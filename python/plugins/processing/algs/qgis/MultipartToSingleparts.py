@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -27,12 +28,11 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QGis, QgsFeature, QgsGeometry
+from qgis.core import QgsFeature, QgsGeometry, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
@@ -55,75 +55,29 @@ class MultipartToSingleparts(GeoAlgorithm):
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Single parts')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
-
-        geomType = self.multiToSingleGeom(layer.dataProvider().geometryType())
+        geomType = QgsWkbTypes.singleType(layer.wkbType())
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields().toList(), geomType, layer.crs())
-
-        outFeat = QgsFeature()
-        inGeom = QgsGeometry()
+            layer.fields().toList(), geomType, layer.crs())
 
         features = vector.features(layer)
         total = 100.0 / len(features)
         for current, f in enumerate(features):
-            inGeom = f.geometry()
-            attrs = f.attributes()
+            input_geometry = f.geometry()
+            if input_geometry:
+                if input_geometry.isMultipart():
+                    for g in input_geometry.asGeometryCollection():
+                        output_feature = f
+                        output_feature.setGeometry(g)
+                        writer.addFeature(output_feature)
+                else:
+                    writer.addFeature(f)
+            else:
+                #input feature with null geometry
+                writer.addFeature(f)
 
-            geometries = self.extractAsSingle(inGeom)
-            outFeat.setAttributes(attrs)
-
-            for g in geometries:
-                outFeat.setGeometry(g)
-                writer.addFeature(outFeat)
-
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer
-
-    def multiToSingleGeom(self, wkbType):
-        try:
-            if wkbType in (QGis.WKBPoint, QGis.WKBMultiPoint,
-                           QGis.WKBPoint25D, QGis.WKBMultiPoint25D):
-                return QGis.WKBPoint
-            elif wkbType in (QGis.WKBLineString, QGis.WKBMultiLineString,
-                             QGis.WKBMultiLineString25D,
-                             QGis.WKBLineString25D):
-
-                return QGis.WKBLineString
-            elif wkbType in (QGis.WKBPolygon, QGis.WKBMultiPolygon,
-                             QGis.WKBMultiPolygon25D, QGis.WKBPolygon25D):
-
-                return QGis.WKBPolygon
-            else:
-                return QGis.WKBUnknown
-        except Exception as err:
-            raise GeoAlgorithmExecutionException(unicode(err))
-
-    def extractAsSingle(self, geom):
-        multiGeom = QgsGeometry()
-        geometries = []
-        if geom.type() == QGis.Point:
-            if geom.isMultipart():
-                multiGeom = geom.asMultiPoint()
-                for i in multiGeom:
-                    geometries.append(QgsGeometry().fromPoint(i))
-            else:
-                geometries.append(geom)
-        elif geom.type() == QGis.Line:
-            if geom.isMultipart():
-                multiGeom = geom.asMultiPolyline()
-                for i in multiGeom:
-                    geometries.append(QgsGeometry().fromPolyline(i))
-            else:
-                geometries.append(geom)
-        elif geom.type() == QGis.Polygon:
-            if geom.isMultipart():
-                multiGeom = geom.asMultiPolygon()
-                for i in multiGeom:
-                    geometries.append(QgsGeometry().fromPolygon(i))
-            else:
-                geometries.append(geom)
-        return geometries

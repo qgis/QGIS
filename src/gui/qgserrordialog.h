@@ -22,13 +22,16 @@
 #include "ui_qgserrordialogbase.h"
 #include "qgisgui.h"
 #include "qgserror.h"
+#include "qgis_gui.h"
 
+/** \ingroup gui
+ * \class QgsErrorDialog
+ */
 class GUI_EXPORT QgsErrorDialog: public QDialog, private Ui::QgsErrorDialogBase
 {
     Q_OBJECT
   public:
-    QgsErrorDialog( const QgsError & theError, const QString & theTitle, QWidget *parent = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
-    ~QgsErrorDialog();
+    QgsErrorDialog( const QgsError & theError, const QString & theTitle, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
     /** Show dialog with error
      * @param theError error
@@ -36,7 +39,7 @@ class GUI_EXPORT QgsErrorDialog: public QDialog, private Ui::QgsErrorDialogBase
      * @param parent parent object
      * @param fl widget flags
      */
-    static void show( const QgsError & theError, const QString & theTitle, QWidget *parent = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
+    static void show( const QgsError & theError, const QString & theTitle, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
   public slots:
     void on_mDetailPushButton_clicked();

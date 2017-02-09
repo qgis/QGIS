@@ -18,9 +18,12 @@
 #include "qgsidentifymenu.h"
 
 #include "qgsapplication.h"
-#include "qgsattributeaction.h"
+#include "qgsactionmanager.h"
 #include "qgshighlight.h"
-
+#include "qgsmapcanvas.h"
+#include "qgsactionmenu.h"
+#include "qgsvectorlayer.h"
+#include "qgslogger.h"
 
 /// @cond PRIVATE
 CustomActionRegistry::CustomActionRegistry( QObject* parent )
@@ -128,7 +131,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::exec( const QList<Qgs
   if ( !singleLayer && mAllowMultipleReturn && idResults.count() > 1 )
   {
     addSeparator();
-    QAction* allAction = new QAction( QgsApplication::getThemeIcon( "/mActionIdentify.svg" ), tr( "%1 all (%2)" ).arg( mDefaultActionName ).arg( idResults.count() ), this );
+    QAction* allAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionIdentify.svg" ) ), tr( "%1 all (%2)" ).arg( mDefaultActionName ).arg( idResults.count() ), this );
     allAction->setData( QVariant::fromValue<ActionData>( ActionData( nullptr ) ) );
     connect( allAction, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
     addAction( allAction );
@@ -193,7 +196,7 @@ void QgsIdentifyMenu::addRasterLayer( QgsMapLayer* layer )
   }
 
   // add layer action to the top menu
-  layerAction->setIcon( QgsApplication::getThemeIcon( "/mIconRasterLayer.png" ) );
+  layerAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconRasterLayer.svg" ) ) );
   layerAction->setData( QVariant::fromValue<ActionData>( ActionData( layer ) ) );
   connect( layerAction, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
   addAction( layerAction );
@@ -263,7 +266,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
     createMenu = !mCustomActionRegistry.mapLayerActions( layer, QgsMapLayerAction::SingleFeature ).isEmpty();
     if ( !createMenu && mShowFeatureActions )
     {
-      QgsActionMenu* featureActionMenu = new QgsActionMenu( layer, &( results[0].mFeature ), this );
+      QgsActionMenu* featureActionMenu = new QgsActionMenu( layer, results[0].mFeature, QStringLiteral( "AttributeTableRow" ), this );
       createMenu  = !featureActionMenu->actions().isEmpty();
       delete featureActionMenu;
     }
@@ -275,8 +278,8 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
     // case 1
     QString featureTitle = results[0].mFeature.attribute( layer->displayField() ).toString();
     if ( featureTitle.isEmpty() )
-      featureTitle = QString( "%1" ).arg( results[0].mFeature.id() );
-    layerAction = new QAction( QString( "%1 (%2)" ).arg( layer->name(), featureTitle ), this );
+      featureTitle = QStringLiteral( "%1" ).arg( results[0].mFeature.id() );
+    layerAction = new QAction( QStringLiteral( "%1 (%2)" ).arg( layer->name(), featureTitle ), this );
   }
   else
   {
@@ -297,8 +300,8 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
       {
         QString featureTitle = results[0].mFeature.attribute( layer->displayField() ).toString();
         if ( featureTitle.isEmpty() )
-          featureTitle = QString( "%1" ).arg( results[0].mFeature.id() );
-        layerMenu = new QMenu( QString( "%1 (%2)" ).arg( layer->name(), featureTitle ), this );
+          featureTitle = QStringLiteral( "%1" ).arg( results[0].mFeature.id() );
+        layerMenu = new QMenu( QStringLiteral( "%1 (%2)" ).arg( layer->name(), featureTitle ), this );
       }
       layerAction = layerMenu->menuAction();
     }
@@ -310,14 +313,14 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
     // icons
     switch ( layer->geometryType() )
     {
-      case QGis::Point:
-        layerAction->setIcon( QgsApplication::getThemeIcon( "/mIconPointLayer.png" ) );
+      case QgsWkbTypes::PointGeometry:
+        layerAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ) );
         break;
-      case QGis::Line:
-        layerAction->setIcon( QgsApplication::getThemeIcon( "/mIconLineLayer.png" ) );
+      case QgsWkbTypes::LineGeometry:
+        layerAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ) );
         break;
-      case QGis::Polygon:
-        layerAction->setIcon( QgsApplication::getThemeIcon( "/mIconPolygonLayer.png" ) );
+      case QgsWkbTypes::PolygonGeometry:
+        layerAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ) );
         break;
       default:
         break;
@@ -348,13 +351,13 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
     QList<QgsMapLayerAction*> customFeatureActions = mCustomActionRegistry.mapLayerActions( layer, QgsMapLayerAction::SingleFeature );
     if ( mShowFeatureActions )
     {
-      featureActionMenu = new QgsActionMenu( layer, result.mFeature.id(), layerMenu );
+      featureActionMenu = new QgsActionMenu( layer, result.mFeature, QStringLiteral( "AttributeTableRow" ), layerMenu );
     }
 
     // feature title
     QString featureTitle = result.mFeature.attribute( layer->displayField() ).toString();
     if ( featureTitle.isEmpty() )
-      featureTitle = QString( "%1" ).arg( result.mFeature.id() );
+      featureTitle = QStringLiteral( "%1" ).arg( result.mFeature.id() );
 
     if ( customFeatureActions.isEmpty() && ( !featureActionMenu || featureActionMenu->actions().isEmpty() ) )
     {
@@ -388,7 +391,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
       continue;
 
     // add default identify action
-    QAction* identifyFeatureAction = new QAction( QgsApplication::getThemeIcon( "/mActionIdentify.svg" ), mDefaultActionName, featureMenu );
+    QAction* identifyFeatureAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionIdentify.svg" ) ), mDefaultActionName, featureMenu );
     connect( identifyFeatureAction, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
     identifyFeatureAction->setData( QVariant::fromValue<ActionData>( ActionData( layer, result.mFeature.id() ) ) );
     featureMenu->addAction( identifyFeatureAction );
@@ -420,7 +423,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
   if ( mAllowMultipleReturn && results.count() > 1 )
   {
     layerMenu->addSeparator();
-    QAction* allAction = new QAction( QgsApplication::getThemeIcon( "/mActionIdentify.svg" ), tr( "%1 all (%2)" ).arg( mDefaultActionName ).arg( results.count() ), layerMenu );
+    QAction* allAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionIdentify.svg" ) ), tr( "%1 all (%2)" ).arg( mDefaultActionName ).arg( results.count() ), layerMenu );
     allAction->setData( QVariant::fromValue<ActionData>( ActionData( layer ) ) );
     connect( allAction, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
     layerMenu->addAction( allAction );
@@ -431,7 +434,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
   {
     QString title = mapLayerAction->text();
     if ( mapLayerAction->targets().testFlag( QgsMapLayerAction::MultipleFeatures ) )
-      title.append( QString( " (%1)" ).arg( results.count() ) );
+      title.append( QStringLiteral( " (%1)" ).arg( results.count() ) );
     QAction* action = new QAction( mapLayerAction->icon(), title, layerMenu );
     action->setData( QVariant::fromValue<ActionData>( ActionData( layer, mapLayerAction ) ) );
     connect( action, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
@@ -597,12 +600,12 @@ void QgsIdentifyMenu::handleMenuHover()
     if ( !vl )
       continue;
 
-    QgsHighlight *hl = new QgsHighlight( mCanvas, result.mFeature.constGeometry(), vl );
+    QgsHighlight *hl = new QgsHighlight( mCanvas, result.mFeature.geometry(), vl );
     QSettings settings;
-    QColor color = QColor( settings.value( "/Map/highlight/color", QGis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
-    int alpha = settings.value( "/Map/highlight/colorAlpha", QGis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
-    double buffer = settings.value( "/Map/highlight/buffer", QGis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
-    double minWidth = settings.value( "/Map/highlight/minWidth", QGis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
+    QColor color = QColor( settings.value( QStringLiteral( "/Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+    int alpha = settings.value( QStringLiteral( "/Map/highlight/colorAlpha" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
+    double buffer = settings.value( QStringLiteral( "/Map/highlight/buffer" ), Qgis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
+    double minWidth = settings.value( QStringLiteral( "/Map/highlight/minWidth" ), Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
     hl->setColor( color ); // sets also fill with default alpha
     color.setAlpha( alpha );
     hl->setFillColor( color ); // sets fill with alpha

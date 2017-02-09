@@ -42,5 +42,5 @@ class QgsAuthConfigUriEdit : QDialog
 
     QString dataSourceUri();
 
-    static bool hasConfigID( const QString &txt );
+    static bool hasConfigId( const QString &txt );
 };

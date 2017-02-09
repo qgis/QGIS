@@ -41,15 +41,15 @@ class TopologyRule
     bool useSecondLayer;
     bool useTolerance;
     bool useSpatialIndex;
-    QList<QGis::GeometryType> layer1SupportedTypes;
-    QList<QGis::GeometryType> layer2SupportedTypes;
+    QList<QgsWkbTypes::GeometryType> layer1SupportedTypes;
+    QList<QgsWkbTypes::GeometryType> layer2SupportedTypes;
 
-    bool layer1AcceptsType( QGis::GeometryType type )
+    bool layer1AcceptsType( QgsWkbTypes::GeometryType type )
     {
       return layer1SupportedTypes.contains( type );
     }
 
-    bool layer2AcceptsType( QGis::GeometryType type )
+    bool layer2AcceptsType( QgsWkbTypes::GeometryType type )
     {
       return layer2SupportedTypes.contains( type );
     }
@@ -63,8 +63,8 @@ class TopologyRule
                            bool useSecondLayer0 = true,
                            bool useTolerance0 = false,
                            bool useSpatialIndex0 = false,
-                           const QList<QGis::GeometryType>& layer1SupportedTypes0 = QList<QGis::GeometryType>(),
-                           const QList<QGis::GeometryType>& layer2SupportedTypes0 = QList<QGis::GeometryType>()
+                           const QList<QgsWkbTypes::GeometryType>& layer1SupportedTypes0 = QList<QgsWkbTypes::GeometryType>(),
+                           const QList<QgsWkbTypes::GeometryType>& layer2SupportedTypes0 = QList<QgsWkbTypes::GeometryType>()
                          )
         : f( f0 )
         , useSecondLayer( useSecondLayer0 )
@@ -110,6 +110,7 @@ class topolTest: public QObject
      * Returns copy of the test map
      */
     QMap<QString, TopologyRule> testMap() { return mTopologyRuleMap; }
+
     /**
      * Runs the test and returns all found errors
      * @param testName name of the test
@@ -127,6 +128,7 @@ class topolTest: public QObject
      * @param layer2 pointer to the second layer
      */
     ErrorList checkOverlapWithLayer( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent );
+
     /**
      * Checks for self-intersections in the layer
      * @param tolerance not used
@@ -136,6 +138,7 @@ class topolTest: public QObject
     ErrorList checkSelfIntersections( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent );
 
 #if 0 //unused and broken
+
     /**
      * Checks for features that are too close
      * @param tolerance allowed tolerance
@@ -152,6 +155,7 @@ class topolTest: public QObject
      * @param layer2 pointer to the second layer
      */
     ErrorList checkSegmentLength( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent );
+
     /**
      * Checks for dangling lines
      * @param tolerance allowed tolerance
@@ -159,6 +163,7 @@ class topolTest: public QObject
      * @param layer2 not used
      */
     ErrorList checkDanglingLines( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent );
+
     /**
      * Checks for points not covered by any segment
      * @param tolerance not used
@@ -166,6 +171,7 @@ class topolTest: public QObject
      * @param layer2 pointer to the second layer
      */
     ErrorList checkPointCoveredBySegment( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent );
+
     /**
      * Checks for invalid geometries
      * @param tolerance not used
@@ -248,13 +254,14 @@ class topolTest: public QObject
 
 
   public slots:
+
     /**
      * Checks for invalid geometries
      * @param tolerance not used
      * @param layer1 pointer to the first layer
      * @param layer2 not used
      */
-    void setTestCancelled();
+    void setTestCanceled();
 
   private:
     QMap<QString, QgsSpatialIndex*> mLayerIndexes;
@@ -264,7 +271,7 @@ class topolTest: public QObject
     QMap<QgsFeatureId, FeatureLayer> mFeatureMap2;
 
     QgisInterface* theQgsInterface;
-    bool mTestCancelled;
+    bool mTestCanceled;
 
     /**
      * Builds spatial index for the layer
@@ -287,11 +294,12 @@ class topolTest: public QObject
     void fillFeatureMap( QgsVectorLayer* layer, const QgsRectangle& extent );
 
     /**
-     * Returns true if the test was cancelled
+     * Returns true if the test was canceled
      */
-    bool testCancelled();
+    bool testCanceled();
 
   signals:
+
     /**
      * Informs progress dialog about current status
      * @param value process status

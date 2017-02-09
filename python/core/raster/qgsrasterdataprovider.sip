@@ -10,17 +10,22 @@ class QgsImageFetcher : QObject
 #include <qgsrasterdataprovider.h>
 %End
   public:
-
-    QgsImageFetcher();
+    /** Constructor */
+    QgsImageFetcher( QObject* parent = 0 );
+    /** Destructor */
     virtual ~QgsImageFetcher();
 
-    // Make sure to connect to "finish" and "error" before starting
+    /** Starts the image download
+     * @note Make sure to connect to "finish" and "error" before starting */
     virtual void start() = 0;
 
   signals:
-
+    /** Emitted when the download completes
+     *  @param legend The downloaded legend image */
     void finish( const QImage& legend );
+    /** Emitted to report progress */
     void progress( qint64 received, qint64 total );
+    /** Emitted when an error occurs */
     void error( const QString& msg );
 };
 
@@ -47,27 +52,18 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /* It makes no sense to set input on provider */
     bool setInput( QgsRasterInterface* input );
 
-    /** \brief   Renders the layer as an image
-     * \note When render caching (/qgis/enable_render_caching) is on the wms
-     * provider doesn't wait for the reply of the getmap request or all
-     * tiles replies and can return incomplete images.
-     * Temporarily disable render caching if you require the complete
-     * wms image in the first call.
-     */
-    virtual QImage* draw( const QgsRectangle & viewExtent, int pixelWidth, int pixelHeight ) = 0;
-
     /** Get the extent of the data source.
      * @return QgsRectangle containing the extent of the layer
      */
-    virtual QgsRectangle extent() = 0;
+    virtual QgsRectangle extent() const = 0;
 
     /** Returns data type for the band specified by number */
-    virtual QGis::DataType dataType( int bandNo ) const = 0;
+    virtual Qgis::DataType dataType( int bandNo ) const = 0;
 
     /** Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType
      */
-    virtual QGis::DataType srcDataType( int bandNo ) const = 0;
+    virtual Qgis::DataType sourceDataType( int bandNo ) const = 0;
 
     /** Returns data type for the band specified by number */
     virtual int colorInterpretation( int theBandNo ) const;
@@ -97,19 +93,19 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     virtual int ySize() const;
 
     /** Read block of data using given extent and size. */
-    virtual QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight ) / Factory /;
+    virtual QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight, QgsRasterBlockFeedback* feedback = nullptr ) / Factory /;
 
     /** Return true if source band has no data value */
-    virtual bool srcHasNoDataValue( int bandNo ) const;
+    virtual bool sourceHasNoDataValue( int bandNo ) const;
 
     /** \brief Get source nodata value usage */
-    virtual bool useSrcNoDataValue( int bandNo ) const;
+    virtual bool useSourceNoDataValue( int bandNo ) const;
 
     /** \brief Set source nodata value usage */
-    virtual void setUseSrcNoDataValue( int bandNo, bool use );
+    virtual void setUseSourceNoDataValue( int bandNo, bool use );
 
     /** Value representing no data value. */
-    virtual double srcNoDataValue( int bandNo ) const;
+    virtual double sourceNoDataValue( int bandNo ) const;
 
     virtual void setUserNoDataValue( int bandNo, const QgsRasterRangeList& noData );
 
@@ -121,6 +117,9 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** \brief Returns the sublayers of this layer - useful for providers that manage
      *  their own layers, such as WMS */
     virtual QStringList subLayers() const;
+
+    /** \brief Returns whether the provider supplies a legend graphic */
+    virtual bool supportsLegendGraphic() const;
 
     /** \brief Returns the legend rendered as pixmap
      *
@@ -153,14 +152,14 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
                                    QgsRaster::RasterPyramidsFormat theFormat = QgsRaster::PyramidsGTiff,
                                    const QStringList & theConfigOptions = QStringList() );
 
-    /** \brief Accessor for ths raster layers pyramid list.
+    /** \brief Accessor for the raster layers pyramid list.
      * @param overviewList used to construct the pyramid list (optional), when empty the list is defined by the provider.
      * A pyramid list defines the
      * POTENTIAL pyramids that can be in a raster. To know which of the pyramid layers
      * ACTUALLY exists you need to look at the existsFlag member in each struct stored in the
      * list.
      */
-    virtual QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() );
+    virtual QList<QgsRasterPyramid> buildPyramidList( const QList<int>& overviewList = QList<int>() );
 
     /** \brief Returns true if raster has at least one populated histogram. */
     bool hasPyramids();
@@ -186,6 +185,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
      * @param theExtent context extent
      * @param theWidth context width
      * @param theHeight context height
+     * @param theDpi context dpi
      * @return QgsRaster::IdentifyFormatValue: map of values for each band, keys are band numbers
      *         (from 1).
      *         QgsRaster::IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer
@@ -194,7 +194,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
      *         Empty if failed or there are no results (TODO: better error reporting).
      */
     //virtual QMap<int, QVariant> identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
-    virtual QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
+    virtual QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0, int theDpi = 96 );
 
     /**
      * \brief   Returns the caption error text for the last error in this provider
@@ -233,15 +233,50 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** Current time stamp of data source */
     virtual QDateTime dataTimestamp() const;
 
+    /** Checks whether the provider is in editing mode, i.e. raster write operations will be accepted.
+     * By default providers are not editable. Use setEditable() method to enable/disable editing.
+     * @see setEditable(), writeBlock()
+     * @note added in QGIS 3.0
+     */
+    virtual bool isEditable() const;
+
+    /** Turns on/off editing mode of the provider. When in editing mode, it is possible
+     * to overwrite data of the provider using writeBlock() calls.
+     * @note Only some providers support editing mode and even those may fail to turn
+     * the underlying data source into editing mode, so it is necessary to check the return
+     * value whether the operation was successful.
+     * @returns true if the switch to/from editing mode was successful
+     * @see isEditable(), writeBlock()
+     * @note added in QGIS 3.0
+     */
+    virtual bool setEditable( bool enabled );
+
     /** Writes into the provider datasource*/
     // TODO: add data type (may be defferent from band type)
     virtual bool write( void* data, int band, int width, int height, int xOffset, int yOffset );
+
+    /** Writes pixel data from a raster block into the provider data source.
+     *
+     * This will override previously stored pixel values. It is assumed that cells in the passed
+     * raster block are aligned with the cells of the data source. If raster block does not cover
+     * the whole area of the data source, only a subset of pixels covered by the raster block
+     * will be overwritten. By default, writing of raster data starts from the first cell
+     * of the raster - it is possible to set offset in pixels by specifying non-zero
+     * xOffset and yOffset values.
+     *
+     * Writing is supported only by some data providers. Provider has to be in editing mode
+     * in order to allow write operations.
+     * @see isEditable(), setEditable()
+     * @returns true on success
+     * @note added in QGIS 3.0
+     */
+    bool writeBlock( QgsRasterBlock* block, int band, int xOffset = 0, int yOffset = 0 );
 
     /** Creates a new dataset with mDataSourceURI */
     static QgsRasterDataProvider* create( const QString &providerKey,
                                           const QString &uri,
                                           const QString& format, int nBands,
-                                          QGis::DataType type,
+                                          Qgis::DataType type,
                                           int width, int height, double* geoTransform,
                                           const QgsCoordinateReferenceSystem& crs,
                                           const QStringList& createOptions = QStringList() );
@@ -286,7 +321,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** Emit a message to be displayed on status bar, usually used by network providers (WMS,WCS)
      * @note added in 2.14
      */
-    void statusChanged( const QString& );
+    void statusChanged( const QString& ) const;
 
   protected:
     /** Read block of data
@@ -297,7 +332,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** Read block of data using give extent and size
      * @note not available in python bindings
      */
-    //virtual void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data );
+    //virtual void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data, QgsRasterBlockFeedback* feedback = nullptr );
 
     /** Returns true if user no data contains value */
     bool userNoDataValuesContains( int bandNo, double value ) const;

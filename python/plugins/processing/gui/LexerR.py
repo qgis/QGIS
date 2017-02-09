@@ -25,8 +25,8 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-from PyQt.QtGui import QColor
-from PyQt.Qsci import QsciLexerCustom
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.Qsci import QsciLexerCustom
 
 
 class LexerR(QsciLexerCustom):
@@ -52,7 +52,7 @@ class LexerR(QsciLexerCustom):
             4: 'String',
         }
 
-        for (k, v) in self._styles.iteritems():
+        for (k, v) in list(self._styles.items()):
             setattr(self, v, k)
 
     def description(self, style):
@@ -104,7 +104,7 @@ class LexerR(QsciLexerCustom):
         for line in source.splitlines(True):
             length = len(line)
 
-            if line.startswith('#'):
+            if line.startswith(b'#'):
                 state = self.Comment
             else:
                 state = self.Default

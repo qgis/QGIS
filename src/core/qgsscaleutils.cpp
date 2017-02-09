@@ -22,21 +22,21 @@
 bool QgsScaleUtils::saveScaleList( const QString &fileName, const QStringList &scales, QString &errorMessage )
 {
   QDomDocument doc;
-  QDomElement root = doc.createElement( "qgsScales" );
-  root.setAttribute( "version", "1.0" );
+  QDomElement root = doc.createElement( QStringLiteral( "qgsScales" ) );
+  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
   for ( int i = 0; i < scales.count(); ++i )
   {
-    QDomElement el = doc.createElement( "scale" );
-    el.setAttribute( "value", scales.at( i ) );
+    QDomElement el = doc.createElement( QStringLiteral( "scale" ) );
+    el.setAttribute( QStringLiteral( "value" ), scales.at( i ) );
     root.appendChild( el );
   }
 
   QFile file( fileName );
-  if ( !file.open( QIODevice::WriteOnly | QIODevice::Text ) )
+  if ( !file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
   {
-    errorMessage = QString( "Cannot write file %1:\n%2." ).arg( fileName, file.errorString() );
+    errorMessage = QStringLiteral( "Cannot write file %1:\n%2." ).arg( fileName, file.errorString() );
     return false;
   }
 
@@ -50,7 +50,7 @@ bool QgsScaleUtils::loadScaleList( const QString &fileName, QStringList &scales,
   QFile file( fileName );
   if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
-    errorMessage = QString( "Cannot read file %1:\n%2." ).arg( fileName, file.errorString() );
+    errorMessage = QStringLiteral( "Cannot read file %1:\n%2." ).arg( fileName, file.errorString() );
     return false;
   }
 
@@ -61,7 +61,7 @@ bool QgsScaleUtils::loadScaleList( const QString &fileName, QStringList &scales,
 
   if ( !doc.setContent( &file, true, &errorStr, &errorLine, &errorColumn ) )
   {
-    errorMessage = QString( "Parse error at line %1, column %2:\n%3" )
+    errorMessage = QStringLiteral( "Parse error at line %1, column %2:\n%3" )
                    .arg( errorLine )
                    .arg( errorColumn )
                    .arg( errorStr );
@@ -69,16 +69,16 @@ bool QgsScaleUtils::loadScaleList( const QString &fileName, QStringList &scales,
   }
 
   QDomElement root = doc.documentElement();
-  if ( root.tagName() != "qgsScales" )
+  if ( root.tagName() != QLatin1String( "qgsScales" ) )
   {
-    errorMessage = "The file is not an scales exchange file.";
+    errorMessage = QStringLiteral( "The file is not an scales exchange file." );
     return false;
   }
 
   QDomElement child = root.firstChildElement();
   while ( !child.isNull() )
   {
-    scales.append( child.attribute( "value" ) );
+    scales.append( child.attribute( QStringLiteral( "value" ) ) );
     child = child.nextSiblingElement();
   }
 

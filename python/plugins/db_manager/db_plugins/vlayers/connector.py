@@ -18,18 +18,20 @@ email                : hugo dot mercier at oslandia dot com
  *                                                                         *
  ***************************************************************************/
 """
+from __future__ import print_function
+from builtins import object
 
-from PyQt.QtCore import QUrl, QTemporaryFile
+from qgis.PyQt.QtCore import QUrl, QTemporaryFile
 
 from ..connector import DBConnector
 from ..plugin import Table
 
-from qgis.core import QGis, QgsDataSourceURI, QgsVirtualLayerDefinition, QgsMapLayerRegistry, QgsMapLayer, QgsVectorLayer, QgsCoordinateReferenceSystem
+from qgis.core import Qgis, QgsDataSourceUri, QgsVirtualLayerDefinition, QgsProject, QgsMapLayer, QgsVectorLayer, QgsCoordinateReferenceSystem, QgsWkbTypes
 
 import sqlite3
 
 
-class sqlite3_connection:
+class sqlite3_connection(object):
 
     def __init__(self, sqlite_file):
         self.conn = sqlite3.connect(sqlite_file)
@@ -59,7 +61,7 @@ def classFactory():
 # Tables in DB Manager are identified by their display names
 # This global registry maps a display name with a layer id
 # It is filled when getVectorTables is called
-class VLayerRegistry:
+class VLayerRegistry(object):
     _instance = None
 
     @classmethod
@@ -96,7 +98,7 @@ class VLayerRegistry:
         lid = self.layers.get(l)
         if lid is None:
             return lid
-        return QgsMapLayerRegistry.instance().mapLayer(lid)
+        return QgsProject.instance().mapLayer(lid)
 
 
 class VLayerConnector(DBConnector):
@@ -106,7 +108,7 @@ class VLayerConnector(DBConnector):
 
     def _execute(self, cursor, sql):
         # This is only used to get list of fields
-        class DummyCursor:
+        class DummyCursor(object):
 
             def __init__(self, sql):
                 self.sql = sql
@@ -116,7 +118,8 @@ class VLayerConnector(DBConnector):
         return DummyCursor(sql)
 
     def _get_cursor(self, name=None):
-        print("_get_cursor_", name)
+        # fix_print_with_import
+        print(("_get_cursor_", name))
 
     def _get_cursor_columns(self, c):
         tf = QTemporaryFile()
@@ -129,14 +132,14 @@ class VLayerConnector(DBConnector):
         if not p.isValid():
             return []
         f = [f.name() for f in p.fields()]
-        if p.geometryType() != QGis.WKBNoGeometry:
+        if p.geometryType() != QgsWkbTypes.NullGeometry:
             gn = getQueryGeometryName(tmp)
             if gn:
                 f += [gn]
         return f
 
     def uri(self):
-        return QgsDataSourceURI("qgis")
+        return QgsDataSourceUri("qgis")
 
     def getInfo(self):
         return "info"
@@ -187,7 +190,7 @@ class VLayerConnector(DBConnector):
         reg = VLayerRegistry.instance()
         VLayerRegistry.instance().reset()
         lst = []
-        for _, l in list(QgsMapLayerRegistry.instance().mapLayers().items()):
+        for _, l in list(QgsProject.instance().mapLayers().items()):
             if l.type() == QgsMapLayer.VectorLayer:
 
                 lname = l.name()
@@ -199,41 +202,41 @@ class VLayerConnector(DBConnector):
 
                 geomType = None
                 dim = None
-                g = l.dataProvider().geometryType()
-                if g == QGis.WKBPoint:
+                g = l.dataProvider().wkbType()
+                if g == QgsWkbTypes.Point:
                     geomType = 'POINT'
                     dim = 'XY'
-                elif g == QGis.WKBLineString:
+                elif g == QgsWkbTypes.LineString:
                     geomType = 'LINESTRING'
                     dim = 'XY'
-                elif g == QGis.WKBPolygon:
+                elif g == QgsWkbTypes.Polygon:
                     geomType = 'POLYGON'
                     dim = 'XY'
-                elif g == QGis.WKBMultiPoint:
+                elif g == QgsWkbTypes.MultiPoint:
                     geomType = 'MULTIPOINT'
                     dim = 'XY'
-                elif g == QGis.WKBMultiLineString:
+                elif g == QgsWkbTypes.MultiLineString:
                     geomType = 'MULTILINESTRING'
                     dim = 'XY'
-                elif g == QGis.WKBMultiPolygon:
+                elif g == QgsWkbTypes.MultiPolygon:
                     geomType = 'MULTIPOLYGON'
                     dim = 'XY'
-                elif g == QGis.WKBPoint25D:
+                elif g == QgsWkbTypes.Point25D:
                     geomType = 'POINT'
                     dim = 'XYZ'
-                elif g == QGis.WKBLineString25D:
+                elif g == QgsWkbTypes.LineString25D:
                     geomType = 'LINESTRING'
                     dim = 'XYZ'
-                elif g == QGis.WKBPolygon25D:
+                elif g == QgsWkbTypes.Polygon25D:
                     geomType = 'POLYGON'
                     dim = 'XYZ'
-                elif g == QGis.WKBMultiPoint25D:
+                elif g == QgsWkbTypes.MultiPoint25D:
                     geomType = 'MULTIPOINT'
                     dim = 'XYZ'
-                elif g == QGis.WKBMultiLineString25D:
+                elif g == QgsWkbTypes.MultiLineString25D:
                     geomType = 'MULTILINESTRING'
                     dim = 'XYZ'
-                elif g == QGis.WKBMultiPolygon25D:
+                elif g == QgsWkbTypes.MultiPolygon25D:
                     geomType = 'MULTIPOLYGON'
                     dim = 'XYZ'
                 lst.append(
@@ -274,7 +277,7 @@ class VLayerConnector(DBConnector):
     def getTableExtent(self, table, geom):
         is_id, t = table
         if is_id:
-            l = QgsMapLayerRegistry.instance().mapLayer(t)
+            l = QgsProject.instance().mapLayer(t)
         else:
             l = VLayerRegistry.instance().getLayer(t)
         e = l.extent()

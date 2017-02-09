@@ -17,18 +17,19 @@
 
 #include "QDialog"
 #include "ui_qgsprojectlayergroupdialogbase.h"
+#include "qgis_app.h"
 
 class QDomElement;
 
 class QgsLayerTreeGroup;
 
-/** A dialog to select layers and groups from a qgs project*/
+//! A dialog to select layers and groups from a qgs project
 class APP_EXPORT QgsProjectLayerGroupDialog: public QDialog, private Ui::QgsProjectLayerGroupDialogBase
 {
     Q_OBJECT
   public:
-    /** Constructor. If a project file is given, the groups/layers are displayed directly and the file selection hidden*/
-    QgsProjectLayerGroupDialog( QWidget * parent = nullptr, const QString& projectFile = QString(), Qt::WindowFlags f = nullptr );
+    //! Constructor. If a project file is given, the groups/layers are displayed directly and the file selection hidden
+    QgsProjectLayerGroupDialog( QWidget * parent = nullptr, const QString& projectFile = QString(), Qt::WindowFlags f = 0 );
     ~QgsProjectLayerGroupDialog();
 
     QStringList selectedGroups() const;
@@ -47,7 +48,7 @@ class APP_EXPORT QgsProjectLayerGroupDialog: public QDialog, private Ui::QgsProj
   private:
     void changeProjectFile();
     void removeEmbeddedNodes( QgsLayerTreeGroup* node );
-    void unselectChildren( const QModelIndex& index );
+    void deselectChildren( const QModelIndex& index );
     QString mProjectPath;
     bool mShowEmbeddedContent;
 

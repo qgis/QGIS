@@ -15,11 +15,11 @@
 
 #include "qgsvaluerelationsearchwidgetwrapper.h"
 
-#include "qgsfield.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsfields.h"
 #include "qgsvaluerelationwidgetfactory.h"
 #include "qgsvectorlayer.h"
 #include "qgsfilterlineedit.h"
+#include "qgsvaluerelationwidgetwrapper.h"
 
 #include <QSettings>
 #include <QStringListModel>
@@ -57,7 +57,7 @@ QVariant QgsValueRelationSearchWidgetWrapper::value() const
     int cbxIdx = mComboBox->currentIndex();
     if ( cbxIdx > -1 )
     {
-      v = mComboBox->itemData( mComboBox->currentIndex() );
+      v = mComboBox->currentData();
     }
   }
 
@@ -71,16 +71,16 @@ QVariant QgsValueRelationSearchWidgetWrapper::value() const
         selection << item->data( Qt::UserRole ).toString();
     }
 
-    v = selection.join( "," ).prepend( '{' ).append( '}' );
+    v = selection.join( QStringLiteral( "," ) ).prepend( '{' ).append( '}' );
   }
 
   if ( mLineEdit )
   {
-    Q_FOREACH ( const ValueRelationItem& i , mCache )
+    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem& i , mCache )
     {
-      if ( i.second == mLineEdit->text() )
+      if ( i.value == mLineEdit->text() )
       {
-        v = i.first;
+        v = i.key;
         break;
       }
     }
@@ -89,22 +89,109 @@ QVariant QgsValueRelationSearchWidgetWrapper::value() const
   return v;
 }
 
+QgsSearchWidgetWrapper::FilterFlags QgsValueRelationSearchWidgetWrapper::supportedFlags() const
+{
+  return EqualTo | NotEqualTo | IsNull | IsNotNull;
+}
+
+QgsSearchWidgetWrapper::FilterFlags QgsValueRelationSearchWidgetWrapper::defaultFlags() const
+{
+  return EqualTo;
+}
+
+QString QgsValueRelationSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const
+{
+  QString fieldName = QgsExpression::quotedColumnRef( layer()->fields().at( mFieldIdx ).name() );
+
+  //clear any unsupported flags
+  flags &= supportedFlags();
+  if ( flags & IsNull )
+    return fieldName + " IS NULL";
+  if ( flags & IsNotNull )
+    return fieldName + " IS NOT NULL";
+
+  QVariant v = value();
+  if ( !v.isValid() )
+    return QString();
+
+  switch ( v.type() )
+  {
+    case QVariant::Int:
+    case QVariant::UInt:
+    case QVariant::Double:
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
+    {
+      if ( flags & EqualTo )
+        return fieldName + '=' + v.toString();
+      else if ( flags & NotEqualTo )
+        return fieldName + "<>" + v.toString();
+      break;
+    }
+
+    default:
+    {
+      if ( flags & EqualTo )
+        return fieldName + "='" + v.toString() + '\'';
+      else if ( flags & NotEqualTo )
+        return fieldName + "<>'" + v.toString() + '\'';
+      break;
+    }
+  }
+
+  return QString();
+}
+
+void QgsValueRelationSearchWidgetWrapper::clearWidget()
+{
+  if ( mComboBox )
+  {
+    mComboBox->setCurrentIndex( 0 );
+  }
+  if ( mListWidget )
+  {
+    mListWidget->clearSelection();
+  }
+  if ( mLineEdit )
+  {
+    mLineEdit->setText( QString() );
+  }
+}
+
+void QgsValueRelationSearchWidgetWrapper::setEnabled( bool enabled )
+{
+  if ( mComboBox )
+  {
+    mComboBox->setEnabled( enabled );
+  }
+  if ( mListWidget )
+  {
+    mListWidget->setEnabled( enabled );
+  }
+  if ( mLineEdit )
+  {
+    mLineEdit->setEnabled( enabled );
+  }
+}
+
 bool QgsValueRelationSearchWidgetWrapper::valid() const
 {
   return true;
 }
 
-void QgsValueRelationSearchWidgetWrapper::valueChanged()
+void QgsValueRelationSearchWidgetWrapper::onValueChanged()
 {
   QVariant vl = value();
   if ( !vl.isValid() )
   {
     clearExpression();
+    emit valueCleared();
   }
   else
   {
     QSettings settings;
-    setExpression( vl.isNull() ? settings.value( "qgis/nullValue", "NULL" ).toString() : vl.toString() );
+    setExpression( vl.isNull() ? QgsApplication::nullRepresentation() : vl.toString() );
+    emit valueChanged();
   }
   emit expressionChanged( mExpression );
 }
@@ -112,19 +199,19 @@ void QgsValueRelationSearchWidgetWrapper::valueChanged()
 void QgsValueRelationSearchWidgetWrapper::setExpression( QString exp )
 {
   QSettings settings;
-  QString nullValue = settings.value( "qgis/nullValue", "NULL" ).toString();
+  QString nullValue = QgsApplication::nullRepresentation();
   QString fieldName = layer()->fields().at( mFieldIdx ).name();
 
   QString str;
   if ( exp == nullValue )
   {
-    str = QString( "%1 IS NULL" ).arg( QgsExpression::quotedColumnRef( fieldName ) );
+    str = QStringLiteral( "%1 IS NULL" ).arg( QgsExpression::quotedColumnRef( fieldName ) );
   }
   else
   {
-    str = QString( "%1 = '%3'" )
+    str = QStringLiteral( "%1 = '%3'" )
           .arg( QgsExpression::quotedColumnRef( fieldName ),
-                exp.replace( '\'', "''" )
+                exp.replace( '\'', QLatin1String( "''" ) )
               );
   }
   mExpression = str;
@@ -132,11 +219,11 @@ void QgsValueRelationSearchWidgetWrapper::setExpression( QString exp )
 
 QWidget* QgsValueRelationSearchWidgetWrapper::createWidget( QWidget* parent )
 {
-  if ( config( "AllowMulti" ).toBool() )
+  if ( config( QStringLiteral( "AllowMulti" ) ).toBool() )
   {
     return new QgsFilterLineEdit( parent );
   }
-  else if ( config( "UseCompleter" ).toBool() )
+  else if ( config( QStringLiteral( "UseCompleter" ) ).toBool() )
   {
     return new QgsFilterLineEdit( parent );
   }
@@ -148,7 +235,7 @@ QWidget* QgsValueRelationSearchWidgetWrapper::createWidget( QWidget* parent )
 
 void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget* editor )
 {
-  mCache = QgsValueRelationWidgetWrapper::createCache( config() );
+  mCache = QgsValueRelationFieldFormatter::createCache( config() );
 
   mComboBox = qobject_cast<QComboBox*>( editor );
   mListWidget = qobject_cast<QListWidget*>( editor );
@@ -157,43 +244,44 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget* editor )
   if ( mComboBox )
   {
     mComboBox->addItem( tr( "Please select" ), QVariant() ); // creates an invalid to allow selecting all features
-    if ( config( "AllowNull" ).toBool() )
+    if ( config( QStringLiteral( "AllowNull" ) ).toBool() )
     {
       mComboBox->addItem( tr( "(no selection)" ), QVariant( layer()->fields().at( mFieldIdx ).type() ) );
     }
 
-    Q_FOREACH ( const ValueRelationItem& element, mCache )
+    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem& element, mCache )
     {
-      mComboBox->addItem( element.second, element.first );
+      mComboBox->addItem( element.value, element.key );
     }
 
-    connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( valueChanged() ) );
+    connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( onValueChanged() ) );
   }
   else if ( mListWidget )
   {
-    Q_FOREACH ( const ValueRelationItem& element, mCache )
+    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem& element, mCache )
     {
       QListWidgetItem *item;
-      item = new QListWidgetItem( element.second );
-      item->setData( Qt::UserRole, element.first );
+      item = new QListWidgetItem( element.value );
+      item->setData( Qt::UserRole, element.key );
 
       mListWidget->addItem( item );
     }
-    connect( mListWidget, SIGNAL( itemChanged( QListWidgetItem* ) ), this, SLOT( valueChanged() ) );
+    connect( mListWidget, SIGNAL( itemChanged( QListWidgetItem* ) ), this, SLOT( onValueChanged() ) );
   }
   else if ( mLineEdit )
   {
     QStringList values;
-    Q_FOREACH ( const ValueRelationItem& i,  mCache )
+    values.reserve( mCache.size() );
+    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem& i,  mCache )
     {
-      values << i.second;
+      values << i.value;
     }
 
     QStringListModel* m = new QStringListModel( values, mLineEdit );
     QCompleter* completer = new QCompleter( m, mLineEdit );
     completer->setCaseSensitivity( Qt::CaseInsensitive );
     mLineEdit->setCompleter( completer );
-    connect( mLineEdit, SIGNAL( textChanged( QListWidgetItem* ) ), this, SLOT( valueChanged() ) );
+    connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( onValueChanged() ) );
   }
 }
 

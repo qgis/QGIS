@@ -20,6 +20,8 @@
 #include <QWidget>
 #include <QTreeWidget>
 #include <QItemDelegate>
+#include "qgis_gui.h"
+#include <memory>
 
 class QTableWidget;
 class QgsExpressionContextScope;
@@ -63,13 +65,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
      * are created with an empty context by default.
      * @see setContext()
      */
-    QgsExpressionContext* context() const { return mContext.data(); }
-
-    /** Reloads all scopes from the editor's current context. This method should be called
-     * after adding or removing scopes from the attached context.
-     * @see context()
-     */
-    void reloadContext();
+    QgsExpressionContext* context() const { return mContext.get(); }
 
     /** Sets the editable scope for the widget. Only variables from the editable scope can
      * be modified by users.
@@ -86,7 +82,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
     QgsExpressionContextScope* editableScope() const;
 
     /** Sets the setting group for the widget. QgsVariableEditorWidget widgets with
-     * the same setting group will synchronise their settings, eg the size
+     * the same setting group will synchronise their settings, e.g., the size
      * of columns in the tree widget.
      * @param group setting group
      * @see settingGroup()
@@ -94,7 +90,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
     void setSettingGroup( const QString &group ) { mSettingGroup = group; }
 
     /** Returns the setting group for the widget. QgsVariableEditorWidget widgets with
-     * the same setting group will synchronise their settings, eg the size
+     * the same setting group will synchronise their settings, e.g., the size
      * of columns in the tree widget.
      * @returns setting group name
      * @see setSettingGroup()
@@ -105,7 +101,15 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
      * returned. This method can be used to retrieve the variables edited an added by
      * users via the widget.
      */
-    QgsStringMap variablesInActiveScope() const;
+    QVariantMap variablesInActiveScope() const;
+
+  public slots:
+
+    /** Reloads all scopes from the editor's current context. This method should be called
+     * after adding or removing scopes from the attached context.
+     * @see context()
+     */
+    void reloadContext();
 
   signals:
 
@@ -119,7 +123,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
 
   private:
 
-    QScopedPointer<QgsExpressionContext> mContext;
+    std::unique_ptr<QgsExpressionContext> mContext;
     int mEditableScopeIndex;
     QgsVariableEditorTree* mTreeWidget;
     QPushButton* mAddButton;

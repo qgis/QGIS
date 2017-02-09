@@ -50,7 +50,7 @@ class QAction;
 class QToolBar;
 class QToolButton;
 class QPushButton;
-class QDockWidget;
+class QgsDockWidget;
 class QLineEdit;
 class QIcon;
 class QLabel;
@@ -80,7 +80,7 @@ class CoordinateCapture: public QObject, public QgisPlugin
     * @param theInterface Pointer to the QgisInterface object.
      */
     explicit CoordinateCapture( QgisInterface * theInterface );
-    //! Destructor
+
     virtual ~CoordinateCapture();
 
   public slots:
@@ -98,6 +98,7 @@ class CoordinateCapture: public QObject, public QgisPlugin
     void setCRS();
     //! Called when mouse clicks on the canvas. Will populate text box with coords.
     void mouseClicked( const QgsPoint& thePoint );
+
     /** Called when mouse moved over the canvas. If the tracking button is toggled,
      * the text box coords will be updated. */
     void mouseMoved( const QgsPoint& thePoint );
@@ -112,7 +113,7 @@ class CoordinateCapture: public QObject, public QgisPlugin
 
   private:
     //! Container for the coordinate info
-    QPointer<QDockWidget> mpDockWidget;
+    QPointer<QgsDockWidget> mpDockWidget;
 
     //!output display for user defined Coordinate Reference System
     QPointer<QLineEdit> mpUserCrsEdit;

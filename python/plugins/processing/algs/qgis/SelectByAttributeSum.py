@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import next
 
 __author__ = 'Alexander Bruy'
 __date__ = 'April 2015'
@@ -47,41 +48,43 @@ class SelectByAttributeSum(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input Layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input Layer')))
         self.addParameter(ParameterTableField(self.FIELD,
-                                              self.tr('Selection attribute'), self.INPUT, ParameterTableField.DATA_TYPE_NUMBER))
+                                              self.tr('Selection attribute'),
+                                              self.INPUT,
+                                              ParameterTableField.DATA_TYPE_NUMBER))
         self.addParameter(ParameterNumber(self.VALUE, self.tr('Value')))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (attribute sum)'), True))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         fileName = self.getParameterValue(self.INPUT)
         layer = dataobjects.getObjectFromUri(fileName)
         fieldName = self.getParameterValue(self.FIELD)
         value = self.getParameterValue(self.VALUE)
 
-        selected = layer.selectedFeaturesIds()
+        selected = layer.selectedFeatureIds()
         if len(selected) == 0:
             GeoAlgorithmExecutionException(
                 self.tr('There is no selection in the input layer. '
                         'Select one feature and try again.'))
 
         ft = layer.selectedFeatures()[0]
-        geom = QgsGeometry(ft.geometry())
+        geom = ft.geometry()
         attrSum = ft[fieldName]
 
-        idx = QgsSpatialIndex(layer.getFeatures())
+        idx = QgsSpatialIndex(layer.getFeatures(QgsFeatureRequest.setSubsetOfAttributes([])))
         req = QgsFeatureRequest()
         completed = False
         while not completed:
             intersected = idx.intersects(geom.boundingBox())
             if len(intersected) < 0:
-                progress.setInfo(self.tr('No adjacent features found.'))
+                feedback.pushInfo(self.tr('No adjacent features found.'))
                 break
 
-            for i in intersected:
-                ft = layer.getFeatures(req.setFilterFid(i)).next()
-                tmpGeom = QgsGeometry(ft.geometry())
+            req = QgsFeatureRequest().setFilterFids(intersected).setSubsetOfAttributes([fieldName], layer.fields())
+            for ft in layer.getFeatures(req):
+                tmpGeom = ft.geometry()
                 if tmpGeom.touches(geom):
                     geom = tmpGeom.combine(geom)
                     selected.append(i)
@@ -90,5 +93,5 @@ class SelectByAttributeSum(GeoAlgorithm):
                         completed = True
                         break
 
-        layer.setSelectedFeatures(selected)
+        layer.selectByIds(selected)
         self.setOutputValue(self.OUTPUT, fileName)

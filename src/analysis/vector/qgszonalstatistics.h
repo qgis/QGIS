@@ -18,14 +18,22 @@
 #ifndef QGSZONALSTATISTICS_H
 #define QGSZONALSTATISTICS_H
 
-#include "qgsrectangle.h"
 #include <QString>
+#include <QMap>
+#include <limits>
+#include <cfloat>
+#include "qgis_analysis.h"
 
 class QgsGeometry;
 class QgsVectorLayer;
+class QgsRasterLayer;
+class QgsRasterDataProvider;
 class QProgressDialog;
+class QgsRectangle;
+class QgsField;
 
-/** A class that calculates raster statistics (count, sum, mean) for a polygon or multipolygon layer and appends the results as attributes*/
+/** \ingroup analysis
+ *  A class that calculates raster statistics (count, sum, mean) for a polygon or multipolygon layer and appends the results as attributes*/
 class ANALYSIS_EXPORT QgsZonalStatistics
 {
   public:
@@ -48,15 +56,18 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     };
     Q_DECLARE_FLAGS( Statistics, Statistic )
 
-    QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix = "", int rasterBand = 1,
-                        const Statistics& stats = Statistics( Count | Sum | Mean ) );
+    /**
+     * Constructor for QgsZonalStatistics.
+     */
+    QgsZonalStatistics( QgsVectorLayer* polygonLayer, QgsRasterLayer* rasterLayer, const QString& attributePrefix = "", int rasterBand = 1,
+                        Statistics stats = Statistics( Count | Sum | Mean ) );
 
     /** Starts the calculation
       @return 0 in case of success*/
     int calculateStatistics( QProgressDialog* p );
 
   private:
-    QgsZonalStatistics();
+    QgsZonalStatistics() = default;
 
     class FeatureStats
     {
@@ -104,27 +115,28 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     int cellInfoForBBox( const QgsRectangle& rasterBBox, const QgsRectangle& featureBBox, double cellSizeX, double cellSizeY,
                          int& offsetX, int& offsetY, int& nCellsX, int& nCellsY ) const;
 
-    /** Returns statistics by considering the pixels where the center point is within the polygon (fast)*/
-    void statisticsFromMiddlePointTest( void* band, const QgsGeometry* poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY,
+    //! Returns statistics by considering the pixels where the center point is within the polygon (fast)
+    void statisticsFromMiddlePointTest( const QgsGeometry& poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY,
                                         double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, FeatureStats& stats );
 
-    /** Returns statistics with precise pixel - polygon intersection test (slow) */
-    void statisticsFromPreciseIntersection( void* band, const QgsGeometry* poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY,
+    //! Returns statistics with precise pixel - polygon intersection test (slow)
+    void statisticsFromPreciseIntersection( const QgsGeometry& poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY,
                                             double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, FeatureStats& stats );
 
-    /** Tests whether a pixel's value should be included in the result*/
+    //! Tests whether a pixel's value should be included in the result
     bool validPixel( float value ) const;
 
-    QString getUniqueFieldName( const QString& fieldName );
+    QString getUniqueFieldName( const QString& fieldName, const QList<QgsField>& newFields );
 
-    QString mRasterFilePath;
-    /** Raster band to calculate statistics from (defaults to 1)*/
-    int mRasterBand;
-    QgsVectorLayer* mPolygonLayer;
+    QgsRasterLayer* mRasterLayer = nullptr;
+    QgsRasterDataProvider* mRasterProvider = nullptr;
+    //! Raster band to calculate statistics
+    int mRasterBand = 0;
+    QgsVectorLayer* mPolygonLayer = nullptr;
     QString mAttributePrefix;
-    /** The nodata value of the input layer*/
-    float mInputNodataValue;
-    Statistics mStatistics;
+    //! The nodata value of the input layer
+    float mInputNodataValue = -1;
+    Statistics mStatistics = QgsZonalStatistics::All;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsZonalStatistics::Statistics )

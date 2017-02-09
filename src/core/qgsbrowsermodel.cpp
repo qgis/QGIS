@@ -37,10 +37,6 @@ QgsBrowserWatcher::QgsBrowserWatcher( QgsDataItem *item )
 {
 }
 
-QgsBrowserWatcher::~QgsBrowserWatcher()
-{
-}
-
 // sort function for QList<QgsDataItem*>, e.g. sorted/grouped provider listings
 static bool cmpByDataItemName_( QgsDataItem* a, QgsDataItem* b )
 {
@@ -49,7 +45,7 @@ static bool cmpByDataItemName_( QgsDataItem* a, QgsDataItem* b )
 
 QgsBrowserModel::QgsBrowserModel( QObject *parent )
     : QAbstractItemModel( parent )
-    , mFavourites( nullptr )
+    , mFavorites( nullptr )
     , mProjectHome( nullptr )
 {
   connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ), this, SLOT( updateProjectHome() ) );
@@ -101,12 +97,12 @@ void QgsBrowserModel::addRootItems()
   connectItem( item );
   mRootItems << item;
 
-  // add favourite directories
-  mFavourites = new QgsFavouritesItem( nullptr, tr( "Favourites" ) );
-  if ( mFavourites )
+  // add favorite directories
+  mFavorites = new QgsFavoritesItem( nullptr, tr( "Favorites" ) );
+  if ( mFavorites )
   {
-    connectItem( mFavourites );
-    mRootItems << mFavourites;
+    connectItem( mFavorites );
+    mRootItems << mFavorites;
   }
 
   // add drives
@@ -133,7 +129,7 @@ void QgsBrowserModel::addRootItems()
   // container for displaying providers as sorted groups (by QgsDataProvider::DataCapability enum)
   QMap<int, QgsDataItem *> providerMap;
 
-  Q_FOREACH ( QgsDataItemProvider* pr, QgsDataItemProviderRegistry::instance()->providers() )
+  Q_FOREACH ( QgsDataItemProvider* pr, QgsApplication::dataItemProviderRegistry()->providers() )
   {
     int capabilities = pr->capabilities();
     if ( capabilities == QgsDataProvider::NoDataCapabilities )
@@ -142,7 +138,7 @@ void QgsBrowserModel::addRootItems()
       continue;
     }
 
-    QgsDataItem *item = pr->createDataItem( "", nullptr );  // empty path -> top level
+    QgsDataItem *item = pr->createDataItem( QLatin1String( "" ), nullptr );  // empty path -> top level
     if ( item )
     {
       QgsDebugMsg( "Add new top level item : " + item->name() );
@@ -157,7 +153,7 @@ void QgsBrowserModel::addRootItems()
     QList<QgsDataItem *> providerGroup = providerMap.values( key );
     if ( providerGroup.size() > 1 )
     {
-      qSort( providerGroup.begin(), providerGroup.end(), cmpByDataItemName_ );
+      std::sort( providerGroup.begin(), providerGroup.end(), cmpByDataItemName_ );
     }
 
     Q_FOREACH ( QgsDataItem * ditem, providerGroup )
@@ -181,15 +177,14 @@ void QgsBrowserModel::removeRootItems()
 Qt::ItemFlags QgsBrowserModel::flags( const QModelIndex & index ) const
 {
   if ( !index.isValid() )
-    return nullptr;
+    return Qt::ItemFlags();
 
   Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
   QgsDataItem* ptr = reinterpret_cast< QgsDataItem* >( index.internalPointer() );
-  if ( ptr->type() == QgsDataItem::Layer || ptr->type() == QgsDataItem::Project )
-  {
+  if ( ptr->hasDragEnabled() )
     flags |= Qt::ItemIsDragEnabled;
-  }
+
   if ( ptr->acceptDrop() )
     flags |= Qt::ItemIsDropEnabled;
   return flags;
@@ -410,7 +405,6 @@ void QgsBrowserModel::itemDataChanged( QgsDataItem * item )
 }
 void QgsBrowserModel::itemStateChanged( QgsDataItem * item, QgsDataItem::State oldState )
 {
-  QgsDebugMsg( "Entered" );
   if ( !item )
     return;
   QModelIndex idx = findItem( item );
@@ -440,7 +434,7 @@ QStringList QgsBrowserModel::mimeTypes() const
   QStringList types;
   // In theory the mime type convention is: application/x-vnd.<vendor>.<application>.<type>
   // but it seems a bit over formalized. Would be an application/x-qgis-uri better?
-  types << "application/x-vnd.qgis.qgis.uri";
+  types << QStringLiteral( "application/x-vnd.qgis.qgis.uri" );
   return types;
 }
 
@@ -462,9 +456,9 @@ QMimeData * QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
         return mimeData;
       }
 
-      if ( ptr->type() != QgsDataItem::Layer ) continue;
-      QgsLayerItem *layer = static_cast< QgsLayerItem* >( ptr );
-      lst.append( QgsMimeDataUtils::Uri( layer ) );
+      QgsMimeDataUtils::Uri uri = ptr->mimeUri();
+      if ( uri.isValid() )
+        lst.append( uri );
     }
   }
   return QgsMimeDataUtils::encodeUriList( lst );
@@ -503,7 +497,6 @@ bool QgsBrowserModel::canFetchMore( const QModelIndex & parent ) const
 
 void QgsBrowserModel::fetchMore( const QModelIndex & parent )
 {
-  QgsDebugMsg( "Entered" );
   QgsDataItem* item = dataItem( parent );
 
   if ( !item || item->state() == QgsDataItem::Populating || item->state() == QgsDataItem::Populated )
@@ -533,25 +526,25 @@ void QgsBrowserModel::refresh( const QModelIndex& theIndex )
   item->refresh();
 }
 
-void QgsBrowserModel::addFavouriteDirectory( const QString& favDir )
+void QgsBrowserModel::addFavoriteDirectory( const QString& directory )
 {
-  Q_ASSERT( mFavourites );
-  mFavourites->addDirectory( favDir );
+  Q_ASSERT( mFavorites );
+  mFavorites->addDirectory( directory );
 }
 
-void QgsBrowserModel::removeFavourite( const QModelIndex &index )
+void QgsBrowserModel::removeFavorite( const QModelIndex &index )
 {
   QgsDirectoryItem *item = dynamic_cast<QgsDirectoryItem *>( dataItem( index ) );
   if ( !item )
     return;
 
-  mFavourites->removeDirectory( item );
+  mFavorites->removeDirectory( item );
 }
 
 void QgsBrowserModel::hidePath( QgsDataItem *item )
 {
   QSettings settings;
-  QStringList hiddenItems = settings.value( "/browser/hiddenPaths",
+  QStringList hiddenItems = settings.value( QStringLiteral( "/browser/hiddenPaths" ),
                             QStringList() ).toStringList();
   int idx = hiddenItems.indexOf( item->path() );
   if ( idx != -1 )
@@ -562,7 +555,7 @@ void QgsBrowserModel::hidePath( QgsDataItem *item )
   {
     hiddenItems << item->path();
   }
-  settings.setValue( "/browser/hiddenPaths", hiddenItems );
+  settings.setValue( QStringLiteral( "/browser/hiddenPaths" ), hiddenItems );
   if ( item->parent() )
   {
     item->parent()->deleteChildItem( item );

@@ -39,7 +39,7 @@ void QgsWelcomePageItemDelegate::paint( QPainter* painter, const QStyleOptionVie
   QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
 
   QAbstractTextDocumentLayout::PaintContext ctx;
-  QStyleOptionViewItemV4 optionV4 = option;
+  QStyleOptionViewItem optionV4 = option;
 
   QColor color;
   if ( option.state & QStyle::State_Selected && option.state & QStyle::State_HasFocus )
@@ -72,7 +72,7 @@ void QgsWelcomePageItemDelegate::paint( QPainter* painter, const QStyleOptionVie
   int titleSize = QApplication::fontMetrics().height() * 1.1;
   int textSize = titleSize * 0.85;
 
-  doc.setHtml( QString( "<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3</span><br>%4<br>%5</div>" ).arg( textSize ).arg( titleSize )
+  doc.setHtml( QStringLiteral( "<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3</span><br>%4<br>%5</div>" ).arg( textSize ).arg( titleSize )
                .arg( index.data( QgsWelcomePageItemsModel::TitleRole ).toString(),
                      index.data( QgsWelcomePageItemsModel::PathRole ).toString(),
                      index.data( QgsWelcomePageItemsModel::CrsRole ).toString() ) );
@@ -108,7 +108,7 @@ QSize QgsWelcomePageItemDelegate::sizeHint( const QStyleOptionViewItem & option,
   int titleSize = QApplication::fontMetrics().height() * 1.1;
   int textSize = titleSize * 0.85;
 
-  doc.setHtml( QString( "<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3</span><br>%4<br>%5</div>" ).arg( textSize ).arg( titleSize )
+  doc.setHtml( QStringLiteral( "<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3</span><br>%4<br>%5</div>" ).arg( textSize ).arg( titleSize )
                .arg( index.data( QgsWelcomePageItemsModel::TitleRole ).toString(),
                      index.data( QgsWelcomePageItemsModel::PathRole ).toString(),
                      index.data( QgsWelcomePageItemsModel::CrsRole ).toString() ) );
@@ -143,15 +143,14 @@ QVariant QgsWelcomePageItemsModel::data( const QModelIndex& index, int role ) co
   {
     case Qt::DisplayRole:
     case TitleRole:
-      return mRecentProjects.at( index.row() ).title != mRecentProjects.at( index.row() ).path ? mRecentProjects.at( index.row() ).title : QFileInfo( mRecentProjects.at( index.row() ).path ).baseName();
+      return mRecentProjects.at( index.row() ).title != mRecentProjects.at( index.row() ).path ? mRecentProjects.at( index.row() ).title : QFileInfo( mRecentProjects.at( index.row() ).path ).completeBaseName();
     case PathRole:
       return mRecentProjects.at( index.row() ).path;
     case CrsRole:
-      if ( mRecentProjects.at( index.row() ).crs != "" )
+      if ( mRecentProjects.at( index.row() ).crs != QLatin1String( "" ) )
       {
-        QgsCoordinateReferenceSystem crs;
-        crs.createFromOgcWmsCrs( mRecentProjects.at( index.row() ).crs );
-        return  QString( "%1 (%2)" ).arg( mRecentProjects.at( index.row() ).crs, crs.description() );
+        QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mRecentProjects.at( index.row() ).crs );
+        return  QStringLiteral( "%1 (%2)" ).arg( mRecentProjects.at( index.row() ).crs, crs.description() );
       }
       else
       {

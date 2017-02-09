@@ -4,9 +4,9 @@ class QgsSizeScaleWidget : QgsDataDefinedAssistant
 #include <qgssizescalewidget.h>
 %End
   public:
-    QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsMarkerSymbolV2 * symbol );
+    QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsMarkerSymbol * symbol );
 
-    QgsDataDefined dataDefined() const;
+    virtual QgsProperty property() const;
 
     /** Returns the vector layer associated with the widget.
      * @note added in QGIS 2.12

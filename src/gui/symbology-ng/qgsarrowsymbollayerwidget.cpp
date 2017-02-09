@@ -18,22 +18,28 @@
 #include <QColorDialog>
 
 QgsArrowSymbolLayerWidget::QgsArrowSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerV2Widget( parent, vl )
+    : QgsSymbolLayerWidget( parent, vl )
     , mLayer( nullptr )
 {
   setupUi( this );
 
-  mArrowWidthUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
-  mArrowStartWidthUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
-  mHeadSizeUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
-  mOffsetUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
+  mArrowWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                   << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mArrowStartWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                        << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mHeadLengthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                   << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mHeadThicknessUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                      << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   mOffsetSpin->setClearValue( 0.0 );
 }
 
-void QgsArrowSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
+void QgsArrowSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
 {
-  if ( !layer || layer->layerType() != "ArrowLine" )
+  if ( !layer || layer->layerType() != QLatin1String( "ArrowLine" ) )
   {
     return;
   }
@@ -48,27 +54,34 @@ void QgsArrowSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mArrowStartWidthUnitWidget->setUnit( mLayer->arrowStartWidthUnit() );
   mArrowStartWidthUnitWidget->setMapUnitScale( mLayer->arrowStartWidthUnitScale() );
 
-  mHeadSizeSpin->setValue( mLayer->headSize() );
-  mHeadSizeUnitWidget->setUnit( mLayer->headSizeUnit() );
-  mHeadSizeUnitWidget->setMapUnitScale( mLayer->headSizeUnitScale() );
+  mHeadLengthSpin->setValue( mLayer->headLength() );
+  mHeadLengthUnitWidget->setUnit( mLayer->headLengthUnit() );
+  mHeadLengthUnitWidget->setMapUnitScale( mLayer->headLengthUnitScale() );
+  mHeadThicknessSpin->setValue( mLayer->headThickness() );
+  mHeadThicknessUnitWidget->setUnit( mLayer->headThicknessUnit() );
+  mHeadThicknessUnitWidget->setMapUnitScale( mLayer->headThicknessUnitScale() );
 
   mHeadTypeCombo->setCurrentIndex( mLayer->headType() );
+  mArrowTypeCombo->setCurrentIndex( mLayer->arrowType() );
 
   mOffsetSpin->setValue( mLayer->offset() );
   mOffsetUnitWidget->setUnit( mLayer->offsetUnit() );
   mOffsetUnitWidget->setMapUnitScale( mLayer->offsetMapUnitScale() );
 
   mCurvedArrowChck->setChecked( mLayer->isCurved() );
+  mRepeatArrowChck->setChecked( mLayer->isRepeated() );
 
-  registerDataDefinedButton( mArrowWidthDDBtn, "arrow_width", QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
-  registerDataDefinedButton( mArrowStartWidthDDBtn, "arrow_start_width", QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
-  registerDataDefinedButton( mHeadSizeDDBtn, "head_size", QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
-  registerDataDefinedButton( mHeadTypeDDBtn, "head_type", QgsDataDefinedButton::Int, QgsDataDefinedButton::intDesc() );
-  registerDataDefinedButton( mOffsetDDBtn, "offset", QgsDataDefinedButton::String, QgsDataDefinedButton::doubleDesc() );
+  registerDataDefinedButton( mArrowWidthDDBtn, QgsSymbolLayer::PropertyArrowWidth );
+  registerDataDefinedButton( mArrowStartWidthDDBtn, QgsSymbolLayer::PropertyArrowStartWidth );
+  registerDataDefinedButton( mHeadWidthDDBtn, QgsSymbolLayer::PropertyArrowHeadLength );
+  registerDataDefinedButton( mHeadHeightDDBtn, QgsSymbolLayer::PropertyArrowHeadThickness );
+  registerDataDefinedButton( mHeadTypeDDBtn, QgsSymbolLayer::PropertyArrowHeadType );
+  registerDataDefinedButton( mArrowTypeDDBtn, QgsSymbolLayer::PropertyArrowType );
+  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
 }
 
 
-QgsSymbolLayerV2* QgsArrowSymbolLayerWidget::symbolLayer()
+QgsSymbolLayer* QgsArrowSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }
@@ -91,12 +104,21 @@ void QgsArrowSymbolLayerWidget::on_mArrowStartWidthSpin_valueChanged( double d )
   emit changed();
 }
 
-void QgsArrowSymbolLayerWidget::on_mHeadSizeSpin_valueChanged( double d )
+void QgsArrowSymbolLayerWidget::on_mHeadLengthSpin_valueChanged( double d )
 {
   if ( !mLayer )
     return;
 
-  mLayer->setHeadSize( d );
+  mLayer->setHeadLength( d );
+  emit changed();
+}
+
+void QgsArrowSymbolLayerWidget::on_mHeadThicknessSpin_valueChanged( double d )
+{
+  if ( !mLayer )
+    return;
+
+  mLayer->setHeadThickness( d );
   emit changed();
 }
 
@@ -120,13 +142,23 @@ void QgsArrowSymbolLayerWidget::on_mArrowStartWidthUnitWidget_changed()
   emit changed();
 }
 
-void QgsArrowSymbolLayerWidget::on_mHeadSizeUnitWidget_changed()
+void QgsArrowSymbolLayerWidget::on_mHeadLengthUnitWidget_changed()
 {
   if ( !mLayer )
     return;
 
-  mLayer->setHeadSizeUnit( mHeadSizeUnitWidget->unit() );
-  mLayer->setHeadSizeUnitScale( mHeadSizeUnitWidget->getMapUnitScale() );
+  mLayer->setHeadLengthUnit( mHeadLengthUnitWidget->unit() );
+  mLayer->setHeadLengthUnitScale( mHeadLengthUnitWidget->getMapUnitScale() );
+  emit changed();
+}
+
+void QgsArrowSymbolLayerWidget::on_mHeadThicknessUnitWidget_changed()
+{
+  if ( !mLayer )
+    return;
+
+  mLayer->setHeadThicknessUnit( mHeadThicknessUnitWidget->unit() );
+  mLayer->setHeadThicknessUnitScale( mHeadThicknessUnitWidget->getMapUnitScale() );
   emit changed();
 }
 
@@ -141,6 +173,16 @@ void QgsArrowSymbolLayerWidget::on_mHeadTypeCombo_currentIndexChanged( int idx )
   mArrowStartWidthDDBtn->setEnabled( isSingle );
   mArrowStartWidthSpin->setEnabled( isSingle );
   mArrowStartWidthUnitWidget->setEnabled( isSingle );
+  emit changed();
+}
+
+void QgsArrowSymbolLayerWidget::on_mArrowTypeCombo_currentIndexChanged( int idx )
+{
+  if ( !mLayer )
+    return;
+
+  QgsArrowSymbolLayer::ArrowType t = static_cast<QgsArrowSymbolLayer::ArrowType>( idx );
+  mLayer->setArrowType( t );
   emit changed();
 }
 
@@ -172,3 +214,11 @@ void QgsArrowSymbolLayerWidget::on_mCurvedArrowChck_stateChanged( int state )
   emit changed();
 }
 
+void QgsArrowSymbolLayerWidget::on_mRepeatArrowChck_stateChanged( int state )
+{
+  if ( ! mLayer )
+    return;
+
+  mLayer->setIsRepeated( state == Qt::Checked );
+  emit changed();
+}

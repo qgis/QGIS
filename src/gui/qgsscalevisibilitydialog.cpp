@@ -18,11 +18,11 @@
 
 
 #include "qgsscalevisibilitydialog.h"
+#include "qgsscalerangewidget.h"
 
 
-
-QgsScaleVisibilityDialog::QgsScaleVisibilityDialog( QWidget *parent, const QString& title, QgsMapCanvas* mapCanvas ) :
-    QDialog( parent )
+QgsScaleVisibilityDialog::QgsScaleVisibilityDialog( QWidget *parent, const QString& title, QgsMapCanvas* mapCanvas )
+    : QDialog( parent )
 {
   if ( !title.isEmpty() )
   {

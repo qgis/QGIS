@@ -23,7 +23,7 @@ email                : hugo dot mercier at oslandia dot com
 
 static QString quotedColumn( QString name )
 {
-  return "\"" + name.replace( "\"", "\"\"" ) + "\"";
+  return "\"" + name.replace( QLatin1String( "\"" ), QLatin1String( "\"\"" ) ) + "\"";
 }
 
 QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
@@ -43,38 +43,42 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       wheres << subset;
     }
 
-    if ( mDefinition.hasDefinedGeometry() && !request.filterRect().isNull() )
+    if ( !mDefinition.uid().isNull() )
     {
-      bool do_exact = request.flags() & QgsFeatureRequest::ExactIntersect;
-      QgsRectangle rect( request.filterRect() );
-      QString mbr = QString( "%1,%2,%3,%4" ).arg( rect.xMinimum() ).arg( rect.yMinimum() ).arg( rect.xMaximum() ).arg( rect.yMaximum() );
-      wheres << quotedColumn( mDefinition.geometryField() ) + " is not null";
-      wheres <<  QString( "%1Intersects(%2,BuildMbr(%3))" )
-      .arg( do_exact ? "" : "Mbr",
-            quotedColumn( mDefinition.geometryField() ),
-            mbr );
-    }
-    else if ( !mDefinition.uid().isNull() && request.filterType() == QgsFeatureRequest::FilterFid )
-    {
-      wheres << QString( "%1=%2" )
-      .arg( quotedColumn( mDefinition.uid() ) )
-      .arg( request.filterFid() );
-    }
-    else if ( !mDefinition.uid().isNull() && request.filterType() == QgsFeatureRequest::FilterFids )
-    {
-      QString values = quotedColumn( mDefinition.uid() ) + " IN (";
-      bool first = true;
-      Q_FOREACH ( QgsFeatureId v, request.filterFids() )
+      // filters are only available when a column with unique id exists
+      if ( mDefinition.hasDefinedGeometry() && !request.filterRect().isNull() )
       {
-        if ( !first )
-        {
-          values += ",";
-        }
-        first = false;
-        values += QString::number( v );
+        bool do_exact = request.flags() & QgsFeatureRequest::ExactIntersect;
+        QgsRectangle rect( request.filterRect() );
+        QString mbr = QStringLiteral( "%1,%2,%3,%4" ).arg( rect.xMinimum() ).arg( rect.yMinimum() ).arg( rect.xMaximum() ).arg( rect.yMaximum() );
+        wheres << quotedColumn( mDefinition.geometryField() ) + " is not null";
+        wheres <<  QStringLiteral( "%1Intersects(%2,BuildMbr(%3))" )
+        .arg( do_exact ? "" : "Mbr",
+              quotedColumn( mDefinition.geometryField() ),
+              mbr );
       }
-      values += ")";
-      wheres << values;
+      else if ( request.filterType() == QgsFeatureRequest::FilterFid )
+      {
+        wheres << QStringLiteral( "%1=%2" )
+        .arg( quotedColumn( mDefinition.uid() ) )
+        .arg( request.filterFid() );
+      }
+      else if ( request.filterType() == QgsFeatureRequest::FilterFids )
+      {
+        QString values = quotedColumn( mDefinition.uid() ) + " IN (";
+        bool first = true;
+        Q_FOREACH ( QgsFeatureId v, request.filterFids() )
+        {
+          if ( !first )
+          {
+            values += QLatin1String( "," );
+          }
+          first = false;
+          values += QString::number( v );
+        }
+        values += QLatin1String( ")" );
+        wheres << values;
+      }
     }
 
     mFields = mSource->provider()->fields();
@@ -91,7 +95,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       {
         Q_FOREACH ( const QString& field, request.filterExpression()->referencedColumns() )
         {
-          int attrIdx = mFields.fieldNameIndex( field );
+          int attrIdx = mFields.lookupField( field );
           if ( !mAttributes.contains( attrIdx ) )
             mAttributes << attrIdx;
         }
@@ -111,17 +115,19 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       }
       else
       {
-        columns = "0";
+        columns = QStringLiteral( "0" );
       }
       Q_FOREACH ( int i, mAttributes )
       {
-        columns += ",";
+        columns += QLatin1String( "," );
         QString cname = mFields.at( i ).name().toLower();
         columns += quotedColumn( cname );
       }
     }
     // the last column is the geometry, if any
-    if ( !( request.flags() & QgsFeatureRequest::NoGeometry ) && !mDefinition.geometryField().isNull() && mDefinition.geometryField() != "*no*" )
+    if (( !( request.flags() & QgsFeatureRequest::NoGeometry )
+          || ( request.filterType() == QgsFeatureRequest::FilterExpression && request.filterExpression()->needsGeometry() ) )
+        && !mDefinition.geometryField().isNull() && mDefinition.geometryField() != QLatin1String( "*no*" ) )
     {
       columns += "," + quotedColumn( mDefinition.geometryField() );
     }
@@ -129,7 +135,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
     mSqlQuery = "SELECT " + columns + " FROM " + tableName;
     if ( !wheres.isEmpty() )
     {
-      mSqlQuery += " WHERE " + wheres.join( " AND " );
+      mSqlQuery += " WHERE " + wheres.join( QStringLiteral( " AND " ) );
     }
 
     mQuery.reset( new Sqlite::Query( mSqlite, mSqlQuery ) );
@@ -192,12 +198,12 @@ bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature& feature )
   if ( mDefinition.uid().isNull() )
   {
     // no id column => autoincrement
-    feature.setFeatureId( mFid++ );
+    feature.setId( mFid++ );
   }
   else
   {
     // first column: uid
-    feature.setFeatureId( mQuery->columnInt64( 0 ) );
+    feature.setId( mQuery->columnInt64( 0 ) );
   }
 
   int n = mQuery->columnCount();
@@ -230,7 +236,7 @@ bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature& feature )
     }
     else
     {
-      feature.setGeometry( nullptr );
+      feature.clearGeometry();
     }
   }
 
@@ -238,8 +244,8 @@ bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature& feature )
   return true;
 }
 
-QgsVirtualLayerFeatureSource::QgsVirtualLayerFeatureSource( const QgsVirtualLayerProvider* p ) :
-    mProvider( p )
+QgsVirtualLayerFeatureSource::QgsVirtualLayerFeatureSource( const QgsVirtualLayerProvider* p )
+    : mProvider( p )
 {
 }
 

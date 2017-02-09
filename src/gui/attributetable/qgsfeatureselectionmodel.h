@@ -1,14 +1,32 @@
+/***************************************************************************
+    qgsfeatureselectionmodel.h
+    ---------------------
+    begin                : April 2013
+    copyright            : (C) 2013 by Matthias Kuhn
+    email                : matthias at opengis dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSFEATURESELECTIONMODEL_H
 #define QGSFEATURESELECTIONMODEL_H
 
 #include <QItemSelectionModel>
 
 #include "qgsfeature.h"
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 class QgsFeatureModel;
 class QgsIFeatureSelectionManager;
 
+/** \ingroup gui
+ * \class QgsFeatureSelectionModel
+ */
 class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
 {
     Q_OBJECT
@@ -35,6 +53,7 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
      */
 
     virtual bool isSelected( QgsFeatureId fid );
+
     /**
      * Returns the selection status of a given QModelIndex.
      *
@@ -45,6 +64,7 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
     virtual bool isSelected( const QModelIndex& index );
 
   signals:
+
     /**
      * Request a repaint of a list of model indexes.
      * Views using this model should connect to and properly process this signal.
@@ -60,6 +80,7 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
     void requestRepaint();
 
   public slots:
+
     /**
      * Overwritten to do NOTHING (we handle selection ourselves)
      *
@@ -80,7 +101,7 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
      * @param selection  The QItemSelection which will be selected
      * @param command    The command to apply. Select, Deselect and ClearAndSelect are processed.
      */
-    virtual void selectFeatures( const QItemSelection &selection, const SelectionFlags& command );
+    virtual void selectFeatures( const QItemSelection &selection, SelectionFlags command );
 
     virtual void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager );
 

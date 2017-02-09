@@ -20,6 +20,7 @@ email                : hugo dot mercier at oslandia dot com
 
 #include <qgsvirtuallayerprovider.h>
 #include <qgsfeatureiterator.h>
+#include <memory>
 
 class QgsVirtualLayerFeatureSource : public QgsAbstractFeatureSource
 {
@@ -40,18 +41,14 @@ class QgsVirtualLayerFeatureIterator : public QgsAbstractFeatureIteratorFromSour
     QgsVirtualLayerFeatureIterator( QgsVirtualLayerFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
     ~QgsVirtualLayerFeatureIterator();
 
-    //! reset the iterator to the starting position
     virtual bool rewind() override;
-
-    //! end of iterating: free the resources / lock
     virtual bool close() override;
 
   protected:
 
-    //! fetch next feature, return true on success
     virtual bool fetchFeature( QgsFeature& feature ) override;
 
-    QScopedPointer<Sqlite::Query> mQuery;
+    std::unique_ptr<Sqlite::Query> mQuery;
 
     QgsFeatureId mFid;
 

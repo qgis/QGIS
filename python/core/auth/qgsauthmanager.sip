@@ -44,7 +44,7 @@ class QgsAuthManager : QObject
     /** Standard message for when QCA's qca-ossl plugin is missing and system is disabled */
     const QString disabledMessage() const;
 
-    /** The standard authentication database file in ~/.qgis2/ or defined location
+    /** The standard authentication database file in ~/.qgis3/ or defined location
      * @see QgsApplication::qgisAuthDbFilePath
      */
     const QString authenticationDbPath() const;
@@ -99,7 +99,7 @@ class QgsAuthManager : QObject
 
     /** Schedule an optional erase of authentication database, starting when mutex is lockable.
      * @note When an erase is scheduled, any attempt to set the master password,
-     * e.g. password input dialog, is effectively cancelled.
+     * e.g. password input dialog, is effectively canceled.
      * For example: In a GUI app, this keeps excess password input dialogs from popping
      * up when a user has initiated an erase, from a password input dialog, because
      * they forgot their password.
@@ -168,7 +168,7 @@ class QgsAuthManager : QObject
     QWidget *authMethodEditWidget( const QString &authMethodKey, QWidget *parent );
 
     /**
-     * Get supported authentication method expansion(s), e.g. NetworkRequest | DataSourceURI, as flags
+     * Get supported authentication method expansion(s), e.g. NetworkRequest | DataSourceUri, as flags
      * @param authcfg
      */
     QgsAuthMethod::Expansions supportedAuthMethodExpansions( const QString &authcfg );
@@ -268,8 +268,8 @@ class QgsAuthManager : QObject
                              const QString &dataprovider = QString() );
 
     /**
-     * Provider call to update a QgsDataSourceURI with an authentication config
-     * @param connectionItems The connection items, e.g. username=myname, of QgsDataSourceURI
+     * Provider call to update a QgsDataSourceUri with an authentication config
+     * @param connectionItems The connection items, e.g. username=myname, of QgsDataSourceUri
      * @param authcfg Associated authentication config id
      * @param dataprovider Provider key filter, offering logic branching in authentication method
      * @return Whether operation succeeded

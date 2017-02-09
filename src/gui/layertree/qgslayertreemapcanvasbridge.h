@@ -20,13 +20,16 @@
 #include <QStringList>
 
 #include "qgscoordinatereferencesystem.h"
+#include "qgis_gui.h"
 
 class QgsMapCanvas;
-class QgsMapCanvasLayer;
+class QgsMapLayer;
+class QgsMapOverviewCanvas;
 class QgsLayerTreeGroup;
 class QgsLayerTreeNode;
 
 /**
+ * \ingroup gui
  * The QgsLayerTreeMapCanvasBridge class takes care of updates of layer set
  * for QgsMapCanvas from a layer tree. The class listens to the updates in the layer tree
  * and updates the list of layers for rendering whenever some layers are added, removed,
@@ -52,6 +55,13 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
 
     QgsLayerTreeGroup* rootGroup() const { return mRoot; }
     QgsMapCanvas* mapCanvas() const { return mCanvas; }
+
+    //! Associates overview canvas with the bridge, so the overview will be updated whenever main canvas is updated
+    //! @note added in 3.0
+    void setOvervewCanvas( QgsMapOverviewCanvas* overviewCanvas ) { mOverviewCanvas = overviewCanvas; }
+    //! Returns associated overview canvas (may be null)
+    //! @note added in 3.0
+    QgsMapOverviewCanvas* overviewCanvas() const { return mOverviewCanvas; }
 
     bool hasCustomLayerOrder() const { return mHasCustomLayerOrder; }
     QStringList customLayerOrder() const { return mCustomLayerOrder; }
@@ -82,11 +92,19 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
     void hasCustomLayerOrderChanged( bool );
     void customLayerOrderChanged( const QStringList& order );
 
+    /**
+     * Emitted when the set of layers (or order of layers) visible in the
+     * canvas changes.
+     * @note added in QGIS 3.0
+     */
+    void canvasLayersChanged( const QList< QgsMapLayer* >& layers );
+
   protected:
 
     void defaultLayerOrder( QgsLayerTreeNode* node, QStringList& order ) const;
 
-    void setCanvasLayers( QgsLayerTreeNode* node, QList<QgsMapCanvasLayer>& layers );
+    //! Fill canvasLayers and overviewLayers lists from node and its descendants
+    void setCanvasLayers( QgsLayerTreeNode* node, QList<QgsMapLayer*> &canvasLayers, QList<QgsMapLayer*>& overviewLayers );
 
     void deferredSetCanvasLayers();
 
@@ -99,6 +117,7 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
   protected:
     QgsLayerTreeGroup* mRoot;
     QgsMapCanvas* mCanvas;
+    QgsMapOverviewCanvas* mOverviewCanvas;
 
     bool mPendingCanvasUpdate;
 

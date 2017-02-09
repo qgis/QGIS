@@ -18,11 +18,13 @@ email                : lrssvtml (at) gmail (dot) com
  ***************************************************************************/
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
+from builtins import bytes
+from builtins import range
 
-from PyQt.QtCore import Qt, QSettings, QByteArray, QCoreApplication, QFile, QSize
-from PyQt.QtWidgets import QDialog, QMenu, QShortcut, QApplication
-from PyQt.QtGui import QColor, QKeySequence, QFont, QFontMetrics, QStandardItemModel, QStandardItem, QClipboard
-from PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs
+from qgis.PyQt.QtCore import Qt, QSettings, QByteArray, QCoreApplication, QFile, QSize
+from qgis.PyQt.QtWidgets import QDialog, QMenu, QShortcut, QApplication
+from qgis.PyQt.QtGui import QColor, QKeySequence, QFont, QFontMetrics, QStandardItemModel, QStandardItem, QClipboard
+from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs
 
 import sys
 import os
@@ -164,8 +166,8 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         if not self.is_cursor_on_last_line():
             self.move_cursor_to_end()
         line, pos = self.getCursorPosition()
-        selCmdLenght = len(self.text(line))
-        self.setSelection(line, 4, line, selCmdLenght)
+        selCmdLength = len(self.text(line))
+        self.setSelection(line, 4, line, selCmdLength)
         self.removeSelectedText()
         for cmd in commands:
             self.append(cmd)
@@ -208,12 +210,12 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             self.lexer.setPaper(paperColor, style)
 
         self.api = QsciAPIs(self.lexer)
-        chekBoxAPI = self.settings.value("pythonConsole/preloadAPI", True, type=bool)
-        chekBoxPreparedAPI = self.settings.value("pythonConsole/usePreparedAPIFile", False, type=bool)
-        if chekBoxAPI:
+        checkBoxAPI = self.settings.value("pythonConsole/preloadAPI", True, type=bool)
+        checkBoxPreparedAPI = self.settings.value("pythonConsole/usePreparedAPIFile", False, type=bool)
+        if checkBoxAPI:
             pap = os.path.join(QgsApplication.pkgDataPath(), "python", "qsci_apis", "pyqgis.pap")
             self.api.loadPrepared(pap)
-        elif chekBoxPreparedAPI:
+        elif checkBoxPreparedAPI:
             self.api.loadPrepared(self.settings.value("pythonConsole/preparedAPIFile"))
         else:
             apiPath = self.settings.value("pythonConsole/userAPI", [])
@@ -346,8 +348,8 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
     def showPrevious(self):
         if self.historyIndex < len(self.history) and self.history:
             line, pos = self.getCursorPosition()
-            selCmdLenght = len(self.text(line))
-            self.setSelection(line, 4, line, selCmdLenght)
+            selCmdLength = len(self.text(line))
+            self.setSelection(line, 4, line, selCmdLength)
             self.removeSelectedText()
             self.historyIndex += 1
             if self.historyIndex == len(self.history):
@@ -361,8 +363,8 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
     def showNext(self):
         if self.historyIndex > 0 and self.history:
             line, pos = self.getCursorPosition()
-            selCmdLenght = len(self.text(line))
-            self.setSelection(line, 4, line, selCmdLenght)
+            selCmdLength = len(self.text(line))
+            self.setSelection(line, 4, line, selCmdLength)
             self.removeSelectedText()
             self.historyIndex -= 1
             if self.historyIndex == len(self.history):

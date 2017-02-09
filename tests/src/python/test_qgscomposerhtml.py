@@ -16,13 +16,14 @@ import qgis  # NOQA
 
 import os
 
-from PyQt.QtCore import QUrl, qDebug
-from PyQt.QtXml import QDomDocument
+from qgis.PyQt.QtCore import QUrl, qDebug
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsComposition,
                        QgsComposerHtml,
                        QgsComposerFrame,
                        QgsComposerMultiFrame,
-                       QgsMapSettings
+                       QgsMapSettings,
+                       QgsProject
                        )
 
 from qgscompositionchecker import QgsCompositionChecker
@@ -42,7 +43,7 @@ class TestQgsComposerHtml(unittest.TestCase):
         """Run before each test."""
         self.iface = get_iface()
         self.mapSettings = QgsMapSettings()
-        self.mComposition = QgsComposition(self.mapSettings)
+        self.mComposition = QgsComposition(QgsProject.instance())
         self.mComposition.setPaperSize(297, 210)  # A4 landscape
 
     def tearDown(self):
@@ -135,22 +136,6 @@ class TestQgsComposerHtml(unittest.TestCase):
         composerHtml = None
 
         assert myTestResult, myMessage
-
-    def testComposerHtmlAccessor(self):
-        """Test that we can retrieve the ComposerHtml instance given an item.
-        """
-        myComposition = QgsComposition(self.iface.mapCanvas().mapRenderer())
-        mySubstitutionMap = {'replace-me': 'Foo bar'}
-        myFile = os.path.join(TEST_DATA_DIR, 'template.qpt')
-        with open(myFile, 'rt') as myTemplateFile:
-            myTemplateContent = myTemplateFile.read()
-        myDocument = QDomDocument()
-        myDocument.setContent(myTemplateContent)
-        myComposition.loadFromTemplate(myDocument, mySubstitutionMap)
-        myItem = myComposition.getComposerItemById('html-test')
-        myComposerHtml = myComposition.getComposerHtmlByItem(myItem)
-        myMessage = 'Could not retrieve the composer html given an item'
-        self.assertIsNotNone(myComposerHtml, myMessage)
 
 if __name__ == '__main__':
     unittest.main()

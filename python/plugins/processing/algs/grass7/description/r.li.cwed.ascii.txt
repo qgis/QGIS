@@ -4,5 +4,5 @@ Raster (r.*)
 ParameterRaster|input|Name of input raster map|False
 ParameterString|config_txt|Landscape structure configuration|None|True|True
 ParameterFile|config|Landscape structure configuration file|False|True
-ParameterFile|path|Name of file that contains the weight to calculate the index|False
+ParameterFile|path|Name of file that contains the weight to calculate the index|False|False
 OutputFile|output|CWED

@@ -1,0 +1,15 @@
+<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+<g transform="translate(0 -8)">
+<path d="m-30.5-22.5h21v6h-21z" fill="#ffee7f" fill-rule="evenodd" overflow="visible" stroke="#80752a" stroke-linecap="square" transform="matrix(0 -1 -1 0 0 0)"/>
+<path d="m22 27.5h-2" fill="#ffee7f" fill-rule="evenodd" stroke="#b8a93d"/>
+<path d="m22 24.5h-3" fill="#ffee7f" fill-rule="evenodd" stroke="#b8a93d"/>
+<path d="m22 21.5h-2" fill="#ffee7f" fill-rule="evenodd" stroke="#b8a93d"/>
+<path d="m22 18.5h-3" fill="#ffee7f" fill-rule="evenodd" stroke="#b8a93d"/>
+<path d="m22 15.5h-2" fill="#ffee7f" fill-rule="evenodd" stroke="#b8a93d"/>
+<path d="m22 12.5h-3" fill="#ffee7f" fill-rule="evenodd" stroke="#b8a93d"/>
+<path d="m .5.5v23h23zm5 12l6 6h-6z" fill="#ffa067" stroke="#9f6440" stroke-linejoin="round" transform="translate(0 8)"/>
+<path d="m1.5 31.5v-22" fill="none" stroke="#ffb98f"/>
+<path d="m11 26l1.5 1.5h-6l-1-1" fill="none" stroke="#ffb98f" stroke-linejoin="round"/>
+<path d="m .5 8.5000003v22.9999997h23zm5 11.9999997l6 6h-6z" fill="none" stroke="#674029" stroke-linejoin="round"/>
+</g>
+</svg>

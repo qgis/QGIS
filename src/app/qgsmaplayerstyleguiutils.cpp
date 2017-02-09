@@ -108,7 +108,7 @@ void QgsMapLayerStyleGuiUtils::addStyle()
   bool ok;
   QString text = QInputDialog::getText( nullptr, tr( "New style" ),
                                         tr( "Style name:" ), QLineEdit::Normal,
-                                        "new style", &ok );
+                                        QStringLiteral( "new style" ), &ok );
   if ( !ok || text.isEmpty() )
     return;
 

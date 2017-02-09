@@ -1,0 +1,6 @@
+i.tasscap
+Performs Tasseled Cap (Kauth Thomas) transformation.
+Imagery (i.*)
+ParameterMultipleInput|input|Input rasters. Landsat4-7: bands 1,2,3,4,5,7; Landsat8: bands 2,3,4,5,6,7; MODIS: bands 1,2,3,4,5,6,7|3|False
+ParameterSelection|sensor|Satellite sensor|landsat4_tm;landsat5_tm;landsat7_etm;landsat8_oli;modis|0
+OutputDirectory|output|Output Directory

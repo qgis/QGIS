@@ -1,0 +1,13 @@
+{
+  "name": "stdev",
+  "type": "function",
+  "description": "Returns the aggregate standard deviation value from a field or expression.",
+  "arguments": [
+	{"arg":"expression", "description":"sub expression of field to aggregate"},
+	{"arg":"group_by", "optional":true, "description":"optional expression to use to group aggregate calculations"},
+	{"arg":"filter", "optional":true, "description":"optional expression to use to filter features used to calculate aggregate"}
+  ],
+  "examples": [
+	{ "expression":"stdev(\"population\",group_by:=\"state\")", "returns":"standard deviation of population value, grouped by state field"}
+  ]
+}

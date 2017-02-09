@@ -17,125 +17,125 @@
 
 #include "qgslayertreeutils.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 
 
 QgsLayerTreeLayer::QgsLayerTreeLayer( QgsMapLayer *layer )
-    : QgsLayerTreeNode( NodeLayer )
-    , mLayerId( layer->id() )
-    , mLayer( nullptr )
-    , mVisible( Qt::Checked )
+    : QgsLayerTreeNode( NodeLayer, true )
+    , mRef( layer )
+    , mLayerName( layer->name() )
 {
-  Q_ASSERT( QgsMapLayerRegistry::instance()->mapLayer( mLayerId ) == layer );
   attachToLayer();
 }
 
 QgsLayerTreeLayer::QgsLayerTreeLayer( const QString& layerId, const QString& name )
-    : QgsLayerTreeNode( NodeLayer )
-    , mLayerId( layerId )
-    , mLayerName( name )
-    , mLayer( nullptr )
-    , mVisible( Qt::Checked )
+    : QgsLayerTreeNode( NodeLayer, true )
+    , mRef( layerId )
+    , mLayerName( name.isEmpty() ? QStringLiteral( "(?)" ) : name )
 {
-  attachToLayer();
 }
 
 QgsLayerTreeLayer::QgsLayerTreeLayer( const QgsLayerTreeLayer& other )
     : QgsLayerTreeNode( other )
-    , mLayerId( other.mLayerId )
+    , mRef( other.mRef )
     , mLayerName( other.mLayerName )
-    , mLayer( nullptr )
-    , mVisible( other.mVisible )
 {
   attachToLayer();
 }
 
-void QgsLayerTreeLayer::attachToLayer()
+void QgsLayerTreeLayer::resolveReferences( const QgsProject* project )
 {
-  // layer is not necessarily already loaded
-  QgsMapLayer* l = QgsMapLayerRegistry::instance()->mapLayer( mLayerId );
-  if ( l )
-  {
-    mLayer = l;
-    mLayerName = l->name();
-    // make sure we are notified if the layer is removed
-    connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( registryLayersWillBeRemoved( QStringList ) ) );
-  }
-  else
-  {
-    if ( mLayerName.isEmpty() )
-      mLayerName = "(?)";
-    // wait for the layer to be eventually loaded
-    connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( registryLayersAdded( QList<QgsMapLayer*> ) ) );
-  }
-}
+  if ( mRef.layer )
+    return;  // already assigned
 
-
-QString QgsLayerTreeLayer::layerName() const
-{
-  return mLayer ? mLayer->name() : mLayerName;
-}
-
-void QgsLayerTreeLayer::setLayerName( const QString& n )
-{
-  if ( mLayer )
-    mLayer->setLayerName( n );
-  else
-    mLayerName = n;
-}
-
-void QgsLayerTreeLayer::setVisible( Qt::CheckState state )
-{
-  if ( mVisible == state )
+  QgsMapLayer* layer = project->mapLayer( mRef.layerId );
+  if ( !layer )
     return;
 
-  mVisible = state;
-  emit visibilityChanged( this, state );
+  mRef.layer = layer;
+  mRef.layerId = layer->id();
+  attachToLayer();
+  emit layerLoaded();
 }
 
-QgsLayerTreeLayer* QgsLayerTreeLayer::readXML( QDomElement& element )
+void QgsLayerTreeLayer::attachToLayer()
 {
-  if ( element.tagName() != "layer-tree-layer" )
+  if ( !mRef.layer )
+    return;
+
+  connect( mRef.layer, &QgsMapLayer::nameChanged, this, &QgsLayerTreeLayer::layerNameChanged );
+  connect( mRef.layer, &QgsMapLayer::willBeDeleted, this, &QgsLayerTreeLayer::layerWillBeDeleted );
+}
+
+
+QString QgsLayerTreeLayer::name() const
+{
+  return mRef.layer ? mRef.layer->name() : mLayerName;
+}
+
+void QgsLayerTreeLayer::setName( const QString& n )
+{
+  if ( mRef.layer )
+  {
+    if ( mRef.layer->name() == n )
+      return;
+    mRef.layer->setName( n );
+    // no need to emit signal: we will be notified from layer's nameChanged() signal
+  }
+  else
+  {
+    if ( mLayerName == n )
+      return;
+    mLayerName = n;
+    emit nameChanged( this, n );
+  }
+}
+
+QgsLayerTreeLayer* QgsLayerTreeLayer::readXml( QDomElement& element )
+{
+  if ( element.tagName() != QLatin1String( "layer-tree-layer" ) )
     return nullptr;
 
-  QString layerID = element.attribute( "id" );
-  QString layerName = element.attribute( "name" );
-  Qt::CheckState checked = QgsLayerTreeUtils::checkStateFromXml( element.attribute( "checked" ) );
-  bool isExpanded = ( element.attribute( "expanded", "1" ) == "1" );
+  QString layerID = element.attribute( QStringLiteral( "id" ) );
+  QString layerName = element.attribute( QStringLiteral( "name" ) );
+  Qt::CheckState checked = QgsLayerTreeUtils::checkStateFromXml( element.attribute( QStringLiteral( "checked" ) ) );
+  bool isExpanded = ( element.attribute( QStringLiteral( "expanded" ), QStringLiteral( "1" ) ) == QLatin1String( "1" ) );
 
-  QgsLayerTreeLayer* nodeLayer = nullptr;
+  // needs to have the layer reference resolved later
+  QgsLayerTreeLayer* nodeLayer = new QgsLayerTreeLayer( layerID, layerName );
 
-  QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
+  nodeLayer->readCommonXml( element );
 
-  if ( layer )
-    nodeLayer = new QgsLayerTreeLayer( layer );
-  else
-    nodeLayer = new QgsLayerTreeLayer( layerID, layerName );
-
-  nodeLayer->readCommonXML( element );
-
-  nodeLayer->setVisible( checked );
+  nodeLayer->setItemVisibilityChecked( checked != Qt::Unchecked );
   nodeLayer->setExpanded( isExpanded );
   return nodeLayer;
 }
 
-void QgsLayerTreeLayer::writeXML( QDomElement& parentElement )
+QgsLayerTreeLayer* QgsLayerTreeLayer::readXml( QDomElement& element, const QgsProject* project )
+{
+  QgsLayerTreeLayer* node = readXml( element );
+  if ( node )
+    node->resolveReferences( project );
+  return node;
+}
+
+void QgsLayerTreeLayer::writeXml( QDomElement& parentElement )
 {
   QDomDocument doc = parentElement.ownerDocument();
-  QDomElement elem = doc.createElement( "layer-tree-layer" );
-  elem.setAttribute( "id", mLayerId );
-  elem.setAttribute( "name", layerName() );
-  elem.setAttribute( "checked", QgsLayerTreeUtils::checkStateToXml( mVisible ) );
-  elem.setAttribute( "expanded", mExpanded ? "1" : "0" );
+  QDomElement elem = doc.createElement( QStringLiteral( "layer-tree-layer" ) );
+  elem.setAttribute( QStringLiteral( "id" ), layerId() );
+  elem.setAttribute( QStringLiteral( "name" ), name() );
+  elem.setAttribute( QStringLiteral( "checked" ), mChecked ? QStringLiteral( "Qt::Checked" ) : QStringLiteral( "Qt::Unchecked" ) );
+  elem.setAttribute( QStringLiteral( "expanded" ), mExpanded ? "1" : "0" );
 
-  writeCommonXML( elem );
+  writeCommonXml( elem );
 
   parentElement.appendChild( elem );
 }
 
 QString QgsLayerTreeLayer::dump() const
 {
-  return QString( "LAYER: %1 visible=%2 expanded=%3 id=%4\n" ).arg( layerName() ).arg( mVisible ).arg( mExpanded ).arg( layerId() );
+  return QStringLiteral( "LAYER: %1 checked=%2 expanded=%3 id=%4\n" ).arg( name() ).arg( mChecked ).arg( mExpanded ).arg( layerId() );
 }
 
 QgsLayerTreeLayer* QgsLayerTreeLayer::clone() const
@@ -143,30 +143,21 @@ QgsLayerTreeLayer* QgsLayerTreeLayer::clone() const
   return new QgsLayerTreeLayer( *this );
 }
 
-void QgsLayerTreeLayer::registryLayersAdded( const QList<QgsMapLayer*>& layers )
+void QgsLayerTreeLayer::layerWillBeDeleted()
 {
-  Q_FOREACH ( QgsMapLayer* l, layers )
-  {
-    if ( l->id() == mLayerId )
-    {
-      disconnect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( registryLayersAdded( QList<QgsMapLayer*> ) ) );
-      attachToLayer();
-      emit layerLoaded();
-      break;
-    }
-  }
+  Q_ASSERT( mRef.layer );
+
+  mLayerName = mRef.layer->name();
+  // in theory we do not even need to do this - the weak ref should clear itself
+  mRef.layer.clear();
+  // layerId stays in the reference
+
+  emit layerWillBeUnloaded();
 }
 
-void QgsLayerTreeLayer::registryLayersWillBeRemoved( const QStringList& layerIds )
+
+void QgsLayerTreeLayer::layerNameChanged()
 {
-  if ( layerIds.contains( mLayerId ) )
-  {
-    emit layerWillBeUnloaded();
-
-    // stop listening to removal signals and start hoping that the layer may be added again
-    disconnect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( registryLayersWillBeRemoved( QStringList ) ) );
-    connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( registryLayersAdded( QList<QgsMapLayer*> ) ) );
-
-    mLayer = nullptr;
-  }
+  Q_ASSERT( mRef.layer );
+  emit nameChanged( this, mRef.layer->name() );
 }

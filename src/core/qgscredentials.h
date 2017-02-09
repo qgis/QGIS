@@ -1,7 +1,7 @@
 /***************************************************************************
     qgscredentials.h  -  interface for requesting credentials
     ----------------------
-    begin                : Feburary 2010
+    begin                : February 2010
     copyright            : (C) 2010 by Juergen E. Fischer
     email                : jef at norbit dot de
  ***************************************************************************
@@ -23,6 +23,8 @@
 #include <QMap>
 #include <QMutex>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * Interface for requesting credentials in QGIS in GUI independent way.
  * This class provides abstraction of a dialog for requesting credentials to the user.
@@ -37,8 +39,8 @@
 class CORE_EXPORT QgsCredentials
 {
   public:
-    //! virtual destructor
-    virtual ~QgsCredentials();
+
+    virtual ~QgsCredentials() = default;
 
     bool get( const QString& realm, QString &username, QString &password, const QString& message = QString::null );
     void put( const QString& realm, const QString& username, const QString& password );
@@ -87,13 +89,13 @@ class CORE_EXPORT QgsCredentials
     QMap< QString, QPair<QString, QString> > mCredentialCache;
 
     //! Pointer to the credential instance
-    static QgsCredentials *smInstance;
+    static QgsCredentials *sInstance;
 
     QMutex mMutex;
 };
 
 
-/**
+/** \ingroup core
 \brief Default implementation of credentials interface
 
 This class doesn't prompt or return credentials
@@ -115,7 +117,7 @@ class CORE_EXPORT QgsCredentialsNone : public QObject, public QgsCredentials
 };
 
 
-/**
+/** \ingroup core
 \brief Implementation of credentials interface for the console
 
 This class outputs message to the standard output and retrieves input from

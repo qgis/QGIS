@@ -30,7 +30,7 @@ QgsGeometryCheckerDialog::QgsGeometryCheckerDialog( QgisInterface *iface, QWidge
   setWindowTitle( tr( "Check Geometries" ) );
 
   QSettings s;
-  restoreGeometry( s.value( "/Plugin-GeometryChecker/Window/geometry" ).toByteArray() );
+  restoreGeometry( s.value( QStringLiteral( "/Plugin-GeometryChecker/Window/geometry" ) ).toByteArray() );
 
   mTabWidget = new QTabWidget();
   mButtonBox = new QDialogButtonBox( QDialogButtonBox::Close, Qt::Horizontal );
@@ -51,7 +51,7 @@ QgsGeometryCheckerDialog::QgsGeometryCheckerDialog( QgisInterface *iface, QWidge
 QgsGeometryCheckerDialog::~QgsGeometryCheckerDialog()
 {
   QSettings s;
-  s.setValue( "/Plugin-GeometryChecker/Window/geometry", saveGeometry() );
+  s.setValue( QStringLiteral( "/Plugin-GeometryChecker/Window/geometry" ), saveGeometry() );
 }
 
 void QgsGeometryCheckerDialog::onCheckerStarted( QgsGeometryChecker *checker, QgsFeaturePool *featurePool )
@@ -70,7 +70,7 @@ void QgsGeometryCheckerDialog::onCheckerFinished( bool successful )
   {
     mTabWidget->setTabEnabled( 1, true );
     mTabWidget->setCurrentIndex( 1 );
-    static_cast<QgsGeometryCheckerResultTab*>( mTabWidget->widget( 1 ) )->showCheckMessages();
+    static_cast<QgsGeometryCheckerResultTab*>( mTabWidget->widget( 1 ) )->finalize();
   }
 }
 

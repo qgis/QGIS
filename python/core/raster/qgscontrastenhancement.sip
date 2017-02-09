@@ -17,7 +17,7 @@ class QgsContrastEnhancement
       UserDefinedEnhancement
     };
 
-    QgsContrastEnhancement( QGis::DataType theDatatype = QGis::Byte );
+    QgsContrastEnhancement( Qgis::DataType theDatatype = Qgis::Byte );
     ~QgsContrastEnhancement();
 
     /*
@@ -26,10 +26,10 @@ class QgsContrastEnhancement
      *
      */
     /** \brief Helper function that returns the maximum possible value for a GDAL data type */
-    static double maximumValuePossible( QGis::DataType );
+    static double maximumValuePossible( Qgis::DataType );
 
     /** \brief Helper function that returns the minimum possible value for a GDAL data type */
-    static double minimumValuePossible( QGis::DataType );
+    static double minimumValuePossible( Qgis::DataType );
 
     /*
      *
@@ -62,7 +62,7 @@ class QgsContrastEnhancement
     /** \brief Set the contrast enhancement algorithm */
     void setContrastEnhancementAlgorithm( ContrastEnhancementAlgorithm, bool generateTable = true );
 
-    /** \brief A public method that allows the user to set their own custom contrast enhancment function */
+    /** \brief A public method that allows the user to set their own custom contrast enhancement function */
     void setContrastEnhancementFunction( QgsContrastEnhancementFunction* );
 
     /** \brief Set the maximum value for the contrast enhancement range. */
@@ -71,9 +71,9 @@ class QgsContrastEnhancement
     /** \brief Return the minimum value for the contrast enhancement range. */
     void setMinimumValue( double, bool generateTable = true );
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
 
-    void readXML( const QDomElement& elem );
+    void readXml( const QDomElement& elem );
 
   private:
 

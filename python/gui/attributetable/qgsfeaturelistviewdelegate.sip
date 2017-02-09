@@ -4,7 +4,7 @@ class QgsFeatureListViewDelegate : QItemDelegate
 #include <qgsfeaturelistviewdelegate.h>
 %End
   public:
-    static const int sIconSize;
+    static const int ICON_SIZE;
 
     enum Element
     {

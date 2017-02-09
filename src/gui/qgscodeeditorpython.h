@@ -17,6 +17,7 @@
 #define QGSCODEEDITORPYTHON_H
 
 #include "qgscodeeditor.h"
+#include "qgis_gui.h"
 
 
 /** \ingroup gui
@@ -30,6 +31,7 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
     Q_OBJECT
 
   public:
+
     /**
      * Construct a new Python editor.
      *
@@ -38,7 +40,6 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
      * @note added in 2.6
      */
     QgsCodeEditorPython( QWidget *parent = nullptr, const QList<QString> &filenames = QList<QString>() );
-    ~QgsCodeEditorPython();
 
     /** Load APIs from one or more files
      * @param filenames The list of apis files to load for the python lexer

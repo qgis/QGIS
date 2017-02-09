@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 
@@ -38,7 +38,7 @@ class TestQgsScaleExpression: public QObject
     void parsing()
     {
       {
-        QgsScaleExpression exp( "coalesce(scale_linear(column, 1, 7, 2, 10), 0)" );
+        QgsScaleExpression exp( QStringLiteral( "coalesce(scale_linear(column, 1, 7, 2, 10), 0)" ) );
         QCOMPARE( bool( exp ), true );
         QCOMPARE( exp.type(), QgsScaleExpression::Linear );
         QCOMPARE( exp.baseExpression(), QString( "column" ) );
@@ -48,17 +48,17 @@ class TestQgsScaleExpression: public QObject
         QCOMPARE( exp.maxSize(), 10. );
       }
       {
-        QgsScaleExpression exp( "coalesce(scale_exp(column, 1, 7, 2, 10, 0.5), 0)" );
+        QgsScaleExpression exp( QStringLiteral( "coalesce(scale_exp(column, 1, 7, 2, 10, 0.5), 0)" ) );
         QCOMPARE( bool( exp ), true );
         QCOMPARE( exp.type(), QgsScaleExpression::Area );
       }
       {
-        QgsScaleExpression exp( "coalesce(scale_exp(column, 1, 7, 2, 10, 0.57), 0)" );
+        QgsScaleExpression exp( QStringLiteral( "coalesce(scale_exp(column, 1, 7, 2, 10, 0.57), 0)" ) );
         QCOMPARE( bool( exp ), true );
         QCOMPARE( exp.type(), QgsScaleExpression::Flannery );
       }
       {
-        QgsScaleExpression exp( "scale_linear(column, 1, 7, 2, 10)" );
+        QgsScaleExpression exp( QStringLiteral( "scale_linear(column, 1, 7, 2, 10)" ) );
         QCOMPARE( bool( exp ), true );
         QCOMPARE( exp.type(), QgsScaleExpression::Linear );
         QCOMPARE( exp.baseExpression(), QString( "column" ) );
@@ -68,32 +68,32 @@ class TestQgsScaleExpression: public QObject
         QCOMPARE( exp.maxSize(), 10. );
       }
       {
-        QgsScaleExpression exp( "scale_exp(column, 1, 7, 2, 10, 0.5)" );
+        QgsScaleExpression exp( QStringLiteral( "scale_exp(column, 1, 7, 2, 10, 0.5)" ) );
         QCOMPARE( bool( exp ), true );
         QCOMPARE( exp.type(), QgsScaleExpression::Area );
       }
       {
-        QgsScaleExpression exp( "scale_exp(column, 1, 7, 2, 10, 0.57)" );
+        QgsScaleExpression exp( QStringLiteral( "scale_exp(column, 1, 7, 2, 10, 0.57)" ) );
         QCOMPARE( bool( exp ), true );
         QCOMPARE( exp.type(), QgsScaleExpression::Flannery );
       }
       {
-        QgsScaleExpression exp( "coalesce(scale_exp(column, 1, 7, 2, 10, 0.51), 0)" );
+        QgsScaleExpression exp( QStringLiteral( "coalesce(scale_exp(column, 1, 7, 2, 10, 0.51), 0)" ) );
         QCOMPARE( bool( exp ), true );
         QCOMPARE( exp.type(), QgsScaleExpression::Exponential );
       }
       {
-        QgsScaleExpression exp( "coalesce(scale_exp(column, 1, 7, a, 10, 0.5), 0)" );
+        QgsScaleExpression exp( QStringLiteral( "coalesce(scale_exp(column, 1, 7, a, 10, 0.5), 0)" ) );
         QCOMPARE( bool( exp ), false );
         QCOMPARE( exp.type(), QgsScaleExpression::Unknown );
       }
       {
-        QgsScaleExpression exp( "coalesce(scale_exp(column, 1, 7), 0)" );
+        QgsScaleExpression exp( QStringLiteral( "coalesce(scale_exp(column, 1, 7), 0)" ) );
         QCOMPARE( bool( exp ), false );
         QCOMPARE( exp.type(), QgsScaleExpression::Unknown );
       }
       {
-        QgsScaleExpression exp( QgsScaleExpression::Linear, "column", 1, 7, 2, 10 );
+        QgsScaleExpression exp( QgsScaleExpression::Linear, QStringLiteral( "column" ), 1, 7, 2, 10 );
         QCOMPARE( bool( exp ), true );
         QCOMPARE( exp.type(), QgsScaleExpression::Linear );
         QCOMPARE( exp.baseExpression(), QString( "column" ) );
@@ -106,6 +106,6 @@ class TestQgsScaleExpression: public QObject
     }
 };
 
-QTEST_MAIN( TestQgsScaleExpression )
+QGSTEST_MAIN( TestQgsScaleExpression )
 
 #include "testqgsscaleexpression.moc"

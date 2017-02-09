@@ -23,6 +23,8 @@
 #include <QHash>
 #include <QProcess>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * Provides a context based help browser for a dialog.
  *
@@ -45,16 +47,16 @@ class CORE_EXPORT QgsContextHelp : public QObject
   private:
     //! Constructor
     QgsContextHelp();
-    //! Destructor
+
     ~QgsContextHelp();
 
     QProcess *start();
     void showContext( const QString& context );
 
-    static QgsContextHelp *gContextHelp; // Singleton instance
+    static QgsContextHelp *sContextHelp; // Singleton instance
     QProcess *mProcess;
 
-    static QHash<QString, QString> gContextHelpTexts;
+    static QHash<QString, QString> sContextHelpTexts;
 
     void init();
 };

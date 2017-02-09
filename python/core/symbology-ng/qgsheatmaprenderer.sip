@@ -1,4 +1,4 @@
-class QgsHeatmapRenderer : QgsFeatureRendererV2
+class QgsHeatmapRenderer : QgsFeatureRenderer
 {
 %TypeHeaderCode
 #include <qgsheatmaprenderer.h>
@@ -14,14 +14,14 @@ class QgsHeatmapRenderer : QgsFeatureRendererV2
     virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
     virtual void stopRender( QgsRenderContext& context );
     //! @note symbolForFeature2 in python bindings
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=symbolForFeature2/;
+    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );
     //! @note symbol2 in python bindings
-    virtual QgsSymbolV2List symbols( QgsRenderContext& context ) /PyName=symbols2/;
+    virtual QgsSymbolList symbols( QgsRenderContext& context );
     virtual QString dump() const;
-    virtual QList<QString> usedAttributes();
-    static QgsFeatureRendererV2* create( QDomElement& element ) /Factory/;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
+    static QgsFeatureRenderer* create( QDomElement& element ) /Factory/;
     virtual QDomElement save( QDomDocument& doc );
-    static QgsHeatmapRenderer* convertFromRenderer( const QgsFeatureRendererV2* renderer ) /Factory/;
+    static QgsHeatmapRenderer* convertFromRenderer( const QgsFeatureRenderer* renderer ) /Factory/;
 
     //reimplemented to extent the request so that points up to heatmap's radius distance outside
     //visible area are included
@@ -33,26 +33,12 @@ class QgsHeatmapRenderer : QgsFeatureRendererV2
      * @returns color ramp for heatmap
      * @see setColorRamp
      */
-    QgsVectorColorRampV2* colorRamp() const;
+    QgsColorRamp* colorRamp() const;
     /** Sets the color ramp to use for shading the heatmap.
      * @param ramp color ramp for heatmap. Ownership of ramp is transferred to the renderer.
      * @see colorRamp
      */
-    void setColorRamp( QgsVectorColorRampV2* ramp /Transfer/ );
-
-    /** Returns whether the ramp is inverted
-     * @returns true if color ramp is inverted
-     * @see setInvertRamp
-     * @see colorRamp
-     */
-    bool invertRamp() const;
-
-    /** Sets whether the ramp is inverted
-     * @param invert set to true to invert color ramp
-     * @see invertRamp
-     * @see setColorRamp
-     */
-    void setInvertRamp( const bool invert );
+    void setColorRamp( QgsColorRamp* ramp /Transfer/ );
 
     /** Returns the radius for the heatmap
      * @returns heatmap radius
@@ -75,14 +61,14 @@ class QgsHeatmapRenderer : QgsFeatureRendererV2
      * @see setRadiusUnit
      * @see radiusMapUnitScale
      */
-    QgsSymbolV2::OutputUnit radiusUnit() const;
+    QgsUnitTypes::RenderUnit radiusUnit() const;
     /** Sets the units used for the heatmap's radius
      * @param unit units for heatmap radius
      * @see radiusUnit
      * @see setRadius
      * @see radiusMapUnitScale
      */
-    void setRadiusUnit( const QgsSymbolV2::OutputUnit unit );
+    void setRadiusUnit( const QgsUnitTypes::RenderUnit unit );
 
     /** Returns the map unit scale used for the heatmap's radius
      * @returns map unit scale for heatmap's radius

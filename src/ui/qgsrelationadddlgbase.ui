@@ -14,46 +14,6 @@
    <string>Add relation</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="4" column="1" colspan="2">
-    <widget class="QComboBox" name="mCbxReferencingField"/>
-   </item>
-   <item row="3" column="1" colspan="2">
-    <widget class="QComboBox" name="mCbxReferencingLayer"/>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Referencing Field</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Referenced Layer (Parent)</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string>Referenced Field</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1" colspan="2">
-    <widget class="QComboBox" name="mCbxReferencedLayer"/>
-   </item>
-   <item row="6" column="1" colspan="2">
-    <widget class="QComboBox" name="mCbxReferencedField"/>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Referencing Layer (Child)</string>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="0">
     <widget class="QLabel" name="label_7">
      <property name="text">
@@ -61,8 +21,18 @@
      </property>
     </widget>
    </item>
-   <item row="14" column="0" colspan="3">
-    <widget class="QDialogButtonBox" name="buttonBox">
+   <item row="4" column="1" colspan="2">
+    <widget class="QgsMapLayerComboBox" name="mCbxReferencingLayer"/>
+   </item>
+   <item row="9" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>Id</string>
+     </property>
+    </widget>
+   </item>
+   <item row="15" column="0" colspan="3">
+    <widget class="QDialogButtonBox" name="mButtonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -71,34 +41,75 @@
      </property>
     </widget>
    </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="label_5">
+   <item row="4" column="0">
+    <widget class="QLabel" name="label">
      <property name="text">
-      <string>Id</string>
+      <string>Referencing Layer (Child)</string>
      </property>
     </widget>
    </item>
-   <item row="8" column="1">
+   <item row="5" column="1" colspan="2">
+    <widget class="QgsFieldComboBox" name="mCbxReferencingField"/>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Referencing Field</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Referenced Layer (Parent)</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Referenced Field</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="2">
+    <widget class="QgsFieldComboBox" name="mCbxReferencedField"/>
+   </item>
+   <item row="9" column="1" colspan="2">
     <widget class="QLineEdit" name="mTxtRelationId"/>
    </item>
-   <item row="1" column="1">
+   <item row="2" column="1" colspan="2">
+    <widget class="QgsMapLayerComboBox" name="mCbxReferencedLayer"/>
+   </item>
+   <item row="1" column="1" colspan="2">
     <widget class="QLineEdit" name="mTxtRelationName"/>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">qgsmaplayercombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">qgsfieldcombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>mTxtRelationName</tabstop>
-  <tabstop>mCbxReferencingLayer</tabstop>
-  <tabstop>mCbxReferencingField</tabstop>
   <tabstop>mCbxReferencedLayer</tabstop>
   <tabstop>mCbxReferencedField</tabstop>
+  <tabstop>mCbxReferencingLayer</tabstop>
+  <tabstop>mCbxReferencingField</tabstop>
   <tabstop>mTxtRelationId</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>mButtonBox</sender>
    <signal>accepted()</signal>
    <receiver>QgsRelationAddDlgBase</receiver>
    <slot>accept()</slot>
@@ -114,7 +125,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>mButtonBox</sender>
    <signal>rejected()</signal>
    <receiver>QgsRelationAddDlgBase</receiver>
    <slot>reject()</slot>

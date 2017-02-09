@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -27,7 +28,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterRaster
@@ -64,12 +65,12 @@ class nearblack(GdalAlgorithm):
     def getConsoleCommands(self):
         arguments = []
         arguments.append('-o')
-        output = unicode(self.getOutputValue(self.OUTPUT))
+        output = str(self.getOutputValue(self.OUTPUT))
         arguments.append(output)
         arguments.append('-of')
         arguments.append(GdalUtils.getFormatShortNameFromFilename(output))
         arguments.append('-near')
-        arguments.append(unicode(self.getParameterValue(self.NEAR)))
+        arguments.append(str(self.getParameterValue(self.NEAR)))
         if self.getParameterValue(self.WHITE):
             arguments.append('-white')
         arguments.append(self.getParameterValue(self.INPUT))

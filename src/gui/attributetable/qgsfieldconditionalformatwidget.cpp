@@ -1,10 +1,25 @@
+/***************************************************************************
+    qgsfieldconditionalformatwidget.cpp
+    ---------------------
+    begin                : August 2015
+    copyright            : (C) 2015 by Nathan Woodrow
+    email                : woodrow dot nathan at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgsfieldconditionalformatwidget.h"
 
 #include "qgsexpressionbuilderdialog.h"
-#include "qgssymbolv2.h"
-#include "qgssymbolv2selectordialog.h"
-#include "qgssymbollayerv2utils.h"
-#include "qgsstylev2.h"
+#include "qgssymbol.h"
+#include "qgssymbolselectordialog.h"
+#include "qgssymbollayerutils.h"
+#include "qgsstyle.h"
+#include "qgsvectorlayer.h"
 
 QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *parent )
     : QWidget( parent )
@@ -45,28 +60,25 @@ QgsFieldConditionalFormatWidget::~QgsFieldConditionalFormatWidget()
 
 void QgsFieldConditionalFormatWidget::updateIcon()
 {
-  mSymbol = QgsSymbolV2::defaultSymbol( QGis::Point );
+  mSymbol = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
 
-  QgsSymbolV2SelectorDialog dlg( mSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
+  QgsSymbolSelectorDialog dlg( mSymbol, QgsStyle::defaultStyle(), nullptr, this );
   if ( !dlg.exec() )
   {
     return;
   }
 
-  QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mSymbol, btnChangeIcon->iconSize() );
+  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSymbol, btnChangeIcon->iconSize() );
   btnChangeIcon->setIcon( icon );
 }
 
 void QgsFieldConditionalFormatWidget::setExpression()
 {
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mLayer );
-  context.lastScope()->setVariable( "value", 0 );
-  context.setHighlightedVariables( QStringList() << "value" );
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+  context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "value" ), 0, true ) );
+  context.setHighlightedVariables( QStringList() << QStringLiteral( "value" ) );
 
-  QgsExpressionBuilderDialog dlg( mLayer, mRuleEdit->text(), this, "generic", context );
+  QgsExpressionBuilderDialog dlg( mLayer, mRuleEdit->text(), this, QStringLiteral( "generic" ), context );
   dlg.setWindowTitle( tr( "Conditional style rule expression" ) );
 
   if ( dlg.exec() )
@@ -199,7 +211,7 @@ void QgsFieldConditionalFormatWidget::reset()
   mRuleEdit->clear();
   if ( fieldRadio->isChecked() )
   {
-    mRuleEdit->setText( "@value " );
+    mRuleEdit->setText( QStringLiteral( "@value " ) );
   }
   btnBackgroundColor->setColor( QColor() );
   btnTextColor->setColor( QColor() );
@@ -226,7 +238,7 @@ void QgsFieldConditionalFormatWidget::setPresets( const QList<QgsConditionalStyl
   {
     if ( style.isValid() )
     {
-      QStandardItem* item = new QStandardItem( "abc - 123" );
+      QStandardItem* item = new QStandardItem( QStringLiteral( "abc - 123" ) );
       if ( style.backgroundColor().isValid() )
         item->setBackground( style.backgroundColor() );
       if ( style.textColor().isValid() )

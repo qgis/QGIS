@@ -18,6 +18,7 @@
 
 #include <QWidget>
 #include "ui_qgsrelationmanagerdialogbase.h"
+#include "qgis_app.h"
 
 class QgsRelation;
 class QgsRelationManager;
@@ -37,9 +38,11 @@ class APP_EXPORT QgsRelationManagerDialog : public QWidget, private Ui::QgsRelat
     void addRelation( const QgsRelation& rel );
     QList< QgsRelation > relations();
 
-  public slots:
+  private slots:
     void on_mBtnAddRelation_clicked();
+    void on_mBtnDiscoverRelations_clicked();
     void on_mBtnRemoveRelation_clicked();
+    void onSelectionChanged();
 
   private:
     QgsRelationManager* mRelationManager;

@@ -18,6 +18,7 @@ email                : ersts@amnh.org
 #ifndef QGSRASTERTRANSPARENCY_H
 #define QGSRASTERTRANSPARENCY_H
 
+#include "qgis_core.h"
 #include <QList>
 class QDomDocument;
 class QDomElement;
@@ -53,42 +54,42 @@ class CORE_EXPORT QgsRasterTransparency
     //
     // Initializer, Accessor and mutator for transparency tables.
     //
-    /** \brief Accessor for transparentSingleValuePixelList */
+    //! \brief Accessor for transparentSingleValuePixelList
     QList<QgsRasterTransparency::TransparentSingleValuePixel> transparentSingleValuePixelList() const;
 
-    /** \brief Accessor for transparentThreeValuePixelList */
+    //! \brief Accessor for transparentThreeValuePixelList
     QList<QgsRasterTransparency::TransparentThreeValuePixel> transparentThreeValuePixelList() const;
 
-    /** \brief Reset to the transparency list to a single value */
+    //! \brief Reset to the transparency list to a single value
     void initializeTransparentPixelList( double );
 
-    /** \brief Reset to the transparency list to a single value */
+    //! \brief Reset to the transparency list to a single value
     void initializeTransparentPixelList( double, double, double );
 
-    /** \brief Mutator for transparentSingleValuePixelList */
+    //! \brief Mutator for transparentSingleValuePixelList
     void setTransparentSingleValuePixelList( const QList<TransparentSingleValuePixel>& theNewList );
 
-    /** \brief Mutator for transparentThreeValuePixelList */
+    //! \brief Mutator for transparentThreeValuePixelList
     void setTransparentThreeValuePixelList( const QList<TransparentThreeValuePixel>& theNewList );
 
-    /** \brief Returns the transparency value for a single value Pixel */
+    //! \brief Returns the transparency value for a single value Pixel
     int alphaValue( double, int theGlobalTransparency = 255 ) const;
 
-    /** \brief Return the transparency value for a RGB Pixel */
+    //! \brief Return the transparency value for a RGB Pixel
     int alphaValue( double, double, double, int theGlobalTransparency = 255 ) const;
 
-    /** True if there are no entries in the pixel lists except the nodata value*/
+    //! True if there are no entries in the pixel lists except the nodata value
     bool isEmpty() const;
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
 
-    void readXML( const QDomElement& elem );
+    void readXml( const QDomElement& elem );
 
   private:
-    /** \brief The list to hold transparency values for RGB layers */
+    //! \brief The list to hold transparency values for RGB layers
     QList<QgsRasterTransparency::TransparentThreeValuePixel> mTransparentThreeValuePixelList;
 
-    /** \brief The list to hold transparency values for single value pixel layers */
+    //! \brief The list to hold transparency values for single value pixel layers
     QList<QgsRasterTransparency::TransparentSingleValuePixel> mTransparentSingleValuePixelList;
 
 };

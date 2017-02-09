@@ -21,8 +21,12 @@
 #include "qgslogger.h"
 #include "qgsproviderregistry.h"
 
+typedef QList<QgsDataItemProvider*> dataItemProviders_t();
 
-/** Simple data item provider implementation that handles the support for provider plugins (which may contain
+
+/**
+ * \ingroup core
+ * Simple data item provider implementation that handles the support for provider plugins (which may contain
  * dataCapabilities() and dataItem() functions).
  *
  * Ideally the provider plugins should directly provide implementation of QgsDataItemProvider, for the time being
@@ -58,9 +62,20 @@ QgsDataItemProviderRegistry::QgsDataItemProviderRegistry()
 
   Q_FOREACH ( const QString& key, providersList )
   {
-    QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( key );
+    std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->providerLibrary( key ) );
     if ( !library )
       continue;
+
+    // new / better way of returning data items from providers
+
+    dataItemProviders_t* dataItemProvidersFn = reinterpret_cast< dataItemProviders_t * >( cast_to_fptr( library->resolve( "dataItemProviders" ) ) );
+    if ( dataItemProvidersFn )
+    {
+      // the function is a factory - we keep ownership of the returned providers
+      mProviders << dataItemProvidersFn();
+    }
+
+    // legacy support - using dataItem() and dataCapabilities() methods
 
     dataCapabilities_t * dataCapabilities = reinterpret_cast< dataCapabilities_t * >( cast_to_fptr( library->resolve( "dataCapabilities" ) ) );
     if ( !dataCapabilities )
@@ -78,12 +93,6 @@ QgsDataItemProviderRegistry::QgsDataItemProviderRegistry()
 
     mProviders.append( new QgsDataItemProviderFromPlugin( library->fileName(), dataCapabilities, dataItem ) );
   }
-}
-
-QgsDataItemProviderRegistry* QgsDataItemProviderRegistry::instance()
-{
-  static QgsDataItemProviderRegistry sInstance;
-  return &sInstance;
 }
 
 QgsDataItemProviderRegistry::~QgsDataItemProviderRegistry()

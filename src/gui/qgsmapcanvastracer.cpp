@@ -1,12 +1,27 @@
+/***************************************************************************
+    qgsmapcanvastracer.cpp
+    ---------------------
+    begin                : January 2016
+    copyright            : (C) 2016 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgsmapcanvastracer.h"
 
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"
+#include "qgssnappingconfig.h"
 
 #include <QAction>
 
@@ -30,7 +45,7 @@ QgsMapCanvasTracer::QgsMapCanvasTracer( QgsMapCanvas* canvas, QgsMessageBar* mes
 
   // arbitrarily chosen limit that should allow for fairly fast initialization
   // of the underlying graph structure
-  setMaxFeatureCount( QSettings().value( "/qgis/digitizing/tracing_max_feature_count", 10000 ).toInt() );
+  setMaxFeatureCount( QSettings().value( QStringLiteral( "/qgis/digitizing/tracing_max_feature_count" ), 10000 ).toInt() );
 }
 
 QgsMapCanvasTracer::~QgsMapCanvasTracer()
@@ -74,7 +89,7 @@ void QgsMapCanvasTracer::reportError( QgsTracer::PathError err, bool addingVerte
     return;
 
   mLastMessage = new QgsMessageBarItem( tr( "Tracing" ), message, QgsMessageBar::WARNING,
-                                        QSettings().value( "/qgis/messageTimeout", 5 ).toInt() );
+                                        QSettings().value( QStringLiteral( "/qgis/messageTimeout" ), 5 ).toInt() );
   mMessageBar->pushItem( mLastMessage );
 }
 
@@ -85,30 +100,30 @@ void QgsMapCanvasTracer::configure()
   setExtent( mCanvas->extent() );
 
   QList<QgsVectorLayer*> layers;
-  QStringList visibleLayerIds = mCanvas->mapSettings().layers();
+  QList<QgsMapLayer*> visibleLayers = mCanvas->mapSettings().layers();
 
-  switch ( mCanvas->snappingUtils()->snapToMapMode() )
+  switch ( mCanvas->snappingUtils()->config().mode() )
   {
     default:
-    case QgsSnappingUtils::SnapCurrentLayer:
+    case QgsSnappingConfig::ActiveLayer:
     {
       QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( mCanvas->currentLayer() );
-      if ( vl && visibleLayerIds.contains( vl->id() ) )
+      if ( vl && visibleLayers.contains( vl ) )
         layers << vl;
     }
     break;
-    case QgsSnappingUtils::SnapAllLayers:
-      Q_FOREACH ( const QString& layerId, visibleLayerIds )
+    case QgsSnappingConfig::AllLayers:
+      Q_FOREACH ( QgsMapLayer* layer, visibleLayers )
       {
-        QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
+        QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer );
         if ( vl )
           layers << vl;
       }
       break;
-    case QgsSnappingUtils::SnapAdvanced:
+    case QgsSnappingConfig::AdvancedConfiguration:
       Q_FOREACH ( const QgsSnappingUtils::LayerConfig& cfg, mCanvas->snappingUtils()->layers() )
       {
-        if ( visibleLayerIds.contains( cfg.layer->id() ) )
+        if ( visibleLayers.contains( cfg.layer ) )
           layers << cfg.layer;
       }
       break;
@@ -120,6 +135,6 @@ void QgsMapCanvasTracer::configure()
 void QgsMapCanvasTracer::onCurrentLayerChanged()
 {
   // no need to bother if we are not snapping
-  if ( mCanvas->snappingUtils()->snapToMapMode() == QgsSnappingUtils::SnapCurrentLayer )
+  if ( mCanvas->snappingUtils()->config().mode() == QgsSnappingConfig::ActiveLayer )
     invalidateGraph();
 }

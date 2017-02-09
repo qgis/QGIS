@@ -18,6 +18,7 @@
 #ifndef QGSRASTERRANGE_H
 #define QGSRASTERRANGE_H
 
+#include "qgis_core.h"
 #include <QList>
 
 class QgsRasterRange;
@@ -31,6 +32,7 @@ typedef QList<QgsRasterRange> QgsRasterRangeList;
 class CORE_EXPORT QgsRasterRange
 {
   public:
+
     /** \brief Constructor.
      */
     QgsRasterRange();

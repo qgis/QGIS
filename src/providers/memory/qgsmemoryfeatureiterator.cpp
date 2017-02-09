@@ -19,6 +19,7 @@
 #include "qgslogger.h"
 #include "qgsspatialindex.h"
 #include "qgsmessagelog.h"
+#include "qgsproject.h"
 
 
 
@@ -93,7 +94,7 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature& feature )
     if ( !mRequest.filterRect().isNull() && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
     {
       // do exact check in case we're doing intersection
-      if ( mSource->mFeatures.value( *mFeatureIdListIterator ).constGeometry() && mSource->mFeatures.value( *mFeatureIdListIterator ).constGeometry()->intersects( mSelectRectGeom ) )
+      if ( mSource->mFeatures.value( *mFeatureIdListIterator ).hasGeometry() && mSource->mFeatures.value( *mFeatureIdListIterator ).geometry().intersects( mSelectRectGeom ) )
         hasFeature = true;
     }
     else
@@ -145,13 +146,13 @@ bool QgsMemoryFeatureIterator::nextFeatureTraverseAll( QgsFeature& feature )
       if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
       {
         // using exact test when checking for intersection
-        if ( mSelectIterator->constGeometry() && mSelectIterator->constGeometry()->intersects( mSelectRectGeom ) )
+        if ( mSelectIterator->hasGeometry() && mSelectIterator->geometry().intersects( mSelectRectGeom ) )
           hasFeature = true;
       }
       else
       {
         // check just bounding box against rect when not using intersection
-        if ( mSelectIterator->constGeometry() && mSelectIterator->constGeometry()->boundingBox().intersects( mRequest.filterRect() ) )
+        if ( mSelectIterator->hasGeometry() && mSelectIterator->geometry().boundingBox().intersects( mRequest.filterRect() ) )
           hasFeature = true;
       }
     }
@@ -203,9 +204,6 @@ bool QgsMemoryFeatureIterator::close()
 
   iteratorClosed();
 
-  delete mSelectRectGeom;
-  mSelectRectGeom = nullptr;
-
   mClosed = true;
   return true;
 }
@@ -219,7 +217,7 @@ QgsMemoryFeatureSource::QgsMemoryFeatureSource( const QgsMemoryProvider* p )
     , mSubsetString( p->mSubsetString )
 {
   mExpressionContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+  << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
   mExpressionContext.setFields( mFields );
 }
 

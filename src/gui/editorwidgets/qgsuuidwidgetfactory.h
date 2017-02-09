@@ -17,8 +17,10 @@
 #define QGSUUIDWIDGETFACTORY_H
 
 #include "qgseditorwidgetfactory.h"
+#include "qgis_gui.h"
 
-/** \class QgsUuidWidgetFactory
+/** \ingroup gui
+ * \class QgsUuidWidgetFactory
  * \note not available in Python bindings
  */
 
@@ -31,6 +33,7 @@ class GUI_EXPORT QgsUuidWidgetFactory : public QgsEditorWidgetFactory
   public:
     QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const override;
     QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
+    unsigned int fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const override;
 };
 
 #endif // QGSUUIDWIDGETFACTORY_H

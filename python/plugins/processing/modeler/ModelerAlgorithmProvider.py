@@ -27,7 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
+
+from qgis.core import QgsApplication
 
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
@@ -47,34 +49,36 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 class ModelerAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
-        AlgorithmProvider.__init__(self)
+        super().__init__()
         self.actions = [CreateNewModelAction(), AddModelFromFileAction(), GetModelsAction()]
         self.contextMenuActions = [EditModelAction(), DeleteModelAction()]
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
+        ProcessingConfig.addSetting(Setting(self.name(),
                                             ModelerUtils.MODELS_FOLDER, self.tr('Models folder', 'ModelerAlgorithmProvider'),
-                                            ModelerUtils.modelsFolder(), valuetype=Setting.FOLDER))
-
-    def setAlgsList(self, algs):
-        ModelerUtils.allAlgs = algs
+                                            ModelerUtils.defaultModelsFolder(), valuetype=Setting.MULTIPLE_FOLDERS))
 
     def modelsFolder(self):
-        return ModelerUtils.modelsFolder()
+        return ModelerUtils.modelsFolders()[0]
 
-    def getDescription(self):
+    def name(self):
         return self.tr('Models', 'ModelerAlgorithmProvider')
 
-    def getName(self):
+    def id(self):
         return 'model'
 
-    def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'model.png'))
+    def icon(self):
+        return QgsApplication.getThemeIcon("/processingModel.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("processingModel.svg")
 
     def _loadAlgorithms(self):
-        folder = ModelerUtils.modelsFolder()
-        self.loadFromFolder(folder)
+        folders = ModelerUtils.modelsFolders()
+        self.algs = []
+        for f in folders:
+            self.loadFromFolder(f)
 
     def loadFromFolder(self, folder):
         if not os.path.exists(folder):

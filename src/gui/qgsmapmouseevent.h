@@ -20,12 +20,12 @@
 
 #include "qgspoint.h"
 #include "qgspointlocator.h"
-#include "qgssnappingutils.h"
+#include "qgis_gui.h"
 
 class QgsMapCanvas;
 class QgsMapToolAdvancedDigitizing;
 
-/**
+/** \ingroup gui
  * A QgsMapMouseEvent is the result of a user interaction with the mouse on a QgsMapCanvas.
  * It is sent whenever the user moves, clicks, releases or double clicks the mouse.
  * In addition to the coordiantes in pixel space it also knows the coordinates in the mapcanvas' CRS
@@ -38,8 +38,8 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
     enum SnappingMode
     {
       NoSnapping,
-      SnapProjectConfig,  //!< snap according to the configuration set in the snapping settings
-      SnapAllLayers,      //!< snap to all rendered layers (tolerance and type from defaultSettings())
+      SnapProjectConfig,  //!< Snap according to the configuration set in the snapping settings
+      SnapAllLayers,      //!< Snap to all rendered layers (tolerance and type from defaultSettings())
     };
 
     /**

@@ -27,8 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt import uic
-from PyQt.QtWidgets import QFileDialog
+from qgis.PyQt import uic
+from qgis.PyQt.QtWidgets import QFileDialog
 
 from processing.tools.system import isWindows
 
@@ -46,9 +46,9 @@ class RenderingStyleFilePanel(BASE, WIDGET):
         self.btnSelect.clicked.connect(self.showSelectionDialog)
 
     def showSelectionDialog(self):
-        filename = QFileDialog.getOpenFileName(self,
-                                               self.tr('Select style file'), '',
-                                               self.tr('QGIS Layer Style File (*.qml *.QML)'))
+        filename, selected_filter = QFileDialog.getOpenFileName(self,
+                                                                self.tr('Select style file'), '',
+                                                                self.tr('QGIS Layer Style File (*.qml *.QML)'))
         if filename:
             self.leText.setText(filename)
 

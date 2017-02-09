@@ -5,7 +5,7 @@
  * \note Added in version 2.16
  */
 
-class QgsNullSymbolRenderer : QgsFeatureRendererV2
+class QgsNullSymbolRenderer : QgsFeatureRenderer
 {
 %TypeHeaderCode
 #include <qgsnullsymbolrenderer.h>
@@ -16,24 +16,24 @@ class QgsNullSymbolRenderer : QgsFeatureRendererV2
 
     virtual ~QgsNullSymbolRenderer();
 
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );
-    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context );
+    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );
+    virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context );
 
     virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
     virtual void stopRender( QgsRenderContext& context );
     virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context );
 
-    virtual QList<QString> usedAttributes();
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
     virtual QString dump() const;
-    virtual QgsFeatureRendererV2* clone() const /Factory/;
-    virtual QgsSymbolV2List symbols( QgsRenderContext& context ) /PyName=symbols2/;
+    virtual QgsFeatureRenderer* clone() const /Factory/;
+    virtual QgsSymbolList symbols( QgsRenderContext& context );
 
     /** Creates a null renderer from XML element.
      * @param element DOM element
      * @returns new null symbol renderer
      */
-    static QgsFeatureRendererV2* create( QDomElement& element ) /Factory/;
+    static QgsFeatureRenderer* create( QDomElement& element ) /Factory/;
 
     virtual QDomElement save( QDomDocument& doc );
 
@@ -41,6 +41,6 @@ class QgsNullSymbolRenderer : QgsFeatureRendererV2
      * @param renderer renderer to convert from
      * @returns a new renderer if the conversion was possible, otherwise nullptr.
      */
-    static QgsNullSymbolRenderer* convertFromRenderer( const QgsFeatureRendererV2 *renderer ) /Factory/;
+    static QgsNullSymbolRenderer* convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
 
 };

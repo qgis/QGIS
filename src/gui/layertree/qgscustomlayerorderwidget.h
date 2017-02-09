@@ -18,6 +18,7 @@
 
 #include <QWidget>
 #include <QAbstractListModel>
+#include "qgis_gui.h"
 
 class CustomLayerOrderModel;
 class QgsLayerTreeMapCanvasBridge;
@@ -27,6 +28,7 @@ class QCheckBox;
 class QListView;
 
 /**
+  \ingroup gui
  * The QgsCustomLayerOrderWidget class provides a list box where the user can define
  * custom order for drawing of layers. It also features a checkbox for enabling
  * or disabling the custom order. Any changes made by the user are automatically
@@ -47,7 +49,8 @@ class GUI_EXPORT QgsCustomLayerOrderWidget : public QWidget
   protected slots:
     void bridgeHasCustomLayerOrderChanged( bool state );
     void bridgeCustomLayerOrderChanged( const QStringList& order );
-    void nodeVisibilityChanged( QgsLayerTreeNode* node, Qt::CheckState state );
+    //! Slot triggered when the ivsibility of a node changes
+    void nodeVisibilityChanged( QgsLayerTreeNode* node );
 
     void modelUpdated();
 

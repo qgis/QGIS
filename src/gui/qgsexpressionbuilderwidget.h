@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgisexpressionbuilderwidget.h - A genric expression string builder widget.
+    qgisexpressionbuilderwidget.h - A generic expression string builder widget.
      --------------------------------------
     Date                 :  29-May-2011
     Copyright            : (C) 2011 by Nathan Woodrow
@@ -18,16 +18,21 @@
 
 #include <QWidget>
 #include "ui_qgsexpressionbuilder.h"
-#include "qgsvectorlayer.h"
-#include "qgsexpressionhighlighter.h"
 #include "qgsdistancearea.h"
+#include "qgsexpressioncontext.h"
+#include "qgsfeature.h"
 
 #include "QStandardItemModel"
 #include "QStandardItem"
 #include "QSortFilterProxyModel"
 #include "QStringListModel"
+#include "qgis_gui.h"
 
-/** An expression item that can be used in the QgsExpressionBuilderWidget tree.
+class QgsFields;
+class QgsExpressionHighlighter;
+
+/** \ingroup gui
+ * An expression item that can be used in the QgsExpressionBuilderWidget tree.
   */
 class QgsExpressionItem : public QStandardItem
 {
@@ -48,7 +53,7 @@ class QgsExpressionItem : public QStandardItem
       mExpressionText = expressionText;
       mHelpText = helpText;
       mType = itemType;
-      setData( itemType, ItemTypeRole );
+      setData( itemType, ITEM_TYPE_ROLE );
     }
 
     QgsExpressionItem( const QString& label,
@@ -58,7 +63,7 @@ class QgsExpressionItem : public QStandardItem
     {
       mExpressionText = expressionText;
       mType = itemType;
-      setData( itemType, ItemTypeRole );
+      setData( itemType, ITEM_TYPE_ROLE );
     }
 
     QString getExpressionText() const { return mExpressionText; }
@@ -68,22 +73,23 @@ class QgsExpressionItem : public QStandardItem
       * @return The help text.
       */
     QString getHelpText() const { return mHelpText; }
+
     /** Set the help text for the current item
       *
       * @note The help text can be set as a html string.
       */
     void setHelpText( const QString& helpText ) { mHelpText = helpText; }
 
-    /** Get the type of expression item eg header, field, ExpressionNode.
+    /** Get the type of expression item, e.g., header, field, ExpressionNode.
       *
       * @return The QgsExpressionItem::ItemType
       */
     QgsExpressionItem::ItemType getItemType() const { return mType; }
 
     //! Custom sort order role
-    static const int CustomSortRole = Qt::UserRole + 1;
+    static const int CUSTOM_SORT_ROLE = Qt::UserRole + 1;
     //! Item type role
-    static const int ItemTypeRole = Qt::UserRole + 2;
+    static const int ITEM_TYPE_ROLE = Qt::UserRole + 2;
 
   private:
     QString mExpressionText;
@@ -92,7 +98,8 @@ class QgsExpressionItem : public QStandardItem
 
 };
 
-/** Search proxy used to filter the QgsExpressionBuilderWidget tree.
+/** \ingroup gui
+ * Search proxy used to filter the QgsExpressionBuilderWidget tree.
   * The default search for a tree model only searches top level this will handle one
   * level down
   */
@@ -111,14 +118,19 @@ class GUI_EXPORT QgsExpressionItemSearchProxy : public QSortFilterProxyModel
 };
 
 
-/** A reusable widget that can be used to build a expression string.
-  * See QgsExpressionBuilderDialog for exmaple of usage.
+/** \ingroup gui
+ * A reusable widget that can be used to build a expression string.
+  * See QgsExpressionBuilderDialog for example of usage.
   */
 class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExpressionBuilderWidgetBase
 {
     Q_OBJECT
   public:
-    QgsExpressionBuilderWidget( QWidget *parent );
+
+    /**
+     * Create a new expression builder widget with an optional parent.
+     */
+    QgsExpressionBuilderWidget( QWidget* parent = nullptr );
     ~QgsExpressionBuilderWidget();
 
     /** Sets layer in order to get the fields and values
@@ -139,14 +151,14 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      */
     void loadFieldsAndValues( const QMap<QString, QStringList>& fieldValues );
 
-    /** Sets geometry calculator used in distance/area calculations. */
+    //! Sets geometry calculator used in distance/area calculations.
     void setGeomCalculator( const QgsDistanceArea & da );
 
     /** Gets the expression string that has been set in the expression area.
       * @returns The expression as a string. */
     QString expressionText();
 
-    /** Sets the expression string for the widget */
+    //! Sets the expression string for the widget
     void setExpressionText( const QString& expression );
 
     /** Returns the expression context for the widget. The context is used for the expression
@@ -180,9 +192,17 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     bool isExpressionValid();
 
-    void saveToRecent( const QString& key );
+    /**
+     * Adds the current expression to the given collection.
+     * By default it is saved to the collection "generic".
+     */
+    void saveToRecent( const QString& collection = "generic" );
 
-    void loadRecent( const QString& key );
+    /**
+     * Loads the recent expressions from the given collection.
+     * By default it is loaded from the collection "generic".
+     */
+    void loadRecent( const QString& collection = "generic" );
 
     /** Create a new file in the function editor
      */
@@ -245,6 +265,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void on_txtPython_textChanged();
 
   signals:
+
     /** Emitted when the user changes the expression in the widget.
       * Users of this widget should connect to this signal to decide if to let the user
       * continue.
@@ -264,6 +285,20 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     void loadExpressionContext();
 
+    /** Registers a node item for the expression builder, adding multiple items when the function exists in multiple groups
+      * @param groups The groups the item will be show in the tree view.  If a group doesn't exist it will be created.
+      * @param label The label that is show to the user for the item in the tree.
+      * @param expressionText The text that is inserted into the expression area when the user double clicks on the item.
+      * @param helpText The help text that the user will see when item is selected.
+      * @param type The type of the expression item.
+      * @param highlightedItem set to true to make the item highlighted, which inserts a bold copy of the item at the top level
+      * @param sortOrder sort ranking for item
+      */
+    void registerItemForAllGroups( const QStringList& groups, const QString& label, const QString& expressionText,
+                                   const QString& helpText = "",
+                                   QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
+                                   bool highlightedItem = false, int sortOrder = 1 );
+
     bool mAutoSave;
     QString mFunctionsPath;
     QgsVectorLayer *mLayer;
@@ -272,7 +307,6 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QSortFilterProxyModel *mProxyValues;
     QgsExpressionItemSearchProxy *mProxyModel;
     QMap<QString, QgsExpressionItem*> mExpressionGroups;
-    QgsFeature mFeature;
     QgsExpressionHighlighter* highlighter;
     bool mExpressionValid;
     QgsDistanceArea mDa;

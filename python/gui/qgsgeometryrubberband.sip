@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-/** A rubberband class for QgsAbstractGeometryV2 (considering curved geometries)*/
+/** A rubberband class for QgsAbstractGeometry (considering curved geometries)*/
 class QgsGeometryRubberBand: QgsMapCanvasItem
 {
 %TypeHeaderCode
@@ -50,18 +50,18 @@ class QgsGeometryRubberBand: QgsMapCanvasItem
       ICON_FULL_BOX
     };
 
-    QgsGeometryRubberBand( QgsMapCanvas* mapCanvas, QGis::GeometryType geomType = QGis::Line );
+    QgsGeometryRubberBand( QgsMapCanvas* mapCanvas, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::LineGeometry );
     ~QgsGeometryRubberBand();
 
     /** Sets geometry (takes ownership). Geometry is expected to be in map coordinates */
-    void setGeometry( QgsAbstractGeometryV2* geom );
+    void setGeometry( QgsAbstractGeometry* geom /Transfer/ );
     /** Returns a pointer to the geometry*/
-    const QgsAbstractGeometryV2* geometry();
+    const QgsAbstractGeometry* geometry();
     /** Moves vertex to new position (in map coordinates)*/
     void moveVertex( QgsVertexId id, const QgsPointV2& newPos );
     /** Sets fill color for vertex markers*/
     void setFillColor( const QColor& c );
-    /** Sets outline color for vertex markes*/
+    /** Sets outline color for vertex markers*/
     void setOutlineColor( const QColor& c );
     /** Sets outline width*/
     void setOutlineWidth( int width );

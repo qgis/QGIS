@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -31,7 +31,10 @@ class TestSignalReceiver : public QObject
     Q_OBJECT
 
   public:
-    TestSignalReceiver() : QObject( 0 ), blendMode( QPainter::CompositionMode_SourceOver ) {}
+    TestSignalReceiver()
+        : QObject( 0 )
+        , blendMode( QPainter::CompositionMode_SourceOver )
+    {}
     QPainter::CompositionMode blendMode;
   public slots:
     void onBlendModeChanged( const QPainter::CompositionMode blendMode )
@@ -90,7 +93,7 @@ void TestQgsMapLayer::init()
   myFileName = myFileName + "/points.shp";
   QFileInfo myMapFileInfo( myFileName );
   mpLayer = new QgsVectorLayer( myMapFileInfo.filePath(),
-                                myMapFileInfo.completeBaseName(), "ogr" );
+                                myMapFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 }
 
 void TestQgsMapLayer::cleanup()
@@ -149,5 +152,5 @@ void TestQgsMapLayer::isInScaleRange()
 
 }
 
-QTEST_MAIN( TestQgsMapLayer )
+QGSTEST_MAIN( TestQgsMapLayer )
 #include "testqgsmaplayer.moc"

@@ -18,6 +18,7 @@
 #ifndef QGSQTLOCATIONCONNECTION_H
 #define QGSQTLOCATIONCONNECTION_H
 
+#include "qgis_core.h"
 #include "qgsgpsconnection.h"
 
 #include <QtCore/QPointer>
@@ -35,6 +36,7 @@ QTM_USE_NAMESPACE
 #endif
 
 /**
+ * \ingroup core
  * \class QgsQtLocationConnection
  * \note may not be available in Python bindings on all platforms
 */
@@ -46,10 +48,10 @@ class CORE_EXPORT QgsQtLocationConnection: public QgsGPSConnection
     ~QgsQtLocationConnection();
 
   protected slots:
-    /** Needed to make QtLocation detected*/
+    //! Needed to make QtLocation detected
     void broadcastConnectionAvailable();
 
-    /** Parse available data source content*/
+    //! Parse available data source content
     void parseData();
 
     /** Called when the position updated.

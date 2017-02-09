@@ -27,7 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
+
+from qgis.core import QgsApplication
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.AlgorithmProvider import AlgorithmProvider
@@ -37,6 +39,7 @@ from processing.gui.CreateNewScriptAction import CreateNewScriptAction
 from processing.script.ScriptUtils import ScriptUtils
 from processing.script.AddScriptFromFileAction import AddScriptFromFileAction
 from processing.gui.GetScriptsAndModels import GetScriptsAction
+from processing.script.CreateScriptCollectionPluginAction import CreateScriptCollectionPluginAction
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -44,38 +47,44 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 class ScriptAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
-        AlgorithmProvider.__init__(self)
+        super().__init__()
         self.actions.extend([CreateNewScriptAction('Create new script',
                                                    CreateNewScriptAction.SCRIPT_PYTHON),
                              AddScriptFromFileAction(),
-                             GetScriptsAction()])
+                             GetScriptsAction(),
+                             CreateScriptCollectionPluginAction()])
         self.contextMenuActions = \
             [EditScriptAction(EditScriptAction.SCRIPT_PYTHON),
              DeleteScriptAction(DeleteScriptAction.SCRIPT_PYTHON)]
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
+        ProcessingConfig.addSetting(Setting(self.name(),
                                             ScriptUtils.SCRIPTS_FOLDER,
                                             self.tr('Scripts folder', 'ScriptAlgorithmProvider'),
-                                            ScriptUtils.scriptsFolder(), valuetype=Setting.FOLDER))
+                                            ScriptUtils.defaultScriptsFolder(), valuetype=Setting.MULTIPLE_FOLDERS))
 
     def unload(self):
         AlgorithmProvider.unload(self)
         ProcessingConfig.addSetting(ScriptUtils.SCRIPTS_FOLDER)
 
-    def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'script.png'))
+    def icon(self):
+        return QgsApplication.getThemeIcon("/processingScript.svg")
 
-    def getName(self):
+    def svgIconPath(self):
+        return QgsApplication.iconPath("processingScript.svg")
+
+    def id(self):
         return 'script'
 
-    def getDescription(self):
+    def name(self):
         return self.tr('Scripts', 'ScriptAlgorithmProvider')
 
     def _loadAlgorithms(self):
-        folder = ScriptUtils.scriptsFolder()
-        self.algs = ScriptUtils.loadFromFolder(folder)
+        folders = ScriptUtils.scriptsFolders()
+        self.algs = []
+        for f in folders:
+            self.algs.extend(ScriptUtils.loadFromFolder(f))
 
     def addAlgorithmsFromFolder(self, folder):
         self.algs.extend(ScriptUtils.loadFromFolder(folder))

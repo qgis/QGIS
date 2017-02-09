@@ -17,9 +17,10 @@
 #ifndef QGSTICKSSCALEBARSTYLE_H
 #define QGSTICKSSCALEBARSTYLE_H
 
+#include "qgis_core.h"
 #include "qgsscalebarstyle.h"
 
-/** \ingroup MapComposer
+/** \ingroup core
  * A scale bar that draws segments using short ticks.
  */
 class CORE_EXPORT QgsTicksScaleBarStyle: public QgsScaleBarStyle
@@ -33,7 +34,6 @@ class CORE_EXPORT QgsTicksScaleBarStyle: public QgsScaleBarStyle
     };
 
     QgsTicksScaleBarStyle( const QgsComposerScaleBar* bar );
-    ~QgsTicksScaleBarStyle();
 
     QString name() const override;
 

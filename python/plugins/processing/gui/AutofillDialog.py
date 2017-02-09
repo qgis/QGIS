@@ -27,8 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt import uic
-from PyQt.QtWidgets import QDialog
+from qgis.PyQt import uic
+from qgis.PyQt.QtWidgets import QDialog
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(

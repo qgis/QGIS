@@ -17,8 +17,9 @@
 #define QGSTABLEWIDGETITEM_H
 
 #include <QTableWidget>
+#include "qgis_gui.h"
 
-/**
+/** \ingroup gui
  * This can be used like a regular QTableWidgetItem with the difference that a
  * specific role can be set to sort.
  */
@@ -26,6 +27,7 @@ class GUI_EXPORT QgsTableWidgetItem : public QTableWidgetItem
 {
   public:
     QgsTableWidgetItem();
+
     /**
      * Creates a new table widget item with the specified text.
      */
@@ -37,6 +39,7 @@ class GUI_EXPORT QgsTableWidgetItem : public QTableWidgetItem
      * By default this will be set to Qt::DisplayRole
      */
     void setSortRole( int role );
+
     /**
      * Get the role by which the items should be sorted.
      * By default this will be Qt::DisplayRole

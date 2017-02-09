@@ -43,7 +43,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
       QgisInterface *iface,
       QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
-    //! Destructor
+
     ~QgsGrassMapcalc();
 
     // Current tool
@@ -70,32 +70,32 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     bool hasOutput( int type ) override
       { Q_UNUSED( type ); return true; }
 
-    /** \brief receives contentsMousePressEvent from view */
+    //! \brief receives contentsMousePressEvent from view
     void mousePressEvent( QMouseEvent* ) override;
 
-    /** \brief receives contentsMouseReleaseEvent from view */
+    //! \brief receives contentsMouseReleaseEvent from view
     void mouseReleaseEvent( QMouseEvent* ) override;
 
-    /** \brief receives contentsMouseMoveEvent from view */
+    //! \brief receives contentsMouseMoveEvent from view
     void mouseMoveEvent( QMouseEvent* ) override;
 
     void keyPressEvent( QKeyEvent * e ) override;
 
-    /** Cut coordinates by current canvas extent */
+    //! Cut coordinates by current canvas extent
     void limit( QPoint* );
 
-    /** Grow canvas and move items */
+    //! Grow canvas and move items
     void growCanvas( int left, int right, int top, int bottom );
 
-    /** Grow automaticaly if an item is near border */
+    //! Grow automatically if an item is near border
     void autoGrow();
 
     void resizeCanvas( int width, int height );
 
-    /** Show/hide options for tool */
+    //! Show/hide options for tool
     void showOptions( int tool );
 
-    /** Set option for selected object */
+    //! Set option for selected object
     void setOption( void );
 
   public slots:
@@ -238,7 +238,7 @@ class QgsGrassMapcalcFunction
     /* Number of inputs */
     int mInputCount;
 
-    /* Identification name, eg. 'if(x,a,b)' */
+    /* Identification name, e.g., 'if(x,a,b)' */
     //QString mName;
 
     /* Label used in combobox and objects */
@@ -391,7 +391,7 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
     // Number of outputs (0 or 1)
     int mOutputCount;
 
-    // Funcion
+    // Function
     QgsGrassMapcalcFunction mFunction;
 
     // Label font

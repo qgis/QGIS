@@ -1,6 +1,8 @@
 /***************************************************************************
                           qgsaccesscontrolfilter.h
                           ------------------------
+ Access control interface for Qgis Server plugins
+
   begin                : 2015-05-19
   copyright            : (C) 2015 by Stéphane Brunner
   email                : stephane dot brunner at camptocamp dot org
@@ -21,6 +23,7 @@
 #include <QMultiMap>
 #include <QList>
 #include <QString>
+#include "qgis_server.h"
 
 class QgsServerInterface;
 class QgsMapLayer;
@@ -40,6 +43,7 @@ class QgsFeature;
  *  * layerPermissions() - To give the general layer permissins (read / update / insert / delete)
  *  * authorizedLayerAttributes() - Tho filter the attributes (WMS/GetFeatureInfo, WFS/GetFeature)
  *  * allowToEdit() - (all WFS-T requests)
+ *  * cacheKey()
  */
 class SERVER_EXPORT QgsAccessControlFilter
 {
@@ -51,10 +55,10 @@ class SERVER_EXPORT QgsAccessControlFilter
      * and must be passed to QgsAccessControlFilter instances.
      */
     QgsAccessControlFilter( const QgsServerInterface* serverInterface );
-    /** Destructor */
-    virtual ~QgsAccessControlFilter();
 
-    /** Describe the layer permission */
+    virtual ~QgsAccessControlFilter() = default;
+
+    //! Describe the layer permission
     struct LayerPermissions
     {
       bool canRead;
@@ -63,7 +67,7 @@ class SERVER_EXPORT QgsAccessControlFilter
       bool canDelete;
     };
 
-    /** Return the QgsServerInterface instance */
+    //! Return the QgsServerInterface instance
     const QgsServerInterface* serverInterface() const { return mServerInterface; }
 
     /** Return an additional expression filter
@@ -105,12 +109,12 @@ class SERVER_EXPORT QgsAccessControlFilter
 
   private:
 
-    /** The server interface */
+    //! The server interface
     const QgsServerInterface* mServerInterface;
 
 };
 
-/** The registry definition */
+//! The registry definition
 typedef QMultiMap<int, QgsAccessControlFilter*> QgsAccessControlFilterMap;
 
 

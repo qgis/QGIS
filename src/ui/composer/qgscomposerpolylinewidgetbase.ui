@@ -92,6 +92,7 @@
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
+  <tabstop>groupBox</tabstop>
   <tabstop>mLineStyleButton</tabstop>
  </tabstops>
  <resources/>

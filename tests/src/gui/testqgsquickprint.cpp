@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QStringList>
 #include <QApplication>
@@ -26,7 +26,7 @@
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
-#include <qgsmaplayerregistry.h>
+#include <qgsproject.h>
 #include <qgsquickprint.h>
 //qgis test includes
 #include <qgsrenderchecker.h>
@@ -82,7 +82,7 @@ void TestQgsQuickPrint::initTestCase()
   mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
                                       myPointFileInfo.completeBaseName(), "ogr" );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayer( mpPointsLayer );
+  QgsProject::instance()->addMapLayer( mpPointsLayer );
 
   //
   //create a poly layer that will be used in all tests...
@@ -92,7 +92,7 @@ void TestQgsQuickPrint::initTestCase()
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
                                      myPolyFileInfo.completeBaseName(), "ogr" );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayer( mpPolysLayer );
+  QgsProject::instance()->addMapLayer( mpPolysLayer );
 
   //
   // Create a line layer that will be used in all tests...
@@ -102,7 +102,7 @@ void TestQgsQuickPrint::initTestCase()
   mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(),
                                      myLineFileInfo.completeBaseName(), "ogr" );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayer( mpLinesLayer );
+  QgsProject::instance()->addMapLayer( mpLinesLayer );
   //
   // We only need maprender instead of mapcanvas
   // since maprender does not require a qui
@@ -173,5 +173,5 @@ bool TestQgsQuickPrint::imageCheck( QString theTestType )
   return myResultFlag;
 }
 
-QTEST_MAIN( TestQgsQuickPrint )
+QGSTEST_MAIN( TestQgsQuickPrint )
 #include "testqgsquickprint.moc"

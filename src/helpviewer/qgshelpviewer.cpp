@@ -50,7 +50,7 @@ void QgsReaderThread::run()
   }
 }
 
-QgsHelpViewer::QgsHelpViewer( QWidget *parent, const Qt::WindowFlags& fl )
+QgsHelpViewer::QgsHelpViewer( QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );
@@ -112,11 +112,11 @@ void QgsHelpViewer::resizeEvent( QResizeEvent *event )
 void QgsHelpViewer::restorePosition()
 {
   QSettings settings;
-  restoreGeometry( settings.value( "/HelpViewer/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/HelpViewer/geometry" ) ).toByteArray() );
 }
 
 void QgsHelpViewer::saveWindowLocation()
 {
   QSettings settings;
-  settings.setValue( "/HelpViewer/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/HelpViewer/geometry" ), saveGeometry() );
 }

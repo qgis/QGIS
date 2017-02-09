@@ -15,8 +15,8 @@
 
 #include "qgswfsdescribefeaturetype.h"
 
-QgsWFSDescribeFeatureType::QgsWFSDescribeFeatureType( const QString& theUri ) :
-    QgsWFSRequest( theUri )
+QgsWFSDescribeFeatureType::QgsWFSDescribeFeatureType( const QString& theUri )
+    : QgsWfsRequest( theUri )
 {
 }
 
@@ -24,9 +24,9 @@ bool QgsWFSDescribeFeatureType::requestFeatureType( const QString& WFSVersion,
     const QString& typeName )
 {
   QUrl url( baseURL() );
-  url.addQueryItem( "REQUEST", "DescribeFeatureType" );
-  url.addQueryItem( "VERSION", WFSVersion );
-  url.addQueryItem( "TYPENAME", typeName );
+  url.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "DescribeFeatureType" ) );
+  url.addQueryItem( QStringLiteral( "VERSION" ), WFSVersion );
+  url.addQueryItem( QStringLiteral( "TYPENAME" ), typeName );
 
   return sendGET( url, true, false );
 }

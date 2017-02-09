@@ -18,13 +18,16 @@
 #ifndef QGSCOMPOSERARROW_H
 #define QGSCOMPOSERARROW_H
 
+#include "qgis_core.h"
 #include "qgscomposeritem.h"
 #include <QBrush>
 #include <QPen>
 
-class QgsLineSymbolV2;
+class QgsLineSymbol;
 
-/** An item that draws an arrow between to points*/
+/** \ingroup core
+ * An item that draws an arrow between two points.
+*/
 class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
 {
     Q_OBJECT
@@ -52,10 +55,10 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
 
     ~QgsComposerArrow();
 
-    /** Return composer item type. */
+    //! Return composer item type.
     virtual int type() const override { return ComposerArrow; }
 
-    /** \brief Reimplementation of QCanvasItem::paint - draw on canvas */
+    //! \brief Reimplementation of QCanvasItem::paint - draw on canvas
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
     /** Modifies position of start and endpoint and calls QgsComposerItem::setSceneRect
@@ -73,16 +76,6 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      * @see setArrowHeadWidth
      */
     double arrowHeadWidth() const { return mArrowHeadWidth; }
-
-    /** Sets the pen width for drawing the line and arrow head
-     * @deprecated use setArrowHeadOutlineWidth or setLineSymbol instead
-     */
-    Q_DECL_DEPRECATED void setOutlineWidth( double width );
-
-    /** Returns the pen width for drawing the line and arrow head
-     * @deprecated use arrowHeadOutlineWidth or lineSymbol instead
-     */
-    Q_DECL_DEPRECATED double outlineWidth() const;
 
     /** Sets the marker to draw at the start of the line
      * @param svgPath file path for svg marker graphic to draw
@@ -111,16 +104,6 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      * @see startMarker
      */
     QString endMarker() const { return mEndMarkerFile; }
-
-    /** Returns the color for the line and arrow head
-     * @deprecated use arrowHeadOutlineColor, arrowHeadFillColor or lineStyle instead
-     */
-    Q_DECL_DEPRECATED QColor arrowColor() const;
-
-    /** Sets the color for the line and arrow head
-     * @deprecated use setArrowHeadOutlineColor, setArrowHeadFillColor or setLineStyle instead
-     */
-    Q_DECL_DEPRECATED void setArrowColor( const QColor& c );
 
     /** Returns the color used to draw outline around the the arrow head.
      * @returns arrow head outline color
@@ -175,14 +158,14 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      * @see lineSymbol
      * @note added in 2.5
      */
-    void setLineSymbol( QgsLineSymbolV2* symbol );
+    void setLineSymbol( QgsLineSymbol* symbol );
 
     /** Returns the line symbol used for drawing the line portion of the arrow
      * @returns line symbol
      * @see setLineSymbol
      * @note added in 2.5
      */
-    QgsLineSymbolV2* lineSymbol() { return mLineSymbol; }
+    QgsLineSymbol* lineSymbol() { return mLineSymbol; }
 
     /** Returns marker mode, which controls how the arrow endpoints are drawn
      * @returns marker mode
@@ -200,13 +183,13 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      * @param elem is DOM element corresponding to 'Composer' tag
      * @param doc document
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
 
     /** Sets state from DOM document
      * @param itemElem is DOM node corresponding to item tag
      * @param doc is the document to read
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
   private:
 
@@ -228,45 +211,48 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     QPen mPen;
     QBrush mBrush;
 
-    /** Width of the arrow marker in mm. May be specified by the user. The height is automatically adapted*/
+    //! Width of the arrow marker in mm. May be specified by the user. The height is automatically adapted
     double mArrowHeadWidth;
-    /** Height of the arrow marker in mm. Is calculated from arrow marker width and apsect ratio of svg*/
+    //! Height of the arrow marker in mm. Is calculated from arrow marker width and apsect ratio of svg
     double mStartArrowHeadHeight;
     double mStopArrowHeadHeight;
 
-    /** Path to the start marker file*/
+    //! Path to the start marker file
     QString mStartMarkerFile;
-    /** Path to the end marker file*/
+    //! Path to the end marker file
     QString mEndMarkerFile;
-    /** Default marker, no marker or svg marker*/
+    //! Default marker, no marker or svg marker
     MarkerMode mMarkerMode;
 
     double mArrowHeadOutlineWidth;
     QColor mArrowHeadOutlineColor;
     QColor mArrowHeadFillColor;
-    /** Indicates QGIS version to mimic bounding box behaviour for. The line placement changed in version 2.4, so a value
+
+    /** Indicates QGIS version to mimic bounding box behavior for. The line placement changed in version 2.4, so a value
      * of 22 is used to indicate that the line should be drawn using the older placement routine.
      */
-    int mBoundsBehaviour;
+    int mBoundsBehavior;
 
-    QgsLineSymbolV2* mLineSymbol;
+    QgsLineSymbol* mLineSymbol;
 
     /** Adapts the item scene rect to contain the start point, the stop point including the arrow marker and the outline.
      *  Needs to be called whenever the arrow width/height, the outline with or the endpoints are changed
      */
     void adaptItemSceneRect();
-    /** Computes the margin around the line necessary to include the markers */
+    //! Computes the margin around the line necessary to include the markers
     double computeMarkerMargin() const;
-    /** Draws the default marker at the line end*/
+    //! Draws the default marker at the line end
     void drawHardcodedMarker( QPainter* p, MarkerType type );
-    /** Draws a user-defined marker (must be an svg file)*/
+    //! Draws a user-defined marker (must be an svg file)
     void drawSVGMarker( QPainter* p, MarkerType type, const QString& markerPath );
-    /** Apply default graphics settings*/
+    //! Apply default graphics settings
     void init();
+
     /** Creates the default line symbol
      * @note added in QGIS 2.5
      */
     void createDefaultLineSymbol();
+
     /** Draws the arrow line
      * @note added in QGIS 2.5
      */

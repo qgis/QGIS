@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -25,15 +25,15 @@
 //qgis includes...
 // #include <qgisapp.h>
 #include <diagram/qgspiediagram.h>
-#include <qgsdiagramrendererv2.h>
-#include <qgsmaprenderer.h>
+#include <diagram/qgstextdiagram.h>
+#include <qgsdiagramrenderer.h>
 #include <qgsmaplayer.h>
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
-#include <qgsmaplayerregistry.h>
-#include <qgsrendererv2.h>
+#include <qgsrenderer.h>
+#include "qgssinglesymbolrenderer.h"
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 #include "qgspallabeling.h"
@@ -87,21 +87,28 @@ class TestQgsDiagram : public QObject
       QString myPointsFileName = mTestDataDir + "points.shp";
       QFileInfo myPointFileInfo( myPointsFileName );
       mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
-                                         myPointFileInfo.completeBaseName(), "ogr" );
+                                         myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
-      // Register the layer with the registry
-      QgsMapLayerRegistry::instance()->addMapLayer( mPointsLayer );
+      //we don't want to render the points themselves, just the diagrams
+      QgsStringMap symbolProps;
+      symbolProps.insert( "color", "0,0,0,0" );
+      symbolProps.insert( "outline_style", "no" );
+      QgsMarkerSymbol* symbol = QgsMarkerSymbol::createSimple( symbolProps );
+      QgsSingleSymbolRenderer* symbolRenderer = new QgsSingleSymbolRenderer( symbol );
+      mPointsLayer->setRenderer( symbolRenderer );
 
       // Create map composition to draw on
-      mMapSettings->setLayers( QStringList() << mPointsLayer->id() );
+      QgsProject::instance()->addMapLayer( mPointsLayer );
+      mMapSettings->setLayers( QList<QgsMapLayer*>() << mPointsLayer );
 
-      mReport += "<h1>Diagram Tests</h1>\n";
+      mReport += QLatin1String( "<h1>Diagram Tests</h1>\n" );
     }
 
     // will be called after the last testfunction was executed.
     void cleanupTestCase()
     {
       delete mMapSettings;
+      delete mPointsLayer;
 
       QString myReportFile = QDir::tempPath() + "/qgistest.html";
       QFile myFile( myReportFile );
@@ -137,14 +144,14 @@ class TestQgsDiagram : public QObject
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << "\"Pilots\"" << "\"Cabin Crew\"";
+      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
       ds.maxScaleDenominator = -1;
       ds.minScaleDenominator = -1;
       ds.minimumSize = 0;
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsSymbolV2::MM;
+      ds.sizeType = QgsUnitTypes::RenderMillimeters;
       ds.size = QSizeF( 5, 5 );
       ds.angleOffset = 0;
 
@@ -153,7 +160,7 @@ class TestQgsDiagram : public QObject
       dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
       dr->setUpperValue( 10 );
       dr->setUpperSize( QSizeF( 40, 40 ) );
-      dr->setClassificationAttribute( 5 ); // Staff
+      dr->setClassificationField( "Staff" );
       dr->setDiagram( new QgsPieDiagram() );
       dr->setDiagramSettings( ds );
       mPointsLayer->setDiagramRenderer( dr );
@@ -174,14 +181,14 @@ class TestQgsDiagram : public QObject
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << "ln(Pilots + 1)" << "ln(\"Cabin Crew\" + 1)";
+      ds.categoryAttributes = QList<QString>() << QStringLiteral( "ln(Pilots + 1)" ) << QStringLiteral( "ln(\"Cabin Crew\" + 1)" );
       ds.maxScaleDenominator = -1;
       ds.minScaleDenominator = -1;
       ds.minimumSize = 0;
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsSymbolV2::MM;
+      ds.sizeType = QgsUnitTypes::RenderMillimeters;
       ds.size = QSizeF( 5, 5 );
       ds.angleOffset = 0;
 
@@ -191,7 +198,7 @@ class TestQgsDiagram : public QObject
       dr->setUpperValue( 10 );
       dr->setUpperSize( QSizeF( 40, 40 ) );
       dr->setClassificationAttributeIsExpression( true );
-      dr->setClassificationAttributeExpression( "ln(Staff + 1)" );
+      dr->setClassificationAttributeExpression( QStringLiteral( "ln(Staff + 1)" ) );
       dr->setDiagram( new QgsPieDiagram() );
       dr->setDiagramSettings( ds );
 
@@ -208,6 +215,335 @@ class TestQgsDiagram : public QObject
       mPointsLayer->setDiagramRenderer( 0 );
     }
 
+    void testDataDefinedPosition()
+    {
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      ds.categoryColors = QList<QColor>() << col1 << col2;
+      ds.categoryAttributes = QList<QString>() << "\"Pilots\"" << "\"Cabin Crew\"";
+      ds.maxScaleDenominator = -1;
+      ds.minScaleDenominator = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.size = QSizeF( 15, 15 );
+      ds.angleOffset = 0;
+
+      QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
+      dr->setDiagram( new QgsPieDiagram() );
+      dr->setDiagramSettings( ds );
+      mPointsLayer->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( true );
+
+      //Set data defined position
+      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::PositionX, QgsProperty::fromExpression( "$x + -5", true ) );
+      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::PositionY, QgsProperty::fromExpression( "$y + 5", true ) );
+
+      mPointsLayer->setDiagramLayerSettings( dls );
+
+      QVERIFY( imageCheck( "piediagram_datadefined_position" ) );
+    }
+
+    void testDataDefinedOutline()
+    {
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      ds.categoryColors = QList<QColor>() << col1 << col2;
+      ds.categoryAttributes = QList<QString>() << "\"Pilots\"" << "\"Cabin Crew\"";
+      ds.maxScaleDenominator = -1;
+      ds.minScaleDenominator = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.size = QSizeF( 15, 15 );
+      ds.angleOffset = 0;
+
+      QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
+      dr->setDiagram( new QgsPieDiagram() );
+      dr->setDiagramSettings( ds );
+      mPointsLayer->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( true );
+
+      //setup data defined outline
+      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::OutlineColor, QgsProperty::fromExpression( "if(\"Pilots\">1,'0,0,0,255','255,0,0,255')", true ) );
+      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::OutlineWidth, QgsProperty::fromExpression( "\"Staff\" / 2.0", true ) );
+
+      mPointsLayer->setDiagramLayerSettings( dls );
+
+      QVERIFY( imageCheck( "piediagram_datadefined_outline" ) );
+    }
+
+    void testDataDefinedStartAngle()
+    {
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      ds.categoryColors = QList<QColor>() << col1 << col2;
+      ds.categoryAttributes = QList<QString>() << "\"Pilots\"" << "\"Cabin Crew\"";
+      ds.maxScaleDenominator = -1;
+      ds.minScaleDenominator = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.size = QSizeF( 15, 15 );
+      ds.angleOffset = 0;
+
+      QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
+      dr->setDiagram( new QgsPieDiagram() );
+      dr->setDiagramSettings( ds );
+      mPointsLayer->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( true );
+
+      //setup data defined start angle
+      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::StartAngle, QgsProperty::fromExpression( "\"Importance\"/20.0 * 360.0", true ) );
+
+      mPointsLayer->setDiagramLayerSettings( dls );
+
+      QVERIFY( imageCheck( "piediagram_datadefined_startangle" ) );
+    }
+
+    void testDataDefinedDistance()
+    {
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      ds.categoryColors = QList<QColor>() << col1 << col2;
+      ds.categoryAttributes = QList<QString>() << "\"Pilots\"" << "\"Cabin Crew\"";
+      ds.maxScaleDenominator = -1;
+      ds.minScaleDenominator = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.size = QSizeF( 15, 15 );
+      ds.angleOffset = 0;
+
+      QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
+      dr->setDiagram( new QgsPieDiagram() );
+      dr->setDiagramSettings( ds );
+      mPointsLayer->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::AroundPoint );
+      dls.setShowAllDiagrams( true );
+
+      //setup data defined distance
+      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::Distance, QgsProperty::fromExpression( "\"Staff\"*2", true ) );
+
+      mPointsLayer->setDiagramLayerSettings( dls );
+
+      QVERIFY( imageCheck( "piediagram_datadefined_distance" ) );
+    }
+
+    void testDataDefinedShow()
+    {
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      ds.categoryColors = QList<QColor>() << col1 << col2;
+      ds.categoryAttributes = QList<QString>() << "\"Pilots\"" << "\"Cabin Crew\"";
+      ds.maxScaleDenominator = -1;
+      ds.minScaleDenominator = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.size = QSizeF( 15, 15 );
+      ds.angleOffset = 0;
+
+      QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
+      dr->setDiagram( new QgsPieDiagram() );
+      dr->setDiagramSettings( ds );
+      mPointsLayer->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( true );
+
+      //setup data defined show
+      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::Show, QgsProperty::fromExpression( "\"Pilots\"=1", true ) );
+
+      mPointsLayer->setDiagramLayerSettings( dls );
+
+      QVERIFY( imageCheck( "piediagram_datadefined_show" ) );
+    }
+
+    void testDataDefinedPriority()
+    {
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      ds.categoryColors = QList<QColor>() << col1 << col2;
+      ds.categoryAttributes = QList<QString>() << "\"Pilots\"" << "\"Cabin Crew\"";
+      ds.maxScaleDenominator = -1;
+      ds.minScaleDenominator = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.size = QSizeF( 50, 50 );
+      ds.angleOffset = 0;
+
+      QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
+      dr->setDiagram( new QgsPieDiagram() );
+      dr->setDiagramSettings( ds );
+      mPointsLayer->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( false );
+
+      //setup data defined priority
+      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::Priority, QgsProperty::fromExpression( "\"importance\"/2", true ) );
+
+      mPointsLayer->setDiagramLayerSettings( dls );
+
+      QVERIFY( imageCheck( "piediagram_datadefined_priority" ) );
+    }
+
+    void testDataDefinedZIndex()
+    {
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      ds.categoryColors = QList<QColor>() << col1 << col2;
+      ds.categoryAttributes = QList<QString>() << "\"Pilots\"" << "\"Cabin Crew\"";
+      ds.maxScaleDenominator = -1;
+      ds.minScaleDenominator = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.size = QSizeF( 50, 50 );
+      ds.angleOffset = 0;
+
+      QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
+      dr->setDiagram( new QgsPieDiagram() );
+      dr->setDiagramSettings( ds );
+      mPointsLayer->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( true );
+
+      //setup data defined z index
+      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::ZIndex, QgsProperty::fromExpression( "\"importance\"/2", true ) );
+
+      mPointsLayer->setDiagramLayerSettings( dls );
+
+      QVERIFY( imageCheck( "piediagram_datadefined_zindex" ) );
+    }
+
+    void testDataDefinedAlwaysShow()
+    {
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      ds.categoryColors = QList<QColor>() << col1 << col2;
+      ds.categoryAttributes = QList<QString>() << "\"Pilots\"" << "\"Cabin Crew\"";
+      ds.maxScaleDenominator = -1;
+      ds.minScaleDenominator = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.size = QSizeF( 50, 50 );
+      ds.angleOffset = 0;
+
+      QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
+      dr->setDiagram( new QgsPieDiagram() );
+      dr->setDiagramSettings( ds );
+      mPointsLayer->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( false );
+
+      //setup data defined priority (required to only show certain diagrams)
+      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::Priority, QgsProperty::fromExpression( "\"importance\"/2", true ) );
+      //setup data defined "always show"
+      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::AlwaysShow, QgsProperty::fromExpression( "\"Staff\">=6", true ) );
+
+
+      mPointsLayer->setDiagramLayerSettings( dls );
+
+      QVERIFY( imageCheck( "piediagram_datadefined_alwaysshow" ) );
+    }
+
+
+    void testDataDefinedBackgroundColor()
+    {
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      //hide the text so we are just testing the background color
+      col1.setAlphaF( 0 );
+      col2.setAlphaF( 0 );
+      ds.categoryColors = QList<QColor>() << col1 << col2;
+      ds.categoryAttributes = QList<QString>() << "\"Pilots\"" << "\"Cabin Crew\"";
+      ds.maxScaleDenominator = -1;
+      ds.minScaleDenominator = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.size = QSizeF( 15, 15 );
+      ds.angleOffset = 0;
+
+      QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
+      dr->setDiagram( new QgsTextDiagram() );
+      dr->setDiagramSettings( ds );
+      mPointsLayer->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( true );
+
+      //setup data defined outline
+      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::BackgroundColor, QgsProperty::fromExpression( "if(\"Pilots\">1,'0,0,255,150','255,0,0,150')", true ) );
+
+      mPointsLayer->setDiagramLayerSettings( dls );
+
+      QVERIFY( imageCheck( "textdiagram_datadefined_background" ) );
+    }
+
 };
 
 bool TestQgsDiagram::imageCheck( const QString& theTestType )
@@ -219,14 +555,15 @@ bool TestQgsDiagram::imageCheck( const QString& theTestType )
   mMapSettings->setExtent( extent );
   mMapSettings->setFlag( QgsMapSettings::ForceVectorOutput );
   mMapSettings->setOutputDpi( 96 );
-  QgsMultiRenderChecker myChecker;
-  myChecker.setControlName( "expected_" + theTestType );
-  myChecker.setMapSettings( *mMapSettings );
-  myChecker.setColorTolerance( 15 );
-  bool myResultFlag = myChecker.runTest( theTestType, 200 );
-  mReport += myChecker.report();
-  return myResultFlag;
+  QgsMultiRenderChecker checker;
+  checker.setControlPathPrefix( "diagrams" );
+  checker.setControlName( "expected_" + theTestType );
+  checker.setMapSettings( *mMapSettings );
+  checker.setColorTolerance( 15 );
+  bool resultFlag = checker.runTest( theTestType, 200 );
+  mReport += checker.report();
+  return resultFlag;
 }
 
-QTEST_MAIN( TestQgsDiagram )
+QGSTEST_MAIN( TestQgsDiagram )
 #include "testqgsdiagram.moc"

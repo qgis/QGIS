@@ -17,7 +17,7 @@ import qgis  # NOQA
 import os
 import glob
 
-from PyQt.QtCore import QTemporaryFile, QDir
+from qgis.PyQt.QtCore import QTemporaryFile, QDir
 from qgis.core import (QgsRasterLayer,
                        QgsRasterChecker,
                        QgsRasterPipe,
@@ -61,7 +61,7 @@ class TestQgsRasterFileWriter(unittest.TestCase):
             return False
 
         projector = QgsRasterProjector()
-        projector.setCRS(provider.crs(), provider.crs())
+        projector.setCrs(provider.crs(), provider.crs())
         if not pipe.insert(2, projector):
             print("Cannot set pipe projector")
             return False

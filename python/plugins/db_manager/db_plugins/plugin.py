@@ -19,10 +19,12 @@ email                : brush.tyler@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
+from builtins import range
 
-from PyQt.QtCore import Qt, QObject, QSettings, pyqtSignal
-from PyQt.QtWidgets import QApplication, QAction, QMenu, QInputDialog, QMessageBox
-from PyQt.QtGui import QKeySequence, QIcon
+from qgis.PyQt.QtCore import Qt, QObject, QSettings, pyqtSignal
+from qgis.PyQt.QtWidgets import QApplication, QAction, QMenu, QInputDialog, QMessageBox
+from qgis.PyQt.QtGui import QKeySequence, QIcon
 
 from qgis.gui import QgsMessageBar
 from ..db_plugins import createDbPlugin
@@ -38,8 +40,8 @@ class BaseError(Exception):
         else:
             msg = e
 
-        if not isinstance(msg, unicode):
-            msg = unicode(msg, 'utf-8', 'replace')  # convert from utf8 and replace errors (if any)
+        if not isinstance(msg, str):
+            msg = str(msg, 'utf-8', 'replace')  # convert from utf8 and replace errors (if any)
 
         self.msg = msg
         Exception.__init__(self, msg)
@@ -48,7 +50,7 @@ class BaseError(Exception):
         return self.msg
 
     def __str__(self):
-        return unicode(self).encode('utf-8')
+        return str(self).encode('utf-8')
 
 
 class InvalidDataException(BaseError):
@@ -63,7 +65,7 @@ class DbError(BaseError):
 
     def __init__(self, e, query=None):
         BaseError.__init__(self, e)
-        self.query = unicode(query) if query is not None else None
+        self.query = str(query) if query is not None else None
 
     def __unicode__(self):
         if self.query is None:
@@ -422,7 +424,7 @@ class Database(DbItemObject):
         QApplication.restoreOverrideCursor()
         try:
             if not isinstance(item, Table) or item.isView:
-                parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Select a table for editation."),
+                parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Select a table to edit."),
                                            QgsMessageBar.INFO, parent.iface.messageTimeout())
                 return
             from ..dlg_table_properties import DlgTableProperties
@@ -550,6 +552,9 @@ class Database(DbItemObject):
     def spatialIndexClause(self, src_table, src_column, dest_table, dest_table_column):
         return None
 
+    def hasLowercaseFieldNamesOption(self):
+        return False
+
 
 class Schema(DbItemObject):
 
@@ -593,7 +598,7 @@ class Schema(DbItemObject):
 
 
 class Table(DbItemObject):
-    TableType, VectorType, RasterType = range(3)
+    TableType, VectorType, RasterType = list(range(3))
 
     def __init__(self, db, schema=None, parent=None):
         DbItemObject.__init__(self, db)
@@ -670,7 +675,7 @@ class Table(DbItemObject):
         uri = self.database().uri()
         schema = self.schemaName() if self.schemaName() else ''
         geomCol = self.geomColumn if self.type in [Table.VectorType, Table.RasterType] else ""
-        uniqueCol = self.getValidQGisUniqueFields(True) if self.isView else None
+        uniqueCol = self.getValidQgisUniqueFields(True) if self.isView else None
         uri.setDataSource(schema, self.name, geomCol if geomCol else None, None, uniqueCol.name if uniqueCol else "")
         return uri
 
@@ -687,9 +692,9 @@ class Table(DbItemObject):
             return QgsRasterLayer(uri, self.name, provider)
         return QgsVectorLayer(uri, self.name, provider)
 
-    def getValidQGisUniqueFields(self, onlyOne=False):
-        """ list of fields valid to load the table as layer in QGis canvas.
-                QGis automatically search for a valid unique field, so it's
+    def getValidQgisUniqueFields(self, onlyOne=False):
+        """ list of fields valid to load the table as layer in Qgis canvas.
+                Qgis automatically search for a valid unique field, so it's
                 needed only for queries and views """
 
         ret = []
@@ -870,7 +875,7 @@ class Table(DbItemObject):
             self.refresh()
 
     def runAction(self, action):
-        action = unicode(action)
+        action = str(action)
 
         if action.startswith("rows/"):
             if action == "rows/count":
@@ -992,7 +997,7 @@ class VectorTable(Table):
             self.refresh()
 
     def runAction(self, action):
-        action = unicode(action)
+        action = str(action)
 
         if action.startswith("spatialindex/"):
             parts = action.split('/')
@@ -1091,7 +1096,7 @@ class TableField(TableSubItemObject):
         return self.update(new_name)
 
     def update(self, new_name, new_type_str=None, new_not_null=None, new_default_str=None):
-        self.table().aboutToChange()
+        self.table().aboutToChange.emit()
         if self.name == new_name:
             new_name = None
         if self.type2String() == new_type_str:
@@ -1113,7 +1118,7 @@ class TableConstraint(TableSubItemObject):
 
     """ class that represents a constraint of a table (relation) """
 
-    TypeCheck, TypeForeignKey, TypePrimaryKey, TypeUnique, TypeExclusion, TypeUnknown = range(6)
+    TypeCheck, TypeForeignKey, TypePrimaryKey, TypeUnique, TypeExclusion, TypeUnknown = list(range(6))
     types = {"c": TypeCheck, "f": TypeForeignKey, "p": TypePrimaryKey, "u": TypeUnique, "x": TypeExclusion}
 
     onAction = {"a": "NO ACTION", "r": "RESTRICT", "c": "CASCADE", "n": "SET NULL", "d": "SET DEFAULT"}

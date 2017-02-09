@@ -18,6 +18,7 @@
 #ifndef QGSDB2FEATUREITERATOR_H
 #define QGSDB2FEATUREITERATOR_H
 
+#include "qgsfields.h"
 #include "qgsfeatureiterator.h"
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
@@ -65,19 +66,13 @@ class QgsDb2FeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsDb2
 
     ~QgsDb2FeatureIterator();
 
-    //! reset the iterator to the starting position
     virtual bool rewind() override;
-
-    //! end of iterating: free the resources / lock
     virtual bool close() override;
 
   protected:
     void BuildStatement( const QgsFeatureRequest& request );
 
-    //! fetch next feature, return true on success
     virtual bool fetchFeature( QgsFeature& feature ) override;
-
-    //! fetch next feature filter expression
     bool nextFeatureFilterExpression( QgsFeature& f ) override;
 
   private:

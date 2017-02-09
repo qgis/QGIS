@@ -21,6 +21,7 @@ class QgsMapRendererCustomPainterJob : QgsMapRendererJob
     virtual void cancel();
     virtual void waitForFinished();
     virtual bool isActive() const;
+    virtual bool usedCachedLabels() const;
     virtual QgsLabelingResults* takeLabelingResults() /Transfer/;
 
     //! @note not available in python bindings
@@ -38,7 +39,7 @@ class QgsMapRendererCustomPainterJob : QgsMapRendererJob
      * Ideally the "wait for finished" method should not be used at all. The code triggering
      * rendering should not need to actively wait for rendering to finish.
      */
-    void waitForFinishedWithEventLoop( const QEventLoop::ProcessEventsFlags& flags = QEventLoop::AllEvents );
+    void waitForFinishedWithEventLoop( QEventLoop::ProcessEventsFlags flags = QEventLoop::AllEvents );
 
     /**
      * Render the map synchronously in this thread. The function does not return until the map
@@ -51,12 +52,4 @@ class QgsMapRendererCustomPainterJob : QgsMapRendererJob
      */
     void renderSynchronously();
 
-  protected slots:
-    void futureFinished();
-
-  protected:
-    static void staticRender( QgsMapRendererCustomPainterJob* self ); // function to be used within the thread
-
-    // these methods are called within worker thread
-    void doRender();
 };

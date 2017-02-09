@@ -30,7 +30,10 @@
 #include "qgslogger.h"
 
 QgsRectangle::QgsRectangle( double newxmin, double newymin, double newxmax, double newymax )
-    : xmin( newxmin ), ymin( newymin ), xmax( newxmax ), ymax( newymax )
+    : xmin( newxmin )
+    , ymin( newymin )
+    , xmax( newxmax )
+    , ymax( newymax )
 {
   normalize();
 }
@@ -191,26 +194,33 @@ bool QgsRectangle::contains( const QgsPoint &p ) const
          ymin <= p.y() && p.y() <= ymax;
 }
 
-void QgsRectangle::combineExtentWith( QgsRectangle * rect )
+void QgsRectangle::combineExtentWith( const QgsRectangle &rect )
 {
+  if ( isNull() )
+    *this = rect;
+  else
+  {
+    xmin = (( xmin < rect.xMinimum() ) ? xmin : rect.xMinimum() );
+    xmax = (( xmax > rect.xMaximum() ) ? xmax : rect.xMaximum() );
 
-  xmin = (( xmin < rect->xMinimum() ) ? xmin : rect->xMinimum() );
-  xmax = (( xmax > rect->xMaximum() ) ? xmax : rect->xMaximum() );
-
-  ymin = (( ymin < rect->yMinimum() ) ? ymin : rect->yMinimum() );
-  ymax = (( ymax > rect->yMaximum() ) ? ymax : rect->yMaximum() );
+    ymin = (( ymin < rect.yMinimum() ) ? ymin : rect.yMinimum() );
+    ymax = (( ymax > rect.yMaximum() ) ? ymax : rect.yMaximum() );
+  }
 
 }
 
 void QgsRectangle::combineExtentWith( double x, double y )
 {
+  if ( isNull() )
+    *this = QgsRectangle( x, y, x, y );
+  else
+  {
+    xmin = (( xmin < x ) ? xmin : x );
+    xmax = (( xmax > x ) ? xmax : x );
 
-  xmin = (( xmin < x ) ? xmin : x );
-  xmax = (( xmax > x ) ? xmax : x );
-
-  ymin = (( ymin < y ) ? ymin : y );
-  ymax = (( ymax > y ) ? ymax : y );
-
+    ymin = (( ymin < y ) ? ymin : y );
+    ymax = (( ymax > y ) ? ymax : y );
+  }
 }
 
 bool QgsRectangle::isEmpty() const
@@ -238,13 +248,13 @@ QString QgsRectangle::asWktCoordinates() const
 QString QgsRectangle::asWktPolygon() const
 {
   QString rep =
-    QString( "POLYGON((" ) +
+    QStringLiteral( "POLYGON((" ) +
     qgsDoubleToString( xmin ) + ' ' + qgsDoubleToString( ymin ) + ", " +
     qgsDoubleToString( xmax ) + ' ' + qgsDoubleToString( ymin ) + ", " +
     qgsDoubleToString( xmax ) + ' ' + qgsDoubleToString( ymax ) + ", " +
     qgsDoubleToString( xmin ) + ' ' + qgsDoubleToString( ymax ) + ", " +
     qgsDoubleToString( xmin ) + ' ' + qgsDoubleToString( ymin ) +
-    QString( "))" );
+    QStringLiteral( "))" );
 
   return rep;
 }
@@ -280,9 +290,9 @@ QString QgsRectangle::toString( int thePrecision ) const
 {
   QString rep;
   if ( isEmpty() )
-    rep = "Empty";
+    rep = QStringLiteral( "Empty" );
   else
-    rep = QString( "%1,%2 : %3,%4" )
+    rep = QStringLiteral( "%1,%2 : %3,%4" )
           .arg( xmin, 0, 'f', thePrecision )
           .arg( ymin, 0, 'f', thePrecision )
           .arg( xmax, 0, 'f', thePrecision )

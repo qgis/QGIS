@@ -25,7 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import QgsField, QgsFeature
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -56,7 +56,7 @@ class AddTableField(GeoAlgorithm):
                            self.tr('String')]
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterString(self.FIELD_NAME,
                                           self.tr('Field name')))
         self.addParameter(ParameterSelection(self.FIELD_TYPE,
@@ -68,7 +68,7 @@ class AddTableField(GeoAlgorithm):
         self.addOutput(OutputVector(
             self.OUTPUT_LAYER, self.tr('Added')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         fieldType = self.getParameterValue(self.FIELD_TYPE)
         fieldName = self.getParameterValue(self.FIELD_NAME)
         fieldLength = self.getParameterValue(self.FIELD_LENGTH)
@@ -78,17 +78,16 @@ class AddTableField(GeoAlgorithm):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
 
-        provider = layer.dataProvider()
-        fields = provider.fields()
+        fields = layer.fields()
         fields.append(QgsField(fieldName, self.TYPES[fieldType], '',
                                fieldLength, fieldPrecision))
-        writer = output.getVectorWriter(fields, provider.geometryType(),
+        writer = output.getVectorWriter(fields, layer.wkbType(),
                                         layer.crs())
         outFeat = QgsFeature()
         features = vector.features(layer)
         total = 100.0 / len(features)
         for current, feat in enumerate(features):
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
             geom = feat.geometry()
             outFeat.setGeometry(geom)
             atMap = feat.attributes()

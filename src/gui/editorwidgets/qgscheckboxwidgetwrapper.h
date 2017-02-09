@@ -20,8 +20,9 @@
 
 #include <QCheckBox>
 #include <QGroupBox>
+#include "qgis_gui.h"
 
-/**
+/** \ingroup gui
  * Wraps a checkbox widget. This will offer a checkbox to represent boolean values.
  *
  * Options:

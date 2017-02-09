@@ -71,7 +71,7 @@ class QgsTransformEffect : QgsPaintEffect
      * @see setTranslateY
      * @see setTranslateMapUnitScale
      */
-    void setTranslateUnit( const QgsSymbolV2::OutputUnit unit );
+    void setTranslateUnit( const QgsUnitTypes::RenderUnit unit );
 
     /** Returns the units used for the transform translation.
      * @returns units for translation
@@ -80,7 +80,7 @@ class QgsTransformEffect : QgsPaintEffect
      * @see translateY
      * @see translateMapUnitScale
      */
-    QgsSymbolV2::OutputUnit translateUnit() const;
+    QgsUnitTypes::RenderUnit translateUnit() const;
 
     /** Sets the map unit scale used for the transform translation.
      * @param scale map unit scale for translation

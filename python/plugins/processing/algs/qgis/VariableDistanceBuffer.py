@@ -27,9 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QGis
+from qgis.core import Qgis, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -59,7 +59,7 @@ class VariableDistanceBuffer(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Distance field'), self.INPUT))
         self.addParameter(ParameterNumber(self.SEGMENTS,
@@ -67,16 +67,16 @@ class VariableDistanceBuffer(GeoAlgorithm):
         self.addParameter(ParameterBoolean(self.DISSOLVE,
                                            self.tr('Dissolve result'), False))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Buffer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Buffer'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         dissolve = self.getParameterValue(self.DISSOLVE)
         field = self.getParameterValue(self.FIELD)
         segments = int(self.getParameterValue(self.SEGMENTS))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields().toList(), QGis.WKBPolygon, layer.crs())
+            layer.fields().toList(), QgsWkbTypes.Polygon, layer.crs())
 
-        buff.buffering(progress, writer, 0, field, True, layer, dissolve,
+        buff.buffering(feedback, writer, 0, field, True, layer, dissolve,
                        segments)

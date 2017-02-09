@@ -38,6 +38,7 @@
                     <grass name="r.in.gdal"/>
                     <grass name="r.in.gdal.loc"/>
                     <grass name="r.in.xyz"/>
+                    <grass name="r.in.lidar" version_min="7"/>
                     <grass name="r.in.ascii"/>
                     <grass name="r.in.poly"/>
                     <grass name="r.in.bin"/>
@@ -48,6 +49,7 @@
                     <grass name="r.in.srtm"/>
                     <grass name="r.in.aster"/>
                     <grass name="r.in.wms"/>
+                    <grass name="r.unpack" version_min="7"/>
                 </section>
             </section>
             <section label="Import vector into GRASS">
@@ -56,6 +58,7 @@
                 <grass name="v.in.ogr.loc"/>
                 <grass name="v.in.ogr.all"/>
                 <grass name="v.in.ogr.all.loc"/>
+                <grass name="v.in.lidar" version_min="7"/>
                 <grass name="v.in.dxf"/>
                 <grass name="v.in.e00"/>
                 <grass name="v.in.ascii"/>
@@ -65,6 +68,7 @@
                 <grass name="v.in.gpsbabel" version_max="6.4"/>
                 <grass name="v.in.geonames" version_min="6.4"/>
                 <grass name="v.in.gns" version_max="6.4"/>
+                <grass name="v.unpack" version_min="7"/>
             </section>
             <section label="Import from database into GRASS">
                 <grass name="db.in.ogr"/>
@@ -91,6 +95,7 @@
                 <grass name="r.out.tiff" version_max="6.4"/>
                 <grass name="r.out.vrml"/>
                 <grass name="r.out.vtk"/>
+				<grass name="r.pack" version_min="7"/>
             </section>
             <section label="Export vector from GRASS">
                 <grass name="v.out.ogr"/>
@@ -102,6 +107,7 @@
                 <grass name="v.out.pov"/>
                 <grass name="v.out.svg"/>
                 <grass name="v.out.vtk"/>
+				<grass name="v.pack" version_min="7"/>
             </section>
             <section label="Export vector table from GRASS to database format">
                 <grass name="db.out.ogr" version_min="6.4"/>
@@ -174,6 +180,7 @@
             <grass name="r.colors.rast"/>
             <grass name="r.colors.stddev" version_min="6.4"/>
             <grass name="r.blend"/>
+            <grass name="r.shade" version_min="7"/>
             <grass name="r.composite"/>
             <grass name="r.his"/>
         </section>
@@ -199,6 +206,8 @@
                 <grass name="r.series"/>
                 <grass name="r.patch"/>
                 <grass name="r.statistics"/>
+                <grass name="r.stats.zonal" version_min="7"/>
+                <grass name="r.stats.quantile" version_min="7"/>
             </section>
             <section label="Solar and irradiation model">
                 <grass name="r.sunmask.position"/>
@@ -262,6 +271,8 @@
                 <grass name="r.surf.gauss"/>
                 <grass name="r.plane"/>
                 <grass name="r.surf.random"/>
+                <grass name="r.latitude"/>
+                <grass name="r.longitude"/>
             </section>
             <section label="Generate vector contour lines">
                 <grass name="r.contour"/>
@@ -295,7 +306,8 @@
                 <grass name="r.univar"/>
                 <grass name="r.covar"/>
                 <grass name="r.regression.line"/>
-                <grass name="r.coin"/>
+				<grass name="r.regression.multi" version_min="7"/>
+				<grass name="r.coin"/>
                 <grass name="r.distance"/>
             </section>
         </section>
@@ -405,6 +417,7 @@
             <section label="Reclass category values">
                 <grass name="v.reclass.file"/>
                 <grass name="v.reclass.attr"/>
+                <grass name="v.class.mlpy.qgis" version_min="7.0" />
             </section>
         </section>
         <section label="Work with vector points">
@@ -446,6 +459,7 @@
 
     <section label="Imagery">
         <section label="Develop images and group">
+            <grass name="i.group"/>
             <grass name="i.image.mosaic"/>
         </section>
         <section label="Manage image colors">
@@ -460,14 +474,18 @@
             <grass name="i.zc"/>
             <grass name="r.mfilter"/>
         </section>
-        <section label="Tassled cap vegetation index">
+        <section label="Vegetation indices">
+            <grass name="i.albedo" version_min="7"/>
+            <grass name="i.biomass" version_min="7"/>
             <grass name="i.tasscap4"/>
             <grass name="i.tasscap5"/>
             <grass name="i.tasscap7"/>
             <grass name="i.tasscap8" version_min="7.0"/>
             <grass name="i.tasscap.modis" version_min="7.0"/>
+            <grass name="i.vi" version_min="7.0"/>
         </section>
         <section label="Transform image">
+            <grass name="i.segment" version_min="7"/>
             <grass name="i.fft"/>
             <grass name="i.ifft"/>
         </section>
@@ -532,6 +550,12 @@
         </section>
         <section label="Sampling" version_min="7.0">
             <grass name="t.sample" version_min="7.0"/>
+            <grass name="t.rast.what.coordinates.qgis" version_min="7.0" version_max="7.0"/>
+            <grass name="t.rast.what.coordinates" version_min="7.1"/>
+            <grass name="t.rast.what.file.qgis" version_min="7.0" version_max="7.0"/>
+            <grass name="t.rast.what.file" version_min="7.1"/>
+            <grass name="t.rast.what.points.qgis" version_min="7.0" version_max="7.0"/>
+            <grass name="t.rast.what.points" version_min="7.1"/>
             <grass name="t.vect.what.strds" version_min="7.0"/>
             <grass name="t.vect.observe.strds" version_min="7.0"/>
         </section>

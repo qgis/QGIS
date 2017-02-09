@@ -20,12 +20,14 @@
 #include "qgsoptionsdialogbase.h"
 #include "ui_qgsprojectpropertiesbase.h"
 #include "qgis.h"
+#include "qgsunittypes.h"
 #include "qgisgui.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
+#include "qgis_app.h"
 
 class QgsMapCanvas;
 class QgsRelationManagerDialog;
-class QgsStyleV2;
+class QgsStyle;
 class QgsExpressionContext;
 class QgsLayerTreeGroup;
 
@@ -42,17 +44,17 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     //! Constructor
     QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
-    //! Destructor
+
     ~QgsProjectProperties();
 
     /** Gets the currently select map units
      */
-    QGis::UnitType mapUnits() const;
+    QgsUnitTypes::DistanceUnit mapUnits() const;
 
     /*!
      * Set the map units
      */
-    void setMapUnits( QGis::UnitType );
+    void setMapUnits( QgsUnitTypes::DistanceUnit );
 
     /*!
        Every project has a title
@@ -60,10 +62,10 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     QString title() const;
     void title( QString const & title );
 
-    /** Accessor for projection */
+    //! Accessor for projection
     QString projectionWkt();
 
-    /** Indicates that the projection switch is on */
+    //! Indicates that the projection switch is on
     bool isProjected();
 
   public slots:
@@ -85,13 +87,13 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
      * used in scale combobox instead of global ones */
     void on_pbnRemoveScale_clicked();
 
-    /** Let the user load scales from file */
+    //! Let the user load scales from file
     void on_pbnImportScales_clicked();
 
-    /** Let the user load scales from file */
+    //! Let the user load scales from file
     void on_pbnExportScales_clicked();
 
-    /** A scale in the list of project scales changed */
+    //! A scale in the list of project scales changed
     void scaleItemChanged( QListWidgetItem* changedScaleItem );
 
     /*!
@@ -112,13 +114,13 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
      * Slots to select/deselect all the WFS layers
      */
     void on_pbnWFSLayersSelectAll_clicked();
-    void on_pbnWFSLayersUnselectAll_clicked();
+    void on_pbnWFSLayersDeselectAll_clicked();
 
     /*!
      * Slots to select/deselect all the WCS layers
      */
     void on_pbnWCSLayersSelectAll_clicked();
-    void on_pbnWCSLayersUnselectAll_clicked();
+    void on_pbnWCSLayersDeselectAll_clicked();
 
     /*!
      * Slots to launch OWS test
@@ -139,7 +141,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     /*!
      * Slot to show the context help for this dialog
      */
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "introduction/qgis_configuration.html#project-properties" ) ); }
 
     void on_cbxProjectionEnabled_toggled( bool onFlyEnabled );
 
@@ -166,14 +168,12 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void projectionSelectorInitialized();
 
     void on_mButtonAddColor_clicked();
-    void on_mButtonImportColors_clicked();
-    void on_mButtonExportColors_clicked();
 
   signals:
     //! Signal used to inform listeners that the mouse display precision may have changed
     void displayPrecisionChanged();
 
-    //! Signal used to inform listeners that project scale list may have chnaged
+    //! Signal used to inform listeners that project scale list may have changed
     void scalesChanged( const QStringList &scales = QStringList() );
 
     //! let listening canvases know to refresh
@@ -184,15 +184,15 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     //! Formats for displaying coordinates
     enum CoordinateFormat
     {
-      DecimalDegrees, /*!< Decimal degrees */
-      DegreesMinutes, /*!< Degrees, decimal minutes */
-      DegreesMinutesSeconds, /*!< Degrees, minutes, seconds */
-      MapUnits, /*! Show coordinates in map units */
+      DecimalDegrees, //!< Decimal degrees
+      DegreesMinutes, //!< Degrees, decimal minutes
+      DegreesMinutesSeconds, //!< Degrees, minutes, seconds
+      MapUnits, //! Show coordinates in map units
     };
 
     QgsRelationManagerDialog *mRelationManagerDlg;
     QgsMapCanvas* mMapCanvas;
-    QgsStyleV2* mStyle;
+    QgsStyle* mStyle;
 
     void populateStyles();
     void editSymbol( QComboBox* cbo );
@@ -240,5 +240,5 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     static const char * GEO_NONE_DESC;
 
-    void updateGuiForMapUnits( QGis::UnitType units );
+    void updateGuiForMapUnits( QgsUnitTypes::DistanceUnit units );
 };

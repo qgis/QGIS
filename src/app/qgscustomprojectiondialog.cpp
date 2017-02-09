@@ -49,10 +49,8 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
   setupUi( this );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/CustomProjection/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/CustomProjection/geometry" ) ).toByteArray() );
 
-  pbnAdd->setIcon( QgsApplication::getThemeIcon( "symbologyAdd.svg" ) );
-  pbnRemove->setIcon( QgsApplication::getThemeIcon( "symbologyRemove.svg" ) );
   // user database is created at QGIS startup in QgisApp::createDB
   // we just check whether there is our database [MD]
   QFileInfo myFileInfo;
@@ -70,14 +68,14 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
     leNameList->setCurrentItem( leNameList->topLevelItem( 0 ) );
   }
 
-  leNameList->hideColumn( QGIS_CRS_ID_COLUMN );
+  leNameList->hideColumn( QgisCrsIdColumn );
 
 }
 
 QgsCustomProjectionDialog::~QgsCustomProjectionDialog()
 {
   QSettings settings;
-  settings.setValue( "/Windows/CustomProjection/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/CustomProjection/geometry" ), saveGeometry() );
 }
 
 
@@ -97,7 +95,7 @@ void QgsCustomProjectionDialog::populateList()
     //     database if it does not exist.
     Q_ASSERT( myResult == SQLITE_OK );
   }
-  QString mySql = "select srs_id,description,parameters from tbl_srs";
+  QString mySql = QStringLiteral( "select srs_id,description,parameters from tbl_srs" );
   QgsDebugMsg( QString( "Query to populate existing list:%1" ).arg( mySql ) );
   myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
   // XXX Need to free memory from the error msg if one is set
@@ -117,9 +115,9 @@ void QgsCustomProjectionDialog::populateList()
       existingCRSparameters[id] = crs.toProj4();
 
       newItem = new QTreeWidgetItem( leNameList, QStringList() );
-      newItem->setText( QGIS_CRS_NAME_COLUMN, name );
-      newItem->setText( QGIS_CRS_ID_COLUMN, id );
-      newItem->setText( QGIS_CRS_PARAMETERS_COLUMN, crs.toProj4() );
+      newItem->setText( QgisCrsNameColumn, name );
+      newItem->setText( QgisCrsIdColumn, id );
+      newItem->setText( QgisCrsParametersColumn, crs.toProj4() );
     }
   }
   else
@@ -129,12 +127,12 @@ void QgsCustomProjectionDialog::populateList()
   sqlite3_finalize( myPreparedStatement );
   sqlite3_close( myDatabase );
 
-  leNameList->sortByColumn( QGIS_CRS_NAME_COLUMN, Qt::AscendingOrder );
+  leNameList->sortByColumn( QgisCrsNameColumn, Qt::AscendingOrder );
 
   QTreeWidgetItemIterator it( leNameList );
   while ( *it )
   {
-    QString id = ( *it )->text( QGIS_CRS_ID_COLUMN );
+    QString id = ( *it )->text( QgisCrsIdColumn );
     customCRSids.push_back( id );
     customCRSnames.push_back( existingCRSnames[id] );
     customCRSparameters.push_back( existingCRSparameters[id] );
@@ -142,7 +140,7 @@ void QgsCustomProjectionDialog::populateList()
   }
 }
 
-bool  QgsCustomProjectionDialog::deleteCRS( const QString& id )
+bool  QgsCustomProjectionDialog::deleteCrs( const QString& id )
 {
   sqlite3      *myDatabase;
   const char   *myTail;
@@ -168,7 +166,8 @@ bool  QgsCustomProjectionDialog::deleteCRS( const QString& id )
   }
   sqlite3_close( myDatabase );
 
-  QgsCRSCache::instance()->updateCRSCache( QString( "USER:%1" ).arg( id ) );
+  QgsCoordinateReferenceSystem::invalidateCache();
+  QgsCoordinateTransformCache::instance()->invalidateCrs( QStringLiteral( "USER:%1" ).arg( id ) );
 
   return myResult == SQLITE_OK;
 }
@@ -238,7 +237,7 @@ void  QgsCustomProjectionDialog::insertProjection( const QString& myProjectionAc
   sqlite3_close( myDatabase );
 }
 
-bool QgsCustomProjectionDialog::saveCRS( QgsCoordinateReferenceSystem myCRS, const QString& myName, QString myId, bool newEntry )
+bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem myCRS, const QString& myName, QString myId, bool newEntry )
 {
   QString mySql;
   int return_id;
@@ -247,7 +246,7 @@ bool QgsCustomProjectionDialog::saveCRS( QgsCoordinateReferenceSystem myCRS, con
   QgsDebugMsg( QString( "Saving a CRS:%1, %2, %3" ).arg( myName, myCRS.toProj4() ).arg( newEntry ) );
   if ( newEntry )
   {
-    return_id = myCRS.saveAsUserCRS( myName );
+    return_id = myCRS.saveAsUserCrs( myName );
     if ( return_id == -1 )
       return false;
     else
@@ -293,7 +292,8 @@ bool QgsCustomProjectionDialog::saveCRS( QgsCoordinateReferenceSystem myCRS, con
   existingCRSparameters[myId] = myCRS.toProj4();
   existingCRSnames[myId] = myName;
 
-  QgsCRSCache::instance()->updateCRSCache( QString( "USER:%1" ).arg( myId ) );
+  QgsCoordinateReferenceSystem::invalidateCache();
+  QgsCoordinateTransformCache::instance()->invalidateCrs( QStringLiteral( "USER:%1" ).arg( myId ) );
 
   // If we have a projection acronym not in the user db previously, add it.
   // This is a must, or else we can't select it from the vw_srs table.
@@ -307,14 +307,14 @@ bool QgsCustomProjectionDialog::saveCRS( QgsCoordinateReferenceSystem myCRS, con
 void QgsCustomProjectionDialog::on_pbnAdd_clicked()
 {
   QString name = tr( "new CRS" );
-  QString id = "";
+  QString id = QLatin1String( "" );
   QgsCoordinateReferenceSystem parameters;
 
   QTreeWidgetItem* newItem = new QTreeWidgetItem( leNameList, QStringList() );
 
-  newItem->setText( QGIS_CRS_NAME_COLUMN, name );
-  newItem->setText( QGIS_CRS_ID_COLUMN, id );
-  newItem->setText( QGIS_CRS_PARAMETERS_COLUMN, parameters.toProj4() );
+  newItem->setText( QgisCrsNameColumn, name );
+  newItem->setText( QgisCrsIdColumn, id );
+  newItem->setText( QgisCrsParametersColumn, parameters.toProj4() );
   customCRSnames.push_back( name );
   customCRSids.push_back( id );
   customCRSparameters.push_back( parameters.toProj4() );
@@ -330,7 +330,7 @@ void QgsCustomProjectionDialog::on_pbnRemove_clicked()
   }
   QTreeWidgetItem* item = leNameList->takeTopLevelItem( i );
   delete item;
-  if ( customCRSids[i] != "" )
+  if ( customCRSids[i] != QLatin1String( "" ) )
   {
     deletedCRSs.push_back( customCRSids[i] );
   }
@@ -348,20 +348,20 @@ void QgsCustomProjectionDialog::on_leNameList_currentItemChanged( QTreeWidgetIte
     previousIndex = leNameList->indexOfTopLevelItem( previous );
     customCRSnames[previousIndex] = leName->text();
     customCRSparameters[previousIndex] = teParameters->toPlainText();
-    previous->setText( QGIS_CRS_NAME_COLUMN, leName->text() );
-    previous->setText( QGIS_CRS_PARAMETERS_COLUMN, teParameters->toPlainText() );
+    previous->setText( QgisCrsNameColumn, leName->text() );
+    previous->setText( QgisCrsParametersColumn, teParameters->toPlainText() );
   }
   if ( current )
   {
     currentIndex = leNameList->indexOfTopLevelItem( current );
     leName->setText( customCRSnames[currentIndex] );
-    teParameters->setPlainText( current->text( QGIS_CRS_PARAMETERS_COLUMN ) );
+    teParameters->setPlainText( current->text( QgisCrsParametersColumn ) );
   }
   else
   {
     //Can happen that current is null, for example if we just deleted the last element
-    leName->setText( "" );
-    teParameters->setPlainText( "" );
+    leName->setText( QLatin1String( "" ) );
+    teParameters->setPlainText( QLatin1String( "" ) );
     return;
   }
   return;
@@ -369,7 +369,6 @@ void QgsCustomProjectionDialog::on_leNameList_currentItemChanged( QTreeWidgetIte
 
 void QgsCustomProjectionDialog::on_pbnCopyCRS_clicked()
 {
-  QgsDebugMsg( "Entered" );
   QgsGenericProjectionSelector *mySelector = new QgsGenericProjectionSelector( this );
   if ( mySelector->exec() )
   {
@@ -382,7 +381,7 @@ void QgsCustomProjectionDialog::on_pbnCopyCRS_clicked()
     }
     teParameters->setPlainText( srs.toProj4() );
     customCRSparameters[leNameList->currentIndex().row()] = srs.toProj4();
-    leNameList->currentItem()->setText( QGIS_CRS_PARAMETERS_COLUMN, srs.toProj4() );
+    leNameList->currentItem()->setText( QgisCrsParametersColumn, srs.toProj4() );
 
   }
   delete mySelector;
@@ -390,7 +389,6 @@ void QgsCustomProjectionDialog::on_pbnCopyCRS_clicked()
 
 void QgsCustomProjectionDialog::on_buttonBox_accepted()
 {
-  QgsDebugMsg( "Entered" );
   //Update the current CRS:
   int i = leNameList->currentIndex().row();
   if ( i != -1 )
@@ -419,15 +417,15 @@ void QgsCustomProjectionDialog::on_buttonBox_accepted()
   {
     CRS.createFromProj4( customCRSparameters[i] );
     //Test if we just added this CRS (if it has no existing ID)
-    if ( customCRSids[i] == "" )
+    if ( customCRSids[i] == QLatin1String( "" ) )
     {
-      save_success &= saveCRS( CRS, customCRSnames[i], "", true );
+      save_success &= saveCrs( CRS, customCRSnames[i], QLatin1String( "" ), true );
     }
     else
     {
       if ( existingCRSnames[customCRSids[i]] != customCRSnames[i] || existingCRSparameters[customCRSids[i]] != customCRSparameters[i] )
       {
-        save_success &= saveCRS( CRS, customCRSnames[i], customCRSids[i], false );
+        save_success &= saveCrs( CRS, customCRSnames[i], customCRSids[i], false );
       }
     }
     if ( ! save_success )
@@ -438,7 +436,7 @@ void QgsCustomProjectionDialog::on_buttonBox_accepted()
   QgsDebugMsg( "We remove the deleted CRS." );
   for ( int i = 0; i < deletedCRSs.size(); ++i )
   {
-    save_success &= deleteCRS( deletedCRSs[i] );
+    save_success &= deleteCrs( deletedCRSs[i] );
     if ( ! save_success )
     {
       QgsDebugMsg( QString( "Problem for layer '%1'" ).arg( customCRSparameters[i] ) );
@@ -452,7 +450,6 @@ void QgsCustomProjectionDialog::on_buttonBox_accepted()
 
 void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
 {
-  QgsDebugMsg( "entered." );
 
 
   //
@@ -467,8 +464,8 @@ void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
   {
     QMessageBox::information( this, tr( "QGIS Custom Projection" ),
                               tr( "This proj4 projection definition is not valid." ) );
-    projectedX->setText( "" );
-    projectedY->setText( "" );
+    projectedX->setText( QLatin1String( "" ) );
+    projectedY->setText( QLatin1String( "" ) );
     pj_free( myProj );
     return;
 
@@ -482,8 +479,8 @@ void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
   {
     QMessageBox::information( this, tr( "QGIS Custom Projection" ),
                               tr( "Northing and Easthing must be in decimal form." ) );
-    projectedX->setText( "" );
-    projectedY->setText( "" );
+    projectedX->setText( QLatin1String( "" ) );
+    projectedY->setText( QLatin1String( "" ) );
     pj_free( myProj );
     return;
   }
@@ -494,8 +491,8 @@ void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
   {
     QMessageBox::information( this, tr( "QGIS Custom Projection" ),
                               tr( "Internal Error (source projection invalid?)" ) );
-    projectedX->setText( "" );
-    projectedY->setText( "" );
+    projectedX->setText( QLatin1String( "" ) );
+    projectedY->setText( QLatin1String( "" ) );
     pj_free( wgs84Proj );
     return;
   }
@@ -528,7 +525,7 @@ void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
 
 QString QgsCustomProjectionDialog::quotedValue( QString value )
 {
-  value.replace( '\'', "''" );
+  value.replace( '\'', QLatin1String( "''" ) );
   return value.prepend( '\'' ).append( '\'' );
 }
 

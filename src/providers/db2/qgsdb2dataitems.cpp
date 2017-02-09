@@ -23,6 +23,7 @@
 //#include <qaction.h>
 #include "qgsmimedatautils.h"
 #include "qgsvectorlayerimport.h"
+#include "qgsvectorlayer.h"
 
 #include <QSettings>
 #include <QMessageBox>
@@ -30,12 +31,12 @@
 //#include <QtSql/QSqlError>
 #include <QProgressDialog>
 
-static const QString PROVIDER_KEY = "DB2";
+static const QString PROVIDER_KEY = QStringLiteral( "DB2" );
 
 QgsDb2ConnectionItem::QgsDb2ConnectionItem( QgsDataItem *parent, const QString name, const QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIconName = "mIconConnect.png";
+  mIconName = QStringLiteral( "mIconConnect.png" );
   populate();
 }
 
@@ -60,7 +61,7 @@ bool QgsDb2ConnectionItem::ConnInfoFromParameters(
     if ( driver.isEmpty() || host.isEmpty() || database.isEmpty() || port.isEmpty() )
     {
       QgsDebugMsg( "Host, port, driver or database missing" );
-      errorMsg = "Host, port, driver or database missing";
+      errorMsg = QStringLiteral( "Host, port, driver or database missing" );
       return false;
     }
     connInfo = "driver='" + driver + "' "
@@ -73,7 +74,7 @@ bool QgsDb2ConnectionItem::ConnInfoFromParameters(
     if ( database.isEmpty() )
     {
       QgsDebugMsg( "Database must be specified" );
-      errorMsg = "Database must be specified";
+      errorMsg = QStringLiteral( "Database must be specified" );
       return false;
     }
     connInfo = "service='" + service + "' "
@@ -138,7 +139,7 @@ void QgsDb2ConnectionItem::refresh()
   // Add new items
   Q_FOREACH ( QgsDataItem *item, items )
   {
-    // Is it present in childs?
+    // Is it present in children?
     int index = findItem( mChildren, item );
     if ( index >= 0 )
     {
@@ -170,9 +171,8 @@ QVector<QgsDataItem*> QgsDb2ConnectionItem::createChildren()
   QSqlDatabase db = QgsDb2Provider::getDatabase( connInfo, errorMsg );
   if ( errorMsg.isEmpty() )
   {
-    QString connectionName = db.connectionName();
     //children.append( new QgsFavouritesItem(this, "connection successful", mPath + "/success"));
-    QgsDebugMsg( "DB open successful for connection " + connectionName );
+    QgsDebugMsg( "DB open successful for connection " + db.connectionName() );
   }
   else
   {
@@ -180,7 +180,7 @@ QVector<QgsDataItem*> QgsDb2ConnectionItem::createChildren()
     QgsDebugMsg( "DB not open " + errorMsg );
     return children;
   }
-  QString connectionName = db.connectionName();
+
   QgsDb2GeometryColumns db2GC = QgsDb2GeometryColumns( db );
   int sqlcode = db2GC.open();
 
@@ -295,10 +295,9 @@ void QgsDb2ConnectionItem::refreshConnection()
 {
   QString errMsg;
   QSqlDatabase db = QgsDb2Provider::getDatabase( mConnInfo, errMsg );
-
+  Q_UNUSED( db );
   if ( errMsg.isEmpty() )
   {
-    QString connectionName = db.connectionName();
     QgsDebugMsg( "successful get db2 connection on refresh" );
   }
   else
@@ -329,12 +328,12 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData* data, const QString& toS
 
   QStringList importResults;
   bool hasError = false;
-  bool cancelled = false;
+  bool canceled = false;
 
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
   Q_FOREACH ( const QgsMimeDataUtils::Uri& u, lst )
   {
-    if ( u.layerType != "vector" )
+    if ( u.layerType != QLatin1String( "vector" ) )
     {
       importResults.append( tr( "%1: Not a vector layer!" ).arg( u.name ) );
       hasError = true; // only vectors can be imported
@@ -350,7 +349,7 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData* data, const QString& toS
       QString tableName;
       if ( !toSchema.isEmpty() )
       {
-        tableName = QString( "%1.%2" ).arg( toSchema, u.name );
+        tableName = QStringLiteral( "%1.%2" ).arg( toSchema, u.name );
       }
       else
       {
@@ -358,12 +357,12 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData* data, const QString& toS
       }
 
       QString uri = connInfo() + " table=" + tableName;
-      if ( srcLayer->geometryType() != QGis::NoGeometry )
-        uri += " (geom)";
+      if ( srcLayer->geometryType() != QgsWkbTypes::NullGeometry )
+        uri += QLatin1String( " (geom)" );
 
       QgsVectorLayerImport::ImportError err;
       QString importError;
-      err = QgsVectorLayerImport::importLayer( srcLayer, uri, "DB2", &srcLayer->crs(), false, &importError, false, nullptr, progress );
+      err = QgsVectorLayerImport::importLayer( srcLayer, uri, QStringLiteral( "DB2" ), srcLayer->crs(), false, &importError, false, nullptr, progress );
       if ( err == QgsVectorLayerImport::NoError )
       {
         importResults.append( tr( "%1: OK!" ).arg( u.name ) );
@@ -371,14 +370,14 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData* data, const QString& toS
       }
       else
       {
-        if ( err == QgsVectorLayerImport::ErrUserCancelled )
+        if ( err == QgsVectorLayerImport::ErrUserCanceled )
         {
-          cancelled = true;
-          QgsDebugMsg( "import cancelled" );
+          canceled = true;
+          QgsDebugMsg( "import canceled" );
         }
         else
         {
-          QString errMsg = QString( "%1: %2" ).arg( u.name, importError );
+          QString errMsg = QStringLiteral( "%1: %2" ).arg( u.name, importError );
           QgsDebugMsg( "import failed: " + errMsg );
           importResults.append( errMsg );
           hasError = true;
@@ -397,14 +396,14 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData* data, const QString& toS
   delete progress;
   qApp->restoreOverrideCursor();
 
-  if ( cancelled )
+  if ( canceled )
   {
-    QMessageBox::information( nullptr, tr( "Import to DB2 database" ), tr( "Import cancelled." ) );
+    QMessageBox::information( nullptr, tr( "Import to DB2 database" ), tr( "Import canceled." ) );
     refresh();
   }
   else if ( hasError )
   {
-    QMessageBox::warning( nullptr, tr( "Import to DB2 database" ), tr( "Failed to import some layers!\n\n" ) + importResults.join( "\n" ) );
+    QMessageBox::warning( nullptr, tr( "Import to DB2 database" ), tr( "Failed to import some layers!\n\n" ) + importResults.join( QStringLiteral( "\n" ) ) );
   }
   else
   {
@@ -422,7 +421,7 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData* data, const QString& toS
 QgsDb2RootItem::QgsDb2RootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIconName = "mIconDb2.svg";
+  mIconName = QStringLiteral( "mIconDb2.svg" );
   populate();
 }
 
@@ -434,7 +433,7 @@ QVector<QgsDataItem*> QgsDb2RootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
   QSettings settings;
-  settings.beginGroup( "/DB2/connections" );
+  settings.beginGroup( QStringLiteral( "/DB2/connections" ) );
   Q_FOREACH ( const QString& connName, settings.childGroups() )
   {
     connections << new QgsDb2ConnectionItem( this, connName, mPath + "/" + connName );
@@ -500,11 +499,11 @@ QString QgsDb2LayerItem::createUri()
     return QString::null;
   }
   QgsDebugMsg( "connInfo: '" + connItem->connInfo() + "'" );
-  QgsDataSourceURI uri = QgsDataSourceURI( connItem->connInfo() );
+  QgsDataSourceUri uri = QgsDataSourceUri( connItem->connInfo() );
   uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, mLayerProperty.pkColumnName );
   uri.setSrid( mLayerProperty.srid );
-  uri.setWkbType( QGis::fromOldWkbType( QgsDb2TableModel::wkbTypeFromDb2( mLayerProperty.type ) ) );
-  uri.setParam( "extents", mLayerProperty.extents );
+  uri.setWkbType( QgsDb2TableModel::wkbTypeFromDb2( mLayerProperty.type ) );
+  uri.setParam( QStringLiteral( "extents" ), mLayerProperty.extents );
   QString uriString = uri.uri( false );
   QgsDebugMsg( "Layer URI: " + uriString );
   return uriString;
@@ -513,7 +512,7 @@ QString QgsDb2LayerItem::createUri()
 QgsDb2SchemaItem::QgsDb2SchemaItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIconName = "mIconDbSchema.png";
+  mIconName = QStringLiteral( "mIconDbSchema.png" );
 }
 
 QVector<QgsDataItem*> QgsDb2SchemaItem::createChildren()
@@ -538,7 +537,7 @@ void QgsDb2SchemaItem::addLayers( QgsDataItem* newLayers )
   // Add new items
   Q_FOREACH ( QgsDataItem *child, newLayers->children() )
   {
-    // Is it present in childs?
+    // Is it present in children?
     if ( findItem( mChildren, child ) >= 0 )
     {
       continue;
@@ -559,32 +558,34 @@ bool QgsDb2SchemaItem::handleDrop( const QMimeData* data, Qt::DropAction )
 
 QgsDb2LayerItem* QgsDb2SchemaItem::addLayer( QgsDb2LayerProperty layerProperty, bool refresh )
 {
-  QGis::WkbType wkbType = QgsDb2TableModel::wkbTypeFromDb2( layerProperty.type );
-  QString tip = tr( "DB2 *** %1 as %2 in %3" ).arg( layerProperty.geometryColName ).arg( QgsDb2TableModel::displayStringForWkbType( wkbType ) ).arg( layerProperty.srid );
+  QgsWkbTypes::Type wkbType = QgsDb2TableModel::wkbTypeFromDb2( layerProperty.type );
+  QString tip = tr( "DB2 *** %1 as %2 in %3" ).arg( layerProperty.geometryColName,
+                QgsWkbTypes::displayString( wkbType ),
+                layerProperty.srid );
   QgsDebugMsg( tip );
   QgsLayerItem::LayerType layerType;
   switch ( wkbType )
   {
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
+    case QgsWkbTypes::Point:
+    case QgsWkbTypes::Point25D:
+    case QgsWkbTypes::MultiPoint:
+    case QgsWkbTypes::MultiPoint25D:
       layerType = QgsLayerItem::Point;
       break;
-    case QGis::WKBLineString:
-    case QGis::WKBLineString25D:
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiLineString25D:
+    case QgsWkbTypes::LineString:
+    case QgsWkbTypes::LineString25D:
+    case QgsWkbTypes::MultiLineString:
+    case QgsWkbTypes::MultiLineString25D:
       layerType = QgsLayerItem::Line;
       break;
-    case QGis::WKBPolygon:
-    case QGis::WKBPolygon25D:
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPolygon25D:
+    case QgsWkbTypes::Polygon:
+    case QgsWkbTypes::Polygon25D:
+    case QgsWkbTypes::MultiPolygon:
+    case QgsWkbTypes::MultiPolygon25D:
       layerType = QgsLayerItem::Polygon;
       break;
     default:
-      if ( layerProperty.type == "NONE" && layerProperty.geometryColName.isEmpty() )
+      if ( layerProperty.type == QLatin1String( "NONE" ) && layerProperty.geometryColName.isEmpty() )
       {
         layerType = QgsLayerItem::TableLayer;
         tip = tr( "as geometryless table" );

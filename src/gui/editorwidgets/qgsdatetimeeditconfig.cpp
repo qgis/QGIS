@@ -15,6 +15,8 @@
 
 #include "qgsdatetimeeditconfig.h"
 #include "qgsdatetimeeditfactory.h"
+#include "qgsvectorlayer.h"
+#include "qgsdatetimefieldformatter.h"
 
 QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
     : QgsEditorConfigWidget( vl, fieldIdx, parent )
@@ -33,6 +35,11 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer* vl, int fieldIdx, 
   connect( mFieldHelpToolButton, SIGNAL( clicked( bool ) ), this, SLOT( showHelp( bool ) ) );
   connect( mDisplayHelpToolButton, SIGNAL( clicked( bool ) ), this, SLOT( showHelp( bool ) ) );
 
+  connect( mFieldFormatEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( changed() ) );
+  connect( mDisplayFormatEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( changed() ) );
+  connect( mCalendarPopupCheckBox, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+  connect( mAllowNullCheckBox, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+
   // initialize
   updateFieldFormat( mFieldFormatComboBox->currentIndex() );
   displayFormatChanged( mDisplayFormatComboBox->currentIndex() );
@@ -50,15 +57,15 @@ void QgsDateTimeEditConfig::updateFieldFormat( int idx )
 {
   if ( idx == 0 )
   {
-    mFieldFormatEdit->setText( QGSDATETIMEEDIT_DATEFORMAT );
+    mFieldFormatEdit->setText( QgsDateTimeFieldFormatter::DEFAULT_DATE_FORMAT );
   }
   else if ( idx == 1 )
   {
-    mFieldFormatEdit->setText( QGSDATETIMEEDIT_TIMEFORMAT );
+    mFieldFormatEdit->setText( QgsDateTimeFieldFormatter::DEFAULT_TIME_FORMAT );
   }
   else if ( idx == 2 )
   {
-    mFieldFormatEdit->setText( QGSDATETIMEEDIT_DATETIMEFORMAT );
+    mFieldFormatEdit->setText( QgsDateTimeFieldFormatter::DEFAULT_DATETIME_FORMAT );
   }
 
   mFieldFormatEdit->setVisible( idx == 3 );
@@ -101,58 +108,44 @@ void QgsDateTimeEditConfig::showHelp( bool buttonChecked )
 }
 
 
-QgsEditorWidgetConfig QgsDateTimeEditConfig::config()
+QVariantMap QgsDateTimeEditConfig::config()
 {
-  QgsEditorWidgetConfig myConfig;
+  QVariantMap myConfig;
 
-  myConfig.insert( "field_format", mFieldFormatEdit->text() );
-  myConfig.insert( "display_format", mDisplayFormatEdit->text() );
-  myConfig.insert( "calendar_popup", mCalendarPopupCheckBox->isChecked() );
-  myConfig.insert( "allow_null", mAllowNullCheckBox->isChecked() );
+  myConfig.insert( QStringLiteral( "field_format" ), mFieldFormatEdit->text() );
+  myConfig.insert( QStringLiteral( "display_format" ), mDisplayFormatEdit->text() );
+  myConfig.insert( QStringLiteral( "calendar_popup" ), mCalendarPopupCheckBox->isChecked() );
+  myConfig.insert( QStringLiteral( "allow_null" ), mAllowNullCheckBox->isChecked() );
 
   return myConfig;
 }
 
-
-void QgsDateTimeEditConfig::setConfig( const QgsEditorWidgetConfig &config )
+void QgsDateTimeEditConfig::setConfig( const QVariantMap &config )
 {
-  if ( config.contains( "field_format" ) )
-  {
-    const QString fieldFormat = config[ "field_format" ].toString();
-    mFieldFormatEdit->setText( fieldFormat );
+  const QgsField fieldDef = layer()->fields().at( field() );
+  const QString fieldFormat = config.value( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( fieldDef.type() ) ).toString();
+  mFieldFormatEdit->setText( fieldFormat );
 
-    if ( fieldFormat == QGSDATETIMEEDIT_DATEFORMAT )
-      mFieldFormatComboBox->setCurrentIndex( 0 );
-    else if ( fieldFormat == QGSDATETIMEEDIT_TIMEFORMAT )
-      mFieldFormatComboBox->setCurrentIndex( 1 );
-    else if ( fieldFormat == QGSDATETIMEEDIT_DATETIMEFORMAT )
-      mFieldFormatComboBox->setCurrentIndex( 2 );
-    else
-      mFieldFormatComboBox->setCurrentIndex( 3 );
+  if ( fieldFormat == QgsDateTimeFieldFormatter::DEFAULT_DATE_FORMAT )
+    mFieldFormatComboBox->setCurrentIndex( 0 );
+  else if ( fieldFormat == QgsDateTimeFieldFormatter::DEFAULT_TIME_FORMAT )
+    mFieldFormatComboBox->setCurrentIndex( 1 );
+  else if ( fieldFormat == QgsDateTimeFieldFormatter::DEFAULT_DATETIME_FORMAT )
+    mFieldFormatComboBox->setCurrentIndex( 2 );
+  else
+    mFieldFormatComboBox->setCurrentIndex( 3 );
+
+  QString displayFormat = config.value( QStringLiteral( "display_format" ), QgsDateTimeFieldFormatter::defaultFormat( fieldDef.type() ) ).toString();
+  mDisplayFormatEdit->setText( displayFormat );
+  if ( displayFormat == mFieldFormatEdit->text() )
+  {
+    mDisplayFormatComboBox->setCurrentIndex( 0 );
+  }
+  else
+  {
+    mDisplayFormatComboBox->setCurrentIndex( 1 );
   }
 
-  if ( config.contains( "display_format" ) )
-  {
-    const QString displayFormat = config[ "display_format" ].toString();
-    mDisplayFormatEdit->setText( displayFormat );
-    if ( displayFormat == mFieldFormatEdit->text() )
-    {
-      mDisplayFormatComboBox->setCurrentIndex( 0 );
-    }
-    else
-    {
-      mDisplayFormatComboBox->setCurrentIndex( 1 );
-    }
-  }
-
-  if ( config.contains( "calendar_popup" ) )
-  {
-    mCalendarPopupCheckBox->setChecked( config[ "calendar_popup" ].toBool() );
-  }
-
-  if ( config.contains( "allow_null" ) )
-  {
-    mAllowNullCheckBox->setChecked( config[ "allow_null" ].toBool() );
-  }
-
+  mCalendarPopupCheckBox->setChecked( config.value( QStringLiteral( "calendar_popup" ) , false ).toBool() );
+  mAllowNullCheckBox->setChecked( config.value( QStringLiteral( "allow_null" ), true ).toBool() );
 }

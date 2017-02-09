@@ -19,8 +19,10 @@
 #include "qgseditorwidgetwrapper.h"
 
 #include <QComboBox>
+#include "qgis_gui.h"
 
-/** \class QgsEnumerationWidgetWrapper
+/** \ingroup gui
+ * \class QgsEnumerationWidgetWrapper
  * \note not available in Python bindings
  */
 

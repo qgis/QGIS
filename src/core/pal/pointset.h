@@ -30,11 +30,12 @@
 #ifndef POINTSET_H
 #define POINTSET_H
 
-#include "qgsgeometry.h"
-#include "rtree.hpp"
 #include <cfloat>
 #include <cmath>
 #include <QLinkedList>
+#include <geos_c.h>
+
+#include "qgis_core.h"
 
 namespace pal
 {
@@ -59,6 +60,7 @@ namespace pal
   /**
    * \class pal::PointSet
    * \note not available in Python bindings
+   * \ingroup core
    */
   class CORE_EXPORT PointSet
   {
@@ -122,7 +124,7 @@ namespace pal
         max[1] = ymax;
       }
 
-      /** Returns NULL if this isn't a hole. Otherwise returns pointer to parent pointset. */
+      //! Returns NULL if this isn't a hole. Otherwise returns pointer to parent pointset.
       PointSet* getHoleOf() { return holeOf; }
 
       int getNumPoints() const { return nbPoints; }

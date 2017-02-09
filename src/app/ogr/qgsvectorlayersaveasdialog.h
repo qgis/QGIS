@@ -21,12 +21,16 @@
 #include <ui_qgsvectorlayersaveasdialogbase.h>
 #include <QDialog>
 #include "qgscontexthelp.h"
+#include "qgsfields.h"
 #include "qgsvectorfilewriter.h"
+#include "qgis_app.h"
+
+class QgsVectorLayer;
 
 /**
- *  Class to select destination file, type and CRS for ogr layrs
+ *  Class to select destination file, type and CRS for ogr layers
  */
-class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSaveAsDialogBase
+class APP_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSaveAsDialogBase
 {
     Q_OBJECT
 
@@ -38,19 +42,22 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
       AllOptions = ~0
     };
 
-    QgsVectorLayerSaveAsDialog( long srsid, QWidget* parent = nullptr, Qt::WindowFlags fl = nullptr );
-    QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, int options = AllOptions, QWidget* parent = nullptr, Qt::WindowFlags fl = nullptr );
+    QgsVectorLayerSaveAsDialog( long srsid, QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
+    QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, int options = AllOptions, QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
     ~QgsVectorLayerSaveAsDialog();
 
     QString format() const;
     QString encoding() const;
     QString filename() const;
+    QString layername() const;
     QStringList datasourceOptions() const;
     QStringList layerOptions() const;
     long crs() const;
-    bool attributeSelection() const;
     QgsAttributeList selectedAttributes() const;
+    //! Return selected attributes that must be exported with their displayed values instead of their raw values. Added in QGIS 2.16
+    QgsAttributeList attributesAsDisplayedValues() const;
     bool addToCanvas() const;
+
     /** Returns type of symbology export.
         0: No symbology
         1: Feature symbology
@@ -71,7 +78,7 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
      * @see forceMulti()
      * @see includeZ()
      */
-    QgsWKBTypes::Type geometryType() const;
+    QgsWkbTypes::Type geometryType() const;
 
     /** Returns true if geometry type is set to automatic.
      * @see geometryType()
@@ -96,7 +103,11 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
      */
     void setIncludeZ( bool checked );
 
+    //! Returns creation action
+    QgsVectorFileWriter::ActionOnExistingFile creationActionOnExistingFile() const;
+
   private slots:
+
     void on_mFormatComboBox_currentIndexChanged( int idx );
     void on_leFilename_textChanged( const QString& text );
     void on_browseFilename_clicked();
@@ -107,6 +118,8 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
     void accept() override;
     void on_mSelectAllAttributes_clicked();
     void on_mDeselectAllAttributes_clicked();
+    void on_mReplaceRawFieldValues_stateChanged( int state );
+    void on_mAttributeTable_itemChanged( QTableWidgetItem * item );
 
   private:
     void setup();
@@ -117,6 +130,9 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
     QgsRectangle mLayerExtent;
     QgsCoordinateReferenceSystem mLayerCrs;
     QgsVectorLayer *mLayer;
+    bool mAttributeTableItemChangedSlotEnabled;
+    bool mReplaceRawFieldValuesStateChangedSlotEnabled;
+    QgsVectorFileWriter::ActionOnExistingFile mActionOnExistingFile;
 };
 
 #endif // QGSVECTORLAYERSAVEASDIALOG_H

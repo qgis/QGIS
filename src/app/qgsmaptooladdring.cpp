@@ -17,7 +17,7 @@
 
 #include "qgsmaptooladdring.h"
 #include "qgsgeometry.h"
-#include "qgslinestringv2.h"
+#include "qgslinestring.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
@@ -89,7 +89,7 @@ void QgsMapToolAddRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
     bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
     bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
 
-    QgsCurveV2* curveToAdd = nullptr;
+    QgsCurve* curveToAdd = nullptr;
     if ( hasCurvedSegments && providerSupportsCurvedSegments )
     {
       curveToAdd = captureCurve()->clone();

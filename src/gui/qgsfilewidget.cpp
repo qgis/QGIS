@@ -27,6 +27,7 @@
 #include "qgsfilterlineedit.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
+#include "qgsapplication.h"
 
 QgsFileWidget::QgsFileWidget( QWidget *parent )
     : QWidget( parent )
@@ -64,15 +65,11 @@ QgsFileWidget::QgsFileWidget( QWidget *parent )
   layout->addWidget( mLineEdit, 1, 0 );
 
   mFileWidgetButton = new QToolButton( this );
-  mFileWidgetButton->setText( "..." );
+  mFileWidgetButton->setText( QStringLiteral( "..." ) );
   connect( mFileWidgetButton, SIGNAL( clicked() ), this, SLOT( openFileDialog() ) );
   layout->addWidget( mFileWidgetButton, 0, 1, 2, 1 );
 
   setLayout( layout );
-}
-
-QgsFileWidget::~QgsFileWidget()
-{
 }
 
 QString QgsFileWidget::filePath()
@@ -82,9 +79,9 @@ QString QgsFileWidget::filePath()
 
 void QgsFileWidget::setFilePath( QString path )
 {
-  if ( path == QSettings().value( "qgis/nullValue", "NULL" ) )
+  if ( path == QgsApplication::nullRepresentation() )
   {
-    path = "";
+    path = QLatin1String( "" );
   }
 
   //will trigger textEdited slot
@@ -212,7 +209,7 @@ void QgsFileWidget::openFileDialog()
     {
       defPath = QDir::homePath();
     }
-    oldPath = settings.value( "/UI/lastExternalResourceWidgetDefaultPath", defPath ).toString();
+    oldPath = settings.value( QStringLiteral( "/UI/lastExternalResourceWidgetDefaultPath" ), defPath ).toString();
   }
 
   // Handle Storage
@@ -238,11 +235,11 @@ void QgsFileWidget::openFileDialog()
 
   if ( mStorageMode == GetFile )
   {
-    settings.setValue( "/UI/lastFileNameWidgetDir", QFileInfo( fileName ).absolutePath() );
+    settings.setValue( QStringLiteral( "/UI/lastFileNameWidgetDir" ), QFileInfo( fileName ).absolutePath() );
   }
   else if ( mStorageMode == GetDirectory )
   {
-    settings.setValue( "/UI/lastFileNameWidgetDir", fileName );
+    settings.setValue( QStringLiteral( "/UI/lastFileNameWidgetDir" ), fileName );
   }
 
   // Handle relative Path storage
@@ -286,7 +283,7 @@ QString QgsFileWidget::toUrl( const QString& path ) const
   QString rep;
   if ( path.isEmpty() )
   {
-    return QSettings().value( "qgis/nullValue", "NULL" ).toString();
+    return QgsApplication::nullRepresentation();
   }
 
   QString urlStr = relativePath( path, false );
@@ -300,12 +297,12 @@ QString QgsFileWidget::toUrl( const QString& path ) const
   QString pathStr = url.toString();
   if ( mFullUrl )
   {
-    rep = QString( "<a href=\"%1\">%2</a>" ).arg( pathStr, path );
+    rep = QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( pathStr, path );
   }
   else
   {
     QString fileName = QFileInfo( urlStr ).fileName();
-    rep = QString( "<a href=\"%1\">%2</a>" ).arg( pathStr, fileName );
+    rep = QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( pathStr, fileName );
   }
 
   return rep;

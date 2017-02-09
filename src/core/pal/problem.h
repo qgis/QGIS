@@ -30,10 +30,10 @@
 #ifndef PAL_PROBLEM_H
 #define PAL_PROBLEM_H
 
-#include "pal.h"
-#include "rtree.hpp"
+#include "qgis_core.h"
 #include <list>
 #include <QList>
+#include "rtree.hpp"
 
 namespace pal
 {
@@ -43,6 +43,7 @@ namespace pal
 
   /**
    * \class pal::Sol
+   * \ingroup core
    * \note not available in Python bindings
    */
   class Sol
@@ -54,6 +55,7 @@ namespace pal
 
   typedef struct _subpart
   {
+
     /**
      * # of features in problem
      */
@@ -73,10 +75,12 @@ namespace pal
      * wrap bw sub feat and main feat
      */
     int *sub;
+
     /**
      * sub solution
      */
     int *sol;
+
     /**
      * first feat in sub part
      */
@@ -92,6 +96,7 @@ namespace pal
   } Chain;
 
   /**
+   * \ingroup core
    * \brief Representation of a labeling problem
    * \class pal::Problem
    * \note not available in Python bindings
@@ -107,6 +112,11 @@ namespace pal
       //Problem(char *lorena_file, bool displayAll);
 
       ~Problem();
+
+      //! Problem cannot be copied
+      Problem( const Problem& other ) = delete;
+      //! Problem cannot be copied
+      Problem& operator=( const Problem& other ) = delete;
 
       /** Adds a candidate label position to the problem.
        * @param position label candidate position. Ownership is transferred to Problem.
@@ -188,6 +198,7 @@ namespace pal
        * # active candidates (remaining after reduce())
        */
       int nblp;
+
       /**
        * # candidates (all, including)
        */

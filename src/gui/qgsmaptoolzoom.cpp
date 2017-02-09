@@ -54,7 +54,7 @@ void QgsMapToolZoom::canvasMoveEvent( QgsMapMouseEvent* e )
   {
     mDragging = true;
     delete mRubberBand;
-    mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
+    mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
     QColor color( Qt::blue );
     color.setAlpha( 63 );
     mRubberBand->setColor( color );
@@ -82,6 +82,10 @@ void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   if ( e->button() != Qt::LeftButton )
     return;
+
+  bool zoomOut = mZoomOut;
+  if ( e->modifiers() & Qt::AltModifier )
+    zoomOut = !zoomOut;
 
   // We are not really dragging in this case. This is sometimes caused by
   // a pen based computer reporting a press, move, and release, all the
@@ -117,14 +121,14 @@ void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent* e )
     const QgsMapToPixel* m2p = mCanvas->getCoordinateTransform();
     QgsPoint c = m2p->toMapCoordinates( mZoomRect.center() );
 
-    mCanvas->zoomByFactor( mZoomOut ? 1.0 / sf : sf, &c );
+    mCanvas->zoomByFactor( zoomOut ? 1.0 / sf : sf, &c );
 
     mCanvas->refresh();
   }
   else // not dragging
   {
     // change to zoom in/out by the default multiple
-    mCanvas->zoomWithCenter( e->x(), e->y(), !mZoomOut );
+    mCanvas->zoomWithCenter( e->x(), e->y(), !zoomOut );
   }
 }
 

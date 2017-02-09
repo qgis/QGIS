@@ -17,8 +17,8 @@
 #include "qgsmaplayermodel.h"
 
 
-QgsMapLayerComboBox::QgsMapLayerComboBox( QWidget *parent ) :
-    QComboBox( parent )
+QgsMapLayerComboBox::QgsMapLayerComboBox( QWidget *parent )
+    : QComboBox( parent )
 {
   mProxyModel = new QgsMapLayerProxyModel( this );
   setModel( mProxyModel );
@@ -28,8 +28,54 @@ QgsMapLayerComboBox::QgsMapLayerComboBox( QWidget *parent ) :
   connect( mProxyModel, SIGNAL( rowsRemoved( QModelIndex, int, int ) ), this, SLOT( rowsChanged() ) );
 }
 
+void QgsMapLayerComboBox::setExcludedProviders( const QStringList& providers )
+{
+  mProxyModel->setExcludedProviders( providers );
+}
+
+QStringList QgsMapLayerComboBox::excludedProviders() const
+{
+  return mProxyModel->excludedProviders();
+}
+
+void QgsMapLayerComboBox::setAllowEmptyLayer( bool allowEmpty )
+{
+  mProxyModel->sourceLayerModel()->setAllowEmptyLayer( allowEmpty );
+}
+
+bool QgsMapLayerComboBox::allowEmptyLayer() const
+{
+  return mProxyModel->sourceLayerModel()->allowEmptyLayer();
+}
+
+void QgsMapLayerComboBox::setShowCrs( bool showCrs )
+{
+  mProxyModel->sourceLayerModel()->setShowCrs( showCrs );
+}
+
+bool QgsMapLayerComboBox::showCrs() const
+{
+  return mProxyModel->sourceLayerModel()->showCrs();
+}
+
+void QgsMapLayerComboBox::setAdditionalItems( const QStringList& items )
+{
+  mProxyModel->sourceLayerModel()->setAdditionalItems( items );
+}
+
+QStringList QgsMapLayerComboBox::additionalItems() const
+{
+  return mProxyModel->sourceLayerModel()->additionalItems();
+}
+
 void QgsMapLayerComboBox::setLayer( QgsMapLayer *layer )
 {
+  if ( !layer )
+  {
+    setCurrentIndex( -1 );
+    return;
+  }
+
   QModelIndex idx = mProxyModel->sourceLayerModel()->indexFromLayer( layer );
   if ( idx.isValid() )
   {

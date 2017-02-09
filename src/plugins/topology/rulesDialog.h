@@ -26,7 +26,7 @@
 #include "topolTest.h"
 
 class QgisInterface;
-class QgsMapLayerRegistry;
+class QgsProject;
 
 class rulesDialog : public QDialog, private Ui::rulesDialog
 {
@@ -64,9 +64,9 @@ class rulesDialog : public QDialog, private Ui::rulesDialog
     /*
      * Reads a test from the project
      * @param index test index
-     * @param layerRegistry pointer to a QgsMapLayerRegistry instance
+     * @param project pointer to QgsProject
      */
-    void readTest( int index, QgsMapLayerRegistry* layerRegistry );
+    void readTest( int index, QgsProject* project );
     /*
      * Sets the horizontal header for tet table
      */

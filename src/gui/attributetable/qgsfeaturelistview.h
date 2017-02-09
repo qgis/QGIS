@@ -20,6 +20,7 @@
 #include <qdebug.h>
 
 #include "qgsfeature.h" // For QgsFeatureIds
+#include "qgis_gui.h"
 
 class QgsAttributeTableFilterModel;
 class QgsFeatureListModel;
@@ -31,7 +32,7 @@ class QgsVectorLayerCache;
 class QgsFeatureListViewDelegate;
 class QRect;
 
-/**
+/** \ingroup gui
  * Shows a list of features and renders a edit button next to each feature.
  *
  * @brief
@@ -44,17 +45,13 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     Q_OBJECT
 
   public:
+
     /**
      * Creates a feature list view
      *
      * @param parent   owner
      */
     explicit QgsFeatureListView( QWidget* parent = nullptr );
-
-    /**
-     * Destructor
-     */
-    virtual ~QgsFeatureListView() {}
 
     /**
      * Returns the layer cache
@@ -68,6 +65,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      * @param featureListModel  The model to use
      */
     virtual void setModel( QgsFeatureListModel* featureListModel );
+
     /**
      * Get the featureListModel used by this view
      *
@@ -97,7 +95,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     /**
      * Returns a detailed message about errors while parsing a QgsExpression.
      *
-     * @return A message containg information about the parser error.
+     * @return A message containing information about the parser error.
      */
     QString parserErrorString();
 
@@ -128,6 +126,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     virtual void contextMenuEvent( QContextMenuEvent *event ) override;
 
   signals:
+
     /**
      * Is emitted, whenever the current edit selection has been changed.
      *
@@ -145,6 +144,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     void aboutToChangeEditSelection( bool& ok );
 
   public slots:
+
     /**
      * Set the feature(s) to be edited
      *
@@ -158,7 +158,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      * @param index The selection to set
      * @param command selection update mode
      */
-    void setEditSelection( const QModelIndex& index, const QItemSelectionModel::SelectionFlags& command );
+    void setEditSelection( const QModelIndex& index, QItemSelectionModel::SelectionFlags command );
 
     /**
      * Select all currently visible features
@@ -179,7 +179,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     QgsFeatureSelectionModel* mFeatureSelectionModel;
     QgsIFeatureSelectionManager* mFeatureSelectionManager;
     QgsFeatureListViewDelegate* mItemDelegate;
-    bool mEditSelectionDrag; // Is set to true when the user initiated a left button click over an edit button and still keeps pressing /**< TODO */
+    bool mEditSelectionDrag; // Is set to true when the user initiated a left button click over an edit button and still keeps pressing //!< TODO
     int mRowAnchor;
     QItemSelectionModel::SelectionFlags mCtrlDragSelectionFlag;
 };

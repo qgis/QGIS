@@ -29,16 +29,22 @@ struct QgsWFSConstants
   // URI parameters
   static const QString URI_PARAM_URL;
   static const QString URI_PARAM_USERNAME;
+  // QgsDataSourceURI recognizes "user" instead of "username"
+  // we are going to check both
+  static const QString URI_PARAM_USER;
   static const QString URI_PARAM_PASSWORD;
   static const QString URI_PARAM_AUTHCFG;
   static const QString URI_PARAM_VERSION;
   static const QString URI_PARAM_TYPENAME;
   static const QString URI_PARAM_SRSNAME;
   static const QString URI_PARAM_FILTER;
+  static const QString URI_PARAM_BBOX;
   static const QString URI_PARAM_RESTRICT_TO_REQUEST_BBOX;
   static const QString URI_PARAM_MAXNUMFEATURES;
   static const QString URI_PARAM_IGNOREAXISORIENTATION;
   static const QString URI_PARAM_INVERTAXISORIENTATION;
+  static const QString URI_PARAM_VALIDATESQLFUNCTIONS;
+  static const QString URI_PARAM_HIDEDOWNLOADPROGRESSDIALOG;
 
   //
   static const QString VERSION_AUTO;
@@ -52,6 +58,7 @@ struct QgsWFSConstants
   static const QString FIELD_GEN_COUNTER;
   static const QString FIELD_GMLID;
   static const QString FIELD_HEXWKB_GEOM;
+  static const QString FIELD_MD5;
 };
 
 #endif // QGSWFSCONSTANTS_H

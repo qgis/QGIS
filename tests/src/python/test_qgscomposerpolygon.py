@@ -14,15 +14,16 @@ __revision__ = '$Format:%H$'
 
 import qgis
 
-from PyQt.QtGui import QColor
-from PyQt.QtGui import QPolygonF
-from PyQt.QtCore import QPointF
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtGui import QPolygonF
+from qgis.PyQt.QtCore import QPointF
 
 from qgis.core import (QgsComposerPolygon,
                        QgsComposerItem,
                        QgsComposition,
                        QgsMapSettings,
-                       QgsFillSymbolV2
+                       QgsFillSymbol,
+                       QgsProject
                        )
 from qgis.testing import (start_app,
                           unittest
@@ -40,10 +41,8 @@ class TestQgsComposerPolygon(unittest.TestCase):
         """Run once on class initialization."""
         unittest.TestCase.__init__(self, methodName)
 
-        self.mapSettings = QgsMapSettings()
-
         # create composition
-        self.mComposition = QgsComposition(self.mapSettings)
+        self.mComposition = QgsComposition(QgsProject.instance())
         self.mComposition.setPaperSize(297, 210)
 
         # create
@@ -65,7 +64,7 @@ class TestQgsComposerPolygon(unittest.TestCase):
         props["width_border"] = "10.0"
         props["joinstyle"] = "miter"
 
-        style = QgsFillSymbolV2.createSimple(props)
+        style = QgsFillSymbol.createSimple(props)
         self.mComposerPolygon.setPolygonStyleSymbol(style)
 
     def testDisplayName(self):
@@ -107,7 +106,7 @@ class TestQgsComposerPolygon(unittest.TestCase):
         assert myTestResult, myMessage
 
     def testSelectedNode(self):
-        """Test selectedNode and unselectNode methods"""
+        """Test selectedNode and deselectNode methods"""
 
         self.mComposerPolygon.setDisplayNodes(True)
 
@@ -118,7 +117,7 @@ class TestQgsComposerPolygon(unittest.TestCase):
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
 
-        self.mComposerPolygon.unselectNode()
+        self.mComposerPolygon.deselectNode()
         self.mComposerPolygon.setDisplayNodes(False)
         checker = QgsCompositionChecker(
             'composerpolygon_defaultstyle', self.mComposition)

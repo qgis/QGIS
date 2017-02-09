@@ -27,7 +27,8 @@
 #include <QMessageBox>
 
 QgsRunProcess::QgsRunProcess( const QString& action, bool capture )
-    : mProcess( nullptr ), mOutput( nullptr )
+    : mProcess( nullptr )
+    , mOutput( nullptr )
 {
   // Make up a string from the command and arguments that we'll use
   // for display purposes

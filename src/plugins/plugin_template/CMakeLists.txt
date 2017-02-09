@@ -19,11 +19,11 @@ SET ([pluginlcasename]_RCCS  [pluginlcasename].qrc)
 ########################################################
 # Build
 
-QT4_WRAP_UI ([pluginlcasename]_UIS_H  ${[pluginlcasename]_UIS})
+QT5_WRAP_UI ([pluginlcasename]_UIS_H  ${[pluginlcasename]_UIS})
 
-QT4_WRAP_CPP ([pluginlcasename]_MOC_SRCS  ${[pluginlcasename]_MOC_HDRS})
+QT5_WRAP_CPP ([pluginlcasename]_MOC_SRCS  ${[pluginlcasename]_MOC_HDRS})
 
-QT4_ADD_RESOURCES([pluginlcasename]_RCC_SRCS ${[pluginlcasename]_RCCS})
+QT5_ADD_RESOURCES([pluginlcasename]_RCC_SRCS ${[pluginlcasename]_RCCS})
 
 ADD_LIBRARY ([pluginlcasename]plugin MODULE ${[pluginlcasename]_SRCS} ${[pluginlcasename]_MOC_SRCS} ${[pluginlcasename]_RCC_SRCS} ${[pluginlcasename]_UIS_H})
 

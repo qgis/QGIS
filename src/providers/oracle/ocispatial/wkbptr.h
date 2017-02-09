@@ -38,20 +38,29 @@ const int SDO_ARRAY_SIZE = 1024;
 
 enum SDO_GTYPE_TT
 {
-  gtUnknown = 0,
-  gtPoint = 1,
-  gtLine = 2,
-  gtPolygon = 3,
-  gtCollection = 4,
-  gtMultiPoint = 5,
-  gtMultiLine = 6,
-  gtMultiPolygon = 7,
+  GtUnknown = 0,
+  GtPoint = 1,
+  GtLine = 2,
+  GtPolygon = 3,
+  GtCollection = 4,
+  GtMultiPoint = 5,
+  GtMultiLine = 6,
+  GtMultiPolygon = 7,
 };
 
 
 class QOCISpatialGeometry : public QSharedData
 {
   public:
+    QOCISpatialGeometry()
+        : isNull( true )
+        , gtype( -1 )
+        , srid( -1 )
+        , x( 0.0 )
+        , y( 0.0 )
+        , z( 0.0 )
+    {}
+
     bool isNull;
     int gtype;
     int srid;

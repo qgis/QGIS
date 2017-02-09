@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>QgsBrowserDockWidgetBase</class>
- <widget class="QDockWidget" name="QgsBrowserDockWidgetBase">
+ <widget class="QgsDockWidget" name="QgsBrowserDockWidgetBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -262,6 +262,12 @@
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDockWidget</class>
+   <extends>QDockWidget</extends>
+   <header>qgsdockwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

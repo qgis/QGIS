@@ -13,7 +13,7 @@
 #include "qgsdecorationcopyrightdialog.h"
 #include "qgsdecorationcopyright.h"
 
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 //qt includes
 #include <QColorDialog>
@@ -24,12 +24,13 @@
 #include <QPushButton>
 
 QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyright& deco, QWidget* parent )
-    : QDialog( parent ), mDeco( deco )
+    : QDialog( parent )
+    , mDeco( deco )
 {
   setupUi( this );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/DecorationCopyright/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/DecorationCopyright/geometry" ) ).toByteArray() );
 
   QPushButton* applyButton = buttonBox->button( QDialogButtonBox::Apply );
   connect( applyButton, SIGNAL( clicked() ), this, SLOT( apply() ) );
@@ -45,12 +46,12 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   cboPlacement->setCurrentIndex( cboPlacement->findData( mDeco.placement() ) );
   spnHorizontal->setValue( mDeco.mMarginHorizontal );
   spnVertical->setValue( mDeco.mMarginVertical );
-  wgtUnitSelection->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::Percentage << QgsSymbolV2::Pixel );
+  wgtUnitSelection->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPercentage << QgsUnitTypes::RenderPixels );
   wgtUnitSelection->setUnit( mDeco.mMarginUnit );
 
   // color
   pbnColorChooser->setColor( mDeco.mLabelQColor );
-  pbnColorChooser->setContext( "gui" );
+  pbnColorChooser->setContext( QStringLiteral( "gui" ) );
   pbnColorChooser->setColorDialogTitle( tr( "Select text color" ) );
 
   QTextCursor cursor = txtCopyrightText->textCursor();
@@ -62,7 +63,7 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
 QgsDecorationCopyrightDialog::~QgsDecorationCopyrightDialog()
 {
   QSettings settings;
-  settings.setValue( "/Windows/DecorationCopyright/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/DecorationCopyright/geometry" ), saveGeometry() );
 }
 
 void QgsDecorationCopyrightDialog::on_buttonBox_accepted()
@@ -89,7 +90,7 @@ void QgsDecorationCopyrightDialog::apply()
   mDeco.mQFont = txtCopyrightText->currentFont();
   mDeco.mLabelQString = txtCopyrightText->toPlainText();
   mDeco.mLabelQColor = pbnColorChooser->color();
-  mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->itemData( cboPlacement->currentIndex() ).toInt() ) );
+  mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->currentData().toInt() ) );
   mDeco.mMarginUnit = wgtUnitSelection->unit();
   mDeco.mMarginHorizontal = spnHorizontal->value();
   mDeco.mMarginVertical = spnVertical->value();
@@ -99,5 +100,5 @@ void QgsDecorationCopyrightDialog::apply()
 
 void QgsDecorationCopyrightDialog::on_buttonBox_helpRequested()
 {
-  QgsContextHelp::run( metaObject()->className() );
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#id57" ) );
 }

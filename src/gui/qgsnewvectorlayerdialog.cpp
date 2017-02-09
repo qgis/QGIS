@@ -31,16 +31,16 @@
 #include <QFileDialog>
 
 
-QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, const Qt::WindowFlags& fl )
+QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/NewVectorLayer/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/NewVectorLayer/geometry" ) ).toByteArray() );
 
-  mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( "/mActionNewAttribute.png" ) );
-  mRemoveAttributeButton->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteAttribute.png" ) );
+  mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewAttribute.svg" ) ) );
+  mRemoveAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteAttribute.svg" ) ) );
   mTypeBox->addItem( tr( "Text data" ), "String" );
   mTypeBox->addItem( tr( "Whole number" ), "Integer" );
   mTypeBox->addItem( tr( "Decimal number" ), "Real" );
@@ -69,7 +69,7 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, const Qt::Win
   mFileEncoding->addItems( QgsVectorDataProvider::availableEncodings() );
 
   // Use default encoding if none supplied
-  QString enc = QSettings().value( "/UI/encoding", "System" ).toString();
+  QString enc = QSettings().value( QStringLiteral( "/UI/encoding" ), "System" ).toString();
 
   // The specified decoding is added if not existing alread, and then set current.
   // This should select it.
@@ -83,10 +83,9 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, const Qt::Win
 
   mOkButton = buttonBox->button( QDialogButtonBox::Ok );
 
-  mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << "id" << "Integer" << "10" << "" ) );
+  mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << QStringLiteral( "id" ) << QStringLiteral( "Integer" ) << QStringLiteral( "10" ) << QLatin1String( "" ) ) );
 
-  QgsCoordinateReferenceSystem defaultCrs;
-  defaultCrs.createFromOgcWmsCrs( settings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString() );
+  QgsCoordinateReferenceSystem defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( settings.value( QStringLiteral( "/Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString() );
   defaultCrs.validate();
   mCrsSelector->setCrs( defaultCrs );
 
@@ -100,7 +99,7 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, const Qt::Win
 QgsNewVectorLayerDialog::~QgsNewVectorLayerDialog()
 {
   QSettings settings;
-  settings.setValue( "/Windows/NewVectorLayer/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/NewVectorLayer/geometry" ), saveGeometry() );
 }
 
 void QgsNewVectorLayerDialog::on_mFileFormatComboBox_currentIndexChanged( int index )
@@ -119,21 +118,21 @@ void QgsNewVectorLayerDialog::on_mTypeBox_currentIndexChanged( int index )
   {
     case 0: // Text data
       if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 255 )
-        mWidth->setText( "80" );
+        mWidth->setText( QStringLiteral( "80" ) );
       mPrecision->setEnabled( false );
       mWidth->setValidator( new QIntValidator( 1, 255, this ) );
       break;
 
     case 1: // Whole number
       if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 10 )
-        mWidth->setText( "10" );
+        mWidth->setText( QStringLiteral( "10" ) );
       mPrecision->setEnabled( false );
       mWidth->setValidator( new QIntValidator( 1, 10, this ) );
       break;
 
     case 2: // Decimal number
       if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 20 )
-        mWidth->setText( "20" );
+        mWidth->setText( QStringLiteral( "20" ) );
       mPrecision->setEnabled( true );
       mWidth->setValidator( new QIntValidator( 1, 20, this ) );
       break;
@@ -144,21 +143,21 @@ void QgsNewVectorLayerDialog::on_mTypeBox_currentIndexChanged( int index )
   }
 }
 
-QGis::WkbType QgsNewVectorLayerDialog::selectedType() const
+QgsWkbTypes::Type QgsNewVectorLayerDialog::selectedType() const
 {
   if ( mPointRadioButton->isChecked() )
   {
-    return QGis::WKBPoint;
+    return QgsWkbTypes::Point;
   }
   else if ( mLineRadioButton->isChecked() )
   {
-    return QGis::WKBLineString;
+    return QgsWkbTypes::LineString;
   }
   else if ( mPolygonRadioButton->isChecked() )
   {
-    return QGis::WKBPolygon;
+    return QgsWkbTypes::Polygon;
   }
-  return QGis::WKBUnknown;
+  return QgsWkbTypes::Unknown;
 }
 
 int QgsNewVectorLayerDialog::selectedCrsId() const
@@ -170,9 +169,9 @@ void QgsNewVectorLayerDialog::on_mAddAttributeButton_clicked()
 {
   QString myName = mNameEdit->text();
   QString myWidth = mWidth->text();
-  QString myPrecision = mPrecision->isEnabled() ? mPrecision->text() : "";
+  QString myPrecision = mPrecision->isEnabled() ? mPrecision->text() : QLatin1String( "" );
   //use userrole to avoid translated type string
-  QString myType = mTypeBox->itemData( mTypeBox->currentIndex(), Qt::UserRole ).toString();
+  QString myType = mTypeBox->currentData( Qt::UserRole ).toString();
   mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << myName << myType << myWidth << myPrecision ) );
   if ( mAttributeView->topLevelItemCount() > 0 )
   {
@@ -196,7 +195,7 @@ void QgsNewVectorLayerDialog::attributes( QList< QPair<QString, QString> >& at )
   while ( *it )
   {
     QTreeWidgetItem *item = *it;
-    QString type = QString( "%1;%2;%3" ).arg( item->text( 1 ), item->text( 2 ), item->text( 3 ) );
+    QString type = QStringLiteral( "%1;%2;%3" ).arg( item->text( 1 ), item->text( 2 ), item->text( 3 ) );
     at.push_back( qMakePair( item->text( 0 ), type ) );
     QgsDebugMsg( QString( "appending %1//%2" ).arg( item->text( 0 ), type ) );
     ++it;
@@ -206,7 +205,7 @@ void QgsNewVectorLayerDialog::attributes( QList< QPair<QString, QString> >& at )
 QString QgsNewVectorLayerDialog::selectedFileFormat() const
 {
   //use userrole to avoid translated type string
-  QString myType = mFileFormatComboBox->itemData( mFileFormatComboBox->currentIndex(), Qt::UserRole ).toString();
+  QString myType = mFileFormatComboBox->currentData( Qt::UserRole ).toString();
   return myType;
 }
 
@@ -232,10 +231,10 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget* parent, QString* pE
   QgsNewVectorLayerDialog geomDialog( parent );
   if ( geomDialog.exec() == QDialog::Rejected )
   {
-    return "";
+    return QLatin1String( "" );
   }
 
-  QGis::WkbType geometrytype = geomDialog.selectedType();
+  QgsWkbTypes::Type geometrytype = geomDialog.selectedType();
   QString fileformat = geomDialog.selectedFileFormat();
   QString enc = geomDialog.selectedFileEncoding();
   int crsId = geomDialog.selectedCrsId();
@@ -245,23 +244,23 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget* parent, QString* pE
   geomDialog.attributes( attributes );
 
   QSettings settings;
-  QString lastUsedDir = settings.value( "/UI/lastVectorFileFilterDir", QDir::homePath() ).toString();
+  QString lastUsedDir = settings.value( QStringLiteral( "/UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString();
   QString filterString = QgsVectorFileWriter::filterForDriver( fileformat );
   QString fileName = QFileDialog::getSaveFileName( nullptr, tr( "Save layer as..." ), lastUsedDir, filterString );
   if ( fileName.isNull() )
   {
-    return "";
+    return QLatin1String( "" );
   }
 
-  if ( fileformat == "ESRI Shapefile" && !fileName.endsWith( ".shp", Qt::CaseInsensitive ) )
-    fileName += ".shp";
+  if ( fileformat == QLatin1String( "ESRI Shapefile" ) && !fileName.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) )
+    fileName += QLatin1String( ".shp" );
 
-  settings.setValue( "/UI/lastVectorFileFilterDir", QFileInfo( fileName ).absolutePath() );
-  settings.setValue( "/UI/encoding", enc );
+  settings.setValue( QStringLiteral( "/UI/lastVectorFileFilterDir" ), QFileInfo( fileName ).absolutePath() );
+  settings.setValue( QStringLiteral( "/UI/encoding" ), enc );
 
   //try to create the new layer with OGRProvider instead of QgsVectorFileWriter
   QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-  QString ogrlib = pReg->library( "ogr" );
+  QString ogrlib = pReg->library( QStringLiteral( "ogr" ) );
   // load the data provider
   QLibrary* myLib = new QLibrary( ogrlib );
   bool loaded = myLib->load();
@@ -269,15 +268,15 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget* parent, QString* pE
   {
     QgsDebugMsg( "ogr provider loaded" );
 
-    typedef bool ( *createEmptyDataSourceProc )( const QString&, const QString&, const QString&, QGis::WkbType,
-        const QList< QPair<QString, QString> >&, const QgsCoordinateReferenceSystem * );
+    typedef bool ( *createEmptyDataSourceProc )( const QString&, const QString&, const QString&, QgsWkbTypes::Type,
+        const QList< QPair<QString, QString> >&, const QgsCoordinateReferenceSystem & );
     createEmptyDataSourceProc createEmptyDataSource = ( createEmptyDataSourceProc ) cast_to_fptr( myLib->resolve( "createEmptyDataSource" ) );
     if ( createEmptyDataSource )
     {
-      if ( geometrytype != QGis::WKBUnknown )
+      if ( geometrytype != QgsWkbTypes::Unknown )
       {
-        QgsCoordinateReferenceSystem srs( crsId, QgsCoordinateReferenceSystem::InternalCrsId );
-        if ( !createEmptyDataSource( fileName, fileformat, enc, geometrytype, attributes, &srs ) )
+        QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromSrsId( crsId );
+        if ( !createEmptyDataSource( fileName, fileformat, enc, geometrytype, attributes, srs ) )
         {
           return QString::null;
         }

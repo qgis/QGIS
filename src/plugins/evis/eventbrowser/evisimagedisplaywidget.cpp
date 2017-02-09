@@ -32,6 +32,7 @@
 #include <QHBoxLayout>
 #include <QScrollBar>
 #include <QUrl>
+
 /**
 * Constructor
 * @param parent - Pointer the to parent QWidget for modality
@@ -51,7 +52,7 @@ eVisImageDisplayWidget::eVisImageDisplayWidget( QWidget* parent, Qt::WindowFlags
   pbtnZoomIn->setEnabled( false );
   pbtnZoomOut->setEnabled( false );
   pbtnZoomFull->setEnabled( false );
-  QString myThemePath = QgsApplication::activeThemePath();
+  QString myThemePath = QgsApplication::defaultThemePath();
   pbtnZoomIn->setToolTip( tr( "Zoom in" ) );
   pbtnZoomIn->setWhatsThis( tr( "Zoom in to see more detail." ) );
   pbtnZoomOut->setToolTip( tr( "Zoom out" ) );
@@ -96,14 +97,7 @@ eVisImageDisplayWidget::eVisImageDisplayWidget( QWidget* parent, Qt::WindowFlags
 
   //setup http connection
   mHttpBuffer = new QBuffer();
-#if QT_VERSION < 0x050000
-  mHttpConnection = new QHttp();
-#endif
   mHttpBuffer->open( QBuffer::ReadWrite );
-// TODO
-#if QT_VERSION < 0x050000
-  connect( mHttpConnection, SIGNAL( requestFinished( int, bool ) ), this, SLOT( displayUrlImage( int, bool ) ) );
-#endif
 
   //initialize remaining variables
   mScaleByHeight = false;
@@ -118,9 +112,6 @@ eVisImageDisplayWidget::~eVisImageDisplayWidget()
   delete mImageLabel;
   delete mImage;
   delete mHttpBuffer;
-#if QT_VERSION < 0x050000
-  delete mHttpConnection;
-#endif
   delete pbtnZoomIn;
   delete pbtnZoomOut;
   delete pbtnZoomFull;
@@ -197,11 +188,7 @@ void eVisImageDisplayWidget::displayImage()
 */
 void eVisImageDisplayWidget::displayUrlImage( const QString& url )
 {
-  QUrl myUrl( url );
-#if QT_VERSION < 0x050000
-  mHttpConnection->setHost( myUrl.host() );
-  mCurrentHttpImageRequestId = mHttpConnection->get( myUrl.path().replace( '\\', '/' ), mHttpBuffer );
-#endif
+  Q_UNUSED( url );
 }
 
 /**
@@ -237,6 +224,7 @@ void eVisImageDisplayWidget::setScalers()
  * Public and Private Slots
  *
  */
+
 /**
 * Slot called when a http request is complete
 * @param requestId - The id of the http request

@@ -17,8 +17,10 @@
 #define QGSCLASSIFICATIONWIDGETWRAPPERFACTORY_H
 
 #include "qgseditorwidgetfactory.h"
+#include "qgis_gui.h"
 
-/** \class QgsClassificationWidgetWrapperFactory
+/** \ingroup gui
+ * \class QgsClassificationWidgetWrapperFactory
  * \note not available in Python bindings
  */
 

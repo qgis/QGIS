@@ -29,7 +29,7 @@ class QgsProviderRegistry
     QString pluginList( bool asHtml = false ) const;
 
     /** Return library directory where plugins are found */
-    const QDir & libraryDirectory() const;
+    QDir libraryDirectory() const;
 
     /** Set library directory where to search for plugins */
     void setLibraryDirectory( const QDir & path );
@@ -48,18 +48,18 @@ class QgsProviderRegistry
      */
     int providerCapabilities( const QString& providerKey ) const;
 
+    /** Returns a widget for selecting layers from a provider.
+     */
     QWidget *selectWidget( const QString & providerKey,
                            QWidget * parent = 0, const Qt::WindowFlags& fl = 0 );
 
-%If (!QT5_SUPPORT)
     /** Get pointer to provider function
-     * @param providerKey identificator of the provider
-     * @param functionName name of function
-     * @return pointer to function or NULL on error
+        @param providerKey identificator of the provider
+        @param functionName name of function
+        @return pointer to function or NULL on error
      */
-    void *function( const QString & providerKey,
-                    const QString & functionName );
-%End
+    QFunctionPointer function( const QString & providerKey,
+                               const QString & functionName );
 
     QLibrary *providerLibrary( const QString & providerKey ) const;
 

@@ -18,6 +18,8 @@
 #include "qgsmaptoolshowhidelabels.h"
 
 #include "qgsapplication.h"
+#include "qgscsexception.h"
+#include "qgsfeatureiterator.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
 
@@ -46,7 +48,7 @@ void QgsMapToolShowHideLabels::canvasPressEvent( QgsMapMouseEvent* e )
   mSelectRect.setRect( 0, 0, 0, 0 );
   mSelectRect.setTopLeft( e->pos() );
   mSelectRect.setBottomRight( e->pos() );
-  mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
+  mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
 }
 
 void QgsMapToolShowHideLabels::canvasMoveEvent( QgsMapMouseEvent* e )
@@ -94,7 +96,7 @@ void QgsMapToolShowHideLabels::canvasReleaseEvent( QgsMapMouseEvent* e )
 
     showHideLabels( e );
 
-    mRubberBand->reset( QGis::Polygon );
+    mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
     delete mRubberBand;
     mRubberBand = nullptr;
   }
@@ -166,7 +168,7 @@ void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent * e )
     QList<QgsLabelPosition> positions;
     if ( selectedLabelFeatures( vlayer, positions ) )
     {
-      Q_FOREACH ( QgsLabelPosition pos, positions )
+      Q_FOREACH ( const QgsLabelPosition& pos, positions )
       {
         mCurrentLabel.pos = pos;
 
@@ -179,7 +181,7 @@ void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent * e )
   if ( labelChanged )
   {
     vlayer->endEditCommand();
-    mCanvas->refresh();
+    vlayer->triggerRepaint();
   }
   else
   {
@@ -192,13 +194,13 @@ bool QgsMapToolShowHideLabels::selectedFeatures( QgsVectorLayer* vlayer,
 {
   // culled from QgsMapToolSelectUtils::setSelectFeatures()
 
-  QgsGeometry* selectGeometry = mRubberBand->asGeometry();
+  QgsGeometry selectGeometry = mRubberBand->asGeometry();
 
   // toLayerCoordinates will throw an exception for any 'invalid' points in
   // the rubber band.
   // For example, if you project a world map onto a globe using EPSG 2163
   // and then click somewhere off the globe, an exception will be thrown.
-  QgsGeometry selectGeomTrans( *selectGeometry );
+  QgsGeometry selectGeomTrans( selectGeometry );
 
   if ( mCanvas->hasCrsTransformEnabled() )
   {
@@ -211,7 +213,7 @@ bool QgsMapToolShowHideLabels::selectedFeatures( QgsVectorLayer* vlayer,
     {
       Q_UNUSED( cse );
       // catch exception for 'invalid' point and leave existing selection unchanged
-      QgsLogger::warning( "Caught CRS exception " + QString( __FILE__ ) + ": " + QString::number( __LINE__ ) );
+      QgsLogger::warning( "Caught CRS exception " + QStringLiteral( __FILE__ ) + ": " + QString::number( __LINE__ ) );
       emit messageEmitted( tr( "CRS Exception: selection extends beyond layer's coordinate system." ), QgsMessageBar::WARNING );
       return false;
     }
@@ -253,7 +255,7 @@ bool QgsMapToolShowHideLabels::selectedLabelFeatures( QgsVectorLayer* vlayer,
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  QgsRectangle ext = mRubberBand->asGeometry()->boundingBox();
+  QgsRectangle ext = mRubberBand->asGeometry().boundingBox();
   QList<QgsLabelPosition> labelPosList = labelingResults->labelsWithinRect( ext );
 
   QList<QgsLabelPosition>::const_iterator it;
@@ -288,21 +290,25 @@ bool QgsMapToolShowHideLabels::showHide( QgsVectorLayer *vl, const bool show )
     return false;
   }
 
+  // we need to pass int value to the provider
+  // (committing bool value would fail on int field)
+  int curVal = show ? 1 : 0;
+
   // check if attribute value is already the same
-  if ( showSuccess && ( showVal != 0 ) == show )
+  if ( showSuccess && showVal == curVal )
   {
     return false;
   }
 
   // allow NULL (maybe default) value to stand for show label (i.e. 1)
   // skip NULL attributes if trying to show label
-  if ( !showSuccess && show == 1 )
+  if ( !showSuccess && curVal == 1 )
   {
     return false;
   }
 
   // different attribute value, edit table
-  if ( ! vl->changeAttributeValue( mCurrentLabel.pos.featureId, showCol, show ) )
+  if ( ! vl->changeAttributeValue( mCurrentLabel.pos.featureId, showCol, curVal ) )
   {
     QgsDebugMsg( "Failed write to attribute table" );
     return false;

@@ -27,10 +27,10 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
-from PyQt.QtCore import QVariant
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QGis, QgsField, QgsPoint, QgsGeometry, QgsFeature
+from qgis.core import Qgis, QgsField, QgsPoint, QgsGeometry, QgsFeature, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -54,15 +54,16 @@ class ExtentFromLayer(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Polygon from layer extent')
         self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
+        self.tags = self.tr('extent,envelope,bounds,bounding,boundary,layer')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterBoolean(self.BY_FEATURE,
                                            self.tr('Calculate extent for each feature separately'), False))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Extent')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Extent'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
         byFeature = self.getParameterValue(self.BY_FEATURE)
@@ -81,16 +82,16 @@ class ExtentFromLayer(GeoAlgorithm):
         ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                                                                     QGis.WKBPolygon, layer.crs())
+                                                                     QgsWkbTypes.Polygon, layer.crs())
 
         if byFeature:
-            self.featureExtent(layer, writer, progress)
+            self.featureExtent(layer, writer, feedback)
         else:
-            self.layerExtent(layer, writer, progress)
+            self.layerExtent(layer, writer, feedback)
 
         del writer
 
-    def layerExtent(self, layer, writer, progress):
+    def layerExtent(self, layer, writer, feedback):
         rect = layer.extent()
         minx = rect.xMinimum()
         miny = rect.yMinimum()
@@ -123,7 +124,7 @@ class ExtentFromLayer(GeoAlgorithm):
         feat.setAttributes(attrs)
         writer.addFeature(feat)
 
-    def featureExtent(self, layer, writer, progress):
+    def featureExtent(self, layer, writer, feedback):
         features = vector.features(layer)
         total = 100.0 / len(features)
         feat = QgsFeature()
@@ -159,4 +160,4 @@ class ExtentFromLayer(GeoAlgorithm):
             feat.setAttributes(attrs)
 
             writer.addFeature(feat)
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))

@@ -25,6 +25,7 @@
 #include <QMouseEvent>
 #include <QSettings>
 #include <QTreeWidgetItem>
+#include "qgis_app.h"
 
 class QString;
 class QWidget;
@@ -135,7 +136,7 @@ class APP_EXPORT QgsCustomization : public QObject
     void loadDefault();
 
     // Internal Qt widget which has to bes kipped in paths
-    static QStringList mInternalWidgets;
+    static QStringList sInternalWidgets;
 
     QString statusPath() { return mStatusPath; }
 
@@ -164,7 +165,7 @@ class APP_EXPORT QgsCustomization : public QObject
   private slots:
 
   private:
-    static QgsCustomization* pinstance;
+    static QgsCustomization* sInstance;
 
 };
 #endif // QGSCUSTOMIZATION_H

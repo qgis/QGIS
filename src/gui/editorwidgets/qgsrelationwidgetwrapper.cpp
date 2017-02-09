@@ -18,6 +18,7 @@
 #include "qgsrelationeditorwidget.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgsproject.h"
+#include "qgsrelationmanager.h"
 
 #include <QWidget>
 
@@ -37,6 +38,37 @@ void QgsRelationWidgetWrapper::setFeature( const QgsFeature& feature )
 {
   if ( mWidget && mRelation.isValid() )
     mWidget->setFeature( feature );
+}
+
+void QgsRelationWidgetWrapper::setVisible( bool visible )
+{
+  if ( mWidget )
+    mWidget->setVisible( visible );
+}
+
+bool QgsRelationWidgetWrapper::showUnlinkButton() const
+{
+  return mWidget->showUnlinkButton();
+}
+
+void QgsRelationWidgetWrapper::setShowUnlinkButton( bool showUnlinkButton )
+{
+  if ( mWidget )
+    mWidget->setShowUnlinkButton( showUnlinkButton );
+}
+
+bool QgsRelationWidgetWrapper::showLabel() const
+{
+  if ( mWidget )
+    return mWidget->showLabel();
+  else
+    return false;
+}
+
+void QgsRelationWidgetWrapper::setShowLabel( bool showLabel )
+{
+  if ( mWidget )
+    mWidget->setShowLabel( showLabel );
 }
 
 void QgsRelationWidgetWrapper::initWidget( QWidget* editor )
@@ -59,7 +91,7 @@ void QgsRelationWidgetWrapper::initWidget( QWidget* editor )
 
   w->setEditorContext( myContext );
 
-  QgsRelation nmrel = QgsProject::instance()->relationManager()->relation( config( "nm-rel" ).toString() );
+  QgsRelation nmrel = QgsProject::instance()->relationManager()->relation( config( QStringLiteral( "nm-rel" ) ).toString() );
 
   // If this widget is already embedded by the same relation, reduce functionality
   const QgsAttributeEditorContext* ctx = &context();
@@ -84,4 +116,15 @@ void QgsRelationWidgetWrapper::initWidget( QWidget* editor )
 bool QgsRelationWidgetWrapper::valid() const
 {
   return mWidget;
+}
+
+bool QgsRelationWidgetWrapper::showLinkButton() const
+{
+  return mWidget->showLinkButton();
+}
+
+void QgsRelationWidgetWrapper::setShowLinkButton( bool showLinkButton )
+{
+  if ( mWidget )
+    mWidget->setShowLinkButton( showLinkButton );
 }

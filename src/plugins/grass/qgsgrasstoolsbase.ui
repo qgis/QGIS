@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>QgsGrassToolsBase</class>
- <widget class="QDockWidget" name="QgsGrassToolsBase">
+ <widget class="QgsDockWidget" name="QgsGrassToolsBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -132,6 +132,14 @@
    <zorder>mMessageLabel</zorder>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsDockWidget</class>
+   <extends>QDockWidget</extends>
+   <header>qgsdockwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../../../images/images.qrc"/>
  </resources>

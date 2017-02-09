@@ -26,7 +26,7 @@
 QgsNewNameDialog::QgsNewNameDialog( const QString& source, const QString& initial,
                                     const QStringList& extensions, const QStringList& existing,
                                     const QRegExp& regexp, Qt::CaseSensitivity cs,
-                                    QWidget *parent, const Qt::WindowFlags& flags )
+                                    QWidget *parent, Qt::WindowFlags flags )
     : QgsDialog( parent, flags, QDialogButtonBox::Ok | QDialogButtonBox::Cancel )
     , mExiting( existing )
     , mExtensions( extensions )
@@ -59,11 +59,11 @@ QgsNewNameDialog::QgsNewNameDialog( const QString& source, const QString& initia
     QRegExpValidator *validator = new QRegExpValidator( regexp, this );
     mLineEdit->setValidator( validator );
   }
-  mLineEdit->setMinimumWidth( mLineEdit->fontMetrics().width( "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" ) );
+  mLineEdit->setMinimumWidth( mLineEdit->fontMetrics().width( QStringLiteral( "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" ) ) );
   connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( nameChanged() ) );
   layout()->addWidget( mLineEdit );
 
-  mNamesLabel = new QLabel( " ", this );
+  mNamesLabel = new QLabel( QStringLiteral( " " ), this );
   mNamesLabel->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   if ( !mExtensions.isEmpty() )
   {
@@ -71,7 +71,7 @@ QgsNewNameDialog::QgsNewNameDialog( const QString& source, const QString& initia
     layout()->addWidget( mNamesLabel );
   }
 
-  mErrorLabel = new QLabel( " ", this );
+  mErrorLabel = new QLabel( QStringLiteral( " " ), this );
   mErrorLabel->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   mErrorLabel->setWordWrap( true );
   layout()->addWidget( mErrorLabel );
@@ -111,14 +111,13 @@ QString QgsNewNameDialog::highlightText( const QString& text )
 
 void QgsNewNameDialog::nameChanged()
 {
-  QgsDebugMsg( "entered" );
 
   QString namesString = tr( "Full names" ) + ": ";
   if ( !mExtensions.isEmpty() )
   {
     mNamesLabel->setText( namesString );
   }
-  mErrorLabel->setText( " " ); // space to keep vertical space
+  mErrorLabel->setText( QStringLiteral( " " ) ); // space to keep vertical space
   QPushButton* okButton = buttonBox()->button( QDialogButtonBox::Ok );
   okButton->setText( mOkString );
   okButton->setEnabled( true );
@@ -135,7 +134,7 @@ void QgsNewNameDialog::nameChanged()
   QStringList newNames = fullNames( newName, mExtensions );
   if ( !mExtensions.isEmpty() )
   {
-    namesString += ' ' + newNames.join( ", " );
+    namesString += ' ' + newNames.join( QStringLiteral( ", " ) );
     mNamesLabel->setText( namesString );
   }
 
@@ -144,7 +143,7 @@ void QgsNewNameDialog::nameChanged()
   if ( !conflicts.isEmpty() )
   {
     QString warning = !mConflictingNameWarning.isEmpty() ? mConflictingNameWarning
-                      : tr( "%n Name(s) %1 exists", nullptr, conflicts.size() ).arg( conflicts.join( ", " ) );
+                      : tr( "%n Name(s) %1 exists", nullptr, conflicts.size() ).arg( conflicts.join( QStringLiteral( ", " ) ) );
     mErrorLabel->setText( highlightText( warning ) );
     if ( mOverwriteEnabled )
     {

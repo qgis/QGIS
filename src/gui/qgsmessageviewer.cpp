@@ -18,7 +18,7 @@
 #include "qgsmessageviewer.h"
 #include <QSettings>
 
-QgsMessageViewer::QgsMessageViewer( QWidget *parent, const Qt::WindowFlags& fl, bool deleteOnClose )
+QgsMessageViewer::QgsMessageViewer( QWidget *parent, Qt::WindowFlags fl, bool deleteOnClose )
     : QDialog( parent, fl )
 {
   setupUi( this );
@@ -30,16 +30,16 @@ QgsMessageViewer::QgsMessageViewer( QWidget *parent, const Qt::WindowFlags& fl, 
   setCheckBoxVisible( false );
   setCheckBoxState( Qt::Unchecked );
 
-  mCheckBoxQSettingsLabel = "";
+  mCheckBoxQSettingsLabel = QLatin1String( "" );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/MessageViewer/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/MessageViewer/geometry" ) ).toByteArray() );
 }
 
 QgsMessageViewer::~QgsMessageViewer()
 {
   QSettings settings;
-  settings.setValue( "/Windows/MessageViewer/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/MessageViewer/geometry" ), saveGeometry() );
 }
 
 void QgsMessageViewer::setMessageAsHtml( const QString &msg )

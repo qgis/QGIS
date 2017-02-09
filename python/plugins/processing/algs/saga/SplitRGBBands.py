@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -26,7 +28,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.outputs import OutputRaster
@@ -59,7 +61,7 @@ class SplitRGBBands(GeoAlgorithm):
         self.addOutput(OutputRaster(SplitRGBBands.B,
                                     self.tr('Output B band layer')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         # TODO: check correct num of bands
         input = self.getParameterValue(SplitRGBBands.INPUT)
         temp = getTempFilename(None).replace('.', '')
@@ -86,4 +88,4 @@ class SplitRGBBands(GeoAlgorithm):
                         )
 
         SagaUtils.createSagaBatchJobFileFromSagaCommands(commands)
-        SagaUtils.executeSaga(progress)
+        SagaUtils.executeSaga(feedback)

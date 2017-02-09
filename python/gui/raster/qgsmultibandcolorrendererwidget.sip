@@ -10,6 +10,7 @@ class QgsMultiBandColorRendererWidget: QgsRasterRendererWidget
     ~QgsMultiBandColorRendererWidget();
 
     QgsRasterRenderer* renderer();
+    void setMapCanvas( QgsMapCanvas* canvas );
 
     void setFromRenderer( const QgsRasterRenderer* r );
 
@@ -18,7 +19,8 @@ class QgsMultiBandColorRendererWidget: QgsRasterRendererWidget
     void setMin( const QString& value, int index = 0 );
     void setMax( const QString& value, int index = 0 );
     int selectedBand( int index = 0 );
+    void doComputations();
 
   public slots:
-    void loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin );
+    void loadMinMax( int theBandNo, double theMin, double theMax );
 };

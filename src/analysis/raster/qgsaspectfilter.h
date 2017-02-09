@@ -19,13 +19,14 @@
 #define QGSASPECTFILTER_H
 
 #include "qgsderivativefilter.h"
+#include "qgis_analysis.h"
 
-/** Calculates aspect values in a window of 3x3 cells based on first order derivatives in x- and y- directions. Direction is clockwise starting from north*/
+/** \ingroup analysis
+ * Calculates aspect values in a window of 3x3 cells based on first order derivatives in x- and y- directions. Direction is clockwise starting from north*/
 class ANALYSIS_EXPORT QgsAspectFilter: public QgsDerivativeFilter
 {
   public:
     QgsAspectFilter( const QString& inputFile, const QString& outputFile, const QString& outputFormat );
-    ~QgsAspectFilter();
 
     /** Calculates output value from nine input values. The input values and the output value can be equal to the
       nodata value if not present or outside of the border. Must be implemented by subclasses*/

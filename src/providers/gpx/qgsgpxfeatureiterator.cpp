@@ -27,6 +27,7 @@
 
 QgsGPXFeatureIterator::QgsGPXFeatureIterator( QgsGPXFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIteratorFromSource<QgsGPXFeatureSource>( source, ownSource, request )
+    , mFetchedFid( false )
 {
   rewind();
 }
@@ -186,9 +187,11 @@ bool QgsGPXFeatureIterator::readWaypoint( const QgsWaypoint& wpt, QgsFeature& fe
   // some wkb voodoo
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
   {
-    feature.setGeometry( readWaypointGeometry( wpt ) );
+    QgsGeometry* g = readWaypointGeometry( wpt );
+    feature.setGeometry( *g );
+    delete g;
   }
-  feature.setFeatureId( wpt.id );
+  feature.setId( wpt.id );
   feature.setValid( true );
   feature.setFields( mSource->mFields ); // allow name-based attribute lookups
   feature.initAttributes( mSource->mFields.count() );
@@ -225,13 +228,14 @@ bool QgsGPXFeatureIterator::readRoute( const QgsRoute& rte, QgsFeature& feature 
 
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
   {
-    feature.setGeometry( theGeometry );
+    feature.setGeometry( *theGeometry );
+    delete theGeometry;
   }
   else
   {
     delete theGeometry;
   }
-  feature.setFeatureId( rte.id );
+  feature.setId( rte.id );
   feature.setValid( true );
   feature.setFields( mSource->mFields ); // allow name-based attribute lookups
   feature.initAttributes( mSource->mFields.count() );
@@ -267,13 +271,14 @@ bool QgsGPXFeatureIterator::readTrack( const QgsTrack& trk, QgsFeature& feature 
 
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
   {
-    feature.setGeometry( theGeometry );
+    feature.setGeometry( *theGeometry );
+    delete theGeometry;
   }
   else
   {
     delete theGeometry;
   }
-  feature.setFeatureId( trk.id );
+  feature.setId( trk.id );
   feature.setValid( true );
   feature.setFields( mSource->mFields ); // allow name-based attribute lookups
   feature.initAttributes( mSource->mFields.count() );
@@ -394,7 +399,7 @@ QgsGeometry *QgsGPXFeatureIterator::readWaypointGeometry( const QgsWaypoint& wpt
   unsigned char *geo = new unsigned char[size];
 
   QgsWkbPtr wkbPtr( geo, size );
-  wkbPtr << ( char ) QgsApplication::endian() << QGis::WKBPoint << wpt.lon << wpt.lat;
+  wkbPtr << ( char ) QgsApplication::endian() << QgsWkbTypes::Point << wpt.lon << wpt.lat;
 
   QgsGeometry *g = new QgsGeometry();
   g->fromWkb( geo, size );
@@ -409,7 +414,7 @@ QgsGeometry *QgsGPXFeatureIterator::readRouteGeometry( const QgsRoute& rte )
   unsigned char *geo = new unsigned char[size];
 
   QgsWkbPtr wkbPtr( geo, size );
-  wkbPtr << ( char ) QgsApplication::endian() << QGis::WKBLineString << rte.points.size();
+  wkbPtr << ( char ) QgsApplication::endian() << QgsWkbTypes::LineString << rte.points.size();
 
   for ( int i = 0; i < rte.points.size(); ++i )
   {
@@ -451,7 +456,7 @@ QgsGeometry *QgsGPXFeatureIterator::readTrackGeometry( const QgsTrack& trk )
   }
 
   QgsWkbPtr wkbPtr( geo, size );
-  wkbPtr << ( char ) QgsApplication::endian() << QGis::WKBLineString << totalPoints;
+  wkbPtr << ( char ) QgsApplication::endian() << QgsWkbTypes::LineString << totalPoints;
 
   for ( int k = 0; k < trk.segments.size(); k++ )
   {

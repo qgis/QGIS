@@ -20,6 +20,7 @@
 
 #include "qgsmssqlgeometryparser.h"
 #include "qgsfeatureiterator.h"
+#include "qgsfields.h"
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
@@ -30,7 +31,6 @@ class QgsMssqlFeatureSource : public QgsAbstractFeatureSource
 {
   public:
     explicit QgsMssqlFeatureSource( const QgsMssqlProvider* p );
-    ~QgsMssqlFeatureSource();
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
 
@@ -75,20 +75,13 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
 
     ~QgsMssqlFeatureIterator();
 
-    //! reset the iterator to the starting position
     virtual bool rewind() override;
-
-    //! end of iterating: free the resources / lock
     virtual bool close() override;
 
   protected:
     void BuildStatement( const QgsFeatureRequest& request );
 
-
-    //! fetch next feature, return true on success
     virtual bool fetchFeature( QgsFeature& feature ) override;
-
-    //! fetch next feature filter expression
     bool nextFeatureFilterExpression( QgsFeature& f ) override;
 
   private:

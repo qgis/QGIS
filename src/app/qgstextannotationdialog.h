@@ -19,22 +19,27 @@
 #define QGSTEXTANNOTATIONDIALOG_H
 
 #include "ui_qgstextannotationdialogbase.h"
+#include "qgis_app.h"
+#include <memory>
 
 class QgsAnnotationWidget;
-class QgsTextAnnotationItem;
+class QgsMapCanvasAnnotationItem;
 
 class APP_EXPORT QgsTextAnnotationDialog: public QDialog, private Ui::QgsTextAnnotationDialogBase
 {
     Q_OBJECT
   public:
-    QgsTextAnnotationDialog( QgsTextAnnotationItem* item, QWidget * parent = nullptr, Qt::WindowFlags f = nullptr );
-    ~QgsTextAnnotationDialog();
+    QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem* item, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
+
+  protected:
+
+    virtual void showEvent( QShowEvent * event ) override;
 
   private:
-    QgsTextAnnotationItem* mItem;
-    /** Text document (a clone of the annotation items document)*/
-    QTextDocument* mTextDocument;
-    QgsAnnotationWidget* mEmbeddedWidget;
+    QgsMapCanvasAnnotationItem* mItem = nullptr;
+    //! Text document (a clone of the annotation items document)
+    std::unique_ptr< QTextDocument > mTextDocument;
+    QgsAnnotationWidget* mEmbeddedWidget = nullptr;
 
     void blockAllSignals( bool block );
 
@@ -44,6 +49,8 @@ class APP_EXPORT QgsTextAnnotationDialog: public QDialog, private Ui::QgsTextAnn
     void on_mFontColorButton_colorChanged( const QColor& color );
     void setCurrentFontPropertiesToGui();
     void deleteItem();
+    void on_mButtonBox_clicked( QAbstractButton* button );
+    void backgroundColorChanged( const QColor& color );
 };
 
 #endif // QGSTEXTANNOTATIONDIALOG_H

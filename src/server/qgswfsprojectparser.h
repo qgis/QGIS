@@ -19,27 +19,25 @@
 #define QGSWFSPROJECTPARSER_H
 
 #include "qgsserverprojectparser.h"
+#include "qgis_server.h"
 
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
 class QgsAccessControl;
-#endif
 
 
-class SERVER_EXPORT QgsWFSProjectParser
+class SERVER_EXPORT QgsWfsProjectParser
 {
   public:
-    QgsWFSProjectParser(
+    QgsWfsProjectParser(
       const QString& filePath
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
       , const QgsAccessControl* ac
-#endif
     );
-    ~QgsWFSProjectParser();
+    ~QgsWfsProjectParser();
+
+    QgsWfsProjectParser( const QgsWfsProjectParser& rh ) = delete;
+    QgsWfsProjectParser& operator=( const QgsWfsProjectParser& rh ) = delete;
 
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
-    QString serviceUrl() const;
-    QString wfsServiceUrl() const;
     void featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const;
 
     void describeFeatureType( const QString& aTypeName, QDomElement& parentElement, QDomDocument& doc ) const;
@@ -56,12 +54,8 @@ class SERVER_EXPORT QgsWFSProjectParser
 
   private:
     QgsServerProjectParser* mProjectParser;
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
     const QgsAccessControl* mAccessControl;
-#endif
 
-    QgsWFSProjectParser( const QgsWFSProjectParser& rh );
-    QgsWFSProjectParser& operator=( const QgsWFSProjectParser& rh );
 };
 
 #endif // QGSWFSPROJECTPARSER_H

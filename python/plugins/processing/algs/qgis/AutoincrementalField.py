@@ -25,7 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import QgsField, QgsFeature
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -42,23 +42,22 @@ class AutoincrementalField(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Add autoincremental field')
         self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
         self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer')))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Incremented')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         output = self.getOutputFromName(self.OUTPUT)
         vlayer = \
             dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
-        vprovider = vlayer.dataProvider()
-        fields = vprovider.fields()
+        fields = vlayer.fields()
         fields.append(QgsField('AUTO', QVariant.Int))
-        writer = output.getVectorWriter(fields, vprovider.geometryType(),
+        writer = output.getVectorWriter(fields, vlayer.wkbType(),
                                         vlayer.crs())
         outFeat = QgsFeature()
         features = vector.features(vlayer)
         total = 100.0 / len(features)
         for current, feat in enumerate(features):
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
             geom = feat.geometry()
             outFeat.setGeometry(geom)
             attrs = feat.attributes()

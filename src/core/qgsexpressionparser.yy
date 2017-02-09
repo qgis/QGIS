@@ -223,7 +223,9 @@ expression:
             exp_error(parser_ctx, "Function is not known");
             YYERROR;
           }
-          if ( QgsExpression::Functions()[fnIndex]->params() != 0 )
+          // 0 parameters is expected, -1 parameters means leave it to the
+          // implementation
+          if ( QgsExpression::Functions()[fnIndex]->params() > 0 )
           {
             exp_error(parser_ctx, QString( "%1 function is called with wrong number of arguments" ).arg( QgsExpression::Functions()[fnIndex]->name() ).toLocal8Bit().constData() );
             YYERROR;
@@ -247,23 +249,14 @@ expression:
     | SPECIAL_COL
         {
           int fnIndex = QgsExpression::functionIndex(*$1);
-          if (fnIndex == -1)
+          if (fnIndex >= 0)
           {
-            if ( !QgsExpression::hasSpecialColumn( *$1 ) )
-            {
-              exp_error(parser_ctx, "Special column is not known");
-              delete $1;
-              YYERROR;
-            }
-            // $var is equivalent to _specialcol_( "$var" )
-            QgsExpression::NodeList* args = new QgsExpression::NodeList();
-            QgsExpression::NodeLiteral* literal = new QgsExpression::NodeLiteral( *$1 );
-            args->append( literal );
-            $$ = new QgsExpression::NodeFunction( QgsExpression::functionIndex( "_specialcol_" ), args );
+            $$ = new QgsExpression::NodeFunction( fnIndex, nullptr );
           }
           else
           {
-            $$ = new QgsExpression::NodeFunction( fnIndex, nullptr );
+            exp_error(parser_ctx, QString("%1 function is not known").arg(*$1).toLocal8Bit().constData());
+            YYERROR;
           }
           delete $1;
         }
@@ -351,4 +344,3 @@ void exp_error(expression_parser_context* parser_ctx, const char* msg)
 {
   parser_ctx->errorMsg = msg;
 }
-

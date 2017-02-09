@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import next
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -27,16 +28,17 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
-from PyQt.QtCore import QVariant
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QGis, QgsField, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsPoint
+from qgis.core import Qgis, QgsField, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.tools import dataobjects, vector
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
+from processing.tools import dataobjects, vector
+
 from . import voronoi
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -55,12 +57,13 @@ class Delaunay(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POINT]))
+                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT]))
 
         self.addOutput(OutputVector(self.OUTPUT,
-                                    self.tr('Delaunay triangulation')))
+                                    self.tr('Delaunay triangulation'),
+                                    datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
 
@@ -69,7 +72,7 @@ class Delaunay(GeoAlgorithm):
                   QgsField('POINTC', QVariant.Double, '', 24, 15)]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                                                                     QGis.WKBPolygon, layer.crs())
+                                                                     QgsWkbTypes.Polygon, layer.crs())
 
         pts = []
         ptDict = {}
@@ -79,13 +82,19 @@ class Delaunay(GeoAlgorithm):
         total = 100.0 / len(features)
         for current, inFeat in enumerate(features):
             geom = QgsGeometry(inFeat.geometry())
-            point = geom.asPoint()
-            x = point.x()
-            y = point.y()
-            pts.append((x, y))
-            ptNdx += 1
-            ptDict[ptNdx] = inFeat.id()
-            progress.setPercentage(int(current * total))
+            if geom.isNull():
+                continue
+            if geom.isMultipart():
+                points = geom.asMultiPoint()
+            else:
+                points = [geom.asPoint()]
+            for n, point in enumerate(points):
+                x = point.x()
+                y = point.y()
+                pts.append((x, y))
+                ptNdx += 1
+                ptDict[ptNdx] = (inFeat.id(), n)
+            feedback.setProgress(int(current * total))
 
         if len(pts) < 3:
             raise GeoAlgorithmExecutionException(
@@ -102,16 +111,20 @@ class Delaunay(GeoAlgorithm):
 
         total = 100.0 / len(triangles)
         for current, triangle in enumerate(triangles):
-            indicies = list(triangle)
-            indicies.append(indicies[0])
+            indices = list(triangle)
+            indices.append(indices[0])
             polygon = []
             attrs = []
             step = 0
-            for index in indicies:
-                request = QgsFeatureRequest().setFilterFid(ptDict[ids[index]])
-                inFeat = layer.getFeatures(request).next()
+            for index in indices:
+                fid, n = ptDict[ids[index]]
+                request = QgsFeatureRequest().setFilterFid(fid)
+                inFeat = next(layer.getFeatures(request))
                 geom = QgsGeometry(inFeat.geometry())
-                point = QgsPoint(geom.asPoint())
+                if geom.isMultipart():
+                    point = QgsPoint(geom.asMultiPoint()[n])
+                else:
+                    point = QgsPoint(geom.asPoint())
                 polygon.append(point)
                 if step <= 3:
                     attrs.append(ids[index])
@@ -120,6 +133,6 @@ class Delaunay(GeoAlgorithm):
             geometry = QgsGeometry().fromPolygon([polygon])
             feat.setGeometry(geometry)
             writer.addFeature(feat)
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

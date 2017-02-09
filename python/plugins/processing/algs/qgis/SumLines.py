@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import next
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -27,7 +28,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import QgsFeature, QgsGeometry, QgsFeatureRequest, QgsDistanceArea
 
@@ -56,31 +57,29 @@ class SumLines(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
         self.addParameter(ParameterVector(self.LINES,
-                                          self.tr('Lines'), [ParameterVector.VECTOR_TYPE_LINE]))
+                                          self.tr('Lines'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterVector(self.POLYGONS,
-                                          self.tr('Polygons'), [ParameterVector.VECTOR_TYPE_POLYGON]))
+                                          self.tr('Polygons'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterString(self.LEN_FIELD,
                                           self.tr('Lines length field name', 'LENGTH')))
         self.addParameter(ParameterString(self.COUNT_FIELD,
                                           self.tr('Lines count field name', 'COUNT')))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Line length')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Line length'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         lineLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.LINES))
         polyLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POLYGONS))
         lengthFieldName = self.getParameterValue(self.LEN_FIELD)
         countFieldName = self.getParameterValue(self.COUNT_FIELD)
 
-        polyProvider = polyLayer.dataProvider()
-
         (idxLength, fieldList) = vector.findOrCreateField(polyLayer,
-                                                          polyLayer.pendingFields(), lengthFieldName)
+                                                          polyLayer.fields(), lengthFieldName)
         (idxCount, fieldList) = vector.findOrCreateField(polyLayer, fieldList,
                                                          countFieldName)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fieldList.toList(), polyProvider.geometryType(), polyProvider.crs())
+            fieldList.toList(), polyLayer.wkbType(), polyLayer.crs())
 
         spatialIndex = vector.spatialindex(lineLayer)
 
@@ -95,23 +94,26 @@ class SumLines(GeoAlgorithm):
         total = 100.0 / len(features)
         hasIntersections = False
         for current, ftPoly in enumerate(features):
-            inGeom = QgsGeometry(ftPoly.geometry())
+            inGeom = ftPoly.geometry()
             attrs = ftPoly.attributes()
             count = 0
             length = 0
             hasIntersections = False
             lines = spatialIndex.intersects(inGeom.boundingBox())
+            engine = None
             if len(lines) > 0:
                 hasIntersections = True
+                # use prepared geometries for faster intersection tests
+                engine = QgsGeometry.createGeometryEngine(inGeom.geometry())
+                engine.prepareGeometry()
 
             if hasIntersections:
-                for i in lines:
-                    request = QgsFeatureRequest().setFilterFid(i)
-                    ftLine = lineLayer.getFeatures(request).next()
-                    tmpGeom = QgsGeometry(ftLine.geometry())
-                    if inGeom.intersects(tmpGeom):
+                request = QgsFeatureRequest().setFilterFids(lines).setSubsetOfAttributes([])
+                for ftLine in lineLayer.getFeatures(request):
+                    tmpGeom = ftLine.geometry()
+                    if engine.intersects(tmpGeom.geometry()):
                         outGeom = inGeom.intersection(tmpGeom)
-                        length += distArea.measure(outGeom)
+                        length += distArea.measureLength(outGeom)
                         count += 1
 
             outFeat.setGeometry(inGeom)
@@ -126,6 +128,6 @@ class SumLines(GeoAlgorithm):
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

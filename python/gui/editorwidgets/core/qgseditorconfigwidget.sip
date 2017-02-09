@@ -36,7 +36,14 @@ class QgsEditorConfigWidget : QWidget
      */
     QgsVectorLayer* layer();
 
-    virtual QgsEditorWidgetConfig config() = 0;
-    virtual void setConfig( const QgsEditorWidgetConfig& config ) = 0;
+    virtual QVariantMap config() = 0;
+    virtual void setConfig( const QVariantMap& config ) = 0;
+
+  signals:
+
+    /** Emitted when the configuration of the widget is changed.
+     * @note added in QGIS 3.0
+     */
+    void changed();
 };
 

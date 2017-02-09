@@ -29,7 +29,7 @@ QgsMapToolSelectPolygon::QgsMapToolSelectPolygon( QgsMapCanvas* canvas )
   mRubberBand = nullptr;
   mCursor = Qt::ArrowCursor;
   mFillColor = QColor( 254, 178, 76, 63 );
-  mBorderColour = QColor( 254, 58, 29, 100 );
+  mBorderColor = QColor( 254, 58, 29, 100 );
 }
 
 QgsMapToolSelectPolygon::~QgsMapToolSelectPolygon()
@@ -41,9 +41,9 @@ void QgsMapToolSelectPolygon::canvasPressEvent( QgsMapMouseEvent* e )
 {
   if ( !mRubberBand )
   {
-    mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
+    mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
     mRubberBand->setFillColor( mFillColor );
-    mRubberBand->setBorderColor( mBorderColour );
+    mRubberBand->setBorderColor( mBorderColor );
   }
   if ( e->button() == Qt::LeftButton )
   {
@@ -53,11 +53,10 @@ void QgsMapToolSelectPolygon::canvasPressEvent( QgsMapMouseEvent* e )
   {
     if ( mRubberBand->numberOfVertices() > 2 )
     {
-      QgsGeometry* polygonGeom = mRubberBand->asGeometry();
-      QgsMapToolSelectUtils::setSelectFeatures( mCanvas, polygonGeom, e );
-      delete polygonGeom;
+      QgsGeometry polygonGeom = mRubberBand->asGeometry();
+      QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, polygonGeom, e );
     }
-    mRubberBand->reset( QGis::Polygon );
+    mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
     delete mRubberBand;
     mRubberBand = nullptr;
   }

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Médéric Ribreux'
 __date__ = 'January 2016'
@@ -34,6 +35,7 @@ from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputDirectory
 from processing.tools.system import isWindows
+from processing.tools import dataobjects
 from processing.algs.gdal.GdalUtils import GdalUtils
 import re
 
@@ -59,7 +61,7 @@ class retile(GdalAlgorithm):
     ALGO = ['near', 'bilinear', 'cubic', 'cubicspline', 'lanczos']
 
     def commandLineName(self):
-        return "gdalogr:retile"
+        return "gdal:retile"
 
     def commandName(self):
         return "gdal_retile"
@@ -71,14 +73,14 @@ class retile(GdalAlgorithm):
         # Required parameters
         self.addParameter(ParameterMultipleInput(self.INPUT,
                                                  self.tr('Input layers'),
-                                                 ParameterMultipleInput.TYPE_RASTER))
+                                                 dataobjects.TYPE_RASTER))
         # Advanced parameters
         params = []
         params.append(ParameterString(self.PIXELSIZE,
                                       self.tr('Pixel size to be used for the output file (XSIZE YSIZE like 512 512)'),
                                       None, False, True))
         params.append(ParameterSelection(self.ALGORITHM,
-                                         self.tr('Resampling algorithm'), self.ALGO, 0, False, True))
+                                         self.tr('Resampling algorithm'), self.ALGO, 0, False, optional=True))
         params.append(ParameterCrs(self.S_SRS,
                                    self.tr('Override source CRS'), None, True))
         params.append(ParameterNumber(self.PYRAMIDLEVELS,
@@ -89,10 +91,10 @@ class retile(GdalAlgorithm):
                                        False, True))
         params.append(ParameterSelection(self.RTYPE,
                                          self.tr('Output raster type'),
-                                         self.TYPE, 5, False, True))
+                                         self.TYPE, 5, False, optional=True))
         params.append(ParameterSelection(self.FORMAT,
                                          self.tr('Output raster format'),
-                                         GdalUtils.getSupportedRasters().keys(), 0, False, True))
+                                         list(GdalUtils.getSupportedRasters().keys()), 0, False, optional=True))
         params.append(ParameterBoolean(self.USEDIRFOREACHROW,
                                        self.tr('Use a directory for each row'),
                                        False, True))
@@ -125,7 +127,7 @@ class retile(GdalAlgorithm):
             arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
 
         arguments.append('-of')
-        arguments.append(GdalUtils.getSupportedRasters().keys()[self.getParameterValue(self.FORMAT)])
+        arguments.append(list(GdalUtils.getSupportedRasters().keys())[self.getParameterValue(self.FORMAT)])
 
         if self.getParameterValue(self.PIXELSIZE):
             pixelSize = self.getParameterValue(self.PIXELSIZE)
@@ -141,14 +143,14 @@ class retile(GdalAlgorithm):
         if self.getParameterValue(self.USEDIRFOREACHROW):
             arguments.append('-useDirForEachRow')
 
-        ssrs = unicode(self.getParameterValue(self.S_SRS))
+        ssrs = str(self.getParameterValue(self.S_SRS))
         if len(ssrs) > 0:
             arguments.append('-s_srs')
             arguments.append(ssrs)
 
         if self.getParameterValue(self.PYRAMIDLEVELS):
             arguments.append('-levels')
-            arguments.append(unicode(self.getParameterValue(self.PYRAMIDLEVELS)))
+            arguments.append(str(self.getParameterValue(self.PYRAMIDLEVELS)))
 
         arguments.append('-r')
         arguments.append(self.ALGO[self.getParameterValue(self.ALGORITHM)])

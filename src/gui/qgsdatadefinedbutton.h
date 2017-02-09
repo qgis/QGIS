@@ -20,12 +20,13 @@
 #include <QMap>
 #include <QPointer>
 #include <QToolButton>
-#include <QScopedPointer>
-#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextgenerator.h"
+#include "qgsproperty.h"
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
-class QgsDataDefined;
 class QgsMapCanvas;
+class QgsDataDefined;
 
 /** \ingroup gui
  * \class QgsDataDefinedAssistant
@@ -41,7 +42,10 @@ class GUI_EXPORT QgsDataDefinedAssistant: public QDialog
   public:
     QgsDataDefinedAssistant() : mMapCanvas( nullptr ) {}
 
-    virtual QgsDataDefined dataDefined() const = 0;
+    /**
+     * Returns the property which was defined by this assistant.
+     */
+    virtual QgsProperty property() const = 0;
 
     /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
      * map scale and other properties from the canvas.
@@ -94,7 +98,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     QgsDataDefinedButton( QWidget* parent = nullptr,
                           const QgsVectorLayer* vl = nullptr,
                           const QgsDataDefined* datadefined = nullptr,
-                          const QgsDataDefinedButton::DataTypes& datatypes = AnyType,
+                          QgsDataDefinedButton::DataTypes datatypes = AnyType,
                           const QString& description = QString() );
     ~QgsDataDefinedButton();
 
@@ -108,7 +112,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
      */
     void init( const QgsVectorLayer* vl,
                const QgsDataDefined* datadefined = nullptr,
-               const QgsDataDefinedButton::DataTypes& datatypes = AnyType,
+               QgsDataDefinedButton::DataTypes datatypes = AnyType,
                const QString& description = QString() );
 
     QMap< QString, QString > definedProperty() const { return mProperty; }
@@ -127,25 +131,32 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
      */
     QgsDataDefined currentDataDefined() const;
 
+    /** Sets the vector layer associated with the button. This controls which fields are
+     * displayed within the widget's pop up menu.
+     * @param layer vector layer
+     * @note added in QGIS 3.0
+     */
+    void setVectorLayer( QgsVectorLayer* layer );
+
     /**
      * Whether the current data definition or expression is to be used
      */
-    bool isActive() const { return mProperty.value( "active" ).toInt(); }
+    bool isActive() const { return mProperty.value( QStringLiteral( "active" ) ).toInt(); }
 
     /**
      * Whether the current expression is to be used instead of field mapping
      */
-    bool useExpression() const { return mProperty.value( "useexpr" ).toInt(); }
+    bool useExpression() const { return mProperty.value( QStringLiteral( "useexpr" ) ).toInt(); }
 
     /**
      * The current defined expression
      */
-    QString getExpression() const { return mProperty.value( "expression" ); }
+    QString getExpression() const { return mProperty.value( QStringLiteral( "expression" ) ); }
 
     /**
      * The current defined field
      */
-    QString getField() const { return mProperty.value( "field" ); }
+    QString getField() const { return mProperty.value( QStringLiteral( "field" ) ); }
 
     /**
      * The current definition
@@ -218,17 +229,14 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
      */
     void clearCheckedWidgets() { mCheckedWidgets.clear(); }
 
-    //! Callback function for retrieving the expression context for the button
-    typedef QgsExpressionContext( *ExpressionContextCallback )( const void* context );
-
-    /** Register callback function for retrieving the expression context for the button
-     * @param fnGetExpressionContext call back function, will be called when the data defined
-     * button requires the current expression context
-     * @param context context for callback function
-     * @note added in QGIS 2.12
-     * @note not available in Python bindings
+    /**
+     * Register an expression context generator class that will be used to retrieve
+     * an expression context for the button.
+     * @param generator A QgsExpressionContextGenerator class that will be used to
+     *                  create an expression context when required.
+     * @note added in QGIS 3.0
      */
-    void registerGetExpressionContextCallback( ExpressionContextCallback fnGetExpressionContext, const void* context );
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator* generator );
 
     /**
      * Sets an assistant used to define the data defined object properties.
@@ -287,6 +295,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     static QString customDashDesc();
 
   public slots:
+
     /**
      * Set whether the current data definition or expression is to be used
      */
@@ -303,6 +312,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     void checkCheckedWidgets( bool check );
 
   signals:
+
     /**
      * Emitted when data definition or expression is changed
      * @param definition The current definition or expression (empty string if inactive)
@@ -321,23 +331,24 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     /**
      * Set whether the current expression is to be used instead of field mapping
      */
-    void setUseExpression( bool use ) { mProperty.insert( "useexpr", use ? "1" : "0" ); }
+    void setUseExpression( bool use ) { mProperty.insert( QStringLiteral( "useexpr" ), use ? "1" : "0" ); }
 
     /**
      * Set the current defined expression
      */
-    void setExpression( const QString& exp ) { mProperty.insert( "expression", exp ); }
+    void setExpression( const QString& exp ) { mProperty.insert( QStringLiteral( "expression" ), exp ); }
 
     /**
      * Set the current defined field
      */
-    void setField( const QString& field ) { mProperty.insert( "field", field ); }
+    void setField( const QString& field ) { mProperty.insert( QStringLiteral( "field" ), field ); }
 
   private:
     void showDescriptionDialog();
     void showExpressionDialog();
     void showAssistant();
     void updateGui();
+    void updateFieldLists();
 
     const QgsVectorLayer* mVectorLayer;
     QStringList mFieldNameList;
@@ -368,7 +379,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     QString mUsageInfo;
     QString mCurrentDefinition;
 
-    QScopedPointer<QgsDataDefinedAssistant> mAssistant;
+    std::unique_ptr<QgsDataDefinedAssistant> mAssistant;
 
     QIcon mIconDataDefine;
     QIcon mIconDataDefineOn;
@@ -377,8 +388,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     QIcon mIconDataDefineExpressionOn;
     QIcon mIconDataDefineExpressionError;
 
-    ExpressionContextCallback mExpressionContextCallback;
-    const void* mExpressionContextCallbackContext;
+    QgsExpressionContextGenerator* mExpressionContextGenerator;
 
   private slots:
     void aboutToShowMenu();

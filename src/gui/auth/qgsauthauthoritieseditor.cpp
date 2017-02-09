@@ -80,14 +80,14 @@ QgsAuthAuthoritiesEditor::QgsAuthAuthoritiesEditor( QWidget *parent )
 
     connect( btnViewRefresh, SIGNAL( clicked() ), this, SLOT( refreshCaCertsView() ) );
 
-    QVariant cafileval = QgsAuthManager::instance()->getAuthSetting( QString( "cafile" ) );
+    QVariant cafileval = QgsAuthManager::instance()->getAuthSetting( QStringLiteral( "cafile" ) );
     if ( !cafileval.isNull() )
     {
       leCaFile->setText( cafileval.toString() );
     }
 
     btnGroupByOrg->setChecked( false );
-    QVariant sortbyval = QgsAuthManager::instance()->getAuthSetting( QString( "casortby" ), QVariant( false ) );
+    QVariant sortbyval = QgsAuthManager::instance()->getAuthSetting( QStringLiteral( "casortby" ), QVariant( false ) );
     if ( !sortbyval.isNull() )
       btnGroupByOrg->setChecked( sortbyval.toBool() );
 
@@ -97,10 +97,6 @@ QgsAuthAuthoritiesEditor::QgsAuthAuthoritiesEditor( QWidget *parent )
 
     populateUtilitiesMenu();
   }
-}
-
-QgsAuthAuthoritiesEditor::~QgsAuthAuthoritiesEditor()
-{
 }
 
 static void setItemBold_( QTreeWidgetItem* item )
@@ -301,11 +297,11 @@ void QgsAuthAuthoritiesEditor::appendCertsToItem( const QList<QSslCertificate>& 
 
     QTreeWidgetItem * item( new QTreeWidgetItem( parent, coltxts, ( int )catype ) );
 
-    item->setIcon( 0, QgsApplication::getThemeIcon( "/mIconCertificate.svg" ) );
+    item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ) );
     if ( !cert.isValid() )
     {
       item->setForeground( 2, redb );
-      item->setIcon( 0, QgsApplication::getThemeIcon( "/mIconCertificateUntrusted.svg" ) );
+      item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificateUntrusted.svg" ) ) );
     }
 
     if ( trustedids.contains( id ) )
@@ -313,17 +309,17 @@ void QgsAuthAuthoritiesEditor::appendCertsToItem( const QList<QSslCertificate>& 
       item->setForeground( 3, greenb );
       if ( cert.isValid() )
       {
-        item->setIcon( 0, QgsApplication::getThemeIcon( "/mIconCertificateTrusted.svg" ) );
+        item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificateTrusted.svg" ) ) );
       }
     }
     else if ( untrustedids.contains( id ) )
     {
       item->setForeground( 3, redb );
-      item->setIcon( 0, QgsApplication::getThemeIcon( "/mIconCertificateUntrusted.svg" ) );
+      item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificateUntrusted.svg" ) ) );
     }
     else if ( mDefaultTrustPolicy == QgsAuthCertUtils::Untrusted )
     {
-      item->setIcon( 0, QgsApplication::getThemeIcon( "/mIconCertificateUntrusted.svg" ) );
+      item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificateUntrusted.svg" ) ) );
     }
 
     item->setData( 0, Qt::UserRole, id );
@@ -339,10 +335,10 @@ void QgsAuthAuthoritiesEditor::updateCertTrustPolicyCache()
 
 void QgsAuthAuthoritiesEditor::populateUtilitiesMenu()
 {
-  mActionDefaultTrustPolicy = new QAction( "Change default trust policy", this );
+  mActionDefaultTrustPolicy = new QAction( QStringLiteral( "Change default trust policy" ), this );
   connect( mActionDefaultTrustPolicy, SIGNAL( triggered() ), this, SLOT( editDefaultTrustPolicy() ) );
 
-  mActionShowTrustedCAs = new QAction( "Show trusted authorities/issuers", this );
+  mActionShowTrustedCAs = new QAction( QStringLiteral( "Show trusted authorities/issuers" ), this );
   connect( mActionShowTrustedCAs, SIGNAL( triggered() ), this, SLOT( showTrustedCertificateAuthorities() ) );
 
   mUtilitiesMenu = new QMenu( this );
@@ -564,7 +560,7 @@ void QgsAuthAuthoritiesEditor::on_btnInfoCa_clicked()
 
 void QgsAuthAuthoritiesEditor::on_btnGroupByOrg_toggled( bool checked )
 {
-  if ( !QgsAuthManager::instance()->storeAuthSetting( QString( "casortby" ), QVariant( checked ) ) )
+  if ( !QgsAuthManager::instance()->storeAuthSetting( QStringLiteral( "casortby" ), QVariant( checked ) ) )
   {
     authMessageOut( QObject::tr( "Could not store sort by preference" ),
                     QObject::tr( "Authorities Manager" ),
@@ -636,7 +632,7 @@ void QgsAuthAuthoritiesEditor::editDefaultTrustPolicy()
   if ( dlg->exec() )
   {
     QgsAuthCertUtils::CertTrustPolicy trustpolicy(
-      ( QgsAuthCertUtils::CertTrustPolicy )cmbpolicy->itemData( cmbpolicy->currentIndex() ).toInt() );
+      ( QgsAuthCertUtils::CertTrustPolicy )cmbpolicy->currentData().toInt() );
     if ( mDefaultTrustPolicy != trustpolicy )
     {
       defaultTrustPolicyChanged( trustpolicy );
@@ -677,13 +673,13 @@ void QgsAuthAuthoritiesEditor::on_btnCaFile_clicked()
     const QString& fn = dlg->certFileToImport();
     leCaFile->setText( fn );
 
-    if ( !QgsAuthManager::instance()->storeAuthSetting( QString( "cafile" ), QVariant( fn ) ) )
+    if ( !QgsAuthManager::instance()->storeAuthSetting( QStringLiteral( "cafile" ), QVariant( fn ) ) )
     {
       authMessageOut( QObject::tr( "Could not store 'CA file path' in authentication database" ),
                       QObject::tr( "Authorities Manager" ),
                       QgsAuthManager::WARNING );
     }
-    if ( !QgsAuthManager::instance()->storeAuthSetting( QString( "cafileallowinvalid" ),
+    if ( !QgsAuthManager::instance()->storeAuthSetting( QStringLiteral( "cafileallowinvalid" ),
          QVariant( dlg->allowInvalidCerts() ) ) )
     {
       authMessageOut( QObject::tr( "Could not store 'CA file allow invalids' setting in authentication database" ),
@@ -719,14 +715,14 @@ void QgsAuthAuthoritiesEditor::on_btnCaFile_clicked()
 
 void QgsAuthAuthoritiesEditor::on_btnCaFileClear_clicked()
 {
-  if ( !QgsAuthManager::instance()->removeAuthSetting( QString( "cafile" ) ) )
+  if ( !QgsAuthManager::instance()->removeAuthSetting( QStringLiteral( "cafile" ) ) )
   {
     authMessageOut( QObject::tr( "Could not remove 'CA file path' from authentication database" ),
                     QObject::tr( "Authorities Manager" ),
                     QgsAuthManager::WARNING );
     return;
   }
-  if ( !QgsAuthManager::instance()->removeAuthSetting( QString( "cafileallowinvalid" ) ) )
+  if ( !QgsAuthManager::instance()->removeAuthSetting( QStringLiteral( "cafileallowinvalid" ) ) )
   {
     authMessageOut( QObject::tr( "Could not remove 'CA file allow invalids' setting from authentication database" ),
                     QObject::tr( "Authorities Manager" ),
@@ -792,5 +788,5 @@ QgsMessageBar * QgsAuthAuthoritiesEditor::messageBar()
 int QgsAuthAuthoritiesEditor::messageTimeout()
 {
   QSettings settings;
-  return settings.value( "/qgis/messageTimeout", 5 ).toInt();
+  return settings.value( QStringLiteral( "/qgis/messageTimeout" ), 5 ).toInt();
 }

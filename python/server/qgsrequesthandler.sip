@@ -17,56 +17,60 @@
  * Examples of possible mechanisms are cgi Get, cgi Post, SOAP or the usage
  * as a standalone command line executable
  */
-class QgsRequestHandler
+class QgsRequestHandler  /Abstract/
 {
 %TypeHeaderCode
-#include "qgsmapserviceexception.h"
+#include "qgsserverexception.h"
 #include "qgsrequesthandler.h"
 %End
 
   public:
 
-    /** Allow plugins to return a QgsMapServiceException*/
-    virtual void setServiceException( QgsMapServiceException ex /Transfer/ ) = 0;
-    virtual void setDefaultHeaders();
+    /** Allow plugins to return a QgsServerException*/
+    void setServiceException( const QgsServerException& ex );
+
     /** Set an HTTP header*/
-    virtual void setHeader( const QString &name, const QString &value ) = 0;
-    /** Remove an HTTP header*/
-    virtual int removeHeader( const QString &name ) = 0;
+    void setHeader( const QString &name, const QString &value );
+
+    //! Retrieve header value
+    QString getHeader( const QString& name ) const;
+
+    //! Return the list of all header keys
+    QList<QString> headerKeys() const;
+
+   /** Remove an HTTP header*/
+    void removeHeader( const QString &name );
+
     /** Delete all HTTP headers*/
-    virtual void clearHeaders() = 0;
+    void clear();
+
     /** Append the bytestream to response body*/
-    virtual void appendBody( const QByteArray &body ) = 0;
-    /** Clears the response body*/
-    virtual void clearBody() = 0;
-    /** Return the response body*/
-    virtual QByteArray body();
-    /** Set the info format string such as "text/xml"*/
-    virtual void setInfoFormat( const QString &format ) = 0;
-    /** Check whether there is any header set or the body is not empty*/
-    virtual bool responseReady() const = 0;
+    void appendBody( const QByteArray &body );
+
     /** Send out HTTP headers and flush output buffer*/
-    virtual void sendResponse() = 0;
+    void sendResponse();
+
     /** Pointer to last raised exception*/
-    virtual bool exceptionRaised() const = 0;
+    bool exceptionRaised() const;
+
     /** Return a copy of the parsed parameters as a key-value pair, to modify
      * a parameter setParameter( const QString &key, const QString &value)
      * and removeParameter(const QString &key) must be used
      */
-    QMap<QString, QString> parameterMap();
+    QMap<QString, QString> parameterMap() const;
+
     /** Set a request parameter*/
-    virtual void setParameter( const QString &key, const QString &value ) = 0;
+    void setParameter( const QString &key, const QString &value );
+
     /** Remove a request parameter*/
-    virtual int removeParameter( const QString &key ) = 0;
+    void removeParameter( const QString &key );
+
     /** Return a request parameter*/
-    virtual QString parameter( const QString &key ) const = 0;
+    QString parameter( const QString &key ) const;
+
     /** Return the requested format string*/
     QString format() const;
-    /** Return the mime type for the response*/
-    QString infoFormat() const;
+
     /** Return true if the HTTP headers were already sent to the client*/
-    bool headersSent();
-private:
-    /** Parses the input and creates a request neutral Parameter/Value map*/
-    virtual void parseInput() = 0;
+    bool headersSent() const;
 };

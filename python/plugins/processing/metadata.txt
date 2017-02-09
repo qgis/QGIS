@@ -9,7 +9,7 @@ qgisMinimumVersion=2.13
 author=Victor Olaya
 email=volayaf@gmail.com
 
-icon=images/alg.png
+icon=images/alg.svg
 
 homepage=http://qgis.org
 tracker=https://hub.qgis.org/projects/quantum-gis/issues

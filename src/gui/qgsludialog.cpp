@@ -18,15 +18,10 @@
 #include "qgsludialog.h"
 
 
-QgsLUDialog::QgsLUDialog( QWidget *parent, const Qt::WindowFlags& fl )
+QgsLUDialog::QgsLUDialog( QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );
-}
-
-QgsLUDialog::~QgsLUDialog()
-{
-
 }
 
 QString QgsLUDialog::lowerValue() const

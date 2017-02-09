@@ -25,7 +25,9 @@
 
 
 QgsGeometryChecker::QgsGeometryChecker( const QList<QgsGeometryCheck*>& checks, QgsFeaturePool *featurePool )
-    : mChecks( checks ), mFeaturePool( featurePool ), mMergeAttributeIndex( -1 )
+    : mChecks( checks )
+    , mFeaturePool( featurePool )
+    , mMergeAttributeIndex( -1 )
 {
 }
 
@@ -115,7 +117,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError* error, int method )
       if ( mFeaturePool->get( id, f ) )
       {
         recheckFeatures.insert( id );
-        recheckArea.unionRect( f.geometry()->boundingBox() );
+        recheckArea.unionRect( f.geometry().boundingBox() );
       }
     }
   }
@@ -136,7 +138,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError* error, int method )
   // If only selected features were checked, confine the recheck areas to the selected features
   if ( mFeaturePool->getSelectedOnly() )
   {
-    recheckAreaFeatures = recheckAreaFeatures.intersect( mFeaturePool->getLayer()->selectedFeaturesIds() );
+    recheckAreaFeatures = recheckAreaFeatures.intersect( mFeaturePool->getLayer()->selectedFeatureIds() );
   }
 
   // Recheck feature / changed area to detect new errors
@@ -153,14 +155,17 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError* error, int method )
     }
   }
 
-  // Remove just-fixed error from newly-found errors (needed in case error was fixed with "no change")
-  Q_FOREACH ( QgsGeometryCheckError* recheckErr, recheckErrors )
+  // Remove just-fixed error from newly-found errors if no changes occurred (needed in case error was fixed with "no change")
+  if ( changes.isEmpty() )
   {
-    if ( recheckErr->isEqual( error ) )
+    Q_FOREACH ( QgsGeometryCheckError* recheckErr, recheckErrors )
     {
-      recheckErrors.removeAll( recheckErr );
-      delete recheckErr;
-      break;
+      if ( recheckErr->isEqual( error ) )
+      {
+        recheckErrors.removeAll( recheckErr );
+        delete recheckErr;
+        break;
+      }
     }
   }
 
@@ -233,6 +238,11 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError* error, int method )
   }
 
   return true;
+}
+
+QgsMapLayer* QgsGeometryChecker::getLayer() const
+{
+  return mFeaturePool->getLayer();
 }
 
 void QgsGeometryChecker::runCheck( const QgsGeometryCheck* check )

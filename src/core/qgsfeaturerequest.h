@@ -15,6 +15,7 @@
 #ifndef QGSFEATUREREQUEST_H
 #define QGSFEATUREREQUEST_H
 
+#include "qgis_core.h"
 #include <QFlags>
 #include <QList>
 
@@ -26,7 +27,7 @@
 
 typedef QList<int> QgsAttributeList;
 
-/**
+/** \ingroup core
  * This class wraps a request for features to a vector layer (or directly its vector data provider).
  * The request may apply a filter to fetch only a particular subset of features. Currently supported filters:
  * - no filter - all features are returned
@@ -84,7 +85,7 @@ class CORE_EXPORT QgsFeatureRequest
       FilterFids        //!< Filter using feature IDs
     };
 
-    /**
+    /** \ingroup core
      * The OrderByClause class represents an order by clause for a QgsFeatureRequest.
      *
      * It can be a simple field or an expression. Multiple order by clauses can be added to
@@ -109,6 +110,7 @@ class CORE_EXPORT QgsFeatureRequest
     class CORE_EXPORT OrderByClause
     {
       public:
+
         /**
          * Creates a new OrderByClause for a QgsFeatureRequest
          *
@@ -118,6 +120,7 @@ class CORE_EXPORT QgsFeatureRequest
          *                   If the order is descending, by default nulls are first
          */
         OrderByClause( const QString &expression, bool ascending = true );
+
         /**
          * Creates a new OrderByClause for a QgsFeatureRequest
          *
@@ -168,7 +171,7 @@ class CORE_EXPORT QgsFeatureRequest
         bool mNullsFirst;
     };
 
-    /**
+    /** \ingroup core
      * Represents a list of OrderByClauses, with the most important first and the least
      * important last.
      *
@@ -177,6 +180,7 @@ class CORE_EXPORT QgsFeatureRequest
     class OrderBy : public QList<OrderByClause>
     {
       public:
+
         /**
          * Create a new empty order by
          */
@@ -221,12 +225,14 @@ class CORE_EXPORT QgsFeatureRequest
     /**
      * A special attribute that if set matches all attributes
      */
-    static const QString AllAttributes;
+    static const QString ALL_ATTRIBUTES;
 
     //! construct a default request: for all features get attributes and geometries
     QgsFeatureRequest();
     //! construct a request with feature ID filter
     explicit QgsFeatureRequest( QgsFeatureId fid );
+    //! construct a request with feature ID filter
+    explicit QgsFeatureRequest( const QgsFeatureIds &fids );
     //! construct a request with rectangle filter
     explicit QgsFeatureRequest( const QgsRectangle& rect );
     //! construct a request with a filter expression
@@ -321,6 +327,7 @@ class CORE_EXPORT QgsFeatureRequest
      */
 
     QgsFeatureRequest& addOrderBy( const QString &expression, bool ascending = true );
+
     /**
      * Adds a new OrderByClause, appending it as the least important one.
      *
@@ -360,20 +367,24 @@ class CORE_EXPORT QgsFeatureRequest
     long limit() const { return mLimit; }
 
     //! Set flags that affect how features will be fetched
-    QgsFeatureRequest& setFlags( const QgsFeatureRequest::Flags& flags );
+    QgsFeatureRequest& setFlags( QgsFeatureRequest::Flags flags );
     const Flags& flags() const { return mFlags; }
 
     //! Set a subset of attributes that will be fetched. Empty list means that all attributes are used.
     //! To disable fetching attributes, reset the FetchAttributes flag (which is set by default)
     QgsFeatureRequest& setSubsetOfAttributes( const QgsAttributeList& attrs );
+
     /**
      * Return the subset of attributes which at least need to be fetched
      * @return A list of attributes to be fetched
      */
-    const QgsAttributeList& subsetOfAttributes() const { return mAttrs; }
+    QgsAttributeList subsetOfAttributes() const { return mAttrs; }
 
     //! Set a subset of attributes by names that will be fetched
     QgsFeatureRequest& setSubsetOfAttributes( const QStringList& attrNames, const QgsFields& fields );
+
+    //! Set a subset of attributes by names that will be fetched
+    QgsFeatureRequest& setSubsetOfAttributes( const QSet<QString>& attrNames, const QgsFields& fields );
 
     //! Set a simplification method for geometries that will be fetched
     //! @note added in 2.2
@@ -416,7 +427,8 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )
 class QgsFeatureIterator;
 class QgsAbstractFeatureIterator;
 
-/** Base class that can be used for any class that is capable of returning features
+/** \ingroup core
+ * Base class that can be used for any class that is capable of returning features
  * @note added in 2.4
  */
 class CORE_EXPORT QgsAbstractFeatureSource

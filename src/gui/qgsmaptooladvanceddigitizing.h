@@ -17,14 +17,14 @@
 #ifndef QGSMAPTOOLADVANCEDDIGITIZE_H
 #define QGSMAPTOOLADVANCEDDIGITIZE_H
 
-#include "qgsmaptool.h"
 #include "qgsmaptooledit.h"
-#include "qgsadvanceddigitizingdockwidget.h"
+#include "qgis_gui.h"
 
 class QgsMapMouseEvent;
+class QgsAdvancedDigitizingDockWidget;
 
-/**
- * @brief The QgsMapToolAdvancedDigitizing class is a QgsMapTool whcih gives event directly in map coordinates and allows filtering its events.
+/** \ingroup gui
+ * @brief The QgsMapToolAdvancedDigitizing class is a QgsMapTool which gives event directly in map coordinates and allows filtering its events.
  * Events from QgsMapTool are caught and their QMouseEvent are transformed into QgsMapMouseEvent (with map coordinates).
  * Events are then forwarded to corresponding virtual methods which can be reimplemented in subclasses.
  * An event filter can be set on the map tool to filter and modify the events in map coordinates (@see QgsMapToolMapEventFilter).
@@ -40,6 +40,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     {
       CaptureNone,    //!< Do not capture
       CapturePoint,   //!< Capture points
+      CaptureSegment, //!< Capture a segment (i.e. 2 points)
       CaptureLine,    //!< Capture lines
       CapturePolygon  //!< Capture polygons
     };
@@ -51,13 +52,11 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      */
     explicit QgsMapToolAdvancedDigitizing( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget );
 
-    ~QgsMapToolAdvancedDigitizing();
-
-    //! catch the mouse press event, filters it, transforms it to map coordinates and send it to virtual method
+    //! Catch the mouse press event, filters it, transforms it to map coordinates and send it to virtual method
     virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
-    //! catch the mouse release event, filters it, transforms it to map coordinates and send it to virtual method
+    //! Catch the mouse release event, filters it, transforms it to map coordinates and send it to virtual method
     virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
-    //! catch the mouse move event, filters it, transforms it to map coordinates and send it to virtual method
+    //! Catch the mouse move event, filters it, transforms it to map coordinates and send it to virtual method
     virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 
     /**
@@ -87,7 +86,9 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
 
     QgsAdvancedDigitizingDockWidget* cadDockWidget() const { return mCadDockWidget; }
 
+
   protected:
+
     /**
      * Override this method when subclassing this class.
      * This will receive adapted events from the cad system whenever a
@@ -123,12 +124,13 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     //! The capture mode in which this tool operates
     CaptureMode mCaptureMode;
 
-    bool mSnapOnPress;       //!< snap on press
-    bool mSnapOnRelease;     //!< snap on release
-    bool mSnapOnMove;        //!< snap on move
-    bool mSnapOnDoubleClick; //!< snap on double click
+    bool mSnapOnPress;       //!< Snap on press
+    bool mSnapOnRelease;     //!< Snap on release
+    bool mSnapOnMove;        //!< Snap on move
+    bool mSnapOnDoubleClick; //!< Snap on double click
 
   private slots:
+
     /**
      * Is to be called by the cad system whenever a point changes outside of a
      * mouse event. E.g. when additional constraints are toggled.

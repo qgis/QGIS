@@ -18,21 +18,23 @@
 #ifndef QGSRENDERCONTEXT_H
 #define QGSRENDERCONTEXT_H
 
+#include "qgis_core.h"
 #include <QColor>
+#include <memory>
 
+#include "qgsabstractgeometry.h"
 #include "qgscoordinatetransform.h"
 #include "qgsmaptopixel.h"
 #include "qgsrectangle.h"
 #include "qgsvectorsimplifymethod.h"
 #include "qgsexpressioncontext.h"
+#include "qgsfeaturefilterprovider.h"
+#include "qgsmapunitscale.h"
 
 class QPainter;
-
-class QgsAbstractGeometryV2;
-class QgsLabelingEngineInterface;
-class QgsLabelingEngineV2;
+class QgsAbstractGeometry;
+class QgsLabelingEngine;
 class QgsMapSettings;
-class QgsFeatureFilterProvider;
 
 
 /** \ingroup core
@@ -49,8 +51,6 @@ class CORE_EXPORT QgsRenderContext
     QgsRenderContext( const QgsRenderContext& rh );
     QgsRenderContext& operator=( const QgsRenderContext& rh );
 
-    ~QgsRenderContext();
-
     /** Enumeration of flags that affect rendering operations.
      * @note added in QGIS 2.14
      */
@@ -63,13 +63,15 @@ class CORE_EXPORT QgsRenderContext
       DrawSelection            = 0x10,  //!< Whether vector selections should be shown in the rendered map
       DrawSymbolBounds         = 0x20,  //!< Draw bounds of symbols (for debugging/testing)
       RenderMapTile            = 0x40,  //!< Draw map such that there are no problems between adjacent tiles
+      Antialiasing             = 0x80,  //!< Use antialiasing while drawing
+      RenderPartialOutput      = 0x100, //!< Whether to make extra effort to update map image with partially rendered layers (better for interactive map canvas). Added in QGIS 3.0
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
     /** Set combination of flags that will be used for rendering.
      * @note added in QGIS 2.14
      */
-    void setFlags( const QgsRenderContext::Flags& flags );
+    void setFlags( QgsRenderContext::Flags flags );
 
     /** Enable or disable a particular flag (other flags are not affected)
      * @note added in QGIS 2.14
@@ -90,20 +92,38 @@ class CORE_EXPORT QgsRenderContext
     //! @note added in 2.4
     static QgsRenderContext fromMapSettings( const QgsMapSettings& mapSettings );
 
+    /**
+     * Creates a default render context given a pixel based QPainter destination.
+     * If no painter is specified or the painter has no device, then a default
+     * DPI of 88 will be assumed.
+     * @note added in QGIS 3.0
+     */
+    static QgsRenderContext fromQPainter( QPainter* painter );
+
     //getters
 
+    /**
+     * Returns the destination QPainter for the render operation.
+     * @see setPainter()
+    */
     QPainter* painter() {return mPainter;}
-    const QPainter* constPainter() const { return mPainter; }
 
-    const QgsCoordinateTransform* coordinateTransform() const {return mCoordTransform;}
+    /** Returns the current coordinate transform for the context, or an invalid
+     * transform is no coordinate transformation is required.
+     */
+    QgsCoordinateTransform coordinateTransform() const {return mCoordTransform;}
 
     const QgsRectangle& extent() const {return mExtent;}
 
     const QgsMapToPixel& mapToPixel() const {return mMapToPixel;}
 
+    /**
+     * Returns the scaling factor for the render to convert painter units
+     * to physical sizes. This is usually equal to the number of pixels
+     * per millimeter.
+     * @see setScaleFactor()
+     */
     double scaleFactor() const {return mScaleFactor;}
-
-    double rasterScaleFactor() const {return mRasterScaleFactor;}
 
     bool renderingStopped() const {return mRenderingStopped;}
 
@@ -119,13 +139,16 @@ class CORE_EXPORT QgsRenderContext
 
     bool drawEditingInformation() const;
 
+    /**
+     * Returns the renderer map scale. This will match the desired scale denominator
+     * for the rendered map, eg 1000.0 for a 1:1000 map render.
+     * @see setRendererScale()
+     */
     double rendererScale() const {return mRendererScale;}
-
-    QgsLabelingEngineInterface* labelingEngine() const { return mLabelingEngine; }
 
     //! Get access to new labeling engine (may be nullptr)
     //! @note not available in Python bindings
-    QgsLabelingEngineV2* labelingEngineV2() const { return mLabelingEngine2; }
+    QgsLabelingEngine* labelingEngine() const { return mLabelingEngine; }
 
     QColor selectionColor() const { return mSelectionColor; }
 
@@ -139,25 +162,43 @@ class CORE_EXPORT QgsRenderContext
 
     //setters
 
-    /** Sets coordinate transformation. QgsRenderContext does not take ownership*/
-    void setCoordinateTransform( const QgsCoordinateTransform* t );
+    //! Sets coordinate transformation.
+    void setCoordinateTransform( const QgsCoordinateTransform& t );
     void setMapToPixel( const QgsMapToPixel& mtp ) {mMapToPixel = mtp;}
     void setExtent( const QgsRectangle& extent ) {mExtent = extent;}
 
     void setDrawEditingInformation( bool b );
 
     void setRenderingStopped( bool stopped ) {mRenderingStopped = stopped;}
+
+    /**
+     * Sets the scaling factor for the render to convert painter units
+     * to physical sizes. This should usually be equal to the number of pixels
+     * per millimeter.
+     * @see scaleFactor()
+     */
     void setScaleFactor( double factor ) {mScaleFactor = factor;}
-    void setRasterScaleFactor( double factor ) {mRasterScaleFactor = factor;}
+
+    /**
+     * Sets the renderer map scale. This should match the desired scale denominator
+     * for the rendered map, eg 1000.0 for a 1:1000 map render.
+     * @see rendererScale()
+     */
     void setRendererScale( double scale ) {mRendererScale = scale;}
+
+    /**
+     * Sets the destination QPainter for the render operation. Ownership of the painter
+     * is not transferred and the QPainter destination must stay alive for the duration
+     * of any rendering operations.
+     * @see painter()
+     */
     void setPainter( QPainter* p ) {mPainter = p;}
 
     void setForceVectorOutput( bool force );
 
-    void setLabelingEngine( QgsLabelingEngineInterface* iface ) { mLabelingEngine = iface; }
     //! Assign new labeling engine
     //! @note not available in Python bindings
-    void setLabelingEngineV2( QgsLabelingEngineV2* engine2 ) { mLabelingEngine2 = engine2; }
+    void setLabelingEngine( QgsLabelingEngine* engine2 ) { mLabelingEngine = engine2; }
     void setSelectionColor( const QColor& color ) { mSelectionColor = color; }
 
     /** Sets whether vector selections should be shown in the rendered map
@@ -200,10 +241,10 @@ class CORE_EXPORT QgsRenderContext
      */
     const QgsExpressionContext& expressionContext() const { return mExpressionContext; }
 
-    /** Returns pointer to the unsegmentized geometry*/
-    const QgsAbstractGeometryV2* geometry() const { return mGeometry; }
-    /** Sets pointer to original (unsegmentized) geometry*/
-    void setGeometry( const QgsAbstractGeometryV2* geometry ) { mGeometry = geometry; }
+    //! Returns pointer to the unsegmentized geometry
+    const QgsAbstractGeometry* geometry() const { return mGeometry; }
+    //! Sets pointer to original (unsegmentized) geometry
+    void setGeometry( const QgsAbstractGeometry* geometry ) { mGeometry = geometry; }
 
     /** Set a filter feature provider used for additional filtering of rendered features.
      * @param ffp the filter feature provider
@@ -217,55 +258,89 @@ class CORE_EXPORT QgsRenderContext
      * @note added in QGIS 2.14
      * @see setFeatureFilterProvider()
      */
-    const QgsFeatureFilterProvider* featureFilterProvider() const { return mFeatureFilterProvider; }
+    const QgsFeatureFilterProvider* featureFilterProvider() const;
+
+    /** Sets the segmentation tolerance applied when rendering curved geometries
+    @param tolerance the segmentation tolerance*/
+    void setSegmentationTolerance( double tolerance ) { mSegmentationTolerance = tolerance; }
+    //! Gets the segmentation tolerance applied when rendering curved geometries
+    double segmentationTolerance() const { return mSegmentationTolerance; }
+
+    /** Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
+    @param type the segmentation tolerance typename*/
+    void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type ) { mSegmentationToleranceType = type; }
+    //! Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
+    QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const { return mSegmentationToleranceType; }
+
+    // Conversions
+
+    /**
+     * Converts a size from the specified units to painter units (pixels). The conversion respects the limits
+     * specified by the optional scale parameter.
+     * @note added in QGIS 3.0
+     * @see convertToMapUnits()
+     */
+    double convertToPainterUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale = QgsMapUnitScale() ) const;
+
+    /**
+     * Converts a size from the specified units to map units. The conversion respects the limits
+     * specified by the optional scale parameter.
+     * @note added in QGIS 3.0
+     * @see convertToPainterUnits()
+     */
+    double convertToMapUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale = QgsMapUnitScale() ) const;
+
+    /**
+     * Converts a size from map units to the specified units.
+     * @note added in QGIS 3.0
+     * @see convertToMapUnits()
+     */
+    double convertFromMapUnits( double sizeInMapUnits, QgsUnitTypes::RenderUnit outputUnit ) const;
 
   private:
 
     Flags mFlags;
 
-    /** Painter for rendering operations*/
-    QPainter* mPainter;
+    //! Painter for rendering operations
+    QPainter* mPainter = nullptr;
 
-    /** For transformation between coordinate systems. Can be 0 if on-the-fly reprojection is not used*/
-    const QgsCoordinateTransform* mCoordTransform;
+    //! For transformation between coordinate systems. Can be invalid if on-the-fly reprojection is not used
+    QgsCoordinateTransform mCoordTransform;
 
     QgsRectangle mExtent;
 
     QgsMapToPixel mMapToPixel;
 
-    /** True if the rendering has been canceled*/
-    bool mRenderingStopped;
+    //! True if the rendering has been canceled
+    bool mRenderingStopped = false;
 
-    /** Factor to scale line widths and point marker sizes*/
-    double mScaleFactor;
+    //! Factor to scale line widths and point marker sizes
+    double mScaleFactor = 1.0;
 
-    /** Factor to scale rasters*/
-    double mRasterScaleFactor;
+    //! Map scale
+    double mRendererScale = 1.0;
 
-    /** Map scale*/
-    double mRendererScale;
+    //! Newer labeling engine implementation (can be nullptr)
+    QgsLabelingEngine* mLabelingEngine = nullptr;
 
-    /** Labeling engine (can be nullptr)*/
-    QgsLabelingEngineInterface* mLabelingEngine;
-
-    /** Newer labeling engine implementation (can be nullptr) */
-    QgsLabelingEngineV2* mLabelingEngine2;
-
-    /** Color used for features that are marked as selected */
+    //! Color used for features that are marked as selected
     QColor mSelectionColor;
 
-    /** Simplification object which holds the information about how to simplify the features for fast rendering */
+    //! Simplification object which holds the information about how to simplify the features for fast rendering
     QgsVectorSimplifyMethod mVectorSimplifyMethod;
 
-    /** Expression context */
+    //! Expression context
     QgsExpressionContext mExpressionContext;
 
-    /** Pointer to the (unsegmentized) geometry*/
-    const QgsAbstractGeometryV2* mGeometry;
+    //! Pointer to the (unsegmentized) geometry
+    const QgsAbstractGeometry* mGeometry = nullptr;
 
-    /** The feature filter provider */
-    const QgsFeatureFilterProvider* mFeatureFilterProvider;
+    //! The feature filter provider
+    std::unique_ptr< QgsFeatureFilterProvider > mFeatureFilterProvider;
 
+    double mSegmentationTolerance = M_PI_2 / 90;
+
+    QgsAbstractGeometry::SegmentationToleranceType mSegmentationToleranceType = QgsAbstractGeometry::MaximumAngle;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsRenderContext::Flags )

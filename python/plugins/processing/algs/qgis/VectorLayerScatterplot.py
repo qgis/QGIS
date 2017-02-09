@@ -49,7 +49,7 @@ class VectorLayerScatterplot(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Graphics')
 
         self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.XFIELD,
                                               self.tr('X attribute'), self.INPUT,
                                               ParameterTableField.DATA_TYPE_NUMBER))
@@ -59,7 +59,7 @@ class VectorLayerScatterplot(GeoAlgorithm):
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Scatterplot')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         xfieldname = self.getParameterValue(self.XFIELD)
@@ -74,6 +74,5 @@ class VectorLayerScatterplot(GeoAlgorithm):
         plt.xlabel(xfieldname)
         plotFilename = output + '.png'
         lab.savefig(plotFilename)
-        f = open(output, 'w')
-        f.write('<html><img src="' + plotFilename + '"/></html>')
-        f.close()
+        with open(output, 'w') as f:
+            f.write('<html><img src="' + plotFilename + '"/></html>')

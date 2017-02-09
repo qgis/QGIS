@@ -20,9 +20,14 @@
 
 #include <QUndoCommand>
 
+#include "qgis_core.h"
+
 class QgsComposerMultiFrame;
 class QgsComposition;
 
+/** \ingroup core
+ * \class QgsAddRemoveMultiFrameCommand
+ */
 class CORE_EXPORT QgsAddRemoveMultiFrameCommand: public QUndoCommand
 {
   public:

@@ -13,18 +13,10 @@ class QgsMapToolTouch : QgsMapTool
 
     void activate();
     void deactivate();
-
-    //! Overridden mouse move event
-    virtual void canvasMoveEvent( QgsMapMouseEvent * e );
-
-    //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QgsMapMouseEvent * e );
-
-    //! Overridden Mouse double click event.
-    virtual void canvasDoubleClickEvent( QgsMapMouseEvent * e );
-
-    virtual bool isTransient();
-
-    bool gestureEvent( QGestureEvent *event );
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e );
+    virtual void canvasDoubleClickEvent( QgsMapMouseEvent *e );
+    virtual Flags flags() const;
+    bool gestureEvent( QGestureEvent *e );
 };
 %End

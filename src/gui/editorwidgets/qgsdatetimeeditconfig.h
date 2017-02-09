@@ -18,8 +18,10 @@
 
 #include "qgseditorconfigwidget.h"
 #include "ui_qgsdatetimeeditconfig.h"
+#include "qgis_gui.h"
 
-/** \class QgsDateTimeEditConfig
+/** \ingroup gui
+ * \class QgsDateTimeEditConfig
  * \note not available in Python bindings
  */
 
@@ -28,6 +30,8 @@ class GUI_EXPORT QgsDateTimeEditConfig : public QgsEditorConfigWidget, private U
     Q_OBJECT
   public:
     QgsDateTimeEditConfig( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = nullptr );
+    QVariantMap config() override;
+    void setConfig( const QVariantMap &config ) override;
 
   private slots:
     void updateDemoWidget();
@@ -35,11 +39,6 @@ class GUI_EXPORT QgsDateTimeEditConfig : public QgsEditorConfigWidget, private U
     void updateDisplayFormat( const QString& fieldFormat );
     void displayFormatChanged( int idx );
     void showHelp( bool buttonChecked );
-
-    // QgsEditorConfigWidget interface
-  public:
-    QgsEditorWidgetConfig config() override;
-    void setConfig( const QgsEditorWidgetConfig &config ) override;
 };
 
 #endif // QGSDATETIMEEDITCONFIG_H

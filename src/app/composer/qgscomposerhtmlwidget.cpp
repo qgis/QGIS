@@ -31,6 +31,7 @@ QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposer
     , mFrame( frame )
 {
   setupUi( this );
+  setPanelTitle( tr( "HTML properties" ) );
 
   //setup html editor
   mHtmlEditor = new QgsCodeEditorHTML( this );
@@ -53,15 +54,6 @@ QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposer
   if ( mHtml )
   {
     QObject::connect( mHtml, SIGNAL( changed() ), this, SLOT( setGuiElementValues() ) );
-
-    QgsAtlasComposition* atlas = atlasComposition();
-    if ( atlas )
-    {
-      // repopulate data defined buttons if atlas layer changes
-      connect( atlas, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ),
-               this, SLOT( populateDataDefinedButtons() ) );
-      connect( atlas, SIGNAL( toggled( bool ) ), this, SLOT( populateDataDefinedButtons() ) );
-    }
   }
 
   //embed widget for general options
@@ -73,10 +65,8 @@ QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposer
   }
 
   //connections for data defined buttons
-  connect( mUrlDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
-  connect( mUrlDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
-  connect( mUrlDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mUrlLineEdit, SLOT( setDisabled( bool ) ) );
-
+  connect( mUrlDDBtn, &QgsPropertyOverrideButton::activated, mUrlLineEdit, &QLineEdit::setDisabled );
+  registerDataDefinedButton( mUrlDDBtn, QgsComposerObject::SourceUrl );
 }
 
 QgsComposerHtmlWidget::QgsComposerHtmlWidget()
@@ -133,15 +123,15 @@ void QgsComposerHtmlWidget::on_mUrlLineEdit_editingFinished()
 void QgsComposerHtmlWidget::on_mFileToolButton_clicked()
 {
   QSettings s;
-  QString lastDir = s.value( "/UI/lastHtmlDir", QDir::homePath() ).toString();
-  QString file = QFileDialog::getOpenFileName( this, tr( "Select HTML document" ), lastDir, "HTML (*.html *.htm);;All files (*.*)" );
+  QString lastDir = s.value( QStringLiteral( "/UI/lastHtmlDir" ), QDir::homePath() ).toString();
+  QString file = QFileDialog::getOpenFileName( this, tr( "Select HTML document" ), lastDir, QStringLiteral( "HTML (*.html *.htm);;All files (*.*)" ) );
   if ( !file.isEmpty() )
   {
     QUrl url = QUrl::fromLocalFile( file );
     mUrlLineEdit->setText( url.toString() );
     on_mUrlLineEdit_editingFinished();
     mHtml->update();
-    s.setValue( "/UI/lastHtmlDir", QFileInfo( file ).absolutePath() );
+    s.setValue( QStringLiteral( "/UI/lastHtmlDir" ), QFileInfo( file ).absolutePath() );
   }
 }
 
@@ -359,7 +349,7 @@ void QgsComposerHtmlWidget::on_mInsertExpressionButton_clicked()
     selText = mHtmlEditor->selectedText();
 
     // edit the selected expression if there's one
-    if ( selText.startsWith( "[%" ) && selText.endsWith( "%]" ) )
+    if ( selText.startsWith( QLatin1String( "[%" ) ) && selText.endsWith( QLatin1String( "%]" ) ) )
       selText = selText.mid( 2, selText.size() - 4 );
   }
   else
@@ -369,8 +359,8 @@ void QgsComposerHtmlWidget::on_mInsertExpressionButton_clicked()
 
   // use the atlas coverage layer, if any
   QgsVectorLayer* coverageLayer = atlasCoverageLayer();
-  QScopedPointer<QgsExpressionContext> context( mHtml->createExpressionContext() );
-  QgsExpressionBuilderDialog exprDlg( coverageLayer, selText, this, "generic", *context );
+  QgsExpressionContext context = mHtml->createExpressionContext();
+  QgsExpressionBuilderDialog exprDlg( coverageLayer, selText, this, QStringLiteral( "generic" ), context );
   exprDlg.setWindowTitle( tr( "Insert expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
@@ -388,6 +378,7 @@ void QgsComposerHtmlWidget::on_mInsertExpressionButton_clicked()
       {
         mHtmlEditor->insertAt( "[%" + expression + "%]", line, index );
       }
+      mHtml->setHtml( mHtmlEditor->text() );
       composition->endMultiFrameCommand();
       blockSignals( false );
     }
@@ -473,43 +464,10 @@ void QgsComposerHtmlWidget::setGuiElementValues()
   blockSignals( false );
 }
 
-QgsComposerItem::DataDefinedProperty QgsComposerHtmlWidget::ddPropertyForWidget( QgsDataDefinedButton *widget )
-{
-  if ( widget == mUrlDDBtn )
-  {
-    return QgsComposerItem::SourceUrl;
-  }
-  return QgsComposerItem::NoProperty;
-}
-
-static QgsExpressionContext _getExpressionContext( const void* context )
-{
-  const QgsComposerObject* composerObject = ( const QgsComposerObject* ) context;
-  if ( !composerObject )
-  {
-    return QgsExpressionContext();
-  }
-
-  QScopedPointer< QgsExpressionContext > expContext( composerObject->createExpressionContext() );
-  return QgsExpressionContext( *expContext );
-}
-
 void QgsComposerHtmlWidget::populateDataDefinedButtons()
 {
-  QgsVectorLayer* vl = atlasCoverageLayer();
-
-  //block signals from data defined buttons
-  mUrlDDBtn->blockSignals( true );
-
-  mUrlDDBtn->registerGetExpressionContextCallback( &_getExpressionContext, mHtml );
-
-  //initialise buttons to use atlas coverage layer
-  mUrlDDBtn->init( vl, mHtml->dataDefinedProperty( QgsComposerItem::SourceUrl ),
-                   QgsDataDefinedButton::AnyType, tr( "url string" ) );
+  updateDataDefinedButton( mUrlDDBtn );
 
   //initial state of controls - disable related controls when dd buttons are active
   mUrlLineEdit->setEnabled( !mUrlDDBtn->isActive() );
-
-  //unblock signals from data defined buttons
-  mUrlDDBtn->blockSignals( false );
 }

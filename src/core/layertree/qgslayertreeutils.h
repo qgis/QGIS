@@ -19,6 +19,7 @@
 #include <qnamespace.h>
 #include <QList>
 #include <QPair>
+#include "qgis_core.h"
 
 class QDomElement;
 class QDomDocument;
@@ -28,8 +29,9 @@ class QgsLayerTreeNode;
 class QgsLayerTreeGroup;
 class QgsLayerTreeLayer;
 class QgsMapLayer;
+class QgsProject;
 
-/**
+/** \ingroup core
  * Assorted functions for dealing with layer trees.
  *
  * @note added in 2.4
@@ -62,7 +64,7 @@ class CORE_EXPORT QgsLayerTreeUtils
     static void replaceChildrenOfEmbeddedGroups( QgsLayerTreeGroup* group );
 
     //! @note not available in python bindings
-    static void updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup* group );
+    static void updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup* group, const QgsProject* project );
 
     //! get invisible layers
     static QStringList invisibleLayerList( QgsLayerTreeNode *node );

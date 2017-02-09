@@ -27,14 +27,15 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QGis, QgsFeature, QgsGeometry
+from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsWkbTypes, QgsMapToPixelSimplifier
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
+from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
@@ -46,6 +47,7 @@ class SimplifyGeometries(GeoAlgorithm):
     INPUT = 'INPUT'
     TOLERANCE = 'TOLERANCE'
     OUTPUT = 'OUTPUT'
+    METHOD = 'METHOD'
 
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'simplify.png'))
@@ -56,62 +58,53 @@ class SimplifyGeometries(GeoAlgorithm):
 
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'),
-                                          [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
+                                          [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
+        self.methods = [self.tr('Distance (Douglas-Peucker)'),
+                        'Snap to grid',
+                        'Area (Visvalingam)']
+        self.addParameter(ParameterSelection(
+            self.METHOD,
+            self.tr('Simplification method'),
+            self.methods, default=0))
         self.addParameter(ParameterNumber(self.TOLERANCE,
                                           self.tr('Tolerance'), 0.0, 10000000.0, 1.0))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Simplified')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         tolerance = self.getParameterValue(self.TOLERANCE)
+        method = self.getParameterValue(self.METHOD)
 
         pointsBefore = 0
         pointsAfter = 0
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields().toList(), layer.wkbType(), layer.crs())
+            layer.fields().toList(), layer.wkbType(), layer.crs())
 
         features = vector.features(layer)
         total = 100.0 / len(features)
-        for current, f in enumerate(features):
-            featGeometry = QgsGeometry(f.geometry())
-            attrs = f.attributes()
-            pointsBefore += self.geomVertexCount(featGeometry)
-            newGeometry = featGeometry.simplify(tolerance)
-            pointsAfter += self.geomVertexCount(newGeometry)
-            feature = QgsFeature()
-            feature.setGeometry(newGeometry)
-            feature.setAttributes(attrs)
-            writer.addFeature(feature)
-            progress.setPercentage(int(current * total))
+
+        if method != 0:
+            simplifier = QgsMapToPixelSimplifier(QgsMapToPixelSimplifier.SimplifyGeometry, tolerance, method)
+
+        for current, input_feature in enumerate(features):
+            out_feature = input_feature
+            if input_feature.geometry():
+                input_geometry = input_feature.geometry()
+                pointsBefore += input_geometry.geometry().nCoordinates()
+
+                if method == 0: # distance
+                    output_geometry = input_geometry.simplify(tolerance)
+                else:
+                    output_geometry = simplifier.simplify(input_geometry)
+
+                pointsAfter += output_geometry.geometry().nCoordinates()
+                out_feature.setGeometry(output_geometry)
+            writer.addFeature(out_feature)
+            feedback.setProgress(int(current * total))
 
         del writer
 
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
                                self.tr('Simplify: Input geometries have been simplified from %s to %s points' % (pointsBefore, pointsAfter)))
-
-    def geomVertexCount(self, geometry):
-        geomType = geometry.type()
-
-        if geomType == QGis.Line:
-            if geometry.isMultipart():
-                pointsList = geometry.asMultiPolyline()
-                points = sum(pointsList, [])
-            else:
-                points = geometry.asPolyline()
-            return len(points)
-        elif geomType == QGis.Polygon:
-            if geometry.isMultipart():
-                polylinesList = geometry.asMultiPolygon()
-                polylines = sum(polylinesList, [])
-            else:
-                polylines = geometry.asPolygon()
-
-            points = []
-            for l in polylines:
-                points.extend(l)
-
-            return len(points)
-        else:
-            return None

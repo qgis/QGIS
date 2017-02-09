@@ -16,20 +16,20 @@
 #ifndef QGSRENDERCHECKER_H
 #define QGSRENDERCHECKER_H
 
+#include "qgis_core.h"
 #include <qgis.h>
 #include <QDir>
 #include <QString>
 #include <QRegExp>
 #include <QList>
 
-#include <qgsmaprenderer.h>
 #include <qgslogger.h>
 #include <qgsmapsettings.h>
 #include <qgsdartmeasurement.h>
 
 class QImage;
 
-/** \ingroup UnitTests
+/** \ingroup core
  * This is a helper class for unit tests that need to
  * write an image and compare it to an expected result
  * or render time.
@@ -39,9 +39,6 @@ class CORE_EXPORT QgsRenderChecker
   public:
 
     QgsRenderChecker();
-
-    //! Destructor
-    ~QgsRenderChecker() {}
 
     QString controlImagePath() const;
 
@@ -71,7 +68,7 @@ class CORE_EXPORT QgsRenderChecker
 
     void setControlPathSuffix( const QString& theName );
 
-    /** Get an md5 hash that uniquely identifies an image */
+    //! Get an md5 hash that uniquely identifies an image
     QString imageToHash( const QString& theImageFile );
 
     void setRenderedImage( const QString& theImageFileName ) { mRenderedImageFile = theImageFileName; }
@@ -83,9 +80,6 @@ class CORE_EXPORT QgsRenderChecker
      * @return The path to the rendered image
      */
     QString renderedImage() { return mRenderedImageFile; }
-
-    //! @deprecated since 2.4 - use setMapSettings()
-    Q_DECL_DEPRECATED void setMapRenderer( QgsMapRenderer *thepMapRenderer );
 
     //! @note added in 2.4
     void setMapSettings( const QgsMapSettings& mapSettings );
@@ -118,7 +112,7 @@ class CORE_EXPORT QgsRenderChecker
     bool runTest( const QString& theTestName, unsigned int theMismatchCount = 0 );
 
     /**
-     * Test using two arbitary images (map renderer will not be used)
+     * Test using two arbitrary images (map renderer will not be used)
      * @param theTestName - to be used as the basis for writing a file to
      * e.g. /tmp/theTestName.png
      * @param theMismatchCount - defaults to 0 - the number of pixels that
@@ -129,11 +123,12 @@ class CORE_EXPORT QgsRenderChecker
      * @note: make sure to call setExpectedImage and setRenderedImage first.
      */
     bool compareImages( const QString& theTestName, unsigned int theMismatchCount = 0, const QString& theRenderedImageFile = "" );
+
     /** Get a list of all the anomalies. An anomaly is a rendered difference
      * file where there is some red pixel content (indicating a render check
-     * mismatch), but where the output was still acceptible. If the render
+     * mismatch), but where the output was still acceptable. If the render
      * diff matches one of these anomalies we will still consider it to be
-     * acceptible.
+     * acceptable.
      * @return a bool indicating if the diff matched one of the anomaly files
      */
     bool isKnownAnomaly( const QString& theDiffImageFile );
@@ -206,8 +201,8 @@ inline bool compareWkt( const QString& a, const QString& b, double tolerance = 0
   QRegExp re( "-?\\d+(?:\\.\\d+)?(?:[eE]\\d+)?" );
 
   QString a0( a ), b0( b );
-  a0.replace( re, "#" );
-  b0.replace( re, "#" );
+  a0.replace( re, QStringLiteral( "#" ) );
+  b0.replace( re, QStringLiteral( "#" ) );
 
   QgsDebugMsg( QString( "a0:%1 b0:%2" ).arg( a0, b0 ) );
 

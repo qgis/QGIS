@@ -84,7 +84,7 @@ void QgsMapToolChangeLabelProperties::applyChanges( const QgsAttributeMap& chang
 
   if ( !changes.isEmpty() )
   {
-    vlayer->beginEditCommand( tr( "Changed properties for label" ) + QString( " '%1'" ).arg( currentLabelText( 24 ) ) );
+    vlayer->beginEditCommand( tr( "Changed properties for label" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
 
     QgsAttributeMap::const_iterator changeIt = changes.constBegin();
     for ( ; changeIt != changes.constEnd(); ++changeIt )
@@ -93,7 +93,7 @@ void QgsMapToolChangeLabelProperties::applyChanges( const QgsAttributeMap& chang
     }
 
     vlayer->endEditCommand();
-    mCanvas->refresh();
+    vlayer->triggerRepaint();
   }
 }
 

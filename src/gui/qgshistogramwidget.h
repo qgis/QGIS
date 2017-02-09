@@ -21,12 +21,13 @@
 
 #include "qgshistogram.h"
 #include "qgsstatisticalsummary.h"
-#include "qgsgraduatedsymbolrendererv2.h"
+#include "qgsgraduatedsymbolrenderer.h"
 #include <QPen>
 #include <QBrush>
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
-class QgsGraduatedSymbolRendererV2;
+class QgsGraduatedSymbolRenderer;
 class QwtPlotPicker;
 class QwtPlotMarker;
 class QwtPlot;

@@ -21,13 +21,13 @@
 #include "qgslayertreemodellegendnode.h"
 #include "qgspluginlayer.h"
 #include "qgsrasterlayer.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
-#include "qgsdiagramrendererv2.h"
+#include "qgsdiagramrenderer.h"
 
 
-QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent ) :
-    QObject( parent )
+QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent )
+    : QObject( parent )
 {
 }
 
@@ -54,9 +54,9 @@ void QgsMapLayerLegendUtils::setLegendNodeOrder( QgsLayerTreeLayer* nodeLayer, c
   QStringList orderStr;
   Q_FOREACH ( int id, order )
     orderStr << QString::number( id );
-  QString str = orderStr.isEmpty() ? "empty" : orderStr.join( "," );
+  QString str = orderStr.isEmpty() ? QStringLiteral( "empty" ) : orderStr.join( QStringLiteral( "," ) );
 
-  nodeLayer->setCustomProperty( "legend/node-order", str );
+  nodeLayer->setCustomProperty( QStringLiteral( "legend/node-order" ), str );
 }
 
 static int _originalLegendNodeCount( QgsLayerTreeLayer* nodeLayer )
@@ -87,12 +87,12 @@ static QList<int> _makeNodeOrder( QgsLayerTreeLayer* nodeLayer )
 
 QList<int> QgsMapLayerLegendUtils::legendNodeOrder( QgsLayerTreeLayer* nodeLayer )
 {
-  QString orderStr = nodeLayer->customProperty( "legend/node-order" ).toString();
+  QString orderStr = nodeLayer->customProperty( QStringLiteral( "legend/node-order" ) ).toString();
 
   if ( orderStr.isEmpty() )
     return _makeNodeOrder( nodeLayer );
 
-  if ( orderStr == "empty" )
+  if ( orderStr == QLatin1String( "empty" ) )
     return QList<int>();
 
   int numNodes = _originalLegendNodeCount( nodeLayer );
@@ -113,7 +113,7 @@ QList<int> QgsMapLayerLegendUtils::legendNodeOrder( QgsLayerTreeLayer* nodeLayer
 
 bool QgsMapLayerLegendUtils::hasLegendNodeOrder( QgsLayerTreeLayer* nodeLayer )
 {
-  return nodeLayer->customProperties().contains( "legend/node-order" );
+  return nodeLayer->customProperties().contains( QStringLiteral( "legend/node-order" ) );
 }
 
 void QgsMapLayerLegendUtils::setLegendNodeUserLabel( QgsLayerTreeLayer* nodeLayer, int originalIndex, const QString& newLabel )
@@ -187,22 +187,22 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTree
 {
   QList<QgsLayerTreeModelLegendNode*> nodes;
 
-  QgsFeatureRendererV2* r = mLayer->rendererV2();
+  QgsFeatureRenderer* r = mLayer->renderer();
   if ( !r )
     return nodes;
 
-  if ( nodeLayer->customProperty( "showFeatureCount", 0 ).toBool() )
+  if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toBool() )
     mLayer->countSymbolFeatures();
 
   QSettings settings;
-  if ( settings.value( "/qgis/showLegendClassifiers", false ).toBool() && !r->legendClassificationAttribute().isEmpty() )
+  if ( settings.value( QStringLiteral( "/qgis/showLegendClassifiers" ), false ).toBool() && !r->legendClassificationAttribute().isEmpty() )
   {
     nodes.append( new QgsSimpleLegendNode( nodeLayer, r->legendClassificationAttribute() ) );
   }
 
-  Q_FOREACH ( const QgsLegendSymbolItemV2& i, r->legendSymbolItemsV2() )
+  Q_FOREACH ( const QgsLegendSymbolItem& i, r->legendSymbolItemsV2() )
   {
-    QgsSymbolV2LegendNode * n = new QgsSymbolV2LegendNode( nodeLayer, i );
+    QgsSymbolLegendNode * n = new QgsSymbolLegendNode( nodeLayer, i );
     nodes.append( n );
   }
 
@@ -238,9 +238,9 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultRasterLayerLegend::createLayerTree
   QList<QgsLayerTreeModelLegendNode*> nodes;
 
   // temporary solution for WMS. Ideally should be done with a delegate.
-  if ( mLayer->providerType() == "wms" )
+  if ( mLayer->dataProvider()->supportsLegendGraphic() )
   {
-    nodes << new QgsWMSLegendNode( nodeLayer );
+    nodes << new QgsWmsLegendNode( nodeLayer );
   }
 
   QgsLegendColorList rasterItemList = mLayer->legendSymbologyItems();

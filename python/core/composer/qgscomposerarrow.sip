@@ -48,16 +48,6 @@ class QgsComposerArrow: QgsComposerItem
      */
     double arrowHeadWidth() const;
 
-    /** Sets the pen width for drawing the line and arrow head
-     * @deprecated use setArrowHeadOutlineWidth or setLineSymbol instead
-     */
-    void setOutlineWidth( double width ) /Deprecated/;
-
-    /** Returns the pen width for drawing the line and arrow head
-     * @deprecated use arrowHeadOutlineWidth or lineSymbol instead
-     */
-    double outlineWidth() const /Deprecated/;
-
     /** Sets the marker to draw at the start of the line
      * @param svgPath file path for svg marker graphic to draw
      * @see startMarker
@@ -85,16 +75,6 @@ class QgsComposerArrow: QgsComposerItem
      * @see startMarker
      */
     QString endMarker() const;
-
-    /** Returns the color for the line and arrow head
-     * @deprecated use arrowHeadOutlineColor, arrowHeadFillColor or lineStyle instead
-     */
-    QColor arrowColor() const /Deprecated/;
-
-    /** Sets the color for the line and arrow head
-     * @deprecated use setArrowHeadOutlineColor, setArrowHeadFillColor or setLineStyle instead
-     */
-    void setArrowColor( const QColor& c ) /Deprecated/;
 
     /** Returns the color used to draw outline around the the arrow head.
      * @returns arrow head outline color
@@ -149,14 +129,14 @@ class QgsComposerArrow: QgsComposerItem
      * @see lineSymbol
      * @note added in 2.5
      */
-    void setLineSymbol( QgsLineSymbolV2* symbol /Transfer/ );
+    void setLineSymbol( QgsLineSymbol* symbol /Transfer/ );
 
     /** Returns the line symbol used for drawing the line portion of the arrow
      * @returns line symbol
      * @see setLineSymbol
      * @note added in 2.5
      */
-    QgsLineSymbolV2* lineSymbol();
+    QgsLineSymbol* lineSymbol();
 
     /** Returns marker mode, which controls how the arrow endpoints are drawn
      * @returns marker mode
@@ -174,11 +154,11 @@ class QgsComposerArrow: QgsComposerItem
      * @param elem is DOM element corresponding to 'Composer' tag
      * @param doc document
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
 
     /** Sets state from DOM document
      * @param itemElem is DOM node corresponding to item tag
      * @param doc is the document to read
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
 };

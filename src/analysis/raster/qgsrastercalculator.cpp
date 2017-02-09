@@ -17,22 +17,17 @@
 
 #include "qgsrastercalculator.h"
 #include "qgsrastercalcnode.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterinterface.h"
 #include "qgsrasterlayer.h"
 #include "qgsrastermatrix.h"
+#include "qgsrasterprojector.h"
 
 #include <QProgressDialog>
 #include <QFile>
 
 #include <cpl_string.h>
 #include <gdalwarper.h>
-
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8(x)   (x).toUtf8().constData()
-#define TO8F(x)  (x).toUtf8().constData()
-#else
-#define TO8(x)   (x).toLocal8Bit().constData()
-#define TO8F(x)  QFile::encodeName( x ).constData()
-#endif
 
 QgsRasterCalculator::QgsRasterCalculator( const QString& formulaString, const QString& outputFile, const QString& outputFormat,
     const QgsRectangle& outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry>& rasterEntries )
@@ -88,7 +83,7 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
     if ( it->raster->crs() != mOutputCrs )
     {
       QgsRasterProjector proj;
-      proj.setCRS( it->raster->crs(), mOutputCrs );
+      proj.setCrs( it->raster->crs(), mOutputCrs );
       proj.setInput( it->raster->dataProvider() );
       proj.setPrecision( QgsRasterProjector::Exact );
 
@@ -177,8 +172,8 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
   if ( p && p->wasCanceled() )
   {
     //delete the dataset without closing (because it is faster)
-    GDALDeleteDataset( outputDriver, TO8F( mOutputFile ) );
-    return static_cast< int >( Cancelled );
+    GDALDeleteDataset( outputDriver, mOutputFile.toUtf8().constData() );
+    return static_cast< int >( Canceled );
   }
   GDALClose( outputDataset );
 
@@ -216,7 +211,7 @@ GDALDatasetH QgsRasterCalculator::openOutputFile( GDALDriverH outputDriver )
 {
   //open output file
   char **papszOptions = nullptr;
-  GDALDatasetH outputDataset = GDALCreate( outputDriver, TO8F( mOutputFile ), mNumOutputColumns, mNumOutputRows, 1, GDT_Float32, papszOptions );
+  GDALDatasetH outputDataset = GDALCreate( outputDriver, mOutputFile.toUtf8().constData(), mNumOutputColumns, mNumOutputRows, 1, GDT_Float32, papszOptions );
   if ( !outputDataset )
   {
     return outputDataset;

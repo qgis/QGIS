@@ -16,12 +16,13 @@
 #ifndef QGSLAYERTREEGROUP_H
 #define QGSLAYERTREEGROUP_H
 
+#include "qgis_core.h"
 #include "qgslayertreenode.h"
 
 class QgsMapLayer;
 class QgsLayerTreeLayer;
 
-/**
+/** \ingroup core
  * Layer tree group node serves as a container for layers and further groups.
  *
  * Group names do not need to be unique within one tree nor within one parent.
@@ -32,13 +33,14 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 {
     Q_OBJECT
   public:
-    QgsLayerTreeGroup( const QString& name = QString(), Qt::CheckState checked = Qt::Checked );
+    //! Constructor
+    QgsLayerTreeGroup( const QString& name = QString(), bool checked = true );
     QgsLayerTreeGroup( const QgsLayerTreeGroup& other );
 
     //! Get group's name
-    QString name() const { return mName; }
+    QString name() const override;
     //! Set group's name
-    void setName( const QString& n ) { mName = n; }
+    void setName( const QString& n ) override;
 
     //! Insert a new group node with given name at specified position. Newly created node is owned by this group.
     QgsLayerTreeGroup* insertGroup( int index, const QString& name );
@@ -67,6 +69,9 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     //! Remove all child nodes. The nodes will be deleted.
     void removeAllChildren();
 
+    //! Find layer node representing the map layer. Searches recursively the whole sub-tree.
+    //! @note added in 3.0
+    QgsLayerTreeLayer* findLayer( QgsMapLayer* layer ) const;
     //! Find layer node representing the map layer specified by its ID. Searches recursively the whole sub-tree.
     QgsLayerTreeLayer* findLayer( const QString& layerId ) const;
     //! Find all layer nodes. Searches recursively the whole sub-tree.
@@ -76,12 +81,19 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     //! Find group node with specified name. Searches recursively the whole sub-tree.
     QgsLayerTreeGroup* findGroup( const QString& name );
 
-    //! Read group (tree) from XML element <layer-tree-group> and return the newly created group (or null on error)
-    static QgsLayerTreeGroup* readXML( QDomElement& element );
+    //! Read group (tree) from XML element <layer-tree-group> and return the newly created group (or null on error).
+    //! Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
+    static QgsLayerTreeGroup* readXml( QDomElement& element );
+    //! Read group (tree) from XML element <layer-tree-group> and return the newly created group (or null on error).
+    //! Also resolves textual references to layers from the project (calls resolveReferences() internally).
+    //! @note added in 3.0
+    static QgsLayerTreeGroup* readXml( QDomElement& element, const QgsProject* project );
+
     //! Write group (tree) as XML element <layer-tree-group> and add it to the given parent element
-    virtual void writeXML( QDomElement& parentElement ) override;
+    virtual void writeXml( QDomElement& parentElement ) override;
     //! Read children from XML and append them to the group.
-    void readChildrenFromXML( QDomElement& element );
+    //! Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
+    void readChildrenFromXml( QDomElement& element );
 
     //! Return text representation of the tree. For debugging purposes only.
     virtual QString dump() const override;
@@ -89,10 +101,12 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     //! Return a clone of the group. The children are cloned too.
     virtual QgsLayerTreeGroup* clone() const override;
 
-    //! Return the check state of the group node
-    Qt::CheckState isVisible() const { return mChecked; }
-    //! Set check state of the group node - will also update children
-    void setVisible( Qt::CheckState state );
+    //! Calls resolveReferences() on child tree nodes
+    //! @note added in 3.0
+    virtual void resolveReferences( const QgsProject* project ) override;
+
+    //! Check or uncheck a node and all its children (taking into account exclusion rules)
+    virtual void setItemVisibilityCheckedRecursive( bool checked ) override;
 
     //! Return whether the group is mutually exclusive (only one child can be checked at a time)
     //! @note added in 2.12
@@ -104,20 +118,15 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     void setIsMutuallyExclusive( bool enabled, int initialChildIndex = -1 );
 
   protected slots:
-    void layerDestroyed();
     void nodeVisibilityChanged( QgsLayerTreeNode* node );
 
   protected:
-    //! Set check state of this group from its children
-    void updateVisibilityFromChildren();
-    //! Set check state of children (when this group's check state changes) - if not mutually exclusive
-    void updateChildVisibility();
+
     //! Set check state of children - if mutually exclusive
     void updateChildVisibilityMutuallyExclusive();
 
   protected:
     QString mName;
-    Qt::CheckState mChecked;
 
     bool mChangingChildVisibility;
 

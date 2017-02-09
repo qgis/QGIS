@@ -21,13 +21,14 @@
 #include <QSizeF>
 #include <QString>
 #include <gdal_version.h>
+#include "qgis_analysis.h"
 
 class QgsRectangle;
 
 typedef void* GDALDatasetH;
 
 
-/**
+/** \ingroup analysis
  * @brief QgsAlignRaster takes one or more raster layers and warps (resamples) them
  * so they have the same:
  * - coordinate reference system
@@ -48,6 +49,9 @@ class ANALYSIS_EXPORT QgsAlignRaster
       //! Construct raster info with a path to a raster file
       RasterInfo( const QString& layerpath );
       ~RasterInfo();
+
+      RasterInfo( const RasterInfo& rh ) = delete;
+      RasterInfo& operator=( const RasterInfo& rh ) = delete;
 
       //! Check whether the given path is a valid raster
       bool isValid() const { return nullptr != mDataset; }
@@ -86,9 +90,6 @@ class ANALYSIS_EXPORT QgsAlignRaster
       int mBandCnt;
 
     private:
-
-      RasterInfo( const RasterInfo& rh );
-      RasterInfo& operator=( const RasterInfo& rh );
 
       friend class QgsAlignRaster;
     };
@@ -144,10 +145,10 @@ class ANALYSIS_EXPORT QgsAlignRaster
     {
       //! Method to be overridden for progress reporting.
       //! @param complete Overall progress of the alignment operation
-      //! @return false if the execution should be cancelled, true otherwise
+      //! @return false if the execution should be canceled, true otherwise
       virtual bool progress( double complete ) = 0;
 
-      virtual ~ProgressHandler() {}
+      virtual ~ProgressHandler() = default;
     };
 
     //! Assign a progress handler instance. Does not take ownership. nullptr can be passed.
@@ -171,9 +172,9 @@ class ANALYSIS_EXPORT QgsAlignRaster
     QSizeF cellSize() const { return QSizeF( mCellSizeX, mCellSizeY ); }
 
     //! Set the output CRS in WKT format
-    void setDestinationCRS( const QString& crsWkt ) { mCrsWkt = crsWkt; }
+    void setDestinationCrs( const QString& crsWkt ) { mCrsWkt = crsWkt; }
     //! Get the output CRS in WKT format
-    QString destinationCRS() const { return mCrsWkt; }
+    QString destinationCrs() const { return mCrsWkt; }
 
     //! Configure clipping extent (region of interest).
     //! No extra clipping is done if the rectangle is null
@@ -236,7 +237,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
 
     // set by the client
 
-    //! Object that facilitates reporting of progress / cancellation
+    //! Object that facilitates reporting of progress / cancelation
     ProgressHandler* mProgressHandler;
 
     //! Last error message from run()

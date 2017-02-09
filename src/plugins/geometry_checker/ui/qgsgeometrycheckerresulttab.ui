@@ -153,9 +153,9 @@
         </widget>
        </item>
        <item row="3" column="0">
-        <widget class="QGroupBox" name="groupBoxRowSelectionBehaviour">
+        <widget class="QGroupBox" name="groupBoxRowSelectionBehavior">
          <property name="title">
-          <string>When a row is selected, move canvas to:</string>
+          <string>When a row is selected, move canvas to</string>
          </property>
          <property name="flat">
           <bool>true</bool>
@@ -226,7 +226,7 @@
         </widget>
        </item>
        <item row="4" column="0">
-        <widget class="QWidget" name="widgetRowSelectionBehaviour" native="true">
+        <widget class="QWidget" name="widgetRowSelectionBehavior" native="true">
          <layout class="QHBoxLayout" name="horizontalLayout">
           <property name="spacing">
            <number>0</number>
@@ -291,7 +291,7 @@
             </property>
             <property name="icon">
              <iconset resource="../../../../images/images.qrc">
-              <normaloff>:/images/themes/default/mActionCheckQgisVersion.png</normaloff>:/images/themes/default/mActionCheckQgisVersion.png</iconset>
+              <normaloff>:/images/themes/default/mIconSuccess.svg</normaloff>:/images/themes/default/mIconSuccess.svg</iconset>
             </property>
            </widget>
           </item>
@@ -308,7 +308,7 @@
             </property>
             <property name="icon">
              <iconset resource="../../../../images/images.qrc">
-              <normaloff>:/images/themes/default/mActionCheckQgisVersion.png</normaloff>:/images/themes/default/mActionCheckQgisVersion.png</iconset>
+              <normaloff>:/images/themes/default/mIconSuccess.svg</normaloff>:/images/themes/default/mIconSuccess.svg</iconset>
             </property>
            </widget>
           </item>
@@ -385,7 +385,7 @@
           <item>
            <widget class="QLabel" name="labelMergeAttribute">
             <property name="text">
-             <string>Attribute to use when merging features by attribute value:</string>
+             <string>Attribute to use when merging features by attribute value</string>
             </property>
            </widget>
           </item>

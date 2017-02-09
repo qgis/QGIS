@@ -19,12 +19,12 @@
 #define QGSMAPTOOLLABEL_H
 
 #include "qgsmaptool.h"
-#include "qgsmaprenderer.h"
 #include "qgspallabeling.h"
-#include "qgspoint.h"
+#include "qgis_app.h"
+
 class QgsRubberBand;
 
-/** Base class for map tools that modify label properties*/
+//! Base class for map tools that modify label properties
 class APP_EXPORT QgsMapToolLabel: public QgsMapTool
 {
     Q_OBJECT
@@ -39,23 +39,28 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
         @return true if labels of layer can be moved*/
     bool labelMoveable( QgsVectorLayer* vlayer, int& xCol, int& yCol ) const;
     bool labelMoveable( QgsVectorLayer* vlayer, const QgsPalLayerSettings& settings, int& xCol, int& yCol ) const;
+
     /** Returns true if diagram move can be applied to a layer
         @param xCol out: index of the attribute for data defined x coordinate
         @param yCol out: index of the attribute for data defined y coordinate
         @return true if labels of layer can be moved*/
     bool diagramMoveable( QgsVectorLayer* vlayer, int& xCol, int& yCol ) const;
+
     /** Returns true if layer has attribute fields set up
         @param xCol out: index of the attribute for data defined x coordinate
         @param yCol out: index of the attribute for data defined y coordinate
         @return true if layer fields set up and exist*/
     bool layerCanPin( QgsVectorLayer* vlayer, int& xCol, int& yCol ) const;
+
     /** Returns true if layer has attribute field set up for diagrams
       @param showCol out: attribute column for data defined diagram showing
       @note added in QGIS 2.16 */
     bool diagramCanShowHide( QgsVectorLayer* vlayer, int& showCol ) const;
+
     /** Returns true if layer has attribute field set up
       @param showCol out: attribute column for data defined label showing*/
     bool labelCanShowHide( QgsVectorLayer* vlayer, int& showCol ) const;
+
     /** Checks if labels in a layer can be rotated
       @param rotationCol out: attribute column for data defined label rotation*/
     bool layerIsRotatable( QgsVectorLayer *layer, int& rotationCol ) const;
@@ -64,7 +69,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
   protected:
     QgsRubberBand* mLabelRubberBand;
     QgsRubberBand* mFeatureRubberBand;
-    /** Shows label fixpoint (left/bottom by default)*/
+    //! Shows label fixpoint (left/bottom by default)
     QgsRubberBand* mFixPointRubberBand;
 
     struct LabelDetails
@@ -77,7 +82,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
       QgsPalLayerSettings settings;
     };
 
-    /** Currently dragged label position*/
+    //! Currently dragged label position
     LabelDetails mCurrentLabel;
 
 
@@ -92,10 +97,10 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
       @return true in case of success*/
     bool currentLabelRotationPoint( QgsPoint& pos, bool ignoreUpsideDown = false, bool rotatingUnpinned = false );
 
-    /** Creates label / feature / fixpoint rubber bands for the current label position*/
+    //! Creates label / feature / fixpoint rubber bands for the current label position
     void createRubberBands();
 
-    /** Removes label / feature / fixpoint rubber bands*/
+    //! Removes label / feature / fixpoint rubber bands
     void deleteRubberBands();
 
     /** Returns current label's text
@@ -108,17 +113,17 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
       @return true in case of success*/
     bool currentFeature( QgsFeature& f, bool fetchGeom = false );
 
-    /** Returns the font for the current feature (considering default font and data defined properties)*/
+    //! Returns the font for the current feature (considering default font and data defined properties)
     QFont currentLabelFont();
 
-    /** Returns a data defined attribute column name for particular property or empty string if not defined */
-    QString dataDefinedColumnName( QgsPalLayerSettings::DataDefinedProperties p, const QgsPalLayerSettings& labelSettings ) const;
+    //! Returns a data defined attribute column name for particular property or empty string if not defined
+    QString dataDefinedColumnName( QgsPalLayerSettings::Property p, const QgsPalLayerSettings& labelSettings ) const;
 
     /** Returns a data defined attribute column index
       @return -1 if column does not exist or an expression is used instead */
-    int dataDefinedColumnIndex( QgsPalLayerSettings::DataDefinedProperties p, const QgsPalLayerSettings& labelSettings, const QgsVectorLayer* vlayer ) const;
+    int dataDefinedColumnIndex( QgsPalLayerSettings::Property p, const QgsPalLayerSettings& labelSettings, const QgsVectorLayer* vlayer ) const;
 
-    /** Returns whether to preserve predefined rotation data during label pin/unpin operations*/
+    //! Returns whether to preserve predefined rotation data during label pin/unpin operations
     bool currentLabelPreserveRotation();
 
     /** Get data defined position of current label

@@ -25,18 +25,24 @@
 #include "qgscollapsiblegroupbox.h"
 #include "qgsdualview.h"
 #include "qgsrelation.h"
+#include "qgis_gui.h"
 
 class QgsFeature;
 class QgsGenericFeatureSelectionManager;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 
+/** \ingroup gui
+ * \class QgsRelationEditorWidget
+ */
 class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
 {
     Q_OBJECT
     Q_PROPERTY( QgsDualView::ViewMode viewMode READ viewMode WRITE setViewMode )
+    Q_PROPERTY( bool showLabel READ showLabel WRITE setShowLabel )
 
   public:
+
     /**
      * @param parent parent widget
      */
@@ -70,6 +76,48 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
      * which are currently being edited.
      */
     QgsIFeatureSelectionManager* featureSelectionManager();
+
+    /**
+     * Defines if a title label should be shown for this widget.
+     *
+     * @note Added in QGIS 2.18
+     */
+    bool showLabel() const;
+
+    /**
+     * Defines if a title label should be shown for this widget.
+     *
+     * @note Added in QGIS 2.18
+     */
+    void setShowLabel( bool showLabel );
+
+    /**
+     * Determines if the "link feature" button should be shown
+     *
+     * @note Added in QGIS 2.18
+     */
+    bool showLinkButton() const;
+
+    /**
+     * Determines if the "link feature" button should be shown
+     *
+     * @note Added in QGIS 2.18
+     */
+    void setShowLinkButton( bool showLinkButton );
+
+    /**
+     * Determines if the "unlink feature" button should be shown
+     *
+     * @note Added in QGIS 2.18
+     */
+    bool showUnlinkButton() const;
+
+    /**
+     * Determines if the "unlink feature" button should be shown
+     *
+     * @note Added in QGIS 2.18
+     */
+    void setShowUnlinkButton( bool showUnlinkButton );
 
   private slots:
     void setViewMode( int mode ) {setViewMode( static_cast<QgsDualView::ViewMode>( mode ) );}
@@ -105,6 +153,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     QGridLayout* mRelationLayout;
     QButtonGroup* mViewModeButtonGroup;
 
+    bool mShowLabel;
     bool mVisible;
 };
 

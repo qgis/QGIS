@@ -1,4 +1,3 @@
-
 ########################################################
 # Files
 
@@ -36,12 +35,14 @@ SET(PG_HDRS
 ########################################################
 # Build
 
-QT4_WRAP_CPP(PG_MOC_SRCS ${PG_MOC_HDRS})
+QT5_WRAP_CPP(PG_MOC_SRCS ${PG_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
   ../../core
   ../../core/auth
   ../../core/geometry
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${POSTGRES_INCLUDE_DIR}
@@ -57,8 +58,14 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
 )
 
+ADD_LIBRARY (postgresprovider_a STATIC ${PG_SRCS} ${PG_HDRS} ${PG_MOC_SRCS})
 ADD_LIBRARY (postgresprovider MODULE ${PG_SRCS} ${PG_HDRS} ${PG_MOC_SRCS})
 
+TARGET_LINK_LIBRARIES (postgresprovider_a
+  ${POSTGRES_LIBRARY}
+  qgis_core
+  qgis_gui
+)
 TARGET_LINK_LIBRARIES (postgresprovider
   ${POSTGRES_LIBRARY}
   qgis_core

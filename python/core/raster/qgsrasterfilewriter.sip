@@ -29,6 +29,18 @@ class QgsRasterFileWriter
 
     QgsRasterFileWriter( const QString& outputUrl );
 
+    /** Create a raster file with one band without initializing the pixel data.
+     * Returned provider may be used to initialize the raster using writeBlock() calls.
+     * Ownership of the returned provider is passed to the caller.
+     * @note Does not work with tiled mode enabled.
+     * @returns Instance of data provider in editing mode (on success) or null on error.
+     * @note added in QGIS 3.0
+     */
+    QgsRasterDataProvider* createOneBandRaster( Qgis::DataType dataType,
+                                                int width, int height,
+                                                const QgsRectangle& extent,
+                                                const QgsCoordinateReferenceSystem& crs ) /Factory/;
+
     /** Write raster file
         @param pipe raster pipe
         @param nCols number of output columns
@@ -36,7 +48,7 @@ class QgsRasterFileWriter
         @param outputExtent extent to output
         @param crs crs to reproject to
         @param p dialog to show progress in */
-    WriterError writeRaster( const QgsRasterPipe* pipe, int nCols, int nRows, QgsRectangle outputExtent,
+    WriterError writeRaster( const QgsRasterPipe* pipe, int nCols, int nRows, const QgsRectangle& outputExtent,
                              const QgsCoordinateReferenceSystem& crs, QProgressDialog* p = 0 );
 
     void setOutputFormat( const QString& format );

@@ -2,10 +2,11 @@
 
 """
 ***************************************************************************
-    SplitLines.py
+    SplitLinesWithLines.py
+    DEPRECATED, replaced by SplitWithLines.py
     ---------------------
     Date                 : November 2014
-    Revised              : February 2016
+    Revised              : November 2016
     Copyright            : (C) 2014 by Bernhard Ströbl
     Email                : bernhard dot stroebl at jena dot de
 ***************************************************************************
@@ -26,7 +27,7 @@ __copyright__ = '(C) 2014, Bernhard Ströbl'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QGis, QgsFeatureRequest, QgsFeature, QgsGeometry
+from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -42,25 +43,30 @@ class SplitLinesWithLines(GeoAlgorithm):
 
     OUTPUT = 'OUTPUT'
 
+    def __init__(self):
+        GeoAlgorithm.__init__(self)
+        # this algorithm is deprecated - use SplitWithLines instead
+        self.showInToolbox = False
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Split lines with lines')
         self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
         self.addParameter(ParameterVector(self.INPUT_A,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
+                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterVector(self.INPUT_B,
-                                          self.tr('Split layer'), [ParameterVector.VECTOR_TYPE_LINE]))
+                                          self.tr('Split layer'), [dataobjects.TYPE_VECTOR_LINE]))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Splitted')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Split'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layerA = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_A))
         layerB = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_B))
 
         sameLayer = self.getParameterValue(self.INPUT_A) == self.getParameterValue(self.INPUT_B)
-        fieldList = layerA.pendingFields()
+        fieldList = layerA.fields()
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
-                                                                     QGis.WKBLineString, layerA.dataProvider().crs())
+                                                                     QgsWkbTypes.LineString, layerA.crs())
 
         spatialIndex = vector.spatialindex(layerB)
 
@@ -69,26 +75,31 @@ class SplitLinesWithLines(GeoAlgorithm):
         total = 100.0 / float(len(features))
 
         for current, inFeatA in enumerate(features):
-            inGeom = QgsGeometry(inFeatA.geometry())
+            inGeom = inFeatA.geometry()
             attrsA = inFeatA.attributes()
             outFeat.setAttributes(attrsA)
             inLines = [inGeom]
             lines = spatialIndex.intersects(inGeom.boundingBox())
 
+            engine = None
+            if len(lines) > 0:
+                # use prepared geometries for faster intersection tests
+                engine = QgsGeometry.createGeometryEngine(inGeom.geometry())
+                engine.prepareGeometry()
+
             if len(lines) > 0:  # hasIntersections
                 splittingLines = []
 
-                for i in lines:
-                    request = QgsFeatureRequest().setFilterFid(i)
-                    inFeatB = layerB.getFeatures(request).next()
+                request = QgsFeatureRequest().setFilterFids(lines).setSubsetOfAttributes([])
+                for inFeatB in layerB.getFeatures(request):
                     # check if trying to self-intersect
                     if sameLayer:
                         if inFeatA.id() == inFeatB.id():
                             continue
 
-                    splitGeom = QgsGeometry(inFeatB.geometry())
+                    splitGeom = inFeatB.geometry()
 
-                    if inGeom.intersects(splitGeom):
+                    if engine.intersects(splitGeom.geometry()):
                         splittingLines.append(splitGeom)
 
                 if len(splittingLines) > 0:
@@ -96,11 +107,14 @@ class SplitLinesWithLines(GeoAlgorithm):
                         splitterPList = vector.extractPoints(splitGeom)
                         outLines = []
 
+                        split_geom_engine = QgsGeometry.createGeometryEngine(splitGeom.geometry())
+                        split_geom_engine.prepareGeometry()
+
                         while len(inLines) > 0:
                             inGeom = inLines.pop()
                             inPoints = vector.extractPoints(inGeom)
 
-                            if inGeom.intersects(splitGeom):
+                            if split_geom_engine.intersects(inGeom.geometry()):
                                 try:
                                     result, newGeometries, topoTestPoints = inGeom.splitGeometry(splitterPList, False)
                                 except:
@@ -136,6 +150,6 @@ class SplitLinesWithLines(GeoAlgorithm):
                     outFeat.setGeometry(aLine)
                     writer.addFeature(outFeat)
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

@@ -13,7 +13,7 @@
 #include "qgsdecorationscalebardialog.h"
 #include "qgsdecorationscalebar.h"
 #include "qgslogger.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 #include <QColorDialog>
 #include <QSettings>
@@ -21,12 +21,13 @@
 #include <QPushButton>
 
 QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar& deco, int units, QWidget* parent )
-    : QDialog( parent ), mDeco( deco )
+    : QDialog( parent )
+    , mDeco( deco )
 {
   setupUi( this );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/DecorationScaleBar/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/DecorationScaleBar/geometry" ) ).toByteArray() );
 
   QPushButton* applyButton = buttonBox->button( QDialogButtonBox::Apply );
   connect( applyButton, SIGNAL( clicked() ), this, SLOT( apply() ) );
@@ -59,7 +60,7 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar&
   cboPlacement->setCurrentIndex( cboPlacement->findData( mDeco.placement() ) );
   spnHorizontal->setValue( mDeco.mMarginHorizontal );
   spnVertical->setValue( mDeco.mMarginVertical );
-  wgtUnitSelection->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::Percentage << QgsSymbolV2::Pixel );
+  wgtUnitSelection->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPercentage << QgsUnitTypes::RenderPixels );
   wgtUnitSelection->setUnit( mDeco.mMarginUnit );
 
   grpEnable->setChecked( mDeco.enabled() );
@@ -71,24 +72,24 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar&
   cboStyle->setCurrentIndex( mDeco.mStyleIndex );
 
   pbnChangeColor->setColor( mDeco.mColor );
-  pbnChangeColor->setContext( "gui" );
+  pbnChangeColor->setContext( QStringLiteral( "gui" ) );
   pbnChangeColor->setColorDialogTitle( tr( "Select scalebar color" ) );
 }
 
 QgsDecorationScaleBarDialog::~QgsDecorationScaleBarDialog()
 {
   QSettings settings;
-  settings.setValue( "/Windows/DecorationScaleBar/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/DecorationScaleBar/geometry" ), saveGeometry() );
 }
 
 void QgsDecorationScaleBarDialog::on_buttonBox_helpRequested()
 {
-  QgsContextHelp::run( metaObject()->className() );
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#scale-bar" ) );
 }
 
 void QgsDecorationScaleBarDialog::apply()
 {
-  mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->itemData( cboPlacement->currentIndex() ).toInt() ) );
+  mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->currentData().toInt() ) );
   mDeco.mMarginUnit = wgtUnitSelection->unit();
   mDeco.mMarginHorizontal = spnHorizontal->value();
   mDeco.mMarginVertical = spnVertical->value();

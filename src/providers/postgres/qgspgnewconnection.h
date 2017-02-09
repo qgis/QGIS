@@ -18,7 +18,7 @@
 #define QGSPGNEWCONNECTION_H
 #include "ui_qgspgnewconnectionbase.h"
 #include "qgisgui.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 #include "qgsauthconfigselect.h"
 
 /** \class QgsPgNewConnection
@@ -31,7 +31,7 @@ class QgsPgNewConnection : public QDialog, private Ui::QgsPgNewConnectionBase
   public:
     //! Constructor
     QgsPgNewConnection( QWidget *parent = nullptr, const QString& connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
-    //! Destructor
+
     ~QgsPgNewConnection();
     //! Tests the connection using the parameters supplied
     void testConnection();
@@ -39,7 +39,7 @@ class QgsPgNewConnection : public QDialog, private Ui::QgsPgNewConnectionBase
     void accept() override;
     void on_btnConnect_clicked();
     void on_cb_geometryColumnsOnly_clicked();
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#id14" ) ); }
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
     QgsAuthConfigSelect * mAuthConfigSelect;

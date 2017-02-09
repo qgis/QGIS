@@ -15,10 +15,12 @@
 #ifndef QGSWKBPTR_H
 #define QGSWKBPTR_H
 
+#include "qgis_core.h"
 #include "qgswkbtypes.h"
 #include "qgsapplication.h"
 #include "qgis.h"
 #include "qgsexception.h"
+#include "qpolygon.h"
 
 /** \ingroup core
  *  * Custom exception class for Wkb related exceptions.
@@ -30,7 +32,8 @@ class CORE_EXPORT QgsWkbException : public QgsException
 };
 
 
-/** \class QgsWkbPtr
+/** \ingroup core
+ * \class QgsWkbPtr
  * \note not available in Python bindings
  */
 
@@ -56,7 +59,16 @@ class CORE_EXPORT QgsWkbPtr
       mP += sizeof v;
     }
 
+    void write( const QByteArray& data ) const
+    {
+      verifyBound( data.length() );
+      memcpy( mP, data.constData(), data.length() );
+      mP += data.length();
+    }
+
   public:
+    //! Construct WKB pointer from QByteArray
+    QgsWkbPtr( QByteArray& wkb );
     QgsWkbPtr( unsigned char *p, int size );
 
     inline const QgsWkbPtr &operator>>( double &v ) const { read( v ); return *this; }
@@ -64,16 +76,16 @@ class CORE_EXPORT QgsWkbPtr
     inline const QgsWkbPtr &operator>>( int &v ) const { read( v ); return *this; }
     inline const QgsWkbPtr &operator>>( unsigned int &v ) const { read( v ); return *this; }
     inline const QgsWkbPtr &operator>>( char &v ) const { read( v ); return *this; }
-    inline const QgsWkbPtr &operator>>( QgsWKBTypes::Type &v ) const { read( v ); return *this; }
-    inline const QgsWkbPtr &operator>>( QGis::WkbType &v ) const { read( v ); return *this; }
+    inline const QgsWkbPtr &operator>>( QgsWkbTypes::Type &v ) const { read( v ); return *this; }
 
     inline QgsWkbPtr &operator<<( const double &v ) { write( v ); return *this; }
     inline QgsWkbPtr &operator<<( const float &r ) { double v = r; write( v ); return *this; }
     inline QgsWkbPtr &operator<<( const int &v ) { write( v ); return *this; }
     inline QgsWkbPtr &operator<<( const unsigned int &v ) { write( v ); return *this; }
     inline QgsWkbPtr &operator<<( const char &v ) { write( v ); return *this; }
-    inline QgsWkbPtr &operator<<( const QgsWKBTypes::Type &v ) { write( v ); return *this; }
-    inline QgsWkbPtr &operator<<( const QGis::WkbType &v ) { write( v ); return *this; }
+    inline QgsWkbPtr &operator<<( const QgsWkbTypes::Type &v ) { write( v ); return *this; }
+    //! Append data from a byte array
+    inline QgsWkbPtr &operator<<( const QByteArray &data ) { write( data ); return *this; }
 
     inline void operator+=( int n ) { verifyBound( n ); mP += n; }
 
@@ -83,18 +95,23 @@ class CORE_EXPORT QgsWkbPtr
     inline int writtenSize() const { return mP - mStart; }
 };
 
-/** \class QgsConstWkbPtr
+/** \ingroup core
+ * \class QgsConstWkbPtr
  * \note not available in Python bindings
  */
 
 class CORE_EXPORT QgsConstWkbPtr
 {
+  protected:
     mutable unsigned char *mP;
     unsigned char *mEnd;
     mutable bool mEndianSwap;
+    mutable QgsWkbTypes::Type mWkbType;
 
+    //! Verify bounds
     void verifyBound( int size ) const;
 
+    //! Read a value
     template<typename T> void read( T& v ) const
     {
       verifyBound( sizeof v );
@@ -105,14 +122,21 @@ class CORE_EXPORT QgsConstWkbPtr
     }
 
   public:
+    //! Construct WKB pointer from QByteArray
+    explicit QgsConstWkbPtr( const QByteArray& wkb );
     QgsConstWkbPtr( const unsigned char *p, int size );
-    QgsWKBTypes::Type readHeader() const;
+    QgsWkbTypes::Type readHeader() const;
 
     inline const QgsConstWkbPtr &operator>>( double &v ) const { read( v ); return *this; }
     inline const QgsConstWkbPtr &operator>>( float &r ) const { double v; read( v ); r = v; return *this; }
     inline const QgsConstWkbPtr &operator>>( int &v ) const { read( v ); return *this; }
     inline const QgsConstWkbPtr &operator>>( unsigned int &v ) const { read( v ); return *this; }
     inline const QgsConstWkbPtr &operator>>( char &v ) const { read( v ); return *this; }
+
+    //! Read a point
+    virtual const QgsConstWkbPtr &operator>>( QPointF &point ) const;
+    //! Read a point array
+    virtual const QgsConstWkbPtr &operator>>( QPolygonF &points ) const;
 
     inline void operator+=( int n ) { verifyBound( n ); mP += n; }
     inline void operator-=( int n ) { mP -= n; }

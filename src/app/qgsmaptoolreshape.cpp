@@ -14,8 +14,10 @@
  ***************************************************************************/
 
 #include "qgsmaptoolreshape.h"
+#include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgisapp.h"
 
@@ -94,20 +96,20 @@ void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
       //query geometry
       //call geometry->reshape(mCaptureList)
       //register changed geometry in vector layer
-      QgsGeometry* geom = f.geometry();
-      if ( geom )
+      QgsGeometry geom = f.geometry();
+      if ( !geom.isNull() )
       {
-        reshapeReturn = geom->reshapeGeometry( points() );
+        reshapeReturn = geom.reshapeGeometry( points() );
         if ( reshapeReturn == 0 )
         {
           //avoid intersections on polygon layers
-          if ( vlayer->geometryType() == QGis::Polygon )
+          if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
           {
             //ignore all current layer features as they should be reshaped too
-            QMap<QgsVectorLayer*, QSet<QgsFeatureId> > ignoreFeatures;
+            QHash<QgsVectorLayer*, QSet<QgsFeatureId> > ignoreFeatures;
             ignoreFeatures.insert( vlayer, vlayer->allFeatureIds() );
 
-            if ( geom->avoidIntersections( ignoreFeatures ) != 0 )
+            if ( geom.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers(), ignoreFeatures ) != 0 )
             {
               emit messageEmitted( tr( "An error was reported during intersection removal" ), QgsMessageBar::CRITICAL );
               vlayer->destroyEditCommand();
@@ -115,7 +117,7 @@ void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
               return;
             }
 
-            if ( geom->isGeosEmpty() ) //intersection removal might have removed the whole geometry
+            if ( geom.isEmpty() ) //intersection removal might have removed the whole geometry
             {
               emit messageEmitted( tr( "The feature cannot be reshaped because the resulting geometry is empty" ), QgsMessageBar::CRITICAL );
               vlayer->destroyEditCommand();

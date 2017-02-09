@@ -36,7 +36,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsrectangle.h"
@@ -45,7 +45,7 @@
 #include "qgsgpxprovider.h"
 #include "gpsdata.h"
 
-const char* QgsGPXProvider::attr[] = { "name", "elevation", "symbol", "number",
+const char* QgsGPXProvider::ATTR[] = { "name", "elevation", "symbol", "number",
                                        "comment", "description", "source",
                                        "url", "url name"
                                      };
@@ -60,9 +60,9 @@ QgsGPXProvider::DataType QgsGPXProvider::attrUsed[] =
   QgsGPXProvider::AllType, QgsGPXProvider::AllType
 };
 
-const int QgsGPXProvider::attrCount = sizeof( QgsGPXProvider::attr ) / sizeof( const char* );
+const int QgsGPXProvider::ATTR_COUNT = sizeof( QgsGPXProvider::ATTR ) / sizeof( const char* );
 
-const QString GPX_KEY = "gpx";
+const QString GPX_KEY = QStringLiteral( "gpx" );
 
 const QString GPX_DESCRIPTION = QObject::tr( "GPS eXchange format provider" );
 
@@ -74,26 +74,26 @@ QgsGPXProvider::QgsGPXProvider( const QString& uri )
     , mValid( false ) // assume that it won't work
 {
   // we always use UTF-8
-  mEncoding = QTextCodec::codecForName( "utf8" );
+  setEncoding( QStringLiteral( "utf8" ) );
 
   // get the file name and the type parameter from the URI
   int fileNameEnd = uri.indexOf( '?' );
-  if ( fileNameEnd == -1 || uri.mid( fileNameEnd + 1, 5 ) != "type=" )
+  if ( fileNameEnd == -1 || uri.mid( fileNameEnd + 1, 5 ) != QLatin1String( "type=" ) )
   {
     QgsLogger::warning( tr( "Bad URI - you need to specify the feature type." ) );
     return;
   }
   QString typeStr = uri.mid( fileNameEnd + 6 );
-  mFeatureType = ( typeStr == "waypoint" ? WaypointType :
-                   ( typeStr == "route" ? RouteType : TrackType ) );
+  mFeatureType = ( typeStr == QLatin1String( "waypoint" ) ? WaypointType :
+                   ( typeStr == QLatin1String( "route" ) ? RouteType : TrackType ) );
 
   // set up the attributes and the geometry type depending on the feature type
-  for ( int i = 0; i < attrCount; ++i )
+  for ( int i = 0; i < ATTR_COUNT; ++i )
   {
     if ( attrUsed[i] & mFeatureType )
     {
       QString attrTypeName = ( attrType[i] == QVariant::Int ? "int" : ( attrType[i] == QVariant::Double ? "double" : "text" ) );
-      attributeFields.append( QgsField( attr[i], attrType[i], attrTypeName ) );
+      attributeFields.append( QgsField( ATTR[i], attrType[i], attrTypeName ) );
       indexToAttr.append( i );
     }
   }
@@ -125,7 +125,7 @@ QString QgsGPXProvider::storageType() const
   return tr( "GPS eXchange file" );
 }
 
-int QgsGPXProvider::capabilities() const
+QgsVectorDataProvider::Capabilities QgsGPXProvider::capabilities() const
 {
   return QgsVectorDataProvider::AddFeatures |
          QgsVectorDataProvider::DeleteFeatures |
@@ -135,7 +135,7 @@ int QgsGPXProvider::capabilities() const
 
 
 // Return the extent of the layer
-QgsRectangle QgsGPXProvider::extent()
+QgsRectangle QgsGPXProvider::extent() const
 {
   return data->getExtent();
 }
@@ -144,15 +144,15 @@ QgsRectangle QgsGPXProvider::extent()
 /**
  * Return the feature type
  */
-QGis::WkbType QgsGPXProvider::geometryType() const
+QgsWkbTypes::Type QgsGPXProvider::wkbType() const
 {
   if ( mFeatureType == WaypointType )
-    return QGis::WKBPoint;
+    return QgsWkbTypes::Point;
 
   if ( mFeatureType == RouteType || mFeatureType == TrackType )
-    return QGis::WKBLineString;
+    return QgsWkbTypes::LineString;
 
-  return QGis::WKBUnknown;
+  return QgsWkbTypes::Unknown;
 }
 
 
@@ -171,20 +171,20 @@ long QgsGPXProvider::featureCount() const
 }
 
 
-const QgsFields& QgsGPXProvider::fields() const
+QgsFields QgsGPXProvider::fields() const
 {
   return attributeFields;
 }
 
 
 
-bool QgsGPXProvider::isValid()
+bool QgsGPXProvider::isValid() const
 {
   return mValid;
 }
 
 
-QgsFeatureIterator QgsGPXProvider::getFeatures( const QgsFeatureRequest& request )
+QgsFeatureIterator QgsGPXProvider::getFeatures( const QgsFeatureRequest& request ) const
 {
   return QgsFeatureIterator( new QgsGPXFeatureIterator( new QgsGPXFeatureSource( this ), true, request ) );
 }
@@ -203,25 +203,26 @@ bool QgsGPXProvider::addFeatures( QgsFeatureList & flist )
 
   // write back to file
   QFile file( mFileName );
-  if ( !file.open( QIODevice::WriteOnly ) )
+  if ( !file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     return false;
   QTextStream ostr( &file );
-  data->writeXML( ostr );
+  data->writeXml( ostr );
   return true;
 }
 
 
 bool QgsGPXProvider::addFeature( QgsFeature& f )
 {
-  const unsigned char* geo = f.constGeometry()->asWkb();
-  QGis::WkbType wkbType = f.constGeometry()->wkbType();
+  QByteArray wkb( f.geometry().exportToWkb() );
+  const char* geo = wkb.constData();
+  QgsWkbTypes::Type wkbType = f.geometry().wkbType();
   bool success = false;
   QgsGPSObject* obj = nullptr;
   QgsAttributes attrs = f.attributes();
   QgsAttributeMap::const_iterator it;
 
   // is it a waypoint?
-  if ( mFeatureType == WaypointType && geo && wkbType == QGis::WKBPoint )
+  if ( mFeatureType == WaypointType && geo && wkbType == QgsWkbTypes::Point )
   {
 
     // add geometry
@@ -251,7 +252,7 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
   }
 
   // is it a route?
-  if ( mFeatureType == RouteType && geo && wkbType == QGis::WKBLineString )
+  if ( mFeatureType == RouteType && geo && wkbType == QgsWkbTypes::LineString )
   {
 
     QgsRoute rte;
@@ -298,7 +299,7 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
   }
 
   // is it a track?
-  if ( mFeatureType == TrackType && geo && wkbType == QGis::WKBLineString )
+  if ( mFeatureType == TrackType && geo && wkbType == QgsWkbTypes::LineString )
   {
 
     QgsTrack trk;
@@ -391,10 +392,10 @@ bool QgsGPXProvider::deleteFeatures( const QgsFeatureIds & id )
 
   // write back to file
   QFile file( mFileName );
-  if ( !file.open( QIODevice::WriteOnly ) )
+  if ( !file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     return false;
   QTextStream ostr( &file );
-  data->writeXML( ostr );
+  data->writeXml( ostr );
   return true;
 }
 
@@ -441,10 +442,10 @@ bool QgsGPXProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
   // write back to file
   QFile file( mFileName );
-  if ( !file.open( QIODevice::WriteOnly ) )
+  if ( !file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     return false;
   QTextStream ostr( &file );
-  data->writeXML( ostr );
+  data->writeXml( ostr );
   return true;
 }
 
@@ -515,7 +516,7 @@ void QgsGPXProvider::changeAttributeValues( QgsGPSObject& obj, const QgsAttribut
 }
 
 
-QVariant QgsGPXProvider::defaultValue( int fieldId )
+QVariant QgsGPXProvider::defaultValue( int fieldId ) const
 {
   if ( fieldId == SrcAttr )
     return tr( "Digitized in QGIS" );
@@ -535,7 +536,7 @@ QString QgsGPXProvider::description() const
   return GPX_DESCRIPTION;
 } // QgsGPXProvider::description()
 
-QgsCoordinateReferenceSystem QgsGPXProvider::crs()
+QgsCoordinateReferenceSystem QgsGPXProvider::crs() const
 {
   return QgsCoordinateReferenceSystem( GEOSRID, QgsCoordinateReferenceSystem::PostgisCrsId ); // use WGS84
 }

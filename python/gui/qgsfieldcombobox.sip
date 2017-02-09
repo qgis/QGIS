@@ -20,15 +20,32 @@ class QgsFieldComboBox : QComboBox
     explicit QgsFieldComboBox( QWidget *parent /TransferThis/ = 0 );
 
     //! setFilters allows fitering according to the type of field
-    void setFilters( const QgsFieldProxyModel::Filters& filters );
+    void setFilters( QgsFieldProxyModel::Filters filters );
 
     //! currently used filter on list of fields
     QgsFieldProxyModel::Filters filters() const;
 
+    /**
+     * Sets whether an optional empty field ("not set") option is shown in the combo box.
+     * @see allowEmptyFieldName()
+     * @note added in QGIS 3.0
+     */
+    void setAllowEmptyFieldName( bool allowEmpty );
+
+    /**
+     * Returns true if the combo box allows the empty field ("not set") choice.
+     * @see setAllowEmptyFieldName()
+     * @note added in QGIS 3.0
+     */
+    bool allowEmptyFieldName() const;
+
     //! return the currently selected field
     QString currentField() const;
 
-    //! Returns the currently used layer
+    /**
+     * Returns the layer currently associated with the combobox.
+     * @see setLayer()
+     */
     QgsVectorLayer* layer() const;
 
   signals:
@@ -36,10 +53,12 @@ class QgsFieldComboBox : QComboBox
     void fieldChanged( const QString& fieldName );
 
   public slots:
-    //! set the layer of which the fields are listed
-    void setLayer( QgsVectorLayer* layer );
 
-    //! convenience slot to connect QgsMapLayerComboBox layer signal
+    /**
+     * Sets the layer for which fields are listed in the combobox. If no layer is set
+     * or a non-vector layer is set then the combobox will be empty.
+     * @see layer()
+     */
     void setLayer( QgsMapLayer* layer );
 
     //! setField sets the currently selected field

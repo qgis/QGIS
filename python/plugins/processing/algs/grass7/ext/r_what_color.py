@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Médéric Ribreux'
 __date__ = 'February 2016'
@@ -29,7 +30,7 @@ __revision__ = '$Format:%H$'
 def processInputs(alg):
     # We need to import all the bands and color tables of the input rasters
     raster = alg.getParameterValue('input')
-    if raster in alg.exportedLayers.keys():
+    if raster in list(alg.exportedLayers.keys()):
         return
 
     alg.setSessionProjectionFromLayer(raster, alg.commands)
@@ -40,19 +41,19 @@ def processInputs(alg):
 
     alg.setSessionProjectionFromProject(alg.commands)
 
-    region = unicode(alg.getParameterValue(alg.GRASS_REGION_EXTENT_PARAMETER))
+    region = str(alg.getParameterValue(alg.GRASS_REGION_EXTENT_PARAMETER))
     regionCoords = region.split(',')
     command = 'g.region'
     command += ' -a'
-    command += ' n=' + unicode(regionCoords[3])
-    command += ' s=' + unicode(regionCoords[2])
-    command += ' e=' + unicode(regionCoords[1])
-    command += ' w=' + unicode(regionCoords[0])
+    command += ' n=' + str(regionCoords[3])
+    command += ' s=' + str(regionCoords[2])
+    command += ' e=' + str(regionCoords[1])
+    command += ' w=' + str(regionCoords[0])
     cellsize = alg.getParameterValue(alg.GRASS_REGION_CELLSIZE_PARAMETER)
     if cellsize:
-        command += ' res=' + unicode(cellsize)
+        command += ' res=' + str(cellsize)
     else:
-        command += ' res=' + unicode(alg.getDefaultCellsize())
+        command += ' res=' + str(alg.getDefaultCellsize())
     alignToResolution = alg.getParameterValue(alg.GRASS_REGION_ALIGN_TO_RESOLUTION)
     if alignToResolution:
         command += ' -a'

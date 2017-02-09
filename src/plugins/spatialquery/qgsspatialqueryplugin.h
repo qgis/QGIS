@@ -45,13 +45,14 @@ class QgsSpatialQueryPlugin: public QObject, public QgisPlugin
 {
     Q_OBJECT
   public:
+
     /**
      * \brief Constructor for a plugin. The QgisInterface pointer is passed by
      * QGIS when it attempts to instantiate the plugin.
      * \param iface Pointer to the QgisInterface object.
      */
     explicit QgsSpatialQueryPlugin( QgisInterface* iface );
-    //! Destructor
+
     ~QgsSpatialQueryPlugin();
 
   public slots:
@@ -74,7 +75,7 @@ class QgsSpatialQueryPlugin: public QObject, public QgisPlugin
     QAction* mSpatialQueryAction;
 
 
-    void MsgDEBUG( QString sMSg );
+    void MsgDEBUG( const QString &sMSg );
 
 };
 #endif

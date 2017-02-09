@@ -60,7 +60,7 @@ class BarPlot(GeoAlgorithm):
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Bar plot')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         namefieldname = self.getParameterValue(self.NAME_FIELD)
@@ -77,6 +77,5 @@ class BarPlot(GeoAlgorithm):
         plt.xticks(ind, values[namefieldname], rotation=45)
         plotFilename = output + '.png'
         lab.savefig(plotFilename)
-        f = open(output, 'w')
-        f.write('<html><img src="' + plotFilename + '"/></html>')
-        f.close()
+        with open(output, 'w') as f:
+            f.write('<html><img src="' + plotFilename + '"/></html>')

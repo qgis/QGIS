@@ -24,7 +24,7 @@
 class QListWidgetItem;
 class QgsComposer;
 
-/** Delegate for a line edit for renaming a composer. Prevents entry of duplicate composer names.*/
+//! Delegate for a line edit for renaming a composer. Prevents entry of duplicate composer names.
 class QgsComposerNameDelegate : public QItemDelegate
 {
     Q_OBJECT
@@ -49,16 +49,17 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
 {
     Q_OBJECT
   public:
-    QgsComposerManager( QWidget * parent = nullptr, Qt::WindowFlags f = nullptr );
+    QgsComposerManager( QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsComposerManager();
 
     void addTemplates( const QMap<QString, QString>& templates );
 
   public slots:
-    /** Raise, unminimize and activate this window */
+    //! Raise, unminimize and activate this window
     void activate();
 
   private:
+
     /** Stores the relation between items and composer pointers. A 0 pointer for the composer means that
       this composer needs to be created from a default template*/
     QMap<QListWidgetItem*, QgsComposer*> mItemComposerMap;
@@ -90,24 +91,24 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
 #endif
 
   private slots:
-    /** Slot to update buttons state when selecting compositions */
+    //! Slot to update buttons state when selecting compositions
     void toggleButtons();
     void on_mAddButton_clicked();
-    /** Slot to track combobox to use specific template path */
+    //! Slot to track combobox to use specific template path
     void on_mTemplate_currentIndexChanged( int indx );
-    /** Slot to choose path to template */
+    //! Slot to choose path to template
     void on_mTemplatePathBtn_pressed();
-    /** Slot to open default templates dir with user's system */
+    //! Slot to open default templates dir with user's system
     void on_mTemplatesDefaultDirBtn_pressed();
-    /** Slot to open user templates dir with user's system */
+    //! Slot to open user templates dir with user's system
     void on_mTemplatesUserDirBtn_pressed();
 
-    /** Refreshes the list of composers */
+    //! Refreshes the list of composers
     void refreshComposers();
 
     void remove_clicked();
     void show_clicked();
-    /** Duplicate composer */
+    //! Duplicate composer
     void duplicate_clicked();
     void rename_clicked();
     void on_mComposerListWidget_itemChanged( QListWidgetItem * item );

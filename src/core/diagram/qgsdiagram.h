@@ -15,35 +15,34 @@
 #ifndef QGSDIAGRAM_H
 #define QGSDIAGRAM_H
 
-#include "qgsfeature.h"
-#include "qgsexpressioncontext.h"
+#include "qgis_core.h"
 #include <QPen>
 #include <QBrush>
+#include "qgsexpression.h" //for QMap with QgsExpression
 
 class QPainter;
 class QPointF;
 class QgsDiagramSettings;
 class QgsDiagramInterpolationSettings;
-
+class QgsFeature;
 class QgsRenderContext;
+class QgsExpressionContext;
+class QgsFields;
+class QgsAttributes;
 
-class QgsExpression;
 
-
-
-/** Base class for all diagram types*/
+/** \ingroup core
+ * Base class for all diagram types*/
 class CORE_EXPORT QgsDiagram
 {
   public:
     virtual ~QgsDiagram() { clearCache(); }
+
     /** Returns an instance that is equivalent to this one
      * @note added in 2.4 */
     virtual QgsDiagram* clone() const = 0;
 
     void clearCache();
-
-    //! @deprecated use QgsExpressionContext variant instead
-    Q_DECL_DEPRECATED QgsExpression* getExpression( const QString& expression, const QgsFields* fields );
 
     /** Returns a prepared expression for the specified context.
      * @param expression expression string
@@ -52,16 +51,16 @@ class CORE_EXPORT QgsDiagram
      */
     QgsExpression* getExpression( const QString& expression, const QgsExpressionContext& context );
 
-    /** @deprecated `void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )` should be used instead */
-    virtual Q_DECL_DEPRECATED void renderDiagram( const QgsAttributes& att, QgsRenderContext& c, const QgsDiagramSettings& s, QPointF position );
-    /** Draws the diagram at the given position (in pixel coordinates)*/
+    //! Draws the diagram at the given position (in pixel coordinates)
     virtual void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, QPointF position ) = 0;
+
+    /**
+     * Get a descriptive name for this diagram type.
+     */
     virtual QString diagramName() const = 0;
-    /** Returns the size in map units the diagram will use to render.*/
+    //! Returns the size in map units the diagram will use to render.
     virtual QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s ) = 0;
-    /** @deprecated `QSizeF diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )` should be used instead */
-    virtual Q_DECL_DEPRECATED QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is );
-    /** Returns the size in map units the diagram will use to render. Interpolate size*/
+    //! Returns the size in map units the diagram will use to render. Interpolate size
     virtual QSizeF diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) = 0;
 
     /** Returns the size of the legend item for the diagram corresponding to a specified value.
@@ -99,7 +98,7 @@ class CORE_EXPORT QgsDiagram
      *
      *  @return The converted length for rendering
      */
-    float sizePainterUnits( float l, const QgsDiagramSettings& s, const QgsRenderContext& c );
+    double sizePainterUnits( double l, const QgsDiagramSettings& s, const QgsRenderContext& c );
 
     /** Calculates a size to match the current settings and rendering context
      *  @param s    The settings that contain the font size and size type

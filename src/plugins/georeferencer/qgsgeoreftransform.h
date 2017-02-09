@@ -38,7 +38,7 @@ class QgsGeorefTransformInterface
     virtual int getMinimumGCPCount() const = 0;
 
     /**
-     * Return funtion pointer to the GDALTransformer function.
+     * Return function pointer to the GDALTransformer function.
      * Used by GDALwarp.
      */
     virtual GDALTransformerFunc  GDALTransformer()     const = 0;
@@ -98,7 +98,7 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
     //! \brief The transform parametrisation currently in use.
     TransformParametrisation transformParametrisation() const;
 
-    /** True for linear, Helmert, first order polynomial*/
+    //! True for linear, Helmert, first order polynomial
     bool providesAccurateInverseTransformation() const;
 
     //! \returns whether the parameters of this transform have been initialized by \ref updateParametersFromGCPs
@@ -115,7 +115,7 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
     int getMinimumGCPCount() const override;
 
     /**
-     * \brief Return funtion pointer to the GDALTransformer function.
+     * \brief Return function pointer to the GDALTransformer function.
      *
      * Used by the transform routines \ref transform, \ref transformRasterToWorld
      * \ref transformWorldToRaster and by the GDAL warping code

@@ -27,7 +27,7 @@
 #include <QTimer>
 
 
-QgsOptionsDialogBase::QgsOptionsDialogBase( const QString& settingsKey, QWidget* parent, const Qt::WindowFlags& fl, QSettings* settings )
+QgsOptionsDialogBase::QgsOptionsDialogBase( const QString& settingsKey, QWidget* parent, Qt::WindowFlags fl, QSettings* settings )
     : QDialog( parent, fl )
     , mOptsKey( settingsKey )
     , mInit( false )
@@ -35,7 +35,7 @@ QgsOptionsDialogBase::QgsOptionsDialogBase( const QString& settingsKey, QWidget*
     , mOptStackedWidget( nullptr )
     , mOptSplitter( nullptr )
     , mOptButtonBox( nullptr )
-    , mDialogTitle( "" )
+    , mDialogTitle( QLatin1String( "" ) )
     , mIconOnly( false )
     , mSettings( settings )
     , mDelSettings( false )
@@ -46,9 +46,9 @@ QgsOptionsDialogBase::~QgsOptionsDialogBase()
 {
   if ( mInit )
   {
-    mSettings->setValue( QString( "/Windows/%1/geometry" ).arg( mOptsKey ), saveGeometry() );
-    mSettings->setValue( QString( "/Windows/%1/splitState" ).arg( mOptsKey ), mOptSplitter->saveState() );
-    mSettings->setValue( QString( "/Windows/%1/tab" ).arg( mOptsKey ), mOptStackedWidget->currentIndex() );
+    mSettings->setValue( QStringLiteral( "/Windows/%1/geometry" ).arg( mOptsKey ), saveGeometry() );
+    mSettings->setValue( QStringLiteral( "/Windows/%1/splitState" ).arg( mOptsKey ), mOptSplitter->saveState() );
+    mSettings->setValue( QStringLiteral( "/Windows/%1/tab" ).arg( mOptsKey ), mOptStackedWidget->currentIndex() );
   }
 
   if ( mDelSettings ) // local settings obj to delete
@@ -86,19 +86,19 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString& title
   }
 
   // start with copy of qgsoptionsdialog_template.ui to ensure existence of these objects
-  mOptListWidget = findChild<QListWidget*>( "mOptionsListWidget" );
-  QFrame* optionsFrame = findChild<QFrame*>( "mOptionsFrame" );
-  mOptStackedWidget = findChild<QStackedWidget*>( "mOptionsStackedWidget" );
-  mOptSplitter = findChild<QSplitter*>( "mOptionsSplitter" );
-  mOptButtonBox = findChild<QDialogButtonBox*>( "buttonBox" );
-  QFrame* buttonBoxFrame = findChild<QFrame*>( "mButtonBoxFrame" );
+  mOptListWidget = findChild<QListWidget*>( QStringLiteral( "mOptionsListWidget" ) );
+  QFrame* optionsFrame = findChild<QFrame*>( QStringLiteral( "mOptionsFrame" ) );
+  mOptStackedWidget = findChild<QStackedWidget*>( QStringLiteral( "mOptionsStackedWidget" ) );
+  mOptSplitter = findChild<QSplitter*>( QStringLiteral( "mOptionsSplitter" ) );
+  mOptButtonBox = findChild<QDialogButtonBox*>( QStringLiteral( "buttonBox" ) );
+  QFrame* buttonBoxFrame = findChild<QFrame*>( QStringLiteral( "mButtonBoxFrame" ) );
 
   if ( !mOptListWidget || !mOptStackedWidget || !mOptSplitter || !optionsFrame )
   {
     return;
   }
 
-  int size = mSettings->value( "/IconSize", 24 ).toInt();
+  int size = mSettings->value( QStringLiteral( "/IconSize" ), 24 ).toInt();
   // buffer size to match displayed icon size in toolbars, and expected geometry restore
   // newWidth (above) may need adjusted if you adjust iconBuffer here
   int iconBuffer = 4;
@@ -163,13 +163,13 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString& title )
   // re-save original dialog title in case it was changed after dialog initialization
   mDialogTitle = windowTitle();
 
-  restoreGeometry( mSettings->value( QString( "/Windows/%1/geometry" ).arg( mOptsKey ) ).toByteArray() );
+  restoreGeometry( mSettings->value( QStringLiteral( "/Windows/%1/geometry" ).arg( mOptsKey ) ).toByteArray() );
   // mOptListWidget width is fixed to take up less space in QtDesigner
   // revert it now unless the splitter's state hasn't been saved yet
   mOptListWidget->setMaximumWidth(
-    mSettings->value( QString( "/Windows/%1/splitState" ).arg( mOptsKey ) ).isNull() ? 150 : 16777215 );
-  mOptSplitter->restoreState( mSettings->value( QString( "/Windows/%1/splitState" ).arg( mOptsKey ) ).toByteArray() );
-  int curIndx = mSettings->value( QString( "/Windows/%1/tab" ).arg( mOptsKey ), 0 ).toInt();
+    mSettings->value( QStringLiteral( "/Windows/%1/splitState" ).arg( mOptsKey ) ).isNull() ? 150 : 16777215 );
+  mOptSplitter->restoreState( mSettings->value( QStringLiteral( "/Windows/%1/splitState" ).arg( mOptsKey ) ).toByteArray() );
+  int curIndx = mSettings->value( QStringLiteral( "/Windows/%1/tab" ).arg( mOptsKey ), 0 ).toInt();
 
   // if the last used tab is out of range or not enabled display the first enabled one
   if ( mOptStackedWidget->count() < ( curIndx + 1 )
@@ -224,7 +224,7 @@ void QgsOptionsDialogBase::updateWindowTitle()
   QListWidgetItem *curitem = mOptListWidget->currentItem();
   if ( curitem )
   {
-    setWindowTitle( QString( "%1 | %2" ).arg( mDialogTitle, curitem->text() ) );
+    setWindowTitle( QStringLiteral( "%1 | %2" ).arg( mDialogTitle, curitem->text() ) );
   }
   else
   {

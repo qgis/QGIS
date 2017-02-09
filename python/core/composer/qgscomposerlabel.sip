@@ -1,4 +1,4 @@
-/** \ingroup MapComposer
+/** \ingroup core
  * A label that can be placed onto a map composition.
  */
 class QgsComposerLabel : QgsComposerItem
@@ -28,16 +28,6 @@ class QgsComposerLabel : QgsComposerItem
     /** Returns the text as it appears on screen (with replaced data field) */
     QString displayText() const;
 
-    /** Sets the current feature, the current layer and a list of local variable substitutions for evaluating expressions.
-      * @deprecated use atlas features and setSubstitutions() instead
-      */
-    void setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer, const QMap<QString, QVariant>& substitutions = QMap<QString, QVariant>() ) /Deprecated/;
-
-    /** Sets the list of local variable substitutions for evaluating expressions in label text.
-     * @note added in QGIS 2.12
-     */
-    void setSubstitutions( const QMap<QString, QVariant>& substitutions = QMap<QString, QVariant>() );
-
     QFont font() const;
     void setFont( const QFont& f );
     /** Accessor for the vertical alignment of the label
@@ -58,12 +48,6 @@ class QgsComposerLabel : QgsComposerItem
      * @returns void
      */
     void setVAlign( Qt::AlignmentFlag a );
-
-    /** Returns the margin between the edge of the frame and the label contents
-     * @returns margin in mm
-     * @deprecated use marginX and marginY instead
-     */
-    double margin() /Deprecated/;
 
     /** Returns the horizontal margin between the edge of the frame and the label
      * contents.
@@ -116,13 +100,13 @@ class QgsComposerLabel : QgsComposerItem
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc document
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
 
     /** Sets state from Dom document
      * @param itemElem is Dom element corresponding to 'ComposerLabel' tag
      * @param doc document
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
 
     //Overridden to contain part of label's text
     virtual QString displayName() const;

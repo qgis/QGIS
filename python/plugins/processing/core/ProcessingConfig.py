@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -27,8 +29,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtCore import QPyNullVariant, QCoreApplication, QSettings, QObject, pyqtSignal
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QCoreApplication, QSettings, QObject, pyqtSignal
+from qgis.PyQt.QtGui import QIcon
+from qgis.core import NULL, QgsApplication
 from processing.tools.system import defaultOutputFolder
 import processing.tools.dataobjects
 
@@ -40,7 +43,7 @@ class SettingsWatcher(QObject):
 settingsWatcher = SettingsWatcher()
 
 
-class ProcessingConfig:
+class ProcessingConfig(object):
 
     OUTPUT_FOLDER = 'OUTPUTS_FOLDER'
     RASTER_STYLE = 'RASTER_STYLE'
@@ -49,6 +52,7 @@ class ProcessingConfig:
     VECTOR_POLYGON_STYLE = 'VECTOR_POLYGON_STYLE'
     SHOW_RECENT_ALGORITHMS = 'SHOW_RECENT_ALGORITHMS'
     USE_SELECTED = 'USE_SELECTED'
+    FILTER_INVALID_GEOMETRIES = 'FILTER_INVALID_GEOMETRIES'
     USE_FILENAME_AS_LAYER_NAME = 'USE_FILENAME_AS_LAYER_NAME'
     KEEP_DIALOG_OPEN = 'KEEP_DIALOG_OPEN'
     SHOW_DEBUG_IN_DIALOG = 'SHOW_DEBUG_IN_DIALOG'
@@ -57,16 +61,18 @@ class ProcessingConfig:
     POST_EXECUTION_SCRIPT = 'POST_EXECUTION_SCRIPT'
     SHOW_CRS_DEF = 'SHOW_CRS_DEF'
     WARN_UNMATCHING_CRS = 'WARN_UNMATCHING_CRS'
+    WARN_UNMATCHING_EXTENT_CRS = 'WARN_UNMATCHING_EXTENT_CRS'
     DEFAULT_OUTPUT_RASTER_LAYER_EXT = 'DEFAULT_OUTPUT_RASTER_LAYER_EXT'
     DEFAULT_OUTPUT_VECTOR_LAYER_EXT = 'DEFAULT_OUTPUT_VECTOR_LAYER_EXT'
-    SHOW_PROVIDERS_TOOLTIP = "SHOW_PROVIDERS_TOOLTIP"
+    SHOW_PROVIDERS_TOOLTIP = 'SHOW_PROVIDERS_TOOLTIP'
+    MODELS_SCRIPTS_REPO = 'MODELS_SCRIPTS_REPO'
 
     settings = {}
     settingIcons = {}
 
     @staticmethod
     def initialize():
-        icon = QIcon(os.path.dirname(__file__) + '/../images/alg.png')
+        icon = QgsApplication.getThemeIcon("/processingAlgorithm.svg")
         ProcessingConfig.settingIcons['General'] = icon
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
@@ -107,6 +113,10 @@ class ProcessingConfig:
             ProcessingConfig.tr("Warn before executing if layer CRS's do not match"), True))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
+            ProcessingConfig.WARN_UNMATCHING_EXTENT_CRS,
+            ProcessingConfig.tr("Warn before executing if extent CRS might not match layers CRS"), True))
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
             ProcessingConfig.RASTER_STYLE,
             ProcessingConfig.tr('Style for raster layers'), '',
             valuetype=Setting.FILE))
@@ -138,19 +148,41 @@ class ProcessingConfig:
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.RECENT_ALGORITHMS,
-            ProcessingConfig.tr('Recent algs'), '', hidden=True))
+            ProcessingConfig.tr('Recent algorithms'), '', hidden=True))
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.MODELS_SCRIPTS_REPO,
+            ProcessingConfig.tr('Scripts and models repository'),
+            'https://raw.githubusercontent.com/qgis/QGIS-Processing/master'))
+
+        invalidFeaturesOptions = [ProcessingConfig.tr('Do not filter (better performance)'),
+                                  ProcessingConfig.tr('Ignore features with invalid geometries'),
+                                  ProcessingConfig.tr('Stop algorithm execution when a geometry is invalid')]
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.FILTER_INVALID_GEOMETRIES,
+            ProcessingConfig.tr('Invalid features filtering'),
+            invalidFeaturesOptions[2],
+            valuetype=Setting.SELECTION,
+            options=invalidFeaturesOptions))
+
         extensions = processing.tools.dataobjects.getSupportedOutputVectorLayerExtensions()
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT,
-            ProcessingConfig.tr('Default output vector layer extension'), extensions[0],
-            valuetype=Setting.SELECTION, options=extensions))
+            ProcessingConfig.tr('Default output vector layer extension'),
+            extensions[0],
+            valuetype=Setting.SELECTION,
+            options=extensions))
+
         extensions = processing.tools.dataobjects.getSupportedOutputRasterLayerExtensions()
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT,
-            ProcessingConfig.tr('Default output raster layer extension'), extensions[0],
-            valuetype=Setting.SELECTION, options=extensions))
+            ProcessingConfig.tr('Default output raster layer extension'),
+            extensions[0],
+            valuetype=Setting.SELECTION,
+            options=extensions))
 
     @staticmethod
     def setGroupIcon(group, icon):
@@ -159,11 +191,11 @@ class ProcessingConfig:
     @staticmethod
     def getGroupIcon(group):
         if group == ProcessingConfig.tr('General'):
-            return QIcon(os.path.dirname(__file__) + '/../images/alg.png')
+            return QgsApplication.getThemeIcon("/processingAlgorithm.svg")
         if group in ProcessingConfig.settingIcons:
             return ProcessingConfig.settingIcons[group]
         else:
-            return QIcon(os.path.dirname(__file__) + '/../images/alg.png')
+            return QgsApplication.getThemeIcon("/processingAlgorithm.svg")
 
     @staticmethod
     def addSetting(setting):
@@ -177,7 +209,7 @@ class ProcessingConfig:
     def getSettings():
         '''Return settings as a dict with group names as keys and lists of settings as values'''
         settings = {}
-        for setting in ProcessingConfig.settings.values():
+        for setting in list(ProcessingConfig.settings.values()):
             if setting.group not in settings:
                 group = []
                 settings[setting.group] = group
@@ -188,26 +220,34 @@ class ProcessingConfig:
 
     @staticmethod
     def readSettings():
-        for setting in ProcessingConfig.settings.values():
+        for setting in list(ProcessingConfig.settings.values()):
             setting.read()
 
     @staticmethod
-    def getSetting(name):
-        if name in ProcessingConfig.settings.keys():
+    def getSetting(name, readable=False):
+        if name in list(ProcessingConfig.settings.keys()):
             v = ProcessingConfig.settings[name].value
             try:
-                if isinstance(v, QPyNullVariant):
+                if v == NULL:
                     v = None
             except:
                 pass
-            return v
+            if ProcessingConfig.settings[name].valuetype == Setting.SELECTION:
+                if readable:
+                    return v
+                return ProcessingConfig.settings[name].options.index(v)
+            else:
+                return v
         else:
             return None
 
     @staticmethod
     def setSettingValue(name, value):
-        if name in ProcessingConfig.settings.keys():
-            ProcessingConfig.settings[name].setValue(value)
+        if name in list(ProcessingConfig.settings.keys()):
+            if ProcessingConfig.settings[name].valuetype == Setting.SELECTION:
+                ProcessingConfig.settings[name].setValue(ProcessingConfig.settings[name].options[value])
+            else:
+                ProcessingConfig.settings[name].setValue(value)
             ProcessingConfig.settings[name].save()
 
     @staticmethod
@@ -217,7 +257,7 @@ class ProcessingConfig:
         return QCoreApplication.translate(context, string)
 
 
-class Setting:
+class Setting(object):
 
     """A simple config parameter that will appear on the config dialog.
     """
@@ -227,6 +267,7 @@ class Setting:
     SELECTION = 3
     FLOAT = 4
     INT = 5
+    MULTIPLE_FOLDERS = 6
 
     def __init__(self, group, name, description, default, hidden=False, valuetype=None,
                  validator=None, options=None):
@@ -236,33 +277,42 @@ class Setting:
         self.description = description
         self.default = default
         self.hidden = hidden
-        if valuetype is None:
-            if isinstance(default, (int, long)):
-                valuetype = self.INT
-            elif isinstance(default, float):
-                valuetype = self.FLOAT
         self.valuetype = valuetype
         self.options = options
+
+        if self.valuetype is None:
+            if isinstance(default, int):
+                self.valuetype = self.INT
+            elif isinstance(default, float):
+                self.valuetype = self.FLOAT
+
         if validator is None:
-            if valuetype == self.FLOAT:
+            if self.valuetype == self.FLOAT:
                 def checkFloat(v):
                     try:
                         float(v)
                     except ValueError:
-                        raise ValueError(self.tr('Wrong parameter value:\n%s') % unicode(v))
+                        raise ValueError(self.tr('Wrong parameter value:\n%s') % str(v))
                 validator = checkFloat
-            elif valuetype == self.INT:
+            elif self.valuetype == self.INT:
                 def checkInt(v):
                     try:
                         int(v)
                     except ValueError:
-                        raise ValueError(self.tr('Wrong parameter value:\n%s') % unicode(v))
+                        raise ValueError(self.tr('Wrong parameter value:\n%s') % str(v))
                 validator = checkInt
-            elif valuetype in [self.FILE, self.FOLDER]:
+            elif self.valuetype in [self.FILE, self.FOLDER]:
                 def checkFileOrFolder(v):
                     if v and not os.path.exists(v):
-                        raise ValueError(self.tr('Specified path does not exist:\n%s') % unicode(v))
+                        raise ValueError(self.tr('Specified path does not exist:\n%s') % str(v))
                 validator = checkFileOrFolder
+            elif self.valuetype == self.MULTIPLE_FOLDERS:
+                def checkMultipleFolders(v):
+                    folders = v.split(';')
+                    for f in folders:
+                        if f and not os.path.exists(f):
+                            raise ValueError(self.tr('Specified path does not exist:\n%s') % str(f))
+                validator = checkMultipleFolders
             else:
                 def validator(x):
                     return True
@@ -273,19 +323,28 @@ class Setting:
         self.validator(value)
         self.value = value
 
-    def read(self):
-        qsettings = QSettings()
+    def read(self, qsettings=QSettings()):
         value = qsettings.value(self.qname, None)
         if value is not None:
             if isinstance(self.value, bool):
-                value = unicode(value).lower() == unicode(True).lower()
-            self.value = value
+                value = str(value).lower() == str(True).lower()
 
-    def save(self):
-        QSettings().setValue(self.qname, self.value)
+            if self.valuetype == self.SELECTION:
+                try:
+                    self.value = self.options[int(value)]
+                except:
+                    self.value = self.options[0]
+            else:
+                self.value = value
+
+    def save(self, qsettings=QSettings()):
+        if self.valuetype == self.SELECTION:
+            qsettings.setValue(self.qname, self.options.index(self.value))
+        else:
+            qsettings.setValue(self.qname, self.value)
 
     def __str__(self):
-        return self.name + '=' + unicode(self.value)
+        return self.name + '=' + str(self.value)
 
     def tr(self, string, context=''):
         if context == '':

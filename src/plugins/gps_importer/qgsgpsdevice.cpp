@@ -42,25 +42,25 @@ QStringList QgsGPSDevice::importCommand( const QString& babel,
     const QString& out ) const
 {
   const QStringList* original;
-  if ( type == "-w" )
+  if ( type == QLatin1String( "-w" ) )
     original = &mWptDlCmd;
-  else if ( type == "-r" )
+  else if ( type == QLatin1String( "-r" ) )
     original = &mRteDlCmd;
-  else if ( type == "-t" )
+  else if ( type == QLatin1String( "-t" ) )
     original = &mTrkDlCmd;
   else throw "Bad error!";
   QStringList copy;
   QStringList::const_iterator iter;
   for ( iter = original->begin(); iter != original->end(); ++iter )
   {
-    if ( *iter == "%babel" )
+    if ( *iter == QLatin1String( "%babel" ) )
       copy.append( babel );
-    else if ( *iter == "%type" )
+    else if ( *iter == QLatin1String( "%type" ) )
       copy.append( type );
-    else if ( *iter == "%in" )
-      copy.append( QString( "\"%1\"" ).arg( in ) );
-    else if ( *iter == "%out" )
-      copy.append( QString( "\"%1\"" ).arg( out ) );
+    else if ( *iter == QLatin1String( "%in" ) )
+      copy.append( QStringLiteral( "\"%1\"" ).arg( in ) );
+    else if ( *iter == QLatin1String( "%out" ) )
+      copy.append( QStringLiteral( "\"%1\"" ).arg( out ) );
     else
       copy.append( *iter );
   }
@@ -74,25 +74,25 @@ QStringList QgsGPSDevice::exportCommand( const QString& babel,
     const QString& out ) const
 {
   const QStringList* original;
-  if ( type == "-w" )
+  if ( type == QLatin1String( "-w" ) )
     original = &mWptUlCmd;
-  else if ( type == "-r" )
+  else if ( type == QLatin1String( "-r" ) )
     original = &mRteUlCmd;
-  else if ( type == "-t" )
+  else if ( type == QLatin1String( "-t" ) )
     original = &mTrkUlCmd;
   else throw "Bad error!";
   QStringList copy;
   QStringList::const_iterator iter;
   for ( iter = original->begin(); iter != original->end(); ++iter )
   {
-    if ( *iter == "%babel" )
+    if ( *iter == QLatin1String( "%babel" ) )
       copy.append( babel );
-    else if ( *iter == "%type" )
+    else if ( *iter == QLatin1String( "%type" ) )
       copy.append( type );
-    else if ( *iter == "%in" )
-      copy.append( QString( "\"%1\"" ).arg( in ) );
-    else if ( *iter == "%out" )
-      copy.append( QString( "\"%1\"" ).arg( out ) );
+    else if ( *iter == QLatin1String( "%in" ) )
+      copy.append( QStringLiteral( "\"%1\"" ).arg( in ) );
+    else if ( *iter == QLatin1String( "%out" ) )
+      copy.append( QStringLiteral( "\"%1\"" ).arg( out ) );
     else
       copy.append( *iter );
   }

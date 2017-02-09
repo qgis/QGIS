@@ -27,6 +27,7 @@
 
 #ifdef HAVE_TOUCH
 #include <QGestureEvent>
+#include "qgis_gui.h"
 #endif
 
 class QgsMapLayer;
@@ -54,7 +55,23 @@ class GUI_EXPORT QgsMapTool : public QObject
 
   public:
 
-    //! virtual destructor
+    //! Enumeration of flags that adjust the way the map tool operates
+    //! @note added in QGIS 2.16
+    enum Flag
+    {
+      Transient = 1 << 1, /*!< Indicates that this map tool performs a transient (one-off) operation.
+                               If it does, the tool can be operated once and then a previous map
+                               tool automatically restored. */
+      EditTool = 1 << 2, //!< Map tool is an edit tool, which can only be used when layer is editable
+      AllowZoomRect = 1 << 3, //!< Allow zooming by rectangle (by holding shift and dragging) while the tool is active
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
+    /** Returns the flags for the map tool.
+     * @note added in QGIS 2.16
+     */
+    virtual Flags flags() const { return Flags(); }
+
     virtual ~QgsMapTool();
 
     //! Mouse move event for overriding. Default implementation does nothing.
@@ -83,39 +100,24 @@ class GUI_EXPORT QgsMapTool : public QObject
     virtual bool gestureEvent( QGestureEvent* e );
 #endif
 
-    //! Called when rendering has finished. Default implementation does nothing.
-    //! @deprecated since 2.4 - not called anymore - map tools must not directly depend on rendering progress
-    Q_DECL_DEPRECATED virtual void renderComplete();
-
-
     /** Use this to associate a QAction to this maptool. Then when the setMapTool
      * method of mapcanvas is called the action state will be set to on.
      * Usually this will cause e.g. a toolbutton to appear pressed in and
      * the previously used toolbutton to pop out. */
     void setAction( QAction* action );
 
-    /** Return associated action with map tool or NULL if no action is associated */
+    //! Return associated action with map tool or NULL if no action is associated
     QAction* action();
 
     /** Use this to associate a button to this maptool. It has the same meaning
      * as setAction() function except it works with a button instead of an QAction. */
     void setButton( QAbstractButton* button );
 
-    /** Return associated button with map tool or NULL if no button is associated */
+    //! Return associated button with map tool or NULL if no button is associated
     QAbstractButton* button();
 
-    /** Set a user defined cursor */
+    //! Set a user defined cursor
     virtual void setCursor( const QCursor& cursor );
-
-    /** Check whether this MapTool performs a zoom or pan operation.
-     * If it does, we will be able to perform the zoom  and then
-     * resume operations with the original / previously used tool.*/
-    virtual bool isTransient();
-
-    /** Check whether this MapTool performs an edit operation.
-     * If it does, we will deactivate it when editing is turned off
-     */
-    virtual bool isEditTool();
 
     //! called when set as currently active map tool
     virtual void activate();
@@ -132,7 +134,7 @@ class GUI_EXPORT QgsMapTool : public QObject
 
     /** Get search radius in mm. Used by identify, tip etc.
      *  The values is currently set in identify tool options (move somewhere else?)
-     *  and defaults to QGis::DEFAULT_SEARCH_RADIUS_MM.
+     *  and defaults to Qgis::DEFAULT_SEARCH_RADIUS_MM.
      *  @note added in 2.3 */
     static double searchRadiusMM();
 
@@ -206,6 +208,9 @@ class GUI_EXPORT QgsMapTool : public QObject
 
     //! translated name of the map tool
     QString mToolName;
+
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapTool::Flags )
 
 #endif

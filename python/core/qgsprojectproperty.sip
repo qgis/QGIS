@@ -1,12 +1,12 @@
-class QgsProperty
+class QgsProjectProperty
 {
 %TypeHeaderCode
 #include <qgsprojectproperty.h>
 %End
 
   public:
-    QgsProperty();
-    virtual ~QgsProperty();
+    QgsProjectProperty();
+    virtual ~QgsProjectProperty();
 
     /** Dumps out the keys and values
      *
@@ -34,7 +34,7 @@ class QgsProperty
      *
      *  Used for restoring properties from project file
      */
-    virtual bool readXML( QDomNode & keyNode ) = 0;
+    virtual bool readXml( const QDomNode& keyNode ) = 0;
 
     /**
      * adds property hierarchy to given Dom element
@@ -45,7 +45,7 @@ class QgsProperty
      * @param element the parent (or encompassing) property element
      * @param document the overall project file Dom document
      */
-    virtual bool writeXML( const QString & nodeName,
+    virtual bool writeXml( const QString & nodeName,
                            QDomElement   & element,
                            QDomDocument  & document ) = 0;
 
@@ -63,16 +63,16 @@ class QgsProperty
 }; // class QgsProperty
 
 
-class QgsPropertyValue : QgsProperty
+class QgsProjectPropertyValue : QgsProjectProperty
 {
 %TypeHeaderCode
 #include <qgsprojectproperty.h>
 %End
 
   public:
-    QgsPropertyValue();
-    QgsPropertyValue( const QVariant &value );
-    virtual ~QgsPropertyValue();
+    QgsProjectPropertyValue();
+    QgsProjectPropertyValue( const QVariant &value );
+    virtual ~QgsProjectPropertyValue();
 
     /** Returns true if is a QgsPropertyKey */
     virtual bool isKey() const;
@@ -91,39 +91,33 @@ class QgsPropertyValue : QgsProperty
 
     void dump( int tabs = 0 ) const;
 
-    bool readXML( QDomNode & keyNode );
+    bool readXml( const QDomNode& keyNode );
 
-    bool writeXML( const QString & nodeName,
+    bool writeXml( const QString & nodeName,
                    QDomElement   & element,
                    QDomDocument  & document );
 
-    int count() const;
-
-    /** Return keys that do not contain other keys
-     * Since QgsPropertyValue isn't a key, don't do anything.
-     */
-    void entryList( QStringList & keyName, QStringList & entries ) const;
-
 };
 
-class QgsPropertyKey : QgsProperty
+class QgsProjectPropertyKey : QgsProjectProperty
 {
 %TypeHeaderCode
 #include <qgsprojectproperty.h>
 %End
 
   public:
-    QgsPropertyKey( const QString name = "" );
-    virtual ~ QgsPropertyKey();
+    QgsProjectPropertyKey( const QString& name = QString() );
+    virtual ~QgsProjectPropertyKey();
 
-    /// every key has a name
-    // @{
-    // @note not available in python bindings
-    // QString name() const;
+    /**
+     * The name of the property is used as identifier.
+     */
+    QString name() const;
 
-    QString &name();
-    // @}
-
+    /**
+     * The name of the property is used as identifier.
+     */
+    void setName( const QString& name );
 
     /** If this key has a value, it will be stored by its name in its
      * properties
@@ -132,7 +126,7 @@ class QgsPropertyKey : QgsProperty
 
 
     /// add the given property key
-    QgsPropertyKey * addKey( const QString & keyName );
+    QgsProjectPropertyKey * addKey( const QString & keyName );
 
     /// remove the given key
     void removeKey( const QString & keyName );
@@ -142,21 +136,21 @@ class QgsPropertyKey : QgsProperty
      * @param value is the value to set
      * @return pointer to property value
      */
-    QgsPropertyValue * setValue( const QString & name, const QVariant & value );
+    QgsProjectPropertyValue * setValue( const QString & name, const QVariant & value );
 
     /** Set the value associated with this key
      *
      * @note that the single value node associated with each key is always
      * stored keyed by the current key name
      */
-    QgsPropertyValue * setValue( const QVariant & value );
+    QgsProjectPropertyValue * setValue( const QVariant & value );
 
 
     void dump( int tabs = 0 ) const;
 
-    bool readXML( QDomNode & keyNode );
+    bool readXml( const QDomNode& keyNode );
 
-    bool writeXML( const QString &nodeName, QDomElement & element, QDomDocument & document );
+    bool writeXml( const QString &nodeName, QDomElement & element, QDomDocument & document );
 
     /// how many elements are contained within this one?
     int count() const;
@@ -188,5 +182,5 @@ class QgsPropertyKey : QgsProperty
     /// delete any sub-nodes
     virtual void clearKeys();
 
-    QgsProperty * find( QString & propertyName );
+    QgsProjectProperty * find( QString & propertyName );
 }; // class QgsPropertyKey

@@ -48,7 +48,7 @@ int QgsGridFileWriter::writeFile( bool showProgressDialog )
 {
   QFile outputFile( mOutputFilePath );
 
-  if ( !outputFile.open( QFile::WriteOnly ) )
+  if ( !outputFile.open( QFile::WriteOnly | QIODevice::Truncate ) )
   {
     return 1;
   }
@@ -111,7 +111,7 @@ int QgsGridFileWriter::writeFile( bool showProgressDialog )
   QFileInfo fi( mOutputFilePath );
   QString fileName = fi.absolutePath() + '/' + fi.completeBaseName() + ".prj";
   QFile prjFile( fileName );
-  if ( !prjFile.open( QFile::WriteOnly ) )
+  if ( !prjFile.open( QFile::WriteOnly | QIODevice::Truncate ) )
   {
     return 1;
   }

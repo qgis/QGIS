@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
@@ -24,6 +24,7 @@
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
 #include "qgsunittypes.h"
+#include "qgstestutils.h"
 
 /** \ingroup UnitTests
  * This is a unit test for the measure tool
@@ -63,9 +64,9 @@ void TestQgsMeasureTool::initTestCase()
   QgsApplication::initQgis();
 
   // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( "QGIS" );
-  QCoreApplication::setOrganizationDomain( "qgis.org" );
-  QCoreApplication::setApplicationName( "QGIS-TEST" );
+  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
 
   mQgisApp = new QgisApp();
   mCanvas = new QgsMapCanvas();
@@ -86,22 +87,20 @@ void TestQgsMeasureTool::testLengthCalculation()
 {
   //test length measurement
   QSettings s;
-  s.setValue( "/qgis/measure/keepbaseunit", true );
+  s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
 
   // set project CRS and ellipsoid
   QgisApp::instance()->mapCanvas()->setCrsTransformEnabled( true );
   QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
   mCanvas->setCrsTransformEnabled( true );
   mCanvas->setDestinationCrs( srs );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", srs.toProj4() );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSID", ( int ) srs.srsid() );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCrs", srs.authid() );
-  QgsProject::instance()->writeEntry( "Measure", "/Ellipsoid", QString( "WGS84" ) );
-  QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( QGis::Meters ) );
+  QgsProject::instance()->setCrs( srs );
+  QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
+  QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceMeters );
 
   // run length calculation
-  QScopedPointer< QgsMeasureTool > tool( new QgsMeasureTool( mCanvas, false ) );
-  QScopedPointer< QgsMeasureDialog > dlg( new QgsMeasureDialog( tool.data() ) );
+  std::unique_ptr< QgsMeasureTool > tool( new QgsMeasureTool( mCanvas, false ) );
+  std::unique_ptr< QgsMeasureDialog > dlg( new QgsMeasureDialog( tool.get() ) );
 
   tool->restart();
   tool->addPoint( QgsPoint( 2484588, 2425722 ) );
@@ -113,12 +112,12 @@ void TestQgsMeasureTool::testLengthCalculation()
   QString measureString = dlg->editTotal->text();
   double measured = measureString.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   double expected = 26932.156;
-  QVERIFY( qgsDoubleNear( measured, expected, 0.001 ) );
+  QGSCOMPARENEAR( measured, expected, 0.001 );
 
   // change project length unit, check calculation respects unit
-  QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( QGis::Feet ) );
-  QScopedPointer< QgsMeasureTool > tool2( new QgsMeasureTool( mCanvas, false ) );
-  QScopedPointer< QgsMeasureDialog > dlg2( new QgsMeasureDialog( tool2.data() ) );
+  QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceFeet );
+  std::unique_ptr< QgsMeasureTool > tool2( new QgsMeasureTool( mCanvas, false ) );
+  std::unique_ptr< QgsMeasureDialog > dlg2( new QgsMeasureDialog( tool2.get() ) );
 
   tool2->restart();
   tool2->addPoint( QgsPoint( 2484588, 2425722 ) );
@@ -130,29 +129,45 @@ void TestQgsMeasureTool::testLengthCalculation()
   measureString = dlg2->editTotal->text();
   measured = measureString.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   expected = 88360.0918635;
-  QVERIFY( qgsDoubleNear( measured, expected, 0.001 ) );
+  QGSCOMPARENEAR( measured, expected, 0.001 );
+
+  // check new CoordinateReferenceSystem, points must be reprojected to paint them successfully (issue #15182)
+  QgsCoordinateReferenceSystem srs2( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
+
+  QgsCoordinateTransform ct( srs, srs2 );
+
+  QgsPoint p0 = ct.transform( tool2->points()[0] );
+  QgsPoint p1 = ct.transform( tool2->points()[1] );
+
+  mCanvas->setDestinationCrs( srs2 );
+
+  QgsPoint n0 = tool2->points()[0];
+  QgsPoint n1 = tool2->points()[1];
+
+  QGSCOMPARENEAR( p0.x(), n0.x(), 0.001 );
+  QGSCOMPARENEAR( p0.y(), n0.y(), 0.001 );
+  QGSCOMPARENEAR( p1.x(), n1.x(), 0.001 );
+  QGSCOMPARENEAR( p1.y(), n1.y(), 0.001 );
 }
 
 void TestQgsMeasureTool::testAreaCalculation()
 {
   //test area measurement
   QSettings s;
-  s.setValue( "/qgis/measure/keepbaseunit", true );
+  s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
 
   // set project CRS and ellipsoid
   QgisApp::instance()->mapCanvas()->setCrsTransformEnabled( true );
   QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
   mCanvas->setCrsTransformEnabled( true );
   mCanvas->setDestinationCrs( srs );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", srs.toProj4() );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSID", ( int ) srs.srsid() );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCrs", srs.authid() );
-  QgsProject::instance()->writeEntry( "Measure", "/Ellipsoid", QString( "WGS84" ) );
-  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::SquareMeters ) );
+  QgsProject::instance()->setCrs( srs );
+  QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
+  QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMeters );
 
   // run length calculation
-  QScopedPointer< QgsMeasureTool > tool( new QgsMeasureTool( mCanvas, true ) );
-  QScopedPointer< QgsMeasureDialog > dlg( new QgsMeasureDialog( tool.data() ) );
+  std::unique_ptr< QgsMeasureTool > tool( new QgsMeasureTool( mCanvas, true ) );
+  std::unique_ptr< QgsMeasureDialog > dlg( new QgsMeasureDialog( tool.get() ) );
 
   tool->restart();
   tool->addPoint( QgsPoint( 2484588, 2425722 ) );
@@ -166,12 +181,12 @@ void TestQgsMeasureTool::testAreaCalculation()
   QString measureString = dlg->editTotal->text();
   double measured = measureString.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   double expected = 1009089817.0;
-  QVERIFY( qgsDoubleNear( measured, expected, 1.0 ) );
+  QGSCOMPARENEAR( measured, expected, 1.0 );
 
   // change project area unit, check calculation respects unit
-  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::SquareMiles ) );
-  QScopedPointer< QgsMeasureTool > tool2( new QgsMeasureTool( mCanvas, true ) );
-  QScopedPointer< QgsMeasureDialog > dlg2( new QgsMeasureDialog( tool2.data() ) );
+  QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMiles );
+  std::unique_ptr< QgsMeasureTool > tool2( new QgsMeasureTool( mCanvas, true ) );
+  std::unique_ptr< QgsMeasureDialog > dlg2( new QgsMeasureDialog( tool2.get() ) );
 
   tool2->restart();
   tool2->addPoint( QgsPoint( 2484588, 2425722 ) );
@@ -185,8 +200,8 @@ void TestQgsMeasureTool::testAreaCalculation()
   measureString = dlg2->editTotal->text();
   measured = measureString.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   expected = 389.6117565069;
-  QVERIFY( qgsDoubleNear( measured, expected, 0.001 ) );
+  QGSCOMPARENEAR( measured, expected, 0.001 );
 }
 
-QTEST_MAIN( TestQgsMeasureTool )
+QGSTEST_MAIN( TestQgsMeasureTool )
 #include "testqgsmeasuretool.moc"

@@ -22,12 +22,15 @@
 #include <QList>
 #include <QPair>
 
+#include "qgis_core.h"
 #include "qextserialport.h"
 
 class QgsGPSConnection;
 struct QgsGPSInformation;
 
-// Class to detect the GPS port
+/** \ingroup core
+ * Class to detect the GPS port
+ */
 class CORE_EXPORT QgsGPSDetector : public QObject
 {
     Q_OBJECT

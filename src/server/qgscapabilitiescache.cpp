@@ -24,10 +24,6 @@ QgsCapabilitiesCache::QgsCapabilitiesCache()
   QObject::connect( &mFileSystemWatcher, SIGNAL( fileChanged( const QString& ) ), this, SLOT( removeChangedEntry( const QString& ) ) );
 }
 
-QgsCapabilitiesCache::~QgsCapabilitiesCache()
-{
-}
-
 const QDomDocument* QgsCapabilitiesCache::searchCapabilitiesDocument( const QString& configFilePath, const QString& key )
 {
   QCoreApplication::processEvents(); //get updates from file system watcher
@@ -59,6 +55,12 @@ void QgsCapabilitiesCache::insertCapabilitiesDocument( const QString& configFile
   }
 
   mCachedCapabilities[ configFilePath ].insert( key, doc->cloneNode().toDocument() );
+}
+
+void QgsCapabilitiesCache::removeCapabilitiesDocument( const QString& path )
+{
+  mCachedCapabilities.remove( path );
+  mFileSystemWatcher.removePath( path );
 }
 
 void QgsCapabilitiesCache::removeChangedEntry( const QString& path )

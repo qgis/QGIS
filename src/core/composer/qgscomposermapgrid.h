@@ -18,23 +18,24 @@
 #ifndef QGSCOMPOSERMAPGRID_H
 #define QGSCOMPOSERMAPGRID_H
 
+#include "qgis_core.h"
 #include "qgscomposermapitem.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
-#include "qgsrendercontext.h"
 #include <QString>
 #include <QPainter>
 
 class QgsCoordinateTransform;
-class QgsLineSymbolV2;
-class QgsMarkerSymbolV2;
+class QgsLineSymbol;
+class QgsMarkerSymbol;
 class QgsComposerMapGrid;
 class QgsComposerMap;
 class QDomDocument;
 class QDomElement;
 class QPainter;
+class QgsRenderContext;
 
-/** \ingroup MapComposer
+/** \ingroup core
  * \class QgsComposerMapGridStack
  * \brief A collection of grids which is drawn above the map content in a
  * QgsComposerMap. The grid stack controls which grids are drawn and the
@@ -50,8 +51,6 @@ class CORE_EXPORT QgsComposerMapGridStack : public QgsComposerMapItemStack
      * @param map QgsComposerMap the grid stack is attached to
      */
     QgsComposerMapGridStack( QgsComposerMap* map );
-
-    virtual ~QgsComposerMapGridStack();
 
     /** Adds a new map grid to the stack and takes ownership of the grid.
      * The grid will be added to the end of the stack, and rendered
@@ -125,9 +124,9 @@ class CORE_EXPORT QgsComposerMapGridStack : public QgsComposerMapItemStack
      * @param elem is DOM node corresponding to 'a ComposerMap' tag
      * @param doc DOM document
      * @returns true if read was successful
-     * @see writeXML
+     * @see writeXml
      */
-    bool readXML( const QDomElement& elem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement& elem, const QDomDocument& doc ) override;
 
     /** Calculates the maximum distance grids within the stack extend
      * beyond the QgsComposerMap's item rect
@@ -153,7 +152,7 @@ class CORE_EXPORT QgsComposerMapGridStack : public QgsComposerMapItemStack
 // QgsComposerMapGrid
 //
 
-/** \ingroup MapComposer
+/** \ingroup core
  * \class QgsComposerMapGrid
  * \brief An individual grid which is drawn above the map content in a
  * QgsComposerMap.
@@ -171,9 +170,9 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      */
     enum GridUnit
     {
-      MapUnit, /*!< grid units follow map units */
-      MM, /*!< grid units in millimeters */
-      CM /*!< grid units in centimeters */
+      MapUnit, //!< Grid units follow map units
+      MM, //!< Grid units in millimeters
+      CM //!< Grid units in centimeters
     };
 
     /** Grid drawing style
@@ -181,54 +180,52 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     enum GridStyle
     {
       Solid = 0,
-      Cross, /*!< draw line crosses at intersections of grid lines */
-      Markers, /*!< draw markers at intersections of grid lines */
-      FrameAnnotationsOnly /*!< no grid lines over the map, only draw frame and annotations */
+      Cross, //!< Draw line crosses at intersections of grid lines
+      Markers, //!< Draw markers at intersections of grid lines
+      FrameAnnotationsOnly //!< No grid lines over the map, only draw frame and annotations
     };
 
     /** Display settings for grid annotations and frames
      */
     enum DisplayMode
     {
-      ShowAll = 0, /*!< show both latitude and longitude annotations/divisions */
-      LatitudeOnly, /*!< show latitude/y annotations/divisions only */
-      LongitudeOnly, /*!< show longitude/x annotations/divisions only */
-      HideAll /*!< no annotations */
+      ShowAll = 0, //!< Show both latitude and longitude annotations/divisions
+      LatitudeOnly, //!< Show latitude/y annotations/divisions only
+      LongitudeOnly, //!< Show longitude/x annotations/divisions only
+      HideAll //!< No annotations
     };
 
     /** Position for grid annotations
      */
     enum AnnotationPosition
     {
-      InsideMapFrame = 0,
-      OutsideMapFrame, /*!< draw annotations outside the map frame */
-      Disabled /*!< disable annotation
-                  * @deprecated in QGIS 2.7, use QgsComposerMapGrid::HideAll instead */
+      InsideMapFrame = 0, //!< Draw annotations inside the map frame
+      OutsideMapFrame, //!< Draw annotations outside the map frame
     };
 
     /** Direction of grid annotations
      */
     enum AnnotationDirection
     {
-      Horizontal = 0, /*!< draw annotations horizontally */
-      Vertical, /*!< draw annotations vertically, ascending */
-      VerticalDescending, /*!< draw annotations vertically, descending */
-      BoundaryDirection /*!< annotations follow the boundary direction */
+      Horizontal = 0, //!< Draw annotations horizontally
+      Vertical, //!< Draw annotations vertically, ascending
+      VerticalDescending, //!< Draw annotations vertically, descending
+      BoundaryDirection //!< Annotations follow the boundary direction
     };
 
     /** Format for displaying grid annotations
      */
     enum AnnotationFormat
     {
-      Decimal = 0, /*!< decimal degrees, use - for S/W coordinates */
-      DegreeMinute, /*!< degree/minutes, use NSEW suffix */
-      DegreeMinuteSecond, /*!< degree/minutes/seconds, use NSEW suffix */
-      DecimalWithSuffix, /*!< decimal degrees, use NSEW suffix */
-      DegreeMinuteNoSuffix, /*!< degree/minutes, use - for S/W coordinates */
-      DegreeMinutePadded, /*!< degree/minutes, with minutes using leading zeros where required */
-      DegreeMinuteSecondNoSuffix, /*!< degree/minutes/seconds, use - for S/W coordinates */
-      DegreeMinuteSecondPadded, /*!< degree/minutes/seconds, with minutes using leading zeros where required */
-      CustomFormat /*!< custom expression-based format */
+      Decimal = 0, //!< Decimal degrees, use - for S/W coordinates
+      DegreeMinute, //!< Degree/minutes, use NSEW suffix
+      DegreeMinuteSecond, //!< Degree/minutes/seconds, use NSEW suffix
+      DecimalWithSuffix, //!< Decimal degrees, use NSEW suffix
+      DegreeMinuteNoSuffix, //!< Degree/minutes, use - for S/W coordinates
+      DegreeMinutePadded, //!< Degree/minutes, with minutes using leading zeros where required
+      DegreeMinuteSecondNoSuffix, //!< Degree/minutes/seconds, use - for S/W coordinates
+      DegreeMinuteSecondPadded, //!< Degree/minutes/seconds, with minutes using leading zeros where required
+      CustomFormat //!< Custom expression-based format
     };
 
     /** Border sides for annotations
@@ -236,31 +233,31 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     enum BorderSide
     {
       Left,
-      Right, /*!< right border */
-      Bottom, /*!< bottom border */
-      Top /*!< top border */
+      Right, //!< Right border
+      Bottom, //!< Bottom border
+      Top //!< Top border
     };
 
     /** Style for grid frame
      */
     enum FrameStyle
     {
-      NoFrame = 0, /*!< disable grid frame */
-      Zebra, /*!< black/white pattern */
-      InteriorTicks,  /*!< tick markers drawn inside map frame */
-      ExteriorTicks,  /*!< tick markers drawn outside map frame */
-      InteriorExteriorTicks, /*!< tick markers drawn both inside and outside the map frame */
-      LineBorder /*!< simple solid line frame */
+      NoFrame = 0, //!< Disable grid frame
+      Zebra, //!< Black/white pattern
+      InteriorTicks,  //!< Tick markers drawn inside map frame
+      ExteriorTicks,  //!< Tick markers drawn outside map frame
+      InteriorExteriorTicks, //!< Tick markers drawn both inside and outside the map frame
+      LineBorder //!< Simple solid line frame
     };
 
     /** Flags for controlling which side of the map a frame is drawn on
      */
     enum FrameSideFlag
     {
-      FrameLeft = 0x01, /*!< left side of map */
-      FrameRight = 0x02, /*!< right side of map */
-      FrameTop = 0x04, /*!< top side of map */
-      FrameBottom = 0x08 /*!< bottom side of map */
+      FrameLeft = 0x01, //!< Left side of map
+      FrameRight = 0x02, //!< Right side of map
+      FrameTop = 0x04, //!< Top side of map
+      FrameBottom = 0x08 //!< Bottom side of map
     };
     Q_DECLARE_FLAGS( FrameSideFlags, FrameSideFlag )
 
@@ -268,8 +265,8 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      */
     enum AnnotationCoordinate
     {
-      Longitude = 0, /*!< coordinate is a longitude value */
-      Latitude /*!< coordinate is a latitude value */
+      Longitude = 0, //!< Coordinate is a longitude value
+      Latitude //!< Coordinate is a latitude value
     };
 
     /** Constructor for QgsComposerMapGrid.
@@ -288,16 +285,16 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /** Stores grid state in DOM element
      * @param elem is DOM element corresponding to a 'ComposerMap' tag
      * @param doc DOM document
-     * @see readXML
+     * @see readXml
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
 
     /** Sets grid state from a DOM document
      * @param itemElem is DOM node corresponding to a 'ComposerMapGrid' tag
      * @param doc is DOM document
-     * @see writeXML
+     * @see writeXml
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     /** Sets the CRS for the grid.
      * @param crs coordinate reference system for grid
@@ -482,7 +479,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @see setMarkerSymbol
      * @see setStyle
      */
-    void setLineSymbol( QgsLineSymbolV2* symbol );
+    void setLineSymbol( QgsLineSymbol* symbol );
 
     /** Gets the line symbol used for drawing grid lines. This is only used for grids with
      * QgsComposerMapGrid::Solid or QgsComposerMapGrid::Cross styles.
@@ -492,7 +489,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @see style
      * @note not available in python bindings
      */
-    const QgsLineSymbolV2* lineSymbol() const { return mGridLineSymbol; }
+    const QgsLineSymbol* lineSymbol() const { return mGridLineSymbol; }
 
     /** Gets the line symbol used for drawing grid lines. This is only used for grids with
      * QgsComposerMapGrid::Solid or QgsComposerMapGrid::Cross styles.
@@ -501,7 +498,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @see markerSymbol
      * @see style
      */
-    QgsLineSymbolV2* lineSymbol() { return mGridLineSymbol; }
+    QgsLineSymbol* lineSymbol() { return mGridLineSymbol; }
 
     /** Sets the marker symbol used for drawing grid points. This is only used for grids with a
      * QgsComposerMapGrid::Markers style.
@@ -510,7 +507,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @see setLineSymbol
      * @see setStyle
      */
-    void setMarkerSymbol( QgsMarkerSymbolV2* symbol );
+    void setMarkerSymbol( QgsMarkerSymbol* symbol );
 
     /** Gets the marker symbol used for drawing grid points. This is only used for grids with a
      * QgsComposerMapGrid::Markers style.
@@ -520,7 +517,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @see style
      * @note not available in python bindings
      */
-    const QgsMarkerSymbolV2* markerSymbol() const { return mGridMarkerSymbol; }
+    const QgsMarkerSymbol* markerSymbol() const { return mGridMarkerSymbol; }
 
     /** Gets the marker symbol used for drawing grid points. This is only used for grids with a
      * QgsComposerMapGrid::Markers style.
@@ -529,7 +526,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @see lineSymbol
      * @see style
      */
-    QgsMarkerSymbolV2* markerSymbol() { return mGridMarkerSymbol; }
+    QgsMarkerSymbol* markerSymbol() { return mGridMarkerSymbol; }
 
     //
     // ANNOTATIONS
@@ -717,7 +714,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @see frameSideFlags
      * @see testFrameSideFlag
      */
-    void setFrameSideFlags( const FrameSideFlags& flags );
+    void setFrameSideFlags( QgsComposerMapGrid::FrameSideFlags flags );
 
     /** Sets whether the grid frame is drawn for a certain side of the map item.
      * @param flag flag for grid frame side
@@ -827,7 +824,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      */
     QColor frameFillColor2() const { return mGridFrameFillColor2; }
 
-    virtual QgsExpressionContext* createExpressionContext() const override;
+    virtual QgsExpressionContext createExpressionContext() const override;
 
   private:
 
@@ -835,7 +832,12 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     struct GridExtension
     {
-      GridExtension() : top( 0.0 ), right( 0.0 ), bottom( 0.0 ), left( 0.0 ) {}
+      GridExtension()
+          : top( 0.0 )
+          , right( 0.0 )
+          , bottom( 0.0 )
+          , left( 0.0 )
+      {}
       double top;
       double right;
       double bottom;
@@ -845,58 +847,58 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /*True if a re-transformation of grid lines is required*/
     bool mTransformDirty;
 
-    /** Solid or crosses*/
+    //! Solid or crosses
     GridStyle mGridStyle;
-    /** Grid line interval in x-direction (map units)*/
+    //! Grid line interval in x-direction (map units)
     double mGridIntervalX;
-    /** Grid line interval in y-direction (map units)*/
+    //! Grid line interval in y-direction (map units)
     double mGridIntervalY;
-    /** Grid line offset in x-direction*/
+    //! Grid line offset in x-direction
     double mGridOffsetX;
-    /** Grid line offset in y-direction*/
+    //! Grid line offset in y-direction
     double mGridOffsetY;
-    /** Font for grid line annotation*/
+    //! Font for grid line annotation
     QFont mGridAnnotationFont;
-    /** Font color for grid coordinates*/
+    //! Font color for grid coordinates
     QColor mGridAnnotationFontColor;
-    /** Digits after the dot*/
+    //! Digits after the dot
     int mGridAnnotationPrecision;
-    /** True if coordinate values should be drawn*/
+    //! True if coordinate values should be drawn
     bool mShowGridAnnotation;
 
-    /** Annotation display mode for left map side*/
+    //! Annotation display mode for left map side
     DisplayMode mLeftGridAnnotationDisplay;
-    /** Annotation display mode for right map side*/
+    //! Annotation display mode for right map side
     DisplayMode mRightGridAnnotationDisplay;
-    /** Annotation display mode for top map side*/
+    //! Annotation display mode for top map side
     DisplayMode mTopGridAnnotationDisplay;
-    /** Annotation display mode for bottom map side*/
+    //! Annotation display mode for bottom map side
     DisplayMode mBottomGridAnnotationDisplay;
 
-    /** Annotation position for left map side (inside / outside)*/
+    //! Annotation position for left map side (inside / outside)
     AnnotationPosition mLeftGridAnnotationPosition;
-    /** Annotation position for right map side (inside / outside)*/
+    //! Annotation position for right map side (inside / outside)
     AnnotationPosition mRightGridAnnotationPosition;
-    /** Annotation position for top map side (inside / outside)*/
+    //! Annotation position for top map side (inside / outside)
     AnnotationPosition mTopGridAnnotationPosition;
-    /** Annotation position for bottom map side (inside / outside)*/
+    //! Annotation position for bottom map side (inside / outside)
     AnnotationPosition mBottomGridAnnotationPosition;
 
-    /** Distance between map frame and annotation*/
+    //! Distance between map frame and annotation
     double mAnnotationFrameDistance;
 
-    /** Annotation direction on left side ( horizontal or vertical )*/
+    //! Annotation direction on left side ( horizontal or vertical )
     AnnotationDirection mLeftGridAnnotationDirection;
-    /** Annotation direction on right side ( horizontal or vertical )*/
+    //! Annotation direction on right side ( horizontal or vertical )
     AnnotationDirection mRightGridAnnotationDirection;
-    /** Annotation direction on top side ( horizontal or vertical )*/
+    //! Annotation direction on top side ( horizontal or vertical )
     AnnotationDirection mTopGridAnnotationDirection;
-    /** Annotation direction on bottom side ( horizontal or vertical )*/
+    //! Annotation direction on bottom side ( horizontal or vertical )
     AnnotationDirection mBottomGridAnnotationDirection;
     AnnotationFormat mGridAnnotationFormat;
 
     QString mGridAnnotationExpressionString;
-    mutable QScopedPointer< QgsExpression > mGridAnnotationExpression;
+    mutable std::unique_ptr< QgsExpression > mGridAnnotationExpression;
 
     FrameStyle mGridFrameStyle;
     FrameSideFlags mGridFrameSides;
@@ -907,17 +909,17 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     QColor mGridFrameFillColor2;
     double mCrossLength;
 
-    /** Divisions for frame on left map side*/
+    //! Divisions for frame on left map side
     DisplayMode mLeftFrameDivisions;
-    /** Divisions for frame on right map side*/
+    //! Divisions for frame on right map side
     DisplayMode mRightFrameDivisions;
-    /** Divisions for frame on top map side*/
+    //! Divisions for frame on top map side
     DisplayMode mTopFrameDivisions;
-    /** Divisions for frame on bottom map side*/
+    //! Divisions for frame on bottom map side
     DisplayMode mBottomFrameDivisions;
 
-    QgsLineSymbolV2* mGridLineSymbol;
-    QgsMarkerSymbolV2* mGridMarkerSymbol;
+    QgsLineSymbol* mGridLineSymbol;
+    QgsMarkerSymbol* mGridMarkerSymbol;
 
     QgsCoordinateReferenceSystem mCRS;
 
@@ -959,7 +961,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /** Draw an annotation. If optional extension argument is specified, nothing will be drawn and instead
      * the extension of the annotation outside of the map frame will be stored in this variable.
      */
-    void drawCoordinateAnnotation( QPainter* p, QPointF pos, QString annotationString, const AnnotationCoordinate coordinateType, GridExtension* extension = nullptr ) const;
+    void drawCoordinateAnnotation( QPainter* p, QPointF pos, const QString &annotationString, const AnnotationCoordinate coordinateType, GridExtension* extension = nullptr ) const;
 
     /** Draws a single annotation
      * @param p drawing painter
@@ -979,9 +981,9 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
         @return 0 in case of success*/
     int yGridLines( QList< QPair< double, QLineF > >& lines ) const;
 
-    int xGridLinesCRSTransform( const QgsRectangle& bbox, const QgsCoordinateTransform& t, QList< QPair< double, QPolygonF > >& lines ) const;
+    int xGridLinesCrsTransform( const QgsRectangle& bbox, const QgsCoordinateTransform& t, QList< QPair< double, QPolygonF > >& lines ) const;
 
-    int yGridLinesCRSTransform( const QgsRectangle& bbox, const QgsCoordinateTransform& t, QList< QPair< double, QPolygonF > >& lines ) const;
+    int yGridLinesCrsTransform( const QgsRectangle& bbox, const QgsCoordinateTransform& t, QList< QPair< double, QPolygonF > >& lines ) const;
 
     void drawGridLine( const QLineF& line, QgsRenderContext &context ) const;
 
@@ -1001,15 +1003,15 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      */
     BorderSide borderForLineCoord( QPointF p, const AnnotationCoordinate coordinateType ) const;
 
-    /** Get parameters for drawing grid in CRS different to map CRS*/
+    //! Get parameters for drawing grid in CRS different to map CRS
     int crsGridParams( QgsRectangle& crsRect, QgsCoordinateTransform& inverseTransform ) const;
 
     static QList<QPolygonF> trimLinesToMap( const QPolygonF &line, const QgsRectangle &rect );
 
     QPolygonF scalePolygon( const QPolygonF &polygon, const double scale ) const;
 
-    /** Draws grid if CRS is different to map CRS*/
-    void drawGridCRSTransform( QgsRenderContext &context, double dotsPerMM, QList< QPair< double, QLineF > > &horizontalLines,
+    //! Draws grid if CRS is different to map CRS
+    void drawGridCrsTransform( QgsRenderContext &context, double dotsPerMM, QList< QPair< double, QLineF > > &horizontalLines,
                                QList< QPair< double, QLineF > > &verticalLines , bool calculateLinesOnly = false );
 
     void drawGridNoTransform( QgsRenderContext &context, double dotsPerMM, QList<QPair<double, QLineF> > &horizontalLines, QList<QPair<double, QLineF> > &verticalLines, bool calculateLinesOnly = false ) const;
@@ -1026,7 +1028,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     void drawGridFrameLineBorder( QPainter *p, BorderSide border, double* extension = nullptr ) const;
 
-    void calculateCRSTransformLines();
+    void calculateCrsTransformLines();
 
     bool shouldShowDivisionForSide( AnnotationCoordinate coordinate, BorderSide side ) const;
     bool shouldShowDivisionForDisplayMode( AnnotationCoordinate coordinate, DisplayMode mode ) const;

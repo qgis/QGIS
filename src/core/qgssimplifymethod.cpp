@@ -49,7 +49,7 @@ QgsAbstractGeometrySimplifier* QgsSimplifyMethod::createGeometrySimplifier( cons
   if ( methodType == QgsSimplifyMethod::OptimizeForRendering )
   {
     int simplifyFlags = QgsMapToPixelSimplifier::SimplifyGeometry | QgsMapToPixelSimplifier::SimplifyEnvelope;
-    return new QgsMapToPixelSimplifier( simplifyFlags, simplifyMethod.tolerance() );
+    return new QgsMapToPixelSimplifier( simplifyFlags, simplifyMethod.tolerance(), QgsMapToPixelSimplifier::Distance );
   }
   else if ( methodType == QgsSimplifyMethod::PreserveTopology )
   {

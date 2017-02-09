@@ -53,9 +53,9 @@ support GASP tables (which are present in Vera).
 To mitigate this problem, both for Vera and other fonts, there will be
 (very shortly) a new fontconfig 2.2 release that will, by default not
 apply hints if the size is below 8 pixels. if you should have a font
-that in fact has been hinted more agressively, you can use fontconfig
+that in fact has been hinted more aggressively, you can use fontconfig
 to note this exception. We believe this should improve many hinted
-fonts in addition to Vera, though implemeting GASP support is likely
+fonts in addition to Vera, though implementing GASP support is likely
 the right long term solution.
 
 Font rendering in Gnome or KDE is the combination of algorithms in
@@ -92,7 +92,7 @@ to proper judgement of problems of the fonts:
       (causing partial pixels to be insufficiently shaded) if the gamma of
       your monitor has not been compensated for, and minor problems with
       black text on a while background.  The program "xgamma" can be used to
-      set a gamma correction value in the X server's color pallette. Most
+      set a gamma correction value in the X server's color palette. Most
       monitors have a gamma near 2.
 
     * Note that the Vera family uses minimal delta hinting. Your

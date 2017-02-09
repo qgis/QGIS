@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'November 2014'
@@ -40,9 +41,7 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputDirectory
 
-from processing.tools import raster
-from processing.tools import dataobjects
-from processing.tools import vector
+from processing.tools import raster, vector, dataobjects
 
 
 class HypsometricCurves(GeoAlgorithm):
@@ -60,7 +59,7 @@ class HypsometricCurves(GeoAlgorithm):
         self.addParameter(ParameterRaster(self.INPUT_DEM,
                                           self.tr('DEM to analyze')))
         self.addParameter(ParameterVector(self.BOUNDARY_LAYER,
-                                          self.tr('Boundary layer'), ParameterVector.VECTOR_TYPE_POLYGON))
+                                          self.tr('Boundary layer'), dataobjects.TYPE_VECTOR_POLYGON))
         self.addParameter(ParameterNumber(self.STEP,
                                           self.tr('Step'), 0.0, 999999999.999999, 100.0))
         self.addParameter(ParameterBoolean(self.USE_PERCENTAGE,
@@ -69,7 +68,7 @@ class HypsometricCurves(GeoAlgorithm):
         self.addOutput(OutputDirectory(self.OUTPUT_DIRECTORY,
                                        self.tr('Hypsometric curves')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         rasterPath = self.getParameterValue(self.INPUT_DEM)
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.BOUNDARY_LAYER))
@@ -106,8 +105,8 @@ class HypsometricCurves(GeoAlgorithm):
             geom = f.geometry()
             intersectedGeom = rasterGeom.intersection(geom)
 
-            if intersectedGeom.isGeosEmpty():
-                progress.setInfo(
+            if intersectedGeom.isEmpty():
+                feedback.pushInfo(
                     self.tr('Feature %d does not intersect raster or '
                             'entirely located in NODATA area' % f.id()))
                 continue
@@ -132,7 +131,7 @@ class HypsometricCurves(GeoAlgorithm):
             srcArray = rasterBand.ReadAsArray(*srcOffset)
 
             if srcOffset[2] == 0 or srcOffset[3] == 0:
-                progress.setInfo(
+                feedback.pushInfo(
                     self.tr('Feature %d is smaller than raster '
                             'cell size' % f.id()))
                 continue
@@ -165,21 +164,21 @@ class HypsometricCurves(GeoAlgorithm):
                                           mask=numpy.logical_or(srcArray == noData,
                                                                 numpy.logical_not(rasterizedArray)))
 
-            self.calculateHypsometry(f.id(), fName, progress, masked,
+            self.calculateHypsometry(f.id(), fName, feedback, masked,
                                      cellXSize, cellYSize, percentage, step)
 
             memVDS = None
             rasterizedDS = None
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         rasterDS = None
 
-    def calculateHypsometry(self, fid, fName, progress, data, pX, pY,
+    def calculateHypsometry(self, fid, fName, feedback, data, pX, pY,
                             percentage, step):
         out = dict()
         d = data.compressed()
         if d.size == 0:
-            progress.setInfo(
+            feedback.pushInfo(
                 self.tr('Feature %d does not intersect raster or '
                         'entirely located in NODATA area' % fid))
             return
@@ -198,7 +197,7 @@ class HypsometricCurves(GeoAlgorithm):
         else:
             multiplier = pX * pY
 
-        for k, v in out.iteritems():
+        for k, v in list(out.items()):
             out[k] = v * multiplier
 
         prev = None

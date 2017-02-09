@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>QgsBookmarksBase</class>
- <widget class="QDockWidget" name="QgsBookmarksBase">
+ <widget class="QgsDockWidget" name="QgsBookmarksBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -38,9 +38,9 @@
       <property name="floatable">
        <bool>false</bool>
       </property>
+      <addaction name="actionZoomTo"/>
       <addaction name="actionAdd"/>
       <addaction name="actionDelete"/>
-      <addaction name="actionZoomTo"/>
      </widget>
     </item>
     <item row="1" column="0">
@@ -64,7 +64,7 @@
   <action name="actionAdd">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionNewBookmark.png</normaloff>:/images/themes/default/mActionNewBookmark.png</iconset>
+     <normaloff>:/images/themes/default/mActionNewBookmark.svg</normaloff>:/images/themes/default/mActionNewBookmark.svg</iconset>
    </property>
    <property name="text">
     <string>Add</string>
@@ -88,7 +88,7 @@
   <action name="actionZoomTo">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionScaleHighlightFeature.svg</normaloff>:/images/themes/default/mActionScaleHighlightFeature.svg</iconset>
+     <normaloff>:/images/themes/default/mActionZoomToBookmark.svg</normaloff>:/images/themes/default/mActionZoomToBookmark.svg</iconset>
    </property>
    <property name="text">
     <string>Zoom to</string>
@@ -97,25 +97,14 @@
     <string>Zoom to bookmark</string>
    </property>
   </action>
-  <action name="actionHelp">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionHelpContents.svg</normaloff>:/images/themes/default/mActionHelpContents.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Help</string>
-   </property>
-   <property name="toolTip">
-    <string>Help</string>
-   </property>
-   <property name="visible">
-    <bool>true</bool>
-   </property>
-  </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsDockWidget</class>
+   <extends>QDockWidget</extends>
+   <header>qgsdockwidget.h</header>
+  </customwidget>
+</customwidgets>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

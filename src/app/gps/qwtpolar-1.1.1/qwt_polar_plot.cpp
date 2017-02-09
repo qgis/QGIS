@@ -171,7 +171,7 @@ const QwtTextLabel *QwtPolarPlot::titleLabel() const
 
   \param legend Legend
   \param pos The legend's position. For top/left position the number
-             of colums will be limited to 1, otherwise it will be set to
+             of columns will be limited to 1, otherwise it will be set to
              unlimited.
 
   \param ratio Ratio between legend and the bounding rect

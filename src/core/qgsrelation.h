@@ -16,23 +16,32 @@
 #ifndef QGSRELATION_H
 #define QGSRELATION_H
 
+#include "qgis_core.h"
 #include <QList>
 #include <QDomNode>
 #include <QPair>
 
-#include "qgsfield.h"
-#include "qgsfeatureiterator.h"
+#include "qgsfields.h"
 
 class QgsVectorLayer;
+class QgsFeatureIterator;
+class QgsFeature;
+class QgsFeatureRequest;
+class QgsAttributes;
 
+/** \ingroup core
+ * \class QgsRelation
+ */
 class CORE_EXPORT QgsRelation
 {
   public:
+
     /**
+     * \ingroup core
      * Defines a relation between matching fields of the two involved tables of a relation.
      * Often, a relation is only defined by just one FieldPair with the name of the foreign key
-     * column of the referencing table as first element and the name of the primary key column
-     * of the referenced table as the second element.
+     * column of the referencing (child) table as first element and the name of the primary key column
+     * of the referenced (parent) table as the second element.
      * @note not available in Python bindings
      */
     class FieldPair : public QPair< QString, QString >
@@ -46,10 +55,12 @@ class CORE_EXPORT QgsRelation
         FieldPair( const QString& referencingField, const QString& referencedField )
             : QPair< QString, QString >( referencingField, referencedField ) {}
 
-        //! Get the name of the referencing field
+        //! Get the name of the referencing (child) field
         QString referencingField() const { return first; }
-        //! Get the name of the referenced field
+        //! Get the name of the referenced (parent) field
         QString referencedField() const { return second; }
+
+        bool operator==( const FieldPair& other ) const { return first == other.first && second == other.second; }
     };
 
     /**
@@ -64,7 +75,7 @@ class CORE_EXPORT QgsRelation
      *
      * @return A relation
      */
-    static QgsRelation createFromXML( const QDomNode& node );
+    static QgsRelation createFromXml( const QDomNode& node );
 
     /**
      * Writes a relation to an XML structure. Used for saving .qgs projects
@@ -72,10 +83,10 @@ class CORE_EXPORT QgsRelation
      * @param node The parent node in which the relation will be created
      * @param doc  The document in which the relation will be saved
      */
-    void writeXML( QDomNode& node, QDomDocument& doc ) const;
+    void writeXml( QDomNode& node, QDomDocument& doc ) const;
 
     /**
-     * Set a name for this relation
+     * Set an id for this relation
      *
      * @param id
      */
@@ -89,14 +100,14 @@ class CORE_EXPORT QgsRelation
     void setRelationName( const QString& name );
 
     /**
-     * Set the referencing layer id. This layer will be searched in the registry.
+     * Set the referencing (child) layer id. This layer will be searched in the registry.
      *
      * @param id
      */
     void setReferencingLayer( const QString& id );
 
     /**
-     * Set the referenced layer id. This layer will be searched in the registry.
+     * Set the referenced (parent) layer id. This layer will be searched in the registry.
      *
      * @param id
      */
@@ -104,17 +115,17 @@ class CORE_EXPORT QgsRelation
 
     /**
      * Add a field pairs which is part of this relation
-     * The first element of each pair are the field names fo the foreign key.
+     * The first element of each pair are the field names of the foreign key.
      * The second element of each pair are the field names of the matching primary key.
      *
-     * @param referencingField  The field name on the referencing layer (FK)
-     * @param referencedField   The field name on the referenced layer  (PK)
+     * @param referencingField  The field name on the referencing (child) layer (FK)
+     * @param referencedField   The field name on the referenced (parent) layer  (PK)
      */
     void addFieldPair( const QString& referencingField, const QString& referencedField );
 
     /**
      * Add a field pairs which is part of this relation
-     * The first element of each pair are the field names fo the foreign key.
+     * The first element of each pair are the field names of the foreign key.
      * The second element of each pair are the field names of the matching primary key.
      *
      * @param fieldPair A pair of two strings
@@ -129,6 +140,8 @@ class CORE_EXPORT QgsRelation
      * @param feature A feature from the referenced (parent) layer
      *
      * @return An iterator with all the referenced features
+     * @see getRelatedFeaturesRequest()
+     * @see getRelatedFeaturesFilter()
      */
     QgsFeatureIterator getRelatedFeatures( const QgsFeature& feature ) const;
 
@@ -139,8 +152,20 @@ class CORE_EXPORT QgsRelation
      * @param feature A feature from the referenced (parent) layer
      *
      * @return A request for all the referencing features
+     * @see getRelatedFeatures()
+     * @see getRelatedFeaturesFilter()
      */
     QgsFeatureRequest getRelatedFeaturesRequest( const QgsFeature& feature ) const;
+
+    /** Returns a filter expression which returns all the features on the referencing (child) layer
+     * which have a foreign key pointing to the provided feature.
+     * @param feature A feature from the referenced (parent) layer
+     * @return expression filter string for all the referencing features
+     * @note added in QGIS 2.16
+     * @see getRelatedFeatures()
+     * @see getRelatedFeaturesRequest()
+     */
+    QString getRelatedFeaturesFilter( const QgsFeature& feature ) const;
 
     /**
      * Creates a request to return the feature on the referenced (parent) layer
@@ -190,6 +215,12 @@ class CORE_EXPORT QgsRelation
     QString id() const;
 
     /**
+     * Generate a (project-wide) unique id for this relation
+     * @note added in QGIS 3.0
+     */
+    void generateId();
+
+    /**
      * Access the referencing (child) layer's id
      * This is the layer which has the field(s) which point to another layer
      *
@@ -221,7 +252,7 @@ class CORE_EXPORT QgsRelation
 
     /**
      * Returns the field pairs which form this relation
-     * The first element of each pair are the field names fo the foreign key.
+     * The first element of each pair are the field names of the foreign key.
      * The second element of each pair are the field names of the matching primary key.
      *
      * @return The fields forming the relation
@@ -230,7 +261,7 @@ class CORE_EXPORT QgsRelation
 
     /**
      * Returns a list of attributes used to form the referenced fields
-     * (most likely primary key) on the referenced layer.
+     * (most likely primary key) on the referenced (parent) layer.
      *
      * @return A list of attributes
      */
@@ -238,7 +269,7 @@ class CORE_EXPORT QgsRelation
 
     /**
      * Returns a list of attributes used to form the referencing fields
-     * (foreign key) on the referencing layer.
+     * (foreign key) on the referencing (child) layer.
      *
      * @return A list of attributes
      */
@@ -251,7 +282,17 @@ class CORE_EXPORT QgsRelation
      */
     bool isValid() const;
 
+    /**
+     * Compares the two QgsRelation, ignoring the name and the ID.
+     *
+     * @param other The other relation
+     * @return true if they are similar
+     * @note added in QGIS 3.0
+     */
+    bool hasEqualDefinition( const QgsRelation& other ) const;
+
   protected:
+
     /**
      * Updates the validity status of this relation.
      * Will be called internally whenever a member is changed.
@@ -259,18 +300,19 @@ class CORE_EXPORT QgsRelation
     void updateRelationStatus();
 
   private:
-    /** Unique Id */
+    //! Unique Id
     QString mRelationId;
-    /** Human redable name*/
+    //! Human redable name
     QString mRelationName;
-    /** The child layer */
+    //! The child layer
     QString mReferencingLayerId;
-    /** The child layer */
+    //! The child layer
     QgsVectorLayer* mReferencingLayer;
-    /** The parent layer id */
+    //! The parent layer id
     QString mReferencedLayerId;
-    /** The parent layer */
+    //! The parent layer
     QgsVectorLayer* mReferencedLayer;
+
     /** A list of fields which define the relation.
      *  In most cases there will be only one value, but multiple values
      *  are supported for composited foreign keys.

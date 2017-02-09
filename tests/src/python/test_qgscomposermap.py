@@ -16,17 +16,19 @@ import qgis  # NOQA
 
 import os
 
-from PyQt.QtCore import QFileInfo
-from PyQt.QtXml import QDomDocument
-from PyQt.QtGui import QPainter
+from qgis.PyQt.QtCore import QFileInfo
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.PyQt.QtGui import QPainter
 
 from qgis.core import (QgsComposerMap,
                        QgsRectangle,
                        QgsRasterLayer,
+                       QgsVectorLayer,
                        QgsComposition,
-                       QgsMapRenderer,
-                       QgsMapLayerRegistry,
+                       QgsMapSettings,
+                       QgsProject,
                        QgsMultiBandColorRenderer,
+                       QgsCoordinateReferenceSystem
                        )
 
 from qgis.testing import start_app, unittest
@@ -44,37 +46,41 @@ class TestQgsComposerMap(unittest.TestCase):
         unittest.TestCase.__init__(self, methodName)
         myPath = os.path.join(TEST_DATA_DIR, 'rgb256x256.png')
         rasterFileInfo = QFileInfo(myPath)
-        mRasterLayer = QgsRasterLayer(rasterFileInfo.filePath(),
-                                      rasterFileInfo.completeBaseName())
+        self.raster_layer = QgsRasterLayer(rasterFileInfo.filePath(),
+                                           rasterFileInfo.completeBaseName())
         rasterRenderer = QgsMultiBandColorRenderer(
-            mRasterLayer.dataProvider(), 1, 2, 3)
-        mRasterLayer.setRenderer(rasterRenderer)
+            self.raster_layer.dataProvider(), 1, 2, 3)
+        self.raster_layer.setRenderer(rasterRenderer)
+
+        myPath = os.path.join(TEST_DATA_DIR, 'points.shp')
+        vector_file_info = QFileInfo(myPath)
+        self.vector_layer = QgsVectorLayer(vector_file_info.filePath(),
+                                           vector_file_info.completeBaseName(), 'ogr')
+        assert self.vector_layer.isValid()
+
         #pipe = mRasterLayer.pipe()
         #assert pipe.set(rasterRenderer), 'Cannot set pipe renderer'
-        QgsMapLayerRegistry.instance().addMapLayers([mRasterLayer])
+        QgsProject.instance().addMapLayers([self.raster_layer, self.vector_layer])
 
         # create composition with composer map
-        self.mMapRenderer = QgsMapRenderer()
-        layerStringList = []
-        layerStringList.append(mRasterLayer.id())
-        self.mMapRenderer.setLayerSet(layerStringList)
-        self.mMapRenderer.setProjectionsEnabled(False)
-        self.mComposition = QgsComposition(self.mMapRenderer)
+        self.mComposition = QgsComposition(QgsProject.instance())
         self.mComposition.setPaperSize(297, 210)
         self.mComposerMap = QgsComposerMap(self.mComposition, 20, 20, 200, 100)
         self.mComposerMap.setFrameEnabled(True)
+        self.mComposerMap.setLayers([self.raster_layer])
         self.mComposition.addComposerMap(self.mComposerMap)
 
     def testOverviewMap(self):
         overviewMap = QgsComposerMap(self.mComposition, 20, 130, 70, 70)
         overviewMap.setFrameEnabled(True)
+        overviewMap.setLayers([self.raster_layer])
         self.mComposition.addComposerMap(overviewMap)
         # zoom in
         myRectangle = QgsRectangle(96, -152, 160, -120)
         self.mComposerMap.setNewExtent(myRectangle)
         myRectangle2 = QgsRectangle(0, -256, 256, 0)
         overviewMap.setNewExtent(myRectangle2)
-        overviewMap.setOverviewFrameMap(self.mComposerMap.id())
+        overviewMap.overview().setFrameMap(self.mComposerMap.id())
         checker = QgsCompositionChecker('composermap_overview', self.mComposition)
         checker.setControlPathPrefix("composer_mapoverview")
         myTestResult, myMessage = checker.testComposition()
@@ -84,14 +90,15 @@ class TestQgsComposerMap(unittest.TestCase):
     def testOverviewMapBlend(self):
         overviewMap = QgsComposerMap(self.mComposition, 20, 130, 70, 70)
         overviewMap.setFrameEnabled(True)
+        overviewMap.setLayers([self.raster_layer])
         self.mComposition.addComposerMap(overviewMap)
         # zoom in
         myRectangle = QgsRectangle(96, -152, 160, -120)
         self.mComposerMap.setNewExtent(myRectangle)
         myRectangle2 = QgsRectangle(0, -256, 256, 0)
         overviewMap.setNewExtent(myRectangle2)
-        overviewMap.setOverviewFrameMap(self.mComposerMap.id())
-        overviewMap.setOverviewBlendMode(QPainter.CompositionMode_Multiply)
+        overviewMap.overview().setFrameMap(self.mComposerMap.id())
+        overviewMap.overview().setBlendMode(QPainter.CompositionMode_Multiply)
         checker = QgsCompositionChecker('composermap_overview_blending', self.mComposition)
         checker.setControlPathPrefix("composer_mapoverview")
         myTestResult, myMessage = checker.testComposition()
@@ -101,14 +108,15 @@ class TestQgsComposerMap(unittest.TestCase):
     def testOverviewMapInvert(self):
         overviewMap = QgsComposerMap(self.mComposition, 20, 130, 70, 70)
         overviewMap.setFrameEnabled(True)
+        overviewMap.setLayers([self.raster_layer])
         self.mComposition.addComposerMap(overviewMap)
         # zoom in
         myRectangle = QgsRectangle(96, -152, 160, -120)
         self.mComposerMap.setNewExtent(myRectangle)
         myRectangle2 = QgsRectangle(0, -256, 256, 0)
         overviewMap.setNewExtent(myRectangle2)
-        overviewMap.setOverviewFrameMap(self.mComposerMap.id())
-        overviewMap.setOverviewInverted(True)
+        overviewMap.overview().setFrameMap(self.mComposerMap.id())
+        overviewMap.overview().setInverted(True)
         checker = QgsCompositionChecker('composermap_overview_invert', self.mComposition)
         checker.setControlPathPrefix("composer_mapoverview")
         myTestResult, myMessage = checker.testComposition()
@@ -118,28 +126,73 @@ class TestQgsComposerMap(unittest.TestCase):
     def testOverviewMapCenter(self):
         overviewMap = QgsComposerMap(self.mComposition, 20, 130, 70, 70)
         overviewMap.setFrameEnabled(True)
+        overviewMap.setLayers([self.raster_layer])
         self.mComposition.addComposerMap(overviewMap)
         # zoom in
         myRectangle = QgsRectangle(192, -288, 320, -224)
         self.mComposerMap.setNewExtent(myRectangle)
         myRectangle2 = QgsRectangle(0, -256, 256, 0)
         overviewMap.setNewExtent(myRectangle2)
-        overviewMap.setOverviewFrameMap(self.mComposerMap.id())
-        overviewMap.setOverviewInverted(False)
-        overviewMap.setOverviewCentered(True)
+        overviewMap.overview().setFrameMap(self.mComposerMap.id())
+        overviewMap.overview().setInverted(False)
+        overviewMap.overview().setCentered(True)
         checker = QgsCompositionChecker('composermap_overview_center', self.mComposition)
         checker.setControlPathPrefix("composer_mapoverview")
         myTestResult, myMessage = checker.testComposition()
         self.mComposition.removeComposerItem(overviewMap)
         assert myTestResult, myMessage
 
-    # Fails because addItemsFromXML has been commented out in sip
+    def testMapCrs(self):
+        # create composition with composer map
+        map_settings = QgsMapSettings()
+        map_settings.setLayers([self.vector_layer])
+        composition = QgsComposition(QgsProject.instance())
+        composition.setPaperSize(297, 210)
+
+        # check that new maps inherit project CRS
+        QgsProject.instance().setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        map = QgsComposerMap(composition, 20, 20, 200, 100)
+        map.setFrameEnabled(True)
+        rectangle = QgsRectangle(-13838977, 2369660, -8672298, 6250909)
+        map.setNewExtent(rectangle)
+        map.setLayers([self.vector_layer])
+        composition.addComposerMap(map)
+
+        self.assertEqual(map.crs().authid(), 'EPSG:4326')
+        self.assertFalse(map.presetCrs().isValid())
+
+        # overwrite CRS
+        map.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        self.assertEqual(map.crs().authid(), 'EPSG:3857')
+        self.assertEqual(map.presetCrs().authid(), 'EPSG:3857')
+        checker = QgsCompositionChecker('composermap_crs3857', composition)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testComposition()
+        self.assertTrue(result, message)
+
+        # overwrite CRS
+        map.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        self.assertEqual(map.presetCrs().authid(), 'EPSG:4326')
+        self.assertEqual(map.crs().authid(), 'EPSG:4326')
+        rectangle = QgsRectangle(-124, 17, -78, 52)
+        map.zoomToExtent(rectangle)
+        checker = QgsCompositionChecker('composermap_crs4326', composition)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testComposition()
+        self.assertTrue(result, message)
+
+        # change back to project CRS
+        map.setCrs(QgsCoordinateReferenceSystem())
+        self.assertEqual(map.crs().authid(), 'EPSG:4326')
+        self.assertFalse(map.presetCrs().isValid())
+
+    # Fails because addItemsFromXml has been commented out in sip
     @unittest.expectedFailure
     def testuniqueId(self):
         doc = QDomDocument()
         documentElement = doc.createElement('ComposerItemClipboard')
-        self.mComposition.writeXML(documentElement, doc)
-        self.mComposition.addItemsFromXML(documentElement, doc, 0, False)
+        self.mComposition.writeXml(documentElement, doc)
+        self.mComposition.addItemsFromXml(documentElement, doc, 0, False)
 
         # test if both composer maps have different ids
         newMap = QgsComposerMap()
@@ -163,7 +216,7 @@ class TestQgsComposerMap(unittest.TestCase):
         self.mComposerMap.setMapRotation(30.0)
 
         self.mComposition.setGenerateWorldFile(True)
-        self.mComposition.setWorldFileMap(self.mComposerMap)
+        self.mComposition.setReferenceMap(self.mComposerMap)
 
         p = self.mComposition.computeWorldFileParameters()
         pexpected = (4.180480199790922, 2.4133064516129026, 779443.7612381146,

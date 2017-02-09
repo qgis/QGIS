@@ -1,14 +1,10 @@
 /**
  * Layer tree node points to a map layer.
  *
- * When using with existing QgsMapLayer instance, it is expected that the layer
- * has been registered in QgsMapLayerRegistry earlier.
- *
  * The node can exist also without a valid instance of a layer (just ID). That
  * means the referenced layer does not need to be loaded in order to use it
- * in layer tree. In such case, the node will start listening to map layer
- * registry updates in expectation that the layer (identified by its ID) will
- * be loaded later.
+ * in layer tree. In such case, resolveReferences() method can be called
+ * once the layer is loaded.
  *
  * A map layer is supposed to be present in one layer tree just once. It is
  * however possible that temporarily a layer exists in one tree more than just
@@ -31,22 +27,30 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
 
     QgsMapLayer* layer() const;
 
-    QString layerName() const;
-    void setLayerName( const QString& n );
+    //! Get layer's name
+    //! @note added in 3.0
+    QString name() const;
+    //! Set layer's name
+    //! @note added in 3.0
+    void setName( const QString& n );
 
-    Qt::CheckState isVisible() const;
-    void setVisible( Qt::CheckState visible );
+    //! Read layer node from XML. Returns new instance.
+    //! Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
+    static QgsLayerTreeLayer* readXml( QDomElement& element ) /Factory/;
+    //! Read layer node from XML. Returns new instance.
+    //! Also resolves textual references to layers from the project (calls resolveReferences() internally).
+    //! @note added in 3.0
+    static QgsLayerTreeLayer* readXml( QDomElement& element, const QgsProject* project ) /Factory/;
 
-    static QgsLayerTreeLayer* readXML( QDomElement& element ) /Factory/;
-    virtual void writeXML( QDomElement& parentElement );
+    virtual void writeXml( QDomElement& parentElement );
 
     virtual QString dump() const;
 
     virtual QgsLayerTreeLayer* clone() const /Factory/;
 
-  protected slots:
-    void registryLayersAdded( const QList<QgsMapLayer*>& layers );
-    void registryLayersWillBeRemoved( const QStringList& layerIds );
+    //! Resolves reference to layer from stored layer ID (if it has not been resolved already)
+    //! @note added in 3.0
+    virtual void resolveReferences( const QgsProject* project );
 
   signals:
     //! emitted when a previously unavailable layer got loaded

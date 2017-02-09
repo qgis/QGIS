@@ -25,12 +25,17 @@ __copyright__ = '(C) 2012, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+import os
+
 from qgis.core import QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsFeature
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterCrs
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
+from qgis.PyQt.QtGui import QIcon
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class ReprojectLayer(GeoAlgorithm):
@@ -39,25 +44,29 @@ class ReprojectLayer(GeoAlgorithm):
     TARGET_CRS = 'TARGET_CRS'
     OUTPUT = 'OUTPUT'
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'warp.png'))
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Reproject layer')
         self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
+        self.tags = self.tr('transform,reproject,crs,srs,warp')
 
         self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterCrs(self.TARGET_CRS,
                                        self.tr('Target CRS'), 'EPSG:4326'))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Reprojected')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         crsId = self.getParameterValue(self.TARGET_CRS)
         targetCrs = QgsCoordinateReferenceSystem()
         targetCrs.createFromUserInput(crsId)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields().toList(), layer.wkbType(), targetCrs)
+            layer.fields().toList(), layer.wkbType(), targetCrs)
 
         layerCrs = layer.crs()
         crsTransform = QgsCoordinateTransform(layerCrs, targetCrs)
@@ -72,7 +81,7 @@ class ReprojectLayer(GeoAlgorithm):
             outFeat.setAttributes(f.attributes())
             writer.addFeature(outFeat)
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer
 

@@ -16,15 +16,15 @@ import qgis  # NOQA
 
 import os
 
-from PyQt.QtCore import QFileInfo, QDir
-from PyQt.QtXml import QDomDocument
+from qgis.PyQt.QtCore import QFileInfo, QDir
+from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsComposition,
                        QgsPoint,
                        QgsRasterLayer,
                        QgsMultiBandColorRenderer,
-                       QgsMapLayerRegistry,
-                       QgsMapRenderer
+                       QgsProject,
+                       QgsMapSettings
                        )
 
 from qgis.testing import start_app, unittest
@@ -57,7 +57,7 @@ class TestQgsComposition(unittest.TestCase):
         myText = 'Latitude: %s, Longitude: %s' % (myLatitude, myLongitude)
 
         # Load the composition with the substitutions
-        myComposition = QgsComposition(self.iface.mapCanvas().mapRenderer())
+        myComposition = QgsComposition(QgsProject.instance())
         mySubstitutionMap = {'replace-me': myText}
         myFile = os.path.join(TEST_DATA_DIR, 'template-for-substitution.qpt')
         with open(myFile) as f:
@@ -73,7 +73,7 @@ class TestQgsComposition(unittest.TestCase):
 
     def testNoSubstitutionMap(self):
         """Test that we can get a map if we use no text substitutions."""
-        myComposition = QgsComposition(self.iface.mapCanvas().mapRenderer())
+        myComposition = QgsComposition(QgsProject.instance())
         myFile = os.path.join(TEST_DATA_DIR, 'template-for-substitution.qpt')
         with open(myFile) as f:
             myTemplateContent = f.read()
@@ -99,15 +99,9 @@ class TestQgsComposition(unittest.TestCase):
         myPipe = myRasterLayer.pipe()
         assert myPipe.set(myRenderer), "Cannot set pipe renderer"
 
-        QgsMapLayerRegistry.instance().addMapLayers([myRasterLayer])
+        QgsProject.instance().addMapLayers([myRasterLayer])
 
-        myMapRenderer = QgsMapRenderer()
-        myLayerStringList = []
-        myLayerStringList.append(myRasterLayer.id())
-        myMapRenderer.setLayerSet(myLayerStringList)
-        myMapRenderer.setProjectionsEnabled(False)
-
-        myComposition = QgsComposition(myMapRenderer)
+        myComposition = QgsComposition(QgsProject.instance())
         myFile = os.path.join(TEST_DATA_DIR, 'template-for-substitution.qpt')
         with open(myFile) as f:
             myTemplateContent = f.read()
@@ -122,6 +116,7 @@ class TestQgsComposition(unittest.TestCase):
 
         myExtent = myRasterLayer.extent()
         myMap.setNewExtent(myExtent)
+        myMap.setLayers([myRasterLayer])
 
         myImagePath = os.path.join(str(QDir.tempPath()),
                                    'template_map_render_python.png')

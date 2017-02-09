@@ -22,10 +22,11 @@ class QLabel;
 class QLineEdit;
 
 #include "qgseditorwidgetwrapper.h"
+#include "qgis_gui.h"
 
 
 
-/**
+/** \ingroup gui
  * Wraps a file name widget. Will offer a file browser to choose files.
  * \note not available in Python bindings
  */
@@ -54,6 +55,8 @@ class GUI_EXPORT QgsExternalResourceWidgetWrapper : public QgsEditorWidgetWrappe
     void setEnabled( bool enabled ) override;
 
   private:
+    void updateConstraintWidgetStatus( ConstraintResult status ) override;
+
     QLineEdit* mLineEdit;
     QLabel* mLabel;
     QgsExternalResourceWidget* mQgsWidget;

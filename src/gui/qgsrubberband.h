@@ -21,41 +21,48 @@
 #include <QList>
 #include <QPen>
 #include <QPolygon>
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 class QPaintEvent;
 
 /** \ingroup gui
- * A class for drawing transient features (e.g. digitising lines) on the map.
+ * A class for drawing transient features (e.g. digitizing lines) on the map.
  * It may be used
  */
 class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 {
   public:
 
-    /** Icons */
+    //! Icons
     enum IconType
     {
+
       /**
        * No icon is used
        */
       ICON_NONE,
+
       /**
        * A cross is used to highlight points (+)
        */
       ICON_CROSS,
+
       /**
        * A cross is used to highlight points (x)
        */
       ICON_X,
+
       /**
        * A box is used to highlight points (□)
        */
       ICON_BOX,
+
       /**
        * A circle is used to highlight points (○)
        */
       ICON_CIRCLE,
+
       /**
        * A full box is used to highlight points (■)
        */
@@ -65,17 +72,9 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     /**
      * Creates a new RubberBand.
      *  @param mapCanvas The map canvas to draw onto. It's CRS will be used map points onto screen coordinates.
-     *  @param geometryType Defines how the data should be drawn onto the screen. (Use QGis::Line, QGis::Polygon or QGis::Point)
+     *  @param geometryType Defines how the data should be drawn onto the screen. (Use Qgis::Line, Qgis::Polygon or Qgis::Point)
      */
-    QgsRubberBand( QgsMapCanvas* mapCanvas, QGis::GeometryType geometryType = QGis::Line );
-    /**
-     * Creates a new RubberBand.
-     *  @deprecated Use the constructor which takes QGis::GeometryType as second argument instead
-     *  @param mapCanvas The map canvas to draw onto. It's CRS will be used map points onto screen coordinates.
-     *  @param isPolygon true: draw as (multi-)polygon, false draw as (multi-)linestring
-     */
-    Q_DECL_DEPRECATED QgsRubberBand( QgsMapCanvas* mapCanvas, bool isPolygon );
-    ~QgsRubberBand();
+    QgsRubberBand( QgsMapCanvas* mapCanvas, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
 
     /**
      * Set the color for the rubberband
@@ -127,17 +126,9 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     /**
      * Clears all the geometries in this rubberband.
      * Sets the representation type according to geometryType.
-     *  @param geometryType Defines how the data should be drawn onto the screen. (Use QGis::Line, QGis::Polygon or QGis::Point)
+     *  @param geometryType Defines how the data should be drawn onto the screen. (Use Qgis::Line, Qgis::Polygon or Qgis::Point)
      */
-    void reset( QGis::GeometryType geometryType = QGis::Line );
-
-    /**
-     * @deprecated Use the reset method which takes QGis::GeometryType as second argument instead
-     * Clears all the geometries in this rubberband.
-     * Sets the representation type according to isPolygon.
-     *  @param isPolygon true: draw as (multi-)polygon, false draw as (multi-)linestring
-     */
-    Q_DECL_DEPRECATED void reset( bool isPolygon );
+    void reset( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
 
     /**
      * Add a vertex to the rubberband and update canvas.
@@ -148,6 +139,14 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      *  @param geometryIndex The index of the feature part (in case of multipart geometries)
      */
     void addPoint( const QgsPoint & p, bool doUpdate = true, int geometryIndex = 0 );
+
+    /** Ensures that a polygon geometry is closed and that the last vertex equals the
+     * first vertex.
+     * @param doUpdate set to true to update the map canvas immediately
+     * @param geometryIndex index of the feature part (in case of multipart geometries)
+     * @note added in QGIS 2.16
+     */
+    void closePoints( bool doUpdate = true, int geometryIndex = 0 );
 
     /**
      * Remove a vertex from the rubberband and (optionally) update canvas.
@@ -189,7 +188,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      *  @param layer the layer containing the feature, used for coord transformation to map
      *               crs. In case of 0 pointer, the coordinates are not going to be transformed.
      */
-    void setToGeometry( const QgsGeometry *geom, QgsVectorLayer* layer );
+    void setToGeometry( const QgsGeometry& geom, QgsVectorLayer* layer );
 
     /**
      * Sets this rubber band to a map canvas rectangle
@@ -208,7 +207,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      *  @param layer the layer containing the feature, used for coord transformation to map
      *               crs. In case of 0 pointer, the coordinates are not going to be transformed.
      */
-    void addGeometry( const QgsGeometry *geom, QgsVectorLayer* layer );
+    void addGeometry( const QgsGeometry& geom, QgsVectorLayer* layer );
 
     /**
      * Adds translation to original coordinates (all in map coordinates)
@@ -240,7 +239,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      * Returns the rubberband as a Geometry.
      *  @return A geometry object which reflects the current state of the rubberband.
      */
-    QgsGeometry* asGeometry();
+    QgsGeometry asGeometry() const;
 
     virtual void updatePosition() override;
 
@@ -254,17 +253,17 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     QBrush mBrush;
     QPen mPen;
 
-    /** The size of the icon for points. */
+    //! The size of the icon for points.
     int mIconSize;
 
-    /** Icon to be shown. */
+    //! Icon to be shown.
     IconType mIconType;
 
     /**
      * Nested lists used for multitypes
      */
     QList< QList <QgsPoint> > mPoints;
-    QGis::GeometryType mGeometryType;
+    QgsWkbTypes::GeometryType mGeometryType;
     double mTranslationOffsetX;
     double mTranslationOffsetY;
 

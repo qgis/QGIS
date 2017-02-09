@@ -24,30 +24,12 @@
 
 #include <QSettings>
 
-
-QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer* vl, QgsFeature* thepFeature, bool featureOwner, const QgsDistanceArea &myDa, QWidget* parent, bool showDialogButtons )
-    : QDialog( parent )
-    , mHighlight( nullptr )
-    , mOwnedFeature( featureOwner ? thepFeature : nullptr )
-{
-  QgsAttributeEditorContext context;
-  context.setDistanceArea( myDa );
-
-  init( vl, thepFeature, context );
-
-  if ( !showDialogButtons )
-    mAttributeForm->hideButtonBox();
-}
-
 QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer* vl, QgsFeature* thepFeature, bool featureOwner, QWidget* parent, bool showDialogButtons, const QgsAttributeEditorContext &context )
     : QDialog( parent )
     , mHighlight( nullptr )
     , mOwnedFeature( featureOwner ? thepFeature : nullptr )
 {
-  init( vl, thepFeature, context );
-
-  if ( !showDialogButtons )
-    mAttributeForm->hideButtonBox();
+  init( vl, thepFeature, context, showDialogButtons );
 }
 
 QgsAttributeDialog::~QgsAttributeDialog()
@@ -87,30 +69,42 @@ void QgsAttributeDialog::accept()
   QDialog::accept();
 }
 
-void QgsAttributeDialog::show( bool autoDelete )
+void QgsAttributeDialog::show()
 {
-  if ( autoDelete )
-    setAttribute( Qt::WA_DeleteOnClose );
-
   QDialog::show();
   raise();
   activateWindow();
 }
 
-void QgsAttributeDialog::init( QgsVectorLayer* layer, QgsFeature* feature, const QgsAttributeEditorContext &context )
+void QgsAttributeDialog::reject()
 {
+  // Delete any actions on other layers that may have been triggered from this dialog
+  if ( mAttributeForm->mode() == QgsAttributeForm::AddFeatureMode )
+    mTrackedVectorLayerTools.rollback();
+
+  QDialog::reject();
+}
+
+void QgsAttributeDialog::init( QgsVectorLayer* layer, QgsFeature* feature, const QgsAttributeEditorContext& context, bool showDialogButtons )
+{
+  QgsAttributeEditorContext trackedContext = context;
   setWindowTitle( tr( "%1 - Feature Attributes" ).arg( layer->name() ) );
   setLayout( new QGridLayout() );
   layout()->setMargin( 0 );
-  mAttributeForm = new QgsAttributeForm( layer, *feature, context, this );
+  mTrackedVectorLayerTools.setVectorLayerTools( trackedContext.vectorLayerTools() );
+  trackedContext.setVectorLayerTools( &mTrackedVectorLayerTools );
+  if ( showDialogButtons )
+    trackedContext.setFormMode( QgsAttributeEditorContext::StandaloneDialog );
+
+  mAttributeForm = new QgsAttributeForm( layer, *feature, trackedContext, this );
   mAttributeForm->disconnectButtonBox();
   layout()->addWidget( mAttributeForm );
   QDialogButtonBox* buttonBox = mAttributeForm->findChild<QDialogButtonBox*>();
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( layer, SIGNAL( layerDeleted() ), this, SLOT( close() ) );
+  connect( layer, SIGNAL( destroyed() ), this, SLOT( close() ) );
 
-  QgsActionMenu* menu = new QgsActionMenu( layer, &mAttributeForm->feature(), this );
+  QgsActionMenu* menu = new QgsActionMenu( layer, mAttributeForm->feature(), QStringLiteral( "AttributeTableRow" ), this );
   if ( !menu->actions().isEmpty() )
   {
     QMenuBar* menuBar = new QMenuBar( this );

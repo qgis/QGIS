@@ -34,16 +34,11 @@ try:
 except:
     hasMatplotlib = False
 
-try:
-    import shapely
-    assert shapely  # silence pyflakes
-    hasShapely = True
-except:
-    hasShapely = False
+from qgis.PyQt.QtGui import QIcon
 
-from PyQt.QtGui import QIcon
-
-from qgis.core import QGis
+from qgis.core import (Qgis,
+                       QgsWkbTypes,
+                       QgsApplication)
 
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.script.ScriptUtils import ScriptUtils
@@ -51,10 +46,12 @@ from processing.script.ScriptUtils import ScriptUtils
 from .RegularPoints import RegularPoints
 from .SymmetricalDifference import SymmetricalDifference
 from .VectorSplit import VectorSplit
-from .VectorGrid import VectorGrid
+from .VectorGridLines import VectorGridLines
+from .VectorGridPolygons import VectorGridPolygons
 from .RandomExtract import RandomExtract
 from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .ExtractByLocation import ExtractByLocation
+from .ExtractByExpression import ExtractByExpression
 from .PointsInPolygon import PointsInPolygon
 from .PointsInPolygonUnique import PointsInPolygonUnique
 from .PointsInPolygonWeighted import PointsInPolygonWeighted
@@ -99,9 +96,11 @@ from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
 from .TextToFloat import TextToFloat
 from .ExtractByAttribute import ExtractByAttribute
 from .SelectByAttribute import SelectByAttribute
-from .Grid import Grid
+from .GridPolygon import GridPolygon
+from .GridLine import GridLine
 from .Gridify import Gridify
-from .HubDistance import HubDistance
+from .HubDistancePoints import HubDistancePoints
+from .HubDistanceLines import HubDistanceLines
 from .HubLines import HubLines
 from .Merge import Merge
 from .GeometryConvert import GeometryConvert
@@ -128,13 +127,16 @@ from .RandomPointsPolygonsFixed import RandomPointsPolygonsFixed
 from .RandomPointsPolygonsVariable import RandomPointsPolygonsVariable
 from .RandomPointsAlongLines import RandomPointsAlongLines
 from .PointsToPaths import PointsToPaths
+from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .PostGISExecuteSQL import PostGISExecuteSQL
+from .ImportIntoSpatialite import ImportIntoSpatialite
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .SetVectorStyle import SetVectorStyle
 from .SetRasterStyle import SetRasterStyle
 from .SelectByExpression import SelectByExpression
 from .SelectByAttributeSum import SelectByAttributeSum
 from .HypsometricCurves import HypsometricCurves
+from .SplitWithLines import SplitWithLines
 from .SplitLinesWithLines import SplitLinesWithLines
 from .FieldsMapper import FieldsMapper
 from .Datasources2Vrt import Datasources2Vrt
@@ -146,6 +148,43 @@ from .SpatialIndex import SpatialIndex
 from .DefineProjection import DefineProjection
 from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
+from .MergeLines import MergeLines
+from .BoundingBox import BoundingBox
+from .Boundary import Boundary
+from .PointOnSurface import PointOnSurface
+from .OffsetLine import OffsetLine
+from .PolygonCentroids import PolygonCentroids
+from .Translate import Translate
+from .SingleSidedBuffer import SingleSidedBuffer
+from .PointsAlongGeometry import PointsAlongGeometry
+from .Aspect import Aspect
+from .Slope import Slope
+from .Ruggedness import Ruggedness
+from .Hillshade import Hillshade
+from .Relief import Relief
+from .IdwInterpolation import IdwInterpolation
+from .TinInterpolation import TinInterpolation
+from .ZonalStatisticsQgis import ZonalStatisticsQgis
+from .RemoveNullGeometry import RemoveNullGeometry
+from .ExtendLines import ExtendLines
+from .ExtractSpecificNodes import ExtractSpecificNodes
+from .GeometryByExpression import GeometryByExpression
+from .SnapGeometries import SnapGeometriesToLayer
+from .PoleOfInaccessibility import PoleOfInaccessibility
+from .RasterCalculator import RasterCalculator
+from .CreateAttributeIndex import CreateAttributeIndex
+from .DropGeometry import DropGeometry
+from .BasicStatistics import BasicStatisticsForField
+from .Heatmap import Heatmap
+from .Orthogonalize import Orthogonalize
+from .ShortestPathPointToPoint import ShortestPathPointToPoint
+from .ShortestPathPointToLayer import ShortestPathPointToLayer
+from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
+from .ServiceAreaFromPoint import ServiceAreaFromPoint
+from .ServiceAreaFromLayer import ServiceAreaFromLayer
+from .TruncateTable import TruncateTable
+from .Polygonize import Polygonize
+from .FixGeometry import FixGeometry
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -154,8 +193,8 @@ pluginPath = os.path.normpath(os.path.join(
 class QGISAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
-        AlgorithmProvider.__init__(self)
-        self._icon = QIcon(os.path.join(pluginPath, 'images', 'qgis.svg'))
+        super().__init__()
+        self._icon = QgsApplication.getThemeIcon("/providerQgis.svg")
 
         self.alglist = [SumLines(), PointsInPolygon(),
                         PointsInPolygonWeighted(), PointsInPolygonUnique(),
@@ -174,10 +213,11 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         SelectByLocation(), RandomExtract(), DeleteHoles(),
                         RandomExtractWithinSubsets(), ExtractByLocation(),
                         SpatialJoin(), RegularPoints(), SymmetricalDifference(),
-                        VectorSplit(), VectorGrid(), DeleteColumn(),
-                        DeleteDuplicateGeometries(), TextToFloat(),
-                        ExtractByAttribute(), SelectByAttribute(), Grid(),
-                        Gridify(), HubDistance(), HubLines(), Merge(),
+                        VectorSplit(), VectorGridLines(), VectorGridPolygons(),
+                        DeleteColumn(), DeleteDuplicateGeometries(), TextToFloat(),
+                        ExtractByAttribute(), SelectByAttribute(), GridPolygon(),
+                        GridLine(), Gridify(), HubDistancePoints(),
+                        HubDistanceLines(), HubLines(), Merge(),
                         GeometryConvert(), AddTableField(), FieldsCalculator(),
                         SaveSelectedFeatures(), JoinAttributes(),
                         AutoincrementalField(), Explode(), FieldsPyculator(),
@@ -189,15 +229,32 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         RandomPointsLayer(), RandomPointsPolygonsFixed(),
                         RandomPointsPolygonsVariable(),
                         RandomPointsAlongLines(), PointsToPaths(),
+                        SpatialiteExecuteSQL(), ImportIntoSpatialite(),
                         PostGISExecuteSQL(), ImportIntoPostGIS(),
                         SetVectorStyle(), SetRasterStyle(),
                         SelectByExpression(), HypsometricCurves(),
-                        SplitLinesWithLines(), CreateConstantRaster(),
+                        SplitWithLines(), SplitLinesWithLines(), CreateConstantRaster(),
                         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
                         CheckValidity(), OrientedMinimumBoundingBox(), Smooth(),
                         ReverseLineDirection(), SpatialIndex(), DefineProjection(),
                         RectanglesOvalsDiamondsVariable(),
-                        RectanglesOvalsDiamondsFixed()
+                        RectanglesOvalsDiamondsFixed(), MergeLines(),
+                        BoundingBox(), Boundary(), PointOnSurface(),
+                        OffsetLine(), PolygonCentroids(), Translate(),
+                        SingleSidedBuffer(), PointsAlongGeometry(),
+                        Aspect(), Slope(), Ruggedness(), Hillshade(),
+                        Relief(), ZonalStatisticsQgis(),
+                        IdwInterpolation(), TinInterpolation(),
+                        RemoveNullGeometry(), ExtractByExpression(),
+                        ExtendLines(), ExtractSpecificNodes(),
+                        GeometryByExpression(), SnapGeometriesToLayer(),
+                        PoleOfInaccessibility(), CreateAttributeIndex(),
+                        DropGeometry(), BasicStatisticsForField(),
+                        RasterCalculator(), Heatmap(), Orthogonalize(),
+                        ShortestPathPointToPoint(), ShortestPathPointToLayer(),
+                        ShortestPathLayerToPoint(), ServiceAreaFromPoint(),
+                        ServiceAreaFromLayer(), TruncateTable(), Polygonize(),
+                        FixGeometry()
                         ]
 
         if hasMatplotlib:
@@ -214,13 +271,11 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                 PolarPlot(),
             ])
 
-        if hasShapely:
-            from .Polygonize import Polygonize
-            self.alglist.extend([Polygonize()])
-
-        if QGis.QGIS_VERSION_INT >= 21300:
+        if Qgis.QGIS_VERSION_INT >= 21300:
             from .ExecuteSQL import ExecuteSQL
             self.alglist.extend([ExecuteSQL()])
+
+        self.externalAlgs = []  # to store algs added by 3rd party plugins as scripts
 
         folder = os.path.join(os.path.dirname(__file__), 'scripts')
         scripts = ScriptUtils.loadFromFolder(folder)
@@ -236,17 +291,20 @@ class QGISAlgorithmProvider(AlgorithmProvider):
     def unload(self):
         AlgorithmProvider.unload(self)
 
-    def getName(self):
+    def id(self):
         return 'qgis'
 
-    def getDescription(self):
-        return self.tr('QGIS geoalgorithms')
+    def name(self):
+        return 'QGIS'
 
-    def getIcon(self):
-        return self._icon
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
 
     def _loadAlgorithms(self):
-        self.algs = self.alglist
+        self.algs = list(self.alglist) + self.externalAlgs
 
     def supportsNonFileBasedOutput(self):
         return True

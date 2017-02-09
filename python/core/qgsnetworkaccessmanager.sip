@@ -1,5 +1,3 @@
-%Feature PROXY_FACTORY
-
 /*
  * \class QgsNetworkAccessManager
  * \brief network access manager for QGIS
@@ -31,7 +29,6 @@ class QgsNetworkAccessManager : QNetworkAccessManager
     //! destructor
     ~QgsNetworkAccessManager();
 
-%If (PROXY_FACTORY)
     //! insert a factory into the proxy factories list
     void insertProxyFactory( QNetworkProxyFactory *factory /Transfer/ );
 
@@ -40,13 +37,12 @@ class QgsNetworkAccessManager : QNetworkAccessManager
 
     //! retrieve proxy factory list
     const QList<QNetworkProxyFactory *> proxyFactories() const;
-%End
 
     //! retrieve fall back proxy (for urls that no factory returned proxies for)
     const QNetworkProxy &fallbackProxy() const;
 
     //! retrieve exclude list (urls shouldn't use the fallback proxy)
-    const QStringList &excludeList() const;
+    QStringList excludeList() const;
 
     //! set fallback proxy and URL that shouldn't use it.
     void setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes );
@@ -57,35 +53,16 @@ class QgsNetworkAccessManager : QNetworkAccessManager
     //! Get QNetworkRequest::CacheLoadControl from name
     static QNetworkRequest::CacheLoadControl cacheLoadControlFromName( const QString &theName );
 
-    //! Setup the NAM according to the user's settings
+    //! Setup the NAM according to the user's settings #spellok
     void setupDefaultProxyAndCache();
 
     //! return whether the system proxy should be used
-    bool useSystemProxy();
-
-  public slots:
-    /** Send GET request, calls get().
-     * Emits requestSent().
-     * @param request request to be sent
-     * @deprecated use get() directly
-     */
-    void sendGet( const QNetworkRequest & request ) /Deprecated/;
-    /** Abort and delete reply.
-     * @param reply reply to be aborted.
-     * @deprecated use abort() and deleteLayer() on the reply directly
-     */
-    void deleteReply( QNetworkReply * reply ) /Deprecated/;
+    bool useSystemProxy() const;
 
   signals:
     void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * );
     void requestCreated( QNetworkReply * );
     void requestTimedOut( QNetworkReply * );
-    /** Emitted when request was sent by request()
-     * @param reply request reply
-     * @param sender the object which called request() slot.
-     * @deprecated only emitted from deprecated sendGet
-     */
-    void requestSent( QNetworkReply * reply, QObject *sender );
 
   protected:
     virtual QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0 );

@@ -1,4 +1,17 @@
-
+/***************************************************************************
+  qgspointlocator.sip
+  --------------------------------------
+  Date                 : November 2014
+  Copyright            : (C) 2014 by Martin Dobias
+  Email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 class QgsPointLocator : QObject
 {
 %TypeHeaderCode
@@ -6,20 +19,23 @@ class QgsPointLocator : QObject
 %End
 
   public:
+
     /** Construct point locator for a layer.
-     *  @arg destCRS if not null, will do the searches on data reprojected to the given CRS
+     *  @arg destinationCrs if a valid QgsCoordinateReferenceSystem is passed then the locator will
+     *  do the searches on data reprojected to the given CRS
      *  @arg extent  if not null, will index only a subset of the layer
      */
-    explicit QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateReferenceSystem* destCRS = 0, const QgsRectangle* extent = 0 );
+    explicit QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateReferenceSystem& destinationCrs = QgsCoordinateReferenceSystem(),
+                              const QgsRectangle* extent = nullptr );
 
     ~QgsPointLocator();
 
     //! Get associated layer
     //! @note added in QGIS 2.14
     QgsVectorLayer* layer() const;
-    //! Get destination CRS - may be null if not doing OTF reprojection
+    //! Get destination CRS - may be an invalid QgsCoordinateReferenceSystem if not doing OTF reprojection
     //! @note added in QGIS 2.14
-    const QgsCoordinateReferenceSystem* destCRS() const;
+    QgsCoordinateReferenceSystem destinationCrs() const;
     //! Get extent of the area point locator covers - if null then it caches the whole layer
     //! @note added in QGIS 2.14
     const QgsRectangle* extent() const;
@@ -29,11 +45,11 @@ class QgsPointLocator : QObject
 
     enum Type
     {
-      Invalid,
-      Vertex,
-      Edge,
-      Area,
-      All
+      Invalid, //!< Invalid
+      Vertex,  //!< Snapped to a vertex. Can be a vertex of the geometry or an intersection.
+      Edge,    //!< Snapped to an edge
+      Area,    //!< Snapped to an area
+      All      //!< Combination of vertex, edge and area
     };
 
     typedef QFlags<QgsPointLocator::Type> Types;

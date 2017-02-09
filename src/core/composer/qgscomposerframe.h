@@ -16,20 +16,21 @@
 #ifndef QGSCOMPOSERFRAME_H
 #define QGSCOMPOSERFRAME_H
 
+#include "qgis_core.h"
 #include "qgscomposeritem.h"
 
 class QgsComposition;
 class QgsComposerMultiFrame;
 
-/** Frame item for a composer multiframe item*/
+/** \ingroup core
+ * Frame item for a composer multiframe item.
+*/
 class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
 {
     Q_OBJECT
 
   public:
     QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf, qreal x, qreal y, qreal width, qreal height );
-
-    ~QgsComposerFrame();
 
     /** Sets the visible part of the multiframe's content which is visible within
      * this frame (relative to the total multiframe extent in mm).
@@ -52,8 +53,8 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
     void beginItemCommand( const QString& text ) override;
     void endItemCommand() override;
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
     int type() const override { return ComposerFrame; }
 
     /** Returns the visible portion of the multi frame's content which
@@ -99,16 +100,16 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
      */
     bool isEmpty() const;
 
-    virtual QgsExpressionContext* createExpressionContext() const override;
+    virtual QgsExpressionContext createExpressionContext() const override;
 
   private:
     QgsComposerFrame(); //forbidden
     QgsComposerMultiFrame* mMultiFrame;
     QRectF mSection;
 
-    /** If true, composition will not export page if this frame is empty*/
+    //! If true, composition will not export page if this frame is empty
     bool mHidePageIfEmpty;
-    /** If true, background and outside frame will not be drawn if frame is empty*/
+    //! If true, background and outside frame will not be drawn if frame is empty
     bool mHideBackgroundIfEmpty;
 
 };

@@ -11,5 +11,5 @@ class QgsColorBrewerPalette
     static QList<int> listSchemeVariants( const QString& schemeName );
 
     // extracted ColorBrewer data
-    static const char *brewerString;
+    static const char * BREWER_STRING;
 };

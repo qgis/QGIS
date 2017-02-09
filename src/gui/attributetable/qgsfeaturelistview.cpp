@@ -197,7 +197,7 @@ void QgsFeatureListView::setEditSelection( const QgsFeatureIds &fids )
     mCurrentEditSelectionModel->select( selection, QItemSelectionModel::ClearAndSelect );
 }
 
-void QgsFeatureListView::setEditSelection( const QModelIndex& index, const QItemSelectionModel::SelectionFlags& command )
+void QgsFeatureListView::setEditSelection( const QModelIndex& index, QItemSelectionModel::SelectionFlags command )
 {
   bool ok = true;
   emit aboutToChangeEditSelection( ok );
@@ -258,7 +258,8 @@ void QgsFeatureListView::mouseReleaseEvent( QMouseEvent *event )
   }
   else
   {
-    mFeatureSelectionModel->enableSync( true );
+    if ( mFeatureSelectionModel )
+      mFeatureSelectionModel->enableSync( true );
   }
 }
 
@@ -316,7 +317,7 @@ void QgsFeatureListView::contextMenuEvent( QContextMenuEvent *event )
   {
     QgsFeature feature = mModel->data( index, QgsFeatureListModel::FeatureRole ).value<QgsFeature>();
 
-    QgsActionMenu* menu = new QgsActionMenu( mModel->layerCache()->layer(), &feature, this );
+    QgsActionMenu* menu = new QgsActionMenu( mModel->layerCache()->layer(), feature, QStringLiteral( "AttributeTableRow" ), this );
     menu->exec( event->globalPos() );
   }
 }

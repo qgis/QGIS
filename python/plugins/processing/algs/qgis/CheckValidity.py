@@ -27,10 +27,10 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
-from PyQt.QtCore import QSettings, QVariant
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QSettings, QVariant
 
-from qgis.core import QGis, QgsGeometry, QgsFeature, QgsField
+from qgis.core import Qgis, QgsGeometry, QgsFeature, QgsField, QgsWkbTypes
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
@@ -62,8 +62,7 @@ class CheckValidity(GeoAlgorithm):
 
         self.addParameter(ParameterVector(
             self.INPUT_LAYER,
-            self.tr('Input layer'),
-            [ParameterVector.VECTOR_TYPE_ANY]))
+            self.tr('Input layer')))
 
         self.addParameter(ParameterSelection(
             self.METHOD,
@@ -82,7 +81,7 @@ class CheckValidity(GeoAlgorithm):
             self.ERROR_OUTPUT,
             self.tr('Error output')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         settings = QSettings()
         initial_method_setting = settings.value(settings_method_key, 1)
 
@@ -90,56 +89,55 @@ class CheckValidity(GeoAlgorithm):
         if method != 0:
             settings.setValue(settings_method_key, method)
         try:
-            self.doCheck(progress)
+            self.doCheck(feedback)
         finally:
             settings.setValue(settings_method_key, initial_method_setting)
 
-    def doCheck(self, progress):
+    def doCheck(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
-        provider = layer.dataProvider()
 
         settings = QSettings()
         method = int(settings.value(settings_method_key, 1))
 
-        valid_ouput = self.getOutputFromName(self.VALID_OUTPUT)
-        valid_fields = layer.pendingFields().toList()
-        valid_writer = valid_ouput.getVectorWriter(
+        valid_output = self.getOutputFromName(self.VALID_OUTPUT)
+        valid_fields = layer.fields()
+        valid_writer = valid_output.getVectorWriter(
             valid_fields,
-            provider.geometryType(),
+            layer.wkbType(),
             layer.crs())
         valid_count = 0
 
-        invalid_ouput = self.getOutputFromName(self.INVALID_OUTPUT)
-        invalid_fields = layer.pendingFields().toList() + [
+        invalid_output = self.getOutputFromName(self.INVALID_OUTPUT)
+        invalid_fields = layer.fields().toList() + [
             QgsField(name='_errors',
                      type=QVariant.String,
                      len=255)]
-        invalid_writer = invalid_ouput.getVectorWriter(
+        invalid_writer = invalid_output.getVectorWriter(
             invalid_fields,
-            provider.geometryType(),
+            layer.wkbType(),
             layer.crs())
         invalid_count = 0
 
-        error_ouput = self.getOutputFromName(self.ERROR_OUTPUT)
+        error_output = self.getOutputFromName(self.ERROR_OUTPUT)
         error_fields = [
             QgsField(name='message',
                      type=QVariant.String,
                      len=255)]
-        error_writer = error_ouput.getVectorWriter(
+        error_writer = error_output.getVectorWriter(
             error_fields,
-            QGis.WKBPoint,
+            QgsWkbTypes.Point,
             layer.crs())
         error_count = 0
 
         features = vector.features(layer)
         total = 100.0 / len(features)
         for current, inFeat in enumerate(features):
-            geom = QgsGeometry(inFeat.geometry())
+            geom = inFeat.geometry()
             attrs = inFeat.attributes()
 
             valid = True
-            if not geom.isGeosEmpty():
+            if not geom.isNull() and not geom.isEmpty():
                 errors = list(geom.validateGeometry())
                 if errors:
                     # QGIS method return a summary at the end
@@ -174,15 +172,15 @@ class CheckValidity(GeoAlgorithm):
                 invalid_writer.addFeature(outFeat)
                 invalid_count += 1
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del valid_writer
         del invalid_writer
         del error_writer
 
         if valid_count == 0:
-            valid_ouput.open = False
+            valid_output.open = False
         if invalid_count == 0:
-            invalid_ouput.open = False
+            invalid_output.open = False
         if error_count == 0:
-            error_ouput.open = False
+            error_output.open = False

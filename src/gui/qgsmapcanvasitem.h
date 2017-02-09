@@ -18,6 +18,7 @@
 
 #include <QGraphicsItem>
 #include "qgsrectangle.h"
+#include "qgis_gui.h"
 
 class QgsMapCanvas;
 class QgsRenderContext;
@@ -39,7 +40,6 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     //! function to be implemented by derived classes
     virtual void paint( QPainter * painter ) = 0;
 
-    //! paint function called by map canvas
     virtual void paint( QPainter * painter,
                         const QStyleOptionGraphicsItem * option,
                         QWidget * widget = nullptr ) override;
@@ -58,12 +58,7 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     //! called on changed extent or resize event to update position of the item
     virtual void updatePosition();
 
-    //! default implementation for canvas items
     virtual QRectF boundingRect() const override;
-
-    //! sets current offset, to be called from QgsMapCanvas
-    //! @deprecated since v2.4 - not called by QgsMapCanvas anymore
-    Q_DECL_DEPRECATED void setPanningOffset( QPoint point );
 
     //! returns canvas item rectangle in map units
     QgsRectangle rect() const;
@@ -93,11 +88,6 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     QgsRectangle mRect;
 
     double mRectRotation;
-
-    //! offset from normal position due current panning operation,
-    //! used when converting map coordinates to move map canvas items
-    //! @deprecated since v2.4
-    QPoint mPanningOffset;
 
     //! cached size of the item (to return in boundingRect())
     QSizeF mItemSize;

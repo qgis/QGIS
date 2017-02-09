@@ -26,9 +26,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt.QtWidgets import QMessageBox
+from qgis.PyQt.QtWidgets import QMessageBox
 from processing.gui.ContextAction import ContextAction
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
+from processing.core.alglist import algList
 
 
 class DeleteModelAction(ContextAction):
@@ -48,4 +49,4 @@ class DeleteModelAction(ContextAction):
             QMessageBox.No)
         if reply == QMessageBox.Yes:
             os.remove(self.itemData.descriptionFile)
-            self.toolbox.updateProvider('model')
+            algList.reloadProvider('model')

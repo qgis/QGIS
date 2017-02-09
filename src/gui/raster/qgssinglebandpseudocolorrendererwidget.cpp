@@ -18,35 +18,49 @@
 #include "qgssinglebandpseudocolorrendererwidget.h"
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrastershader.h"
+#include "qgsrasterminmaxwidget.h"
+#include "qgstreewidgetitem.h"
 
 // for color ramps - todo add rasterStyle and refactor raster vs. vector ramps
-#include "qgsstylev2.h"
-#include "qgsvectorcolorrampv2.h"
+#include "qgsstyle.h"
+#include "qgscolorramp.h"
+#include "qgscolorrampbutton.h"
 #include "qgscolordialog.h"
 
+#include <QCursor>
+#include <QPushButton>
+#include <QInputDialog>
 #include <QFileDialog>
+#include <QMenu>
 #include <QMessageBox>
 #include <QSettings>
 #include <QTextStream>
+#include <QTreeView>
 
 QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent )
     : QgsRasterRendererWidget( layer, extent )
     , mMinMaxWidget( nullptr )
+    , mDisableMinMaxWidgetRefresh( false )
     , mMinMaxOrigin( 0 )
 {
   QSettings settings;
 
   setupUi( this );
 
-  mColormapTreeWidget->setColumnWidth( 1, 50 );
+  contextMenu = new QMenu( tr( "Options" ), this );
+  contextMenu->addAction( tr( "Change color" ), this, SLOT( changeColor() ) );
+  contextMenu->addAction( tr( "Change transparency" ), this, SLOT( changeTransparency() ) );
 
-  QString defaultPalette = settings.value( "/Raster/defaultPalette", "Spectral" ).toString();
+  mColormapTreeWidget->setColumnWidth( ColorColumn, 50 );
+  mColormapTreeWidget->setContextMenuPolicy( Qt::CustomContextMenu );
+  mColormapTreeWidget->setSelectionMode( QAbstractItemView::ExtendedSelection );
+  connect( mColormapTreeWidget, &QTreeView::customContextMenuRequested,  [=]( const QPoint& ) { contextMenu->exec( QCursor::pos() ); }
+         );
 
-  mColorRampComboBox->populate( QgsStyleV2::defaultStyle() );
-
-  QgsDebugMsg( "defaultPalette = " + defaultPalette );
-  mColorRampComboBox->setCurrentIndex( mColorRampComboBox->findText( defaultPalette ) );
-  connect( mButtonEditRamp, SIGNAL( clicked() ), mColorRampComboBox, SLOT( editSourceRamp() ) );
+  QString defaultPalette = settings.value( QStringLiteral( "/Raster/defaultPalette" ), "" ).toString();
+  btnColorRamp->setColorRampFromName( defaultPalette );
 
   if ( !mRasterLayer )
   {
@@ -65,13 +79,15 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
 
   mMinMaxWidget = new QgsRasterMinMaxWidget( layer, this );
   mMinMaxWidget->setExtent( extent );
+  mMinMaxWidget->setMapCanvas( mCanvas );
+
   QHBoxLayout *layout = new QHBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
   mMinMaxContainerWidget->setLayout( layout );
   layout->addWidget( mMinMaxWidget );
-  connect( mMinMaxWidget, SIGNAL( load( int, double, double, int ) ),
-           this, SLOT( loadMinMax( int, double, double, int ) ) );
 
+  connect( mMinMaxWidget, &QgsRasterMinMaxWidget::widgetChanged, this, &QgsSingleBandPseudoColorRendererWidget::widgetChanged );
+  connect( mMinMaxWidget, &QgsRasterMinMaxWidget::load, this, &QgsSingleBandPseudoColorRendererWidget::loadMinMax );
 
   //fill available bands into combo box
   int nBands = provider->bandCount();
@@ -80,13 +96,15 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
     mBandComboBox->addItem( displayBandName( i ), i );
   }
 
-  mColorInterpolationComboBox->addItem( tr( "Discrete" ), 0 );
-  mColorInterpolationComboBox->addItem( tr( "Linear" ), 1 );
-  mColorInterpolationComboBox->addItem( tr( "Exact" ), 2 );
-  mColorInterpolationComboBox->setCurrentIndex( 1 );
-  mClassificationModeComboBox->addItem( tr( "Continuous" ), Continuous );
-  mClassificationModeComboBox->addItem( tr( "Equal interval" ), EqualInterval );
-  //quantile would be nice as well
+  mColorInterpolationComboBox->addItem( tr( "Discrete" ), QgsColorRampShader::Discrete );
+  mColorInterpolationComboBox->addItem( tr( "Linear" ), QgsColorRampShader::Interpolated );
+  mColorInterpolationComboBox->addItem( tr( "Exact" ), QgsColorRampShader::Exact );
+  mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findData( QgsColorRampShader::Interpolated ) );
+
+  mClassificationModeComboBox->addItem( tr( "Continuous" ), QgsColorRampShader::Continuous );
+  mClassificationModeComboBox->addItem( tr( "Equal interval" ), QgsColorRampShader::EqualInterval );
+  mClassificationModeComboBox->addItem( tr( "Quantile" ), QgsColorRampShader::Quantile );
+  mClassificationModeComboBox->setCurrentIndex( mClassificationModeComboBox->findData( QgsColorRampShader::Continuous ) );
 
   mNumberOfEntriesSpinBox->setValue( 5 ); // some default
 
@@ -95,22 +113,33 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   // If there is currently no min/max, load default with user current default options
   if ( mMinLineEdit->text().isEmpty() || mMaxLineEdit->text().isEmpty() )
   {
-    mMinMaxWidget->load();
+    QgsRasterMinMaxOrigin minMaxOrigin = mMinMaxWidget->minMaxOrigin();
+    if ( minMaxOrigin.limits() == QgsRasterMinMaxOrigin::None )
+    {
+      minMaxOrigin.setLimits( QgsRasterMinMaxOrigin::MinMax );
+      mMinMaxWidget->setFromMinMaxOrigin( minMaxOrigin );
+    }
+    mMinMaxWidget->doComputations();
   }
 
   on_mClassificationModeComboBox_currentIndexChanged( 0 );
 
   resetClassifyButton();
-}
 
-QgsSingleBandPseudoColorRendererWidget::~QgsSingleBandPseudoColorRendererWidget()
-{
+  connect( mClassificationModeComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( classify() ) );
+  connect( mClassifyButton, &QPushButton::clicked, this, &QgsSingleBandPseudoColorRendererWidget::applyColorRamp );
+  connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsSingleBandPseudoColorRendererWidget::applyColorRamp );
+  connect( mNumberOfEntriesSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( classify() ) );
+  connect( mBandComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( classify() ) );
+  connect( mClipCheckBox, SIGNAL( toggled( bool ) ), this, SIGNAL( widgetChanged() ) );
 }
 
 QgsRasterRenderer* QgsSingleBandPseudoColorRendererWidget::renderer()
 {
   QgsRasterShader* rasterShader = new QgsRasterShader();
-  QgsColorRampShader* colorRampShader = new QgsColorRampShader();
+  QgsColorRampShader* colorRampShader = new QgsColorRampShader( lineEditValue( mMinLineEdit ), lineEditValue( mMaxLineEdit ) );
+  colorRampShader->setColorRampType( static_cast< QgsColorRampShader::Type >( mColorInterpolationComboBox->currentData().toInt() ) );
+  colorRampShader->setClassificationMode( static_cast< QgsColorRampShader::ClassificationMode >( mClassificationModeComboBox->currentData().toInt() ) );
   colorRampShader->setClip( mClipCheckBox->isChecked() );
 
   //iterate through mColormapTreeWidget and set colormap info of layer
@@ -125,247 +154,259 @@ QgsRasterRenderer* QgsSingleBandPseudoColorRendererWidget::renderer()
       continue;
     }
     QgsColorRampShader::ColorRampItem newColorRampItem;
-    newColorRampItem.value = currentItem->text( 0 ).toDouble();
-    newColorRampItem.color = currentItem->background( 1 ).color();
-    newColorRampItem.label = currentItem->text( 2 );
+    newColorRampItem.value = currentItem->text( ValueColumn ).toDouble();
+    newColorRampItem.color = currentItem->background( ColorColumn ).color();
+    newColorRampItem.label = currentItem->text( LabelColumn );
     colorRampItems.append( newColorRampItem );
   }
   // sort the shader items
-  qSort( colorRampItems );
+  std::sort( colorRampItems.begin(), colorRampItems.end() );
   colorRampShader->setColorRampItemList( colorRampItems );
 
-  if ( mColorInterpolationComboBox->currentText() == tr( "Linear" ) )
+  if ( !btnColorRamp->isNull() )
   {
-    colorRampShader->setColorRampType( QgsColorRampShader::INTERPOLATED );
+    colorRampShader->setSourceColorRamp( btnColorRamp->colorRamp() );
   }
-  else if ( mColorInterpolationComboBox->currentText() == tr( "Discrete" ) )
-  {
-    colorRampShader->setColorRampType( QgsColorRampShader::DISCRETE );
-  }
-  else
-  {
-    colorRampShader->setColorRampType( QgsColorRampShader::EXACT );
-  }
+
   rasterShader->setRasterShaderFunction( colorRampShader );
 
-  int bandNumber = mBandComboBox->itemData( mBandComboBox->currentIndex() ).toInt();
+  int bandNumber = mBandComboBox->currentData().toInt();
   QgsSingleBandPseudoColorRenderer *renderer = new QgsSingleBandPseudoColorRenderer( mRasterLayer->dataProvider(), bandNumber, rasterShader );
-
   renderer->setClassificationMin( lineEditValue( mMinLineEdit ) );
   renderer->setClassificationMax( lineEditValue( mMaxLineEdit ) );
-  renderer->setClassificationMinMaxOrigin( mMinMaxOrigin );
+  renderer->setMinMaxOrigin( mMinMaxWidget->minMaxOrigin() );
   return renderer;
 }
 
-void QgsSingleBandPseudoColorRendererWidget::on_mAddEntryButton_clicked()
+void QgsSingleBandPseudoColorRendererWidget::doComputations()
 {
-  QTreeWidgetItem* newItem = new QTreeWidgetItem( mColormapTreeWidget );
-  newItem->setText( 0, "0.0" );
-  newItem->setBackground( 1, QBrush( QColor( Qt::magenta ) ) );
-  newItem->setText( 2, tr( "Custom color map entry" ) );
+  mMinMaxWidget->doComputations();
+  if ( mColormapTreeWidget->topLevelItemCount() == 0 )
+    applyColorRamp();
 }
 
-void QgsSingleBandPseudoColorRendererWidget::on_mDeleteEntryButton_clicked()
+void QgsSingleBandPseudoColorRendererWidget::setMapCanvas( QgsMapCanvas* canvas )
 {
-  QTreeWidgetItem* currentItem = mColormapTreeWidget->currentItem();
-  if ( currentItem )
-  {
-    delete currentItem;
-  }
+  QgsRasterRendererWidget::setMapCanvas( canvas );
+  mMinMaxWidget->setMapCanvas( canvas );
 }
 
-void QgsSingleBandPseudoColorRendererWidget::on_mSortButton_clicked()
+/** Generate labels from the values in the color map.
+ *  Skip labels which were manually edited (black text).
+ *  Text of generated labels is made gray
+ */
+void QgsSingleBandPseudoColorRendererWidget::autoLabel()
 {
-  bool inserted = false;
-  int myCurrentIndex = 0;
-  int myTopLevelItemCount = mColormapTreeWidget->topLevelItemCount();
-  QTreeWidgetItem* myCurrentItem;
-  QList<QgsColorRampShader::ColorRampItem> myColorRampItems;
-  for ( int i = 0; i < myTopLevelItemCount; ++i )
+  QgsColorRampShader::Type interpolation = static_cast< QgsColorRampShader::Type >( mColorInterpolationComboBox->currentData().toInt() );
+  bool discrete = interpolation == QgsColorRampShader::Discrete;
+  QString unit = mUnitLineEdit->text();
+  QString label;
+  int topLevelItemCount = mColormapTreeWidget->topLevelItemCount();
+  QTreeWidgetItem* currentItem;
+  for ( int i = 0; i < topLevelItemCount; ++i )
   {
-    myCurrentItem = mColormapTreeWidget->topLevelItem( i );
+    currentItem = mColormapTreeWidget->topLevelItem( i );
     //If the item is null or does not have a pixel values set, skip
-    if ( !myCurrentItem || myCurrentItem->text( 0 ) == "" )
+    if ( !currentItem || currentItem->text( ValueColumn ).isEmpty() )
     {
       continue;
     }
 
-    //Create a copy of the new Color ramp Item
-    QgsColorRampShader::ColorRampItem myNewColorRampItem;
-    myNewColorRampItem.value = myCurrentItem->text( 0 ).toDouble();
-    myNewColorRampItem.color = myCurrentItem->background( 1 ).color();
-    myNewColorRampItem.label = myCurrentItem->text( 2 );
-
-    //Simple insertion sort - speed is not a huge factor here
-    inserted = false;
-    myCurrentIndex = 0;
-    while ( !inserted )
+    if ( discrete )
     {
-      if ( 0 == myColorRampItems.size() || myCurrentIndex == myColorRampItems.size() )
+      if ( i == 0 )
       {
-        myColorRampItems.push_back( myNewColorRampItem );
-        inserted = true;
+        label = "<= " + currentItem->text( ValueColumn ) + unit;
       }
-      else if ( myColorRampItems[myCurrentIndex].value > myNewColorRampItem.value )
+      else if ( currentItem->text( ValueColumn ).toDouble() == std::numeric_limits<double>::infinity() )
       {
-        myColorRampItems.insert( myCurrentIndex, myNewColorRampItem );
-        inserted = true;
+        label = "> " + mColormapTreeWidget->topLevelItem( i - 1 )->text( ValueColumn ) + unit;
       }
-      else if ( myColorRampItems[myCurrentIndex].value <= myNewColorRampItem.value  && myCurrentIndex == myColorRampItems.size() - 1 )
+      else
       {
-        myColorRampItems.push_back( myNewColorRampItem );
-        inserted = true;
+        label = mColormapTreeWidget->topLevelItem( i - 1 )->text( ValueColumn ) + " - " + currentItem->text( ValueColumn ) + unit;
       }
-      else if ( myColorRampItems[myCurrentIndex].value <= myNewColorRampItem.value && myColorRampItems[myCurrentIndex+1].value > myNewColorRampItem.value )
-      {
-        myColorRampItems.insert( myCurrentIndex + 1, myNewColorRampItem );
-        inserted = true;
-      }
-      myCurrentIndex++;
+    }
+    else
+    {
+      label = currentItem->text( ValueColumn ) + unit;
+    }
+
+    if ( currentItem->text( LabelColumn ).isEmpty() || currentItem->text( LabelColumn ) == label || currentItem->foreground( LabelColumn ).color() == QColor( Qt::gray ) )
+    {
+      currentItem->setText( LabelColumn, label );
+      currentItem->setForeground( LabelColumn, QBrush( QColor( Qt::gray ) ) );
     }
   }
-  populateColormapTreeWidget( myColorRampItems );
 }
 
-void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
+//! Extract the unit out of the current labels and set the unit field.
+void QgsSingleBandPseudoColorRendererWidget::setUnitFromLabels()
 {
-  int bandComboIndex = mBandComboBox->currentIndex();
-  if ( bandComboIndex == -1 || !mRasterLayer )
+  QgsColorRampShader::Type interpolation = static_cast< QgsColorRampShader::Type >( mColorInterpolationComboBox->currentData().toInt() );
+  bool discrete = interpolation == QgsColorRampShader::Discrete;
+  QStringList allSuffixes;
+  QString label;
+  int topLevelItemCount = mColormapTreeWidget->topLevelItemCount();
+  QTreeWidgetItem* currentItem;
+  for ( int i = 0; i < topLevelItemCount; ++i )
+  {
+    currentItem = mColormapTreeWidget->topLevelItem( i );
+    //If the item is null or does not have a pixel values set, skip
+    if ( !currentItem || currentItem->text( ValueColumn ).isEmpty() )
+    {
+      continue;
+    }
+
+    if ( discrete )
+    {
+      if ( i == 0 )
+      {
+        label = "<= " + currentItem->text( ValueColumn );
+      }
+      else if ( currentItem->text( ValueColumn ).toDouble() == std::numeric_limits<double>::infinity() )
+      {
+        label = "> " + mColormapTreeWidget->topLevelItem( i - 1 )->text( ValueColumn );
+      }
+      else
+      {
+        label = mColormapTreeWidget->topLevelItem( i - 1 )->text( ValueColumn ) + " - " + currentItem->text( ValueColumn );
+      }
+    }
+    else
+    {
+      label = currentItem->text( ValueColumn );
+    }
+
+    if ( currentItem->text( LabelColumn ).startsWith( label ) )
+    {
+      allSuffixes.append( currentItem->text( LabelColumn ).mid( label.length() ) );
+    }
+  }
+  // find most common suffix
+  QStringList suffixes = QStringList( allSuffixes );
+  suffixes.removeDuplicates();
+  int max = 0;
+  QString unit;
+  for ( int i = 0; i < suffixes.count(); ++i )
+  {
+    int n = allSuffixes.count( suffixes[i] );
+    if ( n > max )
+    {
+      max = n;
+      unit = suffixes[i];
+    }
+  }
+  // Set this suffix as unit if at least used twice
+  if ( max >= 2 )
+  {
+    mUnitLineEdit->setText( unit );
+  }
+  autoLabel();
+}
+
+void QgsSingleBandPseudoColorRendererWidget::on_mAddEntryButton_clicked()
+{
+  QgsTreeWidgetItemObject* newItem = new QgsTreeWidgetItemObject( mColormapTreeWidget );
+  newItem->setText( ValueColumn, QStringLiteral( "0" ) );
+  newItem->setBackground( ColorColumn, QBrush( QColor( Qt::magenta ) ) );
+  newItem->setText( LabelColumn, QString() );
+  newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
+  connect( newItem, SIGNAL( itemEdited( QTreeWidgetItem*, int ) ),
+           this, SLOT( mColormapTreeWidget_itemEdited( QTreeWidgetItem*, int ) ) );
+  mColormapTreeWidget->sortItems( ValueColumn, Qt::AscendingOrder );
+  autoLabel();
+  emit widgetChanged();
+}
+
+void QgsSingleBandPseudoColorRendererWidget::on_mDeleteEntryButton_clicked()
+{
+  QList<QTreeWidgetItem *> itemList;
+  itemList = mColormapTreeWidget->selectedItems();
+  if ( itemList.isEmpty() )
   {
     return;
   }
 
-  //int bandNr = mBandComboBox->itemData( bandComboIndex ).toInt();
-  //QgsRasterBandStats myRasterBandStats = mRasterLayer->dataProvider()->bandStatistics( bandNr );
-  int numberOfEntries = 0;
-
-  QList<double> entryValues;
-  QVector<QColor> entryColors;
-
-  double min = lineEditValue( mMinLineEdit );
-  double max = lineEditValue( mMaxLineEdit );
-
-  QgsVectorColorRampV2* colorRamp = mColorRampComboBox->currentColorRamp();
-
-  if ( mClassificationModeComboBox->itemData( mClassificationModeComboBox->currentIndex() ).toInt() == Continuous )
+  Q_FOREACH ( QTreeWidgetItem *item, itemList )
   {
-    if ( colorRamp )
+    delete item;
+  }
+  emit widgetChanged();
+}
+
+void QgsSingleBandPseudoColorRendererWidget::classify()
+{
+  std::unique_ptr< QgsColorRamp > ramp( btnColorRamp->colorRamp() );
+  if ( !ramp )
+  {
+    return;
+  }
+
+  QgsSingleBandPseudoColorRenderer *pr = new QgsSingleBandPseudoColorRenderer( mRasterLayer->dataProvider(), mBandComboBox->currentData().toInt(), nullptr );
+  pr->setClassificationMin( lineEditValue( mMinLineEdit ) );
+  pr->setClassificationMax( lineEditValue( mMaxLineEdit ) );
+  pr->createShader( ramp.get(), static_cast< QgsColorRampShader::Type >( mColorInterpolationComboBox->currentData().toInt() ), static_cast< QgsColorRampShader::ClassificationMode >( mClassificationModeComboBox->currentData().toInt() ), mNumberOfEntriesSpinBox->value(), mClipCheckBox->isChecked(), minMaxWidget()->extent() );
+
+  const QgsRasterShader* rasterShader = pr->shader();
+  if ( rasterShader )
+  {
+    const QgsColorRampShader* colorRampShader = dynamic_cast<const QgsColorRampShader*>( rasterShader->rasterShaderFunction() );
+    if ( colorRampShader )
     {
-      numberOfEntries = colorRamp->count();
-      entryValues.reserve( colorRamp->count() );
-      for ( int i = 0; i < colorRamp->count(); ++i )
+      mColormapTreeWidget->clear();
+
+      const QList<QgsColorRampShader::ColorRampItem> colorRampItemList = colorRampShader->colorRampItemList();
+      QList<QgsColorRampShader::ColorRampItem>::const_iterator it = colorRampItemList.constBegin();
+      for ( ; it != colorRampItemList.end(); ++it )
       {
-        double value = colorRamp->value( i );
-        entryValues.push_back( min + value * ( max - min ) );
+        QgsTreeWidgetItemObject* newItem = new QgsTreeWidgetItemObject( mColormapTreeWidget );
+        newItem->setText( ValueColumn, QString::number( it->value, 'g', 15 ) );
+        newItem->setBackground( ColorColumn, QBrush( it->color ) );
+        newItem->setText( LabelColumn, it->label );
+        newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
+        connect( newItem, SIGNAL( itemEdited( QTreeWidgetItem*, int ) ),
+                 this, SLOT( mColormapTreeWidget_itemEdited( QTreeWidgetItem*, int ) ) );
       }
-    }
-  }
-  else // EqualInterval
-  {
-    numberOfEntries = mNumberOfEntriesSpinBox->value();
-    //double currentValue = myRasterBandStats.minimumValue;
-    double currentValue = min;
-    double intervalDiff;
-    if ( numberOfEntries > 1 )
-    {
-      //because the highest value is also an entry, there are (numberOfEntries - 1)
-      //intervals
-      //intervalDiff = ( myRasterBandStats.maximumValue - myRasterBandStats.minimumValue ) /
-      intervalDiff = ( max - min ) / ( numberOfEntries - 1 );
-    }
-    else
-    {
-      //intervalDiff = myRasterBandStats.maximumValue - myRasterBandStats.minimumValue;
-      intervalDiff = max - min;
-    }
-
-    entryValues.reserve( numberOfEntries );
-    for ( int i = 0; i < numberOfEntries; ++i )
-    {
-      entryValues.push_back( currentValue );
-      currentValue += intervalDiff;
+      mClipCheckBox->setChecked( colorRampShader->clip() );
     }
   }
 
-#if 0
-  //hard code color range from blue -> red for now. Allow choice of ramps in future
-  int colorDiff = 0;
-  if ( numberOfEntries != 0 )
-  {
-    colorDiff = ( int )( 255 / numberOfEntries );
-  }
-  for ( int i = 0; i < numberOfEntries; ++i )
-  {
-    QColor currentColor;
-    currentColor.setRgb( colorDiff*i, 0, 255 - colorDiff * i );
-    entryColors.push_back( currentColor );
-  }
-#endif
-
-  if ( ! colorRamp )
-  {
-    //hard code color range from blue -> red (previous default)
-    int colorDiff = 0;
-    if ( numberOfEntries != 0 )
-    {
-      colorDiff = ( int )( 255 / numberOfEntries );
-    }
-
-    entryColors.reserve( numberOfEntries );
-    for ( int i = 0; i < numberOfEntries; ++i )
-    {
-      QColor currentColor;
-      int idx = mInvertCheckBox->isChecked() ? numberOfEntries - i - 1 : i;
-      currentColor.setRgb( colorDiff*idx, 0, 255 - colorDiff * idx );
-      entryColors.push_back( currentColor );
-    }
-  }
-  else
-  {
-    entryColors.reserve( numberOfEntries );
-    for ( int i = 0; i < numberOfEntries; ++i )
-    {
-      int idx = mInvertCheckBox->isChecked() ? numberOfEntries - i - 1 : i;
-      entryColors.push_back( colorRamp->color((( double ) idx ) / ( numberOfEntries - 1 ) ) );
-    }
-  }
-
-  mColormapTreeWidget->clear();
-
-  QList<double>::const_iterator value_it = entryValues.begin();
-  QVector<QColor>::const_iterator color_it = entryColors.begin();
-
-  for ( ; value_it != entryValues.end(); ++value_it, ++color_it )
-  {
-    QTreeWidgetItem* newItem = new QTreeWidgetItem( mColormapTreeWidget );
-    newItem->setText( 0, QString::number( *value_it, 'f' ) );
-    newItem->setBackground( 1, QBrush( *color_it ) );
-    newItem->setText( 2, QString::number( *value_it, 'f' ) );
-    newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
-  }
+  autoLabel();
+  emit widgetChanged();
 }
 
 void QgsSingleBandPseudoColorRendererWidget::on_mClassificationModeComboBox_currentIndexChanged( int index )
 {
-  mNumberOfEntriesSpinBox->setEnabled( mClassificationModeComboBox->itemData( index ).toInt() == EqualInterval );
+  QgsColorRampShader::ClassificationMode mode = static_cast< QgsColorRampShader::ClassificationMode >( mClassificationModeComboBox->itemData( index ).toInt() );
+  mNumberOfEntriesSpinBox->setEnabled( mode != QgsColorRampShader::Continuous );
+  mMinLineEdit->setEnabled( mode != QgsColorRampShader::Quantile );
+  mMaxLineEdit->setEnabled( mode != QgsColorRampShader::Quantile );
 }
 
-void QgsSingleBandPseudoColorRendererWidget::on_mColorRampComboBox_currentIndexChanged( int index )
+void QgsSingleBandPseudoColorRendererWidget::applyColorRamp()
 {
-  Q_UNUSED( index );
-  QSettings settings;
-  settings.setValue( "/Raster/defaultPalette", mColorRampComboBox->currentText() );
-
-  QgsVectorColorRampV2* ramp = mColorRampComboBox->currentColorRamp();
+  std::unique_ptr< QgsColorRamp > ramp( btnColorRamp->colorRamp() );
   if ( !ramp )
+  {
     return;
+  }
+
+  if ( !btnColorRamp->colorRampName().isEmpty() )
+  {
+    // Remember last used color ramp
+    QSettings settings;
+    settings.setValue( QStringLiteral( "/Raster/defaultPalette" ), btnColorRamp->colorRampName() );
+  }
 
   bool enableContinuous = ( ramp->count() > 0 );
   mClassificationModeComboBox->setEnabled( enableContinuous );
   if ( !enableContinuous )
   {
-    mClassificationModeComboBox->setCurrentIndex( mClassificationModeComboBox->findData( EqualInterval ) );
+    mClassificationModeComboBox->setCurrentIndex( mClassificationModeComboBox->findData( QgsColorRampShader::EqualInterval ) );
   }
+
+  classify();
 }
 
 void QgsSingleBandPseudoColorRendererWidget::populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem>& colorRampItems )
@@ -374,11 +415,15 @@ void QgsSingleBandPseudoColorRendererWidget::populateColormapTreeWidget( const Q
   QList<QgsColorRampShader::ColorRampItem>::const_iterator it = colorRampItems.constBegin();
   for ( ; it != colorRampItems.constEnd(); ++it )
   {
-    QTreeWidgetItem* newItem = new QTreeWidgetItem( mColormapTreeWidget );
-    newItem->setText( 0, QString::number( it->value, 'f' ) );
-    newItem->setBackground( 1, QBrush( it->color ) );
-    newItem->setText( 2, it->label );
+    QgsTreeWidgetItemObject* newItem = new QgsTreeWidgetItemObject( mColormapTreeWidget );
+    newItem->setText( ValueColumn, QString::number( it->value, 'g', 15 ) );
+    newItem->setBackground( ColorColumn, QBrush( it->color ) );
+    newItem->setText( LabelColumn, it->label );
+    newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
+    connect( newItem, SIGNAL( itemEdited( QTreeWidgetItem*, int ) ),
+             this, SLOT( mColormapTreeWidget_itemEdited( QTreeWidgetItem*, int ) ) );
   }
+  setUnitFromLabels();
 }
 
 void QgsSingleBandPseudoColorRendererWidget::on_mLoadFromBandButton_clicked()
@@ -388,19 +433,20 @@ void QgsSingleBandPseudoColorRendererWidget::on_mLoadFromBandButton_clicked()
     return;
   }
 
-  int bandIndex = mBandComboBox->itemData( mBandComboBox->currentIndex() ).toInt();
+  int bandIndex = mBandComboBox->currentData().toInt();
 
 
   QList<QgsColorRampShader::ColorRampItem> colorRampList = mRasterLayer->dataProvider()->colorTable( bandIndex );
   if ( !colorRampList.isEmpty() )
   {
     populateColormapTreeWidget( colorRampList );
-    mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findText( tr( "Linear" ) ) );
+    mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findData( QgsColorRampShader::Interpolated ) );
   }
   else
   {
     QMessageBox::warning( this, tr( "Load Color Map" ), tr( "The color map for band %1 has no entries" ).arg( bandIndex ) );
   }
+  emit widgetChanged();
 }
 
 void QgsSingleBandPseudoColorRendererWidget::on_mLoadFromFileButton_clicked()
@@ -409,7 +455,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mLoadFromFileButton_clicked()
   bool importError = false;
   QString badLines;
   QSettings settings;
-  QString lastDir = settings.value( "lastColorMapDir", QDir::homePath() ).toString();
+  QString lastDir = settings.value( QStringLiteral( "lastColorMapDir" ), QDir::homePath() ).toString();
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Open file" ), lastDir, tr( "Textfile (*.txt)" ) );
   QFile inputFile( fileName );
   if ( inputFile.open( QFile::ReadOnly ) )
@@ -431,22 +477,22 @@ void QgsSingleBandPseudoColorRendererWidget::on_mLoadFromFileButton_clicked()
       {
         if ( !inputLine.simplified().startsWith( '#' ) )
         {
-          if ( inputLine.contains( "INTERPOLATION", Qt::CaseInsensitive ) )
+          if ( inputLine.contains( QLatin1String( "INTERPOLATION" ), Qt::CaseInsensitive ) )
           {
             inputStringComponents = inputLine.split( ':' );
             if ( inputStringComponents.size() == 2 )
             {
-              if ( inputStringComponents[1].trimmed().toUpper().compare( "INTERPOLATED", Qt::CaseInsensitive ) == 0 )
+              if ( inputStringComponents[1].trimmed().toUpper().compare( QLatin1String( "INTERPOLATED" ), Qt::CaseInsensitive ) == 0 )
               {
-                mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findText( tr( "Linear" ) ) );
+                mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findData( QgsColorRampShader::Interpolated ) );
               }
-              else if ( inputStringComponents[1].trimmed().toUpper().compare( "DISCRETE", Qt::CaseInsensitive ) == 0 )
+              else if ( inputStringComponents[1].trimmed().toUpper().compare( QLatin1String( "DISCRETE" ), Qt::CaseInsensitive ) == 0 )
               {
-                mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findText( tr( "Discrete" ) ) );
+                mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findData( QgsColorRampShader::Discrete ) );
               }
               else
               {
-                mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findText( tr( "Exact" ) ) );
+                mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findData( QgsColorRampShader::Exact ) );
               }
             }
             else
@@ -479,7 +525,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mLoadFromFileButton_clicked()
     populateColormapTreeWidget( colorRampItems );
 
     QFileInfo fileInfo( fileName );
-    settings.setValue( "lastColorMapDir", fileInfo.absoluteDir().absolutePath() );
+    settings.setValue( QStringLiteral( "lastColorMapDir" ), fileInfo.absoluteDir().absolutePath() );
 
     if ( importError )
     {
@@ -490,37 +536,39 @@ void QgsSingleBandPseudoColorRendererWidget::on_mLoadFromFileButton_clicked()
   {
     QMessageBox::warning( this, tr( "Read access denied" ), tr( "Read access denied. Adjust the file permissions and try again.\n\n" ) );
   }
+  emit widgetChanged();
 }
 
 void QgsSingleBandPseudoColorRendererWidget::on_mExportToFileButton_clicked()
 {
   QSettings settings;
-  QString lastDir = settings.value( "lastColorMapDir", QDir::homePath() ).toString();
+  QString lastDir = settings.value( QStringLiteral( "lastColorMapDir" ), QDir::homePath() ).toString();
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Save file" ), lastDir, tr( "Textfile (*.txt)" ) );
   if ( !fileName.isEmpty() )
   {
-    if ( !fileName.endsWith( ".txt", Qt::CaseInsensitive ) )
+    if ( !fileName.endsWith( QLatin1String( ".txt" ), Qt::CaseInsensitive ) )
     {
       fileName = fileName + ".txt";
     }
 
     QFile outputFile( fileName );
-    if ( outputFile.open( QFile::WriteOnly ) )
+    if ( outputFile.open( QFile::WriteOnly | QIODevice::Truncate ) )
     {
       QTextStream outputStream( &outputFile );
       outputStream << "# " << tr( "QGIS Generated Color Map Export File" ) << '\n';
       outputStream << "INTERPOLATION:";
-      if ( mColorInterpolationComboBox->currentText() == tr( "Linear" ) )
+      QgsColorRampShader::Type interpolation = static_cast< QgsColorRampShader::Type >( mColorInterpolationComboBox->currentData().toInt() );
+      switch ( interpolation )
       {
-        outputStream << "INTERPOLATED\n";
-      }
-      else if ( mColorInterpolationComboBox->currentText() == tr( "Discrete" ) )
-      {
-        outputStream << "DISCRETE\n";
-      }
-      else
-      {
-        outputStream << "EXACT\n";
+        case QgsColorRampShader::Interpolated:
+          outputStream << "INTERPOLATED\n";
+          break;
+        case QgsColorRampShader::Discrete:
+          outputStream << "DISCRETE\n";
+          break;
+        case QgsColorRampShader::Exact:
+          outputStream << "EXACT\n";
+          break;
       }
 
       int topLevelItemCount = mColormapTreeWidget->topLevelItemCount();
@@ -533,23 +581,23 @@ void QgsSingleBandPseudoColorRendererWidget::on_mExportToFileButton_clicked()
         {
           continue;
         }
-        color = currentItem->background( 1 ).color();
-        outputStream << currentItem->text( 0 ).toDouble() << ',';
+        color = currentItem->background( ColorColumn ).color();
+        outputStream << currentItem->text( ValueColumn ).toDouble() << ',';
         outputStream << color.red() << ',' << color.green() << ',' << color.blue() << ',' << color.alpha() << ',';
-        if ( currentItem->text( 2 ) == "" )
+        if ( currentItem->text( LabelColumn ).isEmpty() )
         {
           outputStream << "Color entry " << i + 1 << '\n';
         }
         else
         {
-          outputStream << currentItem->text( 2 ) << '\n';
+          outputStream << currentItem->text( LabelColumn ) << '\n';
         }
       }
       outputStream.flush();
       outputFile.close();
 
       QFileInfo fileInfo( fileName );
-      settings.setValue( "lastColorMapDir", fileInfo.absoluteDir().absolutePath() );
+      settings.setValue( QStringLiteral( "lastColorMapDir" ), fileInfo.absoluteDir().absolutePath() );
     }
     else
     {
@@ -565,18 +613,43 @@ void QgsSingleBandPseudoColorRendererWidget::on_mColormapTreeWidget_itemDoubleCl
     return;
   }
 
-  if ( column == 1 ) //change item color
+  if ( column == ColorColumn )
   {
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    QColor newColor = QgsColorDialogV2::getColor( item->background( column ).color(), this, "Change color", true );
+    QColor newColor = QgsColorDialog::getColor( item->background( column ).color(), this, QStringLiteral( "Change color" ), true );
     if ( newColor.isValid() )
     {
-      item->setBackground( 1, QBrush( newColor ) );
+      item->setBackground( ColorColumn, QBrush( newColor ) );
+      emit widgetChanged();
     }
   }
   else
   {
+    if ( column == LabelColumn )
+    {
+      // Set text color to default black, which signifies a manually edited label
+      item->setForeground( LabelColumn, QBrush() );
+    }
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
+  }
+}
+
+//! Update the colormap table after manual edit.
+void QgsSingleBandPseudoColorRendererWidget::mColormapTreeWidget_itemEdited( QTreeWidgetItem* item, int column )
+{
+  Q_UNUSED( item );
+
+  if ( column == ValueColumn )
+  {
+    mColormapTreeWidget->sortItems( ValueColumn, Qt::AscendingOrder );
+    autoLabel();
+    emit widgetChanged();
+  }
+  else if ( column == LabelColumn )
+  {
+    // call autoLabel to fill when empty or gray out when same as autoLabel
+    autoLabel();
+    emit widgetChanged();
   }
 }
 
@@ -593,50 +666,90 @@ void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRen
       const QgsColorRampShader* colorRampShader = dynamic_cast<const QgsColorRampShader*>( rasterShader->rasterShaderFunction() );
       if ( colorRampShader )
       {
-        if ( colorRampShader->colorRampType() == QgsColorRampShader::INTERPOLATED )
+        if ( colorRampShader->sourceColorRamp() )
         {
-          mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findText( tr( "Linear" ) ) );
-        }
-        else if ( colorRampShader->colorRampType() == QgsColorRampShader::DISCRETE )
-        {
-          mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findText( tr( "Discrete" ) ) );
+          btnColorRamp->setColorRamp( colorRampShader->sourceColorRamp() );
         }
         else
         {
-          mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findText( tr( "Exact" ) ) );
+          QSettings settings;
+          QString defaultPalette = settings.value( "/Raster/defaultPalette", "Spectral" ).toString();
+          btnColorRamp->setColorRampFromName( defaultPalette );
         }
+
+        mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findData( colorRampShader->colorRampType() ) );
 
         const QList<QgsColorRampShader::ColorRampItem> colorRampItemList = colorRampShader->colorRampItemList();
         QList<QgsColorRampShader::ColorRampItem>::const_iterator it = colorRampItemList.constBegin();
         for ( ; it != colorRampItemList.end(); ++it )
         {
-          QTreeWidgetItem* newItem = new QTreeWidgetItem( mColormapTreeWidget );
-          newItem->setText( 0, QString::number( it->value, 'f' ) );
-          newItem->setBackground( 1, QBrush( it->color ) );
-          newItem->setText( 2, it->label );
+          QgsTreeWidgetItemObject* newItem = new QgsTreeWidgetItemObject( mColormapTreeWidget );
+          newItem->setText( ValueColumn, QString::number( it->value, 'g', 15 ) );
+          newItem->setBackground( ColorColumn, QBrush( it->color ) );
+          newItem->setText( LabelColumn, it->label );
+          newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
+          connect( newItem, SIGNAL( itemEdited( QTreeWidgetItem*, int ) ),
+                   this, SLOT( mColormapTreeWidget_itemEdited( QTreeWidgetItem*, int ) ) );
         }
+        setUnitFromLabels();
         mClipCheckBox->setChecked( colorRampShader->clip() );
+
+        mClassificationModeComboBox->setCurrentIndex( mClassificationModeComboBox->findData( colorRampShader->classificationMode() ) );
+        mNumberOfEntriesSpinBox->setValue( colorRampShader->colorRampItemList().count() ); // some default
       }
     }
     setLineEditValue( mMinLineEdit, pr->classificationMin() );
     setLineEditValue( mMaxLineEdit, pr->classificationMax() );
-    mMinMaxOrigin = pr->classificationMinMaxOrigin();
-    showMinMaxOrigin();
+
+    mMinMaxWidget->setFromMinMaxOrigin( pr->minMaxOrigin() );
   }
 }
 
 void QgsSingleBandPseudoColorRendererWidget::on_mBandComboBox_currentIndexChanged( int index )
 {
-  QList<int> myBands;
-  myBands.append( mBandComboBox->itemData( index ).toInt() );
-  mMinMaxWidget->setBands( myBands );
+  QList<int> bands;
+  bands.append( mBandComboBox->itemData( index ).toInt() );
+  mMinMaxWidget->setBands( bands );
 }
 
-void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin )
+void QgsSingleBandPseudoColorRendererWidget::on_mColorInterpolationComboBox_currentIndexChanged( int index )
+{
+  QgsColorRampShader::Type interpolation = static_cast< QgsColorRampShader::Type >( mColorInterpolationComboBox->itemData( index ).toInt() );
+
+  mClipCheckBox->setEnabled( interpolation == QgsColorRampShader::Interpolated );
+
+  QString valueLabel;
+  QString valueToolTip;
+  switch ( interpolation )
+  {
+    case QgsColorRampShader::Interpolated:
+      valueLabel = tr( "Value" );
+      valueToolTip = tr( "Value for color stop" );
+      break;
+    case QgsColorRampShader::Discrete:
+      valueLabel = tr( "Value <=" );
+      valueToolTip = tr( "Maximum value for class" );
+      break;
+    case QgsColorRampShader::Exact:
+      valueLabel = tr( "Value =" );
+      valueToolTip = tr( "Value for color" );
+      break;
+  }
+
+  QTreeWidgetItem* header = mColormapTreeWidget->headerItem();
+  header->setText( ValueColumn, valueLabel );
+  header->setToolTip( ValueColumn, valueToolTip );
+
+  autoLabel();
+  emit widgetChanged();
+}
+
+void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int theBandNo, double theMin, double theMax )
 {
   Q_UNUSED( theBandNo );
   QgsDebugMsg( QString( "theBandNo = %1 theMin = %2 theMax = %3" ).arg( theBandNo ).arg( theMin ).arg( theMax ) );
 
+  mDisableMinMaxWidgetRefresh = true;
   if ( qIsNaN( theMin ) )
   {
     mMinLineEdit->clear();
@@ -654,14 +767,8 @@ void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int theBandNo, double t
   {
     mMaxLineEdit->setText( QString::number( theMax ) );
   }
-
-  mMinMaxOrigin = theOrigin;
-  showMinMaxOrigin();
-}
-
-void QgsSingleBandPseudoColorRendererWidget::showMinMaxOrigin()
-{
-  mMinMaxOriginLabel->setText( QgsRasterRenderer::minMaxOriginLabel( mMinMaxOrigin ) );
+  mDisableMinMaxWidgetRefresh = false;
+  classify();
 }
 
 void QgsSingleBandPseudoColorRendererWidget::setLineEditValue( QLineEdit * theLineEdit, double theValue )
@@ -692,5 +799,73 @@ void QgsSingleBandPseudoColorRendererWidget::resetClassifyButton()
   if ( qIsNaN( min ) || qIsNaN( max ) || min >= max )
   {
     mClassifyButton->setEnabled( false );
+  }
+}
+
+void QgsSingleBandPseudoColorRendererWidget::changeColor()
+{
+  QList<QTreeWidgetItem *> itemList;
+  itemList = mColormapTreeWidget->selectedItems();
+  if ( itemList.isEmpty() )
+  {
+    return;
+  }
+  QTreeWidgetItem* firstItem = itemList.first();
+
+  QColor newColor = QgsColorDialog::getColor( firstItem->background( ColorColumn ).color(), this, QStringLiteral( "Change color" ), true );
+  if ( newColor.isValid() )
+  {
+    Q_FOREACH ( QTreeWidgetItem *item, itemList )
+    {
+      item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+      item->setBackground( ColorColumn, QBrush( newColor ) );
+    }
+    emit widgetChanged();
+  }
+}
+
+void QgsSingleBandPseudoColorRendererWidget::changeTransparency()
+{
+  QList<QTreeWidgetItem *> itemList;
+  itemList = mColormapTreeWidget->selectedItems();
+  if ( itemList.isEmpty() )
+  {
+    return;
+  }
+  QTreeWidgetItem* firstItem = itemList.first();
+
+  bool ok;
+  double oldTransparency = firstItem->background( ColorColumn ).color().alpha() / 255 * 100;
+  double transparency = QInputDialog::getDouble( this, tr( "Transparency" ), tr( "Change color transparency [%]" ), oldTransparency, 0.0, 100.0, 0, &ok );
+  if ( ok )
+  {
+    int newTransparency = transparency / 100 * 255;
+    Q_FOREACH ( QTreeWidgetItem *item, itemList )
+    {
+      QColor newColor = item->background( ColorColumn ).color();
+      newColor.setAlpha( newTransparency );
+      item->setBackground( ColorColumn, QBrush( newColor ) );
+    }
+    emit widgetChanged();
+  }
+}
+
+void QgsSingleBandPseudoColorRendererWidget::on_mMinLineEdit_textEdited( const QString & )
+{
+  minMaxModified();
+  classify();
+}
+
+void QgsSingleBandPseudoColorRendererWidget::on_mMaxLineEdit_textEdited( const QString & )
+{
+  minMaxModified();
+  classify();
+}
+
+void QgsSingleBandPseudoColorRendererWidget::minMaxModified()
+{
+  if ( !mDisableMinMaxWidgetRefresh )
+  {
+    mMinMaxWidget->userHasSetManualMinMaxValues();
   }
 }

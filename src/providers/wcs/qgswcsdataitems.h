@@ -50,13 +50,13 @@ class QgsWCSLayerItem : public QgsLayerItem
   public:
     QgsWCSLayerItem( QgsDataItem* parent, QString name, QString path,
                      const QgsWcsCapabilitiesProperty& capabilitiesProperty,
-                     const QgsDataSourceURI& dataSourceUri, const QgsWcsCoverageSummary& coverageSummary );
+                     const QgsDataSourceUri& dataSourceUri, const QgsWcsCoverageSummary& coverageSummary );
     ~QgsWCSLayerItem();
 
     QString createUri();
 
     QgsWcsCapabilitiesProperty mCapabilities;
-    QgsDataSourceURI mDataSourceUri;
+    QgsDataSourceUri mDataSourceUri;
     QgsWcsCoverageSummary mCoverageSummary;
 };
 

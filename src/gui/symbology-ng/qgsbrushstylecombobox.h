@@ -17,7 +17,11 @@
 #define QGSBRUSHSTYLECOMBOBOX_H
 
 #include <QComboBox>
+#include "qgis_gui.h"
 
+/** \ingroup gui
+ * \class QgsBrushStyleComboBox
+ */
 class GUI_EXPORT QgsBrushStyleComboBox : public QComboBox
 {
     Q_OBJECT

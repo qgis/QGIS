@@ -17,11 +17,13 @@
 #ifndef QGSGLOWEFFECT_H
 #define QGSGLOWEFFECT_H
 
+#include "qgis_core.h"
 #include "qgspainteffect.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
+#include "qgscolorramp.h"
+
 #include <QPainter>
 
-class QgsVectorColorRampV2;
 
 /** \ingroup core
  * \class QgsGlowEffect
@@ -36,11 +38,11 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
 
   public:
 
-    /** Color sources for the glow */
+    //! Color sources for the glow
     enum GlowColorType
     {
-      SingleColor, /*!< use a single color and fade the color to totally transparent */
-      ColorRamp /*!< use colors from a color ramp */
+      SingleColor, //!< Use a single color and fade the color to totally transparent
+      ColorRamp //!< Use colors from a color ramp
     };
 
     QgsGlowEffect();
@@ -72,7 +74,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * @see setSpread
      * @see setSpreadMapUnitScale
      */
-    void setSpreadUnit( const QgsSymbolV2::OutputUnit unit ) { mSpreadUnit = unit; }
+    void setSpreadUnit( const QgsUnitTypes::RenderUnit unit ) { mSpreadUnit = unit; }
 
     /** Returns the units used for the glow spread distance.
      * @returns units for spread distance
@@ -80,7 +82,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * @see spread
      * @see spreadMapUnitScale
      */
-    QgsSymbolV2::OutputUnit spreadUnit() const { return mSpreadUnit; }
+    QgsUnitTypes::RenderUnit spreadUnit() const { return mSpreadUnit; }
 
     /** Sets the map unit scale used for the spread distance.
      * @param scale map unit scale for spread distance
@@ -151,7 +153,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * @see ramp
      * @see setColorType
      */
-    void setRamp( QgsVectorColorRampV2* ramp );
+    void setRamp( QgsColorRamp* ramp );
 
     /** Returns the color ramp used for the glow. This only applies if the @link colorType @endlink
      * is set to ColorRamp. The glow will utilise colors from the ramp.
@@ -159,7 +161,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * @see setRamp
      * @see colorType
      */
-    QgsVectorColorRampV2* ramp() const { return mRamp; }
+    QgsColorRamp* ramp() const { return mRamp; }
 
     /** Sets the blend mode for the effect
      * @param mode blend mode used for drawing the effect on to a destination
@@ -175,7 +177,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      */
     QPainter::CompositionMode blendMode() const { return mBlendMode; }
 
-    /** Sets the color mode to use for the glow. The glow can either be drawn using a QgsVectorColorRampV2
+    /** Sets the color mode to use for the glow. The glow can either be drawn using a QgsColorRamp
      * color ramp or by simply specificing a single color. setColorType is used to specify which mode to use
      * for the glow.
      * @param colorType color type to use for glow
@@ -185,7 +187,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      */
     void setColorType( GlowColorType colorType ) { mColorType = colorType; }
 
-    /** Returns the color mode used for the glow. The glow can either be drawn using a QgsVectorColorRampV2
+    /** Returns the color mode used for the glow. The glow can either be drawn using a QgsColorRamp
      * color ramp or by specificing a single color.
      * @returns current color mode used for the glow
      * @see setColorType
@@ -209,9 +211,9 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
     virtual bool shadeExterior() const = 0;
 
     double mSpread;
-    QgsSymbolV2::OutputUnit mSpreadUnit;
+    QgsUnitTypes::RenderUnit mSpreadUnit;
     QgsMapUnitScale mSpreadMapUnitScale;
-    QgsVectorColorRampV2* mRamp;
+    QgsColorRamp* mRamp;
     int mBlurLevel;
     double mTransparency;
     QColor mColor;
@@ -240,9 +242,8 @@ class CORE_EXPORT QgsOuterGlowEffect : public QgsGlowEffect
     static QgsPaintEffect* create( const QgsStringMap& map );
 
     QgsOuterGlowEffect();
-    virtual ~QgsOuterGlowEffect();
 
-    virtual QString type() const override { return QString( "outerGlow" ); }
+    virtual QString type() const override { return QStringLiteral( "outerGlow" ); }
     virtual QgsOuterGlowEffect* clone() const override;
 
   protected:
@@ -271,9 +272,8 @@ class CORE_EXPORT QgsInnerGlowEffect : public QgsGlowEffect
     static QgsPaintEffect* create( const QgsStringMap& map );
 
     QgsInnerGlowEffect();
-    virtual ~QgsInnerGlowEffect();
 
-    virtual QString type() const override { return QString( "innerGlow" ); }
+    virtual QString type() const override { return QStringLiteral( "innerGlow" ); }
     virtual QgsInnerGlowEffect* clone() const override;
 
   protected:

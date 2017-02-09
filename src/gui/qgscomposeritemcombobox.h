@@ -18,21 +18,23 @@
 
 #include <QComboBox>
 #include "qgscomposeritem.h"
+#include "qgis_gui.h"
 
 class QgsComposerProxyModel;
 
 /**
- * /class QgsComposerItemComboBox
- * /ingroup gui
- * /brief The QgsComposerItemComboBox class is a combo box which displays items of
+ * \class QgsComposerItemComboBox
+ * \ingroup gui
+ * \brief The QgsComposerItemComboBox class is a combo box which displays items of
  * a matching type from a composition.
- * /note added in 2.16
+ * \note added in 2.16
  */
 class GUI_EXPORT QgsComposerItemComboBox : public QComboBox
 {
     Q_OBJECT
 
   public:
+
     /**
      * QgsComposerItemComboBox creates a combo box to display a list of items in a
      * composition. The items can optionally be filtered by type.
@@ -80,6 +82,7 @@ class GUI_EXPORT QgsComposerItemComboBox : public QComboBox
     QgsComposerItem* currentItem() const;
 
   public slots:
+
     /** Sets the currently selected item in the combo box.
      * @param item selected item
      */

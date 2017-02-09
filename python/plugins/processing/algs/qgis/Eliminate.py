@@ -5,7 +5,7 @@
     Eliminate.py
     ---------------------
     Date                 : August 2012
-    Copyright            : (C) 2013 by Bernhard Str�bl
+    Copyright            : (C) 2013 by Bernhard Ströbl
     Email                : bernhard.stroebl@jena.de
 ***************************************************************************
 *                                                                         *
@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
 
 __author__ = 'Bernhard Ströbl'
 __date__ = 'September 2013'
@@ -27,8 +29,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
-from PyQt.QtCore import QLocale, QDate
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QLocale, QDate, QVariant
 
 from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry
 
@@ -72,7 +74,7 @@ class Eliminate(GeoAlgorithm):
                       self.tr('Largest common boundary')]
 
         self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
+                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterBoolean(self.KEEPSELECTION,
                                            self.tr('Use current selection in input layer (works only if called from toolbox)'), False))
         self.addParameter(ParameterTableField(self.ATTRIBUTE,
@@ -94,9 +96,9 @@ class Eliminate(GeoAlgorithm):
         self.addParameter(ParameterSelection(self.MODE,
                                              self.tr('Merge selection with the neighbouring polygon with the'),
                                              self.modes))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         inLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         boundary = self.getParameterValue(self.MODE) == self.MODE_BOUNDARY
         smallestArea = self.getParameterValue(self.MODE) == self.MODE_SMALLEST_AREA
@@ -113,26 +115,26 @@ class Eliminate(GeoAlgorithm):
             selectType = processLayer.fields()[selectindex].type()
             selectionError = False
 
-            if selectType == 2:
+            if selectType in [QVariant.Int, QVariant.LongLong, QVariant.UInt, QVariant.ULongLong]:
                 try:
                     y = int(comparisonvalue)
                 except ValueError:
                     selectionError = True
-                    msg = self.tr('Cannot convert "%s" to integer' % unicode(comparisonvalue))
-            elif selectType == 6:
+                    msg = self.tr('Cannot convert "%s" to integer' % str(comparisonvalue))
+            elif selectType == QVariant.Double:
                 try:
                     y = float(comparisonvalue)
                 except ValueError:
                     selectionError = True
-                    msg = self.tr('Cannot convert "%s" to float' % unicode(comparisonvalue))
-            elif selectType == 10:
+                    msg = self.tr('Cannot convert "%s" to float' % str(comparisonvalue))
+            elif selectType == QVariant.String:
                 # 10: string, boolean
                 try:
-                    y = unicode(comparisonvalue)
+                    y = str(comparisonvalue)
                 except ValueError:
                     selectionError = True
-                    msg = self.tr('Cannot convert "%s" to unicode' % unicode(comparisonvalue))
-            elif selectType == 14:
+                    msg = self.tr('Cannot convert "%s" to Unicode' % str(comparisonvalue))
+            elif selectType == QVariant.Date:
                 # date
                 dateAndFormat = comparisonvalue.split(' ')
 
@@ -141,23 +143,23 @@ class Eliminate(GeoAlgorithm):
                     y = QLocale.system().toDate(dateAndFormat[0])
 
                     if y.isNull():
-                        msg = self.tr('Cannot convert "%s" to date with system date format %s' % (unicode(dateAndFormat), QLocale.system().dateFormat()))
+                        msg = self.tr('Cannot convert "%s" to date with system date format %s' % (str(dateAndFormat), QLocale.system().dateFormat()))
                 elif len(dateAndFormat) == 2:
                     y = QDate.fromString(dateAndFormat[0], dateAndFormat[1])
 
                     if y.isNull():
-                        msg = self.tr('Cannot convert "%s" to date with format string "%s"' % (unicode(dateAndFormat[0]), dateAndFormat[1]))
+                        msg = self.tr('Cannot convert "%s" to date with format string "%s"' % (str(dateAndFormat[0]), dateAndFormat[1]))
                 else:
                     y = QDate()
                     msg = ''
 
                 if y.isNull():
-                    # Conversion was unsuccessfull
+                    # Conversion was unsuccessful
                     selectionError = True
                     msg += self.tr('Enter the date and the date format, e.g. "07.26.2011" "MM.dd.yyyy".')
 
             if (comparison == 'begins with' or comparison == 'contains') \
-               and selectType != 10:
+               and selectType != QVariant.String:
                 selectionError = True
                 msg = self.tr('"%s" can only be used with string fields' % comparison)
 
@@ -173,14 +175,14 @@ class Eliminate(GeoAlgorithm):
                     if aValue is None:
                         continue
 
-                    if selectType == 2:
+                    if selectType in [QVariant.Int, QVariant.LongLong, QVariant.UInt, QVariant.ULongLong]:
                         x = int(aValue)
-                    elif selectType == 6:
+                    elif selectType == QVariant.Double:
                         x = float(aValue)
-                    elif selectType == 10:
+                    elif selectType == QVariant.String:
                         # 10: string, boolean
-                        x = unicode(aValue)
-                    elif selectType == 14:
+                        x = str(aValue)
+                    elif selectType == QVariant.Date:
                         # date
                         x = aValue  # should be date
 
@@ -206,7 +208,7 @@ class Eliminate(GeoAlgorithm):
                     if match:
                         selected.append(feature.id())
 
-            processLayer.setSelectedFeatures(selected)
+            processLayer.selectByIds(selected)
 
         if processLayer.selectedFeatureCount() == 0:
             ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
@@ -228,7 +230,7 @@ class Eliminate(GeoAlgorithm):
         else:
             start = 100
 
-        progress.setPercentage(start)
+        feedback.setProgress(start)
         madeProgress = True
 
         # We go through the list and see if we find any polygons we can
@@ -241,24 +243,28 @@ class Eliminate(GeoAlgorithm):
             # Iterate over the polygons to eliminate
             for i in range(len(featToEliminate)):
                 feat = featToEliminate.pop()
-                geom2Eliminate = QgsGeometry(feat.geometry())
+                geom2Eliminate = feat.geometry()
                 bbox = geom2Eliminate.boundingBox()
                 fit = processLayer.getFeatures(
-                    QgsFeatureRequest().setFilterRect(bbox))
+                    QgsFeatureRequest().setFilterRect(bbox).setSubsetOfAttributes([]))
                 mergeWithFid = None
                 mergeWithGeom = None
                 max = 0
                 min = -1
                 selFeat = QgsFeature()
 
-                while fit.nextFeature(selFeat):
-                    selGeom = QgsGeometry(selFeat.geometry())
+                # use prepared geometries for faster intersection tests
+                engine = QgsGeometry.createGeometryEngine(geom2Eliminate.geometry())
+                engine.prepareGeometry()
 
-                    if geom2Eliminate.intersects(selGeom):
+                while fit.nextFeature(selFeat):
+                    selGeom = selFeat.geometry()
+
+                    if engine.intersects(selGeom.geometry()):
                         # We have a candidate
                         iGeom = geom2Eliminate.intersection(selGeom)
 
-                        if iGeom is None:
+                        if not iGeom:
                             continue
 
                         if boundary:
@@ -304,7 +310,7 @@ class Eliminate(GeoAlgorithm):
                             self.tr('Could not replace geometry of feature with id %s' % mergeWithFid))
 
                     start = start + add
-                    progress.setPercentage(start)
+                    feedback.setProgress(start)
                 else:
                     featNotEliminated.append(feat)
 
@@ -315,10 +321,9 @@ class Eliminate(GeoAlgorithm):
         # End while
 
         # Create output
-        provider = processLayer.dataProvider()
         output = self.getOutputFromName(self.OUTPUT)
-        writer = output.getVectorWriter(provider.fields(),
-                                        provider.geometryType(), processLayer.crs())
+        writer = output.getVectorWriter(processLayer.fields(),
+                                        processLayer.wkbType(), processLayer.crs())
 
         # Write all features that are left over to output layer
         iterator = processLayer.getFeatures()

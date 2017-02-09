@@ -21,14 +21,16 @@ class QgsRenderContext
       UseRenderingOptimization, //!< Enable vector simplification and other rendering optimizations
       DrawSelection,            //!< Whether vector selections should be shown in the rendered map
       DrawSymbolBounds,         //!< Draw bounds of symbols (for debugging/testing)
-      RenderMapTile
+      RenderMapTile,            //!< Draw map such that there are no problems between adjacent tiles
+      Antialiasing,             //!< Use antialiasing while drawing
+      RenderPartialOutput,      //!< Whether to make extra effort to update map image with partially rendered layers (better for interactive map canvas). Added in QGIS 3.0
     };
     typedef QFlags<QgsRenderContext::Flag> Flags;
 
     /** Set combination of flags that will be used for rendering.
      * @note added in QGIS 2.14
      */
-    void setFlags( const QgsRenderContext::Flags& flags );
+    void setFlags( QgsRenderContext::Flags flags );
 
     /** Enable or disable a particular flag (other flags are not affected)
      * @note added in QGIS 2.14
@@ -49,20 +51,28 @@ class QgsRenderContext
     //! @note added in 2.4
     static QgsRenderContext fromMapSettings( const QgsMapSettings& mapSettings );
 
+    /**
+     * Creates a default render context given a pixel based QPainter destination.
+     * If no painter is specified or the painter has no device, then a default
+     * DPI of 88 will be assumed.
+     * @note added in QGIS 3.0
+     */
+    static QgsRenderContext fromQPainter( QPainter* painter );
+
     //getters
 
     QPainter* painter();
-    const QPainter* constPainter() const;
 
-    const QgsCoordinateTransform* coordinateTransform() const;
+    /** Returns the current coordinate transform for the context, or an invalid
+     * transform is no coordinate transformation is required.
+     */
+    QgsCoordinateTransform coordinateTransform() const;
 
     const QgsRectangle& extent() const;
 
     const QgsMapToPixel& mapToPixel() const;
 
     double scaleFactor() const;
-
-    double rasterScaleFactor() const;
 
     bool renderingStopped() const;
 
@@ -80,11 +90,9 @@ class QgsRenderContext
 
     double rendererScale() const;
 
-    QgsLabelingEngineInterface* labelingEngine();
-
     //! Get access to new labeling engine (may be nullptr)
     //! @note not available in Python bindings
-    // QgsLabelingEngineV2* labelingEngineV2() const { return mLabelingEngine2; }
+    // QgsLabelingEngine* labelingEngine() const;
 
     QColor selectionColor() const;
 
@@ -98,8 +106,9 @@ class QgsRenderContext
 
     //setters
 
-    /** Sets coordinate transformation. QgsRenderContext does not take ownership*/
-    void setCoordinateTransform( const QgsCoordinateTransform* t );
+    /** Sets coordinate transformation.*/
+    void setCoordinateTransform( const QgsCoordinateTransform& t );
+
     void setMapToPixel( const QgsMapToPixel& mtp );
     void setExtent( const QgsRectangle& extent );
 
@@ -107,16 +116,14 @@ class QgsRenderContext
 
     void setRenderingStopped( bool stopped );
     void setScaleFactor( double factor );
-    void setRasterScaleFactor( double factor );
     void setRendererScale( double scale );
     void setPainter( QPainter* p );
 
     void setForceVectorOutput( bool force );
 
-    void setLabelingEngine( QgsLabelingEngineInterface* iface );
     //! Assign new labeling engine
     //! @note not available in Python bindings
-    // void setLabelingEngineV2( QgsLabelingEngineV2* engine2 ) { mLabelingEngine2 = engine2; }
+    // void setLabelingEngine( QgsLabelingEngine* engine2 );
     void setSelectionColor( const QColor& color );
 
     /** Sets whether vector selections should be shown in the rendered map
@@ -160,9 +167,9 @@ class QgsRenderContext
     //const QgsExpressionContext& expressionContext() const;
 
     /** Returns pointer to the unsegmentized geometry*/
-    const QgsAbstractGeometryV2* geometry() const;
+    const QgsAbstractGeometry* geometry() const;
     /** Sets pointer to original (unsegmentized) geometry*/
-    void setGeometry( const QgsAbstractGeometryV2* geometry );
+    void setGeometry( const QgsAbstractGeometry* geometry );
 
     /** Set a filter feature provider used for additional filtering of rendered features.
      * @param ffp the filter feature provider
@@ -177,4 +184,21 @@ class QgsRenderContext
      * @see setFeatureFilterProvider()
      */
     const QgsFeatureFilterProvider* featureFilterProvider() const;
+
+    /** Sets the segmentation tolerance applied when rendering curved geometries
+    @param tolerance the segmentation tolerance*/
+    void setSegmentationTolerance( double tolerance );
+    /** Gets the segmentation tolerance applied when rendering curved geometries*/
+    double segmentationTolerance() const;
+
+    /** Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
+    @param type the segmentation tolerance typename*/
+    void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type );
+    /** Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)*/
+    QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const;
+
+    double convertToPainterUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale = QgsMapUnitScale() ) const;
+    double convertToMapUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale = QgsMapUnitScale() ) const;
+    double convertFromMapUnits( double sizeInMapUnits, QgsUnitTypes::RenderUnit outputUnit ) const;
+
 };

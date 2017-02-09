@@ -15,7 +15,7 @@
 
 #include "qgscolorwidgets.h"
 #include "qgsapplication.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include <QResizeEvent>
 #include <QStyleOptionFrameV3>
 #include <QPainter>
@@ -42,11 +42,6 @@ QgsColorWidget::QgsColorWidget( QWidget* parent, const ColorComponent component 
     , mExplicitHue( 0 )
 {
   setAcceptDrops( true );
-}
-
-QgsColorWidget::~QgsColorWidget()
-{
-
 }
 
 int QgsColorWidget::componentValue() const
@@ -177,19 +172,19 @@ void QgsColorWidget::alterColor( QColor& color, const QgsColorWidget::ColorCompo
 
 const QPixmap &QgsColorWidget::transparentBackground()
 {
-  static QPixmap transpBkgrd;
+  static QPixmap sTranspBkgrd;
 
-  if ( transpBkgrd.isNull() )
-    transpBkgrd = QgsApplication::getThemePixmap( "/transp-background_8x8.png" );
+  if ( sTranspBkgrd.isNull() )
+    sTranspBkgrd = QgsApplication::getThemePixmap( QStringLiteral( "/transp-background_8x8.png" ) );
 
-  return transpBkgrd;
+  return sTranspBkgrd;
 }
 
 void QgsColorWidget::dragEnterEvent( QDragEnterEvent *e )
 {
   //is dragged data valid color data?
   bool hasAlpha;
-  QColor mimeColor = QgsSymbolLayerV2Utils::colorFromMimeData( e->mimeData(), hasAlpha );
+  QColor mimeColor = QgsSymbolLayerUtils::colorFromMimeData( e->mimeData(), hasAlpha );
 
   if ( mimeColor.isValid() )
   {
@@ -202,7 +197,7 @@ void QgsColorWidget::dropEvent( QDropEvent *e )
 {
   //is dropped data valid color data?
   bool hasAlpha = false;
-  QColor mimeColor = QgsSymbolLayerV2Utils::colorFromMimeData( e->mimeData(), hasAlpha );
+  QColor mimeColor = QgsSymbolLayerUtils::colorFromMimeData( e->mimeData(), hasAlpha );
 
   if ( mimeColor.isValid() )
   {
@@ -409,7 +404,7 @@ void QgsColorWheel::paintEvent( QPaintEvent *event )
   QPainter painter( this );
 
   //draw a frame
-  QStyleOptionFrameV3 option = QStyleOptionFrameV3();
+  QStyleOptionFrame option = QStyleOptionFrame();
   option.initFrom( this );
   option.state = this->hasFocus() ? QStyle::State_Active : QStyle::State_None;
   style()->drawPrimitive( QStyle::PE_Frame, &option, &painter );
@@ -774,7 +769,7 @@ void QgsColorBox::paintEvent( QPaintEvent *event )
   Q_UNUSED( event );
   QPainter painter( this );
 
-  QStyleOptionFrameV3 option;
+  QStyleOptionFrame option;
   option.initFrom( this );
   option.state = hasFocus() ? QStyle::State_Active :  QStyle::State_None;
   style()->drawPrimitive( QStyle::PE_Frame, &option, &painter );
@@ -993,11 +988,6 @@ QgsColorRampWidget::QgsColorRampWidget( QWidget *parent,
   setMarkerSize( 5 );
 }
 
-QgsColorRampWidget::~QgsColorRampWidget()
-{
-
-}
-
 QSize QgsColorRampWidget::sizeHint() const
 {
   if ( mOrientation == QgsColorRampWidget::Horizontal )
@@ -1020,7 +1010,7 @@ void QgsColorRampWidget::paintEvent( QPaintEvent *event )
   if ( mShowFrame )
   {
     //draw frame
-    QStyleOptionFrameV3 option;
+    QStyleOptionFrame option;
     option.initFrom( this );
     option.state = hasFocus() ? QStyle::State_KeyboardFocusChange : QStyle::State_None;
     style()->drawPrimitive( QStyle::PE_Frame, &option, &painter );
@@ -1073,7 +1063,7 @@ void QgsColorRampWidget::paintEvent( QPaintEvent *event )
       }
     }
   }
-  else if ( mComponent == QgsColorWidget::Alpha )
+  else
   {
     //alpha ramps are drawn differently
     //start with the checkboard pattern
@@ -1178,6 +1168,27 @@ void QgsColorRampWidget::mouseMoveEvent( QMouseEvent *event )
   QgsColorWidget::mouseMoveEvent( event );
 }
 
+void QgsColorRampWidget::wheelEvent( QWheelEvent *event )
+{
+  int oldValue = componentValue();
+
+  if ( event->delta() > 0 )
+  {
+    setComponentValue( componentValue() + 1 );
+  }
+  else
+  {
+    setComponentValue( componentValue() - 1 );
+  }
+
+  if ( componentValue() != oldValue )
+  {
+    //value has changed
+    emit colorChanged( mCurrentColor );
+    emit valueChanged( componentValue() );
+  }
+}
+
 void QgsColorRampWidget::mousePressEvent( QMouseEvent *event )
 {
   setColorFromPoint( event->posF() );
@@ -1273,7 +1284,7 @@ QgsColorSliderWidget::QgsColorSliderWidget( QWidget *parent, const ColorComponen
 
   mSpinBox = new QSpinBox();
   //set spinbox to a reasonable width
-  int largestCharWidth = mSpinBox->fontMetrics().width( "888%" );
+  int largestCharWidth = mSpinBox->fontMetrics().width( QStringLiteral( "888%" ) );
   mSpinBox->setMinimumWidth( largestCharWidth + 35 );
   mSpinBox->setMinimum( 0 );
   mSpinBox->setMaximum( convertRealToDisplay( componentRange() ) );
@@ -1293,10 +1304,6 @@ QgsColorSliderWidget::QgsColorSliderWidget( QWidget *parent, const ColorComponen
   connect( mRampWidget, SIGNAL( valueChanged( int ) ), this, SLOT( rampChanged( int ) ) );
   connect( mRampWidget, SIGNAL( colorChanged( const QColor ) ), this, SLOT( rampColorChanged( const QColor ) ) );
   connect( mSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( spinChanged( int ) ) );
-}
-
-QgsColorSliderWidget::~QgsColorSliderWidget()
-{
 }
 
 void QgsColorSliderWidget::setComponent( const QgsColorWidget::ColorComponent component )
@@ -1405,15 +1412,15 @@ QgsColorTextWidget::QgsColorTextWidget( QWidget *parent )
   hLayout->addWidget( mLineEdit );
 
   mMenuButton = new QToolButton( mLineEdit );
-  mMenuButton->setIcon( QgsApplication::getThemeIcon( "/mIconDropDownMenu.svg" ) );
+  mMenuButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconDropDownMenu.svg" ) ) );
   mMenuButton->setCursor( Qt::ArrowCursor );
   mMenuButton->setFocusPolicy( Qt::NoFocus );
-  mMenuButton->setStyleSheet( "QToolButton { border: none; padding: 0px; }" );
+  mMenuButton->setStyleSheet( QStringLiteral( "QToolButton { border: none; padding: 0px; }" ) );
 
   setLayout( hLayout );
 
   int frameWidth = mLineEdit->style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
-  mLineEdit->setStyleSheet( QString( "QLineEdit { padding-right: %1px; } " )
+  mLineEdit->setStyleSheet( QStringLiteral( "QLineEdit { padding-right: %1px; } " )
                             .arg( mMenuButton->sizeHint().width() + frameWidth + 1 ) );
 
   connect( mLineEdit, SIGNAL( editingFinished() ), this, SLOT( textChanged() ) );
@@ -1421,14 +1428,9 @@ QgsColorTextWidget::QgsColorTextWidget( QWidget *parent )
 
   //restore format setting
   QSettings settings;
-  mFormat = ( ColorTextFormat )settings.value( "/ColorWidgets/textWidgetFormat", 0 ).toInt();
+  mFormat = ( ColorTextFormat )settings.value( QStringLiteral( "/ColorWidgets/textWidgetFormat" ), 0 ).toInt();
 
   updateText();
-}
-
-QgsColorTextWidget::~QgsColorTextWidget()
-{
-
 }
 
 void QgsColorTextWidget::setColor( const QColor &color, const bool emitSignals )
@@ -1454,7 +1456,7 @@ void QgsColorTextWidget::updateText()
       mLineEdit->setText( mCurrentColor.name() );
       break;
     case HexRgbA:
-      mLineEdit->setText( mCurrentColor.name() + QString( "%1" ).arg( mCurrentColor.alpha(), 2, 16, QChar( '0' ) ) );
+      mLineEdit->setText( mCurrentColor.name() + QStringLiteral( "%1" ).arg( mCurrentColor.alpha(), 2, 16, QChar( '0' ) ) );
       break;
     case Rgb:
       mLineEdit->setText( QString( tr( "rgb( %1, %2, %3 )" ) ).arg( mCurrentColor.red() ).arg( mCurrentColor.green() ).arg( mCurrentColor.blue() ) );
@@ -1469,7 +1471,7 @@ void QgsColorTextWidget::textChanged()
 {
   QString testString = mLineEdit->text();
   bool containsAlpha;
-  QColor color = QgsSymbolLayerV2Utils::parseColorWithAlpha( testString, containsAlpha );
+  QColor color = QgsSymbolLayerUtils::parseColorWithAlpha( testString, containsAlpha );
   if ( !color.isValid() )
   {
     //bad color string
@@ -1525,7 +1527,7 @@ void QgsColorTextWidget::showMenu()
 
   //save format setting
   QSettings settings;
-  settings.setValue( "/ColorWidgets/textWidgetFormat", ( int )mFormat );
+  settings.setValue( QStringLiteral( "/ColorWidgets/textWidgetFormat" ), ( int )mFormat );
 
   updateText();
 }
@@ -1538,11 +1540,6 @@ void QgsColorTextWidget::showMenu()
 QgsColorPreviewWidget::QgsColorPreviewWidget( QWidget *parent )
     : QgsColorWidget( parent )
     , mColor2( QColor() )
-{
-
-}
-
-QgsColorPreviewWidget::~QgsColorPreviewWidget()
 {
 
 }
@@ -1680,7 +1677,7 @@ void QgsColorPreviewWidget::mouseMoveEvent( QMouseEvent *e )
   }
 
   QDrag *drag = new QDrag( this );
-  drag->setMimeData( QgsSymbolLayerV2Utils::colorToMimeData( dragColor ) );
+  drag->setMimeData( QgsSymbolLayerUtils::colorToMimeData( dragColor ) );
   drag->setPixmap( createDragIcon( dragColor ) );
   drag->exec( Qt::CopyAction );
 }
@@ -1702,11 +1699,6 @@ QgsColorWidgetAction::QgsColorWidgetAction( QgsColorWidget* colorWidget, QMenu* 
 
   connect( this, SIGNAL( hovered() ), this, SLOT( onHover() ) );
   connect( mColorWidget, SIGNAL( hovered() ), this, SLOT( onHover() ) );
-}
-
-QgsColorWidgetAction::~QgsColorWidgetAction()
-{
-
 }
 
 void QgsColorWidgetAction::onHover()

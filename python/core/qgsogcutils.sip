@@ -13,11 +13,11 @@ class QgsOgcUtils
        in default namespace (\verbatim {<Point>...</Point> \endverbatim) or in
        "gml" namespace (\verbatim <gml:Point>...</gml:Point> \endverbatim)
      */
-    static QgsGeometry* geometryFromGML( const QString& xmlString ) /Factory/;
+    static QgsGeometry geometryFromGML( const QString& xmlString );
 
     /** Static method that creates geometry from GML
       */
-    static QgsGeometry* geometryFromGML( const QDomNode& geometryNode ) /Factory/;
+    static QgsGeometry geometryFromGML( const QDomNode& geometryNode );
 
     /** Read rectangle from GML2 Box */
     static QgsRectangle rectangleFromGMLBox( const QDomNode& boxNode );
@@ -58,6 +58,12 @@ class QgsOgcUtils
      * otherwise null QDomElement
      */
     static QDomElement expressionToOgcFilter( const QgsExpression& exp, QDomDocument& doc, QString* errorMessage /Out/ );
+
+    /** Creates an OGC expression XML element.
+     * @return valid OGC expression QDomElement on success,
+     * otherwise null QDomElement
+     */
+    static QDomElement expressionToOgcExpression( const QgsExpression& exp, QDomDocument& doc, QString* errorMessage = nullptr );
 
 };
 

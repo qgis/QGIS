@@ -30,6 +30,23 @@ class QgsMapTool : QObject
 
   public:
 
+    //! Enumeration of flags that adjust the way the map tool operates
+    //! @note added in QGIS 2.16
+    enum Flag
+    {
+      Transient, /*!< Indicates that this map tool performs a transient (one-off) operation.
+                               If it does, the tool can be operated once and then a previous map
+                               tool automatically restored. */
+      EditTool, /*!< Map tool is an edit tool, which can only be used when layer is editable*/
+      AllowZoomRect, /*!< Allow zooming by rectangle (by holding shift and dragging) while the tool is active*/
+    };
+    typedef QFlags<QgsMapTool::Flag> Flags;
+
+    /** Returns the flags for the map tool.
+     * @note added in QGIS 2.16
+     */
+    virtual Flags flags() const;
+
     //! virtual destructor
     virtual ~QgsMapTool();
 
@@ -59,11 +76,6 @@ class QgsMapTool : QObject
     virtual bool gestureEvent( QGestureEvent* e );
 %End
 
-    //! Called when rendering has finished. Default implementation does nothing.
-    //! @deprecated since 2.4 - not called anymore - map tools must not directly depend on rendering progress
-    virtual void renderComplete() /Deprecated/;
-
-
     /** Use this to associate a QAction to this maptool. Then when the setMapTool
      * method of mapcanvas is called the action state will be set to on.
      * Usually this will cause e.g. a toolbutton to appear pressed in and
@@ -83,16 +95,6 @@ class QgsMapTool : QObject
     /** Set a user defined cursor */
     virtual void setCursor( const QCursor& cursor );
 
-    /** Check whether this MapTool performs a zoom or pan operation.
-     * If it does, we will be able to perform the zoom  and then
-     * resume operations with the original / previously used tool.*/
-    virtual bool isTransient();
-
-    /** Check whether this MapTool performs an edit operation.
-     * If it does, we will deactivate it when editing is turned off
-     */
-    virtual bool isEditTool();
-
     //! called when set as currently active map tool
     virtual void activate();
 
@@ -108,7 +110,7 @@ class QgsMapTool : QObject
 
     /** Get search radius in mm. Used by identify, tip etc.
      *  The values is currently set in identify tool options (move somewhere else?)
-     *  and defaults to QGis::DEFAULT_SEARCH_RADIUS_MM.
+     *  and defaults to Qgis::DEFAULT_SEARCH_RADIUS_MM.
      *  @note added in 2.3 */
     static double searchRadiusMM();
 
@@ -164,3 +166,6 @@ class QgsMapTool : QObject
 
 
 };
+
+
+QFlags<QgsMapTool::Flag> operator|(QgsMapTool::Flag f1, QFlags<QgsMapTool::Flag> f2);

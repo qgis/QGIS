@@ -17,12 +17,12 @@
 #define QGSEDITORCONFIGWIDGET_H
 
 #include <QWidget>
+#include "qgis_gui.h"
 
-#include "qgseditorwidgetwrapper.h"
 
 class QgsVectorLayer;
 
-/**
+/** \ingroup gui
  * This class should be subclassed for every configurable editor widget type.
  *
  * It implements the GUI configuration widget and transforms this to/from a configuration.
@@ -34,6 +34,7 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget
 {
     Q_OBJECT
   public:
+
     /**
      * Create a new configuration widget
      *
@@ -48,14 +49,14 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget
      *
      * @return A widget configuration
      */
-    virtual QgsEditorWidgetConfig config() = 0;
+    virtual QVariantMap config() = 0;
 
     /**
      * @brief Update the configuration widget to represent the given configuration.
      *
      * @param config The configuration which should be represented by this widget
      */
-    virtual void setConfig( const QgsEditorWidgetConfig& config ) = 0;
+    virtual void setConfig( const QVariantMap& config ) = 0;
 
     /**
      * Returns the field for which this configuration widget applies
@@ -71,10 +72,12 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget
      */
     QgsVectorLayer* layer();
 
-    /**
-     * Destructor
+  signals:
+
+    /** Emitted when the configuration of the widget is changed.
+     * @note added in QGIS 3.0
      */
-    virtual ~QgsEditorConfigWidget() {}
+    void changed();
 
   private:
     QgsVectorLayer* mLayer;

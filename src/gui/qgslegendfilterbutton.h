@@ -16,11 +16,12 @@
 #define QGS_LEGEND_FILTER_BUTTON_H
 
 #include <QToolButton>
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 
 /** \ingroup gui
- * \class QgsFilterLegendButton
+ * \class QgsLegendFilterButton
  * A tool button that allows enabling or disabling legend filter by contents of the map.
  * An additional pop down menu allows defining a boolean expression to refine the filtering.
  * @note added in 2.14
@@ -31,13 +32,13 @@ class GUI_EXPORT QgsLegendFilterButton: public QToolButton
     Q_OBJECT
 
   public:
+
     /**
      * Construct a new filter legend button
      *
      * @param parent The parent QWidget
      */
     QgsLegendFilterButton( QWidget* parent = nullptr );
-    ~QgsLegendFilterButton();
 
     /**
      * Returns the current text used as filter expression
@@ -55,6 +56,7 @@ class GUI_EXPORT QgsLegendFilterButton: public QToolButton
      * May be null
      */
     QgsVectorLayer* vectorLayer() const;
+
     /**
      * Sets the associated vectorLayer
      * May be null
@@ -62,6 +64,7 @@ class GUI_EXPORT QgsLegendFilterButton: public QToolButton
     void setVectorLayer( QgsVectorLayer* layer );
 
   signals:
+
     /**
      * Emitted when the expression text changes
      */

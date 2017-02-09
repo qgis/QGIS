@@ -97,12 +97,12 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
     checkSelection();
 
     // set up utility actions menu
-    mActionSetMasterPassword = new QAction( "Input master password", this );
-    mActionClearCachedMasterPassword = new QAction( "Clear cached master password", this );
-    mActionResetMasterPassword = new QAction( "Reset master password", this );
-    mActionClearCachedAuthConfigs = new QAction( "Clear cached authentication configurations", this );
-    mActionRemoveAuthConfigs = new QAction( "Remove all authentication configurations", this );
-    mActionEraseAuthDatabase = new QAction( "Erase authentication database", this );
+    mActionSetMasterPassword = new QAction( QStringLiteral( "Input master password" ), this );
+    mActionClearCachedMasterPassword = new QAction( QStringLiteral( "Clear cached master password" ), this );
+    mActionResetMasterPassword = new QAction( QStringLiteral( "Reset master password" ), this );
+    mActionClearCachedAuthConfigs = new QAction( QStringLiteral( "Clear cached authentication configurations" ), this );
+    mActionRemoveAuthConfigs = new QAction( QStringLiteral( "Remove all authentication configurations" ), this );
+    mActionEraseAuthDatabase = new QAction( QStringLiteral( "Erase authentication database" ), this );
 
     connect( mActionSetMasterPassword, SIGNAL( triggered() ), this, SLOT( setMasterPassword() ) );
     connect( mActionClearCachedMasterPassword, SIGNAL( triggered() ), this, SLOT( clearCachedMasterPassword() ) );
@@ -124,10 +124,6 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
     btnAuthUtilities->setMenu( mAuthUtilitiesMenu );
     lblAuthConfigDb->setVisible( false );
   }
-}
-
-QgsAuthConfigEditor::~QgsAuthConfigEditor()
-{
 }
 
 void QgsAuthConfigEditor::setMasterPassword()
@@ -287,7 +283,7 @@ QgsMessageBar * QgsAuthConfigEditor::messageBar()
 int QgsAuthConfigEditor::messageTimeout()
 {
   QSettings settings;
-  return settings.value( "/qgis/messageTimeout", 5 ).toInt();
+  return settings.value( QStringLiteral( "/qgis/messageTimeout" ), 5 ).toInt();
 }
 
 QString QgsAuthConfigEditor::selectedConfigId()

@@ -15,7 +15,6 @@ class QgsMapCanvasItem : QGraphicsItem
     //! function to be implemented by derived classes
     virtual void paint( QPainter * painter ) = 0;
 
-    //! paint function called by map canvas
     virtual void paint( QPainter * painter,
                         const QStyleOptionGraphicsItem * option,
                         QWidget * widget = 0 );
@@ -34,12 +33,7 @@ class QgsMapCanvasItem : QGraphicsItem
     //! called on changed extent or resize event to update position of the item
     virtual void updatePosition();
 
-    //! default implementation for canvas items
     virtual QRectF boundingRect() const;
-
-    //! sets current offset, to be called from QgsMapCanvas
-    //! @deprecated since v2.4 - not called by QgsMapCanvas anymore
-    void setPanningOffset( QPoint point ) /Deprecated/;
 
     //! returns canvas item rectangle in map units
     QgsRectangle rect() const;

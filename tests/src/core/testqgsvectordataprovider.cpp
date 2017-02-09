@@ -12,13 +12,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 
 #include <qgsapplication.h>
 #include <qgsgeometry.h>
 #include <qgsfeaturerequest.h>
+#include "qgsfeatureiterator.h"
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
 
@@ -63,16 +64,16 @@ void TestQgsVectorDataProvider::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  QString layerPointsUrl = QString( TEST_DATA_DIR ) + "/points.shp";
-  QString layerLinesUrl = QString( TEST_DATA_DIR ) + "/lines.shp";
+  QString layerPointsUrl = QStringLiteral( TEST_DATA_DIR ) + "/points.shp";
+  QString layerLinesUrl = QStringLiteral( TEST_DATA_DIR ) + "/lines.shp";
 
   // load layers
 
-  vlayerPoints = new QgsVectorLayer( layerPointsUrl, "testlayer", "ogr" );
+  vlayerPoints = new QgsVectorLayer( layerPointsUrl, QStringLiteral( "testlayer" ), QStringLiteral( "ogr" ) );
   QVERIFY( vlayerPoints );
   QVERIFY( vlayerPoints->isValid() );
 
-  vlayerLines = new QgsVectorLayer( layerLinesUrl, "testlayer", "ogr" );
+  vlayerLines = new QgsVectorLayer( layerLinesUrl, QStringLiteral( "testlayer" ), QStringLiteral( "ogr" ) );
   QVERIFY( vlayerLines );
   QVERIFY( vlayerLines->isValid() );
 }
@@ -114,14 +115,14 @@ static void checkFid4( QgsFeature& f, bool hasGeometry, bool hasAttrs, int onlyO
 
   if ( hasGeometry )
   {
-    QVERIFY( f.constGeometry() );
-    QVERIFY( f.constGeometry()->wkbType() == QGis::WKBPoint );
-    QCOMPARE( keep6digits( f.constGeometry()->asPoint().x() ), -88.302277 );
-    QCOMPARE( keep6digits( f.constGeometry()->asPoint().y() ),  33.731884 );
+    QVERIFY( f.hasGeometry() );
+    QVERIFY( f.geometry().wkbType() == QgsWkbTypes::Point );
+    QCOMPARE( keep6digits( f.geometry().asPoint().x() ), -88.302277 );
+    QCOMPARE( keep6digits( f.geometry().asPoint().y() ),  33.731884 );
   }
   else
   {
-    QVERIFY( !f.constGeometry() );
+    QVERIFY( !f.hasGeometry() );
   }
 }
 
@@ -227,6 +228,6 @@ void TestQgsVectorDataProvider::featureAtId()
 }
 
 
-QTEST_MAIN( TestQgsVectorDataProvider )
+QGSTEST_MAIN( TestQgsVectorDataProvider )
 
 #include "testqgsvectordataprovider.moc"

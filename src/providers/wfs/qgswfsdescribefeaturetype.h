@@ -17,14 +17,14 @@
 
 #include "qgswfsrequest.h"
 
-/** Manages the DescribeFeatureType request */
-class QgsWFSDescribeFeatureType : public QgsWFSRequest
+//! Manages the DescribeFeatureType request
+class QgsWFSDescribeFeatureType : public QgsWfsRequest
 {
     Q_OBJECT
   public:
     explicit QgsWFSDescribeFeatureType( const QString& theUri );
 
-    /** Issue the request */
+    //! Issue the request
     bool requestFeatureType( const QString& WFSVersion, const QString& typeName );
 
   protected:

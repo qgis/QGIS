@@ -32,7 +32,7 @@ class QgsRelation
      *
      * @return A relation
      */
-    static QgsRelation createFromXML( const QDomNode& node );
+    static QgsRelation createFromXml( const QDomNode& node );
 
     /**
      * Writes a relation to an XML structure. Used for saving .qgs projects
@@ -40,10 +40,10 @@ class QgsRelation
      * @param node The parent node in which the relation will be created
      * @param doc  The document in which the relation will be saved
      */
-    void writeXML( QDomNode& node, QDomDocument& doc ) const;
+    void writeXml( QDomNode& node, QDomDocument& doc ) const;
 
     /**
-     * Set a name for this relation
+     * Set an id for this relation
      *
      * @param id
      */
@@ -57,14 +57,14 @@ class QgsRelation
     void setRelationName( const QString& name );
 
     /**
-     * Set the referencing layer id. This layer will be searched in the registry.
+     * Set the referencing (child) layer id. This layer will be searched in the registry.
      *
      * @param id
      */
     void setReferencingLayer( const QString& id );
 
     /**
-     * Set the referenced layer id. This layer will be searched in the registry.
+     * Set the referenced (parent) layer id. This layer will be searched in the registry.
      *
      * @param id
      */
@@ -72,17 +72,17 @@ class QgsRelation
 
     /**
      * Add a field pairs which is part of this relation
-     * The first element of each pair are the field names fo the foreign key.
+     * The first element of each pair are the field names of the foreign key.
      * The second element of each pair are the field names of the matching primary key.
      *
-     * @param referencingField  The field name on the referencing layer (FK)
-     * @param referencedField   The field name on the referenced layer  (PK)
+     * @param referencingField  The field name on the referencing (child) layer (FK)
+     * @param referencedField   The field name on the referenced (parent) layer  (PK)
      */
     void addFieldPair( const QString& referencingField, const QString& referencedField );
 
     /**
      * Add a field pairs which is part of this relation
-     * The first element of each pair are the field names fo the foreign key.
+     * The first element of each pair are the field names of the foreign key.
      * The second element of each pair are the field names of the matching primary key.
      *
      * @param fieldPair A pair of two strings
@@ -97,6 +97,8 @@ class QgsRelation
      * @param feature A feature from the referenced (parent) layer
      *
      * @return An iterator with all the referenced features
+     * @see getRelatedFeaturesRequest()
+     * @see getRelatedFeaturesFilter()
      */
     QgsFeatureIterator getRelatedFeatures( const QgsFeature& feature ) const;
 
@@ -107,8 +109,20 @@ class QgsRelation
      * @param feature A feature from the referenced (parent) layer
      *
      * @return A request for all the referencing features
+     * @see getRelatedFeatures()
+     * @see getRelatedFeaturesFilter()
      */
     QgsFeatureRequest getRelatedFeaturesRequest( const QgsFeature& feature ) const;
+
+    /** Returns a filter expression which returns all the features on the referencing (child) layer
+     * which have a foreign key pointing to the provided feature.
+     * @param feature A feature from the referenced (parent) layer
+     * @return expression filter string for all the referencing features
+     * @note added in QGIS 2.16
+     * @see getRelatedFeatures()
+     * @see getRelatedFeaturesRequest()
+     */
+    QString getRelatedFeaturesFilter( const QgsFeature& feature ) const;
 
     /**
      * Creates a request to return the feature on the referenced (parent) layer
@@ -156,6 +170,12 @@ class QgsRelation
      * @return The id
      */
     QString id() const;
+
+    /**
+     * Generate a (project-wide) unique id for this relation
+     * @note added in QGIS 3.0
+     */
+    void generateId();
 
     /**
      * Access the referencing (child) layer's id
@@ -206,7 +226,7 @@ class QgsRelation
 
     /**
      * Returns a list of attributes used to form the referenced fields
-     * (most likely primary key) on the referenced layer.
+     * (most likely primary key) on the referenced (parent) layer.
      *
      * @return A list of attributes
      */
@@ -214,7 +234,7 @@ class QgsRelation
 
     /**
      * Returns a list of attributes used to form the referencing fields
-     * (foreign key) on the referencing layer.
+     * (foreign key) on the referencing (child) layer.
      *
      * @return A list of attributes
      */
@@ -226,6 +246,15 @@ class QgsRelation
      * @return true if the relation is valid
      */
     bool isValid() const;
+
+    /**
+     * Compares the two QgsRelation, ignoring the name and the ID.
+     *
+     * @param other The other relation
+     * @return true if they are similar
+     * @note added in QGIS 3.0
+     */
+    bool hasEqualDefinition( const QgsRelation& other ) const;
 
   protected:
     /**

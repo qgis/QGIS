@@ -25,8 +25,7 @@ __copyright__ = '(C) 2015, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsMapLayerRegistry
-from PyQt.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QPlainTextEdit, QLineEdit, QComboBox, QCheckBox
+from qgis.PyQt.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QPlainTextEdit, QLineEdit, QComboBox, QCheckBox
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.ParametersPanel import ParametersPanel
@@ -41,8 +40,7 @@ class GdalAlgorithmDialog(AlgorithmDialog):
 
         self.alg = alg
 
-        self.mainWidget = GdalParametersPanel(self, alg)
-        self.setMainWidget()
+        self.setMainWidget(GdalParametersPanel(self, alg))
 
         cornerWidget = QWidget()
         layout = QVBoxLayout()
@@ -55,9 +53,6 @@ class GdalAlgorithmDialog(AlgorithmDialog):
         self.tabWidget.setCornerWidget(cornerWidget)
 
         self.mainWidget.parametersHaveChanged()
-
-        QgsMapLayerRegistry.instance().layerWasAdded.connect(self.mainWidget.layerAdded)
-        QgsMapLayerRegistry.instance().layersWillBeRemoved.connect(self.mainWidget.layersWillBeRemoved)
 
 
 class GdalParametersPanel(ParametersPanel):
@@ -82,7 +77,8 @@ class GdalParametersPanel(ParametersPanel):
         self.parametersHaveChanged()
 
     def connectParameterSignals(self):
-        for w in self.widgets.values():
+        for wrapper in list(self.wrappers.values()):
+            w = wrapper.widget
             if isinstance(w, QLineEdit):
                 w.textChanged.connect(self.parametersHaveChanged)
             elif isinstance(w, QComboBox):

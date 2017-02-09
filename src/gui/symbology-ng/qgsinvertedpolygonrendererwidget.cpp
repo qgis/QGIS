@@ -14,31 +14,30 @@
  ***************************************************************************/
 #include "qgsinvertedpolygonrendererwidget.h"
 #include "qgsinvertedpolygonrenderer.h"
-#include "qgsrendererv2registry.h"
+#include "qgsrendererregistry.h"
 
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 
-QgsRendererV2Widget* QgsInvertedPolygonRendererWidget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
+QgsRendererWidget* QgsInvertedPolygonRendererWidget::create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
 {
   return new QgsInvertedPolygonRendererWidget( layer, style, renderer );
 }
 
-QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
-    : QgsRendererV2Widget( layer, style )
+QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
+    : QgsRendererWidget( layer, style )
 {
   if ( !layer )
   {
     return;
   }
 
+  QgsWkbTypes::Type type = QgsWkbTypes::singleType( QgsWkbTypes::flatType( layer->wkbType() ) );
+
   // the renderer only applies to polygon vector layers
-  if ( layer->wkbType() != QGis::WKBPolygon &&
-       layer->wkbType() != QGis::WKBPolygon25D &&
-       layer->wkbType() != QGis::WKBMultiPolygon &&
-       layer->wkbType() != QGis::WKBMultiPolygon25D )
+  if ( type != QgsWkbTypes::Polygon && type != QgsWkbTypes::CurvePolygon )
   {
     //setup blank dialog
     mRenderer.reset( nullptr );
@@ -46,6 +45,7 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
     QLabel* label = new QLabel( tr( "The inverted polygon renderer only applies to polygon and multipolygon layers. \n"
                                     "'%1' is not a polygon layer and then cannot be displayed" )
                                 .arg( layer->name() ), this );
+    this->setLayout( layout );
     layout->addWidget( label );
     return;
   }
@@ -68,18 +68,17 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
 
   int currentEmbeddedIdx = 0;
   //insert possible renderer types
-  QStringList rendererList = QgsRendererV2Registry::instance()->renderersList();
+  QStringList rendererList = QgsApplication::rendererRegistry()->renderersList( QgsRendererAbstractMetadata::PolygonLayer );
   QStringList::const_iterator it = rendererList.constBegin();
   int idx = 0;
   mRendererComboBox->blockSignals( true );
   for ( ; it != rendererList.constEnd(); ++it, ++idx )
   {
-    if (( *it != "invertedPolygonRenderer" ) && //< an inverted renderer cannot contain another inverted renderer
-        ( *it != "pointDisplacement" ) )        //< an inverted renderer can only contain a polygon renderer
+    if ( *it != QLatin1String( "invertedPolygonRenderer" ) ) //< an inverted renderer cannot contain another inverted renderer
     {
-      QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( *it );
+      QgsRendererAbstractMetadata* m = QgsApplication::rendererRegistry()->rendererMetadata( *it );
       mRendererComboBox->addItem( m->icon(), m->visibleName(), /* data */ *it );
-      const QgsFeatureRendererV2* embeddedRenderer = mRenderer->embeddedRenderer();
+      const QgsFeatureRenderer* embeddedRenderer = mRenderer->embeddedRenderer();
       if ( embeddedRenderer && embeddedRenderer->type() == m->name() )
       {
         // store the combo box index of the current renderer
@@ -98,45 +97,47 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
   }
 }
 
-QgsFeatureRendererV2* QgsInvertedPolygonRendererWidget::renderer()
+QgsFeatureRenderer* QgsInvertedPolygonRendererWidget::renderer()
 {
   if ( mRenderer && mEmbeddedRendererWidget )
   {
-    QgsFeatureRendererV2* embeddedRenderer = mEmbeddedRendererWidget->renderer();
+    QgsFeatureRenderer* embeddedRenderer = mEmbeddedRendererWidget->renderer();
     if ( embeddedRenderer )
     {
       mRenderer->setEmbeddedRenderer( embeddedRenderer->clone() );
     }
   }
-  return mRenderer.data();
+  return mRenderer.get();
 }
 
-void QgsInvertedPolygonRendererWidget::setMapCanvas( QgsMapCanvas* canvas )
+void QgsInvertedPolygonRendererWidget::setContext( const QgsSymbolWidgetContext& context )
 {
-  QgsRendererV2Widget::setMapCanvas( canvas );
+  QgsRendererWidget::setContext( context );
   if ( mEmbeddedRendererWidget )
-    mEmbeddedRendererWidget->setMapCanvas( canvas );
+    mEmbeddedRendererWidget->setContext( context );
 }
 
 void QgsInvertedPolygonRendererWidget::on_mRendererComboBox_currentIndexChanged( int index )
 {
   QString rendererId = mRendererComboBox->itemData( index ).toString();
-  QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( rendererId );
+  QgsRendererAbstractMetadata* m = QgsApplication::rendererRegistry()->rendererMetadata( rendererId );
   if ( m )
   {
-    mEmbeddedRendererWidget.reset( m->createRendererWidget( mLayer, mStyle, const_cast<QgsFeatureRendererV2*>( mRenderer->embeddedRenderer() )->clone() ) );
-    mEmbeddedRendererWidget->setMapCanvas( mMapCanvas );
+    mEmbeddedRendererWidget.reset( m->createRendererWidget( mLayer, mStyle, const_cast<QgsFeatureRenderer*>( mRenderer->embeddedRenderer() )->clone() ) );
+    connect( mEmbeddedRendererWidget.get(), SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
+    mEmbeddedRendererWidget->setContext( mContext );
 
-    if ( mLayout->count() > 2 )
+    if ( layout()->count() > 2 )
     {
       // remove the current renderer widget
-      mLayout->takeAt( 2 );
+      layout()->takeAt( 2 );
     }
-    mLayout->addWidget( mEmbeddedRendererWidget.data() );
+    layout()->addWidget( mEmbeddedRendererWidget.get() );
   }
 }
 
 void QgsInvertedPolygonRendererWidget::on_mMergePolygonsCheckBox_stateChanged( int state )
 {
   mRenderer->setPreprocessingEnabled( state == Qt::Checked );
+  emit widgetChanged();
 }

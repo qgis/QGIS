@@ -20,6 +20,7 @@
 #include "qgscomposeritemwidget.h"
 #include "qgscomposition.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgisgui.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
@@ -28,13 +29,14 @@
 QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel* label ): QgsComposerItemBaseWidget( nullptr, label ), mComposerLabel( label )
 {
   setupUi( this );
+  setPanelTitle( tr( "Label properties" ) );
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, label );
   mainLayout->addWidget( itemPropertiesWidget );
 
   mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
-  mFontColorButton->setContext( "composer" );
+  mFontColorButton->setContext( QStringLiteral( "composer" ) );
 
   mMarginXDoubleSpinBox->setClearValue( 0.0 );
   mMarginYDoubleSpinBox->setClearValue( 0.0 );
@@ -123,7 +125,7 @@ void QgsComposerLabelWidget::on_mFontColorButton_colorChanged( const QColor &new
     return;
   }
 
-  mComposerLabel->beginCommand( tr( "Label color changed" ) );
+  mComposerLabel->beginCommand( tr( "Label color changed" ), QgsComposerMergeCommand::ComposerLabelFontColor );
   mComposerLabel->setFontColor( newLabelColor );
   mComposerLabel->update();
   mComposerLabel->endCommand();
@@ -139,13 +141,13 @@ void QgsComposerLabelWidget::on_mInsertExpressionButton_clicked()
   QString selText = mTextEdit->textCursor().selectedText();
 
   // edit the selected expression if there's one
-  if ( selText.startsWith( "[%" ) && selText.endsWith( "%]" ) )
+  if ( selText.startsWith( QLatin1String( "[%" ) ) && selText.endsWith( QLatin1String( "%]" ) ) )
     selText = selText.mid( 2, selText.size() - 4 );
 
   // use the atlas coverage layer, if any
   QgsVectorLayer* coverageLayer = atlasCoverageLayer();
-  QScopedPointer<QgsExpressionContext> context( mComposerLabel->createExpressionContext() );
-  QgsExpressionBuilderDialog exprDlg( coverageLayer, selText, this, "generic", *context );
+  QgsExpressionContext context = mComposerLabel->createExpressionContext();
+  QgsExpressionBuilderDialog exprDlg( coverageLayer, selText, this, QStringLiteral( "generic" ), context );
 
   exprDlg.setWindowTitle( tr( "Insert expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )

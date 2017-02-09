@@ -22,6 +22,8 @@
 #include <QMap>
 #include <QDomNode>
 
+#include "qgis_core.h"
+
 class QgsPluginLayer;
 
 /** \ingroup core
@@ -32,11 +34,11 @@ class CORE_EXPORT QgsPluginLayerType
   public:
 
     QgsPluginLayerType( const QString& name );
-    virtual ~QgsPluginLayerType();
+    virtual ~QgsPluginLayerType() = default;
 
     QString name();
 
-    /** Return new layer of this type. Return NULL on error */
+    //! Return new layer of this type. Return NULL on error
     virtual QgsPluginLayer* createLayer();
 
     /** Return new layer of this type, using layer URI (specific to this plugin layer type). Return NULL on error.
@@ -44,7 +46,7 @@ class CORE_EXPORT QgsPluginLayerType
      */
     virtual QgsPluginLayer* createLayer( const QString& uri );
 
-    /** Show plugin layer properties dialog. Return false if the dialog cannot be shown. */
+    //! Show plugin layer properties dialog. Return false if the dialog cannot be shown.
     virtual bool showLayerProperties( QgsPluginLayer* layer );
 
   protected:
@@ -54,28 +56,34 @@ class CORE_EXPORT QgsPluginLayerType
 //=============================================================================
 
 /** \ingroup core
-    a registry of plugin layers types
+ * A registry of plugin layers types.
+ *
+ * QgsPluginLayerRegistry is not usually directly created, but rather accessed through
+ * QgsApplication::pluginLayerRegistry().
 */
 class CORE_EXPORT QgsPluginLayerRegistry
 {
   public:
 
-    /** Means of accessing canonical single instance  */
-    static QgsPluginLayerRegistry* instance();
-
+    QgsPluginLayerRegistry();
     ~QgsPluginLayerRegistry();
+
+    //! QgsPluginLayerRegistry cannot be copied.
+    QgsPluginLayerRegistry( const QgsPluginLayerRegistry& rh ) = delete;
+    //! QgsPluginLayerRegistry cannot be copied.
+    QgsPluginLayerRegistry& operator=( const QgsPluginLayerRegistry& rh ) = delete;
 
     /** List all known layer types
      *  \note added in v2.1 */
     QStringList pluginLayerTypes();
 
-    /** Add plugin layer type (take ownership) and return true on success */
+    //! Add plugin layer type (take ownership) and return true on success
     bool addPluginLayerType( QgsPluginLayerType* pluginLayerType );
 
-    /** Remove plugin layer type and return true on success */
+    //! Remove plugin layer type and return true on success
     bool removePluginLayerType( const QString& typeName );
 
-    /** Return plugin layer type metadata or NULL if doesn't exist */
+    //! Return plugin layer type metadata or NULL if doesn't exist
     QgsPluginLayerType* pluginLayerType( const QString& typeName );
 
     /** Return new layer if corresponding plugin has been found, else return NULL.
@@ -86,14 +94,6 @@ class CORE_EXPORT QgsPluginLayerRegistry
   private:
 
     typedef QMap<QString, QgsPluginLayerType*> PluginLayerTypes;
-
-    /** Private since instance() creates it */
-    QgsPluginLayerRegistry();
-    QgsPluginLayerRegistry( const QgsPluginLayerRegistry& rh );
-    QgsPluginLayerRegistry& operator=( const QgsPluginLayerRegistry& rh );
-
-    /** Pointer to canonical Singleton object */
-    static QgsPluginLayerRegistry* _instance;
 
     PluginLayerTypes mPluginLayerTypes;
 };

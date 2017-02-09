@@ -16,6 +16,10 @@
 *                                                                         *
 ***************************************************************************
 """
+from __future__ import print_function
+from builtins import zip
+from builtins import map
+from builtins import str
 
 __author__ = 'Matthias Kuhn'
 __date__ = 'January 2016'
@@ -30,7 +34,7 @@ import sys
 import difflib
 import functools
 
-from PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import QgsApplication, QgsFeatureRequest, QgsVectorLayer
 from nose2.compat import unittest
 
@@ -73,16 +77,19 @@ class TestCase(_TestCase):
         except KeyError:
             precision = 14
 
-        for feats in zip(layer_expected.getFeatures(request), layer_result.getFeatures(request)):
-            if feats[0].geometry() is not None:
+        expected_features = sorted(layer_expected.getFeatures(request), key=lambda f: f.id())
+        result_features = sorted(layer_result.getFeatures(request), key=lambda f: f.id())
+
+        for feats in zip(expected_features, result_features):
+            if feats[0].hasGeometry():
                 geom0 = feats[0].geometry().geometry().asWkt(precision)
             else:
                 geom0 = None
-            if feats[1].geometry() is not None:
+            if feats[1].hasGeometry():
                 geom1 = feats[1].geometry().geometry().asWkt(precision)
             else:
                 geom1 = None
-            _TestCase.assertEquals(
+            _TestCase.assertEqual(
                 self,
                 geom0,
                 geom1,
@@ -95,10 +102,8 @@ class TestCase(_TestCase):
             )
 
             for attr_expected, field_expected in zip(feats[0].attributes(), layer_expected.fields().toList()):
-                attr_result = feats[1][field_expected.name()]
-                field_result = [fld for fld in layer_expected.fields().toList() if fld.name() == field_expected.name()][0]
                 try:
-                    cmp = compare['fields'][field1.name()]
+                    cmp = compare['fields'][field_expected.name()]
                 except KeyError:
                     try:
                         cmp = compare['fields']['__all__']
@@ -108,6 +113,9 @@ class TestCase(_TestCase):
                 # Skip field
                 if 'skip' in cmp:
                     continue
+
+                attr_result = feats[1][field_expected.name()]
+                field_result = [fld for fld in layer_expected.fields().toList() if fld.name() == field_expected.name()][0]
 
                 # Cast field to a given type
                 if 'cast' in cmp:
@@ -264,6 +272,11 @@ def start_app(cleanup=True):
 
         QGISAPP.initQgis()
         print(QGISAPP.showSettings())
+
+        def debug_log_message(message, tag, level):
+            print('{}({}): {}'.format(tag, level, message))
+
+        QgsApplication.instance().messageLog().messageReceived.connect(debug_log_message)
 
         if cleanup:
             import atexit

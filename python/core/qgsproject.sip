@@ -6,203 +6,224 @@
   @note
 
   Has two general kinds of state to make persistent.  (I.e., to read and
-  write.)  First, Qgis proprietary information.  Second plug-in information.
+  write.)  First, QGIS proprietary information.  Second plug-in information.
 
   A singleton since there shall only be one active project at a time; and
   provides canonical location for plug-ins and main app to find/set
   properties.
 
-  Might want to consider moving from Singleton; i.e., allowing more than one
-  project.  Just as the GIMP can have simultaneous multiple images, perhaps
-  qgis can one day have simultaneous multiple projects.
-
 */
-class QgsProject : QObject
+class QgsProject : QObject, QgsExpressionContextGenerator
 {
 %TypeHeaderCode
 #include <qgsproject.h>
 %End
 
   public:
+    //! Returns the QgsProject singleton instance
+    static QgsProject* instance();
 
     /**
-     * @todo XXX Should have semantics for saving project if dirty as last gasp?
+     * Create a new QgsProject.
+     *
+     * Most of the time you want to use QgsProject::instance() instead as many components of QGIS work with the singleton.
      */
+    explicit QgsProject( QObject* parent /TransferThis/ = nullptr );
+
     ~QgsProject();
 
-    /// access to canonical QgsProject instance
-    static QgsProject * instance();
-
-    /**
-     * Every project has an associated title string
-     *
-     * @deprecated Use setTitle instead.
-     */
-    //@{
-    void title( const QString & title ) /Deprecated/;
-
-    /** Set project title
-     *  @note added in 2.4
+    /** Sets the project's title.
+     * @param title new title
+     * @note added in 2.4
+     * @see title()
      */
     void setTitle( const QString& title );
 
-    /** Returns title */
+    /** Returns the project's title.
+     * @see setTitle()
+    */
     QString title() const;
-    //@}
 
     /**
-     * the dirty flag is true if the project has been modified since the last
-     * write()
+     * Returns true if the project has been modified since the last write()
      */
-    //@{
     bool isDirty() const;
 
-    /**
-     * Flag the project as dirty (modified). If this flag is set, the user will
-     * be asked to save changes to the project before closing the current project.
-     *
-     * @deprecated use setDirty instead
+    /** Sets the file name associated with the project. This is the file which contains the project's XML
+     * representation.
+     * @param name project file name
+     * @see fileName()
      */
-    void dirty( bool b ) /Deprecated/;
+    void setFileName( const QString& name );
 
-    /**
-     * Flag the project as dirty (modified). If this flag is set, the user will
-     * be asked to save changes to the project before closing the current project.
-     *
-     * @note added in 2.4
-     */
-    void setDirty( bool b );
-    //@}
-
-
-    /**
-     * Every project has an associated file that contains its XML
-     */
-    //@{
-    void setFileName( const QString & name );
-
-    /** Returns file name */
+    /** Returns the project's file name. This is the file which contains the project's XML
+     * representation.
+     * @see setFileName()
+     * @see fileInfo()
+    */
     QString fileName() const;
-    //@}
 
     /** Returns QFileInfo object for the project's associated file.
+     * @see fileName()
      * @note added in QGIS 2.9
      */
     QFileInfo fileInfo() const;
 
-    /** Clear the project
+    /**
+     * Returns the project's native coordinate reference system.
+     * @note added in QGIS 3.0
+     * @see setCrs()
+     * @see ellipsoid()
+     */
+    QgsCoordinateReferenceSystem crs() const;
+
+    /**
+     * Sets the project's native coordinate reference system.
+     * @note added in QGIS 3.0
+     * @see crs()
+     * @see setEllipsoid()
+     */
+    void setCrs( const QgsCoordinateReferenceSystem& crs );
+
+    /**
+     * Returns a proj string representing the project's ellipsoid setting, e.g., "WGS84".
+     * @see setEllipsoid()
+     * @see crs()
+     * @note added in QGIS 3.0
+     */
+    QString ellipsoid() const;
+
+    /**
+     * Sets the project's ellipsoid from a proj string representation, e.g., "WGS84".
+     * @see ellipsoid()
+     * @see setCrs()
+     * @note added in QGIS 3.0
+     */
+    void setEllipsoid( const QString& ellipsoid );
+
+    /** Clear the project - removes all settings and resets it back to an empty, default state.
      * @note added in 2.4
      */
     void clear();
 
-
-    /** Read project file
-     *
-     * @note Any current plug-in state is erased
-     *
-     * @note dirty set to false after successful invocation
-     *
-     * @note file name argument implicitly sets file
-     *
-     * @note
-     *
-     * - Gets the extents
-     * - Creates maplayers
-     * - Registers maplayers
-     *
-     * @note it's presumed that the caller has already reset the map canvas, map registry, and legend
+    /** Reads given project file from the given file.
+     * @param filename name of project file to read
+     * @returns true if project file has been read successfully
      */
-    //@{
-    bool read( const QFileInfo & file );
+    bool read( const QString& filename );
+
+    /** Reads the project from its currently associated file (see fileName() ).
+     * @returns true if project file has been read successfully
+     */
     bool read();
-    //@}
 
-
-    /** Read the layer described in the associated Dom node
+    /** Reads the layer described in the associated DOM node.
      *
-     * @param layerNode   represents a QgsProject Dom node that maps to a specific layer.
+     * @note This method is mainly for use by QgsProjectBadLayerHandler subclasses
+     * that may fix definition of bad layers with the user's help in GUI. Calling
+     * this method with corrected DOM node adds the layer back to the project.
      *
-     * QgsProject raises an exception when one of the QgsProject::read()
-     * implementations fails.  Since the read()s are invoked from qgisapp,
-     * then qgisapp handles the exception.  It prompts the user for the new
-     * location of the data, if any.  If there is a new location, the Dom
-     * node associated with the layer has its datasource tag corrected.
-     * Then that node is passed to this member function to be re-opened.
-     *
+     * @param layerNode represents a QgsProject DOM node that encodes a specific layer.
      */
-    bool read( QDomNode & layerNode );
-
-
-    /** Write project file
-     *
-     * XXX How to best get read access to Qgis state?  Actually we can finagle
-     * that by searching for qgisapp in object hiearchy.
-     *
-     * @note file name argument implicitly sets file
-     *
-     * @note dirty set to false after successful invocation
-     */
-    //@{
-    bool write( const QFileInfo & file );
-    bool write();
-    //@}
+    bool readLayer( const QDomNode& layerNode );
 
     /**
-     * removes all project properties
+     * Writes the project to a file.
+     * @param filename destination file
+     * @note calling this implicitly sets the project's filename (see setFileName() )
+     * @note isDirty() will be set to false if project is successfully written
+     * @returns true if project was written successfully
      *
-     * ### QGIS 3: remove in favor of clear()
+     * \note Added in QGIS 3.0
      */
-    void clearProperties();
+    bool write( const QString& filename );
 
+    /** Writes the project to its current associated file (see fileName() ).
+     * @note isDirty() will be set to false if project is successfully written
+     * @returns true if project was written successfully
+     */
+    bool write();
 
-    /* key value mutators
+    /**
+     * Write a boolean entry to the project file.
      *
-     * keys would be the familiar QSettings-like '/' delimited entries, implying
+     * Keys are '/'-delimited entries, implying
+     * a hierarchy of keys and corresponding values
+     *
+     * @note The key string must be valid xml tag names in order to be saved to the file.
+     * @note available in python bindings as writeEntryBool
+     */
+    bool writeEntry( const QString& scope, const QString& key, bool value ) /PyName=writeEntryBool/;
+
+    /**
+     * Write a double entry to the project file.
+     *
+     * Keys are '/'-delimited entries, implying
+     * a hierarchy of keys and corresponding values
+     *
+     * @note The key string must be valid xml tag names in order to be saved to the file.
+     * @note available in python bindings as writeEntryDouble
+     */
+    bool writeEntry( const QString& scope, const QString& key, double value ) /PyName=writeEntryDouble/;
+
+    /**
+     * Write an integer entry to the project file.
+     *
+     * Keys are '/'-delimited entries, implying
      * a hierarchy of keys and corresponding values
      *
      * @note The key string must be valid xml tag names in order to be saved to the file.
      */
-    //@{
-    //! @note available in python bindings as writeEntryBool
-    bool writeEntry( const QString & scope, const QString & key, bool value ) /PyName=writeEntryBool/;
-    //! @note available in python bindings as writeEntryDouble
-    bool writeEntry( const QString & scope, const QString & key, double value ) /PyName=writeEntryDouble/;
-    bool writeEntry( const QString & scope, const QString & key, int value );
-    bool writeEntry( const QString & scope, const QString & key, const QString & value );
-    bool writeEntry( const QString & scope, const QString & key, const QStringList & value );
-    //@}
+    bool writeEntry( const QString& scope, const QString& key, int value );
 
-    /** Key value accessors
+    /**
+     * Write a string entry to the project file.
+     *
+     * Keys are '/'-delimited entries, implying
+     * a hierarchy of keys and corresponding values
+     *
+     * @note The key string must be valid xml tag names in order to be saved to the file.
+     */
+    bool writeEntry( const QString& scope, const QString& key, const QString& value );
+
+    /**
+     * Write a string list entry to the project file.
+     *
+     * Keys are '/'-delimited entries, implying
+     * a hierarchy of keys and corresponding values
+     *
+     * @note The key string must be valid xml tag names in order to be saved to the file.
+     */
+    bool writeEntry( const QString& scope, const QString& key, const QStringList& value );
+
+    /**
+     * Key value accessors
      *
      * keys would be the familiar QSettings-like '/' delimited entries,
      * implying a hierarchy of keys and corresponding values
-     *
      */
-    //@{
-    QStringList readListEntry( const QString & scope, const QString & key, const QStringList& def = QStringList(), bool *ok = 0 ) const;
+    QStringList readListEntry( const QString& scope, const QString& key, const QStringList& def = QStringList(), bool *ok = 0 ) const;
 
-    QString readEntry( const QString & scope, const QString & key, const QString & def = QString::null, bool * ok = 0 ) const;
-    int readNumEntry( const QString & scope, const QString & key, int def = 0, bool * ok = 0 ) const;
-    double readDoubleEntry( const QString & scope, const QString & key, double def = 0, bool * ok = 0 ) const;
-    bool readBoolEntry( const QString & scope, const QString & key, bool def = false, bool * ok = 0 ) const;
-    //@}
-
+    QString readEntry( const QString& scope, const QString& key, const QString& def = QString::null, bool* ok = 0 ) const;
+    int readNumEntry( const QString& scope, const QString& key, int def = 0, bool* ok = 0 ) const;
+    double readDoubleEntry( const QString& scope, const QString& key, double def = 0, bool* ok = 0 ) const;
+    bool readBoolEntry( const QString& scope, const QString& key, bool def = false, bool* ok = 0 ) const;
 
     /** Remove the given key */
-    bool removeEntry( const QString & scope, const QString & key );
+    bool removeEntry( const QString& scope, const QString& key );
 
 
     /** Return keys with values -- do not return keys that contain other keys
      *
      * @note equivalent to QSettings entryList()
      */
-    QStringList entryList( const QString & scope, const QString & key ) const;
+    QStringList entryList( const QString& scope, const QString& key ) const;
 
     /** Return keys with keys -- do not return keys that contain only values
      *
      * @note equivalent to QSettings subkeyList()
      */
-    QStringList subkeyList( const QString & scope, const QString & key ) const;
+    QStringList subkeyList( const QString& scope, const QString& key ) const;
 
 
     /** Dump out current project properties to stderr
@@ -212,7 +233,11 @@ class QgsProject : QObject
      */
     void dumpProperties() const;
 
-    /** Prepare a filename to save it to the project file */
+    /**
+     * Prepare a filename to save it to the project file.
+     * Creates an absolute or relative path according to the project settings.
+     * Paths written to the project file should be prepared with this method.
+    */
     QString writePath( const QString& filename, const QString& relativeBasePath = QString::null ) const;
 
     /** Turn filename read from the project file to an absolute path */
@@ -243,14 +268,6 @@ class QgsProject : QObject
      */
     QgsLayerTreeGroup* createEmbeddedGroup( const QString& groupName, const QString& projectFilePath, const QStringList &invisibleLayers );
 
-    /** Convenience function to set snap settings per layer */
-    void setSnapSettingsForLayer( const QString& layerId, bool enabled, QgsSnapper::SnappingType type, QgsTolerance::UnitType unit, double tolerance,
-                                  bool avoidIntersection );
-
-    /** Convenience function to query snap settings of a layer */
-    bool snapSettingsForLayer( const QString& layerId, bool& enabled /Out/, QgsSnapper::SnappingType& type /Out/, QgsTolerance::UnitType& units /Out/, double& tolerance /Out/,
-                               bool& avoidIntersection /Out/ ) const;
-
     /** Convenience function to set topological editing */
     void setTopologicalEditing( bool enabled );
 
@@ -259,15 +276,32 @@ class QgsProject : QObject
 
     /** Convenience function to query default distance measurement units for project.
      * @note added in QGIS 2.14
+     * @see setDistanceUnits()
      * @see areaUnits()
      */
-    QGis::UnitType distanceUnits() const;
+    QgsUnitTypes::DistanceUnit distanceUnits() const;
+
+    /**
+     * Sets the default distance measurement units for the project.
+     * @note added in QGIS 3.0
+     * @see distanceUnits()
+     * @see setAreaUnits()
+     */
+    void setDistanceUnits( QgsUnitTypes::DistanceUnit unit );
 
     /** Convenience function to query default area measurement units for project.
      * @note added in QGIS 2.14
      * @see distanceUnits()
      */
     QgsUnitTypes::AreaUnit areaUnits() const;
+
+    /**
+     * Sets the default area measurement units for the project.
+     * @note added in QGIS 3.0
+     * @see areaUnits()
+     * @see setDistanceUnits()
+     */
+    void setAreaUnits( QgsUnitTypes::AreaUnit unit );
 
     /** Return project's home path
       @return home path of project (or QString::null if not set) */
@@ -285,15 +319,18 @@ class QgsProject : QObject
      */
     QgsLayerTreeRegistryBridge* layerTreeRegistryBridge() const;
 
-    /** Returns pointer to the project's visibility preset collection.
+    /** Returns pointer to the project's map theme collection.
      * @note added in QGIS 2.12
+     * @note renamed in QGIS 3.0, formerly QgsVisibilityPresetCollection
      */
-    QgsVisibilityPresetCollection* visibilityPresetCollection();
+    QgsMapThemeCollection* mapThemeCollection();
+
+    QgsAnnotationManager* annotationManager();
 
     /**
      * Set a list of layers which should not be taken into account on map identification
      */
-    void setNonIdentifiableLayers( QList<QgsMapLayer*> layers );
+    void setNonIdentifiableLayers( const QList<QgsMapLayer*>& layers );
 
     /**
      * Set a list of layers which should not be taken into account on map identification
@@ -323,36 +360,225 @@ class QgsProject : QObject
      *
      * @note Added in QGIS 2.16
      */
-    void setAutoTransaction(bool autoTransaction );
+    void setAutoTransaction( bool autoTransaction );
 
-  protected:
-
-    /** Set error message from read/write operation
-     * @note not available in Python bindings
+    /**
+     * Should default values be evaluated on provider side when requested and not when committed.
+     *
+     * @note added in 2.16
      */
-    //void setError( const QString& errorMessage );
+    bool evaluateDefaultValues() const;
 
-    /** Clear error message
-     * @note not available in Python bindings
+
+    /**
+     * Defines if default values should be evaluated on provider side when requested and not when committed.
+     *
+     * @note added in 2.16
      */
-    //void clearError();
+    void setEvaluateDefaultValues( bool evaluateDefaultValues );
 
-    //! Creates layer and adds it to maplayer registry
-    //! @note not available in python bindings
-    // bool addLayer( const QDomElement& layerElem, QList<QDomNode>& brokenNodes, QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList );
+    QgsExpressionContext createExpressionContext() const;
 
-    //! @note not available in python bindings
-    // void initializeEmbeddedSubtree( const QString& projectFilePath, QgsLayerTreeGroup* group );
+    /**
+     * The snapping configuration for this project.
+     *
+     * @note Added in QGIS 3.0
+     */
+    QgsSnappingConfig snappingConfig() const;
 
-    //! @note not available in python bindings
-    // void loadEmbeddedNodes( QgsLayerTreeGroup* group );
+    /**
+     * The snapping configuration for this project.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void setSnappingConfig( const QgsSnappingConfig& snappingConfig );
+
+    /**
+     * A list of layers with which intersections should be avoided.
+     *
+     * @note Added in QGIS 3.0
+     */
+    QList<QgsVectorLayer*> avoidIntersectionsLayers() const;
+
+    /**
+     * A list of layers with which intersections should be avoided.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void setAvoidIntersectionsLayers( const QList<QgsVectorLayer*>& layers );
+    QVariantMap customVariables() const;
+    void setCustomVariables( const QVariantMap& customVariables );
+    int count() const;
+
+    /** Retrieve a pointer to a registered layer by layer ID.
+     * @param theLayerId ID of layer to retrieve
+     * @returns matching layer, or nullptr if no matching layer found
+     * @see mapLayersByName()
+     * @see mapLayers()
+     */
+    //TODO QGIS 3.0 - rename theLayerId to layerId
+    QgsMapLayer* mapLayer( const QString& theLayerId ) const;
+
+    /** Retrieve a list of matching registered layers by layer name.
+     * @param layerName name of layers to match
+     * @returns list of matching layers
+     * @see mapLayer()
+     * @see mapLayers()
+     */
+    QList<QgsMapLayer *> mapLayersByName( const QString& layerName ) const;
+
+    /** Returns a map of all registered layers by layer ID.
+     * @see mapLayer()
+     * @see mapLayersByName()
+     * @see layers()
+     */
+    QMap<QString, QgsMapLayer*> mapLayers() const;
+
+    /**
+     * @brief
+     * Add a list of layers to the map of loaded layers.
+     *
+     * The layersAdded() and layerWasAdded() signals will always be emitted.
+     * The legendLayersAdded() signal is emitted only if addToLegend is true.
+     *
+     * @param theMapLayers  A list of layer which should be added to the registry
+     * @param addToLegend   If true (by default), the layers will be added to the
+     *                      legend and to the main canvas. If you have a private
+     *                      layer you can set this parameter to false to hide it.
+     * @param takeOwnership Ownership will be transferred to the layer registry.
+     *                      If you specify false here you have take care of deleting
+     *                      the layers yourself. Not available in python.
+     *
+     * @return a list of the map layers that were added
+     *         successfully. If a layer is invalid, or already exists in the registry,
+     *         it will not be part of the returned QList.
+     *
+     * @note As a side-effect QgsProject is made dirty.
+     * @note takeOwnership is not available in the Python bindings - the registry will always
+     * take ownership
+     * @note added in QGIS 1.8
+     * @see addMapLayer()
+     */
+    QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *>& theMapLayers /Transfer/,
+                                       bool addToLegend = true );
+
+    /**
+     * @brief
+     * Add a layer to the map of loaded layers.
+     *
+     * The layersAdded() and layerWasAdded() signals will always be emitted.
+     * The legendLayersAdded() signal is emitted only if addToLegend is true.
+     * If you are adding multiple layers at once, you should use
+     * addMapLayers() instead.
+     *
+     * @param theMapLayer A layer to add to the registry
+     * @param addToLegend If true (by default), the layer will be added to the
+     *                    legend and to the main canvas. If you have a private
+     *                    layer you can set this parameter to false to hide it.
+     * @param takeOwnership Ownership will be transferred to the layer registry.
+     *                      If you specify false here you have take care of deleting
+     *                      the layer yourself. Not available in python.
+     *
+     * @return nullptr if unable to add layer, otherwise pointer to newly added layer
+     *
+     * @see addMapLayers
+     *
+     * @note As a side-effect QgsProject is made dirty.
+     * @note Use addMapLayers if adding more than one layer at a time
+     * @note takeOwnership is not available in the Python bindings - the registry will always
+     * take ownership
+     * @see addMapLayers()
+     */
+    QgsMapLayer* addMapLayer( QgsMapLayer * theMapLayer /Transfer/, bool addToLegend = true );
+
+    /**
+     * @brief
+     * Remove a set of layers from the registry by layer ID.
+     *
+     * The specified layers will be removed from the registry. If the registry has ownership
+     * of any layers these layers will also be deleted.
+     *
+     * @param theLayerIds list of IDs of the layers to remove
+     *
+     * @note As a side-effect the QgsProject instance is marked dirty.
+     * @note added in QGIS 1.8
+     * @see removeMapLayer()
+     * @see removeAllMapLayers()
+     */
+    // TODO QGIS 3.0 - rename theLayerIds to layerIds
+    void removeMapLayers( const QStringList& theLayerIds );
+
+    /**
+     * @brief
+     * Remove a set of layers from the registry.
+     *
+     * The specified layers will be removed from the registry. If the registry has ownership
+     * of any layers these layers will also be deleted.
+     *
+     * @param layers A list of layers to remove. Null pointers are ignored.
+     *
+     * @note As a side-effect the QgsProject instance is marked dirty.
+     * @see removeMapLayer()
+     * @see removeAllMapLayers()
+     */
+    void removeMapLayers( const QList<QgsMapLayer*>& layers );
+
+    /**
+     * @brief
+     * Remove a layer from the registry by layer ID.
+     *
+     * The specified layer will be removed from the registry. If the registry has ownership
+     * of the layer then it will also be deleted.
+     *
+     * @param theLayerId ID of the layer to remove
+     *
+     * @note As a side-effect the QgsProject instance is marked dirty.
+     * @see removeMapLayers()
+     * @see removeAllMapLayers()
+     */
+    // TODO QGIS 3.0 - rename theLayerId to layerId
+    void removeMapLayer( const QString& theLayerId );
+
+    /**
+     * @brief
+     * Remove a layer from the registry.
+     *
+     * The specified layer will be removed from the registry. If the registry has ownership
+     * of the layer then it will also be deleted.
+     *
+     * @param layer The layer to remove. Null pointers are ignored.
+     *
+     * @note As a side-effect the QgsProject instance is marked dirty.
+     * @see removeMapLayers()
+     * @see removeAllMapLayers()
+     */
+    void removeMapLayer( QgsMapLayer* layer );
+
+    /**
+     * Removes all registered layers. If the registry has ownership
+     * of any layers these layers will also be deleted.
+     *
+     * @note As a side-effect the QgsProject instance is marked dirty.
+     * @note Calling this method will cause the removeAll() signal to
+     * be emitted.
+     * @see removeMapLayer()
+     * @see removeMapLayers()
+     */
+    void removeAllMapLayers();
+
+    /**
+     * Reload all registered layer's provider data caches, synchronising the layer
+     * with any changes in the datasource.
+     * @see QgsMapLayer::reload()
+     */
+    void reloadAllLayers();
 
   signals:
     //! emitted when project is being read
-    void readProject( const QDomDocument & );
+    void readProject( const QDomDocument& );
 
     //! emitted when project is being written
-    void writeProject( QDomDocument & );
+    void writeProject( QDomDocument& );
 
     /**
      * Emitted, after the basic initialization of a layer from the project
@@ -362,7 +588,7 @@ class QgsProject : QObject
      * @param mapLayer  The map layer which is being initialized
      * @param layerNode The layer node from the project file
      */
-    void readMapLayer( QgsMapLayer *mapLayer, const QDomElement &layerNode );
+    void readMapLayer( QgsMapLayer* mapLayer, const QDomElement& layerNode );
 
     /**
      * Emitted, when a layer is being saved. You can use this method to save
@@ -380,46 +606,185 @@ class QgsProject : QObject
     //! emitted when an old project file is read.
     void oldProjectVersionWarning( const QString& );
 
-    //! emitted when a layer from a projects was read
-    // @param i current layer
-    // @param n number of layers
+    /**
+     * Emitted when a layer from a projects was read.
+     * @param i current layer
+     * @param n number of layers
+     */
     void layerLoaded( int i, int n );
 
     void loadingLayer( const QString& );
 
-    void snapSettingsChanged();
-
     //! Emitted when the list of layer which are excluded from map identification changes
     void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
 
-  private:
+    //! Emitted when the file name of the project changes
+    void fileNameChanged();
 
-    QgsProject(); // private 'cause it's a singleton
+    //! Emitted when the home path of the project changes
+    void homePathChanged();
 
-}; // QgsProject
+    //! emitted whenever the configuration for snapping has changed
+    void snappingConfigChanged();
 
+    /** Emitted whenever the expression variables stored in the project have been changed.
+     * @note added in QGIS 3.0
+     */
+    void customVariablesChanged();
 
-/** Interface for classes that handle missing layer files when reading project file. */
-class QgsProjectBadLayerHandler
-{
-%TypeHeaderCode
-#include <qgsproject.h>
-%End
+    /**
+     * Emitted whenever a new transaction group has been created or a
+     * transaction group has been removed.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void transactionGroupsChanged();
 
-  public:
-    virtual void handleBadLayers( const QList<QDomNode>& layers, const QDomDocument& projectDom ) = 0;
-    virtual ~QgsProjectBadLayerHandler();
-};
+    /**
+     * Emitted when the topological editing flag has changed.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void topologicalEditingChanged();
 
+    /**
+     * Emitted whenever avoidIntersectionsLayers has changed.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void avoidIntersectionsLayersChanged();
 
-/** Default bad layer handler which ignores any missing layers. */
-class QgsProjectBadLayerDefaultHandler : QgsProjectBadLayerHandler
-{
-%TypeHeaderCode
-#include <qgsproject.h>
-%End
+    /**
+     * Emitted when the map theme collection changes.
+     * This only happens when the map theme collection is reset.
+     * Any pointer previously received from mapThemeCollection()
+     * must no longer be used after this signal is emitted.
+     * You must still connect to signals from the map theme collection
+     * if you want to be notified about new map themes being added and
+     * map themes being removed.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void mapThemeCollectionChanged();
 
-  public:
-    virtual void handleBadLayers( const QList<QDomNode>& layers, const QDomDocument& projectDom );
+    //
+    // signals from QgsMapLayerRegistry
+    //
+
+    /**
+     * Emitted when one or more layers are about to be removed from the registry.
+     *
+     * @param theLayerIds A list of IDs for the layers which are to be removed.
+     * @see layerWillBeRemoved()
+     * @see layersRemoved()
+     */
+    // TODO QGIS 3.0 - rename theLayerIds to layerIds
+    void layersWillBeRemoved( const QStringList& theLayerIds );
+
+    /**
+     * Emitted when one or more layers are about to be removed from the registry.
+     *
+     * @param layers A list of layers which are to be removed.
+     * @see layerWillBeRemoved()
+     * @see layersRemoved()
+     */
+    void layersWillBeRemoved( const QList<QgsMapLayer*>& layers );
+
+    /**
+     * Emitted when a layer is about to be removed from the registry.
+     *
+     * @param theLayerId The ID of the layer to be removed.
+     *
+     * @note Consider using {@link layersWillBeRemoved()} instead
+     * @see layersWillBeRemoved()
+     * @see layerRemoved()
+     */
+    //TODO QGIS 3.0 - rename theLayerId to layerId
+    void layerWillBeRemoved( const QString& theLayerId );
+
+    /**
+     * Emitted when a layer is about to be removed from the registry.
+     *
+     * @param layer The layer to be removed.
+     *
+     * @note Consider using {@link layersWillBeRemoved()} instead
+     * @see layersWillBeRemoved()
+     * @see layerRemoved()
+     */
+    void layerWillBeRemoved( QgsMapLayer* layer );
+
+    /**
+     * Emitted after one or more layers were removed from the registry.
+     *
+     * @param theLayerIds  A list of IDs of the layers which were removed.
+     * @see layersWillBeRemoved()
+     */
+    //TODO QGIS 3.0 - rename theLayerIds to layerIds
+    void layersRemoved( const QStringList& theLayerIds );
+
+    /**
+     * Emitted after a layer was removed from the registry.
+     *
+     * @param theLayerId The ID of the layer removed.
+     *
+     * @note Consider using {@link layersRemoved()} instead
+     * @see layerWillBeRemoved()
+     */
+    //TODO QGIS 3.0 - rename theLayerId to layerId
+    void layerRemoved( const QString& theLayerId );
+
+    /**
+     * Emitted when all layers are removed, before {@link layersWillBeRemoved()} and
+     * {@link layerWillBeRemoved()} signals are emitted. The layersWillBeRemoved() and
+     * layerWillBeRemoved() signals will still be emitted following this signal.
+     * You can use this signal to do easy (and fast) cleanup.
+     */
+    //TODO QGIS 3.0 - rename to past tense
+    void removeAll();
+
+    /**
+     * Emitted when one or more layers were added to the registry.
+     * This signal is also emitted for layers added to the registry,
+     * but not to the legend.
+     *
+     * @param theMapLayers List of layers which have been added.
+     *
+     * @see legendLayersAdded()
+     * @see layerWasAdded()
+     */
+    //TODO QGIS 3.0 - rename theMapLayers to mapLayers
+    void layersAdded( const QList<QgsMapLayer *>& theMapLayers );
+
+    /**
+     * Emitted when a layer was added to the registry.
+     *
+     * @param theMapLayer The ID of the layer which has been added.
+     *
+     * @note Consider using {@link layersAdded()} instead
+     * @see layersAdded()
+     */
+    // TODO QGIS 3.0 - rename theMapLayer to layer
+    void layerWasAdded( QgsMapLayer* theMapLayer );
+
+    /**
+     * Emitted, when a layer was added to the registry and the legend.
+     * Layers can also be private layers, which are signalled by
+     * {@link layersAdded()} and {@link layerWasAdded()} but will not be
+     * advertised by this signal.
+     *
+     * @param theMapLayers List of {@link QgsMapLayer}s which were added to the legend.
+     */
+    //TODO QGIS 3.0 rename theMapLayers to mapLayers
+    void legendLayersAdded( const QList<QgsMapLayer*>& theMapLayers );
+
+  public slots:
+    /**
+     * Flag the project as dirty (modified). If this flag is set, the user will
+     * be asked to save changes to the project before closing the current project.
+     *
+     * @note added in 2.4
+     * @note promoted to public slot in 2.16
+     */
+    void setDirty( bool b = true );
 
 };

@@ -5,11 +5,12 @@
 
     Basic style object.
 
-    :copyright: Copyright 2006-2013 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2015 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
 from pygments.token import Token, STANDARD_TYPES
+from pygments.util import add_metaclass
 
 
 class StyleMeta(type):
@@ -39,7 +40,7 @@ class StyleMeta(type):
                     continue
                 ndef = _styles.get(token.parent, None)
                 styledefs = obj.styles.get(token, '').split()
-                if  not ndef or token is None:
+                if not ndef or token is None:
                     ndef = ['', 0, 0, 0, '', '', 0, 0, 0]
                 elif 'noinherit' in styledefs and token is not Token:
                     ndef = _styles[Token][:]
@@ -104,8 +105,8 @@ class StyleMeta(type):
         return len(cls._styles)
 
 
+@add_metaclass(StyleMeta)
 class Style(object):
-    __metaclass__ = StyleMeta
 
     #: overall background color (``None`` means transparent)
     background_color = '#ffffff'

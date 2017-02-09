@@ -19,6 +19,7 @@
 #define QGSMAPTOOLTEXTANNOTATION_H
 
 #include "qgsmaptoolannotation.h"
+#include "qgis_app.h"
 
 class APP_EXPORT QgsMapToolTextAnnotation: public QgsMapToolAnnotation
 {
@@ -29,7 +30,7 @@ class APP_EXPORT QgsMapToolTextAnnotation: public QgsMapToolAnnotation
     ~QgsMapToolTextAnnotation();
 
   protected:
-    QgsAnnotationItem* createItem( QMouseEvent* e ) override;
+    QgsAnnotation* createItem() const override;
 };
 
 #endif // QGSMAPTOOLTEXTANNOTATION_H

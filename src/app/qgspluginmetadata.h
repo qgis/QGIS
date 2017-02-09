@@ -19,7 +19,9 @@
 #ifndef QGSPLUGINMETADATA_H
 #define QGSPLUGINMETADATA_H
 #include <QString>
+#include "qgis_app.h"
 class QgisPlugin;
+
 /**
 * \class QgsPluginMetadata
 * \brief Stores information about a loaded plugin, including a pointer to

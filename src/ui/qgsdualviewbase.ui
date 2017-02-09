@@ -148,24 +148,6 @@
         <property name="bottomMargin">
          <number>0</number>
         </property>
-        <item row="0" column="0">
-         <widget class="QScrollArea" name="mAttributeEditorScrollArea">
-          <property name="widgetResizable">
-           <bool>true</bool>
-          </property>
-          <widget class="QWidget" name="mAttributeEditorLayout">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>0</y>
-             <width>229</width>
-             <height>503</height>
-            </rect>
-           </property>
-           <layout class="QGridLayout" name="gridLayout_4"/>
-          </widget>
-         </widget>
-        </item>
        </layout>
       </widget>
      </widget>
@@ -174,7 +156,7 @@
    <action name="mActionExpressionPreview">
     <property name="icon">
      <iconset resource="../../images/images.qrc">
-      <normaloff>:/images/themes/default/mActionFilter.png</normaloff>:/images/themes/default/mActionFilter.png</iconset>
+      <normaloff>:/images/themes/default/mActionFilter.svg</normaloff>:/images/themes/default/mActionFilter.svg</iconset>
     </property>
     <property name="text">
      <string>Expression</string>

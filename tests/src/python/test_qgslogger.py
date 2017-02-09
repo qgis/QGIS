@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""QGIS Unit tests for QgsComposition.
+"""QGIS Unit tests for QgsLogger.
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ class TestQgsLogger(unittest.TestCase):
                               'This is critical\n']
             myMessage = ('Expected:\n---\n%s\n---\nGot:\n---\n%s\n---\n' %
                          (myExpectedText, myText))
-            self.assertEquals(myText, myExpectedText, myMessage)
+            self.assertEqual(myText, myExpectedText, myMessage)
         finally:
             pass
             os.remove(myFilename)

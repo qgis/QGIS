@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsserverlogger.h"
+#include "qgsapplication.h"
 #include <QCoreApplication>
 #include <QFile>
 #include <QTextStream>
@@ -23,40 +24,46 @@
 
 #include <cstdlib>
 
-QgsServerLogger* QgsServerLogger::mInstance = nullptr;
+QgsServerLogger* QgsServerLogger::sInstance = nullptr;
 
 QgsServerLogger* QgsServerLogger::instance()
 {
-  if ( !mInstance )
+  if ( !sInstance )
   {
-    mInstance = new QgsServerLogger();
+    sInstance = new QgsServerLogger();
   }
-  return mInstance;
+  return sInstance;
 }
 
-QgsServerLogger::QgsServerLogger(): mLogFile( nullptr )
+QgsServerLogger::QgsServerLogger()
+    : mLogFile( nullptr )
+    , mLogLevel( QgsMessageLog::NONE )
 {
-  //logfile
-  QString filePath = getenv( "QGIS_SERVER_LOG_FILE" );
-  mLogFile.setFileName( filePath );
-  if ( mLogFile.open( QIODevice::Append ) )
-  {
-    mTextStream.setDevice( &mLogFile );
-  }
-
-  //log level
-  char* logLevelChar = getenv( "QGIS_SERVER_LOG_LEVEL" );
-  if ( logLevelChar )
-  {
-    mLogLevel = atoi( logLevelChar );
-  }
-  else
-  {
-    mLogLevel = 3;
-  }
-
-  connect( QgsMessageLog::instance(), SIGNAL( messageReceived( QString, QString, QgsMessageLog::MessageLevel ) ), this,
+  connect( QgsApplication::messageLog(), SIGNAL( messageReceived( QString, QString, QgsMessageLog::MessageLevel ) ), this,
            SLOT( logMessage( QString, QString, QgsMessageLog::MessageLevel ) ) );
+}
+
+void QgsServerLogger::setLogLevel( QgsMessageLog::MessageLevel level )
+{
+  mLogLevel = level;
+}
+
+void QgsServerLogger::setLogFile( const QString& f )
+{
+  if ( ! f.isEmpty() )
+  {
+    if ( mLogFile.exists() )
+    {
+      mTextStream.flush();
+      mLogFile.close();
+    }
+
+    mLogFile.setFileName( f );
+    if ( mLogFile.open( QIODevice::Append ) )
+    {
+      mTextStream.setDevice( &mLogFile );
+    }
+  }
 }
 
 void QgsServerLogger::logMessage( const QString& message, const QString& tag, QgsMessageLog::MessageLevel level )

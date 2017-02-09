@@ -22,10 +22,10 @@
 #include <QMap>
 #include <QObject>
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsfeature.h"
-#include "qgsfeaturestore.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgis_app.h"
 
 /**
   \brief QGIS internal clipboard for features.
@@ -37,12 +37,13 @@
   therefore the original objects can safely be destructed independent of
   the lifetime of the internal clipboard.
 
-  As this class matures it should also be able to accept CSV repesentations
+  As this class matures it should also be able to accept CSV representations
   of features in and out of the system clipboard (QClipboard).
 
 */
 
 class QgsVectorLayer;
+class QgsFeatureStore;
 
 /*
  * Constants used to describe copy-paste MIME types
@@ -53,12 +54,20 @@ class APP_EXPORT QgsClipboard : public QObject
 {
     Q_OBJECT
   public:
+
+    //! Available formats for copying features as text
+    enum CopyFormat
+    {
+      AttributesOnly, //!< Tab delimited text, attributes only
+      AttributesWithWKT, //!< Tab delimited text, with geometry in WKT format
+      GeoJSON, //!< GeoJSON FeatureCollection format
+    };
+
     /**
      * Constructor for the clipboard.
      */
     QgsClipboard();
 
-    //! Destructor
     virtual ~QgsClipboard();
 
     /**
@@ -136,7 +145,7 @@ class APP_EXPORT QgsClipboard : public QObject
     void systemClipboardChanged();
 
   signals:
-    /** Emitted when content changed */
+    //! Emitted when content changed
     void changed();
 
   private:
@@ -145,6 +154,11 @@ class APP_EXPORT QgsClipboard : public QObject
      * Set system clipboard from previously set features.
      */
     void setSystemClipboard();
+
+    /** Creates a text representation of the clipboard features.
+     * @returns clipboard text, respecting user export format
+     */
+    QString generateClipboardText() const;
 
     /** Attempts to convert a string to a list of features, by parsing the string as WKT and GeoJSON
      * @param string string to convert
@@ -167,8 +181,11 @@ class APP_EXPORT QgsClipboard : public QObject
     QgsFields mFeatureFields;
     QgsCoordinateReferenceSystem mCRS;
 
-    /** True when the data from the system clipboard should be read */
+    //! True when the data from the system clipboard should be read
     bool mUseSystemClipboard;
+
+    friend class TestQgisAppClipboard;
+
 };
 
 #endif

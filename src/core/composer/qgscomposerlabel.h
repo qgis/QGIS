@@ -17,15 +17,16 @@
 #ifndef QGSCOMPOSERLABEL_H
 #define QGSCOMPOSERLABEL_H
 
+#include "qgis_core.h"
 #include "qgscomposeritem.h"
 #include <QFont>
 
 class QgsVectorLayer;
 class QgsFeature;
 class QgsDistanceArea;
-class QWebPage;
+class QgsWebPage;
 
-/** \ingroup MapComposer
+/** \ingroup core
  * A label that can be placed onto a map composition.
  */
 class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
@@ -35,13 +36,13 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     QgsComposerLabel( QgsComposition *composition );
     ~QgsComposerLabel();
 
-    /** Return correct graphics item type. */
+    //! Return correct graphics item type.
     virtual int type() const override { return ComposerLabel; }
 
-    /** \brief Reimplementation of QCanvasItem::paint*/
+    //! \brief Reimplementation of QCanvasItem::paint
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
-    /** Resizes the widget such that the text fits to the item. Keeps top left point*/
+    //! Resizes the widget such that the text fits to the item. Keeps top left point
     void adjustSizeToText();
 
     QString text() { return mText; }
@@ -50,45 +51,33 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     int htmlState() { return mHtmlState; }
     void setHtmlState( int state );
 
-    /** Returns the text as it appears on screen (with replaced data field) */
+    //! Returns the text as it appears on screen (with replaced data field)
     QString displayText() const;
-
-    /** Sets the current feature, the current layer and a list of local variable substitutions for evaluating expressions.
-      * @deprecated use atlas features and setSubstitutions() instead
-      */
-    Q_DECL_DEPRECATED void setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer, const QMap<QString, QVariant>& substitutions = ( QMap<QString, QVariant>() ) );
-
-    /** Sets the list of local variable substitutions for evaluating expressions in label text.
-     * @note added in QGIS 2.12
-     */
-    void setSubstitutions( const QMap<QString, QVariant>& substitutions = ( QMap<QString, QVariant>() ) );
 
     QFont font() const;
     void setFont( const QFont& f );
+
     /** Accessor for the vertical alignment of the label
      * @returns Qt::AlignmentFlag
      */
     Qt::AlignmentFlag vAlign() const { return mVAlignment; }
+
     /** Accessor for the horizontal alignment of the label
      * @returns Qt::AlignmentFlag
      */
     Qt::AlignmentFlag hAlign() const { return mHAlignment; }
+
     /** Mutator for the horizontal alignment of the label
      * @param a alignment
      * @returns void
      */
     void setHAlign( Qt::AlignmentFlag a ) {mHAlignment = a;}
+
     /** Mutator for the vertical alignment of the label
      * @param a alignment
      * @returns void
      */
     void setVAlign( Qt::AlignmentFlag a ) { mVAlignment = a; }
-
-    /** Returns the margin between the edge of the frame and the label contents
-     * @returns margin in mm
-     * @deprecated use marginX and marginY instead
-     */
-    Q_DECL_DEPRECATED double margin() { return mMarginX; }
 
     /** Returns the horizontal margin between the edge of the frame and the label
      * contents.
@@ -132,22 +121,22 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
      */
     void setMarginY( const double margin );
 
-    /** Sets text color */
+    //! Sets text color
     void setFontColor( const QColor& c ) { mFontColor = c; }
-    /** Get font color */
+    //! Get font color
     QColor fontColor() const { return mFontColor; }
 
     /** Stores state in Dom element
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc document
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
 
     /** Sets state from Dom document
      * @param itemElem is Dom element corresponding to 'ComposerLabel' tag
      * @param doc document
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     //Overridden to contain part of label's text
     virtual QString displayName() const override;
@@ -182,18 +171,18 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     double htmlUnitsToMM(); //calculate scale factor
     bool mHtmlLoaded;
 
-    /** Helper function to calculate x/y shift for adjustSizeToText() depending on rotation, current size and alignment*/
+    //! Helper function to calculate x/y shift for adjustSizeToText() depending on rotation, current size and alignment
     void itemShiftAdjustSize( double newWidth, double newHeight, double& xShift, double& yShift ) const;
 
-    /** Called when the content is changed to handle HTML loading */
+    //! Called when the content is changed to handle HTML loading
     void contentChanged();
 
     // Font
     QFont mFont;
 
-    /** Horizontal margin between contents and frame (in mm)*/
+    //! Horizontal margin between contents and frame (in mm)
     double mMarginX;
-    /** Vertical margin between contents and frame (in mm)*/
+    //! Vertical margin between contents and frame (in mm)
     double mMarginY;
 
     // Font color
@@ -205,18 +194,17 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     // Vertical Alignment
     Qt::AlignmentFlag mVAlignment;
 
-    /** Replaces replace '$CURRENT_DATE<(FORMAT)>' with the current date (e.g. $CURRENT_DATE(d 'June' yyyy)*/
+    //! Replaces replace '$CURRENT_DATE<(FORMAT)>' with the current date (e.g. $CURRENT_DATE(d 'June' yyyy)
     void replaceDateText( QString& text ) const;
 
     //! Creates an encoded stylesheet url using the current font and label appearance settings
     QUrl createStylesheetUrl() const;
 
-    QScopedPointer<QgsFeature> mExpressionFeature;
+    std::unique_ptr<QgsFeature> mExpressionFeature;
     QgsVectorLayer* mExpressionLayer;
-    QMap<QString, QVariant> mSubstitutions;
     QgsDistanceArea* mDistanceArea;
 
-    QWebPage* mWebPage;
+    QgsWebPage* mWebPage;
 };
 
 #endif

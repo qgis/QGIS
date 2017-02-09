@@ -18,6 +18,7 @@
 #ifndef QGSCOMPOSERMAPOVERVIEW_H
 #define QGSCOMPOSERMAPOVERVIEW_H
 
+#include "qgis_core.h"
 #include "qgscomposermapitem.h"
 #include <QString>
 #include <QObject>
@@ -25,10 +26,10 @@
 
 class QDomDocument;
 class QDomElement;
-class QgsFillSymbolV2;
+class QgsFillSymbol;
 class QgsComposerMapOverview;
 
-/** \ingroup MapComposer
+/** \ingroup core
  * \class QgsComposerMapOverviewStack
  * \brief A collection of overviews which are drawn above the map content in a
  * QgsComposerMap. The overview stack controls which overviews are drawn and the
@@ -44,8 +45,6 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
      * @param map QgsComposerMap the overview stack is attached to
      */
     QgsComposerMapOverviewStack( QgsComposerMap* map );
-
-    virtual ~QgsComposerMapOverviewStack();
 
     /** Adds a new map overview to the stack and takes ownership of the overview.
      * The overview will be added to the end of the stack, and rendered
@@ -119,13 +118,13 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
      * @param elem is DOM node corresponding to a 'ComposerMap' tag
      * @param doc DOM document
      * @returns true if read was successful
-     * @see writeXML
+     * @see writeXml
      */
-    bool readXML( const QDomElement& elem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement& elem, const QDomDocument& doc ) override;
 
 };
 
-/** \ingroup MapComposer
+/** \ingroup core
  * \class QgsComposerMapOverview
  * \brief An individual overview which is drawn above the map content in a
  * QgsComposerMap, and shows the extent of another QgsComposerMap.
@@ -154,16 +153,16 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
     /** Stores overview state in DOM element
      * @param elem is DOM element corresponding to a 'ComposerMap' tag
      * @param doc DOM document
-     * @see readXML
+     * @see readXml
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
 
     /** Sets overview state from a DOM document
      * @param itemElem is DOM node corresponding to a 'ComposerMapOverview' tag
      * @param doc is DOM document
-     * @see writeXML
+     * @see writeXml
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     bool usesAdvancedEffects() const override;
 
@@ -182,20 +181,20 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
      * @param symbol fill symbol for overview
      * @see frameSymbol
      */
-    void setFrameSymbol( QgsFillSymbolV2* symbol );
+    void setFrameSymbol( QgsFillSymbol* symbol );
 
     /** Gets the fill symbol used for drawing the overview extent.
      * @returns fill symbol for overview
      * @see setFrameSymbol
      */
-    QgsFillSymbolV2* frameSymbol() { return mFrameSymbol; }
+    QgsFillSymbol* frameSymbol() { return mFrameSymbol; }
 
     /** Gets the fill symbol used for drawing the overview extent.
      * @returns fill symbol for overview
      * @see setFrameSymbol
      * @note not available in python bindings
      */
-    const QgsFillSymbolV2* frameSymbol() const { return mFrameSymbol; }
+    const QgsFillSymbol* frameSymbol() const { return mFrameSymbol; }
 
     /** Retrieves the blending mode used for drawing the overview.
      * @returns blending mode for overview
@@ -250,22 +249,22 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
 
     QgsComposerMapOverview(); //forbidden
 
-    /** Id of map which displays its extent rectangle into this composer map (overview map functionality). -1 if not present*/
+    //! Id of map which displays its extent rectangle into this composer map (overview map functionality). -1 if not present
     int mFrameMapId;
 
-    /** Drawing style for overview farme*/
-    QgsFillSymbolV2* mFrameSymbol;
+    //! Drawing style for overview farme
+    QgsFillSymbol* mFrameSymbol;
 
-    /** Blend mode for overview*/
+    //! Blend mode for overview
     QPainter::CompositionMode mBlendMode;
 
-    /** True if overview is inverted*/
+    //! True if overview is inverted
     bool mInverted;
 
-    /** True if map is centered on overview*/
+    //! True if map is centered on overview
     bool mCentered;
 
-    /** Creates default overview symbol*/
+    //! Creates default overview symbol
     void createDefaultFrameSymbol();
 
 };

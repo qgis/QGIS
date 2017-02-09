@@ -31,7 +31,7 @@
 #include <limits>
 
 const char NS_SEPARATOR = '?';
-const QString GML_NAMESPACE = "http://www.opengis.net/gml";
+const QString GML_NAMESPACE = QStringLiteral( "http://www.opengis.net/gml" );
 
 QgsGmlFeatureClass::QgsGmlFeatureClass()
 {
@@ -60,14 +60,9 @@ QgsGmlSchema::QgsGmlSchema()
     , mLevel( 0 )
     , mSkipLevel( std::numeric_limits<int>::max() )
 {
-  mGeometryTypes << "Point" << "MultiPoint"
-  << "LineString" << "MultiLineString"
-  << "Polygon" << "MultiPolygon";
-}
-
-QgsGmlSchema::~QgsGmlSchema()
-{
-
+  mGeometryTypes << QStringLiteral( "Point" ) << QStringLiteral( "MultiPoint" )
+  << QStringLiteral( "LineString" ) << QStringLiteral( "MultiLineString" )
+  << QStringLiteral( "Polygon" ) << QStringLiteral( "MultiPolygon" );
 }
 
 QString QgsGmlSchema::readAttribute( const QString& attributeName, const XML_Char** attr ) const
@@ -98,14 +93,14 @@ bool QgsGmlSchema::parseXSD( const QByteArray &xml )
 
   QDomElement docElem = dom.documentElement();
 
-  QList<QDomElement> elementElements = domElements( docElem, "element" );
+  QList<QDomElement> elementElements = domElements( docElem, QStringLiteral( "element" ) );
 
   //QgsDebugMsg( QString( "%1 elemets read" ).arg( elementElements.size() ) );
 
   Q_FOREACH ( const QDomElement& elementElement, elementElements )
   {
-    QString name = elementElement.attribute( "name" );
-    QString type = elementElement.attribute( "type" );
+    QString name = elementElement.attribute( QStringLiteral( "name" ) );
+    QString type = elementElement.attribute( QStringLiteral( "type" ) );
 
     QString gmlBaseType = xsdComplexTypeGmlBaseType( docElem, stripNS( type ) );
     //QgsDebugMsg( QString( "gmlBaseType = %1" ).arg( gmlBaseType ) );
@@ -114,10 +109,10 @@ bool QgsGmlSchema::parseXSD( const QByteArray &xml )
     // ancestor listed in gml:FeatureAssociationType (featureMember) descendant
     // But we could only loose some data if XSD was not correct, I think.
 
-    if ( gmlBaseType == "AbstractFeatureType" )
+    if ( gmlBaseType == QLatin1String( "AbstractFeatureType" ) )
     {
       // Get feature type definition
-      QgsGmlFeatureClass featureClass( name, "" );
+      QgsGmlFeatureClass featureClass( name, QLatin1String( "" ) );
       xsdFeatureClass( docElem, stripNS( type ), featureClass );
       mFeatureClassMap.insert( name, featureClass );
     }
@@ -130,19 +125,19 @@ bool QgsGmlSchema::parseXSD( const QByteArray &xml )
 bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString & typeName, QgsGmlFeatureClass & featureClass )
 {
   //QgsDebugMsg("typeName = " + typeName );
-  QDomElement complexTypeElement = domElement( element, "complexType", "name", typeName );
+  QDomElement complexTypeElement = domElement( element, QStringLiteral( "complexType" ), QStringLiteral( "name" ), typeName );
   if ( complexTypeElement.isNull() ) return false;
 
   // extension or restriction
-  QDomElement extrest = domElement( complexTypeElement, "complexContent.extension" );
+  QDomElement extrest = domElement( complexTypeElement, QStringLiteral( "complexContent.extension" ) );
   if ( extrest.isNull() )
   {
-    extrest = domElement( complexTypeElement, "complexContent.restriction" );
+    extrest = domElement( complexTypeElement, QStringLiteral( "complexContent.restriction" ) );
   }
   if ( extrest.isNull() ) return false;
 
-  QString extrestName = extrest.attribute( "base" );
-  if ( extrestName == "gml:AbstractFeatureType" )
+  QString extrestName = extrest.attribute( QStringLiteral( "base" ) );
+  if ( extrestName == QLatin1String( "gml:AbstractFeatureType" ) )
   {
     // In theory we should add gml:AbstractFeatureType default attributes gml:description
     // and gml:name but it does not seem to be a common practice and we would probably
@@ -162,23 +157,23 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString & 
   }
 
   QStringList geometryAliases;
-  geometryAliases << "location" << "centerOf" << "position" << "extentOf"
-  << "coverage" << "edgeOf" << "centerLineOf" << "multiLocation"
-  << "multiCenterOf" << "multiPosition" << "multiCenterLineOf"
-  << "multiEdgeOf" << "multiCoverage" << "multiExtentOf";
+  geometryAliases << QStringLiteral( "location" ) << QStringLiteral( "centerOf" ) << QStringLiteral( "position" ) << QStringLiteral( "extentOf" )
+  << QStringLiteral( "coverage" ) << QStringLiteral( "edgeOf" ) << QStringLiteral( "centerLineOf" ) << QStringLiteral( "multiLocation" )
+  << QStringLiteral( "multiCenterOf" ) << QStringLiteral( "multiPosition" ) << QStringLiteral( "multiCenterLineOf" )
+  << QStringLiteral( "multiEdgeOf" ) << QStringLiteral( "multiCoverage" ) << QStringLiteral( "multiExtentOf" );
 
   // Add attributes from current comple type
-  QList<QDomElement> sequenceElements = domElements( extrest, "sequence.element" );
+  QList<QDomElement> sequenceElements = domElements( extrest, QStringLiteral( "sequence.element" ) );
   Q_FOREACH ( const QDomElement& sequenceElement, sequenceElements )
   {
-    QString fieldName = sequenceElement.attribute( "name" );
-    QString fieldTypeName = stripNS( sequenceElement.attribute( "type" ) );
-    QString ref = sequenceElement.attribute( "ref" );
+    QString fieldName = sequenceElement.attribute( QStringLiteral( "name" ) );
+    QString fieldTypeName = stripNS( sequenceElement.attribute( QStringLiteral( "type" ) ) );
+    QString ref = sequenceElement.attribute( QStringLiteral( "ref" ) );
     //QgsDebugMsg ( QString("fieldName = %1 fieldTypeName = %2 ref = %3").arg(fieldName).arg(fieldTypeName).arg(ref) );
 
     if ( !ref.isEmpty() )
     {
-      if ( ref.startsWith( "gml:" ) )
+      if ( ref.startsWith( QLatin1String( "gml:" ) ) )
       {
         if ( geometryAliases.contains( stripNS( ref ) ) )
         {
@@ -207,8 +202,8 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString & 
     if ( fieldTypeName.isEmpty() )
     {
       // or type is inheriting from xs:simpleType
-      QDomElement sequenceElementRestriction = domElement( sequenceElement, "simpleType.restriction" );
-      fieldTypeName = stripNS( sequenceElementRestriction.attribute( "base" ) );
+      QDomElement sequenceElementRestriction = domElement( sequenceElement, QStringLiteral( "simpleType.restriction" ) );
+      fieldTypeName = stripNS( sequenceElementRestriction.attribute( QStringLiteral( "base" ) ) );
     }
 
     QVariant::Type fieldType = QVariant::String;
@@ -225,11 +220,11 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString & 
         continue;
       }
 
-      if ( fieldTypeName == "decimal" )
+      if ( fieldTypeName == QLatin1String( "decimal" ) )
       {
         fieldType = QVariant::Double;
       }
-      else if ( fieldTypeName == "integer" )
+      else if ( fieldTypeName == QLatin1String( "integer" ) )
       {
         fieldType = QVariant::Int;
       }
@@ -245,18 +240,18 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString & 
 QString QgsGmlSchema::xsdComplexTypeGmlBaseType( const QDomElement &element, const QString & name )
 {
   //QgsDebugMsg("name = " + name );
-  QDomElement complexTypeElement = domElement( element, "complexType", "name", name );
-  if ( complexTypeElement.isNull() ) return "";
+  QDomElement complexTypeElement = domElement( element, QStringLiteral( "complexType" ), QStringLiteral( "name" ), name );
+  if ( complexTypeElement.isNull() ) return QLatin1String( "" );
 
-  QDomElement extrest = domElement( complexTypeElement, "complexContent.extension" );
+  QDomElement extrest = domElement( complexTypeElement, QStringLiteral( "complexContent.extension" ) );
   if ( extrest.isNull() )
   {
-    extrest = domElement( complexTypeElement, "complexContent.restriction" );
+    extrest = domElement( complexTypeElement, QStringLiteral( "complexContent.restriction" ) );
   }
-  if ( extrest.isNull() ) return "";
+  if ( extrest.isNull() ) return QLatin1String( "" );
 
-  QString extrestName = extrest.attribute( "base" );
-  if ( extrestName.startsWith( "gml:" ) )
+  QString extrestName = extrest.attribute( QStringLiteral( "base" ) );
+  if ( extrestName.startsWith( QLatin1String( "gml:" ) ) )
   {
     // GML base type found
     return stripNS( extrestName );
@@ -294,7 +289,7 @@ QList<QDomElement> QgsGmlSchema::domElements( const QDomElement &element, const 
         }
         else
         {
-          list.append( domElements( el, names.join( "." ) ) );
+          list.append( domElements( el, names.join( QStringLiteral( "." ) ) ) );
         }
       }
     }
@@ -330,7 +325,6 @@ QDomElement QgsGmlSchema::domElement( const QDomElement &element, const QString 
 
 bool QgsGmlSchema::guessSchema( const QByteArray &data )
 {
-  QgsDebugMsg( "Entered" );
   mLevel = 0;
   mSkipLevel = std::numeric_limits<int>::max();
   XML_Parser p = XML_ParserCreateNS( nullptr, NS_SEPARATOR );
@@ -344,7 +338,7 @@ bool QgsGmlSchema::guessSchema( const QByteArray &data )
   {
     QString err = QString( XML_ErrorString( XML_GetErrorCode( p ) ) );
     QgsDebugMsg( QString( "XML_Parse returned %1 error %2" ).arg( res ).arg( err ) );
-    mError = QgsError( err, "GML schema" );
+    mError = QgsError( err, QStringLiteral( "GML schema" ) );
     mError.append( tr( "Cannot guess schema" ) );
   }
 
@@ -366,36 +360,36 @@ void QgsGmlSchema::startElement( const XML_Char* el, const XML_Char** attr )
   }
 
   mParsePathStack.append( elementName );
-  QString path = mParsePathStack.join( "." );
+  QString path = mParsePathStack.join( QStringLiteral( "." ) );
 
   QStringList splitName =  elementName.split( NS_SEPARATOR );
   QString localName = splitName.last();
-  QString ns = splitName.size() > 1 ? splitName.first() : "";
+  QString ns = splitName.size() > 1 ? splitName.first() : QLatin1String( "" );
   //QgsDebugMsg( "ns = " + ns + " localName = " + localName );
 
   ParseMode parseMode = modeStackTop();
   //QgsDebugMsg ( QString("localName = %1 parseMode = %2").arg(localName).arg(parseMode) );
 
-  if ( ns == GML_NAMESPACE && localName == "boundedBy" )
+  if ( ns == GML_NAMESPACE && localName == QLatin1String( "boundedBy" ) )
   {
     // gml:boundedBy in feature or feature collection -> skip
     mSkipLevel = mLevel + 1;
   }
-  else if ( localName.compare( "featureMembers", Qt::CaseInsensitive ) == 0 )
+  else if ( localName.compare( QLatin1String( "featureMembers" ), Qt::CaseInsensitive ) == 0 )
   {
-    mParseModeStack.push( QgsGmlSchema::featureMembers );
+    mParseModeStack.push( QgsGmlSchema::FeatureMembers );
   }
   // GML does not specify that gml:FeatureAssociationType elements should end
   // with 'Member' apart standard gml:featureMember, but it is quite usual to
   // that the names ends with 'Member', e.g.: osgb:topographicMember, cityMember,...
   // so this is really fail if the name does not contain 'Member'
 
-  else if ( localName.endsWith( "member", Qt::CaseInsensitive ) )
+  else if ( localName.endsWith( QLatin1String( "member" ), Qt::CaseInsensitive ) )
   {
-    mParseModeStack.push( QgsGmlSchema::featureMember );
+    mParseModeStack.push( QgsGmlSchema::FeatureMember );
   }
   // UMN Mapserver simple GetFeatureInfo response layer element (ends with _layer)
-  else if ( elementName.endsWith( "_layer" ) )
+  else if ( elementName.endsWith( QLatin1String( "_layer" ) ) )
   {
     // do nothing, we catch _feature children
   }
@@ -403,10 +397,10 @@ void QgsGmlSchema::startElement( const XML_Char* el, const XML_Char** attr )
   // or featureMember children.
   // QGIS mapserver 2.2 GetFeatureInfo is using <Feature id="###"> for feature member,
   // without any feature class distinction.
-  else if ( elementName.endsWith( "_feature" )
-            || parseMode == QgsGmlSchema::featureMember
-            || parseMode == QgsGmlSchema::featureMembers
-            || localName.compare( "feature", Qt::CaseInsensitive ) == 0 )
+  else if ( elementName.endsWith( QLatin1String( "_feature" ) )
+            || parseMode == QgsGmlSchema::FeatureMember
+            || parseMode == QgsGmlSchema::FeatureMembers
+            || localName.compare( QLatin1String( "feature" ), Qt::CaseInsensitive ) == 0 )
   {
     QgsDebugMsg( "is feature path = " + path );
     if ( mFeatureClassMap.count( localName ) == 0 )
@@ -414,9 +408,9 @@ void QgsGmlSchema::startElement( const XML_Char* el, const XML_Char** attr )
       mFeatureClassMap.insert( localName, QgsGmlFeatureClass( localName, path ) );
     }
     mCurrentFeatureName = localName;
-    mParseModeStack.push( QgsGmlSchema::feature );
+    mParseModeStack.push( QgsGmlSchema::Feature );
   }
-  else if ( parseMode == QgsGmlSchema::attribute && ns == GML_NAMESPACE && mGeometryTypes.indexOf( localName ) >= 0 )
+  else if ( parseMode == QgsGmlSchema::Attribute && ns == GML_NAMESPACE && mGeometryTypes.indexOf( localName ) >= 0 )
   {
     // Geometry (Point,MultiPoint,...) in geometry attribute
     QStringList &geometryAttributes = mFeatureClassMap[mCurrentFeatureName].geometryAttributes();
@@ -426,7 +420,7 @@ void QgsGmlSchema::startElement( const XML_Char* el, const XML_Char** attr )
     }
     mSkipLevel = mLevel + 1; // no need to parse children
   }
-  else if ( parseMode == QgsGmlSchema::feature )
+  else if ( parseMode == QgsGmlSchema::Feature )
   {
     // An element in feature should be ordinary or geometry attribute
     //QgsDebugMsg( "is attribute");
@@ -435,19 +429,19 @@ void QgsGmlSchema::startElement( const XML_Char* el, const XML_Char** attr )
     // <gml:desc>My description</gml:desc>
     // but QGIS server (2.2) is using:
     // <Attribute value="My description" name="desc"/>
-    QString name = readAttribute( "name", attr );
+    QString name = readAttribute( QStringLiteral( "name" ), attr );
     //QgsDebugMsg ( "attribute name = " + name );
-    if ( localName.compare( "attribute", Qt::CaseInsensitive ) == 0
+    if ( localName.compare( QLatin1String( "attribute" ), Qt::CaseInsensitive ) == 0
          && !name.isEmpty() )
     {
-      QString value = readAttribute( "value", attr );
+      QString value = readAttribute( QStringLiteral( "value" ), attr );
       //QgsDebugMsg ( "attribute value = " + value );
       addAttribute( name, value );
     }
     else
     {
       mAttributeName = localName;
-      mParseModeStack.push( QgsGmlSchema::attribute );
+      mParseModeStack.push( QgsGmlSchema::Attribute );
       mStringCash.clear();
     }
   }
@@ -472,15 +466,15 @@ void QgsGmlSchema::endElement( const XML_Char* el )
 
   QStringList splitName =  elementName.split( NS_SEPARATOR );
   QString localName = splitName.last();
-  QString ns = splitName.size() > 1 ? splitName.first() : "";
+  QString ns = splitName.size() > 1 ? splitName.first() : QLatin1String( "" );
 
   QgsGmlSchema::ParseMode parseMode = modeStackTop();
 
-  if ( parseMode == QgsGmlSchema::featureMembers )
+  if ( parseMode == QgsGmlSchema::FeatureMembers )
   {
     modeStackPop();
   }
-  else if ( parseMode == QgsGmlSchema::attribute && localName == mAttributeName )
+  else if ( parseMode == QgsGmlSchema::Attribute && localName == mAttributeName )
   {
     // End of attribute
     //QgsDebugMsg("end attribute");
@@ -491,11 +485,11 @@ void QgsGmlSchema::endElement( const XML_Char* el )
       addAttribute( mAttributeName, mStringCash );
     }
   }
-  else if ( ns == GML_NAMESPACE && localName == "boundedBy" )
+  else if ( ns == GML_NAMESPACE && localName == QLatin1String( "boundedBy" ) )
   {
     // was skipped
   }
-  else if ( localName.endsWith( "member", Qt::CaseInsensitive ) )
+  else if ( localName.endsWith( QLatin1String( "member" ), Qt::CaseInsensitive ) )
   {
     modeStackPop();
   }
@@ -513,7 +507,7 @@ void QgsGmlSchema::characters( const XML_Char* chars, int len )
   }
 
   //save chars in mStringCash attribute mode for value type analysis
-  if ( modeStackTop() == QgsGmlSchema::attribute )
+  if ( modeStackTop() == QgsGmlSchema::Attribute )
   {
     mStringCash.append( QString::fromUtf8( chars, len ) );
   }

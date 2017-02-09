@@ -52,11 +52,6 @@ QgsColorSwatchGrid::QgsColorSwatchGrid( QgsColorScheme* scheme, const QString& c
   refreshColors();
 }
 
-QgsColorSwatchGrid::~QgsColorSwatchGrid()
-{
-
-}
-
 QSize QgsColorSwatchGrid::minimumSizeHint() const
 {
   return QSize( mWidth, calculateHeight() );
@@ -325,14 +320,14 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
   }
 }
 
-const QPixmap& QgsColorSwatchGrid::transparentBackground()
+QPixmap QgsColorSwatchGrid::transparentBackground()
 {
-  static QPixmap transpBkgrd;
+  static QPixmap sTranspBkgrd;
 
-  if ( transpBkgrd.isNull() )
-    transpBkgrd = QgsApplication::getThemePixmap( "/transp-background_8x8.png" );
+  if ( sTranspBkgrd.isNull() )
+    sTranspBkgrd = QgsApplication::getThemePixmap( QStringLiteral( "/transp-background_8x8.png" ) );
 
-  return transpBkgrd;
+  return sTranspBkgrd;
 }
 
 int QgsColorSwatchGrid::swatchForPosition( QPoint position ) const
@@ -374,11 +369,6 @@ QgsColorSwatchGridAction::QgsColorSwatchGridAction( QgsColorScheme* scheme, QMen
 
   //hide the action if no colors to be shown
   setVisible( !mColorSwatchGrid->colors()->isEmpty() );
-}
-
-QgsColorSwatchGridAction::~QgsColorSwatchGridAction()
-{
-
 }
 
 void QgsColorSwatchGridAction::setBaseColor( const QColor &baseColor )

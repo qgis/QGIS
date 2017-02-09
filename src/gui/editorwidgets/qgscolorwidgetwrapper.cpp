@@ -14,7 +14,9 @@
  ***************************************************************************/
 
 #include "qgscolorwidgetwrapper.h"
+#include "qgscolorbutton.h"
 #include <QLayout>
+
 
 QgsColorWidgetWrapper::QgsColorWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
@@ -25,12 +27,11 @@ QgsColorWidgetWrapper::QgsColorWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, 
 
 QVariant QgsColorWidgetWrapper::value() const
 {
-  QVariant v;
-
+  QColor c;
   if ( mColorButton )
-    v = mColorButton->color();
+    c = mColorButton->color();
 
-  return v;
+  return c.isValid() ? QVariant( c ) : QVariant( QVariant::Color );
 }
 
 void QgsColorWidgetWrapper::showIndeterminateState()
@@ -48,8 +49,8 @@ QWidget* QgsColorWidgetWrapper::createWidget( QWidget* parent )
   container->setLayout( layout );
   layout->setMargin( 0 );
   layout->setContentsMargins( 0, 0, 0, 0 );
-  QgsColorButtonV2* button = new QgsColorButtonV2();
-  button->setContext( QString( "editor" ) );
+  QgsColorButton* button = new QgsColorButton();
+  button->setContext( QStringLiteral( "editor" ) );
   layout->addWidget( button );
   layout->addStretch();
   container->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Minimum );
@@ -58,12 +59,13 @@ QWidget* QgsColorWidgetWrapper::createWidget( QWidget* parent )
 
 void QgsColorWidgetWrapper::initWidget( QWidget* editor )
 {
-  mColorButton = qobject_cast<QgsColorButtonV2*>( editor );
+  mColorButton = qobject_cast<QgsColorButton*>( editor );
   if ( !mColorButton )
   {
-    mColorButton = editor->findChild<QgsColorButtonV2*>();
+    mColorButton = editor->findChild<QgsColorButton*>();
   }
 
+  mColorButton->setShowNull( true );
   connect( mColorButton, SIGNAL( colorChanged( QColor ) ), this, SLOT( valueChanged() ) );
 }
 
@@ -75,5 +77,10 @@ bool QgsColorWidgetWrapper::valid() const
 void QgsColorWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mColorButton )
-    mColorButton->setColor( QColor( value.toString() ) );
+    mColorButton->setColor( !value.isNull() ? QColor( value.toString() ) : QColor() );
+}
+
+void QgsColorWidgetWrapper::updateConstraintWidgetStatus( ConstraintResult /*constraintValid*/ )
+{
+  // nothing
 }

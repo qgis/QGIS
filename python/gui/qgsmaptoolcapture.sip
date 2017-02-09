@@ -32,14 +32,14 @@ class QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     virtual void deactivate();
 
     /** Adds a whole curve (e.g. circularstring) to the captured geometry. Curve must be in map CRS*/
-    int addCurve( QgsCurveV2* c );
+    int addCurve( QgsCurve* c );
 
     /**
      * Get the capture curve
      *
      * @return Capture curve
      */
-    const QgsCompoundCurveV2* captureCurve() const;
+    const QgsCompoundCurve* captureCurve() const;
 
 
     /**
@@ -67,16 +67,6 @@ class QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
 
   protected:
-    /** Converts a map point to layer coordinates
-     * @param mapPoint the point in map coordinates
-     * @param[in,out] layerPoint the point in layer coordinates
-     * @return
-     *  0 in case of success
-     *  1 if the current layer is null or not a vector layer
-     *  2 if the transformation failed
-     * @deprecated use nextPoint(const QgsPointV2&, QgsPointV2&)
-     */
-    int nextPoint( const QgsPoint& mapPoint, QgsPoint& layerPoint ) /Deprecated/;
 
     /** Converts a map point to layer coordinates
      *  @param mapPoint the point in map coordinates
@@ -96,18 +86,6 @@ class QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      *  0 in case of success
      *  1 if the current layer is null or not a vector layer
      *  2 if the transformation failed
-     * @deprecated use nextPoint( const QPoint&, QgsPointV2&, QgsPointV2& )
-     */
-    int nextPoint( QPoint p, QgsPoint &layerPoint, QgsPoint &mapPoint ) /Deprecated/;
-
-    /** Converts a point to map coordinates and layer coordinates
-     * @param p the input point
-     * @param[in,out] layerPoint the point in layer coordinates
-     * @param[in,out] mapPoint the point in map coordinates
-     * @return
-     *  0 in case of success
-     *  1 if the current layer is null or not a vector layer
-     *  2 if the transformation failed
      */
     int nextPoint( QPoint p, QgsPointV2 &layerPoint, QgsPointV2 &mapPoint );
 
@@ -116,7 +94,7 @@ class QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * @return 0 in case of success, 1 if not applicable (CRS mismatch), 2 in case of failure
      * @note added in 2.14
      */
-    int fetchLayerPoint( QgsPointLocator::Match match, QgsPointV2& layerPoint );
+    int fetchLayerPoint( const QgsPointLocator::Match& match, QgsPointV2& layerPoint );
 
     /** Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
      * @return 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed
@@ -128,7 +106,7 @@ class QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * @param match Data about the snapping match. Can be an invalid match, if point not snapped.
      * @note added in 2.14
      */
-    int addVertex( const QgsPoint& mapPoint, QgsPointLocator::Match match );
+    int addVertex( const QgsPoint& mapPoint, const QgsPointLocator::Match& match );
 
     /** Removes the last vertex from mRubberBand and mCaptureList*/
     void undo();

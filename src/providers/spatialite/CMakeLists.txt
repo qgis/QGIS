@@ -10,7 +10,6 @@ SET(SPATIALITE_SRCS
   qgsspatialitedataitems.cpp
   qgsspatialiteconnection.cpp
   qgsspatialiteconnpool.cpp
-  qgsspatialiteexpressioncompiler.cpp
   qgsspatialitefeatureiterator.cpp
   qgsspatialitesourceselect.cpp
   qgsspatialitetablemodel.cpp
@@ -29,7 +28,7 @@ SET(SPATIALITE_MOC_HDRS
 ########################################################
 # Build
 
-QT4_WRAP_CPP(SPATIALITE_MOC_SRCS ${SPATIALITE_MOC_HDRS})
+QT5_WRAP_CPP(SPATIALITE_MOC_SRCS ${SPATIALITE_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(SYSTEM
   ${QSCINTILLA_INCLUDE_DIR}
@@ -39,6 +38,8 @@ INCLUDE_DIRECTORIES(
   ../../core/geometry
   ../../gui
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${SQLITE3_INCLUDE_DIR}

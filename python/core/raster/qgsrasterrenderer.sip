@@ -6,22 +6,6 @@ class QgsRasterRenderer : QgsRasterInterface
 %End
 
   public:
-    // Origin of min / max values
-    enum MinMaxOrigin
-    {
-      MinMaxUnknown,
-      MinMaxUser, // entered by user
-      // method
-      MinMaxMinMax,
-      MinMaxCumulativeCut,
-      MinMaxStdDev,
-      // Extent
-      MinMaxFullExtent,
-      MinMaxSubExtent,
-      // Precision
-      MinMaxEstimated,
-      MinMaxExact
-    };
 
     static const QRgb NODATA_COLOR;
 
@@ -32,13 +16,13 @@ class QgsRasterRenderer : QgsRasterInterface
 
     virtual int bandCount() const;
 
-    virtual QGis::DataType dataType( int bandNo ) const;
+    virtual Qgis::DataType dataType( int bandNo ) const;
 
     virtual QString type() const;
 
     virtual bool setInput( QgsRasterInterface* input );
 
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0 / Factory /;
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) = 0 / Factory /;
 
     bool usesTransparency() const;
 
@@ -55,19 +39,26 @@ class QgsRasterRenderer : QgsRasterInterface
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
 
     /** Sets base class members from xml. Usually called from create() methods of subclasses*/
-    void readXML( const QDomElement& rendererElem );
+    void readXml( const QDomElement& rendererElem );
+
+    /** Copies common properties like opacity / transparency data from other renderer.
+     *  Useful when cloning renderers.
+     *  @note added in 2.16  */
+    void copyCommonProperties( const QgsRasterRenderer* other, bool copyMinMaxOrigin = true );
 
     /** Returns a list of band numbers used by the renderer*/
     virtual QList<int> usesBands() const;
 
-    static QString minMaxOriginName( int theOrigin );
-    static QString minMaxOriginLabel( int theOrigin );
-    static int minMaxOriginFromName( const QString& theName );
+    //! Returns const reference to origin of min/max values
+    const QgsRasterMinMaxOrigin& minMaxOrigin() const;
+
+    //! Sets origin of min/max values
+    void setMinMaxOrigin( const QgsRasterMinMaxOrigin& theOrigin );
 
   protected:
 
     /** Write upper class info into rasterrenderer element (called by writeXML method of subclasses)*/
-    void _writeXML( QDomDocument& doc, QDomElement& rasterRendererElem ) const;
+    void _writeXml( QDomDocument& doc, QDomElement& rasterRendererElem ) const;
 
   private:
 

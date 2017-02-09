@@ -1,4 +1,4 @@
-class QgsInvertedPolygonRenderer : QgsFeatureRendererV2
+class QgsInvertedPolygonRenderer : QgsFeatureRenderer
 {
 %TypeHeaderCode
 #include <qgsinvertedpolygonrenderer.h>
@@ -6,9 +6,11 @@ class QgsInvertedPolygonRenderer : QgsFeatureRendererV2
   public:
 
     /** Constructor
-     * @param embeddedRenderer optional embeddedRenderer. If null, a default one will be assigned
+     * @param embeddedRenderer optional embeddedRenderer. If null, a default one will be assigned.
+     * Ownership will be transferred.
      */
-    QgsInvertedPolygonRenderer( const QgsFeatureRendererV2* embeddedRenderer /Transfer/ = 0 );
+    QgsInvertedPolygonRenderer( QgsFeatureRenderer* embeddedRenderer /Transfer/ = 0 );
+
     virtual ~QgsInvertedPolygonRenderer();
 
     /** Used to clone this feature renderer.*/
@@ -37,29 +39,29 @@ class QgsInvertedPolygonRenderer : QgsFeatureRendererV2
     virtual QString dump() const;
 
     /** Proxy that will call this method on the embedded renderer. */
-    virtual QList<QString> usedAttributes();
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
     /** Proxy that will call this method on the embedded renderer. */
-    virtual int capabilities();
+    virtual QgsFeatureRenderer::Capabilities capabilities();
     /** Proxy that will call this method on the embedded renderer.
      * @note available in python bindings as symbol2
      */
-    virtual QgsSymbolV2List symbols( QgsRenderContext& context ) /PyName=symbols2/;
+    virtual QgsSymbolList symbols( QgsRenderContext& context );
     /** Proxy that will call this method on the embedded renderer.
      * @note available in python bindings as symbolForFeature2
      */
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=symbolForFeature2/;
+    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );
     /** Proxy that will call this method on the embedded renderer.
      * @note available in python bindings as originalSymbolForFeature2
      */
-    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context ) /PyName=originalSymbolForFeature2/;
+    virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context );
     /** Proxy that will call this method on the embedded renderer.
      * @note available in python bindings as symbolsForFeature
      */
-    virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) /PyName=symbolsForFeature/;
+    virtual QgsSymbolList symbolsForFeature( QgsFeature& feat, QgsRenderContext& context );
     /** Proxy that will call this method on the embedded renderer.
      * @note available in python bindings as originalSymbolsForFeature2
      */
-    virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) /PyName=originalSymbolsForFeature2/;
+    virtual QgsSymbolList originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context );
     /** Proxy that will call this method on the embedded renderer. */
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
     /** Proxy that will call this method on the embedded renderer.
@@ -69,10 +71,10 @@ class QgsInvertedPolygonRenderer : QgsFeatureRendererV2
     /** Proxy that will call this method on the embedded renderer.
      * @note available in python bindings as willRenderFeature2
      */
-    virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context ) /PyName=willRenderFeature2/;
+    virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context );
 
     /** Creates a renderer out of an XML, for loading*/
-    static QgsFeatureRendererV2* create( QDomElement& element ) /Factory/;
+    static QgsFeatureRenderer* create( QDomElement& element ) /Factory/;
 
     /** Creates an XML representation of the renderer. Used for saving purpose
      * @param doc the XML document where to create the XML subtree
@@ -80,13 +82,10 @@ class QgsInvertedPolygonRenderer : QgsFeatureRendererV2
      */
     virtual QDomElement save( QDomDocument& doc );
 
-    /** Sets the embedded renderer
-     * @param subRenderer the embedded renderer (will be cloned)
-     */
-    void setEmbeddedRenderer( const QgsFeatureRendererV2* subRenderer );
-    /** @returns the current embedded renderer
-     */
-    const QgsFeatureRendererV2* embeddedRenderer() const;
+    void setEmbeddedRenderer( QgsFeatureRenderer* subRenderer /Transfer/ );
+    const QgsFeatureRenderer* embeddedRenderer() const;
+
+    virtual void setLegendSymbolItem( const QString& key, QgsSymbol* symbol );
 
     /** @returns true if the geometries are to be preprocessed (merged with an union) before rendering.*/
     bool preprocessingEnabled() const;
@@ -102,5 +101,5 @@ class QgsInvertedPolygonRenderer : QgsFeatureRendererV2
      * @note added in 2.5
      * @returns a new renderer if the conversion was possible, otherwise 0.
      */
-    static QgsInvertedPolygonRenderer* convertFromRenderer( const QgsFeatureRendererV2* renderer ) /Factory/;
+    static QgsInvertedPolygonRenderer* convertFromRenderer( const QgsFeatureRenderer* renderer ) /Factory/;
 };

@@ -10,11 +10,6 @@ class QgsRasterLayer : QgsMapLayer
 %End
 
   public:
-    /** \brief Default cumulative cut lower limit */
-    static const double CUMULATIVE_CUT_LOWER;
-
-    /** \brief Default cumulative cut upper limit */
-    static const double CUMULATIVE_CUT_UPPER;
 
     /** \brief Default sample size (number of pixels) for estimated statistics/histogram calculation */
     static const double SAMPLE_SIZE;
@@ -38,19 +33,9 @@ class QgsRasterLayer : QgsMapLayer
      *
      * -
      * */
-    QgsRasterLayer( const QString &path,
-                    const QString &baseName = QString::null,
-                    bool loadDefaultStyleFlag = true );
-
-    //TODO - QGIS 3.0
-    //This constructor is confusing if used with string literals for providerKey,
-    //as the previous constructor will be called with the literal for providerKey
-    //implicitly converted to a bool.
-    //for QGIS 3.0, make either constructor explicit or alter the signatures
-    /** \brief [ data provider interface ] Constructor in provider mode */
     QgsRasterLayer( const QString &uri,
-                    const QString &baseName,
-                    const QString &providerKey,
+                    const QString &baseName = QString(),
+                    const QString &providerKey = "gdal",
                     bool loadDefaultStyleFlag = true );
 
     /** \brief The destructor */
@@ -115,7 +100,7 @@ class QgsRasterLayer : QgsMapLayer
     int bandCount() const;
 
     /** \brief Get the name of a band given its number  */
-    const  QString bandName( int theBandNoInt );
+    QString bandName( int theBandNoInt ) const;
 
     /** Returns the data provider */
     QgsRasterDataProvider* dataProvider();
@@ -133,9 +118,6 @@ class QgsRasterLayer : QgsMapLayer
      */
     virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext ) /Factory/;
 
-    /** \brief This is called when the view on the raster layer needs to be redrawn */
-    bool draw( QgsRenderContext& rendererContext );
-
     /** \brief This is an overloaded version of the draw() function that is called by both draw() and thumbnailAsPixmap */
     void draw( QPainter * theQPainter,
                QgsRasterViewPort * myRasterViewPort,
@@ -147,7 +129,7 @@ class QgsRasterLayer : QgsMapLayer
     virtual bool isSpatial() const;
 
     /** \brief Obtain GDAL Metadata for this layer */
-    QString metadata();
+    QString metadata() const;
 
     /** \brief Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned */
     QPixmap paletteAsPixmap( int theBandNumber = 1 );
@@ -168,7 +150,7 @@ class QgsRasterLayer : QgsMapLayer
 
 
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,
-                                 QgsRaster::ContrastEnhancementLimits theLimits = QgsRaster::ContrastEnhancementMinMax,
+                                 QgsRasterMinMaxOrigin::Limits theLimits = QgsRasterMinMaxOrigin::MinMax,
                                  const QgsRectangle& theExtent = QgsRectangle(),
                                  int theSampleSize = QgsRasterLayer::SAMPLE_SIZE,
                                  bool theGenerateLookupTableFlag = true );
@@ -176,20 +158,11 @@ class QgsRasterLayer : QgsMapLayer
     /** \brief Set default contrast enhancement */
     void setDefaultContrastEnhancement();
 
-    /** \brief Overloaded version of the above function for convenience when restoring from xml
-     * @deprecated Deprecated since QGIS 2.10. Use setRendererForDrawingStyle() or directly setRenderer()
-     */
-    void setDrawingStyle( const QString & theDrawingStyleQString ) /Deprecated/;
-
     /** \brief [ data provider interface ] A wrapper function to emit a progress update signal */
     void showProgress( int theValue );
 
     /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */
     virtual QStringList subLayers() const;
-
-    /** \brief Draws a preview of the rasterlayer into a pixmap
-    @deprecated use previewAsImage() for rendering with QGIS>=2.4 */
-    QPixmap previewAsPixmap( QSize size, const QColor& bgColor = QColor( 255, 255, 255 ) ) /Deprecated/;
 
     /** \brief Draws a preview of the rasterlayer into a QImage
      @note added in 2.4 */
@@ -215,9 +188,6 @@ class QgsRasterLayer : QgsMapLayer
   public slots:
     void showStatusMessage( const QString & theMessage );
 
-    //! @deprecated in 2.4 - does nothing
-    void updateProgress( int, int ) /Deprecated/;
-
     /** \brief receive progress signal from provider */
     void onProgress( int, double, const QString& );
 
@@ -234,14 +204,19 @@ class QgsRasterLayer : QgsMapLayer
     /** \brief Read the symbology for the current layer from the Dom node supplied */
     bool readSymbology( const QDomNode& node, QString& errorMessage );
 
+    /** \brief Read the style information for the current layer from the Dom node supplied */
+    bool readStyle(const QDomNode &node, QString &errorMessage);
+
     /** \brief Reads layer specific state from project file Dom node */
     bool readXml( const QDomNode& layer_node );
 
     /** \brief Write the symbology for the layer into the docment provided */
     bool writeSymbology( QDomNode&, QDomDocument& doc, QString& errorMessage ) const;
 
-    /** \brief Write layer specific state to project file Dom node */
-    bool writeXml( QDomNode & layer_node, QDomDocument & doc );
+    /** \brief Write the style for the layer into the docment provided */
+    bool writeStyle(QDomNode &node, QDomDocument &doc, QString &errorMessage) const;
 
+    /** \brief Write layer specific state to project file Dom node */
+    bool writeXml( QDomNode & layer_node, QDomDocument & doc ) const;
 };
 

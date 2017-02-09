@@ -18,17 +18,19 @@
 
 #include "ui_qgsgroupwmsdatadialogbase.h"
 #include "qgisgui.h"
-#include "qgscontexthelp.h"
-
 #include "qgis.h"
+#include "qgis_gui.h"
 
-class GUI_EXPORT QgsGroupWMSDataDialog: public QDialog, private Ui::QgsGroupWMSDataDialogBase
+/** \ingroup gui
+ * \class QgsGroupWmsDataDialog
+ */
+class GUI_EXPORT QgsGroupWmsDataDialog: public QDialog, private Ui::QgsGroupWMSDataDialogBase
 {
     Q_OBJECT
 
   public:
     //! Constructor
-    QgsGroupWMSDataDialog( QWidget *parent = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
+    QgsGroupWmsDataDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     //~QgsGroupWMSDataDialog();
 
     //! return group WMS title

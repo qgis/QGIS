@@ -93,10 +93,10 @@ void QgsGPSDeviceDialog::on_pbnUpdateDevice_clicked()
 void QgsGPSDeviceDialog::slotUpdateDeviceList( const QString& selection )
 {
   QString selected;
-  if ( selection == "" )
+  if ( selection == QLatin1String( "" ) )
   {
     QListWidgetItem* item = lbDeviceList->currentItem();
-    selected = ( item ? item->text() : "" );
+    selected = ( item ? item->text() : QLatin1String( "" ) );
   }
   else
   {
@@ -137,17 +137,17 @@ void QgsGPSDeviceDialog::slotSelectionChanged( QListWidgetItem *current )
     leDeviceName->setText( devName );
     QgsGPSDevice* device = mDevices[devName];
     leWptDown->setText( device->
-                        importCommand( "%babel", "-w", "%in", "%out" ).join( " " ) );
+                        importCommand( QStringLiteral( "%babel" ), QStringLiteral( "-w" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QStringLiteral( " " ) ) );
     leWptUp->setText( device->
-                      exportCommand( "%babel", "-w", "%in", "%out" ).join( " " ) );
+                      exportCommand( QStringLiteral( "%babel" ), QStringLiteral( "-w" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QStringLiteral( " " ) ) );
     leRteDown->setText( device->
-                        importCommand( "%babel", "-r", "%in", "%out" ).join( " " ) );
+                        importCommand( QStringLiteral( "%babel" ), QStringLiteral( "-r" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QStringLiteral( " " ) ) );
     leRteUp->setText( device->
-                      exportCommand( "%babel", "-r", "%in", "%out" ).join( " " ) );
+                      exportCommand( QStringLiteral( "%babel" ), QStringLiteral( "-r" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QStringLiteral( " " ) ) );
     leTrkDown->setText( device->
-                        importCommand( "%babel", "-t", "%in", "%out" ).join( " " ) );
+                        importCommand( QStringLiteral( "%babel" ), QStringLiteral( "-t" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QStringLiteral( " " ) ) );
     leTrkUp->setText( device->
-                      exportCommand( "%babel", "-t", "%in", "%out" ).join( " " ) );
+                      exportCommand( QStringLiteral( "%babel" ), QStringLiteral( "-t" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QStringLiteral( " " ) ) );
   }
 }
 
@@ -156,25 +156,25 @@ void QgsGPSDeviceDialog::writeDeviceSettings()
 {
   QStringList deviceNames;
   QSettings settings;
-  QString devPath = "/Plugin-GPS/devices/%1";
-  settings.remove( "/Plugin-GPS/devices" );
+  QString devPath = QStringLiteral( "/Plugin-GPS/devices/%1" );
+  settings.remove( QStringLiteral( "/Plugin-GPS/devices" ) );
 
   std::map<QString, QgsGPSDevice*>::const_iterator iter;
   for ( iter = mDevices.begin(); iter != mDevices.end(); ++iter )
   {
     deviceNames.append( iter->first );
     QString wptDownload =
-      iter->second->importCommand( "%babel", "-w", "%in", "%out" ).join( " " );
+      iter->second->importCommand( QStringLiteral( "%babel" ), QStringLiteral( "-w" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QStringLiteral( " " ) );
     QString wptUpload =
-      iter->second->exportCommand( "%babel", "-w", "%in", "%out" ).join( " " );
+      iter->second->exportCommand( QStringLiteral( "%babel" ), QStringLiteral( "-w" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QStringLiteral( " " ) );
     QString rteDownload =
-      iter->second->importCommand( "%babel", "-r", "%in", "%out" ).join( " " );
+      iter->second->importCommand( QStringLiteral( "%babel" ), QStringLiteral( "-r" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QStringLiteral( " " ) );
     QString rteUpload =
-      iter->second->exportCommand( "%babel", "-r", "%in", "%out" ).join( " " );
+      iter->second->exportCommand( QStringLiteral( "%babel" ), QStringLiteral( "-r" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QStringLiteral( " " ) );
     QString trkDownload =
-      iter->second->importCommand( "%babel", "-t", "%in", "%out" ).join( " " );
+      iter->second->importCommand( QStringLiteral( "%babel" ), QStringLiteral( "-t" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QStringLiteral( " " ) );
     QString trkUpload =
-      iter->second->exportCommand( "%babel", "-t", "%in", "%out" ).join( " " );
+      iter->second->exportCommand( QStringLiteral( "%babel" ), QStringLiteral( "-t" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QStringLiteral( " " ) );
     settings.setValue( devPath.arg( iter->first ) + "/wptdownload",
                        wptDownload );
     settings.setValue( devPath.arg( iter->first ) + "/wptupload", wptUpload );
@@ -185,7 +185,7 @@ void QgsGPSDeviceDialog::writeDeviceSettings()
                        trkDownload );
     settings.setValue( devPath.arg( iter->first ) + "/trkupload", trkUpload );
   }
-  settings.setValue( "/Plugin-GPS/devicelist", deviceNames );
+  settings.setValue( QStringLiteral( "/Plugin-GPS/devicelist" ), deviceNames );
 }
 
 void QgsGPSDeviceDialog::on_pbnClose_clicked()

@@ -97,11 +97,11 @@ class QgsVirtualLayerDefinition
     void setGeometryField( const QString& geometryField );
 
     //! Get the type of the geometry
-    //! QgsWKBTypes::NoGeometry to hide any geometry
-    //! QgsWKBTypes::Unknown for unknown types
-    QgsWKBTypes::Type geometryWkbType() const;
+    //! QgsWkbTypes::NoGeometry to hide any geometry
+    //! QgsWkbTypes::Unknown for unknown types
+    QgsWkbTypes::Type geometryWkbType() const;
     //! Set the type of the geometry
-    void setGeometryWkbType( QgsWKBTypes::Type t );
+    void setGeometryWkbType( QgsWkbTypes::Type t );
 
     //! Get the SRID of the geometry
     long geometrySrid() const;

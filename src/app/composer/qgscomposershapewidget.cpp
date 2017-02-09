@@ -19,19 +19,20 @@
 #include "qgscomposershape.h"
 #include "qgscomposeritemwidget.h"
 #include "qgscomposition.h"
-#include "qgsstylev2.h"
-#include "qgssymbolv2selectordialog.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgsstyle.h"
+#include "qgssymbolselectordialog.h"
+#include "qgssymbollayerutils.h"
 #include <QColorDialog>
 
 QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape* composerShape ): QgsComposerItemBaseWidget( nullptr, composerShape ), mComposerShape( composerShape )
 {
   setupUi( this );
+  setPanelTitle( tr( "Shape properties" ) );
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, composerShape );
 
-  //shapes don't use background or frame, since the symbol style is set through a QgsSymbolV2SelectorDialog
+  //shapes don't use background or frame, since the symbol style is set through a QgsSymbolSelectorWidget
   itemPropertiesWidget->showBackgroundGroup( false );
   itemPropertiesWidget->showFrameGroup( false );
 
@@ -107,18 +108,18 @@ void QgsComposerShapeWidget::on_mShapeStyleButton_clicked()
   // use the atlas coverage layer, if any
   QgsVectorLayer* coverageLayer = atlasCoverageLayer();
 
-  QgsFillSymbolV2* newSymbol = mComposerShape->shapeStyleSymbol()->clone();
-  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), coverageLayer, this );
-  d.setExpressionContext( mComposerShape->createExpressionContext() );
+  QgsFillSymbol* newSymbol = mComposerShape->shapeStyleSymbol()->clone();
+  QgsExpressionContext context = mComposerShape->createExpressionContext();
 
-  if ( d.exec() == QDialog::Accepted )
-  {
-    mComposerShape->beginCommand( tr( "Shape style changed" ) );
-    mComposerShape->setShapeStyleSymbol( newSymbol );
-    updateShapeStyle();
-    mComposerShape->endCommand();
-  }
-  delete newSymbol;
+  QgsSymbolSelectorWidget* d = new QgsSymbolSelectorWidget( newSymbol, QgsStyle::defaultStyle(), coverageLayer, nullptr );
+  QgsSymbolWidgetContext symbolContext;
+  symbolContext.setExpressionContext( &context );
+  d->setContext( symbolContext );
+
+  connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateSymbolFromWidget() ) );
+  connect( d, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget* ) ) );
+  openPanel( d );
+  mComposerShape->beginCommand( tr( "Shape style changed" ) );
 }
 
 void QgsComposerShapeWidget::updateShapeStyle()
@@ -126,7 +127,7 @@ void QgsComposerShapeWidget::updateShapeStyle()
   if ( mComposerShape )
   {
     mComposerShape->refreshSymbol();
-    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mComposerShape->shapeStyleSymbol(), mShapeStyleButton->iconSize() );
+    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mComposerShape->shapeStyleSymbol(), mShapeStyleButton->iconSize() );
     mShapeStyleButton->setIcon( icon );
   }
 }
@@ -177,6 +178,23 @@ void QgsComposerShapeWidget::toggleRadiusSpin( const QString& shapeText )
   {
     mCornerRadiusSpinBox->setEnabled( false );
   }
+}
+
+void QgsComposerShapeWidget::updateSymbolFromWidget()
+{
+  if ( QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( sender() ) )
+    mComposerShape->setShapeStyleSymbol( dynamic_cast< QgsFillSymbol* >( w->symbol() ) );
+}
+
+void QgsComposerShapeWidget::cleanUpSymbolSelector( QgsPanelWidget* container )
+{
+  QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( container );
+  if ( !w )
+    return;
+
+  delete w->symbol();
+  updateShapeStyle();
+  mComposerShape->endCommand();
 }
 
 

@@ -24,6 +24,7 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrectangle.h"
 #include "qgscolorrampshader.h"
+#include "qgis_grass_lib.h"
 
 extern "C"
 {
@@ -57,12 +58,16 @@ class GRASS_LIB_EXPORT QgsGrassRasterValue
     QgsGrassRasterValue();
     ~QgsGrassRasterValue();
 
+    QgsGrassRasterValue( const QgsGrassRasterValue& other ) = delete;
+    QgsGrassRasterValue& operator=( const QgsGrassRasterValue& other ) = delete;
+
     void set( const QString & gisdbase, const QString & location, const QString & mapset, const QString & map );
     void stop();
     // returns raster value, NaN for no data
     // ok is set to true if ok or false on error
     double value( double x, double y, bool *ok );
   private:
+
     void start();
     QString mGisdbase;      // map gisdabase
     QString mLocation;      // map location name (not path!)
@@ -71,6 +76,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterValue
     QTemporaryFile mGisrcFile;
     QProcess *mProcess;
 };
+
 /**
 
   \brief Data provider for GRASS raster layers.
@@ -85,6 +91,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for the provider.
      *
@@ -94,14 +101,10 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
      */
     explicit QgsGrassRasterProvider( QString const & uri = 0 );
 
-    //! Destructor
+
     ~QgsGrassRasterProvider();
 
     QgsRasterInterface * clone() const override;
-
-    /** \brief   Renders the layer as an image
-     */
-    QImage* draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight ) override;
 
     /** Return a provider name
      *
@@ -133,22 +136,15 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
      */
     QString description() const override;
 
-    /** Get the QgsCoordinateReferenceSystem for this layer
-     * @note Must be reimplemented by each provider.
-     * If the provider isn't capable of returning
-     * its projection an empty srs will be return, ti will return 0
-     */
-    virtual QgsCoordinateReferenceSystem crs() override;
+    virtual QgsCoordinateReferenceSystem crs() const override;
 
     /** Return the extent for this data layer
      */
-    virtual QgsRectangle extent() override;
+    virtual QgsRectangle extent() const override;
 
-    /** Returns true if layer is valid
-     */
-    bool isValid() override;
+    bool isValid() const override;
 
-    QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 ) override;
+    QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0, int theDpi = 96 ) override;
 
     /**
      * \brief   Returns the caption error text for the last error in this provider
@@ -178,8 +174,8 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
       */
     int capabilities() const override;
 
-    QGis::DataType dataType( int bandNo ) const override;
-    QGis::DataType srcDataType( int bandNo ) const override;
+    Qgis::DataType dataType( int bandNo ) const override;
+    Qgis::DataType sourceDataType( int bandNo ) const override;
 
     int bandCount() const override;
 
@@ -192,7 +188,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     int ySize() const override;
 
     void readBlock( int bandNo, int xBlock, int yBlock, void *data ) override;
-    void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data ) override;
+    void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
     QgsRasterBandStats bandStatistics( int theBandNo,
                                        int theStats = QgsRasterBandStats::All,
@@ -216,10 +212,11 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     void thaw();
 
   private:
-    void setLastError( QString error );
+    void setLastError( const QString &error );
     void clearLastError();
     // append error if it is not empty
-    void appendIfError( QString error );
+    void appendIfError( const QString &error );
+
     /**
      * Flag indicating if the layer data source is a valid layer
      */

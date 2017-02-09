@@ -19,8 +19,8 @@
 #define QGSDECORATIONITEM_H
 
 #include <QObject>
-#include "qgslogger.h"
-#include "qgssymbollayerv2.h"
+#include "qgsunittypes.h"
+#include "qgis_app.h"
 
 class QPainter;
 
@@ -42,7 +42,7 @@ class APP_EXPORT QgsDecorationItem: public QObject
 
     //! Constructor
     QgsDecorationItem( QObject* parent = nullptr );
-    //! Destructor
+
     virtual ~ QgsDecorationItem();
 
     void setEnabled( bool enabled ) { mEnabled = enabled; }
@@ -80,13 +80,13 @@ class APP_EXPORT QgsDecorationItem: public QObject
 
   protected:
 
-    /** True if decoration item has to be displayed*/
+    //! True if decoration item has to be displayed
     bool mEnabled;
 
     //! Placement of the decoration
     Placement mPlacement;
     //! Units used for the decoration placement margin
-    QgsSymbolV2::OutputUnit mMarginUnit;
+    QgsUnitTypes::RenderUnit mMarginUnit;
 
     QString mName;
     QString mNameConfig;

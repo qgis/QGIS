@@ -22,8 +22,10 @@
 #include <QLabel>
 #include <QProgressBar>
 
-QgsBusyIndicatorDialog::QgsBusyIndicatorDialog( const QString& message, QWidget* parent, const Qt::WindowFlags& fl )
-    : QDialog( parent, fl ), mMessage( QString( message ) ), mMsgLabel( nullptr )
+QgsBusyIndicatorDialog::QgsBusyIndicatorDialog( const QString& message, QWidget* parent, Qt::WindowFlags fl )
+    : QDialog( parent, fl )
+    , mMessage( QString( message ) )
+    , mMsgLabel( nullptr )
 {
   setWindowTitle( tr( "QGIS" ) );
   setLayout( new QVBoxLayout() );
@@ -40,10 +42,6 @@ QgsBusyIndicatorDialog::QgsBusyIndicatorDialog( const QString& message, QWidget*
   {
     mMsgLabel->hide();
   }
-}
-
-QgsBusyIndicatorDialog::~QgsBusyIndicatorDialog()
-{
 }
 
 void QgsBusyIndicatorDialog::setMessage( const QString& message )

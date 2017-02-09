@@ -18,11 +18,14 @@
 #include "qgsapplication.h" //for standard test font
 #include "qgscomposerutils.h"
 #include "qgscomposition.h"
+#include "qgscomposermap.h"
 #include "qgsmultirenderchecker.h"
-#include "qgsdatadefined.h"
 #include "qgsfontutils.h"
+#include "qgsproject.h"
+#include "qgstestutils.h"
+#include "qgsproperty.h"
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QMap>
 
 class TestQgsComposerUtils : public QObject
@@ -48,9 +51,8 @@ class TestQgsComposerUtils : public QObject
     void relativeResizeRect(); //test relative resize of rectangle function
     void decodePaperOrientation(); //test decoding paper orientation
     void decodePaperSize(); //test decoding paper size
-    void readDataDefinedProperty(); //test reading a data defined property
-    void readDataDefinedPropertyMap(); //test reading a whole data defined property map
-    void writeDataDefinedPropertyMap(); //test reading a whole data defined property map
+    void readOldDataDefinedProperty(); //test reading a data defined property
+    void readOldDataDefinedPropertyMap(); //test reading a whole data defined property map
     void scaledFontPixelSize(); //test creating a scaled font
     void fontAscentMM(); //test calculating font ascent in mm
     void fontDescentMM(); //test calculating font descent in mm
@@ -60,11 +62,12 @@ class TestQgsComposerUtils : public QObject
     void textHeightMM(); //test calculating text height in mm
     void drawTextPos(); //test drawing text at a pos
     void drawTextRect(); //test drawing text in a rect
+    void createRenderContextFromComposition();
+    void createRenderContextFromMap();
 
   private:
     bool renderCheck( const QString& testName, QImage &image, int mismatchCount = 0 );
     QgsComposition* mComposition;
-    QgsMapSettings *mMapSettings;
     QString mReport;
     QFont mTestFont;
 
@@ -72,7 +75,6 @@ class TestQgsComposerUtils : public QObject
 
 TestQgsComposerUtils::TestQgsComposerUtils()
     : mComposition( 0 )
-    , mMapSettings( 0 )
 {
 }
 
@@ -82,14 +84,13 @@ void TestQgsComposerUtils::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis(); //for access to test font
 
-  mMapSettings = new QgsMapSettings();
-  mComposition = new QgsComposition( *mMapSettings );
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
-  mReport = "<h1>Composer Utils Tests</h1>\n";
+  mReport = QStringLiteral( "<h1>Composer Utils Tests</h1>\n" );
 
-  QgsFontUtils::loadStandardTestFonts( QStringList() << "Oblique" );
-  mTestFont = QgsFontUtils::getStandardTestFont( "Oblique " );
+  QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Oblique" ) );
+  mTestFont = QgsFontUtils::getStandardTestFont( QStringLiteral( "Oblique " ) );
   mTestFont.setItalic( true );
 
 }
@@ -97,7 +98,6 @@ void TestQgsComposerUtils::initTestCase()
 void TestQgsComposerUtils::cleanupTestCase()
 {
   delete mComposition;
-  delete mMapSettings;
 
   QgsApplication::exitQgis();
 
@@ -381,15 +381,15 @@ void TestQgsComposerUtils::decodePaperOrientation()
 {
   QgsComposition::PaperOrientation orientation;
   bool ok = false;
-  orientation = QgsComposerUtils::decodePaperOrientation( "bad string", ok );
+  orientation = QgsComposerUtils::decodePaperOrientation( QStringLiteral( "bad string" ), ok );
   QVERIFY( !ok );
   QCOMPARE( orientation, QgsComposition::Landscape ); //should default to landscape
   ok = false;
-  orientation = QgsComposerUtils::decodePaperOrientation( "portrait", ok );
+  orientation = QgsComposerUtils::decodePaperOrientation( QStringLiteral( "portrait" ), ok );
   QVERIFY( ok );
   QCOMPARE( orientation, QgsComposition::Portrait );
   ok = false;
-  orientation = QgsComposerUtils::decodePaperOrientation( "LANDSCAPE", ok );
+  orientation = QgsComposerUtils::decodePaperOrientation( QStringLiteral( "LANDSCAPE" ), ok );
   QVERIFY( ok );
   QCOMPARE( orientation, QgsComposition::Landscape );
 }
@@ -415,164 +415,102 @@ void TestQgsComposerUtils::decodePaperSize()
   QCOMPARE( height, 355.6 );
 }
 
-void TestQgsComposerUtils::readDataDefinedProperty()
+void TestQgsComposerUtils::readOldDataDefinedProperty()
 {
   //create a test dom element
   QDomImplementation DomImplementation;
   QDomDocumentType documentType =
     DomImplementation.createDocumentType(
-      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
-  QDomElement rootNode = doc.createElement( "qgis" );
-  QDomElement itemElem = doc.createElement( "item" );
+  QDomElement rootNode = doc.createElement( QStringLiteral( "qgis" ) );
+  QDomElement itemElem = doc.createElement( QStringLiteral( "item" ) );
 
   //dd element
-  QDomElement ddElem = doc.createElement( "dataDefinedProperty" );
-  ddElem.setAttribute( "active", "true" );
-  ddElem.setAttribute( "useExpr", "true" );
-  ddElem.setAttribute( "expr", "test expression" );
-  ddElem.setAttribute( "field", "test field" );
+  QDomElement ddElem = doc.createElement( QStringLiteral( "dataDefinedTestProperty" ) );
+  ddElem.setAttribute( QStringLiteral( "active" ), QStringLiteral( "true" ) );
+  ddElem.setAttribute( QStringLiteral( "useExpr" ), QStringLiteral( "true" ) );
+  ddElem.setAttribute( QStringLiteral( "expr" ), QStringLiteral( "test expression" ) );
+  ddElem.setAttribute( QStringLiteral( "field" ), QStringLiteral( "test field" ) );
   itemElem.appendChild( ddElem );
   rootNode.appendChild( itemElem );
 
   //try reading dd elements
-  QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* > dataDefinedProperties;
 
   //bad data defined properties - should not be read into dataDefinedProperties map
-  QgsComposerUtils::readDataDefinedProperty( QgsComposerObject::NoProperty, ddElem, &dataDefinedProperties );
-  QCOMPARE( dataDefinedProperties.count(), 0 );
-  QgsComposerUtils::readDataDefinedProperty( QgsComposerObject::AllProperties, ddElem, &dataDefinedProperties );
-  QCOMPARE( dataDefinedProperties.count(), 0 );
+  QVERIFY( !QgsComposerUtils::readOldDataDefinedProperty( QgsComposerObject::NoProperty, ddElem ) );
+  QVERIFY( !QgsComposerUtils::readOldDataDefinedProperty( QgsComposerObject::AllProperties, ddElem ) );
 
   //read into valid property
-  QgsComposerUtils::readDataDefinedProperty( QgsComposerObject::TestProperty, ddElem, &dataDefinedProperties );
-  QCOMPARE( dataDefinedProperties.count(), 1 );
-  QVERIFY(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->isActive() );
-  QVERIFY(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->useExpression() );
-  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->expressionString(), QString( "test expression" ) );
-  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->field(), QString( "test field" ) );
+  QgsProperty p( QgsComposerUtils::readOldDataDefinedProperty( QgsComposerObject::TestProperty, ddElem ) );
+  QVERIFY( p );
+  QVERIFY( p.isActive() );
+  QCOMPARE( p.propertyType(), QgsProperty::ExpressionBasedProperty );
+  QCOMPARE( p.expressionString(), QString( "test expression" ) );
+
+  ddElem.setAttribute( QStringLiteral( "useExpr" ), QStringLiteral( "false" ) );
+  p = QgsComposerUtils::readOldDataDefinedProperty( QgsComposerObject::TestProperty, ddElem );
+  QVERIFY( p );
+  QVERIFY( p.isActive() );
+  QCOMPARE( p.propertyType(), QgsProperty::FieldBasedProperty );
+  QCOMPARE( p.field(), QString( "test field" ) );
 
   //reading false parameters
-  QDomElement ddElem2 = doc.createElement( "dataDefinedProperty2" );
-  ddElem2.setAttribute( "active", "false" );
-  ddElem2.setAttribute( "useExpr", "false" );
+  QDomElement ddElem2 = doc.createElement( QStringLiteral( "dataDefinedProperty2" ) );
+  ddElem2.setAttribute( QStringLiteral( "active" ), QStringLiteral( "false" ) );
   itemElem.appendChild( ddElem2 );
-  QgsComposerUtils::readDataDefinedProperty( QgsComposerObject::TestProperty, ddElem2, &dataDefinedProperties );
-  QCOMPARE( dataDefinedProperties.count(), 1 );
-  QVERIFY( !( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->isActive() );
-  QVERIFY( !( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->useExpression() );
-  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->expressionString(), QString() );
-  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->field(), QString() );
-
-  qDeleteAll( dataDefinedProperties );
+  p = QgsComposerUtils::readOldDataDefinedProperty( QgsComposerObject::TestProperty, ddElem2 );
+  QVERIFY( p );
+  QVERIFY( !p.isActive() );
 }
 
-void TestQgsComposerUtils::readDataDefinedPropertyMap()
+void TestQgsComposerUtils::readOldDataDefinedPropertyMap()
 {
   //create a test dom element
   QDomImplementation DomImplementation;
   QDomDocumentType documentType =
     DomImplementation.createDocumentType(
-      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
-  QDomElement rootNode = doc.createElement( "qgis" );
-  QDomElement itemElem = doc.createElement( "item" );
+  QDomElement rootNode = doc.createElement( QStringLiteral( "qgis" ) );
+  QDomElement itemElem = doc.createElement( QStringLiteral( "item" ) );
 
   //dd elements
-  QDomElement ddElem = doc.createElement( "dataDefinedProperty" );
-  ddElem.setAttribute( "active", "true" );
-  ddElem.setAttribute( "useExpr", "true" );
-  ddElem.setAttribute( "expr", "test expression" );
-  ddElem.setAttribute( "field", "test field" );
+  QDomElement ddElem = doc.createElement( QStringLiteral( "dataDefinedBlendMode" ) );
+  ddElem.setAttribute( QStringLiteral( "active" ), QStringLiteral( "true" ) );
+  ddElem.setAttribute( QStringLiteral( "useExpr" ), QStringLiteral( "true" ) );
+  ddElem.setAttribute( QStringLiteral( "expr" ), QStringLiteral( "test expression" ) );
+  ddElem.setAttribute( QStringLiteral( "field" ), QStringLiteral( "test field" ) );
   itemElem.appendChild( ddElem );
-  QDomElement ddElem2 = doc.createElement( "dataDefinedProperty2" );
-  ddElem2.setAttribute( "active", "false" );
-  ddElem2.setAttribute( "useExpr", "false" );
-  ddElem2.setAttribute( "expr", "test expression 2" );
-  ddElem2.setAttribute( "field", "test field 2" );
+  QDomElement ddElem2 = doc.createElement( QStringLiteral( "dataDefinedTransparency" ) );
+  ddElem2.setAttribute( QStringLiteral( "active" ), QStringLiteral( "false" ) );
+  ddElem2.setAttribute( QStringLiteral( "useExpr" ), QStringLiteral( "false" ) );
+  ddElem2.setAttribute( QStringLiteral( "expr" ), QStringLiteral( "test expression 2" ) );
+  ddElem2.setAttribute( QStringLiteral( "field" ), QStringLiteral( "test field 2" ) );
   itemElem.appendChild( ddElem2 );
-  QDomElement ddElem3 = doc.createElement( "dataDefinedProperty3" );
-  ddElem3.setAttribute( "active", "true" );
-  ddElem3.setAttribute( "useExpr", "false" );
-  ddElem3.setAttribute( "expr", "test expression 3" );
-  ddElem3.setAttribute( "field", "test field 3" );
+  QDomElement ddElem3 = doc.createElement( QStringLiteral( "dataDefinedProperty" ) );
+  ddElem3.setAttribute( QStringLiteral( "active" ), QStringLiteral( "true" ) );
+  ddElem3.setAttribute( QStringLiteral( "useExpr" ), QStringLiteral( "false" ) );
+  ddElem3.setAttribute( QStringLiteral( "expr" ), QStringLiteral( "test expression 3" ) );
+  ddElem3.setAttribute( QStringLiteral( "field" ), QStringLiteral( "test field 3" ) );
   itemElem.appendChild( ddElem3 );
   rootNode.appendChild( itemElem );
 
   //try reading dd elements
-  QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* > dataDefinedProperties;
-  QMap<QgsComposerObject::DataDefinedProperty, QString> dataDefinedNames;
-  dataDefinedNames[ QgsComposerObject::BlendMode ] = QString( "dataDefinedProperty" );
-  dataDefinedNames[ QgsComposerObject::Transparency ] = QString( "dataDefinedProperty2" );
-  dataDefinedNames[ QgsComposerObject::TestProperty ] = QString( "dataDefinedProperty3" );
+  QgsPropertyCollection dataDefinedProperties;
 
-  QgsComposerUtils::readDataDefinedPropertyMap( itemElem, &dataDefinedNames, &dataDefinedProperties );
+  QgsComposerUtils::readOldDataDefinedPropertyMap( itemElem, dataDefinedProperties );
   //check returned values
   QCOMPARE( dataDefinedProperties.count(), 3 );
-  QVERIFY(( dataDefinedProperties.value( QgsComposerObject::BlendMode ) )->isActive() );
-  QVERIFY(( dataDefinedProperties.value( QgsComposerObject::BlendMode ) )->useExpression() );
-  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::BlendMode ) )->expressionString(), QString( "test expression" ) );
-  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::BlendMode ) )->field(), QString( "test field" ) );
-  QVERIFY( !( dataDefinedProperties.value( QgsComposerObject::Transparency ) )->isActive() );
-  QVERIFY( !( dataDefinedProperties.value( QgsComposerObject::Transparency ) )->useExpression() );
-  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::Transparency ) )->expressionString(), QString( "test expression 2" ) );
-  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::Transparency ) )->field(), QString( "test field 2" ) );
-  QVERIFY(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->isActive() );
-  QVERIFY( !( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->useExpression() );
-  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->expressionString(), QString( "test expression 3" ) );
-  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->field(), QString( "test field 3" ) );
-  qDeleteAll( dataDefinedProperties );
-}
-
-void TestQgsComposerUtils::writeDataDefinedPropertyMap()
-{
-  //create a test dom element
-  QDomImplementation DomImplementation;
-  QDomDocumentType documentType =
-    DomImplementation.createDocumentType(
-      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
-  QDomDocument doc( documentType );
-  QDomElement itemElem = doc.createElement( "item" );
-
-  //create some data defined properties
-  QMap<QgsComposerObject::DataDefinedProperty, QString> dataDefinedNames;
-  dataDefinedNames[ QgsComposerObject::BlendMode ] = QString( "dataDefinedProperty" );
-  dataDefinedNames[ QgsComposerObject::Transparency ] = QString( "dataDefinedProperty2" );
-  dataDefinedNames[ QgsComposerObject::TestProperty ] = QString( "dataDefinedProperty3" );
-
-  QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* > dataDefinedProperties;
-  dataDefinedProperties[ QgsComposerObject::BlendMode ] = new QgsDataDefined( true, true, QString( "expression 1" ), QString( "field 1" ) );
-  dataDefinedProperties[ QgsComposerObject::Transparency ] = new QgsDataDefined( false, false, QString( "expression 2" ), QString( "field 2" ) );
-  dataDefinedProperties[ QgsComposerObject::TestProperty ] = new QgsDataDefined( false, true, QString( "expression 3" ), QString( "field 3" ) );
-
-  //write the property map
-  QgsComposerUtils::writeDataDefinedPropertyMap( itemElem, doc, &dataDefinedNames, &dataDefinedProperties );
-
-  //now check it
-  QDomNodeList dd1NodeList = itemElem.elementsByTagName( "dataDefinedProperty" );
-  QCOMPARE( dd1NodeList.count(), 1 );
-  QDomElement dd1Elem = dd1NodeList.at( 0 ).toElement();
-  QCOMPARE( dd1Elem.attribute( "active", "bad" ), QString( "true" ) );
-  QCOMPARE( dd1Elem.attribute( "useExpr", "bad" ), QString( "true" ) );
-  QCOMPARE( dd1Elem.attribute( "expr", "bad" ), QString( "expression 1" ) );
-  QCOMPARE( dd1Elem.attribute( "field", "bad" ), QString( "field 1" ) );
-
-  QDomNodeList dd2NodeList = itemElem.elementsByTagName( "dataDefinedProperty2" );
-  QCOMPARE( dd2NodeList.count(), 1 );
-  QDomElement dd2Elem = dd2NodeList.at( 0 ).toElement();
-  QCOMPARE( dd2Elem.attribute( "active", "bad" ), QString( "false" ) );
-  QCOMPARE( dd2Elem.attribute( "useExpr", "bad" ), QString( "false" ) );
-  QCOMPARE( dd2Elem.attribute( "expr", "bad" ), QString( "expression 2" ) );
-  QCOMPARE( dd2Elem.attribute( "field", "bad" ), QString( "field 2" ) );
-
-  QDomNodeList dd3NodeList = itemElem.elementsByTagName( "dataDefinedProperty3" );
-  QCOMPARE( dd3NodeList.count(), 1 );
-  QDomElement dd3Elem = dd3NodeList.at( 0 ).toElement();
-  QCOMPARE( dd3Elem.attribute( "active", "bad" ), QString( "false" ) );
-  QCOMPARE( dd3Elem.attribute( "useExpr", "bad" ), QString( "true" ) );
-  QCOMPARE( dd3Elem.attribute( "expr", "bad" ), QString( "expression 3" ) );
-  QCOMPARE( dd3Elem.attribute( "field", "bad" ), QString( "field 3" ) );
-  qDeleteAll( dataDefinedProperties );
+  QVERIFY(( dataDefinedProperties.property( QgsComposerObject::BlendMode ) ).isActive() );
+  QCOMPARE(( dataDefinedProperties.property( QgsComposerObject::BlendMode ) ).propertyType(), QgsProperty::ExpressionBasedProperty );
+  QCOMPARE( dataDefinedProperties.property( QgsComposerObject::BlendMode ).expressionString(), QString( "test expression" ) );
+  QVERIFY( !( dataDefinedProperties.property( QgsComposerObject::Transparency ) ).isActive() );
+  QCOMPARE(( dataDefinedProperties.property( QgsComposerObject::Transparency ) ).propertyType(), QgsProperty::FieldBasedProperty );
+  QCOMPARE( dataDefinedProperties.property( QgsComposerObject::Transparency ).field(), QString( "test field 2" ) );
+  QVERIFY(( dataDefinedProperties.property( QgsComposerObject::TestProperty ) ).isActive() );
+  QCOMPARE(( dataDefinedProperties.property( QgsComposerObject::TestProperty ) ).propertyType(), QgsProperty::FieldBasedProperty );
+  QCOMPARE( dataDefinedProperties.property( QgsComposerObject::TestProperty ).field(), QString( "test field 3" ) );
 }
 
 void TestQgsComposerUtils::scaledFontPixelSize()
@@ -639,7 +577,7 @@ void TestQgsComposerUtils::textHeightMM()
 void TestQgsComposerUtils::drawTextPos()
 {
   //test drawing with no painter
-  QgsComposerUtils::drawText( 0, QPointF( 5, 15 ), QString( "Abc123" ), mTestFont );
+  QgsComposerUtils::drawText( 0, QPointF( 5, 15 ), QStringLiteral( "Abc123" ), mTestFont );
 
   //test drawing text on to image
   mTestFont.setPointSize( 48 );
@@ -647,7 +585,7 @@ void TestQgsComposerUtils::drawTextPos()
   testImage.fill( qRgb( 152, 219, 249 ) );
   QPainter testPainter;
   testPainter.begin( &testImage );
-  QgsComposerUtils::drawText( &testPainter, QPointF( 5, 15 ), QString( "Abc123" ), mTestFont, Qt::white );
+  QgsComposerUtils::drawText( &testPainter, QPointF( 5, 15 ), QStringLiteral( "Abc123" ), mTestFont, Qt::white );
   testPainter.end();
   QVERIFY( renderCheck( "composerutils_drawtext_pos", testImage, 100 ) );
 
@@ -656,7 +594,7 @@ void TestQgsComposerUtils::drawTextPos()
   testImage.fill( qRgb( 152, 219, 249 ) );
   testPainter.begin( &testImage );
   testPainter.setPen( QPen( Qt::green ) );
-  QgsComposerUtils::drawText( &testPainter, QPointF( 5, 15 ), QString( "Abc123" ), mTestFont );
+  QgsComposerUtils::drawText( &testPainter, QPointF( 5, 15 ), QStringLiteral( "Abc123" ), mTestFont );
   testPainter.end();
   QVERIFY( renderCheck( "composerutils_drawtext_posnocolor", testImage, 100 ) );
 }
@@ -664,7 +602,7 @@ void TestQgsComposerUtils::drawTextPos()
 void TestQgsComposerUtils::drawTextRect()
 {
   //test drawing with no painter
-  QgsComposerUtils::drawText( 0, QRectF( 5, 15, 200, 50 ), QString( "Abc123" ), mTestFont );
+  QgsComposerUtils::drawText( 0, QRectF( 5, 15, 200, 50 ), QStringLiteral( "Abc123" ), mTestFont );
 
   //test drawing text on to image
   mTestFont.setPointSize( 48 );
@@ -672,7 +610,7 @@ void TestQgsComposerUtils::drawTextRect()
   testImage.fill( qRgb( 152, 219, 249 ) );
   QPainter testPainter;
   testPainter.begin( &testImage );
-  QgsComposerUtils::drawText( &testPainter, QRectF( 5, 15, 200, 50 ), QString( "Abc123" ), mTestFont, Qt::white );
+  QgsComposerUtils::drawText( &testPainter, QRectF( 5, 15, 200, 50 ), QStringLiteral( "Abc123" ), mTestFont, Qt::white );
   testPainter.end();
   QVERIFY( renderCheck( "composerutils_drawtext_rect", testImage, 100 ) );
 
@@ -681,23 +619,124 @@ void TestQgsComposerUtils::drawTextRect()
   testImage.fill( qRgb( 152, 219, 249 ) );
   testPainter.begin( &testImage );
   testPainter.setPen( QPen( Qt::green ) );
-  QgsComposerUtils::drawText( &testPainter, QRectF( 5, 15, 200, 50 ), QString( "Abc123" ), mTestFont );
+  QgsComposerUtils::drawText( &testPainter, QRectF( 5, 15, 200, 50 ), QStringLiteral( "Abc123" ), mTestFont );
   testPainter.end();
   QVERIFY( renderCheck( "composerutils_drawtext_rectnocolor", testImage, 100 ) );
 
   //test alignment settings
   testImage.fill( qRgb( 152, 219, 249 ) );
   testPainter.begin( &testImage );
-  QgsComposerUtils::drawText( &testPainter, QRectF( 5, 15, 200, 50 ), QString( "Abc123" ), mTestFont, Qt::black, Qt::AlignRight, Qt::AlignBottom );
+  QgsComposerUtils::drawText( &testPainter, QRectF( 5, 15, 200, 50 ), QStringLiteral( "Abc123" ), mTestFont, Qt::black, Qt::AlignRight, Qt::AlignBottom );
   testPainter.end();
   QVERIFY( renderCheck( "composerutils_drawtext_rectalign", testImage, 100 ) );
 
   //test extra flags - render without clipping
   testImage.fill( qRgb( 152, 219, 249 ) );
   testPainter.begin( &testImage );
-  QgsComposerUtils::drawText( &testPainter, QRectF( 5, 15, 20, 50 ), QString( "Abc123" ), mTestFont, Qt::white, Qt::AlignLeft, Qt::AlignTop, Qt::TextDontClip );
+  QgsComposerUtils::drawText( &testPainter, QRectF( 5, 15, 20, 50 ), QStringLiteral( "Abc123" ), mTestFont, Qt::white, Qt::AlignLeft, Qt::AlignTop, Qt::TextDontClip );
   testPainter.end();
   QVERIFY( renderCheck( "composerutils_drawtext_rectflag", testImage, 100 ) );
+}
+
+void TestQgsComposerUtils::createRenderContextFromComposition()
+{
+  QImage testImage = QImage( 250, 250, QImage::Format_RGB32 );
+  testImage.setDotsPerMeterX( 150 / 25.4 * 1000 );
+  testImage.setDotsPerMeterY( 150 / 25.4 * 1000 );
+  QPainter p( &testImage );
+
+  // no composition
+  QgsRenderContext rc = QgsComposerUtils::createRenderContextForComposition( nullptr, &p );
+  QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
+  QCOMPARE( rc.painter(), &p );
+
+  // no composition, no painter
+  rc = QgsComposerUtils::createRenderContextForComposition( nullptr, nullptr );
+  QGSCOMPARENEAR( rc.scaleFactor(), 88 / 25.4, 0.001 );
+  QVERIFY( !rc.painter() );
+
+  //create composition with no reference map
+  QgsRectangle extent( 2000, 2800, 2500, 2900 );
+  QgsComposition* composition = new QgsComposition( QgsProject::instance() );
+  rc = QgsComposerUtils::createRenderContextForComposition( composition, &p );
+  QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
+  QCOMPARE( rc.painter(), &p );
+
+  // composition, no map, no painter
+  rc = QgsComposerUtils::createRenderContextForComposition( composition, nullptr );
+  QGSCOMPARENEAR( rc.scaleFactor(), 88 / 25.4, 0.001 );
+  QVERIFY( !rc.painter() );
+
+  // add a reference map
+  QgsComposerMap* map = new QgsComposerMap( composition );
+  map->setNewExtent( extent );
+  map->setSceneRect( QRectF( 30, 60, 200, 100 ) );
+  composition->addComposerMap( map );
+  composition->setReferenceMap( map );
+
+  rc = QgsComposerUtils::createRenderContextForComposition( composition, &p );
+  QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
+  QGSCOMPARENEAR( rc.rendererScale(), map->scale(), 1000000 );
+  QCOMPARE( rc.painter(), &p );
+
+  // composition, reference map, no painter
+  rc = QgsComposerUtils::createRenderContextForComposition( composition, nullptr );
+  QGSCOMPARENEAR( rc.scaleFactor(), 88 / 25.4, 0.001 );
+  QGSCOMPARENEAR( rc.rendererScale(), map->scale(), 1000000 );
+  QVERIFY( !rc.painter() );
+
+  p.end();
+}
+
+void TestQgsComposerUtils::createRenderContextFromMap()
+{
+  QImage testImage = QImage( 250, 250, QImage::Format_RGB32 );
+  testImage.setDotsPerMeterX( 150 / 25.4 * 1000 );
+  testImage.setDotsPerMeterY( 150 / 25.4 * 1000 );
+  QPainter p( &testImage );
+
+  // no map
+  QgsRenderContext rc = QgsComposerUtils::createRenderContextForMap( nullptr, &p );
+  QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
+  QCOMPARE( rc.painter(), &p );
+
+  // no map, no painter
+  rc = QgsComposerUtils::createRenderContextForMap( nullptr, nullptr );
+  QGSCOMPARENEAR( rc.scaleFactor(), 88 / 25.4, 0.001 );
+  QVERIFY( !rc.painter() );
+
+  //create composition with no reference map
+  QgsRectangle extent( 2000, 2800, 2500, 2900 );
+  QgsComposition* composition = new QgsComposition( QgsProject::instance() );
+
+  // add a map
+  QgsComposerMap* map = new QgsComposerMap( composition );
+  map->setNewExtent( extent );
+  map->setSceneRect( QRectF( 30, 60, 200, 100 ) );
+  composition->addComposerMap( map );
+
+  rc = QgsComposerUtils::createRenderContextForMap( map, &p );
+  QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
+  QGSCOMPARENEAR( rc.rendererScale(), map->scale(), 1000000 );
+  QCOMPARE( rc.painter(), &p );
+
+  // map, no painter
+  rc = QgsComposerUtils::createRenderContextForMap( map, nullptr );
+  QGSCOMPARENEAR( rc.scaleFactor(), 88 / 25.4, 0.001 );
+  QGSCOMPARENEAR( rc.rendererScale(), map->scale(), 1000000 );
+  QVERIFY( !rc.painter() );
+
+  // secondary map
+  QgsComposerMap* map2 = new QgsComposerMap( composition );
+  map2->setNewExtent( extent );
+  map2->setSceneRect( QRectF( 30, 60, 100, 50 ) );
+  composition->addComposerMap( map2 );
+  rc = QgsComposerUtils::createRenderContextForMap( map2, &p );
+  QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
+  QGSCOMPARENEAR( rc.rendererScale(), map2->scale(), 1000000 );
+  QVERIFY( rc.painter() );
+
+  p.end();
 }
 
 bool TestQgsComposerUtils::renderCheck( const QString& testName, QImage &image, int mismatchCount )
@@ -707,7 +746,7 @@ bool TestQgsComposerUtils::renderCheck( const QString& testName, QImage &image, 
   QString myFileName = myTmpDir + testName + ".png";
   image.save( myFileName, "PNG" );
   QgsRenderChecker myChecker;
-  myChecker.setControlPathPrefix( "composer_utils" );
+  myChecker.setControlPathPrefix( QStringLiteral( "composer_utils" ) );
   myChecker.setControlName( "expected_" + testName );
   myChecker.setRenderedImage( myFileName );
   bool myResultFlag = myChecker.compareImages( testName, mismatchCount );
@@ -715,5 +754,5 @@ bool TestQgsComposerUtils::renderCheck( const QString& testName, QImage &image, 
   return myResultFlag;
 }
 
-QTEST_MAIN( TestQgsComposerUtils )
+QGSTEST_MAIN( TestQgsComposerUtils )
 #include "testqgscomposerutils.moc"

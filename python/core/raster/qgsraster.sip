@@ -62,14 +62,6 @@ class QgsRaster
       PyramidsErdas,
     };
 
-    /** \brief Contrast enhancement limits */
-    enum ContrastEnhancementLimits
-    {
-      ContrastEnhancementNone,
-      ContrastEnhancementMinMax,
-      ContrastEnhancementStdDev,
-      ContrastEnhancementCumulativeCut
-    };
 
     /** \brief This enumerator describes the different kinds of drawing we can do */
     enum DrawingStyle
@@ -87,14 +79,11 @@ class QgsRaster
       SingleBandColorDataStyle        // ARGB values rendered directly
     };
 
-    static QString contrastEnhancementLimitsAsString( QgsRaster::ContrastEnhancementLimits theLimits );
-    static ContrastEnhancementLimits contrastEnhancementLimitsFromString( const QString& theLimits );
-
     /** Get value representable by given data type.
      * Supported are numerical types Byte, UInt16, Int16, UInt32, Int32, Float32, Float64.
      * @param value
      * @param dataType
      * @note added in version 2.1 */
-    static double representableValue( double value, QGis::DataType dataType );
+    static double representableValue( double value, Qgis::DataType dataType );
 };
 

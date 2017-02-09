@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -28,7 +29,7 @@ __revision__ = '$Format:%H$'
 import os
 import random
 
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import QgsFeature
 
@@ -56,7 +57,6 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sub_selection.png'))
 
     def defineCharacteristics(self):
-        self.allowOnlyOpenedLayers = True
         self.name, self.i18n_name = self.trAlgorithm('Random selection within subsets')
         self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
 
@@ -64,7 +64,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
                         self.tr('Percentage of selected features')]
 
         self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('ID Field'), self.INPUT))
         self.addParameter(ParameterSelection(self.METHOD,
@@ -74,7 +74,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selection stratified'), True))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         filename = self.getParameterValue(self.INPUT)
 
         layer = dataobjects.getObjectFromUri(filename)
@@ -82,7 +82,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
         method = self.getParameterValue(self.METHOD)
 
         layer.removeSelection()
-        index = layer.fieldNameIndex(field)
+        index = layer.fields().lookupField(field)
 
         unique = vector.getUniqueValues(layer, index)
         featureCount = layer.featureCount()
@@ -115,7 +115,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
                     if attrs[index] == i:
                         FIDs.append(inFeat.id())
                     current += 1
-                    progress.setPercentage(int(current * total))
+                    feedback.setProgress(int(current * total))
 
                 if method == 1:
                     selValue = int(round(value * len(FIDs), 0))
@@ -128,8 +128,8 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
                     selFeat = random.sample(FIDs, selValue)
 
                 selran.extend(selFeat)
-            layer.setSelectedFeatures(selran)
+            layer.selectByIds(selran)
         else:
-            layer.setSelectedFeatures(range(featureCount))
+            layer.selectByIds(list(range(featureCount)))  # FIXME: implies continuous feature ids
 
         self.setOutputValue(self.OUTPUT, filename)

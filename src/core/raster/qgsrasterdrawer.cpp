@@ -16,10 +16,13 @@
  ***************************************************************************/
 
 #include "qgslogger.h"
+#include "qgsrasterblock.h"
 #include "qgsrasterdrawer.h"
+#include "qgsrasterinterface.h"
 #include "qgsrasteriterator.h"
 #include "qgsrasterviewport.h"
 #include "qgsmaptopixel.h"
+#include "qgsrendercontext.h"
 #include <QImage>
 #include <QPainter>
 #include <QPrinter>
@@ -28,7 +31,7 @@ QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator* iterator ): mIterator( iter
 {
 }
 
-void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel )
+void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel, QgsRasterBlockFeedback* feedback )
 {
   QgsDebugMsgLevel( "Entered", 4 );
   if ( !p || !mIterator || !viewPort || !theQgsMapToPixel )
@@ -38,7 +41,7 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
 
   // last pipe filter has only 1 band
   int bandNumber = 1;
-  mIterator->startRasterRead( bandNumber, viewPort->mWidth, viewPort->mHeight, viewPort->mDrawnExtent );
+  mIterator->startRasterRead( bandNumber, viewPort->mWidth, viewPort->mHeight, viewPort->mDrawnExtent, feedback );
 
   //number of cols/rows in output pixels
   int nCols = 0;
@@ -63,6 +66,7 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
 
     QImage img = block->image();
 
+#ifndef QT_NO_PRINTER
     // Because of bug in Acrobat Reader we must use "white" transparent color instead
     // of "black" for PDF. See #9101.
     QPrinter *printer = dynamic_cast<QPrinter *>( p->device() );
@@ -84,10 +88,26 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
         }
       }
     }
+#endif
+
+    if ( feedback && feedback->renderPartialOutput() )
+    {
+      // there could have been partial preview written before
+      // so overwrite anything with the resulting image.
+      // (we are guaranteed to have a temporary image for this layer, see QgsMapRendererJob::needTemporaryImage)
+      p->setCompositionMode( QPainter::CompositionMode_Source );
+    }
 
     drawImage( p, viewPort, img, topLeftCol, topLeftRow, theQgsMapToPixel );
 
     delete block;
+
+    p->setCompositionMode( QPainter::CompositionMode_SourceOver );  // go back to the default composition mode
+
+    // ok this does not matter much anyway as the tile size quite big so most of the time
+    // there would be just one tile for the whole display area, but it won't hurt...
+    if ( feedback && feedback->isCanceled() )
+      break;
   }
 }
 

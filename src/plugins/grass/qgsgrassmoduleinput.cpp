@@ -32,7 +32,6 @@
 #include "qgsdatasourceuri.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 
@@ -59,7 +58,6 @@ QgsGrassModuleInputModel::QgsGrassModuleInputModel( QObject *parent )
     : QStandardItemModel( parent )
     , mWatcher( 0 )
 {
-  QgsDebugMsg( "entered" );
   setColumnCount( 1 );
 
   mWatcher = new QFileSystemWatcher( this );
@@ -127,11 +125,11 @@ void QgsGrassModuleInputModel::onDirectoryChanged( const QString & path )
   {
     QgsDebugMsg( "cellhd/vector = " + path );
     mapset = parentDir.dirName();
-    if ( path.endsWith( "cellhd" ) )
+    if ( path.endsWith( QLatin1String( "cellhd" ) ) )
     {
       types << QgsGrassObject::Raster;
     }
-    else if ( path.endsWith( "vector" ) )
+    else if ( path.endsWith( QLatin1String( "vector" ) ) )
     {
       types << QgsGrassObject::Vector;
     }
@@ -150,7 +148,7 @@ void QgsGrassModuleInputModel::onFileChanged( const QString & path )
 {
   QgsDebugMsg( "path = " + path );
   // when tgis/sqlite.db is changed, this gets called twice, probably the file changes more times when it is modified
-  if ( path.endsWith( "/tgis/sqlite.db" ) )
+  if ( path.endsWith( QLatin1String( "/tgis/sqlite.db" ) ) )
   {
     QDir dir = QFileInfo( path ).dir();
     dir.cdUp();
@@ -217,12 +215,12 @@ void QgsGrassModuleInputModel::refreshMapset( QStandardItem *mapsetItem, const Q
   }
   Q_FOREACH ( QgsGrassObject::Type type, types )
   {
-    QgsGrassObject mapsetObject( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation(), mapset, "", QgsGrassObject::Mapset );
+    QgsGrassObject mapsetObject( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation(), mapset, QLatin1String( "" ), QgsGrassObject::Mapset );
     QStringList maps = QgsGrass::grassObjects( mapsetObject, type );
     QStringList mapNames;
     Q_FOREACH ( const QString& map, maps )
     {
-      if ( map.startsWith( "qgis_import_tmp_" ) )
+      if ( map.startsWith( QLatin1String( "qgis_import_tmp_" ) ) )
       {
         continue;
       }
@@ -274,7 +272,6 @@ void QgsGrassModuleInputModel::refreshMapset( QStandardItem *mapsetItem, const Q
 void QgsGrassModuleInputModel::reload()
 {
 
-  QgsDebugMsg( "entered" );
   if ( !mWatcher->files().isEmpty() )
   {
     mWatcher->removePaths( mWatcher->files() );
@@ -316,7 +313,6 @@ void QgsGrassModuleInputModel::reload()
 
 void QgsGrassModuleInputModel::onMapsetChanged()
 {
-  QgsDebugMsg( "entered" );
   if ( mLocationPath != QgsGrass::getDefaultLocationPath() )
   {
     reload();
@@ -325,7 +321,6 @@ void QgsGrassModuleInputModel::onMapsetChanged()
 
 void QgsGrassModuleInputModel::onMapsetSearchPathChanged()
 {
-  QgsDebugMsg( "entered" );
   emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
 }
 
@@ -438,7 +433,6 @@ QgsGrassModuleInputPopup::QgsGrassModuleInputPopup( QWidget * parent )
 
 void QgsGrassModuleInputPopup::setModel( QAbstractItemModel * model )
 {
-  QgsDebugMsg( "entered" );
   QTreeView::setModel( model );
 }
 
@@ -494,7 +488,6 @@ QModelIndex QgsGrassModuleInputCompleterProxy::mapToSource( const QModelIndex & 
 void QgsGrassModuleInputCompleterProxy::refreshMapping()
 {
   // TODO: emit data changed
-  QgsDebugMsg( "entered" );
   mIndexes.clear();
   mRows.clear();
   map( QModelIndex() );
@@ -503,7 +496,6 @@ void QgsGrassModuleInputCompleterProxy::refreshMapping()
 
 void QgsGrassModuleInputCompleterProxy::map( const QModelIndex & parent, int level )
 {
-  //QgsDebugMsg( "entered" );
   if ( !sourceModel() )
   {
     return;
@@ -825,7 +817,6 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     , mUsesRegion( false )
     , mRequired( false )
 {
-  QgsDebugMsg( "entered" );
   mGeometryTypeMask = GV_POINT | GV_LINE | GV_AREA;
 
   if ( mTitle.isEmpty() )
@@ -835,19 +826,19 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
   adjustTitle();
 
   // Check if this parameter is required
-  mRequired = gnode.toElement().attribute( "required" ) == "yes";
+  mRequired = gnode.toElement().attribute( QStringLiteral( "required" ) ) == QLatin1String( "yes" );
 
-  QDomNode promptNode = gnode.namedItem( "gisprompt" );
+  QDomNode promptNode = gnode.namedItem( QStringLiteral( "gisprompt" ) );
   QDomElement promptElem = promptNode.toElement();
-  QString element = promptElem.attribute( "element" );
+  QString element = promptElem.attribute( QStringLiteral( "element" ) );
 
   QDomNode typeNode;
-  if ( element == "vector" )
+  if ( element == QLatin1String( "vector" ) )
   {
     mType = QgsGrassObject::Vector;
 
     // Read type mask if "typeoption" is defined
-    QString opt = qdesc.attribute( "typeoption" );
+    QString opt = qdesc.attribute( QStringLiteral( "typeoption" ) );
     if ( ! opt.isNull() )
     {
       typeNode = nodeByKey( gdesc, opt );
@@ -860,7 +851,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
       {
         mGeometryTypeOption = opt;
 
-        QDomNode valuesNode = typeNode.namedItem( "values" );
+        QDomNode valuesNode = typeNode.namedItem( QStringLiteral( "values" ) );
         if ( valuesNode.isNull() )
         {
           mErrors << tr( "Cannot find values for typeoption %1" ).arg( opt );
@@ -874,9 +865,9 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
           while ( !valueNode.isNull() )
           {
             QDomElement valueElem = valueNode.toElement();
-            if ( !valueElem.isNull() && valueElem.tagName() == "value" )
+            if ( !valueElem.isNull() && valueElem.tagName() == QLatin1String( "value" ) )
             {
-              QDomNode n = valueNode.namedItem( "name" );
+              QDomNode n = valueNode.namedItem( QStringLiteral( "name" ) );
               if ( !n.isNull() )
               {
                 QDomElement e = n.toElement();
@@ -892,7 +883,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     }
 
     // Read type mask defined in configuration
-    opt = qdesc.attribute( "typemask" );
+    opt = qdesc.attribute( QStringLiteral( "typemask" ) );
     if ( ! opt.isNull() )
     {
       int mask = 0;
@@ -907,7 +898,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     }
 
     // Read "layeroption" if defined
-    opt = qdesc.attribute( "layeroption" );
+    opt = qdesc.attribute( QStringLiteral( "layeroption" ) );
     if ( ! opt.isNull() )
     {
 
@@ -924,25 +915,25 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     }
 
     // Read "mapid"
-    mMapId = qdesc.attribute( "mapid" );
+    mMapId = qdesc.attribute( QStringLiteral( "mapid" ) );
   }
-  else if ( element == "cell" )
+  else if ( element == QLatin1String( "cell" ) )
   {
     mType = QgsGrassObject::Raster;
   }
-  else if ( element == "strds" )
+  else if ( element == QLatin1String( "strds" ) )
   {
     mType = QgsGrassObject::Strds;
   }
-  else if ( element == "stvds" )
+  else if ( element == QLatin1String( "stvds" ) )
   {
     mType = QgsGrassObject::Stvds;
   }
-  else if ( element == "str3ds" )
+  else if ( element == QLatin1String( "str3ds" ) )
   {
     mType = QgsGrassObject::Str3ds;
   }
-  else if ( element == "stds" )
+  else if ( element == QLatin1String( "stds" ) )
   {
     mType = QgsGrassObject::Stds;
   }
@@ -951,7 +942,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     mErrors << tr( "GRASS element %1 not supported" ).arg( element );
   }
 
-  if ( qdesc.attribute( "update" ) == "yes" )
+  if ( qdesc.attribute( QStringLiteral( "update" ) ) == QLatin1String( "yes" ) )
   {
     mUpdate = true;
   }
@@ -971,11 +962,11 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
   mapLayout->addWidget( mComboBox );
 
   // Region button
-  QString region = qdesc.attribute( "region" );
+  QString region = qdesc.attribute( QStringLiteral( "region" ) );
   // TODO: implement region for multiple
-  if ( mType == QgsGrassObject::Raster && region != "no" && !mDirect && !multiple() )
+  if ( mType == QgsGrassObject::Raster && region != QLatin1String( "no" ) && !mDirect && !multiple() )
   {
-    mRegionButton = new QPushButton( QgsGrassPlugin::getThemeIcon( "grass_set_region.png" ), "" );
+    mRegionButton = new QPushButton( QgsGrassPlugin::getThemeIcon( QStringLiteral( "grass_set_region.png" ) ), QLatin1String( "" ) );
 
     mRegionButton->setToolTip( tr( "Use region of this map" ) );
     mRegionButton->setCheckable( true );
@@ -1044,7 +1035,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
   mUsesRegion = false;
   if ( region.length() > 0 )
   {
-    if ( region == "yes" )
+    if ( region == QLatin1String( "yes" ) )
       mUsesRegion = true;
   }
   else
@@ -1053,7 +1044,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
       mUsesRegion = true;
   }
   QgsDebugMsg( QString( "mUsesRegion = %1" ).arg( mUsesRegion ) );
-  onChanged( "" );
+  onChanged( QLatin1String( "" ) );
 }
 
 QgsGrassModuleInput::~QgsGrassModuleInput()
@@ -1062,7 +1053,6 @@ QgsGrassModuleInput::~QgsGrassModuleInput()
 
 bool QgsGrassModuleInput::useRegion()
 {
-  QgsDebugMsg( "entered" );
 
   return mUsesRegion && mType == QgsGrassObject::Raster && mRegionButton && mRegionButton->isChecked();
 }
@@ -1078,7 +1068,7 @@ QStringList QgsGrassModuleInput::options()
     {
       maps << mSelectedModel->item( i )->text();
     }
-    list << mKey + "=" + maps.join( "," );
+    list << mKey + "=" + maps.join( QStringLiteral( "," ) );
   }
   else
   {
@@ -1101,7 +1091,7 @@ QStringList QgsGrassModuleInput::options()
     if ( !mGeometryTypeOption.isEmpty() )
     {
 
-      list << mGeometryTypeOption + "=" + currentGeometryTypeNames().join( "," );
+      list << mGeometryTypeOption + "=" + currentGeometryTypeNames().join( QStringLiteral( "," ) );
     }
   }
 
@@ -1110,7 +1100,6 @@ QStringList QgsGrassModuleInput::options()
 
 QgsFields QgsGrassModuleInput::currentFields()
 {
-  QgsDebugMsg( "entered" );
 
   QgsGrassVectorLayer * layer = currentLayer();
   if ( !layer )
@@ -1122,9 +1111,8 @@ QgsFields QgsGrassModuleInput::currentFields()
 
 QgsGrassObject QgsGrassModuleInput::currentGrassObject()
 {
-  QgsDebugMsg( "entered" );
 
-  QgsGrassObject grassObject( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation(), "", "", mType );
+  QgsGrassObject grassObject( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation(), QLatin1String( "" ), QLatin1String( "" ), mType );
   grassObject.setFullName( mComboBox->currentText() );
   return grassObject;
 }
@@ -1169,8 +1157,8 @@ QStringList QgsGrassModuleInput::currentLayerCodes()
   {
     Q_FOREACH ( QString type, currentGeometryTypeNames() )
     {
-      type.replace( "area", "polygon" );
-      list << QString( "%1_%2" ).arg( currentLayer()->number() ).arg( type );
+      type.replace( QLatin1String( "area" ), QLatin1String( "polygon" ) );
+      list << QStringLiteral( "%1_%2" ).arg( currentLayer()->number() ).arg( type );
     }
   }
   QgsDebugMsg( "list = " + list.join( "," ) );
@@ -1240,7 +1228,6 @@ void QgsGrassModuleInput::onChanged( const QString & text )
 
 void QgsGrassModuleInput::onLayerChanged()
 {
-  QgsDebugMsg( "entered" );
 
   // TODO(?): support vector sublayers/types for multiple input
   if ( multiple() )
@@ -1289,7 +1276,6 @@ void QgsGrassModuleInput::onLayerChanged()
 
 QString QgsGrassModuleInput::ready()
 {
-  QgsDebugMsg( "entered" );
 
   QString error;
 
@@ -1363,7 +1349,6 @@ void QgsGrassModuleInput::onActivated( const QString & text )
 
 void QgsGrassModuleInput::deleteSelectedItem( const QModelIndex &index )
 {
-  QgsDebugMsg( "entered" );
   if ( index.isValid() )
   {
     mSelectedModel->removeRow( index.row() );

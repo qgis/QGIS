@@ -18,6 +18,7 @@
 #ifndef QGSCOLORSCHEMEREGISTRY_H
 #define QGSCOLORSCHEMEREGISTRY_H
 
+#include "qgis_core.h"
 #include "qgscolorscheme.h"
 #include <QList>
 
@@ -26,17 +27,13 @@
  * \brief Registry of color schemes
  *
  * A registry of QgsColorScheme color schemes. This class can be created directly, or
- * accessed via a global instance.
+ * accessed via a QgsApplication::colorSchemeRegistry().
  * \note Added in version 2.5
  */
 class CORE_EXPORT QgsColorSchemeRegistry
 {
 
   public:
-
-    /** Returns the global instance pointer, creating the object on the first call.
-     */
-    static QgsColorSchemeRegistry * instance();
 
     /** Constructor for an empty color scheme registry
      */
@@ -97,8 +94,6 @@ class CORE_EXPORT QgsColorSchemeRegistry
     template<class T> void schemes( QList<T*>& schemeList );
 
   private:
-
-    static QgsColorSchemeRegistry *mInstance;
 
     QList< QgsColorScheme* > mColorSchemeList;
 

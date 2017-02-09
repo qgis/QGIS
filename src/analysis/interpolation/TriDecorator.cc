@@ -221,11 +221,11 @@ double TriDecorator::getYMin() const
   }
 }
 
-void TriDecorator::setForcedCrossBehaviour( Triangulation::forcedCrossBehaviour b )
+void TriDecorator::setForcedCrossBehavior( Triangulation::ForcedCrossBehavior b )
 {
   if ( mTIN )
   {
-    mTIN->setForcedCrossBehaviour( b );
+    mTIN->setForcedCrossBehavior( b );
   }
   else
   {

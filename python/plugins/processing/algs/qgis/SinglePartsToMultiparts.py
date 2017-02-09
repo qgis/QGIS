@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -27,9 +28,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QGis, QgsFeature, QgsGeometry
+from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -60,96 +61,41 @@ class SinglePartsToMultiparts(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Multipart')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         fieldName = self.getParameterValue(self.FIELD)
 
-        geomType = self.singleToMultiGeom(layer.dataProvider().geometryType())
+        geomType = QgsWkbTypes.multiType(layer.wkbType())
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields().toList(), geomType, layer.crs())
+            layer.fields().toList(), geomType, layer.crs())
 
-        inFeat = QgsFeature()
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
-        outGeom = QgsGeometry()
 
-        index = layer.fieldNameIndex(fieldName)
-        unique = vector.getUniqueValues(layer, index)
+        index = layer.fields().lookupField(fieldName)
 
-        current = 0
+        collection_geom = {}
+        collection_attrs = {}
+
         features = vector.features(layer)
-        total = 100.0 / (len(features) * len(unique))
-        if not len(unique) == layer.featureCount():
-            for i in unique:
-                multi_feature = []
-                first = True
-                features = vector.features(layer)
-                for inFeat in features:
-                    atMap = inFeat.attributes()
-                    idVar = atMap[index]
-                    if unicode(idVar).strip() == unicode(i).strip():
-                        if first:
-                            attrs = atMap
-                            first = False
-                        inGeom = QgsGeometry(inFeat.geometry())
-                        vType = inGeom.type()
-                        feature_list = self.extractAsMulti(inGeom)
-                        multi_feature.extend(feature_list)
+        total = 100.0 / len(features)
+        for current, feature in enumerate(features):
+            atMap = feature.attributes()
+            idVar = atMap[index]
+            key = str(idVar).strip()
+            if not key in collection_geom:
+                collection_geom[key] = []
+                collection_attrs[key] = atMap
 
-                    current += 1
-                    progress.setPercentage(int(current * total))
+            inGeom = feature.geometry()
+            collection_geom[key].append(inGeom)
 
-                outFeat.setAttributes(attrs)
-                outGeom = QgsGeometry(self.convertGeometry(multi_feature,
-                                                           vType))
-                outFeat.setGeometry(outGeom)
-                writer.addFeature(outFeat)
+            feedback.setProgress(int(current * total))
 
-            del writer
-        else:
-            raise GeoAlgorithmExecutionException(self.tr('Invalid unique ID field'))
+        for key, geoms in collection_geom.items():
+            outFeat.setAttributes(collection_attrs[key])
+            outFeat.setGeometry(QgsGeometry.collectGeometry(geoms))
+            writer.addFeature(outFeat)
 
-    def singleToMultiGeom(self, wkbType):
-        try:
-            if wkbType in (QGis.WKBPoint, QGis.WKBMultiPoint,
-                           QGis.WKBPoint25D, QGis.WKBMultiPoint25D):
-                return QGis.WKBMultiPoint
-            elif wkbType in (QGis.WKBLineString, QGis.WKBMultiLineString,
-                             QGis.WKBMultiLineString25D,
-                             QGis.WKBLineString25D):
-
-                return QGis.WKBMultiLineString
-            elif wkbType in (QGis.WKBPolygon, QGis.WKBMultiPolygon,
-                             QGis.WKBMultiPolygon25D, QGis.WKBPolygon25D):
-
-                return QGis.WKBMultiPolygon
-            else:
-                return QGis.WKBUnknown
-        except Exception:
-            pass
-
-    def extractAsMulti(self, geom):
-        if geom.type() == QGis.Point:
-            if geom.isMultipart():
-                return geom.asMultiPoint()
-            else:
-                return [geom.asPoint()]
-        elif geom.type() == QGis.Line:
-            if geom.isMultipart():
-                return geom.asMultiPolyline()
-            else:
-                return [geom.asPolyline()]
-        else:
-            if geom.isMultipart():
-                return geom.asMultiPolygon()
-            else:
-                return [geom.asPolygon()]
-
-    def convertGeometry(self, geom_list, vType):
-        if vType == QGis.Point:
-            return QgsGeometry().fromMultiPoint(geom_list)
-        elif vType == QGis.Line:
-            return QgsGeometry().fromMultiPolyline(geom_list)
-        else:
-            return QgsGeometry().fromMultiPolygon(geom_list)
+        del writer

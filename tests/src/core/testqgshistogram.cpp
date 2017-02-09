@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include <QDir>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
@@ -132,13 +132,13 @@ void TestQgsHistogram::fromLayer()
 
   QVERIFY( !h.setValues( 0, QString() ) );
 
-  QgsVectorLayer* layer = new QgsVectorLayer( "Point?field=col1:real", "layer", "memory" );
+  QgsVectorLayer* layer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:real" ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
   QVERIFY( layer->isValid() );
   QgsFeatureList features;
   for ( int i = 1; i <= 10; ++i )
   {
     QgsFeature f( layer->dataProvider()->fields(), i );
-    f.setAttribute( "col1", i );
+    f.setAttribute( QStringLiteral( "col1" ), i );
     features << f;
   }
   layer->dataProvider()->addFeatures( features );
@@ -153,5 +153,5 @@ void TestQgsHistogram::fromLayer()
   delete layer;
 }
 
-QTEST_MAIN( TestQgsHistogram )
+QGSTEST_MAIN( TestQgsHistogram )
 #include "testqgshistogram.moc"

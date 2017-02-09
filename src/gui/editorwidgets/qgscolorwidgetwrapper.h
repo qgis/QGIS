@@ -17,11 +17,11 @@
 #define QGSCOLORWIDGETWRAPPER_H
 
 #include "qgseditorwidgetwrapper.h"
+#include "qgis_gui.h"
 
-#include "qgscolorbuttonv2.h"
+class QgsColorButton;
 
-
-/**
+/** \ingroup gui
  * Wraps a color widget. Users will be able to choose a color.
  * \note not available in Python bindings
  */
@@ -46,7 +46,9 @@ class GUI_EXPORT  QgsColorWidgetWrapper : public QgsEditorWidgetWrapper
     void setValue( const QVariant& value ) override;
 
   private:
-    QgsColorButtonV2* mColorButton;
+    void updateConstraintWidgetStatus( ConstraintResult status ) override;
+
+    QgsColorButton* mColorButton;
 };
 
 #endif // QGSCOLORWIDGETWRAPPER_H

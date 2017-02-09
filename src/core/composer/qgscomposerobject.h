@@ -17,20 +17,21 @@
 #ifndef QGSCOMPOSEROBJECT_H
 #define QGSCOMPOSEROBJECT_H
 
+#include "qgis_core.h"
 #include "qgsobjectcustomproperties.h"
-#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextgenerator.h"
+#include "qgspropertycollection.h"
 #include <QObject>
 #include <QDomNode>
 #include <QMap>
 
 class QgsComposition;
 class QPainter;
-class QgsDataDefined;
 
-/** \ingroup MapComposer
+/** \ingroup core
  * A base class for objects which belong to a map composition.
  */
-class CORE_EXPORT QgsComposerObject: public QObject
+class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContextGenerator
 {
     Q_OBJECT
   public:
@@ -39,39 +40,52 @@ class CORE_EXPORT QgsComposerObject: public QObject
      */
     enum DataDefinedProperty
     {
-      NoProperty = 0, /*!< no property */
-      AllProperties, /*!< all properties for item */
-      TestProperty, /*!< dummy property with no effect on item*/
+      NoProperty = 0, //!< No property
+      AllProperties, //!< All properties for item
+      TestProperty, //!< Dummy property with no effect on item
       //composer page properties
-      PresetPaperSize, /*!< preset paper size for composition */
-      PaperWidth, /*!< paper width */
-      PaperHeight, /*!< paper height */
-      NumPages, /*!< number of pages in composition */
-      PaperOrientation, /*!< paper orientation */
+      PresetPaperSize, //!< Preset paper size for composition
+      PaperWidth, //!< Paper width
+      PaperHeight, //!< Paper height
+      NumPages, //!< Number of pages in composition
+      PaperOrientation, //!< Paper orientation
       //general composer item properties
-      PageNumber, /*!< page number for item placement */
-      PositionX, /*!< x position on page */
-      PositionY, /*!< y position on page */
-      ItemWidth, /*!< width of item */
-      ItemHeight, /*!< height of item */
-      ItemRotation, /*!< rotation of item */
-      Transparency, /*!< item transparency */
-      BlendMode, /*!< item blend mode */
-      ExcludeFromExports, /*!< exclude item from exports */
+      PageNumber, //!< Page number for item placement
+      PositionX, //!< X position on page
+      PositionY, //!< Y position on page
+      ItemWidth, //!< Width of item
+      ItemHeight, //!< Height of item
+      ItemRotation, //!< Rotation of item
+      Transparency, //!< Item transparency
+      BlendMode, //!< Item blend mode
+      ExcludeFromExports, //!< Exclude item from exports
+      FrameColor, //!< Item frame color
+      BackgroundColor, //!< Item background color
       //composer map
-      MapRotation, /*!< map rotation */
-      MapScale, /*!< map scale */
-      MapXMin, /*!< map extent x minimum */
-      MapYMin, /*!< map extent y minimum */
-      MapXMax, /*!< map extent x maximum */
-      MapYMax, /*!< map extent y maximum */
-      MapAtlasMargin, /*!< map atlas margin*/
-      MapLayers, /*!< map layer set*/
-      MapStylePreset, /*!< layer and style visibility preset */
+      MapRotation, //!< Map rotation
+      MapScale, //!< Map scale
+      MapXMin, //!< Map extent x minimum
+      MapYMin, //!< Map extent y minimum
+      MapXMax, //!< Map extent x maximum
+      MapYMax, //!< Map extent y maximum
+      MapAtlasMargin, //!< Map atlas margin
+      MapLayers, //!< Map layer set
+      MapStylePreset, //!< Layer and style map theme
       //composer picture
-      PictureSource, /*!< picture source url */
+      PictureSource, //!< Picture source url
+      PictureSvgBackgroundColor, //!< SVG background color
+      PictureSvgOutlineColor, //!< SVG outline color
+      PictureSvgOutlineWidth, //!< SVG outline width
       //html item
-      SourceUrl /*!< html source url */
+      SourceUrl, //!< Html source url
+      //legend item
+      LegendTitle, //!< Legend title
+      LegendColumnCount, //!< Legend column count
+      //scalebar item
+      ScalebarFillColor, //!< Scalebar fill color
+      ScalebarFillColor2, //!< Scalebar secondary fill color
+      ScalebarLineColor, //!< Scalebar line color
+      ScalebarLineWidth, //!< Scalebar line width
     };
 
     /** Specifies whether the value returned by a function should be the original, user
@@ -80,15 +94,21 @@ class CORE_EXPORT QgsComposerObject: public QObject
      */
     enum PropertyValueType
     {
-      EvaluatedValue = 0, /*!< return the current evaluated value for the property */
-      OriginalValue /*!< return the original, user set value */
+      EvaluatedValue = 0, //!< Return the current evaluated value for the property
+      OriginalValue //!< Return the original, user set value
     };
+
+    /**
+     * Returns the composer object property definitions.
+     * @note added in QGIS 3.0
+     */
+    static const QgsPropertiesDefinition& propertyDefinitions();
 
     /** Constructor
      * @param composition parent composition
      */
     QgsComposerObject( QgsComposition* composition );
-    virtual ~QgsComposerObject();
+    virtual ~QgsComposerObject() = default;
 
     /** Returns the composition the item is attached to.
      * @returns QgsComposition for item.
@@ -102,29 +122,32 @@ class CORE_EXPORT QgsComposerObject: public QObject
      * @param elem is DOM element corresponding to item tag
      * @param doc is the DOM document
      */
-    virtual bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    virtual bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
 
     /** Sets item state from DOM element
      * @param itemElem is DOM node corresponding to item tag
      * @param doc is DOM document
      */
-    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    virtual bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
 
-    /** Returns a reference to the data defined settings for one of the item's data defined properties.
-     * @param property data defined property to return
-     * @note this method was added in version 2.5
+    /** Returns a reference to the object's property collection, used for data defined overrides.
+     * @note added in QGIS 3.0
+     * @see setDataDefinedProperties()
      */
-    QgsDataDefined* dataDefinedProperty( const DataDefinedProperty property ) const;
+    QgsPropertyCollection& dataDefinedProperties() { return mDataDefinedProperties; }
 
-    /** Sets parameters for a data defined property for the item
-     * @param property data defined property to set
-     * @param active true if data defined property is active, false if it is disabled
-     * @param useExpression true if the expression should be used
-     * @param expression expression for data defined property
-     * @param field field name if the data defined property should take its value from a field
-     * @note this method was added in version 2.5
+    /** Returns a reference to the object's property collection, used for data defined overrides.
+     * @note added in QGIS 3.0
+     * @see setDataDefinedProperties()
      */
-    void setDataDefinedProperty( const DataDefinedProperty property, const bool active, const bool useExpression, const QString &expression, const QString &field );
+    const QgsPropertyCollection& dataDefinedProperties() const { return mDataDefinedProperties; }
+
+    /** Sets the objects's property collection, used for data defined overrides.
+     * @param collection property collection. Existing properties will be replaced.
+     * @note added in QGIS 3.0
+     * @see dataDefinedProperties()
+     */
+    void setDataDefinedProperties( const QgsPropertyCollection& collection ) { mDataDefinedProperties = collection; }
 
     /** Set a custom property for the object.
      * @param key property key. If a property with the same key already exists it will be overwritten.
@@ -168,11 +191,11 @@ class CORE_EXPORT QgsComposerObject: public QObject
      * scopes for global, project and composition properties.
      * @note added in QGIS 2.12
      */
-    virtual QgsExpressionContext* createExpressionContext() const;
+    virtual QgsExpressionContext createExpressionContext() const;
 
   public slots:
 
-    /** Triggers a redraw for the item*/
+    //! Triggers a redraw for the item
     virtual void repaint();
 
     /** Refreshes a data defined property for the item by reevaluating the property's value
@@ -189,39 +212,30 @@ class CORE_EXPORT QgsComposerObject: public QObject
 
     QgsComposition* mComposition;
 
-    /** Map of data defined properties for the item to string name to use when exporting item to xml*/
-    QMap< QgsComposerObject::DataDefinedProperty, QString > mDataDefinedNames;
-
-    /** Custom properties for object*/
+    //! Custom properties for object
     QgsObjectCustomProperties mCustomProperties;
 
-    /** Evaluate a data defined property and return the calculated value
-     * @returns true if data defined property could be successfully evaluated
-     * @param property data defined property to evaluate
-     * @param expressionValue QVariant for storing the evaluated value
-     * @param context expression context for evaluating expressions. Must have feature and fields set to current
-     * atlas feature and coverage layer fields prior to calling this method.
-     * @note this method was added in version 2.5
-     */
-    bool dataDefinedEvaluate( const QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue, const QgsExpressionContext& context = QgsExpressionContext() ) const;
+    QgsPropertyCollection mDataDefinedProperties;
 
   signals:
+
     /** Emitted when the item changes. Signifies that the item widgets must update the
      * gui elements.
      */
     void itemChanged();
 
   private slots:
-    /** Prepares all composer item data defined expressions using the current atlas coverage layer if set.
-     * @note this method was added in version 2.5
+
+    /**
+     * Prepares all composer item data defined properties using the current atlas coverage layer if set.
      */
-    void prepareDataDefinedExpressions() const;
+    void prepareProperties() const;
 
   private:
+    //! Property definitions
+    static QgsPropertiesDefinition sPropertyDefinitions;
 
-    /** Map of current data defined properties*/
-    //mutable since expressions in data defineds need to be preparable
-    mutable QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* > mDataDefinedProperties;
+    static void initPropertyDefinitions();
 
     friend class TestQgsComposerObject;
 };

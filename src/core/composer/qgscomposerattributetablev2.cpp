@@ -19,18 +19,21 @@
 #include "qgscomposertablecolumn.h"
 #include "qgscomposermap.h"
 #include "qgscomposerutils.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsfeatureiterator.h"
 #include "qgsvectorlayer.h"
 #include "qgscomposerframe.h"
 #include "qgsatlascomposition.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
 #include "qgsgeometry.h"
+#include "qgscsexception.h"
+#include "qgsmapsettings.h"
 
 //QgsComposerAttributeTableCompareV2
 
 QgsComposerAttributeTableCompareV2::QgsComposerAttributeTableCompareV2()
-    : mCurrentSortColumn( 0 ), mAscending( true )
+    : mCurrentSortColumn( 0 )
+    , mAscending( true )
 {
 }
 
@@ -56,10 +59,10 @@ QgsComposerAttributeTableV2::QgsComposerAttributeTableV2( QgsComposition* compos
     , mShowOnlyVisibleFeatures( false )
     , mFilterToAtlasIntersection( false )
     , mFilterFeatures( false )
-    , mFeatureFilter( "" )
+    , mFeatureFilter( QLatin1String( "" ) )
 {
   //set first vector layer from layer registry as default one
-  QMap<QString, QgsMapLayer*> layerMap =  QgsMapLayerRegistry::instance()->mapLayers();
+  QMap<QString, QgsMapLayer*> layerMap =  mComposition->project()->mapLayers();
   QMap<QString, QgsMapLayer*>::const_iterator mapIt = layerMap.constBegin();
   for ( ; mapIt != layerMap.constEnd(); ++mapIt )
   {
@@ -76,10 +79,11 @@ QgsComposerAttributeTableV2::QgsComposerAttributeTableV2( QgsComposition* compos
     //listen for modifications to layer and refresh table when they occur
     connect( mVectorLayer, SIGNAL( layerModified() ), this, SLOT( refreshAttributes() ) );
   }
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( removeLayer( const QString& ) ) );
 
   if ( mComposition )
   {
+    connect( mComposition->project(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( removeLayer( const QString& ) ) );
+
     //refresh table attributes when composition is refreshed
     connect( mComposition, SIGNAL( refreshItemsTriggered() ), this, SLOT( refreshAttributes() ) );
 
@@ -90,10 +94,6 @@ QgsComposerAttributeTableV2::QgsComposerAttributeTableV2( QgsComposition* compos
     connect( &mComposition->atlasComposition(), SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( atlasLayerChanged( QgsVectorLayer* ) ) );
   }
   refreshAttributes();
-}
-
-QgsComposerAttributeTableV2::~QgsComposerAttributeTableV2()
-{
 }
 
 QString QgsComposerAttributeTableV2::displayName() const
@@ -141,7 +141,7 @@ void QgsComposerAttributeTableV2::setRelationId( const QString& relationId )
 
   QgsVectorLayer* prevLayer = sourceLayer();
   mRelationId = relationId;
-  QgsRelation relation = QgsProject::instance()->relationManager()->relation( mRelationId );
+  QgsRelation relation = mComposition->project()->relationManager()->relation( mRelationId );
   QgsVectorLayer* newLayer = relation.referencingLayer();
 
   if ( mSource == QgsComposerAttributeTableV2::RelationChildren && newLayer != prevLayer )
@@ -308,7 +308,7 @@ void QgsComposerAttributeTableV2::setFeatureFilter( const QString& expression )
   emit changed();
 }
 
-void QgsComposerAttributeTableV2::setDisplayAttributes( const QSet<int>& attr, bool refresh )
+void QgsComposerAttributeTableV2::setDisplayedFields( const QStringList& fields, bool refresh )
 {
   QgsVectorLayer* source = sourceLayer();
   if ( !source )
@@ -316,25 +316,23 @@ void QgsComposerAttributeTableV2::setDisplayAttributes( const QSet<int>& attr, b
     return;
   }
 
-  //rebuild columns list, taking only attributes with index in supplied QSet
+  //rebuild columns list, taking only fields contained in supplied list
   qDeleteAll( mColumns );
   mColumns.clear();
 
-  const QgsFields& fields = source->fields();
+  QgsFields layerFields = source->fields();
 
-  if ( !attr.empty() )
+  if ( !fields.isEmpty() )
   {
-    QSet<int>::const_iterator attIt = attr.constBegin();
-    for ( ; attIt != attr.constEnd(); ++attIt )
+    Q_FOREACH ( const QString& field, fields )
     {
-      int attrIdx = ( *attIt );
-      if ( !fields.exists( attrIdx ) )
-      {
+      int attrIdx = layerFields.lookupField( field );
+      if ( attrIdx < 0 )
         continue;
-      }
+
       QString currentAlias = source->attributeDisplayName( attrIdx );
       QgsComposerTableColumn* col = new QgsComposerTableColumn;
-      col->setAttribute( fields[attrIdx].name() );
+      col->setAttribute( layerFields.at( attrIdx ).name() );
       col->setHeading( currentAlias );
       mColumns.append( col );
     }
@@ -343,7 +341,7 @@ void QgsComposerAttributeTableV2::setDisplayAttributes( const QSet<int>& attr, b
   {
     //resetting, so add all attributes to columns
     int idx = 0;
-    Q_FOREACH ( const QgsField& field, fields )
+    Q_FOREACH ( const QgsField& field, layerFields )
     {
       QString currentAlias = source->attributeDisplayName( idx );
       QgsComposerTableColumn* col = new QgsComposerTableColumn;
@@ -371,7 +369,7 @@ void QgsComposerAttributeTableV2::restoreFieldAliasMap( const QMap<int, QString>
   QList<QgsComposerTableColumn*>::const_iterator columnIt = mColumns.constBegin();
   for ( ; columnIt != mColumns.constEnd(); ++columnIt )
   {
-    int attrIdx = source->fieldNameIndex(( *columnIt )->attribute() );
+    int attrIdx = source->fields().lookupField(( *columnIt )->attribute() );
     if ( map.contains( attrIdx ) )
     {
       ( *columnIt )->setHeading( map.value( attrIdx ) );
@@ -402,11 +400,11 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
     return false;
   }
 
-  QScopedPointer< QgsExpressionContext > context( createExpressionContext() );
-  context->setFields( layer->fields() );
+  QgsExpressionContext context = createExpressionContext();
+  context.setFields( layer->fields() );
 
   //prepare filter expression
-  QScopedPointer<QgsExpression> filterExpression;
+  std::unique_ptr<QgsExpression> filterExpression;
   bool activeFilter = false;
   if ( mFilterFeatures && !mFeatureFilter.isEmpty() )
   {
@@ -421,10 +419,10 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
   if ( mComposerMap && mShowOnlyVisibleFeatures )
   {
     selectionRect = *mComposerMap->currentMapExtent();
-    if ( layer && mComposition->mapSettings().hasCrsTransformEnabled() )
+    if ( layer )
     {
       //transform back to layer CRS
-      QgsCoordinateTransform coordTransform( layer->crs(), mComposition->mapSettings().destinationCrs() );
+      QgsCoordinateTransform coordTransform( layer->crs(), mComposerMap->crs() );
       try
       {
         selectionRect = coordTransform.transformBoundingBox( selectionRect, QgsCoordinateTransform::ReverseTransform );
@@ -441,7 +439,7 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
 
   if ( mSource == QgsComposerAttributeTableV2::RelationChildren )
   {
-    QgsRelation relation = QgsProject::instance()->relationManager()->relation( mRelationId );
+    QgsRelation relation = mComposition->project()->relationManager()->relation( mRelationId );
     QgsFeature atlasFeature = mComposition->atlasComposition().feature();
     req = relation.getRelatedFeaturesRequest( atlasFeature );
   }
@@ -465,11 +463,11 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
 
   while ( fit.nextFeature( f ) && counter < mMaximumNumberOfFeatures )
   {
-    context->setFeature( f );
+    context.setFeature( f );
     //check feature against filter
-    if ( activeFilter && !filterExpression.isNull() )
+    if ( activeFilter && filterExpression )
     {
-      QVariant result = filterExpression->evaluate( context.data() );
+      QVariant result = filterExpression->evaluate( &context );
       // skip this feature if the filter evaluation is false
       if ( !result.toBool() )
       {
@@ -479,13 +477,13 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
     //check against atlas feature intersection
     if ( mFilterToAtlasIntersection )
     {
-      if ( !f.constGeometry() || ! mComposition->atlasComposition().enabled() )
+      if ( !f.hasGeometry() || ! mComposition->atlasComposition().enabled() )
       {
         continue;
       }
       QgsFeature atlasFeature = mComposition->atlasComposition().feature();
-      if ( !atlasFeature.constGeometry() ||
-           !f.constGeometry()->intersects( atlasFeature.constGeometry() ) )
+      if ( !atlasFeature.hasGeometry() ||
+           !f.geometry().intersects( atlasFeature.geometry() ) )
       {
         //feature falls outside current atlas feature
         continue;
@@ -497,7 +495,7 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
     QList<QgsComposerTableColumn*>::const_iterator columnIt = mColumns.constBegin();
     for ( ; columnIt != mColumns.constEnd(); ++columnIt )
     {
-      int idx = layer->fieldNameIndex(( *columnIt )->attribute() );
+      int idx = layer->fields().lookupField(( *columnIt )->attribute() );
       if ( idx != -1 )
       {
         currentRow << replaceWrapChar( f.attributes().at( idx ) );
@@ -506,10 +504,11 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
       {
         // Lets assume it's an expression
         QgsExpression* expression = new QgsExpression(( *columnIt )->attribute() );
-        context->lastScope()->setVariable( QString( "row_number" ), counter + 1 );
-        expression->prepare( context.data() );
-        QVariant value = expression->evaluate( context.data() );
+        context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), counter + 1, true ) );
+        expression->prepare( &context );
+        QVariant value = expression->evaluate( &context );
         currentRow << value;
+        delete expression;
       }
     }
 
@@ -527,20 +526,20 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
   {
     c.setSortColumn( sortColumns.at( i ).first );
     c.setAscending( sortColumns.at( i ).second );
-    qStableSort( contents.begin(), contents.end(), c );
+    std::stable_sort( contents.begin(), contents.end(), c );
   }
 
   recalculateTableSize();
   return true;
 }
 
-QgsExpressionContext *QgsComposerAttributeTableV2::createExpressionContext() const
+QgsExpressionContext QgsComposerAttributeTableV2::createExpressionContext() const
 {
-  QgsExpressionContext* context = QgsComposerTableV2::createExpressionContext();
+  QgsExpressionContext context = QgsComposerTableV2::createExpressionContext();
 
   if ( mSource == LayerAttributes )
   {
-    context->appendScope( QgsExpressionContextUtils::layerScope( mVectorLayer ) );
+    context.appendScope( QgsExpressionContextUtils::layerScope( mVectorLayer ) );
   }
 
   return context;
@@ -553,7 +552,7 @@ QVariant QgsComposerAttributeTableV2::replaceWrapChar( const QVariant &variant )
     return variant;
 
   QString replaced = variant.toString();
-  replaced.replace( mWrapString, "\n" );
+  replaced.replace( mWrapString, QLatin1String( "\n" ) );
   return replaced;
 }
 
@@ -567,7 +566,7 @@ QgsVectorLayer *QgsComposerAttributeTableV2::sourceLayer()
       return mVectorLayer;
     case QgsComposerAttributeTableV2::RelationChildren:
     {
-      QgsRelation relation = QgsProject::instance()->relationManager()->relation( mRelationId );
+      QgsRelation relation = mComposition->project()->relationManager()->relation( mRelationId );
       return relation.referencingLayer();
     }
   }
@@ -609,7 +608,7 @@ QList<QPair<int, bool> > QgsComposerAttributeTableV2::sortAttributes() const
   }
 
   //sort columns by rank
-  qSort( sortedColumns.begin(), sortedColumns.end(), columnsBySortRank );
+  std::sort( sortedColumns.begin(), sortedColumns.end(), columnsBySortRank );
 
   //generate list of column index, bool for sort direction (to match 2.0 api)
   QList<QPair<int, bool> > attributesBySortRank;
@@ -635,40 +634,40 @@ void QgsComposerAttributeTableV2::setWrapString( const QString &wrapString )
   emit changed();
 }
 
-bool QgsComposerAttributeTableV2::writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
+bool QgsComposerAttributeTableV2::writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
 {
-  QDomElement composerTableElem = doc.createElement( "ComposerAttributeTableV2" );
-  composerTableElem.setAttribute( "source", QString::number( static_cast< int >( mSource ) ) );
-  composerTableElem.setAttribute( "relationId", mRelationId );
-  composerTableElem.setAttribute( "showUniqueRowsOnly", mShowUniqueRowsOnly );
-  composerTableElem.setAttribute( "showOnlyVisibleFeatures", mShowOnlyVisibleFeatures );
-  composerTableElem.setAttribute( "filterToAtlasIntersection", mFilterToAtlasIntersection );
-  composerTableElem.setAttribute( "maxFeatures", mMaximumNumberOfFeatures );
-  composerTableElem.setAttribute( "filterFeatures", mFilterFeatures ? "true" : "false" );
-  composerTableElem.setAttribute( "featureFilter", mFeatureFilter );
-  composerTableElem.setAttribute( "wrapString", mWrapString );
+  QDomElement composerTableElem = doc.createElement( QStringLiteral( "ComposerAttributeTableV2" ) );
+  composerTableElem.setAttribute( QStringLiteral( "source" ), QString::number( static_cast< int >( mSource ) ) );
+  composerTableElem.setAttribute( QStringLiteral( "relationId" ), mRelationId );
+  composerTableElem.setAttribute( QStringLiteral( "showUniqueRowsOnly" ), mShowUniqueRowsOnly );
+  composerTableElem.setAttribute( QStringLiteral( "showOnlyVisibleFeatures" ), mShowOnlyVisibleFeatures );
+  composerTableElem.setAttribute( QStringLiteral( "filterToAtlasIntersection" ), mFilterToAtlasIntersection );
+  composerTableElem.setAttribute( QStringLiteral( "maxFeatures" ), mMaximumNumberOfFeatures );
+  composerTableElem.setAttribute( QStringLiteral( "filterFeatures" ), mFilterFeatures ? "true" : "false" );
+  composerTableElem.setAttribute( QStringLiteral( "featureFilter" ), mFeatureFilter );
+  composerTableElem.setAttribute( QStringLiteral( "wrapString" ), mWrapString );
 
   if ( mComposerMap )
   {
-    composerTableElem.setAttribute( "composerMap", mComposerMap->id() );
+    composerTableElem.setAttribute( QStringLiteral( "composerMap" ), mComposerMap->id() );
   }
   else
   {
-    composerTableElem.setAttribute( "composerMap", -1 );
+    composerTableElem.setAttribute( QStringLiteral( "composerMap" ), -1 );
   }
   if ( mVectorLayer )
   {
-    composerTableElem.setAttribute( "vectorLayer", mVectorLayer->id() );
+    composerTableElem.setAttribute( QStringLiteral( "vectorLayer" ), mVectorLayer->id() );
   }
 
-  bool ok = QgsComposerTableV2::writeXML( composerTableElem, doc, ignoreFrames );
+  bool ok = QgsComposerTableV2::writeXml( composerTableElem, doc, ignoreFrames );
 
   elem.appendChild( composerTableElem );
 
   return ok;
 }
 
-bool QgsComposerAttributeTableV2::readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames )
+bool QgsComposerAttributeTableV2::readXml( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames )
 {
   if ( itemElem.isNull() )
   {
@@ -676,7 +675,7 @@ bool QgsComposerAttributeTableV2::readXML( const QDomElement& itemElem, const QD
   }
 
   //read general table properties
-  if ( !QgsComposerTableV2::readXML( itemElem, doc, ignoreFrames ) )
+  if ( !QgsComposerTableV2::readXml( itemElem, doc, ignoreFrames ) )
   {
     return false;
   }
@@ -688,24 +687,24 @@ bool QgsComposerAttributeTableV2::readXML( const QDomElement& itemElem, const QD
     disconnect( prevLayer, SIGNAL( layerModified() ), this, SLOT( refreshAttributes() ) );
   }
 
-  mSource = QgsComposerAttributeTableV2::ContentSource( itemElem.attribute( "source", "0" ).toInt() );
-  mRelationId = itemElem.attribute( "relationId", "" );
+  mSource = QgsComposerAttributeTableV2::ContentSource( itemElem.attribute( QStringLiteral( "source" ), QStringLiteral( "0" ) ).toInt() );
+  mRelationId = itemElem.attribute( QStringLiteral( "relationId" ), QLatin1String( "" ) );
 
   if ( mSource == QgsComposerAttributeTableV2::AtlasFeature )
   {
     mCurrentAtlasLayer = mComposition->atlasComposition().coverageLayer();
   }
 
-  mShowUniqueRowsOnly = itemElem.attribute( "showUniqueRowsOnly", "0" ).toInt();
-  mShowOnlyVisibleFeatures = itemElem.attribute( "showOnlyVisibleFeatures", "1" ).toInt();
-  mFilterToAtlasIntersection = itemElem.attribute( "filterToAtlasIntersection", "0" ).toInt();
-  mFilterFeatures = itemElem.attribute( "filterFeatures", "false" ) == "true" ? true : false;
-  mFeatureFilter = itemElem.attribute( "featureFilter", "" );
-  mMaximumNumberOfFeatures = itemElem.attribute( "maxFeatures", "5" ).toInt();
-  mWrapString = itemElem.attribute( "wrapString" );
+  mShowUniqueRowsOnly = itemElem.attribute( QStringLiteral( "showUniqueRowsOnly" ), QStringLiteral( "0" ) ).toInt();
+  mShowOnlyVisibleFeatures = itemElem.attribute( QStringLiteral( "showOnlyVisibleFeatures" ), QStringLiteral( "1" ) ).toInt();
+  mFilterToAtlasIntersection = itemElem.attribute( QStringLiteral( "filterToAtlasIntersection" ), QStringLiteral( "0" ) ).toInt();
+  mFilterFeatures = itemElem.attribute( QStringLiteral( "filterFeatures" ), QStringLiteral( "false" ) ) == QLatin1String( "true" ) ? true : false;
+  mFeatureFilter = itemElem.attribute( QStringLiteral( "featureFilter" ), QLatin1String( "" ) );
+  mMaximumNumberOfFeatures = itemElem.attribute( QStringLiteral( "maxFeatures" ), QStringLiteral( "5" ) ).toInt();
+  mWrapString = itemElem.attribute( QStringLiteral( "wrapString" ) );
 
   //composer map
-  int composerMapId = itemElem.attribute( "composerMap", "-1" ).toInt();
+  int composerMapId = itemElem.attribute( QStringLiteral( "composerMap" ), QStringLiteral( "-1" ) ).toInt();
   if ( composerMapId == -1 )
   {
     mComposerMap = nullptr;
@@ -727,14 +726,14 @@ bool QgsComposerAttributeTableV2::readXML( const QDomElement& itemElem, const QD
   }
 
   //vector layer
-  QString layerId = itemElem.attribute( "vectorLayer", "not_existing" );
-  if ( layerId == "not_existing" )
+  QString layerId = itemElem.attribute( QStringLiteral( "vectorLayer" ), QStringLiteral( "not_existing" ) );
+  if ( layerId == QLatin1String( "not_existing" ) )
   {
     mVectorLayer = nullptr;
   }
   else
   {
-    QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+    QgsMapLayer* ml = mComposition->project()->mapLayer( layerId );
     if ( ml )
     {
       mVectorLayer = dynamic_cast<QgsVectorLayer*>( ml );

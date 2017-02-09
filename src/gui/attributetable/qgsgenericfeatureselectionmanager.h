@@ -18,8 +18,9 @@
 
 #include "qgsfeature.h"
 #include "qgsifeatureselectionmanager.h"
+#include "qgis_gui.h"
 
-/**
+/** \ingroup gui
  * This selection manager synchronizes a local set of selected features with an attribute table.
  * If you want to synchronize the attribute table selection with the map canvas selection, you
  * should use { @link QgsVectorLayerSelectionManager } instead.
@@ -38,7 +39,7 @@ class GUI_EXPORT QgsGenericFeatureSelectionManager : public QgsIFeatureSelection
     virtual void select( const QgsFeatureIds& ids ) override;
     virtual void deselect( const QgsFeatureIds& ids ) override;
     virtual void setSelectedFeatures( const QgsFeatureIds& ids ) override;
-    virtual const QgsFeatureIds& selectedFeaturesIds() const override;
+    virtual const QgsFeatureIds& selectedFeatureIds() const override;
 
   private:
     QgsFeatureIds mSelectedFeatures;

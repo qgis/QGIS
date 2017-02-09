@@ -20,24 +20,24 @@
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
 
-static const QString AUTH_METHOD_KEY = "Basic";
-static const QString AUTH_METHOD_DESCRIPTION = "Basic authentication";
+static const QString AUTH_METHOD_KEY = QStringLiteral( "Basic" );
+static const QString AUTH_METHOD_DESCRIPTION = QStringLiteral( "Basic authentication" );
 
-QMap<QString, QgsAuthMethodConfig> QgsAuthBasicMethod::mAuthConfigCache = QMap<QString, QgsAuthMethodConfig>();
+QMap<QString, QgsAuthMethodConfig> QgsAuthBasicMethod::sAuthConfigCache = QMap<QString, QgsAuthMethodConfig>();
 
 
 QgsAuthBasicMethod::QgsAuthBasicMethod()
     : QgsAuthMethod()
 {
   setVersion( 2 );
-  setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceURI );
+  setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceUri );
   setDataProviders( QStringList()
-                    << "postgres"
-                    << "db2"
-                    << "ows"
-                    << "wfs"  // convert to lowercase
-                    << "wcs"
-                    << "wms" );
+                    << QStringLiteral( "postgres" )
+                    << QStringLiteral( "db2" )
+                    << QStringLiteral( "ows" )
+                    << QStringLiteral( "wfs" )  // convert to lowercase
+                    << QStringLiteral( "wcs" )
+                    << QStringLiteral( "wms" ) );
 }
 
 QgsAuthBasicMethod::~QgsAuthBasicMethod()
@@ -71,12 +71,12 @@ bool QgsAuthBasicMethod::updateNetworkRequest( QNetworkRequest &request, const Q
     return false;
   }
 
-  QString username = mconfig.config( "username" );
-  QString password = mconfig.config( "password" );
+  QString username = mconfig.config( QStringLiteral( "username" ) );
+  QString password = mconfig.config( QStringLiteral( "password" ) );
 
   if ( !username.isEmpty() )
   {
-    request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( username, password ).toAscii().toBase64() );
+    request.setRawHeader( "Authorization", "Basic " + QStringLiteral( "%1:%2" ).arg( username, password ).toLatin1().toBase64() );
   }
   return true;
 }
@@ -92,8 +92,8 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
     return false;
   }
 
-  QString username = mconfig.config( "username" );
-  QString password = mconfig.config( "password" );
+  QString username = mconfig.config( QStringLiteral( "username" ) );
+  QString password = mconfig.config( QStringLiteral( "password" ) );
 
   if ( username.isEmpty() )
   {
@@ -128,15 +128,15 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
 
 void QgsAuthBasicMethod::updateMethodConfig( QgsAuthMethodConfig &mconfig )
 {
-  if ( mconfig.hasConfig( "oldconfigstyle" ) )
+  if ( mconfig.hasConfig( QStringLiteral( "oldconfigstyle" ) ) )
   {
     QgsDebugMsg( "Updating old style auth method config" );
 
-    QStringList conflist = mconfig.config( "oldconfigstyle" ).split( "|||" );
-    mconfig.setConfig( "realm", conflist.at( 0 ) );
-    mconfig.setConfig( "username", conflist.at( 1 ) );
-    mconfig.setConfig( "password", conflist.at( 2 ) );
-    mconfig.removeConfig( "oldconfigstyle" );
+    QStringList conflist = mconfig.config( QStringLiteral( "oldconfigstyle" ) ).split( QStringLiteral( "|||" ) );
+    mconfig.setConfig( QStringLiteral( "realm" ), conflist.at( 0 ) );
+    mconfig.setConfig( QStringLiteral( "username" ), conflist.at( 1 ) );
+    mconfig.setConfig( QStringLiteral( "password" ), conflist.at( 2 ) );
+    mconfig.removeConfig( QStringLiteral( "oldconfigstyle" ) );
   }
 
   // TODO: add updates as method version() increases due to config storage changes
@@ -152,9 +152,9 @@ QgsAuthMethodConfig QgsAuthBasicMethod::getMethodConfig( const QString &authcfg,
   QgsAuthMethodConfig mconfig;
 
   // check if it is cached
-  if ( mAuthConfigCache.contains( authcfg ) )
+  if ( sAuthConfigCache.contains( authcfg ) )
   {
-    mconfig = mAuthConfigCache.value( authcfg );
+    mconfig = sAuthConfigCache.value( authcfg );
     QgsDebugMsg( QString( "Retrieved config for authcfg: %1" ).arg( authcfg ) );
     return mconfig;
   }
@@ -175,14 +175,14 @@ QgsAuthMethodConfig QgsAuthBasicMethod::getMethodConfig( const QString &authcfg,
 void QgsAuthBasicMethod::putMethodConfig( const QString &authcfg, const QgsAuthMethodConfig& mconfig )
 {
   QgsDebugMsg( QString( "Putting basic config for authcfg: %1" ).arg( authcfg ) );
-  mAuthConfigCache.insert( authcfg, mconfig );
+  sAuthConfigCache.insert( authcfg, mconfig );
 }
 
 void QgsAuthBasicMethod::removeMethodConfig( const QString &authcfg )
 {
-  if ( mAuthConfigCache.contains( authcfg ) )
+  if ( sAuthConfigCache.contains( authcfg ) )
   {
-    mAuthConfigCache.remove( authcfg );
+    sAuthConfigCache.remove( authcfg );
     QgsDebugMsg( QString( "Removed basic config for authcfg: %1" ).arg( authcfg ) );
   }
 }
@@ -191,8 +191,8 @@ QString QgsAuthBasicMethod::escapeUserPass( const QString &theVal, QChar delim )
 {
   QString val = theVal;
 
-  val.replace( '\\', "\\\\" );
-  val.replace( delim, QString( "\\%1" ).arg( delim ) );
+  val.replace( '\\', QLatin1String( "\\\\" ) );
+  val.replace( delim, QStringLiteral( "\\%1" ).arg( delim ) );
 
   return val;
 }

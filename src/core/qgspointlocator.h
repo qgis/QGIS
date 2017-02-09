@@ -19,12 +19,11 @@
 class QgsPoint;
 class QgsVectorLayer;
 
+#include "qgis_core.h"
 #include "qgsfeature.h"
 #include "qgspoint.h"
-#include "qgsrectangle.h"
-
-class QgsCoordinateTransform;
-class QgsCoordinateReferenceSystem;
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
 
 class QgsPointLocator_VisitorNearestVertex;
 class QgsPointLocator_VisitorNearestEdge;
@@ -37,7 +36,7 @@ namespace SpatialIndex
   class ISpatialIndex;
 }
 
-/**
+/** \ingroup core
  * @brief The class defines interface for querying point location:
  *  - query nearest vertices / edges to a point
  *  - query vertices / edges in rectangle
@@ -51,20 +50,23 @@ class CORE_EXPORT QgsPointLocator : public QObject
 {
     Q_OBJECT
   public:
+
     /** Construct point locator for a layer.
-     *  @arg destCRS if not null, will do the searches on data reprojected to the given CRS
+     *  @arg destinationCrs if a valid QgsCoordinateReferenceSystem is passed then the locator will
+     *  do the searches on data reprojected to the given CRS
      *  @arg extent  if not null, will index only a subset of the layer
      */
-    explicit QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateReferenceSystem* destCRS = nullptr, const QgsRectangle* extent = nullptr );
+    explicit QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateReferenceSystem& destinationCrs = QgsCoordinateReferenceSystem(),
+                              const QgsRectangle* extent = nullptr );
 
     ~QgsPointLocator();
 
     //! Get associated layer
     //! @note added in QGIS 2.14
     QgsVectorLayer* layer() const { return mLayer; }
-    //! Get destination CRS - may be null if not doing OTF reprojection
+    //! Get destination CRS - may be an invalid QgsCoordinateReferenceSystem if not doing OTF reprojection
     //! @note added in QGIS 2.14
-    const QgsCoordinateReferenceSystem* destCRS() const;
+    QgsCoordinateReferenceSystem destinationCrs() const;
     //! Get extent of the area point locator covers - if null then it caches the whole layer
     //! @note added in QGIS 2.14
     const QgsRectangle* extent() const { return mExtent; }
@@ -72,13 +74,16 @@ class CORE_EXPORT QgsPointLocator : public QObject
     //! @note added in QGIS 2.14
     void setExtent( const QgsRectangle* extent );
 
+    /**
+     * The type of a snap result or the filter type for a snap request.
+     */
     enum Type
     {
-      Invalid = 0,
-      Vertex = 1,
-      Edge = 2,
-      Area = 4,
-      All = Vertex | Edge | Area
+      Invalid = 0, //!< Invalid
+      Vertex  = 1, //!< Snapped to a vertex. Can be a vertex of the geometry or an intersection.
+      Edge    = 2, //!< Snapped to an edge
+      Area    = 4, //!< Snapped to an area
+      All = Vertex | Edge | Area //!< Combination of vertex, edge and area
     };
 
     Q_DECLARE_FLAGS( Types, Type )
@@ -89,16 +94,28 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * false if the creation of index has been prematurely stopped due to the limit of features, otherwise true */
     bool init( int maxFeaturesToIndex = -1 );
 
-    /** Indicate whether the data have been already indexed */
+    //! Indicate whether the data have been already indexed
     bool hasIndex() const;
 
     struct Match
     {
-      //! consruct invalid match
-      Match() : mType( Invalid ), mDist( 0 ), mPoint(), mLayer( nullptr ), mFid( 0 ), mVertexIndex( 0 ) {}
+      //! construct invalid match
+      Match()
+          : mType( Invalid )
+          , mDist( 0 )
+          , mPoint()
+          , mLayer( nullptr )
+          , mFid( 0 )
+          , mVertexIndex( 0 )
+      {}
 
       Match( Type t, QgsVectorLayer* vl, QgsFeatureId fid, double dist, const QgsPoint& pt, int vertexIndex = 0, QgsPoint* edgePoints = nullptr )
-          : mType( t ), mDist( dist ), mPoint( pt ), mLayer( vl ), mFid( fid ), mVertexIndex( vertexIndex )
+          : mType( t )
+          , mDist( dist )
+          , mPoint( pt )
+          , mLayer( vl )
+          , mFid( fid )
+          , mVertexIndex( vertexIndex )
       {
         if ( edgePoints )
         {
@@ -125,9 +142,15 @@ class CORE_EXPORT QgsPointLocator : public QObject
       //! for vertex / edge match (first vertex of the edge)
       int vertexIndex() const { return mVertexIndex; }
 
-      //! reference vector layer
+      /**
+       * The vector layer where the snap occurred.
+       * Will be null if the snap happened on an intersection.
+       */
       QgsVectorLayer* layer() const { return mLayer; }
 
+      /**
+       * The id of the feature to which the snapped geometry belongs.
+       */
       QgsFeatureId featureId() const { return mFid; }
 
       //! Only for a valid edge match - obtain endpoints of the edge
@@ -154,7 +177,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     //! Implement the interface and pass its instance to QgsPointLocator or QgsSnappingUtils methods.
     struct MatchFilter
     {
-      virtual ~MatchFilter() {}
+      virtual ~MatchFilter() = default;
       virtual bool acceptMatch( const Match& match ) = 0;
     };
 
@@ -163,7 +186,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     //! Find nearest vertex to the specified point - up to distance specified by tolerance
     //! Optional filter may discard unwanted matches.
     Match nearestVertex( const QgsPoint& point, double tolerance, MatchFilter* filter = nullptr );
-    //! Find nearest edges to the specified point - up to distance specified by tolerance
+    //! Find nearest edge to the specified point - up to distance specified by tolerance
     //! Optional filter may discard unwanted matches.
     Match nearestEdge( const QgsPoint& point, double tolerance, MatchFilter* filter = nullptr );
     //! Find edges within a specified recangle
@@ -186,15 +209,15 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
   protected:
     bool rebuildIndex( int maxFeaturesToIndex = -1 );
+  protected slots:
     void destroyIndex();
-
   private slots:
     void onFeatureAdded( QgsFeatureId fid );
     void onFeatureDeleted( QgsFeatureId fid );
-    void onGeometryChanged( QgsFeatureId fid, QgsGeometry& geom );
+    void onGeometryChanged( QgsFeatureId fid, const QgsGeometry& geom );
 
   private:
-    /** Storage manager */
+    //! Storage manager
     SpatialIndex::IStorageManager* mStorage;
 
     QHash<QgsFeatureId, QgsGeometry*> mGeoms;
@@ -203,8 +226,8 @@ class CORE_EXPORT QgsPointLocator : public QObject
     //! flag whether the layer is currently empty (i.e. mRTree is null but it is not necessary to rebuild it)
     bool mIsEmptyLayer;
 
-    /** R-tree containing spatial index */
-    QgsCoordinateTransform* mTransform;
+    //! R-tree containing spatial index
+    QgsCoordinateTransform mTransform;
     QgsVectorLayer* mLayer;
     QgsRectangle* mExtent;
 

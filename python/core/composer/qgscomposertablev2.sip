@@ -16,7 +16,7 @@ typedef QList< QList< QVariant > > QgsComposerTableContents;
 typedef QList<QgsComposerTableColumn*> QgsComposerTableColumns;
 
 
-/** \ingroup MapComposer
+/** \ingroup core
  *  \class QgsComposerTableStyle
  *  \brief Styling option for a composer table cell
  *  \note added in QGIS 2.12
@@ -42,19 +42,19 @@ class QgsComposerTableStyle
      * @param doc QDomDocument for the destination XML.
      * @see readXML
      */
-    bool writeXML( QDomElement& styleElem, QDomDocument & doc ) const;
+    bool writeXml( QDomElement& styleElem, QDomDocument & doc ) const;
 
     /** Reads the style's properties from XML.
      * @param styleElem a QDomElement holding the style's desired properties.
      * @see writeXML
      */
-    bool readXML( const QDomElement& styleElem );
+    bool readXml( const QDomElement& styleElem );
 
 };
 
 /** A class to display a table in the print composer, and allow
  * the table to span over multiple frames
- * \ingroup MapComposer
+ * \ingroup core
  * @note added in QGIS 2.5
  */
 class QgsComposerTableV2: QgsComposerMultiFrame
@@ -95,7 +95,7 @@ class QgsComposerTableV2: QgsComposerMultiFrame
 
     /** Controls how long strings in the table are handled
      */
-    enum WrapBehaviour
+    enum WrapBehavior
     {
       TruncateText = 0, /*!< text which doesn't fit inside the cell is truncated */
       WrapText /*!< text which doesn't fit inside the cell is wrapped. Note that this only applies to text in columns with a fixed width. */
@@ -133,34 +133,34 @@ class QgsComposerTableV2: QgsComposerMultiFrame
      */
     double cellMargin() const;
 
-    /** Sets the behaviour for empty tables with no content rows.
-     * @param mode behaviour mode for empty tables
-     * @see emptyTableBehaviour
+    /** Sets the behavior for empty tables with no content rows.
+     * @param mode behavior mode for empty tables
+     * @see emptyTableBehavior
      */
-    void setEmptyTableBehaviour( const EmptyTableMode mode );
+    void setEmptyTableBehavior( const EmptyTableMode mode );
 
-    /** Returns the behaviour mode for empty tables. This property controls
+    /** Returns the behavior mode for empty tables. This property controls
      * how the table is drawn if it contains no content rows.
-     * @returns behaviour mode for empty tables
-     * @see setEmptyTableBehaviour
+     * @returns behavior mode for empty tables
+     * @see setEmptyTableBehavior
      */
-    EmptyTableMode emptyTableBehaviour() const;
+    EmptyTableMode emptyTableBehavior() const;
 
     /** Sets the message for empty tables with no content rows. This message
-     * is displayed in the table body if the empty table behaviour is
+     * is displayed in the table body if the empty table behavior is
      * set to ShowMessage
      * @param message message to show for empty tables
      * @see emptyTableMessage
-     * @see setEmptyTableBehaviour
+     * @see setEmptyTableBehavior
      */
     void setEmptyTableMessage( const QString& message );
 
     /** Returns the message for empty tables with no content rows. This message
-     * is displayed in the table body if the empty table behaviour is
+     * is displayed in the table body if the empty table behavior is
      * set to ShowMessage
      * @returns message to show for empty tables
      * @see setEmptyTableMessage
-     * @see emptyTableBehaviour
+     * @see emptyTableBehavior
      */
     QString emptyTableMessage() const;
 
@@ -310,6 +310,46 @@ class QgsComposerTableV2: QgsComposerMultiFrame
      */
     QColor gridColor() const;
 
+    /** Sets whether the grid's horizontal lines should be drawn in the table
+     * @param horizontalGird set to true to draw grid's horizontal lines
+     * @see setShowGrid
+     * @see setGridStrokeWidth
+     * @see setGridColor
+     * @see setVerticalGrid
+     * @note added in QGIS 3.0
+     */
+    void setHorizontalGrid( const bool horizontalGrid );
+
+    /** Returns whether the grid's horizontal lines are drawn in the table
+     * @returns true if grid's horizontal lines are drawn
+     * @see setShowGrid
+     * @see setGridStrokeWidth
+     * @see setGridColor
+     * @see setVerticalGrid
+     * @note added in QGIS 3.0
+     */
+    bool horizontalGrid() const;
+
+    /** Sets whether the grid's vertical lines should be drawn in the table
+     * @param verticalGird set to true to draw grid's vertical lines
+     * @see setShowGrid
+     * @see setGridStrokeWidth
+     * @see setGridColor
+     * @see setHorizontalGrid
+     * @note added in QGIS 3.0
+     */
+    void setVerticalGrid( const bool verticalGrid );
+
+    /** Returns whether the grid's vertical lines are drawn in the table
+     * @returns true if grid's vertical lines are drawn
+     * @see setShowGrid
+     * @see setGridStrokeWidth
+     * @see setGridColor
+     * @see setHorizontalGrid
+     * @note added in QGIS 3.0
+     */
+    bool verticalGrid() const;
+
     /** Sets color used for background of table.
      * @param color table background color
      * @see backgroundColor
@@ -324,21 +364,21 @@ class QgsComposerTableV2: QgsComposerMultiFrame
      */
     QColor backgroundColor() const;
 
-    /** Sets the wrap behaviour for the table, which controls how text within cells is
+    /** Sets the wrap behavior for the table, which controls how text within cells is
      * automatically wrapped.
-     * @param behaviour wrap behaviour
-     * @see wrapBehaviour
+     * @param behavior wrap behavior
+     * @see wrapBehavior
      * @note added in QGIS 2.12
      */
-    void setWrapBehaviour( WrapBehaviour behaviour );
+    void setWrapBehavior( WrapBehavior behavior );
 
-    /** Returns the wrap behaviour for the table, which controls how text within cells is
+    /** Returns the wrap behavior for the table, which controls how text within cells is
      * automatically wrapped.
-     * @returns current wrap behaviour
-     * @see setWrapBehaviour
+     * @returns current wrap behavior
+     * @see setWrapBehavior
      * @note added in QGIS 2.12
      */
-    WrapBehaviour wrapBehaviour() const;
+    WrapBehavior wrapBehavior() const;
 
     /** Returns a pointer to the list of QgsComposerTableColumns shown in the table
      * @returns pointer to list of columns in table
@@ -362,7 +402,7 @@ class QgsComposerTableV2: QgsComposerMultiFrame
     void setCellStyle( CellStyleGroup group, const QgsComposerTableStyle& style );
 
     /** Returns the cell style for a cell group.
-     * @param group group to retreive style for
+     * @param group group to retrieve style for
      * @see setCellStyle()
      * @note added in QGIS 2.12
      */
@@ -393,8 +433,8 @@ class QgsComposerTableV2: QgsComposerMultiFrame
     //reimplemented to return min frame height
     virtual QSizeF minFrameSize( const int frameIndex = -1 ) const;
 
-    virtual bool writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const;
-    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
+    virtual bool writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const;
+    virtual bool readXml( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
     virtual QSizeF totalSize() const;
     virtual void render( QPainter* p, const QRectF& renderExtent, const int frameIndex );
 
@@ -503,57 +543,5 @@ class QgsComposerTableV2: QgsComposerMultiFrame
      * @returns true if contents contains rows
      */
     bool contentsContainsRow( const QgsComposerTableContents &contents, const QgsComposerTableRow &row ) const;
-
-    //deprecated methods
-
-    /** Calculates how many content rows are visible within a given frame
-     * @param frameIndex index number for frame
-     * @returns number of visible content rows (excludes header rows)
-     * @deprecated will be removed in QGIS 3.0
-     */
-    int rowsVisible( const int frameIndex ) const /Deprecated/;
-
-    /** Calculates how many content rows would be visible within a specified
-     * height.
-     * @param frameHeight height of frame
-     * @param includeHeader set to true if frame would include a header row
-     * @returns number of visible content rows (excluding header row)
-     * @deprecated will be removed in QGIS 3.0
-     */
-    int rowsVisible( const double frameHeight, const bool includeHeader ) const /Deprecated/;
-
-    /** Calculates a range of rows which should be visible in a given
-     * frame extent.
-     * @param extent visible extent
-     * @param frameIndex index number for frame
-     * @returns row range
-     * @deprecated will be removed in QGIS 3.0
-     */
-    QPair<int, int> rowRange( const QRectF &extent, const int frameIndex ) const /Deprecated/;
-
-    /** Draws the horizontal grid lines for the table.
-     * @param painter destination painter for grid lines
-     * @param rows number of rows shown in table
-     * @param drawHeaderLines set to true to include for the table header
-     * @see drawVerticalGridLines
-     * @deprecated will be removed in QGIS 3.0
-     */
-    void drawHorizontalGridLines( QPainter* painter, const int rows, const bool drawHeaderLines ) const /Deprecated/;
-
-    /** Draws the vertical grid lines for the table.
-     * @param painter destination painter for grid lines
-     * @param maxWidthMap QMap of int to double, where the int contains the column number and the double is the
-     * maximum width of text present in the column.
-     * @param numberRows number of rows of content in table frame
-     * @param hasHeader set to true if table frame includes header cells
-     * @param mergeCells set to true to merge table content cells
-     * @note not available in python bindings
-     * @see drawVerticalGridLines
-     * @see calculateMaxColumnWidths
-     * @note not available in python bindings
-     * @deprecated will be removed in QGIS 3.0
-     */
-   // void drawVerticalGridLines( QPainter* painter, const QMap<int, double>& maxWidthMap, const int numberRows, const bool hasHeader, const bool mergeCells = false ) const /Deprecated/;
-
 
 };

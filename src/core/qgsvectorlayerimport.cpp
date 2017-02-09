@@ -16,8 +16,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
@@ -25,6 +26,9 @@
 #include "qgsvectorlayerimport.h"
 #include "qgsproviderregistry.h"
 #include "qgsdatasourceuri.h"
+#include "qgscsexception.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 #include <QProgressDialog>
 
@@ -33,8 +37,8 @@
 typedef QgsVectorLayerImport::ImportError createEmptyLayer_t(
   const QString &uri,
   const QgsFields &fields,
-  QGis::WkbType geometryType,
-  const QgsCoordinateReferenceSystem *destCRS,
+  QgsWkbTypes::Type geometryType,
+  const QgsCoordinateReferenceSystem &destCRS,
   bool overwrite,
   QMap<int, int> *oldToNewAttrIdx,
   QString *errorMessage,
@@ -45,8 +49,8 @@ typedef QgsVectorLayerImport::ImportError createEmptyLayer_t(
 QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
     const QString &providerKey,
     const QgsFields& fields,
-    QGis::WkbType geometryType,
-    const QgsCoordinateReferenceSystem* crs,
+    QgsWkbTypes::Type geometryType,
+    const QgsCoordinateReferenceSystem& crs,
     bool overwrite,
     const QMap<QString, QVariant> *options,
     QProgressDialog *progress )
@@ -59,7 +63,7 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
 
   QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
 
-  QLibrary *myLib = pReg->providerLibrary( providerKey );
+  std::unique_ptr< QLibrary > myLib( pReg->providerLibrary( providerKey ) );
   if ( !myLib )
   {
     mError = ErrInvalidProvider;
@@ -70,13 +74,10 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
   createEmptyLayer_t * pCreateEmpty = reinterpret_cast< createEmptyLayer_t * >( cast_to_fptr( myLib->resolve( "createEmptyLayer" ) ) );
   if ( !pCreateEmpty )
   {
-    delete myLib;
     mError = ErrProviderUnsupportedFeature;
-    mErrorMessage = QObject::tr( "Provider %1 has no %2 method" ).arg( providerKey, "createEmptyLayer" );
+    mErrorMessage = QObject::tr( "Provider %1 has no %2 method" ).arg( providerKey, QStringLiteral( "createEmptyLayer" ) );
     return;
   }
-
-  delete myLib;
 
   // create an empty layer
   QString errMsg;
@@ -136,8 +137,8 @@ bool QgsVectorLayerImport::addFeature( QgsFeature& feat )
   QgsAttributes attrs = feat.attributes();
 
   QgsFeature newFeat;
-  if ( feat.constGeometry() )
-    newFeat.setGeometry( *feat.constGeometry() );
+  if ( feat.hasGeometry() )
+    newFeat.setGeometry( feat.geometry() );
 
   newFeat.initAttributes( mAttributeCount );
 
@@ -176,7 +177,7 @@ bool QgsVectorLayerImport::flushBuffer()
     mErrorMessage = QObject::tr( "Creation error for features from #%1 to #%2. Provider errors was: \n%3" )
                     .arg( mFeatureBuffer.first().id() )
                     .arg( mFeatureBuffer.last().id() )
-                    .arg( errors.join( "\n" ) );
+                    .arg( errors.join( QStringLiteral( "\n" ) ) );
 
     mError = ErrFeatureWriteFailed;
     mErrorCount += mFeatureBuffer.count();
@@ -206,21 +207,21 @@ QgsVectorLayerImport::ImportError
 QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
                                    const QString& uri,
                                    const QString& providerKey,
-                                   const QgsCoordinateReferenceSystem *destCRS,
+                                   const QgsCoordinateReferenceSystem& destCRS,
                                    bool onlySelected,
                                    QString *errorMessage,
                                    bool skipAttributeCreation,
                                    QMap<QString, QVariant> *options,
                                    QProgressDialog *progress )
 {
-  const QgsCoordinateReferenceSystem* outputCRS;
-  QgsCoordinateTransform* ct = nullptr;
+  QgsCoordinateReferenceSystem outputCRS;
+  QgsCoordinateTransform ct;
   bool shallTransform = false;
 
   if ( !layer )
     return ErrInvalidLayer;
 
-  if ( destCRS && destCRS->isValid() )
+  if ( destCRS.isValid() )
   {
     // This means we should transform
     outputCRS = destCRS;
@@ -229,7 +230,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
   else
   {
     // This means we shouldn't transform, use source CRS as output (if defined)
-    outputCRS = &layer->crs();
+    outputCRS = layer->crs();
   }
 
 
@@ -237,15 +238,15 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
   bool forceSinglePartGeom = false;
   if ( options )
   {
-    overwrite = options->take( "overwrite" ).toBool();
-    forceSinglePartGeom = options->take( "forceSinglePartGeometryType" ).toBool();
+    overwrite = options->take( QStringLiteral( "overwrite" ) ).toBool();
+    forceSinglePartGeom = options->take( QStringLiteral( "forceSinglePartGeometryType" ) ).toBool();
   }
 
   QgsFields fields = skipAttributeCreation ? QgsFields() : layer->fields();
-  QGis::WkbType wkbType = layer->wkbType();
+  QgsWkbTypes::Type wkbType = layer->wkbType();
 
   // Special handling for Shapefiles
-  if ( layer->providerType() == "ogr" && layer->storageType() == "ESRI Shapefile" )
+  if ( layer->providerType() == QLatin1String( "ogr" ) && layer->storageType() == QLatin1String( "ESRI Shapefile" ) )
   {
     // convert field names to lowercase
     for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
@@ -258,23 +259,23 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
       // convert wkbtype to multipart (see #5547)
       switch ( wkbType )
       {
-        case QGis::WKBPoint:
-          wkbType = QGis::WKBMultiPoint;
+        case QgsWkbTypes::Point:
+          wkbType = QgsWkbTypes::MultiPoint;
           break;
-        case QGis::WKBLineString:
-          wkbType = QGis::WKBMultiLineString;
+        case QgsWkbTypes::LineString:
+          wkbType = QgsWkbTypes::MultiLineString;
           break;
-        case QGis::WKBPolygon:
-          wkbType = QGis::WKBMultiPolygon;
+        case QgsWkbTypes::Polygon:
+          wkbType = QgsWkbTypes::MultiPolygon;
           break;
-        case QGis::WKBPoint25D:
-          wkbType = QGis::WKBMultiPoint25D;
+        case QgsWkbTypes::Point25D:
+          wkbType = QgsWkbTypes::MultiPoint25D;
           break;
-        case QGis::WKBLineString25D:
-          wkbType = QGis::WKBMultiLineString25D;
+        case QgsWkbTypes::LineString25D:
+          wkbType = QgsWkbTypes::MultiLineString25D;
           break;
-        case QGis::WKBPolygon25D:
-          wkbType = QGis::WKBMultiPolygon25D;
+        case QgsWkbTypes::Polygon25D:
+          wkbType = QgsWkbTypes::MultiPolygon25D;
           break;
         default:
           break;
@@ -304,21 +305,21 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
   QgsFeature fet;
 
   QgsFeatureRequest req;
-  if ( wkbType == QGis::WKBNoGeometry )
+  if ( wkbType == QgsWkbTypes::NoGeometry )
     req.setFlags( QgsFeatureRequest::NoGeometry );
   if ( skipAttributeCreation )
     req.setSubsetOfAttributes( QgsAttributeList() );
 
   QgsFeatureIterator fit = layer->getFeatures( req );
 
-  const QgsFeatureIds& ids = layer->selectedFeaturesIds();
+  const QgsFeatureIds& ids = layer->selectedFeatureIds();
 
   // Create our transform
-  if ( destCRS )
-    ct = new QgsCoordinateTransform( layer->crs(), *destCRS );
+  if ( destCRS.isValid() )
+    ct = QgsCoordinateTransform( layer->crs(), destCRS );
 
   // Check for failure
-  if ( !ct )
+  if ( !ct.isValid() )
     shallTransform = false;
 
   int n = 0;
@@ -333,14 +334,14 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     progress->setRange( 0, layer->featureCount() );
   }
 
-  bool cancelled = false;
+  bool canceled = false;
 
   // write all features
   while ( fit.nextFeature( fet ) )
   {
     if ( progress && progress->wasCanceled() )
     {
-      cancelled = true;
+      canceled = true;
       if ( errorMessage )
       {
         *errorMessage += '\n' + QObject::tr( "Import was canceled at %1 of %2" ).arg( progress->value() ).arg( progress->maximum() );
@@ -364,14 +365,15 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     {
       try
       {
-        if ( fet.constGeometry() )
+        if ( fet.hasGeometry() )
         {
-          fet.geometry()->transform( *ct );
+          QgsGeometry g = fet.geometry();
+          g.transform( ct );
+          fet.setGeometry( g );
         }
       }
       catch ( QgsCsException &e )
       {
-        delete ct;
         delete writer;
 
         QString msg = QObject::tr( "Failed to transform a point while drawing a feature with ID '%1'. Writing stopped. (Exception: %2)" )
@@ -422,11 +424,6 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
 
   delete writer;
 
-  if ( shallTransform )
-  {
-    delete ct;
-  }
-
   if ( errorMessage )
   {
     if ( errors > 0 )
@@ -439,8 +436,8 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     }
   }
 
-  if ( cancelled )
-    return ErrUserCancelled;
+  if ( canceled )
+    return ErrUserCanceled;
   else if ( errors > 0 )
     return ErrFeatureWriteFailed;
 

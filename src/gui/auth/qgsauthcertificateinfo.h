@@ -20,7 +20,7 @@
 
 #include <QFile>
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
 #include <QtCrypto>
 #include <QSslCertificate>
 #endif
@@ -29,6 +29,7 @@
 #include <QWidget>
 #include "ui_qgsauthcertificateinfo.h"
 #include "qgsauthcertutils.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * Widget for viewing detailed info on a certificate and its hierarchical trust chain
@@ -42,7 +43,6 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
                               bool manageCertTrust = false,
                               QWidget *parent = nullptr,
                               const QList<QSslCertificate>& connectionCAs = QList<QSslCertificate>() );
-    ~QgsAuthCertInfo();
 
     bool trustCacheRebuilt() { return mTrustCacheRebuilt; }
 
@@ -142,6 +142,7 @@ class GUI_EXPORT QgsAuthCertInfoDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Construct a dialog displaying detailed info on a certificate and its hierarchical trust chain
      * @param cert Certificate object
@@ -153,9 +154,8 @@ class GUI_EXPORT QgsAuthCertInfoDialog : public QDialog
                                     bool manageCertTrust,
                                     QWidget *parent = nullptr,
                                     const QList<QSslCertificate>& connectionCAs = QList<QSslCertificate>() );
-    ~QgsAuthCertInfoDialog();
 
-    /** Get access to embedded info widget */
+    //! Get access to embedded info widget
     QgsAuthCertInfo *certInfoWidget() { return mCertInfoWdgt; }
 
     /** Whether the trust cache has been rebuilt

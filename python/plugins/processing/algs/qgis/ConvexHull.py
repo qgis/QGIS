@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -27,10 +28,10 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
-from PyQt.QtCore import QVariant
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QGis, QgsField, QgsFeature, QgsGeometry
+from qgis.core import Qgis, QgsField, QgsFeature, QgsGeometry, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -61,15 +62,15 @@ class ConvexHull(GeoAlgorithm):
                         self.tr('Create convex hulls based on field')]
 
         self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Field (optional, only used if creating convex hulls by classes)'),
                                               self.INPUT, optional=True))
         self.addParameter(ParameterSelection(self.METHOD,
                                              self.tr('Method'), self.methods))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Convex hull')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Convex hull'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         useField = self.getParameterValue(self.METHOD) == 1
@@ -77,10 +78,10 @@ class ConvexHull(GeoAlgorithm):
 
         f = QgsField('value', QVariant.String, '', 255)
         if useField:
-            index = layer.fieldNameIndex(fieldName)
-            fType = layer.pendingFields()[index].type()
-            if fType == QVariant.Int:
-                f.setType(QVariant.Int)
+            index = layer.fields().lookupField(fieldName)
+            fType = layer.fields()[index].type()
+            if fType in [QVariant.Int, QVariant.UInt, QVariant.LongLong, QVariant.ULongLong]:
+                f.setType(fType)
                 f.setLength(20)
             elif fType == QVariant.Double:
                 f.setType(QVariant.Double)
@@ -97,7 +98,7 @@ class ConvexHull(GeoAlgorithm):
                   ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, QGis.WKBPolygon, layer.dataProvider().crs())
+            fields, QgsWkbTypes.Polygon, layer.crs())
 
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
@@ -116,16 +117,16 @@ class ConvexHull(GeoAlgorithm):
                 features = vector.features(layer)
                 for f in features:
                     idVar = f[fieldName]
-                    if unicode(idVar).strip() == unicode(i).strip():
+                    if str(idVar).strip() == str(i).strip():
                         if first:
                             val = idVar
                             first = False
 
-                        inGeom = QgsGeometry(f.geometry())
+                        inGeom = f.geometry()
                         points = vector.extractPoints(inGeom)
                         hull.extend(points)
                     current += 1
-                    progress.setPercentage(int(current * total))
+                    feedback.setProgress(int(current * total))
 
                 if len(hull) >= 3:
                     tmpGeom = QgsGeometry(outGeom.fromMultiPoint(hull))
@@ -144,10 +145,10 @@ class ConvexHull(GeoAlgorithm):
             total = 100.0 / layer.featureCount()
             features = vector.features(layer)
             for current, f in enumerate(features):
-                inGeom = QgsGeometry(f.geometry())
+                inGeom = f.geometry()
                 points = vector.extractPoints(inGeom)
                 hull.extend(points)
-                progress.setPercentage(int(current * total))
+                feedback.setProgress(int(current * total))
 
             tmpGeom = QgsGeometry(outGeom.fromMultiPoint(hull))
             try:

@@ -50,11 +50,11 @@ QgsVariableEditorWidget::QgsVariableEditorWidget( QWidget *parent )
   QSpacerItem* horizontalSpacer = new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
   horizontalLayout->addItem( horizontalSpacer );
   mAddButton = new QPushButton();
-  mAddButton->setIcon( QgsApplication::getThemeIcon( "/symbologyAdd.svg" ) );
+  mAddButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
   mAddButton->setEnabled( false );
   horizontalLayout->addWidget( mAddButton );
   mRemoveButton = new QPushButton();
-  mRemoveButton->setIcon( QgsApplication::getThemeIcon( "/symbologyRemove.svg" ) );
+  mRemoveButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyRemove.svg" ) ) );
   mRemoveButton->setEnabled( false );
   horizontalLayout->addWidget( mRemoveButton );
   verticalLayout->addLayout( horizontalLayout );
@@ -77,7 +77,7 @@ QgsVariableEditorWidget::~QgsVariableEditorWidget()
 
 void QgsVariableEditorWidget::showEvent( QShowEvent * event )
 {
-  // initialise widget on first show event only
+  // initialize widget on first show event only
   if ( mShown )
   {
     event->accept();
@@ -108,7 +108,7 @@ void QgsVariableEditorWidget::setContext( QgsExpressionContext* context )
 void QgsVariableEditorWidget::reloadContext()
 {
   mTreeWidget->resetTree();
-  mTreeWidget->setContext( mContext.data() );
+  mTreeWidget->setContext( mContext.get() );
   mTreeWidget->refreshTree();
 }
 
@@ -132,9 +132,9 @@ QgsExpressionContextScope* QgsVariableEditorWidget::editableScope() const
   return mContext->scope( mEditableScopeIndex );
 }
 
-QgsStringMap QgsVariableEditorWidget::variablesInActiveScope() const
+QVariantMap QgsVariableEditorWidget::variablesInActiveScope() const
 {
-  QgsStringMap variables;
+  QVariantMap variables;
   if ( !mContext || mEditableScopeIndex < 0 || mEditableScopeIndex >= mContext->scopeCount() )
   {
     return variables;
@@ -146,7 +146,7 @@ QgsStringMap QgsVariableEditorWidget::variablesInActiveScope() const
     if ( scope->isReadOnly( variable ) )
       continue;
 
-    variables.insert( variable, scope->variable( variable ).toString() );
+    variables.insert( variable, scope->variable( variable ) );
   }
 
   return variables;
@@ -167,9 +167,9 @@ void QgsVariableEditorWidget::on_mAddButton_clicked()
     return;
 
   QgsExpressionContextScope* scope = mContext->scope( mEditableScopeIndex );
-  scope->setVariable( "new_variable", QVariant() );
+  scope->setVariable( QStringLiteral( "new_variable" ), QVariant() );
   mTreeWidget->refreshTree();
-  QTreeWidgetItem* item = mTreeWidget->itemFromVariable( scope, "new_variable" );
+  QTreeWidgetItem* item = mTreeWidget->itemFromVariable( scope, QStringLiteral( "new_variable" ) );
   QModelIndex index = mTreeWidget->itemToIndex( item );
   mTreeWidget->selectionModel()->select( index, QItemSelectionModel::ClearAndSelect );
   mTreeWidget->editItem( item, 0 );
@@ -258,10 +258,10 @@ QgsVariableEditorTree::QgsVariableEditorTree( QWidget *parent )
   {
     QPixmap pix( 14, 14 );
     pix.fill( Qt::transparent );
-    mExpandIcon.addPixmap( QgsApplication::getThemeIcon( "/mIconExpandSmall.svg" ).pixmap( 14, 14 ), QIcon::Normal, QIcon::Off );
-    mExpandIcon.addPixmap( QgsApplication::getThemeIcon( "/mIconExpandSmall.svg" ).pixmap( 14, 14 ), QIcon::Selected, QIcon::Off );
-    mExpandIcon.addPixmap( QgsApplication::getThemeIcon( "/mIconCollapseSmall.svg" ).pixmap( 14, 14 ), QIcon::Normal, QIcon::On );
-    mExpandIcon.addPixmap( QgsApplication::getThemeIcon( "/mIconCollapseSmall.svg" ).pixmap( 14, 14 ), QIcon::Selected, QIcon::On );
+    mExpandIcon.addPixmap( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpandSmall.svg" ) ).pixmap( 14, 14 ), QIcon::Normal, QIcon::Off );
+    mExpandIcon.addPixmap( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpandSmall.svg" ) ).pixmap( 14, 14 ), QIcon::Selected, QIcon::Off );
+    mExpandIcon.addPixmap( QgsApplication::getThemeIcon( QStringLiteral( "/mIconCollapseSmall.svg" ) ).pixmap( 14, 14 ), QIcon::Normal, QIcon::On );
+    mExpandIcon.addPixmap( QgsApplication::getThemeIcon( QStringLiteral( "/mIconCollapseSmall.svg" ) ).pixmap( 14, 14 ), QIcon::Selected, QIcon::On );
   }
 
   setIconSize( QSize( 18, 18 ) );
@@ -344,12 +344,8 @@ void QgsVariableEditorTree::refreshScopeVariables( QgsExpressionContextScope* sc
 
   Q_FOREACH ( const QString& name, scope->filteredVariableNames() )
   {
-    QTreeWidgetItem* item;
-    if ( mVariableToItem.contains( qMakePair( scopeIndex, name ) ) )
-    {
-      item = mVariableToItem.value( qMakePair( scopeIndex, name ) );
-    }
-    else
+    QTreeWidgetItem* item = mVariableToItem.value( qMakePair( scopeIndex, name ) );
+    if ( !item )
     {
       item = new QTreeWidgetItem( scopeItem );
       mVariableToItem.insert( qMakePair( scopeIndex, name ), item );
@@ -479,7 +475,7 @@ void QgsVariableEditorTree::emitChanged()
 void QgsVariableEditorTree::drawRow( QPainter* painter, const QStyleOptionViewItem& option,
                                      const QModelIndex& index ) const
 {
-  QStyleOptionViewItemV3 opt = option;
+  QStyleOptionViewItem opt = option;
   QTreeWidgetItem* item = itemFromIndex( index );
   if ( index.parent().isValid() )
   {

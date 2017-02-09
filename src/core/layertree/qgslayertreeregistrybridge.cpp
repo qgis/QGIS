@@ -15,24 +15,23 @@
 
 #include "qgslayertreeregistrybridge.h"
 
-#include "qgsmaplayerregistry.h"
-
 #include "qgslayertree.h"
 
 #include "qgsproject.h"
 #include "qgslogger.h"
 
-QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root, QObject *parent )
+QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root, QgsProject* project, QObject *parent )
     : QObject( parent )
     , mRoot( root )
+    , mProject( project )
     , mRegistryRemovingLayers( false )
     , mEnabled( true )
     , mNewLayersVisible( true )
     , mInsertionPointGroup( root )
     , mInsertionPointIndex( 0 )
 {
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( legendLayersAdded( QList<QgsMapLayer*> ) ), this, SLOT( layersAdded( QList<QgsMapLayer*> ) ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( layersWillBeRemoved( QStringList ) ) );
+  connect( mProject, SIGNAL( legendLayersAdded( QList<QgsMapLayer*> ) ), this, SLOT( layersAdded( QList<QgsMapLayer*> ) ) );
+  connect( mProject, SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( layersWillBeRemoved( QStringList ) ) );
 
   connect( mRoot, SIGNAL( willRemoveChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( groupWillRemoveChildren( QgsLayerTreeNode*, int, int ) ) );
   connect( mRoot, SIGNAL( removedChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( groupRemovedChildren() ) );
@@ -53,16 +52,16 @@ void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer*>& layers 
   Q_FOREACH ( QgsMapLayer* layer, layers )
   {
     QgsLayerTreeLayer* nodeLayer = new QgsLayerTreeLayer( layer );
-    nodeLayer->setVisible( mNewLayersVisible ? Qt::Checked : Qt::Unchecked );
+    nodeLayer->setItemVisibilityChecked( mNewLayersVisible );
 
     nodes << nodeLayer;
 
     // check whether the layer is marked as embedded
-    QString projectFile = QgsProject::instance()->layerIsEmbedded( nodeLayer->layerId() );
+    QString projectFile = mProject->layerIsEmbedded( nodeLayer->layerId() );
     if ( !projectFile.isEmpty() )
     {
-      nodeLayer->setCustomProperty( "embedded", 1 );
-      nodeLayer->setCustomProperty( "embedded_project", projectFile );
+      nodeLayer->setCustomProperty( QStringLiteral( "embedded" ), 1 );
+      nodeLayer->setCustomProperty( QStringLiteral( "embedded_project" ), projectFile );
     }
   }
 
@@ -147,5 +146,5 @@ void QgsLayerTreeRegistryBridge::groupRemovedChildren()
 
 void QgsLayerTreeRegistryBridge::removeLayersFromRegistry( const QStringList& layerIds )
 {
-  QgsMapLayerRegistry::instance()->removeMapLayers( layerIds );
+  mProject->removeMapLayers( layerIds );
 }

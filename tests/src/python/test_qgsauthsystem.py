@@ -21,10 +21,10 @@ from qgis.core import QgsAuthManager, QgsAuthCertUtils, QgsPkiBundle, QgsAuthMet
 from qgis.gui import QgsAuthEditorWidgets
 
 
-from PyQt.QtCore import QFileInfo, qDebug
-from PyQt.QtWidgets import QDialog, QVBoxLayout, QDialogButtonBox
-from PyQt.QtTest import QTest
-from PyQt.QtNetwork import QSsl, QSslError, QSslSocket
+from qgis.PyQt.QtCore import QFileInfo, qDebug
+from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QDialogButtonBox
+from qgis.PyQt.QtTest import QTest
+from qgis.PyQt.QtNetwork import QSsl, QSslError, QSslSocket
 
 from qgis.testing import (
     start_app,
@@ -135,7 +135,7 @@ class TestQgsAuthManager(unittest.TestCase):
         full_chain = 'chains_subissuer-issuer-root_issuer2-root2.pem'
         full_chain_path = os.path.join(PKIDATA, full_chain)
 
-        # load CA file authorites for later comaprison
+        # load CA file authorities for later comaprison
         # noinspection PyTypeChecker
         # ca_certs = QSslCertificate.fromPath(full_chain_path)
         ca_certs = QgsAuthCertUtils.certsFromFile(full_chain_path)
@@ -382,7 +382,7 @@ class TestQgsAuthManager(unittest.TestCase):
         self.assertIsNotNone(self.authm.uniqueConfigId(), msg)
 
         uids = []
-        for _ in xrange(50):
+        for _ in range(50):
             # time.sleep(0.01)  # or else the salt is not random enough
             uids.append(self.authm.uniqueConfigId())
         msg = 'Generated 50 config ids are not unique:\n{0}\n{1}'.format(

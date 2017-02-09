@@ -15,8 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff/>
-   </iconset>
+    <normaloff>.</normaloff>.</iconset>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
@@ -38,6 +37,9 @@
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QPushButton" name="btnConnect">
+          <property name="toolTip">
+           <string>Connect to selected database</string>
+          </property>
           <property name="text">
            <string>Connect</string>
           </property>
@@ -45,6 +47,9 @@
         </item>
         <item>
          <widget class="QPushButton" name="btnNew">
+          <property name="toolTip">
+           <string>Create a new database connection</string>
+          </property>
           <property name="text">
            <string>New</string>
           </property>
@@ -52,6 +57,9 @@
         </item>
         <item>
          <widget class="QPushButton" name="btnEdit">
+          <property name="toolTip">
+           <string>Edit selected database connection</string>
+          </property>
           <property name="text">
            <string>Edit</string>
           </property>
@@ -59,8 +67,11 @@
         </item>
         <item>
          <widget class="QPushButton" name="btnDelete">
+          <property name="toolTip">
+           <string>Remove connection to selected database</string>
+          </property>
           <property name="text">
-           <string>Delete</string>
+           <string>Remove</string>
           </property>
          </widget>
         </item>
@@ -101,6 +112,12 @@
    </item>
    <item row="1" column="0">
     <widget class="QTreeView" name="mTablesTreeView">
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
      <property name="selectionMode">
       <enum>QAbstractItemView::ExtendedSelection</enum>
      </property>
@@ -152,7 +169,16 @@
       <bool>false</bool>
      </property>
      <layout class="QGridLayout">
-      <property name="margin">
+      <property name="leftMargin">
+       <number>9</number>
+      </property>
+      <property name="topMargin">
+       <number>9</number>
+      </property>
+      <property name="rightMargin">
+       <number>9</number>
+      </property>
+      <property name="bottomMargin">
        <number>9</number>
       </property>
       <property name="spacing">

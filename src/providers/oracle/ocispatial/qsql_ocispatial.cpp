@@ -94,10 +94,8 @@
 #define QOCISPATIAL_THREADED
 
 
-#if QT_VERSION >= 0x050000
 Q_DECLARE_OPAQUE_POINTER( OCIEnv* )
 Q_DECLARE_OPAQUE_POINTER( OCIStmt* )
-#endif
 Q_DECLARE_METATYPE( OCIEnv* )
 Q_DECLARE_METATYPE( OCIStmt* )
 
@@ -565,7 +563,7 @@ int QOCISpatialResultPrivate::bindValue( OCIStmt *sql, OCIBind **hbnd, OCIError 
             OCI_VERIFY_E( err, OCINumberFromInt( err, &g.gtype, sizeof( int ), OCI_NUMBER_SIGNED, &geometryObj->gtype ) );
             OCI_VERIFY_E( err, OCINumberFromInt( err, &g.srid, sizeof( int ), OCI_NUMBER_SIGNED, &geometryObj->srid ) );
 
-            if ( SDO_GTYPE_TT( g.gtype ) == gtPoint )
+            if ( SDO_GTYPE_TT( g.gtype ) == GtPoint )
             {
               geometryInd->point._atomic = OCI_IND_NOTNULL;
               geometryInd->point.x       = OCI_IND_NOTNULL;
@@ -662,6 +660,7 @@ int QOCISpatialResultPrivate::bindValue( OCIStmt *sql, OCIBind **hbnd, OCIError 
                           ba.data(),
                           ba.capacity(),
                           SQLT_STR, indPtr, tmpSize, 0, 0, 0, OCI_DEFAULT );
+        tmpStorage.append( ba );
       }
       else
       {
@@ -673,7 +672,6 @@ int QOCISpatialResultPrivate::bindValue( OCIStmt *sql, OCIBind **hbnd, OCIError 
       }
       if ( r == OCI_SUCCESS )
         setCharset( *hbnd, OCI_HTYPE_BIND );
-      tmpStorage.append( ba );
       break;
     } // default case
   } // switch
@@ -2396,13 +2394,13 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
   Q_ASSERT( nElems % 3 == 0 );
   Q_ASSERT( nOrds % nDims == 0 );
 
-  if ( iType == gtUnknown )
+  if ( iType == GtUnknown )
   {
     qWarning() << "unknown geometry";
     return false;
   }
 
-  if ( iType == gtPoint && nElems == 0 )
+  if ( iType == GtPoint && nElems == 0 )
   {
     Q_ASSERT( nOrds == 0 );
 
@@ -2511,7 +2509,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
     return false;
   }
 
-  if ( iType == gtPoint || iType == gtMultiPoint )
+  if ( iType == GtPoint || iType == GtMultiPoint )
   {
     int nPoints = 0;
 
@@ -2529,7 +2527,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
     }
 
     Q_ASSERT( nPoints % nDims == 0 );
-    Q_ASSERT( iType == gtMultiPoint || nPoints == nDims );
+    Q_ASSERT( iType == GtMultiPoint || nPoints == nDims );
 
     int wkbSize = 0;
 
@@ -2586,7 +2584,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
     return true;
   }
 
-  if ( iType == gtLine || iType == gtMultiLine )
+  if ( iType == GtLine || iType == GtMultiLine )
   {
     Q_ASSERT( nOrds % nDims == 0 );
 
@@ -2658,7 +2656,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
     return true;
   }
 
-  if ( iType == gtPolygon || iType == gtMultiPolygon )
+  if ( iType == GtPolygon || iType == GtMultiPolygon )
   {
     int nPolygons = 0;
     int nPoints = 0;
@@ -3163,9 +3161,7 @@ bool QOCISpatialResult::exec()
     qOraWarning( "Unable to get statement type:", d->err );
     setLastError( qMakeError( QCoreApplication::translate( "QOCISpatialResult",
                               "Unable to get statement type" ), QSqlError::StatementError, d->err ) );
-#ifdef QOCISPATIAL_DEBUG
-    qDebug() << "lastQuery()" << lastQuery();
-#endif
+    qWarning( "type retrieval failed with statement:%s", lastQuery().toLocal8Bit().constData() );
     return false;
   }
 
@@ -3189,9 +3185,7 @@ bool QOCISpatialResult::exec()
     qOraWarning( "unable to bind value: ", d->err );
     setLastError( qMakeError( QCoreApplication::translate( "QOCISpatialResult", "Unable to bind value" ),
                               QSqlError::StatementError, d->err ) );
-#ifdef QOCISPATIAL_DEBUG
-    qDebug() << "lastQuery()" << lastQuery();
-#endif
+    qWarning( "bind failed with statement:%s", lastQuery().toLocal8Bit().constData() );
     return false;
   }
 
@@ -3202,9 +3196,7 @@ bool QOCISpatialResult::exec()
     qOraWarning( "unable to execute statement:", d->err );
     setLastError( qMakeError( QCoreApplication::translate( "QOCISpatialResult",
                               "Unable to execute statement" ), QSqlError::StatementError, d->err ) );
-#ifdef QOCISPATIAL_DEBUG
-    qDebug() << "lastQuery()" << lastQuery();
-#endif
+    qWarning( "execution failed with statement:%s", lastQuery().toLocal8Bit().constData() );
     return false;
   }
 
@@ -3259,23 +3251,6 @@ QVariant QOCISpatialResult::lastInsertId() const
       return QVariant::fromValue( ptr );
   }
   return QVariant();
-}
-
-void QOCISpatialResult::virtual_hook( int id, void *data )
-{
-  ENTER
-  Q_ASSERT( data );
-
-  switch ( id )
-  {
-#if QT_VERSION < 0x050000
-    case QSqlResult::BatchOperation:
-      QOCISpatialCols::execBatch( d, boundValues(), *reinterpret_cast<bool *>( data ) );
-      break;
-#endif
-    default:
-      QSqlCachedResult::virtual_hook( id, data );
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -3362,9 +3337,7 @@ bool QOCISpatialDriver::hasFeature( DriverFeature f ) const
     case EventNotifications:
     case FinishQuery:
     case MultipleResultSets:
-#if QT_VERSION >= 0x050000
     case CancelQuery:
-#endif
       return false;
     case Unicode:
       return d->serverVersion >= 9;
@@ -3740,8 +3713,8 @@ QSqlRecord QOCISpatialDriver::record( const QString& tablename ) const
     return fil;
 
   QSqlQuery t( createResult() );
-  // using two separate queries for this is A LOT faster than using
-  // eg. a sub-query on the sys.synonyms table
+  // using two separate queries for this is A LOT faster than using,
+  // e.g., a sub-query on the sys.synonyms table
   QString stmt( QLatin1String( "select column_name, data_type, data_length, "
                                "data_precision, data_scale, nullable, data_default%1"
                                "from all_tab_columns a "

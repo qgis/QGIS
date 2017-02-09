@@ -1,4 +1,4 @@
-class QgsArrowSymbolLayerWidget: QgsSymbolLayerV2Widget
+class QgsArrowSymbolLayerWidget: QgsSymbolLayerWidget
 {
 %TypeHeaderCode
 #include <qgsarrowsymbollayerwidget.h>
@@ -13,10 +13,10 @@ class QgsArrowSymbolLayerWidget: QgsSymbolLayerV2Widget
     /** Static creation method
      * @param layer the layer where this symbol layer is applied
      */
-    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* layer ) /Factory/;
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* layer ) /Factory/;
 
     /** Set the symbol layer */
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
+    virtual void setSymbolLayer( QgsSymbolLayer* layer );
     /** Get the current symbol layer */
-    virtual QgsSymbolLayerV2* symbolLayer();
+    virtual QgsSymbolLayer* symbolLayer();
 };

@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 
-/**
+/** \ingroup server
  * \class  QgsMapServiceException
  * \brief Exception class for WMS service exceptions.
  *

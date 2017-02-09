@@ -1,0 +1,8 @@
+i.gensigset
+Generates statistics for i.smap from raster map.
+Imagery (i.*)
+ParameterRaster|trainingmap|Ground truth training map|False
+ParameterMultipleInput|input|Input rasters|3|False
+ParameterNumber|maxsig|Maximum number of sub-signatures in any class|1|None|5|True
+OutputFile|signaturefile|Signature File
+

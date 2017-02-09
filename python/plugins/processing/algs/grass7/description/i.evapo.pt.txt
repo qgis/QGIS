@@ -1,0 +1,10 @@
+i.evapo.pt
+Computes evapotranspiration calculation Priestley and Taylor formulation, 1972.
+Imagery (i.*)
+ParameterRaster|net_radiation|Name of input net radiation raster map [W/m2]|False
+ParameterRaster|soil_heatflux|Name of input soil heat flux raster map [W/m2]|False
+ParameterRaster|air_temperature|Name of input air temperature raster map [K]|False
+ParameterRaster|atmospheric_pressure|Name of input atmospheric pressure raster map [millibars]|False
+ParameterNumber|priestley_taylor_coeff|Priestley-Taylor coefficient|0.0|None|1.26|False
+*ParameterBoolean|-z|Set negative ETa to zero|False
+OutputRaster|output|Evapotranspiration

@@ -16,20 +16,16 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvasmap.h"
-#include "qgsmaprenderer.h"
 #include "qgsmapsettings.h"
-#include "qgsmaplayer.h"
 
 #include <QPainter>
+
+/// @cond PRIVATE
 
 QgsMapCanvasMap::QgsMapCanvasMap( QgsMapCanvas* canvas )
     : QgsMapCanvasItem( canvas )
 {
   setZValue( -10 );
-}
-
-QgsMapCanvasMap::~QgsMapCanvasMap()
-{
 }
 
 void QgsMapCanvasMap::setContent( const QImage& image, const QgsRectangle& rect )
@@ -77,7 +73,4 @@ void QgsMapCanvasMap::paint( QPainter* painter )
 #endif
 }
 
-QPaintDevice& QgsMapCanvasMap::paintDevice()
-{
-  return mImage;
-}
+/// @endcond

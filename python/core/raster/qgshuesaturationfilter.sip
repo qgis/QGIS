@@ -21,11 +21,11 @@ class QgsHueSaturationFilter : QgsRasterInterface
 
     int bandCount() const;
 
-    QGis::DataType dataType( int bandNo ) const;
+    Qgis::DataType dataType( int bandNo ) const;
 
     bool setInput( QgsRasterInterface* input );
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height );
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) /Factory/;
 
     void setSaturation( int saturation );
     int saturation() const;
@@ -40,8 +40,8 @@ class QgsHueSaturationFilter : QgsRasterInterface
     void setColorizeStrength( int colorizeStrength );
     int colorizeStrength() const;
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
 
     /** Sets base class members from xml. Usually called from create() methods of subclasses*/
-    void readXML( const QDomElement& filterElem );
+    void readXml( const QDomElement& filterElem );
 };

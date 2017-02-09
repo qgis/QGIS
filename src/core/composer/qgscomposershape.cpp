@@ -17,17 +17,20 @@
 
 #include "qgscomposershape.h"
 #include "qgscomposition.h"
-#include "qgssymbolv2.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
 #include "qgscomposermodel.h"
+#include "qgsmapsettings.h"
+#include "qgscomposerutils.h"
 #include <QPainter>
 
-QgsComposerShape::QgsComposerShape( QgsComposition* composition ): QgsComposerItem( composition ),
-    mShape( Ellipse ),
-    mCornerRadius( 0 ),
-    mUseSymbolV2( false ), //default to not using SymbolV2 for shapes, to preserve 2.0 api
-    mShapeStyleSymbol( nullptr ),
-    mMaxSymbolBleed( 0 )
+QgsComposerShape::QgsComposerShape( QgsComposition* composition )
+    : QgsComposerItem( composition )
+    , mShape( Ellipse )
+    , mCornerRadius( 0 )
+    , mUseSymbol( false ) //default to not using symbol for shapes, to preserve 2.0 api
+    , mShapeStyleSymbol( nullptr )
+    , mMaxSymbolBleed( 0 )
 {
   setFrameEnabled( true );
   createDefaultShapeStyleSymbol();
@@ -40,13 +43,13 @@ QgsComposerShape::QgsComposerShape( QgsComposition* composition ): QgsComposerIt
   }
 }
 
-QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition ):
-    QgsComposerItem( x, y, width, height, composition ),
-    mShape( Ellipse ),
-    mCornerRadius( 0 ),
-    mUseSymbolV2( false ), //default to not using SymbolV2 for shapes, to preserve 2.0 api
-    mShapeStyleSymbol( nullptr ),
-    mMaxSymbolBleed( 0 )
+QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition )
+    : QgsComposerItem( x, y, width, height, composition )
+    , mShape( Ellipse )
+    , mCornerRadius( 0 )
+    , mUseSymbol( false ) //default to not using Symbol for shapes, to preserve 2.0 api
+    , mShapeStyleSymbol( nullptr )
+    , mMaxSymbolBleed( 0 )
 {
   setSceneRect( QRectF( x, y, width, height ) );
   setFrameEnabled( true );
@@ -65,22 +68,24 @@ QgsComposerShape::~QgsComposerShape()
   delete mShapeStyleSymbol;
 }
 
-void QgsComposerShape::setUseSymbolV2( bool useSymbolV2 )
+void QgsComposerShape::setUseSymbol( bool useSymbol )
 {
-  mUseSymbolV2 = useSymbolV2;
-  setFrameEnabled( !useSymbolV2 );
+  mUseSymbol = useSymbol;
+  setFrameEnabled( !useSymbol );
 }
 
-void QgsComposerShape::setShapeStyleSymbol( QgsFillSymbolV2* symbol )
+void QgsComposerShape::setShapeStyleSymbol( QgsFillSymbol* symbol )
 {
   delete mShapeStyleSymbol;
-  mShapeStyleSymbol = static_cast<QgsFillSymbolV2*>( symbol->clone() );
+  mShapeStyleSymbol = static_cast<QgsFillSymbol*>( symbol->clone() );
   refreshSymbol();
 }
 
 void QgsComposerShape::refreshSymbol()
 {
-  mMaxSymbolBleed = QgsSymbolLayerV2Utils::estimateMaxSymbolBleed( mShapeStyleSymbol );
+  QgsRenderContext rc = QgsComposerUtils::createRenderContextForMap( mComposition->referenceMap(), nullptr, mComposition->printResolution() );
+  mMaxSymbolBleed = ( 25.4 / mComposition->printResolution() ) * QgsSymbolLayerUtils::estimateMaxSymbolBleed( mShapeStyleSymbol, rc );
+
   updateBoundingRect();
 
   update();
@@ -91,15 +96,20 @@ void QgsComposerShape::createDefaultShapeStyleSymbol()
 {
   delete mShapeStyleSymbol;
   QgsStringMap properties;
-  properties.insert( "color", "white" );
-  properties.insert( "style", "solid" );
-  properties.insert( "style_border", "solid" );
-  properties.insert( "color_border", "black" );
-  properties.insert( "width_border", "0.3" );
-  properties.insert( "joinstyle", "miter" );
-  mShapeStyleSymbol = QgsFillSymbolV2::createSimple( properties );
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "white" ) );
+  properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
+  properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "solid" ) );
+  properties.insert( QStringLiteral( "color_border" ), QStringLiteral( "black" ) );
+  properties.insert( QStringLiteral( "width_border" ), QStringLiteral( "0.3" ) );
+  properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
+  mShapeStyleSymbol = QgsFillSymbol::createSimple( properties );
 
-  mMaxSymbolBleed = QgsSymbolLayerV2Utils::estimateMaxSymbolBleed( mShapeStyleSymbol );
+  if ( mComposition )
+  {
+    QgsRenderContext rc = QgsComposerUtils::createRenderContextForMap( mComposition->referenceMap(), nullptr, mComposition->printResolution() );
+    mMaxSymbolBleed = ( 25.4 / mComposition->printResolution() ) * QgsSymbolLayerUtils::estimateMaxSymbolBleed( mShapeStyleSymbol, rc );
+  }
+
   updateBoundingRect();
 
   emit frameChanged();
@@ -130,7 +140,7 @@ void QgsComposerShape::paint( QPainter* painter, const QStyleOptionGraphicsItem*
 
 void QgsComposerShape::drawShape( QPainter* p )
 {
-  if ( mUseSymbolV2 )
+  if ( mUseSymbol )
   {
     drawShapeUsingSymbol( p );
     return;
@@ -176,15 +186,10 @@ void QgsComposerShape::drawShapeUsingSymbol( QPainter* p )
   double dotsPerMM = p->device()->logicalDpiX() / 25.4;
 
   //setup render context
-  QgsMapSettings ms = mComposition->mapSettings();
-  //context units should be in dots
-  ms.setOutputDpi( p->device()->logicalDpiX() );
-  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
-  context.setPainter( p );
+  QgsRenderContext context = QgsComposerUtils::createRenderContextForComposition( mComposition, p );
   context.setForceVectorOutput( true );
-  QgsExpressionContext* expressionContext = createExpressionContext();
-  context.setExpressionContext( *expressionContext );
-  delete expressionContext;
+  QgsExpressionContext expressionContext = createExpressionContext();
+  context.setExpressionContext( expressionContext );
 
   p->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
 
@@ -245,7 +250,7 @@ void QgsComposerShape::drawShapeUsingSymbol( QPainter* p )
 
 void QgsComposerShape::drawFrame( QPainter* p )
 {
-  if ( mFrame && p && !mUseSymbolV2 )
+  if ( mFrame && p && !mUseSymbol )
   {
     p->setPen( pen() );
     p->setBrush( Qt::NoBrush );
@@ -256,7 +261,7 @@ void QgsComposerShape::drawFrame( QPainter* p )
 
 void QgsComposerShape::drawBackground( QPainter* p )
 {
-  if ( p && ( mBackground || mUseSymbolV2 ) )
+  if ( p && ( mBackground || mUseSymbol ) )
   {
     p->setBrush( brush() );//this causes a problem in atlas generation
     p->setPen( Qt::NoPen );
@@ -270,73 +275,73 @@ double QgsComposerShape::estimatedFrameBleed() const
   return mMaxSymbolBleed;
 }
 
-bool QgsComposerShape::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerShape::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
-  QDomElement composerShapeElem = doc.createElement( "ComposerShape" );
-  composerShapeElem.setAttribute( "shapeType", mShape );
-  composerShapeElem.setAttribute( "cornerRadius", mCornerRadius );
+  QDomElement composerShapeElem = doc.createElement( QStringLiteral( "ComposerShape" ) );
+  composerShapeElem.setAttribute( QStringLiteral( "shapeType" ), mShape );
+  composerShapeElem.setAttribute( QStringLiteral( "cornerRadius" ), mCornerRadius );
 
-  QDomElement shapeStyleElem = QgsSymbolLayerV2Utils::saveSymbol( QString(), mShapeStyleSymbol, doc );
+  QDomElement shapeStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mShapeStyleSymbol, doc );
   composerShapeElem.appendChild( shapeStyleElem );
 
   elem.appendChild( composerShapeElem );
-  return _writeXML( composerShapeElem, doc );
+  return _writeXml( composerShapeElem, doc );
 }
 
-bool QgsComposerShape::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerShape::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
-  mShape = QgsComposerShape::Shape( itemElem.attribute( "shapeType", "0" ).toInt() );
-  mCornerRadius = itemElem.attribute( "cornerRadius", "0" ).toDouble();
+  mShape = QgsComposerShape::Shape( itemElem.attribute( QStringLiteral( "shapeType" ), QStringLiteral( "0" ) ).toInt() );
+  mCornerRadius = itemElem.attribute( QStringLiteral( "cornerRadius" ), QStringLiteral( "0" ) ).toDouble();
 
   //restore general composer item properties
-  QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
+  QDomNodeList composerItemList = itemElem.elementsByTagName( QStringLiteral( "ComposerItem" ) );
   if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
 
     //rotation
-    if ( !qgsDoubleNear( composerItemElem.attribute( "rotation", "0" ).toDouble(), 0.0 ) )
+    if ( !qgsDoubleNear( composerItemElem.attribute( QStringLiteral( "rotation" ), QStringLiteral( "0" ) ).toDouble(), 0.0 ) )
     {
       //check for old (pre 2.1) rotation attribute
-      setItemRotation( composerItemElem.attribute( "rotation", "0" ).toDouble() );
+      setItemRotation( composerItemElem.attribute( QStringLiteral( "rotation" ), QStringLiteral( "0" ) ).toDouble() );
     }
 
-    _readXML( composerItemElem, doc );
+    _readXml( composerItemElem, doc );
   }
 
-  QDomElement shapeStyleSymbolElem = itemElem.firstChildElement( "symbol" );
+  QDomElement shapeStyleSymbolElem = itemElem.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !shapeStyleSymbolElem.isNull() )
   {
     delete mShapeStyleSymbol;
-    mShapeStyleSymbol = QgsSymbolLayerV2Utils::loadSymbol<QgsFillSymbolV2>( shapeStyleSymbolElem );
+    mShapeStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( shapeStyleSymbolElem );
   }
   else
   {
-    //upgrade project file from 2.0 to use symbolV2 styling
+    //upgrade project file from 2.0 to use symbol styling
     delete mShapeStyleSymbol;
     QgsStringMap properties;
-    properties.insert( "color", QgsSymbolLayerV2Utils::encodeColor( brush().color() ) );
+    properties.insert( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( brush().color() ) );
     if ( hasBackground() )
     {
-      properties.insert( "style", "solid" );
+      properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
     }
     else
     {
-      properties.insert( "style", "no" );
+      properties.insert( QStringLiteral( "style" ), QStringLiteral( "no" ) );
     }
     if ( hasFrame() )
     {
-      properties.insert( "style_border", "solid" );
+      properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "solid" ) );
     }
     else
     {
-      properties.insert( "style_border", "no" );
+      properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "no" ) );
     }
-    properties.insert( "color_border", QgsSymbolLayerV2Utils::encodeColor( pen().color() ) );
-    properties.insert( "width_border", QString::number( pen().widthF() ) );
+    properties.insert( QStringLiteral( "color_border" ), QgsSymbolLayerUtils::encodeColor( pen().color() ) );
+    properties.insert( QStringLiteral( "width_border" ), QString::number( pen().widthF() ) );
 
     //for pre 2.0 projects, shape color and outline were specified in a different element...
-    QDomNodeList outlineColorList = itemElem.elementsByTagName( "OutlineColor" );
+    QDomNodeList outlineColorList = itemElem.elementsByTagName( QStringLiteral( "OutlineColor" ) );
     if ( !outlineColorList.isEmpty() )
     {
       QDomElement frameColorElem = outlineColorList.at( 0 ).toElement();
@@ -344,47 +349,47 @@ bool QgsComposerShape::readXML( const QDomElement& itemElem, const QDomDocument&
       int penRed, penGreen, penBlue, penAlpha;
       double penWidth;
 
-      penWidth = itemElem.attribute( "outlineWidth" ).toDouble( &widthOk );
-      penRed = frameColorElem.attribute( "red" ).toDouble( &redOk );
-      penGreen = frameColorElem.attribute( "green" ).toDouble( &greenOk );
-      penBlue = frameColorElem.attribute( "blue" ).toDouble( &blueOk );
-      penAlpha = frameColorElem.attribute( "alpha" ).toDouble( &alphaOk );
+      penWidth = itemElem.attribute( QStringLiteral( "outlineWidth" ) ).toDouble( &widthOk );
+      penRed = frameColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
+      penGreen = frameColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
+      penBlue = frameColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
+      penAlpha = frameColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
 
       if ( redOk && greenOk && blueOk && alphaOk && widthOk )
       {
-        properties.insert( "color_border", QgsSymbolLayerV2Utils::encodeColor( QColor( penRed, penGreen, penBlue, penAlpha ) ) );
-        properties.insert( "width_border", QString::number( penWidth ) );
+        properties.insert( QStringLiteral( "color_border" ), QgsSymbolLayerUtils::encodeColor( QColor( penRed, penGreen, penBlue, penAlpha ) ) );
+        properties.insert( QStringLiteral( "width_border" ), QString::number( penWidth ) );
       }
     }
-    QDomNodeList fillColorList = itemElem.elementsByTagName( "FillColor" );
+    QDomNodeList fillColorList = itemElem.elementsByTagName( QStringLiteral( "FillColor" ) );
     if ( !fillColorList.isEmpty() )
     {
       QDomElement fillColorElem = fillColorList.at( 0 ).toElement();
       bool redOk, greenOk, blueOk, alphaOk;
       int fillRed, fillGreen, fillBlue, fillAlpha;
 
-      fillRed = fillColorElem.attribute( "red" ).toDouble( &redOk );
-      fillGreen = fillColorElem.attribute( "green" ).toDouble( &greenOk );
-      fillBlue = fillColorElem.attribute( "blue" ).toDouble( &blueOk );
-      fillAlpha = fillColorElem.attribute( "alpha" ).toDouble( &alphaOk );
+      fillRed = fillColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
+      fillGreen = fillColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
+      fillBlue = fillColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
+      fillAlpha = fillColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
 
       if ( redOk && greenOk && blueOk && alphaOk )
       {
-        properties.insert( "color", QgsSymbolLayerV2Utils::encodeColor( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) ) );
-        properties.insert( "style", "solid" );
+        properties.insert( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) ) );
+        properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
       }
     }
-    if ( itemElem.hasAttribute( "transparentFill" ) )
+    if ( itemElem.hasAttribute( QStringLiteral( "transparentFill" ) ) )
     {
       //old style (pre 2.0) of specifying that shapes had no fill
-      bool hasOldTransparentFill = itemElem.attribute( "transparentFill", "0" ).toInt();
+      bool hasOldTransparentFill = itemElem.attribute( QStringLiteral( "transparentFill" ), QStringLiteral( "0" ) ).toInt();
       if ( hasOldTransparentFill )
       {
-        properties.insert( "style", "no" );
+        properties.insert( QStringLiteral( "style" ), QStringLiteral( "no" ) );
       }
     }
 
-    mShapeStyleSymbol = QgsFillSymbolV2::createSimple( properties );
+    mShapeStyleSymbol = QgsFillSymbol::createSimple( properties );
   }
   emit itemChanged();
   return true;

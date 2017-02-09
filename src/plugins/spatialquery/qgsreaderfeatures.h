@@ -20,6 +20,7 @@
 
 #include <qgsvectorlayer.h>
 #include <qgsfeature.h>
+#include "qgsfeatureiterator.h"
 
 /**
 * \class QgsReaderFeatures
@@ -28,6 +29,7 @@
 class QgsReaderFeatures
 {
   public:
+
     /**
      * \brief Constructor for a Reader Features.
      * \param layer Pointer to the layer.
@@ -43,6 +45,7 @@ class QgsReaderFeatures
     bool nextFeature( QgsFeature & feature );
 
   private:
+
     /**
      * \brief init Reader
      * \param useSelection Use or not use the features selected

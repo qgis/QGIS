@@ -31,7 +31,7 @@
 #include <QLineEdit>
 #include <QVector2D>
 
-static const int MinRadiusRole = Qt::UserRole + 1;
+static const int MIN_RADIUS_ROLE = Qt::UserRole + 1;
 
 
 QgsNodeEditorModel::QgsNodeEditorModel( QgsVectorLayer* layer, QgsSelectedFeature* selectedFeature, QgsMapCanvas* canvas, QObject* parent )
@@ -88,7 +88,7 @@ int QgsNodeEditorModel::columnCount( const QModelIndex& parent ) const
 QVariant QgsNodeEditorModel::data( const QModelIndex& index, int role ) const
 {
   if ( !index.isValid() ||
-       ( role != Qt::DisplayRole && role != Qt::EditRole && role != MinRadiusRole && role != Qt::FontRole ) )
+       ( role != Qt::DisplayRole && role != Qt::EditRole && role != MIN_RADIUS_ROLE && role != Qt::FontRole ) )
     return QVariant();
 
   if ( index.row() >= mSelectedFeature->vertexMap().count() )
@@ -120,7 +120,7 @@ QVariant QgsNodeEditorModel::data( const QModelIndex& index, int role ) const
     }
   }
 
-  if ( role == MinRadiusRole )
+  if ( role == MIN_RADIUS_ROLE )
   {
     if ( index.column() == mRCol )
     {
@@ -225,12 +225,12 @@ bool QgsNodeEditorModel::setData( const QModelIndex& index, const QVariant& valu
   }
   double z = ( index.column() == mZCol ? value.toDouble() : mSelectedFeature->vertexMap().at( index.row() )->point().z() );
   double m = ( index.column() == mMCol ? value.toDouble() : mSelectedFeature->vertexMap().at( index.row() )->point().m() );
-  QgsPointV2 p( QgsWKBTypes::PointZM, x, y, z, m );
+  QgsPointV2 p( QgsWkbTypes::PointZM, x, y, z, m );
 
   mLayer->beginEditCommand( QObject::tr( "Moved vertices" ) );
   mLayer->moveVertex( p, mSelectedFeature->featureId(), index.row() );
   mLayer->endEditCommand();
-  mCanvas->refresh();
+  mLayer->triggerRepaint();
 
   return false;
 }
@@ -319,15 +319,17 @@ void QgsNodeEditor::updateTableSelection()
   mTableView->selectionModel()->clearSelection();
   const QList<QgsVertexEntry*>& vertexMap = mSelectedFeature->vertexMap();
   int firstSelectedRow = -1;
+  QItemSelection selection;
   for ( int i = 0, n = vertexMap.size(); i < n; ++i )
   {
     if ( vertexMap[i]->isSelected() )
     {
       if ( firstSelectedRow < 0 )
         firstSelectedRow = i;
-      mTableView->selectionModel()->select( mNodeModel->index( i, 0 ), QItemSelectionModel::Rows | QItemSelectionModel::Select );
+      selection.select( mNodeModel->index( i, 0 ), mNodeModel->index( i, mNodeModel->columnCount() - 1 ) );
     }
   }
+  mTableView->selectionModel()->select( selection, QItemSelectionModel::Select );
 
   if ( firstSelectedRow >= 0 )
     mTableView->scrollTo( mNodeModel->index( firstSelectedRow, 0 ), QAbstractItemView::PositionAtTop );
@@ -371,9 +373,9 @@ void QgsNodeEditor::zoomToNode( int idx )
   QPolygonF ext = mCanvas->mapSettings().visiblePolygon();
   //close polygon
   ext.append( ext.first() );
-  QScopedPointer< QgsGeometry > extGeom( QgsGeometry::fromQPolygonF( ext ) );
-  QScopedPointer< QgsGeometry > nodeGeom( QgsGeometry::fromPoint( tCenter ) );
-  if ( !nodeGeom->within( extGeom.data() ) )
+  QgsGeometry extGeom( QgsGeometry::fromQPolygonF( ext ) );
+  QgsGeometry nodeGeom( QgsGeometry::fromPoint( tCenter ) );
+  if ( !nodeGeom.within( extGeom ) )
   {
     mCanvas->setCenter( tCenter );
     mCanvas->refresh();
@@ -404,8 +406,8 @@ QWidget*CoordinateItemDelegate::createEditor( QWidget* parent, const QStyleOptio
 {
   QLineEdit* lineEdit = new QLineEdit( parent );
   QDoubleValidator* validator = new QDoubleValidator();
-  if ( !index.data( MinRadiusRole ).isNull() )
-    validator->setBottom( index.data( MinRadiusRole ).toDouble() );
+  if ( !index.data( MIN_RADIUS_ROLE ).isNull() )
+    validator->setBottom( index.data( MIN_RADIUS_ROLE ).toDouble() );
   lineEdit->setValidator( validator );
   return lineEdit;
 }

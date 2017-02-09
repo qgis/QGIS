@@ -28,12 +28,17 @@ __revision__ = '$Format:%H$'
 
 import os
 import json
+
 from processing.preconfigured.PreconfiguredUtils import algAsDict
 from processing.preconfigured.PreconfiguredUtils import preconfiguredAlgorithmsFolder
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.AlgorithmDialog import AlgorithmDialog
-from PyQt4.QtGui import QMessageBox, QPalette, QColor, QVBoxLayout, QLabel,\
-    QLineEdit, QWidget
+from processing.core.alglist import algList
+
+from qgis.PyQt.QtWidgets import QMessageBox, QVBoxLayout, QLabel, QLineEdit, QWidget
+from qgis.PyQt.QtGui import QPalette, QColor
+
+from qgis.gui import QgsMessageBar
 
 
 class PreconfiguredAlgorithmDialog(AlgorithmDialog):
@@ -59,14 +64,14 @@ class PreconfiguredAlgorithmDialog(AlgorithmDialog):
             description["name"] = self.settingsPanel.txtName.text().strip()
             description["group"] = self.settingsPanel.txtGroup.text().strip()
             if not (description["name"] and description["group"]):
-                self.tabWidget.setCurrentIndex(1)
+                self.tabWidget.setCurrentIndex(self.tabWidget.count() - 1)
                 return
             validChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:'
             filename = ''.join(c for c in description["name"] if c in validChars).lower() + ".json"
             filepath = os.path.join(preconfiguredAlgorithmsFolder(), filename)
             with open(filepath, "w") as f:
                 json.dump(description, f)
-            self.toolbox.updateProvider('preconfigured')
+            algList.reloadProvider('preconfigured')
         except AlgorithmDialogBase.InvalidParameterValue as e:
             try:
                 self.buttonBox.accepted.connect(lambda:
@@ -74,8 +79,9 @@ class PreconfiguredAlgorithmDialog(AlgorithmDialog):
                 palette = e.widget.palette()
                 palette.setColor(QPalette.Base, QColor(255, 255, 0))
                 e.widget.setPalette(palette)
-                self.lblProgress.setText(
-                    self.tr('<b>Missing parameter value: %s</b>') % e.parameter.description)
+                self.parent.bar.pushMessage("", self.tr('Missing parameter value: %s')
+                                            % e.parameter.description,
+                                            level=QgsMessageBar.WARNING, duration=5)
                 return
             except:
                 QMessageBox.critical(self,

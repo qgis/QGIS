@@ -17,6 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgsdistancearea.h"
+#include "qgsfeatureiterator.h"
 #include "qgsvectordataprovider.h"
 #include "qgsexpression.h"
 #include "qgsfeature.h"
@@ -24,6 +25,9 @@
 #include "qgsgenericfeatureselectionmanager.h"
 #include "qgsrelation.h"
 #include "qgsvectorlayertools.h"
+#include "qgsproject.h"
+#include "qgstransactiongroup.h"
+#include "qgslogger.h"
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -31,6 +35,7 @@
 QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget* parent )
     : QgsCollapsibleGroupBox( parent )
     , mViewMode( QgsDualView::AttributeEditor )
+    , mShowLabel( true )
     , mVisible( false )
 {
   QVBoxLayout* topLayout = new QVBoxLayout( this );
@@ -42,55 +47,63 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget* parent )
   buttonLayout->setContentsMargins( 0, 0, 0, 0 );
   // toogle editing
   mToggleEditingButton = new QToolButton( this );
-  mToggleEditingButton->setObjectName( "mToggleEditingButton" );
-  mToggleEditingButton->setIcon( QgsApplication::getThemeIcon( "/mActionToggleEditing.svg" ) );
+  mToggleEditingButton->setObjectName( QStringLiteral( "mToggleEditingButton" ) );
+  mToggleEditingButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
   mToggleEditingButton->setText( tr( "Toggle editing" ) );
   mToggleEditingButton->setEnabled( false );
   mToggleEditingButton->setCheckable( true );
+  mToggleEditingButton->setToolTip( tr( "Toggle editing mode for child layer" ) );
   buttonLayout->addWidget( mToggleEditingButton );
   // save Edits
   mSaveEditsButton = new QToolButton( this );
-  mSaveEditsButton->setIcon( QgsApplication::getThemeIcon( "/mActionSaveEdits.svg" ) );
-  mSaveEditsButton->setText( tr( "Save layer edits" ) );
+  mSaveEditsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveEdits.svg" ) ) );
+  mSaveEditsButton->setText( tr( "Save child layer edits" ) );
+  mSaveEditsButton->setToolTip( tr( "Save child layer edits" ) );
   mSaveEditsButton->setEnabled( true );
   buttonLayout->addWidget( mSaveEditsButton );
   // add feature
   mAddFeatureButton = new QToolButton( this );
-  mAddFeatureButton->setIcon( QgsApplication::getThemeIcon( "/mActionAdd.svg" ) );
-  mAddFeatureButton->setText( tr( "Add feature" ) );
-  mAddFeatureButton->setObjectName( "mAddFeatureButton" );
+  mAddFeatureButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewTableRow.svg" ) ) );
+  mAddFeatureButton->setText( tr( "Add child feature" ) );
+  mAddFeatureButton->setToolTip( tr( "Add child feature" ) );
+  mAddFeatureButton->setObjectName( QStringLiteral( "mAddFeatureButton" ) );
   buttonLayout->addWidget( mAddFeatureButton );
   // delete feature
   mDeleteFeatureButton = new QToolButton( this );
-  mDeleteFeatureButton->setIcon( QgsApplication::getThemeIcon( "/mActionRemove.svg" ) );
-  mDeleteFeatureButton->setText( tr( "Delete feature" ) );
-  mDeleteFeatureButton->setObjectName( "mDeleteFeatureButton" );
+  mDeleteFeatureButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ) );
+  mDeleteFeatureButton->setText( tr( "Delete child feature" ) );
+  mDeleteFeatureButton->setToolTip( tr( "Delete child feature" ) );
+  mDeleteFeatureButton->setObjectName( QStringLiteral( "mDeleteFeatureButton" ) );
   buttonLayout->addWidget( mDeleteFeatureButton );
   // link feature
   mLinkFeatureButton = new QToolButton( this );
-  mLinkFeatureButton->setIcon( QgsApplication::getThemeIcon( "/mActionLink.svg" ) );
-  mLinkFeatureButton->setText( tr( "Link feature" ) );
-  mLinkFeatureButton->setObjectName( "mLinkFeatureButton" );
+  mLinkFeatureButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionLink.svg" ) ) );
+  mLinkFeatureButton->setText( tr( "Link existing features" ) );
+  mLinkFeatureButton->setToolTip( tr( "Link existing child features" ) );
+  mLinkFeatureButton->setObjectName( QStringLiteral( "mLinkFeatureButton" ) );
   buttonLayout->addWidget( mLinkFeatureButton );
   // unlink feature
   mUnlinkFeatureButton = new QToolButton( this );
-  mUnlinkFeatureButton->setIcon( QgsApplication::getThemeIcon( "/mActionUnlink.svg" ) );
+  mUnlinkFeatureButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUnlink.svg" ) ) );
   mUnlinkFeatureButton->setText( tr( "Unlink feature" ) );
-  mUnlinkFeatureButton->setObjectName( "mUnlinkFeatureButton" );
+  mUnlinkFeatureButton->setToolTip( tr( "Unlink child feature" ) );
+  mUnlinkFeatureButton->setObjectName( QStringLiteral( "mUnlinkFeatureButton" ) );
   buttonLayout->addWidget( mUnlinkFeatureButton );
   // spacer
   buttonLayout->addItem( new QSpacerItem( 0, 0, QSizePolicy::Expanding ) );
   // form view
   mFormViewButton = new QToolButton( this );
   mFormViewButton->setText( tr( "Form view" ) );
-  mFormViewButton->setIcon( QgsApplication::getThemeIcon( "/mActionPropertyItem.png" ) );
+  mFormViewButton->setToolTip( tr( "Switch to form view" ) );
+  mFormViewButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPropertyItem.svg" ) ) );
   mFormViewButton->setCheckable( true );
   mFormViewButton->setChecked( mViewMode == QgsDualView::AttributeEditor );
   buttonLayout->addWidget( mFormViewButton );
   // table view
   mTableViewButton = new QToolButton( this );
   mTableViewButton->setText( tr( "Table view" ) );
-  mTableViewButton->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTable.svg" ) );
+  mTableViewButton->setToolTip( tr( "Switch to table view" ) );
+  mTableViewButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ) );
   mTableViewButton->setCheckable( true );
   mTableViewButton->setChecked( mViewMode == QgsDualView::AttributeTable );
   buttonLayout->addWidget( mTableViewButton );
@@ -141,7 +154,8 @@ void QgsRelationEditorWidget::setRelationFeature( const QgsRelation& relation, c
   connect( mRelation.referencingLayer(), SIGNAL( editingStarted() ), this, SLOT( updateButtons() ) );
   connect( mRelation.referencingLayer(), SIGNAL( editingStopped() ), this, SLOT( updateButtons() ) );
 
-  setTitle( relation.name() );
+  if ( mShowLabel )
+    setTitle( relation.name() );
 
   QgsVectorLayer* lyr = relation.referencingLayer();
 
@@ -156,8 +170,7 @@ void QgsRelationEditorWidget::setRelationFeature( const QgsRelation& relation, c
     mToggleEditingButton->setEnabled( false );
   }
 
-  setObjectName( mRelation.name() );
-  loadState();
+  setObjectName( QStringLiteral( "referenced/" ) + mRelation.name() );
 
   // If not yet initialized, it is not (yet) visible, so we don't load it to be faster (lazy loading)
   // If it is already initialized, it has been set visible before and the currently shown feature is changing
@@ -191,6 +204,17 @@ void QgsRelationEditorWidget::setRelations( const QgsRelation& relation, const Q
   if ( !mRelation.isValid() )
     return;
 
+  mToggleEditingButton->setVisible( true );
+
+  Q_FOREACH ( QgsTransactionGroup* tg, QgsProject::instance()->transactionGroups().values() )
+  {
+    if ( tg->layers().contains( mRelation.referencingLayer() ) )
+    {
+      mToggleEditingButton->setVisible( false );
+      mSaveEditsButton->setVisible( false );
+    }
+  }
+
   connect( mRelation.referencingLayer(), SIGNAL( editingStarted() ), this, SLOT( updateButtons() ) );
   connect( mRelation.referencingLayer(), SIGNAL( editingStopped() ), this, SLOT( updateButtons() ) );
 
@@ -215,8 +239,7 @@ void QgsRelationEditorWidget::setRelations( const QgsRelation& relation, const Q
     mToggleEditingButton->setEnabled( false );
   }
 
-  setObjectName( mRelation.name() );
-  loadState();
+  setObjectName( QStringLiteral( "referenced/" ) + mRelation.name() );
 
   updateUi();
 }
@@ -355,7 +378,7 @@ void QgsRelationEditorWidget::linkFeature()
       QMap<int, QVariant> keys;
       Q_FOREACH ( const QgsRelation::FieldPair& fieldPair, mRelation.fieldPairs() )
       {
-        int idx = mRelation.referencingLayer()->fieldNameIndex( fieldPair.referencingField() );
+        int idx = mRelation.referencingLayer()->fields().lookupField( fieldPair.referencingField() );
         QVariant val = mFeature.attribute( fieldPair.referencedField() );
         keys.insert( idx, val );
       }
@@ -383,8 +406,8 @@ void QgsRelationEditorWidget::deleteFeature()
     layer = mNmRelation.referencedLayer();
   else
     layer = mRelation.referencingLayer();
-  QgsDebugMsg( QString( "Delete %1" ).arg( mFeatureSelectionMgr->selectedFeaturesIds().size() ) );
-  layer->deleteFeatures( mFeatureSelectionMgr->selectedFeaturesIds() );
+  QgsDebugMsg( QString( "Delete %1" ).arg( mFeatureSelectionMgr->selectedFeatureIds().size() ) );
+  layer->deleteFeatures( mFeatureSelectionMgr->selectedFeatureIds() );
 }
 
 void QgsRelationEditorWidget::unlinkFeature()
@@ -393,7 +416,7 @@ void QgsRelationEditorWidget::unlinkFeature()
   {
     QgsFeatureIterator selectedIterator = mNmRelation.referencedLayer()->getFeatures(
                                             QgsFeatureRequest()
-                                            .setFilterFids( mFeatureSelectionMgr->selectedFeaturesIds() )
+                                            .setFilterFids( mFeatureSelectionMgr->selectedFeatureIds() )
                                             .setSubsetOfAttributes( mNmRelation.referencedFields() ) );
 
     QgsFeature f;
@@ -405,9 +428,9 @@ void QgsRelationEditorWidget::unlinkFeature()
       filters << '(' + mNmRelation.getRelatedFeaturesRequest( f ).filterExpression()->expression() + ')';
     }
 
-    QString filter = QString( "(%1) AND (%2)" ).arg(
+    QString filter = QStringLiteral( "(%1) AND (%2)" ).arg(
                        mRelation.getRelatedFeaturesRequest( mFeature ).filterExpression()->expression(),
-                       filters.join( " OR " ) );
+                       filters.join( QStringLiteral( " OR " ) ) );
 
     QgsFeatureIterator linkedIterator = mRelation.referencingLayer()->getFeatures( QgsFeatureRequest()
                                         .setSubsetOfAttributes( QgsAttributeList() )
@@ -416,7 +439,10 @@ void QgsRelationEditorWidget::unlinkFeature()
     QgsFeatureIds fids;
 
     while ( linkedIterator.nextFeature( f ) )
+    {
       fids << f.id();
+      QgsDebugMsgLevel( FID_TO_STRING( f.id() ), 4 );
+    }
 
     mRelation.referencingLayer()->deleteFeatures( fids );
 
@@ -427,7 +453,7 @@ void QgsRelationEditorWidget::unlinkFeature()
     QMap<int, QgsField> keyFields;
     Q_FOREACH ( const QgsRelation::FieldPair& fieldPair, mRelation.fieldPairs() )
     {
-      int idx = mRelation.referencingLayer()->fieldNameIndex( fieldPair.referencingField() );
+      int idx = mRelation.referencingLayer()->fields().lookupField( fieldPair.referencingField() );
       if ( idx < 0 )
       {
         QgsDebugMsg( QString( "referencing field %1 not found" ).arg( fieldPair.referencingField() ) );
@@ -437,7 +463,7 @@ void QgsRelationEditorWidget::unlinkFeature()
       keyFields.insert( idx, fld );
     }
 
-    Q_FOREACH ( QgsFeatureId fid, mFeatureSelectionMgr->selectedFeaturesIds() )
+    Q_FOREACH ( QgsFeatureId fid, mFeatureSelectionMgr->selectedFeatureIds() )
     {
       QMapIterator<int, QgsField> it( keyFields );
       while ( it.hasNext() )
@@ -508,7 +534,7 @@ void QgsRelationEditorWidget::updateUi()
 
       QgsFeatureRequest nmRequest;
 
-      nmRequest.setFilterExpression( filters.join( " OR " ) );
+      nmRequest.setFilterExpression( filters.join( QStringLiteral( " OR " ) ) );
 
       mDualView->init( mNmRelation.referencedLayer(), nullptr, nmRequest, mEditorContext );
     }
@@ -517,4 +543,39 @@ void QgsRelationEditorWidget::updateUi()
       mDualView->init( mRelation.referencingLayer(), nullptr, myRequest, mEditorContext );
     }
   }
+}
+
+bool QgsRelationEditorWidget::showLinkButton() const
+{
+  return mLinkFeatureButton->isVisible();
+}
+
+void QgsRelationEditorWidget::setShowLinkButton( bool showLinkButton )
+{
+  mLinkFeatureButton->setVisible( showLinkButton );
+}
+
+bool QgsRelationEditorWidget::showUnlinkButton() const
+{
+  return mUnlinkFeatureButton->isVisible();
+}
+
+void QgsRelationEditorWidget::setShowUnlinkButton( bool showUnlinkButton )
+{
+  mUnlinkFeatureButton->setVisible( showUnlinkButton );
+}
+
+bool QgsRelationEditorWidget::showLabel() const
+{
+  return mShowLabel;
+}
+
+void QgsRelationEditorWidget::setShowLabel( bool showLabel )
+{
+  mShowLabel = showLabel;
+
+  if ( mShowLabel && mRelation.isValid() )
+    setTitle( mRelation.name() );
+  else
+    setTitle( QString() );
 }

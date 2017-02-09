@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'August 2013'
@@ -66,21 +67,21 @@ class ZonalStatistics(GeoAlgorithm):
                                           self.tr('Raster band'), 1, 999, 1))
         self.addParameter(ParameterVector(self.INPUT_VECTOR,
                                           self.tr('Vector layer containing zones'),
-                                          [ParameterVector.VECTOR_TYPE_POLYGON]))
+                                          [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterString(self.COLUMN_PREFIX,
                                           self.tr('Output column prefix'), '_'))
         self.addParameter(ParameterBoolean(self.GLOBAL_EXTENT,
                                            self.tr('Load whole raster in memory')))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Zonal statistics')))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Zonal statistics'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         """ Based on code by Matthew Perry
             https://gist.github.com/perrygeo/5667173
         """
 
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_VECTOR))
 
-        rasterPath = unicode(self.getParameterValue(self.INPUT_RASTER))
+        rasterPath = str(self.getParameterValue(self.INPUT_RASTER))
         bandNumber = self.getParameterValue(self.RASTER_BAND)
         columnPrefix = self.getParameterValue(self.COLUMN_PREFIX)
         useGlobalExtent = self.getParameterValue(self.GLOBAL_EXTENT)
@@ -132,7 +133,7 @@ class ZonalStatistics(GeoAlgorithm):
         memVectorDriver = ogr.GetDriverByName('Memory')
         memRasterDriver = gdal.GetDriverByName('MEM')
 
-        fields = layer.pendingFields()
+        fields = layer.fields()
         (idxMin, fields) = vector.findOrCreateField(layer, fields,
                                                     columnPrefix + 'min', 21, 6)
         (idxMax, fields) = vector.findOrCreateField(layer, fields,
@@ -158,7 +159,7 @@ class ZonalStatistics(GeoAlgorithm):
                                                          columnPrefix + 'mode', 21, 6)
 
         writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(
-            fields.toList(), layer.dataProvider().geometryType(), layer.crs())
+            fields.toList(), layer.wkbType(), layer.crs())
 
         outFeat = QgsFeature()
 
@@ -254,7 +255,7 @@ class ZonalStatistics(GeoAlgorithm):
             memVDS = None
             rasterizedDS = None
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         rasterDS = None
 

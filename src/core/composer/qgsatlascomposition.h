@@ -16,9 +16,11 @@
 #ifndef QGSATLASCOMPOSITION_H
 #define QGSATLASCOMPOSITION_H
 
-#include "qgscoordinatetransform.h"
+#include "qgis_core.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
+#include "qgsrectangle.h"
+#include "qgsexpression.h"
 
 #include <memory>
 #include <QString>
@@ -29,10 +31,9 @@
 class QgsComposerMap;
 class QgsComposition;
 class QgsVectorLayer;
-class QgsExpression;
 class QgsExpressionContext;
 
-/** \ingroup MapComposer
+/** \ingroup core
  * Class used to render an Atlas, iterating over geometry features.
  * prepareForFeature() modifies the atlas map's extent to zoom on the given feature.
  * This class is used for printing, exporting to PDF and images.
@@ -45,7 +46,6 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     Q_OBJECT
   public:
     QgsAtlasComposition( QgsComposition* composition );
-    ~QgsAtlasComposition();
 
     /** Returns whether the atlas generation is enabled
      * @returns true if atlas is enabled
@@ -176,7 +176,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      * @see setPredefinedScales
      * @see QgsComposerMap::atlasScalingMode
      */
-    const QVector<qreal>& predefinedScales() const { return mPredefinedScales; }
+    QVector<qreal> predefinedScales() const { return mPredefinedScales; }
 
     /** Sets the list of predefined scales for the atlas. This is used
      * for maps which are set to the predefined atlas scaling mode.
@@ -189,10 +189,10 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     /** Begins the rendering. Returns true if successful, false if no matching atlas
       features found.*/
     bool beginRender();
-    /** Ends the rendering. Restores original extent */
+    //! Ends the rendering. Restores original extent
     void endRender();
 
-    /** Returns the number of features in the coverage layer */
+    //! Returns the number of features in the coverage layer
     int numFeatures() const;
 
     /** Prepare the atlas map for the given feature. Sets the extent and context variables
@@ -207,10 +207,10 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      */
     bool prepareForFeature( const QgsFeature *feat );
 
-    /** Returns the current filename. Must be called after prepareForFeature() */
+    //! Returns the current filename. Must be called after prepareForFeature()
     QString currentFilename() const;
 
-    void writeXML( QDomElement& elem, QDomDocument& doc ) const;
+    void writeXml( QDomElement& elem, QDomDocument& doc ) const;
 
     /** Reads general atlas settings from xml
      * @param elem a QDomElement holding the atlas properties.
@@ -218,16 +218,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      * @see readXMLMapSettings
      * @note This method should be called before restoring composer item properties
      */
-    void readXML( const QDomElement& elem, const QDomDocument& doc );
-
-    /** Reads old (pre 2.2) map related atlas settings from xml
-     * @param elem a QDomElement holding the atlas map properties.
-     * @param doc QDomDocument for the source xml.
-     * @see readXMLMapSettings
-     * @note This method should be called after restoring composer item properties
-     * @note added in version 2.5
-     */
-    void readXMLMapSettings( const QDomElement& elem, const QDomDocument& doc );
+    void readXml( const QDomElement& elem, const QDomDocument& doc );
 
     QgsComposition* composition() { return mComposition; }
 
@@ -251,53 +242,10 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      */
     int currentFeatureNumber() const { return mCurrentFeatureNo; }
 
-    /** Recalculates the bounds of an atlas driven map */
+    //! Recalculates the bounds of an atlas driven map
     void prepareMap( QgsComposerMap* map );
 
-
-    //deprecated methods
-
-    /** Returns the map used by the atlas
-     * @deprecated Use QgsComposerMap::atlasDriven() instead
-     */
-    Q_DECL_DEPRECATED QgsComposerMap* composerMap() const;
-
-    /** Sets the map used by the atlas
-     * @deprecated Use QgsComposerMap::setAtlasDriven( true ) instead
-     */
-    Q_DECL_DEPRECATED void setComposerMap( QgsComposerMap* map );
-
-    /** Returns whether the atlas map uses a fixed scale
-     * @deprecated since 2.4 Use QgsComposerMap::atlasScalingMode() instead
-     */
-    Q_DECL_DEPRECATED bool fixedScale() const;
-
-    /** Sets whether the atlas map should use a fixed scale
-     * @deprecated since 2.4 Use QgsComposerMap::setAtlasScalingMode() instead
-     */
-    Q_DECL_DEPRECATED void setFixedScale( bool fixed );
-
-    /** Returns the margin for the atlas map
-     * @deprecated Use QgsComposerMap::atlasMargin() instead
-     */
-    Q_DECL_DEPRECATED float margin() const;
-
-    /** Sets the margin for the atlas map
-     * @deprecated Use QgsComposerMap::setAtlasMargin( double ) instead
-     */
-    Q_DECL_DEPRECATED void setMargin( float margin );
-
-    //! @deprecated use sortKeyAttributeName instead
-    Q_DECL_DEPRECATED int sortKeyAttributeIndex() const;
-    //! @deprecated use setSortKeyAttributeName instead
-    Q_DECL_DEPRECATED void setSortKeyAttributeIndex( int idx );
-
-    /** Returns the current atlas feature. Must be called after prepareForFeature( i ).
-     * @deprecated use feature() instead
-     */
-    Q_DECL_DEPRECATED QgsFeature* currentFeature() { return &mCurrentFeature; }
-
-    /** Returns the current atlas geometry in the given projection system (default to the coverage layer's CRS) */
+    //! Returns the current atlas geometry in the given projection system (default to the coverage layer's CRS)
     QgsGeometry currentGeometry( const QgsCoordinateReferenceSystem& projectedTo = QgsCoordinateReferenceSystem() ) const;
 
   public slots:
@@ -313,25 +261,25 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     void firstFeature();
 
   signals:
-    /** Emitted when one of the parameters changes */
+    //! Emitted when one of the parameters changes
     void parameterChanged();
 
-    /** Emitted when atlas is enabled or disabled */
+    //! Emitted when atlas is enabled or disabled
     void toggled( bool );
 
-    /** Is emitted when the atlas has an updated status bar message for the composer window*/
+    //! Is emitted when the atlas has an updated status bar message for the composer window
     void statusMsgChanged( const QString& message );
 
-    /** Is emitted when the coverage layer for an atlas changes*/
+    //! Is emitted when the coverage layer for an atlas changes
     void coverageLayerChanged( QgsVectorLayer* layer );
 
-    /** Is emitted when atlas rendering has begun*/
+    //! Is emitted when atlas rendering has begun
     void renderBegun();
 
-    /** Is emitted when atlas rendering has ended*/
+    //! Is emitted when atlas rendering has ended
     void renderEnded();
 
-    /** Is emitted when the current atlas feature changes*/
+    //! Is emitted when the current atlas feature changes
     void featureChanged( QgsFeature* feature );
 
     /** Is emitted when the number of features for the atlas changes.
@@ -340,6 +288,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     void numberFeaturesChanged( int numFeatures );
 
   private:
+
     /** Updates the filename expression.
      * @returns true if expression was successfully parsed, false if expression is invalid
      */
@@ -391,7 +340,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     QgsFeature mCurrentFeature;
 
-    QScopedPointer<QgsExpression> mFilenameExpr;
+    std::unique_ptr<QgsExpression> mFilenameExpr;
 
     // bounding box of the current feature transformed into map crs
     QgsRectangle mTransformedFeatureBounds;

@@ -35,7 +35,7 @@ class ExampleAlgorithmProvider(AlgorithmProvider):
     MY_DUMMY_SETTING = 'MY_DUMMY_SETTING'
 
     def __init__(self):
-        AlgorithmProvider.__init__(self)
+        super().__init__()
 
         # Deactivate provider by default
         self.activate = False
@@ -66,7 +66,7 @@ class ExampleAlgorithmProvider(AlgorithmProvider):
         ProcessingConfig.removeSetting(
             ExampleAlgorithmProvider.MY_DUMMY_SETTING)
 
-    def getName(self):
+    def id(self):
         """This is the name that will appear on the toolbox group.
 
         It is also used to create the command line name of all the
@@ -74,15 +74,15 @@ class ExampleAlgorithmProvider(AlgorithmProvider):
         """
         return 'Example provider'
 
-    def getDescription(self):
+    def name(self):
         """This is the provired full name.
         """
         return 'Example algorithms'
 
-    def getIcon(self):
+    def icon(self):
         """We return the default icon.
         """
-        return AlgorithmProvider.getIcon(self)
+        return AlgorithmProvider.icon(self)
 
     def _loadAlgorithms(self):
         """Here we fill the list of algorithms in self.algs.

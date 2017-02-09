@@ -18,11 +18,11 @@
 #include "qgscomposition.h"
 #include <QtCore>
 
-QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition* c, bool createUndoCommands ):
-    QgsComposerObject( c ),
-    mResizeMode( UseExistingFrames ),
-    mCreateUndoCommands( createUndoCommands ),
-    mIsRecalculatingSize( false )
+QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition* c, bool createUndoCommands )
+    : QgsComposerObject( c )
+    , mResizeMode( UseExistingFrames )
+    , mCreateUndoCommands( createUndoCommands )
+    , mIsRecalculatingSize( false )
 {
   mComposition->addMultiFrame( this );
   connect( mComposition, SIGNAL( nPagesChanged() ), this, SLOT( handlePageChange() ) );
@@ -39,22 +39,6 @@ QgsComposerMultiFrame::QgsComposerMultiFrame()
 QgsComposerMultiFrame::~QgsComposerMultiFrame()
 {
   deleteFrames();
-}
-
-void QgsComposerMultiFrame::render( QPainter *p, const QRectF &renderExtent )
-{
-  //base implementation does nothing
-  Q_UNUSED( p );
-  Q_UNUSED( renderExtent );
-}
-
-void QgsComposerMultiFrame::render( QPainter *painter, const QRectF &renderExtent, const int frameIndex )
-{
-  Q_UNUSED( frameIndex );
-  //base implementation ignores frameIndex
-  Q_NOWARN_DEPRECATED_PUSH
-  render( painter, renderExtent );
-  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsComposerMultiFrame::setResizeMode( ResizeMode mode )
@@ -246,7 +230,7 @@ void QgsComposerMultiFrame::handleFrameRemoval( QgsComposerItem* item )
     if ( resizeMode() != QgsComposerMultiFrame::RepeatOnEveryPage && !mIsRecalculatingSize )
     {
       //removing a frame forces the multi frame to UseExistingFrames resize mode
-      //otherwise the frame may not actually be removed, leading to confusing ui behaviour
+      //otherwise the frame may not actually be removed, leading to confusing ui behavior
       mResizeMode = QgsComposerMultiFrame::UseExistingFrames;
       emit changed();
       recalculateFrameSizes();
@@ -356,34 +340,34 @@ int QgsComposerMultiFrame::frameIndex( QgsComposerFrame *frame ) const
   return mFrameItems.indexOf( frame );
 }
 
-bool QgsComposerMultiFrame::_writeXML( QDomElement& elem, QDomDocument& doc, bool ignoreFrames ) const
+bool QgsComposerMultiFrame::_writeXml( QDomElement& elem, QDomDocument& doc, bool ignoreFrames ) const
 {
-  elem.setAttribute( "resizeMode", mResizeMode );
+  elem.setAttribute( QStringLiteral( "resizeMode" ), mResizeMode );
   if ( !ignoreFrames )
   {
     QList<QgsComposerFrame*>::const_iterator frameIt = mFrameItems.constBegin();
     for ( ; frameIt != mFrameItems.constEnd(); ++frameIt )
     {
-      ( *frameIt )->writeXML( elem, doc );
+      ( *frameIt )->writeXml( elem, doc );
     }
   }
-  QgsComposerObject::writeXML( elem, doc );
+  QgsComposerObject::writeXml( elem, doc );
   return true;
 }
 
-bool QgsComposerMultiFrame::_readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames )
+bool QgsComposerMultiFrame::_readXml( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames )
 {
-  QgsComposerObject::readXML( itemElem, doc );
+  QgsComposerObject::readXml( itemElem, doc );
 
-  mResizeMode = static_cast< ResizeMode >( itemElem.attribute( "resizeMode", "0" ).toInt() );
+  mResizeMode = static_cast< ResizeMode >( itemElem.attribute( QStringLiteral( "resizeMode" ), QStringLiteral( "0" ) ).toInt() );
   if ( !ignoreFrames )
   {
-    QDomNodeList frameList = itemElem.elementsByTagName( "ComposerFrame" );
+    QDomNodeList frameList = itemElem.elementsByTagName( QStringLiteral( "ComposerFrame" ) );
     for ( int i = 0; i < frameList.size(); ++i )
     {
       QDomElement frameElem = frameList.at( i ).toElement();
       QgsComposerFrame* newFrame = new QgsComposerFrame( mComposition, this, 0, 0, 0, 0 );
-      newFrame->readXML( frameElem, doc );
+      newFrame->readXml( frameElem, doc );
       addFrame( newFrame, false );
     }
 

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -28,19 +29,53 @@ __revision__ = '$Format:%H$'
 import os
 import webbrowser
 
-from PyQt import uic
-from PyQt.QtCore import QCoreApplication, QSettings, QByteArray, QUrl
-from PyQt.QtWidgets import QApplication, QDialogButtonBox, QDesktopWidget
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import QCoreApplication, QSettings, QByteArray, QUrl
+from qgis.PyQt.QtWidgets import QApplication, QDialogButtonBox, QDesktopWidget
+from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 
 from qgis.utils import iface
-from qgis.core import QgsNetworkAccessManager
+from qgis.core import (QgsNetworkAccessManager,
+                       QgsProject,
+                       QgsProcessingFeedback)
+
 
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.gui import AlgorithmClassification
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
     os.path.join(pluginPath, 'ui', 'DlgAlgorithmBase.ui'))
+
+
+class AlgorithmDialogFeedback(QgsProcessingFeedback):
+    """
+    Directs algorithm feedback to an algorithm dialog
+    """
+
+    def __init__(self, dialog):
+        QgsProcessingFeedback.__init__(self)
+        self.dialog = dialog
+
+    def reportError(self, msg):
+        self.dialog.error(msg)
+
+    def setProgressText(self, text):
+        self.dialog.setText(text)
+
+    def setProgress(self, i):
+        self.dialog.setPercentage(i)
+
+    def pushInfo(self, msg):
+        self.dialog.setInfo(msg)
+
+    def pushCommandInfo(self, msg):
+        self.dialog.setCommand(msg)
+
+    def pushDebugInfo(self, msg):
+        self.dialog.setDebugInfo(msg)
+
+    def pushConsoleInfo(self, msg):
+        self.dialog.setConsoleInfo(msg)
 
 
 class AlgorithmDialogBase(BASE, WIDGET):
@@ -48,6 +83,8 @@ class AlgorithmDialogBase(BASE, WIDGET):
     def __init__(self, alg):
         super(AlgorithmDialogBase, self).__init__(iface.mainWindow())
         self.setupUi(self)
+
+        self.feedback = AlgorithmDialogFeedback(self)
 
         self.settings = QSettings()
         self.restoreGeometry(self.settings.value("/Processing/dialogBase", QByteArray()))
@@ -62,11 +99,11 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
         self.btnClose = self.buttonBox.button(QDialogButtonBox.Close)
 
-        self.setWindowTitle(AlgorithmClassification.getDisplayName(self.alg))
+        self.setWindowTitle(self.alg.displayName())
 
-        desktop = QDesktopWidget()
-        if desktop.physicalDpiX() > 96:
-            self.textHelp.setZoomFactor(desktop.physicalDpiX() / 96)
+        #~ desktop = QDesktopWidget()
+        #~ if desktop.physicalDpiX() > 96:
+        #~ self.txtHelp.setZoomFactor(desktop.physicalDpiX() / 96)
 
         algHelp = self.alg.shortHelp()
         if algHelp is None:
@@ -84,20 +121,22 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
         def linkClicked(url):
             webbrowser.open(url.toString())
-        self.textShortHelp.anchorClicked.connect(linkClicked)
 
-        self.textHelp.page().setNetworkAccessManager(QgsNetworkAccessManager.instance())
+        self.textShortHelp.anchorClicked.connect(linkClicked)
 
         isText, algHelp = self.alg.help()
         if algHelp is not None:
             algHelp = algHelp if isText else QUrl(algHelp)
             try:
                 if isText:
-                    self.textHelp.setHtml(algHelp)
+                    self.txtHelp.setHtml(algHelp)
                 else:
-                    self.textHelp.settings().clearMemoryCaches()
-                    self.textHelp.load(algHelp)
-            except:
+                    html = self.tr('<p>Downloading algorithm help... Please wait.</p>')
+                    self.txtHelp.setHtml(html)
+                    rq = QNetworkRequest(algHelp)
+                    self.reply = QgsNetworkAccessManager.instance().get(rq)
+                    self.reply.finished.connect(self.requestFinished)
+            except Exception as e:
                 self.tabWidget.removeTab(2)
         else:
             self.tabWidget.removeTab(2)
@@ -105,12 +144,28 @@ class AlgorithmDialogBase(BASE, WIDGET):
         self.showDebug = ProcessingConfig.getSetting(
             ProcessingConfig.SHOW_DEBUG_IN_DIALOG)
 
+    def requestFinished(self):
+        """Change the webview HTML content"""
+        reply = self.sender()
+        if reply.error() != QNetworkReply.NoError:
+            html = self.tr('<h2>No help available for this algorithm</h2><p>{}</p>'.format(reply.errorString()))
+        else:
+            html = str(reply.readAll())
+        reply.deleteLater()
+        self.txtHelp.setHtml(html)
+
     def closeEvent(self, evt):
         self.settings.setValue("/Processing/dialogBase", self.saveGeometry())
         super(AlgorithmDialogBase, self).closeEvent(evt)
 
-    def setMainWidget(self):
+    def setMainWidget(self, widget):
+        if self.mainWidget is not None:
+            QgsProject.instance().layerWasAdded.disconnect(self.mainWidget.layerRegistryChanged)
+            QgsProject.instance().layersWillBeRemoved.disconnect(self.mainWidget.layerRegistryChanged)
+        self.mainWidget = widget
         self.tabWidget.widget(0).layout().addWidget(self.mainWidget)
+        QgsProject.instance().layerWasAdded.connect(self.mainWidget.layerRegistryChanged)
+        QgsProject.instance().layersWillBeRemoved.connect(self.mainWidget.layerRegistryChanged)
 
     def error(self, msg):
         QApplication.restoreOverrideCursor()

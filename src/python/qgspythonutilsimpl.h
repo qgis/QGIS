@@ -126,12 +126,11 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     //@return true if qgis.user could be imported
     bool checkQgisUser();
 
-    //! import user defined Python code
-    void doUserImports();
+    //! import custom user and global Python code (startup scripts)
+    void doCustomImports();
 
     //! cleanup Python context
     void finish();
-
 
     void installErrorHook();
 
@@ -151,6 +150,5 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     //! flag determining that python support is enabled
     bool mPythonEnabled;
 };
-
 
 #endif

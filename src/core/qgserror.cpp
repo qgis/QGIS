@@ -51,15 +51,18 @@ QString QgsError::message( QgsErrorMessage::Format theFormat ) const
 {
   QString str;
 
+#ifdef QGISDEBUG
   QString srcUrl;
+#endif
+
 #if defined(QGISDEBUG) && defined(QGS_GIT_REMOTE_URL)
   // TODO: verify if we are not ahead to origin (remote hash does not exist)
-  //       and there are no local not commited changes
-  QString hash = QString( QGis::QGIS_DEV_VERSION );
-  QString remote = QString( QGS_GIT_REMOTE_URL );
-  if ( !hash.isEmpty() && !remote.isEmpty() && remote.contains( "github.com" ) )
+  //       and there are no local not committed changes
+  QString hash = QString( Qgis::QGIS_DEV_VERSION );
+  QString remote = QStringLiteral( QGS_GIT_REMOTE_URL );
+  if ( !hash.isEmpty() && !remote.isEmpty() && remote.contains( QLatin1String( "github.com" ) ) )
   {
-    QString path = remote.remove( QRegExp( ".*github.com[:/]" ) ).remove( ".git" );
+    QString path = remote.remove( QRegExp( ".*github.com[:/]" ) ).remove( QStringLiteral( ".git" ) );
     srcUrl = "https://github.com/" + path + "/blob/" + hash;
   }
 #endif
@@ -91,15 +94,15 @@ QString QgsError::message( QgsErrorMessage::Format theFormat ) const
       QString where;
       if ( !file.isEmpty() )
       {
-        where += QString( "file: %1 row: %2" ).arg( file ).arg( m.line() );
+        where += QStringLiteral( "file: %1 row: %2" ).arg( file ).arg( m.line() );
       }
       if ( !m.function().isEmpty() )
       {
-        where += QString( "function %1:" ).arg( m.function() );
+        where += QStringLiteral( "function %1:" ).arg( m.function() );
       }
       if ( !where.isEmpty() )
       {
-        str += QString( " (%1)" ).arg( where );
+        str += QStringLiteral( " (%1)" ).arg( where );
       }
 #endif
     }
@@ -107,15 +110,15 @@ QString QgsError::message( QgsErrorMessage::Format theFormat ) const
     {
       str += "<p><b>" + m.tag() + ":</b> " + m.message();
 #ifdef QGISDEBUG
-      QString location = QString( "%1 : %2 : %3" ).arg( file ).arg( m.line() ).arg( m.function() );
+      QString location = QStringLiteral( "%1 : %2 : %3" ).arg( file ).arg( m.line() ).arg( m.function() );
       if ( !srcUrl.isEmpty() )
       {
-        QString url = QString( "%1/%2#L%3" ).arg( srcUrl, file ).arg( m.line() );
-        str += QString( "<br>(<a href='%1'>%2</a>)" ).arg( url, location );
+        QString url = QStringLiteral( "%1/%2#L%3" ).arg( srcUrl, file ).arg( m.line() );
+        str += QStringLiteral( "<br>(<a href='%1'>%2</a>)" ).arg( url, location );
       }
       else
       {
-        str += QString( "<br>(%1)" ).arg( location );
+        str += QStringLiteral( "<br>(%1)" ).arg( location );
       }
 #endif
     }

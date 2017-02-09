@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
 from processing.preconfigured.PreconfiguredAlgorithm import PreconfiguredAlgorithm
 from processing.preconfigured.PreconfiguredUtils import preconfiguredAlgorithmsFolder
@@ -39,7 +39,7 @@ from processing.preconfigured.DeletePreconfiguredAlgorithmAction import DeletePr
 class PreconfiguredAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
-        AlgorithmProvider.__init__(self)
+        super().__init__()
         self.contextMenuActions = \
             [NewPreconfiguredAlgorithmAction(), DeletePreconfiguredAlgorithmAction()]
 
@@ -53,11 +53,8 @@ class PreconfiguredAlgorithmProvider(AlgorithmProvider):
                     alg = PreconfiguredAlgorithm(fullpath)
                     self.algs.append(alg)
 
-    def getIcon(self):
-        return QIcon(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'images', 'alg.png'))
-
-    def getName(self):
+    def id(self):
         return 'preconfigured'
 
-    def getDescription(self):
+    def name(self):
         return self.tr('Preconfigured algorithms', 'PreconfiguredAlgorithmProvider')

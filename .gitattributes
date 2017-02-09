@@ -1,1 +1,2 @@
 *.sip export-subst
+*.py export-subst

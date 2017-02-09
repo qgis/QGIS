@@ -4,6 +4,34 @@
 # Redistribution and use is allowed according to the terms of the BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
+# Macro that checks for extra include directories set during GRASS compilation.
+# This helps for platforms where GRASS is built against dependencies in
+# non-standard locations; like on Mac, where the system gettext is too old and
+# GRASS is built off of gettext in /usr/local/opt, or some other custom prefix.
+# Such includes may need found again when including some GRASS headers.
+
+MACRO (CHECK_GRASS_EXTRA_INCLUDE_DIRS GRASS_VERSION)
+  SET(GRASS_EXTRA_INCLUDE_DIRS${GRASS_VERSION} ""
+      CACHE STRING "Extra includes string used for GRASS${GRASS_VERSION}")
+
+  IF(UNIX AND EXISTS ${GRASS_INCLUDE_DIR${GRASS_VERSION}}/Make/Platform.make
+     AND "${GRASS${GRASS_VERSION}_EXTRA_INCLUDE_DIRS}" STREQUAL "")
+
+    FILE(READ ${GRASS_INCLUDE_DIR${GRASS_VERSION}}/Make/Platform.make _platformfile)
+    STRING(REGEX MATCH "INCLUDE_DIRS *= *[^\n]*" _config_includes "${_platformfile}")
+    SET(_extra_includes "")
+    IF(NOT "${_config_includes}" STREQUAL "")
+      STRING(REGEX REPLACE "INCLUDE_DIRS *= *([^\n]*)" "\\1" _extra_includes "${_config_includes}")
+    ENDIF()
+    IF(NOT "${_extra_includes}" STREQUAL "")
+      SET(GRASS_EXTRA_INCLUDE_DIRS${GRASS_VERSION} ${_extra_includes}
+          CACHE STRING "Extra includes string used for GRASS${GRASS_VERSION}" FORCE)
+    ENDIF()
+  ENDIF()
+
+  MARK_AS_ADVANCED (GRASS_EXTRA_INCLUDE_DIRS${GRASS_VERSION})
+ENDMACRO (CHECK_GRASS_EXTRA_INCLUDE_DIRS GRASS_VERSION)
+
 # macro that checks for grass installation in specified directory
 
 MACRO (CHECK_GRASS G_PREFIX)
@@ -108,10 +136,12 @@ MACRO (CHECK_GRASS G_PREFIX)
           SET(GRASS_FOUND${GRASS_FIND_VERSION} TRUE)
           SET(GRASS_FOUND TRUE) # GRASS_FOUND is true if at least one version was found
           SET(GRASS_PREFIX${GRASS_CACHE_VERSION} ${G_PREFIX})
+          CHECK_GRASS_EXTRA_INCLUDE_DIRS(${GRASS_FIND_VERSION})
           IF(GRASS_FIND_VERSION EQUAL 6)
             # Set also normal variable with number
             SET(GRASS_INCLUDE_DIR${GRASS_FIND_VERSION} ${GRASS_INCLUDE_DIR${GRASS_CACHE_VERSION}})
             SET(GRASS_PREFIX${GRASS_FIND_VERSION} ${G_PREFIX})
+            CHECK_GRASS_EXTRA_INCLUDE_DIRS(${GRASS_FIND_VERSION})
           ENDIF(GRASS_FIND_VERSION EQUAL 6)
         ENDIF(GRASS_LIBRARIES_FOUND${GRASS_FIND_VERSION})
     ENDIF(GRASS_MAJOR_VERSION${GRASS_FIND_VERSION} EQUAL GRASS_FIND_VERSION)
@@ -137,7 +167,7 @@ IF (UNIX)
   IF (GRASS_FIND_VERSION EQUAL 6)
     LIST(APPEND GRASS_PATHS /usr/lib64/grass64 /usr/lib/grass64)
   ELSEIF (GRASS_FIND_VERSION EQUAL 7)
-    LIST(APPEND GRASS_PATHS /usr/lib64/grass70 /usr/lib/grass70 /usr/lib64/grass71 /usr/lib/grass71)
+    LIST(APPEND GRASS_PATHS /usr/lib64/grass70 /usr/lib/grass70 /usr/lib64/grass71 /usr/lib/grass71 /usr/lib64/grass72 /usr/lib/grass72)
   ENDIF ()
 ENDIF (UNIX)
 
@@ -151,6 +181,7 @@ IF (APPLE)
     LIST(APPEND GRASS_PATHS
       /Applications/GRASS-7.0.app/Contents/MacOS
       /Applications/GRASS-7.1.app/Contents/MacOS
+      /Applications/GRASS-7.2.app/Contents/MacOS
     )
   ENDIF ()
   LIST(APPEND GRASS_PATHS /Applications/GRASS.app/Contents/Resources)

@@ -31,8 +31,9 @@ class SERVER_EXPORT QgsServerPlugins
 {
   public:
     explicit QgsServerPlugins();
+
     /**
-     * Initialise the python plugins
+     * Initialize the python plugins
      * @param interface QgsServerInterface
      * @return bool true on success
      */

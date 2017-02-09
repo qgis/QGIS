@@ -19,8 +19,9 @@
 #include <QObject>
 
 #include "qgsfeature.h"
+#include "qgis_gui.h"
 
-/**
+/** \ingroup gui
  * Is an interface class to abstract feature selection handling.
  *
  * e.g. { @link QgsVectorLayer } implements this interface to manage its selections.
@@ -70,9 +71,10 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
      * @return A list of { @link QgsFeatureId } 's
      * @see selectedFeatures()
      */
-    virtual const QgsFeatureIds &selectedFeaturesIds() const = 0;
+    virtual const QgsFeatureIds &selectedFeatureIds() const = 0;
 
   signals:
+
     /**
      * This signal is emitted when selection was changed
      *

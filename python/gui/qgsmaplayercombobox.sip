@@ -28,6 +28,64 @@ class QgsMapLayerComboBox : QComboBox
     //! returns the list of excepted layers
     QList<QgsMapLayer*> exceptedLayerList() const;
 
+    /**
+     * Sets a list of data providers which should be excluded from the combobox.
+     * @note added in QGIS 3.0
+     * @see excludedProviders()
+     */
+    void setExcludedProviders( const QStringList& providers );
+
+    /**
+     * Returns the list of data providers which are excluded from the combobox.
+     * @see setExcludedProviders()
+     * @note added in QGIS 3.0
+     */
+    QStringList excludedProviders() const;
+
+    /**
+     * Sets whether an optional empty layer ("not set") option is shown in the combo box.
+     * @see allowEmptyLayer()
+     * @note added in QGIS 3.0
+     */
+    void setAllowEmptyLayer( bool allowEmpty );
+
+    /**
+     * Returns true if the combo box allows the empty layer ("not set") choice.
+     * @see setAllowEmptyLayer()
+     * @note added in QGIS 3.0
+     */
+    bool allowEmptyLayer() const;
+
+    /**
+     * Sets whether the CRS of layers is also included in the combo box text.
+     * @see showCrs()
+     * @note added in QGIS 3.0
+     */
+    void setShowCrs( bool showCrs );
+
+    /**
+     * Returns true if the combo box shows the layer's CRS.
+     * @see setShowCrs()
+     * @note added in QGIS 3.0
+     */
+    bool showCrs() const;
+
+    /**
+     * Sets a list of additional (non map layer) items to include at the end of the combobox.
+     * These may represent additional layers such as layers which are not included in the map
+     * layer registry, or paths to layers which have not yet been loaded into QGIS.
+     * @see additionalItems()
+     * @note added in QGIS 3.0
+     */
+    void setAdditionalItems( const QStringList& items );
+
+    /**
+     * Return the list of additional (non map layer) items included at the end of the combo box.
+     * @see setAdditionalItems()
+     * @note added in QGIS 3.0
+     */
+    QStringList additionalItems() const;
+
     /** Returns the current layer selected in the combo box.
      * @see layer
      */

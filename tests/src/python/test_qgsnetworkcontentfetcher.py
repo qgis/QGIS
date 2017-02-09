@@ -6,6 +6,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
+
+from builtins import chr
+from builtins import str
 __author__ = 'Matthias Kuhn'
 __date__ = '4/28/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
@@ -15,14 +18,16 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 import os
-from qgis.testing import unittest
+from qgis.testing import unittest, start_app
 from qgis.core import QgsNetworkContentFetcher
 from utilities import unitTestDataPath
-from PyQt.QtCore import QUrl, QCoreApplication
-from PyQt.QtNetwork import QNetworkReply
+from qgis.PyQt.QtCore import QUrl, QCoreApplication
+from qgis.PyQt.QtNetwork import QNetworkReply
 import socketserver
 import threading
 import http.server
+
+app = start_app()
 
 
 class TestQgsNetworkContentFetcher(unittest.TestCase):
@@ -46,8 +51,6 @@ class TestQgsNetworkContentFetcher(unittest.TestCase):
 
         self.loaded = False
 
-        self.app = QCoreApplication([])
-
     def contentLoaded(self):
         self.loaded = True
 
@@ -57,7 +60,7 @@ class TestQgsNetworkContentFetcher(unittest.TestCase):
         fetcher.fetchContent(QUrl())
         fetcher.finished.connect(self.contentLoaded)
         while not self.loaded:
-            self.app.processEvents()
+            app.processEvents()
 
         r = fetcher.reply()
         assert r.error() != QNetworkReply.NoError
@@ -68,7 +71,7 @@ class TestQgsNetworkContentFetcher(unittest.TestCase):
         fetcher.fetchContent(QUrl('http://x'))
         fetcher.finished.connect(self.contentLoaded)
         while not self.loaded:
-            self.app.processEvents()
+            app.processEvents()
 
         r = fetcher.reply()
         assert r.error() != QNetworkReply.NoError
@@ -79,7 +82,7 @@ class TestQgsNetworkContentFetcher(unittest.TestCase):
         fetcher.fetchContent(QUrl('http://localhost:' + str(TestQgsNetworkContentFetcher.port) + '/qgis_local_server/index.html'))
         fetcher.finished.connect(self.contentLoaded)
         while not self.loaded:
-            self.app.processEvents()
+            app.processEvents()
 
         r = fetcher.reply()
         assert r.error() == QNetworkReply.NoError, r.error()
@@ -95,7 +98,7 @@ class TestQgsNetworkContentFetcher(unittest.TestCase):
         fetcher.fetchContent(QUrl('http://localhost:' + str(TestQgsNetworkContentFetcher.port) + '/qgis_local_server/index.html'))
         fetcher.finished.connect(self.contentLoaded)
         while not self.loaded:
-            self.app.processEvents()
+            app.processEvents()
 
         r = fetcher.reply()
         assert r.error() == QNetworkReply.NoError, r.error()
@@ -109,13 +112,13 @@ class TestQgsNetworkContentFetcher(unittest.TestCase):
         fetcher.fetchContent(QUrl('http://localhost:' + str(TestQgsNetworkContentFetcher.port) + '/encoded_html.html'))
         fetcher.finished.connect(self.contentLoaded)
         while not self.loaded:
-            self.app.processEvents()
+            app.processEvents()
 
         r = fetcher.reply()
         assert r.error() == QNetworkReply.NoError, r.error()
 
         html = fetcher.contentAsString()
-        assert unichr(6040) in html
+        assert chr(6040) in html
 
 if __name__ == "__main__":
     unittest.main()

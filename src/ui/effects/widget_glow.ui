@@ -46,7 +46,7 @@
          </widget>
         </item>
         <item row="3" column="1">
-         <widget class="QgsColorButtonV2" name="mColorBtn">
+         <widget class="QgsColorButton" name="mColorBtn">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -135,24 +135,26 @@
          </widget>
         </item>
         <item row="4" column="1" colspan="2">
-         <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
-          <item>
-           <widget class="QgsColorRampComboBox" name="mRampComboBox"/>
-          </item>
-          <item>
-           <widget class="QPushButton" name="mButtonEditRamp">
-            <property name="maximumSize">
-             <size>
-              <width>100</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Edit</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <widget class="QgsColorRampButton" name="btnColorRamp">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
+         </widget>         
         </item>
         <item row="5" column="1" colspan="2">
          <widget class="QgsBlendModeComboBox" name="mBlendCmbBx"/>
@@ -243,9 +245,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -275,9 +277,10 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorRampComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgscolorrampcombobox.h</header>
+   <class>QgsColorRampButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorrampbutton.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -289,8 +292,7 @@
   <tabstop>radioSingleColor</tabstop>
   <tabstop>mColorBtn</tabstop>
   <tabstop>radioColorRamp</tabstop>
-  <tabstop>mRampComboBox</tabstop>
-  <tabstop>mButtonEditRamp</tabstop>
+  <tabstop>btnColorRamp</tabstop>
   <tabstop>mBlendCmbBx</tabstop>
   <tabstop>mDrawModeComboBox</tabstop>
  </tabstops>
@@ -315,7 +317,7 @@
   <connection>
    <sender>radioColorRamp</sender>
    <signal>toggled(bool)</signal>
-   <receiver>mRampComboBox</receiver>
+   <receiver>btnColorRamp</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -324,22 +326,6 @@
     </hint>
     <hint type="destinationlabel">
      <x>250</x>
-     <y>157</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>radioColorRamp</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mButtonEditRamp</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>64</x>
-     <y>156</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>423</x>
      <y>157</y>
     </hint>
    </hints>

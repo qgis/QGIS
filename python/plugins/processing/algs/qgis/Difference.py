@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import next
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -27,27 +28,24 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QGis, QgsFeatureRequest, QgsFeature, QgsGeometry
+from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterVector, ParameterBoolean
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
-
-GEOM_25D = [QGis.WKBPoint25D, QGis.WKBLineString25D, QGis.WKBPolygon25D,
-            QGis.WKBMultiPoint25D, QGis.WKBMultiLineString25D,
-            QGis.WKBMultiPolygon25D]
 
 
 class Difference(GeoAlgorithm):
 
     INPUT = 'INPUT'
     OVERLAY = 'OVERLAY'
+    IGNORE_INVALID = 'IGNORE_INVALID'
     OUTPUT = 'OUTPUT'
 
     def getIcon(self):
@@ -57,61 +55,48 @@ class Difference(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Difference')
         self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
         self.addParameter(ParameterVector(Difference.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterVector(Difference.OVERLAY,
-                                          self.tr('Difference layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Difference layer')))
         self.addOutput(OutputVector(Difference.OUTPUT, self.tr('Difference')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layerA = dataobjects.getObjectFromUri(
             self.getParameterValue(Difference.INPUT))
         layerB = dataobjects.getObjectFromUri(
             self.getParameterValue(Difference.OVERLAY))
 
-        geomType = layerA.dataProvider().geometryType()
-        if geomType in GEOM_25D:
-            raise GeoAlgorithmExecutionException(
-                self.tr('Input layer has unsupported geometry type {}').format(geomType))
-
+        geomType = QgsWkbTypes.multiType(layerA.wkbType())
         writer = self.getOutputFromName(
-            Difference.OUTPUT).getVectorWriter(layerA.pendingFields(),
+            Difference.OUTPUT).getVectorWriter(layerA.fields(),
                                                geomType,
-                                               layerA.dataProvider().crs())
+                                               layerA.crs())
 
         outFeat = QgsFeature()
         index = vector.spatialindex(layerB)
         selectionA = vector.features(layerA)
         total = 100.0 / len(selectionA)
         for current, inFeatA in enumerate(selectionA):
-            add = True
-            geom = QgsGeometry(inFeatA.geometry())
+            geom = inFeatA.geometry()
             diff_geom = QgsGeometry(geom)
             attrs = inFeatA.attributes()
             intersections = index.intersects(geom.boundingBox())
-            for i in intersections:
-                request = QgsFeatureRequest().setFilterFid(i)
-                inFeatB = layerB.getFeatures(request).next()
-                tmpGeom = QgsGeometry(inFeatB.geometry())
+
+            request = QgsFeatureRequest().setFilterFids(intersections).setSubsetOfAttributes([])
+            for inFeatB in layerB.getFeatures(request):
+                tmpGeom = inFeatB.geometry()
                 if diff_geom.intersects(tmpGeom):
                     diff_geom = QgsGeometry(diff_geom.difference(tmpGeom))
-                    if diff_geom.isGeosEmpty() or not diff_geom.isGeosValid():
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                               self.tr('GEOS geoprocessing error: One or '
-                                                       'more input features have invalid '
-                                                       'geometry.'))
-                        add = False
-                        break
 
-            if add:
-                try:
-                    outFeat.setGeometry(diff_geom)
-                    outFeat.setAttributes(attrs)
-                    writer.addFeature(outFeat)
-                except:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                           self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
-                    continue
+            try:
+                outFeat.setGeometry(diff_geom)
+                outFeat.setAttributes(attrs)
+                writer.addFeature(outFeat)
+            except:
+                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
+                                       self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                continue
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

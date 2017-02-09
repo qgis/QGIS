@@ -6,6 +6,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
+from builtins import str
 __author__ = 'Tim Sutton'
 __date__ = '20/08/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
@@ -16,16 +17,18 @@ import qgis  # NOQA
 
 import os
 
-from PyQt.QtCore import QFileInfo
-from PyQt.QtGui import QColor
+from qgis.PyQt.QtCore import QFileInfo
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsRaster,
                        QgsRasterLayer,
                        QgsColorRampShader,
                        QgsContrastEnhancement,
-                       QgsMapLayerRegistry,
-                       QgsMapRenderer,
+                       QgsProject,
+                       QgsMapSettings,
                        QgsPoint,
+                       QgsRasterMinMaxOrigin,
                        QgsRasterShader,
                        QgsRasterTransparency,
                        QgsRenderChecker,
@@ -57,7 +60,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         assert len(myRasterValues) > 0
 
         # Get the name of the first band
-        myBand = myRasterValues.keys()[0]
+        myBand = list(myRasterValues.keys())[0]
         # myExpectedName = 'Band 1
         myExpectedBand = 1
         myMessage = 'Expected "%s" got "%s" for first raster band name' % (
@@ -66,14 +69,14 @@ class TestQgsRasterLayer(unittest.TestCase):
 
         # Convert each band value to a list of ints then to a string
 
-        myValues = myRasterValues.values()
+        myValues = list(myRasterValues.values())
         myIntValues = []
         for myValue in myValues:
             myIntValues.append(int(myValue))
         myValues = str(myIntValues)
         myExpectedValues = '[127, 141, 112, 72, 86, 126, 156, 211, 170]'
         myMessage = 'Expected: %s\nGot: %s' % (myValues, myExpectedValues)
-        self.assertEquals(myValues, myExpectedValues, myMessage)
+        self.assertEqual(myValues, myExpectedValues, myMessage)
 
     def testTransparency(self):
         myPath = os.path.join(unitTestDataPath('raster'),
@@ -88,7 +91,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         myRasterLayer.setRenderer(renderer)
         myRasterLayer.setContrastEnhancement(
             QgsContrastEnhancement.StretchToMinimumMaximum,
-            QgsRaster.ContrastEnhancementMinMax)
+            QgsRasterMinMaxOrigin.MinMax)
 
         myContrastEnhancement = myRasterLayer.renderer().contrastEnhancement()
         # print ("myContrastEnhancement.minimumValue = %.17g" %
@@ -131,18 +134,15 @@ class TestQgsRasterLayer(unittest.TestCase):
 
         rasterRenderer.setRasterTransparency(rasterTransparency)
 
-        QgsMapLayerRegistry.instance().addMapLayers([myRasterLayer, ])
+        QgsProject.instance().addMapLayers([myRasterLayer, ])
 
-        myMapRenderer = QgsMapRenderer()
-
-        myLayers = []
-        myLayers.append(myRasterLayer.id())
-        myMapRenderer.setLayerSet(myLayers)
-        myMapRenderer.setExtent(myRasterLayer.extent())
+        myMapSettings = QgsMapSettings()
+        myMapSettings.setLayers([myRasterLayer])
+        myMapSettings.setExtent(myRasterLayer.extent())
 
         myChecker = QgsRenderChecker()
         myChecker.setControlName("expected_raster_transparency")
-        myChecker.setMapRenderer(myMapRenderer)
+        myChecker.setMapSettings(myMapSettings)
 
         myResultFlag = myChecker.runTest("raster_transparency_python")
         assert myResultFlag, "Raster transparency rendering test failed"
@@ -150,14 +150,14 @@ class TestQgsRasterLayer(unittest.TestCase):
     def testIssue7023(self):
         """Check if converting a raster from 1.8 to 2 works."""
         myPath = os.path.join(unitTestDataPath('raster'),
-                              'raster-pallette-crash2.tif')
+                              'raster-palette-crash2.tif')
         myFileInfo = QFileInfo(myPath)
         myBaseName = myFileInfo.baseName()
         myRasterLayer = QgsRasterLayer(myPath, myBaseName)
         myMessage = 'Raster not loaded: %s' % myPath
         assert myRasterLayer.isValid(), myMessage
         # crash on next line
-        QgsMapLayerRegistry.instance().addMapLayers([myRasterLayer])
+        QgsProject.instance().addMapLayers([myRasterLayer])
 
     def testShaderCrash(self):
         """Check if we assign a shader and then reassign it no crash occurs."""
@@ -171,7 +171,7 @@ class TestQgsRasterLayer(unittest.TestCase):
 
         myRasterShader = QgsRasterShader()
         myColorRampShader = QgsColorRampShader()
-        myColorRampShader.setColorRampType(QgsColorRampShader.INTERPOLATED)
+        myColorRampShader.setColorRampType(QgsColorRampShader.Interpolated)
         myItems = []
         myItem = QgsColorRampShader.ColorRampItem(
             10, QColor('#ffff00'), 'foo')
@@ -193,7 +193,7 @@ class TestQgsRasterLayer(unittest.TestCase):
 
         myRasterShader = QgsRasterShader()
         myColorRampShader = QgsColorRampShader()
-        myColorRampShader.setColorRampType(QgsColorRampShader.INTERPOLATED)
+        myColorRampShader.setColorRampType(QgsColorRampShader.Interpolated)
         myItems = []
         myItem = QgsColorRampShader.ColorRampItem(10,
                                                   QColor('#ffff00'), 'foo')
@@ -230,6 +230,63 @@ class TestQgsRasterLayer(unittest.TestCase):
         layer.setRenderer(r)
         assert self.rendererChanged
         assert layer.renderer() == r
+
+    def testQgsRasterMinMaxOrigin(self):
+
+        mmo = QgsRasterMinMaxOrigin()
+        mmo_default = QgsRasterMinMaxOrigin()
+        self.assertEqual(mmo, mmo_default)
+
+        mmo = QgsRasterMinMaxOrigin()
+        self.assertEqual(mmo.limits(), QgsRasterMinMaxOrigin.None_)
+        mmo.setLimits(QgsRasterMinMaxOrigin.CumulativeCut)
+        self.assertEqual(mmo.limits(), QgsRasterMinMaxOrigin.CumulativeCut)
+        self.assertNotEqual(mmo, mmo_default)
+
+        mmo = QgsRasterMinMaxOrigin()
+        self.assertEqual(mmo.extent(), QgsRasterMinMaxOrigin.WholeRaster)
+        mmo.setExtent(QgsRasterMinMaxOrigin.UpdatedCanvas)
+        self.assertEqual(mmo.extent(), QgsRasterMinMaxOrigin.UpdatedCanvas)
+        self.assertNotEqual(mmo, mmo_default)
+
+        mmo = QgsRasterMinMaxOrigin()
+        self.assertEqual(mmo.statAccuracy(), QgsRasterMinMaxOrigin.Estimated)
+        mmo.setStatAccuracy(QgsRasterMinMaxOrigin.Exact)
+        self.assertEqual(mmo.statAccuracy(), QgsRasterMinMaxOrigin.Exact)
+        self.assertNotEqual(mmo, mmo_default)
+
+        mmo = QgsRasterMinMaxOrigin()
+        self.assertAlmostEqual(mmo.cumulativeCutLower(), 0.02)
+        mmo.setCumulativeCutLower(0.1)
+        self.assertAlmostEqual(mmo.cumulativeCutLower(), 0.1)
+        self.assertNotEqual(mmo, mmo_default)
+
+        mmo = QgsRasterMinMaxOrigin()
+        self.assertAlmostEqual(mmo.cumulativeCutUpper(), 0.98)
+        mmo.setCumulativeCutUpper(0.9)
+        self.assertAlmostEqual(mmo.cumulativeCutUpper(), 0.9)
+        self.assertNotEqual(mmo, mmo_default)
+
+        mmo = QgsRasterMinMaxOrigin()
+        self.assertAlmostEqual(mmo.stdDevFactor(), 2.0)
+        mmo.setStdDevFactor(2.5)
+        self.assertAlmostEqual(mmo.stdDevFactor(), 2.5)
+        self.assertNotEqual(mmo, mmo_default)
+
+        mmo = QgsRasterMinMaxOrigin()
+        mmo.setLimits(QgsRasterMinMaxOrigin.CumulativeCut)
+        mmo.setExtent(QgsRasterMinMaxOrigin.UpdatedCanvas)
+        mmo.setStatAccuracy(QgsRasterMinMaxOrigin.Exact)
+        mmo.setCumulativeCutLower(0.1)
+        mmo.setCumulativeCutUpper(0.9)
+        mmo.setStdDevFactor(2.5)
+        doc = QDomDocument()
+        parentElem = doc.createElement("test")
+        mmo.writeXml(doc, parentElem)
+        mmoUnserialized = QgsRasterMinMaxOrigin()
+        mmoUnserialized.readXml(parentElem)
+        self.assertEqual(mmo, mmoUnserialized)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -45,7 +45,7 @@ QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent , const QString& authcfg ,
     mAuthNotifyLayout = new QVBoxLayout;
     this->setLayout( mAuthNotifyLayout );
 
-    QString msg( disabled ? QgsAuthManager::instance()->disabledMessage() : "" );
+    QString msg( disabled ? QgsAuthManager::instance()->disabledMessage() : QLatin1String( "" ) );
     if ( !authcfg.isEmpty() )
     {
       msg += "\n\n" + tr( "Authentication config id not loaded: %1" ).arg( authcfg );
@@ -90,10 +90,6 @@ QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent , const QString& authcfg ,
 
     leName->setFocus();
   }
-}
-
-QgsAuthConfigEdit::~QgsAuthConfigEdit()
-{
 }
 
 void QgsAuthConfigEdit::populateAuthMethods()
@@ -220,7 +216,7 @@ void QgsAuthConfigEdit::saveConfig()
   if ( !QgsAuthManager::instance()->setMasterPassword( true ) )
     return;
 
-  QString authMethodKey = cmbAuthMethods->itemData( cmbAuthMethods->currentIndex() ).toString();
+  QString authMethodKey = cmbAuthMethods->currentData().toString();
 
   QgsAuthMethodEdit *editWidget = currentEditWidget();
   if ( !editWidget )

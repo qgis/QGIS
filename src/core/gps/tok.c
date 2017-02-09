@@ -24,7 +24,7 @@
  *
  */
 
-/** \file tok.h */
+//! \file tok.h
 
 #include "tok.h"
 
@@ -98,7 +98,7 @@ double nmea_atof( const char *str, int str_sz )
 }
 
 /**
- * \brief Formating string (like standard printf) with CRC tail (*CRC)
+ * \brief Formatting string (like standard printf) with CRC tail (*CRC)
  */
 int nmea_printf( char *buff, int buff_sz, const char *format, ... )
 {

@@ -16,8 +16,8 @@
 #include "qgspixmaplabel.h"
 
 
-QgsPixmapLabel::QgsPixmapLabel( QWidget *parent ) :
-    QLabel( parent )
+QgsPixmapLabel::QgsPixmapLabel( QWidget *parent )
+    : QLabel( parent )
 {
   this->setMinimumSize( 1, 1 );
 }

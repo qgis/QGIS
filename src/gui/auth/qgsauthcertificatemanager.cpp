@@ -26,11 +26,6 @@ QgsAuthCertEditors::QgsAuthCertEditors( QWidget *parent )
   setupUi( this );
 }
 
-QgsAuthCertEditors::~QgsAuthCertEditors()
-{
-}
-
-
 
 QgsAuthCertManager::QgsAuthCertManager( QWidget *parent )
     : QDialog( parent )
@@ -49,8 +44,4 @@ QgsAuthCertManager::QgsAuthCertManager( QWidget *parent )
   layout->addWidget( buttonBox );
 
   setLayout( layout );
-}
-
-QgsAuthCertManager::~QgsAuthCertManager()
-{
 }

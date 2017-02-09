@@ -19,8 +19,10 @@
 #define QGSTOTALCURVATUREFILTER_H
 
 #include "qgsninecellfilter.h"
+#include "qgis_analysis.h"
 
-/** Calculates total curvature as described by Wilson, Gallant (2000): terrain analysis*/
+/** \ingroup analysis
+ * Calculates total curvature as described by Wilson, Gallant (2000): terrain analysis*/
 class ANALYSIS_EXPORT QgsTotalCurvatureFilter: public QgsNineCellFilter
 {
   public:
@@ -28,6 +30,7 @@ class ANALYSIS_EXPORT QgsTotalCurvatureFilter: public QgsNineCellFilter
     ~QgsTotalCurvatureFilter();
 
   protected:
+
     /** Calculates total curvature from nine input values. The input values and the output value can be equal to the
       nodata value if not present or outside of the border. Must be implemented by subclasses*/
     float processNineCellWindow( float* x11, float* x21, float* x31,

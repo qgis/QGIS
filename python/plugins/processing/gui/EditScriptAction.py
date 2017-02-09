@@ -29,6 +29,7 @@ from processing.gui.ContextAction import ContextAction
 from processing.gui.ScriptEditorDialog import ScriptEditorDialog
 from processing.algs.r.RAlgorithm import RAlgorithm
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
+from processing.core.alglist import algList
 
 
 class EditScriptAction(ContextAction):
@@ -52,6 +53,6 @@ class EditScriptAction(ContextAction):
         dlg.exec_()
         if dlg.update:
             if self.scriptType == ScriptEditorDialog.SCRIPT_PYTHON:
-                self.toolbox.updateProvider('script')
+                algList.reloadProvider('script')
             elif self.scriptType == ScriptEditorDialog.SCRIPT_R:
-                self.toolbox.updateProvider('r')
+                algList.reloadProvider('r')

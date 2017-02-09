@@ -23,19 +23,13 @@
 #include <QSslCertificate>
 #include <QSslError>
 
-#include "qgsauthconfig.h"
+#include "qgis_core.h"
 
-#if QT_VERSION >= 0x050000
+class QgsAuthConfigSslServer;
+
 #define SSL_ISSUER_INFO( var, prop ) var.issuerInfo( prop ).value(0)
-#else
-#define SSL_ISSUER_INFO( var, prop ) var.issuerInfo( prop )
-#endif
 
-#if QT_VERSION >= 0x050000
 #define SSL_SUBJECT_INFO( var, prop ) var.subjectInfo( prop ).value(0)
-#else
-#define SSL_SUBJECT_INFO( var, prop ) var.subjectInfo( prop )
-#endif
 
 /** \ingroup core
  * \brief Utilities for working with certificates and keys
@@ -43,7 +37,7 @@
 class CORE_EXPORT QgsAuthCertUtils
 {
   public:
-    /** Type of CA certificate source */
+    //! Type of CA certificate source
     enum CaCertSource
     {
       SystemRoot = 0,
@@ -52,7 +46,7 @@ class CORE_EXPORT QgsAuthCertUtils
       Connection = 3
     };
 
-    /** Type of certificate trust policy */
+    //! Type of certificate trust policy
     enum CertTrustPolicy
     {
       DefaultTrust = 0,
@@ -61,7 +55,7 @@ class CORE_EXPORT QgsAuthCertUtils
       NoPolicy = 3
     };
 
-    /** Type of certificate usage */
+    //! Type of certificate usage
     enum CertUsageType
     {
       UndeterminedUsage = 0,
@@ -77,7 +71,7 @@ class CORE_EXPORT QgsAuthCertUtils
       CRLSigningUsage
     };
 
-    /** Type of certificate key group */
+    //! Type of certificate key group
     enum ConstraintGroup
     {
       KeyUsage = 0,
@@ -85,10 +79,10 @@ class CORE_EXPORT QgsAuthCertUtils
     };
 
 
-    /** SSL Protocol name strings per enum */
+    //! SSL Protocol name strings per enum
     static QString getSslProtocolName( QSsl::SslProtocol protocol );
 
-    /** Map certificate sha1 to certificate as simple cache */
+    //! Map certificate sha1 to certificate as simple cache
     static QMap<QString, QSslCertificate> mapDigestToCerts( const QList<QSslCertificate>& certs );
 
     /** Map certificates to their oraganization.
@@ -105,10 +99,10 @@ class CORE_EXPORT QgsAuthCertUtils
      */
     static QMap< QString, QList<QgsAuthConfigSslServer> > sslConfigsGroupedByOrg( const QList<QgsAuthConfigSslServer>& configs );
 
-    /** Return list of concatenated certs from a PEM or DER formatted file */
+    //! Return list of concatenated certs from a PEM or DER formatted file
     static QList<QSslCertificate> certsFromFile( const QString &certspath );
 
-    /** Return first cert from a PEM or DER formatted file */
+    //! Return first cert from a PEM or DER formatted file
     static QSslCertificate certFromFile( const QString &certpath );
 
     /** Return non-encrypted key from a PEM or DER formatted file
@@ -120,7 +114,7 @@ class CORE_EXPORT QgsAuthCertUtils
                                 const QString &keypass = QString(),
                                 QString *algtype = nullptr );
 
-    /** Return list of concatenated certs from a PEM Base64 text block */
+    //! Return list of concatenated certs from a PEM Base64 text block
     static QList<QSslCertificate> certsFromString( const QString &pemtext );
 
     /** Return list of certificate, private key and algorithm (as PEM text) from file path components
@@ -158,7 +152,7 @@ class CORE_EXPORT QgsAuthCertUtils
      */
     static QString getCaSourceName( QgsAuthCertUtils::CaCertSource source , bool single = false );
 
-    /** Get the general name via RFC 5280 resolution */
+    //! Get the general name via RFC 5280 resolution
     static QString resolvedCertName( const QSslCertificate& cert, bool issuer = false );
 
     /** Get combined distinguished name for certificate
@@ -171,10 +165,10 @@ class CORE_EXPORT QgsAuthCertUtils
         const QCA::Certificate& acert = QCA::Certificate(),
         bool issuer = false );
 
-    /** Get the general name for certificate trust */
+    //! Get the general name for certificate trust
     static QString getCertTrustName( QgsAuthCertUtils::CertTrustPolicy trust );
 
-    /** Get string with colon delimeters every 2 characters */
+    //! Get string with colon delimiters every 2 characters
     static QString getColonDelimited( const QString& txt );
 
     /** Get the sha1 hash for certificate
@@ -218,25 +212,25 @@ class CORE_EXPORT QgsAuthCertUtils
      */
     static QString certificateUsageTypeString( QgsAuthCertUtils::CertUsageType usagetype );
 
-    /** Try to determine the certificates usage types */
+    //! Try to determine the certificates usage types
     static QList<QgsAuthCertUtils::CertUsageType> certificateUsageTypes( const QSslCertificate& cert );
 
-    /** Get whether a certificate is an Authority */
+    //! Get whether a certificate is an Authority
     static bool certificateIsAuthority( const QSslCertificate& cert );
 
-    /** Get whether a certificate can sign other certificates */
+    //! Get whether a certificate can sign other certificates
     static bool certificateIsIssuer( const QSslCertificate& cert );
 
-    /** Get whether a certificate is an Authority or can at least sign other certificates */
+    //! Get whether a certificate is an Authority or can at least sign other certificates
     static bool certificateIsAuthorityOrIssuer( const QSslCertificate& cert );
 
-    /** Get whether a certificate is probably used for a SSL server */
+    //! Get whether a certificate is probably used for a SSL server
     static bool certificateIsSslServer( const QSslCertificate& cert );
 
-    /** Get whether a certificate is probably used for a client identity */
+    //! Get whether a certificate is probably used for a client identity
     static bool certificateIsSslClient( const QSslCertificate& cert );
 
-    /** Get short strings describing an SSL error */
+    //! Get short strings describing an SSL error
     static QString sslErrorEnumString( QSslError::SslError errenum );
 
     /** Get short strings describing SSL errors.

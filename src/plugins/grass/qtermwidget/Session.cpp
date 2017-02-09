@@ -139,7 +139,7 @@ WId Session::windowId() const
 	// https://bugreports.qt-project.org/browse/QTBUG-41942
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-	return 0;
+  return 0;
 #else
     if ( _views.count() == 0 ) {
         return 0;
@@ -295,8 +295,8 @@ void Session::run()
     // is not set then fall back to /bin/sh
 
     // here we expect full path. If there is no fullpath let's expect it's
-    // a custom shell (eg. python, etc.) available in the PATH.
-    if (exec.startsWith("/"))
+    // a custom shell (e.g., python, etc.) available in the PATH.
+    if (exec.startsWith(QLatin1String("/")))
     {
         QFile excheck(exec);
         if ( exec.isEmpty() || !excheck.exists() ) {
@@ -305,13 +305,13 @@ void Session::run()
         excheck.setFileName(exec);
 
         if ( exec.isEmpty() || !excheck.exists() ) {
-            exec = "/bin/sh";
+            exec = QStringLiteral("/bin/sh");
         }
     }
 
     // _arguments sometimes contain ("") so isEmpty()
     // or count() does not work as expected...
-    QString argsTmp(_arguments.join(" ").trimmed());
+    QString argsTmp(_arguments.join(QStringLiteral(" ")).trimmed());
     QStringList arguments;
     arguments << exec;
     if (argsTmp.length())
@@ -371,7 +371,7 @@ void Session::runEmptyPTY()
 
 void Session::setUserTitle( int what, const QString & caption )
 {
-    //set to true if anything is actually changed (eg. old _nameTitle != new _nameTitle )
+    //set to true if anything is actually changed (e.g., old _nameTitle != new _nameTitle )
     bool modified = false;
 
     // (btw: what=0 changes _userTitle and icon, what=1 only icon, what=2 only _nameTitle

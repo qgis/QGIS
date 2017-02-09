@@ -16,32 +16,31 @@
 #include "qgsvectorfieldsymbollayer.h"
 #include "qgsvectorlayer.h"
 
-QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent ): QgsSymbolLayerV2Widget( parent, vl ), mLayer( nullptr )
+QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent ): QgsSymbolLayerWidget( parent, vl ), mLayer( nullptr )
 {
   setupUi( this );
 
-  mDistanceUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
+  mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                 << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
-  if ( mVectorLayer )
+  if ( vectorLayer() )
   {
-    mXAttributeComboBox->addItem( "" );
-    mYAttributeComboBox->addItem( "" );
-    Q_FOREACH ( const QgsField& f, mVectorLayer->fields() )
+    mXAttributeComboBox->addItem( QLatin1String( "" ) );
+    mYAttributeComboBox->addItem( QLatin1String( "" ) );
+    int i = 0;
+    Q_FOREACH ( const QgsField& f, vectorLayer()->fields() )
     {
       QString fieldName = f.name();
-      mXAttributeComboBox->addItem( fieldName );
-      mYAttributeComboBox->addItem( fieldName );
+      mXAttributeComboBox->addItem( vectorLayer()->fields().iconForField( i ), fieldName );
+      mYAttributeComboBox->addItem( vectorLayer()->fields().iconForField( i ), fieldName );
+      i++;
     }
   }
 }
 
-QgsVectorFieldSymbolLayerWidget::~QgsVectorFieldSymbolLayerWidget()
+void QgsVectorFieldSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
 {
-}
-
-void QgsVectorFieldSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
-{
-  if ( layer->layerType() != "VectorField" )
+  if ( layer->layerType() != QLatin1String( "VectorField" ) )
   {
     return;
   }
@@ -97,7 +96,7 @@ void QgsVectorFieldSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
   emit changed();
 }
 
-QgsSymbolLayerV2* QgsVectorFieldSymbolLayerWidget::symbolLayer()
+QgsSymbolLayer* QgsVectorFieldSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }
@@ -160,7 +159,7 @@ void QgsVectorFieldSymbolLayerWidget::on_mHeightRadioButton_toggled( bool checke
   if ( mLayer && checked )
   {
     mLayer->setVectorFieldType( QgsVectorFieldSymbolLayer::Height );
-    mXAttributeLabel->setText( "" );
+    mXAttributeLabel->setText( QLatin1String( "" ) );
     mXAttributeComboBox->setEnabled( false );
     mYAttributeLabel->setText( tr( "Height attribute" ) );
     emit changed();

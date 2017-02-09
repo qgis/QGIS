@@ -29,8 +29,8 @@
 
 import xml.etree.ElementTree as etree
 
-from PyQt.QtCore import QSettings
-from PyQt.QtWidgets import QDialog, QDialogButtonBox, QFileDialog, QListWidgetItem, QMessageBox
+from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QFileDialog, QListWidgetItem, QMessageBox
 
 from MetaSearch.util import (get_connections_from_file, get_ui_class,
                              prettify_xml)
@@ -73,12 +73,12 @@ class ManageConnectionsDialog(QDialog, BASE_CLASS):
 
         if self.mode == 0:
             slabel = self.tr('Save connections')
-            self.filename = QFileDialog.getSaveFileName(self, slabel,
-                                                        '.', label)
+            self.filename, filter = QFileDialog.getSaveFileName(self, slabel,
+                                                                '.', label)
         else:
             slabel = self.tr('Load connections')
-            self.filename = QFileDialog.getOpenFileName(self, slabel,
-                                                        '.', label)
+            self.filename, selected_filter = QFileDialog.getOpenFileName(self, slabel,
+                                                                         '.', label)
 
         if not self.filename:
             return

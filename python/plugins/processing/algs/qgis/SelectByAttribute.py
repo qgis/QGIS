@@ -25,7 +25,7 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import QgsExpression, QgsFeatureRequest
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -68,7 +68,7 @@ class SelectByAttribute(GeoAlgorithm):
                                self.tr('contains')]
 
         self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input Layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input Layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Selection attribute'), self.INPUT))
         self.addParameter(ParameterSelection(self.OPERATOR,
@@ -77,16 +77,16 @@ class SelectByAttribute(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (attribute)'), True))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         fileName = self.getParameterValue(self.INPUT)
         layer = dataobjects.getObjectFromUri(fileName)
         fieldName = self.getParameterValue(self.FIELD)
         operator = self.OPERATORS[self.getParameterValue(self.OPERATOR)]
         value = self.getParameterValue(self.VALUE)
 
-        fields = layer.pendingFields()
+        fields = layer.fields()
 
-        idx = layer.fieldNameIndex(fieldName)
+        idx = layer.fields().lookupField(fieldName)
         fieldType = fields[idx].type()
 
         if fieldType != QVariant.String and operator in self.OPERATORS[-2:]:
@@ -94,7 +94,7 @@ class SelectByAttribute(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('Operators %s can be used only with string fields.' % op))
 
-        if fieldType in [QVariant.Int, QVariant.Double]:
+        if fieldType in [QVariant.Int, QVariant.Double, QVariant.UInt, QVariant.LongLong, QVariant.ULongLong]:
             expr = '"%s" %s %s' % (fieldName, operator, value)
         elif fieldType == QVariant.String:
             if operator not in self.OPERATORS[-2:]:
@@ -111,10 +111,10 @@ class SelectByAttribute(GeoAlgorithm):
 
         qExp = QgsExpression(expr)
         if not qExp.hasParserError():
-            qReq = QgsFeatureRequest(qExp)
+            qReq = QgsFeatureRequest(qExp).setSubsetOfAttributes([])
         else:
             raise GeoAlgorithmExecutionException(qExp.parserErrorString())
         selected = [f.id() for f in layer.getFeatures(qReq)]
 
-        layer.setSelectedFeatures(selected)
+        layer.selectByIds(selected)
         self.setOutputValue(self.OUTPUT, fileName)

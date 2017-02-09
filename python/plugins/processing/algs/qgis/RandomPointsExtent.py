@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'April 2014'
@@ -28,9 +29,9 @@ __revision__ = '$Format:%H$'
 import os
 import random
 
-from PyQt.QtGui import QIcon
-from PyQt.QtCore import QVariant
-from qgis.core import (QGis, QgsGeometry, QgsRectangle, QgsFeature, QgsFields,
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QVariant
+from qgis.core import (Qgis, QgsGeometry, QgsRectangle, QgsFeature, QgsFields, QgsWkbTypes,
                        QgsField, QgsSpatialIndex, QgsPoint)
 from qgis.utils import iface
 
@@ -39,7 +40,7 @@ from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
-from processing.tools import vector
+from processing.tools import vector, dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -58,18 +59,18 @@ class RandomPointsExtent(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Random points in extent')
         self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
         self.addParameter(ParameterExtent(self.EXTENT,
-                                          self.tr('Input extent')))
+                                          self.tr('Input extent'), optional=False))
         self.addParameter(ParameterNumber(self.POINT_NUMBER,
                                           self.tr('Points number'), 1, None, 1))
         self.addParameter(ParameterNumber(self.MIN_DISTANCE,
                                           self.tr('Minimum distance'), 0.0, None, 0.0))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         pointCount = int(self.getParameterValue(self.POINT_NUMBER))
         minDistance = float(self.getParameterValue(self.MIN_DISTANCE))
-        extent = unicode(self.getParameterValue(self.EXTENT)).split(',')
+        extent = str(self.getParameterValue(self.EXTENT)).split(',')
 
         xMin = float(extent[0])
         xMax = float(extent[1])
@@ -82,7 +83,7 @@ class RandomPointsExtent(GeoAlgorithm):
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
         mapCRS = iface.mapCanvas().mapSettings().destinationCrs()
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, QGis.WKBPoint, mapCRS)
+            fields, QgsWkbTypes.Point, mapCRS)
 
         nPoints = 0
         nIterations = 0
@@ -111,7 +112,7 @@ class RandomPointsExtent(GeoAlgorithm):
                 index.insertFeature(f)
                 points[nPoints] = pnt
                 nPoints += 1
-                progress.setPercentage(int(nPoints * total))
+                feedback.setProgress(int(nPoints * total))
             nIterations += 1
 
         if nPoints < pointCount:

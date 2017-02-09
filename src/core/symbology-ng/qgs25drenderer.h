@@ -16,12 +16,15 @@
 #ifndef QGS25DRENDERER_H
 #define QGS25DRENDERER_H
 
-#include "qgsrendererv2.h"
-#include "qgsdatadefined.h"
+#include "qgis_core.h"
+#include "qgsrenderer.h"
 
 class QgsOuterGlowEffect;
 
-class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRendererV2
+/** \ingroup core
+ * \class Qgs25DRenderer
+ */
+class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
 {
   public:
     Qgs25DRenderer();
@@ -31,17 +34,17 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRendererV2
      *
      * @param element XML information
      */
-    static QgsFeatureRendererV2* create( QDomElement& element );
+    static QgsFeatureRenderer* create( QDomElement& element );
     QDomElement save( QDomDocument& doc ) override;
 
     void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
     void stopRender( QgsRenderContext& context ) override;
 
-    QList<QString> usedAttributes() override;
-    QgsFeatureRendererV2* clone() const override;
+    QSet<QString> usedAttributes( const QgsRenderContext& context ) const override;
+    QgsFeatureRenderer* clone() const override;
 
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
-    virtual QgsSymbolV2List symbols( QgsRenderContext& context ) override;
+    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
+    virtual QgsSymbolList symbols( QgsRenderContext& context ) override;
 
     /**
      * Get the roof color
@@ -71,7 +74,7 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRendererV2
     /**
      * Get wall shading enabled
      */
-    bool wallShadingEnabled();
+    bool wallShadingEnabled() const;
 
     /**
      * Get the shadow's color
@@ -87,6 +90,7 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRendererV2
      * Get the shadow's spread distance in map units
      */
     double shadowSpread() const;
+
     /**
      * Set the shadow's spread distance in map units
      */
@@ -97,12 +101,13 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRendererV2
      * we assume that the internals are not compatible and create a new default
      * 2.5D renderer.
      */
-    static Qgs25DRenderer* convertFromRenderer( QgsFeatureRendererV2* renderer );
+    static Qgs25DRenderer* convertFromRenderer( QgsFeatureRenderer* renderer );
 
     /**
      * Is the shadow enabled
      */
     bool shadowEnabled() const;
+
     /**
      * Enable or disable the shadow
      */
@@ -110,11 +115,11 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRendererV2
 
   private:
 
-    QgsFillSymbolLayerV2* roofLayer() const;
-    QgsFillSymbolLayerV2* wallLayer() const;
+    QgsFillSymbolLayer* roofLayer() const;
+    QgsFillSymbolLayer* wallLayer() const;
     QgsOuterGlowEffect* glowEffect() const;
 
-    QScopedPointer<QgsSymbolV2> mSymbol;
+    std::unique_ptr<QgsSymbol> mSymbol;
 };
 
 #endif // QGS25DRENDERER_H

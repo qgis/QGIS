@@ -20,6 +20,7 @@
 #include <QString>
 // qscintilla includes
 #include <Qsci/qsciapis.h>
+#include "qgis_gui.h"
 
 
 class QWidget;
@@ -34,17 +35,17 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     Q_OBJECT
 
   public:
+
     /**
      * Construct a new code editor.
      *
      * @param parent The parent QWidget
      * @param title The title to show in the code editor dialog
-     * @param folding False: Enable margin for code editor
-     * @param margin False: Enable folding for code editor
+     * @param folding false: Enable folding for code editor
+     * @param margin false: Enable margin for code editor
      * @note added in 2.6
      */
     QgsCodeEditor( QWidget *parent = nullptr, const QString& title = "", bool folding = false, bool margin = false );
-    ~QgsCodeEditor();
 
     /** Set the widget title
      * @param title widget title
@@ -72,6 +73,9 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
   protected:
 
     bool isFixedPitch( const QFont& font );
+
+    void focusOutEvent( QFocusEvent *event ) override;
+    void keyPressEvent( QKeyEvent * event ) override;
 
     QFont getMonospaceFont();
 

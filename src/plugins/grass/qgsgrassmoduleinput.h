@@ -64,14 +64,14 @@ class QgsGrassModuleInputModel : public QStandardItemModel
     explicit QgsGrassModuleInputModel( QObject *parent = 0 );
     ~QgsGrassModuleInputModel();
 
-    /** Get singleton instance of this class. */
+    //! Get singleton instance of this class.
     static QgsGrassModuleInputModel* instance();
 
     QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const override;
 
 
   public slots:
-    /** Reload current mapset */
+    //! Reload current mapset
     void reload();
 
     void onMapsetChanged();
@@ -87,7 +87,7 @@ class QgsGrassModuleInputModel : public QStandardItemModel
     void watch( const QString & path );
     QString mLocationPath;
     // mapset watched dirs
-    QStringList watchedDirs() { QStringList l; l << "cellhd" << "vector" << "tgis"; return l; }
+    QStringList watchedDirs() { QStringList l; l << QStringLiteral( "cellhd" ) << QStringLiteral( "vector" ) << QStringLiteral( "tgis" ); return l; }
     // names of
     QStringList locationDirNames();
     QFileSystemWatcher *mWatcher;
@@ -101,7 +101,6 @@ class QgsGrassModuleInputProxy : public QSortFilterProxyModel
 
   public:
     explicit QgsGrassModuleInputProxy( QgsGrassModuleInputModel *sourceModel, QgsGrassObject::Type type, QObject *parent = 0 );
-    ~QgsGrassModuleInputProxy() {}
 
   protected:
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
@@ -233,6 +232,7 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
     Q_OBJECT
 
   public:
+
     /** \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
@@ -242,10 +242,10 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
                          QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
                          bool direct, QWidget * parent = 0 );
 
-    //! Destructor
+
     ~QgsGrassModuleInput();
 
-    //! Retruns list of options which will be passed to module
+    //! Returns list of options which will be passed to module
     virtual QStringList options() override;
 
     // ! Return vector of attribute fields of current vector

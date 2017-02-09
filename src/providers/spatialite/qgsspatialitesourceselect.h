@@ -20,7 +20,7 @@
 #include "qgisgui.h"
 #include "qgsdbfilterproxymodel.h"
 #include "qgsspatialitetablemodel.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 #include <QThread>
 #include <QMap>
@@ -51,7 +51,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
 
     //! Constructor
     QgsSpatiaLiteSourceSelect( QWidget * parent, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool embedded = false );
-    //! Destructor
+
     ~QgsSpatiaLiteSourceSelect();
     //! Populate the connection list combo box
     void populateConnectionList();
@@ -65,6 +65,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     void dbChanged();
 
   public slots:
+
     /** Connects to the database using the stored connection parameters.
      * Once connected, available layers are displayed.
      */
@@ -86,22 +87,23 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     void setLayerType( const QString& table, const QString& column, const QString& type );
     void on_mTablesTreeView_clicked( const QModelIndex &index );
     void on_mTablesTreeView_doubleClicked( const QModelIndex &index );
+    void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString & regexp );
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#spatialite-layers" ) ); }
 
   signals:
     void connectionsChanged();
     void addDatabaseLayers( QStringList const & paths, QString const & providerKey );
 
   private:
-    enum columns
+    enum Columns
     {
-      dbssType = 0,
-      dbssDetail,
-      dbssSql,
-      dbssColumns,
+      DbssType = 0,
+      DbssDetail,
+      DbssSql,
+      DbssColumns,
     };
 
     typedef QPair< QString, QString > geomPair;

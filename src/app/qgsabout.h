@@ -19,6 +19,7 @@
 
 #include "ui_qgsabout.h"
 #include "qgsoptionsdialogbase.h"
+#include "qgis_app.h"
 
 class APP_EXPORT QgsAbout : public QgsOptionsDialogBase, private Ui::QgsAbout
 {

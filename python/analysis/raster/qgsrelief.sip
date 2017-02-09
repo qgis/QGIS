@@ -26,7 +26,7 @@ class QgsRelief
 
     void clearReliefColors();
     void addReliefColorClass( const QgsRelief::ReliefColor& color );
-    const QList< QgsRelief::ReliefColor >& reliefColors() const;
+    QList< QgsRelief::ReliefColor > reliefColors() const;
     void setReliefColors( const QList< QgsRelief::ReliefColor >& c );
 
     /** Calculates class breaks according with the method of Buenzli (2011) using an iterative algorithm for segmented regression

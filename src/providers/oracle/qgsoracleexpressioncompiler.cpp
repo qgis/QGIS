@@ -29,8 +29,15 @@ QgsSqlExpressionCompiler::Result QgsOracleExpressionCompiler::compileNode( const
 
     switch ( bin->op() )
     {
+      case QgsExpression::boConcat:
+        // oracle's handling of || WRT null is not standards compliant
+        return Fail;
+
       case QgsExpression::boPow:
       case QgsExpression::boRegexp:
+      case QgsExpression::boILike:
+      case QgsExpression::boNotILike:
+      case QgsExpression::boMod:
       {
         QString op1, op2;
 
@@ -46,6 +53,18 @@ QgsSqlExpressionCompiler::Result QgsOracleExpressionCompiler::compileNode( const
 
           case QgsExpression::boRegexp:
             result = QString( "regexp_like(%1,%2)" ).arg( op1, op2 );
+            return Complete;
+
+          case QgsExpression::boILike:
+            result = QString( "lower(%1) LIKE lower(%2)" ).arg( op1, op2 );
+            return Complete;
+
+          case QgsExpression::boNotILike:
+            result = QString( "NOT lower(%1) LIKE lower(%2)" ).arg( op1, op2 );
+            return Complete;
+
+          case QgsExpression::boMod  :
+            result = QString( "MOD(%1,%2)" ).arg( op1, op2 );
             return Complete;
 
           default:
@@ -70,5 +89,14 @@ QString QgsOracleExpressionCompiler::quotedIdentifier( const QString& identifier
 QString QgsOracleExpressionCompiler::quotedValue( const QVariant& value, bool& ok )
 {
   ok = true;
-  return QgsOracleConn::quotedValue( value );
+
+  switch ( value.type() )
+  {
+    case QVariant::Bool:
+      //no boolean literal support in Oracle, so fake it
+      return value.toBool() ? "(1=1)" : "(1=0)";
+
+    default:
+      return QgsOracleConn::quotedValue( value );
+  }
 }

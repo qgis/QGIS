@@ -17,11 +17,13 @@
 #ifndef QGSPAINTEFFECT_H
 #define QGSPAINTEFFECT_H
 
+#include "qgis_core.h"
 #include "qgis.h"
-#include "qgsrendercontext.h"
 #include <QPainter>
 #include <QDomDocument>
 #include <QDomElement>
+
+class QgsRenderContext;
 
 /** \ingroup core
  * \class QgsPaintEffect
@@ -57,9 +59,9 @@ class CORE_EXPORT QgsPaintEffect
      */
     enum DrawMode
     {
-      Modifier, /*!< the result of the effect is not rendered, but is passed on to following effects in the stack */
-      Render, /*!< the result of the effect is rendered on the destination, but does not affect subsequent effects in the stack */
-      ModifyAndRender /*!< the result of the effect is both rendered and passed on to subsequent effects in the stack */
+      Modifier, //!< The result of the effect is not rendered, but is passed on to following effects in the stack
+      Render, //!< The result of the effect is rendered on the destination, but does not affect subsequent effects in the stack
+      ModifyAndRender //!< The result of the effect is both rendered and passed on to subsequent effects in the stack
     };
 
     QgsPaintEffect();
@@ -92,7 +94,7 @@ class CORE_EXPORT QgsPaintEffect
     virtual void readProperties( const QgsStringMap& props ) = 0;
 
     /** Saves the current state of the effect to a DOM element. The default
-     * behaviour is to save the properties string map returned by
+     * behavior is to save the properties string map returned by
      * @link properties @endlink.
      * @param doc destination DOM document
      * @param element destination DOM element
@@ -246,7 +248,7 @@ class CORE_EXPORT QgsPaintEffect
  *
  * The draw source effect can be used to draw an unaltered copy of the original source
  * picture. Minor changes like lowering the opacity and applying a blend mode are
- * supported, however these changes will force the resultant output to be rasterised.
+ * supported, however these changes will force the resultant output to be rasterized.
  * If no alterations are performed then the original picture will be rendered as a vector.
  *
  * \note Added in version 2.9
@@ -257,7 +259,6 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect
   public:
 
     QgsDrawSourceEffect();
-    virtual ~QgsDrawSourceEffect();
 
     /** Creates a new QgsDrawSource effect from a properties string map.
      * @param map encoded properties string map
@@ -265,7 +266,7 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect
      */
     static QgsPaintEffect* create( const QgsStringMap& map );
 
-    virtual QString type() const override { return QString( "drawSource" ); }
+    virtual QString type() const override { return QStringLiteral( "drawSource" ); }
     virtual QgsDrawSourceEffect* clone() const override;
     virtual QgsStringMap properties() const override;
     virtual void readProperties( const QgsStringMap& props ) override;
@@ -306,6 +307,57 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect
 
     double mTransparency;
     QPainter::CompositionMode mBlendMode;
+};
+
+/** \ingroup core
+ * \class QgsEffectPainter
+ * \brief A class to manager painter saving and restoring required for effect drawing
+ *
+ * \note Added in version 3.0
+ */
+class CORE_EXPORT QgsEffectPainter
+{
+  public:
+
+    /**
+     * QgsEffectPainter constructor
+     *
+     * @param renderContext the QgsRenderContext object
+     * @note Added in QGIS 3.0
+     */
+    QgsEffectPainter( QgsRenderContext& renderContext );
+
+    /**
+     * QgsEffectPainter constructor alternative if no painter translation is needed
+     *
+     * @param renderContext the QgsRenderContext object
+     * @param effect the QgsPaintEffect object
+     * @note Added in QGIS 3.0
+     */
+    QgsEffectPainter( QgsRenderContext& renderContext, QgsPaintEffect* effect );
+    ~QgsEffectPainter();
+
+    /**
+     * Sets the effect to be painted
+     *
+     * @param effect the QgsPaintEffect object
+     */
+    void setEffect( QgsPaintEffect* effect );
+
+    ///@cond PRIVATE
+
+    /**
+     * Access to the painter object
+     *
+     * @note Added in QGIS 3.0
+     */
+    QPainter* operator->() { return mPainter; }
+    ///@endcond
+
+  private:
+    QgsRenderContext& mRenderContext;
+    QPainter* mPainter;
+    QgsPaintEffect* mEffect;
 };
 
 #endif // QGSPAINTEFFECT_H

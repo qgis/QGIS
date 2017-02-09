@@ -17,8 +17,10 @@
 #define QGSENUMERATIONWIDGETFACTORY_H
 
 #include "qgseditorwidgetfactory.h"
+#include "qgis_gui.h"
 
-/** \class QgsEnumerationWidgetFactory
+/** \ingroup gui
+ * \class QgsEnumerationWidgetFactory
  * \note not available in Python bindings
  */
 
@@ -32,8 +34,7 @@ class GUI_EXPORT QgsEnumerationWidgetFactory : public QgsEditorWidgetFactory
     QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const override;
     QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
 
-  private:
-    bool isFieldSupported( QgsVectorLayer* vl, int fieldIdx ) override;
+    unsigned int fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const override;
 };
 
 #endif // QGSENUMERATIONWIDGETFACTORY_H

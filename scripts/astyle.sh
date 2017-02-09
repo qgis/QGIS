@@ -65,20 +65,21 @@ astyleit() {
 	modified=$1.unify_includes_modified
 	cp "$1" "$modified"
 	scripts/unify_includes.pl "$modified"
+	scripts/doxygen_space.pl "$modified"
 	diff "$1" "$modified" >/dev/null || mv "$modified" "$1"
 	rm -f "$modified"
 }
 
 for f in "$@"; do
 	case "$f" in
-		src/app/gps/qwtpolar-*|src/core/gps/qextserialport/*|src/plugins/grass/qtermwidget/*|src/astyle/*|python/ext-libs/*|src/providers/spatialite/qspatialite/*|src/plugins/dxf2shp_converter/dxflib/src/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*|python/ext-libs/*|*/ui_*.py)
+		src/app/gps/qwtpolar-*|src/core/gps/qextserialport/*|src/plugins/grass/qtermwidget/*|src/astyle/*|python/ext-libs/*|src/providers/spatialite/qspatialite/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*|python/ext-libs/*|*/ui_*.py)
 			echo -ne "$f skipped $elcr"
 			continue
 			;;
 
 		*.cpp|*.h|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.hpp)
 			if [ -x "$f" ]; then
-							chmod a-x "$f"
+				chmod a-x "$f"
 			fi
 			cmd=astyleit
 			;;

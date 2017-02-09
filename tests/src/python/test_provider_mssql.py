@@ -18,7 +18,7 @@ import os
 
 from qgis.core import QgsVectorLayer, QgsFeatureRequest
 
-from PyQt.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
+from qgis.PyQt.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
 
 from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest
@@ -33,7 +33,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        cls.dbconn = u"dbname='gis' host=localhost\sqlexpress"
+        cls.dbconn = "dbname='gis' host=localhost\sqlexpress"
         if 'QGIS_MSSQLTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_MSSQLTEST_DB']
         # Create test layers
@@ -51,10 +51,10 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         """Run after all tests"""
 
     def enableCompiler(self):
-        QSettings().setValue(u'/qgis/compileExpressions', True)
+        QSettings().setValue('/qgis/compileExpressions', True)
 
     def disableCompiler(self):
-        QSettings().setValue(u'/qgis/compileExpressions', False)
+        QSettings().setValue('/qgis/compileExpressions', False)
 
     # HERE GO THE PROVIDER SPECIFIC TESTS
     def testDateTimeTypes(self):
@@ -72,13 +72,13 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
 
         f = next(vl.getFeatures(QgsFeatureRequest()))
 
-        date_idx = vl.fieldNameIndex('date_field')
+        date_idx = vl.fields().lookupField('date_field')
         assert isinstance(f.attributes()[date_idx], QDate)
         self.assertEqual(f.attributes()[date_idx], QDate(2004, 3, 4))
-        time_idx = vl.fieldNameIndex('time_field')
+        time_idx = vl.fields().lookupField('time_field')
         assert isinstance(f.attributes()[time_idx], QTime)
         self.assertEqual(f.attributes()[time_idx], QTime(13, 41, 52))
-        datetime_idx = vl.fieldNameIndex('datetime_field')
+        datetime_idx = vl.fields().lookupField('datetime_field')
         assert isinstance(f.attributes()[datetime_idx], QDateTime)
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(
             QDate(2004, 3, 4), QTime(13, 41, 52)))

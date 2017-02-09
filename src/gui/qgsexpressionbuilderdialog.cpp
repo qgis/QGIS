@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgisexpressionbuilderdialog.h - A genric expression string builder dialog.
+    qgisexpressionbuilderdialog.h - A generic expression string builder dialog.
      --------------------------------------
     Date                 :  29-May-2011
     Copyright            : (C) 2011 by Nathan Woodrow
@@ -17,7 +17,8 @@
 #include <QSettings>
 
 QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer* layer, const QString& startText, QWidget* parent, const QString& key, const QgsExpressionContext &context )
-    : QDialog( parent ), mRecentKey( key )
+    : QDialog( parent )
+    , mRecentKey( key )
 {
   setupUi( this );
 
@@ -31,7 +32,7 @@ QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer* layer, c
   builder->loadRecent( mRecentKey );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/ExpressionBuilderDialog/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/ExpressionBuilderDialog/geometry" ) ).toByteArray() );
 }
 
 QgsExpressionBuilderWidget* QgsExpressionBuilderDialog::expressionBuilder()
@@ -64,7 +65,7 @@ void QgsExpressionBuilderDialog::done( int r )
   QDialog::done( r );
 
   QSettings settings;
-  settings.setValue( "/Windows/ExpressionBuilderDialog/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/ExpressionBuilderDialog/geometry" ), saveGeometry() );
 }
 
 void QgsExpressionBuilderDialog::accept()

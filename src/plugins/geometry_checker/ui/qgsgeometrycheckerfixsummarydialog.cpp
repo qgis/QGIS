@@ -20,7 +20,9 @@
 #include "qgsmapcanvas.h"
 
 QgsGeometryCheckerFixSummaryDialog::QgsGeometryCheckerFixSummaryDialog( QgisInterface* iface, QgsVectorLayer* layer, const Statistics& stats, const QStringList &messages, QWidget *parent )
-    : QDialog( parent ), mIface( iface ), mLayer( layer )
+    : QDialog( parent )
+    , mIface( iface )
+    , mLayer( layer )
 {
   ui.setupUi( this );
 
@@ -51,7 +53,7 @@ QgsGeometryCheckerFixSummaryDialog::QgsGeometryCheckerFixSummaryDialog( QgisInte
   setupTable( ui.tableWidgetNotFixed );
   setupTable( ui.tableWidgetObsoleteErrors );
 
-  ui.plainTextEditMessages->setPlainText( messages.join( "\n" ) );
+  ui.plainTextEditMessages->setPlainText( messages.join( QStringLiteral( "\n" ) ) );
 
   ui.groupBoxFixedErrors->setVisible( !stats.fixedErrors.isEmpty() );
   ui.groupBoxNewErrors->setVisible( !stats.newErrors.isEmpty() );
@@ -63,7 +65,7 @@ QgsGeometryCheckerFixSummaryDialog::QgsGeometryCheckerFixSummaryDialog( QgisInte
 void QgsGeometryCheckerFixSummaryDialog::addError( QTableWidget* table, QgsGeometryCheckError* error )
 {
   int prec = 7 - std::floor( qMax( 0., std::log10( qMax( error->location().x(), error->location().y() ) ) ) );
-  QString posStr = QString( "%1, %2" ).arg( error->location().x(), 0, 'f', prec ).arg( error->location().y(), 0, 'f', prec );
+  QString posStr = QStringLiteral( "%1, %2" ).arg( error->location().x(), 0, 'f', prec ).arg( error->location().y(), 0, 'f', prec );
   double layerToMap = mIface->mapCanvas()->mapSettings().layerToMapUnits( mLayer );
   QVariant value;
   if ( error->valueType() == QgsGeometryCheckError::ValueLength )

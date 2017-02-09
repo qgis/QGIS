@@ -17,14 +17,16 @@
 #define QGSVALUERELATIONWIDGETWRAPPER_H
 
 #include "qgseditorwidgetwrapper.h"
+#include "qgsvaluerelationfieldformatter.h"
 
 #include <QComboBox>
 #include <QListWidget>
 #include <QLineEdit>
+#include "qgis_gui.h"
 
 class QgsValueRelationWidgetFactory;
 
-/**
+/** \ingroup gui
  * Wraps a value relation widget. This widget will offer a combobox with values from another layer
  * referenced by a foreign key (a constraint may be set but is not required on data level).
  * This is useful for having value lists on a separate layer containing codes and their
@@ -49,23 +51,10 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     Q_OBJECT
 
   public:
-    typedef QPair < QVariant, QString > ValueRelationItem;
-    typedef QVector < ValueRelationItem > ValueRelationCache;
-
-  public:
     explicit QgsValueRelationWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = nullptr, QWidget* parent = nullptr );
-    static bool orderByKeyLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1 ,
-                                    const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 );
-    static bool orderByValueLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1 ,
-                                      const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 );
 
-
-
-    // QgsEditorWidgetWrapper interface
-  public:
     QVariant value() const override;
-    // TODO or have friend class :)
-    static ValueRelationCache createCache( const QgsEditorWidgetConfig& config );
+
     void showIndeterminateState() override;
 
   protected:
@@ -81,12 +70,10 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     QListWidget* mListWidget;
     QLineEdit* mLineEdit;
 
-    ValueRelationCache mCache;
+    QgsValueRelationFieldFormatter::ValueRelationCache mCache;
     QgsVectorLayer* mLayer;
 
     friend class QgsValueRelationWidgetFactory;
 };
-
-Q_DECLARE_METATYPE( QgsValueRelationWidgetWrapper::ValueRelationCache )
 
 #endif // QGSVALUERELATIONWIDGETWRAPPER_H

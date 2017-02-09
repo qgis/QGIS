@@ -23,7 +23,7 @@
 
 class QgsComposerLabel;
 
-/** \ingroup MapComposer
+/** \ingroup app
   * A widget to enter text, font size, box yes/no for composer labels
   */
 class QgsComposerLabelWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerLabelWidgetBase

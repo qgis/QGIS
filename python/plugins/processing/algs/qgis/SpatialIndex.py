@@ -51,21 +51,20 @@ class SpatialIndex(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input Layer'),
-                                          [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input Layer')))
         self.addOutput(OutputVector(self.OUTPUT,
                                     self.tr('Indexed layer'), True))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         fileName = self.getParameterValue(self.INPUT)
         layer = dataobjects.getObjectFromUri(fileName)
         provider = layer.dataProvider()
 
         if provider.capabilities() & QgsVectorDataProvider.CreateSpatialIndex:
             if not provider.createSpatialIndex():
-                progress.setInfo(self.tr('Can not create spatial index'))
+                feedback.pushInfo(self.tr('Could not create spatial index'))
         else:
-            progress.setInfo(self.tr("Layer's data provider does not support "
-                                     "spatial indexes"))
+            feedback.pushInfo(self.tr("Layer's data provider does not support "
+                                      "spatial indexes"))
 
         self.setOutputValue(self.OUTPUT, fileName)

@@ -63,8 +63,8 @@ static const QString sName = QObject::tr( "Georeferencer GDAL" );
 static const QString sDescription = QObject::tr( "Georeferencing rasters using GDAL" );
 static const QString sCategory = QObject::tr( "Raster" );
 static const QString sPluginVersion = QObject::tr( "Version 3.1.9" );
-static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
-static const QString sPluginIcon = ":/icons/default/mGeorefRun.png";
+static const QgisPlugin::PluginType sPluginType = QgisPlugin::UI;
+static const QString sPluginIcon = QStringLiteral( ":/icons/default/mGeorefRun.png" );
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -99,12 +99,12 @@ void QgsGeorefPlugin::initGui()
 
   // Create the action for tool
   mActionRunGeoref = new QAction( QIcon(), tr( "&Georeferencer..." ), this );
-  mActionRunGeoref->setObjectName( "mActionRunGeoref" );
+  mActionRunGeoref->setObjectName( QStringLiteral( "mActionRunGeoref" ) );
 
   // Connect the action to the run
   connect( mActionRunGeoref, SIGNAL( triggered() ), this, SLOT( run() ) );
 
-  setCurrentTheme( "" );
+  setCurrentTheme( QLatin1String( "" ) );
   // this is called when the icon theme is changed
   connect( mQGisIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 
@@ -139,7 +139,7 @@ void QgsGeorefPlugin::unload()
 void QgsGeorefPlugin::setCurrentTheme( const QString& )
 {
   if ( mActionRunGeoref )
-    mActionRunGeoref->setIcon( getThemeIcon( "/mGeorefRun.png" ) );
+    mActionRunGeoref->setIcon( getThemeIcon( QStringLiteral( "/mGeorefRun.png" ) ) );
 }
 
 QIcon QgsGeorefPlugin::getThemeIcon( const QString &theName )

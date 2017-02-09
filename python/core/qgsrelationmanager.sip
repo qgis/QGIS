@@ -7,7 +7,11 @@ class QgsRelationManager : QObject
 #include "qgsrelationmanager.h"
 %End
   public:
-    explicit QgsRelationManager( QgsProject *project );
+
+    /** Constructor for QgsRelationManager.
+     * @param project associated project (used to notify project of changes)
+     */
+    explicit QgsRelationManager( QgsProject *project = nullptr );
 
     /**
      * Will set the specified relations and remove any relation currently set.
@@ -21,7 +25,7 @@ class QgsRelationManager : QObject
      *
      * @return A QMap where the key is the relation id, the value the relation object.
      */
-    const QMap<QString, QgsRelation>& relations() const;
+    QMap<QString, QgsRelation> relations() const;
 
     /**
      * Add a relation.
@@ -50,8 +54,17 @@ class QgsRelationManager : QObject
      * @param id The id to search for
      *
      * @return A relation. Invalid if not found.
+     * @see relationsByName()
      */
     QgsRelation relation( const QString& id ) const;
+
+    /** Returns a list of relations with matching names.
+     * @param name relation name to search for. Searching is case insensitive.
+     * @returns a list of matching relations
+     * @note added in QGIS 2.16
+     * @see relation()
+     */
+    QList<QgsRelation> relationsByName( const QString& name ) const;
 
     /**
      * Remove any relation managed by this class.
@@ -66,7 +79,7 @@ class QgsRelationManager : QObject
      *
      * @return A list of relations matching the given layer and fieldIdx.
      */
-    QList<QgsRelation> referencingRelations( QgsVectorLayer *layer = 0, int fieldIdx = -2 ) const;
+    QList<QgsRelation> referencingRelations( const QgsVectorLayer *layer = 0, int fieldIdx = -2 ) const;
 
     /**
      * Get all relations where this layer is the referenced part (i.e. the parent table with the primary key being referenced from another layer).
@@ -76,6 +89,16 @@ class QgsRelationManager : QObject
      * @return A list of relations where the specified layer is the referenced part.
      */
     QList<QgsRelation> referencedRelations( QgsVectorLayer *layer = 0 ) const;
+
+    /**
+     * Discover all the relations available from the current layers.
+     *
+     * @param existingRelations the existing relations to filter them out
+     * @param layers the current layers
+     * @return the list of discovered relations
+     * @note added in QGIS 3.0
+     */
+    static QList<QgsRelation> discoverRelations( const QList<QgsRelation>& existingRelations, const QList<QgsVectorLayer*>& layers );
 
   signals:
     /** This signal is emitted when the relations were loaded after reading a project */

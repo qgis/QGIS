@@ -20,7 +20,7 @@
 #include <spatialite.h>
 
 #if defined(SPATIALITE_HAS_INIT_EX)
-QHash<sqlite3 *, void *> QgsSLConnect::mSLconns;
+QHash<sqlite3 *, void *> QgsSLConnect::sSLconns;
 #endif
 
 int QgsSLConnect::sqlite3_open( const char *filename, sqlite3 **ppDb )
@@ -37,7 +37,7 @@ int QgsSLConnect::sqlite3_open( const char *filename, sqlite3 **ppDb )
   if ( res == SQLITE_OK )
   {
     spatialite_init_ex( *ppDb, conn, 0 );
-    mSLconns.insert( *ppDb, conn );
+    sSLconns.insert( *ppDb, conn );
   }
 #endif
 
@@ -49,8 +49,8 @@ int QgsSLConnect::sqlite3_close( sqlite3 *db )
   int res = ::sqlite3_close( db );
 
 #if defined(SPATIALITE_HAS_INIT_EX)
-  if ( mSLconns.contains( db ) )
-    spatialite_cleanup_ex( mSLconns.take( db ) );
+  if ( sSLconns.contains( db ) )
+    spatialite_cleanup_ex( sSLconns.take( db ) );
 #endif
 
   if ( res != SQLITE_OK )
@@ -75,7 +75,7 @@ int QgsSLConnect::sqlite3_open_v2( const char *filename, sqlite3 **ppDb, int fla
   if ( res == SQLITE_OK )
   {
     spatialite_init_ex( *ppDb, conn, 0 );
-    mSLconns.insert( *ppDb, conn );
+    sSLconns.insert( *ppDb, conn );
   }
 #endif
 
@@ -87,8 +87,8 @@ int QgsSLConnect::sqlite3_close_v2( sqlite3 *db )
   int res = ::sqlite3_close( db );
 
 #if defined(SPATIALITE_HAS_INIT_EX)
-  if ( mSLconns.contains( db ) )
-    spatialite_cleanup_ex( mSLconns.take( db ) );
+  if ( sSLconns.contains( db ) )
+    spatialite_cleanup_ex( sSLconns.take( db ) );
 #endif
 
   if ( res != SQLITE_OK )

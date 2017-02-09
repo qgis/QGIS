@@ -39,4 +39,15 @@ class QgsAttributeTableDelegate : QItemDelegate
     void setEditorData( QWidget *editor, const QModelIndex &index ) const;
 
     void setFeatureSelectionModel( QgsFeatureSelectionModel* featureSelectionModel );
+
+  signals:
+    /**
+     * Is emitted when an action column item is painted.
+     * The consumer of this signal can initialize the index widget.
+     *
+     * @note This signal is emitted repeatedly whenever the item is being painted.
+     *       It is the consumers responsibility to check if initialization has already
+     *       happened before.
+     */
+    void actionColumnItemPainted( const QModelIndex& index ) const;
 };

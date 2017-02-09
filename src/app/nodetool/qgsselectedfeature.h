@@ -33,7 +33,7 @@ class QgsVertexEntry;
 /**
  * Constant representing zero value for distance. It's 0 because of error in double counting.
  */
-const static double ZERO_TOLERANCE = 0.000000001;
+static const double ZERO_TOLERANCE = 0.000000001;
 
 /**
  * Class that keeps the selected feature
@@ -92,7 +92,7 @@ class QgsSelectedFeature: public QObject
      * Inverts selection of a set of vertices at once.
      * @param vertexIndices list of vertex indices to invert whether or not they are selected
      */
-    void invertVertexSelection( QVector<int> vertexIndices );
+    void invertVertexSelection( const QVector<int> &vertexIndices );
 
     /**
      * Tells if vertex is selected
@@ -160,7 +160,7 @@ class QgsSelectedFeature: public QObject
     /*
      * the geometry of a feature from the layer was changed - might be the selected
      */
-    void geometryChanged( QgsFeatureId, QgsGeometry & );
+    void geometryChanged( QgsFeatureId, const QgsGeometry& );
 
     /*
      * the current layer changed - destroy
@@ -178,6 +178,7 @@ class QgsSelectedFeature: public QObject
     void beforeRollBack();
 
   private:
+
     /**
      * Deletes whole vertex map.
      */
@@ -192,7 +193,7 @@ class QgsSelectedFeature: public QObject
      * Updates stored geometry to actual one loaded from layer
      * (or already available geometry)
      */
-    void updateGeometry( QgsGeometry *geom );
+    void updateGeometry( const QgsGeometry* geom );
 
     /**
      * Validates the geometry

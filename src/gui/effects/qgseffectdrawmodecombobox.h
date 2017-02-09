@@ -18,6 +18,7 @@
 
 #include <QComboBox>
 #include "qgspainteffect.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsEffectDrawModeComboBox

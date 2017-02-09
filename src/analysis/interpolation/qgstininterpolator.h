@@ -20,22 +20,24 @@
 
 #include "qgsinterpolator.h"
 #include <QString>
+#include "qgis_analysis.h"
 
 class Triangulation;
 class TriangleInterpolator;
 class QgsFeature;
 
-/** Interpolation in a triangular irregular network*/
+/** \ingroup analysis
+ *  Interpolation in a triangular irregular network*/
 class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
 {
   public:
     //describes the type of interpolation
-    enum TIN_INTERPOLATION
+    enum TINInterpolation
     {
       Linear,
       CloughTocher
     };
-    QgsTINInterpolator( const QList<LayerData>& inputData, TIN_INTERPOLATION interpolation = Linear, bool showProgressDialog = false );
+    QgsTINInterpolator( const QList<LayerData>& inputData, TINInterpolation interpolation = Linear, bool showProgressDialog = false );
     ~QgsTINInterpolator();
 
     /** Calculates interpolation value for map coordinates x, y
@@ -53,15 +55,16 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
     TriangleInterpolator* mTriangleInterpolator;
     bool mIsInitialized;
     bool mShowProgressDialog;
-    /** If true: export triangulation to shapefile after initialization*/
+    //! If true: export triangulation to shapefile after initialization
     bool mExportTriangulationToFile;
-    /** File path to export the triangulation*/
+    //! File path to export the triangulation
     QString mTriangulationFilePath;
-    /** Type of interpolation*/
-    TIN_INTERPOLATION mInterpolation;
+    //! Type of interpolation
+    TINInterpolation mInterpolation;
 
-    /** Create dual edge triangulation*/
+    //! Create dual edge triangulation
     void initialize();
+
     /** Inserts the vertices of a feature into the triangulation
       @param f the feature
       @param zCoord true if the z coordinate is the interpolation attribute

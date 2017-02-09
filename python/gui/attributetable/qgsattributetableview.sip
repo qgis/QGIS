@@ -14,12 +14,12 @@ class QgsAttributeTableView : QTableView
      * @brief setFeatureSelectionManager
      * @param featureSelectionManager We will take ownership
      */
-    void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager );
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager /Transfer/ );
 
     /**
      * This event filter is installed on the verticalHeader to intercept mouse press and release
      * events. These are used to disable / enable live synchronisation with the map canvas selection
-     * which can be slow due to recurring canvas repaints. Updating the
+     * which can be slow due to recurring canvas repaints.
      *
      * @param object The object which is the target of the event.
      * @param event  The intercepted event
@@ -27,6 +27,13 @@ class QgsAttributeTableView : QTableView
      * @return Returns always false, so the event gets processed
      */
     virtual bool eventFilter( QObject* object, QEvent* event );
+
+    /**
+     * Set the attribute table config which should be used to control
+     * the appearance of the attribute table.
+     * @note added in QGIS 2.16
+     */
+    void setAttributeTableConfig( const QgsAttributeTableConfig& config );
 
   protected:
     /**
@@ -79,7 +86,7 @@ class QgsAttributeTableView : QTableView
   signals:
     /**
      * @brief
-     * Is emitted, in order to provide a hook to add aditional menu entries to the context menu.
+     * Is emitted, in order to provide a hook to add additional* menu entries to the context menu.
      *
      * @param menu     If additional QMenuItems are added, they will show up in the context menu.
      * @param atIndex  The QModelIndex, to which the context menu belongs. Relative to the source model.
@@ -88,6 +95,13 @@ class QgsAttributeTableView : QTableView
     void willShowContextMenu( QMenu* menu, const QModelIndex& atIndex );
 
     void finished();
+
+    /** Emitted when a column in the view has been resized.
+     * @param column column index (starts at 0)
+     * @param width new width in pixel
+     * @note added in QGIS 2.16
+     */
+    void columnResized( int column, int width );
 
   public slots:
     void repaintRequested( const QModelIndexList& indexes );

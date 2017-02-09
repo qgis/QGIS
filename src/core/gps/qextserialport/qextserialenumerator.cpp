@@ -94,7 +94,7 @@ QextSerialEnumerator::~QextSerialEnumerator( )
         {
           QString port = "\\\\.\\COM" + QString::number(i);
 
-          HANDLE hPort = ::CreateFile(port.toAscii(), GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0);
+          HANDLE hPort = ::CreateFile(port.toLatin1(), GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0);
           if( hPort == INVALID_HANDLE_VALUE )
             continue;
 

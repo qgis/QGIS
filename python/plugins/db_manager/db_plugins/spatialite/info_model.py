@@ -20,7 +20,7 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt.QtWidgets import QApplication
+from qgis.PyQt.QtWidgets import QApplication
 
 from ..info_model import DatabaseInfo
 from ..html_elems import HtmlTable, HtmlParagraph
@@ -58,10 +58,7 @@ class SLDatabaseInfo(DatabaseInfo):
         ]
         ret.append(HtmlTable(tbl))
 
-        if self.db.connector.is_gpkg:
-            pass
-
-        elif not self.db.connector.has_geometry_columns:
+        if not self.db.connector.has_geometry_columns:
             ret.append(HtmlParagraph(
                 QApplication.translate("DBManagerPlugin", "<warning> geometry_columns table doesn't exist!\n"
                                                           "This table is essential for many GIS applications for enumeration of tables.")))

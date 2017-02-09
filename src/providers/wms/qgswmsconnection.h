@@ -32,7 +32,7 @@ class QgsWMSConnection : public QObject
   public:
     //! Constructor
     explicit QgsWMSConnection( const QString& theConnName );
-    //! Destructor
+
     ~QgsWMSConnection();
 
     static QStringList connectionList();
@@ -44,8 +44,8 @@ class QgsWMSConnection : public QObject
 
   public:
     QString mConnName;
-    QgsDataSourceURI uri();
-    QgsDataSourceURI mUri;
+    QgsDataSourceUri uri();
+    QgsDataSourceUri mUri;
 };
 
 #endif // QGSWMSCONNECTION_H

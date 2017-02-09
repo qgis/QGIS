@@ -19,10 +19,16 @@ email                : brush.tyler@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
+from builtins import range
 
-from PyQt.QtCore import Qt, QTime, QRegExp, QAbstractTableModel
-from PyQt.QtGui import QFont, QStandardItemModel, QStandardItem
-from PyQt.QtWidgets import QApplication
+import sys
+if sys.version_info < (3,):
+    memoryview = buffer
+
+from qgis.PyQt.QtCore import Qt, QTime, QRegExp, QAbstractTableModel
+from qgis.PyQt.QtGui import QFont, QStandardItemModel, QStandardItem
+from qgis.PyQt.QtWidgets import QApplication
 
 from .plugin import DbError
 
@@ -57,10 +63,15 @@ class BaseTableModel(QAbstractTableModel):
         return len(self._header)
 
     def data(self, index, role):
-        if role != Qt.DisplayRole and role != Qt.FontRole:
+        if role not in [Qt.DisplayRole,
+                        Qt.EditRole,
+                        Qt.FontRole]:
             return None
 
         val = self.getData(index.row(), index.column())
+
+        if role == Qt.EditRole:
+            return val
 
         if role == Qt.FontRole:  # draw NULL in italic
             if val is not None:
@@ -71,16 +82,16 @@ class BaseTableModel(QAbstractTableModel):
 
         if val is None:
             return "NULL"
-        elif isinstance(val, buffer):
+        elif isinstance(val, memoryview):
             # hide binary data
             return None
-        elif isinstance(val, (str, unicode)) and len(val) > 300:
+        elif isinstance(val, str) and len(val) > 300:
             # too much data to display, elide the string
             val = val[:300]
         try:
-            return unicode(val)  # convert to unicode
+            return str(val)  # convert to Unicode
         except UnicodeDecodeError:
-            return unicode(val, 'utf-8', 'replace')  # convert from utf8 and replace errors (if any)
+            return str(val, 'utf-8', 'replace')  # convert from utf8 and replace errors (if any)
 
     def headerData(self, section, orientation, role):
         if role != Qt.DisplayRole:
@@ -139,7 +150,7 @@ class SqlResultModel(BaseTableModel):
 
         t = QTime()
         t.start()
-        c = self.db._execute(None, unicode(sql))
+        c = self.db._execute(None, str(sql))
         self._secs = t.elapsed() / 1000.0
         del t
 
@@ -182,7 +193,7 @@ class SimpleTableModel(QStandardItemModel):
     def rowFromData(self, data):
         row = []
         for c in data:
-            item = QStandardItem(unicode(c))
+            item = QStandardItem(str(c))
             item.setFlags((item.flags() | Qt.ItemIsEditable) if self.editable else (item.flags() & ~Qt.ItemIsEditable))
             row.append(item)
         return row
@@ -267,7 +278,7 @@ class TableConstraintsModel(SimpleTableModel):
                                          QApplication.translate("DBManagerPlugin", 'Column(s)')], editable, parent)
 
     def append(self, constr):
-        field_names = [unicode(k_v[1].name) for k_v in iter(list(constr.fields().items()))]
+        field_names = [str(k_v[1].name) for k_v in iter(list(constr.fields().items()))]
         data = [constr.name, constr.type2String(), u", ".join(field_names)]
         self.appendRow(self.rowFromData(data))
         row = self.rowCount() - 1
@@ -303,7 +314,7 @@ class TableIndexesModel(SimpleTableModel):
                                          QApplication.translate("DBManagerPlugin", 'Column(s)')], editable, parent)
 
     def append(self, idx):
-        field_names = [unicode(k_v1[1].name) for k_v1 in iter(list(idx.fields().items()))]
+        field_names = [str(k_v1[1].name) for k_v1 in iter(list(idx.fields().items()))]
         data = [idx.name, u", ".join(field_names)]
         self.appendRow(self.rowFromData(data))
         row = self.rowCount() - 1

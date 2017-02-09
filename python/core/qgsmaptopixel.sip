@@ -11,15 +11,40 @@ class QgsMapToPixel
 %End
 
   public:
+
     /**
      * Constructor
      * @param mapUnitsPerPixel Map units per pixel
-     * @param height Map canvas height, in pixels
-     * @param ymin Minimum y value of the map canvas
-     * @param xmin Minimum x value of the map canvas
-     * @deprecated in 2.8, use version with all parameters
+     * @param centerX X coordinate of map center, in geographical units
+     * @param centerY Y coordinate of map center, in geographical units
+     * @param widthPixels Output width, in pixels
+     * @param heightPixels Output height, in pixels
+     * @param rotation clockwise rotation in degrees
+     * @note added in 2.8
      */
-    QgsMapToPixel( double mapUnitsPerPixel = 0, double height = 0, double ymin = 0, double xmin = 0 ) /Deprecated/;
+    QgsMapToPixel( double mapUnitsPerPixel, double centerX, double centerY, int widthPixels, int heightPixels, double rotation );
+
+    /**
+     * Constructor
+     * @param mapUnitsPerPixel Map units per pixel
+     */
+    QgsMapToPixel( double mapUnitsPerPixel );
+
+    /** Returns a new QgsMapToPixel created using a specified scale and distance unit.
+     * @param scale map scale
+     * @param dpi screen DPI
+     * @param mapUnits map units
+     * @returns matching QgsMapToPixel
+     * @note added in QGIS 3.0
+     */
+    static QgsMapToPixel fromScale( double scale, QgsUnitTypes::DistanceUnit mapUnits, double dpi = 96 );
+
+    /**
+     * Constructor
+     *
+     * Use setParameters to fill
+     */
+    QgsMapToPixel();
 
     /**
      * Transform the point from map (world) coordinates to device coordinates
@@ -110,49 +135,31 @@ class QgsMapToPixel
     double mapRotation() const;
 
     /**
-     * Set maximum y value
-     * @deprecated in 2.8, use setParameters
-     * @note this really sets the viewport height, not ymax
-     */
-    void setYMaximum( double ymax ) /Deprecated/;
-
-    /**
-     * Set minimum y value
-     * @deprecated in 2.8, use setParameters
-     */
-    void setYMinimum( double ymin ) /Deprecated/;
-
-    /**
-     * set minimum x value
-     * @deprecated in 2.8, use setParameters
-     */
-    void setXMinimum( double xmin ) /Deprecated/;
-
-    /**
      * Set parameters for use in transforming coordinates
      * @param mapUnitsPerPixel Map units per pixel
-     * @param xmin Minimum x value
-     * @param ymin Minimum y value
-     * @param height Map height, in pixels
-     * @deprecated in 2.8, use the version with full parameters
-     * @note not available in python bindings
-     */
-    // void setParameters( double mapUnitsPerPixel, double xmin, double ymin, double ymax ) /Deprecated/;
-
-    /**
-     * Set parameters for use in transforming coordinates
-     * @param mapUnitsPerPixel Map units per pixel
-     * @param xc X ordinate of map center, in geographical units
-     * @param yc Y ordinate of map center, in geographical units
-     * @param width Output width, in pixels
-     * @param height Output height, in pixels
+     * @param centerX X coordinate of map center, in geographical units
+     * @param centerY Y coordinate of map center, in geographical units
+     * @param widthPixels Output width, in pixels
+     * @param heightPixels Output height, in pixels
      * @param rotation clockwise rotation in degrees
      * @note added in 2.8
      */
-    void setParameters( double mapUnitsPerPixel, double xc, double yc, int width, int height, double rotation );
+    void setParameters( double mapUnitsPerPixel, double centerX, double centerY, int widthPixels, int heightPixels, double rotation );
 
     //! String representation of the parameters used in the transform
     QString showParameters() const;
 
     QTransform transform() const;
+
+    /** Returns the center x-coordinate for the transform.
+     * @see yCenter()
+     * @note added in QGIS 3.0
+     */
+    double xCenter() const;
+
+    /** Returns the center y-coordinate for the transform.
+     * @see xCenter()
+     * @note added in QGIS 3.0
+     */
+    double yCenter() const;
 };

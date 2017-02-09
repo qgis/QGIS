@@ -136,7 +136,7 @@ QwtPolarLayout::~QwtPolarLayout()
   \brief Specify the position of the legend
   \param pos The legend's position.
   \param ratio Ratio between legend and the bounding rect
-               of title, canvas and axes. The legend will be shrinked
+               of title, canvas and axes. The legend will be shrunk
                if it would need more space than the given ratio.
                The ratio is limited to ]0.0 .. 1.0]. In case of <= 0.0
                it will be reset to the default ratio.
@@ -200,7 +200,7 @@ QwtPolarPlot::LegendPosition QwtPolarLayout::legendPosition() const
 /*!
   Specify the relative size of the legend in the plot
   \param ratio Ratio between legend and the bounding rect
-               of title, canvas and axes. The legend will be shrinked
+               of title, canvas and axes. The legend will be shrunk
                if it would need more space than the given ratio.
                The ratio is limited to ]0.0 .. 1.0]. In case of <= 0.0
                it will be reset to the default ratio.

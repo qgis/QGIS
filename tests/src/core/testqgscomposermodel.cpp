@@ -19,9 +19,11 @@
 #include "qgscomposermodel.h"
 #include "qgscomposerlabel.h"
 #include "qgsapplication.h"
+#include "qgsmapsettings.h"
+#include "qgsproject.h"
 
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QList>
 
 class TestQgsComposerModel : public QObject
@@ -31,7 +33,6 @@ class TestQgsComposerModel : public QObject
   public:
     TestQgsComposerModel()
         : mComposition( 0 )
-        , mMapSettings( 0 )
         , mItem1( 0 )
         , mItem2( 0 )
         , mItem3( 0 )
@@ -64,7 +65,6 @@ class TestQgsComposerModel : public QObject
 
   private:
     QgsComposition *mComposition;
-    QgsMapSettings *mMapSettings;
     QgsComposerLabel *mItem1;
     QgsComposerLabel *mItem2;
     QgsComposerLabel *mItem3;
@@ -75,8 +75,7 @@ void TestQgsComposerModel::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mMapSettings = new QgsMapSettings();
-  mComposition = new QgsComposition( *mMapSettings );
+  mComposition = new QgsComposition( QgsProject::instance() );
 
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 }
@@ -87,7 +86,6 @@ void TestQgsComposerModel::cleanupTestCase()
   delete mItem2;
   delete mItem3;
   delete mComposition;
-  delete mMapSettings;
   QgsApplication::exitQgis();
 }
 
@@ -610,5 +608,5 @@ void TestQgsComposerModel::reorderToBottomWithRemoved()
   QCOMPARE( mComposition->itemsModel()->mItemsInScene.at( 1 ), mItem2 );
 }
 
-QTEST_MAIN( TestQgsComposerModel )
+QGSTEST_MAIN( TestQgsComposerModel )
 #include "testqgscomposermodel.moc"

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import next
 
 __author__ = 'Alexander Bruy'
 __date__ = 'April 2014'
@@ -27,8 +28,8 @@ __revision__ = '$Format:%H$'
 
 import random
 
-from PyQt.QtCore import QVariant
-from qgis.core import (QGis, QgsFields, QgsField, QgsGeometry, QgsSpatialIndex,
+from qgis.PyQt.QtCore import QVariant
+from qgis.core import (Qgis, QgsFields, QgsField, QgsGeometry, QgsSpatialIndex, QgsWkbTypes,
                        QgsDistanceArea, QgsFeatureRequest, QgsFeature,
                        QgsPoint)
 
@@ -51,15 +52,15 @@ class RandomPointsAlongLines(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Random points along line')
         self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
         self.addParameter(ParameterVector(self.VECTOR,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
+                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterNumber(self.POINT_NUMBER,
                                           self.tr('Number of points'), 1, None, 1))
         self.addParameter(ParameterNumber(self.MIN_DISTANCE,
                                           self.tr('Minimum distance'), 0.0, None, 0.0))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.VECTOR))
         pointCount = float(self.getParameterValue(self.POINT_NUMBER))
@@ -68,7 +69,7 @@ class RandomPointsAlongLines(GeoAlgorithm):
         fields = QgsFields()
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, QGis.WKBPoint, layer.dataProvider().crs())
+            fields, QgsWkbTypes.Point, layer.crs())
 
         nPoints = 0
         nIterations = 0
@@ -87,8 +88,8 @@ class RandomPointsAlongLines(GeoAlgorithm):
         while nIterations < maxIterations and nPoints < pointCount:
             # pick random feature
             fid = random.randint(0, featureCount - 1)
-            f = layer.getFeatures(request.setFilterFid(fid)).next()
-            fGeom = QgsGeometry(f.geometry())
+            f = next(layer.getFeatures(request.setFilterFid(fid).setSubsetOfAttributes([])))
+            fGeom = f.geometry()
 
             if fGeom.isMultipart():
                 lines = fGeom.asMultiPolyline()
@@ -126,7 +127,7 @@ class RandomPointsAlongLines(GeoAlgorithm):
                     index.insertFeature(f)
                     points[nPoints] = pnt
                     nPoints += 1
-                    progress.setPercentage(int(nPoints * total))
+                    feedback.setProgress(int(nPoints * total))
             nIterations += 1
 
         if nPoints < pointCount:

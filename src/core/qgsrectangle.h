@@ -18,6 +18,7 @@
 #ifndef QGSRECTANGLE_H
 #define QGSRECTANGLE_H
 
+#include "qgis_core.h"
 #include <iosfwd>
 #include <QDomDocument>
 
@@ -43,7 +44,7 @@ class CORE_EXPORT QgsRectangle
     QgsRectangle( const QRectF & qRectF );
     //! Copy constructor
     QgsRectangle( const QgsRectangle &other );
-    //! Destructor
+
     ~QgsRectangle();
     //! Set the rectangle from two QgsPoints. The rectangle is
     //! normalised after construction.
@@ -83,8 +84,9 @@ class CORE_EXPORT QgsRectangle
     void scale( double scaleFactor, double centerX, double centerY );
     //! Grow the rectangle by the specified amount
     void grow( double delta );
-    /** Updates the rectangle to include the specified point */
+    //! Updates the rectangle to include the specified point
     void include( const QgsPoint& p );
+
     /** Get rectangle enlarged by buffer.
      * @note added in 2.1 */
     QgsRectangle buffer( double width );
@@ -97,7 +99,7 @@ class CORE_EXPORT QgsRectangle
     //! return true when rectangle contains a point
     bool contains( const QgsPoint &p ) const;
     //! expand the rectangle so that covers both the original rectangle and the given rectangle
-    void combineExtentWith( QgsRectangle *rect );
+    void combineExtentWith( const QgsRectangle& rect );
     //! expand the rectangle so that covers both the original rectangle and the given point
     void combineExtentWith( double x, double y );
     //! test if rectangle is empty.
@@ -119,20 +121,23 @@ class CORE_EXPORT QgsRectangle
     QString toString( int thePrecision ) const;
     //! returns rectangle as a polygon
     QString asPolygon() const;
+
     /** Comparison operator
      * @return True if rectangles are equal
      */
     bool operator==( const QgsRectangle &r1 ) const;
+
     /** Comparison operator
      * @return False if rectangles are equal
      */
     bool operator!=( const QgsRectangle &r1 ) const;
+
     /** Assignment operator
      * @param r1 QgsRectangle to assign from
      */
     QgsRectangle & operator=( const QgsRectangle &r1 );
 
-    /** Updates rectangle to include passed argument */
+    //! Updates rectangle to include passed argument
     void unionRect( const QgsRectangle& rect );
 
     /** Returns true if the rectangle has finite boundaries. Will
@@ -155,9 +160,9 @@ class CORE_EXPORT QgsRectangle
 
 };
 
-/** Writes the list rectangle to stream out. QGIS version compatibility is not guaranteed. */
+//! Writes the list rectangle to stream out. QGIS version compatibility is not guaranteed.
 CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsRectangle& rectangle );
-/** Reads a rectangle from stream in into rectangle. QGIS version compatibility is not guaranteed. */
+//! Reads a rectangle from stream in into rectangle. QGIS version compatibility is not guaranteed.
 CORE_EXPORT QDataStream& operator>>( QDataStream& in, QgsRectangle& rectangle );
 
 inline QgsRectangle::~QgsRectangle()

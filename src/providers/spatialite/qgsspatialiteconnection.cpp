@@ -28,7 +28,7 @@
 QStringList QgsSpatiaLiteConnection::connectionList()
 {
   QSettings settings;
-  settings.beginGroup( "/SpatiaLite/connections" );
+  settings.beginGroup( QStringLiteral( "/SpatiaLite/connections" ) );
   return settings.childGroups();
 }
 
@@ -53,7 +53,7 @@ QgsSpatiaLiteConnection::QgsSpatiaLiteConnection( const QString& name )
   // "name" can be either a saved connection or a path to database
 
   QSettings settings;
-  mPath = settings.value( QString( "/SpatiaLite/connections/%1/sqlitepath" ).arg( name ) ).toString();
+  mPath = settings.value( QStringLiteral( "/SpatiaLite/connections/%1/sqlitepath" ).arg( name ) ).toString();
   if ( mPath.isNull() )
     mPath = name; // not found in settings - probably it's a path
 }
@@ -179,7 +179,7 @@ int QgsSpatiaLiteConnection::checkHasMetadataTables( sqlite3* handle )
   ret = sqlite3_get_table( handle, "PRAGMA table_info(geometry_columns)", &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK )
   {
-    mErrorMsg = tr( "table info on %1 failed" ).arg( "geometry_columns" );
+    mErrorMsg = tr( "table info on %1 failed" ).arg( QStringLiteral( "geometry_columns" ) );
     goto error;
   }
   if ( rows < 1 )
@@ -215,7 +215,7 @@ int QgsSpatiaLiteConnection::checkHasMetadataTables( sqlite3* handle )
   ret = sqlite3_get_table( handle, "PRAGMA table_info(spatial_ref_sys)", &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK )
   {
-    mErrorMsg = tr( "table info on %1 failed" ).arg( "spatial_ref_sys" );
+    mErrorMsg = tr( "table info on %1 failed" ).arg( QStringLiteral( "spatial_ref_sys" ) );
     goto error;
   }
   if ( rows < 1 )
@@ -358,7 +358,7 @@ bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 * handle, b
       for ( i = 1; i <= rows; i++ )
       {
         QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
-        mTables.append( TableEntry( tableName, QString(), "qgis_table" ) );
+        mTables.append( TableEntry( tableName, QString(), QStringLiteral( "qgis_table" ) ) );
       }
     }
     sqlite3_free_table( results );
@@ -463,7 +463,7 @@ bool QgsSpatiaLiteConnection::getTableInfo( sqlite3 * handle, bool loadGeometryl
     for ( i = 1; i <= rows; i++ )
     {
       QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
-      mTables.append( TableEntry( tableName, QString(), "qgis_table" ) );
+      mTables.append( TableEntry( tableName, QString(), QStringLiteral( "qgis_table" ) ) );
     }
     sqlite3_free_table( results );
   }
@@ -484,9 +484,9 @@ error:
 QString QgsSpatiaLiteConnection::quotedValue( QString value ) const
 {
   if ( value.isNull() )
-    return "NULL";
+    return QStringLiteral( "NULL" );
 
-  value.replace( '\'', "''" );
+  value.replace( '\'', QLatin1String( "''" ) );
   return value.prepend( '\'' ).append( '\'' );
 }
 
@@ -500,7 +500,7 @@ bool QgsSpatiaLiteConnection::checkGeometryColumnsAuth( sqlite3 * handle )
   bool exists = false;
 
   // checking the metadata tables
-  QString sql = QString( "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'geometry_columns_auth'" );
+  QString sql = QStringLiteral( "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'geometry_columns_auth'" );
 
   ret = sqlite3_get_table( handle, sql.toUtf8().constData(), &results, &rows, &columns, nullptr );
   if ( ret != SQLITE_OK )
@@ -534,7 +534,7 @@ bool QgsSpatiaLiteConnection::checkViewsGeometryColumns( sqlite3 * handle )
   bool exists = false;
 
   // checking the metadata tables
-  QString sql = QString( "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'views_geometry_columns'" );
+  QString sql = QStringLiteral( "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'views_geometry_columns'" );
 
   ret = sqlite3_get_table( handle, sql.toUtf8().constData(), &results, &rows, &columns, nullptr );
   if ( ret != SQLITE_OK )
@@ -567,7 +567,7 @@ bool QgsSpatiaLiteConnection::checkVirtsGeometryColumns( sqlite3 * handle )
   bool exists = false;
 
   // checking the metadata tables
-  QString sql = QString( "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'virts_geometry_columns'" );
+  QString sql = QStringLiteral( "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'virts_geometry_columns'" );
 
   ret = sqlite3_get_table( handle, sql.toUtf8().constData(), &results, &rows, &columns, nullptr );
   if ( ret != SQLITE_OK )
@@ -692,7 +692,7 @@ error:
 
 
 
-QMap < QString, QgsSqliteHandle * > QgsSqliteHandle::handles;
+QMap < QString, QgsSqliteHandle * > QgsSqliteHandle::sHandles;
 
 
 bool QgsSqliteHandle::checkMetadata( sqlite3 *handle )
@@ -726,11 +726,11 @@ QgsSqliteHandle* QgsSqliteHandle::openDb( const QString & dbPath, bool shared )
 
   //QMap < QString, QgsSqliteHandle* >&handles = QgsSqliteHandle::handles;
 
-  if ( shared && handles.contains( dbPath ) )
+  if ( shared && sHandles.contains( dbPath ) )
   {
     QgsDebugMsg( QString( "Using cached connection for %1" ).arg( dbPath ) );
-    handles[dbPath]->ref++;
-    return handles[dbPath];
+    sHandles[dbPath]->ref++;
+    return sHandles[dbPath];
   }
 
   QgsDebugMsg( QString( "New sqlite connection for " ) + dbPath );
@@ -758,7 +758,7 @@ QgsSqliteHandle* QgsSqliteHandle::openDb( const QString & dbPath, bool shared )
 
   QgsSqliteHandle *handle = new QgsSqliteHandle( sqlite_handle, dbPath, shared );
   if ( shared )
-    handles.insert( dbPath, handle );
+    sHandles.insert( dbPath, handle );
 
   return handle;
 }
@@ -774,7 +774,7 @@ void QgsSqliteHandle::closeDb( QgsSqliteHandle * &handle )
   else
   {
     QMap < QString, QgsSqliteHandle * >::iterator i;
-    for ( i = handles.begin(); i != handles.end() && i.value() != handle; ++i )
+    for ( i = sHandles.begin(); i != sHandles.end() && i.value() != handle; ++i )
       ;
 
     Q_ASSERT( i.value() == handle );
@@ -784,7 +784,7 @@ void QgsSqliteHandle::closeDb( QgsSqliteHandle * &handle )
     {
       i.value()->sqliteClose();
       delete i.value();
-      handles.remove( i.key() );
+      sHandles.remove( i.key() );
     }
   }
 
@@ -794,13 +794,13 @@ void QgsSqliteHandle::closeDb( QgsSqliteHandle * &handle )
 void QgsSqliteHandle::closeAll()
 {
   QMap < QString, QgsSqliteHandle * >::iterator i;
-  for ( i = handles.begin(); i != handles.end(); ++i )
+  for ( i = sHandles.begin(); i != sHandles.end(); ++i )
   {
     i.value()->sqliteClose();
     delete i.value();
   }
 
-  handles.clear();
+  sHandles.clear();
 }
 
 void QgsSqliteHandle::sqliteClose()

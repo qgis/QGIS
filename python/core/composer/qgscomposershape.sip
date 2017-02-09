@@ -27,34 +27,34 @@ class QgsComposerShape: QgsComposerItem
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc write template file
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
 
     /** Sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag
      * @param doc is Dom document
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
 
     //setters and getters
     QgsComposerShape::Shape shapeType() const;
     void setShapeType( QgsComposerShape::Shape s );
 
-    /** Sets radius for rounded rectangle corners. Added in v2.1 */
+    /** Sets radius for rounded rectangle corners. Added in 2.1 */
     void setCornerRadius( double radius );
     /** Returns the radius for rounded rectangle corners*/
     double cornerRadius() const;
 
-    /** Sets the QgsFillSymbolV2 used to draw the shape. Must also call setUseSymbolV2( true ) to
+    /** Sets the QgsFillSymbol used to draw the shape. Must also call setUseSymbol( true ) to
      * enable drawing with a symbol.
      * Note: added in version 2.1*/
-    void setShapeStyleSymbol( QgsFillSymbolV2* symbol );
-    /** Returns the QgsFillSymbolV2 used to draw the shape.
+    void setShapeStyleSymbol( QgsFillSymbol* symbol );
+    /** Returns the QgsFillSymbol used to draw the shape.
      * Note: added in version 2.1*/
-    QgsFillSymbolV2* shapeStyleSymbol();
+    QgsFillSymbol* shapeStyleSymbol();
 
-    /** Controls whether the shape should be drawn using a QgsFillSymbolV2.
-     * Note: Added in v2.1 */
-    void setUseSymbolV2( bool useSymbolV2 );
+    /** Controls whether the shape should be drawn using a QgsFillSymbol.
+     * Note: Added in 2.1 */
+    void setUseSymbol( bool useSymbol );
 
     /** Depending on the symbol style, the bounding rectangle can be larger than the shape
     @note this function was added in version 2.3*/

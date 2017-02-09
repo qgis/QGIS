@@ -19,6 +19,7 @@
 // Needed for CMake variables defines
 #include "qgsconfig.h"
 
+#include "qgis_python.h"
 
 #include <QString>
 #include <QStringList>
@@ -50,11 +51,11 @@ class PYTHON_EXPORT QgsPythonUtils
     virtual bool isEnabled() = 0;
 
     //! initialize python and import bindings
-    virtual void initPython( QgisInterface* interface ) = 0;
+    virtual void initPython( QgisInterface *iface ) = 0;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     //! initialize python and import server bindings
-    virtual void initServerPython( QgsServerInterface* interface ) = 0;
+    virtual void initServerPython( QgsServerInterface *iface ) = 0;
 
     //! start server plugin: call plugin's classServerFactory(serverInterface) add to active plugins
     virtual bool startServerPlugin( QString packageName ) = 0;

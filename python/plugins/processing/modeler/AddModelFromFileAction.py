@@ -27,13 +27,17 @@ __revision__ = '$Format:%H$'
 
 import os
 import shutil
-from PyQt.QtGui import QIcon
-from PyQt.QtWidgets import QFileDialog, QMessageBox
-from PyQt.QtCore import QSettings, QFileInfo
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
+from qgis.PyQt.QtCore import QSettings, QFileInfo
+
+from qgis.core import QgsApplication
+
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.WrongModelException import WrongModelException
 from processing.modeler.ModelerUtils import ModelerUtils
+from processing.core.alglist import algList
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -45,14 +49,14 @@ class AddModelFromFileAction(ToolboxAction):
         self.group, self.i18n_group = self.trAction('Tools')
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'model.png'))
+        return QgsApplication.getThemeIcon("/processingModel.svg")
 
     def execute(self):
         settings = QSettings()
         lastDir = settings.value('Processing/lastModelsDir', '')
-        filename = QFileDialog.getOpenFileName(self.toolbox,
-                                               self.tr('Open model', 'AddModelFromFileAction'), lastDir,
-                                               self.tr('Processing model files (*.model *.MODEL)', 'AddModelFromFileAction'))
+        filename, selected_filter = QFileDialog.getOpenFileName(self.toolbox,
+                                                                self.tr('Open model', 'AddModelFromFileAction'), lastDir,
+                                                                self.tr('Processing model files (*.model *.MODEL)', 'AddModelFromFileAction'))
         if filename:
             try:
                 settings.setValue('Processing/lastModelsDir',
@@ -70,6 +74,6 @@ class AddModelFromFileAction(ToolboxAction):
                                     self.tr('Error reading model', 'AddModelFromFileAction'),
                                     self.tr('Cannot read file', 'AddModelFromFileAction'))
                 return
-            destFilename = os.path.join(ModelerUtils.modelsFolder(), os.path.basename(filename))
+            destFilename = os.path.join(ModelerUtils.modelsFolders()[0], os.path.basename(filename))
             shutil.copyfile(filename, destFilename)
-            self.toolbox.updateProvider('model')
+            algList.reloadProvider('model')

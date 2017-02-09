@@ -60,7 +60,7 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString& pluginPath )
 #if defined(Q_OS_WIN) || defined(__CYGWIN__)
   mLibraryDirectory.setNameFilters( QStringList( "*authmethod.dll" ) );
 #else
-  mLibraryDirectory.setNameFilters( QStringList( "*authmethod.so" ) );
+  mLibraryDirectory.setNameFilters( QStringList( QStringLiteral( "*authmethod.so" ) ) );
 #endif
 
   QgsDebugMsg( QString( "Checking for auth method plugins in: %1" ).arg( mLibraryDirectory.path() ) );
@@ -214,21 +214,21 @@ QString QgsAuthMethodRegistry::pluginList( bool asHtml ) const
 
   if ( asHtml )
   {
-    list += "<ol>";
+    list += QLatin1String( "<ol>" );
   }
 
   while ( it != mAuthMethods.end() )
   {
     if ( asHtml )
     {
-      list += "<li>";
+      list += QLatin1String( "<li>" );
     }
 
     list += it->second->description();
 
     if ( asHtml )
     {
-      list + "<br></li>";
+      list += "<br></li>";
     }
     else
     {
@@ -240,13 +240,13 @@ QString QgsAuthMethodRegistry::pluginList( bool asHtml ) const
 
   if ( asHtml )
   {
-    list += "</ol>";
+    list += QLatin1String( "</ol>" );
   }
 
   return list;
 }
 
-const QDir &QgsAuthMethodRegistry::libraryDirectory() const
+QDir QgsAuthMethodRegistry::libraryDirectory() const
 {
   return mLibraryDirectory;
 }
@@ -277,7 +277,7 @@ QgsAuthMethod *QgsAuthMethodRegistry::authMethod( const QString &authMethodKey )
   }
   else
   {
-    QgsDebugMsg( "dlopen suceeded" );
+    QgsDebugMsg( "dlopen succeeded" );
     dlclose( handle );
   }
 
@@ -324,7 +324,6 @@ QWidget *QgsAuthMethodRegistry::editWidget( const QString &authMethodKey, QWidge
   return editFactory( parent );
 }
 
-#if QT_VERSION >= 0x050000
 QFunctionPointer QgsAuthMethodRegistry::function( QString const & authMethodKey,
     QString const & functionName )
 {
@@ -334,7 +333,7 @@ QFunctionPointer QgsAuthMethodRegistry::function( QString const & authMethodKey,
 
   if ( myLib.load() )
   {
-    return myLib.resolve( functionName.toAscii().data() );
+    return myLib.resolve( functionName.toLatin1().data() );
   }
   else
   {
@@ -342,25 +341,6 @@ QFunctionPointer QgsAuthMethodRegistry::function( QString const & authMethodKey,
     return 0;
   }
 }
-#else
-void *QgsAuthMethodRegistry::function( QString const & authMethodKey,
-                                       QString const & functionName )
-{
-  QLibrary myLib( library( authMethodKey ) );
-
-  QgsDebugMsg( "Library name is " + myLib.fileName() );
-
-  if ( myLib.load() )
-  {
-    return myLib.resolve( functionName.toAscii().data() );
-  }
-  else
-  {
-    QgsDebugMsg( "Cannot load library: " + myLib.errorString() );
-    return nullptr;
-  }
-}
-#endif
 
 QLibrary *QgsAuthMethodRegistry::authMethodLibrary( const QString &authMethodKey ) const
 {

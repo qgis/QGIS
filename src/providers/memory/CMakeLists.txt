@@ -5,12 +5,13 @@ INCLUDE_DIRECTORIES(
   .
   ../../core
   ../../core/geometry
+  ${CMAKE_BINARY_DIR}/src/core
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${GEOS_INCLUDE_DIR}
 )
 
-QT4_WRAP_CPP(MEMORY_MOC_SRCS qgsmemoryprovider.h)
+QT5_WRAP_CPP(MEMORY_MOC_SRCS qgsmemoryprovider.h)
 ADD_LIBRARY(memoryprovider MODULE ${MEMORY_SRCS} ${MEMORY_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES(memoryprovider

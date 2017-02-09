@@ -62,6 +62,15 @@ bool QgsProjectVersion::operator==( const QgsProjectVersion &other ) const
           ( mSub == other.mSub ) );
 }
 
+/** Boolean equal operator
+ */
+bool QgsProjectVersion::operator!=( const QgsProjectVersion &other ) const
+{
+  return (( mMajor != other.mMajor ) ||
+          ( mMinor != other.mMinor ) ||
+          ( mSub != other.mSub ) );
+}
+
 /** Boolean >= operator
  */
 bool QgsProjectVersion::operator>=( const QgsProjectVersion &other ) const
@@ -84,10 +93,15 @@ QString QgsProjectVersion::text()
 {
   if ( mName.isEmpty() )
   {
-    return QString( "%1.%2.%3" ).arg( mMajor ).arg( mMinor ).arg( mSub );
+    return QStringLiteral( "%1.%2.%3" ).arg( mMajor ).arg( mMinor ).arg( mSub );
   }
   else
   {
-    return QString( "%1.%2.%3-%4" ).arg( mMajor ).arg( mMinor ).arg( mSub ).arg( mName );
+    return QStringLiteral( "%1.%2.%3-%4" ).arg( mMajor ).arg( mMinor ).arg( mSub ).arg( mName );
   }
+}
+
+bool QgsProjectVersion::isNull() const
+{
+  return mMajor == 0 && mMinor == 0 && mSub == 0;
 }

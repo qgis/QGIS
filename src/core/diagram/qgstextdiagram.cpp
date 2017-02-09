@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstextdiagram.h"
-#include "qgsdiagramrendererv2.h"
+#include "qgsdiagramrenderer.h"
 #include "qgsrendercontext.h"
 #include "qgsexpression.h"
 
@@ -27,10 +27,6 @@ QgsTextDiagram::QgsTextDiagram(): mOrientation( Vertical ), mShape( Circle )
   mBrush.setStyle( Qt::SolidPattern );
 }
 
-QgsTextDiagram::~QgsTextDiagram()
-{
-}
-
 QgsTextDiagram* QgsTextDiagram::clone() const
 {
   return new QgsTextDiagram( *this );
@@ -40,8 +36,8 @@ QSizeF QgsTextDiagram::diagramSize( const QgsFeature& feature, const QgsRenderCo
 {
   QgsExpressionContext expressionContext = c.expressionContext();
   expressionContext.setFeature( feature );
-  if ( feature.fields() )
-    expressionContext.setFields( *feature.fields() );
+  if ( !feature.fields().isEmpty() )
+    expressionContext.setFields( feature.fields() );
 
   QVariant attrVal;
   if ( is.classificationAttributeIsExpression )
@@ -51,7 +47,7 @@ QSizeF QgsTextDiagram::diagramSize( const QgsFeature& feature, const QgsRenderCo
   }
   else
   {
-    attrVal = feature.attributes().at( is.classificationAttribute );
+    attrVal = feature.attribute( is.classificationField );
   }
 
   bool ok = false;
@@ -198,8 +194,8 @@ void QgsTextDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext&
 
   QgsExpressionContext expressionContext = c.expressionContext();
   expressionContext.setFeature( feature );
-  if ( feature.fields() )
-    expressionContext.setFields( *feature.fields() );
+  if ( !feature.fields().isEmpty() )
+    expressionContext.setFields( feature.fields() );
 
   for ( int i = 0; i < textPositions.size(); ++i )
   {

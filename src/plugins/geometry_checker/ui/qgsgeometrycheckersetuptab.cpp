@@ -22,8 +22,9 @@
 #include "../checks/qgsgeometrycheck.h"
 #include "../utils/qgsfeaturepool.h"
 
+#include "qgsfeatureiterator.h"
 #include "qgisinterface.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorfilewriter.h"
@@ -39,7 +40,8 @@
 
 
 QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface* iface , QWidget *parent )
-    : QWidget( parent ), mIface( iface )
+    : QWidget( parent )
+    , mIface( iface )
 
 {
   ui.setupUi( this );
@@ -52,8 +54,8 @@ QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface* iface , Q
 
   connect( mRunButton, SIGNAL( clicked() ), this, SLOT( runChecks() ) );
   connect( ui.comboBoxInputLayer, SIGNAL( currentIndexChanged( int ) ), this, SLOT( validateInput() ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( updateLayers() ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( updateLayers() ) );
+  connect( QgsProject::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( updateLayers() ) );
+  connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( updateLayers() ) );
   connect( ui.radioButtonOutputNew, SIGNAL( toggled( bool ) ), ui.lineEditOutput, SLOT( setEnabled( bool ) ) );
   connect( ui.radioButtonOutputNew, SIGNAL( toggled( bool ) ), ui.pushButtonOutputBrowse, SLOT( setEnabled( bool ) ) );
   connect( ui.buttonGroupOutput, SIGNAL( buttonClicked( int ) ), this, SLOT( validateInput() ) );
@@ -85,22 +87,18 @@ void QgsGeometryCheckerSetupTab::updateLayers()
   QgsMapLayer* currentLayer = isVisible() ? 0 : mIface->mapCanvas()->currentLayer();
   int currIdx = -1;
   int idx = 0;
-  Q_FOREACH ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
+  Q_FOREACH ( QgsVectorLayer* layer, QgsProject::instance()->layers<QgsVectorLayer*>() )
   {
-    QgsDebugMsg( QString( "Adding layer, have %1 in list" ).arg( ui.comboBoxInputLayer->count() ) );
-    if ( qobject_cast<QgsVectorLayer*>( layer ) )
+    ui.comboBoxInputLayer->addItem( layer->name(), layer->id() );
+    if ( layer->name() == prevLayer )
     {
-      ui.comboBoxInputLayer->addItem( layer->name(), layer->id() );
-      if ( layer->name() == prevLayer )
-      {
-        currIdx = idx;
-      }
-      else if ( currIdx == -1 && layer == currentLayer )
-      {
-        currIdx = idx;
-      }
-      ++idx;
+      currIdx = idx;
     }
+    else if ( currIdx == -1 && layer == currentLayer )
+    {
+      currIdx = idx;
+    }
+    ++idx;
   }
   ui.comboBoxInputLayer->setCurrentIndex( qMax( 0, currIdx ) );
 }
@@ -126,18 +124,18 @@ void QgsGeometryCheckerSetupTab::validateInput()
       nApplicable += factory->checkApplicability( ui, layer->geometryType() );
     }
   }
-  bool outputOk = ui.radioButtonOuputModifyInput->isChecked() || !ui.lineEditOutput->text().isEmpty();
+  bool outputOk = ui.radioButtonOutputModifyInput->isChecked() || !ui.lineEditOutput->text().isEmpty();
   mRunButton->setEnabled( layer && nApplicable > 0 && outputOk );
 }
 
 void QgsGeometryCheckerSetupTab::selectOutputFile()
 {
-  QString filterString = QgsVectorFileWriter::filterForDriver( "ESRI Shapefile" );
+  QString filterString = QgsVectorFileWriter::filterForDriver( QStringLiteral( "ESRI Shapefile" ) );
   QMap<QString, QString> filterFormatMap = QgsVectorFileWriter::supportedFiltersAndFormats();
   Q_FOREACH ( const QString& filter, filterFormatMap.keys() )
   {
     QString driverName = filterFormatMap.value( filter );
-    if ( driverName != "ESRI Shapefile" ) // Default entry, first in list (see above)
+    if ( driverName != QLatin1String( "ESRI Shapefile" ) ) // Default entry, first in list (see above)
     {
       filterString += ";;" + filter;
     }
@@ -160,9 +158,9 @@ void QgsGeometryCheckerSetupTab::selectOutputFile()
     QgsVectorFileWriter::MetaData mdata;
     if ( QgsVectorFileWriter::driverMetadata( mOutputDriverName, mdata ) )
     {
-      if ( !filename.endsWith( QString( ".%1" ).arg( mdata.ext ), Qt::CaseInsensitive ) )
+      if ( !filename.endsWith( QStringLiteral( ".%1" ).arg( mdata.ext ), Qt::CaseInsensitive ) )
       {
-        filename += QString( ".%1" ).arg( mdata.ext );
+        filename += QStringLiteral( ".%1" ).arg( mdata.ext );
       }
     }
     ui.lineEditOutput->setText( filename );
@@ -171,7 +169,7 @@ void QgsGeometryCheckerSetupTab::selectOutputFile()
 
 void QgsGeometryCheckerSetupTab::runChecks()
 {
-  /** Get selected layer **/
+  //! Get selected layer *
   QgsVectorLayer* layer = getSelectedLayer();
   if ( !layer )
     return;
@@ -190,14 +188,14 @@ void QgsGeometryCheckerSetupTab::runChecks()
   }
   bool selectedOnly = ui.checkBoxInputSelectedOnly->isChecked();
 
-  /** Set window busy **/
+  //! Set window busy *
   setCursor( Qt::WaitCursor );
   mRunButton->setEnabled( false );
   ui.labelStatus->setText( tr( "<b>Preparing output...</b>" ) );
   ui.labelStatus->show();
   QApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
 
-  /** Duplicate if necessary **/
+  //! Duplicate if necessary *
   if ( ui.radioButtonOutputNew->isChecked() )
   {
     // Write selected feature ids to new layer
@@ -205,7 +203,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
 
     // Remove existing layer with same uri
     QStringList toRemove;
-    Q_FOREACH ( QgsMapLayer* maplayer, QgsMapLayerRegistry::instance()->mapLayers() )
+    Q_FOREACH ( QgsMapLayer* maplayer, QgsProject::instance()->mapLayers() )
     {
       if ( dynamic_cast<QgsVectorLayer*>( maplayer ) &&
            static_cast<QgsVectorLayer*>( maplayer )->dataProvider()->dataSourceUri().startsWith( filename ) )
@@ -215,11 +213,11 @@ void QgsGeometryCheckerSetupTab::runChecks()
     }
     if ( !toRemove.isEmpty() )
     {
-      QgsMapLayerRegistry::instance()->removeMapLayers( toRemove );
+      QgsProject::instance()->removeMapLayers( toRemove );
     }
 
     QString errMsg;
-    QgsVectorFileWriter::WriterError err =  QgsVectorFileWriter::writeAsVectorFormat( layer, filename, layer->dataProvider()->encoding(), &layer->crs(), mOutputDriverName, selectedOnly, &errMsg );
+    QgsVectorFileWriter::WriterError err =  QgsVectorFileWriter::writeAsVectorFormat( layer, filename, layer->dataProvider()->encoding(), layer->crs(), mOutputDriverName, selectedOnly, &errMsg );
     if ( err != QgsVectorFileWriter::NoError )
     {
       QMessageBox::critical( this, tr( "Layer Creation Failed" ), tr( "Failed to create the output layer: %1" ).arg( errMsg ) );
@@ -228,7 +226,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
       unsetCursor();
       return;
     }
-    QgsVectorLayer* newlayer = new QgsVectorLayer( filename, QFileInfo( filename ).completeBaseName(), "ogr" );
+    QgsVectorLayer* newlayer = new QgsVectorLayer( filename, QFileInfo( filename ).completeBaseName(), QStringLiteral( "ogr" ) );
 
     if ( selectedOnly )
     {
@@ -242,7 +240,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
       QgsFeatureIterator it = layer->getFeatures();
       while ( it.nextFeature( feature ) )
       {
-        if ( !layer->selectedFeaturesIds().contains( feature.id() ) )
+        if ( !layer->selectedFeatureIds().contains( feature.id() ) )
         {
           features.append( feature );
         }
@@ -250,7 +248,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
       newlayer->dataProvider()->addFeatures( features );
 
       // Set selected features
-      newlayer->setSelectedFeatures( selectedFeatures );
+      newlayer->selectByIds( selectedFeatures );
     }
     layer = newlayer;
   }
@@ -262,19 +260,19 @@ void QgsGeometryCheckerSetupTab::runChecks()
       {
         QString outputFileName = ui.lineEditOutput->text();
         QFile( outputFileName ).remove();
-        if ( mOutputDriverName == "ESRI Shapefile" )
+        if ( mOutputDriverName == QLatin1String( "ESRI Shapefile" ) )
         {
-          QFile( QString( outputFileName ).replace( QRegExp( "shp$" ), "dbf" ) ).remove();
-          QFile( QString( outputFileName ).replace( QRegExp( "shp$" ), "prj" ) ).remove();
-          QFile( QString( outputFileName ).replace( QRegExp( "shp$" ), "qpj" ) ).remove();
-          QFile( QString( outputFileName ).replace( QRegExp( "shp$" ), "shx" ) ).remove();
+          QFile( QString( outputFileName ).replace( QRegExp( "shp$" ), QStringLiteral( "dbf" ) ) ).remove();
+          QFile( QString( outputFileName ).replace( QRegExp( "shp$" ), QStringLiteral( "prj" ) ) ).remove();
+          QFile( QString( outputFileName ).replace( QRegExp( "shp$" ), QStringLiteral( "qpj" ) ) ).remove();
+          QFile( QString( outputFileName ).replace( QRegExp( "shp$" ), QStringLiteral( "shx" ) ) ).remove();
         }
       }
       return;
     }
   }
 
-  /** Setup checker **/
+  //! Setup checker *
   ui.labelStatus->setText( tr( "<b>Building spatial index...</b>" ) );
   QApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
   QgsFeaturePool* featurePool = new QgsFeaturePool( layer, selectedOnly );
@@ -294,14 +292,14 @@ void QgsGeometryCheckerSetupTab::runChecks()
 
   emit checkerStarted( checker, featurePool );
 
-  /** Add result layer (do this after checkerStarted, otherwise warning about removing of result layer may appear) **/
+  //! Add result layer (do this after checkerStarted, otherwise warning about removing of result layer may appear) *
   layer->setReadOnly( true );
   if ( ui.radioButtonOutputNew->isChecked() )
   {
-    QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << layer );
+    QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << layer );
   }
 
-  /** Run **/
+  //! Run *
   ui.buttonBox->addButton( mAbortButton, QDialogButtonBox::ActionRole );
   mRunButton->hide();
   ui.progressBar->setRange( 0, 0 );
@@ -320,7 +318,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
   ui.progressBar->setRange( 0, maxSteps );
   evLoop.exec();
 
-  /** Restore window **/
+  //! Restore window *
   unsetCursor();
   mAbortButton->setEnabled( true );
   ui.buttonBox->removeButton( mAbortButton );
@@ -330,7 +328,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
   ui.labelStatus->hide();
   ui.widgetInputs->setEnabled( true );
 
-  /** Show result **/
+  //! Show result *
   emit checkerFinished( !futureWatcher.isCanceled() );
 }
 

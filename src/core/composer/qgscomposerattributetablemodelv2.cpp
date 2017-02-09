@@ -21,17 +21,11 @@
 #include "qgscomposertablecolumn.h"
 
 
-//QgsComposerAttributeTableColumnModelV2V2
+//QgsComposerAttributeTableColumnModelV2
 
 QgsComposerAttributeTableColumnModelV2::QgsComposerAttributeTableColumnModelV2( QgsComposerAttributeTableV2 *composerTable, QObject *parent ) : QAbstractTableModel( parent )
     , mComposerTable( composerTable )
 {
-
-}
-
-QgsComposerAttributeTableColumnModelV2::~QgsComposerAttributeTableColumnModelV2()
-{
-
 }
 
 QModelIndex QgsComposerAttributeTableColumnModelV2::index( int row, int column, const QModelIndex &parent ) const
@@ -412,7 +406,7 @@ bool QgsComposerAttributeTableColumnModelV2::moveColumnInSortRank( QgsComposerTa
       sortedColumns.append( currentColumn );
     }
   }
-  qStableSort( sortedColumns.begin(), sortedColumns.end(), columnsBySortRank );
+  std::stable_sort( sortedColumns.begin(), sortedColumns.end(), columnsBySortRank );
   int columnPos = sortedColumns.indexOf( column );
 
   if (( columnPos == 0 && direction == ShiftUp )
@@ -441,7 +435,7 @@ bool QgsComposerAttributeTableColumnModelV2::moveColumnInSortRank( QgsComposerTa
 
 
 
-//QgsComposerTableSortColumnsProxyModelV2V2
+//QgsComposerTableSortColumnsProxyModelV2
 
 QgsComposerTableSortColumnsProxyModelV2::QgsComposerTableSortColumnsProxyModelV2( QgsComposerAttributeTableV2 *composerTable, ColumnFilterType filterType, QObject *parent )
     : QSortFilterProxyModel( parent )
@@ -449,11 +443,6 @@ QgsComposerTableSortColumnsProxyModelV2::QgsComposerTableSortColumnsProxyModelV2
     , mFilterType( filterType )
 {
   setDynamicSortFilter( true );
-}
-
-QgsComposerTableSortColumnsProxyModelV2::~QgsComposerTableSortColumnsProxyModelV2()
-{
-
 }
 
 bool QgsComposerTableSortColumnsProxyModelV2::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const

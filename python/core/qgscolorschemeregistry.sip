@@ -14,10 +14,6 @@ class QgsColorSchemeRegistry
 %End
   public:
 
-    /** Returns the global instance pointer, creating the object on the first call.
-     */
-    static QgsColorSchemeRegistry * instance();
-
     /** Constructor for an empty color scheme registry
      */
     QgsColorSchemeRegistry();

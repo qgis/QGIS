@@ -17,6 +17,7 @@
 #include <QStringList>
 
 #include "qgis.h"
+#include "qgis_gui.h"
 
 class QResizeEvent;
 
@@ -29,7 +30,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
 {
     Q_OBJECT
   public:
-    QgsProjectionSelector( QWidget* parent, const char *name = "", const Qt::WindowFlags& fl = nullptr );
+    QgsProjectionSelector( QWidget* parent, const char *name = "", Qt::WindowFlags fl = 0 );
 
     ~QgsProjectionSelector();
 
@@ -96,7 +97,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
      *                  list of projections by.  This is useful in (e.g.) WMS situations
      *                  where you just want to offer what the WMS server can support.
      *
-     * \warning This function's behaviour is undefined if it is called after the widget is shown.
+     * \warning This function's behavior is undefined if it is called after the widget is shown.
      */
     void setOgcWmsCrsFilter( const QSet<QString>& crsFilter );
     void on_lstCoordinateSystems_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
@@ -108,13 +109,14 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
     void pushProjectionToFront();
 
   protected:
-    /** Used to ensure the projection list view is actually populated */
+    // Used to ensure the projection list view is actually populated
     void showEvent( QShowEvent * theEvent ) override;
 
-    /** Used to manage column sizes */
+    // Used to manage column sizes
     void resizeEvent( QResizeEvent * theEvent ) override;
 
   private:
+
     /**
      * \brief converts the CRS group to a SQL expression fragment
      *
@@ -138,7 +140,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
      *          does not scroll the list to the selection if the widget is not visible.
      *          Therefore you will typically want to use this in a showEvent().
      */
-    void applySelection( int column = NONE, QString value = QString::null );
+    void applySelection( int column = QgsProjectionSelector::None, QString value = QString::null );
 
     /**
        * \brief gets an arbitrary sqlite3 expression from the selection
@@ -147,7 +149,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
        */
     QString getSelectedExpression( const QString& e );
 
-    /** Show the user a warning if the srs database could not be found */
+    //! Show the user a warning if the srs database could not be found
     void showDBMissingWarning( const QString& theFileName );
     // List view nodes for the tree view of projections
     //! User defined projections node
@@ -165,7 +167,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
     /**
      * Utility method used in conjunction with name based searching tool
      */
-    long getLargestCRSIDMatch( const QString& theSql );
+    long getLargestCrsIdMatch( const QString& theSql );
 
     //! add recently used CRS
     void insertRecent( long theCrsId );
@@ -180,7 +182,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
     //! Has the Recent Projection List been populated?
     bool mRecentProjListDone;
 
-    enum columns { NAME_COLUMN, AUTHID_COLUMN, QGIS_CRS_ID_COLUMN, NONE };
+    enum Columns { NameColumn, AuthidColumn, QgisCrsIdColumn, None };
     int mSearchColumn;
     QString mSearchValue;
 

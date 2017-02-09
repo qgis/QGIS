@@ -18,6 +18,7 @@
 #ifndef QGSMULTIBANDCOLORRENDERER_H
 #define QGSMULTIBANDCOLORRENDERER_H
 
+#include "qgis_core.h"
 #include "qgsrasterrenderer.h"
 
 class QgsContrastEnhancement;
@@ -33,11 +34,17 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
                                QgsContrastEnhancement* redEnhancement = nullptr, QgsContrastEnhancement* greenEnhancement = nullptr,
                                QgsContrastEnhancement* blueEnhancement = nullptr );
     ~QgsMultiBandColorRenderer();
+
+    //! QgsMultiBandColorRenderer cannot be copied. Use clone() instead.
+    QgsMultiBandColorRenderer( const QgsMultiBandColorRenderer& ) = delete;
+    //! QgsMultiBandColorRenderer cannot be copied. Use clone() instead.
+    const QgsMultiBandColorRenderer& operator=( const QgsMultiBandColorRenderer& ) = delete;
+
     QgsMultiBandColorRenderer * clone() const override;
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
-    QgsRasterBlock* block( int bandNo, const QgsRectangle & extent, int width, int height ) override;
+    QgsRasterBlock* block( int bandNo, const QgsRectangle & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
     int redBand() const { return mRedBand; }
     void setRedBand( int band ) { mRedBand = band; }
@@ -47,18 +54,18 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     void setBlueBand( int band ) { mBlueBand = band; }
 
     const QgsContrastEnhancement* redContrastEnhancement() const { return mRedContrastEnhancement; }
-    /** Takes ownership*/
+    //! Takes ownership
     void setRedContrastEnhancement( QgsContrastEnhancement* ce );
 
     const QgsContrastEnhancement* greenContrastEnhancement() const { return mGreenContrastEnhancement; }
-    /** Takes ownership*/
+    //! Takes ownership
     void setGreenContrastEnhancement( QgsContrastEnhancement* ce );
 
     const QgsContrastEnhancement* blueContrastEnhancement() const { return mBlueContrastEnhancement; }
-    /** Takes ownership*/
+    //! Takes ownership
     void setBlueContrastEnhancement( QgsContrastEnhancement* ce );
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const override;
+    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const override;
 
     QList<int> usesBands() const override;
 
@@ -71,8 +78,6 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     QgsContrastEnhancement* mGreenContrastEnhancement;
     QgsContrastEnhancement* mBlueContrastEnhancement;
 
-    QgsMultiBandColorRenderer( const QgsMultiBandColorRenderer& );
-    const QgsMultiBandColorRenderer& operator=( const QgsMultiBandColorRenderer& );
 };
 
 #endif // QGSMULTIBANDCOLORRENDERER_H

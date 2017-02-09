@@ -92,15 +92,15 @@ void QgsOpenRasterDialog::on_tbnSelectRaster_clicked()
 
   // What DOING this code?
   QgsProject* prj = QgsProject::instance();
-  QString projBehaviour = settings.value( "/Projections/defaultBehaviour", "prompt" ).toString();
+  QString projBehavior = settings.value( "/Projections/defaultBehavior", "prompt" ).toString();
   QString projectCRS = prj->readEntry( "SpatialRefSys", "/ProjectCRSProj4String" );
   int projectCrsId = prj->readNumEntry( "SpatialRefSys", "/ProjectCrsId" );
 
-  settings.setValue( "/Projections/defaultBehaviour", "useProject" );
+  settings.setValue( "/Projections/defaultBehavior", "useProject" );
   prj->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", GEOPROJ4 );
   prj->writeEntry( "SpatialRefSys", "/ProjectCrsId", int( GEOCRS_ID ) );
 
-  settings.setValue( "/Projections/defaultBehaviour", projBehaviour );
+  settings.setValue( "/Projections/defaultBehavior", projBehavior );
   prj->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", projectCRS );
   prj->writeEntry( "SpatialRefSys", "/ProjectCrsId", projectCrsId );
 }

@@ -30,11 +30,6 @@ QgsScaleBarStyle::QgsScaleBarStyle(): mScaleBar( nullptr )
 
 }
 
-QgsScaleBarStyle::~QgsScaleBarStyle()
-{
-
-}
-
 void QgsScaleBarStyle::drawLabels( QPainter* p ) const
 {
   if ( !p || !mScaleBar )

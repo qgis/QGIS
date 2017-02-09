@@ -52,13 +52,14 @@
 #include <QSize>
 #include <QString>
 #include <QWidget>
+#include "qgis_gui.h"
 
 QT_BEGIN_NAMESPACE
 class QMouseEvent;
 class QPaintEvent;
 QT_END_NAMESPACE
 
-//! [0]
+//! \ingroup gui
 class GUI_EXPORT CharacterWidget : public QWidget
 {
     Q_OBJECT

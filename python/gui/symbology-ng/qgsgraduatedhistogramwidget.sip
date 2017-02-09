@@ -2,7 +2,7 @@
 /** \ingroup gui
  * \class QgsGraduatedHistogramWidget
  * \brief Graphical histogram for displaying distribution of field values and
- * editing range breaks for a QgsGraduatedSymbolRendererV2 renderer.
+ * editing range breaks for a QgsGraduatedSymbolRenderer renderer.
  *
  * \note Added in version 2.9
  */
@@ -21,11 +21,11 @@ class QgsGraduatedHistogramWidget : QWidget
     QgsGraduatedHistogramWidget( QWidget *parent /TransferThis/ = 0 );
     ~QgsGraduatedHistogramWidget();
 
-    /** Sets the QgsGraduatedSymbolRendererV2 renderer associated with the histogram.
+    /** Sets the QgsGraduatedSymbolRenderer renderer associated with the histogram.
      * The histogram will fetch the ranges from the renderer before every refresh.
-     * @param renderer associated QgsGraduatedSymbolRendererV2
+     * @param renderer associated QgsGraduatedSymbolRenderer
      */
-    void setRenderer( QgsGraduatedSymbolRendererV2* renderer );
+    void setRenderer( QgsGraduatedSymbolRenderer* renderer );
 
   signals:
 

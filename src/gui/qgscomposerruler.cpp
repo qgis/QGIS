@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgscomposerruler.cpp
+    ---------------------
+    begin                : January 2013
+    copyright            : (C) 2013 by Marco Hugentobler
+    email                : marco dot hugentobler at sourcepole dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgscomposerruler.h"
 #include "qgscomposition.h"
 #include "qgis.h"
@@ -9,14 +23,15 @@
 const int RULER_FONT_SIZE = 8;
 const unsigned int COUNT_VALID_MULTIPLES = 3;
 const unsigned int COUNT_VALID_MAGNITUDES = 5;
-const int QgsComposerRuler::validScaleMultiples[] = {1, 2, 5};
-const int QgsComposerRuler::validScaleMagnitudes[] = {1, 10, 100, 1000, 10000};
+const int QgsComposerRuler::VALID_SCALE_MULTIPLES[] = {1, 2, 5};
+const int QgsComposerRuler::VALID_SCALE_MAGNITUDES[] = {1, 10, 100, 1000, 10000};
 
-QgsComposerRuler::QgsComposerRuler( QgsComposerRuler::Direction d ) : QWidget( nullptr ),
-    mDirection( d ),
-    mComposition( nullptr ),
-    mLineSnapItem( nullptr ),
-    mScaleMinPixelsWidth( 0 )
+QgsComposerRuler::QgsComposerRuler( QgsComposerRuler::Direction d )
+    : QWidget( nullptr )
+    , mDirection( d )
+    , mComposition( nullptr )
+    , mLineSnapItem( nullptr )
+    , mScaleMinPixelsWidth( 0 )
 {
   setMouseTracking( true );
 
@@ -28,7 +43,7 @@ QgsComposerRuler::QgsComposerRuler( QgsComposerRuler::Direction d ) : QWidget( n
   //calculate ruler sizes and marker separations
 
   //minimum gap required between major ticks is 3 digits * 250%, based on appearance
-  mScaleMinPixelsWidth = mRulerFontMetrics->width( "000" ) * 2.5;
+  mScaleMinPixelsWidth = mRulerFontMetrics->width( QStringLiteral( "000" ) ) * 2.5;
   //minimum ruler height is twice the font height in pixels
   mRulerMinSize = mRulerFontMetrics->height() * 1.5;
 
@@ -297,14 +312,14 @@ int QgsComposerRuler::optimumScale( double minPixelDiff, int &magnitude, int &mu
   {
     for ( unsigned int multipleCandidate = 0; multipleCandidate < COUNT_VALID_MULTIPLES; ++multipleCandidate )
     {
-      int candidateScale = validScaleMultiples[multipleCandidate] * validScaleMagnitudes[magnitudeCandidate];
+      int candidateScale = VALID_SCALE_MULTIPLES[multipleCandidate] * VALID_SCALE_MAGNITUDES[magnitudeCandidate];
       //find pixel size for each step using this candidate scale
       double pixelDiff = mTransform.map( QPointF( candidateScale, 0 ) ).x() - mTransform.map( QPointF( 0, 0 ) ).x();
       if ( pixelDiff > minPixelDiff )
       {
         //found the optimum major scale
-        magnitude = validScaleMagnitudes[magnitudeCandidate];
-        multiple = validScaleMultiples[multipleCandidate];
+        magnitude = VALID_SCALE_MAGNITUDES[magnitudeCandidate];
+        multiple = VALID_SCALE_MULTIPLES[multipleCandidate];
         return candidateScale;
       }
     }
@@ -323,17 +338,17 @@ int QgsComposerRuler::optimumNumberDivisions( double rulerScale, int scaleMultip
   switch ( scaleMultiple )
   {
     case 1:
-      //numbers increase by 1 increment each time, eg 1, 2, 3 or 10, 20, 30
+      //numbers increase by 1 increment each time, e.g., 1, 2, 3 or 10, 20, 30
       //so we can draw either 10, 5 or 2 small ticks and have each fall on a nice value
       validSmallDivisions << 10 << 5 << 2;
       break;
     case 2:
-      //numbers increase by 2 increments each time, eg 2, 4, 6 or 20, 40, 60
+      //numbers increase by 2 increments each time, e.g., 2, 4, 6 or 20, 40, 60
       //so we can draw either 10, 4 or 2 small ticks and have each fall on a nice value
       validSmallDivisions << 10 << 4 << 2;
       break;
     case 5:
-      //numbers increase by 5 increments each time, eg 5, 10, 15 or 100, 500, 1000
+      //numbers increase by 5 increments each time, e.g., 5, 10, 15 or 100, 500, 1000
       //so we can draw either 10 or 5 small ticks and have each fall on a nice value
       validSmallDivisions << 10 << 5;
       break;
@@ -360,8 +375,10 @@ int QgsComposerRuler::optimumNumberDivisions( double rulerScale, int scaleMultip
 
 void QgsComposerRuler::setSceneTransform( const QTransform& transform )
 {
+#if 0
   QString debug = QString::number( transform.dx() ) + ',' + QString::number( transform.dy() ) + ','
                   + QString::number( transform.m11() ) + ',' + QString::number( transform.m22() );
+#endif
   mTransform = transform;
   update();
 }

@@ -20,24 +20,43 @@
 
 #include "qgsrasterrendererwidget.h"
 #include "ui_qgspalettedrendererwidgetbase.h"
+#include "qgis_gui.h"
 
 class QgsRasterLayer;
 
+/** \ingroup gui
+ * \class QgsPalettedRendererWidget
+ */
 class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, private Ui::QgsPalettedRendererWidgetBase
 {
     Q_OBJECT
 
   public:
+
     QgsPalettedRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
     static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) { return new QgsPalettedRendererWidget( layer, theExtent ); }
-    ~QgsPalettedRendererWidget();
 
     QgsRasterRenderer* renderer() override;
 
     void setFromRenderer( const QgsRasterRenderer* r );
 
+  private:
+
+    enum Column
+    {
+      ValueColumn = 0,
+      ColorColumn = 1,
+      LabelColumn = 2,
+    };
+
+    QMenu* contextMenu;
+
   private slots:
+
     void on_mTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column );
+    void on_mTreeWidget_itemChanged( QTreeWidgetItem * item, int column );
+    void changeColor();
+    void changeTransparency();
 };
 
 #endif // QGSPALETTEDRENDERERWIDGET_H

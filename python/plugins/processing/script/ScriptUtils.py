@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -39,13 +41,18 @@ class ScriptUtils(object):
     ACTIVATE_SCRIPTS = 'ACTIVATE_SCRIPTS'
 
     @staticmethod
-    def scriptsFolder():
-        folder = ProcessingConfig.getSetting(ScriptUtils.SCRIPTS_FOLDER)
-        if folder is None:
-            folder = unicode(os.path.join(userFolder(), 'scripts'))
+    def defaultScriptsFolder():
+        folder = str(os.path.join(userFolder(), 'scripts'))
         mkdir(folder)
-
         return os.path.abspath(folder)
+
+    @staticmethod
+    def scriptsFolders():
+        folder = ProcessingConfig.getSetting(ScriptUtils.SCRIPTS_FOLDER)
+        if folder is not None:
+            return folder.split(';')
+        else:
+            return [ScriptUtils.defaultScriptsFolder()]
 
     @staticmethod
     def loadFromFolder(folder):
@@ -65,5 +72,5 @@ class ScriptUtils(object):
                     except Exception as e:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                                'Could not load script:' + descriptionFile + '\n'
-                                               + unicode(e))
+                                               + str(e))
         return algs

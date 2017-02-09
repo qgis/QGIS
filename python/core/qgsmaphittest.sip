@@ -31,7 +31,7 @@ class QgsMapHitTest
      * @note added in QGIS 2.12
      * @see legendKeyVisible()
      */
-    bool symbolVisible( QgsSymbolV2* symbol, QgsVectorLayer* layer ) const;
+    bool symbolVisible( QgsSymbol* symbol, QgsVectorLayer* layer ) const;
 
     /** Tests whether a given legend key is visible for a specified layer.
      * @param ruleKey legend rule key
@@ -44,10 +44,10 @@ class QgsMapHitTest
   protected:
 
     //! @note not available in Python bindings
-    //typedef QSet<QString> SymbolV2Set;
+    //typedef QSet<QString> SymbolSet;
 
     //! @note not available in Python bindings
-    //typedef QMap<QgsVectorLayer*, SymbolV2Set> HitTest;
+    //typedef QMap<QgsVectorLayer*, SymbolSet> HitTest;
 
     /** Runs test for visible symbols within a layer
      * @param vl vector layer
@@ -57,7 +57,7 @@ class QgsMapHitTest
      * @note added in QGIS 2.12
      * @note not available in Python bindings
      */
-    //void runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbols, SymbolV2Set& usedSymbolsRuleKey, QgsRenderContext& context );
+    //void runHitTestLayer( QgsVectorLayer* vl, SymbolSet& usedSymbols, SymbolSet& usedSymbolsRuleKey, QgsRenderContext& context );
 
 
 };

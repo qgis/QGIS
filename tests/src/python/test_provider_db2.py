@@ -48,7 +48,7 @@ class TestPyQgsDb2Provider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        cls.dbconn = u"dbname='ostest' driver='IBM DB2 ODBC DRIVER' host=dadler.dynalias.org port=50000 user='osuser' password='osuserpw'"
+        cls.dbconn = "dbname='ostest' driver='IBM DB2 ODBC DRIVER' host=dadler.dynalias.org port=50000 user='osuser' password='osuserpw'"
         if 'QGIS_DB2_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_DB2TEST_DB']
         # Create test layer
@@ -65,17 +65,17 @@ class TestPyQgsDb2Provider(unittest.TestCase, ProviderTestCase):
         """Run after all tests"""
 
     def setUp(self):
-        print ("starting " + self._testMethodName)
+        print(("starting " + self._testMethodName))
 
     def getSubsetString(self):
         """Individual providers may need to override this depending on their subset string formats"""
         return 'cnt > 100 and cnt < 410'
 
     def enableCompiler(self):
-        QSettings().setValue(u'/qgis/compileExpressions', True)
+        QSettings().setValue('/qgis/compileExpressions', True)
 
     def disableCompiler(self):
-        QSettings().setValue(u'/qgis/compileExpressions', False)
+        QSettings().setValue('/qgis/compileExpressions', False)
 
 if __name__ == '__main__':
     unittest.main()

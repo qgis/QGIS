@@ -42,14 +42,14 @@ class DeleteDuplicateGeometries(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer')))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
 
-        fields = layer.pendingFields()
+        fields = layer.fields()
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
                                                                      layer.wkbType(), layer.crs())
@@ -59,22 +59,22 @@ class DeleteDuplicateGeometries(GeoAlgorithm):
         total = 100.0 / len(features)
         geoms = dict()
         for current, f in enumerate(features):
-            geoms[f.id()] = QgsGeometry(f.geometry())
-            progress.setPercentage(int(current * total))
+            geoms[f.id()] = f.geometry()
+            feedback.setProgress(int(current * total))
 
         cleaned = dict(geoms)
 
-        for i, g in geoms.iteritems():
-            for j in cleaned.keys():
+        for i, g in list(geoms.items()):
+            for j in list(cleaned.keys()):
                 if i == j or i not in cleaned:
                     continue
                 if g.isGeosEqual(cleaned[j]):
                     del cleaned[j]
 
         total = 100.0 / len(cleaned)
-        request = QgsFeatureRequest().setFilterFids(cleaned.keys())
+        request = QgsFeatureRequest().setFilterFids(list(cleaned.keys()))
         for current, f in enumerate(layer.getFeatures(request)):
             writer.addFeature(f)
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

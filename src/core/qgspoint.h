@@ -18,6 +18,7 @@
 #ifndef QGSPOINT_H
 #define QGSPOINT_H
 
+#include "qgis_core.h"
 #include <qgis.h>
 
 #include <iostream>
@@ -57,10 +58,35 @@ class CORE_EXPORT QgsVector
      */
     QgsVector operator/( double scalar ) const;
 
-    /** Returns the sum of the x component of this vector multiplied by the x component of another
-     * vector plus the y component of this vector multipled by the y component of another vector.
+    /** Returns the dot product of two vectors, which is the sum of the x component
+     *  of this vector multiplied by the x component of another
+     *  vector plus the y component of this vector multiplied by the y component of another vector.
      */
     double operator*( QgsVector v ) const;
+
+    /**
+     * Adds another vector to this vector.
+     * @note added in QGIS 3.0
+     */
+    QgsVector operator+( QgsVector other ) const;
+
+    /**
+     * Adds another vector to this vector in place.
+     * @note added in QGIS 3.0
+     */
+    QgsVector& operator+=( QgsVector other );
+
+    /**
+     * Subtracts another vector to this vector.
+     * @note added in QGIS 3.0
+     */
+    QgsVector operator-( QgsVector other ) const;
+
+    /**
+     * Subtracts another vector to this vector in place.
+     * @note added in QGIS 3.0
+     */
+    QgsVector& operator-=( QgsVector other );
 
     /** Returns the length of the vector.
      */
@@ -93,16 +119,16 @@ class CORE_EXPORT QgsVector
      */
     QgsVector rotateBy( double rot ) const;
 
-    /** Returns the vector's normalized (or "unit") vector (ie same angle but length of 1.0). Will throw an expection
-     * if called on a vector with length of 0.
-     * @deprecated use normalized() instead
-     */
-    Q_DECL_DEPRECATED QgsVector normal() const;
-
-    /** Returns the vector's normalized (or "unit") vector (ie same angle but length of 1.0). Will throw an expection
+    /** Returns the vector's normalized (or "unit") vector (ie same angle but length of 1.0). Will throw an exception
      * if called on a vector with length of 0.
      */
     QgsVector normalized() const;
+
+    //! Equality operator
+    bool operator==( QgsVector other ) const;
+
+    //! Inequality operator
+    bool operator!=( QgsVector other ) const;
 
   private:
 
@@ -116,12 +142,19 @@ class CORE_EXPORT QgsVector
  */
 class CORE_EXPORT QgsPoint
 {
+    Q_GADGET
+
+    Q_PROPERTY( double x READ x WRITE setX )
+    Q_PROPERTY( double y READ y WRITE setY )
+
   public:
     /// Default constructor
-    QgsPoint() : m_x( 0.0 ), m_y( 0.0 )
+    QgsPoint()
+        : m_x( 0.0 )
+        , m_y( 0.0 )
     {}
 
-    /** Create a point from another point */
+    //! Create a point from another point
     QgsPoint( const QgsPoint& p );
 
     /** Create a point from x,y coordinates
@@ -129,7 +162,8 @@ class CORE_EXPORT QgsPoint
      * @param y y coordinate
      */
     QgsPoint( double x, double y )
-        : m_x( x ), m_y( y )
+        : m_x( x )
+        , m_y( y )
     {}
 
     /** Create a point from a QPointF
@@ -137,7 +171,8 @@ class CORE_EXPORT QgsPoint
      * @note added in QGIS 2.7
      */
     QgsPoint( QPointF point )
-        : m_x( point.x() ), m_y( point.y() )
+        : m_x( point.x() )
+        , m_y( point.y() )
     {}
 
     /** Create a point from a QPoint
@@ -145,7 +180,8 @@ class CORE_EXPORT QgsPoint
      * @note added in QGIS 2.7
      */
     QgsPoint( QPoint point )
-        : m_x( point.x() ), m_y( point.y() )
+        : m_x( point.x() )
+        , m_y( point.y() )
     {}
 
     ~QgsPoint()
@@ -167,7 +203,7 @@ class CORE_EXPORT QgsPoint
       m_y = y;
     }
 
-    /** Sets the x and y value of the point */
+    //! Sets the x and y value of the point
     void set( double x, double y )
     {
       m_x = x;
@@ -206,10 +242,10 @@ class CORE_EXPORT QgsPoint
      *  Its up to the calling function to ensure that this point can
      *  be meaningfully represented in this form.
      *  @param thePrecision number of decimal points to use for seconds
-     *  @param useSuffix set to true to include a direction suffix (eg 'N'),
+     *  @param useSuffix set to true to include a direction suffix (e.g., 'N'),
      *  set to false to use a "-" prefix for west and south coordinates
      *  @param padded set to true to force minutes and seconds to use two decimals,
-     *  eg, '05' instead of '5'.
+     *  e.g., '05' instead of '5'.
      */
     QString toDegreesMinutesSeconds( int thePrecision, const bool useSuffix = true, const bool padded = false ) const;
 
@@ -217,10 +253,10 @@ class CORE_EXPORT QgsPoint
      *  Its up to the calling function to ensure that this point can
      *  be meaningfully represented in this form.
      *  @param thePrecision number of decimal points to use for minutes
-     *  @param useSuffix set to true to include a direction suffix (eg 'N'),
+     *  @param useSuffix set to true to include a direction suffix (e.g., 'N'),
      *  set to false to use a "-" prefix for west and south coordinates
      *  @param padded set to true to force minutes to use two decimals,
-     *  eg, '05' instead of '5'.
+     *  e.g., '05' instead of '5'.
      */
     QString toDegreesMinutes( int thePrecision, const bool useSuffix = true, const bool padded = false ) const;
 
@@ -256,13 +292,13 @@ class CORE_EXPORT QgsPoint
     */
     double distance( const QgsPoint& other ) const;
 
-    /** Returns the minimum distance between this point and a segment */
+    //! Returns the minimum distance between this point and a segment
     double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPoint& minDistPoint, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
 
-    /** Calculates azimuth between this point and other one (clockwise in degree, starting from north) */
+    //! Calculates azimuth between this point and other one (clockwise in degree, starting from north)
     double azimuth( const QgsPoint& other ) const;
 
-    /** Returns a new point which correponds to this point projected by a specified distance
+    /** Returns a new point which corresponds to this point projected by a specified distance
      * in a specified bearing.
      * @param distance distance to project
      * @param bearing angle to project in, clockwise in degrees starting from north

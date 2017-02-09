@@ -18,15 +18,22 @@
 
 #include <QObject>
 #include <QMap>
-
 #include "qgseditorwidgetfactory.h"
+#include "qgsattributeeditorcontext.h"
+#include "qgseditorwidgetautoconf.h"
+#include "qgis_gui.h"
 
 class QgsMapLayer;
 class QDomNode;
 class QgsMapCanvas;
 class QgsMessageBar;
+class QgsSearchWidgetWrapper;
+class QgsEditorWidgetWrapper;
+class QgsEditorConfigWidget;
+class QgsVectorLayer;
 
-/**
+
+/** \ingroup gui
  * This class manages all known edit widget factories
  */
 class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
@@ -34,6 +41,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * This class is a singleton and has therefore to be accessed with this method instead
      * of a constructor.
@@ -62,6 +70,16 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     ~QgsEditorWidgetRegistry();
 
     /**
+     * Find the best editor widget and its configuration for a given field.
+     *
+     * @param vl        The vector layer for which this widget will be created
+     * @param fieldName The field name on the specified layer for which this widget will be created
+     *
+     * @return The id of the widget type to use and its config
+     */
+    QgsEditorWidgetSetup findBest( const QgsVectorLayer* vl, const QString& fieldName ) const;
+
+    /**
      * Create an attribute editor widget wrapper of a given type for a given field.
      * The editor may be NULL if you want the widget wrapper to create a default widget.
      *
@@ -78,7 +96,25 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     QgsEditorWidgetWrapper* create( const QString& widgetId,
                                     QgsVectorLayer* vl,
                                     int fieldIdx,
-                                    const QgsEditorWidgetConfig& config,
+                                    const QVariantMap& config,
+                                    QWidget* editor,
+                                    QWidget* parent,
+                                    const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
+
+    /**
+     * Create an attribute editor widget wrapper of the best type for a given field.
+     * The editor may be NULL if you want the widget wrapper to create a default widget.
+     *
+     * @param vl        The vector layer for which this widget will be created
+     * @param fieldIdx  The field index on the specified layer for which this widget will be created
+     * @param editor    An editor widget which will be used instead of an autocreated widget
+     * @param parent    The parent which will be used for the created wrapper and the created widget
+     * @param context   The editor context (not available in python bindings)
+     *
+     * @return A new widget wrapper
+     */
+    QgsEditorWidgetWrapper* create( QgsVectorLayer* vl,
+                                    int fieldIdx,
                                     QWidget* editor,
                                     QWidget* parent,
                                     const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
@@ -86,7 +122,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     QgsSearchWidgetWrapper* createSearchWidget( const QString& widgetId,
         QgsVectorLayer* vl,
         int fieldIdx,
-        const QgsEditorWidgetConfig& config,
+        const QVariantMap& config,
         QWidget* parent,
         const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
 
@@ -116,7 +152,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      *
      * @return All ids and factories
      */
-    const QMap<QString, QgsEditorWidgetFactory*>& factories();
+    QMap<QString, QgsEditorWidgetFactory*> factories();
 
     /**
      * Get a factory for the given widget type id.
@@ -135,68 +171,22 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      */
     bool registerWidget( const QString& widgetId, QgsEditorWidgetFactory* widgetFactory );
 
+    /**
+     * Register a new auto-conf plugin.
+     *
+     * @param plugin The plugin (ownership is transferred)
+     */
+    void registerAutoConfPlugin( QgsEditorWidgetAutoConfPlugin* plugin ) { mAutoConf.registerPlugin( plugin ); }
+
   protected:
     QgsEditorWidgetRegistry();
-
-  private slots:
-    /**
-     * Read all the editor widget information from a map layer XML node
-     * @param mapLayer
-     * @param layerElem
-     */
-    void readMapLayer( QgsMapLayer* mapLayer, const QDomElement& layerElem );
-
-    /**
-     * Read all old-style editor widget configuration from a map node. Will update
-     * a project file to the new version on next save
-     * @param vl         The layer in question
-     * @param layerElem  The layer element from the project file
-     * @param cfg        Writable config element
-     *
-     * @deprecated
-     */
-    Q_DECL_DEPRECATED const QString readLegacyConfig( QgsVectorLayer* vl, const QDomElement& layerElem, QgsEditorWidgetConfig& cfg );
-
-    /**
-     * Write all the widget config to a layer XML node
-     *
-     * @param mapLayer   The layer for which the config is being written
-     * @param layerElem  The XML element to which the config will be written
-     * @param doc        The document from which to create elements
-     */
-    void writeMapLayer( QgsMapLayer* mapLayer, QDomElement& layerElem, QDomDocument& doc ) const;
-
-    /**
-     * Will connect to appropriate signals from map layers to load and save style
-     *
-     * @param mapLayer The layer to connect
-     */
-    void mapLayerAdded( QgsMapLayer* mapLayer );
-
-    /**
-     * Loads layer symbology for the layer that emitted the signal
-     *
-     * @param element The XML element containing the style information
-     *
-     * @param errorMessage Errors will be written into this string (unused)
-     */
-    void readSymbology( const QDomElement& element, QString& errorMessage );
-
-    /**
-     * Saves layer symbology for the layer that emitted the signal
-     *
-     * @param element The XML element where the style information be written to
-     * @param doc     The XML document where the style information be written to
-     *
-     * @param errorMessage Errors will be written into this string (unused)
-     */
-    void writeSymbology( QDomElement& element, QDomDocument& doc, QString& errorMessage );
 
   private:
     QString findSuitableWrapper( QWidget* editor , const QString& defaultWidget );
 
     QMap<QString, QgsEditorWidgetFactory*> mWidgetFactories;
     QMap<const char*, QPair<int, QString> > mFactoriesByType;
+    QgsEditorWidgetAutoConf mAutoConf;
 };
 
 #endif // QGSEDITORWIDGETREGISTRY_H

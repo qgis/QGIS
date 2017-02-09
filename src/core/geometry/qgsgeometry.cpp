@@ -22,44 +22,35 @@ email                : morb at ozemail dot com dot au
 #include "qgsgeometry.h"
 #include "qgsgeometryeditutils.h"
 #include "qgsgeometryfactory.h"
+#include "qgsgeometrymakevalid.h"
 #include "qgsgeometryutils.h"
 #include "qgsinternalgeometryengine.h"
 #include "qgsgeos.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsmaptopixel.h"
 #include "qgsmessagelog.h"
 #include "qgspoint.h"
 #include "qgsrectangle.h"
 
-#include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
-#include "qgsproject.h"
 #include "qgsgeometryvalidator.h"
 
-#include "qgsmulticurvev2.h"
-#include "qgsmultilinestringv2.h"
-#include "qgsmultipointv2.h"
-#include "qgsmultipolygonv2.h"
-#include "qgsmultisurfacev2.h"
+#include "qgsmulticurve.h"
+#include "qgsmultilinestring.h"
+#include "qgsmultipoint.h"
+#include "qgsmultipolygon.h"
+#include "qgsmultisurface.h"
 #include "qgspointv2.h"
-#include "qgspolygonv2.h"
-#include "qgslinestringv2.h"
-
-#ifndef Q_WS_WIN
-#include <netinet/in.h>
-#else
-#include <winsock.h>
-#endif
+#include "qgspolygon.h"
+#include "qgslinestring.h"
 
 struct QgsGeometryPrivate
 {
-  QgsGeometryPrivate(): ref( 1 ), geometry( nullptr ), mWkb( nullptr ), mWkbSize( 0 ), mGeos( nullptr ) {}
-  ~QgsGeometryPrivate() { delete geometry; delete[] mWkb; GEOSGeom_destroy_r( QgsGeos::getGEOSHandler(), mGeos ); }
+  QgsGeometryPrivate(): ref( 1 ), geometry( nullptr ) {}
+  ~QgsGeometryPrivate() { delete geometry; }
   QAtomicInt ref;
-  QgsAbstractGeometryV2* geometry;
-  mutable const unsigned char* mWkb; //store wkb pointer for backward compatibility
-  mutable int mWkbSize;
-  mutable GEOSGeometry* mGeos;
+  QgsAbstractGeometry* geometry;
 };
 
 QgsGeometry::QgsGeometry(): d( new QgsGeometryPrivate() )
@@ -72,7 +63,7 @@ QgsGeometry::~QgsGeometry()
     delete d;
 }
 
-QgsGeometry::QgsGeometry( QgsAbstractGeometryV2* geom ): d( new QgsGeometryPrivate() )
+QgsGeometry::QgsGeometry( QgsAbstractGeometry* geom ): d( new QgsGeometryPrivate() )
 {
   d->geometry = geom;
   d->ref = QAtomicInt( 1 );
@@ -101,7 +92,7 @@ void QgsGeometry::detach( bool cloneGeom )
   if ( d->ref > 1 )
   {
     ( void )d->ref.deref();
-    QgsAbstractGeometryV2* cGeom = nullptr;
+    QgsAbstractGeometry* cGeom = nullptr;
 
     if ( d->geometry && cloneGeom )
     {
@@ -113,112 +104,104 @@ void QgsGeometry::detach( bool cloneGeom )
   }
 }
 
-void QgsGeometry::removeWkbGeos()
-{
-  delete[] d->mWkb;
-  d->mWkb = nullptr;
-  d->mWkbSize = 0;
-  if ( d->mGeos )
-  {
-    GEOSGeom_destroy_r( QgsGeos::getGEOSHandler(), d->mGeos );
-    d->mGeos = nullptr;
-  }
-}
-
-QgsAbstractGeometryV2* QgsGeometry::geometry() const
+QgsAbstractGeometry* QgsGeometry::geometry() const
 {
   return d->geometry;
 }
 
-void QgsGeometry::setGeometry( QgsAbstractGeometryV2* geometry )
+void QgsGeometry::setGeometry( QgsAbstractGeometry* geometry )
 {
+  if ( d->geometry == geometry )
+  {
+    return;
+  }
+
   detach( false );
   if ( d->geometry )
   {
     delete d->geometry;
     d->geometry = nullptr;
   }
-  removeWkbGeos();
 
   d->geometry = geometry;
 }
 
-bool QgsGeometry::isEmpty() const
+bool QgsGeometry::isNull() const
 {
   return !d->geometry;
 }
 
-QgsGeometry* QgsGeometry::fromWkt( const QString& wkt )
+QgsGeometry QgsGeometry::fromWkt( const QString& wkt )
 {
-  QgsAbstractGeometryV2* geom = QgsGeometryFactory::geomFromWkt( wkt );
+  QgsAbstractGeometry* geom = QgsGeometryFactory::geomFromWkt( wkt );
   if ( !geom )
   {
-    return nullptr;
+    return QgsGeometry();
   }
-  return new QgsGeometry( geom );
+  return QgsGeometry( geom );
 }
 
-QgsGeometry* QgsGeometry::fromPoint( const QgsPoint& point )
+QgsGeometry QgsGeometry::fromPoint( const QgsPoint& point )
 {
-  QgsAbstractGeometryV2* geom = QgsGeometryFactory::fromPoint( point );
+  QgsAbstractGeometry* geom = QgsGeometryFactory::fromPoint( point );
   if ( geom )
   {
-    return new QgsGeometry( geom );
+    return QgsGeometry( geom );
   }
-  return nullptr;
+  return QgsGeometry();
 }
 
-QgsGeometry* QgsGeometry::fromPolyline( const QgsPolyline& polyline )
+QgsGeometry QgsGeometry::fromPolyline( const QgsPolyline& polyline )
 {
-  QgsAbstractGeometryV2* geom = QgsGeometryFactory::fromPolyline( polyline );
+  QgsAbstractGeometry* geom = QgsGeometryFactory::fromPolyline( polyline );
   if ( geom )
   {
-    return new QgsGeometry( geom );
+    return QgsGeometry( geom );
   }
-  return nullptr;
+  return QgsGeometry();
 }
 
-QgsGeometry* QgsGeometry::fromPolygon( const QgsPolygon& polygon )
+QgsGeometry QgsGeometry::fromPolygon( const QgsPolygon& polygon )
 {
-  QgsAbstractGeometryV2* geom = QgsGeometryFactory::fromPolygon( polygon );
+  QgsAbstractGeometry* geom = QgsGeometryFactory::fromPolygon( polygon );
   if ( geom )
   {
-    return new QgsGeometry( geom );
+    return QgsGeometry( geom );
   }
-  return nullptr;
+  return QgsGeometry();
 }
 
-QgsGeometry* QgsGeometry::fromMultiPoint( const QgsMultiPoint& multipoint )
+QgsGeometry QgsGeometry::fromMultiPoint( const QgsMultiPoint& multipoint )
 {
-  QgsAbstractGeometryV2* geom = QgsGeometryFactory::fromMultiPoint( multipoint );
+  QgsAbstractGeometry* geom = QgsGeometryFactory::fromMultiPoint( multipoint );
   if ( geom )
   {
-    return new QgsGeometry( geom );
+    return QgsGeometry( geom );
   }
-  return nullptr;
+  return QgsGeometry();
 }
 
-QgsGeometry* QgsGeometry::fromMultiPolyline( const QgsMultiPolyline& multiline )
+QgsGeometry QgsGeometry::fromMultiPolyline( const QgsMultiPolyline& multiline )
 {
-  QgsAbstractGeometryV2* geom = QgsGeometryFactory::fromMultiPolyline( multiline );
+  QgsAbstractGeometry* geom = QgsGeometryFactory::fromMultiPolyline( multiline );
   if ( geom )
   {
-    return new QgsGeometry( geom );
+    return QgsGeometry( geom );
   }
-  return nullptr;
+  return QgsGeometry();
 }
 
-QgsGeometry* QgsGeometry::fromMultiPolygon( const QgsMultiPolygon& multipoly )
+QgsGeometry QgsGeometry::fromMultiPolygon( const QgsMultiPolygon& multipoly )
 {
-  QgsAbstractGeometryV2* geom = QgsGeometryFactory::fromMultiPolygon( multipoly );
+  QgsAbstractGeometry* geom = QgsGeometryFactory::fromMultiPolygon( multipoly );
   if ( geom )
   {
-    return new QgsGeometry( geom );
+    return QgsGeometry( geom );
   }
-  return nullptr;
+  return QgsGeometry();
 }
 
-QgsGeometry* QgsGeometry::fromRect( const QgsRectangle& rect )
+QgsGeometry QgsGeometry::fromRect( const QgsRectangle& rect )
 {
   QgsPolyline ring;
   ring.append( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
@@ -233,6 +216,26 @@ QgsGeometry* QgsGeometry::fromRect( const QgsRectangle& rect )
   return fromPolygon( polygon );
 }
 
+QgsGeometry QgsGeometry::collectGeometry( const QList< QgsGeometry >& geometries )
+{
+  QgsGeometry collected;
+
+  QList< QgsGeometry >::const_iterator git = geometries.constBegin();
+  for ( ; git != geometries.constEnd(); ++git )
+  {
+    if ( collected.isNull() )
+    {
+      collected = QgsGeometry( *git );
+      collected.convertToMultiType();
+    }
+    else
+    {
+      collected.addPart( *git );
+    }
+  }
+  return collected;
+}
+
 void QgsGeometry::fromWkb( unsigned char *wkb, int length )
 {
   detach( false );
@@ -240,85 +243,65 @@ void QgsGeometry::fromWkb( unsigned char *wkb, int length )
   if ( d->geometry )
   {
     delete d->geometry;
-    removeWkbGeos();
   }
-  d->geometry = QgsGeometryFactory::geomFromWkb( QgsConstWkbPtr( wkb, length ) );
+  QgsConstWkbPtr ptr( wkb, length );
+  d->geometry = QgsGeometryFactory::geomFromWkb( ptr );
+  delete [] wkb;
+}
+
+void QgsGeometry::fromWkb( const QByteArray &wkb )
+{
+  detach( false );
+
   if ( d->geometry )
   {
-    d->mWkb = wkb;
-    d->mWkbSize = length;
+    delete d->geometry;
   }
-  else
-  {
-    delete [] wkb;
-    d->mWkb = nullptr;
-    d->mWkbSize = 0;
-  }
+  QgsConstWkbPtr ptr( wkb );
+  d->geometry = QgsGeometryFactory::geomFromWkb( ptr );
 }
 
-const unsigned char *QgsGeometry::asWkb() const
+GEOSGeometry* QgsGeometry::exportToGeos( double precision ) const
 {
   if ( !d->geometry )
   {
     return nullptr;
   }
 
-  if ( !d->mWkb )
-  {
-    d->mWkb = d->geometry->asWkb( d->mWkbSize );
-  }
-  return d->mWkb;
-}
-
-int QgsGeometry::wkbSize() const
-{
-  if ( !d->geometry )
-  {
-    return 0;
-  }
-
-  if ( !d->mWkb )
-  {
-    d->mWkb = d->geometry->asWkb( d->mWkbSize );
-  }
-  return d->mWkbSize;
-}
-
-const GEOSGeometry* QgsGeometry::asGeos( double precision ) const
-{
-  if ( !d->geometry )
-  {
-    return nullptr;
-  }
-
-  if ( !d->mGeos )
-  {
-    d->mGeos = QgsGeos::asGeos( d->geometry, precision );
-  }
-  return d->mGeos;
+  return QgsGeos::asGeos( d->geometry, precision );
 }
 
 
-QGis::WkbType QgsGeometry::wkbType() const
+QgsWkbTypes::Type QgsGeometry::wkbType() const
 {
   if ( !d->geometry )
   {
-    return QGis::WKBUnknown;
+    return QgsWkbTypes::Unknown;
   }
   else
   {
-    return QGis::fromNewWkbType( d->geometry->wkbType() );
+    return d->geometry->wkbType();
   }
 }
 
 
-QGis::GeometryType QgsGeometry::type() const
+QgsWkbTypes::GeometryType QgsGeometry::type() const
 {
   if ( !d->geometry )
   {
-    return QGis::UnknownGeometry;
+    return QgsWkbTypes::UnknownGeometry;
   }
-  return static_cast< QGis::GeometryType >( QgsWKBTypes::geometryType( d->geometry->wkbType() ) );
+  return static_cast< QgsWkbTypes::GeometryType >( QgsWkbTypes::geometryType( d->geometry->wkbType() ) );
+}
+
+bool QgsGeometry::isEmpty() const
+{
+  if ( !d->geometry )
+  {
+    return true;
+  }
+
+  return d->geometry->isEmpty();
 }
 
 bool QgsGeometry::isMultipart() const
@@ -327,7 +310,7 @@ bool QgsGeometry::isMultipart() const
   {
     return false;
   }
-  return QgsWKBTypes::isMultiType( d->geometry->wkbType() );
+  return QgsWkbTypes::isMultiType( d->geometry->wkbType() );
 }
 
 void QgsGeometry::fromGeos( GEOSGeometry *geos )
@@ -335,13 +318,14 @@ void QgsGeometry::fromGeos( GEOSGeometry *geos )
   detach( false );
   delete d->geometry;
   d->geometry = QgsGeos::fromGeos( geos );
-  d->mGeos = geos;
+  GEOSGeom_destroy_r( QgsGeos::getGEOSHandler(), geos );
 }
 
 QgsPoint QgsGeometry::closestVertex( const QgsPoint& point, int& atVertex, int& beforeVertex, int& afterVertex, double& sqrDist ) const
 {
   if ( !d->geometry )
   {
+    sqrDist = -1;
     return QgsPoint( 0, 0 );
   }
 
@@ -375,6 +359,46 @@ double QgsGeometry::distanceToVertex( int vertex ) const
   }
 
   return QgsGeometryUtils::distanceToVertex( *( d->geometry ), id );
+}
+
+double QgsGeometry::angleAtVertex( int vertex ) const
+{
+  if ( !d->geometry )
+  {
+    return 0;
+  }
+
+  QgsVertexId v2;
+  if ( !vertexIdFromVertexNr( vertex, v2 ) )
+  {
+    return 0;
+  }
+
+  QgsVertexId v1;
+  QgsVertexId v3;
+  QgsGeometryUtils::adjacentVertices( *d->geometry, v2, v1, v3 );
+  if ( v1.isValid() && v3.isValid() )
+  {
+    QgsPointV2 p1 = d->geometry->vertexAt( v1 );
+    QgsPointV2 p2 = d->geometry->vertexAt( v2 );
+    QgsPointV2 p3 = d->geometry->vertexAt( v3 );
+    double angle1 = QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
+    double angle2 = QgsGeometryUtils::lineAngle( p2.x(), p2.y(), p3.x(), p3.y() );
+    return QgsGeometryUtils::averageAngle( angle1, angle2 );
+  }
+  else if ( v3.isValid() )
+  {
+    QgsPointV2 p1 = d->geometry->vertexAt( v2 );
+    QgsPointV2 p2 = d->geometry->vertexAt( v3 );
+    return QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
+  }
+  else if ( v1.isValid() )
+  {
+    QgsPointV2 p1 = d->geometry->vertexAt( v1 );
+    QgsPointV2 p2 = d->geometry->vertexAt( v2 );
+    return QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
+  }
+  return 0.0;
 }
 
 void QgsGeometry::adjacentVertices( int atVertex, int& beforeVertex, int& afterVertex ) const
@@ -413,7 +437,6 @@ bool QgsGeometry::moveVertex( double x, double y, int atVertex )
 
   detach( true );
 
-  removeWkbGeos();
   return d->geometry->moveVertex( id, QgsPointV2( x, y ) );
 }
 
@@ -432,7 +455,6 @@ bool QgsGeometry::moveVertex( const QgsPointV2& p, int atVertex )
 
   detach( true );
 
-  removeWkbGeos();
   return d->geometry->moveVertex( id, p );
 }
 
@@ -444,20 +466,18 @@ bool QgsGeometry::deleteVertex( int atVertex )
   }
 
   //maintain compatibility with < 2.10 API
-  if ( d->geometry->geometryType() == "MultiPoint" )
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::MultiPoint )
   {
     detach( true );
-    removeWkbGeos();
     //delete geometry instead of point
-    return static_cast< QgsGeometryCollectionV2* >( d->geometry )->removeGeometry( atVertex );
+    return static_cast< QgsGeometryCollection* >( d->geometry )->removeGeometry( atVertex );
   }
 
   //if it is a point, set the geometry to nullptr
-  if ( QgsWKBTypes::flatType( d->geometry->wkbType() ) == QgsWKBTypes::Point )
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::Point )
   {
     detach( false );
     delete d->geometry;
-    removeWkbGeos();
     d->geometry = nullptr;
     return true;
   }
@@ -470,7 +490,6 @@ bool QgsGeometry::deleteVertex( int atVertex )
 
   detach( true );
 
-  removeWkbGeos();
   return d->geometry->deleteVertex( id );
 }
 
@@ -482,12 +501,11 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
   }
 
   //maintain compatibility with < 2.10 API
-  if ( d->geometry->geometryType() == "MultiPoint" )
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::MultiPoint )
   {
     detach( true );
-    removeWkbGeos();
     //insert geometry instead of point
-    return static_cast< QgsGeometryCollectionV2* >( d->geometry )->insertGeometry( new QgsPointV2( x, y ), beforeVertex );
+    return static_cast< QgsGeometryCollection* >( d->geometry )->insertGeometry( new QgsPointV2( x, y ), beforeVertex );
   }
 
   QgsVertexId id;
@@ -497,8 +515,6 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
   }
 
   detach( true );
-
-  removeWkbGeos();
 
   return d->geometry->insertVertex( id, QgsPointV2( x, y ) );
 }
@@ -542,12 +558,14 @@ double QgsGeometry::closestVertexWithContext( const QgsPoint& point, int& atVert
 {
   if ( !d->geometry )
   {
-    return 0.0;
+    return -1;
   }
 
   QgsVertexId vId;
   QgsPointV2 pt( point.x(), point.y() );
   QgsPointV2 closestPoint = QgsGeometryUtils::closestVertex( *( d->geometry ), pt, vId );
+  if ( !vId.isValid() )
+    return -1;
   atVertex = vertexNrFromVertexId( vId );
   return QgsGeometryUtils::sqrDistance2D( closestPoint, pt );
 }
@@ -561,7 +579,7 @@ double QgsGeometry::closestSegmentWithContext(
 {
   if ( !d->geometry )
   {
-    return 0;
+    return -1;
   }
 
   QgsPointV2 segmentPt;
@@ -569,6 +587,8 @@ double QgsGeometry::closestSegmentWithContext(
   bool leftOfBool;
 
   double sqrDist = d->geometry->closestSegment( QgsPointV2( point.x(), point.y() ), segmentPt,  vertexAfter, &leftOfBool, epsilon );
+  if ( sqrDist < 0 )
+    return -1;
 
   minDistPoint.setX( segmentPt.x() );
   minDistPoint.setY( segmentPt.y() );
@@ -584,15 +604,14 @@ int QgsGeometry::addRing( const QList<QgsPoint> &ring )
 {
   detach( true );
 
-  removeWkbGeos();
-  QgsLineStringV2* ringLine = new QgsLineStringV2();
-  QgsPointSequenceV2 ringPoints;
+  QgsLineString* ringLine = new QgsLineString();
+  QgsPointSequence ringPoints;
   convertPointList( ring, ringPoints );
   ringLine->setPoints( ringPoints );
   return addRing( ringLine );
 }
 
-int QgsGeometry::addRing( QgsCurveV2* ring )
+int QgsGeometry::addRing( QgsCurve* ring )
 {
   if ( !d->geometry )
   {
@@ -602,47 +621,46 @@ int QgsGeometry::addRing( QgsCurveV2* ring )
 
   detach( true );
 
-  removeWkbGeos();
   return QgsGeometryEditUtils::addRing( d->geometry, ring );
 }
 
-int QgsGeometry::addPart( const QList<QgsPoint> &points, QGis::GeometryType geomType )
+int QgsGeometry::addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType )
 {
-  QgsPointSequenceV2 l;
+  QgsPointSequence l;
   convertPointList( points, l );
   return addPart( l, geomType );
 }
 
-int QgsGeometry::addPart( const QgsPointSequenceV2 &points, QGis::GeometryType geomType )
+int QgsGeometry::addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType )
 {
-  QgsAbstractGeometryV2* partGeom = nullptr;
+  QgsAbstractGeometry* partGeom = nullptr;
   if ( points.size() == 1 )
   {
     partGeom = new QgsPointV2( points[0] );
   }
   else if ( points.size() > 1 )
   {
-    QgsLineStringV2* ringLine = new QgsLineStringV2();
+    QgsLineString* ringLine = new QgsLineString();
     ringLine->setPoints( points );
     partGeom = ringLine;
   }
   return addPart( partGeom, geomType );
 }
 
-int QgsGeometry::addPart( QgsAbstractGeometryV2* part, QGis::GeometryType geomType )
+int QgsGeometry::addPart( QgsAbstractGeometry* part, QgsWkbTypes::GeometryType geomType )
 {
   if ( !d->geometry )
   {
     detach( false );
     switch ( geomType )
     {
-      case QGis::Point:
+      case QgsWkbTypes::PointGeometry:
         d->geometry = new QgsMultiPointV2();
         break;
-      case QGis::Line:
-        d->geometry = new QgsMultiLineStringV2();
+      case QgsWkbTypes::LineGeometry:
+        d->geometry = new QgsMultiLineString();
         break;
-      case QGis::Polygon:
+      case QgsWkbTypes::PolygonGeometry:
         d->geometry = new QgsMultiPolygonV2();
         break;
       default:
@@ -652,21 +670,55 @@ int QgsGeometry::addPart( QgsAbstractGeometryV2* part, QGis::GeometryType geomTy
   else
   {
     detach( true );
-    removeWkbGeos();
   }
 
   convertToMultiType();
   return QgsGeometryEditUtils::addPart( d->geometry, part );
 }
 
-int QgsGeometry::addPart( const QgsGeometry *newPart )
+int QgsGeometry::addPart( const QgsGeometry& newPart )
 {
-  if ( !d->geometry || !newPart || !newPart->d || !newPart->d->geometry )
+  if ( !d->geometry || !newPart.d || !newPart.d->geometry )
   {
     return 1;
   }
 
-  return addPart( newPart->d->geometry->clone() );
+  return addPart( newPart.d->geometry->clone() );
+}
+
+QgsGeometry QgsGeometry::removeInteriorRings( double minimumRingArea ) const
+{
+  if ( !d->geometry || type() != QgsWkbTypes::PolygonGeometry )
+  {
+    return QgsGeometry();
+  }
+
+  if ( QgsWkbTypes::isMultiType( d->geometry->wkbType() ) )
+  {
+    QList<QgsGeometry> parts = asGeometryCollection();
+    QList<QgsGeometry> results;
+    Q_FOREACH ( const QgsGeometry& part, parts )
+    {
+      QgsGeometry result = part.removeInteriorRings( minimumRingArea );
+      if ( result )
+        results << result;
+    }
+    if ( results.isEmpty() )
+      return QgsGeometry();
+
+    QgsGeometry first = results.takeAt( 0 );
+    Q_FOREACH ( const QgsGeometry& result, results )
+    {
+      first.addPart( result );
+    }
+    return first;
+  }
+  else
+  {
+    QgsCurvePolygon* newPoly = static_cast< QgsCurvePolygon* >( d->geometry->clone() );
+    newPoly->removeInteriorRings( minimumRingArea );
+    return QgsGeometry( newPoly );
+  }
 }
 
 int QgsGeometry::addPart( GEOSGeometry *newPart )
@@ -678,8 +730,7 @@ int QgsGeometry::addPart( GEOSGeometry *newPart )
 
   detach( true );
 
-  QgsAbstractGeometryV2* geom = QgsGeos::fromGeos( newPart );
-  removeWkbGeos();
+  QgsAbstractGeometry* geom = QgsGeos::fromGeos( newPart );
   return QgsGeometryEditUtils::addPart( d->geometry, geom );
 }
 
@@ -693,7 +744,6 @@ int QgsGeometry::translate( double dx, double dy )
   detach( true );
 
   d->geometry->transform( QTransform::fromTranslate( dx, dy ) );
-  removeWkbGeos();
   return 0;
 }
 
@@ -710,23 +760,22 @@ int QgsGeometry::rotate( double rotation, const QgsPoint& center )
   t.rotate( -rotation );
   t.translate( -center.x(), -center.y() );
   d->geometry->transform( t );
-  removeWkbGeos();
   return 0;
 }
 
-int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeometry*>& newGeometries, bool topological, QList<QgsPoint> &topologyTestPoints )
+int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeometry>& newGeometries, bool topological, QList<QgsPoint> &topologyTestPoints )
 {
   if ( !d->geometry )
   {
     return 0;
   }
 
-  QList<QgsAbstractGeometryV2*> newGeoms;
-  QgsLineStringV2 splitLineString;
-  QgsPointSequenceV2 splitLinePointsV2;
+  QList<QgsAbstractGeometry*> newGeoms;
+  QgsLineString splitLineString;
+  QgsPointSequence splitLinePointsV2;
   convertPointList( splitLine, splitLinePointsV2 );
   splitLineString.setPoints( splitLinePointsV2 );
-  QgsPointSequenceV2 tp;
+  QgsPointSequence tp;
 
   QgsGeos geos( d->geometry );
   int result = geos.splitGeometry( splitLineString, newGeoms, topological, tp );
@@ -739,16 +788,15 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeome
     newGeometries.clear();
     for ( int i = 1; i < newGeoms.size(); ++i )
     {
-      newGeometries.push_back( new QgsGeometry( newGeoms.at( i ) ) );
+      newGeometries.push_back( QgsGeometry( newGeoms.at( i ) ) );
     }
   }
 
   convertPointList( tp, topologyTestPoints );
-  removeWkbGeos();
   return result;
 }
 
-/** Replaces a part of this geometry with another line*/
+//! Replaces a part of this geometry with another line
 int QgsGeometry::reshapeGeometry( const QList<QgsPoint>& reshapeWithLine )
 {
   if ( !d->geometry )
@@ -756,20 +804,19 @@ int QgsGeometry::reshapeGeometry( const QList<QgsPoint>& reshapeWithLine )
     return 0;
   }
 
-  QgsPointSequenceV2 reshapeLine;
+  QgsPointSequence reshapeLine;
   convertPointList( reshapeWithLine, reshapeLine );
-  QgsLineStringV2 reshapeLineString;
+  QgsLineString reshapeLineString;
   reshapeLineString.setPoints( reshapeLine );
 
   QgsGeos geos( d->geometry );
   int errorCode = 0;
-  QgsAbstractGeometryV2* geom = geos.reshapeGeometry( reshapeLineString, &errorCode );
+  QgsAbstractGeometry* geom = geos.reshapeGeometry( reshapeLineString, &errorCode );
   if ( errorCode == 0 && geom )
   {
     detach( false );
     delete d->geometry;
     d->geometry = geom;
-    removeWkbGeos();
     return 0;
   }
   return errorCode;
@@ -784,7 +831,7 @@ int QgsGeometry::makeDifference( const QgsGeometry* other )
 
   QgsGeos geos( d->geometry );
 
-  QgsAbstractGeometryV2* diffGeom = geos.intersection( *( other->geometry() ) );
+  QgsAbstractGeometry* diffGeom = geos.intersection( *( other->geometry() ) );
   if ( !diffGeom )
   {
     return 1;
@@ -794,8 +841,25 @@ int QgsGeometry::makeDifference( const QgsGeometry* other )
 
   delete d->geometry;
   d->geometry = diffGeom;
-  removeWkbGeos();
   return 0;
+}
+
+QgsGeometry QgsGeometry::makeDifference( const QgsGeometry& other ) const
+{
+  if ( !d->geometry || other.isNull() )
+  {
+    return QgsGeometry();
+  }
+
+  QgsGeos geos( d->geometry );
+
+  QgsAbstractGeometry* diffGeom = geos.intersection( *other.geometry() );
+  if ( !diffGeom )
+  {
+    return QgsGeometry();
+  }
+
+  return QgsGeometry( diffGeom );
 }
 
 QgsRectangle QgsGeometry::boundingBox() const
@@ -807,23 +871,87 @@ QgsRectangle QgsGeometry::boundingBox() const
   return QgsRectangle();
 }
 
-bool QgsGeometry::intersects( const QgsRectangle& r ) const
+QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double& area, double &angle, double& width, double& height ) const
 {
-  QgsGeometry* g = fromRect( r );
-  bool res = intersects( g );
-  delete g;
-  return res;
+  QgsRectangle minRect;
+  area = DBL_MAX;
+  angle = 0;
+  width = DBL_MAX;
+  height = DBL_MAX;
+
+  if ( !d->geometry || d->geometry->nCoordinates() < 2 )
+    return QgsGeometry();
+
+  QgsGeometry hull = convexHull();
+  if ( hull.isNull() )
+    return QgsGeometry();
+
+  QgsVertexId vertexId;
+  QgsPointV2 pt0;
+  QgsPointV2 pt1;
+  QgsPointV2 pt2;
+  // get first point
+  hull.geometry()->nextVertex( vertexId, pt0 );
+  pt1 = pt0;
+  double prevAngle = 0.0;
+  while ( hull.geometry()->nextVertex( vertexId, pt2 ) )
+  {
+    double currentAngle = QgsGeometryUtils::lineAngle( pt1.x(), pt1.y(), pt2.x(), pt2.y() );
+    double rotateAngle = 180.0 / M_PI * ( currentAngle - prevAngle );
+    prevAngle = currentAngle;
+
+    QTransform t = QTransform::fromTranslate( pt0.x(), pt0.y() );
+    t.rotate( rotateAngle );
+    t.translate( -pt0.x(), -pt0.y() );
+
+    hull.geometry()->transform( t );
+
+    QgsRectangle bounds = hull.geometry()->boundingBox();
+    double currentArea = bounds.width() * bounds.height();
+    if ( currentArea  < area )
+    {
+      minRect = bounds;
+      area = currentArea;
+      angle = 180.0 / M_PI * currentAngle;
+      width = bounds.width();
+      height = bounds.height();
+    }
+
+    pt2 = pt1;
+  }
+
+  QgsGeometry minBounds = QgsGeometry::fromRect( minRect );
+  minBounds.rotate( angle, QgsPoint( pt0.x(), pt0.y() ) );
+
+  // constrain angle to 0 - 180
+  if ( angle > 180.0 )
+    angle = fmod( angle, 180.0 );
+
+  return minBounds;
 }
 
-bool QgsGeometry::intersects( const QgsGeometry* geometry ) const
+QgsGeometry QgsGeometry::orthogonalize( double tolerance, int maxIterations, double angleThreshold ) const
 {
-  if ( !d->geometry || !geometry || !geometry->d->geometry )
+  QgsInternalGeometryEngine engine( *this );
+
+  return engine.orthogonalize( tolerance, maxIterations, angleThreshold );
+}
+
+bool QgsGeometry::intersects( const QgsRectangle& r ) const
+{
+  QgsGeometry g = fromRect( r );
+  return intersects( g );
+}
+
+bool QgsGeometry::intersects( const QgsGeometry& geometry ) const
+{
+  if ( !d->geometry || geometry.isNull() )
   {
     return false;
   }
 
   QgsGeos geos( d->geometry );
-  return geos.intersects( *( geometry->d->geometry ) );
+  return geos.intersects( *geometry.d->geometry );
 }
 
 bool QgsGeometry::contains( const QgsPoint* p ) const
@@ -838,81 +966,81 @@ bool QgsGeometry::contains( const QgsPoint* p ) const
   return geos.contains( pt );
 }
 
-bool QgsGeometry::contains( const QgsGeometry* geometry ) const
+bool QgsGeometry::contains( const QgsGeometry& geometry ) const
 {
-  if ( !d->geometry || !geometry || !geometry->d->geometry )
+  if ( !d->geometry || geometry.isNull() )
   {
     return false;
   }
 
   QgsGeos geos( d->geometry );
-  return geos.contains( *( geometry->d->geometry ) );
+  return geos.contains( *( geometry.d->geometry ) );
 }
 
-bool QgsGeometry::disjoint( const QgsGeometry* geometry ) const
+bool QgsGeometry::disjoint( const QgsGeometry& geometry ) const
 {
-  if ( !d->geometry || !geometry || !geometry->d->geometry )
+  if ( !d->geometry || geometry.isNull() )
   {
     return false;
   }
 
   QgsGeos geos( d->geometry );
-  return geos.disjoint( *( geometry->d->geometry ) );
+  return geos.disjoint( *( geometry.d->geometry ) );
 }
 
-bool QgsGeometry::equals( const QgsGeometry* geometry ) const
+bool QgsGeometry::equals( const QgsGeometry& geometry ) const
 {
-  if ( !d->geometry || !geometry || !geometry->d->geometry )
+  if ( !d->geometry || geometry.isNull() )
   {
     return false;
   }
 
   QgsGeos geos( d->geometry );
-  return geos.isEqual( *( geometry->d->geometry ) );
+  return geos.isEqual( *( geometry.d->geometry ) );
 }
 
-bool QgsGeometry::touches( const QgsGeometry* geometry ) const
+bool QgsGeometry::touches( const QgsGeometry& geometry ) const
 {
-  if ( !d->geometry || !geometry || !geometry->d->geometry )
+  if ( !d->geometry || geometry.isNull() )
   {
     return false;
   }
 
   QgsGeos geos( d->geometry );
-  return geos.touches( *( geometry->d->geometry ) );
+  return geos.touches( *( geometry.d->geometry ) );
 }
 
-bool QgsGeometry::overlaps( const QgsGeometry* geometry ) const
+bool QgsGeometry::overlaps( const QgsGeometry& geometry ) const
 {
-  if ( !d->geometry || !geometry || !geometry->d->geometry )
+  if ( !d->geometry || geometry.isNull() )
   {
     return false;
   }
 
   QgsGeos geos( d->geometry );
-  return geos.overlaps( *( geometry->d->geometry ) );
+  return geos.overlaps( *( geometry.d->geometry ) );
 }
 
-bool QgsGeometry::within( const QgsGeometry* geometry ) const
+bool QgsGeometry::within( const QgsGeometry& geometry ) const
 {
-  if ( !d->geometry || !geometry || !geometry->d->geometry )
+  if ( !d->geometry || geometry.isNull() )
   {
     return false;
   }
 
   QgsGeos geos( d->geometry );
-  return geos.within( *( geometry->d->geometry ) );
+  return geos.within( *( geometry.d->geometry ) );
 }
 
-bool QgsGeometry::crosses( const QgsGeometry* geometry ) const
+bool QgsGeometry::crosses( const QgsGeometry& geometry ) const
 {
-  if ( !d->geometry || !geometry || !geometry->d->geometry )
+  if ( !d->geometry || geometry.isNull() )
   {
     return false;
   }
 
   QgsGeos geos( d->geometry );
-  return geos.crosses( *( geometry->d->geometry ) );
+  return geos.crosses( *( geometry.d->geometry ) );
 }
 
 QString QgsGeometry::exportToWkt( int precision ) const
@@ -928,26 +1056,26 @@ QString QgsGeometry::exportToGeoJSON( int precision ) const
 {
   if ( !d->geometry )
   {
-    return QString();
+    return QStringLiteral( "null" );
   }
   return d->geometry->asJSON( precision );
 }
 
-QgsGeometry* QgsGeometry::convertToType( QGis::GeometryType destType, bool destMultipart ) const
+QgsGeometry QgsGeometry::convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart ) const
 {
   switch ( destType )
   {
-    case QGis::Point:
+    case QgsWkbTypes::PointGeometry:
       return convertToPoint( destMultipart );
 
-    case QGis::Line:
+    case QgsWkbTypes::LineGeometry:
       return convertToLine( destMultipart );
 
-    case QGis::Polygon:
+    case QgsWkbTypes::PolygonGeometry:
       return convertToPolygon( destMultipart );
 
     default:
-      return nullptr;
+      return QgsGeometry();
   }
 }
 
@@ -963,8 +1091,8 @@ bool QgsGeometry::convertToMultiType()
     return true;
   }
 
-  QgsGeometryCollectionV2* multiGeom = dynamic_cast<QgsGeometryCollectionV2*>
-                                       ( QgsGeometryFactory::geomFromWkbType( QgsWKBTypes::multiType( d->geometry->wkbType() ) ) );
+  QgsGeometryCollection* multiGeom = dynamic_cast<QgsGeometryCollection*>
+                                     ( QgsGeometryFactory::geomFromWkbType( QgsWkbTypes::multiType( d->geometry->wkbType() ) ) );
   if ( !multiGeom )
   {
     return false;
@@ -973,7 +1101,6 @@ bool QgsGeometry::convertToMultiType()
   detach( true );
   multiGeom->addGeometry( d->geometry );
   d->geometry = multiGeom;
-  removeWkbGeos();
   return true;
 }
 
@@ -989,21 +1116,20 @@ bool QgsGeometry::convertToSingleType()
     return true;
   }
 
-  QgsGeometryCollectionV2* multiGeom = dynamic_cast<QgsGeometryCollectionV2*>( d->geometry );
+  QgsGeometryCollection* multiGeom = dynamic_cast<QgsGeometryCollection*>( d->geometry );
   if ( !multiGeom || multiGeom->partCount() < 1 )
     return false;
 
-  QgsAbstractGeometryV2* firstPart = multiGeom->geometryN( 0 )->clone();
+  QgsAbstractGeometry* firstPart = multiGeom->geometryN( 0 )->clone();
   detach( false );
 
   d->geometry = firstPart;
-  removeWkbGeos();
   return true;
 }
 
 QgsPoint QgsGeometry::asPoint() const
 {
-  if ( !d->geometry || d->geometry->geometryType() != "Point" )
+  if ( !d->geometry || QgsWkbTypes::flatType( d->geometry->wkbType() ) != QgsWkbTypes::Point )
   {
     return QgsPoint();
   }
@@ -1024,11 +1150,12 @@ QgsPolyline QgsGeometry::asPolyline() const
     return polyLine;
   }
 
-  bool doSegmentation = ( d->geometry->geometryType() == "CompoundCurve" || d->geometry->geometryType() == "CircularString" );
-  QgsLineStringV2* line = nullptr;
+  bool doSegmentation = ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::CompoundCurve
+                          || QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::CircularString );
+  QgsLineString* line = nullptr;
   if ( doSegmentation )
   {
-    QgsCurveV2* curve = dynamic_cast<QgsCurveV2*>( d->geometry );
+    QgsCurve* curve = dynamic_cast<QgsCurve*>( d->geometry );
     if ( !curve )
     {
       return polyLine;
@@ -1037,7 +1164,7 @@ QgsPolyline QgsGeometry::asPolyline() const
   }
   else
   {
-    line = dynamic_cast<QgsLineStringV2*>( d->geometry );
+    line = dynamic_cast<QgsLineString*>( d->geometry );
     if ( !line )
     {
       return polyLine;
@@ -1066,12 +1193,12 @@ QgsPolygon QgsGeometry::asPolygon() const
   if ( !d->geometry )
     return QgsPolygon();
 
-  bool doSegmentation = ( d->geometry->geometryType() == "CurvePolygon" );
+  bool doSegmentation = ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::CurvePolygon );
 
   QgsPolygonV2* p = nullptr;
   if ( doSegmentation )
   {
-    QgsCurvePolygonV2* curvePoly = dynamic_cast<QgsCurvePolygonV2*>( d->geometry );
+    QgsCurvePolygon* curvePoly = dynamic_cast<QgsCurvePolygon*>( d->geometry );
     if ( !curvePoly )
     {
       return QgsPolygon();
@@ -1100,7 +1227,7 @@ QgsPolygon QgsGeometry::asPolygon() const
 
 QgsMultiPoint QgsGeometry::asMultiPoint() const
 {
-  if ( !d->geometry || d->geometry->geometryType() != "MultiPoint" )
+  if ( !d->geometry || QgsWkbTypes::flatType( d->geometry->wkbType() ) != QgsWkbTypes::MultiPoint )
   {
     return QgsMultiPoint();
   }
@@ -1129,7 +1256,7 @@ QgsMultiPolyline QgsGeometry::asMultiPolyline() const
     return QgsMultiPolyline();
   }
 
-  QgsGeometryCollectionV2* geomCollection = dynamic_cast<QgsGeometryCollectionV2*>( d->geometry );
+  QgsGeometryCollection* geomCollection = dynamic_cast<QgsGeometryCollection*>( d->geometry );
   if ( !geomCollection )
   {
     return QgsMultiPolyline();
@@ -1145,10 +1272,10 @@ QgsMultiPolyline QgsGeometry::asMultiPolyline() const
   for ( int i = 0; i < nLines; ++i )
   {
     bool deleteLine = false;
-    const QgsLineStringV2* line = dynamic_cast<const QgsLineStringV2*>( geomCollection->geometryN( i ) );
+    const QgsLineString* line = dynamic_cast<const QgsLineString*>( geomCollection->geometryN( i ) );
     if ( !line )
     {
-      const QgsCurveV2* curve = dynamic_cast<const QgsCurveV2*>( geomCollection->geometryN( i ) );
+      const QgsCurve* curve = dynamic_cast<const QgsCurve*>( geomCollection->geometryN( i ) );
       if ( !curve )
       {
         continue;
@@ -1157,7 +1284,7 @@ QgsMultiPolyline QgsGeometry::asMultiPolyline() const
       line = curve->curveToLine();
     }
 
-    QgsPointSequenceV2 lineCoords;
+    QgsPointSequence lineCoords;
     line->points( lineCoords );
     QgsPolyline polyLine;
     convertToPolyline( lineCoords, polyLine );
@@ -1178,7 +1305,7 @@ QgsMultiPolygon QgsGeometry::asMultiPolygon() const
     return QgsMultiPolygon();
   }
 
-  QgsGeometryCollectionV2* geomCollection = dynamic_cast<QgsGeometryCollectionV2*>( d->geometry );
+  QgsGeometryCollection* geomCollection = dynamic_cast<QgsGeometryCollection*>( d->geometry );
   if ( !geomCollection )
   {
     return QgsMultiPolygon();
@@ -1196,7 +1323,7 @@ QgsMultiPolygon QgsGeometry::asMultiPolygon() const
     const QgsPolygonV2* polygon = dynamic_cast<const QgsPolygonV2*>( geomCollection->geometryN( i ) );
     if ( !polygon )
     {
-      const QgsCurvePolygonV2* cPolygon = dynamic_cast<const QgsCurvePolygonV2*>( geomCollection->geometryN( i ) );
+      const QgsCurvePolygon* cPolygon = dynamic_cast<const QgsCurvePolygon*>( geomCollection->geometryN( i ) );
       if ( cPolygon )
       {
         polygon = cPolygon->toPolygon();
@@ -1226,7 +1353,7 @@ double QgsGeometry::area() const
   //debug: compare geos area with calculation in QGIS
   double geosArea = g.area();
   double qgisArea = 0;
-  QgsSurfaceV2* surface = dynamic_cast<QgsSurfaceV2*>( d->geometry );
+  QgsSurface* surface = dynamic_cast<QgsSurface*>( d->geometry );
   if ( surface )
   {
     qgisArea = surface->area();
@@ -1257,75 +1384,177 @@ double QgsGeometry::distance( const QgsGeometry& geom ) const
   return g.distance( *( geom.d->geometry ) );
 }
 
-QgsGeometry* QgsGeometry::buffer( double distance, int segments ) const
+QgsGeometry QgsGeometry::buffer( double distance, int segments ) const
 {
   if ( !d->geometry )
   {
-    return nullptr;
+    return QgsGeometry();
   }
 
   QgsGeos g( d->geometry );
-  QgsAbstractGeometryV2* geom = g.buffer( distance, segments );
+  QgsAbstractGeometry* geom = g.buffer( distance, segments );
   if ( !geom )
   {
-    return nullptr;
+    return QgsGeometry();
   }
-  return new QgsGeometry( geom );
+  return QgsGeometry( geom );
 }
 
-QgsGeometry* QgsGeometry::buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit ) const
+QgsGeometry QgsGeometry::buffer( double distance, int segments, EndCapStyle endCapStyle, JoinStyle joinStyle, double mitreLimit ) const
 {
   if ( !d->geometry )
   {
-    return nullptr;
+    return QgsGeometry();
   }
 
   QgsGeos g( d->geometry );
-  QgsAbstractGeometryV2* geom = g.buffer( distance, segments, endCapStyle, joinStyle, mitreLimit );
+  QgsAbstractGeometry* geom = g.buffer( distance, segments, endCapStyle, joinStyle, mitreLimit );
   if ( !geom )
   {
-    return nullptr;
+    return QgsGeometry();
   }
-  return new QgsGeometry( geom );
+  return QgsGeometry( geom );
 }
 
-QgsGeometry* QgsGeometry::offsetCurve( double distance, int segments, int joinStyle, double mitreLimit ) const
+QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, JoinStyle joinStyle, double mitreLimit ) const
+{
+  if ( !d->geometry || type() != QgsWkbTypes::LineGeometry )
+  {
+    return QgsGeometry();
+  }
+
+  if ( QgsWkbTypes::isMultiType( d->geometry->wkbType() ) )
+  {
+    QList<QgsGeometry> parts = asGeometryCollection();
+    QList<QgsGeometry> results;
+    Q_FOREACH ( const QgsGeometry& part, parts )
+    {
+      QgsGeometry result = part.offsetCurve( distance, segments, joinStyle, mitreLimit );
+      if ( result )
+        results << result;
+    }
+    if ( results.isEmpty() )
+      return QgsGeometry();
+
+    QgsGeometry first = results.takeAt( 0 );
+    Q_FOREACH ( const QgsGeometry& result, results )
+    {
+      first.addPart( result );
+    }
+    return first;
+  }
+  else
+  {
+    QgsGeos geos( d->geometry );
+    QgsAbstractGeometry* offsetGeom = geos.offsetCurve( distance, segments, joinStyle, mitreLimit );
+    if ( !offsetGeom )
+    {
+      return QgsGeometry();
+    }
+    return QgsGeometry( offsetGeom );
+  }
+}
+
+QgsGeometry QgsGeometry::singleSidedBuffer( double distance, int segments, BufferSide side , JoinStyle joinStyle, double mitreLimit ) const
+{
+  if ( !d->geometry || type() != QgsWkbTypes::LineGeometry )
+  {
+    return QgsGeometry();
+  }
+
+  if ( QgsWkbTypes::isMultiType( d->geometry->wkbType() ) )
+  {
+    QList<QgsGeometry> parts = asGeometryCollection();
+    QList<QgsGeometry> results;
+    Q_FOREACH ( const QgsGeometry& part, parts )
+    {
+      QgsGeometry result = part.singleSidedBuffer( distance, segments, side, joinStyle, mitreLimit );
+      if ( result )
+        results << result;
+    }
+    if ( results.isEmpty() )
+      return QgsGeometry();
+
+    QgsGeometry first = results.takeAt( 0 );
+    Q_FOREACH ( const QgsGeometry& result, results )
+    {
+      first.addPart( result );
+    }
+    return first;
+  }
+  else
+  {
+    QgsGeos geos( d->geometry );
+    QgsAbstractGeometry* bufferGeom = geos.singleSidedBuffer( distance, segments, side,
+                                      joinStyle, mitreLimit );
+    if ( !bufferGeom )
+    {
+      return QgsGeometry();
+    }
+    return QgsGeometry( bufferGeom );
+  }
+}
+
+QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) const
+{
+  if ( !d->geometry || type() != QgsWkbTypes::LineGeometry )
+  {
+    return QgsGeometry();
+  }
+
+  if ( QgsWkbTypes::isMultiType( d->geometry->wkbType() ) )
+  {
+    QList<QgsGeometry> parts = asGeometryCollection();
+    QList<QgsGeometry> results;
+    Q_FOREACH ( const QgsGeometry& part, parts )
+    {
+      QgsGeometry result = part.extendLine( startDistance, endDistance );
+      if ( result )
+        results << result;
+    }
+    if ( results.isEmpty() )
+      return QgsGeometry();
+
+    QgsGeometry first = results.takeAt( 0 );
+    Q_FOREACH ( const QgsGeometry& result, results )
+    {
+      first.addPart( result );
+    }
+    return first;
+  }
+  else
+  {
+    QgsLineString* line = dynamic_cast< QgsLineString* >( d->geometry );
+    if ( !line )
+      return QgsGeometry();
+
+    QgsLineString* newLine = line->clone();
+    newLine->extend( startDistance, endDistance );
+    return QgsGeometry( newLine );
+  }
+}
+
+QgsGeometry QgsGeometry::simplify( double tolerance ) const
 {
   if ( !d->geometry )
   {
-    return nullptr;
+    return QgsGeometry();
   }
 
   QgsGeos geos( d->geometry );
-  QgsAbstractGeometryV2* offsetGeom = geos.offsetCurve( distance, segments, joinStyle, mitreLimit );
-  if ( !offsetGeom )
-  {
-    return nullptr;
-  }
-  return new QgsGeometry( offsetGeom );
-}
-
-QgsGeometry* QgsGeometry::simplify( double tolerance ) const
-{
-  if ( !d->geometry )
-  {
-    return nullptr;
-  }
-
-  QgsGeos geos( d->geometry );
-  QgsAbstractGeometryV2* simplifiedGeom = geos.simplify( tolerance );
+  QgsAbstractGeometry* simplifiedGeom = geos.simplify( tolerance );
   if ( !simplifiedGeom )
   {
-    return nullptr;
+    return QgsGeometry();
   }
-  return new QgsGeometry( simplifiedGeom );
+  return QgsGeometry( simplifiedGeom );
 }
 
-QgsGeometry* QgsGeometry::centroid() const
+QgsGeometry QgsGeometry::centroid() const
 {
   if ( !d->geometry )
   {
-    return nullptr;
+    return QgsGeometry();
   }
 
   QgsGeos geos( d->geometry );
@@ -1333,16 +1562,16 @@ QgsGeometry* QgsGeometry::centroid() const
   bool ok = geos.centroid( centroid );
   if ( !ok )
   {
-    return nullptr;
+    return QgsGeometry();
   }
-  return new QgsGeometry( centroid.clone() );
+  return QgsGeometry( centroid.clone() );
 }
 
-QgsGeometry* QgsGeometry::pointOnSurface() const
+QgsGeometry QgsGeometry::pointOnSurface() const
 {
   if ( !d->geometry )
   {
-    return nullptr;
+    return QgsGeometry();
   }
 
   QgsGeos geos( d->geometry );
@@ -1350,103 +1579,226 @@ QgsGeometry* QgsGeometry::pointOnSurface() const
   bool ok = geos.pointOnSurface( pt );
   if ( !ok )
   {
-    return nullptr;
+    return QgsGeometry();
   }
-  return new QgsGeometry( pt.clone() );
+  return QgsGeometry( pt.clone() );
 }
 
-QgsGeometry* QgsGeometry::convexHull() const
+QgsGeometry QgsGeometry::poleOfInaccessibility( double precision, double* distanceToBoundary ) const
+{
+  QgsInternalGeometryEngine engine( *this );
+
+  return engine.poleOfInaccessibility( precision, distanceToBoundary );
+}
+
+QgsGeometry QgsGeometry::convexHull() const
 {
   if ( !d->geometry )
   {
-    return nullptr;
+    return QgsGeometry();
   }
   QgsGeos geos( d->geometry );
-  QgsAbstractGeometryV2* cHull = geos.convexHull();
+  QgsAbstractGeometry* cHull = geos.convexHull();
   if ( !cHull )
   {
-    return nullptr;
+    return QgsGeometry();
   }
-  return new QgsGeometry( cHull );
+  return QgsGeometry( cHull );
 }
 
-QgsGeometry* QgsGeometry::interpolate( double distance ) const
+QgsGeometry QgsGeometry::voronoiDiagram( const QgsGeometry& extent, double tolerance, bool edgesOnly ) const
 {
   if ( !d->geometry )
   {
-    return nullptr;
+    return QgsGeometry();
   }
+
   QgsGeos geos( d->geometry );
-  QgsAbstractGeometryV2* result = geos.interpolate( distance );
+  return geos.voronoiDiagram( extent.geometry(), tolerance, edgesOnly );
+}
+
+QgsGeometry QgsGeometry::delaunayTriangulation( double tolerance, bool edgesOnly ) const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  QgsGeos geos( d->geometry );
+  return geos.delaunayTriangulation( tolerance, edgesOnly );
+}
+
+QgsGeometry QgsGeometry::interpolate( double distance ) const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  QgsGeometry line = *this;
+  if ( type() == QgsWkbTypes::PolygonGeometry )
+    line = QgsGeometry( d->geometry->boundary() );
+
+  QgsGeos geos( line.geometry() );
+  QgsAbstractGeometry* result = geos.interpolate( distance );
   if ( !result )
   {
-    return nullptr;
+    return QgsGeometry();
   }
-  return new QgsGeometry( result );
+  return QgsGeometry( result );
 }
 
-QgsGeometry* QgsGeometry::intersection( const QgsGeometry* geometry ) const
+double QgsGeometry::lineLocatePoint( const QgsGeometry& point ) const
 {
-  if ( !d->geometry || !geometry->d->geometry )
+  if ( type() != QgsWkbTypes::LineGeometry )
+    return -1;
+
+  if ( QgsWkbTypes::flatType( point.wkbType() ) != QgsWkbTypes::Point )
+    return -1;
+
+  QgsGeometry segmentized = *this;
+  if ( QgsWkbTypes::isCurvedType( wkbType() ) )
   {
-    return nullptr;
+    segmentized = QgsGeometry( static_cast< QgsCurve* >( d->geometry )->segmentize() );
+  }
+
+  QgsGeos geos( d->geometry );
+  return geos.lineLocatePoint( *( static_cast< QgsPointV2* >( point.d->geometry ) ) );
+}
+
+double QgsGeometry::interpolateAngle( double distance ) const
+{
+  if ( !d->geometry )
+    return 0.0;
+
+  // always operate on segmentized geometries
+  QgsGeometry segmentized = *this;
+  if ( QgsWkbTypes::isCurvedType( wkbType() ) )
+  {
+    segmentized = QgsGeometry( static_cast< QgsCurve* >( d->geometry )->segmentize() );
+  }
+
+  QgsVertexId previous;
+  QgsVertexId next;
+  if ( !QgsGeometryUtils::verticesAtDistance( *segmentized.geometry(), distance, previous, next ) )
+    return 0.0;
+
+  if ( previous == next )
+  {
+    // distance coincided exactly with a vertex
+    QgsVertexId v2 = previous;
+    QgsVertexId v1;
+    QgsVertexId v3;
+    QgsGeometryUtils::adjacentVertices( *segmentized.geometry(), v2, v1, v3 );
+    if ( v1.isValid() && v3.isValid() )
+    {
+      QgsPointV2 p1 = segmentized.geometry()->vertexAt( v1 );
+      QgsPointV2 p2 = segmentized.geometry()->vertexAt( v2 );
+      QgsPointV2 p3 = segmentized.geometry()->vertexAt( v3 );
+      double angle1 = QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
+      double angle2 = QgsGeometryUtils::lineAngle( p2.x(), p2.y(), p3.x(), p3.y() );
+      return QgsGeometryUtils::averageAngle( angle1, angle2 );
+    }
+    else if ( v3.isValid() )
+    {
+      QgsPointV2 p1 = segmentized.geometry()->vertexAt( v2 );
+      QgsPointV2 p2 = segmentized.geometry()->vertexAt( v3 );
+      return QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
+    }
+    else
+    {
+      QgsPointV2 p1 = segmentized.geometry()->vertexAt( v1 );
+      QgsPointV2 p2 = segmentized.geometry()->vertexAt( v2 );
+      return QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
+    }
+  }
+  else
+  {
+    QgsPointV2 p1 = segmentized.geometry()->vertexAt( previous );
+    QgsPointV2 p2 = segmentized.geometry()->vertexAt( next );
+    return QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
+  }
+}
+
+QgsGeometry QgsGeometry::intersection( const QgsGeometry& geometry ) const
+{
+  if ( !d->geometry || geometry.isNull() )
+  {
+    return QgsGeometry();
   }
 
   QgsGeos geos( d->geometry );
 
-  QgsAbstractGeometryV2* resultGeom = geos.intersection( *( geometry->d->geometry ) );
-  return new QgsGeometry( resultGeom );
+  QgsAbstractGeometry* resultGeom = geos.intersection( *( geometry.d->geometry ) );
+  return QgsGeometry( resultGeom );
 }
 
-QgsGeometry* QgsGeometry::combine( const QgsGeometry* geometry ) const
+QgsGeometry QgsGeometry::combine( const QgsGeometry& geometry ) const
 {
-  if ( !d->geometry || !geometry->d->geometry )
+  if ( !d->geometry || geometry.isNull() )
   {
-    return nullptr;
+    return QgsGeometry();
   }
 
   QgsGeos geos( d->geometry );
 
-  QgsAbstractGeometryV2* resultGeom = geos.combine( *( geometry->d->geometry ) );
+  QgsAbstractGeometry* resultGeom = geos.combine( *( geometry.d->geometry ) );
   if ( !resultGeom )
   {
-    return nullptr;
+    return QgsGeometry();
   }
-  return new QgsGeometry( resultGeom );
+  return QgsGeometry( resultGeom );
 }
 
-QgsGeometry* QgsGeometry::difference( const QgsGeometry* geometry ) const
+QgsGeometry QgsGeometry::mergeLines() const
 {
-  if ( !d->geometry || !geometry->d->geometry )
+  if ( !d->geometry )
   {
-    return nullptr;
+    return QgsGeometry();
+  }
+
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::LineString )
+  {
+    // special case - a single linestring was passed
+    return QgsGeometry( *this );
+  }
+
+  QgsGeos geos( d->geometry );
+  return geos.mergeLines();
+}
+
+QgsGeometry QgsGeometry::difference( const QgsGeometry& geometry ) const
+{
+  if ( !d->geometry || geometry.isNull() )
+  {
+    return QgsGeometry();
   }
 
   QgsGeos geos( d->geometry );
 
-  QgsAbstractGeometryV2* resultGeom = geos.difference( *( geometry->d->geometry ) );
+  QgsAbstractGeometry* resultGeom = geos.difference( *( geometry.d->geometry ) );
   if ( !resultGeom )
   {
-    return nullptr;
+    return QgsGeometry();
   }
-  return new QgsGeometry( resultGeom );
+  return QgsGeometry( resultGeom );
 }
 
-QgsGeometry* QgsGeometry::symDifference( const QgsGeometry* geometry ) const
+QgsGeometry QgsGeometry::symDifference( const QgsGeometry& geometry ) const
 {
-  if ( !d->geometry || !geometry->d->geometry )
+  if ( !d->geometry || geometry.isNull() )
   {
-    return nullptr;
+    return QgsGeometry();
   }
 
   QgsGeos geos( d->geometry );
 
-  QgsAbstractGeometryV2* resultGeom = geos.symDifference( *( geometry->d->geometry ) );
+  QgsAbstractGeometry* resultGeom = geos.symDifference( *( geometry.d->geometry ) );
   if ( !resultGeom )
   {
-    return nullptr;
+    return QgsGeometry();
   }
-  return new QgsGeometry( resultGeom );
+  return QgsGeometry( resultGeom );
 }
 
 QgsGeometry QgsGeometry::extrude( double x, double y )
@@ -1456,27 +1808,32 @@ QgsGeometry QgsGeometry::extrude( double x, double y )
   return engine.extrude( x, y );
 }
 
-QList<QgsGeometry*> QgsGeometry::asGeometryCollection() const
+QByteArray QgsGeometry::exportToWkb() const
 {
-  QList<QgsGeometry*> geometryList;
+  return d->geometry ? d->geometry->asWkb() : QByteArray();
+}
+
+QList<QgsGeometry> QgsGeometry::asGeometryCollection() const
+{
+  QList<QgsGeometry> geometryList;
   if ( !d->geometry )
   {
     return geometryList;
   }
 
-  QgsGeometryCollectionV2* gc = dynamic_cast<QgsGeometryCollectionV2*>( d->geometry );
+  QgsGeometryCollection* gc = dynamic_cast<QgsGeometryCollection*>( d->geometry );
   if ( gc )
   {
     int numGeom = gc->numGeometries();
     geometryList.reserve( numGeom );
     for ( int i = 0; i < numGeom; ++i )
     {
-      geometryList.append( new QgsGeometry( gc->geometryN( i )->clone() ) );
+      geometryList.append( QgsGeometry( gc->geometryN( i )->clone() ) );
     }
   }
   else //a singlepart geometry
   {
-    geometryList.append( new QgsGeometry( d->geometry->clone() ) );
+    geometryList.append( QgsGeometry( d->geometry->clone() ) );
   }
 
   return geometryList;
@@ -1492,12 +1849,12 @@ QPolygonF QgsGeometry::asQPolygonF() const
 {
   QPolygonF result;
   QgsPolyline polyline;
-  QGis::WkbType type = wkbType();
-  if ( type == QGis::WKBLineString || type == QGis::WKBLineString25D )
+  QgsWkbTypes::Type type = wkbType();
+  if ( type == QgsWkbTypes::LineString || type == QgsWkbTypes::LineString25D )
   {
     polyline = asPolyline();
   }
-  else if ( type == QGis::WKBPolygon || type == QGis::WKBPolygon25D )
+  else if ( type == QgsWkbTypes::Polygon || type == QgsWkbTypes::Polygon25D )
   {
     QgsPolygon polygon = asPolygon();
     if ( polygon.size() < 1 )
@@ -1525,8 +1882,8 @@ bool QgsGeometry::deleteRing( int ringNum, int partNum )
   }
 
   detach( true );
-
-  return QgsGeometryEditUtils::deleteRing( d->geometry, ringNum, partNum );
+  bool ok = QgsGeometryEditUtils::deleteRing( d->geometry, ringNum, partNum );
+  return ok;
 }
 
 bool QgsGeometry::deletePart( int partNum )
@@ -1544,26 +1901,39 @@ bool QgsGeometry::deletePart( int partNum )
 
   detach( true );
   bool ok = QgsGeometryEditUtils::deletePart( d->geometry, partNum );
-  removeWkbGeos();
   return ok;
 }
 
-int QgsGeometry::avoidIntersections( const QMap<QgsVectorLayer*, QSet< QgsFeatureId > >& ignoreFeatures )
+int QgsGeometry::avoidIntersections( const QList<QgsVectorLayer*>& avoidIntersectionsLayers, const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures )
 {
   if ( !d->geometry )
   {
     return 1;
   }
 
-  QgsAbstractGeometryV2* diffGeom = QgsGeometryEditUtils::avoidIntersections( *( d->geometry ), ignoreFeatures );
+  QgsAbstractGeometry* diffGeom = QgsGeometryEditUtils::avoidIntersections( *( d->geometry ), avoidIntersectionsLayers, ignoreFeatures );
   if ( diffGeom )
   {
     detach( false );
     d->geometry = diffGeom;
-    removeWkbGeos();
   }
   return 0;
 }
+
+
+QgsGeometry QgsGeometry::makeValid()
+{
+  if ( !d->geometry )
+    return QgsGeometry();
+
+  QString errorMsg;
+  QgsAbstractGeometry* g = _qgis_lwgeom_make_valid( *d->geometry, errorMsg );
+  if ( !g )
+    return QgsGeometry();
+
+  return QgsGeometry( g );
+}
+
 
 void QgsGeometry::validateGeometry( QList<Error> &errors )
 {
@@ -1592,33 +1962,39 @@ bool QgsGeometry::isGeosEqual( const QgsGeometry& g ) const
   return geos.isEqual( *( g.d->geometry ) );
 }
 
-bool QgsGeometry::isGeosEmpty() const
-{
-  if ( !d->geometry )
-  {
-    return false;
-  }
-
-  QgsGeos geos( d->geometry );
-  return geos.isEmpty();
-}
-
-QgsGeometry *QgsGeometry::unaryUnion( const QList<QgsGeometry*> &geometryList )
+QgsGeometry QgsGeometry::unaryUnion( const QList<QgsGeometry>& geometries )
 {
   QgsGeos geos( nullptr );
 
-  QList<QgsAbstractGeometryV2*> geomV2List;
-  QList<QgsGeometry*>::const_iterator it = geometryList.constBegin();
-  for ( ; it != geometryList.constEnd(); ++it )
+  QList<QgsAbstractGeometry*> geomV2List;
+  QList<QgsGeometry>::const_iterator it = geometries.constBegin();
+  for ( ; it != geometries.constEnd(); ++it )
   {
-    if ( *it )
+    if ( !(( *it ).isNull() ) )
     {
-      geomV2List.append(( *it )->geometry() );
+      geomV2List.append(( *it ).geometry() );
     }
   }
 
-  QgsAbstractGeometryV2* geom = geos.combine( geomV2List );
-  return new QgsGeometry( geom );
+  QgsAbstractGeometry* geom = geos.combine( geomV2List );
+  return QgsGeometry( geom );
+}
+
+QgsGeometry QgsGeometry::polygonize( const QList<QgsGeometry>& geometryList )
+{
+  QgsGeos geos( nullptr );
+
+  QList<QgsAbstractGeometry*> geomV2List;
+  QList<QgsGeometry>::const_iterator it = geometryList.constBegin();
+  for ( ; it != geometryList.constEnd(); ++it )
+  {
+    if ( !(( *it ).isNull() ) )
+    {
+      geomV2List.append(( *it ).geometry() );
+    }
+  }
+
+  return geos.polygonize( geomV2List );
 }
 
 void QgsGeometry::convertToStraightSegment()
@@ -1628,11 +2004,10 @@ void QgsGeometry::convertToStraightSegment()
     return;
   }
 
-  QgsAbstractGeometryV2* straightGeom = d->geometry->segmentize();
+  QgsAbstractGeometry* straightGeom = d->geometry->segmentize();
   detach( false );
 
   d->geometry = straightGeom;
-  removeWkbGeos();
 }
 
 bool QgsGeometry::requiresConversionToStraightSegments() const
@@ -1654,7 +2029,6 @@ int QgsGeometry::transform( const QgsCoordinateTransform& ct )
 
   detach();
   d->geometry->transform( ct );
-  removeWkbGeos();
   return 0;
 }
 
@@ -1667,7 +2041,6 @@ int QgsGeometry::transform( const QTransform& ct )
 
   detach();
   d->geometry->transform( ct );
-  removeWkbGeos();
   return 0;
 }
 
@@ -1707,15 +2080,15 @@ bool QgsGeometry::vertexIdFromVertexNr( int nr, QgsVertexId& id ) const
     return false;
   }
 
-  QgsCoordinateSequenceV2 coords = d->geometry->coordinateSequence();
+  QgsCoordinateSequence coords = d->geometry->coordinateSequence();
 
   int vertexCount = 0;
   for ( int part = 0; part < coords.size(); ++part )
   {
-    const QgsRingSequenceV2 &featureCoords = coords.at( part );
+    const QgsRingSequence &featureCoords = coords.at( part );
     for ( int ring = 0; ring < featureCoords.size(); ++ring )
     {
-      const QgsPointSequenceV2 &ringCoords = featureCoords.at( ring );
+      const QgsPointSequence &ringCoords = featureCoords.at( ring );
       for ( int vertex = 0; vertex < ringCoords.size(); ++vertex )
       {
         if ( vertexCount == nr )
@@ -1739,15 +2112,15 @@ int QgsGeometry::vertexNrFromVertexId( QgsVertexId id ) const
     return -1;
   }
 
-  QgsCoordinateSequenceV2 coords = d->geometry->coordinateSequence();
+  QgsCoordinateSequence coords = d->geometry->coordinateSequence();
 
   int vertexCount = 0;
   for ( int part = 0; part < coords.size(); ++part )
   {
-    const QgsRingSequenceV2 &featureCoords = coords.at( part );
+    const QgsRingSequence &featureCoords = coords.at( part );
     for ( int ring = 0; ring < featureCoords.size(); ++ring )
     {
-      const QgsPointSequenceV2 &ringCoords = featureCoords.at( ring );
+      const QgsPointSequence &ringCoords = featureCoords.at( ring );
       for ( int vertex = 0; vertex < ringCoords.size(); ++vertex )
       {
         if ( vertex == id.vertex && ring == id.ring && part == id.part )
@@ -1761,7 +2134,7 @@ int QgsGeometry::vertexNrFromVertexId( QgsVertexId id ) const
   return -1;
 }
 
-void QgsGeometry::convertPointList( const QList<QgsPoint> &input, QgsPointSequenceV2 &output )
+void QgsGeometry::convertPointList( const QList<QgsPoint> &input, QgsPointSequence &output )
 {
   output.clear();
   QList<QgsPoint>::const_iterator it = input.constBegin();
@@ -1771,17 +2144,22 @@ void QgsGeometry::convertPointList( const QList<QgsPoint> &input, QgsPointSequen
   }
 }
 
-void QgsGeometry::convertPointList( const QgsPointSequenceV2 &input, QList<QgsPoint> &output )
+void QgsGeometry::convertPointList( const QgsPointSequence &input, QList<QgsPoint> &output )
 {
   output.clear();
-  QgsPointSequenceV2::const_iterator it = input.constBegin();
+  QgsPointSequence::const_iterator it = input.constBegin();
   for ( ; it != input.constEnd(); ++it )
   {
     output.append( QgsPoint( it->x(), it->y() ) );
   }
 }
 
-void QgsGeometry::convertToPolyline( const QgsPointSequenceV2 &input, QgsPolyline& output )
+QgsGeometry::operator bool() const
+{
+  return d->geometry;
+}
+
+void QgsGeometry::convertToPolyline( const QgsPointSequence &input, QgsPolyline& output )
 {
   output.clear();
   output.resize( input.size() );
@@ -1797,12 +2175,12 @@ void QgsGeometry::convertToPolyline( const QgsPointSequenceV2 &input, QgsPolylin
 void QgsGeometry::convertPolygon( const QgsPolygonV2& input, QgsPolygon& output )
 {
   output.clear();
-  QgsCoordinateSequenceV2 coords = input.coordinateSequence();
+  QgsCoordinateSequence coords = input.coordinateSequence();
   if ( coords.size() < 1 )
   {
     return;
   }
-  const QgsRingSequenceV2 &rings = coords[0];
+  const QgsRingSequence &rings = coords[0];
   output.resize( rings.size() );
   for ( int i = 0; i < rings.size(); ++i )
   {
@@ -1815,12 +2193,12 @@ GEOSContextHandle_t QgsGeometry::getGEOSHandler()
   return QgsGeos::getGEOSHandler();
 }
 
-QgsGeometry *QgsGeometry::fromQPointF( QPointF point )
+QgsGeometry QgsGeometry::fromQPointF( QPointF point )
 {
-  return new QgsGeometry( new QgsPointV2( point.x(), point.y() ) );
+  return QgsGeometry( new QgsPointV2( point.x(), point.y() ) );
 }
 
-QgsGeometry *QgsGeometry::fromQPolygonF( const QPolygonF &polygon )
+QgsGeometry QgsGeometry::fromQPolygonF( const QPolygonF &polygon )
 {
   if ( polygon.isClosed() )
   {
@@ -1890,122 +2268,185 @@ bool QgsGeometry::compare( const QgsMultiPolygon &p1, const QgsMultiPolygon &p2,
   return true;
 }
 
-QgsGeometry* QgsGeometry::smooth( const unsigned int iterations, const double offset ) const
+QgsGeometry QgsGeometry::smooth( const unsigned int iterations, const double offset, double minimumDistance, double maxAngle ) const
 {
-  switch ( wkbType() )
+  if ( d->geometry->isEmpty() )
+    return QgsGeometry();
+
+  QgsGeometry geom = *this;
+  if ( QgsWkbTypes::isCurvedType( wkbType() ) )
+    geom = QgsGeometry( d->geometry->segmentize() );
+
+  switch ( QgsWkbTypes::flatType( geom.wkbType() ) )
   {
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
+    case QgsWkbTypes::Point:
+    case QgsWkbTypes::MultiPoint:
       //can't smooth a point based geometry
-      return new QgsGeometry( *this );
+      return geom;
 
-    case QGis::WKBLineString:
-    case QGis::WKBLineString25D:
+    case QgsWkbTypes::LineString:
     {
-      QgsPolyline line = asPolyline();
-      return QgsGeometry::fromPolyline( smoothLine( line, iterations, offset ) );
+      QgsLineString* lineString = static_cast< QgsLineString* >( d->geometry );
+      return QgsGeometry( smoothLine( *lineString, iterations, offset, minimumDistance, maxAngle ) );
     }
 
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiLineString25D:
+    case QgsWkbTypes::MultiLineString:
     {
-      QgsMultiPolyline multiline = asMultiPolyline();
-      QgsMultiPolyline resultMultiline;
-      QgsMultiPolyline::const_iterator lineIt = multiline.constBegin();
-      for ( ; lineIt != multiline.constEnd(); ++lineIt )
+      QgsMultiLineString* multiLine = static_cast< QgsMultiLineString* >( d->geometry );
+
+      QgsMultiLineString* resultMultiline = new QgsMultiLineString();
+      for ( int i = 0; i < multiLine->numGeometries(); ++i )
       {
-        resultMultiline << smoothLine( *lineIt, iterations, offset );
+        resultMultiline->addGeometry( smoothLine( *( static_cast< QgsLineString* >( multiLine->geometryN( i ) ) ), iterations, offset, minimumDistance, maxAngle ) );
       }
-      return QgsGeometry::fromMultiPolyline( resultMultiline );
+      return QgsGeometry( resultMultiline );
     }
 
-    case QGis::WKBPolygon:
-    case QGis::WKBPolygon25D:
+    case QgsWkbTypes::Polygon:
     {
-      QgsPolygon poly = asPolygon();
-      return QgsGeometry::fromPolygon( smoothPolygon( poly, iterations, offset ) );
+      QgsPolygonV2* poly = static_cast< QgsPolygonV2* >( d->geometry );
+      return QgsGeometry( smoothPolygon( *poly, iterations, offset, minimumDistance, maxAngle ) );
     }
 
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPolygon25D:
+    case QgsWkbTypes::MultiPolygon:
     {
-      QgsMultiPolygon multipoly = asMultiPolygon();
-      QgsMultiPolygon resultMultipoly;
-      QgsMultiPolygon::const_iterator polyIt = multipoly.constBegin();
-      for ( ; polyIt != multipoly.constEnd(); ++polyIt )
+      QgsMultiPolygonV2* multiPoly = static_cast< QgsMultiPolygonV2* >( d->geometry );
+
+      QgsMultiPolygonV2* resultMultiPoly = new QgsMultiPolygonV2();
+      for ( int i = 0; i < multiPoly->numGeometries(); ++i )
       {
-        resultMultipoly << smoothPolygon( *polyIt, iterations, offset );
+        resultMultiPoly->addGeometry( smoothPolygon( *( static_cast< QgsPolygonV2* >( multiPoly->geometryN( i ) ) ), iterations, offset, minimumDistance, maxAngle ) );
       }
-      return QgsGeometry::fromMultiPolygon( resultMultipoly );
+      return QgsGeometry( resultMultiPoly );
     }
 
-    case QGis::WKBUnknown:
+    case QgsWkbTypes::Unknown:
     default:
-      return new QgsGeometry( *this );
+      return QgsGeometry( *this );
   }
 }
 
-inline QgsPoint interpolatePointOnLine( const QgsPoint& p1, const QgsPoint& p2, const double offset )
+inline QgsPointV2 interpolatePointOnLine( const QgsPointV2& p1, const QgsPointV2& p2, const double offset )
 {
   double deltaX = p2.x() - p1.x();
   double deltaY = p2.y() - p1.y();
-  return QgsPoint( p1.x() + deltaX * offset, p1.y() + deltaY * offset );
+  return QgsPointV2( p1.x() + deltaX * offset, p1.y() + deltaY * offset );
 }
 
-QgsPolyline QgsGeometry::smoothLine( const QgsPolyline& polyline, const unsigned int iterations, const double offset ) const
+QgsLineString* smoothCurve( const QgsLineString& line, const unsigned int iterations,
+                            const double offset, double squareDistThreshold, double maxAngleRads,
+                            bool isRing )
 {
-  QgsPolyline result = polyline;
+  std::unique_ptr< QgsLineString > result( new QgsLineString( line ) );
   for ( unsigned int iteration = 0; iteration < iterations; ++iteration )
   {
-    QgsPolyline outputLine = QgsPolyline();
-    outputLine.reserve( 2 * ( result.count() - 1 ) );
-    for ( int i = 0; i < result.count() - 1; i++ )
+    QgsPointSequence outputLine;
+    outputLine.reserve( 2 * ( result->numPoints() - 1 ) );
+    bool skipFirst = false;
+    bool skipLast = false;
+    if ( isRing )
     {
-      const QgsPoint& p1 = result.at( i );
-      const QgsPoint& p2 = result.at( i + 1 );
-      outputLine << ( i == 0 ? result.at( i ) : interpolatePointOnLine( p1, p2, offset ) );
-      outputLine << ( i == result.count() - 2 ? result.at( i + 1 ) : interpolatePointOnLine( p1, p2, 1.0 - offset ) );
+      QgsPointV2 p1 = result->pointN( result->numPoints() - 2 );
+      QgsPointV2 p2 = result->pointN( 0 );
+      QgsPointV2 p3 = result->pointN( 1 );
+      double angle = QgsGeometryUtils::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
+                     p3.x(), p3.y() );
+      angle = qAbs( M_PI - angle );
+      skipFirst = angle > maxAngleRads;
     }
-    result = outputLine;
-  }
-  return result;
-}
-
-QgsPolygon QgsGeometry::smoothPolygon( const QgsPolygon& polygon, const unsigned int iterations, const double offset ) const
-{
-  QgsPolygon resultPoly;
-  QgsPolygon::const_iterator ringIt = polygon.constBegin();
-  for ( ; ringIt != polygon.constEnd(); ++ringIt )
-  {
-    QgsPolyline resultRing = *ringIt;
-    for ( unsigned int iteration = 0; iteration < iterations; ++iteration )
+    for ( int i = 0; i < result->numPoints() - 1; i++ )
     {
-      QgsPolyline outputRing = QgsPolyline();
-      outputRing.reserve( 2 * ( resultRing.count() - 1 ) + 1 );
-      for ( int i = 0; i < resultRing.count() - 1; ++i )
+      QgsPointV2 p1 = result->pointN( i );
+      QgsPointV2 p2 = result->pointN( i + 1 );
+
+      double angle = M_PI;
+      if ( i == 0 && isRing )
       {
-        const QgsPoint& p1 = resultRing.at( i );
-        const QgsPoint& p2 = resultRing.at( i + 1 );
-        outputRing << interpolatePointOnLine( p1, p2, offset );
-        outputRing << interpolatePointOnLine( p1, p2, 1.0 - offset );
+        QgsPointV2 p3 = result->pointN( result->numPoints() - 2 );
+        angle = QgsGeometryUtils::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
+                p3.x(), p3.y() );
       }
-      //close polygon
-      outputRing << outputRing.at( 0 );
+      else if ( i < result->numPoints() - 2 )
+      {
+        QgsPointV2 p3 = result->pointN( i + 2 );
+        angle = QgsGeometryUtils::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
+                p3.x(), p3.y() );
+      }
+      else if ( i == result->numPoints() - 2 && isRing )
+      {
+        QgsPointV2 p3 = result->pointN( 1 );
+        angle = QgsGeometryUtils::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
+                p3.x(), p3.y() );
+      }
 
-      resultRing = outputRing;
+      skipLast = angle < M_PI - maxAngleRads || angle > M_PI + maxAngleRads;
+
+      // don't apply distance threshold to first or last segment
+      if ( i == 0 || i >= result->numPoints() - 2
+           || QgsGeometryUtils::sqrDistance2D( p1, p2 ) > squareDistThreshold )
+      {
+        if ( !isRing )
+        {
+          if ( !skipFirst )
+            outputLine << ( i == 0 ? result->pointN( i ) : interpolatePointOnLine( p1, p2, offset ) );
+          if ( !skipLast )
+            outputLine << ( i == result->numPoints() - 2 ? result->pointN( i + 1 ) : interpolatePointOnLine( p1, p2, 1.0 - offset ) );
+          else
+            outputLine << p2;
+        }
+        else
+        {
+          // ring
+          if ( !skipFirst )
+            outputLine << interpolatePointOnLine( p1, p2, offset );
+          else if ( i == 0 )
+            outputLine << p1;
+          if ( !skipLast )
+            outputLine << interpolatePointOnLine( p1, p2, 1.0 - offset );
+          else
+            outputLine << p2;
+        }
+      }
+      skipFirst = skipLast;
     }
-    resultPoly << resultRing;
+
+    if ( isRing && outputLine.at( 0 ) != outputLine.at( outputLine.count() - 1 ) )
+      outputLine << outputLine.at( 0 );
+
+    result->setPoints( outputLine );
   }
-  return resultPoly;
+  return result.release();
 }
 
-QgsGeometry* QgsGeometry::convertToPoint( bool destMultipart ) const
+QgsLineString* QgsGeometry::smoothLine( const QgsLineString& line, const unsigned int iterations, const double offset, double minimumDistance, double maxAngle ) const
+{
+  double maxAngleRads = maxAngle * M_PI / 180.0;
+  double squareDistThreshold = minimumDistance > 0 ? minimumDistance * minimumDistance : -1;
+  return smoothCurve( line, iterations, offset, squareDistThreshold, maxAngleRads, false );
+}
+
+QgsPolygonV2* QgsGeometry::smoothPolygon( const QgsPolygonV2& polygon, const unsigned int iterations, const double offset, double minimumDistance, double maxAngle ) const
+{
+  double maxAngleRads = maxAngle * M_PI / 180.0;
+  double squareDistThreshold = minimumDistance > 0 ? minimumDistance * minimumDistance : -1;
+  std::unique_ptr< QgsPolygonV2 > resultPoly( new QgsPolygonV2 );
+
+  resultPoly->setExteriorRing( smoothCurve( *( static_cast< const QgsLineString*>( polygon.exteriorRing() ) ), iterations, offset,
+                               squareDistThreshold, maxAngleRads, true ) );
+
+  for ( int i = 0; i < polygon.numInteriorRings(); ++i )
+  {
+    resultPoly->addInteriorRing( smoothCurve( *( static_cast< const QgsLineString*>( polygon.interiorRing( i ) ) ), iterations, offset,
+                                 squareDistThreshold, maxAngleRads, true ) );
+  }
+  return resultPoly.release();
+}
+
+QgsGeometry QgsGeometry::convertToPoint( bool destMultipart ) const
 {
   switch ( type() )
   {
-    case QGis::Point:
+    case QgsWkbTypes::PointGeometry:
     {
       bool srcIsMultipart = isMultipart();
 
@@ -2013,7 +2454,7 @@ QgsGeometry* QgsGeometry::convertToPoint( bool destMultipart ) const
           ( !destMultipart && !srcIsMultipart ) )
       {
         // return a copy of the same geom
-        return new QgsGeometry( *this );
+        return QgsGeometry( *this );
       }
       if ( destMultipart )
       {
@@ -2029,14 +2470,14 @@ QgsGeometry* QgsGeometry::convertToPoint( bool destMultipart ) const
           return fromPoint( multiPoint[0] );
         }
       }
-      return nullptr;
+      return QgsGeometry();
     }
 
-    case QGis::Line:
+    case QgsWkbTypes::LineGeometry:
     {
       // only possible if destination is multipart
       if ( !destMultipart )
-        return nullptr;
+        return QgsGeometry();
 
       // input geometry is multipart
       if ( isMultipart() )
@@ -2055,14 +2496,14 @@ QgsGeometry* QgsGeometry::convertToPoint( bool destMultipart ) const
         if ( !line.isEmpty() )
           return fromMultiPoint( line );
       }
-      return nullptr;
+      return QgsGeometry();
     }
 
-    case QGis::Polygon:
+    case QgsWkbTypes::PolygonGeometry:
     {
       // can only transform if destination is multipoint
       if ( !destMultipart )
-        return nullptr;
+        return QgsGeometry();
 
       // input geometry is multipart: make a multipoint from multipolygon
       if ( isMultipart() )
@@ -2088,22 +2529,22 @@ QgsGeometry* QgsGeometry::convertToPoint( bool destMultipart ) const
     }
 
     default:
-      return nullptr;
+      return QgsGeometry();
   }
 }
 
-QgsGeometry* QgsGeometry::convertToLine( bool destMultipart ) const
+QgsGeometry QgsGeometry::convertToLine( bool destMultipart ) const
 {
   switch ( type() )
   {
-    case QGis::Point:
+    case QgsWkbTypes::PointGeometry:
     {
       if ( !isMultipart() )
-        return nullptr;
+        return QgsGeometry();
 
       QgsMultiPoint multiPoint = asMultiPoint();
       if ( multiPoint.count() < 2 )
-        return nullptr;
+        return QgsGeometry();
 
       if ( destMultipart )
         return fromMultiPolyline( QgsMultiPolyline() << multiPoint );
@@ -2111,7 +2552,7 @@ QgsGeometry* QgsGeometry::convertToLine( bool destMultipart ) const
         return fromPolyline( multiPoint );
     }
 
-    case QGis::Line:
+    case QgsWkbTypes::LineGeometry:
     {
       bool srcIsMultipart = isMultipart();
 
@@ -2119,7 +2560,7 @@ QgsGeometry* QgsGeometry::convertToLine( bool destMultipart ) const
           ( !destMultipart && ! srcIsMultipart ) )
       {
         // return a copy of the same geom
-        return new QgsGeometry( *this );
+        return QgsGeometry( *this );
       }
       if ( destMultipart )
       {
@@ -2135,10 +2576,10 @@ QgsGeometry* QgsGeometry::convertToLine( bool destMultipart ) const
         if ( multiLine.count() == 1 )
           return fromPolyline( multiLine[0] );
       }
-      return nullptr;
+      return QgsGeometry();
     }
 
-    case QGis::Polygon:
+    case QgsWkbTypes::PolygonGeometry:
     {
       // input geometry is multipolygon
       if ( isMultipart() )
@@ -2191,26 +2632,26 @@ QgsGeometry* QgsGeometry::convertToLine( bool destMultipart ) const
           }
         }
       }
-      return nullptr;
+      return QgsGeometry();
     }
 
     default:
-      return nullptr;
+      return QgsGeometry();
   }
 }
 
-QgsGeometry* QgsGeometry::convertToPolygon( bool destMultipart ) const
+QgsGeometry QgsGeometry::convertToPolygon( bool destMultipart ) const
 {
   switch ( type() )
   {
-    case QGis::Point:
+    case QgsWkbTypes::PointGeometry:
     {
       if ( !isMultipart() )
-        return nullptr;
+        return QgsGeometry();
 
       QgsMultiPoint multiPoint = asMultiPoint();
       if ( multiPoint.count() < 3 )
-        return nullptr;
+        return QgsGeometry();
 
       if ( multiPoint.last() != multiPoint.first() )
         multiPoint << multiPoint.first();
@@ -2222,7 +2663,7 @@ QgsGeometry* QgsGeometry::convertToPolygon( bool destMultipart ) const
         return fromPolygon( polygon );
     }
 
-    case QGis::Line:
+    case QgsWkbTypes::LineGeometry:
     {
       // input geometry is multiline
       if ( isMultipart() )
@@ -2233,9 +2674,9 @@ QgsGeometry* QgsGeometry::convertToPolygon( bool destMultipart ) const
         {
           // do not create polygon for a 1 segment line
           if (( *multiLineIt ).count() < 3 )
-            return nullptr;
+            return QgsGeometry();
           if (( *multiLineIt ).count() == 3 && ( *multiLineIt ).first() == ( *multiLineIt ).last() )
-            return nullptr;
+            return QgsGeometry();
 
           // add closing node
           if (( *multiLineIt ).first() != ( *multiLineIt ).last() )
@@ -2263,9 +2704,9 @@ QgsGeometry* QgsGeometry::convertToPolygon( bool destMultipart ) const
 
         // do not create polygon for a 1 segment line
         if ( line.count() < 3 )
-          return nullptr;
+          return QgsGeometry();
         if ( line.count() == 3 && line.first() == line.last() )
-          return nullptr;
+          return QgsGeometry();
 
         // add closing node
         if ( line.first() != line.last() )
@@ -2281,10 +2722,10 @@ QgsGeometry* QgsGeometry::convertToPolygon( bool destMultipart ) const
           return fromPolygon( QgsPolygon() << line );
         }
       }
-      return nullptr;
+      return QgsGeometry();
     }
 
-    case QGis::Polygon:
+    case QgsWkbTypes::PolygonGeometry:
     {
       bool srcIsMultipart = isMultipart();
 
@@ -2292,7 +2733,7 @@ QgsGeometry* QgsGeometry::convertToPolygon( bool destMultipart ) const
           ( !destMultipart && ! srcIsMultipart ) )
       {
         // return a copy of the same geom
-        return new QgsGeometry( *this );
+        return QgsGeometry( *this );
       }
       if ( destMultipart )
       {
@@ -2310,23 +2751,22 @@ QgsGeometry* QgsGeometry::convertToPolygon( bool destMultipart ) const
           return fromPolygon( multiPolygon[0] );
         }
       }
-      return nullptr;
+      return QgsGeometry();
     }
 
     default:
-      return nullptr;
+      return QgsGeometry();
   }
 }
 
-QgsGeometryEngine* QgsGeometry::createGeometryEngine( const QgsAbstractGeometryV2* geometry )
+QgsGeometryEngine* QgsGeometry::createGeometryEngine( const QgsAbstractGeometry* geometry )
 {
   return new QgsGeos( geometry );
 }
 
 QDataStream& operator<<( QDataStream& out, const QgsGeometry& geometry )
 {
-  QByteArray byteArray = QByteArray::fromRawData( reinterpret_cast< const char * >( geometry.asWkb() ), geometry.wkbSize() ); // does not copy data and does not take ownership
-  out << byteArray;
+  out << geometry.exportToWkb();
   return out;
 }
 
@@ -2340,8 +2780,6 @@ QDataStream& operator>>( QDataStream& in, QgsGeometry& geometry )
     return in;
   }
 
-  char *data = new char[byteArray.size()];
-  memcpy( data, byteArray.data(), byteArray.size() );
-  geometry.fromWkb( reinterpret_cast< unsigned char* >( data ), byteArray.size() );
+  geometry.fromWkb( byteArray );
   return in;
 }

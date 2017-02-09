@@ -15,7 +15,6 @@
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
 
-#include "qgsgeometrysimplifier.h"
 #include "qgssimplifymethod.h"
 
 #include "qgsexpressionsorter.h"
@@ -27,15 +26,8 @@ QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest&
     , refs( 0 )
     , mFetchedCount( 0 )
     , mCompileStatus( NoCompilation )
-    , mGeometrySimplifier( nullptr )
-    , mLocalSimplification( false )
     , mUseCachedFeatures( false )
 {
-}
-
-QgsAbstractFeatureIterator::~QgsAbstractFeatureIterator()
-{
-  delete mGeometrySimplifier;
 }
 
 bool QgsAbstractFeatureIterator::nextFeature( QgsFeature& f )
@@ -79,12 +71,6 @@ bool QgsAbstractFeatureIterator::nextFeature( QgsFeature& f )
     }
   }
 
-  // simplify the geometry using the simplifier configured
-  if ( dataOk && mLocalSimplification )
-  {
-    if ( f.constGeometry() )
-      simplify( f );
-  }
   if ( dataOk )
     mFetchedCount++;
 
@@ -115,7 +101,7 @@ bool QgsAbstractFeatureIterator::nextFeatureFilterFids( QgsFeature& f )
 void QgsAbstractFeatureIterator::ref()
 {
   // Prepare if required the simplification of geometries to fetch:
-  // This code runs here because of 'prepareSimplification()' is virtual and it can be overrided
+  // This code runs here because of 'prepareSimplification()' is virtual and it can be overridden
   // in inherited iterators who change the default behavior.
   // It would be better to call this method in the constructor enabling virtual-calls as it is described by example at:
   // http://www.parashift.com/c%2B%2B-faq-lite/calling-virtuals-from-ctor-idiom.html
@@ -138,18 +124,7 @@ void QgsAbstractFeatureIterator::deref()
 
 bool QgsAbstractFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simplifyMethod )
 {
-  mLocalSimplification = false;
-
-  delete mGeometrySimplifier;
-  mGeometrySimplifier = nullptr;
-
-  // setup the simplification of geometries to fetch
-  if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && ( simplifyMethod.forceLocalOptimization() || !providerCanSimplify( simplifyMethod.methodType() ) ) )
-  {
-    mGeometrySimplifier = QgsSimplifyMethod::createGeometrySimplifier( simplifyMethod );
-    mLocalSimplification = nullptr != mGeometrySimplifier;
-    return mLocalSimplification;
-  }
+  Q_UNUSED( simplifyMethod );
   return false;
 }
 
@@ -190,7 +165,7 @@ void QgsAbstractFeatureIterator::setupOrderBy( const QList<QgsFeatureRequest::Or
       mCachedFeatures.append( indexedFeature );
     }
 
-    qSort( mCachedFeatures.begin(), mCachedFeatures.end(), QgsExpressionSorter( preparedOrderBys ) );
+    std::sort( mCachedFeatures.begin(), mCachedFeatures.end(), QgsExpressionSorter( preparedOrderBys ) );
 
     mFeatureIterator = mCachedFeatures.constBegin();
     mUseCachedFeatures = true;
@@ -202,20 +177,6 @@ void QgsAbstractFeatureIterator::setupOrderBy( const QList<QgsFeatureRequest::Or
 bool QgsAbstractFeatureIterator::providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const
 {
   Q_UNUSED( methodType )
-  return false;
-}
-
-bool QgsAbstractFeatureIterator::simplify( QgsFeature& feature )
-{
-  // simplify locally the geometry using the configured simplifier
-  if ( mGeometrySimplifier )
-  {
-    QgsGeometry* geometry = feature.geometry();
-
-    QGis::GeometryType geometryType = geometry->type();
-    if ( geometryType == QGis::Line || geometryType == QGis::Polygon )
-      return mGeometrySimplifier->simplifyGeometry( geometry );
-  }
   return false;
 }
 

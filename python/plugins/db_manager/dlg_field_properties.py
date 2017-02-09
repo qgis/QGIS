@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Giuseppe Sucameli'
 __date__ = 'April 2012'
@@ -23,7 +24,7 @@ __copyright__ = '(C) 2012, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt.QtWidgets import QDialog, QMessageBox
+from qgis.PyQt.QtWidgets import QDialog, QMessageBox
 
 from .db_plugins.plugin import TableField
 
@@ -51,7 +52,7 @@ class DlgFieldProperties(QDialog, Ui_Dialog):
         self.editName.setText(fld.name)
         self.cboType.setEditText(fld.dataType)
         if fld.modifier:
-            self.editLength.setText(unicode(fld.modifier))
+            self.editLength.setText(str(fld.modifier))
         self.chkNull.setChecked(not fld.notNull)
         if fld.hasDefault:
             self.editDefault.setText(fld.default)

@@ -16,11 +16,14 @@
 #ifndef QGSRELATIONREFERENCEWIDGETWRAPPER_H
 #define QGSRELATIONREFERENCEWIDGETWRAPPER_H
 
-#include "qgsrelationreferencewidget.h"
 #include "qgseditorwidgetwrapper.h"
+#include "qgis_gui.h"
 
+class QgsRelationReferenceWidget;
+class QgsMapCanvas;
+class QgsMessageBar;
 
-/**
+/** \ingroup gui
  * Wraps a relation reference widget.
  *
  * Options:
@@ -58,6 +61,10 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
 
   private slots:
     void foreignKeyChanged( QVariant value );
+
+  protected:
+
+    void updateConstraintWidgetStatus( ConstraintResult status ) override;
 
   private:
     QgsRelationReferenceWidget* mWidget;

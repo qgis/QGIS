@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -26,13 +27,14 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt.QtGui import QIcon
-from PyQt.QtCore import QCoreApplication
-from qgis.core import QgsVectorFileWriter
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.core import QgsProcessingProvider
 from processing.core.ProcessingConfig import Setting, ProcessingConfig
+from processing.tools import dataobjects
 
 
-class AlgorithmProvider(object):
+class AlgorithmProvider(QgsProcessingProvider):
 
     """This is the base class for algorithms providers.
 
@@ -42,6 +44,7 @@ class AlgorithmProvider(object):
     """
 
     def __init__(self):
+        super().__init__()
         # Indicates if the provider should be active by default.
         # For provider relying on an external software, this should be
         # False, so the user should activate them manually and install
@@ -72,9 +75,9 @@ class AlgorithmProvider(object):
         Processing framework. By default it just adds a setting to
         activate or deactivate algorithms from the provider.
         """
-        ProcessingConfig.settingIcons[self.getDescription()] = self.getIcon()
-        name = 'ACTIVATE_' + self.getName().upper().replace(' ', '_')
-        ProcessingConfig.addSetting(Setting(self.getDescription(), name,
+        ProcessingConfig.settingIcons[self.name()] = self.icon()
+        name = 'ACTIVATE_' + self.id().upper().replace(' ', '_')
+        ProcessingConfig.addSetting(Setting(self.name(), name,
                                             self.tr('Activate'), self.activate))
 
     def unload(self):
@@ -84,45 +87,20 @@ class AlgorithmProvider(object):
         This method is called when you remove the provider from
         Processing. Removal of config setting should be done here.
         """
-        name = 'ACTIVATE_' + self.getName().upper().replace(' ', '_')
+        name = 'ACTIVATE_' + self.id().upper().replace(' ', '_')
         ProcessingConfig.removeSetting(name)
-
-    def getName(self):
-        """Returns the name to use to create the command-line name.
-        Should be a short descriptive name of the provider.
-        """
-        return 'processing'
-
-    def getDescription(self):
-        """Returns the full name of the provider.
-        """
-        return self.tr('Generic algorithm provider')
-
-    def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../images/alg.png')
 
     def getSupportedOutputRasterLayerExtensions(self):
         return ['tif']
 
     def getSupportedOutputVectorLayerExtensions(self):
-        formats = QgsVectorFileWriter.supportedFiltersAndFormats()
-        extensions = ['shp']  # shp is the default, should be the first
-        for extension in formats.keys():
-            extension = unicode(extension)
-            extension = extension[extension.find('*.') + 2:]
-            extension = extension[:extension.find(' ')]
-            if extension.lower() != 'shp':
-                extensions.append(extension)
-        return extensions
+        return dataobjects.getSupportedOutputVectorLayerExtensions()
 
     def getSupportedOutputTableExtensions(self):
         return ['csv']
 
     def supportsNonFileBasedOutput(self):
         return False
-
-    def canBeActivated(self):
-        return True
 
     def tr(self, string, context=''):
         if context == '':

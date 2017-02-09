@@ -17,39 +17,26 @@
 #ifndef QGSATTRIBUTEDIALOG_H
 #define QGSATTRIBUTEDIALOG_H
 
-#include "qgsfeature.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgsattributeform.h"
+#include "qgstrackedvectorlayertools.h"
 
 #include <QDialog>
 #include <QMenuBar>
 #include <QGridLayout>
+#include "qgis_gui.h"
 
 class QgsDistanceArea;
-class QgsFeature;
-class QgsField;
 class QgsHighlight;
-class QgsVectorLayer;
-class QgsVectorLayerTools;
 
+/** \ingroup gui
+ * \class QgsAttributeDialog
+ */
 class GUI_EXPORT QgsAttributeDialog : public QDialog
 {
     Q_OBJECT
 
   public:
-    /**
-     * Create an attribute dialog for a given layer and feature
-     *
-     * @param vl                The layer for which the dialog will be generated
-     * @param thepFeature       A feature for which the dialog will be generated
-     * @param featureOwner      Set to true, if the dialog should take ownership of the feature
-     * @param myDa              A QgsDistanceArea which will be used for expressions
-     * @param parent            A parent widget for the dialog
-     * @param showDialogButtons True: Show the dialog buttons accept/cancel
-     *
-     * @deprecated
-     */
-    Q_DECL_DEPRECATED QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, const QgsDistanceArea& myDa, QWidget* parent = nullptr, bool showDialogButtons = true );
 
     /**
      * Create an attribute dialog for a given layer and feature
@@ -82,15 +69,6 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      */
     void setHighlight( QgsHighlight *h );
 
-    /**
-     * @brief Returns reference to self. Only here for legacy compliance
-     *
-     * @return this
-     *
-     * @deprecated Do not use. Just use this object itself. Or QgsAttributeForm if you want to embed.
-     */
-    Q_DECL_DEPRECATED QDialog *dialog() { return this; }
-
     QgsAttributeForm *attributeForm() { return mAttributeForm; }
 
     const QgsFeature *feature() { return &mAttributeForm->feature(); }
@@ -103,18 +81,8 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     bool editable() { return mAttributeForm->editable(); }
 
     /**
-     * Toggles the form mode between edit feature and add feature.
-     * If set to true, the dialog will be editable even with an invalid feature.
-     * If set to true, the dialog will add a new feature when the form is accepted.
-     *
-     * @param isAddDialog If set to true, turn this dialog into an add feature dialog.
-     * @deprecated use setMode() instead
-     */
-    Q_DECL_DEPRECATED void setIsAddDialog( bool isAddDialog ) { mAttributeForm->setMode( isAddDialog ? QgsAttributeForm::AddFeatureMode : QgsAttributeForm::SingleEditMode ); }
-
-    /**
      * Toggles the form mode.
-     * @param mode form mode. Eg if set to QgsAttributeForm::AddFeatureMode, the dialog will be editable even with an invalid feature and
+     * @param mode form mode. For example, if set to QgsAttributeForm::AddFeatureMode, the dialog will be editable even with an invalid feature and
      * will add a new feature when the form is accepted.
      */
     void setMode( QgsAttributeForm::Mode mode ) { mAttributeForm->setMode( mode ); }
@@ -137,13 +105,13 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
 
   public slots:
     void accept() override;
+    void reject() override;
 
-    //! Show the dialog non-blocking. Reparents this dialog to be a child of the dialog form and is deleted when
-    //! closed.
-    void show( bool autoDelete = true );
+    //! Show the dialog non-blocking. Reparents this dialog to be a child of the dialog form
+    void show();
 
   private:
-    void init( QgsVectorLayer* layer, QgsFeature* feature, const QgsAttributeEditorContext& context );
+    void init( QgsVectorLayer* layer, QgsFeature* feature, const QgsAttributeEditorContext& context, bool showDialogButtons );
 
     QString mSettingsPath;
     // Used to sync multiple widgets for the same field
@@ -154,11 +122,14 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     QgsAttributeForm* mAttributeForm;
     QgsFeature *mOwnedFeature;
 
+    QgsTrackedVectorLayerTools mTrackedVectorLayerTools;
+
     // true if this dialog is editable
     bool mEditable;
 
     static int sFormCounter;
     static QString sSettingsPath;
+
 };
 
 #endif

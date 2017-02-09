@@ -16,9 +16,10 @@
 #ifndef QGSMULTIRENDERCHECKER_H
 #define QGSMULTIRENDERCHECKER_H
 
+#include "qgis_core.h"
 #include "qgsrenderchecker.h"
 
-/**
+/** \ingroup core
  * This class allows checking rendered images against comparison images.
  * Its main purpose is for the unit testing framework.
  *
@@ -52,6 +53,8 @@ class CORE_EXPORT QgsMultiRenderChecker
 {
   public:
     QgsMultiRenderChecker();
+
+    virtual ~QgsMultiRenderChecker() = default;
 
     /**
      * Base directory name for the control image (with control image path
@@ -129,13 +132,16 @@ class CORE_EXPORT QgsMultiRenderChecker
 };
 
 #ifdef ENABLE_TESTS
-// Renders a composition to an image and compares with an expected output
 ///@cond PRIVATE
+
+/** \ingroup core
+ * \class QgsCompositionChecker
+ * Renders a composition to an image and compares with an expected output
+ */
 class CORE_EXPORT QgsCompositionChecker : public QgsMultiRenderChecker
 {
   public:
     QgsCompositionChecker( const QString& testName, QgsComposition* composition );
-    ~QgsCompositionChecker();
 
     void setSize( QSize size ) { mSize = size; }
 

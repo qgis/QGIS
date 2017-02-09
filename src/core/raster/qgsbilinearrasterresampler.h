@@ -21,6 +21,8 @@
 #include "qgsrasterresampler.h"
 #include <QColor>
 
+#include "qgis_core.h"
+
 /** \ingroup core
     Bilinear Raster Resampler
 */
@@ -28,10 +30,9 @@ class CORE_EXPORT QgsBilinearRasterResampler: public QgsRasterResampler
 {
   public:
     QgsBilinearRasterResampler();
-    ~QgsBilinearRasterResampler();
 
     void resample( const QImage& srcImage, QImage& dstImage ) override;
-    QString type() const override { return "bilinear"; }
+    QString type() const override { return QStringLiteral( "bilinear" ); }
     QgsBilinearRasterResampler * clone() const override;
 };
 

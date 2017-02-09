@@ -18,22 +18,23 @@
 
 #include <QGridLayout>
 #include <QLabel>
+#include "qgis_gui.h"
 
-#include "qgscollapsiblegroupbox.h"
-#include "qgsmaplayer.h"
-#include "qgsmapcanvas.h"
-#include "qgsscalewidget.h"
+class QgsMapCanvas;
+class QgsScaleWidget;
 
-
+/** \ingroup gui
+ * \class QgsScaleRangeWidget
+ */
 class GUI_EXPORT QgsScaleRangeWidget : public QWidget
 {
     Q_OBJECT
 
   public:
     explicit QgsScaleRangeWidget( QWidget *parent = nullptr );
-    ~QgsScaleRangeWidget();
 
     //! set the map canvas which will be used for the current scale buttons
+
     /**
      * @brief setMapCanvas set the map canvas which will be used for the current scale buttons
      * if not set, the buttons are hidden.
@@ -46,21 +47,47 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
     //! return the maximum scale
     double maximumScale();
 
-    //! return the minimum scale denominator ( = 1 / maximum scale )
+    /**
+     * Returns the minimum scale denominator ( = 1 / maximum scale )
+     * In case of maximum scale = 0 it will also return 0
+     */
     double minimumScaleDenom();
 
-    //! return the maximum scale denominator ( = 1 / minimum scale )
+    /**
+     * Returns the maximum scale denominator ( = 1 / minimum scale )
+     * In case of minimum scale = 0 it will also return 0
+     */
     double maximumScaleDenom();
 
     //! call to reload the project scales and apply them to the 2 scales combo boxes
     void reloadProjectScales();
 
   public slots:
+
+    /**
+     * Set the minimum scale. Infinite will be handled equally to 0 internally.
+     */
     void setMinimumScale( double scale );
 
+    /**
+     * Set the maximum scale. Infinite will be handled equally to 0 internally.
+     */
     void setMaximumScale( double scale );
 
     void setScaleRange( double min, double max );
+
+  signals:
+
+    /** Emitted when the scale range set in the widget is changed.
+     * @param min minimum scale
+     * @param max maximum scale
+     * @note added in QGIS 2.16
+     */
+    void rangeChanged( double min, double max );
+
+  private slots:
+
+    void emitRangeChanged();
 
   private:
     //! pointer to the map canvas used for current buttons.

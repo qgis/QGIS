@@ -5,8 +5,8 @@ class QgsComposerNodesItem: QgsComposerItem
 %End
   public:
 
-    QgsComposerNodesItem( QString mTagName, QgsComposition* c );
-    QgsComposerNodesItem( QString mTagName, QPolygonF polygon, QgsComposition* c );
+    QgsComposerNodesItem( const QString& mTagName, QgsComposition* c );
+    QgsComposerNodesItem( const QString& mTagName, const QPolygonF& polygon, QgsComposition* c );
     ~QgsComposerNodesItem();
 
     /** Add a node in current shape.
@@ -16,7 +16,7 @@ class QgsComposerNodesItem: QgsComposerItem
      * true. Typically, if this flag is true, the new node has to be nearest
      * than radius to the shape to be added.
      */
-    bool addNode( const QPointF &pt, const bool checkArea = true, const double radius = 10 );
+    bool addNode( QPointF pt, const bool checkArea = true, const double radius = 10 );
 
     /** Set a tag to indicate if we want to draw or not the shape's nodes.
      * @param display
@@ -27,7 +27,7 @@ class QgsComposerNodesItem: QgsComposerItem
      * @param index the index of the node to move
      * @param node is the new position in scene coordinate
      */
-    bool moveNode( const int index, const QPointF &node );
+    bool moveNode( const int index, QPointF node );
 
     /** \brief Reimplementation of QCanvasItem::paint - draw on canvas */
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
@@ -52,7 +52,7 @@ class QgsComposerNodesItem: QgsComposerItem
      * @param itemElem is Dom node corresponding to item tag
      * @param doc is Dom document
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
 
     /** Remove a node from the shape.
      * @param index of the node to delete
@@ -72,20 +72,20 @@ class QgsComposerNodesItem: QgsComposerItem
       */
     int selectedNode();
 
-    /** Unselect a node.
+    /** Deselect a node.
      */
-    void unselectNode();
+    void deselectNode();
 
     /** Stores state in Dom element
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc write template file
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
 
   protected:
 
     /** Method called in addNode. */
-    virtual bool _addNode( const int nodeIndex, const QPointF &newPoint, const double radius ) = 0;
+    virtual bool _addNode( const int nodeIndex, QPointF newPoint, const double radius ) = 0;
 
     /** Method called in removeNode. */
     virtual bool _removeNode( const int nodeIndex ) = 0;
@@ -94,17 +94,17 @@ class QgsComposerNodesItem: QgsComposerItem
     virtual void _draw( QPainter *painter ) = 0;
 
     /** Method called in readXML. */
-    virtual void _readXMLStyle( const QDomElement &elmt ) = 0;
+    virtual void _readXmlStyle( const QDomElement &elmt ) = 0;
 
     /** Method called in writeXML. */
-    virtual void _writeXMLStyle( QDomDocument &doc, QDomElement &elmt ) const = 0;
+    virtual void _writeXmlStyle( QDomDocument &doc, QDomElement &elmt ) const = 0;
 
     /** Rescale the current shape according to the boudning box. Useful when
      * the shape is resized thanks to the rubber band. */
     void rescaleToFitBoundingBox();
 
     /** Compute an euclidian distance between 2 nodes. */
-    double computeDistance(const QPointF &pt1, const QPointF &pt2) const;
+    double computeDistance( QPointF pt1, QPointF pt2) const;
 
     /** Update the current scene rectangle for this item. */
     void updateSceneRect();

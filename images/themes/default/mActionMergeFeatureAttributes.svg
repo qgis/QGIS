@@ -1,0 +1,13 @@
+<svg enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+<g transform="translate(0 -8)">
+<path d="m2.5 10.5h8v5h-8" fill="#fff" stroke="#9a9a9a" stroke-linecap="square"/>
+<path d="m21.5 15.5h-8v-5h8" fill="#fff" stroke="#9a9a9a" stroke-linecap="square"/>
+<path d="m2.5 17.5h8v5h-8" fill="#fff" stroke="#9a9a9a" stroke-linecap="square"/>
+<path d="m21.5 22.5h-8v-5h8" fill="#fff" stroke="#9a9a9a" stroke-linecap="square"/>
+<path d="m2.5 24.5h8v5h-8" fill="#fff" stroke="#9a9a9a" stroke-linecap="square"/>
+<path d="m21.5 29.5h-8v-5h8" fill="#fff" stroke="#9a9a9a" stroke-linecap="square"/>
+<path d="m8.0050501 12.99495c1.9974749-1.993262 5.9924249-1.993262 7.9898999 0" fill="none" stroke="#383838" stroke-linecap="round" stroke-width=".99999994"/>
+<path d="m8.0050501 19.99495c1.9974749-1.993262 5.9924249-1.993262 7.9898999 0" fill="none" stroke="#383838" stroke-linecap="round" stroke-width=".99999994"/>
+<path d="m8.0050501 26.99495c1.9974749-1.993262 5.9924249-1.993262 7.9898999 0" fill="none" stroke="#383838" stroke-linecap="round" stroke-width=".99999994"/>
+</g>
+</svg>

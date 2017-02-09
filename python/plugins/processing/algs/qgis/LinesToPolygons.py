@@ -27,9 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QGis, QgsFeature, QgsGeometry
+from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -50,16 +50,18 @@ class LinesToPolygons(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Lines to polygons')
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+        self.tags = self.tr('line,polygon,convert')
 
         self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Polygons from lines')))
+                                          self.tr('Input layer'),
+                                          [dataobjects.TYPE_VECTOR_LINE]))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Polygons from lines'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields().toList(), QGis.WKBPolygon, layer.crs()
+            layer.fields().toList(), QgsWkbTypes.Polygon, layer.crs()
         )
 
         outFeat = QgsFeature()
@@ -79,7 +81,7 @@ class LinesToPolygons(GeoAlgorithm):
                 outFeat.setAttributes(attrs)
                 writer.addFeature(outFeat)
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer
 

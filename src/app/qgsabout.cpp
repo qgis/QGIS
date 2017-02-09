@@ -32,11 +32,11 @@ QgsAbout::QgsAbout( QWidget *parent )
     : QgsOptionsDialogBase( "about", parent, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
 #else
 QgsAbout::QgsAbout( QWidget *parent )
-    : QgsOptionsDialogBase( "about", parent )  // Normal dialog in non Mac-OS
+    : QgsOptionsDialogBase( QStringLiteral( "about" ), parent )  // Normal dialog in non Mac-OS
 #endif
 {
   setupUi( this );
-  initOptionsBase( true, QString( "%1 - %2 Bit" ).arg( windowTitle() ).arg( QSysInfo::WordSize ) );
+  initOptionsBase( true, QStringLiteral( "%1 - %2 Bit" ).arg( windowTitle() ).arg( QSysInfo::WordSize ) );
   init();
 }
 
@@ -87,7 +87,7 @@ void QgsAbout::init()
     {
       line = stream.readLine(); // line of text excluding '\n'
       //ignore the line if it starts with a hash....
-      if ( line.left( 1 ) == "#" )
+      if ( !line.isEmpty() && line.at( 0 ) == '#' )
         continue;
       QStringList myTokens = line.split( '\t', QString::SkipEmptyParts );
       lines << myTokens[0];
@@ -119,7 +119,7 @@ void QgsAbout::init()
     {
       line = stream.readLine(); // line of text excluding '\n'
       //ignore the line if it starts with a hash....
-      if ( line.left( 1 ) == "#" )
+      if ( !line.isEmpty() && line.at( 0 ) == '#' )
         continue;
       lines += line;
     }
@@ -179,7 +179,7 @@ void QgsAbout::init()
     txtDonors->clear();
     txtDonors->document()->setDefaultStyleSheet( QgsApplication::reportStyleSheet() );
     txtDonors->setHtml( donorsHTML );
-    QgsDebugMsg( QString( "donorsHTML:%1" ).arg( donorsHTML.toAscii().constData() ) );
+    QgsDebugMsg( QString( "donorsHTML:%1" ).arg( donorsHTML.toLatin1().constData() ) );
   }
 
   // read the TRANSLATORS file and populate the text widget
@@ -190,7 +190,7 @@ void QgsAbout::init()
 #endif
   if ( translatorFile.open( QIODevice::ReadOnly ) )
   {
-    QString translatorHTML = "";
+    QString translatorHTML = QLatin1String( "" );
     QTextStream translatorStream( &translatorFile );
     // Always use UTF-8
     translatorStream.setCodec( "UTF-8" );
@@ -201,7 +201,7 @@ void QgsAbout::init()
       translatorHTML += translatorStream.readLine();
     }
     txtTranslators->setHtml( translatorHTML );
-    QgsDebugMsg( QString( "translatorHTML:%1" ).arg( translatorHTML.toAscii().constData() ) );
+    QgsDebugMsg( QString( "translatorHTML:%1" ).arg( translatorHTML.toLatin1().constData() ) );
   }
   setWhatsNew();
   setLicence();
@@ -245,15 +245,15 @@ void QgsAbout::setPluginInfo()
   myString += QgsAuthMethodRegistry::instance()->pluginList( true );
   //qt database plugins
   myString += "<b>" + tr( "Available Qt Database Plugins" ) + "</b><br>";
-  myString += "<ol>\n<li>\n";
+  myString += QLatin1String( "<ol>\n<li>\n" );
   QStringList myDbDriverList = QSqlDatabase::drivers();
-  myString += myDbDriverList.join( "</li>\n<li>" );
-  myString += "</li>\n</ol>\n";
+  myString += myDbDriverList.join( QStringLiteral( "</li>\n<li>" ) );
+  myString += QLatin1String( "</li>\n</ol>\n" );
   //qt image plugins
   myString += "<b>" + tr( "Available Qt Image Plugins" ) + "</b><br>";
   myString += tr( "Qt Image Plugin Search Paths <br>" );
-  myString += QApplication::libraryPaths().join( "<br>" );
-  myString += "<ol>\n<li>\n";
+  myString += QApplication::libraryPaths().join( QStringLiteral( "<br>" ) );
+  myString += QLatin1String( "<ol>\n<li>\n" );
   QList<QByteArray> myImageFormats = QImageReader::supportedImageFormats();
   QList<QByteArray>::const_iterator myIterator = myImageFormats.begin();
   while ( myIterator != myImageFormats.end() )
@@ -262,7 +262,7 @@ void QgsAbout::setPluginInfo()
     myString += myFormat + "</li>\n<li>";
     ++myIterator;
   }
-  myString += "</li>\n</ol>\n";
+  myString += QLatin1String( "</li>\n</ol>\n" );
 
   QString myStyle = QgsApplication::reportStyleSheet();
   txtProviders->clear();
@@ -272,12 +272,12 @@ void QgsAbout::setPluginInfo()
 
 void QgsAbout::on_btnQgisUser_clicked()
 {
-  openUrl( QString( "http://lists.osgeo.org/mailman/listinfo/qgis-user" ) );
+  openUrl( QStringLiteral( "http://lists.osgeo.org/mailman/listinfo/qgis-user" ) );
 }
 
 void QgsAbout::on_btnQgisHome_clicked()
 {
-  openUrl( QString( "http://qgis.org" ) );
+  openUrl( QStringLiteral( "http://qgis.org" ) );
 }
 
 void QgsAbout::openUrl( const QUrl &url )
@@ -303,14 +303,14 @@ QString QgsAbout::fileSystemSafe( const QString& fileName )
 
     if ( c > 0x7f )
     {
-      result = result + QString( "%1" ).arg( c, 2, 16, QChar( '0' ) );
+      result = result + QStringLiteral( "%1" ).arg( c, 2, 16, QChar( '0' ) );
     }
     else
     {
       result = result + QString( c );
     }
   }
-  result.replace( QRegExp( "[^a-z0-9A-Z]" ), "_" );
+  result.replace( QRegExp( "[^a-z0-9A-Z]" ), QStringLiteral( "_" ) );
   QgsDebugMsg( result );
 
   return result;

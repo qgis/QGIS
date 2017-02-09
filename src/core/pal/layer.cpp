@@ -34,7 +34,8 @@
 #include "feature.h"
 #include "geomfunction.h"
 #include "util.h"
-#include "qgslabelingenginev2.h"
+#include "qgslabelingengine.h"
+
 #include <cmath>
 #include <vector>
 
@@ -49,7 +50,6 @@ Layer::Layer( QgsAbstractLabelProvider* provider, const QString& name, QgsPalLay
     , mLabelLayer( toLabel )
     , mDisplayAll( displayAll )
     , mCentroidInside( false )
-    , mFitInPolygon( false )
     , mArrangement( arrangement )
     , mArrangementFlags( nullptr )
     , mMode( LabelPerFeature )
@@ -170,7 +170,7 @@ bool Layer::registerFeature( QgsLabelFeature* lf )
 
     if ( lf->isObstacle() && featureGeomIsObstacleGeom )
     {
-      //if we are not labelling the layer, only insert it into the obstacle list and avoid an
+      //if we are not labeling the layer, only insert it into the obstacle list and avoid an
       //unnecessary copy
       if ( mLabelLayer && labelWellDefined )
       {
@@ -362,7 +362,7 @@ void Layer::joinConnectedFeatures()
     QLinkedList<FeaturePart*>* parts = mConnectedHashtable.value( labelText );
 
     // go one-by-one part, try to merge
-    while ( !parts->isEmpty() )
+    while ( !parts->isEmpty() && parts->count() > 1 )
     {
       // part we'll be checking against other in this round
       FeaturePart* partCheck = parts->takeFirst();
@@ -371,24 +371,29 @@ void Layer::joinConnectedFeatures()
       if ( otherPart )
       {
         // remove partCheck from r-tree
-        double bmin[2], bmax[2];
-        partCheck->getBoundingBox( bmin, bmax );
-        mFeatureIndex->Remove( bmin, bmax, partCheck );
-        mFeatureParts.removeOne( partCheck );
+        double checkpartBMin[2], checkpartBMax[2];
+        partCheck->getBoundingBox( checkpartBMin, checkpartBMax );
 
-        mConnectedFeaturesIds.insert( partCheck->featureId(), connectedFeaturesId );
-        otherPart->getBoundingBox( bmin, bmax );
+        double otherPartBMin[2], otherPartBMax[2];
+        otherPart->getBoundingBox( otherPartBMin, otherPartBMax );
 
         // merge points from partCheck to p->item
         if ( otherPart->mergeWithFeaturePart( partCheck ) )
         {
+          // remove the parts we are joining from the index
+          mFeatureIndex->Remove( checkpartBMin, checkpartBMax, partCheck );
+          mFeatureIndex->Remove( otherPartBMin, otherPartBMax, otherPart );
+
+          // reinsert merged line to r-tree (probably not needed)
+          otherPart->getBoundingBox( otherPartBMin, otherPartBMax );
+          mFeatureIndex->Insert( otherPartBMin, otherPartBMax, otherPart );
+
+          mConnectedFeaturesIds.insert( partCheck->featureId(), connectedFeaturesId );
           mConnectedFeaturesIds.insert( otherPart->featureId(), connectedFeaturesId );
-          // reinsert p->item to r-tree (probably not needed)
-          mFeatureIndex->Remove( bmin, bmax, otherPart );
-          otherPart->getBoundingBox( bmin, bmax );
-          mFeatureIndex->Insert( bmin, bmax, otherPart );
+
+          mFeatureParts.removeOne( partCheck );
+          delete partCheck;
         }
-        delete partCheck;
       }
     }
 
@@ -422,6 +427,7 @@ void Layer::chopFeaturesAtRepeatDistance()
     double chopInterval = fpart->repeatDistance();
     if ( chopInterval != 0. && GEOSGeomTypeId_r( geosctxt, geom ) == GEOS_LINESTRING )
     {
+      chopInterval *= ceil( fpart->getLabelWidth() / fpart->repeatDistance() );
 
       double bmin[2], bmax[2];
       fpart->getBoundingBox( bmin, bmax );

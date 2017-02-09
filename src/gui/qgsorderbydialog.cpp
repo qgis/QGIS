@@ -18,6 +18,7 @@
 
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsfieldexpressionwidget.h"
+#include "qgsvectorlayer.h"
 
 #include <QTableWidget>
 #include <QKeyEvent>
@@ -48,7 +49,7 @@ void QgsOrderByDialog::setOrderBy( const QgsFeatureRequest::OrderBy& orderBy )
   }
 
   // Add an empty widget at the end
-  setRow( i, QgsFeatureRequest::OrderByClause( "" ) );
+  setRow( i, QgsFeatureRequest::OrderByClause( QLatin1String( "" ) ) );
 }
 
 QgsFeatureRequest::OrderBy QgsOrderByDialog::orderBy()
@@ -58,6 +59,7 @@ QgsFeatureRequest::OrderBy QgsOrderByDialog::orderBy()
   for ( int i = 0; i < mOrderByTableWidget->rowCount(); ++i )
   {
     QString expressionText = static_cast<QgsFieldExpressionWidget*>( mOrderByTableWidget->cellWidget( i, 0 ) )->currentText();
+    bool isExpression = static_cast<QgsFieldExpressionWidget*>( mOrderByTableWidget->cellWidget( i, 0 ) )->isExpression();
 
     if ( ! expressionText.isEmpty() )
     {
@@ -70,6 +72,9 @@ QgsFeatureRequest::OrderBy QgsOrderByDialog::orderBy()
       int nullsFirstIndex = static_cast<QComboBox*>( mOrderByTableWidget->cellWidget( i, 2 ) )->currentIndex();
       if ( nullsFirstIndex == 1 )
         nullsFirst = true;
+
+      if ( !isExpression )
+        expressionText = QgsExpression::quotedColumnRef( expressionText );
 
       QgsFeatureRequest::OrderByClause orderByClause( expressionText, asc, nullsFirst );
 
@@ -99,7 +104,7 @@ void QgsOrderByDialog::onExpressionChanged( const QString& expression )
   else if ( !expression.isEmpty() && row == mOrderByTableWidget->rowCount() - 1 )
   {
     mOrderByTableWidget->insertRow( mOrderByTableWidget->rowCount() );
-    setRow( row + 1, QgsFeatureRequest::OrderByClause( "" ) );
+    setRow( row + 1, QgsFeatureRequest::OrderByClause( QLatin1String( "" ) ) );
   }
 }
 

@@ -57,7 +57,7 @@ There are varions commands/functions which can be used to measure time, e.g.:
     // measured code
     double elapsed = time.elapsed() / 1000.;
 
-I tried all of them and all are giving the same mostly useless values. If the same piece of code is measured more times, the results differ. It seems that all those functions read user time from the same place, kernel task_struct.utime. The problem is, if I understand correctly, how the task_struct.utime is updated. Whenever timer interrupt comes (every 1/HZ) to scheduler, it calls update_process_times->account_process_tick->irqtime_account_process_tick->account_user_time and increases task_struct.utime by cputime_one_jiffy (1/HZ). See kernel/sched.c and kernel/timer.c. It means, that utime is not increased by pure time when the the task code is running, but by fixed interval which includes some task switching overhead??? In a simple test, I could observe 30% increas of utime if another application was running at the same time.
+I tried all of them and all are giving the same mostly useless values. If the same piece of code is measured more times, the results differ. It seems that all those functions read user time from the same place, kernel task_struct.utime. The problem is, if I understand correctly, how the task_struct.utime is updated. Whenever timer interrupt comes (every 1/HZ) to scheduler, it calls update_process_times->account_process_tick->irqtime_account_process_tick->account_user_time and increases task_struct.utime by cputime_one_jiffy (1/HZ). See kernel/sched.c and kernel/timer.c. It means, that utime is not increased by pure time when the the task code is running, but by fixed interval which includes some task switching overhead??? In a simple test, I could observe 30% increase of utime if another application was running at the same time.
 
 Unfortunately I don't see anything better than user time + sys time, running test with highest priority and avoiding other use of computer when tests are running, e.g.:
 
@@ -65,11 +65,11 @@ Unfortunately I don't see anything better than user time + sys time, running tes
 
 To be sure that the measured values are correct, it is necessary to run more cycles and check some standard deviation or so.
 
-There is also high level benchmark support available in QTestLib, it is possible to use QBENCHMARK macro + QTEST_MAIN to create easily test executable. Such test may be run with various options, some notes on modes/options:
+There is also high level benchmark support available in QTestLib, it is possible to use QBENCHMARK macro + QGSTEST_MAIN to create easily test executable. Such test may be run with various options, some notes on modes/options:
 
 -tickcounter - reads rdtsc register (on Linux), thus it counts real time, result is not constant
 
--callgrind - reruns the command with callgrind, number of 'instr. loads' is constant for constant number of iterations, number of instructions per iterarion decreases with number of iterarions (for small numbers of iterations) for a simple function the number of instractions of the second iteration may be 40% of the first one - cache, prediction??? Callgrind is realy very slow. I am not sure what 'instr. loads' exactly means and if it can be somehow converted to time, but I don't believe so. AFAIK each instruction need a different number of cycles and it may be different even for the same instruction because of CPU cache, then there are instruction pipelines etc.
+-callgrind - reruns the command with callgrind, number of 'instr. loads' is constant for constant number of iterations, number of instructions per iterarion decreases with number of iterarions (for small numbers of iterations) for a simple function the number of instractions of the second iteration may be 40% of the first one - cache, prediction??? Callgrind is really very slow. I am not sure what 'instr. loads' exactly means and if it can be somehow converted to time, but I don't believe so. AFAIK each instruction need a different number of cycles and it may be different even for the same instruction because of CPU cache, then there are instruction pipelines etc.
 
 
     Build options

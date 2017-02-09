@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsextentgroupbox.h
+    ---------------------
+    begin                : March 2014
+    copyright            : (C) 2014 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSEXTENTGROUPBOX_H
 #define QGSEXTENTGROUPBOX_H
 
@@ -7,10 +21,11 @@
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
+#include "qgis_gui.h"
 
 class QgsCoordinateReferenceSystem;
 
-/**
+/** \ingroup gui
  * Collapsible group box for configuration of extent, typically for a save operation.
  *
  * Besides allowing the user to enter the extent manually, it comes with options to use
@@ -30,9 +45,9 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
 
     enum ExtentState
     {
-      OriginalExtent,  //!<  layer's extent
-      CurrentExtent,   //!<  map canvas extent
-      UserExtent,      //!<  extent manually entered/modified by the user
+      OriginalExtent,  //!< Layer's extent
+      CurrentExtent,   //!< Map canvas extent
+      UserExtent,      //!< Extent manually entered/modified by the user
     };
 
     //! Setup original extent - should be called as part of initialization
@@ -70,7 +85,7 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
     //! set output extent to be the same as current extent (may be transformed to output CRS)
     void setOutputExtentFromCurrent();
 
-    //! set output extent to custom extent (may be transformed to outut CRS)
+    //! set output extent to custom extent (may be transformed to output CRS)
     void setOutputExtentFromUser( const QgsRectangle& extent, const QgsCoordinateReferenceSystem& crs );
 
   signals:

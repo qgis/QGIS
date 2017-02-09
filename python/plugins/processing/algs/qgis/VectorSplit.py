@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2014'
@@ -27,7 +28,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -52,13 +53,13 @@ class VectorSplit(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Split vector layer')
         self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
         self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Unique ID field'), self.INPUT))
 
         self.addOutput(OutputDirectory(self.OUTPUT, self.tr('Output directory')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         fieldName = self.getParameterValue(self.FIELD)
@@ -66,18 +67,18 @@ class VectorSplit(GeoAlgorithm):
 
         mkdir(directory)
 
-        fieldIndex = layer.fieldNameIndex(fieldName)
+        fieldIndex = layer.fields().lookupField(fieldName)
         uniqueValues = vector.uniqueValues(layer, fieldIndex)
         baseName = os.path.join(directory, '{0}_{1}'.format(layer.name(), fieldName))
 
-        fields = layer.pendingFields()
-        crs = layer.dataProvider().crs()
+        fields = layer.fields()
+        crs = layer.crs()
         geomType = layer.wkbType()
 
         total = 100.0 / len(uniqueValues)
 
         for current, i in enumerate(uniqueValues):
-            fName = u'{0}_{1}.shp'.format(baseName, unicode(i).strip())
+            fName = u'{0}_{1}.shp'.format(baseName, str(i).strip())
 
             writer = vector.VectorWriter(fName, None, fields, geomType, crs)
             for f in vector.features(layer):
@@ -85,4 +86,4 @@ class VectorSplit(GeoAlgorithm):
                     writer.addFeature(f)
             del writer
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))

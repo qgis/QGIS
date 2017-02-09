@@ -17,6 +17,7 @@
 #define QGSMAPTOOLPAN_H
 
 #include "qgsmaptool.h"
+#include "qgis_gui.h"
 class QgsMapCanvas;
 
 
@@ -32,16 +33,10 @@ class GUI_EXPORT QgsMapToolPan : public QgsMapTool
     //! constructor
     QgsMapToolPan( QgsMapCanvas* canvas );
 
-    //! Mouse press event
+    virtual Flags flags() const override { return QgsMapTool::Transient | QgsMapTool::AllowZoomRect; }
     virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
-
-    //! Overridden mouse move event
     virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
-
-    //! Overridden mouse release event
     virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
-
-    virtual bool isTransient() override { return true; }
 
   private:
 

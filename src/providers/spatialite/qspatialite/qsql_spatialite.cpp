@@ -60,10 +60,8 @@
 #include <sqlite3.h>
 #include <qgsslconnect.h>
 
-#if QT_VERSION >= 0x050000
 Q_DECLARE_OPAQUE_POINTER(sqlite3*)
 Q_DECLARE_OPAQUE_POINTER(sqlite3_stmt*)
-#endif
 Q_DECLARE_METATYPE(sqlite3*)
 Q_DECLARE_METATYPE(sqlite3_stmt*)
 
@@ -72,7 +70,7 @@ QT_BEGIN_NAMESPACE
 static QString _q_escapeIdentifier(const QString &identifier)
 {
     QString res = identifier;
-    if(!identifier.isEmpty() && identifier.left(1) != QString(QLatin1Char('"')) && identifier.right(1) != QString(QLatin1Char('"')) ) {
+    if(!identifier.isEmpty() && identifier.at(0) != '"' && identifier.right(1) != QString(QLatin1Char('"')) ) {
         res.replace(QLatin1Char('"'), QLatin1String("\"\""));
         res.prepend(QLatin1Char('"')).append(QLatin1Char('"'));
         res.replace(QLatin1Char('.'), QLatin1String("\".\""));
@@ -326,20 +324,6 @@ QSpatiaLiteResult::~QSpatiaLiteResult()
     delete d;
 }
 
-void QSpatiaLiteResult::virtual_hook(int id, void *data)
-{
-    switch (id) {
-#if QT_VERSION < 0x050000
-    case QSqlResult::DetachFromResultSet:
-        if (d->stmt)
-            sqlite3_reset(d->stmt);
-        break;
-#endif
-    default:
-        QSqlCachedResult::virtual_hook(id, data);
-    }
-}
-
 bool QSpatiaLiteResult::reset(const QString &query)
 {
     if (!prepare(query))
@@ -491,13 +475,11 @@ QSqlRecord QSpatiaLiteResult::record() const
     return d->rInf;
 }
 
-#if QT_VERSION >= 0x050000
 void QSpatiaLiteResult::detachFromResultSet()
 {
     if (d->stmt)
         sqlite3_reset(d->stmt);
 }
-#endif
 
 QVariant QSpatiaLiteResult::handle() const
 {
@@ -545,9 +527,7 @@ bool QSpatiaLiteDriver::hasFeature(DriverFeature f) const
     case BatchOperations:
     case EventNotifications:
     case MultipleResultSets:
-#if QT_VERSION >= 0x050000
     case CancelQuery:
-#endif
         return false;
     }
     return false;

@@ -36,13 +36,21 @@
 QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture ): QgsComposerItemBaseWidget( nullptr, picture ), mPicture( picture ), mPreviewsLoaded( false )
 {
   setupUi( this );
+  setPanelTitle( tr( "Picture properties" ) );
 
   mFillColorButton->setAllowAlpha( true );
   mFillColorButton->setColorDialogTitle( tr( "Select fill color" ) );
-  mFillColorButton->setContext( "composer" );
+  mFillColorButton->setContext( QStringLiteral( "composer" ) );
   mOutlineColorButton->setAllowAlpha( true );
   mOutlineColorButton->setColorDialogTitle( tr( "Select outline color" ) );
-  mOutlineColorButton->setContext( "composer" );
+  mOutlineColorButton->setContext( QStringLiteral( "composer" ) );
+
+  mNorthTypeComboBox->blockSignals( true );
+  mNorthTypeComboBox->addItem( tr( "Grid north" ), QgsComposerPicture::GridNorth );
+  mNorthTypeComboBox->addItem( tr( "True north" ), QgsComposerPicture::TrueNorth );
+  mNorthTypeComboBox->blockSignals( false );
+  mPictureRotationOffsetSpinBox->setClearValue( 0.0 );
+  mPictureRotationSpinBox->setClearValue( 0.0 );
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, picture );
@@ -52,7 +60,7 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
   {
     mComposerMapComboBox->setComposition( mPicture->composition() );
     mComposerMapComboBox->setItemType( QgsComposerItem::ComposerMap );
-    connect( mComposerMapComboBox, SIGNAL( itemChanged( const QgsComposerItem* ) ), this, SLOT( composerMapChanged( const QgsComposerItem* ) ) );
+    connect( mComposerMapComboBox, SIGNAL( itemChanged( QgsComposerItem* ) ), this, SLOT( composerMapChanged( QgsComposerItem* ) ) );
   }
 
   setGuiElementValues();
@@ -68,19 +76,12 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
   connect( mPicture, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
   connect( mPicture, SIGNAL( pictureRotationChanged( double ) ), this, SLOT( setPicRotationSpinValue( double ) ) );
 
-  QgsAtlasComposition* atlas = atlasComposition();
-  if ( atlas )
-  {
-    // repopulate data defined buttons if atlas layer changes
-    connect( atlas, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ),
-             this, SLOT( populateDataDefinedButtons() ) );
-    connect( atlas, SIGNAL( toggled( bool ) ), this, SLOT( populateDataDefinedButtons() ) );
-  }
-
   //connections for data defined buttons
-  connect( mSourceDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
-  connect( mSourceDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
-  connect( mSourceDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mPictureLineEdit, SLOT( setDisabled( bool ) ) );
+  connect( mSourceDDBtn, &QgsPropertyOverrideButton::activated, mPictureLineEdit, &QLineEdit::setDisabled );
+  registerDataDefinedButton( mSourceDDBtn, QgsComposerObject::PictureSource );
+  registerDataDefinedButton( mFillColorDDBtn, QgsComposerObject::PictureSvgBackgroundColor );
+  registerDataDefinedButton( mOutlineColorDDBtn, QgsComposerObject::PictureSvgOutlineColor );
+  registerDataDefinedButton( mOutlineWidthDDBtn, QgsComposerObject::PictureSvgOutlineWidth );
 }
 
 QgsComposerPictureWidget::~QgsComposerPictureWidget()
@@ -101,7 +102,7 @@ void QgsComposerPictureWidget::on_mPictureBrowseButton_clicked()
 
   if ( openDir.isEmpty() )
   {
-    openDir = s.value( "/UI/lastComposerPictureDir", QDir::homePath() ).toString();
+    openDir = s.value( QStringLiteral( "/UI/lastComposerPictureDir" ), QDir::homePath() ).toString();
   }
 
   //show file dialog
@@ -115,11 +116,11 @@ void QgsComposerPictureWidget::on_mPictureBrowseButton_clicked()
   QFileInfo fileInfo( filePath );
   if ( !fileInfo.exists() || !fileInfo.isReadable() )
   {
-    QMessageBox::critical( nullptr, "Invalid file", "Error, file does not exist or is not readable" );
+    QMessageBox::critical( nullptr, QStringLiteral( "Invalid file" ), QStringLiteral( "Error, file does not exist or is not readable" ) );
     return;
   }
 
-  s.setValue( "/UI/lastComposerPictureDir", fileInfo.absolutePath() );
+  s.setValue( QStringLiteral( "/UI/lastComposerPictureDir" ), fileInfo.absolutePath() );
 
   mPictureLineEdit->blockSignals( true );
   mPictureLineEdit->setText( filePath );
@@ -194,12 +195,12 @@ void QgsComposerPictureWidget::on_mAddDirectoryButton_clicked()
 
   //update the image directory list in the settings
   QSettings s;
-  QStringList userDirList = s.value( "/Composer/PictureWidgetDirectories" ).toStringList();
+  QStringList userDirList = s.value( QStringLiteral( "/Composer/PictureWidgetDirectories" ) ).toStringList();
   if ( !userDirList.contains( directory ) )
   {
     userDirList.append( directory );
   }
-  s.setValue( "/Composer/PictureWidgetDirectories", userDirList );
+  s.setValue( QStringLiteral( "/Composer/PictureWidgetDirectories" ), userDirList );
 }
 
 void QgsComposerPictureWidget::on_mRemoveDirectoryButton_clicked()
@@ -223,9 +224,9 @@ void QgsComposerPictureWidget::on_mRemoveDirectoryButton_clicked()
 
   //update the image directory list in the settings
   QSettings s;
-  QStringList userDirList = s.value( "/Composer/PictureWidgetDirectories" ).toStringList();
+  QStringList userDirList = s.value( QStringLiteral( "/Composer/PictureWidgetDirectories" ) ).toStringList();
   userDirList.removeOne( directoryToRemove );
-  s.setValue( "/Composer/PictureWidgetDirectories", userDirList );
+  s.setValue( QStringLiteral( "/Composer/PictureWidgetDirectories" ), userDirList );
 }
 
 void QgsComposerPictureWidget::on_mResizeModeComboBox_currentIndexChanged( int index )
@@ -280,6 +281,8 @@ void QgsComposerPictureWidget::on_mRotationFromComposerMapCheckBox_stateChanged(
     mPicture->setRotationMap( -1 );
     mPictureRotationSpinBox->setEnabled( true );
     mComposerMapComboBox->setEnabled( false );
+    mNorthTypeComboBox->setEnabled( false );
+    mPictureRotationOffsetSpinBox->setEnabled( false );
     mPicture->setPictureRotation( mPictureRotationSpinBox->value() );
   }
   else
@@ -288,12 +291,14 @@ void QgsComposerPictureWidget::on_mRotationFromComposerMapCheckBox_stateChanged(
     int mapId = map ? map->id() : -1;
     mPicture->setRotationMap( mapId );
     mPictureRotationSpinBox->setEnabled( false );
+    mNorthTypeComboBox->setEnabled( true );
+    mPictureRotationOffsetSpinBox->setEnabled( true );
     mComposerMapComboBox->setEnabled( true );
   }
   mPicture->endCommand();
 }
 
-void QgsComposerPictureWidget::composerMapChanged( const QgsComposerItem* item )
+void QgsComposerPictureWidget::composerMapChanged( QgsComposerItem* item )
 {
   if ( !mPicture )
   {
@@ -307,7 +312,7 @@ void QgsComposerPictureWidget::composerMapChanged( const QgsComposerItem* item )
     return;
   }
 
-  const QgsComposerMap* composerMap = dynamic_cast< const QgsComposerMap*>( item );
+  QgsComposerMap* composerMap = dynamic_cast< QgsComposerMap*>( item );
   int id = composerMap ? composerMap->id() : -1;
   if ( !composerMap )
   {
@@ -335,6 +340,8 @@ void QgsComposerPictureWidget::setGuiElementValues()
     mPictureLineEdit->blockSignals( true );
     mComposerMapComboBox->blockSignals( true );
     mRotationFromComposerMapCheckBox->blockSignals( true );
+    mNorthTypeComboBox->blockSignals( true );
+    mPictureRotationOffsetSpinBox->blockSignals( true );
     mResizeModeComboBox->blockSignals( true );
     mAnchorPointComboBox->blockSignals( true );
     mFillColorButton->blockSignals( true );
@@ -355,13 +362,19 @@ void QgsComposerPictureWidget::setGuiElementValues()
       mRotationFromComposerMapCheckBox->setCheckState( Qt::Checked );
       mPictureRotationSpinBox->setEnabled( false );
       mComposerMapComboBox->setEnabled( true );
+      mNorthTypeComboBox->setEnabled( true );
+      mPictureRotationOffsetSpinBox->setEnabled( true );
     }
     else
     {
       mRotationFromComposerMapCheckBox->setCheckState( Qt::Unchecked );
       mPictureRotationSpinBox->setEnabled( true );
       mComposerMapComboBox->setEnabled( false );
+      mNorthTypeComboBox->setEnabled( false );
+      mPictureRotationOffsetSpinBox->setEnabled( false );
     }
+    mNorthTypeComboBox->setCurrentIndex( mNorthTypeComboBox->findData( mPicture->northMode() ) );
+    mPictureRotationOffsetSpinBox->setValue( mPicture->northOffset() );
 
     mResizeModeComboBox->setCurrentIndex(( int )mPicture->resizeMode() );
     //disable picture rotation for non-zoom modes
@@ -389,6 +402,8 @@ void QgsComposerPictureWidget::setGuiElementValues()
     mPictureRotationSpinBox->blockSignals( false );
     mPictureLineEdit->blockSignals( false );
     mComposerMapComboBox->blockSignals( false );
+    mNorthTypeComboBox->blockSignals( false );
+    mPictureRotationOffsetSpinBox->blockSignals( false );
     mResizeModeComboBox->blockSignals( false );
     mAnchorPointComboBox->blockSignals( false );
     mFillColorButton->blockSignals( false );
@@ -406,7 +421,7 @@ QIcon QgsComposerPictureWidget::svgToIcon( const QString& filePath ) const
   bool fillParam, fillOpacityParam, outlineParam, outlineWidthParam, outlineOpacityParam;
   bool hasDefaultFillColor = false, hasDefaultFillOpacity = false, hasDefaultOutlineColor = false,
                              hasDefaultOutlineWidth = false, hasDefaultOutlineOpacity = false;
-  QgsSvgCache::instance()->containsParams( filePath, fillParam, hasDefaultFillColor, fill,
+  QgsApplication::svgCache()->containsParams( filePath, fillParam, hasDefaultFillColor, fill,
       fillOpacityParam, hasDefaultFillOpacity, fillOpacity,
       outlineParam, hasDefaultOutlineColor, outline,
       outlineWidthParam, hasDefaultOutlineWidth, outlineWidth,
@@ -423,7 +438,7 @@ QIcon QgsComposerPictureWidget::svgToIcon( const QString& filePath ) const
     outlineWidth = 0.6;
 
   bool fitsInCache; // should always fit in cache at these sizes (i.e. under 559 px ^ 2, or half cache size)
-  const QImage& img = QgsSvgCache::instance()->svgAsImage( filePath, 30.0, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, 1.0, fitsInCache );
+  const QImage& img = QgsApplication::svgCache()->svgAsImage( filePath, 30.0, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, fitsInCache );
 
   return QIcon( QPixmap::fromImage( img ) );
 }
@@ -434,7 +449,7 @@ void QgsComposerPictureWidget::updateSvgParamGui( bool resetValues )
     return;
 
   QString picturePath = mPicture->picturePath();
-  if ( !picturePath.endsWith( ".svg", Qt::CaseInsensitive ) )
+  if ( !picturePath.endsWith( QLatin1String( ".svg" ), Qt::CaseInsensitive ) )
   {
     mFillColorButton->setEnabled( false );
     mOutlineColorButton->setEnabled( false );
@@ -447,7 +462,7 @@ void QgsComposerPictureWidget::updateSvgParamGui( bool resetValues )
   QColor defaultFill, defaultOutline;
   double defaultOutlineWidth, defaultFillOpacity, defaultOutlineOpacity;
   bool hasDefaultFillColor, hasDefaultFillOpacity, hasDefaultOutlineColor, hasDefaultOutlineWidth, hasDefaultOutlineOpacity;
-  QgsSvgCache::instance()->containsParams( picturePath, hasFillParam, hasDefaultFillColor, defaultFill,
+  QgsApplication::svgCache()->containsParams( picturePath, hasFillParam, hasDefaultFillColor, defaultFill,
       hasFillOpacityParam, hasDefaultFillOpacity, defaultFillOpacity,
       hasOutlineParam, hasDefaultOutlineColor, defaultOutline,
       hasOutlineWidthParam, hasDefaultOutlineWidth, defaultOutlineWidth,
@@ -498,7 +513,7 @@ int QgsComposerPictureWidget::addDirectoryToPreview( const QString& path )
   QFileInfoList fileList = directory.entryInfoList( QDir::Files );
   QFileInfoList::const_iterator fileIt = fileList.constBegin();
 
-  QProgressDialog progress( "Adding Icons...", "Abort", 0, fileList.size() - 1, this );
+  QProgressDialog progress( QStringLiteral( "Adding Icons..." ), QStringLiteral( "Abort" ), 0, fileList.size() - 1, this );
   //cancel button does not seem to work properly with modal dialog
   //progress.setWindowModality(Qt::WindowModal);
 
@@ -553,7 +568,7 @@ int QgsComposerPictureWidget::addDirectoryToPreview( const QString& path )
       listItem->setIcon( icon );
     }
 
-    listItem->setText( "" );
+    listItem->setText( QLatin1String( "" ) );
     //store the absolute icon file path as user data
     listItem->setData( Qt::UserRole, fileIt->absoluteFilePath() );
     ++counter;
@@ -594,7 +609,7 @@ void QgsComposerPictureWidget::addStandardDirectoriesToPreview()
 
   //include additional user-defined directories for images
   QSettings s;
-  QStringList userDirList = s.value( "/Composer/PictureWidgetDirectories" ).toStringList();
+  QStringList userDirList = s.value( QStringLiteral( "/Composer/PictureWidgetDirectories" ) ).toStringList();
   QStringList::const_iterator userDirIt = userDirList.constBegin();
   for ( ; userDirIt != userDirList.constEnd(); ++userDirIt )
   {
@@ -609,7 +624,7 @@ bool QgsComposerPictureWidget::testSvgFile( const QString& filename ) const
 {
   //QSvgRenderer crashes with some (non-svg) xml documents.
   //So at least we try to sort out the ones with different suffixes
-  if ( !filename.endsWith( ".svg" ) )
+  if ( !filename.endsWith( QLatin1String( ".svg" ) ) )
   {
     return false;
   }
@@ -643,7 +658,7 @@ void QgsComposerPictureWidget::loadPicturePreviews( bool collapsed )
 
 void QgsComposerPictureWidget::on_mFillColorButton_colorChanged( const QColor& color )
 {
-  mPicture->beginCommand( tr( "Picture fill color changed" ) );
+  mPicture->beginCommand( tr( "Picture fill color changed" ), QgsComposerMergeCommand::ComposerPictureFillColor );
   mPicture->setSvgFillColor( color );
   mPicture->endCommand();
   mPicture->update();
@@ -651,7 +666,7 @@ void QgsComposerPictureWidget::on_mFillColorButton_colorChanged( const QColor& c
 
 void QgsComposerPictureWidget::on_mOutlineColorButton_colorChanged( const QColor& color )
 {
-  mPicture->beginCommand( tr( "Picture border color changed" ) );
+  mPicture->beginCommand( tr( "Picture border color changed" ), QgsComposerMergeCommand::ComposerPictureOutlineColor );
   mPicture->setSvgBorderColor( color );
   mPicture->endCommand();
   mPicture->update();
@@ -665,51 +680,36 @@ void QgsComposerPictureWidget::on_mOutlineWidthSpinBox_valueChanged( double d )
   mPicture->update();
 }
 
+void QgsComposerPictureWidget::on_mPictureRotationOffsetSpinBox_valueChanged( double d )
+{
+  mPicture->beginCommand( tr( "Picture North offset changed" ), QgsComposerMergeCommand::ComposerPictureNorthOffset );
+  mPicture->setNorthOffset( d );
+  mPicture->endCommand();
+  mPicture->update();
+}
+
+void QgsComposerPictureWidget::on_mNorthTypeComboBox_currentIndexChanged( int index )
+{
+  mPicture->beginCommand( tr( "Picture North mode changed" ) );
+  mPicture->setNorthMode( static_cast< QgsComposerPicture::NorthMode >( mNorthTypeComboBox->itemData( index ).toInt() ) );
+  mPicture->endCommand();
+  mPicture->update();
+}
+
 void QgsComposerPictureWidget::resizeEvent( QResizeEvent * event )
 {
   Q_UNUSED( event );
   mSearchDirectoriesComboBox->setMinimumWidth( mPreviewListWidget->sizeHint().width() );
 }
 
-QgsComposerObject::DataDefinedProperty QgsComposerPictureWidget::ddPropertyForWidget( QgsDataDefinedButton *widget )
-{
-  if ( widget == mSourceDDBtn )
-  {
-    return QgsComposerObject::PictureSource;
-  }
-
-  return QgsComposerObject::NoProperty;
-}
-
-static QgsExpressionContext _getExpressionContext( const void* context )
-{
-  const QgsComposerObject* composerObject = ( const QgsComposerObject* ) context;
-  if ( !composerObject )
-  {
-    return QgsExpressionContext();
-  }
-
-  QScopedPointer< QgsExpressionContext > expContext( composerObject->createExpressionContext() );
-  return QgsExpressionContext( *expContext );
-}
-
 void QgsComposerPictureWidget::populateDataDefinedButtons()
 {
-  QgsVectorLayer* vl = atlasCoverageLayer();
-
-  //block signals from data defined buttons
-  mSourceDDBtn->blockSignals( true );
-
-  mSourceDDBtn->registerGetExpressionContextCallback( &_getExpressionContext, mPicture );
-
-  //initialise buttons to use atlas coverage layer
-  mSourceDDBtn->init( vl, mPicture->dataDefinedProperty( QgsComposerObject::PictureSource ),
-                      QgsDataDefinedButton::AnyType, QgsDataDefinedButton::anyStringDesc() );
+  updateDataDefinedButton( mSourceDDBtn );
+  updateDataDefinedButton( mFillColorDDBtn );
+  updateDataDefinedButton( mOutlineColorDDBtn );
+  updateDataDefinedButton( mOutlineWidthDDBtn );
 
   //initial state of controls - disable related controls when dd buttons are active
   mPictureLineEdit->setEnabled( !mSourceDDBtn->isActive() );
-
-  //unblock signals from data defined buttons
-  mSourceDDBtn->blockSignals( false );
 }
 

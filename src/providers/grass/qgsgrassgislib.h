@@ -110,20 +110,20 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
 
     int G_get_ellipsoid_parameters( double *a, double *e2 );
 
-    /** Get QGIS raster type for GRASS raster type */
-    QGis::DataType qgisRasterType( RASTER_MAP_TYPE grassType );
+    //! Get QGIS raster type for GRASS raster type
+    Qgis::DataType qgisRasterType( RASTER_MAP_TYPE grassType );
 
-    /** Get GRASS raster type for QGIS raster type */
-    RASTER_MAP_TYPE grassRasterType( QGis::DataType qgisType );
+    //! Get GRASS raster type for QGIS raster type
+    RASTER_MAP_TYPE grassRasterType( Qgis::DataType qgisType );
 
-    /** Get no data value for GRASS data type */
+    //! Get no data value for GRASS data type
     double noDataValueForGrassType( RASTER_MAP_TYPE grassType );
 
     /** Grass does not seem to have any function to init Cell_head,
      * initialization is done in G__read_Cell_head_array */
     void initCellHead( struct Cell_head *cellhd );
 
-    /** Get raster from map of opened rasters, open it if it is not yet open */
+    //! Get raster from map of opened rasters, open it if it is not yet open
     Raster raster( QString name );
 
     void * resolve( const char * symbol );
@@ -136,32 +136,32 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
     void warning( QString msg );
 
   private:
-    /** Pointer to canonical Singleton object */
+    //! Pointer to canonical Singleton object
     static QgsGrassGisLib* _instance;
 
-    /** Original GRASS library handle */
+    //! Original GRASS library handle
     QLibrary mLibrary;
 
-    /** Raster maps, key is fake file descriptor  */
+    //! Raster maps, key is fake file descriptor
     QMap<int, Raster> mRasters;
 
-    /** Region to be used for data processing and output */
+    //! Region to be used for data processing and output
     struct Cell_head mWindow;
 
-    /** Current region extent */
+    //! Current region extent
     QgsRectangle mExtent;
-    /** Current region rows */
+    //! Current region rows
     int mRows;
-    /** Current region columns */
+    //! Current region columns
     int mColumns;
-    /** X resolution */
+    //! X resolution
     double mXRes;
-    /** Y resolution */
+    //! Y resolution
     double mYRes;
-    /** Current coordinate reference system */
+    //! Current coordinate reference system
     QgsCoordinateReferenceSystem mCrs;
     QgsDistanceArea mDistanceArea;
-    /** Lat1, lat2 used for geodesic distance calculation */
+    //! Lat1, lat2 used for geodesic distance calculation
     double mLat1, mLat2;
 };
 

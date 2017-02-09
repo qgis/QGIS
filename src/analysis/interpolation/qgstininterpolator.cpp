@@ -16,10 +16,12 @@
  ***************************************************************************/
 
 #include "qgstininterpolator.h"
+#include "qgsfeatureiterator.h"
 #include "CloughTocherInterpolator.h"
 #include "DualEdgeTriangulation.h"
 #include "NormVecDecorator.h"
 #include "LinTriangleInterpolator.h"
+#include "Line3D.h"
 #include "Point3D.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
@@ -27,7 +29,7 @@
 #include "qgswkbptr.h"
 #include <QProgressDialog>
 
-QgsTINInterpolator::QgsTINInterpolator( const QList<LayerData>& inputData, TIN_INTERPOLATION interpolation, bool showProgressDialog )
+QgsTINInterpolator::QgsTINInterpolator( const QList<LayerData>& inputData, TINInterpolation interpolation, bool showProgressDialog )
     : QgsInterpolator( inputData )
     , mTriangulation( nullptr )
     , mTriangleInterpolator( nullptr )
@@ -171,9 +173,9 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
     return 1;
   }
 
-  const QgsGeometry* g = f->constGeometry();
+  QgsGeometry g = f->geometry();
   {
-    if ( !g )
+    if ( g.isNull() )
     {
       return 2;
     }
@@ -199,18 +201,19 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
   //parse WKB. It is ugly, but we cannot use the methods with QgsPoint because they don't contain z-values for 25D types
   bool hasZValue = false;
   double x, y, z;
-  QgsConstWkbPtr currentWkbPtr( g->asWkb(), g->wkbSize() );
+  QByteArray wkb( g.exportToWkb() );
+  QgsConstWkbPtr currentWkbPtr( wkb );
   currentWkbPtr.readHeader();
   //maybe a structure or break line
   Line3D* line = nullptr;
 
-  QGis::WkbType wkbType = g->wkbType();
+  QgsWkbTypes::Type wkbType = g.wkbType();
   switch ( wkbType )
   {
-    case QGis::WKBPoint25D:
+    case QgsWkbTypes::Point25D:
       hasZValue = true;
       FALLTHROUGH;
-    case QGis::WKBPoint:
+    case QgsWkbTypes::Point:
     {
       currentWkbPtr >> x >> y;
       if ( zCoord && hasZValue )
@@ -228,10 +231,10 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       }
       break;
     }
-    case QGis::WKBMultiPoint25D:
+    case QgsWkbTypes::MultiPoint25D:
       hasZValue = true;
       FALLTHROUGH;
-    case QGis::WKBMultiPoint:
+    case QgsWkbTypes::MultiPoint:
     {
       int nPoints;
       currentWkbPtr >> nPoints;
@@ -250,10 +253,10 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       }
       break;
     }
-    case QGis::WKBLineString25D:
+    case QgsWkbTypes::LineString25D:
       hasZValue = true;
       FALLTHROUGH;
-    case QGis::WKBLineString:
+    case QgsWkbTypes::LineString:
     {
       if ( type != POINTS )
       {
@@ -290,10 +293,10 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       }
       break;
     }
-    case QGis::WKBMultiLineString25D:
+    case QgsWkbTypes::MultiLineString25D:
       hasZValue = true;
       FALLTHROUGH;
-    case QGis::WKBMultiLineString:
+    case QgsWkbTypes::MultiLineString:
     {
       int nLines;
       currentWkbPtr >> nLines;
@@ -334,10 +337,10 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       }
       break;
     }
-    case QGis::WKBPolygon25D:
+    case QgsWkbTypes::Polygon25D:
       hasZValue = true;
       FALLTHROUGH;
-    case QGis::WKBPolygon:
+    case QgsWkbTypes::Polygon:
     {
       int nRings;
       currentWkbPtr >> nRings;
@@ -380,10 +383,10 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       break;
     }
 
-    case QGis::WKBMultiPolygon25D:
+    case QgsWkbTypes::MultiPolygon25D:
       hasZValue = true;
       FALLTHROUGH;
-    case QGis::WKBMultiPolygon:
+    case QgsWkbTypes::MultiPolygon:
     {
       int nPolys;
       currentWkbPtr >> nPolys;

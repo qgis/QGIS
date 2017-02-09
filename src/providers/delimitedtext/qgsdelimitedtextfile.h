@@ -64,12 +64,12 @@ class QTextStream;
 *   For regexp type delimiters this specifies the reqular expression.
 *   The field is ignored for csv and whitespace
 * - quoteChar, optional, a single character used for quoting plain fields
-* - escapeChar, optional, a single characer used for escaping (may be the same as quoteChar)
+* - escapeChar, optional, a single character used for escaping (may be the same as quoteChar)
 */
 
 // Note: this has been implemented as a single class rather than a set of classes based
-// on an abstract base class in order to facilitate changing the type of the parser easily
-// eg in the provider dialog
+// on an abstract base class in order to facilitate changing the type of the parser easily,
+// e.g., in the provider dialog
 
 class QgsDelimitedTextFile : public QObject
 {
@@ -102,6 +102,7 @@ class QgsDelimitedTextFile : public QObject
      * @param filename  the name of the file
      */
     void setFileName( const QString& filename );
+
     /** Return the filename
      * @return filename  the name of the file
      */
@@ -114,6 +115,7 @@ class QgsDelimitedTextFile : public QObject
      *  @param encoding the encoding to use for the fileName()
      */
     void setEncoding( const QString& encoding );
+
     /** Return the file encoding
      *  @return encoding The file encoding
      */
@@ -123,6 +125,7 @@ class QgsDelimitedTextFile : public QObject
      *  @param url  The url from which the delimiter and delimiterType items are read
      */
     bool setFromUrl( const QString& url );
+
     /** Decode the parser settings from a url
      *  @param url  The url from which the delimiter and delimiterType items are read
      */
@@ -141,6 +144,7 @@ class QgsDelimitedTextFile : public QObject
      *  @param regexp A string defining the regular expression
      */
     void setTypeRegexp( const QString& regexp );
+
     /** Set the parser to use a character type delimiter.
      *  @param delim  The field delimiter character set
      *  @param quote  The quote character, used to define quoted fields
@@ -153,6 +157,7 @@ class QgsDelimitedTextFile : public QObject
      * @param skiplines The maximum lines to skip
      */
     void setSkipLines( int skiplines );
+
     /** Return the number of header lines to skip
      * @return skiplines The maximum lines to skip
      */
@@ -165,6 +170,7 @@ class QgsDelimitedTextFile : public QObject
      * @param useheaders Field names will be read if true
      */
     void setUseHeader( bool useheader = true );
+
     /** Return the option for reading field names from the first record
      * @return useheaders Field names will be read if true
      */
@@ -177,6 +183,7 @@ class QgsDelimitedTextFile : public QObject
      * @param useheaders Empty fields will be discarded if true
      */
     void setDiscardEmptyFields( bool discardEmptyFields = true );
+
     /** Return the option for discarding empty fields
      * @return useheaders Empty fields will be discarded if true
      */
@@ -189,6 +196,7 @@ class QgsDelimitedTextFile : public QObject
      * @param trimFields Fields will be trimmed if true
      */
     void setTrimFields( bool trimFields = true );
+
     /** Return the option for trimming empty fields
      * @return useheaders Empty fields will be trimmed if true
      */
@@ -202,6 +210,7 @@ class QgsDelimitedTextFile : public QObject
      *  @param maxFields  The maximum number of fields that will be read
      */
     void setMaxFields( int maxFields );
+
     /** Return the maximum number of fields that will be read
      *  @return maxFields The maximum number of fields that will be read
      */
@@ -261,6 +270,7 @@ class QgsDelimitedTextFile : public QObject
      *  @return maxRecordNumber The maximum record number
      */
     long recordCount() { return mMaxRecordNumber; }
+
     /** Reset the file to reread from the beginning
      */
     Status reset();
@@ -277,14 +287,14 @@ class QgsDelimitedTextFile : public QObject
     bool isValid();
 
     /** Encode characters - used to convert delimiter/quote/escape characters to
-     *  encoded form (eg replace tab with \t)
+     *  encoded form (e.g., replace tab with \t)
      *  @param string  The unencoded string
      *  @return encstring  The encoded string
      */
     static QString encodeChars( QString string );
 
     /** Encode characters - used to encoded character strings to
-     *  decoded form (eg replace \t with tab)
+     *  decoded form (e.g., replace \t with tab)
      *  @param string  The unencoded string
      *  @return decstring  The decoded string
      */
@@ -297,11 +307,13 @@ class QgsDelimitedTextFile : public QObject
     void setUseWatcher( bool useWatcher );
 
   signals:
+
     /** Signal sent when the file is updated by another process
      */
     void fileUpdated();
 
   public slots:
+
     /** Slot used by watcher to notify of file updates
      */
     void updateFile();
@@ -318,14 +330,14 @@ class QgsDelimitedTextFile : public QObject
      */
     void close();
 
-    /** Reset the status if the definition is changing (eg clear
+    /** Reset the status if the definition is changing (e.g., clear
      *  existing field names, etc...
      */
     void resetDefinition();
 
-    /** Parse reqular expression delimited fields */
+    //! Parse reqular expression delimited fields
     Status parseRegexp( QString &buffer, QStringList &fields );
-    /** Parse quote delimited fields, where quote and escape are different */
+    //! Parse quote delimited fields, where quote and escape are different
     Status parseQuoted( QString &buffer, QStringList &fields );
 
     /** Return the next line from the data file.  If skipBlank is true then

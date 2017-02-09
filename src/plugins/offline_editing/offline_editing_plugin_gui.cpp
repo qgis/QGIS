@@ -18,11 +18,10 @@
 
 #include "offline_editing_plugin_gui.h"
 
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
@@ -74,7 +73,7 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget* parent, Qt::Win
 
   restoreState();
 
-  mOfflineDbFile = "offline.sqlite";
+  mOfflineDbFile = QStringLiteral( "offline.sqlite" );
   mOfflineDataPathLineEdit->setText( QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ) );
 
   QgsLayerTreeGroup* rootNode = QgsLayerTree::toGroup( QgsProject::instance()->layerTreeRoot()->clone() );
@@ -82,14 +81,14 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget* parent, Qt::Win
   mLayerTree->setModel( treeModel );
 
   connect( mSelectAllButton, SIGNAL( clicked() ), this, SLOT( selectAll() ) );
-  connect( mUnselectAllButton, SIGNAL( clicked() ), this, SLOT( unSelectAll() ) );
+  connect( mDeselectAllButton, SIGNAL( clicked() ), this, SLOT( deSelectAll() ) );
 }
 
 QgsOfflineEditingPluginGui::~QgsOfflineEditingPluginGui()
 {
   QSettings settings;
-  settings.setValue( "Plugin-OfflineEditing/geometry", saveGeometry() );
-  settings.setValue( "Plugin-OfflineEditing/offline_data_path", mOfflineDataPath );
+  settings.setValue( QStringLiteral( "Plugin-OfflineEditing/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Plugin-OfflineEditing/offline_data_path" ), mOfflineDataPath );
 }
 
 QString QgsOfflineEditingPluginGui::offlineDataPath()
@@ -102,9 +101,14 @@ QString QgsOfflineEditingPluginGui::offlineDbFile()
   return mOfflineDbFile;
 }
 
-QStringList& QgsOfflineEditingPluginGui::selectedLayerIds()
+QStringList QgsOfflineEditingPluginGui::selectedLayerIds()
 {
   return mSelectedLayerIds;
+}
+
+bool QgsOfflineEditingPluginGui::onlySelected() const
+{
+  return mOnlySelectedCheckBox->checkState() == Qt::Checked;
 }
 
 void QgsOfflineEditingPluginGui::on_mBrowseButton_clicked()
@@ -117,9 +121,9 @@ void QgsOfflineEditingPluginGui::on_mBrowseButton_clicked()
 
   if ( !fileName.isEmpty() )
   {
-    if ( !fileName.endsWith( ".sqlite", Qt::CaseInsensitive ) )
+    if ( !fileName.endsWith( QLatin1String( ".sqlite" ), Qt::CaseInsensitive ) )
     {
-      fileName += ".sqlite";
+      fileName += QLatin1String( ".sqlite" );
     }
     mOfflineDbFile = QFileInfo( fileName ).fileName();
     mOfflineDataPath = QFileInfo( fileName ).absolutePath();
@@ -148,7 +152,6 @@ void QgsOfflineEditingPluginGui::on_buttonBox_accepted()
   {
     if ( nodeLayer->isVisible() )
     {
-      QgsDebugMsg( nodeLayer->layerId() );
       mSelectedLayerIds.append( nodeLayer->layerId() );
     }
   }
@@ -164,25 +167,25 @@ void QgsOfflineEditingPluginGui::on_buttonBox_rejected()
 // TODO: help
 void QgsOfflineEditingPluginGui::on_buttonBox_helpRequested()
 {
-  QgsContextHelp::run( metaObject()->className() );
+  QgsHelp::openHelp( QStringLiteral( "plugins/plugins_offline_editing.html" ) );
 }
 
 void QgsOfflineEditingPluginGui::restoreState()
 {
   QSettings settings;
-  mOfflineDataPath = settings.value( "Plugin-OfflineEditing/offline_data_path", QDir().absolutePath() ).toString();
-  restoreGeometry( settings.value( "Plugin-OfflineEditing/geometry" ).toByteArray() );
+  mOfflineDataPath = settings.value( QStringLiteral( "Plugin-OfflineEditing/offline_data_path" ), QDir::homePath() ).toString();
+  restoreGeometry( settings.value( QStringLiteral( "Plugin-OfflineEditing/geometry" ) ).toByteArray() );
 }
 
 void QgsOfflineEditingPluginGui::selectAll()
 {
   Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLayerTree->layerTreeModel()->rootGroup()->findLayers() )
-    nodeLayer->setVisible( Qt::Checked );
+    nodeLayer->setItemVisibilityChecked( true );
 }
 
 
-void QgsOfflineEditingPluginGui::unSelectAll()
+void QgsOfflineEditingPluginGui::deSelectAll()
 {
   Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLayerTree->layerTreeModel()->rootGroup()->findLayers() )
-    nodeLayer->setVisible( Qt::Unchecked );
+    nodeLayer->setItemVisibilityChecked( false );
 }

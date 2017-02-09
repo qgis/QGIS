@@ -110,8 +110,6 @@ class QgsPGLayerItem : public QgsLayerItem
     QString createUri();
 
     virtual QList<QAction*> actions() override;
-
-    /** Returns comments of the layer */
     virtual QString comments() const override;
 
   public slots:

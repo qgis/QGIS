@@ -1,0 +1,17 @@
+<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+<g transform="translate(0 -8)">
+<path d="m1.5 28.5h21v2h-21z" fill="#c7c7c7" fill-rule="evenodd" overflow="visible" stroke="#5b5b5c" stroke-linejoin="round"/>
+<path d="m3 12.5h18" fill="none" stroke="#5b5b5c"/>
+<path d="m3 18.5h18" fill="none" stroke="#5b5b5c"/>
+<path d="m3 24.5h18" fill="none" stroke="#5b5b5c"/>
+<circle cx="12.5" cy="18.5" r="2" style="overflow:visible;fill:#c6f8c6;fill-opacity:.99607843;fill-rule:evenodd;stroke:#619361;stroke-width:.99999994"/>
+<circle cx="7.5" cy="18.5" r="2" style="overflow:visible;fill:#c6f8c6;fill-opacity:.99607843;fill-rule:evenodd;stroke:#619361;stroke-width:.99999994"/>
+<circle cx="17.5" cy="24.500002" r="2" style="overflow:visible;fill:#c3e1f5;fill-opacity:.99607843;fill-rule:evenodd;stroke:#3f5e71;stroke-width:.99999994"/>
+<circle cx="12.5" cy="24.500002" r="2" style="overflow:visible;fill:#c3e1f5;fill-opacity:.99607843;fill-rule:evenodd;stroke:#3f5e71;stroke-width:.99999994"/>
+<circle cx="7.5" cy="24.500002" r="2" style="overflow:visible;fill:#c3e1f5;fill-opacity:.99607843;fill-rule:evenodd;stroke:#3f5e71;stroke-width:.99999994"/>
+<circle cx="17.5" cy="12.5" r="2" style="overflow:visible;fill:#f7aeae;fill-opacity:.99607843;fill-rule:evenodd;stroke:#a20404;stroke-width:.99999994"/>
+<circle cx="9.5" cy="12.5" fill="#f7aeae" fill-opacity=".99607843" fill-rule="evenodd" overflow="visible" r="2" stroke="#a20404"/>
+<path d="m2.5 10.506742v17.986517" fill="none" stroke="#5b5b5c" stroke-linecap="round"/>
+<path d="m21.5 10.506742v17.986517" fill="none" stroke="#5b5b5c" stroke-linecap="round"/>
+</g>
+</svg>

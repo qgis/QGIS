@@ -20,7 +20,7 @@
 #include <QDateTime>
 #include <QObject>
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 
 #include "qgsgrass.h"
 
@@ -32,23 +32,21 @@ class GRASS_LIB_EXPORT QgsGrassVectorLayer : public QObject
 
     QgsGrassVectorLayer( const QgsGrassObject &grassObject, int number, struct field_info *fieldInfo, QObject * parent = 0 );
 
-    ~QgsGrassVectorLayer();
-
     QgsGrassObject grassObject() const { return mGrassObject; }
 
-    /** Layer number (field) */
+    //! Layer number (field)
     int number() { return mNumber; }
 
-    /** Set number of elements of given type. */
+    //! Set number of elements of given type.
     void setTypeCount( int type, int count ) { mTypeCounts[type] = count; }
 
-    /** Get number of elements of given type. Types may be combined by bitwise or)*/
+    //! Get number of elements of given type. Types may be combined by bitwise or)
     int typeCount( int type ) const;
 
-    /** Get all types in the layer (combined by bitwise or)*/
+    //! Get all types in the layer (combined by bitwise or)
     int type() const;
 
-    /** Get all types in the layer as list  */
+    //! Get all types in the layer as list
     QList<int> types() const;
 
     QgsFields fields();
@@ -84,27 +82,27 @@ class GRASS_LIB_EXPORT QgsGrassVector : public QObject
 
     QgsGrassVector( const QgsGrassObject& grassObject, QObject *parent = 0 );
 
-    /** Open header and read layers/types */
+    //! Open header and read layers/types
     bool openHead();
 
-    /** Get list of layers. The layers exist until the vector is deleted or reloaded */
+    //! Get list of layers. The layers exist until the vector is deleted or reloaded
     QList<QgsGrassVectorLayer*> layers() const { return mLayers; }
 
     /** Get numbers of primitives
      * @return type/count pairs */
     QMap<int, int> typeCounts() const {return mTypeCounts; }
 
-    /** Get total number of primitives of given type. Types may be combined by bitwise or) */
+    //! Get total number of primitives of given type. Types may be combined by bitwise or)
     int typeCount( int type ) const;
 
     /** Maximum layer number (field).
      * @return max layer number or 0 if no layer exists */
     int maxLayerNumber() const;
 
-    /** Get number of nodes */
+    //! Get number of nodes
     int nodeCount() const { return mNodeCount; }
 
-    /** Return error message */
+    //! Return error message
     QString error() const { return mError; }
 
   signals:

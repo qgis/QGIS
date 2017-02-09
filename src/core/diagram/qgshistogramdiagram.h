@@ -18,11 +18,12 @@
 
 #define DIAGRAM_NAME_HISTOGRAM "Histogram"
 
+#include "qgis_core.h"
 #include "qgsdiagram.h"
-#include "qgsfeature.h"
 #include <QPen>
 #include <QBrush>
 
+class QgsFeature;
 class QPainter;
 class QPointF;
 class QgsDiagramSettings;
@@ -30,12 +31,13 @@ class QgsDiagramInterpolationSettings;
 
 class QgsRenderContext;
 
-
+/** \ingroup core
+ * \class QgsHistogramDiagram
+ */
 class CORE_EXPORT QgsHistogramDiagram: public QgsDiagram
 {
   public:
     QgsHistogramDiagram();
-    ~QgsHistogramDiagram();
 
     virtual QgsHistogramDiagram* clone() const override;
 

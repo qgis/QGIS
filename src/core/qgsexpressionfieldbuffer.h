@@ -18,14 +18,15 @@
 #ifndef QGSEXPRESSIONFIELDBUFFER_H
 #define QGSEXPRESSIONFIELDBUFFER_H
 
+#include "qgis_core.h"
 #include <QString>
 #include <QList>
 #include <QDomNode>
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsexpression.h"
 
-/**
+/** \ingroup core
  * Buffers information about expression fields for a vector layer.
  *
  * @note added in 2.6
@@ -35,13 +36,11 @@ class CORE_EXPORT QgsExpressionFieldBuffer
   public:
     typedef struct ExpressionField
     {
-      ExpressionField() : cachedExpression( expression ) {}
-      ExpressionField( const QString& exp, const QgsField& fld ) : expression( exp ), cachedExpression( exp ), field( fld ) {}
+      ExpressionField( const QString& exp, const QgsField& fld )
+          : cachedExpression( exp )
+          , field( fld )
+      {}
 
-      /**
-       * @deprecated use cachedExpression instead
-       */
-      QString expression;
       QgsExpression cachedExpression;
       QgsField field;
     } ExpressionField;
@@ -62,6 +61,16 @@ class CORE_EXPORT QgsExpressionFieldBuffer
      * @param index index of expression to remove
      */
     void removeExpression( int index );
+
+    /**
+     * Renames an expression field at a given index
+     *
+     * @param index The index of the expression to change
+     * @param name   New name for field
+     *
+     * @note added in 3.0
+     */
+    void renameExpression( int index, const QString& name );
 
     /**
      * Changes the expression at a given index
@@ -90,7 +99,7 @@ class CORE_EXPORT QgsExpressionFieldBuffer
      */
     void updateFields( QgsFields& flds );
 
-    const QList<ExpressionField>& expressions() const { return mExpressions; }
+    QList<ExpressionField> expressions() const { return mExpressions; }
 
   private:
     QList<ExpressionField> mExpressions;

@@ -17,6 +17,7 @@
 #ifndef QGSCOLOREFFECT_H
 #define QGSCOLOREFFECT_H
 
+#include "qgis_core.h"
 #include "qgspainteffect.h"
 #include "qgsimageoperation.h"
 #include "qgis.h"
@@ -24,7 +25,7 @@
 
 /** \ingroup core
  * \class QgsColorEffect
- * \brief A paint effect which alters the colors (eg brightness, contrast) in a
+ * \brief A paint effect which alters the colors (e.g., brightness, contrast) in a
  * source picture.
  *
  * \note Added in version 2.9
@@ -42,9 +43,8 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
     static QgsPaintEffect* create( const QgsStringMap& map );
 
     QgsColorEffect();
-    virtual ~QgsColorEffect();
 
-    virtual QString type() const override { return QString( "color" ); }
+    virtual QString type() const override { return QStringLiteral( "color" ); }
     virtual QgsStringMap properties() const override;
     virtual void readProperties( const QgsStringMap& props ) override;
     virtual QgsColorEffect* clone() const override;

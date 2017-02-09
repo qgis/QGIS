@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgisexpressionbuilderwidget.cpp - A genric expression string builder widget.
+    qgisexpressionbuilderwidget.cpp - A generic expression string builder widget.
      --------------------------------------
     Date                 :  29-May-2011
     Copyright            : (C) 2011 by Nathan Woodrow
@@ -21,6 +21,8 @@
 #include "qgspythonrunner.h"
 #include "qgsgeometry.h"
 #include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
+#include "qgsvectorlayer.h"
 
 #include <QSettings>
 #include <QMenu>
@@ -78,9 +80,9 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   txtSearchEditValues->setPlaceholderText( tr( "Search" ) );
 
   QSettings settings;
-  splitter->restoreState( settings.value( "/windows/QgsExpressionBuilderWidget/splitter" ).toByteArray() );
-  editorSplit->restoreState( settings.value( "/windows/QgsExpressionBuilderWidget/editorsplitter" ).toByteArray() );
-  functionsplit->restoreState( settings.value( "/windows/QgsExpressionBuilderWidget/functionsplitter" ).toByteArray() );
+  splitter->restoreState( settings.value( QStringLiteral( "/Windows/QgsExpressionBuilderWidget/splitter" ) ).toByteArray() );
+  editorSplit->restoreState( settings.value( QStringLiteral( "/Windows/QgsExpressionBuilderWidget/editorsplitter" ) ).toByteArray() );
+  functionsplit->restoreState( settings.value( QStringLiteral( "/Windows/QgsExpressionBuilderWidget/functionsplitter" ) ).toByteArray() );
 
   txtExpressionString->setFoldingVisible( false );
 
@@ -88,7 +90,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
 
   if ( QgsPythonRunner::isValid() )
   {
-    QgsPythonRunner::eval( "qgis.user.expressionspath", mFunctionsPath );
+    QgsPythonRunner::eval( QStringLiteral( "qgis.user.expressionspath" ), mFunctionsPath );
     updateFunctionFileList( mFunctionsPath );
   }
   else
@@ -101,16 +103,17 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   QModelIndex firstItem = mProxyModel->index( 0, 0, QModelIndex() );
   expressionTree->setCurrentIndex( firstItem );
 
-  lblAutoSave->setText( "" );
+  lblAutoSave->setText( QLatin1String( "" ) );
+  txtExpressionString->setWrapMode( QsciScintilla::WrapWord );
 }
 
 
 QgsExpressionBuilderWidget::~QgsExpressionBuilderWidget()
 {
   QSettings settings;
-  settings.setValue( "/windows/QgsExpressionBuilderWidget/splitter", splitter->saveState() );
-  settings.setValue( "/windows/QgsExpressionBuilderWidget/editorsplitter", editorSplit->saveState() );
-  settings.setValue( "/windows/QgsExpressionBuilderWidget/functionsplitter", functionsplit->saveState() );
+  settings.setValue( QStringLiteral( "/Windows/QgsExpressionBuilderWidget/splitter" ), splitter->saveState() );
+  settings.setValue( QStringLiteral( "/Windows/QgsExpressionBuilderWidget/editorsplitter" ), editorSplit->saveState() );
+  settings.setValue( QStringLiteral( "/Windows/QgsExpressionBuilderWidget/functionsplitter" ), functionsplit->saveState() );
 
   delete mModel;
   delete mProxyModel;
@@ -130,7 +133,7 @@ void QgsExpressionBuilderWidget::setLayer( QgsVectorLayer *layer )
 
 void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const QModelIndex & )
 {
-  txtSearchEditValues->setText( QString( "" ) );
+  txtSearchEditValues->setText( QLatin1String( "" ) );
 
   // Get the item
   QModelIndex idx = mProxyModel->mapToSource( index );
@@ -145,7 +148,7 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
   }
 
   mLoadGroupBox->setVisible( item->getItemType() == QgsExpressionItem::Field && mLayer );
-  mValueGroupBox->setVisible(( item->getItemType() == QgsExpressionItem::Field && mLayer ) || mValuesListView->model()->rowCount() > 0 );
+  mValueGroupBox->setVisible( item->getItemType() == QgsExpressionItem::Field && mLayer );
 
   // Show the help for the current item.
   QString help = loadFunctionHelp( item );
@@ -182,7 +185,7 @@ void QgsExpressionBuilderWidget::saveFunctionFile( QString fileName )
     myDir.mkpath( mFunctionsPath );
   }
 
-  if ( !fileName.endsWith( ".py" ) )
+  if ( !fileName.endsWith( QLatin1String( ".py" ) ) )
   {
     fileName.append( ".py" );
   }
@@ -201,14 +204,14 @@ void QgsExpressionBuilderWidget::updateFunctionFileList( const QString& path )
 {
   mFunctionsPath = path;
   QDir dir( path );
-  dir.setNameFilters( QStringList() << "*.py" );
+  dir.setNameFilters( QStringList() << QStringLiteral( "*.py" ) );
   QStringList files = dir.entryList( QDir::Files );
   cmbFileNames->clear();
   Q_FOREACH ( const QString& name, files )
   {
     QFileInfo info( mFunctionsPath + QDir::separator() + name );
-    if ( info.baseName() == "__init__" ) continue;
-    QListWidgetItem* item = new QListWidgetItem( QgsApplication::getThemeIcon( "console/iconTabEditorConsole.png" ), info.baseName() );
+    if ( info.baseName() == QLatin1String( "__init__" ) ) continue;
+    QListWidgetItem* item = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "console/iconTabEditorConsole.png" ) ), info.baseName() );
     cmbFileNames->addItem( item );
   }
   if ( !cmbFileNames->currentItem() )
@@ -222,7 +225,7 @@ void QgsExpressionBuilderWidget::newFunctionFile( const QString& fileName )
     return;
 
   QString templatetxt;
-  QgsPythonRunner::eval( "qgis.user.expressions.template", templatetxt );
+  QgsPythonRunner::eval( QStringLiteral( "qgis.user.expressions.template" ), templatetxt );
   txtPython->setText( templatetxt );
   cmbFileNames->insertItem( 0, fileName );
   cmbFileNames->setCurrentRow( 0 );
@@ -234,7 +237,7 @@ void QgsExpressionBuilderWidget::on_btnNewFile_pressed()
   bool ok;
   QString text = QInputDialog::getText( this, tr( "Enter new file name" ),
                                         tr( "File name:" ), QLineEdit::Normal,
-                                        "", &ok );
+                                        QLatin1String( "" ), &ok );
   if ( ok && !text.isEmpty() )
   {
     newFunctionFile( text );
@@ -254,7 +257,7 @@ void QgsExpressionBuilderWidget::on_cmbFileNames_currentItemChanged( QListWidget
 
 void QgsExpressionBuilderWidget::loadCodeFromFile( QString path )
 {
-  if ( !path.endsWith( ".py" ) )
+  if ( !path.endsWith( QLatin1String( ".py" ) ) )
     path.append( ".py" );
 
   txtPython->loadScript( path );
@@ -303,7 +306,7 @@ void QgsExpressionBuilderWidget::loadFieldNames( const QgsFields& fields )
   {
     QString fieldName = fields.at( i ).name();
     fieldNames << fieldName;
-    registerItem( "Fields and Values", fieldName, " \"" + fieldName + "\" ", "", QgsExpressionItem::Field, false, i );
+    registerItem( QStringLiteral( "Fields and Values" ), fieldName, " \"" + fieldName + "\" ", QLatin1String( "" ), QgsExpressionItem::Field, false, i );
   }
 //  highlighter->addFields( fieldNames );
 }
@@ -328,7 +331,7 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString& fieldName, int 
 
   // TODO We should thread this so that we don't hold the user up if the layer is massive.
 
-  int fieldIndex = mLayer->fieldNameIndex( fieldName );
+  int fieldIndex = mLayer->fields().lookupField( fieldName );
 
   if ( fieldIndex < 0 )
     return;
@@ -340,11 +343,11 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString& fieldName, int 
   {
     QString strValue;
     if ( value.isNull() )
-      strValue = "NULL";
+      strValue = QStringLiteral( "NULL" );
     else if ( value.type() == QVariant::Int || value.type() == QVariant::Double || value.type() == QVariant::LongLong )
       strValue = value.toString();
     else
-      strValue = '\'' + value.toString().replace( '\'', "''" ) + '\'';
+      strValue = '\'' + value.toString().replace( '\'', QLatin1String( "''" ) ) + '\'';
     strValues.append( strValue );
   }
   mValuesModel->setStringList( strValues );
@@ -359,7 +362,7 @@ void QgsExpressionBuilderWidget::registerItem( const QString& group,
 {
   QgsExpressionItem* item = new QgsExpressionItem( label, expressionText, helpText, type );
   item->setData( label, Qt::UserRole );
-  item->setData( sortOrder, QgsExpressionItem::CustomSortRole );
+  item->setData( sortOrder, QgsExpressionItem::CUSTOM_SORT_ROLE );
 
   // Look up the group and insert the new function.
   if ( mExpressionGroups.contains( group ) )
@@ -370,10 +373,10 @@ void QgsExpressionBuilderWidget::registerItem( const QString& group,
   else
   {
     // If the group doesn't exist yet we make it first.
-    QgsExpressionItem *newgroupNode = new QgsExpressionItem( QgsExpression::group( group ), "", QgsExpressionItem::Header );
+    QgsExpressionItem *newgroupNode = new QgsExpressionItem( QgsExpression::group( group ), QLatin1String( "" ), QgsExpressionItem::Header );
     newgroupNode->setData( group, Qt::UserRole );
     //Recent group should always be last group
-    newgroupNode->setData( group.startsWith( "Recent (" ) ? 2 : 1, QgsExpressionItem::CustomSortRole );
+    newgroupNode->setData( group.startsWith( QLatin1String( "Recent (" ) ) ? 2 : 1, QgsExpressionItem::CUSTOM_SORT_ROLE );
     newgroupNode->appendRow( item );
     newgroupNode->setBackground( QBrush( QColor( "#eee" ) ) );
     mModel->appendRow( newgroupNode );
@@ -385,7 +388,7 @@ void QgsExpressionBuilderWidget::registerItem( const QString& group,
     //insert a copy as a top level item
     QgsExpressionItem* topLevelItem = new QgsExpressionItem( label, expressionText, helpText, type );
     topLevelItem->setData( label, Qt::UserRole );
-    item->setData( 0, QgsExpressionItem::CustomSortRole );
+    item->setData( 0, QgsExpressionItem::CUSTOM_SORT_ROLE );
     QFont font = topLevelItem->font();
     font.setBold( true );
     topLevelItem->setFont( font );
@@ -399,10 +402,10 @@ bool QgsExpressionBuilderWidget::isExpressionValid()
   return mExpressionValid;
 }
 
-void QgsExpressionBuilderWidget::saveToRecent( const QString& key )
+void QgsExpressionBuilderWidget::saveToRecent( const QString& collection )
 {
   QSettings settings;
-  QString location = QString( "/expressions/recent/%1" ).arg( key );
+  QString location = QStringLiteral( "/expressions/recent/%1" ).arg( collection );
   QStringList expressions = settings.value( location ).toStringList();
   expressions.removeAll( this->expressionText() );
 
@@ -414,13 +417,13 @@ void QgsExpressionBuilderWidget::saveToRecent( const QString& key )
   }
 
   settings.setValue( location, expressions );
-  this->loadRecent( key );
+  this->loadRecent( collection );
 }
 
-void QgsExpressionBuilderWidget::loadRecent( const QString& key )
+void QgsExpressionBuilderWidget::loadRecent( const QString& collection )
 {
-  mRecentKey = key;
-  QString name = tr( "Recent (%1)" ).arg( key );
+  mRecentKey = collection;
+  QString name = tr( "Recent (%1)" ).arg( collection );
   if ( mExpressionGroups.contains( name ) )
   {
     QgsExpressionItem* node = mExpressionGroups.value( name );
@@ -428,7 +431,7 @@ void QgsExpressionBuilderWidget::loadRecent( const QString& key )
   }
 
   QSettings settings;
-  QString location = QString( "/expressions/recent/%1" ).arg( key );
+  QString location = QStringLiteral( "/expressions/recent/%1" ).arg( collection );
   QStringList expressions = settings.value( location ).toStringList();
   int i = 0;
   Q_FOREACH ( const QString& expression, expressions )
@@ -443,31 +446,32 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
   mModel->clear();
   mExpressionGroups.clear();
   // TODO Can we move this stuff to QgsExpression, like the functions?
-  registerItem( "Operators", "+", " + " );
-  registerItem( "Operators", "-", " - " );
-  registerItem( "Operators", "*", " * " );
-  registerItem( "Operators", "/", " / " );
-  registerItem( "Operators", "%", " % " );
-  registerItem( "Operators", "^", " ^ " );
-  registerItem( "Operators", "=", " = " );
-  registerItem( "Operators", ">", " > " );
-  registerItem( "Operators", "<", " < " );
-  registerItem( "Operators", "<>", " <> " );
-  registerItem( "Operators", "<=", " <= " );
-  registerItem( "Operators", ">=", " >= " );
-  registerItem( "Operators", "||", " || " );
-  registerItem( "Operators", "IN", " IN " );
-  registerItem( "Operators", "LIKE", " LIKE " );
-  registerItem( "Operators", "ILIKE", " ILIKE " );
-  registerItem( "Operators", "IS", " IS " );
-  registerItem( "Operators", "OR", " OR " );
-  registerItem( "Operators", "AND", " AND " );
-  registerItem( "Operators", "NOT", " NOT " );
+  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "+" ), QStringLiteral( " + " ) );
+  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "-" ), QStringLiteral( " - " ) );
+  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "*" ), QStringLiteral( " * " ) );
+  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "/" ), QStringLiteral( " / " ) );
+  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "%" ), QStringLiteral( " % " ) );
+  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "^" ), QStringLiteral( " ^ " ) );
+  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "=" ), QStringLiteral( " = " ) );
+  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "~" ), QStringLiteral( " ~ " ) );
+  registerItem( QStringLiteral( "Operators" ), QStringLiteral( ">" ), QStringLiteral( " > " ) );
+  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "<" ), QStringLiteral( " < " ) );
+  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "<>" ), QStringLiteral( " <> " ) );
+  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "<=" ), QStringLiteral( " <= " ) );
+  registerItem( QStringLiteral( "Operators" ), QStringLiteral( ">=" ), QStringLiteral( " >= " ) );
+  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "||" ), QStringLiteral( " || " ) );
+  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "IN" ), QStringLiteral( " IN " ) );
+  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "LIKE" ), QStringLiteral( " LIKE " ) );
+  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "ILIKE" ), QStringLiteral( " ILIKE " ) );
+  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "IS" ), QStringLiteral( " IS " ) );
+  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "OR" ), QStringLiteral( " OR " ) );
+  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "AND" ), QStringLiteral( " AND " ) );
+  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "NOT" ), QStringLiteral( " NOT " ) );
 
-  QString casestring = "CASE WHEN condition THEN result END";
-  registerItem( "Conditionals", "CASE", casestring );
+  QString casestring = QStringLiteral( "CASE WHEN condition THEN result END" );
+  registerItem( QStringLiteral( "Conditionals" ), QStringLiteral( "CASE" ), casestring );
 
-  registerItem( "Fields and Values", "NULL", "NULL" );
+  registerItem( QStringLiteral( "Fields and Values" ), QStringLiteral( "NULL" ), QStringLiteral( "NULL" ) );
 
   // Load the functions from the QgsExpression class
   int count = QgsExpression::functionCount();
@@ -477,7 +481,7 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
     QString name = func->name();
     if ( name.startsWith( '_' ) ) // do not display private functions
       continue;
-    if ( func->group() == "deprecated" ) // don't show deprecated functions
+    if ( func->isDeprecated() ) // don't show deprecated functions
       continue;
     if ( func->isContextual() )
     {
@@ -488,15 +492,8 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
     if ( func->params() != 0 )
       name += '(';
     else if ( !name.startsWith( '$' ) )
-      name += "()";
-    registerItem( func->group(), func->name(), ' ' + name + ' ', func->helptext() );
-  }
-
-  QList<QgsExpression::Function*> specials = QgsExpression::specialColumns();
-  for ( int i = 0; i < specials.size(); ++i )
-  {
-    QString name = specials[i]->name();
-    registerItem( specials[i]->group(), name, ' ' + name + ' ' );
+      name += QLatin1String( "()" );
+    registerItemForAllGroups( func->groups(), func->name(), ' ' + name + ' ', func->helpText() );
   }
 
   loadExpressionContext();
@@ -532,10 +529,10 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
   // we don't show the user an error as it will be confusing.
   if ( text.isEmpty() )
   {
-    lblPreview->setText( "" );
-    lblPreview->setStyleSheet( "" );
-    txtExpressionString->setToolTip( "" );
-    lblPreview->setToolTip( "" );
+    lblPreview->setText( QLatin1String( "" ) );
+    lblPreview->setStyleSheet( QLatin1String( "" ) );
+    txtExpressionString->setToolTip( QLatin1String( "" ) );
+    lblPreview->setToolTip( QLatin1String( "" ) );
     emit expressionParsed( false );
     return;
   }
@@ -545,45 +542,31 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
   if ( mLayer )
   {
     // Only set calculator if we have layer, else use default.
-    exp.setGeomCalculator( mDa );
+    exp.setGeomCalculator( &mDa );
 
-    if ( !mFeature.isValid() )
+    if ( !mExpressionContext.feature().isValid() )
     {
-      mLayer->getFeatures().nextFeature( mFeature );
-    }
-
-    if ( mFeature.isValid() )
-    {
-      mExpressionContext.setFeature( mFeature );
-      QVariant value = exp.evaluate( &mExpressionContext );
-      if ( !exp.hasEvalError() )
-        lblPreview->setText( QgsExpression::formatPreviewString( value ) );
-    }
-    else
-    {
-      // The feature is invalid because we don't have one but that doesn't mean user can't
-      // build a expression string.  They just get no preview.
-      lblPreview->setText( "" );
+      // no feature passed yet, try to get from layer
+      QgsFeature f;
+      mLayer->getFeatures().nextFeature( f );
+      mExpressionContext.setFeature( f );
     }
   }
-  else
+
+  QVariant value = exp.evaluate( &mExpressionContext );
+  if ( !exp.hasEvalError() )
   {
-    // No layer defined
-    QVariant value = exp.evaluate( &mExpressionContext );
-    if ( !exp.hasEvalError() )
-    {
-      lblPreview->setText( QgsExpression::formatPreviewString( value ) );
-    }
+    lblPreview->setText( QgsExpression::formatPreviewString( value ) );
   }
 
   if ( exp.hasParserError() || exp.hasEvalError() )
   {
-    QString tooltip = QString( "<b>%1:</b><br>%2" ).arg( tr( "Parser Error" ), exp.parserErrorString() );
+    QString tooltip = QStringLiteral( "<b>%1:</b><br>%2" ).arg( tr( "Parser Error" ), exp.parserErrorString() );
     if ( exp.hasEvalError() )
-      tooltip += QString( "<br><br><b>%1:</b><br>%2" ).arg( tr( "Eval Error" ), exp.evalErrorString() );
+      tooltip += QStringLiteral( "<br><br><b>%1:</b><br>%2" ).arg( tr( "Eval Error" ), exp.evalErrorString() );
 
     lblPreview->setText( tr( "Expression is invalid <a href=""more"">(more info)</a>" ) );
-    lblPreview->setStyleSheet( "color: rgba(255, 6, 10,  255);" );
+    lblPreview->setStyleSheet( QStringLiteral( "color: rgba(255, 6, 10,  255);" ) );
     txtExpressionString->setToolTip( tooltip );
     lblPreview->setToolTip( tooltip );
     emit expressionParsed( false );
@@ -591,9 +574,9 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
   }
   else
   {
-    lblPreview->setStyleSheet( "" );
-    txtExpressionString->setToolTip( "" );
-    lblPreview->setToolTip( "" );
+    lblPreview->setStyleSheet( QLatin1String( "" ) );
+    txtExpressionString->setToolTip( QLatin1String( "" ) );
+    lblPreview->setToolTip( QLatin1String( "" ) );
     emit expressionParsed( true );
   }
 }
@@ -603,7 +586,7 @@ void QgsExpressionBuilderWidget::loadExpressionContext()
   QStringList variableNames = mExpressionContext.filteredVariableNames();
   Q_FOREACH ( const QString& variable, variableNames )
   {
-    registerItem( "Variables", variable, " @" + variable + ' ',
+    registerItem( QStringLiteral( "Variables" ), variable, " @" + variable + ' ',
                   QgsExpression::variableHelpText( variable, true, mExpressionContext.variable( variable ) ),
                   QgsExpressionItem::ExpressionNode,
                   mExpressionContext.isHighlightedVariable( variable ) );
@@ -619,7 +602,15 @@ void QgsExpressionBuilderWidget::loadExpressionContext()
       continue;
     if ( func->params() != 0 )
       name += '(';
-    registerItem( func->group(), func->name(), ' ' + name + ' ', func->helptext() );
+    registerItemForAllGroups( func->groups(), func->name(), ' ' + name + ' ', func->helpText() );
+  }
+}
+
+void QgsExpressionBuilderWidget::registerItemForAllGroups( const QStringList& groups, const QString& label, const QString& expressionText, const QString& helpText, QgsExpressionItem::ItemType type, bool highlightedItem, int sortOrder )
+{
+  Q_FOREACH ( const QString& group, groups )
+  {
+    registerItem( group, label, expressionText, helpText, type, highlightedItem, sortOrder );
   }
 }
 
@@ -724,7 +715,7 @@ void QgsExpressionBuilderWidget::loadAllValues()
 
 void QgsExpressionBuilderWidget::on_txtPython_textChanged()
 {
-  lblAutoSave->setText( "Saving..." );
+  lblAutoSave->setText( QStringLiteral( "Saving..." ) );
   if ( mAutoSave )
   {
     autosave();
@@ -743,7 +734,7 @@ void QgsExpressionBuilderWidget::autosave()
 
   QString file = item->text();
   saveFunctionFile( file );
-  lblAutoSave->setText( "Saved" );
+  lblAutoSave->setText( QStringLiteral( "Saved" ) );
   QGraphicsOpacityEffect *effect = new QGraphicsOpacityEffect();
   lblAutoSave->setGraphicsEffect( effect );
   QPropertyAnimation *anim = new QPropertyAnimation( effect, "opacity" );
@@ -775,7 +766,7 @@ QString QgsExpressionBuilderWidget::helpStylesheet() const
 QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* expressionItem )
 {
   if ( !expressionItem )
-    return "";
+    return QLatin1String( "" );
 
   QString helpContents = expressionItem->getHelpText();
 
@@ -785,9 +776,9 @@ QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* express
     QString name = expressionItem->data( Qt::UserRole ).toString();
 
     if ( expressionItem->getItemType() == QgsExpressionItem::Field )
-      helpContents = QgsExpression::helptext( "Field" );
+      helpContents = QgsExpression::helpText( QStringLiteral( "Field" ) );
     else
-      helpContents = QgsExpression::helptext( name );
+      helpContents = QgsExpression::helpText( name );
   }
 
   return "<head><style>" + helpStylesheet() + "</style></head><body>" + helpContents + "</body>";
@@ -805,7 +796,7 @@ QgsExpressionItemSearchProxy::QgsExpressionItemSearchProxy()
 bool QgsExpressionItemSearchProxy::filterAcceptsRow( int source_row, const QModelIndex& source_parent ) const
 {
   QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
-  QgsExpressionItem::ItemType itemType = QgsExpressionItem::ItemType( sourceModel()->data( index, QgsExpressionItem::ItemTypeRole ).toInt() );
+  QgsExpressionItem::ItemType itemType = QgsExpressionItem::ItemType( sourceModel()->data( index, QgsExpressionItem::ITEM_TYPE_ROLE ).toInt() );
 
   int count = sourceModel()->rowCount( index );
   bool matchchild = false;
@@ -829,8 +820,8 @@ bool QgsExpressionItemSearchProxy::filterAcceptsRow( int source_row, const QMode
 
 bool QgsExpressionItemSearchProxy::lessThan( const QModelIndex& left, const QModelIndex& right ) const
 {
-  int leftSort = sourceModel()->data( left, QgsExpressionItem::CustomSortRole ).toInt();
-  int rightSort = sourceModel()->data( right,  QgsExpressionItem::CustomSortRole ).toInt();
+  int leftSort = sourceModel()->data( left, QgsExpressionItem::CUSTOM_SORT_ROLE ).toInt();
+  int rightSort = sourceModel()->data( right,  QgsExpressionItem::CUSTOM_SORT_ROLE ).toInt();
   if ( leftSort != rightSort )
     return leftSort < rightSort;
 

@@ -16,11 +16,13 @@
 #ifndef QGSDATAITEMPROVIDER_H
 #define QGSDATAITEMPROVIDER_H
 
+#include "qgis_core.h"
+
 class QgsDataItem;
 
 class QString;
 
-/**
+/** \ingroup core
  * This is the interface for those who want to add custom data items to the browser tree.
  *
  * The method createDataItem() is ever called only if capabilities() return non-zero value.
@@ -35,7 +37,7 @@ class QString;
 class CORE_EXPORT QgsDataItemProvider
 {
   public:
-    virtual ~QgsDataItemProvider() {}
+    virtual ~QgsDataItemProvider() = default;
 
     //! Human-readable name of the provider name
     virtual QString name() = 0;

@@ -21,4 +21,8 @@ class QgsRelationReferenceWidgetWrapper : QgsEditorWidgetWrapper
   public slots:
     virtual void setValue( const QVariant& value );
     virtual void setEnabled( bool enabled );
+
+  protected:
+
+    void updateConstraintWidgetStatus( ConstraintResult status );
 };

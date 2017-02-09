@@ -20,13 +20,15 @@
 
 #include "ui_qgswfssourceselectbase.h"
 #include "qgscontexthelp.h"
+#include "qgswfscapabilities.h"
 
 #include <QItemDelegate>
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 
 class QgsGenericProjectionSelector;
-class QgsWFSCapabilities;
+class QgsWfsCapabilities;
+class QgsSQLComposerDialog;
 
 class QgsWFSItemDelegate : public QItemDelegate
 {
@@ -55,19 +57,21 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
   private:
     QgsWFSSourceSelect(); //default constructor is forbidden
     QgsGenericProjectionSelector* mProjectionSelector;
+
     /** Stores the available CRS for a server connections.
      The first string is the typename, the corresponding list
     stores the CRS for the typename in the form 'EPSG:XXXX'*/
     QMap<QString, QStringList > mAvailableCRS;
-    QgsWFSCapabilities* mCapabilities;
+    QgsWfsCapabilities* mCapabilities;
     QString mUri;            // data source URI
     QgsWFSItemDelegate* mItemDelegate;
     QStandardItemModel* mModel;
     QSortFilterProxyModel* mModelProxy;
     QPushButton *mBuildQueryButton;
     QPushButton *mAddButton;
-
-    void populateConnectionList();
+    QgsWfsCapabilities::Capabilities mCaps;
+    QModelIndex mSQLIndex;
+    QgsSQLComposerDialog* mSQLComposerDialog;
 
     /** Returns the best suited CRS from a set of authority ids
        1. project CRS if contained in the set
@@ -93,6 +97,9 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
     void treeWidgetCurrentRowChanged( const QModelIndex & current, const QModelIndex & previous );
     void buildQueryButtonClicked();
     void filterChanged( const QString& text );
+    void updateSql();
+
+    void populateConnectionList();
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 

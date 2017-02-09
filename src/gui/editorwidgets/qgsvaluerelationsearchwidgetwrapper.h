@@ -17,44 +17,46 @@
 #define QGSVALUERELATIONSEARCHWIDGETWRAPPER_H
 
 #include "qgssearchwidgetwrapper.h"
-#include "qgsvaluerelationwidgetwrapper.h"
+#include "qgsvaluerelationfieldformatter.h"
 
 #include <QComboBox>
 #include <QListWidget>
 #include <QLineEdit>
+#include "qgis_gui.h"
 
 class QgsValueRelationWidgetFactory;
 
-/**
+/** \ingroup gui
  * Wraps a value relation search  widget. This widget will offer a combobox with values from another layer
  * referenced by a foreign key (a constraint may be set but is not required on data level).
  * It will be used as a search widget and produces expression to look for in the layer.
- * \note not available in Python bindings
  */
 
 class GUI_EXPORT QgsValueRelationSearchWidgetWrapper : public QgsSearchWidgetWrapper
 {
     Q_OBJECT
-
-  public:
-    typedef QPair < QVariant, QString > ValueRelationItem;
-    typedef QVector < ValueRelationItem > ValueRelationCache;
-
   public:
     explicit QgsValueRelationSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = nullptr );
     bool applyDirectly() override;
     QString expression() override;
     bool valid() const override;
     QVariant value() const;
+    FilterFlags supportedFlags() const override;
+    FilterFlags defaultFlags() const override;
+    virtual QString createExpression( FilterFlags flags ) const override;
+
+  public slots:
+    virtual void clearWidget() override;
+    virtual void setEnabled( bool enabled ) override;
 
   protected:
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
 
-  public slots:
-    void valueChanged();
-
   protected slots:
+    //! Called when current value of search widget changes
+    void onValueChanged();
+
     void setExpression( QString exp ) override;
 
   private:
@@ -62,7 +64,7 @@ class GUI_EXPORT QgsValueRelationSearchWidgetWrapper : public QgsSearchWidgetWra
     QListWidget* mListWidget;
     QLineEdit* mLineEdit;
 
-    ValueRelationCache mCache;
+    QgsValueRelationFieldFormatter::ValueRelationCache mCache;
     QgsVectorLayer* mLayer;
 
     friend class QgsValueRelationWidgetFactory;

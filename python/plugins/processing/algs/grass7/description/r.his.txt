@@ -4,7 +4,7 @@ Raster (r.*)
 ParameterRaster|hue|Hue|False
 ParameterRaster|intensity|Intensity|False
 ParameterRaster|saturation|Saturation|False
-ParameterBoolean|-n|Respect NULL values while drawing|False
+ParameterBoolean|-c|Use colors from color tables for NULL values|False
 OutputRaster|red|Red
 OutputRaster|green|Green
 OutputRaster|blue|Blue

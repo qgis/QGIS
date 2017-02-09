@@ -29,7 +29,7 @@ class QgsSpatiaLiteConnection : public QObject
 {
     Q_OBJECT
   public:
-    /** Construct a connection. Name can be either stored connection name or a path to the database file */
+    //! Construct a connection. Name can be either stored connection name or a path to the database file
     explicit QgsSpatiaLiteConnection( const QString& name );
 
     QString path() { return mPath; }
@@ -41,7 +41,10 @@ class QgsSpatiaLiteConnection : public QObject
     typedef struct TableEntry
     {
       TableEntry( const QString& _tableName, const QString& _column, const QString& _type )
-          : tableName( _tableName ), column( _column ), type( _type ) {}
+          : tableName( _tableName )
+          , column( _column )
+          , type( _type )
+      {}
       QString tableName;
       QString column;
       QString type;
@@ -65,13 +68,13 @@ class QgsSpatiaLiteConnection : public QObject
 
     Error fetchTables( bool loadGeometrylessTables );
 
-    /** Return list of tables. fetchTables() function has to be called before */
+    //! Return list of tables. fetchTables() function has to be called before
     QList<TableEntry> tables() { return mTables; }
 
-    /** Return additional error message (if an error occurred before) */
+    //! Return additional error message (if an error occurred before)
     QString errorMessage() { return mErrorMsg; }
 
-    /** Updates the Internal Statistics*/
+    //! Updates the Internal Statistics
     bool updateStatistics();
 
   protected:
@@ -79,7 +82,7 @@ class QgsSpatiaLiteConnection : public QObject
     sqlite3 *openSpatiaLiteDb( const QString& path );
     void closeSpatiaLiteDb( sqlite3 * handle );
 
-    /** Checks if geometry_columns and spatial_ref_sys exist and have expected layout*/
+    //! Checks if geometry_columns and spatial_ref_sys exist and have expected layout
     int checkHasMetadataTables( sqlite3* handle );
 
     /** Inserts information about the spatial tables into mTables
@@ -88,34 +91,35 @@ class QgsSpatiaLiteConnection : public QObject
 
 #ifdef SPATIALITE_VERSION_GE_4_0_0
     // only if libspatialite version is >= 4.0.0
+
     /**
      * Inserts information about the spatial tables into mTables
      * please note: this method is fully based on the Abstract Interface
      * implemented in libspatialite starting since v.4.0
      *
-     * using the Abstract Interface is highly reccommended, because all
-     * version-dependent implementation details become completly transparent,
+     * using the Abstract Interface is highly recommended, because all
+     * version-dependent implementation details become completely transparent,
      * thus completely freeing the client application to take care of them.
      */
     bool getTableInfoAbstractInterface( sqlite3 * handle, bool loadGeometrylessTables );
 #endif
 
-    /** Cleaning well-formatted SQL strings*/
+    //! Cleaning well-formatted SQL strings
     QString quotedValue( QString value ) const;
 
-    /** Checks if geometry_columns_auth table exists*/
+    //! Checks if geometry_columns_auth table exists
     bool checkGeometryColumnsAuth( sqlite3 * handle );
 
-    /** Checks if views_geometry_columns table exists*/
+    //! Checks if views_geometry_columns table exists
     bool checkViewsGeometryColumns( sqlite3 * handle );
 
-    /** Checks if virts_geometry_columns table exists*/
+    //! Checks if virts_geometry_columns table exists
     bool checkVirtsGeometryColumns( sqlite3 * handle );
 
-    /** Checks if this layer has been declared HIDDEN*/
+    //! Checks if this layer has been declared HIDDEN
     bool isDeclaredHidden( sqlite3 * handle, const QString& table, const QString& geom );
 
-    /** Checks if this layer is a RasterLite-1 datasource*/
+    //! Checks if this layer is a RasterLite-1 datasource
     bool isRasterlite1Datasource( sqlite3 * handle, const char * table );
 
     QString mErrorMsg;
@@ -131,7 +135,10 @@ class QgsSqliteHandle
     //
   public:
     QgsSqliteHandle( sqlite3 * handle, const QString& dbPath, bool shared )
-        : ref( shared ? 1 : -1 ), sqlite_handle( handle ), mDbPath( dbPath ), mIsValid( true )
+        : ref( shared ? 1 : -1 )
+        , sqlite_handle( handle )
+        , mDbPath( dbPath )
+        , mIsValid( true )
     {
     }
 
@@ -177,7 +184,7 @@ class QgsSqliteHandle
     QString mDbPath;
     bool mIsValid;
 
-    static QMap < QString, QgsSqliteHandle * > handles;
+    static QMap < QString, QgsSqliteHandle * > sHandles;
 };
 
 

@@ -16,8 +16,8 @@
  ***************************************************************************/
 
 #include "qgsgraduatedhistogramwidget.h"
-#include "qgsgraduatedsymbolrendererv2.h"
-#include "qgsgraduatedsymbolrendererv2widget.h"
+#include "qgsgraduatedsymbolrenderer.h"
+#include "qgsgraduatedsymbolrendererwidget.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsstatisticalsummary.h"
@@ -68,12 +68,7 @@ QgsGraduatedHistogramWidget::QgsGraduatedHistogramWidget( QWidget *parent )
 #endif
 }
 
-
-QgsGraduatedHistogramWidget::~QgsGraduatedHistogramWidget()
-{
-}
-
-void QgsGraduatedHistogramWidget::setRenderer( QgsGraduatedSymbolRendererV2 *renderer )
+void QgsGraduatedHistogramWidget::setRenderer( QgsGraduatedSymbolRenderer *renderer )
 {
   mRenderer = renderer;
 }

@@ -47,7 +47,7 @@ bool QgsMultiRenderChecker::runTest( const QString& theTestName, unsigned int th
 
   if ( subDirs.isEmpty() )
   {
-    subDirs << "";
+    subDirs << QLatin1String( "" );
   }
 
   QVector<QgsDartMeasurement> dartMeasurements;
@@ -87,7 +87,7 @@ bool QgsMultiRenderChecker::runTest( const QString& theTestName, unsigned int th
     Q_FOREACH ( const QgsDartMeasurement& measurement, dartMeasurements )
       measurement.send();
 
-    QgsDartMeasurement msg( "Image not accepted by test", QgsDartMeasurement::Text, "This may be caused because the test is supposed to fail or rendering inconsistencies."
+    QgsDartMeasurement msg( QStringLiteral( "Image not accepted by test" ), QgsDartMeasurement::Text, "This may be caused because the test is supposed to fail or rendering inconsistencies."
                             "If this is a rendering inconsistency, please add another control image folder, add an anomaly image or increase the color tolerance." );
     msg.send();
   }
@@ -125,10 +125,6 @@ QgsCompositionChecker::QgsCompositionChecker( const QString& testName, QgsCompos
 QgsCompositionChecker::QgsCompositionChecker()
     : mComposition( nullptr )
     , mDotsPerMeter( 96 / 25.4 * 1000 )
-{
-}
-
-QgsCompositionChecker::~QgsCompositionChecker()
 {
 }
 

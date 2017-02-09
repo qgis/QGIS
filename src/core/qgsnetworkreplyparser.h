@@ -21,7 +21,9 @@
 
 #include <QNetworkReply>
 
-/**
+#include "qgis_core.h"
+
+/** \ingroup core
   \brief Multipart QNetworkReply parser.
 
   It seams that Qt does not have currently support for multipart reply
@@ -56,7 +58,7 @@ class CORE_EXPORT QgsNetworkReplyParser : public QObject
       * @return raw header */
     QByteArray rawHeader( int part, const QByteArray & headerName ) const { return mHeaders.value( part ).value( headerName ); }
 
-    /** Get headers */
+    //! Get headers
     QList< RawHeaderMap > headers() const { return mHeaders; }
 
     /** Get part part body
@@ -64,10 +66,10 @@ class CORE_EXPORT QgsNetworkReplyParser : public QObject
       * @return part body */
     QByteArray body( int part ) const { return mBodies.value( part ); }
 
-    /** Get bodies */
+    //! Get bodies
     QList<QByteArray> bodies() const { return mBodies; }
 
-    /** Parsing error */
+    //! Parsing error
     QString error() const { return mError; }
 
     /** Test if reply is multipart.

@@ -14,46 +14,28 @@
  ***************************************************************************/
 #include "qgsundowidget.h"
 
-#include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgslayertreeview.h"
+#include "qgslogger.h"
 #include "qgsmaplayer.h"
 #include "qgsmapcanvas.h"
 
 
 QgsUndoWidget::QgsUndoWidget( QWidget * parent, QgsMapCanvas * mapCanvas )
-    : QDockWidget( parent )
+    : QgsPanelWidget( parent )
 {
   setupUi( this );
-  setWidget( dockWidgetContents );
 
   connect( undoButton, SIGNAL( clicked() ), this, SLOT( undo() ) );
   connect( redoButton, SIGNAL( clicked() ), this, SLOT( redo() ) );
-  connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
-           this, SLOT( layerChanged( QgsMapLayer* ) ) );
 
   undoButton->setDisabled( true );
   redoButton->setDisabled( true );
   mMapCanvas = mapCanvas;
-  mUndoView = new QUndoView( dockWidgetContents );
+  mUndoView = new QUndoView( this );
   gridLayout->addWidget( mUndoView, 0, 0, 1, 2 );
   mUndoStack = nullptr;
   mPreviousIndex = 0;
   mPreviousCount = 0;
-}
-
-
-void QgsUndoWidget::layerChanged( QgsMapLayer * layer )
-{
-  if ( layer )
-  {
-    setUndoStack( layer->undoStack() );
-  }
-  else
-  {
-    destroyStack();
-  }
-  emit undoStackChanged();
 }
 
 
@@ -103,12 +85,12 @@ void QgsUndoWidget::indexChanged( int curIndx )
 
   if ( offset != 0 )
   {
-    QgsDebugMsg( QString( "curIndx : %1" ).arg( curIndx ) );
-    QgsDebugMsg( QString( "offset  : %1" ).arg( offset ) );
-    QgsDebugMsg( QString( "curCount: %1" ).arg( curCount ) );
+    QgsDebugMsgLevel( QString( "curIndx : %1" ).arg( curIndx ), 4 );
+    QgsDebugMsgLevel( QString( "offset  : %1" ).arg( offset ), 4 );
+    QgsDebugMsgLevel( QString( "curCount: %1" ).arg( curCount ), 4 );
     if ( lastRedo )
     {
-      QgsDebugMsg( QString( "lastRedo: true" ) );
+      QgsDebugMsgLevel( QString( "lastRedo: true" ), 4 );
     }
   }
 
@@ -118,7 +100,6 @@ void QgsUndoWidget::indexChanged( int curIndx )
   {
     if ( mMapCanvas )
     {
-      QgsDebugMsg( QString( "trigger redraw" ) );
       mMapCanvas->refresh();
     }
   }
@@ -154,9 +135,9 @@ void QgsUndoWidget::setUndoStack( QUndoStack* undoStack )
 
   mUndoView = new QUndoView( dockWidgetContents );
   mUndoView->setStack( undoStack );
-  mUndoView->setObjectName( "undoView" );
+  mUndoView->setObjectName( QStringLiteral( "undoView" ) );
   gridLayout->addWidget( mUndoView, 0, 0, 1, 2 );
-  setWidget( dockWidgetContents );
+//  setWidget( dockWidgetContents );
   connect( mUndoStack, SIGNAL( canUndoChanged( bool ) ), this, SLOT( undoChanged( bool ) ) );
   connect( mUndoStack, SIGNAL( canRedoChanged( bool ) ), this, SLOT( redoChanged( bool ) ) );
 
@@ -169,30 +150,30 @@ void QgsUndoWidget::setUndoStack( QUndoStack* undoStack )
 
 
 
-void QgsUndoWidget::setupUi( QDockWidget *UndoWidget )
+void QgsUndoWidget::setupUi( QWidget *UndoWidget )
 {
   if ( UndoWidget->objectName().isEmpty() )
-    UndoWidget->setObjectName( QString::fromUtf8( "UndoWidget" ) );
+    UndoWidget->setObjectName( QStringLiteral( "UndoWidget" ) );
   UndoWidget->resize( 200, 223 );
   UndoWidget->setMinimumSize( QSize( 200, 220 ) );
   dockWidgetContents = new QWidget( UndoWidget );
-  dockWidgetContents->setObjectName( QString::fromUtf8( "dockWidgetContents" ) );
+  dockWidgetContents->setObjectName( QStringLiteral( "dockWidgetContents" ) );
   gridLayout = new QGridLayout( dockWidgetContents );
-  gridLayout->setObjectName( QString::fromUtf8( "gridLayout" ) );
+  gridLayout->setObjectName( QStringLiteral( "gridLayout" ) );
   gridLayout->setContentsMargins( 0, 0, 0, 0 );
   spacerItem = new QSpacerItem( 20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
 
   gridLayout->addItem( spacerItem, 0, 0, 1, 1 );
 
   undoButton = new QPushButton( dockWidgetContents );
-  undoButton->setObjectName( QString::fromUtf8( "undoButton" ) );
-  undoButton->setIcon( QgsApplication::getThemeIcon( "mActionUndo.png" ) );
+  undoButton->setObjectName( QStringLiteral( "undoButton" ) );
+  undoButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionUndo.svg" ) ) );
 
   gridLayout->addWidget( undoButton, 1, 0, 1, 1 );
 
   redoButton = new QPushButton( dockWidgetContents );
-  redoButton->setObjectName( QString::fromUtf8( "redoButton" ) );
-  redoButton->setIcon( QgsApplication::getThemeIcon( "mActionRedo.png" ) );
+  redoButton->setObjectName( QStringLiteral( "redoButton" ) );
+  redoButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionRedo.svg" ) ) );
 
   gridLayout->addWidget( redoButton, 1, 1, 1, 1 );
 
@@ -200,14 +181,14 @@ void QgsUndoWidget::setupUi( QDockWidget *UndoWidget )
 
   gridLayout->addItem( spacerItem1, 0, 1, 1, 1 );
 
-  UndoWidget->setWidget( dockWidgetContents );
+  UndoWidget->setLayout( gridLayout );
 
   retranslateUi( UndoWidget );
 
   QMetaObject::connectSlotsByName( UndoWidget );
 } // setupUi
 
-void QgsUndoWidget::retranslateUi( QDockWidget *UndoWidget )
+void QgsUndoWidget::retranslateUi( QWidget *UndoWidget )
 {
   UndoWidget->setWindowTitle( QApplication::translate( "UndoWidget", "Undo/Redo Panel", nullptr, QApplication::UnicodeUTF8 ) );
   undoButton->setText( QApplication::translate( "UndoWidget", "Undo", nullptr, QApplication::UnicodeUTF8 ) );

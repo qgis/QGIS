@@ -17,6 +17,7 @@
 #define QGSLAYERTREEVIEWDEFAULTACTIONS_H
 
 #include <QObject>
+#include "qgis_gui.h"
 
 class QAction;
 
@@ -27,6 +28,7 @@ class QgsMapLayer;
 
 
 /**
+ * \ingroup gui
  * The QgsLayerTreeViewDefaultActions class serves as a factory of actions
  * that can be used together with a layer tree view.
  *
@@ -44,6 +46,15 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     QAction* actionShowInOverview( QObject* parent = nullptr );
     QAction* actionRenameGroupOrLayer( QObject* parent = nullptr );
     QAction* actionShowFeatureCount( QObject* parent = nullptr );
+
+    //! Action to check a group and all its children
+    QAction* actionCheckAndAllChildren( QObject* parent = nullptr );
+
+    //! Action to uncheck a group and all its children
+    QAction* actionUncheckAndAllChildren( QObject* parent = nullptr );
+
+    //! Action to check a group and all its parents
+    QAction* actionCheckAndAllParents( QObject* parent = nullptr );
 
     QAction* actionZoomToLayer( QgsMapCanvas* canvas, QObject* parent = nullptr );
     QAction* actionZoomToGroup( QgsMapCanvas* canvas, QObject* parent = nullptr );
@@ -73,6 +84,11 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     //! Slot to enable/disable mutually exclusive group flag
     //! @note added in 2.12
     void mutuallyExclusiveGroup();
+
+  private slots:
+    void checkAndAllChildren();
+    void uncheckAndAllChildren();
+    void checkAndAllParents();
 
   protected:
     void zoomToLayers( QgsMapCanvas* canvas, const QList<QgsMapLayer*>& layers );

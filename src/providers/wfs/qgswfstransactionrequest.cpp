@@ -17,7 +17,7 @@
 #include "qgslogger.h"
 
 QgsWFSTransactionRequest::QgsWFSTransactionRequest( const QString& theUri )
-    : QgsWFSRequest( theUri )
+    : QgsWfsRequest( theUri )
 {
 }
 
@@ -27,9 +27,16 @@ bool QgsWFSTransactionRequest::send( const QDomDocument& doc, QDomDocument& serv
 
   QgsDebugMsg( doc.toString() );
 
-  if ( sendPOST( url, "text/xml", doc.toByteArray( -1 ) ) )
+  if ( sendPOST( url, QStringLiteral( "text/xml" ), doc.toByteArray( -1 ) ) )
   {
-    serverResponse.setContent( mResponse, true );
+    QString errorMsg;
+    if ( !serverResponse.setContent( mResponse, true, &errorMsg ) )
+    {
+      QgsDebugMsg( mResponse );
+      QgsDebugMsg( errorMsg );
+      return false;
+    }
+    QgsDebugMsg( mResponse );
     return true;
   }
   return false;

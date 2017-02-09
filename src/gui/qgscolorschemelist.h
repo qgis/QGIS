@@ -20,8 +20,10 @@
 #include <QAbstractItemModel>
 #include <QItemDelegate>
 #include <QFile>
+#include "qgis_gui.h"
 
 class QMimeData;
+class QgsPanelWidget;
 
 /** \ingroup gui
  * \class QgsColorSwatchDelegate
@@ -39,13 +41,17 @@ class GUI_EXPORT QgsColorSwatchDelegate : public QAbstractItemDelegate
     QSize sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
     bool editorEvent( QEvent * event, QAbstractItemModel * model, const QStyleOptionViewItem & option, const QModelIndex & index ) override;
 
+  private slots:
+
+    void colorChanged();
+
   private:
     QWidget* mParent;
 
     /** Generates a checkboard pattern for transparent color backgrounds
      * @returns checkboard pixmap
      */
-    const QPixmap &transparentBackground() const;
+    QPixmap transparentBackground() const;
 };
 
 
@@ -68,8 +74,6 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
      * @param parent parent object
      */
     explicit QgsColorSchemeModel( QgsColorScheme* scheme, const QString &context = QString(), const QColor &baseColor = QColor(), QObject* parent = nullptr );
-
-    ~QgsColorSchemeModel();
 
     //reimplemented QAbstractItemModel methods
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
@@ -114,8 +118,9 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
     /** Add a color to the list
      * @param color color to add
      * @param label label for color
+     * @param allowDuplicate set to true to allow duplicate colors to be added (colors which are already present in the list)
      */
-    void addColor( const QColor &color, const QString &label = QString() );
+    void addColor( const QColor &color, const QString &label = QString(), bool allowDuplicate = false );
 
     /** Returns whether the color scheme model has been modified
      * @returns true if colors have been modified
@@ -157,8 +162,6 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
      */
     QgsColorSchemeList( QWidget *parent = nullptr, QgsColorScheme* scheme = nullptr, const QString &context = QString(), const QColor &baseColor = QColor() );
 
-    virtual ~QgsColorSchemeList();
-
     /** Saves the current colors shown in the list back to a color scheme, if supported
      * by the color scheme.
      * @note this method is only effective if the color scheme is editable
@@ -182,12 +185,19 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
      */
     bool isDirty() const;
 
+    /** Returns the scheme currently selected in the list.
+     * @note added in QGIS 3.0
+     * @see setScheme()
+     */
+    QgsColorScheme* scheme();
+
   public slots:
 
     /** Sets the color scheme to show in the list
      * @param scheme QgsColorScheme for colors to show in the list
      * @param context context string provided to color scheme
      * @param baseColor base color for color scheme
+     * @see scheme()
      */
     void setScheme( QgsColorScheme* scheme, const QString &context = QString(), const QColor &baseColor = QColor() );
 
@@ -198,8 +208,9 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
     /** Adds a color to the list
      * @param color color to add
      * @param label optional label for color
+     * @param allowDuplicate set to true to allow duplicate colors to be added, ie colors which already exist in the list
      */
-    void addColor( const QColor &color, const QString &label = QString() );
+    void addColor( const QColor &color, const QString &label = QString(), bool allowDuplicate = false );
 
     /** Pastes colors from clipboard to the list
      * @see copyColors
@@ -210,6 +221,18 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
      * @see pasteColors
      */
     void copyColors();
+
+    /** Displays a file picker dialog allowing users to import colors into the list from a file.
+     * @note added in QGIS 3.0
+     * @see showExportColorsDialog()
+     */
+    void showImportColorsDialog();
+
+    /** Displays a file picker dialog allowing users to export colors from the list into a file.
+     * @note added in QGIS 3.0
+     * @see showImportColorsDialog()
+     */
+    void showExportColorsDialog();
 
   signals:
 

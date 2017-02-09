@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Customization</string>
+   <string>Interface customization</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -151,7 +151,7 @@
      <normaloff>:/images/themes/default/mActionSelectAllTree.svg</normaloff>:/images/themes/default/mActionSelectAllTree.svg</iconset>
    </property>
    <property name="text">
-    <string>Select All</string>
+    <string>Check All</string>
    </property>
   </action>
  </widget>

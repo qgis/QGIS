@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -30,29 +32,31 @@ import os
 import stat
 import subprocess
 
-from PyQt.QtCore import QSettings, QCoreApplication
+from qgis.PyQt.QtCore import QSettings, QCoreApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.tools.system import userFolder, isWindows, mkdir
+from processing.tools.system import userFolder, isWindows, mkdir, getTempFilenameInTempFolder
 
 
-class RUtils:
+class RUtils(object):
 
     RSCRIPTS_FOLDER = 'R_SCRIPTS_FOLDER'
     R_FOLDER = 'R_FOLDER'
     R_USE64 = 'R_USE64'
     R_LIBS_USER = 'R_LIBS_USER'
 
+    rscriptfilename = os.path.join(userFolder(), 'processing_script.r')
+
     @staticmethod
     def RFolder():
         folder = ProcessingConfig.getSetting(RUtils.R_FOLDER)
         if folder is None:
             if isWindows():
-                if 'ProgramW6432' in os.environ.keys() and os.path.isdir(os.path.join(os.environ['ProgramW6432'], 'R')):
+                if 'ProgramW6432' in list(os.environ.keys()) and os.path.isdir(os.path.join(os.environ['ProgramW6432'], 'R')):
                     testfolder = os.path.join(os.environ['ProgramW6432'], 'R')
-                elif 'PROGRAMFILES(x86)' in os.environ.keys() and os.path.isdir(os.path.join(os.environ['PROGRAMFILES(x86)'], 'R')):
+                elif 'PROGRAMFILES(x86)' in list(os.environ.keys()) and os.path.isdir(os.path.join(os.environ['PROGRAMFILES(x86)'], 'R')):
                     testfolder = os.path.join(os.environ['PROGRAMFILES(x86)'], 'R')
-                elif 'PROGRAMFILES' in os.environ.keys() and os.path.isdir(os.path.join(os.environ['PROGRAMFILES'], 'R')):
+                elif 'PROGRAMFILES' in list(os.environ.keys()) and os.path.isdir(os.path.join(os.environ['PROGRAMFILES'], 'R')):
                     testfolder = os.path.join(os.environ['PROGRAMFILES'], 'R')
                 else:
                     testfolder = 'C:\\R'
@@ -69,50 +73,53 @@ class RUtils:
             else:
                 folder = ''
 
-        return os.path.abspath(unicode(folder))
+        return os.path.abspath(str(folder))
 
     @staticmethod
     def RLibs():
         folder = ProcessingConfig.getSetting(RUtils.R_LIBS_USER)
         if folder is None:
-            folder = unicode(os.path.join(userFolder(), 'rlibs'))
+            folder = str(os.path.join(userFolder(), 'rlibs'))
         try:
             mkdir(folder)
         except:
-            folder = unicode(os.path.join(userFolder(), 'rlibs'))
+            folder = str(os.path.join(userFolder(), 'rlibs'))
             mkdir(folder)
-        return os.path.abspath(unicode(folder))
+        return os.path.abspath(str(folder))
 
     @staticmethod
-    def RScriptsFolder():
-        folder = ProcessingConfig.getSetting(RUtils.RSCRIPTS_FOLDER)
-        if folder is None:
-            folder = unicode(os.path.join(userFolder(), 'rscripts'))
-        try:
-            mkdir(folder)
-        except:
-            folder = unicode(os.path.join(userFolder(), 'rscripts'))
-            mkdir(folder)
-
+    def defaultRScriptsFolder():
+        folder = str(os.path.join(userFolder(), 'rscripts'))
+        mkdir(folder)
         return os.path.abspath(folder)
 
     @staticmethod
+    def RScriptsFolders():
+        folder = ProcessingConfig.getSetting(RUtils.RSCRIPTS_FOLDER)
+        if folder is not None:
+            return folder.split(';')
+        else:
+            return [RUtils.defaultRScriptsFolder()]
+
+    @staticmethod
     def createRScriptFromRCommands(commands):
-        scriptfile = open(RUtils.getRScriptFilename(), 'w')
-        for command in commands:
-            scriptfile.write(command + '\n')
-        scriptfile.close()
+        with open(RUtils.getRScriptFilename(), 'w') as scriptfile:
+            for command in commands:
+                scriptfile.write(command + '\n')
 
     @staticmethod
     def getRScriptFilename():
-        return userFolder() + os.sep + 'processing_script.r'
+        return RUtils.rscriptfilename
 
     @staticmethod
     def getConsoleOutputFilename():
         return RUtils.getRScriptFilename() + '.Rout'
 
     @staticmethod
-    def executeRAlgorithm(alg, progress):
+    def executeRAlgorithm(alg, feedback):
+        # generate new R script file name in a temp folder
+        RUtils.rscriptfilename = getTempFilenameInTempFolder('processing_script.r')
+        # run commands
         RUtils.verboseCommands = alg.getVerboseCommands()
         RUtils.createRScriptFromRCommands(alg.getFullSetOfRCommands())
         if isWindows():
@@ -121,8 +128,7 @@ class RUtils:
             else:
                 execDir = 'i386'
             command = [
-                RUtils.RFolder() + os.sep + 'bin' + os.sep + execDir + os.sep
-                + 'R.exe',
+                os.path.join(RUtils.RFolder(), 'bin', execDir, 'R.exe'),
                 'CMD',
                 'BATCH',
                 '--vanilla',
@@ -140,7 +146,7 @@ class RUtils:
             command,
             shell=True,
             stdout=subprocess.PIPE,
-            stdin=open(os.devnull),
+            stdin=subprocess.DEVNULL,
             stderr=subprocess.STDOUT,
             universal_newlines=True,
         )
@@ -150,7 +156,7 @@ class RUtils:
         loglines.append(RUtils.tr('R execution console output'))
         loglines += RUtils.allConsoleResults
         for line in loglines:
-            progress.setConsoleInfo(line)
+            feedback.pushConsoleInfo(line)
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
 
     @staticmethod
@@ -159,18 +165,18 @@ class RUtils:
         RUtils.allConsoleResults = []
         add = False
         if os.path.exists(RUtils.getConsoleOutputFilename()):
-            lines = open(RUtils.getConsoleOutputFilename())
-            for line in lines:
-                line = line.strip().strip(' ')
-                if line.startswith('>'):
-                    line = line[1:].strip(' ')
-                    if line in RUtils.verboseCommands:
-                        add = True
-                    else:
-                        add = False
-                elif add:
-                    RUtils.consoleResults.append('<p>' + line + '</p>\n')
-                RUtils.allConsoleResults.append(line)
+            with open(RUtils.getConsoleOutputFilename()) as lines:
+                for line in lines:
+                    line = line.strip().strip(' ')
+                    if line.startswith('>'):
+                        line = line[1:].strip(' ')
+                        if line in RUtils.verboseCommands:
+                            add = True
+                        else:
+                            add = False
+                    elif add:
+                        RUtils.consoleResults.append('<p>' + line + '</p>\n')
+                    RUtils.allConsoleResults.append(line)
 
     @staticmethod
     def getConsoleOutput():
@@ -200,15 +206,14 @@ class RUtils:
                 execDir = 'x64'
             else:
                 execDir = 'i386'
-            command = [RUtils.RFolder() + os.sep + 'bin' + os.sep + execDir
-                       + os.sep + 'R.exe', '--version']
+            command = [os.path.join(RUtils.RFolder(), 'bin', execDir, 'R.exe'), '--version']
         else:
             command = ['R --version']
         proc = subprocess.Popen(
             command,
             shell=True,
             stdout=subprocess.PIPE,
-            stdin=open(os.devnull),
+            stdin=subprocess.DEVNULL,
             stderr=subprocess.STDOUT,
             universal_newlines=True,
         ).stdout

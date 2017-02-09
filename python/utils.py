@@ -32,9 +32,9 @@ QGIS utilities module
 
 """
 
-from PyQt.QtCore import QCoreApplication, QLocale
-from PyQt.QtWidgets import QPushButton, QApplication
-from qgis.core import QGis, QgsExpression, QgsMessageLog, qgsfunction, QgsMessageOutput
+from qgis.PyQt.QtCore import QCoreApplication, QLocale, QThread
+from qgis.PyQt.QtWidgets import QPushButton, QApplication
+from qgis.core import Qgis, QgsExpression, QgsMessageLog, qgsfunction, QgsMessageOutput, QgsWkbTypes, QgsApplication
 from qgis.gui import QgsMessageBar
 
 import sys
@@ -67,9 +67,16 @@ warnings.filterwarnings("ignore", "the sets module is deprecated")
 def showWarning(message, category, filename, lineno, file=None, line=None):
     stk = ""
     for s in traceback.format_stack()[:-2]:
-        stk += s.decode('utf-8', 'replace') if hasattr(s, 'decode') else s
+        if hasattr(s, 'decode'):
+            stk += s.decode(sys.getfilesystemencoding())
+        else:
+            stk += s
+    if hasattr(filename, 'decode'):
+        decoded_filename = filename.decode(sys.getfilesystemencoding())
+    else:
+        decoded_filename = filename
     QgsMessageLog.logMessage(
-        "warning:%s\ntraceback:%s" % (warnings.formatwarning(message, category, filename, lineno), stk),
+        u"warning:{}\ntraceback:{}".format(warnings.formatwarning(message, category, decoded_filename, lineno), stk),
         QCoreApplication.translate("Python", "Python warning")
     )
 
@@ -171,9 +178,9 @@ def open_stack_dialog(type, value, tb, msg, pop_error=True):
                      version_label=version_label,
                      num=sys.version,
                      qgis_label=qgis_label,
-                     qversion=QGis.QGIS_VERSION,
-                     qgisrelease=QGis.QGIS_RELEASE_NAME,
-                     devversion=QGis.QGIS_DEV_VERSION,
+                     qversion=Qgis.QGIS_VERSION,
+                     qgisrelease=Qgis.QGIS_RELEASE_NAME,
+                     devversion=Qgis.QGIS_DEV_VERSION,
                      pypath_label=pypath_label,
                      pypath=u"".join(u"<li>{}</li>".format(path) for path in sys.path))
 
@@ -186,7 +193,13 @@ def open_stack_dialog(type, value, tb, msg, pop_error=True):
 
 
 def qgis_excepthook(type, value, tb):
-    showException(type, value, tb, None, messagebar=True)
+    # detect if running in the main thread
+    in_main_thread = True
+    if QThread.currentThread() != QgsApplication.instance().thread():
+        in_main_thread = False
+
+    # only use messagebar if running in main thread - otherwise it will crash!
+    showException(type, value, tb, None, messagebar=in_main_thread)
 
 
 def installErrorHook():
@@ -247,9 +260,8 @@ def findPlugins(path):
         cp = configparser.ConfigParser()
 
         try:
-            f = codecs.open(metadataFile, "r", "utf8")
-            cp.readfp(f)
-            f.close()
+            with codecs.open(metadataFile, "r", "utf8") as f:
+                cp.read_file(f)
         except:
             cp = None
 
@@ -577,6 +589,41 @@ def startServerPlugin(packageName):
     server_active_plugins.append(packageName)
     return True
 
+
+def spatialite_connect(*args, **kwargs):
+    """returns a dbapi2.Connection to a spatialite db
+either using pyspatialite if it is present
+or using the "mod_spatialite" extension (python3)"""
+    try:
+        from pyspatialite import dbapi2
+    except ImportError:
+        import sqlite3
+        con = sqlite3.dbapi2.connect(*args, **kwargs)
+        con.enable_load_extension(True)
+        cur = con.cursor()
+        libs = [
+            # Spatialite >= 4.2 and Sqlite >= 3.7.17, should work on all platforms
+            ("mod_spatialite", "sqlite3_modspatialite_init"),
+            # Spatialite >= 4.2 and Sqlite < 3.7.17 (Travis)
+            ("mod_spatialite.so", "sqlite3_modspatialite_init"),
+            # Spatialite < 4.2 (linux)
+            ("libspatialite.so", "sqlite3_extension_init")
+        ]
+        found = False
+        for lib, entry_point in libs:
+            try:
+                cur.execute("select load_extension('{}', '{}')".format(lib, entry_point))
+            except sqlite3.OperationalError:
+                continue
+            else:
+                found = True
+                break
+        if not found:
+            raise RuntimeError("Cannot find any suitable spatialite module")
+        cur.close()
+        con.enable_load_extension(False)
+        return con
+    return dbapi2.connect(*args, **kwargs)
 
 #######################
 # IMPORT wrapper

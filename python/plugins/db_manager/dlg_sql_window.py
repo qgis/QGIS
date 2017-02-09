@@ -21,11 +21,14 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import zip
+from builtins import next
+from builtins import str
 
-from PyQt.QtCore import Qt, pyqtSignal
-from PyQt.QtWidgets import QDialog, QWidget, QAction, QApplication, QInputDialog, QStyledItemDelegate
-from PyQt.QtGui import QKeySequence, QCursor, QClipboard, QIcon, QStandardItemModel, QStandardItem
-from PyQt.Qsci import QsciAPIs
+from qgis.PyQt.QtCore import Qt, pyqtSignal
+from qgis.PyQt.QtWidgets import QDialog, QWidget, QAction, QApplication, QInputDialog, QStyledItemDelegate
+from qgis.PyQt.QtGui import QKeySequence, QCursor, QClipboard, QIcon, QStandardItemModel, QStandardItem
+from qgis.PyQt.Qsci import QsciAPIs
 
 from qgis.core import QgsProject
 
@@ -64,12 +67,13 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.defaultLayerName = 'QueryLayer'
 
         if self.allowMultiColumnPk:
-            self.uniqueColumnCheck.setText(self.trUtf8("Column(s) with unique values"))
+            self.uniqueColumnCheck.setText(self.tr("Column(s) with unique values"))
         else:
-            self.uniqueColumnCheck.setText(self.trUtf8("Column with unique values"))
+            self.uniqueColumnCheck.setText(self.tr("Column with unique values"))
 
         self.editSql.setFocus()
         self.editSql.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.editSql.setMarginVisible(True)
         self.initCompleter()
 
         # allow copying results
@@ -141,8 +145,8 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         if query == "":
             return
         name = self.presetName.text()
-        QgsProject.instance().writeEntry('DBManager', 'savedQueries/q' + unicode(name.__hash__()) + '/name', name)
-        QgsProject.instance().writeEntry('DBManager', 'savedQueries/q' + unicode(name.__hash__()) + '/query', query)
+        QgsProject.instance().writeEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/name', name)
+        QgsProject.instance().writeEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/query', query)
         index = self.presetCombo.findText(name)
         if index == -1:
             self.presetCombo.addItem(name)
@@ -152,13 +156,13 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
     def deletePreset(self):
         name = self.presetCombo.currentText()
-        QgsProject.instance().removeEntry('DBManager', 'savedQueries/q' + unicode(name.__hash__()))
+        QgsProject.instance().removeEntry('DBManager', 'savedQueries/q' + str(name.__hash__()))
         self.presetCombo.removeItem(self.presetCombo.findText(name))
         self.presetCombo.setCurrentIndex(-1)
 
     def loadPreset(self, name):
-        query = QgsProject.instance().readEntry('DBManager', 'savedQueries/q' + unicode(name.__hash__()) + '/query')[0]
-        name = QgsProject.instance().readEntry('DBManager', 'savedQueries/q' + unicode(name.__hash__()) + '/name')[0]
+        query = QgsProject.instance().readEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/query')[0]
+        name = QgsProject.instance().readEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/name')[0]
         self.editSql.setText(query)
 
     def loadAsLayerToggled(self, checked):
@@ -239,13 +243,13 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         if query.strip().endswith(';'):
             query = query.strip()[:-1]
 
-        from qgis.core import QgsMapLayer, QgsMapLayerRegistry
+        from qgis.core import QgsMapLayer
 
         layerType = QgsMapLayer.VectorLayer if self.vectorRadio.isChecked() else QgsMapLayer.RasterLayer
 
         # get a new layer name
         names = []
-        for layer in list(QgsMapLayerRegistry.instance().mapLayers().values()):
+        for layer in list(QgsProject.instance().mapLayers().values()):
             names.append(layer.name())
 
         layerName = self.layerNameEdit.text()
@@ -272,8 +276,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             if layer is None:
                 return
 
-            from qgis.core import QgsMapLayerRegistry
-            QgsMapLayerRegistry.instance().addMapLayers([layer], True)
+            QgsProject.instance().addMapLayers([layer], True)
         finally:
             QApplication.restoreOverrideCursor()
 
@@ -302,9 +305,9 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
                     break
                 aliasIndex += 1
 
-            sql = u"SELECT * FROM (%s\n) AS %s LIMIT 0" % (unicode(query), connector.quoteId(alias))
+            sql = u"SELECT * FROM (%s\n) AS %s LIMIT 0" % (str(query), connector.quoteId(alias))
         else:
-            sql = u"SELECT * FROM (%s\n) WHERE 1=0" % unicode(query)
+            sql = u"SELECT * FROM (%s\n) WHERE 1=0" % str(query)
 
         c = None
         try:
@@ -330,7 +333,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         QApplication.restoreOverrideCursor()
 
     def setColumnCombos(self, cols, quotedCols):
-        # get sensible default columns. do this before sorting in case there's hints in the column order (eg, id is more likely to be first)
+        # get sensible default columns. do this before sorting in case there's hints in the column order (e.g., id is more likely to be first)
         try:
             defaultGeomCol = next(col for col in cols if col in ['geom', 'geometry', 'the_geom', 'way'])
         except:
@@ -415,7 +418,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             dictionary = getSqlDictionary()
 
         wordlist = []
-        for name, value in dictionary.items():
+        for name, value in list(dictionary.items()):
             wordlist += value  # concat lists
         wordlist = list(set(wordlist))  # remove duplicates
 

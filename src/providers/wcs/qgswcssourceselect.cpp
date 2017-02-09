@@ -23,12 +23,12 @@
 #include "qgswcsprovider.h"
 #include "qgswcssourceselect.h"
 #include "qgswcscapabilities.h"
-#include "qgsnumericsortlistviewitem.h"
+#include "qgstreewidgetitem.h"
 
 #include <QWidget>
 
 QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget * parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
-    : QgsOWSSourceSelect( "WCS", parent, fl, managerMode, embeddedMode )
+    : QgsOWSSourceSelect( QStringLiteral( "WCS" ), parent, fl, managerMode, embeddedMode )
 {
   // Hide irrelevant widgets
   mWMSGroupBox->hide();
@@ -47,14 +47,13 @@ QgsWCSSourceSelect::~QgsWCSSourceSelect()
 
 void QgsWCSSourceSelect::populateLayerList()
 {
-  QgsDebugMsg( "entered" );
 
   mLayersTreeWidget->clear();
 
 
-  QgsDataSourceURI uri = mUri;
+  QgsDataSourceUri uri = mUri;
   QString cache = QgsNetworkAccessManager::cacheLoadControlName( selectedCacheLoadControl() );
-  uri.setParam( "cache", cache );
+  uri.setParam( QStringLiteral( "cache" ), cache );
 
   mCapabilities.setUri( uri );
 
@@ -68,7 +67,7 @@ void QgsWCSSourceSelect::populateLayerList()
   if ( !mCapabilities.supportedCoverages( coverages ) )
     return;
 
-  QMap<int, QgsNumericSortTreeWidgetItem *> items;
+  QMap<int, QgsTreeWidgetItem *> items;
   QMap<int, int> coverageParents;
   QMap<int, QStringList> coverageParentNames;
   mCapabilities.coverageParents( coverageParents, coverageParentNames );
@@ -83,7 +82,7 @@ void QgsWCSSourceSelect::populateLayerList()
   {
     QgsDebugMsg( QString( "coverage orderId = %1 identifier = %2" ).arg( coverage->orderId ).arg( coverage->identifier ) );
 
-    QgsNumericSortTreeWidgetItem *lItem = createItem( coverage->orderId, QStringList() << coverage->identifier << coverage->title << coverage->abstract, items, coverageAndStyleCount, coverageParents, coverageParentNames );
+    QgsTreeWidgetItem *lItem = createItem( coverage->orderId, QStringList() << coverage->identifier << coverage->title << coverage->abstract, items, coverageAndStyleCount, coverageParents, coverageParentNames );
 
     lItem->setData( 0, Qt::UserRole + 0, coverage->identifier );
     lItem->setData( 0, Qt::UserRole + 1, "" );
@@ -115,13 +114,12 @@ QString QgsWCSSourceSelect::selectedIdentifier()
 
 void QgsWCSSourceSelect::addClicked()
 {
-  QgsDebugMsg( "entered" );
-  QgsDataSourceURI uri = mUri;
+  QgsDataSourceUri uri = mUri;
 
   QString identifier = selectedIdentifier();
   if ( identifier.isEmpty() ) { return; }
 
-  uri.setParam( "identifier", identifier );
+  uri.setParam( QStringLiteral( "identifier" ), identifier );
 
   // Set crs only if necessary (multiple offered), so that we can decide in the
   // provider if WCS 1.0 with RESPONSE_CRS has to be used.  Not perfect, they can
@@ -130,32 +128,31 @@ void QgsWCSSourceSelect::addClicked()
   //       without that param user is asked for CRS
   //if ( selectedLayersCRSs().size() > 1 )
   //{
-  uri.setParam( "crs", selectedCRS() );
+  uri.setParam( QStringLiteral( "crs" ), selectedCrs() );
   //}
 
   QgsDebugMsg( "selectedFormat = " +  selectedFormat() );
   if ( !selectedFormat().isEmpty() )
   {
-    uri.setParam( "format", selectedFormat() );
+    uri.setParam( QStringLiteral( "format" ), selectedFormat() );
   }
 
   QgsDebugMsg( "selectedTime = " +  selectedTime() );
   if ( !selectedTime().isEmpty() )
   {
-    uri.setParam( "time", selectedTime() );
+    uri.setParam( QStringLiteral( "time" ), selectedTime() );
   }
 
   QString cache;
   QgsDebugMsg( QString( "selectedCacheLoadControl = %1" ).arg( selectedCacheLoadControl() ) );
   cache = QgsNetworkAccessManager::cacheLoadControlName( selectedCacheLoadControl() );
-  uri.setParam( "cache", cache );
+  uri.setParam( QStringLiteral( "cache" ), cache );
 
-  emit addRasterLayer( uri.encodedUri(), identifier, "wcs" );
+  emit addRasterLayer( uri.encodedUri(), identifier, QStringLiteral( "wcs" ) );
 }
 
 void QgsWCSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
 {
-  QgsDebugMsg( "entered" );
 
   QString identifier = selectedIdentifier();
   if ( identifier.isEmpty() ) { return; }
@@ -166,7 +163,7 @@ void QgsWCSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
 
   populateFormats();
 
-  populateCRS();
+  populateCrs();
 
   updateButtons();
 
@@ -175,7 +172,6 @@ void QgsWCSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
 
 void QgsWCSSourceSelect::updateButtons()
 {
-  QgsDebugMsg( "entered" );
 
   if ( mLayersTreeWidget->selectedItems().isEmpty() )
   {
@@ -183,18 +179,17 @@ void QgsWCSSourceSelect::updateButtons()
   }
   else
   {
-    if ( selectedCRS().isEmpty() )
+    if ( selectedCrs().isEmpty() )
     {
       showStatusMessage( tr( "No CRS selected" ) );
     }
   }
 
-  mAddButton->setEnabled( !mLayersTreeWidget->selectedItems().isEmpty() && !selectedCRS().isEmpty() && !selectedFormat().isEmpty() );
+  mAddButton->setEnabled( !mLayersTreeWidget->selectedItems().isEmpty() && !selectedCrs().isEmpty() && !selectedFormat().isEmpty() );
 }
 
 QList<QgsWCSSourceSelect::SupportedFormat> QgsWCSSourceSelect::providerFormats()
 {
-  QgsDebugMsg( "entered" );
   QList<SupportedFormat> formats;
 
   QMap<QString, QString> mimes = QgsWcsProvider::supportedMimes();
@@ -203,7 +198,7 @@ QList<QgsWCSSourceSelect::SupportedFormat> QgsWCSSourceSelect::providerFormats()
     SupportedFormat format = { mime, mimes.value( mime ) };
 
     // prefer tiff
-    if ( mime == "image/tiff" )
+    if ( mime == QLatin1String( "image/tiff" ) )
     {
       formats.prepend( format );
     }
@@ -218,7 +213,6 @@ QList<QgsWCSSourceSelect::SupportedFormat> QgsWCSSourceSelect::providerFormats()
 
 QStringList QgsWCSSourceSelect::selectedLayersFormats()
 {
-  QgsDebugMsg( "entered" );
 
   QString identifier = selectedIdentifier();
   if ( identifier.isEmpty() ) { return QStringList(); }
@@ -230,9 +224,8 @@ QStringList QgsWCSSourceSelect::selectedLayersFormats()
   return c.supportedFormat;
 }
 
-QStringList QgsWCSSourceSelect::selectedLayersCRSs()
+QStringList QgsWCSSourceSelect::selectedLayersCrses()
 {
-  QgsDebugMsg( "entered" );
 
   QString identifier = selectedIdentifier();
   if ( identifier.isEmpty() ) { return QStringList(); }
@@ -245,7 +238,6 @@ QStringList QgsWCSSourceSelect::selectedLayersCRSs()
 
 QStringList QgsWCSSourceSelect::selectedLayersTimes()
 {
-  QgsDebugMsg( "entered" );
 
   QString identifier = selectedIdentifier();
   if ( identifier.isEmpty() ) { return QStringList(); }

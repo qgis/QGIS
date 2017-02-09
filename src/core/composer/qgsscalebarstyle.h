@@ -20,10 +20,12 @@
 #include <QIcon>
 #include <QRectF>
 
+#include "qgis_core.h"
+
 class QgsComposerScaleBar;
 class QPainter;
 
-/** \ingroup MapComposer
+/** \ingroup core
  * Abstraction of composer scale bar style. Subclasses draw themselves, have the
 possibility to implement custom labeling and calculate corresponding box size.
 */
@@ -31,7 +33,7 @@ class CORE_EXPORT QgsScaleBarStyle
 {
   public:
     QgsScaleBarStyle( const QgsComposerScaleBar* bar );
-    virtual ~QgsScaleBarStyle();
+    virtual ~QgsScaleBarStyle() = default;
 
     /** Draws the style
      @param p painter object
@@ -39,7 +41,12 @@ class CORE_EXPORT QgsScaleBarStyle
     virtual void draw( QPainter* p, double xOffset = 0 ) const = 0; //to do by every subclass
     virtual void drawLabels( QPainter* p ) const; //default implementation provided
     virtual QRectF calculateBoxSize() const; //default implementation provided
-    virtual QString name() const = 0; //return name of the style
+
+    /**
+     * Get a name for this style.
+     * Needs to be remiplmeented by subclasses.
+     */
+    virtual QString name() const = 0;
 
   private:
     QgsScaleBarStyle(); //default constructor forbidden

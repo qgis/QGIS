@@ -16,15 +16,11 @@
  ***************************************************************************/
 
 #include "qgsdetaileditemwidget.h"
-QgsDetailedItemWidget::QgsDetailedItemWidget( QWidget * parent ) :
-    QWidget( parent )
+QgsDetailedItemWidget::QgsDetailedItemWidget( QWidget * parent )
+    : QWidget( parent )
 
 {
   setupUi( this );
-}
-
-QgsDetailedItemWidget::~QgsDetailedItemWidget()
-{
 }
 
 void QgsDetailedItemWidget::setData( const QgsDetailedItemData& theData )

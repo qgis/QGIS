@@ -40,14 +40,14 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
 
   public:
 
-    enum PAGE
+    enum Page
     {
-      DATABASE,
-      LOCATION,
-      CRS,
-      REGION,
-      MAPSET,
-      FINISH
+      Database,
+      Location,
+      Crs,
+      Region,
+      MapSet,
+      Finish
     };
 
     //! Constructor
@@ -55,7 +55,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
                        QgsGrassPlugin *plugin,
                        QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
-    //! Destructor
+
     ~QgsGrassNewMapset();
 
     //! Next page
@@ -197,7 +197,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     QgsGrassPlugin *mPlugin;
 
     //! Editing is already running
-    static bool mRunning;
+    static bool sRunning;
 
     //! Projection selector
     QgsProjectionSelector *mProjectionSelector;

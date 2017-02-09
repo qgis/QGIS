@@ -18,6 +18,7 @@
 
 #include <QWidgetAction>
 #include <QWidget>
+#include "qgis_gui.h"
 
 class QColor;
 class QSpinBox;
@@ -27,9 +28,9 @@ class QToolButton;
 /** \ingroup gui
  * \class QgsColorWidget
  * A base class for interactive color widgets. Widgets can either allow setting a single component of
- * a color (eg the red or green components), or an entire color. The QgsColorWidget also keeps track of
+ * a color (e.g., the red or green components), or an entire color. The QgsColorWidget also keeps track of
  * any explicitly set hue for the color, so that this information is not lost when the widget is
- * set to a color with an ambiguous hue (eg black or white shades).
+ * set to a color with an ambiguous hue (e.g., black or white shades).
  * \note Added in version 2.5
  */
 
@@ -43,14 +44,14 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      */
     enum ColorComponent
     {
-      Multiple = 0, /*!< widget alters multiple color components */
-      Red, /*!< red component of color */
-      Green, /*!< green component of color */
-      Blue, /*!< blue component of color */
-      Hue, /*!< hue component of color (based on HSV model) */
-      Saturation, /*!< saturation component of color (based on HSV model) */
-      Value, /*!< value component of color (based on HSV model) */
-      Alpha /*!< alpha component (opacity) of color */
+      Multiple = 0, //!< Widget alters multiple color components
+      Red, //!< Red component of color
+      Green, //!< Green component of color
+      Blue, //!< Blue component of color
+      Hue, //!< Hue component of color (based on HSV model)
+      Saturation, //!< Saturation component of color (based on HSV model)
+      Value, //!< Value component of color (based on HSV model)
+      Alpha //!< Alpha component (opacity) of color
     };
 
     /** Construct a new color widget.
@@ -58,8 +59,6 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * @param component color component the widget alters
      */
     QgsColorWidget( QWidget* parent = nullptr, const ColorComponent component = Multiple );
-
-    virtual ~QgsColorWidget();
 
     /** Returns the current color for the widget
      * @returns current widget color
@@ -129,7 +128,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
 
     ColorComponent mComponent;
 
-    /** QColor wipes the hue information when it is ambiguous (eg, for saturation = 0). So
+    /** QColor wipes the hue information when it is ambiguous (e.g., for saturation = 0). So
      * the hue is stored in mExplicit hue to keep it around, as it is useful when modifying colors
      */
     int mExplicitHue;
@@ -145,7 +144,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
     int componentRange( const ColorComponent component ) const;
 
     /** Returns the value of a component of the widget's current color. This method correctly
-     * handles hue values when the color has an ambiguous hue (eg black or white shades)
+     * handles hue values when the color has an ambiguous hue (e.g., black or white shades)
      * @param component color component to return
      * @returns value of color component, or -1 if widget has an invalid color set
      * @see hue
@@ -153,7 +152,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
     int componentValue( const ColorComponent component ) const;
 
     /** Returns the hue for the widget. This may differ from the hue for the QColor returned by color(),
-     * as QColor returns a hue of -1 if the color's hue is ambiguous (eg, if the saturation is zero).
+     * as QColor returns a hue of -1 if the color's hue is ambiguous (e.g., if the saturation is zero).
      * @returns explicitly set hue for widget
      */
     int hue() const;
@@ -202,8 +201,6 @@ class GUI_EXPORT QgsColorWidgetAction: public QWidgetAction
      * @param parent parent widget
      */
     QgsColorWidgetAction( QgsColorWidget* colorWidget, QMenu* menu = nullptr, QWidget *parent = nullptr );
-
-    virtual ~QgsColorWidgetAction();
 
     /** Returns the color widget contained in the widget action.
      */
@@ -328,10 +325,10 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
      */
     void createImages( const QSizeF size );
 
-    /** Creates the hue wheel image*/
+    //! Creates the hue wheel image
     void createWheel();
 
-    /** Creates the inner triangle image*/
+    //! Creates the inner triangle image
     void createTriangle();
 
     /** Sets the widget color based on a point in the widget
@@ -432,7 +429,7 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
 /** \ingroup gui
  * \class QgsColorRampWidget
  * A color ramp widget. This widget consists of an interactive box filled with a color which varies along
- * its length by a single color component (eg, varying saturation from 0 to 100%).
+ * its length by a single color component (e.g., varying saturation from 0 to 100%).
  * \note Added in version 2.5
  */
 
@@ -446,8 +443,8 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
      */
     enum Orientation
     {
-      Horizontal = 0, /*!< horizontal ramp */
-      Vertical /*!< vertical ramp */
+      Horizontal = 0, //!< Horizontal ramp
+      Vertical //!< Vertical ramp
     };
 
     /** Construct a new color ramp widget.
@@ -458,8 +455,6 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
     QgsColorRampWidget( QWidget* parent = nullptr,
                         const ColorComponent component = QgsColorWidget::Red,
                         const Orientation orientation = QgsColorRampWidget::Horizontal );
-
-    virtual ~QgsColorRampWidget();
 
     virtual QSize sizeHint() const override;
     void paintEvent( QPaintEvent* event ) override;
@@ -515,6 +510,7 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
   protected:
 
     virtual void mouseMoveEvent( QMouseEvent *event ) override;
+    virtual void wheelEvent( QWheelEvent* event ) override;
     virtual void mousePressEvent( QMouseEvent *event ) override;
     virtual void keyPressEvent( QKeyEvent * event ) override;
 
@@ -560,8 +556,6 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
      * @param component color component which is controlled by the slider
      */
     QgsColorSliderWidget( QWidget* parent = nullptr, const ColorComponent component = QgsColorWidget::Red );
-
-    virtual ~QgsColorSliderWidget();
 
     virtual void setComponent( const ColorComponent component ) override;
     virtual void setComponentValue( const int value ) override;
@@ -625,8 +619,6 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
      */
     QgsColorTextWidget( QWidget* parent = nullptr );
 
-    virtual ~QgsColorTextWidget();
-
     virtual void setColor( const QColor &color, const bool emitSignals = false ) override;
 
   protected:
@@ -638,10 +630,10 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
      */
     enum ColorTextFormat
     {
-      HexRgb = 0, /*!< \#RRGGBB in hexadecimal */
-      HexRgbA, /*!< \#RRGGBBAA in hexadecimal, with alpha */
-      Rgb, /*!< rgb( r, g, b ) format */
-      Rgba /*!< rgba( r, g, b, a ) format, with alpha */
+      HexRgb = 0, //!< \#RRGGBB in hexadecimal
+      HexRgbA, //!< \#RRGGBBAA in hexadecimal, with alpha
+      Rgb, //!< Rgb( r, g, b ) format
+      Rgba //!< Rgba( r, g, b, a ) format, with alpha
     };
 
     QLineEdit* mLineEdit;
@@ -684,8 +676,6 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
      * @param parent parent QWidget for the widget
      */
     QgsColorPreviewWidget( QWidget* parent = nullptr );
-
-    virtual ~QgsColorPreviewWidget();
 
     void paintEvent( QPaintEvent* event ) override;
     virtual QSize sizeHint() const override;

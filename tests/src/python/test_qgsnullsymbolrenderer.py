@@ -27,10 +27,10 @@ import qgis  # NOQA
 
 import os
 
-from PyQt.QtCore import QSize
+from qgis.PyQt.QtCore import QSize
 
 from qgis.core import (QgsVectorLayer,
-                       QgsMapLayerRegistry,
+                       QgsProject,
                        QgsRectangle,
                        QgsMultiRenderChecker,
                        QgsNullSymbolRenderer,
@@ -52,12 +52,12 @@ class TestQgsNullSymbolRenderer(unittest.TestCase):
         self.iface = get_iface()
         myShpFile = os.path.join(TEST_DATA_DIR, 'polys.shp')
         self.layer = QgsVectorLayer(myShpFile, 'Polys', 'ogr')
-        QgsMapLayerRegistry.instance().addMapLayer(self.layer)
+        QgsProject.instance().addMapLayer(self.layer)
 
         self.renderer = QgsNullSymbolRenderer()
-        self.layer.setRendererV2(self.renderer)
+        self.layer.setRenderer(self.renderer)
 
-        rendered_layers = [self.layer.id()]
+        rendered_layers = [self.layer]
         self.mapsettings = self.iface.mapCanvas().mapSettings()
         self.mapsettings.setOutputSize(QSize(400, 400))
         self.mapsettings.setOutputDpi(96)
@@ -65,7 +65,7 @@ class TestQgsNullSymbolRenderer(unittest.TestCase):
         self.mapsettings.setLayers(rendered_layers)
 
     def tearDown(self):
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        QgsProject.instance().removeAllMapLayers()
 
     def testRender(self):
         # test no features are rendered

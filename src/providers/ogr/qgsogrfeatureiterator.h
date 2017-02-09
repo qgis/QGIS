@@ -17,12 +17,12 @@
 
 #include "qgsfeatureiterator.h"
 #include "qgsogrconnpool.h"
+#include "qgsfields.h"
 
 #include <ogr_api.h>
 
 class QgsOgrFeatureIterator;
 class QgsOgrProvider;
-class QgsOgrAbstractGeometrySimplifier;
 
 class QgsOgrFeatureSource : public QgsAbstractFeatureSource
 {
@@ -40,6 +40,8 @@ class QgsOgrFeatureSource : public QgsAbstractFeatureSource
     QString mSubsetString;
     QTextCodec* mEncoding;
     QgsFields mFields;
+    bool mFirstFieldIsFid;
+    QgsFields mFieldsWithoutFid;
     OGRwkbGeometryType mOgrGeometryTypeFilter;
     QString mDriverName;
 
@@ -54,26 +56,17 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
 
     ~QgsOgrFeatureIterator();
 
-    //! reset the iterator to the starting position
     virtual bool rewind() override;
-
-    //! end of iterating: free the resources / lock
     virtual bool close() override;
 
   protected:
-    //! fetch next feature, return true on success
     virtual bool fetchFeature( QgsFeature& feature ) override;
-
-    //! Setup the simplification of geometries to fetch using the specified simplify method
-    virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod ) override;
-
-    //! fetch next feature filter expression
     bool nextFeatureFilterExpression( QgsFeature& f ) override;
 
-    bool readFeature( OGRFeatureH fet, QgsFeature& feature );
+    bool readFeature( OGRFeatureH fet, QgsFeature& feature ) const;
 
     //! Get an attribute associated with a feature
-    void getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature & f, int attindex );
+    void getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature & f, int attindex ) const;
 
     bool mFeatureFetched;
 
@@ -86,13 +79,11 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
     bool mFetchGeometry;
 
   private:
-    //! optional object to simplify OGR-geometries fecthed by this feature iterator
-    QgsOgrAbstractGeometrySimplifier* mGeometrySimplifier;
-
     bool mExpressionCompiled;
+    QgsFeatureIds mFilterFids;
+    QgsFeatureIds::const_iterator mFilterFidsIt;
 
-    //! returns whether the iterator supports simplify geometries on provider side
-    virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const override;
+    bool fetchFeatureWithId( QgsFeatureId id, QgsFeature& feature ) const;
 };
 
 #endif // QGSOGRFEATUREITERATOR_H

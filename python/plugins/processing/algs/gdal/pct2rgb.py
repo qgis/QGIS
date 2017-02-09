@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -27,7 +29,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.tools.system import isWindows
@@ -55,7 +57,7 @@ class pct2rgb(GdalAlgorithm):
                                           self.tr('Input layer'), False))
         options = []
         for i in range(25):
-            options.append(unicode(i + 1))
+            options.append(str(i + 1))
         self.addParameter(ParameterSelection(pct2rgb.NBAND,
                                              self.tr('Band to convert'), options))
         self.addOutput(OutputRaster(pct2rgb.OUTPUT, self.tr('PCT to RGB')))
@@ -63,7 +65,7 @@ class pct2rgb(GdalAlgorithm):
     def getConsoleCommands(self):
         arguments = []
         arguments.append('-b')
-        arguments.append(unicode(self.getParameterValue(pct2rgb.NBAND) + 1))
+        arguments.append(str(self.getParameterValue(pct2rgb.NBAND) + 1))
         arguments.append('-of')
         out = self.getOutputValue(pct2rgb.OUTPUT)
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))

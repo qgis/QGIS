@@ -18,33 +18,30 @@
 #ifndef QGSCOMPOSERLEGEND_H
 #define QGSCOMPOSERLEGEND_H
 
-#include "qgscomposerlegendstyle.h"
+#include "qgis_core.h"
 #include "qgscomposeritem.h"
-#include "qgscomposerlegenditem.h"
 #include "qgslayertreemodel.h"
-#include "qgslegendmodel.h"
 #include "qgslegendsettings.h"
 
 class QgsLayerTreeModel;
-class QgsSymbolV2;
-class QgsComposerGroupItem;
-class QgsComposerLayerItem;
+class QgsSymbol;
 class QgsComposerMap;
 class QgsLegendRenderer;
 
 
-/** \ingroup MapComposer
+/** \ingroup core
  * Item model implementation based on layer tree model for composer legend.
  * Overrides some functionality of QgsLayerTreeModel to better fit the needs of composer legend.
  *
  * @note added in 2.6
  */
-class CORE_EXPORT QgsLegendModelV2 : public QgsLayerTreeModel
+class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
 {
     Q_OBJECT
 
   public:
-    QgsLegendModelV2( QgsLayerTreeGroup* rootNode, QObject *parent = nullptr );
+    //! Construct the model based on the given layer tree
+    QgsLegendModel( QgsLayerTreeGroup* rootNode, QObject *parent = nullptr );
 
     QVariant data( const QModelIndex& index, int role ) const override;
 
@@ -52,7 +49,7 @@ class CORE_EXPORT QgsLegendModelV2 : public QgsLayerTreeModel
 };
 
 
-/** \ingroup MapComposer
+/** \ingroup core
  * A legend that can be placed onto a map composition
  */
 class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
@@ -63,24 +60,37 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     QgsComposerLegend( QgsComposition* composition );
     ~QgsComposerLegend();
 
-    /** Return correct graphics item type. */
+    //! Return correct graphics item type.
     virtual int type() const override { return ComposerLegend; }
 
-    /** \brief Reimplementation of QCanvasItem::paint*/
+    //! \brief Reimplementation of QCanvasItem::paint
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
-    /** Paints the legend and calculates its size. If painter is 0, only size is calculated*/
+    //! Paints the legend and calculates its size. If painter is 0, only size is calculated
     QSizeF paintAndDetermineSize( QPainter* painter );
 
-    /** Sets item box to the whole content*/
+    //! Sets item box to the whole content
     void adjustBoxSize();
 
-    /** Returns pointer to the legend model*/
-    //! @deprecated in 2.6 - use modelV2()
-    Q_DECL_DEPRECATED QgsLegendModel* model() {return &mLegendModel;}
+    /** Sets whether the legend should automatically resize to fit its contents.
+     * @param enabled set to false to disable automatic resizing. The legend frame will not
+     * be expanded to fit legend items, and items may be cropped from display.
+     * @see resizeToContents()
+     * @note added in QGIS 3.0
+     */
+    void setResizeToContents( bool enabled );
 
-    //! @note added in 2.6
-    QgsLegendModelV2* modelV2() { return mLegendModel2; }
+    /** Returns whether the legend should automatically resize to fit its contents.
+     * @see setResizeToContents()
+     * @note added in QGIS 3.0
+     */
+    bool resizeToContents() const;
+
+
+    /**
+     * Returns the legend model
+     */
+    QgsLegendModel* model() { return mLegendModel; }
 
     //! @note added in 2.6
     void setAutoUpdateModel( bool autoUpdate );
@@ -118,6 +128,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
      * @see setTitleAlignment
      */
     Qt::AlignmentFlag titleAlignment() const;
+
     /** Sets the alignment of the legend title
      * @param alignment Text alignment for drawing the legend title
      * @note added in 2.3
@@ -125,19 +136,32 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
      */
     void setTitleAlignment( Qt::AlignmentFlag alignment );
 
-    /** Returns reference to modifiable style */
-    QgsComposerLegendStyle & rstyle( QgsComposerLegendStyle::Style s );
-    /** Returns style */
-    QgsComposerLegendStyle style( QgsComposerLegendStyle::Style s ) const;
-    void setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle& style );
+    //! Returns reference to modifiable style
+    QgsLegendStyle & rstyle( QgsLegendStyle::Style s );
+    //! Returns style
+    QgsLegendStyle style( QgsLegendStyle::Style s ) const;
+    void setStyle( QgsLegendStyle::Style s, const QgsLegendStyle& style );
 
-    QFont styleFont( QgsComposerLegendStyle::Style s ) const;
-    /** Set style font */
-    void setStyleFont( QgsComposerLegendStyle::Style s, const QFont& f );
+    QFont styleFont( QgsLegendStyle::Style s ) const;
+    //! Set style font
+    void setStyleFont( QgsLegendStyle::Style s, const QFont& f );
 
-    /** Set style margin*/
-    void setStyleMargin( QgsComposerLegendStyle::Style s, double margin );
-    void setStyleMargin( QgsComposerLegendStyle::Style s, QgsComposerLegendStyle::Side side, double margin );
+    //! Set style margin
+    void setStyleMargin( QgsLegendStyle::Style s, double margin );
+    void setStyleMargin( QgsLegendStyle::Style s, QgsLegendStyle::Side side, double margin );
+
+    /** Returns the spacing in-between lines in mm
+     * @note added in 3.0
+     * @see setLineSpacing
+     */
+    double lineSpacing() const;
+
+    /** Sets the spacing in-between multiple lines
+     * @param spacing Double value to use as spacing in between multiple lines
+     * @note added in 3.0
+     * @see lineSpacing
+     */
+    void setLineSpacing( double spacing );
 
     double boxSpace() const;
     void setBoxSpace( double s );
@@ -230,32 +254,41 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void setComposerMap( const QgsComposerMap* map );
     const QgsComposerMap* composerMap() const { return mComposerMap;}
 
-    /** Updates the model and all legend entries*/
+    //! Updates the model and all legend entries
     void updateLegend();
 
     /** Stores state in Dom node
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc Dom document
        */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
 
     /** Sets state from Dom document
        * @param itemElem is Dom node corresponding to item tag
        * @param doc is Dom document
        */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     //Overridden to show legend title
     virtual QString displayName() const override;
 
+    /**
+     * Returns the legend's renderer settings object.
+     * @note added in QGIS 3.0
+     */
+    const QgsLegendSettings& legendSettings() const { return mSettings; }
+
   public slots:
-    /** Data changed*/
+    //! Data changed
     void synchronizeWithModel();
-    /** Sets mCompositionMap to 0 if the map is deleted*/
+    //! Sets mCompositionMap to 0 if the map is deleted
     void invalidateCurrentMap();
 
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = nullptr ) override;
+
+
   private slots:
-    void updateFilterByMap();
+    void updateFilterByMap( bool redraw = true );
 
     //! update legend in case style of associated map has changed
     void mapLayerStyleOverridesChanged();
@@ -272,12 +305,13 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     //! use new custom layer tree and update model. if new root is null pointer, will use project's tree
     void setCustomLayerTree( QgsLayerTreeGroup* rootGroup );
 
-    QgsLegendModel mLegendModel;
-
-    QgsLegendModelV2* mLegendModel2;
+    QgsLegendModel* mLegendModel;
     QgsLayerTreeGroup* mCustomLayerTree;
 
     QgsLegendSettings mSettings;
+
+    QString mTitle;
+    int mColumnCount = 1;
 
     const QgsComposerMap* mComposerMap;
 
@@ -293,6 +327,15 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void doUpdateFilterByMap();
 
     bool mInAtlas;
+
+    //! Will be false until the associated map scale and DPI have been calculated
+    bool mInitialMapScaleCalculated;
+
+    //! Will be true if the legend size should be totally reset at next paint
+    bool mForceResize;
+
+    //! Will be true if the legend should be resized automatically to fit contents
+    bool mSizeToContents;
 };
 
 #endif

@@ -12,11 +12,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgsvectordataprovider.h"
 #include "qgsfieldcalculator.h"
@@ -72,33 +73,32 @@ void TestQgsFieldCalculator::testLengthCalculations()
   //test length calculation respects ellipsoid and project distance units
 
   //create a temporary layer
-  QScopedPointer< QgsVectorLayer> tempLayer( new QgsVectorLayer( "LineString?crs=epsg:3111&field=pk:int&field=col1:double", "vl", "memory" ) );
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
   QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
-  f1.setAttribute( "pk", 1 );
-  f1.setAttribute( "col1", 0.0 );
+  f1.setAttribute( QStringLiteral( "pk" ), 1 );
+  f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
   QgsPolyline line3111;
   line3111 << QgsPoint( 2484588, 2425722 ) << QgsPoint( 2482767, 2398853 );
-  f1.setGeometry( QgsGeometry::fromPolyline( line3111 ) );
+  QgsGeometry line3111G = QgsGeometry::fromPolyline( line3111 ) ;
+  f1.setGeometry( line3111G );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
   // set project CRS and ellipsoid
   QgisApp::instance()->mapCanvas()->setCrsTransformEnabled( true );
   QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", srs.toProj4() );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSID", ( int ) srs.srsid() );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCrs", srs.authid() );
-  QgsProject::instance()->writeEntry( "Measure", "/Ellipsoid", QString( "WGS84" ) );
-  QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( QGis::Meters ) );
+  QgsProject::instance()->setCrs( srs );
+  QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
+  QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceMeters );
 
   // run length calculation
   tempLayer->startEditing();
-  QScopedPointer< QgsFieldCalculator > calc( new QgsFieldCalculator( tempLayer.data() ) );
+  std::unique_ptr< QgsFieldCalculator > calc( new QgsFieldCalculator( tempLayer.get() ) );
 
   // this next part is fragile, and may need to be modified if the dialog changes:
   calc->mUpdateExistingGroupBox->setChecked( true );
   calc->mExistingFieldComboBox->setCurrentIndex( 1 );
-  calc->builder->setExpressionText( "$length" );
+  calc->builder->setExpressionText( QStringLiteral( "$length" ) );
   calc->accept();
 
   tempLayer->commitChanges();
@@ -111,12 +111,12 @@ void TestQgsFieldCalculator::testLengthCalculations()
   QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 0.001 ) );
 
   // change project length unit, check calculation respects unit
-  QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( QGis::Feet ) );
+  QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceFeet );
   tempLayer->startEditing();
-  QScopedPointer< QgsFieldCalculator > calc2( new QgsFieldCalculator( tempLayer.data() ) );
+  std::unique_ptr< QgsFieldCalculator > calc2( new QgsFieldCalculator( tempLayer.get() ) );
   calc2->mUpdateExistingGroupBox->setChecked( true );
   calc2->mExistingFieldComboBox->setCurrentIndex( 1 );
-  calc2->builder->setExpressionText( "$length" );
+  calc2->builder->setExpressionText( QStringLiteral( "$length" ) );
   calc2->accept();
   tempLayer->commitChanges();
   // check result
@@ -132,36 +132,35 @@ void TestQgsFieldCalculator::testAreaCalculations()
   //test area calculation respects ellipsoid and project area units
 
   //create a temporary layer
-  QScopedPointer< QgsVectorLayer> tempLayer( new QgsVectorLayer( "Polygon?crs=epsg:3111&field=pk:int&field=col1:double", "vl", "memory" ) );
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
   QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
-  f1.setAttribute( "pk", 1 );
-  f1.setAttribute( "col1", 0.0 );
+  f1.setAttribute( QStringLiteral( "pk" ), 1 );
+  f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
 
   QgsPolyline polygonRing3111;
   polygonRing3111 << QgsPoint( 2484588, 2425722 ) << QgsPoint( 2482767, 2398853 ) << QgsPoint( 2520109, 2397715 ) << QgsPoint( 2520792, 2425494 ) << QgsPoint( 2484588, 2425722 );
   QgsPolygon polygon3111;
   polygon3111 << polygonRing3111;
-  f1.setGeometry( QgsGeometry::fromPolygon( polygon3111 ) );
+  QgsGeometry polygon3111G = QgsGeometry::fromPolygon( polygon3111 ) ;
+  f1.setGeometry( polygon3111G );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
   // set project CRS and ellipsoid
   QgisApp::instance()->mapCanvas()->setCrsTransformEnabled( true );
   QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", srs.toProj4() );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSID", ( int ) srs.srsid() );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCrs", srs.authid() );
-  QgsProject::instance()->writeEntry( "Measure", "/Ellipsoid", QString( "WGS84" ) );
-  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::SquareMeters ) );
+  QgsProject::instance()->setCrs( srs );
+  QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
+  QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMeters );
 
   // run area calculation
   tempLayer->startEditing();
-  QScopedPointer< QgsFieldCalculator > calc( new QgsFieldCalculator( tempLayer.data() ) );
+  std::unique_ptr< QgsFieldCalculator > calc( new QgsFieldCalculator( tempLayer.get() ) );
 
   // this next part is fragile, and may need to be modified if the dialog changes:
   calc->mUpdateExistingGroupBox->setChecked( true );
   calc->mExistingFieldComboBox->setCurrentIndex( 1 );
-  calc->builder->setExpressionText( "$area" );
+  calc->builder->setExpressionText( QStringLiteral( "$area" ) );
   calc->accept();
 
   tempLayer->commitChanges();
@@ -174,12 +173,12 @@ void TestQgsFieldCalculator::testAreaCalculations()
   QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 1.0 ) );
 
   // change project area unit, check calculation respects unit
-  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::SquareMiles ) );
+  QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMiles );
   tempLayer->startEditing();
-  QScopedPointer< QgsFieldCalculator > calc2( new QgsFieldCalculator( tempLayer.data() ) );
+  std::unique_ptr< QgsFieldCalculator > calc2( new QgsFieldCalculator( tempLayer.get() ) );
   calc2->mUpdateExistingGroupBox->setChecked( true );
   calc2->mExistingFieldComboBox->setCurrentIndex( 1 );
-  calc2->builder->setExpressionText( "$area" );
+  calc2->builder->setExpressionText( QStringLiteral( "$area" ) );
   calc2->accept();
   tempLayer->commitChanges();
   // check result
@@ -189,5 +188,5 @@ void TestQgsFieldCalculator::testAreaCalculations()
   QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 0.001 ) );
 }
 
-QTEST_MAIN( TestQgsFieldCalculator )
+QGSTEST_MAIN( TestQgsFieldCalculator )
 #include "testqgsfieldcalculator.moc"

@@ -112,7 +112,7 @@
           <item>
            <widget class="QGroupBox" name="groupBox_2">
             <property name="title">
-             <string>Geometry validity:</string>
+             <string>Geometry validity</string>
             </property>
             <property name="flat">
              <bool>true</bool>
@@ -169,7 +169,7 @@
           <item>
            <widget class="QGroupBox" name="groupBoxGeometryTypes">
             <property name="title">
-             <string>Allowed geometry types:</string>
+             <string>Allowed geometry types</string>
             </property>
             <property name="flat">
              <bool>true</bool>
@@ -238,7 +238,7 @@
           <item>
            <widget class="QGroupBox" name="groupBoxGeometryProperties">
             <property name="title">
-             <string>Geometry properties:</string>
+             <string>Geometry properties</string>
             </property>
             <property name="flat">
              <bool>true</bool>
@@ -279,7 +279,7 @@
           <item>
            <widget class="QGroupBox" name="groupBoxGeometryConditions">
             <property name="title">
-             <string>Geometry conditions:</string>
+             <string>Geometry conditions</string>
             </property>
             <property name="flat">
              <bool>true</bool>
@@ -313,14 +313,14 @@
              <item row="1" column="0">
               <widget class="QCheckBox" name="checkBoxAngle">
                <property name="text">
-                <string>Minimum angle between segments (deg):</string>
+                <string>Minimum angle between segments (deg)</string>
                </property>
               </widget>
              </item>
              <item row="0" column="0">
               <widget class="QCheckBox" name="checkBoxSegmentLength">
                <property name="text">
-                <string>Minimal segment length (map units):</string>
+                <string>Minimal segment length (map units)</string>
                </property>
               </widget>
              </item>
@@ -347,14 +347,14 @@
              <item row="2" column="0">
               <widget class="QCheckBox" name="checkBoxArea">
                <property name="text">
-                <string>Minimal polygon area (map units sqr.):</string>
+                <string>Minimal polygon area (map units sqr.)</string>
                </property>
               </widget>
              </item>
              <item row="3" column="0">
               <widget class="QCheckBox" name="checkBoxSliverPolygons">
                <property name="text">
-                <string>No sliver polygons:</string>
+                <string>No sliver polygons</string>
                </property>
               </widget>
              </item>
@@ -401,7 +401,7 @@
                    </sizepolicy>
                   </property>
                   <property name="text">
-                   <string>Maximum thinness:</string>
+                   <string>Maximum thinness</string>
                   </property>
                  </widget>
                 </item>
@@ -437,7 +437,7 @@
                 <item row="1" column="0" colspan="2">
                  <widget class="QCheckBox" name="checkBoxSliverArea">
                   <property name="text">
-                   <string>Max. area (map units sqr.):</string>
+                   <string>Max. area (map units sqr.)</string>
                   </property>
                  </widget>
                 </item>
@@ -450,7 +450,7 @@
           <item>
            <widget class="QGroupBox" name="groupBoxTopology">
             <property name="title">
-             <string>Topology checks:</string>
+             <string>Topology checks</string>
             </property>
             <property name="flat">
              <bool>true</bool>
@@ -490,7 +490,7 @@
                 </sizepolicy>
                </property>
                <property name="text">
-                <string>Check for overlaps smaller than (map units sqr.):</string>
+                <string>Check for overlaps smaller than (map units sqr.)</string>
                </property>
               </widget>
              </item>
@@ -503,7 +503,7 @@
                 </sizepolicy>
                </property>
                <property name="text">
-                <string>Check for gaps smaller than (map units sqr.):</string>
+                <string>Check for gaps smaller than (map units sqr.)</string>
                </property>
               </widget>
              </item>
@@ -561,7 +561,7 @@
             <item>
              <widget class="QLabel" name="labelTolerance">
               <property name="text">
-               <string>Tolerance:</string>
+               <string>Tolerance</string>
               </property>
              </widget>
             </item>
@@ -615,7 +615,7 @@
               <number>2</number>
              </property>
              <item row="0" column="0">
-              <widget class="QRadioButton" name="radioButtonOuputModifyInput">
+              <widget class="QRadioButton" name="radioButtonOutputModifyInput">
                <property name="text">
                 <string>&amp;Modify input layer</string>
                </property>
@@ -754,7 +754,7 @@
   <tabstop>checkBoxGaps</tabstop>
   <tabstop>doubleSpinBoxGapArea</tabstop>
   <tabstop>spinBoxTolerance</tabstop>
-  <tabstop>radioButtonOuputModifyInput</tabstop>
+  <tabstop>radioButtonOutputModifyInput</tabstop>
   <tabstop>radioButtonOutputNew</tabstop>
   <tabstop>lineEditOutput</tabstop>
   <tabstop>pushButtonOutputBrowse</tabstop>

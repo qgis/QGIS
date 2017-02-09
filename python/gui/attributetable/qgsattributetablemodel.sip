@@ -126,7 +126,7 @@ class QgsAttributeTableModel : QAbstractTableModel
     /**
      * Execute an action
      */
-    void executeAction( int action, const QModelIndex &idx ) const;
+    void executeAction( const QString& action, const QModelIndex &idx ) const;
 
     /**
      * Execute a QgsMapLayerAction
@@ -149,6 +149,19 @@ class QgsAttributeTableModel : QAbstractTableModel
     void prefetchColumnData( int column );
 
     /**
+     * Prefetches the entire data for one expression. Based on this cached information
+     * the sorting can later be done in a performant way.
+     *
+     * @param expression The expression to cache
+     */
+    void prefetchSortData( const QString& expression );
+
+    /**
+     * The expression which was used to fill the sorting cache
+     */
+    QString sortCacheExpression() const;
+
+    /**
      * Set a request that will be used to fill this attribute table model.
      * In contrast to a filter, the request will constrain the data shown without the possibility
      * to dynamically adjust it.
@@ -160,7 +173,7 @@ class QgsAttributeTableModel : QAbstractTableModel
     /**
      * Get the the feature request
      */
-    const QgsFeatureRequest &request() const;
+    const QgsFeatureRequest& request() const;
 
     /**
      * Sets the context in which this table is shown.
@@ -177,6 +190,18 @@ class QgsAttributeTableModel : QAbstractTableModel
      * @return The context
      */
     const QgsAttributeEditorContext& editorContext() const;
+
+    /**
+     * Empty extra columns to announce from this model.
+     * Any extra columns need to be implemented by proxy models in front of this model.
+     */
+    int extraColumns() const;
+
+    /**
+     * Empty extra columns to announce from this model.
+     * Any extra columns need to be implemented by proxy models in front of this model.
+     */
+    void setExtraColumns( int extraColumns );
 
   public slots:
 
@@ -201,34 +226,4 @@ class QgsAttributeTableModel : QAbstractTableModel
     //! @note not available in python bindings
     // void progress( int i, bool &cancel );
     void finished();
-
-  protected slots:
-    /**
-     * Launched when attribute value has been changed
-     * @param fid feature id
-     * @param idx attribute index
-     * @param value new value
-     */
-    virtual void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
-    /**
-     * Launched when eatures have been deleted
-     * @param fids feature ids
-     */
-    virtual void featuresDeleted( const QgsFeatureIds& fid );
-    /**
-     * Launched when a feature has been added
-     * @param fid feature id
-     */
-    virtual void featureAdded( QgsFeatureId fid );
-
-    /**
-     * Launched when layer has been deleted
-     */
-    virtual void layerDeleted();
-
-  protected:
-    /**
-      * Gets mFieldCount, mAttributes and mValueMaps
-      */
-    virtual void loadAttributes();
 };

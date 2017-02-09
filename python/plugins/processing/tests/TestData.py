@@ -26,54 +26,17 @@ __copyright__ = '(C) 2013, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os.path
-from processing.tools import dataobjects
 
-dataFolder = os.path.join(os.path.dirname(__file__), 'data')
+testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 
 
 def table():
-    return os.path.join(dataFolder, 'table.dbf')
+    return os.path.join(testDataPath, 'table.dbf')
 
 
 def points():
-    return os.path.join(dataFolder, 'points.shp')
+    return os.path.join(testDataPath, 'points.gml')
 
 
-def points2():
-    return os.path.join(dataFolder, 'points2.shp')
-
-
-def raster():
-    return os.path.join(dataFolder, 'raster.tif')
-
-
-def lines():
-    return os.path.join(dataFolder, 'lines.shp')
-
-
-def polygons():
-    return os.path.join(dataFolder, 'polygons.shp')
-
-
-def polygons2():
-    return os.path.join(dataFolder, 'polygons2.shp')
-
-
-def polygonsGeoJson():
-    return os.path.join(dataFolder, 'polygons.geojson')
-
-
-def union():
-    return os.path.join(dataFolder, 'union.shp')
-
-
-def loadTestData():
-    dataobjects.load(points(), 'points')
-    dataobjects.load(points2(), 'points2')
-    dataobjects.load(polygons(), 'polygons')
-    dataobjects.load(polygons2(), 'polygons2')
-    dataobjects.load(polygonsGeoJson(), 'polygonsGeoJson')
-    dataobjects.load(lines(), 'lines')
-    dataobjects.load(raster(), 'raster')
-    dataobjects.load(table(), 'table')
-    dataobjects.load(union(), 'union')
+def invalid_geometries():
+    return os.path.join(testDataPath, 'invalidgeometries.gml')

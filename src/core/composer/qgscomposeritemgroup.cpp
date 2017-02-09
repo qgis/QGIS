@@ -36,7 +36,7 @@ QgsComposerItemGroup::~QgsComposerItemGroup()
   //loop through group members and remove them from the scene
   Q_FOREACH ( QgsComposerItem* item, mItems )
   {
-    if ( !item )
+    if ( !item || item->isRemoved() )
       continue;
 
     //inform model that we are about to remove an item from the scene
@@ -174,43 +174,43 @@ void QgsComposerItemGroup::drawFrame( QPainter* p )
   }
 }
 
-bool QgsComposerItemGroup::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerItemGroup::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
-  QDomElement group = doc.createElement( "ComposerItemGroup" );
+  QDomElement group = doc.createElement( QStringLiteral( "ComposerItemGroup" ) );
 
   QSet<QgsComposerItem*>::const_iterator itemIt = mItems.begin();
   for ( ; itemIt != mItems.end(); ++itemIt )
   {
-    QDomElement item = doc.createElement( "ComposerItemGroupElement" );
-    item.setAttribute( "uuid", ( *itemIt )->uuid() );
+    QDomElement item = doc.createElement( QStringLiteral( "ComposerItemGroupElement" ) );
+    item.setAttribute( QStringLiteral( "uuid" ), ( *itemIt )->uuid() );
     group.appendChild( item );
   }
 
   elem.appendChild( group );
 
-  return _writeXML( group, doc );
+  return _writeXml( group, doc );
 }
 
-bool QgsComposerItemGroup::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerItemGroup::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   //restore general composer item properties
-  QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
+  QDomNodeList composerItemList = itemElem.elementsByTagName( QStringLiteral( "ComposerItem" ) );
   if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
-    _readXML( composerItemElem, doc );
+    _readXml( composerItemElem, doc );
   }
 
   QList<QGraphicsItem *> items = mComposition->items();
 
-  QDomNodeList elementNodes = itemElem.elementsByTagName( "ComposerItemGroupElement" );
+  QDomNodeList elementNodes = itemElem.elementsByTagName( QStringLiteral( "ComposerItemGroupElement" ) );
   for ( int i = 0; i < elementNodes.count(); ++i )
   {
     QDomNode elementNode = elementNodes.at( i );
     if ( !elementNode.isElement() )
       continue;
 
-    QString uuid = elementNode.toElement().attribute( "uuid" );
+    QString uuid = elementNode.toElement().attribute( QStringLiteral( "uuid" ) );
 
     for ( QList<QGraphicsItem *>::iterator it = items.begin(); it != items.end(); ++it )
     {

@@ -38,7 +38,7 @@ class QgsTileScaleWidget : public QWidget, private Ui::QgsTileScaleWidget
     void scaleEnabled( bool );
 
   private:
-    QgsTileScaleWidget( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+    QgsTileScaleWidget( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsTileScaleWidget();
 
     QgsMapCanvas *mMapCanvas;

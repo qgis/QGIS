@@ -18,10 +18,13 @@ email                : lrssvtml (at) gmail (dot) com
  ***************************************************************************/
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
-from PyQt.QtCore import Qt, QObject, QEvent, QSettings, QCoreApplication, QFileInfo, QSize
-from PyQt.QtGui import QFont, QFontMetrics, QColor, QKeySequence, QCursor
-from PyQt.QtWidgets import QShortcut, QMenu, QApplication, QWidget, QGridLayout, QSpacerItem, QSizePolicy, QFileDialog, QTabWidget, QTreeWidgetItem, QFrame, QLabel, QToolButton, QMessageBox
-from PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs, QsciStyle
+from __future__ import print_function
+from builtins import str
+from builtins import range
+from qgis.PyQt.QtCore import Qt, QObject, QEvent, QSettings, QCoreApplication, QFileInfo, QSize
+from qgis.PyQt.QtGui import QFont, QFontMetrics, QColor, QKeySequence, QCursor
+from qgis.PyQt.QtWidgets import QShortcut, QMenu, QApplication, QWidget, QGridLayout, QSpacerItem, QSizePolicy, QFileDialog, QTabWidget, QTreeWidgetItem, QFrame, QLabel, QToolButton, QMessageBox
+from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs, QsciStyle
 from qgis.core import QgsApplication
 from qgis.gui import QgsMessageBar
 import sys
@@ -47,7 +50,7 @@ class KeyFilter(QObject):
         self.window = window
         self.tab = tab
         self._handlers = {}
-        for shortcut, handler in KeyFilter.SHORTCUTS.items():
+        for shortcut, handler in list(KeyFilter.SHORTCUTS.items()):
             modifiers = shortcut[0]
             if not isinstance(modifiers, list):
                 modifiers = [modifiers]
@@ -165,7 +168,7 @@ class Editor(QsciScintilla):
         self.newShortcutCS.activated.connect(self.autoCompleteKeyBinding)
         self.runScut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_E), self)
         self.runScut.setContext(Qt.WidgetShortcut)
-        self.runScut.activated.connect(self.runSelectedCode)
+        self.runScut.activated.connect(self.runSelectedCode)  # spellok
         self.runScriptScut = QShortcut(QKeySequence(Qt.SHIFT + Qt.CTRL + Qt.Key_E), self)
         self.runScriptScut.setContext(Qt.WidgetShortcut)
         self.runScriptScut.activated.connect(self.runScriptCode)
@@ -255,12 +258,12 @@ class Editor(QsciScintilla):
             self.lexer.setPaper(paperColor, style)
 
         self.api = QsciAPIs(self.lexer)
-        chekBoxAPI = self.settings.value("pythonConsole/preloadAPI", True, type=bool)
-        chekBoxPreparedAPI = self.settings.value("pythonConsole/usePreparedAPIFile", False, type=bool)
-        if chekBoxAPI:
+        checkBoxAPI = self.settings.value("pythonConsole/preloadAPI", True, type=bool)
+        checkBoxPreparedAPI = self.settings.value("pythonConsole/usePreparedAPIFile", False, type=bool)
+        if checkBoxAPI:
             pap = os.path.join(QgsApplication.pkgDataPath(), "python", "qsci_apis", "pyqgis.pap")
             self.api.loadPrepared(pap)
-        elif chekBoxPreparedAPI:
+        elif checkBoxPreparedAPI:
             self.api.loadPrepared(self.settings.value("pythonConsole/preparedAPIFile"))
         else:
             apiPath = self.settings.value("pythonConsole/userAPI", [])
@@ -294,9 +297,9 @@ class Editor(QsciScintilla):
         iconFind = QgsApplication.getThemeIcon("console/iconSearchEditorConsole.png")
         iconSyntaxCk = QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.png")
         iconObjInsp = QgsApplication.getThemeIcon("console/iconClassBrowserConsole.png")
-        iconCut = QgsApplication.getThemeIcon("mActionEditCut.png")
-        iconCopy = QgsApplication.getThemeIcon("mActionEditCopy.png")
-        iconPaste = QgsApplication.getThemeIcon("mActionEditPaste.png")
+        iconCut = QgsApplication.getThemeIcon("mActionEditCut.svg")
+        iconCopy = QgsApplication.getThemeIcon("mActionEditCopy.svg")
+        iconPaste = QgsApplication.getThemeIcon("mActionEditPaste.svg")
         menu.addAction(
             QCoreApplication.translate("PythonConsole", "Hide Editor"),
             self.hideEditor)
@@ -304,9 +307,9 @@ class Editor(QsciScintilla):
         syntaxCheck = menu.addAction(iconSyntaxCk,
                                      QCoreApplication.translate("PythonConsole", "Check Syntax"),
                                      self.syntaxCheck, 'Ctrl+4')
-        runSelected = menu.addAction(iconRun,
+        runSelected = menu.addAction(iconRun,  # spellok
                                      QCoreApplication.translate("PythonConsole", "Run Selected"),
-                                     self.runSelectedCode, 'Ctrl+E')
+                                     self.runSelectedCode, 'Ctrl+E')  # spellok
         menu.addAction(iconRunScript,
                        QCoreApplication.translate("PythonConsole", "Run Script"),
                        self.runScriptCode, 'Shift+Ctrl+E')
@@ -355,14 +358,14 @@ class Editor(QsciScintilla):
         pasteAction.setEnabled(False)
         codePadAction.setEnabled(False)
         cutAction.setEnabled(False)
-        runSelected.setEnabled(False)
+        runSelected.setEnabled(False)  # spellok
         copyAction.setEnabled(False)
         selectAllAction.setEnabled(False)
         undoAction.setEnabled(False)
         redoAction.setEnabled(False)
         showCodeInspection.setEnabled(False)
         if self.hasSelectedText():
-            runSelected.setEnabled(True)
+            runSelected.setEnabled(True)  # spellok
             copyAction.setEnabled(True)
             cutAction.setEnabled(True)
             codePadAction.setEnabled(True)
@@ -528,10 +531,10 @@ class Editor(QsciScintilla):
         try:
             ## set creationflags for running command without shell window
             if sys.platform.startswith('win'):
-                p = subprocess.Popen(['python', filename], shell=False, stdin=subprocess.PIPE,
+                p = subprocess.Popen(['python3', filename], shell=False, stdin=subprocess.PIPE,
                                      stderr=subprocess.PIPE, stdout=subprocess.PIPE, creationflags=0x08000000)
             else:
-                p = subprocess.Popen(['python', filename], shell=False, stdin=subprocess.PIPE,
+                p = subprocess.Popen(['python3', filename], shell=False, stdin=subprocess.PIPE,
                                      stderr=subprocess.PIPE, stdout=subprocess.PIPE)
             out, _traceback = p.communicate()
 
@@ -594,10 +597,10 @@ class Editor(QsciScintilla):
                 tmpFile = self.createTempFile()
                 filename = tmpFile
 
-            self.parent.pc.shell.runCommand(u"execfile(u'{0}'.encode('{1}'))"
+            self.parent.pc.shell.runCommand(u"exec(open(u'{0}'.encode('{1}')).read())"
                                             .format(filename.replace("\\", "/"), sys.getfilesystemencoding()))
 
-    def runSelectedCode(self):
+    def runSelectedCode(self):  # spellok
         cmd = self.selectedText()
         self.parent.pc.shell.insertFromDropPaste(cmd)
         self.parent.pc.shell.entered()
@@ -633,7 +636,8 @@ class Editor(QsciScintilla):
                 source = source.encode('utf-8')
             if isinstance(filename, type(u"")):
                 filename = filename.encode('utf-8')
-            compile(source, filename, 'exec')
+            if filename:
+                compile(source, filename, 'exec')
         except SyntaxError as detail:
             eline = detail.lineno and detail.lineno or 1
             ecolumn = detail.offset and detail.offset or 1
@@ -754,8 +758,8 @@ class EditorTab(QWidget):
         self.path = None
         self.readOnly = readOnly
 
-        self.fileExcuteList = {}
-        self.fileExcuteList = dict()
+        self.fileExecuteList = {}
+        self.fileExecuteList = dict()
 
         self.newEditor = Editor(self)
         if filename:
@@ -801,10 +805,10 @@ class EditorTab(QWidget):
         if self.path is None:
             saveTr = QCoreApplication.translate('PythonConsole',
                                                 'Python Console: Save file')
-            self.path = QFileDialog().getSaveFileName(self,
-                                                      saveTr,
-                                                      self.tw.tabText(index) + '.py',
-                                                      "Script file (*.py)")
+            self.path, filter = QFileDialog().getSaveFileName(self,
+                                                              saveTr,
+                                                              self.tw.tabText(index) + '.py',
+                                                              "Script file (*.py)")
             # If the user didn't select a file, abort the save operation
             if len(self.path) == 0:
                 self.path = None
@@ -898,7 +902,7 @@ class EditorTabWidget(QTabWidget):
         toolTipClose = QCoreApplication.translate("PythonConsole",
                                                   "Close")
         self.clButton.setToolTip(toolTipClose)
-        self.clButton.setIcon(QgsApplication.getThemeIcon("mIconClose.png"))
+        self.clButton.setIcon(QgsApplication.getThemeIcon("/mIconClose.svg"))
         self.clButton.setIconSize(QSize(18, 18))
         self.clButton.setCursor(Qt.PointingHandCursor)
         self.clButton.setStyleSheet('QToolButton:hover{border: none } \
@@ -1189,7 +1193,7 @@ class EditorTabWidget(QTabWidget):
                             for superClass in class_data.super:
                                 if superClass == 'object':
                                     continue
-                                if isinstance(superClass, basestring):
+                                if isinstance(superClass, str):
                                     superClassName.append(superClass)
                                 else:
                                     superClassName.append(superClass.name)

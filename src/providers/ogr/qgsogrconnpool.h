@@ -17,6 +17,7 @@
 #define QGSOGRCONNPOOL_H
 
 #include "qgsconnectionpool.h"
+#include "qgsogrprovider.h"
 #include <ogr_api.h>
 
 
@@ -32,10 +33,10 @@ inline QString qgsConnectionPool_ConnectionToName( QgsOgrConn* c )
   return c->path;
 }
 
-inline void qgsConnectionPool_ConnectionCreate( QString connInfo, QgsOgrConn*& c )
+inline void qgsConnectionPool_ConnectionCreate( const QString& connInfo, QgsOgrConn*& c )
 {
   c = new QgsOgrConn;
-  QString filePath = connInfo.left( connInfo.indexOf( "|" ) );
+  QString filePath = connInfo.left( connInfo.indexOf( QLatin1String( "|" ) ) );
   c->ds = OGROpen( filePath.toUtf8().constData(), false, nullptr );
   c->path = connInfo;
   c->valid = true;
@@ -43,7 +44,7 @@ inline void qgsConnectionPool_ConnectionCreate( QString connInfo, QgsOgrConn*& c
 
 inline void qgsConnectionPool_ConnectionDestroy( QgsOgrConn* c )
 {
-  OGR_DS_Destroy( c->ds );
+  QgsOgrProviderUtils::OGRDestroyWrapper( c->ds );
   delete c;
 }
 
@@ -62,7 +63,10 @@ class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgr
     Q_OBJECT
 
   public:
-    explicit QgsOgrConnPoolGroup( QString name ) : QgsConnectionPoolGroup<QgsOgrConn*>( name ), mRefCount( 0 ) { initTimer( this ); }
+    explicit QgsOgrConnPoolGroup( const QString& name )
+        : QgsConnectionPoolGroup<QgsOgrConn*>( name )
+        , mRefCount( 0 )
+    { initTimer( this ); }
     void ref() { ++mRefCount; }
     bool unref()
     {
@@ -83,7 +87,7 @@ class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgr
 
 };
 
-/** Ogr connection pool - singleton */
+//! Ogr connection pool - singleton
 class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup>
 {
   public:
@@ -153,7 +157,7 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup
   private:
     QgsOgrConnPool();
     ~QgsOgrConnPool();
-    static QgsOgrConnPool *mInstance;
+    static QgsOgrConnPool *sInstance;
 };
 
 

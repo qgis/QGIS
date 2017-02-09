@@ -56,7 +56,7 @@ class QgsShadowEffect : QgsPaintEffect
     void setOffsetDistance( const double distance );
 
     /** Returns the distance used for offsetting the shadow.
-     * @returns offset distance. Distance units are retreived via @link offsetUnit @endlink
+     * @returns offset distance. Distance units are retrieved via @link offsetUnit @endlink
      * @see setOffsetDistance
      * @see offsetUnit
      * @see offsetMapUnitScale
@@ -69,7 +69,7 @@ class QgsShadowEffect : QgsPaintEffect
      * @see setOffsetDistance
      * @see setOffsetMapUnitScale
      */
-    void setOffsetUnit( const QgsSymbolV2::OutputUnit unit );
+    void setOffsetUnit( const QgsUnitTypes::RenderUnit unit );
 
     /** Returns the units used for the shadow offset distance.
      * @returns units for offset distance
@@ -77,7 +77,7 @@ class QgsShadowEffect : QgsPaintEffect
      * @see offsetDistance
      * @see offsetMapUnitScale
      */
-    QgsSymbolV2::OutputUnit offsetUnit() const;
+    QgsUnitTypes::RenderUnit offsetUnit() const;
 
     /** Sets the map unit scale used for the shadow offset distance.
      * @param scale map unit scale for offset distance

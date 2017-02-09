@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -28,10 +31,16 @@ __revision__ = '$Format:%H$'
 import os
 import subprocess
 import platform
-from PyQt.QtCore import QSettings
-from qgis.core import QgsApplication
+
+from osgeo import gdal
+
+from qgis.PyQt.QtCore import QSettings
+from qgis.core import (QgsApplication,
+                       QgsVectorFileWriter,
+                       QgsProcessingFeedback)
+from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.core.SilentProgress import SilentProgress
+from processing.tools.system import isWindows, isMac
 
 try:
     from osgeo import gdal
@@ -40,14 +49,16 @@ except:
     gdalAvailable = False
 
 
-class GdalUtils:
+class GdalUtils(object):
+
+    GDAL_HELP_PATH = 'GDAL_HELP_PATH'
 
     supportedRasters = None
 
     @staticmethod
-    def runGdal(commands, progress=None):
-        if progress is None:
-            progress = SilentProgress()
+    def runGdal(commands, feedback=None):
+        if feedback is None:
+            feedback = QgsProcessingFeedback()
         envval = os.getenv('PATH')
         # We need to give some extra hints to get things picked up on OS X
         isDarwin = False
@@ -67,28 +78,29 @@ class GdalUtils:
                 envval += '{}{}'.format(os.pathsep, path)
                 os.putenv('PATH', envval)
 
-        fused_command = ' '.join([unicode(c) for c in commands])
-        progress.setInfo('GDAL command:')
-        progress.setCommand(fused_command)
-        progress.setInfo('GDAL command output:')
+        fused_command = ' '.join([str(c) for c in commands])
+        ProcessingLog.addToLog(ProcessingLog.LOG_INFO, fused_command)
+        feedback.pushInfo('GDAL command:')
+        feedback.pushCommandInfo(fused_command)
+        feedback.pushInfo('GDAL command output:')
         success = False
         retry_count = 0
         while success == False:
             loglines = []
             loglines.append('GDAL execution console output')
             try:
-                proc = subprocess.Popen(
+                with subprocess.Popen(
                     fused_command,
                     shell=True,
                     stdout=subprocess.PIPE,
-                    stdin=open(os.devnull),
+                    stdin=subprocess.DEVNULL,
                     stderr=subprocess.STDOUT,
                     universal_newlines=True,
-                ).stdout
-                for line in proc:
-                    progress.setConsoleInfo(line)
-                    loglines.append(line)
-                success = True
+                ) as proc:
+                    for line in proc.stdout:
+                        feedback.pushConsoleInfo(line)
+                        loglines.append(line)
+                    success = True
             except IOError as e:
                 if retry_count < 5:
                     retry_count += 1
@@ -136,17 +148,29 @@ class GdalUtils:
     @staticmethod
     def getSupportedRasterExtensions():
         allexts = ['tif']
-        for exts in GdalUtils.getSupportedRasters().values():
+        for exts in list(GdalUtils.getSupportedRasters().values()):
             for ext in exts:
                 if ext not in allexts and ext != '':
                     allexts.append(ext)
         return allexts
 
     @staticmethod
+    def getVectorDriverFromFileName(filename):
+        ext = os.path.splitext(filename)[1]
+        if ext == '':
+            return 'ESRI Shapefile'
+
+        formats = QgsVectorFileWriter.supportedFiltersAndFormats()
+        for k, v in list(formats.items()):
+            if ext in k:
+                return v
+        return 'ESRI Shapefile'
+
+    @staticmethod
     def getFormatShortNameFromFilename(filename):
         ext = filename[filename.rfind('.') + 1:]
         supported = GdalUtils.getSupportedRasters()
-        for name in supported.keys():
+        for name in list(supported.keys()):
             exts = supported[name]
             if ext in exts:
                 return name
@@ -163,3 +187,29 @@ class GdalUtils:
                 escaped = s
             joined += escaped + ' '
         return joined.strip()
+
+    @staticmethod
+    def version():
+        return int(gdal.VersionInfo('VERSION_NUM'))
+
+    @staticmethod
+    def readableVersion():
+        return gdal.VersionInfo('RELEASE_NAME')
+
+    @staticmethod
+    def gdalHelpPath():
+        helpPath = ProcessingConfig.getSetting(GdalUtils.GDAL_HELP_PATH)
+
+        if helpPath is None:
+            if isWindows():
+                pass
+            elif isMac():
+                pass
+            else:
+                searchPaths = ['/usr/share/doc/libgdal-doc/gdal']
+                for path in searchPaths:
+                    if os.path.exists(path):
+                        helpPath = os.path.abspath(path)
+                        break
+
+        return helpPath if helpPath is not None else 'http://www.gdal.org/'

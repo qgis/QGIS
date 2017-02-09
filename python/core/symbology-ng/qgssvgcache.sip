@@ -16,7 +16,7 @@ class QgsSvgCacheEntry
      * @param outline color of outline
      * @param lookupKey the key string used in QgsSvgCache for quick lookup of this entry (relative or absolute path)
      */
-    QgsSvgCacheEntry( const QString& file, double size, double outlineWidth, double widthScaleFactor, double rasterScaleFactor, const QColor& fill, const QColor& outline, const QString& lookupKey = QString() );
+    QgsSvgCacheEntry( const QString& file, double size, double outlineWidth, double widthScaleFactor, const QColor& fill, const QColor& outline, const QString& lookupKey = QString() );
     ~QgsSvgCacheEntry();
 
     //! Absolute path to SVG file
@@ -26,7 +26,6 @@ class QgsSvgCacheEntry
     double size; //size in pixels (cast to int for QImage)
     double outlineWidth;
     double widthScaleFactor;
-    double rasterScaleFactor;
 
     /** SVG viewbox size.
      * @note added in QGIS 2.14
@@ -65,7 +64,8 @@ class QgsSvgCache : QObject
 
   public:
 
-    static QgsSvgCache* instance();
+    QgsSvgCache( QObject * parent /TransferThis/ = 0 );
+
     ~QgsSvgCache();
 
     /** Get SVG as QImage.
@@ -78,8 +78,8 @@ class QgsSvgCache : QObject
      * @param rasterScaleFactor raster scale factor
      * @param fitsInCache
      */
-    const QImage& svgAsImage( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-                              double widthScaleFactor, double rasterScaleFactor, bool& fitsInCache );
+    QImage svgAsImage( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+                              double widthScaleFactor, bool& fitsInCache );
     /** Get SVG  as QPicture&.
      * @param file Absolute or relative path to SVG file.
      * @param size size of cached image
@@ -90,8 +90,8 @@ class QgsSvgCache : QObject
      * @param rasterScaleFactor raster scale factor
      * @param forceVectorOutput
      */
-    const QPicture& svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-                                  double widthScaleFactor, double rasterScaleFactor, bool forceVectorOutput = false );
+    QPicture svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+                                  double widthScaleFactor, bool forceVectorOutput = false );
 
     /** Calculates the viewbox size of a (possibly cached) SVG file.
      * @param file Absolute or relative path to SVG file.
@@ -105,32 +105,12 @@ class QgsSvgCache : QObject
      * @note added in QGIS 2.14
      */
     QSizeF svgViewboxSize( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-                           double widthScaleFactor, double rasterScaleFactor );
+                           double widthScaleFactor );
 
     /** Tests if an svg file contains parameters for fill, outline color, outline width. If yes, possible default values are returned. If there are several
       default values in the svg file, only the first one is considered*/
     void containsParams( const QString& path, bool& hasFillParam, QColor& defaultFillColor, bool& hasOutlineParam, QColor& defaultOutlineColor, bool& hasOutlineWidthParam,
                          double& defaultOutlineWidth ) const;
-
-    /** Tests if an svg file contains parameters for fill, outline color, outline width. If yes, possible default values are returned. If there are several
-     * default values in the svg file, only the first one is considered.
-     * @param path path to SVG file
-     * @param hasFillParam will be true if fill param present in SVG
-     * @param hasDefaultFillParam will be true if fill param has a default value specified
-     * @param defaultFillColor will be set to default fill color specified in SVG, if present
-     * @param hasOutlineParam will be true if outline param present in SVG
-     * @param hasDefaultOutlineColor will be true if outline param has a default value specified
-     * @param defaultOutlineColor will be set to default outline color specified in SVG, if present
-     * @param hasOutlineWidthParam will be true if outline width param present in SVG
-     * @param hasDefaultOutlineWidth will be true if outline width param has a default value specified
-     * @param defaultOutlineWidth will be set to default outline width specified in SVG, if present
-     * @note available in python bindings as containsParamsV2
-     * @note added in QGIS 2.12
-     * @deprecated use variant with fill and outline opacity
-     */
-    void containsParams( const QString& path, bool& hasFillParam, bool& hasDefaultFillParam, QColor& defaultFillColor,
-                         bool& hasOutlineParam, bool& hasDefaultOutlineColor, QColor& defaultOutlineColor,
-                         bool& hasOutlineWidthParam, bool& hasDefaultOutlineWidth, double& defaultOutlineWidth ) const /Deprecated,PyName=containsParamsV2/;
 
     /** Tests if an svg file contains parameters for fill, outline color, outline width. If yes, possible default values are returned. If there are several
      * default values in the svg file, only the first one is considered.
@@ -163,19 +143,17 @@ class QgsSvgCache : QObject
     QByteArray getImageData( const QString &path ) const;
 
     /** Get SVG content*/
-    const QByteArray& svgContent( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-                                  double widthScaleFactor, double rasterScaleFactor );
+    QByteArray svgContent( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+                                  double widthScaleFactor );
 
   signals:
     /** Emit a signal to be caught by qgisapp and display a msg on status bar */
     void statusChanged( const QString&  theStatusQString );
 
   protected:
-    //! protected constructor
-    QgsSvgCache( QObject * parent /TransferThis/ = 0 );
 
     /** Creates new cache entry and returns pointer to it
-     * @param file Absolute or relative path to SVG file. If the path is relative the file is searched by QgsSymbolLayerV2Utils::symbolNameToPath() in SVG paths.
+     * @param file Absolute or relative path to SVG file. If the path is relative the file is searched by QgsSymbolLayerUtils::symbolNameToPath() in SVG paths.
      * in settings svg/searchPathsForSVG
      * @param size size of cached image
      * @param fill color of fill
@@ -185,14 +163,14 @@ class QgsSvgCache : QObject
      * @param rasterScaleFactor raster scale factor
      */
     QgsSvgCacheEntry* insertSVG( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-                                 double widthScaleFactor, double rasterScaleFactor );
+                                 double widthScaleFactor );
 
     void replaceParamsAndCacheSvg( QgsSvgCacheEntry* entry );
     void cacheImage( QgsSvgCacheEntry* entry );
     void cachePicture( QgsSvgCacheEntry* entry, bool forceVectorOutput = false );
     /** Returns entry from cache or creates a new entry if it does not exist already*/
     QgsSvgCacheEntry* cacheEntry( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-                                  double widthScaleFactor, double rasterScaleFactor );
+                                  double widthScaleFactor );
 
     /** Removes the least used items until the maximum size is under the limit*/
     void trimToMaximumSize();

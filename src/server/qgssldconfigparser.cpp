@@ -18,14 +18,13 @@
 #include "qgssldconfigparser.h"
 #include "qgsapplication.h"
 #include "qgsconfigparserutils.h"
-#include "qgslabel.h"
-#include "qgslabelattributes.h"
 #include "qgslogger.h"
 #include "qgsmapserviceexception.h"
+#include "qgsmessagelog.h"
 #include "qgsrasterlayer.h"
-#include "qgsrendererv2.h"
-#include "qgssinglesymbolrendererv2.h"
-#include "qgssymbolv2.h"
+#include "qgsrenderer.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include <sqlite3.h>
@@ -50,18 +49,12 @@
 
 #include <QTemporaryFile>
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8(x) (x).toUtf8().constData()
-#else
-#define TO8(x) (x).toLocal8Bit().constData()
-#endif
-
 QgsSLDConfigParser::QgsSLDConfigParser( QDomDocument* doc, const QMap<QString, QString>& parameters )
-    : QgsWMSConfigParser()
+    : QgsWmsConfigParser()
     , mXMLDoc( doc )
     , mParameterMap( parameters )
-    , mSLDNamespace( "http://www.opengis.net/sld" )
-    , mOutputUnits( QgsMapRenderer::Pixels )
+    , mSLDNamespace( QStringLiteral( "http://www.opengis.net/sld" ) )
+    , mOutputUnits( QgsUnitTypes::RenderUnit::RenderPixels )
     , mFallbackParser( nullptr )
 {
 
@@ -72,16 +65,16 @@ QgsSLDConfigParser::QgsSLDConfigParser( QDomDocument* doc, const QMap<QString, Q
     QDomElement sldElement = mXMLDoc->documentElement();
     if ( !sldElement.isNull() )
     {
-      QString unitString = sldElement.attribute( "units" );
+      QString unitString = sldElement.attribute( QStringLiteral( "units" ) );
       if ( !unitString.isEmpty() )
       {
-        if ( unitString == "mm" )
+        if ( unitString == QLatin1String( "mm" ) )
         {
-          mOutputUnits = QgsMapRenderer::Millimeters;
+          mOutputUnits = QgsUnitTypes::RenderUnit::RenderMillimeters;
         }
-        else if ( unitString == "pixel" )
+        else if ( unitString == QLatin1String( "pixel" ) )
         {
-          mOutputUnits = QgsMapRenderer::Pixels;
+          mOutputUnits = QgsUnitTypes::RenderUnit::RenderPixels;
         }
       }
     }
@@ -93,9 +86,10 @@ QgsSLDConfigParser::~QgsSLDConfigParser()
   delete mXMLDoc;
 }
 
-void QgsSLDConfigParser::layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings ) const
+void QgsSLDConfigParser::layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, const QString& serviceUrl, bool fullProjectSettings ) const
 {
   Q_UNUSED( version );
+  Q_UNUSED( serviceUrl );
   Q_UNUSED( fullProjectSettings );
 
   //iterate over all <UserLayer> nodes
@@ -108,38 +102,38 @@ void QgsSLDConfigParser::layersAndStylesCapabilities( QDomElement& parentElement
       //QgsCoordinateReferenceSystem wgs84;
       //wgs84.createFromEpsg(4326);
 
-      QDomNodeList layerNodeList = sldNode.toElement().elementsByTagName( "UserLayer" );
+      QDomNodeList layerNodeList = sldNode.toElement().elementsByTagName( QStringLiteral( "UserLayer" ) );
       for ( int i = 0; i < layerNodeList.size(); ++i )
       {
-        QDomElement layerElement = doc.createElement( "Layer" );
-        layerElement.setAttribute( "queryable", "1" ); //support GetFeatureInfo for all layers
+        QDomElement layerElement = doc.createElement( QStringLiteral( "Layer" ) );
+        layerElement.setAttribute( QStringLiteral( "queryable" ), QStringLiteral( "1" ) ); //support GetFeatureInfo for all layers
         parentElement.appendChild( layerElement );
 
         //add name
-        QDomNodeList nameList = layerNodeList.item( i ).toElement().elementsByTagName( "Name" );
+        QDomNodeList nameList = layerNodeList.item( i ).toElement().elementsByTagName( QStringLiteral( "Name" ) );
         if ( !nameList.isEmpty() )
         {
           //layer name
-          QDomElement layerNameElement = doc.createElement( "Name" );
+          QDomElement layerNameElement = doc.createElement( QStringLiteral( "Name" ) );
           QDomText layerNameText = doc.createTextNode( nameList.item( 0 ).toElement().text() );
           layerNameElement.appendChild( layerNameText );
           layerElement.appendChild( layerNameElement );
         }
 
         //add title
-        QDomNodeList titleList = layerNodeList.item( i ).toElement().elementsByTagName( "Title" );
+        QDomNodeList titleList = layerNodeList.item( i ).toElement().elementsByTagName( QStringLiteral( "Title" ) );
         if ( !titleList.isEmpty() )
         {
-          QDomElement layerTitleElement = doc.createElement( "Title" );
+          QDomElement layerTitleElement = doc.createElement( QStringLiteral( "Title" ) );
           QDomText layerTitleText = doc.createTextNode( titleList.item( 0 ).toElement().text() );
           layerTitleElement.appendChild( layerTitleText );
           layerElement.appendChild( layerTitleElement );
         }
         //add abstract
-        QDomNodeList abstractList = layerNodeList.item( i ).toElement().elementsByTagName( "Abstract" );
+        QDomNodeList abstractList = layerNodeList.item( i ).toElement().elementsByTagName( QStringLiteral( "Abstract" ) );
         if ( !abstractList.isEmpty() )
         {
-          QDomElement layerAbstractElement = doc.createElement( "Abstract" );
+          QDomElement layerAbstractElement = doc.createElement( QStringLiteral( "Abstract" ) );
           QDomText layerAbstractText = doc.createTextNode( abstractList.item( 0 ).toElement().text() );
           layerAbstractElement.appendChild( layerAbstractText );
           layerElement.appendChild( layerAbstractElement );
@@ -147,7 +141,7 @@ void QgsSLDConfigParser::layersAndStylesCapabilities( QDomElement& parentElement
 
 
         //get QgsMapLayer object to add Ex_GeographicalBoundingBox, Bounding Box
-        QList<QgsMapLayer*> layerList = mapLayerFromStyle( nameList.item( 0 ).toElement().text(), "" );
+        QList<QgsMapLayer*> layerList = mapLayerFromStyle( nameList.item( 0 ).toElement().text(), QLatin1String( "" ) );
         if ( layerList.size() < 1 )//error while generating the layer
         {
           QgsDebugMsg( "Error, no maplayer in layer list" );
@@ -163,45 +157,45 @@ void QgsSLDConfigParser::layersAndStylesCapabilities( QDomElement& parentElement
         }
 
         //append geographic bbox and the CRS elements
-        QStringList crsNumbers = QgsConfigParserUtils::createCRSListForLayer( theMapLayer );
+        QStringList crsNumbers = QgsConfigParserUtils::createCrsListForLayer( theMapLayer );
         QStringList crsRestriction; //no crs restrictions in SLD parser
-        QgsConfigParserUtils::appendCRSElementsToLayer( layerElement, doc, crsNumbers, crsRestriction );
+        QgsConfigParserUtils::appendCrsElementsToLayer( layerElement, doc, crsNumbers, crsRestriction );
         QgsConfigParserUtils::appendLayerBoundingBoxes( layerElement, doc, theMapLayer->extent(), theMapLayer->crs(), crsNumbers, crsRestriction );
 
         //iterate over all <UserStyle> nodes within a user layer
-        QDomNodeList userStyleList = layerNodeList.item( i ).toElement().elementsByTagName( "UserStyle" );
+        QDomNodeList userStyleList = layerNodeList.item( i ).toElement().elementsByTagName( QStringLiteral( "UserStyle" ) );
         for ( int j = 0; j < userStyleList.size(); ++j )
         {
-          QDomElement styleElement = doc.createElement( "Style" );
+          QDomElement styleElement = doc.createElement( QStringLiteral( "Style" ) );
           layerElement.appendChild( styleElement );
           //Name
-          QDomNodeList nameList = userStyleList.item( j ).toElement().elementsByTagName( "Name" );
+          QDomNodeList nameList = userStyleList.item( j ).toElement().elementsByTagName( QStringLiteral( "Name" ) );
           if ( !nameList.isEmpty() )
           {
-            QDomElement styleNameElement = doc.createElement( "Name" );
+            QDomElement styleNameElement = doc.createElement( QStringLiteral( "Name" ) );
             QDomText styleNameText = doc.createTextNode( nameList.item( 0 ).toElement().text() );
             styleNameElement.appendChild( styleNameText );
             styleElement.appendChild( styleNameElement );
 
-            QDomElement styleTitleElement = doc.createElement( "Title" );
+            QDomElement styleTitleElement = doc.createElement( QStringLiteral( "Title" ) );
             QDomText styleTitleText = doc.createTextNode( nameList.item( 0 ).toElement().text() );
             styleTitleElement.appendChild( styleTitleText );
             styleElement.appendChild( styleTitleElement );
           }
           //Title
-          QDomNodeList titleList = userStyleList.item( j ).toElement().elementsByTagName( "Title" );
+          QDomNodeList titleList = userStyleList.item( j ).toElement().elementsByTagName( QStringLiteral( "Title" ) );
           if ( !titleList.isEmpty() )
           {
-            QDomElement styleTitleElement = doc.createElement( "Title" );
+            QDomElement styleTitleElement = doc.createElement( QStringLiteral( "Title" ) );
             QDomText styleTitleText = doc.createTextNode( titleList.item( 0 ).toElement().text() );
             styleTitleElement.appendChild( styleTitleText );
             styleElement.appendChild( styleTitleElement );
           }
           //Abstract
-          QDomNodeList abstractList = userStyleList.item( j ).toElement().elementsByTagName( "Abstract" );
+          QDomNodeList abstractList = userStyleList.item( j ).toElement().elementsByTagName( QStringLiteral( "Abstract" ) );
           if ( !abstractList.isEmpty() )
           {
-            QDomElement styleAbstractElement = doc.createElement( "Abstract" );
+            QDomElement styleAbstractElement = doc.createElement( QStringLiteral( "Abstract" ) );
             QDomText styleAbstractText = doc.createTextNode( abstractList.item( 0 ).toElement().text() );
             styleAbstractElement.appendChild( styleAbstractText );
             styleElement.appendChild( styleAbstractElement );
@@ -224,14 +218,14 @@ QList<QgsMapLayer*> QgsSLDConfigParser::mapLayerFromStyle( const QString& lName,
     QDomElement userStyleElement = findUserStyleElement( namedLayerElemList[i], styleName );
     if ( !userStyleElement.isNull() )
     {
-      fallbackLayerList = mFallbackParser->mapLayerFromStyle( lName, "", false );
+      fallbackLayerList = mFallbackParser->mapLayerFromStyle( lName, QLatin1String( "" ), false );
       if ( !fallbackLayerList.isEmpty() )
       {
         QgsVectorLayer* v = dynamic_cast<QgsVectorLayer*>( fallbackLayerList.at( 0 ) );
         if ( v )
         {
-          QgsFeatureRendererV2* r = rendererFromUserStyle( userStyleElement, v );
-          v->setRendererV2( r );
+          QgsFeatureRenderer* r = rendererFromUserStyle( userStyleElement, v );
+          v->setRenderer( r );
           labelSettingsFromUserStyle( userStyleElement, v );
 
           resultList.push_back( v );
@@ -292,7 +286,7 @@ QList<QgsMapLayer*> QgsSLDConfigParser::mapLayerFromStyle( const QString& lName,
     return resultList;
   }
 
-  QgsFeatureRendererV2* theRenderer = nullptr;
+  QgsFeatureRenderer* theRenderer = nullptr;
 
   QgsRasterLayer* theRasterLayer = dynamic_cast<QgsRasterLayer*>( theMapLayer );
   if ( theRasterLayer )
@@ -320,8 +314,8 @@ QList<QgsMapLayer*> QgsSLDConfigParser::mapLayerFromStyle( const QString& lName,
   QgsVectorLayer* theVectorLayer = dynamic_cast<QgsVectorLayer*>( theMapLayer );
   if ( userStyleElement.isNull() )//apply a default style
   {
-    QgsSymbolV2* symbol = QgsSymbolV2::defaultSymbol( theVectorLayer->geometryType() );
-    theRenderer = new QgsSingleSymbolRendererV2( symbol );
+    QgsSymbol* symbol = QgsSymbol::defaultSymbol( theVectorLayer->geometryType() );
+    theRenderer = new QgsSingleSymbolRenderer( symbol );
   }
   else
   {
@@ -337,7 +331,7 @@ QList<QgsMapLayer*> QgsSLDConfigParser::mapLayerFromStyle( const QString& lName,
     delete theVectorLayer;
     return resultList;
   }
-  theVectorLayer->setRendererV2( theRenderer );
+  theVectorLayer->setRenderer( theRenderer );
   QgsDebugMsg( "Returning the vectorlayer" );
   resultList.push_back( theVectorLayer );
   return resultList;
@@ -359,11 +353,11 @@ int QgsSLDConfigParser::layersAndStyles( QStringList& layers, QStringList& style
       for ( int i = 0; i < layerNodes.size(); ++i )
       {
         QDomElement currentLayerElement = layerNodes.item( i ).toElement();
-        if ( currentLayerElement.localName() == "NamedLayer" )
+        if ( currentLayerElement.localName() == QLatin1String( "NamedLayer" ) )
         {
           QgsDebugMsg( "Found a NamedLayer" );
           //layer name
-          QDomNodeList nameList = currentLayerElement.elementsByTagName/*NS*/( /*mSLDNamespace,*/ "Name" );
+          QDomNodeList nameList = currentLayerElement.elementsByTagName/*NS*/( /*mSLDNamespace,*/ QStringLiteral( "Name" ) );
           if ( nameList.length() < 1 )
           {
             continue; //a layer name is mandatory
@@ -371,10 +365,10 @@ int QgsSLDConfigParser::layersAndStyles( QStringList& layers, QStringList& style
           QString layerName = nameList.item( 0 ).toElement().text();
 
           //find the Named Styles and the corresponding names
-          QDomNodeList namedStyleList = currentLayerElement.elementsByTagName/*NS*/( /*mSLDNamespace,*/ "NamedStyle" );
+          QDomNodeList namedStyleList = currentLayerElement.elementsByTagName/*NS*/( /*mSLDNamespace,*/ QStringLiteral( "NamedStyle" ) );
           for ( int j = 0; j < namedStyleList.size(); ++j )
           {
-            QDomNodeList styleNameList = namedStyleList.item( j ).toElement().elementsByTagName/*NS*/( /*mSLDNamespace,*/ "Name" );
+            QDomNodeList styleNameList = namedStyleList.item( j ).toElement().elementsByTagName/*NS*/( /*mSLDNamespace,*/ QStringLiteral( "Name" ) );
             if ( styleNameList.size() < 1 )
             {
               continue; //a layer name is mandatory
@@ -386,10 +380,10 @@ int QgsSLDConfigParser::layersAndStyles( QStringList& layers, QStringList& style
           }
 
           //named layers can also have User Styles
-          QDomNodeList userStyleList = currentLayerElement.elementsByTagName/*NS*/( /*mSLDNamespace,*/ "UserStyle" );
+          QDomNodeList userStyleList = currentLayerElement.elementsByTagName/*NS*/( /*mSLDNamespace,*/ QStringLiteral( "UserStyle" ) );
           for ( int j = 0; j < userStyleList.size(); ++j )
           {
-            QDomNodeList styleNameList = userStyleList.item( j ).toElement().elementsByTagName/*NS*/( /*mSLDNamespace,*/ "Name" );
+            QDomNodeList styleNameList = userStyleList.item( j ).toElement().elementsByTagName/*NS*/( /*mSLDNamespace,*/ QStringLiteral( "Name" ) );
             if ( styleNameList.size() < 1 )
             {
               continue; //a layer name is mandatory
@@ -400,11 +394,11 @@ int QgsSLDConfigParser::layersAndStyles( QStringList& layers, QStringList& style
             styles.push_back( styleName );
           }
         }
-        else if ( currentLayerElement.localName() == "UserLayer" )
+        else if ( currentLayerElement.localName() == QLatin1String( "UserLayer" ) )
         {
           QgsDebugMsg( "Found a UserLayer" );
           //layer name
-          QDomNodeList nameList = currentLayerElement.elementsByTagName/*NS*/( /*mSLDNamespace,*/ "Name" );
+          QDomNodeList nameList = currentLayerElement.elementsByTagName/*NS*/( /*mSLDNamespace,*/ QStringLiteral( "Name" ) );
           if ( nameList.length() < 1 )
           {
             QgsDebugMsg( "Namelist size is <1" );
@@ -413,10 +407,10 @@ int QgsSLDConfigParser::layersAndStyles( QStringList& layers, QStringList& style
           QString layerName = nameList.item( 0 ).toElement().text();
           QgsDebugMsg( "layerName is: " + layerName );
           //find the User Styles and the corresponding names
-          QDomNodeList userStyleList = currentLayerElement.elementsByTagName/*NS*/( /*mSLDNamespace,*/ "UserStyle" );
+          QDomNodeList userStyleList = currentLayerElement.elementsByTagName/*NS*/( /*mSLDNamespace,*/ QStringLiteral( "UserStyle" ) );
           for ( int j = 0; j < userStyleList.size(); ++j )
           {
-            QDomNodeList styleNameList = userStyleList.item( j ).toElement().elementsByTagName/*NS*/( /*mSLDNamespace,*/ "Name" );
+            QDomNodeList styleNameList = userStyleList.item( j ).toElement().elementsByTagName/*NS*/( /*mSLDNamespace,*/ QStringLiteral( "Name" ) );
             if ( styleNameList.size() < 1 )
             {
               QgsDebugMsg( "Namelist size is <1" );
@@ -445,14 +439,14 @@ QDomDocument QgsSLDConfigParser::getStyle( const QString& styleName, const QStri
 
   if ( userLayerElement.isNull() )
   {
-    throw QgsMapServiceException( "LayerNotDefined", "Operation request is for a Layer not offered by the server." );
+    throw QgsMapServiceException( QStringLiteral( "LayerNotDefined" ), QStringLiteral( "Operation request is for a Layer not offered by the server." ) );
   }
 
   QDomElement userStyleElement = findUserStyleElement( userLayerElement, styleName );
 
   if ( userStyleElement.isNull() )
   {
-    throw QgsMapServiceException( "StyleNotDefined", "Operation request references a Style not offered by the server." );
+    throw QgsMapServiceException( QStringLiteral( "StyleNotDefined" ), QStringLiteral( "Operation request references a Style not offered by the server." ) );
   }
 
   QDomDocument styleDoc;
@@ -466,14 +460,13 @@ QDomDocument QgsSLDConfigParser::getStyles( QStringList& layerList ) const
   for ( int i = 0; i < layerList.size(); i++ )
   {
     QString layerName;
-    QString typeName;
     layerName = layerList.at( i );
     QDomElement userLayerElement = findUserLayerElement( layerName );
     if ( userLayerElement.isNull() )
     {
-      throw QgsMapServiceException( "LayerNotDefined", "Operation request is for a Layer not offered by the server." );
+      throw QgsMapServiceException( QStringLiteral( "LayerNotDefined" ), QStringLiteral( "Operation request is for a Layer not offered by the server." ) );
     }
-    QDomNodeList userStyleList = userLayerElement.elementsByTagName( "UserStyle" );
+    QDomNodeList userStyleList = userLayerElement.elementsByTagName( QStringLiteral( "UserStyle" ) );
     for ( int j = 0; j < userStyleList.size(); j++ )
     {
       QDomElement userStyleElement = userStyleList.item( i ).toElement();
@@ -483,16 +476,16 @@ QDomDocument QgsSLDConfigParser::getStyles( QStringList& layerList ) const
   return styleDoc;
 }
 
-QDomDocument QgsSLDConfigParser::describeLayer( QStringList& layerList, const QString& hrefString ) const
+QDomDocument QgsSLDConfigParser::describeLayer( QStringList& layerList, const QString& wfsHrefString, const QString& wcsHrefString ) const
 {
   if ( mFallbackParser )
   {
-    return mFallbackParser->describeLayer( layerList, hrefString );
+    return mFallbackParser->describeLayer( layerList, wfsHrefString, wcsHrefString );
   }
   return QDomDocument();
 }
 
-QgsMapRenderer::OutputUnits QgsSLDConfigParser::outputUnits() const
+QgsUnitTypes::RenderUnit QgsSLDConfigParser::outputUnits() const
 {
   return mOutputUnits;
 }
@@ -511,6 +504,15 @@ bool QgsSLDConfigParser::featureInfoWithWktGeometry() const
   if ( mFallbackParser )
   {
     return mFallbackParser->featureInfoWithWktGeometry();
+  }
+  return false;
+}
+
+bool QgsSLDConfigParser::segmentizeFeatureInfoWktGeometry() const
+{
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->segmentizeFeatureInfoWktGeometry();
   }
   return false;
 }
@@ -557,21 +559,12 @@ void QgsSLDConfigParser::drawOverlays( QPainter* p, int dpi, int width, int heig
   }
 }
 
-void QgsSLDConfigParser::loadLabelSettings( QgsLabelingEngineInterface * lbl ) const
+void QgsSLDConfigParser::loadLabelSettings() const
 {
   if ( mFallbackParser )
   {
-    mFallbackParser->loadLabelSettings( lbl );
+    mFallbackParser->loadLabelSettings();
   }
-}
-
-QString QgsSLDConfigParser::serviceUrl() const
-{
-  if ( mFallbackParser )
-  {
-    return mFallbackParser->serviceUrl();
-  }
-  return QString();
 }
 
 QStringList QgsSLDConfigParser::wfsLayerNames() const
@@ -654,7 +647,7 @@ double QgsSLDConfigParser::legendSymbolHeight() const
   return 0;
 }
 
-const QFont& QgsSLDConfigParser::legendLayerFont() const
+QFont QgsSLDConfigParser::legendLayerFont() const
 {
   if ( mFallbackParser )
   {
@@ -663,31 +656,13 @@ const QFont& QgsSLDConfigParser::legendLayerFont() const
   return mLegendLayerFont;
 }
 
-const QFont& QgsSLDConfigParser::legendItemFont() const
+QFont QgsSLDConfigParser::legendItemFont() const
 {
   if ( mFallbackParser )
   {
     return mFallbackParser->legendItemFont();
   }
   return mLegendItemFont;
-}
-
-double QgsSLDConfigParser::maxWidth() const
-{
-  if ( mFallbackParser )
-  {
-    return mFallbackParser->maxWidth();
-  }
-  return -1;
-}
-
-double QgsSLDConfigParser::maxHeight() const
-{
-  if ( mFallbackParser )
-  {
-    return mFallbackParser->maxHeight();
-  }
-  return -1;
 }
 
 double QgsSLDConfigParser::imageQuality() const
@@ -699,38 +674,29 @@ double QgsSLDConfigParser::imageQuality() const
   return -1;
 }
 
-int QgsSLDConfigParser::WMSPrecision() const
+int QgsSLDConfigParser::wmsPrecision() const
 {
   if ( mFallbackParser )
   {
-    return mFallbackParser->WMSPrecision();
+    return mFallbackParser->wmsPrecision();
   }
   return -1;
 }
 
-bool QgsSLDConfigParser::WMSInspireActivated() const
+bool QgsSLDConfigParser::wmsInspireActivated() const
 {
   if ( mFallbackParser )
   {
-    return mFallbackParser->WMSInspireActivated();
+    return mFallbackParser->wmsInspireActivated();
   }
   return false;
 }
 
-QgsComposition* QgsSLDConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const
+QgsComposition* QgsSLDConfigParser::initComposition( const QString& composerTemplate, const QgsMapSettings& mapSettings, QList< QgsComposerMap*>& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const
 {
   if ( mFallbackParser )
   {
-    return mFallbackParser->createPrintComposition( composerTemplate, mapRenderer, parameterMap, highlightLayers );
-  }
-  return nullptr;
-}
-
-QgsComposition* QgsSLDConfigParser::initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const
-{
-  if ( mFallbackParser )
-  {
-    return mFallbackParser->initComposition( composerTemplate, mapRenderer, mapList, legendList, labelList, htmlFrameList );
+    return mFallbackParser->initComposition( composerTemplate, mapSettings, mapList, legendList, labelList, htmlFrameList );
   }
   return nullptr;
 }
@@ -761,9 +727,9 @@ void QgsSLDConfigParser::addExternalGMLData( const QString &, QDomDocument * )
   //soon...
 }
 
-QList< QPair< QString, QgsLayerCoordinateTransform > > QgsSLDConfigParser::layerCoordinateTransforms() const
+QList< QPair< QString, QgsDatumTransformStore::Entry > > QgsSLDConfigParser::layerCoordinateTransforms() const
 {
-  return QList< QPair< QString, QgsLayerCoordinateTransform > >();
+  return QList< QPair< QString, QgsDatumTransformStore::Entry > >();
 }
 
 int QgsSLDConfigParser::nLayers() const
@@ -773,7 +739,7 @@ int QgsSLDConfigParser::nLayers() const
     QDomNode sldNode = mXMLDoc->documentElement();
     if ( !sldNode.isNull() )
     {
-      QDomNodeList layerNodeList = sldNode.toElement().elementsByTagName( "UserLayer" );
+      QDomNodeList layerNodeList = sldNode.toElement().elementsByTagName( QStringLiteral( "UserLayer" ) );
       return layerNodeList.size();
     }
   }
@@ -800,10 +766,10 @@ QList<QDomElement> QgsSLDConfigParser::findNamedLayerElements( const QString& la
     QDomElement sldElement = mXMLDoc->documentElement();
     if ( !sldElement.isNull() )
     {
-      QDomNodeList NamedLayerList = sldElement.elementsByTagName( "NamedLayer" );
+      QDomNodeList NamedLayerList = sldElement.elementsByTagName( QStringLiteral( "NamedLayer" ) );
       for ( int i = 0; i < NamedLayerList.size(); ++i )
       {
-        QDomNodeList nameList = NamedLayerList.item( i ).toElement().elementsByTagName( "Name" );
+        QDomNodeList nameList = NamedLayerList.item( i ).toElement().elementsByTagName( QStringLiteral( "Name" ) );
         if ( !nameList.isEmpty() )
         {
           if ( nameList.item( 0 ).toElement().text() == layerName )
@@ -822,10 +788,10 @@ QDomElement QgsSLDConfigParser::findUserStyleElement( const QDomElement& userLay
   QDomElement defaultResult;
   if ( !userLayerElement.isNull() )
   {
-    QDomNodeList userStyleList = userLayerElement.elementsByTagName( "UserStyle" );
+    QDomNodeList userStyleList = userLayerElement.elementsByTagName( QStringLiteral( "UserStyle" ) );
     for ( int i = 0; i < userStyleList.size(); ++i )
     {
-      QDomNodeList nameList = userStyleList.item( i ).toElement().elementsByTagName( "Name" );
+      QDomNodeList nameList = userStyleList.item( i ).toElement().elementsByTagName( QStringLiteral( "Name" ) );
       if ( !nameList.isEmpty() )
       {
         if ( nameList.item( 0 ).toElement().text() == styleName )
@@ -843,10 +809,10 @@ QDomElement QgsSLDConfigParser::findNamedStyleElement( const QDomElement& layerE
   QDomElement defaultResult;
   if ( !layerElement.isNull() )
   {
-    QDomNodeList styleList = layerElement.elementsByTagName( "NamedStyle" );
+    QDomNodeList styleList = layerElement.elementsByTagName( QStringLiteral( "NamedStyle" ) );
     for ( int i = 0; i < styleList.size(); ++i )
     {
-      QDomNodeList nameList = styleList.item( i ).toElement().elementsByTagName( "Name" );
+      QDomNodeList nameList = styleList.item( i ).toElement().elementsByTagName( QStringLiteral( "Name" ) );
       if ( !nameList.isEmpty() )
       {
         if ( nameList.item( 0 ).toElement().text() == styleName )
@@ -859,7 +825,7 @@ QDomElement QgsSLDConfigParser::findNamedStyleElement( const QDomElement& layerE
   return defaultResult;
 }
 
-QgsFeatureRendererV2* QgsSLDConfigParser::rendererFromUserStyle( const QDomElement& userStyleElement, QgsVectorLayer* vec ) const
+QgsFeatureRenderer* QgsSLDConfigParser::rendererFromUserStyle( const QDomElement& userStyleElement, QgsVectorLayer* vec ) const
 {
   if ( !vec || userStyleElement.isNull() )
   {
@@ -869,10 +835,10 @@ QgsFeatureRendererV2* QgsSLDConfigParser::rendererFromUserStyle( const QDomEleme
   QgsDebugMsg( "Entering" );
 
   QString errorMessage;
-  QgsFeatureRendererV2* renderer = QgsFeatureRendererV2::loadSld( userStyleElement.parentNode(), vec->geometryType(), errorMessage );
+  QgsFeatureRenderer* renderer = QgsFeatureRenderer::loadSld( userStyleElement.parentNode(), vec->geometryType(), errorMessage );
   if ( !renderer )
   {
-    throw QgsMapServiceException( "SLD error", errorMessage );
+    throw QgsMapServiceException( QStringLiteral( "SLD error" ), errorMessage );
   }
   return renderer;
 }
@@ -972,363 +938,11 @@ bool QgsSLDConfigParser::rasterSymbologyFromUserStyle( const QDomElement& userSt
 
 bool QgsSLDConfigParser::labelSettingsFromUserStyle( const QDomElement& userStyleElement, QgsVectorLayer* vec ) const
 {
-  if ( userStyleElement.isNull() || !vec )
-    return false;
-
-  Q_NOWARN_DEPRECATED_PUSH
-  vec->enableLabels( false );
-  Q_NOWARN_DEPRECATED_POP
-
-  QDomNodeList featureTypeList = userStyleElement.elementsByTagName( "FeatureTypeStyle" );
-  if ( featureTypeList.size() <= 0 )
-    return false;
-
-  //QGIS WMS server only supports one featureTypeStyle per layer
-  QDomNodeList ruleNodeList = featureTypeList.item( 0 ).toElement().elementsByTagName( "Rule" );
-  // if there are rule elements:
-  if ( ruleNodeList.size() <= 0 )
-    return false;
-
-  // rule element
-  QDomElement ruleElement = ruleNodeList.item( ruleNodeList.size() - 1 ).toElement();
-  //find <TextSymbolizer>.
-  //Unfortunately, QGIS does not support having different labels for different classifications.
-  //Therefore we take the last text symbolizer for all features
-  QDomNodeList textSymbolizerList = ruleElement.elementsByTagName( "TextSymbolizer" );
-  // if there are textSymbolizers
-  if ( textSymbolizerList.size() <= 0 )
-    return false;
-
-  int opacity = 255;
-  int polyColorRed = 0;
-  int polyColorGreen = 0;
-  int polyColorBlue = 0;
-  QString elemText;
-  QString fontfamily = QString( "Helvetica" );
-  QString fontstyle = QString( "Normal" );
-  int fontsize = 14;
-  QString fontweight = QString( "Normal" );
-  QString fontunderline = QString( "Normal" );
-  bool success = false;
-
-  QDomElement textSymbolizerElement = textSymbolizerList.item( textSymbolizerList.size() - 1 ).toElement();
-  // if there is a viable text textSymbolizerElement
-  if ( textSymbolizerElement.isNull() )
-    return false;
-
-  QgsLabelAttributes * myLabelAttributes = vec->label()->labelAttributes();
-  //element <Label> contains the attribute name
-  QDomNodeList labelNodeList = textSymbolizerElement.elementsByTagName( "Label" );
-  // if a viable label element is provided
-  if ( labelNodeList.size() <= 0 )
-    //from the specs: 'if a Label element is not provided ... then no text will be rendered'
-    return false;
-
-  QDomElement labelElement = labelNodeList.item( 0 ).toElement();
-  //we need the text of an <ogc:PropertyName> element
-  QDomNodeList propertyNameList = labelElement.elementsByTagName( "PropertyName" );
-  if ( propertyNameList.size() <= 0 )
-    return false;
-
-  Q_NOWARN_DEPRECATED_PUSH
-  vec->enableLabels( true );
-  Q_NOWARN_DEPRECATED_POP
-
-  QDomElement propertyNameElement = propertyNameList.item( 0 ).toElement();
-  QString labelAttribute = propertyNameElement.text();
-  vec->label()->setLabelField( QgsLabel::Text, vec->dataProvider()->fieldNameIndex( labelAttribute ) );
-
-  // Iterate through each of CssParameter from the sld:font, sld:fill, sld:halo
-  QDomNodeList labelFontElementList = textSymbolizerElement.elementsByTagName( "Font" );
-  QDomNodeList labelFillElementList = textSymbolizerElement.elementsByTagName( "Fill" );
-  QDomNodeList labelBufferElementList = textSymbolizerElement.elementsByTagName( "Halo" );
-  QDomNodeList labelPlacementElementList = textSymbolizerElement.elementsByTagName( "LabelPlacement" );
-  // Iterate through sld:font
-  if ( !labelFontElementList.isEmpty() )
-  {
-    if ( !labelFontElementList.item( 0 ).toElement().isNull() )
-    {
-      QDomNodeList cssNodes = labelFontElementList.item( 0 ).toElement().elementsByTagName( "CssParameter" );
-      QString cssName;
-      QDomElement currentElement;
-      QgsDebugMsg( "Number of Css Properties: " + QString::number( cssNodes.size() ) );
-      for ( int i = 0; i < cssNodes.size(); ++i )
-      {
-        currentElement = cssNodes.item( i ).toElement();
-        if ( currentElement.isNull() )
-        {
-          continue;
-        }
-        QString elemText = currentElement.text();
-
-        //switch depending on attribute 'name'
-        cssName = currentElement.attribute( "name", "not_found" );
-        QgsDebugMsg( "property " + QString::number( i ) + ": " + cssName  + " " + elemText );
-        if ( cssName != "not_found" )
-        {
-          if ( cssName == "font-family" )
-          {
-            QgsDebugMsg( cssName + " " + elemText );
-            fontfamily = elemText;
-          }
-          else if ( cssName == "font-style" )
-          {
-            QgsDebugMsg( cssName + " " + elemText );
-            fontstyle = elemText;
-          }
-          else if ( cssName == "font-size" )
-          {
-            QgsDebugMsg( cssName + " " + elemText );
-            success = false;
-            fontsize = elemText.toInt( &success );
-            if ( !success )
-            {
-              fontsize = 12;
-            }
-
-          }
-          else if ( cssName == "font-weight" )
-          {
-            QgsDebugMsg( cssName + " " + elemText );
-            fontweight = elemText;
-          }
-          else if ( cssName == "font-underline" )
-          {
-            QgsDebugMsg( cssName + " " + elemText );
-            fontunderline = elemText;
-          }
-        }
-
-      }
-    }
-  }
-
-  // Iterate through sld:fill
-  if ( !labelFillElementList.isEmpty() )
-  {
-    if ( !labelFillElementList.item( 0 ).toElement().isNull() )
-    {
-      QDomNodeList cssNodes = labelFillElementList.item( 0 ).toElement().elementsByTagName( "CssParameter" );
-      QString cssName;
-      QDomElement currentElement;
-      QgsDebugMsg( "Number of Css Properties: " + QString::number( cssNodes.size() ) );
-      for ( int i = 0; i < cssNodes.size(); ++i )
-      {
-        currentElement = cssNodes.item( i ).toElement();
-        if ( currentElement.isNull() )
-        {
-          continue;
-        }
-        QString elemText = currentElement.text();
-
-        //switch depending on attribute 'name'
-        cssName = currentElement.attribute( "name", "not_found" );
-        QgsDebugMsg( "property " + QString::number( i ) + ": " + cssName  + " " + elemText );
-        if ( cssName != "not_found" )
-        {
-          if ( cssName == "fill" )
-          {
-            QgsDebugMsg( cssName + " " + elemText );
-            //accept input in the form of #ff0000
-            if ( elemText.length() == 7 )
-            {
-              bool success;
-              polyColorRed = elemText.mid( 1, 2 ).toInt( &success, 16 );
-              if ( !success )
-              {
-                polyColorRed = 0;
-              }
-              polyColorGreen = elemText.mid( 3, 2 ).toInt( &success, 16 );
-              if ( !success )
-              {
-                polyColorGreen = 0;
-              }
-              polyColorBlue = elemText.mid( 5, 2 ).toInt( &success, 16 );
-              if ( !success )
-              {
-                polyColorBlue = 0;
-              }
-            }
-          }
-          else if ( cssName == "fill-opacity" )
-          {
-            QgsDebugMsg( cssName + " " + elemText );
-            bool success;
-            double op = elemText.toDouble( &success );
-            if ( success )
-            {
-              if ( op > 1.0 )
-              {
-                opacity = 255;
-              }
-              else if ( op < 0.0 )
-              {
-                opacity = 0;
-              }
-              else
-              {
-                opacity = ( int )( 255 * op );
-              }
-            }
-          }
-        }
-
-      }
-    }
-  }
-
-  myLabelAttributes->setSize( fontsize, QgsLabelAttributes::PointUnits );
-  myLabelAttributes->setFamily( fontfamily );
-  myLabelAttributes->setColor( QColor( polyColorRed, polyColorGreen, polyColorBlue, opacity ) );
-  if (( fontstyle == "italic" ) || ( fontstyle == "Italic" ) )
-  {
-    myLabelAttributes->setItalic( true );
-  }
-  if (( fontweight == "bold" ) || ( fontweight == "Bold" ) )
-  {
-    myLabelAttributes->setBold( true );
-  }
-  if (( fontunderline == "underline" ) || ( fontunderline == "Underline" ) )
-  {
-    myLabelAttributes->setUnderline( true );
-  }
-  // set label buffer(sld:halo)
-
-  if ( !labelBufferElementList.isEmpty() )
-  {
-    if ( !labelBufferElementList.item( 0 ).toElement().isNull() )
-    {
-      QDomNodeList cssNodes = labelBufferElementList.item( 0 ).toElement().elementsByTagName( "CssParameter" );
-      QString cssName;
-      QDomElement currentElement;
-      QgsDebugMsg( "Number of Css Properties: " + QString::number( cssNodes.size() ) );
-      for ( int i = 0; i < cssNodes.size(); ++i )
-      {
-        currentElement = cssNodes.item( i ).toElement();
-        if ( currentElement.isNull() )
-        {
-          continue;
-        }
-        QString elemText = currentElement.text();
-
-        //switch depending on attribute 'name'
-        cssName = currentElement.attribute( "name", "not_found" );
-        QgsDebugMsg( "property " + QString::number( i ) + ": " + cssName  + " " + elemText );
-        if ( cssName != "not_found" )
-        {
-          if ( cssName == "fill" )
-          {
-            QgsDebugMsg( cssName + " " + elemText );
-            //accept input in the form of #ff0000
-            if ( elemText.length() == 7 )
-            {
-              bool success;
-              polyColorRed = elemText.mid( 1, 2 ).toInt( &success, 16 );
-              if ( !success )
-              {
-                polyColorRed = 255;
-              }
-              polyColorGreen = elemText.mid( 3, 2 ).toInt( &success, 16 );
-              if ( !success )
-              {
-                polyColorGreen = 255;
-              }
-              polyColorBlue = elemText.mid( 5, 2 ).toInt( &success, 16 );
-              if ( !success )
-              {
-                polyColorBlue = 255;
-              }
-            }
-          }
-          else if ( cssName == "fill-opacity" )
-          {
-            QgsDebugMsg( cssName + " " + elemText );
-            bool success;
-            double op = elemText.toDouble( &success );
-            if ( success )
-            {
-              if ( op > 1.0 )
-              {
-                opacity = 255;
-              }
-              else if ( op < 0.0 )
-              {
-                opacity = 0;
-              }
-              else
-              {
-                opacity = ( int )( 255 * op );
-              }
-            }
-          }
-        }
-      }
-
-      //QgsMapServerLogger::instance()->printMessage("radius " + QString::number(radius));
-      myLabelAttributes->setBufferEnabled( true );
-      myLabelAttributes->setBufferColor( QColor( polyColorRed, polyColorGreen, polyColorBlue, opacity ) );
-
-#if 0
-      double radius = 5.0;
-      QDomElement radiusElement = labelBufferElementList.item( 0 ).toElement().elementsByTagName( "Radius" ).item( 0 ).toElement();
-      if ( !radiusElement.isNull() )
-      {
-        bool success = false;
-        radius = radiusElement.text().toDouble( &success );
-        if ( !success )
-        {
-          radius = 5.0;
-        }
-      }
-      myLabelAttributes->setBufferSize( radius, QgsLabelAttributes::PointUnits );
-#endif
-
-      // ******** BUG ************  see why setting buffersize dows not work (is a problem in QGIS vector layer rendering)
-
-    }
-  }
-
-  // label placement
-  if ( !labelPlacementElementList.isEmpty() )
-  {
-    if ( !labelPlacementElementList.item( 0 ).toElement().isNull() )
-    {
-      double displacementX = 0.0;
-      double displacementY = 0.0;
-      double rotationAngle = 0.0;
-
-      QDomElement pointPlacementElement = labelPlacementElementList.item( 0 ).toElement().elementsByTagName( "PointPlacement" ).item( 0 ).toElement();
-      if ( !pointPlacementElement.isNull() )
-      {
-        bool success = false;
-        rotationAngle = pointPlacementElement.elementsByTagName( "Rotation" ).item( 0 ).toElement().text().toDouble( &success );
-        if ( !success )
-        {
-          rotationAngle = 0.0;
-        }
-        success = false;
-        displacementX = pointPlacementElement.elementsByTagName( "DisplacementX" ).item( 0 ).toElement().text().toDouble( &success );
-        if ( !success )
-        {
-          displacementX = 0.0;
-        }
-        displacementY = pointPlacementElement.elementsByTagName( "DisplacementY" ).item( 0 ).toElement().text().toDouble( &success );
-        if ( !success )
-        {
-          displacementY = 0.0;
-        }
-      }
-      QgsDebugMsg( "rotationAngle " + QString::number( rotationAngle ) );
-
-      myLabelAttributes->setOffset( displacementX, displacementY, QgsLabelAttributes::PointUnits );
-      myLabelAttributes->setAngle( rotationAngle );
-    }
-  } // end labelPlacement
-  Q_NOWARN_DEPRECATED_PUSH
-  vec->enableLabels( true );
-  Q_NOWARN_DEPRECATED_POP
-
-  return true;
+  // TODO create rule based labeling from user's SLD
+  // (there is QgsVectorLayer::readSldLabeling() that does something very similar)
+  Q_UNUSED( userStyleElement );
+  Q_UNUSED( vec );
+  return false;
 }
 
 QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& userStyleElem, QgsRasterLayer* rasterLayer ) const
@@ -1341,7 +955,7 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
   }
 
   //get <ContourSymbolizer> element
-  QDomNodeList contourNodeList = userStyleElem.elementsByTagName( "ContourSymbolizer" );
+  QDomNodeList contourNodeList = userStyleElem.elementsByTagName( QStringLiteral( "ContourSymbolizer" ) );
   if ( contourNodeList.size() < 1 )
   {
     return nullptr;
@@ -1356,11 +970,11 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
   double equidistance, minValue, maxValue, offset;
   QString propertyName;
 
-  equidistance = contourSymbolizerElem.attribute( "equidistance" ).toDouble();
-  minValue = contourSymbolizerElem.attribute( "minValue" ).toDouble();
-  maxValue = contourSymbolizerElem.attribute( "maxValue" ).toDouble();
-  offset = contourSymbolizerElem.attribute( "offset" ).toDouble();
-  propertyName = contourSymbolizerElem.attribute( "propertyName" );
+  equidistance = contourSymbolizerElem.attribute( QStringLiteral( "equidistance" ) ).toDouble();
+  minValue = contourSymbolizerElem.attribute( QStringLiteral( "minValue" ) ).toDouble();
+  maxValue = contourSymbolizerElem.attribute( QStringLiteral( "maxValue" ) ).toDouble();
+  offset = contourSymbolizerElem.attribute( QStringLiteral( "offset" ) ).toDouble();
+  propertyName = contourSymbolizerElem.attribute( QStringLiteral( "propertyName" ) );
 
   if ( equidistance <= 0.0 )
   {
@@ -1415,11 +1029,11 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
 
   int /* b3D = FALSE, */ bNoDataSet = FALSE, bIgnoreNoData = FALSE;
 
-  hSrcDS = GDALOpen( TO8( rasterLayer->source() ), GA_ReadOnly );
+  hSrcDS = GDALOpen( rasterLayer->source().toUtf8().constData(), GA_ReadOnly );
   if ( !hSrcDS )
   {
     delete [] adfFixedLevels;
-    throw QgsMapServiceException( "LayerNotDefined", "Operation request is for a file not available on the server." );
+    throw QgsMapServiceException( QStringLiteral( "LayerNotDefined" ), QStringLiteral( "Operation request is for a file not available on the server." ) );
   }
 
   hBand = GDALGetRasterBand( hSrcDS, nBandIn );
@@ -1456,14 +1070,14 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
   {
     //fprintf( FCGI_stderr, "Unable to find format driver named 'ESRI Shapefile'.\n" );
     delete [] adfFixedLevels;
-    throw QgsMapServiceException( "LayerNotDefined", "Operation request is for a file not available on the server." );
+    throw QgsMapServiceException( QStringLiteral( "LayerNotDefined" ), QStringLiteral( "Operation request is for a file not available on the server." ) );
   }
 
-  hDS = OGR_Dr_CreateDataSource( hDriver, TO8( tmpFileName ), nullptr );
+  hDS = OGR_Dr_CreateDataSource( hDriver, tmpFileName.toUtf8().constData(), nullptr );
   if ( !hDS )
   {
     delete [] adfFixedLevels;
-    throw QgsMapServiceException( "LayerNotDefined", "Operation request cannot create data source." );
+    throw QgsMapServiceException( QStringLiteral( "LayerNotDefined" ), QStringLiteral( "Operation request cannot create data source." ) );
   }
 
   hLayer = OGR_DS_CreateLayer( hDS, "contour", hSRS,
@@ -1472,7 +1086,7 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
   if ( !hLayer )
   {
     delete [] adfFixedLevels;
-    throw QgsMapServiceException( "LayerNotDefined", "Operation request could not create contour file." );
+    throw QgsMapServiceException( QStringLiteral( "LayerNotDefined" ), QStringLiteral( "Operation request could not create contour file." ) );
   }
 
   hFld = OGR_Fld_Create( "ID", OFTInteger );
@@ -1482,7 +1096,7 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
 
   if ( !propertyName.isEmpty() )
   {
-    hFld = OGR_Fld_Create( TO8( propertyName ), OFTReal );
+    hFld = OGR_Fld_Create( propertyName.toUtf8().constData(), OFTReal );
     OGR_Fld_SetWidth( hFld, 12 );
     OGR_Fld_SetPrecision( hFld, 3 );
     OGR_L_CreateField( hLayer, hFld, FALSE );
@@ -1510,13 +1124,13 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
   mFilePathsToRemove.push_back( tmpBaseName + ".dbf" );
   mFilePathsToRemove.push_back( tmpBaseName + ".shx" );
 
-  QgsVectorLayer* contourLayer = new QgsVectorLayer( tmpFileName, "layer", "ogr" );
+  QgsVectorLayer* contourLayer = new QgsVectorLayer( tmpFileName, QStringLiteral( "layer" ), QStringLiteral( "ogr" ) );
 
   //create renderer
-  QgsFeatureRendererV2* theRenderer = rendererFromUserStyle( userStyleElem, contourLayer );
-  contourLayer->setRendererV2( theRenderer );
+  QgsFeatureRenderer* theRenderer = rendererFromUserStyle( userStyleElem, contourLayer );
+  contourLayer->setRenderer( theRenderer );
 
-  //add labelling if requested
+  //add labeling if requested
   labelSettingsFromUserStyle( userStyleElem, contourLayer );
 
   QgsDebugMsg( "Returning the contour layer" );
@@ -1531,10 +1145,10 @@ QDomElement QgsSLDConfigParser::findUserLayerElement( const QString& layerName )
     QDomElement sldElement = mXMLDoc->documentElement();
     if ( !sldElement.isNull() )
     {
-      QDomNodeList UserLayerList = sldElement.elementsByTagName( "UserLayer" );
+      QDomNodeList UserLayerList = sldElement.elementsByTagName( QStringLiteral( "UserLayer" ) );
       for ( int i = 0; i < UserLayerList.size(); ++i )
       {
-        QDomNodeList nameList = UserLayerList.item( i ).toElement().elementsByTagName( "Name" );
+        QDomNodeList nameList = UserLayerList.item( i ).toElement().elementsByTagName( QStringLiteral( "Name" ) );
         if ( !nameList.isEmpty() )
         {
           if ( nameList.item( 0 ).toElement().text() == layerName )
@@ -1550,12 +1164,23 @@ QDomElement QgsSLDConfigParser::findUserLayerElement( const QString& layerName )
 
 QgsMapLayer* QgsSLDConfigParser::mapLayerFromUserLayer( const QDomElement& userLayerElem, const QString& layerName, bool allowCaching ) const
 {
+  if ( !mFallbackParser )
+  {
+    return 0;
+  }
+
+  if ( !mFallbackParser->allowRequestDefinedDatasources() )
+  {
+    QgsMessageLog::logMessage( "The project configuration does not allow datasources defined in the request", "Server", QgsMessageLog::CRITICAL );
+    return 0;
+  }
+
   QgsDebugMsg( "Entering." );
   QgsMSLayerBuilder* layerBuilder = nullptr;
   QDomElement builderRootElement;
 
   //hosted vector data?
-  QDomNode hostedVDSNode = userLayerElem.namedItem( "HostedVDS" );
+  QDomNode hostedVDSNode = userLayerElem.namedItem( QStringLiteral( "HostedVDS" ) );
   if ( !hostedVDSNode.isNull() )
   {
     builderRootElement = hostedVDSNode.toElement();
@@ -1563,7 +1188,7 @@ QgsMapLayer* QgsSLDConfigParser::mapLayerFromUserLayer( const QDomElement& userL
   }
 
   //hosted raster data?
-  QDomNode hostedRDSNode = userLayerElem.namedItem( "HostedRDS" );
+  QDomNode hostedRDSNode = userLayerElem.namedItem( QStringLiteral( "HostedRDS" ) );
   if ( !layerBuilder && !hostedRDSNode.isNull() )
   {
     builderRootElement = hostedRDSNode.toElement();
@@ -1571,7 +1196,7 @@ QgsMapLayer* QgsSLDConfigParser::mapLayerFromUserLayer( const QDomElement& userL
   }
 
   //remote OWS (WMS, WFS, WCS)?
-  QDomNode remoteOWSNode = userLayerElem.namedItem( "RemoteOWS" );
+  QDomNode remoteOWSNode = userLayerElem.namedItem( QStringLiteral( "RemoteOWS" ) );
   if ( !layerBuilder && !remoteOWSNode.isNull() )
   {
     builderRootElement = remoteOWSNode.toElement();
@@ -1579,7 +1204,7 @@ QgsMapLayer* QgsSLDConfigParser::mapLayerFromUserLayer( const QDomElement& userL
   }
 
   //remote vector/raster datasource
-  QDomNode remoteRDSNode = userLayerElem.namedItem( "RemoteRDS" );
+  QDomNode remoteRDSNode = userLayerElem.namedItem( QStringLiteral( "RemoteRDS" ) );
   if ( !layerBuilder && !remoteRDSNode.isNull() )
   {
     builderRootElement = remoteRDSNode.toElement();
@@ -1587,7 +1212,7 @@ QgsMapLayer* QgsSLDConfigParser::mapLayerFromUserLayer( const QDomElement& userL
     QgsDebugMsg( "Detected remote raster datasource" );
   }
 
-  QDomNode remoteVDSNode = userLayerElem.namedItem( "RemoteVDS" );
+  QDomNode remoteVDSNode = userLayerElem.namedItem( QStringLiteral( "RemoteVDS" ) );
   if ( !layerBuilder && !remoteVDSNode.isNull() )
   {
     builderRootElement = remoteVDSNode.toElement();
@@ -1596,14 +1221,14 @@ QgsMapLayer* QgsSLDConfigParser::mapLayerFromUserLayer( const QDomElement& userL
   }
 
   //sent vector/raster datasource
-  QDomNode sentVDSNode = userLayerElem.namedItem( "SentVDS" );
+  QDomNode sentVDSNode = userLayerElem.namedItem( QStringLiteral( "SentVDS" ) );
   if ( !layerBuilder && !sentVDSNode.isNull() )
   {
     builderRootElement = sentVDSNode.toElement();
     layerBuilder = new QgsSentDataSourceBuilder();
   }
 
-  QDomNode sentRDSNode = userLayerElem.namedItem( "SentRDS" );
+  QDomNode sentRDSNode = userLayerElem.namedItem( QStringLiteral( "SentRDS" ) );
   if ( !layerBuilder && !sentRDSNode.isNull() )
   {
     builderRootElement = sentRDSNode.toElement();
@@ -1624,7 +1249,7 @@ QgsMapLayer* QgsSLDConfigParser::mapLayerFromUserLayer( const QDomElement& userL
   //maybe the datasource is defined in the fallback SLD?
   if ( !theMapLayer && mFallbackParser )
   {
-    QList<QgsMapLayer*> fallbackList = mFallbackParser->mapLayerFromStyle( layerName, "", allowCaching );
+    QList<QgsMapLayer*> fallbackList = mFallbackParser->mapLayerFromStyle( layerName, QLatin1String( "" ), allowCaching );
     if ( !fallbackList.isEmpty() )
     {
       QgsMapLayer* fallbackLayer = fallbackList.at( 0 ); //todo: prevent crash if layer list is empty
@@ -1651,7 +1276,7 @@ QgsMapLayer* QgsSLDConfigParser::mapLayerFromUserLayer( const QDomElement& userL
 
   //raster layer from interpolation
 
-  QDomNode rasterInterpolationNode = userLayerElem.namedItem( "RasterInterpolation" );
+  QDomNode rasterInterpolationNode = userLayerElem.namedItem( QStringLiteral( "RasterInterpolation" ) );
   if ( !rasterInterpolationNode.isNull() )
   {
     QgsVectorLayer* vectorCast = dynamic_cast<QgsVectorLayer*>( theMapLayer );
@@ -1669,7 +1294,7 @@ QgsMapLayer* QgsSLDConfigParser::mapLayerFromUserLayer( const QDomElement& userL
 void QgsSLDConfigParser::setCrsForLayer( const QDomElement& layerElem, QgsMapLayer* ml ) const
 {
   //create CRS if specified as attribute ("epsg" or "proj")
-  QString epsg = layerElem.attribute( "epsg", "" );
+  QString epsg = layerElem.attribute( QStringLiteral( "epsg" ), QLatin1String( "" ) );
   if ( !epsg.isEmpty() )
   {
     bool conversionOk;
@@ -1677,33 +1302,40 @@ void QgsSLDConfigParser::setCrsForLayer( const QDomElement& layerElem, QgsMapLay
     if ( conversionOk )
     {
       //set spatial ref sys
-      QgsCoordinateReferenceSystem srs;
-      srs.createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgnr ) );
+      QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:%1" ).arg( epsgnr ) );
       ml->setCrs( srs );
     }
   }
   else
   {
-    QString projString = layerElem.attribute( "proj", "" );
+    QString projString = layerElem.attribute( QStringLiteral( "proj" ), QLatin1String( "" ) );
     if ( !projString.isEmpty() )
     {
-      QgsCoordinateReferenceSystem srs;
-      srs.createFromProj4( projString );
+      QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromProj4( projString );
       //TODO: createFromProj4 used to save to the user database any new CRS
       // this behavior was changed in order to separate creation and saving.
       // Not sure if it necessary to save it here, should be checked by someone
       // familiar with the code (should also give a more descriptive name to the generated CRS)
       if ( srs.srsid() == 0 )
       {
-        QString myName = QString( " * %1 (%2)" )
+        QString myName = QStringLiteral( " * %1 (%2)" )
                          .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
                                srs.toProj4() );
-        srs.saveAsUserCRS( myName );
+        srs.saveAsUserCrs( myName );
       }
 
       ml->setCrs( srs );
     }
   }
+}
+
+bool QgsSLDConfigParser::allowRequestDefinedDatasources() const
+{
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->allowRequestDefinedDatasources();
+  }
+  return false;
 }
 
 

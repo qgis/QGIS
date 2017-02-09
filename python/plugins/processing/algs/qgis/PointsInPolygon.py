@@ -27,8 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
-from PyQt.QtCore import QVariant
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QVariant
 
 from qgis.core import QgsGeometry, QgsFeatureRequest, QgsFeature, QgsField
 
@@ -55,28 +55,27 @@ class PointsInPolygon(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Count points in polygon')
         self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
         self.addParameter(ParameterVector(self.POLYGONS,
-                                          self.tr('Polygons'), [ParameterVector.VECTOR_TYPE_POLYGON]))
+                                          self.tr('Polygons'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterVector(self.POINTS,
-                                          self.tr('Points'), [ParameterVector.VECTOR_TYPE_POINT]))
+                                          self.tr('Points'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterString(self.FIELD,
                                           self.tr('Count field name'), 'NUMPOINTS'))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Count')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Count'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         polyLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POLYGONS))
         pointLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
         fieldName = self.getParameterValue(self.FIELD)
 
-        polyProvider = polyLayer.dataProvider()
-        fields = polyProvider.fields()
+        fields = polyLayer.fields()
         fields.append(QgsField(fieldName, QVariant.Int))
 
         (idxCount, fieldList) = vector.findOrCreateField(polyLayer,
-                                                         polyLayer.pendingFields(), fieldName)
+                                                         polyLayer.fields(), fieldName)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields.toList(), polyProvider.geometryType(), polyProvider.crs())
+            fields.toList(), polyLayer.wkbType(), polyLayer.crs())
 
         spatialIndex = vector.spatialindex(pointLayer)
 
@@ -97,7 +96,7 @@ class PointsInPolygon(GeoAlgorithm):
             count = 0
             points = spatialIndex.intersects(geom.boundingBox())
             if len(points) > 0:
-                request = QgsFeatureRequest().setFilterFids(points)
+                request = QgsFeatureRequest().setFilterFids(points).setSubsetOfAttributes([])
                 fit = pointLayer.getFeatures(request)
                 ftPoint = QgsFeature()
                 while fit.nextFeature(ftPoint):
@@ -113,6 +112,6 @@ class PointsInPolygon(GeoAlgorithm):
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

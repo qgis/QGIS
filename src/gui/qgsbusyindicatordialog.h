@@ -22,6 +22,7 @@
 
 #include <QDialog>
 #include <QLabel>
+#include "qgis_gui.h"
 
 
 /** \ingroup gui
@@ -32,14 +33,14 @@ class GUI_EXPORT QgsBusyIndicatorDialog : public QDialog
 {
     Q_OBJECT
   public:
+
     /** Constructor
      * Modal busy indicator dialog with no buttons.
      * @param message Text to show above busy progress indicator.
      * @param parent parent object (owner)
      * @param fl widget flags
      */
-    QgsBusyIndicatorDialog( const QString& message = "", QWidget *parent = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
-    ~QgsBusyIndicatorDialog();
+    QgsBusyIndicatorDialog( const QString& message = "", QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
     QString message() const { return mMessage; }
     void setMessage( const QString& message );

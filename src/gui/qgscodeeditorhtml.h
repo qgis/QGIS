@@ -17,6 +17,7 @@
 #define QGSCODEEDITORHTML_H
 
 #include "qgscodeeditor.h"
+#include "qgis_gui.h"
 
 
 /** \ingroup gui
@@ -31,7 +32,6 @@ class GUI_EXPORT QgsCodeEditorHTML : public QgsCodeEditor
 
   public:
     QgsCodeEditorHTML( QWidget *parent = nullptr );
-    ~QgsCodeEditorHTML();
 
   private:
     void setSciLexerHTML();

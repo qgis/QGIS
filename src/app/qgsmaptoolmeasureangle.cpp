@@ -44,7 +44,7 @@ QgsMapToolMeasureAngle::~QgsMapToolMeasureAngle()
 
 void QgsMapToolMeasureAngle::canvasMoveEvent( QgsMapMouseEvent* e )
 {
-  if ( !mRubberBand || mAnglePoints.size() < 1 || mAnglePoints.size() > 2 || !mRubberBand )
+  if ( !mRubberBand || mAnglePoints.size() < 1 || mAnglePoints.size() > 2 )
   {
     return;
   }
@@ -93,7 +93,8 @@ void QgsMapToolMeasureAngle::canvasReleaseEvent( QgsMapMouseEvent* e )
   {
     if ( !mResultDisplay )
     {
-      mResultDisplay = new QgsDisplayAngle( this, Qt::WindowStaysOnTopHint );
+      mResultDisplay = new QgsDisplayAngle( this );
+      mResultDisplay->setWindowFlags( mResultDisplay->windowFlags() | Qt::Tool );
       QObject::connect( mResultDisplay, SIGNAL( rejected() ), this, SLOT( stopMeasuring() ) );
     }
     configureDistanceArea();
@@ -131,12 +132,12 @@ void QgsMapToolMeasureAngle::deactivate()
 void QgsMapToolMeasureAngle::createRubberBand()
 {
   delete mRubberBand;
-  mRubberBand = new QgsRubberBand( mCanvas, QGis::Line );
+  mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::LineGeometry );
 
   QSettings settings;
-  int myRed = settings.value( "/qgis/default_measure_color_red", 180 ).toInt();
-  int myGreen = settings.value( "/qgis/default_measure_color_green", 180 ).toInt();
-  int myBlue = settings.value( "/qgis/default_measure_color_blue", 180 ).toInt();
+  int myRed = settings.value( QStringLiteral( "/qgis/default_measure_color_red" ), 180 ).toInt();
+  int myGreen = settings.value( QStringLiteral( "/qgis/default_measure_color_green" ), 180 ).toInt();
+  int myBlue = settings.value( QStringLiteral( "/qgis/default_measure_color_blue" ), 180 ).toInt();
   mRubberBand->setColor( QColor( myRed, myGreen, myBlue, 100 ) );
   mRubberBand->setWidth( 3 );
 }
@@ -180,9 +181,8 @@ void QgsMapToolMeasureAngle::updateSettings()
 
 void QgsMapToolMeasureAngle::configureDistanceArea()
 {
-  QString ellipsoidId = QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE );
+  QString ellipsoidId = QgsProject::instance()->ellipsoid();
   mDa.setSourceCrs( mCanvas->mapSettings().destinationCrs().srsid() );
   mDa.setEllipsoid( ellipsoidId );
-  // Only use ellipsoidal calculation when project wide transformation is enabled.
-  mDa.setEllipsoidalMode( mCanvas->mapSettings().hasCrsTransformEnabled() );
+  mDa.setEllipsoidalMode( true );
 }

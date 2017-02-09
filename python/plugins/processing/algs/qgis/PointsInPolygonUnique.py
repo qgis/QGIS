@@ -25,7 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import QgsField, QgsFeatureRequest, QgsFeature, QgsGeometry
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -47,31 +47,30 @@ class PointsInPolygonUnique(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Count unique points in polygon')
         self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
         self.addParameter(ParameterVector(self.POLYGONS,
-                                          self.tr('Polygons'), [ParameterVector.VECTOR_TYPE_POLYGON]))
+                                          self.tr('Polygons'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterVector(self.POINTS,
-                                          self.tr('Points'), [ParameterVector.VECTOR_TYPE_POINT]))
+                                          self.tr('Points'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterTableField(self.CLASSFIELD,
                                               self.tr('Class field'), self.POINTS))
         self.addParameter(ParameterString(self.FIELD,
                                           self.tr('Count field name'), 'NUMPOINTS'))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Unique count')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Unique count'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         polyLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POLYGONS))
         pointLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
         fieldName = self.getParameterValue(self.FIELD)
         classFieldName = self.getParameterValue(self.CLASSFIELD)
 
-        polyProvider = polyLayer.dataProvider()
-        fields = polyProvider.fields()
+        fields = polyLayer.fields()
         fields.append(QgsField(fieldName, QVariant.Int))
 
-        classFieldIndex = pointLayer.fieldNameIndex(classFieldName)
+        classFieldIndex = pointLayer.fields().lookupField(classFieldName)
         (idxCount, fieldList) = vector.findOrCreateField(polyLayer,
-                                                         polyLayer.pendingFields(), fieldName)
+                                                         polyLayer.fields(), fieldName)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields.toList(), polyProvider.geometryType(), polyProvider.crs())
+            fields.toList(), polyLayer.wkbType(), polyLayer.crs())
 
         spatialIndex = vector.spatialindex(pointLayer)
 
@@ -91,7 +90,7 @@ class PointsInPolygonUnique(GeoAlgorithm):
             classes = set()
             points = spatialIndex.intersects(geom.boundingBox())
             if len(points) > 0:
-                request = QgsFeatureRequest().setFilterFids(points)
+                request = QgsFeatureRequest().setFilterFids(points).setSubsetOfAttributes([classFieldIndex])
                 fit = pointLayer.getFeatures(request)
                 ftPoint = QgsFeature()
                 while fit.nextFeature(ftPoint):
@@ -109,6 +108,6 @@ class PointsInPolygonUnique(GeoAlgorithm):
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

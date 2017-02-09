@@ -28,9 +28,9 @@ __revision__ = '$Format:%H$'
 import os
 import random
 
-from PyQt.QtGui import QIcon
-from PyQt.QtCore import QVariant
-from qgis.core import (QGis, QgsFields, QgsField, QgsFeature, QgsPoint,
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QVariant
+from qgis.core import (Qgis, QgsFields, QgsField, QgsFeature, QgsPoint, QgsWkbTypes,
                        QgsGeometry, QgsSpatialIndex, QgsDistanceArea)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -64,7 +64,7 @@ class RandomPointsPolygonsVariable(GeoAlgorithm):
                            self.tr('Points density')]
 
         self.addParameter(ParameterVector(self.VECTOR,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
+                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterSelection(self.STRATEGY,
                                              self.tr('Sampling strategy'), self.strategies, 0))
         self.addParameter(ParameterTableField(self.FIELD,
@@ -72,9 +72,9 @@ class RandomPointsPolygonsVariable(GeoAlgorithm):
                                               self.VECTOR, ParameterTableField.DATA_TYPE_NUMBER))
         self.addParameter(ParameterNumber(self.MIN_DISTANCE,
                                           self.tr('Minimum distance'), 0.0, None, 0.0))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.VECTOR))
         fieldName = self.getParameterValue(self.FIELD)
@@ -84,18 +84,18 @@ class RandomPointsPolygonsVariable(GeoAlgorithm):
         fields = QgsFields()
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, QGis.WKBPoint, layer.dataProvider().crs())
+            fields, QgsWkbTypes.Point, layer.crs())
 
         da = QgsDistanceArea()
 
         features = vector.features(layer)
         for current, f in enumerate(features):
-            fGeom = QgsGeometry(f.geometry())
+            fGeom = f.geometry()
             bbox = fGeom.boundingBox()
             if strategy == 0:
                 pointCount = int(f[fieldName])
             else:
-                pointCount = int(round(f[fieldName] * da.measure(fGeom)))
+                pointCount = int(round(f[fieldName] * da.measureArea(fGeom)))
 
             if strategy == 0 and pointCount == 0:
                 continue
@@ -127,7 +127,7 @@ class RandomPointsPolygonsVariable(GeoAlgorithm):
                     index.insertFeature(f)
                     points[nPoints] = pnt
                     nPoints += 1
-                    progress.setPercentage(int(nPoints * total))
+                    feedback.setProgress(int(nPoints * total))
                 nIterations += 1
 
             if nPoints < pointCount:
@@ -135,6 +135,6 @@ class RandomPointsPolygonsVariable(GeoAlgorithm):
                                        self.tr('Can not generate requested number of random '
                                                'points. Maximum number of attempts exceeded.'))
 
-            progress.setPercentage(0)
+            feedback.setProgress(0)
 
         del writer

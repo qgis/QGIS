@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include "qgsfilewidget.h"
 
@@ -52,7 +52,7 @@ void TestQgsFileWidget::cleanup()
 void TestQgsFileWidget::relativePath()
 {
   QgsFileWidget* w = new QgsFileWidget();
-  w->setDefaultRoot( "/home/test" );
+  w->setDefaultRoot( QStringLiteral( "/home/test" ) );
   w->setRelativeStorage( QgsFileWidget::Absolute );
   QCOMPARE( w->relativePath( "/home/test2/file1.ext", true ), QString( "/home/test2/file1.ext" ) );
   QCOMPARE( w->relativePath( "/home/test2/file2.ext", false ), QString( "/home/test2/file2.ext" ) );
@@ -66,7 +66,7 @@ void TestQgsFileWidget::relativePath()
 void TestQgsFileWidget::toUrl()
 {
   QgsFileWidget* w = new QgsFileWidget();
-  w->setDefaultRoot( "/home/test" );
+  w->setDefaultRoot( QStringLiteral( "/home/test" ) );
   w->setRelativeStorage( QgsFileWidget::Absolute );
   w->setFullUrl( true );
   QCOMPARE( w->toUrl( "/home/test2/file1.ext" ), QString( "<a href=\"file:///home/test2/file1.ext\">/home/test2/file1.ext</a>" ) );
@@ -83,5 +83,5 @@ void TestQgsFileWidget::toUrl()
 
 
 
-QTEST_MAIN( TestQgsFileWidget )
+QGSTEST_MAIN( TestQgsFileWidget )
 #include "testqgsfilewidget.moc"

@@ -17,10 +17,11 @@
 #define QGSVECTORLAYERSELECTIONMANAGER_H
 
 #include "qgsifeatureselectionmanager.h"
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 
-/**
+/** \ingroup gui
  * \class QgsVectorLayerSelectionManager
  * \note not available in Python bindings
  */
@@ -30,6 +31,7 @@ class GUI_EXPORT QgsVectorLayerSelectionManager : public QgsIFeatureSelectionMan
 
   public:
     explicit QgsVectorLayerSelectionManager( QgsVectorLayer* layer, QObject *parent = nullptr );
+
     /**
      * The number of features that are selected in this layer
      *
@@ -66,7 +68,7 @@ class GUI_EXPORT QgsVectorLayerSelectionManager : public QgsIFeatureSelectionMan
      * @return A list of { @link QgsFeatureIds }
      * @see selectedFeatures()
      */
-    virtual const QgsFeatureIds& selectedFeaturesIds() const override;
+    virtual const QgsFeatureIds& selectedFeatureIds() const override;
 
   private:
     QgsVectorLayer* mLayer;

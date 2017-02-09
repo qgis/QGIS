@@ -16,6 +16,7 @@
 #define QGSFILEDROPEDIT_H
 
 #include <QLineEdit>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * A line edit for capturing file names that can have files dropped onto
@@ -27,7 +28,6 @@ class GUI_EXPORT QgsFileDropEdit: public QLineEdit
 
   public:
     QgsFileDropEdit( QWidget *parent = nullptr );
-    virtual ~QgsFileDropEdit();
 
     bool isDirOnly() const { return mDirOnly; }
     void setDirOnly( bool isDirOnly );

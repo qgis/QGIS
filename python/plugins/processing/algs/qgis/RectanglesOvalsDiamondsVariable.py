@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Alexander Bruy'
 __date__ = 'August 2012'
@@ -28,9 +29,9 @@ __revision__ = '$Format:%H$'
 import os
 import math
 
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QGis, QgsFeature, QgsGeometry, QgsPoint
+from qgis.core import QgsWkbTypes, QgsFeature, QgsGeometry, QgsPoint
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -61,7 +62,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'),
-                                          [ParameterVector.VECTOR_TYPE_POINT]))
+                                          [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterSelection(self.SHAPE,
                                              self.tr('Buffer shape'), self.shapes))
         self.addParameter(ParameterTableField(self.WIDTH,
@@ -84,9 +85,10 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                                           36))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
-                                    self.tr('Output')))
+                                    self.tr('Output'),
+                                    datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
         shape = self.getParameterValue(self.SHAPE)
@@ -97,8 +99,8 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
 
         writer = self.getOutputFromName(
             self.OUTPUT_LAYER).getVectorWriter(
-                layer.pendingFields().toList(),
-                QGis.WKBPolygon,
+                layer.fields().toList(),
+                QgsWkbTypes.Polygon,
                 layer.crs())
 
         outFeat = QgsFeature()
@@ -134,7 +136,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                 yOffset = h / 2.0
                 phi = angle * math.pi / 180
 
-                point = feat.constGeometry().asPoint()
+                point = feat.geometry().asPoint()
                 x = point.x()
                 y = point.y()
                 points = [(-xOffset, -yOffset), (-xOffset, yOffset), (xOffset, yOffset), (xOffset, -yOffset)]
@@ -158,7 +160,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                 xOffset = w / 2.0
                 yOffset = h / 2.0
 
-                point = feat.constGeometry().asPoint()
+                point = feat.geometry().asPoint()
                 x = point.x()
                 y = point.y()
                 points = [(-xOffset, -yOffset), (-xOffset, yOffset), (xOffset, yOffset), (xOffset, -yOffset)]
@@ -187,7 +189,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                 yOffset = h / 2.0
                 phi = angle * math.pi / 180
 
-                point = feat.constGeometry().asPoint()
+                point = feat.geometry().asPoint()
                 x = point.x()
                 y = point.y()
                 points = [(0.0, -yOffset), (-xOffset, 0.0), (0.0, yOffset), (xOffset, 0.0)]
@@ -211,7 +213,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                 xOffset = w / 2.0
                 yOffset = h / 2.0
 
-                point = feat.constGeometry().asPoint()
+                point = feat.geometry().asPoint()
                 x = point.x()
                 y = point.y()
                 points = [(0.0, -yOffset), (-xOffset, 0.0), (0.0, yOffset), (xOffset, 0.0)]
@@ -240,11 +242,11 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                 yOffset = h / 2.0
                 phi = angle * math.pi / 180
 
-                point = feat.constGeometry().asPoint()
+                point = feat.geometry().asPoint()
                 x = point.x()
                 y = point.y()
                 points = []
-                for t in [(2 * math.pi) / segments * i for i in xrange(segments)]:
+                for t in [(2 * math.pi) / segments * i for i in range(segments)]:
                     points.append((xOffset * math.cos(t), yOffset * math.sin(t)))
                 polygon = [[QgsPoint(i[0] * math.cos(phi) + i[1] * math.sin(phi) + x,
                                      -i[0] * math.sin(phi) + i[1] * math.cos(phi) + y) for i in points]]
@@ -266,11 +268,11 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                 xOffset = w / 2.0
                 yOffset = h / 2.0
 
-                point = feat.constGeometry().asPoint()
+                point = feat.geometry().asPoint()
                 x = point.x()
                 y = point.y()
                 points = []
-                for t in [(2 * math.pi) / segments * i for i in xrange(segments)]:
+                for t in [(2 * math.pi) / segments * i for i in range(segments)]:
                     points.append((xOffset * math.cos(t), yOffset * math.sin(t)))
                 polygon = [[QgsPoint(i[0] + x, i[1] + y) for i in points]]
 

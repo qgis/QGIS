@@ -38,7 +38,7 @@ class QgsExternalResourceWidget : QWidget
 
     //! returns the type of content used in the document viewer
     QgsExternalResourceWidget::DocumentViewerContent documentViewerContent() const;
-    //! setDocumentViewerContent defines the type of content to be shown. Widget will be adapated accordingly
+    //! setDocumentViewerContent defines the type of content to be shown. Widget will be adapted accordingly
     void setDocumentViewerContent( QgsExternalResourceWidget::DocumentViewerContent content );
 
     //! returns the height of the document viewer
@@ -58,6 +58,31 @@ class QgsExternalResourceWidget : QWidget
 
     //! defines if the widget is readonly
     void setReadOnly( bool readOnly );
+
+    /**
+     * Configures if paths are handled absolute or relative and if relative,
+     * which should be the base path.
+     */
+    QgsFileWidget::RelativeStorage relativeStorage() const;
+
+    /**
+     * Configures if paths are handled absolute or relative and if relative,
+     * which should be the base path.
+     */
+    void setRelativeStorage( QgsFileWidget::RelativeStorage relativeStorage );
+
+
+    /**
+     * Configures the base path which should be used if the relativeStorage property
+     * is set to QgsFileWidget::RelativeDefaultPath.
+     */
+    QString defaultRoot() const;
+
+    /**
+     * Configures the base path which should be used if the relativeStorage property
+     * is set to QgsFileWidget::RelativeDefaultPath.
+     */
+    void setDefaultRoot(const QString& defaultRoot);
 
   signals:
     //! emitteed as soon as the current document changes

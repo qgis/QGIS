@@ -20,6 +20,8 @@
 #include <QString>
 #include <QObject>
 
+#include "qgis_core.h"
+
 class QgsMessageOutput;
 typedef QgsMessageOutput*( *MESSAGE_OUTPUT_CREATOR )();
 
@@ -42,8 +44,7 @@ class CORE_EXPORT QgsMessageOutput
     //! message can be in plain text or in html format
     enum MessageType { MessageText, MessageHtml };
 
-    //! virtual destructor
-    virtual ~QgsMessageOutput();
+    virtual ~QgsMessageOutput() = default;
 
     //! set message, it won't be displayed until
     virtual void setMessage( const QString& message, MessageType msgType ) = 0;
@@ -78,7 +79,7 @@ class CORE_EXPORT QgsMessageOutput
 };
 
 
-/**
+/** \ingroup core
 \brief Default implementation of message output interface
 
 This class outputs messages to the standard output. Therefore it might

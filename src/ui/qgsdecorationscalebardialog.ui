@@ -55,7 +55,7 @@
       <item row="3" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QgsColorButtonV2" name="pbnChangeColor">
+         <widget class="QgsColorButton" name="pbnChangeColor">
           <property name="minimumSize">
            <size>
             <width>150</width>
@@ -379,9 +379,9 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

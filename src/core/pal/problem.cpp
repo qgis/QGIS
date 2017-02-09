@@ -41,7 +41,7 @@
 #include <cfloat>
 #include <limits.h> //for INT_MAX
 
-#include "qgslabelingenginev2.h"
+#include "qgslabelingengine.h"
 
 using namespace pal;
 
@@ -2268,7 +2268,7 @@ QList<LabelPosition*> * Problem::getSolution( bool returnInactive )
     }
     else if ( returnInactive
               || mLabelPositions.at( featStartId[i] )->getFeaturePart()->layer()->displayAll()
-              || mLabelPositions.at( featStartId[i] )->getFeaturePart()->getAlwaysShow() )
+              || mLabelPositions.at( featStartId[i] )->getFeaturePart()->alwaysShow() )
     {
       solList->push_back( mLabelPositions.at( featStartId[i] ) ); // unplaced label
     }
@@ -2277,7 +2277,7 @@ QList<LabelPosition*> * Problem::getSolution( bool returnInactive )
   // if features collide, order by size, so smaller ones appear on top
   if ( returnInactive )
   {
-    qSort( solList->begin(), solList->end(), compareLabelArea );
+    std::sort( solList->begin(), solList->end(), compareLabelArea );
   }
 
   return solList;

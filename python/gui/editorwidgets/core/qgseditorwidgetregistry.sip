@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+
 /**
  * This class manages all known edit widget factories
  */
@@ -44,6 +45,17 @@ class QgsEditorWidgetRegistry : QObject
     static void initEditors( QgsMapCanvas* mapCanvas = 0, QgsMessageBar* messageBar = 0 );
 
     /**
+     * Find the best editor widget and its configuration for a given field.
+     *
+     * @param vl        The vector layer for which this widget will be created
+     * @param fieldIdx  The field index on the specified layer for which this widget will be created
+     *
+     * @return The id of the widget type to use and its config
+     */
+    QgsEditorWidgetSetup findBest( const QgsVectorLayer* vl, const QString& fieldName ) const;
+
+
+    /**
      * Create an attribute editor widget wrapper of a given type for a given field.
      * The editor may be NULL if you want the widget wrapper to create a default widget.
      *
@@ -60,7 +72,7 @@ class QgsEditorWidgetRegistry : QObject
     QgsEditorWidgetWrapper* create( const QString& widgetId,
                                     QgsVectorLayer* vl,
                                     int fieldIdx,
-                                    const QgsEditorWidgetConfig& config,
+                                    const QVariantMap& config,
                                     QWidget* editor,
                                     QWidget* parent /TransferThis/,
                                     const QgsAttributeEditorContext& context = QgsAttributeEditorContext() ) /Factory/;
@@ -68,7 +80,7 @@ class QgsEditorWidgetRegistry : QObject
     QgsSearchWidgetWrapper* createSearchWidget( const QString& widgetId,
         QgsVectorLayer* vl,
         int fieldIdx,
-        const QgsEditorWidgetConfig& config,
+        const QVariantMap& config,
         QWidget* parent /TransferThis/,
         const QgsAttributeEditorContext& context = QgsAttributeEditorContext() ) /Factory/;
 
@@ -98,7 +110,7 @@ class QgsEditorWidgetRegistry : QObject
      *
      * @return All ids and factories
      */
-    const QMap<QString, QgsEditorWidgetFactory*>& factories();
+    QMap<QString, QgsEditorWidgetFactory*> factories();
 
     /**
      * Get a factory for the given widget type id.
@@ -116,4 +128,11 @@ class QgsEditorWidgetRegistry : QObject
      * @return true, if successful, false, if the widgetId is already in use or widgetFactory is NULL
      */
     bool registerWidget( const QString& widgetId, QgsEditorWidgetFactory* widgetFactory /Transfer/ );
+
+     /**
+     * Register a new auto-conf plugin.
+     *
+     * @param plugin The plugin (ownership is transferred)
+     */
+    void registerAutoConfPlugin( QgsEditorWidgetAutoConfPlugin* plugin );
 };

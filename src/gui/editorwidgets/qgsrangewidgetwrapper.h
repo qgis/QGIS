@@ -20,11 +20,15 @@
 
 #include <QSpinBox>
 #include <QDoubleSpinBox>
+#include "qgis_gui.h"
 
-#include "qgsdial.h"
-#include "qgsslider.h"
+class QAbstractSlider;
+class QSlider;
+class QDial;
+class QgsSlider;
+class QgsDial;
 
-/**
+/** \ingroup gui
  * Wraps a range widget.
  *
  * Options:
@@ -55,8 +59,11 @@ class GUI_EXPORT QgsRangeWidgetWrapper : public QgsEditorWidgetWrapper
   public slots:
     virtual void setValue( const QVariant& value ) override;
 
-  public slots:
-    void valueChanged( const QVariant& );
+  private slots:
+
+    // NOTE - cannot be named "valueChanged", otherwise implicit conversion to QVariant results in
+    // infinite recursion
+    void valueChangedVariant( const QVariant& );
 
   private:
     QSpinBox* mIntSpinBox;

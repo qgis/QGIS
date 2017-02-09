@@ -18,6 +18,7 @@
 #ifndef QGSCOMPOSERMODEL_H
 #define QGSCOMPOSERMODEL_H
 
+#include "qgis_core.h"
 #include <QAbstractItemModel>
 #include <QSortFilterProxyModel>
 #include <QStringList>
@@ -29,7 +30,7 @@ class QGraphicsItem;
 
 /**
  * \class QgsComposerModel
- * \ingroup MapComposer
+ * \ingroup core
  *
  * A model for items attached to a composition. The model also maintains the z-order for the
  * composition, and must be notified whenever item stacking changes.
@@ -54,9 +55,9 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
     //! Columns returned by the model
     enum Columns
     {
-      Visibility = 0, /*!< Item visibility check box */
-      LockStatus, /*!< Item lock status check box */
-      ItemId, /*!< Item ID */
+      Visibility = 0, //!< Item visibility check box
+      LockStatus, //!< Item lock status check box
+      ItemId, //!< Item ID
     };
 
     /** Constructor
@@ -64,8 +65,6 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @param parent parent object
      */
     explicit QgsComposerModel( QgsComposition* composition, QObject* parent = nullptr );
-
-    ~QgsComposerModel();
 
     //reimplemented QAbstractItemModel methods
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
@@ -255,15 +254,15 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
 
   protected:
 
-    /** Maintains z-Order of items. Starts with item at position 1 (position 0 is always paper item)*/
+    //! Maintains z-Order of items. Starts with item at position 1 (position 0 is always paper item)
     QList<QgsComposerItem*> mItemZList;
 
-    /** Cached list of items from mItemZList which are currently in the scene*/
+    //! Cached list of items from mItemZList which are currently in the scene
     QList<QgsComposerItem*> mItemsInScene;
 
   private:
 
-    /** Parent composition*/
+    //! Parent composition
     QgsComposition* mComposition;
 
     /** Returns the QgsComposerItem corresponding to a QModelIndex, if possible
@@ -293,10 +292,10 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
 
 
 /**
- * /class QgsComposerProxyModel
- * /ingroup core
- * /brief Allows for filtering a QgsComposerModel by item type.
- * /note added in 2.16
+ * \class QgsComposerProxyModel
+ * \ingroup core
+ * \brief Allows for filtering a QgsComposerModel by item type.
+ * \note added in 2.16
  */
 class CORE_EXPORT QgsComposerProxyModel: public QSortFilterProxyModel
 {

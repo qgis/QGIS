@@ -9,6 +9,8 @@ class QgsMapToolPan : QgsMapTool
     //! constructor
     QgsMapToolPan( QgsMapCanvas* canvas );
 
+    virtual Flags flags() const;
+
     //! Mouse press event
     virtual void canvasPressEvent( QgsMapMouseEvent* e );
 
@@ -18,6 +20,5 @@ class QgsMapToolPan : QgsMapTool
     //! Overridden mouse release event
     virtual void canvasReleaseEvent( QgsMapMouseEvent* e );
 
-    virtual bool isTransient();
 };
 

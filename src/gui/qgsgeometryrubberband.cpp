@@ -16,12 +16,12 @@
  ***************************************************************************/
 
 #include "qgsgeometryrubberband.h"
-#include "qgsabstractgeometryv2.h"
+#include "qgsabstractgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgspointv2.h"
 #include <QPainter>
 
-QgsGeometryRubberBand::QgsGeometryRubberBand( QgsMapCanvas* mapCanvas, QGis::GeometryType geomType ): QgsMapCanvasItem( mapCanvas ),
+QgsGeometryRubberBand::QgsGeometryRubberBand( QgsMapCanvas* mapCanvas, QgsWkbTypes::GeometryType geomType ): QgsMapCanvasItem( mapCanvas ),
     mGeometry( nullptr ), mIconSize( 5 ), mIconType( ICON_BOX ), mGeometryType( geomType )
 {
   mPen = QPen( QColor( 255, 0, 0 ) );
@@ -43,7 +43,7 @@ void QgsGeometryRubberBand::paint( QPainter* painter )
   painter->save();
   painter->translate( -pos() );
 
-  if ( mGeometryType == QGis::Polygon )
+  if ( mGeometryType == QgsWkbTypes::PolygonGeometry )
   {
     painter->setBrush( mBrush );
   }
@@ -54,7 +54,7 @@ void QgsGeometryRubberBand::paint( QPainter* painter )
   painter->setPen( mPen );
 
 
-  QgsAbstractGeometryV2* paintGeom = mGeometry->clone();
+  QgsAbstractGeometry* paintGeom = mGeometry->clone();
 
   paintGeom->transform( mMapCanvas->getCoordinateTransform()->transform() );
   paintGeom->draw( *painter );
@@ -107,7 +107,7 @@ void QgsGeometryRubberBand::drawVertex( QPainter* p, double x, double y )
   }
 }
 
-void QgsGeometryRubberBand::setGeometry( QgsAbstractGeometryV2* geom )
+void QgsGeometryRubberBand::setGeometry( QgsAbstractGeometry* geom )
 {
   delete mGeometry;
   mGeometry = geom;

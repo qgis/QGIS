@@ -17,13 +17,15 @@
 #ifndef QGSCOMPOSERPOLYGON_H
 #define QGSCOMPOSERPOLYGON_H
 
+#include "qgis_core.h"
 #include "qgscomposernodesitem.h"
+#include "qgssymbol.h"
 #include <QBrush>
 #include <QPen>
 
-class QgsFillSymbolV2;
+class QgsFillSymbol;
 
-/**
+/** \ingroup core
  * Composer item for polygons.
  * @note added in QGIS 2.16
  */
@@ -43,44 +45,41 @@ class CORE_EXPORT QgsComposerPolygon: public QgsComposerNodesItem
      * @param polygon nodes of the shape
      * @param c parent composition
      */
-    QgsComposerPolygon( QPolygonF polygon, QgsComposition* c );
+    QgsComposerPolygon( const QPolygonF &polygon, QgsComposition* c );
 
-    /** Destructor */
-    ~QgsComposerPolygon();
-
-    /** Overridden to return shape name */
+    //! Overridden to return shape name
     virtual QString displayName() const override;
 
-    /** Returns the QgsSymbolV2 used to draw the shape. */
-    QgsFillSymbolV2* polygonStyleSymbol() { return mPolygonStyleSymbol.data(); }
+    //! Returns the QgsSymbol used to draw the shape.
+    QgsFillSymbol* polygonStyleSymbol() { return mPolygonStyleSymbol.get(); }
 
-    /** Set the QgsSymbolV2 used to draw the shape. */
-    void setPolygonStyleSymbol( QgsFillSymbolV2* symbol );
+    //! Set the QgsSymbol used to draw the shape.
+    void setPolygonStyleSymbol( QgsFillSymbol* symbol );
 
-    /** Return correct graphics item type. */
+    //! Return correct graphics item type.
     virtual int type() const override { return ComposerPolygon; }
 
   protected:
 
-    /** QgsSymbolV2 use to draw the shape. */
-    QScopedPointer<QgsFillSymbolV2> mPolygonStyleSymbol;
+    //! QgsSymbol use to draw the shape.
+    std::unique_ptr<QgsFillSymbol> mPolygonStyleSymbol;
 
     /** Add the node newPoint at the given position according to some
      * criteres. */
-    bool _addNode( const int indexPoint, const QPointF &newPoint, const double radius ) override;
+    bool _addNode( const int indexPoint, QPointF newPoint, const double radius ) override;
 
     bool _removeNode( const int nodeIndex ) override;
 
-    /** Draw nodes for the current shape. */
+    //! Draw nodes for the current shape.
     void _draw( QPainter *painter ) override;
 
-    /** Read symbol in XML. */
-    void _readXMLStyle( const QDomElement &elmt ) override;
+    //! Read symbol in XML.
+    void _readXmlStyle( const QDomElement &elmt ) override;
 
-    /** Write the symbol in an XML document. */
-    void _writeXMLStyle( QDomDocument &doc, QDomElement &elmt ) const override;
+    //! Write the symbol in an XML document.
+    void _writeXmlStyle( QDomDocument &doc, QDomElement &elmt ) const override;
 
-    /** Create a default symbol. */
+    //! Create a default symbol.
     void createDefaultPolygonStyleSymbol();
 };
 

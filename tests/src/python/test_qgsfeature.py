@@ -15,7 +15,7 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 import os
-from qgis.core import QgsFeature, QgsGeometry, QgsPoint, QgsVectorLayer, NULL
+from qgis.core import QgsFeature, QgsGeometry, QgsPoint, QgsVectorLayer, NULL, QgsFields, QgsField
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 
@@ -66,12 +66,21 @@ class TestQgsFeature(unittest.TestCase):
 
         assert myAttributes == myExpectedAttributes, myMessage
 
-    def test_SetAttribute(self):
+    def test_SetAttributes(self):
         feat = QgsFeature()
         feat.initAttributes(1)
         feat.setAttributes([0])
         feat.setAttributes([NULL])
         assert [NULL] == feat.attributes()
+
+    def test_setAttribute(self):
+        feat = QgsFeature()
+        feat.initAttributes(1)
+        with self.assertRaises(KeyError):
+            feat.setAttribute(-1, 5)
+        with self.assertRaises(KeyError):
+            feat.setAttribute(10, 5)
+        self.assertTrue(feat.setAttribute(0, 5))
 
     def test_DeleteAttribute(self):
         feat = QgsFeature()
@@ -84,6 +93,22 @@ class TestQgsFeature(unittest.TestCase):
         myExpectedAttrs = ["text1", "text3"]
         myMessage = '\nExpected: %s\nGot: %s' % (str(myExpectedAttrs), str(myAttrs))
         assert myAttrs == myExpectedAttrs, myMessage
+
+    def test_DeleteAttributeByName(self):
+        fields = QgsFields()
+        field1 = QgsField('my_field')
+        fields.append(field1)
+        field2 = QgsField('my_field2')
+        fields.append(field2)
+
+        feat = QgsFeature(fields)
+        feat.initAttributes(2)
+        feat[0] = "text1"
+        feat[1] = "text2"
+        with self.assertRaises(KeyError):
+            feat.deleteAttribute('not present')
+        self.assertTrue(feat.deleteAttribute('my_field'))
+        self.assertEqual(feat.attributes(), ['text2'])
 
     def test_SetGeometry(self):
         feat = QgsFeature()

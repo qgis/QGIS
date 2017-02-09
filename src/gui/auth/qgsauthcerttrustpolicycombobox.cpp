@@ -58,13 +58,9 @@ QgsAuthCertTrustPolicyComboBox::QgsAuthCertTrustPolicyComboBox( QWidget *parent,
   setDefaultTrustPolicy( defaultpolicy );
 }
 
-QgsAuthCertTrustPolicyComboBox::~QgsAuthCertTrustPolicyComboBox()
-{
-}
-
 QgsAuthCertUtils::CertTrustPolicy QgsAuthCertTrustPolicyComboBox::trustPolicy()
 {
-  return ( QgsAuthCertUtils::CertTrustPolicy )itemData( currentIndex() ).toInt();
+  return ( QgsAuthCertUtils::CertTrustPolicy )currentData().toInt();
 }
 
 QgsAuthCertUtils::CertTrustPolicy QgsAuthCertTrustPolicyComboBox::trustPolicyForIndex( int indx )
@@ -87,18 +83,18 @@ void QgsAuthCertTrustPolicyComboBox::setDefaultTrustPolicy( QgsAuthCertUtils::Ce
 void QgsAuthCertTrustPolicyComboBox::highlightCurrentIndex( int indx )
 {
   QgsAuthCertUtils::CertTrustPolicy policy = ( QgsAuthCertUtils::CertTrustPolicy )itemData( indx ).toInt();
-  QString ss( "" );
+  QString ss( QLatin1String( "" ) );
 
   // TODO: why are these widget state selectors backwards?
   switch ( policy )
   {
     case QgsAuthCertUtils::Trusted:
       // ss = QgsAuthCertUtils::greenTextStyleSheet( "QLineEdit" );
-      ss = QgsAuthGuiUtils::greenTextStyleSheet( "QComboBox:open" ) + "\nQComboBox:!open{}";
+      ss = QgsAuthGuiUtils::greenTextStyleSheet( QStringLiteral( "QComboBox:open" ) ) + "\nQComboBox:!open{}";
       break;
     case QgsAuthCertUtils::Untrusted:
       // ss = QgsAuthCertUtils::redTextStyleSheet( "QLineEdit" );
-      ss = QgsAuthGuiUtils::redTextStyleSheet( "QComboBox:open" ) + "\nQComboBox:!open{}";
+      ss = QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QComboBox:open" ) ) + "\nQComboBox:!open{}";
       break;
     case QgsAuthCertUtils::DefaultTrust:
     default:
@@ -122,7 +118,7 @@ const QString QgsAuthCertTrustPolicyComboBox::defaultTrustText( QgsAuthCertUtils
       defaultpolicy = QgsAuthCertUtils::Trusted;
     }
   }
-  return QString( "%1 (%2)" )
+  return QStringLiteral( "%1 (%2)" )
          .arg( QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::DefaultTrust ),
                QgsAuthCertUtils::getCertTrustName( defaultpolicy ) );
 }

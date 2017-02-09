@@ -26,7 +26,7 @@ class QgsVertexEntry;
 class QgsSelectedFeature;
 class QgsNodeEditor;
 
-/** A maptool to move/deletes/adds vertices of line or polygon features*/
+//! A maptool to move/deletes/adds vertices of line or polygon features
 class QgsMapToolNodeTool: public QgsMapToolEdit
 {
     Q_OBJECT
@@ -53,7 +53,7 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     /*
      * the geometry for the selected feature has changed
      */
-    void geometryChanged( QgsFeatureId fid, QgsGeometry &geom );
+    void geometryChanged( QgsFeatureId fid, const QgsGeometry& geom );
 
     /*
      * the current layer changed
@@ -71,6 +71,7 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     void deleteNodeSelection();
 
   private:
+
     /**
      * Get the feature on the mouse click
      */
@@ -84,7 +85,7 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     /**
      * Update select feature rubber band using a certain geometry
      */
-    void updateSelectFeature( QgsGeometry &geom );
+    void updateSelectFeature( const QgsGeometry &geom );
 
     /**
      * Deletes the rubber band pointers and clears mRubberBands
@@ -105,12 +106,12 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     bool checkCorrectnessOfFeature( QgsVectorLayer* vlayer );
 
     /**
-     * Creates rubber bands for ther features when topology editing is enabled
+     * Creates rubber bands for their features when topology editing is enabled
      */
     void createTopologyRubberBands();
 
     /**
-     * Returns the index of first selected vertex, -1 when all unselected
+     * Returns the index of first selected vertex, -1 when all deselected
      */
     int firstSelectedVertex();
 
@@ -138,46 +139,46 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     and applies it to the map canvas*/
     QgsMapCanvasSnapper mSnapper;
 
-    /** Rubber bands during node move */
+    //! Rubber bands during node move
     QMap<QgsFeatureId, QgsGeometryRubberBand*> mMoveRubberBands;
 
-    /** Rubber band for selected feature */
+    //! Rubber band for selected feature
     QgsGeometryRubberBand* mSelectRubberBand;
 
-    /** Vertices of features to move */
+    //! Vertices of features to move
     QMap<QgsFeatureId, QList< QPair<QgsVertexId, QgsPointV2> > > mMoveVertices;
 
-    /** Object containing selected feature and it's vertexes */
+    //! Object containing selected feature and it's vertexes
     QgsSelectedFeature *mSelectedFeature;
 
-    /** Dock widget which allows editing vertices */
+    //! Dock widget which allows editing vertices
     QgsNodeEditor* mNodeEditor;
 
-    /** Flag if moving of vertexes is occurring */
+    //! Flag if moving of vertexes is occurring
     bool mMoving;
 
-    /** Flag if selection of another feature can occur */
+    //! Flag if selection of another feature can occur
     bool mSelectAnother;
 
-    /** Feature id of another feature where user clicked */
+    //! Feature id of another feature where user clicked
     QgsFeatureId mAnother;
 
-    /** Stored position of last press down action to count how much vertexes should be moved */
+    //! Stored position of last press down action to count how much vertexes should be moved
     QPoint mPressCoordinates;
 
-    /** Closest vertex to click in map coordinates */
+    //! Closest vertex to click in map coordinates
     QgsPoint mClosestMapVertex;
 
-    /** Active rubberband for selecting vertexes */
+    //! Active rubberband for selecting vertexes
     QRubberBand *mSelectionRubberBand;
 
-    /** Rectangle defining area for selecting vertexes */
+    //! Rectangle defining area for selecting vertexes
     QRect* mRect;
 
-    /** Flag to tell if edition points */
+    //! Flag to tell if edition points
     bool mIsPoint;
 
-    /** Vertex to deselect on release */
+    //! Vertex to deselect on release
     int mDeselectOnRelease;
 };
 

@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspiediagram.h"
-#include "qgsdiagramrendererv2.h"
+#include "qgsdiagramrenderer.h"
 #include "qgsrendercontext.h"
 #include "qgsexpression.h"
 
@@ -24,10 +24,6 @@ QgsPieDiagram::QgsPieDiagram()
 {
   mCategoryBrush.setStyle( Qt::SolidPattern );
   mPen.setStyle( Qt::SolidLine );
-}
-
-QgsPieDiagram::~QgsPieDiagram()
-{
 }
 
 QgsPieDiagram* QgsPieDiagram::clone() const
@@ -43,8 +39,8 @@ QSizeF QgsPieDiagram::diagramSize( const QgsFeature& feature, const QgsRenderCon
   if ( is.classificationAttributeIsExpression )
   {
     QgsExpressionContext expressionContext = c.expressionContext();
-    if ( feature.fields() )
-      expressionContext.setFields( *feature.fields() );
+    if ( !feature.fields().isEmpty() )
+      expressionContext.setFields( feature.fields() );
     expressionContext.setFeature( feature );
 
     QgsExpression* expression = getExpression( is.classificationAttributeExpression, expressionContext );
@@ -52,7 +48,7 @@ QSizeF QgsPieDiagram::diagramSize( const QgsFeature& feature, const QgsRenderCon
   }
   else
   {
-    attrVal = feature.attributes().at( is.classificationAttribute );
+    attrVal = feature.attribute( is.classificationField );
   }
 
   bool ok = false;
@@ -94,8 +90,8 @@ void QgsPieDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext& 
 
   QgsExpressionContext expressionContext = c.expressionContext();
   expressionContext.setFeature( feature );
-  if ( feature.fields() )
-    expressionContext.setFields( *feature.fields() );
+  if ( !feature.fields().isEmpty() )
+    expressionContext.setFields( feature.fields() );
 
   QList<QString>::const_iterator catIt = s.categoryAttributes.constBegin();
   for ( ; catIt != s.categoryAttributes.constEnd(); ++catIt )

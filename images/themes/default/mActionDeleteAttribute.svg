@@ -1,0 +1,24 @@
+<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+<g transform="translate(0 -8)">
+<path d="m2.5 15.5h19v14h-19z" fill="#e6e6e6" stroke="#6e97c4"/>
+<path d="m2.5 10.5h19v5h-19z" fill="#bad9ec" stroke="#6e97c4"/>
+<path d="m5 13h4" fill="none" overflow="visible" stroke="#6e97c4" stroke-width="2"/>
+<path d="m11 13h7.999999" fill="none" stroke="#6e97c4" stroke-width="2"/>
+<path d="m5 17.5h4" fill="none" overflow="visible" stroke="#6e97c4"/>
+<path d="m11 17.5h7.999999" fill="none" stroke="#6e97c4"/>
+<path d="m5 20.5h4" fill="none" overflow="visible" stroke="#6e97c4"/>
+<path d="m11 20.5h7.999999" fill="none" stroke="#6e97c4"/>
+<path d="m5 23.5h4" fill="none" overflow="visible" stroke="#6e97c4"/>
+<path d="m11 23.5h7.999999" fill="none" stroke="#6e97c4"/>
+<path d="m5 26.5h4" fill="none" overflow="visible" stroke="#6e97c4"/>
+<path d="m11 26.5h7.999999" fill="none" stroke="#6e97c4"/>
+<path d="m6.5 9.5h5v21h-5z" style="overflow:visible;fill:#de9292;fill-rule:evenodd;stroke:#d26464;stroke-width:.99999994;stroke-linecap:round"/>
+<path d="m8 13h2" fill="none" overflow="visible" stroke="#fff" stroke-width="2"/>
+<g>
+<rect fill="#d26464" height="10.000001" rx="2.0114901" width="9.999999" x="14.000001" y="22"/>
+<path d="m16.87868 29.12132l4.24264-4.24264" style="overflow:visible;fill:#fcffff;fill-rule:evenodd;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<path d="m15.000001 27h7.999999c0 0 0 0 0-2 0-2-.5-2-4-2-3.499999 0-3.999999 0-3.999999 2 0 2 0 2 0 2z" fill="#fcffff" fill-rule="evenodd" opacity=".3"/>
+<path d="m16.87868 24.87868l4.24264 4.24264" style="overflow:visible;fill:#fcffff;fill-rule:evenodd;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+</g>
+</g>
+</svg>

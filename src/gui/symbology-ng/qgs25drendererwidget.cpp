@@ -14,18 +14,19 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgs25drendererwidget.h"
-
+#include "qgs25drenderer.h"
+#include "qgsvectorlayer.h"
 #include "qgsmaplayerstylemanager.h"
 
-Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
-    : QgsRendererV2Widget( layer, style )
+Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
+    : QgsRendererWidget( layer, style )
     , mRenderer( nullptr )
 {
   if ( !layer )
     return;
 
   // the renderer only applies to point vector layers
-  if ( layer->geometryType() != QGis::Polygon )
+  if ( layer->geometryType() != QgsWkbTypes::PolygonGeometry )
   {
     //setup blank dialog
     QGridLayout* layout = new QGridLayout( this );
@@ -38,6 +39,16 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyleV2* s
 
   setupUi( this );
 
+  mWallColorButton->setColorDialogTitle( tr( "Select wall color" ) );
+  mWallColorButton->setAllowAlpha( true );
+  mWallColorButton->setContext( QStringLiteral( "symbology" ) );
+  mRoofColorButton->setColorDialogTitle( tr( "Select roof color" ) );
+  mRoofColorButton->setAllowAlpha( true );
+  mRoofColorButton->setContext( QStringLiteral( "symbology" ) );
+  mShadowColorButton->setColorDialogTitle( tr( "Select shadow color" ) );
+  mShadowColorButton->setAllowAlpha( true );
+  mShadowColorButton->setContext( QStringLiteral( "symbology" ) );
+
   if ( renderer )
   {
     mRenderer = Qgs25DRenderer::convertFromRenderer( renderer );
@@ -46,11 +57,11 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyleV2* s
   mHeightWidget->setLayer( layer );
 
   QgsExpressionContextScope* scope = QgsExpressionContextUtils::layerScope( mLayer );
-  QVariant height = scope->variable( "qgis_25d_height" );
-  QVariant angle = scope->variable( "qgis_25d_angle" );
+  QVariant height = scope->variable( QStringLiteral( "qgis_25d_height" ) );
+  QVariant angle = scope->variable( QStringLiteral( "qgis_25d_angle" ) );
   delete scope;
 
-  mHeightWidget->setField( height.isNull() ? "10" : height.toString() );
+  mHeightWidget->setField( height.isNull() ? QStringLiteral( "10" ) : height.toString() );
   mAngleWidget->setValue( angle.isNull() ? 70 : angle.toDouble() );
   mWallColorButton->setColor( mRenderer->wallColor() );
   mRoofColorButton->setColor( mRenderer->roofColor() );
@@ -69,7 +80,7 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyleV2* s
   connect( mWallExpositionShading, SIGNAL( toggled( bool ) ), this, SLOT( updateRenderer() ) );
 }
 
-QgsFeatureRendererV2* Qgs25DRendererWidget::renderer()
+QgsFeatureRenderer* Qgs25DRendererWidget::renderer()
 {
   return mRenderer;
 }
@@ -82,17 +93,21 @@ void Qgs25DRendererWidget::updateRenderer()
   mRenderer->setShadowEnabled( mShadowEnabledWidget->isChecked() );
   mRenderer->setShadowSpread( mShadowSizeWidget->value() );
   mRenderer->setWallShadingEnabled( mWallExpositionShading->isChecked() );
+  emit widgetChanged();
 }
 
 void Qgs25DRendererWidget::apply()
 {
-  QgsExpressionContextUtils::setLayerVariable( mLayer, "qgis_25d_height", mHeightWidget->currentText() );
-  QgsExpressionContextUtils::setLayerVariable( mLayer, "qgis_25d_angle", mAngleWidget->value() );
+  if ( mHeightWidget )
+  {
+    QgsExpressionContextUtils::setLayerVariable( mLayer, QStringLiteral( "qgis_25d_height" ), mHeightWidget->currentText() );
+    QgsExpressionContextUtils::setLayerVariable( mLayer, QStringLiteral( "qgis_25d_angle" ), mAngleWidget->value() );
 
-  emit layerVariablesChanged();
+    emit layerVariablesChanged();
+  }
 }
 
-QgsRendererV2Widget* Qgs25DRendererWidget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
+QgsRendererWidget* Qgs25DRendererWidget::create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
 {
   return new Qgs25DRendererWidget( layer, style, renderer );
 }

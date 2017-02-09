@@ -23,7 +23,7 @@ SET(DB2_MOC_HDRS
 ########################################################
 # Build
 
-QT4_WRAP_CPP(DB2_MOC_SRCS ${DB2_MOC_HDRS})
+QT5_WRAP_CPP(DB2_MOC_SRCS ${DB2_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
   .
@@ -34,11 +34,14 @@ INCLUDE_DIRECTORIES(
   ../../gui/auth
   ../../ui  
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
 )
 
 INCLUDE_DIRECTORIES(SYSTEM
   ${GEOS_INCLUDE_DIR}
   ${QT_INCLUDE_DIR}
+  ${QSCINTILLA_INCLUDE_DIR}
 )
 
 ADD_LIBRARY (db2provider MODULE ${DB2_SRCS} ${DB2_HDRS} ${DB2_MOC_SRCS})

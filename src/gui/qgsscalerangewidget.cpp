@@ -16,7 +16,7 @@
 #include "qgsscalerangewidget.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
-
+#include "qgsscalewidget.h"
 
 QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
     : QWidget( parent )
@@ -25,21 +25,21 @@ QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
   mLayout = new QGridLayout( this );
   mLayout->setContentsMargins( 0, 0, 0, 0 );
 
-  QLabel* minLbl = new QLabel( tr( "Minimum\n(exclusive)" ), this );
+  QLabel* minLbl = new QLabel( tr( "Minimum (exclusive)" ), this );
   minLbl->setWordWrap( true );
   minLbl->setAlignment( Qt::AlignTop );
   minLbl->setToolTip( tr( "Minimum scale, i.e. maximum scale denominator. "
                           "This limit is exclusive, that means the layer will not be displayed on this scale." ) );
-  QLabel* maxLbl = new QLabel( tr( "Maximum\n(inclusive)" ), this );
+  QLabel* maxLbl = new QLabel( tr( "Maximum (inclusive)" ), this );
   maxLbl->setWordWrap( true );
   maxLbl->setAlignment( Qt::AlignTop );
   maxLbl->setToolTip( tr( "Maximum scale, i.e. minimum scale denominator. "
                           "This limit is inclusive, that means the layer will be displayed on this scale." ) );
 
   mMinimumScaleIconLabel = new QLabel( this );
-  mMinimumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( "/mActionZoomOut.svg" ) );
+  mMinimumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( QStringLiteral( "/mActionZoomOut.svg" ) ) );
   mMaximumScaleIconLabel = new QLabel( this );
-  mMaximumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( "/mActionZoomIn.svg" ) );
+  mMaximumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( QStringLiteral( "/mActionZoomIn.svg" ) ) );
 
   mMinimumScaleWidget = new QgsScaleWidget( this );
   mMaximumScaleWidget = new QgsScaleWidget( this );
@@ -51,31 +51,28 @@ QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
   mMinimumScaleWidget->setScale( 1.0 / 100000 );
   mMaximumScaleWidget->setScale( 1.0 / 1000 );
 
-  mLayout->addWidget( minLbl, 0, 0, 2, 1 );
-  mLayout->addWidget( mMinimumScaleIconLabel, 0, 1 );
-  mLayout->addWidget( mMinimumScaleWidget, 0, 2 );
-  mLayout->addWidget( maxLbl, 0, 3, 2, 1 );
-  mLayout->addWidget( mMaximumScaleIconLabel, 0, 4 );
-  mLayout->addWidget( mMaximumScaleWidget, 0, 5 );
+  mLayout->addWidget( minLbl, 0, 0, 1, 2 );
+  mLayout->addWidget( mMinimumScaleIconLabel, 1, 0 );
+  mLayout->addWidget( mMinimumScaleWidget, 1, 1 );
+  mLayout->addWidget( maxLbl, 0, 2, 1, 2 );
+  mLayout->addWidget( mMaximumScaleIconLabel, 1, 2 );
+  mLayout->addWidget( mMaximumScaleWidget, 1, 3 );
 
   mLayout->setColumnStretch( 0, 0 );
-  mLayout->setColumnStretch( 1, 0 );
-  mLayout->setColumnStretch( 2, 3 );
-  mLayout->setColumnStretch( 3, 0 );
-  mLayout->setColumnStretch( 4, 0 );
-  mLayout->setColumnStretch( 5, 3 );
-}
+  mLayout->setColumnStretch( 1, 3 );
+  mLayout->setColumnStretch( 2, 0 );
+  mLayout->setColumnStretch( 3, 3 );
 
-QgsScaleRangeWidget::~QgsScaleRangeWidget()
-{
+  connect( mMinimumScaleWidget, SIGNAL( scaleChanged( double ) ), this, SLOT( emitRangeChanged() ) );
+  connect( mMaximumScaleWidget, SIGNAL( scaleChanged( double ) ), this, SLOT( emitRangeChanged() ) );
 }
 
 void QgsScaleRangeWidget::reloadProjectScales()
 {
-  bool projectScales = QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" );
+  bool projectScales = QgsProject::instance()->readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) );
   if ( projectScales )
   {
-    QStringList scalesList = QgsProject::instance()->readListEntry( "Scales", "/ScalesList" );
+    QStringList scalesList = QgsProject::instance()->readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) );
     mMinimumScaleWidget->updateScales( scalesList );
     mMaximumScaleWidget->updateScales( scalesList );
   }
@@ -89,6 +86,8 @@ void QgsScaleRangeWidget::setMapCanvas( QgsMapCanvas *mapCanvas )
 
 void QgsScaleRangeWidget::setMinimumScale( double scale )
 {
+  if ( qIsInf( scale ) )
+    scale = 0;
   mMinimumScaleWidget->setScale( scale );
 }
 
@@ -99,6 +98,8 @@ double QgsScaleRangeWidget::minimumScale()
 
 void QgsScaleRangeWidget::setMaximumScale( double scale )
 {
+  if ( qIsInf( scale ) )
+    scale = 0;
   mMaximumScaleWidget->setScale( scale );
 }
 
@@ -109,17 +110,30 @@ double QgsScaleRangeWidget::maximumScale()
 
 double QgsScaleRangeWidget::minimumScaleDenom()
 {
-  return qRound( 1.0 / maximumScale() );
+  double scale = maximumScale();
+  if ( scale == 0 )
+    return 0;
+  else
+    return qRound( 1.0 / scale );
 }
 
 double QgsScaleRangeWidget::maximumScaleDenom()
 {
-  return qRound( 1.0 / minimumScale() );
+  double scale = minimumScale();
+  if ( scale == 0 )
+    return 0;
+  else
+    return qRound( 1.0 / scale );
 }
 
 void QgsScaleRangeWidget::setScaleRange( double min, double max )
 {
   setMaximumScale( max );
   setMinimumScale( min );
+}
+
+void QgsScaleRangeWidget::emitRangeChanged()
+{
+  emit rangeChanged( minimumScale(), maximumScale() );
 }
 

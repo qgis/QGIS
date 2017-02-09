@@ -24,7 +24,7 @@
  *
  */
 
-/** \file */
+//! \file
 
 #ifndef NMEA_TIME_H
 #define NMEA_TIME_H
@@ -42,13 +42,13 @@ extern "C"
    */
   typedef struct _nmeaTIME
   {
-    int     year;       /**< Years since 1900 */
-    int     mon;        /**< Months since January - [0,11] */
-    int     day;        /**< Day of the month - [1,31] */
-    int     hour;       /**< Hours since midnight - [0,23] */
-    int     min;        /**< Minutes after the hour - [0,59] */
-    int     sec;        /**< Seconds after the minute - [0,59] */
-    int     msec;       /**< Thousandths part of second - [0,999] */
+    int     year;       //!< Years since 1900
+    int     mon;        //!< Months since January - [0,11]
+    int     day;        //!< Day of the month - [1,31]
+    int     hour;       //!< Hours since midnight - [0,23]
+    int     min;        //!< Minutes after the hour - [0,59]
+    int     sec;        //!< Seconds after the minute - [0,59]
+    int     msec;       //!< Thousandths part of second - [0,999]
 
   } nmeaTIME;
 

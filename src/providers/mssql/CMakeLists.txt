@@ -24,18 +24,21 @@ SET(MSSQL_HDRS
 ########################################################
 # Build
 
-QT4_WRAP_CPP(MSSQL_MOC_SRCS ${MSSQL_MOC_HDRS})
+QT5_WRAP_CPP(MSSQL_MOC_SRCS ${MSSQL_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
   .
   ../../core
   ../../core/geometry
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${QT_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
+  ${PROJ_INCLUDE_DIR}
 )
 INCLUDE_DIRECTORIES(
   ../../gui

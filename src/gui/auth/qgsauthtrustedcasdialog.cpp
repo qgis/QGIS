@@ -61,17 +61,13 @@ QgsAuthTrustedCAsDialog::QgsAuthTrustedCAsDialog( QWidget *parent,
 
 
     btnGroupByOrg->setChecked( false );
-    QVariant sortbyval = QgsAuthManager::instance()->getAuthSetting( QString( "trustedcasortby" ), QVariant( false ) );
+    QVariant sortbyval = QgsAuthManager::instance()->getAuthSetting( QStringLiteral( "trustedcasortby" ), QVariant( false ) );
     if ( !sortbyval.isNull() )
       btnGroupByOrg->setChecked( sortbyval.toBool() );
 
     populateCaCertsView();
     checkSelection();
   }
-}
-
-QgsAuthTrustedCAsDialog::~QgsAuthTrustedCAsDialog()
-{
 }
 
 static void setItemBold_( QTreeWidgetItem* item )
@@ -201,11 +197,11 @@ void QgsAuthTrustedCAsDialog::appendCertsToItem( const QList<QSslCertificate>& c
 
     QTreeWidgetItem * item( new QTreeWidgetItem( parent, coltxts, ( int )catype ) );
 
-    item->setIcon( 0, QgsApplication::getThemeIcon( "/mIconCertificate.svg" ) );
+    item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ) );
     if ( !cert.isValid() )
     {
       item->setForeground( 2, redb );
-      item->setIcon( 0, QgsApplication::getThemeIcon( "/mIconCertificateUntrusted.svg" ) );
+      item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificateUntrusted.svg" ) ) );
     }
 
     item->setData( 0, Qt::UserRole, id );
@@ -300,7 +296,7 @@ void QgsAuthTrustedCAsDialog::on_btnInfoCa_clicked()
 
 void QgsAuthTrustedCAsDialog::on_btnGroupByOrg_toggled( bool checked )
 {
-  if ( !QgsAuthManager::instance()->storeAuthSetting( QString( "trustedcasortby" ), QVariant( checked ) ) )
+  if ( !QgsAuthManager::instance()->storeAuthSetting( QStringLiteral( "trustedcasortby" ), QVariant( checked ) ) )
   {
     authMessageOut( QObject::tr( "Could not store sort by preference" ),
                     QObject::tr( "Trusted Authorities/Issuers" ),
@@ -332,5 +328,5 @@ QgsMessageBar * QgsAuthTrustedCAsDialog::messageBar()
 int QgsAuthTrustedCAsDialog::messageTimeout()
 {
   QSettings settings;
-  return settings.value( "/qgis/messageTimeout", 5 ).toInt();
+  return settings.value( QStringLiteral( "/qgis/messageTimeout" ), 5 ).toInt();
 }

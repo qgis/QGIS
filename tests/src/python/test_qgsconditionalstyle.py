@@ -23,7 +23,7 @@ from qgis.testing import (start_app,
                           unittest,
                           )
 from utilities import unitTestDataPath
-from PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant
 #
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

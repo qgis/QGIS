@@ -315,7 +315,7 @@
   <action name="mActionCopy">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionEditCopy.png</normaloff>:/images/themes/default/mActionEditCopy.png</iconset>
+     <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
    </property>
    <property name="text">
     <string>Copy Feature</string>
@@ -327,7 +327,7 @@
   <action name="mActionPrint">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFilePrint.png</normaloff>:/images/themes/default/mActionFilePrint.png</iconset>
+     <normaloff>:/images/themes/default/mActionFilePrint.svg</normaloff>:/images/themes/default/mActionFilePrint.svg</iconset>
    </property>
    <property name="text">
     <string>Print Response</string>

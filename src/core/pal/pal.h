@@ -30,6 +30,7 @@
 #ifndef PAL_H
 #define PAL_H
 
+#include "qgis_core.h"
 #include "qgsgeometry.h"
 #include "qgspallabeling.h"
 #include <QList>
@@ -44,7 +45,7 @@ class QgsAbstractLabelProvider;
 
 namespace pal
 {
-  /** Get GEOS context handle to be used in all GEOS library calls with reentrant API */
+  //! Get GEOS context handle to be used in all GEOS library calls with reentrant API
   GEOSContextHandle_t geosContext();
 
   class Layer;
@@ -53,17 +54,17 @@ namespace pal
   class Problem;
   class PointSet;
 
-  /** Search method to use */
+  //! Search method to use
   enum SearchMethod
   {
-    CHAIN = 0, /**< is the worst but fastest method */
-    POPMUSIC_TABU_CHAIN = 1, /**< is the best but slowest */
-    POPMUSIC_TABU = 2, /**< is a little bit better than CHAIN but slower*/
-    POPMUSIC_CHAIN = 3, /**< is slower and best than TABU, worse and faster than TABU_CHAIN */
-    FALP = 4 /** only initial solution */
+    CHAIN = 0, //!< Is the worst but fastest method
+    POPMUSIC_TABU_CHAIN = 1, //!< Is the best but slowest
+    POPMUSIC_TABU = 2, //!< Is a little bit better than CHAIN but slower
+    POPMUSIC_CHAIN = 3, //!< Is slower and best than TABU, worse and faster than TABU_CHAIN
+    FALP = 4 //! only initial solution
   };
 
-  /** Enumeration line arrangement flags. Flags can be combined. */
+  //! Enumeration line arrangement flags. Flags can be combined.
   enum LineArrangementFlag
   {
     FLAG_ON_LINE     = 1,
@@ -73,8 +74,8 @@ namespace pal
   };
   Q_DECLARE_FLAGS( LineArrangementFlags, LineArrangementFlag )
 
-  /**
-   *  \brief Main Pal labelling class
+  /** \ingroup core
+   *  \brief Main Pal labeling class
    *
    *  A pal object will contains layers and global information such as which search method
    *  will be used.
@@ -94,10 +95,12 @@ namespace pal
        */
       Pal();
 
-      /**
-       * \brief delete an instance
-       */
       ~Pal();
+
+      //! Pal cannot be copied.
+      Pal( const Pal& other ) = delete;
+      //! Pal cannot be copied.
+      Pal& operator=( const Pal& other ) = delete;
 
       /**
        * \brief add a new layer
@@ -137,10 +140,10 @@ namespace pal
 
       typedef bool ( *FnIsCancelled )( void* ctx );
 
-      /** Register a function that returns whether this job has been cancelled - PAL calls it during the computation */
+      //! Register a function that returns whether this job has been cancelled - PAL calls it during the computation
       void registerCancellationCallback( FnIsCancelled fnCancelled, void* context );
 
-      /** Check whether the job has been cancelled */
+      //! Check whether the job has been cancelled
       inline bool isCancelled() { return fnIsCancelled ? fnIsCancelled( fnIsCancelledContext ) : false; }
 
       Problem* extractProblem( double bbox[4] );
@@ -257,9 +260,9 @@ namespace pal
        */
       bool showPartial;
 
-      /** Callback that may be called from PAL to check whether the job has not been cancelled in meanwhile */
+      //! Callback that may be called from PAL to check whether the job has not been cancelled in meanwhile
       FnIsCancelled fnIsCancelled;
-      /** Application-specific context for the cancellation check function */
+      //! Application-specific context for the cancellation check function
       void* fnIsCancelledContext;
 
       /**
@@ -317,11 +320,13 @@ namespace pal
        * @return minimum # of iteration
        */
       int getMinIt();
+
       /**
        * \brief Get the maximum # of iteration doing in POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
        * @return maximum # of iteration
        */
       int getMaxIt();
+
   };
 
 } // end namespace pal

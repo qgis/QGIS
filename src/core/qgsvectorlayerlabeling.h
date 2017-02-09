@@ -18,6 +18,8 @@
 #include <QString>
 #include <QStringList>
 
+#include "qgis_core.h"
+
 class QDomDocument;
 class QDomElement;
 
@@ -25,18 +27,18 @@ class QgsPalLayerSettings;
 class QgsVectorLayer;
 class QgsVectorLayerLabelProvider;
 
-/**
+/** \ingroup core
  * Abstract base class - its implementations define different approaches to the labeling of a vector layer.
  *
  * @note added in 2.12
  * @note not available in Python bindings
- * @note this class is not a part of public API yet. See notes in QgsLabelingEngineV2
+ * @note this class is not a part of public API yet. See notes in QgsLabelingEngine
  */
 class CORE_EXPORT QgsAbstractVectorLayerLabeling
 {
   public:
 
-    virtual ~QgsAbstractVectorLayerLabeling();
+    virtual ~QgsAbstractVectorLayerLabeling() = default;
 
     //! Unique type string of the labeling configuration implementation
     virtual QString type() const = 0;
@@ -54,20 +56,28 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
     //! they are identified by their ID (e.g. in case of rule-based labeling, provider ID == rule key)
     virtual QgsPalLayerSettings settings( QgsVectorLayer* layer, const QString& providerId = QString() ) const = 0;
 
+    /**
+     * Returns true if drawing labels requires advanced effects like composition
+     * modes, which could prevent it being used as an isolated cached image
+     * or exported to a vector format.
+     * @note added in QGIS 3.0
+     */
+    virtual bool requiresAdvancedEffects( QgsVectorLayer* layer ) const = 0;
+
     // static stuff
 
     //! Try to create instance of an implementation based on the XML data
     static QgsAbstractVectorLayerLabeling* create( const QDomElement& element );
 };
 
-/**
+/** \ingroup core
  * Basic implementation of the labeling interface.
  *
  * The configuration is kept in layer's custom properties for backward compatibility.
  *
  * @note added in 2.12
  * @note not available in Python bindings
- * @note this class is not a part of public API yet. See notes in QgsLabelingEngineV2
+ * @note this class is not a part of public API yet. See notes in QgsLabelingEngine
  */
 class CORE_EXPORT QgsVectorLayerSimpleLabeling : public QgsAbstractVectorLayerLabeling
 {
@@ -77,6 +87,7 @@ class CORE_EXPORT QgsVectorLayerSimpleLabeling : public QgsAbstractVectorLayerLa
     virtual QgsVectorLayerLabelProvider* provider( QgsVectorLayer* layer ) const override;
     virtual QDomElement save( QDomDocument& doc ) const override;
     virtual QgsPalLayerSettings settings( QgsVectorLayer* layer, const QString& providerId = QString() ) const override;
+    bool requiresAdvancedEffects( QgsVectorLayer* layer ) const override;
 };
 
 #endif // QGSVECTORLAYERLABELING_H

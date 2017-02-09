@@ -15,14 +15,13 @@
 #ifndef QGSFEATUREITERATOR_H
 #define QGSFEATUREITERATOR_H
 
+#include "qgis_core.h"
 #include "qgsfeaturerequest.h"
-#include "qgslogger.h"
 #include "qgsindexedfeature.h"
 
-class QgsAbstractGeometrySimplifier;
 
 /** \ingroup core
- * Interface that can be optionaly attached to an iterator so its
+ * Interface that can be optionally attached to an iterator so its
  * nextFeature() implementaton can check if it must stop as soon as possible.
  * @note Added in QGIS 2.16
  * @note not available in Python bindings
@@ -44,16 +43,16 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     //! Status of expression compilation for filter expression requests
     enum CompileStatus
     {
-      NoCompilation, /*!< Expression could not be compiled or not attempt was made to compile expression */
-      PartiallyCompiled, /*!< Expression was partially compiled, but extra checks need to be applied to features*/
-      Compiled, /*!< Expression was fully compiled and delegated to data provider source*/
+      NoCompilation, //!< Expression could not be compiled or not attempt was made to compile expression
+      PartiallyCompiled, //!< Expression was partially compiled, but extra checks need to be applied to features
+      Compiled, //!< Expression was fully compiled and delegated to data provider source
     };
 
     //! base class constructor - stores the iteration parameters
     QgsAbstractFeatureIterator( const QgsFeatureRequest& request );
 
     //! destructor makes sure that the iterator is closed properly
-    virtual ~QgsAbstractFeatureIterator();
+    virtual ~QgsAbstractFeatureIterator() = default;
 
     //! fetch next feature, return true on success
     virtual bool nextFeature( QgsFeature& f );
@@ -79,6 +78,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     CompileStatus compileStatus() const { return mCompileStatus; }
 
   protected:
+
     /**
      * If you write a feature iterator for your provider, this is the method you
      * need to implement!!
@@ -113,10 +113,10 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      */
     virtual bool nextFeatureFilterFids( QgsFeature & f );
 
-    /** A copy of the feature request. */
+    //! A copy of the feature request.
     QgsFeatureRequest mRequest;
 
-    /** Set to true, as soon as the iterator is closed. */
+    //! Set to true, as soon as the iterator is closed.
     bool mClosed;
 
     /**
@@ -131,8 +131,8 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     //! reference counting (to allow seamless copying of QgsFeatureIterator instances)
     //! TODO QGIS3: make this private
     int refs;
-    void ref(); //!< add reference
-    void deref(); //!< remove reference, delete if refs == 0
+    void ref(); //!< Add reference
+    void deref(); //!< Remove reference, delete if refs == 0
     friend class QgsFeatureIterator;
 
     //! Number of features already fetched by iterator
@@ -145,20 +145,12 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod );
 
   private:
-    //! optional object to locally simplify geometries fetched by this feature iterator
-    QgsAbstractGeometrySimplifier* mGeometrySimplifier;
-    //! this iterator runs local simplification
-    bool mLocalSimplification;
-
     bool mUseCachedFeatures;
     QList<QgsIndexedFeature> mCachedFeatures;
     QList<QgsIndexedFeature>::ConstIterator mFeatureIterator;
 
     //! returns whether the iterator supports simplify geometries on provider side
     virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const;
-
-    //! simplify the specified geometry if it was configured
-    virtual bool simplify( QgsFeature& feature );
 
     /**
      * Should be overwritten by providers which implement an own order by strategy
@@ -181,7 +173,8 @@ class CORE_EXPORT QgsAbstractFeatureIterator
 
 
 
-/** Helper template that cares of two things: 1. automatic deletion of source if owned by iterator, 2. notification of open/closed iterator.
+/** \ingroup core
+ * Helper template that cares of two things: 1. automatic deletion of source if owned by iterator, 2. notification of open/closed iterator.
  * \note not available in Python bindings
 */
 template<typename T>
@@ -189,7 +182,9 @@ class QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
 {
   public:
     QgsAbstractFeatureIteratorFromSource( T* source, bool ownSource, const QgsFeatureRequest& request )
-        : QgsAbstractFeatureIterator( request ), mSource( source ), mOwnSource( ownSource )
+        : QgsAbstractFeatureIterator( request )
+        , mSource( source )
+        , mOwnSource( ownSource )
     {
       mSource->iteratorOpened( this );
     }

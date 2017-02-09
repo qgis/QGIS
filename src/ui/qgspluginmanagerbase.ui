@@ -371,6 +371,12 @@
                   </property>
                   <item>
                    <widget class="QgsWebView" name="wvDetails" native="true">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
                     <property name="url" stdset="0">
                      <url>
                       <string>about:blank</string>
@@ -382,7 +388,63 @@
                 </widget>
                </item>
                <item>
+                <layout class="QGridLayout" name="gridLayout">
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SetMinimumSize</enum>
+                 </property>
+                 <item row="1" column="1">
+                  <widget class="QSlider" name="voteSlider">
+                   <property name="minimum">
+                    <number>1</number>
+                   </property>
+                   <property name="maximum">
+                    <number>5</number>
+                   </property>
+                   <property name="pageStep">
+                    <number>1</number>
+                   </property>
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="tickPosition">
+                    <enum>QSlider::TicksAbove</enum>
+                   </property>
+                   <property name="tickInterval">
+                    <number>1</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QPushButton" name="voteSubmit">
+                   <property name="text">
+                    <string>Vote!</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="voteLabel">
+                   <property name="text">
+                    <string>Your Vote</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0" colspan="3">
+                  <widget class="QLabel" name="voteRating">
+                   <property name="text">
+                    <string>Current vote</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_6">
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SetMinimumSize</enum>
+                 </property>
                  <item>
                   <widget class="QPushButton" name="buttonUpgradeAll">
                    <property name="enabled">
@@ -519,8 +581,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>552</width>
-                   <height>611</height>
+                   <width>419</width>
+                   <height>626</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_10">

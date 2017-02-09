@@ -18,16 +18,22 @@
 
 
 #include "qgsserverinterfaceimpl.h"
+#include "qgsconfigcache.h"
+#include "qgsmslayercache.h"
 
-
-/** Constructor */
-QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache* capCache ) :
-    mCapabilitiesCache( capCache )
+//! Constructor
+QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache* capCache, QgsServiceRegistry* srvRegistry, QgsServerSettings* settings )
+    : mCapabilitiesCache( capCache )
+    , mServiceRegistry( srvRegistry )
+    , mServerSettings( settings )
 {
   mRequestHandler = nullptr;
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
   mAccessControls = new QgsAccessControl();
+#else
+  mAccessControls = nullptr;
+#endif
 }
-
 
 QString QgsServerInterfaceImpl::getEnv( const QString& name ) const
 {
@@ -35,10 +41,11 @@ QString QgsServerInterfaceImpl::getEnv( const QString& name ) const
 }
 
 
-/** Destructor */
 QgsServerInterfaceImpl::~QgsServerInterfaceImpl()
 {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
   delete mAccessControls;
+#endif
 }
 
 
@@ -67,8 +74,38 @@ void QgsServerInterfaceImpl::setFilters( QgsServerFiltersMap* filters )
   mFilters = *filters;
 }
 
-/** Register a new access control filter */
+//! Register a new access control filter
 void QgsServerInterfaceImpl::registerAccessControl( QgsAccessControlFilter* accessControl, int priority )
 {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
   mAccessControls->registerAccessControl( accessControl, priority );
+#else
+  Q_UNUSED( accessControl );
+  Q_UNUSED( priority );
+#endif
+}
+
+
+void QgsServerInterfaceImpl::removeConfigCacheEntry( const QString& path )
+{
+  if ( mCapabilitiesCache )
+  {
+    mCapabilitiesCache->removeCapabilitiesDocument( path );
+  }
+  QgsConfigCache::instance()->removeEntry( path );
+}
+
+void QgsServerInterfaceImpl::removeProjectLayers( const QString& path )
+{
+  QgsMSLayerCache::instance()->removeProjectLayers( path );
+}
+
+QgsServiceRegistry* QgsServerInterfaceImpl::serviceRegistry()
+{
+  return mServiceRegistry;
+}
+
+QgsServerSettings* QgsServerInterfaceImpl::serverSettings()
+{
+  return mServerSettings;
 }

@@ -21,19 +21,22 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
+from builtins import range
 
-from PyQt.QtCore import Qt, QSettings, QFileInfo
-from PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QApplication
-from PyQt.QtGui import QCursor
+from qgis.PyQt.QtCore import Qt, QSettings, QFileInfo
+from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QApplication
+from qgis.PyQt.QtGui import QCursor
 
-import qgis.core
+from qgis.core import QgsDataSourceUri, QgsVectorLayer, QgsRasterLayer, QgsMimeDataUtils, QgsMapLayer, QgsProviderRegistry, QgsCoordinateReferenceSystem, QgsVectorLayerImport, QgsProject
+from qgis.gui import QgsMessageViewer
 from qgis.utils import iface
 
 from .ui.ui_DlgImportVector import Ui_DbManagerDlgImportVector as Ui_Dialog
 
 
 class DlgImportVector(QDialog, Ui_Dialog):
-    HAS_INPUT_MODE, ASK_FOR_INPUT_MODE = range(2)
+    HAS_INPUT_MODE, ASK_FOR_INPUT_MODE = list(range(2))
 
     def __init__(self, inLayer, outDb, outUri, parent=None):
         QDialog.__init__(self, parent)
@@ -75,6 +78,10 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
             self.editPrimaryKey.setText(self.default_pk)
             self.editGeomColumn.setText(self.default_geom)
+
+            self.chkLowercaseFieldNames.setEnabled(self.db.hasLowercaseFieldNamesOption())
+            if not self.chkLowercaseFieldNames.isEnabled():
+                self.chkLowercaseFieldNames.setChecked(False)
         else:
             # set default values
             self.checkSupports()
@@ -105,12 +112,17 @@ class DlgImportVector(QDialog, Ui_Dialog):
         if not self.chkSpatialIndex.isEnabled():
             self.chkSpatialIndex.setChecked(False)
 
+        self.chkLowercaseFieldNames.setEnabled(self.db.hasLowercaseFieldNamesOption())
+        if not self.chkLowercaseFieldNames.isEnabled():
+            self.chkLowercaseFieldNames.setChecked(False)
+
     def populateLayers(self):
         self.cboInputLayer.clear()
-        for index, layer in enumerate(iface.legendInterface().layers()):
+        for nodeLayer in QgsProject.instance().layerTreeRoot().findLayers():
+            layer = nodeLayer.layer()
             # TODO: add import raster support!
-            if layer.type() == qgis.core.QgsMapLayer.VectorLayer:
-                self.cboInputLayer.addItem(layer.name(), index)
+            if layer.type() == QgsMapLayer.VectorLayer:
+                self.cboInputLayer.addItem(layer.name(), layer.id())
 
     def deleteInputLayer(self):
         """ unset the input layer, then destroy it but only if it was created from this dialog """
@@ -123,14 +135,14 @@ class DlgImportVector(QDialog, Ui_Dialog):
         return False
 
     def chooseInputFile(self):
-        vectorFormats = qgis.core.QgsProviderRegistry.instance().fileVectorFilters()
+        vectorFormats = QgsProviderRegistry.instance().fileVectorFilters()
         # get last used dir and format
         settings = QSettings()
         lastDir = settings.value("/db_manager/lastUsedDir", "")
         lastVectorFormat = settings.value("/UI/lastVectorFileFilter", "")
         # ask for a filename
-        (filename, lastVectorFormat) = QFileDialog.getOpenFileNameAndFilter(self, self.tr("Choose the file to import"),
-                                                                            lastDir, vectorFormats, lastVectorFormat)
+        filename, lastVectorFormat = QFileDialog.getOpenFileName(self, self.tr("Choose the file to import"),
+                                                                 lastDir, vectorFormats, lastVectorFormat)
         if filename == "":
             return
         # store the last used dir and format
@@ -161,8 +173,8 @@ class DlgImportVector(QDialog, Ui_Dialog):
                 return False
 
             layerName = QFileInfo(filename).completeBaseName()
-            layer = qgis.core.QgsVectorLayer(filename, layerName, "ogr")
-            if not layer.isValid() or layer.type() != qgis.core.QgsMapLayer.VectorLayer:
+            layer = QgsVectorLayer(filename, layerName, "ogr")
+            if not layer.isValid() or layer.type() != QgsMapLayer.VectorLayer:
                 layer.deleteLater()
                 return False
 
@@ -170,8 +182,8 @@ class DlgImportVector(QDialog, Ui_Dialog):
             self.inLayerMustBeDestroyed = True
 
         else:
-            legendIndex = self.cboInputLayer.itemData(index)
-            self.inLayer = iface.legendInterface().layers()[legendIndex]
+            layerId = self.cboInputLayer.itemData(index)
+            self.inLayer = QgsProject.instance().mapLayer(layerId)
             self.inLayerMustBeDestroyed = False
 
         self.checkSupports()
@@ -184,7 +196,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
         # update the output table name, pk and geom column
         self.cboTable.setEditText(self.inLayer.name())
 
-        srcUri = qgis.core.QgsDataSourceURI(self.inLayer.source())
+        srcUri = QgsDataSourceUri(self.inLayer.source())
         pk = srcUri.keyColumn() if srcUri.keyColumn() else self.default_pk
         self.editPrimaryKey.setText(pk)
         geom = srcUri.geometryColumn() if srcUri.geometryColumn() else self.default_geom
@@ -286,7 +298,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
             # get pk and geom field names from the source layer or use the
             # ones defined by the user
-            srcUri = qgis.core.QgsDataSourceURI(self.inLayer.source())
+            srcUri = QgsDataSourceUri(self.inLayer.source())
 
             pk = srcUri.keyColumn() if not self.chkPrimaryKey.isChecked() else self.editPrimaryKey.text()
             if not pk:
@@ -299,28 +311,33 @@ class DlgImportVector(QDialog, Ui_Dialog):
             else:
                 geom = None
 
+            options = {}
+            if self.chkLowercaseFieldNames.isEnabled() and self.chkLowercaseFieldNames.isChecked():
+                pk = pk.lower()
+                if geom:
+                    geom = geom.lower()
+                options['lowercaseFieldNames'] = True
+
             # get output params, update output URI
             self.outUri.setDataSource(schema, table, geom, "", pk)
             uri = self.outUri.uri(False)
 
             providerName = self.db.dbplugin().providerName()
-
-            options = {}
             if self.chkDropTable.isChecked():
                 options['overwrite'] = True
 
             if self.chkSinglePart.isEnabled() and self.chkSinglePart.isChecked():
                 options['forceSinglePartGeometryType'] = True
 
-            outCrs = None
+            outCrs = QgsCoordinateReferenceSystem()
             if self.chkTargetSrid.isEnabled() and self.chkTargetSrid.isChecked():
                 targetSrid = int(self.editTargetSrid.text())
-                outCrs = qgis.core.QgsCoordinateReferenceSystem(targetSrid)
+                outCrs = QgsCoordinateReferenceSystem(targetSrid)
 
             # update input layer crs and encoding
             if self.chkSourceSrid.isEnabled() and self.chkSourceSrid.isChecked():
                 sourceSrid = int(self.editSourceSrid.text())
-                inCrs = qgis.core.QgsCoordinateReferenceSystem(sourceSrid)
+                inCrs = QgsCoordinateReferenceSystem(sourceSrid)
                 self.inLayer.setCrs(inCrs)
 
             if self.chkEncoding.isEnabled() and self.chkEncoding.isChecked():
@@ -330,10 +347,10 @@ class DlgImportVector(QDialog, Ui_Dialog):
             onlySelected = self.chkSelectedFeatures.isChecked()
 
             # do the import!
-            ret, errMsg = qgis.core.QgsVectorLayerImport.importLayer(self.inLayer, uri, providerName, outCrs, onlySelected, False, options)
+            ret, errMsg = QgsVectorLayerImport.importLayer(self.inLayer, uri, providerName, outCrs, onlySelected, False, options)
         except Exception as e:
             ret = -1
-            errMsg = unicode(e)
+            errMsg = str(e)
 
         finally:
             # restore input layer crs and encoding
@@ -343,7 +360,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
             QApplication.restoreOverrideCursor()
 
         if ret != 0:
-            output = qgis.gui.QgsMessageViewer()
+            output = QgsMessageViewer()
             output.setTitle(self.tr("Import to database"))
             output.setMessageAsPlainText(self.tr("Error %d\n%s") % (ret, errMsg))
             output.showMessage()

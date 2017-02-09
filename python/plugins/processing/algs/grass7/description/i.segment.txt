@@ -1,0 +1,16 @@
+i.segment
+Identifies segments (objects) from imagery data.
+Imagery (i.*)
+ParameterMultipleInput|input|Input rasters|3|False
+ParameterNumber|threshold|Difference threshold between 0 and 1|0.0|1.0|0.5|False
+ParameterSelection|method|Segmentation method|region_growing|0
+ParameterSelection|similarity|Similarity calculation method|euclidean;manhattan|0
+ParameterNumber|minsize|Minimum number of cells in a segment|1|100000|1|True
+ParameterNumber|memory|Amount of memory to use in MB|1|None|300|True
+ParameterNumber|iterations|Maximum number of iterations|1|None|20|True
+ParameterRaster|seeds|Name for input raster map with starting seeds|True
+ParameterRaster|bounds|Name of input bounding/constraining raster map|True
+*ParameterBoolean|-d|Use 8 neighbors (3x3 neighborhood) instead of the default 4 neighbors for each pixel|False
+*ParameterBoolean|-w|Weighted input, do not perform the default scaling of input raster maps|False
+OutputRaster|output|Segmented Raster
+OutputRaster|goodness|Goodness Raster

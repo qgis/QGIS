@@ -1,4 +1,4 @@
-/** \ingroup MapComposer
+/** \ingroup core
  * \class QgsComposerMapGridStack
  * \brief A collection of grids which is drawn above the map content in a
  * QgsComposerMap. The grid stack controls which grids are drawn and the
@@ -95,7 +95,7 @@ class QgsComposerMapGridStack : QgsComposerMapItemStack
      * @returns true if read was successful
      * @see writeXML
      */
-    bool readXML( const QDomElement& elem, const QDomDocument& doc );
+    bool readXml( const QDomElement& elem, const QDomDocument& doc );
 
     /** Calculates the maximum distance grids within the stack extend
      * beyond the QgsComposerMap's item rect
@@ -121,7 +121,7 @@ class QgsComposerMapGridStack : QgsComposerMapItemStack
 // QgsComposerMapGrid
 //
 
-/** \ingroup MapComposer
+/** \ingroup core
  * \class QgsComposerMapGrid
  * \brief An individual grid which is drawn above the map content in a
  * QgsComposerMap.
@@ -171,8 +171,6 @@ class QgsComposerMapGrid : QgsComposerMapItem
     {
       InsideMapFrame = 0,
       OutsideMapFrame, /*!< draw annotations outside the map frame */
-      Disabled /*!< disable annotation
-                  * @deprecated in QGIS 2.7, use QgsComposerMapGrid::HideAll instead */
     };
 
     /** Direction of grid annotations
@@ -259,14 +257,14 @@ class QgsComposerMapGrid : QgsComposerMapItem
      * @param doc DOM document
      * @see readXML
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
 
     /** Sets grid state from a DOM document
      * @param itemElem is DOM node corresponding to a 'ComposerMapGrid' tag
      * @param doc is DOM document
      * @see writeXML
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
 
     /** Sets the CRS for the grid.
      * @param crs coordinate reference system for grid
@@ -451,7 +449,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
      * @see setMarkerSymbol
      * @see setStyle
      */
-    void setLineSymbol( QgsLineSymbolV2* symbol /Transfer/ );
+    void setLineSymbol( QgsLineSymbol* symbol /Transfer/ );
 
     /** Gets the line symbol used for drawing grid lines. This is only used for grids with
      * QgsComposerMapGrid::Solid or QgsComposerMapGrid::Cross styles.
@@ -461,7 +459,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
      * @see style
      * @note not available in python bindings
      */
-    // const QgsLineSymbolV2* lineSymbol() const { return mGridLineSymbol; }
+    // const QgsLineSymbol* lineSymbol() const { return mGridLineSymbol; }
 
     /** Gets the line symbol used for drawing grid lines. This is only used for grids with
      * QgsComposerMapGrid::Solid or QgsComposerMapGrid::Cross styles.
@@ -470,7 +468,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
      * @see markerSymbol
      * @see style
      */
-    QgsLineSymbolV2* lineSymbol();
+    QgsLineSymbol* lineSymbol();
 
     /** Sets the marker symbol used for drawing grid points. This is only used for grids with a
      * QgsComposerMapGrid::Markers style.
@@ -479,7 +477,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
      * @see setLineSymbol
      * @see setStyle
      */
-    void setMarkerSymbol( QgsMarkerSymbolV2* symbol /Transfer/);
+    void setMarkerSymbol( QgsMarkerSymbol* symbol /Transfer/);
 
     /** Gets the marker symbol used for drawing grid points. This is only used for grids with a
      * QgsComposerMapGrid::Markers style.
@@ -489,7 +487,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
      * @see style
      * @note not available in python bindings
      */
-    // const QgsMarkerSymbolV2* markerSymbol() const { return mGridMarkerSymbol; }
+    // const QgsMarkerSymbol* markerSymbol() const { return mGridMarkerSymbol; }
 
     /** Gets the marker symbol used for drawing grid points. This is only used for grids with a
      * QgsComposerMapGrid::Markers style.
@@ -498,7 +496,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
      * @see lineSymbol
      * @see style
      */
-    QgsMarkerSymbolV2* markerSymbol();
+    QgsMarkerSymbol* markerSymbol();
 
     //
     // ANNOTATIONS
@@ -686,7 +684,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
      * @see frameSideFlags
      * @see testFrameSideFlag
      */
-    void setFrameSideFlags( const FrameSideFlags& flags );
+    void setFrameSideFlags( FrameSideFlags flags );
 
     /** Sets whether the grid frame is drawn for a certain side of the map item.
      * @param flag flag for grid frame side
@@ -796,6 +794,6 @@ class QgsComposerMapGrid : QgsComposerMapItem
      */
     QColor frameFillColor2() const;
 
-    virtual QgsExpressionContext* createExpressionContext() const;
+    virtual QgsExpressionContext createExpressionContext() const;
 
 };

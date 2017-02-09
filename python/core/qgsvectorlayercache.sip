@@ -65,8 +65,17 @@ class QgsVectorLayerCache : QObject
      * be used for slow data sources, be aware, that the call to this method might take a long time.
      *
      * @param fullCache   True: enable full caching, False: disable full caching
+     * @see hasFullCache()
      */
     void setFullCache( bool fullCache );
+
+    /** Returns true if the cache is complete, ie it contains all features. This may happen as
+     * a result of a call to setFullCache() or by through a feature request which resulted in
+     * all available features being cached.
+     * @see setFullCache()
+     * @note added in QGIS 3.0
+     */
+    bool hasFullCache() const;
 
     /**
      * @brief
@@ -76,7 +85,7 @@ class QgsVectorLayerCache : QObject
      *
      * @param cacheIndex  The cache index to add.
      */
-    void addCacheIndex( QgsAbstractCacheIndex *cacheIndex );
+    void addCacheIndex( QgsAbstractCacheIndex *cacheIndex /Transfer/ );
 
     /**
      * Query this VectorLayerCache for features.
@@ -90,11 +99,39 @@ class QgsVectorLayerCache : QObject
     QgsFeatureIterator getFeatures( const QgsFeatureRequest& featureRequest = QgsFeatureRequest() );
 
     /**
+     * Query the layer for features matching a given expression.
+     */
+    QgsFeatureIterator getFeatures( const QString& expression );
+
+    /**
+     * Query the layer for the feature with the given id.
+     * If there is no such feature, the returned feature will be invalid.
+     */
+    QgsFeature getFeature( QgsFeatureId fid );
+
+    /**
+     * Query the layer for the features with the given ids.
+     */
+    QgsFeatureIterator getFeatures( QgsFeatureIds fids );
+
+    /**
+     * Query the layer for the features which intersect the specified rectangle.
+     */
+    QgsFeatureIterator getFeatures( const QgsRectangle& rectangle );
+
+    /**
      * Check if a certain feature id is cached.
      * @param  fid The feature id to look for
      * @return True if this id is in the cache
+     * @see cachedFeatureIds()
      */
-    bool isFidCached( const QgsFeatureId fid );
+    bool isFidCached( const QgsFeatureId fid ) const;
+
+    /** Returns the set of feature IDs for features which are cached.
+     * @note added in QGIS 3.0
+     * @see isFidCached()
+     */
+    QgsFeatureIds cachedFeatureIds() const;
 
     /**
      * Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features

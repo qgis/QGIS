@@ -17,7 +17,6 @@
 #include "qgsmaptool.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
-#include "qgsmaprenderer.h"
 #include "qgsrendercontext.h"
 #include <QAction>
 #include <QAbstractButton>
@@ -164,7 +163,7 @@ void QgsMapTool::canvasReleaseEvent( QgsMapMouseEvent* e )
 
 void QgsMapTool::wheelEvent( QWheelEvent *e )
 {
-  Q_UNUSED( e );
+  e->ignore();
 }
 
 void QgsMapTool::keyPressEvent( QKeyEvent *e )
@@ -185,20 +184,6 @@ bool QgsMapTool::gestureEvent( QGestureEvent *e )
 }
 #endif
 
-void QgsMapTool::renderComplete()
-{
-}
-
-bool QgsMapTool::isTransient()
-{
-  return false;
-}
-
-bool QgsMapTool::isEditTool()
-{
-  return false;
-}
-
 QgsMapCanvas* QgsMapTool::canvas()
 {
   return mCanvas;
@@ -207,13 +192,13 @@ QgsMapCanvas* QgsMapTool::canvas()
 double QgsMapTool::searchRadiusMM()
 {
   QSettings settings;
-  double radius = settings.value( "/Map/searchRadiusMM", QGis::DEFAULT_SEARCH_RADIUS_MM ).toDouble();
+  double radius = settings.value( QStringLiteral( "/Map/searchRadiusMM" ), Qgis::DEFAULT_SEARCH_RADIUS_MM ).toDouble();
 
   if ( radius > 0 )
   {
     return radius;
   }
-  return QGis::DEFAULT_SEARCH_RADIUS_MM;
+  return Qgis::DEFAULT_SEARCH_RADIUS_MM;
 }
 
 double QgsMapTool::searchRadiusMU( const QgsRenderContext& context )

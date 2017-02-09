@@ -16,12 +16,12 @@
 #ifndef QGSRASTERCHECKER_H
 #define QGSRASTERCHECKER_H
 
+#include "qgis_core.h"
 #include <QDir>
 #include <QString>
-#include <qgsmaprenderer.h>
 class QImage;
 
-/** \ingroup UnitTests
+/** \ingroup core
  * This is a helper class for unit tests that need to
  * write an image and compare it to an expected result
  * or render time.
@@ -32,10 +32,8 @@ class CORE_EXPORT QgsRasterChecker
 
     QgsRasterChecker();
 
-    //! Destructor
-    ~QgsRasterChecker() {}
-
     QString report() { return mReport; }
+
     /**
      * Test using renderer to generate the image to be compared.
      * @param theVerifiedKey verified provider key

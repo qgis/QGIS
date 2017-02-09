@@ -18,27 +18,30 @@
 #define QGSSIZESCALEWIDGET_H
 
 #include "qgslayertreegroup.h"
-#include "qgslayertreemodel.h"
 #include "qgsdatadefinedbutton.h"
 #include "ui_widget_size_scale.h"
 #include <QStandardItemModel>
 #include <QItemDelegate>
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
-class QgsSymbolV2;
+class QgsSymbol;
 class QgsLayerTreeLayer;
 class QgsScaleExpression;
-class QgsDataDefined;
+class QgsAbstractProperty;
 class QgsMapCanvas;
 
-class GUI_EXPORT QgsSizeScaleWidget : public QgsDataDefinedAssistant, private Ui_SizeScaleBase
+/** \ingroup gui
+ * \class QgsSizeScaleWidget
+ */
+class GUI_EXPORT QgsSizeScaleWidget : public QgsDataDefinedAssistant, private Ui_SizeScaleBase, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
   public:
-    QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsSymbolV2 * symbol );
+    QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsSymbol * symbol );
 
-    QgsDataDefined dataDefined() const override;
+    QgsProperty property() const override;
 
     /** Returns the vector layer associated with the widget.
      * @note added in QGIS 2.12
@@ -55,7 +58,7 @@ class GUI_EXPORT QgsSizeScaleWidget : public QgsDataDefinedAssistant, private Ui
 
   private:
 
-    const QgsSymbolV2* mSymbol;
+    const QgsSymbol* mSymbol;
     QgsVectorLayer* mLayer;
     QgsLayerTreeLayer* mLayerTreeLayer;
     QgsLayerTreeGroup mRoot;
@@ -65,6 +68,7 @@ class GUI_EXPORT QgsSizeScaleWidget : public QgsDataDefinedAssistant, private Ui
     QgsScaleExpression* createExpression() const;
     void setFromSymbol();
 
+    QgsExpressionContext createExpressionContext() const override;
 };
 
 /// @cond PRIVATE

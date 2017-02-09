@@ -15,12 +15,30 @@
 #ifndef QGSAPPLICATION_H
 #define QGSAPPLICATION_H
 
+#include "qgis_core.h"
 #include <QApplication>
 #include <QEvent>
 #include <QStringList>
 
 #include <qgis.h>
 #include <qgsconfig.h>
+
+class QgsActionScopeRegistry;
+class QgsRuntimeProfiler;
+class QgsTaskManager;
+class QgsFieldFormatterRegistry;
+class QgsColorSchemeRegistry;
+class QgsPaintEffectRegistry;
+class QgsRendererRegistry;
+class QgsSvgCache;
+class QgsSymbolLayerRegistry;
+class QgsRasterRendererRegistry;
+class QgsGPSConnectionRegistry;
+class QgsDataItemProviderRegistry;
+class QgsPluginLayerRegistry;
+class QgsMessageLog;
+class QgsProcessingRegistry;
+class QgsAnnotationRegistry;
 
 /** \ingroup core
  * Extends QApplication to provide access to QGIS specific resources such
@@ -34,6 +52,7 @@ typedef void XEvent;
 class CORE_EXPORT QgsApplication : public QApplication
 {
     Q_OBJECT
+
   public:
     static const char* QGIS_ORGANIZATION_NAME;
     static const char* QGIS_ORGANIZATION_DOMAIN;
@@ -41,7 +60,14 @@ class CORE_EXPORT QgsApplication : public QApplication
     QgsApplication( int & argc, char ** argv, bool GUIenabled, const QString& customConfigPath = QString(), const QString& platformName = "desktop" );
     virtual ~QgsApplication();
 
-    /** This method initialises paths etc for QGIS. Called by the ctor or call it manually
+    /**
+     * Returns the singleton instance of the QgsApplication.
+     *
+     * @note Added in QGIS 3.0
+     */
+    static QgsApplication* instance();
+
+    /** This method initializes paths etc for QGIS. Called by the ctor or call it manually
         when your app does not extend the QApplication class.
         @note you will probably want to call initQgis too to load the providers in
         the above case.
@@ -79,7 +105,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * @brief Set the current UI theme used to style the interface.  Use uiThemes() to
-     * find valid themes to use. Variabels found in variables.qss will be added to the stylesheet
+     * find valid themes to use. Variables found in variables.qss will be added to the stylesheet
      * on load.
      * @param themeName The name of the theme.
      * @note using an invalid theme name will reset to default
@@ -87,7 +113,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static void setUITheme( const QString &themeName );
 
     /**
-     * @brief All themes found in ~/.qgis2/themes folder.
+     * @brief All themes found in ~/.qgis3/themes folder.
      * The path is to the root folder for the theme
      * @note Valid theme folders must contain a style.qss file.
      * @return A hash of theme name and theme path. Valid theme folders contain style.qss
@@ -108,10 +134,10 @@ class CORE_EXPORT QgsApplication : public QApplication
      * @note this function was added in version 2.7 */
     static QString developersMapFilePath();
 
-    /** Returns the path to the sponsors file. */
+    //! Returns the path to the sponsors file.
     static QString sponsorsFilePath();
 
-    /** Returns the path to the donors file. */
+    //! Returns the path to the donors file.
     static QString donorsFilePath();
 
     /**
@@ -151,10 +177,10 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Returns the path to the srs.db file.
     static QString srsDbFilePath();
 
-    //! Returns the pathes to svg directories.
+    //! Returns the paths to svg directories.
     static QStringList svgPaths();
 
-    //! Returns the pathes to composer template directories
+    //! Returns the paths to composer template directories
     static QStringList composerTemplatePaths();
 
     //! Returns the system environment variables passed to application.
@@ -188,7 +214,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QPixmap getThemePixmap( const QString &theName );
 
     //! Returns the path to user's style.
-    static QString userStyleV2Path();
+    static QString userStylePath();
 
     //! Returns the short name regular expression for line edit validator
     static QRegExp shortNameRegExp();
@@ -211,17 +237,22 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static QString osName();
 
-    /** Returns the QGIS platform name, eg "desktop" or "server".
+    /** Returns the QGIS platform name, e.g., "desktop" or "server".
      * @note added in QGIS 2.14
      * @see osName()
      */
     static QString platform();
 
+    /** Returns the QGIS locale.
+     * @note added in QGIS 3.0
+     */
+    static QString locale();
+
     //! Returns the path to user's themes folder
     static QString userThemesFolder();
 
     //! Returns the path to default style (works as a starting point).
-    static QString defaultStyleV2Path();
+    static QString defaultStylePath();
 
     //! Returns the path to default themes folder from install (works as a starting point).
     static QString defaultThemesFolder();
@@ -250,7 +281,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! loads providers
     static void initQgis();
 
-    //! initialise qgis.db
+    //! initialize qgis.db
     static bool createDB( QString* errorMessage = nullptr );
 
     //! Create the users theme folder
@@ -262,7 +293,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! get application icon
     static QString appIconPath();
 
-    /** Constants for endian-ness */
+    //! Constants for endian-ness
     enum endian_t
     {
       XDR = 0,  // network, or big-endian, byte order
@@ -308,19 +339,19 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static void registerOgrDrivers();
 
-    /** Converts absolute path to path relative to target */
+    //! Converts absolute path to path relative to target
     static QString absolutePathToRelativePath( const QString& apath, const QString& targetPath );
-    /** Converts path relative to target to an absolute path */
+    //! Converts path relative to target to an absolute path
     static QString relativePathToAbsolutePath( const QString& rpath, const QString& targetPath );
 
-    /** Indicates whether running from build directory (not installed) */
+    //! Indicates whether running from build directory (not installed)
     static bool isRunningFromBuildDir() { return ABISYM( mRunningFromBuildDir ); }
 #ifdef _MSC_VER
     static QString cfgIntDir() { return ABISYM( mCfgIntDir ); }
 #endif
-    /** Returns path to the source directory. Valid only when running from build directory */
+    //! Returns path to the source directory. Valid only when running from build directory
     static QString buildSourcePath() { return ABISYM( mBuildSourcePath ); }
-    /** Returns path to the build output directory. Valid only when running from build directory */
+    //! Returns path to the build output directory. Valid only when running from build directory
     static QString buildOutputPath() { return ABISYM( mBuildOutputPath ); }
 
     /** Sets the GDAL_SKIP environment variable to include the specified driver
@@ -349,10 +380,95 @@ class CORE_EXPORT QgsApplication : public QApplication
     /** Get maximum concurrent thread count
      * @note added in 2.4 */
     static int maxThreads() { return ABISYM( mMaxThreads ); }
+
     /** Set maximum concurrent thread count
      * @note must be between 1 and \#cores, -1 means use all available cores
      * @note added in 2.4 */
     static void setMaxThreads( int maxThreads );
+
+    /**
+     * Returns the application's task manager, used for managing application
+     * wide background task handling.
+     * @note added in QGIS 3.0
+     */
+    static QgsTaskManager* taskManager();
+
+    /**
+     * Returns the application's color scheme registry, used for managing color schemes.
+     * @note added in QGIS 3.0
+     */
+    static QgsColorSchemeRegistry* colorSchemeRegistry();
+
+    /**
+     * Returns the application's paint effect registry, used for managing paint effects.
+     * @note added in QGIS 3.0
+     */
+    static QgsPaintEffectRegistry* paintEffectRegistry();
+
+    /**
+     * Returns the application's renderer registry, used for managing vector layer renderers.
+     * @note added in QGIS 3.0
+     */
+    static QgsRendererRegistry* rendererRegistry();
+
+    /**
+     * Returns the application's raster renderer registry, used for managing raster layer renderers.
+     * @note added in QGIS 3.0
+     * @note not available in Python bindings
+     */
+    static QgsRasterRendererRegistry* rasterRendererRegistry();
+
+    /**
+     * Returns the application's data item provider registry, which keeps a list of data item
+     * providers that may add items to the browser tree.
+     * @note added in QGIS 3.0
+     */
+    static QgsDataItemProviderRegistry* dataItemProviderRegistry();
+
+    /**
+     * Returns the application's SVG cache, used for caching SVG images and handling parameter replacement
+     * within SVG files.
+     * @note added in QGIS 3.0
+     */
+    static QgsSvgCache* svgCache();
+
+    /**
+     * Returns the application's symbol layer registry, used for managing symbol layers.
+     * @note added in QGIS 3.0
+     */
+    static QgsSymbolLayerRegistry* symbolLayerRegistry();
+
+    /**
+     * Returns the application's GPS connection registry, used for managing GPS connections.
+     * @note added in QGIS 3.0
+     */
+    static QgsGPSConnectionRegistry* gpsConnectionRegistry();
+
+    /**
+     * Returns the application's plugin layer registry, used for managing plugin layer types.
+     * @note added in QGIS 3.0
+     */
+    static QgsPluginLayerRegistry* pluginLayerRegistry();
+
+    /**
+     * Returns the application's message log.
+     * @note added in QGIS 3.0
+     */
+    static QgsMessageLog* messageLog();
+
+    /**
+     * Returns the application's processing registry, used for managing processing providers,
+     * algorithms, and various parameters and outputs.
+     * @note added in QGIS 3.0
+     */
+    static QgsProcessingRegistry* processingRegistry();
+
+    /**
+     * Returns the application's annotation registry, used for managing annotation types.
+     * @note added in QGIS 3.0
+     * @note not available in Python bindings
+     */
+    static QgsAnnotationRegistry* annotationRegistry();
 
 #ifdef ANDROID
     //dummy method to workaround sip generation issue issue
@@ -363,9 +479,80 @@ class CORE_EXPORT QgsApplication : public QApplication
     }
 #endif
 
+    /**
+     * Returns the action scope registry.
+     *
+     * @note Added in QGIS 3.0
+     */
+    static QgsActionScopeRegistry* actionScopeRegistry();
+
+    /**
+     * Returns the application runtime profiler.
+     * @note added in QGIS 3.0
+     */
+    static QgsRuntimeProfiler* profiler();
+
+    /**
+     * Get the registry of available field formatters.
+     */
+    static QgsFieldFormatterRegistry* fieldFormatterRegistry();
+
+    /**
+     * This string is used to represent the value `NULL` throughout QGIS.
+     *
+     * In general, when passing values around, prefer to use a null QVariant
+     * `QVariant( field.type() )` or `QVariant( QVariant::Int )`. This value
+     * should only be used in the final presentation step when showing values
+     * in a widget or sending it to a web browser.
+     */
+    static QString nullRepresentation();
+
+    /**
+     * \copydoc nullRepresentation()
+     */
+    static void setNullRepresentation( const QString& nullRepresentation );
+
+    /**
+     * Custom expression variables for this application.
+     * This does not include generated variables (like system name, user name etc.)
+     *
+     * \see QgsExpressionContextUtils::globalVariables().
+     * \note Added in QGIS 3.0
+     */
+    static QVariantMap customVariables();
+
+    /**
+     * Custom expression variables for this application.
+     * Do not include generated variables (like system name, user name etc.)
+     *
+     * \see QgsExpressionContextUtils::globalVariables().
+     * \note Added in QGIS 3.0
+     */
+    static void setCustomVariables( const QVariantMap& customVariables );
+
+
+    /**
+     * Set a single custom expression variable.
+     *
+     * \note Added in QGIS 3.0
+     */
+    static void setCustomVariable( const QString& name, const QVariant& value );
+
   signals:
     //! @note not available in python bindings
     void preNotify( QObject * receiver, QEvent * event, bool * done );
+
+    /**
+     * Emitted whenever a custom global variable changes.
+     * @note added in QGIS 3.0
+     */
+    void customVariablesChanged();
+
+
+    /**
+     * \copydoc nullRepresentation()
+     */
+    void nullRepresentationChanged();
 
   private:
     static void copyPath( const QString& src, const QString& dst );
@@ -384,22 +571,25 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     static QString ABISYM( mConfigPath );
 
-    /** True when running from build directory, i.e. without 'make install' */
+    //! True when running from build directory, i.e. without 'make install'
     static bool ABISYM( mRunningFromBuildDir );
-    /** Path to the source directory. valid only when running from build directory. */
+    //! Path to the source directory. valid only when running from build directory.
     static QString ABISYM( mBuildSourcePath );
 #ifdef _MSC_VER
-    /** Configuration internal dir */
+    //! Configuration internal dir
     static QString ABISYM( mCfgIntDir );
 #endif
-    /** Path to the output directory of the build. valid only when running from build directory */
+    //! Path to the output directory of the build. valid only when running from build directory
     static QString ABISYM( mBuildOutputPath );
+
     /** List of gdal drivers to be skipped. Uses GDAL_SKIP to exclude them.
      * @see skipGdalDriver, restoreGdalDriver */
     static QStringList ABISYM( mGdalSkipList );
+
     /**
      * @note added in 2.4 */
     static int ABISYM( mMaxThreads );
+
     /**
      * @note added in 2.12 */
     static QString ABISYM( mAuthDbDirPath );
@@ -409,6 +599,24 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString sPlatformName;
 
     QMap<QString, QIcon> mIconCache;
+
+    QgsActionScopeRegistry* mActionScopeRegistry = nullptr;
+    QgsRuntimeProfiler* mProfiler = nullptr;
+    QgsTaskManager* mTaskManager = nullptr;
+    QgsFieldFormatterRegistry* mFieldFormatterRegistry = nullptr;
+    QgsColorSchemeRegistry* mColorSchemeRegistry = nullptr;
+    QgsPaintEffectRegistry* mPaintEffectRegistry = nullptr;
+    QgsRendererRegistry* mRendererRegistry = nullptr;
+    QgsSvgCache* mSvgCache = nullptr;
+    QgsSymbolLayerRegistry* mSymbolLayerRegistry = nullptr;
+    QgsRasterRendererRegistry* mRasterRendererRegistry = nullptr;
+    QgsGPSConnectionRegistry* mGpsConnectionRegistry = nullptr;
+    QgsDataItemProviderRegistry* mDataItemProviderRegistry = nullptr;
+    QgsPluginLayerRegistry* mPluginLayerRegistry = nullptr;
+    QgsMessageLog* mMessageLog = nullptr;
+    QgsProcessingRegistry* mProcessingRegistry = nullptr;
+    QgsAnnotationRegistry* mAnnotationRegistry = nullptr;
+    QString mNullRepresentation;
 };
 
 #endif

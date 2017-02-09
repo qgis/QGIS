@@ -1,46 +1,37 @@
-class QgsLayerPropertiesWidget : QWidget
+class QgsLayerPropertiesWidget : QgsPanelWidget, QgsExpressionContextGenerator
 {
 %TypeHeaderCode
 #include <qgslayerpropertieswidget.h>
 %End
 
   public:
-    QgsLayerPropertiesWidget( QgsSymbolLayerV2* layer, const QgsSymbolV2* symbol, const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
+    QgsLayerPropertiesWidget( QgsSymbolLayer* layer, const QgsSymbol* symbol, const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
-    /** Returns the expression context used for the widget, if set. This expression context is used for
-     * evaluating data defined symbol properties and for populating based expression widgets in
-     * the properties widget.
-     * @note added in QGIS 2.12
-     * @see setExpressionContext()
+   /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+     * @param context symbol widget context
+     * @see context()
+     * @note added in QGIS 3.0
      */
-    QgsExpressionContext* expressionContext() const;
+    void setContext( const QgsSymbolWidgetContext& context );
 
-    /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
-     * map scale and other properties from the canvas.
-     * @param canvas map canvas
-     * @note added in QGIS 2.12
+    /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+     * @see setContext()
+     * @note added in QGIS 3.0
      */
-    virtual void setMapCanvas( QgsMapCanvas* canvas );
+    QgsSymbolWidgetContext context() const;
+
 
   public slots:
     void layerTypeChanged();
     void emitSignalChanged();
 
-    /** Sets the optional expression context used for the widget. This expression context is used for
-     * evaluating data defined symbol properties and for populating based expression widgets in
-     * the properties widget.
-     * @param context expression context pointer. Ownership is not transferred and the object must
-     * be kept alive for the lifetime of the properties widget.
-     * @note added in QGIS 2.12
-     * @see expressionContext()
-     */
-    void setExpressionContext( QgsExpressionContext* context );
-
   signals:
     void changed();
-    void changeLayer( QgsSymbolLayerV2* );
+    void changeLayer( QgsSymbolLayer* );
 
   protected:
     void populateLayerTypes();
-    void updateSymbolLayerWidget( QgsSymbolLayerV2* layer );
+    void updateSymbolLayerWidget( QgsSymbolLayer* layer );
+
+    void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key );
 };

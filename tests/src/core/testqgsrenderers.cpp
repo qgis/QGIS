@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -22,12 +22,11 @@
 #include <QDesktopServices>
 
 //qgis includes...
-#include <qgsmaprenderer.h>
 #include <qgsmaplayer.h>
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
-#include <qgsmaplayerregistry.h>
+#include <qgsproject.h>
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 
@@ -95,9 +94,9 @@ void TestQgsRenderers::initTestCase()
   QString myPointsFileName = mTestDataDir + "points.shp";
   QFileInfo myPointFileInfo( myPointsFileName );
   mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
-                                      myPointFileInfo.completeBaseName(), "ogr" );
+                                      myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpPointsLayer );
 
   //
@@ -106,9 +105,9 @@ void TestQgsRenderers::initTestCase()
   QString myPolysFileName = mTestDataDir + "polys.shp";
   QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
-                                     myPolyFileInfo.completeBaseName(), "ogr" );
+                                     myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpPolysLayer );
 
 
@@ -118,9 +117,9 @@ void TestQgsRenderers::initTestCase()
   QString myLinesFileName = mTestDataDir + "lines.shp";
   QFileInfo myLineFileInfo( myLinesFileName );
   mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(),
-                                     myLineFileInfo.completeBaseName(), "ogr" );
+                                     myLineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpLinesLayer );
   //
   // We only need maprender instead of mapcanvas
@@ -128,8 +127,8 @@ void TestQgsRenderers::initTestCase()
   // and is more light weight
   //
   mMapSettings->setLayers(
-    QStringList() << mpPointsLayer->id() << mpPolysLayer->id() << mpLinesLayer->id() );
-  mReport += "<h1>Vector Renderer Tests</h1>\n";
+    QList<QgsMapLayer*>() << mpPointsLayer << mpPolysLayer << mpLinesLayer );
+  mReport += QLatin1String( "<h1>Vector Renderer Tests</h1>\n" );
 }
 void TestQgsRenderers::cleanupTestCase()
 {
@@ -148,34 +147,11 @@ void TestQgsRenderers::cleanupTestCase()
 
 void TestQgsRenderers::singleSymbol()
 {
-  mReport += "<h2>Single symbol renderer test</h2>\n";
+  mReport += QLatin1String( "<h2>Single symbol renderer test</h2>\n" );
   QVERIFY( setQml( "single" ) );
   QVERIFY( imageCheck( "single" ) );
 }
 
-// TODO: update tests and enable
-/*
-void TestQgsRenderers::uniqueValue()
-{
-  mReport += "<h2>Unique value symbol renderer test</h2>\n";
-  QVERIFY( setQml( "uniquevalue" ) );
-  QVERIFY( imageCheck( "uniquevalue" ) );
-}
-
-void TestQgsRenderers::graduatedSymbol()
-{
-  mReport += "<h2>Graduated symbol renderer test</h2>\n";
-  QVERIFY( setQml( "graduated" ) );
-  QVERIFY( imageCheck( "graduated" ) );
-}
-
-void TestQgsRenderers::continuousSymbol()
-{
-  mReport += "<h2>Continuous symbol renderer test</h2>\n";
-  QVERIFY( setQml( "continuous" ) );
-  QVERIFY( imageCheck( "continuous" ) );
-}
-*/
 //
 // Private helper functions not called directly by CTest
 //
@@ -237,5 +213,5 @@ bool TestQgsRenderers::imageCheck( const QString& theTestType )
   return myResultFlag;
 }
 
-QTEST_MAIN( TestQgsRenderers )
+QGSTEST_MAIN( TestQgsRenderers )
 #include "testqgsrenderers.moc"

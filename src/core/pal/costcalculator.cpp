@@ -63,7 +63,7 @@ void CostCalculator::addObstacleCostPenalty( LabelPosition* lp, FeaturePart* obs
       break;
 
     case GEOS_POLYGON:
-      // behaviour depends on obstacle avoid type
+      // behavior depends on obstacle avoid type
       switch ( obstacle->layer()->obstacleType() )
       {
         case QgsPalLayerSettings::PolygonInterior:
@@ -104,11 +104,12 @@ void CostCalculator::setPolygonCandidatesCost( int nblp, QList< LabelPosition* >
   // IMPORTANT - only want to sort first nblp positions. The rest have not had the cost
   // calculated so will have nonsense values
   QList< LabelPosition* > toSort;
+  toSort.reserve( nblp );
   for ( int i = 0; i < nblp; ++i )
   {
     toSort << lPos.at( i );
   }
-  qSort( toSort.begin(), toSort.end(), candidateSortShrink );
+  std::sort( toSort.begin(), toSort.end(), candidateSortShrink );
   for ( int i = 0; i < nblp; ++i )
   {
     lPos[i] = toSort.at( i );
@@ -180,7 +181,7 @@ int CostCalculator::finalizeCandidatesCosts( Feats* feat, int max_p, RTree <Feat
     max_p = feat->lPos.count();
   //
   // sort candidates list, best label to worst
-  qSort( feat->lPos.begin(), feat->lPos.end(), candidateSortGrow );
+  std::sort( feat->lPos.begin(), feat->lPos.end(), candidateSortGrow );
 
   // try to exclude all conflitual labels (good ones have cost < 1 by pruning)
   double discrim = 0.0;

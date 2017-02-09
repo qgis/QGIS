@@ -20,10 +20,21 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt.QtWidgets import QApplication
+from qgis.PyQt.QtWidgets import QApplication
 
-from ..info_model import TableInfo, VectorTableInfo, RasterTableInfo
+from ..info_model import TableInfo, VectorTableInfo, RasterTableInfo, DatabaseInfo
 from ..html_elems import HtmlSection, HtmlParagraph, HtmlTable, HtmlTableHeader, HtmlTableCol
+
+
+class PGDatabaseInfo(DatabaseInfo):
+
+    def connectionDetails(self):
+        tbl = [
+            (QApplication.translate("DBManagerPlugin", "Host:"), self.db.connector.host),
+            (QApplication.translate("DBManagerPlugin", "User:"), self.db.connector.user),
+            (QApplication.translate("DBManagerPlugin", "Database:"), self.db.connector.dbname)
+        ]
+        return HtmlTable(tbl)
 
 
 class PGTableInfo(TableInfo):

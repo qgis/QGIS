@@ -12,19 +12,20 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QApplication>
 #include <QCheckBox>
+#include <memory>
 
 //qgis includes...
 #include <qgis.h>
 
 /** \ingroup UnitTests
- * Includes unit tests for the QGis namespace
+ * Includes unit tests for the Qgis namespace
  */
-class TestQGis : public QObject
+class TestQgis : public QObject
 {
     Q_OBJECT
 
@@ -47,17 +48,17 @@ class TestQGis : public QObject
 };
 
 //runs before all tests
-void TestQGis::initTestCase()
+void TestQgis::initTestCase()
 {
-  mReport = "<h1>QGis Tests</h1>\n";
+  mReport = QStringLiteral( "<h1>Qgis Tests</h1>\n" );
 }
 
 //runs after all tests
-void TestQGis::cleanupTestCase()
+void TestQgis::cleanupTestCase()
 {
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly ) )
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     QTextStream myQTextStream( &myFile );
     myQTextStream << mReport;
@@ -65,67 +66,67 @@ void TestQGis::cleanupTestCase()
   }
 }
 
-void TestQGis::permissiveToDouble()
+void TestQgis::permissiveToDouble()
 {
   //good inputs
   bool ok = false;
-  double result = QGis::permissiveToDouble( QString( "1000" ), ok );
+  double result = qgsPermissiveToDouble( QStringLiteral( "1000" ), ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.0 );
   ok = false;
-  result = QGis::permissiveToDouble( QString( "1" ) + QLocale::system().groupSeparator() + "000", ok );
+  result = qgsPermissiveToDouble( QStringLiteral( "1" ) + QLocale::system().groupSeparator() + "000", ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.0 );
   ok = false;
-  result = QGis::permissiveToDouble( QString( "5" ) + QLocale::system().decimalPoint() + "5", ok );
+  result = qgsPermissiveToDouble( QStringLiteral( "5" ) + QLocale::system().decimalPoint() + "5", ok );
   QVERIFY( ok );
   QCOMPARE( result, 5.5 );
   ok = false;
-  result = QGis::permissiveToDouble( QString( "1" ) + QLocale::system().groupSeparator() + "000" + QLocale::system().decimalPoint() + "5", ok );
+  result = qgsPermissiveToDouble( QStringLiteral( "1" ) + QLocale::system().groupSeparator() + "000" + QLocale::system().decimalPoint() + "5", ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.5 );
 
   //bad input
   ok = false;
-  ( void ) QGis::permissiveToDouble( QString( "a" ), ok );
+  ( void ) qgsPermissiveToDouble( QStringLiteral( "a" ), ok );
   QVERIFY( !ok );
 
   //messy input (invalid thousand separator position), should still be converted
   ok = false;
-  result = QGis::permissiveToDouble( QString( "10" ) + QLocale::system().groupSeparator() + "00", ok );
+  result = qgsPermissiveToDouble( QStringLiteral( "10" ) + QLocale::system().groupSeparator() + "00", ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.0 );
   ok = false;
-  result = QGis::permissiveToDouble( QString( "10" ) + QLocale::system().groupSeparator() + "00" + QLocale::system().decimalPoint() + "5", ok );
+  result = qgsPermissiveToDouble( QStringLiteral( "10" ) + QLocale::system().groupSeparator() + "00" + QLocale::system().decimalPoint() + "5", ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.5 );
 }
 
-void TestQGis::permissiveToInt()
+void TestQgis::permissiveToInt()
 {
   //good inputs
   bool ok = false;
-  int result = QGis::permissiveToInt( QString( "1000" ), ok );
+  int result = qgsPermissiveToInt( QStringLiteral( "1000" ), ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000 );
   ok = false;
-  result = QGis::permissiveToInt( QString( "1%01000" ).arg( QLocale::system().groupSeparator() ), ok );
+  result = qgsPermissiveToInt( QStringLiteral( "1%01000" ).arg( QLocale::system().groupSeparator() ), ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000 );
 
   //bad input
   ok = false;
-  ( void ) QGis::permissiveToInt( QString( "a" ), ok );
+  ( void ) qgsPermissiveToInt( QStringLiteral( "a" ), ok );
   QVERIFY( !ok );
 
   //messy input (invalid thousand separator position), should still be converted
   ok = false;
-  result = QGis::permissiveToInt( QString( "10%0100" ).arg( QLocale::system().groupSeparator() ), ok );
+  result = qgsPermissiveToInt( QStringLiteral( "10%0100" ).arg( QLocale::system().groupSeparator() ), ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000 );
 }
 
-void TestQGis::doubleToString()
+void TestQgis::doubleToString()
 {
   QCOMPARE( qgsDoubleToString( 5.6783212, 5 ), QString( "5.67832" ) );
   QCOMPARE( qgsDoubleToString( 5.5555555, 5 ), QString( "5.55556" ) );
@@ -141,7 +142,7 @@ void TestQGis::doubleToString()
   QCOMPARE( qgsDoubleToString( 12345, -1 ), QString( "12345" ) );
 }
 
-void TestQGis::qgsround()
+void TestQgis::qgsround()
 {
   QCOMPARE( qgsRound( 3.141592653589793 ), 3. );
   QCOMPARE( qgsRound( 2.718281828459045 ), 3. );
@@ -155,11 +156,11 @@ void TestQGis::qgsround()
   QCOMPARE( qgsRound( -1.5 ), -2. );
 }
 
-void TestQGis::signalBlocker()
+void TestQgis::signalBlocker()
 {
-  QScopedPointer< QCheckBox > checkbox( new QCheckBox() );
+  std::unique_ptr< QCheckBox > checkbox( new QCheckBox() );
 
-  QSignalSpy spy( checkbox.data(), SIGNAL( toggled( bool ) ) );
+  QSignalSpy spy( checkbox.get(), SIGNAL( toggled( bool ) ) );
 
   //first check that signals are not blocked
   QVERIFY( !checkbox->signalsBlocked() );
@@ -169,7 +170,7 @@ void TestQGis::signalBlocker()
 
   //block signals
   {
-    QgsSignalBlocker< QCheckBox > blocker( checkbox.data() );
+    QgsSignalBlocker< QCheckBox > blocker( checkbox.get() );
     QVERIFY( checkbox->signalsBlocked() );
 
     checkbox->setChecked( false );
@@ -190,7 +191,7 @@ void TestQGis::signalBlocker()
   // now check that initial blocking state is restored when QgsSignalBlocker goes out of scope
   checkbox->blockSignals( true );
   {
-    QgsSignalBlocker< QCheckBox > blocker( checkbox.data() );
+    QgsSignalBlocker< QCheckBox > blocker( checkbox.get() );
     QVERIFY( checkbox->signalsBlocked() );
   }
   // initial blocked state should be restored
@@ -199,10 +200,10 @@ void TestQGis::signalBlocker()
 
   // nested signal blockers
   {
-    QgsSignalBlocker< QCheckBox > blocker( checkbox.data() );
+    QgsSignalBlocker< QCheckBox > blocker( checkbox.get() );
     QVERIFY( checkbox->signalsBlocked() );
     {
-      QgsSignalBlocker< QCheckBox > blocker2( checkbox.data() );
+      QgsSignalBlocker< QCheckBox > blocker2( checkbox.get() );
       QVERIFY( checkbox->signalsBlocked() );
     }
     QVERIFY( checkbox->signalsBlocked() );
@@ -215,18 +216,18 @@ void TestQGis::signalBlocker()
   QCOMPARE( spy.last().at( 0 ).toBool(), true );
 
   QVERIFY( !checkbox->signalsBlocked() );
-  whileBlocking( checkbox.data() )->setChecked( false );
+  whileBlocking( checkbox.get() )->setChecked( false );
   // should have been no signals emitted
   QCOMPARE( spy.count(), 3 );
   // check that initial state of blocked signals was restored correctly
   QVERIFY( !checkbox->signalsBlocked() );
   checkbox->blockSignals( true );
   QVERIFY( checkbox->signalsBlocked() );
-  whileBlocking( checkbox.data() )->setChecked( true );
+  whileBlocking( checkbox.get() )->setChecked( true );
   QVERIFY( checkbox->signalsBlocked() );
 }
 
-void TestQGis::qVariantCompare_data()
+void TestQgis::qVariantCompare_data()
 {
   QTest::addColumn<QVariant>( "lhs" );
   QTest::addColumn<QVariant>( "rhs" );
@@ -271,17 +272,17 @@ void TestQGis::qVariantCompare_data()
   QTest::newRow( "qvariantlist 4" ) << QVariant( QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) ) << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 3 ) ) << false << true;
   QTest::newRow( "qvariantlist 5" ) << QVariant( QVariantList() << QVariant( 5 ) ) << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) << true << false;
   QTest::newRow( "qvariantlist 5" ) << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) << QVariant( QVariantList() << QVariant( 5 ) ) << false << true;
-  QTest::newRow( "qstringlist" ) << QVariant( QStringList() << "aa" ) << QVariant( QStringList() << "bb" ) << true << false;
-  QTest::newRow( "qstringlist 2" ) << QVariant( QStringList() << "bb" ) << QVariant( QStringList() << "aa" ) << false << true;
-  QTest::newRow( "qstringlist 3" ) << QVariant( QStringList() << "aa" << "cc" ) << QVariant( QStringList() << "aa" << "xx" ) << true << false;
-  QTest::newRow( "qstringlist 4" ) << QVariant( QStringList() << "aa" << "xx" ) << QVariant( QStringList() << "aa" << "cc" ) << false << true;
-  QTest::newRow( "qstringlist 5" ) << QVariant( QStringList() << "aa" ) << QVariant( QStringList() << "aa" << "xx" ) << true << false;
-  QTest::newRow( "qstringlist 6" ) << QVariant( QStringList() << "aa" << "xx" ) << QVariant( QStringList() << "aa" ) << false << true;
+  QTest::newRow( "qstringlist" ) << QVariant( QStringList() << QStringLiteral( "aa" ) ) << QVariant( QStringList() << QStringLiteral( "bb" ) ) << true << false;
+  QTest::newRow( "qstringlist 2" ) << QVariant( QStringList() << QStringLiteral( "bb" ) ) << QVariant( QStringList() << QStringLiteral( "aa" ) ) << false << true;
+  QTest::newRow( "qstringlist 3" ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "cc" ) ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "xx" ) ) << true << false;
+  QTest::newRow( "qstringlist 4" ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "xx" ) ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "cc" ) ) << false << true;
+  QTest::newRow( "qstringlist 5" ) << QVariant( QStringList() << QStringLiteral( "aa" ) ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "xx" ) ) << true << false;
+  QTest::newRow( "qstringlist 6" ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "xx" ) ) << QVariant( QStringList() << QStringLiteral( "aa" ) ) << false << true;
   QTest::newRow( "string" ) << QVariant( "a b c" ) << QVariant( "d e f" ) << true << false;
   QTest::newRow( "string 2" ) << QVariant( "d e f" ) << QVariant( "a b c" ) << false << true;
 }
 
-void TestQGis::qVariantCompare()
+void TestQgis::qVariantCompare()
 {
   QFETCH( QVariant, lhs );
   QFETCH( QVariant, rhs );
@@ -293,5 +294,5 @@ void TestQGis::qVariantCompare()
 }
 
 
-QTEST_MAIN( TestQGis )
+QGSTEST_MAIN( TestQgis )
 #include "testqgis.moc"

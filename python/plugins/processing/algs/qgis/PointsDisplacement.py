@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import next
 
 __author__ = 'Alexander Bruy'
 __date__ = 'July 2013'
@@ -47,24 +48,23 @@ class PointsDisplacement(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POINT]))
+                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterNumber(self.DISTANCE,
                                           self.tr('Displacement distance'),
                                           0.00001, 999999999.999990, 0.00015))
         self.addParameter(ParameterBoolean(self.HORIZONTAL,
                                            self.tr('Horizontal distribution for two point case')))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Displaced')))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Displaced'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         radius = self.getParameterValue(self.DISTANCE)
         horizontal = self.getParameterValue(self.HORIZONTAL)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
 
-        provider = layer.dataProvider()
-        writer = output.getVectorWriter(provider.fields(),
-                                        provider.geometryType(), provider.crs())
+        writer = output.getVectorWriter(layer.fields(),
+                                        layer.wkbType(), layer.crs())
 
         features = vector.features(layer)
 
@@ -78,19 +78,18 @@ class PointsDisplacement(GeoAlgorithm):
             else:
                 duplicates[wkt].extend([f.id()])
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         current = 0
         total = 100.0 / len(duplicates)
-        progress.setPercentage(0)
+        feedback.setProgress(0)
 
         fullPerimeter = 2 * math.pi
 
-        request = QgsFeatureRequest()
-        for (geom, fids) in duplicates.iteritems():
+        for (geom, fids) in list(duplicates.items()):
             count = len(fids)
             if count == 1:
-                f = layer.getFeatures(request.setFilterFid(fids[0])).next()
+                f = next(layer.getFeatures(QgsFeatureRequest().setFilterFid(fids[0])))
                 writer.addFeature(f)
             else:
                 angleStep = fullPerimeter / count
@@ -100,13 +99,13 @@ class PointsDisplacement(GeoAlgorithm):
                     currentAngle = 0
 
                 old_point = QgsGeometry.fromWkt(geom).asPoint()
-                for fid in fids:
+
+                request = QgsFeatureRequest().setFilterFids(fids).setFlags(QgsFeatureRequest.NoGeometry)
+                for f in layer.getFeatures(request):
                     sinusCurrentAngle = math.sin(currentAngle)
                     cosinusCurrentAngle = math.cos(currentAngle)
                     dx = radius * sinusCurrentAngle
                     dy = radius * cosinusCurrentAngle
-
-                    f = layer.getFeatures(request.setFilterFid(fid)).next()
 
                     new_point = QgsPoint(old_point.x() + dx, old_point.y()
                                          + dy)
@@ -118,6 +117,6 @@ class PointsDisplacement(GeoAlgorithm):
                     currentAngle += angleStep
 
             current += 1
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

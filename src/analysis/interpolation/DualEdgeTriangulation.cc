@@ -17,6 +17,8 @@
 
 #include "DualEdgeTriangulation.h"
 #include <map>
+#include "Line3D.h"
+#include "MathUtils.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsvectorfilewriter.h"
@@ -462,12 +464,12 @@ int DualEdgeTriangulation::baseEdgeOfPoint( int point )
       return actedge;
     }
 
-    else if ( leftofnumber <= 0 )
+    else if ( leftofnumber <= 0.0 )
     {
       actedge = mHalfEdge[actedge]->getNext();
     }
 
-    else if ( leftofnumber > 0 )
+    else
     {
       actedge = mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[actedge]->getDual()]->getNext()]->getNext()]->getDual();
     }
@@ -476,7 +478,7 @@ int DualEdgeTriangulation::baseEdgeOfPoint( int point )
 
 int DualEdgeTriangulation::baseEdgeOfTriangle( Point3D* point )
 {
-  unsigned int actedge = mEdgeInside;//start with an edge which does not point to the virtual point (usualy number 3)
+  unsigned int actedge = mEdgeInside;//start with an edge which does not point to the virtual point (usually number 3)
   int counter = 0;//number of consecutive successful left-of-tests
   int nulls = 0;//number of left-of-tests, which returned 0. 1 means, that the point is on a line, 2 means that it is on an existing point
   int numinstabs = 0;//number of suspect left-of-tests due to 'leftOfTresh'
@@ -485,7 +487,7 @@ int DualEdgeTriangulation::baseEdgeOfTriangle( Point3D* point )
 
   while ( true )
   {
-    if ( runs > nBaseOfRuns )//prevents endless loops
+    if ( runs > MAX_BASE_ITERATIONS )//prevents endless loops
     {
       // QgsDebugMsg("warning, probable endless loop detected");
       return -100;
@@ -1266,7 +1268,7 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
     }
     else if ( MathUtils::lineIntersection( mPointVector[p1], mPointVector[p2], mPointVector[mHalfEdge[mHalfEdge[actedge]->getNext()]->getPoint()], mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[actedge]->getNext()]->getDual()]->getPoint()] ) )
     {
-      if ( mHalfEdge[mHalfEdge[actedge]->getNext()]->getForced() && mForcedCrossBehaviour == Triangulation::SnappingType_VERTICE )//if the crossed edge is a forced edge, we have to snap the forced line to the next node
+      if ( mHalfEdge[mHalfEdge[actedge]->getNext()]->getForced() && mForcedCrossBehavior == Triangulation::SnappingTypeVertex )//if the crossed edge is a forced edge, we have to snap the forced line to the next node
       {
         Point3D crosspoint;
         int p3, p4;
@@ -1288,7 +1290,7 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
           return e;
         }
       }
-      else if ( mHalfEdge[mHalfEdge[actedge]->getNext()]->getForced() && mForcedCrossBehaviour == Triangulation::INSERT_VERTICE )//if the crossed edge is a forced edge, we have to insert a new vertice on this edge
+      else if ( mHalfEdge[mHalfEdge[actedge]->getNext()]->getForced() && mForcedCrossBehavior == Triangulation::InsertVertex )//if the crossed edge is a forced edge, we have to insert a new vertice on this edge
       {
         Point3D crosspoint;
         int p3, p4;
@@ -1354,7 +1356,7 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
   {
     if ( MathUtils::lineIntersection( mPointVector[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getPoint()], mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getPoint()], mPointVector[p1], mPointVector[p2] ) )
     {
-      if ( mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getForced() && mForcedCrossBehaviour == Triangulation::SnappingType_VERTICE )//if the crossed edge is a forced edge and mForcedCrossBehaviour is SnappingType_VERTICE, we have to snap the forced line to the next node
+      if ( mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getForced() && mForcedCrossBehavior == Triangulation::SnappingTypeVertex )//if the crossed edge is a forced edge and mForcedCrossBehavior is SnappingType_VERTICE, we have to snap the forced line to the next node
       {
         Point3D crosspoint;
         int p3, p4;
@@ -1376,7 +1378,7 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
           return e;
         }
       }
-      else if ( mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getForced() && mForcedCrossBehaviour == Triangulation::INSERT_VERTICE )//if the crossed edge is a forced edge, we have to insert a new vertice on this edge
+      else if ( mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getForced() && mForcedCrossBehavior == Triangulation::InsertVertex )//if the crossed edge is a forced edge, we have to insert a new vertice on this edge
       {
         Point3D crosspoint;
         int p3, p4;
@@ -1401,7 +1403,7 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
     }
     else if ( MathUtils::lineIntersection( mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getPoint()], mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getNext()]->getPoint()], mPointVector[p1], mPointVector[p2] ) )
     {
-      if ( mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getNext()]->getForced() && mForcedCrossBehaviour == Triangulation::SnappingType_VERTICE )//if the crossed edge is a forced edge and mForcedCrossBehaviour is SnappingType_VERTICE, we have to snap the forced line to the next node
+      if ( mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getNext()]->getForced() && mForcedCrossBehavior == Triangulation::SnappingTypeVertex )//if the crossed edge is a forced edge and mForcedCrossBehavior is SnappingType_VERTICE, we have to snap the forced line to the next node
       {
         Point3D crosspoint;
         int p3, p4;
@@ -1423,7 +1425,7 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
           return e;
         }
       }
-      else if ( mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getNext()]->getForced() && mForcedCrossBehaviour == Triangulation::INSERT_VERTICE )//if the crossed edge is a forced edge, we have to insert a new vertice on this edge
+      else if ( mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getNext()]->getForced() && mForcedCrossBehavior == Triangulation::InsertVertex )//if the crossed edge is a forced edge, we have to insert a new vertice on this edge
       {
         Point3D crosspoint;
         int p3, p4;
@@ -1525,7 +1527,7 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
   rightPolygon.append( mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext() );
   mHalfEdge[rightPolygon.last()]->setNext( dualfirstedge );//set 'Next' of the last edge to dualfirstedge
 
-  //set the necessary nexts of leftPolygon(exept the first)
+  //set the necessary nexts of leftPolygon(except the first)
   int actedgel = leftPolygon[1];
   leftiter = leftPolygon.constBegin();
   leftiter += 2;
@@ -1566,9 +1568,9 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
   return leftPolygon.first();
 }
 
-void DualEdgeTriangulation::setForcedCrossBehaviour( Triangulation::forcedCrossBehaviour b )
+void DualEdgeTriangulation::setForcedCrossBehavior( Triangulation::ForcedCrossBehavior b )
 {
-  mForcedCrossBehaviour = b;
+  mForcedCrossBehavior = b;
 }
 
 void DualEdgeTriangulation::setEdgeColor( int r, int g, int b )
@@ -2604,7 +2606,7 @@ bool DualEdgeTriangulation::pointInside( double x, double y )
 
   while ( true )
   {
-    if ( runs > nBaseOfRuns )//prevents endless loops
+    if ( runs > MAX_BASE_ITERATIONS )//prevents endless loops
     {
       QgsDebugMsg( QString( "warning, instability detected: Point coordinates: %1//%2" ).arg( x ).arg( y ) );
       return false;
@@ -3088,12 +3090,12 @@ bool DualEdgeTriangulation::saveAsShapefile( const QString& fileName ) const
   QString shapeFileName = fileName;
 
   QgsFields fields;
-  fields.append( QgsField( "type", QVariant::String, "String" ) );
+  fields.append( QgsField( QStringLiteral( "type" ), QVariant::String, QStringLiteral( "String" ) ) );
 
   // add the extension if not present
-  if ( shapeFileName.indexOf( ".shp" ) == -1 )
+  if ( shapeFileName.indexOf( QLatin1String( ".shp" ) ) == -1 )
   {
-    shapeFileName += ".shp";
+    shapeFileName += QLatin1String( ".shp" );
   }
 
   //delete already existing files
@@ -3105,7 +3107,7 @@ bool DualEdgeTriangulation::saveAsShapefile( const QString& fileName ) const
     }
   }
 
-  QgsVectorFileWriter writer( shapeFileName, "Utf-8", fields, QGis::WKBLineString, nullptr );
+  QgsVectorFileWriter writer( shapeFileName, QStringLiteral( "Utf-8" ), fields, QgsWkbTypes::LineString );
   if ( writer.hasError() != QgsVectorFileWriter::NoError )
   {
     return false;
@@ -3136,8 +3138,7 @@ bool DualEdgeTriangulation::saveAsShapefile( const QString& fileName ) const
       QgsPolyline lineGeom;
       lineGeom.push_back( QgsPoint( p1->getX(), p1->getY() ) );
       lineGeom.push_back( QgsPoint( p2->getX(), p2->getY() ) );
-      QgsGeometry* geom = QgsGeometry::fromPolyline( lineGeom );
-      edgeLineFeature.setGeometry( geom );
+      edgeLineFeature.setGeometry( QgsGeometry::fromPolyline( lineGeom ) );
       edgeLineFeature.initAttributes( 1 );
 
       //attributes
@@ -3146,11 +3147,11 @@ bool DualEdgeTriangulation::saveAsShapefile( const QString& fileName ) const
       {
         if ( currentEdge->getBreak() )
         {
-          attributeString = "break line";
+          attributeString = QStringLiteral( "break line" );
         }
         else
         {
-          attributeString = "structure line";
+          attributeString = QStringLiteral( "structure line" );
         }
       }
       edgeLineFeature.setAttribute( 0, attributeString );

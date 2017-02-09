@@ -66,28 +66,32 @@ SET (GEOREF_RCCS  georeferencer.qrc)
 ########################################################
 # Build
 
-QT4_WRAP_UI (GEOREF_UIS_H  ${GEOREF_UIS})
+QT5_WRAP_UI (GEOREF_UIS_H  ${GEOREF_UIS})
 
-QT4_WRAP_CPP (GEOREF_MOC_SRCS  ${GEOREF_MOC_HDRS})
+QT5_WRAP_CPP (GEOREF_MOC_SRCS  ${GEOREF_MOC_HDRS})
 
-QT4_ADD_RESOURCES(GEOREF_RCC_SRCS ${GEOREF_RCCS})
+QT5_ADD_RESOURCES(GEOREF_RCC_SRCS ${GEOREF_RCCS})
 
 ADD_LIBRARY (georefplugin MODULE ${GEOREF_SRCS} ${GEOREF_MOC_SRCS} ${GEOREF_RCC_SRCS} ${GEOREF_UIS_H})
 
 INCLUDE_DIRECTORIES(
-     ${CMAKE_CURRENT_SOURCE_DIR}
-     ${CMAKE_CURRENT_BINARY_DIR}
-     ../../core ../../core/geometry ../../core/raster ../../core/composer
-     ../../gui  ../../gui/editorwidgets
-     ..
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}/../../ui
+  ../../core ../../core/geometry ../../core/raster ../../core/composer
+  ../../gui  ../../gui/editorwidgets ../../gui/layertree
+  ..
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
+  ${CMAKE_BINARY_DIR}/src/app
 )
 INCLUDE_DIRECTORIES(SYSTEM
-     ${GSL_INCLUDE_DIR}
-     ${QGIS_INCLUDE_DIR}
-     ${GDAL_INCLUDE_DIR}
-     ${GEOS_INCLUDE_DIR}
-     ${QT_QTXML_INCLUDE_DIR}
-     ${QWT_INCLUDE_DIR}
+  ${GSL_INCLUDE_DIR}
+  ${QGIS_INCLUDE_DIR}
+  ${GDAL_INCLUDE_DIR}
+  ${GEOS_INCLUDE_DIR}
+  ${QT_QTXML_INCLUDE_DIR}
+  ${QWT_INCLUDE_DIR}
 )
 
 TARGET_LINK_LIBRARIES(georefplugin

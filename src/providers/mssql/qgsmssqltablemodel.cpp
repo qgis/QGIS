@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmssqltablemodel.h"
+#include "qgsapplication.h"
 #include "qgsdataitem.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
@@ -36,10 +37,6 @@ QgsMssqlTableModel::QgsMssqlTableModel()
   setHorizontalHeaderLabels( headerLabels );
 }
 
-QgsMssqlTableModel::~QgsMssqlTableModel()
-{
-}
-
 void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProperty )
 {
   QgsDebugMsg( QString( "%1.%2.%3 type=%4 srid=%5 pk=%6 sql=%7" )
@@ -53,12 +50,12 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
 
   // is there already a root item with the given scheme Name?
   QStandardItem *schemaItem;
-  QList<QStandardItem*> schemaItems = findItems( layerProperty.schemaName, Qt::MatchExactly, dbtmSchema );
+  QList<QStandardItem*> schemaItems = findItems( layerProperty.schemaName, Qt::MatchExactly, DbtmSchema );
 
   // there is already an item for this schema
   if ( !schemaItems.isEmpty() )
   {
-    schemaItem = schemaItems.at( dbtmSchema );
+    schemaItem = schemaItems.at( DbtmSchema );
   }
   else
   {
@@ -68,13 +65,13 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
     invisibleRootItem()->setChild( invisibleRootItem()->rowCount(), schemaItem );
   }
 
-  QGis::WkbType wkbType = QgsMssqlTableModel::wkbTypeFromMssql( layerProperty.type );
-  if ( wkbType == QGis::WKBUnknown && layerProperty.geometryColName.isEmpty() )
+  QgsWkbTypes::Type wkbType = QgsMssqlTableModel::wkbTypeFromMssql( layerProperty.type );
+  if ( wkbType == QgsWkbTypes::Unknown && layerProperty.geometryColName.isEmpty() )
   {
-    wkbType = QGis::WKBNoGeometry;
+    wkbType = QgsWkbTypes::NoGeometry;
   }
 
-  bool needToDetect = wkbType == QGis::WKBUnknown && layerProperty.type != "GEOMETRYCOLLECTION";
+  bool needToDetect = wkbType == QgsWkbTypes::Unknown && layerProperty.type != QLatin1String( "GEOMETRYCOLLECTION" );
 
   QList<QStandardItem*> childItemList;
 
@@ -84,7 +81,7 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
   QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ),
       needToDetect
       ? tr( "Detecting..." )
-      : QgsMssqlTableModel::displayStringForWkbType( wkbType ) );
+      : QgsWkbTypes::displayString( wkbType ) );
   typeItem->setData( needToDetect, Qt::UserRole + 1 );
   typeItem->setData( wkbType, Qt::UserRole + 2 );
 
@@ -93,11 +90,11 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
   QStandardItem *sridItem = new QStandardItem( layerProperty.srid );
   sridItem->setEditable( false );
 
-  QString pkText, pkCol = "";
+  QString pkText, pkCol = QLatin1String( "" );
   switch ( layerProperty.pkCols.size() )
   {
     case 0:
-      pkText = "";
+      pkText = QLatin1String( "" );
       break;
     case 1:
       pkText = layerProperty.pkCols[0];
@@ -115,7 +112,7 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
   pkItem->setData( layerProperty.pkCols, Qt::UserRole + 1 );
   pkItem->setData( pkCol, Qt::UserRole + 2 );
 
-  QStandardItem *selItem = new QStandardItem( "" );
+  QStandardItem *selItem = new QStandardItem( QLatin1String( "" ) );
   selItem->setFlags( selItem->flags() | Qt::ItemIsUserCheckable );
   selItem->setCheckState( Qt::Checked );
   selItem->setToolTip( tr( "Disable 'Fast Access to Features at ID' capability to force keeping the attribute table in memory (e.g. in case of expensive views)." ) );
@@ -132,7 +129,7 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
   childItemList << sqlItem;
 
   bool detailsFromThread = needToDetect ||
-                           ( wkbType != QGis::WKBNoGeometry && layerProperty.srid.isEmpty() );
+                           ( wkbType != QgsWkbTypes::NoGeometry && layerProperty.srid.isEmpty() );
 
   if ( detailsFromThread || pkText == tr( "Select..." ) )
   {
@@ -159,9 +156,9 @@ void QgsMssqlTableModel::setSql( const QModelIndex &index, const QString &sql )
   }
 
   //find out schema name and table name
-  QModelIndex schemaSibling = index.sibling( index.row(), dbtmSchema );
-  QModelIndex tableSibling = index.sibling( index.row(), dbtmTable );
-  QModelIndex geomSibling = index.sibling( index.row(), dbtmGeomCol );
+  QModelIndex schemaSibling = index.sibling( index.row(), DbtmSchema );
+  QModelIndex tableSibling = index.sibling( index.row(), DbtmTable );
+  QModelIndex geomSibling = index.sibling( index.row(), DbtmGeomCol );
 
   if ( !schemaSibling.isValid() || !tableSibling.isValid() || !geomSibling.isValid() )
   {
@@ -172,30 +169,30 @@ void QgsMssqlTableModel::setSql( const QModelIndex &index, const QString &sql )
   QString tableName = itemFromIndex( tableSibling )->text();
   QString geomName = itemFromIndex( geomSibling )->text();
 
-  QList<QStandardItem*> schemaItems = findItems( schemaName, Qt::MatchExactly, dbtmSchema );
+  QList<QStandardItem*> schemaItems = findItems( schemaName, Qt::MatchExactly, DbtmSchema );
   if ( schemaItems.size() < 1 )
   {
     return;
   }
 
-  QStandardItem* schemaItem = schemaItems.at( dbtmSchema );
+  QStandardItem* schemaItem = schemaItems.at( DbtmSchema );
 
   int n = schemaItem->rowCount();
   for ( int i = 0; i < n; i++ )
   {
-    QModelIndex currentChildIndex = indexFromItem( schemaItem->child( i, dbtmSchema ) );
+    QModelIndex currentChildIndex = indexFromItem( schemaItem->child( i, DbtmSchema ) );
     if ( !currentChildIndex.isValid() )
     {
       continue;
     }
 
-    QModelIndex currentTableIndex = currentChildIndex.sibling( i, dbtmTable );
+    QModelIndex currentTableIndex = currentChildIndex.sibling( i, DbtmTable );
     if ( !currentTableIndex.isValid() )
     {
       continue;
     }
 
-    QModelIndex currentGeomIndex = currentChildIndex.sibling( i, dbtmGeomCol );
+    QModelIndex currentGeomIndex = currentChildIndex.sibling( i, DbtmGeomCol );
     if ( !currentGeomIndex.isValid() )
     {
       continue;
@@ -203,7 +200,7 @@ void QgsMssqlTableModel::setSql( const QModelIndex &index, const QString &sql )
 
     if ( itemFromIndex( currentTableIndex )->text() == tableName && itemFromIndex( currentGeomIndex )->text() == geomName )
     {
-      QModelIndex sqlIndex = currentChildIndex.sibling( i, dbtmSql );
+      QModelIndex sqlIndex = currentChildIndex.sibling( i, DbtmSql );
       if ( sqlIndex.isValid() )
       {
         itemFromIndex( sqlIndex )->setText( sql );
@@ -221,7 +218,7 @@ void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerPr
 
   //find schema item and table item
   QStandardItem* schemaItem;
-  QList<QStandardItem*> schemaItems = findItems( layerProperty.schemaName, Qt::MatchExactly, dbtmSchema );
+  QList<QStandardItem*> schemaItems = findItems( layerProperty.schemaName, Qt::MatchExactly, DbtmSchema );
 
   if ( schemaItems.size() < 1 )
   {
@@ -233,30 +230,31 @@ void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerPr
   int n = schemaItem->rowCount();
   for ( int i = 0; i < n; i++ )
   {
-    QModelIndex currentChildIndex = indexFromItem( schemaItem->child( i, dbtmSchema ) );
+    QModelIndex currentChildIndex = indexFromItem( schemaItem->child( i, DbtmSchema ) );
     if ( !currentChildIndex.isValid() )
     {
       continue;
     }
 
     QList<QStandardItem *> row;
+    row.reserve( DbtmColumns );
 
-    for ( int j = 0; j < dbtmColumns; j++ )
+    for ( int j = 0; j < DbtmColumns; j++ )
     {
       row << itemFromIndex( currentChildIndex.sibling( i, j ) );
     }
 
-    if ( row[ dbtmTable ]->text() == layerProperty.tableName && row[ dbtmGeomCol ]->text() == layerProperty.geometryColName )
+    if ( row[ DbtmTable ]->text() == layerProperty.tableName && row[ DbtmGeomCol ]->text() == layerProperty.geometryColName )
     {
-      row[ dbtmSrid ]->setText( layerProperty.srid );
+      row[ DbtmSrid ]->setText( layerProperty.srid );
 
       if ( typeList.isEmpty() )
       {
-        row[ dbtmType ]->setText( tr( "Select..." ) );
-        row[ dbtmType ]->setFlags( row[ dbtmType ]->flags() | Qt::ItemIsEditable );
+        row[ DbtmType ]->setText( tr( "Select..." ) );
+        row[ DbtmType ]->setFlags( row[ DbtmType ]->flags() | Qt::ItemIsEditable );
 
-        row[ dbtmSrid ]->setText( tr( "Enter..." ) );
-        row[ dbtmSrid ]->setFlags( row[ dbtmSrid ]->flags() | Qt::ItemIsEditable );
+        row[ DbtmSrid ]->setText( tr( "Enter..." ) );
+        row[ DbtmSrid ]->setFlags( row[ DbtmSrid ]->flags() | Qt::ItemIsEditable );
 
         Q_FOREACH ( QStandardItem *item, row )
         {
@@ -266,14 +264,14 @@ void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerPr
       else
       {
         // update existing row
-        QGis::WkbType wkbType = QgsMssqlTableModel::wkbTypeFromMssql( typeList.at( 0 ) );
+        QgsWkbTypes::Type wkbType = QgsMssqlTableModel::wkbTypeFromMssql( typeList.at( 0 ) );
 
-        row[ dbtmType ]->setIcon( iconForWkbType( wkbType ) );
-        row[ dbtmType ]->setText( QgsMssqlTableModel::displayStringForWkbType( wkbType ) );
-        row[ dbtmType ]->setData( false, Qt::UserRole + 1 );
-        row[ dbtmType ]->setData( wkbType, Qt::UserRole + 2 );
+        row[ DbtmType ]->setIcon( iconForWkbType( wkbType ) );
+        row[ DbtmType ]->setText( QgsWkbTypes::displayString( wkbType ) );
+        row[ DbtmType ]->setData( false, Qt::UserRole + 1 );
+        row[ DbtmType ]->setData( wkbType, Qt::UserRole + 2 );
 
-        row[ dbtmSrid ]->setText( sridList.at( 0 ) );
+        row[ DbtmSrid ]->setText( sridList.at( 0 ) );
 
         Qt::ItemFlags flags = Qt::ItemIsEnabled;
         if ( layerProperty.pkCols.size() < 2 )
@@ -295,28 +293,24 @@ void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerPr
   }
 }
 
-QIcon QgsMssqlTableModel::iconForWkbType( QGis::WkbType type )
+QIcon QgsMssqlTableModel::iconForWkbType( QgsWkbTypes::Type type )
 {
-  switch ( type )
+  switch ( QgsWkbTypes::geometryType( type ) )
+
   {
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
+    case QgsWkbTypes::PointGeometry:
       return QgsApplication::getThemeIcon( "/mIconPointLayer.svg" );
-    case QGis::WKBLineString:
-    case QGis::WKBLineString25D:
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiLineString25D:
+      break;
+    case QgsWkbTypes::LineGeometry:
       return QgsApplication::getThemeIcon( "/mIconLineLayer.svg" );
-    case QGis::WKBPolygon:
-    case QGis::WKBPolygon25D:
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPolygon25D:
+      break;
+    case QgsWkbTypes::PolygonGeometry:
       return QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" );
-    case QGis::WKBNoGeometry:
-      return QgsApplication::getThemeIcon( "/mIconTableLayer.png" );
-    case QGis::WKBUnknown:
+      break;
+    case QgsWkbTypes::NullGeometry:
+      return QgsApplication::getThemeIcon( "/mIconTableLayer.svg" );
+      break;
+    case QgsWkbTypes::UnknownGeometry:
       break;
   }
   return QgsApplication::getThemeIcon( "/mIconLayer.png" );
@@ -327,20 +321,20 @@ bool QgsMssqlTableModel::setData( const QModelIndex &idx, const QVariant &value,
   if ( !QStandardItemModel::setData( idx, value, role ) )
     return false;
 
-  if ( idx.column() == dbtmType || idx.column() == dbtmSrid || idx.column() == dbtmPkCol )
+  if ( idx.column() == DbtmType || idx.column() == DbtmSrid || idx.column() == DbtmPkCol )
   {
-    QGis::GeometryType geomType = ( QGis::GeometryType ) idx.sibling( idx.row(), dbtmType ).data( Qt::UserRole + 2 ).toInt();
+    QgsWkbTypes::GeometryType geomType = ( QgsWkbTypes::GeometryType ) idx.sibling( idx.row(), DbtmType ).data( Qt::UserRole + 2 ).toInt();
 
-    bool ok = geomType != QGis::UnknownGeometry;
+    bool ok = geomType != QgsWkbTypes::UnknownGeometry;
 
-    if ( ok && geomType != QGis::NoGeometry )
-      idx.sibling( idx.row(), dbtmSrid ).data().toInt( &ok );
+    if ( ok && geomType != QgsWkbTypes::NullGeometry )
+      idx.sibling( idx.row(), DbtmSrid ).data().toInt( &ok );
 
-    QStringList pkCols = idx.sibling( idx.row(), dbtmPkCol ).data( Qt::UserRole + 1 ).toStringList();
+    QStringList pkCols = idx.sibling( idx.row(), DbtmPkCol ).data( Qt::UserRole + 1 ).toStringList();
     if ( ok && !pkCols.isEmpty() )
-      ok = pkCols.contains( idx.sibling( idx.row(), dbtmPkCol ).data().toString() );
+      ok = pkCols.contains( idx.sibling( idx.row(), DbtmPkCol ).data().toString() );
 
-    for ( int i = 0; i < dbtmColumns; i++ )
+    for ( int i = 0; i < DbtmColumns; i++ )
     {
       QStandardItem *item = itemFromIndex( idx.sibling( idx.row(), i ) );
       if ( ok )
@@ -358,12 +352,12 @@ QString QgsMssqlTableModel::layerURI( const QModelIndex &index, const QString &c
   if ( !index.isValid() )
     return QString::null;
 
-  QGis::WkbType wkbType = ( QGis::WkbType ) itemFromIndex( index.sibling( index.row(), dbtmType ) )->data( Qt::UserRole + 2 ).toInt();
-  if ( wkbType == QGis::WKBUnknown )
+  QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt();
+  if ( wkbType == QgsWkbTypes::Unknown )
     // no geometry type selected
     return QString::null;
 
-  QStandardItem *pkItem = itemFromIndex( index.sibling( index.row(), dbtmPkCol ) );
+  QStandardItem *pkItem = itemFromIndex( index.sibling( index.row(), DbtmPkCol ) );
   QString pkColumnName = pkItem->data( Qt::UserRole + 2 ).toString();
 
   if ( !pkItem->data( Qt::UserRole + 1 ).toStringList().isEmpty() &&
@@ -371,132 +365,93 @@ QString QgsMssqlTableModel::layerURI( const QModelIndex &index, const QString &c
     // no valid primary candidate selected
     return QString::null;
 
-  QString schemaName = index.sibling( index.row(), dbtmSchema ).data( Qt::DisplayRole ).toString();
-  QString tableName = index.sibling( index.row(), dbtmTable ).data( Qt::DisplayRole ).toString();
+  QString schemaName = index.sibling( index.row(), DbtmSchema ).data( Qt::DisplayRole ).toString();
+  QString tableName = index.sibling( index.row(), DbtmTable ).data( Qt::DisplayRole ).toString();
 
   QString geomColumnName;
   QString srid;
-  if ( wkbType != QGis::WKBNoGeometry )
+  if ( wkbType != QgsWkbTypes::NoGeometry )
   {
-    geomColumnName = index.sibling( index.row(), dbtmGeomCol ).data( Qt::DisplayRole ).toString();
+    geomColumnName = index.sibling( index.row(), DbtmGeomCol ).data( Qt::DisplayRole ).toString();
 
-    srid = index.sibling( index.row(), dbtmSrid ).data( Qt::DisplayRole ).toString();
+    srid = index.sibling( index.row(), DbtmSrid ).data( Qt::DisplayRole ).toString();
     bool ok;
     srid.toInt( &ok );
     if ( !ok )
       return QString::null;
   }
 
-  bool selectAtId = itemFromIndex( index.sibling( index.row(), dbtmSelectAtId ) )->checkState() == Qt::Checked;
-  QString sql = index.sibling( index.row(), dbtmSql ).data( Qt::DisplayRole ).toString();
+  bool selectAtId = itemFromIndex( index.sibling( index.row(), DbtmSelectAtId ) )->checkState() == Qt::Checked;
+  QString sql = index.sibling( index.row(), DbtmSql ).data( Qt::DisplayRole ).toString();
 
-  QgsDataSourceURI uri( connInfo );
+  QgsDataSourceUri uri( connInfo );
   uri.setDataSource( schemaName, tableName, geomColumnName, sql, pkColumnName );
   uri.setUseEstimatedMetadata( useEstimatedMetadata );
-  uri.setWkbType( QGis::fromOldWkbType( wkbType ) );
+  uri.setWkbType( wkbType );
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );
 
   return uri.uri();
 }
 
-QGis::WkbType QgsMssqlTableModel::wkbTypeFromMssql( QString type )
+QgsWkbTypes::Type QgsMssqlTableModel::wkbTypeFromMssql( QString type )
 {
   type = type.toUpper();
 
-  if ( type == "POINT" )
+  if ( type == QLatin1String( "POINT" ) )
   {
-    return QGis::WKBPoint;
+    return QgsWkbTypes::Point;
   }
-  else if ( type == "POINTM" )
+  else if ( type == QLatin1String( "POINTM" ) )
   {
-    return QGis::WKBPoint25D;
+    return QgsWkbTypes::Point25D;
   }
-  else if ( type == "MULTIPOINT" )
+  else if ( type == QLatin1String( "MULTIPOINT" ) )
   {
-    return QGis::WKBMultiPoint;
+    return QgsWkbTypes::MultiPoint;
   }
-  else if ( type == "MULTIPOINTM" )
+  else if ( type == QLatin1String( "MULTIPOINTM" ) )
   {
-    return QGis::WKBMultiPoint25D;
+    return QgsWkbTypes::MultiPoint25D;
   }
-  else if ( type == "LINESTRING" )
+  else if ( type == QLatin1String( "LINESTRING" ) )
   {
-    return QGis::WKBLineString;
+    return QgsWkbTypes::LineString;
   }
-  else if ( type == "LINESTRINGM" )
+  else if ( type == QLatin1String( "LINESTRINGM" ) )
   {
-    return QGis::WKBLineString25D;
+    return QgsWkbTypes::LineString25D;
   }
-  else if ( type == "MULTILINESTRING" )
+  else if ( type == QLatin1String( "MULTILINESTRING" ) )
   {
-    return QGis::WKBMultiLineString;
+    return QgsWkbTypes::MultiLineString;
   }
-  else if ( type == "MULTILINESTRINGM" )
+  else if ( type == QLatin1String( "MULTILINESTRINGM" ) )
   {
-    return QGis::WKBMultiLineString25D;
+    return QgsWkbTypes::MultiLineString25D;
   }
-  else if ( type == "POLYGON" )
+  else if ( type == QLatin1String( "POLYGON" ) )
   {
-    return QGis::WKBPolygon;
+    return QgsWkbTypes::Polygon;
   }
-  else if ( type == "POLYGONM" )
+  else if ( type == QLatin1String( "POLYGONM" ) )
   {
-    return QGis::WKBPolygon25D;
+    return QgsWkbTypes::Polygon25D;
   }
-  else if ( type == "MULTIPOLYGON" )
+  else if ( type == QLatin1String( "MULTIPOLYGON" ) )
   {
-    return QGis::WKBMultiPolygon;
+    return QgsWkbTypes::MultiPolygon;
   }
-  else if ( type == "MULTIPOLYGONM" )
+  else if ( type == QLatin1String( "MULTIPOLYGONM" ) )
   {
-    return QGis::WKBMultiPolygon25D;
+    return QgsWkbTypes::MultiPolygon25D;
   }
-  else if ( type == "NONE" )
+  else if ( type == QLatin1String( "NONE" ) )
   {
-    return QGis::WKBNoGeometry;
+    return QgsWkbTypes::NoGeometry;
   }
   else
   {
-    return QGis::WKBUnknown;
+    return QgsWkbTypes::Unknown;
   }
-}
-
-QString QgsMssqlTableModel::displayStringForWkbType( QGis::WkbType type )
-{
-  switch ( type )
-  {
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
-      return tr( "Point" );
-
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
-      return tr( "Multipoint" );
-
-    case QGis::WKBLineString:
-    case QGis::WKBLineString25D:
-      return tr( "Line" );
-
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiLineString25D:
-      return tr( "Multiline" );
-
-    case QGis::WKBPolygon:
-    case QGis::WKBPolygon25D:
-      return tr( "Polygon" );
-
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPolygon25D:
-      return tr( "Multipolygon" );
-
-    case QGis::WKBNoGeometry:
-      return tr( "No Geometry" );
-
-    case QGis::WKBUnknown:
-      return tr( "Unknown Geometry" );
-  }
-
-  Q_ASSERT( !"unexpected wkbType" );
-  return QString::null;
 }

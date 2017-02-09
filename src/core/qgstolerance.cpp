@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstolerance.h"
+#include "qgsmapsettings.h"
 #include <QSettings>
 #include <QPoint>
 #include <cmath>
@@ -67,16 +68,11 @@ double QgsTolerance::toleranceInMapUnits( double tolerance, QgsMapLayer *layer, 
   }
 }
 
-double QgsTolerance::toleranceInMapUnits( double tolerance, QgsMapLayer* layer, QgsMapRenderer* renderer, UnitType units )
-{
-  return toleranceInMapUnits( tolerance, layer, renderer->mapSettings(), units );
-}
-
 double QgsTolerance::vertexSearchRadius( const QgsMapSettings& mapSettings )
 {
   QSettings settings;
-  double tolerance = settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble();
-  UnitType units = static_cast< QgsTolerance::UnitType >( settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", QgsTolerance::Pixels ).toInt() );
+  double tolerance = settings.value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit" ), 10 ).toDouble();
+  UnitType units = static_cast< QgsTolerance::UnitType >( settings.value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit_unit" ), QgsTolerance::Pixels ).toInt() );
   if ( units == LayerUnits )
     units = ProjectUnits;
   return toleranceInProjectUnits( tolerance, nullptr, mapSettings, units );
@@ -85,28 +81,17 @@ double QgsTolerance::vertexSearchRadius( const QgsMapSettings& mapSettings )
 double QgsTolerance::vertexSearchRadius( QgsMapLayer *layer, const QgsMapSettings &mapSettings )
 {
   QSettings settings;
-  double tolerance = settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble();
-  UnitType units = static_cast< QgsTolerance::UnitType >( settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", QgsTolerance::Pixels ).toInt() );
+  double tolerance = settings.value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit" ), 10 ).toDouble();
+  UnitType units = static_cast< QgsTolerance::UnitType >( settings.value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit_unit" ), QgsTolerance::Pixels ).toInt() );
   return toleranceInMapUnits( tolerance, layer, mapSettings, units );
-}
-
-double QgsTolerance::vertexSearchRadius( QgsMapLayer* layer, QgsMapRenderer* renderer )
-{
-  return vertexSearchRadius( layer, renderer->mapSettings() );
 }
 
 double QgsTolerance::defaultTolerance( QgsMapLayer *layer, const QgsMapSettings& mapSettings )
 {
   QSettings settings;
-  double tolerance = settings.value( "/qgis/digitizing/default_snapping_tolerance", 0 ).toDouble();
-  UnitType units = static_cast< QgsTolerance::UnitType >( settings.value( "/qgis/digitizing/default_snapping_tolerance_unit", ProjectUnits ).toInt() );
+  double tolerance = settings.value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), 0 ).toDouble();
+  UnitType units = static_cast< QgsTolerance::UnitType >( settings.value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ), ProjectUnits ).toInt() );
   return toleranceInMapUnits( tolerance, layer, mapSettings, units );
-}
-
-
-double QgsTolerance::defaultTolerance( QgsMapLayer* layer, QgsMapRenderer* renderer )
-{
-  return defaultTolerance( layer, renderer->mapSettings() );
 }
 
 

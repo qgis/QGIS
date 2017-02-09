@@ -17,7 +17,7 @@
 
 #include "qgslabelfeature.h"
 
-/**
+/** \ingroup core
  * Class that adds extra information to QgsLabelFeature for text labels
  *
  * @note not part of public API
@@ -32,19 +32,19 @@ class QgsTextLabelFeature : public QgsLabelFeature
     ~QgsTextLabelFeature();
 
     /** Returns the text component corresponding to a specified label part
-     * @param partId Set to -1 for labels which are not broken into parts (eg, non-curved labels), or the required
+     * @param partId Set to -1 for labels which are not broken into parts (e.g., non-curved labels), or the required
      * part index for labels which are broken into parts (curved labels)
      * @note added in QGIS 2.10
      */
     QString text( int partId ) const;
 
     //! calculate data for info(). setDefinedFont() must have been called already.
-    void calculateInfo( bool curvedLabeling, QFontMetricsF* fm, const QgsMapToPixel* xform, double fontScale, double maxinangle, double maxoutangle );
+    void calculateInfo( bool curvedLabeling, QFontMetricsF* fm, const QgsMapToPixel* xform, double maxinangle, double maxoutangle );
 
     //! Get data-defined values
-    const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& dataDefinedValues() const { return mDataDefinedValues; }
+    const QMap< QgsPalLayerSettings::Property, QVariant >& dataDefinedValues() const { return mDataDefinedValues; }
     //! Set data-defined values
-    void setDataDefinedValues( const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& values ) { mDataDefinedValues = values; }
+    void setDataDefinedValues( const QMap< QgsPalLayerSettings::Property, QVariant >& values ) { mDataDefinedValues = values; }
 
     //! Set font to be used for rendering
     void setDefinedFont( const QFont& f ) { mDefinedFont = f; }
@@ -61,8 +61,8 @@ class QgsTextLabelFeature : public QgsLabelFeature
     QFont mDefinedFont;
     //! Metrics of the font for rendering
     QFontMetricsF* mFontMetrics;
-    /** Stores attribute values for data defined properties*/
-    QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant > mDataDefinedValues;
+    //! Stores attribute values for data defined properties
+    QMap< QgsPalLayerSettings::Property, QVariant > mDataDefinedValues;
 
 };
 

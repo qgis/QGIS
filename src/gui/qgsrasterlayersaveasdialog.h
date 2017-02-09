@@ -19,11 +19,15 @@
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrasterrange.h"
+#include "qgis_gui.h"
 
 class QgsRasterLayer;
 class QgsRasterDataProvider;
 class QgsRasterFormatOptionsWidget;
 
+/** \ingroup gui
+ * \class QgsRasterLayerSaveAsDialog
+ */
 class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRasterLayerSaveAsDialogBase
 {
     Q_OBJECT
@@ -48,8 +52,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLayer,
                                 QgsRasterDataProvider* sourceProvider, const QgsRectangle& currentExtent,
                                 const QgsCoordinateReferenceSystem& layerCrs, const QgsCoordinateReferenceSystem& currentCrs,
-                                QWidget* parent = nullptr, const Qt::WindowFlags& f = nullptr );
-    ~QgsRasterLayerSaveAsDialog();
+                                QWidget* parent = nullptr, Qt::WindowFlags f = 0 );
 
     Mode mode() const;
     int nColumns() const;

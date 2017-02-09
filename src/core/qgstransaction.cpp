@@ -18,8 +18,9 @@
 #include <QLibrary>
 
 #include "qgstransaction.h"
+#include "qgslogger.h"
 #include "qgsdatasourceuri.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
@@ -28,8 +29,7 @@ typedef QgsTransaction* createTransaction_t( const QString& connString );
 
 QgsTransaction* QgsTransaction::create( const QString& connString, const QString& providerKey )
 {
-
-  QLibrary* lib = QgsProviderRegistry::instance()->providerLibrary( providerKey );
+  std::unique_ptr< QLibrary > lib( QgsProviderRegistry::instance()->providerLibrary( providerKey ) );
   if ( !lib )
     return nullptr;
 
@@ -39,8 +39,6 @@ QgsTransaction* QgsTransaction::create( const QString& connString, const QString
 
   QgsTransaction* ts = createTransaction( connString );
 
-  delete lib;
-
   return ts;
 }
 
@@ -49,11 +47,11 @@ QgsTransaction* QgsTransaction::create( const QStringList& layerIds )
   if ( layerIds.isEmpty() )
     return nullptr;
 
-  QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerIds.first() ) );
+  QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( layerIds.first() ) );
   if ( !layer )
     return nullptr;
 
-  QString connStr = QgsDataSourceURI( layer->source() ).connectionInfo( false );
+  QString connStr = QgsDataSourceUri( layer->source() ).connectionInfo( false );
   QString providerKey = layer->dataProvider()->name();
   QgsTransaction* ts = QgsTransaction::create( connStr, providerKey );
   if ( !ts )
@@ -72,7 +70,8 @@ QgsTransaction* QgsTransaction::create( const QStringList& layerIds )
 
 
 QgsTransaction::QgsTransaction( const QString& connString )
-    : mConnString( connString ), mTransactionActive( false )
+    : mConnString( connString )
+    , mTransactionActive( false )
 {
 }
 
@@ -83,7 +82,7 @@ QgsTransaction::~QgsTransaction()
 
 bool QgsTransaction::addLayer( const QString& layerId )
 {
-  QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
+  QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( layerId ) );
   return addLayer( layer );
 }
 
@@ -103,15 +102,15 @@ bool QgsTransaction::addLayer( QgsVectorLayer* layer )
     return false;
 
   //connection string not compatible
-  if ( QgsDataSourceURI( layer->source() ).connectionInfo( false ) != mConnString )
+  if ( QgsDataSourceUri( layer->source() ).connectionInfo( false ) != mConnString )
   {
     QgsDebugMsg( QString( "Couldn't start transaction because connection string for layer %1 : '%2' does not match '%3'" ).arg(
-                   layer->id(), QgsDataSourceURI( layer->source() ).connectionInfo( false ), mConnString ) );
+                   layer->id(), QgsDataSourceUri( layer->source() ).connectionInfo( false ), mConnString ) );
     return false;
   }
 
-  connect( this, SIGNAL( afterRollback() ), layer->dataProvider(), SIGNAL( dataChanged() ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( onLayersDeleted( QStringList ) ) );
+  connect( this, &QgsTransaction::afterRollback, layer->dataProvider(), &QgsVectorDataProvider::dataChanged );
+  connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( onLayersDeleted( QStringList ) ) );
   mLayers.insert( layer );
 
   if ( mTransactionActive )
@@ -165,7 +164,7 @@ bool QgsTransaction::rollback( QString& errorMsg )
 
 bool QgsTransaction::supportsTransaction( const QgsVectorLayer* layer )
 {
-  QLibrary* lib = QgsProviderRegistry::instance()->providerLibrary( layer->providerType() );
+  std::unique_ptr< QLibrary > lib( QgsProviderRegistry::instance()->providerLibrary( layer->providerType() ) );
   if ( !lib )
     return false;
 

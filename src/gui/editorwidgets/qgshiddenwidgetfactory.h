@@ -17,8 +17,10 @@
 #define QGSHIDDENWIDGETFACTORY_H
 
 #include "qgseditorwidgetfactory.h"
+#include "qgis_gui.h"
 
-/** \class QgsHiddenWidgetFactory
+/** \ingroup gui
+ * \class QgsHiddenWidgetFactory
  * \note not available in Python bindings
  */
 

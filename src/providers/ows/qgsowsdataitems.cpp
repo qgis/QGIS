@@ -28,7 +28,7 @@
 QgsOWSConnectionItem::QgsOWSConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIconName = "mIconConnect.png";
+  mIconName = QStringLiteral( "mIconConnect.png" );
 }
 
 QgsOWSConnectionItem::~QgsOWSConnectionItem()
@@ -37,16 +37,15 @@ QgsOWSConnectionItem::~QgsOWSConnectionItem()
 
 QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
 {
-  QgsDebugMsg( "Entered" );
   QVector<QgsDataItem*> children;
-  QMap<QgsDataItem*, QString> serviceItems; // service/provider key
+  QHash<QgsDataItem*, QString> serviceItems; // service/provider key
 
   int layerCount = 0;
   // Try to open with WMS,WFS,WCS
   Q_FOREACH ( const QString& key, QStringList() << "wms" << "WFS" << "wcs" )
   {
     QgsDebugMsg( "Add connection for provider " + key );
-    QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( key );
+    std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->providerLibrary( key ) );
     if ( !library )
     {
       QgsDebugMsg( "Cannot get provider " + key );
@@ -94,7 +93,7 @@ QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
       {
         item->removeChildItem( subItem );
         subItem->setParent( this );
-        replacePath( subItem, providerKey.toLower() + ":/", "ows:/" );
+        replacePath( subItem, providerKey.toLower() + ":/", QStringLiteral( "ows:/" ) );
         children.append( subItem );
       }
       delete item;
@@ -174,7 +173,7 @@ QgsOWSRootItem::QgsOWSRootItem( QgsDataItem* parent, QString name, QString path 
     : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;
-  mIconName = "mIconOws.svg";
+  mIconName = QStringLiteral( "mIconOws.svg" );
   populate();
 }
 
@@ -184,13 +183,12 @@ QgsOWSRootItem::~QgsOWSRootItem()
 
 QVector<QgsDataItem*> QgsOWSRootItem::createChildren()
 {
-  QgsDebugMsg( "Entered" );
   QVector<QgsDataItem*> connections;
   // Combine all WMS,WFS,WCS connections
   QStringList connNames;
   Q_FOREACH ( const QString& service, QStringList() << "WMS" << "WFS" << "WCS" )
   {
-    Q_FOREACH ( const QString& connName, QgsOWSConnection::connectionList( service ) )
+    Q_FOREACH ( const QString& connName, QgsOwsConnection::connectionList( service ) )
     {
       if ( !connNames.contains( connName ) )
       {
@@ -261,7 +259,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 {
   if ( thePath.isEmpty() )
   {
-    return new QgsOWSRootItem( parentItem, "OWS", "ows:" );
+    return new QgsOWSRootItem( parentItem, QStringLiteral( "OWS" ), QStringLiteral( "ows:" ) );
   }
   return nullptr;
 }

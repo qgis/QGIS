@@ -21,7 +21,7 @@
 #include "qgisgui.h"
 #include "qgsdbfilterproxymodel.h"
 #include "qgsmssqltablemodel.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 #include <QMap>
 #include <QPair>
@@ -55,7 +55,7 @@ class QgsMssqlGeomColumnTypeThread : public QThread
 {
     Q_OBJECT
   public:
-    QgsMssqlGeomColumnTypeThread( QString connectionName, bool useEstimatedMetadata );
+    QgsMssqlGeomColumnTypeThread( const QString &connectionName, bool useEstimatedMetadata );
 
     // These functions get the layer types and pass that information out
     // by emitting the setLayerType() signal.
@@ -65,7 +65,7 @@ class QgsMssqlGeomColumnTypeThread : public QThread
     void setLayerType( const QgsMssqlLayerProperty& layerProperty );
 
   public slots:
-    void addGeometryColumn( QgsMssqlLayerProperty layerProperty );
+    void addGeometryColumn( const QgsMssqlLayerProperty &layerProperty );
     void stop();
 
   private:
@@ -96,7 +96,7 @@ class QgsMssqlSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 
     //! Constructor
     QgsMssqlSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
-    //! Destructor
+
     ~QgsMssqlSourceSelect();
     //! Populate the connection list combo box
     void populateConnectionList();
@@ -140,10 +140,11 @@ class QgsMssqlSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     void setLayerType( const QgsMssqlLayerProperty& layerProperty );
     void on_mTablesTreeView_clicked( const QModelIndex &index );
     void on_mTablesTreeView_doubleClicked( const QModelIndex &index );
+    void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString& regexp );
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#mssql-spatial-layers" ) ); }
 
     void columnThreadFinished();
 
@@ -158,7 +159,7 @@ class QgsMssqlSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     bool mEmbeddedMode;
 
     // queue another query for the thread
-    void addSearchGeometryColumn( QString connectionName, QgsMssqlLayerProperty layerProperty, bool estimateMetadata );
+    void addSearchGeometryColumn( const QString &connectionName, const QgsMssqlLayerProperty &layerProperty, bool estimateMetadata );
 
     // Set the position of the database connection list to the last
     // used one.

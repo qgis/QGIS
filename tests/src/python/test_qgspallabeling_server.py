@@ -24,7 +24,7 @@ import os
 import glob
 import shutil
 
-from PyQt.QtCore import QSettings, qDebug
+from qgis.PyQt.QtCore import QSettings, qDebug
 
 from qgis.core import QgsProject, QgsApplication, QgsPalLabeling
 
@@ -72,9 +72,9 @@ class TestServerBase(TestQgsPalLabeling):
         # noinspection PyArgumentList
         cls._CacheDir = settings.value(
             "cache/directory",
-            os.path.join(unicode(QgsApplication.qgisSettingsDirPath()),
+            os.path.join(str(QgsApplication.qgisSettingsDirPath()),
                          "cache"),
-            type=unicode)
+            type=str)
 
     @classmethod
     def tearDownClass(cls):
@@ -115,8 +115,8 @@ class TestServerBase(TestQgsPalLabeling):
         # TODO: support other types of servers, besides WMS
         ms = self._TestMapSettings
         osize = ms.outputSize()
-        dpi = str(ms.outputDpi())
-        lyrs = [str(self._MapRegistry.mapLayer(i).name()) for i in ms.layers()]
+        dpi = str(int(ms.outputDpi()))
+        lyrs = [str(layer.name()) for layer in ms.layers()]
         lyrs.reverse()
         params = {
             'SERVICE': 'WMS',

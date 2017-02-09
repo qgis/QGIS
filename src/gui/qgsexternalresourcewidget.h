@@ -24,6 +24,7 @@ class QgsPixmapLabel;
 #include <QVariant>
 
 #include "qgsfilewidget.h"
+#include "qgis_gui.h"
 
 
 
@@ -40,6 +41,8 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     Q_PROPERTY( DocumentViewerContent documentViewerContent READ documentViewerContent WRITE setDocumentViewerContent )
     Q_PROPERTY( int documentViewerHeight READ documentViewerHeight WRITE setDocumentViewerHeight )
     Q_PROPERTY( int documentViewerWidth READ documentViewerWidth WRITE setDocumentViewerWidth )
+    Q_PROPERTY( QgsFileWidget::RelativeStorage relativeStorage READ relativeStorage WRITE setRelativeStorage )
+    Q_PROPERTY( QString defaultRoot READ defaultRoot WRITE setDefaultRoot )
 
   public:
     enum DocumentViewerContent
@@ -73,11 +76,12 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
 
     //! returns the type of content used in the document viewer
     QgsExternalResourceWidget::DocumentViewerContent documentViewerContent() const;
-    //! setDocumentViewerContent defines the type of content to be shown. Widget will be adapated accordingly
+    //! setDocumentViewerContent defines the type of content to be shown. Widget will be adapted accordingly
     void setDocumentViewerContent( QgsExternalResourceWidget::DocumentViewerContent content );
 
     //! returns the height of the document viewer
     int documentViewerHeight() const;
+
     /**
      * @brief setDocumentViewerWidth set the height of the document viewer.
      * @param height the height. Use 0 for automatic best display.
@@ -85,6 +89,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     void setDocumentViewerHeight( int height );
     //! returns the width of the document viewer
     int documentViewerWidth() const ;
+
     /**
      * @brief setDocumentViewerWidth set the width of the document viewer.
      * @param width the width. Use 0 for automatic best display.
@@ -93,6 +98,31 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
 
     //! defines if the widget is readonly
     void setReadOnly( bool readOnly );
+
+    /**
+     * Configures if paths are handled absolute or relative and if relative,
+     * which should be the base path.
+     */
+    QgsFileWidget::RelativeStorage relativeStorage() const;
+
+    /**
+     * Configures if paths are handled absolute or relative and if relative,
+     * which should be the base path.
+     */
+    void setRelativeStorage( QgsFileWidget::RelativeStorage relativeStorage );
+
+
+    /**
+     * Configures the base path which should be used if the relativeStorage property
+     * is set to QgsFileWidget::RelativeDefaultPath.
+     */
+    QString defaultRoot() const;
+
+    /**
+     * Configures the base path which should be used if the relativeStorage property
+     * is set to QgsFileWidget::RelativeDefaultPath.
+     */
+    void setDefaultRoot( const QString& defaultRoot );
 
   signals:
     //! emitteed as soon as the current document changes
@@ -104,11 +134,15 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
   private:
     void updateDocumentViewer();
 
+    QString resolvePath( const QString& path );
+
     //! properties
     bool mFileWidgetVisible;
     DocumentViewerContent mDocumentViewerContent;
     int mDocumentViewerHeight;
     int mDocumentViewerWidth;
+    QgsFileWidget::RelativeStorage mRelativeStorage;
+    QString mDefaultRoot; // configured default root path for QgsFileWidget::RelativeStorage::RelativeDefaultPath
 
     //! UI objects
     QgsFileWidget* mFileWidget;

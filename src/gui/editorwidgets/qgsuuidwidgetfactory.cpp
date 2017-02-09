@@ -33,3 +33,9 @@ QgsEditorConfigWidget* QgsUuidWidgetFactory::configWidget( QgsVectorLayer* vl, i
 {
   return new QgsDummyConfigDlg( vl, fieldIdx, parent, QObject::tr( "Read-only field that generates a UUID if empty." ) );
 }
+
+unsigned int QgsUuidWidgetFactory::fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const
+{
+  const QVariant::Type type = vl->fields().field( fieldIdx ).type();
+  return type == QVariant::String ? 5 : 0;
+}

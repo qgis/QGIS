@@ -67,9 +67,8 @@ class QgsPaintEffectRegistry
 
   public:
 
-    /** Returns a reference to the singleton instance of the paint effect registry.
-     */
-    static QgsPaintEffectRegistry* instance();
+    QgsPaintEffectRegistry();
+    ~QgsPaintEffectRegistry();
 
     /** Returns the metadata for a specific effect.
      * @param name unique string name for paint effect class
@@ -119,10 +118,6 @@ class QgsPaintEffectRegistry
      * @see defaultStack()
      */
     static bool isDefaultStack( QgsPaintEffect* effect );
-
-  protected:
-    QgsPaintEffectRegistry();
-    ~QgsPaintEffectRegistry();
 
   private:
     QgsPaintEffectRegistry( const QgsPaintEffectRegistry& rh );

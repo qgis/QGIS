@@ -1,5 +1,3 @@
-SUBDIRS(network)
-
 #############################################################
 # sources
 
@@ -29,6 +27,7 @@ SET(QGIS_ANALYSIS_SRCS
   raster/qgsruggednessfilter.cpp
   raster/qgsderivativefilter.cpp
   raster/qgshillshadefilter.cpp
+  raster/qgskde.cpp
   raster/qgsslopefilter.cpp
   raster/qgsaspectfilter.cpp
   raster/qgstotalcurvaturefilter.cpp
@@ -38,6 +37,7 @@ SET(QGIS_ANALYSIS_SRCS
   raster/qgsrastermatrix.cpp
   vector/mersenne-twister.cpp
   vector/qgsgeometryanalyzer.cpp
+  vector/qgsgeometrysnapper.cpp
   vector/qgspointsample.cpp
   vector/qgstransectsample.cpp
   vector/qgszonalstatistics.cpp
@@ -47,11 +47,22 @@ SET(QGIS_ANALYSIS_SRCS
   openstreetmap/qgsosmdatabase.cpp
   openstreetmap/qgsosmdownload.cpp
   openstreetmap/qgsosmimport.cpp
+
+  network/qgsgraph.cpp
+  network/qgsgraphbuilder.cpp
+  network/qgsnetworkspeedstrategy.cpp
+  network/qgsnetworkdistancestrategy.cpp
+  network/qgsvectorlayerdirector.cpp
+  network/qgsgraphanalyzer.cpp
 )
 
 SET(QGIS_ANALYSIS_MOC_HDRS
   openstreetmap/qgsosmdownload.h
   openstreetmap/qgsosmimport.h
+  vector/qgsgeometrysnapper.h
+
+  network/qgsgraphdirector.h
+  network/qgsvectorlayerdirector.h
 )
 
 INCLUDE_DIRECTORIES(SYSTEM ${SPATIALITE_INCLUDE_DIR})
@@ -87,7 +98,7 @@ IF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   )
 ENDIF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 
-QT4_WRAP_CPP(QGIS_ANALYSIS_MOC_SRCS ${QGIS_ANALYSIS_MOC_HDRS})
+QT5_WRAP_CPP(QGIS_ANALYSIS_MOC_SRCS ${QGIS_ANALYSIS_MOC_HDRS})
 
 # install headers
 
@@ -96,6 +107,7 @@ SET(QGIS_ANALYSIS_HDRS
   raster/qgsaspectfilter.h
   raster/qgsderivativefilter.h
   raster/qgshillshadefilter.h
+  raster/qgskde.h
   raster/qgsninecellfilter.h
   raster/qgsrastercalculator.h
   raster/qgsrelief.h
@@ -132,6 +144,16 @@ SET(QGIS_ANALYSIS_HDRS
   openstreetmap/qgsosmdatabase.h
   openstreetmap/qgsosmdownload.h
   openstreetmap/qgsosmimport.h
+
+  network/qgsgraph.h
+  network/qgsgraphbuilderinterface.h
+  network/qgsgraphbuilder.h
+  network/qgsnetworkstrategy.h
+  network/qgsnetworkspeedstrategy.h
+  network/qgsnetworkdistancestrategy.h
+  network/qgsgraphdirector.h
+  network/qgsvectorlayerdirector.h
+  network/qgsgraphanalyzer.h
 )
 
 INCLUDE_DIRECTORIES(
@@ -140,7 +162,10 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/geometry
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/raster
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/symbology-ng
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/analysis
   interpolation
+  network
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${PROJ_INCLUDE_DIR}
@@ -149,18 +174,21 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${SQLITE3_INCLUDE_DIR}
 )
 
-IF (NOT MSVC)
-  ADD_DEFINITIONS("-UANALYSIS_EXPORT")
-  IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
-  ENDIF()
-ENDIF (NOT MSVC)
-ADD_DEFINITIONS("\"-DANALYSIS_EXPORT=${DLLEXPORT}\"")
-
 #############################################################
 # qgis_analysis library
 
 ADD_LIBRARY(qgis_analysis SHARED ${QGIS_ANALYSIS_SRCS} ${QGIS_ANALYSIS_MOC_SRCS} ${QGIS_ANALYSIS_HDRS})
+
+GENERATE_EXPORT_HEADER(
+   qgis_analysis
+   BASE_NAME ANALYSIS
+   EXPORT_FILE_NAME qgis_analysis.h
+)
+IF(MSVC)
+  SET_TARGET_PROPERTIES(qgis_analysis PROPERTIES LINK_FLAGS "/FORCE:MULTIPLE")
+ENDIF(MSVC)
+
+SET(QGIS_ANALYSIS_HDRS ${QGIS_ANALYSIS_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_analysis.h)
 
 IF(NOT APPLE)
   INSTALL(FILES ${QGIS_ANALYSIS_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
@@ -172,7 +200,7 @@ ELSE(NOT APPLE)
     FRAMEWORK_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}"
     MACOSX_FRAMEWORK_INFO_PLIST "${CMAKE_SOURCE_DIR}/mac/framework.info.plist.in"
     MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${COMPLETE_VERSION}
-    MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis2_analysis
+    MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis3_analysis
     BUILD_WITH_INSTALL_RPATH TRUE
     PUBLIC_HEADER "${QGIS_ANALYSIS_HDRS}"
     LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}"

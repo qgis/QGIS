@@ -22,7 +22,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgsdbfilterproxymodel.h"
 #include "qgspgtablemodel.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 #include <QMap>
 #include <QPair>
@@ -64,7 +64,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
   public:
     //! Constructor
     QgsPgSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
-    //! Destructor
+
     ~QgsPgSourceSelect();
     //! Populate the connection list combo box
     void populateConnectionList();
@@ -73,7 +73,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     //! Connection info (database, host, user, password)
     QString connectionInfo( bool expandAuthCfg = true );
     //! Data source URI
-    QgsDataSourceURI dataSourceUri();
+    QgsDataSourceUri dataSourceUri();
 
   signals:
     void addDatabaseLayers( QStringList const & layerPathList, QString const & providerKey );
@@ -112,10 +112,11 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     void setLayerType( const QgsPostgresLayerProperty& layerProperty );
     void on_mTablesTreeView_clicked( const QModelIndex &index );
     void on_mTablesTreeView_doubleClicked( const QModelIndex &index );
+    void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString& regexp );
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#id14" ) ); }
 
     void columnThreadFinished();
 
@@ -142,7 +143,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     QStringList mColumnLabels;
     // Our thread for doing long running queries
     QgsGeomColumnTypeThread* mColumnTypeThread;
-    QgsDataSourceURI mDataSrcUri;
+    QgsDataSourceUri mDataSrcUri;
     QStringList mSelectedTables;
     bool mUseEstimatedMetadata;
     // Storage for the range of layer type icons

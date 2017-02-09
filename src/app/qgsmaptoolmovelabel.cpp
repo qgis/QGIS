@@ -17,7 +17,6 @@
 
 #include "qgsmaptoolmovelabel.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include <QMouseEvent>
@@ -147,7 +146,7 @@ void QgsMapToolMoveLabel::canvasReleaseEvent( QgsMapMouseEvent* e )
     }
   }
 
-  vlayer->beginEditCommand( tr( "Moved label" ) + QString( " '%1'" ).arg( currentLabelText( 24 ) ) );
+  vlayer->beginEditCommand( tr( "Moved label" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
   vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, xCol, xPosNew );
   vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, yCol, yPosNew );
 
@@ -169,8 +168,7 @@ void QgsMapToolMoveLabel::canvasReleaseEvent( QgsMapMouseEvent* e )
   }
   vlayer->endEditCommand();
 
-  if ( mCanvas )
-    mCanvas->refresh();
+  vlayer->triggerRepaint();
 }
 
 

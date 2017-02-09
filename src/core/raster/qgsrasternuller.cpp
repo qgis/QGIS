@@ -23,10 +23,6 @@ QgsRasterNuller::QgsRasterNuller( QgsRasterInterface* input )
 {
 }
 
-QgsRasterNuller::~QgsRasterNuller()
-{
-}
-
 QgsRasterNuller* QgsRasterNuller::clone() const
 {
   QgsDebugMsgLevel( "Entered", 4 );
@@ -63,13 +59,13 @@ int QgsRasterNuller::bandCount() const
   return 0;
 }
 
-QGis::DataType QgsRasterNuller::dataType( int bandNo ) const
+Qgis::DataType QgsRasterNuller::dataType( int bandNo ) const
 {
   if ( mInput ) return mInput->dataType( bandNo );
-  return QGis::UnknownDataType;
+  return Qgis::UnknownDataType;
 }
 
-QgsRasterBlock * QgsRasterNuller::block( int bandNo, QgsRectangle  const & extent, int width, int height )
+QgsRasterBlock * QgsRasterNuller::block( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback )
 {
   QgsDebugMsgLevel( "Entered", 4 );
   if ( !mInput )
@@ -77,7 +73,7 @@ QgsRasterBlock * QgsRasterNuller::block( int bandNo, QgsRectangle  const & exten
     return new QgsRasterBlock();
   }
 
-  QgsRasterBlock *inputBlock = mInput->block( bandNo, extent, width, height );
+  QgsRasterBlock *inputBlock = mInput->block( bandNo, extent, width, height, feedback );
   if ( !inputBlock )
   {
     return new QgsRasterBlock();
@@ -89,8 +85,7 @@ QgsRasterBlock * QgsRasterNuller::block( int bandNo, QgsRectangle  const & exten
     return inputBlock;
   }
 
-  QgsRasterBlock *outputBlock = nullptr;
-
+  QgsRasterBlock *outputBlock = new QgsRasterBlock( inputBlock->dataType(), width, height );
   if ( mHasOutputNoData.value( bandNo - 1 ) || inputBlock->hasNoDataValue() )
   {
     double noDataValue;
@@ -102,11 +97,7 @@ QgsRasterBlock * QgsRasterNuller::block( int bandNo, QgsRectangle  const & exten
     {
       noDataValue = inputBlock->noDataValue();
     }
-    outputBlock = new QgsRasterBlock( inputBlock->dataType(), width, height, noDataValue );
-  }
-  else
-  {
-    outputBlock = new QgsRasterBlock( inputBlock->dataType(), width, height );
+    outputBlock->setNoDataValue( noDataValue );
   }
 
   for ( int i = 0; i < height; i++ )

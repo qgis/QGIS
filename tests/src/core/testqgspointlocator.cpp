@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 
@@ -21,8 +21,9 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsgeometry.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgspointlocator.h"
+#include "qgspolygon.h"
 
 
 struct FilterExcludePoint : public QgsPointLocator::MatchFilter
@@ -36,7 +37,10 @@ struct FilterExcludePoint : public QgsPointLocator::MatchFilter
 
 struct FilterExcludeEdge : public QgsPointLocator::MatchFilter
 {
-  FilterExcludeEdge( const QgsPoint& p1, const QgsPoint& p2 ) : mP1( p1 ), mP2( p2 ) {}
+  FilterExcludeEdge( const QgsPoint& p1, const QgsPoint& p2 )
+      : mP1( p1 )
+      , mP2( p2 )
+  {}
 
   bool acceptMatch( const QgsPointLocator::Match& match )
   {
@@ -76,18 +80,19 @@ class TestQgsPointLocator : public QObject
       //         \ |
       //          \|
       //           + (1,0)
-      mVL = new QgsVectorLayer( "Polygon", "x", "memory" );
+      mVL = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
       QgsFeature ff( 0 );
       QgsPolygon polygon;
       QgsPolyline polyline;
       polyline << QgsPoint( 0, 1 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 1 );
       polygon << polyline;
-      ff.setGeometry( QgsGeometry::fromPolygon( polygon ) );
+      QgsGeometry ffGeom = QgsGeometry::fromPolygon( polygon );
+      ff.setGeometry( ffGeom );
       QgsFeatureList flist;
       flist << ff;
       mVL->dataProvider()->addFeatures( flist );
 
-      QgsMapLayerRegistry::instance()->addMapLayer( mVL );
+      QgsProject::instance()->addMapLayer( mVL );
     }
 
     void cleanupTestCase()
@@ -199,7 +204,8 @@ class TestQgsPointLocator : public QObject
       QgsPolyline polyline;
       polyline << QgsPoint( 10, 11 ) << QgsPoint( 11, 10 ) << QgsPoint( 11, 11 ) << QgsPoint( 10, 11 );
       polygon << polyline;
-      ff.setGeometry( QgsGeometry::fromPolygon( polygon ) );
+      QgsGeometry ffGeom = QgsGeometry::fromPolygon( polygon ) ;
+      ff.setGeometry( ffGeom );
       QgsFeatureList flist;
       flist << ff;
       bool resA = mVL->addFeature( ff );
@@ -216,9 +222,9 @@ class TestQgsPointLocator : public QObject
       QVERIFY( mAddA.count() == 1 );
 
       // change geometry
-      QgsGeometry* newGeom = new QgsGeometry( *ff.constGeometry() );
+      QgsGeometry* newGeom = new QgsGeometry( ff.geometry() );
       newGeom->moveVertex( 10, 10, 2 ); // change 11,11 to 10,10
-      mVL->changeGeometry( ff.id(), newGeom );
+      mVL->changeGeometry( ff.id(), *newGeom );
       delete newGeom;
 
       // verify it is changed in the point locator
@@ -256,8 +262,50 @@ class TestQgsPointLocator : public QObject
       QVERIFY( m2.isValid() );
       QCOMPARE( m2.point(), QgsPoint( 1, 1 ) );
     }
+
+    void testNullGeometries()
+    {
+      QgsVectorLayer* vlNullGeom = new QgsVectorLayer( "Polygon", "x", "memory" );
+      QgsFeature ff( 0 );
+      ff.setGeometry( QgsGeometry() );
+      QgsFeatureList flist;
+      flist << ff;
+      vlNullGeom->dataProvider()->addFeatures( flist );
+
+      QgsPointLocator loc( vlNullGeom, 0, nullptr );
+
+      QgsPointLocator::Match m1 = loc.nearestVertex( QgsPoint( 2, 2 ), std::numeric_limits<double>::max() );
+      QVERIFY( !m1.isValid() );
+
+      QgsPointLocator::Match m2 = loc.nearestEdge( QgsPoint( 2, 2 ), std::numeric_limits<double>::max() );
+      QVERIFY( !m2.isValid() );
+
+      delete vlNullGeom;
+    }
+
+    void testEmptyGeometries()
+    {
+      QgsVectorLayer* vlEmptyGeom = new QgsVectorLayer( "Polygon", "x", "memory" );
+      QgsFeature ff( 0 );
+      QgsGeometry g;
+      g.setGeometry( new QgsPolygonV2() );
+      ff.setGeometry( g );
+      QgsFeatureList flist;
+      flist << ff;
+      vlEmptyGeom->dataProvider()->addFeatures( flist );
+
+      QgsPointLocator loc( vlEmptyGeom, 0, nullptr );
+
+      QgsPointLocator::Match m1 = loc.nearestVertex( QgsPoint( 2, 2 ), std::numeric_limits<double>::max() );
+      QVERIFY( !m1.isValid() );
+
+      QgsPointLocator::Match m2 = loc.nearestEdge( QgsPoint( 2, 2 ), std::numeric_limits<double>::max() );
+      QVERIFY( !m2.isValid() );
+
+      delete vlEmptyGeom;
+    }
 };
 
-QTEST_MAIN( TestQgsPointLocator )
+QGSTEST_MAIN( TestQgsPointLocator )
 
 #include "testqgspointlocator.moc"

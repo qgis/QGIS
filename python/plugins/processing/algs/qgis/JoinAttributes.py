@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -51,7 +52,7 @@ class JoinAttributes(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Join attributes table')
         self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterTable(self.INPUT_LAYER_2,
                                          self.tr('Input layer 2'), False))
         self.addParameter(ParameterTableField(self.TABLE_FIELD,
@@ -61,7 +62,7 @@ class JoinAttributes(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
                                     self.tr('Joined layer')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         input = self.getParameterValue(self.INPUT_LAYER)
         input2 = self.getParameterValue(self.INPUT_LAYER_2)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
@@ -69,14 +70,13 @@ class JoinAttributes(GeoAlgorithm):
         field2 = self.getParameterValue(self.TABLE_FIELD_2)
 
         layer = dataobjects.getObjectFromUri(input)
-        provider = layer.dataProvider()
-        joinField1Index = layer.fieldNameIndex(field)
+        joinField1Index = layer.fields().lookupField(field)
 
         layer2 = dataobjects.getObjectFromUri(input2)
-        joinField2Index = layer2.fieldNameIndex(field2)
+        joinField2Index = layer2.fields().lookupField(field2)
 
         outFields = vector.combineVectorFields(layer, layer2)
-        writer = output.getVectorWriter(outFields, provider.geometryType(),
+        writer = output.getVectorWriter(outFields, layer.wkbType(),
                                         layer.crs())
 
         # Cache attributes of Layer 2
@@ -85,10 +85,10 @@ class JoinAttributes(GeoAlgorithm):
         total = 100.0 / len(features)
         for current, feat in enumerate(features):
             attrs = feat.attributes()
-            joinValue2 = unicode(attrs[joinField2Index])
+            joinValue2 = str(attrs[joinField2Index])
             if joinValue2 not in cache:
                 cache[joinValue2] = attrs
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         # Create output vector layer with additional attribute
         outFeat = QgsFeature()
@@ -97,9 +97,9 @@ class JoinAttributes(GeoAlgorithm):
         for current, feat in enumerate(features):
             outFeat.setGeometry(feat.geometry())
             attrs = feat.attributes()
-            joinValue1 = unicode(attrs[joinField1Index])
+            joinValue1 = str(attrs[joinField1Index])
             attrs.extend(cache.get(joinValue1, []))
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
         del writer

@@ -1,0 +1,8 @@
+r.in.lidar
+r.in.lidar.info - Extract information from LAS file
+Raster (r.*)
+ParameterFile|input|LAS input file|False|False
+Hardcoded|-p
+Hardcoded|-g
+Hardcoded|-s
+OutputHTML|html|LAS information

@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QApplication>
@@ -293,5 +293,5 @@ int TestRasterHistogram::testFile( QString theTestType,
 }
 
 
-QTEST_MAIN( TestRasterHistogram )
+QGSTEST_MAIN( TestRasterHistogram )
 #include "testqgsrasterhistogram.moc"

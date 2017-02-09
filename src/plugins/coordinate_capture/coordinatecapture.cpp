@@ -24,11 +24,11 @@
 #include "qgsapplication.h"
 #include <qgspoint.h>
 #include <qgsmapcanvas.h>
-#include <qgsmaprenderer.h>
 #include <qgis.h>
 #include <qgscoordinatereferencesystem.h>
 #include <qgscoordinatetransform.h>
 #include <qgsgenericprojectionselector.h>
+#include "qgsdockwidget.h"
 
 #include "coordinatecapture.h"
 #include "coordinatecapturegui.h"
@@ -39,7 +39,6 @@
 
 #include <QAction>
 #include <QToolBar>
-#include <QDockWidget>
 #include <QLayout>
 #include <QLineEdit>
 #include <QClipboard>
@@ -52,8 +51,8 @@ static const QString sName = QObject::tr( "Coordinate Capture" );
 static const QString sDescription = QObject::tr( "Capture mouse coordinates in different CRS" );
 static const QString sCategory = QObject::tr( "Vector" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
-static const QString sPluginIcon = ":/coordinate_capture/coordinate_capture.png";
-static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
+static const QString sPluginIcon = QStringLiteral( ":/coordinate_capture/coordinate_capture.png" );
+static const QgisPlugin::PluginType sPluginType = QgisPlugin::UI;
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -97,18 +96,18 @@ void CoordinateCapture::initGui()
   connect( mQGisIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 
   setSourceCrs(); //set up the source CRS
-  mTransform.setDestCRS( mCrs ); // set the CRS in the transform
-  mUserCrsDisplayPrecision = ( mCrs.mapUnits() == QGis::Degrees ) ? 5 : 3; // precision depends on CRS units
+  mTransform.setDestinationCrs( mCrs ); // set the CRS in the transform
+  mUserCrsDisplayPrecision = ( mCrs.mapUnits() == QgsUnitTypes::DistanceDegrees ) ? 5 : 3; // precision depends on CRS units
 
   //create the dock widget
-  mpDockWidget = new QDockWidget( tr( "Coordinate Capture" ), mQGisIface->mainWindow() );
-  mpDockWidget->setObjectName( "CoordinateCapture" );
+  mpDockWidget = new QgsDockWidget( tr( "Coordinate Capture" ), mQGisIface->mainWindow() );
+  mpDockWidget->setObjectName( QStringLiteral( "CoordinateCapture" ) );
   mpDockWidget->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   mQGisIface->addDockWidget( Qt::LeftDockWidgetArea, mpDockWidget );
 
   // Create the action for tool
   mQActionPointer = new QAction( QIcon(), tr( "Coordinate Capture" ), this );
-  mQActionPointer->setObjectName( "mQActionPointer" );
+  mQActionPointer->setObjectName( QStringLiteral( "mQActionPointer" ) );
   mQActionPointer->setCheckable( true );
   mQActionPointer->setChecked( mpDockWidget->isVisible() );
   // Set the what's this text
@@ -162,7 +161,7 @@ void CoordinateCapture::initGui()
   connect( mpCaptureButton, SIGNAL( clicked() ), this, SLOT( run() ) );
 
   // Set the icons
-  setCurrentTheme( "" );
+  setCurrentTheme( QLatin1String( "" ) );
 
   mypLayout->addWidget( mypUserCrsToolButton, 0, 0 );
   mypLayout->addWidget( mpUserCrsEdit, 0, 1 );
@@ -190,15 +189,15 @@ void CoordinateCapture::setCRS()
   if ( mySelector.exec() )
   {
     mCrs.createFromSrsId( mySelector.selectedCrsId() );
-    mTransform.setDestCRS( mCrs );
-    mUserCrsDisplayPrecision = ( mCrs.mapUnits() == QGis::Degrees ) ? 5 : 3; //precision depends on CRS units
+    mTransform.setDestinationCrs( mCrs );
+    mUserCrsDisplayPrecision = ( mCrs.mapUnits() == QgsUnitTypes::DistanceDegrees ) ? 5 : 3; //precision depends on CRS units
   }
 }
 
 void CoordinateCapture::setSourceCrs()
 {
   mTransform.setSourceCrs( mQGisIface->mapCanvas()->mapSettings().destinationCrs() );
-  mCanvasDisplayPrecision = ( mQGisIface->mapCanvas()->mapSettings().destinationCrs().mapUnits() == QGis::Degrees ) ? 5 : 3; // for the map canvas coordinate display
+  mCanvasDisplayPrecision = ( mQGisIface->mapCanvas()->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees ) ? 5 : 3; // for the map canvas coordinate display
 }
 
 void CoordinateCapture::mouseClicked( const QgsPoint& thePoint )
@@ -287,10 +286,10 @@ void CoordinateCapture::setCurrentTheme( const QString& theThemeName )
     mQActionPointer->setIcon( QIcon( getIconPath( "coordinate_capture.png" ) ) );
   if ( mpDockWidget )
   {
-    mpTrackMouseButton->setIcon( QIcon( getIconPath( "tracking.png" ) ) );
+    mpTrackMouseButton->setIcon( QIcon( getIconPath( "tracking.svg" ) ) );
     mpCaptureButton->setIcon( QIcon( getIconPath( "coordinate_capture.png" ) ) );
-    mypUserCrsToolButton->setIcon( QIcon( getIconPath( "geographic.png" ) ) );
-    mypCRSLabel->setPixmap( QPixmap( getIconPath( "transformed.png" ) ) );
+    mypUserCrsToolButton->setIcon( QIcon( getIconPath( "mIconProjectionEnabled.svg" ) ) );
+    mypCRSLabel->setPixmap( QPixmap( getIconPath( QStringLiteral( "transformed.svg" ) ) ) );
   }
 }
 
@@ -314,7 +313,7 @@ QString CoordinateCapture::getIconPath( const QString& theName )
   }
   else
   {
-    return "";
+    return QLatin1String( "" );
   }
 }
 

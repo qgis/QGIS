@@ -19,11 +19,12 @@
 #include "qgsmaptool.h"
 #include "qgspoint.h"
 #include "qgsdistancearea.h"
+#include "qgis_app.h"
 
 class QgsDisplayAngle;
 class QgsRubberBand;
 
-/** Map tool to measure angle between two segments*/
+//! Map tool to measure angle between two segments
 class APP_EXPORT QgsMapToolMeasureAngle: public QgsMapTool
 {
     Q_OBJECT
@@ -31,7 +32,9 @@ class APP_EXPORT QgsMapToolMeasureAngle: public QgsMapTool
     QgsMapToolMeasureAngle( QgsMapCanvas* canvas );
     ~QgsMapToolMeasureAngle();
 
-    //! Mouse move event for overridingqgs
+    virtual Flags flags() const override { return QgsMapTool::AllowZoomRect; }
+
+    //! Mouse move event for overriding
     void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 
     //! Mouse release event for overriding
@@ -44,28 +47,28 @@ class APP_EXPORT QgsMapToolMeasureAngle: public QgsMapTool
     void deactivate() override;
 
   private:
-    /** Points defining the angle (three for measuring)*/
+    //! Points defining the angle (three for measuring)
     QList<QgsPoint> mAnglePoints;
     QgsRubberBand* mRubberBand;
     QgsDisplayAngle* mResultDisplay;
 
-    /** Creates a new rubber band and deletes the old one*/
+    //! Creates a new rubber band and deletes the old one
     void createRubberBand();
-    /** Snaps point to background layers*/
+    //! Snaps point to background layers
     QgsPoint snapPoint( QPoint p );
 
-    /** Tool for measuring */
+    //! Tool for measuring
     QgsDistanceArea mDa;
 
   public slots:
-    /** Recalculate angle if projection state changed*/
+    //! Recalculate angle if projection state changed
     void updateSettings();
 
   private slots:
-    /** Deletes the rubber band and the dialog*/
+    //! Deletes the rubber band and the dialog
     void stopMeasuring();
 
-    /** Configures distance area objects with ellipsoid / output crs*/
+    //! Configures distance area objects with ellipsoid / output crs
     void configureDistanceArea();
 
 };

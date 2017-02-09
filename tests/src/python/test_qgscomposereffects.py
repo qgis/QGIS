@@ -14,11 +14,12 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from PyQt.QtGui import QPainter, QColor
+from qgis.PyQt.QtGui import QPainter, QColor
 
 from qgis.core import (QgsComposerShape,
                        QgsComposition,
-                       QgsMapRenderer
+                       QgsMapSettings,
+                       QgsProject
                        )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -35,8 +36,8 @@ class TestQgsComposerEffects(unittest.TestCase):
         unittest.TestCase.__init__(self, methodName)
 
         # create composition
-        self.mMapRenderer = QgsMapRenderer()
-        self.mComposition = QgsComposition(self.mMapRenderer)
+        self.mMapSettings = QgsMapSettings()
+        self.mComposition = QgsComposition(QgsProject.instance())
         self.mComposition.setPaperSize(297, 210)
 
         self.mComposerRect1 = QgsComposerShape(20, 20, 150, 100, self.mComposition)

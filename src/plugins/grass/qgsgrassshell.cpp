@@ -71,12 +71,11 @@ QgsGrassShell::QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent, const ch
   // QTermWidget does set default font family Monospace, size 10 via QWidget::setFont()
   // but QWidget::setFont() does not guarantee to really change the font (see doc)
   // setStyleSheet() works (it is applied to QTermWidget children TerminalDisplay)
-  mTerminal->setStyleSheet( "font-family: Monospace; font-size: 10pt;" );
+  mTerminal->setStyleSheet( QStringLiteral( "font-family: Monospace; font-size: 10pt;" ) );
 }
 
 QgsGrassShell::~QgsGrassShell()
 {
-  QgsDebugMsg( "entered" );
 }
 
 void QgsGrassShell::closeShell()
@@ -98,8 +97,8 @@ void QgsGrassShell::closeShell()
 
 void QgsGrassShell::initTerminal( QTermWidget *terminal )
 {
-  QStringList env( "" );
-  QStringList args( "" );
+  QStringList env( QLatin1String( "" ) );
+  QStringList args( QLatin1String( "" ) );
 
   // GRASS Init.sh should not be started here, it is either run when GRASS is started if QGIS is run from GRASS shell or everything (set environment variables and lock mapset) is done in QgsGrass::openMapset
   //QString shellProgram = QString( "%1/etc/Init.sh" ).arg( ::getenv( "GISBASE" ) );
@@ -112,13 +111,13 @@ void QgsGrassShell::initTerminal( QTermWidget *terminal )
 
   env << "PATH=" + path;
   env << "PYTHONPATH=" + QgsGrass::getPythonPath();
-  env << "TERM=vt100";
-  env << "GISRC_MODE_MEMORY";
+  env << QStringLiteral( "TERM=vt100" );
+  env << QStringLiteral( "GISRC_MODE_MEMORY" );
   // TODO: we should check if these environment variable were set by user before QGIS was started
   env << "GRASS_HTML_BROWSER=" + QgsGrassUtils::htmlBrowserPath() ;
-  env << "GRASS_WISH=wish";
-  env << "GRASS_TCLSH=tclsh";
-  env << "GRASS_PYTHON=python";
+  env << QStringLiteral( "GRASS_WISH=wish" );
+  env << QStringLiteral( "GRASS_TCLSH=tclsh" );
+  env << QStringLiteral( "GRASS_PYTHON=python" );
 
   //args << "-text";
   //args << QString( "%1/%2/%3" ).arg( QgsGrass::getDefaultGisdbase() ).arg( QgsGrass::getDefaultLocation() ).arg( QgsGrass::getDefaultMapset() );

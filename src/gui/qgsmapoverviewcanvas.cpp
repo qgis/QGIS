@@ -18,7 +18,7 @@
 
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsmapoverviewcanvas.h"
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmaptopixel.h"
@@ -37,16 +37,14 @@ QgsMapOverviewCanvas::QgsMapOverviewCanvas( QWidget * parent, QgsMapCanvas* mapC
     , mJob( nullptr )
 {
   setAutoFillBackground( true );
-  setObjectName( "theOverviewCanvas" );
+  setObjectName( QStringLiteral( "theOverviewCanvas" ) );
   mPanningWidget = new QgsPanningWidget( this );
 
   mSettings.setFlag( QgsMapSettings::DrawLabeling, false );
 
-  connect( mMapCanvas, SIGNAL( extentsChanged() ), this, SLOT( drawExtentRect() ) );
-}
-
-QgsMapOverviewCanvas::~QgsMapOverviewCanvas()
-{
+  connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsMapOverviewCanvas::drawExtentRect );
+  connect( mMapCanvas, &QgsMapCanvas::hasCrsTransformEnabledChanged, this, &QgsMapOverviewCanvas::hasCrsTransformEnabled );
+  connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapOverviewCanvas::destinationCrsChanged );
 }
 
 void QgsMapOverviewCanvas::resizeEvent( QResizeEvent* e )
@@ -175,7 +173,7 @@ void QgsMapOverviewCanvas::refresh()
 
   if ( mJob )
   {
-    QgsDebugMsg( "oveview - cancelling old" );
+    QgsDebugMsg( "oveview - canceling old" );
     mJob->cancel();
     QgsDebugMsg( "oveview - deleting old" );
     delete mJob; // get rid of previous job (if any)
@@ -225,25 +223,23 @@ void QgsMapOverviewCanvas::setBackgroundColor( const QColor& color )
   setPalette( palette );
 }
 
-void QgsMapOverviewCanvas::setLayerSet( const QStringList& layerSet )
+void QgsMapOverviewCanvas::setLayers( const QList<QgsMapLayer*>& layers )
 {
-  QgsDebugMsg( "layerSet: " + layerSet.join( ", " ) );
-
-  Q_FOREACH ( const QString& layerID, mSettings.layers() )
+  Q_FOREACH ( QgsMapLayer* ml, mSettings.layers() )
   {
-    if ( QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( layerID ) )
-      disconnect( ml, SIGNAL( repaintRequested() ), this, SLOT( layerRepaintRequested() ) );
+    disconnect( ml, &QgsMapLayer::repaintRequested, this, &QgsMapOverviewCanvas::layerRepaintRequested );
   }
 
-  mSettings.setLayers( layerSet );
+  mSettings.setLayers( layers );
 
-  Q_FOREACH ( const QString& layerID, mSettings.layers() )
+  Q_FOREACH ( QgsMapLayer* ml, mSettings.layers() )
   {
-    if ( QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( layerID ) )
-      connect( ml, SIGNAL( repaintRequested() ), this, SLOT( layerRepaintRequested() ) );
+    connect( ml, &QgsMapLayer::repaintRequested, this, &QgsMapOverviewCanvas::layerRepaintRequested );
   }
 
   updateFullExtent();
+
+  refresh();
 }
 
 void QgsMapOverviewCanvas::updateFullExtent()
@@ -266,12 +262,12 @@ void QgsMapOverviewCanvas::hasCrsTransformEnabled( bool flag )
   mSettings.setCrsTransformEnabled( flag );
 }
 
-void QgsMapOverviewCanvas::destinationSrsChanged()
+void QgsMapOverviewCanvas::destinationCrsChanged()
 {
   mSettings.setDestinationCrs( mMapCanvas->mapSettings().destinationCrs() );
 }
 
-QStringList QgsMapOverviewCanvas::layerSet() const
+QList<QgsMapLayer*> QgsMapOverviewCanvas::layers() const
 {
   return mSettings.layers();
 }
@@ -282,7 +278,7 @@ QStringList QgsMapOverviewCanvas::layerSet() const
 QgsPanningWidget::QgsPanningWidget( QWidget* parent )
     : QWidget( parent )
 {
-  setObjectName( "panningWidget" );
+  setObjectName( QStringLiteral( "panningWidget" ) );
   setMinimumSize( 5, 5 );
   setAttribute( Qt::WA_NoSystemBackground );
 }
@@ -291,6 +287,11 @@ void QgsPanningWidget::setPolygon( const QPolygon& p )
 {
   if ( p == mPoly ) return;
   mPoly = p;
+
+  //ensure polygon is closed
+  if ( mPoly.at( 0 ) != mPoly.at( mPoly.length() - 1 ) )
+    mPoly.append( mPoly.at( 0 ) );
+
   setGeometry( p.boundingRect() );
   update();
 }
@@ -303,7 +304,13 @@ void QgsPanningWidget::paintEvent( QPaintEvent* pe )
   p.begin( this );
   p.setPen( Qt::red );
   QPolygonF t = mPoly.translated( -mPoly.boundingRect().left(), -mPoly.boundingRect().top() );
-  p.drawConvexPolygon( t );
+
+  // drawPolygon causes issues on windows - corners of path may be missing resulting in triangles being drawn
+  // instead of rectangles! (Same cause as #13343)
+  QPainterPath path;
+  path.addPolygon( t );
+  p.drawPath( path );
+
   p.end();
 }
 

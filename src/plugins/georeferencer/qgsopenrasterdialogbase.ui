@@ -22,7 +22,7 @@
      <item row="0" column="0">
       <widget class="QLabel" name="textLabel1_2">
        <property name="text">
-        <string>Raster file:</string>
+        <string>Raster file</string>
        </property>
       </widget>
      </item>
@@ -61,7 +61,7 @@
      <item row="1" column="0">
       <widget class="QLabel" name="lblSelectModifiedRaster">
        <property name="text">
-        <string>Save raster as:</string>
+        <string>Save raster as</string>
        </property>
       </widget>
      </item>

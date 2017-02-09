@@ -22,6 +22,7 @@
 #include "qgsmessageoutput.h"
 
 #include <QString>
+#include "qgis_gui.h"
 
 
 /** \ingroup gui
@@ -31,7 +32,7 @@ class GUI_EXPORT QgsMessageViewer: public QDialog, public QgsMessageOutput, priv
 {
     Q_OBJECT
   public:
-    QgsMessageViewer( QWidget *parent = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags, bool deleteOnClose = true );
+    QgsMessageViewer( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool deleteOnClose = true );
     ~QgsMessageViewer();
 
     virtual void setMessage( const QString& message, MessageType msgType ) override;

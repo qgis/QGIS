@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -25,7 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import QgsField, QgsFeatureRequest, QgsFeature, QgsGeometry
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -53,31 +54,30 @@ class PointsInPolygonWeighted(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
         self.addParameter(ParameterVector(self.POLYGONS,
-                                          self.tr('Polygons'), [ParameterVector.VECTOR_TYPE_POLYGON]))
+                                          self.tr('Polygons'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterVector(self.POINTS,
-                                          self.tr('Points'), [ParameterVector.VECTOR_TYPE_POINT]))
+                                          self.tr('Points'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterTableField(self.WEIGHT,
                                               self.tr('Weight field'), self.POINTS))
         self.addParameter(ParameterString(self.FIELD,
                                           self.tr('Count field name'), 'NUMPOINTS'))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Weighted count')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Weighted count'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         polyLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POLYGONS))
         pointLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
         fieldName = self.getParameterValue(self.FIELD)
-        fieldIdx = pointLayer.fieldNameIndex(self.getParameterValue(self.WEIGHT))
+        fieldIdx = pointLayer.fields().lookupField(self.getParameterValue(self.WEIGHT))
 
-        polyProvider = polyLayer.dataProvider()
-        fields = polyProvider.fields()
+        fields = polyLayer.fields()
         fields.append(QgsField(fieldName, QVariant.Int))
 
         (idxCount, fieldList) = vector.findOrCreateField(polyLayer,
-                                                         polyLayer.pendingFields(), fieldName)
+                                                         polyLayer.fields(), fieldName)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields.toList(), polyProvider.geometryType(), polyProvider.crs())
+            fields.toList(), polyLayer.wkbType(), polyLayer.crs())
 
         spatialIndex = vector.spatialindex(pointLayer)
 
@@ -97,14 +97,14 @@ class PointsInPolygonWeighted(GeoAlgorithm):
             count = 0
             points = spatialIndex.intersects(geom.boundingBox())
             if len(points) > 0:
-                progress.setText(unicode(len(points)))
-                request = QgsFeatureRequest().setFilterFids(points)
+                feedback.setProgressText(str(len(points)))
+                request = QgsFeatureRequest().setFilterFids(points).setSubsetOfAttributes([fieldIdx])
                 fit = pointLayer.getFeatures(request)
                 ftPoint = QgsFeature()
                 while fit.nextFeature(ftPoint):
                     tmpGeom = QgsGeometry(ftPoint.geometry())
                     if engine.contains(tmpGeom.geometry()):
-                        weight = unicode(ftPoint.attributes()[fieldIdx])
+                        weight = str(ftPoint.attributes()[fieldIdx])
                         try:
                             count += float(weight)
                         except:
@@ -119,6 +119,6 @@ class PointsInPolygonWeighted(GeoAlgorithm):
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

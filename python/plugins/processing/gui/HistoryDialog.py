@@ -27,10 +27,10 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt import uic
-from PyQt.QtCore import Qt
-from PyQt.QtWidgets import QAction, QPushButton, QDialogButtonBox, QStyle, QMessageBox, QFileDialog, QMenu, QTreeWidgetItem
-from PyQt.QtGui import QIcon
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QAction, QPushButton, QDialogButtonBox, QStyle, QMessageBox, QFileDialog, QMenu, QTreeWidgetItem
+from qgis.PyQt.QtGui import QIcon
 from processing.gui import TestTools
 from processing.core.ProcessingLog import ProcessingLog
 
@@ -84,8 +84,8 @@ class HistoryDialog(BASE, WIDGET):
             self.fillTree()
 
     def saveLog(self):
-        fileName = QFileDialog.getSaveFileName(self,
-                                               self.tr('Save file'), '.', self.tr('Log files (*.log *.LOG)'))
+        fileName, filter = QFileDialog.getSaveFileName(self,
+                                                       self.tr('Save file'), '.', self.tr('Log files (*.log *.LOG)'))
 
         if fileName == '':
             return
@@ -98,7 +98,7 @@ class HistoryDialog(BASE, WIDGET):
     def fillTree(self):
         self.tree.clear()
         elements = ProcessingLog.getLogEntries()
-        for category in elements.keys():
+        for category in list(elements.keys()):
             groupItem = QTreeWidgetItem()
             groupItem.setText(0, category)
             groupItem.setIcon(0, self.groupIcon)

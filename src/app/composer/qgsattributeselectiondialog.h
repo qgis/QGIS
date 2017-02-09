@@ -23,22 +23,20 @@
 #include <QSet>
 #include <QItemDelegate>
 #include "ui_qgsattributeselectiondialogbase.h"
+#include "qgsexpressioncontextgenerator.h"
 
 class QGridLayout;
 class QgsVectorLayer;
 class QPushButton;
-class QgsComposerAttributeTable;
 class QgsComposerAttributeTableV2;
-class QgsComposerAttributeTableColumnModel;
 class QgsComposerAttributeTableColumnModelV2;
-class QgsComposerTableSortColumnsProxyModel;
 class QgsComposerTableSortColumnsProxyModelV2;
-class QgsComposerTableAvailableSortProxyModelV2;
+class QgsComposerTableAvailableSortProxyModel;
 class QgsComposerObject;
 
 // QgsComposerColumnAlignmentDelegate
 
-/** A delegate for showing column alignment as a combo box*/
+//! A delegate for showing column alignment as a combo box
 class QgsComposerColumnAlignmentDelegate : public QItemDelegate
 {
     Q_OBJECT
@@ -55,8 +53,8 @@ class QgsComposerColumnAlignmentDelegate : public QItemDelegate
 
 // QgsComposerColumnAlignmentDelegate
 
-/** A delegate for showing column attribute source as a QgsFieldExpressionWidget*/
-class QgsComposerColumnSourceDelegate : public QItemDelegate
+//! A delegate for showing column attribute source as a QgsFieldExpressionWidget
+class QgsComposerColumnSourceDelegate : public QItemDelegate, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -71,11 +69,12 @@ class QgsComposerColumnSourceDelegate : public QItemDelegate
   private:
     QgsVectorLayer* mVectorLayer;
     const QgsComposerObject* mComposerObject;
+    QgsExpressionContext createExpressionContext() const override;
 };
 
 // QgsComposerColumnWidthDelegate
 
-/** A delegate for showing column width as a spin box*/
+//! A delegate for showing column width as a spin box
 class QgsComposerColumnWidthDelegate : public QItemDelegate
 {
     Q_OBJECT
@@ -92,7 +91,7 @@ class QgsComposerColumnWidthDelegate : public QItemDelegate
 
 // QgsComposerColumnSortOrderDelegate
 
-/** A delegate for showing column sort order as a combo box*/
+//! A delegate for showing column sort order as a combo box
 class QgsComposerColumnSortOrderDelegate : public QItemDelegate
 {
     Q_OBJECT
@@ -109,16 +108,12 @@ class QgsComposerColumnSortOrderDelegate : public QItemDelegate
 
 // QgsAttributeSelectionDialog
 
-/** A dialog to select what attributes to display (in the table item), set the column properties and specify a sort order*/
+//! A dialog to select what attributes to display (in the table item), set the column properties and specify a sort order
 class QgsAttributeSelectionDialog: public QDialog, private Ui::QgsAttributeSelectionDialogBase
 {
     Q_OBJECT
   public:
-    QgsAttributeSelectionDialog( QgsComposerAttributeTableV2* table, QgsVectorLayer* vLayer, QWidget * parent = nullptr, Qt::WindowFlags f = nullptr );
-
-    //todo - remove for QGIS 3.0
-    QgsAttributeSelectionDialog( QgsComposerAttributeTable* table, QgsVectorLayer* vLayer, QWidget * parent = nullptr, Qt::WindowFlags f = nullptr );
-
+    QgsAttributeSelectionDialog( QgsComposerAttributeTableV2* table, QgsVectorLayer* vLayer, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
 
     ~QgsAttributeSelectionDialog();
 
@@ -135,18 +130,14 @@ class QgsAttributeSelectionDialog: public QDialog, private Ui::QgsAttributeSelec
 
   private:
     QgsComposerAttributeTableV2* mComposerTable;
-    QgsComposerAttributeTable* mComposerTableV1;
 
     const QgsVectorLayer* mVectorLayer;
 
     QgsComposerAttributeTableColumnModelV2* mColumnModel;
-    QgsComposerAttributeTableColumnModel* mColumnModelV1;
 
     QgsComposerTableSortColumnsProxyModelV2* mSortedProxyModel;
-    QgsComposerTableSortColumnsProxyModel* mSortedProxyModelV1;
 
     QgsComposerTableSortColumnsProxyModelV2* mAvailableSortProxyModel;
-    QgsComposerTableSortColumnsProxyModel* mAvailableSortProxyModelV1;
 
     QgsComposerColumnAlignmentDelegate *mColumnAlignmentDelegate;
     QgsComposerColumnSourceDelegate *mColumnSourceDelegate;

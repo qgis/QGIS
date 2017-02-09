@@ -17,15 +17,16 @@
 #include "qgscomposerpolylinewidget.h"
 #include "qgscomposerpolyline.h"
 #include "qgscomposeritemwidget.h"
-#include "qgssymbolv2selectordialog.h"
-#include "qgsstylev2.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbolselectordialog.h"
+#include "qgsstyle.h"
+#include "qgssymbollayerutils.h"
 
 QgsComposerPolylineWidget::QgsComposerPolylineWidget( QgsComposerPolyline* composerPolyline ):
     QgsComposerItemBaseWidget( nullptr, composerPolyline )
     , mComposerPolyline( composerPolyline )
 {
   setupUi( this );
+  setPanelTitle( tr( "Polyline properties" ) );
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, composerPolyline );
@@ -50,20 +51,21 @@ void QgsComposerPolylineWidget::on_mLineStyleButton_clicked()
   if ( !mComposerPolyline )
     return;
 
-  QScopedPointer<QgsLineSymbolV2> newSymbol;
-  newSymbol.reset( mComposerPolyline->polylineStyleSymbol()->clone() );
+  // use the atlas coverage layer, if any
+  QgsVectorLayer* coverageLayer = atlasCoverageLayer();
 
-  QgsSymbolV2SelectorDialog d( newSymbol.data(), QgsStyleV2::defaultStyle(),
-                               nullptr, this );
-  d.setExpressionContext( mComposerPolyline->createExpressionContext() );
+  QgsLineSymbol* newSymbol = mComposerPolyline->polylineStyleSymbol()->clone();
+  QgsExpressionContext context = mComposerPolyline->createExpressionContext();
 
-  if ( d.exec() == QDialog::Accepted )
-  {
-    mComposerPolyline->beginCommand( tr( "Polyline style changed" ) );
-    mComposerPolyline->setPolylineStyleSymbol( newSymbol.data() );
-    updatePolylineStyle();
-    mComposerPolyline->endCommand();
-  }
+  QgsSymbolSelectorWidget* d = new QgsSymbolSelectorWidget( newSymbol, QgsStyle::defaultStyle(), coverageLayer, nullptr );
+  QgsSymbolWidgetContext symbolContext;
+  symbolContext.setExpressionContext( &context );
+  d->setContext( symbolContext );
+
+  connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateStyleFromWidget() ) );
+  connect( d, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpStyleSelector( QgsPanelWidget* ) ) );
+  openPanel( d );
+  mComposerPolyline->beginCommand( tr( "Polyline style changed" ) );
 }
 
 void QgsComposerPolylineWidget::setGuiElementValues()
@@ -74,11 +76,31 @@ void QgsComposerPolylineWidget::setGuiElementValues()
   updatePolylineStyle();
 }
 
+void QgsComposerPolylineWidget::updateStyleFromWidget()
+{
+  if ( QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( sender() ) )
+  {
+    mComposerPolyline->setPolylineStyleSymbol( dynamic_cast< QgsLineSymbol* >( w->symbol() ) );
+    mComposerPolyline->update();
+  }
+}
+
+void QgsComposerPolylineWidget::cleanUpStyleSelector( QgsPanelWidget* container )
+{
+  QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( container );
+  if ( !w )
+    return;
+
+  delete w->symbol();
+  updatePolylineStyle();
+  mComposerPolyline->endCommand();
+}
+
 void QgsComposerPolylineWidget::updatePolylineStyle()
 {
   if ( mComposerPolyline )
   {
-    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mComposerPolyline->polylineStyleSymbol(), mLineStyleButton->iconSize() );
+    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mComposerPolyline->polylineStyleSymbol(), mLineStyleButton->iconSize() );
     mLineStyleButton->setIcon( icon );
   }
 }

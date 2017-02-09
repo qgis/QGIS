@@ -22,10 +22,12 @@
 #include <QString>
 #include <QObject>
 
+#include "qgis_core.h"
+
 class QgsVectorDataProvider;
 class QgsVectorLayer;
 
-/**
+/** \ingroup core
  * This class allows including a set of layers in a database-side transaction,
  * provided the layer data providers support transactions and are compatible
  * with each other.
@@ -51,7 +53,13 @@ class CORE_EXPORT QgsTransaction : public QObject
     Q_OBJECT
 
   public:
-    /** Creates a transaction for the specified connection string and provider */
+
+    //! QgsTransaction cannot be copied.
+    QgsTransaction( const QgsTransaction& other ) = delete;
+    //! QgsTransaction cannot be copied.
+    const QgsTransaction& operator=( const QgsTransaction& other ) = delete;
+
+    //! Creates a transaction for the specified connection string and provider
     static QgsTransaction* create( const QString& connString, const QString& providerKey );
 
     /** Creates a transaction which includes the specified layers. Connection string
@@ -60,10 +68,10 @@ class CORE_EXPORT QgsTransaction : public QObject
 
     virtual ~QgsTransaction();
 
-    /** Add layer to the transaction. The layer must not be in edit mode.*/
+    //! Add layer to the transaction. The layer must not be in edit mode.
     bool addLayer( const QString& layerId );
 
-    /** Add layer to the transaction. The layer must not be in edit mode.*/
+    //! Add layer to the transaction. The layer must not be in edit mode.
     bool addLayer( QgsVectorLayer* layer );
 
     /** Begin transaction
@@ -76,13 +84,13 @@ class CORE_EXPORT QgsTransaction : public QObject
      *  Some providers might not honour the statement timeout. */
     bool begin( QString& errorMsg, int statementTimeout = 20 );
 
-    /** Commit transaction. */
+    //! Commit transaction.
     bool commit( QString& errorMsg );
 
-    /** Roll back transaction. */
+    //! Roll back transaction.
     bool rollback( QString& errorMsg );
 
-    /** Executes sql */
+    //! Executes sql
     virtual bool executeSql( const QString& sql, QString& error ) = 0;
 
     /**
@@ -91,6 +99,7 @@ class CORE_EXPORT QgsTransaction : public QObject
     static bool supportsTransaction( const QgsVectorLayer* layer );
 
   signals:
+
     /**
      * Emitted after a rollback
      */
@@ -105,8 +114,6 @@ class CORE_EXPORT QgsTransaction : public QObject
     QString mConnString;
 
   private:
-    QgsTransaction( const QgsTransaction& other );
-    const QgsTransaction& operator=( const QgsTransaction& other );
 
     bool mTransactionActive;
     QSet<QgsVectorLayer*> mLayers;

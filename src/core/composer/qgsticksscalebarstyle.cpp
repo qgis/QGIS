@@ -29,23 +29,18 @@ QgsTicksScaleBarStyle::QgsTicksScaleBarStyle(): QgsScaleBarStyle( nullptr )
   mTickPosition = TicksMiddle;
 }
 
-QgsTicksScaleBarStyle::~QgsTicksScaleBarStyle()
-{
-
-}
-
 QString QgsTicksScaleBarStyle::name() const
 {
   switch ( mTickPosition )
   {
     case TicksUp:
-      return "Line Ticks Up";
+      return QStringLiteral( "Line Ticks Up" );
     case TicksDown:
-      return "Line Ticks Down";
+      return QStringLiteral( "Line Ticks Down" );
     case TicksMiddle:
-      return "Line Ticks Middle";
+      return QStringLiteral( "Line Ticks Middle" );
   }
-  return "";  // to make gcc happy
+  return QLatin1String( "" );  // to make gcc happy
 }
 
 void QgsTicksScaleBarStyle::draw( QPainter* p, double xOffset ) const

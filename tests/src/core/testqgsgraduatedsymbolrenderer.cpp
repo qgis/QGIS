@@ -12,14 +12,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
 #include <QSettings>
-#include <QSharedPointer>
 
-#include "qgsgraduatedsymbolrendererv2.h"
+#include "qgsgraduatedsymbolrenderer.h"
 
 class TestQgsGraduatedSymbolRenderer: public QObject
 {
@@ -59,12 +58,12 @@ void TestQgsGraduatedSymbolRenderer::cleanup()
 
 void TestQgsGraduatedSymbolRenderer::rangesOverlap()
 {
-  QgsGraduatedSymbolRendererV2 renderer;
+  QgsGraduatedSymbolRenderer renderer;
   //test with no ranges
   QVERIFY( !renderer.rangesOverlap() );
 
   //test with inverted range
-  QgsRendererRangeV2 inverted;
+  QgsRendererRange inverted;
   inverted.setLowerValue( 3.1 );
   inverted.setUpperValue( 1.2 );
   renderer.addClass( inverted );
@@ -72,13 +71,13 @@ void TestQgsGraduatedSymbolRenderer::rangesOverlap()
   renderer.deleteAllClasses();
 
   //test non-overlapping ranges
-  QgsRendererRangeV2 range1;
+  QgsRendererRange range1;
   range1.setLowerValue( 1.1 );
   range1.setUpperValue( 3.2 );
-  QgsRendererRangeV2 range2;
+  QgsRendererRange range2;
   range2.setLowerValue( 6.4 );
   range2.setUpperValue( 7.2 );
-  QgsRendererRangeV2 range3;
+  QgsRendererRange range3;
   range3.setLowerValue( 3.2 );
   range3.setUpperValue( 6.4 );
 
@@ -89,7 +88,7 @@ void TestQgsGraduatedSymbolRenderer::rangesOverlap()
   QVERIFY( !renderer.rangesOverlap() );
 
   //add overlapping class
-  QgsRendererRangeV2 range4;
+  QgsRendererRange range4;
   range4.setLowerValue( 7.0 );
   range4.setUpperValue( 8.4 );
   renderer.addClass( range4 );
@@ -99,12 +98,12 @@ void TestQgsGraduatedSymbolRenderer::rangesOverlap()
 
 void TestQgsGraduatedSymbolRenderer::rangesHaveGaps()
 {
-  QgsGraduatedSymbolRendererV2 renderer;
+  QgsGraduatedSymbolRenderer renderer;
   //test with no ranges
   QVERIFY( !renderer.rangesHaveGaps() );
 
   //test with inverted range
-  QgsRendererRangeV2 inverted;
+  QgsRendererRange inverted;
   inverted.setLowerValue( 3.1 );
   inverted.setUpperValue( 1.2 );
   renderer.addClass( inverted );
@@ -112,13 +111,13 @@ void TestQgsGraduatedSymbolRenderer::rangesHaveGaps()
   renderer.deleteAllClasses();
 
   //test ranges without gaps ranges
-  QgsRendererRangeV2 range1;
+  QgsRendererRange range1;
   range1.setLowerValue( 1.1 );
   range1.setUpperValue( 3.2 );
-  QgsRendererRangeV2 range2;
+  QgsRendererRange range2;
   range2.setLowerValue( 6.4 );
   range2.setUpperValue( 7.2 );
-  QgsRendererRangeV2 range3;
+  QgsRendererRange range3;
   range3.setLowerValue( 3.2 );
   range3.setUpperValue( 6.4 );
 
@@ -129,7 +128,7 @@ void TestQgsGraduatedSymbolRenderer::rangesHaveGaps()
   QVERIFY( !renderer.rangesHaveGaps() );
 
   //add gaps in ranges
-  QgsRendererRangeV2 range4;
+  QgsRendererRange range4;
   range4.setLowerValue( 8.0 );
   range4.setUpperValue( 8.4 );
   renderer.addClass( range4 );
@@ -137,5 +136,5 @@ void TestQgsGraduatedSymbolRenderer::rangesHaveGaps()
   QVERIFY( renderer.rangesHaveGaps() );
 }
 
-QTEST_MAIN( TestQgsGraduatedSymbolRenderer )
+QGSTEST_MAIN( TestQgsGraduatedSymbolRenderer )
 #include "testqgsgraduatedsymbolrenderer.moc"

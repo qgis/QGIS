@@ -29,15 +29,13 @@
 class QgsGeometryCoordinateTransform
 {
   public:
+
     /**
      * \brief Constructor for a Geometry Coordinate Transform.
      *
      */
     QgsGeometryCoordinateTransform();
 
-    /**
-     * \brief Destructor
-     */
     ~QgsGeometryCoordinateTransform();
 
     /**
@@ -53,11 +51,13 @@ class QgsGeometryCoordinateTransform
      */
     void transform( QgsGeometry *geom );
   private:
+
     /**
      * \brief Transform the coordinates reference system of the geometry (use by transform)
      * \param geom      Geometry
      */
     void setGeomTransform( QgsGeometry *geom );
+
     /**
      * \brief None transform the coordinates reference system of the geometry (use by transform)
      * \param geom      Geometry
@@ -65,7 +65,7 @@ class QgsGeometryCoordinateTransform
     void setNoneGeomTransform( QgsGeometry *geom )
     { Q_UNUSED( geom ); }
 
-    QgsCoordinateTransform * mCoordTransform;
+    QgsCoordinateTransform mCoordTransform;
     void ( QgsGeometryCoordinateTransform::* mFuncTransform )( QgsGeometry * );
 
     QgsGeometryCoordinateTransform( const QgsGeometryCoordinateTransform& rh );

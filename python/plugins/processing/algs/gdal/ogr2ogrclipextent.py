@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'November 2012'
@@ -49,7 +50,7 @@ class Ogr2OgrClipExtent(GdalAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('[OGR] Geoprocessing')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterExtent(self.CLIP_EXTENT,
                                           self.tr('Clip extent')))
         self.addParameter(ParameterString(self.OPTIONS,
@@ -66,7 +67,7 @@ class Ogr2OgrClipExtent(GdalAlgorithm):
         outFile = output.value
 
         output = ogrConnectionString(outFile)
-        options = unicode(self.getParameterValue(self.OPTIONS))
+        options = str(self.getParameterValue(self.OPTIONS))
 
         arguments = []
         regionCoords = clipExtent.split(',')
@@ -77,7 +78,7 @@ class Ogr2OgrClipExtent(GdalAlgorithm):
         arguments.append(regionCoords[3])
         arguments.append('-clipsrc spat_extent')
 
-        if len(options) > 0:
+        if options is not None and len(options.strip()) > 0:
             arguments.append(options)
 
         arguments.append(output)

@@ -16,15 +16,20 @@
 #ifndef QGSATTRIBUTEFORMINTERFACE_H
 #define QGSATTRIBUTEFORMINTERFACE_H
 
+#include "qgis_gui.h"
+
 class QgsAttributeForm;
 class QgsFeature;
 
+/** \ingroup gui
+ * \class QgsAttributeFormInterface
+ */
 class GUI_EXPORT QgsAttributeFormInterface
 {
   public:
     explicit QgsAttributeFormInterface( QgsAttributeForm* form );
 
-    virtual ~QgsAttributeFormInterface();
+    virtual ~QgsAttributeFormInterface() = default;
 
     virtual bool acceptChanges( const QgsFeature& feature );
 

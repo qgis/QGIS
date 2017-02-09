@@ -19,6 +19,7 @@
 #define QGSMAPTOOLHTMLANNOTATION_H
 
 #include "qgsmaptoolannotation.h"
+#include "qgis_app.h"
 
 class APP_EXPORT QgsMapToolHtmlAnnotation: public QgsMapToolAnnotation
 {
@@ -29,7 +30,7 @@ class APP_EXPORT QgsMapToolHtmlAnnotation: public QgsMapToolAnnotation
     ~QgsMapToolHtmlAnnotation();
 
   protected:
-    QgsAnnotationItem* createItem( QMouseEvent* e ) override;
+    QgsAnnotation* createItem() const override;
 };
 
 #endif // QgsMapToolHtmlAnnotation_H

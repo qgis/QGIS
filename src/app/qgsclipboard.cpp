@@ -28,12 +28,14 @@
 
 #include "qgsclipboard.h"
 #include "qgsfeature.h"
-#include "qgsfield.h"
+#include "qgsfeaturestore.h"
+#include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgsogrutils.h"
+#include "qgsjsonutils.h"
 
 QgsClipboard::QgsClipboard()
     : QObject()
@@ -76,56 +78,81 @@ void QgsClipboard::replaceWithCopyOf( QgsFeatureStore & featureStore )
   emit changed();
 }
 
+QString QgsClipboard::generateClipboardText() const
+{
+  QSettings settings;
+  CopyFormat format = AttributesWithWKT;
+  if ( settings.contains( QStringLiteral( "/qgis/copyFeatureFormat" ) ) )
+    format = static_cast< CopyFormat >( settings.value( QStringLiteral( "/qgis/copyFeatureFormat" ), true ).toInt() );
+  else
+  {
+    //old format setting
+    format = settings.value( QStringLiteral( "/qgis/copyGeometryAsWKT" ), true ).toBool() ? AttributesWithWKT : AttributesOnly;
+  }
+
+  switch ( format )
+  {
+    case AttributesOnly:
+    case AttributesWithWKT:
+    {
+      QStringList textLines;
+      QStringList textFields;
+
+      // first do the field names
+      if ( format == AttributesWithWKT )
+      {
+        textFields += QStringLiteral( "wkt_geom" );
+      }
+
+      Q_FOREACH ( const QgsField& field, mFeatureFields )
+      {
+        textFields += field.name();
+      }
+      textLines += textFields.join( QStringLiteral( "\t" ) );
+      textFields.clear();
+
+      // then the field contents
+      for ( QgsFeatureList::const_iterator it = mFeatureClipboard.constBegin(); it != mFeatureClipboard.constEnd(); ++it )
+      {
+        QgsAttributes attributes = it->attributes();
+
+        // TODO: Set up Paste Transformations to specify the order in which fields are added.
+        if ( format == AttributesWithWKT )
+        {
+          if ( it->hasGeometry() )
+            textFields += it->geometry().exportToWkt();
+          else
+          {
+            textFields += QgsApplication::nullRepresentation();
+          }
+        }
+
+        // QgsDebugMsg("about to traverse fields.");
+        for ( int idx = 0; idx < attributes.count(); ++idx )
+        {
+          // QgsDebugMsg(QString("inspecting field '%1'.").arg(it2->toString()));
+          textFields += attributes.at( idx ).toString();
+        }
+
+        textLines += textFields.join( QStringLiteral( "\t" ) );
+        textFields.clear();
+      }
+
+      return textLines.join( QStringLiteral( "\n" ) );
+    }
+    case GeoJSON:
+    {
+      QgsJSONExporter exporter;
+      exporter.setSourceCrs( mCRS );
+      return exporter.exportFeatures( mFeatureClipboard );
+    }
+  }
+  return QString();
+}
+
 void QgsClipboard::setSystemClipboard()
 {
-  // Replace the system clipboard.
-  QSettings settings;
-  bool copyWKT = settings.value( "qgis/copyGeometryAsWKT", true ).toBool();
-
-  QStringList textLines;
-  QStringList textFields;
-
-  // first do the field names
-  if ( copyWKT )
-  {
-    textFields += "wkt_geom";
-  }
-
-  Q_FOREACH ( const QgsField& field, mFeatureFields )
-  {
-    textFields += field.name();
-  }
-  textLines += textFields.join( "\t" );
-  textFields.clear();
-
-  // then the field contents
-  for ( QgsFeatureList::const_iterator it = mFeatureClipboard.constBegin(); it != mFeatureClipboard.constEnd(); ++it )
-  {
-    QgsAttributes attributes = it->attributes();
-
-    // TODO: Set up Paste Transformations to specify the order in which fields are added.
-    if ( copyWKT )
-    {
-      if ( it->constGeometry() )
-        textFields += it->constGeometry()->exportToWkt();
-      else
-      {
-        textFields += settings.value( "qgis/nullValue", "NULL" ).toString();
-      }
-    }
-
-    // QgsDebugMsg("about to traverse fields.");
-    for ( int idx = 0; idx < attributes.count(); ++idx )
-    {
-      // QgsDebugMsg(QString("inspecting field '%1'.").arg(it2->toString()));
-      textFields += attributes.at( idx ).toString();
-    }
-
-    textLines += textFields.join( "\t" );
-    textFields.clear();
-  }
-
-  QString textCopy = textLines.join( "\n" );
+  QString textCopy = generateClipboardText();
 
   QClipboard *cb = QApplication::clipboard();
 
@@ -161,8 +188,8 @@ QgsFeatureList QgsClipboard::stringToFeatureList( const QString& string, const Q
   Q_FOREACH ( const QString& row, values )
   {
     // Assume that it's just WKT for now.
-    QgsGeometry* geometry = QgsGeometry::fromWkt( row );
-    if ( !geometry )
+    QgsGeometry geometry = QgsGeometry::fromWkt( row );
+    if ( geometry.isNull() )
       continue;
 
     QgsFeature feature;
@@ -218,7 +245,7 @@ void QgsClipboard::insert( const QgsFeature& feature )
 {
   mFeatureClipboard.push_back( feature );
 
-  QgsDebugMsgLevel( "inserted " + feature.constGeometry()->exportToWkt(), 4 );
+  QgsDebugMsgLevel( "inserted " + feature.geometry().exportToWkt(), 4 );
   mUseSystemClipboard = false;
   emit changed();
 }
@@ -242,7 +269,9 @@ QgsFeatureList QgsClipboard::transformedCopyOf( const QgsCoordinateReferenceSyst
   QgsDebugMsg( "transforming clipboard." );
   for ( QgsFeatureList::iterator iter = featureList.begin(); iter != featureList.end(); ++iter )
   {
-    iter->geometry()->transform( ct );
+    QgsGeometry g = iter->geometry();
+    g.transform( ct );
+    iter->setGeometry( g );
   }
 
   return featureList;

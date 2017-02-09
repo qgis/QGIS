@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtXml import QDomDocument
+from qgis.PyQt.QtXml import QDomDocument
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterFile
@@ -52,7 +52,7 @@ class SetRasterStyle(GeoAlgorithm):
                                         self.tr('Style file'), False, False, 'qml'))
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Styled'), True))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         filename = self.getParameterValue(self.INPUT)
         layer = dataobjects.getObjectFromUri(filename)
 
@@ -69,4 +69,3 @@ class SetRasterStyle(GeoAlgorithm):
             layer.readSymbology(n, '')
             self.setOutputValue(self.OUTPUT, filename)
             iface.mapCanvas().refresh()
-            iface.legendInterface().refreshLayerSymbology(layer)

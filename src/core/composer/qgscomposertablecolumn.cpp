@@ -17,68 +17,62 @@
 
 #include "qgscomposertablecolumn.h"
 
-QgsComposerTableColumn::QgsComposerTableColumn( const QString& heading ) :
-    mBackgroundColor( Qt::transparent ),
-    mHAlignment( Qt::AlignLeft ),
-    mVAlignment( Qt::AlignVCenter ),
-    mHeading( heading ),
-    mSortByRank( 0 ),
-    mSortOrder( Qt::AscendingOrder ),
-    mWidth( 0.0 )
+QgsComposerTableColumn::QgsComposerTableColumn( const QString& heading )
+    : mBackgroundColor( Qt::transparent )
+    , mHAlignment( Qt::AlignLeft )
+    , mVAlignment( Qt::AlignVCenter )
+    , mHeading( heading )
+    , mSortByRank( 0 )
+    , mSortOrder( Qt::AscendingOrder )
+    , mWidth( 0.0 )
 {
 
 }
 
-
-QgsComposerTableColumn::~QgsComposerTableColumn()
-{
-
-}
-
-bool QgsComposerTableColumn::writeXML( QDomElement& columnElem, QDomDocument& doc ) const
+bool QgsComposerTableColumn::writeXml( QDomElement& columnElem, QDomDocument& doc ) const
 {
   //background color
-  QDomElement bgColorElem = doc.createElement( "backgroundColor" );
-  bgColorElem.setAttribute( "red", QString::number( mBackgroundColor.red() ) );
-  bgColorElem.setAttribute( "green", QString::number( mBackgroundColor.green() ) );
-  bgColorElem.setAttribute( "blue", QString::number( mBackgroundColor.blue() ) );
-  bgColorElem.setAttribute( "alpha", QString::number( mBackgroundColor.alpha() ) );
+  QDomElement bgColorElem = doc.createElement( QStringLiteral( "backgroundColor" ) );
+  bgColorElem.setAttribute( QStringLiteral( "red" ), QString::number( mBackgroundColor.red() ) );
+  bgColorElem.setAttribute( QStringLiteral( "green" ), QString::number( mBackgroundColor.green() ) );
+  bgColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( mBackgroundColor.blue() ) );
+  bgColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mBackgroundColor.alpha() ) );
   columnElem.appendChild( bgColorElem );
 
-  columnElem.setAttribute( "hAlignment", mHAlignment );
-  columnElem.setAttribute( "vAlignment", mVAlignment );
+  columnElem.setAttribute( QStringLiteral( "hAlignment" ), mHAlignment );
+  columnElem.setAttribute( QStringLiteral( "vAlignment" ), mVAlignment );
 
-  columnElem.setAttribute( "heading", mHeading );
-  columnElem.setAttribute( "attribute", mAttribute );
+  columnElem.setAttribute( QStringLiteral( "heading" ), mHeading );
+  columnElem.setAttribute( QStringLiteral( "attribute" ), mAttribute );
 
-  columnElem.setAttribute( "sortByRank", QString::number( mSortByRank ) );
-  columnElem.setAttribute( "sortOrder", QString::number( mSortOrder ) );
+  columnElem.setAttribute( QStringLiteral( "sortByRank" ), QString::number( mSortByRank ) );
+  columnElem.setAttribute( QStringLiteral( "sortOrder" ), QString::number( mSortOrder ) );
 
-  columnElem.setAttribute( "width", QString::number( mWidth ) );
+  columnElem.setAttribute( QStringLiteral( "width" ), QString::number( mWidth ) );
 
   return true;
 }
 
-bool QgsComposerTableColumn::readXML( const QDomElement& columnElem )
+bool QgsComposerTableColumn::readXml( const QDomElement& columnElem )
 {
-  mHAlignment = static_cast< Qt::AlignmentFlag >( columnElem.attribute( "hAlignment", QString::number( Qt::AlignLeft ) ).toInt() );
-  mVAlignment = static_cast< Qt::AlignmentFlag >( columnElem.attribute( "vAlignment", QString::number( Qt::AlignVCenter ) ).toInt() );
-  mHeading = columnElem.attribute( "heading", "" );
-  mAttribute = columnElem.attribute( "attribute", "" );
-  mSortByRank = columnElem.attribute( "sortByRank", "0" ).toInt();
-  mSortOrder = static_cast< Qt::SortOrder >( columnElem.attribute( "sortOrder", QString::number( Qt::AscendingOrder ) ).toInt() );
-  mWidth = columnElem.attribute( "width", "0.0" ).toDouble();
+  mHAlignment = static_cast< Qt::AlignmentFlag >( columnElem.attribute( QStringLiteral( "hAlignment" ), QString::number( Qt::AlignLeft ) ).toInt() );
+  mVAlignment = static_cast< Qt::AlignmentFlag >( columnElem.attribute( QStringLiteral( "vAlignment" ), QString::number( Qt::AlignVCenter ) ).toInt() );
+  mHeading = columnElem.attribute( QStringLiteral( "heading" ), QLatin1String( "" ) );
+  mAttribute = columnElem.attribute( QStringLiteral( "attribute" ), QLatin1String( "" ) );
+  mSortByRank = columnElem.attribute( QStringLiteral( "sortByRank" ), QStringLiteral( "0" ) ).toInt();
+  mSortOrder = static_cast< Qt::SortOrder >( columnElem.attribute( QStringLiteral( "sortOrder" ), QString::number( Qt::AscendingOrder ) ).toInt() );
+  mWidth = columnElem.attribute( QStringLiteral( "width" ), QStringLiteral( "0.0" ) ).toDouble();
 
-  QDomNodeList bgColorList = columnElem.elementsByTagName( "backgroundColor" );
+  QDomNodeList bgColorList = columnElem.elementsByTagName( QStringLiteral( "backgroundColor" ) );
   if ( !bgColorList.isEmpty() )
   {
     QDomElement bgColorElem = bgColorList.at( 0 ).toElement();
     bool redOk, greenOk, blueOk, alphaOk;
     int bgRed, bgGreen, bgBlue, bgAlpha;
-    bgRed = bgColorElem.attribute( "red" ).toDouble( &redOk );
-    bgGreen = bgColorElem.attribute( "green" ).toDouble( &greenOk );
-    bgBlue = bgColorElem.attribute( "blue" ).toDouble( &blueOk );
-    bgAlpha = bgColorElem.attribute( "alpha" ).toDouble( &alphaOk );
+    bgRed = bgColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
+    bgGreen = bgColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
+    bgBlue = bgColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
+    bgAlpha = bgColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
     if ( redOk && greenOk && blueOk && alphaOk )
     {
       mBackgroundColor = QColor( bgRed, bgGreen, bgBlue, bgAlpha );

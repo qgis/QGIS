@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -27,7 +28,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterRaster
@@ -49,7 +50,7 @@ class information(GdalAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-info.png'))
 
     def commandLineName(self):
-        return "gdalorg:rasterinfo"
+        return "gdal:gdalinfo"
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Information')
@@ -72,12 +73,11 @@ class information(GdalAlgorithm):
         arguments.append(self.getParameterValue(information.INPUT))
         return ['gdalinfo', GdalUtils.escapeAndJoin(arguments)]
 
-    def processAlgorithm(self, progress):
-        GdalUtils.runGdal(self.getConsoleCommands(), progress)
+    def processAlgorithm(self, feedback):
+        GdalUtils.runGdal(self.getConsoleCommands(), feedback)
         output = self.getOutputValue(information.OUTPUT)
-        f = open(output, 'w')
-        f.write('<pre>')
-        for s in GdalUtils.getConsoleOutput()[1:]:
-            f.write(unicode(s))
-        f.write('</pre>')
-        f.close()
+        with open(output, 'w') as f:
+            f.write('<pre>')
+            for s in GdalUtils.getConsoleOutput()[1:]:
+                f.write(str(s))
+            f.write('</pre>')

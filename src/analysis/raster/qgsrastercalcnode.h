@@ -19,12 +19,16 @@
 #ifndef QGSRASTERCALCNODE_H
 #define QGSRASTERCALCNODE_H
 
-#include "qgsrastermatrix.h"
 #include <QMap>
 #include <QString>
+#include "qgis_analysis.h"
 
 class QgsRasterBlock;
+class QgsRasterMatrix;
 
+/** \ingroup analysis
+ * \class QgsRasterCalcNode
+ */
 class ANALYSIS_EXPORT QgsRasterCalcNode
 {
   public:
@@ -73,6 +77,11 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     QgsRasterCalcNode( const QString& rasterName );
     ~QgsRasterCalcNode();
 
+    //! QgsRasterCalcNode cannot be copied
+    QgsRasterCalcNode( const QgsRasterCalcNode& rh ) = delete;
+    //! QgsRasterCalcNode cannot be copied
+    QgsRasterCalcNode& operator=( const QgsRasterCalcNode& rh ) = delete;
+
     Type type() const { return mType; }
 
     //set left node
@@ -89,10 +98,6 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
      */
     bool calculate( QMap<QString, QgsRasterBlock* >& rasterData, QgsRasterMatrix& result, int row = -1 ) const;
 
-    /** @deprecated use method which accepts QgsRasterBlocks instead
-     */
-    Q_DECL_DEPRECATED bool calculate( QMap<QString, QgsRasterMatrix*>& rasterData, QgsRasterMatrix& result ) const;
-
     static QgsRasterCalcNode* parseRasterCalcString( const QString& str, QString& parserErrorMsg );
 
   private:
@@ -104,8 +109,6 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     QgsRasterMatrix* mMatrix;
     Operator mOperator;
 
-    QgsRasterCalcNode( const QgsRasterCalcNode& rh );
-    QgsRasterCalcNode& operator=( const QgsRasterCalcNode& rh );
 };
 
 

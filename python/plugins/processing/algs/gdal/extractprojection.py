@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
@@ -27,7 +28,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
 from osgeo import gdal, osr
 
@@ -56,16 +57,16 @@ class ExtractProjection(GdalAlgorithm):
     def getConsoleCommands(self):
         return ["extractprojection"]
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         rasterPath = self.getParameterValue(self.INPUT)
         createPrj = self.getParameterValue(self.PRJ_FILE)
 
-        raster = gdal.Open(unicode(rasterPath))
+        raster = gdal.Open(str(rasterPath))
         crs = raster.GetProjection()
         geotransform = raster.GetGeoTransform()
         raster = None
 
-        outFileName = os.path.splitext(unicode(rasterPath))[0]
+        outFileName = os.path.splitext(str(rasterPath))[0]
 
         if crs != '' and createPrj:
             tmp = osr.SpatialReference()
@@ -74,17 +75,15 @@ class ExtractProjection(GdalAlgorithm):
             crs = tmp.ExportToWkt()
             tmp = None
 
-            prj = open(outFileName + '.prj', 'wt')
-            prj.write(crs)
-            prj.close()
+            with open(outFileName + '.prj', 'wt') as prj:
+                prj.write(crs)
 
-        wld = open(outFileName + '.wld', 'wt')
-        wld.write('%0.8f\n' % geotransform[1])
-        wld.write('%0.8f\n' % geotransform[4])
-        wld.write('%0.8f\n' % geotransform[2])
-        wld.write('%0.8f\n' % geotransform[5])
-        wld.write('%0.8f\n' % (geotransform[0] + 0.5 * geotransform[1] + 0.5
-                               * geotransform[2]))
-        wld.write('%0.8f\n' % (geotransform[3] + 0.5 * geotransform[4] + 0.5
-                               * geotransform[5]))
-        wld.close()
+        with open(outFileName + '.wld', 'wt') as wld:
+            wld.write('%0.8f\n' % geotransform[1])
+            wld.write('%0.8f\n' % geotransform[4])
+            wld.write('%0.8f\n' % geotransform[2])
+            wld.write('%0.8f\n' % geotransform[5])
+            wld.write('%0.8f\n' % (geotransform[0] + 0.5 * geotransform[1] + 0.5
+                                   * geotransform[2]))
+            wld.write('%0.8f\n' % (geotransform[3] + 0.5 * geotransform[4] + 0.5
+                                   * geotransform[5]))

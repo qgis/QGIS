@@ -17,9 +17,10 @@
 #ifndef QGSSINGLEBOXSCALEBARSTYLE_H
 #define QGSSINGLEBOXSCALEBARSTYLE_H
 
+#include "qgis_core.h"
 #include "qgsscalebarstyle.h"
 
-/** \ingroup MapComposer
+/** \ingroup core
  * Scalebar style that draws a single box with alternating
  * color for the segments.
  */

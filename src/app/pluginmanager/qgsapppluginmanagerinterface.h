@@ -18,7 +18,8 @@
 #define QGSPLUGINMANAGERAPPIFACE_H
 
 #include "qgspluginmanagerinterface.h"
-#include "qgspluginmanager.h"
+
+class QgsPluginManager;
 
 /** \ingroup gui
  * QgsPluginManagerInterface
@@ -33,7 +34,6 @@ class QgsAppPluginManagerInterface : public QgsPluginManagerInterface
     //! Constructor
     explicit QgsAppPluginManagerInterface( QgsPluginManager * pluginManager );
 
-    //! Destructor
     ~QgsAppPluginManagerInterface();
 
     //! remove python plugins from the metadata registry (c++ plugins stay)

@@ -20,7 +20,7 @@
 #include "qgslayertreemodel.h"
 #include "qgslayertreeview.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
 #include <QAction>
@@ -33,14 +33,14 @@ QgsLayerTreeViewDefaultActions::QgsLayerTreeViewDefaultActions( QgsLayerTreeView
 
 QAction* QgsLayerTreeViewDefaultActions::actionAddGroup( QObject* parent )
 {
-  QAction* a = new QAction( QgsApplication::getThemeIcon( "/mActionAddGroup.svg" ), tr( "&Add Group" ), parent );
+  QAction* a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddGroup.svg" ) ), tr( "&Add Group" ), parent );
   connect( a, SIGNAL( triggered() ), this, SLOT( addGroup() ) );
   return a;
 }
 
 QAction* QgsLayerTreeViewDefaultActions::actionRemoveGroupOrLayer( QObject* parent )
 {
-  QAction* a = new QAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.svg" ), tr( "&Remove" ), parent );
+  QAction* a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemoveLayer.svg" ) ), tr( "&Remove" ), parent );
   connect( a, SIGNAL( triggered() ), this, SLOT( removeGroupOrLayer() ) );
   return a;
 }
@@ -54,7 +54,7 @@ QAction* QgsLayerTreeViewDefaultActions::actionShowInOverview( QObject* parent )
   QAction* a = new QAction( tr( "&Show in Overview" ), parent );
   connect( a, SIGNAL( triggered() ), this, SLOT( showInOverview() ) );
   a->setCheckable( true );
-  a->setChecked( node->customProperty( "overview", 0 ).toInt() );
+  a->setChecked( node->customProperty( QStringLiteral( "overview" ), 0 ).toInt() );
   return a;
 }
 
@@ -74,13 +74,13 @@ QAction* QgsLayerTreeViewDefaultActions::actionShowFeatureCount( QObject* parent
   QAction* a = new QAction( tr( "Show Feature Count" ), parent );
   connect( a, SIGNAL( triggered() ), this, SLOT( showFeatureCount() ) );
   a->setCheckable( true );
-  a->setChecked( node->customProperty( "showFeatureCount", 0 ).toInt() );
+  a->setChecked( node->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() );
   return a;
 }
 
 QAction* QgsLayerTreeViewDefaultActions::actionZoomToLayer( QgsMapCanvas* canvas, QObject* parent )
 {
-  QAction* a = new QAction( QgsApplication::getThemeIcon( "/mActionZoomToLayer.svg" ),
+  QAction* a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ),
                             tr( "&Zoom to Layer" ), parent );
   a->setData( QVariant::fromValue( reinterpret_cast<void*>( canvas ) ) );
   connect( a, SIGNAL( triggered() ), this, SLOT( zoomToLayer() ) );
@@ -89,7 +89,7 @@ QAction* QgsLayerTreeViewDefaultActions::actionZoomToLayer( QgsMapCanvas* canvas
 
 QAction* QgsLayerTreeViewDefaultActions::actionZoomToGroup( QgsMapCanvas* canvas, QObject* parent )
 {
-  QAction* a = new QAction( QgsApplication::getThemeIcon( "/mActionZoomToLayer.svg" ),
+  QAction* a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ),
                             tr( "&Zoom to Group" ), parent );
   a->setData( QVariant::fromValue( reinterpret_cast<void*>( canvas ) ) );
   connect( a, SIGNAL( triggered() ), this, SLOT( zoomToGroup() ) );
@@ -123,6 +123,60 @@ QAction* QgsLayerTreeViewDefaultActions::actionMutuallyExclusiveGroup( QObject* 
   return a;
 }
 
+QAction* QgsLayerTreeViewDefaultActions::actionCheckAndAllChildren( QObject* parent )
+{
+  QgsLayerTreeNode* node = mView->currentNode();
+  if ( !node || !QgsLayerTree::isGroup( node ) || node->isItemVisibilityCheckedRecursive() )
+    return nullptr;
+  QAction* a = new QAction( tr( "Check and all its children (Ctrl-click)" ), parent );
+  connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::checkAndAllChildren );
+  return a;
+}
+
+QAction* QgsLayerTreeViewDefaultActions::actionUncheckAndAllChildren( QObject* parent )
+{
+  QgsLayerTreeNode* node = mView->currentNode();
+  if ( !node || !QgsLayerTree::isGroup( node ) || node->isItemVisibilityUncheckedRecursive() )
+    return nullptr;
+  QAction* a = new QAction( tr( "Uncheck and all its children (Ctrl-click)" ), parent );
+  connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::uncheckAndAllChildren );
+  return a;
+}
+
+QAction* QgsLayerTreeViewDefaultActions::actionCheckAndAllParents( QObject* parent )
+{
+  QgsLayerTreeNode* node = mView->currentNode();
+  if ( !node || !QgsLayerTree::isLayer( node ) || node->isVisible() )
+    return nullptr;
+  QAction* a = new QAction( tr( "Check and all its parents" ), parent );
+  connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::checkAndAllParents );
+  return a;
+}
+
+void QgsLayerTreeViewDefaultActions::checkAndAllChildren()
+{
+  QgsLayerTreeNode* node = mView->currentNode();
+  if ( !node )
+    return;
+  node->setItemVisibilityCheckedRecursive( true );
+}
+
+void QgsLayerTreeViewDefaultActions::uncheckAndAllChildren()
+{
+  QgsLayerTreeNode* node = mView->currentNode();
+  if ( !node )
+    return;
+  node->setItemVisibilityCheckedRecursive( false );
+}
+
+void QgsLayerTreeViewDefaultActions::checkAndAllParents()
+{
+  QgsLayerTreeNode* node = mView->currentNode();
+  if ( !node )
+    return;
+  node->setItemVisibilityCheckedParentRecursive( true );
+}
+
 void QgsLayerTreeViewDefaultActions::addGroup()
 {
   QgsLayerTreeGroup* group = mView->currentGroupNode();
@@ -152,9 +206,9 @@ void QgsLayerTreeViewDefaultActions::showInOverview()
   QgsLayerTreeNode* node = mView->currentNode();
   if ( !node )
     return;
-  int newValue = node->customProperty( "overview", 0 ).toInt();
+  int newValue = node->customProperty( QStringLiteral( "overview" ), 0 ).toInt();
   Q_FOREACH ( QgsLayerTreeLayer* l, mView->selectedLayerNodes() )
-    l->setCustomProperty( "overview", newValue ? 0 : 1 );
+    l->setCustomProperty( QStringLiteral( "overview" ), newValue ? 0 : 1 );
 }
 
 void QgsLayerTreeViewDefaultActions::showFeatureCount()
@@ -163,9 +217,9 @@ void QgsLayerTreeViewDefaultActions::showFeatureCount()
   if ( !QgsLayerTree::isLayer( node ) )
     return;
 
-  int newValue = node->customProperty( "showFeatureCount", 0 ).toInt();
+  int newValue = node->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt();
   Q_FOREACH ( QgsLayerTreeLayer* l, mView->selectedLayerNodes() )
-    l->setCustomProperty( "showFeatureCount", newValue ? 0 : 1 );
+    l->setCustomProperty( QStringLiteral( "showFeatureCount" ), newValue ? 0 : 1 );
 }
 
 
@@ -188,7 +242,7 @@ void QgsLayerTreeViewDefaultActions::zoomToGroup( QgsMapCanvas* canvas )
 
   QList<QgsMapLayer*> layers;
   Q_FOREACH ( const QString& layerId, groupNode->findLayerIds() )
-    layers << QgsMapLayerRegistry::instance()->mapLayer( layerId );
+    layers << QgsProject::instance()->mapLayer( layerId );
 
   zoomToLayers( canvas, layers );
 }
@@ -225,7 +279,7 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas* canvas, const Q
     QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer*>( layer );
     if ( vLayer )
     {
-      if ( vLayer->geometryType() == QGis::NoGeometry )
+      if ( vLayer->geometryType() == QgsWkbTypes::NullGeometry )
         continue;
 
       if ( layerExtent.isEmpty() )
@@ -242,7 +296,7 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas* canvas, const Q
     if ( canvas->hasCrsTransformEnabled() )
       layerExtent = canvas->mapSettings().layerExtentToOutputExtent( layer, layerExtent );
 
-    extent.combineExtentWith( &layerExtent );
+    extent.combineExtentWith( layerExtent );
   }
 
   if ( extent.isNull() )

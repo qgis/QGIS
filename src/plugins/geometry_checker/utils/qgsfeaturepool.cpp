@@ -16,21 +16,24 @@
 
 #include "qgsfeaturepool.h"
 #include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
-#include "qgsgeomutils.h"
+#include "qgsgeometryutils.h"
 
 #include <QMutexLocker>
 #include <qmath.h>
 #include <limits>
 
 QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer, bool selectedOnly )
-    : mFeatureCache( sCacheSize ), mLayer( layer ), mSelectedOnly( selectedOnly )
+    : mFeatureCache( CACHE_SIZE )
+    , mLayer( layer )
+    , mSelectedOnly( selectedOnly )
 {
   if ( selectedOnly )
   {
-    mFeatureIds = layer->selectedFeaturesIds();
+    mFeatureIds = layer->selectedFeatureIds();
   }
   else
   {
@@ -44,7 +47,14 @@ QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer, bool selectedOnly )
   QgsFeatureIterator it = layer->getFeatures( req );
   while ( it.nextFeature( feature ) )
   {
-    mIndex.insertFeature( feature );
+    if ( feature.geometry() )
+    {
+      mIndex.insertFeature( feature );
+    }
+    else
+    {
+      mFeatureIds.remove( feature.id() );
+    }
   }
 }
 
@@ -79,12 +89,12 @@ void QgsFeaturePool::addFeature( QgsFeature& feature )
   features.append( feature );
   mLayerMutex.lock();
   mLayer->dataProvider()->addFeatures( features );
-  feature.setFeatureId( features.front().id() );
+  feature.setId( features.front().id() );
   if ( mSelectedOnly )
   {
-    QgsFeatureIds selectedFeatureIds = mLayer->selectedFeaturesIds();
+    QgsFeatureIds selectedFeatureIds = mLayer->selectedFeatureIds();
     selectedFeatureIds.insert( feature.id() );
-    mLayer->setSelectedFeatures( selectedFeatureIds );
+    mLayer->selectByIds( selectedFeatureIds );
   }
   mLayerMutex.unlock();
   mIndexMutex.lock();
@@ -95,7 +105,7 @@ void QgsFeaturePool::addFeature( QgsFeature& feature )
 void QgsFeaturePool::updateFeature( QgsFeature& feature )
 {
   QgsGeometryMap geometryMap;
-  geometryMap.insert( feature.id(), QgsGeometry( feature.geometry()->geometry()->clone() ) );
+  geometryMap.insert( feature.id(), QgsGeometry( feature.geometry().geometry()->clone() ) );
   QgsChangedAttributesMap changedAttributesMap;
   QgsAttributeMap attribMap;
   for ( int i = 0, n = feature.attributes().size(); i < n; ++i )

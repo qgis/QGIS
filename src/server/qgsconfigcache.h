@@ -25,10 +25,12 @@
 #include <QMap>
 #include <QObject>
 
+#include "qgis_server.h"
+#include "qgswmsconfigparser.h"
+#include "qgswfsprojectparser.h"
+#include "qgswcsprojectparser.h"
+
 class QgsServerProjectParser;
-class QgsWCSProjectParser;
-class QgsWFSProjectParser;
-class QgsWMSConfigParser;
 class QgsAccessControl;
 
 class QDomDocument;
@@ -38,45 +40,40 @@ class SERVER_EXPORT QgsConfigCache : public QObject
     Q_OBJECT
   public:
     static QgsConfigCache* instance();
-    ~QgsConfigCache();
 
     QgsServerProjectParser* serverConfiguration( const QString& filePath );
     QgsWCSProjectParser* wcsConfiguration(
       const QString& filePath
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
       , const QgsAccessControl* accessControl
-#endif
     );
-    QgsWFSProjectParser* wfsConfiguration(
+    QgsWfsProjectParser* wfsConfiguration(
       const QString& filePath
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
       , const QgsAccessControl* accessControl
-#endif
     );
-    QgsWMSConfigParser* wmsConfiguration(
+    QgsWmsConfigParser* wmsConfiguration(
       const QString& filePath
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
       , const QgsAccessControl* accessControl
-#endif
       , const QMap<QString, QString>& parameterMap = ( QMap< QString, QString >() )
     );
+
+    void removeEntry( const QString& path );
 
   private:
     QgsConfigCache();
 
-    /** Check for configuration file updates (remove entry from cache if file changes)*/
+    //! Check for configuration file updates (remove entry from cache if file changes)
     QFileSystemWatcher mFileSystemWatcher;
 
-    /** Returns xml document for project file / sld or 0 in case of errors*/
+    //! Returns xml document for project file / sld or 0 in case of errors
     QDomDocument* xmlDocument( const QString& filePath );
 
     QCache<QString, QDomDocument> mXmlDocumentCache;
-    QCache<QString, QgsWMSConfigParser> mWMSConfigCache;
-    QCache<QString, QgsWFSProjectParser> mWFSConfigCache;
+    QCache<QString, QgsWmsConfigParser> mWMSConfigCache;
+    QCache<QString, QgsWfsProjectParser> mWFSConfigCache;
     QCache<QString, QgsWCSProjectParser> mWCSConfigCache;
 
   private slots:
-    /** Removes changed entry from this cache*/
+    //! Removes changed entry from this cache
     void removeChangedEntry( const QString& path );
 };
 

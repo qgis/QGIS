@@ -17,7 +17,9 @@
 
 #include "qgscomposerutils.h"
 #include "qgscomposition.h"
-#include "qgsdatadefined.h"
+#include "qgsproperty.h"
+#include "qgsmapsettings.h"
+#include "qgscomposermap.h"
 #include <QPainter>
 
 #define FONT_WORKAROUND_SCALE 10 //scale factor for upscaling fontsize and downscaling painter
@@ -261,12 +263,12 @@ double QgsComposerUtils::relativePosition( const double position, const double b
 
 QgsComposition::PaperOrientation QgsComposerUtils::decodePaperOrientation( const QString& orientationString, bool &ok )
 {
-  if ( orientationString.compare( "Portrait", Qt::CaseInsensitive ) == 0 )
+  if ( orientationString.compare( QLatin1String( "Portrait" ), Qt::CaseInsensitive ) == 0 )
   {
     ok = true;
     return QgsComposition::Portrait;
   }
-  if ( orientationString.compare( "Landscape", Qt::CaseInsensitive ) == 0 )
+  if ( orientationString.compare( QLatin1String( "Landscape" ), Qt::CaseInsensitive ) == 0 )
   {
     ok = true;
     return QgsComposition::Landscape;
@@ -278,32 +280,32 @@ QgsComposition::PaperOrientation QgsComposerUtils::decodePaperOrientation( const
 bool QgsComposerUtils::decodePresetPaperSize( const QString& presetString, double &width, double &height )
 {
   QList< QPair< QString, QSizeF > > presets;
-  presets << qMakePair( QString( "A5" ), QSizeF( 148, 210 ) );
-  presets << qMakePair( QString( "A4" ), QSizeF( 210, 297 ) );
-  presets << qMakePair( QString( "A3" ), QSizeF( 297, 420 ) );
-  presets << qMakePair( QString( "A2" ), QSizeF( 420, 594 ) );
-  presets << qMakePair( QString( "A1" ), QSizeF( 594, 841 ) );
-  presets << qMakePair( QString( "A0" ), QSizeF( 841, 1189 ) );
-  presets << qMakePair( QString( "B5" ), QSizeF( 176, 250 ) );
-  presets << qMakePair( QString( "B4" ), QSizeF( 250, 353 ) );
-  presets << qMakePair( QString( "B3" ), QSizeF( 353, 500 ) );
-  presets << qMakePair( QString( "B2" ), QSizeF( 500, 707 ) );
-  presets << qMakePair( QString( "B1" ), QSizeF( 707, 1000 ) );
-  presets << qMakePair( QString( "B0" ), QSizeF( 1000, 1414 ) );
+  presets << qMakePair( QStringLiteral( "A5" ), QSizeF( 148, 210 ) );
+  presets << qMakePair( QStringLiteral( "A4" ), QSizeF( 210, 297 ) );
+  presets << qMakePair( QStringLiteral( "A3" ), QSizeF( 297, 420 ) );
+  presets << qMakePair( QStringLiteral( "A2" ), QSizeF( 420, 594 ) );
+  presets << qMakePair( QStringLiteral( "A1" ), QSizeF( 594, 841 ) );
+  presets << qMakePair( QStringLiteral( "A0" ), QSizeF( 841, 1189 ) );
+  presets << qMakePair( QStringLiteral( "B5" ), QSizeF( 176, 250 ) );
+  presets << qMakePair( QStringLiteral( "B4" ), QSizeF( 250, 353 ) );
+  presets << qMakePair( QStringLiteral( "B3" ), QSizeF( 353, 500 ) );
+  presets << qMakePair( QStringLiteral( "B2" ), QSizeF( 500, 707 ) );
+  presets << qMakePair( QStringLiteral( "B1" ), QSizeF( 707, 1000 ) );
+  presets << qMakePair( QStringLiteral( "B0" ), QSizeF( 1000, 1414 ) );
   // North american formats
-  presets << qMakePair( QString( "Legal" ), QSizeF( 215.9, 355.6 ) );
-  presets << qMakePair( QString( "Letter" ), QSizeF( 215.9, 279.4 ) );
-  presets << qMakePair( QString( "ANSI A" ), QSizeF( 215.9, 279.4 ) );
-  presets << qMakePair( QString( "ANSI B" ), QSizeF( 279.4, 431.8 ) );
-  presets << qMakePair( QString( "ANSI C" ), QSizeF( 431.8, 558.8 ) );
-  presets << qMakePair( QString( "ANSI D" ), QSizeF( 558.8, 863.6 ) );
-  presets << qMakePair( QString( "ANSI E" ), QSizeF( 863.6, 1117.6 ) );
-  presets << qMakePair( QString( "Arch A" ), QSizeF( 228.6, 304.8 ) );
-  presets << qMakePair( QString( "Arch B" ), QSizeF( 304.8, 457.2 ) );
-  presets << qMakePair( QString( "Arch C" ), QSizeF( 457.2, 609.6 ) );
-  presets << qMakePair( QString( "Arch D" ), QSizeF( 609.6, 914.4 ) );
-  presets << qMakePair( QString( "Arch E" ), QSizeF( 914.4, 1219.2 ) );
-  presets << qMakePair( QString( "Arch E1" ), QSizeF( 762, 1066.8 ) );
+  presets << qMakePair( QStringLiteral( "Legal" ), QSizeF( 215.9, 355.6 ) );
+  presets << qMakePair( QStringLiteral( "Letter" ), QSizeF( 215.9, 279.4 ) );
+  presets << qMakePair( QStringLiteral( "ANSI A" ), QSizeF( 215.9, 279.4 ) );
+  presets << qMakePair( QStringLiteral( "ANSI B" ), QSizeF( 279.4, 431.8 ) );
+  presets << qMakePair( QStringLiteral( "ANSI C" ), QSizeF( 431.8, 558.8 ) );
+  presets << qMakePair( QStringLiteral( "ANSI D" ), QSizeF( 558.8, 863.6 ) );
+  presets << qMakePair( QStringLiteral( "ANSI E" ), QSizeF( 863.6, 1117.6 ) );
+  presets << qMakePair( QStringLiteral( "Arch A" ), QSizeF( 228.6, 304.8 ) );
+  presets << qMakePair( QStringLiteral( "Arch B" ), QSizeF( 304.8, 457.2 ) );
+  presets << qMakePair( QStringLiteral( "Arch C" ), QSizeF( 457.2, 609.6 ) );
+  presets << qMakePair( QStringLiteral( "Arch D" ), QSizeF( 609.6, 914.4 ) );
+  presets << qMakePair( QStringLiteral( "Arch E" ), QSizeF( 914.4, 1219.2 ) );
+  presets << qMakePair( QStringLiteral( "Arch E1" ), QSizeF( 762, 1066.8 ) );
 
   QList< QPair< QString, QSizeF > >::const_iterator presetIt = presets.constBegin();
   for ( ;presetIt != presets.constEnd(); ++presetIt )
@@ -318,112 +320,52 @@ bool QgsComposerUtils::decodePresetPaperSize( const QString& presetString, doubl
   return false;
 }
 
-void QgsComposerUtils::readDataDefinedPropertyMap( const QDomElement &itemElem, QMap<QgsComposerObject::DataDefinedProperty, QString> *dataDefinedNames, QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties )
+void QgsComposerUtils::readOldDataDefinedPropertyMap( const QDomElement &itemElem, QgsPropertyCollection& dataDefinedProperties )
 {
-  QMap<QgsComposerObject::DataDefinedProperty, QString>::const_iterator i = dataDefinedNames->constBegin();
-  for ( ; i != dataDefinedNames->constEnd(); ++i )
+  QgsPropertiesDefinition::const_iterator i = QgsComposerObject::propertyDefinitions().constBegin();
+  for ( ; i != QgsComposerObject::propertyDefinitions().constEnd(); ++i )
   {
-    QString elemName = i.value();
+    QString elemName = i.value().name();
     QDomNodeList ddNodeList = itemElem.elementsByTagName( elemName );
     if ( !ddNodeList.isEmpty() )
     {
       QDomElement ddElem = ddNodeList.at( 0 ).toElement();
-      readDataDefinedProperty( i.key(), ddElem, dataDefinedProperties );
+      QgsProperty prop = readOldDataDefinedProperty( static_cast< QgsComposerObject::DataDefinedProperty >( i.key() ), ddElem );
+      if ( prop )
+        dataDefinedProperties.setProperty( i.key(), prop );
     }
   }
 }
 
-void QgsComposerUtils::readDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QDomElement &ddElem, QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties )
+QgsProperty QgsComposerUtils::readOldDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QDomElement &ddElem )
 {
   if ( property == QgsComposerObject::AllProperties || property == QgsComposerObject::NoProperty )
   {
     //invalid property
-    return;
-  }
-
-  QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >::const_iterator it = dataDefinedProperties->constFind( property );
-
-  QgsDataDefined* dd = nullptr;
-  if ( it != dataDefinedProperties->constEnd() )
-  {
-    dd = it.value();
-  }
-  else
-  {
-    //QgsDataDefined for property doesn't currently exist, need to add new
-    dd = new QgsDataDefined();
-    dataDefinedProperties->insert( property, dd );
+    return QgsProperty();
   }
 
   //set values for QgsDataDefined
-  QString active = ddElem.attribute( "active" );
-  if ( active.compare( "true", Qt::CaseInsensitive ) == 0 )
+  QString active = ddElem.attribute( QStringLiteral( "active" ) );
+  bool isActive = false;
+  if ( active.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
   {
-    dd->setActive( true );
+    isActive = true;
   }
+  QString field = ddElem.attribute( QStringLiteral( "field" ) );
+  QString expr = ddElem.attribute( QStringLiteral( "expr" ) );
+
+  QString useExpr = ddElem.attribute( QStringLiteral( "useExpr" ) );
+  bool isExpression = false;
+  if ( useExpr.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
+  {
+    isExpression = true;
+  }
+
+  if ( isExpression )
+    return QgsProperty::fromExpression( expr, isActive );
   else
-  {
-    dd->setActive( false );
-  }
-  dd->setField( ddElem.attribute( "field" ) );
-  dd->setExpressionString( ddElem.attribute( "expr" ) );
-  QString useExpr = ddElem.attribute( "useExpr" );
-  if ( useExpr.compare( "true", Qt::CaseInsensitive ) == 0 )
-  {
-    dd->setUseExpression( true );
-  }
-  else
-  {
-    dd->setUseExpression( false );
-  }
-}
-
-void QgsComposerUtils::writeDataDefinedPropertyMap( QDomElement &itemElem, QDomDocument &doc, const QMap<QgsComposerObject::DataDefinedProperty, QString> *dataDefinedNames, const QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties )
-{
-  QMap<QgsComposerObject::DataDefinedProperty, QString >::const_iterator i = dataDefinedNames->constBegin();
-  for ( ; i != dataDefinedNames->constEnd(); ++i )
-  {
-    QString newElemName = i.value();
-
-    QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >::const_iterator it = dataDefinedProperties->find( i.key() );
-    if ( it != dataDefinedProperties->constEnd() )
-    {
-      QgsDataDefined* dd = it.value();
-      if ( dd )
-      {
-        bool active = dd->isActive();
-        bool useExpr = dd->useExpression();
-        QString expr = dd->expressionString();
-        QString field = dd->field();
-
-        bool defaultVals = ( !active && !useExpr && expr.isEmpty() && field.isEmpty() );
-
-        if ( !defaultVals )
-        {
-          QDomElement ddElem = doc.createElement( newElemName );
-          if ( active )
-          {
-            ddElem.setAttribute( "active", "true" );
-          }
-          else
-          {
-            ddElem.setAttribute( "active", "false" );
-          }
-          if ( useExpr )
-          {
-            ddElem.setAttribute( "useExpr", "true" );
-          }
-          else
-          {
-            ddElem.setAttribute( "useExpr", "false" );
-          }
-          ddElem.setAttribute( "expr", expr );
-          ddElem.setAttribute( "field", field );
-          itemElem.appendChild( ddElem );
-        }
-      }
-    }
-  }
+    return QgsProperty::fromField( field, isActive );
 }
 
 QFont QgsComposerUtils::scaledFontPixelSize( const QFont &font )
@@ -544,4 +486,49 @@ void QgsComposerUtils::drawText( QPainter *painter, const QRectF &rect, const QS
   painter->scale( scaleFactor, scaleFactor );
   painter->drawText( scaledRect, halignment | valignment | flags, text );
   painter->restore();
+}
+
+QgsRenderContext QgsComposerUtils::createRenderContextForMap( QgsComposerMap* map, QPainter* painter, double dpi )
+{
+  if ( !map )
+  {
+    QgsRenderContext context;
+    context.setPainter( painter );
+    if ( dpi < 0 && painter && painter->device() )
+    {
+      context.setScaleFactor( painter->device()->logicalDpiX() / 25.4 );
+    }
+    else if ( dpi > 0 )
+    {
+      context.setScaleFactor( dpi / 25.4 );
+    }
+    else
+    {
+      context.setScaleFactor( 3.465 ); //assume 88 dpi as standard value
+    }
+    return context;
+  }
+
+  // default to 88 dpi if no painter specified
+  if ( dpi < 0 )
+  {
+    dpi = ( painter && painter->device() ) ? painter->device()->logicalDpiX() : 88;
+  }
+  double dotsPerMM = dpi / 25.4;
+
+  // get map settings from reference map
+  QgsRectangle extent = *( map->currentMapExtent() );
+  QSizeF mapSizeMM = map->rect().size();
+  QgsMapSettings ms = map->mapSettings( extent, mapSizeMM * dotsPerMM, dpi );
+
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
+  if ( painter )
+    context.setPainter( painter );
+  return context;
+}
+
+QgsRenderContext QgsComposerUtils::createRenderContextForComposition( QgsComposition* composition, QPainter* painter )
+{
+  QgsComposerMap* referenceMap = composition ? composition->referenceMap() : nullptr;
+  return createRenderContextForMap( referenceMap, painter );
 }

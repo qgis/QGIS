@@ -20,6 +20,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -29,10 +30,10 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt import uic
-from PyQt.QtCore import QSettings
-from PyQt.QtWidgets import QDialog, QAbstractItemView, QPushButton, QDialogButtonBox, QFileDialog
-from PyQt.QtGui import QStandardItemModel, QStandardItem
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtWidgets import QDialog, QAbstractItemView, QPushButton, QDialogButtonBox, QFileDialog
+from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -77,7 +78,7 @@ class MultipleFileInputDialog(BASE, WIDGET):
     def accept(self):
         self.selectedoptions = []
         model = self.lstLayers.model()
-        for i in xrange(model.rowCount()):
+        for i in range(model.rowCount()):
             item = model.item(i)
             self.selectedoptions.append(item.text())
         QDialog.accept(self)
@@ -92,8 +93,8 @@ class MultipleFileInputDialog(BASE, WIDGET):
         else:
             path = ''
 
-        files = QFileDialog.getOpenFileNames(self,
-                                             self.tr('Select file(s)'), path, self.tr('All files (*.*)'))
+        files, selected_filter = QFileDialog.getOpenFileNames(self,
+                                                              self.tr('Select file(s)'), path, self.tr('All files (*.*)'))
 
         if len(files) == 0:
             return

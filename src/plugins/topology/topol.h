@@ -71,7 +71,7 @@ class Topol: public QObject, public QgisPlugin
     * @param theInterface Pointer to the QgisInterface object.
      */
     explicit Topol( QgisInterface * theInterface );
-    //! Destructor
+
     virtual ~Topol();
 
   public slots:

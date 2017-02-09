@@ -23,10 +23,11 @@
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
 
-from PyQt.QtCore import QDir, QUrl, QFile, QCoreApplication
-from PyQt.QtWidgets import QDialog
-from PyQt.QtNetwork import QNetworkRequest, QNetworkReply
+from qgis.PyQt.QtCore import QDir, QUrl, QFile, QCoreApplication
+from qgis.PyQt.QtWidgets import QDialog
+from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 
 import qgis
 from qgis.core import QgsNetworkAccessManager, QgsAuthManager
@@ -58,7 +59,7 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
 
         self.request = QNetworkRequest(url)
         authcfg = repositories.all()[plugin["zip_repository"]]["authcfg"]
-        if authcfg and isinstance(authcfg, basestring):
+        if authcfg and isinstance(authcfg, str):
             if not QgsAuthManager.instance().updateNetworkRequest(
                     self.request, authcfg.strip()):
                 self.mResult = self.tr(
@@ -101,7 +102,7 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
         if reply.error() != QNetworkReply.NoError:
             self.mResult = reply.errorString()
             if reply.error() == QNetworkReply.OperationCanceledError:
-                self.mResult += "<br/><br/>" + QCoreApplication.translate("QgsPluginInstaller", "If you haven't cancelled the download manually, it might be caused by a timeout. In this case consider increasing the connection timeout value in QGIS options.")
+                self.mResult += "<br/><br/>" + QCoreApplication.translate("QgsPluginInstaller", "If you haven't canceled the download manually, it might be caused by a timeout. In this case consider increasing the connection timeout value in QGIS options.")
             self.reject()
             reply.deleteLater()
             return
@@ -116,12 +117,12 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
         if not QDir(pluginDir).exists():
             QDir().mkpath(pluginDir)
         # if the target directory already exists as a link, remove the link without resolving:
-        QFile(pluginDir + unicode(QDir.separator()) + self.plugin["id"]).remove()
+        QFile(pluginDir + str(QDir.separator()) + self.plugin["id"]).remove()
         try:
-            unzip(unicode(tmpPath), unicode(pluginDir))  # test extract. If fails, then exception will be raised and no removing occurs
+            unzip(str(tmpPath), str(pluginDir))  # test extract. If fails, then exception will be raised and no removing occurs
             # removing old plugin files if exist
             removeDir(QDir.cleanPath(pluginDir + "/" + self.plugin["id"]))  # remove old plugin if exists
-            unzip(unicode(tmpPath), unicode(pluginDir))  # final extract.
+            unzip(str(tmpPath), str(pluginDir))  # final extract.
         except:
             self.mResult = self.tr("Failed to unzip the plugin package. Probably it's broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:") + "\n" + pluginDir
             self.reject()

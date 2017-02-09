@@ -18,26 +18,30 @@
 #define PARAMETRICLINE_H
 
 #include "Point3D.h"
-#include "Vector3D.h"
 #include <QVector>
+#include "qgis_analysis.h"
 
+class Vector3D;
+
+/** \ingroup analysis
+ * ParametricLine is an Interface for parametric lines. It is possible, that a parametric line is composed of several parametric
+ * lines (see the composite pattern in Gamma et al. 'Design Patterns'). Do not build instances of it since it is an abstract class.*/
 class ANALYSIS_EXPORT ParametricLine
-      /** ParametricLine is an Interface for parametric lines. It is possible, that a parametric line is composed of several parametric lines (see the composite pattern in Gamma et al. 'Design Patterns'). Do not build instances of it since it is an abstract class.*/
 {
   protected:
-    /** Degree of the parametric Line*/
+    //! Degree of the parametric Line
     int mDegree;
-    /** Pointer to the parent object. If there isn't one, mParent is 0*/
+    //! Pointer to the parent object. If there isn't one, mParent is 0
     ParametricLine* mParent;
-    /** MControlPoly stores the points of the control polygon*/
+    //! MControlPoly stores the points of the control polygon
     QVector<Point3D*>* mControlPoly;
   public:
-    /** Default constructor*/
+    //! Default constructor
     ParametricLine();
+
     /** Constructor, par is a pointer to the parent object, controlpoly the controlpolygon
       */
     ParametricLine( ParametricLine* par, QVector<Point3D*>* controlpoly );
-    /** Destructor*/
     virtual ~ParametricLine();
     virtual void add( ParametricLine* pl ) = 0;
     virtual void calcFirstDer( float t, Vector3D* v ) = 0;
@@ -58,12 +62,18 @@ class ANALYSIS_EXPORT ParametricLine
 
 //-----------------------------------------constructors and destructor----------------------
 
-inline ParametricLine::ParametricLine() : mDegree( 0 ), mParent( nullptr ), mControlPoly( nullptr )
+inline ParametricLine::ParametricLine()
+    : mDegree( 0 )
+    , mParent( nullptr )
+    , mControlPoly( nullptr )
 {
 
 }
 
-inline ParametricLine::ParametricLine( ParametricLine* par, QVector<Point3D*>* controlpoly ) : mDegree( 0 ), mParent( par ), mControlPoly( controlpoly )
+inline ParametricLine::ParametricLine( ParametricLine* par, QVector<Point3D*>* controlpoly )
+    : mDegree( 0 )
+    , mParent( par )
+    , mControlPoly( controlpoly )
 {
 
 }

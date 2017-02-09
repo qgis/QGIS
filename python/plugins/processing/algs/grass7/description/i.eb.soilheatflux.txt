@@ -1,0 +1,10 @@
+i.eb.soilheatflux
+Soil heat flux approximation (Bastiaanssen, 1995).
+Imagery (i.*)
+ParameterRaster|albedo|Name of albedo raster map [0.0;1.0]|False
+ParameterRaster|ndvi|Name of NDVI raster map [-1.0;+1.0]|False
+ParameterRaster|temperature|Name of Surface temperature raster map [K]|False
+ParameterRaster|netradiation|Name of Net Radiation raster map [W/m2]|False
+ParameterRaster|localutctime|Name of time of satellite overpass raster map [local time in UTC]|False
+ParameterBoolean|-r|HAPEX-Sahel empirical correction (Roerink, 1995)|False
+OutputRaster|output|Soil Heat Flux

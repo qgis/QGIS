@@ -18,6 +18,7 @@
 #define QGSMEASURETOOL_H
 
 #include "qgsmaptool.h"
+#include "qgis_app.h"
 
 class QgsDistanceArea;
 class QgsMapCanvas;
@@ -36,6 +37,8 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
 
     ~QgsMeasureTool();
 
+    virtual Flags flags() const override { return QgsMapTool::AllowZoomRect; }
+
     //! returns whether measuring distance or area
     bool measureArea() { return mMeasureArea; }
 
@@ -49,7 +52,7 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     void addPoint( const QgsPoint &point );
 
     //! Returns reference to array of the points
-    const QList<QgsPoint>& points();
+    QList<QgsPoint> points();
 
     // Inherited from QgsMapTool
 
@@ -96,11 +99,14 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     // project projection
     bool mWrongProjectProjection;
 
+    //! Destination CoordinateReferenceSystem used by the MapCanvas
+    QgsCoordinateReferenceSystem mDestinationCrs;
+
     //! Returns the snapped (map) coordinate
     //@param p (pixel) coordinate
-    QgsPoint snapPoint( const QPoint& p );
+    QgsPoint snapPoint( QPoint p );
 
-    /** Removes the last vertex from mRubberBand*/
+    //! Removes the last vertex from mRubberBand
     void undo();
 };
 

@@ -19,6 +19,7 @@ email                : ersts@amnh.org
 #ifndef QGSLINEARMINMAXENHANCEMENTWITHCLIP_H
 #define QGSLINEARMINMAXENHANCEMENTWITHCLIP_H
 
+#include "qgis_core.h"
 #include "qgscontrastenhancementfunction.h"
 
 /** \ingroup core
@@ -29,7 +30,7 @@ class CORE_EXPORT QgsLinearMinMaxEnhancementWithClip : public QgsContrastEnhance
 {
 
   public:
-    QgsLinearMinMaxEnhancementWithClip( QGis::DataType, double, double );
+    QgsLinearMinMaxEnhancementWithClip( Qgis::DataType, double, double );
 
     int enhance( double ) override;
 

@@ -33,7 +33,10 @@
 QgsGeometryCheckerFixDialog::QgsGeometryCheckerFixDialog( QgsGeometryChecker *checker,
     const QList<QgsGeometryCheckError *> &errors,
     QgisInterface* iface, QWidget *parent )
-    : QDialog( parent ), mChecker( checker ), mErrors( errors ), mIface( iface )
+    : QDialog( parent )
+    , mChecker( checker )
+    , mErrors( errors )
+    , mIface( iface )
 {
   setWindowTitle( tr( "Fix errors" ) );
 
@@ -84,7 +87,7 @@ void QgsGeometryCheckerFixDialog::setupNextError()
   mFixBtn->setVisible( true );
   mFixBtn->setFocus();
   mSkipBtn->setVisible( true );
-  mStatusLabel->setText( "" );
+  mStatusLabel->setText( QLatin1String( "" ) );
   mResolutionsBox->setEnabled( true );
 
   QgsGeometryCheckError* error = mErrors.at( 0 );
@@ -122,6 +125,7 @@ void QgsGeometryCheckerFixDialog::fixError()
 
   QgsGeometryCheckError* error = mErrors.at( 0 );
   mChecker->fixError( error, mRadioGroup->checkedId() );
+  mChecker->getLayer()->triggerRepaint();
 
   unsetCursor();
 
@@ -162,7 +166,6 @@ void QgsGeometryCheckerFixDialog::fixError()
   }
   adjustSize();
   emit currentErrorChanged( error );
-  mIface->mapCanvas()->refresh();
 }
 
 void QgsGeometryCheckerFixDialog::skipError()

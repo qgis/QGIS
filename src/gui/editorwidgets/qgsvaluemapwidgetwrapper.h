@@ -19,9 +19,10 @@
 #include "qgseditorwidgetwrapper.h"
 
 #include <QComboBox>
+#include "qgis_gui.h"
 
 
-/**
+/** \ingroup gui
  * Wraps a value map widget.
  *
  * Options:

@@ -15,15 +15,11 @@
 #ifndef QGSGMLSCHEMA_H
 #define QGSGMLSCHEMA_H
 
+#include "qgis_core.h"
 #include <expat.h>
 #include "qgis.h"
-#include "qgsapplication.h"
-#include "qgsdataprovider.h"
 #include "qgserror.h"
-#include "qgsfeature.h"
-#include "qgsfield.h"
-#include "qgslogger.h"
-#include "qgspoint.h"
+#include "qgsfields.h"
 #include <list>
 #include <set>
 #include <stack>
@@ -32,10 +28,14 @@
 #include <QDomElement>
 #include <QStringList>
 #include <QStack>
+
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
+class QgsFeature;
 
-/* Description of feature class in GML */
+/** \ingroup core
+ * Description of feature class in GML
+*/
 class CORE_EXPORT QgsGmlFeatureClass
 {
   public:
@@ -70,15 +70,16 @@ class CORE_EXPORT QgsGmlFeatureClass
     QStringList mGeometryAttributes;
 };
 
+/** \ingroup core
+ * \class QgsGmlSchema
+ */
 class CORE_EXPORT QgsGmlSchema : public QObject
 {
     Q_OBJECT
   public:
     QgsGmlSchema();
 
-    ~QgsGmlSchema();
-
-    /** Get fields info from XSD */
+    //! Get fields info from XSD
     bool parseXSD( const QByteArray &xml );
 
     /** Guess GML schema from data if XSD does not exist.
@@ -88,32 +89,32 @@ class CORE_EXPORT QgsGmlSchema : public QObject
       * @return true in case of success */
     bool guessSchema( const QByteArray &data );
 
-    /** Get list of dot separated paths to feature classes parsed from GML or XSD */
+    //! Get list of dot separated paths to feature classes parsed from GML or XSD
     QStringList typeNames() const;
 
-    /** Get fields for type/class name parsed from GML or XSD */
+    //! Get fields for type/class name parsed from GML or XSD
     QList<QgsField> fields( const QString & typeName );
 
-    /** Get list of geometry attributes for type/class name */
+    //! Get list of geometry attributes for type/class name
     QStringList geometryAttributes( const QString & typeName );
 
-    /** Get error if parseXSD() or guessSchema() failed */
+    //! Get error if parseXSD() or guessSchema() failed
     QgsError error() const { return mError; }
 
   private:
 
     enum ParseMode
     {
-      none,
-      boundingBox,
-      featureMembers, // gml:featureMembers
-      featureMember, // gml:featureMember
-      feature,  // feature element containint attrs and geo (inside gml:featureMember)
-      attribute,
-      geometry
+      None,
+      BoundingBox,
+      FeatureMembers, // gml:featureMembers
+      FeatureMember, // gml:featureMember
+      Feature,  // feature element containint attrs and geo (inside gml:featureMember)
+      Attribute,
+      Geometry
     };
 
-    /** XML handler methods*/
+    //! XML handler methods
     void startElement( const XML_Char* el, const XML_Char** attr );
     void endElement( const XML_Char* el );
     void characters( const XML_Char* chars, int len );
@@ -138,22 +139,22 @@ class CORE_EXPORT QgsGmlSchema : public QObject
       @return attribute value or an empty string if no such attribute*/
     QString readAttribute( const QString& attributeName, const XML_Char** attr ) const;
 
-    /** Returns pointer to main window or 0 if it does not exist*/
+    //! Returns pointer to main window or 0 if it does not exist
     QWidget* findMainWindow() const;
 
-    /** Get dom elements by path */
+    //! Get dom elements by path
     QList<QDomElement> domElements( const QDomElement &element, const QString & path );
 
-    /** Get dom element by path */
+    //! Get dom element by path
     QDomElement domElement( const QDomElement &element, const QString & path );
 
-    /** Filter list of elements by attribute value */
+    //! Filter list of elements by attribute value
     QList<QDomElement> domElements( QList<QDomElement> &elements, const QString & attr, const QString & attrVal );
 
-    /** Get dom element by path and attribute value */
+    //! Get dom element by path and attribute value
     QDomElement domElement( const QDomElement &element, const QString & path, const QString & attr, const QString & attrVal );
 
-    /** Strip namespace from element name */
+    //! Strip namespace from element name
     QString stripNS( const QString & name );
 
     /** Find GML base type for complex type of given name
@@ -163,39 +164,39 @@ class CORE_EXPORT QgsGmlSchema : public QObject
      */
     QString xsdComplexTypeGmlBaseType( const QDomElement &element, const QString & name );
 
-    /** Get feature class information from complex type recursively */
+    //! Get feature class information from complex type recursively
     bool xsdFeatureClass( const QDomElement &element, const QString & typeName, QgsGmlFeatureClass & featureClass );
 
 
-    /** Get safely (if empty) top from mode stack */
-    ParseMode modeStackTop() { return mParseModeStack.isEmpty() ? none : mParseModeStack.top(); }
+    //! Get safely (if empty) top from mode stack
+    ParseMode modeStackTop() { return mParseModeStack.isEmpty() ? None : mParseModeStack.top(); }
 
-    /** Safely (if empty) pop from mode stack */
-    ParseMode modeStackPop() { return mParseModeStack.isEmpty() ? none : mParseModeStack.pop(); }
+    //! Safely (if empty) pop from mode stack
+    ParseMode modeStackPop() { return mParseModeStack.isEmpty() ? None : mParseModeStack.pop(); }
 
-    /** Keep track about the most important nested elements*/
+    //! Keep track about the most important nested elements
     //std::stack<ParseMode> mParseModeStack;
     QStack<ParseMode> mParseModeStack;
-    /** This contains the character data if an important element has been encountered*/
+    //! This contains the character data if an important element has been encountered
     QString mStringCash;
     QgsFeature* mCurrentFeature;
     QString mCurrentFeatureId;
     int mFeatureCount;
     QString mAttributeName;
-    /** Coordinate separator for coordinate strings. Usually "," */
+    //! Coordinate separator for coordinate strings. Usually ","
     QString mCoordinateSeparator;
-    /** Tuple separator for coordinate strings. Usually " " */
+    //! Tuple separator for coordinate strings. Usually " "
     QString mTupleSeparator;
 
     /* Schema information guessed/parsed from GML in getSchema() */
 
-    /** Depth level, root element is 0 */
+    //! Depth level, root element is 0
     int mLevel;
 
-    /** Skip all levels under this */
+    //! Skip all levels under this
     int mSkipLevel;
 
-    /** Path to current level */
+    //! Path to current level
     QStringList mParsePathStack;
 
     QString mCurrentFeatureName;

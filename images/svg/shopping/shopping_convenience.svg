@@ -1,32 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1"
-	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docbase="s:\Data\FacilityIcons" sodipodi:docname="shopping_convinience.svg" inkscape:version="0.46" sodipodi:version="0.32"
-	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
-	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<sodipodi:namedview  showgrid="false" inkscape:cy="319.23647" inkscape:cx="318.83568" inkscape:zoom="0.46083856" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:current-layer="svg2" inkscape:window-y="88" inkscape:window-x="91" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="1103" inkscape:window-height="783">
-	</sodipodi:namedview>
-<defs>
-	
-	
-		<inkscape:perspective  inkscape:vp_z="580 : 290 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 290 : 1" sodipodi:type="inkscape:persp3d" id="perspective2441" inkscape:persp3d-origin="290 : 193.33333 : 1">
-		</inkscape:perspective>
-	
-		<inkscape:perspective  inkscape:vp_z="744.09448 : 526.18109 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 526.18109 : 1" sodipodi:type="inkscape:persp3d" id="perspective2466" inkscape:persp3d-origin="372.04724 : 350.78739 : 1">
-		</inkscape:perspective>
-</defs>
-<path fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)" d="M520.115,221.835c-2.672-3.376-6.74-5.345-11.046-5.345H318.026
-	l47.858-128.614c0.925-2.485,0.824-5.237-0.279-7.648s-3.12-4.286-5.605-5.211l-15.67-5.831c-5.173-1.925-10.933,0.708-12.859,5.885
-	l-52.623,141.419H80.196c-4.302,0-8.367,1.965-11.04,5.336c-2.672,3.371-3.657,7.778-2.675,11.966l49.668,211.825
-	c1.494,6.371,7.176,10.871,13.714,10.871c0.021,0,0.042,0,0.063,0l329.531-1.458c6.509-0.029,12.151-4.515,13.647-10.85
-	l49.674-210.367C523.769,229.624,522.787,225.211,520.115,221.835z M328.846,244.664v54.946h-72.302v-54.946H328.846z
-	 M328.846,318.392v60.303h-72.302v-60.303H328.846z M237.761,299.61H169.46v-54.946h68.301V299.61z M237.761,318.392v60.303H169.46
-	v-60.303H237.761z M237.761,397.476v30.363l-68.301,0.302v-30.665H237.761z M256.543,397.476h72.302v29.96l-72.302,0.32V397.476z
-	 M347.627,397.476h70.303v29.565l-70.303,0.312V397.476z M347.627,378.694v-60.303h70.303v60.303H347.627z M347.627,299.61v-54.946
-	h70.303v54.946H347.627z M150.678,244.664v54.946h-32.253c-2.715,0-5.154,1.159-6.869,3.002l-13.587-57.948H150.678z
-	 M115.112,317.779c1.032,0.39,2.145,0.612,3.313,0.612h32.253v60.303h-14.437c-2.417,0-4.614,0.921-6.278,2.421L115.112,317.779z
-	 M133.716,397.122c0.805,0.225,1.649,0.354,2.525,0.354h14.437v30.748l-9.659,0.043L133.716,397.122z M436.711,426.958v-29.482
-	h18.475l-6.949,29.432L436.711,426.958z M459.618,378.707c-0.082-0.003-0.161-0.013-0.243-0.013h-22.664v-60.303h37.148
-	L459.618,378.707z M478.278,299.678c-0.356-0.041-0.718-0.067-1.086-0.067h-40.481v-54.946h54.558L478.278,299.678z"/>
+<svg enable-background="new 0 0 580 580" height="580" viewBox="0 0 580 580" width="580" xmlns="http://www.w3.org/2000/svg">
+<path d="m520.115 221.835c-2.672-3.376-6.74-5.345-11.046-5.345h-191.043l47.858-128.614c.925-2.485.824-5.237-.279-7.648s-3.12-4.286-5.605-5.211l-15.67-5.831c-5.173-1.925-10.933.708-12.859 5.885l-52.623 141.419h-198.652c-4.302 0-8.367 1.965-11.04 5.336-2.672 3.371-3.657 7.778-2.675 11.966l49.668 211.825c1.494 6.371 7.176 10.871 13.714 10.871.021 0 .042 0 .063 0l329.531-1.458c6.509-.029 12.151-4.515 13.647-10.85l49.674-210.367c.991-4.189.009-8.602-2.663-11.978zm-191.269 22.829v54.946h-72.302v-54.946zm0 73.728v60.303h-72.302v-60.303zm-91.085-18.782h-68.301v-54.946h68.301zm0 18.782v60.303h-68.301v-60.303zm0 79.084v30.363l-68.301.302v-30.665zm18.782 0h72.302v29.96l-72.302.32zm91.084 0h70.303v29.565l-70.303.312zm0-18.782v-60.303h70.303v60.303zm0-79.084v-54.946h70.303v54.946zm-196.949-54.946v54.946h-32.253c-2.715 0-5.154 1.159-6.869 3.002l-13.587-57.948zm-35.566 73.115c1.032.39 2.145.612 3.313.612h32.253v60.303h-14.437c-2.417 0-4.614.921-6.278 2.421zm18.604 79.343c.805.225 1.649.354 2.525.354h14.437v30.748l-9.659.043zm302.995 29.836v-29.482h18.475l-6.949 29.432zm22.907-48.251c-.082-.003-.161-.013-.243-.013h-22.664v-60.303h37.148zm18.66-79.029c-.356-.041-.718-.067-1.086-.067h-40.481v-54.946h54.558z" fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)"/>
 </svg>

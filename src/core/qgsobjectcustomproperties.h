@@ -20,11 +20,12 @@
 
 #include <QMap>
 #include <QVariant>
+#include "qgis_core.h"
 
 class QDomDocument;
 class QDomNode;
 
-/**
+/** \ingroup core
  * Simple key-value store (keys = strings, values = variants) that supports loading/saving to/from XML
  * in \verbatim <customproperties> \endverbatim element.
  *
@@ -54,7 +55,7 @@ class CORE_EXPORT QgsObjectCustomProperties
      */
     void readXml( const QDomNode& parentNode, const QString& keyStartsWith = QString() );
 
-    /** Write store contents to XML */
+    //! Write store contents to XML
     void writeXml( QDomNode& parentNode, QDomDocument& doc ) const;
 
 

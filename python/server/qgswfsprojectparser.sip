@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 
-class QgsWFSProjectParser
+class QgsWfsProjectParser
 {
 %TypeHeaderCode
 #include "qgswfsprojectparser.h"
@@ -24,12 +24,10 @@ class QgsWFSProjectParser
 %End
 
   public:
-    QgsWFSProjectParser( const QString& filePath, const QgsAccessControl* ac );
-    ~QgsWFSProjectParser();
+    QgsWfsProjectParser( const QString& filePath, const QgsAccessControl* ac );
+    ~QgsWfsProjectParser();
 
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
-    QString serviceUrl() const;
-    QString wfsServiceUrl() const;
     void featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const;
 
     void describeFeatureType( const QString& aTypeName, QDomElement& parentElement, QDomDocument& doc ) const;
@@ -46,6 +44,6 @@ class QgsWFSProjectParser
 
   private:
 
-    QgsWFSProjectParser( const QgsWFSProjectParser& rh );
+    QgsWfsProjectParser( const QgsWfsProjectParser& rh );
 
 };

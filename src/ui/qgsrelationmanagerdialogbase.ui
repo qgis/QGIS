@@ -16,6 +16,9 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QTableWidget" name="mRelationsTable">
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
      <property name="sortingEnabled">
       <bool>true</bool>
      </property>
@@ -76,6 +79,17 @@
       <widget class="QPushButton" name="mBtnAddRelation">
        <property name="text">
         <string>Add Relation</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mBtnDiscoverRelations">
+       <property name="text">
+        <string>Discover Relations</string>
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">

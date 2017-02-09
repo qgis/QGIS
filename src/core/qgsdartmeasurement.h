@@ -18,6 +18,11 @@
 
 #include <QString>
 
+#include "qgis_core.h"
+
+/** \ingroup core
+ * \class QgsDartMeasurement
+ */
 class CORE_EXPORT QgsDartMeasurement
 {
   public:

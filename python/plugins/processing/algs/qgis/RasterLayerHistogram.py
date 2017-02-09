@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'January 2013'
@@ -28,7 +30,7 @@ __revision__ = '$Format:%H$'
 import matplotlib.pyplot as plt
 import matplotlib.pylab as lab
 
-from PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import QgsField
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -59,7 +61,7 @@ class RasterLayerHistogram(GeoAlgorithm):
         self.addOutput(OutputHTML(self.PLOT, self.tr('Histogram')))
         self.addOutput(OutputTable(self.TABLE, self.tr('Table')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         nbins = self.getParameterValue(self.BINS)
@@ -67,7 +69,7 @@ class RasterLayerHistogram(GeoAlgorithm):
         outputplot = self.getOutputValue(self.PLOT)
         outputtable = self.getOutputFromName(self.TABLE)
 
-        values = raster.scanraster(layer, progress)
+        values = raster.scanraster(layer, feedback)
 
         # ALERT: this is potentially blocking if the layer is too big
         plt.close()
@@ -80,11 +82,10 @@ class RasterLayerHistogram(GeoAlgorithm):
         fields = [QgsField('CENTER_VALUE', QVariant.Double),
                   QgsField('NUM_ELEM', QVariant.Double)]
         writer = outputtable.getTableWriter(fields)
-        for i in xrange(len(values)):
-            writer.addRecord([unicode(bins[i]) + '-' + unicode(bins[i + 1]), n[i]])
+        for i in range(len(values)):
+            writer.addRecord([str(bins[i]) + '-' + str(bins[i + 1]), n[i]])
 
         plotFilename = outputplot + '.png'
         lab.savefig(plotFilename)
-        f = open(outputplot, 'w')
-        f.write('<html><img src="' + plotFilename + '"/></html>')
-        f.close()
+        with open(outputplot, 'w') as f:
+            f.write('<html><img src="' + plotFilename + '"/></html>')

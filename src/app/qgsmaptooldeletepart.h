@@ -17,11 +17,11 @@
 #define QGSMAPTOOLDELETEPART_H
 
 #include "qgsmaptooledit.h"
-#include "qgsrubberband.h"
+#include "qgis_app.h"
 
 class QgsVertexMarker;
 
-/** Map tool to delete vertices from line/polygon features*/
+//! Map tool to delete vertices from line/polygon features
 class APP_EXPORT QgsMapToolDeletePart: public QgsMapToolEdit
 {
     Q_OBJECT
@@ -42,7 +42,7 @@ class APP_EXPORT QgsMapToolDeletePart: public QgsMapToolEdit
   private:
     QgsVectorLayer* vlayer;
 
-    QgsGeometry* partUnderPoint( QPoint p, QgsFeatureId &fid, int &partNum );
+    QgsGeometry partUnderPoint( QPoint p, QgsFeatureId &fid, int &partNum );
 
     /* Rubberband that shows the part being deleted*/
     QgsRubberBand* mRubberBand;

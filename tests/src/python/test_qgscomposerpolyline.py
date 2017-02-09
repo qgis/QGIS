@@ -14,15 +14,16 @@ __revision__ = '$Format:%H$'
 
 import qgis
 
-from PyQt.QtGui import QColor
-from PyQt.QtGui import QPolygonF
-from PyQt.QtCore import QPointF
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtGui import QPolygonF
+from qgis.PyQt.QtCore import QPointF
 
 from qgis.core import (QgsComposerPolyline,
                        QgsComposerItem,
                        QgsComposition,
                        QgsMapSettings,
-                       QgsLineSymbolV2
+                       QgsLineSymbol,
+                       QgsProject
                        )
 from qgis.testing import (start_app,
                           unittest
@@ -40,10 +41,8 @@ class TestQgsComposerPolyline(unittest.TestCase):
         """Run once on class initialization."""
         unittest.TestCase.__init__(self, methodName)
 
-        self.mapSettings = QgsMapSettings()
-
         # create composition
-        self.mComposition = QgsComposition(self.mapSettings)
+        self.mComposition = QgsComposition(QgsProject.instance())
         self.mComposition.setPaperSize(297, 210)
 
         # create
@@ -63,7 +62,7 @@ class TestQgsComposerPolyline(unittest.TestCase):
         props["width"] = "10.0"
         props["capstyle"] = "square"
 
-        style = QgsLineSymbolV2.createSimple(props)
+        style = QgsLineSymbol.createSimple(props)
         self.mComposerPolyline.setPolylineStyleSymbol(style)
 
     def testDisplayName(self):
@@ -105,7 +104,7 @@ class TestQgsComposerPolyline(unittest.TestCase):
         assert myTestResult, myMessage
 
     def testSelectedNode(self):
-        """Test selectedNode and unselectNode methods"""
+        """Test selectedNode and deselectNode methods"""
 
         self.mComposerPolyline.setDisplayNodes(True)
 
@@ -116,7 +115,7 @@ class TestQgsComposerPolyline(unittest.TestCase):
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
 
-        self.mComposerPolyline.unselectNode()
+        self.mComposerPolyline.deselectNode()
         self.mComposerPolyline.setDisplayNodes(False)
         checker = QgsCompositionChecker(
             'composerpolyline_defaultstyle', self.mComposition)

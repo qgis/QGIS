@@ -18,11 +18,12 @@
 #define QGSFEATUREACTION_H
 
 #include "qgsfeature.h"
-#include "qgsvectorlayertools.h"
 
 #include <QList>
 #include <QPair>
 #include <QAction>
+#include <QUuid>
+#include "qgis_app.h"
 
 class QgsIdentifyResultsDialog;
 class QgsVectorLayer;
@@ -34,7 +35,7 @@ class APP_EXPORT QgsFeatureAction : public QAction
     Q_OBJECT
 
   public:
-    QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *vl, int action = -1, int defaultAttr = -1, QObject *parent = nullptr );
+    QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *vl, const QUuid& actionId = QString(), int defaultAttr = -1, QObject *parent = nullptr );
 
   public slots:
     void execute();
@@ -60,12 +61,12 @@ class APP_EXPORT QgsFeatureAction : public QAction
 
     QgsVectorLayer* mLayer;
     QgsFeature* mFeature;
-    int mAction;
+    QUuid mActionId;
     int mIdx;
 
     bool mFeatureSaved;
 
-    static QMap<QgsVectorLayer *, QgsAttributeMap> sLastUsedValues;
+    static QHash<QgsVectorLayer *, QgsAttributeMap> sLastUsedValues;
 };
 
 #endif

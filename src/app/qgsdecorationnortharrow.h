@@ -22,6 +22,7 @@
 #include "qgsdecorationitem.h"
 
 #include <QStringList>
+#include "qgis_app.h"
 
 class QAction;
 class QToolBar;
@@ -34,7 +35,7 @@ class APP_EXPORT QgsDecorationNorthArrow: public QgsDecorationItem
   public:
     //! Constructor
     QgsDecorationNorthArrow( QObject* parent = nullptr );
-    //! Destructor
+
     virtual ~QgsDecorationNorthArrow();
 
   public slots:
@@ -45,7 +46,7 @@ class APP_EXPORT QgsDecorationNorthArrow: public QgsDecorationItem
 
     //! Show the dialog box
     void run() override;
-    //! draw some arbitary text to the screen
+    //! draw some arbitrary text to the screen
     void render( QPainter * ) override;
 
     //! try to calculate the direction for the north arrow. Sets the
@@ -56,7 +57,6 @@ class APP_EXPORT QgsDecorationNorthArrow: public QgsDecorationItem
 
   private:
 
-    static const double PI;
     //  static const double DEG2RAD;
     static const double TOL;
 

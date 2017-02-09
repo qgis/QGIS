@@ -1,0 +1,13 @@
+{
+  "name": "maximum",
+  "type": "function",
+  "description": "Returns the aggregate maximum value from a field or expression.",
+  "arguments": [
+	{"arg":"expression", "description":"sub expression of field to aggregate"},
+	{"arg":"group_by", "optional":true, "description":"optional expression to use to group aggregate calculations"},
+	{"arg":"filter", "optional":true, "description":"optional expression to use to filter features used to calculate aggregate"}
+  ],
+  "examples": [
+	{ "expression":"maximum(\"population\",group_by:=\"state\")", "returns":"maximum population value, grouped by state field"}
+  ]
+}

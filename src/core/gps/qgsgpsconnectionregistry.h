@@ -21,34 +21,38 @@
 #include <QList>
 #include <QSet>
 
+#include "qgis_core.h"
+
 class QgsGPSConnection;
 
-/** A singleton class to register / unregister existing GPS connections such that the information
-  is available to all classes and plugins*/
+/** \ingroup core
+ * A class to register / unregister existing GPS connections such that the information
+ * is available to all classes and plugins.
+ *
+ * QgsGPSConnectionRegistry is not usually directly created, but rather accessed through
+ * QgsApplication::gpsConnectionRegistry().
+*/
 class CORE_EXPORT QgsGPSConnectionRegistry
 {
   public:
-    static QgsGPSConnectionRegistry* instance();
+    QgsGPSConnectionRegistry();
     ~QgsGPSConnectionRegistry();
 
-    /** Inserts a connection into the registry. The connection is owned by the registry class until it is unregistered again*/
+    //! QgsGPSConnectionRegistry cannot be copied.
+    QgsGPSConnectionRegistry( const QgsGPSConnectionRegistry& rh ) = delete;
+    //! QgsGPSConnectionRegistry cannot be copied.
+    QgsGPSConnectionRegistry& operator=( const QgsGPSConnectionRegistry& rh ) = delete;
+
+    //! Inserts a connection into the registry. The connection is owned by the registry class until it is unregistered again
     void registerConnection( QgsGPSConnection* c );
-    /** Unregisters connection. The registry does no longer own the connection*/
+    //! Unregisters connection. The registry does no longer own the connection
     void unregisterConnection( QgsGPSConnection* c );
 
     QList< QgsGPSConnection *> connectionList() const;
 
-  protected:
-    QgsGPSConnectionRegistry();
-
-    static QgsGPSConnectionRegistry* mInstance;
-
-    QSet<QgsGPSConnection*> mConnections;
-
   private:
 
-    QgsGPSConnectionRegistry( const QgsGPSConnectionRegistry& rh );
-    QgsGPSConnectionRegistry& operator=( const QgsGPSConnectionRegistry& rh );
+    QSet<QgsGPSConnection*> mConnections;
 };
 
 #endif // QGSGPSCONNECTIONREGISTRY_H

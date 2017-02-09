@@ -5,7 +5,7 @@ typedef QList< QPair< QColor, QString > > QgsNamedColorList;
  * \class QgsColorScheme
  * \brief Abstract base class for color schemes
  *
- * A color scheme for display in QgsColorButtonV2. Color schemes return lists
+ * A color scheme for display in QgsColorButton. Color schemes return lists
  * of colors with an optional associated color name. The colors returned
  * can be generated using an optional base color.
  * \note Added in version 2.5
@@ -33,7 +33,7 @@ class QgsColorScheme
 
   public:
 
-    /** Flags for controlling behaviour of color scheme
+    /** Flags for controlling behavior of color scheme
      */
     enum SchemeFlag
     {
@@ -59,7 +59,7 @@ class QgsColorScheme
 
     /** Gets a list of colors from the scheme. The colors can optionally
      * be generated using the supplied context and base color.
-     * @param context string specifiying an optional context for the returned
+     * @param context string specifying an optional context for the returned
      * colors. For instance, a "recent colors" scheme may filter returned colors
      * by context so that colors used only in a "composer" context are returned.
      * @param baseColor base color for the scheme's colors. Some color schemes
@@ -151,6 +151,8 @@ class QgsUserColorScheme : QgsGplColorScheme
 
     virtual bool isEditable() const;
 
+    virtual QgsColorScheme::SchemeFlags flags() const;
+
     /** Sets the name for the scheme
      * @param name new name
      */
@@ -160,6 +162,12 @@ class QgsUserColorScheme : QgsGplColorScheme
      * @returns true if erase was successful
      */
     bool erase();
+
+    /** Sets whether a this scheme should be shown in color button menus.
+     * @param show set to true to show in color button menus, or false to hide from menus
+     * @note added in QGIS 3.0
+     */
+    void setShowSchemeInMenu( bool show );
 
   protected:
 
@@ -196,8 +204,15 @@ class QgsRecentColorScheme : QgsColorScheme
     /** Adds a color to the list of recent colors.
      * @param color color to add
      * @note added in QGIS 2.14
+     * @see lastUsedColor()
      */
     static void addRecentColor( const QColor& color );
+
+    /** Returns the most recently used color.
+     * @note added in QGIS 3.0
+     * @see addRecentColor()
+     */
+    static QColor lastUsedColor();
 };
 
 /** \ingroup core

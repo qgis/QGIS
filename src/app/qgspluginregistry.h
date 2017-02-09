@@ -21,6 +21,7 @@
 
 #include <QMap>
 #include "qgspluginmetadata.h"
+#include "qgis_app.h"
 
 class QgsPythonUtils;
 class QgisPlugin;
@@ -107,7 +108,7 @@ class APP_EXPORT QgsPluginRegistry
     bool checkQgisVersion( const QString& minVersion, const QString& maxVersion = "" ) const;
 
   private:
-    static QgsPluginRegistry* _instance;
+    static QgsPluginRegistry* sInstance;
     QMap<QString, QgsPluginMetadata> mPlugins;
     QgsPythonUtils* mPythonUtils;
     QgisInterface* mQgisInterface;

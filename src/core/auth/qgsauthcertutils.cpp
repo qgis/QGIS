@@ -30,12 +30,10 @@ QString QgsAuthCertUtils::getSslProtocolName( QSsl::SslProtocol protocol )
 {
   switch ( protocol )
   {
-#if QT_VERSION >= 0x040800
     case QSsl::SecureProtocols:
       return QObject::tr( "SecureProtocols" );
     case QSsl::TlsV1SslV3:
       return QObject::tr( "TlsV1SslV3" );
-#endif
     case QSsl::TlsV1:
       return QObject::tr( "TlsV1" );
     case QSsl::SslV3:
@@ -64,7 +62,7 @@ QMap<QString, QList<QSslCertificate> > QgsAuthCertUtils::certsGroupedByOrg( cons
   {
     QString org( SSL_SUBJECT_INFO( cert, QSslCertificate::Organization ) );
     if ( org.isEmpty() )
-      org = "(Organization not defined)";
+      org = QStringLiteral( "(Organization not defined)" );
     QList<QSslCertificate> valist = orgcerts.contains( org ) ? orgcerts.value( org ) : QList<QSslCertificate>();
     orgcerts.insert( org, valist << cert );
   }
@@ -118,7 +116,7 @@ static QByteArray fileData_( const QString& path, bool astext = false )
 QList<QSslCertificate> QgsAuthCertUtils::certsFromFile( const QString &certspath )
 {
   QList<QSslCertificate> certs;
-  bool pem = certspath.endsWith( ".pem", Qt::CaseInsensitive );
+  bool pem = certspath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive );
   certs = QSslCertificate::fromData( fileData_( certspath, pem ), pem ? QSsl::Pem : QSsl::Der );
   if ( certs.isEmpty() )
   {
@@ -146,7 +144,7 @@ QSslKey QgsAuthCertUtils::keyFromFile( const QString &keypath,
                                        const QString &keypass,
                                        QString *algtype )
 {
-  bool pem = keypath.endsWith( ".pem", Qt::CaseInsensitive );
+  bool pem = keypath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive );
   QByteArray keydata( fileData_( keypath, pem ) );
 
   QSslKey clientkey;
@@ -168,12 +166,12 @@ QSslKey QgsAuthCertUtils::keyFromFile( const QString &keypath,
       return QSslKey();
     }
     if ( algtype )
-      *algtype = "dsa";
+      *algtype = QStringLiteral( "dsa" );
   }
   else
   {
     if ( algtype )
-      *algtype = "rsa";
+      *algtype = QStringLiteral( "rsa" );
   }
 
   return clientkey;
@@ -182,7 +180,7 @@ QSslKey QgsAuthCertUtils::keyFromFile( const QString &keypath,
 QList<QSslCertificate> QgsAuthCertUtils::certsFromString( const QString &pemtext )
 {
   QList<QSslCertificate> certs;
-  certs = QSslCertificate::fromData( pemtext.toAscii(), QSsl::Pem );
+  certs = QSslCertificate::fromData( pemtext.toLatin1(), QSsl::Pem );
   if ( certs.isEmpty() )
   {
     QgsDebugMsg( "Parsed cert(s) EMPTY" );
@@ -234,15 +232,15 @@ QStringList QgsAuthCertUtils::pkcs12BundleToPem( const QString &bundlepath,
   QString algtype;
   if ( bundle.privateKey().isRSA() )
   {
-    algtype = "rsa";
+    algtype = QStringLiteral( "rsa" );
   }
   else if ( bundle.privateKey().isDSA() )
   {
-    algtype = "dsa";
+    algtype = QStringLiteral( "dsa" );
   }
   else if ( bundle.privateKey().isDH() )
   {
-    algtype = "dh";
+    algtype = QStringLiteral( "dh" );
   }
 
   return QStringList() << bundle.certificateChain().primary().toPEM() << bundle.privateKey().toPEM( passarray ) << algtype;
@@ -253,7 +251,7 @@ QString QgsAuthCertUtils::pemTextToTempFile( const QString &name, const QByteArr
   QFile pemFile( QDir::tempPath() + QDir::separator() + name );
   QString pemFilePath( pemFile.fileName() );
 
-  if ( pemFile.open( QIODevice::WriteOnly ) )
+  if ( pemFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     qint64 bytesWritten = pemFile.write( pemtext );
     if ( bytesWritten == -1 )
@@ -328,7 +326,7 @@ void QgsAuthCertUtils::appendDirSegment_( QStringList &dirname,
 {
   if ( !value.isEmpty() )
   {
-    dirname.append( segment + '=' + value.replace( ',', "\\," ) );
+    dirname.append( segment + '=' + value.replace( ',', QLatin1String( "\\," ) ) );
   }
 }
 
@@ -342,7 +340,7 @@ QString QgsAuthCertUtils::getCertDistinguishedName( const QSslCertificate &qcert
   if ( acert.isNull() )
   {
     QCA::ConvertResult res;
-    QCA::Certificate acert( QCA::Certificate::fromPEM( qcert.toPem(), &res, QString( "qca-ossl" ) ) );
+    QCA::Certificate acert( QCA::Certificate::fromPEM( qcert.toPem(), &res, QStringLiteral( "qca-ossl" ) ) );
     if ( res != QCA::ConvertGood || acert.isNull() )
     {
       QgsDebugMsg( "Certificate could not be converted to QCA cert" );
@@ -358,28 +356,28 @@ QString QgsAuthCertUtils::getCertDistinguishedName( const QSslCertificate &qcert
   //  C=US
   QStringList dirname;
   QgsAuthCertUtils::appendDirSegment_(
-    dirname, "E", issuer ? acert.issuerInfo().value( QCA::Email )
+    dirname, QStringLiteral( "E" ), issuer ? acert.issuerInfo().value( QCA::Email )
     : acert.subjectInfo().value( QCA::Email ) );
   QgsAuthCertUtils::appendDirSegment_(
-    dirname, "CN", issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::CommonName )
+    dirname, QStringLiteral( "CN" ), issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::CommonName )
     : SSL_SUBJECT_INFO( qcert, QSslCertificate::CommonName ) );
   QgsAuthCertUtils::appendDirSegment_(
-    dirname, "OU", issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::OrganizationalUnitName )
+    dirname, QStringLiteral( "OU" ), issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::OrganizationalUnitName )
     : SSL_SUBJECT_INFO( qcert, QSslCertificate::OrganizationalUnitName ) );
   QgsAuthCertUtils::appendDirSegment_(
-    dirname, "O", issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::Organization )
+    dirname, QStringLiteral( "O" ), issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::Organization )
     : SSL_SUBJECT_INFO( qcert, QSslCertificate::Organization ) );
   QgsAuthCertUtils::appendDirSegment_(
-    dirname, "L", issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::LocalityName )
+    dirname, QStringLiteral( "L" ), issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::LocalityName )
     : SSL_SUBJECT_INFO( qcert, QSslCertificate::LocalityName ) );
   QgsAuthCertUtils::appendDirSegment_(
-    dirname, "ST", issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::StateOrProvinceName )
+    dirname, QStringLiteral( "ST" ), issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::StateOrProvinceName )
     : SSL_SUBJECT_INFO( qcert, QSslCertificate::StateOrProvinceName ) );
   QgsAuthCertUtils::appendDirSegment_(
-    dirname, "C", issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::CountryName )
+    dirname, QStringLiteral( "C" ), issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::CountryName )
     : SSL_SUBJECT_INFO( qcert, QSslCertificate::CountryName ) );
 
-  return dirname.join( "," );
+  return dirname.join( QStringLiteral( "," ) );
 }
 
 QString QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::CertTrustPolicy trust )
@@ -407,7 +405,7 @@ QString QgsAuthCertUtils::getColonDelimited( const QString &txt )
   {
     sl << txt.mid( i, ( i + 2 > txt.size() ) ? -1 : 2 );
   }
-  return sl.join( ":" );
+  return sl.join( QStringLiteral( ":" ) );
 }
 
 QString QgsAuthCertUtils::shaHexForCert( const QSslCertificate& cert, bool formatted )
@@ -426,7 +424,7 @@ QCA::Certificate QgsAuthCertUtils::qtCertToQcaCert( const QSslCertificate &cert 
     return QCA::Certificate();
 
   QCA::ConvertResult res;
-  QCA::Certificate qcacert( QCA::Certificate::fromPEM( cert.toPem(), &res, QString( "qca-ossl" ) ) );
+  QCA::Certificate qcacert( QCA::Certificate::fromPEM( cert.toPem(), &res, QStringLiteral( "qca-ossl" ) ) );
   if ( res != QCA::ConvertGood || qcacert.isNull() )
   {
     QgsDebugMsg( "Certificate could not be converted to QCA cert" );
@@ -459,7 +457,7 @@ QCA::KeyBundle QgsAuthCertUtils::qcaKeyBundle( const QString &path, const QStrin
     passarray = QCA::SecureArray( pass.toUtf8() );
 
   QCA::ConvertResult res;
-  QCA::KeyBundle bundle( QCA::KeyBundle::fromFile( path, passarray, &res, QString( "qca-ossl" ) ) );
+  QCA::KeyBundle bundle( QCA::KeyBundle::fromFile( path, passarray, &res, QStringLiteral( "qca-ossl" ) ) );
 
   return ( res == QCA::ConvertGood ? bundle : QCA::KeyBundle() );
 }
@@ -611,7 +609,7 @@ QList<QgsAuthCertUtils::CertUsageType> QgsAuthCertUtils::certificateUsageTypes( 
     return usages;
 
   QCA::ConvertResult res;
-  QCA::Certificate qcacert( QCA::Certificate::fromPEM( cert.toPem(), &res, QString( "qca-ossl" ) ) );
+  QCA::Certificate qcacert( QCA::Certificate::fromPEM( cert.toPem(), &res, QStringLiteral( "qca-ossl" ) ) );
   if ( res != QCA::ConvertGood || qcacert.isNull() )
   {
     QgsDebugMsg( "Certificate could not be converted to QCA cert" );

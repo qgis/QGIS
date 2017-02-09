@@ -5,19 +5,19 @@
 
     Lexers for .net languages.
 
-    :copyright: Copyright 2006-2013 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2015 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 import re
 
 from pygments.lexer import RegexLexer, DelegatingLexer, bygroups, include, \
-     using, this
+    using, this, default
 from pygments.token import Punctuation, \
-     Text, Comment, Operator, Keyword, Name, String, Number, Literal, Other
-from pygments.util import get_choice_opt
+    Text, Comment, Operator, Keyword, Name, String, Number, Literal, Other
+from pygments.util import get_choice_opt, iteritems
 from pygments import unistring as uni
 
-from pygments.lexers.web import XmlLexer
+from pygments.lexers.html import XmlLexer
 
 __all__ = ['CSharpLexer', 'NemerleLexer', 'BooLexer', 'VbNetLexer',
            'CSharpAspxLexer', 'VbNetAspxLexer', 'FSharpLexer']
@@ -44,24 +44,24 @@ class CSharpLexer(RegexLexer):
 
       The default value is ``basic``.
 
-      *New in Pygments 0.8.*
+      .. versionadded:: 0.8
     """
 
     name = 'C#'
     aliases = ['csharp', 'c#']
     filenames = ['*.cs']
-    mimetypes = ['text/x-csharp'] # inferred
+    mimetypes = ['text/x-csharp']  # inferred
 
     flags = re.MULTILINE | re.DOTALL | re.UNICODE
 
-    # for the range of allowed unicode characters in identifiers,
-    # see http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-334.pdf
+    # for the range of allowed unicode characters in identifiers, see
+    # http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-334.pdf
 
     levels = {
-        'none': '@?[_a-zA-Z][a-zA-Z0-9_]*',
-        'basic': ('@?[_' + uni.Lu + uni.Ll + uni.Lt + uni.Lm + uni.Nl + ']' +
-                  '[' + uni.Lu + uni.Ll + uni.Lt + uni.Lm + uni.Nl +
-                  uni.Nd + uni.Pc + uni.Cf + uni.Mn + uni.Mc + ']*'),
+        'none': '@?[_a-zA-Z]\w*',
+        'basic': ('@?[_' + uni.combine('Lu', 'Ll', 'Lt', 'Lm', 'Nl') + ']' +
+                  '[' + uni.combine('Lu', 'Ll', 'Lt', 'Lm', 'Nl', 'Nd', 'Pc',
+                                    'Cf', 'Mn', 'Mc') + ']*'),
         'full': ('@?(?:_|[^' +
                  uni.allexcept('Lu', 'Ll', 'Lt', 'Lm', 'Lo', 'Nl') + '])'
                  + '[^' + uni.allexcept('Lu', 'Ll', 'Lt', 'Lm', 'Lo', 'Nl',
@@ -71,17 +71,17 @@ class CSharpLexer(RegexLexer):
     tokens = {}
     token_variants = True
 
-    for levelname, cs_ident in levels.items():
+    for levelname, cs_ident in iteritems(levels):
         tokens[levelname] = {
             'root': [
                 # method names
-                (r'^([ \t]*(?:' + cs_ident + r'(?:\[\])?\s+)+?)' # return type
-                 r'(' + cs_ident + ')'                           # method name
+                (r'^([ \t]*(?:' + cs_ident + r'(?:\[\])?\s+)+?)'  # return type
+                 r'(' + cs_ident + ')'                            # method name
                  r'(\s*)(\()',                               # signature start
                  bygroups(using(this), Name.Function, Text, Punctuation)),
                 (r'^\s*\[.*?\]', Name.Attribute),
                 (r'[^\S\n]+', Text),
-                (r'\\\n', Text), # line continuation
+                (r'\\\n', Text),  # line continuation
                 (r'//.*?\n', Comment.Single),
                 (r'/[*].*?[*]/', Comment.Multiline),
                 (r'\n', Text),
@@ -97,17 +97,17 @@ class CSharpLexer(RegexLexer):
                  Comment.Preproc),
                 (r'\b(extern)(\s+)(alias)\b', bygroups(Keyword, Text,
                  Keyword)),
-                (r'(abstract|as|async|await|base|break|case|catch|'
+                (r'(abstract|as|async|await|base|break|by|case|catch|'
                  r'checked|const|continue|default|delegate|'
                  r'do|else|enum|event|explicit|extern|false|finally|'
                  r'fixed|for|foreach|goto|if|implicit|in|interface|'
-                 r'internal|is|lock|new|null|operator|'
+                 r'internal|is|let|lock|new|null|on|operator|'
                  r'out|override|params|private|protected|public|readonly|'
                  r'ref|return|sealed|sizeof|stackalloc|static|'
                  r'switch|this|throw|true|try|typeof|'
                  r'unchecked|unsafe|virtual|void|while|'
                  r'get|set|new|partial|yield|add|remove|value|alias|ascending|'
-                 r'descending|from|group|into|orderby|select|where|'
+                 r'descending|from|group|into|orderby|select|thenby|where|'
                  r'join|equals)\b', Keyword),
                 (r'(global)(::)', bygroups(Keyword, Punctuation)),
                 (r'(bool|byte|char|decimal|double|dynamic|float|int|long|object|'
@@ -117,16 +117,17 @@ class CSharpLexer(RegexLexer):
                 (cs_ident, Name),
             ],
             'class': [
-                (cs_ident, Name.Class, '#pop')
+                (cs_ident, Name.Class, '#pop'),
+                default('#pop'),
             ],
             'namespace': [
-                (r'(?=\()', Text, '#pop'), # using (resource)
-                ('(' + cs_ident + r'|\.)+', Name.Namespace, '#pop')
+                (r'(?=\()', Text, '#pop'),  # using (resource)
+                ('(' + cs_ident + r'|\.)+', Name.Namespace, '#pop'),
             ]
         }
 
     def __init__(self, **options):
-        level = get_choice_opt(options, 'unicodelevel', self.tokens.keys(), 'basic')
+        level = get_choice_opt(options, 'unicodelevel', list(self.tokens), 'basic')
         if level not in self._all_tokens:
             # compile the regexes now
             self._tokens = self.__class__.process_tokendef(level)
@@ -156,44 +157,44 @@ class NemerleLexer(RegexLexer):
 
       The default value is ``basic``.
 
-    *New in Pygments 1.5.*
+    .. versionadded:: 1.5
     """
 
     name = 'Nemerle'
     aliases = ['nemerle']
     filenames = ['*.n']
-    mimetypes = ['text/x-nemerle'] # inferred
+    mimetypes = ['text/x-nemerle']  # inferred
 
     flags = re.MULTILINE | re.DOTALL | re.UNICODE
 
     # for the range of allowed unicode characters in identifiers, see
     # http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-334.pdf
 
-    levels = dict(
-        none = '@?[_a-zA-Z][a-zA-Z0-9_]*',
-        basic = ('@?[_' + uni.Lu + uni.Ll + uni.Lt + uni.Lm + uni.Nl + ']' +
-                 '[' + uni.Lu + uni.Ll + uni.Lt + uni.Lm + uni.Nl +
-                 uni.Nd + uni.Pc + uni.Cf + uni.Mn + uni.Mc + ']*'),
-        full = ('@?(?:_|[^' + uni.allexcept('Lu', 'Ll', 'Lt', 'Lm', 'Lo',
-                                            'Nl') + '])'
-                + '[^' + uni.allexcept('Lu', 'Ll', 'Lt', 'Lm', 'Lo', 'Nl',
-                                       'Nd', 'Pc', 'Cf', 'Mn', 'Mc') + ']*'),
-    )
+    levels = {
+        'none': '@?[_a-zA-Z]\w*',
+        'basic': ('@?[_' + uni.combine('Lu', 'Ll', 'Lt', 'Lm', 'Nl') + ']' +
+                  '[' + uni.combine('Lu', 'Ll', 'Lt', 'Lm', 'Nl', 'Nd', 'Pc',
+                                    'Cf', 'Mn', 'Mc') + ']*'),
+        'full': ('@?(?:_|[^' +
+                 uni.allexcept('Lu', 'Ll', 'Lt', 'Lm', 'Lo', 'Nl') + '])'
+                 + '[^' + uni.allexcept('Lu', 'Ll', 'Lt', 'Lm', 'Lo', 'Nl',
+                                        'Nd', 'Pc', 'Cf', 'Mn', 'Mc') + ']*'),
+    }
 
     tokens = {}
     token_variants = True
 
-    for levelname, cs_ident in levels.items():
+    for levelname, cs_ident in iteritems(levels):
         tokens[levelname] = {
             'root': [
                 # method names
-                (r'^([ \t]*(?:' + cs_ident + r'(?:\[\])?\s+)+?)' # return type
-                 r'(' + cs_ident + ')'                           # method name
+                (r'^([ \t]*(?:' + cs_ident + r'(?:\[\])?\s+)+?)'  # return type
+                 r'(' + cs_ident + ')'                            # method name
                  r'(\s*)(\()',                               # signature start
                  bygroups(using(this), Name.Function, Text, Punctuation)),
                 (r'^\s*\[.*?\]', Name.Attribute),
                 (r'[^\S\n]+', Text),
-                (r'\\\n', Text), # line continuation
+                (r'\\\n', Text),  # line continuation
                 (r'//.*?\n', Comment.Single),
                 (r'/[*].*?[*]/', Comment.Multiline),
                 (r'\n', Text),
@@ -249,7 +250,7 @@ class NemerleLexer(RegexLexer):
                 (cs_ident, Name.Class, '#pop')
             ],
             'namespace': [
-                (r'(?=\()', Text, '#pop'), # using (resource)
+                (r'(?=\()', Text, '#pop'),  # using (resource)
                 ('(' + cs_ident + r'|\.)+', Name.Namespace, '#pop')
             ],
             'splice-string': [
@@ -284,7 +285,7 @@ class NemerleLexer(RegexLexer):
         }
 
     def __init__(self, **options):
-        level = get_choice_opt(options, 'unicodelevel', self.tokens.keys(),
+        level = get_choice_opt(options, 'unicodelevel', list(self.tokens),
                                'basic')
         if level not in self._all_tokens:
             # compile the regexes now
@@ -336,9 +337,9 @@ class BooLexer(RegexLexer):
             (r'"""(\\\\|\\"|.*?)"""', String.Double),
             (r'"(\\\\|\\"|[^"]*?)"', String.Double),
             (r"'(\\\\|\\'|[^']*?)'", String.Single),
-            (r'[a-zA-Z_][a-zA-Z0-9_]*', Name),
+            (r'[a-zA-Z_]\w*', Name),
             (r'(\d+\.\d*|\d*\.\d+)([fF][+-]?[0-9]+)?', Number.Float),
-            (r'[0-9][0-9\.]*(ms?|d|h|s)', Number),
+            (r'[0-9][0-9.]*(ms?|d|h|s)', Number),
             (r'0\d+', Number.Oct),
             (r'0x[a-fA-F0-9]+', Number.Hex),
             (r'\d+L', Number.Integer.Long),
@@ -351,13 +352,13 @@ class BooLexer(RegexLexer):
             ('[*/]', Comment.Multiline)
         ],
         'funcname': [
-            ('[a-zA-Z_][a-zA-Z0-9_]*', Name.Function, '#pop')
+            ('[a-zA-Z_]\w*', Name.Function, '#pop')
         ],
         'classname': [
-            ('[a-zA-Z_][a-zA-Z0-9_]*', Name.Class, '#pop')
+            ('[a-zA-Z_]\w*', Name.Class, '#pop')
         ],
         'namespace': [
-            ('[a-zA-Z_][a-zA-Z0-9_.]*', Name.Namespace, '#pop')
+            ('[a-zA-Z_][\w.]*', Name.Namespace, '#pop')
         ]
     }
 
@@ -372,7 +373,11 @@ class VbNetLexer(RegexLexer):
     name = 'VB.net'
     aliases = ['vb.net', 'vbnet']
     filenames = ['*.vb', '*.bas']
-    mimetypes = ['text/x-vbnet', 'text/x-vba'] # (?)
+    mimetypes = ['text/x-vbnet', 'text/x-vba']  # (?)
+
+    uni_name = '[_' + uni.combine('Lu', 'Ll', 'Lt', 'Lm', 'Nl') + ']' + \
+               '[' + uni.combine('Lu', 'Ll', 'Lt', 'Lm', 'Nl', 'Nd', 'Pc',
+                                 'Cf', 'Mn', 'Mc') + ']*'
 
     flags = re.MULTILINE | re.IGNORECASE
     tokens = {
@@ -382,11 +387,11 @@ class VbNetLexer(RegexLexer):
             (r'\n', Text),
             (r'rem\b.*?\n', Comment),
             (r"'.*?\n", Comment),
-            (r'#If\s.*?\sThen|#ElseIf\s.*?\sThen|#End\s+If|#Const|'
+            (r'#If\s.*?\sThen|#ElseIf\s.*?\sThen|#Else|#End\s+If|#Const|'
              r'#ExternalSource.*?\n|#End\s+ExternalSource|'
              r'#Region.*?\n|#End\s+Region|#ExternalChecksum',
              Comment.Preproc),
-            (r'[\(\){}!#,.:]', Punctuation),
+            (r'[(){}!#,.:]', Punctuation),
             (r'Option\s+(Strict|Explicit|Compare)\s+'
              r'(On|Off|Binary|Text)', Keyword.Declaration),
             (r'(?<!\.)(AddHandler|Alias|'
@@ -422,16 +427,16 @@ class VbNetLexer(RegexLexer):
             (r'(?<!\.)(AddressOf|And|AndAlso|As|GetType|In|Is|IsNot|Like|Mod|'
              r'Or|OrElse|TypeOf|Xor)\b', Operator.Word),
             (r'&=|[*]=|/=|\\=|\^=|\+=|-=|<<=|>>=|<<|>>|:=|'
-             r'<=|>=|<>|[-&*/\\^+=<>]',
+             r'<=|>=|<>|[-&*/\\^+=<>\[\]]',
              Operator),
             ('"', String, 'string'),
-            ('[a-zA-Z_][a-zA-Z0-9_]*[%&@!#$]?', Name),
+            (r'_\n', Text),  # Line continuation  (must be before Name)
+            (uni_name + '[%&@!#$]?', Name),
             ('#.*?#', Literal.Date),
-            (r'(\d+\.\d*|\d*\.\d+)([fF][+-]?[0-9]+)?', Number.Float),
+            (r'(\d+\.\d*|\d*\.\d+)(F[+-]?[0-9]+)?', Number.Float),
             (r'\d+([SILDFR]|US|UI|UL)?', Number.Integer),
             (r'&H[0-9a-f]+([SILDFR]|US|UI|UL)?', Number.Integer),
             (r'&O[0-7]+([SILDFR]|US|UI|UL)?', Number.Integer),
-            (r'_\n', Text), # Line continuation
         ],
         'string': [
             (r'""', String),
@@ -439,25 +444,31 @@ class VbNetLexer(RegexLexer):
             (r'[^"]+', String),
         ],
         'dim': [
-            (r'[a-z_][a-z0-9_]*', Name.Variable, '#pop'),
-            (r'', Text, '#pop'),  # any other syntax
+            (uni_name, Name.Variable, '#pop'),
+            default('#pop'),  # any other syntax
         ],
         'funcname': [
-            (r'[a-z_][a-z0-9_]*', Name.Function, '#pop'),
+            (uni_name, Name.Function, '#pop'),
         ],
         'classname': [
-            (r'[a-z_][a-z0-9_]*', Name.Class, '#pop'),
+            (uni_name, Name.Class, '#pop'),
         ],
         'namespace': [
-            (r'[a-z_][a-z0-9_.]*', Name.Namespace, '#pop'),
+            (uni_name, Name.Namespace),
+            (r'\.', Name.Namespace),
+            default('#pop'),
         ],
         'end': [
             (r'\s+', Text),
             (r'(Function|Sub|Property|Class|Structure|Enum|Module|Namespace)\b',
              Keyword, '#pop'),
-            (r'', Text, '#pop'),
+            default('#pop'),
         ]
     }
+
+    def analyse_text(text):
+        if re.search(r'^\s*(#If|Module|Namespace)', text, re.MULTILINE):
+            return 0.5
 
 
 class GenericAspxLexer(RegexLexer):
@@ -483,10 +494,10 @@ class GenericAspxLexer(RegexLexer):
     }
 
 
-#TODO support multiple languages within the same source file
+# TODO support multiple languages within the same source file
 class CSharpAspxLexer(DelegatingLexer):
     """
-    Lexer for highligting C# within ASP.NET pages.
+    Lexer for highlighting C# within ASP.NET pages.
     """
 
     name = 'aspx-cs'
@@ -495,7 +506,7 @@ class CSharpAspxLexer(DelegatingLexer):
     mimetypes = []
 
     def __init__(self, **options):
-        super(CSharpAspxLexer, self).__init__(CSharpLexer,GenericAspxLexer,
+        super(CSharpAspxLexer, self).__init__(CSharpLexer, GenericAspxLexer,
                                               **options)
 
     def analyse_text(text):
@@ -507,7 +518,7 @@ class CSharpAspxLexer(DelegatingLexer):
 
 class VbNetAspxLexer(DelegatingLexer):
     """
-    Lexer for highligting Visual Basic.net within ASP.NET pages.
+    Lexer for highlighting Visual Basic.net within ASP.NET pages.
     """
 
     name = 'aspx-vb'
@@ -516,8 +527,8 @@ class VbNetAspxLexer(DelegatingLexer):
     mimetypes = []
 
     def __init__(self, **options):
-        super(VbNetAspxLexer, self).__init__(VbNetLexer,GenericAspxLexer,
-                                              **options)
+        super(VbNetAspxLexer, self).__init__(VbNetLexer, GenericAspxLexer,
+                                             **options)
 
     def analyse_text(text):
         if re.search(r'Page\s*Language="Vb"', text, re.I) is not None:
@@ -529,9 +540,12 @@ class VbNetAspxLexer(DelegatingLexer):
 # Very close to functional.OcamlLexer
 class FSharpLexer(RegexLexer):
     """
-    For the F# language.
+    For the F# language (version 3.0).
 
-    *New in Pygments 1.5.*
+    AAAAACK Strings
+    http://research.microsoft.com/en-us/um/cambridge/projects/fsharp/manual/spec.html#_Toc335818775
+
+    .. versionadded:: 1.5
     """
 
     name = 'FSharp'
@@ -540,91 +554,137 @@ class FSharpLexer(RegexLexer):
     mimetypes = ['text/x-fsharp']
 
     keywords = [
-      'abstract', 'and', 'as', 'assert', 'base', 'begin', 'class',
-      'default', 'delegate', 'do', 'do!', 'done', 'downcast',
-      'downto', 'elif', 'else', 'end', 'exception', 'extern',
-      'false', 'finally', 'for', 'fun', 'function', 'global', 'if',
-      'in', 'inherit', 'inline', 'interface', 'internal', 'lazy',
-      'let', 'let!', 'match', 'member', 'module', 'mutable',
-      'namespace', 'new', 'null', 'of', 'open', 'or', 'override',
-      'private', 'public', 'rec', 'return', 'return!', 'sig',
-      'static', 'struct', 'then', 'to', 'true', 'try', 'type',
-      'upcast', 'use', 'use!', 'val', 'void', 'when', 'while',
-      'with', 'yield', 'yield!'
+        'abstract', 'as', 'assert', 'base', 'begin', 'class', 'default',
+        'delegate', 'do!', 'do', 'done', 'downcast', 'downto', 'elif', 'else',
+        'end', 'exception', 'extern', 'false', 'finally', 'for', 'function',
+        'fun', 'global', 'if', 'inherit', 'inline', 'interface', 'internal',
+        'in', 'lazy', 'let!', 'let', 'match', 'member', 'module', 'mutable',
+        'namespace', 'new', 'null', 'of', 'open', 'override', 'private', 'public',
+        'rec', 'return!', 'return', 'select', 'static', 'struct', 'then', 'to',
+        'true', 'try', 'type', 'upcast', 'use!', 'use', 'val', 'void', 'when',
+        'while', 'with', 'yield!', 'yield',
+    ]
+    # Reserved words; cannot hurt to color them as keywords too.
+    keywords += [
+        'atomic', 'break', 'checked', 'component', 'const', 'constraint',
+        'constructor', 'continue', 'eager', 'event', 'external', 'fixed',
+        'functor', 'include', 'method', 'mixin', 'object', 'parallel',
+        'process', 'protected', 'pure', 'sealed', 'tailcall', 'trait',
+        'virtual', 'volatile',
     ]
     keyopts = [
-      '!=','#','&&','&','\(','\)','\*','\+',',','-\.',
-      '->','-','\.\.','\.','::',':=',':>',':',';;',';','<-',
-      '<','>]','>','\?\?','\?','\[<','\[>','\[\|','\[',
-      ']','_','`','{','\|\]','\|','}','~','<@','=','@>'
+        '!=', '#', '&&', '&', '\(', '\)', '\*', '\+', ',', '-\.',
+        '->', '-', '\.\.', '\.', '::', ':=', ':>', ':', ';;', ';', '<-',
+        '<\]', '<', '>\]', '>', '\?\?', '\?', '\[<', '\[\|', '\[', '\]',
+        '_', '`', '\{', '\|\]', '\|', '\}', '~', '<@@', '<@', '=', '@>', '@@>',
     ]
 
     operators = r'[!$%&*+\./:<=>?@^|~-]'
-    word_operators = ['and', 'asr', 'land', 'lor', 'lsl', 'lxor', 'mod', 'not', 'or']
+    word_operators = ['and', 'or', 'not']
     prefix_syms = r'[!?~]'
     infix_syms = r'[=<>@^|&+\*/$%-]'
-    primitives = ['unit', 'int', 'float', 'bool', 'string', 'char', 'list', 'array',
-                  'byte', 'sbyte', 'int16', 'uint16', 'uint32', 'int64', 'uint64'
-                  'nativeint', 'unativeint', 'decimal', 'void', 'float32', 'single',
-                  'double']
+    primitives = [
+        'sbyte', 'byte', 'char', 'nativeint', 'unativeint', 'float32', 'single',
+        'float', 'double', 'int8', 'uint8', 'int16', 'uint16', 'int32',
+        'uint32', 'int64', 'uint64', 'decimal', 'unit', 'bool', 'string',
+        'list', 'exn', 'obj', 'enum',
+    ]
+
+    # See http://msdn.microsoft.com/en-us/library/dd233181.aspx and/or
+    # http://fsharp.org/about/files/spec.pdf for reference.  Good luck.
 
     tokens = {
         'escape-sequence': [
-            (r'\\[\\\"\'ntbr]', String.Escape),
+            (r'\\[\\"\'ntbrafv]', String.Escape),
             (r'\\[0-9]{3}', String.Escape),
-            (r'\\x[0-9a-fA-F]{2}', String.Escape),
+            (r'\\u[0-9a-fA-F]{4}', String.Escape),
+            (r'\\U[0-9a-fA-F]{8}', String.Escape),
         ],
         'root': [
             (r'\s+', Text),
-            (r'false|true|\(\)|\[\]', Name.Builtin.Pseudo),
-            (r'\b([A-Z][A-Za-z0-9_\']*)(?=\s*\.)',
+            (r'\(\)|\[\]', Name.Builtin.Pseudo),
+            (r'\b(?<!\.)([A-Z][\w\']*)(?=\s*\.)',
              Name.Namespace, 'dotted'),
-            (r'\b([A-Z][A-Za-z0-9_\']*)', Name.Class),
+            (r'\b([A-Z][\w\']*)', Name),
+            (r'///.*?\n', String.Doc),
             (r'//.*?\n', Comment.Single),
             (r'\(\*(?!\))', Comment, 'comment'),
+
+            (r'@"', String, 'lstring'),
+            (r'"""', String, 'tqs'),
+            (r'"', String, 'string'),
+
+            (r'\b(open|module)(\s+)([\w.]+)',
+             bygroups(Keyword, Text, Name.Namespace)),
+            (r'\b(let!?)(\s+)(\w+)',
+             bygroups(Keyword, Text, Name.Variable)),
+            (r'\b(type)(\s+)(\w+)',
+             bygroups(Keyword, Text, Name.Class)),
+            (r'\b(member|override)(\s+)(\w+)(\.)(\w+)',
+             bygroups(Keyword, Text, Name, Punctuation, Name.Function)),
             (r'\b(%s)\b' % '|'.join(keywords), Keyword),
+            (r'``([^`\n\r\t]|`[^`\n\r\t])+``', Name),
             (r'(%s)' % '|'.join(keyopts), Operator),
             (r'(%s|%s)?%s' % (infix_syms, prefix_syms, operators), Operator),
             (r'\b(%s)\b' % '|'.join(word_operators), Operator.Word),
             (r'\b(%s)\b' % '|'.join(primitives), Keyword.Type),
-
-            (r'#[ \t]*(if|endif|else|line|nowarn|light)\b.*?\n',
+            (r'#[ \t]*(if|endif|else|line|nowarn|light|\d+)\b.*?\n',
              Comment.Preproc),
 
             (r"[^\W\d][\w']*", Name),
 
-            (r'\d[\d_]*', Number.Integer),
-            (r'0[xX][\da-fA-F][\da-fA-F_]*', Number.Hex),
-            (r'0[oO][0-7][0-7_]*', Number.Oct),
-            (r'0[bB][01][01_]*', Number.Binary),
-            (r'-?\d[\d_]*(.[\d_]*)?([eE][+\-]?\d[\d_]*)', Number.Float),
+            (r'\d[\d_]*[uU]?[yslLnQRZINGmM]?', Number.Integer),
+            (r'0[xX][\da-fA-F][\da-fA-F_]*[uU]?[yslLn]?[fF]?', Number.Hex),
+            (r'0[oO][0-7][0-7_]*[uU]?[yslLn]?', Number.Oct),
+            (r'0[bB][01][01_]*[uU]?[yslLn]?', Number.Bin),
+            (r'-?\d[\d_]*(.[\d_]*)?([eE][+\-]?\d[\d_]*)[fFmM]?',
+             Number.Float),
 
-            (r"'(?:(\\[\\\"'ntbr ])|(\\[0-9]{3})|(\\x[0-9a-fA-F]{2}))'",
+            (r"'(?:(\\[\\\"'ntbr ])|(\\[0-9]{3})|(\\x[0-9a-fA-F]{2}))'B?",
              String.Char),
             (r"'.'", String.Char),
-            (r"'", Keyword), # a stray quote is another syntax element
+            (r"'", Keyword),  # a stray quote is another syntax element
 
-            (r'"', String.Double, 'string'),
+            (r'@?"', String.Double, 'string'),
 
             (r'[~?][a-z][\w\']*:', Name.Variable),
-        ],
-        'comment': [
-            (r'[^(*)]+', Comment),
-            (r'\(\*', Comment, '#push'),
-            (r'\*\)', Comment, '#pop'),
-            (r'[(*)]', Comment),
-        ],
-        'string': [
-            (r'[^\\"]+', String.Double),
-            include('escape-sequence'),
-            (r'\\\n', String.Double),
-            (r'"', String.Double, '#pop'),
         ],
         'dotted': [
             (r'\s+', Text),
             (r'\.', Punctuation),
-            (r'[A-Z][A-Za-z0-9_\']*(?=\s*\.)', Name.Namespace),
-            (r'[A-Z][A-Za-z0-9_\']*', Name.Class, '#pop'),
-            (r'[a-z_][A-Za-z0-9_\']*', Name, '#pop'),
+            (r'[A-Z][\w\']*(?=\s*\.)', Name.Namespace),
+            (r'[A-Z][\w\']*', Name, '#pop'),
+            (r'[a-z_][\w\']*', Name, '#pop'),
+            # e.g. dictionary index access
+            default('#pop'),
+        ],
+        'comment': [
+            (r'[^(*)@"]+', Comment),
+            (r'\(\*', Comment, '#push'),
+            (r'\*\)', Comment, '#pop'),
+            # comments cannot be closed within strings in comments
+            (r'@"', String, 'lstring'),
+            (r'"""', String, 'tqs'),
+            (r'"', String, 'string'),
+            (r'[(*)@]', Comment),
+        ],
+        'string': [
+            (r'[^\\"]+', String),
+            include('escape-sequence'),
+            (r'\\\n', String),
+            (r'\n', String),  # newlines are allowed in any string
+            (r'"B?', String, '#pop'),
+        ],
+        'lstring': [
+            (r'[^"]+', String),
+            (r'\n', String),
+            (r'""', String),
+            (r'"B?', String, '#pop'),
+        ],
+        'tqs': [
+            (r'[^"]+', String),
+            (r'\n', String),
+            (r'"""B?', String, '#pop'),
+            (r'"', String),
         ],
     }

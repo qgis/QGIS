@@ -16,13 +16,18 @@
 #define QGSVECTORLAYEREDITUTILS_H
 
 
+#include "qgis_core.h"
 #include "qgsfeature.h"
 
 #include "qgsvectorlayer.h"
+#include "qgsgeometry.h"
 
 class QgsGeometryCache;
-class QgsCurveV2;
+class QgsCurve;
 
+/** \ingroup core
+ * \class QgsVectorLayerEditUtils
+ */
 class CORE_EXPORT QgsVectorLayerEditUtils
 {
   public:
@@ -50,18 +55,12 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      */
     bool moveVertex( const QgsPointV2& p, QgsFeatureId atFeatureId, int atVertex );
 
-    /** Deletes a vertex from a feature
-     * @deprecated use deleteVertexV2() instead
-     */
-    Q_DECL_DEPRECATED bool deleteVertex( QgsFeatureId atFeatureId, int atVertex );
-
     /** Deletes a vertex from a feature.
      * @param featureId ID of feature to remove vertex from
      * @param vertex index of vertex to delete
      * @note added in QGIS 2.14
      */
-    //TODO QGIS 3.0 - rename to deleteVertex
-    QgsVectorLayer::EditResult deleteVertexV2( QgsFeatureId featureId, int vertex );
+    QgsVectorLayer::EditResult deleteVertex( QgsFeatureId featureId, int vertex );
 
     /** Adds a ring to polygon/multipolygon features
      * @param ring ring to add
@@ -94,7 +93,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * @note available in python bindings as addCurvedRing
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addRing( QgsCurveV2* ring, const QgsFeatureIds& targetFeatureIds = QgsFeatureIds(), QgsFeatureId* modifiedFeatureId = nullptr );
+    int addRing( QgsCurve* ring, const QgsFeatureIds& targetFeatureIds = QgsFeatureIds(), QgsFeatureId* modifiedFeatureId = nullptr );
 
     /** Adds a new part polygon to a multipart feature
      * @return
@@ -121,11 +120,11 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * @note available in python bindings as addPartV2
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QgsPointSequenceV2 &ring, QgsFeatureId featureId );
+    int addPart( const QgsPointSequence &ring, QgsFeatureId featureId );
 
     // @note available in python bindings as addCurvedPart
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( QgsCurveV2* ring, QgsFeatureId featureId );
+    int addPart( QgsCurve* ring, QgsFeatureId featureId );
 
     /** Translates feature by dx, dy
      * @param featureId id of the feature to translate
@@ -160,7 +159,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * @note geom is not going to be modified by the function
      * @return 0 in case of success
      */
-    int addTopologicalPoints( const QgsGeometry *geom );
+    int addTopologicalPoints( const QgsGeometry& geom );
 
     /** Adds a vertex to segments which intersect point p but don't
      * already have a vertex there. If a feature already has a vertex at position p,

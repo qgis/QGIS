@@ -22,12 +22,12 @@
 
 class QgsVectorLayer;
 
-/** A class that produces a rasterlayer from a vector layer with spatial interpolation*/
+//! A class that produces a rasterlayer from a vector layer with spatial interpolation
 class QgsInterpolationLayerBuilder: public QgsMSLayerBuilder
 {
   public:
+
     explicit QgsInterpolationLayerBuilder( QgsVectorLayer* vl );
-    ~QgsInterpolationLayerBuilder();
 
     /** Creates a maplayer from xml tag
        @param elem xml element containing description of datasource

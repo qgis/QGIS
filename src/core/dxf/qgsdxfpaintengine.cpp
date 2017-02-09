@@ -27,10 +27,6 @@ QgsDxfPaintEngine::QgsDxfPaintEngine( const QgsDxfPaintDevice* dxfDevice, QgsDxf
 {
 }
 
-QgsDxfPaintEngine::~QgsDxfPaintEngine()
-{
-}
-
 bool QgsDxfPaintEngine::begin( QPaintDevice* pdev )
 {
   Q_UNUSED( pdev );
@@ -66,7 +62,7 @@ void QgsDxfPaintEngine::updateState( const QPaintEngineState& state )
     mBrush = state.brush();
 }
 
-void QgsDxfPaintEngine::setRing( QgsPointSequenceV2 &polyline, const QPointF *points, int pointCount )
+void QgsDxfPaintEngine::setRing( QgsPointSequence &polyline, const QPointF *points, int pointCount )
 {
   polyline.clear();
   for ( int i = 0; i < pointCount; ++i )
@@ -79,19 +75,19 @@ void QgsDxfPaintEngine::drawPolygon( const QPointF *points, int pointCount, Poly
   if ( !mDxf || !mPaintDevice )
     return;
 
-  QgsRingSequenceV2 polygon;
-  polygon << QgsPointSequenceV2();
+  QgsRingSequence polygon;
+  polygon << QgsPointSequence();
   setRing( polygon.last(), points, pointCount );
 
   if ( mode == QPaintEngine::PolylineMode )
   {
     if ( mPen.style() != Qt::NoPen && mPen.brush().style() != Qt::NoBrush )
-      mDxf->writePolyline( polygon.at( 0 ), mLayer, "CONTINUOUS", mPen.color(), currentWidth() );
+      mDxf->writePolyline( polygon.at( 0 ), mLayer, QStringLiteral( "CONTINUOUS" ), mPen.color(), currentWidth() );
   }
   else
   {
     if ( mBrush.style() != Qt::NoBrush )
-      mDxf->writePolygon( polygon, mLayer, "SOLID", mBrush.color() );
+      mDxf->writePolygon( polygon, mLayer, QStringLiteral( "SOLID" ), mBrush.color() );
   }
 }
 
@@ -122,7 +118,7 @@ void QgsDxfPaintEngine::drawPath( const QPainterPath& path )
   endPolygon();
 
   if ( !mPolygon.isEmpty() && mBrush.style() != Qt::NoBrush )
-    mDxf->writePolygon( mPolygon, mLayer, "SOLID", mBrush.color() );
+    mDxf->writePolygon( mPolygon, mLayer, QStringLiteral( "SOLID" ), mBrush.color() );
 
   mPolygon.clear();
 }
@@ -156,7 +152,7 @@ void QgsDxfPaintEngine::endPolygon()
     if ( mPen.style() != Qt::NoPen )
       drawPolygon( mCurrentPolygon.constData(), mCurrentPolygon.size(), QPaintEngine::PolylineMode );
 
-    mPolygon << QgsPointSequenceV2();
+    mPolygon << QgsPointSequence();
     setRing( mPolygon.last(), mCurrentPolygon.constData(), mCurrentPolygon.size() );
   }
   mCurrentPolygon.clear();
@@ -198,7 +194,7 @@ void QgsDxfPaintEngine::drawLines( const QLineF* lines, int lineCount )
   {
     mDxf->writeLine( toDxfCoordinates( lines[i].p1() ),
                      toDxfCoordinates( lines[i].p2() ),
-                     mLayer, "CONTINUOUS", mPen.color(), currentWidth() );
+                     mLayer, QStringLiteral( "CONTINUOUS" ), mPen.color(), currentWidth() );
   }
 }
 

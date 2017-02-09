@@ -21,6 +21,7 @@
 
 
 #include "qgsscalecombobox.h"
+#include "qgis_gui.h"
 
 class QgsMapCanvas;
 
@@ -38,8 +39,6 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
   public:
     explicit QgsScaleWidget( QWidget *parent = nullptr );
 
-    virtual ~QgsScaleWidget();
-
     //! shows a button to set the scale to the current scale of the map canvas next to the combobox
     //! @note the map canvas must be defined to show the button
     void setShowCurrentScaleButton( bool showCurrentScaleButton );
@@ -55,7 +54,7 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
     //! Function to read the selected scale as double
     double scale() const { return mScaleComboBox->scale();}
     //! Function to set the selected scale from double
-    void setScale( double scale ) { return mScaleComboBox->setScale( scale ); }
+    void setScale( double scale );
     //! Function to read the min scale
     double minScale() const { return mScaleComboBox->minScale(); }
 

@@ -27,9 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QGis, QgsFeature, QgsGeometry
+from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -50,48 +50,30 @@ class PolygonsToLines(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Polygons to lines')
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+        self.tags = self.tr('line,polygon,convert')
 
         self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
+                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Lines from polygons')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Lines from polygons'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields().toList(), QGis.WKBLineString, layer.crs())
-
-        outFeat = QgsFeature()
-        inGeom = QgsGeometry()
-        outGeom = QgsGeometry()
+            layer.fields().toList(), QgsWkbTypes.LineString, layer.crs())
 
         features = vector.features(layer)
         total = 100.0 / len(features)
         for current, f in enumerate(features):
-            inGeom = f.geometry()
-            attrs = f.attributes()
-            lineList = self.extractAsLine(inGeom)
-            outFeat.setAttributes(attrs)
-            for h in lineList:
-                outFeat.setGeometry(outGeom.fromPolyline(h))
-                writer.addFeature(outFeat)
+            if f.hasGeometry():
+                lines = QgsGeometry(f.geometry().geometry().boundary()).asGeometryCollection()
+                for line in lines:
+                    f.setGeometry(line)
+                    writer.addFeature(f)
+            else:
+                writer.addFeature(f)
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer
-
-    def extractAsLine(self, geom):
-        multiGeom = QgsGeometry()
-        lines = []
-        if geom and geom.type() == QGis.Polygon:
-            if geom.isMultipart():
-                multiGeom = geom.asMultiPolygon()
-                for i in multiGeom:
-                    lines.extend(i)
-            else:
-                multiGeom = geom.asPolygon()
-                lines = multiGeom
-            return lines
-        else:
-            return []

@@ -16,13 +16,16 @@
 #ifndef QGSLAYERTREENODE_H
 #define QGSLAYERTREENODE_H
 
+#include "qgis_core.h"
 #include <QObject>
 
 #include "qgsobjectcustomproperties.h"
 
 class QDomElement;
 
-/**
+class QgsProject;
+
+/** \ingroup core
  * This class is a base class for nodes in a layer tree.
  * Layer tree is a hierarchical structure consisting of group and layer nodes:
  * - group nodes are containers and may contain children (layer and group nodes)
@@ -70,8 +73,8 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     //! Enumeration of possible tree node types
     enum NodeType
     {
-      NodeGroup,   //!< container of other groups and layers
-      NodeLayer    //!< leaf node pointing to a layer
+      NodeGroup,   //!< Container of other groups and layers
+      NodeLayer    //!< Leaf node pointing to a layer
     };
 
     ~QgsLayerTreeNode();
@@ -82,11 +85,26 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     QgsLayerTreeNode *parent() { return mParent; }
     //! Get list of children of the node. Children are owned by the parent
     QList<QgsLayerTreeNode*> children() { return mChildren; }
+    //! Get list of children of the node. Children are owned by the parent
+    QList<QgsLayerTreeNode*> children() const { return mChildren; }
 
-    //! Read layer tree from XML. Returns new instance
-    static QgsLayerTreeNode *readXML( QDomElement &element );
+    //! Return name of the node
+    //! @note added in 3.0
+    virtual QString name() const = 0;
+    //! Set name of the node. Emits nameChanged signal.
+    //! @note added in 3.0
+    virtual void setName( const QString& name ) = 0;
+
+    //! Read layer tree from XML. Returns new instance.
+    //! Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
+    static QgsLayerTreeNode *readXml( QDomElement &element );
+    //! Read layer tree from XML. Returns new instance.
+    //! Also resolves textual references to layers from the project (calls resolveReferences() internally).
+    //! @note added in 3.0
+    static QgsLayerTreeNode* readXml( QDomElement& element, const QgsProject* project );
+
     //! Write layer tree to XML
-    virtual void writeXML( QDomElement &parentElement ) = 0;
+    virtual void writeXml( QDomElement &parentElement ) = 0;
 
     //! Return string with layer tree structure. For debug purposes only
     virtual QString dump() const = 0;
@@ -94,20 +112,53 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     //! Create a copy of the node. Returns new instance
     virtual QgsLayerTreeNode *clone() const = 0;
 
+    //! Turn textual references to layers into map layer object from project.
+    //! This method should be called after readXml()
+    //! @note added in 3.0
+    virtual void resolveReferences( const QgsProject* project ) = 0;
+
+    //! Returns whether a node is really visible (ie checked and all its ancestors checked as well)
+    //! @note added in 3.0
+    bool isVisible() const;
+
+    //! Returns whether a node is checked (independently of its ancestors or children)
+    //! @note added in 3.0
+    bool itemVisibilityChecked() const { return mChecked; }
+
+    //! Check or uncheck a node (independently of its ancestors or children)
+    //! @note added in 3.0
+    void setItemVisibilityChecked( bool checked );
+
+    //! Check or uncheck a node and all its children (taking into account exclusion rules)
+    //! @note added in 3.0
+    virtual void setItemVisibilityCheckedRecursive( bool checked );
+
+    //! Check or uncheck a node and all its parents
+    //! @note added in 3.0
+    void setItemVisibilityCheckedParentRecursive( bool checked );
+
+    //! Return whether this node is checked and all its children.
+    //! @note added in 3.0
+    bool isItemVisibilityCheckedRecursive() const;
+
+    //! Return whether this node is unchecked and all its children.
+    //! @note added in 3.0
+    bool isItemVisibilityUncheckedRecursive() const;
+
     //! Return whether the node should be shown as expanded or collapsed in GUI
     bool isExpanded() const;
     //! Set whether the node should be shown as expanded or collapsed in GUI
     void setExpanded( bool expanded );
 
-    /** Set a custom property for the node. Properties are stored in a map and saved in project file. */
+    //! Set a custom property for the node. Properties are stored in a map and saved in project file.
     void setCustomProperty( const QString &key, const QVariant &value );
-    /** Read a custom property from layer. Properties are stored in a map and saved in project file. */
+    //! Read a custom property from layer. Properties are stored in a map and saved in project file.
     QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
-    /** Remove a custom property from layer. Properties are stored in a map and saved in project file. */
+    //! Remove a custom property from layer. Properties are stored in a map and saved in project file.
     void removeCustomProperty( const QString &key );
-    /** Return list of keys stored in custom properties */
+    //! Return list of keys stored in custom properties
     QStringList customProperties() const;
-    /** Remove a child from a node */
+    //! Remove a child from a node
     bool takeChild( QgsLayerTreeNode *node );
 
   signals:
@@ -121,21 +172,27 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     //! Emitted when one or more nodes has been removed from a node within the tree
     void removedChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
     //! Emitted when check state of a node within the tree has been changed
-    void visibilityChanged( QgsLayerTreeNode *node, Qt::CheckState state );
+    void visibilityChanged( QgsLayerTreeNode *node );
     //! Emitted when a custom property of a node within the tree has been changed or removed
     void customPropertyChanged( QgsLayerTreeNode *node, const QString& key );
     //! Emitted when the collapsed/expanded state of a node within the tree has been changed
     void expandedChanged( QgsLayerTreeNode *node, bool expanded );
+    //! Emitted when the name of the node is changed
+    //! @note added in 3.0
+    void nameChanged( QgsLayerTreeNode* node, QString name );
 
   protected:
 
-    QgsLayerTreeNode( NodeType t );
+    //! Constructor
+    QgsLayerTreeNode( NodeType t, bool checked = true );
     QgsLayerTreeNode( const QgsLayerTreeNode &other );
 
     // low-level utility functions
 
-    void readCommonXML( QDomElement &element );
-    void writeCommonXML( QDomElement &element );
+    //! Read common XML elements.
+    void readCommonXml( QDomElement &element );
+    //! Write common XML elements.
+    void writeCommonXml( QDomElement &element );
 
     //! Low-level insertion of children to the node. The children must not have any parent yet!
     void insertChildrenPrivate( int index, QList<QgsLayerTreeNode*> nodes );
@@ -145,6 +202,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
   protected:
     //! type of the node - determines which subclass is used
     NodeType mNodeType;
+    bool mChecked;
     //! pointer to the parent node - null in case of root node
     QgsLayerTreeNode *mParent;
     //! list of children - node is responsible for their deletion

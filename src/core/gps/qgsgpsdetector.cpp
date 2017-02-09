@@ -36,11 +36,11 @@ QList< QPair<QString, QString> > QgsGPSDetector::availablePorts()
 
   // try local QtLocation first
 #if defined(HAVE_QT_MOBILITY_LOCATION ) || defined(QT_POSITIONING_LIB)
-  devs << QPair<QString, QString>( "internalGPS", tr( "internal GPS" ) );
+  devs << QPair<QString, QString>( QStringLiteral( "internalGPS" ), tr( "internal GPS" ) );
 #endif
 
   // try local gpsd first
-  devs << QPair<QString, QString>( "localhost:2947:", tr( "local gpsd" ) );
+  devs << QPair<QString, QString>( QStringLiteral( "localhost:2947:" ), tr( "local gpsd" ) );
 
 #ifdef Q_OS_LINUX
   // look for linux serial devices
@@ -48,7 +48,7 @@ QList< QPair<QString, QString> > QgsGPSDetector::availablePorts()
   {
     for ( int i = 0; i < 10; ++i )
     {
-      if ( QFileInfo( linuxDev.arg( i ) ).exists() )
+      if ( QFileInfo::exists( linuxDev.arg( i ) ) )
       {
         devs << QPair<QString, QString>( linuxDev.arg( i ), linuxDev.arg( i ) );
       }
@@ -154,7 +154,7 @@ void QgsGPSDetector::advance()
 
       mConn = new QgsGpsdConnection( gpsParams[0], gpsParams[1].toShort(), gpsParams[2] );
     }
-    else if ( mPortList.at( mPortIndex ).first.contains( "internalGPS" ) )
+    else if ( mPortList.at( mPortIndex ).first.contains( QLatin1String( "internalGPS" ) ) )
     {
 #if defined(HAVE_QT_MOBILITY_LOCATION ) || defined(QT_POSITIONING_LIB)
       mConn = new QgsQtLocationConnection();

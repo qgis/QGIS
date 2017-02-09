@@ -27,7 +27,8 @@
 #include "qgscontexthelp.h"
 
 QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString& connName, Qt::WindowFlags fl )
-    : QDialog( parent, fl ), mOriginalConnName( connName )
+    : QDialog( parent, fl )
+    , mOriginalConnName( connName )
 {
   setupUi( this );
 
@@ -48,14 +49,14 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString& co
     cb_allowGeometrylessTables->setChecked( settings.value( key + "/allowGeometrylessTables", true ).toBool() );
     cb_useEstimatedMetadata->setChecked( settings.value( key + "/estimatedMetadata", false ).toBool() );
 
-    if ( settings.value( key + "/saveUsername" ).toString() == "true" )
+    if ( settings.value( key + "/saveUsername" ).toString() == QLatin1String( "true" ) )
     {
       txtUsername->setText( settings.value( key + "/username" ).toString() );
       chkStoreUsername->setChecked( true );
       cb_trustedConnection->setChecked( false );
     }
 
-    if ( settings.value( key + "/savePassword" ).toString() == "true" )
+    if ( settings.value( key + "/savePassword" ).toString() == QLatin1String( "true" ) )
     {
       txtPassword->setText( settings.value( key + "/password" ).toString() );
       chkStorePassword->setChecked( true );
@@ -65,11 +66,11 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString& co
   }
   on_cb_trustedConnection_clicked();
 }
-/** Autoconnected SLOTS **/
+//! Autoconnected SLOTS *
 void QgsMssqlNewConnection::accept()
 {
   QSettings settings;
-  QString baseKey = "/MSSQL/connections/";
+  QString baseKey = QStringLiteral( "/MSSQL/connections/" );
   settings.setValue( baseKey + "selected", txtName->text() );
 
   // warn if entry was renamed to an existing connection
@@ -94,7 +95,7 @@ void QgsMssqlNewConnection::accept()
   baseKey += txtName->text();
   QString database;
   QListWidgetItem* item = listDatabase->currentItem();
-  if ( item && item->text() != "(from service)" )
+  if ( item && item->text() != QLatin1String( "(from service)" ) )
   {
     database = item->text();
   }
@@ -102,8 +103,8 @@ void QgsMssqlNewConnection::accept()
   settings.setValue( baseKey + "/service", txtService->text() );
   settings.setValue( baseKey + "/host", txtHost->text() );
   settings.setValue( baseKey + "/database", database );
-  settings.setValue( baseKey + "/username", chkStoreUsername->isChecked() ? txtUsername->text() : "" );
-  settings.setValue( baseKey + "/password", chkStorePassword->isChecked() ? txtPassword->text() : "" );
+  settings.setValue( baseKey + "/username", chkStoreUsername->isChecked() ? txtUsername->text() : QLatin1String( "" ) );
+  settings.setValue( baseKey + "/password", chkStorePassword->isChecked() ? txtPassword->text() : QLatin1String( "" ) );
   settings.setValue( baseKey + "/saveUsername", chkStoreUsername->isChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/savePassword", chkStorePassword->isChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/geometryColumns", cb_geometryColumns->isChecked() );
@@ -128,9 +129,9 @@ void QgsMssqlNewConnection::on_cb_trustedConnection_clicked()
   if ( cb_trustedConnection->checkState() == Qt::Checked )
   {
     txtUsername->setEnabled( false );
-    txtUsername->setText( "" );
+    txtUsername->setText( QLatin1String( "" ) );
     txtPassword->setEnabled( false );
-    txtPassword->setText( "" );
+    txtPassword->setText( QLatin1String( "" ) );
   }
   else
   {
@@ -139,7 +140,7 @@ void QgsMssqlNewConnection::on_cb_trustedConnection_clicked()
   }
 }
 
-/** End  Autoconnected SLOTS **/
+//! End  Autoconnected SLOTS *
 
 QgsMssqlNewConnection::~QgsMssqlNewConnection()
 {
@@ -148,7 +149,7 @@ QgsMssqlNewConnection::~QgsMssqlNewConnection()
 
 bool QgsMssqlNewConnection::testConnection( const QString& testDatabase )
 {
-  bar->pushMessage( "Testing connection", "....." );
+  bar->pushMessage( QStringLiteral( "Testing connection" ), QStringLiteral( "....." ) );
   // Gross but needed to show the last message.
   qApp->processEvents();
 
@@ -165,7 +166,7 @@ bool QgsMssqlNewConnection::testConnection( const QString& testDatabase )
   {
     database = testDatabase;
   }
-  else if ( item && item->text() != "(from service)" )
+  else if ( item && item->text() != QLatin1String( "(from service)" ) )
   {
     database = item->text();
   }
@@ -199,13 +200,13 @@ bool QgsMssqlNewConnection::testConnection( const QString& testDatabase )
 
 void QgsMssqlNewConnection::listDatabases()
 {
-  testConnection( "master" );
+  testConnection( QStringLiteral( "master" ) );
   listDatabase->clear();
-  QString queryStr = "SELECT name FROM master..sysdatabases WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb')";
+  QString queryStr = QStringLiteral( "SELECT name FROM master..sysdatabases WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb')" );
 
   QSqlDatabase db = QgsMssqlProvider::GetDatabase( txtService->text().trimmed(),
                     txtHost->text().trimmed(),
-                    "master",
+                    QStringLiteral( "master" ),
                     txtUsername->text().trimmed(),
                     txtPassword->text().trimmed() );
   if ( db.open() )
@@ -216,7 +217,7 @@ void QgsMssqlNewConnection::listDatabases()
 
     if ( !txtService->text().isEmpty() )
     {
-      listDatabase->addItem( "(from service)" );
+      listDatabase->addItem( QStringLiteral( "(from service)" ) );
     }
 
     if ( query.isActive() )

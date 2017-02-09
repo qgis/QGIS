@@ -25,7 +25,7 @@
 
 QgsMessageBarItem::QgsMessageBarItem( const QString &text, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
     : QWidget( parent )
-    , mTitle( "" )
+    , mTitle( QLatin1String( "" ) )
     , mText( text )
     , mLevel( level )
     , mDuration( duration )
@@ -64,8 +64,8 @@ QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text,
 
 QgsMessageBarItem::QgsMessageBarItem( QWidget *widget, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
     : QWidget( parent )
-    , mTitle( "" )
-    , mText( "" )
+    , mTitle( QLatin1String( "" ) )
+    , mText( QLatin1String( "" ) )
     , mLevel( level )
     , mDuration( duration )
     , mWidget( widget )
@@ -73,10 +73,6 @@ QgsMessageBarItem::QgsMessageBarItem( QWidget *widget, QgsMessageBar::MessageLev
     , mLayout( nullptr )
 {
   writeContent();
-}
-
-QgsMessageBarItem::~QgsMessageBarItem()
-{
 }
 
 void QgsMessageBarItem::writeContent()
@@ -102,17 +98,17 @@ void QgsMessageBarItem::writeContent()
   }
   else
   {
-    QString msgIcon( "/mIconInfo.png" );
+    QString msgIcon( QStringLiteral( "/mIconInfo.svg" ) );
     switch ( mLevel )
     {
       case QgsMessageBar::CRITICAL:
-        msgIcon = QString( "/mIconCritical.png" );
+        msgIcon = QStringLiteral( "/mIconCritical.png" );
         break;
       case QgsMessageBar::WARNING:
-        msgIcon = QString( "/mIconWarn.png" );
+        msgIcon = QStringLiteral( "/mIconWarning.svg" );
         break;
       case QgsMessageBar::SUCCESS:
-        msgIcon = QString( "/mIconSuccess.png" );
+        msgIcon = QStringLiteral( "/mIconSuccess.png" );
         break;
       default:
         break;
@@ -135,7 +131,7 @@ void QgsMessageBarItem::writeContent()
     if ( !mTextEdit )
     {
       mTextEdit = new QTextEdit( this );
-      mTextEdit->setObjectName( "textEdit" );
+      mTextEdit->setObjectName( QStringLiteral( "textEdit" ) );
       mTextEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
       mTextEdit->setReadOnly( true );
       mTextEdit->setFrameShape( QFrame::NoFrame );
@@ -152,9 +148,9 @@ void QgsMessageBarItem::writeContent()
     {
       // add ':' to end of title
       QString t = mTitle.trimmed();
-      if ( !content.isEmpty() && !t.endsWith( ':' ) && !t.endsWith( ": " ) )
-        t += ": ";
-      content.prepend( QLatin1String( "<b>" ) + t + " </b>" );
+      if ( !content.isEmpty() && !t.endsWith( ':' ) && !t.endsWith( QLatin1String( ": " ) ) )
+        t += QLatin1String( ": " );
+      content.prepend( QStringLiteral( "<b>" ) + t + " </b>" );
     }
     mTextEdit->setText( content );
   }
@@ -190,7 +186,7 @@ void QgsMessageBarItem::writeContent()
     mStyleSheet = "QgsMessageBar { background-color: #e7f5fe; border: 1px solid #b9cfe4; } "
                   "QLabel,QTextEdit { color: #2554a1; } ";
   }
-  mStyleSheet += "QLabel#mItemCount { font-style: italic; }";
+  mStyleSheet += QLatin1String( "QLabel#mItemCount { font-style: italic; }" );
 }
 
 QgsMessageBarItem* QgsMessageBarItem::setText( const QString& text )

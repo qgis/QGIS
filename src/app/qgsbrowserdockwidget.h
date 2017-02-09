@@ -15,7 +15,6 @@
 #ifndef QGSBROWSERDOCKWIDGET_H
 #define QGSBROWSERDOCKWIDGET_H
 
-#include <QDockWidget>
 #include <ui_qgsbrowserdockwidgetbase.h>
 #include <ui_qgsbrowserlayerpropertiesbase.h>
 #include <ui_qgsbrowserdirectorypropertiesbase.h>
@@ -23,7 +22,9 @@
 
 #include "qgsdataitem.h"
 #include "qgsbrowsertreeview.h"
+#include "qgsdockwidget.h"
 #include <QSortFilterProxyModel>
+#include "qgis_app.h"
 
 class QgsBrowserModel;
 class QModelIndex;
@@ -50,7 +51,7 @@ class QgsBrowserPropertiesWidget : public QWidget
     explicit QgsBrowserPropertiesWidget( QWidget* parent = nullptr );
     static QgsBrowserPropertiesWidget* createWidget( QgsDataItem* item, QWidget* parent = nullptr );
     virtual void setItem( QgsDataItem* item ) { Q_UNUSED( item ) }
-    /** Set content widget, usually item paramWidget. Takes ownership. */
+    //! Set content widget, usually item paramWidget. Takes ownership.
     virtual void setWidget( QWidget* widget );
 
     /** Sets whether the properties widget should display in condensed mode, ie, for display in a dock
@@ -100,21 +101,21 @@ class QgsBrowserPropertiesDialog : public QDialog , private Ui::QgsBrowserProper
     QString mSettingsSection;
 };
 
-class APP_EXPORT QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrowserDockWidgetBase
+class APP_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBrowserDockWidgetBase
 {
     Q_OBJECT
   public:
     explicit QgsBrowserDockWidget( const QString& name, QWidget *parent = nullptr );
     ~QgsBrowserDockWidget();
-    void addFavouriteDirectory( const QString& favDir );
+    void addFavoriteDirectory( const QString& favDir );
 
   public slots:
     void addLayerAtIndex( const QModelIndex& index );
     void showContextMenu( QPoint );
 
-    void addFavourite();
-    void addFavouriteDirectory();
-    void removeFavourite();
+    void addFavorite();
+    void addFavoriteDirectory();
+    void removeFavorite();
 
     void refresh();
 
@@ -125,7 +126,6 @@ class APP_EXPORT QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrows
     void setFilter();
 
     // layer menu items
-    void addCurrentLayer();
     void addSelectedLayers();
     void showProperties();
     void hideItem();
@@ -173,6 +173,7 @@ class QgsDockBrowserTreeView : public QgsBrowserTreeView
 
     void dragEnterEvent( QDragEnterEvent* e ) override;
     void dragMoveEvent( QDragMoveEvent* e ) override;
+    void dropEvent( QDropEvent* e ) override;
 };
 
 /**

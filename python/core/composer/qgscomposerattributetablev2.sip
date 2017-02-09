@@ -52,7 +52,7 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      * @param ignoreFrames ignore frames
      * @see readXML
      */
-    virtual bool writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const;
+    virtual bool writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const;
 
     /** Reads the properties specific to an attribute table from xml.
      * @param itemElem a QDomElement holding the attribute table's desired properties.
@@ -60,7 +60,7 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      * @param ignoreFrames ignore frames
      * @see writeXML
      */
-    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
+    virtual bool readXml( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
 
     virtual void addFrame( QgsComposerFrame* frame /Transfer/, bool recalcFrameSizes = true );
 
@@ -76,7 +76,7 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      */
     ContentSource source() const;
 
-    /** Returns the source layer for the table, considering the table source mode. Eg,
+    /** Returns the source layer for the table, considering the table source mode. For example,
      * if the table is set to atlas feature mode, then the source layer will be the
      * atlas coverage layer. If the table is set to layer attributes mode, then
      * the source layer will be the user specified vector layer.
@@ -231,14 +231,14 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
     void setFeatureFilter( const QString& expression );
 
     /** Sets the attributes to display in the table.
-     * @param attr QSet of integer values refering to the attributes from the vector layer to show.
-     * Set to an empty QSet to show all feature attributes.
+     * @param fields list of fields names from the vector layer to show.
+     * Set to an empty list to show all feature attributes.
      * @param refresh set to true to force the table to refetch features from its vector layer
      * and immediately update the display of the table. This may result in the table changing size
      * to accommodate the new displayed feature attributes.
-     * @see displayAttributes
+     * @note added in QGIS 2.16
      */
-    void setDisplayAttributes( const QSet<int>& attr, bool refresh = true );
+    void setDisplayedFields( const QStringList& fields, bool refresh = true );
 
     /** Returns the attributes used to sort the table's features.
      * @returns a QList of integer/bool pairs, where the integer refers to the attribute index and
@@ -248,7 +248,7 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      */
     //QList<QPair<int, bool> > sortAttributes() const;
 
-    /** Sets a string to wrap the contents of the table cells by. Occurances of this string will
+    /** Sets a string to wrap the contents of the table cells by. Occurrences of this string will
      * be replaced by a line break.
      * @param wrapString string to replace with line break
      * @note added in QGIS 2.12
@@ -256,7 +256,7 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      */
     void setWrapString( const QString& wrapString );
 
-    /** Returns the string used to wrap the contents of the table cells by. Occurances of this string will
+    /** Returns the string used to wrap the contents of the table cells by. Occurrences of this string will
      * be replaced by a line break.
      * @returns string which will be replaced with line break
      * @note added in QGIS 2.12
@@ -271,5 +271,5 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      */
     bool getTableContents( QgsComposerTableContents &contents );
 
-    virtual QgsExpressionContext* createExpressionContext() const /Factory/;
+    virtual QgsExpressionContext createExpressionContext() const;
 };

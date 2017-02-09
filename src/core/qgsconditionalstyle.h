@@ -1,21 +1,21 @@
 #ifndef QGSCONDITIONALSTYLE_H
 #define QGSCONDITIONALSTYLE_H
 
+#include "qgis_core.h"
 #include <QFont>
 #include <QColor>
 #include <QPixmap>
 #include <QDomNode>
 #include <QDomDocument>
 
-#include "qgsfeature.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 
 class QgsConditionalStyle;
 
 typedef QList<QgsConditionalStyle> QgsConditionalStyles;
 
 
-/**
+/** \ingroup core
  * @brief The QgsConditionalLayerStyles class holds conditional style information
  * for a layer. This includes field styles and full row styles.
  */
@@ -70,7 +70,6 @@ class CORE_EXPORT QgsConditionalStyle
     QgsConditionalStyle();
     QgsConditionalStyle( const QgsConditionalStyle& other );
     QgsConditionalStyle( const QString& rule );
-    ~QgsConditionalStyle();
 
     QgsConditionalStyle& operator=( const QgsConditionalStyle& other );
 
@@ -121,9 +120,9 @@ class CORE_EXPORT QgsConditionalStyle
 
     /**
      * @brief Set the icon for the style. Icons are generated from symbols
-     * @param value QgsSymbolV2 to be used when generating the icon
+     * @param value QgsSymbol to be used when generating the icon
      */
-    void setSymbol( QgsSymbolV2* value );
+    void setSymbol( QgsSymbol* value );
 
     /**
      * @brief The name of the style.
@@ -145,9 +144,9 @@ class CORE_EXPORT QgsConditionalStyle
 
     /**
      * @brief The symbol used to generate the icon for the style
-     * @return The QgsSymbolV2 used for the icon
+     * @return The QgsSymbol used for the icon
      */
-    QgsSymbolV2* symbol() const { return mSymbol.data(); }
+    QgsSymbol* symbol() const { return mSymbol.get(); }
 
     /**
      * @brief The text color set for style
@@ -174,6 +173,7 @@ class CORE_EXPORT QgsConditionalStyle
      * @return True of the color set for background is valid.
      */
     bool validBackgroundColor() const;
+
     /**
      * @brief The font for the style
      * @return QFont for the style
@@ -234,7 +234,7 @@ class CORE_EXPORT QgsConditionalStyle
     bool mValid;
     QString mName;
     QString mRule;
-    QScopedPointer<QgsSymbolV2> mSymbol;
+    std::unique_ptr<QgsSymbol> mSymbol;
     QFont mFont;
     QColor mBackColor;
     QColor mTextColor;

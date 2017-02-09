@@ -19,10 +19,15 @@
 #define QGSADDREMOVEITEMCOMMAND_H
 
 #include <QUndoCommand>
+
+#include "qgis_core.h"
+
 class QgsComposerItem;
 class QgsComposition;
 
-/** A composer command class for adding / removing composer items. If mState == Removed, the command owns the item*/
+/** \ingroup core
+ * A composer command class for adding / removing composer items. If mState == Removed, the command owns the item
+*/
 class CORE_EXPORT QgsAddRemoveItemCommand: public QObject, public QUndoCommand
 {
     Q_OBJECT

@@ -19,14 +19,10 @@
 #include "qgspluginlayerregistry.h"
 #include "qgslogger.h"
 #include "qgspluginlayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 
 QgsPluginLayerType::QgsPluginLayerType( const QString& name )
     : mName( name )
-{
-}
-
-QgsPluginLayerType::~QgsPluginLayerType()
 {
 }
 
@@ -52,19 +48,9 @@ bool QgsPluginLayerType::showLayerProperties( QgsPluginLayer *layer )
   return false;
 }
 
-//=============================================================================
-
-/** Static calls to enforce singleton behaviour */
-QgsPluginLayerRegistry* QgsPluginLayerRegistry::_instance = nullptr;
-QgsPluginLayerRegistry* QgsPluginLayerRegistry::instance()
-{
-  if ( !_instance )
-  {
-    _instance = new QgsPluginLayerRegistry();
-  }
-  return _instance;
-}
-
+//
+// QgsPluginLayerRegistry
+//
 
 QgsPluginLayerRegistry::QgsPluginLayerRegistry()
 {
@@ -106,8 +92,8 @@ bool QgsPluginLayerRegistry::removePluginLayerType( const QString& typeName )
   if ( !mPluginLayerTypes.contains( typeName ) )
     return false;
 
-  // remove all remaining layers of this type - to avoid invalid behaviour
-  QList<QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers().values();
+  // remove all remaining layers of this type - to avoid invalid behavior
+  QList<QgsMapLayer*> layers = QgsProject::instance()->mapLayers().values();
   Q_FOREACH ( QgsMapLayer* layer, layers )
   {
     if ( layer->type() == QgsMapLayer::PluginLayer )
@@ -115,7 +101,7 @@ bool QgsPluginLayerRegistry::removePluginLayerType( const QString& typeName )
       QgsPluginLayer* pl = qobject_cast<QgsPluginLayer*>( layer );
       if ( pl->pluginLayerType() == typeName )
       {
-        QgsMapLayerRegistry::instance()->removeMapLayers(
+        QgsProject::instance()->removeMapLayers(
           QStringList() << layer->id() );
       }
     }

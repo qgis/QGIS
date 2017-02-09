@@ -22,7 +22,7 @@
 
 class QgsComposerScaleBar;
 
-/** \ingroup MapComposer
+/** \ingroup app
  * A widget to define the properties of a QgsComposerScaleBarItem.
  */
 class QgsComposerScaleBarWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerScaleBarWidgetBase
@@ -60,16 +60,16 @@ class QgsComposerScaleBarWidget: public QgsComposerItemBaseWidget, private Ui::Q
   private slots:
     void setGuiElements();
     void segmentSizeRadioChanged( QAbstractButton*radio );
-    void composerMapChanged( const QgsComposerItem* item );
+    void composerMapChanged( QgsComposerItem* item );
 
   private:
     QgsComposerScaleBar* mComposerScaleBar;
     QButtonGroup mSegmentSizeRadioGroup;
 
-    /** Enables/disables the signals of the input gui elements*/
+    //! Enables/disables the signals of the input gui elements
     void blockMemberSignals( bool enable );
 
-    /** Enables/disables controls based on scale bar style*/
+    //! Enables/disables controls based on scale bar style
     void toggleStyleSpecificControls( const QString& style );
 
     void connectUpdateSignal();

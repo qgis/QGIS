@@ -23,14 +23,15 @@
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatetransform.h"
 
 #include "qgsosmdownload.h"
 
 QgsOSMDownloadDialog::QgsOSMDownloadDialog( QWidget* parent )
-    : QDialog( parent ), mDownload( new QgsOSMDownload )
+    : QDialog( parent )
+    , mDownload( new QgsOSMDownload )
 {
   setupUi( this );
 
@@ -62,7 +63,7 @@ QgsOSMDownloadDialog::~QgsOSMDownloadDialog()
 
 void QgsOSMDownloadDialog::populateLayers()
 {
-  QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
+  QMap<QString, QgsMapLayer*> layers = QgsProject::instance()->mapLayers();
   QMap<QString, QgsMapLayer*>::iterator it;
   for ( it = layers.begin(); it != layers.end(); ++it )
   {
@@ -102,7 +103,7 @@ void QgsOSMDownloadDialog::onExtentCanvas()
 
   if ( QgisApp::instance()->mapCanvas()->hasCrsTransformEnabled() )
   {
-    QgsCoordinateReferenceSystem dst( GEOCRS_ID, QgsCoordinateReferenceSystem::InternalCrsId );
+    QgsCoordinateReferenceSystem dst = QgsCoordinateReferenceSystem::fromSrsId( GEOCRS_ID );
 
     QgsCoordinateTransform ct( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(), dst );
     r = ct.transformBoundingBox( r );
@@ -137,11 +138,11 @@ void QgsOSMDownloadDialog::onCurrentLayerChanged( int index )
     return;
 
   QString layerId = cboLayers->itemData( index ).toString();
-  QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+  QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerId );
   if ( !layer )
     return;
 
-  QgsCoordinateReferenceSystem dst( GEOCRS_ID, QgsCoordinateReferenceSystem::InternalCrsId );
+  QgsCoordinateReferenceSystem dst = QgsCoordinateReferenceSystem::fromSrsId( GEOCRS_ID );
 
   QgsCoordinateTransform ct( layer->crs(), dst );
   QgsRectangle rect( ct.transformBoundingBox( layer->extent() ) );
@@ -154,13 +155,13 @@ void QgsOSMDownloadDialog::onCurrentLayerChanged( int index )
 void QgsOSMDownloadDialog::onBrowseClicked()
 {
   QSettings settings;
-  QString lastDir = settings.value( "/osm/lastDir", QDir::homePath() ).toString();
+  QString lastDir = settings.value( QStringLiteral( "/osm/lastDir" ), QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getSaveFileName( this, QString(), lastDir, tr( "OpenStreetMap files (*.osm)" ) );
   if ( fileName.isNull() )
     return;
 
-  settings.setValue( "/osm/lastDir", QFileInfo( fileName ).absolutePath() );
+  settings.setValue( QStringLiteral( "/osm/lastDir" ), QFileInfo( fileName ).absolutePath() );
   editFileName->setText( fileName );
 }
 
@@ -210,5 +211,5 @@ void QgsOSMDownloadDialog::onDownloadProgress( qint64 bytesReceived, qint64 byte
 {
   Q_UNUSED( bytesTotal ); // it's -1 anyway (= unknown)
   double mbytesReceived = ( double )bytesReceived / ( 1024 * 1024 );
-  editSize->setText( QString( "%1 MB" ).arg( QString::number( mbytesReceived, 'f', 1 ) ) );
+  editSize->setText( QStringLiteral( "%1 MB" ).arg( QString::number( mbytesReceived, 'f', 1 ) ) );
 }

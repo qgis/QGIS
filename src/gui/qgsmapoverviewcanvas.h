@@ -32,6 +32,7 @@ class QgsRectangle;
 
 class QgsMapRendererQImageJob;
 #include "qgsmapsettings.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * A widget that displays an overview map.
@@ -43,8 +44,6 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
   public:
     QgsMapOverviewCanvas( QWidget * parent = nullptr, QgsMapCanvas* mapCanvas = nullptr );
 
-    ~QgsMapOverviewCanvas();
-
     //! renders overview and updates panning widget
     void refresh();
 
@@ -52,9 +51,10 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     void setBackgroundColor( const QColor& color );
 
     //! updates layer set for overview
-    void setLayerSet( const QStringList& layerSet );
+    void setLayers( const QList<QgsMapLayer*>& layers );
 
-    QStringList layerSet() const;
+    //! Returns list of layers visible in the overview
+    QList<QgsMapLayer*> layers() const;
 
     void enableAntiAliasing( bool flag ) { mSettings.setFlag( QgsMapSettings::Antialiasing, flag ); }
 
@@ -69,8 +69,9 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     // ### QGIS 3: rename so it does not look like getter, make protected
     void hasCrsTransformEnabled( bool flag );
 
-    // ### QGIS 3: rename Srs to Crs, make protected
-    void destinationSrsChanged();
+    // ### QGIS 3: make protected
+    //! Should be called when the canvas destination CRS is changed
+    void destinationCrsChanged();
 
   protected slots:
     void mapRenderingFinished();

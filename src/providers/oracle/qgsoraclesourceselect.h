@@ -21,7 +21,7 @@
 #include "qgisgui.h"
 #include "qgsdbfilterproxymodel.h"
 #include "qgsoracletablemodel.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 #include "qgsoracleconnpool.h"
 
 #include <QMap>
@@ -54,7 +54,7 @@ class QgsOracleSourceSelectDelegate : public QItemDelegate
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const;
 
-    void setConnectionInfo( const QgsDataSourceURI& connInfo ) { mConnInfo = connInfo; }
+    void setConnectionInfo( const QgsDataSourceUri& connInfo ) { mConnInfo = connInfo; }
 
   protected:
     void setConn( QgsOracleConn *conn ) const { if ( mConn ) QgsOracleConnPool::instance()->releaseConnection( mConn ); mConn = conn; }
@@ -67,7 +67,7 @@ class QgsOracleSourceSelectDelegate : public QItemDelegate
     }
 
   private:
-    QgsDataSourceURI mConnInfo;
+    QgsDataSourceUri mConnInfo;
     //! lazily initialized connection (to detect possible primary keys)
     mutable QgsOracleConn *mConn;
 };
@@ -130,10 +130,11 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     void setLayerType( QgsOracleLayerProperty layerProperty );
     void on_mTablesTreeView_clicked( const QModelIndex &index );
     void on_mTablesTreeView_doubleClicked( const QModelIndex &index );
+    void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString& regexp );
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#id2" ) ); }
 
     void columnThreadFinished();
 
@@ -163,7 +164,7 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     QStringList mColumnLabels;
     // Our thread for doing long running queries
     QgsOracleColumnTypeThread *mColumnTypeThread;
-    QgsDataSourceURI mConnInfo;
+    QgsDataSourceUri mConnInfo;
     QStringList mSelectedTables;
     // Storage for the range of layer type icons
     QMap<QString, QPair<QString, QIcon> > mLayerIcons;

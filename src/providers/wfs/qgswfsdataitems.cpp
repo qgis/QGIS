@@ -27,49 +27,53 @@
 #include <QEventLoop>
 
 
-QgsWFSLayerItem::QgsWFSLayerItem( QgsDataItem* parent, QString name, const QgsDataSourceURI& uri, QString featureType, QString title, QString crsString )
-    : QgsLayerItem( parent, title, parent->path() + '/' + name, QString(), QgsLayerItem::Vector, "WFS" )
+QgsWfsLayerItem::QgsWfsLayerItem( QgsDataItem* parent, QString name, const QgsDataSourceUri& uri, QString featureType, QString title, QString crsString )
+    : QgsLayerItem( parent, title, parent->path() + '/' + name, QString(), QgsLayerItem::Vector, QStringLiteral( "WFS" ) )
 {
-  mUri = QgsWFSDataSourceURI::build( uri.uri(), featureType, crsString );
+  QSettings settings;
+  bool useCurrentViewExtent = settings.value( QStringLiteral( "/Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), true ).toBool();
+  mUri = QgsWFSDataSourceURI::build( uri.uri(), featureType, crsString, QString(), useCurrentViewExtent );
   setState( Populated );
-  mIconName = "mIconConnect.png";
+  mIconName = QStringLiteral( "mIconConnect.png" );
 }
 
-QgsWFSLayerItem::~QgsWFSLayerItem()
+QgsWfsLayerItem::~QgsWfsLayerItem()
 {
 }
 
 ////
 
-QgsWFSConnectionItem::QgsWFSConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri )
+QgsWfsConnectionItem::QgsWfsConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri )
     : QgsDataCollectionItem( parent, name, path )
     , mUri( uri )
     , mCapabilities( nullptr )
 {
-  mIconName = "mIconWfs.svg";
+  mIconName = QStringLiteral( "mIconWfs.svg" );
 }
 
-QgsWFSConnectionItem::~QgsWFSConnectionItem()
+QgsWfsConnectionItem::~QgsWfsConnectionItem()
 {
 }
 
-QVector<QgsDataItem*> QgsWFSConnectionItem::createChildren()
+QVector<QgsDataItem*> QgsWfsConnectionItem::createChildren()
 {
-  QgsDataSourceURI uri( mUri );
+  QgsDataSourceUri uri( mUri );
   QgsDebugMsg( "mUri = " + mUri );
 
-  QgsWFSCapabilities capabilities( mUri );
+  QgsWfsCapabilities capabilities( mUri );
 
-  capabilities.requestCapabilities( true );
+  const bool synchronous = true;
+  const bool forceRefresh = false;
+  capabilities.requestCapabilities( synchronous, forceRefresh );
 
   QVector<QgsDataItem*> layers;
-  if ( capabilities.errorCode() == QgsWFSCapabilities::NoError )
+  if ( capabilities.errorCode() == QgsWfsCapabilities::NoError )
   {
-    QgsWFSCapabilities::Capabilities caps = capabilities.capabilities();
-    Q_FOREACH ( const QgsWFSCapabilities::FeatureType& featureType, caps.featureTypes )
+    QgsWfsCapabilities::Capabilities caps = capabilities.capabilities();
+    Q_FOREACH ( const QgsWfsCapabilities::FeatureType& featureType, caps.featureTypes )
     {
       //QgsWFSLayerItem* layer = new QgsWFSLayerItem( this, mName, featureType.name, featureType.title );
-      QgsWFSLayerItem* layer = new QgsWFSLayerItem( this, mName, uri, featureType.name, featureType.title, featureType.crslist.first() );
+      QgsWfsLayerItem* layer = new QgsWfsLayerItem( this, mName, uri, featureType.name, featureType.title, featureType.crslist.first() );
       layers.append( layer );
     }
   }
@@ -82,7 +86,7 @@ QVector<QgsDataItem*> QgsWFSConnectionItem::createChildren()
   return layers;
 }
 
-QList<QAction*> QgsWFSConnectionItem::actions()
+QList<QAction*> QgsWfsConnectionItem::actions()
 {
   QList<QAction*> lst;
 
@@ -97,7 +101,7 @@ QList<QAction*> QgsWFSConnectionItem::actions()
   return lst;
 }
 
-void QgsWFSConnectionItem::editConnection()
+void QgsWfsConnectionItem::editConnection()
 {
   QgsNewHttpConnection nc( nullptr, QgsWFSConstants::CONNECTIONS_WFS, mName );
   nc.setWindowTitle( tr( "Modify WFS connection" ) );
@@ -109,9 +113,9 @@ void QgsWFSConnectionItem::editConnection()
   }
 }
 
-void QgsWFSConnectionItem::deleteConnection()
+void QgsWfsConnectionItem::deleteConnection()
 {
-  QgsWFSConnection::deleteConnection( mName );
+  QgsWfsConnection::deleteConnection( mName );
   // the parent should be updated
   mParent->refresh();
 }
@@ -121,33 +125,33 @@ void QgsWFSConnectionItem::deleteConnection()
 //////
 
 
-QgsWFSRootItem::QgsWFSRootItem( QgsDataItem* parent, QString name, QString path )
+QgsWfsRootItem::QgsWfsRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;
-  mIconName = "mIconWfs.svg";
+  mIconName = QStringLiteral( "mIconWfs.svg" );
   populate();
 }
 
-QgsWFSRootItem::~QgsWFSRootItem()
+QgsWfsRootItem::~QgsWfsRootItem()
 {
 }
 
-QVector<QgsDataItem*> QgsWFSRootItem::createChildren()
+QVector<QgsDataItem*> QgsWfsRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
 
-  Q_FOREACH ( const QString& connName, QgsWFSConnection::connectionList() )
+  Q_FOREACH ( const QString& connName, QgsWfsConnection::connectionList() )
   {
-    QgsWFSConnection connection( connName );
+    QgsWfsConnection connection( connName );
     QString path = "wfs:/" + connName;
-    QgsDataItem * conn = new QgsWFSConnectionItem( this, connName, path, connection.uri().uri() );
+    QgsDataItem * conn = new QgsWfsConnectionItem( this, connName, path, connection.uri().uri() );
     connections.append( conn );
   }
   return connections;
 }
 
-QList<QAction*> QgsWFSRootItem::actions()
+QList<QAction*> QgsWfsRootItem::actions()
 {
   QList<QAction*> lst;
 
@@ -158,19 +162,19 @@ QList<QAction*> QgsWFSRootItem::actions()
   return lst;
 }
 
-QWidget * QgsWFSRootItem::paramWidget()
+QWidget * QgsWfsRootItem::paramWidget()
 {
-  QgsWFSSourceSelect *select = new QgsWFSSourceSelect( nullptr, nullptr, true );
+  QgsWFSSourceSelect *select = new QgsWFSSourceSelect( nullptr, 0, true );
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
 }
 
-void QgsWFSRootItem::connectionsChanged()
+void QgsWfsRootItem::connectionsChanged()
 {
   refresh();
 }
 
-void QgsWFSRootItem::newConnection()
+void QgsWfsRootItem::newConnection()
 {
   QgsNewHttpConnection nc( nullptr, QgsWFSConstants::CONNECTIONS_WFS );
   nc.setWindowTitle( tr( "Create a new WFS connection" ) );
@@ -198,17 +202,17 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   QgsDebugMsg( "thePath = " + thePath );
   if ( thePath.isEmpty() )
   {
-    return new QgsWFSRootItem( parentItem, "WFS", "wfs:" );
+    return new QgsWfsRootItem( parentItem, QStringLiteral( "WFS" ), QStringLiteral( "wfs:" ) );
   }
 
   // path schema: wfs:/connection name (used by OWS)
-  if ( thePath.startsWith( "wfs:/" ) )
+  if ( thePath.startsWith( QLatin1String( "wfs:/" ) ) )
   {
     QString connectionName = thePath.split( '/' ).last();
-    if ( QgsWFSConnection::connectionList().contains( connectionName ) )
+    if ( QgsWfsConnection::connectionList().contains( connectionName ) )
     {
-      QgsWFSConnection connection( connectionName );
-      return new QgsWFSConnectionItem( parentItem, "WMS", thePath, connection.uri().uri() );
+      QgsWfsConnection connection( connectionName );
+      return new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), thePath, connection.uri().uri() );
     }
   }
 

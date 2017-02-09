@@ -27,7 +27,7 @@ QgsWmtsDimensions::QgsWmtsDimensions( const QgsWmtsTileLayer &layer, QWidget *pa
   setupUi( this );
 
   QStringList dims = layer.dimensions.keys();
-  qSort( dims );
+  std::sort( dims.begin(), dims.end() );
 
   mDimensions->setRowCount( dims.size() );
 
@@ -49,14 +49,14 @@ QgsWmtsDimensions::QgsWmtsDimensions( const QgsWmtsTileLayer &layer, QWidget *pa
 
   QSettings settings;
   QgsDebugMsg( "restoring geometry" );
-  restoreGeometry( settings.value( "/Windows/WMTSDimensions/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/WMTSDimensions/geometry" ) ).toByteArray() );
 }
 
 QgsWmtsDimensions::~QgsWmtsDimensions()
 {
   QSettings settings;
   QgsDebugMsg( "saving geometry" );
-  settings.setValue( "/Windows/WmtsDimensions/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/WmtsDimensions/geometry" ), saveGeometry() );
 }
 
 void QgsWmtsDimensions::selectedDimensions( QHash<QString, QString> &selected )

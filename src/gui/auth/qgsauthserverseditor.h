@@ -21,6 +21,7 @@
 
 #include "ui_qgsauthserverseditor.h"
 #include "qgsauthmanager.h"
+#include "qgis_gui.h"
 
 class QgsMessageBar;
 
@@ -32,22 +33,22 @@ class GUI_EXPORT QgsAuthServersEditor : public QWidget, private Ui::QgsAuthServe
     Q_OBJECT
 
   public:
+
     /**
      * Widget for editing authentication configurations directly in database
      * @param parent Parent Widget
      */
     explicit QgsAuthServersEditor( QWidget *parent = nullptr );
-    ~QgsAuthServersEditor();
 
   private slots:
     void populateSslConfigsView();
 
     void refreshSslConfigsView();
 
-    /** Pass selection change on to UI update */
+    //! Pass selection change on to UI update
     void selectionChanged( const QItemSelection& selected, const QItemSelection& deselected );
 
-    /** Update UI based upon current selection */
+    //! Update UI based upon current selection
     void checkSelection();
 
     void handleDoubleClick( QTreeWidgetItem* item, int col );
@@ -60,11 +61,11 @@ class GUI_EXPORT QgsAuthServersEditor : public QWidget, private Ui::QgsAuthServe
 
     void on_btnGroupByOrg_toggled( bool checked );
 
-    /** Relay messages to widget's messagebar */
+    //! Relay messages to widget's messagebar
     void authMessageOut( const QString& message, const QString& authtag, QgsAuthManager::MessageLevel level );
 
   protected:
-    /** Overridden show event of base widget */
+
     void showEvent( QShowEvent *e ) override;
 
   private:

@@ -23,10 +23,10 @@ import sys
 import os
 import subprocess
 
-from PyQt.QtCore import QRect, QRectF, QSize, QSizeF, qDebug
-from PyQt.QtGui import QImage, QColor, QPainter
-from PyQt.QtPrintSupport import QPrinter
-from PyQt.QtSvg import QSvgRenderer, QSvgGenerator
+from qgis.PyQt.QtCore import QRect, QRectF, QSize, QSizeF, qDebug
+from qgis.PyQt.QtGui import QImage, QColor, QPainter
+from qgis.PyQt.QtPrintSupport import QPrinter
+from qgis.PyQt.QtSvg import QSvgRenderer, QSvgGenerator
 
 from qgis.core import QgsComposition, QgsMapSettings, QgsProject, QgsComposerMap
 
@@ -65,7 +65,7 @@ if not PDFUTIL:
 # output kind enum
 # noinspection PyClassHasNoInit
 class OutputKind():
-    Img, Svg, Pdf = range(3)
+    Img, Svg, Pdf = list(range(3))
 
 
 # noinspection PyShadowingNames
@@ -102,7 +102,7 @@ class TestComposerBase(TestQgsPalLabeling):
 
     def _set_up_composition(self, width, height, dpi):
         # set up composition and add map
-        self._c = QgsComposition(self._TestMapSettings)
+        self._c = QgsComposition(QgsProject.instance())
         """:type: QgsComposition"""
         # self._c.setUseAdvancedEffects(False)
         self._c.setPrintResolution(dpi)
@@ -119,6 +119,7 @@ class TestComposerBase(TestQgsPalLabeling):
         """:type: QgsComposerMap"""
         self._cmap.setPreviewMode(QgsComposerMap.Render)
         self._cmap.setFrameEnabled(False)
+        self._cmap.setLayers(self._TestMapSettings.layers())
         self._c.addComposerMap(self._cmap)
         # now expand map to fill page and set its extent
         self._cmap.setSceneRect(QRectF(0, 0, paperw, paperw))

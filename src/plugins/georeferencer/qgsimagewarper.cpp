@@ -29,13 +29,7 @@
 #include "qgsgeoreftransform.h"
 #include "qgslogger.h"
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8F(x) (x).toUtf8().constData()
-#else
-#define TO8F(x) QFile::encodeName( x ).constData()
-#endif
-
-bool QgsImageWarper::mWarpCanceled = false;
+bool QgsImageWarper::sWarpCanceled = false;
 
 QgsImageWarper::QgsImageWarper( QWidget *theParent )
     : mParent( theParent )
@@ -48,7 +42,7 @@ bool QgsImageWarper::openSrcDSAndGetWarpOpt( const QString &input, ResamplingMet
 {
   // Open input file
   GDALAllRegister();
-  hSrcDS = GDALOpen( TO8F( input ), GA_ReadOnly );
+  hSrcDS = GDALOpen( input.toUtf8().constData(), GA_ReadOnly );
   if ( !hSrcDS )
     return false;
 
@@ -83,9 +77,9 @@ bool QgsImageWarper::createDestinationDataset( const QString &outputName, GDALDa
     return false;
   }
   char **papszOptions = nullptr;
-  papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", compression.toAscii() );
+  papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", compression.toLatin1() );
   hDstDS = GDALCreate( driver,
-                       TO8F( outputName ), resX, resY,
+                       outputName.toUtf8().constData(), resX, resY,
                        GDALGetRasterCount( hSrcDS ),
                        GDALGetRasterDataType( GDALGetRasterBand( hSrcDS, 1 ) ),
                        papszOptions );
@@ -108,10 +102,10 @@ bool QgsImageWarper::createDestinationDataset( const QString &outputName, GDALDa
     OGRErr err = oTargetSRS.exportToWkt( &wkt );
     if ( err != CE_None || GDALSetProjection( hDstDS, wkt ) != CE_None )
     {
-      OGRFree( wkt );
+      CPLFree( wkt );
       return false;
     }
-    OGRFree( wkt );
+    CPLFree( wkt );
   }
 
   for ( int i = 0; i < GDALGetRasterCount( hSrcDS ); ++i )
@@ -258,7 +252,7 @@ int QgsImageWarper::warpFile( const QString& input,
   GDALClose( hSrcDS );
   GDALClose( hDstDS );
 
-  return mWarpCanceled ? -1 : eErr == CE_None ? 1 : 0;
+  return sWarpCanceled ? -1 : eErr == CE_None ? 1 : 0;
 }
 
 
@@ -344,11 +338,11 @@ int CPL_STDCALL QgsImageWarper::updateWarpProgress( double dfComplete, const cha
   // TODO: call QEventLoop manually to make "cancel" button more responsive
   if ( progress->wasCanceled() )
   {
-    mWarpCanceled = true;
+    sWarpCanceled = true;
     return false;
   }
 
-  mWarpCanceled = false;
+  sWarpCanceled = false;
   return true;
 }
 

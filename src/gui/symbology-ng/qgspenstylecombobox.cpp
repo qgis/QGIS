@@ -46,7 +46,7 @@ QgsPenStyleComboBox::QgsPenStyleComboBox( QWidget* parent )
 
 Qt::PenStyle QgsPenStyleComboBox::penStyle() const
 {
-  return ( Qt::PenStyle ) itemData( currentIndex() ).toInt();
+  return ( Qt::PenStyle ) currentData().toInt();
 }
 
 void QgsPenStyleComboBox::setPenStyle( Qt::PenStyle style )
@@ -80,14 +80,14 @@ QgsPenJoinStyleComboBox::QgsPenJoinStyleComboBox( QWidget* parent )
     : QComboBox( parent )
 {
   QString path = QgsApplication::defaultThemePath();
-  addItem( QIcon( path + "/join_bevel.png" ), tr( "Bevel" ), QVariant( Qt::BevelJoin ) );
-  addItem( QIcon( path + "/join_miter.png" ), tr( "Miter" ), QVariant( Qt::MiterJoin ) );
-  addItem( QIcon( path + "/join_round.png" ), tr( "Round" ), QVariant( Qt::RoundJoin ) );
+  addItem( QIcon( path + "/join_bevel.svg" ), tr( "Bevel" ), QVariant( Qt::BevelJoin ) );
+  addItem( QIcon( path + "/join_miter.svg" ), tr( "Miter" ), QVariant( Qt::MiterJoin ) );
+  addItem( QIcon( path + "/join_round.svg" ), tr( "Round" ), QVariant( Qt::RoundJoin ) );
 }
 
 Qt::PenJoinStyle QgsPenJoinStyleComboBox::penJoinStyle() const
 {
-  return ( Qt::PenJoinStyle ) itemData( currentIndex() ).toInt();
+  return ( Qt::PenJoinStyle ) currentData().toInt();
 }
 
 void QgsPenJoinStyleComboBox::setPenJoinStyle( Qt::PenJoinStyle style )
@@ -104,14 +104,14 @@ QgsPenCapStyleComboBox::QgsPenCapStyleComboBox( QWidget* parent )
     : QComboBox( parent )
 {
   QString path = QgsApplication::defaultThemePath();
-  addItem( QIcon( path + "/cap_square.png" ), tr( "Square" ), QVariant( Qt::SquareCap ) );
-  addItem( QIcon( path + "/cap_flat.png" ), tr( "Flat" ), QVariant( Qt::FlatCap ) );
-  addItem( QIcon( path + "/cap_round.png" ), tr( "Round" ), QVariant( Qt::RoundCap ) );
+  addItem( QIcon( path + "/cap_square.svg" ), tr( "Square" ), QVariant( Qt::SquareCap ) );
+  addItem( QIcon( path + "/cap_flat.svg" ), tr( "Flat" ), QVariant( Qt::FlatCap ) );
+  addItem( QIcon( path + "/cap_round.svg" ), tr( "Round" ), QVariant( Qt::RoundCap ) );
 }
 
 Qt::PenCapStyle QgsPenCapStyleComboBox::penCapStyle() const
 {
-  return ( Qt::PenCapStyle ) itemData( currentIndex() ).toInt();
+  return ( Qt::PenCapStyle ) currentData().toInt();
 }
 
 void QgsPenCapStyleComboBox::setPenCapStyle( Qt::PenCapStyle style )

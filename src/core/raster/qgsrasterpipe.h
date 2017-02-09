@@ -18,18 +18,21 @@
 #ifndef QGSRASTERPIPE_H
 #define QGSRASTERPIPE_H
 
+#include "qgis_core.h"
 #include <QImage>
+#include <QMap>
 #include <QObject>
 
-#include "qgsbrightnesscontrastfilter.h"
-#include "qgshuesaturationfilter.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsrasterinterface.h"
-#include "qgsrasternuller.h"
-#include "qgsrasterprojector.h"
-#include "qgsrasterrenderer.h"
-#include "qgsrasterresamplefilter.h"
-#include "qgsrectangle.h"
+class QgsRasterInterface;
+class QgsRasterRenderer;
+class QgsRasterResampleFilter;
+class QgsBrightnessContrastFilter;
+class QgsHueSaturationFilter;
+class QgsRasterProjector;
+class QgsRasterNuller;
+class QgsRasterResampleFilter;
+class QgsContrastEnhancement;
+class QgsRasterDataProvider;
 
 #if defined(Q_OS_WIN)
 #undef interface
@@ -59,6 +62,8 @@ class CORE_EXPORT QgsRasterPipe
 
     ~QgsRasterPipe();
 
+    QgsRasterPipe& operator=( const QgsRasterPipe& rh ) = delete;
+
     /** Try to insert interface at specified index and connect
      * if connection would fail, the interface is not inserted and false is returned */
     bool insert( int idx, QgsRasterInterface* theInterface );
@@ -75,10 +80,10 @@ class CORE_EXPORT QgsRasterPipe
      */
     bool set( QgsRasterInterface * theInterface );
 
-    /** Remove and delete interface at given index if possible */
+    //! Remove and delete interface at given index if possible
     bool remove( int idx );
 
-    /** Remove and delete interface from pipe if possible */
+    //! Remove and delete interface from pipe if possible
     bool remove( QgsRasterInterface * theInterface );
 
     int size() const { return mInterfaces.size(); }
@@ -89,7 +94,7 @@ class CORE_EXPORT QgsRasterPipe
      *  Returns true on success */
     bool setOn( int idx, bool on );
 
-    /** Test if interface at index may be swithed on/off */
+    //! Test if interface at index may be swithed on/off
     bool canSetOn( int idx, bool on );
 
     // Getters for special types of interfaces
@@ -102,7 +107,7 @@ class CORE_EXPORT QgsRasterPipe
     QgsRasterNuller * nuller() const;
 
   private:
-    /** Get known parent type_info of interface parent */
+    //! Get known parent type_info of interface parent
     Role interfaceRole( QgsRasterInterface * iface ) const;
 
     // Interfaces in pipe, the first is always provider
@@ -119,14 +124,13 @@ class CORE_EXPORT QgsRasterPipe
     // Check if index is in bounds
     bool checkBounds( int idx ) const;
 
-    /** Get known interface by role */
+    //! Get known interface by role
     QgsRasterInterface * interface( Role role ) const;
 
     /** \brief Try to connect interfaces in pipe and to the provider at beginning.
         Returns true if connected or false if connection failed */
     bool connect( QVector<QgsRasterInterface*> theInterfaces );
 
-    QgsRasterPipe& operator=( const QgsRasterPipe& rh );
 };
 
 #endif

@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsosmdownload.cpp
+    ---------------------
+    begin                : February 2013
+    copyright            : (C) 2013 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgsosmdownload.h"
 
 #include <QNetworkAccessManager>
@@ -10,19 +24,20 @@
 
 QString QgsOSMDownload::defaultServiceUrl()
 {
-  return "http://overpass-api.de/api/interpreter";
+  return QStringLiteral( "http://overpass-api.de/api/interpreter" );
 }
 
 
 QString QgsOSMDownload::queryFromRect( const QgsRectangle& rect )
 {
-  return QString( "(node(%1,%2,%3,%4);<;);out;" ).arg( rect.yMinimum() ).arg( rect.xMinimum() )
+  return QStringLiteral( "(node(%1,%2,%3,%4);<;);out;" ).arg( rect.yMinimum() ).arg( rect.xMinimum() )
          .arg( rect.yMaximum() ).arg( rect.xMaximum() );
 }
 
 
 QgsOSMDownload::QgsOSMDownload()
-    : mServiceUrl( defaultServiceUrl() ), mReply( nullptr )
+    : mServiceUrl( defaultServiceUrl() )
+    , mReply( nullptr )
 {
 }
 
@@ -62,7 +77,7 @@ bool QgsOSMDownload::start()
   QgsNetworkAccessManager* nwam = QgsNetworkAccessManager::instance();
 
   QUrl url( mServiceUrl );
-  url.addQueryItem( "data", mQuery );
+  url.addQueryItem( QStringLiteral( "data" ), mQuery );
 
   QNetworkRequest request( url );
   request.setRawHeader( "User-Agent", "QGIS" );

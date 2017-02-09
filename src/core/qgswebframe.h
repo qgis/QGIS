@@ -16,6 +16,8 @@
 #ifndef QGSWEBFRAME_H
 #define QGSWEBFRAME_H
 
+#include "qgis_core.h"
+
 #ifdef WITH_QTWEBKIT
 #include <QWebFrame>
 #else
@@ -23,8 +25,9 @@
 #include <QObject>
 #include <QPainter>
 #include <QUrl>
+#include <QVariant>
 
-/**
+/** \ingroup core
  * @brief The QWebFrame class is a collection of stubs to mimic the API of a QWebFrame on systems
  * where QtWebkit is not available.
  */
@@ -70,6 +73,11 @@ class CORE_EXPORT QWebFrame : public QObject
     void addToJavaScriptWindowObject( const QString&, QObject* )
     {
 
+    }
+
+    QVariant evaluateJavaScript( const QString & )
+    {
+      return QVariant();
     }
 
   signals:

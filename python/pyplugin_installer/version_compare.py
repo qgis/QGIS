@@ -1,7 +1,7 @@
 """
 /***************************************************************************
                         Plugin Installer module
-                        Plugin version comparision functions
+                        Plugin version comparison functions
                              -------------------
     Date                 : 2008-11-24
     Copyright            : (C) 2008 by Borys Jurgiel
@@ -23,7 +23,7 @@ and recognizes all major notations, prefixes (ver. and version), delimiters
 
 Usage: compareVersions(version1, version2)
 
-The function accepts arguments of any type convertable to unicode string
+The function accepts arguments of any type convertible to Unicode string
 and returns integer value:
 0 - the versions are equal
 1 - version 1 is higher
@@ -31,7 +31,7 @@ and returns integer value:
 
 -----------------------------------------------------------------------------
 HOW DOES IT WORK...
-First, both arguments are converted to uppercase unicode and stripped of
+First, both arguments are converted to uppercase Unicode and stripped of
 'VERSION' or 'VER.' prefix. Then they are chopped into a list of particular
 numeric and alphabetic elements. The dots, dashes and underlines are recognized
 as delimiters. Also numbers and non numbers are separated. See example below:
@@ -45,6 +45,8 @@ the end of the shorter list and the matter is still unresolved, the longer
 list is usually recognized as higher, except following suffixes:
 ALPHA, BETA, RC, PREVIEW and TRUNK which make the version number lower.
 """
+from builtins import str
+from builtins import range
 
 import re
 
@@ -55,8 +57,8 @@ def normalizeVersion(s):
     """ remove possible prefix from given string and convert to uppercase """
     prefixes = ['VERSION', 'VER.', 'VER', 'V.', 'V', 'REVISION', 'REV.', 'REV', 'R.', 'R']
     if not s:
-        return unicode()
-    s = unicode(s).upper()
+        return str()
+    s = str(s).upper()
     for i in prefixes:
         if s[:len(i)] == i:
             s = s.replace(i, '')
@@ -157,9 +159,9 @@ ALLOWED FORMATS ARE: major.minor OR major.minor.bugfix, where each segment must 
 
 def splitVersion(s):
     """ split string into 2 or 3 numerical segments """
-    if not s or type(s) not in [str, unicode]:
+    if not s or type(s) != str:
         return None
-    l = unicode(s).split('.')
+    l = str(s).split('.')
     for c in l:
         if not c.isnumeric():
             return None

@@ -18,11 +18,13 @@
 #ifndef QGSGPSDCONNECTION_H
 #define QGSGPSDCONNECTION_H
 
+#include "qgis_core.h"
 #include "qgsnmeaconnection.h"
 
 #include <QAbstractSocket>
 
-/** Evaluates NMEA sentences coming from gpsd*/
+/** \ingroup core
+ * Evaluates NMEA sentences coming from gpsd*/
 class CORE_EXPORT QgsGpsdConnection: public QgsNMEAConnection
 {
     Q_OBJECT

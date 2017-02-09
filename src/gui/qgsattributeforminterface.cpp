@@ -23,10 +23,6 @@ QgsAttributeFormInterface::QgsAttributeFormInterface( QgsAttributeForm* form )
 {
 }
 
-QgsAttributeFormInterface::~QgsAttributeFormInterface()
-{
-}
-
 bool QgsAttributeFormInterface::acceptChanges( const QgsFeature& feature )
 {
   Q_UNUSED( feature )

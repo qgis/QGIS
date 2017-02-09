@@ -16,15 +16,20 @@
 #define QGSARROWSYMBOLLAYERWIDGET_H
 
 #include "ui_qgsarrowsymbollayerwidgetbase.h"
-#include "qgssymbollayerv2widget.h"
+#include "qgssymbollayerwidget.h"
+#include "qgis_gui.h"
 
 class QgsArrowSymbolLayer;
 
-class GUI_EXPORT QgsArrowSymbolLayerWidget: public QgsSymbolLayerV2Widget, private Ui::QgsArrowSymbolLayerWidgetBase
+/** \ingroup gui
+ * \class QgsArrowSymbolLayerWidget
+ */
+class GUI_EXPORT QgsArrowSymbolLayerWidget: public QgsSymbolLayerWidget, private Ui::QgsArrowSymbolLayerWidgetBase
 {
     Q_OBJECT
 
   public:
+
     /** Constructor
      * @param layer the layer where this symbol layer is applied
      * @param parent the parent widget
@@ -34,12 +39,10 @@ class GUI_EXPORT QgsArrowSymbolLayerWidget: public QgsSymbolLayerV2Widget, priva
     /** Static creation method
      * @param layer the layer where this symbol layer is applied
      */
-    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* layer ) { return new QgsArrowSymbolLayerWidget( layer ); }
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* layer ) { return new QgsArrowSymbolLayerWidget( layer ); }
 
-    /** Set the symbol layer */
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer ) override;
-    /** Get the current symbol layer */
-    virtual QgsSymbolLayerV2* symbolLayer() override;
+    virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;
+    virtual QgsSymbolLayer* symbolLayer() override;
 
   private:
     QgsArrowSymbolLayer* mLayer;
@@ -51,15 +54,19 @@ class GUI_EXPORT QgsArrowSymbolLayerWidget: public QgsSymbolLayerV2Widget, priva
     void on_mArrowStartWidthSpin_valueChanged( double d );
     void on_mArrowStartWidthUnitWidget_changed();
 
-    void on_mHeadSizeSpin_valueChanged( double d );
-    void on_mHeadSizeUnitWidget_changed();
+    void on_mHeadLengthSpin_valueChanged( double d );
+    void on_mHeadLengthUnitWidget_changed();
+    void on_mHeadThicknessSpin_valueChanged( double d );
+    void on_mHeadThicknessUnitWidget_changed();
 
     void on_mHeadTypeCombo_currentIndexChanged( int );
+    void on_mArrowTypeCombo_currentIndexChanged( int );
 
     void on_mOffsetSpin_valueChanged( double d );
     void on_mOffsetUnitWidget_changed();
 
     void on_mCurvedArrowChck_stateChanged( int );
+    void on_mRepeatArrowChck_stateChanged( int );
 };
 
 #endif

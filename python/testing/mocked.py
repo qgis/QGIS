@@ -32,8 +32,8 @@ import mock
 from qgis.gui import QgisInterface, QgsMapCanvas
 from qgis.core import QgsApplication
 
-from PyQt.QtWidgets import QMainWindow
-from PyQt.QtCore import QSize
+from qgis.PyQt.QtWidgets import QMainWindow
+from qgis.PyQt.QtCore import QSize
 
 from qgis.testing import start_app
 
@@ -61,7 +61,6 @@ def get_iface():
 
     canvas = QgsMapCanvas(my_iface.mainWindow())
     canvas.resize(QSize(400, 400))
-
     my_iface.mapCanvas.return_value = canvas
 
     return my_iface

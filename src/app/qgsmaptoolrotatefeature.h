@@ -19,8 +19,7 @@
 #include <QWidget>
 
 #include "qgsmaptooledit.h"
-#include "qgsvectorlayer.h"
-
+#include "qgis_app.h"
 
 class QgsDoubleSpinBox;
 class QHBoxLayout;
@@ -63,7 +62,7 @@ class APP_EXPORT QgsAngleMagnetWidget : public QWidget
 };
 
 
-/** Map tool to rotate features */
+//! Map tool to rotate features
 class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolEdit
 {
     Q_OBJECT
@@ -93,14 +92,14 @@ class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolEdit
     void createRotationWidget();
     void deleteRotationWidget();
 
-    /** Start point of the move in map coordinates*/
+    //! Start point of the move in map coordinates
     QgsPoint mStartPointMapCoords;
     QPointF mInitialPos;
 
-    /** Rubberband that shows the feature being moved*/
+    //! Rubberband that shows the feature being moved
     QgsRubberBand* mRubberBand;
 
-    /** Id of moved feature*/
+    //! Id of moved feature
     QgsFeatureIds mRotatedFeatures;
     double mRotation;
     double mRotationOffset;
@@ -110,7 +109,7 @@ class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolEdit
 
     bool mRotationActive;
 
-    /** Shows current angle value and allows numerical editing*/
+    //! Shows current angle value and allows numerical editing
     QgsAngleMagnetWidget* mRotationWidget;
 };
 

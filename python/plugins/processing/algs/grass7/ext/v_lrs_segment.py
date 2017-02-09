@@ -37,7 +37,7 @@ def checkParameterValuesBeforeExecuting(alg):
 def processInputs(alg):
     # We need to import the rstable
     rstable = alg.getParameterValue('rstable')
-    if rstable in alg.exportedLayers.keys():
+    if rstable in list(alg.exportedLayers.keys()):
         return
     alg.exportedLayers[rstable] = alg.getTempFilename()
     command = 'db.in.ogr input=\"{}\" output={} --overwrite'.format(

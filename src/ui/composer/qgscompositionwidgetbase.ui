@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>345</width>
-    <height>506</height>
+    <height>464</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -59,12 +59,89 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-445</y>
-        <width>326</width>
-        <height>949</height>
+        <y>0</y>
+        <width>329</width>
+        <height>1065</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_4">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
+         <property name="title">
+          <string>General settings</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="1" column="1">
+           <widget class="QPushButton" name="mPageStyleButton">
+            <property name="text">
+             <string>Change...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QgsSpinBox" name="mNumPagesSpinBox">
+              <property name="minimum">
+               <number>1</number>
+              </property>
+              <property name="showClearButton" stdset="0">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsPropertyOverrideButton" name="mNumPagesDDBtn">
+              <property name="text">
+               <string>...</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="mNumPagesLabel">
+            <property name="text">
+             <string>Number of pages</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_10">
+            <property name="text">
+             <string>Page background</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_13">
+            <property name="text">
+             <string>Reference map</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QgsComposerItemComboBox" name="mReferenceMapComboBox">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="toolTip">
+             <string>Specifies the master map for this composition, which is used to georeference composer exports and for scale calculation for item styles.</string>
+            </property>
+            <property name="editable">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
          <property name="focusPolicy">
@@ -164,7 +241,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QgsDataDefinedButton" name="mPaperHeightDDBtn">
+             <widget class="QgsPropertyOverrideButton" name="mPaperHeightDDBtn">
               <property name="text">
                <string>...</string>
               </property>
@@ -197,7 +274,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QgsDataDefinedButton" name="mPaperWidthDDBtn">
+             <widget class="QgsPropertyOverrideButton" name="mPaperWidthDDBtn">
               <property name="text">
                <string>...</string>
               </property>
@@ -221,7 +298,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QgsDataDefinedButton" name="mPaperSizeDDBtn">
+             <widget class="QgsPropertyOverrideButton" name="mPaperSizeDDBtn">
               <property name="text">
                <string>...</string>
               </property>
@@ -255,7 +332,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QgsDataDefinedButton" name="mPaperOrientationDDBtn">
+             <widget class="QgsPropertyOverrideButton" name="mPaperOrientationDDBtn">
               <property name="text">
                <string>...</string>
               </property>
@@ -373,65 +450,40 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_4">
-         <property name="title">
-          <string>Page settings</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_4">
-          <item row="0" column="0">
-           <widget class="QLabel" name="mNumPagesLabel">
-            <property name="text">
-             <string>Number of pages</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <layout class="QHBoxLayout" name="horizontalLayout_4">
-            <item>
-             <widget class="QgsSpinBox" name="mNumPagesSpinBox">
-              <property name="minimum">
-               <number>1</number>
-              </property>
-              <property name="showClearButton" stdset="0">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QgsDataDefinedButton" name="mNumPagesDDBtn">
-              <property name="text">
-               <string>...</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_10">
-            <property name="text">
-             <string>Page background</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QPushButton" name="mPageStyleButton">
-            <property name="text">
-             <string>Change...</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_3">
          <property name="title">
           <string>Export settings</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
+          <item row="2" column="0" colspan="2">
+           <widget class="QCheckBox" name="mPrintAsRasterCheckBox">
+            <property name="text">
+             <string>Print as raster</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QCheckBox" name="mGenerateWorldFileCheckBox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>If checked, a separate world file which georeferences exported images will be created</string>
+            </property>
+            <property name="text">
+             <string>Save world file</string>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="1">
            <widget class="QgsSpinBox" name="mResolutionSpinBox">
             <property name="suffix">
@@ -445,42 +497,6 @@
             </property>
             <property name="showClearButton" stdset="0">
              <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QCheckBox" name="mPrintAsRasterCheckBox">
-            <property name="text">
-             <string>Print as raster</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="checked">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QgsComposerItemComboBox" name="mWorldFileMapComboBox">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="editable">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QCheckBox" name="mGenerateWorldFileCheckBox">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>World file on</string>
             </property>
            </widget>
           </item>
@@ -648,6 +664,18 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsVariableEditorWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">qgsvariableeditorwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
@@ -669,25 +697,18 @@
    <header>qgscomposeritemcombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsDataDefinedButton</class>
+   <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsVariableEditorWidget</class>
-   <extends>QWidget</extends>
-   <header location="global">qgsvariableeditorwidget.h</header>
-   <container>1</container>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
+  <tabstop>groupBox_4</tabstop>
+  <tabstop>mNumPagesSpinBox</tabstop>
+  <tabstop>mNumPagesDDBtn</tabstop>
+  <tabstop>mPageStyleButton</tabstop>
+  <tabstop>mReferenceMapComboBox</tabstop>
   <tabstop>groupBox</tabstop>
   <tabstop>mPaperSizeComboBox</tabstop>
   <tabstop>mPaperSizeDDBtn</tabstop>
@@ -703,13 +724,9 @@
   <tabstop>mRightMarginSpinBox</tabstop>
   <tabstop>mBottomMarginSpinBox</tabstop>
   <tabstop>mResizePageButton</tabstop>
-  <tabstop>mNumPagesSpinBox</tabstop>
-  <tabstop>mNumPagesDDBtn</tabstop>
-  <tabstop>mPageStyleButton</tabstop>
   <tabstop>mResolutionSpinBox</tabstop>
   <tabstop>mPrintAsRasterCheckBox</tabstop>
   <tabstop>mGenerateWorldFileCheckBox</tabstop>
-  <tabstop>mWorldFileMapComboBox</tabstop>
   <tabstop>mSnapToGridGroupCheckBox</tabstop>
   <tabstop>mGridResolutionSpinBox</tabstop>
   <tabstop>mOffsetXSpinBox</tabstop>

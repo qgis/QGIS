@@ -34,6 +34,7 @@ class QgsFeature;
 class QgsRectangle;
 class QgsPoint;
 
+#include "qgis_core.h"
 #include <QList>
 #include <QSharedDataPointer>
 
@@ -42,6 +43,9 @@ class QgsPoint;
 class QgsSpatialIndexData;
 class QgsFeatureIterator;
 
+/** \ingroup core
+ * \class QgsSpatialIndex
+ */
 class CORE_EXPORT QgsSpatialIndex
 {
 
@@ -49,7 +53,7 @@ class CORE_EXPORT QgsSpatialIndex
 
     /* creation of spatial index */
 
-    /** Constructor - creates R-tree */
+    //! Constructor - creates R-tree
     QgsSpatialIndex();
 
     /** Constructor - creates R-tree and bulk loads it with features from the iterator.
@@ -59,30 +63,30 @@ class CORE_EXPORT QgsSpatialIndex
      */
     explicit QgsSpatialIndex( const QgsFeatureIterator& fi );
 
-    /** Copy constructor */
+    //! Copy constructor
     QgsSpatialIndex( const QgsSpatialIndex& other );
 
-    /** Destructor finalizes work with spatial index */
+    //! Destructor finalizes work with spatial index
     ~QgsSpatialIndex();
 
-    /** Implement assignment operator */
+    //! Implement assignment operator
     QgsSpatialIndex& operator=( const QgsSpatialIndex& other );
 
     /* operations */
 
-    /** Add feature to index */
+    //! Add feature to index
     bool insertFeature( const QgsFeature& f );
 
-    /** Remove feature from index */
+    //! Remove feature from index
     bool deleteFeature( const QgsFeature& f );
 
 
     /* queries */
 
-    /** Returns features that intersect the specified rectangle */
+    //! Returns features that intersect the specified rectangle
     QList<QgsFeatureId> intersects( const QgsRectangle& rect ) const;
 
-    /** Returns nearest neighbors (their count is specified by second parameter) */
+    //! Returns nearest neighbors (their count is specified by second parameter)
     QList<QgsFeatureId> nearestNeighbor( const QgsPoint& point, int neighbors ) const;
 
     /* debugging */

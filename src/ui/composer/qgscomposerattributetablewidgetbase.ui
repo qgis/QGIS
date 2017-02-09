@@ -17,16 +17,7 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -356,7 +347,7 @@
            <widget class="QComboBox" name="mEmptyModeComboBox"/>
           </item>
           <item row="10" column="1">
-           <widget class="QComboBox" name="mWrapBehaviourComboBox"/>
+           <widget class="QComboBox" name="mWrapBehaviorComboBox"/>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="mMarginLabel">
@@ -374,7 +365,7 @@
           <item row="7" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_5">
             <item>
-             <widget class="QgsColorButtonV2" name="mBackgroundColorButton">
+             <widget class="QgsColorButton" name="mBackgroundColorButton">
               <property name="minimumSize">
                <size>
                 <width>120</width>
@@ -471,7 +462,7 @@
           <item row="1" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
-             <widget class="QgsColorButtonV2" name="mGridColorButton">
+             <widget class="QgsColorButton" name="mGridColorButton">
               <property name="minimumSize">
                <size>
                 <width>120</width>
@@ -503,6 +494,20 @@
              </spacer>
             </item>
            </layout>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QCheckBox" name="mDrawHorizontalGrid">
+            <property name="text">
+             <string>Draw horizontal lines</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QCheckBox" name="mDrawVerticalGrid">
+            <property name="text">
+             <string>Draw vertical lines</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -552,7 +557,7 @@
              <item row="1" column="1">
               <layout class="QHBoxLayout" name="horizontalLayout_3">
                <item>
-                <widget class="QgsColorButtonV2" name="mHeaderFontColorButton">
+                <widget class="QgsColorButton" name="mHeaderFontColorButton">
                  <property name="minimumSize">
                   <size>
                    <width>120</width>
@@ -655,7 +660,7 @@
              <item row="1" column="1">
               <layout class="QHBoxLayout" name="horizontalLayout_4">
                <item>
-                <widget class="QgsColorButtonV2" name="mContentFontColorButton">
+                <widget class="QgsColorButton" name="mContentFontColorButton">
                  <property name="minimumSize">
                   <size>
                    <width>120</width>
@@ -775,9 +780,9 @@
    <header location="global">qgsmaplayercombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -822,10 +827,12 @@
   <tabstop>mBackgroundColorButton</tabstop>
   <tabstop>mAdvancedCustomisationButton</tabstop>
   <tabstop>mWrapStringLineEdit</tabstop>
-  <tabstop>mWrapBehaviourComboBox</tabstop>
+  <tabstop>mWrapBehaviorComboBox</tabstop>
   <tabstop>mShowGridGroupCheckBox</tabstop>
   <tabstop>mGridStrokeWidthSpinBox</tabstop>
   <tabstop>mGridColorButton</tabstop>
+  <tabstop>mDrawHorizontalGrid</tabstop>
+  <tabstop>mDrawVerticalGrid</tabstop>
   <tabstop>groupBox_3</tabstop>
   <tabstop>mHeaderFontPushButton</tabstop>
   <tabstop>mHeaderFontColorButton</tabstop>

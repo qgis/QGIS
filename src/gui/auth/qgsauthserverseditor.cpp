@@ -64,17 +64,13 @@ QgsAuthServersEditor::QgsAuthServersEditor( QWidget *parent )
     connect( btnViewRefresh, SIGNAL( clicked() ), this, SLOT( refreshSslConfigsView() ) );
 
     btnGroupByOrg->setChecked( false );
-    QVariant sortbyval = QgsAuthManager::instance()->getAuthSetting( QString( "serverssortby" ), QVariant( false ) );
+    QVariant sortbyval = QgsAuthManager::instance()->getAuthSetting( QStringLiteral( "serverssortby" ), QVariant( false ) );
     if ( !sortbyval.isNull() )
       btnGroupByOrg->setChecked( sortbyval.toBool() );
 
     populateSslConfigsView();
     checkSelection();
   }
-}
-
-QgsAuthServersEditor::~QgsAuthServersEditor()
-{
 }
 
 static void setItemBold_( QTreeWidgetItem* item )
@@ -209,11 +205,11 @@ void QgsAuthServersEditor::appendSslConfigsToItem( const QList<QgsAuthConfigSslS
 
     QTreeWidgetItem * item( new QTreeWidgetItem( parent, coltxts, ( int )conftype ) );
 
-    item->setIcon( 0, QgsApplication::getThemeIcon( "/mIconCertificate.svg" ) );
+    item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ) );
     if ( !cert.isValid() )
     {
       item->setForeground( 2, redb );
-      item->setIcon( 0, QgsApplication::getThemeIcon( "/mIconCertificateUntrusted.svg" ) );
+      item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificateUntrusted.svg" ) ) );
     }
 
     item->setData( 0, Qt::UserRole, id );
@@ -389,7 +385,7 @@ void QgsAuthServersEditor::on_btnEditServer_clicked()
 
 void QgsAuthServersEditor::on_btnGroupByOrg_toggled( bool checked )
 {
-  if ( !QgsAuthManager::instance()->storeAuthSetting( QString( "serverssortby" ), QVariant( checked ) ) )
+  if ( !QgsAuthManager::instance()->storeAuthSetting( QStringLiteral( "serverssortby" ), QVariant( checked ) ) )
   {
     authMessageOut( QObject::tr( "Could not store sort by preference" ),
                     QObject::tr( "Authentication SSL Configs" ),
@@ -421,5 +417,5 @@ QgsMessageBar * QgsAuthServersEditor::messageBar()
 int QgsAuthServersEditor::messageTimeout()
 {
   QSettings settings;
-  return settings.value( "/qgis/messageTimeout", 5 ).toInt();
+  return settings.value( QStringLiteral( "/qgis/messageTimeout" ), 5 ).toInt();
 }

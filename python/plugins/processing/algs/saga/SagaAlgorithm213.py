@@ -16,6 +16,10 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'December 2014'
@@ -58,7 +62,7 @@ class SagaAlgorithm213(SagaAlgorithm212):
         newone.provider = self.provider
         return newone
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = list()
         self.exportedLayers = {}
 
@@ -102,7 +106,7 @@ class SagaAlgorithm213(SagaAlgorithm212):
                 layers = param.value.split(';')
                 if layers is None or len(layers) == 0:
                     continue
-                if param.datatype == ParameterMultipleInput.TYPE_RASTER:
+                if param.datatype == dataobjects.TYPE_RASTER:
                     for i, layerfile in enumerate(layers):
                         if layerfile.endswith('sdat'):
                             layerfile = param.value[:-4] + "sgrd"
@@ -112,10 +116,10 @@ class SagaAlgorithm213(SagaAlgorithm212):
                             if exportCommand is not None:
                                 commands.append(exportCommand)
                         param.value = ";".join(layers)
-                elif param.datatype in [ParameterMultipleInput.TYPE_VECTOR_ANY,
-                                        ParameterMultipleInput.TYPE_VECTOR_LINE,
-                                        ParameterMultipleInput.TYPE_VECTOR_POLYGON,
-                                        ParameterMultipleInput.TYPE_VECTOR_POINT]:
+                elif param.datatype in [dataobjects.TYPE_VECTOR_ANY,
+                                        dataobjects.TYPE_VECTOR_LINE,
+                                        dataobjects.TYPE_VECTOR_POLYGON,
+                                        dataobjects.TYPE_VECTOR_POINT]:
                     for layerfile in layers:
                         layer = dataobjects.getObjectFromUri(layerfile, False)
                         if layer:
@@ -135,14 +139,14 @@ class SagaAlgorithm213(SagaAlgorithm212):
             if isinstance(param, (ParameterRaster, ParameterVector,
                                   ParameterTable)):
                 value = param.value
-                if value in self.exportedLayers.keys():
+                if value in list(self.exportedLayers.keys()):
                     command += ' -' + param.name + ' "' \
                         + self.exportedLayers[value] + '"'
                 else:
                     command += ' -' + param.name + ' "' + value + '"'
             elif isinstance(param, ParameterMultipleInput):
                 s = param.value
-                for layer in self.exportedLayers.keys():
+                for layer in list(self.exportedLayers.keys()):
                     s = s.replace(layer, self.exportedLayers[layer])
                 command += ' -' + param.name + ' "' + s + '"'
             elif isinstance(param, ParameterBoolean):
@@ -152,14 +156,13 @@ class SagaAlgorithm213(SagaAlgorithm212):
                     command += ' -' + param.name.strip() + " false"
             elif isinstance(param, ParameterFixedTable):
                 tempTableFile = getTempFilename('txt')
-                f = open(tempTableFile, 'w')
-                f.write('\t'.join([col for col in param.cols]) + '\n')
-                values = param.value.split(',')
-                for i in range(0, len(values), 3):
-                    s = values[i] + '\t' + values[i + 1] + '\t' + values[i
-                                                                         + 2] + '\n'
-                    f.write(s)
-                f.close()
+                with open(tempTableFile, 'w') as f:
+                    f.write('\t'.join([col for col in param.cols]) + '\n')
+                    values = param.value.split(',')
+                    for i in range(0, len(values), 3):
+                        s = values[i] + '\t' + values[i + 1] + '\t' + values[i
+                                                                             + 2] + '\n'
+                        f.write(s)
                 command += ' -' + param.name + ' "' + tempTableFile + '"'
             elif isinstance(param, ParameterExtent):
                 # 'We have to substract/add half cell size, since SAGA is
@@ -169,11 +172,11 @@ class SagaAlgorithm213(SagaAlgorithm212):
                 values = param.value.split(',')
                 for i in range(4):
                     command += ' -' + self.extentParamNames[i] + ' ' \
-                        + unicode(float(values[i]) + offset[i])
+                        + str(float(values[i]) + offset[i])
             elif isinstance(param, (ParameterNumber, ParameterSelection)):
-                command += ' -' + param.name + ' ' + unicode(param.value)
+                command += ' -' + param.name + ' ' + str(param.value)
             else:
-                command += ' -' + param.name + ' "' + unicode(param.value) + '"'
+                command += ' -' + param.name + ' "' + str(param.value) + '"'
 
         for out in self.outputs:
             command += ' -' + out.name + ' "' + out.getCompatibleFileName(self) + '"'
@@ -197,11 +200,11 @@ class SagaAlgorithm213(SagaAlgorithm212):
         loglines = []
         loglines.append(self.tr('SAGA execution commands'))
         for line in commands:
-            progress.setCommand(line)
+            feedback.pushCommandInfo(line)
             loglines.append(line)
         if ProcessingConfig.getSetting(SagaUtils.SAGA_LOG_COMMANDS):
             ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
-        SagaUtils.executeSaga(progress)
+        SagaUtils.executeSaga(feedback)
 
         if self.crs is not None:
             for out in self.outputs:

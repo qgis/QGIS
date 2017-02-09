@@ -117,7 +117,7 @@ Copyright FAQ
       systems and software (e.g., Gnome, KDE, etc.) are now converting to
       use fontconfig (see www.fontconfig.org) to handle font configuration,
       selection and substitution; it has provisions for overriding font
-      names and subsituting alternatives. An example is provided by the
+      names and substituting alternatives. An example is provided by the
       supplied local.conf file, which chooses the family Bitstream Vera for
       "sans", "serif" and "monospace".  Other software (e.g., the XFree86
       core server) has other mechanisms for font substitution.

@@ -19,18 +19,17 @@
 #include "qgscomposition.h"
 #include "qgscomposermap.h"
 #include "qgscomposertexttable.h"
-#include "qgscomposerattributetable.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsmapsettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsfeature.h"
-#include "qgssymbolv2.h"
-#include "qgssinglesymbolrendererv2.h"
-#include "qgsdatadefined.h"
+#include "qgssymbol.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgsproperty.h"
 
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 class TestQgsComposerDD : public QObject
 {
@@ -39,7 +38,6 @@ class TestQgsComposerDD : public QObject
   public:
     TestQgsComposerDD()
         : mComposition( 0 )
-        , mMapSettings( 0 )
         , mVectorLayer( 0 )
         , mAtlasMap( 0 )
         , mAtlas( 0 )
@@ -55,7 +53,6 @@ class TestQgsComposerDD : public QObject
 
   private:
     QgsComposition *mComposition;
-    QgsMapSettings *mMapSettings;
     QgsVectorLayer* mVectorLayer;
     QgsComposerMap* mAtlasMap;
     QgsAtlasComposition* mAtlas;
@@ -67,38 +64,30 @@ void TestQgsComposerDD::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mMapSettings = new QgsMapSettings();
-
   //create maplayers from testdata and add to layer registry
-  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/france_parts.shp" );
+  QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/france_parts.shp" );
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                      vectorFileInfo.completeBaseName(),
-                                     "ogr" );
+                                     QStringLiteral( "ogr" ) );
 
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   mVectorLayer->setSimplifyMethod( simplifyMethod );
 
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mVectorLayer );
-
   //create composition with composer map
-  mMapSettings->setLayers( QStringList() << mVectorLayer->id() );
-  mMapSettings->setCrsTransformEnabled( true );
-  mMapSettings->setMapUnits( QGis::Meters );
 
   // select epsg:2154
   QgsCoordinateReferenceSystem crs;
   crs.createFromSrid( 2154 );
-  mMapSettings->setDestinationCrs( crs );
-  mComposition = new QgsComposition( *mMapSettings );
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   // fix the renderer, fill with green
   QgsStringMap props;
-  props.insert( "color", "0,127,0" );
-  QgsFillSymbolV2* fillSymbol = QgsFillSymbolV2::createSimple( props );
-  QgsSingleSymbolRendererV2* renderer = new QgsSingleSymbolRendererV2( fillSymbol );
-  mVectorLayer->setRendererV2( renderer );
+  props.insert( QStringLiteral( "color" ), QStringLiteral( "0,127,0" ) );
+  QgsFillSymbol* fillSymbol = QgsFillSymbol::createSimple( props );
+  QgsSingleSymbolRenderer* renderer = new QgsSingleSymbolRenderer( fillSymbol );
+  mVectorLayer->setRenderer( renderer );
 
   // the atlas map
   mAtlasMap = new QgsComposerMap( mComposition, 20, 20, 130, 130 );
@@ -110,14 +99,14 @@ void TestQgsComposerDD::initTestCase()
   mAtlas->setEnabled( true );
   mComposition->setAtlasMode( QgsComposition::ExportAtlas );
 
-  mReport = "<h1>Composer Data Defined Tests</h1>\n";
+  mReport = QStringLiteral( "<h1>Composer Data Defined Tests</h1>\n" );
 
 }
 
 void TestQgsComposerDD::cleanupTestCase()
 {
   delete mComposition;
-  delete mMapSettings;
+  delete mVectorLayer;
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
@@ -141,12 +130,12 @@ void TestQgsComposerDD::cleanup()
 void TestQgsComposerDD::ddEvaluate()
 {
   //set a data defined property
-  mAtlasMap->setDataDefinedProperty( QgsComposerItem::PositionY, true, true, QString( "20+30" ), QString() );
+  mAtlasMap->dataDefinedProperties().setProperty( QgsComposerItem::PositionY, QgsProperty::fromExpression( QStringLiteral( "20+30" ) ) );
   //evaluate property
   mAtlasMap->refreshDataDefinedProperty( QgsComposerItem::PositionY );
   QCOMPARE( mAtlasMap->pos().y(), 50.0 );
-  mAtlasMap->setDataDefinedProperty( QgsComposerItem::PositionY, false, false, QString(), QString() );
+  mAtlasMap->dataDefinedProperties().setProperty( QgsComposerItem::PositionY, QgsProperty() );
 }
 
-QTEST_MAIN( TestQgsComposerDD )
+QGSTEST_MAIN( TestQgsComposerDD )
 #include "testqgscomposerdd.moc"

@@ -25,13 +25,13 @@
 #include <QTimer>
 #include <QThread>
 
-#include "qgslogger.h"
 
 #define CONN_POOL_MAX_CONCURRENT_CONNS      4
 #define CONN_POOL_EXPIRATION_TIME           60    // in seconds
 
 
-/** Template that stores data related to one server.
+/** \ingroup core
+ * Template that stores data related to one server.
  *
  * It is assumed that following functions exist:
  * - void qgsConnectionPool_ConnectionCreate(QString name, T& c)  ... create a new connection
@@ -55,7 +55,7 @@ class QgsConnectionPoolGroup
 {
   public:
 
-    static const int maxConcurrentConnections;
+    static const int MAX_CONCURRENT_CONNECTIONS;
 
     struct Item
     {
@@ -77,6 +77,11 @@ class QgsConnectionPoolGroup
         qgsConnectionPool_ConnectionDestroy( item.c );
       }
     }
+
+    //! QgsConnectionPoolGroup cannot be copied
+    QgsConnectionPoolGroup( const QgsConnectionPoolGroup& other ) = delete;
+    //! QgsConnectionPoolGroup cannot be copied
+    QgsConnectionPoolGroup& operator=( const QgsConnectionPoolGroup& other ) = delete;
 
     T acquire()
     {
@@ -213,12 +218,13 @@ class QgsConnectionPoolGroup
     QMutex connMutex;
     QSemaphore sem;
     QTimer* expirationTimer;
+
 };
 
 
-/**
+/** \ingroup core
  * Template class responsible for keeping a pool of open connections.
- * This is desired to avoid the overhead of creation of new connection everytime.
+ * This is desired to avoid the overhead of creation of new connection every time.
  *
  * The methods are thread safe.
  *

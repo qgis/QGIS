@@ -1,3 +1,4 @@
+
 /* sqlitecompat.h - compatibility macros
  *
  * Copyright (C) 2006-2010 Gerhard Häring <gh@ghaering.de>
@@ -25,13 +26,6 @@
 
 #ifndef PYSQLITE_COMPAT_H
 #define PYSQLITE_COMPAT_H
-
-/* define Py_ssize_t for pre-2.5 versions of Python */
-
-#if PY_VERSION_HEX < 0x02050000
-typedef int Py_ssize_t;
-typedef int (*lenfunc)(PyObject*);
-#endif
 
 
 /* define PyDict_CheckExact for pre-2.4 versions of Python */

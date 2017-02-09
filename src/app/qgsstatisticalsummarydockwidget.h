@@ -15,11 +15,14 @@
 #ifndef QGSSTATISTICALSUMMARYDOCKWIDGET_H
 #define QGSSTATISTICALSUMMARYDOCKWIDGET_H
 
-#include <QDockWidget>
 #include <QMap>
 #include "ui_qgsstatisticalsummarybase.h"
 
 #include "qgsstatisticalsummary.h"
+#include "qgsstringstatisticalsummary.h"
+#include "qgsdatetimestatisticalsummary.h"
+#include "qgsdockwidget.h"
+#include "qgis_app.h"
 
 class QgsBrowserModel;
 class QModelIndex;
@@ -30,7 +33,7 @@ class QgsBrowserTreeFilterProxyModel;
 
 /** A dock widget which displays a statistical summary of the values in a field or expression
  */
-class APP_EXPORT QgsStatisticalSummaryDockWidget : public QDockWidget, private Ui::QgsStatisticalSummaryWidgetBase
+class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private Ui::QgsStatisticalSummaryWidgetBase, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -61,7 +64,16 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QDockWidget, private U
     QgsVectorLayer* mLayer;
 
     QMap< int, QAction* > mStatsActions;
-    static QList< QgsStatisticalSummary::Statistic > mDisplayStats;
+    static QList< QgsStatisticalSummary::Statistic > sDisplayStats;
+    static QList< QgsStringStatisticalSummary::Statistic > sDisplayStringStats;
+    static QList< QgsDateTimeStatisticalSummary::Statistic > sDisplayDateTimeStats;
+
+    void updateNumericStatistics( bool selectedOnly );
+    void updateStringStatistics( bool selectedOnly );
+    void updateDateTimeStatistics( bool selectedOnly );
+    void addRow( int row, const QString& name, const QString& value, bool showValue );
+
+    QgsExpressionContext createExpressionContext() const override;
 };
 
 #endif // QGSSTATISTICALSUMMARYDOCKWIDGET_H

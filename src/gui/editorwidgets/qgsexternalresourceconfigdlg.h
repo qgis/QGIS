@@ -19,8 +19,10 @@
 #include "ui_qgsexternalresourceconfigdlg.h"
 
 #include "qgseditorconfigwidget.h"
+#include "qgis_gui.h"
 
-/** \class QgsExternalResourceConfigDlg
+/** \ingroup gui
+ * \class QgsExternalResourceConfigDlg
  * \note not available in Python bindings
  */
 
@@ -33,8 +35,8 @@ class GUI_EXPORT QgsExternalResourceConfigDlg : public QgsEditorConfigWidget, pr
 
     // QgsEditorConfigWidget interface
   public:
-    QgsEditorWidgetConfig config() override;
-    void setConfig( const QgsEditorWidgetConfig& config ) override;
+    QVariantMap config() override;
+    void setConfig( const QVariantMap& config ) override;
 
   private slots:
     //! Choose a base directory for rootPath

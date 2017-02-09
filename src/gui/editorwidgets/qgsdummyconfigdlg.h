@@ -18,9 +18,11 @@
 
 #include "ui_qgsdummyconfigdlgbase.h"
 #include "qgseditorconfigwidget.h"
+#include "qgis_gui.h"
 
 
-/** \class QgsDummyConfigDlg
+/** \ingroup gui
+ * \class QgsDummyConfigDlg
  * \note not available in Python bindings
  */
 
@@ -33,8 +35,8 @@ class GUI_EXPORT QgsDummyConfigDlg : public QgsEditorConfigWidget, private Ui::Q
 
     // QgsEditorConfigWidget interface
   public:
-    virtual QgsEditorWidgetConfig config() override;
-    virtual void setConfig( const QgsEditorWidgetConfig& config ) override;
+    virtual QVariantMap config() override;
+    virtual void setConfig( const QVariantMap& config ) override;
 };
 
 #endif // QGSDUMMYCONFIGDLG_H

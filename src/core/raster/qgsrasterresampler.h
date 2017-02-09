@@ -28,10 +28,21 @@ class QImage;
 class QgsRasterResampler
 {
   public:
-    virtual ~QgsRasterResampler() {}
+    virtual ~QgsRasterResampler() = default;
     virtual void resample( const QImage& srcImage, QImage& dstImage ) = 0;
+
+    /**
+     * Get a descriptive type identifier for this raster resampler.
+     * Needs to be implemented by subclasses.
+     */
     virtual QString type() const = 0;
-    virtual QgsRasterResampler * clone() const = 0;
+
+    /**
+     * Get a deep copy of this object.
+     * Needs to be reimplemented by subclasses.
+     * Ownership is transferred to the caller.
+     */
+    virtual QgsRasterResampler* clone() const = 0;
 };
 
 #endif // QGSRASTERRESAMPLER_H

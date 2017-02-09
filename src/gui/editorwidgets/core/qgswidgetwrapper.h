@@ -22,10 +22,10 @@
 
 class QgsVectorLayer;
 
-#include "qgseditorwidgetconfig.h"
 #include "qgsattributeeditorcontext.h"
+#include "qgis_gui.h"
 
-/**
+/** \ingroup gui
  * Manages an editor widget
  * Widget and wrapper share the same parent
  *
@@ -40,6 +40,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
 {
     Q_OBJECT
   public:
+
     /**
      * Create a new widget wrapper
      *
@@ -70,7 +71,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      *
      * @param config The config for this wrapper
      */
-    void setConfig( const QgsEditorWidgetConfig& config );
+    void setConfig( const QVariantMap& config );
 
     /**
      * Set the context in which this widget is shown
@@ -94,7 +95,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      *
      * @return The configuration
      */
-    QgsEditorWidgetConfig config() const;
+    QVariantMap config() const;
 
     /**
      * Returns information about the context in which this widget is shown
@@ -123,7 +124,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      * Return true if the widget has been properly initialized.
      * This acts as hint for the calling party if this wrapper can be used
      * after initializing it.
-     * If it cannot be used this is a hint tothe caller that he may try to find
+     * If it cannot be used this is a hint to the caller that he may try to find
      * another suitable widget type instead.
      *
      * @return Validity status of this widget.
@@ -133,6 +134,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     virtual bool valid() const = 0;
 
   protected:
+
     /**
      * This method should create a new widget with the provided parent. This will only be called
      * if the form did not already provide a widget, so it is not guaranteed to be called!
@@ -154,6 +156,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     virtual void initWidget( QWidget* editor );
 
   public slots:
+
     /**
      * Is called, when the value of the widget needs to be changed. Update the widget representation
      * to reflect the new value.
@@ -172,7 +175,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
 
   private:
     QgsAttributeEditorContext mContext;
-    QgsEditorWidgetConfig mConfig;
+    QVariantMap mConfig;
     QWidget* mWidget;
     QWidget* mParent;
     QgsVectorLayer* mLayer;

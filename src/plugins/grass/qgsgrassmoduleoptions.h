@@ -24,7 +24,7 @@
 //#include <QVBoxLayout>
 
 #include "qgis.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgscoordinatereferencesystem.h"
 
 #include "qgsgrassmoduleparam.h"
@@ -55,7 +55,7 @@ class QgsGrassModuleOptions
       QgsGrassTools *tools, QgsGrassModule *module,
       QgisInterface *iface, bool direct );
 
-    //! Destructor
+
     virtual ~QgsGrassModuleOptions();
 
     //! Get module options as list of arguments for QProcess
@@ -149,7 +149,7 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
       QString xname, QDomElement confDocElem,
       bool direct, QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
-    //! Destructor
+
     ~QgsGrassModuleStandardOptions();
 
     //! Get module options as list of arguments for QProcess
@@ -179,6 +179,7 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
     void switchAdvanced();
 
   private:
+
     /** Read and parse module options (--interface-description).
      * @param errors - list to which possible errors are added
      */
@@ -189,7 +190,7 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
      */
     bool getCurrentMapRegion( QgsGrassModuleInput * param, struct Cell_head *window );
 
-    // List of providers used by layers in QgsMapLayerRegistry
+    // List of providers used by layers in QgsProject
     QList<QgsGrassProvider *> grassProviders();
     QList<QgsGrassRasterProvider *> grassRasterProviders();
 

@@ -36,10 +36,6 @@ QgsComposerModel::QgsComposerModel( QgsComposition* composition, QObject *parent
 
 }
 
-QgsComposerModel::~QgsComposerModel()
-{
-}
-
 QgsComposerItem* QgsComposerModel::itemFromIndex( const QModelIndex &index ) const
 {
   //try to return the QgsComposerItem corresponding to a QModelIndex
@@ -228,13 +224,6 @@ bool QgsComposerModel::setData( const QModelIndex & index, const QVariant & valu
 
 QVariant QgsComposerModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
-  static QIcon lockIcon;
-  if ( lockIcon.isNull() )
-    lockIcon = QgsApplication::getThemeIcon( "/locked.svg" );
-  static QIcon showIcon;
-  if ( showIcon.isNull() )
-    showIcon = QgsApplication::getThemeIcon( "/mActionShowAllLayers.png" );
-
   switch ( role )
   {
     case Qt::DisplayRole:
@@ -250,11 +239,11 @@ QVariant QgsComposerModel::headerData( int section, Qt::Orientation orientation,
     {
       if ( section == Visibility )
       {
-        return qVariantFromValue( showIcon );
+        return qVariantFromValue( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ) );
       }
       else if ( section == LockStatus )
       {
-        return qVariantFromValue( lockIcon );
+        return qVariantFromValue( QgsApplication::getThemeIcon( QStringLiteral( "/locked.svg" ) ) );
       }
 
       return QVariant();
@@ -277,7 +266,7 @@ Qt::DropActions QgsComposerModel::supportedDropActions() const
 QStringList QgsComposerModel::mimeTypes() const
 {
   QStringList types;
-  types << "application/x-vnd.qgis.qgis.composeritemid";
+  types << QStringLiteral( "application/x-vnd.qgis.qgis.composeritemid" );
   return types;
 }
 
@@ -302,7 +291,7 @@ QMimeData* QgsComposerModel::mimeData( const QModelIndexList &indexes ) const
     }
   }
 
-  mimeData->setData( "application/x-vnd.qgis.qgis.composeritemid", encodedData );
+  mimeData->setData( QStringLiteral( "application/x-vnd.qgis.qgis.composeritemid" ), encodedData );
   return mimeData;
 }
 
@@ -324,7 +313,7 @@ bool QgsComposerModel::dropMimeData( const QMimeData *data,
     return true;
   }
 
-  if ( !data->hasFormat( "application/x-vnd.qgis.qgis.composeritemid" ) )
+  if ( !data->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.composeritemid" ) ) )
   {
     return false;
   }
@@ -336,7 +325,7 @@ bool QgsComposerModel::dropMimeData( const QMimeData *data,
 
   int beginRow = row != -1 ? row : rowCount( QModelIndex() );
 
-  QByteArray encodedData = data->data( "application/x-vnd.qgis.qgis.composeritemid" );
+  QByteArray encodedData = data->data( QStringLiteral( "application/x-vnd.qgis.qgis.composeritemid" ) );
   QDataStream stream( &encodedData, QIODevice::ReadOnly );
   QList<QgsComposerItem*> droppedItems;
   int rows = 0;
@@ -362,7 +351,7 @@ bool QgsComposerModel::dropMimeData( const QMimeData *data,
   //move dropped items
 
   //first sort them by z-order
-  qSort( droppedItems.begin(), droppedItems.end(), zOrderDescending );
+  std::sort( droppedItems.begin(), droppedItems.end(), zOrderDescending );
 
   //calculate position in z order list to drop items at
   int destPos = 0;
@@ -537,7 +526,7 @@ void QgsComposerModel::removeItem( QgsComposerItem * item )
   QModelIndex itemIndex = indexForItem( item );
   if ( !itemIndex.isValid() )
   {
-    //removing an item not in the scene (eg, deleted item)
+    //removing an item not in the scene (e.g., deleted item)
     //we need to remove it from the list, but don't need to call
     //beginRemoveRows or endRemoveRows since the item was not used by the model
     mItemZList.removeAt( pos );

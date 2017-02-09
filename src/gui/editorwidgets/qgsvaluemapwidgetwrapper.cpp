@@ -14,6 +14,10 @@
  ***************************************************************************/
 
 #include "qgsvaluemapwidgetwrapper.h"
+#include "qgsvaluemapconfigdlg.h"
+#include "qgsvaluemapfieldformatter.h"
+
+#include <QSettings>
 
 QgsValueMapWidgetWrapper::QgsValueMapWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
@@ -27,7 +31,10 @@ QVariant QgsValueMapWidgetWrapper::value() const
   QVariant v;
 
   if ( mComboBox )
-    v = mComboBox->itemData( mComboBox->currentIndex() );
+    v = mComboBox->currentData();
+
+  if ( v == QgsValueMapFieldFormatter::NULL_VALUE )
+    v = QVariant( field().type() );
 
   return v;
 }
@@ -51,10 +58,10 @@ void QgsValueMapWidgetWrapper::initWidget( QWidget* editor )
 
   if ( mComboBox )
   {
-    const QgsEditorWidgetConfig cfg = config();
-    QgsEditorWidgetConfig::ConstIterator it = cfg.constBegin();
+    const QVariantMap map = config().value( QStringLiteral( "map" ) ).toMap();
+    QVariantMap::ConstIterator it = map.constBegin();
 
-    while ( it != cfg.constEnd() )
+    while ( it != map.constEnd() )
     {
       mComboBox->addItem( it.key(), it.value() );
       ++it;
@@ -70,6 +77,12 @@ bool QgsValueMapWidgetWrapper::valid() const
 
 void QgsValueMapWidgetWrapper::setValue( const QVariant& value )
 {
+  QString v;
+  if ( value.isNull() )
+    v = QgsValueMapFieldFormatter::NULL_VALUE;
+  else
+    v = value.toString();
+
   if ( mComboBox )
-    mComboBox->setCurrentIndex( mComboBox->findData( value ) );
+    mComboBox->setCurrentIndex( mComboBox->findData( v ) );
 }

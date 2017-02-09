@@ -19,14 +19,15 @@ email                : brush.tyler@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
 
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import SpatiaLiteDBConnector
 
-from PyQt.QtCore import Qt, QSettings, QFileInfo
-from PyQt.QtGui import QIcon
-from PyQt.QtWidgets import QApplication, QAction, QFileDialog
-from qgis.core import QgsDataSourceURI
+from qgis.PyQt.QtCore import Qt, QSettings, QFileInfo
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QApplication, QAction, QFileDialog
+from qgis.core import QgsDataSourceUri
 from qgis.gui import QgsMessageBar
 
 from ..plugin import DBPlugin, Database, Table, VectorTable, RasterTable, TableField, TableIndex, TableTrigger, \
@@ -51,7 +52,7 @@ class SpatiaLiteDBPlugin(DBPlugin):
 
     @classmethod
     def typeNameString(self):
-        return 'SpatiaLite/Geopackage'
+        return 'SpatiaLite'
 
     @classmethod
     def providerName(self):
@@ -74,7 +75,7 @@ class SpatiaLiteDBPlugin(DBPlugin):
 
         database = settings.value("sqlitepath")
 
-        uri = QgsDataSourceURI()
+        uri = QgsDataSourceUri()
         uri.setDatabase(database)
         return self.connectToUri(uri)
 
@@ -89,17 +90,17 @@ class SpatiaLiteDBPlugin(DBPlugin):
     def addConnectionActionSlot(self, item, action, parent, index):
         QApplication.restoreOverrideCursor()
         try:
-            filename = QFileDialog.getOpenFileName(parent, "Choose Sqlite/Spatialite/Geopackage file")
+            filename, selected_filter = QFileDialog.getOpenFileName(parent, "Choose Sqlite/Spatialite file")
             if not filename:
                 return
         finally:
             QApplication.setOverrideCursor(Qt.WaitCursor)
 
         conn_name = QFileInfo(filename).fileName()
-        uri = QgsDataSourceURI()
+        uri = QgsDataSourceUri()
         uri.setDatabase(filename)
         self.addConnection(conn_name, uri)
-        index.internalPointer().itemChanged.emit(index.internalPointer())
+        index.internalPointer().itemChanged()
 
 
 class SLDatabase(Database):
@@ -153,7 +154,7 @@ class SLDatabase(Database):
         self.database().refresh()
 
     def runAction(self, action):
-        action = unicode(action)
+        action = str(action)
 
         if action.startswith("vacuum/"):
             if action == "vacuum/run":
@@ -183,21 +184,13 @@ class SLTable(Table):
         return ogrUri
 
     def mimeUri(self):
-        if self.database().connector.isGpkg():
-            # QGIS has no provider to load Geopackage vectors, let's use OGR
-            return u"vector:ogr:%s:%s" % (self.name, self.ogrUri())
         return Table.mimeUri(self)
 
     def toMapLayer(self):
         from qgis.core import QgsVectorLayer
 
-        if self.database().connector.isGpkg():
-            # QGIS has no provider to load Geopackage vectors, let's use OGR
-            provider = "ogr"
-            uri = self.ogrUri()
-        else:
-            provider = self.database().dbplugin().providerName()
-            uri = self.uri().uri()
+        provider = self.database().dbplugin().providerName()
+        uri = self.uri().uri()
 
         return QgsVectorLayer(uri, self.name, provider)
 
@@ -222,7 +215,7 @@ class SLVectorTable(SLTable, VectorTable):
         SLTable.__init__(self, row[:-5], db, schema)
         VectorTable.__init__(self, db, schema)
         # SpatiaLite does case-insensitive checks for table names, but the
-        # SL provider didn't do the same in QGis < 1.9, so self.geomTableName
+        # SL provider didn't do the same in Qgis < 1.9, so self.geomTableName
         # stores the table name like stored in the geometry_columns table
         self.geomTableName, self.geomColumn, self.geomType, self.geomDim, self.srid = row[-5:]
 
@@ -282,12 +275,8 @@ class SLRasterTable(SLTable, RasterTable):
     def toMapLayer(self):
         from qgis.core import QgsRasterLayer, QgsContrastEnhancement
 
-        if self.database().connector.isGpkg():
-            # QGIS has no provider to load Geopackage rasters, let's use GDAL
-            uri = self.ogrUri()
-        else:
-            # QGIS has no provider to load Rasterlite rasters, let's use GDAL
-            uri = self.rasterliteGdalUri()
+        # QGIS has no provider to load Rasterlite rasters, let's use GDAL
+        uri = self.rasterliteGdalUri()
 
         rl = QgsRasterLayer(uri, self.name)
         if rl.isValid():

@@ -16,11 +16,13 @@
 #ifndef QGSMAPRENDERERCUSTOMPAINTERJOB_H
 #define QGSMAPRENDERERCUSTOMPAINTERJOB_H
 
+#include "qgis_core.h"
 #include "qgsmaprendererjob.h"
 
 #include <QEventLoop>
 
-/** Job implementation that renders everything sequentially using a custom painter.
+/** \ingroup core
+ * Job implementation that renders everything sequentially using a custom painter.
  *
  * Also supports synchronous rendering in main thread for cases when rendering in background
  * is not an option because of some technical limitations (e.g. printing to printer on some
@@ -39,6 +41,7 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
     virtual void cancel() override;
     virtual void waitForFinished() override;
     virtual bool isActive() const override;
+    virtual bool usedCachedLabels() const override;
     virtual QgsLabelingResults* takeLabelingResults() override;
 
     //! @note not available in python bindings
@@ -56,7 +59,7 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
      * Ideally the "wait for finished" method should not be used at all. The code triggering
      * rendering should not need to actively wait for rendering to finish.
      */
-    void waitForFinishedWithEventLoop( const QEventLoop::ProcessEventsFlags& flags = QEventLoop::AllEvents );
+    void waitForFinishedWithEventLoop( QEventLoop::ProcessEventsFlags flags = QEventLoop::AllEvents );
 
     /**
      * Render the map synchronously in this thread. The function does not return until the map
@@ -69,26 +72,25 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
      */
     void renderSynchronously();
 
-  protected slots:
+  private slots:
     void futureFinished();
 
-  protected:
+  private:
     static void staticRender( QgsMapRendererCustomPainterJob* self ); // function to be used within the thread
 
     // these methods are called within worker thread
     void doRender();
 
-  private:
     QPainter* mPainter;
     QFuture<void> mFuture;
     QFutureWatcher<void> mFutureWatcher;
-    QgsRenderContext mLabelingRenderContext;
-    QgsPalLabeling* mLabelingEngine;
-    QgsLabelingEngineV2* mLabelingEngineV2;
+    std::unique_ptr< QgsLabelingEngine > mLabelingEngineV2;
 
     bool mActive;
     LayerRenderJobs mLayerJobs;
+    LabelRenderJob mLabelJob;
     bool mRenderSynchronously;
+
 };
 
 

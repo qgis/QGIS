@@ -1,0 +1,13 @@
+{
+  "name": "q1",
+  "type": "function",
+  "description": "Returns the calculated first quartile from a field or expression.",
+  "arguments": [
+	{"arg":"expression", "description":"sub expression of field to aggregate"},
+	{"arg":"group_by", "optional":true, "description":"optional expression to use to group aggregate calculations"},
+	{"arg":"filter", "optional":true, "description":"optional expression to use to filter features used to calculate aggregate"}
+  ],
+  "examples": [
+	{ "expression":"q1(\"population\",group_by:=\"state\")", "returns":"first quartile of population value, grouped by state field"}
+  ]
+}

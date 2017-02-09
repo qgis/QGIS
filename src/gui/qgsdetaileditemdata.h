@@ -21,6 +21,7 @@
 #include <QMetaType>
 #include <QString>
 #include <QPixmap>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * This class is the data only representation of a
@@ -37,6 +38,7 @@ class GUI_EXPORT QgsDetailedItemData
     void setCheckable( const bool theFlag );
     void setChecked( const bool theFlag );
     void setEnabled( bool theFlag );
+
     /** This is a hint to the delegate to render using
      * a widget rather than manually painting every
      * part of the list item.

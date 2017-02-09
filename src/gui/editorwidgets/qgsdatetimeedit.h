@@ -17,11 +17,12 @@
 #define QGSDATETIMEEDIT_H
 
 #include <QDateTimeEdit>
+#include "qgis_gui.h"
 
 class QToolButton;
 class QLineEdit;
 
-/**
+/** \ingroup gui
  * @brief The QgsDateTimeEdit class is a QDateTimeEdit with the capability of setting/reading null date/times.
  */
 class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
@@ -32,7 +33,7 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
   public:
     explicit QgsDateTimeEdit( QWidget *parent = nullptr );
 
-    //! determines if the widget allows setting null date/time.
+    //! Determines if the widget allows setting null date/time.
     void setAllowNull( bool allowNull );
     bool allowNull() const {return mAllowNull;}
 
@@ -48,10 +49,16 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
      */
     QDateTime dateTime() const;
 
-    //! Set the current date as NULL
-    //! @note if the widget is not configured to accept NULL dates, this will have no effect
+    /**
+     * Set the current date as NULL
+     * @note if the widget is not configured to accept NULL dates, this will have no effect
+     */
     virtual void clear() override;
 
+    /** Resets the widget to show no value (ie, an "unknown" state).
+     * @note added in QGIS 2.16
+     */
+    void setEmpty();
 
   protected:
     virtual void resizeEvent( QResizeEvent* event ) override;
@@ -69,6 +76,7 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
 
     bool mAllowNull;
     bool mIsNull;
+    bool mIsEmpty;
 
     QLineEdit* mNullLabel;
     QToolButton* mClearButton;

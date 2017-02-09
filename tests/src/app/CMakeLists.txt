@@ -1,7 +1,7 @@
 #####################################################
 # Don't forget to include output directory, otherwise
 # the UI file won't be wrapped!
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} 
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/auth
@@ -10,6 +10,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/raster
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/symbology-ng
   ${CMAKE_CURRENT_BINARY_DIR}/../../../src/ui
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/ui
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui/editorwidgets
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui/editorwidgets/core
@@ -19,7 +20,11 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/python
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/app
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/app/pluginmanager
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/ui
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/test
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
+  ${CMAKE_BINARY_DIR}/src/python
+  ${CMAKE_BINARY_DIR}/src/app
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
@@ -27,6 +32,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
+  ${QSCINTILLA_INCLUDE_DIR}
 )
 
 #############################################################
@@ -58,7 +64,7 @@ ENDIF (APPLE)
 #qtests in the executable file list as the moc is
 #directly included in the sources
 #and should not be compiled twice. Trying to include
-#them in will cause an error at build time 
+#them in will cause an error at build time
 
 #No relinking and full RPATH for the install tree
 #See: http://www.cmake.org/Wiki/CMake_RPATH_handling#No_relinking_and_full_RPATH_for_the_install_tree
@@ -101,8 +107,11 @@ ENDMACRO (ADD_QGIS_TEST)
 #############################################################
 # Tests:
 
+ADD_QGIS_TEST(apppythontest testqgisapppython.cpp)
 ADD_QGIS_TEST(qgisappclipboard testqgisappclipboard.cpp)
 ADD_QGIS_TEST(attributetabletest testqgsattributetable.cpp)
 ADD_QGIS_TEST(fieldcalculatortest testqgsfieldcalculator.cpp)
 ADD_QGIS_TEST(maptoolidentifyaction testqgsmaptoolidentifyaction.cpp)
+ADD_QGIS_TEST(maptoolselect testqgsmaptoolselect.cpp)
 ADD_QGIS_TEST(measuretool testqgsmeasuretool.cpp)
+ADD_QGIS_TEST(vectorlayersaveasdialogtest testqgsvectorlayersaveasdialog.cpp)

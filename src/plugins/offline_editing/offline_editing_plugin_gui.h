@@ -41,17 +41,18 @@ class QgsOfflineEditingPluginGui : public QDialog, private Ui::QgsOfflineEditing
     Q_OBJECT
 
   public:
-    QgsOfflineEditingPluginGui( QWidget* parent = nullptr, Qt::WindowFlags fl = nullptr );
+    QgsOfflineEditingPluginGui( QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
     virtual ~QgsOfflineEditingPluginGui();
 
     QString offlineDataPath();
     QString offlineDbFile();
-    QStringList& selectedLayerIds();
+    QStringList selectedLayerIds();
+    bool onlySelected() const;
 
   public slots:
-    /** Change the selection of layers in the list */
+    //! Change the selection of layers in the list
     void selectAll();
-    void unSelectAll();
+    void deSelectAll();
 
   private:
     void saveState();

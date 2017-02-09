@@ -16,8 +16,9 @@
 #ifndef QGSMULTIEDITTOOLBUTTON_H
 #define QGSMULTIEDITTOOLBUTTON_H
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include <QToolButton>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsMultiEditToolButton
@@ -35,9 +36,9 @@ class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
     //! Button states
     enum State
     {
-      Default, /*!< Default state, all features have same value for widget */
-      MixedValues, /*!< Mixed state, some features have different values for the widget */
-      Changed, /*!< Value for widget has changed but changes have not yet been committed */
+      Default, //!< Default state, all features have same value for widget
+      MixedValues, //!< Mixed state, some features have different values for the widget
+      Changed, //!< Value for widget has changed but changes have not yet been committed
     };
 
     /** Constructor for QgsMultiEditToolButton.

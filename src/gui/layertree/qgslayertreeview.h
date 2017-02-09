@@ -17,6 +17,7 @@
 #define QGSLAYERTREEVIEW_H
 
 #include <QTreeView>
+#include "qgis_gui.h"
 
 class QgsLayerTreeGroup;
 class QgsLayerTreeLayer;
@@ -28,6 +29,7 @@ class QgsLayerTreeViewMenuProvider;
 class QgsMapLayer;
 
 /**
+ * \ingroup gui
  * The QgsLayerTreeView class extends QTreeView and provides some additional functionality
  * when working with a layer tree.
  *
@@ -91,6 +93,14 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     //! Force refresh of layer symbology. Normally not needed as the changes of layer's renderer are monitored by the model
     void refreshLayerSymbology( const QString& layerId );
 
+    //! Enhancement of QTreeView::expandAll() that also records expanded state in layer tree nodes
+    //! @note added in QGIS 2.18
+    void expandAllNodes();
+
+    //! Enhancement of QTreeView::collapseAll() that also records expanded state in layer tree nodes
+    //! @note added in QGIS 2.18
+    void collapseAllNodes();
+
   signals:
     //! Emitted when a current layer is changed
     void currentLayerChanged( QgsMapLayer* layer );
@@ -101,6 +111,9 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     void updateExpandedStateFromNode( QgsLayerTreeNode* node );
 
     QgsMapLayer* layerForIndex( const QModelIndex& index ) const;
+
+    void mouseReleaseEvent( QMouseEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
 
   protected slots:
 
@@ -123,7 +136,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 };
 
 
-/**
+/** \ingroup gui
  * Implementation of this interface can be implemented to allow QgsLayerTreeView
  * instance to provide custom context menus (opened upon right-click).
  *
@@ -133,7 +146,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 class GUI_EXPORT QgsLayerTreeViewMenuProvider
 {
   public:
-    virtual ~QgsLayerTreeViewMenuProvider() {}
+    virtual ~QgsLayerTreeViewMenuProvider() = default;
 
     //! Return a newly created menu instance (or null pointer on error)
     virtual QMenu* createContextMenu() = 0;

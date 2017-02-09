@@ -24,7 +24,9 @@
 #include <QNetworkProxy>
 #include <QNetworkRequest>
 
-/*
+#include "qgis_core.h"
+
+/**
  * \class QgsNetworkAccessManager
  * \brief network access manager for QGIS
  * \ingroup core
@@ -52,9 +54,6 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 
     QgsNetworkAccessManager( QObject *parent = nullptr );
 
-    //! destructor
-    ~QgsNetworkAccessManager();
-
     //! insert a factory into the proxy factories list
     void insertProxyFactory( QNetworkProxyFactory *factory );
 
@@ -68,7 +67,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     const QNetworkProxy &fallbackProxy() const;
 
     //! retrieve exclude list (urls shouldn't use the fallback proxy)
-    const QStringList &excludeList() const;
+    QStringList excludeList() const;
 
     //! set fallback proxy and URL that shouldn't use it.
     void setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes );
@@ -83,31 +82,12 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     void setupDefaultProxyAndCache();
 
     //! return whether the system proxy should be used
-    bool useSystemProxy() { return mUseSystemProxy; }
-
-  public slots:
-    /** Send GET request, calls get().
-     * Emits requestSent().
-     * @param request request to be sent
-     * @deprecated use get() directly
-     */
-    Q_DECL_DEPRECATED void sendGet( const QNetworkRequest & request );
-    /** Abort and delete reply.
-     * @param reply reply to be aborted.
-     * @deprecated use abort() and deleteLayer() on the reply directly
-     */
-    Q_DECL_DEPRECATED void deleteReply( QNetworkReply * reply );
+    bool useSystemProxy() const { return mUseSystemProxy; }
 
   signals:
     void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * );
     void requestCreated( QNetworkReply * );
     void requestTimedOut( QNetworkReply * );
-    /** Emitted when request was sent by request()
-     * @param reply request reply
-     * @param sender the object which called request() slot.
-     * @deprecated only emitted from deprecated sendGet
-     */
-    void requestSent( QNetworkReply * reply, QObject *sender );
 
   private slots:
     void abortRequest();
@@ -121,7 +101,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     QStringList mExcludedURLs;
     bool mUseSystemProxy;
     bool mInitialized;
-    static QgsNetworkAccessManager *smMainNAM;
+    static QgsNetworkAccessManager *sMainNAM;
 };
 
 #endif // QGSNETWORKACCESSMANAGER_H

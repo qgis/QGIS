@@ -33,16 +33,16 @@
 QString QgsGPSObject::xmlify( const QString& str )
 {
   QString tmp = str;
-  tmp.replace( '&', "&amp;" );
-  tmp.replace( '<', "&lt;" );
-  tmp.replace( '>', "&gt;" );
-  tmp.replace( '\"', "&quot;" );
-  tmp.replace( '\'', "&apos;" );
+  tmp.replace( '&', QLatin1String( "&amp;" ) );
+  tmp.replace( '<', QLatin1String( "&lt;" ) );
+  tmp.replace( '>', QLatin1String( "&gt;" ) );
+  tmp.replace( '\"', QLatin1String( "&quot;" ) );
+  tmp.replace( '\'', QLatin1String( "&apos;" ) );
   return tmp;
 }
 
 
-void QgsGPSObject::writeXML( QTextStream& stream )
+void QgsGPSObject::writeXml( QTextStream& stream )
 {
   if ( !name.isEmpty() )
     stream << "<name>" << xmlify( name ) << "</name>\n";
@@ -67,9 +67,9 @@ QgsGPSPoint::QgsGPSPoint()
 }
 
 
-void QgsGPSPoint::writeXML( QTextStream& stream )
+void QgsGPSPoint::writeXml( QTextStream& stream )
 {
-  QgsGPSObject::writeXML( stream );
+  QgsGPSObject::writeXml( stream );
   if ( ele != -std::numeric_limits<double>::max() )
     stream << "<ele>" << ele << "</ele>\n";
   if ( !sym.isEmpty() )
@@ -88,42 +88,42 @@ QgsGPSExtended::QgsGPSExtended()
 }
 
 
-void QgsGPSExtended::writeXML( QTextStream& stream )
+void QgsGPSExtended::writeXml( QTextStream& stream )
 {
-  QgsGPSObject::writeXML( stream );
+  QgsGPSObject::writeXml( stream );
   if ( number != std::numeric_limits<int>::max() )
     stream << "<number>" << number << "</number>\n";
 }
 
 
-void QgsWaypoint::writeXML( QTextStream& stream )
+void QgsWaypoint::writeXml( QTextStream& stream )
 {
   stream << "<wpt lat=\"" << QString::number( lat, 'f', OUTPUT_PRECISION ) <<
   "\" lon=\"" << QString::number( lon, 'f', OUTPUT_PRECISION ) << "\">\n";
-  QgsGPSPoint::writeXML( stream );
+  QgsGPSPoint::writeXml( stream );
   stream << "</wpt>\n";
 }
 
 
-void QgsRoute::writeXML( QTextStream& stream )
+void QgsRoute::writeXml( QTextStream& stream )
 {
   stream << "<rte>\n";
-  QgsGPSExtended::writeXML( stream );
+  QgsGPSExtended::writeXml( stream );
   for ( int i = 0; i < points.size(); ++i )
   {
     stream << "<rtept lat=\"" << QString::number( points[i].lat, 'f', OUTPUT_PRECISION )
     << "\" lon=\"" << QString::number( points[i].lon, 'f', OUTPUT_PRECISION ) << "\">\n";
-    points[i].writeXML( stream );
+    points[i].writeXml( stream );
     stream << "</rtept>\n";
   }
   stream << "</rte>\n";
 }
 
 
-void QgsTrack::writeXML( QTextStream& stream )
+void QgsTrack::writeXml( QTextStream& stream )
 {
   stream << "<trk>\n";
-  QgsGPSExtended::writeXML( stream );
+  QgsGPSExtended::writeXml( stream );
   for ( int i = 0; i < segments.size(); ++i )
   {
     stream << "<trkseg>\n";
@@ -133,7 +133,7 @@ void QgsTrack::writeXML( QTextStream& stream )
       QString::number( segments.at( i ).points.at( j ).lat, 'f', OUTPUT_PRECISION ) <<
       "\" lon=\"" << QString::number( segments.at( i ).points.at( j ).lon, 'f', OUTPUT_PRECISION ) <<
       "\">\n";
-      segments[i].points[j].writeXML( stream );
+      segments[i].points[j].writeXml( stream );
       stream << "</trkpt>\n";
     }
     stream << "</trkseg>\n";
@@ -291,7 +291,7 @@ QgsGPSData::TrackIterator QgsGPSData::addTrack( const QgsTrack &trk )
 void QgsGPSData::removeWaypoints( const QgsFeatureIds &ids )
 {
   QList<QgsFeatureId> ids2 = ids.toList();
-  qSort( ids2 );
+  std::sort( ids2.begin(), ids2.end() );
   QList<QgsFeatureId>::const_iterator iter = ids2.begin();
   WaypointIterator wIter;
   for ( wIter = waypoints.begin();
@@ -312,7 +312,7 @@ void QgsGPSData::removeWaypoints( const QgsFeatureIds &ids )
 void QgsGPSData::removeRoutes( const QgsFeatureIds &ids )
 {
   QList<QgsFeatureId> ids2 = ids.toList();
-  qSort( ids2 );
+  std::sort( ids2.begin(), ids2.end() );
   QList<QgsFeatureId>::const_iterator iter = ids2.begin();
   RouteIterator rIter;
   for ( rIter = routes.begin(); rIter != routes.end() && iter != ids2.end(); )
@@ -332,7 +332,7 @@ void QgsGPSData::removeRoutes( const QgsFeatureIds &ids )
 void QgsGPSData::removeTracks( const QgsFeatureIds &ids )
 {
   QList<QgsFeatureId> ids2 = ids.toList();
-  qSort( ids2 );
+  std::sort( ids2.begin(), ids2.end() );
   QList<QgsFeatureId>::const_iterator iter = ids2.begin();
   TrackIterator tIter;
   for ( tIter = tracks.begin(); tIter != tracks.end() && iter != ids2.end(); )
@@ -349,18 +349,18 @@ void QgsGPSData::removeTracks( const QgsFeatureIds &ids )
 }
 
 
-void QgsGPSData::writeXML( QTextStream& stream )
+void QgsGPSData::writeXml( QTextStream& stream )
 {
   stream.setCodec( QTextCodec::codecForName( "UTF8" ) );
   stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
   << "<gpx version=\"1.0\" creator=\"QGIS\">\n";
   for ( WaypointIterator wIter = waypoints.begin();
         wIter != waypoints.end(); ++wIter )
-    wIter->writeXML( stream );
+    wIter->writeXml( stream );
   for ( RouteIterator rIter = routes.begin(); rIter != routes.end(); ++rIter )
-    rIter->writeXML( stream );
+    rIter->writeXml( stream );
   for ( TrackIterator tIter = tracks.begin(); tIter != tracks.end(); ++tIter )
-    tIter->writeXML( stream );
+    tIter->writeXml( stream );
   stream << "</gpx>\n";
   stream << flush;
 }
@@ -494,7 +494,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
          parseModes.top() == ParsingTrack )
     {
       mString = &mObj->name;
-      mCharBuffer = "";
+      mCharBuffer = QLatin1String( "" );
       parseModes.push( ParsingString );
     }
     else
@@ -507,7 +507,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
          parseModes.top() == ParsingTrack )
     {
       mString = &mObj->cmt;
-      mCharBuffer = "";
+      mCharBuffer = QLatin1String( "" );
       parseModes.push( ParsingString );
     }
     else
@@ -520,7 +520,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
          parseModes.top() == ParsingTrack )
     {
       mString = &mObj->desc;
-      mCharBuffer = "";
+      mCharBuffer = QLatin1String( "" );
       parseModes.push( ParsingString );
     }
     else
@@ -533,7 +533,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
          parseModes.top() == ParsingTrack )
     {
       mString = &mObj->src;
-      mCharBuffer = "";
+      mCharBuffer = QLatin1String( "" );
       parseModes.push( ParsingString );
     }
     else
@@ -546,7 +546,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
          parseModes.top() == ParsingTrack )
     {
       mString = &mObj->url;
-      mCharBuffer = "";
+      mCharBuffer = QLatin1String( "" );
       parseModes.push( ParsingString );
     }
     else
@@ -559,7 +559,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
          parseModes.top() == ParsingTrack )
     {
       mString = &mObj->urlname;
-      mCharBuffer = "";
+      mCharBuffer = QLatin1String( "" );
       parseModes.push( ParsingString );
     }
     else
@@ -572,7 +572,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
     if ( parseModes.top() == ParsingWaypoint )
     {
       mDouble = &mWpt.ele;
-      mCharBuffer = "";
+      mCharBuffer = QLatin1String( "" );
       parseModes.push( ParsingDouble );
     }
     else
@@ -583,7 +583,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
     if ( parseModes.top() == ParsingWaypoint )
     {
       mString = &mWpt.sym;
-      mCharBuffer = "";
+      mCharBuffer = QLatin1String( "" );
       parseModes.push( ParsingString );
     }
     else
@@ -596,7 +596,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
     if ( parseModes.top() == ParsingRoute )
     {
       mInt = &mRte.number;
-      mCharBuffer = "";
+      mCharBuffer = QLatin1String( "" );
       parseModes.push( ParsingInt );
     }
     else if ( parseModes.top() == ParsingTrack )
@@ -715,17 +715,17 @@ bool QgsGPXHandler::endElement( const std::string& qName )
   else if ( parseModes.top() == ParsingDouble )
   {
     *mDouble = QString( mCharBuffer ).toDouble();
-    mCharBuffer = "";
+    mCharBuffer = QLatin1String( "" );
   }
   else if ( parseModes.top() == ParsingInt )
   {
     *mInt = QString( mCharBuffer ).toInt();
-    mCharBuffer = "";
+    mCharBuffer = QLatin1String( "" );
   }
   else if ( parseModes.top() == ParsingString )
   {
     *mString = mCharBuffer;
-    mCharBuffer = "";
+    mCharBuffer = QLatin1String( "" );
   }
   parseModes.pop();
 

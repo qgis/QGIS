@@ -87,12 +87,12 @@ class QgsOWSSourceSelect : QDialog
     virtual QStringList selectedLayersFormats();
 
     //! Server CRS supported for currently selected layer item(s)
-    virtual QStringList selectedLayersCRSs();
+    virtual QStringList selectedLayersCrses();
 
     //! List of times (temporalDomain timePosition/timePeriod for currently selected layer item(s)
     virtual QStringList selectedLayersTimes();
 
-    //virtual QStringList layerCRS( int id );
+    //virtual QStringList layerCrs( int id );
 
     //! Populate the connection list combo box
     void populateConnectionList();
@@ -104,10 +104,10 @@ class QgsOWSSourceSelect : QDialog
     void clearFormats();
 
     //! Set supported CRSs
-    void populateCRS();
+    void populateCrs();
 
     //! Clear CRSs
-    void clearCRS();
+    void clearCrs();
 
     //! Populate times
     void populateTimes();
@@ -148,8 +148,8 @@ class QgsOWSSourceSelect : QDialog
     //! Returns a textual description for the authority id
     QString descriptionForAuthId( const QString& authId );
 
-    void addWMSListRow( const QDomElement& item, int row );
-    void addWMSListItem( const QDomElement& el, int row, int column );
+    void addWmsListRow( const QDomElement& item, int row );
+    void addWmsListItem( const QDomElement& el, int row, int column );
 
     virtual void enableLayersForCrs( QTreeWidgetItem *item );
 
@@ -157,7 +157,7 @@ class QgsOWSSourceSelect : QDialog
     QString selectedFormat();
 
     //! Returns currently selected Crs
-    QString selectedCRS();
+    QString selectedCrs();
 
     //! Returns currently selected time
     QString selectedTime();

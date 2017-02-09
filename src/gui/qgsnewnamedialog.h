@@ -21,6 +21,7 @@ class QLabel;
 class QLineEdit;
 
 #include "qgsdialog.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * New name, for example new layer name dialog. If existing names are provided,
@@ -31,6 +32,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
 {
     Q_OBJECT
   public:
+
     /** New dialog constructor.
      * @param source original data source name, e.g. original layer name of the layer to be copied
      * @param initial initial name
@@ -44,7 +46,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     QgsNewNameDialog( const QString& source = QString::null, const QString& initial = QString::null,
                       const QStringList& extensions = QStringList(), const QStringList& existing = QStringList(),
                       const QRegExp& regexp = QRegExp(), Qt::CaseSensitivity cs = Qt::CaseSensitive,
-                      QWidget *parent = nullptr, const Qt::WindowFlags& flags = QgisGui::ModalDialogFlags );
+                      QWidget *parent = nullptr, Qt::WindowFlags flags = QgisGui::ModalDialogFlags );
 
     /** Sets the hint string for the dialog (the text shown above the name
      * input box).

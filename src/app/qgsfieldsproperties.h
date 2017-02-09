@@ -26,6 +26,7 @@
 
 #include "qgsvectorlayer.h"
 #include "ui_qgsfieldspropertiesbase.h"
+#include "qgis_app.h"
 
 class DesignerTree;
 class DragList;
@@ -42,6 +43,16 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
       FieldConfigRole
     };
 
+    struct RelationEditorConfiguration
+    {
+      RelationEditorConfiguration()
+          : showLinkButton( true )
+          , showUnlinkButton( true )
+      {}
+      bool showLinkButton;
+      bool showUnlinkButton;
+    };
+
     class DesignerTreeItemData
     {
       public:
@@ -55,12 +66,16 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         DesignerTreeItemData()
             : mType( Field )
             , mColumnCount( 1 )
+            , mShowAsGroupBox( false )
+            , mShowLabel( true )
         {}
 
         DesignerTreeItemData( Type type, const QString& name )
             : mType( type )
             , mName( name )
             , mColumnCount( 1 )
+            , mShowAsGroupBox( false )
+            , mShowLabel( true )
         {}
 
         QString name() const { return mName; }
@@ -74,10 +89,26 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         int columnCount() const { return mColumnCount; }
         void setColumnCount( int count ) { mColumnCount = count; }
 
+        bool showAsGroupBox() const;
+        void setShowAsGroupBox( bool showAsGroupBox );
+
+        bool showLabel() const;
+        void setShowLabel( bool showLabel );
+
+        QgsOptionalExpression visibilityExpression() const;
+        void setVisibilityExpression( const QgsOptionalExpression& visibilityExpression );
+
+        RelationEditorConfiguration relationEditorConfiguration() const;
+        void setRelationEditorConfiguration( RelationEditorConfiguration relationEditorConfiguration );
+
       private:
         Type mType;
         QString mName;
         int mColumnCount;
+        bool mShowAsGroupBox;
+        bool mShowLabel;
+        QgsOptionalExpression mVisibilityExpression;
+        RelationEditorConfiguration mRelationEditorConfiguration;
     };
 
     /**
@@ -92,9 +123,13 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         bool mEditable;
         bool mEditableEnabled;
         bool mLabelOnTop;
+        QgsFieldConstraints::Constraints mConstraints;
+        QHash< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength > mConstraintStrength;
+        QString mConstraint;
+        QString mConstraintDescription;
         QPushButton* mButton;
-        QString mEditorWidgetV2Type;
-        QMap<QString, QVariant> mEditorWidgetV2Config;
+        QString mEditorWidgetType;
+        QMap<QString, QVariant> mEditorWidgetConfig;
     };
 
   public:
@@ -108,10 +143,9 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     bool addAttribute( const QgsField &field );
 
     /** Creates the a proper item to save from the tree
-     * @param item The tree widget item to process
      * @return A widget definition. Containing another container or the final field
      */
-    QgsAttributeEditorElement* createAttributeEditorWidget( QTreeWidgetItem* item, QObject *parent );
+    QgsAttributeEditorElement* createAttributeEditorWidget( QTreeWidgetItem* item, QgsAttributeEditorElement* parent, bool forceGroup = true );
 
     void init();
     void apply();
@@ -164,7 +198,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
 
     void updateExpression();
 
-    /** Editing of layer was toggled */
+    //! Editing of layer was toggled
     void editingToggled();
 
   protected:
@@ -185,23 +219,23 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     // between fieldIdx and QTableWidgetItem->row()
     QList<QTableWidgetItem*> mIndexedWidgets;
 
-    enum attrColumns
+    enum AttrColumns
     {
-      attrIdCol = 0,
-      attrNameCol,
-      attrTypeCol,
-      attrTypeNameCol,
-      attrLengthCol,
-      attrPrecCol,
-      attrCommentCol,
-      attrEditTypeCol,
-      attrAliasCol,
-      attrWMSCol,
-      attrWFSCol,
-      attrColCount,
+      AttrIdCol = 0,
+      AttrNameCol,
+      AttrEditTypeCol,
+      AttrAliasCol,
+      AttrTypeCol,
+      AttrTypeNameCol,
+      AttrLengthCol,
+      AttrPrecCol,
+      AttrCommentCol,
+      AttrWMSCol,
+      AttrWFSCol,
+      AttrColCount,
     };
 
-    enum relationColumns
+    enum RelationColumns
     {
       RelNameCol = 0,
       RelLayerCol,
@@ -211,9 +245,9 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
       RelColCount
     };
 
-    static QMap< QgsVectorLayer::EditType, QString > editTypeMap;
-    static void setupEditTypes();
-    static QString editTypeButtonText( QgsVectorLayer::EditType type );
+  private:
+    void updateFieldRenamingStatus();
+
 };
 
 QDataStream& operator<< ( QDataStream& stream, const QgsFieldsProperties::DesignerTreeItemData& data );
@@ -240,7 +274,7 @@ class DragList : public QTableWidget
   protected:
     virtual QStringList mimeTypes() const override;
 
-    virtual QMimeData* mimeData( const QList<QTableWidgetItem*> items ) const override;
+    virtual QMimeData* mimeData( const QList<QTableWidgetItem *> items ) const override;
 };
 
 /**
@@ -251,7 +285,7 @@ class DesignerTree : public QTreeWidget
     Q_OBJECT
 
   public:
-    explicit DesignerTree( QWidget* parent = nullptr );
+    explicit DesignerTree( QgsVectorLayer* layer, QWidget* parent = nullptr );
     QTreeWidgetItem* addItem( QTreeWidgetItem* parent, QgsFieldsProperties::DesignerTreeItemData data );
     QTreeWidgetItem* addContainer( QTreeWidgetItem* parent, const QString& title , int columnCount );
 
@@ -268,6 +302,9 @@ class DesignerTree : public QTreeWidget
 
   private slots:
     void onItemDoubleClicked( QTreeWidgetItem* item, int column );
+
+  private:
+    QgsVectorLayer* mLayer;
 };
 
 Q_DECLARE_METATYPE( QgsFieldsProperties::FieldConfig )

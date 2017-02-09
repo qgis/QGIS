@@ -17,7 +17,6 @@
 
 #include "qgsdataitem.h"
 
-Q_NOWARN_DEPRECATED_PUSH
 class QgsGdalLayerItem : public QgsLayerItem
 {
     Q_OBJECT
@@ -30,16 +29,12 @@ class QgsGdalLayerItem : public QgsLayerItem
     QgsGdalLayerItem( QgsDataItem* parent,
                       QString name, QString path, QString uri,
                       QStringList *theSublayers = nullptr );
-    ~QgsGdalLayerItem();
 
-    bool setCrs( QgsCoordinateReferenceSystem crs ) override;
-
-    Q_DECL_DEPRECATED Capability capabilities() override;
+    bool setCrs( const QgsCoordinateReferenceSystem& crs ) override;
 
     QVector<QgsDataItem*> createChildren() override;
 
     QString layerName() const override;
 };
-Q_NOWARN_DEPRECATED_POP
 
 #endif // QGSGDALDATAITEMS_H

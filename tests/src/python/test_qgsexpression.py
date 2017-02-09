@@ -16,7 +16,7 @@ import qgis  # NOQA
 
 from qgis.testing import unittest
 from qgis.utils import qgsfunction
-from qgis.core import QgsExpression
+from qgis.core import QgsExpression, QgsFeatureRequest
 
 
 class TestQgsExpressionCustomFunctions(unittest.TestCase):
@@ -46,13 +46,21 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
     def geomtest(values, feature, parent):
         pass
 
+    @qgsfunction(args=0, group='testing', register=False)
+    def no_referenced_columns_set(values, feature, parent):
+        return 1
+
+    @qgsfunction(args=0, group='testing', register=False, referenced_columns=['a', 'b'])
+    def referenced_columns_set(values, feature, parent):
+        return 2
+
     def tearDown(self):
         QgsExpression.unregisterFunction('testfun')
 
     def testCanBeRegistered(self):
         QgsExpression.registerFunction(self.testfun)
         index = QgsExpression.functionIndex('testfun')
-        self.assertTrue(not index == -1)
+        self.assertNotEqual(index, -1)
 
     def testAutoCountsCorrectArgs(self):
         function = self.autocount
@@ -73,11 +81,11 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
     def testCanUnregisterFunction(self):
         QgsExpression.registerFunction(self.testfun)
         index = QgsExpression.functionIndex('testfun')
-        self.assertTrue(not index == -1)
+        self.assertNotEqual(index, -1)
         error = QgsExpression.unregisterFunction('testfun')
         self.assertTrue(error)
         index = QgsExpression.functionIndex('testfun')
-        self.assertTrue(index == -1)
+        self.assertEqual(index, -1)
 
     def testCanEvaluateFunction(self):
         QgsExpression.registerFunction(self.testfun)
@@ -118,6 +126,17 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         success = QgsExpression.registerFunction(self.geomtest)
         self.assertTrue(success)
 
+    def testReferencedColumnsNoSet(self):
+        success = QgsExpression.registerFunction(self.no_referenced_columns_set)
+        exp = QgsExpression('no_referenced_columns_set()')
+        self.assertEqual(exp.referencedColumns(),
+                         {QgsFeatureRequest.ALL_ATTRIBUTES})
+
+    def testReferencedColumnsSet(self):
+        success = QgsExpression.registerFunction(self.referenced_columns_set)
+        exp = QgsExpression('referenced_columns_set()')
+        self.assertEqual(set(exp.referencedColumns()), set(['a', 'b']))
+
     def testCantOverrideBuiltinsWithUnregister(self):
         success = QgsExpression.unregisterFunction("sqrt")
         self.assertFalse(success)
@@ -125,7 +144,7 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
     def testDump(self):
         for txt in [
             "id",
-            u"idä",
+            "idä",
             "\"id abc\"",
             "\"id	abc\"",
             "  abc   ",
@@ -150,7 +169,7 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
             comment
             **/""": 'test*/'
         }
-        for e, exp_res in expressions.items():
+        for e, exp_res in list(expressions.items()):
             exp = QgsExpression(e)
             result = exp.evaluate()
             self.assertEqual(exp_res, result)
@@ -164,10 +183,18 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
             "'test--'": 'test--',
             "'--test'": '--test',
         }
-        for e, exp_res in expressions.items():
+        for e, exp_res in list(expressions.items()):
             exp = QgsExpression(e)
             result = exp.evaluate()
             self.assertEqual(exp_res, result)
+
+    def testValid(self):
+        e = QgsExpression()
+        self.assertFalse(e.isValid())
+        e.setExpression('asdf||#@¼')
+        self.assertFalse(e.isValid())
+        e.setExpression('1')
+        self.assertTrue(e.isValid())
 
 if __name__ == "__main__":
     unittest.main()

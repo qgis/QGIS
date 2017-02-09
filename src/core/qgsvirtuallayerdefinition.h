@@ -17,10 +17,11 @@ email                : hugo dot mercier at oslandia dot com
 #ifndef QGSVIRTUALLAYERDEFINITION_H
 #define QGSVIRTUALLAYERDEFINITION_H
 
-#include <qgsfield.h>
-#include <qgis.h>
+#include "qgis_core.h"
+#include "qgsfields.h"
+#include "qgis.h"
 
-/**
+/** \ingroup core
  * Class to manipulate the definition of a virtual layer
  *
  * It is used to extract parameters from an initial virtual layer definition as well as
@@ -29,7 +30,8 @@ email                : hugo dot mercier at oslandia dot com
 class CORE_EXPORT QgsVirtualLayerDefinition
 {
   public:
-    /**
+
+    /** \ingroup core
      * A SourceLayer is either a reference to a live layer in the registry
      * or all the parameters needed to load it (provider key, source, etc.)
      */
@@ -37,10 +39,17 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     {
       public:
         //! Constructor variant to build a live layer reference
-        SourceLayer( const QString& name, const QString& ref ) : mName( name ), mRef( ref ) {}
+        SourceLayer( const QString& name, const QString& ref )
+            : mName( name )
+            , mRef( ref )
+        {}
         //! Constructor variant to build a layer with a provider and a source
         SourceLayer( const QString& name, const QString& source, const QString& provider, const QString& encoding )
-            : mName( name ), mSource( source ), mProvider( provider ), mEncoding( encoding ) {}
+            : mName( name )
+            , mSource( source )
+            , mProvider( provider )
+            , mEncoding( encoding )
+        {}
 
         //! Is it a live layer or not ?
         bool isReferenced() const { return !mRef.isEmpty(); }
@@ -124,11 +133,11 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     void setGeometryField( const QString& geometryField ) { mGeometryField = geometryField; }
 
     //! Get the type of the geometry
-    //! QgsWKBTypes::NoGeometry to hide any geometry
-    //! QgsWKBTypes::Unknown for unknown types
-    QgsWKBTypes::Type geometryWkbType() const { return mGeometryWkbType; }
+    //! QgsWkbTypes::NoGeometry to hide any geometry
+    //! QgsWkbTypes::Unknown for unknown types
+    QgsWkbTypes::Type geometryWkbType() const { return mGeometryWkbType; }
     //! Set the type of the geometry
-    void setGeometryWkbType( QgsWKBTypes::Type t ) { mGeometryWkbType = t; }
+    void setGeometryWkbType( QgsWkbTypes::Type t ) { mGeometryWkbType = t; }
 
     //! Get the SRID of the geometry
     long geometrySrid() const { return mGeometrySrid; }
@@ -136,7 +145,7 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     void setGeometrySrid( long srid ) { mGeometrySrid = srid; }
 
     //! Get field definitions
-    const QgsFields& fields() const { return mFields; }
+    QgsFields fields() const { return mFields; }
     //! Set field definitions
     void setFields( const QgsFields& fields ) { mFields = fields; }
 
@@ -149,7 +158,7 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     //! Convenient method to test if the geometry is defined (not NoGeometry and not Unknown)
     bool hasDefinedGeometry() const
     {
-      return geometryWkbType() != QgsWKBTypes::NoGeometry && geometryWkbType() != QgsWKBTypes::Unknown;
+      return geometryWkbType() != QgsWkbTypes::NoGeometry && geometryWkbType() != QgsWkbTypes::Unknown;
     }
 
   private:
@@ -159,7 +168,7 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     QString mGeometryField;
     QString mFilePath;
     QgsFields mFields;
-    QgsWKBTypes::Type mGeometryWkbType;
+    QgsWkbTypes::Type mGeometryWkbType;
     long mGeometrySrid;
 };
 

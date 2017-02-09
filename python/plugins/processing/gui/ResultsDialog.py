@@ -26,11 +26,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import codecs
 
-from PyQt import uic
-from PyQt.QtCore import QUrl
-from PyQt.QtGui import QIcon
-from PyQt.QtWidgets import QStyle, QTreeWidgetItem
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import QUrl
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QStyle, QTreeWidgetItem
 
 from processing.core.ProcessingResults import ProcessingResults
 
@@ -48,12 +49,12 @@ class ResultsDialog(BASE, WIDGET):
         self.keyIcon = QIcon()
         self.keyIcon.addPixmap(self.style().standardPixmap(QStyle.SP_FileIcon))
 
-        self.tree.itemClicked.connect(self.changeResult)
+        self.tree.currentItemChanged.connect(self.changeResult)
 
         self.fillTree()
 
         if self.lastUrl:
-            self.webView.load(self.lastUrl)
+            self.txtResults.setHtml(self.loadResults(self.lastUrl))
 
     def fillTree(self):
         elements = ProcessingResults.getResults()
@@ -64,13 +65,17 @@ class ResultsDialog(BASE, WIDGET):
             item = TreeResultItem(element)
             item.setIcon(0, self.keyIcon)
             self.tree.addTopLevelItem(item)
-        self.lastUrl = QUrl(elements[-1].filename)
+        self.lastUrl = elements[-1].filename
 
     def changeResult(self):
         item = self.tree.currentItem()
         if isinstance(item, TreeResultItem):
-            url = QUrl(item.filename)
-            self.webView.load(url)
+            self.txtResults.setHtml(self.loadResults(item.filename))
+
+    def loadResults(self, fileName):
+        with codecs.open(fileName, encoding='utf-8') as f:
+            content = f.read()
+        return content
 
 
 class TreeResultItem(QTreeWidgetItem):

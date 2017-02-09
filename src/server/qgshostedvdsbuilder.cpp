@@ -27,11 +27,6 @@ QgsHostedVDSBuilder::QgsHostedVDSBuilder(): QgsMSLayerBuilder()
 
 }
 
-QgsHostedVDSBuilder::~QgsHostedVDSBuilder()
-{
-
-}
-
 QgsMapLayer* QgsHostedVDSBuilder::createMapLayer( const QDomElement& elem,
     const QString& layerName,
     QList<QTemporaryFile*> &filesToRemove,
@@ -44,10 +39,10 @@ QgsMapLayer* QgsHostedVDSBuilder::createMapLayer( const QDomElement& elem,
     return nullptr;
   }
 
-  QString providerType = elem.attribute( "providerType", "not found" );
-  QString uri = elem.attribute( "uri", "not found" );
+  QString providerType = elem.attribute( QStringLiteral( "providerType" ), QStringLiteral( "not found" ) );
+  QString uri = elem.attribute( QStringLiteral( "uri" ), QStringLiteral( "not found" ) );
 
-  if ( providerType == "not found" || uri == "not found" )
+  if ( providerType == QLatin1String( "not found" ) || uri == QLatin1String( "not found" ) )
   {
     QgsDebugMsg( "error, provider type not found" );
     return nullptr;
@@ -86,7 +81,7 @@ QgsMapLayer* QgsHostedVDSBuilder::createMapLayer( const QDomElement& elem,
   //projection
   if ( ml )
   {
-    QString epsg = elem.attribute( "epsg" );
+    QString epsg = elem.attribute( QStringLiteral( "epsg" ) );
     if ( !epsg.isEmpty() )
     {
       bool conversionOk;
@@ -94,8 +89,7 @@ QgsMapLayer* QgsHostedVDSBuilder::createMapLayer( const QDomElement& elem,
       if ( conversionOk )
       {
         //set spatial ref sys
-        QgsCoordinateReferenceSystem srs;
-        srs.createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgnr ) );
+        QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:%1" ).arg( epsgnr ) );
         ml->setCrs( srs );
       }
     }

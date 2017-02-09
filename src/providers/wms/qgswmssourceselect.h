@@ -20,7 +20,7 @@
 #include "ui_qgswmssourceselectbase.h"
 #include "qgsdatasourceuri.h"
 #include "qgisgui.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 #include "qgswmsprovider.h"
 
@@ -30,7 +30,7 @@
 class QgisApp;
 class QgsWmsProvider;
 class QButtonGroup;
-class QgsNumericSortTreeWidgetItem;
+class QgsTreeWidgetItem;
 class QDomDocument;
 class QDomElement;
 class QgsWmsCapabilities;
@@ -51,7 +51,7 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
   public:
     //! Constructor
     QgsWMSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
-    //! Destructor
+
     ~QgsWMSSourceSelect();
 
   public slots:
@@ -95,7 +95,7 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     //! Add some default wms servers to the list
     void on_btnAddDefault_clicked();
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_ogc/ogc_client_support.html#id5" ) ); }
 
   private:
     //! Populate the connection list combo box
@@ -148,12 +148,12 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     bool populateLayerList( const QgsWmsCapabilities& capabilities );
 
     //! create an item including possible parents
-    QgsNumericSortTreeWidgetItem *createItem( int id,
-        const QStringList &names,
-        QMap<int, QgsNumericSortTreeWidgetItem *> &items,
-        int &layerAndStyleCount,
-        const QMap<int, int> &layerParents,
-        const QMap<int, QStringList> &layerParentNames );
+    QgsTreeWidgetItem *createItem( int id,
+                                   const QStringList &names,
+                                   QMap<int, QgsTreeWidgetItem *> &items,
+                                   int &layerAndStyleCount,
+                                   const QMap<int, int> &layerParents,
+                                   const QMap<int, QStringList> &layerParentNames );
 
     //! Returns a textual description for the authority id
     QString descriptionForAuthId( const QString& authId );
@@ -165,7 +165,7 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     QString mConnName;
 
     //! URI for selected connection
-    QgsDataSourceURI mUri;
+    QgsDataSourceUri mUri;
 
     //! layer name derived from latest layer selection (updated as long it's not edited manually)
     QString mLastLayerName;

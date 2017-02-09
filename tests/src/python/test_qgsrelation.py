@@ -19,7 +19,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsRelation,
                        QgsGeometry,
                        QgsPoint,
-                       QgsMapLayerRegistry
+                       QgsProject
                        )
 from qgis.testing import start_app, unittest
 
@@ -64,7 +64,7 @@ def createReferencedLayer():
 
 
 def formatAttributes(attrs):
-    return repr([unicode(a) for a in attrs])
+    return repr([str(a) for a in attrs])
 
 
 class TestQgsRelation(unittest.TestCase):
@@ -72,10 +72,10 @@ class TestQgsRelation(unittest.TestCase):
     def setUp(self):
         self.referencedLayer = createReferencedLayer()
         self.referencingLayer = createReferencingLayer()
-        QgsMapLayerRegistry.instance().addMapLayers([self.referencedLayer, self.referencingLayer])
+        QgsProject.instance().addMapLayers([self.referencedLayer, self.referencingLayer])
 
     def tearDown(self):
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        QgsProject.instance().removeAllMapLayers()
 
     def test_isValid(self):
         rel = QgsRelation()
@@ -107,9 +107,10 @@ class TestQgsRelation(unittest.TestCase):
 
         feat = next(self.referencedLayer.getFeatures())
 
-        it = rel.getRelatedFeatures(feat)
+        self.assertEqual(rel.getRelatedFeaturesFilter(feat), '"foreignkey" = 123')
 
-        assert [a.attributes() for a in it] == [[u'test1', 123], [u'test2', 123]]
+        it = rel.getRelatedFeatures(feat)
+        assert [a.attributes() for a in it] == [['test1', 123], ['test2', 123]]
 
     def test_getReferencedFeature(self):
         rel = QgsRelation()

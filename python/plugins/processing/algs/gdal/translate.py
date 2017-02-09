@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -27,16 +28,16 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterBoolean
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterExtent
-from processing.core.parameters import ParameterCrs
+from processing.core.parameters import (ParameterRaster,
+                                        ParameterString,
+                                        ParameterNumber,
+                                        ParameterBoolean,
+                                        ParameterSelection,
+                                        ParameterExtent,
+                                        ParameterCrs)
 from processing.core.outputs import OutputRaster
 
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -55,29 +56,21 @@ class translate(GdalAlgorithm):
     PROJWIN = 'PROJWIN'
     SRS = 'SRS'
     SDS = 'SDS'
-    EXTRA = 'EXTRA'
     RTYPE = 'RTYPE'
+    OPTIONS = 'OPTIONS'
     TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
-    TILED = 'TILED'
-    COMPRESS = 'COMPRESS'
-    JPEGCOMPRESSION = 'JPEGCOMPRESSION'
-    PREDICTOR = 'PREDICTOR'
-    ZLEVEL = 'ZLEVEL'
-    BIGTIFF = 'BIGTIFF'
-    BIGTIFFTYPE = ['', 'YES', 'NO', 'IF_NEEDED', 'IF_SAFER']
-    COMPRESSTYPE = ['NONE', 'JPEG', 'LZW', 'PACKBITS', 'DEFLATE']
-    TFW = 'TFW'
 
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'translate.png'))
 
     def commandLineName(self):
-        return "gdalogr:translate"
+        return "gdal:translate"
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Translate (convert format)')
         self.group, self.i18n_group = self.trAlgorithm('[GDAL] Conversion')
-        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
+
+        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.OUTSIZE,
                                           self.tr('Set the size of the output file (In pixels or %)'),
                                           1, None, 100))
@@ -96,57 +89,30 @@ class translate(GdalAlgorithm):
                                            self.tr('Copy all subdatasets of this file to individual output files'),
                                            False))
 
-        params = []
-        params.append(ParameterSelection(self.RTYPE,
-                                         self.tr('Output raster type'), self.TYPE, 5))
-        params.append(ParameterSelection(self.COMPRESS,
-                                         self.tr('GeoTIFF options. Compression type:'), self.COMPRESSTYPE, 4))
-        params.append(ParameterNumber(self.JPEGCOMPRESSION,
-                                      self.tr('Set the JPEG compression level'),
-                                      1, 100, 75))
-        params.append(ParameterNumber(self.ZLEVEL,
-                                      self.tr('Set the DEFLATE compression level'),
-                                      1, 9, 6))
-        params.append(ParameterNumber(self.PREDICTOR,
-                                      self.tr('Set the predictor for LZW or DEFLATE compression'),
-                                      1, 3, 1))
-        params.append(ParameterBoolean(self.TILED,
-                                       self.tr('Create tiled output (only used for the GTiff format)'), False))
-        params.append(ParameterSelection(self.BIGTIFF,
-                                         self.tr('Control whether the created file is a BigTIFF or a classic TIFF'), self.BIGTIFFTYPE, 0))
-        params.append(ParameterBoolean(self.TFW,
-                                       self.tr('Force the generation of an associated ESRI world file (.tfw))'), False))
-        params.append(ParameterString(self.EXTRA,
-                                      self.tr('Additional creation parameters'), '', optional=True))
-
-        for param in params:
-            param.isAdvanced = True
-            self.addParameter(param)
+        self.addParameter(ParameterString(self.OPTIONS,
+                                          self.tr('Additional creation options'),
+                                          optional=True,
+                                          metadata={'widget_wrapper': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}))
+        self.addParameter(ParameterSelection(self.RTYPE,
+                                             self.tr('Output raster type'),
+                                             self.TYPE, 5))
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Converted')))
 
     def getConsoleCommands(self):
         out = self.getOutputValue(translate.OUTPUT)
-        outsize = unicode(self.getParameterValue(self.OUTSIZE))
-        outsizePerc = unicode(self.getParameterValue(self.OUTSIZE_PERC))
+        outsize = str(self.getParameterValue(self.OUTSIZE))
+        outsizePerc = str(self.getParameterValue(self.OUTSIZE_PERC))
         noData = self.getParameterValue(self.NO_DATA)
-        if noData is not None:
-            noData = unicode(noData)
-        expand = unicode(self.getParameterFromName(
+        expand = str(self.getParameterFromName(
             self.EXPAND).options[self.getParameterValue(self.EXPAND)])
-        projwin = unicode(self.getParameterValue(self.PROJWIN))
+        projwin = str(self.getParameterValue(self.PROJWIN))
         crsId = self.getParameterValue(self.SRS)
         sds = self.getParameterValue(self.SDS)
-        extra = self.getParameterValue(self.EXTRA)
-        if extra is not None:
-            extra = unicode(extra)
-        jpegcompression = unicode(self.getParameterValue(self.JPEGCOMPRESSION))
-        predictor = unicode(self.getParameterValue(self.PREDICTOR))
-        zlevel = unicode(self.getParameterValue(self.ZLEVEL))
-        tiled = unicode(self.getParameterValue(self.TILED))
-        compress = self.COMPRESSTYPE[self.getParameterValue(self.COMPRESS)]
-        bigtiff = self.BIGTIFFTYPE[self.getParameterValue(self.BIGTIFF)]
-        tfw = unicode(self.getParameterValue(self.TFW))
+        opts = self.getParameterValue(self.OPTIONS)
+
+        if noData is not None:
+            noData = str(noData)
 
         arguments = []
         arguments.append('-of')
@@ -181,25 +147,13 @@ class translate(GdalAlgorithm):
             arguments.extend(projwin)
         if crsId:
             arguments.append('-a_srs')
-            arguments.append(unicode(crsId))
+            arguments.append(str(crsId))
         if sds:
             arguments.append('-sds')
-        if extra and len(extra) > 0:
-            arguments.append(extra)
-        if GdalUtils.getFormatShortNameFromFilename(out) == "GTiff":
-            arguments.append("-co COMPRESS=" + compress)
-            if compress == 'JPEG':
-                arguments.append("-co JPEG_QUALITY=" + jpegcompression)
-            elif (compress == 'LZW') or (compress == 'DEFLATE'):
-                arguments.append("-co PREDICTOR=" + predictor)
-            if compress == 'DEFLATE':
-                arguments.append("-co ZLEVEL=" + zlevel)
-            if tiled == "True":
-                arguments.append("-co TILED=YES")
-            if tfw == "True":
-                arguments.append("-co TFW=YES")
-            if len(bigtiff) > 0:
-                arguments.append("-co BIGTIFF=" + bigtiff)
+
+        if opts:
+            arguments.append('-co')
+            arguments.append(opts)
 
         arguments.append(self.getParameterValue(self.INPUT))
         arguments.append(out)

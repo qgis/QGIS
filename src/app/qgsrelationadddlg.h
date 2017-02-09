@@ -17,6 +17,7 @@
 
 #include <QDialog>
 #include "ui_qgsrelationadddlgbase.h"
+#include "qgis_app.h"
 
 class QgsVectorLayer;
 
@@ -27,8 +28,6 @@ class APP_EXPORT QgsRelationAddDlg : public QDialog, private Ui::QgsRelationAddD
   public:
     explicit QgsRelationAddDlg( QWidget *parent = nullptr );
 
-    void addLayers( const QList<QgsVectorLayer*>& layers );
-
     QString referencingLayerId();
     QString referencedLayerId();
     QList< QPair< QString, QString > > references();
@@ -37,13 +36,8 @@ class APP_EXPORT QgsRelationAddDlg : public QDialog, private Ui::QgsRelationAddD
 
 
   private slots:
-    void on_mCbxReferencingLayer_currentIndexChanged( int index );
-    void on_mCbxReferencedLayer_currentIndexChanged( int index );
 
-  private:
-    void loadLayerAttributes( QComboBox* cbx, QgsVectorLayer* layer );
-
-    QMap< QString, QgsVectorLayer* > mLayers;
+    void checkDefinitionValid();
 
 };
 

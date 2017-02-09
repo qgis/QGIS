@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'October 2012'
@@ -27,7 +28,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QGis, QgsFeature, QgsGeometry, QgsPoint
+from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -50,36 +51,34 @@ class DensifyGeometries(GeoAlgorithm):
 
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'),
-                                          [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
+                                          [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterNumber(self.VERTICES,
                                           self.tr('Vertices to add'), 1, 10000000, 1))
 
         self.addOutput(OutputVector(self.OUTPUT,
                                     self.tr('Densified')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         vertices = self.getParameterValue(self.VERTICES)
 
-        isPolygon = layer.geometryType() == QGis.Polygon
+        isPolygon = layer.geometryType() == QgsWkbTypes.PolygonGeometry
 
         writer = self.getOutputFromName(
-            self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
+            self.OUTPUT).getVectorWriter(layer.fields().toList(),
                                          layer.wkbType(), layer.crs())
 
         features = vector.features(layer)
         total = 100.0 / len(features)
         for current, f in enumerate(features):
-            featGeometry = QgsGeometry(f.geometry())
-            attrs = f.attributes()
-            newGeometry = self.densifyGeometry(featGeometry, int(vertices),
-                                               isPolygon)
-            feature = QgsFeature()
-            feature.setGeometry(newGeometry)
-            feature.setAttributes(attrs)
+            feature = f
+            if feature.hasGeometry():
+                new_geometry = self.densifyGeometry(feature.geometry(), int(vertices),
+                                                    isPolygon)
+                feature.setGeometry(new_geometry)
             writer.addFeature(feature)
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer
 
@@ -112,15 +111,12 @@ class DensifyGeometries(GeoAlgorithm):
 
     def densify(self, polyline, pointsNumber):
         output = []
-        if pointsNumber != 1:
-            multiplier = 1.0 / float(pointsNumber + 1)
-        else:
-            multiplier = 1
-        for i in xrange(len(polyline) - 1):
+        multiplier = 1.0 / float(pointsNumber + 1)
+        for i in range(len(polyline) - 1):
             p1 = polyline[i]
             p2 = polyline[i + 1]
             output.append(p1)
-            for j in xrange(pointsNumber):
+            for j in range(pointsNumber):
                 delta = multiplier * (j + 1)
                 x = p1.x() + delta * (p2.x() - p1.x())
                 y = p1.y() + delta * (p2.y() - p1.y())

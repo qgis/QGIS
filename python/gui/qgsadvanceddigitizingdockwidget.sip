@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsadvanceddigitizingdock.h  -  dock for CAD tools
+    qgsadvanceddigitizingdockwidget.sip  -  dock for CAD tools
     ----------------------
     begin                : October 2014
     copyright            : (C) Denis Rouzaud
@@ -15,10 +15,10 @@
 
 
 /**
- * @brief The QgsAdvancedDigitizingDock class is a dockable widget
+ * @brief The QgsAdvancedDigitizingDockWidget class is a dockable widget
  * used to handle the CAD tools on top of a selection of map tools.
  * It handles both the UI and the constraints. Constraints are applied
- * by implemeting filters called from QgsMapToolAdvancedDigitizing.
+ * by implementing filters called from QgsMapToolAdvancedDigitizing.
  */
 class QgsAdvancedDigitizingDockWidget : QDockWidget
 {
@@ -50,6 +50,16 @@ class QgsAdvancedDigitizingDockWidget : QDockWidget
     };
 
     /**
+     * Determines if the dock has to record one, two or many points.
+     */
+    enum AdvancedDigitizingMode
+    {
+      SinglePoint, //!< Capture a single point (e.g. for point digitizing)
+      TwoPoints,   //!< Capture two points (e.g. for translation)
+      ManyPoints   //!< Capture two or more points (e.g. line or polygon digitizing)
+    };
+
+    /**
      * @brief The CadConstraint is an abstract class for all basic constraints (angle/distance/x/y).
      * It contains all values (locked, value, relative) and pointers to corresponding widgets.
      * @note Relative is not mandatory since it is not used for distance.
@@ -67,7 +77,13 @@ class QgsAdvancedDigitizingDockWidget : QDockWidget
           HardLock
         };
 
-        CadConstraint( QLineEdit* lineEdit, QToolButton* lockerButton, QToolButton* relativeButton = 0 );
+        /** Constructor for CadConstraint.
+         * @param lineEdit associated line edit for constraint value
+         * @param lockerButton associated button for locking constraint
+         * @param relativeButton optional button for toggling relative constraint mode
+         * @param repeatingLockButton optional button for toggling repeating lock mode
+         */
+        CadConstraint( QLineEdit* lineEdit, QToolButton* lockerButton, QToolButton* relativeButton = nullptr, QToolButton* repeatingLockButton = nullptr );
 
         /**
          * The current lock mode of this constraint
@@ -78,6 +94,14 @@ class QgsAdvancedDigitizingDockWidget : QDockWidget
          * Is any kind of lock mode enabled
          */
         bool isLocked() const;
+
+        /** Returns true if a repeating lock is set for the constraint. Repeating locks are not
+         * automatically cleared after a new point is added.
+         * @note added in QGIS 2.16
+         * @see setRepeatingLock()
+         */
+        bool isRepeatingLock() const;
+
         /**
          * Is the constraint in relative mode
          */
@@ -97,6 +121,14 @@ class QgsAdvancedDigitizingDockWidget : QDockWidget
          */
         void setLockMode( LockMode mode );
 
+        /** Sets whether a repeating lock is set for the constraint. Repeating locks are not
+         * automatically cleared after a new point is added.
+         * @param repeating set to true to set the lock to repeat automatically
+         * @note added in QGIS 2.16
+         * @see isRepeatingLock()
+         */
+        void setRepeatingLock( bool repeating );
+
         /**
          * Set if the constraint should be treated relative
          */
@@ -104,8 +136,10 @@ class QgsAdvancedDigitizingDockWidget : QDockWidget
 
         /**
          * Set the value of the constraint
+         * @param value new value for constraint
+         * @param updateWidget set to false to prevent automatically updating the associated widget's value
          */
-        void setValue( double value );
+        void setValue( double value, bool updateWidget = true );
 
         /**
          * Toggle lock mode
@@ -145,10 +179,10 @@ class QgsAdvancedDigitizingDockWidget : QDockWidget
      * Will react on a canvas release event
      *
      * @param e A mouse event (may be modified)
-     * @param captureSegment Capture segments?
+     * @param mode determines if the dock has to record one, two or many points.
      * @return  If the event is hidden (construction mode hides events from the maptool)
      */
-    bool canvasReleaseEvent( QgsMapMouseEvent* e , bool captureSegment );
+    bool canvasReleaseEvent( QgsMapMouseEvent* e, AdvancedDigitizingMode mode );
     /**
      * Will react on a canvas move event
      *
@@ -235,7 +269,7 @@ class QgsAdvancedDigitizingDockWidget : QDockWidget
     /**
      * Snapped to a segment
      */
-    const QList<QgsPoint>& snappedSegment() const;
+    QList<QgsPoint> snappedSegment() const;
 
     //! return the action used to enable/disable the tools
     QAction* enableAction();
@@ -276,13 +310,14 @@ class QgsAdvancedDigitizingDockWidget : QDockWidget
 
   private slots:
     //! set the additiona constraint by clicking on the perpendicular/parallel buttons
-    void addtionalConstraintClicked( bool activated );
+    void additionalConstraintClicked( bool activated );
 
     //! lock/unlock a constraint and set its value
     void lockConstraint( bool activate = true );
 
     //! unlock all constraints
-    void releaseLocks();
+    //! @param releaseRepeatingLocks set to false to preserve the lock for any constraints set to repeating lock mode
+    void releaseLocks( bool releaseRepeatingLocks = true );
 
     //! set the relative properties of constraints
     void setConstraintRelative( bool activate );

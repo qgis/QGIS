@@ -20,9 +20,9 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt.QtCore import Qt
-from PyQt.QtWidgets import QTableView, QAbstractItemView, QApplication, QAction
-from PyQt.QtGui import QKeySequence, QCursor, QClipboard
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QTableView, QAbstractItemView, QApplication, QAction
+from qgis.PyQt.QtGui import QKeySequence, QCursor, QClipboard
 
 from .db_plugins.plugin import DbError, Table
 from .dlg_db_error import DlgDbError

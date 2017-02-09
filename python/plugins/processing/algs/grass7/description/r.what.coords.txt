@@ -2,7 +2,7 @@ r.what
 r.what.coords - Queries raster maps on their category values and category labels on a point.
 Raster (r.*)
 ParameterRaster|map|Name of raster map|False
-ParameterString|coordinates|Coordinates for query (east, north)|None|False|False
+ParameterPoint|coordinates|Coordinates for query (east, north)
 ParameterString|null_value|String representing NULL value|*|False|True
 ParameterString|separator|Field separator. Special characters: pipe, comma, space, tab, newlineString representing NULL value|pipe|False|True
 ParameterNumber|cache|Size of point cache|0|None|500|True

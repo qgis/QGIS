@@ -33,8 +33,7 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputHTML
-from processing.tools import vector
-from processing.tools import dataobjects
+from processing.tools import vector, dataobjects
 
 
 class VectorLayerHistogram(GeoAlgorithm):
@@ -49,7 +48,7 @@ class VectorLayerHistogram(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Graphics')
 
         self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Attribute'), self.INPUT,
                                               ParameterTableField.DATA_TYPE_NUMBER))
@@ -58,7 +57,7 @@ class VectorLayerHistogram(GeoAlgorithm):
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Histogram')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         fieldname = self.getParameterValue(self.FIELD)
@@ -71,6 +70,5 @@ class VectorLayerHistogram(GeoAlgorithm):
         plt.hist(values[fieldname], bins)
         plotFilename = output + '.png'
         lab.savefig(plotFilename)
-        f = open(output, 'w')
-        f.write('<html><img src="' + plotFilename + '"/></html>')
-        f.close()
+        with open(output, 'w') as f:
+            f.write('<html><img src="' + plotFilename + '"/></html>')

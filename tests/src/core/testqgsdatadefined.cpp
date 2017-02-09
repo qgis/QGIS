@@ -12,12 +12,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
 #include <QSettings>
-#include <QSharedPointer>
+#include <memory>
 
 #include "qgsdatadefined.h"
 #include "qgsapplication.h"
@@ -71,32 +71,32 @@ void TestQgsDataDefined::cleanup()
 
 void TestQgsDataDefined::create()
 {
-  QSharedPointer<QgsDataDefined> dd( new QgsDataDefined( true, true, QString( "exp" ), QString( "field" ) ) );
+  std::shared_ptr<QgsDataDefined> dd( new QgsDataDefined( true, true, QStringLiteral( "exp" ), QStringLiteral( "field" ) ) );
   QVERIFY( dd->isActive() );
   QVERIFY( dd->useExpression() );
   QCOMPARE( dd->expressionString(), QString( "exp" ) );
   QCOMPARE( dd->field(), QString( "field" ) );
 
   //test with string constructor
-  QScopedPointer<QgsDataDefined> stringConstructorField( new QgsDataDefined( QString( "\"col1\"" ) ) );
+  std::unique_ptr<QgsDataDefined> stringConstructorField( new QgsDataDefined( QStringLiteral( "\"col1\"" ) ) );
   QVERIFY( stringConstructorField->isActive() );
   QVERIFY( ! stringConstructorField->useExpression() );
   QVERIFY( stringConstructorField->expressionString().isEmpty() );
   QCOMPARE( stringConstructorField->field(), QString( "col1" ) );
 
-  QScopedPointer<QgsDataDefined> stringConstructorExp( new QgsDataDefined( QString( "1 + 2" ) ) );
+  std::unique_ptr<QgsDataDefined> stringConstructorExp( new QgsDataDefined( QStringLiteral( "1 + 2" ) ) );
   QVERIFY( stringConstructorExp->isActive() );
   QVERIFY( stringConstructorExp->useExpression() );
   QCOMPARE( stringConstructorExp->expressionString(), QString( "1 + 2" ) );
   QVERIFY( stringConstructorExp->field().isEmpty() );
 
-  QScopedPointer<QgsDataDefined> stringConstructorEmpty( new QgsDataDefined( QString() ) );
+  std::unique_ptr<QgsDataDefined> stringConstructorEmpty( new QgsDataDefined( QString() ) );
   QVERIFY( ! stringConstructorEmpty->isActive() );
 }
 
 void TestQgsDataDefined::copy()
 {
-  QgsDataDefined original( true, true, QString( "sqrt(2)" ), QString( "field" ) );
+  QgsDataDefined original( true, true, QStringLiteral( "sqrt(2)" ), QStringLiteral( "field" ) );
   original.prepareExpression();
   QgsDataDefined copy( original );
   QVERIFY( copy == original );
@@ -108,7 +108,7 @@ void TestQgsDataDefined::copy()
 
 void TestQgsDataDefined::assignment()
 {
-  QgsDataDefined original( true, true, QString( "sqrt(2)" ), QString( "field" ) );
+  QgsDataDefined original( true, true, QStringLiteral( "sqrt(2)" ), QStringLiteral( "field" ) );
   QgsDataDefined copy;
   copy = original;
   QVERIFY( copy == original );
@@ -131,10 +131,10 @@ void TestQgsDataDefined::gettersSetters()
   dd.setUseExpression( true );
   QVERIFY( dd.useExpression() );
 
-  dd.setExpressionString( QString( "expression" ) );
+  dd.setExpressionString( QStringLiteral( "expression" ) );
   QCOMPARE( dd.expressionString(), QString( "expression" ) );
 
-  dd.setField( QString( "field" ) );
+  dd.setField( QStringLiteral( "field" ) );
   QCOMPARE( dd.field(), QString( "field" ) );
 }
 
@@ -150,11 +150,11 @@ void TestQgsDataDefined::defaultValues()
   QVERIFY( !dd->hasDefaultValues() );
   delete dd;
   dd = new QgsDataDefined();
-  dd->setExpressionString( QString( "expression" ) );
+  dd->setExpressionString( QStringLiteral( "expression" ) );
   QVERIFY( !dd->hasDefaultValues() );
   delete dd;
   dd = new QgsDataDefined();
-  dd->setField( QString( "field" ) );
+  dd->setField( QStringLiteral( "field" ) );
   QVERIFY( !dd->hasDefaultValues() );
   delete dd;
 }
@@ -163,13 +163,13 @@ void TestQgsDataDefined::equality()
 {
   QgsDataDefined dd1;
   dd1.setActive( true );
-  dd1.setField( QString( "field" ) );
-  dd1.setExpressionString( QString( "expression" ) );
+  dd1.setField( QStringLiteral( "field" ) );
+  dd1.setExpressionString( QStringLiteral( "expression" ) );
   dd1.setUseExpression( true );
   QgsDataDefined dd2;
   dd2.setActive( true );
-  dd2.setField( QString( "field" ) );
-  dd2.setExpressionString( QString( "expression" ) );
+  dd2.setField( QStringLiteral( "field" ) );
+  dd2.setExpressionString( QStringLiteral( "expression" ) );
   dd2.setUseExpression( true );
   QVERIFY( dd1 == dd2 );
   QVERIFY( !( dd1 != dd2 ) );
@@ -179,14 +179,14 @@ void TestQgsDataDefined::equality()
   QVERIFY( !( dd1 == dd2 ) );
   QVERIFY( dd1 != dd2 );
   dd2.setActive( true );
-  dd2.setField( QString( "a" ) );
+  dd2.setField( QStringLiteral( "a" ) );
   QVERIFY( !( dd1 == dd2 ) );
   QVERIFY( dd1 != dd2 );
-  dd2.setField( QString( "field" ) );
-  dd2.setExpressionString( QString( "b" ) );
+  dd2.setField( QStringLiteral( "field" ) );
+  dd2.setExpressionString( QStringLiteral( "b" ) );
   QVERIFY( !( dd1 == dd2 ) );
   QVERIFY( dd1 != dd2 );
-  dd2.setExpressionString( QString( "expression" ) );
+  dd2.setExpressionString( QStringLiteral( "expression" ) );
   dd2.setUseExpression( false );
   QVERIFY( !( dd1 == dd2 ) );
   QVERIFY( dd1 != dd2 );
@@ -198,15 +198,15 @@ void TestQgsDataDefined::xmlMethods()
   QDomImplementation DomImplementation;
   QDomDocumentType documentType =
     DomImplementation.createDocumentType(
-      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
 
   QgsDataDefined dd1;
   dd1.setActive( true );
-  dd1.setField( QString( "field" ) );
-  dd1.setExpressionString( QString( "expression" ) );
+  dd1.setField( QStringLiteral( "field" ) );
+  dd1.setExpressionString( QStringLiteral( "expression" ) );
   dd1.setUseExpression( true );
-  QDomElement ddElem = dd1.toXmlElement( doc, "test" );
+  QDomElement ddElem = dd1.toXmlElement( doc, QStringLiteral( "test" ) );
 
   //test reading
   QgsDataDefined dd2;
@@ -229,8 +229,8 @@ void TestQgsDataDefined::mapMethods()
   //no base name
   QgsDataDefined dd1;
   dd1.setActive( true );
-  dd1.setField( QString( "field" ) );
-  dd1.setExpressionString( QString( "expression" ) );
+  dd1.setField( QStringLiteral( "field" ) );
+  dd1.setExpressionString( QStringLiteral( "expression" ) );
   dd1.setUseExpression( true );
   QgsStringMap map1 = dd1.toMap();
 
@@ -241,22 +241,22 @@ void TestQgsDataDefined::mapMethods()
   //base name
   QgsDataDefined dd3;
   dd3.setActive( false );
-  dd3.setField( QString( "field2" ) );
-  dd3.setExpressionString( QString( "expression2" ) );
+  dd3.setField( QStringLiteral( "field2" ) );
+  dd3.setExpressionString( QStringLiteral( "expression2" ) );
   dd3.setUseExpression( false );
-  QgsStringMap map2 = dd3.toMap( QString( "basename" ) );
+  QgsStringMap map2 = dd3.toMap( QStringLiteral( "basename" ) );
 
-  QgsDataDefined* dd4 = QgsDataDefined::fromMap( map2, QString( "basename" ) );
+  QgsDataDefined* dd4 = QgsDataDefined::fromMap( map2, QStringLiteral( "basename" ) );
   QCOMPARE( *dd4, dd3 );
   delete dd4;
 
   // read with invalid basename
-  dd4 = QgsDataDefined::fromMap( map2, QString( "xx" ) );
+  dd4 = QgsDataDefined::fromMap( map2, QStringLiteral( "xx" ) );
   QVERIFY( !dd4 );
 
   //test read map with only an expression
   QgsStringMap expMapOnly;
-  expMapOnly.insert( QString( "expression" ), QString( "test_exp" ) );
+  expMapOnly.insert( QStringLiteral( "expression" ), QStringLiteral( "test_exp" ) );
 
   dd4 = QgsDataDefined::fromMap( expMapOnly );
   QVERIFY( dd4 );
@@ -273,20 +273,20 @@ void TestQgsDataDefined::referencedColumns()
   dd.setActive( true );
   dd.setUseExpression( true );
 
-  QStringList cols = dd.referencedColumns();
+  QSet<QString> cols = dd.referencedColumns();
   QVERIFY( cols.isEmpty() );
 
   //set as expression
-  dd.setExpressionString( "1+col1+col2" );
+  dd.setExpressionString( QStringLiteral( "1+col1+col2" ) );
   cols = dd.referencedColumns();
-  QCOMPARE( cols.length(), 2 );
+  QCOMPARE( cols.size(), 2 );
   QVERIFY( cols.contains( QString( "col1" ) ) );
   QVERIFY( cols.contains( QString( "col2" ) ) );
 
   //alter expression and check that referenced columns is updated
-  dd.setExpressionString( "1+col1+col2+col3" );
+  dd.setExpressionString( QStringLiteral( "1+col1+col2+col3" ) );
   cols = dd.referencedColumns();
-  QCOMPARE( cols.length(), 3 );
+  QCOMPARE( cols.size(), 3 );
   QVERIFY( cols.contains( QString( "col1" ) ) );
   QVERIFY( cols.contains( QString( "col2" ) ) );
   QVERIFY( cols.contains( QString( "col3" ) ) );
@@ -296,15 +296,15 @@ void TestQgsDataDefined::referencedColumns()
   cols = dd.referencedColumns();
   QVERIFY( cols.isEmpty() );
 
-  dd.setField( "field" );
+  dd.setField( QStringLiteral( "field" ) );
   cols = dd.referencedColumns();
-  QCOMPARE( cols.length(), 1 );
+  QCOMPARE( cols.size(), 1 );
   QVERIFY( cols.contains( QString( "field" ) ) );
 
   //switch back to expression
   dd.setUseExpression( true );
   cols = dd.referencedColumns();
-  QCOMPARE( cols.length(), 3 );
+  QCOMPARE( cols.size(), 3 );
   QVERIFY( cols.contains( QString( "col1" ) ) );
   QVERIFY( cols.contains( QString( "col2" ) ) );
   QVERIFY( cols.contains( QString( "col3" ) ) );
@@ -314,8 +314,8 @@ void TestQgsDataDefined::expressionOrString()
 {
   QgsDataDefined dd;
   dd.setActive( true );
-  dd.setField( "field" );
-  dd.setExpressionString( "1+col1+col2" );
+  dd.setField( QStringLiteral( "field" ) );
+  dd.setExpressionString( QStringLiteral( "1+col1+col2" ) );
   dd.setUseExpression( true );
   QCOMPARE( dd.expressionOrField(), QString( "1+col1+col2" ) );
 
@@ -323,5 +323,5 @@ void TestQgsDataDefined::expressionOrString()
   QCOMPARE( dd.expressionOrField(), QString( "\"field\"" ) );
 }
 
-QTEST_MAIN( TestQgsDataDefined )
+QGSTEST_MAIN( TestQgsDataDefined )
 #include "testqgsdatadefined.moc"

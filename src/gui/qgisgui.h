@@ -19,12 +19,14 @@
 #include <QPair>
 #include <QWidget>
 #include <QStringList>
+#include "qgis_gui.h"
 
 class QFont;
 
 /** \ingroup gui
  * /namespace QgisGui
  * The QgisGui namespace contains constants and helper functions used throughout the QGIS GUI.
+ * \note not available in Python bindings
  */
 namespace QgisGui
 {
@@ -37,7 +39,7 @@ namespace QgisGui
    * for platforms such as the Mac where modal and modeless dialogs have
    * different looks, QGIS modal dialogs will look the same as Qt modal
    * dialogs and all modal dialogs will look distinct from modeless dialogs.
-   * Althought not the standard Mac modal look, it does lack the minimize
+   * Although not the standard Mac modal look, it does lack the minimize
    * control which makes sense only for modeless dislogs.
    *
    * The Qt3 method of creating a true Mac modal dialog is deprecated in Qt4
@@ -46,7 +48,22 @@ namespace QgisGui
    * Qt::WindowMaximizeButtonHint is included but will be ignored if
    * the dialog is a fixed size and does not have a size grip.
    */
-  static const Qt::WindowFlags ModalDialogFlags = nullptr;
+  static const Qt::WindowFlags ModalDialogFlags = 0;
+
+  /**
+   * Minimum magnification level allowed in map canvases.
+   * @see CANVAS_MAGNIFICATION_MAX
+   * @note added in QGIS 3.0
+   */
+  constexpr double CANVAS_MAGNIFICATION_MIN = 0.1;
+
+  /**
+   * Maximum magnification level allowed in map canvases.
+   * @see CANVAS_MAGNIFICATION_MAX
+   * @note added in QGIS 3.0
+   */
+  // Must be a factor of 2, so zooming in to max from 100% then zooming back out will result in 100% mag
+  constexpr double CANVAS_MAGNIFICATION_MAX = 16.0;
 
   /**
     Open files, preferring to have the default file selector be the

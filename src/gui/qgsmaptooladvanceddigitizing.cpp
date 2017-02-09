@@ -15,7 +15,8 @@
 
 #include "qgsmapmouseevent.h"
 #include "qgsmaptooladvanceddigitizing.h"
-
+#include "qgsmapcanvas.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 
 QgsMapToolAdvancedDigitizing::QgsMapToolAdvancedDigitizing( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget )
     : QgsMapToolEdit( canvas )
@@ -25,10 +26,6 @@ QgsMapToolAdvancedDigitizing::QgsMapToolAdvancedDigitizing( QgsMapCanvas* canvas
     , mSnapOnMove( false )
     , mSnapOnDoubleClick( false )
     , mCadDockWidget( cadDockWidget )
-{
-}
-
-QgsMapToolAdvancedDigitizing::~QgsMapToolAdvancedDigitizing()
 {
 }
 
@@ -42,7 +39,23 @@ void QgsMapToolAdvancedDigitizing::canvasPressEvent( QgsMapMouseEvent* e )
 void QgsMapToolAdvancedDigitizing::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   snap( e );
-  if ( !mCadDockWidget->canvasReleaseEvent( e, mCaptureMode == CaptureLine || mCaptureMode == CapturePolygon ) )
+
+  QgsAdvancedDigitizingDockWidget::AdvancedDigitizingMode dockMode;
+  switch ( mCaptureMode )
+  {
+    case CaptureLine:
+    case CapturePolygon:
+      dockMode = QgsAdvancedDigitizingDockWidget::ManyPoints;
+      break;
+    case CaptureSegment:
+      dockMode = QgsAdvancedDigitizingDockWidget::TwoPoints;
+      break;
+    default:
+      dockMode = QgsAdvancedDigitizingDockWidget::SinglePoint;
+      break;
+  }
+
+  if ( !mCadDockWidget->canvasReleaseEvent( e, dockMode ) )
     cadCanvasReleaseEvent( e );
 }
 
@@ -69,9 +82,9 @@ void QgsMapToolAdvancedDigitizing::deactivate()
 
 void QgsMapToolAdvancedDigitizing::cadPointChanged( const QgsPoint& point )
 {
-  QgsMapMouseEvent fakeEvent( mCanvas, QMouseEvent::Move, QPoint( 0, 0 ) );
-  fakeEvent.setMapPoint( point );
-  canvasMoveEvent( &fakeEvent );
+  Q_UNUSED( point );
+  QMouseEvent* ev = new QMouseEvent( QEvent::MouseMove, mCanvas->mouseLastXY(), Qt::NoButton, Qt::NoButton, Qt::NoModifier );
+  qApp->postEvent( mCanvas->viewport(), ev );  // event queue will delete the event when processed
 }
 
 void QgsMapToolAdvancedDigitizing::snap( QgsMapMouseEvent* e )

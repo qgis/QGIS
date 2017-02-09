@@ -30,7 +30,7 @@ QgsMapToolSelectFreehand::QgsMapToolSelectFreehand( QgsMapCanvas* canvas )
   mRubberBand = nullptr;
   mCursor = Qt::ArrowCursor;
   mFillColor = QColor( 254, 178, 76, 63 );
-  mBorderColour = QColor( 254, 58, 29, 100 );
+  mBorderColor = QColor( 254, 58, 29, 100 );
 }
 
 QgsMapToolSelectFreehand::~QgsMapToolSelectFreehand()
@@ -45,9 +45,9 @@ void QgsMapToolSelectFreehand::canvasPressEvent( QgsMapMouseEvent* e )
 
   if ( !mRubberBand )
   {
-    mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
+    mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
     mRubberBand->setFillColor( mFillColor );
-    mRubberBand->setBorderColor( mBorderColour );
+    mRubberBand->setBorderColor( mBorderColor );
   }
   mRubberBand->addPoint( toMapCoordinates( e->pos() ) );
   mDragging = true;
@@ -68,13 +68,30 @@ void QgsMapToolSelectFreehand::canvasReleaseEvent( QgsMapMouseEvent* e )
   if ( !mRubberBand )
     return;
 
+  bool singleSelect = false;
+  if ( mRubberBand->numberOfVertices() > 0 && mRubberBand->numberOfVertices() <= 2 )
+  {
+    // single click, not drag - create a rectangle around clicked point
+    QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
+    if ( vlayer )
+    {
+      QRect selectRect;
+      QgsMapToolSelectUtils::expandSelectRectangle( selectRect, vlayer, e->pos() );
+      QgsMapToolSelectUtils::setRubberBand( mCanvas, selectRect, mRubberBand );
+      singleSelect = true;
+    }
+  }
+
   if ( mRubberBand->numberOfVertices() > 2 )
   {
-    QgsGeometry* shapeGeom = mRubberBand->asGeometry();
-    QgsMapToolSelectUtils::setSelectFeatures( mCanvas, shapeGeom, e );
-    delete shapeGeom;
+    QgsGeometry shapeGeom = mRubberBand->asGeometry();
+    if ( singleSelect )
+      QgsMapToolSelectUtils::selectSingleFeature( mCanvas, shapeGeom, e );
+    else
+      QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, shapeGeom, e );
   }
-  mRubberBand->reset( QGis::Polygon );
+
+  mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
   delete mRubberBand;
   mRubberBand = nullptr;
   mDragging = false;

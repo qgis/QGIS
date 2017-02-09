@@ -23,7 +23,7 @@
 #include <QMutex>
 #include "qgsfeature.h"
 #include "qgsspatialindex.h"
-#include "qgsgeomutils.h"
+#include "qgsgeometrycheckerutils.h"
 
 class QgsVectorLayer;
 
@@ -45,12 +45,14 @@ class QgsFeaturePool
     struct MapEntry
     {
       MapEntry( QgsFeature* _feature, QLinkedList<QgsFeatureId>::iterator _ageIt )
-          : feature( _feature ), ageIt( _ageIt ) {}
+          : feature( _feature )
+          , ageIt( _ageIt )
+      {}
       QgsFeature* feature;
       QLinkedList<QgsFeatureId>::iterator ageIt;
     };
 
-    static const int sCacheSize = 1000;
+    static const int CACHE_SIZE = 1000;
 
     QCache<QgsFeatureId, QgsFeature> mFeatureCache;
     QgsVectorLayer* mLayer;

@@ -17,8 +17,8 @@
 
 #define DIAGRAM_NAME_TEXT "Text"
 
+#include "qgis_core.h"
 #include "qgsdiagram.h"
-#include "qgsfeature.h"
 #include <QPen>
 #include <QBrush>
 
@@ -26,10 +26,12 @@ class QPainter;
 class QPointF;
 class QgsDiagramSettings;
 class QgsDiagramInterpolationSettings;
-
+class QgsFeature;
 class QgsRenderContext;
 
-
+/** \ingroup core
+ * \class QgsTextDiagram
+ */
 class CORE_EXPORT QgsTextDiagram: public QgsDiagram
 {
   public:
@@ -47,7 +49,6 @@ class CORE_EXPORT QgsTextDiagram: public QgsDiagram
     };
 
     QgsTextDiagram();
-    ~QgsTextDiagram();
     virtual QgsTextDiagram* clone() const override;
 
     void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, QPointF position ) override;

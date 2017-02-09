@@ -49,10 +49,10 @@ class QgsDistanceArea
     //! sets source spatial reference system by authid
     void setSourceAuthId( const QString& authid );
 
-    //! returns source spatial reference system
-    //! @deprecated use sourceCrsId() instead
-    // TODO QGIS 3.0 - make sourceCrs() return QgsCoordinateReferenceSystem
-    long sourceCrs() const /Deprecated/;
+    /** Returns the source spatial reference system.
+     * @see setSourceCrs()
+     */
+    QgsCoordinateReferenceSystem sourceCrs() const;
 
     /** Returns the QgsCoordinateReferenceSystem::srsid() for the CRS used during calculations.
      * @see setSourceCrs()
@@ -96,12 +96,6 @@ class QgsDistanceArea
     double ellipsoidSemiMinor() const;
     //! returns ellipsoid's inverse flattening
     double ellipsoidInverseFlattening() const;
-
-    /** General measurement (line distance or polygon area)
-     * @deprecated use measureArea() or measureLength() methods instead, as this method
-     * is unpredictable for geometry collections
-     */
-    double measure( const QgsGeometry* geometry ) const /Deprecated/;
 
     /** Measures the area of a geometry.
      * @param geometry geometry to measure
@@ -155,7 +149,7 @@ class QgsDistanceArea
      * @note added in QGIS 2.14
      * @see areaUnits()
      */
-    QGis::UnitType lengthUnits() const;
+    QgsUnitTypes::DistanceUnit lengthUnits() const;
 
     /** Returns the units of area for areal calculations made by this object.
      * @note added in QGIS 2.14
@@ -169,46 +163,29 @@ class QgsDistanceArea
     //! compute bearing - in radians
     double bearing( const QgsPoint& p1, const QgsPoint& p2 ) const;
 
-    /** Returns a measurement formatted as a friendly string
-     * @param value value of measurement
-     * @param decimals number of decimal places to show
-     * @param u unit of measurement
-     * @param isArea set to true if measurement is an area measurement
-     * @param keepBaseUnit set to false to allow conversion of large distances to more suitable units, eg meters
-     * to kilometers
-     * @return formatted measurement string
-     * @deprecated use formatDistance() or formatArea() instead
-     */
-    static QString textUnit( double value, int decimals, QGis::UnitType u, bool isArea, bool keepBaseUnit = false ) /Deprecated/;
-
     /** Returns an distance formatted as a friendly string.
      * @param distance distance to format
      * @param decimals number of decimal places to show
      * @param unit unit of distance
-     * @param keepBaseUnit set to false to allow conversion of large distances to more suitable units, eg meters to
+     * @param keepBaseUnit set to false to allow conversion of large distances to more suitable units, e.g., meters to
      * kilometers
      * @returns formatted distance string
      * @note added in QGIS 2.16
      * @see formatArea()
      */
-    static QString formatDistance( double distance, int decimals, QGis::UnitType unit, bool keepBaseUnit = false );
+    static QString formatDistance( double distance, int decimals, QgsUnitTypes::DistanceUnit unit, bool keepBaseUnit = false );
 
     /** Returns an area formatted as a friendly string.
      * @param area area to format
      * @param decimals number of decimal places to show
      * @param unit unit of area
-     * @param keepBaseUnit set to false to allow conversion of large areas to more suitable units, eg square meters to
+     * @param keepBaseUnit set to false to allow conversion of large areas to more suitable units, e.g., square meters to
      * square kilometers
      * @returns formatted area string
      * @note added in QGIS 2.14
      * @see formatDistance()
      */
     static QString formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit = false );
-
-
-    //! Helper for conversion between physical units
-    // TODO QGIS 3.0 - remove this method, as its behaviour is non-intuitive.
-    void convertMeasurement( double &measure /In,Out/, QGis::UnitType &measureUnits /In,Out/, QGis::UnitType displayUnits, bool isArea ) const;
 
     /** Takes a length measurement calculated by this QgsDistanceArea object and converts it to a
      * different distance unit.
@@ -219,7 +196,7 @@ class QgsDistanceArea
      * @see convertAreaMeasurement()
      * @note added in QGIS 2.14
      */
-    double convertLengthMeasurement( double length, QGis::UnitType toUnits ) const;
+    double convertLengthMeasurement( double length, QgsUnitTypes::DistanceUnit toUnits ) const;
 
     /** Takes an area measurement calculated by this QgsDistanceArea object and converts it to a
      * different areal unit.

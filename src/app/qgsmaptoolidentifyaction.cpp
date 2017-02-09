@@ -19,7 +19,8 @@
 #include "qgscursors.h"
 #include "qgsdistancearea.h"
 #include "qgsfeature.h"
-#include "qgsfield.h"
+#include "qgsfeaturestore.h"
+#include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsidentifyresultsdialog.h"
@@ -33,8 +34,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
-#include "qgsmaplayerregistry.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgsunittypes.h"
 
 #include <QSettings>
@@ -90,12 +90,12 @@ void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer* layer, const QLi
   if ( !vl )
     return;
 
-  QString filter = "$id IN (";
+  QString filter = QStringLiteral( "$id IN (" );
   Q_FOREACH ( const QgsFeature &feature, featureList )
   {
-    filter.append( QString( "%1," ).arg( feature.id() ) );
+    filter.append( QStringLiteral( "%1," ).arg( feature.id() ) );
   }
-  filter = filter.replace( QRegExp( ",$" ), ")" );
+  filter = filter.replace( QRegExp( ",$" ), QStringLiteral( ")" ) );
 
   QgsAttributeTableDialog* tableDialog = new QgsAttributeTableDialog( vl );
   tableDialog->setFilterExpression( filter );
@@ -141,7 +141,7 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent* e )
   {
     // Show the dialog before items are inserted so that items can resize themselves
     // according to dialog size also the first time, see also #9377
-    if ( results.size() != 1 || !QSettings().value( "/Map/identifyAutoFeatureForm", false ).toBool() )
+    if ( results.size() != 1 || !QSettings().value( QStringLiteral( "/Map/identifyAutoFeatureForm" ), false ).toBool() )
       resultsDialog()->QDialog::show();
 
     QList<IdentifyResult>::const_iterator result;
@@ -184,7 +184,7 @@ void QgsMapToolIdentifyAction::deactivate()
   QgsMapTool::deactivate();
 }
 
-QGis::UnitType QgsMapToolIdentifyAction::displayDistanceUnits() const
+QgsUnitTypes::DistanceUnit QgsMapToolIdentifyAction::displayDistanceUnits() const
 {
   return QgsProject::instance()->distanceUnits();
 }

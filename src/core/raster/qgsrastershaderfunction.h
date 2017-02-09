@@ -19,11 +19,13 @@ email                : ersts@amnh.org
 
 #ifndef QGSRASTERSHADERFUNCTION_H
 #define QGSRASTERSHADERFUNCTION_H
+
 /** \ingroup core
  * The raster shade function applies a shader to a pixel at render time -
  * typically used to render grayscale images as false color.
  */
 
+#include "qgis_core.h"
 #include <QColor>
 #include <QPair>
 
@@ -32,18 +34,18 @@ class CORE_EXPORT QgsRasterShaderFunction
 
   public:
     QgsRasterShaderFunction( double theMinimumValue = 0.0, double theMaximumValue = 255.0 );
-    virtual ~QgsRasterShaderFunction() {}
+    virtual ~QgsRasterShaderFunction() = default;
 
-    /** \brief Set the maximum value */
+    //! \brief Set the maximum value
     virtual void setMaximumValue( double );
 
-    /** \brief Return the minimum value */
+    //! \brief Return the minimum value
     virtual void setMinimumValue( double );
 
-    /** \brief generates and new RGBA value based on one input value */
+    //! \brief generates and new RGBA value based on one input value
     virtual bool shade( double, int*, int*, int*, int* );
 
-    /** \brief generates and new RGBA value based on original RGBA value */
+    //! \brief generates and new RGBA value based on original RGBA value
     virtual bool shade( double, double, double, double, int*, int*, int*, int* );
 
     double minimumMaximumRange() const { return mMinimumMaximumRange; }
@@ -54,13 +56,13 @@ class CORE_EXPORT QgsRasterShaderFunction
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const { Q_UNUSED( symbolItems ); }
 
   protected:
-    /** \brief User defineable maximum value for the shading function */
+    //! \brief User defineable maximum value for the shading function
     double mMaximumValue;
 
-    /** \brief User defineable minimum value for the shading function */
+    //! \brief User defineable minimum value for the shading function
     double mMinimumValue;
 
-    /** \brief Minimum maximum range for the shading function */
+    //! \brief Minimum maximum range for the shading function
     double mMinimumMaximumRange;
 };
 #endif

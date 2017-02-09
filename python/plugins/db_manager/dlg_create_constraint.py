@@ -22,8 +22,8 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from PyQt.QtCore import Qt
-from PyQt.QtWidgets import QDialog, QApplication
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QDialog, QApplication
 
 from .db_plugins.plugin import DbError
 from .dlg_db_error import DlgDbError

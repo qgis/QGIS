@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -30,12 +30,11 @@
 #include <qgsrasterlayer.h>
 #include <qgsrasterpyramid.h>
 #include <qgsrasterbandstats.h>
-#include <qgsmaplayerregistry.h>
+#include "qgsrasterdataprovider.h"
 #include <qgsapplication.h>
-#include <qgsmaprenderer.h>
 #include <qgssinglebandgrayrenderer.h>
 #include <qgssinglebandpseudocolorrenderer.h>
-#include <qgsvectorcolorrampv2.h>
+#include <qgscolorramp.h>
 #include <qgscptcityarchive.h>
 
 //qgis unit test includes
@@ -83,17 +82,17 @@ void TestQgsRasterSubLayer::initTestCase()
   // disable any PAM stuff to make sure stats are consistent
   CPLSetConfigOption( "GDAL_PAM_ENABLED", "NO" );
   QString mySettings = QgsApplication::showSettings();
-  mySettings = mySettings.replace( '\n', "<br />" );
-  mTestDataDir = QString( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+  mySettings = mySettings.replace( '\n', QLatin1String( "<br />" ) );
+  mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
 
   GDALAllRegister();
-  QString format = "netCDF";
+  QString format = QStringLiteral( "netCDF" );
   GDALDriverH myGdalDriver = GDALGetDriverByName( format.toLocal8Bit().constData() );
   mHasNetCDF = myGdalDriver != 0;
 
   mFileName = mTestDataDir + "landsat2.nc";
 
-  mReport += "<h1>Raster Sub Layer Tests</h1>\n";
+  mReport += QLatin1String( "<h1>Raster Sub Layer Tests</h1>\n" );
   //mReport += "<p>" + mySettings + "</p>";
 
   if ( mHasNetCDF )
@@ -106,7 +105,7 @@ void TestQgsRasterSubLayer::initTestCase()
   }
   else
   {
-    mReport += "<p>NetCDF format is not compiled in GDAL library, cannot test sub layers.</p>";
+    mReport += QLatin1String( "<p>NetCDF format is not compiled in GDAL library, cannot test sub layers.</p>" );
   }
 }
 
@@ -129,15 +128,15 @@ void TestQgsRasterSubLayer::subLayersList()
 {
   if ( mHasNetCDF )
   {
-    mReport += "<h2>Check Sublayers List</h2>\n";
+    mReport += QLatin1String( "<h2>Check Sublayers List</h2>\n" );
     // Layer with sublayers is not valid
     //QVERIFY( mpRasterLayer->isValid() );
     QStringList expected;
     // Sublayer format: NETCDF:"/path/to/landsat2.nc":Band1
     //                  NETCDF:"c:/path/to/landsat2.nc":Band1
     // File path is delicate on Windows -> compare only sublayers
-    expected << "Band1";
-    expected << "Band2";
+    expected << QStringLiteral( "Band1" );
+    expected << QStringLiteral( "Band2" );
 
     QStringList sublayers;
     Q_FOREACH ( const QString& s, mpRasterLayer->subLayers() )
@@ -145,11 +144,11 @@ void TestQgsRasterSubLayer::subLayersList()
       qDebug() << "sublayer: " << s;
       sublayers << s.split( ':' ).last();
     }
-    qDebug() << "sublayers: " << sublayers.join( "," );
-    mReport += QString( "sublayers:<br>%1<br>\n" ).arg( sublayers.join( "<br>" ) );
-    mReport += QString( "expected:<br>%1<br>\n" ).arg( expected.join( "<br>" ) );
+    qDebug() << "sublayers: " << sublayers.join( QStringLiteral( "," ) );
+    mReport += QStringLiteral( "sublayers:<br>%1<br>\n" ).arg( sublayers.join( QStringLiteral( "<br>" ) ) );
+    mReport += QStringLiteral( "expected:<br>%1<br>\n" ).arg( expected.join( QStringLiteral( "<br>" ) ) );
     QVERIFY( sublayers == expected );
-    mReport += "<p>Passed</p>";
+    mReport += QLatin1String( "<p>Passed</p>" );
   }
 }
 
@@ -157,11 +156,11 @@ void TestQgsRasterSubLayer::checkStats()
 {
   if ( mHasNetCDF )
   {
-    mReport += "<h2>Check Stats</h2>\n";
+    mReport += QLatin1String( "<h2>Check Stats</h2>\n" );
     QString sublayerUri = mpRasterLayer->subLayers().value( 0 );
     mReport += "sublayer: " + sublayerUri + "<br>\n";
 
-    QgsRasterLayer *sublayer = new QgsRasterLayer( sublayerUri, "Sublayer 1" );
+    QgsRasterLayer *sublayer = new QgsRasterLayer( sublayerUri, QStringLiteral( "Sublayer 1" ) );
 
     QgsRasterBandStats myStatistics = sublayer->dataProvider()->bandStatistics( 1,
                                       QgsRasterBandStats::Min | QgsRasterBandStats::Max );
@@ -169,20 +168,20 @@ void TestQgsRasterSubLayer::checkStats()
     int height = 200;
     double min = 122;
     double max = 130;
-    mReport += QString( "width = %1 expected = %2<br>\n" ).arg( sublayer->width() ).arg( width );
-    mReport += QString( "height = %1 expected = %2<br>\n" ).arg( sublayer->height() ).arg( height );
-    mReport += QString( "min = %1 expected = %2<br>\n" ).arg( myStatistics.minimumValue ).arg( min );
-    mReport += QString( "max = %1 expected = %2<br>\n" ).arg( myStatistics.maximumValue ).arg( max );
+    mReport += QStringLiteral( "width = %1 expected = %2<br>\n" ).arg( sublayer->width() ).arg( width );
+    mReport += QStringLiteral( "height = %1 expected = %2<br>\n" ).arg( sublayer->height() ).arg( height );
+    mReport += QStringLiteral( "min = %1 expected = %2<br>\n" ).arg( myStatistics.minimumValue ).arg( min );
+    mReport += QStringLiteral( "max = %1 expected = %2<br>\n" ).arg( myStatistics.maximumValue ).arg( max );
 
     QVERIFY( sublayer->width() == width );
     QVERIFY( sublayer->height() == height );
     QVERIFY( qgsDoubleNear( myStatistics.minimumValue, min ) );
     QVERIFY( qgsDoubleNear( myStatistics.maximumValue, max ) );
-    mReport += "<p>Passed</p>";
+    mReport += QLatin1String( "<p>Passed</p>" );
     delete sublayer;
   }
 }
 
 
-QTEST_MAIN( TestQgsRasterSubLayer )
+QGSTEST_MAIN( TestQgsRasterSubLayer )
 #include "testqgsrastersublayer.moc"

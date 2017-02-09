@@ -5,7 +5,7 @@
 
     Module that implements the default filter.
 
-    :copyright: Copyright 2006-2013 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2015 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
@@ -29,7 +29,7 @@ def simplefilter(f):
     Decorator that converts a function into a filter::
 
         @simplefilter
-        def lowercase(lexer, stream, options):
+        def lowercase(self, lexer, stream, options):
             for ttype, value in stream:
                 yield ttype, value.lower()
     """
@@ -69,6 +69,6 @@ class FunctionFilter(Filter):
         Filter.__init__(self, **options)
 
     def filter(self, lexer, stream):
-        # pylint: disable-msg=E1102
+        # pylint: disable=not-callable
         for ttype, value in self.function(lexer, stream, self.options):
             yield ttype, value

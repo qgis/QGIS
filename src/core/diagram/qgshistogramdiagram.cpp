@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgshistogramdiagram.h"
-#include "qgsdiagramrendererv2.h"
+#include "qgsdiagramrenderer.h"
 #include "qgsrendercontext.h"
 #include "qgsexpression.h"
 
@@ -24,10 +24,6 @@ QgsHistogramDiagram::QgsHistogramDiagram()
   mCategoryBrush.setStyle( Qt::SolidPattern );
   mPen.setStyle( Qt::SolidLine );
   mScaleFactor = 0;
-}
-
-QgsHistogramDiagram::~QgsHistogramDiagram()
-{
 }
 
 QgsHistogramDiagram* QgsHistogramDiagram::clone() const
@@ -50,8 +46,8 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsFeature& feature, const QgsRen
 
   QgsExpressionContext expressionContext = c.expressionContext();
   expressionContext.setFeature( feature );
-  if ( feature.fields() )
-    expressionContext.setFields( *feature.fields() );
+  if ( !feature.fields().isEmpty() )
+    expressionContext.setFields( feature.fields() );
 
   Q_FOREACH ( const QString& cat, s.categoryAttributes )
   {
@@ -147,8 +143,8 @@ void QgsHistogramDiagram::renderDiagram( const QgsFeature& feature, QgsRenderCon
 
   QgsExpressionContext expressionContext = c.expressionContext();
   expressionContext.setFeature( feature );
-  if ( feature.fields() )
-    expressionContext.setFields( *feature.fields() );
+  if ( !feature.fields().isEmpty() )
+    expressionContext.setFields( feature.fields() );
 
   Q_FOREACH ( const QString& cat, s.categoryAttributes )
   {

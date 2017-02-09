@@ -33,3 +33,17 @@ QgsEditorConfigWidget* QgsColorWidgetFactory::configWidget( QgsVectorLayer* vl, 
 {
   return new QgsDummyConfigDlg( vl, fieldIdx, parent, QObject::tr( "Field contains a color." ) );
 }
+
+unsigned int QgsColorWidgetFactory::fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const
+{
+  const QgsField field = vl->fields().field( fieldIdx );
+  const QVariant::Type type = field.type();
+  if ( type == QVariant::Color )
+  {
+    return 20;
+  }
+  else
+  {
+    return 5;
+  }
+}

@@ -67,7 +67,7 @@ bool QgsAuthPkcs12Edit::validateConfig()
     passarray = QCA::SecureArray( lePkcs12KeyPass->text().toUtf8() );
 
   QCA::ConvertResult res;
-  QCA::KeyBundle bundle( QCA::KeyBundle::fromFile( bundlepath, passarray, &res, QString( "qca-ossl" ) ) );
+  QCA::KeyBundle bundle( QCA::KeyBundle::fromFile( bundlepath, passarray, &res, QStringLiteral( "qca-ossl" ) ) );
 
   if ( res == QCA::ErrorFile )
   {
@@ -77,7 +77,7 @@ bool QgsAuthPkcs12Edit::validateConfig()
   else if ( res == QCA::ErrorPassphrase )
   {
     writePkiMessage( lePkcs12Msg, tr( "Incorrect bundle password" ), Invalid );
-    lePkcs12KeyPass->setPlaceholderText( QString( "Required passphrase" ) );
+    lePkcs12KeyPass->setPlaceholderText( QStringLiteral( "Required passphrase" ) );
     return validityChange( false );
   }
   else if ( res == QCA::ErrorDecode )
@@ -116,8 +116,8 @@ bool QgsAuthPkcs12Edit::validateConfig()
 QgsStringMap QgsAuthPkcs12Edit::configMap() const
 {
   QgsStringMap config;
-  config.insert( "bundlepath", lePkcs12Bundle->text() );
-  config.insert( "bundlepass", lePkcs12KeyPass->text() );
+  config.insert( QStringLiteral( "bundlepath" ), lePkcs12Bundle->text() );
+  config.insert( QStringLiteral( "bundlepass" ), lePkcs12KeyPass->text() );
 
   return config;
 }
@@ -127,8 +127,8 @@ void QgsAuthPkcs12Edit::loadConfig( const QgsStringMap &configmap )
   clearConfig();
 
   mConfigMap = configmap;
-  lePkcs12Bundle->setText( configmap.value( "bundlepath" ) );
-  lePkcs12KeyPass->setText( configmap.value( "bundlepass" ) );
+  lePkcs12Bundle->setText( configmap.value( QStringLiteral( "bundlepath" ) ) );
+  lePkcs12KeyPass->setText( configmap.value( QStringLiteral( "bundlepass" ) ) );
 
   validateConfig();
 }
@@ -150,7 +150,7 @@ void QgsAuthPkcs12Edit::clearConfig()
 void QgsAuthPkcs12Edit::clearPkiMessage( QLineEdit *lineedit )
 {
   lineedit->clear();
-  lineedit->setStyleSheet( "" );
+  lineedit->setStyleSheet( QLatin1String( "" ) );
 }
 
 void QgsAuthPkcs12Edit::writePkiMessage( QLineEdit *lineedit, const QString &msg, Validity valid )
@@ -160,18 +160,18 @@ void QgsAuthPkcs12Edit::writePkiMessage( QLineEdit *lineedit, const QString &msg
   switch ( valid )
   {
     case Valid:
-      ss = QgsAuthGuiUtils::greenTextStyleSheet( "QLineEdit" );
+      ss = QgsAuthGuiUtils::greenTextStyleSheet( QStringLiteral( "QLineEdit" ) );
       txt = tr( "Valid: %1" ).arg( msg );
       break;
     case Invalid:
-      ss = QgsAuthGuiUtils::redTextStyleSheet( "QLineEdit" );
+      ss = QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QLineEdit" ) );
       txt = tr( "Invalid: %1" ).arg( msg );
       break;
     case Unknown:
-      ss = "";
+      ss = QLatin1String( "" );
       break;
     default:
-      ss = "";
+      ss = QLatin1String( "" );
   }
   lineedit->setStyleSheet( ss );
   lineedit->setText( txt );
@@ -181,14 +181,14 @@ void QgsAuthPkcs12Edit::writePkiMessage( QLineEdit *lineedit, const QString &msg
 void QgsAuthPkcs12Edit::clearPkcs12BundlePath()
 {
   lePkcs12Bundle->clear();
-  lePkcs12Bundle->setStyleSheet( "" );
+  lePkcs12Bundle->setStyleSheet( QLatin1String( "" ) );
 }
 
 void QgsAuthPkcs12Edit::clearPkcs12BundlePass()
 {
   lePkcs12KeyPass->clear();
-  lePkcs12KeyPass->setStyleSheet( "" );
-  lePkcs12KeyPass->setPlaceholderText( QString( "Optional passphrase" ) );
+  lePkcs12KeyPass->setStyleSheet( QLatin1String( "" ) );
+  lePkcs12KeyPass->setPlaceholderText( QStringLiteral( "Optional passphrase" ) );
   chkPkcs12PassShow->setChecked( false );
 }
 

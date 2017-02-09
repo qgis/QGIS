@@ -19,7 +19,7 @@ email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
 """
 
-from PyQt.QtWidgets import QApplication
+from qgis.PyQt.QtWidgets import QApplication
 
 from ..info_model import DatabaseInfo
 from ..html_elems import HtmlTable

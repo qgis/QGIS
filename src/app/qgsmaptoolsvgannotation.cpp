@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolsvgannotation.h"
-#include "qgssvgannotationitem.h"
+#include "qgssvgannotation.h"
 #include "qgsproject.h"
 #include <QMouseEvent>
 
@@ -30,12 +30,7 @@ QgsMapToolSvgAnnotation::~QgsMapToolSvgAnnotation()
 
 }
 
-QgsAnnotationItem* QgsMapToolSvgAnnotation::createItem( QMouseEvent* e )
+QgsAnnotation* QgsMapToolSvgAnnotation::createItem() const
 {
-  QgsSvgAnnotationItem* svgItem = new QgsSvgAnnotationItem( mCanvas );
-  svgItem->setMapPosition( toMapCoordinates( e->pos() ) );
-  svgItem->setSelected( true );
-  svgItem->setFrameSize( QSizeF( 200, 100 ) );
-  QgsProject::instance()->setDirty( true );
-  return svgItem;
+  return new QgsSvgAnnotation();
 }

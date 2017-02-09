@@ -25,8 +25,8 @@
 """
 
 from qgis.gui import QgsAuthConfigSelect
-from PyQt.QtWidgets import QDialog, QDialogButtonBox, QVBoxLayout
-from PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QVBoxLayout
+from qgis.PyQt.QtCore import Qt
 
 from .ui_qgsplugininstallerrepositorybase import Ui_QgsPluginInstallerRepositoryDetailsDialogBase
 

@@ -19,6 +19,7 @@
 
 #include <ui_qgsdetaileditemwidgetbase.h>
 #include <qgsdetaileditemdata.h>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * A widget renderer for detailed item views.
@@ -30,7 +31,6 @@ class GUI_EXPORT QgsDetailedItemWidget :
     Q_OBJECT
   public:
     QgsDetailedItemWidget( QWidget * parent = nullptr );
-    ~QgsDetailedItemWidget();
     void setData( const QgsDetailedItemData& theData );
     void setChecked( bool theFlag );
   private:

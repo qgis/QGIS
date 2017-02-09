@@ -26,10 +26,11 @@
 #include "ui_qgspluginmanagerbase.h"
 #include "qgsoptionsdialogbase.h"
 #include "qgisgui.h"
-#include "qgscontexthelp.h"
-#include "qgspythonutils.h"
-#include "qgspluginsortfilterproxymodel.h"
+#include "qgshelp.h"
 #include "qgsmessagebar.h"
+#include "qgspythonutils.h"
+
+class QgsPluginSortFilterProxyModel;
 
 const int PLUGMAN_TAB_ALL = 0;
 const int PLUGMAN_TAB_INSTALLED = 1;
@@ -49,7 +50,6 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Constructor; set pluginsAreEnabled to false in --noplugins mode
     QgsPluginManager( QWidget *parent = nullptr, bool pluginsAreEnabled = true, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
-    //! Destructor
     ~QgsPluginManager();
 
     //! Save pointer to python utils and enable Python support
@@ -58,7 +58,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Load selected plugin
     void loadPlugin( const QString& id );
 
-    //! Unload unselected plugin
+    //! Unload deselected plugin
     void unloadPlugin( const QString& id );
 
     //! Save plugin enabled/disabled state to QSettings
@@ -85,7 +85,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Return metadata of given plugin
     const QMap<QString, QString> * pluginMetadata( const QString& key ) const;
 
-    //! Select one of the vertical tabs programatically
+    //! Select one of the vertical tabs programmatically
     void selectTabItem( int idx );
 
     //! Clear the repository listWidget
@@ -116,7 +116,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Load/unload plugin by double click
     void on_vwPlugins_doubleClicked( const QModelIndex & index );
 
-    //! Handle click in the web wiew
+    //! Handle click in the web view
     void on_wvDetails_linkClicked( const QUrl & url );
 
     //! Update the filter when user changes the filter expression
@@ -156,7 +156,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void on_ckbDeprecated_toggled( bool state );
 
     //! Open help browser
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "plugins/plugins.html#the-plugins-dialog" ) ); }
 
     //! Reimplement QgsOptionsDialogBase method to prevent modifying the tab list by signals from the stacked widget
     void optionsStackedWidget_CurrentChanged( int indx ) { Q_UNUSED( indx ) }
@@ -169,6 +169,11 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
 
     //! show the given message in the Plugin Manager internal message bar
     void pushMessage( const QString &text, QgsMessageBar::MessageLevel level, int duration = -1 );
+
+#ifndef WITH_QTWEBKIT
+    //! vote button was clicked
+    void submitVote();
+#endif
 
   protected:
     //! Reimplement QgsOptionsDialogBase method as we have a custom window title what would be overwritten by this method
@@ -199,6 +204,9 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Return true if there are invalid plugins in the metadata registry
     bool hasInvalidPlugins();
 
+    //! send vote
+    void sendVote( int pluginId, int vote );
+
     QStandardItemModel *mModelPlugins;
 
     QgsPluginSortFilterProxyModel * mModelProxy;
@@ -217,6 +225,10 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     QList<int> mCheckingOnStartIntervals;
 
     QgsMessageBar *msgBar;
+
+#ifndef WITH_QTWEBKIT
+    int mCurrentPluginId;
+#endif
 };
 
 #endif

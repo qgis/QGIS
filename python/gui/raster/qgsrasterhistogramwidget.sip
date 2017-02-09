@@ -1,4 +1,4 @@
-class QgsRasterHistogramWidget : QWidget
+class QgsRasterHistogramWidget : QgsPanelWidget
 {
 %TypeHeaderCode
 #include <qgsrasterhistogramwidget.h>
@@ -30,6 +30,8 @@ class QgsRasterHistogramWidget : QWidget
     void refreshHistogram();
     /** This slot lets you save the histogram as an image to disk */
     void on_mSaveAsImageButton_clicked();
+
+    void apply();
 
   private slots:
     /** Used when the histogram band selector changes, or when tab is loaded. */

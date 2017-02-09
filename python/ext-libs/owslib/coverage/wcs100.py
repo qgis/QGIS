@@ -9,8 +9,13 @@
 # Contact email: d.lowe@rl.ac.uk
 # =============================================================================
 
+from __future__ import (absolute_import, division, print_function)
+
 from owslib.coverage.wcsBase import WCSBase, WCSCapabilitiesReader, ServiceException
-from urllib import urlencode
+try:
+    from urllib import urlencode
+except ImportError:
+    from urllib.parse import urlencode
 from owslib.util import openURL, testXMLValue
 from owslib.etree import etree
 from owslib.crs import Crs
@@ -32,7 +37,7 @@ class WebCoverageService_1_0_0(WCSBase):
         if name in self.__getattribute__('contents').keys():
             return self.__getattribute__('contents')[name]
         else:
-            raise KeyError, "No content named %s" % name
+            raise KeyError("No content named %s" % name)
     
     def __init__(self,url,xml, cookies):
         self.version='1.0.0'
@@ -166,7 +171,7 @@ class WebCoverageService_1_0_0(WCSBase):
         for item in self.operations:
             if item.name == name:
                 return item
-        raise KeyError, "No operation named %s" % name
+        raise KeyError("No operation named %s" % name)
 
 
 class OperationMetadata(object):

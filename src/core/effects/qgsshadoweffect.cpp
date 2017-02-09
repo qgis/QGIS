@@ -17,7 +17,7 @@
 
 #include "qgsshadoweffect.h"
 #include "qgsimageoperation.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 #include "qgsunittypes.h"
 
 QgsShadowEffect::QgsShadowEffect()
@@ -25,15 +25,10 @@ QgsShadowEffect::QgsShadowEffect()
     , mBlurLevel( 10 )
     , mOffsetAngle( 135 )
     , mOffsetDist( 2.0 )
-    , mOffsetUnit( QgsSymbolV2::MM )
+    , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
     , mTransparency( 0.0 )
     , mColor( Qt::black )
     , mBlendMode( QPainter::CompositionMode_Multiply )
-{
-
-}
-
-QgsShadowEffect::~QgsShadowEffect()
 {
 
 }
@@ -59,8 +54,7 @@ void QgsShadowEffect::draw( QgsRenderContext &context )
   QgsImageOperation::overlayColor( colorisedIm, mColor );
   QgsImageOperation::stackBlur( colorisedIm, mBlurLevel );
 
-  double offsetDist = mOffsetDist *
-                      QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context, mOffsetUnit, mOffsetMapUnitScale );
+  double offsetDist = context.convertToPainterUnits( mOffsetDist, mOffsetUnit, mOffsetMapUnitScale );
 
   double   angleRad = mOffsetAngle * M_PI / 180; // to radians
   QPointF transPt( -offsetDist * cos( angleRad + M_PI / 2 ),
@@ -96,61 +90,61 @@ void QgsShadowEffect::draw( QgsRenderContext &context )
 QgsStringMap QgsShadowEffect::properties() const
 {
   QgsStringMap props;
-  props.insert( "enabled", mEnabled ? "1" : "0" );
-  props.insert( "draw_mode", QString::number( int( mDrawMode ) ) );
-  props.insert( "blend_mode", QString::number( int( mBlendMode ) ) );
-  props.insert( "transparency", QString::number( mTransparency ) );
-  props.insert( "blur_level", QString::number( mBlurLevel ) );
-  props.insert( "offset_angle", QString::number( mOffsetAngle ) );
-  props.insert( "offset_distance", QString::number( mOffsetDist ) );
-  props.insert( "offset_unit", QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit ) );
-  props.insert( "offset_unit_scale", QgsSymbolLayerV2Utils::encodeMapUnitScale( mOffsetMapUnitScale ) );
-  props.insert( "color", QgsSymbolLayerV2Utils::encodeColor( mColor ) );
+  props.insert( QStringLiteral( "enabled" ), mEnabled ? "1" : "0" );
+  props.insert( QStringLiteral( "draw_mode" ), QString::number( int( mDrawMode ) ) );
+  props.insert( QStringLiteral( "blend_mode" ), QString::number( int( mBlendMode ) ) );
+  props.insert( QStringLiteral( "transparency" ), QString::number( mTransparency ) );
+  props.insert( QStringLiteral( "blur_level" ), QString::number( mBlurLevel ) );
+  props.insert( QStringLiteral( "offset_angle" ), QString::number( mOffsetAngle ) );
+  props.insert( QStringLiteral( "offset_distance" ), QString::number( mOffsetDist ) );
+  props.insert( QStringLiteral( "offset_unit" ), QgsUnitTypes::encodeUnit( mOffsetUnit ) );
+  props.insert( QStringLiteral( "offset_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale ) );
+  props.insert( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
   return props;
 }
 
 void QgsShadowEffect::readProperties( const QgsStringMap &props )
 {
   bool ok;
-  QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( "blend_mode" ).toInt( &ok ) );
+  QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( QStringLiteral( "blend_mode" ) ).toInt( &ok ) );
   if ( ok )
   {
     mBlendMode = mode;
   }
-  double transparency = props.value( "transparency" ).toDouble( &ok );
+  double transparency = props.value( QStringLiteral( "transparency" ) ).toDouble( &ok );
   if ( ok )
   {
     mTransparency = transparency;
   }
-  mEnabled = props.value( "enabled", "1" ).toInt();
-  mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( "draw_mode", "2" ).toInt() );
-  int level = props.value( "blur_level" ).toInt( &ok );
+  mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt();
+  mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
+  int level = props.value( QStringLiteral( "blur_level" ) ).toInt( &ok );
   if ( ok )
   {
     mBlurLevel = level;
   }
-  int angle = props.value( "offset_angle" ).toInt( &ok );
+  int angle = props.value( QStringLiteral( "offset_angle" ) ).toInt( &ok );
   if ( ok )
   {
     mOffsetAngle = angle;
   }
-  double distance = props.value( "offset_distance" ).toDouble( &ok );
+  double distance = props.value( QStringLiteral( "offset_distance" ) ).toDouble( &ok );
   if ( ok )
   {
     mOffsetDist = distance;
   }
-  mOffsetUnit = QgsSymbolLayerV2Utils::decodeOutputUnit( props.value( "offset_unit" ) );
-  mOffsetMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( props.value( "offset_unit_scale" ) );
-  if ( props.contains( "color" ) )
+  mOffsetUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "offset_unit" ) ) );
+  mOffsetMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "offset_unit_scale" ) ) );
+  if ( props.contains( QStringLiteral( "color" ) ) )
   {
-    mColor = QgsSymbolLayerV2Utils::decodeColor( props.value( "color" ) );
+    mColor = QgsSymbolLayerUtils::decodeColor( props.value( QStringLiteral( "color" ) ) );
   }
 }
 
 QRectF QgsShadowEffect::boundingRect( const QRectF &rect, const QgsRenderContext& context ) const
 {
   //offset distance
-  double spread = mOffsetDist * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context, mOffsetUnit, mOffsetMapUnitScale );
+  double spread = context.convertToPainterUnits( mOffsetDist, mOffsetUnit, mOffsetMapUnitScale );
   //plus possible extension due to blur, with a couple of extra pixels thrown in for safety
   spread += mBlurLevel * 2 + 10;
   return rect.adjusted( -spread, -spread, spread, spread );
@@ -174,11 +168,6 @@ QgsDropShadowEffect::QgsDropShadowEffect()
 
 }
 
-QgsDropShadowEffect::~QgsDropShadowEffect()
-{
-
-}
-
 QgsDropShadowEffect* QgsDropShadowEffect::clone() const
 {
   return new QgsDropShadowEffect( *this );
@@ -198,11 +187,6 @@ QgsPaintEffect *QgsInnerShadowEffect::create( const QgsStringMap &map )
 
 QgsInnerShadowEffect::QgsInnerShadowEffect()
     : QgsShadowEffect()
-{
-
-}
-
-QgsInnerShadowEffect::~QgsInnerShadowEffect()
 {
 
 }

@@ -29,7 +29,7 @@
 #include "qgsmessagelog.h"
 #include "qgsprovidermetadata.h"
 #include "qgsvectorlayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 
 
 // typedefs for provider plugin functions of interest
@@ -83,7 +83,7 @@ void QgsProviderRegistry::init()
 #elif defined(ANDROID)
   mLibraryDirectory.setNameFilters( QStringList( "*provider.so" ) );
 #else
-  mLibraryDirectory.setNameFilters( QStringList( "*.so" ) );
+  mLibraryDirectory.setNameFilters( QStringList( QStringLiteral( "*.so" ) ) );
 #endif
 
   QgsDebugMsg( QString( "Checking %1 for provider plugins" ).arg( mLibraryDirectory.path() ) );
@@ -108,11 +108,8 @@ void QgsProviderRegistry::init()
     fileRegexp.setPattern( filePattern );
   }
 
-  QListIterator<QFileInfo> it( mLibraryDirectory.entryInfoList() );
-  while ( it.hasNext() )
+  Q_FOREACH ( const QFileInfo& fi, mLibraryDirectory.entryInfoList() )
   {
-    QFileInfo fi( it.next() );
-
     if ( !fileRegexp.isEmpty() )
     {
       if ( fileRegexp.indexIn( fi.fileName() ) == -1 )
@@ -228,7 +225,7 @@ typedef void cleanupProviderFunction_t();
 
 void QgsProviderRegistry::clean()
 {
-  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+  QgsProject::instance()->removeAllMapLayers();
 
   Providers::const_iterator it = mProviders.begin();
 
@@ -301,17 +298,17 @@ QString QgsProviderRegistry::pluginList( bool asHTML ) const
   QString list;
 
   if ( asHTML )
-    list += "<ol>";
+    list += QLatin1String( "<ol>" );
 
   while ( it != mProviders.end() )
   {
     if ( asHTML )
-      list += "<li>";
+      list += QLatin1String( "<li>" );
 
     list += it->second->description();
 
     if ( asHTML )
-      list + "<br></li>";
+      list += "<br></li>";
     else
       list += '\n';
 
@@ -319,7 +316,7 @@ QString QgsProviderRegistry::pluginList( bool asHTML ) const
   }
 
   if ( asHTML )
-    list += "</ol>";
+    list += QLatin1String( "</ol>" );
 
   return list;
 }
@@ -331,7 +328,7 @@ void QgsProviderRegistry::setLibraryDirectory( QDir const & path )
   init();
 }
 
-QDir const & QgsProviderRegistry::libraryDirectory() const
+QDir QgsProviderRegistry::libraryDirectory() const
 {
   return mLibraryDirectory;
 }
@@ -369,7 +366,7 @@ QgsDataProvider *QgsProviderRegistry::provider( QString const & providerKey, QSt
   }
   else
   {
-    QgsDebugMsg( "dlopen suceeded" );
+    QgsDebugMsg( "dlopen succeeded" );
     dlclose( handle );
   }
 
@@ -405,7 +402,7 @@ QgsDataProvider *QgsProviderRegistry::provider( QString const & providerKey, QSt
 
 int QgsProviderRegistry::providerCapabilities( const QString &providerKey ) const
 {
-  QLibrary *library = providerLibrary( providerKey );
+  std::unique_ptr< QLibrary > library( providerLibrary( providerKey ) );
   if ( !library )
   {
     return QgsDataProvider::NoDataCapabilities;
@@ -424,7 +421,7 @@ int QgsProviderRegistry::providerCapabilities( const QString &providerKey ) cons
 typedef QWidget * selectFactoryFunction_t( QWidget * parent, Qt::WindowFlags fl );
 
 QWidget* QgsProviderRegistry::selectWidget( const QString & providerKey,
-    QWidget * parent, const Qt::WindowFlags& fl )
+    QWidget * parent, Qt::WindowFlags fl )
 {
   selectFactoryFunction_t * selectFactory =
     reinterpret_cast< selectFactoryFunction_t * >( cast_to_fptr( function( providerKey, "selectWidget" ) ) );
@@ -435,7 +432,6 @@ QWidget* QgsProviderRegistry::selectWidget( const QString & providerKey,
   return selectFactory( parent, fl );
 }
 
-#if QT_VERSION >= 0x050000
 QFunctionPointer QgsProviderRegistry::function( QString const & providerKey,
     QString const & functionName )
 {
@@ -445,7 +441,7 @@ QFunctionPointer QgsProviderRegistry::function( QString const & providerKey,
 
   if ( myLib.load() )
   {
-    return myLib.resolve( functionName.toAscii().data() );
+    return myLib.resolve( functionName.toLatin1().data() );
   }
   else
   {
@@ -453,38 +449,17 @@ QFunctionPointer QgsProviderRegistry::function( QString const & providerKey,
     return 0;
   }
 }
-#else
-void *QgsProviderRegistry::function( QString const & providerKey,
-                                     QString const & functionName )
+
+QLibrary* QgsProviderRegistry::providerLibrary( QString const & providerKey ) const
 {
-  QLibrary myLib( library( providerKey ) );
-
-  QgsDebugMsg( "Library name is " + myLib.fileName() );
-
-  if ( myLib.load() )
-  {
-    return myLib.resolve( functionName.toAscii().data() );
-  }
-  else
-  {
-    QgsDebugMsg( "Cannot load library: " + myLib.errorString() );
-    return nullptr;
-  }
-}
-#endif
-
-QLibrary *QgsProviderRegistry::providerLibrary( QString const & providerKey ) const
-{
-  QLibrary *myLib = new QLibrary( library( providerKey ) );
+  std::unique_ptr< QLibrary > myLib( new QLibrary( library( providerKey ) ) );
 
   QgsDebugMsg( "Library name is " + myLib->fileName() );
 
   if ( myLib->load() )
-    return myLib;
+    return myLib.release();
 
   QgsDebugMsg( "Cannot load library: " + myLib->errorString() );
-
-  delete myLib;
 
   return nullptr;
 }

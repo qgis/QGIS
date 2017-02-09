@@ -19,6 +19,8 @@
 #include <QString>
 #include <QObject>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * Interface for logging messages from QGIS in GUI independent way.
  * This class provides abstraction of a tabbed window for showing messages to the user.
@@ -27,20 +29,27 @@
 
  * QGIS application uses QgsMessageLog class for logging messages in a dockable
  * window for the user.
+ *
+ * QgsMessageLog is not usually directly created, but rather accessed through
+ * QgsApplication::messageLog().
 */
 class CORE_EXPORT QgsMessageLog : public QObject
 {
     Q_OBJECT
+    Q_ENUMS( MessageLevel )
 
   public:
-    static QgsMessageLog *instance();
 
     enum MessageLevel
     {
+      ALL = 0,
       INFO = 0,
       WARNING = 1,
-      CRITICAL = 2
+      CRITICAL = 2,
+      NONE = 3
     };
+
+    QgsMessageLog();
 
     //! add a message to the instance (and create it if necessary)
     static void logMessage( const QString& message, const QString& tag = QString::null, MessageLevel level = WARNING );
@@ -51,15 +60,12 @@ class CORE_EXPORT QgsMessageLog : public QObject
     void messageReceived( bool received );
 
   private:
-    QgsMessageLog();
 
     void emitMessage( const QString& message, const QString& tag, QgsMessageLog::MessageLevel level );
 
-    static QgsMessageLog *sInstance;
 };
 
-
-/**
+/** \ingroup core
 \brief Default implementation of message logging interface
 
 This class outputs log messages to the standard output. Therefore it might

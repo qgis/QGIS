@@ -13,7 +13,7 @@
 #include "qgsdecorationnortharrowdialog.h"
 #include "qgsdecorationnortharrow.h"
 #include "qgslogger.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 #include <QPainter>
 #include <QSettings>
@@ -22,12 +22,13 @@
 #include <QPushButton>
 
 QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorthArrow& deco, QWidget* parent )
-    : QDialog( parent ), mDeco( deco )
+    : QDialog( parent )
+    , mDeco( deco )
 {
   setupUi( this );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/DecorationNorthArrow/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/DecorationNorthArrow/geometry" ) ).toByteArray() );
 
   QPushButton* applyButton = buttonBox->button( QDialogButtonBox::Apply );
   connect( applyButton, SIGNAL( clicked() ), this, SLOT( apply() ) );
@@ -46,7 +47,7 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   cboPlacement->setCurrentIndex( cboPlacement->findData( mDeco.placement() ) );
   spinHorizontal->setValue( mDeco.mMarginHorizontal );
   spinVertical->setValue( mDeco.mMarginVertical );
-  wgtUnitSelection->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::Percentage << QgsSymbolV2::Pixel );
+  wgtUnitSelection->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPercentage << QgsUnitTypes::RenderPixels );
   wgtUnitSelection->setUnit( mDeco.mMarginUnit );
 
   // enabled
@@ -59,12 +60,12 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
 QgsDecorationNorthArrowDialog::~QgsDecorationNorthArrowDialog()
 {
   QSettings settings;
-  settings.setValue( "/Windows/DecorationNorthArrow/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/DecorationNorthArrow/geometry" ), saveGeometry() );
 }
 
 void QgsDecorationNorthArrowDialog::on_buttonBox_helpRequested()
 {
-  QgsContextHelp::run( metaObject()->className() );
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#north-arrow" ) );
 }
 
 void QgsDecorationNorthArrowDialog::on_buttonBox_accepted()
@@ -92,7 +93,7 @@ void QgsDecorationNorthArrowDialog::on_sliderRotation_valueChanged( int theInt )
 void QgsDecorationNorthArrowDialog::apply()
 {
   mDeco.mRotationInt = sliderRotation->value();
-  mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->itemData( cboPlacement->currentIndex() ).toInt() ) );
+  mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->currentData().toInt() ) );
   mDeco.mMarginUnit = wgtUnitSelection->unit();
   mDeco.setEnabled( grpEnable->isChecked() );
   mDeco.mAutomatic = cboxAutomatic->isChecked();
@@ -104,7 +105,7 @@ void QgsDecorationNorthArrowDialog::apply()
 void QgsDecorationNorthArrowDialog::rotatePixmap( int theRotationInt )
 {
   QPixmap myQPixmap;
-  QString myFileNameQString = ":/images/north_arrows/default.png";
+  QString myFileNameQString = QStringLiteral( ":/images/north_arrows/default.png" );
 // QgsDebugMsg(QString("Trying to load %1").arg(myFileNameQString));
   if ( myQPixmap.load( myFileNameQString ) )
   {
@@ -151,7 +152,7 @@ void QgsDecorationNorthArrowDialog::rotatePixmap( int theRotationInt )
     myPainterPixmap.fill();
     QPainter myQPainter;
     myQPainter.begin( &myPainterPixmap );
-    QFont myQFont( "time", 12, QFont::Bold );
+    QFont myQFont( QStringLiteral( "time" ), 12, QFont::Bold );
     myQPainter.setFont( myQFont );
     myQPainter.setPen( Qt::red );
     myQPainter.drawText( 10, 20, tr( "Pixmap not found" ) );

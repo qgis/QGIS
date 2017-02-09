@@ -20,7 +20,6 @@ class QgsLayerTreeModelLegendNode : QObject
     enum LegendNodeRoles
     {
       RuleKeyRole,                    //!< rule key of the node (QString)
-      SymbolV2LegacyRuleKeyRole,      //!< for QgsSymbolV2LegendNode only - legacy rule key (void ptr, to be cast to QgsSymbolV2 ptr)
       ParentRuleKeyRole               //!< rule key of the parent legend node - for legends with tree hierarchy (QString). Added in 2.8
     };
 
@@ -112,14 +111,14 @@ class QgsLayerTreeModelLegendNode : QObject
  *
  * @note added in 2.6
  */
-class QgsSymbolV2LegendNode : QgsLayerTreeModelLegendNode
+class QgsSymbolLegendNode : QgsLayerTreeModelLegendNode
 {
 %TypeHeaderCode
 #include <qgslayertreemodellegendnode.h>
 %End
   public:
-    QgsSymbolV2LegendNode( QgsLayerTreeLayer* nodeLayer, const QgsLegendSymbolItemV2& item, QObject* parent /TransferThis/ = 0 );
-    ~QgsSymbolV2LegendNode();
+    QgsSymbolLegendNode( QgsLayerTreeLayer* nodeLayer, const QgsLegendSymbolItem& item, QObject* parent /TransferThis/ = 0 );
+    ~QgsSymbolLegendNode();
 
     virtual Qt::ItemFlags flags() const;
     virtual QVariant data( int role ) const;
@@ -141,15 +140,28 @@ class QgsSymbolV2LegendNode : QgsLayerTreeModelLegendNode
     //! @note added in 2.10
     QSize iconSize() const;
 
-    //! Get the minimum icon size to prevent cropping
-    //! @note added in 2.10
+    /**
+     * Calculates the minimum icon size to prevent cropping. When evaluating
+     * the size for multiple icons it is more efficient to create a single
+     * render context in advance and use the variant which accepts a QgsRenderContext
+     * argument.
+     * @note added in 2.10
+     */
     QSize minimumIconSize() const;
+
+    /**
+     * Calculates the minimum icon size to prevent cropping. When evaluating
+     * the size for multiple icons it is more efficient to create a single
+     * render context in advance and call this method instead of minimumIconSize().
+     * @note added in QGIS 2.18
+     */
+    QSize minimumIconSize( QgsRenderContext* context ) const;
 
     /** Returns the symbol used by the legend node.
      * @see setSymbol()
      * @note added in QGIS 2.14
      */
-    const QgsSymbolV2* symbol() const;
+    const QgsSymbol* symbol() const;
 
     /** Sets the symbol to be used by the legend node. The symbol change is also propagated
      * to the associated vector layer's renderer.
@@ -157,7 +169,7 @@ class QgsSymbolV2LegendNode : QgsLayerTreeModelLegendNode
      * @see symbol()
      * @note added in QGIS 2.14
      */
-    void setSymbol( QgsSymbolV2* symbol /Transfer/ );
+    void setSymbol( QgsSymbol* symbol /Transfer/ );
 
   public slots:
 
@@ -235,13 +247,18 @@ class QgsRasterSymbolLegendNode : QgsLayerTreeModelLegendNode
  *
  * @note added in 2.8
  */
-class QgsWMSLegendNode : QgsLayerTreeModelLegendNode
+class QgsWmsLegendNode : QgsLayerTreeModelLegendNode
 {
 %TypeHeaderCode
 #include <qgslayertreemodellegendnode.h>
 %End
   public:
-    QgsWMSLegendNode( QgsLayerTreeLayer* nodeLayer, QObject* parent /TransferThis/ = nullptr );
+
+    /** Constructor for QgsWmsLegendNode.
+     * @param nodeLayer layer node
+     * @param parent parent object
+     */
+    QgsWmsLegendNode( QgsLayerTreeLayer* nodeLayer, QObject* parent /TransferThis/ = nullptr );
 
     virtual QVariant data( int role ) const;
 

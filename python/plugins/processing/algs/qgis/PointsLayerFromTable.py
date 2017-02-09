@@ -25,11 +25,9 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QGis
+from qgis.core import Qgis, QgsWkbTypes, QgsPointV2
 from qgis.core import QgsCoordinateReferenceSystem
-from qgis.core import QgsFeature
 from qgis.core import QgsGeometry
-from qgis.core import QgsPoint
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
@@ -43,51 +41,85 @@ class PointsLayerFromTable(GeoAlgorithm):
     INPUT = 'INPUT'
     XFIELD = 'XFIELD'
     YFIELD = 'YFIELD'
+    ZFIELD = 'ZFIELD'
+    MFIELD = 'MFIELD'
     OUTPUT = 'OUTPUT'
     TARGET_CRS = 'TARGET_CRS'
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Points layer from table')
+        self.name, self.i18n_name = self.trAlgorithm('Create points layer from table')
         self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
+        self.tags = self.tr('points,create,values,attributes')
         self.addParameter(ParameterTable(self.INPUT,
                                          self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.XFIELD,
                                               self.tr('X field'), self.INPUT, ParameterTableField.DATA_TYPE_ANY))
         self.addParameter(ParameterTableField(self.YFIELD,
                                               self.tr('Y field'), self.INPUT, ParameterTableField.DATA_TYPE_ANY))
+        self.addParameter(ParameterTableField(self.ZFIELD,
+                                              self.tr('Z field'), self.INPUT, datatype=ParameterTableField.DATA_TYPE_ANY, optional=True))
+        self.addParameter(ParameterTableField(self.MFIELD,
+                                              self.tr('M field'), self.INPUT, datatype=ParameterTableField.DATA_TYPE_ANY, optional=True))
         self.addParameter(ParameterCrs(self.TARGET_CRS,
                                        self.tr('Target CRS'), 'EPSG:4326'))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Points from table')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Points from table'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         source = self.getParameterValue(self.INPUT)
         vlayer = dataobjects.getObjectFromUri(source)
         output = self.getOutputFromName(self.OUTPUT)
-        vprovider = vlayer.dataProvider()
-        fields = vprovider.fields()
-        writer = output.getVectorWriter(fields, QGis.WKBPoint, self.crs)
-        xfieldindex = vlayer.fieldNameIndex(self.getParameterValue(self.XFIELD))
-        yfieldindex = vlayer.fieldNameIndex(self.getParameterValue(self.YFIELD))
+
+        fields = vlayer.fields()
+        x_field_index = fields.lookupField(self.getParameterValue(self.XFIELD))
+        y_field_index = fields.lookupField(self.getParameterValue(self.YFIELD))
+        z_field_index = None
+        if self.getParameterValue(self.ZFIELD):
+            z_field_index = fields.lookupField(self.getParameterValue(self.ZFIELD))
+        m_field_index = None
+        if self.getParameterValue(self.MFIELD):
+            m_field_index = fields.lookupField(self.getParameterValue(self.MFIELD))
+
+        wkb_type = QgsWkbTypes.Point
+        if z_field_index is not None:
+            wkb_type = QgsWkbTypes.addZ(wkb_type)
+        if m_field_index is not None:
+            wkb_type = QgsWkbTypes.addM(wkb_type)
 
         crsId = self.getParameterValue(self.TARGET_CRS)
-        targetCrs = QgsCoordinateReferenceSystem()
-        targetCrs.createFromUserInput(crsId)
-        self.crs = targetCrs
+        target_crs = QgsCoordinateReferenceSystem()
+        target_crs.createFromUserInput(crsId)
 
-        outFeat = QgsFeature()
+        writer = output.getVectorWriter(fields, wkb_type, target_crs)
+
         features = vector.features(vlayer)
         total = 100.0 / len(features)
+
         for current, feature in enumerate(features):
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
             attrs = feature.attributes()
+
             try:
-                x = float(attrs[xfieldindex])
-                y = float(attrs[yfieldindex])
+                x = float(attrs[x_field_index])
+                y = float(attrs[y_field_index])
+
+                point = QgsPointV2(x, y)
+
+                if z_field_index is not None:
+                    try:
+                        point.addZValue(float(attrs[z_field_index]))
+                    except:
+                        point.addZValue(0.0)
+
+                if m_field_index is not None:
+                    try:
+                        point.addMValue(float(attrs[m_field_index]))
+                    except:
+                        point.addMValue(0.0)
+
+                feature.setGeometry(QgsGeometry(point))
             except:
-                continue
-            pt = QgsPoint(x, y)
-            outFeat.setGeometry(QgsGeometry.fromPoint(pt))
-            outFeat.setAttributes(attrs)
-            writer.addFeature(outFeat)
+                pass  # no geometry
+
+            writer.addFeature(feature)
 
         del writer

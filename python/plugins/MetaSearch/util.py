@@ -1,3 +1,6 @@
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
@@ -28,10 +31,11 @@
 import warnings
 warnings.filterwarnings("ignore", category=PendingDeprecationWarning)
 
-import ConfigParser
+import configparser
 from gettext import gettext, ngettext
 import logging
 import os
+import codecs
 import webbrowser
 from xml.dom.minidom import parseString
 import xml.etree.ElementTree as etree
@@ -40,11 +44,11 @@ from jinja2 import Environment, FileSystemLoader
 from pygments import highlight
 from pygments.lexers import XmlLexer
 from pygments.formatters import HtmlFormatter
-from PyQt.QtCore import QSettings
-from PyQt.QtWidgets import QMessageBox
-from PyQt.uic import loadUiType
+from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtWidgets import QMessageBox
+from qgis.PyQt.uic import loadUiType
 
-from qgis.core import QGis
+from qgis.core import Qgis, QgsWkbTypes
 
 
 LOGGER = logging.getLogger('MetaSearch')
@@ -57,8 +61,9 @@ class StaticContext(object):
     def __init__(self):
         """init"""
         self.ppath = os.path.dirname(os.path.abspath(__file__))
-        self.metadata = ConfigParser.ConfigParser()
-        self.metadata.readfp(open(os.path.join(self.ppath, 'metadata.txt')))
+        self.metadata = configparser.ConfigParser()
+        with codecs.open(os.path.join(self.ppath, 'metadata.txt'), "r", "utf8") as f:
+            self.metadata.read_file(f)
 
 
 def get_ui_class(ui_file):
@@ -133,7 +138,7 @@ def get_help_url():
     """return QGIS MetaSearch help documentation link"""
 
     locale_name = QSettings().value('locale/userLocale')[0:2]
-    version = QGis.QGIS_VERSION.rsplit('.', 1)[0]
+    version = Qgis.QGIS_VERSION.rsplit('.', 1)[0]
 
     path = '%s/%s/docs/user_manual/plugins/plugins_metasearch.html' % \
            (version, locale_name)

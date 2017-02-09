@@ -23,7 +23,7 @@
 
 class QNetworkDiskCache;
 
-/**
+/** \ingroup core
  * Wrapper implementation of QNetworkDiskCache with all methods guarded by a
  * mutex soly for internal use of QgsNetworkAccessManagers
  *
@@ -34,7 +34,6 @@ class QgsNetworkDiskCache : public QNetworkDiskCache
     Q_OBJECT
 
   public:
-    ~QgsNetworkDiskCache();
 
     //! @see QNetworkDiskCache::cacheDirectory
     QString cacheDirectory() const;
@@ -81,18 +80,18 @@ class QgsNetworkDiskCache : public QNetworkDiskCache
     virtual qint64 expire() override;
 
   private:
-    QgsNetworkDiskCache( QObject *parent );
+    explicit QgsNetworkDiskCache( QObject *parent );
     Q_DISABLE_COPY( QgsNetworkDiskCache )
 
     class ExpirableNetworkDiskCache : public QNetworkDiskCache
     {
       public:
-        ExpirableNetworkDiskCache( QObject *parent = 0 ) : QNetworkDiskCache( parent ) {}
+        explicit ExpirableNetworkDiskCache( QObject *parent = 0 ) : QNetworkDiskCache( parent ) {}
         qint64 runExpire() { return QNetworkDiskCache::expire(); }
     };
 
-    static ExpirableNetworkDiskCache smDiskCache;
-    static QMutex smDiskCacheMutex;
+    static ExpirableNetworkDiskCache sDiskCache;
+    static QMutex sDiskCacheMutex;
 
     friend class QgsNetworkAccessManager;
 };

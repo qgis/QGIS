@@ -24,6 +24,7 @@
 #include <QColor>
 #include <QFont>
 #include <QObject>
+#include "qgis_app.h"
 class QAction;
 class QPainter;
 
@@ -36,8 +37,6 @@ class APP_EXPORT QgsDecorationCopyright : public QgsDecorationItem
 
     //! Constructor
     QgsDecorationCopyright( QObject* parent = nullptr );
-    //! Destructor
-    virtual ~QgsDecorationCopyright();
 
   public slots:
     //! set values on the gui when a project is read or the gui first loaded

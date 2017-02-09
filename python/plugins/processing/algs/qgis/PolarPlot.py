@@ -58,7 +58,7 @@ class PolarPlot(GeoAlgorithm):
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Polar plot')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         namefieldname = self.getParameterValue(self.NAME_FIELD)
@@ -77,6 +77,5 @@ class PolarPlot(GeoAlgorithm):
         ax.bar(theta, radii, width=width, bottom=0.0)
         plotFilename = output + '.png'
         lab.savefig(plotFilename)
-        f = open(output, 'w')
-        f.write('<html><img src="' + plotFilename + '"/></html>')
-        f.close()
+        with open(output, 'w') as f:
+            f.write('<html><img src="' + plotFilename + '"/></html>')

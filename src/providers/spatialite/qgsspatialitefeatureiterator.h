@@ -16,6 +16,7 @@
 #define QGSSPATIALITEFEATUREITERATOR_H
 
 #include "qgsfeatureiterator.h"
+#include "qgsfields.h"
 
 extern "C"
 {
@@ -30,7 +31,6 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
 {
   public:
     explicit QgsSpatiaLiteFeatureSource( const QgsSpatiaLiteProvider* p );
-    ~QgsSpatiaLiteFeatureSource();
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
 
@@ -59,19 +59,12 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
     QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
 
     ~QgsSpatiaLiteFeatureIterator();
-
-    //! reset the iterator to the starting position
     virtual bool rewind() override;
-
-    //! end of iterating: free the resources / lock
     virtual bool close() override;
 
   protected:
 
-    //! fetch next feature, return true on success
     virtual bool fetchFeature( QgsFeature& feature ) override;
-
-    //! fetch next feature filter expression
     bool nextFeatureFilterExpression( QgsFeature& f ) override;
 
     QString whereClauseRect();
@@ -82,7 +75,7 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
     QString quotedPrimaryKey();
     bool getFeature( sqlite3_stmt *stmt, QgsFeature &feature );
     QString fieldName( const QgsField& fld );
-    QVariant getFeatureAttribute( sqlite3_stmt* stmt, int ic, QVariant::Type type );
+    QVariant getFeatureAttribute( sqlite3_stmt* stmt, int ic, QVariant::Type type, QVariant::Type subType );
     void getFeatureGeometry( sqlite3_stmt* stmt, int ic, QgsFeature& feature );
 
     //! wrapper of the SQLite database connection
@@ -93,7 +86,7 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
      */
     sqlite3_stmt *sqliteStatement;
 
-    /** Geometry column index used when fetching geometry */
+    //! Geometry column index used when fetching geometry
     int mGeomColIdx;
 
     //! Set to true, if geometry is in the requested columns

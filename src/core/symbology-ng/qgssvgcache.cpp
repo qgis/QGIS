@@ -20,7 +20,7 @@
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsmessagelog.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerutils.h"
 
 #include <QApplication>
 #include <QCoreApplication>
@@ -41,7 +41,6 @@ QgsSvgCacheEntry::QgsSvgCacheEntry()
     , size( 0.0 )
     , outlineWidth( 0 )
     , widthScaleFactor( 1.0 )
-    , rasterScaleFactor( 1.0 )
     , fill( Qt::black )
     , outline( Qt::black )
     , image( nullptr )
@@ -51,13 +50,12 @@ QgsSvgCacheEntry::QgsSvgCacheEntry()
 {
 }
 
-QgsSvgCacheEntry::QgsSvgCacheEntry( const QString& f, double s, double ow, double wsf, double rsf, const QColor& fi, const QColor& ou, const QString& lk )
+QgsSvgCacheEntry::QgsSvgCacheEntry( const QString& f, double s, double ow, double wsf, const QColor& fi, const QColor& ou, const QString& lk )
     : file( f )
     , lookupKey( lk.isEmpty() ? f : lk )
     , size( s )
     , outlineWidth( ow )
     , widthScaleFactor( wsf )
-    , rasterScaleFactor( rsf )
     , fill( fi )
     , outline( ou )
     , image( nullptr )
@@ -77,7 +75,7 @@ QgsSvgCacheEntry::~QgsSvgCacheEntry()
 bool QgsSvgCacheEntry::operator==( const QgsSvgCacheEntry& other ) const
 {
   return other.file == file && qgsDoubleNear( other.size, size ) && qgsDoubleNear( other.outlineWidth, outlineWidth ) && qgsDoubleNear( other.widthScaleFactor, widthScaleFactor )
-         && qgsDoubleNear( other.rasterScaleFactor, rasterScaleFactor ) && other.fill == fill && other.outline == outline;
+         && other.fill == fill && other.outline == outline;
 }
 
 int QgsSvgCacheEntry::dataSize() const
@@ -94,19 +92,13 @@ int QgsSvgCacheEntry::dataSize() const
   return size;
 }
 
-QgsSvgCache* QgsSvgCache::instance()
-{
-  static QgsSvgCache mInstance;
-  return &mInstance;
-}
-
 QgsSvgCache::QgsSvgCache( QObject *parent )
     : QObject( parent )
     , mTotalSize( 0 )
     , mLeastRecentEntry( nullptr )
     , mMostRecentEntry( nullptr )
 {
-  mMissingSvg = QString( "<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>?</text></svg>" ).toAscii();
+  mMissingSvg = QStringLiteral( "<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>?</text></svg>" ).toLatin1();
 }
 
 QgsSvgCache::~QgsSvgCache()
@@ -115,13 +107,13 @@ QgsSvgCache::~QgsSvgCache()
 }
 
 
-const QImage& QgsSvgCache::svgAsImage( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-                                       double widthScaleFactor, double rasterScaleFactor, bool& fitsInCache )
+QImage QgsSvgCache::svgAsImage( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+                                double widthScaleFactor, bool& fitsInCache )
 {
   QMutexLocker locker( &mMutex );
 
   fitsInCache = true;
-  QgsSvgCacheEntry* currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
+  QgsSvgCacheEntry* currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor );
 
   //if current entry image is 0: cache image for entry
   // checks to see if image will fit into cache
@@ -137,7 +129,7 @@ const QImage& QgsSvgCache::svgAsImage( const QString& file, double size, const Q
     long cachedDataSize = 0;
     cachedDataSize += currentEntry->svgContent.size();
     cachedDataSize += static_cast< int >( currentEntry->size * currentEntry->size * hwRatio * 32 );
-    if ( cachedDataSize > mMaximumSize / 2 )
+    if ( cachedDataSize > MAXIMUM_SIZE / 2 )
     {
       fitsInCache = false;
       delete currentEntry->image;
@@ -160,12 +152,12 @@ const QImage& QgsSvgCache::svgAsImage( const QString& file, double size, const Q
   return *( currentEntry->image );
 }
 
-const QPicture& QgsSvgCache::svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-    double widthScaleFactor, double rasterScaleFactor, bool forceVectorOutput )
+QPicture QgsSvgCache::svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+                                    double widthScaleFactor, bool forceVectorOutput )
 {
   QMutexLocker locker( &mMutex );
 
-  QgsSvgCacheEntry* currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
+  QgsSvgCacheEntry* currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor );
 
   //if current entry picture is 0: cache picture for entry
   //update stats for memory usage
@@ -178,32 +170,32 @@ const QPicture& QgsSvgCache::svgAsPicture( const QString& file, double size, con
   return *( currentEntry->picture );
 }
 
-const QByteArray& QgsSvgCache::svgContent( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-    double widthScaleFactor, double rasterScaleFactor )
+QByteArray QgsSvgCache::svgContent( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+                                    double widthScaleFactor )
 {
   QMutexLocker locker( &mMutex );
 
-  QgsSvgCacheEntry *currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
+  QgsSvgCacheEntry *currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor );
 
   return currentEntry->svgContent;
 }
 
-QSizeF QgsSvgCache::svgViewboxSize( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth, double widthScaleFactor, double rasterScaleFactor )
+QSizeF QgsSvgCache::svgViewboxSize( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth, double widthScaleFactor )
 {
   QMutexLocker locker( &mMutex );
 
-  QgsSvgCacheEntry *currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
+  QgsSvgCacheEntry *currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor );
 
   return currentEntry->viewboxSize;
 }
 
 QgsSvgCacheEntry* QgsSvgCache::insertSVG( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-    double widthScaleFactor, double rasterScaleFactor )
+    double widthScaleFactor )
 {
   // The file may be relative path (e.g. if path is data defined)
-  QString path = QgsSymbolLayerV2Utils::symbolNameToPath( file );
+  QString path = QgsSymbolLayerUtils::symbolNameToPath( file );
 
-  QgsSvgCacheEntry* entry = new QgsSvgCacheEntry( path, size, outlineWidth, widthScaleFactor, rasterScaleFactor, fill, outline, file );
+  QgsSvgCacheEntry* entry = new QgsSvgCacheEntry( path, size, outlineWidth, widthScaleFactor, fill, outline, file );
 
   replaceParamsAndCacheSvg( entry );
 
@@ -243,26 +235,6 @@ void QgsSvgCache::containsParams( const QString& path, bool& hasFillParam, QColo
   double defaultOutlineOpacity = 1.0;
 
   containsParams( path, hasFillParam, hasDefaultFillColor, defaultFillColor,
-                  hasFillOpacityParam, hasDefaultFillOpacity, defaultFillOpacity,
-                  hasOutlineParam, hasDefaultOutlineColor, defaultOutlineColor,
-                  hasOutlineWidthParam, hasDefaultOutlineWidth, defaultOutlineWidth,
-                  hasOutlineOpacityParam, hasDefaultOutlineOpacity, defaultOutlineOpacity );
-}
-
-
-void QgsSvgCache::containsParams( const QString& path,
-                                  bool& hasFillParam, bool& hasDefaultFillParam, QColor& defaultFillColor,
-                                  bool& hasOutlineParam, bool& hasDefaultOutlineColor, QColor& defaultOutlineColor,
-                                  bool& hasOutlineWidthParam, bool& hasDefaultOutlineWidth, double& defaultOutlineWidth ) const
-{
-  bool hasFillOpacityParam = false;
-  bool hasDefaultFillOpacity = false;
-  double defaultFillOpacity = 1.0;
-  bool hasOutlineOpacityParam = false;
-  bool hasDefaultOutlineOpacity = false;
-  double defaultOutlineOpacity = 1.0;
-
-  containsParams( path, hasFillParam, hasDefaultFillParam, defaultFillColor,
                   hasFillOpacityParam, hasDefaultFillOpacity, defaultFillOpacity,
                   hasOutlineParam, hasDefaultOutlineColor, defaultOutlineColor,
                   hasOutlineWidthParam, hasDefaultOutlineWidth, defaultOutlineWidth,
@@ -328,7 +300,13 @@ void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry* entry )
   entry->viewboxSize = viewboxSize;
   replaceElemParams( docElem, entry->fill, entry->outline, entry->outlineWidth * sizeScaleFactor );
 
-  entry->svgContent = svgDoc.toByteArray();
+  entry->svgContent = svgDoc.toByteArray( 0 );
+
+  // toByteArray screws up tspans inside text by adding new lines before and after each span... this should help, at the
+  // risk of potentially breaking some svgs where the newline is desired
+  entry->svgContent.replace( "\n<tspan", "<tspan" );
+  entry->svgContent.replace( "</tspan>\n", "</tspan>" );
+
   mTotalSize += entry->svgContent.size();
 }
 
@@ -342,16 +320,23 @@ double QgsSvgCache::calcSizeScaleFactor( QgsSvgCacheEntry* entry, const QDomElem
 
   //find svg viewbox attribute
   //first check if docElem is svg element
-  if ( docElem.tagName() == "svg" )
+  if ( docElem.tagName() == QLatin1String( "svg" ) && docElem.hasAttribute( QStringLiteral( "viewBox" ) ) )
   {
-    viewBox = docElem.attribute( "viewBox", QString() );
+    viewBox = docElem.attribute( QStringLiteral( "viewBox" ), QString() );
+  }
+  else if ( docElem.tagName() == QLatin1String( "svg" ) && docElem.hasAttribute( QStringLiteral( "viewbox" ) ) )
+  {
+    viewBox = docElem.attribute( QStringLiteral( "viewbox" ), QString() );
   }
   else
   {
-    QDomElement svgElem = docElem.firstChildElement( "svg" ) ;
+    QDomElement svgElem = docElem.firstChildElement( QStringLiteral( "svg" ) ) ;
     if ( !svgElem.isNull() )
     {
-      viewBox = svgElem.attribute( "viewBox", QString() );
+      if ( svgElem.hasAttribute( QStringLiteral( "viewBox" ) ) )
+        viewBox = svgElem.attribute( QStringLiteral( "viewBox" ), QString() );
+      else if ( svgElem.hasAttribute( QStringLiteral( "viewbox" ) ) )
+        viewBox = svgElem.attribute( QStringLiteral( "viewbox" ), QString() );
     }
   }
 
@@ -396,7 +381,7 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
   }
 
   // maybe it's a url...
-  if ( !path.contains( "://" ) ) // otherwise short, relative SVG paths might be considered URLs
+  if ( !path.contains( QLatin1String( "://" ) ) ) // otherwise short, relative SVG paths might be considered URLs
   {
     return mMissingSvg;
   }
@@ -408,7 +393,7 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
   }
 
   // check whether it's a url pointing to a local file
-  if ( svgUrl.scheme().compare( "file", Qt::CaseInsensitive ) == 0 )
+  if ( svgUrl.scheme().compare( QLatin1String( "file" ), Qt::CaseInsensitive ) == 0 )
   {
     svgFile.setFileName( svgUrl.toLocalFile() );
     if ( svgFile.exists() )
@@ -437,7 +422,7 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
     request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
     reply = QgsNetworkAccessManager::instance()->get( request );
-    connect( reply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( downloadProgress( qint64, qint64 ) ) );
+    connect( reply, &QNetworkReply::downloadProgress, this, &QgsSvgCache::downloadProgress );
 
     //emit statusChanged( tr( "Downloading svg." ) );
 
@@ -481,7 +466,7 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
 
   QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
   QgsDebugMsg( "contentType: " + contentType );
-  if ( !contentType.startsWith( "image/svg+xml", Qt::CaseInsensitive ) )
+  if ( !contentType.startsWith( QLatin1String( "image/svg+xml" ), Qt::CaseInsensitive ) )
   {
     reply->deleteLater();
     return mMissingSvg;
@@ -577,7 +562,7 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput 
 }
 
 QgsSvgCacheEntry* QgsSvgCache::cacheEntry( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-    double widthScaleFactor, double rasterScaleFactor )
+    double widthScaleFactor )
 {
   //search entries in mEntryLookup
   QgsSvgCacheEntry* currentEntry = nullptr;
@@ -588,8 +573,7 @@ QgsSvgCacheEntry* QgsSvgCache::cacheEntry( const QString& file, double size, con
   {
     QgsSvgCacheEntry* cacheEntry = *entryIt;
     if ( qgsDoubleNear( cacheEntry->size, size ) && cacheEntry->fill == fill && cacheEntry->outline == outline &&
-         qgsDoubleNear( cacheEntry->outlineWidth, outlineWidth ) && qgsDoubleNear( cacheEntry->widthScaleFactor, widthScaleFactor )
-         && qgsDoubleNear( cacheEntry->rasterScaleFactor, rasterScaleFactor ) )
+         qgsDoubleNear( cacheEntry->outlineWidth, outlineWidth ) && qgsDoubleNear( cacheEntry->widthScaleFactor, widthScaleFactor ) )
     {
       currentEntry = cacheEntry;
       break;
@@ -600,7 +584,7 @@ QgsSvgCacheEntry* QgsSvgCache::cacheEntry( const QString& file, double size, con
   //cache and replace params in svg content
   if ( !currentEntry )
   {
-    currentEntry = insertSVG( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
+    currentEntry = insertSVG( file, size, fill, outline, outlineWidth, widthScaleFactor );
   }
   else
   {
@@ -639,7 +623,7 @@ void QgsSvgCache::replaceElemParams( QDomElement& elem, const QColor& fill, cons
   {
     QDomAttr attribute = attributes.item( i ).toAttr();
     //e.g. style="fill:param(fill);param(stroke)"
-    if ( attribute.name().compare( "style", Qt::CaseInsensitive ) == 0 )
+    if ( attribute.name().compare( QLatin1String( "style" ), Qt::CaseInsensitive ) == 0 )
     {
       //entries separated by ';'
       QString newAttributeString;
@@ -655,23 +639,23 @@ void QgsSvgCache::replaceElemParams( QDomElement& elem, const QColor& fill, cons
         }
         QString key = keyValueSplit.at( 0 );
         QString value = keyValueSplit.at( 1 );
-        if ( value.startsWith( "param(fill)" ) )
+        if ( value.startsWith( QLatin1String( "param(fill)" ) ) )
         {
           value = fill.name();
         }
-        else if ( value.startsWith( "param(fill-opacity)" ) )
+        else if ( value.startsWith( QLatin1String( "param(fill-opacity)" ) ) )
         {
           value = fill.alphaF();
         }
-        else if ( value.startsWith( "param(outline)" ) )
+        else if ( value.startsWith( QLatin1String( "param(outline)" ) ) )
         {
           value = outline.name();
         }
-        else if ( value.startsWith( "param(outline-opacity)" ) )
+        else if ( value.startsWith( QLatin1String( "param(outline-opacity)" ) ) )
         {
           value = outline.alphaF();
         }
-        else if ( value.startsWith( "param(outline-width)" ) )
+        else if ( value.startsWith( QLatin1String( "param(outline-width)" ) ) )
         {
           value = QString::number( outlineWidth );
         }
@@ -687,23 +671,23 @@ void QgsSvgCache::replaceElemParams( QDomElement& elem, const QColor& fill, cons
     else
     {
       QString value = attribute.value();
-      if ( value.startsWith( "param(fill)" ) )
+      if ( value.startsWith( QLatin1String( "param(fill)" ) ) )
       {
         elem.setAttribute( attribute.name(), fill.name() );
       }
-      else if ( value.startsWith( "param(fill-opacity)" ) )
+      else if ( value.startsWith( QLatin1String( "param(fill-opacity)" ) ) )
       {
         elem.setAttribute( attribute.name(), fill.alphaF() );
       }
-      else if ( value.startsWith( "param(outline)" ) )
+      else if ( value.startsWith( QLatin1String( "param(outline)" ) ) )
       {
         elem.setAttribute( attribute.name(), outline.name() );
       }
-      else if ( value.startsWith( "param(outline-opacity)" ) )
+      else if ( value.startsWith( QLatin1String( "param(outline-opacity)" ) ) )
       {
         elem.setAttribute( attribute.name(), outline.alphaF() );
       }
-      else if ( value.startsWith( "param(outline-width)" ) )
+      else if ( value.startsWith( QLatin1String( "param(outline-width)" ) ) )
       {
         elem.setAttribute( attribute.name(), QString::number( outlineWidth ) );
       }
@@ -744,7 +728,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
   for ( int i = 0; i < nAttributes; ++i )
   {
     QDomAttr attribute = attributes.item( i ).toAttr();
-    if ( attribute.name().compare( "style", Qt::CaseInsensitive ) == 0 )
+    if ( attribute.name().compare( QLatin1String( "style" ), Qt::CaseInsensitive ) == 0 )
     {
       //entries separated by ';'
       QStringList entryList = attribute.value().split( ';' );
@@ -756,10 +740,9 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
         {
           continue;
         }
-        QString key = keyValueSplit.at( 0 );
         QString value = keyValueSplit.at( 1 );
         valueSplit = value.split( ' ' );
-        if ( !hasFillParam && value.startsWith( "param(fill)" ) )
+        if ( !hasFillParam && value.startsWith( QLatin1String( "param(fill)" ) ) )
         {
           hasFillParam = true;
           if ( valueSplit.size() > 1 )
@@ -768,7 +751,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
             hasDefaultFill = true;
           }
         }
-        else if ( !hasFillOpacityParam && value.startsWith( "param(fill-opacity)" ) )
+        else if ( !hasFillOpacityParam && value.startsWith( QLatin1String( "param(fill-opacity)" ) ) )
         {
           hasFillOpacityParam = true;
           if ( valueSplit.size() > 1 )
@@ -782,7 +765,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
             }
           }
         }
-        else if ( !hasOutlineParam && value.startsWith( "param(outline)" ) )
+        else if ( !hasOutlineParam && value.startsWith( QLatin1String( "param(outline)" ) ) )
         {
           hasOutlineParam = true;
           if ( valueSplit.size() > 1 )
@@ -791,7 +774,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
             hasDefaultOutline = true;
           }
         }
-        else if ( !hasOutlineWidthParam && value.startsWith( "param(outline-width)" ) )
+        else if ( !hasOutlineWidthParam && value.startsWith( QLatin1String( "param(outline-width)" ) ) )
         {
           hasOutlineWidthParam = true;
           if ( valueSplit.size() > 1 )
@@ -800,7 +783,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
             hasDefaultOutlineWidth = true;
           }
         }
-        else if ( !hasOutlineOpacityParam && value.startsWith( "param(outline-opacity)" ) )
+        else if ( !hasOutlineOpacityParam && value.startsWith( QLatin1String( "param(outline-opacity)" ) ) )
         {
           hasOutlineOpacityParam = true;
           if ( valueSplit.size() > 1 )
@@ -820,7 +803,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
     {
       QString value = attribute.value();
       valueSplit = value.split( ' ' );
-      if ( !hasFillParam && value.startsWith( "param(fill)" ) )
+      if ( !hasFillParam && value.startsWith( QLatin1String( "param(fill)" ) ) )
       {
         hasFillParam = true;
         if ( valueSplit.size() > 1 )
@@ -829,7 +812,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
           hasDefaultFill = true;
         }
       }
-      else if ( !hasFillOpacityParam && value.startsWith( "param(fill-opacity)" ) )
+      else if ( !hasFillOpacityParam && value.startsWith( QLatin1String( "param(fill-opacity)" ) ) )
       {
         hasFillOpacityParam = true;
         if ( valueSplit.size() > 1 )
@@ -843,7 +826,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
           }
         }
       }
-      else if ( !hasOutlineParam && value.startsWith( "param(outline)" ) )
+      else if ( !hasOutlineParam && value.startsWith( QLatin1String( "param(outline)" ) ) )
       {
         hasOutlineParam = true;
         if ( valueSplit.size() > 1 )
@@ -852,7 +835,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
           hasDefaultOutline = true;
         }
       }
-      else if ( !hasOutlineWidthParam && value.startsWith( "param(outline-width)" ) )
+      else if ( !hasOutlineWidthParam && value.startsWith( QLatin1String( "param(outline-width)" ) ) )
       {
         hasOutlineWidthParam = true;
         if ( valueSplit.size() > 1 )
@@ -861,7 +844,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
           hasDefaultOutlineWidth = true;
         }
       }
-      else if ( !hasOutlineOpacityParam && value.startsWith( "param(outline-opacity)" ) )
+      else if ( !hasOutlineOpacityParam && value.startsWith( QLatin1String( "param(outline-opacity)" ) ) )
       {
         hasOutlineOpacityParam = true;
         if ( valueSplit.size() > 1 )
@@ -909,7 +892,6 @@ void QgsSvgCache::printEntryList()
     QgsDebugMsg( "File:" + entry->file );
     QgsDebugMsg( "Size:" + QString::number( entry->size ) );
     QgsDebugMsg( "Width scale factor" + QString::number( entry->widthScaleFactor ) );
-    QgsDebugMsg( "Raster scale factor" + QString::number( entry->rasterScaleFactor ) );
     entry = entry->nextEntry;
   }
 }
@@ -922,7 +904,7 @@ void QgsSvgCache::trimToMaximumSize()
     return;
   }
   QgsSvgCacheEntry* entry = mLeastRecentEntry;
-  while ( entry && ( mTotalSize > mMaximumSize ) )
+  while ( entry && ( mTotalSize > MAXIMUM_SIZE ) )
   {
     QgsSvgCacheEntry* bkEntry = entry;
     entry = entry->nextEntry;
@@ -961,7 +943,7 @@ void QgsSvgCache::takeEntryFromList( QgsSvgCacheEntry* entry )
 
 void QgsSvgCache::downloadProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
-  QString msg = tr( "%1 of %2 bytes of svg image downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) );
+  QString msg = tr( "%1 of %2 bytes of svg image downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QStringLiteral( "unknown number of" ) : QString::number( bytesTotal ) );
   QgsDebugMsg( msg );
   emit statusChanged( msg );
 }

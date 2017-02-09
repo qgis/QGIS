@@ -17,7 +17,6 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -31,25 +30,28 @@ import traceback
 import subprocess
 import copy
 
-from PyQt.QtGui import QIcon
-from PyQt.QtCore import QCoreApplication, QSettings
+from qgis.PyQt.QtCore import QCoreApplication, QSettings
 
+from qgis.core import (QgsApplication,
+                       QgsProcessingFeedback)
+
+from builtins import str
+from builtins import object
+from processing.gui.ParametersPanel import ParametersPanel
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.SilentProgress import SilentProgress
-from processing.core.parameters import ParameterRaster, ParameterVector, ParameterMultipleInput, ParameterTable, Parameter
+from processing.core.parameters import ParameterRaster, ParameterVector, ParameterMultipleInput, ParameterTable, Parameter, ParameterExtent
 from processing.core.outputs import OutputVector, OutputRaster, OutputTable, OutputHTML, Output
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools import dataobjects, vector
-from processing.tools.system import setTempOutput
 from processing.algs.help import shortHelp
 
 
-class GeoAlgorithm:
+class GeoAlgorithm(object):
 
     def __init__(self):
-        self._icon = QIcon(os.path.dirname(__file__) + '/../images/alg.png')
+        self._icon = QgsApplication.getThemeIcon("/processingAlgorithm.svg")
         # Parameters needed by the algorithm
         self.parameters = list()
 
@@ -60,6 +62,9 @@ class GeoAlgorithm:
         self.name, self.i18n_name = '', ''
         self.group, self.i18n_group = '', ''
 
+        # Tags
+        self.tags = ''
+
         # The crs taken from input layers (if possible), and used when
         # loading output layers
         self.crs = None
@@ -68,10 +73,6 @@ class GeoAlgorithm:
         # appear in the toolbox or modeler
         self.showInToolbox = True
         self.showInModeler = True
-        #if true, will show only loaded layers in parameters dialog.
-        #Also, if True, the algorithm does not run on the modeler
-        #or batch ptocessing interface
-        self.allowOnlyOpenedLayers = False
 
         # False if it should not be run a a batch process
         self.canRunInBatchMode = True
@@ -81,7 +82,7 @@ class GeoAlgorithm:
 
         # If the algorithm is run as part of a model, the parent model
         # can be set in this variable, to allow for customized
-        # behaviour, in case some operations should be run differently
+        # behavior, in case some operations should be run differently
         # when running as part of a model
         self.model = None
 
@@ -117,7 +118,7 @@ class GeoAlgorithm:
             text = self._formatHelp(text)
         return text
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         """Here goes the algorithm itself.
 
         There is no return value from this method.
@@ -130,6 +131,9 @@ class GeoAlgorithm:
         """Here is where the parameters and outputs should be defined.
         """
         pass
+
+    def getParametersPanel(self, parent):
+        return ParametersPanel(parent, self)
 
     def getCustomParametersDialog(self):
         """If the algorithm has a custom parameters dialog, it should
@@ -181,9 +185,15 @@ class GeoAlgorithm:
         """
         return None
 
+    def processBeforeAddingToModeler(self, alg, model):
+        """Add here any task that has to be performed before adding an algorithm
+        to a model, such as changing the value of a parameter depending on value
+        of another one"""
+        pass
+
     # =========================================================
 
-    def execute(self, progress=SilentProgress(), model=None):
+    def execute(self, feedback=None, model=None):
         """The method to use to call a processing algorithm.
 
         Although the body of the algorithm is in processAlgorithm(),
@@ -193,19 +203,22 @@ class GeoAlgorithm:
         Raises a GeoAlgorithmExecutionException in case anything goes
         wrong.
         """
+
+        if feedback is None:
+            feedback = QgsProcessingFeedback()
+
         self.model = model
         try:
             self.setOutputCRS()
-            self.resolveTemporaryOutputs()
-            self.resolveDataObjects()
-            self.checkOutputFileExtensions()
-            self.runPreExecutionScript(progress)
-            self.processAlgorithm(progress)
-            progress.setPercentage(100)
-            self.convertUnsupportedFormats(progress)
-            self.runPostExecutionScript(progress)
+            self.resolveOutputs()
+            self.evaluateParameterValues()
+            self.runPreExecutionScript(feedback)
+            self.processAlgorithm(feedback)
+            feedback.setProgress(100)
+            self.convertUnsupportedFormats(feedback)
+            self.runPostExecutionScript(feedback)
         except GeoAlgorithmExecutionException as gaee:
-            lines = [self.tr('Uncaught error while executing algorithm')]
+            lines = [self.tr('Error while executing algorithm')]
             lines.append(traceback.format_exc())
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, gaee.msg)
             raise GeoAlgorithmExecutionException(gaee.msg, lines, gaee)
@@ -215,7 +228,7 @@ class GeoAlgorithm:
             lines = [self.tr('Uncaught error while executing algorithm')]
             lines.append(traceback.format_exc())
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, lines)
-            raise GeoAlgorithmExecutionException(unicode(e) + self.tr('\nSee log for more details'), lines, e)
+            raise GeoAlgorithmExecutionException(str(e) + self.tr('\nSee log for more details'), lines, e)
 
     def _checkParameterValuesBeforeExecuting(self):
         for param in self.parameters:
@@ -232,37 +245,39 @@ class GeoAlgorithm:
                             return "Wrong parameter value: " + param.value
         return self.checkParameterValuesBeforeExecuting()
 
-    def runPostExecutionScript(self, progress):
+    def runPostExecutionScript(self, feedback):
         scriptFile = ProcessingConfig.getSetting(
             ProcessingConfig.POST_EXECUTION_SCRIPT)
-        self.runHookScript(scriptFile, progress)
+        self.runHookScript(scriptFile, feedback)
 
-    def runPreExecutionScript(self, progress):
+    def runPreExecutionScript(self, feedback):
         scriptFile = ProcessingConfig.getSetting(
             ProcessingConfig.PRE_EXECUTION_SCRIPT)
-        self.runHookScript(scriptFile, progress)
+        self.runHookScript(scriptFile, feedback)
 
-    def runHookScript(self, filename, progress):
+    def runHookScript(self, filename, feedback):
         if filename is None or not os.path.exists(filename):
             return
         try:
             script = 'import processing\n'
             ns = {}
-            ns['progress'] = progress
+            ns['feedback'] = feedback
             ns['alg'] = self
-            f = open(filename)
-            lines = f.readlines()
-            for line in lines:
-                script += line
+            with open(filename) as f:
+                lines = f.readlines()
+                for line in lines:
+                    script += line
             exec(script, ns)
-        except:
+        except Exception as e:
+            ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
+                                   "Error in hook script: " + str(e))
             # A wrong script should not cause problems, so we swallow
             # all exceptions
             pass
 
-    def convertUnsupportedFormats(self, progress):
+    def convertUnsupportedFormats(self, feedback):
         i = 0
-        progress.setText(self.tr('Converting outputs'))
+        feedback.setProgressText(self.tr('Converting outputs'))
         for out in self.outputs:
             if isinstance(out, OutputVector):
                 if out.compatible is not None:
@@ -271,10 +286,9 @@ class GeoAlgorithm:
                         # For the case of memory layer, if the
                         # getCompatible method has been called
                         continue
-                    provider = layer.dataProvider()
                     writer = out.getVectorWriter(
-                        provider.fields(),
-                        provider.geometryType(), layer.crs()
+                        layer.fields(),
+                        layer.wkbType(), layer.crs()
                     )
                     features = vector.features(layer)
                     for feature in features:
@@ -287,8 +301,8 @@ class GeoAlgorithm:
                     destFile = out.value
                     crsid = layer.crs().authid()
                     settings = QSettings()
-                    path = unicode(settings.value('/GdalTools/gdalPath', ''))
-                    envval = unicode(os.getenv('PATH'))
+                    path = str(settings.value('/GdalTools/gdalPath', ''))
+                    envval = str(os.getenv('PATH'))
                     if not path.lower() in envval.lower().split(os.pathsep):
                         envval += '%s%s' % (os.pathsep, path)
                         os.putenv('PATH', envval)
@@ -310,60 +324,38 @@ class GeoAlgorithm:
             elif isinstance(out, OutputTable):
                 if out.compatible is not None:
                     layer = dataobjects.getObjectFromUri(out.compatible)
-                    provider = layer.dataProvider()
-                    writer = out.getTableWriter(provider.fields())
+                    writer = out.getTableWriter(layer.fields())
                     features = vector.features(layer)
                     for feature in features:
                         writer.addRecord(feature)
-            progress.setPercentage(100 * i / float(len(self.outputs)))
+            feedback.setProgress(100 * i / float(len(self.outputs)))
 
     def getFormatShortNameFromFilename(self, filename):
         ext = filename[filename.rfind('.') + 1:]
         supported = GdalUtils.getSupportedRasters()
-        for name in supported.keys():
+        for name in list(supported.keys()):
             exts = supported[name]
             if ext in exts:
                 return name
         return 'GTiff'
 
-    def checkOutputFileExtensions(self):
-        """Checks if the values of outputs are correct and have one of
-        the supported output extensions.
+    def evaluateParameterValues(self):
+        for param in self.parameters:
+            try:
+                param.evaluate(self)
+            except ValueError as e:
+                traceback.print_exc()
+                raise GeoAlgorithmExecutionException(str(e))
 
-        If not, it adds the first one of the supported extensions, which
-        is assumed to be the default one.
-        """
-        for out in self.outputs:
-            if not out.hidden and out.value is not None:
-                if not os.path.isabs(out.value):
-                    continue
-                if isinstance(out, OutputRaster):
-                    exts = \
-                        dataobjects.getSupportedOutputRasterLayerExtensions()
-                elif isinstance(out, OutputVector):
-                    exts = \
-                        dataobjects.getSupportedOutputVectorLayerExtensions()
-                elif isinstance(out, OutputTable):
-                    exts = dataobjects.getSupportedOutputTableExtensions()
-                elif isinstance(out, OutputHTML):
-                    exts = ['html', 'htm']
-                else:
-                    continue
-                idx = out.value.rfind('.')
-                if idx == -1:
-                    out.value = out.value + '.' + exts[0]
-                else:
-                    ext = out.value[idx + 1:]
-                    if ext not in exts:
-                        out.value = out.value + '.' + exts[0]
-
-    def resolveTemporaryOutputs(self):
+    def resolveOutputs(self):
         """Sets temporary outputs (output.value = None) with a
-        temporary file instead.
+        temporary file instead. Resolves expressions as well.
         """
-        for out in self.outputs:
-            if not out.hidden and out.value is None:
-                setTempOutput(out, self)
+        try:
+            for out in self.outputs:
+                out.resolveValue(self)
+        except ValueError as e:
+            raise GeoAlgorithmExecutionException(str(e))
 
     def setOutputCRS(self):
         layers = dataobjects.getAllLayers()
@@ -482,14 +474,15 @@ class GeoAlgorithm:
     def __str__(self):
         s = 'ALGORITHM: ' + self.name + '\n'
         for param in self.parameters:
-            s += '\t' + unicode(param) + '\n'
+            s += '\t' + str(param) + '\n'
         for out in self.outputs:
-            s += '\t' + unicode(out) + '\n'
+            if not out.hidden:
+                s += '\t' + str(out) + '\n'
         s += '\n'
         return s
 
     def commandLineName(self):
-        name = self.provider.getName().lower() + ':' + self.name.lower()
+        name = self.provider.id().lower() + ':' + self.name.lower()
         validChars = \
             'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:'
         name = ''.join(c for c in name if c in validChars)
@@ -538,6 +531,12 @@ class GeoAlgorithm:
                 s += out.getValueAsCommandLineParameter() + ','
         s = s[:-1] + ')'
         return s
+
+    def displayName(self):
+        return self.i18n_name or self.name
+
+    def displayNames(self):
+        return self.name, self.i18n_name
 
     def tr(self, string, context=''):
         if context == '':

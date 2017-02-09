@@ -22,9 +22,9 @@ Portions of this file contain code from Eric4 APIsManager module.
 import sys
 import os
 
-from PyQt.Qsci import QsciLexerPython, QsciAPIs
-from PyQt.QtWidgets import QApplication
-from PyQt.QtCore import QObject
+from qgis.PyQt.Qsci import QsciLexerPython, QsciAPIs
+from qgis.PyQt.QtWidgets import QApplication
+from qgis.PyQt.QtCore import QObject
 
 
 class PrepareAPIs(QObject):

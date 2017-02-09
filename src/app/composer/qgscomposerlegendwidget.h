@@ -26,7 +26,7 @@
 class QgsComposerLegend;
 
 
-/** \ingroup MapComposer
+/** \ingroup app
  * A widget for setting properties relating to a composer legend.
  */
 class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerLegendWidgetBase
@@ -37,7 +37,7 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     explicit QgsComposerLegendWidget( QgsComposerLegend* legend );
     ~QgsComposerLegendWidget();
 
-    /** Updates the legend layers and groups*/
+    //! Updates the legend layers and groups
     void updateLegend();
 
     QgsComposerLegend* legend() { return mLegend; }
@@ -66,8 +66,10 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     void on_mFontColorButton_colorChanged( const QColor& newFontColor );
     void on_mBoxSpaceSpinBox_valueChanged( double d );
     void on_mColumnSpaceSpinBox_valueChanged( double d );
+    void on_mLineSpacingSpinBox_valueChanged( double d );
     void on_mCheckBoxAutoUpdate_stateChanged( int state );
-    void composerMapChanged( const QgsComposerItem* item );
+    void composerMapChanged( QgsComposerItem* item );
+    void on_mCheckboxResizeContents_toggled( bool checked );
 
     void on_mRasterBorderGroupBox_toggled( bool state );
     void on_mRasterBorderWidthSpinBox_valueChanged( double d );
@@ -93,11 +95,13 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     void setCurrentNodeStyleFromAction();
 
   private slots:
-    /** Sets GUI according to state of mLegend*/
+    //! Sets GUI according to state of mLegend
     void setGuiElements();
 
-    /** Update the enabling state of the filter by atlas button */
+    //! Update the enabling state of the filter by atlas button
     void updateFilterLegendByAtlasButton();
+
+    void on_mItemTreeView_doubleClicked( const QModelIndex &index );
 
   private:
     QgsComposerLegendWidget();
@@ -107,9 +111,8 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
 };
 
 
-class QgsComposerLegendMenuProvider : public QObject, public QgsLayerTreeViewMenuProvider
+class QgsComposerLegendMenuProvider : public QgsLayerTreeViewMenuProvider
 {
-    Q_OBJECT
 
   public:
     QgsComposerLegendMenuProvider( QgsLayerTreeView* view, QgsComposerLegendWidget* w );

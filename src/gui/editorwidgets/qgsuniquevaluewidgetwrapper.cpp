@@ -33,11 +33,11 @@ QVariant QgsUniqueValuesWidgetWrapper::value() const
   QVariant value;
 
   if ( mComboBox )
-    value = mComboBox->itemData( mComboBox->currentIndex() );
+    value = mComboBox->currentData();
 
   if ( mLineEdit )
   {
-    if ( mLineEdit->text() == QSettings().value( "qgis/nullValue", "NULL" ).toString() )
+    if ( mLineEdit->text() == QgsApplication::nullRepresentation() )
       value = QVariant( field().type() );
     else
       value = mLineEdit->text();
@@ -48,7 +48,7 @@ QVariant QgsUniqueValuesWidgetWrapper::value() const
 
 QWidget* QgsUniqueValuesWidgetWrapper::createWidget( QWidget* parent )
 {
-  if ( config( "Editable" ).toBool() )
+  if ( config( QStringLiteral( "Editable" ) ).toBool() )
     return new QgsFilterLineEdit( parent );
   else
     return new QComboBox( parent );
@@ -83,7 +83,7 @@ void QgsUniqueValuesWidgetWrapper::initWidget( QWidget* editor )
     QgsFilterLineEdit* fle = qobject_cast<QgsFilterLineEdit*>( editor );
     if ( fle && !( field().type() == QVariant::Int || field().type() == QVariant::Double || field().type() == QVariant::LongLong || field().type() == QVariant::Date ) )
     {
-      fle->setNullValue( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+      fle->setNullValue( QgsApplication::nullRepresentation() );
     }
 
     QCompleter* c = new QCompleter( sValues );
@@ -127,7 +127,7 @@ void QgsUniqueValuesWidgetWrapper::setValue( const QVariant& value )
   if ( mLineEdit )
   {
     if ( value.isNull() )
-      mLineEdit->setText( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+      mLineEdit->setText( QgsApplication::nullRepresentation() );
     else
       mLineEdit->setText( value.toString() );
   }

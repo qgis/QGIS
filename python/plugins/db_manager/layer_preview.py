@@ -20,12 +20,12 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt.QtCore import Qt, QSettings, QTimer
-from PyQt.QtGui import QColor, QCursor
-from PyQt.QtWidgets import QApplication
+from qgis.PyQt.QtCore import Qt, QSettings, QTimer
+from qgis.PyQt.QtGui import QColor, QCursor
+from qgis.PyQt.QtWidgets import QApplication
 
-from qgis.gui import QgsMapCanvas, QgsMapCanvasLayer, QgsMessageBar
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
+from qgis.gui import QgsMapCanvas, QgsMessageBar
+from qgis.core import QgsVectorLayer, QgsProject
 
 from .db_plugins.plugin import Table
 
@@ -46,7 +46,7 @@ class LayerPreview(QgsMapCanvas):
         self.enableAntiAliasing(settings.value("/qgis/enable_anti_aliasing", False, type=bool))
         action = settings.value("/qgis/wheel_action", 0, type=float)
         zoomFactor = settings.value("/qgis/zoom_factor", 2, type=float)
-        self.setWheelAction(QgsMapCanvas.WheelAction(action), zoomFactor)
+        self.setWheelFactor(zoomFactor)
 
     def refresh(self):
         self.setDirty(True)
@@ -97,7 +97,7 @@ class LayerPreview(QgsMapCanvas):
         if table and table.geomType:
             # limit the query result if required
             if limit and table.rowCount > 1000:
-                uniqueField = table.getValidQGisUniqueFields(True)
+                uniqueField = table.getValidQgisUniqueFields(True)
                 if uniqueField is None:
                     self.parent.tabs.setCurrentWidget(self.parent.info)
                     self.parent.infoBar.pushMessage(
@@ -119,14 +119,14 @@ class LayerPreview(QgsMapCanvas):
 
         # remove old layer (if any) and set new
         if self.currentLayer:
-            QgsMapLayerRegistry.instance().removeMapLayers([self.currentLayer.id()])
+            QgsProject.instance().removeMapLayers([self.currentLayer.id()])
 
         if vl:
-            self.setLayerSet([QgsMapCanvasLayer(vl)])
-            QgsMapLayerRegistry.instance().addMapLayers([vl], False)
+            self.setLayers([vl])
+            QgsProject.instance().addMapLayers([vl], False)
             self.zoomToFullExtent()
         else:
-            self.setLayerSet([])
+            self.setLayers([])
 
         self.currentLayer = vl
 

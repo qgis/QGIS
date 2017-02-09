@@ -19,8 +19,10 @@
 #include "ui_qgsuniquevaluesconfigdlgbase.h"
 
 #include "qgseditorconfigwidget.h"
+#include "qgis_gui.h"
 
-/** \class QgsUniqueValuesConfigDlg
+/** \ingroup gui
+ * \class QgsUniqueValuesConfigDlg
  * \note not available in Python bindings
  */
 
@@ -33,8 +35,8 @@ class GUI_EXPORT QgsUniqueValuesConfigDlg : public QgsEditorConfigWidget, privat
 
     // QgsEditorConfigWidget interface
   public:
-    QgsEditorWidgetConfig config() override;
-    void setConfig( const QgsEditorWidgetConfig& config ) override;
+    QVariantMap config() override;
+    void setConfig( const QVariantMap& config ) override;
 };
 
 #endif // QGSUNIQUEVALUESCONFIGDLG_H

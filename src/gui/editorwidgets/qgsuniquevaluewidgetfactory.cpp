@@ -33,23 +33,3 @@ QgsEditorConfigWidget* QgsUniqueValueWidgetFactory::configWidget( QgsVectorLayer
 {
   return new QgsUniqueValuesConfigDlg( vl, fieldIdx, parent );
 }
-
-QgsEditorWidgetConfig QgsUniqueValueWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
-{
-  Q_UNUSED( layer )
-  Q_UNUSED( fieldIdx )
-
-  QgsEditorWidgetConfig cfg;
-
-  cfg.insert( "Editable", configElement.attribute( "Editable", "0" ) == "1" );
-
-  return cfg;
-}
-
-void QgsUniqueValueWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
-{
-  Q_UNUSED( doc )
-  Q_UNUSED( layer )
-  Q_UNUSED( fieldIdx )
-  configElement.setAttribute( "Editable", config.value( "Editable", false ).toBool() );
-}

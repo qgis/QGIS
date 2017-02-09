@@ -1,8 +1,16 @@
 /***************************************************************************
- *  qgsgeometrysliverpolygoncheck.h                                        *
- *  -------------------                                                    *
- *  copyright            : (C) 2014 by Sandro Mani / Sourcepole AG         *
- *  email                : smani@sourcepole.ch                             *
+    qgsgeometrysliverpolygoncheck.h
+    ---------------------
+    begin                : September 2015
+    copyright            : (C) 2014 by Sandro Mani / Sourcepole AG
+    email                : smani at sourcepole dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
  ***************************************************************************/
 
 #ifndef QGS_GEOMETRY_SLIVERPOLYGON_CHECK_H
@@ -19,12 +27,12 @@ class QgsGeometrySliverPolygonCheck : public QgsGeometryAreaCheck
     QgsGeometrySliverPolygonCheck( QgsFeaturePool* featurePool, double threshold, double maxArea = 0. )
         : QgsGeometryAreaCheck( featurePool, threshold ), mMaxArea( maxArea ) {}
     QString errorDescription() const override { return tr( "Sliver polygon" ); }
-    QString errorName() const override { return "QgsGeometrySliverPolygonCheck"; }
+    QString errorName() const override { return QStringLiteral( "QgsGeometrySliverPolygonCheck" ); }
 
   private:
     double mMaxArea;
 
-    bool checkThreshold( const QgsAbstractGeometryV2 *geom, double &value ) const override
+    bool checkThreshold( const QgsAbstractGeometry *geom, double &value ) const override
     {
       QgsRectangle bb = geom->boundingBox();
       double maxDim = qMax( bb.width(), bb.height() );

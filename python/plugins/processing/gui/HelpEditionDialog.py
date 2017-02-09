@@ -16,8 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
-
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -30,10 +29,11 @@ __revision__ = '$Format:%H$'
 import os
 import json
 
-from PyQt import uic
-from PyQt.QtWidgets import QDialog, QTreeWidgetItem
+from qgis.PyQt import uic
+from qgis.PyQt.QtWidgets import QDialog, QTreeWidgetItem
 
 from processing.core.ProcessingLog import ProcessingLog
+from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -79,7 +79,7 @@ class HelpEditionDialog(BASE, WIDGET):
         QDialog.reject(self)
 
     def accept(self):
-        self.descriptions[self.currentName] = unicode(self.text.toPlainText())
+        self.descriptions[self.currentName] = str(self.text.toPlainText())
         QDialog.accept(self)
 
     def getHtml(self):
@@ -121,7 +121,7 @@ class HelpEditionDialog(BASE, WIDGET):
         item = self.tree.currentItem()
         if isinstance(item, TreeDescriptionItem):
             if self.currentName:
-                self.descriptions[self.currentName] = unicode(self.text.toPlainText())
+                self.descriptions[self.currentName] = str(self.text.toPlainText())
             name = item.name
             if name:
                 self.text.setEnabled(True)
@@ -138,7 +138,7 @@ class HelpEditionDialog(BASE, WIDGET):
                 self.updateHtmlView()
 
     def updateHtmlView(self):
-        self.webView.setHtml(self.getHtml())
+        self.txtPreview.setHtml(self.getHtml())
 
     def getDescription(self, name):
         if name in self.descriptions:

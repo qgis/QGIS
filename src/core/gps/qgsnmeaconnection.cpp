@@ -79,11 +79,11 @@ void QgsNMEAConnection::processStringBuffer()
   int endSentenceIndex = 0;
   int dollarIndex;
 
-  while (( endSentenceIndex = mStringBuffer.indexOf( "\r\n" ) ) && endSentenceIndex != -1 )
+  while (( endSentenceIndex = mStringBuffer.indexOf( QLatin1String( "\r\n" ) ) ) && endSentenceIndex != -1 )
   {
-    endSentenceIndex = mStringBuffer.indexOf( "\r\n" );
+    endSentenceIndex = mStringBuffer.indexOf( QLatin1String( "\r\n" ) );
 
-    dollarIndex = mStringBuffer.indexOf( "$" );
+    dollarIndex = mStringBuffer.indexOf( QLatin1String( "$" ) );
     if ( endSentenceIndex == -1 )
     {
       break;
@@ -96,35 +96,35 @@ void QgsNMEAConnection::processStringBuffer()
       {
         QString substring = mStringBuffer.mid( dollarIndex, endSentenceIndex );
         QByteArray ba = substring.toLocal8Bit();
-        if ( substring.startsWith( "$GPGGA" ) )
+        if ( substring.startsWith( QLatin1String( "$GPGGA" ) ) )
         {
           QgsDebugMsg( substring );
           processGGASentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
           QgsDebugMsg( "*******************GPS data received****************" );
         }
-        else if ( substring.startsWith( "$GPRMC" ) || substring.startsWith( "$GNRMC" ) )
+        else if ( substring.startsWith( QLatin1String( "$GPRMC" ) ) || substring.startsWith( QLatin1String( "$GNRMC" ) ) )
         {
           QgsDebugMsg( substring );
           processRMCSentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
           QgsDebugMsg( "*******************GPS data received****************" );
         }
-        else if ( substring.startsWith( "$GPGSV" ) )
+        else if ( substring.startsWith( QLatin1String( "$GPGSV" ) ) )
         {
           QgsDebugMsg( substring );
           processGSVSentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
           QgsDebugMsg( "*******************GPS data received****************" );
         }
-        else if ( substring.startsWith( "$GPVTG" ) )
+        else if ( substring.startsWith( QLatin1String( "$GPVTG" ) ) )
         {
           QgsDebugMsg( substring );
           processVTGSentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
           QgsDebugMsg( "*******************GPS data received****************" );
         }
-        else if ( substring.startsWith( "$GPGSA" ) )
+        else if ( substring.startsWith( QLatin1String( "$GPGSA" ) ) )
         {
           QgsDebugMsg( substring );
           processGSASentence( ba.data(), ba.length() );

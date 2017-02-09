@@ -1,29 +1,6 @@
 %Feature HAVE_TOUCH
 
 /** \ingroup gui
-  * A class that stores visibility and presence in overview flags together
-  * with pointer to the layer.
-  *
-*/
-class QgsMapCanvasLayer
-{
-%TypeHeaderCode
-#include <qgsmapcanvas.h>
-%End
-  public:
-    QgsMapCanvasLayer( QgsMapLayer* layer, bool visible = true, bool isInOverview = false );
-
-    void setVisible( bool visible );
-    void setInOverview( bool isInOverview );
-
-    bool isVisible() const;
-    bool isInOverview() const;
-
-    const QgsMapLayer* layer() const;
-};
-
-
-/** \ingroup gui
  * Map canvas is a class for displaying all GIS data types on a canvas.
  */
 
@@ -42,23 +19,20 @@ class QgsMapCanvas : QGraphicsView
 
   public:
 
-    enum WheelAction { WheelZoom, WheelZoomAndRecenter, WheelZoomToMouseCursor, WheelNothing };
-
     //! Constructor
-    QgsMapCanvas( QWidget * parent /TransferThis/ = 0, const char *name = 0 );
+    QgsMapCanvas( QWidget * parent /TransferThis/ = 0 );
 
-    //! Destructor
     ~QgsMapCanvas();
 
-    void setLayerSet( QList<QgsMapCanvasLayer>& layers );
+    //! Returns the magnification factor
+    //! @note added in 2.16
+    double magnificationFactor() const;
+
+    //! Set list of layers that should be shown in the canvas
+    //! @note added in 3.0
+    void setLayers( const QList<QgsMapLayer*>& layers );
 
     void setCurrentLayer( QgsMapLayer* layer );
-
-    // ### QGIS 3: make QgsMapCanvas independent from overview
-    void updateOverview();
-
-    // ### QGIS 3: make QgsMapCanvas independent from overview
-    void enableOverviewMode( QgsMapOverviewCanvas* overview );
 
     //! Get access to properties used for map rendering
     //! @note added in 2.4
@@ -102,43 +76,25 @@ class QgsMapCanvas : QGraphicsView
 
     //! Set how often map preview should be updated while it is being rendered (in milliseconds)
     //! @note added in 2.4
-    void setMapUpdateInterval( int timeMiliseconds );
+    void setMapUpdateInterval( int timeMilliseconds );
 
     //! Find out how often map preview should be updated while it is being rendered (in milliseconds)
     //! @note added in 2.4
     int mapUpdateInterval() const;
 
-    //! @deprecated since 2.4 - there could be more than just one "map" items
-    QgsMapCanvasMap* map() /Deprecated/;
-
-    //! @deprecated since 2.4 - use mapSettings() for anything related to current renderer settings
-    //// SIP: removed /Transfer/ because it crashes after few calls to iface.mapCanvas().mapRenderer().hasCrsTransformEnabled()
-    //// and in fact there is no transfer of ownership from c++ to python!
-    //// Actually the problem comes from the fact that "hasCrsTransformEnabled" is both a signal and a normal method
-    //// /KeepReference/ is necessary because otherwise mapRenderer().hasCrsTransformEnabled() was crashing
-    QgsMapRenderer* mapRenderer() /Deprecated, KeepReference/;
-
-    //! Accessor for the canvas paint device
-    //! @deprecated since 2.4
-    QPaintDevice &canvasPaintDevice() /Deprecated/;
-
     //! Get the last reported scale of the canvas
     double scale();
-
-    //! Clear the map canvas
-    //! @deprecated since 2.4 - use refresh() - clear does the same thing
-    void clear() /Deprecated/;
 
     //! Returns the mapUnitsPerPixel (map units per pixel) for the canvas
     double mapUnitsPerPixel() const;
 
-    //! Returns the current zoom exent of the map canvas
+    //! Returns the current zoom extent of the map canvas
     QgsRectangle extent() const;
-    //! Returns the combined exent for all layers on the map canvas
+    //! Returns the combined extent for all layers on the map canvas
     QgsRectangle fullExtent() const;
 
     //! Set the extent of the map canvas
-    void setExtent( const QgsRectangle &r );
+    void setExtent( const QgsRectangle &r, bool magnified = false );
 
     //! Get the current map canvas rotation in clockwise degrees
     //! @note added in 2.8
@@ -178,10 +134,15 @@ class QgsMapCanvas : QGraphicsView
         @param ids the feature ids*/
     void zoomToFeatureIds( QgsVectorLayer* layer, const QgsFeatureIds& ids );
 
-    /** Pan to the selected features of current (vector) layer keeping same extent. */
+    /** Centers canvas extent to feature ids
+        @param layer the vector layer
+        @param ids the feature ids*/
+    void panToFeatureIds( QgsVectorLayer* layer, const QgsFeatureIds& ids );
+
+    //! Pan to the selected features of current (vector) layer keeping same extent.
     void panToSelected( QgsVectorLayer* layer = 0 );
 
-    /** \brief Sets the map tool currently being used on the canvas */
+    //! \brief Sets the map tool currently being used on the canvas
     void setMapTool( QgsMapTool* mapTool );
 
     /** \brief Unset the current map tool or last non zoom tool
@@ -192,24 +153,20 @@ class QgsMapCanvas : QGraphicsView
      */
     void unsetMapTool( QgsMapTool* mapTool );
 
-    /** Returns the currently active tool*/
+    //! Returns the currently active tool
     QgsMapTool* mapTool();
 
-    /** Write property of QColor bgColor. */
-    virtual void setCanvasColor( const QColor & _newVal );
-    /** Read property of QColor bgColor. */
-    virtual QColor canvasColor() const;
+    //! Write property of QColor bgColor.
+    void setCanvasColor( const QColor & _newVal );
+    //! Read property of QColor bgColor.
+    QColor canvasColor() const;
 
-    /** Set color of selected vector features */
+    //! Set color of selected vector features
     //! @note added in 2.4
     void setSelectionColor( const QColor& color );
 
-    /** Emits signal scaleChanged to update scale in main window */
+    //! Emits signal scaleChanged to update scale in main window
     void updateScale();
-
-    /** Updates the full extent */
-    //! @deprecated since v2.4 - does nothing
-    void updateFullExtent() /Deprecated/;
 
     //! return the map layer at position index in the layer stack
     QgsMapLayer *layer( int index );
@@ -237,19 +194,11 @@ class QgsMapCanvas : QGraphicsView
      */
     bool isFrozen();
 
-    //! Flag the canvas as dirty and needed a refresh
-    //! @deprecated since 2.4 - use refresh() to trigger a refresh (clients should not decide explicitly whether canvas is dirty or not)
-    void setDirty( bool _dirty ) /Deprecated/;
-
-    //! Return the state of the canvas (dirty or not)
-    //! @deprecated since 2.4 - dirty flag is not kept anymore - always returns false
-    bool isDirty() const /Deprecated/;
-
     //! Set map units (needed by project properties dialog)
-    void setMapUnits( QGis::UnitType mapUnits );
+    void setMapUnits( QgsUnitTypes::DistanceUnit mapUnits );
 
     //! Get the current canvas map units
-    QGis::UnitType mapUnits() const;
+    QgsUnitTypes::DistanceUnit mapUnits() const;
 
     //! Getter for stored overrides of styles for layers.
     //! @note added in 2.12
@@ -268,14 +217,8 @@ class QgsMapCanvas : QGraphicsView
     //! returns current layer (set by legend widget)
     QgsMapLayer* currentLayer();
 
-    //! set wheel action and zoom factor (should be greater than 1)
-    void setWheelAction( WheelAction action, double factor = 2 );
-
-    //! Zoom in with fixed factor
-    void zoomIn();
-
-    //! Zoom out with fixed factor
-    void zoomOut();
+    //! set wheel zoom factor (should be greater than 1)
+    void setWheelFactor( double factor );
 
     //! Zoom to a specific scale
     void zoomScale( double scale );
@@ -287,6 +230,15 @@ class QgsMapCanvas : QGraphicsView
     //! Zooms in/out with a given center
     void zoomWithCenter( int x, int y, bool zoomIn );
 
+    //! Zooms to feature extent. Adds a small margin around the extent
+    //! and does a pan if rect is empty (point extent)
+    void zoomToFeatureExtent( QgsRectangle& rect );
+
+    //! Returns whether the scale is locked, so zooming can be performed using magnication.
+    //! @note added in 2.16
+    //! @see setScaleLocked()
+    bool scaleLocked() const;
+
     //! used to determine if anti-aliasing is enabled or not
     void enableAntiAliasing( bool theFlag );
 
@@ -295,10 +247,6 @@ class QgsMapCanvas : QGraphicsView
 
     //! sets map tile rendering flag
     void enableMapTileRendering( bool theFlag );
-
-    //! Select which Qt class to render with
-    //! @deprecated since 2.4 - does nothing because now we always render to QImage
-    void useImageToRender( bool theFlag ) /Deprecated/;
 
     // following 2 methods should be moved elsewhere or changed to private
     // currently used by pan map tool
@@ -349,6 +297,7 @@ class QgsMapCanvas : QGraphicsView
      *  @note added in 2.8
      */
     QgsSnappingUtils* snappingUtils() const;
+
     /** Assign an instance of snapping utils to the map canvas.
      * The instance is not owned by the canvas, so it is possible to use one instance in multiple canvases.
      *
@@ -383,9 +332,17 @@ class QgsMapCanvas : QGraphicsView
      */
     // const QgsExpressionContextScope& expressionContextScope() const;
 
+    /** Sets the segmentation tolerance applied when rendering curved geometries
+    @param tolerance the segmentation tolerance*/
+    void setSegmentationTolerance( double tolerance );
+
+    /** Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
+    @param type the segmentation tolerance typename*/
+    void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type );
+
   public slots:
 
-    /** Repaints the canvas map*/
+    //! Repaints the canvas map
     void refresh();
 
     //! Receives signal about selection change, and pass it on with layer info
@@ -405,18 +362,12 @@ class QgsMapCanvas : QGraphicsView
     //! State of render suppression flag
     bool renderFlag();
 
-    /** A simple helper method to find out if on the fly projections are enabled or not */
+    //! A simple helper method to find out if on the fly projections are enabled or not
     bool hasCrsTransformEnabled();
-
-    //! @deprecated in 2.4 - does nothing - kept for API compatibility
-    void updateMap() /Deprecated/;
 
     //! stop rendering (if there is any right now)
     //! @note added in 2.4
     void stopRendering();
-
-    //! @deprecated since 2.4 - does nothing - errors are reported by different means
-    void showError( QgsMapLayer * mapLayer ) /Deprecated/;
 
     //! called to read map canvas settings from project
     void readProject( const QDomDocument & );
@@ -427,18 +378,24 @@ class QgsMapCanvas : QGraphicsView
     //! ask user about datum transformation
     void getDatumTransformInfo( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId );
 
-    //! return if canvas rotation is enabled
-    //! @note added in 2.8
-    static bool rotationEnabled();
+    //! Sets the factor of magnification to apply to the map canvas. Indeed, we
+    //! increase/decrease the DPI of the map settings according to this factor
+    //! in order to render marker point, labels, ... bigger.
+    //! @note added in 2.16
+    void setMagnificationFactor( double factor );
 
-    //! change canvas rotation support
-    //! @note added in 2.8
-    static void enableRotation( bool enabled );
+    //! Lock the scale, so zooming can be performed using magnication
+    //! @note added in 2.16
+    //! @see scaleLocked()
+    void setScaleLocked( bool isLocked );
+
+    //! Zoom in with fixed factor
+    void zoomIn();
+
+    //! Zoom out with fixed factor
+    void zoomOut();
 
   signals:
-    /** Let the owner know how far we are with render operations */
-    //! @deprecated since 2.4 - already unused in 2.0 anyway
-    void setProgress( int, int ) /Deprecated/;
 
     /** Emits current mouse position
         \note changed in 1.3 */
@@ -454,6 +411,10 @@ class QgsMapCanvas : QGraphicsView
     //! @note added in 2.8
     void rotationChanged( double );
 
+    //! Emitted when the scale of the map changes
+    //! @note added in 2.16
+    void magnificationChanged( double );
+
     /** Emitted when the canvas has rendered.
      * Passes a pointer to the painter on which the map was drawn. This is
      * useful for plugins that wish to draw on the map after it has been
@@ -467,11 +428,11 @@ class QgsMapCanvas : QGraphicsView
     void renderComplete( QPainter * );
 
     // ### QGIS 3: renamte to mapRefreshFinished()
-    /** Emitted when canvas finished a refresh request. */
+    //! Emitted when canvas finished a refresh request.
     void mapCanvasRefreshed();
 
     // ### QGIS 3: rename to mapRefreshStarted()
-    /** Emitted when the canvas is about to be rendered. */
+    //! Emitted when the canvas is about to be rendered.
     void renderStarting();
 
     //! Emitted when a new set of layers has been received
@@ -563,16 +524,12 @@ class QgsMapCanvas : QGraphicsView
     //! called when panning is in action, reset indicates end of panning
     void moveCanvasContents( bool reset = false );
 
-    //! Zooms to feature extent. Adds a small margin around the extent
-    //! and does a pan if rect is empty (point extent)
-    void zoomToFeatureExtent( QgsRectangle& rect );
-
     //! called on resize or changed extent to notify canvas items to change their rectangle
     void updateCanvasItemPositions();
 
     //! Make sure the datum transform store is properly populated
     void updateDatumTransformEntries();
 
-private:
+  private:
     void connectNotify( const char * signal );
 }; // class QgsMapCanvas

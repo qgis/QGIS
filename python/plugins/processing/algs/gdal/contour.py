@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
@@ -27,7 +28,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 
@@ -71,11 +72,12 @@ class contour(GdalAlgorithm):
                                     self.tr('Contours')))
 
     def getConsoleCommands(self):
-        interval = unicode(self.getParameterValue(self.INTERVAL))
-        fieldName = unicode(self.getParameterValue(self.FIELD_NAME))
+        output = self.getOutputValue(self.OUTPUT_VECTOR)
+        interval = str(self.getParameterValue(self.INTERVAL))
+        fieldName = str(self.getParameterValue(self.FIELD_NAME))
         extra = self.getParameterValue(self.EXTRA)
         if extra is not None:
-            extra = unicode(extra)
+            extra = str(extra)
 
         arguments = []
         if len(fieldName) > 0:
@@ -84,10 +86,14 @@ class contour(GdalAlgorithm):
         arguments.append('-i')
         arguments.append(interval)
 
+        driver = GdalUtils.getVectorDriverFromFileName(output)
+        arguments.append('-f')
+        arguments.append(driver)
+
         if extra and len(extra) > 0:
             arguments.append(extra)
 
         arguments.append(self.getParameterValue(self.INPUT_RASTER))
-        arguments.append(self.getOutputValue(self.OUTPUT_VECTOR))
+        arguments.append(output)
 
         return ['gdal_contour', GdalUtils.escapeAndJoin(arguments)]

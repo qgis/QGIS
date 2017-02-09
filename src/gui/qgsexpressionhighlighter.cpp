@@ -23,8 +23,8 @@ QgsExpressionHighlighter::QgsExpressionHighlighter( QTextDocument *parent )
   keywordFormat.setForeground( Qt::darkBlue );
   keywordFormat.setFontWeight( QFont::Bold );
   QStringList keywordPatterns;
-  keywordPatterns << "\\bCASE\\b" << "\\bWHEN\\b" << "\\bTHEN\\b"
-  << "\\bELSE\\b" << "\\bEND\\b";
+  keywordPatterns << QStringLiteral( "\\bCASE\\b" ) << QStringLiteral( "\\bWHEN\\b" ) << QStringLiteral( "\\bTHEN\\b" )
+  << QStringLiteral( "\\bELSE\\b" ) << QStringLiteral( "\\bEND\\b" );
 
   Q_FOREACH ( const QString &pattern, keywordPatterns )
   {

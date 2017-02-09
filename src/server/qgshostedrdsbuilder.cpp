@@ -21,14 +21,10 @@
 #include "qgsmslayercache.h"
 #include "qgsrasterlayer.h"
 #include "qgscoordinatereferencesystem.h"
+
 #include <QDomElement>
 
 QgsHostedRDSBuilder::QgsHostedRDSBuilder(): QgsMSLayerBuilder()
-{
-
-}
-
-QgsHostedRDSBuilder::~QgsHostedRDSBuilder()
 {
 
 }
@@ -40,15 +36,14 @@ QgsMapLayer* QgsHostedRDSBuilder::createMapLayer( const QDomElement& elem,
     bool allowCaching ) const
 {
   Q_UNUSED( filesToRemove );
-  QgsDebugMsg( "entering." );
 
   if ( elem.isNull() )
   {
     return nullptr;
   }
 
-  QString uri = elem.attribute( "uri", "not found" );
-  if ( uri == "not found" )
+  QString uri = elem.attribute( QStringLiteral( "uri" ), QStringLiteral( "not found" ) );
+  if ( uri == QLatin1String( "not found" ) )
   {
     QgsDebugMsg( "Uri not found" );
     return nullptr;
@@ -59,9 +54,9 @@ QgsMapLayer* QgsHostedRDSBuilder::createMapLayer( const QDomElement& elem,
     QgsRasterLayer* rl = nullptr;
     if ( allowCaching )
     {
-      rl = dynamic_cast<QgsRasterLayer*>( QgsMSLayerCache::instance()->searchLayer( uri, layerName ) );
+      rl = qobject_cast<QgsRasterLayer*>( QgsMSLayerCache::instance()->searchLayer( uri, layerName ) );
     }
-    if ( !rl )
+    if ( !rl || !rl->isValid() )
     {
       QgsDebugMsg( "hostedrds layer not in cache, so create and insert it" );
       rl = new QgsRasterLayer( uri, layerNameFromUri( uri ) );
@@ -80,7 +75,7 @@ QgsMapLayer* QgsHostedRDSBuilder::createMapLayer( const QDomElement& elem,
     //projection
     if ( rl )
     {
-      QString epsg = elem.attribute( "epsg" );
+      QString epsg = elem.attribute( QStringLiteral( "epsg" ) );
       if ( !epsg.isEmpty() )
       {
         bool conversionOk;
@@ -88,8 +83,7 @@ QgsMapLayer* QgsHostedRDSBuilder::createMapLayer( const QDomElement& elem,
         if ( conversionOk )
         {
           //set spatial ref sys
-          QgsCoordinateReferenceSystem srs;
-          srs.createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgnr ) );
+          QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:%1" ).arg( epsgnr ) );
           rl->setCrs( srs );
         }
       }

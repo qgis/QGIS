@@ -30,16 +30,16 @@
 #include "qgscomposition.h"
 #include "qgscomposeritem.h"
 #include "qgscomposerframe.h"
-#include "qgsdatadefined.h"
 #include "qgscomposerutils.h"
 #include "qgscomposermodel.h"
+#include "qgscomposereffect.h"
 
 #include <limits>
 #include "qgsapplication.h"
 #include "qgsrectangle.h" //just for debugging
 #include "qgslogger.h"
-#include "qgssymbollayerv2utils.h" //for pointOnLineWithDistance
-#include "qgsmaprenderer.h" //for getCompositionMode
+#include "qgssymbollayerutils.h" //for pointOnLineWithDistance
+#include "qgspainting.h"
 #include "qgsexpressioncontext.h"
 
 #include <cmath>
@@ -54,7 +54,6 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
     , mFrame( false )
     , mBackground( true )
     , mBackgroundColor( QColor( 255, 255, 255, 255 ) )
-    , mFrameJoinStyle( Qt::MiterJoin )
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mItemRotation( 0 )
@@ -67,7 +66,7 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
     , mLastUsedPositionMode( UpperLeft )
     , mIsGroupMember( false )
     , mCurrentExportLayer( -1 )
-    , mId( "" )
+    , mId( QLatin1String( "" ) )
     , mUuid( QUuid::createUuid().toString() )
 {
   init( manageZValue );
@@ -81,9 +80,9 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     , mHAlignSnapItem( nullptr )
     , mVAlignSnapItem( nullptr )
     , mFrame( false )
+    , mFrameColor( QColor( 0, 0, 0 ) )
     , mBackground( true )
     , mBackgroundColor( QColor( 255, 255, 255, 255 ) )
-    , mFrameJoinStyle( Qt::MiterJoin )
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mItemRotation( 0 )
@@ -96,7 +95,7 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     , mLastUsedPositionMode( UpperLeft )
     , mIsGroupMember( false )
     , mCurrentExportLayer( -1 )
-    , mId( "" )
+    , mId( QLatin1String( "" ) )
     , mUuid( QUuid::createUuid().toString() )
 {
   init( manageZValue );
@@ -107,9 +106,9 @@ void QgsComposerItem::init( const bool manageZValue )
 {
   setFlag( QGraphicsItem::ItemIsSelectable, true );
   //set default pen and brush
-  setBrush( QBrush( QColor( 255, 255, 255, 255 ) ) );
-  QPen defaultPen( QColor( 0, 0, 0 ) );
-  defaultPen.setWidthF( 0.3 );
+  setBrush( mBackgroundColor );
+  QPen defaultPen( mFrameColor );
+  defaultPen.setWidthF( mFrameWidth );
   defaultPen.setJoinStyle( mFrameJoinStyle );
   setPen( defaultPen );
   //let z-Value be managed by composition
@@ -126,17 +125,6 @@ void QgsComposerItem::init( const bool manageZValue )
   // Setup composer effect
   mEffect = new QgsComposerEffect();
   setGraphicsEffect( mEffect );
-
-  // data defined strings
-  mDataDefinedNames.insert( QgsComposerObject::PageNumber, QString( "dataDefinedPageNumber" ) );
-  mDataDefinedNames.insert( QgsComposerObject::PositionX, QString( "dataDefinedPositionX" ) );
-  mDataDefinedNames.insert( QgsComposerObject::PositionY, QString( "dataDefinedPositionY" ) );
-  mDataDefinedNames.insert( QgsComposerObject::ItemWidth, QString( "dataDefinedWidth" ) );
-  mDataDefinedNames.insert( QgsComposerObject::ItemHeight, QString( "dataDefinedHeight" ) );
-  mDataDefinedNames.insert( QgsComposerObject::ItemRotation, QString( "dataDefinedRotation" ) );
-  mDataDefinedNames.insert( QgsComposerObject::Transparency, QString( "dataDefinedTransparency" ) );
-  mDataDefinedNames.insert( QgsComposerObject::BlendMode, QString( "dataDefinedBlendMode" ) );
-  mDataDefinedNames.insert( QgsComposerObject::ExcludeFromExports, QString( "dataDefinedExcludeExports" ) );
 }
 
 QgsComposerItem::~QgsComposerItem()
@@ -154,7 +142,6 @@ QgsComposerItem::~QgsComposerItem()
 
 void QgsComposerItem::setSelected( bool s )
 {
-  QgsDebugMsg( "entered." );
   QGraphicsRectItem::setSelected( s );
   //inform model that id data has changed
   if ( mComposition )
@@ -164,97 +151,95 @@ void QgsComposerItem::setSelected( bool s )
   update(); //to draw selection boxes
 }
 
-bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) const
+bool QgsComposerItem::_writeXml( QDomElement& itemElem, QDomDocument& doc ) const
 {
   if ( itemElem.isNull() )
   {
     return false;
   }
 
-  QDomElement composerItemElem = doc.createElement( "ComposerItem" );
+  QDomElement composerItemElem = doc.createElement( QStringLiteral( "ComposerItem" ) );
 
   //frame
   if ( mFrame )
   {
-    composerItemElem.setAttribute( "frame", "true" );
+    composerItemElem.setAttribute( QStringLiteral( "frame" ), QStringLiteral( "true" ) );
   }
   else
   {
-    composerItemElem.setAttribute( "frame", "false" );
+    composerItemElem.setAttribute( QStringLiteral( "frame" ), QStringLiteral( "false" ) );
   }
 
   //background
   if ( mBackground )
   {
-    composerItemElem.setAttribute( "background", "true" );
+    composerItemElem.setAttribute( QStringLiteral( "background" ), QStringLiteral( "true" ) );
   }
   else
   {
-    composerItemElem.setAttribute( "background", "false" );
+    composerItemElem.setAttribute( QStringLiteral( "background" ), QStringLiteral( "false" ) );
   }
 
   //scene rect
   QPointF pagepos = pagePos();
-  composerItemElem.setAttribute( "x", QString::number( pos().x() ) );
-  composerItemElem.setAttribute( "y", QString::number( pos().y() ) );
-  composerItemElem.setAttribute( "page", page() );
-  composerItemElem.setAttribute( "pagex", QString::number( pagepos.x() ) );
-  composerItemElem.setAttribute( "pagey", QString::number( pagepos.y() ) );
-  composerItemElem.setAttribute( "width", QString::number( rect().width() ) );
-  composerItemElem.setAttribute( "height", QString::number( rect().height() ) );
-  composerItemElem.setAttribute( "positionMode", QString::number( static_cast< int >( mLastUsedPositionMode ) ) );
-  composerItemElem.setAttribute( "zValue", QString::number( zValue() ) );
-  composerItemElem.setAttribute( "outlineWidth", QString::number( pen().widthF() ) );
-  composerItemElem.setAttribute( "frameJoinStyle", QgsSymbolLayerV2Utils::encodePenJoinStyle( mFrameJoinStyle ) );
-  composerItemElem.setAttribute( "itemRotation", QString::number( mItemRotation ) );
-  composerItemElem.setAttribute( "uuid", mUuid );
-  composerItemElem.setAttribute( "id", mId );
-  composerItemElem.setAttribute( "visibility", isVisible() );
+  composerItemElem.setAttribute( QStringLiteral( "x" ), QString::number( pos().x() ) );
+  composerItemElem.setAttribute( QStringLiteral( "y" ), QString::number( pos().y() ) );
+  composerItemElem.setAttribute( QStringLiteral( "page" ), page() );
+  composerItemElem.setAttribute( QStringLiteral( "pagex" ), QString::number( pagepos.x() ) );
+  composerItemElem.setAttribute( QStringLiteral( "pagey" ), QString::number( pagepos.y() ) );
+  composerItemElem.setAttribute( QStringLiteral( "width" ), QString::number( rect().width() ) );
+  composerItemElem.setAttribute( QStringLiteral( "height" ), QString::number( rect().height() ) );
+  composerItemElem.setAttribute( QStringLiteral( "positionMode" ), QString::number( static_cast< int >( mLastUsedPositionMode ) ) );
+  composerItemElem.setAttribute( QStringLiteral( "zValue" ), QString::number( zValue() ) );
+  composerItemElem.setAttribute( QStringLiteral( "outlineWidth" ), QString::number( mFrameWidth ) );
+  composerItemElem.setAttribute( QStringLiteral( "frameJoinStyle" ), QgsSymbolLayerUtils::encodePenJoinStyle( mFrameJoinStyle ) );
+  composerItemElem.setAttribute( QStringLiteral( "itemRotation" ), QString::number( mItemRotation ) );
+  composerItemElem.setAttribute( QStringLiteral( "uuid" ), mUuid );
+  composerItemElem.setAttribute( QStringLiteral( "id" ), mId );
+  composerItemElem.setAttribute( QStringLiteral( "visibility" ), isVisible() );
   //position lock for mouse moves/resizes
   if ( mItemPositionLocked )
   {
-    composerItemElem.setAttribute( "positionLock", "true" );
+    composerItemElem.setAttribute( QStringLiteral( "positionLock" ), QStringLiteral( "true" ) );
   }
   else
   {
-    composerItemElem.setAttribute( "positionLock", "false" );
+    composerItemElem.setAttribute( QStringLiteral( "positionLock" ), QStringLiteral( "false" ) );
   }
 
-  composerItemElem.setAttribute( "lastValidViewScaleFactor", QString::number( mLastValidViewScaleFactor ) );
+  composerItemElem.setAttribute( QStringLiteral( "lastValidViewScaleFactor" ), QString::number( mLastValidViewScaleFactor ) );
 
   //frame color
-  QDomElement frameColorElem = doc.createElement( "FrameColor" );
-  QColor frameColor = pen().color();
-  frameColorElem.setAttribute( "red", QString::number( frameColor.red() ) );
-  frameColorElem.setAttribute( "green", QString::number( frameColor.green() ) );
-  frameColorElem.setAttribute( "blue", QString::number( frameColor.blue() ) );
-  frameColorElem.setAttribute( "alpha", QString::number( frameColor.alpha() ) );
+  QDomElement frameColorElem = doc.createElement( QStringLiteral( "FrameColor" ) );
+  frameColorElem.setAttribute( QStringLiteral( "red" ), QString::number( mFrameColor.red() ) );
+  frameColorElem.setAttribute( QStringLiteral( "green" ), QString::number( mFrameColor.green() ) );
+  frameColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( mFrameColor.blue() ) );
+  frameColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mFrameColor.alpha() ) );
   composerItemElem.appendChild( frameColorElem );
 
   //background color
-  QDomElement bgColorElem = doc.createElement( "BackgroundColor" );
-  QColor bgColor = brush().color();
-  bgColorElem.setAttribute( "red", QString::number( bgColor.red() ) );
-  bgColorElem.setAttribute( "green", QString::number( bgColor.green() ) );
-  bgColorElem.setAttribute( "blue", QString::number( bgColor.blue() ) );
-  bgColorElem.setAttribute( "alpha", QString::number( bgColor.alpha() ) );
+  QDomElement bgColorElem = doc.createElement( QStringLiteral( "BackgroundColor" ) );
+  bgColorElem.setAttribute( QStringLiteral( "red" ), QString::number( mBackgroundColor.red() ) );
+  bgColorElem.setAttribute( QStringLiteral( "green" ), QString::number( mBackgroundColor.green() ) );
+  bgColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( mBackgroundColor.blue() ) );
+  bgColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mBackgroundColor.alpha() ) );
   composerItemElem.appendChild( bgColorElem );
 
   //blend mode
-  composerItemElem.setAttribute( "blendMode", QgsMapRenderer::getBlendModeEnum( mBlendMode ) );
+  composerItemElem.setAttribute( QStringLiteral( "blendMode" ), QgsPainting::getBlendModeEnum( mBlendMode ) );
 
   //transparency
-  composerItemElem.setAttribute( "transparency", QString::number( mTransparency ) );
+  composerItemElem.setAttribute( QStringLiteral( "transparency" ), QString::number( mTransparency ) );
 
-  composerItemElem.setAttribute( "excludeFromExports", mExcludeFromExports );
+  composerItemElem.setAttribute( QStringLiteral( "excludeFromExports" ), mExcludeFromExports );
 
-  QgsComposerObject::writeXML( composerItemElem, doc );
+  QgsComposerObject::writeXml( composerItemElem, doc );
   itemElem.appendChild( composerItemElem );
 
   return true;
 }
 
-bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerItem::_readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   Q_UNUSED( doc );
   if ( itemElem.isNull() )
@@ -262,24 +247,24 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
     return false;
   }
 
-  QgsComposerObject::readXML( itemElem, doc );
+  QgsComposerObject::readXml( itemElem, doc );
 
   //rotation
-  setItemRotation( itemElem.attribute( "itemRotation", "0" ).toDouble() );
+  setItemRotation( itemElem.attribute( QStringLiteral( "itemRotation" ), QStringLiteral( "0" ) ).toDouble() );
 
   //uuid
-  mUuid = itemElem.attribute( "uuid", QUuid::createUuid().toString() );
+  mUuid = itemElem.attribute( QStringLiteral( "uuid" ), QUuid::createUuid().toString() );
 
   // temporary for groups imported from templates
-  mTemplateUuid = itemElem.attribute( "templateUuid" );
+  mTemplateUuid = itemElem.attribute( QStringLiteral( "templateUuid" ) );
 
   //id
-  QString id = itemElem.attribute( "id", "" );
+  QString id = itemElem.attribute( QStringLiteral( "id" ), QLatin1String( "" ) );
   setId( id );
 
   //frame
-  QString frame = itemElem.attribute( "frame" );
-  if ( frame.compare( "true", Qt::CaseInsensitive ) == 0 )
+  QString frame = itemElem.attribute( QStringLiteral( "frame" ) );
+  if ( frame.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
   {
     mFrame = true;
   }
@@ -289,8 +274,8 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   }
 
   //frame
-  QString background = itemElem.attribute( "background" );
-  if ( background.compare( "true", Qt::CaseInsensitive ) == 0 )
+  QString background = itemElem.attribute( QStringLiteral( "background" ) );
+  if ( background.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
   {
     mBackground = true;
   }
@@ -300,8 +285,8 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   }
 
   //position lock for mouse moves/resizes
-  QString positionLock = itemElem.attribute( "positionLock" );
-  if ( positionLock.compare( "true", Qt::CaseInsensitive ) == 0 )
+  QString positionLock = itemElem.attribute( QStringLiteral( "positionLock" ) );
+  if ( positionLock.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
   {
     setPositionLock( true );
   }
@@ -311,21 +296,21 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   }
 
   //visibility
-  setVisibility( itemElem.attribute( "visibility", "1" ) != "0" );
+  setVisibility( itemElem.attribute( QStringLiteral( "visibility" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
 
   //position
   int page;
   double x, y, pagex, pagey, width, height;
   bool xOk, yOk, pageOk, pagexOk, pageyOk, widthOk, heightOk, positionModeOK;
 
-  x = itemElem.attribute( "x" ).toDouble( &xOk );
-  y = itemElem.attribute( "y" ).toDouble( &yOk );
-  page = itemElem.attribute( "page" ).toInt( &pageOk );
-  pagex = itemElem.attribute( "pagex" ).toDouble( &pagexOk );
-  pagey = itemElem.attribute( "pagey" ).toDouble( &pageyOk );
-  width = itemElem.attribute( "width" ).toDouble( &widthOk );
-  height = itemElem.attribute( "height" ).toDouble( &heightOk );
-  mLastUsedPositionMode = static_cast< ItemPositionMode >( itemElem.attribute( "positionMode" ).toInt( &positionModeOK ) );
+  x = itemElem.attribute( QStringLiteral( "x" ) ).toDouble( &xOk );
+  y = itemElem.attribute( QStringLiteral( "y" ) ).toDouble( &yOk );
+  page = itemElem.attribute( QStringLiteral( "page" ) ).toInt( &pageOk );
+  pagex = itemElem.attribute( QStringLiteral( "pagex" ) ).toDouble( &pagexOk );
+  pagey = itemElem.attribute( QStringLiteral( "pagey" ) ).toDouble( &pageyOk );
+  width = itemElem.attribute( QStringLiteral( "width" ) ).toDouble( &widthOk );
+  height = itemElem.attribute( QStringLiteral( "height" ) ).toDouble( &heightOk );
+  mLastUsedPositionMode = static_cast< ItemPositionMode >( itemElem.attribute( QStringLiteral( "positionMode" ) ).toInt( &positionModeOK ) );
   if ( !positionModeOK )
   {
     mLastUsedPositionMode = UpperLeft;
@@ -343,12 +328,14 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
     return false;
   }
 
-  mLastValidViewScaleFactor = itemElem.attribute( "lastValidViewScaleFactor", "-1" ).toDouble();
+  mLastValidViewScaleFactor = itemElem.attribute( QStringLiteral( "lastValidViewScaleFactor" ), QStringLiteral( "-1" ) ).toDouble();
 
-  setZValue( itemElem.attribute( "zValue" ).toDouble() );
+  setZValue( itemElem.attribute( QStringLiteral( "zValue" ) ).toDouble() );
+
+  QgsExpressionContext context = createExpressionContext();
 
   //pen
-  QDomNodeList frameColorList = itemElem.elementsByTagName( "FrameColor" );
+  QDomNodeList frameColorList = itemElem.elementsByTagName( QStringLiteral( "FrameColor" ) );
   if ( !frameColorList.isEmpty() )
   {
     QDomElement frameColorElem = frameColorList.at( 0 ).toElement();
@@ -356,47 +343,53 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
     int penRed, penGreen, penBlue, penAlpha;
     double penWidth;
 
-    penWidth = itemElem.attribute( "outlineWidth" ).toDouble( &widthOk );
-    penRed = frameColorElem.attribute( "red" ).toDouble( &redOk );
-    penGreen = frameColorElem.attribute( "green" ).toDouble( &greenOk );
-    penBlue = frameColorElem.attribute( "blue" ).toDouble( &blueOk );
-    penAlpha = frameColorElem.attribute( "alpha" ).toDouble( &alphaOk );
-    mFrameJoinStyle = QgsSymbolLayerV2Utils::decodePenJoinStyle( itemElem.attribute( "frameJoinStyle", "miter" ) );
+    penWidth = itemElem.attribute( QStringLiteral( "outlineWidth" ) ).toDouble( &widthOk );
+    penRed = frameColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
+    penGreen = frameColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
+    penBlue = frameColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
+    penAlpha = frameColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
+    mFrameJoinStyle = QgsSymbolLayerUtils::decodePenJoinStyle( itemElem.attribute( QStringLiteral( "frameJoinStyle" ), QStringLiteral( "miter" ) ) );
 
     if ( redOk && greenOk && blueOk && alphaOk && widthOk )
     {
-      QPen framePen( QColor( penRed, penGreen, penBlue, penAlpha ) );
-      framePen.setWidthF( penWidth );
+      mFrameColor = QColor( penRed, penGreen, penBlue, penAlpha );
+      mFrameWidth = penWidth;
+      QPen framePen( mFrameColor );
+      framePen.setWidthF( mFrameWidth );
       framePen.setJoinStyle( mFrameJoinStyle );
       setPen( framePen );
+      //apply any data defined settings
+      refreshFrameColor( false, context );
     }
   }
 
   //brush
-  QDomNodeList bgColorList = itemElem.elementsByTagName( "BackgroundColor" );
+  QDomNodeList bgColorList = itemElem.elementsByTagName( QStringLiteral( "BackgroundColor" ) );
   if ( !bgColorList.isEmpty() )
   {
     QDomElement bgColorElem = bgColorList.at( 0 ).toElement();
     bool redOk, greenOk, blueOk, alphaOk;
     int bgRed, bgGreen, bgBlue, bgAlpha;
-    bgRed = bgColorElem.attribute( "red" ).toDouble( &redOk );
-    bgGreen = bgColorElem.attribute( "green" ).toDouble( &greenOk );
-    bgBlue = bgColorElem.attribute( "blue" ).toDouble( &blueOk );
-    bgAlpha = bgColorElem.attribute( "alpha" ).toDouble( &alphaOk );
+    bgRed = bgColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
+    bgGreen = bgColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
+    bgBlue = bgColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
+    bgAlpha = bgColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
     if ( redOk && greenOk && blueOk && alphaOk )
     {
-      QColor brushColor( bgRed, bgGreen, bgBlue, bgAlpha );
-      setBackgroundColor( brushColor );
+      mBackgroundColor = QColor( bgRed, bgGreen, bgBlue, bgAlpha );
+      setBrush( QBrush( mBackgroundColor, Qt::SolidPattern ) );
     }
+    //apply any data defined settings
+    refreshBackgroundColor( false, context );
   }
 
   //blend mode
-  setBlendMode( QgsMapRenderer::getCompositionMode( static_cast< QgsMapRenderer::BlendMode >( itemElem.attribute( "blendMode", "0" ).toUInt() ) ) );
+  setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( itemElem.attribute( QStringLiteral( "blendMode" ), QStringLiteral( "0" ) ).toUInt() ) ) );
 
   //transparency
-  setTransparency( itemElem.attribute( "transparency", "0" ).toInt() );
+  setTransparency( itemElem.attribute( QStringLiteral( "transparency" ), QStringLiteral( "0" ) ).toInt() );
 
-  mExcludeFromExports = itemElem.attribute( "excludeFromExports", "0" ).toInt();
+  mExcludeFromExports = itemElem.attribute( QStringLiteral( "excludeFromExports" ), QStringLiteral( "0" ) ).toInt();
   mEvaluatedExcludeFromExports = mExcludeFromExports;
 
   QRectF evaluatedRect = evalItemRect( QRectF( x, y, width, height ) );
@@ -419,26 +412,31 @@ void QgsComposerItem::setFrameEnabled( const bool drawFrame )
 
 void QgsComposerItem::setFrameOutlineColor( const QColor &color )
 {
-  QPen itemPen = pen();
-  if ( itemPen.color() == color )
+  if ( mFrameColor == color )
   {
     //no change
     return;
   }
-  itemPen.setColor( color );
+  mFrameColor = color;
+  QPen itemPen = pen();
+  itemPen.setColor( mFrameColor );
   setPen( itemPen );
+  // apply any datadefined overrides
+  QgsExpressionContext context = createExpressionContext();
+  refreshFrameColor( true, context );
   emit frameChanged();
 }
 
 void QgsComposerItem::setFrameOutlineWidth( const double outlineWidth )
 {
-  QPen itemPen = pen();
-  if ( qgsDoubleNear( itemPen.widthF(), outlineWidth ) )
+  if ( qgsDoubleNear( mFrameWidth, outlineWidth ) )
   {
     //no change
     return;
   }
-  itemPen.setWidthF( outlineWidth );
+  mFrameWidth = outlineWidth;
+  QPen itemPen = pen();
+  itemPen.setWidthF( mFrameWidth );
   setPen( itemPen );
   emit frameChanged();
 }
@@ -525,7 +523,13 @@ void QgsComposerItem::drawSelectionBoxes( QPainter* p )
     selectedItemPen.setWidth( 0 );
     p->setPen( selectedItemPen );
     p->setBrush( Qt::NoBrush );
-    p->drawPolygon( rect() );
+
+    // drawPolygon causes issues on windows - corners of path may be missing resulting in triangles being drawn
+    // instead of rectangles! (Same cause as #13343)
+    QPainterPath path;
+    path.addPolygon( rect() );
+    p->drawPath( path );
+
     p->restore();
   }
 
@@ -709,36 +713,21 @@ QRectF QgsComposerItem::evalItemRect( const QRectF &newRect, const bool resizeOn
 
   //TODO QGIS 3.0
   //maintain pre 2.12 API. remove when API break allowed
-  QScopedPointer< QgsExpressionContext > scopedContext;
-  const QgsExpressionContext* evalContext = context;
-  if ( !evalContext )
-  {
-    scopedContext.reset( createExpressionContext() );
-    evalContext = scopedContext.data();
-  }
+  QgsExpressionContext scopedContext = createExpressionContext();
+  const QgsExpressionContext* evalContext = context ? context : &scopedContext;
 
   //data defined position or size set? if so, update rect with data defined values
-  QVariant exprVal;
+  bool ok = false;
+  double ddWidth = mDataDefinedProperties.valueAsDouble( QgsComposerObject::ItemWidth, *evalContext, 0, &ok );
   //evaulate width and height first, since they may affect position if non-top-left reference point set
-  if ( dataDefinedEvaluate( QgsComposerObject::ItemWidth, exprVal, *evalContext ) )
+  if ( ok )
   {
-    bool ok;
-    double width = exprVal.toDouble( &ok );
-    QgsDebugMsg( QString( "exprVal Width:%1" ).arg( width ) );
-    if ( ok && !exprVal.isNull() )
-    {
-      result.setWidth( width );
-    }
+    result.setWidth( ddWidth );
   }
-  if ( dataDefinedEvaluate( QgsComposerObject::ItemHeight, exprVal, *evalContext ) )
+  double ddHeight = mDataDefinedProperties.valueAsDouble( QgsComposerObject::ItemHeight, *evalContext, 0, &ok );
+  if ( ok )
   {
-    bool ok;
-    double height = exprVal.toDouble( &ok );
-    QgsDebugMsg( QString( "exprVal Height:%1" ).arg( height ) );
-    if ( ok && !exprVal.isNull() )
-    {
-      result.setHeight( height );
-    }
+    result.setHeight( ddHeight );
   }
 
   double x = result.left();
@@ -766,15 +755,10 @@ QRectF QgsComposerItem::evalItemRect( const QRectF &newRect, const bool resizeOn
       x += rect().width();
     }
   }
-  if ( dataDefinedEvaluate( QgsComposerObject::PositionX, exprVal, *evalContext ) )
+  double ddPosX = mDataDefinedProperties.valueAsDouble( QgsComposerObject::PositionX, *evalContext, 0.0, &ok );
+  if ( ok )
   {
-    bool ok;
-    double positionX = exprVal.toDouble( &ok );
-    QgsDebugMsg( QString( "exprVal Position X:%1" ).arg( positionX ) );
-    if ( ok && !exprVal.isNull() )
-    {
-      x = positionX;
-    }
+    x = ddPosX;
   }
 
   double y = result.top();
@@ -802,15 +786,10 @@ QRectF QgsComposerItem::evalItemRect( const QRectF &newRect, const bool resizeOn
       y += rect().height();
     }
   }
-  if ( dataDefinedEvaluate( QgsComposerObject::PositionY, exprVal, *evalContext ) )
+  double ddPosY = mDataDefinedProperties.valueAsDouble( QgsComposerObject::PositionY, *evalContext, 0, &ok );
+  if ( ok )
   {
-    bool ok;
-    double positionY = exprVal.toDouble( &ok );
-    QgsDebugMsg( QString( "exprVal Position Y:%1" ).arg( positionY ) );
-    if ( ok && !exprVal.isNull() )
-    {
-      y = positionY;
-    }
+    y = ddPosY;
   }
 
   //adjust x-coordinate if placement is not done to a left point
@@ -851,10 +830,10 @@ bool QgsComposerItem::shouldDrawItem() const
   return !mEvaluatedExcludeFromExports;
 }
 
-QgsExpressionContext* QgsComposerItem::createExpressionContext() const
+QgsExpressionContext QgsComposerItem::createExpressionContext() const
 {
-  QgsExpressionContext* context = QgsComposerObject::createExpressionContext();
-  context->appendScope( QgsExpressionContextUtils::composerItemScope( this ) );
+  QgsExpressionContext context = QgsComposerObject::createExpressionContext();
+  context.appendScope( QgsExpressionContextUtils::composerItemScope( this ) );
   return context;
 }
 
@@ -871,28 +850,21 @@ void QgsComposerItem::drawBackground( QPainter* p )
   }
 }
 
-void QgsComposerItem::drawArrowHead( QPainter *p, double x, double y, double angle, double arrowHeadWidth ) const
-{
-  QgsComposerUtils::drawArrowHead( p, x, y, angle, arrowHeadWidth );
-}
-
-double QgsComposerItem::angle( QPointF p1, QPointF p2 ) const
-{
-  return QgsComposerUtils::angle( p1, p2 );
-}
-
 void QgsComposerItem::setBackgroundColor( const QColor& backgroundColor )
 {
   mBackgroundColor = backgroundColor;
   setBrush( QBrush( mBackgroundColor, Qt::SolidPattern ) );
+  // apply any datadefined overrides
+  QgsExpressionContext context = createExpressionContext();
+  refreshBackgroundColor( true, context );
 }
 
 void QgsComposerItem::setBlendMode( const QPainter::CompositionMode blendMode )
 {
   mBlendMode = blendMode;
   // Update the composer effect to use the new blend mode
-  QScopedPointer< QgsExpressionContext > context( createExpressionContext() );
-  refreshBlendMode( *context.data() );
+  QgsExpressionContext context = createExpressionContext();
+  refreshBlendMode( context );
 }
 
 void QgsComposerItem::refreshBlendMode( const QgsExpressionContext& context )
@@ -900,11 +872,12 @@ void QgsComposerItem::refreshBlendMode( const QgsExpressionContext& context )
   QPainter::CompositionMode blendMode = mBlendMode;
 
   //data defined blend mode set?
-  QVariant exprVal;
-  if ( dataDefinedEvaluate( QgsComposerObject::BlendMode, exprVal, context ) && !exprVal.isNull() )
+  bool ok = false;
+  QString blendStr = mDataDefinedProperties.valueAsString( QgsComposerObject::BlendMode, context, QString(), &ok );
+  if ( ok && !blendStr.isEmpty() )
   {
-    QString blendstr = exprVal.toString().trimmed();
-    QPainter::CompositionMode blendModeD = QgsSymbolLayerV2Utils::decodeBlendMode( blendstr );
+    QString blendstr = blendStr.trimmed();
+    QPainter::CompositionMode blendModeD = QgsSymbolLayerUtils::decodeBlendMode( blendstr );
 
     QgsDebugMsg( QString( "exprVal BlendMode:%1" ).arg( blendModeD ) );
     blendMode = blendModeD;
@@ -917,8 +890,8 @@ void QgsComposerItem::refreshBlendMode( const QgsExpressionContext& context )
 void QgsComposerItem::setTransparency( const int transparency )
 {
   mTransparency = transparency;
-  QScopedPointer< QgsExpressionContext > context( createExpressionContext() );
-  refreshTransparency( true, *context.data() );
+  QgsExpressionContext context = createExpressionContext();
+  refreshTransparency( true, context );
 }
 
 void QgsComposerItem::refreshTransparency( const bool updateItem, const QgsExpressionContext& context )
@@ -926,21 +899,53 @@ void QgsComposerItem::refreshTransparency( const bool updateItem, const QgsExpre
   int transparency = mTransparency;
 
   //data defined transparency set?
-  QVariant exprVal;
-  if ( dataDefinedEvaluate( QgsComposerObject::Transparency, exprVal, context ) )
-  {
-    bool ok;
-    int transparencyD = exprVal.toInt( &ok );
-    QgsDebugMsg( QString( "exprVal Transparency:%1" ).arg( transparencyD ) );
-    if ( ok && !exprVal.isNull() )
-    {
-      transparency = transparencyD;
-    }
-  }
+  transparency = mDataDefinedProperties.valueAsInt( QgsComposerObject::Transparency, context, mTransparency );
 
   // Set the QGraphicItem's opacity
   setOpacity( 1. - ( transparency / 100. ) );
 
+  if ( updateItem )
+  {
+    update();
+  }
+}
+
+void QgsComposerItem::refreshFrameColor( const bool updateItem, const QgsExpressionContext& context )
+{
+  //data defined outline color set?
+  bool ok = false;
+  QColor frameColor = mDataDefinedProperties.valueAsColor( QgsComposerObject::FrameColor, context, mFrameColor, &ok );
+  if ( ok )
+  {
+    QPen itemPen = pen();
+    itemPen.setColor( frameColor );
+    setPen( itemPen );
+  }
+  else
+  {
+    QPen itemPen = pen();
+    itemPen.setColor( mFrameColor );
+    setPen( itemPen );
+  }
+  if ( updateItem )
+  {
+    update();
+  }
+}
+
+void QgsComposerItem::refreshBackgroundColor( const bool updateItem, const QgsExpressionContext& context )
+{
+  //data defined color set?
+  bool ok = false;
+  QColor backgroundColor = mDataDefinedProperties.valueAsColor( QgsComposerObject::BackgroundColor, context, mBackgroundColor, &ok );
+  if ( ok )
+  {
+    setBrush( QBrush( backgroundColor, Qt::SolidPattern ) );
+  }
+  else
+  {
+    setBrush( QBrush( mBackgroundColor, Qt::SolidPattern ) );
+  }
   if ( updateItem )
   {
     update();
@@ -952,50 +957,6 @@ void QgsComposerItem::setEffectsEnabled( const bool effectsEnabled )
   //enable or disable the QgsComposerEffect applied to this item
   mEffectsEnabled = effectsEnabled;
   mEffect->setEnabled( effectsEnabled );
-}
-
-void QgsComposerItem::drawText( QPainter* p, double x, double y, const QString& text, const QFont& font, const QColor& c ) const
-{
-  QgsComposerUtils::drawText( p, QPointF( x, y ), text, font, c );
-}
-
-void QgsComposerItem::drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment, Qt::AlignmentFlag valignment, int flags ) const
-{
-  QgsComposerUtils::drawText( p, rect, text, font, QColor(), halignment, valignment, flags );
-}
-double QgsComposerItem::textWidthMillimeters( const QFont& font, const QString& text ) const
-{
-  return QgsComposerUtils::textWidthMM( font, text );
-}
-
-double QgsComposerItem::fontHeightCharacterMM( const QFont& font, QChar c ) const
-{
-  return QgsComposerUtils::fontHeightCharacterMM( font, c );
-}
-
-double QgsComposerItem::fontAscentMillimeters( const QFont& font ) const
-{
-  return QgsComposerUtils::fontAscentMM( font );
-}
-
-double QgsComposerItem::fontDescentMillimeters( const QFont& font ) const
-{
-  return QgsComposerUtils::fontDescentMM( font );
-}
-
-double QgsComposerItem::fontHeightMillimeters( const QFont& font ) const
-{
-  return QgsComposerUtils::fontHeightMM( font );
-}
-
-double QgsComposerItem::pixelFontSize( double pointSize ) const
-{
-  return QgsComposerUtils::pointsToMM( pointSize );
-}
-
-QFont QgsComposerItem::scaledFontPixelSize( const QFont& font ) const
-{
-  return QgsComposerUtils::scaledFontPixelSize( font );
 }
 
 double QgsComposerItem::horizontalViewScaleFactor() const
@@ -1035,28 +996,6 @@ double QgsComposerItem::rectHandlerBorderTolerance() const
   return rectHandlerSize;
 }
 
-double QgsComposerItem::lockSymbolSize() const
-{
-  double lockSymbolSize = 20.0 / horizontalViewScaleFactor();
-
-  if ( lockSymbolSize > ( rect().width() / 3 ) )
-  {
-    lockSymbolSize = rect().width() / 3;
-  }
-  if ( lockSymbolSize > ( rect().height() / 3 ) )
-  {
-    lockSymbolSize = rect().height() / 3;
-  }
-  return lockSymbolSize;
-}
-
-void QgsComposerItem::setRotation( const double r )
-{
-  //kept for api compatibility with QGIS 2.0
-  //remove after 2.0 series
-  setItemRotation( r, true );
-}
-
 void QgsComposerItem::setItemRotation( const double r, const bool adjustPosition )
 {
   if ( r >= 360 )
@@ -1068,8 +1007,8 @@ void QgsComposerItem::setItemRotation( const double r, const bool adjustPosition
     mItemRotation = r;
   }
 
-  QScopedPointer< QgsExpressionContext > context( createExpressionContext() );
-  refreshRotation( true, adjustPosition, *context.data() );
+  QgsExpressionContext context = createExpressionContext();
+  refreshRotation( true, adjustPosition, context );
 }
 
 void QgsComposerItem::refreshRotation( const bool updateItem, const bool adjustPosition, const QgsExpressionContext& context )
@@ -1077,17 +1016,7 @@ void QgsComposerItem::refreshRotation( const bool updateItem, const bool adjustP
   double rotation = mItemRotation;
 
   //data defined rotation set?
-  QVariant exprVal;
-  if ( dataDefinedEvaluate( QgsComposerObject::ItemRotation, exprVal, context ) )
-  {
-    bool ok;
-    double rotD = exprVal.toDouble( &ok );
-    QgsDebugMsg( QString( "exprVal Rotation:%1" ).arg( rotD ) );
-    if ( ok && !exprVal.isNull() )
-    {
-      rotation = rotD;
-    }
-  }
+  rotation = mDataDefinedProperties.valueAsDouble( QgsComposerObject::ItemRotation, context, rotation );
 
   if ( qgsDoubleNear( rotation, mEvaluatedItemRotation ) )
   {
@@ -1123,186 +1052,14 @@ void QgsComposerItem::refreshRotation( const bool updateItem, const bool adjustP
   }
 }
 
-bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height ) const
-{
-  //kept for api compatibility with QGIS 2.0, use item rotation
-  Q_NOWARN_DEPRECATED_PUSH
-  return imageSizeConsideringRotation( width, height, mEvaluatedItemRotation );
-  Q_NOWARN_DEPRECATED_POP
-}
-
-bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height, double rotation ) const
-{
-  if ( qAbs( rotation ) <= 0.0 ) //width and height stays the same if there is no rotation
-  {
-    return true;
-  }
-
-  if ( qgsDoubleNear( qAbs( rotation ), 90 ) || qgsDoubleNear( qAbs( rotation ), 270 ) )
-  {
-    double tmp = width;
-    width = height;
-    height = tmp;
-    return true;
-  }
-
-  double x1 = 0;
-  double y1 = 0;
-  double x2 = width;
-  double y2 = 0;
-  double x3 = width;
-  double y3 = height;
-  double x4 = 0;
-  double y4 = height;
-  double midX = width / 2.0;
-  double midY = height / 2.0;
-
-  Q_NOWARN_DEPRECATED_PUSH
-  if ( !cornerPointOnRotatedAndScaledRect( x1, y1, width, height, rotation ) )
-  {
-    return false;
-  }
-  if ( !cornerPointOnRotatedAndScaledRect( x2, y2, width, height, rotation ) )
-  {
-    return false;
-  }
-  if ( !cornerPointOnRotatedAndScaledRect( x3, y3, width, height, rotation ) )
-  {
-    return false;
-  }
-  if ( !cornerPointOnRotatedAndScaledRect( x4, y4, width, height, rotation ) )
-  {
-    return false;
-  }
-  Q_NOWARN_DEPRECATED_POP
-
-
-  //assume points 1 and 3 are on the rectangle boundaries. Calculate 2 and 4.
-  double distM1 = sqrt(( x1 - midX ) * ( x1 - midX ) + ( y1 - midY ) * ( y1 - midY ) );
-  QPointF p2 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x2, y2 ), distM1 );
-
-  if ( p2.x() < width && p2.x() > 0 && p2.y() < height && p2.y() > 0 )
-  {
-    width = sqrt(( p2.x() - x1 ) * ( p2.x() - x1 ) + ( p2.y() - y1 ) * ( p2.y() - y1 ) );
-    height = sqrt(( x3 - p2.x() ) * ( x3 - p2.x() ) + ( y3 - p2.y() ) * ( y3 - p2.y() ) );
-    return true;
-  }
-
-  //else assume that points 2 and 4 are on the rectangle boundaries. Calculate 1 and 3
-  double distM2 = sqrt(( x2 - midX ) * ( x2 - midX ) + ( y2 - midY ) * ( y2 - midY ) );
-  QPointF p1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x1, y1 ), distM2 );
-  QPointF p3 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x3, y3 ), distM2 );
-  width = sqrt(( x2 - p1.x() ) * ( x2 - p1.x() ) + ( y2 - p1.y() ) * ( y2 - p1.y() ) );
-  height = sqrt(( p3.x() - x2 ) * ( p3.x() - x2 ) + ( p3.y() - y2 ) * ( p3.y() - y2 ) );
-  return true;
-}
-
-QRectF QgsComposerItem::largestRotatedRectWithinBounds( const QRectF& originalRect, const QRectF& boundsRect, double rotation ) const
-{
-  return QgsComposerUtils::largestRotatedRectWithinBounds( originalRect, boundsRect, rotation );
-}
-
-bool QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const
-{
-  //kept for api compatibility with QGIS 2.0, use item rotation
-  Q_NOWARN_DEPRECATED_PUSH
-  return cornerPointOnRotatedAndScaledRect( x, y, width, height, mEvaluatedItemRotation );
-  Q_NOWARN_DEPRECATED_POP
-}
-
-bool QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation ) const
-{
-  //first rotate point clockwise
-  double rotToRad = rotation * M_PI / 180.0;
-  QPointF midpoint( width / 2.0, height / 2.0 );
-  double xVector = x - midpoint.x();
-  double yVector = y - midpoint.y();
-  //double xRotated = cos(rotToRad) * xVector + sin(rotToRad) * yVector;
-  //double yRotated = -sin(rotToRad) * xVector + cos(rotToRad) * yVector;
-  double xRotated = cos( rotToRad ) * xVector - sin( rotToRad ) * yVector;
-  double yRotated = sin( rotToRad ) * xVector + cos( rotToRad ) * yVector;
-
-  //create line from midpoint to rotated point
-  QLineF line( midpoint.x(), midpoint.y(), midpoint.x() + xRotated, midpoint.y() + yRotated );
-
-  //intersect with all four borders and return result
-  QList<QLineF> borders;
-  borders << QLineF( 0, 0, width, 0 );
-  borders << QLineF( width, 0, width, height );
-  borders << QLineF( width, height, 0, height );
-  borders << QLineF( 0, height, 0, 0 );
-
-  QList<QLineF>::const_iterator it = borders.constBegin();
-  QPointF intersectionPoint;
-
-  for ( ; it != borders.constEnd(); ++it )
-  {
-    if ( line.intersect( *it, &intersectionPoint ) == QLineF::BoundedIntersection )
-    {
-      x = intersectionPoint.x();
-      y = intersectionPoint.y();
-      return true;
-    }
-  }
-  return false;
-}
-
-void QgsComposerItem::sizeChangedByRotation( double& width, double& height )
-{
-  //kept for api compatibility with QGIS 2.0, use item rotation
-  Q_NOWARN_DEPRECATED_PUSH
-  return sizeChangedByRotation( width, height, mEvaluatedItemRotation );
-  Q_NOWARN_DEPRECATED_POP
-}
-
-void QgsComposerItem::sizeChangedByRotation( double& width, double& height, double rotation )
-{
-  if ( rotation == 0.0 )
-  {
-    return;
-  }
-
-  //vector to p1
-  double x1 = -width / 2.0;
-  double y1 = -height / 2.0;
-  QgsComposerUtils::rotate( rotation, x1, y1 );
-  //vector to p2
-  double x2 = width / 2.0;
-  double y2 = -height / 2.0;
-  QgsComposerUtils::rotate( rotation, x2, y2 );
-  //vector to p3
-  double x3 = width / 2.0;
-  double y3 = height / 2.0;
-  QgsComposerUtils::rotate( rotation, x3, y3 );
-  //vector to p4
-  double x4 = -width / 2.0;
-  double y4 = height / 2.0;
-  QgsComposerUtils::rotate( rotation, x4, y4 );
-
-  //double midpoint
-  QPointF midpoint( width / 2.0, height / 2.0 );
-
-  QPolygonF rotatedRectPoly;
-  rotatedRectPoly << QPointF( midpoint.x() + x1, midpoint.y() + y1 );
-  rotatedRectPoly << QPointF( midpoint.x() + x2, midpoint.y() + y2 );
-  rotatedRectPoly << QPointF( midpoint.x() + x3, midpoint.y() + y3 );
-  rotatedRectPoly << QPointF( midpoint.x() + x4, midpoint.y() + y4 );
-  QRectF boundingRect = rotatedRectPoly.boundingRect();
-  width = boundingRect.width();
-  height = boundingRect.height();
-}
-
-void QgsComposerItem::rotate( double angle, double& x, double& y ) const
-{
-  QgsComposerUtils::rotate( angle, x, y );
-}
-
 QGraphicsLineItem* QgsComposerItem::hAlignSnapItem()
 {
   if ( !mHAlignSnapItem )
   {
     mHAlignSnapItem = new QGraphicsLineItem( nullptr );
-    mHAlignSnapItem->setPen( QPen( QColor( Qt::red ) ) );
+    QPen pen = QPen( QColor( Qt::red ) );
+    pen.setWidthF( 0.0 );
+    mHAlignSnapItem->setPen( pen );
     scene()->addItem( mHAlignSnapItem );
     mHAlignSnapItem->setZValue( 90 );
   }
@@ -1314,7 +1071,9 @@ QGraphicsLineItem* QgsComposerItem::vAlignSnapItem()
   if ( !mVAlignSnapItem )
   {
     mVAlignSnapItem = new QGraphicsLineItem( nullptr );
-    mVAlignSnapItem->setPen( QPen( QColor( Qt::red ) ) );
+    QPen pen = QPen( QColor( Qt::red ) );
+    pen.setWidthF( 0.0 );
+    mVAlignSnapItem->setPen( pen );
     scene()->addItem( mVAlignSnapItem );
     mVAlignSnapItem->setZValue( 90 );
   }
@@ -1356,13 +1115,8 @@ void QgsComposerItem::refreshDataDefinedProperty( const QgsComposerObject::DataD
 {
   //maintain 2.10 API
   //TODO QGIS 3.0 - remove this
-  const QgsExpressionContext* evalContext = context;
-  QScopedPointer< QgsExpressionContext > scopedContext;
-  if ( !evalContext )
-  {
-    scopedContext.reset( createExpressionContext() );
-    evalContext = scopedContext.data();
-  }
+  QgsExpressionContext scopedContext = createExpressionContext();
+  const QgsExpressionContext* evalContext = context ? context : &scopedContext;
 
   //update data defined properties and redraw item to match
   if ( property == QgsComposerObject::PositionX || property == QgsComposerObject::PositionY ||
@@ -1388,15 +1142,19 @@ void QgsComposerItem::refreshDataDefinedProperty( const QgsComposerObject::DataD
   {
     refreshBlendMode( *evalContext );
   }
+  if ( property == QgsComposerObject::FrameColor || property == QgsComposerObject::AllProperties )
+  {
+    refreshFrameColor( false, *evalContext );
+  }
+  if ( property == QgsComposerObject::BackgroundColor || property == QgsComposerObject::AllProperties )
+  {
+    refreshBackgroundColor( false, *evalContext );
+  }
   if ( property == QgsComposerObject::ExcludeFromExports || property == QgsComposerObject::AllProperties )
   {
     bool exclude = mExcludeFromExports;
     //data defined exclude from exports set?
-    QVariant exprVal;
-    if ( dataDefinedEvaluate( QgsComposerObject::ExcludeFromExports, exprVal, *evalContext ) && !exprVal.isNull() )
-    {
-      exclude = exprVal.toBool();
-    }
+    exclude = mDataDefinedProperties.valueAsBool( QgsComposerObject::ExcludeFromExports, *evalContext, exclude );
     mEvaluatedExcludeFromExports = exclude;
   }
 

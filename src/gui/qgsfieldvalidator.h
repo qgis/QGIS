@@ -23,9 +23,12 @@
 #include <QValidator>
 #include <QVariant>
 #include <QSettings>
-#include "qgsfield.h"
+#include "qgsfields.h"
+#include "qgis_gui.h"
 
-
+/** \ingroup gui
+ * \class QgsFieldValidator
+ */
 class GUI_EXPORT QgsFieldValidator : public QValidator
 {
     Q_OBJECT

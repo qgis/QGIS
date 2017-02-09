@@ -25,7 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import QgsField, QgsFeature
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -44,21 +44,20 @@ class EquivalentNumField(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Add unique value index field')
         self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
         self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Class field'), self.INPUT))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Layer with index field')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         fieldname = self.getParameterValue(self.FIELD)
         output = self.getOutputFromName(self.OUTPUT)
         vlayer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
-        vprovider = vlayer.dataProvider()
-        fieldindex = vlayer.fieldNameIndex(fieldname)
-        fields = vprovider.fields()
+        fieldindex = vlayer.fields().lookupField(fieldname)
+        fields = vlayer.fields()
         fields.append(QgsField('NUM_FIELD', QVariant.Int))
-        writer = output.getVectorWriter(fields, vprovider.geometryType(),
+        writer = output.getVectorWriter(fields, vlayer.wkbType(),
                                         vlayer.crs())
         outFeat = QgsFeature()
         classes = {}
@@ -66,14 +65,14 @@ class EquivalentNumField(GeoAlgorithm):
         features = vector.features(vlayer)
         total = 100.0 / len(features)
         for current, feature in enumerate(features):
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
             inGeom = feature.geometry()
             outFeat.setGeometry(inGeom)
             atMap = feature.attributes()
             clazz = atMap[fieldindex]
 
             if clazz not in classes:
-                classes[clazz] = len(classes.keys())
+                classes[clazz] = len(list(classes.keys()))
 
             atMap.append(classes[clazz])
             outFeat.setAttributes(atMap)

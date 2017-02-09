@@ -32,7 +32,7 @@ class QgsOSMElement
     bool isValid() const;
 
     // fetched automatically from DB
-    QgsOSMElementID elemID() const;
+    QgsOSMElementID elemId() const;
     qint64 id() const;
     //QString username() const;
     //QDateTime timestamp() const;

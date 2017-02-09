@@ -21,9 +21,13 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
+from builtins import range
 
-from PyQt.QtCore import QRegExp
-from qgis.core import QgsCredentials, QgsDataSourceURI
+from functools import cmp_to_key
+
+from qgis.PyQt.QtCore import QRegExp
+from qgis.core import QgsCredentials, QgsDataSourceUri
 
 from ..connector import DBConnector
 from ..plugin import ConnectionError, DbError, Table
@@ -60,9 +64,9 @@ class PostGisDBConnector(DBConnector):
 
         expandedConnInfo = self._connectionInfo()
         try:
-            self.connection = psycopg2.connect(expandedConnInfo.encode('utf-8'))
+            self.connection = psycopg2.connect(expandedConnInfo)
         except self.connection_error_types() as e:
-            err = unicode(e)
+            err = str(e)
             uri = self.uri()
             conninfo = uri.connectionInfo(False)
 
@@ -79,16 +83,16 @@ class PostGisDBConnector(DBConnector):
 
                 newExpandedConnInfo = uri.connectionInfo(True)
                 try:
-                    self.connection = psycopg2.connect(newExpandedConnInfo.encode('utf-8'))
+                    self.connection = psycopg2.connect(newExpandedConnInfo)
                     QgsCredentials.instance().put(conninfo, username, password)
                 except self.connection_error_types() as e:
                     if i == 2:
                         raise ConnectionError(e)
 
-                    err = unicode(e)
+                    err = str(e)
                 finally:
                     # remove certs (if any) of the expanded connectionInfo
-                    expandedUri = QgsDataSourceURI(newExpandedConnInfo)
+                    expandedUri = QgsDataSourceUri(newExpandedConnInfo)
 
                     sslCertFile = expandedUri.param("sslcert")
                     if sslCertFile:
@@ -106,7 +110,7 @@ class PostGisDBConnector(DBConnector):
                         os.remove(sslCAFile)
         finally:
             # remove certs (if any) of the expanded connectionInfo
-            expandedUri = QgsDataSourceURI(expandedConnInfo)
+            expandedUri = QgsDataSourceUri(expandedConnInfo)
 
             sslCertFile = expandedUri.param("sslcert")
             if sslCertFile:
@@ -125,8 +129,8 @@ class PostGisDBConnector(DBConnector):
 
         self.connection.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 
-        c = self._execute(None, u"SELECT current_user")
-        self.user = self._fetchone(c)
+        c = self._execute(None, u"SELECT current_user,current_database()")
+        self.user, self.dbname = self._fetchone(c)
         self._close_cursor(c)
 
         self._checkSpatial()
@@ -135,7 +139,7 @@ class PostGisDBConnector(DBConnector):
         self._checkRasterColumnsTable()
 
     def _connectionInfo(self):
-        return unicode(self.uri().connectionInfo(True))
+        return str(self.uri().connectionInfo(True))
 
     def _checkSpatial(self):
         """ check whether postgis_version is present in catalog """
@@ -215,9 +219,9 @@ class PostGisDBConnector(DBConnector):
         return self.has_raster
 
     def hasCustomQuerySupport(self):
-        from qgis.core import QGis
+        from qgis.core import Qgis, QgsWkbTypes
 
-        return QGis.QGIS_VERSION[0:3] >= "1.5"
+        return Qgis.QGIS_VERSION[0:3] >= "1.5"
 
     def hasTableColumnEditingSupport(self):
         return True
@@ -331,7 +335,7 @@ class PostGisDBConnector(DBConnector):
                 items.append(item)
         self._close_cursor(c)
 
-        return sorted(items, cmp=lambda x, y: cmp((x[2], x[1]), (y[2], y[1])))
+        return sorted(items, key=cmp_to_key(lambda x, y: (x[1] > y[1]) - (x[1] < y[1])))
 
     def getVectorTables(self, schema=None):
         """ get list of table with a geometry column
@@ -509,7 +513,7 @@ class PostGisDBConnector(DBConnector):
         return res
 
     def getTableIndexes(self, table):
-        """ get info about table's indexes. ignore primary key constraint index, they get listed in constaints """
+        """ get info about table's indexes. ignore primary key constraint index, they get listed in constraints """
         schema, tablename = self.getSchemaTableName(table)
         schema_where = u" AND nspname=%s " % self.quoteString(schema) if schema is not None else ""
 
@@ -828,6 +832,12 @@ class PostGisDBConnector(DBConnector):
     def runVacuumAnalyze(self, table):
         """ run vacuum analyze on a table """
         sql = u"VACUUM ANALYZE %s" % self.quoteId(table)
+        self._execute(None, sql)
+        self._commit()
+
+    def runRefreshMaterializedView(self, table):
+        """ run refresh materialized view on a table """
+        sql = u"REFRESH MATERIALIZED VIEW %s" % self.quoteId(table)
         self._execute(None, sql)
         self._commit()
 

@@ -17,7 +17,7 @@
 #include "qgsrelationreferencewidgetwrapper.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
-
+#include "qgsrelationreferencewidget.h"
 
 QgsRelationReferenceWidgetWrapper::QgsRelationReferenceWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QgsMapCanvas* canvas, QgsMessageBar* messageBar, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
@@ -46,23 +46,26 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget* editor )
 
   mWidget->setEditorContext( context(), mCanvas, mMessageBar );
 
-  bool showForm = config( "ShowForm", true ).toBool();
-  bool mapIdent = config( "MapIdentification", false ).toBool();
-  bool readOnlyWidget = config( "ReadOnly", false ).toBool();
-  bool orderByValue = config( "OrderByValue", false ).toBool();
+  bool showForm = config( QStringLiteral( "ShowForm" ), true ).toBool();
+  bool mapIdent = config( QStringLiteral( "MapIdentification" ), false ).toBool();
+  bool readOnlyWidget = config( QStringLiteral( "ReadOnly" ), false ).toBool();
+  bool orderByValue = config( QStringLiteral( "OrderByValue" ), false ).toBool();
 
   mWidget->setEmbedForm( showForm );
   mWidget->setReadOnlySelector( readOnlyWidget );
   mWidget->setAllowMapIdentification( mapIdent );
   mWidget->setOrderByValue( orderByValue );
-  if ( config( "FilterFields", QVariant() ).isValid() )
+  if ( config( QStringLiteral( "FilterFields" ), QVariant() ).isValid() )
   {
-    mWidget->setFilterFields( config( "FilterFields" ).toStringList() );
-    mWidget->setChainFilters( config( "ChainFilters" ).toBool() );
+    mWidget->setFilterFields( config( QStringLiteral( "FilterFields" ) ).toStringList() );
+    mWidget->setChainFilters( config( QStringLiteral( "ChainFilters" ) ).toBool() );
   }
-  mWidget->setAllowAddFeatures( config( "AllowAddFeatures", false ).toBool() );
+  mWidget->setAllowAddFeatures( config( QStringLiteral( "AllowAddFeatures" ), false ).toBool() );
 
-  QgsRelation relation = QgsProject::instance()->relationManager()->relation( config( "Relation" ).toString() );
+  const QVariant relationName = config( QStringLiteral( "Relation" ) );
+  QgsRelation relation = relationName.isValid() ?
+                         QgsProject::instance()->relationManager()->relation( relationName.toString() ) :
+                         layer()->referencingRelations( fieldIdx() )[0];
 
   // If this widget is already embedded by the same relation, reduce functionality
   const QgsAttributeEditorContext* ctx = &context();
@@ -73,12 +76,13 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget* editor )
       mWidget->setEmbedForm( false );
       mWidget->setReadOnlySelector( false );
       mWidget->setAllowMapIdentification( false );
+      break;
     }
     ctx = ctx->parentContext();
   }
   while ( ctx );
 
-  mWidget->setRelation( relation, config( "AllowNULL" ).toBool() );
+  mWidget->setRelation( relation, config( QStringLiteral( "AllowNULL" ) ).toBool() );
 
   connect( mWidget, SIGNAL( foreignKeyChanged( QVariant ) ), this,  SLOT( foreignKeyChanged( QVariant ) ) );
 }
@@ -138,4 +142,25 @@ void QgsRelationReferenceWidgetWrapper::foreignKeyChanged( QVariant value )
     value = QVariant( field().type() );
   }
   emit valueChanged( value );
+}
+
+void QgsRelationReferenceWidgetWrapper::updateConstraintWidgetStatus( ConstraintResult status )
+{
+  if ( mWidget )
+  {
+    switch ( status )
+    {
+      case ConstraintResultPass:
+        mWidget->setStyleSheet( QString() );
+        break;
+
+      case ConstraintResultFailHard:
+        mWidget->setStyleSheet( QStringLiteral( ".QComboBox { background-color: #dd7777; }" ) );
+        break;
+
+      case ConstraintResultFailSoft:
+        mWidget->setStyleSheet( QStringLiteral( ".QComboBox { background-color: #ffd85d; }" ) );
+        break;
+    }
+  }
 }

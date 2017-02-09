@@ -18,7 +18,7 @@ email                : ersts@amnh.org
 
 #include "qgslinearminmaxenhancement.h"
 
-QgsLinearMinMaxEnhancement::QgsLinearMinMaxEnhancement( QGis::DataType theQgsRasterDataType, double theMinimumValue, double theMaximumValue ) : QgsContrastEnhancementFunction( theQgsRasterDataType, theMinimumValue, theMaximumValue )
+QgsLinearMinMaxEnhancement::QgsLinearMinMaxEnhancement( Qgis::DataType theQgsRasterDataType, double theMinimumValue, double theMaximumValue ) : QgsContrastEnhancementFunction( theQgsRasterDataType, theMinimumValue, theMaximumValue )
 {
 }
 

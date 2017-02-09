@@ -37,8 +37,7 @@ class QgsPluginLayerRegistry
 
   public:
 
-    /** Means of accessing canonical single instance  */
-    static QgsPluginLayerRegistry* instance();
+    QgsPluginLayerRegistry();
 
     ~QgsPluginLayerRegistry();
 
@@ -62,8 +61,6 @@ class QgsPluginLayerRegistry
 
   private:
 
-    /** Private since instance() creates it */
-    QgsPluginLayerRegistry();
     QgsPluginLayerRegistry( const QgsPluginLayerRegistry& rh );
 
 };

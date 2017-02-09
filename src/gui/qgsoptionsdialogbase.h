@@ -22,6 +22,7 @@
 #include <QDialog>
 #include <QPointer>
 #include <QSettings>
+#include "qgis_gui.h"
 
 class QDialogButtonBox;
 class QListWidget;
@@ -50,13 +51,14 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     Q_OBJECT
 
   public:
+
     /** Constructor
      * @param settingsKey QSettings subgroup key for saving/restore ui states, e.g. "ProjectProperties".
      * @param parent parent object (owner)
      * @param fl widget flags
      * @param settings custom QSettings pointer
      */
-    QgsOptionsDialogBase( const QString& settingsKey, QWidget* parent = nullptr, const Qt::WindowFlags& fl = nullptr, QSettings* settings = nullptr );
+    QgsOptionsDialogBase( const QString& settingsKey, QWidget* parent = nullptr, Qt::WindowFlags fl = 0, QSettings* settings = nullptr );
     ~QgsOptionsDialogBase();
 
     /** Set up the base ui connections for vertical tabs.

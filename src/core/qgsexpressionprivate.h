@@ -18,13 +18,14 @@
 #define QGSEXPRESSIONPRIVATE_H
 
 #include <QString>
-#include <QSharedPointer>
+#include <memory>
 
 #include "qgsexpression.h"
 #include "qgsdistancearea.h"
 #include "qgsunittypes.h"
 
 ///@cond
+
 /**
  * This class exists only for implicit sharing of QgsExpression
  * and is not part of the public API.
@@ -36,19 +37,16 @@ class QgsExpressionPrivate
     QgsExpressionPrivate()
         : ref( 1 )
         , mRootNode( nullptr )
-        , mRowNumber( 0 )
-        , mScale( 0 )
         , mCalc( nullptr )
-        , mDistanceUnit( QGis::UnknownUnit )
-        , mAreaUnit( QgsUnitTypes::UnknownAreaUnit )
+        , mDistanceUnit( QgsUnitTypes::DistanceUnknownUnit )
+        , mAreaUnit( QgsUnitTypes::AreaUnknownUnit )
     {}
 
     QgsExpressionPrivate( const QgsExpressionPrivate& other )
         : ref( 1 )
         , mRootNode( other.mRootNode ? other.mRootNode->clone() : nullptr )
         , mParserErrorString( other.mParserErrorString )
-        , mRowNumber( 0 )
-        , mScale( other.mScale )
+        , mEvalErrorString( other.mEvalErrorString )
         , mExp( other.mExp )
         , mCalc( other.mCalc )
         , mDistanceUnit( other.mDistanceUnit )
@@ -67,12 +65,10 @@ class QgsExpressionPrivate
     QString mParserErrorString;
     QString mEvalErrorString;
 
-    int mRowNumber;
-    double mScale;
     QString mExp;
 
-    QSharedPointer<QgsDistanceArea> mCalc;
-    QGis::UnitType mDistanceUnit;
+    std::shared_ptr<QgsDistanceArea> mCalc;
+    QgsUnitTypes::DistanceUnit mDistanceUnit;
     QgsUnitTypes::AreaUnit mAreaUnit;
 };
 ///@endcond

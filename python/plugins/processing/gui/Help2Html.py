@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 
 __author__ = 'Victor Olaya'
@@ -26,7 +27,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 import os
 import re
 import json
@@ -88,7 +89,7 @@ def getHtmlFromDescriptionsDict(alg, descriptions):
 
 def getDescription(name, descriptions):
     if name in descriptions:
-        return unicode(descriptions[name]).replace("\n", "<br>")
+        return str(descriptions[name]).replace("\n", "<br>")
     else:
         return ''
 

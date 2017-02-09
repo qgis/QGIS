@@ -16,6 +16,7 @@
 #define QGSWMSDATAITEMS_H
 
 #include "qgsdataitem.h"
+#include "qgsdataitemprovider.h"
 #include "qgsdatasourceuri.h"
 #include "qgswmsprovider.h"
 
@@ -51,14 +52,14 @@ class QgsWMSLayerItem : public QgsLayerItem
   public:
     QgsWMSLayerItem( QgsDataItem* parent, QString name, QString path,
                      const QgsWmsCapabilitiesProperty& capabilitiesProperty,
-                     const QgsDataSourceURI& dataSourceUri,
+                     const QgsDataSourceUri& dataSourceUri,
                      const QgsWmsLayerProperty &layerProperty );
     ~QgsWMSLayerItem();
 
     QString createUri();
 
     QgsWmsCapabilitiesProperty mCapabilitiesProperty;
-    QgsDataSourceURI mDataSourceUri;
+    QgsDataSourceUri mDataSourceUri;
     QgsWmsLayerProperty mLayerProperty;
 };
 
@@ -69,7 +70,7 @@ class QgsWMTSLayerItem : public QgsLayerItem
     QgsWMTSLayerItem( QgsDataItem* parent,
                       const QString &name,
                       const QString &path,
-                      const QgsDataSourceURI &dataSourceUri,
+                      const QgsDataSourceUri &dataSourceUri,
                       const QString &id,
                       const QString &format,
                       const QString &style,
@@ -82,7 +83,7 @@ class QgsWMTSLayerItem : public QgsLayerItem
     QString layerName() const override { return mTitle; }
 
   private:
-    QgsDataSourceURI mDataSourceUri;
+    QgsDataSourceUri mDataSourceUri;
     QString mId, mFormat, mStyle, mTileMatrixSet, mCrs, mTitle;
 };
 
@@ -104,5 +105,64 @@ class QgsWMSRootItem : public QgsDataCollectionItem
 
     void newConnection();
 };
+
+
+//! Provider for WMS root data item
+class QgsWmsDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    virtual QString name() override { return QStringLiteral( "WMS" ); }
+
+    virtual int capabilities() override { return QgsDataProvider::Net; }
+
+    virtual QgsDataItem* createDataItem( const QString& path, QgsDataItem* parentItem ) override;
+};
+
+
+//! Root item for XYZ tile layers
+class QgsXyzTileRootItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsXyzTileRootItem( QgsDataItem* parent, QString name, QString path );
+
+    QVector<QgsDataItem*> createChildren() override;
+
+    virtual QList<QAction*> actions() override;
+
+  private slots:
+    void newConnection();
+};
+
+//! Item implementation for XYZ tile layers
+class QgsXyzLayerItem : public QgsLayerItem
+{
+    Q_OBJECT
+  public:
+    QgsXyzLayerItem( QgsDataItem* parent, QString name, QString path, const QString& encodedUri );
+
+    virtual QList<QAction*> actions() override;
+
+  public slots:
+    void deleteConnection();
+};
+
+
+//! Provider for XYZ root data item
+class QgsXyzTileDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    virtual QString name() override { return QStringLiteral( "XYZ Tiles" ); }
+
+    virtual int capabilities() override { return QgsDataProvider::Net; }
+
+    virtual QgsDataItem* createDataItem( const QString& path, QgsDataItem* parentItem ) override
+    {
+      if ( path.isEmpty() )
+        return new QgsXyzTileRootItem( parentItem, QStringLiteral( "Tile Server (XYZ)" ), QStringLiteral( "xyz:" ) );
+      return nullptr;
+    }
+};
+
 
 #endif // QGSWMSDATAITEMS_H

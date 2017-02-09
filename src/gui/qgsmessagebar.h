@@ -24,6 +24,7 @@
 #include <QIcon>
 #include <QColor>
 #include <QList>
+#include "qgis_gui.h"
 
 class QWidget;
 class QGridLayout;
@@ -53,7 +54,6 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     };
 
     QgsMessageBar( QWidget *parent = nullptr );
-    ~QgsMessageBar();
 
     /**
      * Display a message item on the bar after hiding the currently visible one
@@ -87,9 +87,9 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     static QgsMessageBarItem* createMessage( QWidget *widget, QWidget *parent = nullptr );
 
     //! convenience method for pushing a message to the bar
-    void pushMessage( const QString &text, MessageLevel level = INFO, int duration = 0 ) { return pushMessage( QString::null, text, level, duration ); }
+    void pushMessage( const QString &text, MessageLevel level = INFO, int duration = 5 ) { return pushMessage( QString::null, text, level, duration ); }
     //! convenience method for pushing a message with title to the bar
-    void pushMessage( const QString &title, const QString &text, MessageLevel level = INFO, int duration = 0 );
+    void pushMessage( const QString &title, const QString &text, MessageLevel level = INFO, int duration = 5 );
 
     QgsMessageBarItem *currentItem() { return mCurrentItem; }
 
@@ -101,6 +101,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     void widgetRemoved( QgsMessageBarItem *item );
 
   public slots:
+
     /** Remove the currently displayed widget from the bar and
      *  display the next in the stack if any or hide the bar.
      *  @return true if the widget was removed, false otherwise

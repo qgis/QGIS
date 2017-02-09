@@ -22,13 +22,14 @@
 #include "qgsosmbase.h"
 
 #include "qgsgeometry.h"
+#include "qgis_analysis.h"
 
 class QgsOSMNodeIterator;
 class QgsOSMWayIterator;
 
 typedef QPair<QString, int> QgsOSMTagCountPair;
 
-/**
+/** \ingroup analysis
  * Class that encapsulates access to OpenStreetMap data stored in a database
  * previously imported from XML file.
  *
@@ -48,6 +49,11 @@ class ANALYSIS_EXPORT QgsOSMDatabase
   public:
     explicit QgsOSMDatabase( const QString& dbFileName = QString() );
     ~QgsOSMDatabase();
+
+    //! QgsOSMDatabase cannot be copied.
+    QgsOSMDatabase( const QgsOSMDatabase& rh ) = delete;
+    //! QgsOSMDatabase cannot be copied.
+    QgsOSMDatabase& operator=( const QgsOSMDatabase& rh ) = delete;
 
     void setFileName( const QString& dbFileName ) { mDbFileName = dbFileName; }
     QString filename() const { return mDbFileName; }
@@ -120,15 +126,14 @@ class ANALYSIS_EXPORT QgsOSMDatabase
     sqlite3_stmt* mStmtWayNodePoints;
     sqlite3_stmt* mStmtWayTags;
 
-    QgsOSMDatabase( const QgsOSMDatabase& rh );
-    QgsOSMDatabase& operator=( const QgsOSMDatabase& rh );
 };
 
 
-/** Encapsulate iteration over table of nodes/
+/** \ingroup analysis
+ * Encapsulate iteration over table of nodes/
  * @note not available in Python bindings
 */
-class ANALYSIS_EXPORT QgsOSMNodeIterator
+class ANALYSIS_EXPORT QgsOSMNodeIterator // clazy:exclude=rule-of-three
 {
   public:
     ~QgsOSMNodeIterator();
@@ -137,6 +142,7 @@ class ANALYSIS_EXPORT QgsOSMNodeIterator
     void close();
 
   protected:
+
     /** @note not available in Python bindings
      */
     QgsOSMNodeIterator( sqlite3* handle );
@@ -144,14 +150,16 @@ class ANALYSIS_EXPORT QgsOSMNodeIterator
     sqlite3_stmt* mStmt;
 
     friend class QgsOSMDatabase;
+
 };
 
 
 
-/** Encapsulate iteration over table of ways
+/** \ingroup analysis
+ * Encapsulate iteration over table of ways
  * @note not available in Python bindings
  */
-class ANALYSIS_EXPORT QgsOSMWayIterator
+class ANALYSIS_EXPORT QgsOSMWayIterator // clazy:exclude=rule-of-three
 {
   public:
     ~QgsOSMWayIterator();
@@ -160,15 +168,15 @@ class ANALYSIS_EXPORT QgsOSMWayIterator
     void close();
 
   protected:
+
     /** @note not available in Python bindings
      */
     QgsOSMWayIterator( sqlite3* handle );
 
     sqlite3_stmt* mStmt;
 
-  private:
-
     friend class QgsOSMDatabase;
+
 };
 
 

@@ -27,9 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt import uic
-from PyQt.QtWidgets import QFileDialog
-from PyQt.QtCore import QSettings
+from qgis.PyQt import uic
+from qgis.PyQt.QtWidgets import QFileDialog
+from qgis.PyQt.QtCore import QSettings
 
 from processing.tools.system import isWindows
 
@@ -70,8 +70,8 @@ class FileSelectionPanel(BASE, WIDGET):
                 settings.setValue('/Processing/LastInputPath',
                                   os.path.dirname(folder))
         else:
-            filenames = QFileDialog.getOpenFileNames(self,
-                                                     self.tr('Select file'), path, '*.' + self.ext)
+            filenames, selected_filter = QFileDialog.getOpenFileNames(self,
+                                                                      self.tr('Select file'), path, '*.' + self.ext)
             if filenames:
                 self.leText.setText(u';'.join(filenames))
                 settings.setValue('/Processing/LastInputPath',

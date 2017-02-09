@@ -15,12 +15,12 @@
 #ifndef QGSDATADEFINED_H
 #define QGSDATADEFINED_H
 
+#include "qgis_core.h"
 #include <QStringList>
 #include <QDomElement>
 #include <QMap>
 #include <QExplicitlySharedDataPointer>
 #include "qgis.h"
-#include "qgsfield.h"
 #include "qgsexpressioncontext.h"
 
 class QgsExpression;
@@ -37,6 +37,7 @@ class QgsDataDefinedPrivate;
 class CORE_EXPORT QgsDataDefined
 {
   public:
+
     /**
      * Construct a new data defined object
      *
@@ -137,27 +138,6 @@ class CORE_EXPORT QgsDataDefined
      */
     QString expressionOrField() const;
 
-    //! @note not available in python bindings
-    QMap<QString, QVariant> expressionParams() const;
-    //! @note not available in python bindings
-    void setExpressionParams( const QMap<QString, QVariant>& params );
-    void insertExpressionParam( const QString& key, const QVariant& param );
-
-    /** Prepares the expression using a vector layer
-     * @param layer vector layer
-     * @returns true if expression was successfully prepared
-     * @deprecated use QgsExpressionContext variant instead
-     */
-    Q_DECL_DEPRECATED bool prepareExpression( QgsVectorLayer* layer );
-
-    /** Prepares the expression using a fields collection
-     * @param fields
-     * @returns true if expression was successfully prepared
-     * @note added in QGIS 2.9
-     * @deprecated use QgsExpressionContext variant instead
-     */
-    Q_DECL_DEPRECATED bool prepareExpression( const QgsFields &fields );
-
     /** Prepares the expression using an expression context.
      * @param context expression context
      * @returns true if expression was successfully prepared
@@ -173,23 +153,10 @@ class CORE_EXPORT QgsDataDefined
     QgsExpression* expression();
 
     /** Returns the columns referenced by the QgsDataDefined
-     * @param layer vector layer, used for preparing the expression if required
-     * @deprecated use QgsExpressionContext variant instead
-     */
-    Q_DECL_DEPRECATED QStringList referencedColumns( QgsVectorLayer* layer );
-
-    /** Returns the columns referenced by the QgsDataDefined
-     * @param fields vector layer, used for preparing the expression if required
-     * @note added in QGIS 2.9
-     * @deprecated use QgsExpressionContext variant instead
-     */
-    Q_DECL_DEPRECATED QStringList referencedColumns( const QgsFields& fields );
-
-    /** Returns the columns referenced by the QgsDataDefined
      * @param context expression context, used for preparing the expression if required
      * @note added in QGIS 2.12
      */
-    QStringList referencedColumns( const QgsExpressionContext& context = QgsExpressionContext() );
+    QSet<QString> referencedColumns( const QgsExpressionContext& context = QgsExpressionContext() );
 
     /**
      * Get the field which this QgsDataDefined represents. Be aware that this may return

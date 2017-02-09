@@ -16,7 +16,7 @@
 #include "qgsmaplayeractionregistry.h"
 
 
-QgsMapLayerAction::QgsMapLayerAction( const QString& name, QObject* parent, const Targets& targets, const QIcon& icon )
+QgsMapLayerAction::QgsMapLayerAction( const QString& name, QObject* parent, Targets targets, const QIcon& icon )
     : QAction( icon, name, parent )
     , mSingleLayer( false )
     , mActionLayer( nullptr )
@@ -26,8 +26,8 @@ QgsMapLayerAction::QgsMapLayerAction( const QString& name, QObject* parent, cons
 {
 }
 
-/** Creates a map layer action which can run only on a specific layer*/
-QgsMapLayerAction::QgsMapLayerAction( const QString& name, QObject* parent, QgsMapLayer* layer, const Targets& targets, const QIcon& icon )
+//! Creates a map layer action which can run only on a specific layer
+QgsMapLayerAction::QgsMapLayerAction( const QString& name, QObject* parent, QgsMapLayer* layer, Targets targets, const QIcon& icon )
     : QAction( icon, name, parent )
     , mSingleLayer( true )
     , mActionLayer( layer )
@@ -37,8 +37,8 @@ QgsMapLayerAction::QgsMapLayerAction( const QString& name, QObject* parent, QgsM
 {
 }
 
-/** Creates a map layer action which can run on a specific type of layer*/
-QgsMapLayerAction::QgsMapLayerAction( const QString& name, QObject* parent, QgsMapLayer::LayerType layerType, const Targets& targets, const QIcon& icon )
+//! Creates a map layer action which can run on a specific type of layer
+QgsMapLayerAction::QgsMapLayerAction( const QString& name, QObject* parent, QgsMapLayer::LayerType layerType, Targets targets, const QIcon& icon )
     : QAction( icon, name, parent )
     , mSingleLayer( false )
     , mActionLayer( nullptr )
@@ -93,16 +93,16 @@ void QgsMapLayerAction::triggerForLayer( QgsMapLayer* layer )
 }
 
 //
-// Static calls to enforce singleton behaviour
+// Static calls to enforce singleton behavior
 //
-QgsMapLayerActionRegistry *QgsMapLayerActionRegistry::mInstance = nullptr;
+QgsMapLayerActionRegistry *QgsMapLayerActionRegistry::sInstance = nullptr;
 QgsMapLayerActionRegistry *QgsMapLayerActionRegistry::instance()
 {
-  if ( !mInstance )
+  if ( !sInstance )
   {
-    mInstance = new QgsMapLayerActionRegistry();
+    sInstance = new QgsMapLayerActionRegistry();
   }
-  return mInstance;
+  return sInstance;
 }
 
 //
@@ -114,18 +114,13 @@ QgsMapLayerActionRegistry::QgsMapLayerActionRegistry( QObject *parent ) : QObjec
   // constructor does nothing
 }
 
-QgsMapLayerActionRegistry::~QgsMapLayerActionRegistry()
-{
-
-}
-
 void QgsMapLayerActionRegistry::addMapLayerAction( QgsMapLayerAction * action )
 {
   mMapLayerActionList.append( action );
   emit changed();
 }
 
-QList< QgsMapLayerAction* > QgsMapLayerActionRegistry::mapLayerActions( QgsMapLayer* layer, const QgsMapLayerAction::Targets& targets )
+QList< QgsMapLayerAction* > QgsMapLayerActionRegistry::mapLayerActions( QgsMapLayer* layer, QgsMapLayerAction::Targets targets )
 {
   QList< QgsMapLayerAction* > validActions;
   QList<QgsMapLayerAction*>::iterator actionIt;

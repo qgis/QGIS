@@ -20,8 +20,10 @@
 
 #include "ui_qgsrelationreferenceconfigdlgbase.h"
 #include "qgseditorconfigwidget.h"
+#include "qgis_gui.h"
 
-/** \class QgsRelationReferenceConfigDlg
+/** \ingroup gui
+ * \class QgsRelationReferenceConfigDlg
  * \note not available in Python bindings
  */
 
@@ -31,8 +33,8 @@ class GUI_EXPORT QgsRelationReferenceConfigDlg : public QgsEditorConfigWidget, p
 
   public:
     explicit QgsRelationReferenceConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent );
-    virtual QgsEditorWidgetConfig config() override;
-    virtual void setConfig( const QgsEditorWidgetConfig& config ) override;
+    virtual QVariantMap config() override;
+    virtual void setConfig( const QVariantMap& config ) override;
 
   private:
     void loadFields();

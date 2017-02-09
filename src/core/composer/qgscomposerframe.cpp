@@ -46,39 +46,35 @@ QgsComposerFrame::QgsComposerFrame()
   setBackgroundEnabled( false );
 }
 
-QgsComposerFrame::~QgsComposerFrame()
+bool QgsComposerFrame::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
-}
-
-bool QgsComposerFrame::writeXML( QDomElement& elem, QDomDocument & doc ) const
-{
-  QDomElement frameElem = doc.createElement( "ComposerFrame" );
-  frameElem.setAttribute( "sectionX", QString::number( mSection.x() ) );
-  frameElem.setAttribute( "sectionY", QString::number( mSection.y() ) );
-  frameElem.setAttribute( "sectionWidth", QString::number( mSection.width() ) );
-  frameElem.setAttribute( "sectionHeight", QString::number( mSection.height() ) );
-  frameElem.setAttribute( "hidePageIfEmpty", mHidePageIfEmpty );
-  frameElem.setAttribute( "hideBackgroundIfEmpty", mHideBackgroundIfEmpty );
+  QDomElement frameElem = doc.createElement( QStringLiteral( "ComposerFrame" ) );
+  frameElem.setAttribute( QStringLiteral( "sectionX" ), QString::number( mSection.x() ) );
+  frameElem.setAttribute( QStringLiteral( "sectionY" ), QString::number( mSection.y() ) );
+  frameElem.setAttribute( QStringLiteral( "sectionWidth" ), QString::number( mSection.width() ) );
+  frameElem.setAttribute( QStringLiteral( "sectionHeight" ), QString::number( mSection.height() ) );
+  frameElem.setAttribute( QStringLiteral( "hidePageIfEmpty" ), mHidePageIfEmpty );
+  frameElem.setAttribute( QStringLiteral( "hideBackgroundIfEmpty" ), mHideBackgroundIfEmpty );
   elem.appendChild( frameElem );
 
-  return _writeXML( frameElem, doc );
+  return _writeXml( frameElem, doc );
 }
 
-bool QgsComposerFrame::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerFrame::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
-  double x = itemElem.attribute( "sectionX" ).toDouble();
-  double y = itemElem.attribute( "sectionY" ).toDouble();
-  double width = itemElem.attribute( "sectionWidth" ).toDouble();
-  double height = itemElem.attribute( "sectionHeight" ).toDouble();
+  double x = itemElem.attribute( QStringLiteral( "sectionX" ) ).toDouble();
+  double y = itemElem.attribute( QStringLiteral( "sectionY" ) ).toDouble();
+  double width = itemElem.attribute( QStringLiteral( "sectionWidth" ) ).toDouble();
+  double height = itemElem.attribute( QStringLiteral( "sectionHeight" ) ).toDouble();
   mSection = QRectF( x, y, width, height );
-  mHidePageIfEmpty = itemElem.attribute( "hidePageIfEmpty", "0" ).toInt();
-  mHideBackgroundIfEmpty = itemElem.attribute( "hideBackgroundIfEmpty", "0" ).toInt();
-  QDomElement composerItem = itemElem.firstChildElement( "ComposerItem" );
+  mHidePageIfEmpty = itemElem.attribute( QStringLiteral( "hidePageIfEmpty" ), QStringLiteral( "0" ) ).toInt();
+  mHideBackgroundIfEmpty = itemElem.attribute( QStringLiteral( "hideBackgroundIfEmpty" ), QStringLiteral( "0" ) ).toInt();
+  QDomElement composerItem = itemElem.firstChildElement( QStringLiteral( "ComposerItem" ) );
   if ( composerItem.isNull() )
   {
     return false;
   }
-  return _readXML( composerItem, doc );
+  return _readXml( composerItem, doc );
 }
 
 void QgsComposerFrame::setHidePageIfEmpty( const bool hidePageIfEmpty )
@@ -115,15 +111,15 @@ bool QgsComposerFrame::isEmpty() const
 
 }
 
-QgsExpressionContext *QgsComposerFrame::createExpressionContext() const
+QgsExpressionContext QgsComposerFrame::createExpressionContext() const
 {
   if ( !mMultiFrame )
     return QgsComposerItem::createExpressionContext();
 
   //start with multiframe's context
-  QgsExpressionContext* context = mMultiFrame->createExpressionContext();
+  QgsExpressionContext context = mMultiFrame->createExpressionContext();
   //add frame's individual context
-  context->appendScope( QgsExpressionContextUtils::composerItemScope( this ) );
+  context.appendScope( QgsExpressionContextUtils::composerItemScope( this ) );
 
   return context;
 }

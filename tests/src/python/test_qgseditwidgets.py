@@ -14,15 +14,20 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import QgsFeature, QgsGeometry, QgsPoint, QgsVectorLayer, NULL
+from qgis.core import (QgsProject, QgsFeature, QgsGeometry, QgsPoint, QgsProject, QgsRelation, QgsVectorLayer, NULL,
+                       QgsField)
 from qgis.gui import QgsEditorWidgetRegistry
 
 from qgis.testing import start_app, unittest
+from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtWidgets import QTextEdit
 
 start_app()
 
 
 class TestQgsTextEditWidget(unittest.TestCase):
+
+    VALUEMAP_NULL_TEXT = "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}"
 
     @classmethod
     def setUpClass(cls):
@@ -63,6 +68,47 @@ class TestQgsTextEditWidget(unittest.TestCase):
         self.doAttributeTest(0, ['value', '123', NULL, NULL])
         self.doAttributeTest(1, [NULL, 123, NULL, NULL])
 
+    def testStringWithMaxLen(self):
+        """ tests that text edit wrappers correctly handle string fields with a maximum length """
+        layer = QgsVectorLayer("none?field=fldint:integer", "layer", "memory")
+        assert layer.isValid()
+        layer.dataProvider().addAttributes([QgsField('max', QVariant.String, 'string', 10),
+                                            QgsField('nomax', QVariant.String, 'string', 0)])
+        layer.updateFields()
+        QgsProject.instance().addMapLayer(layer)
 
-if __name__ == '__main__':
+        reg = QgsEditorWidgetRegistry.instance()
+        config = {'IsMultiline': 'True'}
+
+        # first test for field without character limit
+        editor = QTextEdit()
+        editor.setPlainText('this_is_a_long_string')
+        w = reg.create('TextEdit', layer, 2, config, editor, None)
+        self.assertEqual(w.value(), 'this_is_a_long_string')
+
+        # next test for field with character limit
+        editor = QTextEdit()
+        editor.setPlainText('this_is_a_long_string')
+        w = reg.create('TextEdit', layer, 1, config, editor, None)
+
+        self.assertEqual(w.value(), 'this_is_a_')
+
+        QgsProject.instance().removeAllMapLayers()
+
+    def test_ValueMap_set_get(self):
+        layer = QgsVectorLayer("none?field=number:integer", "layer", "memory")
+        assert layer.isValid()
+        QgsProject.instance().addMapLayer(layer)
+        reg = QgsEditorWidgetRegistry.instance()
+        configWdg = reg.createConfigWidget('ValueMap', layer, 0, None)
+
+        config = {'map': {'two': '2', 'twoandhalf': '2.5', 'NULL text': 'NULL',
+                          'nothing': self.VALUEMAP_NULL_TEXT}}
+
+        # Set a configuration containing values and NULL and check if it
+        # is returned intact.
+        configWdg.setConfig(config)
+        self.assertEqual(configWdg.config(), config)
+
+        QgsProject.instance().removeAllMapLayers()
     unittest.main()

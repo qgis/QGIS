@@ -20,7 +20,7 @@
 #include "qgsdataitem.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayercombobox.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsrasterlayer.h"
 
 #include <QCheckBox>
@@ -35,7 +35,7 @@
 
 static QgsMapLayer* _rasterLayer( const QString& filename )
 {
-  QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
+  QMap<QString, QgsMapLayer*> layers = QgsProject::instance()->mapLayers();
   Q_FOREACH ( QgsMapLayer* layer, layers )
   {
     if ( layer->type() == QgsMapLayer::RasterLayer && layer->source() == filename )
@@ -55,7 +55,7 @@ static QString _rasterLayerName( const QString& filename )
 
 
 
-/** Helper class to report progress */
+//! Helper class to report progress
 struct QgsAlignRasterDialogProgress : public QgsAlignRaster::ProgressHandler
 {
   explicit QgsAlignRasterDialogProgress( QProgressBar* pb ) : mPb( pb ) {}
@@ -94,7 +94,7 @@ QgsAlignRasterDialog::QgsAlignRasterDialog( QWidget *parent )
   connect( mSpinGridOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( updateParametersFromReferenceLayer() ) );
   connect( mSpinGridOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( updateParametersFromReferenceLayer() ) );
 
-  connect( mChkCustomCRS, SIGNAL( clicked( bool ) ), this, SLOT( updateCustomCRS() ) );
+  connect( mChkCustomCRS, SIGNAL( clicked( bool ) ), this, SLOT( updateCustomCrs() ) );
   connect( mChkCustomCellSize, SIGNAL( clicked( bool ) ), this, SLOT( updateCustomCellSize() ) );
   connect( mChkCustomGridOffset, SIGNAL( clicked( bool ) ), this, SLOT( updateCustomGridOffset() ) );
 
@@ -111,7 +111,7 @@ QgsAlignRasterDialog::QgsAlignRasterDialog( QWidget *parent )
 
   populateLayersView();
 
-  updateCustomCRS();
+  updateCustomCrs();
   updateCustomCellSize();
   updateCustomGridOffset();
 }
@@ -164,7 +164,7 @@ void QgsAlignRasterDialog::updateAlignedRasterInfo()
   }
 
   QSize size = mAlign->alignedRasterSize();
-  QString msg = QString( "%1 x %2" ).arg( size.width() ).arg( size.height() );
+  QString msg = QStringLiteral( "%1 x %2" ).arg( size.width() ).arg( size.height() );
   mEditOutputSize->setText( msg );
 }
 
@@ -206,7 +206,7 @@ void QgsAlignRasterDialog::updateParametersFromReferenceLayer()
   // refresh values that may have changed
   if ( res )
   {
-    QgsCoordinateReferenceSystem destCRS( mAlign->destinationCRS() );
+    QgsCoordinateReferenceSystem destCRS( mAlign->destinationCrs() );
     mClipExtentGroupBox->setOutputCrs( destCRS );
     if ( !mChkCustomCRS->isChecked() )
     {
@@ -304,7 +304,7 @@ void QgsAlignRasterDialog::referenceLayerChanged()
 
 void QgsAlignRasterDialog::destinationCrsChanged()
 {
-  if ( mCrsSelector->crs().toWkt() == mAlign->destinationCRS() )
+  if ( mCrsSelector->crs().toWkt() == mAlign->destinationCrs() )
     return;
 
   int index = mCboReferenceLayer->currentIndex();
@@ -325,7 +325,7 @@ void QgsAlignRasterDialog::clipExtentChanged()
   updateAlignedRasterInfo();
 }
 
-void QgsAlignRasterDialog::updateCustomCRS()
+void QgsAlignRasterDialog::updateCustomCrs()
 {
   mCrsSelector->setEnabled( mChkCustomCRS->isChecked() );
   updateParametersFromReferenceLayer();
@@ -362,7 +362,7 @@ void QgsAlignRasterDialog::runAlign()
       {
         QgsRasterLayer* layer = new QgsRasterLayer( item.outputFilename, QFileInfo( item.outputFilename ).baseName() );
         if ( layer->isValid() )
-          QgsMapLayerRegistry::instance()->addMapLayer( layer );
+          QgsProject::instance()->addMapLayer( layer );
         else
           delete layer;
       }
@@ -393,13 +393,11 @@ QgsAlignRasterLayerConfigDialog::QgsAlignRasterLayerConfigDialog()
   cboResample->addItem( tr( "Lanczos (6x6 kernel)" ), QgsAlignRaster::RA_Lanczos );
   cboResample->addItem( tr( "Average" ), QgsAlignRaster::RA_Average );
   cboResample->addItem( tr( "Mode" ), QgsAlignRaster::RA_Mode );
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
   cboResample->addItem( tr( "Maximum" ), QgsAlignRaster::RA_Max );
   cboResample->addItem( tr( "Minimum" ), QgsAlignRaster::RA_Min );
   cboResample->addItem( tr( "Median" ), QgsAlignRaster::RA_Median );
   cboResample->addItem( tr( "First Quartile (Q1)" ), QgsAlignRaster::RA_Q1 );
   cboResample->addItem( tr( "Third Quartile (Q3)" ), QgsAlignRaster::RA_Q3 );
-#endif
 
   editOutput = new QLineEdit( this );
   btnBrowse = new QPushButton( tr( "Browse..." ), this );
@@ -439,7 +437,7 @@ QString QgsAlignRasterLayerConfigDialog::outputFilename() const
 
 QgsAlignRaster::ResampleAlg QgsAlignRasterLayerConfigDialog::resampleMethod() const
 {
-  return static_cast< QgsAlignRaster::ResampleAlg >( cboResample->itemData( cboResample->currentIndex() ).toInt() );
+  return static_cast< QgsAlignRaster::ResampleAlg >( cboResample->currentData().toInt() );
 }
 
 bool QgsAlignRasterLayerConfigDialog::rescaleValues() const
@@ -459,16 +457,16 @@ void QgsAlignRasterLayerConfigDialog::setItem( const QString& inputFilename, con
 void QgsAlignRasterLayerConfigDialog::browseOutputFilename()
 {
   QSettings settings;
-  QString dirName = editOutput->text().isEmpty() ? settings.value( "/UI/lastRasterFileDir", QDir::homePath() ).toString() : editOutput->text();
+  QString dirName = editOutput->text().isEmpty() ? settings.value( QStringLiteral( "/UI/lastRasterFileDir" ), QDir::homePath() ).toString() : editOutput->text();
 
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Select output file" ), dirName, tr( "GeoTIFF" ) + " (*.tif *.tiff *.TIF *.TIFF)" );
 
   if ( !fileName.isEmpty() )
   {
-    // ensure the user never ommited the extension from the file name
-    if ( !fileName.endsWith( ".tif", Qt::CaseInsensitive ) && !fileName.endsWith( ".tiff", Qt::CaseInsensitive ) )
+    // ensure the user never omitted the extension from the file name
+    if ( !fileName.endsWith( QLatin1String( ".tif" ), Qt::CaseInsensitive ) && !fileName.endsWith( QLatin1String( ".tiff" ), Qt::CaseInsensitive ) )
     {
-      fileName += ".tif";
+      fileName += QLatin1String( ".tif" );
     }
     editOutput->setText( fileName );
   }

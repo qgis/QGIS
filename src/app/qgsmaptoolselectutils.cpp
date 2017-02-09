@@ -16,13 +16,14 @@ email                : jpalmer at linz dot govt dot nz
 #include <limits>
 
 #include "qgsmaptoolselectutils.h"
+#include "qgsfeatureiterator.h"
 #include "qgisapp.h"
 #include "qgsmessagebar.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgsrubberband.h"
 #include "qgscsexception.h"
 #include "qgslogger.h"
@@ -55,7 +56,7 @@ void QgsMapToolSelectUtils::setRubberBand( QgsMapCanvas* canvas, QRect& selectRe
 
   if ( rubberBand )
   {
-    rubberBand->reset( QGis::Polygon );
+    rubberBand->reset( QgsWkbTypes::PolygonGeometry );
     rubberBand->addPoint( ll, false );
     rubberBand->addPoint( lr, false );
     rubberBand->addPoint( ur, false );
@@ -68,7 +69,7 @@ void QgsMapToolSelectUtils::expandSelectRectangle( QRect& selectRect,
     QPoint point )
 {
   int boxSize = 0;
-  if ( vlayer->geometryType() != QGis::Polygon )
+  if ( vlayer->geometryType() != QgsWkbTypes::PolygonGeometry )
   {
     //if point or line use an artificial bounding box of 10x10 pixels
     //to aid the user to click on a feature accurately
@@ -85,56 +86,153 @@ void QgsMapToolSelectUtils::expandSelectRectangle( QRect& selectRect,
   selectRect.setBottom( point.y() + boxSize );
 }
 
-void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
-    QgsGeometry* selectGeometry,
-    bool doContains,
-    bool doDifference,
-    bool singleSelect )
+void QgsMapToolSelectUtils::selectMultipleFeatures( QgsMapCanvas* canvas, const QgsGeometry& selectGeometry, QMouseEvent* e )
 {
-  if ( selectGeometry->type() != QGis::Polygon )
-    return;
+  QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection;
+  if ( e->modifiers() & Qt::ShiftModifier && e->modifiers() & Qt::ControlModifier )
+    behavior = QgsVectorLayer::IntersectSelection;
+  else if ( e->modifiers() & Qt::ShiftModifier )
+    behavior = QgsVectorLayer::AddToSelection;
+  else if ( e->modifiers() & Qt::ControlModifier )
+    behavior = QgsVectorLayer::RemoveFromSelection;
 
+  bool doContains = e->modifiers() & Qt::AltModifier;
+  setSelectedFeatures( canvas, selectGeometry, behavior, doContains );
+}
+
+void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas* canvas, const QgsGeometry& selectGeometry, QMouseEvent* e )
+{
   QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas );
   if ( !vlayer )
     return;
+
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+
+  QgsFeatureIds selectedFeatures = getMatchingFeatures( canvas, selectGeometry, false, true );
+  if ( selectedFeatures.isEmpty() )
+  {
+    if ( !( e->modifiers() & Qt::ShiftModifier || e->modifiers() & Qt::ControlModifier ) )
+    {
+      // if no modifiers then clicking outside features clears the selection
+      // but if there's a shift or ctrl modifier, then it's likely the user was trying
+      // to modify an existing selection by adding or subtracting features and just
+      // missed the feature
+      vlayer->removeSelection();
+    }
+    QApplication::restoreOverrideCursor();
+    return;
+  }
+
+  QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection;
+
+  //either shift or control modifier switches to "toggle" selection mode
+  if ( e->modifiers() & Qt::ShiftModifier || e->modifiers() & Qt::ControlModifier )
+  {
+    QgsFeatureId selectId = *selectedFeatures.constBegin();
+    QgsFeatureIds layerSelectedFeatures = vlayer->selectedFeatureIds();
+    if ( layerSelectedFeatures.contains( selectId ) )
+      behavior = QgsVectorLayer::RemoveFromSelection;
+    else
+      behavior = QgsVectorLayer::AddToSelection;
+  }
+
+  vlayer->selectByIds( selectedFeatures, behavior );
+
+  QApplication::restoreOverrideCursor();
+}
+
+void QgsMapToolSelectUtils::setSelectedFeatures( QgsMapCanvas* canvas, const QgsGeometry& selectGeometry,
+    QgsVectorLayer::SelectBehavior selectBehavior, bool doContains, bool singleSelect )
+{
+  QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas );
+  if ( !vlayer )
+    return;
+
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+
+  QgsFeatureIds selectedFeatures = getMatchingFeatures( canvas, selectGeometry, doContains, singleSelect );
+  vlayer->selectByIds( selectedFeatures, selectBehavior );
+
+  QApplication::restoreOverrideCursor();
+}
+
+
+QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas* canvas, const QgsGeometry& selectGeometry, bool doContains, bool singleSelect )
+{
+  QgsFeatureIds newSelectedFeatures;
+
+  if ( selectGeometry.type() != QgsWkbTypes::PolygonGeometry )
+    return newSelectedFeatures;
+
+  QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas );
+  if ( !vlayer )
+    return newSelectedFeatures;
 
   // toLayerCoordinates will throw an exception for any 'invalid' points in
   // the rubber band.
   // For example, if you project a world map onto a globe using EPSG 2163
   // and then click somewhere off the globe, an exception will be thrown.
-  QgsGeometry selectGeomTrans( *selectGeometry );
+  QgsGeometry selectGeomTrans = selectGeometry;
 
   if ( canvas->mapSettings().hasCrsTransformEnabled() )
   {
     try
     {
       QgsCoordinateTransform ct( canvas->mapSettings().destinationCrs(), vlayer->crs() );
+
+      if ( !ct.isShortCircuited() && selectGeomTrans.type() == QgsWkbTypes::PolygonGeometry )
+      {
+        // convert add more points to the edges of the rectangle
+        // improve transformation result
+        QgsPolygon poly( selectGeomTrans.asPolygon() );
+        if ( poly.size() == 1 && poly.at( 0 ).size() == 5 )
+        {
+          const QgsPolyline &ringIn = poly.at( 0 );
+
+          QgsPolygon newpoly( 1 );
+          newpoly[0].resize( 41 );
+          QgsPolyline &ringOut = newpoly[0];
+
+          ringOut[ 0 ] = ringIn.at( 0 );
+
+          int i = 1;
+          for ( int j = 1; j < 5; j++ )
+          {
+            QgsVector v(( ringIn.at( j ) - ringIn.at( j - 1 ) ) / 10.0 );
+            for ( int k = 0; k < 9; k++ )
+            {
+              ringOut[ i ] = ringOut[ i - 1 ] + v;
+              i++;
+            }
+            ringOut[ i++ ] = ringIn.at( j );
+          }
+          selectGeomTrans = QgsGeometry::fromPolygon( newpoly );
+        }
+      }
+
       selectGeomTrans.transform( ct );
     }
     catch ( QgsCsException &cse )
     {
       Q_UNUSED( cse );
       // catch exception for 'invalid' point and leave existing selection unchanged
-      QgsLogger::warning( "Caught CRS exception " + QString( __FILE__ ) + ": " + QString::number( __LINE__ ) );
+      QgsDebugMsg( "Caught CRS exception " );
       QgisApp::instance()->messageBar()->pushMessage(
         QObject::tr( "CRS Exception" ),
         QObject::tr( "Selection extends beyond layer's coordinate system" ),
         QgsMessageBar::WARNING,
         QgisApp::instance()->messageTimeout() );
-      return;
+      return newSelectedFeatures;
     }
   }
 
-  QApplication::setOverrideCursor( Qt::WaitCursor );
-
-  QgsDebugMsg( "Selection layer: " + vlayer->name() );
-  QgsDebugMsg( "Selection polygon: " + selectGeomTrans.exportToWkt() );
-  QgsDebugMsg( "doContains: " + QString( doContains ? "T" : "F" ) );
-  QgsDebugMsg( "doDifference: " + QString( doDifference ? "T" : "F" ) );
+  QgsDebugMsgLevel( "Selection layer: " + vlayer->name(), 3 );
+  QgsDebugMsgLevel( "Selection polygon: " + selectGeomTrans.exportToWkt(), 3 );
+  QgsDebugMsgLevel( "doContains: " + QString( doContains ? "T" : "F" ), 3 );
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( canvas->mapSettings() );
   context.expressionContext() << QgsExpressionContextUtils::layerScope( vlayer );
-  QgsFeatureRendererV2* r = vlayer->rendererV2();
+  QgsFeatureRenderer* r = vlayer->renderer();
   if ( r )
     r->startRender( context, vlayer->fields() );
 
@@ -142,13 +240,12 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
   request.setFilterRect( selectGeomTrans.boundingBox() );
   request.setFlags( QgsFeatureRequest::ExactIntersect );
   if ( r )
-    request.setSubsetOfAttributes( r->usedAttributes(), vlayer->fields() );
+    request.setSubsetOfAttributes( r->usedAttributes( context ), vlayer->fields() );
   else
     request.setSubsetOfAttributes( QgsAttributeList() );
 
   QgsFeatureIterator fit = vlayer->getFeatures( request );
 
-  QgsFeatureIds newSelectedFeatures;
   QgsFeature f;
   QgsFeatureId closestFeatureId = 0;
   bool foundSingleFeature = false;
@@ -160,7 +257,7 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
     if ( r && !r->willRenderFeature( f, context ) )
       continue;
 
-    const QgsGeometry* g = f.constGeometry();
+    QgsGeometry g = f.geometry();
     if ( doContains )
     {
       if ( !selectGeomTrans.contains( g ) )
@@ -174,7 +271,7 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
     if ( singleSelect )
     {
       foundSingleFeature = true;
-      double distance = g->distance( selectGeomTrans );
+      double distance = g.distance( selectGeomTrans );
       if ( distance <= closestFeatureDist )
       {
         closestFeatureDist = distance;
@@ -196,40 +293,7 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
 
   QgsDebugMsg( "Number of new selected features: " + QString::number( newSelectedFeatures.size() ) );
 
-  if ( doDifference )
-  {
-    QgsFeatureIds layerSelectedFeatures = vlayer->selectedFeaturesIds();
-
-    QgsFeatureIds selectedFeatures;
-    QgsFeatureIds deselectedFeatures;
-
-    QgsFeatureIds::const_iterator i = newSelectedFeatures.constEnd();
-    while ( i != newSelectedFeatures.constBegin() )
-    {
-      --i;
-      if ( layerSelectedFeatures.contains( *i ) )
-      {
-        deselectedFeatures.insert( *i );
-      }
-      else
-      {
-        selectedFeatures.insert( *i );
-      }
-    }
-
-    vlayer->modifySelection( selectedFeatures, deselectedFeatures );
-  }
-  else
-  {
-    vlayer->setSelectedFeatures( newSelectedFeatures );
-  }
-
-  QApplication::restoreOverrideCursor();
+  return newSelectedFeatures;
 }
 
-void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas, QgsGeometry* selectGeometry, QMouseEvent * e )
-{
-  bool doContains = e->modifiers() & Qt::ShiftModifier;
-  bool doDifference = e->modifiers() & Qt::ControlModifier;
-  setSelectFeatures( canvas, selectGeometry, doContains, doDifference );
-}
+

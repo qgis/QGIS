@@ -19,6 +19,7 @@
 
 #include <QAbstractItemDelegate>
 #include <QString>
+#include "qgis_gui.h"
 
 class QCheckBox;
 class QgsDetailedItemWidget;
@@ -37,11 +38,11 @@ class GUI_EXPORT QgsDetailedItemDelegate : public QAbstractItemDelegate
   public:
     QgsDetailedItemDelegate( QObject * parent = nullptr );
     ~QgsDetailedItemDelegate();
-    /** Reimplement for parent class */
+    //! Reimplement for parent class
     void paint( QPainter * thePainter,
                 const QStyleOptionViewItem & theOption,
                 const QModelIndex & theIndex ) const override;
-    /** Reimplement for parent class */
+    //! Reimplement for parent class
     QSize sizeHint( const QStyleOptionViewItem & theOption,
                     const QModelIndex & theIndex ) const override;
 

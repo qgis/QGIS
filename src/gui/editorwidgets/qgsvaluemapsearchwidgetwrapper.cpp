@@ -15,16 +15,18 @@
 
 #include "qgsvaluemapsearchwidgetwrapper.h"
 #include "qgstexteditconfigdlg.h"
+#include "qgsvaluemapconfigdlg.h"
+#include "qgsvaluemapfieldformatter.h"
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsfieldvalidator.h"
 
 #include <QSettings>
 #include <QSizePolicy>
 
 QgsValueMapSearchWidgetWrapper::QgsValueMapSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsSearchWidgetWrapper( vl, fieldIdx, parent ),
-    mComboBox( nullptr )
+    : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
+    , mComboBox( nullptr )
 {
 }
 
@@ -40,10 +42,12 @@ void QgsValueMapSearchWidgetWrapper::comboBoxIndexChanged( int idx )
     if ( idx == 0 )
     {
       clearExpression();
+      emit valueCleared();
     }
     else
     {
       setExpression( mComboBox->itemData( idx ).toString() );
+      emit valueChanged();
     }
     emit expressionChanged( mExpression );
   }
@@ -64,19 +68,87 @@ bool QgsValueMapSearchWidgetWrapper::valid() const
   return true;
 }
 
+QgsSearchWidgetWrapper::FilterFlags QgsValueMapSearchWidgetWrapper::supportedFlags() const
+{
+  return EqualTo | NotEqualTo | IsNull | IsNotNull;
+}
+
+QgsSearchWidgetWrapper::FilterFlags QgsValueMapSearchWidgetWrapper::defaultFlags() const
+{
+  return EqualTo;
+}
+
+QString QgsValueMapSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const
+{
+  //if deselect value, always pass
+  if ( mComboBox->currentIndex() == 0 )
+    return QString();
+
+  //clear any unsupported flags
+  flags &= supportedFlags();
+
+  QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
+  QString fieldName = QgsExpression::quotedColumnRef( layer()->fields().at( mFieldIdx ).name() );
+
+  if ( flags & IsNull )
+    return fieldName + " IS NULL";
+  if ( flags & IsNotNull )
+    return fieldName + " IS NOT NULL";
+
+  QString currentKey = mComboBox->currentData().toString();
+
+  switch ( fldType )
+  {
+    case QVariant::Int:
+    case QVariant::UInt:
+    case QVariant::Double:
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
+    {
+      if ( flags & EqualTo )
+        return fieldName + '=' + currentKey;
+      else if ( flags & NotEqualTo )
+        return fieldName + "<>" + currentKey;
+      break;
+    }
+
+    default:
+    {
+      if ( flags & EqualTo )
+        return fieldName + "='" + currentKey + '\'';
+      else if ( flags & NotEqualTo )
+        return fieldName + "<>'" + currentKey + '\'';
+      break;
+    }
+  }
+
+  return QString();
+}
+
+void QgsValueMapSearchWidgetWrapper::clearWidget()
+{
+  mComboBox->setCurrentIndex( 0 );
+}
+
+void QgsValueMapSearchWidgetWrapper::setEnabled( bool enabled )
+{
+  mComboBox->setEnabled( enabled );
+}
+
 void QgsValueMapSearchWidgetWrapper::initWidget( QWidget* editor )
 {
   mComboBox = qobject_cast<QComboBox*>( editor );
 
   if ( mComboBox )
   {
-    const QgsEditorWidgetConfig cfg = config();
-    QgsEditorWidgetConfig::ConstIterator it = cfg.constBegin();
+    const QVariantMap cfg = config();
+    QVariantMap::ConstIterator it = cfg.constBegin();
     mComboBox->addItem( tr( "Please select" ), "" );
 
     while ( it != cfg.constEnd() )
     {
-      mComboBox->addItem( it.key(), it.value() );
+      if ( it.value() != QgsValueMapFieldFormatter::NULL_VALUE )
+        mComboBox->addItem( it.key(), it.value() );
       ++it;
     }
     connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( comboBoxIndexChanged( int ) ) );
@@ -88,9 +160,9 @@ void QgsValueMapSearchWidgetWrapper::setExpression( QString exp )
   QString fieldName = layer()->fields().at( mFieldIdx ).name();
   QString str;
 
-  str = QString( "%1 = '%2'" )
+  str = QStringLiteral( "%1 = '%2'" )
         .arg( QgsExpression::quotedColumnRef( fieldName ),
-              exp.replace( '\'', "''" ) );
+              exp.replace( '\'', QLatin1String( "''" ) ) );
 
   mExpression = str;
 }

@@ -22,14 +22,9 @@
 #include "qgslogger.h"
 #include "qgsproviderregistry.h"
 #include "qgsogrhelperfunctions.h"
+#include "qgsapplication.h"
 #include <ogr_api.h>
 #include <cpl_error.h>
-
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8F(x) (x).toUtf8().constData()
-#else
-#define TO8F(x) QFile::encodeName( x ).constData()
-#endif
 
 QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString& connType, const QString& connName, Qt::WindowFlags fl )
     : QDialog( parent, fl )
@@ -38,7 +33,7 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString& connTy
   setupUi( this );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/OGRDatabaseConnection/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/OGRDatabaseConnection/geometry" ) ).toByteArray() );
 
   //add database drivers
   QStringList dbDrivers = QgsProviderRegistry::instance()->databaseDrivers().split( ';' );
@@ -59,7 +54,7 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString& connTy
     QString port = settings.value( key + "/port" ).toString();
     txtPort->setText( port );
     txtUsername->setText( settings.value( key + "/username" ).toString() );
-    if ( settings.value( key + "/save" ).toString() == "true" )
+    if ( settings.value( key + "/save" ).toString() == QLatin1String( "true" ) )
     {
       txtPassword->setText( settings.value( key + "/password" ).toString() );
       chkStorePassword->setChecked( true );
@@ -74,7 +69,7 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString& connTy
 QgsNewOgrConnection::~QgsNewOgrConnection()
 {
   QSettings settings;
-  settings.setValue( "/Windows/OGRDatabaseConnection/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/OGRDatabaseConnection/geometry" ), saveGeometry() );
 }
 
 void QgsNewOgrConnection::testConnection()
@@ -88,7 +83,7 @@ void QgsNewOgrConnection::testConnection()
   OGRDataSourceH       poDS;
   OGRSFDriverH         pahDriver;
   CPLErrorReset();
-  poDS = OGROpen( TO8F( uri ), false, &pahDriver );
+  poDS = OGROpen( uri.toUtf8().constData(), false, &pahDriver );
   if ( !poDS )
   {
     QMessageBox::information( this, tr( "Test connection" ), tr( "Connection failed - Check settings and try again.\n\nExtended error information:\n%1" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
@@ -100,7 +95,7 @@ void QgsNewOgrConnection::testConnection()
   }
 }
 
-/** Autoconnected SLOTS **/
+//! Autoconnected SLOTS *
 void QgsNewOgrConnection::accept()
 {
   QSettings settings;
@@ -129,7 +124,7 @@ void QgsNewOgrConnection::accept()
   settings.setValue( baseKey + "/database", txtDatabase->text() );
   settings.setValue( baseKey + "/port", txtPort->text() );
   settings.setValue( baseKey + "/username", txtUsername->text() );
-  settings.setValue( baseKey + "/password", chkStorePassword->isChecked() ? txtPassword->text() : "" );
+  settings.setValue( baseKey + "/password", chkStorePassword->isChecked() ? txtPassword->text() : QLatin1String( "" ) );
   settings.setValue( baseKey + "/save", chkStorePassword->isChecked() ? "true" : "false" );
 
   QDialog::accept();
@@ -140,4 +135,4 @@ void QgsNewOgrConnection::on_btnConnect_clicked()
   testConnection();
 }
 
-/** End  Autoconnected SLOTS **/
+//! End  Autoconnected SLOTS *

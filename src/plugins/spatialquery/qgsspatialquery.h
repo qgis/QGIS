@@ -24,6 +24,7 @@
 #include "qgsmngprogressbar.h"
 #include "qgsreaderfeatures.h"
 
+class QgsGeometryEngine;
 
 /**
 * \brief Enum with the topologic relations
@@ -51,16 +52,17 @@ enum Topologic_Relation
 class QgsSpatialQuery
 {
   public:
+
     /**
      * \brief Constructor for a Spatial query.
      * \param pb Pointer to the MngProgressBar object.
      */
     explicit QgsSpatialQuery( MngProgressBar *pb );
 
-    /**
-     * \brief Destructor
-     */
     ~QgsSpatialQuery();
+
+    QgsSpatialQuery( const QgsSpatialQuery& rh ) = delete;
+    QgsSpatialQuery& operator=( const QgsSpatialQuery& rh ) = delete;
 
     /**
      * \brief Sets if using selected features in Target layer
@@ -99,7 +101,7 @@ class QgsSpatialQuery
      * \param geomType          Geometry Type
      * \returns short int       Topologic Dimension
      */
-    static short int dimensionGeometry( QGis::GeometryType geomType );
+    static short int dimensionGeometry( QgsWkbTypes::GeometryType geomType );
 
   private:
 
@@ -135,9 +137,9 @@ class QgsSpatialQuery
      * \param geomTarget         Geometry the feature Target
      * \param operation          Pointer to function of GEOS operation
      */
-    void populateIndexResult(
-      QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, QgsGeometry *geomTarget,
-      bool ( QgsGeometry::* operation )( const QgsGeometry * ) const );
+    void populateIndexResult( QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, const QgsGeometry& geomTarget,
+                              bool ( QgsGeometryEngine::* operation )( const QgsAbstractGeometry&, QString* ) const );
+
     /**
      * \brief Populate index Result Disjoint
      * \param qsetIndexResult    Reference to QSet contains the result query
@@ -145,9 +147,8 @@ class QgsSpatialQuery
      * \param geomTarget         Geometry the feature Target
      * \param operation          Pointer to function of GEOS operation
      */
-    void populateIndexResultDisjoint(
-      QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, QgsGeometry *geomTarget,
-      bool ( QgsGeometry::* operation )( const QgsGeometry * ) const );
+    void populateIndexResultDisjoint( QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, const QgsGeometry& geomTarget,
+                                      bool ( QgsGeometryEngine::*operation )( const QgsAbstractGeometry&, QString* ) const );
 
     MngProgressBar *mPb;
     bool mUseReferenceSelection;
@@ -158,8 +159,6 @@ class QgsSpatialQuery
     QgsVectorLayer * mLayerReference;
     QgsSpatialIndex  mIndexReference;
 
-    QgsSpatialQuery( const QgsSpatialQuery& rh );
-    QgsSpatialQuery& operator=( const QgsSpatialQuery& rh );
 };
 
 #endif // SPATIALQUERY_H

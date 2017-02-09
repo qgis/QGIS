@@ -21,6 +21,7 @@
 #include "qgsoptionsdialogbase.h"
 
 #include "ui_qgsgrassoptionsbase.h"
+#include "qgis_grass_lib.h"
 
 class GRASS_LIB_EXPORT QgsGrassOptions : public QgsOptionsDialogBase, private Ui::QgsGrassOptionsBase
 {
@@ -28,7 +29,6 @@ class GRASS_LIB_EXPORT QgsGrassOptions : public QgsOptionsDialogBase, private Ui
 
   public:
     explicit QgsGrassOptions( QWidget *parent = 0 );
-    ~QgsGrassOptions();
 
   private slots:
     void on_mGisbaseBrowseButton_clicked();

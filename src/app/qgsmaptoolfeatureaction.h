@@ -21,6 +21,7 @@
 
 #include <QObject>
 #include <QPointer>
+#include "qgis_app.h"
 
 class QgsVectorLayer;
 
@@ -35,6 +36,8 @@ class APP_EXPORT QgsMapToolFeatureAction : public QgsMapTool
     QgsMapToolFeatureAction( QgsMapCanvas* canvas );
 
     ~QgsMapToolFeatureAction();
+
+    virtual Flags flags() const override { return QgsMapTool::AllowZoomRect; }
 
     //! Overridden mouse move event
     virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;

@@ -17,13 +17,15 @@
 #ifndef QGSCOMPOSERUTILS_H
 #define QGSCOMPOSERUTILS_H
 
+#include "qgis_core.h"
 #include "qgscomposition.h" //for page size and orientation enums
+#include "qgsrendercontext.h"
 #include <QPointF>
 #include <QRectF>
 
 class QPainter;
 
-/** \ingroup MapComposer
+/** \ingroup core
  * Utilities for compositions.
  */
 class CORE_EXPORT QgsComposerUtils
@@ -123,40 +125,19 @@ class CORE_EXPORT QgsComposerUtils
      */
     static bool decodePresetPaperSize( const QString& presetString, double &width, double &height );
 
-    /** Reads all data defined properties from xml
-     * @param itemElem dom element containing data defined properties
-     * @param dataDefinedNames map of data defined property to name used within xml
-     * @param dataDefinedProperties map of data defined properties to QgsDataDefined in which to store properties from xml
-     * @note this method was added in version 2.5
+    /** Reads all pre 3.0 data defined properties from an XML element.
+     * @note this method was added in version 3.0
      * @see readDataDefinedProperty
      * @see writeDataDefinedPropertyMap
      */
-    static void readDataDefinedPropertyMap( const QDomElement &itemElem,
-                                            QMap< QgsComposerObject::DataDefinedProperty, QString >* dataDefinedNames,
-                                            QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties
-                                          );
+    static void readOldDataDefinedPropertyMap( const QDomElement &itemElem,
+        QgsPropertyCollection& dataDefinedProperties );
 
-    /** Reads a single data defined property from xml DOM element
-     * @param property data defined property to read
-     * @param ddElem dom element containing settings for data defined property
-     * @param dataDefinedProperties map of data defined properties to QgsDataDefined in which to store properties from xml
-     * @note this method was added in version 2.5
+    /** Reads a pre 3.0 data defined property from an XML DOM element.
+     * @note this method was added in version 3.0
      * @see readDataDefinedPropertyMap
      */
-    static void readDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QDomElement &ddElem,
-                                         QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties );
-
-    /** Writes data defined properties to xml
-     * @param itemElem DOM element in which to store data defined properties
-     * @param doc DOM document
-     * @param dataDefinedNames map of data defined property to name used within xml
-     * @param dataDefinedProperties map of data defined properties to QgsDataDefined for storing in xml
-     * @note this method was added in version 2.5
-     * @see readDataDefinedPropertyMap
-     */
-    static void writeDataDefinedPropertyMap( QDomElement &itemElem, QDomDocument &doc,
-        const QMap< QgsComposerObject::DataDefinedProperty, QString >* dataDefinedNames,
-        const QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties );
+    static QgsProperty readOldDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QDomElement &ddElem );
 
     /** Returns a font where size is set in pixels and the size has been upscaled with FONT_WORKAROUND_SCALE
      * to workaround QT font rendering bugs
@@ -263,6 +244,25 @@ class CORE_EXPORT QgsComposerUtils
      * @note added in version 2.5
      */
     static void drawText( QPainter* painter, const QRectF& rect, const QString& text, const QFont& font, const QColor& color = QColor(), const Qt::AlignmentFlag halignment = Qt::AlignLeft, const Qt::AlignmentFlag valignment = Qt::AlignTop, const int flags = Qt::TextWordWrap );
+
+    /**
+     * Creates a render context suitable for the specified composer \a map and \a painter destination.
+     * This method returns a new QgsRenderContext which matches the scale and settings of the
+     * target map. If the \a dpi argument is not specified then the dpi will be taken from the destinatation
+     * painter device.
+     * @note added in QGIS 3.0
+     * @see createRenderContextForComposition()
+     */
+    static QgsRenderContext createRenderContextForMap( QgsComposerMap* map, QPainter* painter, double dpi = -1 );
+
+    /**
+     * Creates a render context suitable for the specified \a composition and \a painter destination.
+     * This method returns a new QgsRenderContext which matches the scale and settings from the composition's
+     * QgsComposition::referenceMap().
+     * @note added in QGIS 3.0
+     * @see createRenderContextForMap()
+     */
+    static QgsRenderContext createRenderContextForComposition( QgsComposition* composition, QPainter* painter );
 
 };
 

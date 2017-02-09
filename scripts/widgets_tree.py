@@ -39,12 +39,12 @@ Output should go to ../resources/customization.xml
 import sys
 import os
 import glob
-from PyQt.QtWidgets import QWidget, QDialog, QCheckBox, QComboBox, QDial, QPushButton, QLabel, QLCDNumber, QLineEdit, QRadioButton, QScrollBar, QSlider, QSpinBox, QTextEdit, QDateEdit, QTimeEdit, QDateTimeEdit, QListView, QProgressBar, QTableView, QTabWidget, QTextBrowser, QDialogButtonBox, QScrollArea, QGroupBox, QStackedWidget
-from PyQt.uic import loadUi
-from PyQt.QtXml import QDomDocument
+from qgis.PyQt.QtWidgets import QWidget, QDialog, QCheckBox, QComboBox, QDial, QPushButton, QLabel, QLCDNumber, QLineEdit, QRadioButton, QScrollBar, QSlider, QSpinBox, QTextEdit, QDateEdit, QTimeEdit, QDateTimeEdit, QListView, QProgressBar, QTableView, QTabWidget, QTextBrowser, QDialogButtonBox, QScrollArea, QGroupBox, QStackedWidget
+from qgis.PyQt.uic import loadUi
+from qgis.PyQt.QtXml import QDomDocument
 
 # qwt_plot is missing somehow but it may depend on installed packages
-from PyQt4 import Qwt5 as qwt_plot
+from qgis.PyQt import Qwt5 as qwt_plot
 sys.modules['qwt_plot'] = qwt_plot
 
 # loadUi is looking for custom widget in module which is lowercase version of
@@ -126,7 +126,7 @@ class UiInspector:
 
 
 if __name__ == '__main__':
-    from PyQt4.QtCore import QApplication
+    from qgis.PyQt.QtCore import QApplication
     app = QApplication(sys.argv) # required by loadUi
     inspector = UiInspector()
     xml = inspector.xml()

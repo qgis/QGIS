@@ -25,28 +25,56 @@
 #include <QString>
 #include <QTextStream>
 
-/** Writes message log into server logfile*/
+//! Writes message log into server logfile
 class QgsServerLogger: public QObject
 {
     Q_OBJECT
   public:
+
+    /**
+     * Get the singleton instance
+     */
     static QgsServerLogger* instance();
 
-    int logLevel() const { return mLogLevel; }
-    //QString logFile() const { return mLogFile; }
+    /**
+     * Get the current log level
+     * @return the log level
+     * @note added in QGIS 3.0
+     */
+    QgsMessageLog::MessageLevel logLevel() const { return mLogLevel; }
+
+    /**
+      * Set the current log level
+      * @param level the log level
+      * @note added in QGIS 3.0
+      */
+    void setLogLevel( QgsMessageLog::MessageLevel level );
+
+    /**
+      * Set the current log file
+      */
+    void setLogFile( const QString& f );
 
   public slots:
+
+    /**
+     * Log a message from the server context
+     *
+     * @param message the message
+     * @param tag tag of the message
+     * @param level log level of the message
+     */
     void logMessage( const QString& message, const QString& tag, QgsMessageLog::MessageLevel level );
 
   protected:
     QgsServerLogger();
 
   private:
-    static QgsServerLogger* mInstance;
+    static QgsServerLogger* sInstance;
 
     QFile mLogFile;
     QTextStream mTextStream;
-    int mLogLevel;
+    QgsMessageLog::MessageLevel mLogLevel;
 };
 
 #endif // QGSSERVERLOGGER_H

@@ -33,7 +33,7 @@ class QgsComposerMultiFrame: QgsComposerObject
 
   public:
 
-    /** Specifies the behaviour for creating new frames to fit the multiframe's content
+    /** Specifies the behavior for creating new frames to fit the multiframe's content
      */
     enum ResizeMode
     {
@@ -82,19 +82,12 @@ class QgsComposerMultiFrame: QgsComposerObject
     virtual QSizeF minFrameSize( const int frameIndex = -1 ) const;
 
     /** Renders a portion of the multiframe's content into a painter.
-     * @param p destination painter
-     * @param renderExtent visible extent of content to render into the painter.
-     * @deprecated use render( QPainter* painter, const QRectF& renderExtent, const int frameIndex ) instead
-     */
-    virtual void render( QPainter* p, const QRectF& renderExtent ) /Deprecated/;
-
-    /** Renders a portion of the multiframe's content into a painter.
      * @param painter destination painter
      * @param renderExtent visible extent of content to render into the painter.
      * @param frameIndex frame number for content
      * @note added in version 2.5
      */
-    virtual void render( QPainter* painter, const QRectF& renderExtent, const int frameIndex );
+    virtual void render( QPainter* painter, const QRectF& renderExtent, const int frameIndex ) = 0;
 
     /** Adds a frame to the multiframe.
      * @param frame frame to add
@@ -144,7 +137,7 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @param ignoreFrames set to false to avoid writing state information about child frames into DOM
      * @see _writeXML
      */
-    virtual bool writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const = 0;
+    virtual bool writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const = 0;
 
     /** Stores state information about base multiframe object in DOM element. Implementations of writeXML
      * should call this method.
@@ -153,7 +146,7 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @param ignoreFrames set to false to avoid writing state information about child frames into DOM
      * @see writeXML
      */
-    bool _writeXML( QDomElement& elem, QDomDocument& doc, bool ignoreFrames = false ) const;
+    bool _writeXml( QDomElement& elem, QDomDocument& doc, bool ignoreFrames = false ) const;
 
     /** Reads multiframe state information from a DOM element. Implementations of readXML
      * should also call the _readXML method to restore general multiframe properties.
@@ -162,7 +155,7 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @param ignoreFrames set to false to avoid read state information about child frames from DOM
      * @see _readXML
      */
-    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false ) = 0;
+    virtual bool readXml( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false ) = 0;
 
     /** Restores state information about base multiframe object from a DOM element. Implementations of readXML
      * should call this method.
@@ -171,7 +164,7 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @param ignoreFrames set to false to avoid reading state information about child frames from DOM
      * @see readXML
      */
-    bool _readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
+    bool _readXml( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
 
     /** Returns the parent composition for the multiframe.
      * @returns composition
@@ -212,7 +205,7 @@ class QgsComposerMultiFrame: QgsComposerObject
 
     /** Creates a new frame and adds it to the multi frame and composition.
      * @param currentFrame an existing QgsComposerFrame from which to copy the size
-     * and general frame properties (eg frame style, background, rendering settings).
+     * and general frame properties (e.g., frame style, background, rendering settings).
      * @param pos position of top-left corner of the new frame
      * @param size size of the new frame
      * @returns new QgsComposerFrame

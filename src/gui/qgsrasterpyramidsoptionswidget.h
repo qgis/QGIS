@@ -19,7 +19,7 @@
 #define QGSRASTERPYRAMIDSOPTIONSWIDGET_H
 
 #include "ui_qgsrasterpyramidsoptionswidgetbase.h"
-#include "qgsrasterdataprovider.h"
+#include "qgis_gui.h"
 
 class QCheckBox;
 
@@ -34,7 +34,6 @@ class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget,
   public:
 
     QgsRasterPyramidsOptionsWidget( QWidget* parent = nullptr, const QString& provider = "gdal" );
-    ~QgsRasterPyramidsOptionsWidget();
 
     QStringList configOptions() const { return mSaveOptionsWidget->options(); }
     QgsRasterFormatSaveOptionsWidget* createOptionsWidget() { return mSaveOptionsWidget; }
@@ -62,6 +61,15 @@ class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget,
     void someValueChanged(); /* emitted when any other setting changes */
 
   private:
+
+    // Must be in the same order as in the .ui file
+    typedef enum
+    {
+      GTIFF = 0,
+      INTERNAL = 1,
+      ERDAS = 2
+    } Format;
+
 
     QString mProvider;
     QList< int > mOverviewList;

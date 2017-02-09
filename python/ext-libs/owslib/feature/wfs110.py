@@ -7,10 +7,15 @@
 # Contact email: tomkralidis@gmail.com
 # =============================================================================
 
+from __future__ import (absolute_import, division, print_function)
+
 import cgi
-from cStringIO import StringIO
-from urllib import urlencode
-from urllib2 import urlopen
+from six import PY2
+from six.moves import cStringIO as StringIO
+try:
+    from urllib import urlencode
+except ImportError:
+    from urllib.parse import urlencode
 from owslib.util import openURL, testXMLValue, nspath_eval, ServiceException
 from owslib.etree import etree
 from owslib.fgdc import Metadata
@@ -32,7 +37,7 @@ class WebFeatureService_1_1_0(WebFeatureService_):
 
     Implements IWebFeatureService.
     """
-    def __new__(self,url, version, xml, parse_remote_metadata=False):
+    def __new__(self,url, version, xml, parse_remote_metadata=False, timeout=30):
         """ overridden __new__ method
 
         @type url: string
@@ -41,10 +46,11 @@ class WebFeatureService_1_1_0(WebFeatureService_):
         @param xml: elementtree object
         @type parse_remote_metadata: boolean
         @param parse_remote_metadata: whether to fully process MetadataURL elements
+        @param timeout: time (in seconds) after which requests should timeout
         @return: initialized WebFeatureService_1_1_0 object
         """
         obj=object.__new__(self)
-        obj.__init__(url, version, xml, parse_remote_metadata)
+        obj.__init__(url, version, xml, parse_remote_metadata, timeout)
         return obj
 
     def __getitem__(self,name):
@@ -52,13 +58,14 @@ class WebFeatureService_1_1_0(WebFeatureService_):
         if name in self.__getattribute__('contents').keys():
             return self.__getattribute__('contents')[name]
         else:
-            raise KeyError, "No content named %s" % name
+            raise KeyError("No content named %s" % name)
 
 
-    def __init__(self, url, version, xml=None, parse_remote_metadata=False):
+    def __init__(self, url, version, xml=None, parse_remote_metadata=False, timeout=30):
         """Initialize."""
         self.url = url
         self.version = version
+        self.timeout = timeout
         self._capabilities = None
         self.owscommon = OwsCommon('1.0.0')
         reader = WFSCapabilitiesReader(self.version)
@@ -99,12 +106,12 @@ class WebFeatureService_1_1_0(WebFeatureService_):
         self.exceptions = [f.text for f \
                 in self._capabilities.findall('Capability/Exception/Format')]
 
-    def getcapabilities(self, timeout=30):
+    def getcapabilities(self):
         """Request and return capabilities document from the WFS as a
         file-like object.
         NOTE: this is effectively redundant now"""
         reader = WFSCapabilitiesReader(self.version)
-        return urlopen(reader.capabilities_url(self.url), timeout=timeout)
+        return openURL(reader.capabilities_url(self.url), timeout=self.timeout)
 
     def items(self):
         '''supports dict-like items() access'''
@@ -113,9 +120,21 @@ class WebFeatureService_1_1_0(WebFeatureService_):
             items.append((item,self.contents[item]))
         return items
 
+    def _makeStringIO(self, strval):
+        """
+        Helper method to make sure the StringIO being returned will work.
+
+        Differences between Python 2.6/2.7/3.x mean we have a lot of cases to handle.
+        """
+        if PY2:
+            return StringIO(strval)
+
+        return StringIO(strval.decode())
+
     def getfeature(self, typename=None, filter=None, bbox=None, featureid=None,
-                   featureversion=None, propertyname=['*'], maxfeatures=None,
-                   srsname=None, outputFormat=None, method='Get'):
+                   featureversion=None, propertyname='*', maxfeatures=None,
+                   srsname=None, outputFormat=None, method='Get',
+                   startindex=None):
         """Request and return feature data as a file-like object.
 
         Parameters
@@ -140,6 +159,8 @@ class WebFeatureService_1_1_0(WebFeatureService_):
             EPSG code to request the data in
         outputFormat: string (optional)
             Requested response format of the request.
+        startindex: int (optional)
+            Start position to return feature set (paging in combination with maxfeatures)
 
         There are 3 different modes of use
 
@@ -194,20 +215,22 @@ class WebFeatureService_1_1_0(WebFeatureService_):
             request['featureversion'] = str(featureversion)
         if maxfeatures is not None:
             request['maxfeatures'] = str(maxfeatures)
+        if startindex is not None:
+            request['startindex'] = str(startindex)
         if outputFormat is not None:
             request["outputFormat"] = outputFormat
 
         data = urlencode(request)
         log.debug("Making request: %s?%s" % (base_url, data))
-        u = openURL(base_url, data, method)
+        u = openURL(base_url, data, method, timeout=self.timeout)
 
         # check for service exceptions, rewrap, and return
         # We're going to assume that anything with a content-length > 32k
         # is data. We'll check anything smaller.
-        try:
+        if 'Content-Length' in u.info():
             length = int(u.info()['Content-Length'])
             have_read = False
-        except (KeyError, AttributeError):
+        else:
             data = u.read()
             have_read = True
             length = len(data)
@@ -220,16 +243,16 @@ class WebFeatureService_1_1_0(WebFeatureService_):
                 tree = etree.fromstring(data)
             except BaseException:
                 # Not XML
-                return StringIO(data)
+                return self._makeStringIO(data)
             else:
                 if tree.tag == "{%s}ServiceExceptionReport" % namespaces["ogc"]:
                     se = tree.find(nspath_eval('ServiceException', namespaces["ogc"]))
                     raise ServiceException(str(se.text).strip())
                 else:
-                    return StringIO(data)
+                    return self._makeStringIO(data)
         else:
             if have_read:
-                return StringIO(data)
+                return self._makeStringIO(data)
             return u
 
     def getOperationByName(self, name):
@@ -237,7 +260,7 @@ class WebFeatureService_1_1_0(WebFeatureService_):
         for item in self.operations:
             if item.name == name:
                 return item
-        raise KeyError, "No operation named %s" % name
+        raise KeyError("No operation named %s" % name)
 
 
 
@@ -285,14 +308,14 @@ class ContentMetadata:
 
             if metadataUrl['url'] is not None and parse_remote_metadata:  # download URL
                 try:
-                    content = urlopen(metadataUrl['url'], timeout=timeout)
+                    content = openURL(metadataUrl['url'], timeout=timeout)
                     doc = etree.parse(content)
                     if metadataUrl['type'] is not None:
                         if metadataUrl['type'] == 'FGDC':
                             metadataUrl['metadata'] = Metadata(doc)
                         if metadataUrl['type'] in ['TC211', '19115', '19139']:
                             metadataUrl['metadata'] = MD_Metadata(doc)
-                except Exception, err:
+                except Exception:
                     metadataUrl['metadata'] = None
 
             self.metadataUrls.append(metadataUrl)
@@ -342,7 +365,7 @@ class WFSCapabilitiesReader(object):
             A timeout value (in seconds) for the request.
         """
         request = self.capabilities_url(url)
-        u = urlopen(request, timeout=timeout)
+        u = openURL(request, timeout=timeout)
         return etree.fromstring(u.read())
 
     def readString(self, st):
@@ -351,7 +374,7 @@ class WFSCapabilitiesReader(object):
 
         string should be an XML capabilities document
         """
-        if not isinstance(st, str):
-            raise ValueError("String must be of type string, not %s" % type(st))
+        if not isinstance(st, str) and not isinstance(st, bytes):
+            raise ValueError("String must be of type string or bytes, not %s" % type(st))
         return etree.fromstring(st)
 

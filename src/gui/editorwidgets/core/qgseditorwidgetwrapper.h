@@ -23,11 +23,10 @@
 class QgsVectorLayer;
 class QgsField;
 
-#include "qgseditorwidgetconfig.h"
-#include "qgsattributeeditorcontext.h"
 #include "qgswidgetwrapper.h"
+#include "qgis_gui.h"
 
-/**
+/** \ingroup gui
  * Manages an editor widget
  * Widget and wrapper share the same parent
  *
@@ -42,6 +41,18 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
 {
     Q_OBJECT
   public:
+
+    /**
+     * Result of constraint checks.
+     * @note added in QGIS 3.0
+     */
+    enum ConstraintResult
+    {
+      ConstraintResultPass = 0, //!< Widget passed constraints successfully
+      ConstraintResultFailHard, //!< Widget failed at least one hard (enforced) constraint
+      ConstraintResultFailSoft, //!< Widget failed at least one soft (non-enforced) constraint
+    };
+
     /**
      * Create a new widget wrapper
      *
@@ -98,6 +109,13 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     static QgsEditorWidgetWrapper* fromWidget( QWidget* widget );
 
     /**
+     * Check if the given widget or one of its parent is a QTableView.
+     * @param parent the widget to check
+     * @return true if yes
+     */
+    static bool isInTable( const QWidget* parent );
+
+    /**
      * Is used to enable or disable the edit functionality of the managed widget.
      * By default this will enable or disable the whole widget
      *
@@ -110,7 +128,43 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      */
     virtual void showIndeterminateState() {}
 
+    /**
+     * Update constraint.
+     * @param featureContext the feature to use to evaluate the constraint
+     * @param constraintOrigin optional origin for constraints to check. This can be used to limit the constraints tested
+     * to only provider or layer based constraints.
+     * @note added in QGIS 2.16
+     */
+    void updateConstraint( const QgsFeature &featureContext, QgsFieldConstraints::ConstraintOrigin constraintOrigin = QgsFieldConstraints::ConstraintOriginNotSet );
+
+    /**
+     * Get the current constraint status.
+     * @return true if the constraint is valid or if there's no constraint,
+     * false otherwise
+     * @note added in QGIS 2.16
+     * @see constraintFailureReason()
+     * @see isBlockingCommit()
+     */
+    bool isValidConstraint() const;
+
+    /**
+     * Returns true if the widget is preventing the feature from being committed. This may be true as a result
+     * of attribute values failing enforced field constraints.
+     * @note added in QGIS 3.0
+     * @see isValidConstraint()
+     */
+    bool isBlockingCommit() const;
+
+    /**
+     * Returns the reason why a constraint check has failed (or an empty string
+     * if constraint check was successful).
+     * @see isValidConstraint()
+     * @note added in QGIS 3.0
+     */
+    QString constraintFailureReason() const;
+
   signals:
+
     /**
      * Emit this signal, whenever the value changed.
      *
@@ -118,7 +172,18 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      */
     void valueChanged( const QVariant& value );
 
+    /**
+     * Emit this signal when the constraint status changed.
+     * @brief constraintStatusChanged
+     * @param constraint represented as a string
+     * @param desc is the constraint description
+     * @param err the error represented as a string. Empty if none.
+     * @param status
+     */
+    void constraintStatusChanged( const QString& constraint, const QString &desc, const QString& err, ConstraintResult status );
+
   public slots:
+
     /**
      * Will be called when the feature changes
      *
@@ -137,6 +202,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     virtual void setValue( const QVariant& value ) = 0;
 
   protected slots:
+
     /**
      * If you emit to this slot in your implementation, an appropriate change notification
      * will be broadcasted. Helper for string type widgets.
@@ -185,8 +251,40 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      */
     void valueChanged();
 
+  protected:
+
+    /**
+     * This should update the widget with a visual cue if a constraint status
+     * changed.
+     *
+     * By default a stylesheet will be applied on the widget that changes the
+     * background color to red.
+     *
+     * This can be overwritten in subclasses to allow individual widgets to
+     * change the visual cue.
+     *
+     * @param status The current constraint status.
+     *
+     * @note added in QGIS 2.16
+     */
+    virtual void updateConstraintWidgetStatus( ConstraintResult status );
+
   private:
+
+    /**
+     * Boolean storing the current validity of the constraint for this widget.
+     */
+    bool mValidConstraint;
+
+    //! True if widget is blocking feature commits
+    bool mIsBlockingCommit;
+
+    //! Contains the string explanation of why a constraint check failed
+    QString mConstraintFailureReason;
+
     int mFieldIdx;
+    QgsFeature mFeature;
+    mutable QVariant mDefaultValue; // Cache default value, we don't want to retrieve different serial numbers if called repeatedly
 };
 
 // We'll use this class inside a QVariant in the widgets properties

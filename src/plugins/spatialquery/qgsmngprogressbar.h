@@ -27,19 +27,18 @@
 class MngProgressBar
 {
   public:
+
     /**
      * \brief Constructor for a MngProgressBar.
      * \param pb Pointer to the MngProgressBar object.
      */
     explicit MngProgressBar( QProgressBar *pb );
-    /**
-     * \brief Destructor
-     */
+
     ~MngProgressBar() { mPb->reset(); }
 
     /**
      * \brief Sets the progress bar's minimum and maximum values to minimum and maximum respectively
-     * \param minimum minimun value.
+     * \param minimum minimum value.
      * \param maximum maximum value.
      */
     void init( int minimum, int maximum );

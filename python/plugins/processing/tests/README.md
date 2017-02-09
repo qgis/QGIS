@@ -37,7 +37,7 @@ A new window will open with a text definition.
 **copy the text definition** there.
 
 The first string from the command goes to the key `algorithm`, the subsequent
-ones to params and the last one(s) to results.
+ones to `params` and the last one(s) to `results`.
 
 The above translates to
 
@@ -98,6 +98,20 @@ params:
   OTHER: another param
 ```
 
+### File type parameters
+
+If you need an external file for the algorithm test, you need to specify the 'file' type and the (relative) path to the file in its 'name':
+
+```yaml
+params:
+  PAR: 2
+  STR: string
+  EXTFILE:
+    type: file
+    name: custom/grass7/extfile.txt
+  OTHER: another param
+```
+
 ### Results
 
 Results are specified very similar.
@@ -152,7 +166,7 @@ OUTPUT:
       
 #### Files
 
-You can compare the content of an ouptut file by an expected result reference file
+You can compare the content of an output file by an expected result reference file
 
 ```yaml
 OUTPUT_HTML_FILE:

@@ -33,7 +33,6 @@ class QgsLinearGeorefTransform : public QgsGeorefTransformInterface
 {
   public:
     QgsLinearGeorefTransform() : mParameters() {}
-    ~QgsLinearGeorefTransform() {}
 
     bool getOriginScale( QgsPoint &origin, double &scaleX, double &scaleY ) const;
 
@@ -113,7 +112,6 @@ class QgsProjectiveGeorefTransform : public QgsGeorefTransformInterface
 {
   public:
     QgsProjectiveGeorefTransform() : mParameters() {}
-    ~QgsProjectiveGeorefTransform() {}
 
     bool updateParametersFromGCPs( const QVector<QgsPoint> &mapCoords, const QVector<QgsPoint> &pixelCoords ) override;
     int getMinimumGCPCount() const override;
@@ -487,7 +485,9 @@ int QgsHelmertGeorefTransform::helmert_transform( void *pTransformerArg, int bDs
   return true;
 }
 
-QgsGDALGeorefTransform::QgsGDALGeorefTransform( bool useTPS, unsigned int polynomialOrder ) : mPolynomialOrder( qMin( 3u, polynomialOrder ) ), mIsTPSTransform( useTPS )
+QgsGDALGeorefTransform::QgsGDALGeorefTransform( bool useTPS, unsigned int polynomialOrder )
+    : mPolynomialOrder( qMin( 3u, polynomialOrder ) )
+    , mIsTPSTransform( useTPS )
 {
   mGDALTransformer     = nullptr;
   mGDALTransformerArgs = nullptr;
@@ -575,10 +575,11 @@ bool QgsProjectiveGeorefTransform::updateParametersFromGCPs( const QVector<QgsPo
     return false;
 
   // HACK: flip y coordinates, because georeferencer and gdal use different conventions
-  QVector<QgsPoint> flippedPixelCoords( pixelCoords.size() );
-  for ( int i = 0; i < pixelCoords.size(); i++ )
+  QVector<QgsPoint> flippedPixelCoords;
+  flippedPixelCoords.reserve( pixelCoords.size() );
+  Q_FOREACH ( const QgsPoint& coord, pixelCoords )
   {
-    flippedPixelCoords[i] = pixelCoords[i];
+    flippedPixelCoords << QgsPoint( coord.x(), -coord.y() );
   }
 
   QgsLeastSquares::projective( mapCoords, flippedPixelCoords, mParameters.H );

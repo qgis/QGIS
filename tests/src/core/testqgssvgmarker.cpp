@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -22,16 +22,15 @@
 #include <QDesktopServices>
 
 //qgis includes...
-#include <qgsmaprenderer.h>
 #include <qgsmaplayer.h>
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
-#include <qgsmaplayerregistry.h>
-#include <qgssymbolv2.h>
-#include <qgssinglesymbolrendererv2.h>
-#include "qgsmarkersymbollayerv2.h"
-#include "qgsdatadefined.h"
+#include <qgsproject.h>
+#include <qgssymbol.h>
+#include <qgssinglesymbolrenderer.h>
+#include "qgsmarkersymbollayer.h"
+#include "qgsproperty.h"
 
 //qgis test includes
 #include "qgsrenderchecker.h"
@@ -67,9 +66,9 @@ class TestQgsSvgMarkerSymbol : public QObject
     bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPointsLayer;
-    QgsSvgMarkerSymbolLayerV2* mSvgMarkerLayer;
-    QgsMarkerSymbolV2* mMarkerSymbol;
-    QgsSingleSymbolRendererV2* mSymbolRenderer;
+    QgsSvgMarkerSymbolLayer* mSvgMarkerLayer;
+    QgsMarkerSymbol* mMarkerSymbol;
+    QgsSingleSymbolRenderer* mSymbolRenderer;
     QString mTestDataDir;
     QString mReport;
 };
@@ -93,25 +92,25 @@ void TestQgsSvgMarkerSymbol::initTestCase()
   QString pointFileName = mTestDataDir + "points.shp";
   QFileInfo pointFileInfo( pointFileName );
   mpPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(),
-                                      pointFileInfo.completeBaseName(), "ogr" );
+                                      pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpPointsLayer );
 
   //setup symbol
-  mSvgMarkerLayer = new QgsSvgMarkerSymbolLayerV2();
-  mMarkerSymbol = new QgsMarkerSymbolV2();
+  mSvgMarkerLayer = new QgsSvgMarkerSymbolLayer();
+  mMarkerSymbol = new QgsMarkerSymbol();
   mMarkerSymbol->changeSymbolLayer( 0, mSvgMarkerLayer );
-  mSymbolRenderer = new QgsSingleSymbolRendererV2( mMarkerSymbol );
-  mpPointsLayer->setRendererV2( mSymbolRenderer );
+  mSymbolRenderer = new QgsSingleSymbolRenderer( mMarkerSymbol );
+  mpPointsLayer->setRenderer( mSymbolRenderer );
 
   // We only need maprender instead of mapcanvas
   // since maprender does not require a qui
   // and is more light weight
   //
-  mMapSettings.setLayers( QStringList() << mpPointsLayer->id() );
-  mReport += "<h1>SVG Marker Tests</h1>\n";
+  mMapSettings.setLayers( QList<QgsMapLayer*>() << mpPointsLayer );
+  mReport += QLatin1String( "<h1>SVG Marker Tests</h1>\n" );
 
 }
 void TestQgsSvgMarkerSymbol::cleanupTestCase()
@@ -130,9 +129,9 @@ void TestQgsSvgMarkerSymbol::cleanupTestCase()
 
 void TestQgsSvgMarkerSymbol::svgMarkerSymbol()
 {
-  mReport += "<h2>SVG marker symbol layer test</h2>\n";
+  mReport += QLatin1String( "<h2>SVG marker symbol layer test</h2>\n" );
 
-  mSvgMarkerLayer->setPath( "/transport/transport_airport.svg" );
+  mSvgMarkerLayer->setPath( QStringLiteral( "/transport/transport_airport.svg" ) );
   mSvgMarkerLayer->setOutlineColor( Qt::black );
   mSvgMarkerLayer->setColor( Qt::blue );
   mSvgMarkerLayer->setSize( 10 );
@@ -147,10 +146,10 @@ void TestQgsSvgMarkerSymbol::bounds()
   mSvgMarkerLayer->setOutlineColor( Qt::black );
   mSvgMarkerLayer->setColor( Qt::blue );
   mSvgMarkerLayer->setOutlineWidth( 0.5 );
-  mSvgMarkerLayer->setDataDefinedProperty( "size", new QgsDataDefined( true, true, "min(\"importance\" * 2, 6)" ) );
+  mSvgMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty::fromExpression( QStringLiteral( "min(\"importance\" * 2, 6)" ) ) );
 
   mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, true );
-  bool result = imageCheck( "svgmarker_bounds" );
+  bool result = imageCheck( QStringLiteral( "svgmarker_bounds" ) );
   mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, false );
   QVERIFY( result );
 }
@@ -167,7 +166,7 @@ bool TestQgsSvgMarkerSymbol::imageCheck( const QString& theTestType )
   mMapSettings.setExtent( mpPointsLayer->extent() );
   mMapSettings.setOutputDpi( 96 );
   QgsRenderChecker myChecker;
-  myChecker.setControlPathPrefix( "symbol_svgmarker" );
+  myChecker.setControlPathPrefix( QStringLiteral( "symbol_svgmarker" ) );
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
   bool myResultFlag = myChecker.runTest( theTestType );
@@ -175,5 +174,5 @@ bool TestQgsSvgMarkerSymbol::imageCheck( const QString& theTestType )
   return myResultFlag;
 }
 
-QTEST_MAIN( TestQgsSvgMarkerSymbol )
+QGSTEST_MAIN( TestQgsSvgMarkerSymbol )
 #include "testqgssvgmarker.moc"
