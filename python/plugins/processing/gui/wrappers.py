@@ -193,9 +193,9 @@ class WidgetWrapper(QObject):
         return filename, selected_filter
 
 
-class ExpressionEnabledWidgetWrapper(WidgetWrapper):
+class ExpressionWidgetWrapperMixin():
 
-    def createWidget(self, basewidget):
+    def wrapWithExpressionButton(self, basewidget):
         expr_button = QToolButton()
         expr_button.clicked.connect(self.showExpressionsBuilder)
         expr_button.setText('...')
