@@ -36,7 +36,7 @@ from processing.gui.NumberInputPanel import NumberInputPanel
 class GdalAlgorithmDialog(AlgorithmDialog):
 
     def __init__(self, alg):
-        AlgorithmDialogBase.__init__(self, alg)
+        AlgorithmDialog.__init__(self, alg)
 
         self.alg = alg
 
