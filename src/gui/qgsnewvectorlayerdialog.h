@@ -19,7 +19,7 @@
 
 #include "ui_qgsnewvectorlayerdialogbase.h"
 #include "qgisgui.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 #include "qgis.h"
 #include "qgis_gui.h"
@@ -55,7 +55,7 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
     void on_mRemoveAttributeButton_clicked();
     void on_mFileFormatComboBox_currentIndexChanged( int index );
     void on_mTypeBox_currentIndexChanged( int index );
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/editing_geometry_attributes.html#creating-a-new-shapefile-layer" ) ); }
     void nameChanged( const QString& );
     void selectionChanged();
 
