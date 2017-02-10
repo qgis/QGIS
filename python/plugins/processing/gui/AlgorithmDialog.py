@@ -133,6 +133,9 @@ class AlgorithmDialog(AlgorithmDialogBase):
                             if p.crs() != projectCRS:
                                 unmatchingCRS = True
             if isinstance(param, ParameterExtent):
+                if param.skip_crs_check:
+                    continue
+
                 value = self.mainWidget.wrappers[param.name].widget.leText.text().strip()
                 if value:
                     hasExtent = True
