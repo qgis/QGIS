@@ -272,7 +272,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      *   pr = p.midpoint ( QgsPointV2( QgsWkbTypes.PointM, 2, 2, 0, 2 ) )
      *   # pr is a 3D point: 'PointM (3 4 1)'
      *   pr = p.midpoint ( QgsPointV2( QgsWkbTypes.PointZM, 2, 2, 2, 2 ) )
-     *   # pr is a 3D point: 'PointZM (3 4 1 1)'
+     *   # pr is a 4D point: 'PointZM (3 4 1 1)'
      * \endcode
      * @note added in QGIS 3.0
      */
