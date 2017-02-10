@@ -62,7 +62,7 @@ class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTex
     void on_buttonBox_rejected();
     void on_buttonBox_helpRequested()
     {
-      QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#id8" ) );
+      QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#delimited-text-files" ) );
     }
     void on_btnBrowseForFile_clicked();
 

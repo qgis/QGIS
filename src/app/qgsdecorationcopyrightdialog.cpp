@@ -100,5 +100,5 @@ void QgsDecorationCopyrightDialog::apply()
 
 void QgsDecorationCopyrightDialog::on_buttonBox_helpRequested()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#id57" ) );
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#copyright-label" ) );
 }
