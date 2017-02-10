@@ -25,7 +25,18 @@ __copyright__ = '(C) 2015, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.PyQt.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QPlainTextEdit, QLineEdit, QComboBox, QCheckBox
+from qgis.PyQt.QtWidgets import (QWidget,
+                                 QVBoxLayout,
+                                 QPushButton,
+                                 QLabel,
+                                 QPlainTextEdit,
+                                 QLineEdit,
+                                 QComboBox,
+                                 QCheckBox,
+                                 QSizePolicy)
+
+from qgis.gui import QgsMessageBar
+
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.ParametersPanel import ParametersPanel
@@ -36,9 +47,13 @@ from processing.gui.NumberInputPanel import NumberInputPanel
 class GdalAlgorithmDialog(AlgorithmDialog):
 
     def __init__(self, alg):
-        AlgorithmDialog.__init__(self, alg)
+        AlgorithmDialogBase.__init__(self, alg)
 
         self.alg = alg
+
+        self.bar = QgsMessageBar()
+        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.layout().insertWidget(0, self.bar)
 
         self.setMainWidget(GdalParametersPanel(self, alg))
 
