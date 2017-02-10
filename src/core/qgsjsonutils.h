@@ -38,11 +38,13 @@ class CORE_EXPORT QgsJSONExporter
 
     /** Constructor for QgsJSONExporter.
      * @param vectorLayer associated vector layer (required for related attribute export)
-     * @param precision maximum number of decimal places to use for geometry coordinates
+     * @param precision maximum number of decimal places to use for geometry coordinates,
+     *  the RFC 7946 GeoJSON specification recommends limiting coordinate precision to 6
      */
-    QgsJSONExporter( const QgsVectorLayer* vectorLayer = nullptr, int precision = 17 );
+    QgsJSONExporter( const QgsVectorLayer* vectorLayer = nullptr, int precision = 6 );
 
     /** Sets the maximum number of decimal places to use in geometry coordinates.
+     * The RFC 7946 GeoJSON specification recommends limiting coordinate precision to 6
      * @param precision number of decimal places
      * @see precision()
      */

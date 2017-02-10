@@ -1913,7 +1913,10 @@ QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoord
 
   QgsJSONExporter exporter;
   exporter.setSourceCrs( crs );
-  exporter.setPrecision( prec );
+  //QgsJSONExporter force transform geometry to ESPG:4326
+  //and the RFC 7946 GeoJSON specification recommends limiting coordinate precision to 6
+  Q_UNUSED( prec );
+  //exporter.setPrecision( prec );
 
   //copy feature so we can modify its geometry as required
   QgsFeature f( *feat );
