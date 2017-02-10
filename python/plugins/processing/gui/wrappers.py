@@ -88,7 +88,6 @@ from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
 from processing.gui.FixedTablePanel import FixedTablePanel
 from processing.gui.ExtentSelectionPanel import ExtentSelectionPanel
-from processing.gui.StringInputPanel import StringInputPanel
 
 
 DIALOG_STANDARD = 'standard'
@@ -837,22 +836,19 @@ class VectorWidgetWrapper(WidgetWrapper):
             return self.comboValue(validator, combobox=self.combo)
 
 
-class StringWidgetWrapper(WidgetWrapper):
+class StringWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
 
     def createWidget(self):
         if self.dialogType == DIALOG_STANDARD:
             if self.param.multiline:
                 widget = QPlainTextEdit()
-                if self.param.default:
-                    widget.setPlainText(self.param.default)
             else:
-                widget = StringInputPanel(self.param)
-                if self.param.default:
-                    widget.setValue(self.param.default)
+                self._lineedit = QLineEdit()
+                return self.wrapWithExpressionButton(self._lineedit)
+
         elif self.dialogType == DIALOG_BATCH:
             widget = QLineEdit()
-            if self.param.default:
-                widget.setText(self.param.default)
+
         else:
             # strings, numbers, files and table fields are all allowed input types
             strings = self.dialog.getAvailableValuesOfType([ParameterString, ParameterNumber, ParameterFile,
@@ -860,20 +856,23 @@ class StringWidgetWrapper(WidgetWrapper):
             options = [(self.dialog.resolveValueDescription(s), s) for s in strings]
             if self.param.multiline:
                 widget = MultilineTextPanel(options)
-                widget.setText(self.param.default or "")
             else:
                 widget = QComboBox()
                 widget.setEditable(True)
                 for desc, val in options:
                     widget.addItem(desc, val)
-                widget.setEditText(self.param.default or "")
         return widget
 
     def setValue(self, value):
         if self.dialogType == DIALOG_STANDARD:
-            pass  # TODO
+            if self.param.multiline:
+                self.widget.setPlainText(value)
+            else:
+                self._lineedit.setText(value)
+
         elif self.dialogType == DIALOG_BATCH:
             self.widget.setText(value)
+
         else:
             if self.param.multiline:
                 self.widget.setValue(value)
@@ -885,10 +884,12 @@ class StringWidgetWrapper(WidgetWrapper):
             if self.param.multiline:
                 text = self.widget.toPlainText()
             else:
-                text = self.widget.getValue()
+                text = self._lineedit.text()
             return text
+
         elif self.dialogType == DIALOG_BATCH:
             return self.widget.text()
+
         else:
             if self.param.multiline:
                 value = self.widget.getValue()
