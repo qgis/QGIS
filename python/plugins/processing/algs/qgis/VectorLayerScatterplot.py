@@ -72,6 +72,5 @@ class VectorLayerScatterplot(GeoAlgorithm):
         values = vector.values(layer, xfieldname, yfieldname)
         data = [go.Scatter(x=values[xfieldname],
                            y=values[yfieldname],
-                           mode='markers'
-                          )]
+                           mode='markers')]
         plt.offline.plot(data, filename=output)
