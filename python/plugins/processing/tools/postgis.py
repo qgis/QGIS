@@ -136,12 +136,9 @@ class DbError(Exception):
         self.query = query
 
     def __str__(self):
-        return str(self).encode('utf-8')
-
-    def __unicode__(self):
-        text = u'MESSAGE: %s' % self.message
+        text = "MESSAGE: {}".format(self.message)
         if self.query:
-            text += u'\nQUERY: %s' % self.query
+            text = "{}\nQUERY: {}".format(text, self.query)
         return text
 
 
@@ -829,7 +826,8 @@ class GeoDB(object):
         try:
             cursor.execute(sql)
         except psycopg2.Error as e:
-            raise DbError(str(e), e.cursor.query)
+            raise DbError(str(e),
+                          e.cursor.query.decode(e.cursor.connection.encoding))
 
     def _exec_sql_and_commit(self, sql):
         """Tries to execute and commit some action, on error it rolls
