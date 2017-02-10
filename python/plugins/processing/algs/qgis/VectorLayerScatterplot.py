@@ -25,8 +25,8 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import matplotlib.pyplot as plt
-import matplotlib.pylab as lab
+import plotly as plt
+import plotly.graph_objs as go
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -51,10 +51,12 @@ class VectorLayerScatterplot(GeoAlgorithm):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.XFIELD,
-                                              self.tr('X attribute'), self.INPUT,
+                                              self.tr('X attribute'),
+                                              self.INPUT,
                                               ParameterTableField.DATA_TYPE_NUMBER))
         self.addParameter(ParameterTableField(self.YFIELD,
-                                              self.tr('Y attribute'), self.INPUT,
+                                              self.tr('Y attribute'),
+                                              self.INPUT,
                                               ParameterTableField.DATA_TYPE_NUMBER))
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Scatterplot')))
@@ -68,11 +70,8 @@ class VectorLayerScatterplot(GeoAlgorithm):
         output = self.getOutputValue(self.OUTPUT)
 
         values = vector.values(layer, xfieldname, yfieldname)
-        plt.close()
-        plt.scatter(values[xfieldname], values[yfieldname])
-        plt.ylabel(yfieldname)
-        plt.xlabel(xfieldname)
-        plotFilename = output + '.png'
-        lab.savefig(plotFilename)
-        with open(output, 'w') as f:
-            f.write('<html><img src="' + plotFilename + '"/></html>')
+        data = [go.Scatter(x=values[xfieldname],
+                           y=values[yfieldname],
+                           mode='markers'
+                          )]
+        plt.offline.plot(data, filename=output)
