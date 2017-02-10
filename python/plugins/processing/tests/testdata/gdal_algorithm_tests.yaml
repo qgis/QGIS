@@ -106,12 +106,10 @@ tests:
   - algorithm: gdal:offsetlinesforlines
     name: Offset lines for lines (right-handed)
     params:
-      DISSOLVEALL: false
       GEOMETRY: geometry
       INPUT_LAYER:
          name: lines.gml
          type: vector
-      MULTI: false
       RADIUS: -0.5
     results:
       OUTPUT_LAYER:
