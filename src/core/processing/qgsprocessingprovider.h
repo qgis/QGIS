@@ -48,7 +48,7 @@ class CORE_EXPORT QgsProcessingProvider
 
     /**
      * Returns an icon for the provider.
-     * @see svgIcon()
+     * @see svgIconPath()
      */
     virtual QIcon icon() const;
 
