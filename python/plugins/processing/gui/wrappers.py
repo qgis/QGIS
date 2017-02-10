@@ -270,6 +270,8 @@ class CrsWidgetWrapper(WidgetWrapper):
             if self.param.default:
                 crs = QgsCoordinateReferenceSystem(self.param.default)
                 widget.setCrs(crs)
+            else:
+                widget.setOptionVisible(QgsProjectionSelectionWidget.CrsNotSet, True)
 
             return widget
 
