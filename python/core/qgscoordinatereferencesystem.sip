@@ -183,6 +183,8 @@ class QgsCoordinateReferenceSystem
     // TODO QGIS 3: remove theType and always use EPSG code
     QgsCoordinateReferenceSystem( const long theId, CrsType theType = PostgisCrsId );
 
+    static QList< long > validSrsIds();
+
     // static creators
 
     /** Creates a CRS from a given OGC WMS-format Coordinate Reference System string.

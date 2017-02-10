@@ -236,6 +236,15 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     //! Assignment operator
     QgsCoordinateReferenceSystem& operator=( const QgsCoordinateReferenceSystem& srs );
 
+    /**
+     * Returns a list of all valid SRS IDs present in the CRS database. Any of the
+     * returned values can be safely passed to fromSrsId() to create a new, valid
+     * QgsCoordinateReferenceSystem object.
+     * @see fromSrsId()
+     * @note added in QGIS 3.0
+     */
+    static QList< long > validSrsIds();
+
     // static creators
 
     /** Creates a CRS from a given OGC WMS-format Coordinate Reference System string.
@@ -274,6 +283,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @returns matching CRS, or an invalid CRS if ID could not be found
      * @note added in QGIS 3.0
      * @see createFromSrsId()
+     * @see validSrsIds()
     */
     static QgsCoordinateReferenceSystem fromSrsId( long srsId );
 
