@@ -47,9 +47,6 @@ class OffsetCurve(GdalAlgorithm):
     INPUT_LAYER = 'INPUT_LAYER'
     GEOMETRY = 'GEOMETRY'
     RADIUS = 'RADIUS'
-    DISSOLVEALL = 'DISSOLVEALL'
-    FIELD = 'FIELD'
-    MULTI = 'MULTI'
     OPTIONS = 'OPTIONS'
 
     def defineCharacteristics(self):
@@ -65,12 +62,6 @@ class OffsetCurve(GdalAlgorithm):
                                           self.tr('Offset distance (positive value for left-sided and negative - for right-sided)'),
                                           -99999999.999999, 99999999.999999, 1000.0,
                                           optional=False))
-        self.addParameter(ParameterBoolean(self.DISSOLVEALL,
-                                           self.tr('Dissolve all results'), False))
-        self.addParameter(ParameterTableField(self.FIELD,
-                                              self.tr('Dissolve by attribute'), self.INPUT_LAYER, optional=True))
-        self.addParameter(ParameterBoolean(self.MULTI,
-                                           self.tr('Output as singlepart geometries (only used when dissolving by attribute)'), False))
         self.addParameter(ParameterString(self.OPTIONS,
                                           self.tr('Additional creation options (see ogr2ogr manual)'),
                                           '', optional=True))
@@ -81,9 +72,6 @@ class OffsetCurve(GdalAlgorithm):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         geometry = self.getParameterValue(self.GEOMETRY)
         distance = self.getParameterValue(self.RADIUS)
-        dissolveall = self.getParameterValue(self.DISSOLVEALL)
-        field = self.getParameterValue(self.FIELD)
-        multi = self.getParameterValue(self.MULTI)
         options = self.getParameterValue(self.OPTIONS)
 
         ogrLayer = ogrConnectionString(inLayer)[1:-1]
@@ -102,18 +90,9 @@ class OffsetCurve(GdalAlgorithm):
         arguments.append('sqlite')
         arguments.append('-sql')
 
-        if dissolveall or field is not None:
-            sql = "SELECT ST_Union(ST_OffsetCurve({},  {})) * FROM '{}'".format(geometry, distance, layername)
-        else:
-            sql = "SELECT ST_OffsetCurve({}, {}), * FROM '{}'".format(geometry, distance, layername)
-
-        if field is not None:
-            sql = '"{} GROUP BY {}"'.format(sql, field)
+        sql = "SELECT ST_OffsetCurve({}, {}), * FROM '{}'".format(geometry, distance, layername)
 
         arguments.append(sql)
-
-        if field is not None and multi:
-            arguments.append('-explodecollections')
 
         if options is not None and len(options.strip()) > 0:
             arguments.append(options)
