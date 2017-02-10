@@ -818,6 +818,26 @@ void TestQgsGeometry::point()
   QCOMPARE( QgsPointV2( 1, -2 ).distanceSquared( QgsPointV2( 1, -4 ) ), 4.0 );
   QCOMPARE( QgsPointV2( 1, -2 ).distanceSquared( 1, -4 ), 4.0 );
 
+  // distance 3D
+  QCOMPARE( QgsPointV2( 0, 0 ).distanceSquared3D( QgsPointV2( 1, 1 )), 2.0 );
+  QCOMPARE( QgsPointV2( 0, 0 ).distanceSquared3D(  1, 1, 0 ), 2.0 );
+  QCOMPARE( QgsPointV2( 0, 0 ).distanceSquared3D( QgsPointV2 ( QgsWkbTypes::PointZ, 2, 2, 2, 0 )), 12.0 );
+  QCOMPARE( QgsPointV2( 0, 0 ).distanceSquared3D(  2, 2, 2 ), 12.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 2, 2, 2, 0 ).distanceSquared3D( QgsPointV2( 1, 1 )), 6.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 2, 2, 2, 0 ).distanceSquared3D( 1, 1, 0 ), 6.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( QgsPointV2( 0, 0 )), 12.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D(  0, 0, 0 ), 12.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( QgsPointV2( QgsWkbTypes::PointZ, 2, 2, 2, 0 )), 48.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( 2, 2, 2 ), 48.0 );
+
+
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 1, 2, 0 ).distance3D( QgsPointV2( QgsWkbTypes::PointZ, 1, 3, 2, 0 )), 2.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 1, 2, 0 ).distance3D( 1, 3, 2 ), 2.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 1, 2, 0 ).distance3D( QgsPointV2( QgsWkbTypes::PointZ, 1, 1, 4, 0 )), 2.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 1, 2, 0 ).distance3D( 1, 1, 4 ), 2.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 1, -2, 0 ).distance3D( QgsPointV2( QgsWkbTypes::PointZ, 1, 1, -4, 0 )), 2.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 1, -2, 0 ).distance3D( 1, 1, -4 ), 2.0 );
+
   // azimuth
   QCOMPARE( QgsPointV2( 1, 2 ).azimuth( QgsPointV2( 1, 2 ) ), 0.0 );
   QCOMPARE( QgsPointV2( 1, 2 ).azimuth( QgsPointV2( 1, 3 ) ), 0.0 );
@@ -889,6 +909,13 @@ void TestQgsGeometry::point()
   QCOMPARE( p34.project( 1, 0, 0 ), QgsPointV2( QgsWkbTypes::PointZM, 1, 2, 3, 5 ) );
   QCOMPARE( p34.project( 5, 450 ), QgsPointV2( QgsWkbTypes::PointZM, 6, 2, 2, 5 ) );
   QCOMPARE( p34.project( 5, 450, 450 ), QgsPointV2( QgsWkbTypes::PointZM, 6, 2, 2, 5 ) );
+
+  // midpoint
+  QgsPointV2 p35 = QgsPointV2( 4, 6 );
+  QCOMPARE( p35.midpoint( QgsPointV2( 2, 2 ) ), QgsPointV2( 3, 4 ) );
+  QCOMPARE( p35.midpoint( QgsPointV2( QgsWkbTypes::PointZ, 2, 2, 2 ) ), QgsPointV2( QgsWkbTypes::PointZ, 3, 4, 1 ) );
+  QCOMPARE( p35.midpoint( QgsPointV2( QgsWkbTypes::PointM, 2, 2, 0, 2 ) ), QgsPointV2( QgsWkbTypes::PointM, 3, 4, 0, 1 ) );
+  QCOMPARE( p35.midpoint( QgsPointV2( QgsWkbTypes::PointZM, 2, 2, 2, 2 ) ), QgsPointV2( QgsWkbTypes::PointZM, 3, 4, 1, 1 ) );
 
 }
 
