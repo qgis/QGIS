@@ -328,6 +328,7 @@ class ParameterExtent(Parameter):
     def __init__(self, name='', description='', default=None, optional=True):
         Parameter.__init__(self, name, description, default, optional)
         # The value is a string in the form "xmin, xmax, ymin, ymax"
+        self.skip_crs_check = False
 
     def setValue(self, value):
         if not value:
