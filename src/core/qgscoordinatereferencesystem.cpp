@@ -90,6 +90,66 @@ QgsCoordinateReferenceSystem& QgsCoordinateReferenceSystem::operator=( const Qgs
   return *this;
 }
 
+QList<long> QgsCoordinateReferenceSystem::validSrsIds()
+{
+  QList<long> results;
+  // check both standard & user defined projection databases
+  QStringList dbs = QStringList() <<  QgsApplication::srsDatabaseFilePath() << QgsApplication::qgisUserDatabaseFilePath();
+
+  Q_FOREACH ( const QString& db, dbs )
+  {
+    QFileInfo myInfo( db );
+    if ( !myInfo.exists() )
+    {
+      QgsDebugMsg( "failed : " + db + " does not exist!" );
+      continue;
+    }
+
+    sqlite3 *database = nullptr;
+    const char *tail = nullptr;
+    sqlite3_stmt *statement = nullptr;
+
+    //check the db is available
+    int result = openDatabase( db, &database );
+    if ( result != SQLITE_OK )
+    {
+      QgsDebugMsg( "failed : " + db + " could not be opened!" );
+      continue;
+    }
+
+    QString sql = "select srs_id from tbl_srs";
+    result = sqlite3_prepare( database, sql.toUtf8(),
+                              sql.toUtf8().length(),
+                              &statement, &tail );
+    while ( 1 )
+    {
+      // this one is an infinitive loop, intended to fetch any row
+      int ret = sqlite3_step( statement );
+
+      if ( ret == SQLITE_DONE )
+      {
+        // there are no more rows to fetch - we can stop looping
+        break;
+      }
+
+      if ( ret == SQLITE_ROW )
+      {
+        results.append( sqlite3_column_int( statement, 0 ) );
+      }
+      else
+      {
+        QgsMessageLog::logMessage( QObject::tr( "SQLite error: %2\nSQL: %1" ).arg( sql, sqlite3_errmsg( database ) ), QObject::tr( "SpatiaLite" ) );
+        break;
+      }
+    }
+
+    sqlite3_finalize( statement );
+    sqlite3_close( database );
+  }
+  std::sort( results.begin(), results.end() );
+  return results;
+}
+
 QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromOgcWmsCrs( const QString& ogcCrs )
 {
   QgsCoordinateReferenceSystem crs;
