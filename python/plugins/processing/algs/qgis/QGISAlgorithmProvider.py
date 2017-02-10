@@ -28,11 +28,14 @@ __revision__ = '$Format:%H$'
 import os
 
 try:
-    import matplotlib.pyplot
-    assert matplotlib  # NOQA silence pyflakes
-    hasMatplotlib = True
+    #import matplotlib.pyplot
+    #assert matplotlib  # NOQA silence pyflakes
+    #hasMatplotlib = True
+    import plotly
+    hasPlotly = True
 except:
-    hasMatplotlib = False
+    #hasMatplotlib = False
+    hasPlotly = False
 
 from qgis.PyQt.QtGui import QIcon
 
@@ -259,19 +262,28 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         FixGeometry(), ExecuteSQL(), FindProjection()
                         ]
 
-        if hasMatplotlib:
-            from .VectorLayerHistogram import VectorLayerHistogram
-            from .RasterLayerHistogram import RasterLayerHistogram
-            from .VectorLayerScatterplot import VectorLayerScatterplot
-            from .MeanAndStdDevPlot import MeanAndStdDevPlot
-            from .BarPlot import BarPlot
-            from .PolarPlot import PolarPlot
+        #~ if hasMatplotlib:
+            #~ from .VectorLayerHistogram import VectorLayerHistogram
+            #~ from .RasterLayerHistogram import RasterLayerHistogram
+            #~ from .VectorLayerScatterplot import VectorLayerScatterplot
+            #~ from .MeanAndStdDevPlot import MeanAndStdDevPlot
+            #~ from .BarPlot import BarPlot
+            #~ from .PolarPlot import PolarPlot
 
-            self.alglist.extend([
-                VectorLayerHistogram(), RasterLayerHistogram(),
-                VectorLayerScatterplot(), MeanAndStdDevPlot(), BarPlot(),
-                PolarPlot(),
-            ])
+            #~ self.alglist.extend([
+                #~ VectorLayerHistogram(), RasterLayerHistogram(),
+                #~ VectorLayerScatterplot(), MeanAndStdDevPlot(), BarPlot(),
+                #~ PolarPlot(),
+            #~ ])
+        if hasPlotly:
+            #~ from .VectorLayerHistogram import VectorLayerHistogram
+            #~ from .RasterLayerHistogram import RasterLayerHistogram
+            #~ from .VectorLayerScatterplot import VectorLayerScatterplot
+            #~ from .MeanAndStdDevPlot import MeanAndStdDevPlot
+            from .BarPlot import BarPlot
+            #~ from .PolarPlot import PolarPlot
+
+            self.alglist.extend([BarPlot()])
 
         self.externalAlgs = []  # to store algs added by 3rd party plugins as scripts
 
