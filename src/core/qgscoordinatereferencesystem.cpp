@@ -352,7 +352,7 @@ void QgsCoordinateReferenceSystem::validate()
   }
 }
 
-bool QgsCoordinateReferenceSystem::createFromSrid( long id )
+bool QgsCoordinateReferenceSystem::createFromSrid( const long id )
 {
   sSrIdCacheLock.lockForRead();
   QHash< long, QgsCoordinateReferenceSystem >::const_iterator crsIt = sSrIdCache.constFind( id );
@@ -374,7 +374,7 @@ bool QgsCoordinateReferenceSystem::createFromSrid( long id )
   return result;
 }
 
-bool QgsCoordinateReferenceSystem::createFromSrsId( long id )
+bool QgsCoordinateReferenceSystem::createFromSrsId( const long id )
 {
   sCRSSrsIdLock.lockForRead();
   QHash< long, QgsCoordinateReferenceSystem >::const_iterator crsIt = sSrsIdCache.constFind( id );
