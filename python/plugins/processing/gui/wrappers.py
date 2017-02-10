@@ -1115,15 +1115,3 @@ class TableFieldWidgetWrapper(WidgetWrapper):
             def validator(v):
                 return bool(v) or self.param.optional
             return self.comboValue(validator)
-
-
-def GeometryPredicateWidgetWrapper(WidgetWrapper):
-
-    def createWidget(self):
-        return GeometryPredicateSelectionPanel()
-
-    def setValue(self, value):
-        self.widget.setValue(value)
-
-    def value(self):
-        return self.widget.value()
