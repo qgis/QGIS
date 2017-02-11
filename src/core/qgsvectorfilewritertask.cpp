@@ -29,6 +29,7 @@ QgsVectorFileWriterTask::QgsVectorFileWriterTask( QgsVectorLayer* layer, const Q
     mOwnedFeedback.reset( new QgsFeedback() );
     mOptions.feedback = mOwnedFeedback.get();
   }
+  setDependentLayers( QStringList() << mLayer->id() );
 }
 
 void QgsVectorFileWriterTask::cancel()
