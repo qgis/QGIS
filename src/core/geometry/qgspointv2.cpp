@@ -514,28 +514,3 @@ QgsPointV2 QgsPointV2::project( double distance, double azimuth, double inclinat
 
   return QgsPointV2( pType, mX + dx, mY + dy, mZ + dz, mM );
 }
-
-QgsPointV2 QgsPointV2::midpoint (const QgsPointV2& other) const
-{
-    QgsWkbTypes::Type pType( QgsWkbTypes::Point );
-
-
-    double x = ( mX + other.x() ) / 2.0;
-    double y = ( mY + other.y() ) / 2.0;
-    double z = 0.0;
-    double m = 0.0;
-
-    if ( is3D() || other.is3D() )
-    {
-      pType = QgsWkbTypes::addZ( pType );
-      z = ( mZ + other.z()) / 2.0;
-    }
-
-    if ( isMeasure() || other.isMeasure() )
-    {
-      pType = QgsWkbTypes::addM( pType );
-      m = ( mM + other.m()) / 2.0;
-    }
-
-    return QgsPointV2( pType, x, y, z, m );
-}

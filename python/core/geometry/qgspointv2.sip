@@ -243,27 +243,6 @@ class QgsPointV2: public QgsAbstractGeometry
      */
     QgsPointV2 project( double distance, double azimuth, double inclination = 90.0 ) const;
 
-    /** Returns a middle point between this point and other one.
-     * Z value is computed if one of this point have Z.
-     * M value is computed if one of this point have M.
-     * @param other other point.
-     * @return New point at middle between this and other one.
-     * Example:
-     * \code{.py}
-     *   p = QgsPointV2( 4, 6 ) # 2D point
-     *   pr = p.midpoint ( QgsPointV2( 2, 2 ) )
-     *   # pr is a 2D point: 'Point (3 4)'
-     *   pr = p.midpoint ( QgsPointV2( QgsWkbTypes.PointZ, 2, 2, 2 ) )
-     *   # pr is a 3D point: 'PointZ (3 4 1)'
-     *   pr = p.midpoint ( QgsPointV2( QgsWkbTypes.PointM, 2, 2, 0, 2 ) )
-     *   # pr is a 3D point: 'PointM (3 4 1)'
-     *   pr = p.midpoint ( QgsPointV2( QgsWkbTypes.PointZM, 2, 2, 2, 2 ) )
-     *   # pr is a 4D point: 'PointZM (3 4 1 1)'
-     * \endcode
-     * @note added in QGIS 3.0
-     */
-    QgsPointV2 midpoint (const QgsPointV2& other) const;
-
     /**
      * Calculates the vector obtained by subtracting a point from this point.
      * @note added in QGIS 3.0

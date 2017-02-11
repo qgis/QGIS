@@ -244,6 +244,16 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static QStringList wktGetChildBlocks( const QString& wkt , const QString &defaultType = "" );
 
+    /** Returns a middle point between points pt1 and pt2.
+     * Z value is computed if one of this point have Z.
+     * M value is computed if one of this point have M.
+     * @param pt1 first point.
+     * @param pt2 second point.
+     * @return New point at middle between points pt1 and pt2.
+     * @note added in QGIS 3.0
+     */
+    static QgsPointV2 midpoint (const QgsPointV2& pt1, const QgsPointV2& pt2);
+
     enum ComponentType
     {
       Vertex,
