@@ -247,7 +247,7 @@ class QgsPointV2: public QgsAbstractGeometry
      * Z value is computed if one of this point have Z.
      * M value is computed if one of this point have M.
      * @param other other point.
-     * @return New point at middle between this and an other one.
+     * @return New point at middle between this and other one.
      * Example:
      * \code{.py}
      *   p = QgsPointV2( 4, 6 ) # 2D point
