@@ -29,7 +29,8 @@ QgsVectorFileWriterTask::QgsVectorFileWriterTask( QgsVectorLayer* layer, const Q
     mOwnedFeedback.reset( new QgsFeedback() );
     mOptions.feedback = mOwnedFeedback.get();
   }
-  setDependentLayers( QStringList() << mLayer->id() );
+  if ( mLayer )
+    setDependentLayers( QStringList() << mLayer->id() );
 }
 
 void QgsVectorFileWriterTask::cancel()
@@ -42,7 +43,6 @@ bool QgsVectorFileWriterTask::run()
 {
   if ( !mLayer )
     return false;
-
 
   mError = QgsVectorFileWriter::writeAsVectorFormat(
              mLayer, mDestFileName, mOptions, &mNewFilename, &mErrorMessage );
