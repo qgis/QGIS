@@ -801,7 +801,9 @@ void QgsVectorLayerProperties::loadStyle_clicked()
   QString myLastUsedDir = myQSettings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load layer properties from style file" ), myLastUsedDir,
-                       tr( "QGIS Layer Style File" ) + " (*.qml);;" + tr( "SLD File" ) + " (*.sld)" );
+                       tr( "QGIS Layer Properties File" ) + " (*.qlp);;" +
+                       tr( "QGIS 2.x Layer Style File" ) + " (*.qml);;" +
+                       tr( "SLD File" ) + " (*.sld)" );
   if ( myFileName.isNull() )
   {
     return;
@@ -907,8 +909,8 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
     }
     else
     {
-      format = tr( "QGIS Layer Style File" ) + " (*.qml)";
-      extension = QStringLiteral( ".qml" );
+      format = tr( "QGIS Layer Properties File" ) + " (*.qlp)";
+      extension = QStringLiteral( ".qlp" );
     }
 
     QString myOutputFileName = QFileDialog::getSaveFileName( this, tr( "Save layer properties as style file" ),

@@ -1439,7 +1439,7 @@ QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, const QString& fileP
       {
         QgsDataItem *item = nullptr;
         // try first with normal path (Passthru)
-        // this is to simplify .qml handling, and without this some tests will fail
+        // this is to simplify .qlp handling, and without this some tests will fail
         // (e.g. testZipItemVectorTransparency(), second test)
         if (( sProviderNames.at( i ) == QLatin1String( "ogr" ) ) ||
             ( sProviderNames.at( i ) == QLatin1String( "gdal" ) && zipFileCount == 1 ) )

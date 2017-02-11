@@ -1762,13 +1762,9 @@ void QgsRasterLayerProperties::loadStyle_clicked()
                        this,
                        tr( "Load layer properties from style file" ),
                        lastUsedDir,
-                       tr( "QGIS Layer Style File" ) + " (*.qml)" );
+                       tr( "QGIS Layer Properties File" ) + " (*.qlp);;" + tr( "QGIS 2.x Layer Style File" ) + " (*.qml)" );
   if ( fileName.isEmpty() )
     return;
-
-  // ensure the user never omits the extension from the file name
-  if ( !fileName.endsWith( QLatin1String( ".qml" ), Qt::CaseInsensitive ) )
-    fileName += QLatin1String( ".qml" );
 
   mOldStyle = mRasterLayer->styleManager()->style( mRasterLayer->styleManager()->currentStyle() );
 
@@ -1781,7 +1777,7 @@ void QgsRasterLayerProperties::loadStyle_clicked()
   }
   else
   {
-    QMessageBox::information( this, tr( "Saved Style" ), message );
+    QMessageBox::information( this, tr( "Load Style" ), message );
   }
 }
 
@@ -1795,13 +1791,13 @@ void QgsRasterLayerProperties::saveStyleAs_clicked()
                              this,
                              tr( "Save layer properties as style file" ),
                              lastUsedDir,
-                             tr( "QGIS Layer Style File" ) + " (*.qml)" );
+                             tr( "QGIS Layer Properties File" ) + " (*.qlp)" );
   if ( outputFileName.isEmpty() )
     return;
 
   // ensure the user never omits the extension from the file name
-  if ( !outputFileName.endsWith( QLatin1String( ".qml" ), Qt::CaseInsensitive ) )
-    outputFileName += QLatin1String( ".qml" );
+  if ( !outputFileName.endsWith( QLatin1String( ".qlp" ), Qt::CaseInsensitive ) )
+    outputFileName += QLatin1String( ".qlp" );
 
   apply(); // make sure the style to save is uptodate
 
