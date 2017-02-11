@@ -131,8 +131,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
         QgsFeedback* feedback = nullptr ) const override;
     virtual void enumValues( int index, QStringList& enumList ) const override;
     bool isValid() const override;
-    virtual bool isSaveAndLoadStyleToDBSupported() const override { return true; }
-    virtual bool isDeleteStyleFromDbSupported() const override { return true; }
+    virtual bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
+    virtual bool isDeleteStyleFromDatabaseSupported() const override { return true; }
     QgsAttributeList attributeIndexes() const override;
     QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
     QString defaultValueClause( int fieldId ) const override;

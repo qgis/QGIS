@@ -168,16 +168,16 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     static QString i18nPath();
 
     //! Returns the path to the master qgis.db file.
-    static QString qgisMasterDbFilePath();
+    static QString qgisMasterDatabaseFilePath();
 
     //! Returns the path to the settings directory in user's home dir
     static QString qgisSettingsDirPath();
 
     //! Returns the path to the user qgis.db file.
-    static QString qgisUserDbFilePath();
+    static QString qgisUserDatabaseFilePath();
 
     //! Returns the path to the user authentication database file: qgis-auth.db.
-    static QString qgisAuthDbFilePath();
+    static QString qgisAuthDatabaseFilePath();
 
     //! Returns the path to the splash screen image directory.
     static QString splashPath();
@@ -186,7 +186,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     static QString iconsPath();
 
     //! Returns the path to the srs.db file.
-    static QString srsDbFilePath();
+    static QString srsDatabaseFilePath();
 
     //! Returns the paths to svg directories.
     static QStringList svgPaths();
@@ -287,13 +287,13 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     static void setDefaultSvgPaths( const QStringList& pathList );
 
     //! Alters authentication data base directory path - used by 3rd party apps
-    static void setAuthDbDirPath( const QString& theAuthDbDirPath );
+    static void setAuthDatabaseDirPath( const QString& theAuthDbDirPath );
 
     //! loads providers
     static void initQgis();
 
     //! initialize qgis.db
-    static bool createDB( QString* errorMessage = 0 );
+    static bool createDatabase( QString* errorMessage = 0 );
 
     //! Create the users theme folder
     static bool createThemeFolder();

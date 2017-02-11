@@ -101,7 +101,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
         QgsFeedback* feedback = nullptr ) const override;
 
     bool isValid() const override;
-    virtual bool isSaveAndLoadStyleToDBSupported() const override { return true; }
+    virtual bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
     bool addFeatures( QgsFeatureList & flist ) override;
     bool deleteFeatures( const QgsFeatureIds & id ) override;
     bool truncate() override;

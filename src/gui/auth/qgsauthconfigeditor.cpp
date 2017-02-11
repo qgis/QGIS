@@ -55,8 +55,8 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
 
     setShowUtilitiesButton( showUtilities );
 
-    mConfigModel = new QSqlTableModel( this, QgsAuthManager::instance()->authDbConnection() );
-    mConfigModel->setTable( QgsAuthManager::instance()->authDbConfigTable() );
+    mConfigModel = new QSqlTableModel( this, QgsAuthManager::instance()->authDatabaseConnection() );
+    mConfigModel->setTable( QgsAuthManager::instance()->authDatabaseConfigTable() );
     mConfigModel->select();
 
     mConfigModel->setHeaderData( 0, Qt::Horizontal, tr( "ID" ) );

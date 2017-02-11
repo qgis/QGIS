@@ -48,7 +48,7 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name,
   }
 
   // Get the full path name to the sqlite3 spatial reference database.
-  mSrsDatabaseFileName = QgsApplication::srsDbFilePath();
+  mSrsDatabaseFileName = QgsApplication::srsDatabaseFilePath();
 
   lstCoordinateSystems->header()->setResizeMode( AuthidColumn, QHeaderView::Stretch );
   lstCoordinateSystems->header()->resizeSection( QgisCrsIdColumn, 0 );
@@ -307,7 +307,7 @@ QString QgsProjectionSelector::selectedProj4String()
   QString databaseFileName;
   if ( srsId.toLong() >= USER_CRS_START_ID )
   {
-    databaseFileName = QgsApplication::qgisUserDbFilePath();
+    databaseFileName = QgsApplication::qgisUserDatabaseFilePath();
     if ( !QFileInfo::exists( databaseFileName ) ) //its unlikely that this condition will ever be reached
       return QString();
   }
@@ -371,7 +371,7 @@ QString QgsProjectionSelector::getSelectedExpression( const QString& expression 
   QString databaseFileName;
   if ( lvi->text( QgisCrsIdColumn ).toLong() >= USER_CRS_START_ID )
   {
-    databaseFileName = QgsApplication::qgisUserDbFilePath();
+    databaseFileName = QgsApplication::qgisUserDatabaseFilePath();
     if ( !QFileInfo::exists( databaseFileName ) )
     {
       return QString();
@@ -478,7 +478,7 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> *crsFilter )
 
   //determine where the user proj database lives for this user. If none is found an empty
   //now only will be shown
-  QString databaseFileName = QgsApplication::qgisUserDbFilePath();
+  QString databaseFileName = QgsApplication::qgisUserDatabaseFilePath();
   // first we look for ~/.qgis/qgis.db
   // if it doesn't exist we copy it in from the global resources dir
 
@@ -887,7 +887,7 @@ long QgsProjectionSelector::getLargestCrsIdMatch( const QString& theSql )
   // first we search the users db as any srsid there will be definition be greater than in sys db
 
   //check the db is available
-  QString databaseFileName = QgsApplication::qgisUserDbFilePath();
+  QString databaseFileName = QgsApplication::qgisUserDatabaseFilePath();
   if ( QFileInfo::exists( databaseFileName ) ) //only bother trying to open if the file exists
   {
     result = sqlite3_open_v2( databaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );

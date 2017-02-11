@@ -425,7 +425,7 @@ class QgsMapLayer : QObject
      * @param qml will be set to QML style content from database
      * @returns true if style was successfully loaded
      */
-    virtual bool loadNamedStyleFromDb( const QString &db, const QString &uri, QString &qml /Out/ );
+    virtual bool loadNamedStyleFromDatabase( const QString &db, const QString &uri, QString &qml /Out/ );
 
     /**
      * Import the properties of this layer from a QDomDocument

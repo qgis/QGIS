@@ -91,7 +91,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     virtual void setEncoding( const QString& e ) override;
     virtual bool enterUpdateMode() override;
     virtual bool leaveUpdateMode() override;
-    virtual bool isSaveAndLoadStyleToDBSupported() const override;
+    virtual bool isSaveAndLoadStyleToDatabaseSupported() const override;
     QString fileVectorFilters() const override;
     //! Return a string containing the available database drivers
     QString databaseDrivers() const;

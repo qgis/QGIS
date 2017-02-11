@@ -27,13 +27,13 @@ class QgsAuthManager : QObject
     ~QgsAuthManager();
 
     /** Set up the application instance of the authentication database connection */
-    QSqlDatabase authDbConnection() const;
+    QSqlDatabase authDatabaseConnection() const;
 
     /** Name of the authentication database table that stores configs */
-    const QString authDbConfigTable() const;
+    const QString authDatabaseConfigTable() const;
 
     /** Name of the authentication database table that stores server exceptions/configs */
-    const QString authDbServersTable() const;
+    const QString authDatabaseServersTable() const;
 
     /** Initialize QCA, prioritize qca-ossl plugin and optionally set up the authentication database */
     bool init( const QString& pluginPath = QString::null );
@@ -45,9 +45,9 @@ class QgsAuthManager : QObject
     const QString disabledMessage() const;
 
     /** The standard authentication database file in ~/.qgis3/ or defined location
-     * @see QgsApplication::qgisAuthDbFilePath
+     * @see QgsApplication::qgisAuthDatabaseFilePath
      */
-    const QString authenticationDbPath() const;
+    const QString authenticationDatabasePath() const;
 
     /** Main call to initially set or continually check master password is set
      * @note If it is not set, the user is asked for its input
@@ -72,7 +72,7 @@ class QgsAuthManager : QObject
     bool masterPasswordIsSet() const;
 
     /** Verify a password hash existing in authentication database */
-    bool masterPasswordHashInDb() const;
+    bool masterPasswordHashInDatabase() const;
 
     /** Clear supplied master password
      * @note This will not necessarily clear authenticated connections cached in network connection managers
@@ -95,7 +95,7 @@ class QgsAuthManager : QObject
 
     /** Whether there is a scheduled opitonal erase of authentication database.
      */
-    bool scheduledAuthDbErase();
+    bool scheduledAuthDatabaseErase();
 
     /** Schedule an optional erase of authentication database, starting when mutex is lockable.
      * @note When an erase is scheduled, any attempt to set the master password,
@@ -107,7 +107,7 @@ class QgsAuthManager : QObject
      * through the given application, to prompt the erase operation (e.g. via a dialog);
      * if no access to user interaction occurs wihtin 90 seconds, it cancels the schedule.
      */
-    void setScheduledAuthDbErase( bool scheduleErase );
+    void setScheduledAuthDatabaseErase( bool scheduleErase );
 
     /** Re-emit a signal to schedule an optional erase of authentication database.
      * @note This can be called from the slot connected to a previously emitted scheduling signal,
@@ -116,7 +116,7 @@ class QgsAuthManager : QObject
      * @param emitted Setting to false will cause signal to be emitted by the schedule timer.
      * Setting to true will stop any emitting, but will not stop the schedule timer.
      */
-    void setScheduledAuthDbEraseRequestEmitted( bool emitted );
+    void setScheduledAuthDatabaseEraseRequestEmitted( bool emitted );
 
     /** Simple text tag describing authentication system for message logs */
     QString authManTag() const;
