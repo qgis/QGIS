@@ -80,4 +80,5 @@ class QgsDoubleSpinBox : QDoubleSpinBox
   protected:
     virtual void changeEvent( QEvent* event );
     virtual void paintEvent( QPaintEvent* event );
+    virtual void fixup(QString & input) const;
 };

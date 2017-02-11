@@ -78,7 +78,7 @@ class QgsSpinBox : QSpinBox
     virtual QValidator::State validate( QString & input, int & pos ) const;
 
   protected:
-
     virtual void changeEvent( QEvent* event );
     virtual void paintEvent( QPaintEvent* event );
+    virtual void fixup(QString &input) const;
 };

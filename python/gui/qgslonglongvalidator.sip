@@ -8,7 +8,7 @@ class QgsLongLongValidator : QValidator
     QgsLongLongValidator( qint64 bottom, qint64 top, QObject *parent );
     ~QgsLongLongValidator();
 
-    QValidator::State validate( QString &input, int& ) const;
+    virtual QValidator::State validate( QString &input, int& ) const;
 
     void setBottom( qint64 bottom );
     void setTop( qint64 top );
@@ -17,4 +17,6 @@ class QgsLongLongValidator : QValidator
 
     qint64 bottom() const;
     qint64 top() const;
+
+    virtual void fixup(QString &input) const;
 };

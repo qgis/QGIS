@@ -1,5 +1,4 @@
 %Module(name=qgis._server,
-        version=0,
         keyword_arguments="Optional")
 
 

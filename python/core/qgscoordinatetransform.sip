@@ -15,6 +15,7 @@
 class QgsCoordinateTransform : QObject
 {
 %TypeHeaderCode
+extern PyObject *sipExportedExceptions__core[2];  // workaround: sipExportedExceptions__core is only defined in the first sip part
 #include <qgscoordinatetransform.h>
 %End
 
@@ -215,5 +216,5 @@ class QgsCoordinateTransform : QObject
 
   signals:
     /** Signal when an invalid pj_transform() has occurred */
-    void  invalidTransformInput() const;
+    void invalidTransformInput() const;
 };

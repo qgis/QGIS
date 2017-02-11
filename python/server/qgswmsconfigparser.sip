@@ -115,7 +115,7 @@ class QgsWMSConfigParser
     virtual void setScaleDenominator( double denom ) = 0;
     virtual void addExternalGMLData( const QString& layerName, QDomDocument* gmlDoc ) = 0;
 
-    virtual QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const = 0;
+    // virtual QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const = 0;
 
     virtual int nLayers() const = 0;
 

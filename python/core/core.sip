@@ -1,5 +1,4 @@
 %Module(name=qgis._core,
-        version=0,
         keyword_arguments="Optional")
 
 %Feature QT5_SUPPORT
