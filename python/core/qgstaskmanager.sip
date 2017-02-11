@@ -78,14 +78,7 @@ class QgsTask : QObject
      */
     double progress() const;
 
-    /**
-     * Notifies the task that it should terminate. Calling this is not guaranteed
-     * to immediately end the task, rather it sets the isCanceled() flag which
-     * task subclasses can check and terminate their operations at an appropriate
-     * time. Any subtasks owned by this task will also be canceled.
-     * @see isCanceled()
-     */
-    void cancel();
+    virtual void cancel();
 
     /**
      * Places the task on hold. If the task in not queued

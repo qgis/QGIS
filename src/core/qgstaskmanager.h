@@ -116,9 +116,11 @@ class CORE_EXPORT QgsTask : public QObject
      * to immediately end the task, rather it sets the isCanceled() flag which
      * task subclasses can check and terminate their operations at an appropriate
      * time. Any subtasks owned by this task will also be canceled.
+     * Derived classes must ensure that the base class implementation is called
+     * from any overridden version.
      * @see isCanceled()
      */
-    void cancel();
+    virtual void cancel();
 
     /**
      * Places the task on hold. If the task in not queued

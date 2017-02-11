@@ -149,6 +149,7 @@
 %Include qgsunittypes.sip
 %Include qgsvectordataprovider.sip
 %Include qgsvectorfilewriter.sip
+%Include qgsvectorfilewritertask.sip
 %Include qgsvectorlayer.sip
 %Include qgsvectorlayercache.sip
 %Include qgsvectorlayereditbuffer.sip

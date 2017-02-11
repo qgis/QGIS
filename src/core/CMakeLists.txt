@@ -237,6 +237,7 @@ SET(QGIS_CORE_SRCS
   qgsunittypes.cpp
   qgsvectordataprovider.cpp
   qgsvectorfilewriter.cpp
+  qgsvectorfilewritertask.cpp
   qgsvectorlayer.cpp
   qgsvectorlayercache.cpp
   qgsvectorlayerdiagramprovider.cpp
@@ -528,6 +529,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgstransactiongroup.h
   qgsunittypes.h
   qgsvectordataprovider.h
+  qgsvectorfilewritertask.h
   qgsvectorlayercache.h
   qgsvectorlayereditbuffer.h
   qgsvectorlayereditpassthrough.h

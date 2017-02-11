@@ -250,6 +250,7 @@
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsvectorlayerutils.h"
 #include "qgshelp.h"
+#include "qgsvectorfilewritertask.h"
 
 #include "qgssublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
@@ -6477,12 +6478,6 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
       }
     }
 
-    // ok if the file existed it should be deleted now so we can continue...
-    QApplication::setOverrideCursor( Qt::WaitCursor );
-
-    QgsVectorFileWriter::WriterError error;
-    QString errorMessage;
-    QString newFilename;
     QgsRectangle filterExtent = dialog->filterExtent();
     QgisAppFieldValueConverter converter( vlayer, dialog->attributesAsDisplayedValues() );
     QgisAppFieldValueConverter* converterPtr = nullptr;
@@ -6510,32 +6505,41 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
     options.attributes = dialog->selectedAttributes();
     options.fieldValueConverter = converterPtr;
 
-    error = QgsVectorFileWriter::writeAsVectorFormat(
-              vlayer, vectorFilename, options, &newFilename, &errorMessage );
+    bool addToCanvas = dialog->addToCanvas();
+    QString layerName = dialog->layername();
+    QgsVectorFileWriterTask* writerTask = new QgsVectorFileWriterTask( vlayer, vectorFilename, options );
 
-    QApplication::restoreOverrideCursor();
-
-    if ( error == QgsVectorFileWriter::NoError )
+    // when writer is successful:
+    connect( writerTask, &QgsVectorFileWriterTask::writeComplete, this, [this, addToCanvas, layerName, encoding, vectorFilename, vlayer]( const QString& newFilename )
     {
-      if ( dialog->addToCanvas() )
+      if ( addToCanvas )
       {
         QString uri( newFilename );
-        if ( !dialog->layername().isEmpty() )
-          uri += "|layername=" + dialog->layername();
-        addVectorLayers( QStringList( uri ), encoding, QStringLiteral( "file" ) );
+        if ( !layerName.isEmpty() )
+          uri += "|layername=" + layerName;
+        this->addVectorLayers( QStringList( uri ), encoding, QStringLiteral( "file" ) );
       }
-      emit layerSavedAs( vlayer, vectorFilename );
-      messageBar()->pushMessage( tr( "Saving done" ),
-                                 tr( "Export to vector file has been completed" ),
-                                 QgsMessageBar::INFO, messageTimeout() );
+      this->emit layerSavedAs( vlayer, vectorFilename );
+      this->messageBar()->pushMessage( tr( "Saving done" ),
+                                       tr( "Export to vector file has been completed" ),
+                                       QgsMessageBar::INFO, messageTimeout() );
     }
-    else
+           );
+
+    // when an error occurs:
+    connect( writerTask, &QgsVectorFileWriterTask::errorOccurred, this, [=]( int error, const QString & errorMessage )
     {
-      QgsMessageViewer *m = new QgsMessageViewer( nullptr );
-      m->setWindowTitle( tr( "Save error" ) );
-      m->setMessageAsPlainText( tr( "Export to vector file failed.\nError: %1" ).arg( errorMessage ) );
-      m->exec();
+      if ( error != QgsVectorFileWriter::Canceled )
+      {
+        QgsMessageViewer *m = new QgsMessageViewer( nullptr );
+        m->setWindowTitle( tr( "Save error" ) );
+        m->setMessageAsPlainText( tr( "Export to vector file failed.\nError: %1" ).arg( errorMessage ) );
+        m->exec();
+      }
     }
+           );
+
+    QgsApplication::taskManager()->addTask( writerTask );
   }
 
   delete dialog;

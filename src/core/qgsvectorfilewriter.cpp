@@ -2426,6 +2426,12 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
   // write all features
   while ( fit.nextFeature( fet ) )
   {
+    if ( options.feedback && options.feedback->isCanceled() )
+    {
+      delete writer;
+      return Canceled;
+    }
+
     if ( shallTransform )
     {
       try
@@ -3085,3 +3091,4 @@ bool QgsVectorFileWriter::areThereNewFieldsToCreate( const QString& datasetName,
   OGR_DS_Destroy( hDS );
   return ret;
 }
+
