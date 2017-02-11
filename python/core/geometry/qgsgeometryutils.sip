@@ -65,4 +65,6 @@ class QgsGeometryUtils
 
     static double averageAngle( double a1, double a2 );
 
+    static QgsPointV2 midpoint (const QgsPointV2& pt1, const QgsPointV2& pt2);
+
 };

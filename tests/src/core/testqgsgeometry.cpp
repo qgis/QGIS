@@ -910,13 +910,6 @@ void TestQgsGeometry::point()
   QCOMPARE( p34.project( 5, 450 ), QgsPointV2( QgsWkbTypes::PointZM, 6, 2, 2, 5 ) );
   QCOMPARE( p34.project( 5, 450, 450 ), QgsPointV2( QgsWkbTypes::PointZM, 6, 2, 2, 5 ) );
 
-  // midpoint
-  QgsPointV2 p35 = QgsPointV2( 4, 6 );
-  QCOMPARE( p35.midpoint( QgsPointV2( 2, 2 ) ), QgsPointV2( 3, 4 ) );
-  QCOMPARE( p35.midpoint( QgsPointV2( QgsWkbTypes::PointZ, 2, 2, 2 ) ), QgsPointV2( QgsWkbTypes::PointZ, 3, 4, 1 ) );
-  QCOMPARE( p35.midpoint( QgsPointV2( QgsWkbTypes::PointM, 2, 2, 0, 2 ) ), QgsPointV2( QgsWkbTypes::PointM, 3, 4, 0, 1 ) );
-  QCOMPARE( p35.midpoint( QgsPointV2( QgsWkbTypes::PointZM, 2, 2, 2, 2 ) ), QgsPointV2( QgsWkbTypes::PointZM, 3, 4, 1, 1 ) );
-
 }
 
 void TestQgsGeometry::lineString()
