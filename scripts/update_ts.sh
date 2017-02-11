@@ -111,9 +111,19 @@ rm python-i18n.ts
 cd ..
 for i in python/plugins/*/CMakeLists.txt; do
 	cd ${i%/*}
-	pylupdate5 -tr-function trAlgorithm $(find . -name "*.py" -o -name "*.ui") -ts python-i18n.ts
+	cat <<EOF >python-i18n.pro
+SOURCES = $(find . -type f -name "*.py" -printf "	%p \
+")
+
+FORMS = $(find . -type f -name "*.ui" -printf "	%p \
+")
+
+TRANSLATIONS = python-i18n.ts
+EOF
+
+	pylupdate5 -tr-function trAlgorithm python-i18n.pro
 	perl ../../../scripts/ts2cpp.pl python-i18n.ts python-i18n.cpp
-	rm python-i18n.ts
+	rm python-i18n.ts python-i18n.pro
 	cd ../../..
 done
 
