@@ -58,4 +58,5 @@ class QgsSpinBox : QSpinBox
     virtual void resizeEvent( QResizeEvent* event );
     virtual void changeEvent( QEvent* event );
     virtual void paintEvent( QPaintEvent* event );
+    virtual void fixup(QString &input) const;
 };

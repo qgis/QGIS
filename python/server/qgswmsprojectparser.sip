@@ -63,7 +63,7 @@ class QgsWMSProjectParser : public QgsWMSConfigParser
     void setScaleDenominator( double )  /*override*/;
     void addExternalGMLData( const QString&, QDomDocument* )  /*override*/ ;
 
-    QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const  /*override*/ ;
+    // QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const  /*override*/ ;
 
     /** Fills a layer and a style list. The two list have the same number of entries and the style and the layer at a position belong together (similar to the HTTP parameters 'Layers' and 'Styles'. Returns 0 in case of success*/
     int layersAndStyles( QStringList& layers, QStringList& styles ) const  /*override*/ ;
