@@ -87,6 +87,7 @@ void TestQgsProcessing::addProvider()
   QVERIFY( !r.addProvider( p3 ) );
   QCOMPARE( r.providers().toSet(), QSet< QgsProcessingProvider* >() << p << p2 );
   QCOMPARE( spyProviderAdded.count(), 2 );
+  delete p3;
 }
 
 void TestQgsProcessing::providerById()

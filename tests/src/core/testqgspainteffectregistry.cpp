@@ -60,12 +60,13 @@ class TestQgsPaintEffectRegistry : public QObject
 
 void TestQgsPaintEffectRegistry::initTestCase()
 {
-
+  QgsApplication::init(); // init paths for CRS lookup
+  QgsApplication::initQgis();
 }
 
 void TestQgsPaintEffectRegistry::cleanupTestCase()
 {
-
+  QgsApplication::exitQgis();
 }
 
 void TestQgsPaintEffectRegistry::init()
@@ -116,8 +117,10 @@ void TestQgsPaintEffectRegistry::addEffect()
   registry->addEffectType( new QgsPaintEffectMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy effect" ), DummyPaintEffect::create ) );
   QCOMPARE( registry->effects().length(), previousCount + 1 );
   //try adding again, should have no effect
-  registry->addEffectType( new QgsPaintEffectMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy effect" ), DummyPaintEffect::create ) );
+  QgsPaintEffectMetadata* dupe = new QgsPaintEffectMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy effect" ), DummyPaintEffect::create );
+  QVERIFY( ! registry->addEffectType( dupe ) );
   QCOMPARE( registry->effects().length(), previousCount + 1 );
+  delete dupe;
 
   //try adding empty metadata
   registry->addEffectType( nullptr );

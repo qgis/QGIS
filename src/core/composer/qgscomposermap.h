@@ -493,11 +493,11 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
   private:
 
     //! Unique identifier
-    int mId;
+    int mId = 0;
 
-    QgsComposerMapGridStack* mGridStack;
+    QgsComposerMapGridStack* mGridStack = nullptr;
 
-    QgsComposerMapOverviewStack* mOverviewStack;
+    QgsComposerMapOverviewStack* mOverviewStack = nullptr;
 
     // Map region in map units really used for rendering
     // It can be the same as mUserExtent, but it can be bigger in on dimension if mCalculate==Scale,
@@ -516,50 +516,50 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QImage mCacheImage;
 
     // Is cache up to date
-    bool mCacheUpdated;
+    bool mCacheUpdated = false;
 
     //! \brief Preview style
-    PreviewMode mPreviewMode;
+    PreviewMode mPreviewMode = QgsComposerMap::Rectangle;
 
     //! \brief Number of layers when cache was created
     int mNumCachedLayers;
 
     //! \brief set to true if in state of drawing. Concurrent requests to draw method are returned if set to true
-    bool mDrawing;
+    bool mDrawing = false;
 
     //! Offset in x direction for showing map cache image
-    double mXOffset;
+    double mXOffset = 0.0;
     //! Offset in y direction for showing map cache image
-    double mYOffset;
+    double mYOffset = 0.0;
 
     //! Map rotation
-    double mMapRotation;
+    double mMapRotation = 0;
 
     /** Temporary evaluated map rotation. Data defined rotation may mean this value
      * differs from mMapRotation*/
-    double mEvaluatedMapRotation;
+    double mEvaluatedMapRotation = 0;
 
     //! Flag if layers to be displayed should be read from qgis canvas (true) or from stored list in mLayerSet (false)
-    bool mKeepLayerSet;
+    bool mKeepLayerSet = false;
 
     //! Stored layer list (used if layer live-link mKeepLayerSet is disabled)
     QgsWeakMapLayerPointerList mLayers;
 
-    bool mKeepLayerStyles;
+    bool mKeepLayerStyles = false;
     //! Stored style names (value) to be used with particular layer IDs (key) instead of default style
     QMap<QString, QString> mLayerStyleOverrides;
 
     /** Whether layers and styles should be used from a preset (preset name is stored
      * in mVisibilityPresetName and may be overridden by data-defined expression).
      * This flag has higher priority than mKeepLayerSet. */
-    bool mFollowVisibilityPreset;
+    bool mFollowVisibilityPreset = false;
 
     /** Map theme name to be used for map's layers and styles in case mFollowVisibilityPreset
      *  is true. May be overridden by data-defined expression. */
     QString mFollowVisibilityPresetName;
 
     //! Whether updates to the map are enabled
-    bool mUpdatesEnabled;
+    bool mUpdatesEnabled = true;
 
     //! Establishes signal/slot connection for update in case of layer change
     void connectUpdateSlot();
@@ -576,18 +576,18 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     //! Current bounding rectangle. This is used to check if notification to the graphics scene is necessary
     QRectF mCurrentRectangle;
     //! True if annotation items, rubber band, etc. from the main canvas should be displayed
-    bool mDrawAnnotations;
+    bool mDrawAnnotations = true;
 
     /** Adjusts an extent rectangle to match the provided item width and height, so that extent
      * center of extent remains the same */
     void adjustExtentToItemShape( double itemWidth, double itemHeight, QgsRectangle& extent ) const;
 
     //! True if map is being controlled by an atlas
-    bool mAtlasDriven;
+    bool mAtlasDriven = false;
     //! Current atlas scaling mode
-    AtlasScalingMode mAtlasScalingMode;
+    AtlasScalingMode mAtlasScalingMode = Auto;
     //! Margin size for atlas driven extents (percentage of feature size) - when in auto scaling mode
-    double mAtlasMargin;
+    double mAtlasMargin = 0.10;
 
     void init();
 

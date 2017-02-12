@@ -1,6 +1,0 @@
-Transpose Grids
-grid_tools
-ParameterRaster|GRIDS|Input Grid|False
-ParameterBoolean|MIRROR_X|Mirror Horizontally|False
-ParameterBoolean|MIRROR_Y|Mirror Vertically|False
-OutputRaster|TRANSPOSED|Transposed Grid

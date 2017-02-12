@@ -1,6 +1,0 @@
-Grid Buffer
-grid_tools
-ParameterRaster|FEATURES|Features Grid|False
-ParameterNumber|DIST|Distance|None|None|1000
-ParameterSelection|BUFFERTYPE|Buffer Distance|[0] Fixed;[1] Cell value
-OutputRaster|BUFFER|Buffer Grid

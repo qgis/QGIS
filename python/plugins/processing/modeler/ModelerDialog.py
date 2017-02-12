@@ -474,9 +474,10 @@ class ModelerDialog(BASE, WIDGET):
             self.hasChanged = False
 
     def openModel(self):
-        filename, selected_filter = str(QFileDialog.getOpenFileName(self,
-                                                                    self.tr('Open Model'), ModelerUtils.modelsFolders()[0],
-                                                                    self.tr('Processing models (*.model *.MODEL)')))
+        filename, selected_filter = QFileDialog.getOpenFileName(self,
+                                                                self.tr('Open Model'),
+                                                                ModelerUtils.modelsFolders()[0],
+                                                                self.tr('Processing models (*.model *.MODEL)'))
         if filename:
             try:
                 alg = ModelerAlgorithm.fromFile(filename)

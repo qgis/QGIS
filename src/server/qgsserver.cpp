@@ -234,11 +234,11 @@ bool QgsServer::init( )
   QgsMessageLog::logMessage( "Prefix  PATH: " + QgsApplication::prefixPath(), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   QgsMessageLog::logMessage( "Plugin  PATH: " + QgsApplication::pluginPath(), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   QgsMessageLog::logMessage( "PkgData PATH: " + QgsApplication::pkgDataPath(), QStringLiteral( "Server" ), QgsMessageLog::INFO );
-  QgsMessageLog::logMessage( "User DB PATH: " + QgsApplication::qgisUserDbFilePath(), QStringLiteral( "Server" ), QgsMessageLog::INFO );
-  QgsMessageLog::logMessage( "Auth DB PATH: " + QgsApplication::qgisAuthDbFilePath(), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( "User DB PATH: " + QgsApplication::qgisUserDatabaseFilePath(), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( "Auth DB PATH: " + QgsApplication::qgisAuthDatabaseFilePath(), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   QgsMessageLog::logMessage( "SVG PATHS: " + QgsApplication::svgPaths().join( QDir::separator() ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
 
-  QgsApplication::createDB(); //init qgis.db (e.g. necessary for user crs)
+  QgsApplication::createDatabase(); //init qgis.db (e.g. necessary for user crs)
 
   // Instantiate authentication system
   //   creates or uses qgis-auth.db in ~/.qgis3/ or directory defined by QGIS_AUTH_DB_DIR_PATH env variable

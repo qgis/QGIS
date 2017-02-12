@@ -313,6 +313,7 @@ Section: python
 Depends:
  python3-pyqt5,
  python3-pyqt5.qtsql,
+ python3-pyqt5.qtsvg,
  python3-sip,
  python-qgis-common (= ${source:Version}),
  python3-psycopg2,

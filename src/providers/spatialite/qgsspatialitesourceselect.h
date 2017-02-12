@@ -123,7 +123,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     QMap < QString, QPair < QString, QIcon > >mLayerIcons;
     //! Model that acts as datasource for mTableTreeWidget
     QgsSpatiaLiteTableModel mTableModel;
-    QgsDbFilterProxyModel mProxyModel;
+    QgsDatabaseFilterProxyModel mProxyModel;
 
     QString layerURI( const QModelIndex &index );
     QPushButton *mBuildQueryButton;

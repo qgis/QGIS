@@ -70,7 +70,7 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
     LabelRenderJob mLabelJob;
 
     //! New labeling engine
-    QgsLabelingEngine* mLabelingEngineV2;
+    std::unique_ptr< QgsLabelingEngine > mLabelingEngineV2;
     QFuture<void> mLabelingFuture;
     QFutureWatcher<void> mLabelingFutureWatcher;
 

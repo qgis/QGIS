@@ -171,7 +171,7 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 
     //! Model that acts as datasource for mTableTreeWidget
     QgsOracleTableModel mTableModel;
-    QgsDbFilterProxyModel mProxyModel;
+    QgsDatabaseFilterProxyModel mProxyModel;
     QgsOracleSourceSelectDelegate *mTablesTreeDelegate;
 
     QPushButton *mBuildQueryButton;

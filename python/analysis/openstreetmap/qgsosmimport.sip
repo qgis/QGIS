@@ -19,8 +19,8 @@ class QgsOSMXmlImport : public QObject
     void setInputXmlFileName( const QString& xmlFileName );
     QString inputXmlFileName() const;
 
-    void setOutputDbFileName( const QString& dbFileName );
-    QString outputDbFileName() const;
+    void setOutputDatabaseFileName( const QString& fileName );
+    QString outputDatabaseFileName() const;
 
     /**
      * Run import. This will parse the XML file and store the data in a SQLite database.

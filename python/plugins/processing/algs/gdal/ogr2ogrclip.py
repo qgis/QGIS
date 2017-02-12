@@ -75,7 +75,8 @@ class Ogr2OgrClip(GdalAlgorithm):
         arguments.append(ogrClipLayer)
         arguments.append("-clipsrclayer")
         arguments.append(ogrLayerName(clipLayer))
-        if len(options) > 0:
+
+        if options is not None and len(options.strip()) > 0:
             arguments.append(options)
 
         arguments.append(output)

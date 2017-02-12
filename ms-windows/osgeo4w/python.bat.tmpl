@@ -1,7 +1,7 @@
 @echo off
 call "%~dp0\o4w_env.bat"
-call "%~dp0\qt5_env.bat"
-call "%~dp0\py3_env.bat"
+call qt5_env.bat
+call py3_env.bat
 @echo off
 path %OSGEO4W_ROOT%\apps\@package@\bin;%PATH%
 set QGIS_PREFIX_PATH=%OSGEO4W_ROOT:\=/%/apps/@package@
@@ -11,4 +11,4 @@ set VSI_CACHE=TRUE
 set VSI_CACHE_SIZE=1000000
 set QT_PLUGIN_PATH=%OSGEO4W_ROOT%\apps\@package@\qtplugins;%OSGEO4W_ROOT%\apps\qt5\plugins
 set PYTHONPATH=%OSGEO4W_ROOT%\apps\@package@\python;%PYTHONPATH%
-"%OSGEO4W_ROOT%"\bin\python.exe %*
+"%PYTHONHOME%\python" %*

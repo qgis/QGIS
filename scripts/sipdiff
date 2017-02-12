@@ -1,5 +1,21 @@
 #!/usr/bin/env bash
 
+# ARGUMENTS
+REMOVE_COMMENTS=YES
+while getopts ":c" opt; do
+  case $opt in
+    c)
+      # keep comments
+      REMOVE_COMMENTS=NO
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      exit 1
+      ;;
+  esac
+done
+shift $(expr $OPTIND - 1)
+
 # GNU prefix command for mac os support (gsed, gsplit)
 GP=
 if [[ "$OSTYPE" =~ darwin* ]]; then
@@ -15,7 +31,11 @@ for file in $*; do
   tempfile=$(${GP}mktemp ${f}XXXX --suffix=.h)
 
   # Remove comments
-  ${GP}sed 's/a/aA/g;s/__/aB/g;s/#/aC/g' "src/$d/$f.h" | cpp -E $arg - | ${GP}sed 's/aC/#/g;s/aB/__/g;s/aA/a/g' > $tempfile
+  if [[ "$REMOVE_COMMENTS" =~ YES ]]; then
+    ${GP}sed 's/a/aA/g;s/__/aB/g;s/#/aC/g' "src/$d/$f.h" | cpp -E $arg - | ${GP}sed 's/aC/#/g;s/aB/__/g;s/aA/a/g' > $tempfile
+  else
+    cp "src/$d/$f.h" $tempfile
+  fi
 
   # Remove override keyword
   ${GP}sed -i 's/ override;/;/g' $tempfile
@@ -33,10 +53,13 @@ for file in $*; do
   ${GP}sed -i -r '/^\s*Q_(OBJECT|ENUMS|PROPERTY).*?$/d' $tempfile
 
   # Remove function definition in header
-  ${GP}sed -i -r 's/^(\s*)?(inline )?(void|bool|int|double|Q\w+)(\s+[^ ]*?\(.*?\)( const)?)\s*\{.*?\}$/\1\3\4;/g' $tempfile
+  ${GP}sed -i -r 's/^(\s*)?(virtual |static )?(inline )?(void|bool|int|double|Q\w+)(\s+[^ ]*?\(.*?\)( const)?)\s*\{.*?\}$/\1\2\4\5;/g' $tempfile
 
   # Remove nullptr
   ${GP}sed -i 's/nullptr/0/g' $tempfile
+
+  # Remove forward declarations
+  ${GP}sed -i -r '/^\s*class Q\w+;$/d' $tempfile
 
   vimdiff $tempfile python/$d/$f.sip
 

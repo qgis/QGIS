@@ -26,6 +26,7 @@
 QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent, const QString& nullValue )
     : QLineEdit( parent )
     , mClearButtonVisible( true )
+    , mSearchIconVisible( false )
     , mClearMode( ClearToNull )
     , mNullValue( nullValue )
     , mFocusInEvent( false )
@@ -40,6 +41,10 @@ QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent, const QString& nullValue 
   QIcon hoverIcon = QgsApplication::getThemeIcon( "/mIconClearTextHover.svg" );
   mClearHoverPixmap = hoverIcon.pixmap( mClearIconSize );
 
+  QIcon searchIcon = QgsApplication::getThemeIcon( "/search.svg" );
+  mSearchIconSize = QSize( 16, 16 );
+  mSearchIconPixmap = searchIcon.pixmap( mSearchIconSize );
+
   connect( this, SIGNAL( textChanged( const QString& ) ), this,
            SLOT( onTextChanged( const QString& ) ) );
 }
@@ -53,6 +58,16 @@ void QgsFilterLineEdit::setShowClearButton( bool visible )
 
   if ( changed )
     update();
+}
+
+void QgsFilterLineEdit::setShowSearchIcon( bool visible )
+{
+  bool changed = mSearchIconVisible != visible;
+  if ( changed )
+  {
+    mSearchIconVisible = visible;
+    update();
+  }
 }
 
 void QgsFilterLineEdit::mousePressEvent( QMouseEvent* e )
@@ -134,6 +149,13 @@ void QgsFilterLineEdit::paintEvent( QPaintEvent* e )
     else
       p.drawPixmap( r.left() , r.top() , mClearIconPixmap );
   }
+
+  if ( mSearchIconVisible && !shouldShowClear() )
+  {
+    QRect r = searchRect();
+    QPainter p( this );
+    p.drawPixmap( r.left() , r.top() , mSearchIconPixmap );
+  }
 }
 
 void QgsFilterLineEdit::leaveEvent( QEvent* e )
@@ -190,4 +212,13 @@ QRect QgsFilterLineEdit::clearRect() const
                 ( rect().bottom() + 1 - mClearIconSize.height() ) / 2,
                 mClearIconSize.width(),
                 mClearIconSize.height() );
+}
+
+QRect QgsFilterLineEdit::searchRect() const
+{
+  int frameWidth = style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
+  return QRect( rect().left() + frameWidth * 2,
+                ( rect().bottom() + 1 - mSearchIconSize.height() ) / 2,
+                mSearchIconSize.width(),
+                mSearchIconSize.height() );
 }

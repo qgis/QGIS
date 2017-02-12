@@ -992,7 +992,7 @@ QString QgsMapLayer::loadDefaultStyle( bool & resultFlag )
   return loadNamedStyle( styleURI(), resultFlag );
 }
 
-bool QgsMapLayer::loadNamedStyleFromDb( const QString &db, const QString &uri, QString &qml )
+bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &uri, QString &qml )
 {
   QgsDebugMsg( QString( "db = %1 uri = %2" ).arg( db, uri ) );
 
@@ -1064,9 +1064,9 @@ QString QgsMapLayer::loadNamedStyle( const QString &uri, bool &resultFlag )
     QgsDebugMsg( QString( "project fileName: %1" ).arg( project.absoluteFilePath() ) );
 
     QString qml;
-    if ( loadNamedStyleFromDb( QDir( QgsApplication::qgisSettingsDirPath() ).absoluteFilePath( QStringLiteral( "qgis.qmldb" ) ), uri, qml ) ||
-         ( project.exists() && loadNamedStyleFromDb( project.absoluteDir().absoluteFilePath( project.baseName() + ".qmldb" ), uri, qml ) ) ||
-         loadNamedStyleFromDb( QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( QStringLiteral( "resources/qgis.qmldb" ) ), uri, qml ) )
+    if ( loadNamedStyleFromDatabase( QDir( QgsApplication::qgisSettingsDirPath() ).absoluteFilePath( QStringLiteral( "qgis.qmldb" ) ), uri, qml ) ||
+         ( project.exists() && loadNamedStyleFromDatabase( project.absoluteDir().absoluteFilePath( project.baseName() + ".qmldb" ), uri, qml ) ) ||
+         loadNamedStyleFromDatabase( QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( QStringLiteral( "resources/qgis.qmldb" ) ), uri, qml ) )
     {
       resultFlag = myDocument.setContent( qml, &myErrorMessage, &line, &column );
       if ( !resultFlag )

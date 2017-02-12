@@ -196,7 +196,7 @@ void QgsSymbolLegendNode::setSymbol( QgsSymbol* symbol )
     return;
 
   mItem.setSymbol( symbol );
-  vlayer->renderer()->setLegendSymbolItem( mItem.ruleKey(), symbol->clone() );
+  vlayer->renderer()->setLegendSymbolItem( mItem.ruleKey(), symbol );
 
   mPixmap = QPixmap();
 

@@ -408,6 +408,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
 
   // setup user interface
   setupUi( this );
+  this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
   mExpressionWidget->setLayer( mLayer );
 

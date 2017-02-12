@@ -83,6 +83,7 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <tr><td>QgsCptCityColorRampV2DialogBase<td>QgsCptCityColorRampDialogBase
 <tr><td>QgsCurvePolygonV2<td>QgsCurvePolygon
 <tr><td>QgsCurveV2<td>QgsCurve
+<tr><td>QgsDbFilterProxyModel<td>QgsDatabaseFilterProxyModel
 <tr><td>QgsDiagramRendererV2<td>QgsDiagramRenderer
 <tr><td>QgsEditorWidgetV2<td>QgsEditorWidget
 <tr><td>QgsEllipseSymbolLayerV2<td>QgsEllipseSymbolLayer
@@ -306,7 +307,7 @@ Data Providers        {#qgis_api_break_3_0_DataProviders}
 
       - QgsDataProvider: crs(), extent(), isValid(), supportsSubsetString(), subsetString()
       - QgsVectorDataProvider: getFeatures(), minimumValue(), maximumValue(), uniqueValues(), enumValues(), defaultValue(),
-      attributeIndexes(), pkAttributeIndexes(), isSaveAndLoadStyleToDBSupported()
+      attributeIndexes(), pkAttributeIndexes(), isSaveAndLoadStyleToDatabaseSupported()
       - QgsRasterInterface: extent()
 
 
@@ -399,6 +400,17 @@ QgsAdvancedDigitizingDockWidget        {#qgis_api_break_3_0_QgsAdvancedDigitizin
 - canvasReleaseEvent takes now QgsAdvancedDigitizingDockWidget::CaptureMode as second argument.
 
 
+QgsApplication        {#qgis_api_break_3_0_QgsApplication}
+--------------
+
+- qgisMasterDbFilePath() was renamed to qgisMasterDatabaseFilePath()
+- qgisMasterDatabaseFilePath() was renamed to qgisUserDatabaseFilePath()
+- qgisAuthDbFilePath() was renamed to qgisAuthDatabaseFilePath()
+- srsDbFilePath() was renamed to srsDatabaseFilePath()
+- setAuthDbDirPath() was renamed to setAuthDatabaseDirPath()
+- createDB() was renamed to createDatabase()
+
+
 QgsAtlasComposition        {#qgis_api_break_3_0_QgsAtlasComposition}
 -------------------
 
@@ -435,6 +447,19 @@ QgsAuthConfigUriEdit        {#qgis_api_break_3_0_QgsAuthConfigUriEdit}
 --------------------
 
 - hasConfigID() has been renamed to hasConfigId()
+
+
+QgsAuthManager        {#qgis_api_break_3_0_QgsAuthManager}
+--------------
+
+- authDbConnection() was renamed to authDatabaseConnection()
+- authDbConfigTable() was renamed to authDatabaseConfigTable()
+- authDbServersTable() was renamed to authDatabaseServersTable()
+- authenticationDbPath() was renamed to authenticationDatabasePath()
+- masterPasswordHashInDb() was renamed to masterPasswordHashInDatabase()
+- scheduledAuthDbErase() was renamed to scheduledAuthDatabaseErase()
+- setScheduledAuthDbErase() was renamed to setScheduledAuthDatabaseErase()
+- setScheduledAuthDbEraseRequestEmitted() was renamed to setScheduledAuthDatabaseEraseRequestEmitted()
 
 
 QgsAuthMethod        {#qgis_api_break_3_0_QgsAuthMethod}
@@ -699,6 +724,7 @@ called if changes are made to the CRS database.
 - geographicCRSAuthId() has been renamed to geographicCrsAuthId()
 - geographicFlag() was renamed to isGeographic()
 - axisInverted() was renamed to hasAxisInverted()
+- syncDb() was renamed to syncDatabase()
 
 
 QgsCoordinateTransform        {#qgis_api_break_3_0_QgsCoordinateTransform}
@@ -1316,6 +1342,8 @@ screenUpdateRequested() were removed. These members have had no effect for a num
 - writeLayerXML() was renamed to writeLayerXml()
 - capitaliseLayerName() was renamed to capitalizeLayerName() <!--#spellok-->
 - asLayerDefinition(), fromLayerDefinition(), fromLayerDefinitionFile() were moved to QgsLayerDefinition class and renamed to exportLayerDefinitionLayers() resp. loadLayerDefinitionLayers()
+- loadNamedStyleFromDb() was renamed to loadNamedStyleFromDatabase()
+
 
 
 QgsMapLayerRegistry        {#qgis_api_break_3_0_QgsMapLayerRegistry}
@@ -1428,6 +1456,13 @@ QgsOSMElement        {#qgis_api_break_3_0_QgsOSMElement}
 -------------
 
 - elemID() has been renamed to elemId()
+
+
+QgsOSMXmlImport        {#qgis_api_break_3_0_QgsOSMXmlImport}
+-------------
+
+- setOutputDbFileName() and outputDbFileName() have been renamed to setOutputDatabaseFileName()
+and outputDatabaseFileName()
 
 
 QgsOwsConnection        {#qgis_api_break_3_0_QgsOwsConnection}
@@ -1906,6 +1941,7 @@ capabilities have been removed, as they were unused and had no effect.
 clause fragment which must be evaluated by the provider in order to calculate the default value. In
 QGIS 3.0 defaultValue() only returns literal, constant defaultValues. A new method defaultValueClause
 has been added which returns the SQL clause fragments which must be evaluated by the provider itself.
+- isSaveAndLoadStyleToDBSupported() was renamed to isSaveAndLoadStyleToDatabaseSupported()
 
 
 QgsVectorJoinInfo   {#qgis_api_break_3_0_QgsVectorJoinInfo}

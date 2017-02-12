@@ -1040,7 +1040,7 @@ int main( int argc, char *argv[] )
   // set authentication database directory
   if ( !authdbdirectory.isEmpty() )
   {
-    QgsApplication::setAuthDbDirPath( authdbdirectory );
+    QgsApplication::setAuthDatabaseDirPath( authdbdirectory );
   }
 
   //set up splash screen

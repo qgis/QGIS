@@ -185,6 +185,7 @@ from .ServiceAreaFromLayer import ServiceAreaFromLayer
 from .TruncateTable import TruncateTable
 from .Polygonize import Polygonize
 from .FixGeometry import FixGeometry
+from .ExecuteSQL import ExecuteSQL
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -254,7 +255,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         ShortestPathPointToPoint(), ShortestPathPointToLayer(),
                         ShortestPathLayerToPoint(), ServiceAreaFromPoint(),
                         ServiceAreaFromLayer(), TruncateTable(), Polygonize(),
-                        FixGeometry()
+                        FixGeometry(), ExecuteSQL()
                         ]
 
         if hasMatplotlib:
@@ -270,10 +271,6 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                 VectorLayerScatterplot(), MeanAndStdDevPlot(), BarPlot(),
                 PolarPlot(),
             ])
-
-        if Qgis.QGIS_VERSION_INT >= 21300:
-            from .ExecuteSQL import ExecuteSQL
-            self.alglist.extend([ExecuteSQL()])
 
         self.externalAlgs = []  # to store algs added by 3rd party plugins as scripts
 

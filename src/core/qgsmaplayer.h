@@ -463,7 +463,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @param qml will be set to QML style content from database
      * @returns true if style was successfully loaded
      */
-    virtual bool loadNamedStyleFromDb( const QString &db, const QString &uri, QString &qml );
+    virtual bool loadNamedStyleFromDatabase( const QString &db, const QString &uri, QString &qml );
 
     /**
      * Import the properties of this layer from a QDomDocument

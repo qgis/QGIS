@@ -175,8 +175,8 @@ class OutputSelectionPanel(BASE, WIDGET):
             fileName = str(files[0])
             selectedFileFilter = str(fileDialog.selectedNameFilter())
             if not fileName.lower().endswith(
-                    tuple(re.findall("\*(\.[a-z]{1,10})", fileFilter))):
-                ext = re.search("\*(\.[a-z]{1,10})", selectedFileFilter)
+                    tuple(re.findall("\\*(\\.[a-z]{1,10})", fileFilter))):
+                ext = re.search("\\*(\\.[a-z]{1,10})", selectedFileFilter)
                 if ext:
                     fileName += ext.group(1)
             settings.setValue('/Processing/LastOutputPath',
@@ -212,8 +212,8 @@ class OutputSelectionPanel(BASE, WIDGET):
             fileName = str(files[0])
             selectedFileFilter = str(fileDialog.selectedNameFilter())
             if not fileName.lower().endswith(
-                    tuple(re.findall("\*(\.[a-z]{1,10})", fileFilter))):
-                ext = re.search("\*(\.[a-z]{1,10})", selectedFileFilter)
+                    tuple(re.findall("\\*(\\.[a-z]{1,10})", fileFilter))):
+                ext = re.search("\\*(\\.[a-z]{1,10})", selectedFileFilter)
                 if ext:
                     fileName += ext.group(1)
             self.leText.setText(fileName)

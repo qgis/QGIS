@@ -690,12 +690,12 @@ QStringList QgsVectorDataProvider::errors() const
   return mErrors;
 }
 
-bool QgsVectorDataProvider::isSaveAndLoadStyleToDBSupported() const
+bool QgsVectorDataProvider::isSaveAndLoadStyleToDatabaseSupported() const
 {
   return false;
 }
 
-bool QgsVectorDataProvider::isDeleteStyleFromDbSupported() const
+bool QgsVectorDataProvider::isDeleteStyleFromDatabaseSupported() const
 {
   return false;
 }

@@ -88,7 +88,7 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
         self.addParameter(ParameterSelection(self.GTYPE,
                                              self.tr('Output geometry type'), self.GEOMTYPE, 0))
         self.addParameter(ParameterCrs(self.A_SRS,
-                                       self.tr('Assign an output CRS'), '', optional=True))
+                                       self.tr('Assign an output CRS'), '', optional=False))
         self.addParameter(ParameterCrs(self.T_SRS,
                                        self.tr('Reproject to this CRS on output '), '', optional=True))
         self.addParameter(ParameterCrs(self.S_SRS,

@@ -57,15 +57,22 @@ void QgsFileDownloader::startDownload()
   QgsNetworkAccessManager* nam = QgsNetworkAccessManager::instance();
 
   QNetworkRequest request( mUrl );
-
+  if ( mReply )
+  {
+    disconnect( mReply, &QNetworkReply::readyRead, this, &QgsFileDownloader::onReadyRead );
+    disconnect( mReply, &QNetworkReply::finished, this, &QgsFileDownloader::onFinished );
+    disconnect( mReply, &QNetworkReply::downloadProgress, this, &QgsFileDownloader::onDownloadProgress );
+    mReply->abort();
+    mReply->deleteLater();
+  }
   mReply = nam->get( request );
 
   connect( mReply, &QNetworkReply::readyRead, this, &QgsFileDownloader::onReadyRead );
   connect( mReply, &QNetworkReply::finished, this, &QgsFileDownloader::onFinished );
   connect( mReply, &QNetworkReply::downloadProgress, this, &QgsFileDownloader::onDownloadProgress );
-  connect( nam, &QgsNetworkAccessManager::requestTimedOut, this, &QgsFileDownloader::onRequestTimedOut );
+  connect( nam, &QgsNetworkAccessManager::requestTimedOut, this, &QgsFileDownloader::onRequestTimedOut, Qt::UniqueConnection );
 #ifndef QT_NO_SSL
-  connect( nam, &QgsNetworkAccessManager::sslErrors, this, &QgsFileDownloader::onSslErrors );
+  connect( nam, &QgsNetworkAccessManager::sslErrors, this, &QgsFileDownloader::onSslErrors, Qt::UniqueConnection );
 #endif
   if ( mGuiNotificationsEnabled )
   {

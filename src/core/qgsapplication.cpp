@@ -236,7 +236,7 @@ void QgsApplication::init( QString customConfigPath )
   ABISYM( mAuthDbDirPath ) = qgisSettingsDirPath();
   if ( getenv( "QGIS_AUTH_DB_DIR_PATH" ) )
   {
-    setAuthDbDirPath( getenv( "QGIS_AUTH_DB_DIR_PATH" ) );
+    setAuthDatabaseDirPath( getenv( "QGIS_AUTH_DB_DIR_PATH" ) );
   }
 
 
@@ -416,7 +416,7 @@ void QgsApplication::setDefaultSvgPaths( const QStringList& pathList )
   ABISYM( mDefaultSvgPaths ) = pathList;
 }
 
-void QgsApplication::setAuthDbDirPath( const QString& theAuthDbDirPath )
+void QgsApplication::setAuthDatabaseDirPath( const QString& theAuthDbDirPath )
 {
   QFileInfo fi( theAuthDbDirPath );
   if ( fi.exists() && fi.isDir() && fi.isWritable() )
@@ -689,7 +689,7 @@ QString QgsApplication::i18nPath()
 /*!
   Returns the path to the master qgis.db file.
 */
-QString QgsApplication::qgisMasterDbFilePath()
+QString QgsApplication::qgisMasterDatabaseFilePath()
 {
   return ABISYM( mPkgDataPath ) + QStringLiteral( "/resources/qgis.db" );
 }
@@ -705,7 +705,7 @@ QString QgsApplication::qgisSettingsDirPath()
 /*!
   Returns the path to the user qgis.db file.
 */
-QString QgsApplication::qgisUserDbFilePath()
+QString QgsApplication::qgisUserDatabaseFilePath()
 {
   return qgisSettingsDirPath() + QStringLiteral( "qgis.db" );
 }
@@ -713,7 +713,7 @@ QString QgsApplication::qgisUserDbFilePath()
 /*!
   Returns the path to the user authentication database file: qgis-auth.db.
 */
-QString QgsApplication::qgisAuthDbFilePath()
+QString QgsApplication::qgisAuthDatabaseFilePath()
 {
   return ABISYM( mAuthDbDirPath ) + QStringLiteral( "qgis-auth.db" );
 }
@@ -736,7 +736,7 @@ QString QgsApplication::iconsPath()
 /*!
   Returns the path to the srs.db file.
 */
-QString QgsApplication::srsDbFilePath()
+QString QgsApplication::srsDatabaseFilePath()
 {
   if ( ABISYM( mRunningFromBuildDir ) )
   {
@@ -999,8 +999,8 @@ QString QgsApplication::showSettings()
                           activeThemePath(),
                           defaultThemePath(),
                           svgPaths().join( tr( "\n\t\t", "match indentation of application state" ) ),
-                          qgisMasterDbFilePath() )
-                    .arg( qgisAuthDbFilePath() );
+                          qgisMasterDatabaseFilePath() )
+                    .arg( qgisAuthDatabaseFilePath() );
   return myState;
 }
 
@@ -1395,7 +1395,7 @@ QgsActionScopeRegistry* QgsApplication::actionScopeRegistry()
   return instance()->mActionScopeRegistry;
 }
 
-bool QgsApplication::createDB( QString *errorMessage )
+bool QgsApplication::createDatabase( QString *errorMessage )
 {
   // set a working directory up for gdal to write .aux.xml files into
   // for cases where the raster dir is read only to the user
@@ -1417,13 +1417,13 @@ bool QgsApplication::createDB( QString *errorMessage )
 #endif
 
   // Check qgis.db and make private copy if necessary
-  QFile qgisPrivateDbFile( QgsApplication::qgisUserDbFilePath() );
+  QFile qgisPrivateDbFile( QgsApplication::qgisUserDatabaseFilePath() );
 
   // first we look for ~/.qgis/qgis.db
   if ( !qgisPrivateDbFile.exists() )
   {
     // if it doesn't exist we copy it in from the global resources dir
-    QString qgisMasterDbFileName = QgsApplication::qgisMasterDbFilePath();
+    QString qgisMasterDbFileName = QgsApplication::qgisMasterDatabaseFilePath();
     QFile masterFile( qgisMasterDbFileName );
 
     // Must be sure there is destination directory ~/.qgis
@@ -1445,7 +1445,7 @@ bool QgsApplication::createDB( QString *errorMessage )
   {
     // migrate if necessary
     sqlite3 *db;
-    if ( sqlite3_open( QgsApplication::qgisUserDbFilePath().toUtf8().constData(), &db ) != SQLITE_OK )
+    if ( sqlite3_open( QgsApplication::qgisUserDatabaseFilePath().toUtf8().constData(), &db ) != SQLITE_OK )
     {
       if ( errorMessage )
       {

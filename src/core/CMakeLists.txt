@@ -682,6 +682,7 @@ SET(QGIS_CORE_HDRS
   qgseditformconfig.h
   qgseditorwidgetsetup.h
   qgsfeaturefilterprovider.h
+  qgsfield_p.h
   qgserror.h
   qgsexception.h
   qgsexpression.h
@@ -733,6 +734,7 @@ SET(QGIS_CORE_HDRS
   qgsprojectproperty.h
   qgsprojectversion.h
   qgsproperty.h
+  qgsproperty_p.h
   qgspropertycollection.h
   qgspropertytransformer.h
   qgsprovidermetadata.h

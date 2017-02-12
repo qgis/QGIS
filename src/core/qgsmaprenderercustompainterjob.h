@@ -84,7 +84,7 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
     QPainter* mPainter;
     QFuture<void> mFuture;
     QFutureWatcher<void> mFutureWatcher;
-    QgsLabelingEngine* mLabelingEngineV2;
+    std::unique_ptr< QgsLabelingEngine > mLabelingEngineV2;
 
     bool mActive;
     LayerRenderJobs mLayerJobs;

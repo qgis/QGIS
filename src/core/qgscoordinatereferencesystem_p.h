@@ -65,7 +65,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
         , mSRID( other.mSRID )
         , mAuthId( other.mAuthId )
         , mIsValid( other.mIsValid )
-        , mCRS( OSRNewSpatialReference( nullptr ) )
+        , mCRS( nullptr )
         , mValidationHint( other.mValidationHint )
         , mWkt( other.mWkt )
         , mProj4( other.mProj4 )
@@ -75,6 +75,10 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
       if ( mIsValid )
       {
         mCRS = OSRClone( other.mCRS );
+      }
+      else
+      {
+        mCRS = OSRNewSpatialReference( nullptr );
       }
     }
 

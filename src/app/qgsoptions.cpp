@@ -1023,6 +1023,7 @@ void QgsOptions::iconSizeChanged( const QString &iconSize )
   QgisApp::instance()->setIconSizes( iconSize.toInt() );
 }
 
+
 void QgsOptions::uiThemeChanged( const QString &theme )
 {
   if ( theme == QgsApplication::themeName() )
