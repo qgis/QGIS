@@ -36,6 +36,7 @@
 #include "qgslinesymbollayerv2.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsmaplayerstylemanager.h"
 #include "qgsunittypes.h"
 #include "qgstextlabelfeature.h"
 #include "qgscrscache.h"
@@ -380,9 +381,10 @@ QgsDxfExport::QgsDxfExport( const QgsDxfExport& dxfExport )
   *this = dxfExport;
 }
 
-QgsDxfExport& QgsDxfExport::operator=( const QgsDxfExport & dxfExport )
+QgsDxfExport &QgsDxfExport::operator=( const QgsDxfExport & dxfExport )
 {
-  mLayers = dxfExport.mLayers;
+  mMapSettings = dxfExport.mMapSettings;
+  mLayerNameAttribute = dxfExport.mLayerNameAttribute;
   mSymbologyScaleDenominator = dxfExport.mSymbologyScaleDenominator;
   mSymbologyExport = dxfExport.mSymbologyExport;
   mMapUnits = dxfExport.mMapUnits;
@@ -398,9 +400,26 @@ QgsDxfExport::~QgsDxfExport()
 {
 }
 
+void QgsDxfExport::setMapSettings( const QgsMapSettings &settings )
+{
+  mMapSettings = settings;
+}
+
 void QgsDxfExport::addLayers( const QList< QPair< QgsVectorLayer *, int > > &layers )
 {
-  mLayers = layers;
+  QStringList layerList;
+
+  mLayerNameAttribute.clear();
+
+  QList< QPair< QgsVectorLayer*, int > >::const_iterator layerIt = layers.constBegin();
+  for ( ; layerIt != layers.constEnd(); ++layerIt )
+  {
+    layerList << layerIt->first->id();
+    if ( layerIt->second >= 0 )
+      mLayerNameAttribute.insert( layerIt->first->id(), layerIt->second );
+  }
+
+  mMapSettings.setLayers( layerList );
 }
 
 void QgsDxfExport::writeGroup( int code, int i )
@@ -506,22 +525,22 @@ int QgsDxfExport::writeToFile( QIODevice* d, const QString& encoding )
 
   if ( mExtent.isEmpty() )
   {
-    QList< QPair<QgsVectorLayer*, int> >::const_iterator layerIt = mLayers.constBegin();
-    for ( ; layerIt != mLayers.constEnd(); ++layerIt )
+    Q_FOREACH ( QString id, mMapSettings.layers() )
     {
-      if ( layerIt->first )
-      {
-        QgsRectangle layerExtent = layerIt->first->extent();
-        layerExtent = mMapSettings.layerToMapCoordinates( layerIt->first, layerExtent );
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( id ) );
+      if ( !vl )
+        continue;
 
-        if ( mExtent.isEmpty() )
-        {
-          mExtent = layerExtent;
-        }
-        else
-        {
-          mExtent.combineExtentWith( layerExtent );
-        }
+      QgsRectangle layerExtent = vl->extent();
+      layerExtent = mMapSettings.layerToMapCoordinates( vl, layerExtent );
+
+      if ( mExtent.isEmpty() )
+      {
+        mExtent = layerExtent;
+      }
+      else
+      {
+        mExtent.combineExtentWith( layerExtent );
       }
     }
   }
@@ -756,27 +775,25 @@ void QgsDxfExport::writeTables()
   writeGroup( 70, 0 );
   writeGroup( 0, "ENDTAB" );
 
-  QList< QPair<QgsVectorLayer*, int> >::const_iterator layerIt = mLayers.constBegin();
   QSet<QString> layerNames;
-  for ( ; layerIt != mLayers.constEnd(); ++layerIt )
+  Q_FOREACH ( QString id, mMapSettings.layers() )
   {
-    if ( !layerIsScaleBasedVisible( layerIt->first ) )
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( id ) );
+    if ( !vl || !layerIsScaleBasedVisible( vl ) )
       continue;
 
-    if ( layerIt->first )
+    int attrIdx = mLayerNameAttribute.value( vl->id(), -1 );
+    if ( attrIdx < 0 )
     {
-      if ( layerIt->second < 0 )
+      layerNames << dxfLayerName( layerName( vl ) );
+    }
+    else
+    {
+      QList<QVariant> values;
+      vl->uniqueValues( attrIdx, values );
+      Q_FOREACH ( const QVariant& v, values )
       {
-        layerNames << dxfLayerName( layerName( layerIt->first ) );
-      }
-      else
-      {
-        QList<QVariant> values;
-        layerIt->first->uniqueValues( layerIt->second, values );
-        Q_FOREACH ( const QVariant& v, values )
-        {
-          layerNames << dxfLayerName( v.toString() );
-        }
+        layerNames << dxfLayerName( v.toString() );
       }
     }
   }
@@ -954,27 +971,40 @@ void QgsDxfExport::writeEntities()
   engine.setMapSettings( mMapSettings );
 
   // iterate through the maplayers
-  QList< QPair< QgsVectorLayer*, int > >::const_iterator layerIt = mLayers.constBegin();
-  for ( ; layerIt != mLayers.constEnd(); ++layerIt )
+  Q_FOREACH ( QString id, mMapSettings.layers() )
   {
-    QgsVectorLayer* vl = layerIt->first;
+    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( id ) );
     if ( !vl || !layerIsScaleBasedVisible( vl ) )
     {
       continue;
+    }
+
+    bool hasStyleOverride = mMapSettings.layerStyleOverrides().contains( vl->id() );
+    if ( hasStyleOverride )
+    {
+      QgsDebugMsg( QString( "%1: apply override style" ).arg( vl->id() ) );
+      vl->styleManager()->setOverrideStyle( mMapSettings.layerStyleOverrides().value( vl->id() ) );
+    }
+    else
+    {
+      QgsDebugMsg( QString( "%1: not override style" ).arg( vl->id() ) );
     }
 
     QgsSymbolV2RenderContext sctx( ctx, QgsSymbolV2::MM, 1.0, false, 0, nullptr );
     QgsFeatureRendererV2* renderer = vl->rendererV2();
     if ( !renderer )
     {
+      if ( hasStyleOverride )
+        vl->styleManager()->restoreOverrideStyle();
       continue;
     }
     renderer->startRender( ctx, vl->fields() );
 
     QStringList attributes = renderer->usedAttributes();
-    if ( vl->fields().exists( layerIt->second ) )
+    int attrIdx = mLayerNameAttribute.value( vl->id(), 1 );
+    if ( vl->fields().exists( attrIdx ) )
     {
-      QString layerAttr = vl->fields().at( layerIt->second ).name();
+      QString layerAttr = vl->fields().at( attrIdx ).name();
       if ( !attributes.contains( layerAttr ) )
         attributes << layerAttr;
     }
@@ -1012,6 +1042,10 @@ void QgsDxfExport::writeEntities()
     {
       writeEntitiesSymbolLevels( vl );
       renderer->stopRender( ctx );
+
+      if ( hasStyleOverride )
+        vl->styleManager()->restoreOverrideStyle();
+
       continue;
     }
 
@@ -1026,7 +1060,7 @@ void QgsDxfExport::writeEntities()
     while ( featureIt.nextFeature( fet ) )
     {
       ctx.expressionContext().setFeature( fet );
-      QString lName( dxfLayerName( layerIt->second == -1 ? layerName( vl ) : fet.attribute( layerIt->second ).toString() ) );
+      QString lName( dxfLayerName( attrIdx < 0 ? layerName( vl ) : fet.attribute( attrIdx ).toString() ) );
 
       sctx.setFeature( &fet );
       if ( mSymbologyExport == NoSymbology )
@@ -1076,6 +1110,9 @@ void QgsDxfExport::writeEntities()
     }
 
     renderer->stopRender( ctx );
+
+    if ( hasStyleOverride )
+      vl->styleManager()->restoreOverrideStyle();
   }
 
   engine.run( ctx );
@@ -4014,11 +4051,9 @@ QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2* > > QgsDxfExport::symbolLayers( Qg
 {
   QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2* > > symbolLayers;
 
-  QList< QPair< QgsVectorLayer*, int> >::const_iterator lIt = mLayers.constBegin();
-  for ( ; lIt != mLayers.constEnd(); ++lIt )
+  Q_FOREACH ( QString id, mMapSettings.layers() )
   {
-    // cast to vector layer
-    QgsVectorLayer* vl = lIt->first;
+    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( id ) );
     if ( !vl )
     {
       continue;
@@ -4271,12 +4306,13 @@ bool QgsDxfExport::layerIsScaleBasedVisible( const QgsMapLayer* layer ) const
 
 QString QgsDxfExport::layerName( const QString &id, const QgsFeature &f ) const
 {
-  QList< QPair<QgsVectorLayer*, int> >::const_iterator layerIt = mLayers.constBegin();
-  for ( ; layerIt != mLayers.constEnd(); ++layerIt )
+  Q_FOREACH ( QString lid, mMapSettings.layers() )
   {
-    if ( layerIt->first && layerIt->first->id() == id )
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( lid ) );
+    if ( vl && vl->id() == id )
     {
-      return dxfLayerName( layerIt->second < 0 ? layerName( layerIt->first ) : f.attribute( layerIt->second ).toString() );
+      int attrIdx = mLayerNameAttribute.value( vl->id(), -1 );
+      return dxfLayerName( attrIdx < 0 ? layerName( vl ) : f.attribute( attrIdx ).toString() );
     }
   }
 

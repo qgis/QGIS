@@ -56,6 +56,12 @@ class CORE_EXPORT QgsDxfExport
     QgsDxfExport &operator=( const QgsDxfExport &dxfExport );
 
     /**
+     * Set map settings and assign layer name attributes
+     * @param settings map settings to apply
+     */
+    void setMapSettings( const QgsMapSettings &settings );
+
+    /**
      * Add layers to export
      * @param layers list of layers and corresponding attribute indexes that determine the layer name (-1 for original layer name or title)
      * @see setLayerTitleAsName
@@ -391,8 +397,6 @@ class CORE_EXPORT QgsDxfExport
     void registerDxfLayer( QString layerId, QgsFeatureId fid, QString layer );
 
   private:
-    QList< QPair<QgsVectorLayer*, int> > mLayers;
-
     /** Extent for export, only intersecting features are exported. If the extent is an empty rectangle, all features are exported*/
     QgsRectangle mExtent;
     /** Scale for symbology export (used if symbols units are mm)*/
@@ -459,6 +463,7 @@ class CORE_EXPORT QgsDxfExport
     QMap< QString, QMap<QgsFeatureId, QString> > mDxfLayerNames;
     long mCrs;
     QgsMapSettings mMapSettings;
+    QHash<QString, int> mLayerNameAttribute;
     double mFactor;
 };
 
