@@ -44,6 +44,8 @@ bool QgsVectorFileWriterTask::run()
   if ( !mLayer )
     return false;
 
+  connect( mOptions.feedback, &QgsFeedback::progressChanged, this, &QgsVectorFileWriterTask::setProgress );
+
   mError = QgsVectorFileWriter::writeAsVectorFormat(
              mLayer, mDestFileName, mOptions, &mNewFilename, &mErrorMessage );
   return mError == QgsVectorFileWriter::NoError;

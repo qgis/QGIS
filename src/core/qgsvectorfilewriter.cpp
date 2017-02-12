@@ -2424,12 +2424,27 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
   writer->mFields = layer->fields();
 
   // write all features
+  long saved = 0;
+  long total = options.onlySelectedFeatures ? layer->selectedFeatureCount() : layer->featureCount();
+  int lastProgressReport = 0;
   while ( fit.nextFeature( fet ) )
   {
     if ( options.feedback && options.feedback->isCanceled() )
     {
       delete writer;
       return Canceled;
+    }
+
+    saved++;
+    if ( options.feedback )
+    {
+      //avoid spamming progress reports
+      int newProgress = ( 100.0 * saved ) / total;
+      if ( newProgress < 100 && newProgress != lastProgressReport )
+      {
+        lastProgressReport = newProgress;
+        options.feedback->setProgress( lastProgressReport );
+      }
     }
 
     if ( shallTransform )
