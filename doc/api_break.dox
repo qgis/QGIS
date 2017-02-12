@@ -266,6 +266,7 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 - QgsMapCanvasMap. It is an internal class used by map canvas.
 - QgsMapLayerRegistry. Its functionality has been moved to QgsProject.
 - QgsMapRenderer. It has been replaced by QgsMapRendererJob with subclasses and QgsMapSettings.
+- QgsMapToolTouch. The touch navigation functionality is now built into the standard QgsMapToolPan tool.
 - QgsPhotoWidgetWrapper was removed. Use QgsExternalResourceWidgetWrapper instead.
 - QgsPseudoColorShader. This shader has been broken for some time and was replaced by QgsSingleBandPseudoColorRenderer.
 - QgsProjectBadLayerGuiHandler was removed. It was unused in QGIS code and barely useful. Implement your own QgsProjectBadLayerHandler subclass if needed.
@@ -355,6 +356,7 @@ QgisInterface        {#qgis_api_break_3_0_QgisInterface}
 
 - fileMenu() has been removed, use projectMenu() instead.
 - actionRemoveLayer was removed as it no longer exists.
+- actionTouch was removed, as the corresponding action no longer exists (see notes on QgsMapToolTouch)
 
 
 QgsAbstractGeometry        {#qgis_api_break_3_0_QgsAbstractGeometry}
