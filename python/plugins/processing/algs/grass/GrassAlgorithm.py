@@ -31,7 +31,7 @@ import uuid
 import importlib
 import re
 
-from PyQt4.QtCore import QCoreApplication
+from PyQt4.QtCore import QCoreApplication, QUrl
 from PyQt4.QtGui import QIcon
 
 from qgis.core import QgsRasterLayer
