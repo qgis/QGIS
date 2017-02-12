@@ -8444,7 +8444,7 @@ void QgisApp::removeLayer()
   QStringList activeTaskDescriptions;
   Q_FOREACH ( QgsMapLayer * layer, mLayerTreeView->selectedLayers() )
   {
-    QList< QgsTask* > tasks = QgsApplication::taskManager()->tasksDependentOnLayer( layer->id() );
+    QList< QgsTask* > tasks = QgsApplication::taskManager()->tasksDependentOnLayer( layer );
     if ( !tasks.isEmpty() )
     {
       Q_FOREACH ( QgsTask* task, tasks )
@@ -9649,7 +9649,7 @@ bool QgisApp::checkTasksDependOnProject()
 
   for ( ; layerIt != layers.constEnd(); ++layerIt )
   {
-    QList< QgsTask* > tasks = QgsApplication::taskManager()->tasksDependentOnLayer( layerIt.key() );
+    QList< QgsTask* > tasks = QgsApplication::taskManager()->tasksDependentOnLayer( layerIt.value() );
     if ( !tasks.isEmpty() )
     {
       Q_FOREACH ( QgsTask* task, tasks )

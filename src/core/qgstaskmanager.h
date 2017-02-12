@@ -24,6 +24,7 @@
 #include <QReadWriteLock>
 
 #include "qgis_core.h"
+#include "qgsmaplayer.h"
 
 class QgsTask;
 class QgsTaskRunnableWrapper;
@@ -170,18 +171,18 @@ class CORE_EXPORT QgsTask : public QObject
                      SubTaskDependency subTaskDependency = SubTaskIndependent );
 
     /**
-     * Sets a list of layer IDs on which the task depends. The task will automatically
+     * Sets a list of layers on which the task depends. The task will automatically
      * be canceled if any of these layers are about to be removed.
      * @see dependentLayerIds()
      */
-    void setDependentLayers( const QStringList& dependentLayerIds );
+    void setDependentLayers( const QList<QgsMapLayer*>& dependentLayers );
 
     /**
-     * Returns the list of layer IDs on which the task depends. The task will automatically
+     * Returns the list of layers on which the task depends. The task will automatically
      * be canceled if any of these layers are about to be removed.
      * @see setDependentLayers()
      */
-    QStringList dependentLayerIds() const { return mDependentLayerIds; }
+    QList< QgsMapLayer* > dependentLayers() const;
 
   signals:
 
@@ -296,7 +297,7 @@ class CORE_EXPORT QgsTask : public QObject
     };
     QList< SubTask > mSubTasks;
 
-    QStringList mDependentLayerIds;
+    QgsWeakMapLayerPointerList mDependentLayers;
 
 
     /**
@@ -430,16 +431,16 @@ class CORE_EXPORT QgsTaskManager : public QObject
     /** Returns a list of layers on which as task is dependent. The task will automatically
      * be canceled if any of these layers are above to be removed.
      * @param taskId task ID
-     * @returns list of layer IDs
+     * @returns list of layers
      * @see tasksDependentOnLayer()
      */
-    QStringList dependentLayers( long taskId ) const;
+    QList< QgsMapLayer* > dependentLayers( long taskId ) const;
 
     /**
      * Returns a list of tasks which depend on a layer.
      * @see dependentLayers()
      */
-    QList< QgsTask* > tasksDependentOnLayer( const QString& layerId ) const;
+    QList< QgsTask* > tasksDependentOnLayer( QgsMapLayer* layer ) const;
 
     /** Returns a list of the active (queued or running) tasks.
      * @see countActiveTasks()
@@ -489,7 +490,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
 
     void taskProgressChanged( double progress );
     void taskStatusChanged( int status );
-    void layersWillBeRemoved( const QStringList& layerIds );
+    void layersWillBeRemoved( const QList<QgsMapLayer*>& layers );
 
   private:
 
@@ -506,7 +507,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
 
     QMap< long, TaskInfo > mTasks;
     QMap< long, QgsTaskList > mTaskDependencies;
-    QMap< long, QStringList > mLayerDependencies;
+    QMap< long, QgsWeakMapLayerPointerList > mLayerDependencies;
 
     //! Tracks the next unique task ID
     long mNextTaskId;

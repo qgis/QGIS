@@ -30,7 +30,7 @@ QgsVectorFileWriterTask::QgsVectorFileWriterTask( QgsVectorLayer* layer, const Q
     mOptions.feedback = mOwnedFeedback.get();
   }
   if ( mLayer )
-    setDependentLayers( QStringList() << mLayer->id() );
+    setDependentLayers( QList< QgsMapLayer* >() << mLayer );
 }
 
 void QgsVectorFileWriterTask::cancel()
