@@ -36,8 +36,15 @@ class QgsFeedback : QObject
     //! Tells whether the operation has been canceled already
     bool isCanceled() const;
 
+    void setProgress( double progress );
+
+    double progress() const;
+
   signals:
     //! Internal routines can connect to this signal if they use event loop
     void canceled();
+
+    void progressChanged( double progress );
+
 
 };
