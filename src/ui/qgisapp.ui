@@ -1884,7 +1884,7 @@ Ctrl (Cmd) increments by 15 deg.</string>
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>:/images/themes/default/mActionTouch.png</normaloff>:/images/themes/default/mActionTouch.png</iconset>
+     <normaloff>:/images/themes/default/mActionTouch.svg</normaloff>:/images/themes/default/mActionTouch.svg</iconset>
    </property>
    <property name="text">
     <string>Touch Zoom and Pan</string>
