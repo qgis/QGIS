@@ -392,7 +392,6 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     //! View menu actions
     virtual QAction *actionPan() override;
-    virtual QAction *actionTouch() override;
     virtual QAction *actionPanToSelected() override;
     virtual QAction *actionZoomIn() override;
     virtual QAction *actionZoomOut() override;

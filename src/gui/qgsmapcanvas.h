@@ -33,10 +33,8 @@
 #include "qgsmapsettings.h" // TEMPORARY
 #include "qgsprevieweffect.h" //for QgsPreviewEffect::PreviewMode
 
-#ifdef HAVE_TOUCH
 #include <QGestureEvent>
 #include "qgis_gui.h"
-#endif
 
 class QWheelEvent;
 class QPixmap;
@@ -555,10 +553,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void messageEmitted( const QString& title, const QString& message, QgsMessageBar::MessageLevel = QgsMessageBar::INFO );
 
   protected:
-#ifdef HAVE_TOUCH
+
     //! Overridden standard event to be gestures aware
     bool event( QEvent * e ) override;
-#endif
 
     //! Overridden key press event
     void keyPressEvent( QKeyEvent * e ) override;

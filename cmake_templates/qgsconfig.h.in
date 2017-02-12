@@ -48,8 +48,6 @@
 
 #cmakedefine HAVE_ORACLE
 
-#cmakedefine HAVE_TOUCH
-
 #cmakedefine HAVE_OSGEARTHQT
 
 #cmakedefine SERVER_SKIP_ECW

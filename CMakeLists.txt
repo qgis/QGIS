@@ -268,23 +268,6 @@ IF (WITH_QTMOBILITY)
     FIND_PACKAGE(QtMobility 1.1.0)
 ENDIF (WITH_QTMOBILITY)
 
-IF (ANDROID)
-  SET (DEFAULT_WITH_TOUCH TRUE)
-ELSE (ANDROID)
-  SET (DEFAULT_WITH_TOUCH FALSE)
-ENDIF (ANDROID)
-
-#Add a touch mode if Qt has Qt Gestures
-SET (WITH_TOUCH ${DEFAULT_WITH_TOUCH} CACHE BOOL "Determines if touch interface related code should be build")
-
-IF (WITH_TOUCH)
-  # following variable is used in qgsconfig.h
-  SET (HAVE_TOUCH TRUE)
-  MESSAGE (STATUS "Touch support enabled")
-ELSE (WITH_TOUCH)
-  MESSAGE (STATUS "Touch support disabled")
-ENDIF (WITH_TOUCH)
-
 # search for QScintilla2 (C++ lib)
 FIND_PACKAGE(QScintilla REQUIRED)
 

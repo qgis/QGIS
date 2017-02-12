@@ -131,10 +131,8 @@ class QgsDiagramProperties;
 #include "ui_qgisapp.h"
 #include "qgis_app.h"
 
-#ifdef HAVE_TOUCH
 #include <QGestureEvent>
 #include <QTapAndHoldGesture>
-#endif
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -352,7 +350,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionSnappingOptions() { return mActionSnappingOptions; }
     QAction *actionOffsetCurve() { return mActionOffsetCurve; }
     QAction *actionPan() { return mActionPan; }
-    QAction *actionTouch() { return mActionTouch; }
     QAction *actionPanToSelected() { return mActionPanToSelected; }
     QAction *actionZoomIn() { return mActionZoomIn; }
     QAction *actionZoomOut() { return mActionZoomOut; }
@@ -1222,10 +1219,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void zoomIn();
     //! Set map tool to pan
     void pan();
-#ifdef HAVE_TOUCH
-    //! Set map tool to touch
-    void touch();
-#endif
     //! Identify feature(s) on the currently selected layer
     void identify();
     //! Measure distance
@@ -1590,9 +1583,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
             : mZoomIn( nullptr )
             , mZoomOut( nullptr )
             , mPan( nullptr )
-#ifdef HAVE_TOUCH
-            , mTouch( 0 )
-#endif
             , mIdentify( nullptr )
             , mFeatureAction( nullptr )
             , mMeasureDist( nullptr )
@@ -1639,9 +1629,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mZoomIn;
         QgsMapTool *mZoomOut;
         QgsMapTool *mPan;
-#ifdef HAVE_TOUCH
-        QgsMapTool *mTouch;
-#endif
         QgsMapTool *mIdentify;
         QgsMapTool *mFeatureAction;
         QgsMapTool *mMeasureDist;
@@ -1865,10 +1852,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QStackedWidget* mCentralContainer;
 
     int mProjOpen;
-#ifdef HAVE_TOUCH
+
     bool gestureEvent( QGestureEvent *event );
     void tapAndHoldTriggered( QTapAndHoldGesture *gesture );
-#endif
 
     friend class TestQgisAppPython;
 };

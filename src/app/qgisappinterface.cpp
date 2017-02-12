@@ -573,7 +573,6 @@ QAction *QgisAppInterface::actionNodeTool() { return qgis->actionNodeTool(); }
 
 //! View menu actions
 QAction *QgisAppInterface::actionPan() { return qgis->actionPan(); }
-QAction *QgisAppInterface::actionTouch() { return qgis->actionTouch(); }
 QAction *QgisAppInterface::actionPanToSelected() { return qgis->actionPanToSelected(); }
 QAction *QgisAppInterface::actionZoomIn() { return qgis->actionZoomIn(); }
 QAction *QgisAppInterface::actionZoomOut() { return qgis->actionZoomOut(); }
