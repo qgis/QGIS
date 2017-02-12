@@ -32,6 +32,12 @@ class QgsDxfExport
     ~QgsDxfExport();
 
     /**
+     * Set map settings and assign layer name attributes
+     * @param settings map settings to apply
+     */
+    void setMapSettings( const QgsMapSettings &settings );
+
+    /**
      * Add layers to export
      * @param layers list of layers and corresponding attribute indexes that determine the layer name (-1 for original layer name or title)
      * @see setLayerTitleAsName
