@@ -1052,7 +1052,7 @@ class CORE_EXPORT QgsExpression
         /** Adds a named node. Takes ownership of the provided node.
          * @note added in QGIS 2.16
         */
-        void append( NamedNode* node ) { mList.append( node->node ); mNameList.append( node->name.toLower() ); mHasNamedNodes = true; }
+        void append( NamedNode* node ) { mList.append( node->node ); mNameList.append( node->name.toLower() ); mHasNamedNodes = true; delete node; }
 
         /** Returns the number of nodes in the list.
          */
