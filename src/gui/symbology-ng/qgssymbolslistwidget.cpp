@@ -16,8 +16,6 @@
 
 #include "qgssymbolslistwidget.h"
 
-#include "qgssizescalewidget.h"
-
 #include "qgsstylemanagerdialog.h"
 #include "qgsstylesavedialog.h"
 

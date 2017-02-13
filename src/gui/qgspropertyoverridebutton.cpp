@@ -533,7 +533,6 @@ void QgsPropertyOverrideButton::showAssistant()
 
   QgsPanelWidget* panel = QgsPanelWidget::findParentPanel( this );
   QgsPropertyAssistantWidget* widget = new QgsPropertyAssistantWidget( panel, mDefinition, mProperty, mVectorLayer );
-  widget->setDockMode( panel && panel->dockMode() );
   widget->registerExpressionContextGenerator( mExpressionContextGenerator );
   widget->setSymbol( mSymbol ); // we only show legend preview in dialog version
 

@@ -38,7 +38,6 @@
 #include "qgssvgselectorwidget.h"
 
 #include "qgslogger.h"
-#include "qgssizescalewidget.h"
 
 #include <QAbstractButton>
 #include <QColorDialog>

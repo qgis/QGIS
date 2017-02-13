@@ -133,10 +133,7 @@ void QgsPropertyAssistantWidget::computeValuesFromLayer()
 
 void QgsPropertyAssistantWidget::updatePreview()
 {
-  if ( !mTransformerWidget || !mSymbol )
-    return;
-
-  if ( dockMode() )
+  if ( !mTransformerWidget || !mLayer ) // TODO - make this work OK without a layer
     return;
 
   mLegendPreview->setIconSize( QSize( 512, 512 ) );
@@ -145,7 +142,7 @@ void QgsPropertyAssistantWidget::updatePreview()
   QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( minValueSpinBox->value(),
                          maxValueSpinBox->value(), 4 );
 
-  QList< QgsSymbolLegendNode* > nodes = mTransformerWidget->generatePreviews( breaks, mLayerTreeLayer, mLayer, mSymbol.get(), minValueSpinBox->value(),
+  QList< QgsSymbolLegendNode* > nodes = mTransformerWidget->generatePreviews( breaks, mLayerTreeLayer, mSymbol.get(), minValueSpinBox->value(),
                                         maxValueSpinBox->value() );
   if ( nodes.isEmpty() )
   {
@@ -321,11 +318,26 @@ QgsSizeScaleTransformer* QgsPropertySizeAssistantWidget::createTransformer( doub
   return transformer;
 }
 
-QList< QgsSymbolLegendNode* > QgsPropertySizeAssistantWidget::generatePreviews( const QList<double>& breaks, QgsLayerTreeLayer* parent, const QgsVectorLayer* layer, const QgsSymbol* symbol, double minValue, double maxValue ) const
+QList< QgsSymbolLegendNode* > QgsPropertySizeAssistantWidget::generatePreviews( const QList<double>& breaks, QgsLayerTreeLayer* parent, const QgsSymbol* symbol, double minValue, double maxValue ) const
 {
   QList< QgsSymbolLegendNode* > nodes;
 
-  if ( !symbol || !layer )
+  const QgsSymbol* legendSymbol = symbol;
+  std::unique_ptr< QgsSymbol > tempSymbol;
+
+  if ( !legendSymbol )
+  {
+    if ( mDefinition.standardTemplate() == QgsPropertyDefinition::Size )
+    {
+      tempSymbol.reset( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+    }
+    else if ( mDefinition.standardTemplate() == QgsPropertyDefinition::StrokeWidth )
+    {
+      tempSymbol.reset( QgsLineSymbol::createSimple( QgsStringMap() ) );
+    }
+    legendSymbol = tempSymbol.get();
+  }
+  if ( !legendSymbol )
     return nodes;
 
   std::unique_ptr< QgsSizeScaleTransformer > t( createTransformer( minValue, maxValue ) );
@@ -333,17 +345,17 @@ QList< QgsSymbolLegendNode* > QgsPropertySizeAssistantWidget::generatePreviews( 
   for ( int i = 0; i < breaks.length(); i++ )
   {
     std::unique_ptr< QgsSymbolLegendNode > node;
-    if ( dynamic_cast<const QgsMarkerSymbol*>( symbol ) )
+    if ( dynamic_cast<const QgsMarkerSymbol*>( legendSymbol ) )
     {
-      std::unique_ptr< QgsMarkerSymbol > symbolClone( static_cast<QgsMarkerSymbol*>( symbol->clone() ) );
+      std::unique_ptr< QgsMarkerSymbol > symbolClone( static_cast<QgsMarkerSymbol*>( legendSymbol->clone() ) );
       symbolClone->setDataDefinedSize( QgsProperty() );
       symbolClone->setDataDefinedAngle( QgsProperty() ); // to avoid symbol not being drawn
       symbolClone->setSize( t->size( breaks[i] ) );
       node.reset( new QgsSymbolLegendNode( parent, QgsLegendSymbolItem( symbolClone.get(), QString::number( i ), QString() ) ) );
     }
-    else if ( dynamic_cast<const QgsLineSymbol*>( symbol ) )
+    else if ( dynamic_cast<const QgsLineSymbol*>( legendSymbol ) )
     {
-      std::unique_ptr< QgsLineSymbol > symbolClone( static_cast<QgsLineSymbol*>( symbol->clone() ) );
+      std::unique_ptr< QgsLineSymbol > symbolClone( static_cast<QgsLineSymbol*>( legendSymbol->clone() ) );
       symbolClone->setDataDefinedWidth( QgsProperty() );
       symbolClone->setWidth( t->size( breaks[i] ) );
       node.reset( new QgsSymbolLegendNode( parent, QgsLegendSymbolItem( symbolClone.get(), QString::number( i ), QString() ) ) );
@@ -354,7 +366,7 @@ QList< QgsSymbolLegendNode* > QgsPropertySizeAssistantWidget::generatePreviews( 
   return nodes;
 }
 
-QList<QgsSymbolLegendNode*> QgsPropertyAbstractTransformerWidget::generatePreviews( const QList<double>& , QgsLayerTreeLayer* , const QgsVectorLayer*, const QgsSymbol*, double, double ) const
+QList<QgsSymbolLegendNode*> QgsPropertyAbstractTransformerWidget::generatePreviews( const QList<double>& , QgsLayerTreeLayer* , const QgsSymbol*, double, double ) const
 {
   return QList< QgsSymbolLegendNode* >();
 }
