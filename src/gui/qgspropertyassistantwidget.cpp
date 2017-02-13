@@ -164,7 +164,7 @@ void QgsPropertyAssistantWidget::updatePreview()
   mPreviewList.clear();
 
   QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( minValueSpinBox->value(),
-                         maxValueSpinBox->value(), 4 );
+                         maxValueSpinBox->value(), 8 );
 
   QList< QgsSymbolLegendNode* > nodes = mTransformerWidget->generatePreviews( breaks, mLayerTreeLayer, mSymbol.get(), minValueSpinBox->value(),
                                         maxValueSpinBox->value() );
@@ -181,7 +181,9 @@ void QgsPropertyAssistantWidget::updatePreview()
     const QSize minSize( node->minimumIconSize() );
     node->setIconSize( minSize );
     widthMax = qMax( minSize.width(), widthMax );
-    mPreviewList.appendRow( new QStandardItem( node->data( Qt::DecorationRole ).value<QPixmap>(), QString::number( breaks[i] ) ) );
+    QStandardItem* item = new QStandardItem( node->data( Qt::DecorationRole ).value<QPixmap>(), QString::number( breaks[i] ) );
+    item->setEditable( false );
+    mPreviewList.appendRow( item );
     delete node;
     i++;
   }

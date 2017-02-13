@@ -121,6 +121,14 @@
           <height>16777215</height>
          </size>
         </property>
+        <property name="toolTip">
+         <string>Fetch value range from layer</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normalon>:/images/themes/default/mActionDraw.svg</normalon>
+         </iconset>
+        </property>
        </widget>
       </item>
       <item row="0" column="1" colspan="2">
