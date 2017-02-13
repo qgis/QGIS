@@ -14,8 +14,7 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
   qgiscustomwidgets.cpp
   qgscollapsiblegroupboxplugin.cpp
   qgscolorbuttonplugin.cpp
-  qgsdatetimeeditplugin.cpp
-  qgsdatadefinedbuttonplugin.cpp
+  qgsdatetimeeditplugin.cpp  
   qgsdockwidgetplugin.cpp
   qgsdoublespinboxplugin.cpp
   qgsexpressionbuilderwidgetplugin.cpp
@@ -27,6 +26,7 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
   qgsfilterlineeditplugin.cpp
   qgsmaplayercomboboxplugin.cpp
   qgsprojectionselectionwidgetplugin.cpp
+  qgspropertyoverridebuttonplugin.cpp
   qgsrelationeditorwidgetplugin.cpp
   qgsrelationreferencewidgetplugin.cpp
   qgsscalerangewidgetplugin.cpp
@@ -39,7 +39,6 @@ SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
   qgscollapsiblegroupboxplugin.h
   qgscolorbuttonplugin.h
   qgsdatetimeeditplugin.h
-  qgsdatadefinedbuttonplugin.h
   qgsdockwidgetplugin.h
   qgsdoublespinboxplugin.h
   qgsexpressionbuilderwidgetplugin.h
@@ -51,6 +50,7 @@ SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
   qgsfilterlineeditplugin.h
   qgsmaplayercomboboxplugin.h
   qgsprojectionselectionwidgetplugin.h
+  qgspropertyoverridebuttonplugin.h
   qgsrelationeditorwidgetplugin.h
   qgsrelationreferencewidgetplugin.h
   qgsscalerangewidgetplugin.h
@@ -69,7 +69,6 @@ SET(QGIS_CUSTOMWIDGETS_HDRS
   qgscollapsiblegroupboxplugin.h
   qgscolorbuttonplugin.h
   qgsdatetimeeditplugin.h
-  qgsdatadefinedbuttonplugin.h
   qgsdockwidgetplugin.h
   qgsdoublespinboxplugin.h
   qgsexpressionbuilderwidgetplugin.h
@@ -81,6 +80,7 @@ SET(QGIS_CUSTOMWIDGETS_HDRS
   qgsfilterlineeditplugin.h
   qgsmaplayercomboboxplugin.h
   qgsprojectionselectionwidgetplugin.h
+  qgspropertyoverridebuttonplugin.h
   qgsrelationeditorwidgetplugin.h
   qgsrelationreferencewidgetplugin.h
   qgsscalerangewidgetplugin.h
