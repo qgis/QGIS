@@ -237,6 +237,21 @@ QgsProperty &QgsProperty::operator=( const QgsProperty & other )
   return *this;
 }
 
+bool QgsProperty::operator==( const QgsProperty& other ) const
+{
+  return d->active == other.d->active
+         && d->type == other.d->type
+         && ( d->type != StaticProperty || d->staticValue == other.d->staticValue )
+         && ( d->type != FieldBasedProperty || d->fieldName == other.d->fieldName )
+         && ( d->type != ExpressionBasedProperty || d->expressionString == other.d->expressionString )
+         && (( !d->transformer && !other.d->transformer ) || ( d->transformer && other.d->transformer && d->transformer->toExpression( QString() ) == other.d->transformer->toExpression( QString() ) ) );
+}
+
+bool QgsProperty::operator!=( const QgsProperty& other ) const
+{
+  return ( !(( *this ) == other ) );
+}
+
 QgsProperty::Type QgsProperty::propertyType() const
 {
   return static_cast< Type >( d->type );

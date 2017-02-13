@@ -90,6 +90,9 @@ class QgsProperty
 
     operator bool() const;
 
+    bool operator==( const QgsProperty& other ) const;
+    bool operator!=( const QgsProperty& other ) const;
+
     Type propertyType() const;
 
     bool isActive() const;

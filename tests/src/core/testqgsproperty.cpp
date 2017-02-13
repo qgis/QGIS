@@ -593,6 +593,14 @@ void TestQgsProperty::equality()
   dd1.setField( QStringLiteral( "field" ) );
   QVERIFY( dd1 == dd2 );
   QVERIFY( !( dd1 != dd2 ) );
+
+  // with transformer
+  dd1.setTransformer( new QgsGenericNumericTransformer( 1, 2, 3, 4 ) );
+  QVERIFY( !( dd1 == dd2 ) );
+  QVERIFY( dd1 != dd2 );
+  dd2.setTransformer( new QgsGenericNumericTransformer( 1, 2, 3, 4 ) );
+  QVERIFY( dd1 == dd2 );
+  QVERIFY( !( dd1 != dd2 ) );
 }
 
 void TestQgsProperty::propertyTransformer()

@@ -228,6 +228,9 @@ class CORE_EXPORT QgsProperty
      */
     operator bool() const;
 
+    bool operator==( const QgsProperty& other ) const;
+    bool operator!=( const QgsProperty& other ) const;
+
     /**
      * Returns the property type.
      */
