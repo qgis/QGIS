@@ -143,7 +143,9 @@ class ItemDelegate : public QItemDelegate
 
     QSize sizeHint( const QStyleOptionViewItem& /*option*/, const QModelIndex & index ) const override
     {
-      return mModel->item( index.row() )->icon().actualSize( QSize( 512, 512 ) );
+      QSize size = mModel->item( index.row() )->icon().actualSize( QSize( 512, 512 ) );
+      size.rheight() += 6;
+      return size;
     }
 
   private:
