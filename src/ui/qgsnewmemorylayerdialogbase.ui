@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>444</width>
-    <height>293</height>
+    <height>304</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -77,6 +77,13 @@
          </widget>
         </item>
        </layout>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="mGeometryWithZCheckBox">
+        <property name="text">
+         <string>Geometries with Z/M coordinate</string>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">

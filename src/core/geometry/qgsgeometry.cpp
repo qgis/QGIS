@@ -519,6 +519,32 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
   return d->geometry->insertVertex( id, QgsPointV2( x, y ) );
 }
 
+bool QgsGeometry::insertVertex( const QgsPointV2& point, int beforeVertex )
+{
+  if ( !d->geometry )
+  {
+    return false;
+  }
+
+  //maintain compatibility with < 2.10 API
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::MultiPoint )
+  {
+    detach( true );
+    //insert geometry instead of point
+    return static_cast< QgsGeometryCollection* >( d->geometry )->insertGeometry( new QgsPointV2( point ), beforeVertex );
+  }
+
+  QgsVertexId id;
+  if ( !vertexIdFromVertexNr( beforeVertex, id ) )
+  {
+    return false;
+  }
+
+  detach( true );
+
+  return d->geometry->insertVertex( id, point );
+}
+
 QgsPoint QgsGeometry::vertexAt( int atVertex ) const
 {
   if ( !d->geometry )

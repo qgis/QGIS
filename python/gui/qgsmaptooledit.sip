@@ -27,6 +27,7 @@ class QgsMapToolEdit: QgsMapTool
 
     virtual Flags flags() const;
 
+    double defaultZValue() const;
   protected:
 
     /** Creates a rubber band with the color/line width from

@@ -56,6 +56,27 @@ bool QgsVectorLayerEditUtils::insertVertex( double x, double y, QgsFeatureId atF
   return true;
 }
 
+bool QgsVectorLayerEditUtils::insertVertex( const QgsPointV2& point, QgsFeatureId atFeatureId, int beforeVertex )
+{
+  if ( !L->hasGeometryType() )
+    return false;
+
+  QgsGeometry geometry;
+  if ( !cache()->geometry( atFeatureId, geometry ) )
+  {
+    // it's not in cache: let's fetch it from layer
+    QgsFeature f;
+    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.hasGeometry() )
+      return false; // geometry not found
+
+    geometry = f.geometry();
+  }
+
+  geometry.insertVertex( point, beforeVertex );
+
+  L->editBuffer()->changeGeometry( atFeatureId, geometry );
+  return true;
+}
 
 bool QgsVectorLayerEditUtils::moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex )
 {

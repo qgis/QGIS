@@ -37,6 +37,12 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
 
     virtual Flags flags() const override { return QgsMapTool::EditTool; }
 
+    /**
+     * Return default Z value
+     * Use for set Z coordinate to new vertex for 2.5d geometries
+     */
+    double defaultZValue() const;
+
   protected:
 
     /** Creates a rubber band with the color/line width from
