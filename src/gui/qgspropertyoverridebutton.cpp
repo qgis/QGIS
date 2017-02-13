@@ -404,7 +404,7 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
     mDefineMenu->addAction( mActionPasteExpr );
   }
 
-  if ( !mDefinition.name().isEmpty() )
+  if ( !mDefinition.name().isEmpty() && mDefinition.supportsAssistant() )
   {
     mDefineMenu->addSeparator();
     mActionAssistant->setCheckable( mProperty.transformer() );
@@ -599,7 +599,7 @@ void QgsPropertyOverrideButton::updateGui()
   {
     icon = mProperty.isActive() ? QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineOn.svg" ) ) : QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefine.svg" ) );
 
-    if ( !mFieldNameList.contains( mFieldName ) )
+    if ( !mFieldNameList.contains( mFieldName ) && !mProperty.transformer() )
     {
       icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineError.svg" ) );
       deftip = tr( "'%1' field missing" ).arg( mFieldName );

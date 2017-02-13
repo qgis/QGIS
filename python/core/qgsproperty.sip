@@ -58,6 +58,7 @@ class QgsPropertyDefinition
 
     StandardPropertyTemplate standardTemplate() const;
 
+    bool supportsAssistant() const;
 };
 
 class QgsProperty

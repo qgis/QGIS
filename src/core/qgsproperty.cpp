@@ -177,6 +177,11 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString& name, DataType data
     , mHelpText( helpText )
 {}
 
+bool QgsPropertyDefinition::supportsAssistant() const
+{
+  return mTypes == DataTypeNumeric || mStandardType == Size || mStandardType == StrokeWidth || mStandardType == ColorNoAlpha || mStandardType == ColorWithAlpha;
+}
+
 QString QgsPropertyDefinition::trString()
 {
   // just something to reduce translation redundancy

@@ -150,6 +150,12 @@ class CORE_EXPORT QgsPropertyDefinition
      */
     StandardPropertyTemplate standardTemplate() const { return mStandardType; }
 
+    /**
+     * Returns true if the property is of a type which is compatible with property
+     * override assistants.
+     */
+    bool supportsAssistant() const;
+
   private:
 
     QString mName;

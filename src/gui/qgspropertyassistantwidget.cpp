@@ -71,7 +71,16 @@ QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget* parent ,
     case QgsPropertyDefinition::StrokeWidth:
     {
       mTransformerWidget = new QgsPropertySizeAssistantWidget( this, mDefinition, initialState );
+      break;
     }
+
+    case QgsPropertyDefinition::ColorNoAlpha:
+    case QgsPropertyDefinition::ColorWithAlpha:
+    {
+      mTransformerWidget = new QgsPropertyColorAssistantWidget( this, mDefinition, initialState );
+      break;
+    }
+
     default:
       break;
   }
@@ -369,4 +378,64 @@ QList< QgsSymbolLegendNode* > QgsPropertySizeAssistantWidget::generatePreviews( 
 QList<QgsSymbolLegendNode*> QgsPropertyAbstractTransformerWidget::generatePreviews( const QList<double>& , QgsLayerTreeLayer* , const QgsSymbol*, double, double ) const
 {
   return QList< QgsSymbolLegendNode* >();
+}
+
+QgsPropertyColorAssistantWidget::QgsPropertyColorAssistantWidget( QWidget* parent, const QgsPropertyDefinition& definition, const QgsProperty& initialState )
+    : QgsPropertyAbstractTransformerWidget( parent, definition )
+{
+  setupUi( this );
+
+  layout()->setContentsMargins( 0, 0, 0, 0 );
+  layout()->setMargin( 0 );
+
+  bool supportsAlpha = definition.standardTemplate() == QgsPropertyDefinition::ColorWithAlpha;
+  mNullColorButton->setAllowAlpha( supportsAlpha );
+
+  if ( const QgsColorRampTransformer* colorTransform = dynamic_cast< const QgsColorRampTransformer* >( initialState.transformer() ) )
+  {
+    mNullColorButton->setColor( colorTransform->nullColor() );
+    mColorRampButton->setColorRamp( colorTransform->colorRamp() );
+  }
+
+  connect( mNullColorButton, &QgsColorButton::colorChanged, this, &QgsPropertyColorAssistantWidget::widgetChanged );
+  connect( mColorRampButton, &QgsColorRampButton::colorRampChanged, this, &QgsPropertyColorAssistantWidget::widgetChanged );
+}
+
+QgsColorRampTransformer* QgsPropertyColorAssistantWidget::createTransformer( double minValue, double maxValue ) const
+{
+  QgsColorRampTransformer* transformer = new QgsColorRampTransformer(
+    minValue,
+    maxValue,
+    mColorRampButton->colorRamp(),
+    mNullColorButton->color() );
+  return transformer;
+}
+
+QList<QgsSymbolLegendNode*> QgsPropertyColorAssistantWidget::generatePreviews( const QList<double>& breaks, QgsLayerTreeLayer* parent, const QgsSymbol* symbol, double minValue, double maxValue ) const
+{
+  QList< QgsSymbolLegendNode* > nodes;
+
+  const QgsMarkerSymbol* legendSymbol = dynamic_cast<const QgsMarkerSymbol*>( symbol );
+  std::unique_ptr< QgsMarkerSymbol > tempSymbol;
+
+  if ( !legendSymbol )
+  {
+    tempSymbol.reset( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+    legendSymbol = tempSymbol.get();
+  }
+  if ( !legendSymbol )
+    return nodes;
+
+  std::unique_ptr< QgsColorRampTransformer > t( createTransformer( minValue, maxValue ) );
+
+  for ( int i = 0; i < breaks.length(); i++ )
+  {
+    std::unique_ptr< QgsSymbolLegendNode > node;
+    std::unique_ptr< QgsMarkerSymbol > symbolClone( static_cast<QgsMarkerSymbol*>( legendSymbol->clone() ) );
+    symbolClone->setColor( t->color( breaks[i] ) );
+    node.reset( new QgsSymbolLegendNode( parent, QgsLegendSymbolItem( symbolClone.get(), QString::number( i ), QString() ) ) );
+    if ( node )
+      nodes << node.release();
+  }
+  return nodes;
 }

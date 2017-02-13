@@ -21,6 +21,7 @@
 #include "qgspanelwidget.h"
 #include "ui_qgspropertyassistantwidgetbase.h"
 #include "ui_qgspropertysizeassistantwidget.h"
+#include "ui_qgspropertycolorassistantwidget.h"
 #include "qgsproperty.h"
 #include "qgslayertreegroup.h"
 #include "qgssymbol.h"
@@ -67,6 +68,19 @@ class GUI_EXPORT QgsPropertySizeAssistantWidget : public QgsPropertyAbstractTran
     QgsPropertySizeAssistantWidget( QWidget* parent = nullptr, const QgsPropertyDefinition& definition = QgsPropertyDefinition(), const QgsProperty& initialState = QgsProperty() );
 
     virtual QgsSizeScaleTransformer* createTransformer( double minValue, double maxValue ) const override;
+
+    QList< QgsSymbolLegendNode* > generatePreviews( const QList<double>& breaks, QgsLayerTreeLayer* parent, const QgsSymbol* symbol, double minValue, double maxValue ) const override;
+};
+
+class GUI_EXPORT QgsPropertyColorAssistantWidget : public QgsPropertyAbstractTransformerWidget, private Ui::PropertyColorAssistant
+{
+    Q_OBJECT
+
+  public:
+
+    QgsPropertyColorAssistantWidget( QWidget* parent = nullptr, const QgsPropertyDefinition& definition = QgsPropertyDefinition(), const QgsProperty& initialState = QgsProperty() );
+
+    virtual QgsColorRampTransformer* createTransformer( double minValue, double maxValue ) const override;
 
     QList< QgsSymbolLegendNode* > generatePreviews( const QList<double>& breaks, QgsLayerTreeLayer* parent, const QgsSymbol* symbol, double minValue, double maxValue ) const override;
 };
