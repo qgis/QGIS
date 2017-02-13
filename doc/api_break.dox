@@ -272,6 +272,7 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 - QgsPseudoColorShader. This shader has been broken for some time and was replaced by QgsSingleBandPseudoColorRenderer.
 - QgsProjectBadLayerGuiHandler was removed. It was unused in QGIS code and barely useful. Implement your own QgsProjectBadLayerHandler subclass if needed.
 - QgsRendererV2DataDefinedMenus was removed. Use QgsDataDefinedButton instead.
+- QgsSizeScaleWidget. Use QgsPropertyAssistantWidget instead.
 - QgsLegacyHelpers.
 - QgsProviderCountCalcEvent and QgsProviderExtentCalcEvent. These classes were unused in QGIS core and unmaintained.
 - QgsWebviewWidgetWrapper was removed. Use QgsExternalResourceWidgetWrapper instead.

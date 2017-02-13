@@ -61,7 +61,7 @@ QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget* parent ,
     mRoot.addChildNode( mLayerTreeLayer ); // takes ownership
   }
   mLegendPreview->setModel( &mPreviewList );
-  mLegendPreview->setItemDelegate( new ItemDelegate( &mPreviewList ) );
+  mLegendPreview->setItemDelegate( new QgsAssistantPreviewItemDelegate( &mPreviewList ) );
   mLegendPreview->setHeaderHidden( true );
   mLegendPreview->expandAll();
   mLegendVerticalFrame->setLayout( new QVBoxLayout() );

@@ -140,6 +140,7 @@ class GUI_EXPORT QgsPropertyAssistantWidget : public QgsPanelWidget, private Ui:
     /**
      * Sets a symbol which can be used for previews inside the widget. If not specified, default
      * created symbols will be used instead.
+     * @note not available in Python bindings
      */
     void setSymbol( std::shared_ptr< QgsSymbol > symbol ) { mSymbol = symbol; updatePreview(); }
 
@@ -170,12 +171,12 @@ class GUI_EXPORT QgsPropertyAssistantWidget : public QgsPanelWidget, private Ui:
 
 
 /// @cond PRIVATE
-class ItemDelegate : public QItemDelegate
+class QgsAssistantPreviewItemDelegate : public QItemDelegate
 {
     Q_OBJECT
 
   public:
-    explicit ItemDelegate( QStandardItemModel* model ) : mModel( model ) {}
+    explicit QgsAssistantPreviewItemDelegate( QStandardItemModel* model ) : mModel( model ) {}
 
     QSize sizeHint( const QStyleOptionViewItem& /*option*/, const QModelIndex & index ) const override
     {

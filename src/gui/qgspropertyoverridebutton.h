@@ -159,6 +159,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     /**
      * Sets a symbol which can be used for previews inside the widget or in any dialog created
      * by the widget. If not specified, a default created symbol will be used instead.
+     * @note not available in Python bindings
      */
     void setSymbol( std::shared_ptr< QgsSymbol > symbol ) { mSymbol = symbol; }
 

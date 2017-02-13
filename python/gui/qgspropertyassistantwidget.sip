@@ -6,7 +6,13 @@ class QgsPropertyAssistantWidget : public QgsPanelWidget
 
   public:
 
-    QgsPropertyAssistantWidget( QWidget* parent /TransferThis/ = nullptr );
+    QgsPropertyAssistantWidget( QWidget* parent /TransferThis/ = 0, const QgsPropertyDefinition& definition = QgsPropertyDefinition(),
+                                const QgsProperty& initialState = QgsProperty(),
+                                const QgsVectorLayer* layer = 0 );
 
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator* generator );
+
+    void updateProperty( QgsProperty& property );
+
+    void setDockMode( bool dockMode );
 };
-
