@@ -81,6 +81,8 @@ class TestQgsProperty : public QObject
     void equality();
     void propertyTransformer(); //test for QgsPropertyTransformer
     void propertyTransformerFromExpression(); // text converting expression into QgsPropertyTransformer
+    void genericNumericTransformer();
+    void genericNumericTransformerFromExpression(); // text converting expression to QgsGenericNumericTransformer
     void sizeScaleTransformer(); //test for QgsSizeScaleTransformer
     void sizeScaleTransformerFromExpression(); // text converting expression to QgsSizeScaleTransformer
     void colorRampTransformer(); //test for QgsColorRampTransformer
@@ -680,6 +682,173 @@ void TestQgsProperty::propertyTransformerFromExpression()
   QVERIFY( fieldName.isEmpty() );
 }
 
+void TestQgsProperty::genericNumericTransformer()
+{
+  QgsExpressionContext context;
+  QgsGenericNumericTransformer t1( 10,
+                                   20,
+                                   100,
+                                   200,
+                                   -10,
+                                   1.0 );
+  QCOMPARE( t1.transformerType(), QgsPropertyTransformer::GenericNumericTransformer );
+  QCOMPARE( t1.minValue(), 10.0 );
+  QCOMPARE( t1.maxValue(), 20.0 );
+  QCOMPARE( t1.minOutputValue(), 100.0 );
+  QCOMPARE( t1.maxOutputValue(), 200.0 );
+  QCOMPARE( t1.nullOutputValue(), -10.0 );
+  QCOMPARE( t1.exponent(), 1.0 );
+
+  //transform
+  QCOMPARE( t1.transform( context, 10 ).toInt(), 100 );
+  QCOMPARE( t1.transform( context, 20 ).toInt(), 200 );
+  //null value
+  QCOMPARE( t1.transform( context, QVariant( QVariant::Double ) ).toInt(), -10 );
+  //non numeric value
+  QCOMPARE( t1.transform( context, QVariant( "ffff" ) ), QVariant( "ffff" ) );
+
+  //saving and restoring
+
+  //create a test dom element
+  QDomImplementation DomImplementation;
+  QDomDocumentType documentType =
+    DomImplementation.createDocumentType(
+      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+  QDomDocument doc( documentType );
+
+  QgsGenericNumericTransformer t2( 15,
+                                   25,
+                                   150,
+                                   250,
+                                   -10,
+                                   99 );
+
+  QDomElement element = doc.createElement( "xform" );
+  QVERIFY( t2.writeXml( element, doc ) );
+  QgsGenericNumericTransformer r1;
+  QVERIFY( r1.readXml( element, doc ) );
+  QCOMPARE( r1.minValue(), 15.0 );
+  QCOMPARE( r1.maxValue(), 25.0 );
+  QCOMPARE( r1.minOutputValue(), 150.0 );
+  QCOMPARE( r1.maxOutputValue(), 250.0 );
+  QCOMPARE( r1.nullOutputValue(), -10.0 );
+  QCOMPARE( r1.exponent(), 99.0 );
+
+  // test cloning
+  std::unique_ptr< QgsGenericNumericTransformer > r2( t2.clone() );
+  QCOMPARE( r2->minValue(), 15.0 );
+  QCOMPARE( r2->maxValue(), 25.0 );
+  QCOMPARE( r2->minOutputValue(), 150.0 );
+  QCOMPARE( r2->maxOutputValue(), 250.0 );
+  QCOMPARE( r2->nullOutputValue(), -10.0 );
+  QCOMPARE( r2->exponent(), 99.0 );
+
+  //test various min/max value/size and scaling methods
+
+  //getters and setters
+  QgsGenericNumericTransformer t;
+  t.setMinValue( 100 );
+  QCOMPARE( t.minValue(), 100.0 );
+  t.setMaxValue( 200 );
+  QCOMPARE( t.maxValue(), 200.0 );
+  t.setMinOutputValue( 10.0 );
+  QCOMPARE( t.minOutputValue(), 10.0 );
+  t.setMaxOutputValue( 20.0 );
+  QCOMPARE( t.maxOutputValue(), 20.0 );
+  t.setNullOutputValue( 1 );
+  QCOMPARE( t.nullOutputValue(), 1.0 );
+  t.setExponent( 2.5 );
+  QCOMPARE( t.exponent(), 2.5 );
+
+  //test linear scaling
+  t.setExponent( 1.0 );
+  QCOMPARE( t.value( 100 ), 10.0 );
+  QCOMPARE( t.value( 150 ), 15.0 );
+  QCOMPARE( t.value( 200 ), 20.0 );
+  //test exponential scaling
+  t.setExponent( 1.5 );
+  QCOMPARE( t.value( 100 ), 10.0 );
+  QVERIFY( qgsDoubleNear( t.value( 150 ), 13.5355, 0.001 ) );
+  QCOMPARE( t.value( 200 ), 20.0 );
+
+  //as expression
+  QgsGenericNumericTransformer t3( 15,
+                                   25,
+                                   150,
+                                   250,
+                                   -10,
+                                   1.0 );
+  QCOMPARE( t3.toExpression( "5+6" ), QStringLiteral( "coalesce(scale_linear(5+6, 15, 25, 150, 250), -10)" ) );
+  t3.setExponent( 1.6 );
+  QCOMPARE( t3.toExpression( "5+6" ), QStringLiteral( "coalesce(scale_exp(5+6, 15, 25, 150, 250, 1.6), -10)" ) );
+
+  // test size scale transformer inside property
+  QgsProperty p;
+  p.setTransformer( new QgsGenericNumericTransformer( 15,
+                    25,
+                    150,
+                    250,
+                    -10,
+                    99 ) );
+  p.setStaticValue( QVariant() );
+  bool ok = false;
+  QCOMPARE( p.valueAsDouble( context, 100, &ok ), -10.0 );
+  QVERIFY( ok );
+  p.setExpressionString( QStringLiteral( "NULL" ) );
+  QCOMPARE( p.valueAsDouble( context, 100, &ok ), -10.0 );
+  QVERIFY( ok );
+  p.setExpressionString( QStringLiteral( "no field" ) );
+  QCOMPARE( p.valueAsDouble( context, 100, &ok ), -10.0 );
+  QVERIFY( ok );
+}
+
+void TestQgsProperty::genericNumericTransformerFromExpression()
+{
+  QString baseExpression;
+  QString fieldName;
+  std::unique_ptr< QgsGenericNumericTransformer > exp( QgsGenericNumericTransformer::fromExpression( QStringLiteral( "coalesce(scale_linear(column, 1, 7, 2, 10), 0)" ), baseExpression, fieldName ) );
+  QVERIFY( exp.get() );
+  QCOMPARE( fieldName, QStringLiteral( "column" ) );
+  QVERIFY( baseExpression.isEmpty() );
+  QCOMPARE( exp->minValue(), 1. );
+  QCOMPARE( exp->maxValue(), 7. );
+  QCOMPARE( exp->minOutputValue(), 2. );
+  QCOMPARE( exp->maxOutputValue(), 10. );
+  QCOMPARE( exp->nullOutputValue(), 0.0 );
+
+  exp.reset( QgsGenericNumericTransformer::fromExpression( QStringLiteral( "scale_linear(column, 1, 7, 2, 10)" ), baseExpression, fieldName ) );
+  QVERIFY( exp.get() );
+  QCOMPARE( fieldName, QStringLiteral( "column" ) );
+  QVERIFY( baseExpression.isEmpty() );
+  QCOMPARE( exp->minValue(), 1. );
+  QCOMPARE( exp->maxValue(), 7. );
+  QCOMPARE( exp->minOutputValue(), 2. );
+  QCOMPARE( exp->maxOutputValue(), 10. );
+
+  exp.reset( QgsGenericNumericTransformer::fromExpression( QStringLiteral( "scale_linear(column * 2, 1, 7, 2, 10)" ), baseExpression, fieldName ) );
+  QVERIFY( exp.get() );
+  QCOMPARE( baseExpression, QStringLiteral( "column * 2" ) );
+  QVERIFY( fieldName.isEmpty() );
+  QCOMPARE( exp->minValue(), 1. );
+  QCOMPARE( exp->maxValue(), 7. );
+  QCOMPARE( exp->minOutputValue(), 2. );
+  QCOMPARE( exp->maxOutputValue(), 10. );
+
+  exp.reset( QgsGenericNumericTransformer::fromExpression( QStringLiteral( "coalesce(scale_exp(column, 1, 7, 2, 10, 0.51), 1)" ), baseExpression, fieldName ) );
+  QVERIFY( exp.get() );
+  QCOMPARE( exp->minValue(), 1. );
+  QCOMPARE( exp->maxValue(), 7. );
+  QCOMPARE( exp->minOutputValue(), 2. );
+  QCOMPARE( exp->maxOutputValue(), 10. );
+  QCOMPARE( exp->exponent(), 0.51 );
+  QCOMPARE( exp->nullOutputValue(), 1.0 );
+
+  QVERIFY( !QgsGenericNumericTransformer::fromExpression( QStringLiteral( "coalesce(scale_exp(column, 1, 7, a, 10, 0.5), 0)" ), baseExpression, fieldName ) );
+  QVERIFY( !QgsGenericNumericTransformer::fromExpression( QStringLiteral( "coalesce(scale_exp(column, 1, 7), 0)" ), baseExpression, fieldName ) );
+  QVERIFY( !QgsGenericNumericTransformer::fromExpression( QStringLiteral( "1+2" ), baseExpression, fieldName ) );
+  QVERIFY( !QgsGenericNumericTransformer::fromExpression( QStringLiteral( "" ), baseExpression, fieldName ) );
+}
+
 void TestQgsProperty::sizeScaleTransformer()
 {
   QgsExpressionContext context;
@@ -842,6 +1011,7 @@ void TestQgsProperty::sizeScaleTransformerFromExpression()
   QCOMPARE( exp->maxValue(), 7. );
   QCOMPARE( exp->minSize(), 2. );
   QCOMPARE( exp->maxSize(), 10. );
+  QCOMPARE( exp->nullSize(), 0.0 );
 
   exp.reset( QgsSizeScaleTransformer::fromExpression( QStringLiteral( "coalesce(scale_exp(column, 1, 7, 2, 10, 0.5), 0)" ), baseExpression, fieldName ) );
   QVERIFY( exp.get() );
@@ -879,9 +1049,10 @@ void TestQgsProperty::sizeScaleTransformerFromExpression()
   QVERIFY( exp.get() );
   QCOMPARE( exp->type(), QgsSizeScaleTransformer::Flannery );
 
-  exp.reset( QgsSizeScaleTransformer::fromExpression( QStringLiteral( "coalesce(scale_exp(column, 1, 7, 2, 10, 0.51), 0)" ), baseExpression, fieldName ) );
+  exp.reset( QgsSizeScaleTransformer::fromExpression( QStringLiteral( "coalesce(scale_exp(column, 1, 7, 2, 10, 0.51), 22)" ), baseExpression, fieldName ) );
   QVERIFY( exp.get() );
   QCOMPARE( exp->type(), QgsSizeScaleTransformer::Exponential );
+  QCOMPARE( exp->nullSize(), 22.0 );
 
   QVERIFY( !QgsSizeScaleTransformer::fromExpression( QStringLiteral( "coalesce(scale_exp(column, 1, 7, a, 10, 0.5), 0)" ), baseExpression, fieldName ) );
   QVERIFY( !QgsSizeScaleTransformer::fromExpression( QStringLiteral( "coalesce(scale_exp(column, 1, 7), 0)" ), baseExpression, fieldName ) );

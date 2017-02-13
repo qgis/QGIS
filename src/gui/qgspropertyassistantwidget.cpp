@@ -75,6 +75,7 @@ QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget* parent ,
     case QgsPropertyDefinition::StrokeWidth:
     {
       mTransformerWidget = new QgsPropertySizeAssistantWidget( this, mDefinition, initialState );
+      mLegendPreview->show();
       break;
     }
 
@@ -82,11 +83,18 @@ QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget* parent ,
     case QgsPropertyDefinition::ColorWithAlpha:
     {
       mTransformerWidget = new QgsPropertyColorAssistantWidget( this, mDefinition, initialState );
+      mLegendPreview->show();
       break;
     }
 
     default:
+    {
+      if ( mDefinition.dataType() == QgsPropertyDefinition::DataTypeNumeric )
+      {
+        mTransformerWidget = new QgsPropertyGenericNumericAssistantWidget( this, mDefinition, initialState );
+      }
       break;
+    }
   }
 
   if ( mTransformerWidget )
@@ -157,7 +165,7 @@ void QgsPropertyAssistantWidget::computeValuesFromLayer()
 
 void QgsPropertyAssistantWidget::updatePreview()
 {
-  if ( !mTransformerWidget || !mLayer ) // TODO - make this work OK without a layer
+  if ( mLegendPreview->isHidden() || !mTransformerWidget || !mLayer ) // TODO - make this work OK without a layer
     return;
 
   mLegendPreview->setIconSize( QSize( 512, 512 ) );
@@ -168,11 +176,6 @@ void QgsPropertyAssistantWidget::updatePreview()
 
   QList< QgsSymbolLegendNode* > nodes = mTransformerWidget->generatePreviews( breaks, mLayerTreeLayer, mSymbol.get(), minValueSpinBox->value(),
                                         maxValueSpinBox->value() );
-  if ( nodes.isEmpty() )
-  {
-    mLegendPreview->show();
-    return;
-  }
 
   int widthMax = 0;
   int i = 0;
@@ -200,7 +203,6 @@ void QgsPropertyAssistantWidget::updatePreview()
     p.end();
     mPreviewList.item( i )->setIcon( enlarged );
   }
-  mLegendPreview->show();
 }
 
 bool QgsPropertyAssistantWidget::computeValuesFromExpression( const QString& expression, double& minValue, double& maxValue ) const
@@ -455,4 +457,42 @@ QList<QgsSymbolLegendNode*> QgsPropertyColorAssistantWidget::generatePreviews( c
       nodes << node.release();
   }
   return nodes;
+}
+
+QgsPropertyGenericNumericAssistantWidget::QgsPropertyGenericNumericAssistantWidget( QWidget* parent, const QgsPropertyDefinition& definition, const QgsProperty& initialState )
+    : QgsPropertyAbstractTransformerWidget( parent, definition )
+{
+  setupUi( this );
+
+  layout()->setContentsMargins( 0, 0, 0, 0 );
+  layout()->setMargin( 0 );
+
+  minOutputSpinBox->setShowClearButton( false );
+  maxOutputSpinBox->setShowClearButton( false );
+  nullOutputSpinBox->setShowClearButton( false );
+
+  if ( const QgsGenericNumericTransformer* transform = dynamic_cast< const QgsGenericNumericTransformer* >( initialState.transformer() ) )
+  {
+    minOutputSpinBox->setValue( transform->minOutputValue() );
+    maxOutputSpinBox->setValue( transform->maxOutputValue() );
+    nullOutputSpinBox->setValue( transform->nullOutputValue() );
+    exponentSpinBox->setValue( transform->exponent() );
+  }
+
+  connect( minOutputSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertySizeAssistantWidget::widgetChanged );
+  connect( maxOutputSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertySizeAssistantWidget::widgetChanged );
+  connect( nullOutputSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertySizeAssistantWidget::widgetChanged );
+  connect( exponentSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertySizeAssistantWidget::widgetChanged );
+}
+
+QgsGenericNumericTransformer*QgsPropertyGenericNumericAssistantWidget::createTransformer( double minValue, double maxValue ) const
+{
+  QgsGenericNumericTransformer* transformer = new QgsGenericNumericTransformer(
+    minValue,
+    maxValue,
+    minOutputSpinBox->value(),
+    maxOutputSpinBox->value(),
+    nullOutputSpinBox->value(),
+    exponentSpinBox->value() );
+  return transformer;
 }

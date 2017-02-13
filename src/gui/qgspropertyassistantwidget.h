@@ -22,6 +22,7 @@
 #include "ui_qgspropertyassistantwidgetbase.h"
 #include "ui_qgspropertysizeassistantwidget.h"
 #include "ui_qgspropertycolorassistantwidget.h"
+#include "ui_qgspropertygenericnumericassistantwidget.h"
 #include "qgsproperty.h"
 #include "qgslayertreegroup.h"
 #include "qgssymbol.h"
@@ -56,6 +57,18 @@ class GUI_EXPORT QgsPropertyAbstractTransformerWidget : public QWidget
   protected:
 
     QgsPropertyDefinition mDefinition;
+
+};
+
+class GUI_EXPORT QgsPropertyGenericNumericAssistantWidget : public QgsPropertyAbstractTransformerWidget, private Ui::PropertyGenericNumericAssistant
+{
+    Q_OBJECT
+
+  public:
+
+    QgsPropertyGenericNumericAssistantWidget( QWidget* parent = nullptr, const QgsPropertyDefinition& definition = QgsPropertyDefinition(), const QgsProperty& initialState = QgsProperty() );
+
+    virtual QgsGenericNumericTransformer* createTransformer( double minValue, double maxValue ) const override;
 
 };
 
