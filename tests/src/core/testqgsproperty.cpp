@@ -807,6 +807,26 @@ void TestQgsProperty::sizeScaleTransformer()
   t2.setType( QgsSizeScaleTransformer::Exponential );
   t2.setExponent( 1.6 );
   QCOMPARE( t2.toExpression( "5+6" ), QStringLiteral( "coalesce(scale_exp(5+6, 15, 25, 150, 250, 1.6), -10)" ) );
+
+  // test size scale transformer inside property
+  QgsProperty p;
+  p.setTransformer( new  QgsSizeScaleTransformer( QgsSizeScaleTransformer::Exponential,
+                    15,
+                    25,
+                    150,
+                    250,
+                    -10,
+                    99 ) );
+  p.setStaticValue( QVariant() );
+  bool ok = false;
+  QCOMPARE( p.valueAsDouble( context, 100, &ok ), -10.0 );
+  QVERIFY( ok );
+  p.setExpressionString( QStringLiteral( "NULL" ) );
+  QCOMPARE( p.valueAsDouble( context, 100, &ok ), -10.0 );
+  QVERIFY( ok );
+  p.setExpressionString( QStringLiteral( "no field" ) );
+  QCOMPARE( p.valueAsDouble( context, 100, &ok ), -10.0 );
+  QVERIFY( ok );
 }
 
 void TestQgsProperty::sizeScaleTransformerFromExpression()

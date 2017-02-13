@@ -464,11 +464,13 @@ QVariant QgsProperty::value( const QgsExpressionContext& context, const QVariant
 
   bool valOk = false;
   QVariant val = propertyValue( context, defaultValue, &valOk );
-  if ( !valOk )
+  if ( !d->transformer && !valOk ) // if transformer present, let it handle null values
     return defaultValue;
 
   if ( d->transformer )
   {
+    if ( !valOk )
+      val = QVariant();
     val = d->transformer->transform( context, val );
   }
 
