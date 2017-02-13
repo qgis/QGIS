@@ -151,12 +151,10 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( const QgsVectorL
   }
 
   //make a temporary symbol for the size assistant preview
-  mAssistantPreviewSymbol = new QgsLineSymbol();
+  mAssistantPreviewSymbol.reset( new QgsLineSymbol() );
 
-#if 0
   if ( vectorLayer() )
-    mPenWidthDDBtn->setAssistant( tr( "Width Assistant..." ), new QgsSizeScaleWidget( vectorLayer(), mAssistantPreviewSymbol ) );
-#endif
+    mPenWidthDDBtn->setSymbol( mAssistantPreviewSymbol );
 
   connect( spinWidth, SIGNAL( valueChanged( double ) ), this, SLOT( penWidthChanged() ) );
   connect( btnChangeColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( colorChanged( const QColor& ) ) );
@@ -168,11 +166,6 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( const QgsVectorL
   updatePatternIcon();
 
   connect( this, SIGNAL( changed() ), this, SLOT( updateAssistantSymbol() ) );
-}
-
-QgsSimpleLineSymbolLayerWidget::~QgsSimpleLineSymbolLayerWidget()
-{
-  delete mAssistantPreviewSymbol;
 }
 
 void QgsSimpleLineSymbolLayerWidget::updateAssistantSymbol()

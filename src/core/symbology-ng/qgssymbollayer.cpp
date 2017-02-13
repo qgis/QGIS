@@ -45,7 +45,7 @@ void QgsSymbolLayer::initPropertyDefinitions()
     { QgsSymbolLayer::PropertyName, QgsPropertyDefinition( "name", QObject::tr( "Symbol name" ), QgsPropertyDefinition::String ) },
     { QgsSymbolLayer::PropertyFillColor, QgsPropertyDefinition( "fillColor", QObject::tr( "Symbol fill color" ), QgsPropertyDefinition::ColorWithAlpha ) },
     { QgsSymbolLayer::PropertyOutlineColor, QgsPropertyDefinition( "outlineColor", QObject::tr( "Symbol outline color" ), QgsPropertyDefinition::ColorWithAlpha ) },
-    { QgsSymbolLayer::PropertyOutlineWidth, QgsPropertyDefinition( "outlineWidth", QObject::tr( "Symbol outline width" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsSymbolLayer::PropertyOutlineWidth, QgsPropertyDefinition( "outlineWidth", QObject::tr( "Symbol outline width" ), QgsPropertyDefinition::StrokeWidth ) },
     { QgsSymbolLayer::PropertyOutlineStyle, QgsPropertyDefinition( "outlineStyle", QObject::tr( "Symbol outline style" ), QgsPropertyDefinition::LineStyle )},
     { QgsSymbolLayer::PropertyOffset, QgsPropertyDefinition( "offset", QObject::tr( "Symbol offset" ), QgsPropertyDefinition::Offset )},
     { QgsSymbolLayer::PropertyCharacter, QgsPropertyDefinition( "char", QObject::tr( "Marker character(s)" ), QgsPropertyDefinition::String )},

@@ -25,6 +25,7 @@ class QgsPropertyDefinition
       Size,
       Size2D,
       LineStyle,
+      StrokeWidth,
       FillStyle,
       CapStyle,
       HorizontalAnchor,

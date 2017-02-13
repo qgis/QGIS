@@ -371,10 +371,8 @@ void QgsSymbolsListWidget::updateAssistantSymbol()
   mAssistantSymbol.reset( mSymbol->clone() );
   if ( mSymbol->type() == QgsSymbol::Marker )
     mSizeDDBtn->setSymbol( mAssistantSymbol );
-#if 0
   else if ( mSymbol->type() == QgsSymbol::Line && mLayer )
-    mWidthDDBtn->setAssistant( tr( "Width Assistant..." ), new QgsSizeScaleWidget( mLayer, mSymbol ) );
-#endif
+    mWidthDDBtn->setSymbol( mAssistantSymbol );
 }
 
 void QgsSymbolsListWidget::symbolAddedToStyle( const QString& name, QgsSymbol* symbol )

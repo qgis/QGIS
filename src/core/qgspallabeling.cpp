@@ -151,7 +151,7 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { QgsPalLayerSettings::ShapeBlendMode, QgsPropertyDefinition( "ShapeBlendMode", QObject::tr( "Shape blend mode" ), QgsPropertyDefinition::BlendMode ) },
     { QgsPalLayerSettings::ShapeFillColor, QgsPropertyDefinition( "ShapeFillColor", QObject::tr( "Shape fill color" ), QgsPropertyDefinition::ColorWithAlpha ) },
     { QgsPalLayerSettings::ShapeBorderColor, QgsPropertyDefinition( "ShapeBorderColor", QObject::tr( "Shape border color" ), QgsPropertyDefinition::ColorWithAlpha ) },
-    { QgsPalLayerSettings::ShapeBorderWidth, QgsPropertyDefinition( "ShapeBorderWidth", QObject::tr( "Shape border width" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsPalLayerSettings::ShapeBorderWidth, QgsPropertyDefinition( "ShapeBorderWidth", QObject::tr( "Shape border width" ), QgsPropertyDefinition::StrokeWidth ) },
     { QgsPalLayerSettings::ShapeBorderWidthUnits, QgsPropertyDefinition( "ShapeBorderWidthUnits", QObject::tr( "Shape border width units" ), QgsPropertyDefinition::RenderUnits ) },
     { QgsPalLayerSettings::ShapeJoinStyle, QgsPropertyDefinition( "ShapeJoinStyle", QObject::tr( "Shape join style" ), QgsPropertyDefinition::PenJoinStyle ) },
     { QgsPalLayerSettings::ShadowDraw, QgsPropertyDefinition( "ShadowDraw", QObject::tr( "Draw shadow" ), QgsPropertyDefinition::Boolean ) },

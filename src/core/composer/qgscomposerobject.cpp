@@ -66,13 +66,13 @@ void QgsComposerObject::initPropertyDefinitions()
     { QgsComposerObject::SourceUrl, QgsPropertyDefinition( "dataDefinedSourceUrl" , QObject::tr( "Source URL" ), QgsPropertyDefinition::String ) },
     { QgsComposerObject::PictureSvgBackgroundColor, QgsPropertyDefinition( "dataDefinedSvgBackgroundColor" , QObject::tr( "SVG background color" ), QgsPropertyDefinition::ColorWithAlpha ) },
     { QgsComposerObject::PictureSvgOutlineColor, QgsPropertyDefinition( "dataDefinedSvgOutlineColor" , QObject::tr( "SVG outline color" ), QgsPropertyDefinition::ColorWithAlpha ) },
-    { QgsComposerObject::PictureSvgOutlineWidth, QgsPropertyDefinition( "dataDefinedSvgOutlineWidth" , QObject::tr( "SVG outline width" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsComposerObject::PictureSvgOutlineWidth, QgsPropertyDefinition( "dataDefinedSvgOutlineWidth" , QObject::tr( "SVG outline width" ), QgsPropertyDefinition::StrokeWidth ) },
     { QgsComposerObject::LegendTitle, QgsPropertyDefinition( "dataDefinedLegendTitle" , QObject::tr( "Legend title" ), QgsPropertyDefinition::String ) },
     { QgsComposerObject::LegendColumnCount, QgsPropertyDefinition( "dataDefinedLegendColumns" , QObject::tr( "Number of columns" ), QgsPropertyDefinition::IntegerPositiveGreaterZero ) },
     { QgsComposerObject::ScalebarFillColor, QgsPropertyDefinition( "dataDefinedScalebarFill" , QObject::tr( "Fill color" ), QgsPropertyDefinition::ColorWithAlpha ) },
     { QgsComposerObject::ScalebarFillColor2, QgsPropertyDefinition( "dataDefinedScalebarFill2" , QObject::tr( "Secondary fill color" ), QgsPropertyDefinition::ColorWithAlpha ) },
     { QgsComposerObject::ScalebarLineColor, QgsPropertyDefinition( "dataDefinedScalebarLineColor" , QObject::tr( "Line color" ), QgsPropertyDefinition::ColorWithAlpha ) },
-    { QgsComposerObject::ScalebarLineWidth, QgsPropertyDefinition( "dataDefinedScalebarLineWidth" , QObject::tr( "Line width" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsComposerObject::ScalebarLineWidth, QgsPropertyDefinition( "dataDefinedScalebarLineWidth" , QObject::tr( "Line width" ), QgsPropertyDefinition::StrokeWidth ) },
   };
 }
 

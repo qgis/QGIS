@@ -126,6 +126,11 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString& name, const QString
       mHelpText = trString() + QLatin1String( "[<b>no</b>|<b>solid</b>|<b>dash</b>|<b>dot</b>|<b>dash dot</b>|<b>dash dot dot</b>]" );
       break;
 
+    case StrokeWidth:
+      mTypes = DataTypeNumeric;
+      mHelpText = QObject::tr( "double [&gt;= 0.0]" );
+      break;
+
     case FillStyle:
       mTypes = DataTypeString;
       mHelpText = trString() + QLatin1String( "[<b>solid</b>|<b>horizontal</b>|<b>vertical</b>|<b>cross</b>|<b>b_diagonal</b>|<b>f_diagonal"

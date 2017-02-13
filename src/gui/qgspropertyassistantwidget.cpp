@@ -68,6 +68,7 @@ QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget* parent ,
   switch ( definition.standardTemplate() )
   {
     case QgsPropertyDefinition::Size:
+    case QgsPropertyDefinition::StrokeWidth:
     {
       mTransformerWidget = new QgsPropertySizeAssistantWidget( this, mDefinition, initialState );
     }
@@ -266,10 +267,18 @@ QgsPropertySizeAssistantWidget::QgsPropertySizeAssistantWidget( QWidget* parent,
   layout()->setContentsMargins( 0, 0, 0, 0 );
   layout()->setMargin( 0 );
 
-  scaleMethodComboBox->addItem( tr( "Flannery" ), QgsSizeScaleTransformer::Flannery );
-  scaleMethodComboBox->addItem( tr( "Surface" ), QgsSizeScaleTransformer::Area );
-  scaleMethodComboBox->addItem( tr( "Radius" ), QgsSizeScaleTransformer::Linear );
-  scaleMethodComboBox->addItem( tr( "Exponential" ), QgsSizeScaleTransformer::Exponential );
+  if ( definition.standardTemplate() == QgsPropertyDefinition::Size )
+  {
+    scaleMethodComboBox->addItem( tr( "Flannery" ), QgsSizeScaleTransformer::Flannery );
+    scaleMethodComboBox->addItem( tr( "Surface" ), QgsSizeScaleTransformer::Area );
+    scaleMethodComboBox->addItem( tr( "Radius" ), QgsSizeScaleTransformer::Linear );
+    scaleMethodComboBox->addItem( tr( "Exponential" ), QgsSizeScaleTransformer::Exponential );
+  }
+  else if ( definition.standardTemplate() == QgsPropertyDefinition::StrokeWidth )
+  {
+    scaleMethodComboBox->addItem( tr( "Exponential" ), QgsSizeScaleTransformer::Exponential );
+    scaleMethodComboBox->addItem( tr( "Linear" ), QgsSizeScaleTransformer::Linear );
+  }
 
   minSizeSpinBox->setShowClearButton( false );
   maxSizeSpinBox->setShowClearButton( false );

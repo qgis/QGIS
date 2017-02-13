@@ -117,8 +117,6 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
   public:
     QgsSimpleLineSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
 
-    ~QgsSimpleLineSymbolLayerWidget();
-
     static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsSimpleLineSymbolLayerWidget( vl ); }
 
     // from base class
@@ -149,7 +147,7 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
 
   private:
 
-    QgsLineSymbol* mAssistantPreviewSymbol;
+    std::shared_ptr< QgsLineSymbol > mAssistantPreviewSymbol;
 
 };
 

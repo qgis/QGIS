@@ -67,6 +67,7 @@ class CORE_EXPORT QgsPropertyDefinition
       Size, //!< 1D size (eg marker radius, or square marker height/width)
       Size2D, //!< 2D size (width/height different)
       LineStyle, //!< Line style (eg solid/dashed)
+      StrokeWidth, //!< Line stroke width
       FillStyle, //!< Fill style (eg solid, lines)
       CapStyle, //!< Line cap style (eg round)
       HorizontalAnchor, //!< Horizontal anchor point
