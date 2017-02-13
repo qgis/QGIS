@@ -156,6 +156,8 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
      */
     void registerExpressionContextGenerator( QgsExpressionContextGenerator* generator );
 
+    void setSymbol( std::shared_ptr< QgsSymbol > symbol ) { mSymbol = symbol; }
+
   public slots:
 
     /**
@@ -229,6 +231,8 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
 
     //! Internal property used for storing state of widget
     QgsProperty mProperty;
+
+    std::shared_ptr< QgsSymbol > mSymbol;
 
   private slots:
     void aboutToShowMenu();

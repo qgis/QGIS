@@ -532,10 +532,13 @@ void QgsPropertyOverrideButton::showAssistant()
   }
 
   QgsPanelWidget* panel = QgsPanelWidget::findParentPanel( this );
+  QgsPropertyAssistantWidget* widget = new QgsPropertyAssistantWidget( panel, mDefinition, mProperty, mVectorLayer );
+  widget->setDockMode( panel && panel->dockMode() );
+  widget->registerExpressionContextGenerator( mExpressionContextGenerator );
+  widget->setSymbol( mSymbol ); // we only show legend preview in dialog version
+
   if ( panel && panel->dockMode() )
   {
-    QgsPropertyAssistantWidget* widget = new QgsPropertyAssistantWidget( panel, mDefinition, mProperty, mVectorLayer );
-    widget->registerExpressionContextGenerator( mExpressionContextGenerator );
     connect( widget, &QgsPropertyAssistantWidget::widgetChanged, this, [this,widget]
     {
       widget->updateProperty( this->mProperty );
@@ -548,6 +551,30 @@ void QgsPropertyOverrideButton::showAssistant()
 
     panel->openPanel( widget );
     return;
+  }
+  else
+  {
+    // Show the dialog version if not in a panel
+    QDialog* dlg = new QDialog( this );
+    QString key =  QStringLiteral( "/UI/paneldialog/%1" ).arg( widget->panelTitle() );
+    QSettings settings;
+    dlg->restoreGeometry( settings.value( key ).toByteArray() );
+    dlg->setWindowTitle( widget->panelTitle() );
+    dlg->setLayout( new QVBoxLayout() );
+    dlg->layout()->addWidget( widget );
+    QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok );
+    connect( buttonBox, SIGNAL( accepted() ), dlg, SLOT( accept() ) );
+    dlg->layout()->addWidget( buttonBox );
+    dlg->exec();
+    settings.setValue( key, dlg->saveGeometry() );
+
+    widget->updateProperty( mProperty );
+    mExpressionString = mProperty.asExpression();
+    mFieldName = mProperty.field();
+    widget->acceptPanel();
+    updateGui();
+
+    emit changed();
   }
 }
 

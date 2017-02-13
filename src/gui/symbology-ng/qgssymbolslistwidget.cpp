@@ -105,12 +105,8 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyle* style, 
   registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::PropertyOutlineWidth );
   connect( mWidthDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsSymbolsListWidget::updateDataDefinedLineWidth );
 
-#if 0
-  if ( mSymbol->type() == QgsSymbol::Marker && mLayer )
-    mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mLayer, mSymbol ) );
-  else if ( mSymbol->type() == QgsSymbol::Line && mLayer )
-    mWidthDDBtn->setAssistant( tr( "Width Assistant..." ), new QgsSizeScaleWidget( mLayer, mSymbol ) );
-#endif
+  connect( this, &QgsSymbolsListWidget::changed, this, &QgsSymbolsListWidget::updateAssistantSymbol );
+  updateAssistantSymbol();
 
   // Live color updates are not undoable to child symbol layers
   btnColor->setAcceptLiveUpdates( false );
@@ -368,6 +364,17 @@ void QgsSymbolsListWidget::updateDataDefinedLineWidth()
     lineSymbol->setDataDefinedWidth( dd );
     emit changed();
   }
+}
+
+void QgsSymbolsListWidget::updateAssistantSymbol()
+{
+  mAssistantSymbol.reset( mSymbol->clone() );
+  if ( mSymbol->type() == QgsSymbol::Marker )
+    mSizeDDBtn->setSymbol( mAssistantSymbol );
+#if 0
+  else if ( mSymbol->type() == QgsSymbol::Line && mLayer )
+    mWidthDDBtn->setAssistant( tr( "Width Assistant..." ), new QgsSizeScaleWidget( mLayer, mSymbol ) );
+#endif
 }
 
 void QgsSymbolsListWidget::symbolAddedToStyle( const QString& name, QgsSymbol* symbol )

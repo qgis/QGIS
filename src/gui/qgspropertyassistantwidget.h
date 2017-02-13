@@ -22,7 +22,12 @@
 #include "ui_qgspropertyassistantwidgetbase.h"
 #include "ui_qgspropertysizeassistantwidget.h"
 #include "qgsproperty.h"
+#include "qgslayertreegroup.h"
+#include "qgssymbol.h"
+#include "qgslayertreemodellegendnode.h"
 #include "qgis_gui.h"
+#include <QStandardItemModel>
+#include <QItemDelegate>
 
 class QgsMapCanvas;
 
@@ -40,6 +45,8 @@ class GUI_EXPORT QgsPropertyAbstractTransformerWidget : public QWidget
     {}
 
     virtual QgsPropertyTransformer* createTransformer( double minValue, double maxValue ) const = 0;
+
+    virtual QList< QgsSymbolLegendNode* > generatePreviews( const QList<double>& breaks, QgsLayerTreeLayer* parent, const QgsVectorLayer* layer, const QgsSymbol* symbol, double minValue, double maxValue ) const;
 
   signals:
 
@@ -59,9 +66,9 @@ class GUI_EXPORT QgsPropertySizeAssistantWidget : public QgsPropertyAbstractTran
 
     QgsPropertySizeAssistantWidget( QWidget* parent = nullptr, const QgsPropertyDefinition& definition = QgsPropertyDefinition(), const QgsProperty& initialState = QgsProperty() );
 
-    virtual QgsPropertyTransformer* createTransformer( double minValue, double maxValue ) const override;
+    virtual QgsSizeScaleTransformer* createTransformer( double minValue, double maxValue ) const override;
 
-
+    QList< QgsSymbolLegendNode* > generatePreviews( const QList<double>& breaks, QgsLayerTreeLayer* parent, const QgsVectorLayer* layer, const QgsSymbol* symbol, double minValue, double maxValue ) const override;
 };
 
 ///@endcond PRIVATE
@@ -84,9 +91,12 @@ class GUI_EXPORT QgsPropertyAssistantWidget : public QgsPanelWidget, private Ui:
 
     void updateProperty( QgsProperty& property );
 
+    void setSymbol( std::shared_ptr< QgsSymbol > symbol ) { mSymbol = symbol; updatePreview(); }
 
   private slots:
     void computeValuesFromLayer();
+    void updatePreview();
+
 
   private:
 
@@ -95,10 +105,36 @@ class GUI_EXPORT QgsPropertyAssistantWidget : public QgsPanelWidget, private Ui:
     QgsExpressionContextGenerator* mExpressionContextGenerator = nullptr;
     QgsPropertyAbstractTransformerWidget* mTransformerWidget = nullptr;
 
+    QgsLayerTreeLayer* mLayerTreeLayer = nullptr;
+    QgsLayerTreeGroup mRoot;
+    QStandardItemModel mPreviewList;
+
+    std::shared_ptr< QgsSymbol > mSymbol;
+
     bool computeValuesFromExpression( const QString& expression, double& minValue, double& maxValue ) const;
     bool computeValuesFromField( const QString& fieldName, double& minValue, double& maxValue ) const;
 
 };
 
+
+/// @cond PRIVATE
+class ItemDelegate : public QItemDelegate
+{
+    Q_OBJECT
+
+  public:
+    explicit ItemDelegate( QStandardItemModel* model ) : mModel( model ) {}
+
+    QSize sizeHint( const QStyleOptionViewItem& /*option*/, const QModelIndex & index ) const override
+    {
+      return mModel->item( index.row() )->icon().actualSize( QSize( 512, 512 ) );
+    }
+
+  private:
+    QStandardItemModel* mModel = nullptr;
+
+};
+
+///@endcond
 
 #endif // QGSPROPERTYASSISTANTWIDGET_H

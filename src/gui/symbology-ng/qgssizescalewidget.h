@@ -110,24 +110,5 @@ class GUI_EXPORT QgsSizeScaleWidget : public QgsDataDefinedAssistant, private Ui
     QgsExpressionContext createExpressionContext() const override;
 };
 
-/// @cond PRIVATE
-class ItemDelegate : public QItemDelegate
-{
-    Q_OBJECT
-
-  public:
-    explicit ItemDelegate( QStandardItemModel* model ) : mModel( model ) {}
-
-    QSize sizeHint( const QStyleOptionViewItem& /*option*/, const QModelIndex & index ) const override
-    {
-      return mModel->item( index.row() )->icon().actualSize( QSize( 512, 512 ) );
-    }
-
-  private:
-    QStandardItemModel* mModel;
-
-};
-
-///@endcond
 
 #endif //QGSSIZESCALEWIDGET_H

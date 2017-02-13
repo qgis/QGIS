@@ -402,12 +402,10 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( const QgsVec
   spinOffsetY->setClearValue( 0.0 );
 
   //make a temporary symbol for the size assistant preview
-  mAssistantPreviewSymbol = new QgsMarkerSymbol();
+  mAssistantPreviewSymbol.reset( new QgsMarkerSymbol() );
 
-#if 0
   if ( vectorLayer() )
-    mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( vectorLayer(), mAssistantPreviewSymbol ) );
-#endif
+    mSizeDDBtn->setSymbol( mAssistantPreviewSymbol );
 
   QSize size = lstNames->iconSize();
   double markerSize = DEFAULT_POINT_SIZE * 2;
@@ -435,9 +433,7 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( const QgsVec
 }
 
 QgsSimpleMarkerSymbolLayerWidget::~QgsSimpleMarkerSymbolLayerWidget()
-{
-  delete mAssistantPreviewSymbol;
-}
+{}
 
 void QgsSimpleMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
 {
@@ -821,12 +817,10 @@ QgsFilledMarkerSymbolLayerWidget::QgsFilledMarkerSymbolLayerWidget( const QgsVec
   spinOffsetY->setClearValue( 0.0 );
 
   //make a temporary symbol for the size assistant preview
-  mAssistantPreviewSymbol = new QgsMarkerSymbol();
+  mAssistantPreviewSymbol.reset( new QgsMarkerSymbol() );
 
-#if 0
   if ( vectorLayer() )
-    mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( vectorLayer(), mAssistantPreviewSymbol ) );
-#endif
+    mSizeDDBtn->setSymbol( mAssistantPreviewSymbol );
 
   QSize size = lstNames->iconSize();
   double markerSize = DEFAULT_POINT_SIZE * 2;
@@ -851,11 +845,6 @@ QgsFilledMarkerSymbolLayerWidget::QgsFilledMarkerSymbolLayerWidget( const QgsVec
   connect( spinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
   connect( spinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
   connect( this, SIGNAL( changed() ), this, SLOT( updateAssistantSymbol() ) );
-}
-
-QgsFilledMarkerSymbolLayerWidget::~QgsFilledMarkerSymbolLayerWidget()
-{
-  delete mAssistantPreviewSymbol;
 }
 
 void QgsFilledMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
@@ -1770,16 +1759,10 @@ QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( const QgsVectorLay
   connect( this, SIGNAL( changed() ), this, SLOT( updateAssistantSymbol() ) );
 
   //make a temporary symbol for the size assistant preview
-  mAssistantPreviewSymbol = new QgsMarkerSymbol();
-#if 0
-  if ( vectorLayer() )
-    mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( vectorLayer(), mAssistantPreviewSymbol ) );
-#endif
-}
+  mAssistantPreviewSymbol.reset( new QgsMarkerSymbol() );
 
-QgsSvgMarkerSymbolLayerWidget::~QgsSvgMarkerSymbolLayerWidget()
-{
-  delete mAssistantPreviewSymbol;
+  if ( vectorLayer() )
+    mSizeDDBtn->setSymbol( mAssistantPreviewSymbol );
 }
 
 #include <QTime>
@@ -2688,12 +2671,10 @@ QgsFontMarkerSymbolLayerWidget::QgsFontMarkerSymbolLayerWidget( const QgsVectorL
   spinOffsetY->setClearValue( 0.0 );
 
   //make a temporary symbol for the size assistant preview
-  mAssistantPreviewSymbol = new QgsMarkerSymbol();
+  mAssistantPreviewSymbol.reset( new QgsMarkerSymbol() );
 
-#if 0
   if ( vectorLayer() )
-    mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( vectorLayer(), mAssistantPreviewSymbol ) );
-#endif
+    mSizeDDBtn->setSymbol( mAssistantPreviewSymbol );
 
   connect( cboFont, SIGNAL( currentFontChanged( const QFont & ) ), this, SLOT( setFontFamily( const QFont& ) ) );
   connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setSize( double ) ) );
@@ -2706,11 +2687,6 @@ QgsFontMarkerSymbolLayerWidget::QgsFontMarkerSymbolLayerWidget( const QgsVectorL
   connect( spinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
   connect( widgetChar, SIGNAL( characterSelected( const QChar & ) ), this, SLOT( setCharacter( const QChar & ) ) );
   connect( this, SIGNAL( changed() ), this, SLOT( updateAssistantSymbol() ) );
-}
-
-QgsFontMarkerSymbolLayerWidget::~QgsFontMarkerSymbolLayerWidget()
-{
-  delete mAssistantPreviewSymbol;
 }
 
 void QgsFontMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )

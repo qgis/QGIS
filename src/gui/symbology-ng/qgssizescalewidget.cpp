@@ -127,7 +127,7 @@ QgsSizeScaleWidget::QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsS
   }
 
   treeView->setModel( &mPreviewList );
-  treeView->setItemDelegate( new ItemDelegate( &mPreviewList ) );
+  // treeView->setItemDelegate( new ItemDelegate( &mPreviewList ) );
   treeView->setHeaderHidden( true );
   treeView->expandAll();
 

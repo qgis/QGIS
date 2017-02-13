@@ -201,7 +201,7 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
 
   private:
 
-    QgsMarkerSymbol* mAssistantPreviewSymbol;
+    std::shared_ptr< QgsMarkerSymbol > mAssistantPreviewSymbol;
 };
 
 ///////////
@@ -264,8 +264,6 @@ class GUI_EXPORT QgsFilledMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
      */
     QgsFilledMarkerSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
 
-    ~QgsFilledMarkerSymbolLayerWidget();
-
     /** Creates a new QgsFilledMarkerSymbolLayerWidget.
      * @param vl associated vector layer
      */
@@ -292,7 +290,7 @@ class GUI_EXPORT QgsFilledMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
 
   private:
 
-    QgsMarkerSymbol* mAssistantPreviewSymbol;
+    std::shared_ptr< QgsMarkerSymbol > mAssistantPreviewSymbol;
 };
 
 ///////////
@@ -431,7 +429,6 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
 
   public:
     QgsSvgMarkerSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
-    ~QgsSvgMarkerSymbolLayerWidget();
 
     static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsSvgMarkerSymbolLayerWidget( vl ); }
 
@@ -471,7 +468,7 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
 
   private:
 
-    QgsMarkerSymbol* mAssistantPreviewSymbol;
+    std::shared_ptr< QgsMarkerSymbol > mAssistantPreviewSymbol;
 
 };
 
@@ -646,8 +643,6 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, p
   public:
     QgsFontMarkerSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
 
-    ~QgsFontMarkerSymbolLayerWidget();
-
     static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsFontMarkerSymbolLayerWidget( vl ); }
 
     // from base class
@@ -683,7 +678,7 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, p
 
   private:
 
-    QgsMarkerSymbol* mAssistantPreviewSymbol;
+    std::shared_ptr< QgsMarkerSymbol > mAssistantPreviewSymbol;
 
 };
 
