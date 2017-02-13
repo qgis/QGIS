@@ -100,12 +100,27 @@ class GUI_EXPORT QgsPropertyColorAssistantWidget : public QgsPropertyAbstractTra
 
 ///@endcond PRIVATE
 
+
+
+/**
+ * \class QgsPropertyAssistantWidget
+ * \ingroup gui
+ * Shows a user-friendly assistant guiding users through the creation of QgsProperty overrides.
+ * \note added in QGIS 3.0
+ */
 class GUI_EXPORT QgsPropertyAssistantWidget : public QgsPanelWidget, private Ui::PropertyAssistantBase
 {
     Q_OBJECT
 
   public:
 
+    /**
+     * Constructor for QgsPropertyAssistantWidget. Aside from a \a parent widget, the constructor accepts a
+     * corresponding property \a definition from which it customises the displayed options (eg a color based
+     * property definition will show an assistant to allow creation of color based properties).
+     * The \a initialState dictates the initial state to show in the widget. A corresponding \a layer
+     * can also be set to allow population of GUI widgets such as field selectors.
+     */
     QgsPropertyAssistantWidget( QWidget* parent = nullptr, const QgsPropertyDefinition& definition = QgsPropertyDefinition(),
                                 const QgsProperty& initialState = QgsProperty(),
                                 const QgsVectorLayer* layer = nullptr );
@@ -116,8 +131,16 @@ class GUI_EXPORT QgsPropertyAssistantWidget : public QgsPanelWidget, private Ui:
      */
     void registerExpressionContextGenerator( QgsExpressionContextGenerator* generator );
 
+    /**
+     * Updates a \a property in place to corresponding to the current settings shown
+     * in the widget.
+     */
     void updateProperty( QgsProperty& property );
 
+    /**
+     * Sets a symbol which can be used for previews inside the widget. If not specified, default
+     * created symbols will be used instead.
+     */
     void setSymbol( std::shared_ptr< QgsSymbol > symbol ) { mSymbol = symbol; updatePreview(); }
 
     void setDockMode( bool dockMode ) override;

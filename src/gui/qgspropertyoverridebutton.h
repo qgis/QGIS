@@ -156,6 +156,10 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
      */
     void registerExpressionContextGenerator( QgsExpressionContextGenerator* generator );
 
+    /**
+     * Sets a symbol which can be used for previews inside the widget or in any dialog created
+     * by the widget. If not specified, a default created symbol will be used instead.
+     */
     void setSymbol( std::shared_ptr< QgsSymbol > symbol ) { mSymbol = symbol; }
 
   public slots:

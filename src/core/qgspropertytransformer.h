@@ -207,8 +207,7 @@ class CORE_EXPORT QgsGenericNumericTransformer : public QgsPropertyTransformer
     static QgsGenericNumericTransformer* fromExpression( const QString& expression, QString& baseExpression, QString& fieldName );
 
     /**
-     * Calculates the size corresponding to a specific value.
-     * @param value value to calculate size for
+     * Calculates the size corresponding to a specific \a input value.
      * @returns calculated size using size scale transformer's parameters and type
      */
     double value( double input ) const;

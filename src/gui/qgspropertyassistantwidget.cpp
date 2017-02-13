@@ -285,6 +285,7 @@ bool QgsPropertyAssistantWidget::computeValuesFromField( const QString& fieldNam
   return true;
 }
 
+///@cond PRIVATE
 
 //
 // QgsPropertySizeAssistantWidget
@@ -524,3 +525,5 @@ QgsGenericNumericTransformer*QgsPropertyGenericNumericAssistantWidget::createTra
     exponentSpinBox->value() );
   return transformer;
 }
+
+///@endcond PRIVATE
