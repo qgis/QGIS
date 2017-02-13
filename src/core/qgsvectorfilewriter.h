@@ -517,7 +517,6 @@ class CORE_EXPORT QgsVectorFileWriter
     OGRDataSourceH mDS;
     OGRLayerH mLayer;
     OGRSpatialReferenceH mOgrRef;
-    OGRGeometryH mGeom;
 
     QgsFields mFields;
 
