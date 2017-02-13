@@ -292,14 +292,6 @@ QgsDataDefinedValueDialog::QgsDataDefinedValueDialog( const QList<QgsSymbol*>& s
 void QgsDataDefinedValueDialog::setContext( const QgsSymbolWidgetContext& context )
 {
   mContext = context;
-#if 0
-  Q_FOREACH ( QgsPropertyOverrideButton* ddButton, findChildren<QgsPropertyOverrideButton*>() )
-  {
-
-    if ( ddButton->assistant() )
-      ddButton->assistant()->setMapCanvas( context.mapCanvas() );
-  }
-#endif
 }
 
 QgsSymbolWidgetContext QgsDataDefinedValueDialog::context() const
