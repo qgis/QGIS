@@ -22,7 +22,6 @@
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
-#include "qgsscaleexpression.h"
 #include "qgssymbollayer.h"
 #include "qgsproperty.h"
 

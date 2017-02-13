@@ -32,7 +32,6 @@ SET(QGIS_GUI_SRCS
   symbology-ng/qgsrendererwidget.cpp
   symbology-ng/qgsrulebasedrendererwidget.cpp
   symbology-ng/qgssinglesymbolrendererwidget.cpp
-  symbology-ng/qgssizescalewidget.cpp
   symbology-ng/qgssmartgroupeditordialog.cpp
   symbology-ng/qgsstyleexportimportdialog.cpp
   symbology-ng/qgsstylegroupselectiondialog.cpp
@@ -495,7 +494,6 @@ SET(QGIS_GUI_MOC_HDRS
   symbology-ng/qgsrendererwidget.h
   symbology-ng/qgsrulebasedrendererwidget.h
   symbology-ng/qgssinglesymbolrendererwidget.h
-  symbology-ng/qgssizescalewidget.h
   symbology-ng/qgssmartgroupeditordialog.h
   symbology-ng/qgsstyleexportimportdialog.h
   symbology-ng/qgsstylegroupselectiondialog.h

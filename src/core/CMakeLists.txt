@@ -212,7 +212,6 @@ SET(QGIS_CORE_SRCS
   qgsrunprocess.cpp
   qgsruntimeprofiler.cpp
   qgsscalecalculator.cpp
-  qgsscaleexpression.cpp
   qgsscaleutils.cpp
   qgssimplifymethod.cpp
   qgsslconnect.cpp
@@ -746,7 +745,6 @@ SET(QGIS_CORE_HDRS
   qgsrendercontext.h
   qgsruntimeprofiler.h
   qgsscalecalculator.h
-  qgsscaleexpression.h
   qgsscaleutils.h
   qgssimplifymethod.h
   qgssnapper.h
