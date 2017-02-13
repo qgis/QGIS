@@ -64,6 +64,10 @@ QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget* parent ,
   mLegendPreview->setItemDelegate( new ItemDelegate( &mPreviewList ) );
   mLegendPreview->setHeaderHidden( true );
   mLegendPreview->expandAll();
+  mLegendVerticalFrame->setLayout( new QVBoxLayout() );
+  mLegendVerticalFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
+  mLegendVerticalFrame->layout()->setMargin( 0 );
+  mLegendVerticalFrame->hide();
 
   switch ( definition.standardTemplate() )
   {
@@ -114,6 +118,17 @@ void QgsPropertyAssistantWidget::updateProperty( QgsProperty& property )
 
   if ( mTransformerWidget )
     property.setTransformer( mTransformerWidget->createTransformer( minValueSpinBox->value(), maxValueSpinBox->value() ) );
+}
+
+void QgsPropertyAssistantWidget::setDockMode( bool dockMode )
+{
+  QgsPanelWidget::setDockMode( dockMode );
+
+  if ( dockMode && mLegendVerticalFrame->isHidden() )
+  {
+    mLegendVerticalFrame->layout()->addWidget( mLegendPreview );
+    mLegendVerticalFrame->show();
+  }
 }
 
 void QgsPropertyAssistantWidget::computeValuesFromLayer()

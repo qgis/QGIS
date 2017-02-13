@@ -107,6 +107,8 @@ class GUI_EXPORT QgsPropertyAssistantWidget : public QgsPanelWidget, private Ui:
 
     void setSymbol( std::shared_ptr< QgsSymbol > symbol ) { mSymbol = symbol; updatePreview(); }
 
+    void setDockMode( bool dockMode ) override;
+
   private slots:
     void computeValuesFromLayer();
     void updatePreview();
