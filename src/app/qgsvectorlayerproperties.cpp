@@ -322,6 +322,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   }
 
   mLayersDependenciesTreeView->setModel( mLayersDependenciesTreeModel.get() );
+
+  connect( mRefreshLayerCheckBox, &QCheckBox::toggled, mRefreshLayerIntervalSpinBox, &QDoubleSpinBox::setEnabled );
+
 } // QgsVectorLayerProperties ctor
 
 
@@ -445,6 +448,10 @@ void QgsVectorLayerProperties::syncToLayer()
   mSimplifyMaximumScaleComboBox->setScale( 1.0 / simplifyMethod.maximumScale() );
 
   mForceRasterCheckBox->setChecked( mLayer->renderer() && mLayer->renderer()->forceRasterRender() );
+
+  mRefreshLayerCheckBox->setChecked( mLayer->hasAutoRefreshEnabled() );
+  mRefreshLayerIntervalSpinBox->setEnabled( mLayer->hasAutoRefreshEnabled() );
+  mRefreshLayerIntervalSpinBox->setValue( mLayer->autoRefreshInterval() / 1000.0 );
 
   // load appropriate symbology page (V1 or V2)
   updateSymbologyPage();
@@ -582,6 +589,9 @@ void QgsVectorLayerProperties::apply()
 
   if ( mLayer->renderer() )
     mLayer->renderer()->setForceRasterRender( mForceRasterCheckBox->isChecked() );
+
+  mLayer->setAutoRefreshInterval( mRefreshLayerIntervalSpinBox->value() * 1000.0 );
+  mLayer->setAutoRefreshEnabled( mRefreshLayerCheckBox->isChecked() );
 
   mOldJoins = mLayer->vectorJoins();
 
