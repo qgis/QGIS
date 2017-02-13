@@ -1548,7 +1548,7 @@ void QgsLineSymbol::setDataDefinedWidth( const QgsProperty& property )
     {
       if ( !property )
       {
-        lineLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyWidth, QgsProperty() );
+        lineLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineWidth, QgsProperty() );
         lineLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyOffset, QgsProperty() );
       }
       else
