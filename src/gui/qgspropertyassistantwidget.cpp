@@ -87,6 +87,12 @@ QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget* parent ,
       break;
     }
 
+    case QgsPropertyDefinition::Rotation:
+    {
+      mTransformerWidget = new QgsPropertyGenericNumericAssistantWidget( this, mDefinition, initialState );
+      break;
+    }
+
     default:
     {
       if ( mDefinition.dataType() == QgsPropertyDefinition::DataTypeNumeric )
@@ -467,9 +473,31 @@ QgsPropertyGenericNumericAssistantWidget::QgsPropertyGenericNumericAssistantWidg
   layout()->setContentsMargins( 0, 0, 0, 0 );
   layout()->setMargin( 0 );
 
-  minOutputSpinBox->setShowClearButton( false );
-  maxOutputSpinBox->setShowClearButton( false );
   nullOutputSpinBox->setShowClearButton( false );
+
+  if ( definition.standardTemplate() == QgsPropertyDefinition::Rotation )
+  {
+    // tweak dialog for rotation
+    minOutputSpinBox->setMaximum( 360.0 );
+    minOutputSpinBox->setValue( 0.0 );
+    minOutputSpinBox->setShowClearButton( true );
+    minOutputSpinBox->setClearValue( 0.0 );
+    minOutputSpinBox->setSuffix( tr( " °" ) );
+    maxOutputSpinBox->setMaximum( 360.0 );
+    maxOutputSpinBox->setValue( 360.0 );
+    maxOutputSpinBox->setShowClearButton( true );
+    maxOutputSpinBox->setClearValue( 360.0 );
+    maxOutputSpinBox->setSuffix( tr( " °" ) );
+    exponentSpinBox->hide();
+    mExponentLabel->hide();
+    mLabelMinOutput->setText( tr( "Angle from" ) );
+    mLabelNullOutput->setText( tr( "Angle when NULL" ) );
+  }
+  else
+  {
+    minOutputSpinBox->setShowClearButton( false );
+    maxOutputSpinBox->setShowClearButton( false );
+  }
 
   if ( const QgsGenericNumericTransformer* transform = dynamic_cast< const QgsGenericNumericTransformer* >( initialState.transformer() ) )
   {

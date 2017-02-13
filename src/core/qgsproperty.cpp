@@ -69,6 +69,11 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString& name, const QString
       mHelpText = QObject::tr( "double [0.0-1.0]" );
       break;
 
+    case Rotation:
+      mTypes = DataTypeNumeric;
+      mHelpText = QObject::tr( "double [0.0-360.0]" );
+      break;
+
     case String:
       mTypes = DataTypeString;
       mHelpText = QObject::tr( "string of variable length" );
@@ -179,7 +184,8 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString& name, DataType data
 
 bool QgsPropertyDefinition::supportsAssistant() const
 {
-  return mTypes == DataTypeNumeric || mStandardType == Size || mStandardType == StrokeWidth || mStandardType == ColorNoAlpha || mStandardType == ColorWithAlpha;
+  return mTypes == DataTypeNumeric || mStandardType == Size || mStandardType == StrokeWidth || mStandardType == ColorNoAlpha || mStandardType == ColorWithAlpha
+         || mStandardType == Rotation;
 }
 
 QString QgsPropertyDefinition::trString()

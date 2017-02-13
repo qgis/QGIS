@@ -25,21 +25,21 @@
     </widget>
    </item>
    <item row="0" column="0">
-    <widget class="QLabel" name="label_5">
+    <widget class="QLabel" name="mLabelMinOutput">
      <property name="text">
       <string>Output from</string>
      </property>
     </widget>
    </item>
    <item row="3" column="0">
-    <widget class="QLabel" name="label_8">
+    <widget class="QLabel" name="mLabelNullOutput">
      <property name="text">
       <string>Output when NULL</string>
      </property>
     </widget>
    </item>
    <item row="2" column="0">
-    <widget class="QLabel" name="label_2">
+    <widget class="QLabel" name="mExponentLabel">
      <property name="text">
       <string>Exponent</string>
      </property>

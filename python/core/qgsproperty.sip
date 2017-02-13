@@ -14,6 +14,7 @@ class QgsPropertyDefinition
       Double,
       DoublePositive,
       Double0To1,
+      Rotation,
       String,
       Transparency,
       RenderUnits,
