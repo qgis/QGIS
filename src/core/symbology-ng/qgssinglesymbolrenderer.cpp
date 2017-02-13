@@ -306,7 +306,7 @@ QgsLegendSymbolListV2 QgsSingleSymbolRenderer::legendSymbolItemsV2() const
   {
     const QgsMarkerSymbol * symbol = static_cast<const QgsMarkerSymbol *>( mSymbol.get() );
     QgsProperty sizeDD( symbol->dataDefinedSize() );
-    if ( sizeDD && sizeDD.isActive() && sizeDD.propertyType() == QgsProperty::ExpressionBasedProperty )
+    if ( sizeDD && sizeDD.isActive() )
     {
       if ( const QgsSizeScaleTransformer* sizeTransformer = dynamic_cast< const QgsSizeScaleTransformer* >( sizeDD.transformer() ) )
       {
