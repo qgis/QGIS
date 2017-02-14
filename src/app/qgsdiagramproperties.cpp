@@ -459,6 +459,7 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int inde
       mTextOptionsFrame->show();
       mBackgroundColorLabel->show();
       mBackgroundColorButton->show();
+      mBackgroundColorDDBtn->show();
       mDiagramFontButton->show();
     }
     else
@@ -466,6 +467,7 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int inde
       mTextOptionsFrame->hide();
       mBackgroundColorLabel->hide();
       mBackgroundColorButton->hide();
+      mBackgroundColorDDBtn->hide();
       mDiagramFontButton->hide();
     }
 
@@ -509,11 +511,13 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int inde
     {
       mAngleOffsetComboBox->show();
       mAngleOffsetLabel->show();
+      mStartAngleDDBtn->show();
     }
     else
     {
       mAngleOffsetComboBox->hide();
       mAngleOffsetLabel->hide();
+      mStartAngleDDBtn->hide();
     }
   }
 }
