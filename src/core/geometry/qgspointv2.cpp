@@ -438,12 +438,12 @@ QPointF QgsPointV2::toQPointF() const
 
 double QgsPointV2::distance( double x, double y ) const
 {
-  return sqrt(( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) );
+  return sqrt( ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) );
 }
 
 double QgsPointV2::distance( const QgsPointV2& other ) const
 {
-  return sqrt(( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) );
+  return sqrt( ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) );
 }
 
 double QgsPointV2::distanceSquared( double x, double y ) const
@@ -451,9 +451,29 @@ double QgsPointV2::distanceSquared( double x, double y ) const
   return ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y );
 }
 
-double QgsPointV2::distanceSquared( const QgsPointV2& other ) const
+double QgsPointV2::distanceSquared( const QgsPointV2& other) const
 {
   return ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) ;
+}
+
+double QgsPointV2::distance3D( double x, double y, double z ) const
+{
+  return sqrt( ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) + ( mZ - z ) * ( mZ - z ) );
+}
+
+double QgsPointV2::distance3D( const QgsPointV2& other ) const
+{
+  return sqrt( ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) + ( mZ - other.z() ) * ( mZ - other.z() ) );
+}
+
+double QgsPointV2::distanceSquared3D( double x, double y, double z ) const
+{
+  return ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) + ( mZ - z ) * ( mZ - z );
+}
+
+double QgsPointV2::distanceSquared3D( const QgsPointV2& other) const
+{
+  return ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) + ( mZ - other.z() ) * ( mZ - other.z() );
 }
 
 double QgsPointV2::azimuth( const QgsPointV2& other ) const

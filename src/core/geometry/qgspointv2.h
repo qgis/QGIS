@@ -188,6 +188,41 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
     double distanceSquared( const QgsPointV2& other ) const;
 
     /**
+     * Returns the 3D distance between this point and a specified x, y, z coordinate. In certain
+     * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
+     * when comparing distances.
+     * @note added in QGIS 3.0
+     * @see distanceSquared()
+    */
+    double distance3D( double x, double y, double z ) const;
+
+    /**
+     * Returns the 3D distance between this point and another point. In certain
+     * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
+     * when comparing distances.
+     * @note added in QGIS 3.0
+    */
+    double distance3D( const QgsPointV2& other ) const;
+
+    /**
+     * Returns the 3D squared distance between this point a specified x, y, z coordinate. Calling
+     * this is faster than calling distance(), and may be useful in use cases such as comparing
+     * distances where the extra expense of calling distance() is not required.
+     * @see distance()
+     * @note added in QGIS 3.0
+    */
+    double distanceSquared3D( double x, double y, double z ) const;
+
+    /**
+     * Returns the 3D squared distance between this point another point. Calling
+     * this is faster than calling distance(), and may be useful in use cases such as comparing
+     * distances where the extra expense of calling distance() is not required.
+     * @see distance()
+     * @note added in QGIS 3.0
+    */
+    double distanceSquared3D( const QgsPointV2& other ) const;
+
+    /**
      * Calculates azimuth between this point and other one (clockwise in degree, starting from north)
      * @note added in QGIS 3.0
      */
