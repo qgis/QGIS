@@ -418,6 +418,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   registerDataDefinedButton( mZOrderDDBtn, QgsDiagramLayerSettings::ZIndex );
   registerDataDefinedButton( mShowDiagramDDBtn, QgsDiagramLayerSettings::Show );
   registerDataDefinedButton( mAlwaysShowDDBtn, QgsDiagramLayerSettings::AlwaysShow );
+  registerDataDefinedButton( mIsObstacleDDBtn, QgsDiagramLayerSettings::IsObstacle );
   registerDataDefinedButton( mStartAngleDDBtn, QgsDiagramLayerSettings::StartAngle );
 }
 
