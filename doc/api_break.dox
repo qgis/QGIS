@@ -1349,13 +1349,6 @@ screenUpdateRequested() were removed. These members have had no effect for a num
 - loadNamedStyleFromDb() was renamed to loadNamedStyleFromDatabase()
 
 
-
-QgsMapLayerRegistry        {#qgis_api_break_3_0_QgsMapLayerRegistry}
--------------------
-
-- clearAllLayerCaches() was removed. This method has had no effect since QGIS 2.4
-
-
 QgsMapOverviewCanvas        {#qgis_api_break_3_0_QgsMapOverviewCanvas}
 --------------------
 
