@@ -416,15 +416,29 @@ QgsPropertyColorAssistantWidget::QgsPropertyColorAssistantWidget( QWidget* paren
 
   bool supportsAlpha = definition.standardTemplate() == QgsPropertyDefinition::ColorWithAlpha;
   mNullColorButton->setAllowAlpha( supportsAlpha );
+  mNullColorButton->setShowNoColor( true );
+  mNullColorButton->setColorDialogTitle( tr( "Color for null values" ) );
+  mNullColorButton->setContext( QStringLiteral( "symbology" ) );
+  mNullColorButton->setNoColorString( tr( "Transparent" ) );
 
   if ( const QgsColorRampTransformer* colorTransform = dynamic_cast< const QgsColorRampTransformer* >( initialState.transformer() ) )
   {
     mNullColorButton->setColor( colorTransform->nullColor() );
-    mColorRampButton->setColorRamp( colorTransform->colorRamp() );
+    if ( colorTransform->colorRamp() )
+      mColorRampButton->setColorRamp( colorTransform->colorRamp() );
   }
 
   connect( mNullColorButton, &QgsColorButton::colorChanged, this, &QgsPropertyColorAssistantWidget::widgetChanged );
   connect( mColorRampButton, &QgsColorRampButton::colorRampChanged, this, &QgsPropertyColorAssistantWidget::widgetChanged );
+
+  if ( !mColorRampButton->colorRamp() )
+  {
+    // set a default ramp
+    QString defaultRampName = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ), QString() );
+    std::unique_ptr< QgsColorRamp > defaultRamp( QgsStyle::defaultStyle()->colorRamp( !defaultRampName.isEmpty() ? defaultRampName : QStringLiteral( "Blues" ) ) );
+    if ( defaultRamp )
+      mColorRampButton->setColorRamp( defaultRamp.get() );
+  }
 }
 
 QgsColorRampTransformer* QgsPropertyColorAssistantWidget::createTransformer( double minValue, double maxValue ) const
