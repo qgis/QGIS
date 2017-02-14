@@ -413,6 +413,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   registerDataDefinedButton( mLineWidthDDBtn, QgsDiagramLayerSettings::OutlineWidth );
   registerDataDefinedButton( mCoordXDDBtn, QgsDiagramLayerSettings::PositionX );
   registerDataDefinedButton( mCoordYDDBtn, QgsDiagramLayerSettings::PositionY );
+  registerDataDefinedButton( mDistanceDDBtn, QgsDiagramLayerSettings::Distance );
   registerDataDefinedButton( mPriorityDDBtn, QgsDiagramLayerSettings::Priority );
   registerDataDefinedButton( mZOrderDDBtn, QgsDiagramLayerSettings::ZIndex );
   registerDataDefinedButton( mShowDiagramDDBtn, QgsDiagramLayerSettings::Show );
