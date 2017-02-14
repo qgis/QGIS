@@ -84,7 +84,7 @@ class translate(GdalAlgorithm):
         self.addParameter(ParameterCrs(self.SRS,
                                        self.tr('Output projection for output file [leave blank to use input projection]'), None, optional=True))
         self.addParameter(ParameterExtent(self.PROJWIN,
-                                          self.tr('Subset based on georeferenced coordinates')), optional=True)
+                                          self.tr('Subset based on georeferenced coordinates'), optional=True))
         self.addParameter(ParameterBoolean(self.SDS,
                                            self.tr('Copy all subdatasets of this file to individual output files'),
                                            False))
