@@ -554,6 +554,7 @@
         <file>themes/default/processingModel.svg</file>
         <file>themes/default/processingScript.svg</file>
         <file>themes/default/processingAlgorithm.svg</file>
+        <file>themes/default/search.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

@@ -17,9 +17,7 @@
 # -r: deactivate interactive mode to fix errors
 # optional argument: list of files to be checked
 
-
-
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DIR=$(git rev-parse --show-toplevel)/scripts/spell_check
 
 AGIGNORE=${DIR}/.agignore
 

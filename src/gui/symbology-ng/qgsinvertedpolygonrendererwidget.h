@@ -53,9 +53,9 @@ class GUI_EXPORT QgsInvertedPolygonRendererWidget : public QgsRendererWidget, pr
 
   protected:
     //! The mask renderer
-    QScopedPointer<QgsInvertedPolygonRenderer> mRenderer;
+    std::unique_ptr<QgsInvertedPolygonRenderer> mRenderer;
     //! The widget used to represent the mask's embedded renderer
-    QScopedPointer<QgsRendererWidget> mEmbeddedRendererWidget;
+    std::unique_ptr<QgsRendererWidget> mEmbeddedRendererWidget;
 
   private slots:
     void on_mRendererComboBox_currentIndexChanged( int index );

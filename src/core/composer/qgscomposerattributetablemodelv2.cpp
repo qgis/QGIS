@@ -406,7 +406,7 @@ bool QgsComposerAttributeTableColumnModelV2::moveColumnInSortRank( QgsComposerTa
       sortedColumns.append( currentColumn );
     }
   }
-  qStableSort( sortedColumns.begin(), sortedColumns.end(), columnsBySortRank );
+  std::stable_sort( sortedColumns.begin(), sortedColumns.end(), columnsBySortRank );
   int columnPos = sortedColumns.indexOf( column );
 
   if (( columnPos == 0 && direction == ShiftUp )

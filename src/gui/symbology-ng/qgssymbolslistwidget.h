@@ -89,8 +89,13 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
   signals:
     void changed();
 
+  private slots:
+
+    void updateAssistantSymbol();
+
   private:
     QgsSymbol* mSymbol;
+    std::shared_ptr< QgsSymbol > mAssistantSymbol;
     QgsStyle* mStyle;
     QMenu* mAdvancedMenu;
     QAction* mClipFeaturesAction;

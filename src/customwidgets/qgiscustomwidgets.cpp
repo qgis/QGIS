@@ -18,7 +18,6 @@
 #include "qgiscustomwidgets.h"
 #include "qgscollapsiblegroupboxplugin.h"
 #include "qgscolorbuttonplugin.h"
-#include "qgsdatadefinedbuttonplugin.h"
 #include "qgsdatetimeeditplugin.h"
 #include "qgsdockwidgetplugin.h"
 #include "qgsdoublespinboxplugin.h"
@@ -26,9 +25,11 @@
 #include "qgsextentgroupboxplugin.h"
 #include "qgsfieldcomboboxplugin.h"
 #include "qgsfieldexpressionwidgetplugin.h"
+#include "qgsfilewidgetplugin.h"
 #include "qgsfilterlineeditplugin.h"
 #include "qgsmaplayercomboboxplugin.h"
 #include "qgsprojectionselectionwidgetplugin.h"
+#include "qgspropertyoverridebuttonplugin.h"
 #include "qgsrelationeditorwidgetplugin.h"
 #include "qgsrelationreferencewidgetplugin.h"
 #include "qgsscalerangewidgetplugin.h"
@@ -41,7 +42,6 @@ QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
 {
   mWidgets.append( new QgsCollapsibleGroupBoxPlugin( this ) );
   mWidgets.append( new QgsColorButtonPlugin( this ) );
-  mWidgets.append( new QgsDataDefinedButtonPlugin( this ) );
   mWidgets.append( new QgsDateTimeEditPlugin( this ) );
   mWidgets.append( new QgsDockWidgetPlugin( this ) );
   mWidgets.append( new QgsDoubleSpinBoxPlugin( this ) );
@@ -49,9 +49,11 @@ QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
   mWidgets.append( new QgsExtentGroupBoxPlugin( this ) );
   mWidgets.append( new QgsFieldComboBoxPlugin( this ) );
   mWidgets.append( new QgsFieldExpressionWidgetPlugin( this ) );
+  mWidgets.append( new QgsFileWidgetPlugin( this ) );
   mWidgets.append( new QgsFilterLineEditPlugin( this ) );
   mWidgets.append( new QgsMapLayerComboBoxPlugin( this ) );
   mWidgets.append( new QgsProjectionSelectionWidgetPlugin( this ) );
+  mWidgets.append( new QgsPropertyOverrideButtonPlugin( this ) );
   mWidgets.append( new QgsRelationEditorWidgetPlugin( this ) );
   mWidgets.append( new QgsRelationReferenceWidgetPlugin( this ) );
   mWidgets.append( new QgsScaleRangeWidgetPlugin( this ) );

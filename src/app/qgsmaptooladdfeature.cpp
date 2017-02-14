@@ -146,7 +146,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
       }
       else if ( layerWKBType == QgsWkbTypes::Point25D )
       {
-        g = QgsGeometry( new QgsPointV2( QgsWkbTypes::PointZ, savePoint.x(), savePoint.y(), 0.0 ) );
+        g = QgsGeometry( new QgsPointV2( QgsWkbTypes::PointZ, savePoint.x(), savePoint.y(), defaultZValue() ) );
       }
       else if ( layerWKBType == QgsWkbTypes::MultiPoint )
       {
@@ -155,7 +155,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
       else if ( layerWKBType == QgsWkbTypes::MultiPoint25D )
       {
         QgsMultiPointV2* mp = new QgsMultiPointV2();
-        mp->addGeometry( new QgsPointV2( QgsWkbTypes::PointZ, savePoint.x(), savePoint.y(), 0.0 ) );
+        mp->addGeometry( new QgsPointV2( QgsWkbTypes::PointZ, savePoint.x(), savePoint.y(), defaultZValue() ) );
         g = QgsGeometry( mp );
       }
       else
@@ -233,7 +233,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
       }
 
       //create QgsFeature with wkb representation
-      QScopedPointer< QgsFeature > f( new QgsFeature( vlayer->fields(), 0 ) );
+      std::unique_ptr< QgsFeature > f( new QgsFeature( vlayer->fields(), 0 ) );
 
       //does compoundcurve contain circular strings?
       //does provider support circular strings?
@@ -288,7 +288,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
       }
       f->setValid( true );
 
-      if ( addFeature( vlayer, f.data(), false ) )
+      if ( addFeature( vlayer, f.get(), false ) )
       {
         //add points to other features to keep topology up-to-date
         bool topologicalEditing = QgsProject::instance()->topologicalEditing();

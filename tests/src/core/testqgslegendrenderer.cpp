@@ -327,9 +327,9 @@ void TestQgsLegendRenderer::testMapUnits()
   sym->setSizeUnit( QgsUnitTypes::RenderMillimeters );
   catRenderer->updateCategorySymbol( 2, sym );
 
-  QgsLayerTreeGroup* root = new QgsLayerTreeGroup();
+  std::unique_ptr< QgsLayerTreeGroup > root( new QgsLayerTreeGroup() );
   root->addLayer( mVL3 );
-  QgsLayerTreeModel legendModel( root );
+  QgsLayerTreeModel legendModel( root.get() );
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings );
@@ -481,9 +481,9 @@ void TestQgsLegendRenderer::testFilterByMapSameSymbol()
 
   QString testName = QStringLiteral( "legend_filter_by_map_dupe" );
 
-  QgsLayerTreeGroup* root = new QgsLayerTreeGroup();
+  std::unique_ptr< QgsLayerTreeGroup > root( new QgsLayerTreeGroup() );
   root->addLayer( vl4 );
-  QgsLayerTreeModel legendModel( root );
+  QgsLayerTreeModel legendModel( root.get() );
 
   QgsMapSettings mapSettings;
   // extent and size to include only the red and green points
@@ -507,7 +507,7 @@ bool TestQgsLegendRenderer::_testLegendColumns( int itemCount, int columnCount, 
   QgsFillSymbol* sym = new QgsFillSymbol();
   sym->setColor( Qt::cyan );
 
-  QgsLayerTreeGroup* root = new QgsLayerTreeGroup();
+  std::unique_ptr< QgsLayerTreeGroup > root( new QgsLayerTreeGroup() );
 
   QList< QgsVectorLayer* > layers;
   for ( int i = 1; i <= itemCount; ++i )
@@ -520,7 +520,7 @@ bool TestQgsLegendRenderer::_testLegendColumns( int itemCount, int columnCount, 
   }
   delete sym;
 
-  QgsLayerTreeModel legendModel( root );
+  QgsLayerTreeModel legendModel( root.get() );
   QgsLegendSettings settings;
   settings.setColumnCount( columnCount );
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
@@ -565,10 +565,10 @@ void TestQgsLegendRenderer::testRasterBorder()
 {
   QString testName = QStringLiteral( "legend_raster_border" );
 
-  QgsLayerTreeGroup* root = new QgsLayerTreeGroup();
+  std::unique_ptr< QgsLayerTreeGroup > root( new QgsLayerTreeGroup() );
   root->addLayer( mRL );
 
-  QgsLayerTreeModel legendModel( root );
+  QgsLayerTreeModel legendModel( root.get() );
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings );
@@ -673,9 +673,9 @@ void TestQgsLegendRenderer::testDiagramAttributeLegend()
   dls.setShowAllDiagrams( true );
   vl4->setDiagramLayerSettings( dls );
 
-  QgsLayerTreeGroup* root = new QgsLayerTreeGroup();
+  std::unique_ptr< QgsLayerTreeGroup > root( new QgsLayerTreeGroup() );
   root->addLayer( vl4 );
-  QgsLayerTreeModel legendModel( root );
+  QgsLayerTreeModel legendModel( root.get() );
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
@@ -713,9 +713,9 @@ void TestQgsLegendRenderer::testDiagramSizeLegend()
   dls.setShowAllDiagrams( true );
   vl4->setDiagramLayerSettings( dls );
 
-  QgsLayerTreeGroup* root = new QgsLayerTreeGroup();
+  std::unique_ptr< QgsLayerTreeGroup > root( new QgsLayerTreeGroup() );
   root->addLayer( vl4 );
-  QgsLayerTreeModel legendModel( root );
+  QgsLayerTreeModel legendModel( root.get() );
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );

@@ -2300,6 +2300,7 @@ tests:
         name: expected/zonal_statistics.gml
         type: vector
 
+
   - algorithm: qgis:polygonfromlayerextent
     name: Standard polygon from layer extent
     params:
@@ -2312,6 +2313,19 @@ tests:
         name: expected/polygon_from_extent.gml
         type: vector
         
+
+  - algorithm: qgis:fixgeometries
+    name: Fix geometries
+    params:
+      INPUT:
+        name: invalidgeometries.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/valid.gml
+        type: vector
+
+
   - algorithm: qgis:polygonize
     name: Polygonize
     params:
@@ -2324,3 +2338,41 @@ tests:
       OUTPUT:
         name: expected/polygonize.gml
         type: vector
+
+  - algorithm: qgis:voronoipolygons
+    name: Standard voronoi
+    params:
+      BUFFER: 0.0
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/voronoi.gml
+        type: vector
+
+  - algorithm: qgis:voronoipolygons
+    name: Vornoi with buffer region
+    params:
+      BUFFER: 10.0
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/voronoi_buffer.gml
+        type: vector
+
+  - algorithm: qgis:findprojection
+    name: Find projection
+    params:
+      INPUT_LAYER:
+        name: custom/find_projection.gml
+        type: vector
+      TARGET_AREA: 151.1198,151.1368,-33.9118,-33.9003
+      TARGET_AREA_CRS: EPSG:4326
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/find_projection.html
+        type: file
+

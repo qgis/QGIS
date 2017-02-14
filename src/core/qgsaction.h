@@ -24,6 +24,7 @@
 #include <QUuid>
 
 #include "qgsexpressioncontext.h"
+#include <memory>
 
 class QgsExpressionContextScope;
 
@@ -189,7 +190,7 @@ class CORE_EXPORT QgsAction
     QString mCommand;
     bool mCaptureOutput = false;
     QSet<QString> mActionScopes;
-    mutable QSharedPointer<QAction> mAction;
+    mutable std::shared_ptr<QAction> mAction;
     QUuid mId;
 };
 

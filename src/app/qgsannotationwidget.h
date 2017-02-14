@@ -20,6 +20,7 @@
 
 #include "ui_qgsannotationwidgetbase.h"
 #include "qgis_app.h"
+#include <memory>
 
 class QgsMapCanvasAnnotationItem;
 class QgsMarkerSymbol;
@@ -47,8 +48,8 @@ class APP_EXPORT QgsAnnotationWidget: public QWidget, private Ui::QgsAnnotationW
 
   private:
     QgsMapCanvasAnnotationItem* mItem = nullptr;
-    QScopedPointer< QgsMarkerSymbol > mMarkerSymbol;
-    QScopedPointer< QgsFillSymbol > mFillSymbol;
+    std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
+    std::unique_ptr< QgsFillSymbol > mFillSymbol;
 
     void blockAllSignals( bool block );
     void updateCenterIcon();

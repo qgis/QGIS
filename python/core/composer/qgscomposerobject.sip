@@ -60,7 +60,11 @@ class QgsComposerObject : QObject, QgsExpressionContextGenerator
       ScalebarLineWidth, //!< Scalebar line width
     };
 
-    static const QgsPropertiesDefinition PROPERTY_DEFINITIONS;
+    /**
+     * Returns the composer object property definitions.
+     * @note added in QGIS 3.0
+     */
+    static const QgsPropertiesDefinition& propertyDefinitions();
 
     /** Specifies whether the value returned by a function should be the original, user
      * set value, or the current evaluated value for the property. This may differ if

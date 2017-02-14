@@ -39,7 +39,7 @@ QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem* it
   {
     QgsTextAnnotation* annotation = static_cast< QgsTextAnnotation* >( mItem->annotation() );
     mTextDocument.reset( annotation->document() ? annotation->document()->clone() : nullptr );
-    mTextEdit->setDocument( mTextDocument.data() );
+    mTextEdit->setDocument( mTextDocument.get() );
   }
 
   mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
@@ -91,7 +91,7 @@ void QgsTextAnnotationDialog::applyTextToItem()
     {
       mEmbeddedWidget->apply();
     }
-    annotation->setDocument( mTextDocument.data() );
+    annotation->setDocument( mTextDocument.get() );
     mItem->update();
   }
 }

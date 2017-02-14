@@ -43,7 +43,7 @@ class CORE_EXPORT QgsAbstractLabelProvider
 
   public:
     //! Construct the provider with default values
-    QgsAbstractLabelProvider( const QString& layerId = QString(), const QString& providerId = QString() );
+    QgsAbstractLabelProvider( QgsMapLayer* layer, const QString& providerId = QString() );
 
     virtual ~QgsAbstractLabelProvider() = default;
 
@@ -74,6 +74,9 @@ class CORE_EXPORT QgsAbstractLabelProvider
 
     //! Returns ID of associated layer, or empty string if no layer is associated with the provider.
     QString layerId() const { return mLayerId; }
+
+    //! Returns the associated layer, or nullptr if no layer is associated with the provider.
+    QgsMapLayer* layer() const { return mLayer.data(); }
 
     //! Returns provider ID - useful in case there is more than one label provider within a layer
     //! (e.g. in case of rule-based labeling - provider ID = rule's key). May be empty string if
@@ -106,6 +109,8 @@ class CORE_EXPORT QgsAbstractLabelProvider
     QString mName;
     //! Associated layer's ID, if applicable
     QString mLayerId;
+    //! Weak pointer to source layer
+    QgsWeakMapLayerPointer mLayer;
     //! Associated provider ID (one layer may have multiple providers, e.g. in rule-based labeling)
     QString mProviderId;
     //! Flags altering drawing and registration of features
@@ -187,10 +192,10 @@ class CORE_EXPORT QgsLabelingEngine
     const QgsMapSettings& mapSettings() const { return mMapSettings; }
 
     /**
-     * Returns a list of layer IDs for layers with providers in the engine.
+     * Returns a list of layers with providers in the engine.
      * @note added in QGIS 3.0
      */
-    QStringList participatingLayerIds() const;
+    QList< QgsMapLayer* > participatingLayers() const;
 
     //! Add provider of label features. Takes ownership of the provider
     void addProvider( QgsAbstractLabelProvider* provider );
@@ -205,7 +210,7 @@ class CORE_EXPORT QgsLabelingEngine
     QgsLabelingResults* takeResults();
 
     //! For internal use by the providers
-    QgsLabelingResults* results() const { return mResults; }
+    QgsLabelingResults* results() const { return mResults.get(); }
 
     //! Set flags of the labeling engine
     void setFlags( Flags flags ) { mFlags = flags; }
@@ -250,7 +255,7 @@ class CORE_EXPORT QgsLabelingEngine
     int mCandPoint, mCandLine, mCandPolygon;
 
     //! Resulting labeling layout
-    QgsLabelingResults* mResults;
+    std::unique_ptr< QgsLabelingResults > mResults;
 
 };
 

@@ -21,7 +21,6 @@
 #include "qgsexpression.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
-#include <QScopedPointer>
 
 /** \ingroup core
  * QgsInvertedPolygonRenderer is a polygon-only feature renderer used to
@@ -144,7 +143,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
   private:
 
     //! Embedded renderer
-    QScopedPointer<QgsFeatureRenderer> mSubRenderer;
+    std::unique_ptr<QgsFeatureRenderer> mSubRenderer;
 
     //! Structure where the reversed geometry is built during renderFeature
     struct CombinedFeature

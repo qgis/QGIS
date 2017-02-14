@@ -145,19 +145,24 @@ void QgsNewVectorLayerDialog::on_mTypeBox_currentIndexChanged( int index )
 
 QgsWkbTypes::Type QgsNewVectorLayerDialog::selectedType() const
 {
+  QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown;
   if ( mPointRadioButton->isChecked() )
   {
-    return QgsWkbTypes::Point;
+    wkbType = QgsWkbTypes::Point;
   }
   else if ( mLineRadioButton->isChecked() )
   {
-    return QgsWkbTypes::LineString;
+    wkbType = QgsWkbTypes::LineString;
   }
   else if ( mPolygonRadioButton->isChecked() )
   {
-    return QgsWkbTypes::Polygon;
+    wkbType = QgsWkbTypes::Polygon;
   }
-  return QgsWkbTypes::Unknown;
+
+  if ( mGeometryWithZCheckBox->isChecked() && wkbType != QgsWkbTypes::Unknown )
+    wkbType = QgsWkbTypes::to25D( wkbType );
+
+  return wkbType;
 }
 
 int QgsNewVectorLayerDialog::selectedCrsId() const

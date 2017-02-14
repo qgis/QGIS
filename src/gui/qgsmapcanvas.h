@@ -600,7 +600,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     class CanvasProperties;
 
     /// Handle pattern for implementation object
-    QScopedPointer<CanvasProperties> mCanvasProperties;
+    std::unique_ptr<CanvasProperties> mCanvasProperties;
 
 #if 0
 
@@ -611,6 +611,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 #endif
     //! Make sure the datum transform store is properly populated
     void updateDatumTransformEntries();
+
+  private slots:
+
+    void layerRepaintRequested( bool deferred );
+
+    void autoRefreshTriggered();
+
+    void updateAutoRefreshTimer();
 
   private:
     /// this class is non-copyable
@@ -698,9 +706,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool mZoomDragging;
 
     //! Zoom by rectangle rubber band
-    QScopedPointer< QgsRubberBand > mZoomRubberBand;
+    std::unique_ptr< QgsRubberBand > mZoomRubberBand;
 
     QCursor mZoomCursor;
+
+    QTimer mAutoRefreshTimer;
 
     //! Force a resize of the map canvas item
     //! @note added in 2.16

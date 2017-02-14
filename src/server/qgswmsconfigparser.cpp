@@ -329,8 +329,8 @@ QStringList QgsWmsConfigParser::addHighlightLayers( const QMap<QString, QString>
     }
 
     QString errorMsg;
-    QScopedPointer<QgsFeatureRenderer> renderer( QgsFeatureRenderer::loadSld( sldDoc.documentElement(), geom.type(), errorMsg ) );
-    if ( !renderer.data() )
+    std::unique_ptr<QgsFeatureRenderer> renderer( QgsFeatureRenderer::loadSld( sldDoc.documentElement(), geom.type(), errorMsg ) );
+    if ( !renderer )
     {
       continue;
     }
@@ -342,17 +342,17 @@ QStringList QgsWmsConfigParser::addHighlightLayers( const QMap<QString, QString>
       labelString = labelSplit.at( i );
     }
 
-    QScopedPointer<QgsVectorLayer> layer( createHighlightLayer( i, crsString, geom, labelString, labelSizeSplit, labelColorSplit, labelWeightSplit, labelFontSplit,
-                                          labelBufferSizeSplit, labelBufferColorSplit ) );
-    if ( !layer.data() )
+    std::unique_ptr<QgsVectorLayer> layer( createHighlightLayer( i, crsString, geom, labelString, labelSizeSplit, labelColorSplit, labelWeightSplit, labelFontSplit,
+                                           labelBufferSizeSplit, labelBufferColorSplit ) );
+    if ( !layer )
     {
       continue;
     }
 
-    layer->setRenderer( renderer.take() );
-    layerSet.prepend( layer.data()->id() );
-    highlightLayers.append( layer.data()->id() );
-    QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << layer.take() );
+    layer->setRenderer( renderer.release() );
+    layerSet.prepend( layer->id() );
+    highlightLayers.append( layer->id() );
+    QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << layer.release() );
   }
   return highlightLayers;
 }

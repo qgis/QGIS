@@ -24,29 +24,8 @@
 #include "feature.h"
 #include "labelposition.h"
 
-
-QgsVectorLayerDiagramProvider::QgsVectorLayerDiagramProvider(
-  const QgsDiagramLayerSettings* diagSettings,
-  const QgsDiagramRenderer* diagRenderer,
-  const QString& layerId,
-  const QgsFields& fields,
-  const QgsCoordinateReferenceSystem& crs,
-  QgsAbstractFeatureSource* source,
-  bool ownsSource )
-    : QgsAbstractLabelProvider( layerId )
-    , mSettings( *diagSettings )
-    , mDiagRenderer( diagRenderer->clone() )
-    , mFields( fields )
-    , mLayerCrs( crs )
-    , mSource( source )
-    , mOwnsSource( ownsSource )
-{
-  init();
-}
-
-
 QgsVectorLayerDiagramProvider::QgsVectorLayerDiagramProvider( QgsVectorLayer* layer, bool ownFeatureLoop )
-    : QgsAbstractLabelProvider( layer->id() )
+    : QgsAbstractLabelProvider( layer )
     , mSettings( *layer->diagramLayerSettings() )
     , mDiagRenderer( layer->diagramRenderer()->clone() )
     , mFields( layer->fields() )
@@ -236,11 +215,11 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
   }
 
   GEOSGeometry* geomCopy = nullptr;
-  QScopedPointer<QgsGeometry> scopedPreparedGeom;
+  std::unique_ptr<QgsGeometry> scopedPreparedGeom;
   if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, mSettings.coordinateTransform(), &extentGeom ) )
   {
     scopedPreparedGeom.reset( new QgsGeometry( QgsPalLabeling::prepareGeometry( geom, context, mSettings.coordinateTransform(), &extentGeom ) ) );
-    QgsGeometry* preparedGeom = scopedPreparedGeom.data();
+    QgsGeometry* preparedGeom = scopedPreparedGeom.get();
     if ( preparedGeom->isNull() )
       return nullptr;
     geomCopy = preparedGeom->exportToGeos();
@@ -254,7 +233,7 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
     return nullptr; // invalid geometry
 
   GEOSGeometry* geosObstacleGeomClone = nullptr;
-  QScopedPointer<QgsGeometry> scopedObstacleGeom;
+  std::unique_ptr<QgsGeometry> scopedObstacleGeom;
   if ( isObstacle && obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( *obstacleGeometry, context, mSettings.coordinateTransform(), &extentGeom ) )
   {
     QgsGeometry preparedObstacleGeom = QgsPalLabeling::prepareGeometry( *obstacleGeometry, context, mSettings.coordinateTransform(), &extentGeom );

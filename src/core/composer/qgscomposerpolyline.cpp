@@ -130,7 +130,7 @@ void QgsComposerPolyline::setPolylineStyleSymbol( QgsLineSymbol* symbol )
 void QgsComposerPolyline::_writeXmlStyle( QDomDocument &doc, QDomElement &elmt ) const
 {
   const QDomElement pe = QgsSymbolLayerUtils::saveSymbol( QString(),
-                         mPolylineStyleSymbol.data(),
+                         mPolylineStyleSymbol.get(),
                          doc );
   elmt.appendChild( pe );
 }

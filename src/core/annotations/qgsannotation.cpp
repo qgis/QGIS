@@ -326,7 +326,7 @@ void QgsAnnotation::_writeXml( QDomElement& itemElem, QDomDocument& doc ) const
   }
   if ( mMarkerSymbol )
   {
-    QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "marker symbol" ), mMarkerSymbol.data(), doc );
+    QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "marker symbol" ), mMarkerSymbol.get(), doc );
     if ( !symbolElem.isNull() )
     {
       annotationElem.appendChild( symbolElem );
@@ -335,7 +335,7 @@ void QgsAnnotation::_writeXml( QDomElement& itemElem, QDomDocument& doc ) const
   if ( mFillSymbol )
   {
     QDomElement fillElem = doc.createElement( QStringLiteral( "fillSymbol" ) );
-    QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "fill symbol" ), mFillSymbol.data(), doc );
+    QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "fill symbol" ), mFillSymbol.get(), doc );
     if ( !symbolElem.isNull() )
     {
       fillElem.appendChild( symbolElem );

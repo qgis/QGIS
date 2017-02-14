@@ -137,6 +137,16 @@
         </widget>
        </item>
        <item>
+        <widget class="QCheckBox" name="mAddToCanvas">
+         <property name="text">
+          <string>Add saved file to map</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QgsCollapsibleGroupBox" name="mAttributesSelection">
          <property name="title">
           <string>Select fields to export and their export options</string>
@@ -199,16 +209,6 @@
            </widget>
           </item>
          </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="mAddToCanvas">
-         <property name="text">
-          <string>Add saved file to map</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
         </widget>
        </item>
        <item>
@@ -287,7 +287,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsExtentGroupBox" name="mExtentGroupBox"/>
+        <widget class="QgsExtentGroupBox" name="mExtentGroupBox">
+         <property name="title">
+          <string>Extent</string>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBox" name="mDatasourceOptionsGroupBox">
@@ -411,6 +415,19 @@
          <zorder>mOgrLayerOptions</zorder>
         </widget>
        </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
       </layout>
      </widget>
     </widget>
@@ -458,7 +475,6 @@
   <tabstop>mSelectedOnly</tabstop>
   <tabstop>mSelectAllAttributes</tabstop>
   <tabstop>mDeselectAllAttributes</tabstop>
-  <tabstop>mAddToCanvas</tabstop>
   <tabstop>mSymbologyExportComboBox</tabstop>
   <tabstop>mScaleSpinBox</tabstop>
   <tabstop>mGeometryGroupBox</tabstop>

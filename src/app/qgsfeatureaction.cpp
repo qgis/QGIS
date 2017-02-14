@@ -116,7 +116,7 @@ bool QgsFeatureAction::editFeature( bool showModal )
 
   if ( showModal )
   {
-    QScopedPointer<QgsAttributeDialog> dialog( newDialog( false ) );
+    std::unique_ptr<QgsAttributeDialog> dialog( newDialog( false ) );
 
     if ( !mFeature->isValid() )
       dialog->setMode( QgsAttributeForm::AddFeatureMode );

@@ -137,7 +137,6 @@ class QgsField;
 class QgsFields;
 
 #include "ui_widget_set_dd_value.h"
-#include "qgssizescalewidget.h"
 #include "qgis_gui.h"
 
 /** \ingroup gui
@@ -212,10 +211,11 @@ class GUI_EXPORT QgsDataDefinedSizeDialog : public QgsDataDefinedValueDialog
         : QgsDataDefinedValueDialog( symbolList, layer, tr( "Size" ) )
     {
       init( QgsSymbolLayer::PropertySize );
-#if 0
       if ( !symbolList.isEmpty() && symbolList.at( 0 ) && vectorLayer() )
-        mDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( vectorLayer(), static_cast<const QgsMarkerSymbol*>( symbolList.at( 0 ) ) ) );
-#endif
+      {
+        mAssistantSymbol.reset( static_cast<const QgsMarkerSymbol*>( symbolList.at( 0 ) )->clone() );
+        mDDBtn->setSymbol( mAssistantSymbol );
+      }
     }
 
   protected:
@@ -224,6 +224,10 @@ class GUI_EXPORT QgsDataDefinedSizeDialog : public QgsDataDefinedValueDialog
     double value( const QgsSymbol * symbol ) const override { return static_cast<const QgsMarkerSymbol*>( symbol )->size(); }
 
     void setDataDefined( QgsSymbol* symbol, const QgsProperty& dd ) override;
+
+  private:
+
+    std::shared_ptr< QgsMarkerSymbol > mAssistantSymbol;
 };
 
 /** \ingroup gui

@@ -26,7 +26,6 @@
 #include <QMouseEvent>
 #include <QRect>
 #include <QColor>
-#include <QScopedPointer>
 
 
 QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas* canvas )

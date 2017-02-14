@@ -87,13 +87,13 @@
  * CRS Database and Custom CRS
  * ===========================
  *
- * The database of CRS shipped with QGIS is stored in a SQLite database (see QgsApplication::srsDbFilePath())
+ * The database of CRS shipped with QGIS is stored in a SQLite database (see QgsApplication::srsDatabaseFilePath())
  * and it is based on the data files maintained by GDAL project (a variety of .csv and .wkt files).
  *
  * Sometimes it happens that users need to use a CRS definition that is not well known
  * or that has been only created with a specific purpose (and thus its definition is not
  * available in our database of CRS). Whenever a new CRS definition is seen, it will
- * be added to the local databse (in user's home directory, see QgsApplication::qgisUserDbFilePath()).
+ * be added to the local databse (in user's home directory, see QgsApplication::qgisUserDatabaseFilePath()).
  * QGIS also features a GUI for management of local custom CRS definitions.
  *
  * There are therefore two databases: one for shipped CRS definitions and one for custom CRS definitions.
@@ -182,6 +182,8 @@ class QgsCoordinateReferenceSystem
      */
     // TODO QGIS 3: remove theType and always use EPSG code
     QgsCoordinateReferenceSystem( const long theId, CrsType theType = PostgisCrsId );
+
+    static QList< long > validSrsIds();
 
     // static creators
 
@@ -496,7 +498,7 @@ class QgsCoordinateReferenceSystem
      *   negative number of failed updates in case of errors.
      * @note This is used internally and should not be necessary to call in client code
      */
-    static int syncDb();
+    static int syncDatabase();
 
 
     /** Save the proj4-string as a custom CRS

@@ -21,6 +21,7 @@
 #include <QTreeWidget>
 #include <QItemDelegate>
 #include "qgis_gui.h"
+#include <memory>
 
 class QTableWidget;
 class QgsExpressionContextScope;
@@ -64,7 +65,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
      * are created with an empty context by default.
      * @see setContext()
      */
-    QgsExpressionContext* context() const { return mContext.data(); }
+    QgsExpressionContext* context() const { return mContext.get(); }
 
     /** Sets the editable scope for the widget. Only variables from the editable scope can
      * be modified by users.
@@ -122,7 +123,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
 
   private:
 
-    QScopedPointer<QgsExpressionContext> mContext;
+    std::unique_ptr<QgsExpressionContext> mContext;
     int mEditableScopeIndex;
     QgsVariableEditorTree* mTreeWidget;
     QPushButton* mAddButton;

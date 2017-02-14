@@ -401,7 +401,7 @@ bool QgsMemoryProvider::renameAttributes( const QgsFieldNameMap& renamedAttribut
 bool QgsMemoryProvider::deleteAttributes( const QgsAttributeIds& attributes )
 {
   QList<int> attrIdx = attributes.toList();
-  qSort( attrIdx.begin(), attrIdx.end(), qGreater<int>() );
+  std::sort( attrIdx.begin(), attrIdx.end(), std::greater<int>() );
 
   // delete attributes one-by-one with decreasing index
   for ( QList<int>::const_iterator it = attrIdx.constBegin(); it != attrIdx.constEnd(); ++it )

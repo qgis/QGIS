@@ -351,7 +351,7 @@ bool QgsComposerModel::dropMimeData( const QMimeData *data,
   //move dropped items
 
   //first sort them by z-order
-  qSort( droppedItems.begin(), droppedItems.end(), zOrderDescending );
+  std::sort( droppedItems.begin(), droppedItems.end(), zOrderDescending );
 
   //calculate position in z order list to drop items at
   int destPos = 0;

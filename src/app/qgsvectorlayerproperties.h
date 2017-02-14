@@ -196,8 +196,8 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     QgsExpressionContext createExpressionContext() const override;
 
-    QScopedPointer<QgsLayerTreeGroup> mLayersDependenciesTreeGroup;
-    QScopedPointer<QgsLayerTreeModel> mLayersDependenciesTreeModel;
+    std::unique_ptr<QgsLayerTreeGroup> mLayersDependenciesTreeGroup;
+    std::unique_ptr<QgsLayerTreeModel> mLayersDependenciesTreeModel;
 
   private slots:
     void openPanel( QgsPanelWidget* panel );

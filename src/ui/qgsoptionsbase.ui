@@ -58,6 +58,9 @@
         <number>0</number>
        </property>
        <item>
+        <widget class="QgsFilterLineEdit" name="mSearchLineEdit"/>
+       </item>
+       <item>
         <widget class="QListWidget" name="mOptionsListWidget">
          <property name="minimumSize">
           <size>
@@ -308,7 +311,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>2</number>
+          <number>12</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -337,8 +340,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>691</width>
-                <height>702</height>
+                <width>857</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -1024,7 +1027,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>843</width>
-                <height>1110</height>
+                <height>1065</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1554,7 +1557,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>843</width>
-                <height>755</height>
+                <height>685</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1806,6 +1809,16 @@
                     </property>
                    </widget>
                   </item>
+                  <item>
+                   <widget class="QCheckBox" name="cbxEvaluateDefaultValues">
+                    <property name="toolTip">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When digitizing a new feature, default values are retrieved from the database. With this option turned on, the default values will be evaluated at the time of digitizing. With this option turned off, the default values will be evaluated at the time of saving.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
+                    <property name="text">
+                     <string>Evaluate default values</string>
+                    </property>
+                   </widget>
+                  </item>
                  </layout>
                 </widget>
                </item>
@@ -1911,8 +1924,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>713</width>
-                <height>1110</height>
+                <width>843</width>
+                <height>936</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -2662,8 +2675,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>151</width>
-                <height>239</height>
+                <width>857</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -2813,8 +2826,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>523</width>
-                <height>370</height>
+                <width>857</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3156,8 +3169,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>640</width>
-                <height>660</height>
+                <width>857</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3587,8 +3600,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>509</width>
-                <height>623</height>
+                <width>857</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -3856,8 +3869,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>572</width>
-                <height>793</height>
+                <width>857</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3870,16 +3883,6 @@
                   <string>Feature creation</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_28">
-                  <item row="2" column="2">
-                   <widget class="QComboBox" name="mValidateGeometries">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="2" column="0">
                    <widget class="QLabel" name="label_19">
                     <property name="text">
@@ -3917,6 +3920,39 @@
                     </property>
                     <property name="tristate">
                      <bool>false</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="mDefaultZValueLabel">
+                    <property name="text">
+                     <string>Default Z value</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="2">
+                   <widget class="QDoubleSpinBox" name="mDefaultZValueSpinBox">
+                    <property name="decimals">
+                     <number>3</number>
+                    </property>
+                    <property name="minimum">
+                     <double>-999999.998999999952503</double>
+                    </property>
+                    <property name="maximum">
+                     <double>1000000.000000000000000</double>
+                    </property>
+                    <property name="singleStep">
+                     <double>1.000000000000000</double>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="2">
+                   <widget class="QComboBox" name="mValidateGeometries">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
                     </property>
                    </widget>
                   </item>
@@ -4411,8 +4447,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>435</width>
-                <height>402</height>
+                <width>857</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4550,8 +4586,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>543</width>
-                <height>710</height>
+                <width>857</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -4796,8 +4832,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>292</width>
-                <height>258</height>
+                <width>857</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -4905,8 +4941,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>534</width>
-                <height>790</height>
+                <width>843</width>
+                <height>689</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -5465,6 +5501,11 @@
    <extends>QTabWidget</extends>
    <header>qgsautheditorwidgets.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

@@ -16,11 +16,11 @@
 #ifndef QGSFIELDEXPRESSIONWIDGET_H
 #define QGSFIELDEXPRESSIONWIDGET_H
 
-#include <QSharedPointer>
 #include <QWidget>
 #include <QToolButton>
 #include <QComboBox>
 #include <QColor>
+#include <memory>
 
 #include "qgsdistancearea.h"
 #include "qgsfieldproxymodel.h"
@@ -193,7 +193,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     QToolButton* mButton;
     QgsFieldProxyModel* mFieldProxyModel;
     QString mExpressionDialogTitle;
-    QSharedPointer<const QgsDistanceArea> mDa;
+    std::shared_ptr<const QgsDistanceArea> mDa;
     QgsExpressionContext mExpressionContext;
     const QgsExpressionContextGenerator* mExpressionContextGenerator;
     QString mBackupExpression;

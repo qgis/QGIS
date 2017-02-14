@@ -638,3 +638,8 @@ QgsCoordinateReferenceSystem QgsDxfExportDialog::crs() const
 {
   return mCRS;
 }
+
+QString QgsDxfExportDialog::mapTheme() const
+{
+  return mVisibilityPresets->currentText();
+}

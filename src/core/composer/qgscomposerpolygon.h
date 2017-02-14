@@ -51,7 +51,7 @@ class CORE_EXPORT QgsComposerPolygon: public QgsComposerNodesItem
     virtual QString displayName() const override;
 
     //! Returns the QgsSymbol used to draw the shape.
-    QgsFillSymbol* polygonStyleSymbol() { return mPolygonStyleSymbol.data(); }
+    QgsFillSymbol* polygonStyleSymbol() { return mPolygonStyleSymbol.get(); }
 
     //! Set the QgsSymbol used to draw the shape.
     void setPolygonStyleSymbol( QgsFillSymbol* symbol );
@@ -62,7 +62,7 @@ class CORE_EXPORT QgsComposerPolygon: public QgsComposerNodesItem
   protected:
 
     //! QgsSymbol use to draw the shape.
-    QScopedPointer<QgsFillSymbol> mPolygonStyleSymbol;
+    std::unique_ptr<QgsFillSymbol> mPolygonStyleSymbol;
 
     /** Add the node newPoint at the given position according to some
      * criteres. */

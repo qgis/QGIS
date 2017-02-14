@@ -109,8 +109,11 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyArrowType, //!< Arrow type
     };
 
-    //! Property definitions
-    static const QgsPropertiesDefinition PROPERTY_DEFINITIONS;
+    /**
+     * Returns the symbol layer property definitions.
+     * @note added in QGIS 3.0
+     */
+    static const QgsPropertiesDefinition& propertyDefinitions();
 
     virtual ~QgsSymbolLayer();
 
@@ -309,6 +312,7 @@ class CORE_EXPORT QgsSymbolLayer
     void setDataDefinedProperties( const QgsPropertyCollection& collection ) { mDataDefinedProperties = collection; }
 
   protected:
+
     QgsSymbolLayer( QgsSymbol::SymbolType type, bool locked = false );
 
     QgsSymbol::SymbolType mType;
@@ -348,6 +352,12 @@ class CORE_EXPORT QgsSymbolLayer
      * @note added in QGIS 2.9
      */
     void copyPaintEffect( QgsSymbolLayer* destLayer ) const;
+
+  private:
+    static void initPropertyDefinitions();
+
+    //! Property definitions
+    static QgsPropertiesDefinition sPropertyDefinitions;
 
 };
 

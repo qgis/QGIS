@@ -83,6 +83,7 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
   mScaleBasedVisibility = false;
 
   connect( mStyleManager, &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsMapLayer::styleChanged );
+  connect( &mRefreshTimer, &QTimer::timeout, this, [=] { triggerRepaint( true ); } );
 }
 
 QgsMapLayer::~QgsMapLayer()
@@ -420,6 +421,9 @@ bool QgsMapLayer::readLayerXml( const QDomElement& layerElement, const QgsProjec
   setMinimumScale( layerElement.attribute( QStringLiteral( "minimumScale" ) ).toDouble() );
   setMaximumScale( layerElement.attribute( QStringLiteral( "maximumScale" ) ).toDouble() );
 
+  setAutoRefreshInterval( layerElement.attribute( QStringLiteral( "autoRefreshTime" ), 0 ).toInt() );
+  setAutoRefreshEnabled( layerElement.attribute( QStringLiteral( "autoRefreshEnabled" ), QStringLiteral( "0" ) ).toInt() );
+
   QDomNode extentNode = layerElement.namedItem( QStringLiteral( "extent" ) );
   if ( !extentNode.isNull() )
   {
@@ -536,6 +540,9 @@ bool QgsMapLayer::writeLayerXml( QDomElement& layerElement, QDomDocument& docume
   {
     layerElement.appendChild( QgsXmlUtils::writeRectangle( mExtent, document ) );
   }
+
+  layerElement.setAttribute( QStringLiteral( "autoRefreshTime" ), QString::number( mRefreshTimer.interval() ) );
+  layerElement.setAttribute( QStringLiteral( "autoRefreshEnabled" ), mRefreshTimer.isActive() ? 1 : 0 );
 
   // ID
   QDomElement layerId = document.createElement( QStringLiteral( "id" ) );
@@ -857,6 +864,40 @@ bool QgsMapLayer::hasScaleBasedVisibility() const
   return mScaleBasedVisibility;
 }
 
+bool QgsMapLayer::hasAutoRefreshEnabled() const
+{
+  return mRefreshTimer.isActive();
+}
+
+int QgsMapLayer::autoRefreshInterval() const
+{
+  return mRefreshTimer.interval();
+}
+
+void QgsMapLayer::setAutoRefreshInterval( int interval )
+{
+  if ( interval <= 0 )
+  {
+    mRefreshTimer.stop();
+    mRefreshTimer.setInterval( 0 );
+  }
+  else
+  {
+    mRefreshTimer.setInterval( interval );
+  }
+  emit autoRefreshIntervalChanged( mRefreshTimer.isActive() ? mRefreshTimer.interval() : 0 );
+}
+
+void QgsMapLayer::setAutoRefreshEnabled( bool enabled )
+{
+  if ( !enabled )
+    mRefreshTimer.stop();
+  else if ( mRefreshTimer.interval() > 0 )
+    mRefreshTimer.start();
+
+  emit autoRefreshIntervalChanged( mRefreshTimer.isActive() ? mRefreshTimer.interval() : 0 );
+}
+
 void QgsMapLayer::setMinimumScale( double scale )
 {
   mMinScale = scale;
@@ -992,7 +1033,7 @@ QString QgsMapLayer::loadDefaultStyle( bool & resultFlag )
   return loadNamedStyle( styleURI(), resultFlag );
 }
 
-bool QgsMapLayer::loadNamedStyleFromDb( const QString &db, const QString &uri, QString &qml )
+bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &uri, QString &qml )
 {
   QgsDebugMsg( QString( "db = %1 uri = %2" ).arg( db, uri ) );
 
@@ -1064,9 +1105,9 @@ QString QgsMapLayer::loadNamedStyle( const QString &uri, bool &resultFlag )
     QgsDebugMsg( QString( "project fileName: %1" ).arg( project.absoluteFilePath() ) );
 
     QString qml;
-    if ( loadNamedStyleFromDb( QDir( QgsApplication::qgisSettingsDirPath() ).absoluteFilePath( QStringLiteral( "qgis.qmldb" ) ), uri, qml ) ||
-         ( project.exists() && loadNamedStyleFromDb( project.absoluteDir().absoluteFilePath( project.baseName() + ".qmldb" ), uri, qml ) ) ||
-         loadNamedStyleFromDb( QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( QStringLiteral( "resources/qgis.qmldb" ) ), uri, qml ) )
+    if ( loadNamedStyleFromDatabase( QDir( QgsApplication::qgisSettingsDirPath() ).absoluteFilePath( QStringLiteral( "qgis.qmldb" ) ), uri, qml ) ||
+         ( project.exists() && loadNamedStyleFromDatabase( project.absoluteDir().absoluteFilePath( project.baseName() + ".qmldb" ), uri, qml ) ) ||
+         loadNamedStyleFromDatabase( QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( QStringLiteral( "resources/qgis.qmldb" ) ), uri, qml ) )
     {
       resultFlag = myDocument.setContent( qml, &myErrorMessage, &line, &column );
       if ( !resultFlag )
@@ -1591,9 +1632,9 @@ QgsMapLayerStyleManager* QgsMapLayer::styleManager() const
   return mStyleManager;
 }
 
-void QgsMapLayer::triggerRepaint()
+void QgsMapLayer::triggerRepaint( bool deferredUpdate )
 {
-  emit repaintRequested();
+  emit repaintRequested( deferredUpdate );
 }
 
 QString QgsMapLayer::metadata() const

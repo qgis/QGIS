@@ -135,7 +135,7 @@ void QgsStatisticalSummary::finalize()
        || mStatistics & QgsStatisticalSummary::ThirdQuartile
        || mStatistics & QgsStatisticalSummary::InterQuartileRange )
   {
-    qSort( mValues.begin(), mValues.end() );
+    std::sort( mValues.begin(), mValues.end() );
     bool even = ( mCount % 2 ) < 1;
     if ( even )
     {
@@ -212,7 +212,7 @@ void QgsStatisticalSummary::finalize()
   if ( mStatistics & QgsStatisticalSummary::Minority || mStatistics & QgsStatisticalSummary::Majority )
   {
     QList<int> valueCounts = mValueCount.values();
-    qSort( valueCounts.begin(), valueCounts.end() );
+    std::sort( valueCounts.begin(), valueCounts.end() );
     if ( mStatistics & QgsStatisticalSummary::Minority )
     {
       mMinority = mValueCount.key( valueCounts.first() );

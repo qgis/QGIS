@@ -550,7 +550,7 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
   exp->setDistanceUnits( QgsProject::instance()->distanceUnits() );
   exp->setAreaUnits( QgsProject::instance()->areaUnits() );
 
-  exp->prepare( mExpressionContext.data() );
+  exp->prepare( mExpressionContext.get() );
   mExpressionFieldInfo.insert( fieldIdx, exp );
 
   Q_FOREACH ( const QString& col, exp->referencedColumns() )
@@ -745,7 +745,7 @@ void QgsVectorLayerFeatureIterator::addExpressionAttribute( QgsFeature& f, int a
   if ( exp )
   {
     mExpressionContext->setFeature( f );
-    QVariant val = exp->evaluate( mExpressionContext.data() );
+    QVariant val = exp->evaluate( mExpressionContext.get() );
     mSource->mFields.at( attrIndex ).convertCompatible( val );
     f.setAttribute( attrIndex, val );
   }

@@ -733,6 +733,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     virtual QString getStyleFromDatabase( const QString& styleId, QString &msgError );
 
     /**
+     * Delete a style from the database
+     * @note added in QGIS 3.0
+     * @param styleId the provider's layer_styles table id of the style to delete
+     * @param msgError reference to string that will be updated with any error messages
+     * @return true in case of success
+     */
+    virtual bool deleteStyleFromDatabase( const QString& styleId, QString &msgError );
+
+    /**
      * Load a named style from file/local db/datasource db
      * @param theURI the URI of the style or the URI of the layer
      * @param theResultFlag will be set to true if a named style is correctly loaded
@@ -891,6 +900,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *  Not meaningful for Point geometries
      */
     bool insertVertex( double x, double y, QgsFeatureId atFeatureId, int beforeVertex );
+
+    /** Insert a new vertex before the given vertex number,
+     *  in the given ring, item (first number is index 0), and feature
+     *  Not meaningful for Point geometries
+     */
+    bool insertVertex( const QgsPointV2& point, QgsFeatureId atFeatureId, int beforeVertex );
 
     /** Moves the vertex at the given position number,
      *  ring and item (first number is index 0), and feature

@@ -425,7 +425,7 @@ class QgsMapLayer : QObject
      * @param qml will be set to QML style content from database
      * @returns true if style was successfully loaded
      */
-    virtual bool loadNamedStyleFromDb( const QString &db, const QString &uri, QString &qml /Out/ );
+    virtual bool loadNamedStyleFromDatabase( const QString &db, const QString &uri, QString &qml /Out/ );
 
     /**
      * Import the properties of this layer from a QDomDocument
@@ -603,6 +603,11 @@ class QgsMapLayer : QObject
      */
     bool hasScaleBasedVisibility() const;
 
+    bool hasAutoRefreshEnabled() const;
+    int autoRefreshInterval() const;
+    void setAutoRefreshInterval( int interval );
+    void setAutoRefreshEnabled( bool enabled );
+
   public slots:
 
     /** Event handler for when a coordinate transform fails due to bad vertex error */
@@ -634,13 +639,7 @@ class QgsMapLayer : QObject
      */
     void setScaleBasedVisibility( const bool enabled );
 
-    /**
-     * Will advice the map canvas (and any other interested party) that this layer requires to be repainted.
-     * Will emit a repaintRequested() signal.
-     *
-     * @note in 2.6 function moved from vector/raster subclasses to QgsMapLayer
-     */
-    void triggerRepaint();
+    void triggerRepaint( bool deferredUpdate = false );
 
     /** \brief Obtain Metadata for this layer */
     virtual QString metadata() const;
@@ -687,10 +686,7 @@ class QgsMapLayer : QObject
     /** Emit a signal that layer's CRS has been reset */
     void crsChanged();
 
-    /** By emitting this signal the layer tells that either appearance or content have been changed
-     * and any view showing the rendered layer should refresh itself.
-     */
-    void repaintRequested();
+    void repaintRequested( bool deferredUpdate = false );
 
     /** This is used to send a request that any mapcanvas using this layer update its extents */
     void recalculateExtents() const;
@@ -738,6 +734,8 @@ class QgsMapLayer : QObject
      * @note added in QGIS 3.0
      */
     void willBeDeleted();
+
+    void autoRefreshIntervalChanged( int interval );
 
   protected:
     /** Set the extent */

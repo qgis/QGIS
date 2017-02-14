@@ -76,6 +76,7 @@ void TestQgsMapCanvas::initTestCase()
 
 void TestQgsMapCanvas::cleanupTestCase()
 {
+  QgsApplication::exitQgis();
 }
 
 

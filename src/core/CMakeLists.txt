@@ -112,7 +112,6 @@ SET(QGIS_CORE_SRCS
   qgscredentials.cpp
   qgscrscache.cpp
   qgsdartmeasurement.cpp
-  qgsdatadefined.cpp
   qgsdataitem.cpp
   qgsdataitemprovider.cpp
   qgsdataitemproviderregistry.cpp
@@ -213,7 +212,6 @@ SET(QGIS_CORE_SRCS
   qgsrunprocess.cpp
   qgsruntimeprofiler.cpp
   qgsscalecalculator.cpp
-  qgsscaleexpression.cpp
   qgsscaleutils.cpp
   qgssimplifymethod.cpp
   qgsslconnect.cpp
@@ -237,6 +235,7 @@ SET(QGIS_CORE_SRCS
   qgsunittypes.cpp
   qgsvectordataprovider.cpp
   qgsvectorfilewriter.cpp
+  qgsvectorfilewritertask.cpp
   qgsvectorlayer.cpp
   qgsvectorlayercache.cpp
   qgsvectorlayerdiagramprovider.cpp
@@ -528,6 +527,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgstransactiongroup.h
   qgsunittypes.h
   qgsvectordataprovider.h
+  qgsvectorfilewritertask.h
   qgsvectorlayercache.h
   qgsvectorlayereditbuffer.h
   qgsvectorlayereditpassthrough.h
@@ -669,7 +669,6 @@ SET(QGIS_CORE_HDRS
   qgscrscache.h
   qgscsexception.h
   qgsdartmeasurement.h
-  qgsdatadefined.h
   qgsdataitem.h
   qgsdataitemprovider.h
   qgsdataitemproviderregistry.h
@@ -682,6 +681,7 @@ SET(QGIS_CORE_HDRS
   qgseditformconfig.h
   qgseditorwidgetsetup.h
   qgsfeaturefilterprovider.h
+  qgsfield_p.h
   qgserror.h
   qgsexception.h
   qgsexpression.h
@@ -733,6 +733,7 @@ SET(QGIS_CORE_HDRS
   qgsprojectproperty.h
   qgsprojectversion.h
   qgsproperty.h
+  qgsproperty_p.h
   qgspropertycollection.h
   qgspropertytransformer.h
   qgsprovidermetadata.h
@@ -744,7 +745,6 @@ SET(QGIS_CORE_HDRS
   qgsrendercontext.h
   qgsruntimeprofiler.h
   qgsscalecalculator.h
-  qgsscaleexpression.h
   qgsscaleutils.h
   qgssimplifymethod.h
   qgssnapper.h

@@ -66,11 +66,11 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
 
     /** Set subset of fields to be used from joined layer. Takes ownership of the passed pointer. Null pointer tells to use all fields.
       @note added in 2.6 */
-    void setJoinFieldNamesSubset( QStringList* fieldNamesSubset ) { mJoinFieldsSubset = QSharedPointer<QStringList>( fieldNamesSubset ); }
+    void setJoinFieldNamesSubset( QStringList* fieldNamesSubset ) { mJoinFieldsSubset = std::shared_ptr<QStringList>( fieldNamesSubset ); }
 
     /** Get subset of fields to be used from joined layer. All fields will be used if null is returned.
       @note added in 2.6 */
-    QStringList* joinFieldNamesSubset() const { return mJoinFieldsSubset.data(); }
+    QStringList* joinFieldNamesSubset() const { return mJoinFieldsSubset.get(); }
 
   protected:
     //! Join field in the target layer
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     bool mMemoryCache;
 
     //! Subset of fields to use from joined layer. null = use all fields
-    QSharedPointer<QStringList> mJoinFieldsSubset;
+    std::shared_ptr<QStringList> mJoinFieldsSubset;
 
     // caching support
 

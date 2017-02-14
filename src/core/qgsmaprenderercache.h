@@ -85,6 +85,12 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
     QImage cacheImage( const QString& cacheKey ) const;
 
     /**
+     * Returns a list of map layers on which an image in the cache depends.
+     * @note added in QGIS 3.0
+     */
+    QList< QgsMapLayer* > dependentLayers( const QString& cacheKey ) const;
+
+    /**
      * Removes an image from the cache with matching \a cacheKey.
      * @see clear()
      */
@@ -99,7 +105,7 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
     struct CacheParameters
     {
       QImage cachedImage;
-      QList< QPointer< QgsMapLayer > > dependentLayers;
+      QgsWeakMapLayerPointerList dependentLayers;
     };
 
     //! Invalidate cache contents (without locking)
@@ -108,7 +114,7 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
     //! Disconnects from layers we no longer care about
     void dropUnusedConnections();
 
-    QSet< QPointer< QgsMapLayer > > dependentLayers() const;
+    QSet< QgsWeakMapLayerPointer > dependentLayers() const;
 
     mutable QMutex mMutex;
     QgsRectangle mExtent;
@@ -117,7 +123,7 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
     //! Map of cache key to cache parameters
     QMap<QString, CacheParameters> mCachedImages;
     //! List of all layers on which this cache is currently connected
-    QSet< QPointer< QgsMapLayer > > mConnectedLayers;
+    QSet< QgsWeakMapLayerPointer > mConnectedLayers;
 };
 
 

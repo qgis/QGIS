@@ -81,7 +81,7 @@ void QgsColorSchemeList::removeSelection()
   QList<int> rowsToRemove =  QList<int>::fromSet( rows.toSet() );
 
   //remove rows in descending order
-  qSort( rowsToRemove.begin(), rowsToRemove.end(), qGreater<int>() );
+  std::sort( rowsToRemove.begin(), rowsToRemove.end(), std::greater<int>() );
   Q_FOREACH ( int row, rowsToRemove )
   {
     mModel->removeRow( row );
@@ -204,7 +204,7 @@ void QgsColorSchemeList::keyPressEvent( QKeyEvent *event )
     QList<int> rowsToRemove =  QList<int>::fromSet( rows.toSet() );
 
     //remove rows in descending order
-    qSort( rowsToRemove.begin(), rowsToRemove.end(), qGreater<int>() );
+    std::sort( rowsToRemove.begin(), rowsToRemove.end(), std::greater<int>() );
     Q_FOREACH ( int row, rowsToRemove )
     {
       mModel->removeRow( row );

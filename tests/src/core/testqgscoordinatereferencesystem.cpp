@@ -73,6 +73,8 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void setValidationHint();
     void hasAxisInverted();
     void createFromProj4Invalid();
+    void validSrsIds();
+
   private:
     void debugPrint( QgsCoordinateReferenceSystem &theCrs );
     // these used by createFromESRIWkt()
@@ -722,6 +724,20 @@ void TestQgsCoordinateReferenceSystem::createFromProj4Invalid()
 {
   QgsCoordinateReferenceSystem myCrs;
   QVERIFY( !myCrs.createFromProj4( "+proj=longlat +no_defs" ) );
+}
+
+void TestQgsCoordinateReferenceSystem::validSrsIds()
+{
+  QList< long > ids = QgsCoordinateReferenceSystem::validSrsIds();
+  QVERIFY( ids.contains( 3857 ) );
+  QVERIFY( ids.contains( 28356 ) );
+
+  // check that all returns ids are valid
+  Q_FOREACH ( long id, ids )
+  {
+    QgsCoordinateReferenceSystem c = QgsCoordinateReferenceSystem::fromSrsId( id );
+    QVERIFY( c.isValid() );
+  }
 }
 
 QGSTEST_MAIN( TestQgsCoordinateReferenceSystem )

@@ -60,7 +60,7 @@ class CORE_EXPORT QgsPointClusterRenderer: public QgsPointDistanceRenderer
   private:
 
     //! Symbol for point clusters
-    QScopedPointer< QgsMarkerSymbol > mClusterSymbol;
+    std::unique_ptr< QgsMarkerSymbol > mClusterSymbol;
 
     void drawGroup( QPointF centerPoint, QgsRenderContext& context, const QgsPointDistanceRenderer::ClusteredGroup& group ) override;
 

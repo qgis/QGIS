@@ -19,7 +19,9 @@ from qgis.core import (QgsMapRendererCache,
                        QgsVectorLayer,
                        QgsProject)
 from qgis.testing import start_app, unittest
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QImage
+from time import sleep
 start_app()
 
 
@@ -116,6 +118,13 @@ class TestQgsMapRendererCache(unittest.TestCase):
         self.assertFalse(cache.hasCacheImage('xxx'))
         QgsProject.instance().removeMapLayer(layer.id())
 
+        # test that cache is also cleared on deferred update
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer", "memory")
+        cache.setCacheImage('xxx', im, [layer])
+        layer.triggerRepaint(True)
+        self.assertFalse(cache.hasCacheImage('xxx'))
+
     def testRequestRepaintMultiple(self):
         """ test requesting repaint with multiple dependent layers """
         layer1 = QgsVectorLayer("Point?field=fldtxt:string",
@@ -192,6 +201,70 @@ class TestQgsMapRendererCache(unittest.TestCase):
             self.assertFalse(cache.cacheImage('nolayer').isNull())
             self.assertEqual(cache.cacheImage('nolayer'), im1)
 
+    def testDependentLayers(self):
+        # bad layer tests
+        cache = QgsMapRendererCache()
+        self.assertEqual(cache.dependentLayers('not a layer'), [])
+
+        layer1 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer1", "memory")
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer2", "memory")
+
+        im = QImage(200, 200, QImage.Format_RGB32)
+        cache.setCacheImage('no depends', im, [])
+        self.assertEqual(cache.dependentLayers('no depends'), [])
+        cache.setCacheImage('depends', im, [layer1, layer2])
+        self.assertEqual(set(cache.dependentLayers('depends')), set([layer1, layer2]))
+
+    def testLayerRemoval(self):
+        """test that cached image is cleared when a dependent layer is removed"""
+        cache = QgsMapRendererCache()
+        layer1 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer1", "memory")
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer2", "memory")
+        im = QImage(200, 200, QImage.Format_RGB32)
+        cache.setCacheImage('depends', im, [layer1, layer2])
+        cache.setCacheImage('depends2', im, [layer1])
+        cache.setCacheImage('depends3', im, [layer2])
+        cache.setCacheImage('no depends', im, [])
+        self.assertTrue(cache.hasCacheImage('depends'))
+        self.assertTrue(cache.hasCacheImage('depends2'))
+        self.assertTrue(cache.hasCacheImage('depends3'))
+        self.assertTrue(cache.hasCacheImage('no depends'))
+
+        # try deleting a layer
+        layer2 = None
+        self.assertFalse(cache.hasCacheImage('depends'))
+        self.assertTrue(cache.hasCacheImage('depends2'))
+        self.assertFalse(cache.hasCacheImage('depends3'))
+        self.assertTrue(cache.hasCacheImage('no depends'))
+
+        layer1 = None
+        self.assertFalse(cache.hasCacheImage('depends'))
+        self.assertFalse(cache.hasCacheImage('depends2'))
+        self.assertFalse(cache.hasCacheImage('depends3'))
+        self.assertTrue(cache.hasCacheImage('no depends'))
+
+    def testClearOnLayerAutoRefresh(self):
+        """ test that cache is cleared when layer auto refresh is triggered """
+        cache = QgsMapRendererCache()
+        layer1 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer1", "memory")
+        im = QImage(200, 200, QImage.Format_RGB32)
+        cache.setCacheImage('l1', im, [layer1])
+        self.assertTrue(cache.hasCacheImage('l1'))
+
+        layer1.setAutoRefreshInterval(100)
+        layer1.setAutoRefreshEnabled(True)
+        self.assertTrue(cache.hasCacheImage('l1'))
+
+        # wait a second...
+        sleep(1)
+        QCoreApplication.processEvents()
+        # cache should be cleared
+        self.assertFalse(cache.hasCacheImage('l1'))
 
 if __name__ == '__main__':
     unittest.main()

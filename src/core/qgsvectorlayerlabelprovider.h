@@ -44,15 +44,6 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
                                           const QgsPalLayerSettings* settings = nullptr,
                                           const QString& layerName = QString() );
 
-    //! Construct diagram provider with all the necessary configuration parameters
-    QgsVectorLayerLabelProvider( const QgsPalLayerSettings& settings,
-                                 const QString& layerId,
-                                 const QgsFields& fields,
-                                 const QgsCoordinateReferenceSystem& crs,
-                                 QgsAbstractFeatureSource* source,
-                                 bool ownsSource,
-                                 QgsFeatureRenderer* renderer = nullptr );
-
     ~QgsVectorLayerLabelProvider();
 
     virtual QList<QgsLabelFeature*> labelFeatures( QgsRenderContext& context ) override;

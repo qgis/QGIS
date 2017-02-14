@@ -165,7 +165,7 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString * password, 
       {
         if ( stored && chkbxEraseAuthDb->isChecked() )
         {
-          QgsAuthManager::instance()->setScheduledAuthDbErase( true );
+          QgsAuthManager::instance()->setScheduledAuthDatabaseErase( true );
         }
         else
         {

@@ -21,7 +21,6 @@
 #include <QMap>
 #include <QPointer>
 #include <QToolButton>
-#include <QScopedPointer>
 #include "qgsproperty.h"
 #include "qgspropertycollection.h"
 #include "qgsexpressioncontext.h"
@@ -105,7 +104,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     /**
      * Returns true if the button has an active property.
      */
-    bool isActive() const { return mActive; }
+    bool isActive() const { return mProperty.isActive(); }
 
     /**
      * Returns the data type which the widget will accept. This is used to filter
@@ -157,6 +156,13 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
      */
     void registerExpressionContextGenerator( QgsExpressionContextGenerator* generator );
 
+    /**
+     * Sets a symbol which can be used for previews inside the widget or in any dialog created
+     * by the widget. If not specified, a default created symbol will be used instead.
+     * @note not available in Python bindings
+     */
+    void setSymbol( std::shared_ptr< QgsSymbol > symbol ) { mSymbol = symbol; }
+
   public slots:
 
     /**
@@ -181,6 +187,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
 
     void showDescriptionDialog();
     void showExpressionDialog();
+    void showAssistant();
     void updateGui();
 
     /**
@@ -197,8 +204,6 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     QStringList mFieldNameList;
     QStringList mFieldTypeList;
 
-    bool mActive;
-    bool mUseExpression;
     QString mExpressionString;
     QString mFieldName;
 
@@ -217,6 +222,8 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     QAction* mActionClearExpr;
     QAction* mActionAssistant;
 
+    QgsPropertyDefinition mDefinition;
+
     QgsPropertyDefinition::DataType mDataTypes = QgsPropertyDefinition::DataTypeString;
     QString mDataTypesString;
     QString mInputDescription;
@@ -226,6 +233,11 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     QgsExpressionContextGenerator* mExpressionContextGenerator;
 
     QList< QPointer<QWidget> > mCheckedWidgets;
+
+    //! Internal property used for storing state of widget
+    QgsProperty mProperty;
+
+    std::shared_ptr< QgsSymbol > mSymbol;
 
   private slots:
     void aboutToShowMenu();

@@ -41,6 +41,7 @@ class CORE_EXPORT QgsMapRendererSequentialJob : public QgsMapRendererQImageJob
     virtual void waitForFinished() override;
     virtual bool isActive() const override;
 
+    virtual bool usedCachedLabels() const override;
     virtual QgsLabelingResults* takeLabelingResults() override;
 
     // from QgsMapRendererJobWithPreview
@@ -55,7 +56,8 @@ class CORE_EXPORT QgsMapRendererSequentialJob : public QgsMapRendererQImageJob
     QgsMapRendererCustomPainterJob* mInternalJob;
     QImage mImage;
     QPainter* mPainter;
-    QgsLabelingResults* mLabelingResults;
+    std::unique_ptr< QgsLabelingResults > mLabelingResults;
+    bool mUsedCachedLabels = false;
 
 };
 

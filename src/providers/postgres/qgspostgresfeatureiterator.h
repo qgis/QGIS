@@ -18,7 +18,6 @@
 #include "qgsfeatureiterator.h"
 
 #include <QQueue>
-#include <QSharedPointer>
 
 #include "qgspostgresprovider.h"
 
@@ -53,7 +52,7 @@ class QgsPostgresFeatureSource : public QgsAbstractFeatureSource
     QString mQuery;
     // TODO: loadFields()
 
-    QSharedPointer<QgsPostgresSharedData> mShared;
+    std::shared_ptr<QgsPostgresSharedData> mShared;
 
     /* The transaction connection (if any) gets refed/unrefed when creating/
      * destroying the QgsPostgresFeatureSource, to ensure that the transaction

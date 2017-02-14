@@ -21,7 +21,6 @@
 #include "qgssymbol.h"
 #include "qgsexpression.h"
 #include "qgsgeometry.h"
-#include <QScopedPointer>
 
 class QgsColorRamp;
 
@@ -177,7 +176,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
 
     QString mWeightExpressionString;
     int mWeightAttrNum;
-    QScopedPointer<QgsExpression> mWeightExpression;
+    std::unique_ptr<QgsExpression> mWeightExpression;
 
     QgsColorRamp* mGradientRamp;
 

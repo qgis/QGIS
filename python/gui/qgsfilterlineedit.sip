@@ -68,6 +68,19 @@ class QgsFilterLineEdit : QLineEdit
      */
     QString nullValue() const;
 
+    /** Define if a search icon shall be shown on the left of the image
+     * when no text is entered
+     * @param visible set to false to hide the search icon
+     * @note added in QGIS 3.0
+     */
+    void setShowSearchIcon( bool visible );
+
+    /** Returns if a search icon shall be shown on the left of the image
+     * when no text is entered
+     * @note added in QGIS 3.0
+     */
+    bool showSearchIcon() const;
+
     /** Sets the default value for the widget. The default value is a value
      * which the widget will be reset to if it is cleared and the clearMode()
      * is equal to ClearToDefault.

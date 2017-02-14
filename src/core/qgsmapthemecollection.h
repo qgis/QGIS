@@ -84,7 +84,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         QSet<QString> checkedLegendItems;
       private:
         //! Weak pointer to the layer
-        QPointer<QgsMapLayer> mLayer;
+        QgsWeakMapLayerPointer mLayer;
     };
 
     /**

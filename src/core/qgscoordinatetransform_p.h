@@ -235,7 +235,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
       QString transformString;
 
       sqlite3* db;
-      int openResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().constData(), &db, SQLITE_OPEN_READONLY, 0 );
+      int openResult = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().constData(), &db, SQLITE_OPEN_READONLY, 0 );
       if ( openResult != SQLITE_OK )
       {
         sqlite3_close( db );

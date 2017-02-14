@@ -25,7 +25,6 @@
 #include "qgsproperty.h"
 
 #include <QStandardItemModel>
-#include <QScopedPointer>
 #include <QDialogButtonBox>
 #include "qgis_gui.h"
 
@@ -236,7 +235,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     QWidget *mPresentWidget;
 
   private:
-    QScopedPointer<DataDefinedRestorer> mDataDefineRestorer;
+    std::unique_ptr<DataDefinedRestorer> mDataDefineRestorer;
     QgsSymbolWidgetContext mContext;
 };
 

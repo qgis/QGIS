@@ -18,6 +18,8 @@ class QgsMapRendererCache : QObject
 
     QImage cacheImage( const QString& cacheKey ) const;
 
+    QList< QgsMapLayer* > dependentLayers( const QString& cacheKey ) const;
+
     void clearCacheImage( const QString& cacheKey );
 
 };

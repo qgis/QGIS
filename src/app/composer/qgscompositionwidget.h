@@ -19,7 +19,6 @@
 
 class QgsComposition;
 class QgsComposerMap;
-class QgsDataDefinedButton;
 
 /** \ingroup app
  * Struct to hold map composer paper properties.

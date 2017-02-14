@@ -45,7 +45,7 @@ QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
   Q_FOREACH ( const QString& key, QStringList() << "wms" << "WFS" << "wcs" )
   {
     QgsDebugMsg( "Add connection for provider " + key );
-    QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( key );
+    std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->providerLibrary( key ) );
     if ( !library )
     {
       QgsDebugMsg( "Cannot get provider " + key );

@@ -348,19 +348,19 @@ QgsAdvancedDigitizingDockWidget::CadConstraint* QgsAdvancedDigitizingDockWidget:
   CadConstraint* constraint = nullptr;
   if ( obj == mAngleLineEdit || obj == mLockAngleButton )
   {
-    constraint = mAngleConstraint.data();
+    constraint = mAngleConstraint.get();
   }
   else if ( obj == mDistanceLineEdit || obj == mLockDistanceButton )
   {
-    constraint = mDistanceConstraint.data();
+    constraint = mDistanceConstraint.get();
   }
   else if ( obj == mXLineEdit  || obj == mLockXButton )
   {
-    constraint = mXConstraint.data();
+    constraint = mXConstraint.get();
   }
   else if ( obj == mYLineEdit  || obj == mLockYButton )
   {
-    constraint = mYConstraint.data();
+    constraint = mYConstraint.get();
   }
   return constraint;
 }
@@ -440,7 +440,7 @@ void QgsAdvancedDigitizingDockWidget::lockConstraint( bool activate /* default t
   if ( activate )
   {
     // deactivate perpendicular/parallel if angle has been activated
-    if ( constraint == mAngleConstraint.data() )
+    if ( constraint == mAngleConstraint.get() )
     {
       lockAdditionalConstraint( NoConstraint );
     }

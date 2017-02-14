@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include <QColor>
+#include <memory>
 
 #include "qgsabstractgeometry.h"
 #include "qgscoordinatetransform.h"
@@ -335,7 +336,7 @@ class CORE_EXPORT QgsRenderContext
     const QgsAbstractGeometry* mGeometry = nullptr;
 
     //! The feature filter provider
-    QScopedPointer< QgsFeatureFilterProvider > mFeatureFilterProvider;
+    std::unique_ptr< QgsFeatureFilterProvider > mFeatureFilterProvider;
 
     double mSegmentationTolerance = M_PI_2 / 90;
 

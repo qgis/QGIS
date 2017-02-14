@@ -39,6 +39,7 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
     virtual void waitForFinished() override;
     virtual bool isActive() const override;
 
+    virtual bool usedCachedLabels() const override;
     virtual QgsLabelingResults* takeLabelingResults() override;
 
     // from QgsMapRendererJobWithPreview
@@ -52,7 +53,9 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
 
   private:
 
+    //! @note not available in Python bindings
     static void renderLayerStatic( LayerRenderJob& job );
+    //! @note not available in Python bindings
     static void renderLabelsStatic( QgsMapRendererParallelJob* self );
 
     QImage mFinalImage;
@@ -64,10 +67,10 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
     QFutureWatcher<void> mFutureWatcher;
 
     LayerRenderJobs mLayerJobs;
+    LabelRenderJob mLabelJob;
 
     //! New labeling engine
-    QgsLabelingEngine* mLabelingEngineV2;
-    QgsRenderContext mLabelingRenderContext;
+    std::unique_ptr< QgsLabelingEngine > mLabelingEngineV2;
     QFuture<void> mLabelingFuture;
     QFutureWatcher<void> mLabelingFutureWatcher;
 

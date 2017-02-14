@@ -96,6 +96,12 @@ class CORE_EXPORT QgsDiagramLayerSettings
     };
 
     /**
+     * Returns the diagram property definitions.
+     * @note added in QGIS 3.0
+     */
+    static const QgsPropertiesDefinition& propertyDefinitions();
+
+    /**
      * Constructor for QgsDiagramLayerSettings.
      */
     QgsDiagramLayerSettings() = default;
@@ -286,9 +292,6 @@ class CORE_EXPORT QgsDiagramLayerSettings
      */
     void setDataDefinedProperties( const QgsPropertyCollection& collection ) { mDataDefinedProperties = collection; }
 
-    //! Property definitions
-    static const QgsPropertiesDefinition PROPERTY_DEFINITIONS;
-
   private:
 
     //! Associated coordinate transform, or invalid transform for no transformation
@@ -322,6 +325,11 @@ class CORE_EXPORT QgsDiagramLayerSettings
 
     //! Property collection for data defined diagram settings
     QgsPropertyCollection mDataDefinedProperties;
+
+    static void initPropertyDefinitions();
+
+    //! Property definitions
+    static QgsPropertiesDefinition sPropertyDefinitions;
 
 };
 
@@ -542,7 +550,7 @@ class CORE_EXPORT QgsDiagramRenderer
      * @see setSizeLegendSymbol()
      * @see sizeLegend()
      */
-    QgsMarkerSymbol* sizeLegendSymbol() const { return mSizeLegendSymbol.data(); }
+    QgsMarkerSymbol* sizeLegendSymbol() const { return mSizeLegendSymbol.get(); }
 
     /** Sets the marker symbol used for rendering the diagram size legend.
      * @param symbol marker symbol, ownership is transferred to the renderer.
@@ -596,7 +604,7 @@ class CORE_EXPORT QgsDiagramRenderer
     bool mShowSizeLegend;
 
     //! Marker symbol to use in size legends
-    QScopedPointer< QgsMarkerSymbol > mSizeLegendSymbol;
+    std::unique_ptr< QgsMarkerSymbol > mSizeLegendSymbol;
 };
 
 /** \ingroup core

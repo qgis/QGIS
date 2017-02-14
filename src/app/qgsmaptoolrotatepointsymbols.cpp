@@ -83,7 +83,7 @@ void QgsMapToolRotatePointSymbols::canvasPressOnFeature( QgsMapMouseEvent *e, co
   }
 
   mCurrentRotationFeature = attrVal.toDouble();
-  createPixmapItem( mMarkerSymbol.data() );
+  createPixmapItem( mMarkerSymbol.get() );
   if ( mRotationItem )
   {
     mRotationItem->setPointLocation( snappedPoint );
@@ -101,7 +101,7 @@ bool QgsMapToolRotatePointSymbols::checkSymbolCompatibility( QgsMarkerSymbol* ma
   {
     mCurrentRotationAttributes << mActiveLayer->fields().indexFromName( ddAngle.field() );
     ok = true;
-    if ( mMarkerSymbol.isNull() )
+    if ( !mMarkerSymbol )
     {
       mMarkerSymbol.reset( markerSymbol->clone() );
     }

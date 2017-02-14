@@ -405,7 +405,7 @@ double QgsComposerHtml::findNearbyPageBreak( double yPos )
   }
 
   //sort candidate rows by number of changes ascending, row number descending
-  qSort( candidates.begin(), candidates.end(), candidateSort );
+  std::sort( candidates.begin(), candidates.end(), candidateSort );
   //first candidate is now the largest row with smallest number of changes
 
   //ok, now take the mid point of the best candidate position

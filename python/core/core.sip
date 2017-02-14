@@ -33,7 +33,6 @@
 %Include qgscoordinatetransform.sip
 %Include qgscredentials.sip
 %Include qgscrscache.sip
-%Include qgsdatadefined.sip
 %Include qgsdataitem.sip
 %Include qgsdataitemprovider.sip
 %Include qgsdataitemproviderregistry.sip
@@ -131,7 +130,6 @@
 %Include qgsrunprocess.sip
 %Include qgsruntimeprofiler.sip
 %Include qgsscalecalculator.sip
-%Include qgsscaleexpression.sip
 %Include qgsscaleutils.sip
 %Include qgssimplifymethod.sip
 %Include qgssnapper.sip
@@ -149,6 +147,7 @@
 %Include qgsunittypes.sip
 %Include qgsvectordataprovider.sip
 %Include qgsvectorfilewriter.sip
+%Include qgsvectorfilewritertask.sip
 %Include qgsvectorlayer.sip
 %Include qgsvectorlayercache.sip
 %Include qgsvectorlayereditbuffer.sip
@@ -356,6 +355,7 @@
 %Include geometry/qgsgeometry.sip
 %Include geometry/qgsgeometrycollection.sip
 %Include geometry/qgsgeometryengine.sip
+%Include geometry/qgsgeometryutils.sip
 %Include geometry/qgslinestring.sip
 %Include geometry/qgsmulticurve.sip
 %Include geometry/qgsmultilinestring.sip

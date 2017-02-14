@@ -104,7 +104,7 @@ QgsEditorWidgetSetup QgsEditorWidgetAutoConf::editorWidgetSetup( const QgsVector
     }
 
     int bestScore = 0;
-    Q_FOREACH ( QSharedPointer<QgsEditorWidgetAutoConfPlugin> cur, plugins )
+    Q_FOREACH ( std::shared_ptr<QgsEditorWidgetAutoConfPlugin> cur, plugins )
     {
       int score = 0;
       const QgsEditorWidgetSetup curResult = cur->editorWidgetSetup( vl, fieldName, score );
@@ -121,6 +121,6 @@ QgsEditorWidgetSetup QgsEditorWidgetAutoConf::editorWidgetSetup( const QgsVector
 
 void QgsEditorWidgetAutoConf::registerPlugin( QgsEditorWidgetAutoConfPlugin* plugin )
 {
-  plugins.append( QSharedPointer<QgsEditorWidgetAutoConfPlugin>( plugin ) );
+  plugins.append( std::shared_ptr<QgsEditorWidgetAutoConfPlugin>( plugin ) );
 }
 ///@endcond

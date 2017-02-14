@@ -63,7 +63,7 @@ namespace QgsWms
                                  QString( "Output format %1 is not supported by the GetPrint request" ).arg( format ) );
     }
 
-    QScopedPointer<QByteArray> result( renderer.getPrint( format ) );
+    std::unique_ptr<QByteArray> result( renderer.getPrint( format ) );
     response.setHeader( QStringLiteral( "Content-Type" ), contentType );
     response.write( *result );
   }

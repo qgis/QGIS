@@ -55,7 +55,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle* style, QWidget
            this, SLOT( selectionChanged( const QItemSelection&, const QItemSelection& ) ) );
 
   mTempStyle = new QgsStyle();
-  mTempStyle->createMemoryDb();
+  mTempStyle->createMemoryDatabase();
 
   // TODO validate
   mFileName = QLatin1String( "" );
@@ -215,10 +215,10 @@ bool QgsStyleExportImportDialog::populateStyles( QgsStyle* style )
   for ( int i = 0; i < styleNames.count(); ++i )
   {
     name = styleNames[i];
-    QScopedPointer< QgsColorRamp > ramp( style->colorRamp( name ) );
+    std::unique_ptr< QgsColorRamp > ramp( style->colorRamp( name ) );
 
     QStandardItem* item = new QStandardItem( name );
-    QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.data(), listItems->iconSize(), 15 );
+    QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.get(), listItems->iconSize(), 15 );
     item->setIcon( icon );
     model->appendRow( item );
   }

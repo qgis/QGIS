@@ -111,7 +111,7 @@ namespace QgsWfs
 
     //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
     //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
-    QScopedPointer< QgsOWSServerFilterRestorer > filterRestorer( new QgsOWSServerFilterRestorer( accessControl ) );
+    std::unique_ptr< QgsOWSServerFilterRestorer > filterRestorer( new QgsOWSServerFilterRestorer( accessControl ) );
 
     if ( doc.setContent( parameters.value( QStringLiteral( "REQUEST_BODY" ) ), true, &errorMsg ) )
     {
@@ -335,7 +335,7 @@ namespace QgsWfs
             }
             else
             {
-              QSharedPointer<QgsExpression> filter( QgsOgcUtils::expressionFromOgcFilter( filterElem ) );
+              std::shared_ptr<QgsExpression> filter( QgsOgcUtils::expressionFromOgcFilter( filterElem ) );
               if ( filter )
               {
                 if ( filter->hasParserError() )
@@ -694,7 +694,7 @@ namespace QgsWfs
           }
           req.setSubsetOfAttributes( attrIndexes );
           QgsFeatureIterator fit = layer->getFeatures( req );
-          QSharedPointer<QgsExpression> filter( new QgsExpression( expFilter ) );
+          std::shared_ptr<QgsExpression> filter( new QgsExpression( expFilter ) );
           if ( filter )
           {
             if ( filter->hasParserError() )
@@ -802,7 +802,7 @@ namespace QgsWfs
           }
           else
           {
-            QSharedPointer<QgsExpression> filter( QgsOgcUtils::expressionFromOgcFilter( filterElem ) );
+            std::shared_ptr<QgsExpression> filter( QgsOgcUtils::expressionFromOgcFilter( filterElem ) );
             if ( filter )
             {
               if ( filter->hasParserError() )
@@ -914,7 +914,7 @@ namespace QgsWfs
     {
       QString fcString;
 
-      QScopedPointer< QgsRectangle > transformedRect;
+      std::unique_ptr< QgsRectangle > transformedRect;
 
       if ( format == QLatin1String( "GeoJSON" ) )
       {
@@ -931,7 +931,7 @@ namespace QgsWfs
             if ( exportGeom.transform( transform ) == 0 )
             {
               transformedRect.reset( new QgsRectangle( exportGeom.boundingBox() ) );
-              rect = transformedRect.data();
+              rect = transformedRect.get();
             }
           }
           catch ( QgsException &cse )
@@ -1088,7 +1088,10 @@ namespace QgsWfs
 
       QgsJSONExporter exporter;
       exporter.setSourceCrs( crs );
-      exporter.setPrecision( prec );
+      //QgsJSONExporter force transform geometry to ESPG:4326
+      //and the RFC 7946 GeoJSON specification recommends limiting coordinate precision to 6
+      Q_UNUSED( prec );
+      //exporter.setPrecision( prec );
 
       //copy feature so we can modify its geometry as required
       QgsFeature f( *feat );

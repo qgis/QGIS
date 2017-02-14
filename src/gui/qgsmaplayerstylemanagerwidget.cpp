@@ -188,7 +188,7 @@ void QgsMapLayerStyleManagerWidget::saveAsDefault()
 
   if ( QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( mLayer ) )
   {
-    if ( layer->dataProvider()->isSaveAndLoadStyleToDBSupported() )
+    if ( layer->dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
     {
       QMessageBox askToUser;
       askToUser.setText( tr( "Save default style to: " ) );
@@ -230,7 +230,7 @@ void QgsMapLayerStyleManagerWidget::loadDefault()
 
   if ( QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( mLayer ) )
   {
-    if ( layer->dataProvider()->isSaveAndLoadStyleToDBSupported() )
+    if ( layer->dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
     {
       QMessageBox askToUser;
       askToUser.setText( tr( "Load default style from: " ) );

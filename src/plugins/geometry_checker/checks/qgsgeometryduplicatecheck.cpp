@@ -61,7 +61,7 @@ void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError*>& er
     }
     if ( !duplicates.isEmpty() )
     {
-      qSort( duplicates );
+      std::sort( duplicates.begin(), duplicates.end() );
       errors.append( new QgsGeometryDuplicateCheckError( this, featureid, feature.geometry().geometry()->centroid(), duplicates ) );
     }
     delete geomEngine;

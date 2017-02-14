@@ -19,6 +19,7 @@
 #include "qgsapplication.h"
 #include "qgsfeatureiterator.h"
 #include "qgsvectorlayer.h"
+#include "qgsrasterlayer.h"
 #include "qgszonalstatistics.h"
 #include "qgsproject.h"
 
@@ -29,9 +30,6 @@ class TestQgsZonalStatistics : public QObject
 {
     Q_OBJECT
 
-  public:
-    TestQgsZonalStatistics();
-
   private slots:
     void initTestCase();
     void cleanupTestCase();
@@ -41,15 +39,9 @@ class TestQgsZonalStatistics : public QObject
     void testStatistics();
 
   private:
-    QgsVectorLayer* mVectorLayer;
-    QString mRasterPath;
+    QgsVectorLayer* mVectorLayer = nullptr;
+    QgsRasterLayer* mRasterLayer = nullptr;
 };
-
-TestQgsZonalStatistics::TestQgsZonalStatistics()
-    : mVectorLayer( nullptr )
-{
-
-}
 
 void TestQgsZonalStatistics::initTestCase()
 {
@@ -71,10 +63,9 @@ void TestQgsZonalStatistics::initTestCase()
   }
 
   mVectorLayer = new QgsVectorLayer( myTempPath + "polys.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
+  mRasterLayer = new QgsRasterLayer( myTempPath + "edge_problem.asc", QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
   QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mVectorLayer );
-
-  mRasterPath = myTempPath + "edge_problem.asc";
+    QList<QgsMapLayer *>() << mVectorLayer << mRasterLayer );
 }
 
 void TestQgsZonalStatistics::cleanupTestCase()
@@ -84,7 +75,7 @@ void TestQgsZonalStatistics::cleanupTestCase()
 
 void TestQgsZonalStatistics::testStatistics()
 {
-  QgsZonalStatistics zs( mVectorLayer, mRasterPath, QLatin1String( "" ), 1, QgsZonalStatistics::All );
+  QgsZonalStatistics zs( mVectorLayer, mRasterLayer, QLatin1String( "" ), 1, QgsZonalStatistics::All );
   zs.calculateStatistics( nullptr );
 
   QgsFeature f;
@@ -135,7 +126,7 @@ void TestQgsZonalStatistics::testStatistics()
   QCOMPARE( f.attribute( "variety" ).toDouble(), 2.0 );
 
   // same with long prefix to ensure that field name truncation handled correctly
-  QgsZonalStatistics zsl( mVectorLayer, mRasterPath, QStringLiteral( "myqgis2_" ), 1, QgsZonalStatistics::All );
+  QgsZonalStatistics zsl( mVectorLayer, mRasterLayer, QStringLiteral( "myqgis2_" ), 1, QgsZonalStatistics::All );
   zsl.calculateStatistics( nullptr );
 
   request.setFilterFid( 0 );

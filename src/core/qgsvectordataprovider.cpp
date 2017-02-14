@@ -670,7 +670,7 @@ QStringList QgsVectorDataProvider::availableEncodings()
   }
 
   // Do case-insensitive sorting of encodings
-  qSort( sEncodings.begin(), sEncodings.end(), _compareEncodings );
+  std::sort( sEncodings.begin(), sEncodings.end(), _compareEncodings );
 
   return sEncodings;
 }
@@ -690,7 +690,12 @@ QStringList QgsVectorDataProvider::errors() const
   return mErrors;
 }
 
-bool QgsVectorDataProvider::isSaveAndLoadStyleToDBSupported() const
+bool QgsVectorDataProvider::isSaveAndLoadStyleToDatabaseSupported() const
+{
+  return false;
+}
+
+bool QgsVectorDataProvider::isDeleteStyleFromDatabaseSupported() const
 {
   return false;
 }

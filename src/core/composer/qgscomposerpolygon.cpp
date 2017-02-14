@@ -106,7 +106,7 @@ void QgsComposerPolygon::setPolygonStyleSymbol( QgsFillSymbol* symbol )
 void QgsComposerPolygon::_writeXmlStyle( QDomDocument &doc, QDomElement &elmt ) const
 {
   const QDomElement pe = QgsSymbolLayerUtils::saveSymbol( QString(),
-                         mPolygonStyleSymbol.data(),
+                         mPolygonStyleSymbol.get(),
                          doc );
   elmt.appendChild( pe );
 }

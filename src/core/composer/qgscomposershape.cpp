@@ -104,8 +104,11 @@ void QgsComposerShape::createDefaultShapeStyleSymbol()
   properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
   mShapeStyleSymbol = QgsFillSymbol::createSimple( properties );
 
-  QgsRenderContext rc = QgsComposerUtils::createRenderContextForMap( mComposition->referenceMap(), nullptr, mComposition->printResolution() );
-  mMaxSymbolBleed = ( 25.4 / mComposition->printResolution() ) * QgsSymbolLayerUtils::estimateMaxSymbolBleed( mShapeStyleSymbol, rc );
+  if ( mComposition )
+  {
+    QgsRenderContext rc = QgsComposerUtils::createRenderContextForMap( mComposition->referenceMap(), nullptr, mComposition->printResolution() );
+    mMaxSymbolBleed = ( 25.4 / mComposition->printResolution() ) * QgsSymbolLayerUtils::estimateMaxSymbolBleed( mShapeStyleSymbol, rc );
+  }
 
   updateBoundingRect();
 

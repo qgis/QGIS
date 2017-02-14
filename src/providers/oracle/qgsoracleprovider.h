@@ -154,7 +154,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
     static bool exec( QSqlQuery &qry, QString sql );
 
-    virtual bool isSaveAndLoadStyleToDBSupported() const override { return true; }
+    virtual bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
 
     /**
      * Switch to oracle workspace

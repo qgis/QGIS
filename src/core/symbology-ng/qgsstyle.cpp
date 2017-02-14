@@ -59,7 +59,7 @@ QgsStyle* QgsStyle::defaultStyle() // static
     if ( !QFile::exists( styleFilename ) )
     {
       sDefaultStyle = new QgsStyle;
-      sDefaultStyle->createDb( styleFilename );
+      sDefaultStyle->createDatabase( styleFilename );
       if ( QFile::exists( QgsApplication::defaultStylePath() ) )
       {
         sDefaultStyle->importXml( QgsApplication::defaultStylePath() );
@@ -283,7 +283,7 @@ QStringList QgsStyle::colorRampNames()
   return mColorRamps.keys();
 }
 
-bool QgsStyle::openDB( const QString& filename )
+bool QgsStyle::openDatabase( const QString& filename )
 {
   int rc = sqlite3_open( filename.toUtf8(), &mCurrentDB );
   if ( rc )
@@ -296,10 +296,10 @@ bool QgsStyle::openDB( const QString& filename )
   return true;
 }
 
-bool QgsStyle::createDb( const QString& filename )
+bool QgsStyle::createDatabase( const QString& filename )
 {
   mErrorString.clear();
-  if ( !openDB( filename ) )
+  if ( !openDatabase( filename ) )
   {
     mErrorString = QStringLiteral( "Unable to create database" );
     QgsDebugMsg( mErrorString );
@@ -311,10 +311,10 @@ bool QgsStyle::createDb( const QString& filename )
   return true;
 }
 
-bool QgsStyle::createMemoryDb()
+bool QgsStyle::createMemoryDatabase()
 {
   mErrorString.clear();
-  if ( !openDB( QStringLiteral( ":memory:" ) ) )
+  if ( !openDatabase( QStringLiteral( ":memory:" ) ) )
   {
     mErrorString = QStringLiteral( "Unable to create temporary memory database" );
     QgsDebugMsg( mErrorString );
@@ -359,7 +359,7 @@ bool QgsStyle::load( const QString& filename )
   mErrorString.clear();
 
   // Open the sqlite database
-  if ( !openDB( filename ) )
+  if ( !openDatabase( filename ) )
   {
     mErrorString = QStringLiteral( "Unable to open database file specified" );
     QgsDebugMsg( mErrorString );
@@ -1688,8 +1688,8 @@ bool QgsStyle::updateSymbol( StyleEntity type, const QString& name )
       return false;
     }
 
-    QScopedPointer< QgsColorRamp > ramp( colorRamp( name ) );
-    symEl = QgsSymbolLayerUtils::saveColorRamp( name, ramp.data(), doc );
+    std::unique_ptr< QgsColorRamp > ramp( colorRamp( name ) );
+    symEl = QgsSymbolLayerUtils::saveColorRamp( name, ramp.get(), doc );
     if ( symEl.isNull() )
     {
       QgsDebugMsg( "Couldn't convert color ramp to valid XML!" );

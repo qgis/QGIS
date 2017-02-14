@@ -690,7 +690,7 @@ QList< QList< int > > QgsCoordinateTransform::datumTransformations( const QgsCoo
 void QgsCoordinateTransform::searchDatumTransform( const QString& sql, QList< int >& transforms )
 {
   sqlite3* db;
-  int openResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().constData(), &db, SQLITE_OPEN_READONLY, 0 );
+  int openResult = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().constData(), &db, SQLITE_OPEN_READONLY, 0 );
   if ( openResult != SQLITE_OK )
   {
     sqlite3_close( db );
@@ -724,7 +724,7 @@ QString QgsCoordinateTransform::datumTransformString( int datumTransform )
 bool QgsCoordinateTransform::datumTransformCrsInfo( int datumTransform, int& epsgNr, QString& srcProjection, QString& dstProjection, QString &remarks, QString &scope, bool &preferred, bool &deprecated )
 {
   sqlite3* db;
-  int openResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().constData(), &db, SQLITE_OPEN_READONLY, 0 );
+  int openResult = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().constData(), &db, SQLITE_OPEN_READONLY, 0 );
   if ( openResult != SQLITE_OK )
   {
     sqlite3_close( db );

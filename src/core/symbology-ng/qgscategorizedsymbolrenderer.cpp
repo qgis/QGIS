@@ -23,7 +23,6 @@
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
-#include "qgsscaleexpression.h"
 #include "qgssymbollayer.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
@@ -49,7 +48,7 @@ QgsRendererCategory::QgsRendererCategory( const QVariant& value, QgsSymbol* symb
 
 QgsRendererCategory::QgsRendererCategory( const QgsRendererCategory& cat )
     : mValue( cat.mValue )
-    , mSymbol( cat.mSymbol.data() ? cat.mSymbol->clone() : nullptr )
+    , mSymbol( cat.mSymbol ? cat.mSymbol->clone() : nullptr )
     , mLabel( cat.mLabel )
     , mRender( cat.mRender )
 {
@@ -64,9 +63,9 @@ QgsRendererCategory& QgsRendererCategory::operator=( QgsRendererCategory cat )
 
 void QgsRendererCategory::swap( QgsRendererCategory & cat )
 {
-  qSwap( mValue, cat.mValue );
-  qSwap( mSymbol, cat.mSymbol );
-  qSwap( mLabel, cat.mLabel );
+  std::swap( mValue, cat.mValue );
+  std::swap( mSymbol, cat.mSymbol );
+  std::swap( mLabel, cat.mLabel );
 }
 
 QVariant QgsRendererCategory::value() const
@@ -76,7 +75,7 @@ QVariant QgsRendererCategory::value() const
 
 QgsSymbol* QgsRendererCategory::symbol() const
 {
-  return mSymbol.data();
+  return mSymbol.get();
 }
 
 QString QgsRendererCategory::label() const
@@ -96,7 +95,7 @@ void QgsRendererCategory::setValue( const QVariant &value )
 
 void QgsRendererCategory::setSymbol( QgsSymbol* s )
 {
-  if ( mSymbol.data() != s ) mSymbol.reset( s );
+  if ( mSymbol.get() != s ) mSymbol.reset( s );
 }
 
 void QgsRendererCategory::setLabel( const QString &label )
@@ -116,7 +115,7 @@ QString QgsRendererCategory::dump() const
 
 void QgsRendererCategory::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
 {
-  if ( !mSymbol.data() || props.value( QStringLiteral( "attribute" ), QLatin1String( "" ) ).isEmpty() )
+  if ( !mSymbol.get() || props.value( QStringLiteral( "attribute" ), QLatin1String( "" ) ).isEmpty() )
     return;
 
   QString attrName = props[ QStringLiteral( "attribute" )];
@@ -219,7 +218,7 @@ QVariant QgsCategorizedSymbolRenderer::valueForFeature( QgsFeature& feature, Qgs
   QVariant value;
   if ( mAttrNum == -1 )
   {
-    Q_ASSERT( mExpression.data() );
+    Q_ASSERT( mExpression );
 
     value = mExpression->evaluate( &context.expressionContext() );
   }
@@ -352,11 +351,11 @@ void QgsCategorizedSymbolRenderer::sortByValue( Qt::SortOrder order )
 {
   if ( order == Qt::AscendingOrder )
   {
-    qSort( mCategories.begin(), mCategories.end(), valueLessThan );
+    std::sort( mCategories.begin(), mCategories.end(), valueLessThan );
   }
   else
   {
-    qSort( mCategories.begin(), mCategories.end(), valueGreaterThan );
+    std::sort( mCategories.begin(), mCategories.end(), valueGreaterThan );
   }
 }
 
@@ -374,11 +373,11 @@ void QgsCategorizedSymbolRenderer::sortByLabel( Qt::SortOrder order )
 {
   if ( order == Qt::AscendingOrder )
   {
-    qSort( mCategories.begin(), mCategories.end(), labelLessThan );
+    std::sort( mCategories.begin(), mCategories.end(), labelLessThan );
   }
   else
   {
-    qSort( mCategories.begin(), mCategories.end(), labelGreaterThan );
+    std::sort( mCategories.begin(), mCategories.end(), labelGreaterThan );
   }
 }
 
@@ -462,9 +461,9 @@ QString QgsCategorizedSymbolRenderer::dump() const
 QgsCategorizedSymbolRenderer* QgsCategorizedSymbolRenderer::clone() const
 {
   QgsCategorizedSymbolRenderer* r = new QgsCategorizedSymbolRenderer( mAttrName, mCategories );
-  if ( mSourceSymbol.data() )
+  if ( mSourceSymbol )
     r->setSourceSymbol( mSourceSymbol->clone() );
-  if ( mSourceColorRamp.data() )
+  if ( mSourceColorRamp )
   {
     r->setSourceColorRamp( mSourceColorRamp->clone() );
   }
@@ -634,9 +633,9 @@ QgsFeatureRenderer* QgsCategorizedSymbolRenderer::create( QDomElement& element )
     {
       convertSymbolRotation( cat.symbol(), rotationElem.attribute( QStringLiteral( "field" ) ) );
     }
-    if ( r->mSourceSymbol.data() )
+    if ( r->mSourceSymbol )
     {
-      convertSymbolRotation( r->mSourceSymbol.data(), rotationElem.attribute( QStringLiteral( "field" ) ) );
+      convertSymbolRotation( r->mSourceSymbol.get(), rotationElem.attribute( QStringLiteral( "field" ) ) );
     }
   }
 
@@ -649,9 +648,9 @@ QgsFeatureRenderer* QgsCategorizedSymbolRenderer::create( QDomElement& element )
                               QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( QStringLiteral( "scalemethod" ) ) ),
                               sizeScaleElem.attribute( QStringLiteral( "field" ) ) );
     }
-    if ( r->mSourceSymbol.data() && r->mSourceSymbol->type() == QgsSymbol::Marker )
+    if ( r->mSourceSymbol && r->mSourceSymbol->type() == QgsSymbol::Marker )
     {
-      convertSymbolSizeScale( r->mSourceSymbol.data(),
+      convertSymbolSizeScale( r->mSourceSymbol.get(),
                               QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( QStringLiteral( "scalemethod" ) ) ),
                               sizeScaleElem.attribute( QStringLiteral( "field" ) ) );
     }
@@ -699,18 +698,18 @@ QDomElement QgsCategorizedSymbolRenderer::save( QDomDocument& doc )
   }
 
   // save source symbol
-  if ( mSourceSymbol.data() )
+  if ( mSourceSymbol )
   {
     QgsSymbolMap sourceSymbols;
-    sourceSymbols.insert( QStringLiteral( "0" ), mSourceSymbol.data() );
+    sourceSymbols.insert( QStringLiteral( "0" ), mSourceSymbol.get() );
     QDomElement sourceSymbolElem = QgsSymbolLayerUtils::saveSymbols( sourceSymbols, QStringLiteral( "source-symbol" ), doc );
     rendererElem.appendChild( sourceSymbolElem );
   }
 
   // save source color ramp
-  if ( mSourceColorRamp.data() )
+  if ( mSourceColorRamp )
   {
-    QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( QStringLiteral( "[source]" ), mSourceColorRamp.data(), doc );
+    QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( QStringLiteral( "[source]" ), mSourceColorRamp.get(), doc );
     rendererElem.appendChild( colorRampElem );
   }
 
@@ -766,7 +765,7 @@ QgsLegendSymbolList QgsCategorizedSymbolRenderer::legendSymbolItems( double scal
 QgsLegendSymbolListV2 QgsCategorizedSymbolRenderer::legendSymbolItemsV2() const
 {
   QgsLegendSymbolListV2 lst;
-  if ( mSourceSymbol.data() && mSourceSymbol->type() == QgsSymbol::Marker )
+  if ( mSourceSymbol && mSourceSymbol->type() == QgsSymbol::Marker )
   {
     // check that all symbols that have the same size expression
     QgsProperty ddSize;
@@ -793,17 +792,17 @@ QgsLegendSymbolListV2 QgsCategorizedSymbolRenderer::legendSymbolItemsV2() const
       return QgsFeatureRenderer::legendSymbolItemsV2();
     }
 
-    QgsScaleExpression exp( ddSize.asExpression() );
-    if ( exp.type() != QgsScaleExpression::Unknown )
+    if ( const QgsSizeScaleTransformer* sizeTransformer = dynamic_cast< const QgsSizeScaleTransformer* >( ddSize.transformer() ) )
     {
-      QgsLegendSymbolItem title( nullptr, exp.baseExpression(), QLatin1String( "" ) );
+      QgsLegendSymbolItem title( nullptr, ddSize.propertyType() == QgsProperty::ExpressionBasedProperty ? ddSize.expressionString()
+                                 : ddSize.field(), QString() );
       lst << title;
-      Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( exp.minValue(), exp.maxValue(), 4 ) )
+      Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( sizeTransformer->minValue(), sizeTransformer->maxValue(), 4 ) )
       {
-        QgsLegendSymbolItem si( mSourceSymbol.data(), QString::number( v ), QLatin1String( "" ) );
+        QgsLegendSymbolItem si( mSourceSymbol.get(), QString::number( v ), QString() );
         QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( si.symbol() );
         s->setDataDefinedSize( QgsProperty() );
-        s->setSize( exp.size( v ) );
+        s->setSize( sizeTransformer->size( v ) );
         lst << si;
       }
       // now list the categorized symbols
@@ -839,7 +838,7 @@ QSet<QString> QgsCategorizedSymbolRenderer::legendKeysForFeature( QgsFeature& fe
 
 QgsSymbol* QgsCategorizedSymbolRenderer::sourceSymbol()
 {
-  return mSourceSymbol.data();
+  return mSourceSymbol.get();
 }
 void QgsCategorizedSymbolRenderer::setSourceSymbol( QgsSymbol* sym )
 {
@@ -848,7 +847,7 @@ void QgsCategorizedSymbolRenderer::setSourceSymbol( QgsSymbol* sym )
 
 QgsColorRamp* QgsCategorizedSymbolRenderer::sourceColorRamp()
 {
-  return mSourceColorRamp.data();
+  return mSourceColorRamp.get();
 }
 
 void QgsCategorizedSymbolRenderer::setSourceColorRamp( QgsColorRamp* ramp )

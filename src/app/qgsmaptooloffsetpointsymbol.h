@@ -60,7 +60,7 @@ class APP_EXPORT QgsMapToolOffsetPointSymbol: public QgsMapToolPointSymbol
     QgsPointMarkerItem* mOffsetItem;
 
     //! Clone of first found marker symbol for feature with offset attribute set
-    QScopedPointer< QgsMarkerSymbol > mMarkerSymbol;
+    std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
 
     //! Feature which was clicked on
     QgsFeature mClickedFeature;

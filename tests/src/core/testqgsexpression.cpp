@@ -16,7 +16,6 @@
 #include <QObject>
 #include <QString>
 #include <QtConcurrentMap>
-#include <QSharedPointer>
 
 #include <qgsapplication.h>
 //header for class being tested
@@ -77,7 +76,7 @@ class TestQgsExpression: public QObject
       QgsApplication::init();
       QgsApplication::initQgis();
       // Will make sure the settings dir with the style file for color ramp is created
-      QgsApplication::createDB();
+      QgsApplication::createDatabase();
       QgsApplication::showSettings();
 
       //create a point layer that will be used in all tests...

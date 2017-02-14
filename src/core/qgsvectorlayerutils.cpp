@@ -235,12 +235,12 @@ QgsFeature QgsVectorLayerUtils::createFeature( QgsVectorLayer* layer, const QgsG
   }
 
   QgsExpressionContext* evalContext = context;
-  QScopedPointer< QgsExpressionContext > tempContext;
+  std::unique_ptr< QgsExpressionContext > tempContext;
   if ( !evalContext )
   {
     // no context passed, so we create a default one
     tempContext.reset( new QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) ) );
-    evalContext = tempContext.data();
+    evalContext = tempContext.get();
   }
 
   QgsFields fields = layer->fields();

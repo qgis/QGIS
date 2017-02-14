@@ -341,7 +341,7 @@ int vtableCreateConnect( sqlite3* sql, void* aux, int argc, const char* const* a
     return SQLITE_ERROR;
   }
 
-  QScopedPointer<VTable> newVtab;
+  std::unique_ptr<VTable> newVtab;
 
   int r;
   if ( argc == 4 )
@@ -410,7 +410,7 @@ int vtableCreateConnect( sqlite3* sql, void* aux, int argc, const char* const* a
     return r;
   }
 
-  *outVtab = reinterpret_cast< sqlite3_vtab* >( newVtab.take() );
+  *outVtab = reinterpret_cast< sqlite3_vtab* >( newVtab.release() );
   return SQLITE_OK;
 #undef RETURN_CSTR_ERROR
 #undef RETURN_CPPSTR_ERROR

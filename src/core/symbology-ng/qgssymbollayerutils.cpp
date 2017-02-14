@@ -906,7 +906,7 @@ QgsSymbolLayer* QgsSymbolLayerUtils::loadSymbolLayer( QDomElement& element )
     QDomElement ddProps = element.firstChildElement( QStringLiteral( "data_defined_properties" ) );
     if ( !ddProps.isNull() )
     {
-      layer->dataDefinedProperties().readXml( ddProps, element.ownerDocument(), QgsSymbolLayer::PROPERTY_DEFINITIONS );
+      layer->dataDefinedProperties().readXml( ddProps, element.ownerDocument(), QgsSymbolLayer::propertyDefinitions() );
     }
 
     return layer;
@@ -957,7 +957,7 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString& name, QgsSymbol* sym
       layer->paintEffect()->saveProperties( doc, layerEl );
 
     QDomElement ddProps = doc.createElement( QStringLiteral( "data_defined_properties" ) );
-    layer->dataDefinedProperties().writeXml( ddProps, doc, QgsSymbolLayer::PROPERTY_DEFINITIONS );
+    layer->dataDefinedProperties().writeXml( ddProps, doc, QgsSymbolLayer::propertyDefinitions() );
     layerEl.appendChild( ddProps );
 
     if ( layer->subSymbol() )
@@ -3444,13 +3444,13 @@ void QgsSymbolLayerUtils::sortVariantList( QList<QVariant>& list, Qt::SortOrder 
 {
   if ( order == Qt::AscendingOrder )
   {
-    //qSort( list.begin(), list.end(), _QVariantLessThan );
-    qSort( list.begin(), list.end(), qgsVariantLessThan );
+    //std::sort( list.begin(), list.end(), _QVariantLessThan );
+    std::sort( list.begin(), list.end(), qgsVariantLessThan );
   }
   else // Qt::DescendingOrder
   {
-    //qSort( list.begin(), list.end(), _QVariantGreaterThan );
-    qSort( list.begin(), list.end(), qgsVariantGreaterThan );
+    //std::sort( list.begin(), list.end(), _QVariantGreaterThan );
+    std::sort( list.begin(), list.end(), qgsVariantGreaterThan );
   }
 }
 

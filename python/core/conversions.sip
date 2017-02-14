@@ -438,6 +438,53 @@ template <TYPE>
 };
 
 
+%MappedType QList<long>
+{
+%TypeHeaderCode
+#include <QList>
+%End
+
+%ConvertFromTypeCode
+  // Create the list.
+  PyObject *l;
+
+  if ((l = PyList_New(sipCpp->size())) == NULL)
+    return NULL;
+
+  // Set the list elements.
+  QList<long>::iterator it = sipCpp->begin();
+  for (int i = 0; it != sipCpp->end(); ++it, ++i)
+  {
+    PyObject *tobj;
+
+    if ((tobj = PyLong_FromLong(*it)) == NULL)
+    {
+      Py_DECREF(l);
+      return NULL;
+    }
+    PyList_SET_ITEM(l, i, tobj);
+  }
+
+  return l;
+%End
+
+%ConvertToTypeCode
+  // Check the type if that is all that is required.
+  if (sipIsErr == NULL)
+    return PyList_Check(sipPy);
+
+  QList<long> *qlist = new QList<long>;
+
+  for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
+  {
+    *qlist << PyLong_AsLong(PyList_GET_ITEM(sipPy, i));
+  }
+
+  *sipCppPtr = qlist;
+  return sipGetState(sipTransferObj);
+%End
+};
+
 %MappedType QList<qint64>
 {
 %TypeHeaderCode

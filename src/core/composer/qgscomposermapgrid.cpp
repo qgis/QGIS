@@ -1467,7 +1467,7 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGr
   {
     expressionContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_number" ), value, true ) );
     expressionContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_axis" ), coord == QgsComposerMapGrid::Longitude ? "x" : "y", true ) );
-    if ( !mGridAnnotationExpression.data() )
+    if ( !mGridAnnotationExpression )
     {
       mGridAnnotationExpression.reset( new QgsExpression( mGridAnnotationExpressionString ) );
       mGridAnnotationExpression->prepare( &expressionContext );
@@ -1974,7 +1974,7 @@ QgsComposerMapGrid::BorderSide QgsComposerMapGrid::borderForLineCoord( QPointF p
   distanceToSide << qMakePair( p.y(), QgsComposerMapGrid::Top );
   distanceToSide << qMakePair( mComposerMap->rect().height() - p.y(), QgsComposerMapGrid::Bottom );
 
-  qSort( distanceToSide.begin(), distanceToSide.end(), sortByDistance );
+  std::sort( distanceToSide.begin(), distanceToSide.end(), sortByDistance );
   return distanceToSide.at( 0 ).second;
 }
 

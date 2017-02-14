@@ -182,8 +182,8 @@ void QgsComposerShapeWidget::toggleRadiusSpin( const QString& shapeText )
 
 void QgsComposerShapeWidget::updateSymbolFromWidget()
 {
-  QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( sender() );
-  mComposerShape->setShapeStyleSymbol( dynamic_cast< QgsFillSymbol* >( w->symbol() ) );
+  if ( QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( sender() ) )
+    mComposerShape->setShapeStyleSymbol( dynamic_cast< QgsFillSymbol* >( w->symbol() ) );
 }
 
 void QgsComposerShapeWidget::cleanUpSymbolSelector( QgsPanelWidget* container )

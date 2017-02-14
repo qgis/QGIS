@@ -229,7 +229,7 @@ void QgsVirtualLayerSourceSelect::onTestQuery()
 {
   QgsVirtualLayerDefinition def = getVirtualLayerDef();
 
-  QScopedPointer<QgsVectorLayer> vl( new QgsVectorLayer( def.toString(), QStringLiteral( "test" ), QStringLiteral( "virtual" ) ) );
+  std::unique_ptr<QgsVectorLayer> vl( new QgsVectorLayer( def.toString(), QStringLiteral( "test" ), QStringLiteral( "virtual" ) ) );
   if ( vl->isValid() )
   {
     QMessageBox::information( nullptr, tr( "Virtual layer test" ), tr( "No error" ) );

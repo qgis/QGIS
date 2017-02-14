@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgsserviceregstry.h
+                          qgsserviceregistry.h
 
   Class defining the service manager for QGIS server services.
   -------------------

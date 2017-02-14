@@ -428,6 +428,7 @@ void TestQgsGeometryUtils::testVerticesAtDistance()
   QVERIFY( QgsGeometryUtils::verticesAtDistance( *outerRing1, 4, previous, next ) );
   QCOMPARE( previous, QgsVertexId( 0, 0, 4 ) );
   QCOMPARE( next, QgsVertexId( 0, 0, 4 ) );
+  delete outerRing1;
 
   // test closed line
   QgsLineString* closedRing1 = new QgsLineString();

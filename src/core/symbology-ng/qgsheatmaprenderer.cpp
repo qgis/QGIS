@@ -121,7 +121,7 @@ bool QgsHeatmapRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& c
     QVariant value;
     if ( mWeightAttrNum == -1 )
     {
-      Q_ASSERT( mWeightExpression.data() );
+      Q_ASSERT( mWeightExpression.get() );
       value = mWeightExpression->evaluate( &context.expressionContext() );
     }
     else

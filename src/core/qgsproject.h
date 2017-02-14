@@ -962,7 +962,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QgsRelationManager* mRelationManager;
 
-    QScopedPointer<QgsAnnotationManager> mAnnotationManager;
+    std::unique_ptr<QgsAnnotationManager> mAnnotationManager;
 
     QgsLayerTreeGroup* mRootGroup;
 
@@ -971,7 +971,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //! map of transaction group: QPair( providerKey, connString ) -> transactionGroup
     QMap< QPair< QString, QString>, QgsTransactionGroup*> mTransactionGroups;
 
-    QScopedPointer<QgsMapThemeCollection> mMapThemeCollection;
+    std::unique_ptr<QgsMapThemeCollection> mMapThemeCollection;
 
     QVariantMap mCustomVariables;
 

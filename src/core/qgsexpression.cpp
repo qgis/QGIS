@@ -332,7 +332,7 @@ static QgsExpression::Node* getNode( const QVariant& value, QgsExpression* paren
 
 QgsVectorLayer* getVectorLayer( const QVariant& value, QgsExpression* )
 {
-  QgsMapLayer* ml = value.value< QPointer<QgsMapLayer> >().data();
+  QgsMapLayer* ml = value.value< QgsWeakMapLayerPointer >().data();
   QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( ml );
   if ( !vl )
   {
@@ -2439,7 +2439,7 @@ static QVariant fcnRelate( const QVariantList& values, const QgsExpressionContex
   if ( fGeom.isNull() || sGeom.isNull() )
     return QVariant();
 
-  QScopedPointer<QgsGeometryEngine> engine( QgsGeometry::createGeometryEngine( fGeom.geometry() ) );
+  std::unique_ptr<QgsGeometryEngine> engine( QgsGeometry::createGeometryEngine( fGeom.geometry() ) );
 
   if ( values.length() == 2 )
   {
@@ -2765,7 +2765,7 @@ static QVariant fcnProject( const QVariantList& values, const QgsExpressionConte
   double azimuth = getDoubleValue( values.at( 2 ), parent );
   double inclination = getDoubleValue( values.at( 3 ), parent );
 
-  const QgsPointV2* p = dynamic_cast<const QgsPointV2*>( geom.geometry() );
+  const QgsPointV2* p = static_cast<const QgsPointV2*>( geom.geometry() );
   QgsPointV2 newPoint = p->project( distance,  180.0 * azimuth / M_PI, 180.0 * inclination / M_PI );
 
   return QVariant::fromValue( QgsGeometry( new QgsPointV2( newPoint ) ) );
@@ -4238,6 +4238,11 @@ QgsExpression::QgsExpression( const QgsExpression& other )
 
 QgsExpression& QgsExpression::operator=( const QgsExpression & other )
 {
+  if ( !d->ref.deref() )
+  {
+    delete d;
+  }
+
   d = other.d;
   d->ref.ref();
   return *this;
@@ -4325,11 +4330,11 @@ bool QgsExpression::needsGeometry() const
 
 void QgsExpression::initGeomCalculator()
 {
-  if ( d->mCalc.data() )
+  if ( d->mCalc.get() )
     return;
 
   // Use planimetric as default
-  d->mCalc = QSharedPointer<QgsDistanceArea>( new QgsDistanceArea() );
+  d->mCalc = std::shared_ptr<QgsDistanceArea>( new QgsDistanceArea() );
   d->mCalc->setEllipsoidalMode( false );
 }
 
@@ -4349,9 +4354,9 @@ void QgsExpression::setGeomCalculator( const QgsDistanceArea *calc )
 {
   detach();
   if ( calc )
-    d->mCalc = QSharedPointer<QgsDistanceArea>( new QgsDistanceArea( *calc ) );
+    d->mCalc = std::shared_ptr<QgsDistanceArea>( new QgsDistanceArea( *calc ) );
   else
-    d->mCalc.clear();
+    d->mCalc.reset();
 }
 
 bool QgsExpression::prepare( const QgsExpressionContext *context )
@@ -4424,7 +4429,7 @@ QString QgsExpression::dump() const
 
 QgsDistanceArea* QgsExpression::geomCalculator()
 {
-  return d->mCalc.data();
+  return d->mCalc.get();
 }
 
 QgsUnitTypes::DistanceUnit QgsExpression::distanceUnits() const
@@ -4532,6 +4537,7 @@ void QgsExpression::NodeList::append( QgsExpression::NamedNode* node )
   mList.append( node->node );
   mNameList.append( node->name.toLower() );
   mHasNamedNodes = true;
+  delete node;
 }
 
 QgsExpression::NodeList* QgsExpression::NodeList::clone() const
@@ -5357,7 +5363,7 @@ bool QgsExpression::NodeFunction::validateParams( int fnIndex, QgsExpression::No
   const ParameterList& functionParams = Functions()[fnIndex]->parameters();
   if ( functionParams.isEmpty() )
   {
-    error = QStringLiteral( "%1 does not supported named parameters" ).arg( Functions()[fnIndex]->name() );
+    error = QStringLiteral( "%1 does not support named parameters" ).arg( Functions()[fnIndex]->name() );
     return false;
   }
   else

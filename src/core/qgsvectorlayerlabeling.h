@@ -56,6 +56,14 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
     //! they are identified by their ID (e.g. in case of rule-based labeling, provider ID == rule key)
     virtual QgsPalLayerSettings settings( QgsVectorLayer* layer, const QString& providerId = QString() ) const = 0;
 
+    /**
+     * Returns true if drawing labels requires advanced effects like composition
+     * modes, which could prevent it being used as an isolated cached image
+     * or exported to a vector format.
+     * @note added in QGIS 3.0
+     */
+    virtual bool requiresAdvancedEffects( QgsVectorLayer* layer ) const = 0;
+
     // static stuff
 
     //! Try to create instance of an implementation based on the XML data
@@ -79,6 +87,7 @@ class CORE_EXPORT QgsVectorLayerSimpleLabeling : public QgsAbstractVectorLayerLa
     virtual QgsVectorLayerLabelProvider* provider( QgsVectorLayer* layer ) const override;
     virtual QDomElement save( QDomDocument& doc ) const override;
     virtual QgsPalLayerSettings settings( QgsVectorLayer* layer, const QString& providerId = QString() ) const override;
+    bool requiresAdvancedEffects( QgsVectorLayer* layer ) const override;
 };
 
 #endif // QGSVECTORLAYERLABELING_H

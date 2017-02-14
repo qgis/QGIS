@@ -92,7 +92,7 @@ void QgsOSMImportDialog::onOK()
   }
 
   mImport->setInputXmlFileName( editXmlFileName->text() );
-  mImport->setOutputDbFileName( editDbFileName->text() );
+  mImport->setOutputDatabaseFileName( editDbFileName->text() );
 
   buttonBox->setEnabled( false );
   QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -114,7 +114,7 @@ void QgsOSMImportDialog::onOK()
   {
     // create connection - this is a bit hacky, sorry for that.
     QSettings settings;
-    settings.setValue( QStringLiteral( "/SpatiaLite/connections/%1/sqlitepath" ).arg( editConnName->text() ), mImport->outputDbFileName() );
+    settings.setValue( QStringLiteral( "/SpatiaLite/connections/%1/sqlitepath" ).arg( editConnName->text() ), mImport->outputDatabaseFileName() );
   }
 
   QMessageBox::information( this, tr( "OpenStreetMap import" ), tr( "Import has been successful." ) );

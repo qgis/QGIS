@@ -32,7 +32,6 @@ SET(QGIS_GUI_SRCS
   symbology-ng/qgsrendererwidget.cpp
   symbology-ng/qgsrulebasedrendererwidget.cpp
   symbology-ng/qgssinglesymbolrendererwidget.cpp
-  symbology-ng/qgssizescalewidget.cpp
   symbology-ng/qgssmartgroupeditordialog.cpp
   symbology-ng/qgsstyleexportimportdialog.cpp
   symbology-ng/qgsstylegroupselectiondialog.cpp
@@ -194,7 +193,6 @@ SET(QGIS_GUI_SRCS
   qgscredentialdialog.cpp
   qgscursors.cpp
   qgscustomdrophandler.cpp
-  qgsdatadefinedbutton.cpp
   qgsdatumtransformdialog.cpp
   qgsdetaileditemdata.cpp
   qgsdetaileditemdelegate.cpp
@@ -284,6 +282,7 @@ SET(QGIS_GUI_SRCS
   qgsprevieweffect.cpp
   qgsprojectionselectionwidget.cpp
   qgsprojectionselector.cpp
+  qgspropertyassistantwidget.cpp
   qgspropertyoverridebutton.cpp
   qgsquerybuilder.cpp
   qgsrasterformatsaveoptionswidget.cpp
@@ -354,7 +353,6 @@ SET(QGIS_GUI_MOC_HDRS
   qgscompoundcolorwidget.h
   qgsconfigureshortcutsdialog.h
   qgscredentialdialog.h
-  qgsdatadefinedbutton.h
   qgsdatumtransformdialog.h
   qgsdetaileditemdelegate.h
   qgsdetaileditemwidget.h
@@ -436,6 +434,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsprevieweffect.h
   qgsprojectionselectionwidget.h
   qgsprojectionselector.h
+  qgspropertyassistantwidget.h
   qgspropertyoverridebutton.h
   qgsquerybuilder.h
   qgsrasterformatsaveoptionswidget.h
@@ -495,7 +494,6 @@ SET(QGIS_GUI_MOC_HDRS
   symbology-ng/qgsrendererwidget.h
   symbology-ng/qgsrulebasedrendererwidget.h
   symbology-ng/qgssinglesymbolrendererwidget.h
-  symbology-ng/qgssizescalewidget.h
   symbology-ng/qgssmartgroupeditordialog.h
   symbology-ng/qgsstyleexportimportdialog.h
   symbology-ng/qgsstylegroupselectiondialog.h

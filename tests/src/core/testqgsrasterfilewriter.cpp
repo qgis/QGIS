@@ -111,7 +111,7 @@ bool TestQgsRasterFileWriter::writeTest( const QString& theRasterName )
   qDebug() << myFileName;
   QFileInfo myRasterFileInfo( myFileName );
 
-  QScopedPointer<QgsRasterLayer> mpRasterLayer( new QgsRasterLayer( myRasterFileInfo.filePath(),
+  std::unique_ptr<QgsRasterLayer> mpRasterLayer( new QgsRasterLayer( myRasterFileInfo.filePath(),
       myRasterFileInfo.completeBaseName() ) );
   qDebug() << theRasterName <<  " metadata: " << mpRasterLayer->dataProvider()->metadata();
 

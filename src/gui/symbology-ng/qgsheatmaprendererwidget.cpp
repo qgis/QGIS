@@ -83,6 +83,7 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsSt
   }
 
   setupUi( this );
+  this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
   mRadiusUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );

@@ -25,21 +25,35 @@
 #include <QDomElement>
 #include <QPainter>
 
-const QgsPropertiesDefinition QgsDiagramLayerSettings::PROPERTY_DEFINITIONS
+QgsPropertiesDefinition QgsDiagramLayerSettings::sPropertyDefinitions;
+
+void QgsDiagramLayerSettings::initPropertyDefinitions()
 {
-  { QgsDiagramLayerSettings::BackgroundColor, QgsPropertyDefinition( "backgroundColor", QObject::tr( "Background color" ), QgsPropertyDefinition::ColorWithAlpha ) },
-  { QgsDiagramLayerSettings::OutlineColor, QgsPropertyDefinition( "outlineColor", QObject::tr( "Outline color" ), QgsPropertyDefinition::ColorWithAlpha ) },
-  { QgsDiagramLayerSettings::OutlineWidth, QgsPropertyDefinition( "outlineWidth", QObject::tr( "Outline width" ), QgsPropertyDefinition::DoublePositive ) },
-  { QgsDiagramLayerSettings::PositionX, QgsPropertyDefinition( "positionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double ) },
-  { QgsDiagramLayerSettings::PositionY, QgsPropertyDefinition( "positionY", QObject::tr( "Position (Y)" ), QgsPropertyDefinition::Double ) },
-  { QgsDiagramLayerSettings::Distance, QgsPropertyDefinition( "distance", QObject::tr( "Placement distance" ), QgsPropertyDefinition::DoublePositive ) },
-  { QgsDiagramLayerSettings::Priority, QgsPropertyDefinition( "priority", QObject::tr( "Placement priority" ), QgsPropertyDefinition::DoublePositive ) },
-  { QgsDiagramLayerSettings::ZIndex, QgsPropertyDefinition( "zIndex", QObject::tr( "Placement z-index" ), QgsPropertyDefinition::Double ) },
-  { QgsDiagramLayerSettings::IsObstacle, QgsPropertyDefinition( "isObstacle", QObject::tr( "Diagram is an obstacle" ), QgsPropertyDefinition::Boolean ) },
-  { QgsDiagramLayerSettings::Show, QgsPropertyDefinition( "show", QObject::tr( "Show diagram" ), QgsPropertyDefinition::Boolean ) },
-  { QgsDiagramLayerSettings::AlwaysShow, QgsPropertyDefinition( "alwaysShow", QObject::tr( "Always show diagram" ), QgsPropertyDefinition::Boolean ) },
-  { QgsDiagramLayerSettings::StartAngle, QgsPropertyDefinition( "startAngle", QObject::tr( "Pie chart start angle" ), QgsPropertyDefinition::Double ) },
-};
+  if ( !sPropertyDefinitions.isEmpty() )
+    return;
+
+  sPropertyDefinitions = QgsPropertiesDefinition
+  {
+    { QgsDiagramLayerSettings::BackgroundColor, QgsPropertyDefinition( "backgroundColor", QObject::tr( "Background color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+    { QgsDiagramLayerSettings::OutlineColor, QgsPropertyDefinition( "outlineColor", QObject::tr( "Outline color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+    { QgsDiagramLayerSettings::OutlineWidth, QgsPropertyDefinition( "outlineWidth", QObject::tr( "Outline width" ), QgsPropertyDefinition::StrokeWidth ) },
+    { QgsDiagramLayerSettings::PositionX, QgsPropertyDefinition( "positionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double ) },
+    { QgsDiagramLayerSettings::PositionY, QgsPropertyDefinition( "positionY", QObject::tr( "Position (Y)" ), QgsPropertyDefinition::Double ) },
+    { QgsDiagramLayerSettings::Distance, QgsPropertyDefinition( "distance", QObject::tr( "Placement distance" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsDiagramLayerSettings::Priority, QgsPropertyDefinition( "priority", QObject::tr( "Placement priority" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsDiagramLayerSettings::ZIndex, QgsPropertyDefinition( "zIndex", QObject::tr( "Placement z-index" ), QgsPropertyDefinition::Double ) },
+    { QgsDiagramLayerSettings::IsObstacle, QgsPropertyDefinition( "isObstacle", QObject::tr( "Diagram is an obstacle" ), QgsPropertyDefinition::Boolean ) },
+    { QgsDiagramLayerSettings::Show, QgsPropertyDefinition( "show", QObject::tr( "Show diagram" ), QgsPropertyDefinition::Boolean ) },
+    { QgsDiagramLayerSettings::AlwaysShow, QgsPropertyDefinition( "alwaysShow", QObject::tr( "Always show diagram" ), QgsPropertyDefinition::Boolean ) },
+    { QgsDiagramLayerSettings::StartAngle, QgsPropertyDefinition( "startAngle", QObject::tr( "Pie chart start angle" ), QgsPropertyDefinition::Rotation ) },
+  };
+}
+
+const QgsPropertiesDefinition& QgsDiagramLayerSettings::propertyDefinitions()
+{
+  initPropertyDefinitions();
+  return sPropertyDefinitions;
+}
 
 QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings& rh )
     : mCt( rh.mCt )
@@ -52,7 +66,9 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings&
     , mRenderer( rh.mRenderer ? rh.mRenderer->clone() : nullptr )
     , mShowAll( rh.mShowAll )
     , mDataDefinedProperties( rh.mDataDefinedProperties )
-{}
+{
+  initPropertyDefinitions();
+}
 
 QgsDiagramLayerSettings& QgsDiagramLayerSettings::operator=( const QgsDiagramLayerSettings & rh )
 {
@@ -95,7 +111,7 @@ void QgsDiagramLayerSettings::readXml( const QDomElement& elem, const QgsVectorL
   QDomNodeList propertyElems = elem.elementsByTagName( "properties" );
   if ( !propertyElems.isEmpty() )
   {
-    ( void )mDataDefinedProperties.readXml( propertyElems.at( 0 ).toElement(), elem.ownerDocument(), PROPERTY_DEFINITIONS );
+    ( void )mDataDefinedProperties.readXml( propertyElems.at( 0 ).toElement(), elem.ownerDocument(), sPropertyDefinitions );
   }
   else
   {
@@ -138,7 +154,7 @@ void QgsDiagramLayerSettings::writeXml( QDomElement& layerElem, QDomDocument& do
 
   QDomElement diagramLayerElem = doc.createElement( QStringLiteral( "DiagramLayerSettings" ) );
   QDomElement propertiesElem = doc.createElement( "properties" );
-  ( void )mDataDefinedProperties.writeXml( propertiesElem, doc, PROPERTY_DEFINITIONS );
+  ( void )mDataDefinedProperties.writeXml( propertiesElem, doc, sPropertyDefinitions );
   diagramLayerElem.appendChild( propertiesElem );
   diagramLayerElem.setAttribute( QStringLiteral( "placement" ), mPlacement );
   diagramLayerElem.setAttribute( QStringLiteral( "linePlacementFlags" ), mPlacementFlags );
@@ -413,7 +429,7 @@ QgsDiagramRenderer::QgsDiagramRenderer( const QgsDiagramRenderer& other )
     : mDiagram( other.mDiagram ? other.mDiagram->clone() : nullptr )
     , mShowAttributeLegend( other.mShowAttributeLegend )
     , mShowSizeLegend( other.mShowSizeLegend )
-    , mSizeLegendSymbol( other.mSizeLegendSymbol.data() ? other.mSizeLegendSymbol->clone() : nullptr )
+    , mSizeLegendSymbol( other.mSizeLegendSymbol ? other.mSizeLegendSymbol->clone() : nullptr )
 {
 }
 
@@ -422,7 +438,7 @@ QgsDiagramRenderer &QgsDiagramRenderer::operator=( const QgsDiagramRenderer & ot
   mDiagram = other.mDiagram ? other.mDiagram->clone() : nullptr;
   mShowAttributeLegend = other.mShowAttributeLegend;
   mShowSizeLegend = other.mShowSizeLegend;
-  mSizeLegendSymbol.reset( other.mSizeLegendSymbol.data() ? other.mSizeLegendSymbol->clone() : nullptr );
+  mSizeLegendSymbol.reset( other.mSizeLegendSymbol ? other.mSizeLegendSymbol->clone() : nullptr );
   return *this;
 }
 
@@ -557,7 +573,7 @@ void QgsDiagramRenderer::_writeXml( QDomElement& rendererElem, QDomDocument& doc
   }
   rendererElem.setAttribute( QStringLiteral( "attributeLegend" ), mShowAttributeLegend );
   rendererElem.setAttribute( QStringLiteral( "sizeLegend" ), mShowSizeLegend );
-  QDomElement sizeLegendSymbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "sizeSymbol" ), mSizeLegendSymbol.data(), doc );
+  QDomElement sizeLegendSymbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "sizeSymbol" ), mSizeLegendSymbol.get(), doc );
   rendererElem.appendChild( sizeLegendSymbolElem );
 }
 
@@ -749,13 +765,13 @@ QList< QgsLayerTreeModelLegendNode* > QgsLinearlyInterpolatedDiagramRenderer::le
   if ( mShowAttributeLegend )
     nodes = mSettings.legendItems( nodeLayer );
 
-  if ( mShowSizeLegend && mDiagram && mSizeLegendSymbol.data() )
+  if ( mShowSizeLegend && mDiagram && mSizeLegendSymbol )
   {
     // add size legend
     Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( mInterpolationSettings.lowerValue, mInterpolationSettings.upperValue, 4 ) )
     {
       double size = mDiagram->legendSize( v, mSettings, mInterpolationSettings );
-      QgsLegendSymbolItem si( mSizeLegendSymbol.data(), QString::number( v ), QString() );
+      QgsLegendSymbolItem si( mSizeLegendSymbol.get(), QString::number( v ), QString() );
       QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( si.symbol() );
       s->setSize( size );
       s->setSizeUnit( mSettings.sizeType );

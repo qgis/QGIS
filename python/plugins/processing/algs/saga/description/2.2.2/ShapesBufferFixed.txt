@@ -1,9 +1,0 @@
-Shapes Buffer (Fixed distance)|Shapes Buffer
-shapes_tools
-ParameterVector|SHAPES|Shapes|-1|False
-ParameterNumber|DIST_FIELD_DEFAULT|Buffer distance|0.0|None|100.0
-ParameterNumber|NZONES|Number of Buffer Zones|1.0|None|1.0
-ParameterNumber|DARC|Arc Vertex Distance [Degree]|0.01|45.0|5.0
-ParameterBoolean|DISSOLVE       |Dissolve Buffers|True
-ParameterBoolean|POLY_INNER       |Inner Buffer|False
-OutputVector|BUFFER|Buffer

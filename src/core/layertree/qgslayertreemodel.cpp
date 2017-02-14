@@ -1005,7 +1005,7 @@ QMimeData* QgsLayerTreeModel::mimeData( const QModelIndexList& indexes ) const
 {
   // Sort the indexes. Depending on how the user selected the items, the indexes may be unsorted.
   QModelIndexList sortedIndexes = indexes;
-  qSort( sortedIndexes.begin(), sortedIndexes.end(), qLess<QModelIndex>() );
+  std::sort( sortedIndexes.begin(), sortedIndexes.end(), std::less<QModelIndex>() );
 
   QList<QgsLayerTreeNode*> nodesFinal = indexes2nodes( sortedIndexes, true );
 
@@ -1314,11 +1314,11 @@ QgsRenderContext* QgsLayerTreeModel::createTemporaryRenderContext() const
   bool validData = !qgsDoubleNear( mupp, 0.0 ) && dpi != 0 && !qgsDoubleNear( scale, 0.0 );
 
   // setup temporary render context
-  QScopedPointer<QgsRenderContext> context( new QgsRenderContext );
+  std::unique_ptr<QgsRenderContext> context( new QgsRenderContext );
   context->setScaleFactor( dpi / 25.4 );
   context->setRendererScale( scale );
   context->setMapToPixel( QgsMapToPixel( mupp ) );
-  return validData ? context.take() : nullptr;
+  return validData ? context.release() : nullptr;
 }
 
 
@@ -1518,7 +1518,7 @@ void QgsLayerTreeModel::invalidateLegendMapBasedData()
   // we do that here because for symbols with size defined in map units
   // the symbol sizes changes depends on the zoom level
 
-  QScopedPointer<QgsRenderContext> context( createTemporaryRenderContext() );
+  std::unique_ptr<QgsRenderContext> context( createTemporaryRenderContext() );
 
   Q_FOREACH ( const LayerLegendData& data, mLegend )
   {
@@ -1529,7 +1529,7 @@ void QgsLayerTreeModel::invalidateLegendMapBasedData()
       QgsSymbolLegendNode* n = dynamic_cast<QgsSymbolLegendNode*>( legendNode );
       if ( n )
       {
-        const QSize sz( n->minimumIconSize( context.data() ) );
+        const QSize sz( n->minimumIconSize( context.get() ) );
         const QString parentKey( n->data( QgsLayerTreeModelLegendNode::ParentRuleKeyRole ).toString() );
         widthMax[parentKey] = qMax( sz.width(), widthMax.contains( parentKey ) ? widthMax[parentKey] : 0 );
         n->setIconSize( sz );

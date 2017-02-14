@@ -458,14 +458,14 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
 
     case AddPolygon:
     {
-      if ( mPolygonItem.isNull() )
+      if ( !mPolygonItem )
       {
         mPolygonItem.reset( new QGraphicsPolygonItem() );
-        mPolygonItem.data()->setBrush( Qt::NoBrush );
-        mPolygonItem.data()->setPen( QPen( QBrush( QColor( 227, 22, 22, 200 ) ), 0 ) );
-        mPolygonItem.data()->setZValue( 1000 );
+        mPolygonItem->setBrush( Qt::NoBrush );
+        mPolygonItem->setPen( QPen( QBrush( QColor( 227, 22, 22, 200 ) ), 0 ) );
+        mPolygonItem->setZValue( 1000 );
 
-        scene()->addItem( mPolygonItem.data() );
+        scene()->addItem( mPolygonItem.get() );
         scene()->update();
       }
 
@@ -474,13 +474,13 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
 
     case AddPolyline:
     {
-      if ( mPolylineItem.isNull() && mPolygonItem.isNull() )
+      if ( !mPolylineItem && !mPolygonItem )
       {
         mPolygonItem.reset( new QGraphicsPolygonItem() );
 
         mPolylineItem.reset( new QGraphicsPathItem() );
-        mPolylineItem.data()->setPen( QPen( QBrush( QColor( 227, 22, 22, 200 ) ), 0 ) );
-        mPolylineItem.data()->setZValue( 1000 );
+        mPolylineItem->setPen( QPen( QBrush( QColor( 227, 22, 22, 200 ) ), 0 ) );
+        mPolylineItem->setZValue( 1000 );
       }
 
       break;
@@ -796,18 +796,18 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
     {
       case AddPolygon:
       {
-        if ( ! mPolygonItem.isNull() )
+        if ( mPolygonItem )
         {
-          QPolygonF poly = mPolygonItem.data()->polygon();
+          QPolygonF poly = mPolygonItem->polygon();
 
           // last (temporary) point is removed
           poly.remove( poly.count() - 1 );
           if ( poly.size() >= 3 )
           {
-            mPolygonItem.data()->setPolygon( poly );
+            mPolygonItem->setPolygon( poly );
 
             // add polygon in composition
-            QgsComposerPolygon *composerPolygon = new QgsComposerPolygon( mPolygonItem.data()->polygon(), composition() );
+            QgsComposerPolygon *composerPolygon = new QgsComposerPolygon( mPolygonItem->polygon(), composition() );
             composition()->addComposerPolygon( composerPolygon );
 
             // select the polygon
@@ -819,7 +819,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
           }
 
           // clean
-          scene()->removeItem( mPolygonItem.data() );
+          scene()->removeItem( mPolygonItem.get() );
           mPolygonItem.reset();
           emit actionFinished();
         }
@@ -828,19 +828,19 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
 
       case AddPolyline:
       {
-        if ( ! mPolygonItem.isNull() && ! mPolylineItem.isNull() )
+        if ( mPolygonItem && mPolylineItem )
         {
           // ignore the last point due to release event before doubleClick event
-          QPolygonF poly = mPolygonItem.data()->polygon();
+          QPolygonF poly = mPolygonItem->polygon();
 
           // last (temporary) point is removed
           poly.remove( poly.count() - 1 );
           if ( poly.size() >= 2 )
           {
-            mPolygonItem.data()->setPolygon( poly );
+            mPolygonItem->setPolygon( poly );
 
             // add polygon in composition
-            QgsComposerPolyline *composerPolyline = new QgsComposerPolyline( mPolygonItem.data()->polygon(), composition() );
+            QgsComposerPolyline *composerPolyline = new QgsComposerPolyline( mPolygonItem->polygon(), composition() );
             composition()->addComposerPolyline( composerPolyline );
 
             // select the polygon
@@ -852,7 +852,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
           }
 
           // clean
-          scene()->removeItem( mPolylineItem.data() );
+          scene()->removeItem( mPolylineItem.get() );
           mPolygonItem.reset();
           mPolylineItem.reset();
           emit actionFinished();
@@ -964,7 +964,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
 
     case AddPolygon:
     {
-      if ( ! mPolygonItem.isNull() )
+      if ( mPolygonItem )
         addPolygonNode( scenePoint );
 
       break;
@@ -972,17 +972,17 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
 
     case AddPolyline:
     {
-      if ( ! mPolygonItem.isNull() && ! mPolylineItem.isNull() )
+      if ( mPolygonItem && mPolylineItem )
       {
         addPolygonNode( scenePoint );
 
         // rebuild a new qpainter path
         QPainterPath path;
-        path.addPolygon( mPolygonItem.data()->polygon() );
-        mPolylineItem.data()->setPath( path );
+        path.addPolygon( mPolygonItem->polygon() );
+        mPolylineItem->setPath( path );
 
         // add it to the scene
-        scene()->addItem( mPolylineItem.data() );
+        scene()->addItem( mPolylineItem.get() );
         scene()->update();
       }
       break;
@@ -1201,7 +1201,7 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
     mMouseLastXY = e->pos();
     return;
   }
-  else if (( e->buttons() == Qt::NoButton ) && ( mPolygonItem.isNull() ) )
+  else if (( e->buttons() == Qt::NoButton ) && ( !mPolygonItem ) )
   {
     if ( mCurrentTool == Select )
     {
@@ -1248,7 +1248,7 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
 
       case AddPolygon:
       {
-        if ( ! mPolygonItem.isNull() )
+        if ( mPolygonItem )
           movePolygonNode( scenePoint, shiftModifier );
 
         break;
@@ -1256,14 +1256,14 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
 
       case AddPolyline:
       {
-        if ( ! mPolygonItem.isNull() && ! mPolylineItem.isNull() )
+        if ( mPolygonItem && mPolylineItem )
         {
           movePolygonNode( scenePoint, shiftModifier );
 
           // rebuild a new qpainter path
           QPainterPath path;
-          path.addPolygon( mPolygonItem.data()->polygon() );
-          mPolylineItem.data()->setPath( path );
+          path.addPolygon( mPolygonItem->polygon() );
+          mPolylineItem->setPath( path );
         }
 
         break;
@@ -2251,18 +2251,18 @@ QMainWindow* QgsComposerView::composerWindow()
 
 void QgsComposerView::addPolygonNode( QPointF scenePoint )
 {
-  QPolygonF polygon = mPolygonItem.data()->polygon();
+  QPolygonF polygon = mPolygonItem->polygon();
   polygon.append( QPointF( scenePoint.x(), scenePoint.y() ) );
 
   if ( polygon.size() == 1 )
     polygon.append( QPointF( scenePoint.x(), scenePoint.y() ) );
 
-  mPolygonItem.data()->setPolygon( polygon );
+  mPolygonItem->setPolygon( polygon );
 }
 
 void QgsComposerView::movePolygonNode( QPointF scenePoint, bool constrainAngle )
 {
-  QPolygonF polygon = mPolygonItem.data()->polygon();
+  QPolygonF polygon = mPolygonItem->polygon();
 
   if ( polygon.isEmpty() )
     return;
@@ -2279,7 +2279,7 @@ void QgsComposerView::movePolygonNode( QPointF scenePoint, bool constrainAngle )
   }
 
   polygon.replace( polygon.size() - 1, scenePoint );
-  mPolygonItem.data()->setPolygon( polygon );
+  mPolygonItem->setPolygon( polygon );
 }
 
 void QgsComposerView::displayNodes( const bool display )

@@ -17,7 +17,6 @@
 #include <QString>
 #include <QStringList>
 #include <QSettings>
-#include <QSharedPointer>
 
 #include <ogr_api.h>
 #include "cpl_conv.h"

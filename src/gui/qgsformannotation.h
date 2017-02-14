@@ -71,7 +71,7 @@ class GUI_EXPORT QgsFormAnnotation: public QgsAnnotation
 
   private:
 
-    QScopedPointer<QWidget> mDesignerWidget;
+    std::unique_ptr<QWidget> mDesignerWidget;
     QSize mMinimumSize;
     //! Path to (and including) the .ui file
     QString mDesignerForm;

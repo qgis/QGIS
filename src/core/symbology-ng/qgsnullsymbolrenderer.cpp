@@ -48,7 +48,7 @@ bool QgsNullSymbolRenderer::renderFeature( QgsFeature &feature, QgsRenderContext
        feature.geometry().type() == QgsWkbTypes::UnknownGeometry )
     return true;
 
-  if ( mSymbol.isNull() )
+  if ( !mSymbol )
   {
     //create default symbol
     mSymbol.reset( QgsSymbol::defaultSymbol( feature.geometry().type() ) );
@@ -68,7 +68,7 @@ void QgsNullSymbolRenderer::startRender( QgsRenderContext& context, const QgsFie
 
 void QgsNullSymbolRenderer::stopRender( QgsRenderContext& context )
 {
-  if ( mSymbol.data() )
+  if ( mSymbol.get() )
   {
     mSymbol->stopRender( context );
   }

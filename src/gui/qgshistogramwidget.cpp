@@ -98,7 +98,7 @@ static bool _rangesByLower( const QgsRendererRange& a, const QgsRendererRange& b
 void QgsHistogramWidget::setGraduatedRanges( const QgsRangeList &ranges )
 {
   mRanges = ranges;
-  qSort( mRanges.begin(), mRanges.end(), _rangesByLower );
+  std::sort( mRanges.begin(), mRanges.end(), _rangesByLower );
 }
 
 void QgsHistogramWidget::refreshValues()
@@ -120,7 +120,7 @@ void QgsHistogramWidget::refreshValues()
   }
 
 
-  qSort( mValues.begin(), mValues.end() );
+  std::sort( mValues.begin(), mValues.end() );
   mHistogram.setValues( mValues );
   mBinsSpinBox->blockSignals( true );
   mBinsSpinBox->setValue( qMax( mHistogram.optimalNumberBins(), 30 ) );

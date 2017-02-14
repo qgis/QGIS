@@ -158,12 +158,12 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mSaveAsMenu->addAction( tr( "SLD File..." ) );
 
   //Only if the provider support loading & saving styles to db add new choices
-  if ( mLayer->dataProvider()->isSaveAndLoadStyleToDBSupported() )
+  if ( mLayer->dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
   {
     //for loading
     mLoadStyleMenu = new QMenu( this );
     mLoadStyleMenu->addAction( tr( "Load from file..." ) );
-    mLoadStyleMenu->addAction( tr( "Load from database" ) );
+    mLoadStyleMenu->addAction( tr( "Database styles manager" ) );
     //mActionLoadStyle->setContextMenuPolicy( Qt::PreventContextMenu );
     mActionLoadStyle->setMenu( mLoadStyleMenu );
 
@@ -305,7 +305,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   {
     layer->parent()->takeChild( layer );
   }
-  mLayersDependenciesTreeModel.reset( new QgsLayerTreeModel( mLayersDependenciesTreeGroup.data() ) );
+  mLayersDependenciesTreeModel.reset( new QgsLayerTreeModel( mLayersDependenciesTreeGroup.get() ) );
   // use visibility as selection
   mLayersDependenciesTreeModel->setFlag( QgsLayerTreeModel::AllowNodeChangeVisibility );
 
@@ -321,7 +321,10 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     layer->setItemVisibilityChecked( dependencySources.contains( layer->layerId() ) );
   }
 
-  mLayersDependenciesTreeView->setModel( mLayersDependenciesTreeModel.data() );
+  mLayersDependenciesTreeView->setModel( mLayersDependenciesTreeModel.get() );
+
+  connect( mRefreshLayerCheckBox, &QCheckBox::toggled, mRefreshLayerIntervalSpinBox, &QDoubleSpinBox::setEnabled );
+
 } // QgsVectorLayerProperties ctor
 
 
@@ -445,6 +448,10 @@ void QgsVectorLayerProperties::syncToLayer()
   mSimplifyMaximumScaleComboBox->setScale( 1.0 / simplifyMethod.maximumScale() );
 
   mForceRasterCheckBox->setChecked( mLayer->renderer() && mLayer->renderer()->forceRasterRender() );
+
+  mRefreshLayerCheckBox->setChecked( mLayer->hasAutoRefreshEnabled() );
+  mRefreshLayerIntervalSpinBox->setEnabled( mLayer->hasAutoRefreshEnabled() );
+  mRefreshLayerIntervalSpinBox->setValue( mLayer->autoRefreshInterval() / 1000.0 );
 
   // load appropriate symbology page (V1 or V2)
   updateSymbologyPage();
@@ -583,6 +590,9 @@ void QgsVectorLayerProperties::apply()
   if ( mLayer->renderer() )
     mLayer->renderer()->setForceRasterRender( mForceRasterCheckBox->isChecked() );
 
+  mLayer->setAutoRefreshInterval( mRefreshLayerIntervalSpinBox->value() * 1000.0 );
+  mLayer->setAutoRefreshEnabled( mRefreshLayerCheckBox->isChecked() );
+
   mOldJoins = mLayer->vectorJoins();
 
   //save variables
@@ -706,7 +716,7 @@ void QgsVectorLayerProperties::loadDefaultStyle_clicked()
   QString msg;
   bool defaultLoadedFlag = false;
 
-  if ( mLayer->dataProvider()->isSaveAndLoadStyleToDBSupported() )
+  if ( mLayer->dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
   {
     QMessageBox askToUser;
     askToUser.setText( tr( "Load default style from: " ) );
@@ -761,7 +771,7 @@ void QgsVectorLayerProperties::saveDefaultStyle_clicked()
 {
   apply();
   QString errorMsg;
-  if ( mLayer->dataProvider()->isSaveAndLoadStyleToDBSupported() )
+  if ( mLayer->dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
   {
     QMessageBox askToUser;
     askToUser.setText( tr( "Save default style to: " ) );
@@ -883,11 +893,11 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
 
       if ( !msgError.isNull() )
       {
-        QMessageBox::warning( this, infoWindowTitle, msgError );
+        QgisApp::instance()->messageBar()->pushMessage( infoWindowTitle , msgError, QgsMessageBar::WARNING, QgisApp::instance()->messageTimeout() );
       }
       else
       {
-        QMessageBox::information( this, infoWindowTitle, tr( "Style saved" ) );
+        QgisApp::instance()->messageBar()->pushMessage( infoWindowTitle , tr( "Style saved" ), QgsMessageBar::INFO, QgisApp::instance()->messageTimeout() );
       }
 
     }
@@ -1022,6 +1032,7 @@ void QgsVectorLayerProperties::showListOfStylesFromDatabase()
   }
 
   QgsLoadStyleFromDBDialog dialog;
+  dialog.setLayer( mLayer );
   dialog.initializeLists( ids, names, descriptions, sectionLimit );
 
   if ( dialog.exec() == QDialog::Accepted )

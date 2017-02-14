@@ -20,7 +20,6 @@
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
 #include <QObject>
-#include <QSharedPointer>
 #include "qgstest.h"
 
 class TestTask : public QgsTask
@@ -235,15 +234,15 @@ void TestQgsTaskManager::cleanup()
 
 void TestQgsTaskManager::task()
 {
-  QScopedPointer< TestTask > task( new TestTask( "desc" ) );
+  std::unique_ptr< TestTask > task( new TestTask( "desc" ) );
   QCOMPARE( task->status(), QgsTask::Queued );
   QCOMPARE( task->description(), QString( "desc" ) );
   QVERIFY( !task->isActive() );
   QVERIFY( task->canCancel() );
   QVERIFY( task->flags() & QgsTask::CanCancel );
 
-  QSignalSpy startedSpy( task.data(), &QgsTask::begun );
-  QSignalSpy statusSpy( task.data(), &QgsTask::statusChanged );
+  QSignalSpy startedSpy( task.get(), &QgsTask::begun );
+  QSignalSpy statusSpy( task.get(), &QgsTask::statusChanged );
 
   task->start();
   QVERIFY( task->runCalled );
@@ -253,9 +252,9 @@ void TestQgsTaskManager::task()
   QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy.at( 1 ).at( 0 ).toInt() ), QgsTask::Complete );
 
   //test that calling stopped sets correct state
-  QScopedPointer< FailTask > failTask( new FailTask() );
-  QSignalSpy stoppedSpy( failTask.data(), &QgsTask::taskTerminated );
-  QSignalSpy statusSpy2( failTask.data(), &QgsTask::statusChanged );
+  std::unique_ptr< FailTask > failTask( new FailTask() );
+  QSignalSpy stoppedSpy( failTask.get(), &QgsTask::taskTerminated );
+  QSignalSpy statusSpy2( failTask.get(), &QgsTask::statusChanged );
   failTask->start();
   QCOMPARE( failTask->status(), QgsTask::Terminated );
   QVERIFY( !failTask->isActive() );
@@ -265,8 +264,8 @@ void TestQgsTaskManager::task()
 
   //test that calling completed sets correct state
   task.reset( new TestTask() );
-  QSignalSpy completeSpy( task.data(), &QgsTask::taskCompleted );
-  QSignalSpy statusSpy3( task.data(), &QgsTask::statusChanged );
+  QSignalSpy completeSpy( task.get(), &QgsTask::taskCompleted );
+  QSignalSpy statusSpy3( task.get(), &QgsTask::statusChanged );
   task->start();
   QCOMPARE( task->status(), QgsTask::Complete );
   QVERIFY( !task->isActive() );
@@ -294,9 +293,9 @@ void TestQgsTaskManager::task()
 
 void TestQgsTaskManager::taskResult()
 {
-  QScopedPointer< QgsTask > task( new SuccessTask() );
+  std::unique_ptr< QgsTask > task( new SuccessTask() );
   QCOMPARE( task->status(), QgsTask::Queued );
-  QSignalSpy statusSpy( task.data(), &QgsTask::statusChanged );
+  QSignalSpy statusSpy( task.get(), &QgsTask::statusChanged );
 
   task->start();
   QCOMPARE( statusSpy.count(), 2 );
@@ -306,7 +305,7 @@ void TestQgsTaskManager::taskResult()
 
   task.reset( new FailTask() );
   QCOMPARE( task->status(), QgsTask::Queued );
-  QSignalSpy statusSpy2( task.data(), &QgsTask::statusChanged );
+  QSignalSpy statusSpy2( task.get(), &QgsTask::statusChanged );
 
   task->start();
   QCOMPARE( statusSpy2.count(), 2 );
@@ -1027,13 +1026,13 @@ void TestQgsTaskManager::layerDependencies()
   //test that remove layers cancels all tasks which are dependent on them
   TestTask* task = new TestTask();
   task->hold();
-  task->setDependentLayers( QStringList() << layer2->id() << layer3->id() );
-  QCOMPARE( task->dependentLayerIds(), QStringList() << layer2->id() << layer3->id() );
+  task->setDependentLayers( QList< QgsMapLayer* >() << layer2 << layer3 );
+  QCOMPARE( task->dependentLayers(), QList< QgsMapLayer* >() << layer2 << layer3 );
   long taskId = manager.addTask( task );
-  QCOMPARE( manager.dependentLayers( taskId ), QStringList() << layer2->id() << layer3->id() );
-  QVERIFY( manager.tasksDependentOnLayer( "xxx" ).isEmpty() );
-  QCOMPARE( manager.tasksDependentOnLayer( layer2->id() ), QList< QgsTask* >() << task );
-  QCOMPARE( manager.tasksDependentOnLayer( layer3->id() ), QList< QgsTask* >() << task );
+  QCOMPARE( manager.dependentLayers( taskId ), QList< QgsMapLayer* >() << layer2 << layer3 );
+  QVERIFY( manager.tasksDependentOnLayer( nullptr ).isEmpty() );
+  QCOMPARE( manager.tasksDependentOnLayer( layer2 ), QList< QgsTask* >() << task );
+  QCOMPARE( manager.tasksDependentOnLayer( layer3 ), QList< QgsTask* >() << task );
 
   QCOMPARE( task->status(), QgsTask::OnHold );
   //removing layer1 should have no effect

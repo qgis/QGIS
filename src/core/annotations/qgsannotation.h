@@ -182,7 +182,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * Returns the symbol that is used for rendering the annotation frame.
      * @see setFillSymbol()
      */
-    QgsFillSymbol* fillSymbol() const { return mFillSymbol.data(); }
+    QgsFillSymbol* fillSymbol() const { return mFillSymbol.get(); }
 
     /**
      * Renders the annotation to a target render context.
@@ -216,7 +216,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * Returns the symbol that is drawn at the annotation's map position.
      * @see setMarkerSymbol()
      */
-    QgsMarkerSymbol* markerSymbol() const { return mMarkerSymbol.data(); }
+    QgsMarkerSymbol* markerSymbol() const { return mMarkerSymbol.get(); }
 
     /**
      * Returns the map layer associated with the annotation. Annotations can be
@@ -331,12 +331,12 @@ class CORE_EXPORT QgsAnnotation : public QObject
     QSizeF mFrameSize;
 
     //! Point symbol that is to be drawn at the map reference location
-    QScopedPointer<QgsMarkerSymbol> mMarkerSymbol;
+    std::unique_ptr<QgsMarkerSymbol> mMarkerSymbol;
 
     QgsMargins mContentsMargins;
 
     //! Fill symbol used for drawing annotation
-    QScopedPointer<QgsFillSymbol> mFillSymbol;
+    std::unique_ptr<QgsFillSymbol> mFillSymbol;
 
     //! Segment number where the connection to the map point is attached. -1 if no balloon needed (e.g. if point is contained in frame)
     int mBalloonSegment = -1;
@@ -348,7 +348,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
     QPointF mBalloonSegmentPoint2;
 
     //! Associated layer (or nullptr if not attached to a layer)
-    QPointer<QgsMapLayer> mMapLayer;
+    QgsWeakMapLayerPointer mMapLayer;
 
     //! Associated feature, or invalid feature if no feature associated
     QgsFeature mFeature;

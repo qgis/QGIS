@@ -23,6 +23,7 @@
 #include <QRegularExpression>
 #include <QNetworkProxy>
 #include <QNetworkProxyFactory>
+#include <memory>
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -44,7 +45,7 @@ QUrl QgsHelp::helpUrl( const QString& key )
     return helpNotFound;
   }
 
-  QScopedPointer<QgsExpressionContextScope> scope( QgsExpressionContextUtils::globalScope() );
+  std::unique_ptr<QgsExpressionContextScope> scope( QgsExpressionContextUtils::globalScope() );
 
   QUrl helpUrl;
   QString helpPath, fullPath;
@@ -52,7 +53,15 @@ QUrl QgsHelp::helpUrl( const QString& key )
 
   Q_FOREACH ( const QString& path, paths )
   {
-    fullPath = path;
+    if ( path.endsWith( "\\" ) || path.endsWith( "/" ) )
+    {
+      fullPath = path.left( path.size() - 1 );
+    }
+    else
+    {
+      fullPath = path;
+    }
+
     Q_FOREACH ( const QString& var, scope->variableNames() )
     {
       QRegularExpression rx( QStringLiteral( "(<!\\$\\$)*(\\$%1)" ).arg( var ) );

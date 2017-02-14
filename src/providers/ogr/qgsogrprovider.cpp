@@ -1447,7 +1447,7 @@ bool QgsOgrProvider::deleteAttributes( const QgsAttributeIds &attributes )
   bool res = true;
   QList<int> attrsLst = attributes.toList();
   // sort in descending order
-  qSort( attrsLst.begin(), attrsLst.end(), qGreater<int>() );
+  std::sort( attrsLst.begin(), attrsLst.end(), std::greater<int>() );
   Q_FOREACH ( int attr, attrsLst )
   {
     if ( mFirstFieldIsFid )
@@ -2613,20 +2613,38 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
     case QgsWkbTypes::Point:
       OGRvectortype = wkbPoint;
       break;
+    case QgsWkbTypes::Point25D:
+      OGRvectortype = wkbPoint25D;
+      break;
     case QgsWkbTypes::LineString:
       OGRvectortype = wkbLineString;
+      break;
+    case QgsWkbTypes::LineString25D:
+      OGRvectortype = wkbLineString25D;
       break;
     case QgsWkbTypes::Polygon:
       OGRvectortype = wkbPolygon;
       break;
+    case QgsWkbTypes::Polygon25D:
+      OGRvectortype = wkbPolygon25D;
+      break;
     case QgsWkbTypes::MultiPoint:
       OGRvectortype = wkbMultiPoint;
+      break;
+    case QgsWkbTypes::MultiPoint25D:
+      OGRvectortype = wkbMultiPoint25D;
       break;
     case QgsWkbTypes::MultiLineString:
       OGRvectortype = wkbMultiLineString;
       break;
+    case QgsWkbTypes::MultiLineString25D:
+      OGRvectortype = wkbMultiLineString25D;
+      break;
     case QgsWkbTypes::MultiPolygon:
       OGRvectortype = wkbMultiPolygon;
+      break;
+    case QgsWkbTypes::MultiPolygon25D:
+      OGRvectortype = wkbMultiPolygon25D;
       break;
     default:
     {
@@ -3607,7 +3625,7 @@ bool QgsOgrProvider::leaveUpdateMode()
   return true;
 }
 
-bool QgsOgrProvider::isSaveAndLoadStyleToDBSupported() const
+bool QgsOgrProvider::isSaveAndLoadStyleToDatabaseSupported() const
 {
   // We could potentially extend support for styling to other drivers
   // with multiple layer support.
@@ -4028,7 +4046,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
     OGR_F_Destroy( hFeature );
   }
 
-  qSort( listTimestamp.begin(), listTimestamp.end() );
+  std::sort( listTimestamp.begin(), listTimestamp.end() );
   // Sort from most recent to least recent
   for ( int i = listTimestamp.size() - 1; i >= 0; i-- )
   {

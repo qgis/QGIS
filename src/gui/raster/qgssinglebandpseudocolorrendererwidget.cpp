@@ -160,7 +160,7 @@ QgsRasterRenderer* QgsSingleBandPseudoColorRendererWidget::renderer()
     colorRampItems.append( newColorRampItem );
   }
   // sort the shader items
-  qSort( colorRampItems );
+  std::sort( colorRampItems.begin(), colorRampItems.end() );
   colorRampShader->setColorRampItemList( colorRampItems );
 
   if ( !btnColorRamp->isNull() )
@@ -337,7 +337,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mDeleteEntryButton_clicked()
 
 void QgsSingleBandPseudoColorRendererWidget::classify()
 {
-  QScopedPointer< QgsColorRamp > ramp( btnColorRamp->colorRamp() );
+  std::unique_ptr< QgsColorRamp > ramp( btnColorRamp->colorRamp() );
   if ( !ramp )
   {
     return;
@@ -346,7 +346,7 @@ void QgsSingleBandPseudoColorRendererWidget::classify()
   QgsSingleBandPseudoColorRenderer *pr = new QgsSingleBandPseudoColorRenderer( mRasterLayer->dataProvider(), mBandComboBox->currentData().toInt(), nullptr );
   pr->setClassificationMin( lineEditValue( mMinLineEdit ) );
   pr->setClassificationMax( lineEditValue( mMaxLineEdit ) );
-  pr->createShader( ramp.data(), static_cast< QgsColorRampShader::Type >( mColorInterpolationComboBox->currentData().toInt() ), static_cast< QgsColorRampShader::ClassificationMode >( mClassificationModeComboBox->currentData().toInt() ), mNumberOfEntriesSpinBox->value(), mClipCheckBox->isChecked(), minMaxWidget()->extent() );
+  pr->createShader( ramp.get(), static_cast< QgsColorRampShader::Type >( mColorInterpolationComboBox->currentData().toInt() ), static_cast< QgsColorRampShader::ClassificationMode >( mClassificationModeComboBox->currentData().toInt() ), mNumberOfEntriesSpinBox->value(), mClipCheckBox->isChecked(), minMaxWidget()->extent() );
 
   const QgsRasterShader* rasterShader = pr->shader();
   if ( rasterShader )
@@ -386,7 +386,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassificationModeComboBox_curr
 
 void QgsSingleBandPseudoColorRendererWidget::applyColorRamp()
 {
-  QScopedPointer< QgsColorRamp > ramp( btnColorRamp->colorRamp() );
+  std::unique_ptr< QgsColorRamp > ramp( btnColorRamp->colorRamp() );
   if ( !ramp )
   {
     return;

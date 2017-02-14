@@ -20,6 +20,7 @@ class QgsMapRendererParallelJob : QgsMapRendererQImageJob
     virtual void cancel();
     virtual void waitForFinished();
     virtual bool isActive() const;
+    virtual bool usedCachedLabels() const;
 
     virtual QgsLabelingResults* takeLabelingResults() /Transfer/;
 

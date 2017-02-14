@@ -359,7 +359,7 @@ QList<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::getSelfIntersections
       s.segment2 = k;
       if ( s.segment1 > s.segment2 )
       {
-        qSwap( s.segment1, s.segment2 );
+        std::swap( s.segment1, s.segment2 );
       }
       s.point = inter;
       intersections.append( s );

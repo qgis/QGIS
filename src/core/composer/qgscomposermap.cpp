@@ -48,34 +48,10 @@
 
 QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height )
     : QgsComposerItem( x, y, width, height, composition )
-    , mGridStack( nullptr )
-    , mOverviewStack( nullptr )
-    , mMapRotation( 0 )
-    , mEvaluatedMapRotation( 0 )
-    , mKeepLayerSet( false )
-    , mKeepLayerStyles( false )
-    , mFollowVisibilityPreset( false )
-    , mUpdatesEnabled( true )
-    , mDrawAnnotations( true )
-    , mAtlasDriven( false )
-    , mAtlasScalingMode( Auto )
-    , mAtlasMargin( 0.10 )
 {
-  mComposition = composition;
-
-  mId = 0;
   assignFreeId();
 
-  mPreviewMode = QgsComposerMap::Rectangle;
   mCurrentRectangle = rect();
-
-  // Cache
-  mCacheUpdated = false;
-  mDrawing = false;
-
-  //Offset
-  mXOffset = 0.0;
-  mYOffset = 0.0;
 
   QgsProject* project = mComposition->project();
 
@@ -92,26 +68,8 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
 
 QgsComposerMap::QgsComposerMap( QgsComposition *composition )
     : QgsComposerItem( 0, 0, 10, 10, composition )
-    , mGridStack( nullptr )
-    , mOverviewStack( nullptr )
-    , mMapRotation( 0 )
-    , mEvaluatedMapRotation( 0 )
-    , mKeepLayerSet( false )
-    , mKeepLayerStyles( false )
-    , mFollowVisibilityPreset( false )
-    , mUpdatesEnabled( true )
-    , mDrawAnnotations( true )
-    , mAtlasDriven( false )
-    , mAtlasScalingMode( Auto )
-    , mAtlasMargin( 0.10 )
 {
-  //Offset
-  mXOffset = 0.0;
-  mYOffset = 0.0;
-
-  mComposition = composition;
   mId = mComposition->composerMapItems().size();
-  mPreviewMode = QgsComposerMap::Rectangle;
   mCurrentRectangle = rect();
 
   init();
@@ -1231,7 +1189,7 @@ bool QgsComposerMap::writeXml( QDomElement& elem, QDomDocument & doc ) const
 
   //layer set
   QDomElement layerSetElem = doc.createElement( QStringLiteral( "LayerSet" ) );
-  Q_FOREACH ( const QPointer<QgsMapLayer>& layerPtr, mLayers )
+  Q_FOREACH ( const QgsWeakMapLayerPointer& layerPtr, mLayers )
   {
     QgsMapLayer* layer = layerPtr.data();
     if ( !layer )
@@ -1557,7 +1515,7 @@ void QgsComposerMap::setLayerStyleOverrides( const QMap<QString, QString>& overr
 void QgsComposerMap::storeCurrentLayerStyles()
 {
   mLayerStyleOverrides.clear();
-  Q_FOREACH ( const QPointer<QgsMapLayer>& layerPtr, mLayers )
+  Q_FOREACH ( const QgsWeakMapLayerPointer& layerPtr, mLayers )
   {
     if ( QgsMapLayer* layer = layerPtr.data() )
     {

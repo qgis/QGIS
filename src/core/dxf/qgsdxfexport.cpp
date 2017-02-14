@@ -41,6 +41,7 @@
 #include "qgstextlabelfeature.h"
 #include "qgscrscache.h"
 #include "qgslogger.h"
+#include "qgsmaplayerstylemanager.h"
 
 #include "qgswkbtypes.h"
 #include "qgspointv2.h"
@@ -382,9 +383,10 @@ QgsDxfExport::QgsDxfExport( const QgsDxfExport& dxfExport )
   *this = dxfExport;
 }
 
-QgsDxfExport& QgsDxfExport::operator=( const QgsDxfExport & dxfExport )
+QgsDxfExport &QgsDxfExport::operator=( const QgsDxfExport & dxfExport )
 {
-  mLayers = dxfExport.mLayers;
+  mMapSettings = dxfExport.mMapSettings;
+  mLayerNameAttribute = dxfExport.mLayerNameAttribute;
   mSymbologyScaleDenominator = dxfExport.mSymbologyScaleDenominator;
   mSymbologyExport = dxfExport.mSymbologyExport;
   mMapUnits = dxfExport.mMapUnits;
@@ -397,9 +399,26 @@ QgsDxfExport& QgsDxfExport::operator=( const QgsDxfExport & dxfExport )
   return *this;
 }
 
+void QgsDxfExport::setMapSettings( const QgsMapSettings &settings )
+{
+  mMapSettings = settings;
+}
+
 void QgsDxfExport::addLayers( const QList< QPair< QgsVectorLayer *, int > > &layers )
 {
-  mLayers = layers;
+  QList<QgsMapLayer*> layerList;
+
+  mLayerNameAttribute.clear();
+
+  QList< QPair< QgsVectorLayer*, int > >::const_iterator layerIt = layers.constBegin();
+  for ( ; layerIt != layers.constEnd(); ++layerIt )
+  {
+    layerList << layerIt->first;
+    if ( layerIt->second >= 0 )
+      mLayerNameAttribute.insert( layerIt->first->id(), layerIt->second );
+  }
+
+  mMapSettings.setLayers( layerList );
 }
 
 void QgsDxfExport::writeGroup( int code, int i )
@@ -497,22 +516,22 @@ int QgsDxfExport::writeToFile( QIODevice* d, const QString& encoding )
 
   if ( mExtent.isEmpty() )
   {
-    QList< QPair<QgsVectorLayer*, int> >::const_iterator layerIt = mLayers.constBegin();
-    for ( ; layerIt != mLayers.constEnd(); ++layerIt )
+    Q_FOREACH ( QgsMapLayer *ml, mMapSettings.layers() )
     {
-      if ( layerIt->first )
-      {
-        QgsRectangle layerExtent = layerIt->first->extent();
-        layerExtent = mMapSettings.layerToMapCoordinates( layerIt->first, layerExtent );
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
+      if ( !vl )
+        continue;
 
-        if ( mExtent.isEmpty() )
-        {
-          mExtent = layerExtent;
-        }
-        else
-        {
-          mExtent.combineExtentWith( layerExtent );
-        }
+      QgsRectangle layerExtent = vl->extent();
+      layerExtent = mMapSettings.layerToMapCoordinates( vl, layerExtent );
+
+      if ( mExtent.isEmpty() )
+      {
+        mExtent = layerExtent;
+      }
+      else
+      {
+        mExtent.combineExtentWith( layerExtent );
       }
     }
   }
@@ -747,27 +766,28 @@ void QgsDxfExport::writeTables()
   writeGroup( 70, 0 );
   writeGroup( 0, QStringLiteral( "ENDTAB" ) );
 
-  QList< QPair<QgsVectorLayer*, int> >::const_iterator layerIt = mLayers.constBegin();
   QSet<QString> layerNames;
-  for ( ; layerIt != mLayers.constEnd(); ++layerIt )
+  Q_FOREACH ( QgsMapLayer *ml, mMapSettings.layers() )
   {
-    if ( !layerIsScaleBasedVisible( layerIt->first ) )
+    if ( !layerIsScaleBasedVisible( ml ) )
       continue;
 
-    if ( layerIt->first )
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
+    if ( !vl )
+      continue;
+
+    int attrIdx = mLayerNameAttribute.value( vl->id(), -1 );
+    if ( attrIdx < 0 )
     {
-      if ( layerIt->second < 0 )
+      layerNames << dxfLayerName( layerName( vl ) );
+    }
+    else
+    {
+      QList<QVariant> values;
+      vl->uniqueValues( attrIdx, values );
+      Q_FOREACH ( const QVariant& v, values )
       {
-        layerNames << dxfLayerName( layerName( layerIt->first ) );
-      }
-      else
-      {
-        QList<QVariant> values;
-        layerIt->first->uniqueValues( layerIt->second, values );
-        Q_FOREACH ( const QVariant& v, values )
-        {
-          layerNames << dxfLayerName( v.toString() );
-        }
+        layerNames << dxfLayerName( v.toString() );
       }
     }
   }
@@ -946,27 +966,40 @@ void QgsDxfExport::writeEntities()
   engine.setMapSettings( mMapSettings );
 
   // iterate through the maplayers
-  QList< QPair< QgsVectorLayer*, int > >::const_iterator layerIt = mLayers.constBegin();
-  for ( ; layerIt != mLayers.constEnd(); ++layerIt )
+  Q_FOREACH ( QgsMapLayer *ml, mMapSettings.layers() )
   {
-    QgsVectorLayer* vl = layerIt->first;
+    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
     if ( !vl || !layerIsScaleBasedVisible( vl ) )
     {
       continue;
+    }
+
+    bool hasStyleOverride = mMapSettings.layerStyleOverrides().contains( vl->id() );
+    if ( hasStyleOverride )
+    {
+      QgsDebugMsg( QString( "%1: apply override style" ).arg( vl->id() ) );
+      vl->styleManager()->setOverrideStyle( mMapSettings.layerStyleOverrides().value( vl->id() ) );
+    }
+    else
+    {
+      QgsDebugMsg( QString( "%1: not override style" ).arg( vl->id() ) );
     }
 
     QgsSymbolRenderContext sctx( ctx, QgsUnitTypes::RenderMillimeters, 1.0, false, 0, nullptr );
     QgsFeatureRenderer* renderer = vl->renderer();
     if ( !renderer )
     {
+      if ( hasStyleOverride )
+        vl->styleManager()->restoreOverrideStyle();
       continue;
     }
     renderer->startRender( ctx, vl->fields() );
 
     QSet<QString> attributes = renderer->usedAttributes( ctx );
-    if ( vl->fields().exists( layerIt->second ) )
+    int attrIdx = mLayerNameAttribute.value( vl->id(), 1 );
+    if ( vl->fields().exists( attrIdx ) )
     {
-      QString layerAttr = vl->fields().at( layerIt->second ).name();
+      QString layerAttr = vl->fields().at( attrIdx ).name();
       attributes << layerAttr;
     }
 
@@ -1003,6 +1036,10 @@ void QgsDxfExport::writeEntities()
     {
       writeEntitiesSymbolLevels( vl );
       renderer->stopRender( ctx );
+
+      if ( hasStyleOverride )
+        vl->styleManager()->restoreOverrideStyle();
+
       continue;
     }
 
@@ -1017,7 +1054,7 @@ void QgsDxfExport::writeEntities()
     while ( featureIt.nextFeature( fet ) )
     {
       ctx.expressionContext().setFeature( fet );
-      QString lName( dxfLayerName( layerIt->second == -1 ? layerName( vl ) : fet.attribute( layerIt->second ).toString() ) );
+      QString lName( dxfLayerName( attrIdx < 0 ? layerName( vl ) : fet.attribute( attrIdx ).toString() ) );
 
       sctx.setFeature( &fet );
       if ( mSymbologyExport == NoSymbology )
@@ -1067,6 +1104,9 @@ void QgsDxfExport::writeEntities()
     }
 
     renderer->stopRender( ctx );
+
+    if ( hasStyleOverride )
+      vl->styleManager()->restoreOverrideStyle();
   }
 
   engine.run( ctx );
@@ -3644,7 +3684,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QgsCoordinateT
   if ( !fet->hasGeometry() )
     return;
 
-  QScopedPointer<QgsAbstractGeometry> geom( fet->geometry().geometry()->clone() );
+  std::unique_ptr<QgsAbstractGeometry> geom( fet->geometry().geometry()->clone() );
   if ( ct.isValid() )
   {
     geom->transform( ct );
@@ -3702,7 +3742,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QgsCoordinateT
 
   if ( penStyle != Qt::NoPen )
   {
-    const QgsAbstractGeometry *tempGeom = geom.data();
+    const QgsAbstractGeometry *tempGeom = geom.get();
 
     switch ( QgsWkbTypes::flatType( geometryType ) )
     {
@@ -3716,11 +3756,11 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QgsCoordinateT
         if ( !qgsDoubleNear( offset, 0.0 ) )
         {
           QgsGeos geos( tempGeom );
-          if ( tempGeom != geom.data() )
+          if ( tempGeom != geom.get() )
             delete tempGeom;
           tempGeom = geos.offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );
           if ( !tempGeom )
-            tempGeom = geom.data();
+            tempGeom = geom.get();
         }
 
         writePolyline( tempGeom->coordinateSequence().at( 0 ).at( 0 ), layer, lineStyleName, penColor, width );
@@ -3737,11 +3777,11 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QgsCoordinateT
         if ( !qgsDoubleNear( offset, 0.0 ) )
         {
           QgsGeos geos( tempGeom );
-          if ( tempGeom != geom.data() )
+          if ( tempGeom != geom.get() )
             delete tempGeom;
           tempGeom = geos.offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );
           if ( !tempGeom )
-            tempGeom = geom.data();
+            tempGeom = geom.get();
         }
 
         const QgsCoordinateSequence &cs = tempGeom->coordinateSequence();
@@ -3763,11 +3803,11 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QgsCoordinateT
         if ( !qgsDoubleNear( offset, 0.0 ) )
         {
           QgsGeos geos( tempGeom );
-          if ( tempGeom != geom.data() )
+          if ( tempGeom != geom.get() )
             delete tempGeom;
           tempGeom = geos.buffer( offset, 0,  GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 );
           if ( !tempGeom )
-            tempGeom = geom.data();
+            tempGeom = geom.get();
         }
 
         const QgsCoordinateSequence &cs = tempGeom->coordinateSequence();
@@ -3784,11 +3824,11 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QgsCoordinateT
         if ( !qgsDoubleNear( offset, 0.0 ) )
         {
           QgsGeos geos( tempGeom );
-          if ( tempGeom != geom.data() )
+          if ( tempGeom != geom.get() )
             delete tempGeom;
           tempGeom = geos.buffer( offset, 0,  GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 );
           if ( !tempGeom )
-            tempGeom = geom.data();
+            tempGeom = geom.get();
         }
 
         const QgsCoordinateSequence &cs = tempGeom->coordinateSequence();
@@ -3803,13 +3843,13 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QgsCoordinateT
         break;
     }
 
-    if ( tempGeom != geom.data() )
+    if ( tempGeom != geom.get() )
       delete tempGeom;
   }
 
   if ( brushStyle != Qt::NoBrush )
   {
-    const QgsAbstractGeometry *tempGeom = geom.data();
+    const QgsAbstractGeometry *tempGeom = geom.get();
 
     switch ( QgsWkbTypes::flatType( geometryType ) )
     {
@@ -3837,7 +3877,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QgsCoordinateT
 
     }
 
-    if ( tempGeom != geom.data() )
+    if ( tempGeom != geom.get() )
       delete tempGeom;
   }
 }
@@ -3936,11 +3976,9 @@ QList< QPair< QgsSymbolLayer*, QgsSymbol* > > QgsDxfExport::symbolLayers( QgsRen
 {
   QList< QPair< QgsSymbolLayer*, QgsSymbol* > > symbolLayers;
 
-  QList< QPair< QgsVectorLayer*, int> >::const_iterator lIt = mLayers.constBegin();
-  for ( ; lIt != mLayers.constEnd(); ++lIt )
+  Q_FOREACH ( QgsMapLayer *ml, mMapSettings.layers() )
   {
-    // cast to vector layer
-    QgsVectorLayer* vl = lIt->first;
+    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
     if ( !vl )
     {
       continue;
@@ -4192,12 +4230,13 @@ bool QgsDxfExport::layerIsScaleBasedVisible( const QgsMapLayer* layer ) const
 
 QString QgsDxfExport::layerName( const QString &id, const QgsFeature &f ) const
 {
-  QList< QPair<QgsVectorLayer*, int> >::const_iterator layerIt = mLayers.constBegin();
-  for ( ; layerIt != mLayers.constEnd(); ++layerIt )
+  Q_FOREACH ( QgsMapLayer *ml, mMapSettings.layers() )
   {
-    if ( layerIt->first && layerIt->first->id() == id )
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
+    if ( vl && vl->id() == id )
     {
-      return dxfLayerName( layerIt->second < 0 ? layerName( layerIt->first ) : f.attribute( layerIt->second ).toString() );
+      int attrIdx = mLayerNameAttribute.value( vl->id(), -1 );
+      return dxfLayerName( attrIdx < 0 ? layerName( vl ) : f.attribute( attrIdx ).toString() );
     }
   }
 

@@ -18,16 +18,77 @@
 #define QGSOPTIONSDIALOGBASE_H
 
 #include "qgisgui.h"
+#include <functional>
 
 #include <QDialog>
 #include <QPointer>
 #include <QSettings>
+#include <QStyledItemDelegate>
 #include "qgis_gui.h"
+
 
 class QDialogButtonBox;
 class QListWidget;
+class QModelIndex;
+class QPalette;
+class QPainter;
 class QStackedWidget;
+class QStyleOptionViewItem;
 class QSplitter;
+
+class QgsFilterLineEdit;
+
+/** \ingroup gui
+ * \class QgsSearchHighlightOptionWidget
+ * Container for a widget to be used to search text in the option dialog
+ * If the widget type is handled, it is valid.
+ * It can perform a text search in the widget and highlight it in case of success.
+ * This uses stylesheets.
+ * @note added in 3.0
+ */
+class GUI_EXPORT QgsSearchHighlightOptionWidget : public QObject
+{
+    Q_OBJECT
+  public:
+
+    /** Constructor
+     * @param widget the widget used to search text into
+     */
+    explicit QgsSearchHighlightOptionWidget( QWidget* widget = 0 );
+    ~QgsSearchHighlightOptionWidget();
+
+    /**
+     * Returns if it valid: if the widget type is handled and if the widget is not still available
+     */
+    bool isValid() {return mValid;}
+
+    /**
+     * search for a text pattern and highlight the widget if the text is found
+     * @return true if the text pattern is found
+     */
+    bool searchHighlight( QString searchText );
+
+    /**
+     *  reset the style to the original state
+     */
+    void reset();
+
+    /**
+     * return the widget
+     */
+    QWidget* widget() {return mWidget;}
+
+  private slots:
+    void widgetDestroyed();
+
+  private:
+    QWidget* mWidget;
+    QString mStyleSheet;
+    bool mValid;
+    bool mChangedStyle;
+    std::function < QString() > mText;
+};
+
 
 /** \ingroup gui
  * \class QgsOptionsDialogBase
@@ -80,6 +141,15 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      */
     bool iconOnly() {return mIconOnly;}
 
+  public slots:
+
+    /**
+     * searchText searches for a text in all the pages of the stacked widget and highlight the results
+     * @param text the text to search
+     * @note added in 3.0
+     */
+    void searchText( QString text );
+
   protected slots:
     void updateOptionsListVerticalTabs();
     void optionsStackedWidget_CurrentChanged( int indx );
@@ -92,12 +162,22 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
 
     virtual void updateWindowTitle();
 
+    /**
+     * register widgets in the dialog to search for text in it
+     * it is automatically called if a line edit has "mSearchLineEdit" as object name.
+     * @note added in 3.0
+     */
+    void registerTextSearchWidgets();
+
+    QList< QPair< QgsSearchHighlightOptionWidget*, int > > mRegisteredSearchWidgets;
+
     QString mOptsKey;
     bool mInit;
     QListWidget* mOptListWidget;
     QStackedWidget* mOptStackedWidget;
     QSplitter* mOptSplitter;
     QDialogButtonBox* mOptButtonBox;
+    QgsFilterLineEdit* mSearchLineEdit;
     QString mDialogTitle;
     bool mIconOnly;
     // pointer to app or custom, external QSettings

@@ -155,7 +155,7 @@ void QgsDwgImportDialog::on_pbLoadDatabase_clicked()
 
   bool lblVisible = false;
 
-  QScopedPointer<QgsVectorLayer> d( new QgsVectorLayer( QString( "%1|layername=drawing" ).arg( leDatabase->text() ), "layers", "ogr", false ) );
+  std::unique_ptr<QgsVectorLayer> d( new QgsVectorLayer( QString( "%1|layername=drawing" ).arg( leDatabase->text() ), "layers", "ogr", false ) );
   if ( d && d->isValid() )
   {
     int idxPath = d->fields().lookupField( "path" );
@@ -190,7 +190,7 @@ void QgsDwgImportDialog::on_pbLoadDatabase_clicked()
 
   lblMessage->setVisible( lblVisible );
 
-  QScopedPointer<QgsVectorLayer> l( new QgsVectorLayer( QString( "%1|layername=layers" ).arg( leDatabase->text() ), "layers", "ogr", false ) );
+  std::unique_ptr<QgsVectorLayer> l( new QgsVectorLayer( QString( "%1|layername=layers" ).arg( leDatabase->text() ), "layers", "ogr", false ) );
   if ( l && l->isValid() )
   {
     int idxName = l->fields().lookupField( "name" );

@@ -34,9 +34,9 @@ namespace QgsWms
     QgsServerRequest::Parameters params = request.parameters();
     QgsRenderer renderer( serverIface, project, params, getConfigParser( serverIface ) );
 
-    QScopedPointer<QImage> result( renderer.getLegendGraphics() );
+    std::unique_ptr<QImage> result( renderer.getLegendGraphics() );
 
-    if ( !result.isNull() )
+    if ( result )
     {
       QString format = params.value( QStringLiteral( "FORMAT" ), QStringLiteral( "PNG" ) );
       writeImage( response, *result,  format, renderer.getImageQuality() );

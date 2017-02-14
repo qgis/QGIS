@@ -16,8 +16,6 @@
 
 #include "qgssymbolslistwidget.h"
 
-#include "qgssizescalewidget.h"
-
 #include "qgsstylemanagerdialog.h"
 #include "qgsstylesavedialog.h"
 
@@ -41,7 +39,6 @@
 #include <QMessageBox>
 #include <QMenu>
 #include <QPushButton>
-#include <QScopedPointer>
 
 
 QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyle* style, QMenu* menu, QWidget* parent, const QgsVectorLayer * layer )
@@ -106,12 +103,8 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyle* style, 
   registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::PropertyOutlineWidth );
   connect( mWidthDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsSymbolsListWidget::updateDataDefinedLineWidth );
 
-#if 0
-  if ( mSymbol->type() == QgsSymbol::Marker && mLayer )
-    mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mLayer, mSymbol ) );
-  else if ( mSymbol->type() == QgsSymbol::Line && mLayer )
-    mWidthDDBtn->setAssistant( tr( "Width Assistant..." ), new QgsSizeScaleWidget( mLayer, mSymbol ) );
-#endif
+  connect( this, &QgsSymbolsListWidget::changed, this, &QgsSymbolsListWidget::updateAssistantSymbol );
+  updateAssistantSymbol();
 
   // Live color updates are not undoable to child symbol layers
   btnColor->setAcceptLiveUpdates( false );
@@ -371,6 +364,15 @@ void QgsSymbolsListWidget::updateDataDefinedLineWidth()
   }
 }
 
+void QgsSymbolsListWidget::updateAssistantSymbol()
+{
+  mAssistantSymbol.reset( mSymbol->clone() );
+  if ( mSymbol->type() == QgsSymbol::Marker )
+    mSizeDDBtn->setSymbol( mAssistantSymbol );
+  else if ( mSymbol->type() == QgsSymbol::Line && mLayer )
+    mWidthDDBtn->setSymbol( mAssistantSymbol );
+}
+
 void QgsSymbolsListWidget::symbolAddedToStyle( const QString& name, QgsSymbol* symbol )
 {
   Q_UNUSED( name );
@@ -515,10 +517,10 @@ void QgsSymbolsListWidget::updateSymbolInfo()
     if ( mLayer )
     {
       QgsProperty ddSize( markerSymbol->dataDefinedSize() );
-      mSizeDDBtn->init( QgsSymbolLayer::PropertySize, ddSize, QgsSymbolLayer::PROPERTY_DEFINITIONS, mLayer );
+      mSizeDDBtn->init( QgsSymbolLayer::PropertySize, ddSize, QgsSymbolLayer::propertyDefinitions(), mLayer );
       spinSize->setEnabled( !mSizeDDBtn->isActive() );
       QgsProperty ddAngle( markerSymbol->dataDefinedAngle() );
-      mRotationDDBtn->init( QgsSymbolLayer::PropertyAngle, ddAngle, QgsSymbolLayer::PROPERTY_DEFINITIONS, mLayer );
+      mRotationDDBtn->init( QgsSymbolLayer::PropertyAngle, ddAngle, QgsSymbolLayer::propertyDefinitions(), mLayer );
       spinAngle->setEnabled( !mRotationDDBtn->isActive() );
     }
     else
@@ -535,7 +537,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
     if ( mLayer )
     {
       QgsProperty dd( lineSymbol->dataDefinedWidth() );
-      mWidthDDBtn->init( QgsSymbolLayer::PropertyOutlineWidth, dd, QgsSymbolLayer::PROPERTY_DEFINITIONS, mLayer );
+      mWidthDDBtn->init( QgsSymbolLayer::PropertyOutlineWidth, dd, QgsSymbolLayer::propertyDefinitions(), mLayer );
       spinWidth->setEnabled( !mWidthDDBtn->isActive() );
     }
     else

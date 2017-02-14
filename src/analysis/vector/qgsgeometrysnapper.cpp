@@ -481,7 +481,7 @@ void QgsGeometrySnapper::processFeature( QgsFeature& feature, double snapToleran
 
 QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry& geometry, double snapTolerance, SnapMode mode ) const
 {
-  QgsPointV2 center = dynamic_cast< const QgsPointV2* >( geometry.geometry() ) ? *dynamic_cast< const QgsPointV2* >( geometry.geometry() ) :
+  QgsPointV2 center = dynamic_cast< const QgsPointV2* >( geometry.geometry() ) ? *static_cast< const QgsPointV2* >( geometry.geometry() ) :
                       QgsPointV2( geometry.geometry()->boundingBox().center() );
 
   // Get potential reference features and construct snap index
@@ -592,12 +592,12 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry& geometry, doubl
     return QgsGeometry( subjGeom );
 
   // SnapIndex for subject feature
-  QgsSnapIndex* subjSnapIndex = new QgsSnapIndex( center, 10 * snapTolerance );
+  std::unique_ptr< QgsSnapIndex > subjSnapIndex( new QgsSnapIndex( center, 10 * snapTolerance ) );
   subjSnapIndex->addGeometry( subjGeom );
 
-  QgsAbstractGeometry* origSubjGeom = subjGeom->clone();
-  QgsSnapIndex* origSubjSnapIndex = new QgsSnapIndex( center, 10 * snapTolerance );
-  origSubjSnapIndex->addGeometry( origSubjGeom );
+  std::unique_ptr< QgsAbstractGeometry > origSubjGeom( subjGeom->clone() );
+  std::unique_ptr< QgsSnapIndex > origSubjSnapIndex( new QgsSnapIndex( center, 10 * snapTolerance ) );
+  origSubjSnapIndex->addGeometry( origSubjGeom.get() );
 
   // Pass 2: add missing vertices to subject geometry
   Q_FOREACH ( const QgsGeometry& refGeom, refGeometries )
@@ -638,8 +638,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry& geometry, doubl
               const QgsSnapIndex::CoordIdx* idx = snapSegment->idxFrom;
               subjGeom->insertVertex( QgsVertexId( idx->vidx.part, idx->vidx.ring, idx->vidx.vertex + 1 ), point );
               subjPointFlags[idx->vidx.part][idx->vidx.ring].insert( idx->vidx.vertex + 1, SnappedToRefNode );
-              delete subjSnapIndex;
-              subjSnapIndex = new QgsSnapIndex( center, 10 * snapTolerance );
+              subjSnapIndex.reset( new QgsSnapIndex( center, 10 * snapTolerance ) );
               subjSnapIndex->addGeometry( subjGeom );
             }
           }
@@ -647,8 +646,9 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry& geometry, doubl
       }
     }
   }
-  delete subjSnapIndex;
-  delete origSubjSnapIndex;
+  subjSnapIndex.reset();
+  origSubjSnapIndex.reset();
+  origSubjGeom.reset();
 
   // Pass 3: remove superfluous vertices: all vertices which are snapped to a segment and not preceded or succeeded by an unsnapped vertex
   for ( int iPart = 0, nParts = subjGeom->partCount(); iPart < nParts; ++iPart )

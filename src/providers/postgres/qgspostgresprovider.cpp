@@ -467,7 +467,7 @@ QString QgsPostgresProvider::whereClause( QgsFeatureId featureId ) const
 }
 
 
-QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields& fields, QgsPostgresConn* conn, QgsPostgresPrimaryKeyType pkType, const QList<int>& pkAttrs, QSharedPointer<QgsPostgresSharedData> sharedData )
+QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields& fields, QgsPostgresConn* conn, QgsPostgresPrimaryKeyType pkType, const QList<int>& pkAttrs, std::shared_ptr<QgsPostgresSharedData> sharedData )
 {
   QString whereClause;
 
@@ -532,7 +532,7 @@ QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields& 
   return whereClause;
 }
 
-QString QgsPostgresUtils::whereClause( const QgsFeatureIds& featureIds, const QgsFields& fields, QgsPostgresConn* conn, QgsPostgresPrimaryKeyType pkType, const QList<int>& pkAttrs, QSharedPointer<QgsPostgresSharedData> sharedData )
+QString QgsPostgresUtils::whereClause( const QgsFeatureIds& featureIds, const QgsFields& fields, QgsPostgresConn* conn, QgsPostgresPrimaryKeyType pkType, const QList<int>& pkAttrs, std::shared_ptr<QgsPostgresSharedData> sharedData )
 {
   switch ( pkType )
   {
@@ -2409,7 +2409,7 @@ bool QgsPostgresProvider::deleteAttributes( const QgsAttributeIds& ids )
     conn->begin();
 
     QList<int> idsList = ids.values();
-    qSort( idsList.begin(), idsList.end(), qGreater<int>() );
+    std::sort( idsList.begin(), idsList.end(), std::greater<int>() );
 
     for ( QList<int>::const_iterator iter = idsList.begin(); iter != idsList.end(); ++iter )
     {
@@ -2624,7 +2624,7 @@ void QgsPostgresProvider::appendGeomParam( const QgsGeometry& geom, QStringList 
 
   QString param;
 
-  QScopedPointer<QgsGeometry> convertedGeom( convertToProviderType( geom ) );
+  std::unique_ptr<QgsGeometry> convertedGeom( convertToProviderType( geom ) );
   QByteArray wkb( convertedGeom ? convertedGeom->exportToWkb() : geom.exportToWkb() );
   const unsigned char *buf = reinterpret_cast< const unsigned char * >( wkb.constData() );
   int wkbSize = wkb.length();
@@ -4093,7 +4093,7 @@ static QVariant parseArray( const QString& txt, QVariant::Type type, QVariant::T
 {
   if ( !txt.startsWith( '{' ) || !txt.endsWith( '}' ) )
   {
-    if( !txt.isEmpty() )
+    if ( !txt.isEmpty() )
       QgsLogger::warning( "Error parsing array, missing curly braces: " + txt );
     return QVariant( type );
   }
@@ -4632,6 +4632,40 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
   conn->unref();
 
   return numberOfRelatedStyles;
+}
+
+QGISEXTERN bool deleteStyleById( const QString &uri, QString styleId, QString &errCause )
+{
+  QgsDataSourceUri dsUri( uri );
+  bool deleted;
+
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  if ( !conn )
+  {
+    errCause = QObject::tr( "Connection to database failed using username: %1" ).arg( dsUri.username() );
+    deleted = false;
+  }
+  else
+  {
+    QString deleteStyleQuery = QStringLiteral( "DELETE FROM layer_styles WHERE id=%1" ).arg(
+                                 QgsPostgresConn::quotedValue( styleId ) );
+    QgsPostgresResult result( conn->PQexec( deleteStyleQuery ) );
+    if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+    {
+      QgsDebugMsg(
+        QString( "PQexec of this query returning != PGRES_COMMAND_OK (%1 != expected %2): %3" )
+        .arg( result.PQresultStatus() ).arg( PGRES_COMMAND_OK ).arg( deleteStyleQuery ) );
+      QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( deleteStyleQuery ) );
+      errCause = QObject::tr( "Error executing the delete query. The query was logged" );
+      deleted = false;
+    }
+    else
+    {
+      deleted = true;
+    }
+  }
+  conn->unref();
+  return deleted;
 }
 
 QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& errCause )

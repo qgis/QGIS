@@ -119,6 +119,12 @@ typedef QString getStyleById_t(
   QString& errCause
 );
 
+typedef bool deleteStyleById_t(
+  const QString& uri,
+  QString styleID,
+  QString& errCause
+);
+
 QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
                                 const QString& baseName,
                                 const QString& providerKey,
@@ -158,7 +164,7 @@ QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
     setDataSource( vectorLayerPath, baseName, providerKey, loadDefaultStyleFlag );
   }
 
-  connect( this, &QgsVectorLayer::selectionChanged, this, &QgsVectorLayer::repaintRequested );
+  connect( this, &QgsVectorLayer::selectionChanged, this, [=] { emit repaintRequested(); } );
   connect( QgsProject::instance()->relationManager(), &QgsRelationManager::relationsLoaded, this, &QgsVectorLayer::onRelationsLoaded );
 
   // Default simplify drawing settings
@@ -1015,6 +1021,19 @@ bool QgsVectorLayer::insertVertex( double x, double y, QgsFeatureId atFeatureId,
 
   QgsVectorLayerEditUtils utils( this );
   bool result = utils.insertVertex( x, y, atFeatureId, beforeVertex );
+  if ( result )
+    updateExtents();
+  return result;
+}
+
+
+bool QgsVectorLayer::insertVertex( const QgsPointV2& point, QgsFeatureId atFeatureId, int beforeVertex )
+{
+  if ( !mValid || !mEditBuffer || !mDataProvider )
+    return false;
+
+  QgsVectorLayerEditUtils utils( this );
+  bool result = utils.insertVertex( point, atFeatureId, beforeVertex );
   if ( result )
     updateExtents();
   return result;
@@ -2321,7 +2340,7 @@ bool QgsVectorLayer::deleteAttributes( QList<int> attrs )
   // Remove multiple occurrences of same attribute
   attrs = attrs.toSet().toList();
 
-  qSort( attrs.begin(), attrs.end(), qGreater<int>() );
+  std::sort( attrs.begin(), attrs.end(), std::greater<int>() );
 
   Q_FOREACH ( int attr, attrs )
   {
@@ -3071,12 +3090,12 @@ QVariant QgsVectorLayer::defaultValue( int index, const QgsFeature& feature, Qgs
     return mDataProvider->defaultValue( index );
 
   QgsExpressionContext* evalContext = context;
-  QScopedPointer< QgsExpressionContext > tempContext;
+  std::unique_ptr< QgsExpressionContext > tempContext;
   if ( !evalContext )
   {
     // no context passed, so we create a default one
     tempContext.reset( new QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( this ) ) );
-    evalContext = tempContext.data();
+    evalContext = tempContext.get();
   }
 
   if ( feature.isValid() )
@@ -3553,7 +3572,7 @@ QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, boo
 {
   QList<QVariant> values;
 
-  QScopedPointer<QgsExpression> expression;
+  std::unique_ptr<QgsExpression> expression;
   QgsExpressionContext context;
 
   int attrNum = mFields.lookupField( fieldOrExpression );
@@ -3573,7 +3592,7 @@ QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, boo
 
   QgsFeature f;
   QSet<QString> lst;
-  if ( expression.isNull() )
+  if ( !expression )
     lst.insert( fieldOrExpression );
   else
     lst = expression->referencedColumns();
@@ -4266,8 +4285,7 @@ QList<QgsRelation> QgsVectorLayer::referencingRelations( int idx ) const
 
 int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, QStringList &descriptions, QString &msgError )
 {
-  QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-  QLibrary *myLib = pReg->providerLibrary( mProviderKey );
+  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
   if ( !myLib )
   {
     msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
@@ -4277,7 +4295,6 @@ int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, 
 
   if ( !listStylesExternalMethod )
   {
-    delete myLib;
     msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey, QStringLiteral( "listStyles" ) );
     return -1;
   }
@@ -4287,8 +4304,7 @@ int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, 
 
 QString QgsVectorLayer::getStyleFromDatabase( const QString& styleId, QString &msgError )
 {
-  QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-  QLibrary *myLib = pReg->providerLibrary( mProviderKey );
+  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
   if ( !myLib )
   {
     msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
@@ -4298,12 +4314,28 @@ QString QgsVectorLayer::getStyleFromDatabase( const QString& styleId, QString &m
 
   if ( !getStyleByIdMethod )
   {
-    delete myLib;
     msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey, QStringLiteral( "getStyleById" ) );
     return QString();
   }
 
   return getStyleByIdMethod( mDataSource, styleId, msgError );
+}
+
+bool QgsVectorLayer::deleteStyleFromDatabase( const QString& styleId, QString &msgError )
+{
+  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
+  if ( !myLib )
+  {
+    msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
+    return false;
+  }
+  deleteStyleById_t* deleteStyleByIdMethod = reinterpret_cast< deleteStyleById_t * >( cast_to_fptr( myLib->resolve( "deleteStyleById" ) ) );
+  if ( !deleteStyleByIdMethod )
+  {
+    msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey, QStringLiteral( "deleteStyleById" ) );
+    return false;
+  }
+  return deleteStyleByIdMethod( mDataSource, styleId, msgError );
 }
 
 
@@ -4312,8 +4344,7 @@ void QgsVectorLayer::saveStyleToDatabase( const QString& name, const QString& de
 {
 
   QString sldStyle, qmlStyle;
-  QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-  QLibrary *myLib = pReg->providerLibrary( mProviderKey );
+  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
   if ( !myLib )
   {
     msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
@@ -4323,7 +4354,6 @@ void QgsVectorLayer::saveStyleToDatabase( const QString& name, const QString& de
 
   if ( !saveStyleExternalMethod )
   {
-    delete myLib;
     msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey, QStringLiteral( "saveStyle" ) );
     return;
   }
@@ -4357,10 +4387,9 @@ QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &theResultFl
 QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag, bool loadFromLocalDB )
 {
   QgsDataSourceUri dsUri( theURI );
-  if ( !loadFromLocalDB && mDataProvider && mDataProvider->isSaveAndLoadStyleToDBSupported() )
+  if ( !loadFromLocalDB && mDataProvider && mDataProvider->isSaveAndLoadStyleToDatabaseSupported() )
   {
-    QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-    QLibrary *myLib = pReg->providerLibrary( mProviderKey );
+    std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
     if ( myLib )
     {
       loadStyle_t* loadStyleExternalMethod = reinterpret_cast< loadStyle_t * >( cast_to_fptr( myLib->resolve( "loadStyle" ) ) );

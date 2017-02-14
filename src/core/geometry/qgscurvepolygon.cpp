@@ -554,7 +554,7 @@ void QgsCurvePolygon::removeInteriorRings( double minimumAllowedArea )
       delete mInteriorRings.takeAt( ringIndex );
     else
     {
-      double area;
+      double area = 0.0;
       mInteriorRings.at( ringIndex )->sumUpArea( area );
       if ( area < minimumAllowedArea )
         delete mInteriorRings.takeAt( ringIndex );

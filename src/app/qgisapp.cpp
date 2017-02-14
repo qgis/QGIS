@@ -250,6 +250,7 @@
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsvectorlayerutils.h"
 #include "qgshelp.h"
+#include "qgsvectorfilewritertask.h"
 
 #include "qgssublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
@@ -449,15 +450,15 @@ void QgisApp::layerTreeViewDoubleClicked( const QModelIndex& index )
           if ( !originalSymbol )
             return;
 
-          QScopedPointer< QgsSymbol > symbol( originalSymbol->clone() );
+          std::unique_ptr< QgsSymbol > symbol( originalSymbol->clone() );
           QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( node->layerNode()->layer() );
-          QgsSymbolSelectorDialog dlg( symbol.data(), QgsStyle::defaultStyle(), vlayer, this );
+          QgsSymbolSelectorDialog dlg( symbol.get(), QgsStyle::defaultStyle(), vlayer, this );
           QgsSymbolWidgetContext context;
           context.setMapCanvas( mMapCanvas );
           dlg.setContext( context );
           if ( dlg.exec() )
           {
-            node->setSymbol( symbol.take() );
+            node->setSymbol( symbol.release() );
           }
 
           return;
@@ -634,7 +635,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   qApp->processEvents();
   // Do this early on before anyone else opens it and prevents us copying it
   QString dbError;
-  if ( !QgsApplication::createDB( &dbError ) )
+  if ( !QgsApplication::createDatabase( &dbError ) )
   {
     QMessageBox::critical( this, tr( "Private qgis.db" ), dbError );
   }
@@ -1553,7 +1554,7 @@ void QgisApp::readSettings()
   {
     projectKeys.append( key.toInt() );
   }
-  qSort( projectKeys );
+  std::sort( projectKeys.begin(), projectKeys.end() );
 
   Q_FOREACH ( int key, projectKeys )
   {
@@ -2108,7 +2109,7 @@ void QgisApp::createToolBars()
   }
 
   // sort actions in toolbar menu
-  qSort( toolbarMenuActions.begin(), toolbarMenuActions.end(), cmpByText_ );
+  std::sort( toolbarMenuActions.begin(), toolbarMenuActions.end(), cmpByText_ );
 
   mToolbarMenu->addActions( toolbarMenuActions );
 
@@ -5212,6 +5213,10 @@ void QgisApp::dxfExport()
   if ( d.exec() == QDialog::Accepted )
   {
     QgsDxfExport dxfExport;
+
+    QgsMapSettings settings( mapCanvas()->mapSettings() );
+    settings.setLayerStyleOverrides( QgsProject::instance()->mapThemeCollection()->mapThemeStyleOverrides( d.mapTheme() ) );
+    dxfExport.setMapSettings( settings );
     dxfExport.addLayers( d.layers() );
     dxfExport.setSymbologyScaleDenominator( d.symbologyScale() );
     dxfExport.setSymbologyExport( d.symbologyMode() );
@@ -6241,7 +6246,7 @@ void QgisApp::saveAsRasterFile()
   // TODO: show error dialogs
   // TODO: this code should go somewhere else, but probably not into QgsRasterFileWriter
   // clone pipe/provider is not really necessary, ready for threads
-  QScopedPointer<QgsRasterPipe> pipe( nullptr );
+  std::unique_ptr<QgsRasterPipe> pipe( nullptr );
 
   if ( d.mode() == QgsRasterLayerSaveAsDialog::RawDataMode )
   {
@@ -6303,7 +6308,7 @@ void QgisApp::saveAsRasterFile()
   fileWriter.setPyramidsFormat( d.pyramidsFormat() );
   fileWriter.setPyramidsConfigOptions( d.pyramidsConfigOptions() );
 
-  QgsRasterFileWriter::WriterError err = fileWriter.writeRaster( pipe.data(), d.nColumns(), d.nRows(), d.outputRectangle(), d.outputCrs(), &pd );
+  QgsRasterFileWriter::WriterError err = fileWriter.writeRaster( pipe.get(), d.nColumns(), d.nRows(), d.outputRectangle(), d.outputCrs(), &pd );
   if ( err != QgsRasterFileWriter::NoError )
   {
     QMessageBox::warning( this, tr( "Error" ),
@@ -6473,12 +6478,6 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
       }
     }
 
-    // ok if the file existed it should be deleted now so we can continue...
-    QApplication::setOverrideCursor( Qt::WaitCursor );
-
-    QgsVectorFileWriter::WriterError error;
-    QString errorMessage;
-    QString newFilename;
     QgsRectangle filterExtent = dialog->filterExtent();
     QgisAppFieldValueConverter converter( vlayer, dialog->attributesAsDisplayedValues() );
     QgisAppFieldValueConverter* converterPtr = nullptr;
@@ -6506,32 +6505,41 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
     options.attributes = dialog->selectedAttributes();
     options.fieldValueConverter = converterPtr;
 
-    error = QgsVectorFileWriter::writeAsVectorFormat(
-              vlayer, vectorFilename, options, &newFilename, &errorMessage );
+    bool addToCanvas = dialog->addToCanvas();
+    QString layerName = dialog->layername();
+    QgsVectorFileWriterTask* writerTask = new QgsVectorFileWriterTask( vlayer, vectorFilename, options );
 
-    QApplication::restoreOverrideCursor();
-
-    if ( error == QgsVectorFileWriter::NoError )
+    // when writer is successful:
+    connect( writerTask, &QgsVectorFileWriterTask::writeComplete, this, [this, addToCanvas, layerName, encoding, vectorFilename, vlayer]( const QString& newFilename )
     {
-      if ( dialog->addToCanvas() )
+      if ( addToCanvas )
       {
         QString uri( newFilename );
-        if ( !dialog->layername().isEmpty() )
-          uri += "|layername=" + dialog->layername();
-        addVectorLayers( QStringList( uri ), encoding, QStringLiteral( "file" ) );
+        if ( !layerName.isEmpty() )
+          uri += "|layername=" + layerName;
+        this->addVectorLayers( QStringList( uri ), encoding, QStringLiteral( "file" ) );
       }
-      emit layerSavedAs( vlayer, vectorFilename );
-      messageBar()->pushMessage( tr( "Saving done" ),
-                                 tr( "Export to vector file has been completed" ),
-                                 QgsMessageBar::INFO, messageTimeout() );
+      this->emit layerSavedAs( vlayer, vectorFilename );
+      this->messageBar()->pushMessage( tr( "Saving done" ),
+                                       tr( "Export to vector file has been completed" ),
+                                       QgsMessageBar::INFO, messageTimeout() );
     }
-    else
+           );
+
+    // when an error occurs:
+    connect( writerTask, &QgsVectorFileWriterTask::errorOccurred, this, [=]( int error, const QString & errorMessage )
     {
-      QgsMessageViewer *m = new QgsMessageViewer( nullptr );
-      m->setWindowTitle( tr( "Save error" ) );
-      m->setMessageAsPlainText( tr( "Export to vector file failed.\nError: %1" ).arg( errorMessage ) );
-      m->exec();
+      if ( error != QgsVectorFileWriter::Canceled )
+      {
+        QgsMessageViewer *m = new QgsMessageViewer( nullptr );
+        m->setWindowTitle( tr( "Save error" ) );
+        m->setMessageAsPlainText( tr( "Export to vector file failed.\nError: %1" ).arg( errorMessage ) );
+        m->exec();
+      }
     }
+           );
+
+    QgsApplication::taskManager()->addTask( writerTask );
   }
 
   delete dialog;
@@ -6930,7 +6938,7 @@ void QgisApp::on_mPrintComposersMenu_aboutToShow()
   if ( acts.size() > 1 )
   {
     // sort actions by text
-    qSort( acts.begin(), acts.end(), cmpByText_ );
+    std::sort( acts.begin(), acts.end(), cmpByText_ );
   }
   mPrintComposersMenu->addActions( acts );
 }
@@ -8436,7 +8444,7 @@ void QgisApp::removeLayer()
   QStringList activeTaskDescriptions;
   Q_FOREACH ( QgsMapLayer * layer, mLayerTreeView->selectedLayers() )
   {
-    QList< QgsTask* > tasks = QgsApplication::taskManager()->tasksDependentOnLayer( layer->id() );
+    QList< QgsTask* > tasks = QgsApplication::taskManager()->tasksDependentOnLayer( layer );
     if ( !tasks.isEmpty() )
     {
       Q_FOREACH ( QgsTask* task, tasks )
@@ -9641,7 +9649,7 @@ bool QgisApp::checkTasksDependOnProject()
 
   for ( ; layerIt != layers.constEnd(); ++layerIt )
   {
-    QList< QgsTask* > tasks = QgsApplication::taskManager()->tasksDependentOnLayer( layerIt.key() );
+    QList< QgsTask* > tasks = QgsApplication::taskManager()->tasksDependentOnLayer( layerIt.value() );
     if ( !tasks.isEmpty() )
     {
       Q_FOREACH ( QgsTask* task, tasks )
@@ -10404,7 +10412,7 @@ void QgisApp::layersWereAdded( const QList<QgsMapLayer *>& theLayers )
 
     if ( provider )
     {
-      connect( provider, &QgsDataProvider::dataChanged, layer, &QgsMapLayer::triggerRepaint );
+      connect( provider, &QgsDataProvider::dataChanged, layer, [layer] { layer->triggerRepaint(); } );
       connect( provider, &QgsDataProvider::dataChanged, mMapCanvas, &QgsMapCanvas::refresh );
     }
   }
@@ -11916,7 +11924,7 @@ void QgisApp::eraseAuthenticationDatabase()
     if ( layertree && layertree->customProperty( QStringLiteral( "loading" ) ).toBool() )
     {
       QgsDebugMsg( "Project loading, skipping auth db erase" );
-      QgsAuthManager::instance()->setScheduledAuthDbEraseRequestEmitted( false );
+      QgsAuthManager::instance()->setScheduledAuthDatabaseEraseRequestEmitted( false );
       return;
     }
   }
@@ -12040,7 +12048,7 @@ QMenu* QgisApp::createPopupMenu()
       }
     }
 
-    qSort( panels.begin(), panels.end(), cmpByText_ );
+    std::sort( panels.begin(), panels.end(), cmpByText_ );
     QWidgetAction* panelstitle = new QWidgetAction( menu );
     QLabel* plabel = new QLabel( QStringLiteral( "<b>%1</b>" ).arg( tr( "Panels" ) ) );
     plabel->setMargin( 3 );
@@ -12058,7 +12066,7 @@ QMenu* QgisApp::createPopupMenu()
     tlabel->setAlignment( Qt::AlignHCenter );
     toolbarstitle->setDefaultWidget( tlabel );
     menu->addAction( toolbarstitle );
-    qSort( toolbars.begin(), toolbars.end(), cmpByText_ );
+    std::sort( toolbars.begin(), toolbars.end(), cmpByText_ );
     Q_FOREACH ( QAction* a, toolbars )
     {
       menu->addAction( a );

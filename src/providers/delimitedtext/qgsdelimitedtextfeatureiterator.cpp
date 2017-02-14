@@ -80,7 +80,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
     {
       mFeatureIds = mSource->mSpatialIndex->intersects( rect );
       // Sort for efficient sequential retrieval
-      qSort( mFeatureIds.begin(), mFeatureIds.end() );
+      std::sort( mFeatureIds.begin(), mFeatureIds.end() );
       QgsDebugMsg( QString( "Layer has spatial index - selected %1 features from index" ).arg( mFeatureIds.size() ) );
       mMode = FeatureIds;
       mTestSubset = false;

@@ -81,7 +81,8 @@ class DBManagerPlugin(object):
     def onLayerWasAdded(self, aMapLayer):
         if hasattr(aMapLayer, 'dataProvider') and aMapLayer.dataProvider().name() in ['postgres', 'spatialite', 'oracle']:
             uri = QgsDataSourceUri(aMapLayer.source())
-            if re.search('^\(SELECT .+ FROM .+\)$', uri.table(), re.S):
+            table = uri.table()
+            if table.startswith('(') and table.endswith(')'):
                 self.addCustomActionForLayer(self.layerAction, aMapLayer)
         # virtual has QUrl source
         # url = QUrl(QUrl.fromPercentEncoding(l.source()))
@@ -92,8 +93,8 @@ class DBManagerPlugin(object):
     def onUpdateSqlLayer(self):
         l = self.iface.activeLayer()
         if l.dataProvider().name() in ['postgres', 'spatialite', 'oracle']:
-            uri = QgsDataSourceUri(l.source())
-            if re.search('^\(SELECT .+ FROM .+\)$', uri.table(), re.S):
+            table = uri.table()
+            if table.startswith('(') and table.endswith(')'):
                 self.run()
                 self.dlg.runSqlLayerWindow(l)
         # virtual has QUrl source

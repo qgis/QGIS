@@ -69,12 +69,12 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
 
   // open the database
   QSqlDatabase db = QSqlDatabase::addDatabase( QStringLiteral( "QSQLITE" ), QStringLiteral( "bookmarks" ) );
-  db.setDatabaseName( QgsApplication::qgisUserDbFilePath() );
+  db.setDatabaseName( QgsApplication::qgisUserDatabaseFilePath() );
   if ( !db.open() )
   {
     QMessageBox::warning( this, tr( "Error" ),
                           tr( "Unable to open bookmarks database.\nDatabase: %1\nDriver: %2\nDatabase: %3" )
-                          .arg( QgsApplication::qgisUserDbFilePath(),
+                          .arg( QgsApplication::qgisUserDatabaseFilePath(),
                                 db.lastError().driverText(),
                                 db.lastError().databaseText() )
                         );
@@ -101,7 +101,7 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   mProjectModel = new QgsProjectBookmarksTableModel();
   mModel.reset( new QgsMergedBookmarksTableModel( *mQgisModel, *mProjectModel, lstBookmarks ) );
 
-  lstBookmarks->setModel( mModel.data() );
+  lstBookmarks->setModel( mModel.get() );
 
   QSettings settings;
   lstBookmarks->header()->restoreState( settings.value( QStringLiteral( "/Windows/Bookmarks/headerstate" ) ).toByteArray() );

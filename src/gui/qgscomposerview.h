@@ -21,6 +21,7 @@
 #include "qgsprevieweffect.h" // for QgsPreviewEffect::PreviewMode
 #include <QGraphicsPolygonItem>
 #include "qgis_gui.h"
+#include <memory>
 
 class QDomDocument;
 class QDomElement;
@@ -248,8 +249,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     float mMoveContentSearchRadius;
     QgsComposerNodesItem* mNodesItem;
     int mNodesItemIndex;
-    QScopedPointer<QGraphicsPolygonItem> mPolygonItem;
-    QScopedPointer<QGraphicsPathItem> mPolylineItem;
+    std::unique_ptr<QGraphicsPolygonItem> mPolygonItem;
+    std::unique_ptr<QGraphicsPathItem> mPolylineItem;
 
     //! True if user is currently panning by clicking and dragging with the pan tool
     bool mToolPanning;
