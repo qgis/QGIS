@@ -939,7 +939,13 @@ void QgsDiagramProperties::on_mPlacementComboBox_currentIndexChanged( int index 
 void QgsDiagramProperties::on_mButtonSizeLegendSymbol_clicked()
 {
   QgsMarkerSymbol* newSymbol = mSizeLegendSymbol->clone();
-  QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), nullptr, this );
+  QgsSymbolWidgetContext context;
+  context.setMapCanvas( mMapCanvas );
+  QgsExpressionContext ec = createExpressionContext();
+  context.setExpressionContext( &ec );
+
+  QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), mLayer, this );
+  d.setContext( context );
 
   if ( d.exec() == QDialog::Accepted )
   {
