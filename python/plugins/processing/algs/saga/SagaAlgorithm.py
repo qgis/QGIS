@@ -75,7 +75,7 @@ class SagaAlgorithm(GeoAlgorithm):
         self._icon = None
 
     def getCopy(self):
-        newone = SagaAlgorithm212(self.descriptionFile)
+        newone = SagaAlgorithm(self.descriptionFile)
         newone.provider = self.provider
         return newone
 

@@ -82,7 +82,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
                                    self.tr('Problem with SAGA installation: SAGA was not found or is not correctly installed'))
             return
 
-        if version not in ['2.3.0', '2.3.1']:
+        if not version.startswith('2.3.'):
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                    self.tr('Problem with SAGA installation: unsupported SAGA version found.'))
             return
