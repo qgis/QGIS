@@ -819,23 +819,23 @@ void TestQgsGeometry::point()
   QCOMPARE( QgsPointV2( 1, -2 ).distanceSquared( 1, -4 ), 4.0 );
 
   // distance 3D
-  QCOMPARE( QgsPointV2( 0, 0 ).distanceSquared3D( QgsPointV2( 1, 1 )), 2.0 );
-  QCOMPARE( QgsPointV2( 0, 0 ).distanceSquared3D(  1, 1, 0 ), 2.0 );
-  QCOMPARE( QgsPointV2( 0, 0 ).distanceSquared3D( QgsPointV2 ( QgsWkbTypes::PointZ, 2, 2, 2, 0 )), 12.0 );
-  QCOMPARE( QgsPointV2( 0, 0 ).distanceSquared3D(  2, 2, 2 ), 12.0 );
-  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 2, 2, 2, 0 ).distanceSquared3D( QgsPointV2( 1, 1 )), 6.0 );
+  QCOMPARE( QgsPointV2( 0, 0 ).distanceSquared3D( QgsPointV2( 1, 1 ) ), 2.0 );
+  QCOMPARE( QgsPointV2( 0, 0 ).distanceSquared3D( 1, 1, 0 ), 2.0 );
+  QCOMPARE( QgsPointV2( 0, 0 ).distanceSquared3D( QgsPointV2( QgsWkbTypes::PointZ, 2, 2, 2, 0 ) ), 12.0 );
+  QCOMPARE( QgsPointV2( 0, 0 ).distanceSquared3D( 2, 2, 2 ), 12.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 2, 2, 2, 0 ).distanceSquared3D( QgsPointV2( 1, 1 ) ), 6.0 );
   QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 2, 2, 2, 0 ).distanceSquared3D( 1, 1, 0 ), 6.0 );
-  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( QgsPointV2( 0, 0 )), 12.0 );
-  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D(  0, 0, 0 ), 12.0 );
-  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( QgsPointV2( QgsWkbTypes::PointZ, 2, 2, 2, 0 )), 48.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( QgsPointV2( 0, 0 ) ), 12.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( 0, 0, 0 ), 12.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( QgsPointV2( QgsWkbTypes::PointZ, 2, 2, 2, 0 ) ), 48.0 );
   QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( 2, 2, 2 ), 48.0 );
 
 
-  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 1, 2, 0 ).distance3D( QgsPointV2( QgsWkbTypes::PointZ, 1, 3, 2, 0 )), 2.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 1, 2, 0 ).distance3D( QgsPointV2( QgsWkbTypes::PointZ, 1, 3, 2, 0 ) ), 2.0 );
   QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 1, 2, 0 ).distance3D( 1, 3, 2 ), 2.0 );
-  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 1, 2, 0 ).distance3D( QgsPointV2( QgsWkbTypes::PointZ, 1, 1, 4, 0 )), 2.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 1, 2, 0 ).distance3D( QgsPointV2( QgsWkbTypes::PointZ, 1, 1, 4, 0 ) ), 2.0 );
   QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 1, 2, 0 ).distance3D( 1, 1, 4 ), 2.0 );
-  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 1, -2, 0 ).distance3D( QgsPointV2( QgsWkbTypes::PointZ, 1, 1, -4, 0 )), 2.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 1, -2, 0 ).distance3D( QgsPointV2( QgsWkbTypes::PointZ, 1, 1, -4, 0 ) ), 2.0 );
   QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 1, -2, 0 ).distance3D( 1, 1, -4 ), 2.0 );
 
   // azimuth

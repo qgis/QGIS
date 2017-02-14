@@ -542,11 +542,11 @@ void TestQgsGeometryUtils::testAngleThreePoints()
 
 void TestQgsGeometryUtils::testMidPoint()
 {
-    QgsPointV2 p1( 4, 6 );
-    QCOMPARE( QgsGeometryUtils::midpoint( p1, QgsPointV2( 2, 2 ) ), QgsPointV2( 3, 4 ) );
-    QCOMPARE( QgsGeometryUtils::midpoint( p1, QgsPointV2( QgsWkbTypes::PointZ, 2, 2, 2 ) ), QgsPointV2( QgsWkbTypes::PointZ, 3, 4, 1 ) );
-    QCOMPARE( QgsGeometryUtils::midpoint( p1, QgsPointV2( QgsWkbTypes::PointM, 2, 2, 0, 2 ) ), QgsPointV2( QgsWkbTypes::PointM, 3, 4, 0, 1 ) );
-    QCOMPARE( QgsGeometryUtils::midpoint( p1, QgsPointV2( QgsWkbTypes::PointZM, 2, 2, 2, 2 ) ), QgsPointV2( QgsWkbTypes::PointZM, 3, 4, 1, 1 ) );
+  QgsPointV2 p1( 4, 6 );
+  QCOMPARE( QgsGeometryUtils::midpoint( p1, QgsPointV2( 2, 2 ) ), QgsPointV2( 3, 4 ) );
+  QCOMPARE( QgsGeometryUtils::midpoint( p1, QgsPointV2( QgsWkbTypes::PointZ, 2, 2, 2 ) ), QgsPointV2( QgsWkbTypes::PointZ, 3, 4, 1 ) );
+  QCOMPARE( QgsGeometryUtils::midpoint( p1, QgsPointV2( QgsWkbTypes::PointM, 2, 2, 0, 2 ) ), QgsPointV2( QgsWkbTypes::PointM, 3, 4, 0, 1 ) );
+  QCOMPARE( QgsGeometryUtils::midpoint( p1, QgsPointV2( QgsWkbTypes::PointZM, 2, 2, 2, 2 ) ), QgsPointV2( QgsWkbTypes::PointZM, 3, 4, 1, 1 ) );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )

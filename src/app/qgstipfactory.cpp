@@ -99,9 +99,9 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " which can be found in the tab <strong>%2</strong>."
                         " The other move tool ( <img src=\":/images/themes/default/mActionMoveItemContent.svg\"/> )"
                         " allows you to move the map content within a map frame." )
-                      .arg( tr( "Position and Size" ) )
-                      .arg( tr( "Item Properties" ) )
-                      );
+                    .arg( tr( "Position and Size" ) )
+                    .arg( tr( "Item Properties" ) )
+                  );
   addGuiTip( myTip );
   addGuiTip( myTip );
   // This  tip contributed by Andreas Neumann
@@ -125,9 +125,9 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " checkbox and selecting a map frame. Whenever you change the rotation"
                         " value of a linked map, the north arrow will now automatically adjust"
                         " its rotation." )
-                      .arg( tr( "Add Image" ) )
-                      .arg( tr( "Sync with map" ) )
-                      );
+                    .arg( tr( "Add Image" ) )
+                    .arg( tr( "Sync with map" ) )
+                  );
   addGuiTip( myTip );
   addGuiTip( myTip );
   // This  tip contributed by Andreas Neumann
@@ -144,9 +144,9 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " out and pan the map. Scroll forwards to zoom in, scroll backwards to"
                         " zoom out and press and hold the scroll wheel down to pan the map. You"
                         " can configure the zoom scale factor in the <strong> %1 -> %2 </strong> panel." )
-                      .arg( tr( "Options" ) )
-                      .arg( tr( "Map tools" ) )
-                      );
+                    .arg( tr( "Options" ) )
+                    .arg( tr( "Map tools" ) )
+                  );
   addGuiTip( myTip );
   addGuiTip( myTip );
   // by Tim
@@ -196,9 +196,9 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " contributed by the user community that can be"
                         " installed via this same menu. Don't miss out on all QGIS has to offer!"
                         " Check out the plugins and see what they can do for you." )
-                      .arg( tr( "Plugins" ) )
-                      .arg( tr( "Manage and Install Plugins..." ) )
-                      );
+                    .arg( tr( "Plugins" ) )
+                    .arg( tr( "Manage and Install Plugins..." ) )
+                  );
   addGuiTip( myTip );
   addGenericTip( myTip );
   // by yjacolin
@@ -232,11 +232,11 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setContent( tr( "If you have a number of aerial photos spread across a wide area, instead of "
                         "loading each file as a separate layer you can treat them all as a single layer "
                         "by using a .vrt file. "
-                        "To create a .vrt, go to <strong> %1 -> %2 -> %3</strong>.")
-                      .arg( tr( "Raster" ) )
-                      .arg( tr( "Miscellaneous" ) )
-                      .arg( tr( "Build Virtual Raster (Catalog)" ) )
-                      );
+                        "To create a .vrt, go to <strong> %1 -> %2 -> %3</strong>." )
+                    .arg( tr( "Raster" ) )
+                    .arg( tr( "Miscellaneous" ) )
+                    .arg( tr( "Build Virtual Raster (Catalog)" ) )
+                  );
   addGuiTip( myTip );
   // by Harrissou Sant-anna
   myTip.setTitle( tr( "Switch quickly between different styles of the layer" ) );
@@ -245,17 +245,17 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " diagram, fields form, actions...) as you want. Then, simply switch between styles"
                         " from the context menu of the layer in <strong>%1</strong> to automatically"
                         " get different custom representations of your data." )
-                      .arg( tr( "Layers Panel" ) )
-                      );
+                    .arg( tr( "Layers Panel" ) )
+                  );
   addGuiTip( myTip );
   // by Harrissou Sant-anna
   myTip.setTitle( tr( "Live update rendering" ) );
   myTip.setContent( tr( "Press F7 to activate the <strong>%1</strong> panel from which you can"
                         " easily and quickly configure the layer rendering. Check the <strong>%2</strong>"
                         " option to automatically apply to the map canvas each of your modifications." )
-                      .arg( tr( "Layer Styling" ) )
-                      .arg( tr( "Live update" ) )
-                      );
+                    .arg( tr( "Layer Styling" ) )
+                    .arg( tr( "Live update" ) )
+                  );
   addGuiTip( myTip );
   // by Harrissou Sant-anna
   myTip.setTitle( tr( "Print or export a specific feature from an atlas composition" ) );
@@ -278,9 +278,9 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setContent( tr( "QGIS provides you with a list of predefined shortcuts you can use to speed"
                         " your workflow. These are available under <strong> %1 -> %2 </strong>"
                         "  menu and can be extended and customized for any dialog or tool." )
-                      .arg( tr( "Settings" ) )
-                      .arg( tr( "Keyboard Shortcuts" ) )
-                      );
+                    .arg( tr( "Settings" ) )
+                    .arg( tr( "Keyboard Shortcuts" ) )
+                  );
   addGuiTip( myTip );
 
   /* Template for adding more tips
