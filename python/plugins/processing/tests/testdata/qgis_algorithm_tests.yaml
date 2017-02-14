@@ -2300,20 +2300,6 @@ tests:
         name: expected/zonal_statistics.gml
         type: vector
 
-
-  - algorithm: qgis:polygonfromlayerextent
-    name: Standard polygon from layer extent
-    params:
-      BY_FEATURE: false
-      INPUT_LAYER:
-        name: polys.gml
-        type: vector
-    results:
-      OUTPUT:
-        name: expected/polygon_from_extent.gml
-        type: vector
-        
-
   - algorithm: qgis:fixgeometries
     name: Fix geometries
     params:
@@ -2325,6 +2311,16 @@ tests:
         name: expected/valid.gml
         type: vector
 
+  - algorithm: qgis:fixgeometries
+    name: Fix geometries
+    params:
+      INPUT:
+        name: invalidgeometries.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/valid.gml
+        type: vector
 
   - algorithm: qgis:polygonize
     name: Polygonize
@@ -2376,3 +2372,15 @@ tests:
         name: expected/find_projection.html
         type: file
 
+  - algorithm: qgis:polygonfromlayerextent
+    name: Standard polygon from layer extent
+    params:
+      FIELDS: false
+      GEOMETRY: true
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/polygon_from_extent.gml
+        type: vector
