@@ -105,6 +105,7 @@ IF (WITH_BINDINGS)
   SET (WITH_QSCIAPI TRUE CACHE BOOL "Whether to generate PyQGIS QScintilla2 API file. (For devs) run 'make qsci-pap-src' in between QGIS build and install to regenerate .pap file in source tree for console auto-completion.")
   # keep casual users from updating their source tree via WITH_QSCIAPI
   MARK_AS_ADVANCED (WITH_QSCIAPI)
+  ADD_DEFINITIONS(-DWITH_BINDINGS)
 ENDIF (WITH_BINDINGS)
 
 #BUILD WITH QtMobility by default on android only. Other platform can force it

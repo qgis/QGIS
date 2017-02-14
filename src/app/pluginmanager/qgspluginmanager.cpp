@@ -44,6 +44,9 @@
 #include "qgisplugin.h"
 #include "qgslogger.h"
 #include "qgspluginitemdelegate.h"
+#ifdef WITH_BINDINGS
+#include "qgspythonutils.h"
+#endif
 
 // Do we need this?
 // #define TESTLIB
@@ -552,16 +555,22 @@ void QgsPluginManager::reloadModelData()
     }
   }
 
+#ifdef WITH_BINDINGS
   // Add spacers for sort by status
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
     // TODO: implement better sort method instead of these dummy -Z statuses
     mModelPlugins->appendRow( createSpacerItem( tr( "Only locally available", "category: plugins that are only locally available" ), QStringLiteral( "orphanZ" ) ) );
-    if ( hasReinstallablePlugins() ) mModelPlugins->appendRow( createSpacerItem( tr( "Reinstallable", "category: plugins that are installed and available" ), QStringLiteral( "installedZ" ) ) );
-    if ( hasUpgradeablePlugins() ) mModelPlugins->appendRow( createSpacerItem( tr( "Upgradeable", "category: plugins that are installed and there is a newer version available" ), QStringLiteral( "upgradeableZ" ) ) );
-    if ( hasNewerPlugins() ) mModelPlugins->appendRow( createSpacerItem( tr( "Downgradeable", "category: plugins that are installed and there is an OLDER version available" ), QStringLiteral( "newerZ" ) ) );
-    if ( hasAvailablePlugins() ) mModelPlugins->appendRow( createSpacerItem( tr( "Installable", "category: plugins that are available for installation" ), QStringLiteral( "not installedZ" ) ) );
+    if ( hasReinstallablePlugins() )
+      mModelPlugins->appendRow( createSpacerItem( tr( "Reinstallable", "category: plugins that are installed and available" ), QStringLiteral( "installedZ" ) ) );
+    if ( hasUpgradeablePlugins() )
+      mModelPlugins->appendRow( createSpacerItem( tr( "Upgradeable", "category: plugins that are installed and there is a newer version available" ), QStringLiteral( "upgradeableZ" ) ) );
+    if ( hasNewerPlugins() )
+      mModelPlugins->appendRow( createSpacerItem( tr( "Downgradeable", "category: plugins that are installed and there is an OLDER version available" ), QStringLiteral( "newerZ" ) ) );
+    if ( hasAvailablePlugins() )
+      mModelPlugins->appendRow( createSpacerItem( tr( "Installable", "category: plugins that are available for installation" ), QStringLiteral( "not installedZ" ) ) );
   }
+#endif
 
   updateWindowTitle();
 
@@ -1064,6 +1073,7 @@ void QgsPluginManager::addToRepositoryList( const QMap<QString, QString>& reposi
 // "Close" button clicked
 void QgsPluginManager::reject()
 {
+#ifdef WITH_BINDINGS
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
     // get the QSettings group from the installer
@@ -1074,6 +1084,7 @@ void QgsPluginManager::reject()
     settings.setValue( settingsGroup + "/checkOnStartInterval", QVariant( mCheckingOnStartIntervals.value( comboInterval->currentIndex() ) ) );
     QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().onManagerClose()" ) );
   }
+#endif
   done( 1 );
 }
 
