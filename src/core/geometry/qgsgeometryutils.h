@@ -291,6 +291,7 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static QgsPointV2 midpoint (const QgsPointV2& pt1, const QgsPointV2& pt2);
 
+    //! @note not available in Python bindings
     enum ComponentType
     {
       Vertex,
