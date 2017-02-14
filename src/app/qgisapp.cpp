@@ -352,7 +352,9 @@ extern "C"
 #include "qgsnewspatialitelayerdialog.h"
 #include "qgsnewgeopackagelayerdialog.h"
 
+#ifdef WITH_BINDINGS
 #include "qgspythonutils.h"
+#endif
 
 #ifndef Q_OS_WIN
 #include <dlfcn.h>
@@ -965,6 +967,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     }
   }
 
+#ifdef WITH_BINDINGS
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
     startProfile( QStringLiteral( "initPluginInstaller" ) );
@@ -976,6 +979,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     endProfile();
   }
   else if ( mActionShowPythonDialog || mActionInstallFromZip )
+#endif
   {
     // python is disabled so get rid of the action for python console
     // and installing plugin from ZUIP
@@ -1846,6 +1850,7 @@ void QgisApp::showStyleManager()
 
 void QgisApp::showPythonDialog()
 {
+#ifdef WITH_BINDINGS
   if ( !mPythonUtils || !mPythonUtils->isEnabled() )
     return;
 
@@ -1864,6 +1869,7 @@ void QgisApp::showPythonDialog()
   {
     addWindow( mActionShowPythonDialog );
   }
+#endif
 #endif
 }
 
@@ -5019,6 +5025,7 @@ bool QgisApp::addProject( const QString& projectFile )
 
   QSettings settings;
 
+#ifdef WITH_BINDINGS
   // does the project have any macros?
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
@@ -5061,6 +5068,7 @@ bool QgisApp::addProject( const QString& projectFile )
       }
     }
   }
+#endif
 
   emit projectRead(); // let plug-ins know that we've read in a new
   // project so that they can check any project
@@ -5330,6 +5338,7 @@ void QgisApp::openProject( QAction *action )
 
 void QgisApp::runScript( const QString &filePath )
 {
+#ifdef WITH_BINDINGS
   if ( !mPythonUtils || !mPythonUtils->isEnabled() )
     return;
 
@@ -5337,6 +5346,7 @@ void QgisApp::runScript( const QString &filePath )
     QString( "import sys\n"
              "exec(open(\"%1\".replace(\"\\\\\", \"/\").encode(sys.getfilesystemencoding())).read())\n" ).arg( filePath )
     , tr( "Failed to run Python script:" ), false );
+#endif
 }
 
 
@@ -8918,13 +8928,14 @@ void QgisApp::zoomToLayerExtent()
 
 void QgisApp::showPluginManager()
 {
-
+#ifdef WITH_BINDINGS
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
     // Call pluginManagerInterface()->showPluginManager() as soon as the plugin installer says the remote data is fetched.
     QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().showPluginManagerWhenReady()" ) );
   }
   else
+#endif
   {
     // Call the pluginManagerInterface directly
     mQgisInterface->pluginManagerInterface()->showPluginManager();
@@ -8933,10 +8944,12 @@ void QgisApp::showPluginManager()
 
 void QgisApp::installPluginFromZip()
 {
+#ifdef WITH_BINDINGS
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
     QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().installFromZipFile()" ) );
   }
+#endif
 }
 
 
@@ -8948,19 +8961,23 @@ class QgsPythonRunnerImpl : public QgsPythonRunner
 
     virtual bool runCommand( QString command, QString messageOnError = QString() ) override
     {
+#ifdef WITH_BINDINGS
       if ( mPythonUtils && mPythonUtils->isEnabled() )
       {
         return mPythonUtils->runString( command, messageOnError, false );
       }
+#endif
       return false;
     }
 
     virtual bool evalCommand( QString command, QString &result ) override
     {
+#ifdef WITH_BINDINGS
       if ( mPythonUtils && mPythonUtils->isEnabled() )
       {
         return mPythonUtils->evalString( command, result );
       }
+#endif
       return false;
     }
 
@@ -8993,6 +9010,8 @@ void QgisApp::loadPythonSupport()
     }
   }
 
+#ifdef WITH_BINDINGS
+
   //QgsDebugMsg("Python support library loaded successfully.");
   typedef QgsPythonUtils*( *inst )();
   inst pythonlib_inst = reinterpret_cast< inst >( cast_to_fptr( pythonlib.resolve( "instance" ) ) );
@@ -9019,6 +9038,7 @@ void QgisApp::loadPythonSupport()
 
     QgsMessageLog::logMessage( tr( "Python support ENABLED :-) " ), QString::null, QgsMessageLog::INFO );
   }
+#endif
 }
 
 void QgisApp::checkQgisVersion()

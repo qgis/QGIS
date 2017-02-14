@@ -28,9 +28,9 @@
 #include "qgisgui.h"
 #include "qgshelp.h"
 #include "qgsmessagebar.h"
-#include "qgspythonutils.h"
 
 class QgsPluginSortFilterProxyModel;
+class QgsPythonUtils;
 
 const int PLUGMAN_TAB_ALL = 0;
 const int PLUGMAN_TAB_INSTALLED = 1;

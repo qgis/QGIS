@@ -28,7 +28,9 @@
 #include "qgspluginregistry.h"
 #include "qgspluginmetadata.h"
 #include "qgisplugin.h"
+#ifdef WITH_BINDINGS
 #include "qgspythonutils.h"
+#endif
 #include "qgisapp.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
@@ -74,10 +76,12 @@ bool QgsPluginRegistry::isLoaded( const QString& key ) const
   if ( it != mPlugins.end() ) // found a c++ plugin?
     return true;
 
+#ifdef WITH_BINDINGS
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
     return mPythonUtils->isPluginLoaded( key );
   }
+#endif
 
   return false;
 }
@@ -88,11 +92,13 @@ QString QgsPluginRegistry::library( const QString& key )
   if ( it != mPlugins.constEnd() )
     return it->library();
 
+#ifdef WITH_BINDINGS
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
     if ( mPythonUtils->isPluginLoaded( key ) )
       return key;
   }
+#endif
 
   return QString();
 }
@@ -110,11 +116,13 @@ QgisPlugin *QgsPluginRegistry::plugin( const QString& key )
 
 bool QgsPluginRegistry::isPythonPlugin( const QString& key ) const
 {
+#ifdef WITH_BINDINGS
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
     if ( mPythonUtils->isPluginLoaded( key ) )
       return true;
   }
+#endif
   return false;
 }
 
@@ -136,6 +144,7 @@ void QgsPluginRegistry::dump()
                        it->library() ) );
   }
 
+#ifdef WITH_BINDINGS
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
     QgsDebugMsg( "PYTHON PLUGINS IN REGISTRY:" );
@@ -145,6 +154,7 @@ void QgsPluginRegistry::dump()
       QgsDebugMsg( pluginName );
     }
   }
+#endif
 }
 
 
@@ -176,6 +186,7 @@ void QgsPluginRegistry::unloadAll()
     }
   }
 
+#ifdef WITH_BINDINGS
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
     Q_FOREACH ( const QString& pluginName, mPythonUtils->listActivePlugins() )
@@ -183,6 +194,7 @@ void QgsPluginRegistry::unloadAll()
       mPythonUtils->unloadPlugin( pluginName );
     }
   }
+#endif
 }
 
 
@@ -263,6 +275,7 @@ bool QgsPluginRegistry::checkQgisVersion( const QString& minVersion, const QStri
 
 void QgsPluginRegistry::loadPythonPlugin( const QString& packageName )
 {
+#ifdef WITH_BINDINGS
   if ( !mPythonUtils || !mPythonUtils->isEnabled() )
   {
     QgsMessageLog::logMessage( QObject::tr( "Python is not enabled in QGIS." ), QObject::tr( "Plugins" ) );
@@ -296,6 +309,7 @@ void QgsPluginRegistry::loadPythonPlugin( const QString& packageName )
 
     settings.remove( "/PythonPlugins/watchDog/" + packageName );
   }
+#endif
 }
 
 
@@ -404,6 +418,7 @@ void QgsPluginRegistry::loadCppPlugin( const QString& theFullPathName )
 
 void QgsPluginRegistry::unloadPythonPlugin( const QString& packageName )
 {
+#ifdef WITH_BINDINGS
   if ( !mPythonUtils || !mPythonUtils->isEnabled() )
   {
     QgsMessageLog::logMessage( QObject::tr( "Python is not enabled in QGIS." ), QObject::tr( "Plugins" ) );
@@ -419,6 +434,7 @@ void QgsPluginRegistry::unloadPythonPlugin( const QString& packageName )
   // disable the plugin no matter if successfully loaded or not
   QSettings settings;
   settings.setValue( "/PythonPlugins/" + packageName, false );
+#endif
 }
 
 
@@ -488,6 +504,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString& thePluginDirString
     }
   }
 
+#ifdef WITH_BINDINGS
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
     // check for python plugins system-wide
@@ -551,6 +568,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString& thePluginDirString
     }
     // end - temporary fix for issue #5879
   }
+#endif
 
   QgsDebugMsg( "Plugin loading completed" );
 }
@@ -581,6 +599,7 @@ bool QgsPluginRegistry::checkCppPlugin( const QString& pluginFullPath )
 
 bool QgsPluginRegistry::checkPythonPlugin( const QString& packageName )
 {
+#ifdef WITH_BINDINGS
   QString pluginName, description, /*category,*/ version;
 
   // get information from the plugin
@@ -599,14 +618,21 @@ bool QgsPluginRegistry::checkPythonPlugin( const QString& packageName )
   }
 
   return true;
+#else
+  return false;
+#endif
 }
 
 bool QgsPluginRegistry::isPythonPluginCompatible( const QString& packageName ) const
 {
+#ifdef WITH_BINDINGS
   QString minVersion = mPythonUtils->getPluginMetadata( packageName, QStringLiteral( "qgisMinimumVersion" ) );
   // try to read qgisMaximumVersion. Note checkQgisVersion can cope with "__error__" value.
   QString maxVersion = mPythonUtils->getPluginMetadata( packageName, QStringLiteral( "qgisMaximumVersion" ) );
   return minVersion != QLatin1String( "__error__" ) && checkQgisVersion( minVersion, maxVersion );
+#else
+  return false;
+#endif
 }
 
 QList<QgsPluginMetadata*> QgsPluginRegistry::pluginData()
