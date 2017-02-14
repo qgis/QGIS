@@ -1,6 +1,6 @@
 /***************************************************************************
-   qgsdatadefinedbuttonplugin.h
-    --------------------------------------
+   qgspropertyoverridebuttonplugin.h
+    --------------------------------
    Date                 : 25.04.2014
    Copyright            : (C) 2014 Denis Rouzaud
    Email                : denis.rouzaud@gmail.com
@@ -13,8 +13,8 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef QGSDATADEFINEDBUTTONPLUGIN_H
-#define QGSDATADEFINEDBUTTONPLUGIN_H
+#ifndef QGSPROPERTYOVERRIDEBUTTONPLUGIN_H
+#define QGSPROPERTYOVERRIDEBUTTONPLUGIN_H
 
 
 #include <QtGlobal>
@@ -23,13 +23,13 @@
 #include "qgis_customwidgets.h"
 
 
-class CUSTOMWIDGETS_EXPORT QgsDataDefinedButtonPlugin : public QObject, public QDesignerCustomWidgetInterface
+class CUSTOMWIDGETS_EXPORT QgsPropertyOverrideButtonPlugin : public QObject, public QDesignerCustomWidgetInterface
 {
     Q_OBJECT
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsDataDefinedButtonPlugin( QObject *parent = 0 );
+    explicit QgsPropertyOverrideButtonPlugin( QObject *parent = 0 );
 
   private:
     bool mInitialized;
@@ -48,4 +48,4 @@ class CUSTOMWIDGETS_EXPORT QgsDataDefinedButtonPlugin : public QObject, public Q
     QString whatsThis() const override;
     QString domXml() const override;
 };
-#endif // QGSDATADEFINEDBUTTONPLUGIN_H
+#endif // QGSPROPERTYOVERRIDEBUTTONPLUGIN_H

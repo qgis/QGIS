@@ -56,6 +56,7 @@ class CORE_EXPORT QgsPropertyDefinition
       Double, //!< Double value (including negative values)
       DoublePositive, //!< Positive double value (including 0)
       Double0To1, //!< Double value between 0-1 (inclusive)
+      Rotation, //!< Rotation (value between 0-360 degrees)
       String, //!< Any string value
       Transparency, //!< Transparency (0-100)
       RenderUnits, //!< Render units (eg mm/pixels/map units)
@@ -67,6 +68,7 @@ class CORE_EXPORT QgsPropertyDefinition
       Size, //!< 1D size (eg marker radius, or square marker height/width)
       Size2D, //!< 2D size (width/height different)
       LineStyle, //!< Line style (eg solid/dashed)
+      StrokeWidth, //!< Line stroke width
       FillStyle, //!< Fill style (eg solid, lines)
       CapStyle, //!< Line cap style (eg round)
       HorizontalAnchor, //!< Horizontal anchor point
@@ -149,6 +151,12 @@ class CORE_EXPORT QgsPropertyDefinition
      */
     StandardPropertyTemplate standardTemplate() const { return mStandardType; }
 
+    /**
+     * Returns true if the property is of a type which is compatible with property
+     * override assistants.
+     */
+    bool supportsAssistant() const;
+
   private:
 
     QString mName;
@@ -219,6 +227,9 @@ class CORE_EXPORT QgsProperty
      * Returns true if the property is not an invalid type.
      */
     operator bool() const;
+
+    bool operator==( const QgsProperty& other ) const;
+    bool operator!=( const QgsProperty& other ) const;
 
     /**
      * Returns the property type.
@@ -413,6 +424,14 @@ class CORE_EXPORT QgsProperty
      * @see setTransformer()
      */
     const QgsPropertyTransformer* transformer() const;
+
+    /**
+     * Attempts to convert an existing expression based property to a base expression with
+     * corresponding transformer. Returns true if conversion was successful. Note that
+     * calling this method requires multiple parsing of expressions, so it should only
+     * be called in non-performance critical code.
+     */
+    bool convertToTransformer();
 
   private:
 

@@ -33,7 +33,6 @@
 %Include qgscoordinatetransform.sip
 %Include qgscredentials.sip
 %Include qgscrscache.sip
-%Include qgsdatadefined.sip
 %Include qgsdataitem.sip
 %Include qgsdataitemprovider.sip
 %Include qgsdataitemproviderregistry.sip
@@ -131,7 +130,6 @@
 %Include qgsrunprocess.sip
 %Include qgsruntimeprofiler.sip
 %Include qgsscalecalculator.sip
-%Include qgsscaleexpression.sip
 %Include qgsscaleutils.sip
 %Include qgssimplifymethod.sip
 %Include qgssnapper.sip

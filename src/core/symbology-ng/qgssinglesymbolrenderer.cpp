@@ -27,7 +27,6 @@
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
-#include "qgsscaleexpression.h"
 #include "qgsproperty.h"
 
 #include <QDomDocument>
@@ -306,19 +305,19 @@ QgsLegendSymbolListV2 QgsSingleSymbolRenderer::legendSymbolItemsV2() const
   {
     const QgsMarkerSymbol * symbol = static_cast<const QgsMarkerSymbol *>( mSymbol.get() );
     QgsProperty sizeDD( symbol->dataDefinedSize() );
-    if ( sizeDD && sizeDD.isActive() && sizeDD.propertyType() == QgsProperty::ExpressionBasedProperty )
+    if ( sizeDD && sizeDD.isActive() )
     {
-      QgsScaleExpression scaleExp( sizeDD.asExpression() );
-      if ( scaleExp.type() != QgsScaleExpression::Unknown )
+      if ( const QgsSizeScaleTransformer* sizeTransformer = dynamic_cast< const QgsSizeScaleTransformer* >( sizeDD.transformer() ) )
       {
-        QgsLegendSymbolItem title( nullptr, scaleExp.baseExpression(), QString() );
+        QgsLegendSymbolItem title( nullptr, sizeDD.propertyType() == QgsProperty::ExpressionBasedProperty ? sizeDD.expressionString()
+                                   : sizeDD.field(), QString() );
         lst << title;
-        Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( scaleExp.minValue(), scaleExp.maxValue(), 4 ) )
+        Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( sizeTransformer->minValue(), sizeTransformer->maxValue(), 4 ) )
         {
           QgsLegendSymbolItem si( mSymbol.get(), QString::number( v ), QString() );
           QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( si.symbol() );
           s->setDataDefinedSize( QgsProperty() );
-          s->setSize( scaleExp.size( v ) );
+          s->setSize( sizeTransformer->size( v ) );
           lst << si;
         }
         return lst;

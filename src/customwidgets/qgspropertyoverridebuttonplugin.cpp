@@ -1,6 +1,6 @@
 /***************************************************************************
-   qgsdatadefinedbuttonplugin.cpp
-    --------------------------------------
+   qgspropertyoverridebuttonplugin.cpp
+    ----------------------------------
    Date                 : 25.04.2014
    Copyright            : (C) 2014 Denis Rouzaud
    Email                : denis.rouzaud@gmail.com
@@ -14,53 +14,53 @@
 ***************************************************************************/
 
 #include "qgiscustomwidgets.h"
-#include "qgsdatadefinedbuttonplugin.h"
-#include "qgsdatadefinedbutton.h"
+#include "qgspropertyoverridebuttonplugin.h"
+#include "qgspropertyoverridebutton.h"
 
 
-QgsDataDefinedButtonPlugin::QgsDataDefinedButtonPlugin( QObject *parent )
+QgsPropertyOverrideButtonPlugin::QgsPropertyOverrideButtonPlugin( QObject *parent )
     : QObject( parent )
     , mInitialized( false )
 {
 }
 
 
-QString QgsDataDefinedButtonPlugin::name() const
+QString QgsPropertyOverrideButtonPlugin::name() const
 {
-  return "QgsDataDefinedButton";
+  return "QgsPropertyOverrideButton";
 }
 
-QString QgsDataDefinedButtonPlugin::group() const
+QString QgsPropertyOverrideButtonPlugin::group() const
 {
   return QgisCustomWidgets::groupName();
 }
 
-QString QgsDataDefinedButtonPlugin::includeFile() const
+QString QgsPropertyOverrideButtonPlugin::includeFile() const
 {
-  return "qgsdatadefinedbutton.h";
+  return "qgspropertyoverridebutton.h";
 }
 
-QIcon QgsDataDefinedButtonPlugin::icon() const
+QIcon QgsPropertyOverrideButtonPlugin::icon() const
 {
   return QIcon( ":/images/icons/qgis-icon-60x60.png" );
 }
 
-bool QgsDataDefinedButtonPlugin::isContainer() const
+bool QgsPropertyOverrideButtonPlugin::isContainer() const
 {
   return false;
 }
 
-QWidget *QgsDataDefinedButtonPlugin::createWidget( QWidget *parent )
+QWidget *QgsPropertyOverrideButtonPlugin::createWidget( QWidget *parent )
 {
-  return new QgsDataDefinedButton( parent );
+  return new QgsPropertyOverrideButton( parent );
 }
 
-bool QgsDataDefinedButtonPlugin::isInitialized() const
+bool QgsPropertyOverrideButtonPlugin::isInitialized() const
 {
   return mInitialized;
 }
 
-void QgsDataDefinedButtonPlugin::initialize( QDesignerFormEditorInterface *core )
+void QgsPropertyOverrideButtonPlugin::initialize( QDesignerFormEditorInterface *core )
 {
   Q_UNUSED( core );
   if ( mInitialized )
@@ -69,20 +69,20 @@ void QgsDataDefinedButtonPlugin::initialize( QDesignerFormEditorInterface *core 
 }
 
 
-QString QgsDataDefinedButtonPlugin::toolTip() const
+QString QgsPropertyOverrideButtonPlugin::toolTip() const
 {
-  return tr( "A widget to define the scale range" );
+  return tr( "A widget to define override for a corresponding property" );
 }
 
-QString QgsDataDefinedButtonPlugin::whatsThis() const
+QString QgsPropertyOverrideButtonPlugin::whatsThis() const
 {
-  return tr( "A widget to define the scale range." );
+  return tr( "A widget to define override for a corresponding property." );
 }
 
-QString QgsDataDefinedButtonPlugin::domXml() const
+QString QgsPropertyOverrideButtonPlugin::domXml() const
 {
   return QString( "<ui language=\"c++\">\n"
-                  " <widget class=\"%1\" name=\"mDataDefinedButton\">\n"
+                  " <widget class=\"%1\" name=\"mPropertyOverrideButton\">\n"
                   "  <property name=\"geometry\">\n"
                   "   <rect>\n"
                   "    <x>0</x>\n"

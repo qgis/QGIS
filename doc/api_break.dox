@@ -250,6 +250,8 @@ Use QgsComposerAttributeTableV2 instead.
 - QgsCRSCache was removed. QgsCoordinateReferenceSystem now internally uses a cache for CRS creation,
 so there is no longer a need for the separate cache class. Code which previously called QgsCRSCache::updateCRSCache()
 should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinateTransformCache::instance()->invalidateCrs( authid ).
+- QgsDataDefined was removed. Use the QgsProperty framework instead.
+- QgsDataDefinedButton was removed. Use QgsPropertyOverrideButton instead.
 - QgsFileNameWidgetWrapper was removed. Use QgsExternalResourceWidgetWrapper instead.
 - QgsFormAnnotationItem. Use QgsFormAnnotation instead.
 - QgsHtmlAnnotationItem. Use QgsHtmlAnnotation instead.
@@ -270,10 +272,12 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 - QgsPseudoColorShader. This shader has been broken for some time and was replaced by QgsSingleBandPseudoColorRenderer.
 - QgsProjectBadLayerGuiHandler was removed. It was unused in QGIS code and barely useful. Implement your own QgsProjectBadLayerHandler subclass if needed.
 - QgsRendererV2DataDefinedMenus was removed. Use QgsDataDefinedButton instead.
+- QgsSizeScaleWidget. Use QgsPropertyAssistantWidget instead.
 - QgsLegacyHelpers.
 - QgsProviderCountCalcEvent and QgsProviderExtentCalcEvent. These classes were unused in QGIS core and unmaintained.
 - QgsWebviewWidgetWrapper was removed. Use QgsExternalResourceWidgetWrapper instead.
 - QgsEditorWidgetConfig was removed. Use QVariantMap instead.
+- QgsScaleExpression. Use QgsProperty with a QgsSizeScalePropertyTransformer instead.
 - QgsSvgAnnotationItem. Use QgsSvgAnnotation instead.
 - QgsSymbologyV2Conversion was removed. Reading of renderers from pre-1.0 versions is not supported anymore.
 - QgsTextAnnotationItem. Use QgsTextAnnotation instead.

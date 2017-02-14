@@ -1,25 +1,27 @@
 class QgsPropertyTransformer
 {
 %TypeHeaderCode
-#include <qgsproperty.h>
+#include <qgspropertytransformer.h>
 %End
 
 %ConvertToSubClassCode
-  if (sipCpp->transformerType() == QgsPropertyTransformer::SizeScaleTransformer)
-	sipType = sipType_QgsSizeScaleTransformer;
+  if (sipCpp->transformerType() == QgsPropertyTransformer::GenericNumericTransformer)
+    sipType = sipType_QgsGenericNumericTransformer;
+  else if (sipCpp->transformerType() == QgsPropertyTransformer::SizeScaleTransformer)
+    sipType = sipType_QgsSizeScaleTransformer;
   else if (sipCpp->transformerType() == QgsPropertyTransformer::ColorRampTransformer)
-	sipType = sipType_QgsColorRampTransformer;
+    sipType = sipType_QgsColorRampTransformer;
   else
-	sipType = sipType_QgsPropertyTransformer;
+    sipType = sipType_QgsPropertyTransformer;
 %End
 
   public:
 
-    //! Transformer types
     enum Type
     {
-      SizeScaleTransformer, /*!< Size scaling transformer (QgsSizeScaleTransformer) */
-      ColorRampTransformer, /*!< Color ramp transformer (QgsColorRampTransformer) */
+      GenericNumericTransformer,
+      SizeScaleTransformer,
+      ColorRampTransformer,
     };
 
     static QgsPropertyTransformer* create( Type type ) /Factory/;
@@ -47,12 +49,45 @@ class QgsPropertyTransformer
     virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const = 0;
     virtual QString toExpression( const QString& baseExpression ) const = 0;
 
-};
+    static QgsPropertyTransformer* fromExpression( const QString& expression, QString& baseExpression /Out/, QString& fieldName /Out/ ) /Factory/;
 
+};
+class QgsGenericNumericTransformer : QgsPropertyTransformer
+{
+%TypeHeaderCode
+#include <qgspropertytransformer.h>
+%End
+
+  public:
+    QgsGenericNumericTransformer( double minValue = 0.0,
+                                  double maxValue = 1.0,
+                                  double minOutput = 0.0,
+                                  double maxOutput = 1.0,
+                                  double nullOutput = 0.0,
+                                  double exponent = 1.0 );
+
+    virtual Type transformerType() const;
+    virtual QgsGenericNumericTransformer* clone() /Factory/;
+    virtual bool writeXml( QDomElement& transformerElem, QDomDocument& doc ) const;
+    virtual bool readXml( const QDomElement& transformerElem, const QDomDocument& doc );
+    virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const;
+    virtual QString toExpression( const QString& baseExpression ) const;
+    static QgsGenericNumericTransformer* fromExpression( const QString& expression, QString& baseExpression, QString& fieldName ) /Factory/;
+    double value( double input ) const;
+    double minOutputValue() const;
+    void setMinOutputValue( double size );
+    double maxOutputValue() const;
+    void setMaxOutputValue( double size );
+    double nullOutputValue() const;
+    void setNullOutputValue( double size );
+    double exponent() const;
+    void setExponent( double exponent );
+
+};
 class QgsSizeScaleTransformer : QgsPropertyTransformer
 {
 %TypeHeaderCode
-#include <qgsproperty.h>
+#include <qgspropertytransformer.h>
 %End
   public:
 
@@ -79,6 +114,8 @@ class QgsSizeScaleTransformer : QgsPropertyTransformer
     virtual bool readXml( const QDomElement& transformerElem, const QDomDocument& doc );
     virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const;
     virtual QString toExpression( const QString& baseExpression ) const;
+
+    static QgsSizeScaleTransformer* fromExpression( const QString& expression, QString& baseExpression /Out/, QString& fieldName /Out/ ) /Factory/;
 
     double size( double value ) const;
 
@@ -107,7 +144,7 @@ class QgsSizeScaleTransformer : QgsPropertyTransformer
 class QgsColorRampTransformer : QgsPropertyTransformer
 {
 %TypeHeaderCode
-#include <qgsproperty.h>
+#include <qgspropertytransformer.h>
 %End
   public:
 

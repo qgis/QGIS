@@ -22,7 +22,6 @@
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
-#include "qgsscaleexpression.h"
 #include "qgssymbollayer.h"
 #include "qgsproperty.h"
 
@@ -1180,17 +1179,17 @@ QgsLegendSymbolListV2 QgsGraduatedSymbolRenderer::legendSymbolItemsV2() const
       return QgsFeatureRenderer::legendSymbolItemsV2();
     }
 
-    QgsScaleExpression exp( ddSize.asExpression() );
-    if ( exp.type() != QgsScaleExpression::Unknown )
+    if ( const QgsSizeScaleTransformer* sizeTransformer = dynamic_cast< const QgsSizeScaleTransformer* >( ddSize.transformer() ) )
     {
-      QgsLegendSymbolItem title( nullptr, exp.baseExpression(), QLatin1String( "" ) );
+      QgsLegendSymbolItem title( nullptr, ddSize.propertyType() == QgsProperty::ExpressionBasedProperty ? ddSize.expressionString()
+                                 : ddSize.field(), QString() );
       list << title;
-      Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( exp.minValue(), exp.maxValue(), 4 ) )
+      Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( sizeTransformer->minValue(), sizeTransformer->maxValue(), 4 ) )
       {
-        QgsLegendSymbolItem si( mSourceSymbol.get(), QString::number( v ), QLatin1String( "" ) );
+        QgsLegendSymbolItem si( mSourceSymbol.get(), QString::number( v ), QString() );
         QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( si.symbol() );
         s->setDataDefinedSize( QgsProperty() );
-        s->setSize( exp.size( v ) );
+        s->setSize( sizeTransformer->size( v ) );
         list << si;
       }
       // now list the graduated symbols

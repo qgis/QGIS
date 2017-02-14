@@ -15,11 +15,13 @@
 
 #include "qgspropertyoverridebutton.h"
 
-#include <qgsapplication.h>
-#include <qgsexpressionbuilderdialog.h>
-#include <qgsexpression.h>
-#include <qgsmessageviewer.h>
-#include <qgsvectorlayer.h>
+#include "qgsapplication.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpression.h"
+#include "qgsmessageviewer.h"
+#include "qgsvectorlayer.h"
+#include "qgspanelwidget.h"
+#include "qgspropertyassistantwidget.h"
 
 #include <QClipboard>
 #include <QMenu>
@@ -82,10 +84,10 @@ void QgsPropertyOverrideButton::init( int propertyKey, const QgsProperty& proper
   setToProperty( property );
   mPropertyKey = propertyKey;
 
-  const QgsPropertyDefinition& def = definitions.value( propertyKey );
-  mDataTypes = def.dataType();
+  mDefinition = definitions.value( propertyKey );
+  mDataTypes = mDefinition.dataType();
 
-  mInputDescription = def.helpText();
+  mInputDescription = mDefinition.helpText();
   mFullDescription.clear();
   mUsageInfo.clear();
 
@@ -312,8 +314,8 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
         if ( mFieldName == fldname )
         {
           act->setCheckable( true );
-          act->setChecked( mProperty.propertyType() != QgsProperty::ExpressionBasedProperty );
-          fieldActive = mProperty.propertyType() != QgsProperty::ExpressionBasedProperty;
+          act->setChecked( mProperty.propertyType() == QgsProperty::FieldBasedProperty );
+          fieldActive = mProperty.propertyType() == QgsProperty::FieldBasedProperty;
         }
       }
     }
@@ -327,7 +329,7 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
   }
 
   mFieldsMenu->menuAction()->setCheckable( true );
-  mFieldsMenu->menuAction()->setChecked( fieldActive );
+  mFieldsMenu->menuAction()->setChecked( fieldActive && mProperty.propertyType() == QgsProperty::FieldBasedProperty && !mProperty.transformer() );
 
   QAction* exprTitleAct = mDefineMenu->addAction( tr( "Expression" ) );
   exprTitleAct->setFont( titlefont );
@@ -366,7 +368,7 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
 
   mDefineMenu->addAction( mActionVariables );
   mVariablesMenu->menuAction()->setCheckable( true );
-  mVariablesMenu->menuAction()->setChecked( variableActive );
+  mVariablesMenu->menuAction()->setChecked( variableActive && !mProperty.transformer() );
 
   if ( hasExp )
   {
@@ -389,7 +391,7 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
       mActionExpression->setText( expString );
     }
     mDefineMenu->addAction( mActionExpression );
-    mActionExpression->setChecked( mProperty.propertyType() == QgsProperty::ExpressionBasedProperty && !variableActive );
+    mActionExpression->setChecked( mProperty.propertyType() == QgsProperty::ExpressionBasedProperty && !variableActive && !mProperty.transformer() );
 
     mDefineMenu->addAction( mActionExpDialog );
     mDefineMenu->addAction( mActionCopyExpr );
@@ -400,6 +402,14 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
   {
     mDefineMenu->addAction( mActionExpDialog );
     mDefineMenu->addAction( mActionPasteExpr );
+  }
+
+  if ( !mDefinition.name().isEmpty() && mDefinition.supportsAssistant() )
+  {
+    mDefineMenu->addSeparator();
+    mActionAssistant->setCheckable( mProperty.transformer() );
+    mActionAssistant->setChecked( mProperty.transformer() );
+    mDefineMenu->addAction( mActionAssistant );
   }
 }
 
@@ -422,6 +432,7 @@ void QgsPropertyOverrideButton::menuActionTriggered( QAction* action )
   else if ( action == mActionExpression )
   {
     mProperty.setExpressionString( mExpressionString );
+    mProperty.setTransformer( nullptr );
     setActivePrivate( true );
     updateGui();
     emit changed();
@@ -437,26 +448,24 @@ void QgsPropertyOverrideButton::menuActionTriggered( QAction* action )
     {
       mExpressionString = exprString;
       mProperty.setExpressionString( mExpressionString );
-      setActivePrivate( mProperty.isActive() );
+      mProperty.setTransformer( nullptr );
+      setActivePrivate( true );
       updateGui();
       emit changed();
     }
   }
   else if ( action == mActionClearExpr )
   {
-    // only deactivate if defined expression is being used
-    if ( mProperty.isActive() && mProperty.propertyType() == QgsProperty::ExpressionBasedProperty )
-    {
-      mProperty.setStaticValue( QVariant() );
-      setActivePrivate( false );
-    }
+    setActivePrivate( false );
+    mProperty.setStaticValue( QVariant() );
+    mProperty.setTransformer( nullptr );
     mExpressionString.clear();
     updateGui();
     emit changed();
   }
   else if ( action == mActionAssistant )
   {
-    //showAssistant();
+    showAssistant();
   }
   else if ( mFieldsMenu->actions().contains( action ) )  // a field name clicked
   {
@@ -467,6 +476,7 @@ void QgsPropertyOverrideButton::menuActionTriggered( QAction* action )
         mFieldName = action->data().toString();
       }
       mProperty.setField( mFieldName );
+      mProperty.setTransformer( nullptr );
       setActivePrivate( true );
       updateGui();
       emit changed();
@@ -479,6 +489,7 @@ void QgsPropertyOverrideButton::menuActionTriggered( QAction* action )
       mExpressionString = action->data().toString().prepend( "@" );
     }
     mProperty.setExpressionString( mExpressionString );
+    mProperty.setTransformer( nullptr );
     setActivePrivate( true );
     updateGui();
     emit changed();
@@ -498,16 +509,72 @@ void QgsPropertyOverrideButton::showExpressionDialog()
 {
   QgsExpressionContext context = mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : QgsExpressionContext();
 
-  QgsExpressionBuilderDialog d( const_cast<QgsVectorLayer*>( mVectorLayer ), mExpressionString, this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog d( const_cast<QgsVectorLayer*>( mVectorLayer ), mProperty.asExpression(), this, QStringLiteral( "generic" ), context );
   if ( d.exec() == QDialog::Accepted )
   {
     mExpressionString = d.expressionText().trimmed();
     mProperty.setExpressionString( mExpressionString );
+    mProperty.setTransformer( nullptr );
     setActivePrivate( !mExpressionString.isEmpty() );
     updateGui();
     emit changed();
   }
   activateWindow(); // reset focus to parent window
+}
+
+void QgsPropertyOverrideButton::showAssistant()
+{
+  //first step - try to convert any existing expression to a transformer if one doesn't
+  //already exist
+  if ( !mProperty.transformer() )
+  {
+    ( void )mProperty.convertToTransformer();
+  }
+
+  QgsPanelWidget* panel = QgsPanelWidget::findParentPanel( this );
+  QgsPropertyAssistantWidget* widget = new QgsPropertyAssistantWidget( panel, mDefinition, mProperty, mVectorLayer );
+  widget->registerExpressionContextGenerator( mExpressionContextGenerator );
+  widget->setSymbol( mSymbol ); // we only show legend preview in dialog version
+
+  if ( panel && panel->dockMode() )
+  {
+    connect( widget, &QgsPropertyAssistantWidget::widgetChanged, this, [this,widget]
+    {
+      widget->updateProperty( this->mProperty );
+      mExpressionString = this->mProperty.asExpression();
+      mFieldName = this->mProperty.field();
+      this->emit changed();
+    } );
+
+    connect( widget, &QgsPropertyAssistantWidget::panelAccepted, this, [=] { updateGui(); } );
+
+    panel->openPanel( widget );
+    return;
+  }
+  else
+  {
+    // Show the dialog version if not in a panel
+    QDialog* dlg = new QDialog( this );
+    QString key =  QStringLiteral( "/UI/paneldialog/%1" ).arg( widget->panelTitle() );
+    QSettings settings;
+    dlg->restoreGeometry( settings.value( key ).toByteArray() );
+    dlg->setWindowTitle( widget->panelTitle() );
+    dlg->setLayout( new QVBoxLayout() );
+    dlg->layout()->addWidget( widget );
+    QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok );
+    connect( buttonBox, SIGNAL( accepted() ), dlg, SLOT( accept() ) );
+    dlg->layout()->addWidget( buttonBox );
+    dlg->exec();
+    settings.setValue( key, dlg->saveGeometry() );
+
+    widget->updateProperty( mProperty );
+    mExpressionString = mProperty.asExpression();
+    mFieldName = mProperty.field();
+    widget->acceptPanel();
+    updateGui();
+
+    emit changed();
+  }
 }
 
 void QgsPropertyOverrideButton::updateGui()
@@ -532,7 +599,7 @@ void QgsPropertyOverrideButton::updateGui()
   {
     icon = mProperty.isActive() ? QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineOn.svg" ) ) : QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefine.svg" ) );
 
-    if ( !mFieldNameList.contains( mFieldName ) )
+    if ( !mFieldNameList.contains( mFieldName ) && !mProperty.transformer() )
     {
       icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineError.svg" ) );
       deftip = tr( "'%1' field missing" ).arg( mFieldName );

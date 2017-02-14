@@ -32,6 +32,9 @@ QgsPropertyTransformer* QgsPropertyTransformer::create( QgsPropertyTransformer::
   QgsPropertyTransformer* transformer = nullptr;
   switch ( type )
   {
+    case GenericNumericTransformer:
+      transformer = new QgsGenericNumericTransformer();
+      break;
     case SizeScaleTransformer:
       transformer = new QgsSizeScaleTransformer();
       break;
@@ -55,6 +58,17 @@ bool QgsPropertyTransformer::writeXml( QDomElement& transformerElem, QDomDocumen
   return true;
 }
 
+QgsPropertyTransformer* QgsPropertyTransformer::fromExpression( const QString& expression, QString& baseExpression, QString& fieldName )
+{
+  baseExpression.clear();
+  fieldName.clear();
+
+  if ( QgsPropertyTransformer* sizeScale = QgsSizeScaleTransformer::fromExpression( expression, baseExpression, fieldName ) )
+    return sizeScale;
+  else
+    return nullptr;
+}
+
 bool QgsPropertyTransformer::readXml( const QDomElement &transformerElem, const QDomDocument &doc )
 {
   Q_UNUSED( doc );
@@ -62,6 +76,172 @@ bool QgsPropertyTransformer::readXml( const QDomElement &transformerElem, const 
   mMaxValue = transformerElem.attribute( "maxValue", "1.0" ).toDouble();
   return true;
 }
+
+//
+// QgsGenericNumericTransformer
+//
+
+QgsGenericNumericTransformer::QgsGenericNumericTransformer( double minValue, double maxValue, double minOutput, double maxOutput, double nullOutput, double exponent )
+    : QgsPropertyTransformer( minValue, maxValue )
+    , mMinOutput( minOutput )
+    , mMaxOutput( maxOutput )
+    , mNullOutput( nullOutput )
+    , mExponent( exponent )
+{}
+
+QgsGenericNumericTransformer *QgsGenericNumericTransformer::clone()
+{
+  return new QgsGenericNumericTransformer( mMinValue,
+         mMaxValue,
+         mMinOutput,
+         mMaxOutput,
+         mNullOutput,
+         mExponent );
+}
+
+bool QgsGenericNumericTransformer::writeXml( QDomElement &transformerElem, QDomDocument &doc ) const
+{
+  if ( !QgsPropertyTransformer::writeXml( transformerElem, doc ) )
+    return false;
+
+  transformerElem.setAttribute( "minOutput", QString::number( mMinOutput ) );
+  transformerElem.setAttribute( "maxOutput", QString::number( mMaxOutput ) );
+  transformerElem.setAttribute( "nullOutput", QString::number( mNullOutput ) );
+  transformerElem.setAttribute( "exponent", QString::number( mExponent ) );
+
+  return true;
+}
+
+bool QgsGenericNumericTransformer::readXml( const QDomElement &transformerElem, const QDomDocument &doc )
+{
+  if ( !QgsPropertyTransformer::readXml( transformerElem, doc ) )
+    return false;
+
+  mMinOutput = transformerElem.attribute( "minOutput", "0.0" ).toDouble();
+  mMaxOutput = transformerElem.attribute( "maxOutput", "1.0" ).toDouble();
+  mNullOutput = transformerElem.attribute( "nullOutput", "0.0" ).toDouble();
+  mExponent = transformerElem.attribute( "exponent", "1.0" ).toDouble();
+  return true;
+}
+
+double QgsGenericNumericTransformer::value( double input ) const
+{
+  if ( qgsDoubleNear( mExponent, 1.0 ) )
+    return mMinOutput + ( qBound( mMinValue, input, mMaxValue ) - mMinValue ) * ( mMaxOutput - mMinOutput ) / ( mMaxValue - mMinValue );
+  else
+    return mMinOutput + qPow( qBound( mMinValue, input, mMaxValue ) - mMinValue, mExponent ) * ( mMaxOutput - mMinOutput ) / qPow( mMaxValue - mMinValue, mExponent );
+}
+
+QVariant QgsGenericNumericTransformer::transform( const QgsExpressionContext& context, const QVariant& v ) const
+{
+  Q_UNUSED( context );
+
+  if ( v.isNull() )
+    return mNullOutput;
+
+  bool ok;
+  double dblValue = v.toDouble( &ok );
+
+  if ( ok )
+  {
+    //apply scaling to value
+    return value( dblValue );
+  }
+  else
+  {
+    return v;
+  }
+}
+
+QString QgsGenericNumericTransformer::toExpression( const QString& baseExpression ) const
+{
+  QString minValueString = QString::number( mMinValue );
+  QString maxValueString = QString::number( mMaxValue );
+  QString minOutputString = QString::number( mMinOutput );
+  QString maxOutputString = QString::number( mMaxOutput );
+  QString nullOutputString = QString::number( mNullOutput );
+  QString exponentString = QString::number( mExponent );
+
+  if ( qgsDoubleNear( mExponent, 1.0 ) )
+    return QStringLiteral( "coalesce(scale_linear(%1, %2, %3, %4, %5), %6)" ).arg( baseExpression, minValueString, maxValueString, minOutputString, maxOutputString, nullOutputString );
+  else
+    return QStringLiteral( "coalesce(scale_exp(%1, %2, %3, %4, %5, %6), %7)" ).arg( baseExpression, minValueString, maxValueString, minOutputString, maxOutputString, exponentString, nullOutputString );
+}
+
+QgsGenericNumericTransformer* QgsGenericNumericTransformer::fromExpression( const QString& expression, QString& baseExpression, QString& fieldName )
+{
+  bool ok = false;
+
+  double nullValue = 0.0;
+  double exponent = 1.0;
+
+  baseExpression.clear();
+  fieldName.clear();
+
+  QgsExpression e( expression );
+
+  if ( !e.rootNode() )
+    return nullptr;
+
+  const QgsExpression::NodeFunction * f = dynamic_cast<const QgsExpression::NodeFunction*>( e.rootNode() );
+  if ( !f )
+    return nullptr;
+
+  QList<QgsExpression::Node*> args = f->args()->list();
+
+  // the scale function may be enclosed in a coalesce(expr, 0) to avoid NULL value
+  // to be drawn with the default size
+  if ( "coalesce" == QgsExpression::Functions()[f->fnIndex()]->name() )
+  {
+    f = dynamic_cast<const QgsExpression::NodeFunction*>( args[0] );
+    if ( !f )
+      return nullptr;
+    nullValue = QgsExpression( args[1]->dump() ).evaluate().toDouble( &ok );
+    if ( ! ok )
+      return nullptr;
+    args = f->args()->list();
+  }
+
+  if ( "scale_linear" == QgsExpression::Functions()[f->fnIndex()]->name() )
+  {
+    exponent = 1.0;
+  }
+  else if ( "scale_exp" == QgsExpression::Functions()[f->fnIndex()]->name() )
+  {
+    exponent = QgsExpression( args[5]->dump() ).evaluate().toDouble( &ok );
+  }
+  else
+  {
+    return nullptr;
+  }
+
+  bool expOk = true;
+  double minValue = QgsExpression( args[1]->dump() ).evaluate().toDouble( &ok );
+  expOk &= ok;
+  double maxValue = QgsExpression( args[2]->dump() ).evaluate().toDouble( &ok );
+  expOk &= ok;
+  double minOutput = QgsExpression( args[3]->dump() ).evaluate().toDouble( &ok );
+  expOk &= ok;
+  double maxOutput = QgsExpression( args[4]->dump() ).evaluate().toDouble( &ok );
+  expOk &= ok;
+
+  if ( !expOk )
+  {
+    return nullptr;
+  }
+
+  if ( args[0]->nodeType() == QgsExpression::ntColumnRef )
+  {
+    fieldName = static_cast< QgsExpression::NodeColumnRef* >( args[0] )->name();
+  }
+  else
+  {
+    baseExpression = args[0]->dump();
+  }
+  return new QgsGenericNumericTransformer( minValue, maxValue, minOutput, maxOutput, nullValue, exponent );
+}
+
+
 
 //
 // QgsSizeScaleProperty
@@ -195,6 +375,88 @@ QString QgsSizeScaleTransformer::toExpression( const QString& baseExpression ) c
   return QString();
 }
 
+QgsSizeScaleTransformer* QgsSizeScaleTransformer::fromExpression( const QString& expression, QString& baseExpression, QString& fieldName )
+{
+  bool ok = false;
+
+  ScaleType type = Linear;
+  double nullSize = 0.0;
+  double exponent = 1.0;
+
+  baseExpression.clear();
+  fieldName.clear();
+
+  QgsExpression e( expression );
+
+  if ( !e.rootNode() )
+    return nullptr;
+
+  const QgsExpression::NodeFunction * f = dynamic_cast<const QgsExpression::NodeFunction*>( e.rootNode() );
+  if ( !f )
+    return nullptr;
+
+  QList<QgsExpression::Node*> args = f->args()->list();
+
+  // the scale function may be enclosed in a coalesce(expr, 0) to avoid NULL value
+  // to be drawn with the default size
+  if ( "coalesce" == QgsExpression::Functions()[f->fnIndex()]->name() )
+  {
+    f = dynamic_cast<const QgsExpression::NodeFunction*>( args[0] );
+    if ( !f )
+      return nullptr;
+    nullSize = QgsExpression( args[1]->dump() ).evaluate().toDouble( &ok );
+    if ( ! ok )
+      return nullptr;
+    args = f->args()->list();
+  }
+
+  if ( "scale_linear" == QgsExpression::Functions()[f->fnIndex()]->name() )
+  {
+    type = Linear;
+  }
+  else if ( "scale_exp" == QgsExpression::Functions()[f->fnIndex()]->name() )
+  {
+    exponent = QgsExpression( args[5]->dump() ).evaluate().toDouble( &ok );
+    if ( ! ok )
+      return nullptr;
+    if ( qgsDoubleNear( exponent, 0.57, 0.001 ) )
+      type = Flannery;
+    else if ( qgsDoubleNear( exponent, 0.5, 0.001 ) )
+      type = Area;
+    else
+      type = Exponential;
+  }
+  else
+  {
+    return nullptr;
+  }
+
+  bool expOk = true;
+  double minValue = QgsExpression( args[1]->dump() ).evaluate().toDouble( &ok );
+  expOk &= ok;
+  double maxValue = QgsExpression( args[2]->dump() ).evaluate().toDouble( &ok );
+  expOk &= ok;
+  double minSize = QgsExpression( args[3]->dump() ).evaluate().toDouble( &ok );
+  expOk &= ok;
+  double maxSize = QgsExpression( args[4]->dump() ).evaluate().toDouble( &ok );
+  expOk &= ok;
+
+  if ( !expOk )
+  {
+    return nullptr;
+  }
+
+  if ( args[0]->nodeType() == QgsExpression::ntColumnRef )
+  {
+    fieldName = static_cast< QgsExpression::NodeColumnRef* >( args[0] )->name();
+  }
+  else
+  {
+    baseExpression = args[0]->dump();
+  }
+  return new QgsSizeScaleTransformer( type, minValue, maxValue, minSize, maxSize, nullSize, exponent );
+}
+
 
 //
 // QgsColorRampTransformer
@@ -324,4 +586,3 @@ void QgsColorRampTransformer::setColorRamp( QgsColorRamp* ramp )
 {
   mGradientRamp.reset( ramp );
 }
-

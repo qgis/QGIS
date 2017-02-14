@@ -112,7 +112,6 @@ SET(QGIS_CORE_SRCS
   qgscredentials.cpp
   qgscrscache.cpp
   qgsdartmeasurement.cpp
-  qgsdatadefined.cpp
   qgsdataitem.cpp
   qgsdataitemprovider.cpp
   qgsdataitemproviderregistry.cpp
@@ -213,7 +212,6 @@ SET(QGIS_CORE_SRCS
   qgsrunprocess.cpp
   qgsruntimeprofiler.cpp
   qgsscalecalculator.cpp
-  qgsscaleexpression.cpp
   qgsscaleutils.cpp
   qgssimplifymethod.cpp
   qgsslconnect.cpp
@@ -671,7 +669,6 @@ SET(QGIS_CORE_HDRS
   qgscrscache.h
   qgscsexception.h
   qgsdartmeasurement.h
-  qgsdatadefined.h
   qgsdataitem.h
   qgsdataitemprovider.h
   qgsdataitemproviderregistry.h
@@ -748,7 +745,6 @@ SET(QGIS_CORE_HDRS
   qgsrendercontext.h
   qgsruntimeprofiler.h
   qgsscalecalculator.h
-  qgsscaleexpression.h
   qgsscaleutils.h
   qgssimplifymethod.h
   qgssnapper.h

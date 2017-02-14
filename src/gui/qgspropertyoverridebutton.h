@@ -156,6 +156,13 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
      */
     void registerExpressionContextGenerator( QgsExpressionContextGenerator* generator );
 
+    /**
+     * Sets a symbol which can be used for previews inside the widget or in any dialog created
+     * by the widget. If not specified, a default created symbol will be used instead.
+     * @note not available in Python bindings
+     */
+    void setSymbol( std::shared_ptr< QgsSymbol > symbol ) { mSymbol = symbol; }
+
   public slots:
 
     /**
@@ -180,6 +187,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
 
     void showDescriptionDialog();
     void showExpressionDialog();
+    void showAssistant();
     void updateGui();
 
     /**
@@ -214,6 +222,8 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     QAction* mActionClearExpr;
     QAction* mActionAssistant;
 
+    QgsPropertyDefinition mDefinition;
+
     QgsPropertyDefinition::DataType mDataTypes = QgsPropertyDefinition::DataTypeString;
     QString mDataTypesString;
     QString mInputDescription;
@@ -226,6 +236,8 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
 
     //! Internal property used for storing state of widget
     QgsProperty mProperty;
+
+    std::shared_ptr< QgsSymbol > mSymbol;
 
   private slots:
     void aboutToShowMenu();

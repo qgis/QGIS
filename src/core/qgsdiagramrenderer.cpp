@@ -36,7 +36,7 @@ void QgsDiagramLayerSettings::initPropertyDefinitions()
   {
     { QgsDiagramLayerSettings::BackgroundColor, QgsPropertyDefinition( "backgroundColor", QObject::tr( "Background color" ), QgsPropertyDefinition::ColorWithAlpha ) },
     { QgsDiagramLayerSettings::OutlineColor, QgsPropertyDefinition( "outlineColor", QObject::tr( "Outline color" ), QgsPropertyDefinition::ColorWithAlpha ) },
-    { QgsDiagramLayerSettings::OutlineWidth, QgsPropertyDefinition( "outlineWidth", QObject::tr( "Outline width" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsDiagramLayerSettings::OutlineWidth, QgsPropertyDefinition( "outlineWidth", QObject::tr( "Outline width" ), QgsPropertyDefinition::StrokeWidth ) },
     { QgsDiagramLayerSettings::PositionX, QgsPropertyDefinition( "positionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double ) },
     { QgsDiagramLayerSettings::PositionY, QgsPropertyDefinition( "positionY", QObject::tr( "Position (Y)" ), QgsPropertyDefinition::Double ) },
     { QgsDiagramLayerSettings::Distance, QgsPropertyDefinition( "distance", QObject::tr( "Placement distance" ), QgsPropertyDefinition::DoublePositive ) },
@@ -45,7 +45,7 @@ void QgsDiagramLayerSettings::initPropertyDefinitions()
     { QgsDiagramLayerSettings::IsObstacle, QgsPropertyDefinition( "isObstacle", QObject::tr( "Diagram is an obstacle" ), QgsPropertyDefinition::Boolean ) },
     { QgsDiagramLayerSettings::Show, QgsPropertyDefinition( "show", QObject::tr( "Show diagram" ), QgsPropertyDefinition::Boolean ) },
     { QgsDiagramLayerSettings::AlwaysShow, QgsPropertyDefinition( "alwaysShow", QObject::tr( "Always show diagram" ), QgsPropertyDefinition::Boolean ) },
-    { QgsDiagramLayerSettings::StartAngle, QgsPropertyDefinition( "startAngle", QObject::tr( "Pie chart start angle" ), QgsPropertyDefinition::Double ) },
+    { QgsDiagramLayerSettings::StartAngle, QgsPropertyDefinition( "startAngle", QObject::tr( "Pie chart start angle" ), QgsPropertyDefinition::Rotation ) },
   };
 }
 
