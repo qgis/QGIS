@@ -87,7 +87,11 @@ QUrl QgsHelp::helpUrl( const QString& key )
         continue;
       }
       helpUrl = QUrl::fromLocalFile( filePath );
-      helpUrl.setFragment( helpPath.mid( helpPath.lastIndexOf( "#" ) + 1, -1 ) );
+      int pos = helpPath.lastIndexOf( "#" );
+      if ( pos != -1 )
+      {
+        helpUrl.setFragment( helpPath.mid( helpPath.lastIndexOf( "#" ) + 1, -1 ) );
+      }
     }
 
     helpFound = true;
