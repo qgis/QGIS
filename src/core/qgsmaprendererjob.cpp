@@ -457,9 +457,13 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings& settings, const La
 
   QPainter painter( &image );
 
+
   for ( LayerRenderJobs::const_iterator it = jobs.constBegin(); it != jobs.constEnd(); ++it )
   {
     const LayerRenderJob& job = *it;
+
+    if ( job.layer && job.layer->customProperty( QStringLiteral( "rendering/renderAboveLabels" ) ).toBool() )
+      continue; // skip layer for now, it will be rendered after labels
 
     painter.setCompositionMode( job.blendMode );
     painter.setOpacity( job.opacity );
@@ -477,6 +481,22 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings& settings, const La
     painter.setCompositionMode( QPainter::CompositionMode_SourceOver );
     painter.setOpacity( 1.0 );
     painter.drawImage( 0, 0, *labelJob.img );
+  }
+
+  // render any layers with the renderAboveLabels flag now
+  for ( LayerRenderJobs::const_iterator it = jobs.constBegin(); it != jobs.constEnd(); ++it )
+  {
+    const LayerRenderJob& job = *it;
+
+    if ( !job.layer || !job.layer->customProperty( QStringLiteral( "rendering/renderAboveLabels" ) ).toBool() )
+      continue;
+
+    painter.setCompositionMode( job.blendMode );
+    painter.setOpacity( job.opacity );
+
+    Q_ASSERT( job.img );
+
+    painter.drawImage( 0, 0, *job.img );
   }
 
   painter.end();
