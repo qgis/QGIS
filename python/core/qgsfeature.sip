@@ -232,12 +232,11 @@ class QgsFeature
      */
     QgsFeature( const QgsFeature & rhs );
 
-    //! Destructor
     ~QgsFeature();
 
     /** Get the feature ID for this feature.
      * @returns feature ID
-     * @see setFeatureId
+     * @see setId()
      */
     QgsFeatureId id() const;
 
@@ -252,6 +251,7 @@ class QgsFeature
      * @returns list of feature's attributes
      * @see setAttributes
      * @note added in QGIS 2.9
+     * @note Alternatively in Python: iterate feature, eg. @code [attr for attr in feature] @endcode
      */
     QgsAttributes attributes() const;
 
@@ -267,6 +267,7 @@ class QgsFeature
      * @param attr the value of the attribute
      * @return false, if the field index does not exist
      * @note For Python: raises a KeyError exception instead of returning false
+     * @note Alternatively in Python: @code feature[field] = attr @endcode
      * @see setAttributes
      */
     bool setAttribute( int field, const QVariant& attr /GetWrapper/);
@@ -300,6 +301,7 @@ class QgsFeature
      * @param field the index of the field
      * @see setAttribute
      * @note For Python: raises a KeyError exception if the field is not found
+     * @note Alternatively in Python: @code del feature[field] @endcode
      */
     void deleteAttribute( int field );
 %MethodCode
@@ -311,6 +313,7 @@ class QgsFeature
     sipIsErr = 1;
   }
 %End
+
     /** Returns the validity of this feature. This is normally set by
      * the provider to indicate some problem that makes the feature
      * invalid or to indicate a null feature.
@@ -372,6 +375,7 @@ class QgsFeature
      *  @param value The value to set
      *  @return false if attribute name could not be converted to index (C++ only)
      *  @note For Python: raises a KeyError exception instead of returning false
+     *  @note Alternatively in Python: @code feature[name] = attr @endcode
      *  @see setFields
      */
     void setAttribute( const QString& name, const QVariant& value /GetWrapper/ );
@@ -394,11 +398,13 @@ class QgsFeature
     }
   }
 %End
+
     /** Removes an attribute value by field name. Field map must be associated using @link setFields @endlink
      *  before this method can be used.
      *  @param name The name of the field to delete
      *  @return false if attribute name could not be converted to index (C++ only)
      *  @note For Python: raises a KeyError exception instead of returning false
+     *  @note Alternatively in Python: @code del feature[name] @endcode
      *  @see setFields
      */
     bool deleteAttribute( const QString& name );
@@ -416,11 +422,13 @@ class QgsFeature
     sipRes = true;
   }
 %End
+
     /** Lookup attribute value from attribute name. Field map must be associated using @link setFields @endlink
      *  before this method can be used.
      *  @param name The name of the attribute to get
      *  @return The value of the attribute (C++: Invalid variant if no such name exists )
-     *  @note For Python: raises a KeyError exception if field is not found
+     *  @note For Python: raises a KeyError exception if the field is not found
+     *  @note Alternatively in Python: @code feature[name] @endcode
      *  @see setFields
      */
     SIP_PYOBJECT attribute( const QString& name ) const;
@@ -437,6 +445,31 @@ class QgsFeature
     sipRes = sipConvertFromNewType( v, sipType_QVariant, Py_None );
   }
 %End
+
+    /** Lookup attribute value from its index. Field map must be associated using @link setFields @endlink
+     *  before this method can be used.
+     *  @param fieldIdx The index of the attribute to get
+     *  @return The value of the attribute (C++: Invalid variant if no such index exists )
+     *  @note For Python: raises a KeyError exception if the field is not found
+     *  @note Alternatively in Python: @code feature[fieldIdx] @endcode
+     *  @see setFields
+     */
+    SIP_PYOBJECT attribute( int fieldIdx ) const;
+%MethodCode
+  {
+    if (a0 < 0 || a0 >= sipCpp->attributes().count())
+    {
+      PyErr_SetString(PyExc_KeyError, QByteArray::number(a0));
+      sipIsErr = 1;
+    }
+    else
+    {
+      QVariant* v = new QVariant( sipCpp->attribute(a0) );
+      sipRes = sipConvertFromNewType( v, sipType_QVariant, Py_None );
+    }
+  }
+%End
+
     /** Utility method to get attribute index from name. Field map must be associated using @link setFields @endlink
      *  before this method can be used.
      *  @param fieldName name of field to get attribute index of
