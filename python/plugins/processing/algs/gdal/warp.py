@@ -141,10 +141,10 @@ class warp(GdalAlgorithm):
         arguments = []
         arguments.append('-ot')
         arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
-        if len(srccrs) > 0:
+        if srccrs:
             arguments.append('-s_srs')
             arguments.append(srccrs)
-        if len(dstcrs) > 0:
+        if dstcrs:
             arguments.append('-t_srs')
             arguments.append(dstcrs)
         if noData and len(noData) > 0:
@@ -177,7 +177,7 @@ class warp(GdalAlgorithm):
             arguments.extend(rastext)
 
         if GdalUtils.version() >= 2000000:
-            if rastext and rastext_crs is not None:
+            if rastext and rastext_crs:
                 arguments.append('-te_srs')
                 arguments.append(rastext_crs)
 
