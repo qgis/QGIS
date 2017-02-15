@@ -262,31 +262,20 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         FixGeometry(), ExecuteSQL(), FindProjection()
                         ]
 
-        #~ if hasMatplotlib:
-        #~ from .VectorLayerHistogram import VectorLayerHistogram
-        #~ from .RasterLayerHistogram import RasterLayerHistogram
-        #~ from .VectorLayerScatterplot import VectorLayerScatterplot
-        #~ from .MeanAndStdDevPlot import MeanAndStdDevPlot
-        #~ from .BarPlot import BarPlot
-        #~ from .PolarPlot import PolarPlot
-
-        #~ self.alglist.extend([
-        #~ VectorLayerHistogram(), RasterLayerHistogram(),
-        #~ VectorLayerScatterplot(), MeanAndStdDevPlot(), BarPlot(),
-        #~ PolarPlot(),
-        #~ ])
         if hasPlotly:
             from .VectorLayerHistogram import VectorLayerHistogram
             from .RasterLayerHistogram import RasterLayerHistogram
             from .VectorLayerScatterplot import VectorLayerScatterplot
             from .MeanAndStdDevPlot import MeanAndStdDevPlot
             from .BarPlot import BarPlot
-            #~ from .PolarPlot import PolarPlot
+            from .PolarPlot import PolarPlot
 
             self.alglist.extend([VectorLayerHistogram(), RasterLayerHistogram(),
-                                 VectorLayerScatterplot(), MeanAndStdDevPlot(), BarPlot()])
+                                 VectorLayerScatterplot(), MeanAndStdDevPlot(),
+                                 BarPlot(), PolarPlot()])
 
-        self.externalAlgs = []  # to store algs added by 3rd party plugins as scripts
+        # to store algs added by 3rd party plugins as scripts
+        self.externalAlgs = []
 
         folder = os.path.join(os.path.dirname(__file__), 'scripts')
         scripts = ScriptUtils.loadFromFolder(folder)
