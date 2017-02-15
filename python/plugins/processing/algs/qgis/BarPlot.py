@@ -73,4 +73,4 @@ class BarPlot(GeoAlgorithm):
         ind = np.arange(len(values[namefieldname]))
         data = [go.Bar(x=ind,
                        y=values[valuefieldname])]
-        plt.offline.plot(data, filename=output)
+        plt.offline.plot(data, filename=output, auto_open=False)

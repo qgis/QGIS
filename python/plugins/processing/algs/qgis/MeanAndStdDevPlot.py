@@ -82,4 +82,4 @@ class MeanAndStdDevPlot(GeoAlgorithm):
                                boxmean='sd',
                                name=k
                                ))
-        plt.offline.plot(data, filename=output)
+        plt.offline.plot(data, filename=output, auto_open=False)

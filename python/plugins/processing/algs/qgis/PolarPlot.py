@@ -68,4 +68,4 @@ class PolarPlot(GeoAlgorithm):
 
         data = [go.Area(r=values[valuefieldname],
                         t=np.degrees(np.arange(0.0, 2 * np.pi, 2 * np.pi / len(values[valuefieldname]))))]
-        plt.offline.plot(data, filename=output)
+        plt.offline.plot(data, filename=output, auto_open=False)

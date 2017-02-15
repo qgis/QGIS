@@ -71,4 +71,4 @@ class RasterLayerHistogram(GeoAlgorithm):
 
         data = [go.Histogram(x=valueslist,
                              nbinsx=nbins)]
-        plt.offline.plot(data, filename=output)
+        plt.offline.plot(data, filename=output, auto_open=False)
