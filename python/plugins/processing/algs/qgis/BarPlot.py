@@ -25,9 +25,6 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-#import matplotlib.pyplot as plt
-#import matplotlib.pylab as lab
-
 import plotly as plt
 import plotly.graph_objs as go
 import numpy as np

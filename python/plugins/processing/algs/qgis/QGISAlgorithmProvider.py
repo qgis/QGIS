@@ -28,13 +28,9 @@ __revision__ = '$Format:%H$'
 import os
 
 try:
-    #import matplotlib.pyplot
-    #assert matplotlib  # NOQA silence pyflakes
-    #hasMatplotlib = True
     import plotly
     hasPlotly = True
 except:
-    #hasMatplotlib = False
     hasPlotly = False
 
 from qgis.PyQt.QtGui import QIcon
