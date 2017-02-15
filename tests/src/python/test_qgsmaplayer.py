@@ -15,6 +15,7 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 from qgis.core import (QgsMapRendererCache,
+                       QgsPathResolver,
                        QgsRectangle,
                        QgsVectorLayer,
                        QgsProject)
@@ -30,8 +31,8 @@ class TestQgsMapLayer(unittest.TestCase):
         # write to xml
         doc = QDomDocument("testdoc")
         elem = doc.createElement("maplayer")
-        self.assertTrue(source.writeLayerXml(elem, doc))
-        self.assertTrue(dest.readLayerXml(elem), QgsProject.instance())
+        self.assertTrue(source.writeLayerXml(elem, doc, QgsPathResolver()))
+        self.assertTrue(dest.readLayerXml(elem, QgsPathResolver()), QgsProject.instance())
 
     def testGettersSetters(self):
         # test auto refresh getters/setters

@@ -72,8 +72,8 @@ QString QgsPathResolver::readPath( const QString& filename ) const
     // from the filename.
 
     QFileInfo pfi( mBaseFileName );
-    QString home = pfi.exists() ? pfi.canonicalPath() : QString();
-    if ( home.isNull() )
+    QString home = pfi.absoluteFilePath();
+    if ( home.isEmpty() )
       return vsiPrefix + src;
 
     QFileInfo fi( home + '/' + src );
@@ -141,13 +141,13 @@ QString QgsPathResolver::readPath( const QString& filename ) const
 
 QString QgsPathResolver::writePath( const QString& src ) const
 {
-  if ( mBaseFileName.isNull() || src.isEmpty() )
+  if ( mBaseFileName.isEmpty() || src.isEmpty() )
   {
     return src;
   }
 
   QFileInfo pfi( mBaseFileName );
-  QString projPath = pfi.canonicalFilePath();
+  QString projPath = pfi.absoluteFilePath();
 
   if ( projPath.isEmpty() )
   {

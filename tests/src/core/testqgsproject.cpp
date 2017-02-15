@@ -16,6 +16,7 @@
 #include <QObject>
 
 #include <qgsapplication.h>
+#include "qgspathresolver.h"
 #include <qgsproject.h>
 #include "qgsunittypes.h"
 
@@ -30,6 +31,7 @@ class TestQgsProject : public QObject
     void cleanup();// will be called after every testfunction.
 
     void testReadPath();
+    void testPathResolver();
     void testProjectUnits();
     void variablesChanged();
 };
@@ -83,6 +85,23 @@ void TestQgsProject::testReadPath()
   QCOMPARE( prj->readPath( "/vsigzip/./x.gz" ), QString( "/vsigzip/%1/home/qgis/x.gz" ).arg( prefix ) ); // not sure how useful this really is...
 
   delete prj;
+}
+
+void TestQgsProject::testPathResolver()
+{
+  QgsPathResolver resolverRel( "/home/qgis/test.qgs" );
+  QCOMPARE( resolverRel.writePath( "/home/qgis/file1.txt" ), QString( "./file1.txt" ) );
+  QCOMPARE( resolverRel.writePath( "/home/qgis/subdir/file1.txt" ), QString( "./subdir/file1.txt" ) );
+  QCOMPARE( resolverRel.writePath( "/home/file1.txt" ), QString( "../file1.txt" ) );
+  QCOMPARE( resolverRel.readPath( "./file1.txt" ), QString( "/home/qgis/file1.txt" ) );
+  QCOMPARE( resolverRel.readPath( "./subdir/file1.txt" ), QString( "/home/qgis/subdir/file1.txt" ) );
+  QCOMPARE( resolverRel.readPath( "../file1.txt" ), QString( "/home/file1.txt" ) );
+  QCOMPARE( resolverRel.readPath( "/home/qgis/file1.txt" ), QString( "/home/qgis/file1.txt" ) );
+
+  QgsPathResolver resolverAbs;
+  QCOMPARE( resolverAbs.writePath( "/home/qgis/file1.txt" ), QString( "/home/qgis/file1.txt" ) );
+  QCOMPARE( resolverAbs.readPath( "/home/qgis/file1.txt" ), QString( "/home/qgis/file1.txt" ) );
+  QCOMPARE( resolverAbs.readPath( "./file1.txt" ), QString( "./file1.txt" ) );
 }
 
 void TestQgsProject::testProjectUnits()

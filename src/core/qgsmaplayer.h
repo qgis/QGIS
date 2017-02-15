@@ -353,6 +353,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Sets state from Dom document
        @param layerElement The Dom element corresponding to ``maplayer'' tag
+       @param pathResolver object for conversion between relative and absolute paths
        @note
 
        The Dom node corresponds to a Dom document project file XML element read
