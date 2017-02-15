@@ -277,15 +277,14 @@ class QGISAlgorithmProvider(AlgorithmProvider):
             #~ ])
         if hasPlotly:
             from .VectorLayerHistogram import VectorLayerHistogram
-            #~ from .RasterLayerHistogram import RasterLayerHistogram
+            from .RasterLayerHistogram import RasterLayerHistogram
             from .VectorLayerScatterplot import VectorLayerScatterplot
             #~ from .MeanAndStdDevPlot import MeanAndStdDevPlot
             from .BarPlot import BarPlot
             #~ from .PolarPlot import PolarPlot
 
-            self.alglist.extend([
-                VectorLayerHistogram(), VectorLayerScatterplot(),
-                BarPlot()])
+            self.alglist.extend([VectorLayerHistogram(), RasterLayerHistogram(),
+                VectorLayerScatterplot(), BarPlot()])
 
         self.externalAlgs = []  # to store algs added by 3rd party plugins as scripts
 
