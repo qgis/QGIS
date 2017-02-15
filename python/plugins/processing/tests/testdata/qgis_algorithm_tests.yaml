@@ -2361,3 +2361,14 @@ tests:
         name: expected/find_projection.html
         type: file
 
+  - algorithm: qgis:polygonfromlayerextent
+    name: Standard polygon from layer extent
+    params:
+      BY_FEATURE: false
+      INPUT_LAYER:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/polygon_from_extent.gml
+        type: vector
