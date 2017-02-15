@@ -263,28 +263,28 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         ]
 
         #~ if hasMatplotlib:
-            #~ from .VectorLayerHistogram import VectorLayerHistogram
-            #~ from .RasterLayerHistogram import RasterLayerHistogram
-            #~ from .VectorLayerScatterplot import VectorLayerScatterplot
-            #~ from .MeanAndStdDevPlot import MeanAndStdDevPlot
-            #~ from .BarPlot import BarPlot
-            #~ from .PolarPlot import PolarPlot
+        #~ from .VectorLayerHistogram import VectorLayerHistogram
+        #~ from .RasterLayerHistogram import RasterLayerHistogram
+        #~ from .VectorLayerScatterplot import VectorLayerScatterplot
+        #~ from .MeanAndStdDevPlot import MeanAndStdDevPlot
+        #~ from .BarPlot import BarPlot
+        #~ from .PolarPlot import PolarPlot
 
-            #~ self.alglist.extend([
-                #~ VectorLayerHistogram(), RasterLayerHistogram(),
-                #~ VectorLayerScatterplot(), MeanAndStdDevPlot(), BarPlot(),
-                #~ PolarPlot(),
-            #~ ])
+        #~ self.alglist.extend([
+        #~ VectorLayerHistogram(), RasterLayerHistogram(),
+        #~ VectorLayerScatterplot(), MeanAndStdDevPlot(), BarPlot(),
+        #~ PolarPlot(),
+        #~ ])
         if hasPlotly:
             from .VectorLayerHistogram import VectorLayerHistogram
             from .RasterLayerHistogram import RasterLayerHistogram
             from .VectorLayerScatterplot import VectorLayerScatterplot
-            #~ from .MeanAndStdDevPlot import MeanAndStdDevPlot
+            from .MeanAndStdDevPlot import MeanAndStdDevPlot
             from .BarPlot import BarPlot
             #~ from .PolarPlot import PolarPlot
 
             self.alglist.extend([VectorLayerHistogram(), RasterLayerHistogram(),
-                VectorLayerScatterplot(), BarPlot()])
+                                 VectorLayerScatterplot(), MeanAndStdDevPlot(), BarPlot()])
 
         self.externalAlgs = []  # to store algs added by 3rd party plugins as scripts
 
