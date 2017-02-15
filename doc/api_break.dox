@@ -1226,6 +1226,7 @@ QgsLayerDefinition        {#qgis_api_break_3_0_QgsLayerDefinition}
 ------------------
 
 - loadLayerDefinition() now also requires QgsProject as the second argument
+- loadLayerDefinition() and exportLayerDefinition() variants that take QDomDocument as the first argument now expect QgsPathResolver as the last argument
 
 
 QgsLayerPropertiesWidget        {#qgis_api_break_3_0_QgsLayerPropertiesWidget}
@@ -1347,7 +1348,7 @@ screenUpdateRequested() were removed. These members have had no effect for a num
 - capitaliseLayerName() was renamed to capitalizeLayerName() <!--#spellok-->
 - asLayerDefinition(), fromLayerDefinition(), fromLayerDefinitionFile() were moved to QgsLayerDefinition class and renamed to exportLayerDefinitionLayers() resp. loadLayerDefinitionLayers()
 - loadNamedStyleFromDb() was renamed to loadNamedStyleFromDatabase()
-
+- readLayerXml() and writeLayerXml() expect QgsPathResolver reference as the last argument
 
 
 QgsMapLayerRegistry        {#qgis_api_break_3_0_QgsMapLayerRegistry}
@@ -1589,6 +1590,7 @@ QgsProject        {#qgis_api_break_3_0_QgsProject}
 - read( const QFileInfo& file ) was replaced by read( const QString& filename ).
 - write( const QFileInfo& file ) was replaced by write( const QString& filename ).
 - createEmbeddedLayer() does not take vectorLayerList as the third parameter anymore.
+- writePath() does not accept second argument (relativeBasePath) anymore. Use QgsPathResolver instead.
 
 
 QgsProjectPropertyValue        {#qgis_api_break_3_0_QgsProjectPropertyValue}

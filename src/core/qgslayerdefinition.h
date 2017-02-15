@@ -27,6 +27,7 @@ class QDomDocument;
 class QgsLayerTreeGroup;
 class QgsLayerTreeNode;
 class QgsMapLayer;
+class QgsPathResolver;
 class QgsProject;
 
 /** \ingroup core
@@ -42,11 +43,11 @@ class CORE_EXPORT QgsLayerDefinition
     //! Loads the QLR at path into QGIS.  New layers are added to given project into layer tree specified by rootGroup
     static bool loadLayerDefinition( const QString & path, QgsProject* project, QgsLayerTreeGroup* rootGroup, QString &errorMessage );
     //! Loads the QLR from the XML document.  New layers are added to given project into layer tree specified by rootGroup
-    static bool loadLayerDefinition( QDomDocument doc, QgsProject* project, QgsLayerTreeGroup* rootGroup, QString &errorMessage );
+    static bool loadLayerDefinition( QDomDocument doc,  QgsProject* project, QgsLayerTreeGroup* rootGroup, QString &errorMessage, const QgsPathResolver& pathResolver );
     //! Export the selected layer tree nodes to a QLR file
     static bool exportLayerDefinition( QString path, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage );
     //! Export the selected layer tree nodes to a QLR-XML document
-    static bool exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage, const QString& relativeBasePath = QString::null );
+    static bool exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage, const QgsPathResolver& pathResolver );
 
     /** Returns the given layer as a layer definition document
      *  Layer definitions store the data source as well as styling and custom properties.
@@ -56,12 +57,12 @@ class CORE_EXPORT QgsLayerDefinition
      *  This is a low-level routine that does not write layer tree.
      *  @see exportLayerDefinition()
      */
-    static QDomDocument exportLayerDefinitionLayers( const QList<QgsMapLayer*>& layers, const QString& relativeBasePath = QString::null );
+    static QDomDocument exportLayerDefinitionLayers( const QList<QgsMapLayer*>& layers, const QgsPathResolver& pathResolver );
 
     //! Creates new layers from a layer definition document.
     //! This is a low-level routine that does not resolve layer ID conflicts, dependencies and joins
     //! @see loadLayerDefinition()
-    static QList<QgsMapLayer*> loadLayerDefinitionLayers( QDomDocument& document );
+    static QList<QgsMapLayer*> loadLayerDefinitionLayers( QDomDocument& document, const QgsPathResolver& pathResolver );
     //! Creates new layers from a layer definition file (.QLR)
     //! This is a low-level routine that does not resolve layer ID conflicts, dependencies and joins
     //! @see loadLayerDefinition()

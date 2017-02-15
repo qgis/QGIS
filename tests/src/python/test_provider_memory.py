@@ -19,6 +19,7 @@ from qgis.core import (
     QgsLayerDefinition,
     QgsPoint,
     QgsMapLayer,
+    QgsPathResolver,
     QgsVectorLayer,
     QgsFeatureRequest,
     QgsFeature,
@@ -283,11 +284,11 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         myMemoryLayer.updateFields()
 
         # Export the layer to a layer-definition-XML
-        qlr = QgsLayerDefinition.exportLayerDefinitionLayers([myMemoryLayer])
+        qlr = QgsLayerDefinition.exportLayerDefinitionLayers([myMemoryLayer], QgsPathResolver())
         assert qlr is not None
 
         # Import the layer from the layer-definition-XML
-        layers = QgsLayerDefinition.loadLayerDefinitionLayers(qlr)
+        layers = QgsLayerDefinition.loadLayerDefinitionLayers(qlr, QgsPathResolver())
         assert layers is not None
         myImportedLayer = layers[0]
         assert myImportedLayer is not None

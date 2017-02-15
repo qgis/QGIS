@@ -233,12 +233,14 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      */
     void dumpProperties() const;
 
+    QgsPathResolver pathResolver() const;
+
     /**
      * Prepare a filename to save it to the project file.
      * Creates an absolute or relative path according to the project settings.
      * Paths written to the project file should be prepared with this method.
     */
-    QString writePath( const QString& filename, const QString& relativeBasePath = QString::null ) const;
+    QString writePath( const QString& filename ) const;
 
     /** Turn filename read from the project file to an absolute path */
     QString readPath( QString filename ) const;

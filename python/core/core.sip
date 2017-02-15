@@ -107,6 +107,7 @@
 %Include qgspaintenginehack.sip
 %Include qgspainting.sip
 %Include qgspallabeling.sip
+%Include qgspathresolver.sip
 %Include qgspluginlayer.sip
 %Include qgspluginlayerregistry.sip
 %Include qgspoint.sip
