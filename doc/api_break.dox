@@ -252,6 +252,7 @@ so there is no longer a need for the separate cache class. Code which previously
 should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinateTransformCache::instance()->invalidateCrs( authid ).
 - QgsDataDefined was removed. Use the QgsProperty framework instead.
 - QgsDataDefinedButton was removed. Use QgsPropertyOverrideButton instead.
+- QgsDataDefinedSymbolDialog was removed. Code using this dialog should be reworked to use QgsPropertyOverrideButton
 - QgsFileNameWidgetWrapper was removed. Use QgsExternalResourceWidgetWrapper instead.
 - QgsFormAnnotationItem. Use QgsFormAnnotation instead.
 - QgsHtmlAnnotationItem. Use QgsHtmlAnnotation instead.
@@ -271,7 +272,7 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 - QgsPhotoWidgetWrapper was removed. Use QgsExternalResourceWidgetWrapper instead.
 - QgsPseudoColorShader. This shader has been broken for some time and was replaced by QgsSingleBandPseudoColorRenderer.
 - QgsProjectBadLayerGuiHandler was removed. It was unused in QGIS code and barely useful. Implement your own QgsProjectBadLayerHandler subclass if needed.
-- QgsRendererV2DataDefinedMenus was removed. Use QgsDataDefinedButton instead.
+- QgsRendererV2DataDefinedMenus was removed. Use QgsPropertyOverrideButton instead.
 - QgsSizeScaleWidget. Use QgsPropertyAssistantWidget instead.
 - QgsLegacyHelpers.
 - QgsProviderCountCalcEvent and QgsProviderExtentCalcEvent. These classes were unused in QGIS core and unmaintained.
@@ -810,19 +811,6 @@ QgsExpressionContext variables should be used in their place.
 were removed. Use QgsExpressionContext variant instead.
 - referencedColumns( QgsVectorLayer* layer ) and referencedColumns( const QgsFields& fields )
 were removed. Use QgsExpressionContext variant instead.
-
-
-QgsDataDefinedButton        {#qgis_api_break_3_0_QgsDataDefinedButton}
---------------------
-
-- registerGetExpressionContextCallback has been removed in favor of registerExpressionContextGenerator
-
-
-QgsDataDefinedSymbolDialog        {#qgis_api_break_3_0_QgsDataDefinedSymbolDialog}
---------------------------
-
-- QgsDataDefinedSymbolDialog was removed. Code using this dialog should be reworked to use QgsDataDefinedButton
-instead.
 
 
 QgsDataDefinedValueDialog        {#qgis_api_break_3_0_QgsDataDefinedValueDialog}

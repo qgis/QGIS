@@ -345,7 +345,6 @@ QgsProperty QgsComposerUtils::readOldDataDefinedProperty( const QgsComposerObjec
     return QgsProperty();
   }
 
-  //set values for QgsDataDefined
   QString active = ddElem.attribute( QStringLiteral( "active" ) );
   bool isActive = false;
   if ( active.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )

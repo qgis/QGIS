@@ -320,7 +320,7 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, QString name, QS
     sll->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineWidth, QgsProperty::fromField( "linewidth" ) );
     // sll->setUseCustomDashPattern( true );
     // sll->setCustomDashPatternUnit( QgsSymbolV2::MapUnit );
-    // sll->setDataDefinedProperty( "customdash", new QgsDataDefined( true, false, "", "linetype" ) );
+    // sll->setDataDefinedProperty( QgsSymbolLayer::PropertyCustomDash, QgsProperty::fromField( "linetype" ) );
     sym = new QgsLineSymbol();
     sym->changeSymbolLayer( 0, sll );
     sym->setOutputUnit( QgsUnitTypes::RenderMillimeters );
@@ -336,7 +336,7 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, QString name, QS
     sll->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineWidth, QgsProperty::fromField( "width" ) );
     // sll->setUseCustomDashPattern( true );
     // sll->setCustomDashPatternUnit( QgsSymbolV2::MapUnit );
-    // sll->setDataDefinedProperty( "customdash", new QgsDataDefined( true, false, "", "linetype" ) );
+    // sll->setDataDefinedProperty( QgsSymbolLayer::PropertyCustomDash, QgsProperty::fromField( "linetype" ) );
     sym = new QgsLineSymbol();
     sym->changeSymbolLayer( 0, sll );
     sym->setOutputUnit( QgsUnitTypes::RenderMapUnits );
