@@ -34,7 +34,6 @@
 
 
 const QString QgsExpressionContext::EXPR_FIELDS( QStringLiteral( "_fields_" ) );
-const QString QgsExpressionContext::EXPR_FEATURE( QStringLiteral( "_feature_" ) );
 const QString QgsExpressionContext::EXPR_ORIGINAL_VALUE( QStringLiteral( "value" ) );
 const QString QgsExpressionContext::EXPR_SYMBOL_COLOR( QStringLiteral( "symbol_color" ) );
 const QString QgsExpressionContext::EXPR_SYMBOL_ANGLE( QStringLiteral( "symbol_angle" ) );
@@ -58,6 +57,8 @@ QgsExpressionContextScope::QgsExpressionContextScope( const QString& name )
 QgsExpressionContextScope::QgsExpressionContextScope( const QgsExpressionContextScope& other )
     : mName( other.mName )
     , mVariables( other.mVariables )
+    , mHasFeature( other.mHasFeature )
+    , mFeature( other.mFeature )
 {
   QHash<QString, QgsScopedExpressionFunction* >::const_iterator it = other.mFunctions.constBegin();
   for ( ; it != other.mFunctions.constEnd(); ++it )
@@ -70,6 +71,8 @@ QgsExpressionContextScope& QgsExpressionContextScope::operator=( const QgsExpres
 {
   mName = other.mName;
   mVariables = other.mVariables;
+  mHasFeature = other.mHasFeature;
+  mFeature = other.mFeature;
 
   qDeleteAll( mFunctions );
   mFunctions.clear();
@@ -196,10 +199,6 @@ void QgsExpressionContextScope::addFunction( const QString& name, QgsScopedExpre
   mFunctions.insert( name, function );
 }
 
-void QgsExpressionContextScope::setFeature( const QgsFeature &feature )
-{
-  addVariable( StaticVariable( QgsExpressionContext::EXPR_FEATURE, QVariant::fromValue( feature ), true ) );
-}
 
 void QgsExpressionContextScope::setFields( const QgsFields &fields )
 {
@@ -468,9 +467,27 @@ void QgsExpressionContext::setFeature( const QgsFeature &feature )
   mStack.last()->setFeature( feature );
 }
 
+bool QgsExpressionContext::hasFeature() const
+{
+  Q_FOREACH ( const QgsExpressionContextScope* scope, mStack )
+  {
+    if ( scope->hasFeature() )
+      return true;
+  }
+  return false;
+}
+
 QgsFeature QgsExpressionContext::feature() const
 {
-  return qvariant_cast<QgsFeature>( variable( QgsExpressionContext::EXPR_FEATURE ) );
+  //iterate through stack backwards, so that higher priority variables take precedence
+  QList< QgsExpressionContextScope* >::const_iterator it = mStack.constEnd();
+  while ( it != mStack.constBegin() )
+  {
+    --it;
+    if (( *it )->hasFeature() )
+      return ( *it )->feature();
+  }
+  return QgsFeature();
 }
 
 void QgsExpressionContext::setFields( const QgsFields &fields )

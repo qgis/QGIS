@@ -21,6 +21,7 @@
 #include <QString>
 #include <QStringList>
 #include <QSet>
+#include "qgsfeature.h"
 #include "qgsexpression.h"
 
 class QgsExpression;
@@ -250,11 +251,26 @@ class CORE_EXPORT QgsExpressionContextScope
      */
     void addFunction( const QString& name, QgsScopedExpressionFunction* function );
 
+    /**
+     * Returns true if the scope has a feature associated with it.
+     * @note added in QGIS 3.0
+     * @see feature()
+     */
+    bool hasFeature() const { return mHasFeature; }
+
+    /**
+     * Sets the feature associated with the scope.
+     * @see setFeature()
+     * @see hasFeature()
+     * @note added in QGIS 3.0
+     */
+    QgsFeature feature() const { return mFeature; }
+
     /** Convenience function for setting a feature for the scope. Any existing
      * feature set by the scope will be overwritten.
      * @param feature feature for scope
      */
-    void setFeature( const QgsFeature& feature );
+    void setFeature( const QgsFeature& feature ) { mHasFeature = true; mFeature = feature; }
 
     /** Convenience function for setting a fields for the scope. Any existing
      * fields set by the scope will be overwritten.
@@ -266,6 +282,8 @@ class CORE_EXPORT QgsExpressionContextScope
     QString mName;
     QHash<QString, StaticVariable> mVariables;
     QHash<QString, QgsScopedExpressionFunction* > mFunctions;
+    bool mHasFeature = false;
+    QgsFeature mFeature;
 
     bool variableNameSort( const QString &a, const QString &b );
 };
@@ -474,6 +492,13 @@ class CORE_EXPORT QgsExpressionContext
      */
     void setFeature( const QgsFeature& feature );
 
+    /**
+     * Returns true if the context has a feature associated with it.
+     * @note added in QGIS 3.0
+     * @see feature()
+     */
+    bool hasFeature() const;
+
     /** Convenience function for retrieving the feature for the context, if set.
      * @see setFeature
      */
@@ -541,8 +566,6 @@ class CORE_EXPORT QgsExpressionContext
 
     //! Inbuilt variable name for fields storage
     static const QString EXPR_FIELDS;
-    //! Inbuilt variable name for feature storage
-    static const QString EXPR_FEATURE;
     //! Inbuilt variable name for value original value variable
     static const QString EXPR_ORIGINAL_VALUE;
     //! Inbuilt variable name for symbol color variable

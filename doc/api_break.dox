@@ -992,6 +992,12 @@ QgsExpressionItem        {#qgis_api_break_3_0_QgsExpressionItem}
 - CustomSortRole was renamed to CUSTOM_SORT_ROLE
 - ItemTypeRole was renamed to ITEM_TYPE_ROLE
 
+QgsExpressionContext      {#qgis_api_break_3_0_QgsExpressionContext}
+--------------------
+
+- EXPR_FEATURE was removed. Use the direct feature manipulation methods feature(), hasFeature() and setFeature() instead
+
+
 QgsExpressionContextUtils       {#qgis_api_break_3_0_QgsExpressionContextUtils}
 -------------------------
 
