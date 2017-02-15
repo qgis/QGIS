@@ -2364,9 +2364,8 @@ tests:
   - algorithm: qgis:polygonfromlayerextent
     name: Standard polygon from layer extent
     params:
-      FIELDS: false
-      GEOMETRY: true
-      INPUT:
+      BY_FEATURE: false
+      INPUT_LAYER:
         name: polys.gml
         type: vector
     results:
