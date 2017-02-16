@@ -189,7 +189,7 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes, boo
     case QgsEditFormConfig::SuppressDefault:
       break;
   }
-  if ( isDisabledAttributeValuesDlg )
+  if ( isDisabledAttributeValuesDlg || mLayer->pendingFields().count() == 0 )
   {
     mLayer->beginEditCommand( text() );
     mFeatureSaved = mLayer->addFeature( *mFeature );
