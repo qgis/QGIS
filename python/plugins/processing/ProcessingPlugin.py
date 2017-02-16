@@ -102,8 +102,8 @@ class ProcessingPlugin(object):
         self.resultsAction = self.resultsDock.toggleViewAction()
         self.resultsAction.setObjectName('resultsAction')
         self.resultsAction.setIcon(
-            QIcon(os.path.join(cmd_folder, 'images', 'results.svg')))
-        self.resultsAction.setText(self.tr('&Results Viewer...'))
+            QgsApplication.getThemeIcon("/processingResult.svg"))
+        self.resultsAction.setText(self.tr('&Results Viewer'))
         self.iface.registerMainWindowAction(self.resultsAction, 'Ctrl+Alt+R')
         self.menu.addAction(self.resultsAction)
 
