@@ -2284,6 +2284,9 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     }
   }
 
+  int lastProgressReport = 0;
+  long total = options.onlySelectedFeatures ? layer->selectedFeatureCount() : layer->featureCount();
+
   if ( layer->providerType() == QLatin1String( "ogr" ) && layer->dataProvider() )
   {
     QStringList theURIParts = layer->dataProvider()->dataSourceUri().split( '|' );
@@ -2307,14 +2310,30 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
       req.setSubsetOfAttributes( QgsAttributeList() );
       QgsFeatureIterator fit = layer->getFeatures( req );
       QgsFeature fet;
-
+      long scanned = 0;
       while ( fit.nextFeature( fet ) )
       {
+        if ( options.feedback && options.feedback->isCanceled() )
+        {
+          return Canceled;
+        }
+        if ( options.feedback )
+        {
+          //dedicate first 5% of progress bar to this scan
+          int newProgress = ( 5.0 * scanned ) / total;
+          if ( newProgress != lastProgressReport )
+          {
+            lastProgressReport = newProgress;
+            options.feedback->setProgress( lastProgressReport );
+          }
+        }
+
         if ( fet.hasGeometry() && QgsWkbTypes::isMultiType( fet.geometry().geometry()->wkbType() ) )
         {
           destWkbType = QgsWkbTypes::multiType( destWkbType );
           break;
         }
+        scanned++;
       }
     }
   }
@@ -2426,8 +2445,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
 
   // write all features
   long saved = 0;
-  long total = options.onlySelectedFeatures ? layer->selectedFeatureCount() : layer->featureCount();
-  int lastProgressReport = 0;
+  int initialProgress = lastProgressReport;
   while ( fit.nextFeature( fet ) )
   {
     if ( options.feedback && options.feedback->isCanceled() )
@@ -2440,7 +2458,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     if ( options.feedback )
     {
       //avoid spamming progress reports
-      int newProgress = ( 100.0 * saved ) / total;
+      int newProgress = initialProgress + (( 100.0 - initialProgress ) * saved ) / total;
       if ( newProgress < 100 && newProgress != lastProgressReport )
       {
         lastProgressReport = newProgress;
