@@ -1599,6 +1599,16 @@ QgsExpression* QgsOgcUtils::expressionFromOgcFilter( const QDomElement& element 
   if ( element.isNull() || !element.hasChildNodes() )
     return nullptr;
 
+  // check if it is a single string value => no DomElement
+  if ( element.firstChild().nodeType() == QDomNode::TextNode )
+  {
+    QgsExpression *expr = new QgsExpression( element.firstChild().nodeValue() );
+    expr->d->mParserErrorString = QString();
+    return expr;
+  }
+
+  // now parse OGC operators. OGC operator does not have a only text value
+  // but only sub element operators
   QgsExpression *expr = new QgsExpression();
 
   QDomElement childElem = element.firstChildElement();

@@ -2577,6 +2577,7 @@ bool QgsSymbolLayerV2Utils::createFunctionElement( QDomDocument &doc, QDomElemen
 
 bool QgsSymbolLayerV2Utils::functionFromSldElement( QDomElement &element, QString &function )
 {
+  // check if ogc:Filter or containe ogc:Filters
   QDomElement elem = element;
   if ( element.tagName() != "Filter" )
   {
@@ -2592,7 +2593,7 @@ bool QgsSymbolLayerV2Utils::functionFromSldElement( QDomElement &element, QStrin
     return false;
   }
 
-
+  // parse ogc:Filter
   QgsExpression *expr = QgsOgcUtils::expressionFromOgcFilter( elem );
   if ( !expr )
     return false;
