@@ -241,24 +241,16 @@ class BooleanWidgetWrapper(WidgetWrapper):
             return QCheckBox()
         elif self.dialogType == DIALOG_BATCH:
             widget = QComboBox()
-            widget.addItem(self.tr('Yes'))
-            widget.addItem(self.tr('No'))
-            if self.param.default:
-                widget.setCurrentIndex(0)
-            else:
-                widget.setCurrentIndex(1)
+            widget.addItem(self.tr('Yes'), True)
+            widget.addItem(self.tr('No'), False)
             return widget
         else:
             widget = QComboBox()
-            widget.addItem('Yes', True)
-            widget.addItem('No', False)
+            widget.addItem(self.tr('Yes'), True)
+            widget.addItem(self.tr('No'), False)
             bools = self.dialog.getAvailableValuesOfType(ParameterBoolean, None)
             for b in bools:
                 widget.addItem(self.dialog.resolveValueDescription(b), b)
-            if self.param.default:
-                widget.setCurrentIndex(0)
-            else:
-                widget.setCurrentIndex(1)
             return widget
 
     def setValue(self, value):
@@ -270,8 +262,6 @@ class BooleanWidgetWrapper(WidgetWrapper):
     def value(self):
         if self.dialogType == DIALOG_STANDARD:
             return self.widget.isChecked()
-        elif self.dialogType == DIALOG_BATCH:
-            return self.widget.currentIndex == 0
         else:
             return self.comboValue()
 
