@@ -116,7 +116,7 @@ class RAlgorithm(GeoAlgorithm):
         self.passFileNames = False
         self.verboseCommands = []
         ender = 0
-        line = lines.next().strip('\n').strip('\r')
+        line = next(lines).strip('\n').strip('\r')
         while ender < 10:
             if line.startswith('##'):
                 try:
