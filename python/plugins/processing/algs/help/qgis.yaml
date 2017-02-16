@@ -547,9 +547,9 @@ qgis:texttofloat: >
 qgis:topologicalcoloring: >
   This algorithm assigns a color index to polygon features in such a way that no adjacent polygons share the same color index.
 
-  The algorithm attempts to assign colors so that the total number of colors required is minimized, whilst keeping the count of features assigned to each individual color index balanced.
+  The algorithm attempts to assign colors so that the total number of colors required is minimized, whilst keeping the count of features assigned to each individual color index balanced. A minimum number of colors can be specified if desired.
 
-  The color index is saved to a new attribute named color_idx.
+  The color index is saved to a new attribute named color_id.
 
 qgis:translate: >
   This algorithm moves the geometries within a layer, by offsetting them with a specified x and y displacement.

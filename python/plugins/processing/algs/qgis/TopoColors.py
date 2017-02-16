@@ -38,6 +38,7 @@ from qgis.PyQt.QtCore import (QVariant)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
@@ -46,6 +47,7 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 class TopoColor(GeoAlgorithm):
     INPUT_LAYER = 'INPUT_LAYER'
+    MIN_COLORS='MIN_COLORS'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
     def defineCharacteristics(self):
@@ -55,12 +57,15 @@ class TopoColor(GeoAlgorithm):
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
+        self.addParameter(ParameterNumber(self.MIN_COLORS,
+                                          self.tr('Minimum number of colors'), 1, 1000, 4))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Colored'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
+        min_colors = self.getParameterValue(self.MIN_COLORS)
 
         fields = layer.fields()
         fields.append(QgsField('color_id', QVariant.Int))
@@ -76,7 +81,9 @@ class TopoColor(GeoAlgorithm):
         features = deque(f for f in vector.features(layer))
 
         topology, id_graph = self.compute_graph(features, feedback)
-        feature_colors = ColoringAlgorithm.balanced(topology, feedback)
+        feature_colors = ColoringAlgorithm.balanced(topology,
+                                                    feedback,
+                                                    min_colors=min_colors)
 
         max_colors = max(feature_colors.values())
         feedback.pushInfo(self.tr('{} colors required').format(max_colors))
@@ -144,10 +151,10 @@ class TopoColor(GeoAlgorithm):
 class ColoringAlgorithm:
 
     @staticmethod
-    def balanced(graph, feedback):
+    def balanced(graph, feedback, min_colors = 4):
         feature_colors = {}
-        # start with 4 colors in pool
-        color_pool = set(range(1, 5))
+        # start with minimum number of colors in pool
+        color_pool = set(range(1, min_colors+1))
 
         # calculate count of neighbours
         neighbour_count = defaultdict(int)
