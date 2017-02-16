@@ -1,0 +1,218 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    TopoColors.py
+    --------------
+    Date                 : February 2017
+    Copyright            : (C) 2017 by Nyall Dawson
+    Email                : nyall dot dawson at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Nyall Dawson'
+__date__ = 'February 2017'
+__copyright__ = '(C) 2017, Nyall Dawson'
+
+# This will get replaced with a git SHA1 when you do a git archive323
+
+__revision__ = '$Format:%H$'
+
+import os
+import operator
+from collections import defaultdict, deque
+
+from qgis.core import (QgsField,
+                       QgsGeometry,
+                       QgsSpatialIndex,
+                       NULL)
+
+from qgis.PyQt.QtCore import (QVariant)
+
+from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.core.parameters import ParameterVector
+from processing.core.outputs import OutputVector
+from processing.tools import dataobjects, vector
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+
+
+class TopoColor(GeoAlgorithm):
+    INPUT_LAYER = 'INPUT_LAYER'
+    OUTPUT_LAYER = 'OUTPUT_LAYER'
+
+    def defineCharacteristics(self):
+        self.name, self.i18n_name = self.trAlgorithm('Topological coloring')
+        self.group, self.i18n_group = self.trAlgorithm('Cartographic tools')
+        self.tags = self.tr('topocolor,colors,graph,adjacent,assign')
+
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
+
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Colored'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+
+    def processAlgorithm(self, feedback):
+        layer = dataobjects.getObjectFromUri(
+            self.getParameterValue(self.INPUT_LAYER))
+
+        fields = layer.fields()
+        fields.append(QgsField('color_id', QVariant.Int))
+
+        writer = self.getOutputFromName(
+            self.OUTPUT_LAYER).getVectorWriter(
+            fields,
+            layer.wkbType(),
+            layer.crs())
+
+        # use a deque so we can drop features as we write them
+        # it's a bit friendlier on memory usage
+        features = deque(f for f in vector.features(layer))
+
+        topology, id_graph = self.compute_graph(features, feedback)
+        feature_colors = ColoringAlgorithm.balanced(topology, feedback)
+
+        max_colors = max(feature_colors.values())
+        feedback.pushInfo(self.tr('{} colors required').format(max_colors))
+
+        total = 20.0 / len(features)
+        current = 0
+        while features:
+            input_feature = features.popleft()
+            output_feature = input_feature
+            attributes = input_feature.attributes()
+            if input_feature.id() in feature_colors:
+                attributes.append(feature_colors[input_feature.id()])
+            else:
+                attributes.append(NULL)
+            output_feature.setAttributes(attributes)
+
+            writer.addFeature(output_feature)
+            current += 1
+            feedback.setProgress(80 + int(current * total))
+
+        del writer
+
+    @staticmethod
+    def compute_graph(features, feedback, create_id_graph=False):
+        """ compute topology from a layer/field """
+        s = Graph(sort_graph=False)
+        id_graph = None
+        if create_id_graph:
+            id_graph = Graph(sort_graph=True)
+
+        # skip features without geometry
+        features_with_geometry = dict((f.id(), f) for f in features if f.hasGeometry())
+
+        total = 70.0 / len(features_with_geometry)
+        index = QgsSpatialIndex()
+
+        i = 0
+        for feature_id, f in features_with_geometry.items():
+            engine = QgsGeometry.createGeometryEngine(f.geometry().geometry())
+            engine.prepareGeometry()
+
+            feature_bounds = f.geometry().boundingBox()
+            # grow bounds a little so we get touching features
+            feature_bounds.grow(feature_bounds.width() * 0.01)
+            intersections = index.intersects(feature_bounds)
+            for l2 in intersections:
+                f2 = features_with_geometry[l2]
+                if engine.intersects(f2.geometry().geometry()):
+                    s.add_edge(f.id(), f2.id())
+                    s.add_edge(f2.id(), f.id())
+                    if id_graph:
+                        id_graph.add_edge(f.id(), f2.id())
+
+            index.insertFeature(f)
+            i += 1
+            feedback.setProgress(int(i * total))
+
+        for feature_id, f in features_with_geometry.items():
+            if not feature_id in s.node_edge:
+                s.add_edge(feature_id, None)
+
+        return s, id_graph
+
+
+class ColoringAlgorithm:
+
+    @staticmethod
+    def balanced(graph, feedback):
+        feature_colors = {}
+        # start with 4 colors in pool
+        color_pool = set(range(1, 5))
+
+        # calculate count of neighbours
+        neighbour_count = defaultdict(int)
+        for feature_id, neighbours in graph.node_edge.items():
+            neighbour_count[feature_id] += len(neighbours)
+
+        # sort features by neighbour count - we want to handle those with more neighbours first
+        sorted_by_count = [feature_id for feature_id in sorted(neighbour_count.items(),
+                                                               key=operator.itemgetter(1),
+                                                               reverse=True)]
+        # counts for each color already assigned
+        color_counts = defaultdict(int)
+        for c in color_pool:
+            color_counts[c] = 0
+
+        total = 10.0 / len(sorted_by_count)
+        i = 0
+
+        for (feature_id, n) in sorted_by_count:
+            # first work out which already assigned colors are adjacent to this feature
+            adjacent_colors = set()
+            for neighbour in graph.node_edge[feature_id]:
+                if neighbour in feature_colors:
+                    adjacent_colors.add(feature_colors[neighbour])
+
+            # from the existing colors, work out which are available (ie non-adjacent)
+            available_colors = color_pool.difference(adjacent_colors)
+
+            if len(available_colors) == 0:
+                # no existing colors available for this feature, so add new color to pool
+                feature_color = len(color_pool) + 1
+                color_pool.add(feature_color)
+            else:
+                # choose least used available color
+                counts = [(c, v) for c, v in color_counts.items() if c in available_colors]
+                feature_color = sorted(counts, key=operator.itemgetter(1))[0][0]
+            feature_colors[feature_id] = feature_color
+            color_counts[feature_color] += 1
+
+            i += 1
+            feedback.setProgress(70 + int(i * total))
+
+        return feature_colors
+
+
+class Graph:
+
+    def __init__(self, sort_graph=True):
+        self.sort_graph = sort_graph
+        self.node_edge = {}
+
+    def add_edge(self, i, j):
+        ij = [i, j]
+        if self.sort_graph:
+            ij.sort()
+        (i, j) = ij
+        if i in self.node_edge:
+            self.node_edge[i].add(j)
+        else:
+            self.node_edge[i] = {j}
+
+    def make_full(self):
+        g = Graph(sort_graph=False)
+        for k in self.node_edge.keys():
+            for v in self.node_edge[k]:
+                g.add_edge(v, k)
+                g.add_edge(k, v)
+        return g
