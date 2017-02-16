@@ -18,6 +18,7 @@
 #include "qgis_core.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
+#include "qgspoint.h"
 #include <QVariant>
 #include <QHash>
 #include <QString>
@@ -26,8 +27,122 @@
 #include <QDomDocument>
 #include <QColor>
 #include <memory>
+#include <algorithm>
 
 class QgsColorRamp;
+
+
+/**
+ * \ingroup core
+ * \class QgsCurveTransform
+ * \brief Handles scaling of input values to output values by using a curve created
+ * from smoothly joining a number of set control points.
+ *
+ * QgsCurveTransform assists in creation of curve type transforms, typically seen in
+ * raster image editing software (eg the curves dialog in GIMP or Photoshop).
+ * Transforms are created by passing a number of set control points through which
+ * the transform curve must pass. The curve is guaranteed to exactly pass through
+ * these control points. Between control points the curve is smoothly interpolated
+ * so that no disjoint sections or "corners" are present.
+ *
+ * If the first or last control point are not located at x = 0 and x = 1 respectively,
+ * then values outside this range will be mapped to the y value of either the first
+ * or last control point. In other words, the curve will have a flat segment
+ * for values outside of the control point range.
+ *
+ * \note Added in version 3.0
+ */
+
+class CORE_EXPORT QgsCurveTransform
+{
+  public:
+
+    /**
+     * Constructs a default QgsCurveTransform which linearly maps values
+     * between 0 and 1 unchanged. I.e. y == x.
+     */
+    QgsCurveTransform();
+
+    /**
+     * Constructs a QgsCurveTransform using a specified list of \a controlPoints.
+     * Behavior is undefined if duplicate x values exist in the control points
+     * list.
+     */
+    QgsCurveTransform( const QList< QgsPoint >& controlPoints );
+
+    ~QgsCurveTransform();
+
+    /**
+     * Copy constructor
+     */
+    QgsCurveTransform( const QgsCurveTransform& other );
+
+    QgsCurveTransform& operator=( const QgsCurveTransform& other );
+
+    /**
+     * Returns a list of the control points for the transform.
+     * @see setControlPoints()
+     */
+    QList< QgsPoint > controlPoints() const { return mControlPoints; }
+
+    /**
+     * Sets the list of control points for the transform. Any existing
+     * points are removed.
+     * @see controlPoints()
+     */
+    void setControlPoints( const QList< QgsPoint >& points );
+
+    /**
+     * Adds a control point to the transform. Behavior is undefined if duplicate
+     * x values exist in the control points list.
+     * @see removeControlPoint()
+     */
+    void addControlPoint( double x, double y );
+
+    /**
+     * Removes a control point from the transform. This will have no effect if a
+     * matching control point does not exist.
+     * @see addControlPoint()
+     */
+    void removeControlPoint( double x, double y );
+
+    /**
+     * Returns the mapped y value corresponding to the specified \a x value.
+     */
+    double y( double x ) const;
+
+    /**
+     * Returns a list of y values corresponding to a list of \a x values.
+     * Calling this method is faster then calling the double variant multiple
+     * times.
+     */
+    QVector< double > y( const QVector< double >& x ) const;
+
+    /**
+     * Reads the curve's state from an XML element.
+     * @param elem source DOM element for transform's state
+     * @param doc DOM document
+     * @see writeXml()
+    */
+    bool readXml( const QDomElement& elem, const QDomDocument& doc );
+
+    /**
+     * Writes the current state of the transform into an XML element
+     * @param transformElem destination element for the transform's state
+     * @param doc DOM document
+     * @see readXml()
+    */
+    bool writeXml( QDomElement& transformElem, QDomDocument& doc ) const;
+
+  private:
+
+    void calcSecondDerivativeArray();
+
+    QList< QgsPoint > mControlPoints;
+
+    double* mSecondDerivativeArray = nullptr;
+};
+
 
 /**
  * \ingroup core

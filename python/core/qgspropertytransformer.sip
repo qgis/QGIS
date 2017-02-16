@@ -1,3 +1,35 @@
+class QgsCurveTransform
+{
+%TypeHeaderCode
+#include <qgspropertytransformer.h>
+%End
+
+  public:
+
+    QgsCurveTransform();
+    QgsCurveTransform( const QList< QgsPoint >& controlPoints );
+    ~QgsCurveTransform();
+    QgsCurveTransform( const QgsCurveTransform& other );
+
+    //QgsCurveTransform& operator=( const QgsCurveTransform& other );
+
+    QList< QgsPoint > controlPoints() const;
+
+    void setControlPoints( const QList< QgsPoint >& points );
+
+    void addControlPoint( double x, double y );
+
+    void removeControlPoint( double x, double y );
+
+    double y( double x ) const;
+
+    QVector< double > y( const QVector< double >& x ) const;
+
+    bool readXml( const QDomElement& elem, const QDomDocument& doc );
+
+    bool writeXml( QDomElement& transformElem, QDomDocument& doc ) const;
+
+};
 class QgsPropertyTransformer
 {
 %TypeHeaderCode

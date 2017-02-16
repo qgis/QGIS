@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgstest.h"
+#include "qgstestutils.h"
 #include "qgsproperty.h"
 #include "qgspropertycollection.h"
 #include "qgsvectorlayer.h"
@@ -90,10 +91,12 @@ class TestQgsProperty : public QObject
     void asExpression(); //test converting property to expression
     void propertyCollection(); //test for QgsPropertyCollection
     void collectionStack(); //test for QgsPropertyCollectionStack
+    void curveTransform();
 
   private:
 
     QgsPropertiesDefinition mDefinitions;
+    void checkCurveResult( const QList< QgsPoint >& controlPoints, const QVector<double>& x, const QVector<double>& y );
 
 };
 
@@ -1579,6 +1582,128 @@ void TestQgsProperty::collectionStack()
   stack4.at( 0 )->property( Property2 ).setActive( false );
   QVERIFY( !stack4.hasActiveProperties() );
   QVERIFY( !stack4.hasDynamicProperties() );
+}
+
+void TestQgsProperty::curveTransform()
+{
+  QgsCurveTransform t;
+  // linear transform
+  QCOMPARE( t.y( -1 ), 0.0 );
+  QCOMPARE( t.y( 0 ), 0.0 );
+  QCOMPARE( t.y( 0.2 ), 0.2 );
+  QCOMPARE( t.y( 0.5 ), 0.5 );
+  QCOMPARE( t.y( 0.8 ), 0.8 );
+  QCOMPARE( t.y( 1 ), 1.0 );
+  QCOMPARE( t.y( 2 ), 1.0 );
+
+  QVector< double > x;
+  x << -1 << 0 << 0.2 << 0.5 << 0.8 << 1 << 2;
+  QVector< double > y = t.y( x );
+  QCOMPARE( y[0], 0.0 );
+  QCOMPARE( y[1], 0.0 );
+  QCOMPARE( y[2], 0.2 );
+  QCOMPARE( y[3], 0.5 );
+  QCOMPARE( y[4], 0.8 );
+  QCOMPARE( y[5], 1.0 );
+  QCOMPARE( y[6], 1.0 );
+
+  // linear transform with y =/= x
+  checkCurveResult( QList< QgsPoint >() << QgsPoint( 0, 0.2 ) << QgsPoint( 1.0, 0.8 ),
+                    QVector< double >() << -1 << 0 << 0.2 << 0.5 << 0.8 << 1 << 2,
+                    QVector< double >() << 0.2 << 0.2 << 0.32 << 0.5 << 0.68 << 0.8 << 0.8 );
+
+  // reverse linear transform with y = -x
+  checkCurveResult( QList< QgsPoint >() << QgsPoint( 0.0, 1.0 ) << QgsPoint( 1.0, 0 ),
+                    QVector< double >() << -1 << 0 << 0.2 << 0.5 << 0.8 << 1 << 2,
+                    QVector< double >() << 1.0 << 1.0 << 0.8 << 0.5 << 0.2 << 0.0 << 0.0 );
+
+  // ok, time for some more complex tests...
+
+  // 3 control points, but linear
+  checkCurveResult( QList< QgsPoint >() << QgsPoint( 0, 0.0 ) << QgsPoint( 0.2, 0.2 ) << QgsPoint( 1.0, 1.0 ),
+                    QVector< double >() << -1 << 0 << 0.2 << 0.5 << 0.8 << 1 << 2,
+                    QVector< double >() << 0.0 << 0.0 << 0.2 << 0.5 << 0.8 << 1.0 << 1.0 );
+
+  // test for "flat" response for x outside of control point range
+  checkCurveResult( QList< QgsPoint >() << QgsPoint( 0.2, 0.2 ) << QgsPoint( 0.5, 0.5 ) << QgsPoint( 0.8, 0.8 ),
+                    QVector< double >() << -1 << 0 << 0.1 << 0.2 << 0.5 << 0.8 << 0.9 << 1 << 2,
+                    QVector< double >() << 0.2 << 0.2 << 0.2 << 0.2 << 0.5 << 0.8 << 0.8 << 0.8 << 0.8 );
+
+  //curves!
+  checkCurveResult( QList< QgsPoint >() << QgsPoint( 0.0, 0.0 ) << QgsPoint( 0.4, 0.6 ) << QgsPoint( 0.6, 0.8 ) << QgsPoint( 1.0, 1.0 ),
+                    QVector< double >() << -1 << 0 << 0.2 << 0.4 << 0.5 << 0.6 << 0.8 << 0.9 << 1.0 << 2.0,
+                    QVector< double >() << 0.0 << 0.0 << 0.321429 << 0.6 << 0.710714 << 0.8 << 0.921429 << 0.963393 << 1.0 << 1.0 );
+
+  //curves with more control points
+  checkCurveResult( QList< QgsPoint >() << QgsPoint( 0.0, 0.0 ) << QgsPoint( 0.2, 0.6 ) << QgsPoint( 0.4, 0.6 ) << QgsPoint( 0.6, 0.8 ) << QgsPoint( 0.8, 0.3 ) << QgsPoint( 1.0, 1.0 ),
+                    QVector< double >() << -1 << 0 << 0.2 << 0.4 << 0.5 << 0.6 << 0.8 << 0.9 << 1.0 << 2.0,
+                    QVector< double >() << 0.0 << 0.0 << 0.6 << 0.6 << 0.751316 << 0.8 << 0.3 << 0.508074 << 1.0 << 1.0 );
+
+  // general tests
+  QList< QgsPoint > points = QList< QgsPoint >() << QgsPoint( 0.0, 0.0 ) << QgsPoint( 0.4, 0.6 ) << QgsPoint( 0.6, 0.8 ) << QgsPoint( 1.0, 1.0 );
+  QgsCurveTransform src( points );
+  QCOMPARE( src.controlPoints(), points );
+  points = QList< QgsPoint >() << QgsPoint( 0.0, 0.0 ) << QgsPoint( 0.5, 0.6 ) << QgsPoint( 0.6, 0.8 ) << QgsPoint( 1.0, 1.0 );
+  src.setControlPoints( points );
+  QCOMPARE( src.controlPoints(), points );
+
+  src.setControlPoints( QList< QgsPoint >() << QgsPoint( 0.0, 0.0 ) << QgsPoint( 1.0, 1.0 ) );
+  src.addControlPoint( 0.2, 0.3 );
+  src.addControlPoint( 0.1, 0.4 );
+  QCOMPARE( src.controlPoints(), QList< QgsPoint >() << QgsPoint( 0.0, 0.0 ) << QgsPoint( 0.1, 0.4 ) << QgsPoint( 0.2, 0.3 ) << QgsPoint( 1.0, 1.0 ) );
+
+  // remove non-existent point
+  src.removeControlPoint( 0.6, 0.7 );
+  QCOMPARE( src.controlPoints(), QList< QgsPoint >() << QgsPoint( 0.0, 0.0 ) << QgsPoint( 0.1, 0.4 ) << QgsPoint( 0.2, 0.3 ) << QgsPoint( 1.0, 1.0 ) );
+
+  // remove valid point
+  src.removeControlPoint( 0.1, 0.4 );
+  QCOMPARE( src.controlPoints(), QList< QgsPoint >() << QgsPoint( 0.0, 0.0 ) << QgsPoint( 0.2, 0.3 ) << QgsPoint( 1.0, 1.0 ) );
+
+  // copy constructor
+  QgsCurveTransform dest( src );
+  QCOMPARE( dest.controlPoints(), QList< QgsPoint >() << QgsPoint( 0.0, 0.0 ) << QgsPoint( 0.2, 0.3 ) << QgsPoint( 1.0, 1.0 ) );
+  // check a value to ensure that derivative matrix was copied ok
+  QGSCOMPARENEAR( dest.y( 0.5 ), 0.1, 0.638672 );
+
+  // assignment operator
+  QgsCurveTransform dest2;
+  dest2 = src;
+  QCOMPARE( dest2.controlPoints(), QList< QgsPoint >() << QgsPoint( 0.0, 0.0 ) << QgsPoint( 0.2, 0.3 ) << QgsPoint( 1.0, 1.0 ) );
+  QGSCOMPARENEAR( dest2.y( 0.5 ), 0.1, 0.638672 );
+
+  // writing and reading from xml
+  QDomImplementation DomImplementation;
+  QDomDocumentType documentType =
+    DomImplementation.createDocumentType(
+      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+  QDomDocument doc( documentType );
+
+  QDomElement element = doc.createElement( "xform" );
+  QVERIFY( src.writeXml( element, doc ) );
+
+  QgsCurveTransform r1;
+  QVERIFY( r1.readXml( element, doc ) );
+  QCOMPARE( r1.controlPoints(), src.controlPoints() );
+  QGSCOMPARENEAR( dest2.y( 0.5 ), 0.1, 0.638672 );
+}
+
+void TestQgsProperty::checkCurveResult( const QList<QgsPoint>& controlPoints, const QVector<double>& x, const QVector<double>& y )
+{
+  // build transform
+  QgsCurveTransform t( controlPoints );
+
+  // we check two approaches
+  for ( int i = 0; i < x.count(); ++i )
+  {
+    QGSCOMPARENEAR( t.y( x.at( i ) ), y.at( i ), 0.0001 );
+  }
+
+  QVector< double > results = t.y( x );
+  for ( int i = 0; i < y.count(); ++i )
+  {
+    QGSCOMPARENEAR( results.at( i ), y.at( i ), 0.0001 );
+  }
 }
 
 QGSTEST_MAIN( TestQgsProperty )

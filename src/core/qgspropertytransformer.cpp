@@ -586,3 +586,334 @@ void QgsColorRampTransformer::setColorRamp( QgsColorRamp* ramp )
 {
   mGradientRamp.reset( ramp );
 }
+
+
+//
+// QgsCurveTransform
+//
+
+bool sortByX( const QgsPoint& a, const QgsPoint& b )
+{
+  return a.x() < b.x();
+}
+
+QgsCurveTransform::QgsCurveTransform()
+{
+  mControlPoints << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 );
+  calcSecondDerivativeArray();
+}
+
+QgsCurveTransform::QgsCurveTransform( const QList<QgsPoint>& controlPoints )
+    : mControlPoints( controlPoints )
+{
+  std::sort( mControlPoints.begin(), mControlPoints.end(), sortByX );
+  calcSecondDerivativeArray();
+}
+
+QgsCurveTransform::~QgsCurveTransform()
+{
+  delete [] mSecondDerivativeArray;
+}
+
+QgsCurveTransform::QgsCurveTransform( const QgsCurveTransform& other )
+    : mControlPoints( other.mControlPoints )
+{
+  if ( other.mSecondDerivativeArray )
+  {
+    mSecondDerivativeArray = new double[ mControlPoints.count()];
+    memcpy( mSecondDerivativeArray, other.mSecondDerivativeArray, sizeof( double ) * mControlPoints.count() );
+  }
+}
+
+QgsCurveTransform& QgsCurveTransform::operator=( const QgsCurveTransform & other )
+{
+  mControlPoints = other.mControlPoints;
+  if ( other.mSecondDerivativeArray )
+  {
+    delete [] mSecondDerivativeArray;
+    mSecondDerivativeArray = new double[ mControlPoints.count()];
+    memcpy( mSecondDerivativeArray, other.mSecondDerivativeArray, sizeof( double ) * mControlPoints.count() );
+  }
+  return *this;
+}
+
+void QgsCurveTransform::setControlPoints( const QList<QgsPoint>& points )
+{
+  mControlPoints = points;
+  std::sort( mControlPoints.begin(), mControlPoints.end(), sortByX );
+  calcSecondDerivativeArray();
+}
+
+void QgsCurveTransform::addControlPoint( double x, double y )
+{
+  QgsPoint point( x, y );
+  if ( mControlPoints.contains( point ) )
+    return;
+
+  mControlPoints << point;
+  std::sort( mControlPoints.begin(), mControlPoints.end(), sortByX );
+  calcSecondDerivativeArray();
+}
+
+void QgsCurveTransform::removeControlPoint( double x, double y )
+{
+  for ( int i = 0; i < mControlPoints.count(); ++i )
+  {
+    if ( qgsDoubleNear( mControlPoints.at( i ).x(), x )
+         && qgsDoubleNear( mControlPoints.at( i ).y(), y ) )
+    {
+      mControlPoints.removeAt( i );
+      break;
+    }
+  }
+  calcSecondDerivativeArray();
+}
+
+// this code is adapted from https://github.com/OpenFibers/Photoshop-Curves
+// which in turn was adapted from
+// http://www.developpez.net/forums/d331608-3/autres-langages/algorithmes/contribuez/image-interpolation-spline-cubique/#post3513925  //#spellok
+
+double QgsCurveTransform::y( double x ) const
+{
+  int n = mControlPoints.count();
+  if ( n < 2 )
+    return x; // invalid
+  else if ( n < 3 )
+  {
+    // linear
+    if ( x <= mControlPoints.at( 0 ).x() )
+      return mControlPoints.at( 0 ).y();
+    else if ( x >=  mControlPoints.at( n - 1 ).x() )
+      return mControlPoints.at( 1 ).y();
+    else
+    {
+      double dx = mControlPoints.at( 1 ).x() - mControlPoints.at( 0 ).x();
+      double dy = mControlPoints.at( 1 ).y() - mControlPoints.at( 0 ).y();
+      return x * ( dy / dx ) + mControlPoints.at( 0 ).y();
+    }
+  }
+
+  // safety check
+  if ( x <= mControlPoints.at( 0 ).x() )
+    return mControlPoints.at( 0 ).y();
+  if ( x >= mControlPoints.at( n - 1 ).x() )
+    return mControlPoints.at( n - 1 ).y();
+
+  // find corresponding segment
+  QList<QgsPoint>::const_iterator pointIt = mControlPoints.constBegin();
+  QgsPoint currentControlPoint = *pointIt;
+  ++pointIt;
+  QgsPoint nextControlPoint = *pointIt;
+
+  for ( int i = 0; i < n - 1; ++i )
+  {
+    if ( x < nextControlPoint.x() )
+    {
+      // found segment
+      double h = nextControlPoint.x() - currentControlPoint.x();
+      double t = ( x - currentControlPoint.x() ) / h;
+
+      double a = 1 - t;
+
+      return a*currentControlPoint.y() + t*nextControlPoint.y() + ( h*h / 6 )*(( a*a*a - a )*mSecondDerivativeArray[i] + ( t*t*t - t )*mSecondDerivativeArray[i+1] );
+    }
+
+    ++pointIt;
+    if ( pointIt == mControlPoints.constEnd() )
+      break;
+
+    currentControlPoint = nextControlPoint;
+    nextControlPoint = *pointIt;
+  }
+
+  //should not happen
+  return x;
+}
+
+// this code is adapted from https://github.com/OpenFibers/Photoshop-Curves
+// which in turn was adapted from
+// http://www.developpez.net/forums/d331608-3/autres-langages/algorithmes/contribuez/image-interpolation-spline-cubique/#post3513925  //#spellok
+
+QVector<double> QgsCurveTransform::y( const QVector<double>& x ) const
+{
+  QVector<double> result;
+
+  int n = mControlPoints.count();
+  if ( n < 3 )
+  {
+    // invalid control points - use simple transform
+    Q_FOREACH ( double i, x )
+      result << y( i );
+
+    return result;
+  }
+
+  // find corresponding segment
+  QList<QgsPoint>::const_iterator pointIt = mControlPoints.constBegin();
+  QgsPoint currentControlPoint = *pointIt;
+  ++pointIt;
+  QgsPoint nextControlPoint = *pointIt;
+
+  int xIndex = 0;
+  double currentX = x.at( xIndex );
+  // safety check
+  while ( currentX <= currentControlPoint.x() )
+  {
+    result << currentControlPoint.y();
+    xIndex++;
+    currentX = x.at( xIndex );
+  }
+
+  for ( int i = 0; i < n - 1; ++i )
+  {
+    while ( currentX < nextControlPoint.x() )
+    {
+      // found segment
+      double h = nextControlPoint.x() - currentControlPoint.x();
+
+      double t = ( currentX - currentControlPoint.x() ) / h;
+
+      double a = 1 - t;
+
+      result << a*currentControlPoint.y() + t*nextControlPoint.y() + ( h*h / 6 )*(( a*a*a - a )*mSecondDerivativeArray[i] + ( t*t*t - t )*mSecondDerivativeArray[i+1] );
+      xIndex++;
+      if ( xIndex == x.count() )
+        return result;
+
+      currentX = x.at( xIndex );
+    }
+
+    ++pointIt;
+    if ( pointIt == mControlPoints.constEnd() )
+      break;
+
+    currentControlPoint = nextControlPoint;
+    nextControlPoint = *pointIt;
+  }
+
+  // safety check
+  while ( xIndex < x.count() )
+  {
+    result << nextControlPoint.y();
+    xIndex++;
+  }
+
+  return result;
+}
+
+bool QgsCurveTransform::readXml( const QDomElement& elem, const QDomDocument& )
+{
+  QString xString = elem.attribute( QStringLiteral( "x" ) );
+  QString yString = elem.attribute( QStringLiteral( "y" ) );
+
+  QStringList xVals = xString.split( ',' );
+  QStringList yVals = yString.split( ',' );
+  if ( xVals.count() != yVals.count() )
+    return false;
+
+  QList< QgsPoint > newPoints;
+  bool ok = false;
+  for ( int i = 0; i < xVals.count(); ++i )
+  {
+    double x = xVals.at( i ).toDouble( &ok );
+    if ( !ok )
+      return false;
+    double y = yVals.at( i ).toDouble( &ok );
+    if ( !ok )
+      return false;
+    newPoints << QgsPoint( x, y );
+  }
+  setControlPoints( newPoints );
+  return true;
+}
+
+bool QgsCurveTransform::writeXml( QDomElement& transformElem, QDomDocument& ) const
+{
+  QStringList x;
+  QStringList y;
+  Q_FOREACH ( const QgsPoint& p, mControlPoints )
+  {
+    x << qgsDoubleToString( p.x() );
+    y << qgsDoubleToString( p.y() );
+  }
+
+  transformElem.setAttribute( QStringLiteral( "x" ), x.join( ',' ) );
+  transformElem.setAttribute( QStringLiteral( "y" ), y.join( ',' ) );
+
+  return true;
+}
+
+// this code is adapted from https://github.com/OpenFibers/Photoshop-Curves
+// which in turn was adapted from
+// http://www.developpez.net/forums/d331608-3/autres-langages/algorithmes/contribuez/image-interpolation-spline-cubique/#post3513925  //#spellok
+
+void QgsCurveTransform::calcSecondDerivativeArray()
+{
+  int n = mControlPoints.count();
+  if ( n < 3 )
+    return; // cannot proceed
+
+  delete[] mSecondDerivativeArray;
+
+  double* matrix = new double[ n * 3 ];
+  double* result = new double[ n ];
+  matrix[0] = 0;
+  matrix[1] = 1;
+  matrix[2] = 0;
+  result[0] = 0;
+  QList<QgsPoint>::const_iterator pointIt = mControlPoints.constBegin();
+  QgsPoint pointIm1 = *pointIt;
+  ++pointIt;
+  QgsPoint pointI = *pointIt;
+  ++pointIt;
+  QgsPoint pointIp1 = *pointIt;
+
+  for ( int i = 1; i < n - 1; ++i )
+  {
+    matrix[i * 3 + 0 ] = ( pointI.x() - pointIm1.x() ) / 6.0;
+    matrix[i * 3 + 1 ] = ( pointIp1.x() - pointIm1.x() ) / 3.0;
+    matrix[i * 3 + 2 ] = ( pointIp1.x() - pointI.x() ) / 6.0;
+    result[i] = ( pointIp1.y() - pointI.y() ) / ( pointIp1.x() - pointI.x() ) - ( pointI.y() - pointIm1.y() ) / ( pointI.x() - pointIm1.x() );
+
+    // shuffle points
+    pointIm1 = pointI;
+    pointI = pointIp1;
+    ++pointIt;
+    if ( pointIt == mControlPoints.constEnd() )
+      break;
+
+    pointIp1 = *pointIt;
+  }
+  matrix[( n-1 )*3 + 0] = 0;
+  matrix[( n-1 )*3 + 1] = 1;
+  matrix[( n-1 ) * 3 +2] = 0;
+  result[n-1] = 0;
+
+  // solving pass1 (up->down)
+  for ( int i = 1; i < n; ++i )
+  {
+    double k = matrix[i * 3 + 0] / matrix[( i-1 ) * 3 + 1];
+    matrix[i * 3 + 1] -= k * matrix[( i-1 )*3+2];
+    matrix[i * 3 + 0] = 0;
+    result[i] -= k * result[i-1];
+  }
+  // solving pass2 (down->up)
+  for ( int i = n - 2; i >= 0; --i )
+  {
+    double k = matrix[i*3+2] / matrix[( i+1 )*3+1];
+    matrix[i*3+1] -= k * matrix[( i+1 )*3+0];
+    matrix[i*3+2] = 0;
+    result[i] -= k * result[i+1];
+  }
+
+  // return second derivative value for each point
+  mSecondDerivativeArray = new double[n];
+  for ( int i = 0;i < n;++i )
+  {
+    mSecondDerivativeArray[i] = result[i] / matrix[( i*3 )+1];
+  }
+
+  delete[] result;
+  delete[] matrix;
+}
+
