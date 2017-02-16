@@ -2304,6 +2304,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
       {
         req.setFilterFids( layer->selectedFeatureIds() );
       }
+      req.setSubsetOfAttributes( QgsAttributeList() );
       QgsFeatureIterator fit = layer->getFeatures( req );
       QgsFeature fet;
 
