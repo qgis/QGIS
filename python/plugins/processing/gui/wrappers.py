@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    wrappers.py
+    wrappers.py - Standard parameters widget wrappers
     ---------------------
     Date                 : May 2016
     Copyright            : (C) 2016 by Arnaud Morvan, Victor Olaya
@@ -17,8 +17,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
-from builtins import range
 
 
 __author__ = 'Arnaud Morvan'
@@ -34,16 +32,34 @@ import locale
 import os
 from functools import cmp_to_key
 
-from qgis.core import QgsCoordinateReferenceSystem, QgsApplication, QgsWkbTypes, QgsMapLayerProxyModel
-from qgis.PyQt.QtWidgets import QCheckBox, QComboBox, QLineEdit, QPlainTextEdit, QWidget, QHBoxLayout, QToolButton, QFileDialog
-from qgis.gui import (QgsFieldExpressionWidget,
-                      QgsExpressionLineEdit,
-                      QgsProjectionSelectionWidget,
-                      QgsGenericProjectionSelector,
-                      QgsFieldComboBox,
-                      QgsFieldProxyModel,
-                      QgsMapLayerComboBox
-                      )
+from qgis.core import (
+    QgsApplication,
+    QgsCoordinateReferenceSystem,
+    QgsExpression,
+    QgsMapLayerProxyModel,
+    QgsWkbTypes,
+)
+from qgis.PyQt.QtWidgets import (
+    QCheckBox,
+    QComboBox,
+    QDialog,
+    QFileDialog,
+    QHBoxLayout,
+    QLineEdit,
+    QPlainTextEdit,
+    QToolButton,
+    QWidget,
+)
+from qgis.gui import (
+    QgsExpressionLineEdit,
+    QgsExpressionBuilderDialog,
+    QgsFieldComboBox,
+    QgsFieldExpressionWidget,
+    QgsFieldProxyModel,
+    QgsGenericProjectionSelector,
+    QgsMapLayerComboBox,
+    QgsProjectionSelectionWidget,
+)
 from qgis.PyQt.QtCore import pyqtSignal, QObject, QVariant, QSettings
 
 from processing.gui.NumberInputPanel import NumberInputPanel, ModellerNumberInputPanel
@@ -72,7 +88,6 @@ from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
 from processing.gui.FixedTablePanel import FixedTablePanel
 from processing.gui.ExtentSelectionPanel import ExtentSelectionPanel
-from processing.gui.StringInputPanel import StringInputPanel
 
 
 DIALOG_STANDARD = 'standard'
@@ -101,14 +116,14 @@ class WidgetWrapper(QObject):
 
     widgetValueHasChanged = pyqtSignal(object)
 
-    def __init__(self, param, dialog, row=0, col=0):
+    def __init__(self, param, dialog, row=0, col=0, **kwargs):
         QObject.__init__(self)
         self.param = param
         self.dialog = dialog
         self.row = row
         self.col = col
         self.dialogType = dialogTypes.get(dialog.__class__.__name__, DIALOG_STANDARD)
-        self.widget = self.createWidget()
+        self.widget = self.createWidget(**kwargs)
         if param.default is not None:
             self.setValue(param.default)
 
@@ -123,7 +138,7 @@ class WidgetWrapper(QObject):
             return v
         return combobox.currentData()
 
-    def createWidget(self):
+    def createWidget(self, **kwargs):
         pass
 
     def setValue(self, value):
@@ -175,6 +190,36 @@ class WidgetWrapper(QObject):
             settings.setValue('/Processing/LastInputPath',
                               os.path.dirname(str(filename)))
         return filename, selected_filter
+
+
+class ExpressionWidgetWrapperMixin():
+
+    def wrapWithExpressionButton(self, basewidget):
+        expr_button = QToolButton()
+        expr_button.clicked.connect(self.showExpressionsBuilder)
+        expr_button.setText('...')
+
+        layout = QHBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(basewidget)
+        layout.addWidget(expr_button)
+
+        widget = QWidget()
+        widget.setLayout(layout)
+
+        return widget
+
+    def showExpressionsBuilder(self):
+        context = self.param.expressionContext()
+        value = self.value()
+        if not isinstance(value, str):
+            value = ''
+        dlg = QgsExpressionBuilderDialog(None, value, self.widget, 'generic', context)
+        dlg.setWindowTitle(self.tr('Expression based input'))
+        if dlg.exec_() == QDialog.Accepted:
+            exp = QgsExpression(dlg.expressionText())
+            if not exp.hasParserError():
+                self.setValue(dlg.expressionText())
 
 
 class BasicWidgetWrapper(WidgetWrapper):
@@ -793,22 +838,19 @@ class VectorWidgetWrapper(WidgetWrapper):
             return self.comboValue(validator, combobox=self.combo)
 
 
-class StringWidgetWrapper(WidgetWrapper):
+class StringWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
 
     def createWidget(self):
         if self.dialogType == DIALOG_STANDARD:
             if self.param.multiline:
                 widget = QPlainTextEdit()
-                if self.param.default:
-                    widget.setPlainText(self.param.default)
             else:
-                widget = StringInputPanel(self.param)
-                if self.param.default:
-                    widget.setValue(self.param.default)
+                self._lineedit = QLineEdit()
+                return self.wrapWithExpressionButton(self._lineedit)
+
         elif self.dialogType == DIALOG_BATCH:
             widget = QLineEdit()
-            if self.param.default:
-                widget.setText(self.param.default)
+
         else:
             # strings, numbers, files and table fields are all allowed input types
             strings = self.dialog.getAvailableValuesOfType([ParameterString, ParameterNumber, ParameterFile,
@@ -816,20 +858,23 @@ class StringWidgetWrapper(WidgetWrapper):
             options = [(self.dialog.resolveValueDescription(s), s) for s in strings]
             if self.param.multiline:
                 widget = MultilineTextPanel(options)
-                widget.setText(self.param.default or "")
             else:
                 widget = QComboBox()
                 widget.setEditable(True)
                 for desc, val in options:
                     widget.addItem(desc, val)
-                widget.setEditText(self.param.default or "")
         return widget
 
     def setValue(self, value):
         if self.dialogType == DIALOG_STANDARD:
-            pass  # TODO
+            if self.param.multiline:
+                self.widget.setPlainText(value)
+            else:
+                self._lineedit.setText(value)
+
         elif self.dialogType == DIALOG_BATCH:
             self.widget.setText(value)
+
         else:
             if self.param.multiline:
                 self.widget.setValue(value)
@@ -841,10 +886,12 @@ class StringWidgetWrapper(WidgetWrapper):
             if self.param.multiline:
                 text = self.widget.toPlainText()
             else:
-                text = self.widget.getValue()
+                text = self._lineedit.text()
             return text
+
         elif self.dialogType == DIALOG_BATCH:
             return self.widget.text()
+
         else:
             if self.param.multiline:
                 value = self.widget.getValue()

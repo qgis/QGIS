@@ -27,8 +27,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 
-from qgis.PyQt.QtCore import QSettings
-
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterCrs
@@ -87,17 +85,15 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         GdalAlgorithm.__init__(self)
         self.processing = False
 
-    def dbConnectionNames(self):
-        settings = QSettings()
-        settings.beginGroup('/PostgreSQL/connections/')
-        return settings.childGroups()
-
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Import Vector into PostGIS database (available connections)')
         self.group, self.i18n_group = self.trAlgorithm('[OGR] Miscellaneous')
-        self.DB_CONNECTIONS = self.dbConnectionNames()
-        self.addParameter(ParameterSelection(self.DATABASE,
-                                             self.tr('Database (connection name)'), self.DB_CONNECTIONS))
+        self.addParameter(ParameterString(
+            self.DATABASE,
+            self.tr('Database (connection name)'),
+            metadata={
+                'widget_wrapper': {
+                    'class': 'processing.gui.wrappers_postgis.ConnectionWidgetWrapper'}}))
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterString(self.SHAPE_ENCODING,
@@ -110,11 +106,24 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
                                        self.tr('Reproject to this CRS on output '), '', optional=True))
         self.addParameter(ParameterCrs(self.S_SRS,
                                        self.tr('Override source CRS'), '', optional=True))
-        self.addParameter(ParameterString(self.SCHEMA,
-                                          self.tr('Schema name'), 'public', optional=True))
-        self.addParameter(ParameterString(self.TABLE,
-                                          self.tr('Table name, leave blank to use input name'),
-                                          '', optional=True))
+        self.addParameter(ParameterString(
+            self.SCHEMA,
+            self.tr('Schema name'),
+            'public',
+            optional=True,
+            metadata={
+                'widget_wrapper': {
+                    'class': 'processing.gui.wrappers_postgis.SchemaWidgetWrapper',
+                    'connection_param': self.DATABASE}}))
+        self.addParameter(ParameterString(
+            self.TABLE,
+            self.tr('Table name, leave blank to use input name'),
+            '',
+            optional=True,
+            metadata={
+                'widget_wrapper': {
+                    'class': 'processing.gui.wrappers_postgis.TableWidgetWrapper',
+                    'schema_param': self.SCHEMA}}))
         self.addParameter(ParameterString(self.PK,
                                           self.tr('Primary key (new field)'), 'id', optional=True))
         self.addParameter(ParameterTableField(self.PRIMARY_KEY,
@@ -168,7 +177,7 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         self.processing = False
 
     def getConsoleCommands(self):
-        connection = self.DB_CONNECTIONS[self.getParameterValue(self.DATABASE)]
+        connection = self.getParameterValue(self.DATABASE)
         uri = uri_from_name(connection)
         if self.processing:
             # to get credentials input when needed
