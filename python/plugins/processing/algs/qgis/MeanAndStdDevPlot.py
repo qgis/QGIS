@@ -25,9 +25,8 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import matplotlib.pyplot as plt
-import matplotlib.pylab as lab
-import numpy as np
+import plotly as plt
+import plotly.graph_objs as go
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTable
@@ -43,8 +42,7 @@ class MeanAndStdDevPlot(GeoAlgorithm):
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     NAME_FIELD = 'NAME_FIELD'
-    MEAN_FIELD = 'MEAN_FIELD'
-    STDDEV_FIELD = 'STDDEV_FIELD'
+    VALUE_FIELD = 'VALUE_FIELD'
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Mean and standard deviation plot')
@@ -55,10 +53,8 @@ class MeanAndStdDevPlot(GeoAlgorithm):
         self.addParameter(ParameterTableField(self.NAME_FIELD,
                                               self.tr('Category name field'), self.INPUT,
                                               ParameterTableField.DATA_TYPE_ANY))
-        self.addParameter(ParameterTableField(self.MEAN_FIELD,
-                                              self.tr('Mean field'), self.INPUT))
-        self.addParameter(ParameterTableField(self.STDDEV_FIELD,
-                                              self.tr('StdDev field'), self.INPUT))
+        self.addParameter(ParameterTableField(self.VALUE_FIELD,
+                                              self.tr('Value field'), self.INPUT))
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Plot')))
 
@@ -66,22 +62,24 @@ class MeanAndStdDevPlot(GeoAlgorithm):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         namefieldname = self.getParameterValue(self.NAME_FIELD)
-        meanfieldname = self.getParameterValue(self.MEAN_FIELD)
-        stddevfieldname = self.getParameterValue(self.STDDEV_FIELD)
+        valuefieldname = self.getParameterValue(self.VALUE_FIELD)
 
         output = self.getOutputValue(self.OUTPUT)
 
-        values = vector.values(layer, namefieldname, meanfieldname, stddevfieldname)
-        plt.close()
-        ind = np.arange(len(values[namefieldname]))
-        width = 0.8
-        plt.bar(ind, values[meanfieldname], width, color='r',
-                yerr=values[stddevfieldname],
-                error_kw=dict(ecolor='yellow'),
-                )
+        values = vector.values(layer, namefieldname, valuefieldname)
 
-        plt.xticks(ind, values[namefieldname], rotation=45)
-        plotFilename = output + '.png'
-        lab.savefig(plotFilename)
-        with open(output, 'w') as f:
-            f.write('<html><img src="' + plotFilename + '"/></html>')
+        d = {}
+        for i in range(len(values[namefieldname])):
+            v = values[namefieldname][i]
+            if v not in d:
+                d[v] = [values[valuefieldname][i]]
+            else:
+                d[v].append(values[valuefieldname][i])
+
+        data = []
+        for k, v in d.items():
+            data.append(go.Box(y=list(v),
+                               boxmean='sd',
+                               name=k
+                               ))
+        plt.offline.plot(data, filename=output, auto_open=False)
