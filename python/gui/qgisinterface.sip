@@ -404,8 +404,6 @@ class QgisInterface : QObject
     // View menu actions
     //! Get access to the native pan action. Call trigger() on it to set the default pan map tool.
     virtual QAction *actionPan() = 0;
-    //! Get access to the native touch action.
-    virtual QAction *actionTouch() = 0;
     //! Get access to the native pan to selected action. Call trigger() on it to pan the map canvas to the selection.
     virtual QAction *actionPanToSelected() = 0;
     //! Get access to the native zoom in action. Call trigger() on it to set the default zoom in map tool.

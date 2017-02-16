@@ -1962,26 +1962,23 @@ void QgsMapCanvas::mapToolDestroyed()
   mMapTool = nullptr;
 }
 
-#ifdef HAVE_TOUCH
 bool QgsMapCanvas::event( QEvent * e )
 {
-  bool done = false;
-  if ( e->type() == QEvent::Gesture )
+  if ( !QTouchDevice::devices().empty() )
   {
-    // call handler of current map tool
-    if ( mMapTool )
+    if ( e->type() == QEvent::Gesture )
     {
-      done = mMapTool->gestureEvent( static_cast<QGestureEvent*>( e ) );
+      // call handler of current map tool
+      if ( mMapTool )
+      {
+        return mMapTool->gestureEvent( static_cast<QGestureEvent*>( e ) );
+      }
     }
   }
-  else
-  {
-    // pass other events to base class
-    done = QGraphicsView::event( e );
-  }
-  return done;
+
+  // pass other events to base class
+  return QGraphicsView::event( e );
 }
-#endif
 
 void QgsMapCanvas::refreshAllLayers()
 {

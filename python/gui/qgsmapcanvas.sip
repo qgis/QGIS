@@ -1,5 +1,3 @@
-%Feature HAVE_TOUCH
-
 /** \ingroup gui
  * Map canvas is a class for displaying all GIS data types on a canvas.
  */
@@ -486,10 +484,9 @@ class QgsMapCanvas : QGraphicsView
     void messageEmitted( const QString& title, const QString& message, QgsMessageBar::MessageLevel = QgsMessageBar::INFO );
 
   protected:
-%If (HAVE_TOUCH)
+
     //! Overridden standard event to be gestures aware
     bool event( QEvent * e );
-%End
 
     //! Overridden key press event
     void keyPressEvent( QKeyEvent * e );

@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1018</width>
-     <height>19</height>
+     <height>25</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -422,7 +422,6 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="mActionTouch"/>
    <addaction name="mActionPan"/>
    <addaction name="mActionPanToSelected"/>
    <addaction name="mActionZoomIn"/>
@@ -1876,21 +1875,6 @@ Ctrl (Cmd) increments by 15 deg.</string>
    </property>
    <property name="toolTip">
     <string>Pan Map to Selection</string>
-   </property>
-  </action>
-  <action name="mActionTouch">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset>
-     <normaloff>:/images/themes/default/mActionTouch.svg</normaloff>:/images/themes/default/mActionTouch.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Touch Zoom and Pan</string>
-   </property>
-   <property name="toolTip">
-    <string>Touch zoom and pan</string>
    </property>
   </action>
   <action name="mActionOffsetCurve">

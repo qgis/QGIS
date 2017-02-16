@@ -363,10 +363,6 @@ extern "C"
 #include <DbgHelp.h>
 #endif
 
-#ifdef HAVE_TOUCH
-#include "qgsmaptooltouch.h"
-#endif
-
 class QTreeWidgetItem;
 
 /** Set the application title bar text
@@ -1097,14 +1093,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     QgsDebugMsg( "Tips are disabled" );
   }
 
-#ifdef HAVE_TOUCH
-  //add reacting to long click in touch
-  grabGesture( Qt::TapAndHoldGesture );
-#else
-  //remove mActionTouch button
-  delete mActionTouch;
-  mActionTouch = nullptr;
-#endif
+  if ( ! QTouchDevice::devices().isEmpty() )
+  {
+    //add reacting to long click in touch
+    grabGesture( Qt::TapAndHoldGesture );
+  }
 
   // supposedly all actions have been added, now register them to the shortcut manager
   QgsShortcutsManager::instance()->registerAllChildren( this );
@@ -1258,9 +1251,6 @@ QgisApp::~QgisApp()
   delete mMapTools.mZoomIn;
   delete mMapTools.mZoomOut;
   delete mMapTools.mPan;
-#ifdef HAVE_TOUCH
-  delete mMapTools.mTouch;
-#endif
   delete mMapTools.mAddFeature;
   delete mMapTools.mAddPart;
   delete mMapTools.mAddRing;
@@ -1501,12 +1491,10 @@ bool QgisApp::event( QEvent * event )
     openFile( foe->file() );
     done = true;
   }
-#ifdef HAVE_TOUCH
-  else if ( event->type() == QEvent::Gesture )
+  else if ( !QTouchDevice::devices().isEmpty() && event->type() == QEvent::Gesture )
   {
     done = gestureEvent( static_cast<QGestureEvent*>( event ) );
   }
-#endif
   else
   {
     // pass other events to base class
@@ -1644,10 +1632,6 @@ void QgisApp::createActions()
   connect( mActionOffsetCurve, SIGNAL( triggered() ), this, SLOT( offsetCurve() ) );
 
   // View Menu Items
-
-#ifdef HAVE_TOUCH
-  connect( mActionTouch, SIGNAL( triggered() ), this, SLOT( touch() ) );
-#endif
   connect( mActionPan, SIGNAL( triggered() ), this, SLOT( pan() ) );
   connect( mActionPanToSelected, SIGNAL( triggered() ), this, SLOT( panToSelected() ) );
   connect( mActionZoomIn, SIGNAL( triggered() ), this, SLOT( zoomIn() ) );
@@ -1878,9 +1862,6 @@ void QgisApp::createActionGroups()
   //
   // Map Tool Group
   mMapToolGroup = new QActionGroup( this );
-#ifdef HAVE_TOUCH
-  mMapToolGroup->addAction( mActionTouch );
-#endif
   mMapToolGroup->addAction( mActionPan );
   mMapToolGroup->addAction( mActionZoomIn );
   mMapToolGroup->addAction( mActionZoomOut );
@@ -2689,9 +2670,6 @@ void QgisApp::setTheme( const QString& theThemeName )
   mActionZoomFullExtent->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomFullExtent.svg" ) ) );
   mActionZoomToSelected->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToSelected.svg" ) ) );
   mActionShowRasterCalculator->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowRasterCalculator.png" ) ) );
-#ifdef HAVE_TOUCH
-  mActionTouch->setIcon( QgsApplication::getThemeIcon( "/mActionTouch.svg" ) );
-#endif
   mActionPan->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPan.svg" ) ) );
   mActionPanToSelected->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPanToSelected.svg" ) ) );
   mActionZoomLast->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomLast.svg" ) ) );
@@ -2868,10 +2846,6 @@ void QgisApp::createCanvasTools()
   mMapTools.mZoomOut->setAction( mActionZoomOut );
   mMapTools.mPan = new QgsMapToolPan( mMapCanvas );
   mMapTools.mPan->setAction( mActionPan );
-#ifdef HAVE_TOUCH
-  mMapTools.mTouch = new QgsMapToolTouch( mMapCanvas );
-  mMapTools.mTouch->setAction( mActionTouch );
-#endif
   mMapTools.mIdentify = new QgsMapToolIdentifyAction( mMapCanvas );
   mMapTools.mIdentify->setAction( mActionIdentify );
   connect( mMapTools.mIdentify, SIGNAL( copyToClipboard( QgsFeatureStore & ) ),
@@ -4598,15 +4572,10 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
   }
 
   // set the initial map tool
-#ifndef HAVE_TOUCH
   mMapCanvas->setMapTool( mMapTools.mPan );
   mNonEditMapTool = mMapTools.mPan;  // signals are not yet setup to catch this
-#else
-  mMapCanvas->setMapTool( mMapTools.mTouch );
-  mNonEditMapTool = mMapTools.mTouch;  // signals are not yet setup to catch this
-#endif
 
-} // QgisApp::fileNew(bool thePromptToSaveFlag)
+}
 
 bool QgisApp::fileNewFromTemplate( const QString& fileName )
 {
@@ -5848,13 +5817,6 @@ void QgisApp::pan()
 {
   mMapCanvas->setMapTool( mMapTools.mPan );
 }
-
-#ifdef HAVE_TOUCH
-void QgisApp::touch()
-{
-  mMapCanvas->setMapTool( mMapTools.mTouch );
-}
-#endif
 
 void QgisApp::zoomFull()
 {
@@ -12129,8 +12091,6 @@ void QgisApp::onLayerError( const QString& msg )
   mInfoBar->pushCritical( tr( "Layer %1" ).arg( layer->name() ), msg );
 }
 
-
-#ifdef HAVE_TOUCH
 bool QgisApp::gestureEvent( QGestureEvent *event )
 {
   if ( QGesture *tapAndHold = event->gesture( Qt::TapAndHoldGesture ) )
@@ -12153,7 +12113,6 @@ void QgisApp::tapAndHoldTriggered( QTapAndHoldGesture *gesture )
     QApplication::postEvent( receiver, new QMouseEvent( QEvent::MouseButtonRelease, receiver->mapFromGlobal( pos ), Qt::RightButton, Qt::RightButton, Qt::NoModifier ) );
   }
 }
-#endif
 
 #ifdef Q_OS_WIN
 LONG WINAPI QgisApp::qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo )
