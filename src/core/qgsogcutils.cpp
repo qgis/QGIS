@@ -1603,6 +1603,16 @@ QgsExpression* QgsOgcUtils::expressionFromOgcFilter( const QDomElement& element 
 
   QgsExpression *expr = new QgsExpression();
 
+  // check if it is a single string value not having DOM elements
+  // that express OGC operators
+  if ( element.firstChild().nodeType() == QDomNode::TextNode )
+  {
+    expr->setExpression( element.firstChild().nodeValue() );
+    return expr;
+  }
+
+  // then check OGC DOM elements that contain OGC tags specifying
+  // OGC operators.
   QDomElement childElem = element.firstChildElement();
   while ( !childElem.isNull() )
   {
