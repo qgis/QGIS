@@ -509,13 +509,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     int count() const;
 
     /** Retrieve a pointer to a registered layer by layer ID.
-     * @param theLayerId ID of layer to retrieve
+     * @param layerId ID of layer to retrieve
      * @returns matching layer, or nullptr if no matching layer found
      * @see mapLayersByName()
      * @see mapLayers()
      */
-    //TODO QGIS 3.0 - rename theLayerId to layerId
-    QgsMapLayer* mapLayer( const QString& theLayerId ) const;
+    QgsMapLayer* mapLayer( const QString& layerId ) const;
 
     /** Retrieve a list of matching registered layers by layer name.
      * @param layerName name of layers to match
@@ -623,15 +622,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * The specified layers will be removed from the registry. If the registry has ownership
      * of any layers these layers will also be deleted.
      *
-     * @param theLayerIds list of IDs of the layers to remove
+     * @param layerIds list of IDs of the layers to remove
      *
      * @note As a side-effect the QgsProject instance is marked dirty.
      * @note added in QGIS 1.8
      * @see removeMapLayer()
      * @see removeAllMapLayers()
      */
-    // TODO QGIS 3.0 - rename theLayerIds to layerIds
-    void removeMapLayers( const QStringList& theLayerIds );
+    void removeMapLayers( const QStringList& layerIds );
 
     /**
      * @brief
@@ -656,14 +654,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * The specified layer will be removed from the registry. If the registry has ownership
      * of the layer then it will also be deleted.
      *
-     * @param theLayerId ID of the layer to remove
+     * @param layerId ID of the layer to remove
      *
      * @note As a side-effect the QgsProject instance is marked dirty.
      * @see removeMapLayers()
      * @see removeAllMapLayers()
      */
-    // TODO QGIS 3.0 - rename theLayerId to layerId
-    void removeMapLayer( const QString& theLayerId );
+    void removeMapLayer( const QString& layerId );
 
     /**
      * @brief
@@ -800,12 +797,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted when one or more layers are about to be removed from the registry.
      *
-     * @param theLayerIds A list of IDs for the layers which are to be removed.
+     * @param layerIds A list of IDs for the layers which are to be removed.
      * @see layerWillBeRemoved()
      * @see layersRemoved()
      */
-    // TODO QGIS 3.0 - rename theLayerIds to layerIds
-    void layersWillBeRemoved( const QStringList& theLayerIds );
+    void layersWillBeRemoved( const QStringList& layerIds );
 
     /**
      * Emitted when one or more layers are about to be removed from the registry.
@@ -819,14 +815,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted when a layer is about to be removed from the registry.
      *
-     * @param theLayerId The ID of the layer to be removed.
+     * @param layerId The ID of the layer to be removed.
      *
      * @note Consider using {@link layersWillBeRemoved()} instead
      * @see layersWillBeRemoved()
      * @see layerRemoved()
      */
-    //TODO QGIS 3.0 - rename theLayerId to layerId
-    void layerWillBeRemoved( const QString& theLayerId );
+    void layerWillBeRemoved( const QString& layerId );
 
     /**
      * Emitted when a layer is about to be removed from the registry.
@@ -842,22 +837,20 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted after one or more layers were removed from the registry.
      *
-     * @param theLayerIds  A list of IDs of the layers which were removed.
+     * @param layerIds  A list of IDs of the layers which were removed.
      * @see layersWillBeRemoved()
      */
-    //TODO QGIS 3.0 - rename theLayerIds to layerIds
-    void layersRemoved( const QStringList& theLayerIds );
+    void layersRemoved( const QStringList& layerIds );
 
     /**
      * Emitted after a layer was removed from the registry.
      *
-     * @param theLayerId The ID of the layer removed.
+     * @param layerId The ID of the layer removed.
      *
      * @note Consider using {@link layersRemoved()} instead
      * @see layerWillBeRemoved()
      */
-    //TODO QGIS 3.0 - rename theLayerId to layerId
-    void layerRemoved( const QString& theLayerId );
+    void layerRemoved( const QString& layerId );
 
     /**
      * Emitted when all layers are removed, before {@link layersWillBeRemoved()} and
@@ -873,24 +866,20 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * This signal is also emitted for layers added to the registry,
      * but not to the legend.
      *
-     * @param theMapLayers List of layers which have been added.
+     * @param layers List of layers which have been added.
      *
      * @see legendLayersAdded()
      * @see layerWasAdded()
      */
-    //TODO QGIS 3.0 - rename theMapLayers to mapLayers
-    void layersAdded( const QList<QgsMapLayer *>& theMapLayers );
+    void layersAdded( const QList<QgsMapLayer *>& layers );
 
     /**
      * Emitted when a layer was added to the registry.
      *
-     * @param theMapLayer The ID of the layer which has been added.
-     *
      * @note Consider using {@link layersAdded()} instead
      * @see layersAdded()
      */
-    // TODO QGIS 3.0 - rename theMapLayer to layer
-    void layerWasAdded( QgsMapLayer* theMapLayer );
+    void layerWasAdded( QgsMapLayer* layer );
 
     /**
      * Emitted, when a layer was added to the registry and the legend.
@@ -898,10 +887,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * {@link layersAdded()} and {@link layerWasAdded()} but will not be
      * advertised by this signal.
      *
-     * @param theMapLayers List of {@link QgsMapLayer}s which were added to the legend.
+     * @param layers List of {@link QgsMapLayer}s which were added to the legend.
      */
-    //TODO QGIS 3.0 rename theMapLayers to mapLayers
-    void legendLayersAdded( const QList<QgsMapLayer*>& theMapLayers );
+    void legendLayersAdded( const QList<QgsMapLayer*>& layers );
 
   public slots:
 

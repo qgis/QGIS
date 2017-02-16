@@ -2001,9 +2001,9 @@ int QgsProject::count() const
   return mMapLayers.size();
 }
 
-QgsMapLayer * QgsProject::mapLayer( const QString& theLayerId ) const
+QgsMapLayer * QgsProject::mapLayer( const QString& layerId ) const
 {
-  return mMapLayers.value( theLayerId );
+  return mMapLayers.value( layerId );
 }
 
 QList<QgsMapLayer *> QgsProject::mapLayersByName( const QString& layerName ) const
@@ -2020,12 +2020,12 @@ QList<QgsMapLayer *> QgsProject::mapLayersByName( const QString& layerName ) con
 }
 
 QList<QgsMapLayer *> QgsProject::addMapLayers(
-  const QList<QgsMapLayer *>& theMapLayers,
+  const QList<QgsMapLayer *>& layers,
   bool addToLegend,
   bool takeOwnership )
 {
   QList<QgsMapLayer *> myResultList;
-  Q_FOREACH ( QgsMapLayer* myLayer, theMapLayers )
+  Q_FOREACH ( QgsMapLayer* myLayer, layers )
   {
     if ( !myLayer || !myLayer->isValid() )
     {
@@ -2056,19 +2056,19 @@ QList<QgsMapLayer *> QgsProject::addMapLayers(
 }
 
 QgsMapLayer *
-QgsProject::addMapLayer( QgsMapLayer* theMapLayer,
+QgsProject::addMapLayer( QgsMapLayer* layer,
                          bool addToLegend,
                          bool takeOwnership )
 {
   QList<QgsMapLayer *> addedLayers;
-  addedLayers = addMapLayers( QList<QgsMapLayer*>() << theMapLayer, addToLegend, takeOwnership );
+  addedLayers = addMapLayers( QList<QgsMapLayer*>() << layer, addToLegend, takeOwnership );
   return addedLayers.isEmpty() ? nullptr : addedLayers[0];
 }
 
-void QgsProject::removeMapLayers( const QStringList& theLayerIds )
+void QgsProject::removeMapLayers( const QStringList& layerIds )
 {
   QList<QgsMapLayer*> layers;
-  Q_FOREACH ( const QString &myId, theLayerIds )
+  Q_FOREACH ( const QString &myId, layerIds )
   {
     layers << mMapLayers.value( myId );
   }
@@ -2116,9 +2116,9 @@ void QgsProject::removeMapLayers( const QList<QgsMapLayer*>& layers )
   emit layersRemoved( layerIds );
 }
 
-void QgsProject::removeMapLayer( const QString& theLayerId )
+void QgsProject::removeMapLayer( const QString& layerId )
 {
-  removeMapLayers( QList<QgsMapLayer*>() << mMapLayers.value( theLayerId ) );
+  removeMapLayers( QList<QgsMapLayer*>() << mMapLayers.value( layerId ) );
 }
 
 void QgsProject::removeMapLayer( QgsMapLayer* layer )
