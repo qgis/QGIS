@@ -87,7 +87,6 @@ from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 from .SelectByLocation import SelectByLocation
 from .Union import Union
 from .DensifyGeometriesInterval import DensifyGeometriesInterval
-from .Eliminate import Eliminate
 from .SpatialJoin import SpatialJoin
 from .DeleteColumn import DeleteColumn
 from .DeleteHoles import DeleteHoles
@@ -208,7 +207,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         DensifyGeometries(), DensifyGeometriesInterval(),
                         MultipartToSingleparts(), SinglePartsToMultiparts(),
                         PolygonsToLines(), LinesToPolygons(), ExtractNodes(),
-                        Eliminate(), ConvexHull(), FixedDistanceBuffer(),
+                        ConvexHull(), FixedDistanceBuffer(),
                         VariableDistanceBuffer(), Dissolve(), Difference(),
                         Intersection(), Union(), Clip(), ExtentFromLayer(),
                         RandomSelection(), RandomSelectionWithinSubsets(),
