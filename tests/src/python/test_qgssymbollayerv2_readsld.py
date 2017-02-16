@@ -2,11 +2,7 @@
 
 """
 ***************************************************************************
-<<<<<<< 1746b32a08acfdaba35068127b25955ba7bd4b3b
-    test_qgssymbollayer_readsld.py
-=======
     test_qgssymbollayerv2_readsld.py
->>>>>>> Tests and fix to read sld:Rotation when does not have ogc sub tags
     ---------------------
     Date                 : January 2017
     Copyright            : (C) 2017, Jorge Gustavo Rocha
