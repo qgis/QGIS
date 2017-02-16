@@ -321,39 +321,9 @@ class QgsMapLayer : QObject
      */
     virtual bool isSpatial() const;
 
-    /** Sets state from Dom document
-       @param layerElement The Dom element corresponding to ``maplayer'' tag
-       @note
+    bool readLayerXml( const QDomElement& layerElement, const QgsPathResolver& pathResolver );
 
-       The Dom node corresponds to a Dom document project file XML element read
-       by QgsProject.
-
-       This, in turn, calls readXml(), which is over-rideable by sub-classes so
-       that they can read their own specific state from the given Dom node.
-
-       Invoked by QgsProject::read().
-
-       @returns true if successful
-     */
-    bool readLayerXml( const QDomElement& layerElement );
-
-    /** Stores state in Dom node
-     * @param layerElement is a Dom element corresponding to ``maplayer'' tag
-     * @param document is a the dom document being written
-     * @param relativeBasePath base path for relative paths
-     * @note
-     *
-     * The Dom node corresponds to a Dom document project file XML element to be
-     * written by QgsProject.
-     *
-     * This, in turn, calls writeXml(), which is over-rideable by sub-classes so
-     * that they can write their own specific state to the given Dom node.
-     *
-     * Invoked by QgsProject::write().
-     *
-     * @returns true if successful
-     */
-    bool writeLayerXml( QDomElement& layerElement, QDomDocument& document, const QString& relativeBasePath = QString::null ) const;
+    bool writeLayerXml( QDomElement& layerElement, QDomDocument& document, const QgsPathResolver& pathResolver ) const;
 
     /** Set a custom property for layer. Properties are stored in a map and saved in project file.
      * @see customProperty()

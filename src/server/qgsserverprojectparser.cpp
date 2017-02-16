@@ -23,6 +23,7 @@
 #include "qgscsexception.h"
 #include "qgsdatasourceuri.h"
 #include "qgsmslayercache.h"
+#include "qgspathresolver.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgseditorwidgetregistry.h"
@@ -273,7 +274,7 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
       QObject::connect( layer, SIGNAL( readCustomSymbology( const QDomElement&, QString& ) ), QgsEditorWidgetRegistry::instance(), SLOT( readSymbology( const QDomElement&, QString& ) ) );
     }
 
-    layer->readLayerXml( const_cast<QDomElement&>( elem ) ); //should be changed to const in QgsMapLayer
+    layer->readLayerXml( const_cast<QDomElement&>( elem ), QgsProject::instance()->pathResolver() ); //should be changed to const in QgsMapLayer
     //layer->setLayerName( layerName( elem ) );
 
     if ( !layer->isValid() )

@@ -48,6 +48,7 @@ class QgsLayerTreeGroup;
 class QgsLayerTreeRegistryBridge;
 class QgsMapLayer;
 class QgsMapThemeCollection;
+class QgsPathResolver;
 class QgsProjectBadLayerHandler;
 class QgsRelationManager;
 class QgsTolerance;
@@ -295,12 +296,18 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //           and redundantly prints sub-keys.
     void dumpProperties() const;
 
+    /** Return path resolver object with considering whether the project uses absolute
+     * or relative paths and using current project's path.
+     * @note added in QGIS 3.0
+     */
+    QgsPathResolver pathResolver() const;
+
     /**
      * Prepare a filename to save it to the project file.
      * Creates an absolute or relative path according to the project settings.
      * Paths written to the project file should be prepared with this method.
     */
-    QString writePath( const QString& filename, const QString& relativeBasePath = QString::null ) const;
+    QString writePath( const QString& filename ) const;
 
     //! Turn filename read from the project file to an absolute path
     QString readPath( QString filename ) const;

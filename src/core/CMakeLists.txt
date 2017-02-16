@@ -187,6 +187,7 @@ SET(QGIS_CORE_SRCS
   qgspaintenginehack.cpp
   qgspainting.cpp
   qgspallabeling.cpp
+  qgspathresolver.cpp
   qgspluginlayer.cpp
   qgspluginlayerregistry.cpp
   qgspoint.cpp
@@ -727,6 +728,7 @@ SET(QGIS_CORE_HDRS
   qgspaintenginehack.h
   qgspainting.h
   qgspallabeling.h
+  qgspathresolver.h
   qgspluginlayerregistry.h
   qgspointlocator.h
   qgsprojectbadlayerhandler.h

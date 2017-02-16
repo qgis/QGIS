@@ -38,6 +38,7 @@
 class QgsMapLayerLegend;
 class QgsMapLayerRenderer;
 class QgsMapLayerStyleManager;
+class QgsPathResolver;
 class QgsProject;
 
 class QDomDocument;
@@ -352,6 +353,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Sets state from Dom document
        @param layerElement The Dom element corresponding to ``maplayer'' tag
+       @param pathResolver object for conversion between relative and absolute paths
        @note
 
        The Dom node corresponds to a Dom document project file XML element read
@@ -364,20 +366,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
        @returns true if successful
      */
-    bool readLayerXml( const QDomElement& layerElement );
-
-    /** Sets state from Dom document for a specific project.
-      * @param layerElement The Dom element corresponding to ``maplayer'' tag
-      * @param project
-      * @returns true if successful
-      */
-    bool readLayerXml( const QDomElement& layerElement, const QgsProject *project );
-
+    bool readLayerXml( const QDomElement& layerElement, const QgsPathResolver& pathResolver );
 
     /** Stores state in Dom node
      * @param layerElement is a Dom element corresponding to ``maplayer'' tag
      * @param document is a the dom document being written
-     * @param relativeBasePath base path for relative paths
+     * @param pathResolver object for conversion between relative and absolute paths
      * @note
      *
      * The Dom node corresponds to a Dom document project file XML element to be
@@ -390,7 +384,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *
      * @returns true if successful
      */
-    bool writeLayerXml( QDomElement& layerElement, QDomDocument& document, const QString& relativeBasePath = QString::null ) const;
+    bool writeLayerXml( QDomElement& layerElement, QDomDocument& document, const QgsPathResolver& pathResolver ) const;
 
     /** Set a custom property for layer. Properties are stored in a map and saved in project file.
      * @see customProperty()
