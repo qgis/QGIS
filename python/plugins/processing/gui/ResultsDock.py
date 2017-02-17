@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    ResultsDialog.py
+    ResultsDock.py
     ---------------------
     Date                 : August 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -30,57 +30,49 @@ import codecs
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QUrl
-from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QStyle, QTreeWidgetItem
+from qgis.PyQt.QtGui import QDesktopServices
+from qgis.PyQt.QtWidgets import QTreeWidgetItem
 
-from processing.core.ProcessingResults import ProcessingResults
+from processing.core.ProcessingResults import resultsList
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'DlgResults.ui'))
+    os.path.join(pluginPath, 'ui', 'resultsdockbase.ui'))
 
 
-class ResultsDialog(BASE, WIDGET):
+class ResultsDock(BASE, WIDGET):
 
     def __init__(self):
-        super(ResultsDialog, self).__init__(None)
+        super(ResultsDock, self).__init__(None)
         self.setupUi(self)
 
-        self.keyIcon = QIcon()
-        self.keyIcon.addPixmap(self.style().standardPixmap(QStyle.SP_FileIcon))
-
-        self.tree.currentItemChanged.connect(self.changeResult)
+        self.treeResults.currentItemChanged.connect(self.updateDescription)
+        self.treeResults.itemDoubleClicked.connect(self.openResult)
 
         self.fillTree()
 
-        if self.lastUrl:
-            self.txtResults.setHtml(self.loadResults(self.lastUrl))
-
     def fillTree(self):
-        elements = ProcessingResults.getResults()
-        if len(elements) == 0:
-            self.lastUrl = None
-            return
+        self.treeResults.blockSignals(True)
+        self.treeResults.clear()
+        elements = resultsList.getResults()
         for element in elements:
             item = TreeResultItem(element)
-            item.setIcon(0, self.keyIcon)
-            self.tree.addTopLevelItem(item)
-        self.lastUrl = elements[-1].filename
+            self.treeResults.addTopLevelItem(item)
+        self.treeResults.blockSignals(False)
 
-    def changeResult(self):
-        item = self.tree.currentItem()
-        if isinstance(item, TreeResultItem):
-            self.txtResults.setHtml(self.loadResults(item.filename))
+    def updateDescription(self, current, previous):
+        if isinstance(current, TreeResultItem):
+            html = '<b>Algorithm</b>: {}<br><b>File path</b>: {}'.format(current.text(0), current.filename)
+            self.txtDescription.setHtml(html)
 
-    def loadResults(self, fileName):
-        with codecs.open(fileName, encoding='utf-8') as f:
-            content = f.read()
-        return content
+    def openResult(self, item, column):
+        QDesktopServices.openUrl(QUrl.fromLocalFile(item.filename))
 
 
 class TreeResultItem(QTreeWidgetItem):
 
     def __init__(self, result):
         QTreeWidgetItem.__init__(self)
-        self.filename = result.filename
+        self.setIcon(0, result.icon)
         self.setText(0, result.name)
+        self.filename = result.filename

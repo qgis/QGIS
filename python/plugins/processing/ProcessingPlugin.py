@@ -40,13 +40,13 @@ from processing.core.Processing import Processing
 from processing.gui.ProcessingToolbox import ProcessingToolbox
 from processing.gui.HistoryDialog import HistoryDialog
 from processing.gui.ConfigDialog import ConfigDialog
-from processing.gui.ResultsDialog import ResultsDialog
+from processing.gui.ResultsDock import ResultsDock
 from processing.gui.CommanderWindow import CommanderWindow
 from processing.modeler.ModelerDialog import ModelerDialog
 from processing.tools.system import tempFolder
 from processing.gui.menus import removeMenus, initializeMenus, createMenus
 from processing.core.alglist import algList
-
+from processing.core.ProcessingResults import resultsList
 
 cmd_folder = os.path.split(inspect.getfile(inspect.currentframe()))[0]
 if cmd_folder not in sys.path:
@@ -64,6 +64,12 @@ class ProcessingPlugin(object):
         self.toolbox = ProcessingToolbox()
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.toolbox)
         self.toolbox.hide()
+
+        self.resultsDock = ResultsDock()
+        self.iface.addDockWidget(Qt.RightDockWidgetArea, self.resultsDock)
+        self.resultsDock.hide()
+
+        resultsList.resultAdded.connect(self.resultsDock.fillTree)
 
         self.menu = QMenu(self.iface.mainWindow().menuBar())
         self.menu.setObjectName('processing')
@@ -93,11 +99,11 @@ class ProcessingPlugin(object):
         self.iface.registerMainWindowAction(self.historyAction, 'Ctrl+Alt+H')
         self.menu.addAction(self.historyAction)
 
-        self.resultsAction = QAction(
-            QIcon(os.path.join(cmd_folder, 'images', 'results.svg')),
-            self.tr('&Results Viewer...'), self.iface.mainWindow())
+        self.resultsAction = self.resultsDock.toggleViewAction()
         self.resultsAction.setObjectName('resultsAction')
-        self.resultsAction.triggered.connect(self.openResults)
+        self.resultsAction.setIcon(
+            QgsApplication.getThemeIcon("/processingResult.svg"))
+        self.resultsAction.setText(self.tr('&Results Viewer'))
         self.iface.registerMainWindowAction(self.resultsAction, 'Ctrl+Alt+R')
         self.menu.addAction(self.resultsAction)
 
@@ -132,6 +138,10 @@ class ProcessingPlugin(object):
     def unload(self):
         self.toolbox.setVisible(False)
         self.iface.removeDockWidget(self.toolbox)
+
+        self.resultsDock.setVisible(False)
+        self.iface.removeDockWidget(self.resultsDock)
+
         self.menu.deleteLater()
 
         # delete temporary output files
@@ -171,9 +181,10 @@ class ProcessingPlugin(object):
         algList.reloadProvider('model')
 
     def openResults(self):
-        dlg = ResultsDialog()
-        dlg.show()
-        dlg.exec_()
+        if self.resultsDock.isVisible():
+            self.resultsDock.hide()
+        else:
+            self.resultsDock.show()
 
     def openHistory(self):
         dlg = HistoryDialog()
