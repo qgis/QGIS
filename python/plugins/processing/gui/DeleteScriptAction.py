@@ -32,6 +32,7 @@ from qgis.PyQt.QtWidgets import QMessageBox
 from processing.gui.ContextAction import ContextAction
 
 from processing.algs.r.RAlgorithm import RAlgorithm
+from processing.algs.perl.PerlAlgorithm import PerlAlgorithm
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.core.alglist import algList
 
@@ -40,6 +41,7 @@ class DeleteScriptAction(ContextAction):
 
     SCRIPT_PYTHON = 0
     SCRIPT_R = 1
+    SCRIPT_PERL = 1
 
     def __init__(self, scriptType):
         self.name = self.tr('Delete script', 'DeleteScriptAction')
@@ -50,6 +52,8 @@ class DeleteScriptAction(ContextAction):
             return isinstance(self.itemData, ScriptAlgorithm) and self.itemData.allowEdit
         elif self.scriptType == self.SCRIPT_R:
             return isinstance(self.itemData, RAlgorithm)
+        elif self.scriptType == self.SCRIPT_PERL:
+            return isinstance(self.itemData, PerlAlgorithm)
 
     def execute(self):
         reply = QMessageBox.question(None,
@@ -64,3 +68,5 @@ class DeleteScriptAction(ContextAction):
                 algList.reloadProvider('script')
             elif self.scriptType == self.SCRIPT_R:
                 algList.reloadProvider('r')
+            elif self.scriptType == self.SCRIPT_PERL:
+                algList.reloadProvider('perl')

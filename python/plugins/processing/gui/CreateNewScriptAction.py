@@ -42,6 +42,7 @@ class CreateNewScriptAction(ToolboxAction):
 
     SCRIPT_PYTHON = 0
     SCRIPT_R = 1
+    SCRIPT_PERL = 1
 
     def __init__(self, actionName, scriptType):
         self.name, self.i18n_name = self.trAction(actionName)
@@ -54,6 +55,8 @@ class CreateNewScriptAction(ToolboxAction):
             return QgsApplication.getThemeIcon("/processingScript.svg")
         elif self.scriptType == self.SCRIPT_R:
             return QgsApplication.getThemeIcon("/providerR.svg")
+        elif self.scriptType == self.SCRIPT_PERL:
+            return QgsApplication.getThemeIcon("/providerPerl.svg")
 
     def execute(self):
         dlg = None
@@ -61,9 +64,13 @@ class CreateNewScriptAction(ToolboxAction):
             dlg = ScriptEditorDialog(ScriptEditorDialog.SCRIPT_PYTHON, None)
         if self.scriptType == self.SCRIPT_R:
             dlg = ScriptEditorDialog(ScriptEditorDialog.SCRIPT_R, None)
+        if self.scriptType == self.SCRIPT_PERL:
+            dlg = ScriptEditorDialog(ScriptEditorDialog.SCRIPT_PERL, None)
         dlg.show()
         if dlg.update:
             if self.scriptType == self.SCRIPT_PYTHON:
                 algList.reloadProvider('script')
             elif self.scriptType == self.SCRIPT_R:
                 algList.reloadProvider('r')
+            elif self.scriptType == self.SCRIPT_PERL:
+                algList.reloadProvider('perl')

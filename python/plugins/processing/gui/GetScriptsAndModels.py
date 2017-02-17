@@ -51,6 +51,7 @@ from processing.gui import Help2Html
 from processing.gui.Help2Html import getDescription, ALG_DESC, ALG_VERSION, ALG_CREATOR
 from processing.script.ScriptUtils import ScriptUtils
 from processing.algs.r.RUtils import RUtils
+from processing.algs.perl.PerlUtils import PerlUtils
 from processing.modeler.ModelerUtils import ModelerUtils
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
@@ -103,6 +104,29 @@ class GetRScriptsAction(ToolboxAction):
             self.toolbox.updateProvider('r')
 
 
+class GetPerlScriptsAction(ToolboxAction):
+
+    def __init__(self):
+        self.name, self.i18n_name = self.trAction('Get Perl scripts from on-line scripts collection')
+        self.group, self.i18n_group = self.trAction('Tools')
+
+    def getIcon(self):
+        return QgsApplication.getThemeIcon("/providerPerl.svg")
+
+    def execute(self):
+        repoUrl = ProcessingConfig.getSetting(ProcessingConfig.MODELS_SCRIPTS_REPO)
+        if repoUrl is None or repoUrl == '':
+            QMessageBox.warning(None,
+                                self.tr('Repository error'),
+                                self.tr('Scripts and models repository is not configured.'))
+            return
+
+        dlg = GetScriptsAndModelsDialog(GetScriptsAndModelsDialog.PERLSCRIPTS)
+        dlg.exec_()
+        if dlg.updateProvider:
+            self.toolbox.updateProvider('perl')
+
+
 class GetModelsAction(ToolboxAction):
 
     def __init__(self):
@@ -142,10 +166,12 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
     MODELS = 0
     SCRIPTS = 1
     RSCRIPTS = 2
+    PERLSCRIPTS = 3
 
     tr_disambiguation = {0: 'GetModelsAction',
                          1: 'GetScriptsAction',
-                         2: 'GetRScriptsAction'}
+                         2: 'GetRScriptsAction',
+                         3: 'GetPerlScriptsAction'}
 
     def __init__(self, resourceType):
         super(GetScriptsAndModelsDialog, self).__init__(iface.mainWindow())
@@ -167,10 +193,14 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
             self.folder = ScriptUtils.scriptsFolders()[0]
             self.urlBase = '{}/scripts/'.format(repoUrl)
             self.icon = QgsApplication.getThemeIcon("/processingScript.svg")
-        else:
+        elif self.resourceType == self.RSCRIPTS:
             self.folder = RUtils.RScriptsFolders()[0]
             self.urlBase = '{}/rscripts/'.format(repoUrl)
             self.icon = QgsApplication.getThemeIcon("/providerR.svg")
+        else:
+            self.folder = PerlUtils.PerlScriptsFolders()[0]
+            self.urlBase = '{}/perlscripts/'.format(repoUrl)
+            self.icon = QgsApplication.getThemeIcon("/providerPerl.svg")
 
         self.lastSelectedItem = None
         self.updateProvider = False

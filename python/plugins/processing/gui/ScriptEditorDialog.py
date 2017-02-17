@@ -47,6 +47,8 @@ from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.algs.r.RAlgorithm import RAlgorithm
 from processing.algs.r.RUtils import RUtils
+from processing.algs.perl.PerlAlgorithm import PerlAlgorithm
+from processing.algs.perl.PerlUtils import PerlUtils
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.script.ScriptUtils import ScriptUtils
 
@@ -59,6 +61,7 @@ class ScriptEditorDialog(BASE, WIDGET):
 
     SCRIPT_PYTHON = 0
     SCRIPT_R = 1
+    SCRIPT_PERL = 2
 
     hasChanged = False
 
@@ -181,6 +184,8 @@ class ScriptEditorDialog(BASE, WIDGET):
                 alg = ScriptAlgorithm(None, self.editor.text())
             elif self.algType == self.SCRIPT_R:
                 alg = RAlgorithm(None, self.editor.text())
+            elif self.algType == self.SCRIPT_PERL:
+                alg = PerlAlgorithm(None, self.editor.text())
         else:
             alg = self.alg
 
@@ -204,6 +209,9 @@ class ScriptEditorDialog(BASE, WIDGET):
         elif self.algType == self.SCRIPT_R:
             scriptDir = RUtils.RScriptsFolders()[0]
             filterName = self.tr('Processing R script (*.rsx)')
+        elif self.algType == self.SCRIPT_PERL:
+            scriptDir = PerlUtils.PerlScriptsFolders()[0]
+            filterName = self.tr('Processing Perl script (*.pl)')
 
         self.filename, fileFilter = QFileDialog.getOpenFileName(
             self, self.tr('Open script'), scriptDir, filterName)
@@ -235,6 +243,9 @@ class ScriptEditorDialog(BASE, WIDGET):
             elif self.algType == self.SCRIPT_R:
                 scriptDir = RUtils.RScriptsFolders()[0]
                 filterName = self.tr('Processing R script (*.rsx)')
+            elif self.algType == self.SCRIPT_PERL:
+                scriptDir = PerlUtils.PerlScriptsFolders()[0]
+                filterName = self.tr('Processing Perl script (*.pl)')
 
             self.filename, fileFilter = QFileDialog.getSaveFileName(
                 self, self.tr('Save script'), scriptDir, filterName)
@@ -246,6 +257,9 @@ class ScriptEditorDialog(BASE, WIDGET):
             if self.algType == self.SCRIPT_R and \
                     not self.filename.lower().endswith('.rsx'):
                 self.filename += '.rsx'
+            if self.algType == self.SCRIPT_PERL and \
+                    not self.filename.lower().endswith('.pl'):
+                self.filename += '.pl'
 
             text = self.editor.text()
             if self.alg is not None:
@@ -282,6 +296,9 @@ class ScriptEditorDialog(BASE, WIDGET):
         if self.algType == self.SCRIPT_R:
             alg = RAlgorithm(None, self.editor.text())
             alg.provider = QgsApplication.processingRegistry().providerById('r')
+        if self.algType == self.SCRIPT_PERL:
+            alg = PerlAlgorithm(None, self.editor.text())
+            alg.provider = QgsApplication.processingRegistry().providerById('perl')
 
         dlg = alg.getCustomParametersDialog()
         if not dlg:
