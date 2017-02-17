@@ -28,6 +28,7 @@
 #include "qgslogger.h"
 #include "qgsconditionalstyle.h"
 #include "qgsproject.h"
+#include "qgsmaptoolpan.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
@@ -53,6 +54,9 @@ QgsBrowser::QgsBrowser( QWidget *parent, Qt::WindowFlags flags )
     , mAttributeTableFilterModel( nullptr )
 {
   setupUi( this );
+
+  mMapToolPan.reset( new QgsMapToolPan( mapCanvas ) );
+  mapCanvas->setMapTool( mMapToolPan.get() );
 
   // Disable tabs by default
   tabWidget->setTabEnabled( tabWidget->indexOf( paramTab ), false );

@@ -25,6 +25,7 @@
 class QgsBrowserModel;
 class QgsLayerItem;
 class QgsMapLayer;
+class QgsMapToolPan;
 
 class QgsBrowser : public QMainWindow, private Ui::QgsBrowserBase
 {
@@ -79,6 +80,10 @@ class QgsBrowser : public QMainWindow, private Ui::QgsBrowserBase
     // last (selected) tab for each
     QMap<QString, int> mLastTab;
     QgsAttributeTableFilterModel* mAttributeTableFilterModel;
+
+  private:
+
+    std::unique_ptr< QgsMapToolPan > mMapToolPan;
 };
 
 #endif // QGSBROWSER_H
