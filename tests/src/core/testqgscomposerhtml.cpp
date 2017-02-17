@@ -283,8 +283,8 @@ void TestQgsComposerHtml::javascriptSetFeature()
   mComposition->atlasComposition().setEnabled( true );
 
   QgsRelation rel;
-  rel.setRelationId( QStringLiteral( "rel1" ) );
-  rel.setRelationName( QStringLiteral( "relation one" ) );
+  rel.setId( QStringLiteral( "rel1" ) );
+  rel.setName( QStringLiteral( "relation one" ) );
   rel.setReferencingLayer( childLayer->id() );
   rel.setReferencedLayer( parentLayer->id() );
   rel.addFieldPair( QStringLiteral( "y" ), QStringLiteral( "foreignkey" ) );

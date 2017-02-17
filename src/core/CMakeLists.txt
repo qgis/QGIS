@@ -518,6 +518,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgspointlocator.h
   qgsproject.h
   qgsrelationmanager.h
+  qgsrelation.h
   qgsrunprocess.h
   qgssnappingconfig.h
   qgssnappingutils.h
@@ -743,7 +744,6 @@ SET(QGIS_CORE_HDRS
   qgsproviderregistry.h
   qgspythonrunner.h
   qgsrectangle.h
-  qgsrelation.h
   qgsrenderchecker.h
   qgsrendercontext.h
   qgsruntimeprofiler.h

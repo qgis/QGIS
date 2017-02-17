@@ -4174,7 +4174,7 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer*
       Q_FOREACH ( const QgsVectorLayer* foundLayer, foundLayers )
       {
         QgsRelation relation;
-        relation.setRelationName( name );
+        relation.setName( name );
         relation.setReferencingLayer( self->id() );
         relation.setReferencedLayer( foundLayer->id() );
         relation.addFieldPair( fkColumn, refColumn );

@@ -493,7 +493,7 @@ void TestQgsComposerTableV2::attributeTableRelationSource()
 
   //create a relation
   QgsRelation relation;
-  relation.setRelationId( QStringLiteral( "testrelation" ) );
+  relation.setId( QStringLiteral( "testrelation" ) );
   relation.setReferencedLayer( atlasLayer->id() );
   relation.setReferencingLayer( mVectorLayer->id() );
   relation.addFieldPair( QStringLiteral( "Class" ), QStringLiteral( "Class" ) );

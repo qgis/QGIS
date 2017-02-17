@@ -109,14 +109,14 @@ void QgsRelation::writeXml( QDomNode &node, QDomDocument &doc ) const
   node.appendChild( elem );
 }
 
-void QgsRelation::setRelationId( const QString& id )
+void QgsRelation::setId( const QString& id )
 {
   mRelationId = id;
 
   updateRelationStatus();
 }
 
-void QgsRelation::setRelationName( const QString& name )
+void QgsRelation::setName( const QString& name )
 {
   mRelationName = name;
 }
@@ -314,6 +314,26 @@ bool QgsRelation::isValid() const
 bool QgsRelation::hasEqualDefinition( const QgsRelation& other ) const
 {
   return mReferencedLayerId == other.mReferencedLayerId && mReferencingLayerId == other.mReferencingLayerId && mFieldPairs == other.mFieldPairs;
+}
+
+QString QgsRelation::resolveReferencedField( const QString& referencingField ) const
+{
+  Q_FOREACH ( const FieldPair& pair, mFieldPairs )
+  {
+    if ( pair.first == referencingField )
+      return pair.second;
+  }
+  return QString();
+}
+
+QString QgsRelation::resolveReferencingField( const QString& referencedField ) const
+{
+  Q_FOREACH ( const FieldPair& pair, mFieldPairs )
+  {
+    if ( pair.second == referencedField )
+      return pair.first;
+  }
+  return QString();
 }
 
 void QgsRelation::updateRelationStatus()

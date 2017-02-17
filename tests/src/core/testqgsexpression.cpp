@@ -181,8 +181,8 @@ class TestQgsExpression: public QObject
       QgsProject::instance()->addMapLayer( mChildLayer );
 
       QgsRelation rel;
-      rel.setRelationId( QStringLiteral( "my_rel" ) );
-      rel.setRelationName( QStringLiteral( "relation name" ) );
+      rel.setId( QStringLiteral( "my_rel" ) );
+      rel.setName( QStringLiteral( "relation name" ) );
       rel.setReferencedLayer( mAggregatesLayer->id() );
       rel.setReferencingLayer( mChildLayer->id() );
       rel.addFieldPair( QStringLiteral( "parent" ), QStringLiteral( "col1" ) );

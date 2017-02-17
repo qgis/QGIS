@@ -133,8 +133,8 @@ class TestQgsRelationReferenceFieldFormatter(unittest.TestCase):
         fieldFormatter = QgsRelationReferenceFieldFormatter()
 
         rel = QgsRelation()
-        rel.setRelationId('rel1')
-        rel.setRelationName('Relation Number One')
+        rel.setId('rel1')
+        rel.setName('Relation Number One')
         rel.setReferencingLayer(first_layer.id())
         rel.setReferencedLayer(second_layer.id())
         rel.addFieldPair('foreign_key', 'pkid')
@@ -184,8 +184,8 @@ class TestQgsRelationReferenceFieldFormatter(unittest.TestCase):
 
         # Invalid relation
         rel = QgsRelation()
-        rel.setRelationId('rel2')
-        rel.setRelationName('Relation Number Two')
+        rel.setId('rel2')
+        rel.setName('Relation Number Two')
         rel.setReferencingLayer(first_layer.id())
         rel.addFieldPair('foreign_key', 'pkid')
         self.assertFalse(rel.isValid())

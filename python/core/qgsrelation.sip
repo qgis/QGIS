@@ -42,19 +42,9 @@ class QgsRelation
      */
     void writeXml( QDomNode& node, QDomDocument& doc ) const;
 
-    /**
-     * Set an id for this relation
-     *
-     * @param id
-     */
-    void setRelationId( const QString& id );
+    void setId( const QString& id );
 
-    /**
-     * Set a name for this relation
-     *
-     * @param name
-     */
-    void setRelationName( const QString& name );
+    void setName( const QString& name );
 
     /**
      * Set the referencing (child) layer id. This layer will be searched in the registry.
@@ -256,10 +246,4 @@ class QgsRelation
      */
     bool hasEqualDefinition( const QgsRelation& other ) const;
 
-  protected:
-    /**
-     * Updates the validity status of this relation.
-     * Will be called internally whenever a member is changed.
-     */
-    void updateRelationStatus();
 };
