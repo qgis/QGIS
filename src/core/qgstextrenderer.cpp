@@ -26,6 +26,20 @@
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 Q_GUI_EXPORT extern int qt_defaultDpiY();
 
+QgsUnitTypes::RenderUnit convertFromOldLabelUnit( int val )
+{
+  if ( val == 0 )
+    return QgsUnitTypes::RenderPoints;
+  else if ( val == 1 )
+    return QgsUnitTypes::RenderMillimeters;
+  else if ( val == 2 )
+    return QgsUnitTypes::RenderMapUnits;
+  else if ( val == 3 )
+    return QgsUnitTypes::RenderPercentage;
+  else
+    return QgsUnitTypes::RenderMillimeters;
+}
+
 static void _fixQPictureDPI( QPainter* p )
 {
   // QPicture makes an assumption that we drawing to it with system DPI.
@@ -581,8 +595,7 @@ void QgsTextBackgroundSettings::readFromLayer( QgsVectorLayer* layer )
 
   if ( layer->customProperty( QStringLiteral( "labeling/shapeSizeUnit" ) ).toString().isEmpty() )
   {
-    d->sizeUnits = layer->customProperty( QStringLiteral( "labeling/shapeSizeUnits" ), 0 ).toUInt() == 0 ?
-                   QgsUnitTypes::RenderMillimeters : QgsUnitTypes::RenderMapUnits;
+    d->sizeUnits = convertFromOldLabelUnit( layer->customProperty( QStringLiteral( "labeling/shapeSizeUnits" ), 0 ).toUInt() );
   }
   else
   {
@@ -606,8 +619,7 @@ void QgsTextBackgroundSettings::readFromLayer( QgsVectorLayer* layer )
 
   if ( layer->customProperty( QStringLiteral( "labeling/shapeOffsetUnit" ) ).toString().isEmpty() )
   {
-    d->offsetUnits = layer->customProperty( QStringLiteral( "labeling/shapeOffsetUnits" ), 0 ).toUInt() == 0 ?
-                     QgsUnitTypes::RenderMillimeters : QgsUnitTypes::RenderMapUnits;
+    d->offsetUnits = convertFromOldLabelUnit( layer->customProperty( QStringLiteral( "labeling/shapeOffsetUnits" ), 0 ).toUInt() );
   }
   else
   {
@@ -630,8 +642,7 @@ void QgsTextBackgroundSettings::readFromLayer( QgsVectorLayer* layer )
 
   if ( layer->customProperty( QStringLiteral( "labeling/shapeRadiiUnit" ) ).toString().isEmpty() )
   {
-    d->radiiUnits = layer->customProperty( QStringLiteral( "labeling/shapeRadiiUnits" ), 0 ).toUInt() == 0 ?
-                    QgsUnitTypes::RenderMillimeters : QgsUnitTypes::RenderMapUnits;
+    d->radiiUnits = convertFromOldLabelUnit( layer->customProperty( QStringLiteral( "labeling/shapeRadiiUnits" ), 0 ).toUInt() );
   }
   else
   {
@@ -653,8 +664,7 @@ void QgsTextBackgroundSettings::readFromLayer( QgsVectorLayer* layer )
   d->borderWidth = layer->customProperty( QStringLiteral( "labeling/shapeBorderWidth" ), QVariant( .0 ) ).toDouble();
   if ( layer->customProperty( QStringLiteral( "labeling/shapeBorderWidthUnit" ) ).toString().isEmpty() )
   {
-    d->borderWidthUnits = layer->customProperty( QStringLiteral( "labeling/shapeBorderWidthUnits" ), 0 ).toUInt() == 0 ?
-                          QgsUnitTypes::RenderMillimeters : QgsUnitTypes::RenderMapUnits;
+    d->borderWidthUnits = convertFromOldLabelUnit( layer->customProperty( QStringLiteral( "labeling/shapeBorderWidthUnits" ), 0 ).toUInt() );
   }
   else
   {
@@ -726,8 +736,7 @@ void QgsTextBackgroundSettings::readXml( const QDomElement& elem )
 
   if ( !backgroundElem.hasAttribute( QStringLiteral( "shapeSizeUnit" ) ) )
   {
-    d->sizeUnits = backgroundElem.attribute( QStringLiteral( "shapeSizeUnits" ) ).toUInt() == 0 ? QgsUnitTypes::RenderMillimeters
-                   : QgsUnitTypes::RenderMapUnits;
+    d->sizeUnits = convertFromOldLabelUnit( backgroundElem.attribute( QStringLiteral( "shapeSizeUnits" ) ).toUInt() );
   }
   else
   {
@@ -751,8 +760,7 @@ void QgsTextBackgroundSettings::readXml( const QDomElement& elem )
 
   if ( !backgroundElem.hasAttribute( QStringLiteral( "shapeOffsetUnit" ) ) )
   {
-    d->offsetUnits = backgroundElem.attribute( QStringLiteral( "shapeOffsetUnits" ) ).toUInt() == 0 ? QgsUnitTypes::RenderMillimeters
-                     : QgsUnitTypes::RenderMapUnits;
+    d->offsetUnits = convertFromOldLabelUnit( backgroundElem.attribute( QStringLiteral( "shapeOffsetUnits" ) ).toUInt() );
   }
   else
   {
@@ -774,8 +782,7 @@ void QgsTextBackgroundSettings::readXml( const QDomElement& elem )
 
   if ( !backgroundElem.hasAttribute( QStringLiteral( "shapeRadiiUnit" ) ) )
   {
-    d->radiiUnits = backgroundElem.attribute( QStringLiteral( "shapeRadiiUnits" ) ).toUInt() == 0 ? QgsUnitTypes::RenderMillimeters
-                    : QgsUnitTypes::RenderMapUnits;
+    d->radiiUnits = convertFromOldLabelUnit( backgroundElem.attribute( QStringLiteral( "shapeRadiiUnits" ) ).toUInt() );
   }
   else
   {
@@ -797,8 +804,7 @@ void QgsTextBackgroundSettings::readXml( const QDomElement& elem )
 
   if ( !backgroundElem.hasAttribute( QStringLiteral( "shapeBorderWidthUnit" ) ) )
   {
-    d->borderWidthUnits = backgroundElem.attribute( QStringLiteral( "shapeBorderWidthUnits" ) ).toUInt() == 0 ? QgsUnitTypes::RenderMillimeters
-                          : QgsUnitTypes::RenderMapUnits;
+    d->borderWidthUnits = convertFromOldLabelUnit( backgroundElem.attribute( QStringLiteral( "shapeBorderWidthUnits" ) ).toUInt() );
   }
   else
   {
@@ -1048,8 +1054,7 @@ void QgsTextShadowSettings::readFromLayer( QgsVectorLayer* layer )
 
   if ( layer->customProperty( QStringLiteral( "labeling/shadowOffsetUnit" ) ).toString().isEmpty() )
   {
-    d->offsetUnits = layer->customProperty( QStringLiteral( "labeling/shadowOffsetUnits" ), 0 ).toUInt() == 0 ?
-                     QgsUnitTypes::RenderMillimeters : QgsUnitTypes::RenderMapUnits;
+    d->offsetUnits = convertFromOldLabelUnit( layer->customProperty( QStringLiteral( "labeling/shadowOffsetUnits" ), 0 ).toUInt() );
   }
   else
   {
@@ -1070,8 +1075,7 @@ void QgsTextShadowSettings::readFromLayer( QgsVectorLayer* layer )
 
   if ( layer->customProperty( QStringLiteral( "labeling/shadowRadiusUnit" ) ).toString().isEmpty() )
   {
-    d->radiusUnits = layer->customProperty( QStringLiteral( "labeling/shadowRadiusUnits" ), 0 ).toUInt() == 0 ?
-                     QgsUnitTypes::RenderMillimeters : QgsUnitTypes::RenderMapUnits;
+    d->radiusUnits = convertFromOldLabelUnit( layer->customProperty( QStringLiteral( "labeling/shadowRadiusUnits" ), 0 ).toUInt() );
   }
   else
   {
@@ -1132,8 +1136,7 @@ void QgsTextShadowSettings::readXml( const QDomElement& elem )
 
   if ( !shadowElem.hasAttribute( QStringLiteral( "shadowOffsetUnit" ) ) )
   {
-    d->offsetUnits = shadowElem.attribute( QStringLiteral( "shadowOffsetUnits" ) ).toUInt() == 0 ? QgsUnitTypes::RenderMillimeters
-                     : QgsUnitTypes::RenderMapUnits;
+    d->offsetUnits = convertFromOldLabelUnit( shadowElem.attribute( QStringLiteral( "shadowOffsetUnits" ) ).toUInt() );
   }
   else
   {
@@ -1155,8 +1158,7 @@ void QgsTextShadowSettings::readXml( const QDomElement& elem )
 
   if ( !shadowElem.hasAttribute( QStringLiteral( "shadowRadiusUnit" ) ) )
   {
-    d->radiusUnits = shadowElem.attribute( QStringLiteral( "shadowRadiusUnits" ) ).toUInt() == 0 ? QgsUnitTypes::RenderMillimeters
-                     : QgsUnitTypes::RenderMapUnits;
+    d->radiusUnits = convertFromOldLabelUnit( shadowElem.attribute( QStringLiteral( "shadowRadiusUnits" ) ).toUInt() );
   }
   else
   {
