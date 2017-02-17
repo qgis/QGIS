@@ -451,8 +451,8 @@ class TestQgsJSONUtils(unittest.TestCase):
         QgsProject.instance().addMapLayers([child, parent])
 
         rel = QgsRelation()
-        rel.setRelationId('rel1')
-        rel.setRelationName('relation one')
+        rel.setId('rel1')
+        rel.setName('relation one')
         rel.setReferencingLayer(child.id())
         rel.setReferencedLayer(parent.id())
         rel.addFieldPair('y', 'foreignkey')

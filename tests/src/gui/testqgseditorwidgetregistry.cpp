@@ -121,8 +121,8 @@ class TestQgsEditorWidgetRegistry: public QObject
 
       //create a relation between them
       QgsRelation relation;
-      relation.setRelationId( QStringLiteral( "vl1->vl2" ) );
-      relation.setRelationName( QStringLiteral( "vl1->vl2" ) );
+      relation.setId( QStringLiteral( "vl1->vl2" ) );
+      relation.setName( QStringLiteral( "vl1->vl2" ) );
       relation.setReferencingLayer( vl1.id() );
       relation.setReferencedLayer( vl2.id() );
       relation.addFieldPair( "fk", "pk" );

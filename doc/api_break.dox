@@ -1651,7 +1651,9 @@ QgsRasterRenderer
 QgsRelation        {#qgis_api_break_3_0_QgsRelation}
 -----------
 
-- createFromXML() has been renamed to createFromXml()
+- `createFromXML()` has been renamed to `QgsRelation::createFromXml()`
+- `setRelationName()` has been renamed to `QgsRelation::setName()`
+- `setRelationId()` has been renamed to `QgsRelation::setId()`
 
 
 QgsRenderChecker        {#qgis_api_break_3_0_QgsRenderChecker}
@@ -1664,7 +1666,7 @@ setExcludeAttributesWms()
 setExcludeAttributesWfs()
 - editorWidgetV2() and editorWidgetV2Config() have been removed and QgsEditorWidgetRegistry::instance()->findBest() must be used instead.
 - setEditorWidgetV2(), setEditorWidgetV2Config() have been removed and their equivalent in editFormConfig() must be used instead.
-- setCheckedState() is removed. Use editFormConfig()->setWidgetConfig()` instead.
+- setCheckedState() is removed. Use `editFormConfig()->setWidgetConfig()` instead.
 - valueMap(), valueRelation(), dateFormat(), widgetSize() have been removed. Use QgsEditorWidgetRegistry::instance()->findBest().config() instead.
 
 

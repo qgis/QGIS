@@ -66,7 +66,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         cls.rel_a.setReferencingLayer(cls.vl_link.id())
         cls.rel_a.setReferencedLayer(cls.vl_a.id())
         cls.rel_a.addFieldPair('fk_author', 'pk')
-        cls.rel_a.setRelationId('rel_a')
+        cls.rel_a.setId('rel_a')
         assert(cls.rel_a.isValid())
         cls.relMgr.addRelation(cls.rel_a)
 
@@ -74,7 +74,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         cls.rel_b.setReferencingLayer(cls.vl_link.id())
         cls.rel_b.setReferencedLayer(cls.vl_b.id())
         cls.rel_b.addFieldPair('fk_book', 'pk')
-        cls.rel_b.setRelationId('rel_b')
+        cls.rel_b.setId('rel_b')
         assert(cls.rel_b.isValid())
         cls.relMgr.addRelation(cls.rel_b)
 
