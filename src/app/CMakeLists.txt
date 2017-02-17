@@ -1,6 +1,7 @@
 ADD_SUBDIRECTORY(dwg/libdxfrw)
 
 SET(QGIS_APP_SRCS
+  main.cpp
   qgisapp.cpp
   qgisappinterface.cpp
   qgisappstylesheet.cpp
@@ -477,10 +478,11 @@ QT5_ADD_RESOURCES(TEST_RCC_SRCS ${TEST_RCCS})
 QT5_WRAP_CPP(QGIS_APP_MOC_SRCS ${QGIS_APP_MOC_HDRS})
 
 SET (QGIS_APPMAIN_SRCS main.cpp)
+SET (QGIS_APPMAIN_SRCS_WIN mainwin.cpp)
 
 IF (WIN32)
   IF (MSVC)
-    SET (QGIS_APPMAIN_SRCS ${QGIS_APPMAIN_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/qgis_win32.rc)
+    SET (QGIS_APPMAIN_SRCS ${QGIS_APPMAIN_SRCS_WIN} ${CMAKE_CURRENT_SOURCE_DIR}/qgis_win32.rc)
   ELSE(MSVC)
 
     # Icon for windows MINGW
