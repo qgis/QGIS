@@ -27,6 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 import operator
+from enum import Enum
+
 from collections import defaultdict, deque
 
 from qgis.core import (QgsField,
@@ -37,18 +39,25 @@ from qgis.core import (QgsField,
 from qgis.PyQt.QtCore import (QVariant)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterNumber
+from processing.core.parameters import (ParameterVector,
+                                        ParameterSelection,
+                                        ParameterNumber)
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
+class BalanceMethod(Enum):
+    BY_COUNT = 0
+    BY_AREA = 1
+    BY_DISTANCE = 2
 
 class TopoColor(GeoAlgorithm):
     INPUT_LAYER = 'INPUT_LAYER'
     MIN_COLORS='MIN_COLORS'
+    BALANCE='BALANCE'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
+
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Topological coloring')
@@ -59,6 +68,13 @@ class TopoColor(GeoAlgorithm):
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterNumber(self.MIN_COLORS,
                                           self.tr('Minimum number of colors'), 1, 1000, 4))
+        balance_by = [self.tr('By feature count'),
+                           self.tr('By assigned area'),
+                           self.tr('By distance between colors')]
+        self.addParameter(ParameterSelection(
+            self.BALANCE,
+            self.tr('Balance color assignment'),
+            balance_by))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Colored'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
@@ -66,6 +82,7 @@ class TopoColor(GeoAlgorithm):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
         min_colors = self.getParameterValue(self.MIN_COLORS)
+        balance_by = BalanceMethod(self.getParameterValue(self.BALANCE))
 
         fields = layer.fields()
         fields.append(QgsField('color_id', QVariant.Int))
@@ -76,13 +93,13 @@ class TopoColor(GeoAlgorithm):
             layer.wkbType(),
             layer.crs())
 
-        # use a deque so we can drop features as we write them
-        # it's a bit friendlier on memory usage
-        features = deque(f for f in vector.features(layer))
+        features = {f.id():f for f in vector.features(layer)}
 
         topology, id_graph = self.compute_graph(features, feedback)
-        feature_colors = ColoringAlgorithm.balanced(topology,
-                                                    feedback,
+        feature_colors = ColoringAlgorithm.balanced(features,
+                                                    balance=balance_by,
+                                                    graph=topology,
+                                                    feedback=feedback,
                                                     min_colors=min_colors)
 
         max_colors = max(feature_colors.values())
@@ -90,12 +107,11 @@ class TopoColor(GeoAlgorithm):
 
         total = 20.0 / len(features)
         current = 0
-        while features:
-            input_feature = features.popleft()
+        for feature_id, input_feature in features.items():
             output_feature = input_feature
             attributes = input_feature.attributes()
-            if input_feature.id() in feature_colors:
-                attributes.append(feature_colors[input_feature.id()])
+            if feature_id in feature_colors:
+                attributes.append(feature_colors[feature_id])
             else:
                 attributes.append(NULL)
             output_feature.setAttributes(attributes)
@@ -115,7 +131,7 @@ class TopoColor(GeoAlgorithm):
             id_graph = Graph(sort_graph=True)
 
         # skip features without geometry
-        features_with_geometry = dict((f.id(), f) for f in features if f.hasGeometry())
+        features_with_geometry = { f_id: f for (f_id, f) in features.items() if f.hasGeometry() }
 
         total = 70.0 / len(features_with_geometry)
         index = QgsSpatialIndex()
@@ -151,7 +167,7 @@ class TopoColor(GeoAlgorithm):
 class ColoringAlgorithm:
 
     @staticmethod
-    def balanced(graph, feedback, min_colors = 4):
+    def balanced(features, graph, feedback, balance=BalanceMethod.BY_COUNT, min_colors = 4):
         feature_colors = {}
         # start with minimum number of colors in pool
         color_pool = set(range(1, min_colors+1))
@@ -167,8 +183,10 @@ class ColoringAlgorithm:
                                                                reverse=True)]
         # counts for each color already assigned
         color_counts = defaultdict(int)
+        color_areas = defaultdict(float)
         for c in color_pool:
             color_counts[c] = 0
+            color_areas[c] = 0
 
         total = 10.0 / len(sorted_by_count)
         i = 0
@@ -183,16 +201,26 @@ class ColoringAlgorithm:
             # from the existing colors, work out which are available (ie non-adjacent)
             available_colors = color_pool.difference(adjacent_colors)
 
+            feature_color=-1
             if len(available_colors) == 0:
                 # no existing colors available for this feature, so add new color to pool
                 feature_color = len(color_pool) + 1
                 color_pool.add(feature_color)
             else:
-                # choose least used available color
-                counts = [(c, v) for c, v in color_counts.items() if c in available_colors]
-                feature_color = sorted(counts, key=operator.itemgetter(1))[0][0]
+                if balance==BalanceMethod.BY_COUNT:
+                    # choose least used available color
+                    counts = [(c, v) for c, v in color_counts.items() if c in available_colors]
+                    feature_color = sorted(counts, key=operator.itemgetter(1))[0][0]
+                    color_counts[feature_color] += 1
+                elif balance==BalanceMethod.BY_AREA:
+                    areas = [(c, v) for c, v in color_areas.items() if c in available_colors]
+                    feature_color = sorted(areas, key=operator.itemgetter(1))[0][0]
+                    color_areas[feature_color] += features[feature_id].geometry().area()
+                #elif balance==BalanceMethod.BY_DISTANCE:
+
+
             feature_colors[feature_id] = feature_color
-            color_counts[feature_color] += 1
+
 
             i += 1
             feedback.setProgress(70 + int(i * total))
