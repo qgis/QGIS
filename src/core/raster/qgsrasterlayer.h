@@ -282,9 +282,10 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //! \brief [ data provider interface ] Which provider is being used for this Raster Layer?
     QString providerType() const;
 
-    //! \brief Returns the number of raster units per each raster pixel. In a world file, this is normally the first row (without the sign)
-    double rasterUnitsPerPixelX();
-    double rasterUnitsPerPixelY();
+    //! \brief Returns the number of raster units per each raster pixel in X axis. In a world file, this is normally the first row (without the sign)
+    double rasterUnitsPerPixelX() const;
+    //! \brief Returns the number of raster units per each raster pixel in Y axis. In a world file, this is normally the first row (without the sign)
+    double rasterUnitsPerPixelY() const;
 
     /** \brief Set contrast enhancement algorithm
      *  @param algorithm Contrast enhancement algorithm

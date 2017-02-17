@@ -28,7 +28,6 @@
 #include "qgis_server.h"
 #include "qgswmsconfigparser.h"
 #include "qgswfsprojectparser.h"
-#include "qgswcsprojectparser.h"
 
 class QgsServerProjectParser;
 class QgsAccessControl;
@@ -42,10 +41,6 @@ class SERVER_EXPORT QgsConfigCache : public QObject
     static QgsConfigCache* instance();
 
     QgsServerProjectParser* serverConfiguration( const QString& filePath );
-    QgsWCSProjectParser* wcsConfiguration(
-      const QString& filePath
-      , const QgsAccessControl* accessControl
-    );
     QgsWfsProjectParser* wfsConfiguration(
       const QString& filePath
       , const QgsAccessControl* accessControl
@@ -70,7 +65,6 @@ class SERVER_EXPORT QgsConfigCache : public QObject
     QCache<QString, QDomDocument> mXmlDocumentCache;
     QCache<QString, QgsWmsConfigParser> mWMSConfigCache;
     QCache<QString, QgsWfsProjectParser> mWFSConfigCache;
-    QCache<QString, QgsWCSProjectParser> mWCSConfigCache;
 
   private slots:
     //! Removes changed entry from this cache

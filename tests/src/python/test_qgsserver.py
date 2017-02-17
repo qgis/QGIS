@@ -1063,13 +1063,45 @@ class TestQgsServer(unittest.TestCase):
         r, h = self._result(self.server.handleRequest(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_BBox2")
 
+    # WCS tests
+    def wcs_request_compare(self, request):
+        project = self.projectPath
+        assert os.path.exists(project), "Project file not found: " + project
+
+        query_string = 'MAP=%s&SERVICE=WCS&VERSION=1.0.0&REQUEST=%s' % (urllib.parse.quote(project), request)
+        header, body = self.server.handleRequest(query_string)
+        self.assert_headers(header, body)
+        response = header + body
+        f = open(self.testdata_path + 'wcs_' + request.lower() + '.txt', 'rb')
+        expected = f.read()
+        f.close()
+        # Store the output for debug or to regenerate the reference documents:
+        """
+        f = open(os.path.join( tempfile.gettempdir(), 'wcs_' +  request.lower() + '_expected.txt' ), 'w+')
+        f.write(expected)
+        f.close()
+        f = open(os.path.join( tempfile.gettempdir(), 'wcs_' +  request.lower() + '_response.txt'), 'w+')
+        f.write(response)
+        f.close()
+        """
+
+        response = re.sub(RE_STRIP_UNCHECKABLE, b'', response)
+        expected = re.sub(RE_STRIP_UNCHECKABLE, b'', expected)
+
+        self.assertXMLEqual(response, expected, msg="request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s" % (query_string, request, expected.decode('utf-8'), response.decode('utf-8')))
+
+    def test_project_wcs(self):
+        """Test some WCS request"""
+        for request in ('GetCapabilities', 'DescribeCoverage'):
+            self.wcs_request_compare(request)
+
     def test_wcs_getcapabilities_url(self):
         # empty url in project
         project = os.path.join(self.testdata_path, "test_project_without_urls.qgs")
         qs = "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(project),
             "SERVICE": "WCS",
-            "VERSION": "1.3.0",
+            "VERSION": "1.0.0",
             "REQUEST": "GetCapabilities",
             "STYLES": ""
         }.items())])
@@ -1088,7 +1120,7 @@ class TestQgsServer(unittest.TestCase):
         qs = "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(project),
             "SERVICE": "WCS",
-            "VERSION": "1.3.0",
+            "VERSION": "1.0.0",
             "REQUEST": "GetCapabilities",
             "STYLES": ""
         }.items())])

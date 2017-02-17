@@ -17,12 +17,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgswcsutils.h"
+#include "qgsserverprojectutils.h"
+#include "qgswcsgetcoverage.h"
+
 #include "qgsrasterlayer.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterpipe.h"
 #include "qgsrasterprojector.h"
 #include "qgsrasterfilewriter.h"
-#include "qgswcsgetcoverage.h"
 
 #include <QTemporaryFile>
 
@@ -32,27 +34,22 @@ namespace QgsWcs
   /**
    * Output WCS DescribeCoverage response
    */
-  void writeGetCoverage( QgsServerInterface* serverIface, const QString& version,
+  void writeGetCoverage( QgsServerInterface* serverIface, const QgsProject* project, const QString& version,
                          const QgsServerRequest& request, QgsServerResponse& response )
   {
     Q_UNUSED( version );
 
-    response.write( getCoverageData( serverIface, request ) );
+    response.write( getCoverageData( serverIface, project, request ) );
     response.setHeader( "Content-Type", "image/tiff" );
   }
 
-  QByteArray getCoverageData( QgsServerInterface* serverIface, const QgsServerRequest& request )
+  QByteArray getCoverageData( QgsServerInterface* serverIface, const QgsProject* project, const QgsServerRequest& request )
   {
-    QgsWCSProjectParser* configParser = getConfigParser( serverIface );
+    QgsServerRequest::Parameters parameters = request.parameters();
+
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl* accessControl = serverIface->accessControls();
 #endif
-    QStringList wcsLayersId = configParser->wcsLayers();
-
-    QList<QgsMapLayer*> layerList;
-
-    QgsServerRequest::Parameters parameters = request.parameters();
-
     //defining coverage name
     QString coveName;
     //read COVERAGE
@@ -75,8 +72,35 @@ namespace QgsWcs
       throw QgsRequestNotWellFormedException( QStringLiteral( "COVERAGE is mandatory" ) );
     }
 
-    layerList = configParser->mapLayerFromCoverage( coveName );
-    if ( layerList.size() < 1 )
+    //get the raster layer
+    QStringList wcsLayersId = QgsServerProjectUtils::wcsLayers( *project );
+
+    QgsRasterLayer* rLayer = nullptr;
+    for ( int i = 0; i < wcsLayersId.size(); ++i )
+    {
+      QgsMapLayer *layer = project->mapLayer( wcsLayersId.at( i ) );
+      if ( layer->type() != QgsMapLayer::LayerType::RasterLayer )
+      {
+        continue;
+      }
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      if ( !accessControl->layerReadPermission( layer ) )
+      {
+        continue;
+      }
+#endif
+      QString name = layer->name();
+      if ( !layer->shortName().isEmpty() )
+        name = layer->shortName();
+      name = name.replace( QLatin1String( " " ), QLatin1String( "_" ) );
+
+      if ( name == coveName )
+      {
+        rLayer = qobject_cast<QgsRasterLayer *>( layer );
+        break;
+      }
+    }
+    if ( !rLayer )
     {
       throw QgsRequestNotWellFormedException( QStringLiteral( "The layer for the COVERAGE '%1' is not found" ).arg( coveName ) );
     }
@@ -134,69 +158,53 @@ namespace QgsWcs
 
     QgsRectangle rect( minx, miny, maxx, maxy );
 
-    QgsMapLayer* layer = layerList.at( 0 );
-    QgsRasterLayer* rLayer = qobject_cast<QgsRasterLayer*>( layer );
-    if ( rLayer && wcsLayersId.contains( rLayer->id() ) )
+    // transform rect
+    if ( requestCRS != rLayer->crs() )
     {
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-      if ( !accessControl->layerReadPermission( rLayer ) )
-      {
-        throw QgsSecurityAccessException( QStringLiteral( "You are not allowed to access to this coverage" ) );
-      }
-#endif
-
-      // RESPONSE_CRS
-      QgsCoordinateReferenceSystem responseCRS = rLayer->crs();
-      crs = parameters.value( QStringLiteral( "RESPONSE_CRS" ) );
-      if ( crs.isEmpty() )
-      {
-        responseCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
-        if ( !responseCRS.isValid() )
-        {
-          responseCRS = rLayer->crs();
-        }
-      }
-
-      // transform rect
-      if ( requestCRS != rLayer->crs() )
-      {
-        QgsCoordinateTransform t( requestCRS, rLayer->crs() );
-        rect = t.transformBoundingBox( rect );
-      }
-
-      QTemporaryFile tempFile;
-      tempFile.open();
-      QgsRasterFileWriter fileWriter( tempFile.fileName() );
-
-      // clone pipe/provider
-      QgsRasterPipe pipe;
-      if ( !pipe.set( rLayer->dataProvider()->clone() ) )
-      {
-        throw QgsRequestNotWellFormedException( QStringLiteral( "Cannet set pipe provider" ) );
-      }
-
-      // add projector if necessary
-      if ( responseCRS != rLayer->crs() )
-      {
-        QgsRasterProjector * projector = new QgsRasterProjector;
-        projector->setCrs( rLayer->crs(), responseCRS );
-        if ( !pipe.insert( 2, projector ) )
-        {
-          throw QgsRequestNotWellFormedException( QStringLiteral( "Cannot set pipe projector" ) );
-        }
-      }
-
-      QgsRasterFileWriter::WriterError err = fileWriter.writeRaster( &pipe, width, height, rect, responseCRS );
-      if ( err != QgsRasterFileWriter::NoError )
-      {
-        throw QgsRequestNotWellFormedException( QStringLiteral( "Cannot write raster error code: %1" ).arg( err ) );
-      }
-      return tempFile.readAll();
+      QgsCoordinateTransform t( requestCRS, rLayer->crs() );
+      rect = t.transformBoundingBox( rect );
     }
-    else
+
+    // RESPONSE_CRS
+    QgsCoordinateReferenceSystem responseCRS = rLayer->crs();
+    crs = parameters.value( QStringLiteral( "RESPONSE_CRS" ) );
+    if ( !crs.isEmpty() )
     {
-      return QByteArray();
+      responseCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
+      if ( !responseCRS.isValid() )
+      {
+        responseCRS = rLayer->crs();
+      }
     }
+
+    QTemporaryFile tempFile;
+    tempFile.open();
+    QgsRasterFileWriter fileWriter( tempFile.fileName() );
+
+    // clone pipe/provider
+    QgsRasterPipe pipe;
+    if ( !pipe.set( rLayer->dataProvider()->clone() ) )
+    {
+      throw QgsRequestNotWellFormedException( QStringLiteral( "Cannot set pipe provider" ) );
+    }
+
+    // add projector if necessary
+    if ( responseCRS != rLayer->crs() )
+    {
+      QgsRasterProjector * projector = new QgsRasterProjector;
+      projector->setCrs( rLayer->crs(), responseCRS );
+      if ( !pipe.insert( 2, projector ) )
+      {
+        throw QgsRequestNotWellFormedException( QStringLiteral( "Cannot set pipe projector" ) );
+      }
+    }
+
+    QgsRasterFileWriter::WriterError err = fileWriter.writeRaster( &pipe, width, height, rect, responseCRS );
+    if ( err != QgsRasterFileWriter::NoError )
+    {
+      throw QgsRequestNotWellFormedException( QStringLiteral( "Cannot write raster error code: %1" ).arg( err ) );
+    }
+    return tempFile.readAll();
   }
 
 } // namespace QgsWcs

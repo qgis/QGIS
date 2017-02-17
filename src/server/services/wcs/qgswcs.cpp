@@ -73,11 +73,11 @@ namespace QgsWcs
         }
         else if ( QSTR_COMPARE( req, "DescribeCoverage" ) )
         {
-          writeDescribeCoverage( mServerIface, versionString, request, response );
+          writeDescribeCoverage( mServerIface, project, versionString, request, response );
         }
         else if ( QSTR_COMPARE( req, "GetCoverage" ) )
         {
-          writeGetCoverage( mServerIface, versionString, request, response );
+          writeGetCoverage( mServerIface, project, versionString, request, response );
         }
         else
         {
