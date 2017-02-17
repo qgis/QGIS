@@ -1165,7 +1165,14 @@ namespace QgsWfs
           gmlElem = QgsOgcUtils::geometryToGML( &centroid, doc, prec );
         }
         else
-          gmlElem = QgsOgcUtils::geometryToGML( &geom, doc, prec );
+        {
+          QgsAbstractGeometry* abstractGeom = geom.geometry();
+          if ( abstractGeom )
+          {
+            gmlElem = abstractGeom->asGML2( doc, prec, "http://www.opengis.net/gml" );
+          }
+        }
+
         if ( !gmlElem.isNull() )
         {
           QgsRectangle box = geom.boundingBox();
@@ -1240,7 +1247,14 @@ namespace QgsWfs
           gmlElem = QgsOgcUtils::geometryToGML( &centroid, doc, QStringLiteral( "GML3" ), prec );
         }
         else
-          gmlElem = QgsOgcUtils::geometryToGML( &geom, doc, QStringLiteral( "GML3" ), prec );
+        {
+          QgsAbstractGeometry* abstractGeom = geom.geometry();
+          if ( abstractGeom )
+          {
+            gmlElem = abstractGeom->asGML3( doc, prec, "http://www.opengis.net/gml" );
+          }
+        }
+
         if ( !gmlElem.isNull() )
         {
           QgsRectangle box = geom.boundingBox();
