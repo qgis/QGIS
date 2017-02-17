@@ -2379,7 +2379,9 @@ tests:
       INPUT_LAYER:
         name: custom/adjacent_polys.gml
         type: vector
+      MIN_COLORS: 4
     results:
       OUTPUT_LAYER:
         name: expected/topocolor_polys.gml
         type: vector
+
