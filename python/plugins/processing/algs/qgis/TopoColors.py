@@ -203,9 +203,9 @@ class ColoringAlgorithm:
 
             feature_color=-1
             if len(available_colors) == 0:
-                # no existing colors available for this feature, so add new color to pool
-                feature_color = len(color_pool) + 1
-                color_pool.add(feature_color)
+                # no existing colors available for this feature, so add new color to pool and repeat
+                min_colors += 1
+                return ColoringAlgorithm.balanced(features,graph,feedback,balance,min_colors)
             else:
                 if balance==BalanceMethod.BY_COUNT:
                     # choose least used available color
