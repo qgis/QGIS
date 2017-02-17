@@ -2,10 +2,10 @@
 
 """
 ***************************************************************************
-    RAlgorithmProvider.py
+    PerlAlgorithmProvider.py
     ---------------------
     Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
+    Copyright            : (C) 2012 by Victor Olaya and 2017 Ari Jolma
     Email                : volayaf at gmail dot com
 ***************************************************************************
 *                                                                         *
@@ -81,8 +81,6 @@ class PerlAlgorithmProvider(AlgorithmProvider):
                 PerlUtils.PERL_USE64, self.tr('Use 64 bit version'), False))
 
     def unload(self):
-        traceback.print_stack()
-        print("perl al provider unloaded")
         AlgorithmProvider.unload(self)
         ProcessingConfig.removeSetting(PerlUtils.PERLSCRIPTS_FOLDER)
         if isWindows():

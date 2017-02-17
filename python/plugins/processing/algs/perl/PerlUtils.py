@@ -2,10 +2,10 @@
 
 """
 ***************************************************************************
-    RUtils.py
+    PerlUtils.py
     ---------------------
     Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
+    Copyright            : (C) 2012 by Victor Olaya and 2017 Ari Jolma
     Email                : volayaf at gmail dot com
 ***************************************************************************
 *                                                                         *
@@ -36,7 +36,6 @@ from qgis.PyQt.QtCore import QSettings, QCoreApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
 from processing.tools.system import userFolder, isWindows, mkdir, getTempFilenameInTempFolder
-
 
 class PerlUtils:
 
@@ -114,10 +113,10 @@ class PerlUtils:
 
     @staticmethod
     def getConsoleOutputFilename():
-        return PerlUtils.getPerlScriptFilename() + '.Perlout'
+        return PerlUtils.getPerlScriptFilename() + '.out'
 
     @staticmethod
-    def executePerlAlgorithm(alg, progress):
+    def executePerlAlgorithm(alg, feedback):
         # generate new Perl script file name in a temp folder
         PerlUtils.rscriptfilename = getTempFilenameInTempFolder('processing_script.pl')
         # run commands
@@ -130,55 +129,51 @@ class PerlUtils:
                 execDir = 'i386'
             command = [
                 PerlUtils.PerlFolder() + os.sep + 'bin' + os.sep + execDir + os.sep
-                + 'perl.exe',
-                'CMD',
-                'BATCH',
-                '--vanilla',
-                PerlUtils.getPerlScriptFilename(),
-                PerlUtils.getConsoleOutputFilename()
+                + 'perl.exe','-w'
             ]
 
         else:
             os.chmod(PerlUtils.getPerlScriptFilename(), stat.S_IEXEC | stat.S_IREAD
                      | stat.S_IWRITE)
-            command = 'PERL CMD BATCH --vanilla ' + PerlUtils.getPerlScriptFilename() \
-                + ' ' + PerlUtils.getConsoleOutputFilename()
+            command = ['perl', '-w', PerlUtils.getPerlScriptFilename()]
 
         proc = subprocess.Popen(
             command,
-            shell=True,
             stdout=subprocess.PIPE,
-            stdin=open(os.devnull),
-            stderr=subprocess.STDOUT,
-            universal_newlines=True,
-        )
-        proc.wait()
-        PerlUtils.createConsoleOutput()
+            stderr=subprocess.PIPE,
+            universal_newlines=True)
+        try:
+            out, err = proc.communicate()
+        except TimeoutExpired:
+            proc.kill()
+        out += err
+        PerlUtils.createConsoleOutput(out.splitlines())
         loglines = []
-        loglines.append(PerlUtils.tr('Perl execution console output'))
+        loglines.append(PerlUtils.tr('Perl execution console output:'))
         loglines += PerlUtils.allConsoleResults
         for line in loglines:
-            progress.setConsoleInfo(line)
+            # fixme: show the line in black, not grey
+            feedback.pushConsoleInfo(line)
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
+        # fixme: better way to have the algorithm dialog not to close? 
+        raise ValueError('Script finished. The output is above.')
 
     @staticmethod
-    def createConsoleOutput():
+    def createConsoleOutput(out):
         PerlUtils.consoleResults = []
         PerlUtils.allConsoleResults = []
         add = False
-        if os.path.exists(PerlUtils.getConsoleOutputFilename()):
-            lines = open(PerlUtils.getConsoleOutputFilename())
-            for line in lines:
-                line = line.strip().strip(' ')
-                if line.startswith('>'):
-                    line = line[1:].strip(' ')
-                    if line in PerlUtils.verboseCommands:
-                        add = True
-                    else:
-                        add = False
-                elif add:
-                    PerlUtils.consoleResults.append('<p>' + line + '</p>\n')
-                PerlUtils.allConsoleResults.append(line)
+        for line in out:
+            line = line.strip().strip(' ')
+            if line.startswith('>'):
+                line = line[1:].strip(' ')
+                if line in PerlUtils.verboseCommands:
+                    add = True
+                else:
+                    add = False
+            elif add:
+                PerlUtils.consoleResults.append('<p>' + line + '</p>\n')
+            PerlUtils.allConsoleResults.append(line)
 
     @staticmethod
     def getConsoleOutput():

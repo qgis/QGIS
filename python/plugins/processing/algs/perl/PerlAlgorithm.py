@@ -2,10 +2,10 @@
 
 """
 ***************************************************************************
-    RAlgorithm.py
+    PerlAlgorithm.py
     ---------------------
     Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
+    Copyright            : (C) 2012 by Victor Olaya and 2017 Ari Jolma
     Email                : volayaf at gmail dot com
 ***************************************************************************
 *                                                                         *
@@ -115,7 +115,7 @@ class PerlAlgorithm(GeoAlgorithm):
         self.passFileNames = False
         self.verboseCommands = []
         ender = 0
-        line = lines.next().strip('\n').strip('\r')
+        line = next(lines).strip('\n').strip('\r')
         while ender < 10:
             if line.startswith('##'):
                 try:
@@ -138,7 +138,7 @@ class PerlAlgorithm(GeoAlgorithm):
                 self.commands.append(line)
             self.script += line + '\n'
             try:
-                line = lines.next().strip('\n').strip('\r')
+                line = next(lines).strip('\n').strip('\r')
             except:
                 break
 
@@ -149,8 +149,14 @@ class PerlAlgorithm(GeoAlgorithm):
         return s.replace('_', ' ')
 
     def processParameterLine(self, line):
+        print("param line: "+line)
         param = None
         line = line.replace('#', '')
+
+        # todo: add here code to check for opening datasets
+        # using syntax ## dataset $ds = 'name';
+        # where name is a map layer name in the app
+        
         if line.lower().strip().startswith('showplots'):
             self.showPlots = True
             self.addOutput(OutputHTML(PerlAlgorithm.PERLPLOTS, 'Perl Plots'))
@@ -193,12 +199,12 @@ class PerlAlgorithm(GeoAlgorithm):
                     self.tr('Perl folder is not configured.\nPlease configure it '
                             'before running Perl scripts.'))
         loglines = []
-        loglines.append(self.tr('Perl execution commands'))
-        loglines += self.getFullSetOfRCommands()
+        loglines.append(self.tr('Perl execution commands:'))
+        loglines += self.getFullSetOfPerlCommands()
         for line in loglines:
-            progress.setCommand(line)
+            feedback.pushCommandInfo(line)
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
-        PerlUtils.executeRAlgorithm(self, progress)
+        PerlUtils.executePerlAlgorithm(self, feedback)
         if self.showPlots:
             htmlfilename = self.getOutputValue(PerlAlgorithm.PERLPLOTS)
             with open(htmlfilename, 'w') as f:
@@ -206,12 +212,12 @@ class PerlAlgorithm(GeoAlgorithm):
         if self.showConsoleOutput:
             htmlfilename = self.getOutputValue(PerlAlgorithm.PERL_CONSOLE_OUTPUT)
             with open(htmlfilename, 'w') as f:
-                f.write(RUtils.getConsoleOutput())
+                f.write(PerlUtils.getConsoleOutput())
 
-    def getFullSetOfRCommands(self):
+    def getFullSetOfPerlCommands(self):
         commands = []
         commands += self.getImportCommands()
-        commands += self.getRCommands()
+        commands += self.getPerlCommands()
         commands += self.getExportCommands()
 
         return commands
@@ -251,21 +257,9 @@ class PerlAlgorithm(GeoAlgorithm):
 
     def getImportCommands(self):
         commands = []
-
-        # Just use main mirror
-        commands.append('options("repos"="http://cran.at.r-project.org/")')
-
-        # Try to install packages if needed
-        if isWindows():
-            commands.append('.libPaths(\"' + unicode(PerlUtils.PerlLibs()).replace('\\', '/') + '\")')
-        packages = PerlUtils.getRequiredPackages(self.script)
-        packages.extend(['rgdal', 'raster'])
-        for p in packages:
-            commands.append('tryCatch(find.package("' + p
-                            + '"), error=function(e) install.packages("' + p
-                            + '", dependencies=TRUE))')
-        commands.append('library("raster")')
-        commands.append('library("rgdal")')
+        
+        commands.append('use Modern::Perl;')
+        commands.append('use Geo::GDAL qw/:all/;')
 
         for param in self.parameters:
             if isinstance(param, ParameterRaster):
