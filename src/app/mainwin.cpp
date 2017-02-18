@@ -28,10 +28,14 @@ int main( int argc, char *argv[] )
 	// TODO Replace with QGIS name from exe
 	std::string qgisfolder = appsroot + std::string("qgis");
 	std::string pythonfolder = appsroot + std::string("Python36");
-	std::string pythonhome = std::string("PYTHONHOME=") + pythonfolder;
-	std::string pluginpath = std::string("QT_PLUGIN_PATH=") + appsroot +
+
+	std::string envpythonhome = std::string("PYTHONHOME=") + pythonfolder;
+	std::string envpluginpath = std::string("QT_PLUGIN_PATH=") + appsroot +
 				 std::string("Qt5\\plugins;") +
 				 qgisfolder + std::string("\\qtplugins");
+
+	std::string envgdalshare = std::string("GDAL_DATA=") + root + std::string("share\\gdal");
+	std::string envgdaldriverpath = std::string("GDAL_DRIVER_PATH=") + binroot + std::string("gdalplugins");
 
 	std::stringstream ss;
 	ss << "PATH=";
@@ -42,8 +46,16 @@ int main( int argc, char *argv[] )
 	ss << ";" << getenv("PATH");
 	putenv(ss.str().c_str());
 	putenv("PYTHONPATH=");
-	putenv(pythonhome.c_str());
-	putenv(pluginpath.c_str());
+	putenv(envpythonhome.c_str());
+	putenv(envpluginpath.c_str());
+
+	// GDAL ENV
+	putenv("VSI_CACHE=TRUE");
+	putenv("VSI_CACHE_SIZE=1000000");
+	putenv("GDAL_FILENAME_IS_UTF8=TRUE");
+
+	putenv(envgdalshare.c_str());
+	putenv(envgdaldriverpath.c_str());
 
 	std::cout << "The current path is\n " << getenv("PATH") << std::endl;
 	std::cout << "The current QT_PLUGIN_PATH is\n " << getenv("QT_PLUGIN_PATH") << std::endl;
