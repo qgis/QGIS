@@ -78,7 +78,7 @@ namespace QgsWfs
         }
         else if ( QSTR_COMPARE( req, "DescribeFeatureType" ) )
         {
-          writeDescribeFeatureType( mServerIface, versionString, request, response );
+          writeDescribeFeatureType( mServerIface, project, versionString, request, response );
         }
         else if ( QSTR_COMPARE( req, "Transaction" ) )
         {

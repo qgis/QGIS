@@ -6,21 +6,19 @@ Content-Type: text/xml; charset=utf-8
   <Name>WFS</Name>
   <Title>QGIS TestProject</Title>
   <Abstract>Some UTF8 text èòù</Abstract>
-  <OnlineResource></OnlineResource>
-  <Fees>None</Fees>
-  <AccessConstraints>None</AccessConstraints>
+  <OnlineResource/>
  </Service>
  <Capability>
   <Request>
    <GetCapabilities>
     <DCPType>
      <HTTP>
-      <Get onlineResource="http:"/>
+      <Get onlineResource="?"/>
      </HTTP>
     </DCPType>
     <DCPType>
      <HTTP>
-      <Post onlineResource="http:"/>
+      <Post onlineResource="?"/>
      </HTTP>
     </DCPType>
    </GetCapabilities>
@@ -30,12 +28,12 @@ Content-Type: text/xml; charset=utf-8
     </SchemaDescriptionLanguage>
     <DCPType>
      <HTTP>
-      <Get onlineResource="http:"/>
+      <Get onlineResource="?"/>
      </HTTP>
     </DCPType>
     <DCPType>
      <HTTP>
-      <Post onlineResource="http:"/>
+      <Post onlineResource="?"/>
      </HTTP>
     </DCPType>
    </DescribeFeatureType>
@@ -47,19 +45,19 @@ Content-Type: text/xml; charset=utf-8
     </ResultFormat>
     <DCPType>
      <HTTP>
-      <Get onlineResource="http:"/>
+      <Get onlineResource="?"/>
      </HTTP>
     </DCPType>
     <DCPType>
      <HTTP>
-      <Post onlineResource="http:"/>
+      <Post onlineResource="?"/>
      </HTTP>
     </DCPType>
    </GetFeature>
    <Transaction>
     <DCPType>
      <HTTP>
-      <Post onlineResource="http:"/>
+      <Post onlineResource="?"/>
      </HTTP>
     </DCPType>
    </Transaction>
@@ -74,13 +72,13 @@ Content-Type: text/xml; charset=utf-8
    <Title>A test vector layer</Title>
    <Abstract>A test vector layer with unicode òà</Abstract>
    <SRS>EPSG:4326</SRS>
+   <LatLongBoundingBox maxx="8.20355" minx="8.20346" maxy="44.9015" miny="44.9014"/>
    <Operations>
     <Query/>
     <Insert/>
     <Update/>
     <Delete/>
    </Operations>
-   <LatLongBoundingBox maxx="8.20355" minx="8.20346" maxy="44.9015" miny="44.9014"/>
   </FeatureType>
  </FeatureTypeList>
  <ogc:Filter_Capabilities>

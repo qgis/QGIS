@@ -123,6 +123,30 @@ namespace QgsServerProjectUtils
       */
     QString wfsServiceUrl( const QgsProject& project );
 
+    /** Returns the Layer ids list defined in a QGIS project as published in WFS.
+      * @param project the QGIS project
+      * @return the Layer ids list.
+      */
+    QStringList wfsLayerIds( const QgsProject& project );
+
+    /** Returns the Layer ids list defined in a QGIS project as published as WFS-T with update capabilities.
+      * @param project the QGIS project
+      * @return the Layer ids list.
+      */
+    QStringList wfstUpdateLayerIds( const QgsProject& project );
+
+    /** Returns the Layer ids list defined in a QGIS project as published as WFS-T with insert capabilities.
+      * @param project the QGIS project
+      * @return the Layer ids list.
+       */
+    QStringList wfstInsertLayerIds( const QgsProject& project );
+
+    /** Returns the Layer ids list defined in a QGIS project as published as WFS-T with delete capabilities.
+      * @param project the QGIS project
+      * @return the Layer ids list.
+      */
+    QStringList wfstDeleteLayerIds( const QgsProject& project );
+
     /** Returns the WCS service url defined in a QGIS project.
       * @param project the QGIS project
       * @return url if defined in project, an empty string otherwise.
