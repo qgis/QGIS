@@ -11,6 +11,7 @@ typedef int (*f_main)(int, char*[]);
 
 int main( int argc, char *argv[] )
 {
+  // TODO Handle running from build dir.
 	char filepath[MAX_PATH];
 	GetModuleFileName(NULL, filepath, MAX_PATH);
 	char *path;
@@ -24,6 +25,7 @@ int main( int argc, char *argv[] )
 	std::string root = std::string("C:\\OSGeo4W");
 	std::string binroot = root + std::string("\\bin");
 	std::string appsroot = root + std::string("\\apps\\");
+	// TODO Replace with QGIS name from exe
 	std::string qgisfolder = appsroot + std::string("qgis");
 	std::string pythonfolder = appsroot + std::string("Python36");
 	std::string pythonhome = std::string("PYTHONHOME=") + pythonfolder;
@@ -33,15 +35,16 @@ int main( int argc, char *argv[] )
 
 	std::stringstream ss;
 	ss << "PATH=";
-	ss << binroot;
-	ss << ";" << qgisfolder;
+	ss << qgisfolder;
 	ss << ";" << appsroot + std::string("qt5\\bin");
 	ss << ";" << pythonfolder;
+	ss << ";" << binroot;
 	ss << ";" << getenv("PATH");
 	putenv(ss.str().c_str());
 	putenv("PYTHONPATH=");
 	putenv(pythonhome.c_str());
 	putenv(pluginpath.c_str());
+
 	std::cout << "The current path is\n " << getenv("PATH") << std::endl;
 	std::cout << "The current QT_PLUGIN_PATH is\n " << getenv("QT_PLUGIN_PATH") << std::endl;
 	std::cout << "The current PYTHONHOME is\n " << getenv("PYTHONHOME") << std::endl;
