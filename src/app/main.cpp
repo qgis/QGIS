@@ -423,9 +423,15 @@ void myMessageOutput( QtMsgType type, const char *msg )
   }
 }
 
-#if(ANDROID)
+#ifdef _MSC_VER
+#undef APP_EXPORT
+#define APP_EXPORT __declspec(dllexport)
+#endif
+
+#if defined(ANDROID) || defined(Q_OS_WIN)
 // On Android, there there is a libqgis.so instead of a qgis executable.
 // The main method symbol of this library needs to be exported so it can be called by java
+// On Windows this main is included in qgis_app and called from mainwin.cpp
 APP_EXPORT
 #endif
 int main( int argc, char *argv[] )

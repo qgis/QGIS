@@ -62,6 +62,7 @@ call "%PF86%\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86
 path %path%;%PF86%\Microsoft Visual Studio 14.0\VC\bin
 set CMAKE_COMPILER_PATH=%PF86%\Microsoft Visual Studio 14.0\VC\bin
 set SETUPAPI_LIBRARY=c:\Program Files (x86)\Windows Kits\10\Lib\10.0.14393.0\um\x86\SetupAPI.Lib
+if not exist "%SETUPAPI_LIBRARY%" set SETUPAPI_LIBRARY=c:\Program Files (x86)\Windows Kits\8.0\Lib\win8\um\x86\SetupAPI.Lib
 if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
 
 set CMAKE_OPT=^
@@ -77,6 +78,7 @@ call "%PF86%\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
 path %path%;%PF86%\Microsoft Visual Studio 14.0\VC\bin
 set CMAKE_COMPILER_PATH=%PF86%\Microsoft Visual Studio 14.0\VC\bin\amd64
 set SETUPAPI_LIBRARY=c:\Program Files (x86)\Windows Kits\10\Lib\10.0.14393.0\um\x64\SetupAPI.Lib
+if not exist "%SETUPAPI_LIBRARY%" set SETUPAPI_LIBRARY=c:\Program Files (x86)\Windows Kits\8.0\Lib\win8\um\x64\SetupAPI.Lib
 if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
 
 set CMAKE_OPT=^
@@ -292,6 +294,8 @@ touch exclude
 
 move %PKGDIR%\bin\qgis.exe %OSGEO4W_ROOT%\bin\%PACKAGENAME%-bin.exe
 if errorlevel 1 (echo move of desktop executable failed & goto error)
+copy qgis.vars %OSGEO4W_ROOT%\bin\%PACKAGENAME%-bin.vars
+if errorlevel 1 (echo copy of desktop executable vars failed & goto error)
 move %PKGDIR%\bin\qbrowser.exe %OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser-bin.exe
 if errorlevel 1 (echo move of browser executable failed & goto error)
 

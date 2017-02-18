@@ -356,6 +356,8 @@ if errorlevel 1 (echo tar server failed & goto error)
 
 move %PKGDIR%\bin\qgis.exe %OSGEO4W_ROOT%\bin\%PACKAGENAME%-bin.exe
 if errorlevel 1 (echo move of desktop executable failed & goto error)
+copy qgis.vars %OSGEO4W_ROOT%\bin\%PACKAGENAME%-bin.vars
+if errorlevel 1 (echo copy of desktop executable vars failed & goto error)
 move %PKGDIR%\bin\qbrowser.exe %OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser-bin.exe
 if errorlevel 1 (echo move of browser executable failed & goto error)
 
