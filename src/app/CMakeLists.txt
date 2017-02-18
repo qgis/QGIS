@@ -1,7 +1,11 @@
 ADD_SUBDIRECTORY(dwg/libdxfrw)
 
+IF(WIN32)
+  SET(QGIS_APP_SRCS main.cpp)
+ENDIF(WIN32)
+
 SET(QGIS_APP_SRCS
-  main.cpp
+  ${QGIS_APP_SRCS}
   qgisapp.cpp
   qgisappinterface.cpp
   qgisappstylesheet.cpp
@@ -179,6 +183,7 @@ SET(QGIS_APP_SRCS
   qgssettingstree.cpp
   qgsvariantdelegate.cpp
 )
+
 
 SET (QGIS_APP_MOC_HDRS
   qgisapp.h
