@@ -1,44 +1,65 @@
-#ifdef _MSC_VER
-#undef APP_EXPORT
-#define APP_EXPORT __declspec(dllimport)
-#endif
 
 #include <windows.h>
 #include <iostream>
 #include <stdlib.h>
 #include <sstream>
+#include <string>
+#include <vector>
+#include "Shlwapi.h"
 
 typedef int (*f_main)(int, char*[]);
 
 int main( int argc, char *argv[] )
 {
-	std::cout << "FIRST ARG" << argv[0] << std::endl;
+	char filepath[MAX_PATH];
+	GetModuleFileName(NULL, filepath, MAX_PATH);
+	char *path;
+	path = filepath;
+	PSTR name = PathFindFileName(path);
+	PathRemoveFileSpec(path);
+	PathRemoveFileSpec(path);
+	std::cout << "The filepath is\n " << path << std::endl;
+	std::cout << "The filename is\n " << name << std::endl;
+//	std::string root = std::string(path);
+	std::string root = std::string("C:\\OSGeo4W");
+	std::string binroot = root + std::string("\\bin");
+	std::string appsroot = root + std::string("\\apps\\");
+	std::string qgisfolder = appsroot + std::string("qgis");
+	std::string pythonfolder = appsroot + std::string("Python36");
+	std::string pythonhome = std::string("PYTHONHOME=") + pythonfolder;
+	std::string pluginpath = std::string("QT_PLUGIN_PATH=") + appsroot +
+				 std::string("Qt5\\plugins;") +
+				 qgisfolder + std::string("\\qtplugins");
+
 	std::stringstream ss;
 	ss << "PATH=";
-	ss << "c:\\osgeo4w\\apps\\qgis";
-	ss << ";" << "c:\\osgeo4w\\apps\\qt5\\bin";
-	ss << ";" << "c:\\osgeo4w\\bin";
-	ss << ";" << "c:\\osgeo4w\\apps\\Python36";
+	ss << binroot;
+	ss << ";" << qgisfolder;
+	ss << ";" << appsroot + std::string("qt5\\bin");
+	ss << ";" << pythonfolder;
 	ss << ";" << getenv("PATH");
-	std::string env = ss.str();
-	putenv(env.c_str());
+	putenv(ss.str().c_str());
 	putenv("PYTHONPATH=");
-	putenv("PYTHONHOME=c:\\osgeo4w\\apps\\Python36");
-	putenv("QT_PLUGIN_PATH=C:\\OSGeo4W\\apps\\Qt5\\plugins;C:\\OSGeo4W\\apps\\qgis\\qtplugins");
+	putenv(pythonhome.c_str());
+	putenv(pluginpath.c_str());
 	std::cout << "The current path is\n " << getenv("PATH") << std::endl;
 	std::cout << "The current QT_PLUGIN_PATH is\n " << getenv("QT_PLUGIN_PATH") << std::endl;
+	std::cout << "The current PYTHONHOME is\n " << getenv("PYTHONHOME") << std::endl;
 
+	std::cout << "Loading lib" << std::endl;
 	HINSTANCE hGetProcIDDLL = LoadLibrary("qgis_app.dll");
 	if (!hGetProcIDDLL) {
-			std::cout << "could not load the dynamic library" << std::endl;
-			return EXIT_FAILURE;
-		}
+		std::cout << "could not load the qgis_app.dll library" << std::endl;
+		return EXIT_FAILURE;
+	}
 
+	std::cout << "Get address" << std::endl;
 	f_main realmain = (f_main)GetProcAddress(hGetProcIDDLL, "main");
 	if (!realmain) {
-			std::cout << "could not locate the function" << std::endl;
-			return EXIT_FAILURE;
-		}
+		std::cout << "could not locate main function in qgis_app.dll" << std::endl;
+		return EXIT_FAILURE;
+	}
 
+	std::cout << "Calling real main " << std::endl;
 	return realmain(argc, argv);
 }
