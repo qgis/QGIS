@@ -51,8 +51,8 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
     void setTriangulationFilePath( const QString& filepath ) {mTriangulationFilePath = filepath;}
 
   private:
-    Triangulation* mTriangulation;
-    TriangleInterpolator* mTriangleInterpolator;
+    Triangulation* mTriangulation = nullptr;
+    TriangleInterpolator* mTriangleInterpolator = nullptr;
     bool mIsInitialized;
     bool mShowProgressDialog;
     //! If true: export triangulation to shapefile after initialization

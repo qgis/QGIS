@@ -191,8 +191,8 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     //! The length of the cross sides for mGridStyle Cross
     /* double mCrossLength; */
 
-    QgsLineSymbol* mLineSymbol;
-    QgsMarkerSymbol* mMarkerSymbol;
+    QgsLineSymbol* mLineSymbol = nullptr;
+    QgsMarkerSymbol* mMarkerSymbol = nullptr;
 
     QgsUnitTypes::DistanceUnit mMapUnits;
 

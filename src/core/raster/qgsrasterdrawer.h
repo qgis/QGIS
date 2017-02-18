@@ -59,7 +59,7 @@ class CORE_EXPORT QgsRasterDrawer
     void drawImage( QPainter* p, QgsRasterViewPort* viewPort, const QImage& img, int topLeftCol, int topLeftRow, const QgsMapToPixel* mapToPixel = nullptr ) const;
 
   private:
-    QgsRasterIterator* mIterator;
+    QgsRasterIterator* mIterator = nullptr;
 };
 
 #endif // QGSRASTERDRAWER_H

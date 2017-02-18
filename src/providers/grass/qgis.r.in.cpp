@@ -77,7 +77,7 @@ void checkStream( QDataStream& stream )
 
 int main( int argc, char **argv )
 {
-  char *name;
+  char *name = nullptr;
   struct Option *map;
   struct Cell_head window;
 

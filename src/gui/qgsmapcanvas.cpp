@@ -655,7 +655,7 @@ void QgsMapCanvas::saveAsImage( const QString& theFileName, QPixmap * theQPixmap
   // draw annotations
   QStyleOptionGraphicsItem option;
   option.initFrom( this );
-  QGraphicsItem* item;
+  QGraphicsItem* item = nullptr;
   QListIterator<QGraphicsItem*> i( items() );
   i.toBack();
   while ( i.hasPrevious() )

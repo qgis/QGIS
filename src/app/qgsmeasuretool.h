@@ -81,13 +81,13 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
 
     QList<QgsPoint> mPoints;
 
-    QgsMeasureDialog* mDialog;
+    QgsMeasureDialog* mDialog = nullptr;
 
     //! Rubberband widget tracking the lines being drawn
-    QgsRubberBand *mRubberBand;
+    QgsRubberBand *mRubberBand = nullptr;
 
     //! Rubberband widget tracking the added nodes to line
-    QgsRubberBand *mRubberBandPoints;
+    QgsRubberBand *mRubberBandPoints = nullptr;
 
     //! indicates whether we're measuring distances or areas
     bool mMeasureArea;

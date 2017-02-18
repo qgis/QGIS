@@ -54,11 +54,11 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 
   protected:
 
-    QgsAbstractFeatureSource* mProviderFeatureSource;
+    QgsAbstractFeatureSource* mProviderFeatureSource = nullptr;
 
-    QgsVectorLayerJoinBuffer* mJoinBuffer;
+    QgsVectorLayerJoinBuffer* mJoinBuffer = nullptr;
 
-    QgsExpressionFieldBuffer* mExpressionFieldBuffer;
+    QgsExpressionFieldBuffer* mExpressionFieldBuffer = nullptr;
 
     QgsFields mFields;
 
@@ -203,7 +203,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
   private:
     std::unique_ptr<QgsExpressionContext> mExpressionContext;
 
-    QgsInterruptionChecker* mInterruptionChecker;
+    QgsInterruptionChecker* mInterruptionChecker = nullptr;
 
     QList< int > mPreparedFields;
     QList< int > mFieldsToPrepare;

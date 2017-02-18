@@ -34,7 +34,7 @@ class QgsComposerPolylineWidget: public QgsComposerItemBaseWidget, private Ui::Q
     ~QgsComposerPolylineWidget();
 
   private:
-    QgsComposerPolyline* mComposerPolyline;
+    QgsComposerPolyline* mComposerPolyline = nullptr;
 
     void updatePolylineStyle();
 

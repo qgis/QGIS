@@ -59,7 +59,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererModel : public QAbstractItemModel
     void rowsMoved();
 
   private:
-    QgsCategorizedSymbolRenderer* mRenderer;
+    QgsCategorizedSymbolRenderer* mRenderer = nullptr;
     QString mMimeFormat;
 };
 
@@ -167,11 +167,11 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     void keyPressEvent( QKeyEvent* event ) override;
 
   protected:
-    QgsCategorizedSymbolRenderer* mRenderer;
+    QgsCategorizedSymbolRenderer* mRenderer = nullptr;
 
-    QgsSymbol* mCategorizedSymbol;
+    QgsSymbol* mCategorizedSymbol = nullptr;
 
-    QgsCategorizedSymbolRendererModel* mModel;
+    QgsCategorizedSymbolRendererModel* mModel = nullptr;
 
   private:
     QString mOldClassificationAttribute;

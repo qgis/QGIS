@@ -104,7 +104,7 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
 
   private:
     QgsComposerFrame(); //forbidden
-    QgsComposerMultiFrame* mMultiFrame;
+    QgsComposerMultiFrame* mMultiFrame = nullptr;
     QRectF mSection;
 
     //! If true, composition will not export page if this frame is empty

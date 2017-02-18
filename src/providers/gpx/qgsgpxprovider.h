@@ -96,7 +96,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
 
   private:
 
-    QgsGPSData* data;
+    QgsGPSData* data = nullptr;
 
     //! Fields
     QgsFields attributeFields;

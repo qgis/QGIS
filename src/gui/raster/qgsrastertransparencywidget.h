@@ -100,11 +100,11 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
 
     double transparencyCellValue( int row, int column );
 
-    QgsRasterLayer* mRasterLayer;
+    QgsRasterLayer* mRasterLayer = nullptr;
 
-    QgsMapCanvas* mMapCanvas;
+    QgsMapCanvas* mMapCanvas = nullptr;
 
-    QgsMapToolEmitPoint* mPixelSelectorTool;
+    QgsMapToolEmitPoint* mPixelSelectorTool = nullptr;
 
     QVector<bool> mTransparencyToEdited;
 };

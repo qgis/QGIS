@@ -89,12 +89,12 @@ class ANALYSIS_EXPORT QgsOSMXmlImport : public QObject
 
     QFile mInputFile;
 
-    sqlite3* mDatabase;
-    sqlite3_stmt* mStmtInsertNode;
-    sqlite3_stmt* mStmtInsertNodeTag;
-    sqlite3_stmt* mStmtInsertWay;
-    sqlite3_stmt* mStmtInsertWayNode;
-    sqlite3_stmt* mStmtInsertWayTag;
+    sqlite3* mDatabase = nullptr;
+    sqlite3_stmt* mStmtInsertNode = nullptr;
+    sqlite3_stmt* mStmtInsertNodeTag = nullptr;
+    sqlite3_stmt* mStmtInsertWay = nullptr;
+    sqlite3_stmt* mStmtInsertWayNode = nullptr;
+    sqlite3_stmt* mStmtInsertWayTag = nullptr;
 };
 
 

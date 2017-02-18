@@ -145,7 +145,7 @@ QgsRasterRenderer* QgsSingleBandPseudoColorRendererWidget::renderer()
   //iterate through mColormapTreeWidget and set colormap info of layer
   QList<QgsColorRampShader::ColorRampItem> colorRampItems;
   int topLevelItemCount = mColormapTreeWidget->topLevelItemCount();
-  QTreeWidgetItem* currentItem;
+  QTreeWidgetItem* currentItem = nullptr;
   for ( int i = 0; i < topLevelItemCount; ++i )
   {
     currentItem = mColormapTreeWidget->topLevelItem( i );
@@ -202,7 +202,7 @@ void QgsSingleBandPseudoColorRendererWidget::autoLabel()
   QString unit = mUnitLineEdit->text();
   QString label;
   int topLevelItemCount = mColormapTreeWidget->topLevelItemCount();
-  QTreeWidgetItem* currentItem;
+  QTreeWidgetItem* currentItem = nullptr;
   for ( int i = 0; i < topLevelItemCount; ++i )
   {
     currentItem = mColormapTreeWidget->topLevelItem( i );
@@ -248,7 +248,7 @@ void QgsSingleBandPseudoColorRendererWidget::setUnitFromLabels()
   QStringList allSuffixes;
   QString label;
   int topLevelItemCount = mColormapTreeWidget->topLevelItemCount();
-  QTreeWidgetItem* currentItem;
+  QTreeWidgetItem* currentItem = nullptr;
   for ( int i = 0; i < topLevelItemCount; ++i )
   {
     currentItem = mColormapTreeWidget->topLevelItem( i );
@@ -572,7 +572,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mExportToFileButton_clicked()
       }
 
       int topLevelItemCount = mColormapTreeWidget->topLevelItemCount();
-      QTreeWidgetItem* currentItem;
+      QTreeWidgetItem* currentItem = nullptr;
       QColor color;
       for ( int i = 0; i < topLevelItemCount; ++i )
       {

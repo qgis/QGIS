@@ -45,7 +45,7 @@ class TestQgsSnappingUtils : public QObject
     {}
 
   private:
-    QgsVectorLayer* mVL;
+    QgsVectorLayer* mVL = nullptr;
   private slots:
 
     void initTestCase()

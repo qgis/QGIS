@@ -887,7 +887,7 @@ QgsSymbolLayer* QgsSymbolLayerUtils::loadSymbolLayer( QDomElement& element )
   // parse properties
   QgsStringMap props = parseProperties( element );
 
-  QgsSymbolLayer* layer;
+  QgsSymbolLayer* layer = nullptr;
   layer = QgsApplication::symbolLayerRegistry()->createSymbolLayer( layerClass, props );
   if ( layer )
   {

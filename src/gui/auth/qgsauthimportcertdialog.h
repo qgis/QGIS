@@ -92,8 +92,8 @@ class GUI_EXPORT QgsAuthImportCertDialog : public QDialog, private Ui::QgsAuthIm
     QgsAuthImportCertDialog::CertInput mInput;
 
     bool mDisabled;
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout *mAuthNotifyLayout = nullptr;
+    QLabel *mAuthNotify = nullptr;
 };
 
 #endif // QGSAUTHIMPORTCERTDIALOG_H

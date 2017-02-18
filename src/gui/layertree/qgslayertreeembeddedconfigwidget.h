@@ -48,7 +48,7 @@ class GUI_EXPORT QgsLayerTreeEmbeddedConfigWidget : public QWidget, protected Ui
     void onRemoveClicked();
 
   private:
-    QgsMapLayer* mLayer;
+    QgsMapLayer* mLayer = nullptr;
 };
 
 #endif // QGSLAYERTREEEMBEDDEDCONFIGWIDGET_H

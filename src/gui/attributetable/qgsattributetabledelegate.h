@@ -91,8 +91,8 @@ class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
     void actionColumnItemPainted( const QModelIndex& index ) const;
 
   private:
-    QgsVectorLayer* mLayer;
-    QgsFeatureSelectionModel* mFeatureSelectionModel;
+    QgsVectorLayer* mLayer = nullptr;
+    QgsFeatureSelectionModel* mFeatureSelectionModel = nullptr;
 };
 
 #endif //QGSATTRIBUTETABLEDELEGATE_H

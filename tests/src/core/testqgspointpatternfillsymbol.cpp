@@ -66,10 +66,10 @@ class TestQgsPointPatternFillSymbol : public QObject
 
     bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPolysLayer;
-    QgsPointPatternFillSymbolLayer* mPointPatternFill;
-    QgsFillSymbol* mFillSymbol;
-    QgsSingleSymbolRenderer* mSymbolRenderer;
+    QgsVectorLayer * mpPolysLayer = nullptr;
+    QgsPointPatternFillSymbolLayer* mPointPatternFill = nullptr;
+    QgsFillSymbol* mFillSymbol = nullptr;
+    QgsSingleSymbolRenderer* mSymbolRenderer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };

@@ -96,7 +96,7 @@ class GUI_EXPORT QgsAttributeTypeLoadDialog: public QDialog, private Ui::QgsAttr
      */
     void loadDataToValueMap();
 
-    QgsVectorLayer *mLayer;
+    QgsVectorLayer *mLayer = nullptr;
     QMap<QString, QVariant> mValueMap;
 };
 

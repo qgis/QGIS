@@ -49,7 +49,7 @@ class TestQgsLayerTree : public QObject
 
   private:
 
-    QgsLayerTreeGroup* mRoot;
+    QgsLayerTreeGroup* mRoot = nullptr;
 
     void testRendererLegend( QgsFeatureRenderer* renderer );
 

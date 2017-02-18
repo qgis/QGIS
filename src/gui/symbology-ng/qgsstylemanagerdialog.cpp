@@ -367,7 +367,7 @@ void QgsStyleManagerDialog::addItem()
 bool QgsStyleManagerDialog::addSymbol()
 {
   // create new symbol with current type
-  QgsSymbol* symbol;
+  QgsSymbol* symbol = nullptr;
   QString name = tr( "new symbol" );
   switch ( currentItemType() )
   {
@@ -1370,7 +1370,7 @@ void QgsStyleManagerDialog::listitemsContextMenu( QPoint point )
   // Clear all actions and create new actions for every group
   mGroupListMenu->clear();
 
-  QAction* a;
+  QAction* a = nullptr;
   QStringList tags = mStyle->tags();
   tags.sort();
   Q_FOREACH ( const QString& tag, tags )

@@ -42,7 +42,7 @@ class QgsOSMImportDialog : public QDialog, private Ui::QgsOSMImportDialog
     void onProgress( int percent );
 
   private:
-    QgsOSMXmlImport* mImport;
+    QgsOSMXmlImport* mImport = nullptr;
 };
 
 #endif // QGSOSMIMPORTDIALOG_H

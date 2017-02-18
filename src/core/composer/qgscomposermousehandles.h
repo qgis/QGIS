@@ -135,8 +135,8 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     bool mIsResizing;
 
     //! Align snap lines
-    QGraphicsLineItem* mHAlignSnapItem;
-    QGraphicsLineItem* mVAlignSnapItem;
+    QGraphicsLineItem* mHAlignSnapItem = nullptr;
+    QGraphicsLineItem* mVAlignSnapItem = nullptr;
 
     QSizeF mCursorOffset;
 

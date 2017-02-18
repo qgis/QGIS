@@ -57,7 +57,7 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
 
     Q_FOREACH ( const QgsAttributeTableConfig::ColumnConfig& columnConfig, mConfig.columns() )
     {
-      QListWidgetItem* item;
+      QListWidgetItem* item = nullptr;
       if ( columnConfig.type == QgsAttributeTableConfig::Action )
       {
         item = new QListWidgetItem( tr( "[Action Widget]" ), mFieldsList );

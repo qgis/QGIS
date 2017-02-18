@@ -67,8 +67,8 @@ int display( char *name, char *mapset, RASTER_MAP_TYPE data_type, char *format )
 
 int main( int argc, char **argv )
 {
-  char *mapset;
-  char *name;
+  char *mapset = 0;
+  char *name = 0;
   struct GModule *module;
   struct Option *map;
   struct Option *win;
@@ -163,15 +163,15 @@ static int cell_draw( char *name,
                       char *format )
 {
   int cellfile;
-  void *xarray;
+  void *xarray = 0;
   int row;
   int ncols, nrows;
   static unsigned char *red, *grn, *blu, *set;
   int i;
-  void *ptr;
+  void *ptr = 0;
   int big_endian;
   long one = 1;
-  FILE *fo;
+  FILE *fo = 0;
   size_t raster_size;
 #ifdef NAN
   double dnul = NAN;

@@ -261,7 +261,7 @@ void QgsLabelingEngine::run( QgsRenderContext& context )
   double bbox[] = { extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() };
 
   QList<pal::LabelPosition*>* labels;
-  pal::Problem *problem;
+  pal::Problem *problem = nullptr;
   try
   {
     problem = p.extractProblem( bbox );

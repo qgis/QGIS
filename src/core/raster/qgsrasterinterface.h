@@ -261,7 +261,7 @@ class CORE_EXPORT QgsRasterInterface
 
   protected:
     // QgsRasterInterface used as input
-    QgsRasterInterface* mInput;
+    QgsRasterInterface* mInput = nullptr;
 
     //! \brief List  of cached statistics, all bands mixed
     QList <QgsRasterBandStats> mStatistics;

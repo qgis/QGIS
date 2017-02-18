@@ -136,14 +136,14 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
     // Reimplements dialog keyPress event so we can ignore it
     void keyPressEvent( QKeyEvent * event ) override;
 
-    QgsVectorLayer* mLayer;
-    QgsStyle* mStyle;
+    QgsVectorLayer* mLayer = nullptr;
+    QgsStyle* mStyle = nullptr;
 
-    QgsRendererWidget* mActiveWidget;
+    QgsRendererWidget* mActiveWidget = nullptr;
 
-    QgsPaintEffect* mPaintEffect;
+    QgsPaintEffect* mPaintEffect = nullptr;
 
-    QgsMapCanvas* mMapCanvas;
+    QgsMapCanvas* mMapCanvas = nullptr;
 
     QgsFeatureRequest::OrderBy mOrderBy;
 

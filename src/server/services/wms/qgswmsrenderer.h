@@ -256,13 +256,13 @@ namespace QgsWms
       bool mDrawLegendItemLabel;
 
       //! Map containing the WMS parameters
-      QgsWmsConfigParser*    mConfigParser;
+      QgsWmsConfigParser*    mConfigParser = nullptr;
 
       //! The access control helper
-      QgsAccessControl* mAccessControl;
+      QgsAccessControl* mAccessControl = nullptr;
 
       const QgsServerSettings& mSettings;
-      const QgsProject* mProject;
+      const QgsProject* mProject = nullptr;
 
     public:
 

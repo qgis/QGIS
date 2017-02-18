@@ -642,7 +642,7 @@ class GetComposerItemVariables : public QgsScopedExpressionFunction
 
   private:
 
-    const QgsComposition* mComposition;
+    const QgsComposition* mComposition = nullptr;
 
 };
 

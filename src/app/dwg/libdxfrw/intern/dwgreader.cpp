@@ -228,7 +228,7 @@ bool dwgReader::readDwgTables( DRW_Header& hdr, dwgBuffer *dbuf )
   std::map<duint32, objHandle>::iterator mit;
   dint16 oType;
   duint32 bs = 0; //bit size of handle stream 2010+
-  duint8 *tmpByteStr;
+  duint8 *tmpByteStr = nullptr;
 
   //parse linetypes, start with linetype Control
   mit = ObjectMap.find( hdr.linetypeCtrl );
@@ -877,7 +877,7 @@ bool dwgReader::readDwgBlocks( DRW_Interface& intfa, dwgBuffer *dbuf )
   bool ret = true;
   bool ret2 = true;
   duint32 bs = 0;
-  duint8 *tmpByteStr;
+  duint8 *tmpByteStr = nullptr;
   std::map<duint32, objHandle>::iterator mit;
 
   QgsDebugMsg( QString( "object map total size=%1" ).arg( ObjectMap.size() ) );

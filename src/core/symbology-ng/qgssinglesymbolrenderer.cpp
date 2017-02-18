@@ -222,7 +222,7 @@ QgsFeatureRenderer* QgsSingleSymbolRenderer::createFromSld( QDomElement& element
     return nullptr;
 
   // now create the symbol
-  QgsSymbol *symbol;
+  QgsSymbol *symbol = nullptr;
   switch ( geomType )
   {
     case QgsWkbTypes::LineGeometry:

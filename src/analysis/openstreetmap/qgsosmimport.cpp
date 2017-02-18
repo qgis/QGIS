@@ -131,7 +131,7 @@ bool QgsOSMXmlImport::createIndexes()
 
 bool QgsOSMXmlImport::createDatabase()
 {
-  char **results;
+  char **results = nullptr;
   int rows, columns;
   if ( QgsSLConnect::sqlite3_open_v2( mDbFileName.toUtf8().data(), &mDatabase, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr ) != SQLITE_OK )
     return false;
@@ -165,7 +165,7 @@ bool QgsOSMXmlImport::createDatabase()
   int initCount = sizeof( sqlInitStatements ) / sizeof( const char* );
   for ( int i = 0; i < initCount; ++i )
   {
-    char* errMsg;
+    char* errMsg = nullptr;
     if ( sqlite3_exec( mDatabase, sqlInitStatements[i], nullptr, nullptr, &errMsg ) != SQLITE_OK )
     {
       mError = QStringLiteral( "Error executing SQL command:\n%1\nSQL:\n%2" )

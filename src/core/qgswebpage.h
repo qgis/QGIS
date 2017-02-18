@@ -193,8 +193,8 @@ class CORE_EXPORT QWebPage : public QObject
     virtual void javaScriptConsoleMessage( const QString& , int, const QString& ) {}
 
   private:
-    QWebSettings* mSettings;
-    QWebFrame* mFrame;
+    QWebSettings* mSettings = nullptr;
+    QWebFrame* mFrame = nullptr;
 /// @endcond
 };
 #endif

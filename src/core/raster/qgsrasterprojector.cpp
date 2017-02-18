@@ -421,7 +421,7 @@ void ProjectorData::calcHelper( int theMatrixRow, QgsPoint *thePoints )
 void ProjectorData::nextHelper()
 {
   // We just switch pHelperTop and pHelperBottom, memory is not lost
-  QgsPoint *tmp;
+  QgsPoint *tmp = nullptr;
   tmp = pHelperTop;
   pHelperTop = pHelperBottom;
   pHelperBottom = tmp;

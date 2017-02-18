@@ -189,13 +189,13 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     void afterResetModel();
 
   private:
-    QComboBox* mCombo;
-    QToolButton* mButton;
-    QgsFieldProxyModel* mFieldProxyModel;
+    QComboBox* mCombo = nullptr;
+    QToolButton* mButton = nullptr;
+    QgsFieldProxyModel* mFieldProxyModel = nullptr;
     QString mExpressionDialogTitle;
     std::shared_ptr<const QgsDistanceArea> mDa;
     QgsExpressionContext mExpressionContext;
-    const QgsExpressionContextGenerator* mExpressionContextGenerator;
+    const QgsExpressionContextGenerator* mExpressionContextGenerator = nullptr;
     QString mBackupExpression;
 
     friend class TestQgsFieldExpressionWidget;

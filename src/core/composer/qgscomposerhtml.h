@@ -232,7 +232,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
   private:
     ContentMode mContentMode;
     QUrl mUrl;
-    QgsWebPage* mWebPage;
+    QgsWebPage* mWebPage = nullptr;
     QString mHtml;
     QString mFetchedHtml;
     QString mLastFetchedUrl;
@@ -240,14 +240,14 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     bool mLoaded;
     QSizeF mSize; //total size in mm
     double mHtmlUnitsToMM;
-    QImage* mRenderedPage;
+    QImage* mRenderedPage = nullptr;
     bool mEvaluateExpressions;
     bool mUseSmartBreaks;
     double mMaxBreakDistance;
 
     QgsFeature mExpressionFeature;
-    QgsVectorLayer* mExpressionLayer;
-    QgsDistanceArea* mDistanceArea;
+    QgsVectorLayer* mExpressionLayer = nullptr;
+    QgsDistanceArea* mDistanceArea = nullptr;
 
     QString mUserStylesheet;
     bool mEnableUserStylesheet;
@@ -255,7 +255,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     //! JSON string representation of current atlas feature
     QString mAtlasFeatureJSON;
 
-    QgsNetworkContentFetcher* mFetcher;
+    QgsNetworkContentFetcher* mFetcher = nullptr;
 
     double htmlUnitsToMM(); //calculate scale factor
 

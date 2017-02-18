@@ -54,12 +54,12 @@ class ANALYSIS_EXPORT QgsTransectSample
     //! Returns true if another transect is within the specified minimum distance
     static bool otherTransectWithinDistance( const QgsGeometry& geom, double minDistLayerUnit, double minDistance, QgsSpatialIndex& sIndex, const QMap<QgsFeatureId, QgsGeometry>& lineFeatureMap, QgsDistanceArea& da );
 
-    QgsVectorLayer* mStrataLayer;
+    QgsVectorLayer* mStrataLayer = nullptr;
     QString mStrataIdAttribute;
     QString mMinDistanceAttribute;
     QString mNPointsAttribute;
 
-    QgsVectorLayer* mBaselineLayer;
+    QgsVectorLayer* mBaselineLayer = nullptr;
     bool mShareBaseline;
     QString mBaselineStrataId;
 

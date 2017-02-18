@@ -88,7 +88,7 @@ FeaturePart::~FeaturePart()
 
 void FeaturePart::extractCoords( const GEOSGeometry* geom )
 {
-  const GEOSCoordSequence *coordSeq;
+  const GEOSCoordSequence *coordSeq = nullptr;
   GEOSContextHandle_t geosctxt = geosContext();
 
   type = GEOSGeomTypeId_r( geosctxt, geom );

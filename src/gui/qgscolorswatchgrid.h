@@ -104,7 +104,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     void focusOutEvent( QFocusEvent* event ) override;
 
   private:
-    QgsColorScheme* mScheme;
+    QgsColorScheme* mScheme = nullptr;
     QString mContext;
     QgsNamedColorList mColors;
     QColor mBaseColor;
@@ -223,8 +223,8 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
     void colorChanged( const QColor &color );
 
   private:
-    QMenu* mMenu;
-    QgsColorSwatchGrid* mColorSwatchGrid;
+    QMenu* mMenu = nullptr;
+    QgsColorSwatchGrid* mColorSwatchGrid = nullptr;
 
     //used to suppress recursion with hover events
     bool mSuppressRecurse;

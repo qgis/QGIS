@@ -1035,9 +1035,9 @@ bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &
   bool theResultFlag = false;
 
   // read from database
-  sqlite3 *myDatabase;
-  sqlite3_stmt *myPreparedStatement;
-  const char *myTail;
+  sqlite3 *myDatabase = nullptr;
+  sqlite3_stmt *myPreparedStatement = nullptr;
+  const char *myTail = nullptr;
   int myResult;
 
   QgsDebugMsg( QString( "Trying to load style for \"%1\" from \"%2\"" ).arg( uri, db ) );
@@ -1301,9 +1301,9 @@ QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag )
     QString qml = myDocument.toString();
 
     // read from database
-    sqlite3 *myDatabase;
-    sqlite3_stmt *myPreparedStatement;
-    const char *myTail;
+    sqlite3 *myDatabase = nullptr;
+    sqlite3_stmt *myPreparedStatement = nullptr;
+    const char *myTail = nullptr;
     int myResult;
 
     myResult = sqlite3_open( QDir( QgsApplication::qgisSettingsDirPath() ).absoluteFilePath( QStringLiteral( "qgis.qmldb" ) ).toUtf8().data(), &myDatabase );

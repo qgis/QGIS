@@ -150,13 +150,13 @@ class QgsSpatialQuery
     void populateIndexResultDisjoint( QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, const QgsGeometry& geomTarget,
                                       bool ( QgsGeometryEngine::*operation )( const QgsAbstractGeometry&, QString* ) const );
 
-    MngProgressBar *mPb;
+    MngProgressBar *mPb = nullptr;
     bool mUseReferenceSelection;
     bool mUseTargetSelection;
 
-    QgsReaderFeatures * mReaderFeaturesTarget;
-    QgsVectorLayer * mLayerTarget;
-    QgsVectorLayer * mLayerReference;
+    QgsReaderFeatures * mReaderFeaturesTarget = nullptr;
+    QgsVectorLayer * mLayerTarget = nullptr;
+    QgsVectorLayer * mLayerReference = nullptr;
     QgsSpatialIndex  mIndexReference;
 
 };

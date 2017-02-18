@@ -41,7 +41,7 @@ class APP_EXPORT QgsSnappingLayerDelegate : public QItemDelegate
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
 
   private:
-    QgsMapCanvas* mCanvas;
+    QgsMapCanvas* mCanvas = nullptr;
 };
 
 
@@ -85,9 +85,9 @@ class APP_EXPORT QgsSnappingLayerTreeModel : public QSortFilterProxyModel
   private:
     bool nodeShown( QgsLayerTreeNode* node ) const;
 
-    QgsProject* mProject;
+    QgsProject* mProject = nullptr;
     QHash<QgsVectorLayer*, QgsSnappingConfig::IndividualLayerSettings> mIndividualLayerSettings;
-    QgsLayerTreeModel* mLayerTreeModel;
+    QgsLayerTreeModel* mLayerTreeModel = nullptr;
 
     void hasRowchanged( QgsLayerTreeNode* node, const QHash<QgsVectorLayer*, QgsSnappingConfig::IndividualLayerSettings>& oldSettings );
 };

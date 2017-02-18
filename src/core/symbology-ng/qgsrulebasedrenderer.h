@@ -59,7 +59,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
           , symbol( _s )
       {}
       FeatureToRender& ftr;
-      QgsSymbol* symbol;
+      QgsSymbol* symbol = nullptr;
     };
 
     // render level: a list of jobs to be drawn at particular level
@@ -377,7 +377,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         void initFilter();
 
         Rule* mParent; // parent rule (NULL only for root rule)
-        QgsSymbol* mSymbol;
+        QgsSymbol* mSymbol = nullptr;
         int mScaleMinDenom, mScaleMaxDenom;
         QString mFilterExp, mLabel, mDescription;
         bool mElseRule;
@@ -388,7 +388,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         QString mRuleKey; // string used for unique identification of rule within renderer
 
         // temporary
-        QgsExpression* mFilter;
+        QgsExpression* mFilter = nullptr;
         // temporary while rendering
         QSet<int> mSymbolNormZLevels;
         RuleList mActiveChildren;
@@ -475,7 +475,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
   protected:
     //! the root node with hierarchical list of rules
-    Rule* mRootRule;
+    Rule* mRootRule = nullptr;
 
     // temporary
     RenderQueue mRenderQueue;

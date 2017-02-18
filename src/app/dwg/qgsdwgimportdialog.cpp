@@ -211,7 +211,7 @@ void QgsDwgImportDialog::on_pbLoadDatabase_clicked()
 
       QgsDebugMsg( QString( "name:%1 color:%2 flags:%3" ).arg( f.attribute( idxName ).toString() ).arg( f.attribute( idxColor ).toInt() ).arg( f.attribute( idxFlags ).toString(), 0, 16 ) );
 
-      QTableWidgetItem *item;
+      QTableWidgetItem *item = nullptr;
       item = new QTableWidgetItem( f.attribute( idxName ).toString() );
       item->setFlags( Qt::ItemIsUserCheckable | Qt::ItemIsEnabled );
       item->setCheckState( Qt::Checked );
@@ -297,8 +297,8 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, QString name, QS
     layerFilter = QString( "layer IN (%1) AND " ).arg( exprlist.join( "," ) );
   }
 
-  QgsVectorLayer *l;
-  QgsSymbol *sym;
+  QgsVectorLayer *l = nullptr;
+  QgsSymbol *sym = nullptr;
 
   l = layer( layerGroup, layerFilter, "hatches" );
   if ( l )

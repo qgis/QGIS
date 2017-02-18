@@ -123,14 +123,14 @@ class GUI_EXPORT QgsAuthSslImportDialog : public QDialog, private Ui::QgsAuthSsl
     QPushButton* closeButton();
     QString getOpenFileName( const QString& title, const QString& extfilter );
 
-    QSslSocket *mSocket;
+    QSslSocket *mSocket = nullptr;
     bool mExecErrorsDialog;
-    QTimer *mTimer;
+    QTimer *mTimer = nullptr;
     QList<QSslError> mSslErrors;
     QList<QSslCertificate> mTrustedCAs;
 
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout *mAuthNotifyLayout = nullptr;
+    QLabel *mAuthNotify = nullptr;
 };
 
 #endif // QGSAUTHSSLIMPORTDIALOG_H

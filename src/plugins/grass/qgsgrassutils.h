@@ -79,13 +79,13 @@ class QgsGrassElementDialog: public QObject
   private:
     QString mElement;
     QString mSource;
-    QDialog *mDialog;
-    QLineEdit *mLineEdit;
-    QLabel *mLabel;
-    QLabel *mErrorLabel;
-    QPushButton *mOkButton;
-    QPushButton *mCancelButton;
-    QWidget *mParent;
+    QDialog *mDialog = nullptr;
+    QLineEdit *mLineEdit = nullptr;
+    QLabel *mLabel = nullptr;
+    QLabel *mErrorLabel = nullptr;
+    QPushButton *mOkButton = nullptr;
+    QPushButton *mCancelButton = nullptr;
+    QWidget *mParent = nullptr;
 };
 
 #endif // QGSGRASSUTILS_H

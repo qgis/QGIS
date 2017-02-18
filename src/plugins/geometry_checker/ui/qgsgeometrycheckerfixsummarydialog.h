@@ -48,8 +48,8 @@ class QgsGeometryCheckerFixSummaryDialog : public QDialog
 
   private:
     Ui::QgsGeometryCheckerFixSummaryDialog ui;
-    QgisInterface* mIface;
-    QgsVectorLayer* mLayer;
+    QgisInterface* mIface = nullptr;
+    QgsVectorLayer* mLayer = nullptr;
 
     void addError( QTableWidget* table, QgsGeometryCheckError* error );
     void setupTable( QTableWidget* table );

@@ -132,14 +132,14 @@ class CORE_EXPORT QgsVectorLayerImport
 
     int mErrorCount;
 
-    QgsVectorDataProvider *mProvider;
+    QgsVectorDataProvider *mProvider = nullptr;
 
     //! Map attribute indexes to new field indexes
     QMap<int, int> mOldToNewAttrIdx;
     int mAttributeCount;
 
     QgsFeatureList mFeatureBuffer;
-    QProgressDialog *mProgress;
+    QProgressDialog *mProgress = nullptr;
 
 };
 

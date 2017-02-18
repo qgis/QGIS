@@ -402,7 +402,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     friend class QgsPostgresFeatureSource;
 
-    QgsPostgresTransaction* mTransaction;
+    QgsPostgresTransaction* mTransaction = nullptr;
 
     void setTransaction( QgsTransaction* transaction ) override;
 

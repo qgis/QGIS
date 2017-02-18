@@ -527,9 +527,9 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
   private:
 
     //! Pointer to the QgisApp object
-    QgisApp *qgis;
+    QgisApp *qgis = nullptr;
 
-    QTimer *mTimer;
+    QTimer *mTimer = nullptr;
 
     //! Pointer to the PluginManagerInterface object
     QgsAppPluginManagerInterface pluginManagerIface;

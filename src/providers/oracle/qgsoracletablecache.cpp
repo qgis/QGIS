@@ -27,7 +27,7 @@ email                : wonder.sk at gmail dot com
 
 static bool _executeSqliteStatement( sqlite3* db, const QString& sql )
 {
-  sqlite3_stmt* stmt;
+  sqlite3_stmt* stmt = nullptr;
   if ( sqlite3_prepare_v2( db, sql.toUtf8().data(), -1, &stmt, nullptr ) != SQLITE_OK )
     return false;
 
@@ -50,7 +50,7 @@ static bool _removeFromCache( sqlite3* db, const QString& connName )
 
 static sqlite3* _openCacheDatabase()
 {
-  sqlite3* database;
+  sqlite3* database = nullptr;
   if ( sqlite3_open_v2( QgsOracleTableCache::cacheDatabaseFilename().toUtf8().data(), &database, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, 0 ) != SQLITE_OK )
     return 0;
 
@@ -70,7 +70,7 @@ static bool _hasCache( sqlite3* db, const QString& connName, int flags = -1 ) //
   if ( flags >= 0 )
     sqlCacheForConn.append( QString( " AND flags = %1" ).arg( flags ) );
 
-  char **results;
+  char **results = nullptr;
   int rows, columns;
   char *errMsg = nullptr;
   bool res = sqlite3_get_table( db, sqlCacheForConn.toUtf8(), &results, &rows, &columns, &errMsg ) == SQLITE_OK;
@@ -148,7 +148,7 @@ bool QgsOracleTableCache::saveToCache( const QString& connName, CacheFlags flags
   _executeSqliteStatement( db, "BEGIN" );
 
   QString sqlInsert = QString( "INSERT INTO %1 VALUES(?,?,?,?,?,?,?,?)" ).arg( tblName );
-  sqlite3_stmt* stmtInsert;
+  sqlite3_stmt* stmtInsert = nullptr;
   if ( sqlite3_prepare_v2( db, sqlInsert.toUtf8().data(), -1, &stmtInsert, 0 ) != SQLITE_OK )
   {
     sqlite3_close( db );
@@ -200,7 +200,7 @@ bool QgsOracleTableCache::loadFromCache( const QString& connName, CacheFlags fla
   if ( !_hasCache( db, connName, ( int ) flags ) )
     return false;
 
-  sqlite3_stmt* stmt;
+  sqlite3_stmt* stmt = nullptr;
   QString sql = QString( "SELECT * FROM %1" ).arg( QgsOracleConn::quotedIdentifier( "oracle_" + connName ) );
   if ( sqlite3_prepare_v2( db, sql.toUtf8().data(), -1, &stmt, nullptr ) != SQLITE_OK )
   {

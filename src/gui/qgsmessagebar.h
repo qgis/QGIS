@@ -151,15 +151,15 @@ class GUI_EXPORT QgsMessageBar: public QFrame
   private:
     void popItem( QgsMessageBarItem *item );
     void showItem( QgsMessageBarItem *item );
-    QgsMessageBarItem *mCurrentItem;
+    QgsMessageBarItem *mCurrentItem = nullptr;
     QList<QgsMessageBarItem *> mItems;
-    QMenu *mCloseMenu;
-    QToolButton *mCloseBtn;
-    QGridLayout *mLayout;
-    QLabel *mItemCount;
-    QAction *mActionCloseAll;
-    QTimer *mCountdownTimer;
-    QProgressBar *mCountProgress;
+    QMenu *mCloseMenu = nullptr;
+    QToolButton *mCloseBtn = nullptr;
+    QGridLayout *mLayout = nullptr;
+    QLabel *mItemCount = nullptr;
+    QAction *mActionCloseAll = nullptr;
+    QTimer *mCountdownTimer = nullptr;
+    QProgressBar *mCountProgress = nullptr;
     QString mCountStyleSheet;
 
   private slots:

@@ -1591,7 +1591,7 @@ void QgsIdentifyResultsDialog::attributeValueChanged( QgsFeatureId fid, int idx,
 
 void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
 {
-  QgsMapLayer *layer;
+  QgsMapLayer *layer = nullptr;
   QgsVectorLayer *vlayer = vectorLayer( item );
   QgsRasterLayer *rlayer = rasterLayer( item );
 
@@ -1644,7 +1644,7 @@ void QgsIdentifyResultsDialog::zoomToFeature()
   if ( !vlayer && !rlayer )
     return;
 
-  QgsMapLayer *layer;
+  QgsMapLayer *layer = nullptr;
   if ( vlayer )
     layer = vlayer;
   else

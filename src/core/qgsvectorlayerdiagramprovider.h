@@ -104,7 +104,7 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
     //! Diagram layer settings
     QgsDiagramLayerSettings mSettings;
     //! Diagram renderer instance (owned by mSettings)
-    QgsDiagramRenderer* mDiagRenderer;
+    QgsDiagramRenderer* mDiagRenderer = nullptr;
 
     // these are needed only if using own renderer loop
 
@@ -113,7 +113,7 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
     //! Layer's CRS
     QgsCoordinateReferenceSystem mLayerCrs;
     //! Layer's feature source
-    QgsAbstractFeatureSource* mSource;
+    QgsAbstractFeatureSource* mSource = nullptr;
     //! Whether layer's feature source is owned
     bool mOwnsSource;
 

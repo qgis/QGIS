@@ -40,7 +40,7 @@ class APP_EXPORT QgsMapToolPointSymbol: public QgsMapToolEdit
     void canvasPressEvent( QgsMapMouseEvent* e ) override;
 
   protected:
-    QgsVectorLayer* mActiveLayer;
+    QgsVectorLayer* mActiveLayer = nullptr;
     QgsFeatureId mFeatureNumber;
 
     //! Screen coordinate of the snapped feature

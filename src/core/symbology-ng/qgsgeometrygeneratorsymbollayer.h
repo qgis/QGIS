@@ -96,10 +96,10 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
     QgsGeometryGeneratorSymbolLayer( const QString& expression );
 
     std::unique_ptr<QgsExpression> mExpression;
-    QgsFillSymbol* mFillSymbol;
-    QgsLineSymbol* mLineSymbol;
-    QgsMarkerSymbol* mMarkerSymbol;
-    QgsSymbol* mSymbol;
+    QgsFillSymbol* mFillSymbol = nullptr;
+    QgsLineSymbol* mLineSymbol = nullptr;
+    QgsMarkerSymbol* mMarkerSymbol = nullptr;
+    QgsSymbol* mSymbol = nullptr;
 
     /**
      * The type of the sub symbol.

@@ -74,7 +74,7 @@ class SERVER_EXPORT QgsServerFilter
 
   private:
 
-    QgsServerInterface* mServerInterface;
+    QgsServerInterface* mServerInterface = nullptr;
 
 };
 

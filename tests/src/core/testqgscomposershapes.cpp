@@ -51,8 +51,8 @@ class TestQgsComposerShapes : public QObject
     void symbol(); //test is styling shapes via symbol is working
 
   private:
-    QgsComposition* mComposition;
-    QgsComposerShape* mComposerShape;
+    QgsComposition* mComposition = nullptr;
+    QgsComposerShape* mComposerShape = nullptr;
     QString mReport;
 };
 

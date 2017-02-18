@@ -129,7 +129,7 @@ class APP_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
 
     QgsRectangle mLayerExtent;
     QgsCoordinateReferenceSystem mLayerCrs;
-    QgsVectorLayer *mLayer;
+    QgsVectorLayer *mLayer = nullptr;
     bool mAttributeTableItemChangedSlotEnabled;
     bool mReplaceRawFieldValuesStateChangedSlotEnabled;
     QgsVectorFileWriter::ActionOnExistingFile mActionOnExistingFile;

@@ -314,7 +314,7 @@ class QgsTaskRunnableWrapper : public QRunnable
 
   private:
 
-    QgsTask* mTask;
+    QgsTask* mTask = nullptr;
 
 };
 

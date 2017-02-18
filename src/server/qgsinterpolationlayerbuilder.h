@@ -40,7 +40,7 @@ class QgsInterpolationLayerBuilder: public QgsMSLayerBuilder
   private:
     QgsInterpolationLayerBuilder(); //forbidden
 
-    QgsVectorLayer* mVectorLayer;
+    QgsVectorLayer* mVectorLayer = nullptr;
 };
 
 #endif

@@ -48,7 +48,7 @@ class TestQgsMapToolIdentifyAction : public QObject
     void identifyInvalidPolygons(); // test selecting invalid polygons
 
   private:
-    QgsMapCanvas* canvas;
+    QgsMapCanvas* canvas = nullptr;
 
     QString testIdentifyRaster( QgsRasterLayer* layer, double xGeoref, double yGeoref );
     QList<QgsMapToolIdentify::IdentifyResult> testIdentifyVector( QgsVectorLayer* layer, double xGeoref, double yGeoref );

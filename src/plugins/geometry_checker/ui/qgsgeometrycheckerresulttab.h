@@ -40,14 +40,14 @@ class QgsGeometryCheckerResultTab : public QWidget
     static QString sSettingsGroup;
 
   private:
-    QTabWidget* mTabWidget;
+    QTabWidget* mTabWidget = nullptr;
     Ui::QgsGeometryCheckerResultTab ui;
-    QgisInterface* mIface;
-    QgsGeometryChecker* mChecker;
-    QgsFeaturePool* mFeaturePool;
+    QgisInterface* mIface = nullptr;
+    QgsGeometryChecker* mChecker = nullptr;
+    QgsFeaturePool* mFeaturePool = nullptr;
     QList<QgsRubberBand*> mCurrentRubberBands;
     QMap<QgsGeometryCheckError*, QPersistentModelIndex> mErrorMap;
-    QDialog* mAttribTableDialog;
+    QDialog* mAttribTableDialog = nullptr;
     int mErrorCount;
     int mFixedCount;
     bool mCloseable;

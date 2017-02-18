@@ -55,8 +55,8 @@ class GUI_EXPORT QgsScaleVisibilityDialog : public QDialog
 
 
   private:
-    QGroupBox* mGroupBox;
-    QgsScaleRangeWidget* mScaleWidget;
+    QGroupBox* mGroupBox = nullptr;
+    QgsScaleRangeWidget* mScaleWidget = nullptr;
 
 };
 

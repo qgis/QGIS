@@ -418,15 +418,15 @@ class QgsWcsDownloadHandler : public QObject
     void finish() { QMetaObject::invokeMethod( mEventLoop, "quit", Qt::QueuedConnection ); }
 
     QgsWcsAuthorization& mAuth;
-    QEventLoop* mEventLoop;
+    QEventLoop* mEventLoop = nullptr;
 
-    QNetworkReply* mCacheReply;
+    QNetworkReply* mCacheReply = nullptr;
 
     QByteArray& mCachedData;
     QString mWcsVersion;
     QgsError& mCachedError;
 
-    QgsRasterBlockFeedback* mFeedback;
+    QgsRasterBlockFeedback* mFeedback = nullptr;
 
     static int sErrors; // this should be ideally per-provider...?
 };

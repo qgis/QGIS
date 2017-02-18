@@ -49,8 +49,8 @@ class APP_EXPORT QgsMapToolMeasureAngle: public QgsMapTool
   private:
     //! Points defining the angle (three for measuring)
     QList<QgsPoint> mAnglePoints;
-    QgsRubberBand* mRubberBand;
-    QgsDisplayAngle* mResultDisplay;
+    QgsRubberBand* mRubberBand = nullptr;
+    QgsDisplayAngle* mResultDisplay = nullptr;
 
     //! Creates a new rubber band and deletes the old one
     void createRubberBand();

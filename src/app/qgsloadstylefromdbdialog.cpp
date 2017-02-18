@@ -142,7 +142,7 @@ void QgsLoadStyleFromDBDialog::onOthersTableSelectionChanged()
 
 void QgsLoadStyleFromDBDialog::selectionChanged( QTableWidget *styleTable )
 {
-  QTableWidgetItem *item;
+  QTableWidgetItem *item = nullptr;
   QList<QTableWidgetItem *> selected = styleTable->selectedItems();
 
   if ( !selected.isEmpty() )

@@ -92,13 +92,13 @@ class QgsCompassPlugin: public QObject, public QgisPlugin, private Ui::QgsCompas
     //! Category of the plugin
     QString pluginCategoryQString;
     //! Pointer to the QGIS interface object
-    QgisInterface *mQGisIface;
+    QgisInterface *mQGisIface = nullptr;
     //! Pointer to the QAction object used in the menu and toolbar
-    QAction *mActionRunCompass;
-    QAction *mActionAboutCompass;
+    QAction *mActionRunCompass = nullptr;
+    QAction *mActionAboutCompass = nullptr;
 
-    QDockWidget *mDock;
-    QgsCompassPluginGui *mQgsCompassPluginGui;
+    QDockWidget *mDock = nullptr;
+    QgsCompassPluginGui *mQgsCompassPluginGui = nullptr;
 };
 
 #endif

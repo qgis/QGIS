@@ -318,7 +318,7 @@ QString QgsProjectionSelector::selectedProj4String()
 
   QgsDebugMsg( "db = " + databaseFileName );
 
-  sqlite3 *database;
+  sqlite3 *database = nullptr;
   int rc = sqlite3_open_v2( databaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
   if ( rc )
   {
@@ -327,8 +327,8 @@ QString QgsProjectionSelector::selectedProj4String()
   }
 
   // prepare the sql statement
-  const char *tail;
-  sqlite3_stmt *stmt;
+  const char *tail = nullptr;
+  sqlite3_stmt *stmt = nullptr;
   QString sql = QStringLiteral( "select parameters from tbl_srs where srs_id=%1" ).arg( srsId );
 
   QgsDebugMsg( "Selection sql: " + sql );
@@ -387,7 +387,7 @@ QString QgsProjectionSelector::getSelectedExpression( const QString& expression 
   // XXX We could probabaly hold the database open for the life of this object,
   // assuming that it will never be used anywhere else. Given the low overhead,
   // opening it each time seems to be a reasonable approach at this time.
-  sqlite3 *database;
+  sqlite3 *database = nullptr;
   int rc = sqlite3_open_v2( databaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
   if ( rc )
   {
@@ -396,8 +396,8 @@ QString QgsProjectionSelector::getSelectedExpression( const QString& expression 
   }
 
   // prepare the sql statement
-  const char *tail;
-  sqlite3_stmt *stmt;
+  const char *tail = nullptr;
+  sqlite3_stmt *stmt = nullptr;
   QString sql = QStringLiteral( "select %1 from tbl_srs where srs_id=%2" )
                 .arg( expression,
                       lvi->text( QgisCrsIdColumn ) );
@@ -490,9 +490,9 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> *crsFilter )
     return;
   }
 
-  sqlite3      *database;
-  const char   *tail;
-  sqlite3_stmt *stmt;
+  sqlite3      *database = nullptr;
+  const char   *tail = nullptr;
+  sqlite3_stmt *stmt = nullptr;
   //check the db is available
   int result = sqlite3_open_v2( databaseFileName.toUtf8().constData(), &database, SQLITE_OPEN_READONLY, nullptr );
   if ( result )
@@ -512,7 +512,7 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> *crsFilter )
   // XXX Need to free memory from the error msg if one is set
   if ( result == SQLITE_OK )
   {
-    QTreeWidgetItem *newItem;
+    QTreeWidgetItem *newItem = nullptr;
     while ( sqlite3_step( stmt ) == SQLITE_ROW )
     {
       newItem = new QTreeWidgetItem( mUserProjList, QStringList( QString::fromUtf8(( char * )sqlite3_column_text( stmt, 0 ) ) ) );
@@ -573,7 +573,7 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
   }
 
   // open the database containing the spatial reference data
-  sqlite3 *database;
+  sqlite3 *database = nullptr;
   int rc = sqlite3_open_v2( mSrsDatabaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
   if ( rc )
   {
@@ -583,8 +583,8 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
     return;
   }
 
-  const char *tail;
-  sqlite3_stmt *stmt;
+  const char *tail = nullptr;
+  sqlite3_stmt *stmt = nullptr;
   // Set up the query to retrieve the projection information needed to populate the list
   //note I am giving the full field names for clarity here and in case someone
   //changes the underlying view TS
@@ -595,7 +595,7 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
   // XXX Need to free memory from the error msg if one is set
   if ( rc == SQLITE_OK )
   {
-    QTreeWidgetItem *newItem;
+    QTreeWidgetItem *newItem = nullptr;
     // Cache some stuff to speed up creating of the list of projected
     // spatial reference systems
     QString previousSrsType( QLatin1String( "" ) );
@@ -620,7 +620,7 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
       else
       {
         // This is a projected srs
-        QTreeWidgetItem *node;
+        QTreeWidgetItem *node = nullptr;
         QString srsType = QString::fromUtf8(( char* )sqlite3_column_text( stmt, 4 ) );
         // Find the node for this type and add the projection to it
         // If the node doesn't exist, create it
@@ -879,9 +879,9 @@ long QgsProjectionSelector::getLargestCrsIdMatch( const QString& theSql )
   // Now perform the actual search
   //
 
-  sqlite3      *database;
-  const char   *tail;
-  sqlite3_stmt *stmt;
+  sqlite3      *database = nullptr;
+  const char   *tail = nullptr;
+  sqlite3_stmt *stmt = nullptr;
   int           result;
 
   // first we search the users db as any srsid there will be definition be greater than in sys db
@@ -942,9 +942,9 @@ long QgsProjectionSelector::getLargestCrsIdMatch( const QString& theSql )
 
 QStringList QgsProjectionSelector::authorities()
 {
-  sqlite3      *database;
-  const char   *tail;
-  sqlite3_stmt *stmt;
+  sqlite3      *database = nullptr;
+  const char   *tail = nullptr;
+  sqlite3_stmt *stmt = nullptr;
 
   int result = sqlite3_open_v2( mSrsDatabaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
   if ( result )

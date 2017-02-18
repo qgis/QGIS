@@ -174,13 +174,13 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      */
     virtual void drawHistogram();
 
-    QwtPlot* mPlot;
+    QwtPlot* mPlot = nullptr;
     QgsRangeList mRanges;
     QList< QwtPlotMarker* > mRangeMarkers;
 
   private:
 
-    QgsVectorLayer * mVectorLayer;
+    QgsVectorLayer * mVectorLayer = nullptr;
     QString mSourceFieldExp;
     QList<double> mValues;
     QgsStatisticalSummary mStats;

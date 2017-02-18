@@ -43,7 +43,7 @@ class TestQgsFieldCalculator : public QObject
     void testAreaCalculations();
 
   private:
-    QgisApp * mQgisApp;
+    QgisApp * mQgisApp = nullptr;
 };
 
 TestQgsFieldCalculator::TestQgsFieldCalculator()

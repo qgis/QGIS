@@ -95,7 +95,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
     //! Geometry type of layer
     QgsWkbTypes::GeometryType mLayerGeometryType;
 
-    QgsFeatureRenderer* mRenderer;
+    QgsFeatureRenderer* mRenderer = nullptr;
 
     // these are needed only if using own renderer loop
 
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
     //! Layer's CRS
     QgsCoordinateReferenceSystem mCrs;
     //! Layer's feature source
-    QgsAbstractFeatureSource* mSource;
+    QgsAbstractFeatureSource* mSource = nullptr;
     //! Whether layer's feature source is owned
     bool mOwnsSource;
 

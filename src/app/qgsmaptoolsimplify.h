@@ -45,7 +45,7 @@ class APP_EXPORT QgsSimplifyDialog : public QDialog, private Ui::SimplifyLineDia
     virtual void closeEvent( QCloseEvent* e ) override;
 
   private:
-    QgsMapToolSimplify* mTool;
+    QgsMapToolSimplify* mTool = nullptr;
 
 };
 
@@ -93,7 +93,7 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 
     // data
     //! Dialog with slider to set correct tolerance value
-    QgsSimplifyDialog* mSimplifyDialog;
+    QgsSimplifyDialog* mSimplifyDialog = nullptr;
 
     //! Rubber bands to draw current state of simplification
     QList<QgsRubberBand*> mRubberBands;
@@ -108,7 +108,7 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     //! stores actual selection rect
     QRect mSelectionRect;
     //! shows actual selection rect
-    QgsRubberBand* mSelectionRubberBand;
+    QgsRubberBand* mSelectionRubberBand = nullptr;
     //! Flag to indicate a map canvas drag operation is taking place
     bool mDragging;
 

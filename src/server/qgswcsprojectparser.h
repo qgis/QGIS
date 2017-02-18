@@ -42,8 +42,8 @@ class SERVER_EXPORT QgsWCSProjectParser
     QList<QgsMapLayer*> mapLayerFromCoverage( const QString& cName, bool useCache = true ) const;
 
   private:
-    QgsServerProjectParser* mProjectParser;
-    const QgsAccessControl* mAccessControl;
+    QgsServerProjectParser* mProjectParser = nullptr;
+    const QgsAccessControl* mAccessControl = nullptr;
 
 };
 

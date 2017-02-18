@@ -46,8 +46,8 @@ class GUI_EXPORT QgsDialog : public QDialog
     QDialogButtonBox *buttonBox() { return mButtonBox; }
 
   protected:
-    QVBoxLayout *mLayout;
-    QDialogButtonBox *mButtonBox;
+    QVBoxLayout *mLayout = nullptr;
+    QDialogButtonBox *mButtonBox = nullptr;
 };
 
 #endif

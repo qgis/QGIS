@@ -174,18 +174,18 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
 
   private:
 
-    QWidget* mEditPage;
-    QWidget* mSearchPage;
-    QStackedWidget* mStack;
-    QWidget* mSearchFrame;
+    QWidget* mEditPage = nullptr;
+    QWidget* mSearchPage = nullptr;
+    QStackedWidget* mStack = nullptr;
+    QWidget* mSearchFrame = nullptr;
 
-    QgsEditorWidgetWrapper* mWidget;
+    QgsEditorWidgetWrapper* mWidget = nullptr;
     QList< QgsSearchWidgetWrapper* > mSearchWidgets;
-    QgsAttributeForm* mForm;
+    QgsAttributeForm* mForm = nullptr;
     Mode mMode;
 
-    QgsMultiEditToolButton* mMultiEditButton;
-    QgsSearchWidgetToolButton* mSearchWidgetToolButton;
+    QgsMultiEditToolButton* mMultiEditButton = nullptr;
+    QgsSearchWidgetToolButton* mSearchWidgetToolButton = nullptr;
     QVariant mPreviousValue;
     bool mBlockValueUpdate;
     bool mIsMixed;

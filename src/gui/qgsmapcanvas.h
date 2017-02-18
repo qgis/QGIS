@@ -632,7 +632,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QgsMapSettings mSettings;
 
     //! owns pixmap with rendered map and controls rendering
-    QgsMapCanvasMap* mMap;
+    QgsMapCanvasMap* mMap = nullptr;
 
     //! Flag indicating if the map canvas is frozen.
     bool mFrozen;
@@ -644,16 +644,16 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool mRenderFlag;
 
     //! current layer in legend
-    QgsMapLayer* mCurrentLayer;
+    QgsMapLayer* mCurrentLayer = nullptr;
 
     //! graphics scene manages canvas items
-    QGraphicsScene* mScene;
+    QGraphicsScene* mScene = nullptr;
 
     //! pointer to current map tool
-    QgsMapTool* mMapTool;
+    QgsMapTool* mMapTool = nullptr;
 
     //! previous tool if current is for zooming/panning
-    QgsMapTool* mLastNonZoomMapTool;
+    QgsMapTool* mLastNonZoomMapTool = nullptr;
 
     //! recently used extent
     QList <QgsRectangle> mLastExtent;
@@ -666,13 +666,13 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QTimer mMapUpdateTimer;
 
     //! Job that takes care of map rendering in background
-    QgsMapRendererQImageJob* mJob;
+    QgsMapRendererQImageJob* mJob = nullptr;
 
     //! Flag determining whether the active job has been canceled
     bool mJobCanceled;
 
     //! Labeling results from the recently rendered map
-    QgsLabelingResults* mLabelingResults;
+    QgsLabelingResults* mLabelingResults = nullptr;
 
     //! Whether layers are rendered sequentially or in parallel
     bool mUseParallelRendering;
@@ -681,15 +681,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool mDrawRenderingStats;
 
     //! Optionally use cache with rendered map layers for the current map settings
-    QgsMapRendererCache* mCache;
+    QgsMapRendererCache* mCache = nullptr;
 
-    QTimer *mResizeTimer;
+    QTimer *mResizeTimer = nullptr;
 
-    QgsPreviewEffect* mPreviewEffect;
+    QgsPreviewEffect* mPreviewEffect = nullptr;
 
     QgsRectangle imageRect( const QImage& img, const QgsMapSettings& mapSettings );
 
-    QgsSnappingUtils* mSnappingUtils;
+    QgsSnappingUtils* mSnappingUtils = nullptr;
 
     //! lock the scale, so zooming can be performed using magnication
     bool mScaleLocked;

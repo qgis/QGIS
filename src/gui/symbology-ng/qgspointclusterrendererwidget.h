@@ -56,7 +56,7 @@ class GUI_EXPORT QgsPointClusterRendererWidget: public QgsRendererWidget, privat
     void setContext( const QgsSymbolWidgetContext& context ) override;
 
   private:
-    QgsPointClusterRenderer* mRenderer;
+    QgsPointClusterRenderer* mRenderer = nullptr;
 
     void blockAllSignals( bool block );
     void updateCenterIcon();

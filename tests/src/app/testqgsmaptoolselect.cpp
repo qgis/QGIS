@@ -45,7 +45,7 @@ class TestQgsMapToolSelect : public QObject
     void selectInvalidPolygons(); // test selecting invalid polygons
 
   private:
-    QgsMapCanvas* canvas;
+    QgsMapCanvas* canvas = nullptr;
 
     QgsFeatureList testSelectVector( QgsVectorLayer* layer, double xGeoref, double yGeoref );
 

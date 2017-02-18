@@ -138,11 +138,11 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     void showRubberFeature( QgsVectorLayer *lyr, QgsFeatureId id );
 
     //! Pointer to Interface QGIS
-    QgisInterface* mIface;
+    QgisInterface* mIface = nullptr;
     //! Target Layer, the query will be performed on it
-    QgsVectorLayer* mLayerTarget;
+    QgsVectorLayer* mLayerTarget = nullptr;
     //! Reference Layer, the query will be based on it
-    QgsVectorLayer* mLayerReference;
+    QgsVectorLayer* mLayerReference = nullptr;
     //! Stores ID's from spatial query
     QgsFeatureIds mFeatureResult;
     //! Stores ID's invalid of target layer
@@ -152,7 +152,7 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     //! Map for Id name of vector layers (use in signal_qgis_layerWillBeRemoved)
     QMap<QString, QgsVectorLayer *> mMapIdVectorLayers;
     //! Rubber band for features result
-    QgsRubberSelectId* mRubberSelectId;
+    QgsRubberSelectId* mRubberSelectId = nullptr;
     //! Text for source selected
     QString mSourceSelected;
     bool mIsSelectedOperator;

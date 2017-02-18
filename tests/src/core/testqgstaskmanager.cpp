@@ -154,7 +154,7 @@ class FinishTask : public QgsTask
     {}
 
     bool desiredResult;
-    bool* resultObtained;
+    bool* resultObtained = nullptr;
 
   protected:
 

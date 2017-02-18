@@ -147,7 +147,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
     //! The references
     QMap<QString, QgsRelation> mRelations;
 
-    QgsProject* mProject;
+    QgsProject* mProject = nullptr;
 };
 
 #endif // QGSRELATIONMANAGER_H

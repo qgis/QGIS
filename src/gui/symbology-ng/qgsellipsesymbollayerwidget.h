@@ -38,7 +38,7 @@ class GUI_EXPORT QgsEllipseSymbolLayerWidget: public QgsSymbolLayerWidget, priva
     virtual QgsSymbolLayer* symbolLayer() override;
 
   protected:
-    QgsEllipseSymbolLayer* mLayer;
+    QgsEllipseSymbolLayer* mLayer = nullptr;
 
   private:
     void blockComboSignals( bool block );

@@ -33,8 +33,8 @@
 
 typedef struct Face_t
 {
-  const GEOSGeometry* geom;
-  GEOSGeometry* env;
+  const GEOSGeometry* geom = nullptr;
+  GEOSGeometry* env = nullptr;
   double envarea;
   struct Face_t* parent; // if this face is an hole of another one, or NULL
 } Face;
@@ -146,9 +146,9 @@ static GEOSGeometry* LWGEOM_GEOS_buildArea( const GEOSGeometry* geom_in, QString
 {
   GEOSContextHandle_t handle = QgsGeos::getGEOSHandler();
 
-  GEOSGeometry *tmp;
-  GEOSGeometry *shp;
-  GEOSGeometry* geos_result;
+  GEOSGeometry *tmp = nullptr;
+  GEOSGeometry *shp = nullptr;
+  GEOSGeometry* geos_result = nullptr;
   int srid = GEOSGetSRID_r( handle, geom_in );
 
   GEOSGeometry const *vgeoms[1];
@@ -271,12 +271,12 @@ static GEOSGeometry* LWGEOM_GEOS_getPointN( const GEOSGeometry* g_in, uint32_t n
   GEOSContextHandle_t handle = QgsGeos::getGEOSHandler();
 
   uint32_t dims;
-  const GEOSCoordSequence* seq_in;
+  const GEOSCoordSequence* seq_in = nullptr;
   GEOSCoordSeq seq_out;
   double val;
   uint32_t sz;
   int gn;
-  GEOSGeometry* ret;
+  GEOSGeometry* ret = nullptr;
 
   switch ( GEOSGeomTypeId_r( handle, g_in ) )
   {
@@ -496,8 +496,8 @@ static GEOSGeometry* LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry* gin, QStr
   // NOTE: the noding process may drop lines collapsing to points.
   //       We want to retrieve any of those
   {
-    GEOSGeometry* pi;
-    GEOSGeometry* po;
+    GEOSGeometry* pi = nullptr;
+    GEOSGeometry* po = nullptr;
 
     try
     {

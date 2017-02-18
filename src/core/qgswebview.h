@@ -125,8 +125,8 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
     void pageLoadFinished( bool ok );
 
   private:
-    QWebSettings *mSettings;
-    QWebPage *mPage;
+    QWebSettings *mSettings = nullptr;
+    QWebPage *mPage = nullptr;
 
 /// @endcond
 };

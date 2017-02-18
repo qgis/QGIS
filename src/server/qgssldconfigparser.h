@@ -134,7 +134,7 @@ class SERVER_EXPORT QgsSLDConfigParser : public QgsWmsConfigParser
   private:
 
     //! SLD as dom document
-    QDomDocument* mXMLDoc;
+    QDomDocument* mXMLDoc = nullptr;
 
     //! Map containing the WMS parameters of the request
     QMap<QString, QString> mParameterMap;
@@ -144,7 +144,7 @@ class SERVER_EXPORT QgsSLDConfigParser : public QgsWmsConfigParser
     //! Output units (pixel or mm)
     QgsUnitTypes::RenderUnit mOutputUnits;
 
-    QgsWmsConfigParser *mFallbackParser;
+    QgsWmsConfigParser *mFallbackParser = nullptr;
 
     QFont mLegendLayerFont;
 

@@ -84,8 +84,8 @@ class EffectItem : public QStandardItem
     }
 
   protected:
-    QgsPaintEffect* mEffect;
-    QgsEffectStackPropertiesWidget* mWidget;
+    QgsPaintEffect* mEffect = nullptr;
+    QgsEffectStackPropertiesWidget* mWidget = nullptr;
 };
 ///@endcond
 

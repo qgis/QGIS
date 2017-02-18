@@ -219,7 +219,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void on_mButtonAddColor_clicked();
 
   private:
-    QSettings *mSettings;
+    QSettings *mSettings = nullptr;
     QStringList i18nList();
     void initContrastEnhancement( QComboBox *cbox, const QString& name, const QString& defaultVal );
     void saveContrastEnhancement( QComboBox *cbox, const QString& name );
@@ -238,7 +238,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void addScaleToScaleList( QListWidgetItem* newItem );
 
   protected:
-    QgisAppStyleSheet* mStyleSheetBuilder;
+    QgisAppStyleSheet* mStyleSheetBuilder = nullptr;
     QMap<QString, QVariant> mStyleSheetNewOpts;
     QMap<QString, QVariant> mStyleSheetOldOpts;
 

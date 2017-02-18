@@ -201,7 +201,7 @@ void QgsBench::render()
 
   for ( int i = 0; i < mIterations; i++ )
   {
-    QgsMapRendererQImageJob* job;
+    QgsMapRendererQImageJob* job = nullptr;
     if ( mParallel )
       job = new QgsMapRendererParallelJob( mMapSettings );
     else

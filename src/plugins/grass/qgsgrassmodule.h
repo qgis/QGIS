@@ -132,13 +132,13 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
     void setProgress( int percent, bool force = false );
 
     //! Pointer to the QGIS interface object
-    QgisInterface *mIface;
+    QgisInterface *mIface = nullptr;
 
     //! Pointer to canvas
-    QgsMapCanvas *mCanvas;
+    QgsMapCanvas *mCanvas = nullptr;
 
     //! Pointer to GRASS Tools
-    QgsGrassTools *mTools;
+    QgsGrassTools *mTools = nullptr;
 
     //! Module definition file path (.qgm file)
     //QString mPath;
@@ -159,7 +159,7 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
     QString mAppDir;
 
     //! Pointer to options widget
-    QgsGrassModuleOptions *mOptions;
+    QgsGrassModuleOptions *mOptions = nullptr;
 
     //! Last raster output
     QStringList mOutputRaster;

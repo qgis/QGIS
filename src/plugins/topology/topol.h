@@ -95,10 +95,10 @@ class Topol: public QObject, public QgisPlugin
     ////////////////////////////////////////////////////////////////////
 
     //! Pointer to the QGIS interface object
-    QgisInterface *mQGisIface;
+    QgisInterface *mQGisIface = nullptr;
     //!pointer to the qaction for this plugin
-    QAction * mQActionPointer;
-    checkDock* mDock;
+    QAction * mQActionPointer = nullptr;
+    checkDock* mDock = nullptr;
 
     ////////////////////////////////////////////////////////////////////
     //

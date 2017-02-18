@@ -56,7 +56,7 @@ class QgsGlobeFeatureCursor : public osgEarth::Features::FeatureCursor
 
   private:
     QgsFeatureIterator mIterator;
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
     // Cached feature which will be returned next.
     // Always contains the next feature which will be returned
     // (Because hasMore() needs to know if we are able to return a next feature)

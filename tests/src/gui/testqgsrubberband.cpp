@@ -48,10 +48,10 @@ class TestQgsRubberband : public QObject
     void testClose(); //test closing geometry
 
   private:
-    QgsMapCanvas* mCanvas;
-    QgsVectorLayer* mPolygonLayer;
+    QgsMapCanvas* mCanvas = nullptr;
+    QgsVectorLayer* mPolygonLayer = nullptr;
     QString mTestDataDir;
-    QgsRubberBand* mRubberband;
+    QgsRubberBand* mRubberband = nullptr;
 };
 
 void TestQgsRubberband::initTestCase()

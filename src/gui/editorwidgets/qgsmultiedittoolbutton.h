@@ -107,7 +107,7 @@ class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
     State mState;
     QgsField mField;
 
-    QMenu* mMenu;
+    QMenu* mMenu = nullptr;
 
     void updateState();
 

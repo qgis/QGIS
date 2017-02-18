@@ -98,7 +98,7 @@ bool QgsOSMDatabase::close()
 
 int QgsOSMDatabase::runCountStatement( const char* sql ) const
 {
-  sqlite3_stmt* stmt;
+  sqlite3_stmt* stmt = nullptr;
   int res = sqlite3_prepare_v2( mDatabase, sql, -1, &stmt, nullptr );
   if ( res != SQLITE_OK )
     return -1;
@@ -182,7 +182,7 @@ QList<QgsOSMTagCountPair> QgsOSMDatabase::usedTags( bool ways ) const
 
   QString sql = QStringLiteral( "SELECT k, count(k) FROM %1_tags GROUP BY k" ).arg( ways ? "ways" : "nodes" );
 
-  sqlite3_stmt* stmt;
+  sqlite3_stmt* stmt = nullptr;
   if ( sqlite3_prepare_v2( mDatabase, sql.toUtf8().data(), -1, &stmt, nullptr ) != SQLITE_OK )
     return pairs;
 
@@ -384,7 +384,7 @@ void QgsOSMDatabase::exportSpatiaLiteNodes( const QString& tableName, const QStr
   for ( int i = 0; i < tagKeys.count(); ++i )
     sqlInsertPoint += QStringLiteral( ",?" );
   sqlInsertPoint += QLatin1String( ", GeomFromWKB(?, 4326))" );
-  sqlite3_stmt* stmtInsert;
+  sqlite3_stmt* stmtInsert = nullptr;
   if ( sqlite3_prepare_v2( mDatabase, sqlInsertPoint.toUtf8().constData(), -1, &stmtInsert, nullptr ) != SQLITE_OK )
   {
     mError = QStringLiteral( "Prepare SELECT FROM nodes failed." );
@@ -451,7 +451,7 @@ void QgsOSMDatabase::exportSpatiaLiteWays( bool closed, const QString& tableName
   for ( int i = 0; i < tagKeys.count(); ++i )
     sqlInsertLine += QStringLiteral( ",?" );
   sqlInsertLine += QLatin1String( ", GeomFromWKB(?, 4326))" );
-  sqlite3_stmt* stmtInsert;
+  sqlite3_stmt* stmtInsert = nullptr;
   if ( sqlite3_prepare_v2( mDatabase, sqlInsertLine.toUtf8().constData(), -1, &stmtInsert, nullptr ) != SQLITE_OK )
   {
     mError = QStringLiteral( "Prepare SELECT FROM ways failed." );

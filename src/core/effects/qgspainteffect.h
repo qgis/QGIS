@@ -228,13 +228,13 @@ class CORE_EXPORT QgsPaintEffect
 
   private:
 
-    const QPicture* mPicture;
-    QImage* mSourceImage;
+    const QPicture* mPicture = nullptr;
+    QImage* mSourceImage = nullptr;
     bool mOwnsImage;
 
-    QPainter* mPrevPainter;
-    QPainter* mEffectPainter;
-    QPicture* mTempPicture;
+    QPainter* mPrevPainter = nullptr;
+    QPainter* mEffectPainter = nullptr;
+    QPicture* mTempPicture = nullptr;
 
     QRectF imageBoundingRect( const QgsRenderContext& context ) const;
 
@@ -356,8 +356,8 @@ class CORE_EXPORT QgsEffectPainter
 
   private:
     QgsRenderContext& mRenderContext;
-    QPainter* mPainter;
-    QgsPaintEffect* mEffect;
+    QPainter* mPainter = nullptr;
+    QgsPaintEffect* mEffect = nullptr;
 };
 
 #endif // QGSPAINTEFFECT_H

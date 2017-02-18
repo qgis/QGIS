@@ -45,9 +45,9 @@ class TestQgsComposerEffects : public QObject
     void transparency(); //test if composer transparency is functioning
 
   private:
-    QgsComposition* mComposition;
-    QgsComposerShape *mComposerRect1;
-    QgsComposerShape *mComposerRect2;
+    QgsComposition* mComposition = nullptr;
+    QgsComposerShape *mComposerRect1 = nullptr;
+    QgsComposerShape *mComposerRect2 = nullptr;
     QString mReport;
 };
 

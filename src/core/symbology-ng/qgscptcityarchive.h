@@ -178,7 +178,7 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
   protected:
 
     Type mType;
-    QgsCptCityDataItem* mParent;
+    QgsCptCityDataItem* mParent = nullptr;
     QVector<QgsCptCityDataItem*> mChildren; // easier to have it always
     bool mPopulated;
     QString mName;
@@ -391,7 +391,7 @@ class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
     void removeRootItems();
 
     QVector<QgsCptCityDataItem*> mRootItems;
-    QgsCptCityArchive* mArchive;
+    QgsCptCityArchive* mArchive = nullptr;
     ViewType mViewType;
     QSize mIconSize;
 };

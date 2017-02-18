@@ -259,7 +259,7 @@ class ObservingObject : public QObject
     }
 
   private:
-    AccessibleProxyModel  *m_proxy;
+    AccessibleProxyModel  *m_proxy = nullptr;
     QList<QPersistentModelIndex> m_persistentSourceIndexes;
     QList<QPersistentModelIndex> m_persistentProxyIndexes;
 };

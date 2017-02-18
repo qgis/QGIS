@@ -473,9 +473,9 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString& db, const QS
     return d->mIsValid;
   }
 
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
+  sqlite3      *myDatabase = nullptr;
+  const char   *myTail = nullptr;
+  sqlite3_stmt *myPreparedStatement = nullptr;
   int           myResult;
   //check the db is available
   myResult = openDatabase( db, &myDatabase );
@@ -894,9 +894,9 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
   QgsCoordinateReferenceSystem::RecordMap myMap;
   QString myFieldName;
   QString myFieldValue;
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
+  sqlite3      *myDatabase = nullptr;
+  const char   *myTail = nullptr;
+  sqlite3_stmt *myPreparedStatement = nullptr;
   int           myResult;
 
   QgsDebugMsg( "running query: " + theSql );
@@ -1165,7 +1165,7 @@ void QgsCoordinateReferenceSystem::setMapUnits()
     return;
   }
 
-  char *unitName;
+  char *unitName = nullptr;
 
   // Of interest to us is that this call adds in a unit parameter if
   // one doesn't already exist.
@@ -1226,9 +1226,9 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
     return 0;
   }
 
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
+  sqlite3      *myDatabase = nullptr;
+  const char   *myTail = nullptr;
+  sqlite3_stmt *myPreparedStatement = nullptr;
   int           myResult;
 
   // Set up the query to retrieve the projection information
@@ -1332,7 +1332,7 @@ QString QgsCoordinateReferenceSystem::toWkt() const
 {
   if ( d->mWkt.isEmpty() )
   {
-    char *wkt;
+    char *wkt = nullptr;
     if ( OSRExportToWkt( d->mCRS, &wkt ) == OGRERR_NONE )
     {
       d->mWkt = wkt;
@@ -1554,7 +1554,7 @@ QString QgsCoordinateReferenceSystem::proj4FromSrsId( const int theSrsId )
   }
   QgsDebugMsg( "db = " + myDatabaseFileName );
 
-  sqlite3 *db;
+  sqlite3 *db = nullptr;
   int rc;
   rc = openDatabase( myDatabaseFileName, &db );
   if ( rc )
@@ -1562,8 +1562,8 @@ QString QgsCoordinateReferenceSystem::proj4FromSrsId( const int theSrsId )
     return QString();
   }
   // prepare the sql statement
-  const char *pzTail;
-  sqlite3_stmt *ppStmt;
+  const char *pzTail = nullptr;
+  sqlite3_stmt *ppStmt = nullptr;
 
   rc = sqlite3_prepare( db, mySql.toUtf8(), mySql.toUtf8().length(), &ppStmt, &pzTail );
   // XXX Need to free memory from the error msg if one is set
@@ -1690,9 +1690,9 @@ bool QgsCoordinateReferenceSystem::saveAsUserCrs( const QString& name )
             + ',' + quotedValue( toProj4() )
             + ",0)"; // <-- is_geo shamelessly hard coded for now
   }
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
+  sqlite3      *myDatabase = nullptr;
+  const char   *myTail = nullptr;
+  sqlite3_stmt *myPreparedStatement = nullptr;
   int           myResult;
   //check the db is available
   myResult = sqlite3_open( QgsApplication::qgisUserDatabaseFilePath().toUtf8().data(), &myDatabase );
@@ -1734,9 +1734,9 @@ bool QgsCoordinateReferenceSystem::saveAsUserCrs( const QString& name )
 
 long QgsCoordinateReferenceSystem::getRecordCount()
 {
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
+  sqlite3      *myDatabase = nullptr;
+  const char   *myTail = nullptr;
+  sqlite3_stmt *myPreparedStatement = nullptr;
   int           myResult;
   long          myRecordCount = 0;
   //check the db is available
@@ -1901,7 +1901,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
   qDebug( "Load srs db from: %s", QgsApplication::srsDatabaseFilePath().toLocal8Bit().constData() );
 
-  sqlite3 *database;
+  sqlite3 *database = nullptr;
   if ( sqlite3_open( dbFilePath.toUtf8().constData(), &database ) != SQLITE_OK )
   {
     qCritical( "Could not open database: %s [%s]\n", QgsApplication::srsDatabaseFilePath().toLocal8Bit().constData(), sqlite3_errmsg( database ) );
@@ -1921,8 +1921,8 @@ int QgsCoordinateReferenceSystem::syncDatabase()
   ( void )sqlite3_exec( database, "UPDATE tbl_srs SET srid=141001 WHERE srid=41001 AND auth_name='OSGEO' AND auth_id='41001'", nullptr, 0, 0 );
 
   OGRSpatialReferenceH crs = OSRNewSpatialReference( nullptr );
-  const char *tail;
-  sqlite3_stmt *select;
+  const char *tail = nullptr;
+  sqlite3_stmt *select = nullptr;
   char *errMsg = nullptr;
 
   QString proj4;
@@ -2171,8 +2171,8 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
 
   struct
   {
-    const char *src;
-    const char *dst;
+    const char *src; //skip-init-check
+    const char *dst; //skip-init-check
     int idx;
   } map[] =
   {
@@ -2263,7 +2263,7 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
   Q_ASSERT( idxry >= 0 );
   Q_ASSERT( idxrz >= 0 );
 
-  sqlite3 *db;
+  sqlite3 *db = nullptr;
   int openResult = sqlite3_open( dbPath.toUtf8().constData(), &db );
   if ( openResult != SQLITE_OK )
   {
@@ -2315,7 +2315,7 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
     }
 
     //entry already in db?
-    sqlite3_stmt *stmt;
+    sqlite3_stmt *stmt = nullptr;
     QString cOpCode;
     QString sql = QStringLiteral( "SELECT coord_op_code FROM tbl_datum_transform WHERE coord_op_code=%1" ).arg( v[ idxid ] );
     int prepareRes = sqlite3_prepare( db, sql.toLatin1(), sql.size(), &stmt, nullptr );

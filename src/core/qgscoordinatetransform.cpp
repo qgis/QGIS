@@ -689,7 +689,7 @@ QList< QList< int > > QgsCoordinateTransform::datumTransformations( const QgsCoo
 
 void QgsCoordinateTransform::searchDatumTransform( const QString& sql, QList< int >& transforms )
 {
-  sqlite3* db;
+  sqlite3* db = nullptr;
   int openResult = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().constData(), &db, SQLITE_OPEN_READONLY, 0 );
   if ( openResult != SQLITE_OK )
   {
@@ -697,7 +697,7 @@ void QgsCoordinateTransform::searchDatumTransform( const QString& sql, QList< in
     return;
   }
 
-  sqlite3_stmt* stmt;
+  sqlite3_stmt* stmt = nullptr;
   int prepareRes = sqlite3_prepare( db, sql.toLatin1(), sql.size(), &stmt, nullptr );
   if ( prepareRes != SQLITE_OK )
   {
@@ -723,7 +723,7 @@ QString QgsCoordinateTransform::datumTransformString( int datumTransform )
 
 bool QgsCoordinateTransform::datumTransformCrsInfo( int datumTransform, int& epsgNr, QString& srcProjection, QString& dstProjection, QString &remarks, QString &scope, bool &preferred, bool &deprecated )
 {
-  sqlite3* db;
+  sqlite3* db = nullptr;
   int openResult = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().constData(), &db, SQLITE_OPEN_READONLY, 0 );
   if ( openResult != SQLITE_OK )
   {
@@ -731,7 +731,7 @@ bool QgsCoordinateTransform::datumTransformCrsInfo( int datumTransform, int& eps
     return false;
   }
 
-  sqlite3_stmt* stmt;
+  sqlite3_stmt* stmt = nullptr;
   QString sql = QStringLiteral( "SELECT epsg_nr,source_crs_code,target_crs_code,remarks,scope,preferred,deprecated FROM tbl_datum_transform WHERE coord_op_code=%1" ).arg( datumTransform );
   int prepareRes = sqlite3_prepare( db, sql.toLatin1(), sql.size(), &stmt, nullptr );
   if ( prepareRes != SQLITE_OK )

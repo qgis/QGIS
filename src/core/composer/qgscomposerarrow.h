@@ -233,7 +233,7 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      */
     int mBoundsBehavior;
 
-    QgsLineSymbol* mLineSymbol;
+    QgsLineSymbol* mLineSymbol = nullptr;
 
     /** Adapts the item scene rect to contain the start point, the stop point including the arrow marker and the outline.
      *  Needs to be called whenever the arrow width/height, the outline with or the endpoints are changed

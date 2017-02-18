@@ -175,7 +175,7 @@ class QgsPostgresResult
     PGresult *result() const { return mRes; }
 
   private:
-    PGresult *mRes;
+    PGresult *mRes = nullptr;
 
     QgsPostgresResult( const QgsPostgresResult& rh );
 };
@@ -345,7 +345,7 @@ class QgsPostgresConn : public QObject
 
     int mRef;
     int mOpenCursors;
-    PGconn *mConn;
+    PGconn *mConn = nullptr;
     QString mConnInfo;
 
     //! GEOS capability

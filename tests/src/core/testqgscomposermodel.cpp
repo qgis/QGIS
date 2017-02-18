@@ -64,10 +64,10 @@ class TestQgsComposerModel : public QObject
     void reorderToBottomWithRemoved(); //test reordering to bottom with removed items
 
   private:
-    QgsComposition *mComposition;
-    QgsComposerLabel *mItem1;
-    QgsComposerLabel *mItem2;
-    QgsComposerLabel *mItem3;
+    QgsComposition *mComposition = nullptr;
+    QgsComposerLabel *mItem1 = nullptr;
+    QgsComposerLabel *mItem2 = nullptr;
+    QgsComposerLabel *mItem3 = nullptr;
 };
 
 void TestQgsComposerModel::initTestCase()

@@ -67,9 +67,9 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
     void updateConstraintWidgetStatus( ConstraintResult status ) override;
 
   private:
-    QgsRelationReferenceWidget* mWidget;
-    QgsMapCanvas* mCanvas;
-    QgsMessageBar* mMessageBar;
+    QgsRelationReferenceWidget* mWidget = nullptr;
+    QgsMapCanvas* mCanvas = nullptr;
+    QgsMessageBar* mMessageBar = nullptr;
     bool mIndeterminateState;
 };
 

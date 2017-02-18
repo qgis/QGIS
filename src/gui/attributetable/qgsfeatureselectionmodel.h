@@ -112,8 +112,8 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
     QModelIndexList expandIndexToRow( const QModelIndex& index ) const;
 
   private:
-    QgsFeatureModel* mFeatureModel;
-    QgsIFeatureSelectionManager* mFeatureSelectionManager;
+    QgsFeatureModel* mFeatureModel = nullptr;
+    QgsIFeatureSelectionManager* mFeatureSelectionManager = nullptr;
     bool mSyncEnabled;
 
     //! If sync is disabled

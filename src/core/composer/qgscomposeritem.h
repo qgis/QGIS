@@ -558,9 +558,9 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     QPointF mLastMouseEventPos;
 
     //! Rectangle used during move and resize actions
-    QGraphicsRectItem* mBoundingResizeRectangle;
-    QGraphicsLineItem* mHAlignSnapItem;
-    QGraphicsLineItem* mVAlignSnapItem;
+    QGraphicsRectItem* mBoundingResizeRectangle = nullptr;
+    QGraphicsLineItem* mHAlignSnapItem = nullptr;
+    QGraphicsLineItem* mVAlignSnapItem = nullptr;
 
     //! True if item fram needs to be painted
     bool mFrame;
@@ -594,7 +594,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     //! Composition blend mode for item
     QPainter::CompositionMode mBlendMode;
     bool mEffectsEnabled;
-    QgsComposerEffect *mEffect;
+    QgsComposerEffect *mEffect = nullptr;
 
     //! Item transparency
     int mTransparency;

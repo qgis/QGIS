@@ -136,7 +136,7 @@ class SERVER_EXPORT QgsServerProjectParser
   private:
 
     //! Content of project file
-    QDomDocument* mXMLDoc;
+    QDomDocument* mXMLDoc = nullptr;
 
     //! Absolute project file path (including file name)
     QString mProjectPath;

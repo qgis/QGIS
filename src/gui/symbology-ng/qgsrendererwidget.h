@@ -84,11 +84,11 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
     void layerVariablesChanged();
 
   protected:
-    QgsVectorLayer* mLayer;
-    QgsStyle* mStyle;
-    QMenu* contextMenu;
-    QAction* mCopyAction;
-    QAction* mPasteAction;
+    QgsVectorLayer* mLayer = nullptr;
+    QgsStyle* mStyle = nullptr;
+    QMenu* contextMenu = nullptr;
+    QAction* mCopyAction = nullptr;
+    QAction* mPasteAction = nullptr;
 
     //! Context in which widget is shown
     QgsSymbolWidgetContext mContext;
@@ -193,7 +193,7 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
     virtual void setDataDefined( QgsSymbol* symbol, const QgsProperty& dd ) = 0;
 
     QList<QgsSymbol*> mSymbolList;
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
 
     QgsSymbolWidgetContext mContext;
 

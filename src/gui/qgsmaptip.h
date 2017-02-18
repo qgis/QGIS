@@ -87,8 +87,8 @@ class GUI_EXPORT QgsMapTip : public QWidget
     // Flag to indicate if a maptip is currently being displayed
     bool mMapTipVisible;
 
-    QWidget* mWidget;
-    QgsWebView* mWebView;
+    QWidget* mWidget = nullptr;
+    QgsWebView* mWebView = nullptr;
 
   private slots:
     void onLinkClicked( const QUrl& url );

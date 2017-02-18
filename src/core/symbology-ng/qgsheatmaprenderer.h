@@ -178,7 +178,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     int mWeightAttrNum;
     std::unique_ptr<QgsExpression> mWeightExpression;
 
-    QgsColorRamp* mGradientRamp;
+    QgsColorRamp* mGradientRamp = nullptr;
 
     double mExplicitMax;
     int mRenderQuality;

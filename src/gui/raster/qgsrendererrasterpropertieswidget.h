@@ -85,8 +85,8 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
   private:
     void setRendererWidget( const QString& rendererName );
 
-    QgsRasterLayer* mRasterLayer;
-    QgsRasterRendererWidget* mRendererWidget;
+    QgsRasterLayer* mRasterLayer = nullptr;
+    QgsRasterRendererWidget* mRendererWidget = nullptr;
 };
 
 #endif // QGSRENDERERRASTERPROPERTIESDIALOG_H

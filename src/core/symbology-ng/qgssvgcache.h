@@ -73,14 +73,14 @@ class CORE_EXPORT QgsSvgCacheEntry
 
     QColor fill;
     QColor outline;
-    QImage* image;
-    QPicture* picture;
+    QImage* image = nullptr;
+    QPicture* picture = nullptr;
     //content (with params replaced)
     QByteArray svgContent;
 
     //keep entries on a least, sorted by last access
-    QgsSvgCacheEntry* nextEntry;
-    QgsSvgCacheEntry* previousEntry;
+    QgsSvgCacheEntry* nextEntry = nullptr;
+    QgsSvgCacheEntry* previousEntry = nullptr;
 
     //! Don't consider image, picture, last used timestamp for comparison
     bool operator==( const QgsSvgCacheEntry& other ) const;
@@ -228,8 +228,8 @@ class CORE_EXPORT QgsSvgCache : public QObject
 
     //The svg cache keeps the entries on a double connected list, moving the current entry to the front.
     //That way, removing entries for more space can start with the least used objects.
-    QgsSvgCacheEntry* mLeastRecentEntry;
-    QgsSvgCacheEntry* mMostRecentEntry;
+    QgsSvgCacheEntry* mLeastRecentEntry = nullptr;
+    QgsSvgCacheEntry* mMostRecentEntry = nullptr;
 
     //! Maximum cache size
     static const long MAXIMUM_SIZE = 20000000;

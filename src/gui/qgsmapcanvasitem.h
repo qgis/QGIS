@@ -75,7 +75,7 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
   protected:
 
     //! pointer to map canvas
-    QgsMapCanvas* mMapCanvas;
+    QgsMapCanvas* mMapCanvas = nullptr;
 
     //! cached canvas item rectangle in map coordinates
     //! encodes position (xmin,ymax) and size (width/height)

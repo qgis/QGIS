@@ -53,7 +53,7 @@ class QgsDxfLabelProvider : public QgsVectorLayerLabelProvider
 
   protected:
     //! pointer to parent DXF export where this instance is used
-    QgsDxfExport* mDxfExport;
+    QgsDxfExport* mDxfExport = nullptr;
 };
 
 /** \ingroup core
@@ -92,7 +92,7 @@ class QgsDxfRuleBasedLabelProvider : public QgsRuleBasedLabelProvider
 
   protected:
     //! pointer to parent DXF export where this instance is used
-    QgsDxfExport* mDxfExport;
+    QgsDxfExport* mDxfExport = nullptr;
 };
 
 

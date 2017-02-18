@@ -54,7 +54,7 @@ class CORE_EXPORT QgsContextHelp : public QObject
     void showContext( const QString& context );
 
     static QgsContextHelp *sContextHelp; // Singleton instance
-    QProcess *mProcess;
+    QProcess *mProcess = nullptr;
 
     static QHash<QString, QString> sContextHelpTexts;
 

@@ -957,7 +957,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QString mErrorMessage;
 
-    QgsProjectBadLayerHandler* mBadLayerHandler;
+    QgsProjectBadLayerHandler* mBadLayerHandler = nullptr;
 
     /** Embedded layers which are defined in other projects. Key: layer id,
      * value: pair< project file path, save layer yes / no (e.g. if the layer is part of an embedded group, loading/saving is done by the legend)
@@ -967,13 +967,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QgsSnappingConfig mSnappingConfig;
 
-    QgsRelationManager* mRelationManager;
+    QgsRelationManager* mRelationManager = nullptr;
 
     std::unique_ptr<QgsAnnotationManager> mAnnotationManager;
 
-    QgsLayerTreeGroup* mRootGroup;
+    QgsLayerTreeGroup* mRootGroup = nullptr;
 
-    QgsLayerTreeRegistryBridge* mLayerTreeRegistryBridge;
+    QgsLayerTreeRegistryBridge* mLayerTreeRegistryBridge = nullptr;
 
     //! map of transaction group: QPair( providerKey, connString ) -> transactionGroup
     QMap< QPair< QString, QString>, QgsTransactionGroup*> mTransactionGroups;

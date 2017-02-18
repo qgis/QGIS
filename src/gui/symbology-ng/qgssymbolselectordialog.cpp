@@ -208,8 +208,8 @@ class SymbolLayerItem : public QStandardItem
     }
 
   protected:
-    QgsSymbolLayer* mLayer;
-    QgsSymbol* mSymbol;
+    QgsSymbolLayer* mLayer = nullptr;
+    QgsSymbol* mSymbol = nullptr;
     bool mIsLayer;
 };
 

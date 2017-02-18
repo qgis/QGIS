@@ -128,11 +128,11 @@ class TestQgsLegendRenderer : public QObject
     void testDiagramSizeLegend();
 
   private:
-    QgsLayerTreeGroup* mRoot;
+    QgsLayerTreeGroup* mRoot = nullptr;
     QgsVectorLayer* mVL1; // line
     QgsVectorLayer* mVL2; // polygon
     QgsVectorLayer* mVL3; // point
-    QgsRasterLayer* mRL;
+    QgsRasterLayer* mRL = nullptr;
     QString mReport;
     bool _testLegendColumns( int itemCount, int columnCount, const QString& testName );
 };

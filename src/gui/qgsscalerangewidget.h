@@ -91,14 +91,14 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
 
   private:
     //! pointer to the map canvas used for current buttons.
-    QgsMapCanvas* mCanvas;
+    QgsMapCanvas* mCanvas = nullptr;
 
     // ui
-    QGridLayout* mLayout;
-    QLabel* mMaximumScaleIconLabel;
-    QLabel* mMinimumScaleIconLabel;
-    QgsScaleWidget* mMaximumScaleWidget;
-    QgsScaleWidget* mMinimumScaleWidget;
+    QGridLayout* mLayout = nullptr;
+    QLabel* mMaximumScaleIconLabel = nullptr;
+    QLabel* mMinimumScaleIconLabel = nullptr;
+    QgsScaleWidget* mMaximumScaleWidget = nullptr;
+    QgsScaleWidget* mMinimumScaleWidget = nullptr;
 };
 
 #endif // QGSSCALERANGEWIDGET_H

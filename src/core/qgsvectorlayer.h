@@ -1939,10 +1939,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
   private:                       // Private attributes
 
-    QgsConditionalLayerStyles * mConditionalStyles;
+    QgsConditionalLayerStyles * mConditionalStyles = nullptr;
 
     //! Pointer to data provider derived from the abastract base class QgsDataProvider
-    QgsVectorDataProvider *mDataProvider;
+    QgsVectorDataProvider *mDataProvider = nullptr;
 
     //! The preview expression used to generate a human readable preview string for features
     QString mDisplayExpression;
@@ -1953,7 +1953,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QString mProviderKey;
 
     //! The user-defined actions that are accessed from the Identify Results dialog box
-    QgsActionManager* mActions;
+    QgsActionManager* mActions = nullptr;
 
     //! Flag indicating whether the layer is in read-only mode (editing disabled) or not
     bool mReadOnly;
@@ -1997,13 +1997,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsWkbTypes::Type mWkbType;
 
     //! Renderer object which holds the information about how to display the features
-    QgsFeatureRenderer *mRenderer;
+    QgsFeatureRenderer *mRenderer = nullptr;
 
     //! Simplification object which holds the information about how to simplify the features for fast rendering
     QgsVectorSimplifyMethod mSimplifyMethod;
 
     //! Labeling configuration
-    QgsAbstractVectorLayerLabeling* mLabeling;
+    QgsAbstractVectorLayerLabeling* mLabeling = nullptr;
 
     //! Whether 'labeling font not found' has be shown for this layer (only show once in QgsMessageBar, on first rendering)
     bool mLabelFontNotFoundNotified;
@@ -2023,23 +2023,23 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QString mAnnotationForm;
 
     //! cache for some vector layer data - currently only geometries for faster editing
-    QgsGeometryCache* mCache;
+    QgsGeometryCache* mCache = nullptr;
 
     //! stores information about uncommitted changes to layer
-    QgsVectorLayerEditBuffer* mEditBuffer;
+    QgsVectorLayerEditBuffer* mEditBuffer = nullptr;
     friend class QgsVectorLayerEditBuffer;
 
     //stores information about joined layers
-    QgsVectorLayerJoinBuffer* mJoinBuffer;
+    QgsVectorLayerJoinBuffer* mJoinBuffer = nullptr;
 
     //! stores information about expression fields on this layer
-    QgsExpressionFieldBuffer* mExpressionFieldBuffer;
+    QgsExpressionFieldBuffer* mExpressionFieldBuffer = nullptr;
 
     //diagram rendering object. 0 if diagram drawing is disabled
-    QgsDiagramRenderer* mDiagramRenderer;
+    QgsDiagramRenderer* mDiagramRenderer = nullptr;
 
     //stores infos about diagram placement (placement type, priority, position distance)
-    QgsDiagramLayerSettings *mDiagramLayerSettings;
+    QgsDiagramLayerSettings *mDiagramLayerSettings = nullptr;
 
     mutable bool mValidExtent;
     mutable bool mLazyExtent;

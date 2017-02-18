@@ -38,7 +38,7 @@ class QgsFtpTransaction: public QObject
     void setFinishedFlag( bool error );
 
   private:
-    QFtp* mFtp;
+    QFtp* mFtp = nullptr;
     bool mRequestFinished;
     bool mErrorFlag;
 };

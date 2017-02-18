@@ -56,7 +56,7 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNew
   private:
     bool apply();
 
-    QPushButton *mOkButton;
+    QPushButton *mOkButton = nullptr;
     QString mCrsId;
     bool mTableNameEdited;
     bool mLayerIdentifierEdited;

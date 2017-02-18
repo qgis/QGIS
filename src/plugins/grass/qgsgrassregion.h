@@ -92,12 +92,12 @@ class QgsGrassRegion: public QWidget, private Ui::QgsGrassRegionBase
     //QgsGrassPlugin *mPlugin;
 
     //! Pointer to QGIS interface
-    QgisInterface *mInterface;
+    QgisInterface *mInterface = nullptr;
 
     //! Pointer to canvas
-    QgsMapCanvas *mCanvas;
+    QgsMapCanvas *mCanvas = nullptr;
 
-    QButtonGroup *mRadioGroup;
+    QButtonGroup *mRadioGroup = nullptr;
 
     //! Current new region
     struct Cell_head mWindow;
@@ -124,7 +124,7 @@ class QgsGrassRegion: public QWidget, private Ui::QgsGrassRegionBase
     QString formatExtent( double v );
     QString formatResolution( double v );
 
-    QgsGrassRegionEdit* mRegionEdit;
+    QgsGrassRegionEdit* mRegionEdit = nullptr;
 };
 
 //! Map tool which uses rubber band for changing grass region
@@ -170,8 +170,8 @@ class QgsGrassRegionEdit : public QgsMapTool
 
   private:
     //! Rubber band for selecting grass region
-    QgsRubberBand* mRubberBand;
-    QgsRubberBand* mSrcRubberBand;
+    QgsRubberBand* mRubberBand = nullptr;
+    QgsRubberBand* mSrcRubberBand = nullptr;
 
     //! Status of input from canvas
     bool mDraw;

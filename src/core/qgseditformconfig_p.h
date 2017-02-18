@@ -57,7 +57,7 @@ class QgsEditFormConfigPrivate : public QSharedData
     }
 
     //! The invisible root container for attribute editors in the drag and drop designer
-    QgsAttributeEditorContainer* mInvisibleRootContainer;
+    QgsAttributeEditorContainer* mInvisibleRootContainer = nullptr;
 
     //! This flag is set if the root container was configured by the user
     bool mConfiguredRootContainer;

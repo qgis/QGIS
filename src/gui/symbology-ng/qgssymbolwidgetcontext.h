@@ -89,7 +89,7 @@ class GUI_EXPORT QgsSymbolWidgetContext // clazy:exclude=rule-of-three
 
   private:
 
-    QgsMapCanvas* mMapCanvas;
+    QgsMapCanvas* mMapCanvas = nullptr;
     std::unique_ptr< QgsExpressionContext > mExpressionContext;
     QList< QgsExpressionContextScope > mAdditionalScopes;
 

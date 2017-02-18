@@ -251,7 +251,7 @@ namespace pal
       //! List of obstacle parts
       QList<FeaturePart*> mObstacleParts;
 
-      Pal *pal;
+      Pal *pal = nullptr;
 
       double mDefaultPriority;
 

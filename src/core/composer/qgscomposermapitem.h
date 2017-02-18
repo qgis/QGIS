@@ -109,7 +109,7 @@ class CORE_EXPORT QgsComposerMapItem : public QgsComposerObject
     QString mName;
 
     //! Associated composer map
-    QgsComposerMap* mComposerMap;
+    QgsComposerMap* mComposerMap = nullptr;
 
     //! Unique id
     QString mUuid;
@@ -247,7 +247,7 @@ class CORE_EXPORT QgsComposerMapItemStack
 
     QList< QgsComposerMapItem* > mItems;
 
-    QgsComposerMap* mComposerMap;
+    QgsComposerMap* mComposerMap = nullptr;
 
     /** Clears the item stack and deletes all QgsComposerMapItems contained
      * by the stack

@@ -51,8 +51,8 @@ class TestQgsVectorDataProvider : public QObject
 
   private:
 
-    QgsVectorLayer* vlayerPoints;
-    QgsVectorLayer* vlayerLines;
+    QgsVectorLayer* vlayerPoints = nullptr;
+    QgsVectorLayer* vlayerLines = nullptr;
 };
 
 void TestQgsVectorDataProvider::initTestCase()

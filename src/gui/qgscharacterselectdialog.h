@@ -44,7 +44,7 @@ class GUI_EXPORT QgsCharacterSelectorDialog : public QDialog, private Ui::QgsCha
 
   protected:
     QChar mChar;
-    CharacterWidget* mCharWidget;
+    CharacterWidget* mCharWidget = nullptr;
 };
 
 #endif

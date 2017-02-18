@@ -33,7 +33,7 @@ class QgsSlotToFunction : public QObject
     void onSignal() { if ( mCallback ) mCallback( mArg ); }
   private:
     void ( *mCallback )( void* );
-    void* mArg;
+    void* mArg = nullptr;
 };
 
 #endif

@@ -120,7 +120,7 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
 
     bool mUseSymbol;
 
-    QgsFillSymbol* mShapeStyleSymbol;
+    QgsFillSymbol* mShapeStyleSymbol = nullptr;
     double mMaxSymbolBleed;
     //! Current bounding rectangle of shape
     QRectF mCurrentRectangle;

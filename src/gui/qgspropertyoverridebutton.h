@@ -207,20 +207,20 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     QString mExpressionString;
     QString mFieldName;
 
-    QMenu* mDefineMenu;
-    QAction* mActionDataTypes;
-    QMenu* mFieldsMenu;
-    QMenu* mVariablesMenu;
-    QAction* mActionVariables;
+    QMenu* mDefineMenu = nullptr;
+    QAction* mActionDataTypes = nullptr;
+    QMenu* mFieldsMenu = nullptr;
+    QMenu* mVariablesMenu = nullptr;
+    QAction* mActionVariables = nullptr;
 
-    QAction* mActionActive;
-    QAction* mActionDescription;
-    QAction* mActionExpDialog;
-    QAction* mActionExpression;
-    QAction* mActionPasteExpr;
-    QAction* mActionCopyExpr;
-    QAction* mActionClearExpr;
-    QAction* mActionAssistant;
+    QAction* mActionActive = nullptr;
+    QAction* mActionDescription = nullptr;
+    QAction* mActionExpDialog = nullptr;
+    QAction* mActionExpression = nullptr;
+    QAction* mActionPasteExpr = nullptr;
+    QAction* mActionCopyExpr = nullptr;
+    QAction* mActionClearExpr = nullptr;
+    QAction* mActionAssistant = nullptr;
 
     QgsPropertyDefinition mDefinition;
 
@@ -230,7 +230,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     QString mFullDescription;
     QString mUsageInfo;
 
-    QgsExpressionContextGenerator* mExpressionContextGenerator;
+    QgsExpressionContextGenerator* mExpressionContextGenerator = nullptr;
 
     QList< QPointer<QWidget> > mCheckedWidgets;
 

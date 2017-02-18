@@ -50,7 +50,7 @@ class TestQgsComposerHtml : public QObject
     void javascriptSetFeature(); //test that JavaScript setFeature() function is correctly called
 
   private:
-    QgsComposition *mComposition;
+    QgsComposition *mComposition = nullptr;
     QString mReport;
     QFont mTestFont;
 };

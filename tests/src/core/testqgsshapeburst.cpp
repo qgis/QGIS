@@ -70,10 +70,10 @@ class TestQgsShapeburst : public QObject
     bool setQml( const QString& theType );
     bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPolysLayer;
-    QgsShapeburstFillSymbolLayer* mShapeburstFill;
-    QgsFillSymbol* mFillSymbol;
-    QgsSingleSymbolRenderer* mSymbolRenderer;
+    QgsVectorLayer * mpPolysLayer = nullptr;
+    QgsShapeburstFillSymbolLayer* mShapeburstFill = nullptr;
+    QgsFillSymbol* mFillSymbol = nullptr;
+    QgsSingleSymbolRenderer* mSymbolRenderer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };

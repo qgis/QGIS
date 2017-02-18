@@ -323,7 +323,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     virtual void fieldFormatterRemoved( QgsFieldFormatter* fieldFormatter );
 
   private:
-    QgsVectorLayerCache *mLayerCache;
+    QgsVectorLayerCache *mLayerCache = nullptr;
     int mFieldCount;
 
     mutable QgsFeature mFeat;

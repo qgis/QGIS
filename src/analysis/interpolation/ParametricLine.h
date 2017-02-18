@@ -32,7 +32,7 @@ class ANALYSIS_EXPORT ParametricLine
     //! Degree of the parametric Line
     int mDegree;
     //! Pointer to the parent object. If there isn't one, mParent is 0
-    ParametricLine* mParent;
+    ParametricLine* mParent = nullptr;
     //! MControlPoly stores the points of the control polygon
     QVector<Point3D*>* mControlPoly;
   public:

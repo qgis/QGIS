@@ -74,9 +74,9 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     int mGreenBand;
     int mBlueBand;
 
-    QgsContrastEnhancement* mRedContrastEnhancement;
-    QgsContrastEnhancement* mGreenContrastEnhancement;
-    QgsContrastEnhancement* mBlueContrastEnhancement;
+    QgsContrastEnhancement* mRedContrastEnhancement = nullptr;
+    QgsContrastEnhancement* mGreenContrastEnhancement = nullptr;
+    QgsContrastEnhancement* mBlueContrastEnhancement = nullptr;
 
 };
 

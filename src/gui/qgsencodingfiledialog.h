@@ -45,10 +45,10 @@ class GUI_EXPORT QgsEncodingFileDialog: public QFileDialog
 
   private:
     //! Box to choose the encoding type
-    QComboBox* mEncodingComboBox;
+    QComboBox* mEncodingComboBox = nullptr;
 
     /* The button to click */
-    QPushButton *mCancelAllButton;
+    QPushButton *mCancelAllButton = nullptr;
 
     /* Set if user clicked 'Cancel All' */
     bool mCancelAll;

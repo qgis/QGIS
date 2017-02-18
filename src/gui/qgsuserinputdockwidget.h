@@ -62,7 +62,7 @@ class GUI_EXPORT QgsUserInputDockWidget : public QgsDockWidget
     QMap<QWidget*, QFrame*> mWidgetList;
 
     bool mLayoutHorizontal;
-    QBoxLayout* mLayout;
+    QBoxLayout* mLayout = nullptr;
 };
 
 #endif // QGSUSERINPUTDOCKWIDGET_H

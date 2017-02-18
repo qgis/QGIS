@@ -62,7 +62,7 @@ struct MINHEAP
 {
   int maxSize;
   int usedSize;
-  areanode **key_array;
+  areanode **key_array = nullptr;
 };
 
 /**
@@ -91,8 +91,8 @@ struct EFFECTIVE_AREAS
 
   bool is3d;
   QgsPointSequence inpts;
-  areanode *initial_arealist;
-  double *res_arealist;
+  areanode *initial_arealist = nullptr;
+  double *res_arealist = nullptr;
 
 
 };

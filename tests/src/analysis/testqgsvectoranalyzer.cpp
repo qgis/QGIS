@@ -47,9 +47,9 @@ class TestQgsVectorAnalyzer : public QObject
     void layerExtent();
   private:
     QgsGeometryAnalyzer mAnalyzer;
-    QgsVectorLayer * mpLineLayer;
-    QgsVectorLayer * mpPolyLayer;
-    QgsVectorLayer * mpPointLayer;
+    QgsVectorLayer * mpLineLayer = nullptr;
+    QgsVectorLayer * mpPolyLayer = nullptr;
+    QgsVectorLayer * mpPointLayer = nullptr;
 
 };
 

@@ -90,9 +90,9 @@ namespace pal
       int size;
       int maxsize;
       int maxId;
-      int *heap;
-      double *p;
-      int *pos;
+      int *heap = nullptr;
+      double *p = nullptr;
+      int *pos = nullptr;
 
       bool ( *greater )( double l, double r );
   };

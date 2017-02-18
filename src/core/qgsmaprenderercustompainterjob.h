@@ -81,7 +81,7 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
     // these methods are called within worker thread
     void doRender();
 
-    QPainter* mPainter;
+    QPainter* mPainter = nullptr;
     QFuture<void> mFuture;
     QFutureWatcher<void> mFutureWatcher;
     std::unique_ptr< QgsLabelingEngine > mLabelingEngineV2;

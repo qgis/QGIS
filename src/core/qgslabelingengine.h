@@ -103,7 +103,7 @@ class CORE_EXPORT QgsAbstractLabelProvider
 
   protected:
     //! Associated labeling engine
-    const QgsLabelingEngine* mEngine;
+    const QgsLabelingEngine* mEngine = nullptr;
 
     //! Name of the layer
     QString mName;

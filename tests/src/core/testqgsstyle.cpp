@@ -46,7 +46,7 @@ class TestStyle : public QObject
 
     QString mReport;
 
-    QgsStyle *mStyle;
+    QgsStyle *mStyle = nullptr;
     QString mTestDataDir;
 
     bool testValidColor( QgsColorRamp *ramp, double value, const QColor& expected );

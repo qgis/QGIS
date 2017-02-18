@@ -63,7 +63,7 @@ class QgsImageWarper
     struct TransformChain
     {
       GDALTransformerFunc GDALTransformer;
-      void *              GDALTransformerArg;
+      void *              GDALTransformerArg = nullptr;
       double              adfGeotransform[6];
       double              adfInvGeotransform[6];
     };
@@ -90,7 +90,7 @@ class QgsImageWarper
     bool createDestinationDataset( const QString &outputName, GDALDatasetH hSrcDS, GDALDatasetH &hDstDS, uint resX, uint resY,
                                    double *adfGeoTransform, bool useZeroAsTrans, const QString& compression, const QgsCoordinateReferenceSystem& crs );
 
-    QWidget *mParent;
+    QWidget *mParent = nullptr;
     void      *createWarpProgressArg( QProgressDialog *progressDialog ) const;
     //! \brief GDAL progress callback, used to display warping progress via a QProgressDialog
     static int CPL_STDCALL updateWarpProgress( double dfComplete, const char *pszMessage, void *pProgressArg );

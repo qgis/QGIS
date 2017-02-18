@@ -40,7 +40,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle* style, QWidget
   setupUi( this );
 
   // additional buttons
-  QPushButton *pb;
+  QPushButton *pb = nullptr;
   pb = new QPushButton( tr( "Select all" ) );
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
   connect( pb, SIGNAL( clicked() ), this, SLOT( selectAll() ) );
@@ -228,7 +228,7 @@ bool QgsStyleExportImportDialog::populateStyles( QgsStyle* style )
 void QgsStyleExportImportDialog::moveStyles( QModelIndexList* selection, QgsStyle* src, QgsStyle* dst )
 {
   QString symbolName;
-  QgsSymbol* symbol;
+  QgsSymbol* symbol = nullptr;
   QStringList symbolTags;
   bool symbolFavorite;
   QgsColorRamp *ramp = nullptr;

@@ -120,7 +120,7 @@ class CORE_EXPORT QgsTracer : public QObject
 
   private:
     //! Graph data structure for path searching
-    QgsTracerGraph* mGraph;
+    QgsTracerGraph* mGraph = nullptr;
     //! Input layers for the graph building
     QList<QgsVectorLayer*> mLayers;
     //! Whether to reproject layer features to specified destination CRS

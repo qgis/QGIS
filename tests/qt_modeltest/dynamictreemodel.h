@@ -119,7 +119,7 @@ class ModelChangeCommand : public QObject
     virtual void doCommand() = 0;
 
   protected:
-    DynamicTreeModel* m_model;
+    DynamicTreeModel* m_model = nullptr;
     QList<int> m_rowNumbers;
     int m_numCols;
     int m_startRow;

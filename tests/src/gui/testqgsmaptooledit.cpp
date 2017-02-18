@@ -38,7 +38,7 @@ class TestQgsMapToolEdit : public QObject
     void checkDefaultZValue();
 
   private:
-    QgsMapCanvas* mCanvas;
+    QgsMapCanvas* mCanvas = nullptr;
 
 };
 

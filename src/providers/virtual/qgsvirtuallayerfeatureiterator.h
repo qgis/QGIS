@@ -32,7 +32,7 @@ class QgsVirtualLayerFeatureSource : public QgsAbstractFeatureSource
 
     const QgsVirtualLayerProvider* provider() const { return mProvider; }
   private:
-    const QgsVirtualLayerProvider* mProvider;
+    const QgsVirtualLayerProvider* mProvider = nullptr;
 };
 
 class QgsVirtualLayerFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsVirtualLayerFeatureSource>
@@ -53,7 +53,7 @@ class QgsVirtualLayerFeatureIterator : public QgsAbstractFeatureIteratorFromSour
     QgsFeatureId mFid;
 
     QString mPath;
-    sqlite3* mSqlite;
+    sqlite3* mSqlite = nullptr;
     QgsVirtualLayerDefinition mDefinition;
     QgsFields mFields;
 

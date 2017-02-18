@@ -44,7 +44,7 @@ class ANALYSIS_EXPORT QgsGridFileWriter
     QgsGridFileWriter(); //forbidden
     int writeHeader( QTextStream& outStream );
 
-    QgsInterpolator* mInterpolator;
+    QgsInterpolator* mInterpolator = nullptr;
     QString mOutputFilePath;
     QgsRectangle mInterpolationExtent;
     int mNumColumns;

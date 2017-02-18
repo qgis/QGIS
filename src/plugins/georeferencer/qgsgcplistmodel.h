@@ -41,8 +41,8 @@ class QgsGCPListModel : public QStandardItemModel
     void onTransformationModified();
 
   private:
-    QgsGCPList         *mGCPList;
-    QgsGeorefTransform *mGeorefTransform;
+    QgsGCPList         *mGCPList = nullptr;
+    QgsGeorefTransform *mGeorefTransform = nullptr;
 };
 
 #endif

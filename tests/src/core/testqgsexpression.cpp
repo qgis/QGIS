@@ -59,11 +59,11 @@ class TestQgsExpression: public QObject
 
   private:
 
-    QgsVectorLayer* mPointsLayer;
-    QgsVectorLayer* mMemoryLayer;
-    QgsVectorLayer* mAggregatesLayer;
-    QgsVectorLayer* mChildLayer;
-    QgsRasterLayer* mRasterLayer;
+    QgsVectorLayer* mPointsLayer = nullptr;
+    QgsVectorLayer* mMemoryLayer = nullptr;
+    QgsVectorLayer* mAggregatesLayer = nullptr;
+    QgsVectorLayer* mChildLayer = nullptr;
+    QgsRasterLayer* mRasterLayer = nullptr;
 
   private slots:
 

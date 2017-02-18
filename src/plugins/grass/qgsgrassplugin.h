@@ -141,45 +141,45 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     void resetEditActions();
 
     //! Pointer to our toolbar
-    QToolBar *mToolBarPointer;
+    QToolBar *mToolBarPointer = nullptr;
     //! Pointer to the QGIS interface object
-    QgisInterface *qGisInterface;
+    QgisInterface *qGisInterface = nullptr;
     //! Pointer to canvas
-    QgsMapCanvas *mCanvas;
+    QgsMapCanvas *mCanvas = nullptr;
 
     //! Pointer to Display region acction
-    QAction *mRegionAction;
+    QAction *mRegionAction = nullptr;
 
     // Region rubber band
-    QgsRubberBand *mRegionBand;
+    QgsRubberBand *mRegionBand = nullptr;
     //! GRASS tools
-    QgsGrassTools *mTools;
+    QgsGrassTools *mTools = nullptr;
     //! Pointer to QgsGrassNewMapset
-    QgsGrassNewMapset *mNewMapset;
+    QgsGrassNewMapset *mNewMapset = nullptr;
 
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateTransform mCoordinateTransform;
 
     // Actions
-    QAction *mOpenMapsetAction;
-    QAction *mNewMapsetAction;
-    QAction *mCloseMapsetAction;
-    QAction *mOpenToolsAction;
-    QAction *mOptionsAction;
+    QAction *mOpenMapsetAction = nullptr;
+    QAction *mNewMapsetAction = nullptr;
+    QAction *mCloseMapsetAction = nullptr;
+    QAction *mOpenToolsAction = nullptr;
+    QAction *mOptionsAction = nullptr;
 
     // Editing    static bool mNonInitializable;
-    QAction *mAddFeatureAction;
-    QAction *mAddPointAction;
-    QAction *mAddLineAction;
-    QAction *mAddBoundaryAction;
-    QAction *mAddCentroidAction;
-    QAction *mAddAreaAction;
+    QAction *mAddFeatureAction = nullptr;
+    QAction *mAddPointAction = nullptr;
+    QAction *mAddLineAction = nullptr;
+    QAction *mAddBoundaryAction = nullptr;
+    QAction *mAddCentroidAction = nullptr;
+    QAction *mAddAreaAction = nullptr;
 
-    QgsMapTool *mAddPoint;
-    QgsMapTool *mAddLine;
-    QgsMapTool *mAddBoundary;
-    QgsMapTool *mAddCentroid;
-    QgsMapTool *mAddArea;
+    QgsMapTool *mAddPoint = nullptr;
+    QgsMapTool *mAddLine = nullptr;
+    QgsMapTool *mAddBoundary = nullptr;
+    QgsMapTool *mAddCentroid = nullptr;
+    QgsMapTool *mAddArea = nullptr;
 
     // Names of layer styles before editing started
     QMap<QgsVectorLayer *, QString> mOldStyles;

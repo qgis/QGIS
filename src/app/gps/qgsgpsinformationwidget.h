@@ -83,26 +83,26 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     void populateDevices();
     void setStatusIndicator( const FixStatus statusValue );
     void showStatusBarMessage( const QString& msg );
-    QgsGPSConnection* mNmea;
-    QgsMapCanvas * mpCanvas;
-    QgsGpsMarker * mpMapMarker;
-    QwtPlot * mpPlot;
-    QwtPlotCurve * mpCurve;
+    QgsGPSConnection* mNmea = nullptr;
+    QgsMapCanvas * mpCanvas = nullptr;
+    QgsGpsMarker * mpMapMarker = nullptr;
+    QwtPlot * mpPlot = nullptr;
+    QwtPlotCurve * mpCurve = nullptr;
 #ifdef WITH_QWTPOLAR
-    QwtPolarPlot * mpSatellitesWidget;
-    QwtPolarGrid *mpSatellitesGrid;
+    QwtPolarPlot * mpSatellitesWidget = nullptr;
+    QwtPolarGrid *mpSatellitesGrid = nullptr;
     QList< QwtPolarMarker * > mMarkerList;
 #endif
     void createRubberBand();
     QgsCoordinateReferenceSystem mWgs84CRS;
 // not used    QPointF gpsToPixelPosition( const QgsPoint& point );
-    QgsRubberBand * mpRubberBand;
+    QgsRubberBand * mpRubberBand = nullptr;
     QgsPoint mLastGpsPosition;
     QList<QgsPoint> mCaptureList;
     FixStatus mLastFixStatus;
     QString mDateTimeFormat; // user specified format string in registry (no UI presented)
-    QgsVectorLayer * mpLastLayer;
-    QFile * mLogFile;
+    QgsVectorLayer * mpLastLayer = nullptr;
+    QFile * mLogFile = nullptr;
     QTextStream mLogFileTextStream;
     QColor mTrackColor;
 };

@@ -57,7 +57,7 @@ class TestQgsAuthManager: public QObject
 
     QString mPkiData;
     QString mTempDir;
-    const char* mPass;
+    const char* mPass = nullptr;
     QString mReport;
 };
 

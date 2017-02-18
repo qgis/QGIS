@@ -42,7 +42,7 @@ class CORE_EXPORT QgsBrowserWatcher : public QFutureWatcher<QVector <QgsDataItem
     void finished( QgsDataItem* item, const QVector <QgsDataItem*>& items );
 
   private:
-    QgsDataItem *mItem;
+    QgsDataItem *mItem = nullptr;
 };
 
 /** \ingroup core
@@ -168,8 +168,8 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     void removeRootItems();
 
     QVector<QgsDataItem*> mRootItems;
-    QgsFavoritesItem *mFavorites;
-    QgsDirectoryItem *mProjectHome;
+    QgsFavoritesItem *mFavorites = nullptr;
+    QgsDirectoryItem *mProjectHome = nullptr;
 };
 
 #endif // QGSBROWSERMODEL_H

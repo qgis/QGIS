@@ -6356,7 +6356,7 @@ class QgisAppFieldValueConverter : public QgsVectorFileWriter::FieldValueConvert
     virtual QVariant convert( int idx, const QVariant& value ) override;
 
   private:
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
     QgsAttributeList mAttributesAsDisplayedValues;
 };
 
@@ -8487,7 +8487,7 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *>& lyrList )
   }
 
   mMapCanvas->freeze();
-  QgsMapLayer *dupLayer;
+  QgsMapLayer *dupLayer = nullptr;
   QString layerDupName, unSppType;
   QList<QgsMessageBarItem *> msgBars;
 
@@ -8944,7 +8944,7 @@ class QgsPythonRunnerImpl : public QgsPythonRunner
     }
 
   protected:
-    QgsPythonUtils* mPythonUtils;
+    QgsPythonUtils* mPythonUtils = nullptr;
 };
 
 void QgisApp::loadPythonSupport()

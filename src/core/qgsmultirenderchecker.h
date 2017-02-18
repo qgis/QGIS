@@ -151,7 +151,7 @@ class CORE_EXPORT QgsCompositionChecker : public QgsMultiRenderChecker
     QgsCompositionChecker(); //forbidden
 
     QString mTestName;
-    QgsComposition* mComposition;
+    QgsComposition* mComposition = nullptr;
     QSize mSize;
     int mDotsPerMeter;
 };

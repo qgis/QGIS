@@ -221,7 +221,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     mutable bool mValid;
 
     //! Text file
-    QgsDelimitedTextFile *mFile;
+    QgsDelimitedTextFile *mFile = nullptr;
 
     // Fields
     GeomRepresentationType mGeomRep;
@@ -253,7 +253,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
     QString mSubsetString;
     mutable QString mCachedSubsetString;
-    QgsExpression *mSubsetExpression;
+    QgsExpression *mSubsetExpression = nullptr;
     bool mBuildSubsetIndex;
     mutable QList<quintptr> mSubsetIndex;
     mutable bool mUseSubsetIndex;

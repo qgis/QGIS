@@ -113,7 +113,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     QgsDistanceArea mDa;
 
     //! pointer to measure tool which owns this dialog
-    QgsMeasureTool* mTool;
+    QgsMeasureTool* mTool = nullptr;
 
     QgsPoint mLastMousePoint;
 

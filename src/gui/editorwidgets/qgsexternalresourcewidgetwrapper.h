@@ -57,9 +57,9 @@ class GUI_EXPORT QgsExternalResourceWidgetWrapper : public QgsEditorWidgetWrappe
   private:
     void updateConstraintWidgetStatus( ConstraintResult status ) override;
 
-    QLineEdit* mLineEdit;
-    QLabel* mLabel;
-    QgsExternalResourceWidget* mQgsWidget;
+    QLineEdit* mLineEdit = nullptr;
+    QLabel* mLabel = nullptr;
+    QgsExternalResourceWidget* mQgsWidget = nullptr;
 
 
 };

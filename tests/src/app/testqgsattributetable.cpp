@@ -45,7 +45,7 @@ class TestQgsAttributeTable : public QObject
     void testFieldCalculationArea();
 
   private:
-    QgisApp * mQgisApp;
+    QgisApp * mQgisApp = nullptr;
 };
 
 TestQgsAttributeTable::TestQgsAttributeTable()

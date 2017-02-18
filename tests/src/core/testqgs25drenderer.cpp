@@ -57,7 +57,7 @@ class TestQgs25DRenderer : public QObject
   private:
     bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPolysLayer;
+    QgsVectorLayer * mpPolysLayer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };

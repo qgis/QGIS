@@ -85,7 +85,7 @@ class Q_EXPORT_SQLDRIVER_OCISPATIAL QOCISpatialResult : public QSqlCachedResult
     QVariant lastInsertId() const;
 
   private:
-    QOCISpatialResultPrivate *d;
+    QOCISpatialResultPrivate *d = nullptr;
 };
 
 class Q_EXPORT_SQLDRIVER_OCISPATIAL QOCISpatialDriver : public QSqlDriver
@@ -119,7 +119,7 @@ class Q_EXPORT_SQLDRIVER_OCISPATIAL QOCISpatialDriver : public QSqlDriver
     bool                commitTransaction();
     bool                rollbackTransaction();
   private:
-    QOCISpatialDriverPrivate *d;
+    QOCISpatialDriverPrivate *d = nullptr;
 };
 
 QT_END_NAMESPACE

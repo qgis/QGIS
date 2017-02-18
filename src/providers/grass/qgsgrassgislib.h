@@ -59,10 +59,10 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
       public:
         int fd; // fake file descriptor
         QString name; // name passed from grass module, uri
-        QgsRasterDataProvider *provider;
-        QgsRasterProjector *projector;
+        QgsRasterDataProvider *provider = nullptr;
+        QgsRasterProjector *projector = nullptr;
         // Input points to provider or projector
-        QgsRasterInterface *input;
+        QgsRasterInterface *input = nullptr;
         int band;
         int row; // next row to be written
         double noDataValue; // output no data value

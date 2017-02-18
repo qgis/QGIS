@@ -66,12 +66,12 @@ class GUI_EXPORT QgsRangeWidgetWrapper : public QgsEditorWidgetWrapper
     void valueChangedVariant( const QVariant& );
 
   private:
-    QSpinBox* mIntSpinBox;
-    QDoubleSpinBox* mDoubleSpinBox;
-    QSlider* mSlider;
-    QDial* mDial;
-    QgsSlider* mQgsSlider;
-    QgsDial* mQgsDial;
+    QSpinBox* mIntSpinBox = nullptr;
+    QDoubleSpinBox* mDoubleSpinBox = nullptr;
+    QSlider* mSlider = nullptr;
+    QDial* mDial = nullptr;
+    QgsSlider* mQgsSlider = nullptr;
+    QgsDial* mQgsDial = nullptr;
 };
 
 #endif // QGSRANGEWIDGETWRAPPER_H

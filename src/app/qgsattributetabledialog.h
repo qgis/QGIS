@@ -219,18 +219,18 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void formFilterSet( const QString& filter, QgsAttributeForm::FilterType type );
 
   private:
-    QMenu* mMenuActions;
+    QMenu* mMenuActions = nullptr;
 
-    QgsDockWidget* mDock;
-    QgsDistanceArea* myDa;
+    QgsDockWidget* mDock = nullptr;
+    QgsDistanceArea* myDa = nullptr;
 
 
-    QMenu* mFilterColumnsMenu;
-    QSignalMapper* mFilterActionMapper;
+    QMenu* mFilterColumnsMenu = nullptr;
+    QSignalMapper* mFilterActionMapper = nullptr;
 
-    QgsVectorLayer* mLayer;
-    QgsRubberBand* mRubberBand;
-    QgsSearchWidgetWrapper* mCurrentSearchWidgetWrapper;
+    QgsVectorLayer* mLayer = nullptr;
+    QgsRubberBand* mRubberBand = nullptr;
+    QgsSearchWidgetWrapper* mCurrentSearchWidgetWrapper = nullptr;
     QStringList mVisibleFields;
     QgsAttributeEditorContext mEditorContext;
 

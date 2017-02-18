@@ -115,7 +115,7 @@ class ANALYSIS_EXPORT QgsRasterMatrix
   private:
     int mColumns;
     int mRows;
-    double* mData;
+    double* mData = nullptr;
     double mNodataValue;
 
     //! +,-,*,/,^,<,>,<=,>=,=,!=, and, or

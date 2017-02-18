@@ -61,7 +61,7 @@ class TestQgsMapCanvas : public QObject
     void testShiftZoom();
 
   private:
-    QgsMapCanvas* mCanvas;
+    QgsMapCanvas* mCanvas = nullptr;
 };
 
 

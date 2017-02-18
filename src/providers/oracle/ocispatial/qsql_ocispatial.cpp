@@ -172,8 +172,8 @@ void oci_verify( const char *function, const char *file, int line, int result, c
 #ifdef QOCISPATIAL_DEBUG
 class enter
 {
-    const char *mFunction;
-    const char *mFile;
+    const char *mFunction = nullptr;
+    const char *mFile = nullptr;
     int mLine;
     static int level;
 
@@ -278,7 +278,7 @@ class QOCISpatialRowId: public QSharedData
     explicit QOCISpatialRowId( OCIEnv *env );
     ~QOCISpatialRowId();
 
-    OCIRowid *id;
+    OCIRowid *id = nullptr;
 
   private:
     QOCISpatialRowId( const QOCISpatialRowId &other ): QSharedData( other ) { Q_ASSERT( false ); }
@@ -316,8 +316,8 @@ struct QOCISDOGeometryObj
   OCINumber gtype;
   OCINumber srid;
   QOCISDOPointObj point;
-  OCIArray *elem_info;
-  OCIArray *ordinates;
+  OCIArray *elem_info = nullptr;
+  OCIArray *ordinates = nullptr;
 };
 
 struct QOCISDOPointInd
@@ -343,20 +343,20 @@ struct QOCISpatialResultPrivate
   QOCISpatialResultPrivate( QOCISpatialResult *result, const QOCISpatialDriverPrivate *driver );
   ~QOCISpatialResultPrivate();
 
-  QOCISpatialCols *cols;
-  QOCISpatialResult *q;
-  OCIEnv *env;
-  OCIError *err;
+  QOCISpatialCols *cols = nullptr;
+  QOCISpatialResult *q = nullptr;
+  OCIEnv *env = nullptr;
+  OCIError *err = nullptr;
   OCISvcCtx *&svc;
-  OCIStmt *sql;
+  OCIStmt *sql = nullptr;
   QList<QOCISDOGeometryObj*> sdoobj;
   QList<QOCISDOGeometryInd*> sdoind;
   bool transaction;
   int serverVersion;
   int prefetchRows, prefetchMem;
-  OCIType *geometryTDO;
-  QOCISDOGeometryObj *geometryObj;
-  QOCISDOGeometryInd *geometryInd;
+  OCIType *geometryTDO = nullptr;
+  QOCISDOGeometryObj *geometryObj = nullptr;
+  QOCISDOGeometryInd *geometryInd = nullptr;
 
   void setStatementAttributes();
   int bindValue( OCIStmt *sql, OCIBind **hbnd, OCIError *err, int pos,
@@ -755,18 +755,18 @@ struct QOCISpatialDriverPrivate
 {
   QOCISpatialDriverPrivate();
 
-  OCIEnv *env;
-  OCISvcCtx *svc;
-  OCIServer *srvhp;
-  OCISession *authp;
-  OCIError *err;
+  OCIEnv *env = nullptr;
+  OCISvcCtx *svc = nullptr;
+  OCIServer *srvhp = nullptr;
+  OCISession *authp = nullptr;
+  OCIError *err = nullptr;
   bool transaction;
   int serverVersion;
   ub4 prefetchRows;
   ub2 prefetchMem;
   QString user;
 
-  OCIType *geometryTDO;
+  OCIType *geometryTDO = nullptr;
 
   void allocErrorHandle();
   OCIType *tdo( QString type );
@@ -834,7 +834,7 @@ struct OraFieldInfo
   ub4 oraFieldLength; // amount of characters
   sb2 oraPrecision;
   QString oraTypeName;
-  OCIType *oraOCIType;
+  OCIType *oraOCIType = nullptr;
 };
 
 QString qOraWarn( OCIError *err, int *errorCode )
@@ -1144,13 +1144,13 @@ class QOCISpatialCols
         OraFieldInf(): data( 0 ), len( 0 ), ind( 0 ), typ( QVariant::Invalid ), oraType( 0 ), def( 0 ), lob( 0 )
         {}
         ~OraFieldInf();
-        char *data;
+        char *data = nullptr;
         int len;
         sb2 ind;
         QVariant::Type typ;
         ub4 oraType;
-        OCIDefine *def;
-        OCILobLocator *lob;
+        OCIDefine *def = nullptr;
+        OCILobLocator *lob = nullptr;
         QString oraTypeName;
     };
 
@@ -1466,7 +1466,7 @@ int QOCISpatialCols::readPiecewise( QVector<QVariant> &values, int index )
 {
   ENTER
   qDebug() << "readPiecewise( index =" << index << " )";
-  OCIDefine*     dfn;
+  OCIDefine*     dfn = nullptr;
   ub4            typep;
   ub1            in_outp;
   ub4            iterp;
@@ -1752,13 +1752,13 @@ struct QOCISpatialBatchColumn
       : bindh( 0 ), bindAs( 0 ), maxLen( 0 ), recordCount( 0 ),
       data( 0 ), lengths( 0 ), indicators( 0 ), maxarr_len( 0 ), curelep( 0 ) {}
 
-  OCIBind* bindh;
+  OCIBind* bindh = nullptr;
   ub2 bindAs;
   ub4 maxLen;
   ub4 recordCount;
-  char* data;
-  ub2* lengths;
-  sb2* indicators;
+  char* data = nullptr;
+  ub2* lengths = nullptr;
+  sb2* indicators = nullptr;
   ub4 maxarr_len;
   ub4 curelep;
 };
@@ -2219,7 +2219,7 @@ int qReadLob( T &buf, const QOCISpatialResultPrivate *d, OCILobLocator *lob )
 int QOCISpatialCols::readLOBs( QVector<QVariant> &values, int index )
 {
   ENTER
-  OCILobLocator *lob;
+  OCILobLocator *lob = nullptr;
   int r = OCI_SUCCESS;
 
   for ( int i = 0; i < size(); ++i )

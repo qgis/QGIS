@@ -59,7 +59,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererModel : public QAbstractItemModel
     void rowsMoved();
 
   private:
-    QgsGraduatedSymbolRenderer* mRenderer;
+    QgsGraduatedSymbolRenderer* mRenderer = nullptr;
     QString mMimeFormat;
 };
 
@@ -149,13 +149,13 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     void keyPressEvent( QKeyEvent* event ) override;
 
   private:
-    QgsGraduatedSymbolRenderer* mRenderer;
+    QgsGraduatedSymbolRenderer* mRenderer = nullptr;
 
-    QgsSymbol* mGraduatedSymbol;
+    QgsSymbol* mGraduatedSymbol = nullptr;
 
     int mRowSelected;
 
-    QgsGraduatedSymbolRendererModel* mModel;
+    QgsGraduatedSymbolRendererModel* mModel = nullptr;
 
     QgsRangeList mCopyBuffer;
 

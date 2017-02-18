@@ -50,11 +50,11 @@ class QgsRasterLayerRenderer : public QgsMapLayerRenderer
 
   protected:
 
-    QPainter* mPainter;
-    const QgsMapToPixel* mMapToPixel;
-    QgsRasterViewPort* mRasterViewPort;
+    QPainter* mPainter = nullptr;
+    const QgsMapToPixel* mMapToPixel = nullptr;
+    QgsRasterViewPort* mRasterViewPort = nullptr;
 
-    QgsRasterPipe* mPipe;
+    QgsRasterPipe* mPipe = nullptr;
     QgsRenderContext& mContext;
 
     /** \ingroup core
@@ -77,7 +77,7 @@ class QgsRasterLayerRenderer : public QgsMapLayerRenderer
     };
 
     //! feedback class for cancelation and preview generation
-    Feedback* mFeedback;
+    Feedback* mFeedback = nullptr;
 };
 
 

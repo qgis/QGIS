@@ -131,7 +131,7 @@ class CORE_EXPORT QgsImageOperation
 
       /** Color ramp to use for shading the distance transform
        */
-      QgsColorRamp* ramp;
+      QgsColorRamp* ramp = nullptr;
     };
 
     /** Performs a distance transform on the source image and shades the result
@@ -202,7 +202,7 @@ class CORE_EXPORT QgsImageOperation
       unsigned int beginLine;
       unsigned int endLine;
       unsigned int lineLength;
-      QImage* image;
+      QImage* image = nullptr;
     };
 
     //for rect operations
@@ -360,7 +360,7 @@ class CORE_EXPORT QgsImageOperation
 
       private:
         int mWidth;
-        double * mArray;
+        double * mArray = nullptr;
         bool mExterior;
     };
 
@@ -381,7 +381,7 @@ class CORE_EXPORT QgsImageOperation
 
       private:
         int mWidth;
-        double * mArray;
+        double * mArray = nullptr;
         double mSpread;
         double mSpreadSquared;
         const DistanceTransformProperties& mProperties;
@@ -436,9 +436,9 @@ class CORE_EXPORT QgsImageOperation
       private:
         int mRadius;
         LineOperationDirection mDirection;
-        QImage* mDestImage;
+        QImage* mDestImage = nullptr;
         int mDestImageBpl;
-        double* mKernel;
+        double* mKernel = nullptr;
 
         inline QRgb gaussianBlurVertical( const int posy, unsigned char *sourceFirstLine, const int sourceBpl, const int height );
         inline QRgb gaussianBlurHorizontal( const int posx, unsigned char *sourceFirstLine, const int width );

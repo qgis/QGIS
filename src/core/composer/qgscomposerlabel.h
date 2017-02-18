@@ -201,10 +201,10 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     QUrl createStylesheetUrl() const;
 
     std::unique_ptr<QgsFeature> mExpressionFeature;
-    QgsVectorLayer* mExpressionLayer;
-    QgsDistanceArea* mDistanceArea;
+    QgsVectorLayer* mExpressionLayer = nullptr;
+    QgsDistanceArea* mDistanceArea = nullptr;
 
-    QgsWebPage* mWebPage;
+    QgsWebPage* mWebPage = nullptr;
 };
 
 #endif

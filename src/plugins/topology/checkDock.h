@@ -108,25 +108,25 @@ class checkDock : public QgsDockWidget, private Ui::checkDock
 
 
   private:
-    rulesDialog* mConfigureDialog;
+    rulesDialog* mConfigureDialog = nullptr;
 
-    QgsRubberBand* mRBConflict;
-    QgsRubberBand* mRBFeature1;
-    QgsRubberBand* mRBFeature2;
-    QgsVertexMarker* mVMConflict;
-    QgsVertexMarker* mVMFeature1;
-    QgsVertexMarker* mVMFeature2;
+    QgsRubberBand* mRBConflict = nullptr;
+    QgsRubberBand* mRBFeature1 = nullptr;
+    QgsRubberBand* mRBFeature2 = nullptr;
+    QgsVertexMarker* mVMConflict = nullptr;
+    QgsVertexMarker* mVMFeature1 = nullptr;
+    QgsVertexMarker* mVMFeature2 = nullptr;
     QList<QgsRubberBand*> mRbErrorMarkers;
 
     ErrorList mErrorList;
-    DockModel* mErrorListModel;
+    DockModel* mErrorListModel = nullptr;
 
-    QgisInterface* qgsInterface;
+    QgisInterface* qgsInterface = nullptr;
 
     //pointer to topology tests table
-    QTableWidget* mTestTable;
+    QTableWidget* mTestTable = nullptr;
 
-    topolTest* mTest;
+    topolTest* mTest = nullptr;
 
     /**
      * Runs tests from the test table

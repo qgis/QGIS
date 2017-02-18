@@ -295,7 +295,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
     QMap<QVariant, QgsFeatureId> mKeyToFid;  //! map key values to feature id
     QMap<QgsFeatureId, QVariant> mFidToKey;  //! map feature back to fea
-    QgsOracleConn *mConnection;
+    QgsOracleConn *mConnection = nullptr;
 
     bool mHasSpatialIndex;                   //! Geometry column is indexed
     QString mSpatialIndexName;               //! name of spatial index of geometry column

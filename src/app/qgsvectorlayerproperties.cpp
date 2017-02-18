@@ -127,7 +127,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   if ( !mLayer )
     return;
 
-  QVBoxLayout *layout;
+  QVBoxLayout *layout = nullptr;
 
   if ( mLayer->hasGeometryType() )
   {

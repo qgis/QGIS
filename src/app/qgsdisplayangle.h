@@ -36,7 +36,7 @@ class APP_EXPORT QgsDisplayAngle: public QDialog, private Ui::QgsDisplayAngleBas
 
   private:
     //! pointer to tool which owns this dialog
-    QgsMapToolMeasureAngle * mTool;
+    QgsMapToolMeasureAngle * mTool = nullptr;
 
     //! The value we're showing
     double mValue;

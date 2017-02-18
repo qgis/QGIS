@@ -918,8 +918,8 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     //! Divisions for frame on bottom map side
     DisplayMode mBottomFrameDivisions;
 
-    QgsLineSymbol* mGridLineSymbol;
-    QgsMarkerSymbol* mGridMarkerSymbol;
+    QgsLineSymbol* mGridLineSymbol = nullptr;
+    QgsMarkerSymbol* mGridMarkerSymbol = nullptr;
 
     QgsCoordinateReferenceSystem mCRS;
 

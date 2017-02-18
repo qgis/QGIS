@@ -117,14 +117,14 @@ class ANALYSIS_EXPORT QgsOSMDatabase
     QString mError;
 
     //! pointer to sqlite3 database that keeps OSM data
-    sqlite3* mDatabase;
+    sqlite3* mDatabase = nullptr;
 
-    sqlite3_stmt* mStmtNode;
-    sqlite3_stmt* mStmtNodeTags;
-    sqlite3_stmt* mStmtWay;
-    sqlite3_stmt* mStmtWayNode;
-    sqlite3_stmt* mStmtWayNodePoints;
-    sqlite3_stmt* mStmtWayTags;
+    sqlite3_stmt* mStmtNode = nullptr;
+    sqlite3_stmt* mStmtNodeTags = nullptr;
+    sqlite3_stmt* mStmtWay = nullptr;
+    sqlite3_stmt* mStmtWayNode = nullptr;
+    sqlite3_stmt* mStmtWayNodePoints = nullptr;
+    sqlite3_stmt* mStmtWayTags = nullptr;
 
 };
 
@@ -147,7 +147,7 @@ class ANALYSIS_EXPORT QgsOSMNodeIterator // clazy:exclude=rule-of-three
      */
     QgsOSMNodeIterator( sqlite3* handle );
 
-    sqlite3_stmt* mStmt;
+    sqlite3_stmt* mStmt = nullptr;
 
     friend class QgsOSMDatabase;
 
@@ -173,7 +173,7 @@ class ANALYSIS_EXPORT QgsOSMWayIterator // clazy:exclude=rule-of-three
      */
     QgsOSMWayIterator( sqlite3* handle );
 
-    sqlite3_stmt* mStmt;
+    sqlite3_stmt* mStmt = nullptr;
 
     friend class QgsOSMDatabase;
 

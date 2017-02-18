@@ -73,7 +73,7 @@ class APP_EXPORT QgsMapToolPinLabels: public QgsMapToolLabel
     QRect mSelectRect;
 
     //! Stores selection marquee
-    QgsRubberBand* mRubberBand;
+    QgsRubberBand* mRubberBand = nullptr;
 
   private:
 

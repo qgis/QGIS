@@ -51,8 +51,8 @@ class QgsDataItemProviderFromPlugin : public QgsDataItemProvider
 
   protected:
     QString mName;
-    dataCapabilities_t* mCapabilitiesFunc;
-    dataItem_t* mDataItemFunc;
+    dataCapabilities_t* mCapabilitiesFunc = nullptr;
+    dataItem_t* mDataItemFunc = nullptr;
 };
 
 

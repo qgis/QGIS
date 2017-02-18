@@ -412,7 +412,7 @@ class CORE_EXPORT QgsFeatureRequest
     QgsRectangle mFilterRect;
     QgsFeatureId mFilterFid;
     QgsFeatureIds mFilterFids;
-    QgsExpression* mFilterExpression;
+    QgsExpression* mFilterExpression = nullptr;
     QgsExpressionContext mExpressionContext;
     Flags mFlags;
     QgsAttributeList mAttrs;

@@ -86,11 +86,11 @@ class ANALYSIS_EXPORT QgsRelief
 
     double mZFactor;
 
-    QgsSlopeFilter* mSlopeFilter;
-    QgsAspectFilter* mAspectFilter;
-    QgsHillshadeFilter* mHillshadeFilter285;
-    QgsHillshadeFilter* mHillshadeFilter300;
-    QgsHillshadeFilter* mHillshadeFilter315;
+    QgsSlopeFilter* mSlopeFilter = nullptr;
+    QgsAspectFilter* mAspectFilter = nullptr;
+    QgsHillshadeFilter* mHillshadeFilter285 = nullptr;
+    QgsHillshadeFilter* mHillshadeFilter300 = nullptr;
+    QgsHillshadeFilter* mHillshadeFilter315 = nullptr;
 
     //relief colors and corresponding elevations
     QList< ReliefColor > mReliefColors;

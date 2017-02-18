@@ -987,7 +987,7 @@ ErrorList topolTest::checkSegmentLength( double tolerance, QgsVectorLayer* layer
   QgsPolyline ls;
   QgsMultiPolyline mls;
   QList<FeatureLayer> fls;
-  TopolErrorShort* err;
+  TopolErrorShort* err = nullptr;
   double distance;
 
   for ( it = mFeatureList1.begin(); it != mFeatureList1.end(); ++it )

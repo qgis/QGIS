@@ -215,7 +215,7 @@ QgsMessageBarItem *QgsMessageBarItem::setWidget( QWidget *widget )
 {
   if ( mWidget )
   {
-    QLayoutItem *item;
+    QLayoutItem *item = nullptr;
     item = mLayout->itemAt( 2 );
     if ( item->widget() == mWidget )
     {

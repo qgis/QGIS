@@ -124,8 +124,8 @@ class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
     bool allowRequestDefinedDatasources() const override;
 
   private:
-    QgsServerProjectParser* mProjectParser;
-    const QgsAccessControl* mAccessControl;
+    QgsServerProjectParser* mProjectParser = nullptr;
+    const QgsAccessControl* mAccessControl = nullptr;
 
     mutable QFont mLegendLayerFont;
     mutable QFont mLegendItemFont;

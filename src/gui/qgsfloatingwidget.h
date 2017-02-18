@@ -119,9 +119,9 @@ class GUI_EXPORT QgsFloatingWidget: public QWidget
 
   private:
 
-    QWidget* mAnchorWidget;
-    QgsFloatingWidgetEventFilter* mParentEventFilter;
-    QgsFloatingWidgetEventFilter* mAnchorEventFilter;
+    QWidget* mAnchorWidget = nullptr;
+    QgsFloatingWidgetEventFilter* mParentEventFilter = nullptr;
+    QgsFloatingWidgetEventFilter* mAnchorEventFilter = nullptr;
     AnchorPoint mFloatAnchorPoint;
     AnchorPoint mAnchorWidgetAnchorPoint;
 

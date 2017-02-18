@@ -35,7 +35,7 @@
 #include <QStandardPaths>
 #include <QDebug>
 
-PyThreadState* _mainState;
+PyThreadState* _mainState = nullptr;
 
 QgsPythonUtilsImpl::QgsPythonUtilsImpl()
 {
@@ -452,9 +452,9 @@ bool QgsPythonUtilsImpl::getError( QString& errorClassName, QString& errorText )
     return false;
   }
 
-  PyObject* err_type;
-  PyObject* err_value;
-  PyObject* err_tb;
+  PyObject* err_type = nullptr;
+  PyObject* err_value = nullptr;
+  PyObject* err_tb = nullptr;
 
   // get the exception information and clear error
   PyErr_Fetch( &err_type, &err_value, &err_tb );

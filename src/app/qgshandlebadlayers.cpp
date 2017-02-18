@@ -110,7 +110,7 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode>& layers )
 
     mLayerList->setRowCount( j + 1 );
 
-    QTableWidgetItem *item;
+    QTableWidgetItem *item = nullptr;
 
     item = new QTableWidgetItem( name );
     item->setData( Qt::UserRole + 0, i );

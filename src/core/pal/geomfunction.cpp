@@ -266,7 +266,7 @@ int GeomFunction::convexHullId( int *id, const double* const x, const double* co
 int GeomFunction::reorderPolygon( int nbPoints, double *x, double *y )
 {
   int inc = 0;
-  int *cHull;
+  int *cHull = nullptr;
   int i;
 
   int *pts = new int[nbPoints];

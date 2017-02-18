@@ -270,10 +270,10 @@ class DRW_Variant
   private:
     union DRW_VarContent
     {
-      UTF8STRING *s;
+      UTF8STRING *s; //skip-init-check
       dint32 i;
       double d;
-      DRW_Coord *v;
+      DRW_Coord *v; //skip-init-check
 
       DRW_VarContent( UTF8STRING *sd ): s( sd ) {}
       DRW_VarContent( dint32 id ): i( id ) {}

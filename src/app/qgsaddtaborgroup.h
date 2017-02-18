@@ -52,7 +52,7 @@ class APP_EXPORT QgsAddTabOrGroup : public QDialog, private Ui::QgsAddTabOrGroup
     void on_mTabButton_toggled( bool checked );
 
   protected:
-    QgsVectorLayer *mLayer;
+    QgsVectorLayer *mLayer = nullptr;
     QList< TabPair > mTabs;
 };
 

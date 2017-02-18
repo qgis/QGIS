@@ -76,7 +76,7 @@ namespace pal
       double max_char_angle_outside;
       double label_height;
       int char_num;
-      CharacterInfo* char_info;
+      CharacterInfo* char_info = nullptr;
 
   };
 
@@ -280,7 +280,7 @@ namespace pal
 
     protected:
 
-      QgsLabelFeature* mLF;
+      QgsLabelFeature* mLF = nullptr;
       QList<FeaturePart*> mHoles;
 
       //! \brief read coordinates from a GEOS geom

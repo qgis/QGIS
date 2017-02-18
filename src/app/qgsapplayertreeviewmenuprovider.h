@@ -29,7 +29,7 @@ struct LegendLayerAction
       , menu( m )
       , allLayers( all )
   {}
-  QAction* action;
+  QAction* action = nullptr;
   QString menu;
   bool allLayers;
   QList<QgsMapLayer*> layers;
@@ -56,8 +56,8 @@ class QgsAppLayerTreeViewMenuProvider : public QObject, public QgsLayerTreeViewM
 
     void addCustomLayerActions( QMenu* menu, QgsMapLayer* layer );
 
-    QgsLayerTreeView* mView;
-    QgsMapCanvas* mCanvas;
+    QgsLayerTreeView* mView = nullptr;
+    QgsMapCanvas* mCanvas = nullptr;
 
     QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > > mLegendLayerActionMap;
 

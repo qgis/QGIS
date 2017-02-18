@@ -93,7 +93,7 @@ namespace QgsWfs
       }
 
     private:
-      QgsServerInterface* mServerIface;
+      QgsServerInterface* mServerIface = nullptr;
   };
 
 

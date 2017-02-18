@@ -59,7 +59,7 @@ class TestQgsInvertedPolygon : public QObject
     bool setQml( QgsVectorLayer* vlayer, const QString& qmlFile );
     bool imageCheck( const QString& theType, const QgsRectangle* = 0 );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPolysLayer;
+    QgsVectorLayer * mpPolysLayer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };

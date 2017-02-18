@@ -83,7 +83,7 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
     void setCurrentActionShortcut( const QKeySequence& s );
     void updateShortcutText();
 
-    QgsShortcutsManager* mManager;
+    QgsShortcutsManager* mManager = nullptr;
 
     bool mGettingShortcut;
     int mModifiers, mKey;

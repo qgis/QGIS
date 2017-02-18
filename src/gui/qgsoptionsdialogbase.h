@@ -82,7 +82,7 @@ class GUI_EXPORT QgsSearchHighlightOptionWidget : public QObject
     void widgetDestroyed();
 
   private:
-    QWidget* mWidget;
+    QWidget* mWidget = nullptr;
     QString mStyleSheet;
     bool mValid;
     bool mChangedStyle;
@@ -173,11 +173,11 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
 
     QString mOptsKey;
     bool mInit;
-    QListWidget* mOptListWidget;
-    QStackedWidget* mOptStackedWidget;
-    QSplitter* mOptSplitter;
-    QDialogButtonBox* mOptButtonBox;
-    QgsFilterLineEdit* mSearchLineEdit;
+    QListWidget* mOptListWidget = nullptr;
+    QStackedWidget* mOptStackedWidget = nullptr;
+    QSplitter* mOptSplitter = nullptr;
+    QDialogButtonBox* mOptButtonBox = nullptr;
+    QgsFilterLineEdit* mSearchLineEdit = nullptr;
     QString mDialogTitle;
     bool mIconOnly;
     // pointer to app or custom, external QSettings

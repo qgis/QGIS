@@ -359,7 +359,7 @@ QString QgsInvertedPolygonRenderer::dump() const
 
 QgsInvertedPolygonRenderer* QgsInvertedPolygonRenderer::clone() const
 {
-  QgsInvertedPolygonRenderer* newRenderer;
+  QgsInvertedPolygonRenderer* newRenderer = nullptr;
   if ( !mSubRenderer )
   {
     newRenderer = new QgsInvertedPolygonRenderer( nullptr );

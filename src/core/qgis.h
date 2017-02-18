@@ -157,7 +157,7 @@ template<class Object> class QgsSignalBlocker // clazy:exclude=rule-of-three
 
   private:
 
-    Object* mObject;
+    Object* mObject = nullptr;
     bool mPreviousState;
 
 };

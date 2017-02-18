@@ -107,7 +107,7 @@ class QgsGPSPluginGui : public QDialog, private Ui::QgsGPSPluginGuiBase
     std::map<QString, QgsGPSDevice*>& mDevices;
     QString mBabelFilter;
     QString mImpFormat;
-    QAbstractButton *pbnOK;
+    QAbstractButton *pbnOK = nullptr;
 };
 
 #endif

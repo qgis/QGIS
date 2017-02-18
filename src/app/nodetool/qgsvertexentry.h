@@ -29,9 +29,9 @@ class QgsVertexEntry
     int mPenWidth;
     QString mToolTip;
     QgsVertexMarker::IconType mType;
-    QgsVertexMarker *mMarker;
-    QgsMapCanvas *mCanvas;
-    QgsMapLayer *mLayer;
+    QgsVertexMarker *mMarker = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
+    QgsMapLayer *mLayer = nullptr;
 
   public:
     QgsVertexEntry( QgsMapCanvas *canvas,

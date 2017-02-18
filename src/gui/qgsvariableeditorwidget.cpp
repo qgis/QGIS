@@ -404,7 +404,7 @@ void QgsVariableEditorTree::refreshScopeItems( QgsExpressionContextScope* scope,
   //add top level item
   bool isCurrent = scopeIndex == mEditableScopeIndex;
 
-  QTreeWidgetItem* scopeItem;
+  QTreeWidgetItem* scopeItem = nullptr;
   if ( mScopeToItem.contains( scopeIndex ) )
   {
     //retrieve existing item

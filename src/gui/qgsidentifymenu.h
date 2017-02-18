@@ -87,10 +87,10 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
       bool mIsValid;
       bool mAllResults;
       bool mIsExternalAction;
-      QgsMapLayer* mLayer;
+      QgsMapLayer* mLayer = nullptr;
       QgsFeatureId mFeatureId;
       MenuLevel mLevel;
-      QgsMapLayerAction* mMapLayerAction;
+      QgsMapLayerAction* mMapLayerAction = nullptr;
     };
 
     /**
@@ -168,7 +168,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     //! get the lists of results corresponding to an action in the menu
     QList<QgsMapToolIdentify::IdentifyResult> results( QAction* action, bool& externalAction );
 
-    QgsMapCanvas* mCanvas;
+    QgsMapCanvas* mCanvas = nullptr;
     QList<QgsHighlight*> mRubberBands;
     bool mAllowMultipleReturn;
     bool mExecWithSingleResult;

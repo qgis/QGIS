@@ -142,7 +142,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     // The column labels
     QStringList mColumnLabels;
     // Our thread for doing long running queries
-    QgsGeomColumnTypeThread* mColumnTypeThread;
+    QgsGeomColumnTypeThread* mColumnTypeThread = nullptr;
     QgsDataSourceUri mDataSrcUri;
     QStringList mSelectedTables;
     bool mUseEstimatedMetadata;
@@ -153,8 +153,8 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     QgsPgTableModel mTableModel;
     QgsDatabaseFilterProxyModel mProxyModel;
 
-    QPushButton *mBuildQueryButton;
-    QPushButton *mAddButton;
+    QPushButton *mBuildQueryButton = nullptr;
+    QPushButton *mAddButton = nullptr;
 
     void finishList();
 };

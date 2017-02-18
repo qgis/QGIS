@@ -47,7 +47,7 @@ class TestQgsRasterBlock : public QObject
   private:
 
     QString mTestDataDir;
-    QgsRasterLayer* mpRasterLayer;
+    QgsRasterLayer* mpRasterLayer = nullptr;
 };
 
 

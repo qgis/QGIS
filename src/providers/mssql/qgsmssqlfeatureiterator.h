@@ -92,7 +92,7 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
     QSqlDatabase mDatabase;
 
     // The current sql query
-    QSqlQuery* mQuery;
+    QSqlQuery* mQuery = nullptr;
 
     // The current sql statement
     QString mStatement;

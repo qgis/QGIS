@@ -53,14 +53,14 @@ class GUI_EXPORT QgsSourceSelectDialog : public QDialog, protected Ui::QgsSource
   protected:
     QString mServiceName;
     ServiceType mServiceType;
-    QgsGenericProjectionSelector* mProjectionSelector;
+    QgsGenericProjectionSelector* mProjectionSelector = nullptr;
     //  Available CRS for a server connection, key=typename, value=list("EPSG:XXXX")
     QMap<QString, QStringList> mAvailableCRS;
-    QStandardItemModel* mModel;
-    QSortFilterProxyModel* mModelProxy;
-    QPushButton *mBuildQueryButton;
-    QPushButton *mAddButton;
-    QButtonGroup* mImageEncodingGroup;
+    QStandardItemModel* mModel = nullptr;
+    QSortFilterProxyModel* mModelProxy = nullptr;
+    QPushButton *mBuildQueryButton = nullptr;
+    QPushButton *mAddButton = nullptr;
+    QButtonGroup* mImageEncodingGroup = nullptr;
     QgsRectangle mCanvasExtent;
     QgsCoordinateReferenceSystem mCanvasCrs;
 

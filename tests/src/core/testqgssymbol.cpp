@@ -49,9 +49,9 @@ class TestQgsSymbol : public QObject
     QString mReport;
     QString mTestDataDir;
 
-    QgsVectorLayer * mpPointsLayer;
-    QgsVectorLayer * mpLinesLayer;
-    QgsVectorLayer * mpPolysLayer;
+    QgsVectorLayer * mpPointsLayer = nullptr;
+    QgsVectorLayer * mpLinesLayer = nullptr;
+    QgsVectorLayer * mpPolysLayer = nullptr;
 
     bool imageCheck( QgsMapSettings &ms, const QString &testName );
 

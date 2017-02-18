@@ -100,7 +100,7 @@ class QgsGDALGeorefTransform : public QgsGeorefTransformInterface
     const bool mIsTPSTransform;
 
     GDALTransformerFunc  mGDALTransformer;
-    void                *mGDALTransformerArgs;
+    void                *mGDALTransformerArgs = nullptr;
 };
 
 /**
@@ -631,7 +631,7 @@ int QgsProjectiveGeorefTransform::projective_transform( void *pTransformerArg, i
   if ( !t )
     return false;
 
-  double *H;
+  double *H = nullptr;
   if ( !bDstToSrc )
   {
     H = t->H;

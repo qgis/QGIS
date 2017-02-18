@@ -58,7 +58,7 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
   protected:
     QFont mDiagramFont;
 
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
 
   private:
 
@@ -83,7 +83,7 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
     std::unique_ptr< QgsMarkerSymbol > mSizeLegendSymbol;
 
     QString guessLegendText( const QString &expression );
-    QgsMapCanvas *mMapCanvas;
+    QgsMapCanvas *mMapCanvas = nullptr;
 
     QgsExpressionContext createExpressionContext() const override;
 

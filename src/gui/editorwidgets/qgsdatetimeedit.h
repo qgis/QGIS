@@ -78,8 +78,8 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     bool mIsNull;
     bool mIsEmpty;
 
-    QLineEdit* mNullLabel;
-    QToolButton* mClearButton;
+    QLineEdit* mNullLabel = nullptr;
+    QToolButton* mClearButton = nullptr;
 
 };
 

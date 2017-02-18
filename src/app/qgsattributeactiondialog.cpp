@@ -106,7 +106,7 @@ QgsAttributeTableConfig::ActionWidgetStyle QgsAttributeActionDialog::attributeTa
 
 void QgsAttributeActionDialog::insertRow( int row, const QgsAction& action )
 {
-  QTableWidgetItem* item;
+  QTableWidgetItem* item = nullptr;
   mAttributeActionTable->insertRow( row );
 
   // Type

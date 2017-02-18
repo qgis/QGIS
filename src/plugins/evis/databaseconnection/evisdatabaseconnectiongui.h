@@ -56,13 +56,13 @@ class eVisDatabaseConnectionGui : public QDialog, private Ui::eVisDatabaseConnec
 
   private:
     //! \brief Pointer to a database connection
-    eVisDatabaseConnection* mDatabaseConnection;
+    eVisDatabaseConnection* mDatabaseConnection = nullptr;
 
     //! \brief Pointer to a temporary file which will hold the results of our query
     QList<QTemporaryFile*>* mTempOutputFileList;
 
     //! \brief Pointer to another GUI component that will select which fields contain x, y coordinates
-    eVisDatabaseLayerFieldSelectionGui* mDatabaseLayerFieldSelector;
+    eVisDatabaseLayerFieldSelectionGui* mDatabaseLayerFieldSelector = nullptr;
 
     //! \brief Pointer to a QMap which will hold the definition of preexisting query that can be loaded from an xml file
     QMap<int, eVisQueryDefinition>* mQueryDefinitionMap;

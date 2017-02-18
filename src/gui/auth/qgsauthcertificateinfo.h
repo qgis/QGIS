@@ -119,17 +119,17 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
     QgsAuthCertUtils::CertTrustPolicy mDefaultTrustPolicy;
     QgsAuthCertUtils::CertTrustPolicy mCurrentTrustPolicy;
 
-    QTreeWidgetItem *mSecGeneral;
-    QTreeWidgetItem *mSecDetails;
-    QTreeWidgetItem *mSecPemText;
-    QTreeWidgetItem *mGrpSubj;
-    QTreeWidgetItem *mGrpIssu;
-    QTreeWidgetItem *mGrpCert;
-    QTreeWidgetItem *mGrpPkey;
-    QTreeWidgetItem *mGrpExts;
+    QTreeWidgetItem *mSecGeneral = nullptr;
+    QTreeWidgetItem *mSecDetails = nullptr;
+    QTreeWidgetItem *mSecPemText = nullptr;
+    QTreeWidgetItem *mGrpSubj = nullptr;
+    QTreeWidgetItem *mGrpIssu = nullptr;
+    QTreeWidgetItem *mGrpCert = nullptr;
+    QTreeWidgetItem *mGrpPkey = nullptr;
+    QTreeWidgetItem *mGrpExts = nullptr;
 
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout *mAuthNotifyLayout = nullptr;
+    QLabel *mAuthNotify = nullptr;
 };
 
 //////////////// Embed in dialog ///////////////////
@@ -164,7 +164,7 @@ class GUI_EXPORT QgsAuthCertInfoDialog : public QDialog
     bool trustCacheRebuilt() { return mCertInfoWdgt->trustCacheRebuilt(); }
 
   private:
-    QgsAuthCertInfo *mCertInfoWdgt;
+    QgsAuthCertInfo *mCertInfoWdgt = nullptr;
 };
 
 #endif // QGSAUTHCERTIFICATEINFO_H

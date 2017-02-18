@@ -299,12 +299,12 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      */
     bool evalFeatureFilename( const QgsExpressionContext &context );
 
-    QgsComposition* mComposition;
+    QgsComposition* mComposition = nullptr;
 
     bool mEnabled;
     bool mHideCoverage;
     QString mFilenamePattern;
-    QgsVectorLayer* mCoverageLayer;
+    QgsVectorLayer* mCoverageLayer = nullptr;
     bool mSingleFile;
 
     QString mCurrentFilename;

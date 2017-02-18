@@ -149,22 +149,22 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
 
   private:
     // Canvas view
-    QgsGrassMapcalcView *mView;
+    QgsGrassMapcalcView *mView = nullptr;
 
     // Canvas
-    QGraphicsScene *mCanvasScene;
+    QGraphicsScene *mCanvasScene = nullptr;
 
     // Tool
     int mTool;
     int mToolStep;
 
     // Pointer to current object
-    QgsGrassMapcalcObject *mObject;
+    QgsGrassMapcalcObject *mObject = nullptr;
 
     // Pointer to current connector
-    QgsGrassMapcalcConnector *mConnector;
+    QgsGrassMapcalcConnector *mConnector = nullptr;
 
-    QgsGrassModuleInputComboBox *mMapComboBox;
+    QgsGrassModuleInputComboBox *mMapComboBox = nullptr;
 
     //! Last point position
     QPoint mLastPoint;
@@ -179,7 +179,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     std::vector<QgsGrassMapcalcFunction> mFunctions;
 
     //! Output object
-    QgsGrassMapcalcObject *mOutput;
+    QgsGrassMapcalcObject *mOutput = nullptr;
 
     //! Current file name, empty if no file is loaded/saved
     QString mFileName;
@@ -188,19 +188,19 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     unsigned int mNextId;
 
     //! Background
-    QGraphicsRectItem *mPaper;
+    QGraphicsRectItem *mPaper = nullptr;
 
     // Actions
-    QAction *mActionAddMap;
-    QAction *mActionAddConstant;
-    QAction *mActionAddFunction;
-    QAction *mActionAddConnection;
-    QAction *mActionSelectItem;
-    QAction *mActionDeleteItem;
+    QAction *mActionAddMap = nullptr;
+    QAction *mActionAddConstant = nullptr;
+    QAction *mActionAddFunction = nullptr;
+    QAction *mActionAddConnection = nullptr;
+    QAction *mActionSelectItem = nullptr;
+    QAction *mActionDeleteItem = nullptr;
 
-    QAction *mActionLoad;
-    QAction *mActionSave;
-    QAction *mActionSaveAs;
+    QAction *mActionLoad = nullptr;
+    QAction *mActionSave = nullptr;
+    QAction *mActionSaveAs = nullptr;
 };
 
 /*
@@ -438,7 +438,7 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
     std::vector<int> mInputConnectorsEnd;
 
     // Output connector
-    QgsGrassMapcalcConnector *mOutputConnector;
+    QgsGrassMapcalcConnector *mOutputConnector = nullptr;
     int mOutputConnectorEnd;
 
 };
@@ -530,7 +530,7 @@ class QgsGrassMapcalcView: public QGraphicsView
     void keyPressEvent( QKeyEvent * e ) override;
 
   private:
-    QgsGrassMapcalc *mMapcalc;
+    QgsGrassMapcalc *mMapcalc = nullptr;
 
 };
 

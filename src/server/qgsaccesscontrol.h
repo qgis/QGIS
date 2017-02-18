@@ -133,7 +133,7 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
     QString resolveFilterFeatures( const QgsVectorLayer* layer ) const;
 
     //! The AccessControl plugins registry
-    QgsAccessControlFilterMap* mPluginsAccessControls;
+    QgsAccessControlFilterMap* mPluginsAccessControls = nullptr;
 
     QMap<QString, QString> mFilterFeaturesExpressions;
     bool mResolved;

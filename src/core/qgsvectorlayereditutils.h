@@ -189,7 +189,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     @return 0 in case of success */
     int boundingBoxFromPointList( const QList<QgsPoint>& list, double& xmin, double& ymin, double& xmax, double& ymax ) const;
 
-    QgsVectorLayer* L;
+    QgsVectorLayer* L = nullptr;
 };
 
 #endif // QGSVECTORLAYEREDITUTILS_H

@@ -21,11 +21,11 @@
 
 union wkbPtr
 {
-  void *vPtr;
-  double *dPtr;
-  int *iPtr;
+  void *vPtr = nullptr;
+  double *dPtr = nullptr;
+  int *iPtr = nullptr;
   unsigned char *ucPtr;
-  char *cPtr;
+  char *cPtr = nullptr;
 
 };
 

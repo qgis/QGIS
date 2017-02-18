@@ -42,7 +42,7 @@ class GUI_EXPORT QgsAdvancedDigitizingCanvasItem : public QgsMapCanvasItem
     QPen mCursorPen;
 
   private:
-    QgsAdvancedDigitizingDockWidget* mAdvancedDigitizingDockWidget;
+    QgsAdvancedDigitizingDockWidget* mAdvancedDigitizingDockWidget = nullptr;
 };
 
 #endif // QGSADVANCEDDIGITIZINGCANVASITEM_H

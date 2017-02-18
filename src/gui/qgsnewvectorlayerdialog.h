@@ -60,7 +60,7 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
     void selectionChanged();
 
   private:
-    QPushButton *mOkButton;
+    QPushButton *mOkButton = nullptr;
 };
 
 #endif //qgsnewvectorlayerdialog_H

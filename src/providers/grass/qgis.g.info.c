@@ -125,7 +125,7 @@ int main( int argc, char **argv )
     if ( window.proj != PROJECTION_XY )
     {
       struct Key_Value *projinfo, *projunits;
-      char *wkt;
+      char *wkt = 0;
       projinfo = G_get_projinfo();
       projunits = G_get_projunits();
       wkt = GPJ_grass_to_wkt( projinfo, projunits, 0, 0 );
@@ -209,8 +209,8 @@ int main( int argc, char **argv )
     {
       int fd;
       RASTER_MAP_TYPE rast_type;
-      DCELL *dcell;
-      CELL *cell;
+      DCELL *dcell = 0;
+      CELL *cell = 0;
       char buff[101];
       G_get_cellhd( rast_opt->answer, "", &window );
       G_set_window( &window );
@@ -239,7 +239,7 @@ int main( int argc, char **argv )
           }
           else
           {
-            void *ptr;
+            void *ptr = 0;
             double val;
 
 #if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \
@@ -304,11 +304,11 @@ int main( int argc, char **argv )
     {
       int fd;
       RASTER_MAP_TYPE rast_type;
-      DCELL *dcell;
-      CELL *cell;
+      DCELL *dcell = 0;
+      CELL *cell = 0;
       int ncols, nrows;
       int row, col;
-      void *ptr;
+      void *ptr = 0;
       double val;
       double min = DBL_MAX;
       double max = -DBL_MAX;

@@ -81,7 +81,7 @@ class QgsComposerConfigObject: public QObject
 
   private:
 
-    QgsComposerObject* mComposerObject;
+    QgsComposerObject* mComposerObject = nullptr;
 };
 
 /**
@@ -116,7 +116,7 @@ class QgsComposerItemBaseWidget: public QgsPanelWidget
 
   private:
 
-    QgsComposerConfigObject* mConfigObject;
+    QgsComposerConfigObject* mConfigObject = nullptr;
 };
 
 /** A class to enter generic properties for composer items (e.g. background, outline, frame).
@@ -191,8 +191,8 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
 
   private:
 
-    QgsComposerItem* mItem;
-    QgsComposerConfigObject* mConfigObject;
+    QgsComposerItem* mItem = nullptr;
+    QgsComposerConfigObject* mConfigObject = nullptr;
 
     bool mFreezeXPosSpin;
     bool mFreezeYPosSpin;

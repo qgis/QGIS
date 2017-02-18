@@ -96,19 +96,19 @@ class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfig
     int messageTimeout();
     QString selectedConfigId();
 
-    QSqlTableModel *mConfigModel;
+    QSqlTableModel *mConfigModel = nullptr;
 
-    QMenu *mAuthUtilitiesMenu;
-    QAction *mActionSetMasterPassword;
-    QAction *mActionClearCachedMasterPassword;
-    QAction *mActionResetMasterPassword;
-    QAction *mActionClearCachedAuthConfigs;
-    QAction *mActionRemoveAuthConfigs;
-    QAction *mActionEraseAuthDatabase;
+    QMenu *mAuthUtilitiesMenu = nullptr;
+    QAction *mActionSetMasterPassword = nullptr;
+    QAction *mActionClearCachedMasterPassword = nullptr;
+    QAction *mActionResetMasterPassword = nullptr;
+    QAction *mActionClearCachedAuthConfigs = nullptr;
+    QAction *mActionRemoveAuthConfigs = nullptr;
+    QAction *mActionEraseAuthDatabase = nullptr;
 
     bool mDisabled;
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout *mAuthNotifyLayout = nullptr;
+    QLabel *mAuthNotify = nullptr;
 };
 
 #endif // QGSAUTHCONFIGEDITOR_H

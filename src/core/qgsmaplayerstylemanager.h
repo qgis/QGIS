@@ -150,10 +150,10 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
     void currentStyleChanged( const QString& currentName );
 
   private:
-    QgsMapLayer* mLayer;
+    QgsMapLayer* mLayer = nullptr;
     QMap<QString, QgsMapLayerStyle> mStyles;
     QString mCurrentStyle;
-    QgsMapLayerStyle* mOverriddenOriginalStyle;
+    QgsMapLayerStyle* mOverriddenOriginalStyle = nullptr;
 };
 
 #endif // QGSMAPLAYERSTYLEMANAGER_H

@@ -69,7 +69,7 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
      */
     void setRow( int row, const QgsFeatureRequest::OrderByClause& orderByClause );
 
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
 
 };
 

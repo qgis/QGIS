@@ -56,9 +56,9 @@ class TestQgsComposerLabel : public QObject
     void renderAsHtmlRelative();
 
   private:
-    QgsComposition* mComposition;
-    QgsComposerLabel* mComposerLabel;
-    QgsVectorLayer* mVectorLayer;
+    QgsComposition* mComposition = nullptr;
+    QgsComposerLabel* mComposerLabel = nullptr;
+    QgsVectorLayer* mVectorLayer = nullptr;
     QString mReport;
 };
 

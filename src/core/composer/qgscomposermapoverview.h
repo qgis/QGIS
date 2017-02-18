@@ -253,7 +253,7 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
     int mFrameMapId;
 
     //! Drawing style for overview farme
-    QgsFillSymbol* mFrameSymbol;
+    QgsFillSymbol* mFrameSymbol = nullptr;
 
     //! Blend mode for overview
     QPainter::CompositionMode mBlendMode;

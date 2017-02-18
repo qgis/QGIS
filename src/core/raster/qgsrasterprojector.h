@@ -193,7 +193,7 @@ class ProjectorData
     bool mApproximate;
 
     //! Transformation from destination CRS to source CRS
-    QgsCoordinateTransform* mInverseCt;
+    QgsCoordinateTransform* mInverseCt = nullptr;
 
     //! Destination extent
     QgsRectangle mDestExtent;
@@ -243,11 +243,11 @@ class ProjectorData
 
     //! Array of source points for each destination column on top of current CPMatrix grid row
     /* Warning: using QList is slow on access */
-    QgsPoint *pHelperTop;
+    QgsPoint *pHelperTop = nullptr;
 
     //! Array of source points for each destination column on bottom of current CPMatrix grid row
     /* Warning: using QList is slow on access */
-    QgsPoint *pHelperBottom;
+    QgsPoint *pHelperBottom = nullptr;
 
     //! Current mHelperTop matrix row
     int mHelperTopRow;

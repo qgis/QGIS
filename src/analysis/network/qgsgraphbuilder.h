@@ -56,7 +56,7 @@ class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface
 
   private:
 
-    QgsGraph *mGraph;
+    QgsGraph *mGraph = nullptr;
 };
 
 #endif // QGSGRAPHBUILDER_H

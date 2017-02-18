@@ -53,7 +53,7 @@ class TestQgisAppClipboard : public QObject
     void clipboardLogic(); //test clipboard logic
 
   private:
-    QgisApp * mQgisApp;
+    QgisApp * mQgisApp = nullptr;
     QString mTestDataDir;
 };
 

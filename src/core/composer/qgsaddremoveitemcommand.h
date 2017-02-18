@@ -51,8 +51,8 @@ class CORE_EXPORT QgsAddRemoveItemCommand: public QObject, public QUndoCommand
     void itemRemoved( QgsComposerItem* item );
 
   private:
-    QgsComposerItem* mItem;
-    QgsComposition* mComposition;
+    QgsComposerItem* mItem = nullptr;
+    QgsComposition* mComposition = nullptr;
     State mState;
     bool mFirstRun; //flag to prevent execution when the command is pushed to the QUndoStack
 

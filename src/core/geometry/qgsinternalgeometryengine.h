@@ -72,7 +72,7 @@ class QgsInternalGeometryEngine
     QgsGeometry orthogonalize( double tolerance = 1.0E-8, int maxIterations = 1000, double angleThreshold = 15.0 ) const;
 
   private:
-    const QgsAbstractGeometry* mGeometry;
+    const QgsAbstractGeometry* mGeometry = nullptr;
 };
 
 #endif // QGSINTERNALGEOMETRYENGINE_H

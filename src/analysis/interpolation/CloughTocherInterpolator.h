@@ -29,7 +29,7 @@ class ANALYSIS_EXPORT CloughTocherInterpolator : public TriangleInterpolator
 {
   protected:
     //! Association with a triangulation object
-    NormVecDecorator* mTIN;
+    NormVecDecorator* mTIN = nullptr;
     //! Tolerance of the barycentric coordinates at the borders of the triangles (to prevent errors because of very small negativ baricentric coordinates)
     double mEdgeTolerance;
     //! First point of the triangle in x-,y-,z-coordinates

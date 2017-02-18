@@ -174,7 +174,7 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     void defaultExpressionChanged();
 
   private:
-    QgsVectorLayer *mLayer;
+    QgsVectorLayer *mLayer = nullptr;
     int mFieldIdx;
 
     QVariantMap mWidgetConfig;

@@ -118,7 +118,7 @@ class GUI_EXPORT QgsLimitedRandomColorRampDialog : public QDialog
 
   private:
 
-    QgsLimitedRandomColorRampWidget* mWidget;
+    QgsLimitedRandomColorRampWidget* mWidget = nullptr;
 
 };
 

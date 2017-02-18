@@ -595,7 +595,7 @@ class CORE_EXPORT QgsDiagramRenderer
     void _writeXml( QDomElement& rendererElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
 
     //! Reference to the object that does the real diagram rendering
-    QgsDiagram* mDiagram;
+    QgsDiagram* mDiagram = nullptr;
 
     //! Whether to show an attribute legend for the diagrams
     bool mShowAttributeLegend;

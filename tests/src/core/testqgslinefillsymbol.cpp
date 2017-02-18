@@ -66,10 +66,10 @@ class TestQgsLineFillSymbol : public QObject
 
     bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPolysLayer;
-    QgsLinePatternFillSymbolLayer* mLineFill;
-    QgsFillSymbol* mFillSymbol;
-    QgsSingleSymbolRenderer* mSymbolRenderer;
+    QgsVectorLayer * mpPolysLayer = nullptr;
+    QgsLinePatternFillSymbolLayer* mLineFill = nullptr;
+    QgsFillSymbol* mFillSymbol = nullptr;
+    QgsSingleSymbolRenderer* mSymbolRenderer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };

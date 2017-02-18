@@ -43,8 +43,8 @@ class TestProjectionIssues : public QObject
     void issue15183();// test for #15183
 
   private:
-    QgsRasterLayer* mRasterLayer;
-    QgsMapCanvas*   mMapCanvas;
+    QgsRasterLayer* mRasterLayer = nullptr;
+    QgsMapCanvas*   mMapCanvas = nullptr;
 };
 
 void TestProjectionIssues::initTestCase()

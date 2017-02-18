@@ -383,7 +383,7 @@ class CORE_EXPORT QgsStyle : public QObject
     QString mErrorString;
     QString mFileName;
 
-    sqlite3* mCurrentDB;
+    sqlite3* mCurrentDB = nullptr;
 
     static QgsStyle* sDefaultStyle;
 

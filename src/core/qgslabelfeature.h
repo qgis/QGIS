@@ -295,14 +295,14 @@ class CORE_EXPORT QgsLabelFeature
 
   protected:
     //! Pointer to PAL layer (assigned when registered to PAL)
-    pal::Layer* mLayer;
+    pal::Layer* mLayer = nullptr;
 
     //! Associated ID unique within the parent label provider
     QgsFeatureId mId;
     //! Geometry of the feature to be labelled
-    GEOSGeometry* mGeometry;
+    GEOSGeometry* mGeometry = nullptr;
     //! Optional geometry to use for label obstacles, if different to mGeometry
-    GEOSGeometry* mObstacleGeometry;
+    GEOSGeometry* mObstacleGeometry = nullptr;
     //! Optional geometry to use for label's permissible zone
     QgsGeometry mPermissibleZone;
     //! Width and height of the label
@@ -346,15 +346,15 @@ class CORE_EXPORT QgsLabelFeature
     //! text of the label
     QString mLabelText;
     //! extra information for curved labels (may be null)
-    pal::LabelInfo* mInfo;
+    pal::LabelInfo* mInfo = nullptr;
 
   private:
 
     //! GEOS geometry on which mPermissibleZoneGeosPrepared is based on
-    GEOSGeometry* mPermissibleZoneGeos;
+    GEOSGeometry* mPermissibleZoneGeos = nullptr;
 
     // TODO - not required when QgsGeometry caches geos preparedness
-    const GEOSPreparedGeometry* mPermissibleZoneGeosPrepared;
+    const GEOSPreparedGeometry* mPermissibleZoneGeosPrepared = nullptr;
 
 };
 

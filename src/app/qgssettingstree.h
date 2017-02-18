@@ -81,7 +81,7 @@ class QgsSettingsTree : public QTreeWidget
     int findChild( QTreeWidgetItem *parent, const QString &text, int startIndex );
     void moveItemForward( QTreeWidgetItem *parent, int oldIndex, int newIndex );
 
-    QSettings *settings;
+    QSettings *settings = nullptr;
     QTimer refreshTimer;
     bool autoRefresh;
     QIcon groupIcon;

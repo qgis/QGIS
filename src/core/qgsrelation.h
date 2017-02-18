@@ -307,11 +307,11 @@ class CORE_EXPORT QgsRelation
     //! The child layer
     QString mReferencingLayerId;
     //! The child layer
-    QgsVectorLayer* mReferencingLayer;
+    QgsVectorLayer* mReferencingLayer = nullptr;
     //! The parent layer id
     QString mReferencedLayerId;
     //! The parent layer
-    QgsVectorLayer* mReferencedLayer;
+    QgsVectorLayer* mReferencedLayer = nullptr;
 
     /** A list of fields which define the relation.
      *  In most cases there will be only one value, but multiple values

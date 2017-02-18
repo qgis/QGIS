@@ -54,9 +54,9 @@ class QgsLayerTreeTransparencyWidget : public QWidget
     void layerTrChanged();
 
   private:
-    QgsMapLayer* mLayer;
-    QSlider* mSlider;
-    QTimer* mTimer;
+    QgsMapLayer* mLayer = nullptr;
+    QSlider* mSlider = nullptr;
+    QTimer* mTimer = nullptr;
 };
 ///@endcond
 #endif // QGSLAYERTREEEMBEDDEDWIDGETSIMPL_H

@@ -170,26 +170,26 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 
     // initialized
     QgsAttributeEditorContext mEditorContext;
-    QgsMapCanvas* mCanvas;
-    QgsMessageBar* mMessageBar;
+    QgsMapCanvas* mCanvas = nullptr;
+    QgsMessageBar* mMessageBar = nullptr;
     QVariant mForeignKey;
     QgsFeature mFeature;
     // Index of the referenced layer key
     int mReferencedFieldIdx;
     int mReferencingFieldIdx;
     bool mAllowNull;
-    QgsHighlight* mHighlight;
-    QgsMapToolIdentifyFeature* mMapTool;
-    QgsMessageBarItem* mMessageBarItem;
+    QgsHighlight* mHighlight = nullptr;
+    QgsMapToolIdentifyFeature* mMapTool = nullptr;
+    QgsMessageBarItem* mMessageBarItem = nullptr;
     QString mRelationName;
-    QgsAttributeForm* mReferencedAttributeForm;
-    QgsVectorLayer* mReferencedLayer;
-    QgsVectorLayer* mReferencingLayer;
-    QgsAttributeTableModel* mMasterModel;
-    QgsAttributeTableFilterModel* mFilterModel;
-    QgsFeatureListModel* mFeatureListModel;
+    QgsAttributeForm* mReferencedAttributeForm = nullptr;
+    QgsVectorLayer* mReferencedLayer = nullptr;
+    QgsVectorLayer* mReferencingLayer = nullptr;
+    QgsAttributeTableModel* mMasterModel = nullptr;
+    QgsAttributeTableFilterModel* mFilterModel = nullptr;
+    QgsFeatureListModel* mFeatureListModel = nullptr;
     QList<QComboBox*> mFilterComboBoxes;
-    QWidget* mWindowWidget;
+    QWidget* mWindowWidget = nullptr;
     bool mShown;
     QgsRelation mRelation;
     bool mIsEditable;
@@ -206,23 +206,23 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     bool mAllowAddFeatures;
 
     // UI
-    QVBoxLayout* mTopLayout;
-    QToolButton* mMapIdentificationButton;
-    QToolButton* mRemoveFKButton;
-    QToolButton* mOpenFormButton;
-    QToolButton* mHighlightFeatureButton;
-    QToolButton* mAddEntryButton;
-    QAction* mHighlightFeatureAction;
-    QAction* mScaleHighlightFeatureAction;
-    QAction* mPanHighlightFeatureAction;
-    QComboBox* mComboBox;
-    QWidget* mChooserContainer;
-    QWidget* mFilterContainer;
-    QHBoxLayout* mFilterLayout;
-    QgsCollapsibleGroupBox* mAttributeEditorFrame;
-    QVBoxLayout* mAttributeEditorLayout;
-    QLineEdit* mLineEdit;
-    QLabel* mInvalidLabel;
+    QVBoxLayout* mTopLayout = nullptr;
+    QToolButton* mMapIdentificationButton = nullptr;
+    QToolButton* mRemoveFKButton = nullptr;
+    QToolButton* mOpenFormButton = nullptr;
+    QToolButton* mHighlightFeatureButton = nullptr;
+    QToolButton* mAddEntryButton = nullptr;
+    QAction* mHighlightFeatureAction = nullptr;
+    QAction* mScaleHighlightFeatureAction = nullptr;
+    QAction* mPanHighlightFeatureAction = nullptr;
+    QComboBox* mComboBox = nullptr;
+    QWidget* mChooserContainer = nullptr;
+    QWidget* mFilterContainer = nullptr;
+    QHBoxLayout* mFilterLayout = nullptr;
+    QgsCollapsibleGroupBox* mAttributeEditorFrame = nullptr;
+    QVBoxLayout* mAttributeEditorLayout = nullptr;
+    QLineEdit* mLineEdit = nullptr;
+    QLabel* mInvalidLabel = nullptr;
 };
 
 #endif // QGSRELATIONREFERENCEWIDGET_H

@@ -198,7 +198,7 @@ QgsProjectProperty *addKey_( const QString& scope,
   // cursor through property key/value hierarchy
   QgsProjectPropertyKey *currentProperty = rootProperty;
   QgsProjectProperty *nextProperty; // link to next property down hierarchy
-  QgsProjectPropertyKey* newPropertyKey;
+  QgsProjectPropertyKey* newPropertyKey = nullptr;
 
   while ( ! keySequence.isEmpty() )
   {

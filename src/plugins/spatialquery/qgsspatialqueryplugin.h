@@ -68,11 +68,11 @@ class QgsSpatialQueryPlugin: public QObject, public QgisPlugin
 
   private:
 
-    QgsSpatialQueryDialog  *mDialog;
+    QgsSpatialQueryDialog  *mDialog = nullptr;
     //! Pointer to the QgisInterface object
-    QgisInterface* mIface;
+    QgisInterface* mIface = nullptr;
     //! Pointer to the QAction used in the menu and on the toolbar
-    QAction* mSpatialQueryAction;
+    QAction* mSpatialQueryAction = nullptr;
 
 
     void MsgDEBUG( const QString &sMSg );

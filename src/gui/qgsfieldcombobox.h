@@ -95,7 +95,7 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
     void indexChanged( int i );
 
   private:
-    QgsFieldProxyModel* mFieldProxyModel;
+    QgsFieldProxyModel* mFieldProxyModel = nullptr;
 };
 
 #endif // QGSFIELDCOMBOBOX_H

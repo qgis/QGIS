@@ -73,7 +73,7 @@ class CORE_EXPORT QgsLegendSymbolItem
 
   private:
     //! symbol. owned by the struct. can be null.
-    QgsSymbol* mSymbol;
+    QgsSymbol* mSymbol = nullptr;
     //! label of the item (may be empty or non-unique)
     QString mLabel;
     //! unique identifier of the symbol item (within renderer)
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsLegendSymbolItem
     //! whether it can be enabled/disabled
     bool mCheckable;
 
-    QgsSymbol* mOriginalSymbolPointer;
+    QgsSymbol* mOriginalSymbolPointer = nullptr;
 
     // additional data that may be used for filtering
 

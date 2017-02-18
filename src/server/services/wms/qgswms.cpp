@@ -146,7 +146,7 @@ namespace QgsWms
 
     private:
       QString mVersion;
-      QgsServerInterface* mServerIface;
+      QgsServerInterface* mServerIface = nullptr;
   };
 
 

@@ -326,7 +326,7 @@ class CORE_EXPORT QgsSymbolLayer
 
     QgsPropertyCollection mDataDefinedProperties;
 
-    QgsPaintEffect* mPaintEffect;
+    QgsPaintEffect* mPaintEffect = nullptr;
     QgsFields mFields;
 
     // Configuration of selected symbology implementation

@@ -40,8 +40,8 @@ extern "C"
 
   typedef struct _nmeaPARSER
   {
-    void *top_node;
-    void *end_node;
+    void *top_node = nullptr;
+    void *end_node = nullptr;
     unsigned char *buffer;
     int buff_size;
     int buff_use;

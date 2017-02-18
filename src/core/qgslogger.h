@@ -130,8 +130,8 @@ class QgsScopeLogger // clazy:exclude=rule-of-three
       QgsLogger::debug( QStringLiteral( "Leaving." ), 1, _file, _func, _line );
     }
   private:
-    const char *_file;
-    const char *_func;
+    const char *_file = nullptr;
+    const char *_func = nullptr;
     int _line;
 };
 

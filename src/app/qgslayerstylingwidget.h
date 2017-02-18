@@ -66,7 +66,7 @@ class APP_EXPORT QgsMapLayerStyleCommand : public QUndoCommand
     virtual bool mergeWith( const QUndoCommand* other ) override;
 
   private:
-    QgsMapLayer* mLayer;
+    QgsMapLayer* mLayer = nullptr;
     QDomNode mXml;
     QDomNode mLastState;
     QTime mTime;
@@ -124,17 +124,17 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     void pushUndoItem( const QString& name );
     int mNotSupportedPage;
     int mLayerPage;
-    QTimer* mAutoApplyTimer;
+    QTimer* mAutoApplyTimer = nullptr;
     QDomNode mLastStyleXml;
-    QgsMapCanvas* mMapCanvas;
+    QgsMapCanvas* mMapCanvas = nullptr;
     bool mBlockAutoApply;
-    QgsUndoWidget* mUndoWidget;
-    QgsMapLayer* mCurrentLayer;
-    QgsLabelingWidget *mLabelingWidget;
-    QgsRendererRasterPropertiesWidget* mRasterStyleWidget;
+    QgsUndoWidget* mUndoWidget = nullptr;
+    QgsMapLayer* mCurrentLayer = nullptr;
+    QgsLabelingWidget *mLabelingWidget = nullptr;
+    QgsRendererRasterPropertiesWidget* mRasterStyleWidget = nullptr;
     QList<QgsMapLayerConfigWidgetFactory*> mPageFactories;
     QMap<int, QgsMapLayerConfigWidgetFactory*> mUserPages;
-    QgsLayerStyleManagerWidgetFactory* mStyleManagerFactory;
+    QgsLayerStyleManagerWidgetFactory* mStyleManagerFactory = nullptr;
 };
 
 #endif // QGSLAYERSTYLESDOCK_H

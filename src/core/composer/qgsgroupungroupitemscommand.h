@@ -65,9 +65,9 @@ class CORE_EXPORT QgsGroupUngroupItemsCommand: public QObject, public QUndoComma
     void itemRemoved( QgsComposerItem* item );
 
   private:
-    QgsComposerItemGroup* mGroup;
+    QgsComposerItemGroup* mGroup = nullptr;
     QSet<QgsComposerItem*> mItems;
-    QgsComposition* mComposition;
+    QgsComposition* mComposition = nullptr;
     State mState;
     bool mFirstRun; //flag to prevent execution when the command is pushed to the QUndoStack
 

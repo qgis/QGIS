@@ -343,7 +343,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
     double mInterval;
     QgsUnitTypes::RenderUnit mIntervalUnit;
     QgsMapUnitScale mIntervalMapUnitScale;
-    QgsMarkerSymbol* mMarker;
+    QgsMarkerSymbol* mMarker = nullptr;
     Placement mPlacement;
     double mOffsetAlongLine; //distance to offset along line before marker is drawn
     QgsUnitTypes::RenderUnit mOffsetAlongLineUnit; //unit for offset along line

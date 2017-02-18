@@ -105,13 +105,13 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     void updatePanningWidget( QPoint pos );
 
     //! widget for panning map in overview
-    QgsPanningWidget* mPanningWidget;
+    QgsPanningWidget* mPanningWidget = nullptr;
 
     //! position of cursor inside panning widget
     QPoint mPanningCursorOffset;
 
     //! main map canvas - used to get/set extent
-    QgsMapCanvas* mMapCanvas;
+    QgsMapCanvas* mMapCanvas = nullptr;
 
     //! pixmap where the map is stored
     QPixmap mPixmap;
@@ -120,7 +120,7 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     QgsMapSettings mSettings;
 
     //! for rendering overview
-    QgsMapRendererQImageJob* mJob;
+    QgsMapRendererQImageJob* mJob = nullptr;
 };
 
 

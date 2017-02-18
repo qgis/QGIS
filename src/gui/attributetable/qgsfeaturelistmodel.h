@@ -123,8 +123,8 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
     void onEndInsertRows( const QModelIndex& parent, int first, int last );
 
   private:
-    QgsExpression* mExpression;
-    QgsAttributeTableFilterModel* mFilterModel;
+    QgsExpression* mExpression = nullptr;
+    QgsAttributeTableFilterModel* mFilterModel = nullptr;
     QString mParserErrorString;
     bool mInjectNull;
 };

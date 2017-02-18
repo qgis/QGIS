@@ -93,7 +93,7 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
 
   private:
 
-    QgsRasterShader* mShader;
+    QgsRasterShader* mShader = nullptr;
     int mBand;
 
     // Minimum and maximum values used for automatic classification, these

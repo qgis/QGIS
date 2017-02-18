@@ -78,12 +78,12 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
     QString mText;
     QgsMessageBar::MessageLevel mLevel;
     int mDuration;
-    QWidget *mWidget;
+    QWidget *mWidget = nullptr;
     QIcon mUserIcon;
-    QHBoxLayout *mLayout;
-    QLabel *mLblIcon;
+    QHBoxLayout *mLayout = nullptr;
+    QLabel *mLblIcon = nullptr;
     QString mStyleSheet;
-    QTextEdit *mTextEdit;
+    QTextEdit *mTextEdit = nullptr;
 };
 
 #endif // qgsmessagebaritem_H

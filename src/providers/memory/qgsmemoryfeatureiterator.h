@@ -38,7 +38,7 @@ class QgsMemoryFeatureSource : public QgsAbstractFeatureSource
   protected:
     QgsFields mFields;
     QgsFeatureMap mFeatures;
-    QgsSpatialIndex* mSpatialIndex;
+    QgsSpatialIndex* mSpatialIndex = nullptr;
     QString mSubsetString;
     QgsExpressionContext mExpressionContext;
 
@@ -68,7 +68,7 @@ class QgsMemoryFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Qgs
     bool mUsingFeatureIdList;
     QList<QgsFeatureId> mFeatureIdList;
     QList<QgsFeatureId>::const_iterator mFeatureIdListIterator;
-    QgsExpression* mSubsetExpression;
+    QgsExpression* mSubsetExpression = nullptr;
 
 };
 

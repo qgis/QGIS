@@ -42,7 +42,7 @@ class ANALYSIS_EXPORT LinTriangleInterpolator : public TriangleInterpolator
 
 
   protected:
-    DualEdgeTriangulation* mTIN;
+    DualEdgeTriangulation* mTIN = nullptr;
     //! Calculates the first derivative with respect to x for a linear surface and assigns it to vec
     virtual bool calcFirstDerX( double x, double y, Vector3D* result );
     //! Calculates the first derivative with respect to y for a linear surface and assigns it to vec

@@ -51,7 +51,7 @@ class GUI_EXPORT QgsMapToolZoom : public QgsMapTool
     //! Flag to indicate a map canvas drag operation is taking place
     bool mDragging;
 
-    QgsRubberBand* mRubberBand;
+    QgsRubberBand* mRubberBand = nullptr;
 };
 
 #endif

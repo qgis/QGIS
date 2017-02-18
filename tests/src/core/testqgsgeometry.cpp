@@ -170,7 +170,7 @@ class TestQgsGeometry : public QObject
     QString mWktLine;
     QString mTestDataDir;
     QImage mImage;
-    QPainter * mpPainter;
+    QPainter * mpPainter = nullptr;
     QPen mPen1;
     QPen mPen2;
     QString mReport;

@@ -94,13 +94,13 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void updateAssistantSymbol();
 
   private:
-    QgsSymbol* mSymbol;
+    QgsSymbol* mSymbol = nullptr;
     std::shared_ptr< QgsSymbol > mAssistantSymbol;
-    QgsStyle* mStyle;
-    QMenu* mAdvancedMenu;
-    QAction* mClipFeaturesAction;
-    const QgsVectorLayer* mLayer;
-    QgsMapCanvas* mMapCanvas;
+    QgsStyle* mStyle = nullptr;
+    QMenu* mAdvancedMenu = nullptr;
+    QAction* mClipFeaturesAction = nullptr;
+    const QgsVectorLayer* mLayer = nullptr;
+    QgsMapCanvas* mMapCanvas = nullptr;
 
     void populateSymbolView();
     void populateSymbols( const QStringList& symbols );

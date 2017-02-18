@@ -42,7 +42,7 @@ class TestQgsVectorLayerSaveAsDialog : public QObject
     void testAttributesAsDisplayedValues();
 
   private:
-    QgisApp * mQgisApp;
+    QgisApp * mQgisApp = nullptr;
 };
 
 TestQgsVectorLayerSaveAsDialog::TestQgsVectorLayerSaveAsDialog()

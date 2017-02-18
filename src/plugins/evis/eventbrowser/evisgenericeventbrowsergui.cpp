@@ -575,7 +575,7 @@ void eVisGenericEventBrowserGui::loadRecord()
   treeEventData->clear();
 
   //Get a pointer to the current feature
-  QgsFeature* myFeature;
+  QgsFeature* myFeature = nullptr;
   myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 
   if ( !myFeature )

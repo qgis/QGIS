@@ -50,7 +50,7 @@ struct QgsGeometryPrivate
   QgsGeometryPrivate(): ref( 1 ), geometry( nullptr ) {}
   ~QgsGeometryPrivate() { delete geometry; }
   QAtomicInt ref;
-  QgsAbstractGeometry* geometry;
+  QgsAbstractGeometry* geometry = nullptr;
 };
 
 QgsGeometry::QgsGeometry(): d( new QgsGeometryPrivate() )

@@ -63,7 +63,7 @@ class QgsAppPluginManagerInterface : public QgsPluginManagerInterface
   private:
 
     //! Pointer to QgsPluginManager object
-    QgsPluginManager *mPluginManager;
+    QgsPluginManager *mPluginManager = nullptr;
 };
 
 #endif //QGSPLUGINMANAGERAPPIFACE_H

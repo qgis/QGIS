@@ -56,16 +56,16 @@ class DataDefinedRestorer: public QObject
     void restore();
 
   private:
-    QgsMarkerSymbol* mMarker;
-    const QgsMarkerSymbolLayer* mMarkerSymbolLayer;
+    QgsMarkerSymbol* mMarker = nullptr;
+    const QgsMarkerSymbolLayer* mMarkerSymbolLayer = nullptr;
     double mSize;
     double mAngle;
     QPointF mMarkerOffset;
     QgsProperty mDDSize;
     QgsProperty mDDAngle;
 
-    QgsLineSymbol* mLine;
-    const QgsLineSymbolLayer* mLineSymbolLayer;
+    QgsLineSymbol* mLine = nullptr;
+    const QgsLineSymbolLayer* mLineSymbolLayer = nullptr;
     double mWidth;
     double mLineOffset;
     QgsProperty mDDWidth;
@@ -226,13 +226,13 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
 
 
   protected: // data
-    QgsStyle* mStyle;
-    QgsSymbol* mSymbol;
-    QMenu* mAdvancedMenu;
-    const QgsVectorLayer* mVectorLayer;
+    QgsStyle* mStyle = nullptr;
+    QgsSymbol* mSymbol = nullptr;
+    QMenu* mAdvancedMenu = nullptr;
+    const QgsVectorLayer* mVectorLayer = nullptr;
 
-    QStandardItemModel* model;
-    QWidget *mPresentWidget;
+    QStandardItemModel* model = nullptr;
+    QWidget *mPresentWidget = nullptr;
 
   private:
     std::unique_ptr<DataDefinedRestorer> mDataDefineRestorer;
@@ -320,8 +320,8 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     void changeLayer( QgsSymbolLayer* layer );
 
   private:
-    QgsSymbolSelectorWidget* mSelectorWidget;
-    QDialogButtonBox* mButtonBox;
+    QgsSymbolSelectorWidget* mSelectorWidget = nullptr;
+    QDialogButtonBox* mButtonBox = nullptr;
     QgsSymbolWidgetContext mContext;
 };
 

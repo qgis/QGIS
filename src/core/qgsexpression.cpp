@@ -2799,7 +2799,7 @@ static QVariant fcnOrderParts( const QVariantList& values, const QgsExpressionCo
   QString expString = getStringValue( values.at( 1 ), parent );
   bool asc = values.value( 2 ).toBool();
 
-  QgsExpressionContext* unconstedContext;
+  QgsExpressionContext* unconstedContext = nullptr;
   QgsFeature f;
   if ( ctx )
   {

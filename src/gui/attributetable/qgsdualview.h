@@ -328,20 +328,20 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void initModels( QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request );
 
     QgsAttributeEditorContext mEditorContext;
-    QgsAttributeTableModel* mMasterModel;
-    QgsAttributeTableFilterModel* mFilterModel;
-    QgsFeatureListModel* mFeatureListModel;
-    QgsAttributeForm* mAttributeForm;
-    QSignalMapper* mPreviewActionMapper;
-    QMenu* mPreviewColumnsMenu;
-    QMenu* mHorizontalHeaderMenu;
-    QgsVectorLayerCache* mLayerCache;
-    QProgressDialog* mProgressDlg;
-    QgsIFeatureSelectionManager* mFeatureSelectionManager;
+    QgsAttributeTableModel* mMasterModel = nullptr;
+    QgsAttributeTableFilterModel* mFilterModel = nullptr;
+    QgsFeatureListModel* mFeatureListModel = nullptr;
+    QgsAttributeForm* mAttributeForm = nullptr;
+    QSignalMapper* mPreviewActionMapper = nullptr;
+    QMenu* mPreviewColumnsMenu = nullptr;
+    QMenu* mHorizontalHeaderMenu = nullptr;
+    QgsVectorLayerCache* mLayerCache = nullptr;
+    QProgressDialog* mProgressDlg = nullptr;
+    QgsIFeatureSelectionManager* mFeatureSelectionManager = nullptr;
     QgsDistanceArea mDistanceArea;
     QString mDisplayExpression;
     QgsAttributeTableConfig mConfig;
-    QScrollArea* mAttributeEditorScrollArea;
+    QScrollArea* mAttributeEditorScrollArea = nullptr;
 
     friend class TestQgsDualView;
 };
@@ -372,7 +372,7 @@ class GUI_EXPORT QgsAttributeTableAction : public QAction
     void featureForm();
 
   private:
-    QgsDualView* mDualView;
+    QgsDualView* mDualView = nullptr;
     QUuid mAction;
     QModelIndex mFieldIdx;
 };
@@ -396,8 +396,8 @@ class GUI_EXPORT QgsAttributeTableMapLayerAction : public QAction
     void execute();
 
   private:
-    QgsDualView* mDualView;
-    QgsMapLayerAction* mAction;
+    QgsDualView* mDualView = nullptr;
+    QgsMapLayerAction* mAction = nullptr;
     QModelIndex mFieldIdx;
 };
 

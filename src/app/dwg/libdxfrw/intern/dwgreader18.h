@@ -92,7 +92,7 @@ class dwgReader18 : public dwgReader
 #endif
 
   protected:
-    duint8 *objData;
+    duint8 *objData = nullptr;
     duint64 uncompSize;
 
   private:

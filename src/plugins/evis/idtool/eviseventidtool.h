@@ -57,7 +57,7 @@ class eVisEventIdTool : public QgsMapTool
   private:
 
     //! \brief Pointer to a generic event browser
-    eVisGenericEventBrowserGui* mBrowser;
+    eVisGenericEventBrowserGui* mBrowser = nullptr;
 
     //! \brief Selection routine called by the mouse release event
     void select( const QgsPoint& );

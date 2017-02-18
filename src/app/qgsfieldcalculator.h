@@ -57,7 +57,7 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
     //! Inserts the types supported by the provider into the combo box
     void populateOutputFieldTypes();
 
-    QgsVectorLayer* mVectorLayer;
+    QgsVectorLayer* mVectorLayer = nullptr;
     //! Key: field name, Value: field index
     QMap<QString, int> mFieldMap;
 

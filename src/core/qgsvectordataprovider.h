@@ -586,7 +586,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     mutable QMap<int, QVariant> mCacheMinValues, mCacheMaxValues;
 
     //! Encoding
-    QTextCodec* mEncoding;
+    QTextCodec* mEncoding = nullptr;
 
     //! List of attribute indices to fetch with nextFeature calls
     QgsAttributeList mAttributesToFetch;

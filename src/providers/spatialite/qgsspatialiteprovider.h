@@ -164,14 +164,14 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
       }
 
     private:
-      char *errMsg;
+      char *errMsg = nullptr;
 
     };
 
     /**
      * sqlite3 handles pointer
      */
-    QgsSqliteHandle *mHandle;
+    QgsSqliteHandle *mHandle = nullptr;
 
   signals:
 
@@ -272,7 +272,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QgsWkbTypes::Type mGeomType;
 
     //! SQLite handle
-    sqlite3 *mSqliteHandle;
+    sqlite3 *mSqliteHandle = nullptr;
 
     //! String used to define a subset of the layer
     QString mSubsetString;

@@ -77,7 +77,7 @@ class CORE_EXPORT QgsLegendRenderer
             : item( nullptr )
             , labelXOffset( 0.0 )
         {}
-        QObject* item;
+        QObject* item = nullptr;
         // Symbol size size without any space around for symbol item
         QSizeF symbolSize;
         // Label size without any space around for symbol item
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsLegendRenderer
     QgsLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode* node );
 
   private:
-    QgsLayerTreeModel* mLegendModel;
+    QgsLayerTreeModel* mLegendModel = nullptr;
 
     QgsLegendSettings mSettings;
 

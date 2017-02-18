@@ -88,8 +88,8 @@ class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfig
     QgsAuthMethodConfigsMap mConfigs;
 
     bool mDisabled;
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout *mAuthNotifyLayout = nullptr;
+    QLabel *mAuthNotify = nullptr;
 };
 
 
@@ -152,8 +152,8 @@ class GUI_EXPORT QgsAuthConfigUriEdit : public QDialog, private Ui::QgsAuthConfi
     QString mDataUriOrig;
 
     bool mDisabled;
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout *mAuthNotifyLayout = nullptr;
+    QLabel *mAuthNotify = nullptr;
 };
 
 #endif // QGSAUTHCONFIGSELECT_H

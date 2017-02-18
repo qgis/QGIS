@@ -110,17 +110,17 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
     //! Text substitution list
     QgsStringReplacementCollection mSubstitutions;
     //! Quadrant button group
-    QButtonGroup* mQuadrantBtnGrp;
+    QButtonGroup* mQuadrantBtnGrp = nullptr;
     //! Symbol direction button group
-    QButtonGroup* mDirectSymbBtnGrp;
+    QButtonGroup* mDirectSymbBtnGrp = nullptr;
     //! Upside down labels button group
-    QButtonGroup* mUpsidedownBtnGrp;
+    QButtonGroup* mUpsidedownBtnGrp = nullptr;
     //! Point placement button group
-    QButtonGroup* mPlacePointBtnGrp;
+    QButtonGroup* mPlacePointBtnGrp = nullptr;
     //! Line placement button group
-    QButtonGroup* mPlaceLineBtnGrp;
+    QButtonGroup* mPlaceLineBtnGrp = nullptr;
     //! Polygon placement button group
-    QButtonGroup* mPlacePolygonBtnGrp;
+    QButtonGroup* mPlacePolygonBtnGrp = nullptr;
     //! Pixel size font limit
     int mMinPixelLimit;
 
@@ -134,8 +134,8 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
 
   private:
     Mode mWidgetMode;
-    QgsMapCanvas* mMapCanvas;
-    QgsCharacterSelectorDialog* mCharDlg;
+    QgsMapCanvas* mMapCanvas = nullptr;
+    QgsCharacterSelectorDialog* mCharDlg = nullptr;
 
     QFontDatabase mFontDB;
 
@@ -229,7 +229,7 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
 
   private:
 
-    QgsTextFormatWidget* mFormatWidget;
+    QgsTextFormatWidget* mFormatWidget = nullptr;
 };
 
 /** \class QgsTextFormatPanelWidget
@@ -264,7 +264,7 @@ class GUI_EXPORT QgsTextFormatPanelWidget : public QgsPanelWidgetWrapper
 
   private:
 
-    QgsTextFormatWidget* mFormatWidget;
+    QgsTextFormatWidget* mFormatWidget = nullptr;
 };
 
 #endif //QGSTEXTFORMATWIDGET_H

@@ -48,7 +48,7 @@ class TestQgsLabelingEngine : public QObject
     void testParticipatingLayers();
 
   private:
-    QgsVectorLayer* vl;
+    QgsVectorLayer* vl = nullptr;
 
     QString mReport;
 

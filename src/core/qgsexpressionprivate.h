@@ -60,7 +60,7 @@ class QgsExpressionPrivate
 
     QAtomicInt ref;
 
-    QgsExpression::Node* mRootNode;
+    QgsExpression::Node* mRootNode = nullptr;
 
     QString mParserErrorString;
     QString mEvalErrorString;

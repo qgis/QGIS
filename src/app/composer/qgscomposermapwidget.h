@@ -124,7 +124,7 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     void mapCrsChanged( const QgsCoordinateReferenceSystem& crs );
 
   private:
-    QgsComposerMap* mComposerMap;
+    QgsComposerMap* mComposerMap = nullptr;
 
     //! Sets extent of composer map from line edits
     void updateComposerExtentFromGui();

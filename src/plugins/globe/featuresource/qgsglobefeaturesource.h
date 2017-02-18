@@ -48,8 +48,8 @@ class QgsGlobeFeatureSource : public QObject, public osgEarth::Features::Feature
 
   private:
     QgsGlobeFeatureOptions mOptions;
-    QgsVectorLayer* mLayer;
-    osgEarth::Features::FeatureProfile* mProfile;
+    QgsVectorLayer* mLayer = nullptr;
+    osgEarth::Features::FeatureProfile* mProfile = nullptr;
     osgEarth::Features::FeatureSchema mSchema;
     typedef std::map<osgEarth::Features::FeatureID, osg::observer_ptr<osgEarth::Features::Feature> > FeatureMap_t;
     FeatureMap_t mFeatures;

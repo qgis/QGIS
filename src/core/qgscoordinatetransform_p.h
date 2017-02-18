@@ -234,7 +234,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
     {
       QString transformString;
 
-      sqlite3* db;
+      sqlite3* db = nullptr;
       int openResult = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().constData(), &db, SQLITE_OPEN_READONLY, 0 );
       if ( openResult != SQLITE_OK )
       {
@@ -242,7 +242,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
         return transformString;
       }
 
-      sqlite3_stmt* stmt;
+      sqlite3_stmt* stmt = nullptr;
       QString sql = QStringLiteral( "SELECT coord_op_method_code,p1,p2,p3,p4,p5,p6,p7 FROM tbl_datum_transform WHERE coord_op_code=%1" ).arg( datumTransform );
       int prepareRes = sqlite3_prepare( db, sql.toLatin1(), sql.size(), &stmt, nullptr );
       if ( prepareRes != SQLITE_OK )

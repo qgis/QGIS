@@ -192,7 +192,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
   private:
     mutable GEOSGeometry* mGeos;
-    const GEOSPreparedGeometry* mGeosPrepared;
+    const GEOSPreparedGeometry* mGeosPrepared = nullptr;
     double mPrecision;
 
     enum Overlay

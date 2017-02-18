@@ -40,7 +40,7 @@ class APP_EXPORT QgsMapToolDeleteRing : public QgsMapToolEdit
     void deactivate() override;
 
   private:
-    QgsVectorLayer* vlayer;
+    QgsVectorLayer* vlayer = nullptr;
 
     //! delete inner ring from the geometry
     void deleteRing( QgsFeatureId fId, int beforeVertexNr, QgsVectorLayer* vlayer );
@@ -57,7 +57,7 @@ class APP_EXPORT QgsMapToolDeleteRing : public QgsMapToolEdit
     QgsGeometry ringUnderPoint( const QgsPoint& p, QgsFeatureId& fid, int& partNum, int& ringNum );
 
     /* Rubberband that shows the ring being deleted*/
-    QgsRubberBand* mRubberBand;
+    QgsRubberBand* mRubberBand = nullptr;
 
     //The feature, part and ring the mouse was pressed in, to  check we are still in the same ring at release
     QgsFeatureId mPressedFid;

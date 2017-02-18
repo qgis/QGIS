@@ -139,7 +139,7 @@ QgsFields QgsGrassVectorLayer::fields()
       db_init_string( &tableName );
       db_set_string( &tableName, mTable.toUtf8().data() );
 
-      dbTable *table;
+      dbTable *table = nullptr;
       if ( db_describe_table( driver, &tableName, &table ) != DB_OK )
       {
         mError = QObject::tr( "Cannot describe table %1" ).arg( mTable );

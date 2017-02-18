@@ -79,10 +79,10 @@ class CORE_EXPORT QgsRasterIterator
       QgsRasterProjector* prj; //raster projector (or 0 if no reprojection is done)
     };
 
-    QgsRasterInterface* mInput;
+    QgsRasterInterface* mInput = nullptr;
     QMap<int, RasterPartInfo> mRasterPartInfos;
     QgsRectangle mExtent;
-    QgsRasterBlockFeedback* mFeedback;
+    QgsRasterBlockFeedback* mFeedback = nullptr;
 
     int mMaximumTileWidth;
     int mMaximumTileHeight;

@@ -80,9 +80,9 @@ class GUI_EXPORT QgsMapCanvasSnapper
 
   private:
     //! Pointer to the map canvas
-    QgsMapCanvas* mMapCanvas;
+    QgsMapCanvas* mMapCanvas = nullptr;
     //! The object which does the snapping operations
-    QgsSnapper* mSnapper;
+    QgsSnapper* mSnapper = nullptr;
 
 };
 

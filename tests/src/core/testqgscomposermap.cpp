@@ -57,12 +57,12 @@ class TestQgsComposerMap : public QObject
     void dataDefinedStyles(); //test data defined styles
 
   private:
-    QgsComposition *mComposition;
-    QgsComposerMap *mComposerMap;
-    QgsRasterLayer* mRasterLayer;
-    QgsVectorLayer* mPointsLayer;
-    QgsVectorLayer* mPolysLayer;
-    QgsVectorLayer* mLinesLayer;
+    QgsComposition *mComposition = nullptr;
+    QgsComposerMap *mComposerMap = nullptr;
+    QgsRasterLayer* mRasterLayer = nullptr;
+    QgsVectorLayer* mPointsLayer = nullptr;
+    QgsVectorLayer* mPolysLayer = nullptr;
+    QgsVectorLayer* mLinesLayer = nullptr;
     QString mReport;
 };
 

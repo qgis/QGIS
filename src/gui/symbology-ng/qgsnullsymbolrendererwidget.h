@@ -48,7 +48,7 @@ class GUI_EXPORT QgsNullSymbolRendererWidget : public QgsRendererWidget
   protected:
 
     //! Renderer being configured by the widget
-    QgsNullSymbolRenderer* mRenderer;
+    QgsNullSymbolRenderer* mRenderer = nullptr;
 
 };
 

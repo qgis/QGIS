@@ -128,7 +128,7 @@ class GUI_EXPORT QgsSearchWidgetToolButton : public QToolButton
     QgsSearchWidgetWrapper::FilterFlags mAvailableFilterFlags;
     QgsSearchWidgetWrapper::FilterFlags mDefaultFilterFlags;
     QgsSearchWidgetWrapper::FilterFlags mFilterFlags;
-    QMenu* mMenu;
+    QMenu* mMenu = nullptr;
 
     void updateState();
 

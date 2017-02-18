@@ -111,10 +111,10 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     QStringList mExiting;
     QStringList mExtensions;
     Qt::CaseSensitivity mCaseSensitivity;
-    QLabel* mHintLabel;
-    QLineEdit *mLineEdit;
+    QLabel* mHintLabel = nullptr;
+    QLineEdit *mLineEdit = nullptr;
     QLabel *mNamesLabel; // list of names with extensions
-    QLabel *mErrorLabel;
+    QLabel *mErrorLabel = nullptr;
     QString mOkString;
     QRegExp mRegexp;
     bool mOverwriteEnabled;

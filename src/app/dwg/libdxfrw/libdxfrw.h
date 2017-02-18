@@ -127,9 +127,9 @@ class dxfRW
     std::string fileName;
     std::string codePage;
     bool binFile;
-    dxfReader *reader;
-    dxfWriter *writer;
-    DRW_Interface *iface;
+    dxfReader *reader = nullptr;
+    dxfWriter *writer = nullptr;
+    DRW_Interface *iface = nullptr;
     DRW_Header header;
 //  int section;
     std::string nextentity;

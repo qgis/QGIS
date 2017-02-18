@@ -63,14 +63,14 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
   private:
     void refreshMapCanvas();
 
-    QLineEdit *mLineEdit;
-    QToolButton *mToggleExtentsViewButton;
+    QLineEdit *mLineEdit = nullptr;
+    QToolButton *mToggleExtentsViewButton = nullptr;
     //! Widget that will live on the statusbar to display "Coordinate / Extent"
-    QLabel *mLabel;
+    QLabel *mLabel = nullptr;
 
-    QValidator *mCoordsEditValidator;
-    QTimer *mDizzyTimer;
-    QgsMapCanvas* mMapCanvas;
+    QValidator *mCoordsEditValidator = nullptr;
+    QTimer *mDizzyTimer = nullptr;
+    QgsMapCanvas* mMapCanvas = nullptr;
 
     //! The number of decimal places to use if not automatic
     unsigned int mMousePrecisionDecimalPlaces;

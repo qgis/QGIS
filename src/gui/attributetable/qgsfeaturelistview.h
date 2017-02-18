@@ -174,11 +174,11 @@ class GUI_EXPORT QgsFeatureListView : public QListView
   private:
     void selectRow( const QModelIndex &index, bool anchor );
 
-    QgsFeatureListModel *mModel;
-    QItemSelectionModel* mCurrentEditSelectionModel;
-    QgsFeatureSelectionModel* mFeatureSelectionModel;
-    QgsIFeatureSelectionManager* mFeatureSelectionManager;
-    QgsFeatureListViewDelegate* mItemDelegate;
+    QgsFeatureListModel *mModel = nullptr;
+    QItemSelectionModel* mCurrentEditSelectionModel = nullptr;
+    QgsFeatureSelectionModel* mFeatureSelectionModel = nullptr;
+    QgsIFeatureSelectionManager* mFeatureSelectionManager = nullptr;
+    QgsFeatureListViewDelegate* mItemDelegate = nullptr;
     bool mEditSelectionDrag; // Is set to true when the user initiated a left button click over an edit button and still keeps pressing //!< TODO
     int mRowAnchor;
     QItemSelectionModel::SelectionFlags mCtrlDragSelectionFlag;

@@ -59,7 +59,7 @@ class APP_EXPORT QgsMapToolRotatePointSymbols: public QgsMapToolPointSymbol
     bool mRotating;
     QSet<int> mCurrentRotationAttributes;
     //! Item that displays rotation during mouse move
-    QgsPointRotationItem* mRotationItem;
+    QgsPointRotationItem* mRotationItem = nullptr;
     //! True if ctrl was pressed during the last mouse move event
     bool mCtrlPressed;
     //! Clone of first found marker symbol for feature with rotation attribute set

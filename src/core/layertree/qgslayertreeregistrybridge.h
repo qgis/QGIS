@@ -71,14 +71,14 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
     void removeLayersFromRegistry( const QStringList& layerIds );
 
   protected:
-    QgsLayerTreeGroup* mRoot;
-    QgsProject* mProject;
+    QgsLayerTreeGroup* mRoot = nullptr;
+    QgsProject* mProject = nullptr;
     QStringList mLayerIdsForRemoval;
     bool mRegistryRemovingLayers;
     bool mEnabled;
     bool mNewLayersVisible;
 
-    QgsLayerTreeGroup* mInsertionPointGroup;
+    QgsLayerTreeGroup* mInsertionPointGroup = nullptr;
     int mInsertionPointIndex;
 };
 

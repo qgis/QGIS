@@ -88,7 +88,7 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     // true if action is only valid for a single layer
     bool mSingleLayer;
     // layer if action is only valid for a single layer
-    QgsMapLayer* mActionLayer;
+    QgsMapLayer* mActionLayer = nullptr;
 
     // true if action is only valid for a specific layer type
     bool mSpecificLayerType;

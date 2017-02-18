@@ -33,8 +33,8 @@ class QgsGlobeWidget : public QDockWidget
     void syncExtent();
 
   private:
-    QgisInterface* mQgisIface;
-    QMenu* mLayerSelectionMenu;
+    QgisInterface* mQgisIface = nullptr;
+    QMenu* mLayerSelectionMenu = nullptr;
 
     void contextMenuEvent( QContextMenuEvent * e ) override;
 

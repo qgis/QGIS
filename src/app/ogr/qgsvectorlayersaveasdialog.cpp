@@ -404,7 +404,7 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
     {
       QgsField fld = mLayer->fields().at( i );
       Qt::ItemFlags flags = mLayer->providerType() != QLatin1String( "oracle" ) || !fld.typeName().contains( QLatin1String( "SDO_GEOMETRY" ) ) ? Qt::ItemIsEnabled : Qt::NoItemFlags;
-      QTableWidgetItem *item;
+      QTableWidgetItem *item = nullptr;
       item = new QTableWidgetItem( fld.name() );
       item->setFlags( flags | Qt::ItemIsUserCheckable );
       item->setCheckState(( selectAllFields ) ? Qt::Checked : Qt::Unchecked );

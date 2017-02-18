@@ -45,7 +45,7 @@ class TestQgsComposerMultiFrame : public QObject
     void undoRedoRemovedFrame(); //test that undo doesn't crash with removed frames
 
   private:
-    QgsComposition *mComposition;
+    QgsComposition *mComposition = nullptr;
     QString mReport;
 };
 

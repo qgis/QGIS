@@ -52,9 +52,9 @@ class TestQgsFieldExpressionWidget : public QObject
     void testFilters();
 
   private:
-    QgsFieldExpressionWidget* mWidget;
-    QgsVectorLayer* mLayerA;
-    QgsVectorLayer* mLayerB;
+    QgsFieldExpressionWidget* mWidget = nullptr;
+    QgsVectorLayer* mLayerA = nullptr;
+    QgsVectorLayer* mLayerB = nullptr;
 };
 
 // runs before all tests

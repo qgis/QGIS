@@ -106,9 +106,9 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
 
   private:
     void saveRecent();
-    QgsVectorLayer* mLayer;
-    QgsMessageBar* mMessageBar;
-    QgsMapCanvas* mMapCanvas;
+    QgsVectorLayer* mLayer = nullptr;
+    QgsMessageBar* mMessageBar = nullptr;
+    QgsMapCanvas* mMapCanvas = nullptr;
 };
 
 #endif

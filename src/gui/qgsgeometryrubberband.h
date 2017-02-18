@@ -93,7 +93,7 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
     virtual void paint( QPainter* painter ) override;
 
   private:
-    QgsAbstractGeometry* mGeometry;
+    QgsAbstractGeometry* mGeometry = nullptr;
     QBrush mBrush;
     QPen mPen;
     int mIconSize;

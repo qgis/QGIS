@@ -49,7 +49,7 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
       LabelColumn = 2,
     };
 
-    QMenu* contextMenu;
+    QMenu* contextMenu = nullptr;
 
   private slots:
 

@@ -33,7 +33,7 @@ QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mo
   setupUi( this );
 
   // additional buttons
-  QPushButton *pb;
+  QPushButton *pb = nullptr;
   pb = new QPushButton( tr( "Select all" ) );
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
   connect( pb, SIGNAL( clicked() ), this, SLOT( selectAll() ) );

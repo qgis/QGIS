@@ -96,10 +96,10 @@ class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthId
     int messageTimeout();
 
     bool mDisabled;
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout *mAuthNotifyLayout = nullptr;
+    QLabel *mAuthNotify = nullptr;
 
-    QTreeWidgetItem *mRootCertIdentItem;
+    QTreeWidgetItem *mRootCertIdentItem = nullptr;
 };
 
 #endif // QGSAUTHIDENTITIESEDITOR_H

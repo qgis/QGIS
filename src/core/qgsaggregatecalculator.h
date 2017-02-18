@@ -143,7 +143,7 @@ class CORE_EXPORT QgsAggregateCalculator
   private:
 
     //! Source layer
-    const QgsVectorLayer* mLayer;
+    const QgsVectorLayer* mLayer = nullptr;
 
     //! Filter expression, or empty for no filter
     QString mFilterExpression;

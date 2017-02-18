@@ -263,7 +263,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
   private:
 
     //! Parent composition
-    QgsComposition* mComposition;
+    QgsComposition* mComposition = nullptr;
 
     /** Returns the QgsComposerItem corresponding to a QModelIndex, if possible
      * @param index QModelIndex for item
@@ -349,7 +349,7 @@ class CORE_EXPORT QgsComposerProxyModel: public QSortFilterProxyModel
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 
   private:
-    QgsComposition* mComposition;
+    QgsComposition* mComposition = nullptr;
     QgsComposerItem::ItemType mItemTypeFilter;
     QList< QgsComposerItem* > mExceptedList;
 

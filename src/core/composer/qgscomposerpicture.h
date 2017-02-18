@@ -309,7 +309,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     //! Image rotation
     double mPictureRotation;
     //! Map that sets the rotation (or 0 if this picture uses map independent rotation)
-    const QgsComposerMap* mRotationMap;
+    const QgsComposerMap* mRotationMap = nullptr;
 
     //! Mode used to align to North
     NorthMode mNorthMode;

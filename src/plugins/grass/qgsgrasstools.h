@@ -117,20 +117,20 @@ class QgsGrassTools: public QgsDockWidget, public Ui::QgsGrassToolsBase
     int debug( QStandardItem *item );
 
     //! Pointer to the QGIS interface object
-    QgisInterface *mIface;
+    QgisInterface *mIface = nullptr;
 
     //! Pointer to canvas
-    QgsMapCanvas *mCanvas;
+    QgsMapCanvas *mCanvas = nullptr;
 
-    QStandardItemModel * mTreeModel;
-    QgsGrassToolsTreeFilterProxyModel * mTreeModelProxy;
+    QStandardItemModel * mTreeModel = nullptr;
+    QgsGrassToolsTreeFilterProxyModel * mTreeModelProxy = nullptr;
 
     // For model & filtered model by Tim
-    QStandardItemModel * mModulesListModel;
-    QSortFilterProxyModel * mModelProxy;
+    QStandardItemModel * mModulesListModel = nullptr;
+    QSortFilterProxyModel * mModelProxy = nullptr;
 
     // Region widget
-    QgsGrassRegion *mRegion;
+    QgsGrassRegion *mRegion = nullptr;
 
     // this was used for direct
     void removeEmptyItems( QStandardItemModel *treeModel );

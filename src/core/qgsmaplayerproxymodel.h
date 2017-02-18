@@ -99,7 +99,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
   private:
     Filters mFilters;
     QList<QgsMapLayer*> mExceptList;
-    QgsMapLayerModel* mModel;
+    QgsMapLayerModel* mModel = nullptr;
     QStringList mExcludedProviders;
 
     // QSortFilterProxyModel interface

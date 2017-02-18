@@ -158,8 +158,8 @@ class TestQgsSpatialIndex : public QObject
       }
 
       QTime t;
-      QgsSpatialIndex* indexBulk;
-      QgsSpatialIndex* indexInsert;
+      QgsSpatialIndex* indexBulk = nullptr;
+      QgsSpatialIndex* indexInsert = nullptr;
 
       t.start();
       {

@@ -48,11 +48,11 @@ class TestRasterHistogram : public QObject
     QString mDataDir;
     QString mTestPrefix;
     int mWidth, mHeight, mImageQuality;
-    QgsRasterLayer* mRasterLayer;
-    QgsSingleBandGrayRendererWidget* mGrayRendererWidget;
-    QgsMultiBandColorRendererWidget* mRGBRendererWidget;
-    QgsSingleBandPseudoColorRendererWidget* mPseudoRendererWidget;
-    QgsRasterHistogramWidget* mHistogramWidget;
+    QgsRasterLayer* mRasterLayer = nullptr;
+    QgsSingleBandGrayRendererWidget* mGrayRendererWidget = nullptr;
+    QgsMultiBandColorRendererWidget* mRGBRendererWidget = nullptr;
+    QgsSingleBandPseudoColorRendererWidget* mPseudoRendererWidget = nullptr;
+    QgsRasterHistogramWidget* mHistogramWidget = nullptr;
     QString mReport;
 
     bool openLayer( const QString& fileName );

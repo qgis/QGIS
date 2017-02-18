@@ -80,10 +80,10 @@ class TestQgsVectorLayer : public QObject
 
   private:
     bool mTestHasError;
-    QgsMapLayer * mpPointsLayer;
-    QgsMapLayer * mpLinesLayer;
-    QgsMapLayer * mpPolysLayer;
-    QgsVectorLayer * mpNonSpatialLayer;
+    QgsMapLayer * mpPointsLayer = nullptr;
+    QgsMapLayer * mpLinesLayer = nullptr;
+    QgsMapLayer * mpPolysLayer = nullptr;
+    QgsVectorLayer * mpNonSpatialLayer = nullptr;
     QString mTestDataDir;
     QString mReport;
 

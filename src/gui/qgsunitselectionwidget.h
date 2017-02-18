@@ -130,7 +130,7 @@ class GUI_EXPORT QgsMapUnitScaleDialog : public QDialog
 
   private:
 
-    QgsMapUnitScaleWidget* mWidget;
+    QgsMapUnitScaleWidget* mWidget = nullptr;
 
 };
 
@@ -209,7 +209,7 @@ class GUI_EXPORT QgsUnitSelectionWidget : public QWidget, private Ui::QgsUnitSel
   private:
     QgsMapUnitScale mMapUnitScale;
     int mMapUnitIdx;
-    QgsMapCanvas* mCanvas;
+    QgsMapCanvas* mCanvas = nullptr;
 
 };
 

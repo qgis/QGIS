@@ -620,7 +620,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
   protected:
 
     QString mFontFamily;
-    QFontMetrics* mFontMetrics;
+    QFontMetrics* mFontMetrics = nullptr;
     QChar mChr;
 
     double mChrWidth;

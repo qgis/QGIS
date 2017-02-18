@@ -187,7 +187,7 @@ void QgsSettingsTree::updateChildItems( QTreeWidgetItem *parent )
 
   Q_FOREACH ( const QString& group, settings->childGroups() )
   {
-    QTreeWidgetItem *child;
+    QTreeWidgetItem *child = nullptr;
     int childIndex = findChild( parent, group, dividerIndex );
     if ( childIndex != -1 )
     {
@@ -211,7 +211,7 @@ void QgsSettingsTree::updateChildItems( QTreeWidgetItem *parent )
 
   Q_FOREACH ( const QString& key, settings->childKeys() )
   {
-    QTreeWidgetItem *child;
+    QTreeWidgetItem *child = nullptr;
     int childIndex = findChild( parent, key, 0 );
 
     if ( childIndex == -1 || childIndex >= dividerIndex )
@@ -259,7 +259,7 @@ QTreeWidgetItem *QgsSettingsTree::createItem( const QString &text,
   if ( index != 0 )
     after = childAt( parent, index - 1 );
 
-  QTreeWidgetItem *item;
+  QTreeWidgetItem *item = nullptr;
   if ( parent )
     item = new QTreeWidgetItem( parent, after );
   else

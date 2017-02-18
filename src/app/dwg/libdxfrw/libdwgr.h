@@ -44,8 +44,8 @@ class dwgR
     std::string fileName;
     bool applyExt; /*apply extrusion in entities to conv in 2D?*/
     std::string codePage;
-    DRW_Interface *iface;
-    dwgReader *reader;
+    DRW_Interface *iface = nullptr;
+    dwgReader *reader = nullptr;
 
 };
 

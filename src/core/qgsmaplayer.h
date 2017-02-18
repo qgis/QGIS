@@ -956,10 +956,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QgsObjectCustomProperties mCustomProperties;
 
     //! Controller of legend items of this layer
-    QgsMapLayerLegend* mLegend;
+    QgsMapLayerLegend* mLegend = nullptr;
 
     //! Manager of multiple styles available for a layer (may be null)
-    QgsMapLayerStyleManager* mStyleManager;
+    QgsMapLayerStyleManager* mStyleManager = nullptr;
 
     //! Timer for triggering automatic refreshes of the layer
     QTimer mRefreshTimer;

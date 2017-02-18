@@ -166,11 +166,11 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     QWidget* createActionWidget( QgsFeatureId fid );
 
     void selectRow( int row, bool anchor );
-    QgsAttributeTableFilterModel* mFilterModel;
-    QgsFeatureSelectionModel* mFeatureSelectionModel;
-    QgsIFeatureSelectionManager* mFeatureSelectionManager;
-    QgsAttributeTableDelegate* mTableDelegate;
-    QMenu *mActionPopup;
+    QgsAttributeTableFilterModel* mFilterModel = nullptr;
+    QgsFeatureSelectionModel* mFeatureSelectionModel = nullptr;
+    QgsIFeatureSelectionManager* mFeatureSelectionManager = nullptr;
+    QgsAttributeTableDelegate* mTableDelegate = nullptr;
+    QMenu *mActionPopup = nullptr;
     int mRowSectionAnchor;
     QItemSelectionModel::SelectionFlag mCtrlDragSelectionFlag;
     QMap< QModelIndex, QWidget* > mActionWidgets;

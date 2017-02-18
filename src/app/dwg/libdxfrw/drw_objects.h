@@ -114,7 +114,7 @@ class DRW_TableEntry
     std::vector<DRW_Variant*> extData;  //!< FIFO list of extended data, codes 1000 to 1071
 
   private:
-    DRW_Variant *curr;
+    DRW_Variant *curr = nullptr;
 
     //***** dwg parse ********/
   protected:

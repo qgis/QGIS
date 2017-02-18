@@ -69,10 +69,10 @@ class TestQgsEllipseMarkerSymbol : public QObject
 
     bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPointsLayer;
-    QgsEllipseSymbolLayer* mEllipseMarkerLayer;
-    QgsMarkerSymbol* mMarkerSymbol;
-    QgsSingleSymbolRenderer* mSymbolRenderer;
+    QgsVectorLayer * mpPointsLayer = nullptr;
+    QgsEllipseSymbolLayer* mEllipseMarkerLayer = nullptr;
+    QgsMarkerSymbol* mMarkerSymbol = nullptr;
+    QgsSingleSymbolRenderer* mSymbolRenderer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };

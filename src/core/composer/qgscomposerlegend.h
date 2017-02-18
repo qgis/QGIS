@@ -305,15 +305,15 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     //! use new custom layer tree and update model. if new root is null pointer, will use project's tree
     void setCustomLayerTree( QgsLayerTreeGroup* rootGroup );
 
-    QgsLegendModel* mLegendModel;
-    QgsLayerTreeGroup* mCustomLayerTree;
+    QgsLegendModel* mLegendModel = nullptr;
+    QgsLayerTreeGroup* mCustomLayerTree = nullptr;
 
     QgsLegendSettings mSettings;
 
     QString mTitle;
     int mColumnCount = 1;
 
-    const QgsComposerMap* mComposerMap;
+    const QgsComposerMap* mComposerMap = nullptr;
 
     bool mLegendFilterByMap;
     bool mLegendFilterByExpression;

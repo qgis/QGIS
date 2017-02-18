@@ -1121,7 +1121,7 @@ void QgsProjectProperties::apply()
   for ( int i = 0; i < twWFSLayers->rowCount(); i++ )
   {
     QString id = twWFSLayers->item( i, 0 )->data( Qt::UserRole ).toString();
-    QCheckBox* cb;
+    QCheckBox* cb = nullptr;
     cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( i, 1 ) );
     if ( cb && cb->isChecked() )
     {
@@ -1157,7 +1157,7 @@ void QgsProjectProperties::apply()
   for ( int i = 0; i < twWCSLayers->rowCount(); i++ )
   {
     QString id = twWCSLayers->item( i, 0 )->data( Qt::UserRole ).toString();
-    QCheckBox* cb;
+    QCheckBox* cb = nullptr;
     cb = qobject_cast<QCheckBox *>( twWCSLayers->cellWidget( i, 1 ) );
     if ( cb && cb->isChecked() )
     {
@@ -1861,9 +1861,9 @@ void QgsProjectProperties::populateEllipsoidList()
   //
   // Populate the ellipsoid list
   //
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
+  sqlite3      *myDatabase = nullptr;
+  const char   *myTail = nullptr;
+  sqlite3_stmt *myPreparedStatement = nullptr;
   int           myResult;
   EllipsoidDefs myItem;
 

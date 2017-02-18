@@ -82,9 +82,9 @@ QgsCustomProjectionDialog::~QgsCustomProjectionDialog()
 void QgsCustomProjectionDialog::populateList()
 {
   //Setup connection to the existing custom CRS database:
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
+  sqlite3      *myDatabase = nullptr;
+  const char   *myTail = nullptr;
+  sqlite3_stmt *myPreparedStatement = nullptr;
   int           myResult;
   //check the db is available
   myResult = sqlite3_open_v2( QgsApplication::qgisUserDatabaseFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, nullptr );
@@ -101,7 +101,7 @@ void QgsCustomProjectionDialog::populateList()
   // XXX Need to free memory from the error msg if one is set
   if ( myResult == SQLITE_OK )
   {
-    QTreeWidgetItem *newItem;
+    QTreeWidgetItem *newItem = nullptr;
     QString id, name, parameters;
     QgsCoordinateReferenceSystem crs;
     while ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
@@ -142,9 +142,9 @@ void QgsCustomProjectionDialog::populateList()
 
 bool  QgsCustomProjectionDialog::deleteCrs( const QString& id )
 {
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
+  sqlite3      *myDatabase = nullptr;
+  const char   *myTail = nullptr;
+  sqlite3_stmt *myPreparedStatement = nullptr;
   int           myResult;
 
   QString mySql = "delete from tbl_srs where srs_id=" + quotedValue( id );
@@ -174,11 +174,11 @@ bool  QgsCustomProjectionDialog::deleteCrs( const QString& id )
 
 void  QgsCustomProjectionDialog::insertProjection( const QString& myProjectionAcronym )
 {
-  sqlite3      *myDatabase;
-  sqlite3_stmt *myPreparedStatement;
-  sqlite3      *srsDatabase;
+  sqlite3      *myDatabase = nullptr;
+  sqlite3_stmt *myPreparedStatement = nullptr;
+  sqlite3      *srsDatabase = nullptr;
   QString mySql;
-  const char   *myTail;
+  const char   *myTail = nullptr;
   //check the db is available
   int           myResult = sqlite3_open( QgsApplication::qgisUserDatabaseFilePath().toUtf8(), &myDatabase );
   if ( myResult != SQLITE_OK )
@@ -198,8 +198,8 @@ void  QgsCustomProjectionDialog::insertProjection( const QString& myProjectionAc
     // Set up the query to retrieve the projection information needed to populate the PROJECTION list
     QString srsSql = "select acronym,name,notes,parameters from tbl_projection where acronym=" + quotedValue( myProjectionAcronym );
 
-    const char   *srsTail;
-    sqlite3_stmt *srsPreparedStatement;
+    const char   *srsTail = nullptr;
+    sqlite3_stmt *srsPreparedStatement = nullptr;
     srsResult = sqlite3_prepare( srsDatabase, srsSql.toUtf8(), srsSql.length(), &srsPreparedStatement, &srsTail );
     // XXX Need to free memory from the error msg if one is set
     if ( srsResult == SQLITE_OK )
@@ -263,9 +263,9 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem myCRS, con
             + " where srs_id=" + quotedValue( myId )
             ;
     QgsDebugMsg( mySql );
-    sqlite3      *myDatabase;
-    const char   *myTail;
-    sqlite3_stmt *myPreparedStatement;
+    sqlite3      *myDatabase = nullptr;
+    const char   *myTail = nullptr;
+    sqlite3_stmt *myPreparedStatement = nullptr;
     int           myResult;
     //check if the db is available
     myResult = sqlite3_open( QgsApplication::qgisUserDatabaseFilePath().toUtf8(), &myDatabase );

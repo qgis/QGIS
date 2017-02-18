@@ -83,8 +83,8 @@ class TestQgsMapRendererJob : public QObject
     QgsVectorFileWriter::WriterError mError;
     QgsCoordinateReferenceSystem mCRS;
     QgsFields mFields;
-    QgsMapSettings *mMapSettings;
-    QgsMapLayer * mpPolysLayer;
+    QgsMapSettings *mMapSettings = nullptr;
+    QgsMapLayer * mpPolysLayer = nullptr;
     QString mReport;
 };
 

@@ -204,7 +204,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     NodeType mNodeType;
     bool mChecked;
     //! pointer to the parent node - null in case of root node
-    QgsLayerTreeNode *mParent;
+    QgsLayerTreeNode *mParent = nullptr;
     //! list of children - node is responsible for their deletion
     QList<QgsLayerTreeNode*> mChildren;
     //! whether the node should be shown in GUI as expanded

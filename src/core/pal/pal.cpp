@@ -120,7 +120,7 @@ Layer* Pal::addLayer( QgsAbstractLabelProvider* provider, const QString& layerNa
 
 typedef struct _featCbackCtx
 {
-  Layer *layer;
+  Layer *layer = nullptr;
   QLinkedList<Feats*>* fFeats;
   RTree<FeaturePart*, double, 2, double> *obstacles;
   RTree<LabelPosition*, double, 2, double> *candidates;
@@ -199,7 +199,7 @@ bool extractObstaclesCallback( FeaturePart *ft_ptr, void *ctx )
 typedef struct _filterContext
 {
   RTree<LabelPosition*, double, 2, double> *cdtsIndex;
-  Pal* pal;
+  Pal* pal = nullptr;
 } FilterContext;
 
 bool filteringCallback( FeaturePart *featurePart, void *ctx )
@@ -239,7 +239,7 @@ Problem* Pal::extract( double lambda_min, double phi_min, double lambda_max, dou
 
   int max_p = 0;
 
-  LabelPosition* lp;
+  LabelPosition* lp = nullptr;
 
   bbx[0] = bbx[3] = amin[0] = prob->bbox[0] = lambda_min;
   bby[0] = bby[1] = amin[1] = prob->bbox[1] = phi_min;
@@ -325,7 +325,7 @@ Problem* Pal::extract( double lambda_min, double phi_min, double lambda_max, dou
   prob->featStartId = new int [prob->nbft];
   prob->inactiveCost = new double[prob->nbft];
 
-  Feats *feat;
+  Feats *feat = nullptr;
 
   // Filtering label positions against obstacles
   amin[0] = amin[1] = -DBL_MAX;
@@ -453,7 +453,7 @@ Problem* Pal::extract( double lambda_min, double phi_min, double lambda_max, dou
  */
 QList<LabelPosition*>* Pal::labeller( double bbox[4], PalStat **stats, bool displayAll )
 {
-  Problem *prob;
+  Problem *prob = nullptr;
 
   SearchMethod old_searchMethod = searchMethod;
 

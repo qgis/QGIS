@@ -94,10 +94,10 @@ class GUI_EXPORT QgsAuthTrustedCAsDialog : public QDialog, private Ui::QgsAuthTr
 
     QList<QSslCertificate> mTrustedCAs;
     bool mDisabled;
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout *mAuthNotifyLayout = nullptr;
+    QLabel *mAuthNotify = nullptr;
 
-    QTreeWidgetItem * mRootCaSecItem;
+    QTreeWidgetItem * mRootCaSecItem = nullptr;
 };
 
 #endif // QGSAUTHTRUSTEDCASDIALOG_H

@@ -107,7 +107,7 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     QgsComposerLegendWidget();
     void blockAllSignals( bool b );
 
-    QgsComposerLegend* mLegend;
+    QgsComposerLegend* mLegend = nullptr;
 };
 
 
@@ -120,8 +120,8 @@ class QgsComposerLegendMenuProvider : public QgsLayerTreeViewMenuProvider
     virtual QMenu* createContextMenu() override;
 
   protected:
-    QgsLayerTreeView* mView;
-    QgsComposerLegendWidget* mWidget;
+    QgsLayerTreeView* mView = nullptr;
+    QgsComposerLegendWidget* mWidget = nullptr;
 };
 
 

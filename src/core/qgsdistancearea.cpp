@@ -119,9 +119,9 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   //
   // SQLITE3 stuff - get parameters for selected ellipsoid
   //
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
+  sqlite3      *myDatabase = nullptr;
+  const char   *myTail = nullptr;
+  sqlite3_stmt *myPreparedStatement = nullptr;
   int           myResult;
 
   // Shortcut if ellipsoid is none.

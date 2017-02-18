@@ -97,11 +97,11 @@ class QgsFieldValuesLineEditValuesGatherer: public QThread
 
   private:
 
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
     int mAttributeIndex;
     QString mSubstring;
     QStringList mValues;
-    QgsFeedback* mFeedback;
+    QgsFeedback* mFeedback = nullptr;
     QMutex mFeedbackMutex;
     bool mWasCanceled;
 };
@@ -194,7 +194,7 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
 
   private:
 
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
     int mAttributeIndex;
 
     //! Will be true when a background update of the completer values is occurring
@@ -204,7 +204,7 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
     QTimer mShowPopupTimer;
 
     //! Background value gatherer thread
-    QgsFieldValuesLineEditValuesGatherer* mGatherer;
+    QgsFieldValuesLineEditValuesGatherer* mGatherer = nullptr;
 
     //! Will be set to the latest completion text string which should be requested
     QString mRequestedCompletionText;

@@ -98,7 +98,7 @@ class GUI_EXPORT QgsComposerItemComboBox : public QComboBox
     void rowsChanged();
 
   private:
-    QgsComposerProxyModel* mProxyModel;
+    QgsComposerProxyModel* mProxyModel = nullptr;
 
 };
 

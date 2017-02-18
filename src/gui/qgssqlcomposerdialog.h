@@ -170,9 +170,9 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
   private:
     QStringList mApiList;
     QSet<QString> mAlreadySelectedTables;
-    TableSelectedCallback* mTableSelectedCallback;
-    SQLValidatorCallback* mSQLValidatorCallback;
-    QObject* mFocusedObject;
+    TableSelectedCallback* mTableSelectedCallback = nullptr;
+    SQLValidatorCallback* mSQLValidatorCallback = nullptr;
+    QObject* mFocusedObject = nullptr;
     bool mAlreadyModifyingFields;
     bool mDistinct;
     QString mResetSql;

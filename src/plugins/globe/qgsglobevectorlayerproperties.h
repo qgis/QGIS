@@ -102,7 +102,7 @@ class QgsGlobeVectorLayerPropertiesPage : public QgsMapLayerConfigWidget, privat
     void layerSettingsChanged( QgsMapLayer* );
 
   private:
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
 };
 
 

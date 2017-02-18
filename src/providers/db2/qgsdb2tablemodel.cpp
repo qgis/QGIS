@@ -53,7 +53,7 @@ void QgsDb2TableModel::addTableEntry( const QgsDb2LayerProperty &layerProperty )
                .arg( layerProperty.sql ) );
 
   // is there already a root item with the given scheme Name?
-  QStandardItem *schemaItem;
+  QStandardItem *schemaItem = nullptr;
   QList<QStandardItem*> schemaItems = findItems( layerProperty.schemaName, Qt::MatchExactly, DbtmSchema );
 
   // there is already an item for this schema
@@ -221,7 +221,7 @@ void QgsDb2TableModel::setGeometryTypesForTable( QgsDb2LayerProperty layerProper
   Q_ASSERT( typeList.size() == sridList.size() );
 
   //find schema item and table item
-  QStandardItem* schemaItem;
+  QStandardItem* schemaItem = nullptr;
   QList<QStandardItem*> schemaItems = findItems( layerProperty.schemaName, Qt::MatchExactly, DbtmSchema );
 
   if ( schemaItems.size() < 1 )

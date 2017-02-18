@@ -207,11 +207,11 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! send vote
     void sendVote( int pluginId, int vote );
 
-    QStandardItemModel *mModelPlugins;
+    QStandardItemModel *mModelPlugins = nullptr;
 
-    QgsPluginSortFilterProxyModel * mModelProxy;
+    QgsPluginSortFilterProxyModel * mModelProxy = nullptr;
 
-    QgsPythonUtils* mPythonUtils;
+    QgsPythonUtils* mPythonUtils = nullptr;
 
     //! true by default; false in --noplugins mode
     bool mPluginsAreEnabled;
@@ -224,7 +224,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
 
     QList<int> mCheckingOnStartIntervals;
 
-    QgsMessageBar *msgBar;
+    QgsMessageBar *msgBar = nullptr;
 
 #ifndef WITH_QTWEBKIT
     int mCurrentPluginId;

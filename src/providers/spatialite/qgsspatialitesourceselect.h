@@ -126,9 +126,9 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     QgsDatabaseFilterProxyModel mProxyModel;
 
     QString layerURI( const QModelIndex &index );
-    QPushButton *mBuildQueryButton;
-    QPushButton *mAddButton;
-    QPushButton *mStatsButton;
+    QPushButton *mBuildQueryButton = nullptr;
+    QPushButton *mAddButton = nullptr;
+    QPushButton *mStatsButton = nullptr;
 };
 
 #endif // QGSSPATIALITESOURCESELECT_H

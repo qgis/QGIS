@@ -610,7 +610,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool mAuthInit;
     QString mAuthDbPath;
 
-    QCA::Initializer * mQcaInitializer;
+    QCA::Initializer * mQcaInitializer = nullptr;
 
     QHash<QString, QString> mConfigAuthMethods;
     QHash<QString, QgsAuthMethod*> mAuthMethods;
@@ -619,12 +619,12 @@ class CORE_EXPORT QgsAuthManager : public QObject
     int mPassTries;
     bool mAuthDisabled;
     QString mAuthDisabledMessage;
-    QTimer *mScheduledDbEraseTimer;
+    QTimer *mScheduledDbEraseTimer = nullptr;
     bool mScheduledDbErase;
     int mScheduledDbEraseRequestWait; // in seconds
     bool mScheduledDbEraseRequestEmitted;
     int mScheduledDbEraseRequestCount;
-    QMutex *mMutex;
+    QMutex *mMutex = nullptr;
 
 #ifndef QT_NO_SSL
     // mapping of sha1 digest and cert source and cert

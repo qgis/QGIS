@@ -132,7 +132,7 @@ class QgsGrassModuleParam
   protected:
 
     //! Pointer to GRASS module
-    QgsGrassModule *mModule;
+    QgsGrassModule *mModule = nullptr;
 
     //! Option key, for flags without '-'
     QString mKey;
@@ -222,13 +222,13 @@ class QgsGrassModuleMultiParam : public QgsGrassModuleGroupBoxItem
 
   private:
     // Parameters layout
-    QHBoxLayout *mLayout;
+    QHBoxLayout *mLayout = nullptr;
 
     // Parameters layout
-    QVBoxLayout *mParamsLayout;
+    QVBoxLayout *mParamsLayout = nullptr;
 
     // Parameters layout
-    QVBoxLayout *mButtonsLayout;
+    QVBoxLayout *mButtonsLayout = nullptr;
 };
 
 /****************** QgsGrassModuleOption ************************/
@@ -317,7 +317,7 @@ class QgsGrassModuleOption : public QgsGrassModuleMultiParam
     double mMin, mMax;
 
     //! Combobox
-    QComboBox *mComboBox;
+    QComboBox *mComboBox = nullptr;
 
     //! Vector of values for combobox
     QList<QString> mValues;
@@ -332,7 +332,7 @@ class QgsGrassModuleOption : public QgsGrassModuleMultiParam
     QString mOutputElement;
 
     //! Line input validator
-    QValidator *mValidator;
+    QValidator *mValidator = nullptr;
 
     //! Uses region
     bool mUsesRegion;
@@ -408,10 +408,10 @@ class QgsGrassModuleGdalInput : public QgsGrassModuleGroupBoxItem
     QString mOgrWhereOption;
 
     //! Combobox for QGIS layers
-    QComboBox *mLayerComboBox;
+    QComboBox *mLayerComboBox = nullptr;
 
     //! Lineedit for postgres password
-    QLineEdit *mLayerPassword;
+    QLineEdit *mLayerPassword = nullptr;
 
     //! Vector of URI in the combobox
     QStringList mUri;
@@ -492,13 +492,13 @@ class QgsGrassModuleVectorField : public QgsGrassModuleMultiParam
 
   private:
     // Module options
-    QgsGrassModuleStandardOptions *mModuleStandardOptions;
+    QgsGrassModuleStandardOptions *mModuleStandardOptions = nullptr;
 
     //! Layer key
     QString mLayerKey;
 
     //! Pointer to layer input
-    QgsGrassModuleInput *mLayerInput;
+    QgsGrassModuleInput *mLayerInput = nullptr;
 
     // ! Field type (integer,double,string,datetime)
     QString mType;
@@ -560,25 +560,25 @@ class QgsGrassModuleSelection : public QgsGrassModuleGroupBoxItem
     QgsVectorLayer * currentSelectionLayer();
 
     // Module options
-    QgsGrassModuleStandardOptions *mModuleStandardOptions;
+    QgsGrassModuleStandardOptions *mModuleStandardOptions = nullptr;
 
     //! Layer key
     QString mLayerId;
 
     //! Pointer to layer input
-    QgsGrassModuleInput *mLayerInput;
+    QgsGrassModuleInput *mLayerInput = nullptr;
 
     //! Currently connected layer
-    QgsVectorLayer *mVectorLayer;
+    QgsVectorLayer *mVectorLayer = nullptr;
 
     // ! Field type (integer,double,string,datetime)
     QString mType;
 
     //! Line
-    QLineEdit *mLineEdit;
+    QLineEdit *mLineEdit = nullptr;
 
     // selection mode
-    QComboBox *mModeComboBox;
+    QComboBox *mModeComboBox = nullptr;
 };
 
 /*********************** QgsGrassModuleFile **********************/
@@ -624,10 +624,10 @@ class QgsGrassModuleFile : public QgsGrassModuleGroupBoxItem
     QString mFileOption;
 
     //! Line
-    QLineEdit *mLineEdit;
+    QLineEdit *mLineEdit = nullptr;
 
     //! Browse button
-    QPushButton *mBrowseButton;
+    QPushButton *mBrowseButton = nullptr;
 
     //! File filters
     QString mFilters;

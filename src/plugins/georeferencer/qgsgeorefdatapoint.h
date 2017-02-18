@@ -58,10 +58,10 @@ class QgsGeorefDataPoint : public QObject
     void updateCoords();
 
   private:
-    QgsMapCanvas *mSrcCanvas;
-    QgsMapCanvas *mDstCanvas;
-    QgsGCPCanvasItem *mGCPSourceItem;
-    QgsGCPCanvasItem *mGCPDestinationItem;
+    QgsMapCanvas *mSrcCanvas = nullptr;
+    QgsMapCanvas *mDstCanvas = nullptr;
+    QgsGCPCanvasItem *mGCPSourceItem = nullptr;
+    QgsGCPCanvasItem *mGCPDestinationItem = nullptr;
     QgsPoint mPixelCoords;
     QgsPoint mMapCoords;
 

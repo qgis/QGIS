@@ -38,7 +38,7 @@ class QgsOgrExpressionCompiler : public QgsSqlExpressionCompiler
 
   private:
 
-    QgsOgrFeatureSource* mSource;
+    QgsOgrFeatureSource* mSource = nullptr;
 };
 
 #endif // QGSOGREXPRESSIONCOMPILER_H

@@ -65,8 +65,8 @@ class TestQgsComposerPicture : public QObject
 
 
   private:
-    QgsComposition* mComposition;
-    QgsComposerPicture* mComposerPicture;
+    QgsComposition* mComposition = nullptr;
+    QgsComposerPicture* mComposerPicture = nullptr;
     QString mReport;
     QString mPngImage;
     QString mSvgImage;

@@ -280,7 +280,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     typedef QMap<QString, MapThemeRecord> MapThemeRecordMap;
     MapThemeRecordMap mMapThemes;
     //! project used to retrieve layers from layer IDs
-    QgsProject* mProject;
+    QgsProject* mProject = nullptr;
 };
 
 

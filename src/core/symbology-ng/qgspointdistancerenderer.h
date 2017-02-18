@@ -58,7 +58,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
       QgsFeature feature;
 
       //! Base symbol for rendering feature
-      QgsMarkerSymbol* symbol;
+      QgsMarkerSymbol* symbol = nullptr;
 
       //! True if feature is selected and should be rendered in a selected state
       bool isSelected;
@@ -242,7 +242,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     QMap<QgsFeatureId, QgsPoint > mGroupLocations;
 
     //! Spatial index for fast lookup of nearby points.
-    QgsSpatialIndex* mSpatialIndex;
+    QgsSpatialIndex* mSpatialIndex = nullptr;
 
     /** Renders the labels for a group.
      * @param centerPoint center point of group

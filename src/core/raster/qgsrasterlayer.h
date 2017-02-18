@@ -410,7 +410,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     const QString TRSTRING_NOT_SET;
 
     //! Pointer to data provider
-    QgsRasterDataProvider* mDataProvider;
+    QgsRasterDataProvider* mDataProvider = nullptr;
 
     //! [ data provider interface ] Timestamp, the last modified time of the data source when the layer was created
     QDateTime mLastModified;

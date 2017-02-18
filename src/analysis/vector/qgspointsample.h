@@ -44,7 +44,7 @@ class ANALYSIS_EXPORT QgsPointSample
     bool checkMinDistance( QgsPoint& pt, QgsSpatialIndex& index, double minDistance, QMap< QgsFeatureId, QgsPoint >& pointMap );
 
     //! Layer id of input polygon/multipolygon layer
-    QgsVectorLayer* mInputLayer;
+    QgsVectorLayer* mInputLayer = nullptr;
     //! Output path of result layer
     QString mOutputLayer;
     //! Attribute containing number of points per feature

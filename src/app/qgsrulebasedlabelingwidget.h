@@ -71,7 +71,7 @@ class APP_EXPORT QgsRuleBasedLabelingModel : public QAbstractItemModel
     void finishedAddingRules(); // call endInsertRows
 
   protected:
-    QgsRuleBasedLabeling::Rule* mRootRule;
+    QgsRuleBasedLabeling::Rule* mRootRule = nullptr;
 };
 
 
@@ -107,15 +107,15 @@ class QgsRuleBasedLabelingWidget : public QgsPanelWidget, private Ui::QgsRuleBas
     QgsRuleBasedLabeling::Rule* currentRule();
 
   protected:
-    QgsVectorLayer* mLayer;
-    QgsMapCanvas* mCanvas;
+    QgsVectorLayer* mLayer = nullptr;
+    QgsMapCanvas* mCanvas = nullptr;
 
-    QgsRuleBasedLabeling::Rule* mRootRule;
-    QgsRuleBasedLabelingModel* mModel;
+    QgsRuleBasedLabeling::Rule* mRootRule = nullptr;
+    QgsRuleBasedLabelingModel* mModel = nullptr;
 
-    QAction* mCopyAction;
-    QAction* mPasteAction;
-    QAction* mDeleteAction;
+    QAction* mCopyAction = nullptr;
+    QAction* mPasteAction = nullptr;
+    QAction* mDeleteAction = nullptr;
 };
 
 
@@ -158,12 +158,12 @@ class APP_EXPORT QgsLabelingRulePropsWidget : public QgsPanelWidget, private Ui:
 
   protected:
     QgsRuleBasedLabeling::Rule* mRule; // borrowed
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
 
-    QgsLabelingGui* mLabelingGui;
+    QgsLabelingGui* mLabelingGui = nullptr;
     QgsPalLayerSettings* mSettings; // a clone of original settings
 
-    QgsMapCanvas* mMapCanvas;
+    QgsMapCanvas* mMapCanvas = nullptr;
 };
 
 

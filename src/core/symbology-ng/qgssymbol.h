@@ -363,7 +363,7 @@ class CORE_EXPORT QgsSymbol
 
   private:
     //! Initialized in startRender, destroyed in stopRender
-    QgsSymbolRenderContext* mSymbolRenderContext;
+    QgsSymbolRenderContext* mSymbolRenderContext = nullptr;
 
     Q_DISABLE_COPY( QgsSymbol )
 
@@ -501,7 +501,7 @@ class CORE_EXPORT QgsSymbolRenderContext
 
   private:
     QgsRenderContext& mRenderContext;
-    QgsExpressionContextScope* mExpressionContextScope;
+    QgsExpressionContextScope* mExpressionContextScope = nullptr;
     QgsUnitTypes::RenderUnit mOutputUnit;
     QgsMapUnitScale mMapUnitScale;
     qreal mAlpha;

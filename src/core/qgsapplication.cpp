@@ -1444,7 +1444,7 @@ bool QgsApplication::createDatabase( QString *errorMessage )
   else
   {
     // migrate if necessary
-    sqlite3 *db;
+    sqlite3 *db = nullptr;
     if ( sqlite3_open( QgsApplication::qgisUserDatabaseFilePath().toUtf8().constData(), &db ) != SQLITE_OK )
     {
       if ( errorMessage )
@@ -1454,7 +1454,7 @@ bool QgsApplication::createDatabase( QString *errorMessage )
       return false;
     }
 
-    char *errmsg;
+    char *errmsg = nullptr;
     int res = sqlite3_exec( db, "SELECT epsg FROM tbl_srs LIMIT 0", nullptr, nullptr, &errmsg );
     if ( res == SQLITE_OK )
     {

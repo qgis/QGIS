@@ -98,7 +98,7 @@ class CORE_EXPORT QgsGPSConnection : public QObject
 
   protected:
     //! Data source (e.g. serial device, socket, file,...)
-    QIODevice* mSource;
+    QIODevice* mSource = nullptr;
     //! Last state of the gps related variables (e.g. position, time, ...)
     QgsGPSInformation mLastGPSInformation;
     //! Connection status

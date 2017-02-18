@@ -67,7 +67,7 @@ struct QgsAlignRasterDialogProgress : public QgsAlignRaster::ProgressHandler
   }
 
 protected:
-  QProgressBar* mPb;
+  QProgressBar* mPb = nullptr;
 };
 
 

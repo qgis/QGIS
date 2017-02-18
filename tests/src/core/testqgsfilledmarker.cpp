@@ -67,10 +67,10 @@ class TestQgsFilledMarkerSymbol : public QObject
 
     bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPointsLayer;
-    QgsFilledMarkerSymbolLayer* mFilledMarkerLayer;
-    QgsMarkerSymbol* mMarkerSymbol;
-    QgsSingleSymbolRenderer* mSymbolRenderer;
+    QgsVectorLayer * mpPointsLayer = nullptr;
+    QgsFilledMarkerSymbolLayer* mFilledMarkerLayer = nullptr;
+    QgsMarkerSymbol* mMarkerSymbol = nullptr;
+    QgsSingleSymbolRenderer* mSymbolRenderer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };

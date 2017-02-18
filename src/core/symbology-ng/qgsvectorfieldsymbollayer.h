@@ -119,7 +119,7 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
     AngleOrientation mAngleOrientation;
     AngleUnits mAngleUnits;
 
-    QgsLineSymbol* mLineSymbol;
+    QgsLineSymbol* mLineSymbol = nullptr;
 
     //Attribute indices are resolved in startRender method
     int mXIndex;

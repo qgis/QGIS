@@ -116,11 +116,11 @@ class GUI_EXPORT QgsRasterMinMaxWidget: public QWidget, private Ui::QgsRasterMin
     void on_cboAccuracy_currentIndexChanged( int ) { emit widgetChanged(); }
 
   private:
-    QgsRasterLayer* mLayer;
+    QgsRasterLayer* mLayer = nullptr;
     QList<int> mBands;
     QgsRectangle mExtent;
 
-    QgsMapCanvas* mCanvas;
+    QgsMapCanvas* mCanvas = nullptr;
 
     bool mLastRectangleValid;
     QgsRectangle mLastRectangle;

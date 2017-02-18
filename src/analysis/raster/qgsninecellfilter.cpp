@@ -230,7 +230,7 @@ GDALDatasetH QgsNineCellFilter::openInputFile( int& nCellsX, int& nCellsY )
 
 GDALDriverH QgsNineCellFilter::openOutputDriver()
 {
-  char **driverMetadata;
+  char **driverMetadata = nullptr;
 
   //open driver
   GDALDriverH outputDriver = GDALGetDriverByName( mOutputFormat.toLocal8Bit().data() );

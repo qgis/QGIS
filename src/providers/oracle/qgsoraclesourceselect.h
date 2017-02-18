@@ -163,7 +163,7 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     // The column labels
     QStringList mColumnLabels;
     // Our thread for doing long running queries
-    QgsOracleColumnTypeThread *mColumnTypeThread;
+    QgsOracleColumnTypeThread *mColumnTypeThread = nullptr;
     QgsDataSourceUri mConnInfo;
     QStringList mSelectedTables;
     // Storage for the range of layer type icons
@@ -172,10 +172,10 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     //! Model that acts as datasource for mTableTreeWidget
     QgsOracleTableModel mTableModel;
     QgsDatabaseFilterProxyModel mProxyModel;
-    QgsOracleSourceSelectDelegate *mTablesTreeDelegate;
+    QgsOracleSourceSelectDelegate *mTablesTreeDelegate = nullptr;
 
-    QPushButton *mBuildQueryButton;
-    QPushButton *mAddButton;
+    QPushButton *mBuildQueryButton = nullptr;
+    QPushButton *mAddButton = nullptr;
 
     void finishList();
     bool mIsConnected;

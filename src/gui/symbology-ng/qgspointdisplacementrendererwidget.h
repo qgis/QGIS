@@ -39,7 +39,7 @@ class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererWidget, p
     void setContext( const QgsSymbolWidgetContext& context ) override;
 
   private:
-    QgsPointDisplacementRenderer* mRenderer;
+    QgsPointDisplacementRenderer* mRenderer = nullptr;
 
     void blockAllSignals( bool block );
     void updateCenterIcon();

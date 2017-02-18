@@ -338,7 +338,7 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField& field )
     mFieldsList->item( row, AttrNameCol )->setFlags( mFieldsList->item( row, AttrNameCol )->flags() & ~Qt::ItemIsEditable );
 
   FieldConfig cfg( mLayer, idx );
-  QPushButton *pb;
+  QPushButton *pb = nullptr;
   pb = new QPushButton( QgsEditorWidgetRegistry::instance()->name( cfg.mEditorWidgetType ) );
   cfg.mButton = pb;
   mFieldsList->setCellWidget( row, AttrEditTypeCol, pb );

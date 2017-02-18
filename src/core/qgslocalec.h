@@ -26,7 +26,7 @@
  */
 class CORE_EXPORT QgsLocaleNumC
 {
-    char *mOldlocale;
+    char *mOldlocale = nullptr;
     static QMutex sLocaleLock;
 
   public:

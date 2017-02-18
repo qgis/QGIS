@@ -104,15 +104,15 @@ class QgsGeorefPlugin: public QObject, public QgisPlugin
     ////////////////////////////////////////////////////////////////////
 
     //! Pointer to the QGIS interface object
-    QgisInterface *mQGisIface;
+    QgisInterface *mQGisIface = nullptr;
     //!pointer to the qaction for this plugin
-    QAction * mActionRunGeoref;
+    QAction * mActionRunGeoref = nullptr;
     ////////////////////////////////////////////////////////////////////
     //
     // ADD YOUR OWN MEMBER DECLARATIONS AFTER THIS POINT.....
     //
     ////////////////////////////////////////////////////////////////////
-    QgsGeorefPluginGui *mPluginGui;
+    QgsGeorefPluginGui *mPluginGui = nullptr;
 };
 
 #endif

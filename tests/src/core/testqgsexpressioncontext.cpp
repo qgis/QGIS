@@ -113,7 +113,7 @@ class TestQgsExpressionContext : public QObject
 
       private:
 
-        int* mVal;
+        int* mVal = nullptr;
     };
 };
 

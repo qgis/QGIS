@@ -125,9 +125,9 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
 
     std::unique_ptr<QgsExpressionContext> mContext;
     int mEditableScopeIndex;
-    QgsVariableEditorTree* mTreeWidget;
-    QPushButton* mAddButton;
-    QPushButton* mRemoveButton;
+    QgsVariableEditorTree* mTreeWidget = nullptr;
+    QPushButton* mAddButton = nullptr;
+    QPushButton* mRemoveButton = nullptr;
     QString mSettingGroup;
     bool mShown;
 
@@ -195,9 +195,9 @@ class QgsVariableEditorTree : public QTreeWidget
 
   private:
 
-    VariableEditorDelegate* mEditorDelegate;
+    VariableEditorDelegate* mEditorDelegate = nullptr;
     int mEditableScopeIndex;
-    QgsExpressionContext* mContext;
+    QgsExpressionContext* mContext = nullptr;
     QMap< QPair<int, QString>, QTreeWidgetItem* > mVariableToItem;
     QMap< int, QTreeWidgetItem* > mScopeToItem;
 
@@ -226,7 +226,7 @@ class VariableEditorDelegate : public QItemDelegate
     void setEditorData( QWidget *, const QModelIndex & ) const override {}
 
   private:
-    QgsVariableEditorTree *mParentTree;
+    QgsVariableEditorTree *mParentTree = nullptr;
 };
 
 /// @endcond

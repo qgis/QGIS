@@ -1185,7 +1185,7 @@ void QgsDwgImporter::addAppId( const DRW_AppId &data )
 
 bool QgsDwgImporter::createFeature( OGRLayerH layer, OGRFeatureH f, const QgsAbstractGeometry &g0 ) const
 {
-  const QgsAbstractGeometry *g;
+  const QgsAbstractGeometry *g = nullptr;
   std::unique_ptr<QgsAbstractGeometry> sg( nullptr );
 
   if ( !mUseCurves && g0.hasCurvedSegments() )

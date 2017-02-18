@@ -77,9 +77,9 @@ class GUI_EXPORT QgsRelationReferenceSearchWidgetWrapper : public QgsSearchWidge
 
   private:
 
-    QgsRelationReferenceWidget* mWidget;
-    QgsVectorLayer* mLayer;
-    QgsMapCanvas* mCanvas;
+    QgsRelationReferenceWidget* mWidget = nullptr;
+    QgsVectorLayer* mLayer = nullptr;
+    QgsMapCanvas* mCanvas = nullptr;
 
     friend class QgsRelationReferenceWidgetFactory;
 };

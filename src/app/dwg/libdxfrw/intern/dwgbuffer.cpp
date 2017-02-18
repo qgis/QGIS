@@ -797,7 +797,7 @@ double dwgBuffer::getDefaultDouble( double d )
   else if ( b == 1 )
   {
     duint8 buffer[4];
-    char *tmp;
+    char *tmp = nullptr;
     if ( bitPos != 0 )
     {
       for ( int i = 0; i < 4; i++ )
@@ -816,7 +816,7 @@ double dwgBuffer::getDefaultDouble( double d )
   else if ( b == 2 )
   {
     duint8 buffer[6];
-    char *tmp;
+    char *tmp = nullptr;
     if ( bitPos != 0 )
     {
       for ( int i = 0; i < 6; i++ )

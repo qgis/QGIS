@@ -102,11 +102,11 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
 
   private:
     Type mType;
-    QgsRasterCalcNode* mLeft;
-    QgsRasterCalcNode* mRight;
+    QgsRasterCalcNode* mLeft = nullptr;
+    QgsRasterCalcNode* mRight = nullptr;
     double mNumber;
     QString mRasterName;
-    QgsRasterMatrix* mMatrix;
+    QgsRasterMatrix* mMatrix = nullptr;
     Operator mOperator;
 
 };

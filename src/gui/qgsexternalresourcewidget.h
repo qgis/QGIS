@@ -145,11 +145,11 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     QString mDefaultRoot; // configured default root path for QgsFileWidget::RelativeStorage::RelativeDefaultPath
 
     //! UI objects
-    QgsFileWidget* mFileWidget;
-    QgsPixmapLabel* mPixmapLabel;
+    QgsFileWidget* mFileWidget = nullptr;
+    QgsPixmapLabel* mPixmapLabel = nullptr;
 #ifdef WITH_QTWEBKIT
     //! This webview is used as a container to display the picture
-    QWebView* mWebView;
+    QWebView* mWebView = nullptr;
 #endif
 
 };

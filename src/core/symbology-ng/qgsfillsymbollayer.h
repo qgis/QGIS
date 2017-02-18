@@ -296,7 +296,7 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
 
     GradientColorType mGradientColorType;
     QColor mColor2;
-    QgsColorRamp* mGradientRamp;
+    QgsColorRamp* mGradientRamp = nullptr;
     GradientType mGradientType;
     GradientCoordinateMode mCoordinateMode;
     GradientSpread mGradientSpread;
@@ -555,8 +555,8 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     ShapeburstColorType mColorType;
     QColor mColor2;
-    QgsColorRamp* mGradientRamp;
-    QgsColorRamp* mTwoColorGradientRamp;
+    QgsColorRamp* mGradientRamp = nullptr;
+    QgsColorRamp* mTwoColorGradientRamp = nullptr;
 
     bool mIgnoreRings;
 
@@ -632,7 +632,7 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
     QgsMapUnitScale mOutlineWidthMapUnitScale;
 
     //! Custom outline
-    QgsLineSymbol* mOutline;
+    QgsLineSymbol* mOutline = nullptr;
 
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext& context ) { Q_UNUSED( context ); }
 };
@@ -916,7 +916,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     //! SVG view box (to keep the aspect ratio
     QRectF mSvgViewBox;
     //! SVG pattern image
-    QImage* mSvgPattern;
+    QImage* mSvgPattern = nullptr;
 
     //param(fill), param(outline), param(outline-width) are going
     //to be replaced in memory
@@ -1068,7 +1068,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void applyPattern( const QgsSymbolRenderContext& context, QBrush& brush, double lineAngle, double distance );
 
     //! Fill line
-    QgsLineSymbol* mFillLineSymbol;
+    QgsLineSymbol* mFillLineSymbol = nullptr;
 };
 
 /** \ingroup core
@@ -1188,7 +1188,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     virtual QColor color() const override;
 
   protected:
-    QgsMarkerSymbol* mMarkerSymbol;
+    QgsMarkerSymbol* mMarkerSymbol = nullptr;
     double mDistanceX;
     QgsUnitTypes::RenderUnit mDistanceXUnit;
     QgsMapUnitScale mDistanceXMapUnitScale;
@@ -1265,7 +1265,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
     bool pointOnAllParts() const { return mPointOnAllParts; }
 
   protected:
-    QgsMarkerSymbol* mMarker;
+    QgsMarkerSymbol* mMarker = nullptr;
     bool mPointOnSurface;
     bool mPointOnAllParts;
 

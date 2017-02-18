@@ -139,7 +139,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
   protected:
 
-    QgsCurve* mExteriorRing;
+    QgsCurve* mExteriorRing = nullptr;
     QList<QgsCurve*> mInteriorRings;
 
     virtual QgsRectangle calculateBoundingBox() const override;

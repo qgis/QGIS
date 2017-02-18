@@ -568,10 +568,10 @@ class CORE_EXPORT QgsPalLayerSettings
     void setFormat( const QgsTextFormat& format ) { mFormat = format; }
 
     // temporary stuff: set when layer gets prepared or labeled
-    QgsFeature* mCurFeat;
+    QgsFeature* mCurFeat = nullptr;
     QgsFields mCurFields;
     int fieldIndex;
-    const QgsMapToPixel* xform;
+    const QgsMapToPixel* xform = nullptr;
     QgsCoordinateTransform ct;
 
     QgsPoint ptZero;
@@ -640,7 +640,7 @@ class CORE_EXPORT QgsPalLayerSettings
     //! Property collection for data defined label settings
     QgsPropertyCollection mDataDefinedProperties;
 
-    QgsExpression* expression;
+    QgsExpression* expression = nullptr;
 
     QFontDatabase mFontDB;
 
@@ -691,7 +691,7 @@ class CORE_EXPORT QgsLabelingResults
 
   private:
 
-    QgsLabelSearchTree* mLabelSearchTree;
+    QgsLabelSearchTree* mLabelSearchTree = nullptr;
 
     friend class QgsPalLabeling;
     friend class QgsVectorLayerLabelProvider;
@@ -835,7 +835,7 @@ class CORE_EXPORT QgsPalLabeling
     QgsPalLayerSettings mInvalidLayerSettings;
 
     //! New labeling engine to interface with PAL
-    QgsLabelingEngine* mEngine;
+    QgsLabelingEngine* mEngine = nullptr;
 
     // list of candidates from last labeling
     QList<QgsLabelCandidate> mCandidates;

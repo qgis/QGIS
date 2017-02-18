@@ -64,10 +64,10 @@ class TestQgsRenderers : public QObject
     bool mTestHasError;
     bool setQml( const QString& theType ); //uniquevalue / continuous / single /
     bool imageCheck( const QString& theType ); //as above
-    QgsMapSettings *mMapSettings;
-    QgsMapLayer * mpPointsLayer;
-    QgsMapLayer * mpLinesLayer;
-    QgsMapLayer * mpPolysLayer;
+    QgsMapSettings *mMapSettings = nullptr;
+    QgsMapLayer * mpPointsLayer = nullptr;
+    QgsMapLayer * mpLinesLayer = nullptr;
+    QgsMapLayer * mpPolysLayer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };

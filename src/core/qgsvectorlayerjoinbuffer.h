@@ -104,7 +104,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject
 
   private:
 
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
 
     //! Joined vector layers
     QgsVectorJoinList mVectorJoins;

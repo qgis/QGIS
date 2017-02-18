@@ -134,24 +134,24 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
   private:
     void updateUi();
 
-    QgsDualView* mDualView;
+    QgsDualView* mDualView = nullptr;
     QgsDualView::ViewMode mViewMode;
-    QgsGenericFeatureSelectionManager* mFeatureSelectionMgr;
+    QgsGenericFeatureSelectionManager* mFeatureSelectionMgr = nullptr;
     QgsAttributeEditorContext mEditorContext;
     QgsRelation mRelation;
     QgsRelation mNmRelation;
     QgsFeature mFeature;
 
-    QToolButton* mToggleEditingButton;
-    QToolButton* mSaveEditsButton;
-    QToolButton* mAddFeatureButton;
-    QToolButton* mDeleteFeatureButton;
-    QToolButton* mLinkFeatureButton;
-    QToolButton* mUnlinkFeatureButton;
-    QToolButton* mFormViewButton;
-    QToolButton* mTableViewButton;
-    QGridLayout* mRelationLayout;
-    QButtonGroup* mViewModeButtonGroup;
+    QToolButton* mToggleEditingButton = nullptr;
+    QToolButton* mSaveEditsButton = nullptr;
+    QToolButton* mAddFeatureButton = nullptr;
+    QToolButton* mDeleteFeatureButton = nullptr;
+    QToolButton* mLinkFeatureButton = nullptr;
+    QToolButton* mUnlinkFeatureButton = nullptr;
+    QToolButton* mFormViewButton = nullptr;
+    QToolButton* mTableViewButton = nullptr;
+    QGridLayout* mRelationLayout = nullptr;
+    QButtonGroup* mViewModeButtonGroup = nullptr;
 
     bool mShowLabel;
     bool mVisible;

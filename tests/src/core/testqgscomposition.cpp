@@ -60,7 +60,7 @@ class TestQgsComposition : public QObject
     void referenceMap();
 
   private:
-    QgsComposition *mComposition;
+    QgsComposition *mComposition = nullptr;
     QString mReport;
 
 };

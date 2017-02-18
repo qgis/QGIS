@@ -103,13 +103,13 @@ class TestQgsRasterLayer : public QObject
     bool testColorRamp( const QString& name, QgsColorRamp* colorRamp,
                         QgsColorRampShader::Type type, int numberOfEntries );
     QString mTestDataDir;
-    QgsRasterLayer * mpRasterLayer;
-    QgsRasterLayer * mpLandsatRasterLayer;
-    QgsRasterLayer * mpFloat32RasterLayer;
-    QgsRasterLayer * mPngRasterLayer;
-    QgsRasterLayer * mGeoJp2RasterLayer;
+    QgsRasterLayer * mpRasterLayer = nullptr;
+    QgsRasterLayer * mpLandsatRasterLayer = nullptr;
+    QgsRasterLayer * mpFloat32RasterLayer = nullptr;
+    QgsRasterLayer * mPngRasterLayer = nullptr;
+    QgsRasterLayer * mGeoJp2RasterLayer = nullptr;
 
-    QgsMapSettings * mMapSettings;
+    QgsMapSettings * mMapSettings = nullptr;
     QString mReport;
 };
 
@@ -412,7 +412,7 @@ void TestQgsRasterLayer::checkScaleOffset()
   mReport += QLatin1String( "<h2>Check Stats with scale/offset</h2>\n" );
 
   QFileInfo myRasterFileInfo( mTestDataDir + "scaleoffset.tif" );
-  QgsRasterLayer * myRasterLayer;
+  QgsRasterLayer * myRasterLayer = nullptr;
   myRasterLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
                                       myRasterFileInfo.completeBaseName() );
   QVERIFY( myRasterLayer );

@@ -318,10 +318,10 @@ class QgsGPXHandler
     QgsRoutepoint mRtept;
     QgsTrackSegment mTrkseg;
     QgsTrackpoint mTrkpt;
-    QgsGPSObject* mObj;
-    QString* mString;
-    double* mDouble;
-    int* mInt;
+    QgsGPSObject* mObj = nullptr;
+    QString* mString = nullptr;
+    double* mDouble = nullptr;
+    int* mInt = nullptr;
     QString mCharBuffer;
 };
 

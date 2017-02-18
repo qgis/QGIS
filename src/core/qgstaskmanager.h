@@ -291,7 +291,7 @@ class CORE_EXPORT QgsTask : public QObject
           , dependencies( dependencies )
           , dependency( dependency )
       {}
-      QgsTask* task;
+      QgsTask* task = nullptr;
       QgsTaskList dependencies;
       SubTaskDependency dependency;
     };
@@ -365,7 +365,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
       {}
 
       //! Task
-      QgsTask* task;
+      QgsTask* task = nullptr;
 
       /**
        * List of dependent tasks which must be completed before task can run. If any dependent tasks are
@@ -497,10 +497,10 @@ class CORE_EXPORT QgsTaskManager : public QObject
     struct TaskInfo
     {
       TaskInfo( QgsTask* task = nullptr, int priority = 0 );
-      QgsTask* task;
+      QgsTask* task = nullptr;
       QAtomicInt added;
       int priority;
-      QgsTaskRunnableWrapper* runnable;
+      QgsTaskRunnableWrapper* runnable = nullptr;
     };
 
     mutable QMutex* mTaskMutex;

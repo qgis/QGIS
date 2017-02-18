@@ -2815,7 +2815,7 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs() const
   if ( mySpatialRefSys )
   {
     // get the proj4 text
-    char *pszProj4;
+    char *pszProj4 = nullptr;
     OSRExportToProj4( mySpatialRefSys, &pszProj4 );
     QgsDebugMsg( pszProj4 );
     CPLFree( pszProj4 );

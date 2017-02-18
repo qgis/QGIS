@@ -236,7 +236,7 @@ class CORE_EXPORT QgsSnappingConfig
     void readLegacySettings();
 
     //! associated project for this snapping configuration
-    QgsProject* mProject;
+    QgsProject* mProject = nullptr;
     bool mEnabled = false;
     SnappingMode mMode = ActiveLayer;
     SnappingType mType = Vertex;

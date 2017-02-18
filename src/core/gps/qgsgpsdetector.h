@@ -55,7 +55,7 @@ class CORE_EXPORT QgsGPSDetector : public QObject
     QList< QPair< QString, QString > > mPortList;
     QList<BaudRateType> mBaudList;
 
-    QgsGPSConnection *mConn;
+    QgsGPSConnection *mConn = nullptr;
 };
 
 #endif // QGSGPSDETECTOR_H

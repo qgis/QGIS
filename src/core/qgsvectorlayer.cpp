@@ -672,7 +672,7 @@ class QgsVectorLayerInterruptionCheckerDuringCountSymbolFeatures: public QgsInte
     }
 
   private:
-    QProgressDialog* mDialog;
+    QProgressDialog* mDialog = nullptr;
 };
 
 bool QgsVectorLayer::countSymbolFeatures( bool showProgress )

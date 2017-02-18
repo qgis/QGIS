@@ -32,7 +32,7 @@ class QgsPostgresTransaction : public QgsTransaction
     QgsPostgresConn* connection() const { return mConn; }
 
   private:
-    QgsPostgresConn* mConn;
+    QgsPostgresConn* mConn = nullptr;
 
     bool beginTransaction( QString& error, int statementTimeout ) override;
     bool commitTransaction( QString& error ) override;

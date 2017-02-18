@@ -297,7 +297,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 
       protected:
         Rule* mParent; // parent rule (NULL only for root rule)
-        QgsPalLayerSettings* mSettings;
+        QgsPalLayerSettings* mSettings = nullptr;
         int mScaleMinDenom, mScaleMaxDenom;
         QString mFilterExp, mDescription;
         bool mElseRule;
@@ -308,7 +308,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         QString mRuleKey; // string used for unique identification of rule within labeling
 
         // temporary
-        QgsExpression* mFilter;
+        QgsExpression* mFilter = nullptr;
 
     };
 
@@ -335,7 +335,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     bool requiresAdvancedEffects( QgsVectorLayer* layer ) const override;
 
   protected:
-    Rule* mRootRule;
+    Rule* mRootRule = nullptr;
 };
 
 

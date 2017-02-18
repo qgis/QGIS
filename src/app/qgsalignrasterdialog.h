@@ -55,7 +55,7 @@ class QgsAlignRasterDialog : public QDialog, private Ui::QgsAlignRasterDialog
     void updateAlignedRasterInfo();
 
   protected:
-    QgsAlignRaster* mAlign;
+    QgsAlignRaster* mAlign = nullptr;
 };
 
 
@@ -80,12 +80,12 @@ class QgsAlignRasterLayerConfigDialog : public QDialog
     void browseOutputFilename();
 
   protected:
-    QgsMapLayerComboBox* cboLayers;
-    QLineEdit* editOutput;
-    QPushButton* btnBrowse;
-    QComboBox* cboResample;
-    QCheckBox* chkRescale;
-    QDialogButtonBox* btnBox;
+    QgsMapLayerComboBox* cboLayers = nullptr;
+    QLineEdit* editOutput = nullptr;
+    QPushButton* btnBrowse = nullptr;
+    QComboBox* cboResample = nullptr;
+    QCheckBox* chkRescale = nullptr;
+    QDialogButtonBox* btnBox = nullptr;
 };
 
 

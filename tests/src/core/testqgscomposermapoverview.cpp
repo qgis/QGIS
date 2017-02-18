@@ -52,9 +52,9 @@ class TestQgsComposerMapOverview : public QObject
     void overviewMapCenter(); //test if centering of overview map frame works
 
   private:
-    QgsComposition* mComposition;
-    QgsComposerMap* mComposerMap;
-    QgsRasterLayer* mRasterLayer;
+    QgsComposition* mComposition = nullptr;
+    QgsComposerMap* mComposerMap = nullptr;
+    QgsRasterLayer* mRasterLayer = nullptr;
     QString mReport;
 };
 

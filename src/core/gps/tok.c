@@ -60,7 +60,7 @@ int nmea_calc_crc( const char *buff, int buff_sz )
  */
 int nmea_atoi( const char *str, size_t str_sz, int radix )
 {
-  char *tmp_ptr;
+  char *tmp_ptr = 0;
   char buff[NMEA_CONVSTR_BUF];
   int res = 0;
 
@@ -79,7 +79,7 @@ int nmea_atoi( const char *str, size_t str_sz, int radix )
  */
 double nmea_atof( const char *str, int str_sz )
 {
-  char *tmp_ptr;
+  char *tmp_ptr = 0;
   char buff[NMEA_CONVSTR_BUF];
   double res = 0;
 
@@ -137,7 +137,7 @@ int nmea_printf( char *buff, int buff_sz, const char *format, ... )
  */
 int nmea_scanf( const char *buff, int buff_sz, const char *format, ... )
 {
-  const char *beg_tok;
+  const char *beg_tok = 0;
   const char *end_buf = buff + buff_sz;
 
   va_list arg_ptr;
@@ -147,7 +147,7 @@ int nmea_scanf( const char *buff, int buff_sz, const char *format, ... )
   int snum = 0, unum = 0;
 
   int tok_count = 0;
-  void *parg_target;
+  void *parg_target = 0;
 
   va_start( arg_ptr, format );
 

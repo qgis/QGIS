@@ -53,9 +53,9 @@ class CORE_EXPORT QgsMapRendererSequentialJob : public QgsMapRendererQImageJob
 
   private:
 
-    QgsMapRendererCustomPainterJob* mInternalJob;
+    QgsMapRendererCustomPainterJob* mInternalJob = nullptr;
     QImage mImage;
-    QPainter* mPainter;
+    QPainter* mPainter = nullptr;
     std::unique_ptr< QgsLabelingResults > mLabelingResults;
     bool mUsedCachedLabels = false;
 

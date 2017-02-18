@@ -722,7 +722,7 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
 
   QString sql = QStringLiteral( "PRAGMA table_info(%1)" ).arg( quotedIdentifier( mTableName ) );
 
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   char *errMsg = nullptr;
@@ -784,7 +784,7 @@ QString QgsSpatiaLiteProvider::spatialiteVersion()
     return mSpatialiteVersionInfo;
 
   int ret;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   char *errMsg = nullptr;
@@ -822,7 +822,7 @@ QString QgsSpatiaLiteProvider::spatialiteVersion()
 
 void QgsSpatiaLiteProvider::fetchConstraints()
 {
-  char **results;
+  char **results = nullptr;
   char *errMsg = nullptr;
 
   // this is not particularly robust but unfortunately sqlite offers no way to check directly
@@ -932,7 +932,7 @@ void QgsSpatiaLiteProvider::loadFields()
   int ret;
   int i;
   sqlite3_stmt *stmt = nullptr;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   char *errMsg = nullptr;
@@ -1066,7 +1066,7 @@ void QgsSpatiaLiteProvider::determineViewPrimaryKey()
                          " WHERE upper(view_name) = upper(%1) and upper(view_geometry) = upper(%2)" ).arg( quotedValue( mTableName ),
                              quotedValue( mGeometryColumn ) );
 
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   char *errMsg = nullptr;
@@ -1088,7 +1088,7 @@ void QgsSpatiaLiteProvider::determineViewPrimaryKey()
 bool QgsSpatiaLiteProvider::hasTriggers()
 {
   int ret;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   char *errMsg = nullptr;
@@ -3516,7 +3516,7 @@ QVariant QgsSpatiaLiteProvider::minimumValue( int index ) const
 {
   int ret;
   int i;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   char *errMsg = nullptr;
@@ -3579,7 +3579,7 @@ QVariant QgsSpatiaLiteProvider::maximumValue( int index ) const
 {
   int ret;
   int i;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   char *errMsg = nullptr;
@@ -4449,7 +4449,7 @@ bool QgsSpatiaLiteProvider::checkLayerType()
 {
   int ret;
   int i;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   char *errMsg = nullptr;
@@ -4697,7 +4697,7 @@ void QgsSpatiaLiteProvider::getViewSpatialIndexName()
 {
   int ret;
   int i;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   char *errMsg = nullptr;
@@ -4753,7 +4753,7 @@ bool QgsSpatiaLiteProvider::getTableGeometryDetails()
 {
   int ret;
   int i;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   char *errMsg = nullptr;
@@ -4849,7 +4849,7 @@ bool QgsSpatiaLiteProvider::getViewGeometryDetails()
 {
   int ret;
   int i;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   char *errMsg = nullptr;
@@ -4929,7 +4929,7 @@ bool QgsSpatiaLiteProvider::getVShapeGeometryDetails()
 {
   int ret;
   int i;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   char *errMsg = nullptr;
@@ -4996,7 +4996,7 @@ bool QgsSpatiaLiteProvider::getQueryGeometryDetails()
 {
   int ret;
   int i;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   char *errMsg = nullptr;
@@ -5114,7 +5114,7 @@ bool QgsSpatiaLiteProvider::getSridDetails()
 {
   int ret;
   int i;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   char *errMsg = nullptr;
@@ -5169,7 +5169,7 @@ bool QgsSpatiaLiteProvider::getTableSummary()
 {
   int ret;
   int i;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   char *errMsg = nullptr;
@@ -5291,7 +5291,7 @@ static bool initializeSpatialMetadata( sqlite3 *sqlite_handle, QString& errCause
     return false;
 
   // checking if this DB is really empty
-  char **results;
+  char **results = nullptr;
   int rows, columns;
   int ret = sqlite3_get_table( sqlite_handle, "select count(*) from sqlite_master", &results, &rows, &columns, nullptr );
   if ( ret != SQLITE_OK )
@@ -5350,7 +5350,7 @@ QGISEXTERN bool createDb( const QString& dbPath, QString& errCause )
   QDir().mkpath( path.absolutePath() );
 
   // creating/opening the new database
-  sqlite3 *sqlite_handle;
+  sqlite3 *sqlite_handle = nullptr;
   int ret = QgsSLConnect::sqlite3_open_v2( dbPath.toUtf8().constData(), &sqlite_handle, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr );
   if ( ret )
   {
@@ -5465,7 +5465,7 @@ QList<QgsRelation> QgsSpatiaLiteProvider::discoverRelations( const QgsVectorLaye
 {
   QList<QgsRelation> output;
   const QString sql = QStringLiteral( "PRAGMA foreign_key_list(%1)" ).arg( QgsSpatiaLiteProvider::quotedIdentifier( mTableName ) );
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   char *errMsg = nullptr;
@@ -5544,7 +5544,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
   // check if layer_styles table already exist
   QString countIfExist = QStringLiteral( "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='%1';" ).arg( QStringLiteral( "layer_styles" ) );
 
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   char *errMsg = nullptr;
@@ -5731,7 +5731,7 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
                            .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.table() ) )
                            .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.geometryColumn() ) );
 
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   char *errMsg = nullptr;
@@ -5772,7 +5772,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
   // check if layer_styles table already exist
   QString countIfExist = QStringLiteral( "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='%1';" ).arg( QStringLiteral( "layer_styles" ) );
 
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   char *errMsg = nullptr;
@@ -5876,7 +5876,7 @@ QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& e
 
   QString style;
   QString selectQmlQuery = QStringLiteral( "SELECT styleQml FROM layer_styles WHERE id=%1" ).arg( QgsSpatiaLiteProvider::quotedValue( styleId ) );
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   char *errMsg = nullptr;

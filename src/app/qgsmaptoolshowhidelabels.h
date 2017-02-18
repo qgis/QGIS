@@ -50,7 +50,7 @@ class APP_EXPORT QgsMapToolShowHideLabels : public QgsMapToolLabel
     QRect mSelectRect;
 
     //! Stores selection marquee
-    QgsRubberBand* mRubberBand;
+    QgsRubberBand* mRubberBand = nullptr;
 
   private:
     //! Select valid labels to pin or unpin

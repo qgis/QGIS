@@ -70,7 +70,7 @@ class QgsWmsLegendDownloadHandler : public QgsImageFetcher
 
     QgsNetworkAccessManager& mNetworkAccessManager;
     const QgsWmsSettings& mSettings;
-    QNetworkReply* mReply;
+    QNetworkReply* mReply = nullptr;
     QSet<QUrl> mVisitedUrls;
     QUrl mInitialUrl;
 
@@ -411,7 +411,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /**
      * The reply to the capabilities request
      */
-    QNetworkReply *mIdentifyReply;
+    QNetworkReply *mIdentifyReply = nullptr;
 
     /**
      * The result of the identify reply
@@ -447,9 +447,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
     int mTileReqNo;
 
     //! chosen tile layer
-    QgsWmtsTileLayer        *mTileLayer;
+    QgsWmtsTileLayer        *mTileLayer = nullptr;
     //! chosen matrix set
-    QgsWmtsTileMatrixSet    *mTileMatrixSet;
+    QgsWmtsTileMatrixSet    *mTileMatrixSet = nullptr;
 
     //! supported formats for GetFeatureInfo in order of preference
     QStringList mSupportedGetFeatureFormats;
@@ -484,12 +484,12 @@ class QgsWmsImageDownloadHandler : public QObject
 
     QString mProviderUri;
 
-    QNetworkReply* mCacheReply;
-    QImage* mCachedImage;
+    QNetworkReply* mCacheReply = nullptr;
+    QImage* mCachedImage = nullptr;
 
-    QEventLoop* mEventLoop;
+    QEventLoop* mEventLoop = nullptr;
 
-    QgsRasterBlockFeedback* mFeedback;
+    QgsRasterBlockFeedback* mFeedback = nullptr;
 };
 
 
@@ -525,10 +525,10 @@ class QgsWmsTiledImageDownloadHandler : public QObject
 
     QgsWmsAuthorization mAuth;
 
-    QImage* mImage;
+    QImage* mImage = nullptr;
     QgsRectangle mViewExtent;
 
-    QEventLoop* mEventLoop;
+    QEventLoop* mEventLoop = nullptr;
 
     int mTileReqNo;
     bool mSmoothPixmapTransform;
@@ -536,7 +536,7 @@ class QgsWmsTiledImageDownloadHandler : public QObject
     //! Running tile requests
     QList<QNetworkReply*> mReplies;
 
-    QgsRasterBlockFeedback* mFeedback;
+    QgsRasterBlockFeedback* mFeedback = nullptr;
 };
 
 

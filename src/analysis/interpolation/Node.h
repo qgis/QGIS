@@ -26,9 +26,9 @@ class ANALYSIS_EXPORT Node
 {
   protected:
     //! Pointer to the Point3D object associated with the node
-    Point3D* mPoint;
+    Point3D* mPoint = nullptr;
     //! Pointer to the next Node in the linked list
-    Node* mNext;
+    Node* mNext = nullptr;
   public:
     Node();
     Node( const Node& n );

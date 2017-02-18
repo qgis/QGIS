@@ -56,7 +56,7 @@ class QgsAttributeActionPropertiesDialog: public QDialog, private Ui::QgsAttribu
   private:
     void init( const QSet<QString>& actionScopes );
 
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
     QList<QCheckBox*> mActionScopeCheckBoxes;
 };
 

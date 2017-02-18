@@ -42,7 +42,7 @@ class QgsPgNewConnection : public QDialog, private Ui::QgsPgNewConnectionBase
     void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#postgis-layers" ) ); }
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
-    QgsAuthConfigSelect * mAuthConfigSelect;
+    QgsAuthConfigSelect * mAuthConfigSelect = nullptr;
 };
 
 #endif //  QGSPGNEWCONNECTIONBASE_H

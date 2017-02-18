@@ -270,7 +270,7 @@ class topolTest: public QObject
     QList<FeatureLayer> mFeatureList1;
     QMap<QgsFeatureId, FeatureLayer> mFeatureMap2;
 
-    QgisInterface* theQgsInterface;
+    QgisInterface* theQgsInterface = nullptr;
     bool mTestCanceled;
 
     /**

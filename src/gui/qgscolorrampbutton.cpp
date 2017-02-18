@@ -357,7 +357,7 @@ void QgsColorRampButton::createColorRamp()
   if ( !ok || rampType.isEmpty() )
     return;
 
-  QgsColorRamp*  ramp;
+  QgsColorRamp*  ramp = nullptr;
   if ( rampType == tr( "Gradient" ) )
   {
     ramp = new QgsGradientColorRamp();

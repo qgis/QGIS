@@ -67,10 +67,10 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
     bool labelIsRotatable( QgsVectorLayer *layer, const QgsPalLayerSettings& settings, int& rotationCol ) const;
 
   protected:
-    QgsRubberBand* mLabelRubberBand;
-    QgsRubberBand* mFeatureRubberBand;
+    QgsRubberBand* mLabelRubberBand = nullptr;
+    QgsRubberBand* mFeatureRubberBand = nullptr;
     //! Shows label fixpoint (left/bottom by default)
-    QgsRubberBand* mFixPointRubberBand;
+    QgsRubberBand* mFixPointRubberBand = nullptr;
 
     struct LabelDetails
     {
@@ -78,7 +78,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
       explicit LabelDetails( const QgsLabelPosition& p );
       bool valid;
       QgsLabelPosition pos;
-      QgsVectorLayer* layer;
+      QgsVectorLayer* layer = nullptr;
       QgsPalLayerSettings settings;
     };
 

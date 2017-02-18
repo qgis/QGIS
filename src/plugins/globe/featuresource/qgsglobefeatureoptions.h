@@ -32,7 +32,7 @@ class QgsGlobeFeatureOptions : public osgEarth::Features::FeatureSourceOptions /
         T* ptr() { return mPtr; }
 
       private:
-        T* mPtr;
+        T* mPtr = nullptr;
     };
 
   public:
@@ -74,7 +74,7 @@ class QgsGlobeFeatureOptions : public osgEarth::Features::FeatureSourceOptions /
     }
 
     osgEarth::optional<std::string> mLayerId;
-    QgsVectorLayer*       mLayer;
+    QgsVectorLayer*       mLayer = nullptr;
 };
 
 #endif // QGSGLOBEFEATUREOPTIONS_H

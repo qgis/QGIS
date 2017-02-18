@@ -71,7 +71,7 @@ class GUI_EXPORT QgsVectorLayerSelectionManager : public QgsIFeatureSelectionMan
     virtual const QgsFeatureIds& selectedFeatureIds() const override;
 
   private:
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
 };
 
 #endif // QGSVECTORLAYERSELECTIONMANAGER_H

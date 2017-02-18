@@ -116,7 +116,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool 
   if ( request.filterType() == QgsFeatureRequest::FilterExpression
        && QSettings().value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() )
   {
-    QgsSqlExpressionCompiler* compiler;
+    QgsSqlExpressionCompiler* compiler = nullptr;
     if ( source->mDriverName == QLatin1String( "SQLite" ) || source->mDriverName == QLatin1String( "GPKG" ) )
     {
       compiler = new QgsSQLiteExpressionCompiler( source->mFields );

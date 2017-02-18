@@ -73,13 +73,13 @@ class QgsBrowser : public QMainWindow, private Ui::QgsBrowserBase
 
     bool mDirtyMetadata, mDirtyPreview, mDirtyAttributes;
 
-    QgsBrowserModel* mModel;
-    QgsMapLayer *mLayer;
+    QgsBrowserModel* mModel = nullptr;
+    QgsMapLayer *mLayer = nullptr;
     QModelIndex mIndex;
-    QWidget *mParamWidget;
+    QWidget *mParamWidget = nullptr;
     // last (selected) tab for each
     QMap<QString, int> mLastTab;
-    QgsAttributeTableFilterModel* mAttributeTableFilterModel;
+    QgsAttributeTableFilterModel* mAttributeTableFilterModel = nullptr;
 
   private:
 

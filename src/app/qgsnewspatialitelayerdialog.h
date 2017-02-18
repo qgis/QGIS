@@ -64,7 +64,7 @@ class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNew
     static QString quotedIdentifier( QString id );
     static QString quotedValue( QString value );
 
-    QPushButton *mOkButton;
+    QPushButton *mOkButton = nullptr;
     QString mCrsId;
 };
 

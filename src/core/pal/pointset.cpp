@@ -299,12 +299,12 @@ void PointSet::splitPolygons( QLinkedList<PointSet*> &shapes_toProcess,
   int i, j;
 
   int nbp;
-  double *x;
-  double *y;
+  double *x = nullptr;
+  double *y = nullptr;
 
-  int *pts;
+  int *pts = nullptr;
 
-  int *cHull;
+  int *cHull = nullptr;
   int cHullSize;
 
   double cp;
@@ -331,7 +331,7 @@ void PointSet::splitPolygons( QLinkedList<PointSet*> &shapes_toProcess,
 
   double labelArea = xrm * yrm;
 
-  PointSet *shape;
+  PointSet *shape = nullptr;
 
   while ( !shapes_toProcess.isEmpty() )
   {

@@ -72,7 +72,7 @@ class HistogramItem: public QwtPlotItem
     void init();
 
     class PrivateData;
-    PrivateData *d_data;
+    PrivateData *d_data = nullptr;
 };
 
 #include <qstring.h>

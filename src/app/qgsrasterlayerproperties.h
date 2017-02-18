@@ -148,7 +148,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     bool mRGBMinimumMaximumEstimated;
 
     //! \brief Pointer to the raster layer that this property dilog changes the behavior of.
-    QgsRasterLayer * mRasterLayer;
+    QgsRasterLayer * mRasterLayer = nullptr;
 
     /** \brief If the underlying raster layer doesn't have a provider
 
@@ -157,7 +157,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
      */
     //bool mRasterLayerIsInternal;
 
-    QgsRasterRendererWidget* mRendererWidget;
+    QgsRasterRendererWidget* mRendererWidget = nullptr;
 
     bool rasterIsMultiBandColor();
 
@@ -184,10 +184,10 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     qreal mGradientHeight;
     qreal mGradientWidth;
 
-    QgsMapCanvas* mMapCanvas;
-    QgsMapToolEmitPoint* mPixelSelectorTool;
+    QgsMapCanvas* mMapCanvas = nullptr;
+    QgsMapToolEmitPoint* mPixelSelectorTool = nullptr;
 
-    QgsRasterHistogramWidget* mHistogramWidget;
+    QgsRasterHistogramWidget* mHistogramWidget = nullptr;
 
     QVector<bool> mTransparencyToEdited;
 

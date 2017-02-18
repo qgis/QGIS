@@ -106,16 +106,16 @@ class QgsGrassModuleOptions
 
   protected:
     //! Pointer to the QGIS interface object
-    QgisInterface *mIface;
+    QgisInterface *mIface = nullptr;
 
     //! Pointer to canvas
-    QgsMapCanvas *mCanvas;
+    QgsMapCanvas *mCanvas = nullptr;
 
     //! Pointer to GRASS Tools
-    QgsGrassTools *mTools;
+    QgsGrassTools *mTools = nullptr;
 
     //! Pointer to GRASS module
-    QgsGrassModule *mModule;
+    QgsGrassModule *mModule = nullptr;
 
     //! Parent widget
     //QWidget *mParent;
@@ -124,7 +124,7 @@ class QgsGrassModuleOptions
     QString mAppDir;
 
     //! Region mode select box
-    QComboBox * mRegionModeComboBox;
+    QComboBox * mRegionModeComboBox = nullptr;
 
     //! Direct mode
     bool mDirect;

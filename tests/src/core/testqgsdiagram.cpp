@@ -55,8 +55,8 @@ class TestQgsDiagram : public QObject
 
   private:
     bool mTestHasError;
-    QgsMapSettings *mMapSettings;
-    QgsVectorLayer *mPointsLayer;
+    QgsMapSettings *mMapSettings = nullptr;
+    QgsVectorLayer *mPointsLayer = nullptr;
     QString mTestDataDir;
     QString mReport;
 

@@ -200,20 +200,20 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     //! Docks / undocks this window
     void dockThisWindow( bool dock );
 
-    QGridLayout* mCentralLayout;
+    QGridLayout* mCentralLayout = nullptr;
 
-    QgsMessageBar* mMessageBar;
-    QMenu *mPanelMenu;
-    QMenu *mToolbarMenu;
+    QgsMessageBar* mMessageBar = nullptr;
+    QMenu *mPanelMenu = nullptr;
+    QMenu *mToolbarMenu = nullptr;
 
-    QAction *mActionHelp;
+    QAction *mActionHelp = nullptr;
 
-    QgsGCPListWidget *mGCPListWidget;
-    QLineEdit *mScaleEdit;
-    QLabel *mScaleLabel;
-    QLabel *mCoordsLabel;
-    QLabel *mTransformParamLabel;
-    QLabel *mEPSG;
+    QgsGCPListWidget *mGCPListWidget = nullptr;
+    QLineEdit *mScaleEdit = nullptr;
+    QLabel *mScaleLabel = nullptr;
+    QLabel *mCoordsLabel = nullptr;
+    QLabel *mTransformParamLabel = nullptr;
+    QLabel *mEPSG = nullptr;
     unsigned int mMousePrecisionDecimalPlaces;
 
     QString mRasterFileName;
@@ -231,24 +231,24 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     QgsGeorefTransform mGeorefTransform;
     QString mCompressionMethod;
 
-    QgisInterface *mIface;
+    QgisInterface *mIface = nullptr;
 
     QgsGCPList mPoints;
     QgsGCPList mInitialPoints;
-    QgsMapCanvas *mCanvas;
-    QgsRasterLayer *mLayer;
+    QgsMapCanvas *mCanvas = nullptr;
+    QgsRasterLayer *mLayer = nullptr;
     bool mAgainAddRaster;
 
-    QgsMapTool *mToolZoomIn;
-    QgsMapTool *mToolZoomOut;
-    QgsMapTool *mToolPan;
-    QgsMapTool *mToolAddPoint;
-    QgsMapTool *mToolDeletePoint;
-    QgsMapTool *mToolMovePoint;
-    QgsMapTool *mToolMovePointQgis;
+    QgsMapTool *mToolZoomIn = nullptr;
+    QgsMapTool *mToolZoomOut = nullptr;
+    QgsMapTool *mToolPan = nullptr;
+    QgsMapTool *mToolAddPoint = nullptr;
+    QgsMapTool *mToolDeletePoint = nullptr;
+    QgsMapTool *mToolMovePoint = nullptr;
+    QgsMapTool *mToolMovePointQgis = nullptr;
 
-    QgsGeorefDataPoint *mMovingPoint;
-    QgsGeorefDataPoint *mMovingPointQgis;
+    QgsGeorefDataPoint *mMovingPoint = nullptr;
+    QgsGeorefDataPoint *mMovingPointQgis = nullptr;
     QPointer<QgsMapCoordsDialog> mMapCoordsDialog;
 
     bool mUseZeroForTrans;
@@ -256,7 +256,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     bool mGCPsDirty;
     bool mLoadInQgis;
 
-    QgsDockWidget* mDock;
+    QgsDockWidget* mDock = nullptr;
     int messageTimeout();
 };
 

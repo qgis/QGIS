@@ -133,9 +133,9 @@ class GUI_EXPORT QgsAttributeEditorContext
     inline const QgsAttributeEditorContext* parentContext() const { return mParentContext; }
 
   private:
-    const QgsAttributeEditorContext* mParentContext;
-    QgsVectorLayer* mLayer;
-    QgsVectorLayerTools* mVectorLayerTools;
+    const QgsAttributeEditorContext* mParentContext = nullptr;
+    QgsVectorLayer* mLayer = nullptr;
+    QgsVectorLayerTools* mVectorLayerTools = nullptr;
     QgsDistanceArea mDistanceArea;
     QgsRelation mRelation;
     RelationMode mRelationMode;

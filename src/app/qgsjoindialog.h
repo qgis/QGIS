@@ -47,7 +47,7 @@ class APP_EXPORT QgsJoinDialog: public QDialog, private Ui::QgsJoinDialogBase
 
   private:
     //! Target layer
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
 };
 
 

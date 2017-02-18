@@ -277,7 +277,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
   protected:
     //! Pointer to the root node of the layer tree. Not owned by the model
-    QgsLayerTreeGroup* mRootNode;
+    QgsLayerTreeGroup* mRootNode = nullptr;
     //! Set of flags for the model
     Flags mFlags;
     //! Current index - will be underlined
@@ -315,12 +315,12 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
       //! A legend node that is not displayed separately, its icon is instead
       //! shown within the layer node's item.
       //! May be null. if non-null, node is owned by originalNodes !
-      QgsLayerTreeModelLegendNode* embeddedNodeInParent;
+      QgsLayerTreeModelLegendNode* embeddedNodeInParent = nullptr;
       //! Data structure for storage of legend nodes.
       //! These are nodes as received from QgsMapLayerLegend
       QList<QgsLayerTreeModelLegendNode*> originalNodes;
       //! Optional pointer to a tree structure - see LayerLegendTree for details
-      LayerLegendTree* tree;
+      LayerLegendTree* tree = nullptr;
     };
 
     //! @note not available in Python bindings

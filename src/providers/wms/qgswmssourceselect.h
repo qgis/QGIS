@@ -171,9 +171,9 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     QString mLastLayerName;
 
     //! The widget that controls the image format radio buttons
-    QButtonGroup *mImageFormatGroup;
+    QButtonGroup *mImageFormatGroup = nullptr;
 
-    QPushButton *mAddButton;
+    QPushButton *mAddButton = nullptr;
 
     QMap<QString, QString> mCrsNames;
 
@@ -188,7 +188,7 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     QString selectedImageEncoding();
 
     QList<QTreeWidgetItem*> mCurrentSelection;
-    QTableWidgetItem* mCurrentTileset;
+    QTableWidgetItem* mCurrentTileset = nullptr;
 
     QList<QgsWmtsTileLayer> mTileLayers;
 

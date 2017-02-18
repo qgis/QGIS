@@ -52,8 +52,8 @@ class GUI_EXPORT QgsUniqueValuesWidgetWrapper : public QgsEditorWidgetWrapper
     void setValue( const QVariant& value ) override;
 
   private:
-    QComboBox* mComboBox;
-    QLineEdit* mLineEdit;
+    QComboBox* mComboBox = nullptr;
+    QLineEdit* mLineEdit = nullptr;
 };
 
 #endif // QGSUNIQUEVALUEWIDGETWRAPPER_H

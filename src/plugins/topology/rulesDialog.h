@@ -59,7 +59,7 @@ class rulesDialog : public QDialog, private Ui::rulesDialog
   private:
     QMap<QString, TopologyRule> mTestConfMap;
     QList<QString> mLayerIds;
-    QgisInterface* mQgisIface;
+    QgisInterface* mQgisIface = nullptr;
 
     /*
      * Reads a test from the project

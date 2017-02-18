@@ -54,9 +54,9 @@ class GUI_EXPORT QgsSingleSymbolRendererWidget : public QgsRendererWidget
 
   protected:
 
-    QgsSingleSymbolRenderer* mRenderer;
-    QgsSymbolSelectorWidget* mSelector;
-    QgsSymbol* mSingleSymbol;
+    QgsSingleSymbolRenderer* mRenderer = nullptr;
+    QgsSymbolSelectorWidget* mSelector = nullptr;
+    QgsSymbol* mSingleSymbol = nullptr;
 };
 
 

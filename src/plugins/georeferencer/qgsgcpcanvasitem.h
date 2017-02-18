@@ -41,7 +41,7 @@ class QgsGCPCanvasItem : public QgsMapCanvasItem
 
   private:
 
-    const QgsGeorefDataPoint* mDataPoint;
+    const QgsGeorefDataPoint* mDataPoint = nullptr;
     QSizeF mTextBounds;
     QBrush mPointBrush;
     QBrush mLabelBrush;

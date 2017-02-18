@@ -49,7 +49,7 @@ class APP_EXPORT QgsMapToolSelectRadius : public QgsMapTool
     void setRadiusRubberBand( QgsPoint & radiusEdge );
 
     //! used for storing all of the maps point for the polygon
-    QgsRubberBand* mRubberBand;
+    QgsRubberBand* mRubberBand = nullptr;
 
     //! Center point for the radius
     QgsPoint mRadiusCenter;

@@ -72,11 +72,11 @@ class QgsServerInterfaceImpl : public QgsServerInterface
 
     QString mConfigFilePath;
     QgsServerFiltersMap mFilters;
-    QgsAccessControl* mAccessControls;
-    QgsCapabilitiesCache* mCapabilitiesCache;
-    QgsRequestHandler* mRequestHandler;
-    QgsServiceRegistry* mServiceRegistry;
-    QgsServerSettings* mServerSettings;
+    QgsAccessControl* mAccessControls = nullptr;
+    QgsCapabilitiesCache* mCapabilitiesCache = nullptr;
+    QgsRequestHandler* mRequestHandler = nullptr;
+    QgsServiceRegistry* mServiceRegistry = nullptr;
+    QgsServerSettings* mServerSettings = nullptr;
 };
 
 #endif // QGSSERVERINTERFACEIMPL_H

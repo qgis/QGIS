@@ -103,7 +103,7 @@ class TestQgsGrassCommand
     QgsFeature expectedFeature; // simple feature for verification
     QgsFeatureId fid;
     QgsField field;
-    QgsGeometry *geometry;
+    QgsGeometry *geometry = nullptr;
     QVariant value;
 
     QMap<QString, QVariant> values;
@@ -915,8 +915,8 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   TestQgsGrassCommandGroup commandGroup;
   TestQgsGrassCommand command;
   TestQgsGrassFeature grassFeature;
-  QgsLineString * line;
-  QgsGeometry *geometry;
+  QgsLineString * line = nullptr;
+  QgsGeometry *geometry = nullptr;
   QList<QgsPointV2> pointList;
 
   // Start editing

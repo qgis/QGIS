@@ -60,8 +60,8 @@ class TestQgsRasterCalculator : public QObject
 
   private:
 
-    QgsRasterLayer * mpLandsatRasterLayer;
-    QgsRasterLayer * mpLandsatRasterLayer4326;
+    QgsRasterLayer * mpLandsatRasterLayer = nullptr;
+    QgsRasterLayer * mpLandsatRasterLayer4326 = nullptr;
 };
 
 void  TestQgsRasterCalculator::initTestCase()

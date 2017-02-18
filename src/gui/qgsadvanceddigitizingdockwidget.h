@@ -186,10 +186,10 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
         void toggleRelative();
 
       private:
-        QLineEdit* mLineEdit;
-        QToolButton* mLockerButton;
-        QToolButton* mRelativeButton;
-        QToolButton* mRepeatingLockButton;
+        QLineEdit* mLineEdit = nullptr;
+        QToolButton* mLockerButton = nullptr;
+        QToolButton* mRelativeButton = nullptr;
+        QToolButton* mRepeatingLockButton = nullptr;
         LockMode mLockMode;
         bool mRepeatingLock;
         bool mRelative;
@@ -441,8 +441,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      */
     void updateConstraintValue( CadConstraint* constraint, const QString& textValue, bool convertExpression = false );
 
-    QgsMapCanvas* mMapCanvas;
-    QgsAdvancedDigitizingCanvasItem* mCadPaintItem;
+    QgsMapCanvas* mMapCanvas = nullptr;
+    QgsAdvancedDigitizingCanvasItem* mCadPaintItem = nullptr;
 
     CadCapacities mCapacities;
 
@@ -473,7 +473,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     std::unique_ptr<QgsMessageBarItem> mErrorMessage;
 
     // UI
-    QAction* mEnableAction;
+    QAction* mEnableAction = nullptr;
     QMap< QAction*, int > mCommonAngleActions; // map the common angle actions with their angle values
     QMap< QAction*, QgsMapMouseEvent::SnappingMode > mSnappingActions; // map the snapping mode actions with their values
 

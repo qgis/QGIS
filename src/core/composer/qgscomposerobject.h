@@ -210,7 +210,7 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
 
   protected:
 
-    QgsComposition* mComposition;
+    QgsComposition* mComposition = nullptr;
 
     //! Custom properties for object
     QgsObjectCustomProperties mCustomProperties;

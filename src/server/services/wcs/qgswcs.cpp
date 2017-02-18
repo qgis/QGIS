@@ -88,7 +88,7 @@ namespace QgsWcs
       }
 
     private:
-      QgsServerInterface* mServerIface;
+      QgsServerInterface* mServerIface = nullptr;
   };
 
 

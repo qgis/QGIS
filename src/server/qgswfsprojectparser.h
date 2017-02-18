@@ -53,8 +53,8 @@ class SERVER_EXPORT QgsWfsProjectParser
     QSet<QString> wfstDeleteLayers() const;
 
   private:
-    QgsServerProjectParser* mProjectParser;
-    const QgsAccessControl* mAccessControl;
+    QgsServerProjectParser* mProjectParser = nullptr;
+    const QgsAccessControl* mAccessControl = nullptr;
 
 };
 

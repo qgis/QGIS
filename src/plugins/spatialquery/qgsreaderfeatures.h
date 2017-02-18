@@ -52,7 +52,7 @@ class QgsReaderFeatures
      */
     void initReader( bool useSelection );
 
-    QgsVectorLayer * mLayer;
+    QgsVectorLayer * mLayer = nullptr;
     QgsFeatureIterator mFit;
 };
 

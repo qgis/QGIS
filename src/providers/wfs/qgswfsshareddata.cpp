@@ -354,7 +354,7 @@ bool QgsWFSSharedData::createCache()
     }
   }
 
-  sqlite3 *db;
+  sqlite3 *db = nullptr;
   bool ret = true;
   int rc = QgsSLConnect::sqlite3_open( mCacheDbname.toUtf8(), &db );
   if ( rc == SQLITE_OK )

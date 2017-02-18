@@ -394,7 +394,7 @@ class CORE_EXPORT QgsVectorFileWriter
         bool includeZ;
 
         //! Field value converter
-        FieldValueConverter* fieldValueConverter;
+        FieldValueConverter* fieldValueConverter = nullptr;
 
         //! Optional feedback object allowing cancelation of layer save
         QgsFeedback* feedback = nullptr;
@@ -537,7 +537,7 @@ class CORE_EXPORT QgsVectorFileWriter
     WriterError mError;
     QString mErrorMessage;
 
-    QTextCodec *mCodec;
+    QTextCodec *mCodec = nullptr;
 
     //! Geometry type which is being used
     QgsWkbTypes::Type mWkbType;
@@ -555,7 +555,7 @@ class CORE_EXPORT QgsVectorFileWriter
     QString mOgrDriverName;
 
     //! Field value converter
-    FieldValueConverter* mFieldValueConverter;
+    FieldValueConverter* mFieldValueConverter = nullptr;
 
   private:
 

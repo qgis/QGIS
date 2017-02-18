@@ -59,7 +59,7 @@ class QgsPostgresFeatureSource : public QgsAbstractFeatureSource
      * connection remains valid during the life time of the feature source
      * even if the QgsPostgresTransaction object which initially created the
      * connection has since been destroyed. */
-    QgsPostgresConn* mTransactionConnection;
+    QgsPostgresConn* mTransactionConnection = nullptr;
 
     friend class QgsPostgresFeatureIterator;
     friend class QgsPostgresExpressionCompiler;
@@ -83,7 +83,7 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Q
     bool nextFeatureFilterExpression( QgsFeature& f ) override;
     virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod ) override;
 
-    QgsPostgresConn* mConn;
+    QgsPostgresConn* mConn = nullptr;
 
 
     QString whereClauseRect();

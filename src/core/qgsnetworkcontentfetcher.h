@@ -67,7 +67,7 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
 
   private:
 
-    QNetworkReply* mReply;
+    QNetworkReply* mReply = nullptr;
 
     bool mContentLoaded;
 

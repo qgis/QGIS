@@ -49,7 +49,7 @@ class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererWidget, private Ui
     virtual void setContext( const QgsSymbolWidgetContext& context ) override;
 
   private:
-    QgsHeatmapRenderer* mRenderer;
+    QgsHeatmapRenderer* mRenderer = nullptr;
 
     QgsExpressionContext createExpressionContext() const override;
 

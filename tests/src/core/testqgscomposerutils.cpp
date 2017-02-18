@@ -67,7 +67,7 @@ class TestQgsComposerUtils : public QObject
 
   private:
     bool renderCheck( const QString& testName, QImage &image, int mismatchCount = 0 );
-    QgsComposition* mComposition;
+    QgsComposition* mComposition = nullptr;
     QString mReport;
     QFont mTestFont;
 

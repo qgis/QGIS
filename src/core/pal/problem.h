@@ -49,7 +49,7 @@ namespace pal
   class Sol
   {
     public:
-      int *s;
+      int *s = nullptr;
       double cost;
   };
 
@@ -74,12 +74,12 @@ namespace pal
     /**
      * wrap bw sub feat and main feat
      */
-    int *sub;
+    int *sub = nullptr;
 
     /**
      * sub solution
      */
-    int *sol;
+    int *sol = nullptr;
 
     /**
      * first feat in sub part
@@ -91,8 +91,8 @@ namespace pal
   {
     int degree;
     double delta;
-    int *feat;
-    int *label;
+    int *feat = nullptr;
+    int *label = nullptr;
   } Chain;
 
   /**
@@ -220,8 +220,8 @@ namespace pal
        */
       double bbox[4];
 
-      double *labelPositionCost;
-      int *nbOlap;
+      double *labelPositionCost = nullptr;
+      int *nbOlap = nullptr;
 
       QList< LabelPosition* > mLabelPositions;
 
@@ -239,13 +239,13 @@ namespace pal
 
       double nbOverlap;
 
-      int *featWrap;
+      int *featWrap = nullptr;
 
       Chain *chain( SubPart *part, int seed );
 
       Chain *chain( int seed );
 
-      Pal *pal;
+      Pal *pal = nullptr;
 
       void solution_cost();
       void check_solution();

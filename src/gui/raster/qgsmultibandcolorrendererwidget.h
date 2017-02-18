@@ -73,7 +73,7 @@ class GUI_EXPORT QgsMultiBandColorRendererWidget: public QgsRasterRendererWidget
                                 int blueBand );
     //! Reads min/max values from contrast enhancement and fills values into the min/max line edits
     void setMinMaxValue( const QgsContrastEnhancement* ce, QLineEdit* minEdit, QLineEdit* maxEdit );
-    QgsRasterMinMaxWidget * mMinMaxWidget;
+    QgsRasterMinMaxWidget * mMinMaxWidget = nullptr;
     bool mDisableMinMaxWidgetRefresh;
 
     void minMaxModified();

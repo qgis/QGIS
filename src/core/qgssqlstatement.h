@@ -297,7 +297,7 @@ class CORE_EXPORT QgsSQLStatement
 
       protected:
         UnaryOperator mOp;
-        Node* mOperand;
+        Node* mOperand = nullptr;
     };
 
     /** \ingroup core
@@ -333,8 +333,8 @@ class CORE_EXPORT QgsSQLStatement
       protected:
 
         BinaryOperator mOp;
-        Node* mOpLeft;
-        Node* mOpRight;
+        Node* mOpLeft = nullptr;
+        Node* mOpRight = nullptr;
     };
 
     /** \ingroup core
@@ -362,8 +362,8 @@ class CORE_EXPORT QgsSQLStatement
         virtual Node* clone() const override;
 
       protected:
-        Node* mNode;
-        NodeList* mList;
+        Node* mNode = nullptr;
+        NodeList* mList = nullptr;
         bool mNotIn;
     };
 
@@ -395,9 +395,9 @@ class CORE_EXPORT QgsSQLStatement
         virtual Node* clone() const override;
 
       protected:
-        Node* mNode;
-        Node* mMinVal;
-        Node* mMaxVal;
+        Node* mNode = nullptr;
+        Node* mMinVal = nullptr;
+        Node* mMaxVal = nullptr;
         bool mNotBetween;
     };
 
@@ -424,7 +424,7 @@ class CORE_EXPORT QgsSQLStatement
 
       protected:
         QString mName;
-        NodeList* mArgs;
+        NodeList* mArgs = nullptr;
 
     };
 
@@ -516,7 +516,7 @@ class CORE_EXPORT QgsSQLStatement
         NodeSelectedColumn* cloneThis() const;
 
       protected:
-        Node *mColumnNode;
+        Node *mColumnNode = nullptr;
         QString mAlias;
     };
 
@@ -542,7 +542,7 @@ class CORE_EXPORT QgsSQLStatement
         virtual Node* clone() const override;
 
       protected:
-        Node *mNode;
+        Node *mNode = nullptr;
         QString mType;
     };
 
@@ -607,8 +607,8 @@ class CORE_EXPORT QgsSQLStatement
         NodeJoin* cloneThis() const;
 
       protected:
-        NodeTableDef* mTableDef;
-        Node* mOnExpr;
+        NodeTableDef* mTableDef = nullptr;
+        Node* mOnExpr = nullptr;
         QList<QString> mUsingColumns;
         JoinType mType;
     };
@@ -637,7 +637,7 @@ class CORE_EXPORT QgsSQLStatement
         NodeColumnSorted* cloneThis() const;
 
       protected:
-        NodeColumnRef* mColumn;
+        NodeColumnRef* mColumn = nullptr;
         bool mAsc;
     };
 
@@ -683,7 +683,7 @@ class CORE_EXPORT QgsSQLStatement
         QList<NodeSelectedColumn*> mColumns;
         bool mDistinct;
         QList<NodeJoin*> mJoins;
-        Node* mWhere;
+        Node* mWhere = nullptr;
         QList<NodeColumnSorted*> mOrderBy;
     };
 
@@ -751,7 +751,7 @@ class CORE_EXPORT QgsSQLStatement
     void acceptVisitor( Visitor& v ) const;
 
   protected:
-    QgsSQLStatement::Node* mRootNode;
+    QgsSQLStatement::Node* mRootNode = nullptr;
     QString mStatement;
     QString mParserErrorString;
 };
