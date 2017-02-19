@@ -31,6 +31,9 @@
 
 #include "qgseditorwidgetregistry.h"
 
+#ifdef Q_OS_WIN
+__declspec( dllexport )
+#endif
 int main( int argc, char ** argv )
 {
   QSettings settings;

@@ -360,6 +360,8 @@ copy qgis.vars %OSGEO4W_ROOT%\bin\%PACKAGENAME%-bin.vars
 if errorlevel 1 (echo copy of desktop executable vars failed & goto error)
 move %PKGDIR%\bin\qbrowser.exe %OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser-bin.exe
 if errorlevel 1 (echo move of browser executable failed & goto error)
+copy qgis.vars %OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser-bin.vars
+if errorlevel 1 (echo copy of browser executable vars failed & goto error)
 
 if not exist %PKGDIR%\qtplugins\sqldrivers mkdir %PKGDIR%\qtplugins\sqldrivers
 move %OSGEO4W_ROOT%\apps\qt5\plugins\sqldrivers\qsqlocispatial.dll %PKGDIR%\qtplugins\sqldrivers
@@ -383,9 +385,12 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	--exclude "apps/%PACKAGENAME%/python/qgis/_server.lib" ^
 	--exclude "apps/%PACKAGENAME%/python/qgis/server" ^
 	"bin/%PACKAGENAME%-browser-bin.exe" ^
+	"bin/%PACKAGENAME%-browser-bin.vars" ^
 	"bin/%PACKAGENAME%-bin.exe" ^
+	"bin/%PACKAGENAME%-bin.vars" ^
 	"bin/python-%PACKAGENAME%.bat.tmpl" ^
 	"apps/%PACKAGENAME%/bin/qgis_app.dll" ^
+	"apps/%PACKAGENAME%/bin/qgis_browser.dll" ^
 	"apps/%PACKAGENAME%/bin/qgis.reg.tmpl" ^
 	"apps/%PACKAGENAME%/i18n/" ^
 	"apps/%PACKAGENAME%/icons/" ^

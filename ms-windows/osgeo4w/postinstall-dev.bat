@@ -7,20 +7,21 @@ if not %OSGEO4W_MENU_LINKS%==0 mkdir "%OSGEO4W_STARTMENU%"
 if not %OSGEO4W_DESKTOP_LINKS%==0 mkdir "%OSGEO4W_DESKTOP%"
 
 for %%g in (@grassversions@) do (
-	textreplace -std -t bin\@package@-g%%g.bat
-
-	REM copy executable so we have one (now small) executable for each environment
-	REM and call it to produce .env from .vars
 	copy "%OSGEO4W_ROOT%\bin\@package@-bin.exe" "%OSGEO4W_ROOT%\bin\@package@-bin-g%%g.exe"
 	copy "%OSGEO4W_ROOT%\bin\@package@-bin.vars" "%OSGEO4W_ROOT%\bin\@package@-bin-g%%g.vars"
+	textreplace -std -t bin\@package@-g%%g.bat
 	"%OSGEO4W_ROOT%\bin\@package@-g%%g.bat" --exit
 
 	if not %OSGEO4W_MENU_LINKS%==0 nircmd shortcut "%OSGEO4W_ROOT%\bin\@package@-bin-g%%g.exe" "%OSGEO4W_STARTMENU%" "QGIS Desktop @version@ with GRASS %%g (Nightly)"
 	if not %OSGEO4W_DESKTOP_LINKS%==0 nircmd shortcut "%OSGEO4W_ROOT%\bin\@package@-bin-g%%g.exe" "%OSGEO4W_DESKTOP%" "QGIS Desktop @version@ with GRASS %%g (Nightly)"
 
+	copy "%OSGEO4W_ROOT%\bin\@package@-browser-bin.exe" "%OSGEO4W_ROOT%\bin\@package@-browser-bin-g%%g.exe"
+	copy "%OSGEO4W_ROOT%\bin\@package@-bin.vars" "%OSGEO4W_ROOT%\bin\@package@-browser-bin-g%%g.vars"
 	textreplace -std -t bin\@package@-browser-g%%g.bat
-	if not %OSGEO4W_MENU_LINKS%==0 nircmd shortcut "%OSGEO4W_ROOT%\bin\nircmd.exe" "%OSGEO4W_STARTMENU%" "QGIS Browser @version@ with GRASS %%g (Nightly)" "exec hide """%OSGEO4W_ROOT%\bin\@package@-browser-g%%g.bat"" "%OSGEO4W_ROOT%\apps\@package@\icons\browser.ico"
-	if not %OSGEO4W_DESKTOP_LINKS%==0 nircmd shortcut "%OSGEO4W_ROOT%\bin\nircmd.exe" "%OSGEO4W_DESKTOP%" "QGIS Browser @version@ with GRASS %%g (Nightly)" "exec hide """%OSGEO4W_ROOT%\bin\@package@-browser-g%%g.bat"" "%OSGEO4W_ROOT%\apps\@package@\icons\browser.ico"
+	"%OSGEO4W_ROOT%\bin\@package@-browser-g%%g.bat" --exit
+
+	if not %OSGEO4W_MENU_LINKS%==0 nircmd shortcut "%OSGEO4W_ROOT%\bin\@package@-browser-bin-g%%g.exe" "%OSGEO4W_STARTMENU%" "QGIS Browser @version@ with GRASS %%g (Nightly)"
+	if not %OSGEO4W_DESKTOP_LINKS%==0 nircmd shortcut "%OSGEO4W_ROOT%\bin\@package@-browser-bin-g%%g.exe" "%OSGEO4W_DESKTOP%" "QGIS Browser @version@ with GRASS %%g (Nightly)"
 )
 
 if not %OSGEO4W_MENU_LINKS%==0 nircmd shortcut "%OSGEO4W_ROOT%\bin\nircmd.exe" "%OSGEO4W_STARTMENU%" "Qt Designer with QGIS @version@ custom widgets (Nightly)" "exec hide """%OSGEO4W_ROOT%\bin\@package@-designer.bat"" "%OSGEO4W_ROOT%\apps\@package@\icons\QGIS.ico"

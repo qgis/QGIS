@@ -104,10 +104,10 @@ int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     }
   }
 
-  HINSTANCE hGetProcIDDLL = LoadLibrary( "qgis_app.dll" );
+  HINSTANCE hGetProcIDDLL = LoadLibrary( MAINWIN_DLL );
   if ( !hGetProcIDDLL )
   {
-    std::cerr << "Could not load the qgis_app.dll" << std::endl;
+    std::cerr << "Could not load the " MAINWIN_DLL << std::endl;
     return EXIT_FAILURE;
   }
 
