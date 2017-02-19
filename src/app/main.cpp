@@ -809,6 +809,7 @@ int main( int argc, char *argv[] )
 
   myApp.setWindowIcon( QIcon( QgsApplication::appIconPath() ) );
 
+
   //
   // Set up the QSettings environment must be done after qapp is created
   QCoreApplication::setOrganizationName( QgsApplication::QGIS_ORGANIZATION_NAME );
