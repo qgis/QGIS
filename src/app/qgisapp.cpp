@@ -74,10 +74,16 @@
 #include <qgsapplication.h>
 #include <qgscomposition.h>
 #include <qgslayerstylingwidget.h>
+#include "qgstaskmanager.h"
 
 #include <QNetworkReply>
 #include <QNetworkProxy>
 #include <QAuthenticator>
+
+#ifdef Q_OS_WIN
+#include <QWinTaskbarButton>
+#include <QWinTaskbarProgress>
+#endif
 
 //
 // Mac OS X Includes
@@ -1098,6 +1104,20 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     //add reacting to long click in touch
     grabGesture( Qt::TapAndHoldGesture );
   }
+
+
+#ifdef Q_OS_WIN
+  QWinTaskbarButton* taskButton = new QWinTaskbarButton( this );
+  taskButton->setWindow( windowHandle() );
+
+  QWinTaskbarProgress* taskProgress = taskButton->progress();
+  taskProgress->setVisible( false );
+  connect( QgsApplication::taskManager(), &QgsTaskManager::taskAdded, taskProgress, [taskProgress] { taskProgress->setMaximum( 0 ); taskProgress->show(); }
+         );
+  connect( QgsApplication::taskManager(), &QgsTaskManager::finalTaskProgressChanged, taskProgress, [taskProgress]( double val ) { taskProgress->setMaximum( 100 );taskProgress->show(); taskProgress->setValue( val ); }
+         );
+  connect( QgsApplication::taskManager(), &QgsTaskManager::allTasksFinished, taskProgress, &QWinTaskbarProgress::hide );
+#endif
 
   // supposedly all actions have been added, now register them to the shortcut manager
   QgsShortcutsManager::instance()->registerAllChildren( this );
