@@ -64,9 +64,17 @@ def findSagaFolder():
             if os.path.exists(os.path.join(testfolder, 'saga_cmd')):
                 folder = testfolder
     elif isWindows():
-        testfolder = os.path.join(os.path.dirname(QgsApplication.prefixPath()), 'saga')
-        if os.path.exists(os.path.join(testfolder, 'saga_cmd.exe')):
-            folder = testfolder
+        folders = []
+        folders.append(os.path.join(os.path.dirname(QgsApplication.prefixPath()), 'saga'))
+        if "OSGEO4W_ROOT" in os.environ:
+            folders.append(os.path.join(str(os.environ['OSGEO4W_ROOT']), "apps", "saga-ltr"))
+            folders.append(os.path.join(str(os.environ['OSGEO4W_ROOT']), "apps", "saga"))
+
+        for testfolder in folders:
+            if os.path.exists(os.path.join(testfolder, 'saga_cmd.exe')):
+                folder = testfolder
+                break
+
     return folder
 
 
@@ -164,8 +172,8 @@ def executeSaga(progress):
     if isWindows():
         command = ['cmd.exe', '/C ', sagaBatchJobFilename()]
     else:
-        os.chmod(sagaBatchJobFilename(), stat.S_IEXEC
-                 | stat.S_IREAD | stat.S_IWRITE)
+        os.chmod(sagaBatchJobFilename(), stat.S_IEXEC |
+                 stat.S_IREAD | stat.S_IWRITE)
         command = [sagaBatchJobFilename()]
     loglines = []
     loglines.append(QCoreApplication.translate('SagaUtils', 'SAGA execution console output'))
