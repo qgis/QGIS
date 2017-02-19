@@ -85,6 +85,13 @@
 #include <QWinTaskbarProgress>
 #endif
 
+#ifdef Q_OS_WIN
+#include <QtWinExtras/QWinJumpList>
+#include <QtWinExtras/QWinJumpListItem>
+#include <QtWinExtras/QWinJumpListCategory>
+#endif
+
+
 //
 // Mac OS X Includes
 // Must include before GEOS 3 due to unqualified use of 'Point'
@@ -3327,6 +3334,21 @@ void QgisApp::updateRecentProjectPaths()
 
   if ( mWelcomePage )
     mWelcomePage->setRecentProjects( mRecentProjects );
+
+#if defined(Q_OS_WIN)
+  QWinJumpList jumplist;
+  jumplist.recent()->clear();
+  Q_FOREACH ( const QgsWelcomePageItemsModel::RecentProjectData& recentProject, mRecentProjects )
+  {
+    QString name = recentProject.title != recentProject.path ? recentProject.title : QFileInfo( recentProject.path ).baseName();
+    QWinJumpListItem *newProject = new QWinJumpListItem( QWinJumpListItem::Link );
+    newProject->setTitle( name );
+    newProject->setFilePath( QDir::toNativeSeparators( QCoreApplication::applicationFilePath() ) );
+    newProject->setArguments( QStringList( recentProject.path ) );
+    jumplist.recent()->addItem( newProject );
+  }
+#endif
+
 } // QgisApp::updateRecentProjectPaths
 
 // add this file to the recently opened/saved projects list
