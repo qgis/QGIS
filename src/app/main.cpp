@@ -428,6 +428,9 @@ void myMessageOutput( QtMsgType type, const char *msg )
 // The main method symbol of this library needs to be exported so it can be called by java
 APP_EXPORT
 #endif
+#ifdef Q_OS_WIN
+extern "C" __declspec(dllexport)
+#endif
 int main( int argc, char *argv[] )
 {
 #ifdef Q_OS_MACX
