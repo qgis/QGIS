@@ -236,8 +236,8 @@ for %%g IN (%GRASS_VERSIONS%) do (
 	set path=!path!;%OSGEO4W_ROOT%\apps\grass\grass-%%g\lib
 	set GISBASE=%OSGEO4W_ROOT%\apps\grass\grass-%%g
 )
-PATH %path%;%BUILDDIR%\output\plugins\%BUILDCONF%
-set QT_PLUGIN_PATH=%OSGEO4W_ROOT%\output\plugins;%OSGEO4W_ROOT%\apps\qt5\plugins
+PATH %path%;%BUILDDIR%\output\plugins
+set QT_PLUGIN_PATH=%BUILDDIR%\output\plugins;%OSGEO4W_ROOT%\apps\qt5\plugins
 
 cmake --build %BUILDDIR% --target Nightly --config %BUILDCONF%
 if errorlevel 1 echo TESTS WERE NOT SUCCESSFUL.
