@@ -52,10 +52,12 @@ QgsVariableEditorWidget::QgsVariableEditorWidget( QWidget *parent )
   mAddButton = new QPushButton();
   mAddButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
   mAddButton->setEnabled( false );
+  mAddButton->setToolTip( tr( "Add variable" ) );
   horizontalLayout->addWidget( mAddButton );
   mRemoveButton = new QPushButton();
   mRemoveButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyRemove.svg" ) ) );
   mRemoveButton->setEnabled( false );
+  mRemoveButton->setToolTip( tr( "Remove variable" ) );
   horizontalLayout->addWidget( mRemoveButton );
   verticalLayout->addLayout( horizontalLayout );
   connect( mRemoveButton, SIGNAL( clicked() ), this, SLOT( on_mRemoveButton_clicked() ) );
