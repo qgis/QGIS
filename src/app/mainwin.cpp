@@ -9,7 +9,7 @@
 std::string moduleExeBaseName( void )
 {
   DWORD l = MAX_PATH;
-  std::auto_ptr<char> filepath;
+  std::unique_ptr<char> filepath;
   for ( ;; )
   {
     filepath.reset( new char[l] );
