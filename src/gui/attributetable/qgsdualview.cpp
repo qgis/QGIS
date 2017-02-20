@@ -63,9 +63,9 @@ QgsDualView::QgsDualView( QWidget *parent )
   mActionExpressionPreview->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpressionPreview.svg" ) ) );
 
   // Connect layer list preview signals
-  connect( mActionExpressionPreview, SIGNAL( triggered() ), SLOT( previewExpressionBuilder() ) );
-  connect( mPreviewActionMapper, SIGNAL( mapped( QObject * ) ), SLOT( previewColumnChanged( QObject * ) ) );
-  connect( mFeatureList, SIGNAL( displayExpressionChanged( QString ) ), this, SLOT( previewExpressionChanged( QString ) ) );
+  connect( mActionExpressionPreview, &QAction::triggered, this, &QgsDualView::previewExpressionBuilder );
+  connect( mPreviewActionMapper, static_cast < void ( QSignalMapper::* )( QObject * ) > ( &QSignalMapper::mapped ), this, &QgsDualView::previewColumnChanged );
+  connect( mFeatureList, &QgsFeatureListView::displayExpressionChanged, this, &QgsDualView::previewExpressionChanged );
 }
 
 void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request, const QgsAttributeEditorContext &context )
@@ -77,10 +77,10 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
 
   mEditorContext = context;
 
-  connect( mTableView, SIGNAL( willShowContextMenu( QMenu *, QModelIndex ) ), this, SLOT( viewWillShowContextMenu( QMenu *, QModelIndex ) ) );
+  connect( mTableView, &QgsAttributeTableView::willShowContextMenu, this, &QgsDualView::viewWillShowContextMenu );
   mTableView->horizontalHeader()->setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( mTableView->horizontalHeader(), SIGNAL( customContextMenuRequested( QPoint ) ), this, SLOT( showViewHeaderMenu( QPoint ) ) );
-  connect( mTableView, SIGNAL( columnResized( int, int ) ), this, SLOT( tableColumnResized( int, int ) ) );
+  connect( mTableView->horizontalHeader(), &QHeaderView::customContextMenuRequested, this, &QgsDualView::showViewHeaderMenu );
+  connect( mTableView, &QgsAttributeTableView::columnResized, this, &QgsDualView::tableColumnResized );
 
   initLayerCache( !request.filterRect().isNull() );
   initModels( mapCanvas, request );
@@ -103,11 +103,11 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
     mAttributeEditor->layout()->addWidget( mAttributeForm );
   }
 
-  connect( mAttributeForm, SIGNAL( attributeChanged( QString, QVariant ) ), this, SLOT( featureFormAttributeChanged() ) );
-  connect( mAttributeForm, SIGNAL( modeChanged( QgsAttributeForm::Mode ) ), this, SIGNAL( formModeChanged( QgsAttributeForm::Mode ) ) );
-  connect( mMasterModel, SIGNAL( modelChanged() ), mAttributeForm, SLOT( refreshFeature() ) );
-  connect( mAttributeForm, SIGNAL( filterExpressionSet( QString, QgsAttributeForm::FilterType ) ), this, SIGNAL( filterExpressionSet( QString, QgsAttributeForm::FilterType ) ) );
-  connect( mFilterModel, SIGNAL( sortColumnChanged( int, Qt::SortOrder ) ), this, SLOT( onSortColumnChanged() ) );
+  connect( mAttributeForm, &QgsAttributeForm::attributeChanged, this, &QgsDualView::featureFormAttributeChanged );
+  connect( mAttributeForm, &QgsAttributeForm::modeChanged, this, &QgsDualView::formModeChanged );
+  connect( mMasterModel, &QgsAttributeTableModel::modelChanged, mAttributeForm, &QgsAttributeForm::refreshFeature );
+  connect( mAttributeForm, &QgsAttributeForm::filterExpressionSet, this, &QgsDualView::filterExpressionSet );
+  connect( mFilterModel, &QgsAttributeTableFilterModel::sortColumnChanged, this, &QgsDualView::onSortColumnChanged );
   if ( mFeatureListPreviewButton->defaultAction() )
     mFeatureList->setDisplayExpression( mDisplayExpression );
   else
@@ -152,7 +152,8 @@ void QgsDualView::columnBoxInit()
       // Generate action for the preview popup button of the feature list
       QAction *previewAction = new QAction( icon, text, mFeatureListPreviewButton );
       mPreviewActionMapper->setMapping( previewAction, previewAction );
-      connect( previewAction, SIGNAL( triggered() ), mPreviewActionMapper, SLOT( map() ) );
+      connect( previewAction, &QAction::triggered, this, [previewAction, this]( bool ) { this->mPreviewActionMapper->map( previewAction ); }
+             );
       mPreviewColumnsMenu->addAction( previewAction );
 
       if ( text == defaultField )
@@ -175,7 +176,7 @@ void QgsDualView::columnBoxInit()
   }
 
   QAction *sortByPreviewExpression = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "sort.svg" ) ), tr( "Sort by preview expression" ), this );
-  connect( sortByPreviewExpression, SIGNAL( triggered( bool ) ), this, SLOT( sortByPreviewExpression() ) );
+  connect( sortByPreviewExpression, &QAction::triggered, this, &QgsDualView::sortByPreviewExpression );
   mFeatureListPreviewButton->addAction( sortByPreviewExpression );
 }
 
@@ -209,8 +210,8 @@ void QgsDualView::initLayerCache( bool cacheGeometry )
   mLayerCache->setCacheGeometry( cacheGeometry );
   if ( 0 == cacheSize || 0 == ( QgsVectorDataProvider::SelectAtId & mLayer->dataProvider()->capabilities() ) )
   {
-    connect( mLayerCache, SIGNAL( progress( int, bool & ) ), this, SLOT( progress( int, bool & ) ) );
-    connect( mLayerCache, SIGNAL( finished() ), this, SLOT( finished() ) );
+    connect( mLayerCache, &QgsVectorLayerCache::progress, this, &QgsDualView::progress );
+    connect( mLayerCache, &QgsVectorLayerCache::finished, this, &QgsDualView::finished );
 
     mLayerCache->setFullCache( true );
   }
@@ -227,16 +228,16 @@ void QgsDualView::initModels( QgsMapCanvas *mapCanvas, const QgsFeatureRequest &
   mMasterModel->setEditorContext( mEditorContext );
   mMasterModel->setExtraColumns( 1 ); // Add one extra column which we can "abuse" as an action column
 
-  connect( mMasterModel, SIGNAL( progress( int, bool & ) ), this, SLOT( progress( int, bool & ) ) );
-  connect( mMasterModel, SIGNAL( finished() ), this, SLOT( finished() ) );
+  connect( mMasterModel, &QgsAttributeTableModel::progress, this, &QgsDualView::progress );
+  connect( mMasterModel, &QgsAttributeTableModel::finished, this, &QgsDualView::finished );
 
-  connect( mConditionalFormatWidget, SIGNAL( rulesUpdated( QString ) ), mMasterModel, SLOT( fieldConditionalStyleChanged( QString ) ) );
+  connect( mConditionalFormatWidget, &QgsFieldConditionalFormatWidget::rulesUpdated, mMasterModel, &QgsAttributeTableModel::fieldConditionalStyleChanged );
 
   mMasterModel->loadLayer();
 
   mFilterModel = new QgsAttributeTableFilterModel( mapCanvas, mMasterModel, mMasterModel );
 
-  connect( mFeatureList, SIGNAL( displayExpressionChanged( QString ) ), this, SIGNAL( displayExpressionChanged( QString ) ) );
+  connect( mFeatureList, &QgsFeatureListView::displayExpressionChanged, this, &QgsDualView::displayExpressionChanged );
 
   mFeatureListModel = new QgsFeatureListModel( mFilterModel, mFilterModel );
 }
@@ -378,7 +379,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
   QAction *copyContentAction = new QAction( tr( "Copy cell content" ), this );
   copyContentAction->setData( QVariant::fromValue<QModelIndex>( sourceIndex ) );
   menu->addAction( copyContentAction );
-  connect( copyContentAction, SIGNAL( triggered() ), this, SLOT( copyCellContent() ) );
+  connect( copyContentAction, &QAction::triggered, this, &QgsDualView::copyCellContent );
 
   QgsVectorLayer *vl = mFilterModel->layer();
   QgsMapCanvas *canvas = mFilterModel->mapCanvas();
@@ -433,24 +434,24 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
   mHorizontalHeaderMenu = new QMenu( this );
 
   QAction *hide = new QAction( tr( "&Hide column" ), mHorizontalHeaderMenu );
-  connect( hide, SIGNAL( triggered( bool ) ), this, SLOT( hideColumn() ) );
+  connect( hide, &QAction::triggered, this, &QgsDualView::hideColumn );
   hide->setData( col );
   mHorizontalHeaderMenu->addAction( hide );
   QAction *setWidth = new QAction( tr( "&Set width..." ), mHorizontalHeaderMenu );
-  connect( setWidth, SIGNAL( triggered( bool ) ), this, SLOT( resizeColumn() ) );
+  connect( setWidth, &QAction::triggered, this, &QgsDualView::resizeColumn );
   setWidth->setData( col );
   mHorizontalHeaderMenu->addAction( setWidth );
   QAction *optimizeWidth = new QAction( tr( "&Autosize" ), mHorizontalHeaderMenu );
-  connect( optimizeWidth, SIGNAL( triggered( bool ) ), this, SLOT( autosizeColumn() ) );
+  connect( optimizeWidth, &QAction::triggered, this, &QgsDualView::autosizeColumn );
   optimizeWidth->setData( col );
   mHorizontalHeaderMenu->addAction( optimizeWidth );
 
   mHorizontalHeaderMenu->addSeparator();
   QAction *organize = new QAction( tr( "&Organize columns..." ), mHorizontalHeaderMenu );
-  connect( organize, SIGNAL( triggered( bool ) ), this, SLOT( organizeColumns() ) );
+  connect( organize, &QAction::triggered, this, &QgsDualView::organizeColumns );
   mHorizontalHeaderMenu->addAction( organize );
   QAction *sort = new QAction( tr( "&Sort..." ), mHorizontalHeaderMenu );
-  connect( sort, SIGNAL( triggered( bool ) ), this, SLOT( modifySort() ) );
+  connect( sort, &QAction::triggered, this, &QgsDualView::modifySort );
   mHorizontalHeaderMenu->addAction( sort );
 
   mHorizontalHeaderMenu->popup( mTableView->horizontalHeader()->mapToGlobal( point ) );
@@ -536,8 +537,8 @@ void QgsDualView::modifySort()
   orderByDlg.setWindowTitle( tr( "Configure attribute table sort order" ) );
   QDialogButtonBox *dialogButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
   QGridLayout *layout = new QGridLayout();
-  connect( dialogButtonBox, SIGNAL( accepted() ), &orderByDlg, SLOT( accept() ) );
-  connect( dialogButtonBox, SIGNAL( rejected() ), &orderByDlg, SLOT( reject() ) );
+  connect( dialogButtonBox, &QDialogButtonBox::accepted, &orderByDlg, &QDialog::accept );
+  connect( dialogButtonBox, &QDialogButtonBox::rejected, &orderByDlg, &QDialog::reject );
   orderByDlg.setLayout( layout );
 
   QGroupBox *sortingGroupBox = new QGroupBox();
