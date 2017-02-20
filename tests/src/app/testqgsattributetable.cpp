@@ -24,6 +24,7 @@
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
 #include "qgsunittypes.h"
+#include <QSettings>
 
 #include "qgstest.h"
 
@@ -43,6 +44,7 @@ class TestQgsAttributeTable : public QObject
     void cleanup() {} // will be called after every testfunction.
     void testFieldCalculation();
     void testFieldCalculationArea();
+    void testNoGeom();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -62,6 +64,13 @@ void TestQgsAttributeTable::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   mQgisApp = new QgisApp();
+
+  // setup the test QSettings environment
+  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+
+  QSettings().setValue( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll );
 }
 
 //runs after all tests
@@ -166,6 +175,27 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   expected = 389.6117565069;
   QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 0.001 ) );
 }
+
+void TestQgsAttributeTable::testNoGeom()
+{
+  //test that by default the attribute table DOESN'T fetch geometries (because performance)
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QVERIFY( tempLayer->isValid() );
+
+  QSettings().setValue( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll );
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get() ) );
+
+  QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
+  QVERIFY( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry );
+
+  // but if we are requesting only visible features, then geometry must be fetched...
+
+  QSettings().setValue( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowVisible );
+  dlg.reset( new QgsAttributeTableDialog( tempLayer.get() ) );
+  QVERIFY( dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
+  QVERIFY( !( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry ) );
+}
+
 
 QGSTEST_MAIN( TestQgsAttributeTable )
 #include "testqgsattributetable.moc"
