@@ -200,7 +200,6 @@ cmake -G Ninja ^
 	-D QCA_INCLUDE_DIR=%OSGEO4W_ROOT%\apps\Qt5\include\QtCrypto ^
 	-D QCA_LIBRARY=%OSGEO4W_ROOT%\apps\Qt5\lib\qca-qt5.lib ^
 	-D QSCINTILLA_LIBRARY=%OSGEO4W_ROOT%\apps\Qt5\lib\qscintilla2.lib ^
-	-D SUPPRESS_SIP_WARNINGS=TRUE ^
 	%CMAKE_OPT% ^
 	%SRCDIR:\=/%
 if errorlevel 1 (echo cmake failed & goto error)
@@ -277,10 +276,6 @@ for %%g IN (%GRASS_VERSIONS%) do (
 	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%%g/g' qgis-grass.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-g%%g.bat.tmpl
 	if errorlevel 1 (echo creation of desktop template failed & goto error)
 	set batches=!batches! bin/%PACKAGENAME%-g%%g.bat.tmpl
-
-	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%%g/g' browser-grass.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser-g%%g.bat.tmpl
-	if errorlevel 1 (echo creation of browser template & goto error)
-	set batches=!batches! bin/%PACKAGENAME%-browser-g%%g.bat.tmpl
 )
 
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' python.bat.tmpl >%OSGEO4W_ROOT%\bin\python-%PACKAGENAME%.bat.tmpl
@@ -297,10 +292,6 @@ move %PKGDIR%\bin\qgis.exe %OSGEO4W_ROOT%\bin\%PACKAGENAME%-bin.exe
 if errorlevel 1 (echo move of desktop executable failed & goto error)
 copy qgis.vars %OSGEO4W_ROOT%\bin\%PACKAGENAME%-bin.vars
 if errorlevel 1 (echo copy of desktop executable vars failed & goto error)
-move %PKGDIR%\bin\qbrowser.exe %OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser-bin.exe
-if errorlevel 1 (echo move of browser executable failed & goto error)
-copy qgis.vars %OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser-bin.vars
-if errorlevel 1 (echo copy of browser executable vars failed & goto error)
 
 if not exist %PKGDIR%\qtplugins\sqldrivers mkdir %PKGDIR%\qtplugins\sqldrivers
 move %OSGEO4W_ROOT%\apps\qt5\plugins\sqldrivers\qsqlocispatial.dll %PKGDIR%\qtplugins\sqldrivers
@@ -322,7 +313,6 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	--exclude "*.pyc" ^
 	apps/%PACKAGENAME% ^
 	bin/%PACKAGENAME%-bin.exe ^
-	bin/%PACKAGENAME%-browser-bin.exe ^
 	%batches% ^
 	bin/%PACKAGENAME%-designer.bat.tmpl ^
 	bin/python-%PACKAGENAME%.bat.tmpl ^

@@ -63,7 +63,6 @@ CMAKE_OPTS := \
 	-DBINDINGS_GLOBAL_INSTALL=TRUE \
 	-DPEDANTIC=TRUE \
 	-DSERVER_SKIP_ECW=TRUE \
-        -DSUPPRESS_SIP_WARNINGS=TRUE \
 	-DQGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin \
 	-DWITH_APIDOC=TRUE \
 	-DGENERATE_QHP=TRUE \
@@ -225,7 +224,7 @@ binary binary-arch binary-indep build build-arch build-indep clean install insta
 	dh $@ --with python3 --parallel --builddirectory=$(QGIS_BUILDDIR)
 
 override_dh_clean: cleantemplates
-	dh_clean qgis.bin.1 qbrowser.bin.1
+	dh_clean qgis.bin.1
 
 	-$(RM) -r $(CURDIR)/$(QGIS_BUILDDIR)/
 
@@ -282,7 +281,6 @@ override_dh_auto_install:
 
 	# Man pages are installed by dh_installman
 	$(RM) $(CURDIR)/debian/tmp/usr/man/man1/qgis.1
-	$(RM) $(CURDIR)/debian/tmp/usr/man/man1/qbrowser.1
 
 	# Don't ship srs.db, automatically updated in postinst with crssync
 	mv $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs.db $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs-template.db
@@ -290,9 +288,7 @@ override_dh_auto_install:
 	# Install menu pixmap
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/pixmaps
 	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis_icon.svg $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis.svg
-	install -o root -g root -m 644 $(CURDIR)/images/icons/qbrowser_icon.svg $(CURDIR)/debian/tmp/usr/share/pixmaps/qbrowser.svg
 	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis.png
-	install -o root -g root -m 644 $(CURDIR)/images/icons/qbrowser-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qbrowser.png
 	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-mime-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis-mime.png
 
 	# Install MIME type icon
@@ -315,17 +311,14 @@ override_dh_auto_install:
 	for size in 8x8 16x16 22x22 24x24 32x32 36x36 42x42 48x48 64x64 72x72 80x80 96x96 128x128 192x192 256x256 512x512; do \
 		install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/apps ; \
 		install -o root -g root -m 644 $(CURDIR)/debian/icons/qgis-icon$${size}.png $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/apps/qgis.png ; \
-		install -o root -g root -m 644 $(CURDIR)/debian/icons/qbrowser-icon$${size}.png $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/apps/qbrowser.png ; \
 	done
 	
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/hicolor/scalable/apps
 	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis_icon.svg $(CURDIR)/debian/tmp/usr/share/icons/hicolor/scalable/apps/qgis.svg
-	install -o root -g root -m 644 $(CURDIR)/images/icons/qbrowser_icon.svg $(CURDIR)/debian/tmp/usr/share/icons/hicolor/scalable/apps/qbrowser.svg
 
 	# Install desktop files
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/applications
 	install -o root -g root -m 644 $(CURDIR)/debian/qgis.desktop $(CURDIR)/debian/tmp/usr/share/applications
-	install -o root -g root -m 644 $(CURDIR)/debian/qbrowser.desktop $(CURDIR)/debian/tmp/usr/share/applications
 
 	# Mime info
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/mime/packages
@@ -337,10 +330,8 @@ override_dh_auto_install:
 	# qgis binaries
 	install -o root -g root -m 755 -d $(CURDIR)/debian/qgis/usr/bin
 	install -o root -g root -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis $(CURDIR)/debian/qgis/usr/bin/qgis.bin
-	install -o root -g root -m 755 $(CURDIR)/debian/tmp/usr/bin/qbrowser $(CURDIR)/debian/qgis/usr/bin/qbrowser.bin
 
 	$(RM) $(CURDIR)/debian/tmp/usr/bin/qgis
-	$(RM) $(CURDIR)/debian/tmp/usr/bin/qbrowser
 
 	# qgis binary wrappers
 	sed -r \
@@ -349,7 +340,6 @@ override_dh_auto_install:
 		$(CURDIR)/debian/qgis.sh.in >$(CURDIR)/debian/qgis.sh
 
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis
-	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qbrowser
 
 override_dh_install:
 	dh_install --autodest --list-missing
@@ -359,9 +349,8 @@ override_dh_installchangelogs:
 
 override_dh_installman:
 	cp qgis.1 qgis.bin.1
-	cp qbrowser.1 qbrowser.bin.1
 
-	dh_installman -pqgis qgis.1 qbrowser.1 qgis.bin.1 qbrowser.bin.1
+	dh_installman -pqgis qgis.1 qgis.bin.1
 
 override_dh_installmime:
 	dh_installmime -pqgis

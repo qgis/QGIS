@@ -30,7 +30,6 @@ src/plugins/grass/qtermwidget/
 
 #Specific files
 ChangeLog
-debian/qbrowser.desktop
 debian/qgis.desktop
 debian/qgis-plugin-grass.lintian-overrides
 debian/qgis-provider-grass.lintian-overrides

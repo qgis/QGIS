@@ -1,5 +1,4 @@
 textreplace -std -t bin\@package@.bat
-textreplace -std -t bin\@package@-browser.bat
 textreplace -std -t bin\@package@-designer.bat
 textreplace -std -t bin\python-@package@.bat
 
@@ -8,16 +7,12 @@ for %%i in ("%OSGEO4W_ROOT%") do set O4W_ROOT=%%~fsi
 if "%OSGEO4W_DESKTOP%"=="" set OSGEO4W_DESKTOP=~$folder.common_desktop$
 
 "%OSGEO4W_ROOT%\bin\@package@.bat" --exit
-"%OSGEO4W_ROOT%\bin\@package@-browser.bat" --exit
 
 if not %OSGEO4W_MENU_LINKS%==0 mkdir "%OSGEO4W_STARTMENU%"
 if not %OSGEO4W_DESKTOP_LINKS%==0 mkdir "%OSGEO4W_DESKTOP%"
 
 if not %OSGEO4W_MENU_LINKS%==0 nircmd shortcut "%O4W_ROOT%\bin\@package@-bin.exe" "%OSGEO4W_STARTMENU%" "QGIS Desktop @version@"
 if not %OSGEO4W_DESKTOP_LINKS%==0 nircmd shortcut "%O4W_ROOT%\bin\package@-bin.exe" "%OSGEO4W_DESKTOP%" "QGIS Desktop @version@"
-
-if not %OSGEO4W_MENU_LINKS%==0 nircmd shortcut "%O4W_ROOT%\bin\@package@-browser-bin.exe" "%OSGEO4W_STARTMENU%" "QGIS Browser @version@"
-if not %OSGEO4W_DESKTOP_LINKS%==0 nircmd shortcut "%O4W_ROOT%\bin\@package@-browser-bin.exe" "%OSGEO4W_DESKTOP%" "QGIS Browser @version@"
 
 if not %OSGEO4W_MENU_LINKS%==0 nircmd shortcut "%O4W_ROOT%\bin\nircmd.exe" "%OSGEO4W_STARTMENU%" "Qt Designer with QGIS @version@ custom widgets" "exec hide """%OSGEO4W_ROOT%\bin\@package@-designer.bat"" "%O4W_ROOT%\apps\@package@\icons\QGIS.ico"
 if not %OSGEO4W_DESKTOP_LINKS%==0 nircmd shortcut "%O4W_ROOT%\bin\nircmd.exe" "%OSGEO4W_DESKTOP%" "Qt Designer with QGIS @version@ custom widgets" "exec hide %O4W_ROOT%\bin\@package@-designer.bat" "%O4W_ROOT%\apps\@package@\icons\QGIS.ico"

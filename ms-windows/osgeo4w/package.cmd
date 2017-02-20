@@ -192,7 +192,6 @@ cmake -G Ninja ^
 	-D QCA_INCLUDE_DIR=%OSGEO4W_ROOT%\apps\Qt5\include\QtCrypto ^
 	-D QCA_LIBRARY=%OSGEO4W_ROOT%\apps\Qt5\lib\qca-qt5.lib ^
 	-D QSCINTILLA_LIBRARY=%OSGEO4W_ROOT%\apps\Qt5\lib\qscintilla2.lib ^
-	-D SUPPRESS_SIP_WARNINGS=TRUE ^
 	%CMAKE_OPT% ^
 	%SRCDIR:\=/%
 if errorlevel 1 (echo cmake failed & goto error)
@@ -254,9 +253,6 @@ if errorlevel 1 (echo creation of desktop preremove failed & goto error)
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' qgis.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%.bat.tmpl
 if errorlevel 1 (echo creation of desktop template failed & goto error)
 
-sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' browser.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser.bat.tmpl
-if errorlevel 1 (echo creation of browser template & goto error)
-
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' designer.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-designer.bat.tmpl
 if errorlevel 1 (echo creation of designer template failed & goto error)
 
@@ -289,8 +285,6 @@ for %%g IN (%GRASS_VERSIONS%) do (
 	if errorlevel 1 (echo creation of grass desktop preremove failed & goto error)
 	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%%g/g' -e 's/@grassmajor@/!v!/g' qgis-grass.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-grass!v!.bat.tmpl
 	if errorlevel 1 (echo creation of grass desktop template failed & goto error)
-	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%%g/g' -e 's/@grassmajor@/!v!/g' browser-grass.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser-grass!v!.bat.tmpl
-	if errorlevel 1 (echo creation of grass browser template & goto error)
 
 	set packages=!packages! "-grass-plugin!w!"
 )
@@ -358,10 +352,6 @@ move %PKGDIR%\bin\qgis.exe %OSGEO4W_ROOT%\bin\%PACKAGENAME%-bin.exe
 if errorlevel 1 (echo move of desktop executable failed & goto error)
 copy qgis.vars %OSGEO4W_ROOT%\bin\%PACKAGENAME%-bin.vars
 if errorlevel 1 (echo copy of desktop executable vars failed & goto error)
-move %PKGDIR%\bin\qbrowser.exe %OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser-bin.exe
-if errorlevel 1 (echo move of browser executable failed & goto error)
-copy qgis.vars %OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser-bin.vars
-if errorlevel 1 (echo copy of browser executable vars failed & goto error)
 
 if not exist %PKGDIR%\qtplugins\sqldrivers mkdir %PKGDIR%\qtplugins\sqldrivers
 move %OSGEO4W_ROOT%\apps\qt5\plugins\sqldrivers\qsqlocispatial.dll %PKGDIR%\qtplugins\sqldrivers
@@ -384,13 +374,10 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	--exclude "apps/%PACKAGENAME%/python/qgis/_server.pyd" ^
 	--exclude "apps/%PACKAGENAME%/python/qgis/_server.lib" ^
 	--exclude "apps/%PACKAGENAME%/python/qgis/server" ^
-	"bin/%PACKAGENAME%-browser-bin.exe" ^
-	"bin/%PACKAGENAME%-browser-bin.vars" ^
 	"bin/%PACKAGENAME%-bin.exe" ^
 	"bin/%PACKAGENAME%-bin.vars" ^
 	"bin/python-%PACKAGENAME%.bat.tmpl" ^
 	"apps/%PACKAGENAME%/bin/qgis_app.dll" ^
-	"apps/%PACKAGENAME%/bin/qgis_browser.dll" ^
 	"apps/%PACKAGENAME%/bin/qgis.reg.tmpl" ^
 	"apps/%PACKAGENAME%/i18n/" ^
 	"apps/%PACKAGENAME%/icons/" ^
@@ -410,7 +397,6 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	"apps/%PACKAGENAME%/resources/customization.xml" ^
 	"apps/%PACKAGENAME%/resources/themes/" ^
 	"bin/%PACKAGENAME%.bat.tmpl" ^
-	"bin/%PACKAGENAME%-browser.bat.tmpl" ^
 	"bin/%PACKAGENAME%-designer.bat.tmpl" ^
 	"etc/postinstall/%PACKAGENAME%.bat" ^
 	"etc/preremove/%PACKAGENAME%.bat"
@@ -447,7 +433,6 @@ for %%g IN (%GRASS_VERSIONS%) do (
 		"apps/%PACKAGENAME%/plugins/grassplugin!v!.dll" ^
 		"apps/%PACKAGENAME%/plugins/grassprovider!v!.dll" ^
 		"apps/%PACKAGENAME%/plugins/grassrasterprovider!v!.dll" ^
-		"bin/%PACKAGENAME%-browser-grass!v!.bat.tmpl" ^
 		"bin/%PACKAGENAME%-grass!v!.bat.tmpl" ^
 		"etc/postinstall/%PACKAGENAME%-grass-plugin!w!.bat" ^
 		"etc/preremove/%PACKAGENAME%-grass-plugin!w!.bat"
