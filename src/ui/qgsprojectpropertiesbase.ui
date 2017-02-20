@@ -55,6 +55,9 @@
         <number>0</number>
        </property>
        <item>
+        <widget class="QLineEdit" name="mSearchLineEdit"/>
+       </item>
+       <item>
         <widget class="QListWidget" name="mOptionsListWidget">
          <property name="minimumSize">
           <size>
@@ -746,7 +749,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>334</width>
+                <width>341</width>
                 <height>51</height>
                </rect>
               </property>
@@ -805,7 +808,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>130</width>
+                <width>133</width>
                 <height>100</height>
                </rect>
               </property>
@@ -891,7 +894,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>364</width>
+                <width>369</width>
                 <height>528</height>
                </rect>
               </property>
@@ -1292,7 +1295,7 @@
                    </widget>
                   </item>
                   <item row="0" column="0" rowspan="8">
-                   <widget class="QgsColorSchemeList" name="mTreeProjectColors"/>
+                   <widget class="QgsColorSchemeList" name="mTreeProjectColors" native="true"/>
                   </item>
                   <item row="4" column="1">
                    <widget class="QToolButton" name="mButtonImportColors">
@@ -1358,7 +1361,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>588</width>
+                <width>607</width>
                 <height>2181</height>
                </rect>
               </property>
@@ -2438,7 +2441,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>157</width>
+                <width>161</width>
                 <height>51</height>
                </rect>
               </property>
