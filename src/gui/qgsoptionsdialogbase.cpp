@@ -216,6 +216,8 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString& title )
 
 void QgsOptionsDialogBase::searchText( QString text )
 {
+  mSearchLineEdit->setMinimumWidth( text.isEmpty() ? 0 : 70 );
+
   if ( !mOptStackedWidget )
     return;
 
