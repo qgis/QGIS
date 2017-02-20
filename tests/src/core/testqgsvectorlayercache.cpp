@@ -55,6 +55,7 @@ class TestVectorLayerCache : public QObject
     void testFullCache();
     void testFullCacheThroughRequest();
     void testCanUseCacheForRequest();
+    void testCacheGeom();
 
     void onCommittedFeaturesAdded( const QString &, const QgsFeatureList & );
 
@@ -329,6 +330,51 @@ void TestVectorLayerCache::testCanUseCacheForRequest()
   QVERIFY( cache.canUseCacheForRequest( QgsFeatureRequest().setFilterFids( QgsFeatureIds() << id1 << id2 ), it ) );
   QVERIFY( cache.canUseCacheForRequest( QgsFeatureRequest().setFilterRect( QgsRectangle( 1, 2, 3, 4 ) ), it ) );
   QVERIFY( cache.canUseCacheForRequest( QgsFeatureRequest().setFilterExpression( "$x<5" ), it ) );
+}
+
+void TestVectorLayerCache::testCacheGeom()
+{
+  QgsVectorLayerCache cache( mPointsLayer, 2 );
+  // cache geometry
+  cache.setCacheGeometry( true );
+
+  //first get some feature ids from layer
+  QgsFeature f;
+  QgsFeatureIterator it = mPointsLayer->getFeatures();
+  it.nextFeature( f );
+  QgsFeatureId id1 = f.id();
+  it.nextFeature( f );
+  QgsFeatureId id2 = f.id();
+
+  QgsFeatureRequest req;
+  req.setFlags( QgsFeatureRequest::NoGeometry ); // should be ignored by cache
+  req.setFilterFids( QgsFeatureIds() << id1 << id2 );
+
+  it = cache.getFeatures( req );
+  while ( it.nextFeature( f ) )
+  {
+    QVERIFY( f.hasGeometry() );
+  }
+
+  // disabled geometry caching
+  cache.setCacheGeometry( false );
+  // we should still have cached features... no need to lose these!
+  QCOMPARE( cache.cachedFeatureIds(), QgsFeatureIds() << id1 << id2 );
+  it = cache.getFeatures( req );
+  while ( it.nextFeature( f ) )
+  {
+    QVERIFY( f.hasGeometry() );
+  }
+
+  // now upgrade cache from no geometry -> geometry, should be cleared since we
+  // cannot be confident that features existing in the cache have geometry
+  cache.setCacheGeometry( true );
+  QVERIFY( cache.cachedFeatureIds().isEmpty() );
+  it = cache.getFeatures( req );
+  while ( it.nextFeature( f ) )
+  {
+    QVERIFY( f.hasGeometry() );
+  }
 }
 
 void TestVectorLayerCache::onCommittedFeaturesAdded( const QString &layerId, const QgsFeatureList &features )

@@ -58,7 +58,9 @@ int QgsVectorLayerCache::cacheSize()
 
 void QgsVectorLayerCache::setCacheGeometry( bool cacheGeometry )
 {
-  mCacheGeometry = cacheGeometry && mLayer->hasGeometryType();
+  bool shouldCache = cacheGeometry && mLayer->hasGeometryType();
+  bool mustInvalidate = shouldCache && !mCacheGeometry; // going from no geometry -> geometry, so have to clear existing cache entries
+  mCacheGeometry = shouldCache;
   if ( cacheGeometry )
   {
     connect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsVectorLayerCache::geometryChanged );
@@ -66,6 +68,10 @@ void QgsVectorLayerCache::setCacheGeometry( bool cacheGeometry )
   else
   {
     disconnect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsVectorLayerCache::geometryChanged );
+  }
+  if ( mustInvalidate )
+  {
+    invalidate();
   }
 }
 
