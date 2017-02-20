@@ -414,7 +414,7 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
   // The following code blocks until the file is downloaded...
   // TODO: use signals to get reply finished notification, in this moment
   // it's executed while rendering.
-  while ( 1 )
+  while ( true )
   {
     QgsDebugMsg( QString( "get svg: %1" ).arg( svgUrl.toString() ) );
     QNetworkRequest request( svgUrl );

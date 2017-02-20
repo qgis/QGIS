@@ -24,6 +24,7 @@
 #include <QDomElement>
 #include <QImage>
 #include <QVector>
+#include <memory>
 
 QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber,
     QColor* colorArray, int nColors, const QVector<QString>& labels ):
@@ -156,19 +157,18 @@ void QgsPalettedRasterRenderer::setLabel( int idx, const QString& label )
 
 QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback )
 {
-  QgsRasterBlock *outputBlock = new QgsRasterBlock();
+  std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
   if ( !mInput || mNColors == 0 )
   {
-    return outputBlock;
+    return outputBlock.release();
   }
 
-  QgsRasterBlock *inputBlock = mInput->block( bandNo, extent, width, height, feedback );
+  std::shared_ptr< QgsRasterBlock > inputBlock( mInput->block( bandNo, extent, width, height, feedback ) );
 
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugMsg( "No raster data!" );
-    delete inputBlock;
-    return outputBlock;
+    return outputBlock.release();
   }
 
   double currentOpacity = mOpacity;
@@ -176,16 +176,14 @@ QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  con
   //rendering is faster without considering user-defined transparency
   bool hasTransparency = usesTransparency();
 
-  QgsRasterBlock *alphaBlock = nullptr;
+  std::shared_ptr< QgsRasterBlock > alphaBlock;
 
   if ( mAlphaBand > 0 && mAlphaBand != mBand )
   {
-    alphaBlock = mInput->block( mAlphaBand, extent, width, height, feedback );
+    alphaBlock.reset( mInput->block( mAlphaBand, extent, width, height, feedback ) );
     if ( !alphaBlock || alphaBlock->isEmpty() )
     {
-      delete inputBlock;
-      delete alphaBlock;
-      return outputBlock;
+      return outputBlock.release();
     }
   }
   else if ( mAlphaBand == mBand )
@@ -195,9 +193,7 @@ QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  con
 
   if ( !outputBlock->reset( Qgis::ARGB32_Premultiplied, width, height ) )
   {
-    delete inputBlock;
-    delete alphaBlock;
-    return outputBlock;
+    return outputBlock.release();
   }
 
   QRgb myDefaultColor = NODATA_COLOR;
@@ -237,13 +233,7 @@ QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  con
     }
   }
 
-  delete inputBlock;
-  if ( mAlphaBand > 0 && mBand != mAlphaBand )
-  {
-    delete alphaBlock;
-  }
-
-  return outputBlock;
+  return outputBlock.release();
 }
 
 void QgsPalettedRasterRenderer::writeXml( QDomDocument& doc, QDomElement& parentElem ) const

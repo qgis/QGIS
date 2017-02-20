@@ -233,7 +233,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @see layers()
      * @see keepLayerSet()
      */
-    void setLayers( const QList<QgsMapLayer*> layers );
+    void setLayers( const QList<QgsMapLayer*>& layers );
 
     //! Getter for flag that determines if current styles of layers should be overridden by previously stored styles. @note added in 2.8
     bool keepLayerStyles() const { return mKeepLayerStyles; }

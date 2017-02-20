@@ -58,10 +58,3 @@ void QgsPythonRunner::setInstance( QgsPythonRunner* runner )
   sInstance = runner;
 }
 
-///////////////////////////
-// non-static methods
-
-QgsPythonRunner::QgsPythonRunner()
-{
-}
-

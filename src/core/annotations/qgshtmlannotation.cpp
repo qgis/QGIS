@@ -47,9 +47,6 @@ QgsHtmlAnnotation::QgsHtmlAnnotation( QObject* parent )
   connect( mWebPage->mainFrame(), &QWebFrame::javaScriptWindowObjectCleared, this, &QgsHtmlAnnotation::javascript );
 }
 
-QgsHtmlAnnotation::~QgsHtmlAnnotation()
-{}
-
 void QgsHtmlAnnotation::setSourceFile( const QString& htmlFile )
 {
   QFile file( htmlFile );

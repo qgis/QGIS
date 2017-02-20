@@ -1544,7 +1544,7 @@ QgsPathResolver QgsProject::pathResolver() const
   return QgsPathResolver( absolutePaths ? QString() : fileName() );
 }
 
-QString QgsProject::readPath( QString src ) const
+QString QgsProject::readPath( const QString& src ) const
 {
   return pathResolver().readPath( src );
 }

@@ -508,12 +508,12 @@ bool QgsComposerHtml::readXml( const QDomElement& itemElem, const QDomDocument& 
   {
     mContentMode = QgsComposerHtml::Url;
   }
-  mEvaluateExpressions = itemElem.attribute( QStringLiteral( "evaluateExpressions" ), QStringLiteral( "true" ) ) == QLatin1String( "true" ) ? true : false;
-  mUseSmartBreaks = itemElem.attribute( QStringLiteral( "useSmartBreaks" ), QStringLiteral( "true" ) ) == QLatin1String( "true" ) ? true : false;
+  mEvaluateExpressions = itemElem.attribute( QStringLiteral( "evaluateExpressions" ), QStringLiteral( "true" ) ) == QLatin1String( "true" );
+  mUseSmartBreaks = itemElem.attribute( QStringLiteral( "useSmartBreaks" ), QStringLiteral( "true" ) ) == QLatin1String( "true" );
   mMaxBreakDistance = itemElem.attribute( QStringLiteral( "maxBreakDistance" ), QStringLiteral( "10" ) ).toDouble();
   mHtml = itemElem.attribute( QStringLiteral( "html" ) );
   mUserStylesheet = itemElem.attribute( QStringLiteral( "stylesheet" ) );
-  mEnableUserStylesheet = itemElem.attribute( QStringLiteral( "stylesheetEnabled" ), QStringLiteral( "false" ) ) == QLatin1String( "true" ) ? true : false;
+  mEnableUserStylesheet = itemElem.attribute( QStringLiteral( "stylesheetEnabled" ), QStringLiteral( "false" ) ) == QLatin1String( "true" );
 
   //finally load the set url
   QString urlString = itemElem.attribute( QStringLiteral( "url" ) );

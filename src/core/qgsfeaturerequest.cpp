@@ -251,29 +251,17 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature& feature )
       return true;
 
     case QgsFeatureRequest::FilterRect:
-      if ( feature.hasGeometry() && feature.geometry().intersects( mFilterRect ) )
-        return true;
-      else
-        return false;
+      return ( feature.hasGeometry() && feature.geometry().intersects( mFilterRect ) );
 
     case QgsFeatureRequest::FilterFid:
-      if ( feature.id() == mFilterFid )
-        return true;
-      else
-        return false;
+      return ( feature.id() == mFilterFid );
 
     case QgsFeatureRequest::FilterExpression:
       mExpressionContext.setFeature( feature );
-      if ( mFilterExpression->evaluate( &mExpressionContext ).toBool() )
-        return true;
-      else
-        return false;
+      return ( mFilterExpression->evaluate( &mExpressionContext ).toBool() );
 
     case QgsFeatureRequest::FilterFids:
-      if ( mFilterFids.contains( feature.id() ) )
-        return true;
-      else
-        return false;
+      return ( mFilterFids.contains( feature.id() ) );
   }
 
   return true;

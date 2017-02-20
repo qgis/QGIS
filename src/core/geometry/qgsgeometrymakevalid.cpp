@@ -52,7 +52,7 @@ static Face* newFace( const GEOSGeometry* g )
   f->geom = g;
   f->env = GEOSEnvelope_r( handle, f->geom );
   GEOSArea_r( handle, f->env, &f->envarea );
-  f->parent = NULL;
+  f->parent = nullptr;
   return f;
 }
 
@@ -315,23 +315,23 @@ static GEOSGeometry* LWGEOM_GEOS_getPointN( const GEOSGeometry* g_in, uint32_t n
   }
 
   seq_in = GEOSGeom_getCoordSeq_r( handle, g_in );
-  if ( ! seq_in ) return NULL;
-  if ( ! GEOSCoordSeq_getSize_r( handle, seq_in, &sz ) ) return NULL;
-  if ( ! sz ) return NULL;
+  if ( ! seq_in ) return nullptr;
+  if ( ! GEOSCoordSeq_getSize_r( handle, seq_in, &sz ) ) return nullptr;
+  if ( ! sz ) return nullptr;
 
-  if ( ! GEOSCoordSeq_getDimensions_r( handle, seq_in, &dims ) ) return NULL;
+  if ( ! GEOSCoordSeq_getDimensions_r( handle, seq_in, &dims ) ) return nullptr;
 
   seq_out = GEOSCoordSeq_create_r( handle, 1, dims );
-  if ( ! seq_out ) return NULL;
+  if ( ! seq_out ) return nullptr;
 
-  if ( ! GEOSCoordSeq_getX_r( handle, seq_in, n, &val ) ) return NULL;
-  if ( ! GEOSCoordSeq_setX_r( handle, seq_out, n, val ) ) return NULL;
-  if ( ! GEOSCoordSeq_getY_r( handle, seq_in, n, &val ) ) return NULL;
-  if ( ! GEOSCoordSeq_setY_r( handle, seq_out, n, val ) ) return NULL;
+  if ( ! GEOSCoordSeq_getX_r( handle, seq_in, n, &val ) ) return nullptr;
+  if ( ! GEOSCoordSeq_setX_r( handle, seq_out, n, val ) ) return nullptr;
+  if ( ! GEOSCoordSeq_getY_r( handle, seq_in, n, &val ) ) return nullptr;
+  if ( ! GEOSCoordSeq_setY_r( handle, seq_out, n, val ) ) return nullptr;
   if ( dims > 2 )
   {
-    if ( ! GEOSCoordSeq_getZ_r( handle, seq_in, n, &val ) ) return NULL;
-    if ( ! GEOSCoordSeq_setZ_r( handle, seq_out, n, val ) ) return NULL;
+    if ( ! GEOSCoordSeq_getZ_r( handle, seq_in, n, &val ) ) return nullptr;
+    if ( ! GEOSCoordSeq_setZ_r( handle, seq_out, n, val ) ) return nullptr;
   }
 
   return GEOSGeom_createPoint_r( handle, seq_out );
@@ -558,10 +558,10 @@ static GEOSGeometry* LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry* gin, QStr
   // with left-over edges.
   while ( GEOSGetNumGeometries_r( handle, geos_cut_edges ) )
   {
-    GEOSGeometry* new_area = 0;
-    GEOSGeometry* new_area_bound = 0;
-    GEOSGeometry* symdif = 0;
-    GEOSGeometry* new_cut_edges = 0;
+    GEOSGeometry* new_area = nullptr;
+    GEOSGeometry* new_area_bound = nullptr;
+    GEOSGeometry* symdif = nullptr;
+    GEOSGeometry* new_cut_edges = nullptr;
 
     // ASSUMPTION: cut_edges should already be fully noded
 
@@ -620,7 +620,7 @@ static GEOSGeometry* LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry* gin, QStr
     GEOSGeom_destroy_r( handle, geos_area );
     GEOSGeom_destroy_r( handle, new_area );
     geos_area = symdif;
-    symdif = 0;
+    symdif = nullptr;
 
     // Now let's re-set geos_cut_edges with what's left
     // from the original boundary.
@@ -919,7 +919,7 @@ QgsAbstractGeometry* _qgis_lwgeom_make_valid( const QgsAbstractGeometry& lwgeom_
     if ( ! geosgeom )
     {
       errorMessage = "Couldn't convert QGIS geom to GEOS";
-      return NULL;
+      return nullptr;
     }
   }
   else
@@ -930,12 +930,12 @@ QgsAbstractGeometry* _qgis_lwgeom_make_valid( const QgsAbstractGeometry& lwgeom_
   GEOSGeometry* geosout = LWGEOM_GEOS_makeValid( geosgeom, errorMessage );
   GEOSGeom_destroy_r( handle, geosgeom );
   if ( !geosout )
-    return NULL;
+    return nullptr;
 
   QgsAbstractGeometry* lwgeom_out = QgsGeos::fromGeos( geosout );
   GEOSGeom_destroy_r( handle, geosout );
   if ( !lwgeom_out )
-    return NULL;
+    return nullptr;
 
   // force multi-type if we had a multi-type before
   if ( QgsWkbTypes::isMultiType( lwgeom_in.wkbType() ) && !QgsWkbTypes::isMultiType( lwgeom_out->wkbType() ) )

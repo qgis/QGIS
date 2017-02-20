@@ -21,6 +21,7 @@ class QgsVectorLayer;
 #include "qgis_core.h"
 #include <QSet>
 #include <QVector>
+#include <memory>
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsfeature.h"
@@ -120,7 +121,7 @@ class CORE_EXPORT QgsTracer : public QObject
 
   private:
     //! Graph data structure for path searching
-    QgsTracerGraph* mGraph = nullptr;
+    std::unique_ptr< QgsTracerGraph > mGraph;
     //! Input layers for the graph building
     QList<QgsVectorLayer*> mLayers;
     //! Whether to reproject layer features to specified destination CRS

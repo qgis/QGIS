@@ -79,12 +79,12 @@ QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const long theId, Cr
   createFromId( theId, theType );
 }
 
-QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &srs )
+QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &srs ) //NOLINT
     : d( srs.d )
 {
 }
 
-QgsCoordinateReferenceSystem& QgsCoordinateReferenceSystem::operator=( const QgsCoordinateReferenceSystem & srs )
+QgsCoordinateReferenceSystem& QgsCoordinateReferenceSystem::operator=( const QgsCoordinateReferenceSystem & srs ) //NOLINT
 {
   d = srs.d;
   return *this;
@@ -118,10 +118,10 @@ QList<long> QgsCoordinateReferenceSystem::validSrsIds()
     }
 
     QString sql = "select srs_id from tbl_srs";
-    result = sqlite3_prepare( database, sql.toUtf8(),
-                              sql.toUtf8().length(),
-                              &statement, &tail );
-    while ( 1 )
+    ( void )sqlite3_prepare( database, sql.toUtf8(),
+                             sql.toUtf8().length(),
+                             &statement, &tail );
+    while ( true )
     {
       // this one is an infinitive loop, intended to fetch any row
       int ret = sqlite3_step( statement );
@@ -183,7 +183,7 @@ QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromSrsId( long srsId
   return crs;
 }
 
-QgsCoordinateReferenceSystem::~QgsCoordinateReferenceSystem()
+QgsCoordinateReferenceSystem::~QgsCoordinateReferenceSystem() //NOLINT
 {
 }
 
@@ -1916,9 +1916,9 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
   // fix up database, if not done already //
   if ( sqlite3_exec( database, "alter table tbl_srs add noupdate boolean", nullptr, nullptr, nullptr ) == SQLITE_OK )
-    ( void )sqlite3_exec( database, "update tbl_srs set noupdate=(auth_name='EPSG' and auth_id in (5513,5514,5221,2065,102067,4156,4818))", nullptr, 0, 0 );
+    ( void )sqlite3_exec( database, "update tbl_srs set noupdate=(auth_name='EPSG' and auth_id in (5513,5514,5221,2065,102067,4156,4818))", nullptr, nullptr, nullptr );
 
-  ( void )sqlite3_exec( database, "UPDATE tbl_srs SET srid=141001 WHERE srid=41001 AND auth_name='OSGEO' AND auth_id='41001'", nullptr, 0, 0 );
+  ( void )sqlite3_exec( database, "UPDATE tbl_srs SET srid=141001 WHERE srid=41001 AND auth_name='OSGEO' AND auth_id='41001'", nullptr, nullptr, nullptr );
 
   OGRSpatialReferenceH crs = OSRNewSpatialReference( nullptr );
   const char *tail = nullptr;

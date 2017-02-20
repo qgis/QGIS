@@ -104,7 +104,7 @@ class QgsFeatureIteratorDataStream : public IDataStream
     }
 
     //! returns a pointer to the next entry in the stream or 0 at the end of the stream.
-    virtual IData* getNext() override
+    IData* getNext() override
     {
       RTree::Data* ret = mNextData;
       mNextData = nullptr;
@@ -113,13 +113,13 @@ class QgsFeatureIteratorDataStream : public IDataStream
     }
 
     //! returns true if there are more items in the stream.
-    virtual bool hasNext() override { return nullptr != mNextData; }
+    bool hasNext() override { return nullptr != mNextData; }
 
     //! returns the total number of entries available in the stream.
-    virtual uint32_t size() override { Q_ASSERT( 0 && "not available" ); return 0; }
+    uint32_t size() override { Q_ASSERT( false && "not available" ); return 0; }
 
     //! sets the stream pointer to the first entry, if possible.
-    virtual void rewind() override { Q_ASSERT( 0 && "not available" ); }
+    void rewind() override { Q_ASSERT( false && "not available" ); }
 
   protected:
     void readNextEntry()
@@ -228,12 +228,12 @@ QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureIterator& fi )
   d = new QgsSpatialIndexData( fi );
 }
 
-QgsSpatialIndex::QgsSpatialIndex( const QgsSpatialIndex& other )
+QgsSpatialIndex::QgsSpatialIndex( const QgsSpatialIndex& other ) //NOLINT
     : d( other.d )
 {
 }
 
-QgsSpatialIndex:: ~QgsSpatialIndex()
+QgsSpatialIndex:: ~QgsSpatialIndex() //NOLINT
 {
 }
 

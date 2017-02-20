@@ -311,7 +311,7 @@ void QgsShortcutsManager::shortcutDestroyed()
   mShortcuts.remove( qobject_cast<QShortcut*>( sender() ) );
 }
 
-void QgsShortcutsManager::updateActionToolTip( QAction *action, QString sequence )
+void QgsShortcutsManager::updateActionToolTip( QAction *action, const QString& sequence )
 {
   QString current = action->toolTip();
   // Remove the old shortcut.

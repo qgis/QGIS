@@ -225,7 +225,7 @@ QVector<QgsPoint> shortestPath( const QgsTracerGraph& g, int v1, int v2 )
         Q.push( DijkstraQueueItem( v, D[v] ) );
       }
     }
-    F[u] = 1; // mark the vertex as processed (we know the fastest path to it)
+    F[u] = true; // mark the vertex as processed (we know the fastest path to it)
   }
 
   if ( u != v2 ) // there's no path to the end vertex
@@ -454,8 +454,7 @@ void extractLinework( const QgsGeometry& g, QgsMultiPolyline& mpl )
 
 
 QgsTracer::QgsTracer()
-    : mGraph( 0 )
-    , mReprojectionEnabled( false )
+    : mReprojectionEnabled( false )
     , mMaxFeatureCount( 0 )
     , mHasTopologyProblem( false )
 {
@@ -560,7 +559,7 @@ bool QgsTracer::initGraph()
 
   t3.start();
 
-  mGraph = makeGraph( mpl );
+  mGraph.reset( makeGraph( mpl ) );
 
   int timeMake = t3.elapsed();
 
@@ -645,8 +644,7 @@ bool QgsTracer::init()
 
 void QgsTracer::invalidateGraph()
 {
-  delete mGraph;
-  mGraph = 0;
+  mGraph.reset( nullptr );
 }
 
 void QgsTracer::onFeatureAdded( QgsFeatureId fid )

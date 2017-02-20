@@ -979,7 +979,7 @@ bool QgsComposition::readXml( const QDomElement& compositionElem, const QDomDocu
   mPrintAsRaster = compositionElem.attribute( QStringLiteral( "printAsRaster" ) ).toInt();
   mPrintResolution = compositionElem.attribute( QStringLiteral( "printResolution" ), QStringLiteral( "300" ) ).toInt();
 
-  mGenerateWorldFile = compositionElem.attribute( QStringLiteral( "generateWorldFile" ), QStringLiteral( "0" ) ).toInt() == 1 ? true : false;
+  mGenerateWorldFile = compositionElem.attribute( QStringLiteral( "generateWorldFile" ), QStringLiteral( "0" ) ).toInt() == 1;
   mWorldFileMapId = compositionElem.attribute( QStringLiteral( "worldFileMap" ) );
 
   //data defined properties

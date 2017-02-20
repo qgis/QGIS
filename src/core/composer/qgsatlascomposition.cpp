@@ -615,7 +615,7 @@ void QgsAtlasComposition::writeXml( QDomElement& elem, QDomDocument& doc ) const
 
 void QgsAtlasComposition::readXml( const QDomElement& atlasElem, const QDomDocument& )
 {
-  mEnabled = atlasElem.attribute( QStringLiteral( "enabled" ), QStringLiteral( "false" ) ) == QLatin1String( "true" ) ? true : false;
+  mEnabled = atlasElem.attribute( QStringLiteral( "enabled" ), QStringLiteral( "false" ) ) == QLatin1String( "true" );
   emit toggled( mEnabled );
   if ( !mEnabled )
   {
@@ -628,10 +628,10 @@ void QgsAtlasComposition::readXml( const QDomElement& atlasElem, const QDomDocum
   mCoverageLayer = qobject_cast<QgsVectorLayer*>( mComposition->project()->mapLayer( coverageLayerId ) );
 
   mPageNameExpression = atlasElem.attribute( QStringLiteral( "pageNameExpression" ), QString() );
-  mSingleFile = atlasElem.attribute( QStringLiteral( "singleFile" ), QStringLiteral( "false" ) ) == QLatin1String( "true" ) ? true : false;
+  mSingleFile = atlasElem.attribute( QStringLiteral( "singleFile" ), QStringLiteral( "false" ) ) == QLatin1String( "true" );
   mFilenamePattern = atlasElem.attribute( QStringLiteral( "filenamePattern" ), QLatin1String( "" ) );
 
-  mSortFeatures = atlasElem.attribute( QStringLiteral( "sortFeatures" ), QStringLiteral( "false" ) ) == QLatin1String( "true" ) ? true : false;
+  mSortFeatures = atlasElem.attribute( QStringLiteral( "sortFeatures" ), QStringLiteral( "false" ) ) == QLatin1String( "true" );
   if ( mSortFeatures )
   {
     mSortKeyAttributeName = atlasElem.attribute( QStringLiteral( "sortKey" ), QLatin1String( "" ) );
@@ -648,15 +648,15 @@ void QgsAtlasComposition::readXml( const QDomElement& atlasElem, const QDomDocum
         mSortKeyAttributeName = fields.at( idx ).name();
       }
     }
-    mSortAscending = atlasElem.attribute( QStringLiteral( "sortAscending" ), QStringLiteral( "true" ) ) == QLatin1String( "true" ) ? true : false;
+    mSortAscending = atlasElem.attribute( QStringLiteral( "sortAscending" ), QStringLiteral( "true" ) ) == QLatin1String( "true" );
   }
-  mFilterFeatures = atlasElem.attribute( QStringLiteral( "filterFeatures" ), QStringLiteral( "false" ) ) == QLatin1String( "true" ) ? true : false;
+  mFilterFeatures = atlasElem.attribute( QStringLiteral( "filterFeatures" ), QStringLiteral( "false" ) ) == QLatin1String( "true" );
   if ( mFilterFeatures )
   {
     mFeatureFilter = atlasElem.attribute( QStringLiteral( "featureFilter" ), QLatin1String( "" ) );
   }
 
-  mHideCoverage = atlasElem.attribute( QStringLiteral( "hideCoverage" ), QStringLiteral( "false" ) ) == QLatin1String( "true" ) ? true : false;
+  mHideCoverage = atlasElem.attribute( QStringLiteral( "hideCoverage" ), QStringLiteral( "false" ) ) == QLatin1String( "true" );
 
   emit parameterChanged();
 }

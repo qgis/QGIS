@@ -54,7 +54,7 @@ class CORE_EXPORT QgsColorScheme
     };
     Q_DECLARE_FLAGS( SchemeFlags, SchemeFlag )
 
-    QgsColorScheme();
+    QgsColorScheme() = default;
 
     virtual ~QgsColorScheme() = default;
 

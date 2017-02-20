@@ -39,7 +39,7 @@
 #include "priorityqueue.h"
 #include "internalexception.h"
 #include <cfloat>
-#include <limits.h> //for INT_MAX
+#include <limits> //for INT_MAX
 
 #include "qgslabelingengine.h"
 
@@ -539,8 +539,6 @@ void Problem::popmusic()
   delete[] parts;
 
   delete[] ok;
-
-  return;
 }
 
 typedef struct
@@ -740,12 +738,9 @@ inline void actualizeTabuCandidateList( int m, int iteration, int nbOverlap, int
 }
 
 
-inline void actualizeCandidateList( int nbOverlap, int *candidateListSize, double candidateBaseFactor,
+inline void actualizeCandidateList( int nbOverlap, int *candidateListSize, double,
                                     double *candidateFactor, int minCandidateListSize, double growingFactor, int n )
 {
-
-  candidateBaseFactor += 0;
-
   if ( *candidateListSize < n )
     *candidateFactor = *candidateFactor * growingFactor;
   *candidateListSize = minCandidateListSize + static_cast< int >( *candidateFactor * nbOverlap );
@@ -2240,8 +2235,6 @@ void Problem::chain_search()
 
   solution_cost();
   delete[] ok;
-
-  return;
 }
 
 bool Problem::compareLabelArea( pal::LabelPosition* l1, pal::LabelPosition* l2 )

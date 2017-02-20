@@ -22,6 +22,7 @@
 #include <QDomElement>
 #include <QImage>
 #include <QColor>
+#include <memory>
 
 QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterInterface* input, int grayBand ):
     QgsRasterRenderer( input, QStringLiteral( "singlebandgray" ) ), mGrayBand( grayBand ), mGradient( BlackToWhite ), mContrastEnhancement( nullptr )
@@ -84,31 +85,28 @@ QgsRasterBlock* QgsSingleBandGrayRenderer::block( int bandNo, QgsRectangle  cons
   Q_UNUSED( bandNo );
   QgsDebugMsgLevel( QString( "width = %1 height = %2" ).arg( width ).arg( height ), 4 );
 
-  QgsRasterBlock *outputBlock = new QgsRasterBlock();
+  std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
   if ( !mInput )
   {
-    return outputBlock;
+    return outputBlock.release();
   }
 
-  QgsRasterBlock *inputBlock = mInput->block( mGrayBand, extent, width, height, feedback );
+  std::shared_ptr< QgsRasterBlock > inputBlock( mInput->block( mGrayBand, extent, width, height, feedback ) );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugMsg( "No raster data!" );
-    delete inputBlock;
-    return outputBlock;
+    return outputBlock.release();
   }
 
-  QgsRasterBlock *alphaBlock = nullptr;
+  std::shared_ptr< QgsRasterBlock > alphaBlock;
 
   if ( mAlphaBand > 0 && mGrayBand != mAlphaBand )
   {
-    alphaBlock = mInput->block( mAlphaBand, extent, width, height, feedback );
+    alphaBlock.reset( mInput->block( mAlphaBand, extent, width, height, feedback ) );
     if ( !alphaBlock || alphaBlock->isEmpty() )
     {
       // TODO: better to render without alpha
-      delete inputBlock;
-      delete alphaBlock;
-      return outputBlock;
+      return outputBlock.release();
     }
   }
   else if ( mAlphaBand > 0 )
@@ -118,9 +116,7 @@ QgsRasterBlock* QgsSingleBandGrayRenderer::block( int bandNo, QgsRectangle  cons
 
   if ( !outputBlock->reset( Qgis::ARGB32_Premultiplied, width, height ) )
   {
-    delete inputBlock;
-    delete alphaBlock;
-    return outputBlock;
+    return outputBlock.release();
   }
 
   QRgb myDefaultColor = NODATA_COLOR;
@@ -168,13 +164,7 @@ QgsRasterBlock* QgsSingleBandGrayRenderer::block( int bandNo, QgsRectangle  cons
     }
   }
 
-  delete inputBlock;
-  if ( mAlphaBand > 0 && mGrayBand != mAlphaBand )
-  {
-    delete alphaBlock;
-  }
-
-  return outputBlock;
+  return outputBlock.release();
 }
 
 void QgsSingleBandGrayRenderer::writeXml( QDomDocument& doc, QDomElement& parentElem ) const

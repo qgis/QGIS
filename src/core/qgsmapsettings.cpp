@@ -634,7 +634,7 @@ void QgsMapSettings::readXml( QDomNode& theNode )
   QDomElement renderMapTileElem = theNode.firstChildElement( QStringLiteral( "rendermaptile" ) );
   if ( !renderMapTileElem.isNull() )
   {
-    setFlag( QgsMapSettings::RenderMapTile, renderMapTileElem.text() == QLatin1String( "1" ) ? true : false );
+    setFlag( QgsMapSettings::RenderMapTile, renderMapTileElem.text() == QLatin1String( "1" ) );
   }
 
   mDatumTransformStore.readXml( theNode );

@@ -16,10 +16,6 @@
 #include "qgscacheindex.h"
 #include "qgsfeaturerequest.h"
 
-QgsAbstractCacheIndex::QgsAbstractCacheIndex()
-{
-}
-
 void QgsAbstractCacheIndex::requestCompleted( const QgsFeatureRequest& featureRequest, const QgsFeatureIds& fids )
 {
   Q_UNUSED( featureRequest )

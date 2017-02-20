@@ -896,10 +896,8 @@ void QgsComposerItem::setTransparency( const int transparency )
 
 void QgsComposerItem::refreshTransparency( const bool updateItem, const QgsExpressionContext& context )
 {
-  int transparency = mTransparency;
-
   //data defined transparency set?
-  transparency = mDataDefinedProperties.valueAsInt( QgsComposerObject::Transparency, context, mTransparency );
+  int transparency = mDataDefinedProperties.valueAsInt( QgsComposerObject::Transparency, context, mTransparency );
 
   // Set the QGraphicItem's opacity
   setOpacity( 1. - ( transparency / 100. ) );

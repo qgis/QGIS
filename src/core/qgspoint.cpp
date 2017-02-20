@@ -422,18 +422,12 @@ bool QgsPoint::compare( const QgsPoint &other, double epsilon ) const
 // operators
 bool QgsPoint::operator==( const QgsPoint & other )
 {
-  if ( qgsDoubleNear( m_x, other.x() ) && qgsDoubleNear( m_y, other.y() ) )
-    return true;
-  else
-    return false;
+  return ( qgsDoubleNear( m_x, other.x() ) && qgsDoubleNear( m_y, other.y() ) );
 }
 
 bool QgsPoint::operator!=( const QgsPoint & other ) const
 {
-  if ( qgsDoubleNear( m_x, other.x() ) && qgsDoubleNear( m_y, other.y() ) )
-    return false;
-  else
-    return true;
+  return !( qgsDoubleNear( m_x, other.x() ) && qgsDoubleNear( m_y, other.y() ) );
 }
 
 QgsPoint & QgsPoint::operator=( const QgsPoint & other )

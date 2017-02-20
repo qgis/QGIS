@@ -338,7 +338,7 @@ QFunctionPointer QgsAuthMethodRegistry::function( QString const & authMethodKey,
   else
   {
     QgsDebugMsg( "Cannot load library: " + myLib.errorString() );
-    return 0;
+    return nullptr;
   }
 }
 

@@ -327,7 +327,7 @@ int QgsSQLStatement::NodeBinaryOperator::precedence() const
     case boConcat:
       return 7;
   }
-  Q_ASSERT( 0 && "unexpected binary operator" );
+  Q_ASSERT( false && "unexpected binary operator" );
   return -1;
 }
 
@@ -362,7 +362,7 @@ bool QgsSQLStatement::NodeBinaryOperator::leftAssociative() const
     case boPow:
       return false;
   }
-  Q_ASSERT( 0 && "unexpected binary operator" );
+  Q_ASSERT( false && "unexpected binary operator" );
   return false;
 }
 

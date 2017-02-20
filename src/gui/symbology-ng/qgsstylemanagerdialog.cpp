@@ -259,7 +259,7 @@ void QgsStyleManagerDialog::populateList()
 {
   if ( currentItemType() > 3 )
   {
-    Q_ASSERT( 0 && "not implemented" );
+    Q_ASSERT( false && "not implemented" );
     return;
   }
   groupChanged( groupTree->selectionModel()->currentIndex() );
@@ -354,7 +354,7 @@ void QgsStyleManagerDialog::addItem()
   }
   else
   {
-    Q_ASSERT( 0 && "not implemented" );
+    Q_ASSERT( false && "not implemented" );
   }
 
   if ( changed )
@@ -384,7 +384,7 @@ bool QgsStyleManagerDialog::addSymbol()
       name = tr( "new fill symbol" );
       break;
     default:
-      Q_ASSERT( 0 && "unknown symbol type" );
+      Q_ASSERT( false && "unknown symbol type" );
       return false;
   }
 
@@ -636,7 +636,7 @@ void QgsStyleManagerDialog::editItem()
   }
   else
   {
-    Q_ASSERT( 0 && "not implemented" );
+    Q_ASSERT( false && "not implemented" );
   }
 
   if ( changed )
@@ -732,7 +732,7 @@ bool QgsStyleManagerDialog::editColorRamp()
   }
   else
   {
-    Q_ASSERT( 0 && "invalid ramp type" );
+    Q_ASSERT( false && "invalid ramp type" );
   }
 
   mStyle->addColorRamp( name, ramp.release(), true );
@@ -754,7 +754,7 @@ void QgsStyleManagerDialog::removeItem()
   }
   else
   {
-    Q_ASSERT( 0 && "not implemented" );
+    Q_ASSERT( false && "not implemented" );
   }
 
   if ( changed )

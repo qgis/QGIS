@@ -25,7 +25,7 @@
 class FromFactoriesPlugin: public QgsEditorWidgetAutoConfPlugin
 {
   public:
-    virtual QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer* vl, const QString& fieldName, int& score ) const override
+    QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer* vl, const QString& fieldName, int& score ) const override
     {
       int bestScore = 0;
       QString bestType;
@@ -62,7 +62,7 @@ class FromFactoriesPlugin: public QgsEditorWidgetAutoConfPlugin
 class FromDbTablePlugin: public QgsEditorWidgetAutoConfPlugin
 {
   public:
-    virtual QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer* vl, const QString& fieldName, int& score ) const override
+    QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer* vl, const QString& fieldName, int& score ) const override
     {
       QgsField field = vl->fields().field( fieldName );
       if ( !field.editorWidgetSetup().isNull() )

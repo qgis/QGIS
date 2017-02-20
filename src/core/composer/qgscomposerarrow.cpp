@@ -291,8 +291,6 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
   p->translate( -mArrowHeadWidth / 2.0, -arrowHeadHeight / 2.0 );
   r.render( p, QRectF( 0, 0, mArrowHeadWidth, arrowHeadHeight ) );
   p->restore();
-
-  return;
 }
 
 void QgsComposerArrow::setStartMarker( const QString& svgPath )

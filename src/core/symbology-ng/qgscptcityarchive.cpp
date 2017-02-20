@@ -669,12 +669,8 @@ void QgsCptCityDataItem::refresh()
 
 bool QgsCptCityDataItem::equal( const QgsCptCityDataItem *other )
 {
-  if ( metaObject()->className() == other->metaObject()->className() &&
-       mPath == other->path() )
-  {
-    return true;
-  }
-  return false;
+  return ( metaObject()->className() == other->metaObject()->className() &&
+           mPath == other->path() );
 }
 
 // ---------------------------------------------------------------------

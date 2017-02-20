@@ -16,7 +16,7 @@
 #include <QSettings>
 #include <QMenu>
 
-#include "math.h"
+#include <cmath>
 
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsadvanceddigitizingcanvasitem.h"

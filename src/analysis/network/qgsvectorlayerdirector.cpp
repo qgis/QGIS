@@ -118,11 +118,6 @@ QgsVectorLayerDirector::QgsVectorLayerDirector( QgsVectorLayer *myLayer,
   mBothDirectionValue     = bothDirectionValue;
 }
 
-QgsVectorLayerDirector::~QgsVectorLayerDirector()
-{
-
-}
-
 QString QgsVectorLayerDirector::name() const
 {
   return QStringLiteral( "Vector line" );
