@@ -58,7 +58,9 @@ void dwgRSCodec::decode239I( unsigned char *in, unsigned char *out, duint32 blk 
     }
     int r = rsc.decode( data );
     if ( r < 0 )
+    {
       QgsDebugMsg( "WARNING: dwgRSCodec::decode239I, can't correct all errors" );
+    }
     k = i * 239;
     for ( int j = 0; j < 239; j++ )
     {

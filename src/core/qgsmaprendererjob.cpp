@@ -217,10 +217,9 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
   QListIterator<QgsMapLayer*> li( mSettings.layers() );
   li.toBack();
 
-  bool cacheValid = false;
   if ( mCache )
   {
-    cacheValid = mCache->init( mSettings.visibleExtent(), mSettings.scale() );
+    bool cacheValid = mCache->init( mSettings.visibleExtent(), mSettings.scale() );
     QgsDebugMsg( QString( "CACHE VALID: %1" ).arg( cacheValid ) );
   }
 
