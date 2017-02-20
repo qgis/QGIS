@@ -312,6 +312,10 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     static QString identifyFormatLabel( QgsRaster::IdentifyFormat format );
     static Capability identifyFormatToCapability( QgsRaster::IdentifyFormat format );
 
+    //! Step width and height for raster iterations
+    virtual int stepWidth() const;
+    virtual int stepHeight() const;
+
   signals:
     /** Emit a signal to notify of the progress event.
       * Emitted theProgress is in percents (0.0-100.0) */

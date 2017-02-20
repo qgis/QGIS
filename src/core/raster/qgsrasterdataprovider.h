@@ -441,6 +441,10 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     static QString identifyFormatLabel( QgsRaster::IdentifyFormat format );
     static Capability identifyFormatToCapability( QgsRaster::IdentifyFormat format );
 
+    //! Step width and height for raster iterations
+    virtual int stepWidth() const { return 2000; }
+    virtual int stepHeight() const { return 2000; }
+
   signals:
 
     /** Emit a signal to notify of the progress event.
