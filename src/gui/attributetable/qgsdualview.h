@@ -324,7 +324,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void panToCurrentFeature();
 
   private:
-    void initLayerCache( QgsVectorLayer *layer, bool cacheGeometry );
+    void initLayerCache( bool cacheGeometry );
     void initModels( QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request );
 
     QgsAttributeEditorContext mEditorContext;
@@ -336,6 +336,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QMenu *mPreviewColumnsMenu = nullptr;
     QMenu *mHorizontalHeaderMenu = nullptr;
     QgsVectorLayerCache *mLayerCache = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
     QProgressDialog *mProgressDlg = nullptr;
     QgsIFeatureSelectionManager *mFeatureSelectionManager = nullptr;
     QgsDistanceArea mDistanceArea;
