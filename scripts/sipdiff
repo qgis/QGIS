@@ -61,6 +61,9 @@ for file in $*; do
   # Remove forward declarations
   ${GP}sed -i -r '/^\s*class Q\w+;$/d' $tempfile
 
+  # Remove Q_INVOKABLE
+  ${GP}sed -i 's/Q_INVOKABLE //g' $tempfile
+
   vimdiff $tempfile python/$d/$f.sip
 
   rm $tempfile
