@@ -328,6 +328,7 @@ Depends:
  python3-six,
  python3-yaml,
  python3-future,
+ python3-plotly,
  libqgispython{QGIS_ABI},
  ${shlibs:Depends},
  ${python:Depends},
