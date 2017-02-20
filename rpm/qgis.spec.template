@@ -248,8 +248,6 @@ desktop-file-install \
     --dir=%{buildroot}%{_datadir}/applications \
     debian/qgis.desktop
 
-desktop-file-install --dir=%{buildroot}%{_datadir}/applications
-
 # Install MIME type definitions
 install -d %{buildroot}%{_datadir}/mime/packages
 install -pm0644 %{SOURCE5} \
