@@ -33,19 +33,10 @@ class QgsVectorLayerCache : QObject
      */
     int cacheSize();
 
-    /**
-     * Enable or disable the caching of geometries
-     *
-     * @param cacheGeometry    Enable or disable the caching of geometries
-     */
     void setCacheGeometry( bool cacheGeometry );
 
+    bool cacheGeometry() const;
 
-    /**
-     * Set the subset of attributes to be cached
-     *
-     * @param attributes   The attributes to be cached
-     */
     void setCacheSubsetOfAttributes( const QgsAttributeList& attributes );
 
     /**
