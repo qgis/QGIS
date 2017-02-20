@@ -972,7 +972,7 @@ void QgsRasterFileWriter::globalOutputParameters( const QgsRectangle& extent, in
   //calculate nRows automatically for providers without exact resolution
   if ( nRows < 0 )
   {
-    nRows = static_cast< double >( nCols ) / extent.width() * extent.height() + 0.5;
+    nRows = static_cast< double >( nCols ) / extent.width() * extent.height() + 0.5; //NOLINT
   }
   geoTransform[0] = extent.xMinimum();
   geoTransform[1] = pixelSize;

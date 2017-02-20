@@ -72,6 +72,13 @@ TARGET_LINK_LIBRARIES (postgresprovider
   qgis_gui
 )
 
+# clang-tidy
+IF(CLANG_TIDY_EXE)
+  SET_TARGET_PROPERTIES(
+    postgresprovider PROPERTIES
+    CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
+  )
+ENDIF(CLANG_TIDY_EXE)
 
 ########################################################
 # Install

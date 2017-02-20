@@ -55,6 +55,14 @@ TARGET_LINK_LIBRARIES(spatialiteprovider
   ${SPATIALITE_LIBRARY}
 )
 
+# clang-tidy
+IF(CLANG_TIDY_EXE)
+  SET_TARGET_PROPERTIES(
+    spatialiteprovider PROPERTIES
+    CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
+  )
+ENDIF(CLANG_TIDY_EXE)
+
 ########################################################
 # Install
 

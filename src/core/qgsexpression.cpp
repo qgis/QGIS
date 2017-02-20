@@ -24,7 +24,7 @@
 #include <QUuid>
 #include <QMutex>
 
-#include <math.h>
+#include <cmath>
 #include <limits>
 
 #include "qgsdistancearea.h"

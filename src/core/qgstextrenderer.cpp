@@ -1614,7 +1614,7 @@ bool QgsTextFormat::containsAdvancedEffects() const
 
 int QgsTextRenderer::sizeToPixel( double size, const QgsRenderContext& c, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& mapUnitScale )
 {
-  return static_cast< int >( c.convertToPainterUnits( size, unit, mapUnitScale ) + 0.5 );
+  return static_cast< int >( c.convertToPainterUnits( size, unit, mapUnitScale ) + 0.5 ); //NOLINT
 }
 
 void QgsTextRenderer::drawText( const QRectF& rect, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList& textLines, QgsRenderContext& context, const QgsTextFormat& format, bool drawAsOutlines )
@@ -2248,7 +2248,7 @@ void QgsTextRenderer::drawShadow( QgsRenderContext& context, const QgsTextRender
   bool mapUnits = shadow.blurRadiusUnit() == QgsUnitTypes::RenderMapUnits;
   double radius = context.convertToPainterUnits( shadow.blurRadius(), shadow.blurRadiusUnit(), shadow.blurRadiusMapUnitScale() );
   radius /= ( mapUnits ? context.scaleFactor() / component.dpiRatio : 1 );
-  radius = static_cast< int >( radius + 0.5 );
+  radius = static_cast< int >( radius + 0.5 ); //NOLINT
 
   // TODO: add labeling gui option to adjust blurBufferClippingScale to minimize pixels, or
   //       to ensure shadow isn't clipped too tight. (Or, find a better method of buffering)

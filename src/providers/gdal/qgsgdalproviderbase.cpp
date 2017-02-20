@@ -280,7 +280,7 @@ CPLErr QgsGdalProviderBase::gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWF
 {
   GDALRasterIOExtraArg extra;
   INIT_RASTERIO_EXTRA_ARG( extra );
-  if ( 0 && feedback )  // disabled!
+  if ( false && feedback )  // disabled!
   {
     // Currently the cancelation is disabled... When RasterIO call is canceled,
     // GDAL returns CE_Failure with error code = 0 (CPLE_None), however one would

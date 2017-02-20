@@ -636,7 +636,6 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   }
 
   qgsFree( tmpBlock );
-  return;
 }
 
 //void * QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
@@ -1769,8 +1768,8 @@ QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList( QList<int> overviewLi
 
     QgsRasterPyramid myRasterPyramid;
     myRasterPyramid.level = myDivisor;
-    myRasterPyramid.xDim = ( int )( 0.5 + ( myWidth / ( double )myDivisor ) );
-    myRasterPyramid.yDim = ( int )( 0.5 + ( myHeight / ( double )myDivisor ) );
+    myRasterPyramid.xDim = ( int )( 0.5 + ( myWidth / ( double )myDivisor ) ); // NOLINT
+    myRasterPyramid.yDim = ( int )( 0.5 + ( myHeight / ( double )myDivisor ) ); // NOLINT
     myRasterPyramid.exists = false;
 
     QgsDebugMsg( QString( "Pyramid %1 xDim %2 yDim %3" ).arg( myRasterPyramid.level ).arg( myRasterPyramid.xDim ).arg( myRasterPyramid.yDim ) );
@@ -1938,7 +1937,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
   {
     myGdalDriver = GDALGetDriver( i );
 
-    Q_CHECK_PTR( myGdalDriver );
+    Q_CHECK_PTR( myGdalDriver ); // NOLINT
 
     if ( !myGdalDriver )
     {

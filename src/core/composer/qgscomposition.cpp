@@ -2038,8 +2038,8 @@ QPointF QgsComposition::snapPointToGrid( QPointF scenePoint ) const
   double yPage = scenePoint.y() - yOffset; //y-coordinate relative to current page
 
   //snap x coordinate
-  int xRatio = static_cast< int >(( scenePoint.x() - mSnapGridOffsetX ) / mSnapGridResolution + 0.5 );
-  int yRatio = static_cast< int >(( yPage - mSnapGridOffsetY ) / mSnapGridResolution + 0.5 );
+  int xRatio = static_cast< int >(( scenePoint.x() - mSnapGridOffsetX ) / mSnapGridResolution + 0.5 ); //NOLINT
+  int yRatio = static_cast< int >(( yPage - mSnapGridOffsetY ) / mSnapGridResolution + 0.5 ); //NOLINT
 
   double xSnapped = xRatio * mSnapGridResolution + mSnapGridOffsetX;
   double ySnapped = yRatio * mSnapGridResolution + mSnapGridOffsetY + yOffset;

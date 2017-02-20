@@ -21,7 +21,7 @@
 #include "qgssymbol.h"
 #include "qgsmapsettings.h"
 #include <limits>
-#include <math.h>
+#include <cmath>
 
 QgsComposerNodesItem::QgsComposerNodesItem( const QString& tagName,
     QgsComposition* c )

@@ -55,11 +55,6 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem* parent,
   }
 }
 
-QgsOgrLayerItem::~QgsOgrLayerItem()
-{
-}
-
-
 bool QgsOgrLayerItem::setCrs( const QgsCoordinateReferenceSystem& crs )
 {
   if ( !( mCapabilities & SetCrs ) )
@@ -177,10 +172,6 @@ static QgsOgrLayerItem* dataItemForLayer( QgsDataItem* parentItem, QString name,
 
 QgsOgrDataCollectionItem::QgsOgrDataCollectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
-{
-}
-
-QgsOgrDataCollectionItem::~QgsOgrDataCollectionItem()
 {
 }
 

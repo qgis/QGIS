@@ -31,7 +31,6 @@ class QgsPgTableModel : public QStandardItemModel
     Q_OBJECT
   public:
     QgsPgTableModel();
-    ~QgsPgTableModel();
 
     //! Adds entry for one database table to the model
     void addTableEntry( const QgsPostgresLayerProperty& property );

@@ -285,7 +285,7 @@ int point2edge( const QgsTracerGraph& g, const QgsPoint& pt, int& lineVertexAfte
     double dist = closestSegment( e.coords, pt, vertexAfter, epsilon );
     if ( dist == 0 )
     {
-      lineVertexAfter = vertexAfter;
+      lineVertexAfter = vertexAfter; //NOLINT
       return i;
     }
   }
