@@ -107,7 +107,7 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
       bool operator ==( const TabInformation& other );
 
       int sourceIndex;
-      QWidget* widget;
+      QWidget* widget = nullptr;
       QString label;
       bool visible;
     };

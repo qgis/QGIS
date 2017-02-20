@@ -137,7 +137,7 @@ int QgsAtlasComposition::updateFeatures()
   // select all features with all attributes
   QgsFeatureRequest req;
 
-  QScopedPointer<QgsExpression> filterExpression;
+  std::unique_ptr<QgsExpression> filterExpression;
   if ( mFilterFeatures && !mFeatureFilter.isEmpty() )
   {
     filterExpression.reset( new QgsExpression( mFeatureFilter ) );
@@ -154,7 +154,7 @@ int QgsAtlasComposition::updateFeatures()
 
   QgsFeatureIterator fit = mCoverageLayer->getFeatures( req );
 
-  QScopedPointer<QgsExpression> nameExpression;
+  std::unique_ptr<QgsExpression> nameExpression;
   if ( !mPageNameExpression.isEmpty() )
   {
     nameExpression.reset( new QgsExpression( mPageNameExpression ) );
@@ -180,7 +180,7 @@ int QgsAtlasComposition::updateFeatures()
     expressionContext.setFeature( feat );
 
     QString pageName;
-    if ( !nameExpression.isNull() )
+    if ( nameExpression )
     {
       QVariant result = nameExpression->evaluate( &expressionContext );
       if ( nameExpression->hasEvalError() )
@@ -202,7 +202,7 @@ int QgsAtlasComposition::updateFeatures()
   if ( !mFeatureKeys.isEmpty() )
   {
     FieldSorter sorter( mFeatureKeys, mSortAscending );
-    qSort( mFeatureIds.begin(), mFeatureIds.end(), sorter );
+    std::sort( mFeatureIds.begin(), mFeatureIds.end(), sorter );
   }
 
   emit numberFeaturesChanged( mFeatureIds.size() );
@@ -732,7 +732,7 @@ bool QgsAtlasComposition::updateFilenameExpression()
 bool QgsAtlasComposition::evalFeatureFilename( const QgsExpressionContext &context )
 {
   //generate filename for current atlas feature
-  if ( !mFilenamePattern.isEmpty() && !mFilenameExpr.isNull() )
+  if ( !mFilenamePattern.isEmpty() && mFilenameExpr )
   {
     QVariant filenameRes = mFilenameExpr->evaluate( &context );
     if ( mFilenameExpr->hasEvalError() )
@@ -750,7 +750,7 @@ void QgsAtlasComposition::setPredefinedScales( const QVector<qreal>& scales )
 {
   mPredefinedScales = scales;
   // make sure the list is sorted
-  qSort( mPredefinedScales.begin(), mPredefinedScales.end() );
+  std::sort( mPredefinedScales.begin(), mPredefinedScales.end() );
 }
 
 QgsGeometry QgsAtlasComposition::currentGeometry( const QgsCoordinateReferenceSystem& crs ) const

@@ -51,8 +51,8 @@ class QgsDataItemProviderFromPlugin : public QgsDataItemProvider
 
   protected:
     QString mName;
-    dataCapabilities_t* mCapabilitiesFunc;
-    dataItem_t* mDataItemFunc;
+    dataCapabilities_t* mCapabilitiesFunc = nullptr;
+    dataItem_t* mDataItemFunc = nullptr;
 };
 
 
@@ -62,7 +62,7 @@ QgsDataItemProviderRegistry::QgsDataItemProviderRegistry()
 
   Q_FOREACH ( const QString& key, providersList )
   {
-    QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( key );
+    std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->providerLibrary( key ) );
     if ( !library )
       continue;
 

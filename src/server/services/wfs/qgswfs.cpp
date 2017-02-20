@@ -49,10 +49,8 @@ namespace QgsWfs
       }
 
       void executeRequest( const QgsServerRequest& request, QgsServerResponse& response,
-                           QgsProject* project )
+                           const QgsProject* project )
       {
-        Q_UNUSED( project );
-
         QgsServerRequest::Parameters params = request.parameters();
         QString versionString = params.value( "VERSION" );
 
@@ -72,11 +70,11 @@ namespace QgsWfs
 
         if ( QSTR_COMPARE( req, "GetCapabilities" ) )
         {
-          writeGetCapabilities( mServerIface, versionString, request, response );
+          writeGetCapabilities( mServerIface, project, versionString, request, response );
         }
         else if ( QSTR_COMPARE( req, "GetFeature" ) )
         {
-          writeGetFeature( mServerIface, versionString, request, response );
+          writeGetFeature( mServerIface, project, versionString, request, response );
         }
         else if ( QSTR_COMPARE( req, "DescribeFeatureType" ) )
         {
@@ -95,7 +93,7 @@ namespace QgsWfs
       }
 
     private:
-      QgsServerInterface* mServerIface;
+      QgsServerInterface* mServerIface = nullptr;
   };
 
 

@@ -677,7 +677,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
 
     // Mapsets in current search path
     QStringList mMapsetSearchPath;
-    QFileSystemWatcher *mMapsetSearchPathWatcher;
+    QFileSystemWatcher *mMapsetSearchPathWatcher = nullptr;
 
     /* last error in GRASS libraries */
     static GError sLastError;         // static, because used in constructor

@@ -142,7 +142,7 @@ class SyncExtentControlHandler : public NavigationControlHandler
       mGlobe->syncExtent();
     }
   private:
-    GlobePlugin* mGlobe;
+    GlobePlugin* mGlobe = nullptr;
 };
 
 class PanControlHandler : public NavigationControlHandler
@@ -199,7 +199,7 @@ class QueryCoordinatesHandler : public osgGA::GUIEventHandler
     }
 
   private:
-    GlobePlugin* mGlobe;
+    GlobePlugin* mGlobe = nullptr;
 };
 
 class KeyboardControlHandler : public osgGA::GUIEventHandler

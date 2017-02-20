@@ -22,7 +22,7 @@
 #include "qgis_app.h"
 
 class QgsVectorLayer;
-struct QgsVectorJoinInfo;
+class QgsVectorLayerJoinInfo;
 
 class APP_EXPORT QgsJoinDialog: public QDialog, private Ui::QgsJoinDialogBase
 {
@@ -32,10 +32,10 @@ class APP_EXPORT QgsJoinDialog: public QDialog, private Ui::QgsJoinDialogBase
     ~QgsJoinDialog();
 
     //! Configure the dialog for an existing join
-    void setJoinInfo( const QgsVectorJoinInfo& joinInfo );
+    void setJoinInfo( const QgsVectorLayerJoinInfo& joinInfo );
 
     //! Returns the join info
-    QgsVectorJoinInfo joinInfo() const;
+    QgsVectorLayerJoinInfo joinInfo() const;
 
     //! Returns true if user wants to create an attribute index on the join field
     bool createAttributeIndex() const;
@@ -47,7 +47,7 @@ class APP_EXPORT QgsJoinDialog: public QDialog, private Ui::QgsJoinDialogBase
 
   private:
     //! Target layer
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
 };
 
 

@@ -263,10 +263,10 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
 
   private:
     QgsFeatureIds mFilteredFeatures;
-    QgsMapCanvas* mCanvas;
+    QgsMapCanvas* mCanvas = nullptr;
     FilterMode mFilterMode;
     bool mSelectedOnTop;
-    QgsAttributeTableModel* mTableModel;
+    QgsAttributeTableModel* mTableModel = nullptr;
 
     QgsAttributeTableConfig mConfig;
     QVector<int> mColumnMapping;

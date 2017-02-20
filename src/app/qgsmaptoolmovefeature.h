@@ -46,7 +46,7 @@ class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolAdvancedDigitizing
     QgsPoint mStartPointMapCoords;
 
     //! Rubberband that shows the feature being moved
-    QgsRubberBand* mRubberBand;
+    QgsRubberBand* mRubberBand = nullptr;
 
     //! Id of moved feature
     QgsFeatureIds mMovedFeatures;

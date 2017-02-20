@@ -200,11 +200,11 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     //! Creates an encoded stylesheet url using the current font and label appearance settings
     QUrl createStylesheetUrl() const;
 
-    QScopedPointer<QgsFeature> mExpressionFeature;
-    QgsVectorLayer* mExpressionLayer;
-    QgsDistanceArea* mDistanceArea;
+    std::unique_ptr<QgsFeature> mExpressionFeature;
+    QgsVectorLayer* mExpressionLayer = nullptr;
+    QgsDistanceArea* mDistanceArea = nullptr;
 
-    QgsWebPage* mWebPage;
+    QgsWebPage* mWebPage = nullptr;
 };
 
 #endif

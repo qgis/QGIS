@@ -21,6 +21,7 @@ class QgsMapRendererCustomPainterJob : QgsMapRendererJob
     virtual void cancel();
     virtual void waitForFinished();
     virtual bool isActive() const;
+    virtual bool usedCachedLabels() const;
     virtual QgsLabelingResults* takeLabelingResults() /Transfer/;
 
     //! @note not available in python bindings
@@ -51,12 +52,4 @@ class QgsMapRendererCustomPainterJob : QgsMapRendererJob
      */
     void renderSynchronously();
 
-  protected slots:
-    void futureFinished();
-
-  protected:
-    static void staticRender( QgsMapRendererCustomPainterJob* self ); // function to be used within the thread
-
-    // these methods are called within worker thread
-    void doRender();
 };

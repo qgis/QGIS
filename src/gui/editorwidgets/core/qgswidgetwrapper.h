@@ -176,9 +176,9 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
   private:
     QgsAttributeEditorContext mContext;
     QVariantMap mConfig;
-    QWidget* mWidget;
-    QWidget* mParent;
-    QgsVectorLayer* mLayer;
+    QWidget* mWidget = nullptr;
+    QWidget* mParent = nullptr;
+    QgsVectorLayer* mLayer = nullptr;
     bool mInitialized;
 };
 

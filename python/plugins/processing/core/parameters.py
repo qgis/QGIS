@@ -178,6 +178,11 @@ class Parameter(object):
 
     def wrapper(self, dialog, row=0, col=0):
         wrapper = self.metadata.get('widget_wrapper', None)
+        params = {}
+        # wrapper metadata should be a dict with class key
+        if isinstance(wrapper, dict):
+            params = deepcopy(wrapper)
+            wrapper = params.pop('class')
         # wrapper metadata should be a class path
         if isinstance(wrapper, str):
             tokens = wrapper.split('.')
@@ -185,7 +190,7 @@ class Parameter(object):
             wrapper = getattr(mod, tokens[-1])
         # or directly a class object
         if isclass(wrapper):
-            wrapper = wrapper(self, dialog, row, col)
+            wrapper = wrapper(self, dialog, row, col, **params)
         # or a wrapper instance
         return wrapper
 
@@ -328,6 +333,7 @@ class ParameterExtent(Parameter):
     def __init__(self, name='', description='', default=None, optional=True):
         Parameter.__init__(self, name, description, default, optional)
         # The value is a string in the form "xmin, xmax, ymin, ymax"
+        self.skip_crs_check = False
 
     def setValue(self, value):
         if not value:

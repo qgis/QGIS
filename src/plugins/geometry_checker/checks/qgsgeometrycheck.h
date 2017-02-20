@@ -85,7 +85,7 @@ class QgsGeometryCheck : public QObject
 
   protected:
     const CheckType mCheckType;
-    QgsFeaturePool* mFeaturePool;
+    QgsFeaturePool* mFeaturePool = nullptr;
 
     void replaceFeatureGeometryPart( QgsFeature& feature, int partIdx, QgsAbstractGeometry* newPartGeom, Changes& changes ) const;
     void deleteFeatureGeometryPart( QgsFeature& feature, int partIdx, Changes& changes ) const;
@@ -153,7 +153,7 @@ class QgsGeometryCheckError
     virtual bool handleChanges( const QgsGeometryCheck::Changes& changes );
 
   protected:
-    const QgsGeometryCheck* mCheck;
+    const QgsGeometryCheck* mCheck = nullptr;
     QgsFeatureId mFeatureId;
     QgsPointV2 mErrorLocation;
     QgsVertexId mVidx;

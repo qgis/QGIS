@@ -200,6 +200,13 @@ qgis:extractspecificnodes: >
 qgis:fieldcalculator: >
   This algorithm computes a new vector layer with the same features of the input layer, but with an additional attribute. The values of this new attribute are computed from each feature using a mathematical formula, based on te properties and attributes of the feature.
 
+qgis:findprojection: >
+  This algorithm allows creation of a shortlist of possible candidate coordinate reference systems for a layer with an unknown projection.
+
+  The expected area which the layer should reside in must be specified via the target area parameter. Additionally, the coordinate reference system for this target area must also be set.
+
+  The algorithm operates by testing the layer's extent in every known reference system and listing any in which the bounds would fall near the target area if the layer was in this projection.
+
 qgis:fixeddistancebuffer: >
   This algorithm computes a buffer area for all the features in an input layer, using a fixed distance.
 
@@ -383,7 +390,7 @@ qgis:polygonstolines: >
 
 qgis:spatialiteexecutesql: >
   This algorithm performs a SQL database query on a Spatialite database.
-  
+
 qgis:postgisexecutesql: >
   This algorithm performs a SQL database query on a PostGIS database connected to QGIS.
 
@@ -514,7 +521,7 @@ qgis:snappointstogrid: >
 
 qgis:splitwithlines: >
   This algorithm splits the lines or polygons in one layer using the lines in another layer to define the breaking points. Intersection between geometries in both layers are considered as split points.
-  
+
   Output will contain multi geometries for split features.
 
 qgis:splitvectorlayer: >
@@ -571,16 +578,20 @@ qgis:zonalstatistics:
 
 qgis:rastercalculator: >
     This algorithm allows to perform algebraic operations using raster layers.
-    
+
     The resulting layer will have its values computed according to an expression. The expression can contain numerical values, operators and references to any of the layers in the current project. The following functions are also supported:
-    
+
     - sin(), cos(), tan(), atan2(), ln(), log10()
-    
+
     The extent and cellsize can be defined by the user. If the extent is not specified, the minimum extent that covers the input layers will be used. If the cell size is not specified, the minimum cell size of all input layers will be used.
-    
+
     The cell size is assumed to be the same in both X and Y axes.
-    
+
     Layers are referred by their name as displayed in the layer list and the number of the band to use (based on 1), using the pattern 'layer_name@band number'. For instance, the first band from a layer named DEM will be referred as DEM@1.
-    
+
     When using the calculator in the batch interface or from the console, the files to use have to be specified. The corresponding layers are referred using the base name of the file (without the full path). For instance, is using a layer at path/to/my/rasterfile.tif, the first band of that layer will be referred as rasterfile.tif@1.
-    
+
+qgis:fixgeometries: >
+    This algorithm attempts to create a valid representation of a given invalid geometry without losing any of the input vertices. Already-valid geometries are returned without further intervention. Always outputs multi-geometry layer.
+
+    NOTE: M values will be dropped from the output.

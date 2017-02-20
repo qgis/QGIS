@@ -75,7 +75,7 @@ class QgsWfsRequest : public QObject
     QgsWFSDataSourceURI mUri;
 
     //! The reply to the request
-    QNetworkReply *mReply;
+    QNetworkReply *mReply = nullptr;
 
     //! The error message associated with the last error.
     QString mErrorMessage;

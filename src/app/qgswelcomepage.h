@@ -39,9 +39,9 @@ class QgsWelcomePage : public QWidget
     void versionInfoReceived();
 
   private:
-    QgsWelcomePageItemsModel* mModel;
-    QLabel* mVersionInformation;
-    QgsVersionInfo* mVersionInfo;
+    QgsWelcomePageItemsModel* mModel = nullptr;
+    QLabel* mVersionInformation = nullptr;
+    QgsVersionInfo* mVersionInfo = nullptr;
 };
 
 #endif // QGSWELCOMEDIALOG_H

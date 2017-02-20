@@ -77,7 +77,6 @@
 #include "qgssinglesymbolrenderer.h"
 #include "qgsdiagramrenderer.h"
 #include "qgsstyle.h"
-#include "qgssymbologyconversion.h"
 #include "qgspallabeling.h"
 #include "qgssimplifymethod.h"
 #include "qgsexpressioncontext.h"
@@ -120,6 +119,12 @@ typedef QString getStyleById_t(
   QString& errCause
 );
 
+typedef bool deleteStyleById_t(
+  const QString& uri,
+  QString styleID,
+  QString& errCause
+);
+
 QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
                                 const QString& baseName,
                                 const QString& providerKey,
@@ -150,13 +155,16 @@ QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
   mActions = new QgsActionManager( this );
   mConditionalStyles = new QgsConditionalLayerStyles();
 
+  mJoinBuffer = new QgsVectorLayerJoinBuffer( this );
+  connect( mJoinBuffer, &QgsVectorLayerJoinBuffer::joinedFieldsChanged, this, &QgsVectorLayer::onJoinedFieldsChanged );
+
   // if we're given a provider type, try to create and bind one to this layer
   if ( ! mProviderKey.isEmpty() )
   {
     setDataSource( vectorLayerPath, baseName, providerKey, loadDefaultStyleFlag );
   }
 
-  connect( this, &QgsVectorLayer::selectionChanged, this, &QgsVectorLayer::repaintRequested );
+  connect( this, &QgsVectorLayer::selectionChanged, this, [=] { emit repaintRequested(); } );
   connect( QgsProject::instance()->relationManager(), &QgsRelationManager::relationsLoaded, this, &QgsVectorLayer::onRelationsLoaded );
 
   // Default simplify drawing settings
@@ -664,7 +672,7 @@ class QgsVectorLayerInterruptionCheckerDuringCountSymbolFeatures: public QgsInte
     }
 
   private:
-    QProgressDialog* mDialog;
+    QProgressDialog* mDialog = nullptr;
 };
 
 bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
@@ -1013,6 +1021,19 @@ bool QgsVectorLayer::insertVertex( double x, double y, QgsFeatureId atFeatureId,
 
   QgsVectorLayerEditUtils utils( this );
   bool result = utils.insertVertex( x, y, atFeatureId, beforeVertex );
+  if ( result )
+    updateExtents();
+  return result;
+}
+
+
+bool QgsVectorLayer::insertVertex( const QgsPointV2& point, QgsFeatureId atFeatureId, int beforeVertex )
+{
+  if ( !mValid || !mEditBuffer || !mDataProvider )
+    return false;
+
+  QgsVectorLayerEditUtils utils( this );
+  bool result = utils.insertVertex( point, atFeatureId, beforeVertex );
   if ( result )
     updateExtents();
   return result;
@@ -1395,16 +1416,10 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
     }
   }
 
-  //load vector joins
-  if ( !mJoinBuffer )
-  {
-    mJoinBuffer = new QgsVectorLayerJoinBuffer( this );
-    connect( mJoinBuffer, &QgsVectorLayerJoinBuffer::joinedFieldsChanged, this, &QgsVectorLayer::onJoinedFieldsChanged );
-  }
+  // load vector joins - does not resolve references to layers yet
   mJoinBuffer->readXml( layer_node );
 
   updateFields();
-  connect( QgsProject::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( checkJoinLayerRemove( QString ) ) );
 
   QString errorMsg;
   if ( !readSymbology( layer_node, errorMsg ) )
@@ -1467,7 +1482,6 @@ void QgsVectorLayer::setDataSource( const QString& dataSource, const QString& ba
     setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
   }
 
-  connect( QgsProject::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( checkJoinLayerRemove( QString ) ) );
   emit repaintRequested();
 }
 
@@ -1504,8 +1518,6 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
   // get and store the feature type
   mWkbType = mDataProvider->wkbType();
 
-  mJoinBuffer = new QgsVectorLayerJoinBuffer( this );
-  connect( mJoinBuffer, &QgsVectorLayerJoinBuffer::joinedFieldsChanged, this, &QgsVectorLayer::onJoinedFieldsChanged );
   mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
   updateFields();
 
@@ -1627,6 +1639,12 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   QString errorMsg;
   return writeSymbology( layer_node, document, errorMsg );
 } // bool QgsVectorLayer::writeXml
+
+
+void QgsVectorLayer::resolveReferences( QgsProject* project )
+{
+  mJoinBuffer->resolveReferences( project );
+}
 
 
 bool QgsVectorLayer::readSymbology( const QDomNode& layerNode, QString& errorMessage )
@@ -1841,14 +1859,6 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage )
       else
       {
         result = false;
-      }
-    }
-    else
-    {
-      QgsFeatureRenderer* r = QgsSymbologyConversion::readOldRenderer( node, geometryType() );
-      if ( r )
-      {
-        setRenderer( r );
       }
     }
 
@@ -2330,7 +2340,7 @@ bool QgsVectorLayer::deleteAttributes( QList<int> attrs )
   // Remove multiple occurrences of same attribute
   attrs = attrs.toSet().toList();
 
-  qSort( attrs.begin(), attrs.end(), qGreater<int>() );
+  std::sort( attrs.begin(), attrs.end(), std::greater<int>() );
 
   Q_FOREACH ( int attr, attrs )
   {
@@ -2656,7 +2666,7 @@ void QgsVectorLayer::snapToGeometry( const QgsPoint& startPoint,
                                      QMultiMap<double, QgsSnappingResult>& snappingResults,
                                      QgsSnapper::SnappingType snap_to ) const
 {
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
   {
     return;
   }
@@ -2909,32 +2919,20 @@ void QgsVectorLayer::destroyEditCommand()
   }
 }
 
-bool QgsVectorLayer::addJoin( const QgsVectorJoinInfo& joinInfo )
+bool QgsVectorLayer::addJoin( const QgsVectorLayerJoinInfo& joinInfo )
 {
-  return mJoinBuffer && mJoinBuffer->addJoin( joinInfo );
+  return mJoinBuffer->addJoin( joinInfo );
 }
 
-void QgsVectorLayer::checkJoinLayerRemove( const QString& theLayerId )
-{
-  removeJoin( theLayerId );
-}
 
 bool QgsVectorLayer::removeJoin( const QString& joinLayerId )
 {
-  bool res = false;
-  if ( mJoinBuffer )
-  {
-    res = mJoinBuffer->removeJoin( joinLayerId );
-  }
-  return res;
+  return mJoinBuffer->removeJoin( joinLayerId );
 }
 
-const QList< QgsVectorJoinInfo > QgsVectorLayer::vectorJoins() const
+const QList< QgsVectorLayerJoinInfo > QgsVectorLayer::vectorJoins() const
 {
-  if ( mJoinBuffer )
-    return mJoinBuffer->vectorJoins();
-  else
-    return QList< QgsVectorJoinInfo >();
+  return mJoinBuffer->vectorJoins();
 }
 
 int QgsVectorLayer::addExpressionField( const QString& exp, const QgsField& fld )
@@ -2985,7 +2983,7 @@ void QgsVectorLayer::updateFields()
     mEditBuffer->updateFields( mFields );
 
   // joined fields
-  if ( mJoinBuffer && mJoinBuffer->containsJoins() )
+  if ( mJoinBuffer->containsJoins() )
     mJoinBuffer->updateFields( mFields );
 
   if ( mExpressionFieldBuffer )
@@ -3082,14 +3080,6 @@ void QgsVectorLayer::updateFields()
 }
 
 
-void QgsVectorLayer::createJoinCaches() const
-{
-  if ( mJoinBuffer->containsJoins() )
-  {
-    mJoinBuffer->createJoinCaches();
-  }
-}
-
 QVariant QgsVectorLayer::defaultValue( int index, const QgsFeature& feature, QgsExpressionContext* context ) const
 {
   if ( index < 0 || index >= mFields.count() )
@@ -3100,12 +3090,12 @@ QVariant QgsVectorLayer::defaultValue( int index, const QgsFeature& feature, Qgs
     return mDataProvider->defaultValue( index );
 
   QgsExpressionContext* evalContext = context;
-  QScopedPointer< QgsExpressionContext > tempContext;
+  std::unique_ptr< QgsExpressionContext > tempContext;
   if ( !evalContext )
   {
     // no context passed, so we create a default one
     tempContext.reset( new QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( this ) ) );
-    evalContext = tempContext.data();
+    evalContext = tempContext.get();
   }
 
   if ( feature.isValid() )
@@ -3582,7 +3572,7 @@ QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, boo
 {
   QList<QVariant> values;
 
-  QScopedPointer<QgsExpression> expression;
+  std::unique_ptr<QgsExpression> expression;
   QgsExpressionContext context;
 
   int attrNum = mFields.lookupField( fieldOrExpression );
@@ -3602,7 +3592,7 @@ QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, boo
 
   QgsFeature f;
   QSet<QString> lst;
-  if ( expression.isNull() )
+  if ( !expression )
     lst.insert( fieldOrExpression );
   else
     lst = expression->referencedColumns();
@@ -4295,8 +4285,7 @@ QList<QgsRelation> QgsVectorLayer::referencingRelations( int idx ) const
 
 int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, QStringList &descriptions, QString &msgError )
 {
-  QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-  QLibrary *myLib = pReg->providerLibrary( mProviderKey );
+  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
   if ( !myLib )
   {
     msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
@@ -4306,7 +4295,6 @@ int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, 
 
   if ( !listStylesExternalMethod )
   {
-    delete myLib;
     msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey, QStringLiteral( "listStyles" ) );
     return -1;
   }
@@ -4316,23 +4304,38 @@ int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, 
 
 QString QgsVectorLayer::getStyleFromDatabase( const QString& styleId, QString &msgError )
 {
-  QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-  QLibrary *myLib = pReg->providerLibrary( mProviderKey );
+  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
   if ( !myLib )
   {
     msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
-    return QObject::tr( "" );
+    return QString();
   }
   getStyleById_t* getStyleByIdMethod = reinterpret_cast< getStyleById_t * >( cast_to_fptr( myLib->resolve( "getStyleById" ) ) );
 
   if ( !getStyleByIdMethod )
   {
-    delete myLib;
     msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey, QStringLiteral( "getStyleById" ) );
-    return QObject::tr( "" );
+    return QString();
   }
 
   return getStyleByIdMethod( mDataSource, styleId, msgError );
+}
+
+bool QgsVectorLayer::deleteStyleFromDatabase( const QString& styleId, QString &msgError )
+{
+  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
+  if ( !myLib )
+  {
+    msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
+    return false;
+  }
+  deleteStyleById_t* deleteStyleByIdMethod = reinterpret_cast< deleteStyleById_t * >( cast_to_fptr( myLib->resolve( "deleteStyleById" ) ) );
+  if ( !deleteStyleByIdMethod )
+  {
+    msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey, QStringLiteral( "deleteStyleById" ) );
+    return false;
+  }
+  return deleteStyleByIdMethod( mDataSource, styleId, msgError );
 }
 
 
@@ -4341,8 +4344,7 @@ void QgsVectorLayer::saveStyleToDatabase( const QString& name, const QString& de
 {
 
   QString sldStyle, qmlStyle;
-  QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-  QLibrary *myLib = pReg->providerLibrary( mProviderKey );
+  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
   if ( !myLib )
   {
     msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
@@ -4352,7 +4354,6 @@ void QgsVectorLayer::saveStyleToDatabase( const QString& name, const QString& de
 
   if ( !saveStyleExternalMethod )
   {
-    delete myLib;
     msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey, QStringLiteral( "saveStyle" ) );
     return;
   }
@@ -4386,10 +4387,9 @@ QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &theResultFl
 QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag, bool loadFromLocalDB )
 {
   QgsDataSourceUri dsUri( theURI );
-  if ( !loadFromLocalDB && mDataProvider && mDataProvider->isSaveAndLoadStyleToDBSupported() )
+  if ( !loadFromLocalDB && mDataProvider && mDataProvider->isSaveAndLoadStyleToDatabaseSupported() )
   {
-    QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-    QLibrary *myLib = pReg->providerLibrary( mProviderKey );
+    std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
     if ( myLib )
     {
       loadStyle_t* loadStyleExternalMethod = reinterpret_cast< loadStyle_t * >( cast_to_fptr( myLib->resolve( "loadStyle" ) ) );

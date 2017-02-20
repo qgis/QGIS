@@ -20,6 +20,7 @@ email                : hugo dot mercier at oslandia dot com
 
 #include <qgsvirtuallayerprovider.h>
 #include <qgsfeatureiterator.h>
+#include <memory>
 
 class QgsVirtualLayerFeatureSource : public QgsAbstractFeatureSource
 {
@@ -31,7 +32,7 @@ class QgsVirtualLayerFeatureSource : public QgsAbstractFeatureSource
 
     const QgsVirtualLayerProvider* provider() const { return mProvider; }
   private:
-    const QgsVirtualLayerProvider* mProvider;
+    const QgsVirtualLayerProvider* mProvider = nullptr;
 };
 
 class QgsVirtualLayerFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsVirtualLayerFeatureSource>
@@ -47,12 +48,12 @@ class QgsVirtualLayerFeatureIterator : public QgsAbstractFeatureIteratorFromSour
 
     virtual bool fetchFeature( QgsFeature& feature ) override;
 
-    QScopedPointer<Sqlite::Query> mQuery;
+    std::unique_ptr<Sqlite::Query> mQuery;
 
     QgsFeatureId mFid;
 
     QString mPath;
-    sqlite3* mSqlite;
+    sqlite3* mSqlite = nullptr;
     QgsVirtualLayerDefinition mDefinition;
     QgsFields mFields;
 

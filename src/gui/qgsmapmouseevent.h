@@ -147,7 +147,7 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
     QPoint mPixelPoint;
 
     //! The map canvas on which the event was triggered.
-    QgsMapCanvas* mMapCanvas;
+    QgsMapCanvas* mMapCanvas = nullptr;
 
     QgsPointLocator::Match mSnapMatch;
 };

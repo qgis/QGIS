@@ -52,7 +52,7 @@ class CORE_EXPORT QgsScaleBarStyle
     QgsScaleBarStyle(); //default constructor forbidden
 
   protected:
-    const QgsComposerScaleBar* mScaleBar;
+    const QgsComposerScaleBar* mScaleBar = nullptr;
 };
 
 #endif

@@ -35,7 +35,7 @@ class CORE_EXPORT QgsCacheIndexFeatureId : public QgsAbstractCacheIndex
     virtual bool getCacheIterator( QgsFeatureIterator& featureIterator, const QgsFeatureRequest& featureRequest ) override;
 
   private:
-    QgsVectorLayerCache* C;
+    QgsVectorLayerCache* C = nullptr;
 };
 
 #endif // QGSCACHEINDEXFEATUREID_H

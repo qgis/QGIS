@@ -55,6 +55,6 @@ class QgsHelpViewer : public QDialog, private Ui::QgsHelpViewerBase
   private:
     void restorePosition();
     void saveWindowLocation();
-    QgsReaderThread *mThread;
+    QgsReaderThread *mThread = nullptr;
 };
 #endif // QGSHELPVIEWER_H

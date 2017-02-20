@@ -31,11 +31,11 @@ class QgsComposerArrowWidget: public QgsComposerItemBaseWidget, private Ui::QgsC
     ~QgsComposerArrowWidget();
 
   private:
-    QgsComposerArrow* mArrow;
+    QgsComposerArrow* mArrow = nullptr;
 
     void blockAllSignals( bool block );
 
-    QButtonGroup* mRadioButtonGroup;
+    QButtonGroup* mRadioButtonGroup = nullptr;
 
     //! Enables / disables the SVG line inputs
     void enableSvgInputElements( bool enable );

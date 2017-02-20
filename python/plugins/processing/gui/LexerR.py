@@ -104,7 +104,7 @@ class LexerR(QsciLexerCustom):
         for line in source.splitlines(True):
             length = len(line)
 
-            if line.startswith('#'):
+            if line.startswith(b'#'):
                 state = self.Comment
             else:
                 state = self.Default

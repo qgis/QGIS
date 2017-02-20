@@ -62,10 +62,10 @@ class RScodec
     int nn; //(2^mm) - 1   length of codeword
     int kk; //nn-2*tt length of original data
 
-    int *gg;
+    int *gg = nullptr;
     bool isOk;
     unsigned int *index_of;
-    int *alpha_to;
+    int *alpha_to = nullptr;
 };
 
 #endif // RSCODEC_H

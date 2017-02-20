@@ -51,7 +51,7 @@ namespace QgsWfs
   /**
    * Service URL string
    */
-  QString serviceUrl( const QgsServerRequest& request, QgsWfsProjectParser* parser = nullptr );
+  QString serviceUrl( const QgsServerRequest& request, const QgsProject* project );
 
   // Define namespaces used in WFS documents
   const QString WFS_NAMESPACE = QStringLiteral( "http://www.opengis.net/wfs" );

@@ -115,9 +115,9 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
     void nodeCustomPropertyChanged( QgsLayerTreeNode* node, const QString& key );
 
   protected:
-    QgsLayerTreeGroup* mRoot;
-    QgsMapCanvas* mCanvas;
-    QgsMapOverviewCanvas* mOverviewCanvas;
+    QgsLayerTreeGroup* mRoot = nullptr;
+    QgsMapCanvas* mCanvas = nullptr;
+    QgsMapOverviewCanvas* mOverviewCanvas = nullptr;
 
     bool mPendingCanvasUpdate;
 

@@ -58,9 +58,9 @@ class TestQgsComposerMapGrid : public QObject
     void descendingAnnotations(); //test descending annotation direction
 
   private:
-    QgsComposition* mComposition;
-    QgsComposerMap* mComposerMap;
-    QgsMapSettings *mMapSettings;
+    QgsComposition* mComposition = nullptr;
+    QgsComposerMap* mComposerMap = nullptr;
+    QgsMapSettings *mMapSettings = nullptr;
     QString mReport;
 };
 

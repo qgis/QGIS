@@ -427,7 +427,7 @@ GDALDatasetH QgsRelief::openInputFile( int& nCellsX, int& nCellsY )
 
 GDALDriverH QgsRelief::openOutputDriver()
 {
-  char **driverMetadata;
+  char **driverMetadata = nullptr;
 
   //open driver
   GDALDriverH outputDriver = GDALGetDriverByName( mOutputFormat.toLocal8Bit().data() );

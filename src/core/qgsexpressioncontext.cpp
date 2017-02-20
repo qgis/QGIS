@@ -27,6 +27,8 @@
 #include "qgsatlascomposition.h"
 #include "qgsapplication.h"
 #include "qgsmapsettings.h"
+#include "qgsmaplayerlistutils.h"
+
 #include <QSettings>
 #include <QDir>
 
@@ -164,7 +166,7 @@ QStringList QgsExpressionContextScope::filteredVariableNames() const
     filtered << variable;
   }
   QgsExpressionContextVariableCompare cmp( *this );
-  qSort( filtered.begin(), filtered.end(), cmp );
+  std::sort( filtered.begin(), filtered.end(), cmp );
 
   return filtered;
 }
@@ -640,7 +642,44 @@ class GetComposerItemVariables : public QgsScopedExpressionFunction
 
   private:
 
-    const QgsComposition* mComposition;
+    const QgsComposition* mComposition = nullptr;
+
+};
+
+class GetLayerVisibility : public QgsScopedExpressionFunction
+{
+  public:
+    GetLayerVisibility( QList<QgsMapLayer*> layers )
+        : QgsScopedExpressionFunction( QStringLiteral( "is_layer_visible" ), QgsExpression::ParameterList() << QgsExpression::Parameter( QStringLiteral( "id" ) ), QStringLiteral( "General" ) )
+        , mLayers( layers )
+    {}
+
+    virtual QVariant func( const QVariantList& values, const QgsExpressionContext*, QgsExpression* ) override
+    {
+      if ( mLayers.isEmpty() )
+      {
+        return QVariant( false );
+      }
+
+      QgsMapLayer* layer = _qgis_findLayer( mLayers, values.at( 0 ).toString() );
+      if ( layer )
+      {
+        return QVariant( true );
+      }
+      else
+      {
+        return QVariant( false );
+      }
+    }
+
+    QgsScopedExpressionFunction* clone() const override
+    {
+      return new GetLayerVisibility( mLayers );
+    }
+
+  private:
+
+    const QList<QgsMapLayer*> mLayers;
 
 };
 
@@ -721,7 +760,7 @@ QgsExpressionContextScope* QgsExpressionContextUtils::layerScope( const QgsMapLa
 
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_name" ), layer->name(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_id" ), layer->id(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer" ), QVariant::fromValue<QPointer<QgsMapLayer> >( QPointer<QgsMapLayer>( const_cast<QgsMapLayer*>( layer ) ) ), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer" ), QVariant::fromValue<QgsWeakMapLayerPointer >( QgsWeakMapLayerPointer( const_cast<QgsMapLayer*>( layer ) ) ), true ) );
 
   const QgsVectorLayer* vLayer = dynamic_cast< const QgsVectorLayer* >( layer );
   if ( vLayer )
@@ -806,6 +845,8 @@ QgsExpressionContextScope* QgsExpressionContextUtils::mapSettingsScope( const Qg
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs" ), mapSettings.destinationCrs().authid(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_definition" ), mapSettings.destinationCrs().toProj4(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_units" ), QgsUnitTypes::toString( mapSettings.mapUnits() ), true ) );
+
+  scope->addFunction( QStringLiteral( "is_layer_visible" ), new GetLayerVisibility( mapSettings.layers() ) );
 
   return scope;
 }
@@ -1013,6 +1054,7 @@ void QgsExpressionContextUtils::registerContextFunctions()
 {
   QgsExpression::registerFunction( new GetNamedProjectColor( nullptr ) );
   QgsExpression::registerFunction( new GetComposerItemVariables( nullptr ) );
+  QgsExpression::registerFunction( new GetLayerVisibility( QList<QgsMapLayer*>() ) );
 }
 
 bool QgsScopedExpressionFunction::usesGeometry( const QgsExpression::NodeFunction* node ) const

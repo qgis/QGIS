@@ -31,7 +31,7 @@ QgsHistogram::QgsHistogram()
 
 void QgsHistogram::prepareValues()
 {
-  qSort( mValues.begin(), mValues.end() );
+  std::sort( mValues.begin(), mValues.end() );
 
   QgsStatisticalSummary s;
   s.setStatistics( QgsStatisticalSummary::Max | QgsStatisticalSummary::Min | QgsStatisticalSummary::InterQuartileRange );

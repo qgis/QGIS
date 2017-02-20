@@ -88,11 +88,11 @@ class QgsGPSPlugin: public QObject, public QgisPlugin
     void setupBabel();
 
     //! Pointer to the QGIS interface object
-    QgisInterface *mQGisInterface;
+    QgisInterface *mQGisInterface = nullptr;
     //! Pointer to the QAction object used in the menu and toolbar
-    QAction *mQActionPointer;
+    QAction *mQActionPointer = nullptr;
     //! Pointer to the QAction used for creating a new GPX layer
-    QAction *mCreateGPXAction;
+    QAction *mCreateGPXAction = nullptr;
     //! The path to the GPSBabel program
     QString mBabelPath;
     //! Importers for external GPS data file formats

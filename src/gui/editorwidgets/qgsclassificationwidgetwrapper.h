@@ -46,7 +46,7 @@ class GUI_EXPORT QgsClassificationWidgetWrapper : public QgsEditorWidgetWrapper
     void setValue( const QVariant& value ) override;
 
   private:
-    QComboBox* mComboBox;
+    QComboBox* mComboBox = nullptr;
 };
 
 #endif // QGSCLASSIFICATIONWIDGETWRAPPER_H

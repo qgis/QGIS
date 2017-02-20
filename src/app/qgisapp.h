@@ -39,7 +39,8 @@ class QValidator;
 
 class QgisAppInterface;
 class QgisAppStyleSheet;
-class QgsAnnotationItem;
+class QgsAnnotation;
+class QgsMapCanvasAnnotationItem;
 class QgsAuthManager;
 class QgsBookmarks;
 class QgsClipboard;
@@ -130,10 +131,8 @@ class QgsDiagramProperties;
 #include "ui_qgisapp.h"
 #include "qgis_app.h"
 
-#ifdef HAVE_TOUCH
 #include <QGestureEvent>
 #include <QTapAndHoldGesture>
-#endif
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -351,7 +350,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionSnappingOptions() { return mActionSnappingOptions; }
     QAction *actionOffsetCurve() { return mActionOffsetCurve; }
     QAction *actionPan() { return mActionPan; }
-    QAction *actionTouch() { return mActionTouch; }
     QAction *actionPanToSelected() { return mActionPanToSelected; }
     QAction *actionZoomIn() { return mActionZoomIn; }
     QAction *actionZoomOut() { return mActionZoomOut; }
@@ -862,6 +860,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void showPluginManager();
     //! load python support if possible
     void loadPythonSupport();
+
+    /** Install plugin from ZIP file
+     * @note added in QGIS 3.0
+     */
+    void installPluginFromZip();
     //! Find the QMenu with the given name within plugin menu (ie the user visible text on the menu item)
     QMenu* getPluginMenu( const QString& menuName );
     //! Add the action to the submenu with the given name under the plugin menu
@@ -1216,10 +1219,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void zoomIn();
     //! Set map tool to pan
     void pan();
-#ifdef HAVE_TOUCH
-    //! Set map tool to touch
-    void touch();
-#endif
     //! Identify feature(s) on the currently selected layer
     void identify();
     //! Measure distance
@@ -1308,15 +1307,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void showStyleManager();
 
-    void writeAnnotationItemsToProject( QDomDocument& doc );
-
     //! Creates the composer instances in a project file and adds them to the menu
     bool loadComposersFromProject( const QDomDocument& doc );
 
     //! Slot to handle display of composers menu, e.g. sorting
     void on_mPrintComposersMenu_aboutToShow();
-
-    bool loadAnnotationItemsFromProject( const QDomDocument& doc );
 
     //! Toggles whether to show pinned labels
     void showPinnedLabels( bool show );
@@ -1389,6 +1384,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Handles processing of dropped mimedata
     void dropEventTimeout();
+
+    void annotationCreated( QgsAnnotation* annotation );
 
   signals:
 
@@ -1506,7 +1503,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsVectorLayer * pasteToNewMemoryVector();
 
     //! Returns all annotation items in the canvas
-    QList<QgsAnnotationItem*> annotationItems();
+    QList<QgsMapCanvasAnnotationItem*> annotationItems();
     //! Removes annotation items in the canvas
     void removeAnnotationItems();
 
@@ -1537,45 +1534,45 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Copy a vector style from a layer to another one, if they have the same geometry type
     void duplicateVectorStyle( QgsVectorLayer* srcLayer, QgsVectorLayer* destLayer );
 
-    QgisAppStyleSheet *mStyleSheetBuilder;
+    QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
 
     // actions for menus and toolbars -----------------
 
 #ifdef Q_OS_MAC
-    QAction *mActionWindowMinimize;
-    QAction *mActionWindowZoom;
-    QAction *mActionWindowSeparator1;
-    QAction *mActionWindowAllToFront;
-    QAction *mActionWindowSeparator2;
-    QActionGroup *mWindowActions;
+    QAction *mActionWindowMinimize = nullptr;
+    QAction *mActionWindowZoom = nullptr;
+    QAction *mActionWindowSeparator1 = nullptr;
+    QAction *mActionWindowAllToFront = nullptr;
+    QAction *mActionWindowSeparator2 = nullptr;
+    QActionGroup *mWindowActions = nullptr;
 #endif
 
-    QAction *mActionPluginSeparator1;
-    QAction *mActionPluginSeparator2;
-    QAction *mActionRasterSeparator;
+    QAction *mActionPluginSeparator1 = nullptr;
+    QAction *mActionPluginSeparator2 = nullptr;
+    QAction *mActionRasterSeparator = nullptr;
 
     // action groups ----------------------------------
-    QActionGroup *mMapToolGroup;
-    QActionGroup *mPreviewGroup;
+    QActionGroup *mMapToolGroup = nullptr;
+    QActionGroup *mPreviewGroup = nullptr;
 
     // menus ------------------------------------------
 
 #ifdef Q_OS_MAC
-    QMenu *mWindowMenu;
+    QMenu *mWindowMenu = nullptr;
 #endif
-    QMenu *mPanelMenu;
-    QMenu *mToolbarMenu;
+    QMenu *mPanelMenu = nullptr;
+    QMenu *mToolbarMenu = nullptr;
 
     // docks ------------------------------------------
-    QgsDockWidget *mLayerTreeDock;
-    QgsDockWidget *mLayerOrderDock;
-    QgsDockWidget *mOverviewDock;
-    QgsDockWidget *mpGpsDock;
-    QgsDockWidget *mLogDock;
+    QgsDockWidget *mLayerTreeDock = nullptr;
+    QgsDockWidget *mLayerOrderDock = nullptr;
+    QgsDockWidget *mOverviewDock = nullptr;
+    QgsDockWidget *mpGpsDock = nullptr;
+    QgsDockWidget *mLogDock = nullptr;
 
 #ifdef Q_OS_MAC
     //! Window menu action to select this window
-    QAction *mWindowAction;
+    QAction *mWindowAction = nullptr;
 #endif
 
     class Tools
@@ -1586,9 +1583,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
             : mZoomIn( nullptr )
             , mZoomOut( nullptr )
             , mPan( nullptr )
-#ifdef HAVE_TOUCH
-            , mTouch( 0 )
-#endif
             , mIdentify( nullptr )
             , mFeatureAction( nullptr )
             , mMeasureDist( nullptr )
@@ -1632,124 +1626,121 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
             , mChangeLabelProperties( nullptr )
         {}
 
-        QgsMapTool *mZoomIn;
-        QgsMapTool *mZoomOut;
-        QgsMapTool *mPan;
-#ifdef HAVE_TOUCH
-        QgsMapTool *mTouch;
-#endif
-        QgsMapTool *mIdentify;
-        QgsMapTool *mFeatureAction;
-        QgsMapTool *mMeasureDist;
-        QgsMapTool *mMeasureArea;
-        QgsMapTool *mMeasureAngle;
-        QgsMapTool *mAddFeature;
-        QgsMapTool *mCircularStringCurvePoint;
-        QgsMapTool *mCircularStringRadius;
-        QgsMapTool *mMoveFeature;
-        QgsMapTool *mMoveFeatureCopy;
-        QgsMapTool *mOffsetCurve;
-        QgsMapTool *mReshapeFeatures;
-        QgsMapTool *mSplitFeatures;
-        QgsMapTool *mSplitParts;
-        QgsMapTool *mSelect;
-        QgsMapTool *mSelectFeatures;
-        QgsMapTool *mSelectPolygon;
-        QgsMapTool *mSelectFreehand;
-        QgsMapTool *mSelectRadius;
-        QgsMapTool *mVertexAdd;
-        QgsMapTool *mVertexMove;
-        QgsMapTool *mVertexDelete;
-        QgsMapTool *mAddRing;
-        QgsMapTool *mFillRing;
-        QgsMapTool *mAddPart;
-        QgsMapTool *mSimplifyFeature;
-        QgsMapTool *mDeleteRing;
-        QgsMapTool *mDeletePart;
-        QgsMapTool *mNodeTool;
-        QgsMapTool *mRotatePointSymbolsTool;
-        QgsMapTool *mOffsetPointSymbolTool;
-        QgsMapTool *mAnnotation;
-        QgsMapTool *mFormAnnotation;
-        QgsMapTool *mHtmlAnnotation;
-        QgsMapTool *mSvgAnnotation;
-        QgsMapTool *mTextAnnotation;
-        QgsMapTool *mPinLabels;
-        QgsMapTool *mShowHideLabels;
-        QgsMapTool *mMoveLabel;
-        QgsMapTool *mRotateFeature;
-        QgsMapTool *mRotateLabel;
-        QgsMapTool *mChangeLabelProperties;
+        QgsMapTool *mZoomIn = nullptr;
+        QgsMapTool *mZoomOut = nullptr;
+        QgsMapTool *mPan = nullptr;
+        QgsMapTool *mIdentify = nullptr;
+        QgsMapTool *mFeatureAction = nullptr;
+        QgsMapTool *mMeasureDist = nullptr;
+        QgsMapTool *mMeasureArea = nullptr;
+        QgsMapTool *mMeasureAngle = nullptr;
+        QgsMapTool *mAddFeature = nullptr;
+        QgsMapTool *mCircularStringCurvePoint = nullptr;
+        QgsMapTool *mCircularStringRadius = nullptr;
+        QgsMapTool *mMoveFeature = nullptr;
+        QgsMapTool *mMoveFeatureCopy = nullptr;
+        QgsMapTool *mOffsetCurve = nullptr;
+        QgsMapTool *mReshapeFeatures = nullptr;
+        QgsMapTool *mSplitFeatures = nullptr;
+        QgsMapTool *mSplitParts = nullptr;
+        QgsMapTool *mSelect = nullptr;
+        QgsMapTool *mSelectFeatures = nullptr;
+        QgsMapTool *mSelectPolygon = nullptr;
+        QgsMapTool *mSelectFreehand = nullptr;
+        QgsMapTool *mSelectRadius = nullptr;
+        QgsMapTool *mVertexAdd = nullptr;
+        QgsMapTool *mVertexMove = nullptr;
+        QgsMapTool *mVertexDelete = nullptr;
+        QgsMapTool *mAddRing = nullptr;
+        QgsMapTool *mFillRing = nullptr;
+        QgsMapTool *mAddPart = nullptr;
+        QgsMapTool *mSimplifyFeature = nullptr;
+        QgsMapTool *mDeleteRing = nullptr;
+        QgsMapTool *mDeletePart = nullptr;
+        QgsMapTool *mNodeTool = nullptr;
+        QgsMapTool *mRotatePointSymbolsTool = nullptr;
+        QgsMapTool *mOffsetPointSymbolTool = nullptr;
+        QgsMapTool *mAnnotation = nullptr;
+        QgsMapTool *mFormAnnotation = nullptr;
+        QgsMapTool *mHtmlAnnotation = nullptr;
+        QgsMapTool *mSvgAnnotation = nullptr;
+        QgsMapTool *mTextAnnotation = nullptr;
+        QgsMapTool *mPinLabels = nullptr;
+        QgsMapTool *mShowHideLabels = nullptr;
+        QgsMapTool *mMoveLabel = nullptr;
+        QgsMapTool *mRotateFeature = nullptr;
+        QgsMapTool *mRotateLabel = nullptr;
+        QgsMapTool *mChangeLabelProperties = nullptr;
     } mMapTools;
 
-    QgsMapTool *mNonEditMapTool;
+    QgsMapTool *mNonEditMapTool = nullptr;
 
-    QgsTaskManagerStatusBarWidget* mTaskManagerWidget;
+    QgsTaskManagerStatusBarWidget* mTaskManagerWidget = nullptr;
 
-    QgsStatusBarScaleWidget* mScaleWidget;
+    QgsStatusBarScaleWidget* mScaleWidget = nullptr;
 
     //! zoom widget
-    QgsStatusBarMagnifierWidget *mMagnifierWidget;
+    QgsStatusBarMagnifierWidget *mMagnifierWidget = nullptr;
 
     //! Widget that will live in the statusbar to display and edit coords
-    QgsStatusBarCoordinatesWidget *mCoordsEdit;
+    QgsStatusBarCoordinatesWidget *mCoordsEdit = nullptr;
 
     //! Widget that will live on the statusbar to display "Rotation"
-    QLabel *mRotationLabel;
+    QLabel *mRotationLabel = nullptr;
     //! Widget that will live in the statusbar to display and edit rotation
-    QgsDoubleSpinBox *mRotationEdit;
+    QgsDoubleSpinBox *mRotationEdit = nullptr;
     //! The validator for the mCoordsEdit
-    QValidator *mRotationEditValidator;
+    QValidator *mRotationEditValidator = nullptr;
     //! Widget that will live in the statusbar to show progress of operations
-    QProgressBar *mProgressBar;
+    QProgressBar *mProgressBar = nullptr;
     //! Widget used to suppress rendering
-    QCheckBox *mRenderSuppressionCBox;
+    QCheckBox *mRenderSuppressionCBox = nullptr;
     //! Widget in status bar used to show current project CRS
-    QLabel *mOnTheFlyProjectionStatusLabel;
+    QLabel *mOnTheFlyProjectionStatusLabel = nullptr;
     //! Widget in status bar used to show status of on the fly projection
-    QToolButton *mOnTheFlyProjectionStatusButton;
-    QToolButton *mMessageButton;
+    QToolButton *mOnTheFlyProjectionStatusButton = nullptr;
+    QToolButton *mMessageButton = nullptr;
     //! Menu that contains the list of actions of the selected vector layer
-    QMenu *mFeatureActionMenu;
+    QMenu *mFeatureActionMenu = nullptr;
     //! Popup menu
-    QMenu *mPopupMenu;
+    QMenu *mPopupMenu = nullptr;
     //! Top level database menu
-    QMenu *mDatabaseMenu;
+    QMenu *mDatabaseMenu = nullptr;
     //! Top level web menu
-    QMenu *mWebMenu;
+    QMenu *mWebMenu = nullptr;
     //! Popup menu for the map overview tools
-    QMenu *mToolPopupOverviews;
+    QMenu *mToolPopupOverviews = nullptr;
     //! Popup menu for the display tools
-    QMenu *mToolPopupDisplay;
+    QMenu *mToolPopupDisplay = nullptr;
     //! Map canvas
-    QgsMapCanvas *mMapCanvas;
+    QgsMapCanvas *mMapCanvas = nullptr;
     //! Overview map canvas
-    QgsMapOverviewCanvas *mOverviewCanvas;
+    QgsMapOverviewCanvas *mOverviewCanvas = nullptr;
     //! Table of contents (legend) for the map
-    QgsLayerTreeView *mLayerTreeView;
+    QgsLayerTreeView *mLayerTreeView = nullptr;
     //! Helper class that connects layer tree with map canvas
-    QgsLayerTreeMapCanvasBridge *mLayerTreeCanvasBridge;
+    QgsLayerTreeMapCanvasBridge *mLayerTreeCanvasBridge = nullptr;
     //! Table of contents (legend) to order layers of the map
-    QgsCustomLayerOrderWidget *mMapLayerOrder;
+    QgsCustomLayerOrderWidget *mMapLayerOrder = nullptr;
     //! Cursor for the overview map
-    QCursor *mOverviewMapCursor;
+    QCursor *mOverviewMapCursor = nullptr;
     //! Current map window extent in real-world coordinates
-    QRect *mMapWindow;
+    QRect *mMapWindow = nullptr;
     QString mStartupPath;
     //! full path name of the current map file (if it has been saved or loaded)
     QString mFullPathName;
 
     //! interface to QgisApp for plugins
-    QgisAppInterface *mQgisInterface;
+    QgisAppInterface *mQgisInterface = nullptr;
     friend class QgisAppInterface;
 
-    QSplashScreen *mSplash;
+    QSplashScreen *mSplash = nullptr;
     //! list of recently opened/saved project files
     QList<QgsWelcomePageItemsModel::RecentProjectData> mRecentProjects;
     //! Print composers of this project, accessible by id string
     QSet<QgsComposer*> mPrintComposers;
     //! QGIS-internal vector feature clipboard
-    QgsClipboard *mInternalClipboard;
+    QgsClipboard *mInternalClipboard = nullptr;
     //! Flag to indicate how the project properties dialog was summoned
     bool mShowProjectionTab;
 
@@ -1764,13 +1755,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QString mRasterFileFilter;
 
     //! Timer for map tips
-    QTimer *mpMapTipsTimer;
+    QTimer *mpMapTipsTimer = nullptr;
 
     //! Point of last mouse position in map coordinates (used with MapTips)
     QgsPoint mLastMapPosition;
 
     //! Maptip object
-    QgsMapTip *mpMaptip;
+    QgsMapTip *mpMaptip = nullptr;
 
     //! Flag to indicate if maptips are on or off
     bool mMapTipsVisible;
@@ -1784,44 +1775,44 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Flag to indicate an edits save/rollback for active layer is in progress
     bool mSaveRollbackInProgress;
 
-    QgsPythonUtils *mPythonUtils;
+    QgsPythonUtils *mPythonUtils = nullptr;
 
     static QgisApp *sInstance;
 
-    QgsUndoWidget *mUndoWidget;
-    QgsDockWidget *mUndoDock;
+    QgsUndoWidget *mUndoWidget = nullptr;
+    QgsDockWidget *mUndoDock = nullptr;
 
-    QgsBrowserDockWidget *mBrowserWidget;
-    QgsBrowserDockWidget *mBrowserWidget2;
+    QgsBrowserDockWidget *mBrowserWidget = nullptr;
+    QgsBrowserDockWidget *mBrowserWidget2 = nullptr;
 
-    QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget;
-    QgsStatisticalSummaryDockWidget* mStatisticalSummaryDockWidget;
-    QgsBookmarks* mBookMarksDockWidget;
+    QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget = nullptr;
+    QgsStatisticalSummaryDockWidget* mStatisticalSummaryDockWidget = nullptr;
+    QgsBookmarks* mBookMarksDockWidget = nullptr;
 
     //! snapping widget
-    QgsSnappingWidget *mSnappingWidget;
-    QWidget *mSnappingDialogContainer;
-    QgsSnappingWidget *mSnappingDialogWidget;
+    QgsSnappingWidget *mSnappingWidget = nullptr;
+    QWidget *mSnappingDialogContainer = nullptr;
+    QgsSnappingWidget *mSnappingDialogWidget = nullptr;
 
-    QgsPluginManager *mPluginManager;
-    QgsDockWidget *mMapStylingDock;
-    QgsLayerStylingWidget* mMapStyleWidget;
+    QgsPluginManager *mPluginManager = nullptr;
+    QgsDockWidget *mMapStylingDock = nullptr;
+    QgsLayerStylingWidget* mMapStyleWidget = nullptr;
 
-    QgsComposerManager *mComposerManager;
+    QgsComposerManager *mComposerManager = nullptr;
 
     //! Persistent tile scale slider
-    QgsTileScaleWidget *mpTileScaleWidget;
+    QgsTileScaleWidget *mpTileScaleWidget = nullptr;
 
     QList<QgsDecorationItem*> mDecorationItems;
 
     int mLastComposerId;
 
     //! Persistent GPS toolbox
-    QgsGPSInformationWidget *mpGpsWidget;
+    QgsGPSInformationWidget *mpGpsWidget = nullptr;
 
-    QgsMessageBarItem *mLastMapToolMessage;
+    QgsMessageBarItem *mLastMapToolMessage = nullptr;
 
-    QgsMessageLogViewer *mLogViewer;
+    QgsMessageLogViewer *mLogViewer = nullptr;
 
     //! project changed
     void projectChanged( const QDomDocument & );
@@ -1832,23 +1823,23 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     bool mTrustedMacros;
 
     //! a bar to display warnings in a non-blocker manner
-    QgsMessageBar *mInfoBar;
-    QWidget *mMacrosWarn;
+    QgsMessageBar *mInfoBar = nullptr;
+    QWidget *mMacrosWarn = nullptr;
 
     //! A tool bar for user input
-    QgsUserInputDockWidget* mUserInputDockWidget;
+    QgsUserInputDockWidget* mUserInputDockWidget = nullptr;
 
-    QgsVectorLayerTools* mVectorLayerTools;
+    QgsVectorLayerTools* mVectorLayerTools = nullptr;
 
     //! A class that facilitates tracing of features
-    QgsMapCanvasTracer* mTracer;
+    QgsMapCanvasTracer* mTracer = nullptr;
 
-    QAction* mActionFilterLegend;
-    QAction* mActionStyleDock;
+    QAction* mActionFilterLegend = nullptr;
+    QAction* mActionStyleDock = nullptr;
 
-    QgsLegendFilterButton* mLegendExpressionFilterButton;
+    QgsLegendFilterButton* mLegendExpressionFilterButton = nullptr;
 
-    QgsSnappingUtils* mSnappingUtils;
+    QgsSnappingUtils* mSnappingUtils = nullptr;
 
     QList<QgsMapLayerConfigWidgetFactory*> mMapLayerPanelFactories;
 
@@ -1856,15 +1847,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QDateTime mProjectLastModified;
 
-    QgsWelcomePage* mWelcomePage;
+    QgsWelcomePage* mWelcomePage = nullptr;
 
-    QStackedWidget* mCentralContainer;
+    QStackedWidget* mCentralContainer = nullptr;
 
     int mProjOpen;
-#ifdef HAVE_TOUCH
+
     bool gestureEvent( QGestureEvent *event );
     void tapAndHoldTriggered( QTapAndHoldGesture *gesture );
-#endif
 
     friend class TestQgisAppPython;
 };

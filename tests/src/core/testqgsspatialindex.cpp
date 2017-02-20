@@ -158,8 +158,8 @@ class TestQgsSpatialIndex : public QObject
       }
 
       QTime t;
-      QgsSpatialIndex* indexBulk;
-      QgsSpatialIndex* indexInsert;
+      QgsSpatialIndex* indexBulk = nullptr;
+      QgsSpatialIndex* indexInsert = nullptr;
 
       t.start();
       {
@@ -195,8 +195,8 @@ class TestQgsSpatialIndex : public QObject
       QCOMPARE( resBulk.count(), 500 );
       QCOMPARE( resInsert.count(), 500 );
       // the trees are built differently so they will give also different order of fids
-      qSort( resBulk );
-      qSort( resInsert );
+      std::sort( resBulk.begin(), resBulk.end() );
+      std::sort( resInsert.begin(), resInsert.end() );
       QCOMPARE( resBulk, resInsert );
 
       delete indexBulk;

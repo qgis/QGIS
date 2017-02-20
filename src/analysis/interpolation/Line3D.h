@@ -30,9 +30,9 @@ class ANALYSIS_EXPORT Line3D
     //! Assignment operator, declared private to not use it
     Line3D& operator=( const Line3D& );
   protected:
-    Node* head;
-    Node* z;
-    Node* currentNode;
+    Node* head = nullptr;
+    Node* z = nullptr;
+    Node* currentNode = nullptr;
     unsigned int size;
     unsigned int current;
 

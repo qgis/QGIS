@@ -913,7 +913,7 @@ void QgsComposer::setTitle( const QString& title )
 bool QgsComposer::loadFromTemplate( const QDomDocument& templateDoc, bool clearExisting )
 {
   // provide feedback, since composer will be hidden when loading template (much faster)
-  QScopedPointer< QDialog > dlg( new QgsBusyIndicatorDialog( tr( "Loading template into composer..." ), this ) );
+  std::unique_ptr< QDialog > dlg( new QgsBusyIndicatorDialog( tr( "Loading template into composer..." ), this ) );
   dlg->setStyleSheet( mQgis->styleSheet() );
   dlg->show();
 
@@ -3708,7 +3708,6 @@ void QgsComposer::addComposerMap( QgsComposerMap* map )
     return;
   }
 
-  map->setMapCanvas( mapCanvas() ); //set canvas to composer map to have the possibility to draw canvas items
   QgsComposerMapWidget* mapWidget = new QgsComposerMapWidget( map );
   connect( this, SIGNAL( zoomLevelChanged() ), map, SLOT( renderModeUpdateCachedImage() ) );
   mItemWidgetMap.insert( map, mapWidget );
@@ -3917,28 +3916,26 @@ void QgsComposer::cleanupAfterTemplateRead()
     {
       //test if composer map extent intersects extent of all layers
       bool intersects = false;
+      QgsMapCanvas* canvas = mQgis && mQgis->mapCanvas() ? mQgis->mapCanvas() : nullptr;
+
       QgsRectangle composerMapExtent = mapItem->extent();
-      if ( mQgis )
+      if ( canvas )
       {
-        QgsMapCanvas* canvas = mQgis->mapCanvas();
-        if ( canvas )
+        QgsRectangle mapCanvasExtent = mQgis->mapCanvas()->fullExtent();
+        if ( composerMapExtent.intersects( mapCanvasExtent ) )
         {
-          QgsRectangle mapCanvasExtent = mQgis->mapCanvas()->fullExtent();
-          if ( composerMapExtent.intersects( mapCanvasExtent ) )
-          {
-            intersects = true;
-          }
+          intersects = true;
         }
       }
 
       //if not: apply current canvas extent
-      if ( !intersects )
+      if ( canvas && !intersects )
       {
         double currentWidth = mapItem->rect().width();
         double currentHeight = mapItem->rect().height();
         if ( currentWidth - 0 > 0.0 ) //don't divide through zero
         {
-          QgsRectangle canvasExtent = mQgis->mapCanvas()->mapSettings().visibleExtent();
+          QgsRectangle canvasExtent = canvas->mapSettings().visibleExtent();
           //adapt min y of extent such that the size of the map item stays the same
           double newCanvasExtentHeight = currentHeight / currentWidth * canvasExtent.width();
           canvasExtent.setYMinimum( canvasExtent.yMaximum() - newCanvasExtentHeight );
@@ -3987,7 +3984,7 @@ void QgsComposer::populatePrintComposersMenu()
   if ( acts.size() > 1 )
   {
     // sort actions in case main app's aboutToShow slot has not yet
-    qSort( acts.begin(), acts.end(), cmpByText_ );
+    std::sort( acts.begin(), acts.end(), cmpByText_ );
   }
   mPrintComposersMenu->addActions( acts );
 }

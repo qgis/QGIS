@@ -2968,9 +2968,9 @@ bool DualEdgeTriangulation::swapEdge( double x, double y )
   if ( edge1 >= 0 )
   {
     int edge2, edge3;
-    Point3D* point1;
-    Point3D* point2;
-    Point3D* point3;
+    Point3D* point1 = nullptr;
+    Point3D* point2 = nullptr;
+    Point3D* point3 = nullptr;
     edge2 = mHalfEdge[edge1]->getNext();
     edge3 = mHalfEdge[edge2]->getNext();
     point1 = getPoint( mHalfEdge[edge1]->getPoint() );
@@ -3030,9 +3030,9 @@ QList<int>* DualEdgeTriangulation::getPointsAroundEdge( double x, double y )
   if ( edge1 >= 0 )
   {
     int edge2, edge3;
-    Point3D* point1;
-    Point3D* point2;
-    Point3D* point3;
+    Point3D* point1 = nullptr;
+    Point3D* point2 = nullptr;
+    Point3D* point3 = nullptr;
     edge2 = mHalfEdge[edge1]->getNext();
     edge3 = mHalfEdge[edge2]->getNext();
     point1 = getPoint( mHalfEdge[edge1]->getPoint() );

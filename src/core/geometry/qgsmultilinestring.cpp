@@ -60,7 +60,7 @@ QDomElement QgsMultiLineString::asGML2( QDomDocument& doc, int precision, const 
 
 QDomElement QgsMultiLineString::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
 {
-  QDomElement elemMultiCurve = doc.createElementNS( ns, QStringLiteral( "MultiLineString" ) );
+  QDomElement elemMultiCurve = doc.createElementNS( ns, QStringLiteral( "MultiCurve" ) );
   Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
     if ( dynamic_cast<const QgsLineString*>( geom ) )

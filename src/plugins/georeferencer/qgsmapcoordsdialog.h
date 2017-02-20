@@ -108,7 +108,7 @@ class QgsGeorefMapToolEmitPoint : public QgsMapTool
       return ret;
     }
 
-    QgsVertexMarker* mSnappingMarker;
+    QgsVertexMarker* mSnappingMarker = nullptr;
 };
 
 class QgsMapCoordsDialog : public QDialog, private Ui::QgsMapCoordsDialogBase
@@ -134,11 +134,11 @@ class QgsMapCoordsDialog : public QDialog, private Ui::QgsMapCoordsDialogBase
   private:
     double dmsToDD( const QString& dms );
 
-    QPushButton *mPointFromCanvasPushButton;
+    QPushButton *mPointFromCanvasPushButton = nullptr;
 
-    QgsGeorefMapToolEmitPoint* mToolEmitPoint;
-    QgsMapTool* mPrevMapTool;
-    QgsMapCanvas* mQgisCanvas;
+    QgsGeorefMapToolEmitPoint* mToolEmitPoint = nullptr;
+    QgsMapTool* mPrevMapTool = nullptr;
+    QgsMapCanvas* mQgisCanvas = nullptr;
 
     QgsPoint mPixelCoords;
 };

@@ -45,7 +45,7 @@ class GUI_EXPORT QgsArrowSymbolLayerWidget: public QgsSymbolLayerWidget, private
     virtual QgsSymbolLayer* symbolLayer() override;
 
   private:
-    QgsArrowSymbolLayer* mLayer;
+    QgsArrowSymbolLayer* mLayer = nullptr;
 
   private slots:
     void on_mArrowWidthSpin_valueChanged( double d );

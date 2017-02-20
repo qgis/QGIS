@@ -153,11 +153,11 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
     void showDBMissingWarning( const QString& theFileName );
     // List view nodes for the tree view of projections
     //! User defined projections node
-    QTreeWidgetItem *mUserProjList;
+    QTreeWidgetItem *mUserProjList = nullptr;
     //! GEOGCS node
-    QTreeWidgetItem *mGeoList;
+    QTreeWidgetItem *mGeoList = nullptr;
     //! PROJCS node
-    QTreeWidgetItem *mProjList;
+    QTreeWidgetItem *mProjList = nullptr;
 
     //! Users custom coordinate system file
     QString mCustomCsFile;

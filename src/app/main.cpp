@@ -423,9 +423,15 @@ void myMessageOutput( QtMsgType type, const char *msg )
   }
 }
 
-#if(ANDROID)
+#ifdef _MSC_VER
+#undef APP_EXPORT
+#define APP_EXPORT __declspec(dllexport)
+#endif
+
+#if defined(ANDROID) || defined(Q_OS_WIN)
 // On Android, there there is a libqgis.so instead of a qgis executable.
 // The main method symbol of this library needs to be exported so it can be called by java
+// On Windows this main is included in qgis_app and called from mainwin.cpp
 APP_EXPORT
 #endif
 int main( int argc, char *argv[] )
@@ -803,6 +809,7 @@ int main( int argc, char *argv[] )
 
   myApp.setWindowIcon( QIcon( QgsApplication::appIconPath() ) );
 
+
   //
   // Set up the QSettings environment must be done after qapp is created
   QCoreApplication::setOrganizationName( QgsApplication::QGIS_ORGANIZATION_NAME );
@@ -810,7 +817,7 @@ int main( int argc, char *argv[] )
   QCoreApplication::setApplicationName( QgsApplication::QGIS_APPLICATION_NAME );
   QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus, false );
 
-  QSettings* customizationsettings;
+  QSettings* customizationsettings = nullptr;
   if ( !optionpath.isEmpty() || !configpath.isEmpty() )
   {
     // tell QSettings to use INI format and save the file in custom config path
@@ -1040,7 +1047,7 @@ int main( int argc, char *argv[] )
   // set authentication database directory
   if ( !authdbdirectory.isEmpty() )
   {
-    QgsApplication::setAuthDbDirPath( authdbdirectory );
+    QgsApplication::setAuthDatabaseDirPath( authdbdirectory );
   }
 
   //set up splash screen

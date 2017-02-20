@@ -119,7 +119,7 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
     QgsFillSymbolLayer* wallLayer() const;
     QgsOuterGlowEffect* glowEffect() const;
 
-    QScopedPointer<QgsSymbol> mSymbol;
+    std::unique_ptr<QgsSymbol> mSymbol;
 };
 
 #endif // QGS25DRENDERER_H

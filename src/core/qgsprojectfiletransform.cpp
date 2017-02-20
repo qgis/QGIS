@@ -26,6 +26,7 @@
 #include <QDomDocument>
 #include <QPrinter> //to find out screen resolution
 #include <cstdlib>
+#include "qgspathresolver.h"
 #include "qgsproject.h"
 #include "qgsprojectproperty.h"
 #include "qgsrasterbandstats.h"
@@ -486,7 +487,7 @@ void QgsProjectFileTransform::transform1800to1900()
     QgsRasterLayer rasterLayer;
     // TODO: We have to use more data from project file to read the layer it correctly,
     // OTOH, we should not read it until it was converted
-    rasterLayer.readLayerXml( layerNode.toElement() );
+    rasterLayer.readLayerXml( layerNode.toElement(), QgsProject::instance()->pathResolver() );
     convertRasterProperties( mDom, layerNode, rasterPropertiesElem, &rasterLayer );
   }
 
@@ -716,6 +717,15 @@ void QgsProjectFileTransform::transform2990()
         else if ( ewv2Type == QStringLiteral( "FileName" ) )
         {
           editWidgetElement.setAttribute( "type", QStringLiteral( "ExternalResource" ) );
+
+          editWidgetConfiguration.insert( QStringLiteral( "RelativeStorage" ), 1 );
+        }
+        else if ( ewv2Type == QStringLiteral( "WebView" ) )
+        {
+          editWidgetElement.setAttribute( "type", QStringLiteral( "ExternalResource" ) );
+
+          editWidgetConfiguration.insert( QStringLiteral( "DocumentViewerHeight" ), editWidgetConfiguration.value( QStringLiteral( "Height" ) ) );
+          editWidgetConfiguration.insert( QStringLiteral( "DocumentViewerWidth" ), editWidgetConfiguration.value( QStringLiteral( "Width" ) ) );
           editWidgetConfiguration.insert( QStringLiteral( "RelativeStorage" ), 1 );
         }
 

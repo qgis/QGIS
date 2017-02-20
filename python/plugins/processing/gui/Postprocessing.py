@@ -34,10 +34,10 @@ from qgis.core import (QgsProject,
                        QgsProcessingFeedback)
 
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.ProcessingResults import ProcessingResults
+from processing.core.ProcessingResults import resultsList
 from processing.core.ProcessingLog import ProcessingLog
 
-from processing.gui.ResultsDialog import ResultsDialog
+#from processing.gui.ResultsDock import ResultsDock
 from processing.gui.RenderingStyles import RenderingStyles
 
 from processing.core.outputs import OutputRaster
@@ -78,7 +78,7 @@ def handleAlgorithmResults(alg, feedback=None, showResults=True):
                                        "Error loading result layer:\n" + traceback.format_exc())
                 wrongLayers.append(out.description)
         elif isinstance(out, OutputHTML):
-            ProcessingResults.addResult(out.description, out.value)
+            resultsList.addResult(alg.getIcon(), out.description, out.value)
             htmlResults = True
         i += 1
 
@@ -88,9 +88,5 @@ def handleAlgorithmResults(alg, feedback=None, showResults=True):
         msg += "".join(["<li>%s</li>" % lay for lay in wrongLayers]) + "</ul>"
         msg += "You can check the log messages to find more information about the execution of the algorithm"
         feedback.reportError(msg)
-
-    if showResults and htmlResults and not wrongLayers:
-        dlg = ResultsDialog()
-        dlg.exec_()
 
     return len(wrongLayers) == 0

@@ -402,7 +402,7 @@ QgsDataProvider *QgsProviderRegistry::provider( QString const & providerKey, QSt
 
 int QgsProviderRegistry::providerCapabilities( const QString &providerKey ) const
 {
-  QLibrary *library = providerLibrary( providerKey );
+  std::unique_ptr< QLibrary > library( providerLibrary( providerKey ) );
   if ( !library )
   {
     return QgsDataProvider::NoDataCapabilities;
@@ -450,18 +450,16 @@ QFunctionPointer QgsProviderRegistry::function( QString const & providerKey,
   }
 }
 
-QLibrary *QgsProviderRegistry::providerLibrary( QString const & providerKey ) const
+QLibrary* QgsProviderRegistry::providerLibrary( QString const & providerKey ) const
 {
-  QLibrary *myLib = new QLibrary( library( providerKey ) );
+  std::unique_ptr< QLibrary > myLib( new QLibrary( library( providerKey ) ) );
 
   QgsDebugMsg( "Library name is " + myLib->fileName() );
 
   if ( myLib->load() )
-    return myLib;
+    return myLib.release();
 
   QgsDebugMsg( "Cannot load library: " + myLib->errorString() );
-
-  delete myLib;
 
   return nullptr;
 }

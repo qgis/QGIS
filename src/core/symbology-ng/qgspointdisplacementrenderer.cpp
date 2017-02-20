@@ -169,7 +169,7 @@ QgsFeatureRenderer* QgsPointDisplacementRenderer::create( QDomElement& symbology
 
 QgsMarkerSymbol* QgsPointDisplacementRenderer::centerSymbol()
 {
-  return mCenterSymbol.data();
+  return mCenterSymbol.get();
 }
 
 QDomElement QgsPointDisplacementRenderer::save( QDomDocument& doc )
@@ -196,7 +196,7 @@ QDomElement QgsPointDisplacementRenderer::save( QDomDocument& doc )
   }
   if ( mCenterSymbol )
   {
-    QDomElement centerSymbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "centerSymbol" ), mCenterSymbol.data(), doc );
+    QDomElement centerSymbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "centerSymbol" ), mCenterSymbol.get(), doc );
     rendererElement.appendChild( centerSymbolElem );
   }
 

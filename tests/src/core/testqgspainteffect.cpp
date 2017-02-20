@@ -123,7 +123,7 @@ class TestQgsPaintEffect: public QObject
     QString mReport;
     QString mTestDataDir;
 
-    QPicture* mPicture;
+    QPicture* mPicture = nullptr;
 };
 
 

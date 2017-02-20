@@ -69,7 +69,7 @@ class CORE_EXPORT QgsAnimatedIcon : public QObject
   private:
     void resetMovie();
     int mCount; // number of listeners
-    QMovie * mMovie;
+    QMovie * mMovie = nullptr;
     QIcon mIcon;
 };
 
@@ -259,7 +259,7 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     Type mType;
     Capabilities mCapabilities;
-    QgsDataItem* mParent;
+    QgsDataItem* mParent = nullptr;
     QVector<QgsDataItem*> mChildren; // easier to have it always
     State mState;
     QString mName;
@@ -463,7 +463,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     QString mDirPath;
 
   private:
-    QFileSystemWatcher * mFileSystemWatcher;
+    QFileSystemWatcher * mFileSystemWatcher = nullptr;
     bool mRefreshLater;
 };
 

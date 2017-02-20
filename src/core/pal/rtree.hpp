@@ -138,7 +138,7 @@ namespace pal
                 : m_node( NULL )
                 , m_branchIndex( 0 )
             {}
-            Node* m_node;
+            Node* m_node = nullptr;
             int m_branchIndex;
           };
 
@@ -366,7 +366,7 @@ namespace pal
    */
   class RTFileStream
   {
-      FILE* m_file;
+      FILE* m_file = nullptr;
 
     public:
 
@@ -813,7 +813,7 @@ namespace pal
   RTREE_TEMPLATE
   typename RTREE_QUAL::Node* RTREE_QUAL::AllocNode()
   {
-    Node* newNode;
+    Node* newNode = nullptr;
 #ifdef RTREE_DONT_USE_MEMPOOLS
     newNode = new Node;
 #else // RTREE_DONT_USE_MEMPOOLS
@@ -895,7 +895,7 @@ namespace pal
 
     int index;
     Branch branch;
-    Node* otherNode;
+    Node* otherNode = nullptr;
 
     // Still above level for insertion, go down tree recursively
     if ( a_node->m_level > a_level )
@@ -950,8 +950,8 @@ namespace pal
     }
 #endif //_DEBUG  
 
-    Node* newRoot;
-    Node* newNode;
+    Node* newRoot = nullptr;
+    Node* newNode = nullptr;
     Branch branch;
 
     if ( InsertRectRec( a_rect, a_id, *a_root, &newNode, a_level ) )   // Root split
@@ -1423,7 +1423,7 @@ namespace pal
     ASSERT( a_rect && a_root );
     ASSERT( *a_root );
 
-    Node* tempNode;
+    Node* tempNode = nullptr;
     ListNode* reInsertList = nullptr;
 
     if ( !RemoveRectRec( a_rect, a_id, *a_root, &reInsertList ) )
@@ -1540,7 +1540,7 @@ namespace pal
   RTREE_TEMPLATE
   void RTREE_QUAL::ReInsert( Node* a_node, ListNode** a_listNode )
   {
-    ListNode* newListNode;
+    ListNode* newListNode = nullptr;
 
     newListNode = AllocListNode();
     newListNode->m_node = a_node;

@@ -62,8 +62,8 @@ class CORE_EXPORT QgsRunProcess: public QObject
     // Deletes the instance of the class
     void die();
 
-    QProcess* mProcess;
-    QgsMessageOutput* mOutput;
+    QProcess* mProcess = nullptr;
+    QgsMessageOutput* mOutput = nullptr;
     QString mCommand;
 };
 

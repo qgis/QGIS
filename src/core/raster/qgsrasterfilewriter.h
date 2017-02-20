@@ -194,10 +194,10 @@ class CORE_EXPORT QgsRasterFileWriter
     QDomDocument mVRTDocument;
     QList<QDomElement> mVRTBands;
 
-    QProgressDialog* mProgressDialog;
+    QProgressDialog* mProgressDialog = nullptr;
 
-    const QgsRasterPipe* mPipe;
-    const QgsRasterInterface* mInput;
+    const QgsRasterPipe* mPipe = nullptr;
+    const QgsRasterInterface* mInput = nullptr;
 };
 
 #endif // QGSRASTERFILEWRITER_H

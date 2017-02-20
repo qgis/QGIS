@@ -14,6 +14,7 @@ class QgsPropertyDefinition
       Double,
       DoublePositive,
       Double0To1,
+      Rotation,
       String,
       Transparency,
       RenderUnits,
@@ -23,7 +24,9 @@ class QgsPropertyDefinition
       BlendMode,
       Point,
       Size,
+      Size2D,
       LineStyle,
+      StrokeWidth,
       FillStyle,
       CapStyle,
       HorizontalAnchor,
@@ -56,6 +59,7 @@ class QgsPropertyDefinition
 
     StandardPropertyTemplate standardTemplate() const;
 
+    bool supportsAssistant() const;
 };
 
 class QgsProperty
@@ -85,6 +89,9 @@ class QgsProperty
     QgsProperty( const QgsProperty& other );
 
     operator bool() const;
+
+    bool operator==( const QgsProperty& other ) const;
+    bool operator!=( const QgsProperty& other ) const;
 
     Type propertyType() const;
 
@@ -129,6 +136,8 @@ class QgsProperty
     void setTransformer( QgsPropertyTransformer* transformer /Transfer/ );
 
     const QgsPropertyTransformer* transformer() const;
+
+    bool convertToTransformer();
 
 };
 

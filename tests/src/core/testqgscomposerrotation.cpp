@@ -56,11 +56,11 @@ class TestQgsComposerRotation : public QObject
     void mapItemRotation(); //test if composer map item rotation is functioning
 
   private:
-    QgsComposition* mComposition;
-    QgsComposerShape* mComposerRect;
-    QgsComposerLabel* mComposerLabel;
-    QgsComposerMap* mComposerMap;
-    QgsRasterLayer* mRasterLayer;
+    QgsComposition* mComposition = nullptr;
+    QgsComposerShape* mComposerRect = nullptr;
+    QgsComposerLabel* mComposerLabel = nullptr;
+    QgsComposerMap* mComposerMap = nullptr;
+    QgsRasterLayer* mRasterLayer = nullptr;
     QString mReport;
 };
 

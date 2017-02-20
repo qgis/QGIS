@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1018</width>
-     <height>19</height>
+     <height>25</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -187,6 +187,7 @@
      <string>&amp;Plugins</string>
     </property>
     <addaction name="mActionManagePlugins"/>
+    <addaction name="mActionInstallFromZip"/>
     <addaction name="separator"/>
     <addaction name="mActionShowPythonDialog"/>
    </widget>
@@ -421,7 +422,6 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="mActionTouch"/>
    <addaction name="mActionPan"/>
    <addaction name="mActionPanToSelected"/>
    <addaction name="mActionZoomIn"/>
@@ -1654,7 +1654,7 @@
   <action name="mActionCheckQgisVersion">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionCheckQgisVersion.svg</normaloff>:/images/themes/default/mActionCheckQgisVersion.svg</iconset>
+     <normaloff>:/images/themes/default/mIconSuccess.svg</normaloff>:/images/themes/default/mIconSuccess.svg</iconset>
    </property>
    <property name="text">
     <string>Check QGIS Version</string>
@@ -1666,7 +1666,7 @@
   <action name="mActionAbout">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionHelpAbout.png</normaloff>:/images/themes/default/mActionHelpAbout.png</iconset>
+     <normaloff>:/images/themes/default/mActionHelpAbout.svg</normaloff>:/images/themes/default/mActionHelpAbout.svg</iconset>
    </property>
    <property name="text">
     <string>About</string>
@@ -1829,7 +1829,7 @@ Ctrl (Cmd) increments by 15 deg.</string>
   <action name="mActionDecorationScaleBar">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionScaleBar.svg</normaloff>:/images/themes/default/scale_bar.png</iconset>
+     <normaloff>:/images/themes/default/mActionScaleBar.svg</normaloff>:/images/themes/default/mActionScaleBar.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Scale Bar</string>
@@ -1875,21 +1875,6 @@ Ctrl (Cmd) increments by 15 deg.</string>
    </property>
    <property name="toolTip">
     <string>Pan Map to Selection</string>
-   </property>
-  </action>
-  <action name="mActionTouch">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset>
-     <normaloff>:/images/themes/default/mActionTouch.png</normaloff>:/images/themes/default/mActionTouch.png</iconset>
-   </property>
-   <property name="text">
-    <string>Touch Zoom and Pan</string>
-   </property>
-   <property name="toolTip">
-    <string>Touch zoom and pan</string>
    </property>
   </action>
   <action name="mActionOffsetCurve">
@@ -2413,7 +2398,7 @@ Acts on currently active editable layer</string>
   <action name="mActionShowSelectedLayers">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionShowSelectedLayers.png</normaloff>:/images/themes/default/mActionShowSelectedLayers.png</iconset>
+     <normaloff>:/images/themes/default/mActionShowSelectedLayers.svg</normaloff>:/images/themes/default/mActionShowSelectedLayers.svg</iconset>
    </property>
    <property name="text">
     <string>Show Selected Layers</string>
@@ -2422,7 +2407,7 @@ Acts on currently active editable layer</string>
   <action name="mActionHideSelectedLayers">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionHideSelectedLayers.png</normaloff>:/images/themes/default/mActionHideSelectedLayers.png</iconset>
+     <normaloff>:/images/themes/default/mActionHideSelectedLayers.svg</normaloff>:/images/themes/default/mActionHideSelectedLayers.svg</iconset>
    </property>
    <property name="text">
     <string>Hide Selected Layers</string>
@@ -2431,7 +2416,7 @@ Acts on currently active editable layer</string>
   <action name="mActionHideDeselectedLayers">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionHideSelectedLayers.png</normaloff>:/images/themes/default/mActionHideSelectedLayers.png</iconset>
+     <normaloff>:/images/themes/default/mActionHideDeselectedLayers.svg</normaloff>:/images/themes/default/mActionHideDeselectedLayers.svg</iconset>
    </property>
    <property name="text">
     <string>Hide Deselected Layers</string>
@@ -2589,6 +2574,15 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Copy and Move Feature(s)</string>
+   </property>
+  </action>
+  <action name="mActionInstallFromZip">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionInstallPluginFromZip.svg</normaloff>:/images/themes/default/mActionInstallPluginFromZip.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Install plugin from ZIP...</string>
    </property>
   </action>
  </widget>

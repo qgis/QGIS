@@ -199,7 +199,7 @@ class QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
     //! to be called by from subclass in close()
     void iteratorClosed() { mSource->iteratorClosed( this ); }
 
-    T* mSource;
+    T* mSource = nullptr;
     bool mOwnSource;
 };
 
@@ -246,7 +246,7 @@ class CORE_EXPORT QgsFeatureIterator
     friend bool operator!= ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 );
 
   protected:
-    QgsAbstractFeatureIterator* mIter;
+    QgsAbstractFeatureIterator* mIter = nullptr;
 };
 
 ////////

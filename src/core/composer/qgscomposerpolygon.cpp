@@ -73,7 +73,7 @@ void QgsComposerPolygon::_draw( QPainter *painter )
   //setup painter scaling to dots so that raster symbology is drawn to scale
   const double dotsPerMM = painter->device()->logicalDpiX() / 25.4;
 
-  QgsRenderContext context = QgsComposerUtils::createRenderContext( mComposition, painter );
+  QgsRenderContext context = QgsComposerUtils::createRenderContextForComposition( mComposition, painter );
   context.setForceVectorOutput( true );
   context.setExpressionContext( createExpressionContext() );
 
@@ -106,7 +106,7 @@ void QgsComposerPolygon::setPolygonStyleSymbol( QgsFillSymbol* symbol )
 void QgsComposerPolygon::_writeXmlStyle( QDomDocument &doc, QDomElement &elmt ) const
 {
   const QDomElement pe = QgsSymbolLayerUtils::saveSymbol( QString(),
-                         mPolygonStyleSymbol.data(),
+                         mPolygonStyleSymbol.get(),
                          doc );
   elmt.appendChild( pe );
 }

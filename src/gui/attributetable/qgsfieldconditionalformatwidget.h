@@ -90,12 +90,12 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
   public slots:
 
   private:
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
     int mEditIndex;
     bool mEditing;
-    QStandardItemModel* mModel;
-    QStandardItemModel* mPresetsModel;
-    QgsSymbol* mSymbol;
+    QStandardItemModel* mModel = nullptr;
+    QStandardItemModel* mPresetsModel = nullptr;
+    QgsSymbol* mSymbol = nullptr;
     QList<QgsConditionalStyle> mPresets;
 
     QList<QgsConditionalStyle> getStyles();

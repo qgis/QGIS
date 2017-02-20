@@ -45,7 +45,7 @@ class APP_EXPORT QgsRelationManagerDialog : public QWidget, private Ui::QgsRelat
     void onSelectionChanged();
 
   private:
-    QgsRelationManager* mRelationManager;
+    QgsRelationManager* mRelationManager = nullptr;
     QList< QgsVectorLayer* > mLayers;
 };
 

@@ -190,9 +190,9 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
       MapUnits, //! Show coordinates in map units
     };
 
-    QgsRelationManagerDialog *mRelationManagerDlg;
-    QgsMapCanvas* mMapCanvas;
-    QgsStyle* mStyle;
+    QgsRelationManagerDialog *mRelationManagerDlg = nullptr;
+    QgsMapCanvas* mMapCanvas = nullptr;
+    QgsStyle* mStyle = nullptr;
 
     void populateStyles();
     void editSymbol( QComboBox* cbo );

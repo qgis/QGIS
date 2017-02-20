@@ -33,6 +33,8 @@ class QgsCompoundCurve: public QgsCurve
     virtual QgsPointV2 endPoint() const;
     virtual void points( QList<QgsPointV2>& pts ) const;
     virtual int numPoints() const;
+    bool isEmpty() const;
+
     /** Returns a new line string geometry corresponding to a segmentized approximation
      * of the curve.
      * @param tolerance segmentation tolerance

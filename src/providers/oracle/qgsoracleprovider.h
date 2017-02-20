@@ -154,7 +154,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
     static bool exec( QSqlQuery &qry, QString sql );
 
-    virtual bool isSaveAndLoadStyleToDBSupported() const override { return true; }
+    virtual bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
 
     /**
      * Switch to oracle workspace
@@ -295,7 +295,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
     QMap<QVariant, QgsFeatureId> mKeyToFid;  //! map key values to feature id
     QMap<QgsFeatureId, QVariant> mFidToKey;  //! map feature back to fea
-    QgsOracleConn *mConnection;
+    QgsOracleConn *mConnection = nullptr;
 
     bool mHasSpatialIndex;                   //! Geometry column is indexed
     QString mSpatialIndexName;               //! name of spatial index of geometry column

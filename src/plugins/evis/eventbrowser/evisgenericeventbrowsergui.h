@@ -87,16 +87,16 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
     int mDefaultEventImagePathField;
 
     //! \brief Pointer to the QgisInferface
-    QgisInterface* mInterface;
+    QgisInterface* mInterface = nullptr;
 
     //! \brief Pointer to the map canvas
-    QgsMapCanvas* mCanvas;
+    QgsMapCanvas* mCanvas = nullptr;
 
     //! \brief Pointer to the vector layer
-    QgsVectorLayer* mVectorLayer;
+    QgsVectorLayer* mVectorLayer = nullptr;
 
     //! \brief Pointer to the vector data provider
-    QgsVectorDataProvider* mDataProvider;
+    QgsVectorDataProvider* mDataProvider = nullptr;
 
     //! \brief QPixmap holding the default highlighting symbol
     QPixmap mHighlightSymbol;

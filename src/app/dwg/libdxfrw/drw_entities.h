@@ -251,7 +251,7 @@ class DRW_Entity
   private:
     DRW_Coord extAxisX;
     DRW_Coord extAxisY;
-    DRW_Variant* curr;
+    DRW_Variant* curr = nullptr;
 };
 
 
@@ -1141,13 +1141,13 @@ class DRW_Hatch : public DRW_Point
     }
 
     DRW_HatchLoop *loop;       //!< Current loop to add data
-    DRW_Line *line;
-    DRW_Arc *arc;
-    DRW_Ellipse *ellipse;
-    DRW_Spline *spline;
-    DRW_LWPolyline *pline;
-    DRW_Point *pt;
-    DRW_Vertex2D *plvert;
+    DRW_Line *line = nullptr;
+    DRW_Arc *arc = nullptr;
+    DRW_Ellipse *ellipse = nullptr;
+    DRW_Spline *spline = nullptr;
+    DRW_LWPolyline *pline = nullptr;
+    DRW_Point *pt = nullptr;
+    DRW_Vertex2D *plvert = nullptr;
     bool ispol;
 };
 

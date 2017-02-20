@@ -58,10 +58,10 @@ class TestQgsDualView : public QObject
     void testAttributeFormSharedValueScanning();
 
   private:
-    QgsMapCanvas* mCanvas;
-    QgsVectorLayer* mPointsLayer;
+    QgsMapCanvas* mCanvas = nullptr;
+    QgsVectorLayer* mPointsLayer = nullptr;
     QString mTestDataDir;
-    QgsDualView* mDualView;
+    QgsDualView* mDualView = nullptr;
 };
 
 void TestQgsDualView::initTestCase()

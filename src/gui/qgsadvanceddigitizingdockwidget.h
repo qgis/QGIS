@@ -22,7 +22,7 @@
 
 #include <ui_qgsadvanceddigitizingdockwidgetbase.h>
 #include "qgis_gui.h"
-
+#include <memory>
 
 class QgsAdvancedDigitizingCanvasItem;
 class QgsMapCanvas;
@@ -186,10 +186,10 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
         void toggleRelative();
 
       private:
-        QLineEdit* mLineEdit;
-        QToolButton* mLockerButton;
-        QToolButton* mRelativeButton;
-        QToolButton* mRepeatingLockButton;
+        QLineEdit* mLineEdit = nullptr;
+        QToolButton* mLockerButton = nullptr;
+        QToolButton* mRelativeButton = nullptr;
+        QToolButton* mRepeatingLockButton = nullptr;
         LockMode mLockMode;
         bool mRepeatingLock;
         bool mRelative;
@@ -271,13 +271,13 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! Additional constraints are used to place perpendicular/parallel segments to snapped segments on the canvas
     AdditionalConstraint additionalConstraint() const  { return mAdditionalConstraint; }
     //! Constraint on the angle
-    const CadConstraint* constraintAngle() const  { return mAngleConstraint.data(); }
+    const CadConstraint* constraintAngle() const  { return mAngleConstraint.get(); }
     //! Constraint on the distance
-    const CadConstraint* constraintDistance() const { return mDistanceConstraint.data(); }
+    const CadConstraint* constraintDistance() const { return mDistanceConstraint.get(); }
     //! Constraint on the X coordinate
-    const CadConstraint* constraintX() const { return mXConstraint.data(); }
+    const CadConstraint* constraintX() const { return mXConstraint.get(); }
     //! Constraint on the Y coordinate
-    const CadConstraint* constraintY() const { return mYConstraint.data(); }
+    const CadConstraint* constraintY() const { return mYConstraint.get(); }
     //! Constraint on a common angle
     bool commonAngleConstraint() const { return mCommonAngleConstraint; }
 
@@ -441,8 +441,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      */
     void updateConstraintValue( CadConstraint* constraint, const QString& textValue, bool convertExpression = false );
 
-    QgsMapCanvas* mMapCanvas;
-    QgsAdvancedDigitizingCanvasItem* mCadPaintItem;
+    QgsMapCanvas* mMapCanvas = nullptr;
+    QgsAdvancedDigitizingCanvasItem* mCadPaintItem = nullptr;
 
     CadCapacities mCapacities;
 
@@ -455,10 +455,10 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     QgsMapMouseEvent::SnappingMode mSnappingMode;
 
     // constraints
-    QScopedPointer< CadConstraint > mAngleConstraint;
-    QScopedPointer< CadConstraint > mDistanceConstraint;
-    QScopedPointer< CadConstraint > mXConstraint;
-    QScopedPointer< CadConstraint > mYConstraint;
+    std::unique_ptr< CadConstraint > mAngleConstraint;
+    std::unique_ptr< CadConstraint > mDistanceConstraint;
+    std::unique_ptr< CadConstraint > mXConstraint;
+    std::unique_ptr< CadConstraint > mYConstraint;
     AdditionalConstraint mAdditionalConstraint;
     int mCommonAngleConstraint; // if 0: do not snap to common angles
 
@@ -470,10 +470,10 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     bool mSessionActive;
 
     // error message
-    QScopedPointer<QgsMessageBarItem> mErrorMessage;
+    std::unique_ptr<QgsMessageBarItem> mErrorMessage;
 
     // UI
-    QAction* mEnableAction;
+    QAction* mEnableAction = nullptr;
     QMap< QAction*, int > mCommonAngleActions; // map the common angle actions with their angle values
     QMap< QAction*, QgsMapMouseEvent::SnappingMode > mSnappingActions; // map the snapping mode actions with their values
 

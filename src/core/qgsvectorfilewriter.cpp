@@ -79,7 +79,6 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     : mDS( nullptr )
     , mLayer( nullptr )
     , mOgrRef( nullptr )
-    , mGeom( nullptr )
     , mError( NoError )
     , mCodec( nullptr )
     , mWkbType( geometryType )
@@ -108,7 +107,6 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& vectorFileName,
     : mDS( nullptr )
     , mLayer( nullptr )
     , mOgrRef( nullptr )
-    , mGeom( nullptr )
     , mError( NoError )
     , mCodec( nullptr )
     , mWkbType( geometryType )
@@ -322,9 +320,13 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   }
 
   if ( action == CreateOrOverwriteFile )
+  {
     QgsDebugMsg( "Created data source" );
+  }
   else
+  {
     QgsDebugMsg( "Opened data source in update mode" );
+  }
 
   // use appropriate codec
   mCodec = QTextCodec::codecForName( fileEncoding.toLocal8Bit().constData() );
@@ -622,11 +624,6 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   QgsDebugMsg( "Done creating fields" );
 
   mWkbType = geometryType;
-  if ( mWkbType != QgsWkbTypes::NoGeometry )
-  {
-    // create geometry which will be used for import
-    mGeom = createEmptyGeometry( mWkbType );
-  }
 
   if ( newFilename )
     *newFilename = vectorFileName;
@@ -2069,7 +2066,8 @@ OGRFeatureH QgsVectorFileWriter::createFeature( const QgsFeature& feature )
       else // wkb type matches
       {
         QByteArray wkb( geom.exportToWkb() );
-        OGRErr err = OGR_G_ImportFromWkb( mGeom, reinterpret_cast<unsigned char *>( const_cast<char *>( wkb.constData() ) ), wkb.length() );
+        OGRGeometryH ogrGeom = createEmptyGeometry( mWkbType );
+        OGRErr err = OGR_G_ImportFromWkb( ogrGeom, reinterpret_cast<unsigned char *>( const_cast<char *>( wkb.constData() ) ), wkb.length() );
         if ( err != OGRERR_NONE )
         {
           mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
@@ -2080,8 +2078,8 @@ OGRFeatureH QgsVectorFileWriter::createFeature( const QgsFeature& feature )
           return nullptr;
         }
 
-        // set geometry (ownership is not passed to OGR)
-        OGR_F_SetGeometry( poFeature, mGeom );
+        // set geometry (ownership is passed to OGR)
+        OGR_F_SetGeometryDirectly( poFeature, ogrGeom );
       }
     }
     else
@@ -2118,11 +2116,6 @@ bool QgsVectorFileWriter::writeFeature( OGRLayerH layer, OGRFeatureH feature )
 
 QgsVectorFileWriter::~QgsVectorFileWriter()
 {
-  if ( mGeom )
-  {
-    OGR_G_DestroyGeometry( mGeom );
-  }
-
   if ( mDS )
   {
     OGR_DS_Destroy( mDS );
@@ -2291,6 +2284,9 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     }
   }
 
+  int lastProgressReport = 0;
+  long total = options.onlySelectedFeatures ? layer->selectedFeatureCount() : layer->featureCount();
+
   if ( layer->providerType() == QLatin1String( "ogr" ) && layer->dataProvider() )
   {
     QStringList theURIParts = layer->dataProvider()->dataSourceUri().split( '|' );
@@ -2311,16 +2307,33 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
       {
         req.setFilterFids( layer->selectedFeatureIds() );
       }
+      req.setSubsetOfAttributes( QgsAttributeList() );
       QgsFeatureIterator fit = layer->getFeatures( req );
       QgsFeature fet;
-
+      long scanned = 0;
       while ( fit.nextFeature( fet ) )
       {
+        if ( options.feedback && options.feedback->isCanceled() )
+        {
+          return Canceled;
+        }
+        if ( options.feedback )
+        {
+          //dedicate first 5% of progress bar to this scan
+          int newProgress = ( 5.0 * scanned ) / total;
+          if ( newProgress != lastProgressReport )
+          {
+            lastProgressReport = newProgress;
+            options.feedback->setProgress( lastProgressReport );
+          }
+        }
+
         if ( fet.hasGeometry() && QgsWkbTypes::isMultiType( fet.geometry().geometry()->wkbType() ) )
         {
           destWkbType = QgsWkbTypes::multiType( destWkbType );
           break;
         }
+        scanned++;
       }
     }
   }
@@ -2431,8 +2444,28 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
   writer->mFields = layer->fields();
 
   // write all features
+  long saved = 0;
+  int initialProgress = lastProgressReport;
   while ( fit.nextFeature( fet ) )
   {
+    if ( options.feedback && options.feedback->isCanceled() )
+    {
+      delete writer;
+      return Canceled;
+    }
+
+    saved++;
+    if ( options.feedback )
+    {
+      //avoid spamming progress reports
+      int newProgress = initialProgress + (( 100.0 - initialProgress ) * saved ) / total;
+      if ( newProgress < 100 && newProgress != lastProgressReport )
+      {
+        lastProgressReport = newProgress;
+        options.feedback->setProgress( lastProgressReport );
+      }
+    }
+
     if ( shallTransform )
     {
       try
@@ -3092,3 +3125,4 @@ bool QgsVectorFileWriter::areThereNewFieldsToCreate( const QString& datasetName,
   OGR_DS_Destroy( hDS );
   return ret;
 }
+

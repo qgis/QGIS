@@ -113,10 +113,13 @@ void QgsComposerTableBackgroundColorsDialog::setGuiElementValues()
   Q_FOREACH ( QgsComposerTableV2::CellStyleGroup styleGroup, mCheckBoxMap.keys() )
   {
     mCheckBoxMap.value( styleGroup )->setChecked( mComposerTable->cellStyle( styleGroup )->enabled );
-    mColorButtonMap.value( styleGroup )->setEnabled( mComposerTable->cellStyle( styleGroup )->enabled );
-    mColorButtonMap.value( styleGroup )->setColor( mComposerTable->cellStyle( styleGroup )->cellBackgroundColor );
-    mColorButtonMap.value( styleGroup )->setAllowAlpha( true );
-    mColorButtonMap.value( styleGroup )->setColorDialogTitle( tr( "Select background color" ) );
+    QgsColorButton* button = mColorButtonMap.value( styleGroup );
+    if ( !button )
+      continue;
+    button->setEnabled( mComposerTable->cellStyle( styleGroup )->enabled );
+    button->setColor( mComposerTable->cellStyle( styleGroup )->cellBackgroundColor );
+    button->setAllowAlpha( true );
+    button->setColorDialogTitle( tr( "Select background color" ) );
   }
 
   mDefaultColorButton->setColor( mComposerTable->backgroundColor() );

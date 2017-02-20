@@ -66,12 +66,12 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     void setValue( const QVariant& value ) override;
 
   private:
-    QComboBox* mComboBox;
-    QListWidget* mListWidget;
-    QLineEdit* mLineEdit;
+    QComboBox* mComboBox = nullptr;
+    QListWidget* mListWidget = nullptr;
+    QLineEdit* mLineEdit = nullptr;
 
     QgsValueRelationFieldFormatter::ValueRelationCache mCache;
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
 
     friend class QgsValueRelationWidgetFactory;
 };

@@ -77,7 +77,7 @@ class ANALYSIS_EXPORT QgsGeometrySnapper : public QObject
   private:
     struct ProcessFeatureWrapper
     {
-      QgsGeometrySnapper* instance;
+      QgsGeometrySnapper* instance = nullptr;
       double snapTolerance;
       SnapMode mode;
       explicit ProcessFeatureWrapper( QgsGeometrySnapper* _instance, double snapTolerance, SnapMode mode )
@@ -90,7 +90,7 @@ class ANALYSIS_EXPORT QgsGeometrySnapper : public QObject
 
     enum PointFlag { SnappedToRefNode, SnappedToRefSegment, Unsnapped };
 
-    QgsVectorLayer* mReferenceLayer;
+    QgsVectorLayer* mReferenceLayer = nullptr;
     QgsFeatureList mInputFeatures;
 
     QgsSpatialIndex mIndex;
@@ -114,7 +114,7 @@ class QgsSnapIndex
       {}
       QgsPointV2 point() const { return geom->vertexAt( vidx ); }
 
-      const QgsAbstractGeometry* geom;
+      const QgsAbstractGeometry* geom = nullptr;
       QgsVertexId vidx;
     };
 
@@ -136,7 +136,7 @@ class QgsSnapIndex
       public:
         explicit PointSnapItem( const CoordIdx* _idx );
         QgsPointV2 getSnapPoint( const QgsPointV2 &/*p*/ ) const override;
-        const CoordIdx* idx;
+        const CoordIdx* idx = nullptr;
     };
 
     class SegmentSnapItem : public QgsSnapIndex::SnapItem
@@ -146,8 +146,8 @@ class QgsSnapIndex
         QgsPointV2 getSnapPoint( const QgsPointV2 &p ) const override;
         bool getIntersection( const QgsPointV2& p1, const QgsPointV2& p2, QgsPointV2& inter ) const;
         bool getProjection( const QgsPointV2 &p, QgsPointV2 &pProj );
-        const CoordIdx* idxFrom;
-        const CoordIdx* idxTo;
+        const CoordIdx* idxFrom = nullptr;
+        const CoordIdx* idxTo = nullptr;
     };
 
     QgsSnapIndex( const QgsPointV2& origin, double cellSize );

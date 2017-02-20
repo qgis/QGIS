@@ -11,14 +11,14 @@ class QgsLayerDefinition
 #include <qgslayerdefinition.h>
 %End
   public:
-    /** Loads the QLR at path into QGIS.  New layers are added to rootGroup and the map layer registry*/
-    static bool loadLayerDefinition( const QString & path, QgsLayerTreeGroup* rootGroup, QString &errorMessage /Out/ );
-    /** Loads the QLR from the XML document.  New layers are added to rootGroup and the map layer registry */
-    static bool loadLayerDefinition( QDomDocument doc, QgsLayerTreeGroup* rootGroup, QString &errorMessage /Out/ );
-    /** Export the selected layer tree nodes to a QLR file */
+    static bool loadLayerDefinition( const QString & path, QgsProject* project, QgsLayerTreeGroup* rootGroup, QString &errorMessage /Out/ );
+    static bool loadLayerDefinition( QDomDocument doc, QgsProject* project, QgsLayerTreeGroup* rootGroup, QString &errorMessage /Out/, const QgsPathResolver& pathResolver );
     static bool exportLayerDefinition( QString path, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage /Out/ );
-    /** Export the selected layer tree nodes to a QLR-XML document */
-    static bool exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage, const QString& relativeBasePath = QString::null );
+    static bool exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage /Out/, const QgsPathResolver& pathResolver );
+
+    static QDomDocument exportLayerDefinitionLayers( const QList<QgsMapLayer*>& layers, const QgsPathResolver& pathResolver );
+    static QList<QgsMapLayer*> loadLayerDefinitionLayers( QDomDocument& document, const QgsPathResolver& pathResolver ) /Factory/;
+    static QList<QgsMapLayer*> loadLayerDefinitionLayers( const QString &qlrfile ) /Factory/;
 
     /**
      * Class used to work with layer dependencies stored in a XML project or layer definition file

@@ -52,7 +52,7 @@ class APP_EXPORT QgsProjectLayerGroupDialog: public QDialog, private Ui::QgsProj
     QString mProjectPath;
     bool mShowEmbeddedContent;
 
-    QgsLayerTreeGroup* mRootGroup;
+    QgsLayerTreeGroup* mRootGroup = nullptr;
 };
 
 #endif //QGSPROJECTLAYERGROUPDIALOG_H

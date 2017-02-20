@@ -448,7 +448,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
           mWktHasPrefix = true;
         geom = geomFromWkt( sWkt, mWktHasPrefix );
 
-        if ( !geom.isEmpty() )
+        if ( !geom.isNull() )
         {
           QgsWkbTypes::Type type = geom.wkbType();
           if ( type != QgsWkbTypes::NoGeometry )

@@ -56,6 +56,27 @@ bool QgsVectorLayerEditUtils::insertVertex( double x, double y, QgsFeatureId atF
   return true;
 }
 
+bool QgsVectorLayerEditUtils::insertVertex( const QgsPointV2& point, QgsFeatureId atFeatureId, int beforeVertex )
+{
+  if ( !L->hasGeometryType() )
+    return false;
+
+  QgsGeometry geometry;
+  if ( !cache()->geometry( atFeatureId, geometry ) )
+  {
+    // it's not in cache: let's fetch it from layer
+    QgsFeature f;
+    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.hasGeometry() )
+      return false; // geometry not found
+
+    geometry = f.geometry();
+  }
+
+  geometry.insertVertex( point, beforeVertex );
+
+  L->editBuffer()->changeGeometry( atFeatureId, geometry );
+  return true;
+}
 
 bool QgsVectorLayerEditUtils::moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex )
 {
@@ -112,7 +133,7 @@ QgsVectorLayer::EditResult QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId f
   }
 
   L->editBuffer()->changeGeometry( featureId, geometry );
-  return !geometry.isEmpty() ? QgsVectorLayer::Success : QgsVectorLayer::EmptyGeometry;
+  return !geometry.isNull() ? QgsVectorLayer::Success : QgsVectorLayer::EmptyGeometry;
 }
 
 int QgsVectorLayerEditUtils::addRing( const QList<QgsPoint>& ring, const QgsFeatureIds& targetFeatureIds, QgsFeatureId* modifiedFeatureId )
@@ -543,7 +564,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry& geom )
   if ( !L->hasGeometryType() )
     return 1;
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
   {
     return 1;
   }

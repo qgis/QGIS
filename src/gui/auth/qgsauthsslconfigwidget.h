@@ -164,19 +164,19 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     QSslCertificate mCert;
     QList<QSslCertificate> mConnectionCAs;
 
-    QTreeWidgetItem *mProtocolItem;
-    QComboBox *mProtocolCmbBx;
-    QTreeWidgetItem *mIgnoreErrorsItem;
-    QTreeWidgetItem *mVerifyModeItem;
-    QComboBox *mVerifyPeerCmbBx;
-    QTreeWidgetItem *mVerifyDepthItem;
-    QSpinBox *mVerifyDepthSpnBx;
+    QTreeWidgetItem *mProtocolItem = nullptr;
+    QComboBox *mProtocolCmbBx = nullptr;
+    QTreeWidgetItem *mIgnoreErrorsItem = nullptr;
+    QTreeWidgetItem *mVerifyModeItem = nullptr;
+    QComboBox *mVerifyPeerCmbBx = nullptr;
+    QTreeWidgetItem *mVerifyDepthItem = nullptr;
+    QSpinBox *mVerifyDepthSpnBx = nullptr;
 
     bool mCanSave;
 
     bool mDisabled;
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout *mAuthNotifyLayout = nullptr;
+    QLabel *mAuthNotify = nullptr;
 };
 
 //////////////// Embed in dialog ///////////////////
@@ -210,8 +210,8 @@ class GUI_EXPORT QgsAuthSslConfigDialog : public QDialog
     void checkCanSave( bool cansave );
 
   private:
-    QgsAuthSslConfigWidget *mSslConfigWdgt;
-    QPushButton *mSaveButton;
+    QgsAuthSslConfigWidget *mSslConfigWdgt = nullptr;
+    QPushButton *mSaveButton = nullptr;
 };
 
 #endif // QGSAUTHSSLCONFIGWIDGET_H

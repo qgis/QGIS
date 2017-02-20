@@ -102,7 +102,7 @@ class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale &scale );
     QgsMapUnitScale mapUnitScale() const;
 
-    double estimateMaxBleed() const;
+    double estimateMaxBleed( const QgsRenderContext& context ) const;
 
     double dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext& context ) const;
     QColor dxfColor( QgsSymbolRenderContext& context ) const;
@@ -172,7 +172,7 @@ class QgsGradientFillSymbolLayer : QgsFillSymbolLayer
 
     virtual QgsGradientFillSymbolLayer* clone() const /Factory/;
 
-    double estimateMaxBleed() const;
+    double estimateMaxBleed( const QgsRenderContext& context ) const;
 
     /** Type of gradient, e.g., linear or radial*/
     GradientType gradientType() const;
@@ -270,7 +270,7 @@ class QgsShapeburstFillSymbolLayer : QgsFillSymbolLayer
 
     virtual QgsShapeburstFillSymbolLayer* clone() const /Factory/;
 
-    double estimateMaxBleed() const;
+    double estimateMaxBleed( const QgsRenderContext& context ) const;
 
     /** Sets the blur radius, which controls the amount of blurring applied to the fill.
      * @param blurRadius Radius for fill blur. Values between 0 - 17 are valid, where higher values results in a stronger blur. Set to 0 to disable blur.
@@ -476,7 +476,7 @@ class QgsImageFillSymbolLayer: QgsFillSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale& scale );
     QgsMapUnitScale mapUnitScale() const;
 
-    virtual double estimateMaxBleed() const;
+    virtual double estimateMaxBleed( const QgsRenderContext& context ) const;
 
     virtual double dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext& context ) const;
     virtual QColor dxfColor( QgsSymbolRenderContext& context ) const;
@@ -519,7 +519,7 @@ class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
     void stopRender( QgsSymbolRenderContext& context );
     QgsStringMap properties() const;
     virtual QgsRasterFillSymbolLayer* clone() const;
-    virtual double estimateMaxBleed() const;
+    virtual double estimateMaxBleed( const QgsRenderContext& context ) const;
 
     //override QgsImageFillSymbolLayer's support for sub symbols
     virtual QgsSymbol* subSymbol();
@@ -762,7 +762,7 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
-    double estimateMaxBleed() const;
+    double estimateMaxBleed( const QgsRenderContext& context ) const;
 
     QString ogrFeatureStyleWidth( double widthScaleFactor ) const;
 
@@ -870,7 +870,7 @@ class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
-    double estimateMaxBleed() const;
+    double estimateMaxBleed( const QgsRenderContext& context ) const;
 
     //getters and setters
     double distanceX() const;

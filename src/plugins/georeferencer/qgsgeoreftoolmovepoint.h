@@ -45,7 +45,7 @@ class QgsGeorefToolMovePoint : public QgsMapTool
     QPoint mStartPointMapCoords;
 
     //! Rubberband that shows the feature being moved
-    QRubberBand *mRubberBand;
+    QRubberBand *mRubberBand = nullptr;
 };
 
 #endif // QGSGEOREFTOOLMOVEPOINT_H

@@ -172,9 +172,9 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     void addTopoField( QgsFields &fields );
     int mField;
     bool mValid;
-    QgsGrassVectorMap *mMap;
+    QgsGrassVectorMap *mMap = nullptr;
     struct field_info *mFieldInfo;
-    dbDriver *mDriver;
+    dbDriver *mDriver = nullptr;
 
     bool mHasTable;
     // index of key column

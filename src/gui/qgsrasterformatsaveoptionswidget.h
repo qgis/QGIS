@@ -138,7 +138,7 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
 
     QString mFormat;
     QString mProvider;
-    QgsRasterLayer* mRasterLayer;
+    QgsRasterLayer* mRasterLayer = nullptr;
     QString mRasterFileName;
     QMap< QString, QString> mOptionsMap;
     static QMap< QString, QStringList > sBuiltinProfiles;

@@ -32,8 +32,8 @@ class QgsComposerAttributeTableWidget: public QgsComposerItemBaseWidget, private
     ~QgsComposerAttributeTableWidget();
 
   private:
-    QgsComposerAttributeTableV2* mComposerTable;
-    QgsComposerFrame* mFrame;
+    QgsComposerAttributeTableV2* mComposerTable = nullptr;
+    QgsComposerFrame* mFrame = nullptr;
 
     //! Blocks / unblocks the signals of all GUI elements
     void blockAllSignals( bool b );

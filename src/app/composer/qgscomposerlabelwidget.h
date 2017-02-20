@@ -51,7 +51,7 @@ class QgsComposerLabelWidget: public QgsComposerItemBaseWidget, private Ui::QgsC
     void setGuiElementValues();
 
   private:
-    QgsComposerLabel* mComposerLabel;
+    QgsComposerLabel* mComposerLabel = nullptr;
 
     void blockAllSignals( bool block );
 };

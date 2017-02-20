@@ -48,7 +48,7 @@ void QgsTipGui::init()
 
   showTip( myTip );
 
-  QPushButton *pb;
+  QPushButton *pb = nullptr;
   pb = new QPushButton( tr( "&Previous" ) );
   connect( pb, SIGNAL( clicked() ), this, SLOT( prevClicked() ) );
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );

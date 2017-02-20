@@ -360,10 +360,10 @@ class QgsDelimitedTextFile : public QObject
 
     QString mFileName;
     QString mEncoding;
-    QFile *mFile;
-    QTextStream *mStream;
+    QFile *mFile = nullptr;
+    QTextStream *mStream = nullptr;
     bool mUseWatcher;
-    QFileSystemWatcher *mWatcher;
+    QFileSystemWatcher *mWatcher = nullptr;
 
     // Parameters common to parsers
     bool mDefinitionValid;

@@ -49,7 +49,7 @@ class ANALYSIS_EXPORT QgsInterpolator
     //! A layer together with the information about interpolation attribute / z-coordinate interpolation and the type (point, structure line, breakline)
     struct LayerData
     {
-      QgsVectorLayer* vectorLayer;
+      QgsVectorLayer* vectorLayer = nullptr;
       bool zCoordInterpolation;
       int interpolationAttribute;
       InputType mInputType;

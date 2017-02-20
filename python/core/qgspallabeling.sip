@@ -270,6 +270,12 @@ class QgsPalLayerSettings
       AlwaysShow
     };
 
+    /**
+     * Returns the labeling property definitions.
+     * @note added in QGIS 3.0
+     */
+    static const QgsPropertiesDefinition& propertyDefinitions();
+
     // whether to label this layer
     bool enabled;
 
@@ -460,8 +466,6 @@ class QgsPalLayerSettings
     int mFeatsSendingToPal; // total features tested for sending into PAL (relative to maxNumLabels)
     int mFeatsRegPal; // number of features registered in PAL, when using limitNumLabels
 
-    static const QgsPropertiesDefinition PROPERTY_DEFINITIONS;
-
 };
 
 class QgsLabelCandidate
@@ -552,7 +556,6 @@ class QgsPalLabeling
     //! called to find out whether the layer is used for labeling
     //! @note added in 2.4
     static bool staticWillUseLayer( QgsVectorLayer* layer );
-    static bool staticWillUseLayer( const QString& layerID );
 
     //! @note not available in python bindings
     // void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
@@ -560,7 +563,6 @@ class QgsPalLabeling
     //! load/save engine settings to project file
     void loadEngineSettings();
     void saveEngineSettings();
-    void clearEngineSettings();
 
     /** Prepares a geometry for registration with PAL. Handles reprojection, rotation, clipping, etc.
      * @param geometry geometry to prepare

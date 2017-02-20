@@ -60,8 +60,8 @@ class GUI_EXPORT QgsMapLayerStyleManagerWidget : public QgsMapLayerConfigWidget
     void loadStyle();
 
   private:
-    QStandardItemModel* mModel;
-    QListView* mStyleList;
+    QStandardItemModel* mModel = nullptr;
+    QListView* mStyleList = nullptr;
 };
 
 #endif // QGSMAPLAYERSTYLEMANAGERWIDGET_H

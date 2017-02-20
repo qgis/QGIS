@@ -37,7 +37,7 @@ class GUI_EXPORT QgsVectorFieldSymbolLayerWidget: public QgsSymbolLayerWidget, p
     virtual QgsSymbolLayer* symbolLayer() override;
 
   protected:
-    QgsVectorFieldSymbolLayer* mLayer;
+    QgsVectorFieldSymbolLayer* mLayer = nullptr;
 
   private slots:
     void on_mScaleSpinBox_valueChanged( double d );

@@ -174,10 +174,74 @@ class QgsPointV2: public QgsAbstractGeometry
     double distanceSquared( const QgsPointV2& other ) const;
 
     /**
+     * Returns the 3D distance between this point and a specified x, y, z coordinate. In certain
+     * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
+     * when comparing distances.
+     * @note added in QGIS 3.0
+     * @see distanceSquared()
+    */
+    double distance3D( double x, double y, double z ) const;
+
+    /**
+     * Returns the 3D distance between this point and another point. In certain
+     * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
+     * when comparing distances.
+     * @note added in QGIS 3.0
+    */
+    double distance3D( const QgsPointV2& other ) const;
+
+    /**
+     * Returns the 3D squared distance between this point a specified x, y, z coordinate. Calling
+     * this is faster than calling distance(), and may be useful in use cases such as comparing
+     * distances where the extra expense of calling distance() is not required.
+     * @see distance()
+     * @note added in QGIS 3.0
+    */
+    double distanceSquared3D( double x, double y, double z ) const;
+
+    /**
+     * Returns the 3D squared distance between this point another point. Calling
+     * this is faster than calling distance(), and may be useful in use cases such as comparing
+     * distances where the extra expense of calling distance() is not required.
+     * @see distance()
+     * @note added in QGIS 3.0
+    */
+    double distanceSquared3D( const QgsPointV2& other ) const;
+
+    /**
      * Calculates azimuth between this point and other one (clockwise in degree, starting from north)
      * @note added in QGIS 3.0
      */
     double azimuth( const QgsPointV2& other ) const;
+
+    /** Returns a new point which correspond to this point projected by a specified distance
+     * with specified angles (azimuth and inclination).
+     * M value is preserved.
+     * @param distance distance to project
+     * @param azimuth angle to project in X Y, clockwise in degrees starting from north
+     * @param inclination angle to project in Z (3D)
+     * @return The point projected. If a 2D point is projected a 3D point will be returned except if
+     *  inclination is 90. A 3D point is always returned if a 3D point is projected.
+     * Example:
+     * \code{.py}
+     *   p = QgsPointV2( 1, 2 ) # 2D point
+     *   pr = p.project ( 1, 0 )
+     *   # pr is a 2D point: 'Point (1 3)'
+     *   pr = p.project ( 1, 0, 90 )
+     *   # pr is a 2D point: 'Point (1 3)'
+     *   pr = p.project (1, 0, 0 )
+     *   # pr is a 3D point: 'PointZ (1 2 1)'
+     *   p = QgsPointV2( QgsWkbTypes.PointZ, 1, 2, 2 ) # 3D point
+     *   pr = p.project ( 1, 0 )
+     *   # pr is a 3D point: 'PointZ (1 3 2)'
+     *   pr = p.project ( 1, 0, 90 )
+     *   # pr is a 3D point: 'PointZ (1 3 2)'
+     *   pr = p.project (1, 0, 0 )
+     *   # pr is a 3D point: 'PointZ (1 2 3)'
+     * \endcode
+     * @note added in QGIS 3.0
+     */
+    QgsPointV2 project( double distance, double azimuth, double inclination = 90.0 ) const;
 
     /**
      * Calculates the vector obtained by subtracting a point from this point.
@@ -216,6 +280,7 @@ class QgsPointV2: public QgsAbstractGeometry
     virtual int dimension() const;
     virtual QgsPointV2* clone() const /Factory/;
     void clear();
+    bool isEmpty() const;
     virtual bool fromWkb( QgsConstWkbPtr& wkb );
     virtual bool fromWkt( const QString& wkt );
     QByteArray asWkb() const;

@@ -188,7 +188,7 @@ class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
 
   private:
     QPixmap createPreview( const QString& entry ) const;
-    QgsSvgSelectorLoader* mSvgLoader;
+    QgsSvgSelectorLoader* mSvgLoader = nullptr;
 
   private slots:
 
@@ -215,7 +215,7 @@ class GUI_EXPORT QgsSvgSelectorGroupsModel : public QStandardItemModel
     ~QgsSvgSelectorGroupsModel();
 
   private:
-    QgsSvgGroupLoader* mLoader;
+    QgsSvgGroupLoader* mLoader = nullptr;
     QHash< QString, QStandardItem* > mPathItemHash;
 
   private slots:
@@ -296,9 +296,9 @@ class GUI_EXPORT QgsSvgSelectorDialog : public QDialog
     QgsSvgSelectorWidget* svgSelector() { return mSvgSelector; }
 
   protected:
-    QVBoxLayout* mLayout;
-    QDialogButtonBox* mButtonBox;
-    QgsSvgSelectorWidget* mSvgSelector;
+    QVBoxLayout* mLayout = nullptr;
+    QDialogButtonBox* mButtonBox = nullptr;
+    QgsSvgSelectorWidget* mSvgSelector = nullptr;
 };
 
 #endif // QGSSVGSELECTORWIDGET_H

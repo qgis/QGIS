@@ -439,6 +439,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
 
   // setup user interface
   setupUi( this );
+  this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
   mModel = new QgsGraduatedSymbolRendererModel( this );
 
@@ -778,7 +779,7 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
 
   int nclasses = spinGraduatedClasses->value();
 
-  QScopedPointer<QgsColorRamp> ramp( btnColorRamp->colorRamp() );
+  std::unique_ptr<QgsColorRamp> ramp( btnColorRamp->colorRamp() );
   if ( !ramp )
   {
     QMessageBox::critical( this, tr( "Error" ), tr( "No color ramp defined." ) );
@@ -817,7 +818,7 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
       QMessageBox::critical( this, tr( "Error" ), tr( "No color ramp defined." ) );
       return;
     }
-    mRenderer->setSourceColorRamp( ramp.take() );
+    mRenderer->setSourceColorRamp( ramp.release() );
   }
   else
   {
@@ -839,11 +840,11 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
 
 void QgsGraduatedSymbolRendererWidget::reapplyColorRamp()
 {
-  QScopedPointer< QgsColorRamp > ramp( btnColorRamp->colorRamp() );
+  std::unique_ptr< QgsColorRamp > ramp( btnColorRamp->colorRamp() );
   if ( !ramp )
     return;
 
-  mRenderer->updateColorRamp( ramp.take() );
+  mRenderer->updateColorRamp( ramp.release() );
   mRenderer->updateSymbols( mGraduatedSymbol );
   refreshSymbolView();
 }

@@ -78,7 +78,7 @@ class Ogr2OgrClipExtent(GdalAlgorithm):
         arguments.append(regionCoords[3])
         arguments.append('-clipsrc spat_extent')
 
-        if len(options) > 0:
+        if options is not None and len(options.strip()) > 0:
             arguments.append(options)
 
         arguments.append(output)

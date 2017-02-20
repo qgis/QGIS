@@ -70,7 +70,7 @@ class TestQgsMapLayer : public QObject
 
 
   private:
-    QgsMapLayer * mpLayer;
+    QgsMapLayer * mpLayer = nullptr;
 };
 
 void TestQgsMapLayer::initTestCase()

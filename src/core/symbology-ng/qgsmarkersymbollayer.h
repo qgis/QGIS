@@ -420,7 +420,7 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     QgsFilledMarkerSymbolLayer* clone() const override;
     virtual QgsSymbol* subSymbol() override;
     virtual bool setSubSymbol( QgsSymbol* symbol ) override;
-    virtual double estimateMaxBleed() const override;
+    virtual double estimateMaxBleed( const QgsRenderContext& context ) const override;
     QSet<QString> usedAttributes( const QgsRenderContext& context ) const override;
     void setColor( const QColor& c ) override;
     virtual QColor color() const override;
@@ -430,7 +430,7 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     virtual void draw( QgsSymbolRenderContext& context, Shape shape, const QPolygonF& polygon, const QPainterPath& path ) override;
 
     //! Fill subsymbol
-    QScopedPointer< QgsFillSymbol > mFill;
+    std::unique_ptr< QgsFillSymbol > mFill;
 };
 
 //////////
@@ -620,7 +620,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
   protected:
 
     QString mFontFamily;
-    QFontMetrics* mFontMetrics;
+    QFontMetrics* mFontMetrics = nullptr;
     QChar mChr;
 
     double mChrWidth;

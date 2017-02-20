@@ -50,14 +50,14 @@ class GRASS_LIB_EXPORT QgsGrassFeatureSource : public QgsAbstractFeatureSource
 
 
     struct Map_info* map();
-    QgsGrassVectorMapLayer * mLayer;
+    QgsGrassVectorMapLayer * mLayer = nullptr;
     int mLayerType;     // layer type POINT, LINE, ...
     int mGrassType;     // grass feature type: GV_POINT, GV_LINE | GV_BOUNDARY, GV_AREA,
 
     QgsWkbTypes::Type mQgisType; // WKBPoint, WKBLineString, ...
 
     QgsFields mFields;
-    QTextCodec* mEncoding;
+    QTextCodec* mEncoding = nullptr;
 
     bool mEditing; // Standard QGIS editing mode
 

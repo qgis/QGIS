@@ -260,7 +260,7 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget* editor )
   {
     Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem& element, mCache )
     {
-      QListWidgetItem *item;
+      QListWidgetItem *item = nullptr;
       item = new QListWidgetItem( element.value );
       item->setData( Qt::UserRole, element.key );
 

@@ -106,12 +106,10 @@ tests:
   - algorithm: gdal:offsetlinesforlines
     name: Offset lines for lines (right-handed)
     params:
-      DISSOLVEALL: false
       GEOMETRY: geometry
       INPUT_LAYER:
          name: lines.gml
          type: vector
-      MULTI: false
       RADIUS: -0.5
     results:
       OUTPUT_LAYER:
@@ -544,4 +542,74 @@ tests:
     results:
       OUTPUT:
         hash: f468bb08cbede2b606018a7a45a51cc221307a8421a11daefabeac12
+        type: rasterhash
+
+  - algorithm: gdal:colorrelief
+    name: Standard Color Relief
+    params:
+      BAND: 1
+      COLOR_TABLE:
+        name: custom/color_relief.txt
+        type: file
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      MATCH_MODE: '0'
+    results:
+      OUTPUT:
+        hash: f714597fadc9cfc3f5263dc0e35f7c6ba285de238dce439e4988faac
+        type: rasterhash
+
+  - algorithm: gdal:colorrelief
+    name: Color Relief with edges
+    params:
+      BAND: 1
+      COLOR_TABLE:
+        name: custom/color_relief.txt
+        type: file
+      COMPUTE_EDGES: true
+      INPUT:
+        name: dem.tif
+        type: raster
+      MATCH_MODE: '0'
+    results:
+      OUTPUT:
+        hash: f714597fadc9cfc3f5263dc0e35f7c6ba285de238dce439e4988faac
+        type: rasterhash
+
+  - algorithm: gdal:merge
+    name: Merge 2 raster layers
+    params:
+      INPUT:
+        params:
+        - name: custom/dem_to_merge1.tif
+          type: raster
+        - name: custom/dem_to_merge2.tif
+          type: raster
+        type: multi
+      PCT: false
+      RTYPE: '5'
+      SEPARATE: false
+    results:
+      OUTPUT:
+        hash: fb6f0f4081308cc188eda2fbe106e04e0ebf866fc56853f0cca8db1c
+        type: rasterhash
+
+  - algorithm: gdal:merge
+    name: Merge layers and separate in bands
+    params:
+      INPUT:
+        params:
+        - name: custom/dem_to_merge1.tif
+          type: raster
+        - name: custom/dem_to_merge2.tif
+          type: raster
+        type: multi
+      PCT: false
+      RTYPE: '5'
+      SEPARATE: true
+    results:
+      OUTPUT:
+        hash: cbf7b8ca91e7d6cab5ef76eeed6ce80e5dbe173afb7b8eb4aed2e969
         type: rasterhash

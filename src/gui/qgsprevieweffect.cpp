@@ -56,7 +56,7 @@ void QgsPreviewEffect::draw( QPainter* painter )
   {
     case QgsPreviewEffect::PreviewGrayscale:
     {
-      QRgb * line;
+      QRgb * line = nullptr;
 
       for ( int y = 0; y < image.height(); y++ )
       {
@@ -80,7 +80,7 @@ void QgsPreviewEffect::draw( QPainter* painter )
     case QgsPreviewEffect::PreviewProtanope:
     case QgsPreviewEffect::PreviewDeuteranope:
     {
-      QRgb * line;
+      QRgb * line = nullptr;
 
       for ( int y = 0; y < image.height(); y++ )
       {

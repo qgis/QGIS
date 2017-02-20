@@ -70,7 +70,7 @@ class GUI_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
 
   private:
     Filters mFilters;
-    QgsFieldModel* mModel;
+    QgsFieldModel* mModel = nullptr;
 
     //! Returns true if the specified index represents a read only field
     bool isReadOnly( const QModelIndex& index ) const;

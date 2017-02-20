@@ -21,6 +21,7 @@
 #include <QTreeWidget>
 #include <QItemDelegate>
 #include "qgis_gui.h"
+#include <memory>
 
 class QTableWidget;
 class QgsExpressionContextScope;
@@ -64,7 +65,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
      * are created with an empty context by default.
      * @see setContext()
      */
-    QgsExpressionContext* context() const { return mContext.data(); }
+    QgsExpressionContext* context() const { return mContext.get(); }
 
     /** Sets the editable scope for the widget. Only variables from the editable scope can
      * be modified by users.
@@ -122,11 +123,11 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
 
   private:
 
-    QScopedPointer<QgsExpressionContext> mContext;
+    std::unique_ptr<QgsExpressionContext> mContext;
     int mEditableScopeIndex;
-    QgsVariableEditorTree* mTreeWidget;
-    QPushButton* mAddButton;
-    QPushButton* mRemoveButton;
+    QgsVariableEditorTree* mTreeWidget = nullptr;
+    QPushButton* mAddButton = nullptr;
+    QPushButton* mRemoveButton = nullptr;
     QString mSettingGroup;
     bool mShown;
 
@@ -194,9 +195,9 @@ class QgsVariableEditorTree : public QTreeWidget
 
   private:
 
-    VariableEditorDelegate* mEditorDelegate;
+    VariableEditorDelegate* mEditorDelegate = nullptr;
     int mEditableScopeIndex;
-    QgsExpressionContext* mContext;
+    QgsExpressionContext* mContext = nullptr;
     QMap< QPair<int, QString>, QTreeWidgetItem* > mVariableToItem;
     QMap< int, QTreeWidgetItem* > mScopeToItem;
 
@@ -225,7 +226,7 @@ class VariableEditorDelegate : public QItemDelegate
     void setEditorData( QWidget *, const QModelIndex & ) const override {}
 
   private:
-    QgsVariableEditorTree *mParentTree;
+    QgsVariableEditorTree *mParentTree = nullptr;
 };
 
 /// @endcond

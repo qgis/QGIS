@@ -89,11 +89,11 @@ class APP_EXPORT QgsMapThemes : public QObject
 
     static QgsMapThemes* sInstance;
 
-    QMenu* mMenu;
-    QMenu* mReplaceMenu;
-    QAction* mMenuSeparator;
-    QAction* mActionAddPreset;
-    QAction* mActionRemoveCurrentPreset;
+    QMenu* mMenu = nullptr;
+    QMenu* mReplaceMenu = nullptr;
+    QAction* mMenuSeparator = nullptr;
+    QAction* mActionAddPreset = nullptr;
+    QAction* mActionRemoveCurrentPreset = nullptr;
     QList<QAction*> mMenuPresetActions;
     QList<QAction*> mMenuReplaceActions;
 };

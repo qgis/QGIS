@@ -119,17 +119,17 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     bool populateStyles( QgsStyle* style );
     void moveStyles( QModelIndexList* selection, QgsStyle* src, QgsStyle* dst );
 
-    QProgressDialog *mProgressDlg;
-    QgsStyleGroupSelectionDialog *mGroupSelectionDlg;
-    QTemporaryFile *mTempFile;
-    QNetworkAccessManager *mNetManager;
-    QNetworkReply *mNetReply;
+    QProgressDialog *mProgressDlg = nullptr;
+    QgsStyleGroupSelectionDialog *mGroupSelectionDlg = nullptr;
+    QTemporaryFile *mTempFile = nullptr;
+    QNetworkAccessManager *mNetManager = nullptr;
+    QNetworkReply *mNetReply = nullptr;
 
     QString mFileName;
     Mode mDialogMode;
 
-    QgsStyle* mStyle;
-    QgsStyle* mTempStyle;
+    QgsStyle* mStyle = nullptr;
+    QgsStyle* mTempStyle = nullptr;
 };
 
 #endif // QGSSTYLEV2EXPORTIMPORTDIALOG_H

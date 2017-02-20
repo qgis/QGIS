@@ -73,8 +73,8 @@ class GUI_EXPORT QgsDateTimeSearchWidgetWrapper : public QgsSearchWidgetWrapper
     void dateTimeChanged( const QDateTime &date );
 
   private:
-    QgsDateTimeEdit* mDateTimeEdit;
-    QgsVectorLayer* mLayer;
+    QgsDateTimeEdit* mDateTimeEdit = nullptr;
+    QgsVectorLayer* mLayer = nullptr;
 
     friend class QgsDateTimeEditFactory;
 };

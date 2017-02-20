@@ -125,7 +125,8 @@ QStringList QgsRendererRegistry::renderersList( QgsRendererAbstractMetadata::Lay
   QStringList renderers;
   Q_FOREACH ( const QString& renderer, mRenderersOrder )
   {
-    if ( mRenderers.value( renderer )->compatibleLayerTypes() & layerTypes )
+    QgsRendererAbstractMetadata* r = mRenderers.value( renderer );
+    if ( r && r->compatibleLayerTypes() & layerTypes )
       renderers << renderer;
   }
   return renderers;

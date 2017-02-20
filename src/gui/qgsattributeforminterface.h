@@ -42,7 +42,7 @@ class GUI_EXPORT QgsAttributeFormInterface
     const QgsFeature& feature();
 
   private:
-    QgsAttributeForm* mForm;
+    QgsAttributeForm* mForm = nullptr;
 };
 
 #endif // QGSATTRIBUTEFORMINTERFACE_H

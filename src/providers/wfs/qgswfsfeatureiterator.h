@@ -22,6 +22,7 @@
 #include "qgsgml.h"
 #include "qgsspatialindex.h"
 
+#include <memory>
 #include <QProgressDialog>
 #include <QPushButton>
 
@@ -74,8 +75,8 @@ class QgsWFSProgressDialog: public QProgressDialog
     void hide();
 
   private:
-    QPushButton* mCancel;
-    QPushButton* mHide;
+    QPushButton* mCancel = nullptr;
+    QPushButton* mHide = nullptr;
 };
 
 /** This class runs one (or several if paging is needed) GetFeature request,
@@ -136,11 +137,11 @@ class QgsWFSFeatureDownloader: public QgsWfsRequest
     QString sanitizeFilter( QString filter );
 
     //! Mutable data shared between provider, feature sources and downloader.
-    QgsWFSSharedData* mShared;
+    QgsWFSSharedData* mShared = nullptr;
     //! Whether the download should stop
     bool mStop;
     //! Progress dialog
-    QProgressDialog* mProgressDialog;
+    QProgressDialog* mProgressDialog = nullptr;
 
     /** If the progress dialog should be shown immediately, or if it should be
         let to QProgressDialog logic to decide when to show it */
@@ -148,8 +149,8 @@ class QgsWFSFeatureDownloader: public QgsWfsRequest
     bool mSupportsPaging;
     bool mRemoveNSPrefix;
     int mNumberMatched;
-    QWidget* mMainWindow;
-    QTimer* mTimer;
+    QWidget* mMainWindow = nullptr;
+    QTimer* mTimer = nullptr;
     QgsWFSFeatureHitsAsyncRequest mFeatureHitsAsyncRequest;
     int mTotalDownloadedFeatureCount;
 };
@@ -178,7 +179,7 @@ class QgsWFSThreadedFeatureDownloader: public QThread
 
   private:
     QgsWFSSharedData* mShared;  //!< Mutable data shared between provider and feature sources
-    QgsWFSFeatureDownloader* mDownloader;
+    QgsWFSFeatureDownloader* mDownloader = nullptr;
 };
 
 class QgsWFSFeatureSource;
@@ -217,15 +218,15 @@ class QgsWFSFeatureIterator : public QObject,
     //! Copies feature attributes / geometry from srcFeature to dstFeature
     void copyFeature( const QgsFeature& srcFeature, QgsFeature& dstFeature );
 
-    QSharedPointer<QgsWFSSharedData> mShared;  //!< Mutable data shared between provider and feature sources
+    std::shared_ptr<QgsWFSSharedData> mShared;  //!< Mutable data shared between provider and feature sources
 
     //! Subset of attributes (relatives to mShared->mFields) to fetch. Only valid if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
     QgsAttributeList mSubSetAttributes;
 
     bool mDownloadFinished;
-    QEventLoop* mLoop;
+    QEventLoop* mLoop = nullptr;
     QgsFeatureIterator mCacheIterator;
-    QgsInterruptionChecker* mInterruptionChecker;
+    QgsInterruptionChecker* mInterruptionChecker = nullptr;
 
     //! this mutex synchronizes the mWriterXXXX variables between featureReceivedSynchronous() and fetchFeature()
     QMutex mMutex;
@@ -235,13 +236,13 @@ class QgsWFSFeatureIterator : public QObject,
     int mWriteTransferThreshold;
     QByteArray mWriterByteArray;
     QString mWriterFilename;
-    QFile* mWriterFile;
-    QDataStream* mWriterStream;
+    QFile* mWriterFile = nullptr;
+    QDataStream* mWriterStream = nullptr;
 
     QByteArray mReaderByteArray;
     QString mReaderFilename;
-    QFile* mReaderFile;
-    QDataStream* mReaderStream;
+    QFile* mReaderFile = nullptr;
+    QDataStream* mReaderStream = nullptr;
     bool mFetchGeometry;
 };
 
@@ -256,7 +257,7 @@ class QgsWFSFeatureSource : public QgsAbstractFeatureSource
 
   protected:
 
-    QSharedPointer<QgsWFSSharedData> mShared;  //!< Mutable data shared between provider and feature sources
+    std::shared_ptr<QgsWFSSharedData> mShared;  //!< Mutable data shared between provider and feature sources
 
     friend class QgsWFSFeatureIterator;
 };

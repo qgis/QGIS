@@ -66,10 +66,10 @@ class TestQgsMapRotation : public QObject
     bool render( const QString& theFileName );
 
     QString mTestDataDir;
-    QgsRasterLayer * mRasterLayer;
-    QgsVectorLayer* mPointsLayer;
-    QgsVectorLayer* mLinesLayer;
-    QgsMapSettings *mMapSettings;
+    QgsRasterLayer * mRasterLayer = nullptr;
+    QgsVectorLayer* mPointsLayer = nullptr;
+    QgsVectorLayer* mLinesLayer = nullptr;
+    QgsMapSettings *mMapSettings = nullptr;
     QString mReport;
 };
 

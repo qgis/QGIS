@@ -102,7 +102,7 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
     void updateListWidget( QgsCptCityDataItem *item );
 
     QgsCptCityColorRamp mRamp;
-    QgsCptCityArchive* mArchive;
+    QgsCptCityArchive* mArchive = nullptr;
     QgsCptCityBrowserModel::ViewType mArchiveViewType;
 
     /* void refreshModel( const QModelIndex& index ); */
@@ -110,10 +110,10 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
     void showAll();
     void setTreeModel( QgsCptCityBrowserModel* model );
 
-    QgsCptCityBrowserModel* mModel;
-    QgsCptCityBrowserModel* mAuthorsModel;
-    QgsCptCityBrowserModel* mSelectionsModel;
-    TreeFilterProxyModel* mTreeFilter;
+    QgsCptCityBrowserModel* mModel = nullptr;
+    QgsCptCityBrowserModel* mAuthorsModel = nullptr;
+    QgsCptCityBrowserModel* mSelectionsModel = nullptr;
+    TreeFilterProxyModel* mTreeFilter = nullptr;
     QVector<QgsCptCityColorRampItem*> mListRamps;
 
 };
@@ -135,7 +135,7 @@ class TreeFilterProxyModel : public QSortFilterProxyModel
     // bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
 
   private:
-    QgsCptCityBrowserModel* mModel;
+    QgsCptCityBrowserModel* mModel = nullptr;
 };
 
 ///@endcond

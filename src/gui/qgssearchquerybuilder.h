@@ -117,12 +117,12 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
   private:
 
     //! Layer for which is the query builder opened
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
     //! Map that holds field information, keyed by field name
     QMap<QString, int> mFieldMap;
     //! Model for fields ListView
-    QStandardItemModel *mModelFields;
+    QStandardItemModel *mModelFields = nullptr;
     //! Model for values ListView
-    QStandardItemModel *mModelValues;
+    QStandardItemModel *mModelValues = nullptr;
 };
 #endif //QGSSEARCHQUERYBUILDER_H

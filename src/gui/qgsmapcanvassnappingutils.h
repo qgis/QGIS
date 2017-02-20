@@ -42,8 +42,8 @@ class GUI_EXPORT QgsMapCanvasSnappingUtils : public QgsSnappingUtils
     void canvasCurrentLayerChanged();
 
   private:
-    QgsMapCanvas* mCanvas;
-    QProgressDialog* mProgress;
+    QgsMapCanvas* mCanvas = nullptr;
+    QProgressDialog* mProgress = nullptr;
 };
 
 

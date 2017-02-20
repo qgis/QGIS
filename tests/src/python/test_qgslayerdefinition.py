@@ -103,7 +103,7 @@ class TestQgsLayerDefinition(unittest.TestCase):
         layers = QgsProject.instance().mapLayers()
         self.assertEqual(len(layers), 0)
 
-        (result, errMsg) = QgsLayerDefinition.loadLayerDefinition(TEST_DATA_DIR + '/vector_and_raster.qlr', QgsProject.instance().layerTreeRoot())
+        (result, errMsg) = QgsLayerDefinition.loadLayerDefinition(TEST_DATA_DIR + '/vector_and_raster.qlr', QgsProject.instance(), QgsProject.instance().layerTreeRoot())
         self.assertTrue(result)
 
         layers = QgsProject.instance().mapLayers()

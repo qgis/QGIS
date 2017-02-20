@@ -217,7 +217,7 @@ class QgsConnectionPoolGroup
     QList<T> acquiredConns;
     QMutex connMutex;
     QSemaphore sem;
-    QTimer* expirationTimer;
+    QTimer* expirationTimer = nullptr;
 
 };
 

@@ -248,33 +248,16 @@ QDomElement QgsCompoundCurve::asGML2( QDomDocument& doc, int precision, const QS
 
 QDomElement QgsCompoundCurve::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
 {
-  QDomElement elemCurve = doc.createElementNS( ns, QStringLiteral( "Curve" ) );
-
-  QDomElement elemSegments = doc.createElementNS( ns, QStringLiteral( "segments" ) );
-
+  QDomElement compoundCurveElem = doc.createElementNS( ns, QStringLiteral( "CompositeCurve" ) );
   Q_FOREACH ( const QgsCurve* curve, mCurves )
   {
-    if ( dynamic_cast<const QgsLineString*>( curve ) )
-    {
-      QgsPointSequence pts;
-      curve->points( pts );
-
-      QDomElement elemLineStringSegment = doc.createElementNS( ns, QStringLiteral( "LineStringSegment" ) );
-      elemLineStringSegment.appendChild( QgsGeometryUtils::pointsToGML3( pts, doc, precision, ns, is3D() ) );
-      elemSegments.appendChild( elemLineStringSegment );
-    }
-    else if ( dynamic_cast<const QgsCircularString*>( curve ) )
-    {
-      QgsPointSequence pts;
-      curve->points( pts );
-
-      QDomElement elemArcString = doc.createElementNS( ns, QStringLiteral( "ArcString" ) );
-      elemArcString.appendChild( QgsGeometryUtils::pointsToGML3( pts, doc, precision, ns, is3D() ) );
-      elemSegments.appendChild( elemArcString );
-    }
+    QDomElement curveMemberElem = doc.createElementNS( ns, QStringLiteral( "curveMember" ) );
+    QDomElement curveElem = curve->asGML3( doc, precision, ns );
+    curveMemberElem.appendChild( curveElem );
+    compoundCurveElem.appendChild( curveMemberElem );
   }
-  elemCurve.appendChild( elemSegments );
-  return elemCurve;
+
+  return compoundCurveElem;
 }
 
 QString QgsCompoundCurve::asJSON( int precision ) const
@@ -348,6 +331,19 @@ int QgsCompoundCurve::numPoints() const
   }
   nPoints += 1; //last vertex was removed above
   return nPoints;
+}
+
+bool QgsCompoundCurve::isEmpty() const
+{
+  if ( mCurves.isEmpty() )
+    return true;
+
+  Q_FOREACH ( QgsCurve* curve, mCurves )
+  {
+    if ( !curve->isEmpty() )
+      return false;
+  }
+  return true;
 }
 
 QgsLineString* QgsCompoundCurve::curveToLine( double tolerance, SegmentationToleranceType toleranceType ) const

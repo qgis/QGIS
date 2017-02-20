@@ -140,7 +140,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     void rowsChanged();
 
   private:
-    QgsMapLayerProxyModel* mProxyModel;
+    QgsMapLayerProxyModel* mProxyModel = nullptr;
 };
 
 #endif // QGSMAPLAYERCOMBOBOX_H

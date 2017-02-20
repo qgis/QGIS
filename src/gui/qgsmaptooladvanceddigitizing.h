@@ -142,7 +142,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     void cadPointChanged( const QgsPoint& point );
 
   private:
-    QgsAdvancedDigitizingDockWidget* mCadDockWidget;
+    QgsAdvancedDigitizingDockWidget* mCadDockWidget = nullptr;
 
     void snap( QgsMapMouseEvent* e );
 };

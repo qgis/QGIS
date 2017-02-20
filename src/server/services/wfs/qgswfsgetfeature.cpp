@@ -54,7 +54,7 @@ namespace QgsWfs
                                    const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes, const QString& typeName,
                                    bool withGeom, const QString geometryName );
 
-    void startGetFeature( const QgsServerRequest& request, QgsServerResponse& response, QgsWfsProjectParser* configParser, const QString& format,
+    void startGetFeature( const QgsServerRequest& request, QgsServerResponse& response, const QgsProject* project, const QString& format,
                           int prec, QgsCoordinateReferenceSystem& crs, QgsRectangle* rect, const QStringList& typeNames );
 
     void setGetFeature( QgsServerResponse& response, const QString& format, QgsFeature* feat, int featIdx, int prec,
@@ -67,8 +67,9 @@ namespace QgsWfs
 
   /** Output WFS  GetCapabilities response
    */
-  void writeGetFeature( QgsServerInterface* serverIface, const QString& version,
-                        const QgsServerRequest& request, QgsServerResponse& response )
+  void writeGetFeature( QgsServerInterface* serverIface, const QgsProject* project,
+                        const QString& version, const QgsServerRequest& request,
+                        QgsServerResponse& response )
   {
     Q_UNUSED( version );
 
@@ -110,7 +111,7 @@ namespace QgsWfs
 
     //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
     //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
-    QScopedPointer< QgsOWSServerFilterRestorer > filterRestorer( new QgsOWSServerFilterRestorer( accessControl ) );
+    std::unique_ptr< QgsOWSServerFilterRestorer > filterRestorer( new QgsOWSServerFilterRestorer( accessControl ) );
 
     if ( doc.setContent( parameters.value( QStringLiteral( "REQUEST_BODY" ) ), true, &errorMsg ) )
     {
@@ -284,7 +285,7 @@ namespace QgsWfs
                                   ).nextFeature( feature );
 
                 if ( featureCounter == 0 )
-                  startGetFeature( request, response, configParser, format, layerPrec, layerCrs, &searchRect, typeNames );
+                  startGetFeature( request, response, project, format, layerPrec, layerCrs, &searchRect, typeNames );
 
                 setGetFeature( response, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes,
                                typeName, withGeom, geometryName );
@@ -321,7 +322,7 @@ namespace QgsWfs
               while ( fit.nextFeature( feature ) && ( !hasFeatureLimit || featureCounter < maxFeatures + startIndex ) )
               {
                 if ( featureCounter == startIndex )
-                  startGetFeature( request, response, configParser, format, layerPrec, layerCrs, &searchRect, typeNames );
+                  startGetFeature( request, response, project, format, layerPrec, layerCrs, &searchRect, typeNames );
 
                 if ( featureCounter >= startIndex )
                 {
@@ -334,7 +335,7 @@ namespace QgsWfs
             }
             else
             {
-              QSharedPointer<QgsExpression> filter( QgsOgcUtils::expressionFromOgcFilter( filterElem ) );
+              std::shared_ptr<QgsExpression> filter( QgsOgcUtils::expressionFromOgcFilter( filterElem ) );
               if ( filter )
               {
                 if ( filter->hasParserError() )
@@ -378,7 +379,7 @@ namespace QgsWfs
                   if ( res.toInt() != 0 )
                   {
                     if ( featureCounter == startIndex )
-                      startGetFeature( request, response, configParser, format, layerPrec, layerCrs, &searchRect, typeNames );
+                      startGetFeature( request, response, project, format, layerPrec, layerCrs, &searchRect, typeNames );
 
                     if ( featureCounter >= startIndex )
                     {
@@ -397,7 +398,7 @@ namespace QgsWfs
             while ( fit.nextFeature( feature ) && ( !hasFeatureLimit || featureCounter < maxFeatures + startIndex ) )
             {
               if ( featureCounter == startIndex )
-                startGetFeature( request, response, configParser, format, layerPrec, layerCrs, &searchRect, typeNames );
+                startGetFeature( request, response, project, format, layerPrec, layerCrs, &searchRect, typeNames );
 
               if ( featureCounter >= startIndex )
               {
@@ -423,7 +424,7 @@ namespace QgsWfs
 
       QgsProject::instance()->removeAllMapLayers();
       if ( featureCounter <= startIndex )
-        startGetFeature( request, response, configParser, format, layerPrec, layerCrs, &searchRect, typeNames );
+        startGetFeature( request, response, project, format, layerPrec, layerCrs, &searchRect, typeNames );
       endGetFeature( response, format );
       return;
     }
@@ -663,7 +664,7 @@ namespace QgsWfs
                               ).nextFeature( feature );
 
             if ( featureCounter == 0 )
-              startGetFeature( request, response, configParser, format, layerPrec, layerCrs, &searchRect, typeNames );
+              startGetFeature( request, response, project, format, layerPrec, layerCrs, &searchRect, typeNames );
 
             setGetFeature( response, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes,
                            typeName, withGeom, geometryName );
@@ -693,7 +694,7 @@ namespace QgsWfs
           }
           req.setSubsetOfAttributes( attrIndexes );
           QgsFeatureIterator fit = layer->getFeatures( req );
-          QSharedPointer<QgsExpression> filter( new QgsExpression( expFilter ) );
+          std::shared_ptr<QgsExpression> filter( new QgsExpression( expFilter ) );
           if ( filter )
           {
             if ( filter->hasParserError() )
@@ -711,7 +712,7 @@ namespace QgsWfs
               if ( res.toInt() != 0 )
               {
                 if ( featureCounter == startIndex )
-                  startGetFeature( request, response, configParser, format, layerPrec, layerCrs, &searchRect, typeNames );
+                  startGetFeature( request, response, project, format, layerPrec, layerCrs, &searchRect, typeNames );
 
                 if ( featureCounter >= startIndex )
                 {
@@ -751,7 +752,7 @@ namespace QgsWfs
                                 ).nextFeature( feature );
 
               if ( featureCounter == 0 )
-                startGetFeature( request, response, configParser, format, layerPrec, layerCrs, &searchRect, typeNames );
+                startGetFeature( request, response, project, format, layerPrec, layerCrs, &searchRect, typeNames );
 
               setGetFeature( response, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes,
                              typeName, withGeom, geometryName );
@@ -788,7 +789,7 @@ namespace QgsWfs
             while ( fit.nextFeature( feature ) && ( !hasFeatureLimit || featureCounter < maxFeatures + startIndex ) )
             {
               if ( featureCounter == startIndex )
-                startGetFeature( request, response, configParser, format, layerPrec, layerCrs, &searchRect, typeNames );
+                startGetFeature( request, response, project, format, layerPrec, layerCrs, &searchRect, typeNames );
 
               if ( featureCounter >= startIndex )
               {
@@ -801,7 +802,7 @@ namespace QgsWfs
           }
           else
           {
-            QSharedPointer<QgsExpression> filter( QgsOgcUtils::expressionFromOgcFilter( filterElem ) );
+            std::shared_ptr<QgsExpression> filter( QgsOgcUtils::expressionFromOgcFilter( filterElem ) );
             if ( filter )
             {
               if ( filter->hasParserError() )
@@ -838,7 +839,7 @@ namespace QgsWfs
                 if ( res.toInt() != 0 )
                 {
                   if ( featureCounter == startIndex )
-                    startGetFeature( request, response, configParser, format, layerPrec, layerCrs, &searchRect, typeNames );
+                    startGetFeature( request, response, project, format, layerPrec, layerCrs, &searchRect, typeNames );
 
                   if ( featureCounter >= startIndex )
                   {
@@ -878,7 +879,7 @@ namespace QgsWfs
           {
             errors << QStringLiteral( "The feature %2 of layer for the TypeName '%1'" ).arg( tnStr ).arg( featureCounter );
             if ( featureCounter == startIndex )
-              startGetFeature( request, response, configParser, format, layerPrec, layerCrs, &searchRect, typeNames );
+              startGetFeature( request, response, project, format, layerPrec, layerCrs, &searchRect, typeNames );
 
             if ( featureCounter >= startIndex )
             {
@@ -900,7 +901,7 @@ namespace QgsWfs
 
     QgsProject::instance()->removeAllMapLayers();
     if ( featureCounter <= startIndex )
-      startGetFeature( request, response, configParser, format, layerPrec, layerCrs, &searchRect, typeNames );
+      startGetFeature( request, response, project, format, layerPrec, layerCrs, &searchRect, typeNames );
     endGetFeature( response, format );
 
   }
@@ -908,10 +909,12 @@ namespace QgsWfs
   namespace
   {
 
-    void startGetFeature( const QgsServerRequest& request, QgsServerResponse& response, QgsWfsProjectParser* configParser, const QString& format,
+    void startGetFeature( const QgsServerRequest& request, QgsServerResponse& response, const QgsProject* project, const QString& format,
                           int prec, QgsCoordinateReferenceSystem& crs, QgsRectangle* rect, const QStringList& typeNames )
     {
       QString fcString;
+
+      std::unique_ptr< QgsRectangle > transformedRect;
 
       if ( format == QLatin1String( "GeoJSON" ) )
       {
@@ -926,7 +929,10 @@ namespace QgsWfs
           try
           {
             if ( exportGeom.transform( transform ) == 0 )
-              rect = new QgsRectangle( exportGeom.boundingBox() );
+            {
+              transformedRect.reset( new QgsRectangle( exportGeom.boundingBox() ) );
+              rect = transformedRect.get();
+            }
           }
           catch ( QgsException &cse )
           {
@@ -943,7 +949,7 @@ namespace QgsWfs
         response.setHeader( "Content-Type", "text/xml; charset=utf-8" );
 
         //Prepare url
-        QString hrefString = serviceUrl( request, configParser );
+        QString hrefString = serviceUrl( request, project );
 
         QUrl mapUrl( hrefString );
 
@@ -1082,13 +1088,16 @@ namespace QgsWfs
 
       QgsJSONExporter exporter;
       exporter.setSourceCrs( crs );
-      exporter.setPrecision( prec );
+      //QgsJSONExporter force transform geometry to ESPG:4326
+      //and the RFC 7946 GeoJSON specification recommends limiting coordinate precision to 6
+      Q_UNUSED( prec );
+      //exporter.setPrecision( prec );
 
       //copy feature so we can modify its geometry as required
       QgsFeature f( *feat );
       QgsGeometry geom = feat->geometry();
       exporter.setIncludeGeometry( false );
-      if ( !geom.isEmpty() && withGeom && geometryName != QLatin1String( "NONE" ) )
+      if ( !geom.isNull() && withGeom && geometryName != QLatin1String( "NONE" ) )
       {
         exporter.setIncludeGeometry( true );
         if ( geometryName == QLatin1String( "EXTENT" ) )
@@ -1156,7 +1165,14 @@ namespace QgsWfs
           gmlElem = QgsOgcUtils::geometryToGML( &centroid, doc, prec );
         }
         else
-          gmlElem = QgsOgcUtils::geometryToGML( &geom, doc, prec );
+        {
+          QgsAbstractGeometry* abstractGeom = geom.geometry();
+          if ( abstractGeom )
+          {
+            gmlElem = abstractGeom->asGML2( doc, prec, "http://www.opengis.net/gml" );
+          }
+        }
+
         if ( !gmlElem.isNull() )
         {
           QgsRectangle box = geom.boundingBox();
@@ -1231,7 +1247,14 @@ namespace QgsWfs
           gmlElem = QgsOgcUtils::geometryToGML( &centroid, doc, QStringLiteral( "GML3" ), prec );
         }
         else
-          gmlElem = QgsOgcUtils::geometryToGML( &geom, doc, QStringLiteral( "GML3" ), prec );
+        {
+          QgsAbstractGeometry* abstractGeom = geom.geometry();
+          if ( abstractGeom )
+          {
+            gmlElem = abstractGeom->asGML3( doc, prec, "http://www.opengis.net/gml" );
+          }
+        }
+
         if ( !gmlElem.isNull() )
         {
           QgsRectangle box = geom.boundingBox();

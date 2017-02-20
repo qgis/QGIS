@@ -53,8 +53,8 @@ namespace pal
           , priority( 0 )
       {}
 
-      FeaturePart *feature;
-      PointSet *shape;
+      FeaturePart *feature = nullptr;
+      PointSet *shape = nullptr;
       double priority;
       QList< LabelPosition*> lPos;
   };

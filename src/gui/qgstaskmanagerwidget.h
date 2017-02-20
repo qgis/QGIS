@@ -56,8 +56,8 @@ class GUI_EXPORT QgsTaskManagerWidget : public QWidget
 
   private:
 
-    QTreeView* mTreeView;
-    QgsTaskManagerModel* mModel;
+    QTreeView* mTreeView = nullptr;
+    QgsTaskManagerModel* mModel = nullptr;
 };
 
 ///@cond PRIVATE
@@ -115,9 +115,9 @@ class GUI_EXPORT QgsTaskManagerStatusBarWidget : public QToolButton
 
   private:
 
-    QgsTaskManagerFloatingWidget* mFloatingWidget;
-    QProgressBar* mProgressBar;
-    QgsTaskManager* mManager;
+    QgsTaskManagerFloatingWidget* mFloatingWidget = nullptr;
+    QProgressBar* mProgressBar = nullptr;
+    QgsTaskManager* mManager = nullptr;
 };
 
 /**
@@ -176,7 +176,7 @@ class GUI_EXPORT QgsTaskManagerModel: public QAbstractItemModel
 
   private:
 
-    QgsTaskManager* mManager;
+    QgsTaskManager* mManager = nullptr;
 
     QList< long > mRowToTaskIdList;
 

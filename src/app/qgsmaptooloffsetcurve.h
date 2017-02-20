@@ -43,7 +43,7 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
 
   private:
     //! Rubberband that shows the position of the offset curve
-    QgsRubberBand* mRubberBand;
+    QgsRubberBand* mRubberBand = nullptr;
     //! Geometry to manipulate
     QgsGeometry mOriginalGeometry;
     //! Geometry after manipulation
@@ -55,9 +55,9 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     //! Internal flag to distinguish move from click
     bool mGeometryModified;
     //! Shows current distance value and allows numerical editing
-    QgsDoubleSpinBox* mDistanceWidget;
+    QgsDoubleSpinBox* mDistanceWidget = nullptr;
     //! Marker to show the cursor was snapped to another location
-    QgsVertexMarker* mSnapVertexMarker;
+    QgsVertexMarker* mSnapVertexMarker = nullptr;
     //! Forces geometry copy (no modification of geometry in current layer)
     bool mForceCopy;
     bool mMultiPartGeometry;

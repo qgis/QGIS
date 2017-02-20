@@ -142,7 +142,7 @@ class QgsWFSSharedData : public QObject
     QMap< QString, QPair<QString, QString> > mMapFieldNameToSrcLayerNameFieldName;
 
     //! The data provider of the on-disk cache
-    QgsVectorDataProvider* mCacheDataProvider;
+    QgsVectorDataProvider* mCacheDataProvider = nullptr;
 
     //! Current BBOX used by the downloader
     QgsRectangle mRect;
@@ -193,7 +193,7 @@ class QgsWFSSharedData : public QObject
     QString mSortBy;
 
     //! The background feature downloader
-    QgsWFSThreadedFeatureDownloader* mDownloader;
+    QgsWFSThreadedFeatureDownloader* mDownloader = nullptr;
 
     //! Whether the downloader has finished (or been canceled)
     bool mDownloadFinished;
@@ -281,7 +281,7 @@ class QgsWFSSingleFeatureRequest: public QgsWfsRequest
     virtual QString errorMessageWithReason( const QString& reason ) override;
 
   private:
-    QgsWFSSharedData* mShared;
+    QgsWFSSharedData* mShared = nullptr;
 };
 
 #endif // QGSWFSSHAREDDATA_H

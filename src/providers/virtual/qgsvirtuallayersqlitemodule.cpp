@@ -44,7 +44,7 @@ void initVirtualLayerMetadata( sqlite3* db )
 {
   bool create_meta = false;
 
-  sqlite3_stmt *stmt;
+  sqlite3_stmt *stmt = nullptr;
   int r;
   r = sqlite3_prepare_v2( db, "SELECT name FROM sqlite_master WHERE name='_meta'", -1, &stmt, nullptr );
   if ( r )
@@ -54,7 +54,7 @@ void initVirtualLayerMetadata( sqlite3* db )
   create_meta = sqlite3_step( stmt ) != SQLITE_ROW;
   sqlite3_finalize( stmt );
 
-  char *errMsg;
+  char *errMsg = nullptr;
   if ( create_meta )
   {
     r = sqlite3_exec( db, QStringLiteral( "CREATE TABLE _meta (version INT, url TEXT); INSERT INTO _meta (version) VALUES(%1);" ).arg( VIRTUAL_LAYER_VERSION ).toUtf8().constData(), nullptr, nullptr, &errMsg );
@@ -168,12 +168,12 @@ private:
   VTable& operator=( const VTable& other );
 
   // connection
-  sqlite3* mSql;
+  sqlite3* mSql = nullptr;
 
   // pointer to the underlying vector provider
-  QgsVectorDataProvider* mProvider;
+  QgsVectorDataProvider* mProvider = nullptr;
   // pointer to the vector layer, for referenced layer
-  QgsVectorLayer* mLayer;
+  QgsVectorLayer* mLayer = nullptr;
   // the QObjet responsible of receiving the deletion signal
   QgsSlotToFunction mSlotToFunction;
 
@@ -254,7 +254,7 @@ void invalidateTable( void* p )
 struct VTableCursor
 {
   // minimal set of members (see sqlite3.h)
-  VTable *mVtab;
+  VTable *mVtab = nullptr;
 
   // specific members
   QgsFeature mCurrentFeature;
@@ -306,7 +306,7 @@ struct VTableCursor
     int blob_len = 0;
     char* blob = nullptr;
     QgsGeometry g = mCurrentFeature.geometry();
-    if ( ! g.isEmpty() )
+    if ( ! g.isNull() )
     {
       qgsGeometryToSpatialiteBlob( g, mVtab->crs(), blob, blob_len );
     }
@@ -341,7 +341,7 @@ int vtableCreateConnect( sqlite3* sql, void* aux, int argc, const char* const* a
     return SQLITE_ERROR;
   }
 
-  QScopedPointer<VTable> newVtab;
+  std::unique_ptr<VTable> newVtab;
 
   int r;
   if ( argc == 4 )
@@ -410,7 +410,7 @@ int vtableCreateConnect( sqlite3* sql, void* aux, int argc, const char* const* a
     return r;
   }
 
-  *outVtab = reinterpret_cast< sqlite3_vtab* >( newVtab.take() );
+  *outVtab = reinterpret_cast< sqlite3_vtab* >( newVtab.release() );
   return SQLITE_OK;
 #undef RETURN_CSTR_ERROR
 #undef RETURN_CPPSTR_ERROR

@@ -1603,6 +1603,16 @@ QgsExpression* QgsOgcUtils::expressionFromOgcFilter( const QDomElement& element 
 
   QgsExpression *expr = new QgsExpression();
 
+  // check if it is a single string value not having DOM elements
+  // that express OGC operators
+  if ( element.firstChild().nodeType() == QDomNode::TextNode )
+  {
+    expr->setExpression( element.firstChild().nodeValue() );
+    return expr;
+  }
+
+  // then check OGC DOM elements that contain OGC tags specifying
+  // OGC operators.
   QDomElement childElem = element.firstChildElement();
   while ( !childElem.isNull() )
   {
@@ -2498,7 +2508,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
     Q_ASSERT( argNodes.count() == 2 ); // binary spatial ops must have two args
 
     QgsGeometry geom = geometryFromConstExpr( argNodes[1] );
-    if ( !geom.isEmpty() && isGeometryColumn( argNodes[0] ) )
+    if ( !geom.isNull() && isGeometryColumn( argNodes[0] ) )
     {
       QgsRectangle rect = geom.boundingBox();
 

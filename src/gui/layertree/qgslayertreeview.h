@@ -128,9 +128,9 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 
   protected:
     //! helper class with default actions. Lazily initialized.
-    QgsLayerTreeViewDefaultActions* mDefaultActions;
+    QgsLayerTreeViewDefaultActions* mDefaultActions = nullptr;
     //! Context menu provider. Owned by the view.
-    QgsLayerTreeViewMenuProvider* mMenuProvider;
+    QgsLayerTreeViewMenuProvider* mMenuProvider = nullptr;
     //! Keeps track of current layer ID (to check when to emit signal about change of current layer)
     QString mCurrentLayerID;
 };

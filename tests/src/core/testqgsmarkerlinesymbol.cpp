@@ -66,8 +66,8 @@ class TestQgsMarkerLineSymbol : public QObject
     bool render( const QString& theFileName );
 
     QString mTestDataDir;
-    QgsVectorLayer* mLinesLayer;
-    QgsMapSettings *mMapSettings;
+    QgsVectorLayer* mLinesLayer = nullptr;
+    QgsMapSettings *mMapSettings = nullptr;
     QString mReport;
 };
 

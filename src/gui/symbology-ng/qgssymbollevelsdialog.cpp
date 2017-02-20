@@ -102,7 +102,7 @@ void QgsSymbolLevelsDialog::populateTable()
     tableLevels->setItem( row, 0, itemLabel );
     for ( int layer = 0; layer < mMaxLayers; layer++ )
     {
-      QTableWidgetItem* item;
+      QTableWidgetItem* item = nullptr;
       if ( layer >= sym->symbolLayerCount() )
       {
         item = new QTableWidgetItem();

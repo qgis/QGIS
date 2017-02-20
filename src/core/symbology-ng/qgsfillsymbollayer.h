@@ -125,7 +125,7 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
-    double estimateMaxBleed() const override;
+    double estimateMaxBleed( const QgsRenderContext& context ) const override;
 
     double dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext& context ) const override;
     QColor dxfColor( QgsSymbolRenderContext& context ) const override;
@@ -220,7 +220,7 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
 
     QgsGradientFillSymbolLayer* clone() const override;
 
-    double estimateMaxBleed() const override;
+    double estimateMaxBleed( const QgsRenderContext& context ) const override;
 
     //! Type of gradient, e.g., linear or radial
     GradientType gradientType() const { return mGradientType; }
@@ -296,7 +296,7 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
 
     GradientColorType mGradientColorType;
     QColor mColor2;
-    QgsColorRamp* mGradientRamp;
+    QgsColorRamp* mGradientRamp = nullptr;
     GradientType mGradientType;
     GradientCoordinateMode mCoordinateMode;
     GradientSpread mGradientSpread;
@@ -362,7 +362,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     QgsShapeburstFillSymbolLayer* clone() const override;
 
-    double estimateMaxBleed() const override;
+    double estimateMaxBleed( const QgsRenderContext& context ) const override;
 
     /** Sets the blur radius, which controls the amount of blurring applied to the fill.
      * @param blurRadius Radius for fill blur. Values between 0 - 17 are valid, where higher values results in a stronger blur. Set to 0 to disable blur.
@@ -555,8 +555,8 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     ShapeburstColorType mColorType;
     QColor mColor2;
-    QgsColorRamp* mGradientRamp;
-    QgsColorRamp* mTwoColorGradientRamp;
+    QgsColorRamp* mGradientRamp = nullptr;
+    QgsColorRamp* mTwoColorGradientRamp = nullptr;
 
     bool mIgnoreRings;
 
@@ -613,7 +613,7 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
-    virtual double estimateMaxBleed() const override;
+    virtual double estimateMaxBleed( const QgsRenderContext& context ) const override;
 
     double dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext& context ) const override;
     QColor dxfColor( QgsSymbolRenderContext& context ) const override;
@@ -632,7 +632,7 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
     QgsMapUnitScale mOutlineWidthMapUnitScale;
 
     //! Custom outline
-    QgsLineSymbol* mOutline;
+    QgsLineSymbol* mOutline = nullptr;
 
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext& context ) { Q_UNUSED( context ); }
 };
@@ -663,7 +663,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     void stopRender( QgsSymbolRenderContext& context ) override;
     QgsStringMap properties() const override;
     QgsRasterFillSymbolLayer* clone() const override;
-    virtual double estimateMaxBleed() const override;
+    virtual double estimateMaxBleed( const QgsRenderContext& context ) const override;
 
     //override QgsImageFillSymbolLayer's support for sub symbols
     virtual QgsSymbol* subSymbol() override { return nullptr; }
@@ -916,7 +916,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     //! SVG view box (to keep the aspect ratio
     QRectF mSvgViewBox;
     //! SVG pattern image
-    QImage* mSvgPattern;
+    QImage* mSvgPattern = nullptr;
 
     //param(fill), param(outline), param(outline-width) are going
     //to be replaced in memory
@@ -961,7 +961,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
-    double estimateMaxBleed() const override;
+    double estimateMaxBleed( const QgsRenderContext& context ) const override;
 
     QString ogrFeatureStyleWidth( double widthScaleFactor ) const;
 
@@ -1068,7 +1068,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void applyPattern( const QgsSymbolRenderContext& context, QBrush& brush, double lineAngle, double distance );
 
     //! Fill line
-    QgsLineSymbol* mFillLineSymbol;
+    QgsLineSymbol* mFillLineSymbol = nullptr;
 };
 
 /** \ingroup core
@@ -1095,7 +1095,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
-    double estimateMaxBleed() const override;
+    double estimateMaxBleed( const QgsRenderContext& context ) const override;
 
     //getters and setters
     double distanceX() const { return mDistanceX; }
@@ -1188,7 +1188,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     virtual QColor color() const override;
 
   protected:
-    QgsMarkerSymbol* mMarkerSymbol;
+    QgsMarkerSymbol* mMarkerSymbol = nullptr;
     double mDistanceX;
     QgsUnitTypes::RenderUnit mDistanceXUnit;
     QgsMapUnitScale mDistanceXMapUnitScale;
@@ -1265,7 +1265,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
     bool pointOnAllParts() const { return mPointOnAllParts; }
 
   protected:
-    QgsMarkerSymbol* mMarker;
+    QgsMarkerSymbol* mMarker = nullptr;
     bool mPointOnSurface;
     bool mPointOnAllParts;
 

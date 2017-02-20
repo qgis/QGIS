@@ -40,7 +40,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle* style, QWidget
   setupUi( this );
 
   // additional buttons
-  QPushButton *pb;
+  QPushButton *pb = nullptr;
   pb = new QPushButton( tr( "Select all" ) );
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
   connect( pb, SIGNAL( clicked() ), this, SLOT( selectAll() ) );
@@ -55,7 +55,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle* style, QWidget
            this, SLOT( selectionChanged( const QItemSelection&, const QItemSelection& ) ) );
 
   mTempStyle = new QgsStyle();
-  mTempStyle->createMemoryDb();
+  mTempStyle->createMemoryDatabase();
 
   // TODO validate
   mFileName = QLatin1String( "" );
@@ -215,10 +215,10 @@ bool QgsStyleExportImportDialog::populateStyles( QgsStyle* style )
   for ( int i = 0; i < styleNames.count(); ++i )
   {
     name = styleNames[i];
-    QScopedPointer< QgsColorRamp > ramp( style->colorRamp( name ) );
+    std::unique_ptr< QgsColorRamp > ramp( style->colorRamp( name ) );
 
     QStandardItem* item = new QStandardItem( name );
-    QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.data(), listItems->iconSize(), 15 );
+    QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.get(), listItems->iconSize(), 15 );
     item->setIcon( icon );
     model->appendRow( item );
   }
@@ -228,7 +228,7 @@ bool QgsStyleExportImportDialog::populateStyles( QgsStyle* style )
 void QgsStyleExportImportDialog::moveStyles( QModelIndexList* selection, QgsStyle* src, QgsStyle* dst )
 {
   QString symbolName;
-  QgsSymbol* symbol;
+  QgsSymbol* symbol = nullptr;
   QStringList symbolTags;
   bool symbolFavorite;
   QgsColorRamp *ramp = nullptr;

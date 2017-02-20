@@ -57,7 +57,7 @@ class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
 
   protected:
     //! Target item of the command
-    QgsComposerItem* mItem;
+    QgsComposerItem* mItem = nullptr;
     //! XML that saves the state before executing the command
     QDomDocument mPreviousState;
     //! XML containing the state after executing the command
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
 
     //! Parameters for frame items
     //! Parent multiframe
-    QgsComposerMultiFrame* mMultiFrame;
+    QgsComposerMultiFrame* mMultiFrame = nullptr;
     int mFrameNumber;
 
     //! Flag to prevent the first redo() if the command is pushed to the undo stack

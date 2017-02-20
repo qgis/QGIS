@@ -20,6 +20,7 @@
 #include "qgsfields.h"
 
 #include <QSet>
+#include <memory>
 
 typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;
 
@@ -27,7 +28,7 @@ class QgsExpressionFieldBuffer;
 class QgsVectorLayer;
 class QgsVectorLayerEditBuffer;
 class QgsVectorLayerJoinBuffer;
-struct QgsVectorJoinInfo;
+class QgsVectorLayerJoinInfo;
 class QgsExpressionContext;
 
 class QgsVectorLayerFeatureIterator;
@@ -53,11 +54,11 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 
   protected:
 
-    QgsAbstractFeatureSource* mProviderFeatureSource;
+    QgsAbstractFeatureSource* mProviderFeatureSource = nullptr;
 
-    QgsVectorLayerJoinBuffer* mJoinBuffer;
+    QgsVectorLayerJoinBuffer* mJoinBuffer = nullptr;
 
-    QgsExpressionFieldBuffer* mExpressionFieldBuffer;
+    QgsExpressionFieldBuffer* mExpressionFieldBuffer = nullptr;
 
     QgsFields mFields;
 
@@ -168,7 +169,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      */
     struct FetchJoinInfo
     {
-      const QgsVectorJoinInfo* joinInfo;//!< Canonical source of information about the join
+      const QgsVectorLayerJoinInfo* joinInfo;//!< Canonical source of information about the join
       QgsAttributeList attributes;      //!< Attributes to fetch
       int indexOffset;                  //!< At what position the joined fields start
       QgsVectorLayer* joinLayer;        //!< Resolved pointer to the joined layer
@@ -193,16 +194,16 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
 
     /** Information about joins used in the current select() statement.
       Allows faster mapping of attribute ids compared to mVectorJoins */
-    QMap<const QgsVectorJoinInfo*, FetchJoinInfo> mFetchJoinInfo;
+    QMap<const QgsVectorLayerJoinInfo*, FetchJoinInfo> mFetchJoinInfo;
 
     QMap<int, QgsExpression*> mExpressionFieldInfo;
 
     bool mHasVirtualAttributes;
 
   private:
-    QScopedPointer<QgsExpressionContext> mExpressionContext;
+    std::unique_ptr<QgsExpressionContext> mExpressionContext;
 
-    QgsInterruptionChecker* mInterruptionChecker;
+    QgsInterruptionChecker* mInterruptionChecker = nullptr;
 
     QList< int > mPreparedFields;
     QList< int > mFieldsToPrepare;

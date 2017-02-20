@@ -45,7 +45,7 @@ class TestQgsSnappingUtils : public QObject
     {}
 
   private:
-    QgsVectorLayer* mVL;
+    QgsVectorLayer* mVL = nullptr;
   private slots:
 
     void initTestCase()
@@ -53,7 +53,7 @@ class TestQgsSnappingUtils : public QObject
       QgsApplication::init();
       QgsApplication::initQgis();
       // Will make sure the settings dir with the style file for color ramp is created
-      QgsApplication::createDB();
+      QgsApplication::createDatabase();
       QgsApplication::showSettings();
 
       // vector layer with a triangle:

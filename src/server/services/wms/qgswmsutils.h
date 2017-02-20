@@ -53,7 +53,7 @@ namespace QgsWms
 
   /** Return WMS service URL
    */
-  QUrl serviceUrl( const QgsServerRequest& request, QgsWmsConfigParser* parser );
+  QUrl serviceUrl( const QgsServerRequest& request, const QgsProject* project );
 
   /**
    * Return the wms config parser (Transitional)

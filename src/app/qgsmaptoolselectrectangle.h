@@ -52,7 +52,7 @@ class APP_EXPORT QgsMapToolSelectFeatures : public QgsMapTool
     //! stores actual select rect
     QRect mSelectRect;
 
-    QgsRubberBand* mRubberBand;
+    QgsRubberBand* mRubberBand = nullptr;
 
     QColor mFillColor;
 

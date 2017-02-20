@@ -71,7 +71,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
 
     /**
      * Returns the project's native coordinate reference system.
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      * @see setCrs()
      * @see ellipsoid()
      */
@@ -79,7 +79,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
 
     /**
      * Sets the project's native coordinate reference system.
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      * @see crs()
      * @see setEllipsoid()
      */
@@ -89,7 +89,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      * Returns a proj string representing the project's ellipsoid setting, e.g., "WGS84".
      * @see setEllipsoid()
      * @see crs()
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      */
     QString ellipsoid() const;
 
@@ -97,7 +97,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      * Sets the project's ellipsoid from a proj string representation, e.g., "WGS84".
      * @see ellipsoid()
      * @see setCrs()
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      */
     void setEllipsoid( const QString& ellipsoid );
 
@@ -233,12 +233,14 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      */
     void dumpProperties() const;
 
+    QgsPathResolver pathResolver() const;
+
     /**
      * Prepare a filename to save it to the project file.
      * Creates an absolute or relative path according to the project settings.
      * Paths written to the project file should be prepared with this method.
     */
-    QString writePath( const QString& filename, const QString& relativeBasePath = QString::null ) const;
+    QString writePath( const QString& filename ) const;
 
     /** Turn filename read from the project file to an absolute path */
     QString readPath( QString filename ) const;
@@ -283,7 +285,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
 
     /**
      * Sets the default distance measurement units for the project.
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      * @see distanceUnits()
      * @see setAreaUnits()
      */
@@ -297,7 +299,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
 
     /**
      * Sets the default area measurement units for the project.
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      * @see areaUnits()
      * @see setDistanceUnits()
      */
@@ -324,6 +326,8 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      * @note renamed in QGIS 3.0, formerly QgsVisibilityPresetCollection
      */
     QgsMapThemeCollection* mapThemeCollection();
+
+    QgsAnnotationManager* annotationManager();
 
     /**
      * Set a list of layers which should not be taken into account on map identification
@@ -408,14 +412,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
     void setCustomVariables( const QVariantMap& customVariables );
     int count() const;
 
-    /** Retrieve a pointer to a registered layer by layer ID.
-     * @param theLayerId ID of layer to retrieve
-     * @returns matching layer, or nullptr if no matching layer found
-     * @see mapLayersByName()
-     * @see mapLayers()
-     */
-    //TODO QGIS 3.0 - rename theLayerId to layerId
-    QgsMapLayer* mapLayer( const QString& theLayerId ) const;
+    QgsMapLayer* mapLayer( const QString& layerId ) const;
 
     /** Retrieve a list of matching registered layers by layer name.
      * @param layerName name of layers to match
@@ -432,79 +429,12 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      */
     QMap<QString, QgsMapLayer*> mapLayers() const;
 
-    /**
-     * @brief
-     * Add a list of layers to the map of loaded layers.
-     *
-     * The layersAdded() and layerWasAdded() signals will always be emitted.
-     * The legendLayersAdded() signal is emitted only if addToLegend is true.
-     *
-     * @param theMapLayers  A list of layer which should be added to the registry
-     * @param addToLegend   If true (by default), the layers will be added to the
-     *                      legend and to the main canvas. If you have a private
-     *                      layer you can set this parameter to false to hide it.
-     * @param takeOwnership Ownership will be transferred to the layer registry.
-     *                      If you specify false here you have take care of deleting
-     *                      the layers yourself. Not available in python.
-     *
-     * @return a list of the map layers that were added
-     *         successfully. If a layer is invalid, or already exists in the registry,
-     *         it will not be part of the returned QList.
-     *
-     * @note As a side-effect QgsProject is made dirty.
-     * @note takeOwnership is not available in the Python bindings - the registry will always
-     * take ownership
-     * @note added in QGIS 1.8
-     * @see addMapLayer()
-     */
-    QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *>& theMapLayers /Transfer/,
+    QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *>& layers /Transfer/,
                                        bool addToLegend = true );
 
-    /**
-     * @brief
-     * Add a layer to the map of loaded layers.
-     *
-     * The layersAdded() and layerWasAdded() signals will always be emitted.
-     * The legendLayersAdded() signal is emitted only if addToLegend is true.
-     * If you are adding multiple layers at once, you should use
-     * addMapLayers() instead.
-     *
-     * @param theMapLayer A layer to add to the registry
-     * @param addToLegend If true (by default), the layer will be added to the
-     *                    legend and to the main canvas. If you have a private
-     *                    layer you can set this parameter to false to hide it.
-     * @param takeOwnership Ownership will be transferred to the layer registry.
-     *                      If you specify false here you have take care of deleting
-     *                      the layer yourself. Not available in python.
-     *
-     * @return nullptr if unable to add layer, otherwise pointer to newly added layer
-     *
-     * @see addMapLayers
-     *
-     * @note As a side-effect QgsProject is made dirty.
-     * @note Use addMapLayers if adding more than one layer at a time
-     * @note takeOwnership is not available in the Python bindings - the registry will always
-     * take ownership
-     * @see addMapLayers()
-     */
-    QgsMapLayer* addMapLayer( QgsMapLayer * theMapLayer /Transfer/, bool addToLegend = true );
+    QgsMapLayer* addMapLayer( QgsMapLayer * layer /Transfer/, bool addToLegend = true );
 
-    /**
-     * @brief
-     * Remove a set of layers from the registry by layer ID.
-     *
-     * The specified layers will be removed from the registry. If the registry has ownership
-     * of any layers these layers will also be deleted.
-     *
-     * @param theLayerIds list of IDs of the layers to remove
-     *
-     * @note As a side-effect the QgsProject instance is marked dirty.
-     * @note added in QGIS 1.8
-     * @see removeMapLayer()
-     * @see removeAllMapLayers()
-     */
-    // TODO QGIS 3.0 - rename theLayerIds to layerIds
-    void removeMapLayers( const QStringList& theLayerIds );
+    void removeMapLayers( const QStringList& layerIds );
 
     /**
      * @brief
@@ -521,21 +451,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      */
     void removeMapLayers( const QList<QgsMapLayer*>& layers );
 
-    /**
-     * @brief
-     * Remove a layer from the registry by layer ID.
-     *
-     * The specified layer will be removed from the registry. If the registry has ownership
-     * of the layer then it will also be deleted.
-     *
-     * @param theLayerId ID of the layer to remove
-     *
-     * @note As a side-effect the QgsProject instance is marked dirty.
-     * @see removeMapLayers()
-     * @see removeAllMapLayers()
-     */
-    // TODO QGIS 3.0 - rename theLayerId to layerId
-    void removeMapLayer( const QString& theLayerId );
+    void removeMapLayer( const QString& layerId );
 
     /**
      * @brief
@@ -669,15 +585,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
     // signals from QgsMapLayerRegistry
     //
 
-    /**
-     * Emitted when one or more layers are about to be removed from the registry.
-     *
-     * @param theLayerIds A list of IDs for the layers which are to be removed.
-     * @see layerWillBeRemoved()
-     * @see layersRemoved()
-     */
-    // TODO QGIS 3.0 - rename theLayerIds to layerIds
-    void layersWillBeRemoved( const QStringList& theLayerIds );
+    void layersWillBeRemoved( const QStringList& layerIds );
 
     /**
      * Emitted when one or more layers are about to be removed from the registry.
@@ -688,17 +596,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      */
     void layersWillBeRemoved( const QList<QgsMapLayer*>& layers );
 
-    /**
-     * Emitted when a layer is about to be removed from the registry.
-     *
-     * @param theLayerId The ID of the layer to be removed.
-     *
-     * @note Consider using {@link layersWillBeRemoved()} instead
-     * @see layersWillBeRemoved()
-     * @see layerRemoved()
-     */
-    //TODO QGIS 3.0 - rename theLayerId to layerId
-    void layerWillBeRemoved( const QString& theLayerId );
+    void layerWillBeRemoved( const QString& layerId );
 
     /**
      * Emitted when a layer is about to be removed from the registry.
@@ -711,25 +609,9 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      */
     void layerWillBeRemoved( QgsMapLayer* layer );
 
-    /**
-     * Emitted after one or more layers were removed from the registry.
-     *
-     * @param theLayerIds  A list of IDs of the layers which were removed.
-     * @see layersWillBeRemoved()
-     */
-    //TODO QGIS 3.0 - rename theLayerIds to layerIds
-    void layersRemoved( const QStringList& theLayerIds );
+    void layersRemoved( const QStringList& layerIds );
 
-    /**
-     * Emitted after a layer was removed from the registry.
-     *
-     * @param theLayerId The ID of the layer removed.
-     *
-     * @note Consider using {@link layersRemoved()} instead
-     * @see layerWillBeRemoved()
-     */
-    //TODO QGIS 3.0 - rename theLayerId to layerId
-    void layerRemoved( const QString& theLayerId );
+    void layerRemoved( const QString& layerId );
 
     /**
      * Emitted when all layers are removed, before {@link layersWillBeRemoved()} and
@@ -740,40 +622,11 @@ class QgsProject : QObject, QgsExpressionContextGenerator
     //TODO QGIS 3.0 - rename to past tense
     void removeAll();
 
-    /**
-     * Emitted when one or more layers were added to the registry.
-     * This signal is also emitted for layers added to the registry,
-     * but not to the legend.
-     *
-     * @param theMapLayers List of layers which have been added.
-     *
-     * @see legendLayersAdded()
-     * @see layerWasAdded()
-     */
-    //TODO QGIS 3.0 - rename theMapLayers to mapLayers
-    void layersAdded( const QList<QgsMapLayer *>& theMapLayers );
+    void layersAdded( const QList<QgsMapLayer *>& layers );
 
-    /**
-     * Emitted when a layer was added to the registry.
-     *
-     * @param theMapLayer The ID of the layer which has been added.
-     *
-     * @note Consider using {@link layersAdded()} instead
-     * @see layersAdded()
-     */
-    // TODO QGIS 3.0 - rename theMapLayer to layer
-    void layerWasAdded( QgsMapLayer* theMapLayer );
+    void layerWasAdded( QgsMapLayer* layer );
 
-    /**
-     * Emitted, when a layer was added to the registry and the legend.
-     * Layers can also be private layers, which are signalled by
-     * {@link layersAdded()} and {@link layerWasAdded()} but will not be
-     * advertised by this signal.
-     *
-     * @param theMapLayers List of {@link QgsMapLayer}s which were added to the legend.
-     */
-    //TODO QGIS 3.0 rename theMapLayers to mapLayers
-    void legendLayersAdded( const QList<QgsMapLayer*>& theMapLayers );
+    void legendLayersAdded( const QList<QgsMapLayer*>& layers );
 
   public slots:
     /**

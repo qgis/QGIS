@@ -75,7 +75,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 
     int mBand;
     //! Premultiplied color array
-    QRgb* mColors;
+    QRgb* mColors = nullptr;
     //! Number of colors
     int mNColors;
     //! Optional category labels, size of vector may be < mNColors

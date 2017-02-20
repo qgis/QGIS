@@ -678,7 +678,7 @@ void QgsVectorLayerEditBuffer::handleAttributeAdded( int index )
   // go through renamed attributes and adapt
   QList< int > sortedRenamedIndices = mRenamedAttributes.keys();
   //sort keys
-  qSort( sortedRenamedIndices.begin(), sortedRenamedIndices.end(), qGreater< int >() );
+  std::sort( sortedRenamedIndices.begin(), sortedRenamedIndices.end(), std::greater< int >() );
   Q_FOREACH ( int renameIndex, sortedRenamedIndices )
   {
     if ( renameIndex >= index )
@@ -717,7 +717,7 @@ void QgsVectorLayerEditBuffer::handleAttributeDeleted( int index )
   // go through rename attributes and adapt
   QList< int > sortedRenamedIndices = mRenamedAttributes.keys();
   //sort keys
-  qSort( sortedRenamedIndices.begin(), sortedRenamedIndices.end() );
+  std::sort( sortedRenamedIndices.begin(), sortedRenamedIndices.end() );
   int last = -1;
   mRenamedAttributes.remove( index );
   Q_FOREACH ( int renameIndex, sortedRenamedIndices )

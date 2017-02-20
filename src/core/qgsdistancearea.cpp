@@ -119,9 +119,9 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   //
   // SQLITE3 stuff - get parameters for selected ellipsoid
   //
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
+  sqlite3      *myDatabase = nullptr;
+  const char   *myTail = nullptr;
+  sqlite3_stmt *myPreparedStatement = nullptr;
   int           myResult;
 
   // Shortcut if ellipsoid is none.
@@ -154,7 +154,7 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   // Continue with PROJ.4 list of ellipsoids.
 
   //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, nullptr );
+  myResult = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, nullptr );
   if ( myResult )
   {
     QgsMessageLog::logMessage( QObject::tr( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
@@ -350,7 +350,7 @@ double QgsDistanceArea::measureArea( const QgsGeometry* geometry ) const
 
 double QgsDistanceArea::measureArea( const QgsGeometry& geometry ) const
 {
-  if ( geometry.isEmpty() )
+  if ( geometry.isNull() )
     return 0.0;
 
   const QgsAbstractGeometry* geomV2 = geometry.geometry();
@@ -368,7 +368,7 @@ double QgsDistanceArea::measureLength( const QgsGeometry* geometry ) const
 
 double QgsDistanceArea::measureLength( const QgsGeometry& geometry ) const
 {
-  if ( geometry.isEmpty() )
+  if ( geometry.isNull() )
     return 0.0;
 
   const QgsAbstractGeometry* geomV2 = geometry.geometry();
@@ -385,7 +385,7 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry* geometry ) const
 
 double QgsDistanceArea::measurePerimeter( const QgsGeometry& geometry ) const
 {
-  if ( geometry.isEmpty() )
+  if ( geometry.isNull() )
     return 0.0;
 
   const QgsAbstractGeometry* geomV2 = geometry.geometry();

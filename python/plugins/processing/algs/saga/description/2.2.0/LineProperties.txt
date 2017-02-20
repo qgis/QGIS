@@ -1,7 +1,0 @@
-Line Properties
-shapes_lines
-ParameterVector|LINES|Lines|1|False
-ParameterBoolean|BPARTS      |Number of Parts|True
-ParameterBoolean|BPOINTS     |Number of Vertices|True
-ParameterBoolean|BLENGTH     |Length|True
-OutputVector|OUTPUT|Lines with Property Attributes

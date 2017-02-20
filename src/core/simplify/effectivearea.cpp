@@ -96,7 +96,7 @@ static void down( MINHEAP *tree, areanode *arealist, int parent )
   areanode **treearray = tree->key_array;
   int left = parent * 2 + 1;
   int right = left + 1;
-  areanode *tmp;
+  areanode *tmp = nullptr;
   int swap = parent;
   double leftarea = 0;
   double rightarea = 0;
@@ -132,7 +132,7 @@ static void down( MINHEAP *tree, areanode *arealist, int parent )
 static void up( MINHEAP *tree, areanode *arealist, int c )
 {
   //LWDEBUG( 2, "Entered  up" );
-  areanode *tmp;
+  areanode *tmp = nullptr;
 
   Q_UNUSED( arealist );
 

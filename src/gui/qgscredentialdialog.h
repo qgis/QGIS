@@ -59,7 +59,7 @@ class GUI_EXPORT QgsCredentialDialog : public QDialog, public QgsCredentials, pr
     virtual bool requestMasterPassword( QString &password, bool stored = false ) override;
 
   private:
-    QPushButton *mOkButton;
+    QPushButton *mOkButton = nullptr;
 };
 
 #endif

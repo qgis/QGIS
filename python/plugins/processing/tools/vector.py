@@ -569,7 +569,7 @@ def ogrLayerName(uri):
 
     if ' table=' in uri:
         # table="schema"."table"
-        re_table_schema = re.compile(' table="([^"]*)"\."([^"]*)"')
+        re_table_schema = re.compile(' table="([^"]*)"\\."([^"]*)"')
         r = re_table_schema.search(uri)
         if r:
             return r.groups()[0] + '.' + r.groups()[1]

@@ -57,7 +57,7 @@ void QgsInvertedPolygonRenderer::setEmbeddedRenderer( QgsFeatureRenderer* subRen
 
 const QgsFeatureRenderer* QgsInvertedPolygonRenderer::embeddedRenderer() const
 {
-  return mSubRenderer.data();
+  return mSubRenderer.get();
 }
 
 void QgsInvertedPolygonRenderer::setLegendSymbolItem( const QString& key, QgsSymbol* symbol )
@@ -235,7 +235,7 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
     }
   }
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return false; // do not let invalid geometries sneak in!
 
   // add the geometry to the list of geometries for this feature
@@ -359,14 +359,14 @@ QString QgsInvertedPolygonRenderer::dump() const
 
 QgsInvertedPolygonRenderer* QgsInvertedPolygonRenderer::clone() const
 {
-  QgsInvertedPolygonRenderer* newRenderer;
-  if ( mSubRenderer.isNull() )
+  QgsInvertedPolygonRenderer* newRenderer = nullptr;
+  if ( !mSubRenderer )
   {
     newRenderer = new QgsInvertedPolygonRenderer( nullptr );
   }
   else
   {
-    newRenderer = new QgsInvertedPolygonRenderer( mSubRenderer.data()->clone() );
+    newRenderer = new QgsInvertedPolygonRenderer( mSubRenderer.get()->clone() );
   }
   newRenderer->setPreprocessingEnabled( preprocessingEnabled() );
   copyRendererData( newRenderer );

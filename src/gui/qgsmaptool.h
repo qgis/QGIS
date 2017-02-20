@@ -25,10 +25,8 @@
 #include <QString>
 #include <QObject>
 
-#ifdef HAVE_TOUCH
 #include <QGestureEvent>
 #include "qgis_gui.h"
-#endif
 
 class QgsMapLayer;
 class QgsMapCanvas;
@@ -95,10 +93,8 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! Key event for overriding. Default implementation does nothing.
     virtual void keyReleaseEvent( QKeyEvent* e );
 
-#ifdef HAVE_TOUCH
     //! gesture event for overriding. Default implementation does nothing.
     virtual bool gestureEvent( QGestureEvent* e );
-#endif
 
     /** Use this to associate a QAction to this maptool. Then when the setMapTool
      * method of mapcanvas is called the action state will be set to on.
@@ -193,18 +189,18 @@ class GUI_EXPORT QgsMapTool : public QObject
     QPoint toCanvasCoordinates( const QgsPoint& point );
 
     //! pointer to map canvas
-    QgsMapCanvas* mCanvas;
+    QgsMapCanvas* mCanvas = nullptr;
 
     //! cursor used in map tool
     QCursor mCursor;
 
     //! optionally map tool can have pointer to action
     //! which will be used to set that action as active
-    QAction* mAction;
+    QAction* mAction = nullptr;
 
     //! optionally map tool can have pointer to a button
     //! which will be used to set that action as active
-    QAbstractButton* mButton;
+    QAbstractButton* mButton = nullptr;
 
     //! translated name of the map tool
     QString mToolName;

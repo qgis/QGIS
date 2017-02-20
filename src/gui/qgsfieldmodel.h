@@ -147,7 +147,7 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
     QgsFields mFields;
     QList<QString> mExpression;
 
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
     bool mAllowExpression;
     bool mAllowEmpty;
 

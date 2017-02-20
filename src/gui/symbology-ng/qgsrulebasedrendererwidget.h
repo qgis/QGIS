@@ -87,7 +87,7 @@ class GUI_EXPORT QgsRuleBasedRendererModel : public QAbstractItemModel
     void clearFeatureCounts();
 
   protected:
-    QgsRuleBasedRenderer* mR;
+    QgsRuleBasedRenderer* mR = nullptr;
     QHash<QgsRuleBasedRenderer::Rule*, QgsRuleBasedRendererCount> mFeatureCountMap;
 };
 
@@ -148,11 +148,11 @@ class GUI_EXPORT QgsRuleBasedRendererWidget : public QgsRendererWidget, private 
     void refreshSymbolView() override;
     void keyPressEvent( QKeyEvent* event ) override;
 
-    QgsRuleBasedRenderer* mRenderer;
-    QgsRuleBasedRendererModel* mModel;
+    QgsRuleBasedRenderer* mRenderer = nullptr;
+    QgsRuleBasedRendererModel* mModel = nullptr;
 
-    QMenu* mRefineMenu;
-    QAction* mDeleteAction;
+    QMenu* mRefineMenu = nullptr;
+    QAction* mDeleteAction = nullptr;
 
     QgsRuleBasedRenderer::RuleList mCopyBuffer;
 
@@ -224,9 +224,9 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
 
   protected:
     QgsRuleBasedRenderer::Rule* mRule; // borrowed
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
 
-    QgsSymbolSelectorWidget* mSymbolSelector;
+    QgsSymbolSelectorWidget* mSymbolSelector = nullptr;
     QgsSymbol* mSymbol; // a clone of original symbol
 
     QgsSymbolWidgetContext mContext;
@@ -260,8 +260,8 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog
     void accept() override;
 
   private:
-    QgsRendererRulePropsWidget* mPropsWidget;
-    QDialogButtonBox* buttonBox;
+    QgsRendererRulePropsWidget* mPropsWidget = nullptr;
+    QDialogButtonBox* buttonBox = nullptr;
 };
 
 

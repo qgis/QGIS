@@ -1,8 +1,0 @@
-Laplacian Filter
-grid_filter
-ParameterRaster|INPUT|Grid|False
-ParameterSelection|METHOD|Method|[0] standard kernel 1;[1] standard kernel 2;[2] Standard kernel 3;[3] user defined kernel
-ParameterNumber|SIGMA|Standard Deviation (Percent of Radius)|None|None|0
-ParameterNumber|RADIUS|Radius|None|None|1
-ParameterSelection|MODE|Search Mode|[0] square;[1] circle
-OutputRaster|RESULT|Filtered Grid

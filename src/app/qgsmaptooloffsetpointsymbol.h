@@ -57,10 +57,10 @@ class APP_EXPORT QgsMapToolOffsetPointSymbol: public QgsMapToolPointSymbol
     bool mOffsetting;
 
     //! Item that previews the offset during mouse move
-    QgsPointMarkerItem* mOffsetItem;
+    QgsPointMarkerItem* mOffsetItem = nullptr;
 
     //! Clone of first found marker symbol for feature with offset attribute set
-    QScopedPointer< QgsMarkerSymbol > mMarkerSymbol;
+    std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
 
     //! Feature which was clicked on
     QgsFeature mClickedFeature;

@@ -84,7 +84,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
      * @return A relation. Invalid if not found.
      * @see relationsByName()
      */
-    QgsRelation relation( const QString& id ) const;
+    Q_INVOKABLE QgsRelation relation( const QString& id ) const;
 
     /** Returns a list of relations with matching names.
      * @param name relation name to search for. Searching is case insensitive.
@@ -147,7 +147,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
     //! The references
     QMap<QString, QgsRelation> mRelations;
 
-    QgsProject* mProject;
+    QgsProject* mProject = nullptr;
 };
 
 #endif // QGSRELATIONMANAGER_H

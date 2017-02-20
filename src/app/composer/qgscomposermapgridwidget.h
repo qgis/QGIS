@@ -111,8 +111,8 @@ class QgsComposerMapGridWidget: public QgsComposerItemBaseWidget, private Ui::Qg
     void cleanUpGridMarkerStyleSelector( QgsPanelWidget* container );
 
   private:
-    QgsComposerMap* mComposerMap;
-    QgsComposerMapGrid* mComposerMapGrid;
+    QgsComposerMap* mComposerMap = nullptr;
+    QgsComposerMapGrid* mComposerMapGrid = nullptr;
 
     //! Blocks / unblocks the signals of all GUI elements
     void blockAllSignals( bool b );

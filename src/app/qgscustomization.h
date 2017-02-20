@@ -98,7 +98,7 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
     QTreeWidgetItem * readWidgetsXmlNode( const QDomNode& theNode );
 
     QString mLastDirSettingsName;
-    QSettings* mSettings;
+    QSettings* mSettings = nullptr;
 };
 
 class APP_EXPORT QgsCustomization : public QObject
@@ -146,10 +146,10 @@ class APP_EXPORT QgsCustomization : public QObject
   protected:
     QgsCustomization();
     ~QgsCustomization();
-    QgsCustomizationDialog *pDialog;
+    QgsCustomizationDialog *pDialog = nullptr;
 
     bool mEnabled;
-    QSettings* mSettings;
+    QSettings* mSettings = nullptr;
     QString mStatusPath;
 
     void updateMenu( QMenu* menu, QSettings* settings );

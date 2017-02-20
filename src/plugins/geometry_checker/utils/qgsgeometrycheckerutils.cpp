@@ -103,7 +103,7 @@ namespace QgsGeometryCheckerUtils
                   double lambdaq2 = QgsVector( q2.x() - p1.x(), q2.y() - p1.y() ) * d;
                   if ( lambdaq1 > lambdaq2 )
                   {
-                    qSwap( lambdaq1, lambdaq2 );
+                    std::swap( lambdaq1, lambdaq2 );
                   }
                   double lambda1 = qMax( lambdaq1, lambdap1 );
                   double lambda2 = qMin( lambdaq2, lambdap2 );

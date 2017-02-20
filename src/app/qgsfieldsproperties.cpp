@@ -338,7 +338,7 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField& field )
     mFieldsList->item( row, AttrNameCol )->setFlags( mFieldsList->item( row, AttrNameCol )->flags() & ~Qt::ItemIsEditable );
 
   FieldConfig cfg( mLayer, idx );
-  QPushButton *pb;
+  QPushButton *pb = nullptr;
   pb = new QPushButton( QgsEditorWidgetRegistry::instance()->name( cfg.mEditorWidgetType ) );
   cfg.mButton = pb;
   mFieldsList->setCellWidget( row, AttrEditTypeCol, pb );
@@ -989,34 +989,34 @@ void QgsFieldsProperties::apply()
     QString name = mLayer->fields().at( idx ).name();
     FieldConfig cfg = configForRow( i );
 
-    editFormConfig.setReadOnly( i, !cfg.mEditable );
-    editFormConfig.setLabelOnTop( i, cfg.mLabelOnTop );
-    mLayer->setConstraintExpression( i, cfg.mConstraint, cfg.mConstraintDescription );
+    editFormConfig.setReadOnly( idx, !cfg.mEditable );
+    editFormConfig.setLabelOnTop( idx, cfg.mLabelOnTop );
+    mLayer->setConstraintExpression( idx, cfg.mConstraint, cfg.mConstraintDescription );
     mLayer->setEditorWidgetSetup( idx, QgsEditorWidgetSetup( cfg.mEditorWidgetType, cfg.mEditorWidgetConfig ) );
 
     if ( cfg.mConstraints & QgsFieldConstraints::ConstraintNotNull )
     {
-      mLayer->setFieldConstraint( i, QgsFieldConstraints::ConstraintNotNull, cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintStrengthHard ) );
+      mLayer->setFieldConstraint( idx, QgsFieldConstraints::ConstraintNotNull, cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintStrengthHard ) );
     }
     else
     {
-      mLayer->removeFieldConstraint( i, QgsFieldConstraints::ConstraintNotNull );
+      mLayer->removeFieldConstraint( idx, QgsFieldConstraints::ConstraintNotNull );
     }
     if ( cfg.mConstraints & QgsFieldConstraints::ConstraintUnique )
     {
-      mLayer->setFieldConstraint( i, QgsFieldConstraints::ConstraintUnique, cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintStrengthHard ) );
+      mLayer->setFieldConstraint( idx, QgsFieldConstraints::ConstraintUnique, cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintStrengthHard ) );
     }
     else
     {
-      mLayer->removeFieldConstraint( i, QgsFieldConstraints::ConstraintUnique );
+      mLayer->removeFieldConstraint( idx, QgsFieldConstraints::ConstraintUnique );
     }
     if ( cfg.mConstraints & QgsFieldConstraints::ConstraintExpression )
     {
-      mLayer->setFieldConstraint( i, QgsFieldConstraints::ConstraintExpression, cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthHard ) );
+      mLayer->setFieldConstraint( idx, QgsFieldConstraints::ConstraintExpression, cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthHard ) );
     }
     else
     {
-      mLayer->removeFieldConstraint( i, QgsFieldConstraints::ConstraintExpression );
+      mLayer->removeFieldConstraint( idx, QgsFieldConstraints::ConstraintExpression );
     }
 
     if ( mFieldsList->item( i, AttrWMSCol )->checkState() == Qt::Unchecked )
@@ -1328,7 +1328,7 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem* item, int column )
   baseData->setLayout( baseLayout );
   QCheckBox* showLabelCheckbox = new QCheckBox( QStringLiteral( "Show label" ) );
   showLabelCheckbox->setChecked( itemData.showLabel() );
-  baseLayout->addWidget( showLabelCheckbox );
+  baseLayout->addRow( showLabelCheckbox );
   QWidget* baseWidget = new QWidget();
   baseWidget->setLayout( baseLayout );
 
@@ -1338,12 +1338,12 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem* item, int column )
     dlg.setWindowTitle( tr( "Configure container" ) );
     QFormLayout* layout = new QFormLayout() ;
     dlg.setLayout( layout );
-    layout->addWidget( baseWidget );
+    layout->addRow( baseWidget );
 
     QCheckBox* showAsGroupBox = nullptr;
     QLineEdit* title = new QLineEdit( itemData.name() );
     QSpinBox* columnCount = new QSpinBox();
-    QGroupBox* visibilityExpressionGroupBox = new QGroupBox( tr( "Control visibility by expression " ) );
+    QGroupBox* visibilityExpressionGroupBox = new QGroupBox( tr( "Control visibility by expression" ) );
     visibilityExpressionGroupBox->setCheckable( true );
     visibilityExpressionGroupBox->setChecked( itemData.visibilityExpression().enabled() );
     visibilityExpressionGroupBox->setLayout( new QGridLayout );
@@ -1358,13 +1358,13 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem* item, int column )
 
     layout->addRow( tr( "Title" ), title );
     layout->addRow( tr( "Column count" ), columnCount );
-    layout->addWidget( visibilityExpressionGroupBox );
+    layout->addRow( visibilityExpressionGroupBox );
 
     if ( !item->parent() )
     {
       showAsGroupBox = new QCheckBox( tr( "Show as group box" ) );
       showAsGroupBox->setChecked( itemData.showAsGroupBox() );
-      layout->addRow( tr( "Show as group box" ), showAsGroupBox );
+      layout->addRow( showAsGroupBox );
     }
 
     QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok

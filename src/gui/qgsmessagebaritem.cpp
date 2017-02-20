@@ -98,7 +98,7 @@ void QgsMessageBarItem::writeContent()
   }
   else
   {
-    QString msgIcon( QStringLiteral( "/mIconInfo.png" ) );
+    QString msgIcon( QStringLiteral( "/mIconInfo.svg" ) );
     switch ( mLevel )
     {
       case QgsMessageBar::CRITICAL:
@@ -215,7 +215,7 @@ QgsMessageBarItem *QgsMessageBarItem::setWidget( QWidget *widget )
 {
   if ( mWidget )
   {
-    QLayoutItem *item;
+    QLayoutItem *item = nullptr;
     item = mLayout->itemAt( 2 );
     if ( item->widget() == mWidget )
     {

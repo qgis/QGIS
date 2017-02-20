@@ -546,91 +546,91 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QString mTitle;
 
     //! Labels in status bar which shows current mouse position
-    QLabel* mStatusCursorXLabel;
-    QLabel* mStatusCursorYLabel;
-    QLabel* mStatusCursorPageLabel;
+    QLabel* mStatusCursorXLabel = nullptr;
+    QLabel* mStatusCursorYLabel = nullptr;
+    QLabel* mStatusCursorPageLabel = nullptr;
     //! Combobox in status bar which shows/adjusts current zoom level
-    QComboBox* mStatusZoomCombo;
+    QComboBox* mStatusZoomCombo = nullptr;
     QList<double> mStatusZoomLevelsList;
     //! Label in status bar which shows messages from the composition
-    QLabel* mStatusCompositionLabel;
+    QLabel* mStatusCompositionLabel = nullptr;
     //! Label in status bar which shows atlas details
-    QLabel* mStatusAtlasLabel;
+    QLabel* mStatusAtlasLabel = nullptr;
 
     //! Pointer to composer view
-    QgsComposerView *mView;
-    QGridLayout* mViewLayout;
-    QgsComposerRuler* mHorizontalRuler;
-    QgsComposerRuler* mVerticalRuler;
-    QWidget* mRulerLayoutFix;
+    QgsComposerView *mView = nullptr;
+    QGridLayout* mViewLayout = nullptr;
+    QgsComposerRuler* mHorizontalRuler = nullptr;
+    QgsComposerRuler* mVerticalRuler = nullptr;
+    QWidget* mRulerLayoutFix = nullptr;
 
     //! Current composition
-    QgsComposition *mComposition;
+    QgsComposition *mComposition = nullptr;
 
     //! Pointer to QGIS application
-    QgisApp *mQgis;
+    QgisApp *mQgis = nullptr;
 
     //! The composer was opened first time (-> set defaults)
     bool mFirstTime;
 
     //! Layout
-    QGridLayout *mItemOptionsLayout;
+    QGridLayout *mItemOptionsLayout = nullptr;
 
     //! Size grip
-    QSizeGrip *mSizeGrip;
+    QSizeGrip *mSizeGrip = nullptr;
 
     //! To know which item to show if selection changes
     QMap<QgsComposerItem*, QgsPanelWidget*> mItemWidgetMap;
 
     //! Window menu action to select this window
-    QAction *mWindowAction;
+    QAction *mWindowAction = nullptr;
 
     //! Copy/cut/paste actions
-    QAction *mActionCut;
-    QAction *mActionCopy;
-    QAction *mActionPaste;
+    QAction *mActionCut = nullptr;
+    QAction *mActionCopy = nullptr;
+    QAction *mActionPaste = nullptr;
 
     //! Page & Printer Setup
-    QPrinter* mPrinter;
+    QPrinter* mPrinter = nullptr;
     bool mSetPageOrientation;
 
-    QUndoView* mUndoView;
+    QUndoView* mUndoView = nullptr;
 
     //! Preview mode actions
-    QAction *mActionPreviewModeOff;
-    QAction *mActionPreviewModeGrayscale;
-    QAction *mActionPreviewModeMono;
-    QAction *mActionPreviewProtanope;
-    QAction *mActionPreviewDeuteranope;
+    QAction *mActionPreviewModeOff = nullptr;
+    QAction *mActionPreviewModeGrayscale = nullptr;
+    QAction *mActionPreviewModeMono = nullptr;
+    QAction *mActionPreviewProtanope = nullptr;
+    QAction *mActionPreviewDeuteranope = nullptr;
 
-    QComboBox* mAtlasPageComboBox;
+    QComboBox* mAtlasPageComboBox = nullptr;
 
     //! We load composer map content from project xml only on demand. Therefore we need to store the real preview mode type
     QMap< QgsComposerMap*, int > mMapsToRestore;
 
-    QgsDockWidget* mItemDock;
-    QgsPanelWidgetStack* mItemPropertiesStack;
-    QgsDockWidget* mUndoDock;
-    QgsDockWidget* mGeneralDock;
-    QgsPanelWidgetStack* mGeneralPropertiesStack;
-    QgsDockWidget* mAtlasDock;
-    QgsDockWidget* mItemsDock;
+    QgsDockWidget* mItemDock = nullptr;
+    QgsPanelWidgetStack* mItemPropertiesStack = nullptr;
+    QgsDockWidget* mUndoDock = nullptr;
+    QgsDockWidget* mGeneralDock = nullptr;
+    QgsPanelWidgetStack* mGeneralPropertiesStack = nullptr;
+    QgsDockWidget* mAtlasDock = nullptr;
+    QgsDockWidget* mItemsDock = nullptr;
 
-    QTreeView* mItemsTreeView;
+    QTreeView* mItemsTreeView = nullptr;
 
-    QMenu* mPanelMenu;
-    QMenu* mToolbarMenu;
+    QMenu* mPanelMenu = nullptr;
+    QMenu* mToolbarMenu = nullptr;
 
     //! Print Composers menu as mirror of main app's
-    QMenu* mPrintComposersMenu;
+    QMenu* mPrintComposersMenu = nullptr;
 
     //! Window menu as mirror of main app's (on Mac)
-    QMenu* mWindowMenu;
+    QMenu* mWindowMenu = nullptr;
 
     //! Help menu as mirror of main app's (on Mac)
-    QMenu* mHelpMenu;
+    QMenu* mHelpMenu = nullptr;
 
-    QgsMapLayerAction* mAtlasFeatureAction;
+    QgsMapLayerAction* mAtlasFeatureAction = nullptr;
 
     struct PanelStatus
     {

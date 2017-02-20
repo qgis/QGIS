@@ -61,7 +61,7 @@ class TestQgsRasterSubLayer : public QObject
   private:
     QString mTestDataDir;
     QString mFileName;
-    QgsRasterLayer * mpRasterLayer;
+    QgsRasterLayer * mpRasterLayer = nullptr;
     QString mReport;
     bool mHasNetCDF;
 };

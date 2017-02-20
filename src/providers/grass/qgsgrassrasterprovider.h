@@ -74,7 +74,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterValue
     QString mMapset;        // map mapset
     QString mMapName;       // map name
     QTemporaryFile mGisrcFile;
-    QProcess *mProcess;
+    QProcess *mProcess = nullptr;
 };
 
 /**

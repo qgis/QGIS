@@ -36,16 +36,14 @@ class SERVER_EXPORT QgsWCSProjectParser
     QgsWCSProjectParser& operator=( const QgsWCSProjectParser& rh ) = delete;
 
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
-    QString wcsServiceUrl() const;
-    QString serviceUrl() const;
     void wcsContentMetadata( QDomElement& parentElement, QDomDocument& doc ) const;
     QStringList wcsLayers() const;
     void describeCoverage( const QString& aCoveName, QDomElement& parentElement, QDomDocument& doc ) const;
     QList<QgsMapLayer*> mapLayerFromCoverage( const QString& cName, bool useCache = true ) const;
 
   private:
-    QgsServerProjectParser* mProjectParser;
-    const QgsAccessControl* mAccessControl;
+    QgsServerProjectParser* mProjectParser = nullptr;
+    const QgsAccessControl* mAccessControl = nullptr;
 
 };
 

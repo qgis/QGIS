@@ -127,7 +127,7 @@ void QgsSourceSelectDialog::setCurrentExtentAndCrs( const QgsRectangle& canvasEx
 
 void QgsSourceSelectDialog::populateImageEncodings( const QStringList& availableEncodings )
 {
-  QLayoutItem* item;
+  QLayoutItem* item = nullptr;
   while (( item = gbImageEncoding->layout()->takeAt( 0 ) ) != nullptr )
   {
     delete item->widget();

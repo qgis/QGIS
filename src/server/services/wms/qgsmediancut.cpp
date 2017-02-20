@@ -200,19 +200,19 @@ namespace QgsWms
       //sort color box for a/r/g/b
       if ( redRange >= greenRange && redRange >= blueRange && redRange >= alphaRange )
       {
-        qSort( colorBox.begin(), colorBox.end(), redCompare );
+        std::sort( colorBox.begin(), colorBox.end(), redCompare );
       }
       else if ( greenRange >= redRange && greenRange >= blueRange && greenRange >= alphaRange )
       {
-        qSort( colorBox.begin(), colorBox.end(), greenCompare );
+        std::sort( colorBox.begin(), colorBox.end(), greenCompare );
       }
       else if ( blueRange >= redRange && blueRange >= greenRange && blueRange >= alphaRange )
       {
-        qSort( colorBox.begin(), colorBox.end(), blueCompare );
+        std::sort( colorBox.begin(), colorBox.end(), blueCompare );
       }
       else
       {
-        qSort( colorBox.begin(), colorBox.end(), alphaCompare );
+        std::sort( colorBox.begin(), colorBox.end(), alphaCompare );
       }
 
       //get median

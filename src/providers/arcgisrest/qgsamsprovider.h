@@ -41,8 +41,8 @@ class QgsAmsLegendFetcher : public QgsImageFetcher
     void handleError( const QString &errorTitle, const QString &errorMsg );
 
   private:
-    QgsAmsProvider* mProvider;
-    QgsArcGisAsyncQuery* mQuery;
+    QgsAmsProvider* mProvider = nullptr;
+    QgsArcGisAsyncQuery* mQuery = nullptr;
     QByteArray mQueryReply;
     QImage mLegendImage;
     QString mErrorTitle;
@@ -92,7 +92,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
 
   private:
     bool mValid;
-    QgsAmsLegendFetcher* mLegendFetcher;
+    QgsAmsLegendFetcher* mLegendFetcher = nullptr;
     QVariantMap mServiceInfo;
     QVariantMap mLayerInfo;
     QgsCoordinateReferenceSystem mCrs;

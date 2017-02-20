@@ -108,7 +108,7 @@ void QgsVariableEditorWidget::setContext( QgsExpressionContext* context )
 void QgsVariableEditorWidget::reloadContext()
 {
   mTreeWidget->resetTree();
-  mTreeWidget->setContext( mContext.data() );
+  mTreeWidget->setContext( mContext.get() );
   mTreeWidget->refreshTree();
 }
 
@@ -344,12 +344,8 @@ void QgsVariableEditorTree::refreshScopeVariables( QgsExpressionContextScope* sc
 
   Q_FOREACH ( const QString& name, scope->filteredVariableNames() )
   {
-    QTreeWidgetItem* item;
-    if ( mVariableToItem.contains( qMakePair( scopeIndex, name ) ) )
-    {
-      item = mVariableToItem.value( qMakePair( scopeIndex, name ) );
-    }
-    else
+    QTreeWidgetItem* item = mVariableToItem.value( qMakePair( scopeIndex, name ) );
+    if ( !item )
     {
       item = new QTreeWidgetItem( scopeItem );
       mVariableToItem.insert( qMakePair( scopeIndex, name ), item );
@@ -408,7 +404,7 @@ void QgsVariableEditorTree::refreshScopeItems( QgsExpressionContextScope* scope,
   //add top level item
   bool isCurrent = scopeIndex == mEditableScopeIndex;
 
-  QTreeWidgetItem* scopeItem;
+  QTreeWidgetItem* scopeItem = nullptr;
   if ( mScopeToItem.contains( scopeIndex ) )
   {
     //retrieve existing item

@@ -38,17 +38,17 @@ class QgsGeometryCheckerFixDialog : public QDialog
     void currentErrorChanged( QgsGeometryCheckError* error );
 
   private:
-    QgsGeometryChecker* mChecker;
+    QgsGeometryChecker* mChecker = nullptr;
     QList<QgsGeometryCheckError *> mErrors;
-    QgisInterface* mIface;
-    QGroupBox* mResolutionsBox;
-    QDialogButtonBox* mButtonBox;
-    QLabel* mStatusLabel;
-    QProgressBar* mProgressBar;
-    QButtonGroup* mRadioGroup;
-    QPushButton* mNextBtn;
-    QPushButton* mFixBtn;
-    QPushButton* mSkipBtn;
+    QgisInterface* mIface = nullptr;
+    QGroupBox* mResolutionsBox = nullptr;
+    QDialogButtonBox* mButtonBox = nullptr;
+    QLabel* mStatusLabel = nullptr;
+    QProgressBar* mProgressBar = nullptr;
+    QButtonGroup* mRadioGroup = nullptr;
+    QPushButton* mNextBtn = nullptr;
+    QPushButton* mFixBtn = nullptr;
+    QPushButton* mSkipBtn = nullptr;
 
     void showEvent( QShowEvent * ) override;
 

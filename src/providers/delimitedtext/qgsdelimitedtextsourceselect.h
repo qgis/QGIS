@@ -49,20 +49,20 @@ class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTex
     bool trySetXYField( QStringList &fields, QList<bool> &isValidNumber, const QString& xname, const QString& yname );
 
   private:
-    QgsDelimitedTextFile *mFile;
+    QgsDelimitedTextFile *mFile = nullptr;
     int mExampleRowCount;
     int mBadRowCount;
     QString mPluginKey;
     QString mLastFileType;
-    QButtonGroup *bgFileFormat;
-    QButtonGroup *bgGeomType;
+    QButtonGroup *bgFileFormat = nullptr;
+    QButtonGroup *bgGeomType = nullptr;
 
   private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
     void on_buttonBox_helpRequested()
     {
-      QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#id8" ) );
+      QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#delimited-text-files" ) );
     }
     void on_btnBrowseForFile_clicked();
 

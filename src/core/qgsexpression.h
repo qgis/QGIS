@@ -929,7 +929,7 @@ class CORE_EXPORT QgsExpression
         QString name;
 
         //! Node
-        Node* node;
+        Node* node = nullptr;
     };
 
     /** \ingroup core
@@ -1011,7 +1011,7 @@ class CORE_EXPORT QgsExpression
 
       protected:
         UnaryOperator mOp;
-        Node* mOperand;
+        Node* mOperand = nullptr;
     };
 
     /** \ingroup core
@@ -1055,8 +1055,8 @@ class CORE_EXPORT QgsExpression
         QDateTime computeDateTimeFromInterval( const QDateTime& d, QgsInterval* i );
 
         BinaryOperator mOp;
-        Node* mOpLeft;
-        Node* mOpRight;
+        Node* mOpLeft = nullptr;
+        Node* mOpRight = nullptr;
     };
 
     /** \ingroup core
@@ -1086,8 +1086,8 @@ class CORE_EXPORT QgsExpression
         virtual Node* clone() const override;
 
       protected:
-        Node* mNode;
-        NodeList* mList;
+        Node* mNode = nullptr;
+        NodeList* mList = nullptr;
         bool mNotIn;
     };
 
@@ -1118,7 +1118,7 @@ class CORE_EXPORT QgsExpression
 
       private:
         int mFnIndex;
-        NodeList* mArgs;
+        NodeList* mArgs = nullptr;
 
     };
 
@@ -1194,8 +1194,8 @@ class CORE_EXPORT QgsExpression
         WhenThen& operator=( const WhenThen& rh ) = delete;
 
         // protected:
-        Node* mWhenExp;
-        Node* mThenExp;
+        Node* mWhenExp = nullptr;
+        Node* mThenExp = nullptr;
 
     };
     typedef QList<WhenThen*> WhenThenList;
@@ -1227,7 +1227,7 @@ class CORE_EXPORT QgsExpression
 
       protected:
         WhenThenList mConditions;
-        Node* mElseExp;
+        Node* mElseExp = nullptr;
     };
 
     /** Returns the help text for a specified function.
@@ -1342,7 +1342,7 @@ class CORE_EXPORT QgsExpression
      */
     void detach();
 
-    QgsExpressionPrivate* d;
+    QgsExpressionPrivate* d = nullptr;
 
     static QHash<QString, Help> sFunctionHelpTexts;
     static QHash<QString, QString> sVariableHelpTexts;

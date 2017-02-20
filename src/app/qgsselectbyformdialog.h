@@ -67,10 +67,10 @@ class APP_EXPORT QgsSelectByFormDialog : public QDialog
 
   private:
 
-    QgsAttributeForm* mForm;
-    QgsVectorLayer* mLayer;
-    QgsMessageBar* mMessageBar;
-    QgsMapCanvas* mMapCanvas;
+    QgsAttributeForm* mForm = nullptr;
+    QgsVectorLayer* mLayer = nullptr;
+    QgsMessageBar* mMessageBar = nullptr;
+    QgsMapCanvas* mMapCanvas = nullptr;
 
 };
 

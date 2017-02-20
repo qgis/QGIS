@@ -29,6 +29,11 @@ QgsMapToolEdit::QgsMapToolEdit( QgsMapCanvas* canvas )
 {
 }
 
+double QgsMapToolEdit::defaultZValue() const
+{
+  return QSettings().value( QStringLiteral( "/qgis/digitizing/default_z_value" ), Qgis::DEFAULT_Z_COORDINATE ).toDouble();
+}
+
 QgsRubberBand* QgsMapToolEdit::createRubberBand( QgsWkbTypes::GeometryType geometryType, bool alternativeBand )
 {
   QSettings settings;

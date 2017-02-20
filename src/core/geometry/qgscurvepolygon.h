@@ -110,6 +110,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
     virtual QgsCoordinateSequence coordinateSequence() const override;
     virtual int nCoordinates() const override;
+    bool isEmpty() const override;
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
     bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
 
@@ -138,7 +139,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
   protected:
 
-    QgsCurve* mExteriorRing;
+    QgsCurve* mExteriorRing = nullptr;
     QList<QgsCurve*> mInteriorRings;
 
     virtual QgsRectangle calculateBoundingBox() const override;

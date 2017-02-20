@@ -46,7 +46,7 @@ class GUI_EXPORT QgsColorSwatchDelegate : public QAbstractItemDelegate
     void colorChanged();
 
   private:
-    QWidget* mParent;
+    QWidget* mParent = nullptr;
 
     /** Generates a checkboard pattern for transparent color backgrounds
      * @returns checkboard pixmap
@@ -136,7 +136,7 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
     };
 
     QgsNamedColorList mColors;
-    QgsColorScheme* mScheme;
+    QgsColorScheme* mScheme = nullptr;
     QString mContext;
     QColor mBaseColor;
     bool mIsDirty;
@@ -250,9 +250,9 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
     void mouseReleaseEvent( QMouseEvent* event ) override;
 
   private:
-    QgsColorScheme* mScheme;
-    QgsColorSchemeModel* mModel;
-    QgsColorSwatchDelegate* mSwatchDelegate;
+    QgsColorScheme* mScheme = nullptr;
+    QgsColorSchemeModel* mModel = nullptr;
+    QgsColorSwatchDelegate* mSwatchDelegate = nullptr;
 
     QPoint mDragStartPosition;
 

@@ -394,7 +394,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     // WKBPoint, WKBLineString, ...
     QgsWkbTypes::Type mQgisType;
     QString mLayerName;
-    QgsGrassVectorMapLayer *mLayer;
+    QgsGrassVectorMapLayer *mLayer = nullptr;
     // The version of the map for which the instance was last time updated
     int mMapVersion;
 
@@ -432,8 +432,8 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     //QgsFields mEditFields;
 
-    QgsVectorLayerEditBuffer* mEditBuffer;
-    QgsVectorLayer* mEditLayer;
+    QgsVectorLayerEditBuffer* mEditBuffer = nullptr;
+    QgsVectorLayer* mEditLayer = nullptr;
 
     //  next digitized feature GRASS type
     int mNewFeatureType;

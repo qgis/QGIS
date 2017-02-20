@@ -17,7 +17,6 @@
 #include <QString>
 #include <QStringList>
 #include <QSettings>
-#include <QSharedPointer>
 
 #include "qgsfeature.h"
 #include "qgsfield.h"
@@ -313,7 +312,7 @@ void TestQgsFeature::geometry()
   QVERIFY( geomFeature.hasGeometry() );
   geomFeature.clearGeometry();
   QVERIFY( !geomFeature.hasGeometry() );
-  QVERIFY( geomFeature.geometry().isEmpty() );
+  QVERIFY( geomFeature.geometry().isNull() );
 }
 
 void TestQgsFeature::asVariant()

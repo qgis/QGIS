@@ -61,7 +61,7 @@ static QString PROVIDER_DESCRIPTION = QStringLiteral( "GDAL provider" );
 struct QgsGdalProgress
 {
   int type;
-  QgsGdalProvider *provider;
+  QgsGdalProvider *provider = nullptr;
 };
 //
 // global callback function
@@ -203,7 +203,7 @@ bool QgsGdalProvider::crsFromWkt( const char *wkt )
     else
     {
       // get the proj4 text
-      char *pszProj4;
+      char *pszProj4 = nullptr;
       OSRExportToProj4( hCRS, &pszProj4 );
       QgsDebugMsg( pszProj4 );
       CPLFree( pszProj4 );

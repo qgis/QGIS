@@ -43,7 +43,7 @@ class TestQgsScaleComboBox : public QObject
   private:
     void enterScale( const QString& scale );
     void enterScale( double scale );
-    QgsScaleComboBox *s;
+    QgsScaleComboBox *s = nullptr;
 };
 
 void TestQgsScaleComboBox::initTestCase()

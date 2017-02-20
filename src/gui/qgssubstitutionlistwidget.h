@@ -106,7 +106,7 @@ class GUI_EXPORT QgsSubstitutionListDialog : public QDialog
 
   private:
 
-    QgsSubstitutionListWidget* mWidget;
+    QgsSubstitutionListWidget* mWidget = nullptr;
 
 };
 

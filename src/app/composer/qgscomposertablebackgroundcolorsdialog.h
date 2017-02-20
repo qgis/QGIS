@@ -51,7 +51,7 @@ class QgsComposerTableBackgroundColorsDialog: public QDialog, private Ui::QgsCom
 
   private:
 
-    QgsComposerTableV2* mComposerTable;
+    QgsComposerTableV2* mComposerTable = nullptr;
     QMap< QgsComposerTableV2::CellStyleGroup, QCheckBox* > mCheckBoxMap;
     QMap< QgsComposerTableV2::CellStyleGroup, QgsColorButton* > mColorButtonMap;
 

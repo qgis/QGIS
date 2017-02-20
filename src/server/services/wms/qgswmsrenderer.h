@@ -76,6 +76,7 @@ namespace QgsWms
       /** Constructor. Does _NOT_ take ownership of
           QgsConfigParser and QgsCapabilitiesCache*/
       QgsRenderer( QgsServerInterface* serverIface,
+                   const QgsProject* project,
                    const QgsServerRequest::Parameters& parameters,
                    QgsWmsConfigParser* parser );
 
@@ -255,12 +256,13 @@ namespace QgsWms
       bool mDrawLegendItemLabel;
 
       //! Map containing the WMS parameters
-      QgsWmsConfigParser*    mConfigParser;
+      QgsWmsConfigParser*    mConfigParser = nullptr;
 
       //! The access control helper
-      QgsAccessControl* mAccessControl;
+      QgsAccessControl* mAccessControl = nullptr;
 
       const QgsServerSettings& mSettings;
+      const QgsProject* mProject = nullptr;
 
     public:
 

@@ -94,7 +94,11 @@ class CORE_EXPORT QgsProviderRegistry
     QFunctionPointer function( const QString & providerKey,
                                const QString & functionName );
 
-    QLibrary *providerLibrary( const QString & providerKey ) const;
+    /**
+     * Returns a new QLibrary for the specified \a providerKey. Ownership of the returned
+     * object is transferred to the caller and the caller is responsible for deleting it.
+     */
+    QLibrary* providerLibrary( const QString & providerKey ) const;
 
     //! Return list of available providers by their keys
     QStringList providerList() const;

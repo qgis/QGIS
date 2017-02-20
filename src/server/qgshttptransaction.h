@@ -148,7 +148,7 @@ class QgsHttpTransaction : public QObject
      *        but strange things were happening with the signals -
      *        therefore we use the "pointer to" instead.
      */
-    QHttp* http;
+    QHttp* http = nullptr;
 
     /**
      * Indicates the QHttp ID
@@ -198,7 +198,7 @@ class QgsHttpTransaction : public QObject
     /**
      * Indicates the associated QTimer object - used to detect network timeouts
      */
-    QTimer * mWatchdogTimer;
+    QTimer * mWatchdogTimer = nullptr;
 
     /**
      * The error message associated with the last HTTP error.

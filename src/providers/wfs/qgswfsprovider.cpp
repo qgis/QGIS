@@ -59,8 +59,8 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri, const QgsWfsCapabilities::Ca
     , mCapabilities( 0 )
 {
   mShared->mCaps = caps;
-  connect( mShared.data(), SIGNAL( raiseError( const QString& ) ), this, SLOT( pushErrorSlot( const QString& ) ) );
-  connect( mShared.data(), SIGNAL( extentUpdated() ), this, SIGNAL( fullExtentCalculated() ) );
+  connect( mShared.get(), SIGNAL( raiseError( const QString& ) ), this, SLOT( pushErrorSlot( const QString& ) ) );
+  connect( mShared.get(), SIGNAL( extentUpdated() ), this, SIGNAL( fullExtentCalculated() ) );
 
   if ( uri.isEmpty() )
   {
@@ -120,7 +120,7 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri, const QgsWfsCapabilities::Ca
   //Failed to detect feature type from describeFeatureType -> get first feature from layer to detect type
   if ( mWKBType == QgsWkbTypes::Unknown )
   {
-    QgsWFSFeatureDownloader downloader( mShared.data() );
+    QgsWFSFeatureDownloader downloader( mShared.get() );
     connect( &downloader, SIGNAL( featureReceived( QVector<QgsWFSFeatureGmlIdPair> ) ),
              this, SLOT( featureReceivedAnalyzeOneFeature( QVector<QgsWFSFeatureGmlIdPair> ) ) );
     downloader.run( false, /* serialize features */
@@ -645,7 +645,7 @@ void QgsWFSProvider::featureReceivedAnalyzeOneFeature( QVector<QgsWFSFeatureGmlI
   {
     QgsFeature feat = list[0].first;
     QgsGeometry geometry = feat.geometry();
-    if ( !geometry.isEmpty() )
+    if ( !geometry.isNull() )
     {
       mWKBType = geometry.wkbType();
     }
@@ -820,7 +820,7 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
 
     //add geometry column (as gml)
     QgsGeometry geometry = featureIt->geometry();
-    if ( !geometry.isEmpty() )
+    if ( !geometry.isNull() )
     {
       QDomElement geomElem = transactionDoc.createElementNS( mApplicationNamespace, mShared->mGeometryAttribute );
       QgsGeometry the_geom( geometry );

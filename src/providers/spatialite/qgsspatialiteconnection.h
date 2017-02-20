@@ -180,7 +180,7 @@ class QgsSqliteHandle
 
   private:
     int ref;
-    sqlite3 *sqlite_handle;
+    sqlite3 *sqlite_handle = nullptr;
     QString mDbPath;
     bool mIsValid;
 

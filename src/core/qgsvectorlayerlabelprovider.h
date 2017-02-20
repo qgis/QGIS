@@ -44,15 +44,6 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
                                           const QgsPalLayerSettings* settings = nullptr,
                                           const QString& layerName = QString() );
 
-    //! Construct diagram provider with all the necessary configuration parameters
-    QgsVectorLayerLabelProvider( const QgsPalLayerSettings& settings,
-                                 const QString& layerId,
-                                 const QgsFields& fields,
-                                 const QgsCoordinateReferenceSystem& crs,
-                                 QgsAbstractFeatureSource* source,
-                                 bool ownsSource,
-                                 QgsFeatureRenderer* renderer = nullptr );
-
     ~QgsVectorLayerLabelProvider();
 
     virtual QList<QgsLabelFeature*> labelFeatures( QgsRenderContext& context ) override;
@@ -104,7 +95,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
     //! Geometry type of layer
     QgsWkbTypes::GeometryType mLayerGeometryType;
 
-    QgsFeatureRenderer* mRenderer;
+    QgsFeatureRenderer* mRenderer = nullptr;
 
     // these are needed only if using own renderer loop
 
@@ -113,7 +104,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
     //! Layer's CRS
     QgsCoordinateReferenceSystem mCrs;
     //! Layer's feature source
-    QgsAbstractFeatureSource* mSource;
+    QgsAbstractFeatureSource* mSource = nullptr;
     //! Whether layer's feature source is owned
     bool mOwnsSource;
 

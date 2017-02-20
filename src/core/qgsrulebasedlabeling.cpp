@@ -119,6 +119,20 @@ void QgsRuleBasedLabeling::Rule::updateElseRules()
   }
 }
 
+bool QgsRuleBasedLabeling::Rule::requiresAdvancedEffects() const
+{
+  if ( mSettings && mSettings->format().containsAdvancedEffects() )
+    return true;
+
+  Q_FOREACH ( Rule* rule, mChildren )
+  {
+    if ( rule->requiresAdvancedEffects() )
+      return true;
+  }
+
+  return false;
+}
+
 void QgsRuleBasedLabeling::Rule::subProviderIds( QStringList& list ) const
 {
   Q_FOREACH ( const Rule* rule, mChildren )
@@ -436,4 +450,9 @@ QgsPalLayerSettings QgsRuleBasedLabeling::settings( QgsVectorLayer* layer, const
     return *rule->settings();
 
   return QgsPalLayerSettings();
+}
+
+bool QgsRuleBasedLabeling::requiresAdvancedEffects( QgsVectorLayer* ) const
+{
+  return mRootRule->requiresAdvancedEffects();
 }

@@ -77,7 +77,7 @@ void QgsComposerConfigObject::updateDataDefinedButtons()
 void QgsComposerConfigObject::initializeDataDefinedButton( QgsPropertyOverrideButton* button, QgsComposerObject::DataDefinedProperty key )
 {
   button->blockSignals( true );
-  button->init( key, mComposerObject->dataDefinedProperties(), QgsComposerObject::PROPERTY_DEFINITIONS, atlasCoverageLayer() );
+  button->init( key, mComposerObject->dataDefinedProperties(), QgsComposerObject::propertyDefinitions(), atlasCoverageLayer() );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsComposerConfigObject::updateDataDefinedProperty );
   button->registerExpressionContextGenerator( mComposerObject );
   button->blockSignals( false );

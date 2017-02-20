@@ -33,12 +33,12 @@ class QgsOgrFeatureSource : public QgsAbstractFeatureSource
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
 
   protected:
-    const QgsOgrProvider* mProvider;
+    const QgsOgrProvider* mProvider = nullptr;
     QString mDataSource;
     QString mLayerName;
     int mLayerIndex;
     QString mSubsetString;
-    QTextCodec* mEncoding;
+    QTextCodec* mEncoding = nullptr;
     QgsFields mFields;
     bool mFirstFieldIsFid;
     QgsFields mFieldsWithoutFid;
@@ -70,7 +70,7 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
 
     bool mFeatureFetched;
 
-    QgsOgrConn* mConn;
+    QgsOgrConn* mConn = nullptr;
     OGRLayerH ogrLayer;
 
     bool mSubsetStringSet;

@@ -53,8 +53,8 @@ class GUI_EXPORT QgsMapLayerConfigWidget : public QgsPanelWidget
     virtual void apply() = 0;
 
   protected:
-    QgsMapLayer* mLayer;
-    QgsMapCanvas* mMapCanvas;
+    QgsMapLayer* mLayer = nullptr;
+    QgsMapCanvas* mMapCanvas = nullptr;
 };
 
 #endif // QGSMAPLAYERCONFIGWIDGET_H

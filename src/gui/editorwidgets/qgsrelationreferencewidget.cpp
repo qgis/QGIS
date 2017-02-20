@@ -477,7 +477,7 @@ void QgsRelationReferenceWidget::init()
         QVariant nullValue = QgsApplication::nullRepresentation();
         cb->addItem( nullValue.toString(), QVariant( mReferencedLayer->fields().at( idx ).type() ) );
 
-        qSort( uniqueValues.begin(), uniqueValues.end(), qgsVariantLessThan );
+        std::sort( uniqueValues.begin(), uniqueValues.end(), qgsVariantLessThan );
         Q_FOREACH ( const QVariant& v, uniqueValues )
         {
           cb->addItem( v.toString(), v );

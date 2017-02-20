@@ -359,7 +359,7 @@ QList<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::getSelfIntersections
       s.segment2 = k;
       if ( s.segment1 > s.segment2 )
       {
-        qSwap( s.segment1, s.segment2 );
+        std::swap( s.segment1, s.segment2 );
       }
       s.point = inter;
       intersections.append( s );
@@ -817,6 +817,31 @@ QStringList QgsGeometryUtils::wktGetChildBlocks( const QString &wkt, const QStri
     blocks.append( block );
   }
   return blocks;
+}
+
+QgsPointV2 QgsGeometryUtils::midpoint( const QgsPointV2 &pt1, const QgsPointV2 &pt2 )
+{
+  QgsWkbTypes::Type pType( QgsWkbTypes::Point );
+
+
+  double x = ( pt1.x() + pt2.x() ) / 2.0;
+  double y = ( pt1.y() + pt2.y() ) / 2.0;
+  double z = 0.0;
+  double m = 0.0;
+
+  if ( pt1.is3D() || pt2.is3D() )
+  {
+    pType = QgsWkbTypes::addZ( pType );
+    z = ( pt1.z() + pt2.z() ) / 2.0;
+  }
+
+  if ( pt1.isMeasure() || pt2.isMeasure() )
+  {
+    pType = QgsWkbTypes::addM( pType );
+    m = ( pt1.m() + pt2.m() ) / 2.0;
+  }
+
+  return QgsPointV2( pType, x, y, z, m );
 }
 
 double QgsGeometryUtils::lineAngle( double x1, double y1, double x2, double y2 )

@@ -61,10 +61,10 @@ class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
     QgsComposerHtmlWidget();
     void blockSignals( bool block );
 
-    QgsComposerHtml* mHtml;
-    QgsComposerFrame* mFrame;
-    QgsCodeEditorHTML *mHtmlEditor;
-    QgsCodeEditorCSS *mStylesheetEditor;
+    QgsComposerHtml* mHtml = nullptr;
+    QgsComposerFrame* mFrame = nullptr;
+    QgsCodeEditorHTML *mHtmlEditor = nullptr;
+    QgsCodeEditorCSS *mStylesheetEditor = nullptr;
 };
 
 #endif // QGSCOMPOSERHTMLWIDGET_H

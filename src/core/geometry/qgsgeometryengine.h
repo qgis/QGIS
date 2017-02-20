@@ -101,7 +101,7 @@ class CORE_EXPORT QgsGeometryEngine
     virtual QgsAbstractGeometry* offsetCurve( double distance, int segments, int joinStyle, double mitreLimit, QString* errorMsg = nullptr ) const = 0;
 
   protected:
-    const QgsAbstractGeometry* mGeometry;
+    const QgsAbstractGeometry* mGeometry = nullptr;
 
     QgsGeometryEngine();
 };

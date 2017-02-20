@@ -72,7 +72,7 @@ class QgsBrowserLayerProperties : public QgsBrowserPropertiesWidget, private Ui:
     virtual void setCondensedMode( bool condensedMode ) override;
 
   private:
-    QgsBrowserPropertiesWrapLabel *mUriLabel;
+    QgsBrowserPropertiesWrapLabel *mUriLabel = nullptr;
 };
 
 class QgsBrowserDirectoryProperties : public QgsBrowserPropertiesWidget , private Ui::QgsBrowserDirectoryPropertiesBase
@@ -83,8 +83,8 @@ class QgsBrowserDirectoryProperties : public QgsBrowserPropertiesWidget , privat
 
     void setItem( QgsDataItem* item ) override;
   private:
-    QgsDirectoryParamWidget* mDirectoryWidget;
-    QgsBrowserPropertiesWrapLabel *mPathLabel;
+    QgsDirectoryParamWidget* mDirectoryWidget = nullptr;
+    QgsBrowserPropertiesWrapLabel *mPathLabel = nullptr;
 };
 
 class QgsBrowserPropertiesDialog : public QDialog , private Ui::QgsBrowserPropertiesDialogBase
@@ -97,7 +97,7 @@ class QgsBrowserPropertiesDialog : public QDialog , private Ui::QgsBrowserProper
     void setItem( QgsDataItem* item );
 
   private:
-    QgsBrowserPropertiesWidget* mPropertiesWidget;
+    QgsBrowserPropertiesWidget* mPropertiesWidget = nullptr;
     QString mSettingsSection;
 };
 
@@ -144,9 +144,9 @@ class APP_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     int selectedItemsCount();
     QString settingsSection() { return objectName().toLower(); }
 
-    QgsDockBrowserTreeView* mBrowserView;
-    QgsBrowserModel* mModel;
-    QgsBrowserTreeFilterProxyModel* mProxyModel;
+    QgsDockBrowserTreeView* mBrowserView = nullptr;
+    QgsBrowserModel* mModel = nullptr;
+    QgsBrowserTreeFilterProxyModel* mProxyModel = nullptr;
     QString mInitPath;
     bool mPropertiesWidgetEnabled;
     // height fraction
@@ -197,7 +197,7 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
 
   protected:
 
-    QgsBrowserModel* mModel;
+    QgsBrowserModel* mModel = nullptr;
     QString mFilter; //filter string provided
     QVector<QRegExp> mREList; //list of filters, separated by "|"
     QString mPatternSyntax;

@@ -101,7 +101,7 @@ class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
     virtual QList<QgsLayerTreeModelLegendNode*> createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer ) override;
 
   private:
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
 };
 
 
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsDefaultRasterLayerLegend : public QgsMapLayerLegend
     virtual QList<QgsLayerTreeModelLegendNode*> createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer ) override;
 
   private:
-    QgsRasterLayer* mLayer;
+    QgsRasterLayer* mLayer = nullptr;
 };
 
 
@@ -137,7 +137,7 @@ class CORE_EXPORT QgsDefaultPluginLayerLegend : public QgsMapLayerLegend
     virtual QList<QgsLayerTreeModelLegendNode*> createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer ) override;
 
   private:
-    QgsPluginLayer* mLayer;
+    QgsPluginLayer* mLayer = nullptr;
 };
 
 #endif // QGSMAPLAYERLEGEND_H

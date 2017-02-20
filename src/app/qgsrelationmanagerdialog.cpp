@@ -114,9 +114,9 @@ void QgsRelationManagerDialog::on_mBtnAddRelation_clicked()
       relationId = tempId.arg( suffix );
       ++suffix;
     }
-    relation.setRelationId( relationId );
+    relation.setId( relationId );
     relation.addFieldPair( addDlg.references().at( 0 ).first, addDlg.references().at( 0 ).second );
-    relation.setRelationName( addDlg.relationName() );
+    relation.setName( addDlg.relationName() );
 
     addRelation( relation );
   }
@@ -153,7 +153,7 @@ QList< QgsRelation > QgsRelationManagerDialog::relations()
   {
     QgsRelation relation = mRelationsTable->item( i, 0 )->data( Qt::UserRole ).value<QgsRelation>();
     // The name can be editted in the table, so apply this one
-    relation.setRelationName( mRelationsTable->item( i, 0 )->data( Qt::DisplayRole ).toString() );
+    relation.setName( mRelationsTable->item( i, 0 )->data( Qt::DisplayRole ).toString() );
     relations << relation;
   }
 

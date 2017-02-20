@@ -39,7 +39,7 @@ class TestQgsMapToolZoom : public QObject
     void cleanup(); // will be called after every testfunction.
     void zeroDragArea();
   private:
-    QgsMapCanvas* canvas;
+    QgsMapCanvas* canvas = nullptr;
 };
 
 void TestQgsMapToolZoom::initTestCase()

@@ -196,7 +196,7 @@ class TestLayerDependencies(unittest.TestCase):
         QgsLayerDefinition.exportLayerDefinition(tmpfile, [ltr])
 
         grp = ltr.addGroup("imported")
-        QgsLayerDefinition.loadLayerDefinition(tmpfile, grp)
+        QgsLayerDefinition.loadLayerDefinition(tmpfile, QgsProject.instance(), grp)
 
         newPointsLayer = None
         newLinesLayer = None

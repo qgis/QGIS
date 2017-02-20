@@ -321,51 +321,9 @@ class QgsMapLayer : QObject
      */
     virtual bool isSpatial() const;
 
-    /** Sets state from Dom document
-       @param layerElement The Dom element corresponding to ``maplayer'' tag
-       @note
+    bool readLayerXml( const QDomElement& layerElement, const QgsPathResolver& pathResolver );
 
-       The Dom node corresponds to a Dom document project file XML element read
-       by QgsProject.
-
-       This, in turn, calls readXml(), which is over-rideable by sub-classes so
-       that they can read their own specific state from the given Dom node.
-
-       Invoked by QgsProject::read().
-
-       @returns true if successful
-     */
-    bool readLayerXml( const QDomElement& layerElement );
-
-    /** Stores state in Dom node
-     * @param layerElement is a Dom element corresponding to ``maplayer'' tag
-     * @param document is a the dom document being written
-     * @param relativeBasePath base path for relative paths
-     * @note
-     *
-     * The Dom node corresponds to a Dom document project file XML element to be
-     * written by QgsProject.
-     *
-     * This, in turn, calls writeXml(), which is over-rideable by sub-classes so
-     * that they can write their own specific state to the given Dom node.
-     *
-     * Invoked by QgsProject::write().
-     *
-     * @returns true if successful
-     */
-    bool writeLayerXml( QDomElement& layerElement, QDomDocument& document, const QString& relativeBasePath = QString::null ) const;
-
-    /** Returns the given layer as a layer definition document
-     *  Layer definitions store the data source as well as styling and custom properties.
-     *
-     *  Layer definitions can be used to load a layer and styling all from a single file.
-     */
-    static QDomDocument asLayerDefinition( const QList<QgsMapLayer*>& layers, const QString& relativeBasePath = QString::null );
-
-    /** Creates a new layer from a layer definition document
-     */
-    static QList<QgsMapLayer*> fromLayerDefinition( QDomDocument& document, bool addToRegistry = false, bool addToLegend = false );
-    static QList<QgsMapLayer*> fromLayerDefinitionFile( const QString &qlrfile );
+    bool writeLayerXml( QDomElement& layerElement, QDomDocument& document, const QgsPathResolver& pathResolver ) const;
 
     /** Set a custom property for layer. Properties are stored in a map and saved in project file.
      * @see customProperty()
@@ -437,7 +395,7 @@ class QgsMapLayer : QObject
      * @param qml will be set to QML style content from database
      * @returns true if style was successfully loaded
      */
-    virtual bool loadNamedStyleFromDb( const QString &db, const QString &uri, QString &qml /Out/ );
+    virtual bool loadNamedStyleFromDatabase( const QString &db, const QString &uri, QString &qml /Out/ );
 
     /**
      * Import the properties of this layer from a QDomDocument
@@ -615,6 +573,11 @@ class QgsMapLayer : QObject
      */
     bool hasScaleBasedVisibility() const;
 
+    bool hasAutoRefreshEnabled() const;
+    int autoRefreshInterval() const;
+    void setAutoRefreshInterval( int interval );
+    void setAutoRefreshEnabled( bool enabled );
+
   public slots:
 
     /** Event handler for when a coordinate transform fails due to bad vertex error */
@@ -646,13 +609,7 @@ class QgsMapLayer : QObject
      */
     void setScaleBasedVisibility( const bool enabled );
 
-    /**
-     * Will advice the map canvas (and any other interested party) that this layer requires to be repainted.
-     * Will emit a repaintRequested() signal.
-     *
-     * @note in 2.6 function moved from vector/raster subclasses to QgsMapLayer
-     */
-    void triggerRepaint();
+    void triggerRepaint( bool deferredUpdate = false );
 
     /** \brief Obtain Metadata for this layer */
     virtual QString metadata() const;
@@ -699,10 +656,7 @@ class QgsMapLayer : QObject
     /** Emit a signal that layer's CRS has been reset */
     void crsChanged();
 
-    /** By emitting this signal the layer tells that either appearance or content have been changed
-     * and any view showing the rendered layer should refresh itself.
-     */
-    void repaintRequested();
+    void repaintRequested( bool deferredUpdate = false );
 
     /** This is used to send a request that any mapcanvas using this layer update its extents */
     void recalculateExtents() const;
@@ -750,6 +704,8 @@ class QgsMapLayer : QObject
      * @note added in QGIS 3.0
      */
     void willBeDeleted();
+
+    void autoRefreshIntervalChanged( int interval );
 
   protected:
     /** Set the extent */

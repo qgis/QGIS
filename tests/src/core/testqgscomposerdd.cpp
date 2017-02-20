@@ -52,10 +52,10 @@ class TestQgsComposerDD : public QObject
     void ddEvaluate(); //test setting/evaluating data defined value
 
   private:
-    QgsComposition *mComposition;
-    QgsVectorLayer* mVectorLayer;
-    QgsComposerMap* mAtlasMap;
-    QgsAtlasComposition* mAtlas;
+    QgsComposition *mComposition = nullptr;
+    QgsVectorLayer* mVectorLayer = nullptr;
+    QgsComposerMap* mAtlasMap = nullptr;
+    QgsAtlasComposition* mAtlas = nullptr;
     QString mReport;
 };
 

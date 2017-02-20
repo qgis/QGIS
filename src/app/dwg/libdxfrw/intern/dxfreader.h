@@ -65,7 +65,7 @@ class dxfReader
     virtual bool readBool() = 0;
 
   protected:
-    std::ifstream *filestr;
+    std::ifstream *filestr = nullptr;
     std::string strData;
     double doubleData;
     signed int intData; //32 bits integer

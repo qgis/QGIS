@@ -91,7 +91,7 @@ class CORE_EXPORT QgsFieldFormatterRegistry : public QObject
 
   private:
     QHash<QString, QgsFieldFormatter*> mFieldFormatters;
-    QgsFieldFormatter* mFallbackFieldFormatter;
+    QgsFieldFormatter* mFallbackFieldFormatter = nullptr;
 };
 
 #endif // QGSFIELDKITREGISTRY_H

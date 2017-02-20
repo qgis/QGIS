@@ -59,8 +59,8 @@ class QgsArcGisAsyncQuery : public QObject
     void handleReply();
 
   private:
-    QNetworkReply* mReply;
-    QByteArray* mResult;
+    QNetworkReply* mReply = nullptr;
+    QByteArray* mResult = nullptr;
 };
 
 class QgsArcGisAsyncParallelQuery : public QObject

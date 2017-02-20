@@ -58,7 +58,7 @@ class GRASS_LIB_EXPORT QgsGrassImportProgress : public QObject
     void progressChanged( const QString &recentHtml, const QString &allHtml, int min, int max, int value );
 
   private:
-    QProcess* mProcess;
+    QProcess* mProcess = nullptr;
     // All stderr read from the modules converted to HTML
     QString mProgressHtml;
     // temporary part of progress, e.g. number of features written.
@@ -105,8 +105,8 @@ class GRASS_LIB_EXPORT QgsGrassImport : public QObject
     QgsGrassObject mGrassObject;
     QString mError;
     bool mCanceled;
-    QProcess* mProcess;
-    QgsGrassImportProgress* mProgress;
+    QProcess* mProcess = nullptr;
+    QgsGrassImportProgress* mProgress = nullptr;
     QFutureWatcher<bool>* mFutureWatcher;
 };
 
@@ -126,7 +126,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterImport : public QgsGrassImport
     QStringList names() const override;
 
   private:
-    QgsRasterPipe* mPipe;
+    QgsRasterPipe* mPipe = nullptr;
     QgsRectangle mExtent;
     int mXSize;
     int mYSize;
@@ -143,7 +143,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorImport : public QgsGrassImport
     QString srcDescription() const override;
 
   private:
-    QgsVectorDataProvider* mProvider;
+    QgsVectorDataProvider* mProvider = nullptr;
 };
 
 class GRASS_LIB_EXPORT QgsGrassCopy : public QgsGrassImport

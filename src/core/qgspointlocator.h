@@ -164,7 +164,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
       Type mType;
       double mDist;
       QgsPoint mPoint;
-      QgsVectorLayer* mLayer;
+      QgsVectorLayer* mLayer = nullptr;
       QgsFeatureId mFid;
       int mVertexIndex; // e.g. vertex index
       QgsPoint mEdgePoints[2];
@@ -218,18 +218,18 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
   private:
     //! Storage manager
-    SpatialIndex::IStorageManager* mStorage;
+    SpatialIndex::IStorageManager* mStorage = nullptr;
 
     QHash<QgsFeatureId, QgsGeometry*> mGeoms;
-    SpatialIndex::ISpatialIndex* mRTree;
+    SpatialIndex::ISpatialIndex* mRTree = nullptr;
 
     //! flag whether the layer is currently empty (i.e. mRTree is null but it is not necessary to rebuild it)
     bool mIsEmptyLayer;
 
     //! R-tree containing spatial index
     QgsCoordinateTransform mTransform;
-    QgsVectorLayer* mLayer;
-    QgsRectangle* mExtent;
+    QgsVectorLayer* mLayer = nullptr;
+    QgsRectangle* mExtent = nullptr;
 
     friend class QgsPointLocator_VisitorNearestVertex;
     friend class QgsPointLocator_VisitorNearestEdge;

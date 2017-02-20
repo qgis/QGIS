@@ -54,7 +54,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
   QgsExpressionContext defaultContext = mLayer->createExpressionContext();
   context = context ? context : &defaultContext;
 
-  QScopedPointer<QgsExpression> expression;
+  std::unique_ptr<QgsExpression> expression;
 
   int attrNum = mLayer->fields().lookupField( fieldOrExpression );
 
@@ -72,13 +72,13 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
   }
 
   QSet<QString> lst;
-  if ( expression.isNull() )
+  if ( !expression )
     lst.insert( fieldOrExpression );
   else
     lst = expression->referencedColumns();
 
   QgsFeatureRequest request = QgsFeatureRequest()
-                              .setFlags(( expression.data() && expression->needsGeometry() ) ?
+                              .setFlags(( expression && expression->needsGeometry() ) ?
                                         QgsFeatureRequest::NoFlags :
                                         QgsFeatureRequest::NoGeometry )
                               .setSubsetOfAttributes( lst, mLayer->fields() );
@@ -115,7 +115,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
   }
 
   QgsFeatureIterator fit = mLayer->getFeatures( request );
-  return calculate( aggregate, fit, resultType, attrNum, expression.data(), mDelimiter, context, ok );
+  return calculate( aggregate, fit, resultType, attrNum, expression.get(), mDelimiter, context, ok );
 }
 
 QgsAggregateCalculator::Aggregate QgsAggregateCalculator::stringToAggregate( const QString& string, bool* ok )

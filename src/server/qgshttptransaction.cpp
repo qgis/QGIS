@@ -305,7 +305,7 @@ void QgsHttpTransaction::dataReceived( const QHttpResponseHeader& resp )
 
 #if 0
   // Comment this out for now - leave the coding of progressive rendering to another day.
-  char* temp;
+  char* temp = nullptr;
 
   if ( 0 < http->readBlock( temp, http->bytesAvailable() ) )
   {

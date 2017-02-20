@@ -34,7 +34,7 @@ class QgsGPXFeatureSource : public QgsAbstractFeatureSource
   protected:
     QString mFileName;
     QgsGPXProvider::DataType mFeatureType;
-    QgsGPSData* data;
+    QgsGPSData* data = nullptr;
     QVector<int> indexToAttr;
     QgsFields mFields;
 

@@ -299,12 +299,12 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      */
     bool evalFeatureFilename( const QgsExpressionContext &context );
 
-    QgsComposition* mComposition;
+    QgsComposition* mComposition = nullptr;
 
     bool mEnabled;
     bool mHideCoverage;
     QString mFilenamePattern;
-    QgsVectorLayer* mCoverageLayer;
+    QgsVectorLayer* mCoverageLayer = nullptr;
     bool mSingleFile;
 
     QString mCurrentFilename;
@@ -340,7 +340,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     QgsFeature mCurrentFeature;
 
-    QScopedPointer<QgsExpression> mFilenameExpr;
+    std::unique_ptr<QgsExpression> mFilenameExpr;
 
     // bounding box of the current feature transformed into map crs
     QgsRectangle mTransformedFeatureBounds;

@@ -62,7 +62,7 @@ class TestQgsGrassFeature : public QgsFeature
 };
 
 // Command which can be composed of more GRASS features, e.g. boundaries + centroid equivalent
-// of simple fature polygon
+// of simple feature polygon
 class TestQgsGrassCommand
 {
   public:
@@ -103,7 +103,7 @@ class TestQgsGrassCommand
     QgsFeature expectedFeature; // simple feature for verification
     QgsFeatureId fid;
     QgsField field;
-    QgsGeometry *geometry;
+    QgsGeometry *geometry = nullptr;
     QVariant value;
 
     QMap<QString, QVariant> values;
@@ -915,8 +915,8 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   TestQgsGrassCommandGroup commandGroup;
   TestQgsGrassCommand command;
   TestQgsGrassFeature grassFeature;
-  QgsLineString * line;
-  QgsGeometry *geometry;
+  QgsLineString * line = nullptr;
+  QgsGeometry *geometry = nullptr;
   QList<QgsPointV2> pointList;
 
   // Start editing
@@ -1216,6 +1216,7 @@ void TestQgsGrassProvider::edit()
         grassLayer->startEditing();
         grassProvider->startEditing( grassLayer );
 
+        Q_ASSERT( expectedLayer );
         expectedLayer->startEditing();
       }
 
@@ -1582,7 +1583,9 @@ bool TestQgsGrassProvider::compare( QMap<QString, QgsVectorLayer *> layers, bool
 {
   Q_FOREACH ( const QString & grassUri, layers.keys() )
   {
-    if ( !compare( grassUri, layers.value( grassUri ), ok ) )
+    QgsVectorLayer* layer = layers.value( grassUri );
+    Q_ASSERT( layer );
+    if ( !compare( grassUri, layer, ok ) )
     {
       reportRow( "comparison failed: " + grassUri );
     }

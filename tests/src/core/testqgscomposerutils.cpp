@@ -62,11 +62,12 @@ class TestQgsComposerUtils : public QObject
     void textHeightMM(); //test calculating text height in mm
     void drawTextPos(); //test drawing text at a pos
     void drawTextRect(); //test drawing text in a rect
-    void createRenderContext();
+    void createRenderContextFromComposition();
+    void createRenderContextFromMap();
 
   private:
     bool renderCheck( const QString& testName, QImage &image, int mismatchCount = 0 );
-    QgsComposition* mComposition;
+    QgsComposition* mComposition = nullptr;
     QString mReport;
     QFont mTestFont;
 
@@ -637,7 +638,7 @@ void TestQgsComposerUtils::drawTextRect()
   QVERIFY( renderCheck( "composerutils_drawtext_rectflag", testImage, 100 ) );
 }
 
-void TestQgsComposerUtils::createRenderContext()
+void TestQgsComposerUtils::createRenderContextFromComposition()
 {
   QImage testImage = QImage( 250, 250, QImage::Format_RGB32 );
   testImage.setDotsPerMeterX( 150 / 25.4 * 1000 );
@@ -645,24 +646,24 @@ void TestQgsComposerUtils::createRenderContext()
   QPainter p( &testImage );
 
   // no composition
-  QgsRenderContext rc = QgsComposerUtils::createRenderContext( nullptr, &p );
+  QgsRenderContext rc = QgsComposerUtils::createRenderContextForComposition( nullptr, &p );
   QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
   QCOMPARE( rc.painter(), &p );
 
   // no composition, no painter
-  rc = QgsComposerUtils::createRenderContext( nullptr, nullptr );
+  rc = QgsComposerUtils::createRenderContextForComposition( nullptr, nullptr );
   QGSCOMPARENEAR( rc.scaleFactor(), 88 / 25.4, 0.001 );
   QVERIFY( !rc.painter() );
 
   //create composition with no reference map
   QgsRectangle extent( 2000, 2800, 2500, 2900 );
   QgsComposition* composition = new QgsComposition( QgsProject::instance() );
-  rc = QgsComposerUtils::createRenderContext( composition, &p );
+  rc = QgsComposerUtils::createRenderContextForComposition( composition, &p );
   QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
   QCOMPARE( rc.painter(), &p );
 
   // composition, no map, no painter
-  rc = QgsComposerUtils::createRenderContext( composition, nullptr );
+  rc = QgsComposerUtils::createRenderContextForComposition( composition, nullptr );
   QGSCOMPARENEAR( rc.scaleFactor(), 88 / 25.4, 0.001 );
   QVERIFY( !rc.painter() );
 
@@ -673,16 +674,67 @@ void TestQgsComposerUtils::createRenderContext()
   composition->addComposerMap( map );
   composition->setReferenceMap( map );
 
-  rc = QgsComposerUtils::createRenderContext( composition, &p );
+  rc = QgsComposerUtils::createRenderContextForComposition( composition, &p );
   QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
   QGSCOMPARENEAR( rc.rendererScale(), map->scale(), 1000000 );
   QCOMPARE( rc.painter(), &p );
 
   // composition, reference map, no painter
-  rc = QgsComposerUtils::createRenderContext( composition, nullptr );
+  rc = QgsComposerUtils::createRenderContextForComposition( composition, nullptr );
   QGSCOMPARENEAR( rc.scaleFactor(), 88 / 25.4, 0.001 );
   QGSCOMPARENEAR( rc.rendererScale(), map->scale(), 1000000 );
   QVERIFY( !rc.painter() );
+
+  p.end();
+}
+
+void TestQgsComposerUtils::createRenderContextFromMap()
+{
+  QImage testImage = QImage( 250, 250, QImage::Format_RGB32 );
+  testImage.setDotsPerMeterX( 150 / 25.4 * 1000 );
+  testImage.setDotsPerMeterY( 150 / 25.4 * 1000 );
+  QPainter p( &testImage );
+
+  // no map
+  QgsRenderContext rc = QgsComposerUtils::createRenderContextForMap( nullptr, &p );
+  QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
+  QCOMPARE( rc.painter(), &p );
+
+  // no map, no painter
+  rc = QgsComposerUtils::createRenderContextForMap( nullptr, nullptr );
+  QGSCOMPARENEAR( rc.scaleFactor(), 88 / 25.4, 0.001 );
+  QVERIFY( !rc.painter() );
+
+  //create composition with no reference map
+  QgsRectangle extent( 2000, 2800, 2500, 2900 );
+  QgsComposition* composition = new QgsComposition( QgsProject::instance() );
+
+  // add a map
+  QgsComposerMap* map = new QgsComposerMap( composition );
+  map->setNewExtent( extent );
+  map->setSceneRect( QRectF( 30, 60, 200, 100 ) );
+  composition->addComposerMap( map );
+
+  rc = QgsComposerUtils::createRenderContextForMap( map, &p );
+  QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
+  QGSCOMPARENEAR( rc.rendererScale(), map->scale(), 1000000 );
+  QCOMPARE( rc.painter(), &p );
+
+  // map, no painter
+  rc = QgsComposerUtils::createRenderContextForMap( map, nullptr );
+  QGSCOMPARENEAR( rc.scaleFactor(), 88 / 25.4, 0.001 );
+  QGSCOMPARENEAR( rc.rendererScale(), map->scale(), 1000000 );
+  QVERIFY( !rc.painter() );
+
+  // secondary map
+  QgsComposerMap* map2 = new QgsComposerMap( composition );
+  map2->setNewExtent( extent );
+  map2->setSceneRect( QRectF( 30, 60, 100, 50 ) );
+  composition->addComposerMap( map2 );
+  rc = QgsComposerUtils::createRenderContextForMap( map2, &p );
+  QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
+  QGSCOMPARENEAR( rc.rendererScale(), map2->scale(), 1000000 );
+  QVERIFY( rc.painter() );
 
   p.end();
 }

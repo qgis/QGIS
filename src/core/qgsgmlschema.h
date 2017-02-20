@@ -179,7 +179,7 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     QStack<ParseMode> mParseModeStack;
     //! This contains the character data if an important element has been encountered
     QString mStringCash;
-    QgsFeature* mCurrentFeature;
+    QgsFeature* mCurrentFeature = nullptr;
     QString mCurrentFeatureId;
     int mFeatureCount;
     QString mAttributeName;

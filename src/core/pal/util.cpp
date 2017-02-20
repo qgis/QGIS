@@ -101,7 +101,7 @@ QLinkedList<const GEOSGeometry *>* pal::Util::unmulti( const GEOSGeometry *the_g
   QLinkedList<const GEOSGeometry*> *queue = new QLinkedList<const GEOSGeometry*>;
   QLinkedList<const GEOSGeometry*> *final_queue = new QLinkedList<const GEOSGeometry*>;
 
-  const GEOSGeometry *geom;
+  const GEOSGeometry *geom = nullptr;
 
   queue->append( the_geom );
   int nGeom;

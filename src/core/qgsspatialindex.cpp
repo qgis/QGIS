@@ -68,7 +68,7 @@ class QgsSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
 
     void visitData( const IData& d ) override
     {
-      SpatialIndex::IShape* shape;
+      SpatialIndex::IShape* shape = nullptr;
       d.getShape( &shape );
       mNewIndex->insertData( 0, nullptr, *shape, d.getIdentifier() );
       delete shape;
@@ -78,7 +78,7 @@ class QgsSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
       { Q_UNUSED( v ); }
 
   private:
-    SpatialIndex::ISpatialIndex* mNewIndex;
+    SpatialIndex::ISpatialIndex* mNewIndex = nullptr;
 };
 
 
@@ -139,7 +139,7 @@ class QgsFeatureIteratorDataStream : public IDataStream
 
   private:
     QgsFeatureIterator mFi;
-    RTree::Data* mNextData;
+    RTree::Data* mNextData = nullptr;
 };
 
 
@@ -205,10 +205,10 @@ class QgsSpatialIndexData : public QSharedData
     }
 
     //! Storage manager
-    SpatialIndex::IStorageManager* mStorage;
+    SpatialIndex::IStorageManager* mStorage = nullptr;
 
     //! R-tree containing spatial index
-    SpatialIndex::ISpatialIndex* mRTree;
+    SpatialIndex::ISpatialIndex* mRTree = nullptr;
 
   private:
 

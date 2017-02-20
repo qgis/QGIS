@@ -55,7 +55,7 @@ class GUI_EXPORT QgsListWidgetWrapper : public QgsEditorWidgetWrapper
   private:
     void updateConstraintWidgetStatus( ConstraintResult status ) override;
 
-    QgsListWidget* mWidget;
+    QgsListWidget* mWidget = nullptr;
 };
 
 #endif // QGSLISTWIDGETWRAPPER_H

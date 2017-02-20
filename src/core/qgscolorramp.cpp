@@ -273,7 +273,7 @@ void QgsGradientColorRamp::setStops( const QgsGradientStopsList &stops )
   mStops = stops;
 
   //sort stops by offset
-  qSort( mStops.begin(), mStops.end(), stopLessThan );
+  std::sort( mStops.begin(), mStops.end(), stopLessThan );
 }
 
 void QgsGradientColorRamp::addStopsToGradient( QGradient* gradient, double alpha )

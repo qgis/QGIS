@@ -21,6 +21,7 @@
 #include <QFont>
 #include <QIcon>
 #include <QTimer>
+#include <memory>
 
 #include "qgsgeometry.h"
 
@@ -191,7 +192,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     //! Returns the current map settings used for the current legend filter (or null if none is enabled)
     //! @note added in 2.14
-    const QgsMapSettings* legendFilterMapSettings() const { return mLegendFilterMapSettings.data(); }
+    const QgsMapSettings* legendFilterMapSettings() const { return mLegendFilterMapSettings.get(); }
 
     //! Give the layer tree model hints about the currently associated map view
     //! so that legend nodes that use map units can be scaled currectly
@@ -276,7 +277,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
   protected:
     //! Pointer to the root node of the layer tree. Not owned by the model
-    QgsLayerTreeGroup* mRootNode;
+    QgsLayerTreeGroup* mRootNode = nullptr;
     //! Set of flags for the model
     Flags mFlags;
     //! Current index - will be underlined
@@ -314,12 +315,12 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
       //! A legend node that is not displayed separately, its icon is instead
       //! shown within the layer node's item.
       //! May be null. if non-null, node is owned by originalNodes !
-      QgsLayerTreeModelLegendNode* embeddedNodeInParent;
+      QgsLayerTreeModelLegendNode* embeddedNodeInParent = nullptr;
       //! Data structure for storage of legend nodes.
       //! These are nodes as received from QgsMapLayerLegend
       QList<QgsLayerTreeModelLegendNode*> originalNodes;
       //! Optional pointer to a tree structure - see LayerLegendTree for details
-      LayerLegendTree* tree;
+      LayerLegendTree* tree = nullptr;
     };
 
     //! @note not available in Python bindings
@@ -338,8 +339,8 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! scale denominator for filtering of legend nodes (<= 0 means no filtering)
     double mLegendFilterByScale;
 
-    QScopedPointer<QgsMapSettings> mLegendFilterMapSettings;
-    QScopedPointer<QgsMapHitTest> mLegendFilterHitTest;
+    std::unique_ptr<QgsMapSettings> mLegendFilterMapSettings;
+    std::unique_ptr<QgsMapHitTest> mLegendFilterHitTest;
 
     //! whether to use map filtering
     bool mLegendFilterUsesExtent;

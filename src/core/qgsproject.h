@@ -48,11 +48,13 @@ class QgsLayerTreeGroup;
 class QgsLayerTreeRegistryBridge;
 class QgsMapLayer;
 class QgsMapThemeCollection;
+class QgsPathResolver;
 class QgsProjectBadLayerHandler;
 class QgsRelationManager;
 class QgsTolerance;
 class QgsTransactionGroup;
 class QgsVectorLayer;
+class QgsAnnotationManager;
 
 
 /** \ingroup core
@@ -78,6 +80,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( QgsCoordinateReferenceSystem crs READ crs WRITE setCrs )
     Q_PROPERTY( QgsMapThemeCollection* mapThemeCollection READ mapThemeCollection NOTIFY mapThemeCollectionChanged )
     Q_PROPERTY( QgsSnappingConfig snappingConfig READ snappingConfig WRITE setSnappingConfig NOTIFY snappingConfigChanged )
+    Q_PROPERTY( QgsRelationManager* relationManager READ relationManager )
     Q_PROPERTY( QList<QgsVectorLayer*> avoidIntersectionsLayers READ avoidIntersectionsLayers WRITE setAvoidIntersectionsLayers NOTIFY avoidIntersectionsLayersChanged )
 
   public:
@@ -132,7 +135,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Returns the project's native coordinate reference system.
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      * @see setCrs()
      * @see ellipsoid()
      */
@@ -140,7 +143,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Sets the project's native coordinate reference system.
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      * @see crs()
      * @see setEllipsoid()
      */
@@ -150,7 +153,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Returns a proj string representing the project's ellipsoid setting, e.g., "WGS84".
      * @see setEllipsoid()
      * @see crs()
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      */
     QString ellipsoid() const;
 
@@ -158,7 +161,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Sets the project's ellipsoid from a proj string representation, e.g., "WGS84".
      * @see ellipsoid()
      * @see setCrs()
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      */
     void setEllipsoid( const QString& ellipsoid );
 
@@ -294,12 +297,18 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //           and redundantly prints sub-keys.
     void dumpProperties() const;
 
+    /** Return path resolver object with considering whether the project uses absolute
+     * or relative paths and using current project's path.
+     * @note added in QGIS 3.0
+     */
+    QgsPathResolver pathResolver() const;
+
     /**
      * Prepare a filename to save it to the project file.
      * Creates an absolute or relative path according to the project settings.
      * Paths written to the project file should be prepared with this method.
     */
-    QString writePath( const QString& filename, const QString& relativeBasePath = QString::null ) const;
+    QString writePath( const QString& filename ) const;
 
     //! Turn filename read from the project file to an absolute path
     QString readPath( QString filename ) const;
@@ -320,7 +329,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * @note not available in Python bindings
      */
     bool createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
-                              QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList, bool saveFlag = true );
+                              bool saveFlag = true );
 
     /** Create layer group instance defined in an arbitrary project file.
      * @note: added in version 2.4
@@ -342,7 +351,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Sets the default distance measurement units for the project.
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      * @see distanceUnits()
      * @see setAreaUnits()
      */
@@ -356,7 +365,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Sets the default area measurement units for the project.
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      * @see areaUnits()
      * @see setDistanceUnits()
      */
@@ -383,6 +392,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * @note renamed in QGIS 3.0, formerly QgsVisibilityPresetCollection
      */
     QgsMapThemeCollection* mapThemeCollection();
+
+    /**
+     * Returns pointer to the project's annotation manager.
+     * @note added in QGIS 3.0
+     */
+    QgsAnnotationManager* annotationManager();
 
     /**
      * Set a list of layers which should not be taken into account on map identification
@@ -495,13 +510,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     int count() const;
 
     /** Retrieve a pointer to a registered layer by layer ID.
-     * @param theLayerId ID of layer to retrieve
+     * @param layerId ID of layer to retrieve
      * @returns matching layer, or nullptr if no matching layer found
      * @see mapLayersByName()
      * @see mapLayers()
      */
-    //TODO QGIS 3.0 - rename theLayerId to layerId
-    QgsMapLayer* mapLayer( const QString& theLayerId ) const;
+    QgsMapLayer* mapLayer( const QString& layerId ) const;
 
     /** Retrieve a list of matching registered layers by layer name.
      * @param layerName name of layers to match
@@ -609,15 +623,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * The specified layers will be removed from the registry. If the registry has ownership
      * of any layers these layers will also be deleted.
      *
-     * @param theLayerIds list of IDs of the layers to remove
+     * @param layerIds list of IDs of the layers to remove
      *
      * @note As a side-effect the QgsProject instance is marked dirty.
      * @note added in QGIS 1.8
      * @see removeMapLayer()
      * @see removeAllMapLayers()
      */
-    // TODO QGIS 3.0 - rename theLayerIds to layerIds
-    void removeMapLayers( const QStringList& theLayerIds );
+    void removeMapLayers( const QStringList& layerIds );
 
     /**
      * @brief
@@ -642,14 +655,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * The specified layer will be removed from the registry. If the registry has ownership
      * of the layer then it will also be deleted.
      *
-     * @param theLayerId ID of the layer to remove
+     * @param layerId ID of the layer to remove
      *
      * @note As a side-effect the QgsProject instance is marked dirty.
      * @see removeMapLayers()
      * @see removeAllMapLayers()
      */
-    // TODO QGIS 3.0 - rename theLayerId to layerId
-    void removeMapLayer( const QString& theLayerId );
+    void removeMapLayer( const QString& layerId );
 
     /**
      * @brief
@@ -786,12 +798,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted when one or more layers are about to be removed from the registry.
      *
-     * @param theLayerIds A list of IDs for the layers which are to be removed.
+     * @param layerIds A list of IDs for the layers which are to be removed.
      * @see layerWillBeRemoved()
      * @see layersRemoved()
      */
-    // TODO QGIS 3.0 - rename theLayerIds to layerIds
-    void layersWillBeRemoved( const QStringList& theLayerIds );
+    void layersWillBeRemoved( const QStringList& layerIds );
 
     /**
      * Emitted when one or more layers are about to be removed from the registry.
@@ -805,14 +816,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted when a layer is about to be removed from the registry.
      *
-     * @param theLayerId The ID of the layer to be removed.
+     * @param layerId The ID of the layer to be removed.
      *
      * @note Consider using {@link layersWillBeRemoved()} instead
      * @see layersWillBeRemoved()
      * @see layerRemoved()
      */
-    //TODO QGIS 3.0 - rename theLayerId to layerId
-    void layerWillBeRemoved( const QString& theLayerId );
+    void layerWillBeRemoved( const QString& layerId );
 
     /**
      * Emitted when a layer is about to be removed from the registry.
@@ -828,22 +838,20 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted after one or more layers were removed from the registry.
      *
-     * @param theLayerIds  A list of IDs of the layers which were removed.
+     * @param layerIds  A list of IDs of the layers which were removed.
      * @see layersWillBeRemoved()
      */
-    //TODO QGIS 3.0 - rename theLayerIds to layerIds
-    void layersRemoved( const QStringList& theLayerIds );
+    void layersRemoved( const QStringList& layerIds );
 
     /**
      * Emitted after a layer was removed from the registry.
      *
-     * @param theLayerId The ID of the layer removed.
+     * @param layerId The ID of the layer removed.
      *
      * @note Consider using {@link layersRemoved()} instead
      * @see layerWillBeRemoved()
      */
-    //TODO QGIS 3.0 - rename theLayerId to layerId
-    void layerRemoved( const QString& theLayerId );
+    void layerRemoved( const QString& layerId );
 
     /**
      * Emitted when all layers are removed, before {@link layersWillBeRemoved()} and
@@ -859,24 +867,20 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * This signal is also emitted for layers added to the registry,
      * but not to the legend.
      *
-     * @param theMapLayers List of layers which have been added.
+     * @param layers List of layers which have been added.
      *
      * @see legendLayersAdded()
      * @see layerWasAdded()
      */
-    //TODO QGIS 3.0 - rename theMapLayers to mapLayers
-    void layersAdded( const QList<QgsMapLayer *>& theMapLayers );
+    void layersAdded( const QList<QgsMapLayer *>& layers );
 
     /**
      * Emitted when a layer was added to the registry.
      *
-     * @param theMapLayer The ID of the layer which has been added.
-     *
      * @note Consider using {@link layersAdded()} instead
      * @see layersAdded()
      */
-    // TODO QGIS 3.0 - rename theMapLayer to layer
-    void layerWasAdded( QgsMapLayer* theMapLayer );
+    void layerWasAdded( QgsMapLayer* layer );
 
     /**
      * Emitted, when a layer was added to the registry and the legend.
@@ -884,10 +888,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * {@link layersAdded()} and {@link layerWasAdded()} but will not be
      * advertised by this signal.
      *
-     * @param theMapLayers List of {@link QgsMapLayer}s which were added to the legend.
+     * @param layers List of {@link QgsMapLayer}s which were added to the legend.
      */
-    //TODO QGIS 3.0 rename theMapLayers to mapLayers
-    void legendLayersAdded( const QList<QgsMapLayer*>& theMapLayers );
+    void legendLayersAdded( const QList<QgsMapLayer*>& layers );
 
   public slots:
 
@@ -919,11 +922,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     */
     bool _getMapLayers( const QDomDocument& doc, QList<QDomNode>& brokenNodes );
 
-    /** Processes any joins attached to a newly added layer.
-     * @param layer layer to process
-     */
-    void processLayerJoins( QgsVectorLayer* layer );
-
     /** Set error message from read/write operation
      * @note not available in Python bindings
      */
@@ -936,7 +934,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     //! Creates layer and adds it to maplayer registry
     //! @note not available in python bindings
-    bool addLayer( const QDomElement& layerElem, QList<QDomNode>& brokenNodes, QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList );
+    bool addLayer( const QDomElement& layerElem, QList<QDomNode>& brokenNodes );
 
     //! @note not available in python bindings
     void initializeEmbeddedSubtree( const QString& projectFilePath, QgsLayerTreeGroup* group );
@@ -948,7 +946,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QString mErrorMessage;
 
-    QgsProjectBadLayerHandler* mBadLayerHandler;
+    QgsProjectBadLayerHandler* mBadLayerHandler = nullptr;
 
     /** Embedded layers which are defined in other projects. Key: layer id,
      * value: pair< project file path, save layer yes / no (e.g. if the layer is part of an embedded group, loading/saving is done by the legend)
@@ -958,16 +956,18 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QgsSnappingConfig mSnappingConfig;
 
-    QgsRelationManager* mRelationManager;
+    QgsRelationManager* mRelationManager = nullptr;
 
-    QgsLayerTreeGroup* mRootGroup;
+    std::unique_ptr<QgsAnnotationManager> mAnnotationManager;
 
-    QgsLayerTreeRegistryBridge* mLayerTreeRegistryBridge;
+    QgsLayerTreeGroup* mRootGroup = nullptr;
+
+    QgsLayerTreeRegistryBridge* mLayerTreeRegistryBridge = nullptr;
 
     //! map of transaction group: QPair( providerKey, connString ) -> transactionGroup
     QMap< QPair< QString, QString>, QgsTransactionGroup*> mTransactionGroups;
 
-    QScopedPointer<QgsMapThemeCollection> mMapThemeCollection;
+    std::unique_ptr<QgsMapThemeCollection> mMapThemeCollection;
 
     QVariantMap mCustomVariables;
 

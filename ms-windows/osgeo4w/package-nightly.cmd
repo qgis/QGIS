@@ -59,10 +59,11 @@ goto cmake_x86_64
 
 :cmake_x86
 call "%PF86%\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86
-if exist "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" call "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" /x86 /Release
 path %path%;%PF86%\Microsoft Visual Studio 14.0\VC\bin
 set CMAKE_COMPILER_PATH=%PF86%\Microsoft Visual Studio 14.0\VC\bin
 set SETUPAPI_LIBRARY=c:\Program Files (x86)\Windows Kits\10\Lib\10.0.14393.0\um\x86\SetupAPI.Lib
+if not exist "%SETUPAPI_LIBRARY%" set SETUPAPI_LIBRARY=c:\Program Files (x86)\Windows Kits\8.0\Lib\win8\um\x86\SetupAPI.Lib
+if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
 
 set CMAKE_OPT=^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python36/sip.exe ^
@@ -74,12 +75,10 @@ goto cmake
 
 :cmake_x86_64
 call "%PF86%\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
-if exist "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" call "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" /x64 /Release
 path %path%;%PF86%\Microsoft Visual Studio 14.0\VC\bin
 set CMAKE_COMPILER_PATH=%PF86%\Microsoft Visual Studio 14.0\VC\bin\amd64
 set SETUPAPI_LIBRARY=c:\Program Files (x86)\Windows Kits\10\Lib\10.0.14393.0\um\x64\SetupAPI.Lib
-if not exist "%SETUPAPI_LIBRARY%" set SETUPAPI_LIBRARY=%PF86%\Microsoft SDKs\Windows\v7.0A\Lib\x64\SetupAPI.Lib
-if not exist "%SETUPAPI_LIBRARY%" set SETUPAPI_LIBRARY=%PROGRAMFILES%\Microsoft SDKs\Windows\v7.1\Lib\x64\SetupAPI.lib
+if not exist "%SETUPAPI_LIBRARY%" set SETUPAPI_LIBRARY=c:\Program Files (x86)\Windows Kits\8.0\Lib\win8\um\x64\SetupAPI.Lib
 if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
 
 set CMAKE_OPT=^
@@ -152,8 +151,8 @@ touch %SRCDIR%\CMakeLists.txt
 echo CMAKE: %DATE% %TIME%
 if errorlevel 1 goto error
 
-set LIB=%LIB%;%OSGEO4W_ROOT%\lib
-set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\include
+set LIB=%LIB%;%OSGEO4W_ROOT%\apps\Qt5\lib;%OSGEO4W_ROOT%\lib
+set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\apps\Qt5\include;%OSGEO4W_ROOT%\include
 
 cmake -G Ninja ^
 	-D CMAKE_CXX_COMPILER="%CMAKE_COMPILER_PATH:\=/%/cl.exe" ^
@@ -170,9 +169,7 @@ cmake -G Ninja ^
 	-D WITH_GRASS7=TRUE ^
 	-D GRASS_PREFIX7=%GRASS72_PATH:\=/% ^
 	-D WITH_GLOBE=FALSE ^
-	-D WITH_TOUCH=TRUE ^
 	-D WITH_ORACLE=TRUE ^
-	-D WITH_QTWEBKIT=FALSE ^
 	-D WITH_CUSTOM_WIDGETS=TRUE ^
 	-D CMAKE_BUILD_TYPE=%BUILDCONF% ^
 	-D CMAKE_CONFIGURATION_TYPES=%BUILDCONF% ^
@@ -199,26 +196,28 @@ cmake -G Ninja ^
 	-D WITH_INTERNAL_MOCK=FALSE ^
 	-D WITH_INTERNAL_HTTPLIB2=FALSE ^
 	-D WITH_INTERNAL_FUTURE=FALSE ^
+	-D WITH_PYSPATIALITE=TRUE ^
 	-D QCA_INCLUDE_DIR=%OSGEO4W_ROOT%\apps\Qt5\include\QtCrypto ^
-	-D QCA_LIBRARY=%OSGEO4W_ROOT%\apps\Qt5\lib\qca.lib ^
+	-D QCA_LIBRARY=%OSGEO4W_ROOT%\apps\Qt5\lib\qca-qt5.lib ^
 	-D QSCINTILLA_LIBRARY=%OSGEO4W_ROOT%\apps\Qt5\lib\qscintilla2.lib ^
-	-D SUPPRESS_SIP_WARNINGS=TRUE ^
 	%CMAKE_OPT% ^
 	%SRCDIR:\=/%
 if errorlevel 1 (echo cmake failed & goto error)
 
 :skipcmake
-if exist noclean (echo skip clean & goto skipclean)
+if exist ..\noclean (echo skip clean & goto skipclean)
 echo CLEAN: %DATE% %TIME%
 cmake --build %BUILDDIR% --target clean --config %BUILDCONF%
 if errorlevel 1 (echo clean failed & goto error)
 
 :skipclean
+if exist ..\skipbuild (echo skip build & goto skipbuild)
 echo ALL_BUILD: %DATE% %TIME%
 cmake --build %BUILDDIR% --config %BUILDCONF%
 if errorlevel 1 cmake --build %BUILDDIR% --config %BUILDCONF%
 if errorlevel 1 (echo build failed twice & goto error)
 
+:skipbuild
 if exist ..\skiptests goto skiptests
 
 echo RUN_TESTS: %DATE% %TIME%
@@ -236,7 +235,8 @@ for %%g IN (%GRASS_VERSIONS%) do (
 	set path=!path!;%OSGEO4W_ROOT%\apps\grass\grass-%%g\lib
 	set GISBASE=%OSGEO4W_ROOT%\apps\grass\grass-%%g
 )
-PATH %path%;%BUILDDIR%\output\plugins\%BUILDCONF%
+PATH %path%;%BUILDDIR%\output\plugins
+set QT_PLUGIN_PATH=%BUILDDIR%\output\plugins;%OSGEO4W_ROOT%\apps\qt5\plugins
 
 cmake --build %BUILDDIR% --target Nightly --config %BUILDCONF%
 if errorlevel 1 echo TESTS WERE NOT SUCCESSFUL.
@@ -276,10 +276,6 @@ for %%g IN (%GRASS_VERSIONS%) do (
 	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%%g/g' qgis-grass.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-g%%g.bat.tmpl
 	if errorlevel 1 (echo creation of desktop template failed & goto error)
 	set batches=!batches! bin/%PACKAGENAME%-g%%g.bat.tmpl
-
-	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%%g/g' browser-grass.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser-g%%g.bat.tmpl
-	if errorlevel 1 (echo creation of browser template & goto error)
-	set batches=!batches! bin/%PACKAGENAME%-browser-g%%g.bat.tmpl
 )
 
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' python.bat.tmpl >%OSGEO4W_ROOT%\bin\python-%PACKAGENAME%.bat.tmpl
@@ -294,17 +290,17 @@ touch exclude
 
 move %PKGDIR%\bin\qgis.exe %OSGEO4W_ROOT%\bin\%PACKAGENAME%-bin.exe
 if errorlevel 1 (echo move of desktop executable failed & goto error)
-move %PKGDIR%\bin\qbrowser.exe %OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser-bin.exe
-if errorlevel 1 (echo move of browser executable failed & goto error)
+copy qgis.vars %OSGEO4W_ROOT%\bin\%PACKAGENAME%-bin.vars
+if errorlevel 1 (echo copy of desktop executable vars failed & goto error)
 
 if not exist %PKGDIR%\qtplugins\sqldrivers mkdir %PKGDIR%\qtplugins\sqldrivers
-move %OSGEO4W_ROOT%\apps\qt4\plugins\sqldrivers\qsqlocispatial.dll %PKGDIR%\qtplugins\sqldrivers
+move %OSGEO4W_ROOT%\apps\qt5\plugins\sqldrivers\qsqlocispatial.dll %PKGDIR%\qtplugins\sqldrivers
 if errorlevel 1 (echo move of oci sqldriver failed & goto error)
-move %OSGEO4W_ROOT%\apps\qt4\plugins\sqldrivers\qsqlspatialite.dll %PKGDIR%\qtplugins\sqldrivers
+move %OSGEO4W_ROOT%\apps\qt5\plugins\sqldrivers\qsqlspatialite.dll %PKGDIR%\qtplugins\sqldrivers
 if errorlevel 1 (echo move of spatialite sqldriver failed & goto error)
 
 if not exist %PKGDIR%\qtplugins\designer mkdir %PKGDIR%\qtplugins\designer
-move %OSGEO4W_ROOT%\apps\qt4\plugins\designer\qgis_customwidgets.dll %PKGDIR%\qtplugins\designer
+move %OSGEO4W_ROOT%\apps\qt5\plugins\designer\qgis_customwidgets.dll %PKGDIR%\qtplugins\designer
 if errorlevel 1 (echo move of customwidgets failed & goto error)
 
 if not exist %PKGDIR%\python\PyQt5\uic\widget-plugins mkdir %PKGDIR%\python\PyQt5\uic\widget-plugins
@@ -317,7 +313,6 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	--exclude "*.pyc" ^
 	apps/%PACKAGENAME% ^
 	bin/%PACKAGENAME%-bin.exe ^
-	bin/%PACKAGENAME%-browser-bin.exe ^
 	%batches% ^
 	bin/%PACKAGENAME%-designer.bat.tmpl ^
 	bin/python-%PACKAGENAME%.bat.tmpl ^

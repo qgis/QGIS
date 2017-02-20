@@ -63,7 +63,7 @@ class QgsComposerScaleBarWidget: public QgsComposerItemBaseWidget, private Ui::Q
     void composerMapChanged( QgsComposerItem* item );
 
   private:
-    QgsComposerScaleBar* mComposerScaleBar;
+    QgsComposerScaleBar* mComposerScaleBar = nullptr;
     QButtonGroup mSegmentSizeRadioGroup;
 
     //! Enables/disables the signals of the input gui elements

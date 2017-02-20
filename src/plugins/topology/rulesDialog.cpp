@@ -88,7 +88,7 @@ void rulesDialog::readTest( int index, QgsProject* project )
   layer1Id = project->readEntry( QStringLiteral( "Topol" ), "/layer1_" + postfix, QLatin1String( "" ) );
   layer2Id = project->readEntry( QStringLiteral( "Topol" ), "/layer2_" + postfix, QLatin1String( "" ) );
 
-  QgsVectorLayer* l1;
+  QgsVectorLayer* l1 = nullptr;
   if ( !( QgsVectorLayer* )project->mapLayers().contains( layer1Id ) )
     return;
 
@@ -98,7 +98,7 @@ void rulesDialog::readTest( int index, QgsProject* project )
 
   QString layer1Name = l1->name();
   QString layer2Name;
-  QgsVectorLayer* l2;
+  QgsVectorLayer* l2 = nullptr;
 
   if ( mTestConfMap[testName].useSecondLayer )
   {
@@ -116,7 +116,7 @@ void rulesDialog::readTest( int index, QgsProject* project )
   int row = index;
   mRulesTable->insertRow( row );
 
-  QTableWidgetItem* newItem;
+  QTableWidgetItem* newItem = nullptr;
   newItem = new QTableWidgetItem( testName );
   newItem->setFlags( newItem->flags() & ~Qt::ItemIsEditable );
   mRulesTable->setItem( row, 0, newItem );
@@ -239,7 +239,7 @@ void rulesDialog::addRule()
   int row = mRulesTable->rowCount();
   mRulesTable->insertRow( row );
 
-  QTableWidgetItem* newItem;
+  QTableWidgetItem* newItem = nullptr;
   newItem = new QTableWidgetItem( test );
   mRulesTable->setItem( row, 0, newItem );
   newItem = new QTableWidgetItem( layer1 );

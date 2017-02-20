@@ -153,7 +153,7 @@ void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant> &map, bool i
 void QgsValueMapConfigDlg::setRow( int row, const QString& value, const QString& description )
 {
   QSettings settings;
-  QTableWidgetItem* valueCell;
+  QTableWidgetItem* valueCell = nullptr;
   QTableWidgetItem* descriptionCell = new QTableWidgetItem( description );
   tableWidget->insertRow( row );
   if ( value == QgsValueMapFieldFormatter::NULL_VALUE )

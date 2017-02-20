@@ -146,7 +146,7 @@ class QgsDb2SourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString& regexp );
 
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#id33" ) ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#db2-spatial-layers" ) ); }
 
     void columnThreadFinished();
 
@@ -172,7 +172,7 @@ class QgsDb2SourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     // The column labels
     QStringList mColumnLabels;
     // Our thread for doing long running queries
-    QgsDb2GeomColumnTypeThread* mColumnTypeThread;
+    QgsDb2GeomColumnTypeThread* mColumnTypeThread = nullptr;
     QString mConnInfo;
     QStringList mSelectedTables;
     bool mUseEstimatedMetadata;
@@ -181,10 +181,10 @@ class QgsDb2SourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 
     //! Model that acts as datasource for mTableTreeWidget
     QgsDb2TableModel mTableModel;
-    QgsDbFilterProxyModel mProxyModel;
+    QgsDatabaseFilterProxyModel mProxyModel;
 
-    QPushButton *mBuildQueryButton;
-    QPushButton *mAddButton;
+    QPushButton *mBuildQueryButton = nullptr;
+    QPushButton *mAddButton = nullptr;
 
     void finishList();
 };

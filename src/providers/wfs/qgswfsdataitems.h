@@ -58,7 +58,7 @@ class QgsWfsConnectionItem : public QgsDataCollectionItem
   private:
     QString mUri;
 
-    QgsWfsCapabilities* mCapabilities;
+    QgsWfsCapabilities* mCapabilities = nullptr;
 };
 
 

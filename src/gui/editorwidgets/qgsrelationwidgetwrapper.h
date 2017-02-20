@@ -93,7 +93,7 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
 
   private:
     QgsRelation mRelation;
-    QgsRelationEditorWidget* mWidget;
+    QgsRelationEditorWidget* mWidget = nullptr;
 };
 
 #endif // QGSRELATIONWIDGETWRAPPER_H

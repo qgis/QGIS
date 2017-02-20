@@ -64,10 +64,10 @@ class TestQgsCentroidFillSymbol : public QObject
 
     bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPolysLayer;
-    QgsCentroidFillSymbolLayer* mCentroidFill;
-    QgsFillSymbol* mFillSymbol;
-    QgsSingleSymbolRenderer* mSymbolRenderer;
+    QgsVectorLayer * mpPolysLayer = nullptr;
+    QgsCentroidFillSymbolLayer* mCentroidFill = nullptr;
+    QgsFillSymbol* mFillSymbol = nullptr;
+    QgsSingleSymbolRenderer* mSymbolRenderer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };

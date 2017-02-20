@@ -1776,7 +1776,7 @@ tests:
       OUTPUT:
         name: expected/grid_lines_overlay.gml
         type: vector
-         
+
   - algorithm: qgis:creategridpolygon
     name: Create grid (rectangle with overlay)
     params:
@@ -1794,7 +1794,7 @@ tests:
         compare:
           geometry:
             precision: 7
-        
+
   - algorithm: qgis:creategridpolygon
     name: Create grid (diamond with overlay)
     params:
@@ -1812,7 +1812,7 @@ tests:
         compare:
           geometry:
             precision: 7
-            
+
   - algorithm: qgis:creategridpolygon
     name: Create grid (hexagon with overlay)
     params:
@@ -1830,7 +1830,7 @@ tests:
         compare:
           geometry:
             precision: 7
-          
+
   - algorithm: qgis:deleteholes
     name: Delete holes (no min)
     params:
@@ -2298,4 +2298,77 @@ tests:
     results:
       OUTPUT_LAYER:
         name: expected/zonal_statistics.gml
+        type: vector
+
+  - algorithm: qgis:fixgeometries
+    name: Fix geometries
+    params:
+      INPUT:
+        name: invalidgeometries.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/valid.gml
+        type: vector
+
+  - algorithm: qgis:polygonize
+    name: Polygonize
+    params:
+      FIELDS: false
+      GEOMETRY: true
+      INPUT:
+        name: custom/polygonize_lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/polygonize.gml
+        type: vector
+
+  - algorithm: qgis:voronoipolygons
+    name: Standard voronoi
+    params:
+      BUFFER: 0.0
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/voronoi.gml
+        type: vector
+
+  - algorithm: qgis:voronoipolygons
+    name: Vornoi with buffer region
+    params:
+      BUFFER: 10.0
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/voronoi_buffer.gml
+        type: vector
+
+  - algorithm: qgis:findprojection
+    name: Find projection
+    params:
+      INPUT_LAYER:
+        name: custom/find_projection.gml
+        type: vector
+      TARGET_AREA: 151.1198,151.1368,-33.9118,-33.9003
+      TARGET_AREA_CRS: EPSG:4326
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/find_projection.html
+        type: file
+
+  - algorithm: qgis:polygonfromlayerextent
+    name: Standard polygon from layer extent
+    params:
+      BY_FEATURE: false
+      INPUT_LAYER:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/polygon_from_extent.gml
         type: vector

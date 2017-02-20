@@ -58,7 +58,7 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
   protected:
     QFont mDiagramFont;
 
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
 
   private:
 
@@ -80,10 +80,10 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
 
     // Keeps track of the diagram type to properly save / restore settings when the diagram type combo box is set to no diagram.
     QString mDiagramType;
-    QScopedPointer< QgsMarkerSymbol > mSizeLegendSymbol;
+    std::unique_ptr< QgsMarkerSymbol > mSizeLegendSymbol;
 
     QString guessLegendText( const QString &expression );
-    QgsMapCanvas *mMapCanvas;
+    QgsMapCanvas *mMapCanvas = nullptr;
 
     QgsExpressionContext createExpressionContext() const override;
 

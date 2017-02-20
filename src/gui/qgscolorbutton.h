@@ -367,7 +367,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     QString mColorDialogTitle;
     QColor mColor;
 
-    QgsColorSchemeRegistry* mColorSchemeRegistry;
+    QgsColorSchemeRegistry* mColorSchemeRegistry = nullptr;
 
     QColor mDefaultColor;
     QString mContext;
@@ -382,7 +382,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     QPoint mDragStartPosition;
     bool mPickingColor;
 
-    QMenu* mMenu;
+    QMenu* mMenu = nullptr;
 
     QSize mIconSize;
 

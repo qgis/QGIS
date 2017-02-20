@@ -143,9 +143,9 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     StorageMode mStorageMode;
     RelativeStorage mRelativeStorage;
 
-    QLabel* mLinkLabel;
-    QgsFilterLineEdit* mLineEdit;
-    QToolButton* mFileWidgetButton;
+    QLabel* mLinkLabel = nullptr;
+    QgsFilterLineEdit* mLineEdit = nullptr;
+    QToolButton* mFileWidgetButton = nullptr;
 
     //! returns a HTML code with a link to the given file path
     QString toUrl( const QString& path ) const;

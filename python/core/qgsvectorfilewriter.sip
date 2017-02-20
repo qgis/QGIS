@@ -97,6 +97,7 @@ class QgsVectorFileWriter
       ErrProjection,
       ErrFeatureWriteFailed,
       ErrInvalidLayer,
+      Canceled,
     };
 
     enum SymbologyExport
@@ -323,6 +324,8 @@ class QgsVectorFileWriter
 
         /** Field value converter */
         QgsVectorFileWriter::FieldValueConverter* fieldValueConverter;
+
+        QgsFeedback* feedback;
     };
 
     /** Writes a layer out to a vector file.

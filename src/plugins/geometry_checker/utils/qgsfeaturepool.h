@@ -48,14 +48,14 @@ class QgsFeaturePool
           : feature( _feature )
           , ageIt( _ageIt )
       {}
-      QgsFeature* feature;
+      QgsFeature* feature = nullptr;
       QLinkedList<QgsFeatureId>::iterator ageIt;
     };
 
     static const int CACHE_SIZE = 1000;
 
     QCache<QgsFeatureId, QgsFeature> mFeatureCache;
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
     QgsFeatureIds mFeatureIds;
     QMutex mLayerMutex;
     QMutex mIndexMutex;

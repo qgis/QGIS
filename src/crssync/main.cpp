@@ -52,7 +52,7 @@ int main( int argc, char ** argv )
 
   CPLPushErrorHandler( showError );
 
-  int res = QgsCoordinateReferenceSystem::syncDb();
+  int res = QgsCoordinateReferenceSystem::syncDatabase();
 
   CPLPopErrorHandler();
 

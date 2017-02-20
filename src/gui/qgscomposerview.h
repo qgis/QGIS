@@ -21,6 +21,7 @@
 #include "qgsprevieweffect.h" // for QgsPreviewEffect::PreviewMode
 #include <QGraphicsPolygonItem>
 #include "qgis_gui.h"
+#include <memory>
 
 class QDomDocument;
 class QDomElement;
@@ -211,11 +212,11 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     QgsComposerView::Tool mPreviousTool;
 
     //! Rubber band item
-    QGraphicsRectItem* mRubberBandItem;
+    QGraphicsRectItem* mRubberBandItem = nullptr;
     //! Rubber band item for arrows
-    QGraphicsLineItem* mRubberBandLineItem;
+    QGraphicsLineItem* mRubberBandLineItem = nullptr;
     //! Item to move content
-    QgsComposerItem* mMoveContentItem;
+    QgsComposerItem* mMoveContentItem = nullptr;
     //! Start position of content move
     QPointF mMoveContentStartPos;
     //! Start of rubber band creation
@@ -230,8 +231,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
 
     bool mPaintingEnabled;
 
-    QgsComposerRuler* mHorizontalRuler;
-    QgsComposerRuler* mVerticalRuler;
+    QgsComposerRuler* mHorizontalRuler = nullptr;
+    QgsComposerRuler* mVerticalRuler = nullptr;
 
     QgsMapCanvas* mCanvas = nullptr;
 
@@ -246,10 +247,10 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void deselectNode();
 
     float mMoveContentSearchRadius;
-    QgsComposerNodesItem* mNodesItem;
+    QgsComposerNodesItem* mNodesItem = nullptr;
     int mNodesItemIndex;
-    QScopedPointer<QGraphicsPolygonItem> mPolygonItem;
-    QScopedPointer<QGraphicsPathItem> mPolylineItem;
+    std::unique_ptr<QGraphicsPolygonItem> mPolygonItem;
+    std::unique_ptr<QGraphicsPathItem> mPolylineItem;
 
     //! True if user is currently panning by clicking and dragging with the pan tool
     bool mToolPanning;
@@ -265,7 +266,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     QPoint mMouseCurrentXY;
     QPoint mMousePressStartPos;
 
-    QgsPreviewEffect* mPreviewEffect;
+    QgsPreviewEffect* mPreviewEffect = nullptr;
 
     //! Returns the default mouse cursor for a tool
     QCursor defaultCursorForTool( Tool currentTool );

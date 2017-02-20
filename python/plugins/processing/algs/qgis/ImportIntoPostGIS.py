@@ -33,7 +33,6 @@ from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecution
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterTableField
 from processing.tools import dataobjects, postgis
 
@@ -58,14 +57,30 @@ class ImportIntoPostGIS(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Database')
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Layer to import')))
-
-        self.DB_CONNECTIONS = self.dbConnectionNames()
-        self.addParameter(ParameterSelection(self.DATABASE,
-                                             self.tr('Database (connection name)'), self.DB_CONNECTIONS))
-        self.addParameter(ParameterString(self.SCHEMA,
-                                          self.tr('Schema (schema name)'), 'public'))
-        self.addParameter(ParameterString(self.TABLENAME,
-                                          self.tr('Table to import to (leave blank to use layer name)'), optional=True))
+        self.addParameter(ParameterString(
+            self.DATABASE,
+            self.tr('Database (connection name)'),
+            metadata={
+                'widget_wrapper': {
+                    'class': 'processing.gui.wrappers_postgis.ConnectionWidgetWrapper'}}))
+        self.addParameter(ParameterString(
+            self.SCHEMA,
+            self.tr('Schema (schema name)'),
+            'public',
+            optional=True,
+            metadata={
+                'widget_wrapper': {
+                    'class': 'processing.gui.wrappers_postgis.SchemaWidgetWrapper',
+                    'connection_param': self.DATABASE}}))
+        self.addParameter(ParameterString(
+            self.TABLENAME,
+            self.tr('Table to import to (leave blank to use layer name)'),
+            '',
+            optional=True,
+            metadata={
+                'widget_wrapper': {
+                    'class': 'processing.gui.wrappers_postgis.TableWidgetWrapper',
+                    'schema_param': self.SCHEMA}}))
         self.addParameter(ParameterTableField(self.PRIMARY_KEY,
                                               self.tr('Primary key field'), self.INPUT, optional=True))
         self.addParameter(ParameterString(self.GEOMETRY_COLUMN,
@@ -85,7 +100,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
                                            self.tr('Create single-part geometries instead of multi-part'), False))
 
     def processAlgorithm(self, feedback):
-        connection = self.DB_CONNECTIONS[self.getParameterValue(self.DATABASE)]
+        connection = self.getParameterValue(self.DATABASE)
         db = postgis.GeoDB.from_name(connection)
 
         schema = self.getParameterValue(self.SCHEMA)

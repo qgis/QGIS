@@ -35,10 +35,10 @@ class QgsGlobeFrustumHighlightCallback : public osg::NodeCallback
     void operator()( osg::Node*, osg::NodeVisitor* ) override;
 
   private:
-    osg::View* mView;
-    osgEarth::Terrain* mTerrain;
-    QgsRubberBand* mRubberBand;
-    osgEarth::SpatialReference* mSrs;
+    osg::View* mView = nullptr;
+    osgEarth::Terrain* mTerrain = nullptr;
+    QgsRubberBand* mRubberBand = nullptr;
+    osgEarth::SpatialReference* mSrs = nullptr;
 };
 
 #endif // QGSGLOBEFRUSTUMHIGHLIGHT_H

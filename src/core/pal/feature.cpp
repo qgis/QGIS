@@ -88,7 +88,7 @@ FeaturePart::~FeaturePart()
 
 void FeaturePart::extractCoords( const GEOSGeometry* geom )
 {
-  const GEOSCoordSequence *coordSeq;
+  const GEOSCoordSequence *coordSeq = nullptr;
   GEOSContextHandle_t geosctxt = geosContext();
 
   type = GEOSGeomTypeId_r( geosctxt, geom );
@@ -313,7 +313,7 @@ int FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, double y
   double labelWidth = getLabelWidth();
   double labelHeight = getLabelHeight();
   double distanceToLabel = getLabelDistance();
-  const QgsLabelFeature::VisualMargin& visualMargin = mLF->visualMargin();
+  const QgsMargins& visualMargin = mLF->visualMargin();
 
   double symbolWidthOffset = ( mLF->offsetType() == QgsPalLayerSettings::FromSymbolBounds ? mLF->symbolSize().width() / 2.0 : 0.0 );
   double symbolHeightOffset = ( mLF->offsetType() == QgsPalLayerSettings::FromSymbolBounds ? mLF->symbolSize().height() / 2.0 : 0.0 );
@@ -331,85 +331,85 @@ int FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, double y
       case QgsPalLayerSettings::TopLeft:
         quadrant = LabelPosition::QuadrantAboveLeft;
         alpha = 3 * M_PI_4;
-        deltaX = -labelWidth + visualMargin.right - symbolWidthOffset;
-        deltaY = -visualMargin.bottom + symbolHeightOffset;
+        deltaX = -labelWidth + visualMargin.right() - symbolWidthOffset;
+        deltaY = -visualMargin.bottom() + symbolHeightOffset;
         break;
 
       case QgsPalLayerSettings::TopSlightlyLeft:
         quadrant = LabelPosition::QuadrantAboveRight; //right quadrant, so labels are left-aligned
         alpha = M_PI_2;
-        deltaX = -labelWidth / 4.0 - visualMargin.left;
-        deltaY = -visualMargin.bottom + symbolHeightOffset;
+        deltaX = -labelWidth / 4.0 - visualMargin.left();
+        deltaY = -visualMargin.bottom() + symbolHeightOffset;
         break;
 
       case QgsPalLayerSettings::TopMiddle:
         quadrant = LabelPosition::QuadrantAbove;
         alpha = M_PI_2;
         deltaX = -labelWidth / 2.0;
-        deltaY = -visualMargin.bottom + symbolHeightOffset;
+        deltaY = -visualMargin.bottom() + symbolHeightOffset;
         break;
 
       case QgsPalLayerSettings::TopSlightlyRight:
         quadrant = LabelPosition::QuadrantAboveLeft; //left quadrant, so labels are right-aligned
         alpha = M_PI_2;
-        deltaX = -labelWidth * 3.0 / 4.0 + visualMargin.right;
-        deltaY = -visualMargin.bottom + symbolHeightOffset;
+        deltaX = -labelWidth * 3.0 / 4.0 + visualMargin.right();
+        deltaY = -visualMargin.bottom() + symbolHeightOffset;
         break;
 
       case QgsPalLayerSettings::TopRight:
         quadrant = LabelPosition::QuadrantAboveRight;
         alpha = M_PI_4;
-        deltaX = - visualMargin.left + symbolWidthOffset;
-        deltaY = -visualMargin.bottom + symbolHeightOffset;
+        deltaX = - visualMargin.left() + symbolWidthOffset;
+        deltaY = -visualMargin.bottom() + symbolHeightOffset;
         break;
 
       case QgsPalLayerSettings::MiddleLeft:
         quadrant = LabelPosition::QuadrantLeft;
         alpha = M_PI;
-        deltaX = -labelWidth + visualMargin.right - symbolWidthOffset;
+        deltaX = -labelWidth + visualMargin.right() - symbolWidthOffset;
         deltaY = -labelHeight / 2.0;// TODO - should this be adjusted by visual margin??
         break;
 
       case QgsPalLayerSettings::MiddleRight:
         quadrant = LabelPosition::QuadrantRight;
         alpha = 0.0;
-        deltaX = -visualMargin.left + symbolWidthOffset;
+        deltaX = -visualMargin.left() + symbolWidthOffset;
         deltaY = -labelHeight / 2.0;// TODO - should this be adjusted by visual margin??
         break;
 
       case QgsPalLayerSettings::BottomLeft:
         quadrant = LabelPosition::QuadrantBelowLeft;
         alpha = 5 * M_PI_4;
-        deltaX = -labelWidth + visualMargin.right - symbolWidthOffset;
-        deltaY = -labelHeight + visualMargin.top - symbolHeightOffset;
+        deltaX = -labelWidth + visualMargin.right() - symbolWidthOffset;
+        deltaY = -labelHeight + visualMargin.top() - symbolHeightOffset;
         break;
 
       case QgsPalLayerSettings::BottomSlightlyLeft:
         quadrant = LabelPosition::QuadrantBelowRight; //right quadrant, so labels are left-aligned
         alpha = 3 * M_PI_2;
-        deltaX = -labelWidth / 4.0 - visualMargin.left;
-        deltaY = -labelHeight + visualMargin.top - symbolHeightOffset;
+        deltaX = -labelWidth / 4.0 - visualMargin.left();
+        deltaY = -labelHeight + visualMargin.top() - symbolHeightOffset;
         break;
 
       case QgsPalLayerSettings::BottomMiddle:
         quadrant = LabelPosition::QuadrantBelow;
         alpha = 3 * M_PI_2;
         deltaX = -labelWidth / 2.0;
-        deltaY = -labelHeight + visualMargin.top - symbolHeightOffset;
+        deltaY = -labelHeight + visualMargin.top() - symbolHeightOffset;
         break;
 
       case QgsPalLayerSettings::BottomSlightlyRight:
         quadrant = LabelPosition::QuadrantBelowLeft; //left quadrant, so labels are right-aligned
         alpha = 3 * M_PI_2;
-        deltaX = -labelWidth * 3.0 / 4.0 + visualMargin.right;
-        deltaY = -labelHeight + visualMargin.top - symbolHeightOffset;
+        deltaX = -labelWidth * 3.0 / 4.0 + visualMargin.right();
+        deltaY = -labelHeight + visualMargin.top() - symbolHeightOffset;
         break;
 
       case QgsPalLayerSettings::BottomRight:
         quadrant = LabelPosition::QuadrantBelowRight;
         alpha = 7 * M_PI_4;
-        deltaX = -visualMargin.left + symbolWidthOffset;
-        deltaY = -labelHeight + visualMargin.top - symbolHeightOffset;
+        deltaX = -visualMargin.left() + symbolWidthOffset;
+        deltaY = -labelHeight + visualMargin.top() - symbolHeightOffset;
         break;
     }
 
@@ -1601,7 +1601,7 @@ int FeaturePart::createCandidates( QList< LabelPosition*>& lPos,
     }
   }
 
-  qSort( lPos.begin(), lPos.end(), CostCalculator::candidateSortGrow );
+  std::sort( lPos.begin(), lPos.end(), CostCalculator::candidateSortGrow );
   return lPos.count();
 }
 

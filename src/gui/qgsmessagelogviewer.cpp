@@ -51,7 +51,7 @@ void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLo
   for ( i = 0; i < tabWidget->count() && tabWidget->tabText( i ) != tag; i++ )
     ;
 
-  QPlainTextEdit *w;
+  QPlainTextEdit *w = nullptr;
   if ( i < tabWidget->count() )
   {
     w = qobject_cast<QPlainTextEdit *>( tabWidget->widget( i ) );

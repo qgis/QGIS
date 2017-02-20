@@ -4,6 +4,7 @@
 #include "qgis_core.h"
 #include "qgspallabeling.h"
 #include "geos_c.h"
+#include "qgsmargins.h"
 
 namespace pal
 {
@@ -34,52 +35,6 @@ class QgsGeometry;
 class CORE_EXPORT QgsLabelFeature
 {
   public:
-
-    //! Stores visual margins for labels (left, right, top and bottom)
-    //! @note not available in Python bindings
-    struct VisualMargin
-    {
-
-      /** Default constructor, all margins are set to 0.0
-       */
-      VisualMargin()
-          : left( 0.0 )
-          , right( 0.0 )
-          , top( 0.0 )
-          , bottom( 0.0 )
-      {}
-
-      /** Constructor allowing margins to be specified
-       * @param top top margin
-       * @param right right margin
-       * @param bottom bottom margin
-       * @param left left margin
-       */
-      VisualMargin( double top, double right, double bottom, double left )
-          : left( left )
-          , right( right )
-          , top( top )
-          , bottom( bottom )
-      {}
-
-      //! Left margin
-      double left;
-      //! Right margin
-      double right;
-      //! Top margin
-      double top;
-      //! Bottom margin
-      double bottom;
-
-      VisualMargin& operator *=( double value )
-      {
-        left *= value;
-        right *= value;
-        top *= value;
-        bottom *= value;
-        return *this;
-      }
-    };
 
     //! Create label feature, takes ownership of the geometry instance
     QgsLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, QSizeF size );
@@ -146,12 +101,12 @@ class CORE_EXPORT QgsLabelFeature
      * @param margin visual margins for label
      * @see visualMargin()
      */
-    void setVisualMargin( const VisualMargin& margin ) { mVisualMargin = margin; }
+    void setVisualMargin( const QgsMargins& margin ) { mVisualMargin = margin; }
 
     /** Returns the visual margin for the label feature.
      * @see setVisualMargin() for details
      */
-    const VisualMargin& visualMargin() const { return mVisualMargin; }
+    const QgsMargins& visualMargin() const { return mVisualMargin; }
 
     /** Sets the size of the rendered symbol associated with this feature. This size is taken into
      * account in certain label placement modes to avoid placing labels over the rendered
@@ -340,20 +295,20 @@ class CORE_EXPORT QgsLabelFeature
 
   protected:
     //! Pointer to PAL layer (assigned when registered to PAL)
-    pal::Layer* mLayer;
+    pal::Layer* mLayer = nullptr;
 
     //! Associated ID unique within the parent label provider
     QgsFeatureId mId;
     //! Geometry of the feature to be labelled
-    GEOSGeometry* mGeometry;
+    GEOSGeometry* mGeometry = nullptr;
     //! Optional geometry to use for label obstacles, if different to mGeometry
-    GEOSGeometry* mObstacleGeometry;
+    GEOSGeometry* mObstacleGeometry = nullptr;
     //! Optional geometry to use for label's permissible zone
     QgsGeometry mPermissibleZone;
     //! Width and height of the label
     QSizeF mSize;
     //! Visual margin of label contents
-    VisualMargin mVisualMargin;
+    QgsMargins mVisualMargin;
     //! Size of associated rendered symbol, if applicable
     QSizeF mSymbolSize;
     //! Priority of the label
@@ -391,15 +346,15 @@ class CORE_EXPORT QgsLabelFeature
     //! text of the label
     QString mLabelText;
     //! extra information for curved labels (may be null)
-    pal::LabelInfo* mInfo;
+    pal::LabelInfo* mInfo = nullptr;
 
   private:
 
     //! GEOS geometry on which mPermissibleZoneGeosPrepared is based on
-    GEOSGeometry* mPermissibleZoneGeos;
+    GEOSGeometry* mPermissibleZoneGeos = nullptr;
 
     // TODO - not required when QgsGeometry caches geos preparedness
-    const GEOSPreparedGeometry* mPermissibleZoneGeosPrepared;
+    const GEOSPreparedGeometry* mPermissibleZoneGeosPrepared = nullptr;
 
 };
 

@@ -94,10 +94,10 @@ class GUI_EXPORT QgsAuthServersEditor : public QWidget, private Ui::QgsAuthServe
     int messageTimeout();
 
     bool mDisabled;
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout *mAuthNotifyLayout = nullptr;
+    QLabel *mAuthNotify = nullptr;
 
-    QTreeWidgetItem *mRootSslConfigItem;
+    QTreeWidgetItem *mRootSslConfigItem = nullptr;
 };
 
 #endif // QGSAUTHSERVERSEDITOR_H

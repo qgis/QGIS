@@ -106,7 +106,7 @@ QgsAttributeTableConfig::ActionWidgetStyle QgsAttributeActionDialog::attributeTa
 
 void QgsAttributeActionDialog::insertRow( int row, const QgsAction& action )
 {
-  QTableWidgetItem* item;
+  QTableWidgetItem* item = nullptr;
   mAttributeActionTable->insertRow( row );
 
   // Type
@@ -134,7 +134,7 @@ void QgsAttributeActionDialog::insertRow( int row, const QgsAction& action )
   item = new QTableWidgetItem();
   item->setFlags( item->flags() & ~( Qt::ItemIsEditable ) );
   QStringList actionScopes = action.actionScopes().toList();
-  qSort( actionScopes );
+  std::sort( actionScopes.begin(), actionScopes.end() );
   item->setText( actionScopes.join( QStringLiteral( ", " ) ) );
   item->setData( Qt::UserRole, QVariant::fromValue<QSet<QString>>( action.actionScopes() ) );
   mAttributeActionTable->setItem( row, ActionScopes, item );
@@ -338,7 +338,7 @@ void QgsAttributeActionDialog::itemDoubleClicked( QTableWidgetItem* item )
 
     QTableWidgetItem* item = mAttributeActionTable->item( row, ActionScopes );
     QStringList actionScopes = actionProperties.actionScopes().toList();
-    qSort( actionScopes );
+    std::sort( actionScopes.begin(), actionScopes.end() );
     item->setText( actionScopes.join( QStringLiteral( ", " ) ) );
     item->setData( Qt::UserRole, QVariant::fromValue<QSet<QString>>( actionProperties.actionScopes() ) );
 

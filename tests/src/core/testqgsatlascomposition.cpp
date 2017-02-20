@@ -78,14 +78,14 @@ class TestQgsAtlasComposition : public QObject
     void test_remove_layer();
 
   private:
-    QgsComposition* mComposition;
-    QgsComposerLabel* mLabel1;
-    QgsComposerLabel* mLabel2;
-    QgsComposerMap* mAtlasMap;
-    QgsComposerMap* mOverview;
-    QgsVectorLayer* mVectorLayer;
-    QgsVectorLayer* mVectorLayer2;
-    QgsAtlasComposition* mAtlas;
+    QgsComposition* mComposition = nullptr;
+    QgsComposerLabel* mLabel1 = nullptr;
+    QgsComposerLabel* mLabel2 = nullptr;
+    QgsComposerMap* mAtlasMap = nullptr;
+    QgsComposerMap* mOverview = nullptr;
+    QgsVectorLayer* mVectorLayer = nullptr;
+    QgsVectorLayer* mVectorLayer2 = nullptr;
+    QgsAtlasComposition* mAtlas = nullptr;
     QString mReport;
 };
 

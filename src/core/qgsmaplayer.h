@@ -38,6 +38,8 @@
 class QgsMapLayerLegend;
 class QgsMapLayerRenderer;
 class QgsMapLayerStyleManager;
+class QgsPathResolver;
+class QgsProject;
 
 class QDomDocument;
 class QKeyEvent;
@@ -52,6 +54,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     Q_OBJECT
 
     Q_PROPERTY( QString name READ name WRITE setName NOTIFY nameChanged )
+    Q_PROPERTY( int autoRefreshInterval READ autoRefreshInterval WRITE setAutoRefreshInterval NOTIFY autoRefreshIntervalChanged )
 
   public:
 
@@ -350,6 +353,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Sets state from Dom document
        @param layerElement The Dom element corresponding to ``maplayer'' tag
+       @param pathResolver object for conversion between relative and absolute paths
        @note
 
        The Dom node corresponds to a Dom document project file XML element read
@@ -362,13 +366,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
        @returns true if successful
      */
-    bool readLayerXml( const QDomElement& layerElement );
-
+    bool readLayerXml( const QDomElement& layerElement, const QgsPathResolver& pathResolver );
 
     /** Stores state in Dom node
      * @param layerElement is a Dom element corresponding to ``maplayer'' tag
      * @param document is a the dom document being written
-     * @param relativeBasePath base path for relative paths
+     * @param pathResolver object for conversion between relative and absolute paths
      * @note
      *
      * The Dom node corresponds to a Dom document project file XML element to be
@@ -381,19 +384,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *
      * @returns true if successful
      */
-    bool writeLayerXml( QDomElement& layerElement, QDomDocument& document, const QString& relativeBasePath = QString::null ) const;
-
-    /** Returns the given layer as a layer definition document
-     *  Layer definitions store the data source as well as styling and custom properties.
-     *
-     *  Layer definitions can be used to load a layer and styling all from a single file.
-     */
-    static QDomDocument asLayerDefinition( const QList<QgsMapLayer*>& layers, const QString& relativeBasePath = QString::null );
-
-    /** Creates a new layer from a layer definition document
-     */
-    static QList<QgsMapLayer*> fromLayerDefinition( QDomDocument& document, bool addToRegistry = false, bool addToLegend = false );
-    static QList<QgsMapLayer*> fromLayerDefinitionFile( const QString &qlrfile );
+    bool writeLayerXml( QDomElement& layerElement, QDomDocument& document, const QgsPathResolver& pathResolver ) const;
 
     /** Set a custom property for layer. Properties are stored in a map and saved in project file.
      * @see customProperty()
@@ -467,7 +458,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @param qml will be set to QML style content from database
      * @returns true if style was successfully loaded
      */
-    virtual bool loadNamedStyleFromDb( const QString &db, const QString &uri, QString &qml );
+    virtual bool loadNamedStyleFromDatabase( const QString &db, const QString &uri, QString &qml );
 
     /**
      * Import the properties of this layer from a QDomDocument
@@ -650,6 +641,44 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     bool hasScaleBasedVisibility() const;
 
+    /**
+     * Returns true if auto refresh is enabled for the layer.
+     * @note added in QGIS 3.0
+     * @see autoRefreshInterval()
+     * @see setAutoRefreshEnabled()
+     */
+    bool hasAutoRefreshEnabled() const;
+
+    /**
+     * Returns the auto refresh interval (in milliseconds). Note that
+     * auto refresh is only active when hasAutoRefreshEnabled() is true.
+     * @note added in QGIS 3.0
+     * @see autoRefreshEnabled()
+     * @see setAutoRefreshInterval()
+     */
+    int autoRefreshInterval() const;
+
+    /**
+     * Sets the auto refresh interval (in milliseconds) for the layer. This
+     * will cause the layer to be automatically redrawn on a matching interval.
+     * Note that auto refresh must be enabled by calling setAutoRefreshEnabled().
+     *
+     * Note that auto refresh triggers deferred repaints of the layer. Any map
+     * canvas must be refreshed separately in order to view the refreshed layer.
+     * @note added in QGIS 3.0
+     * @see autoRefreshInterval()
+     * @see setAutoRefreshEnabled()
+     */
+    void setAutoRefreshInterval( int interval );
+
+    /**
+     * Sets whether auto refresh is enabled for the layer.
+     * @note added in QGIS 3.0
+     * @see hasAutoRefreshEnabled()
+     * @see setAutoRefreshInterval()
+     */
+    void setAutoRefreshEnabled( bool enabled );
+
   public slots:
 
     //! Event handler for when a coordinate transform fails due to bad vertex error
@@ -682,12 +711,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void setScaleBasedVisibility( const bool enabled );
 
     /**
-     * Will advice the map canvas (and any other interested party) that this layer requires to be repainted.
+     * Will advise the map canvas (and any other interested party) that this layer requires to be repainted.
      * Will emit a repaintRequested() signal.
+     * If \a deferredUpdate is true then the layer will only be repainted when the canvas is next
+     * re-rendered, and will not trigger any canvas redraws itself.
      *
      * @note in 2.6 function moved from vector/raster subclasses to QgsMapLayer
      */
-    void triggerRepaint();
+    void triggerRepaint( bool deferredUpdate = false );
 
     //! \brief Obtain Metadata for this layer
     virtual QString metadata() const;
@@ -736,8 +767,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** By emitting this signal the layer tells that either appearance or content have been changed
      * and any view showing the rendered layer should refresh itself.
+     * If \a deferredUpdate is true then the layer will only be repainted when the canvas is next
+     * re-rendered, and will not trigger any canvas redraws itself.
      */
-    void repaintRequested();
+    void repaintRequested( bool deferredUpdate = false );
 
     //! This is used to send a request that any mapcanvas using this layer update its extents
     void recalculateExtents() const;
@@ -785,6 +818,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @note added in QGIS 3.0
      */
     void willBeDeleted();
+
+    /**
+     * Emitted when the auto refresh interval changes.
+     * @see setAutoRefreshInterval()
+     * @note added in QGIS 3.0
+     */
+    void autoRefreshIntervalChanged( int interval );
 
   protected:
     //! Set the extent
@@ -916,12 +956,30 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QgsObjectCustomProperties mCustomProperties;
 
     //! Controller of legend items of this layer
-    QgsMapLayerLegend* mLegend;
+    QgsMapLayerLegend* mLegend = nullptr;
 
     //! Manager of multiple styles available for a layer (may be null)
-    QgsMapLayerStyleManager* mStyleManager;
+    QgsMapLayerStyleManager* mStyleManager = nullptr;
+
+    //! Timer for triggering automatic refreshes of the layer
+    QTimer mRefreshTimer;
+
 };
 
 Q_DECLARE_METATYPE( QgsMapLayer* )
+
+/**
+ * Weak pointer for QgsMapLayer
+ * @note added in QGIS 3.0
+ * @note not available in Python bindings
+ */
+typedef QPointer< QgsMapLayer > QgsWeakMapLayerPointer;
+
+/**
+ * A list of weak pointers to QgsMapLayers.
+ * @note added in QGIS 3.0
+ * @note not available in Python bindings
+ */
+typedef QList< QgsWeakMapLayerPointer > QgsWeakMapLayerPointerList;
 
 #endif

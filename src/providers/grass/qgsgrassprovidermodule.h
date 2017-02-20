@@ -81,7 +81,7 @@ class QgsGrassLocationItem : public QgsDirectoryItem, public QgsGrassObjectItemB
     virtual QList<QAction*> actions() override { return mActions->actions(); }
 
   private:
-    QgsGrassItemActions *mActions;
+    QgsGrassItemActions *mActions = nullptr;
 };
 
 class QgsGrassMapsetItem : public QgsDirectoryItem, public QgsGrassObjectItemBase
@@ -106,9 +106,9 @@ class QgsGrassMapsetItem : public QgsDirectoryItem, public QgsGrassObjectItemBas
 
   private:
     bool objectInImports( const QgsGrassObject &grassObject );
-    QgsGrassItemActions *mActions;
+    QgsGrassItemActions *mActions = nullptr;
     //void showImportError(const QString& error);
-    QFileSystemWatcher *mMapsetFileSystemWatcher;
+    QFileSystemWatcher *mMapsetFileSystemWatcher = nullptr;
     bool mRefreshLater;
     // running imports
     static QList<QgsGrassImport*> sImports;
@@ -126,7 +126,7 @@ class QgsGrassObjectItem : public QgsLayerItem, public QgsGrassObjectItemBase
     virtual bool equal( const QgsDataItem *other ) override;
 
   protected:
-    QgsGrassItemActions *mActions;
+    QgsGrassItemActions *mActions = nullptr;
 
 };
 
@@ -147,8 +147,8 @@ class QgsGrassVectorItem : public QgsDataCollectionItem, public QgsGrassObjectIt
 
   private:
     bool mValid;
-    QgsGrassItemActions *mActions;
-    QFileSystemWatcher *mWatcher;
+    QgsGrassItemActions *mActions = nullptr;
+    QFileSystemWatcher *mWatcher = nullptr;
 };
 
 class QgsGrassVectorLayerItem : public QgsGrassObjectItem
@@ -205,8 +205,8 @@ class QgsGrassImportItemWidget : public QWidget
     void onProgressChanged( const QString &recentHtml, const QString &allHtml, int min, int max, int value );
 
   private:
-    QTextEdit *mTextEdit;
-    QProgressBar *mProgressBar;
+    QTextEdit *mTextEdit = nullptr;
+    QProgressBar *mProgressBar = nullptr;
 };
 
 // item representing a layer being imported
@@ -231,7 +231,7 @@ class QgsGrassImportItem : public QgsDataItem, public QgsGrassObjectItemBase
     // override refresh to keep Populating state
     virtual void refresh( const QVector<QgsDataItem*>& children ) override { Q_UNUSED( children ); }
     //bool mDeleteAction;
-    QgsGrassImport* mImport;
+    QgsGrassImport* mImport = nullptr;
 
   private:
     static QgsAnimatedIcon *sImportIcon;

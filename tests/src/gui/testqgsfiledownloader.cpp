@@ -89,14 +89,14 @@ class TestQgsFileDownloader: public QObject
 
   private:
     void makeCall( QUrl url , QString fileName, bool cancel = false );
-    QTemporaryFile *mTempFile;
+    QTemporaryFile *mTempFile = nullptr;
     QString mErrorMessage;
     bool mCanceled;
     bool mProgress;
     bool mError;
     bool mCompleted;
     bool mExited;
-    QgsFileDownloader *mFileDownloader;
+    QgsFileDownloader *mFileDownloader = nullptr;
 };
 
 void TestQgsFileDownloader::makeCall( QUrl url, QString fileName, bool cancel )

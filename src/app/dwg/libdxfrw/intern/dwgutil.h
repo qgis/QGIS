@@ -56,8 +56,8 @@ class dwgCompressor
     duint32 long20CompressionOffset();
     duint32 twoByteOffset( duint32 *ll );
 
-    duint8 *bufC;
-    duint8 *bufD;
+    duint8 *bufC = nullptr;
+    duint8 *bufD = nullptr;
     duint32 sizeC;
     duint32 sizeD;
     duint32 pos;

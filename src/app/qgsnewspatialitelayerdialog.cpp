@@ -204,8 +204,8 @@ void QgsNewSpatialiteLayerDialog::on_pbnFindSRID_clicked()
   }
 
   // load up the srid table
-  const char *pzTail;
-  sqlite3_stmt *ppStmt;
+  const char *pzTail = nullptr;
+  sqlite3_stmt *ppStmt = nullptr;
   QString sql = QStringLiteral( "select auth_name || ':' || auth_srid from spatial_ref_sys order by srid asc" );
 
   QSet<QString> myCRSs;
@@ -376,7 +376,7 @@ bool QgsNewSpatialiteLayerDialog::apply()
                                  quotedValue( leGeometryColumn->text() ) );
   QgsDebugMsg( sqlCreateIndex ); // OK
 
-  sqlite3 *db;
+  sqlite3 *db = nullptr;
   int rc = QgsSLConnect::sqlite3_open( mDatabaseComboBox->currentText().toUtf8(), &db );
   if ( rc != SQLITE_OK )
   {
@@ -386,7 +386,7 @@ bool QgsNewSpatialiteLayerDialog::apply()
   }
   else
   {
-    char * errmsg;
+    char * errmsg = nullptr;
     rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, &errmsg );
     if ( rc != SQLITE_OK )
     {

@@ -252,7 +252,7 @@ void QgsRubberBand::movePoint( int index, const QgsPoint& p, int geometryIndex )
 
 void QgsRubberBand::setToGeometry( const QgsGeometry& geom, QgsVectorLayer* layer )
 {
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
   {
     reset( mGeometryType );
     return;
@@ -264,7 +264,7 @@ void QgsRubberBand::setToGeometry( const QgsGeometry& geom, QgsVectorLayer* laye
 
 void QgsRubberBand::addGeometry( const QgsGeometry& geom, QgsVectorLayer* layer )
 {
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
   {
     return;
   }

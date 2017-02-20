@@ -24,14 +24,15 @@
 
 namespace QgsWms
 {
-  void writeGetPrint( QgsServerInterface* serverIface, const QString& version,
-                      const QgsServerRequest& request, QgsServerResponse& response )
+  void writeGetPrint( QgsServerInterface* serverIface, const QgsProject* project,
+                      const QString& version, const QgsServerRequest& request,
+                      QgsServerResponse& response )
   {
     QgsServerRequest::Parameters params = request.parameters();
 
     Q_UNUSED( version );
 
-    QgsRenderer renderer( serverIface, params, getConfigParser( serverIface ) );
+    QgsRenderer renderer( serverIface, project, params, getConfigParser( serverIface ) );
 
     QString format = params.value( "FORMAT" );
     QString contentType;
@@ -62,7 +63,7 @@ namespace QgsWms
                                  QString( "Output format %1 is not supported by the GetPrint request" ).arg( format ) );
     }
 
-    QScopedPointer<QByteArray> result( renderer.getPrint( format ) );
+    std::unique_ptr<QByteArray> result( renderer.getPrint( format ) );
     response.setHeader( QStringLiteral( "Content-Type" ), contentType );
     response.write( *result );
   }

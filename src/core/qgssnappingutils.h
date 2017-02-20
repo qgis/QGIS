@@ -140,7 +140,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
       }
 
       //! The layer to configure.
-      QgsVectorLayer* layer;
+      QgsVectorLayer* layer = nullptr;
       //! To which geometry properties of this layers a snapping should happen.
       QgsPointLocator::Types type;
       //! The range around snapping targets in which snapping should occur.
@@ -203,7 +203,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
   private:
     // environment
     QgsMapSettings mMapSettings;
-    QgsVectorLayer* mCurrentLayer;
+    QgsVectorLayer* mCurrentLayer = nullptr;
 
     QgsSnappingConfig mSnappingConfig;
 

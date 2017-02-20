@@ -63,7 +63,7 @@ namespace QgsWms
     else
     {
       mPainter.reset( new QPainter( image ) );
-      QgsMapRendererCustomPainterJob renderJob( mapSettings, mPainter.data() );
+      QgsMapRendererCustomPainterJob renderJob( mapSettings, mPainter.get() );
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
       renderJob.setFeatureFilterProvider( mAccessControl );
 #endif
@@ -73,7 +73,7 @@ namespace QgsWms
 
   QPainter* QgsMapRendererJobProxy::takePainter()
   {
-    return mPainter.take();
+    return mPainter.release();
   }
 
 } // namespace qgsws

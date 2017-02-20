@@ -76,7 +76,7 @@ namespace pal
 
     private:
 
-      LabelPosition *lp;
+      LabelPosition *lp = nullptr;
       double px, py;
       double dist;
       bool ok;

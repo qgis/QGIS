@@ -43,7 +43,7 @@ class TestQgsFieldCalculator : public QObject
     void testAreaCalculations();
 
   private:
-    QgisApp * mQgisApp;
+    QgisApp * mQgisApp = nullptr;
 };
 
 TestQgsFieldCalculator::TestQgsFieldCalculator()
@@ -73,7 +73,7 @@ void TestQgsFieldCalculator::testLengthCalculations()
   //test length calculation respects ellipsoid and project distance units
 
   //create a temporary layer
-  QScopedPointer< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
   QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "pk" ), 1 );
@@ -93,7 +93,7 @@ void TestQgsFieldCalculator::testLengthCalculations()
 
   // run length calculation
   tempLayer->startEditing();
-  QScopedPointer< QgsFieldCalculator > calc( new QgsFieldCalculator( tempLayer.data() ) );
+  std::unique_ptr< QgsFieldCalculator > calc( new QgsFieldCalculator( tempLayer.get() ) );
 
   // this next part is fragile, and may need to be modified if the dialog changes:
   calc->mUpdateExistingGroupBox->setChecked( true );
@@ -113,7 +113,7 @@ void TestQgsFieldCalculator::testLengthCalculations()
   // change project length unit, check calculation respects unit
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceFeet );
   tempLayer->startEditing();
-  QScopedPointer< QgsFieldCalculator > calc2( new QgsFieldCalculator( tempLayer.data() ) );
+  std::unique_ptr< QgsFieldCalculator > calc2( new QgsFieldCalculator( tempLayer.get() ) );
   calc2->mUpdateExistingGroupBox->setChecked( true );
   calc2->mExistingFieldComboBox->setCurrentIndex( 1 );
   calc2->builder->setExpressionText( QStringLiteral( "$length" ) );
@@ -132,7 +132,7 @@ void TestQgsFieldCalculator::testAreaCalculations()
   //test area calculation respects ellipsoid and project area units
 
   //create a temporary layer
-  QScopedPointer< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
   QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "pk" ), 1 );
@@ -155,7 +155,7 @@ void TestQgsFieldCalculator::testAreaCalculations()
 
   // run area calculation
   tempLayer->startEditing();
-  QScopedPointer< QgsFieldCalculator > calc( new QgsFieldCalculator( tempLayer.data() ) );
+  std::unique_ptr< QgsFieldCalculator > calc( new QgsFieldCalculator( tempLayer.get() ) );
 
   // this next part is fragile, and may need to be modified if the dialog changes:
   calc->mUpdateExistingGroupBox->setChecked( true );
@@ -175,7 +175,7 @@ void TestQgsFieldCalculator::testAreaCalculations()
   // change project area unit, check calculation respects unit
   QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMiles );
   tempLayer->startEditing();
-  QScopedPointer< QgsFieldCalculator > calc2( new QgsFieldCalculator( tempLayer.data() ) );
+  std::unique_ptr< QgsFieldCalculator > calc2( new QgsFieldCalculator( tempLayer.get() ) );
   calc2->mUpdateExistingGroupBox->setChecked( true );
   calc2->mExistingFieldComboBox->setCurrentIndex( 1 );
   calc2->builder->setExpressionText( QStringLiteral( "$area" ) );

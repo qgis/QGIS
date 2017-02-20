@@ -45,7 +45,7 @@ class QgsGeomColumnTypeThread : public QThread
   private:
     QgsGeomColumnTypeThread() {}
 
-    QgsPostgresConn *mConn;
+    QgsPostgresConn *mConn = nullptr;
     QString mName;
     bool mUseEstimatedMetadata;
     bool mAllowGeometrylessTables;

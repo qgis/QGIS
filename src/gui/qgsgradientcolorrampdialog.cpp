@@ -523,10 +523,10 @@ void QgsGradientColorRampDialog::updatePlot()
   alphaPoints << QPointF( 1.0, mRamp.color2().alphaF() );
   addMarkersForColor( 1.0, mRamp.color2(), mCurrentPlotMarkerIndex == i );
 
-  qSort( lightnessPoints.begin(), lightnessPoints.end(), byX );
-  qSort( huePoints.begin(), huePoints.end(), byX );
-  qSort( saturationPoints.begin(), saturationPoints.end(), byX );
-  qSort( alphaPoints.begin(), alphaPoints.end(), byX );
+  std::sort( lightnessPoints.begin(), lightnessPoints.end(), byX );
+  std::sort( huePoints.begin(), huePoints.end(), byX );
+  std::sort( saturationPoints.begin(), saturationPoints.end(), byX );
+  std::sort( alphaPoints.begin(), alphaPoints.end(), byX );
 
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
   mLightnessCurve->setSamples( lightnessPoints );

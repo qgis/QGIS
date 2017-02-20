@@ -55,8 +55,8 @@ class GUI_EXPORT QgsCheckboxWidgetWrapper : public QgsEditorWidgetWrapper
     void setValue( const QVariant& value ) override;
 
   private:
-    QCheckBox* mCheckBox;
-    QGroupBox* mGroupBox;
+    QCheckBox* mCheckBox = nullptr;
+    QGroupBox* mGroupBox = nullptr;
 };
 
 #endif // QGSCHECKBOXWIDGETWRAPPER_H

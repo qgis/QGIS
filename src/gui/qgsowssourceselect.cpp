@@ -312,7 +312,7 @@ QgsTreeWidgetItem *QgsOWSSourceSelect::createItem(
     return items[id];
 
 
-  QgsTreeWidgetItem *item;
+  QgsTreeWidgetItem *item = nullptr;
   if ( layerParents.contains( id ) )
   {
     // it has parent -> create first its parent

@@ -42,7 +42,7 @@ class GUI_EXPORT QgsRelationReferenceConfigDlg : public QgsEditorConfigWidget, p
     void addFilterField( QListWidgetItem* item );
     int indexFromListWidgetItem( QListWidgetItem* item );
 
-    QgsVectorLayer* mReferencedLayer;
+    QgsVectorLayer* mReferencedLayer = nullptr;
 
   private slots:
     void relationChanged( int idx );

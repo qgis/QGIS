@@ -75,7 +75,7 @@ class QgsWFSUtilsKeepAlive: public QThread
   private slots:
     void updateTimestamp();
   private:
-    QSharedMemory* mSharedMemory;
+    QSharedMemory* mSharedMemory = nullptr;
 };
 
 #endif // QGSWFSUTILS_H

@@ -34,6 +34,15 @@ class QgsAttributes;
  */
 class CORE_EXPORT QgsRelation
 {
+    Q_GADGET
+
+    Q_PROPERTY( QString id READ id WRITE setId )
+    Q_PROPERTY( QgsVectorLayer* referencingLayer READ referencingLayer )
+    Q_PROPERTY( QgsVectorLayer* referencedLayer READ referencedLayer )
+    Q_PROPERTY( QString name READ name WRITE setName )
+    Q_PROPERTY( bool isValid READ isValid )
+
+
   public:
 
     /**
@@ -87,29 +96,21 @@ class CORE_EXPORT QgsRelation
 
     /**
      * Set an id for this relation
-     *
-     * @param id
      */
-    void setRelationId( const QString& id );
+    void setId( const QString& id );
 
     /**
      * Set a name for this relation
-     *
-     * @param name
      */
-    void setRelationName( const QString& name );
+    void setName( const QString& name );
 
     /**
      * Set the referencing (child) layer id. This layer will be searched in the registry.
-     *
-     * @param id
      */
     void setReferencingLayer( const QString& id );
 
     /**
      * Set the referenced (parent) layer id. This layer will be searched in the registry.
-     *
-     * @param id
      */
     void setReferencedLayer( const QString& id );
 
@@ -291,7 +292,21 @@ class CORE_EXPORT QgsRelation
      */
     bool hasEqualDefinition( const QgsRelation& other ) const;
 
-  protected:
+    /**
+     * Get the referenced field counterpart given a referencing field.
+     *
+     * @note Added in QGIS 3.0
+     */
+    Q_INVOKABLE QString resolveReferencedField( const QString& referencingField ) const;
+
+    /**
+     * Get the referencing field counterpart given a referenced field.
+     *
+     * @note Added in QGIS 3.0
+     */
+    Q_INVOKABLE QString resolveReferencingField( const QString& referencedField ) const;
+
+  private:
 
     /**
      * Updates the validity status of this relation.
@@ -299,7 +314,6 @@ class CORE_EXPORT QgsRelation
      */
     void updateRelationStatus();
 
-  private:
     //! Unique Id
     QString mRelationId;
     //! Human redable name
@@ -307,11 +321,11 @@ class CORE_EXPORT QgsRelation
     //! The child layer
     QString mReferencingLayerId;
     //! The child layer
-    QgsVectorLayer* mReferencingLayer;
+    QgsVectorLayer* mReferencingLayer = nullptr;
     //! The parent layer id
     QString mReferencedLayerId;
     //! The parent layer
-    QgsVectorLayer* mReferencedLayer;
+    QgsVectorLayer* mReferencedLayer = nullptr;
 
     /** A list of fields which define the relation.
      *  In most cases there will be only one value, but multiple values

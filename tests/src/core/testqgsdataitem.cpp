@@ -44,7 +44,7 @@ class TestQgsDataItem : public QObject
     void testDirItemChildren();
 
   private:
-    QgsDirectoryItem* mDirItem;
+    QgsDirectoryItem* mDirItem = nullptr;
     QString mScanItemsSetting;
     bool isValidDirItem( QgsDirectoryItem *item );
 };

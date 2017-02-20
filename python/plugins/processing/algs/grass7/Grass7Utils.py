@@ -91,25 +91,29 @@ class Grass7Utils(object):
 
         if Grass7Utils.grassPath() is None:
             return None
-        commands = ["grass70 -v"]
-        with subprocess.Popen(
-            commands,
-            shell=True,
-            stdout=subprocess.PIPE,
-            stdin=subprocess.DEVNULL,
-            stderr=subprocess.STDOUT,
-            universal_newlines=True,
-        ) as proc:
-            try:
-                lines = proc.stdout.readlines()
-                for line in lines:
-                    if "GRASS GIS " in line:
-                        Grass7Utils.version = line.split(" ")[-1].strip()
-                        break
-            except:
-                pass
 
-        return Grass7Utils.version
+        for command in ["grass73", "grass72", "grass71", "grass70", "grass"]:
+            with subprocess.Popen(
+                ["{} -v".format(command)],
+                shell=True,
+                stdout=subprocess.PIPE,
+                stdin=subprocess.DEVNULL,
+                stderr=subprocess.STDOUT,
+                universal_newlines=True,
+            ) as proc:
+                try:
+                    lines = proc.stdout.readlines()
+                    for line in lines:
+                        if "GRASS GIS " in line:
+                            line = line.split(" ")[-1].strip()
+                            if line.startswith("7."):
+                                Grass7Utils.version = line
+                                Grass7Utils.command = command
+                                return Grass7Utils.version
+                except:
+                    pass
+
+        return None
 
     @staticmethod
     def grassPath():
@@ -269,13 +273,13 @@ class Grass7Utils(object):
             if 'GISBASE' in env:
                 del env['GISBASE']
             Grass7Utils.createGrass7BatchJobFileFromGrass7Commands(commands)
-            os.chmod(Grass7Utils.grassBatchJobFilename(), stat.S_IEXEC
-                     | stat.S_IREAD | stat.S_IWRITE)
+            os.chmod(Grass7Utils.grassBatchJobFilename(), stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
             if isMac() and os.path.exists(os.path.join(Grass7Utils.grassPath(), 'grass.sh')):
                 command = os.path.join(Grass7Utils.grassPath(), 'grass.sh') + ' ' \
                     + os.path.join(Grass7Utils.grassMapsetFolder(), 'PERMANENT')
             else:
-                command = 'grass70 ' + os.path.join(Grass7Utils.grassMapsetFolder(), 'PERMANENT')
+                print("Grass {}".format(Grass7Utils.version))
+                command = Grass7Utils.command + ' ' + os.path.join(Grass7Utils.grassMapsetFolder(), 'PERMANENT')
 
         return command, env
 
@@ -449,4 +453,4 @@ class Grass7Utils(object):
                         helpPath = os.path.abspath(path)
                         break
 
-        return helpPath if helpPath is not None else 'http://grass.osgeo.org/grass70/manuals/'
+        return helpPath if helpPath is not None else 'http://grass.osgeo.org/{}/manuals/'.format(Grass7Utils.command)

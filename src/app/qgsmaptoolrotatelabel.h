@@ -50,8 +50,8 @@ class APP_EXPORT QgsMapToolRotateLabel: public QgsMapToolLabel
     double mCurrentRotation;
     double mCurrentMouseAzimuth;
     QgsPoint mRotationPoint;
-    QgsPointRotationItem* mRotationItem;
-    QgsRubberBand* mRotationPreviewBox;
+    QgsPointRotationItem* mRotationItem = nullptr;
+    QgsRubberBand* mRotationPreviewBox = nullptr;
 
     //! True if ctrl was pressed during the last mouse move event
     bool mCtrlPressed;

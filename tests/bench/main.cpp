@@ -375,7 +375,7 @@ int main( int argc, char *argv[] )
   // so that this program may be run with old libraries
   //QgsApplication myApp( argc, argv, false, configpath );
 
-  QCoreApplication *myApp;
+  QCoreApplication *myApp = nullptr;
 
 #if VERSION_INT >= 10900
   myApp = new QgsApplication( argc, argv, false );

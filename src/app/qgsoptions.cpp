@@ -856,6 +856,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
 
   mLineGhostCheckBox->setChecked( mSettings->value( QStringLiteral( "/qgis/digitizing/line_ghost" ), false ).toBool() );
 
+  mDefaultZValueSpinBox->setValue(
+    mSettings->value( QStringLiteral( "/qgis/digitizing/default_z_value" ), Qgis::DEFAULT_Z_COORDINATE ).toDouble()
+  );
+
   //default snap mode
   mSnappingEnabledDefault->setChecked( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ),  false ).toBool() );
   mDefaultSnapModeComboBox->addItem( tr( "Vertex" ), QgsSnappingConfig::Vertex );
@@ -1022,6 +1026,7 @@ void QgsOptions::iconSizeChanged( const QString &iconSize )
 {
   QgisApp::instance()->setIconSizes( iconSize.toInt() );
 }
+
 
 void QgsOptions::uiThemeChanged( const QString &theme )
 {
@@ -1360,6 +1365,8 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/fill_color_alpha" ), digitizingColor.alpha() );
 
   settings.setValue( QStringLiteral( "/qgis/digitizing/line_ghost" ), mLineGhostCheckBox->isChecked() );
+
+  mSettings->setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), mDefaultZValueSpinBox->value() );
 
   //default snap mode
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ), mSnappingEnabledDefault->isChecked() );

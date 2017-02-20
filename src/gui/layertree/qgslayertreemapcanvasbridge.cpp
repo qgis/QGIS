@@ -88,8 +88,8 @@ void QgsLayerTreeMapCanvasBridge::setCustomLayerOrder( const QStringList& order 
   QStringList defOrder( defaultLayerOrder() );
   QStringList newOrder( order );
   QStringList sortedNewOrder( order );
-  qSort( defOrder );
-  qSort( sortedNewOrder );
+  std::sort( defOrder.begin(), defOrder.end() );
+  std::sort( sortedNewOrder.begin(), sortedNewOrder.end() );
 
   if ( defOrder.size() < sortedNewOrder.size() )
   {

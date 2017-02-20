@@ -74,8 +74,8 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
         inline const QgsFeature* feature() { return mFeature; }
 
       private:
-        QgsFeature* mFeature;
-        QgsVectorLayerCache* mCache;
+        QgsFeature* mFeature = nullptr;
+        QgsVectorLayerCache* mCache = nullptr;
 
         friend class QgsVectorLayerCache;
         Q_DISABLE_COPY( QgsCachedFeature )
@@ -334,7 +334,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
       mCache.insert( feat.id(), cachedFeature );
     }
 
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
     QCache< QgsFeatureId, QgsCachedFeature > mCache;
 
     bool mCacheGeometry;

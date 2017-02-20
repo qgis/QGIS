@@ -39,9 +39,6 @@
 #include "qgsuuidwidgetfactory.h"
 #include "qgsvaluemapwidgetfactory.h"
 #include "qgsvaluerelationwidgetfactory.h"
-#ifdef WITH_QTWEBKIT
-#include "qgswebviewwidgetfactory.h"
-#endif
 
 
 QgsEditorWidgetRegistry* QgsEditorWidgetRegistry::instance()
@@ -63,9 +60,6 @@ void QgsEditorWidgetRegistry::initEditors( QgsMapCanvas *mapCanvas, QgsMessageBa
   reg->registerWidget( QStringLiteral( "CheckBox" ), new QgsCheckboxWidgetFactory( tr( "Check Box" ) ) );
   reg->registerWidget( QStringLiteral( "ValueRelation" ), new QgsValueRelationWidgetFactory( tr( "Value Relation" ) ) );
   reg->registerWidget( QStringLiteral( "UuidGenerator" ), new QgsUuidWidgetFactory( tr( "Uuid Generator" ) ) );
-#ifdef WITH_QTWEBKIT
-  reg->registerWidget( QStringLiteral( "WebView" ), new QgsWebViewWidgetFactory( tr( "Web View" ) ) );
-#endif
   reg->registerWidget( QStringLiteral( "Color" ), new QgsColorWidgetFactory( tr( "Color" ) ) );
   reg->registerWidget( QStringLiteral( "RelationReference" ), new QgsRelationReferenceFactory( tr( "Relation Reference" ), mapCanvas, messageBar ) );
   reg->registerWidget( QStringLiteral( "DateTime" ), new QgsDateTimeEditFactory( tr( "Date/Time" ) ) );
@@ -94,7 +88,6 @@ QgsEditorWidgetSetup QgsEditorWidgetRegistry::findBest( const QgsVectorLayer* vl
     if ( !setup.isNull() )
       return setup;
   }
-
   return mAutoConf.editorWidgetSetup( vl, fieldName );
 }
 

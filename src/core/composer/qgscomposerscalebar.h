@@ -341,7 +341,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
   protected:
 
     //! Reference to composer map object
-    const QgsComposerMap* mComposerMap;
+    const QgsComposerMap* mComposerMap = nullptr;
     //! Number of segments on right side
     int mNumSegments;
     //! Number of segments on left side
@@ -379,7 +379,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     //! Height of bars/lines
     double mHeight;
     //! Scalebar style
-    QgsScaleBarStyle* mStyle;
+    QgsScaleBarStyle* mStyle = nullptr;
 
     //! Space between bar and Text labels
     double mLabelBarSpace;

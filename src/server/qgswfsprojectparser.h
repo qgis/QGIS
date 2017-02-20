@@ -38,8 +38,6 @@ class SERVER_EXPORT QgsWfsProjectParser
     QgsWfsProjectParser& operator=( const QgsWfsProjectParser& rh ) = delete;
 
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
-    QString serviceUrl() const;
-    QString wfsServiceUrl() const;
     void featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const;
 
     void describeFeatureType( const QString& aTypeName, QDomElement& parentElement, QDomDocument& doc ) const;
@@ -55,8 +53,8 @@ class SERVER_EXPORT QgsWfsProjectParser
     QSet<QString> wfstDeleteLayers() const;
 
   private:
-    QgsServerProjectParser* mProjectParser;
-    const QgsAccessControl* mAccessControl;
+    QgsServerProjectParser* mProjectParser = nullptr;
+    const QgsAccessControl* mAccessControl = nullptr;
 
 };
 

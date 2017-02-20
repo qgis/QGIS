@@ -8,23 +8,18 @@ MinGW).
 This section describes the setup required to allow Visual Studio to be used to
 build QGIS. 
 
-===Visual C++ Express Edition===
+===Visual C++ Community Edition===
 
-The free (as in free beer) Express Edition installer is available under:
+The free (as in free beer) Community installer is available under:
 
-	http://download.microsoft.com/download/c/d/7/cd7d4dfb-5290-4cc7-9f85-ab9e3c9af796/vc_web.exe
-
-You also need the Windows SDK for Windows 7 and .NET Framework 4:
-
-	http://download.microsoft.com/download/A/6/A/A6AC035D-DA3F-4F0C-ADA4-37C8E5D34E3D/winsdk_web.exe
-
+	http://download.microsoft.com/download/D/2/3/D23F4D0F-BA2D-4600-8725-6CCECEA05196/vs_community_ENU.exe
 
 ===Other tools and dependencies===
 
 Download and install following packages:
 
 || Tool | Website |
-| CMake | http://www.cmake.org/files/v3.0/cmake-3.0.2-win32-x86.exe |
+| CMake | https://cmake.org/files/v3.7/cmake-3.7.2-win64-x64.msi |
 | GNU flex, GNU bison and GIT | http://cygwin.com/setup-x86.exe (32bit) or http://cygwin.com/setup-x86_64.exe (64bit) |
 | OSGeo4W | http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86.exe (32bit) or http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86_64.exe (64bit) |
 
@@ -46,13 +41,27 @@ and from OSGeo4W (select //Advanced Installation//):
 - grass
 - gsl-devel
 - iconv
-- pyqt4
-- qt4-devel
-- qwt5-devel-qt4
-- sip
-- spatialite
 - libspatialindex-devel
-- python-qscintilla
+- pyqt5
+- python3-devel
+- python3-qscintilla
+- python3-nose2
+- python3-future
+- python3-pyyaml
+- python3-mock
+- qca-qt5-devel
+- qca-qt5-libs
+- qscintilla-qt5
+- qt5-devel
+- qt5-libs-debug
+- qtwebkit-qt5-devel
+- qtwebkit-qt5-libs-debug
+- qwt-devel-qt5
+- sip-qt5
+- spatialite
+-
+
+
 
 This will also select packages the above packages depend on.
 

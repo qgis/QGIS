@@ -43,7 +43,7 @@ class APP_EXPORT QgsMapToolSelectFreehand : public QgsMapTool
   private:
 
     //! used for storing all of the maps point for the freehand sketch
-    QgsRubberBand* mRubberBand;
+    QgsRubberBand* mRubberBand = nullptr;
 
     bool mDragging;
 

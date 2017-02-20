@@ -134,6 +134,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     virtual int dimension() const override { return 1; }
     virtual QgsLineString* clone() const override;
     virtual void clear() override;
+    bool isEmpty() const override;
 
     virtual bool fromWkb( QgsConstWkbPtr& wkb ) override;
     virtual bool fromWkt( const QString& wkt ) override;

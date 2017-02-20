@@ -18,6 +18,8 @@
 #include <math.h>
 
 //header for class being tested
+#include "qgsexpression.h"
+#include "qgsexpressioncontext.h"
 #include "qgsrectangle.h"
 #include "qgsmapsettings.h"
 #include "qgspoint.h"
@@ -31,9 +33,11 @@ class TestQgsMapSettings: public QObject
     Q_OBJECT
   private slots:
     void initTestCase();
+    void cleanupTestCase();
     void visibleExtent();
     void mapUnitsPerPixel();
     void visiblePolygon();
+    void testIsLayerVisible();
     void testMapLayerListUtils();
   private:
     QString toString( const QPolygonF& p, int decimalPlaces = 2 ) const;
@@ -44,6 +48,11 @@ void TestQgsMapSettings::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
+}
+
+void TestQgsMapSettings::cleanupTestCase()
+{
+  QgsApplication::exitQgis();
 }
 
 QString TestQgsMapSettings::toString( const QPolygonF& p, int dec ) const
@@ -149,6 +158,38 @@ void TestQgsMapSettings::visiblePolygon()
             QString( "32.32 28.03,103.03 -42.67,67.67 -78.03,-3.03 -7.32" ) );
 }
 
+void TestQgsMapSettings::testIsLayerVisible()
+{
+  QgsVectorLayer* vlA = new QgsVectorLayer( "Point", "a", "memory" );
+  QgsVectorLayer* vlB = new QgsVectorLayer( "Point", "b", "memory" );
+
+  QList<QgsMapLayer*> layers;
+  layers << vlA << vlB;
+
+  QgsMapSettings ms;
+  ms.setLayers( layers );
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::mapSettingsScope( ms );
+
+  // test checking for visible layer by id
+  QgsExpression e( QString( "is_layer_visible( '%1' )" ).arg( vlA-> id() ) );
+  QVariant r = e.evaluate( &context );
+  QCOMPARE( r.toBool(), true );
+
+  // test checking for visible layer by name
+  QgsExpression e2( QString( "is_layer_visible( '%1' )" ).arg( vlB-> name() ) );
+  r = e2.evaluate( &context );
+  QCOMPARE( r.toBool(), true );
+
+  // test checking for non-existent layer
+  QgsExpression e3( QString( "is_layer_visible( 'non matching name' )" ) );
+  r = e3.evaluate( &context );
+  QCOMPARE( r.toBool(), false );
+
+  delete vlA;
+  delete vlB;
+}
+
 void TestQgsMapSettings::testMapLayerListUtils()
 {
   QgsVectorLayer* vlA = new QgsVectorLayer( "Point", "a", "memory" );
@@ -157,7 +198,13 @@ void TestQgsMapSettings::testMapLayerListUtils()
   QList<QgsMapLayer*> listRawSource;
   listRawSource << vlA << vlB;
 
-  QList< QPointer<QgsMapLayer> > listQPointer = _qgis_listRawToQPointer( listRawSource );
+  QgsMapLayer* l = _qgis_findLayer( listRawSource, QStringLiteral( "a" ) );
+  QCOMPARE( l, vlA );
+
+  l = _qgis_findLayer( listRawSource, QStringLiteral( "z" ) );
+  QCOMPARE( !l, true );
+
+  QgsWeakMapLayerPointerList listQPointer = _qgis_listRawToQPointer( listRawSource );
 
   QCOMPARE( listQPointer.count(), 2 );
   QCOMPARE( listQPointer[0].data(), vlA );

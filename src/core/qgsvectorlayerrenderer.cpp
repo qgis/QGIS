@@ -317,7 +317,7 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator& fit )
         // new labeling engine
         if ( mContext.labelingEngine() && ( mLabelProvider || mDiagramProvider ) )
         {
-          QScopedPointer<QgsGeometry> obstacleGeometry;
+          std::unique_ptr<QgsGeometry> obstacleGeometry;
           QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, mContext );
 
           if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
@@ -332,11 +332,11 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator& fit )
 
           if ( mLabelProvider )
           {
-            mLabelProvider->registerFeature( fet, mContext, obstacleGeometry.data() );
+            mLabelProvider->registerFeature( fet, mContext, obstacleGeometry.get() );
           }
           if ( mDiagramProvider )
           {
-            mDiagramProvider->registerFeature( fet, mContext, obstacleGeometry.data() );
+            mDiagramProvider->registerFeature( fet, mContext, obstacleGeometry.get() );
           }
         }
       }
@@ -407,7 +407,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator& fit )
     // new labeling engine
     if ( mContext.labelingEngine() )
     {
-      QScopedPointer<QgsGeometry> obstacleGeometry;
+      std::unique_ptr<QgsGeometry> obstacleGeometry;
       QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, mContext );
 
       if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
@@ -422,11 +422,11 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator& fit )
 
       if ( mLabelProvider )
       {
-        mLabelProvider->registerFeature( fet, mContext, obstacleGeometry.data() );
+        mLabelProvider->registerFeature( fet, mContext, obstacleGeometry.get() );
       }
       if ( mDiagramProvider )
       {
-        mDiagramProvider->registerFeature( fet, mContext, obstacleGeometry.data() );
+        mDiagramProvider->registerFeature( fet, mContext, obstacleGeometry.get() );
       }
     }
   }

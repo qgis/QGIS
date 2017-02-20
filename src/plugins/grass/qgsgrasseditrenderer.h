@@ -57,8 +57,8 @@ class QgsGrassEditRenderer : public QgsFeatureRenderer
     static QgsFeatureRenderer* create( QDomElement& element );
 
   protected:
-    QgsFeatureRenderer *mLineRenderer;
-    QgsFeatureRenderer *mMarkerRenderer;
+    QgsFeatureRenderer *mLineRenderer = nullptr;
+    QgsFeatureRenderer *mMarkerRenderer = nullptr;
 };
 
 class QgsGrassEditRendererWidget : public QgsRendererWidget
@@ -73,10 +73,10 @@ class QgsGrassEditRendererWidget : public QgsRendererWidget
     virtual QgsFeatureRenderer* renderer() override;
 
   protected:
-    QgsGrassEditRenderer* mRenderer;
+    QgsGrassEditRenderer* mRenderer = nullptr;
 
-    QgsRendererWidget* mLineRendererWidget;
-    QgsRendererWidget* mPointRendererWidget;
+    QgsRendererWidget* mLineRendererWidget = nullptr;
+    QgsRendererWidget* mPointRendererWidget = nullptr;
 };
 
 #endif // QGSGRASSEDITRENDERER_H

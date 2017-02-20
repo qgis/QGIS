@@ -249,7 +249,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     //! Typename without namespace prefix
     QString mTypeName;
     QByteArray mTypeNameBA;
-    const char* mTypeNamePtr;
+    const char* mTypeNamePtr = nullptr;
     size_t mTypeNameUTF8Len;
 
     QgsWkbTypes::Type mWkbType;
@@ -259,7 +259,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     //! Name of geometry attribute
     QString mGeometryAttribute;
     QByteArray mGeometryAttributeBA;
-    const char* mGeometryAttributePtr;
+    const char* mGeometryAttributePtr = nullptr;
     size_t mGeometryAttributeUTF8Len;
 
     QgsFields mFields;
@@ -276,7 +276,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     QStack<ParseMode> mParseModeStack;
     //! This contains the character data if an important element has been encountered
     QString mStringCash;
-    QgsFeature* mCurrentFeature;
+    QgsFeature* mCurrentFeature = nullptr;
     QVector<QVariant> mCurrentAttributes; //attributes of current feature
     QString mCurrentFeatureId;
     int mFeatureCount;
@@ -308,7 +308,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     QgsRectangle mLayerExtent;
     //! GML namespace URI
     QString mGMLNameSpaceURI;
-    const char* mGMLNameSpaceURIPtr;
+    const char* mGMLNameSpaceURIPtr = nullptr;
     //! Axis orientation logic
     AxisOrientationLogic mAxisOrientationLogic;
     //! Whether to invert axis orientation. This value is immutable, but combined with what is inferred from data and mAxisOrientationLogic, is used to compute mInvertAxisOrientation

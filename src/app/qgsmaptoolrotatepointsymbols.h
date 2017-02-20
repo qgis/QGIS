@@ -18,6 +18,7 @@
 
 #include "qgsmaptoolpointsymbol.h"
 #include "qgis_app.h"
+#include <memory>
 
 class QgsPointRotationItem;
 class QgsMarkerSymbol;
@@ -58,11 +59,11 @@ class APP_EXPORT QgsMapToolRotatePointSymbols: public QgsMapToolPointSymbol
     bool mRotating;
     QSet<int> mCurrentRotationAttributes;
     //! Item that displays rotation during mouse move
-    QgsPointRotationItem* mRotationItem;
+    QgsPointRotationItem* mRotationItem = nullptr;
     //! True if ctrl was pressed during the last mouse move event
     bool mCtrlPressed;
     //! Clone of first found marker symbol for feature with rotation attribute set
-    QScopedPointer< QgsMarkerSymbol > mMarkerSymbol;
+    std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
 
     void drawArrow( double azimut ) const;
     //! Calculates the azimut between mousePos and mSnappedPoint

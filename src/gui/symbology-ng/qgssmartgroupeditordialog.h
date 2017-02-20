@@ -104,9 +104,9 @@ class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmar
     void on_buttonBox_accepted();
 
   protected:
-    QgsStyle* mStyle;
+    QgsStyle* mStyle = nullptr;
     // layout of the mConditionsBox
-    QGridLayout *mLayout;
+    QGridLayout *mLayout = nullptr;
     // counter for the number of conditions
     int mCondCount;
     // map tracking the condition widget and the ids

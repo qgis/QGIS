@@ -91,10 +91,10 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     void createRubberBandForFeature( QgsFeatureId featureId );
 
     QgsFeatureList mFeatureList;
-    QgsVectorLayer* mVectorLayer;
-    QgsMapCanvas* mMapCanvas;
+    QgsVectorLayer* mVectorLayer = nullptr;
+    QgsMapCanvas* mMapCanvas = nullptr;
     //! Item that highlights the selected feature in the merge table
-    QgsRubberBand* mSelectionRubberBand;
+    QgsRubberBand* mSelectionRubberBand = nullptr;
 
     QgsFields mFields;
     QSet<int> mHiddenAttributes;

@@ -58,9 +58,9 @@ class GUI_EXPORT QgsFeatureListViewDelegate : public QItemDelegate
     virtual void paint( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const override;
 
   private:
-    QgsFeatureSelectionModel* mFeatureSelectionModel;
-    QItemSelectionModel* mEditSelectionModel;
-    QgsFeatureListModel* mListModel;
+    QgsFeatureSelectionModel* mFeatureSelectionModel = nullptr;
+    QItemSelectionModel* mEditSelectionModel = nullptr;
+    QgsFeatureListModel* mListModel = nullptr;
     //! Set to true if the current edit selection has been edited
     bool mCurrentFeatureEdited;
 };

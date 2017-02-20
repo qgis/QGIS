@@ -43,17 +43,17 @@ class QgsMapToolAddCircularString: public QgsMapToolCapture
     /** The parent map tool, e.g. the add feature tool.
      *  Completed circular strings will be added to this tool by calling its addCurve() method.
      * */
-    QgsMapToolCapture* mParentTool;
+    QgsMapToolCapture* mParentTool = nullptr;
     //! Circular string points (in map coordinates)
     QgsPointSequence mPoints;
     //! The rubberband to show the already completed circular strings
-    QgsGeometryRubberBand* mRubberBand;
+    QgsGeometryRubberBand* mRubberBand = nullptr;
     //! The rubberband to show the circular string currently working on
-    QgsGeometryRubberBand* mTempRubberBand;
+    QgsGeometryRubberBand* mTempRubberBand = nullptr;
 
     //center point rubber band
     bool mShowCenterPointRubberBand;
-    QgsGeometryRubberBand* mCenterPointRubberBand;
+    QgsGeometryRubberBand* mCenterPointRubberBand = nullptr;
 
     void createCenterPointRubberBand();
     void updateCenterPointRubberBand( const QgsPointV2& pt );

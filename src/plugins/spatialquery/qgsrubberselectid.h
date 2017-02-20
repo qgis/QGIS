@@ -68,11 +68,11 @@ class QgsRubberSelectId
     void setStyle();
 
     //! RubberBand
-    QgsRubberBand* mRubberBand;
+    QgsRubberBand* mRubberBand = nullptr;
     int mColorRGB[3];
     int mWidth;
     QgsWkbTypes::GeometryType mGeometryType;
-    QgsMapCanvas* mMapCanvas;
+    QgsMapCanvas* mMapCanvas = nullptr;
 
     Q_DISABLE_COPY( QgsRubberSelectId )
 };

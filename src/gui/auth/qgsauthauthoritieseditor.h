@@ -120,20 +120,20 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
     QgsMessageBar * messageBar();
     int messageTimeout();
 
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout *mAuthNotifyLayout = nullptr;
+    QLabel *mAuthNotify = nullptr;
 
-    QTreeWidgetItem * mRootCaSecItem;
-    QTreeWidgetItem * mFileCaSecItem;
-    QTreeWidgetItem * mDbCaSecItem;
+    QTreeWidgetItem * mRootCaSecItem = nullptr;
+    QTreeWidgetItem * mFileCaSecItem = nullptr;
+    QTreeWidgetItem * mDbCaSecItem = nullptr;
 
     QgsAuthCertUtils::CertTrustPolicy mDefaultTrustPolicy;
     QMap<QgsAuthCertUtils::CertTrustPolicy, QStringList > mCertTrustCache;
 
-    QMenu * mUtilitiesMenu;
+    QMenu * mUtilitiesMenu = nullptr;
     bool mDisabled;
-    QAction * mActionDefaultTrustPolicy;
-    QAction * mActionShowTrustedCAs;
+    QAction * mActionDefaultTrustPolicy = nullptr;
+    QAction * mActionShowTrustedCAs = nullptr;
 };
 
 #endif // QGSAUTHAUTHORITIESEDITOR_H

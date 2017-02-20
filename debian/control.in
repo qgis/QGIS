@@ -313,6 +313,7 @@ Section: python
 Depends:
  python3-pyqt5,
  python3-pyqt5.qtsql,
+ python3-pyqt5.qtsvg,
  python3-sip,
  python-qgis-common (= ${source:Version}),
  python3-psycopg2,
@@ -327,6 +328,7 @@ Depends:
  python3-six,
  python3-yaml,
  python3-future,
+ python3-plotly,
  libqgispython{QGIS_ABI},
  ${shlibs:Depends},
  ${python:Depends},
@@ -348,7 +350,6 @@ Depends:
  gdal-bin,
  python3-gdal,
  python3-matplotlib,
- python3-shapely,
  libqgis-customwidgets,
  ${misc:Depends}
 XB-Python-Version: ${python:Versions}

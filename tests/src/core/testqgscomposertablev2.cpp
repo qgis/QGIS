@@ -77,11 +77,11 @@ class TestQgsComposerTableV2 : public QObject
     void cellStylesRender(); //test rendering cell styles
 
   private:
-    QgsComposition* mComposition;
-    QgsVectorLayer* mVectorLayer;
-    QgsComposerAttributeTableV2* mComposerAttributeTable;
-    QgsComposerFrame* mFrame1;
-    QgsComposerFrame* mFrame2;
+    QgsComposition* mComposition = nullptr;
+    QgsVectorLayer* mVectorLayer = nullptr;
+    QgsComposerAttributeTableV2* mComposerAttributeTable = nullptr;
+    QgsComposerFrame* mFrame1 = nullptr;
+    QgsComposerFrame* mFrame2 = nullptr;
     QString mReport;
 
     //compares rows in mComposerAttributeTable to expected rows
@@ -423,7 +423,7 @@ void TestQgsComposerTableV2::attributeTableAtlasSource()
   table->setSource( QgsComposerAttributeTableV2::AtlasFeature );
 
   //setup atlas
-  QgsVectorLayer* vectorLayer;
+  QgsVectorLayer* vectorLayer = nullptr;
   QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
   vectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                     vectorFileInfo.completeBaseName(),
@@ -493,7 +493,7 @@ void TestQgsComposerTableV2::attributeTableRelationSource()
 
   //create a relation
   QgsRelation relation;
-  relation.setRelationId( QStringLiteral( "testrelation" ) );
+  relation.setId( QStringLiteral( "testrelation" ) );
   relation.setReferencedLayer( atlasLayer->id() );
   relation.setReferencingLayer( mVectorLayer->id() );
   relation.addFieldPair( QStringLiteral( "Class" ), QStringLiteral( "Class" ) );

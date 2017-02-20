@@ -38,6 +38,7 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyle* sty
   }
 
   setupUi( this );
+  this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
   mWallColorButton->setColorDialogTitle( tr( "Select wall color" ) );
   mWallColorButton->setAllowAlpha( true );

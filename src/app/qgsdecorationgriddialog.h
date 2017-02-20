@@ -54,8 +54,8 @@ class APP_EXPORT QgsDecorationGridDialog : public QDialog, private Ui::QgsDecora
 
   private:
     QgsDecorationGrid& mDeco;
-    QgsLineSymbol* mLineSymbol;
-    QgsMarkerSymbol* mMarkerSymbol;
+    QgsLineSymbol* mLineSymbol = nullptr;
+    QgsMarkerSymbol* mMarkerSymbol = nullptr;
 
     void updateGuiElements();
     void updateDecoFromGui();

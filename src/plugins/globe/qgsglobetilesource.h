@@ -71,7 +71,7 @@ class QgsGlobeTileImage : public osg::Image
     static bool lodSort( const QgsGlobeTileImage* lhs, const QgsGlobeTileImage* rhs ) { return lhs->mLod > rhs->mLod; }
 
   private:
-    QgsGlobeTileSource* mTileSource;
+    QgsGlobeTileSource* mTileSource = nullptr;
     QgsRectangle mTileExtent;
     int mTileSize;
     unsigned char* mTileData;
@@ -97,8 +97,8 @@ class QgsGlobeTileUpdateManager : public QObject
   private:
     QStringList mLayerSet;
     QList<QgsGlobeTileImage*> mTileQueue;
-    QgsGlobeTileImage* mCurrentTile;
-    QgsMapRendererParallelJob* mRenderer;
+    QgsGlobeTileImage* mCurrentTile = nullptr;
+    QgsMapRendererParallelJob* mRenderer = nullptr;
 
   private slots:
     void start();

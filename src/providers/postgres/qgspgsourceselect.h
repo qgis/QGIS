@@ -116,7 +116,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString& regexp );
 
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#id14" ) ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#postgis-layers" ) ); }
 
     void columnThreadFinished();
 
@@ -142,7 +142,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     // The column labels
     QStringList mColumnLabels;
     // Our thread for doing long running queries
-    QgsGeomColumnTypeThread* mColumnTypeThread;
+    QgsGeomColumnTypeThread* mColumnTypeThread = nullptr;
     QgsDataSourceUri mDataSrcUri;
     QStringList mSelectedTables;
     bool mUseEstimatedMetadata;
@@ -151,10 +151,10 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 
     //! Model that acts as datasource for mTableTreeWidget
     QgsPgTableModel mTableModel;
-    QgsDbFilterProxyModel mProxyModel;
+    QgsDatabaseFilterProxyModel mProxyModel;
 
-    QPushButton *mBuildQueryButton;
-    QPushButton *mAddButton;
+    QPushButton *mBuildQueryButton = nullptr;
+    QPushButton *mAddButton = nullptr;
 
     void finishList();
 };

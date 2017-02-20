@@ -217,7 +217,7 @@ void QgsRendererPropertiesDialog::rendererChanged()
   QString rendererName = cboRenderers->currentData().toString();
 
   //Retrieve the previous renderer: from the old active widget if possible, otherwise from the layer
-  QgsFeatureRenderer* oldRenderer;
+  QgsFeatureRenderer* oldRenderer = nullptr;
   if ( mActiveWidget && mActiveWidget->renderer() )
   {
     oldRenderer = mActiveWidget->renderer()->clone();

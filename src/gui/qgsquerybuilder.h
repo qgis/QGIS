@@ -116,14 +116,14 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
 
     // private members
     //! Model for fields ListView
-    QStandardItemModel *mModelFields;
+    QStandardItemModel *mModelFields = nullptr;
     //! Model for values ListView
-    QStandardItemModel *mModelValues;
+    QStandardItemModel *mModelValues = nullptr;
     //! Previous field row to delete model
     int mPreviousFieldRow;
 
     //! vector layer
-    QgsVectorLayer *mLayer;
+    QgsVectorLayer *mLayer = nullptr;
 
     //! original subset string
     QString mOrigSubsetString;

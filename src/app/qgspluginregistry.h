@@ -110,7 +110,7 @@ class APP_EXPORT QgsPluginRegistry
   private:
     static QgsPluginRegistry* sInstance;
     QMap<QString, QgsPluginMetadata> mPlugins;
-    QgsPythonUtils* mPythonUtils;
-    QgisInterface* mQgisInterface;
+    QgsPythonUtils* mPythonUtils = nullptr;
+    QgisInterface* mQgisInterface = nullptr;
 };
 #endif //QgsPluginRegistry_H

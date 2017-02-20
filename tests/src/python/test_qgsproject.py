@@ -14,13 +14,17 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import os
+
 import qgis  # NOQA
 
 from qgis.core import QgsProject, QgsApplication, QgsUnitTypes, QgsCoordinateReferenceSystem
 
 from qgis.testing import start_app, unittest
+from utilities import (unitTestDataPath)
 
 start_app()
+TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsProject(unittest.TestCase):
@@ -139,6 +143,15 @@ class TestQgsProject(unittest.TestCase):
 
         prj.setAreaUnits(QgsUnitTypes.AreaSquareFeet)
         self.assertEqual(prj.areaUnits(), QgsUnitTypes.AreaSquareFeet)
+
+    def testReadEntry(self):
+        prj = QgsProject.instance()
+        prj.read(os.path.join(TEST_DATA_DIR, 'labeling/test-labeling.qgs'))
+
+        #valid key, valid int value
+        self.assertEqual(prj.readNumEntry("SpatialRefSys", "/ProjectionsEnabled", -1)[0], 0)
+        #invalid key
+        self.assertEqual(prj.readNumEntry("SpatialRefSys", "/InvalidKey", -1)[0], -1)
 
 if __name__ == '__main__':
     unittest.main()

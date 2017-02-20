@@ -116,15 +116,15 @@ class eVis: public QObject, public QgisPlugin
 
   private:
 
-    QgisInterface *mQGisIface;
+    QgisInterface *mQGisIface = nullptr;
 
-    QAction* mDatabaseConnectionActionPointer;
+    QAction* mDatabaseConnectionActionPointer = nullptr;
 
-    QAction* mEventIdToolActionPointer;
+    QAction* mEventIdToolActionPointer = nullptr;
 
-    QAction* mEventBrowserActionPointer;
+    QAction* mEventBrowserActionPointer = nullptr;
 
-    eVisEventIdTool* mIdTool;
+    eVisEventIdTool* mIdTool = nullptr;
 
     //! List of pointers to temporary files, files are created by database queries */
     QList<QTemporaryFile*> mTemporaryFileList;

@@ -119,9 +119,9 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
     QgsCoordinateReferenceSystem mLayerCrs;
     QgsCoordinateReferenceSystem mProjectCrs;
     QgsCoordinateReferenceSystem mDefaultCrs;
-    QComboBox* mCrsComboBox;
-    QToolButton* mButton;
-    QgsGenericProjectionSelector* mDialog;
+    QComboBox* mCrsComboBox = nullptr;
+    QToolButton* mButton = nullptr;
+    QgsGenericProjectionSelector* mDialog = nullptr;
     QString mNotSetText;
 
     void addNotSetOption();

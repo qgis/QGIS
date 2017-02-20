@@ -122,17 +122,17 @@ class CoordinateCapture: public QObject, public QgisPlugin
     QPointer<QLineEdit> mpCanvasEdit;
 
     //!Our custom map tool to capture clicks
-    CoordinateCaptureMapTool * mpMapTool;
+    CoordinateCaptureMapTool * mpMapTool = nullptr;
 
     //!A two buttons to track and capture coordinates
-    QToolButton * mpTrackMouseButton;
-    QPushButton * mpCaptureButton;
+    QToolButton * mpTrackMouseButton = nullptr;
+    QPushButton * mpCaptureButton = nullptr;
 
     //! A toolbutton to select crs to display the coordinates
-    QToolButton * mypUserCrsToolButton;
+    QToolButton * mypUserCrsToolButton = nullptr;
 
     //! A label for coordinates in the project crs
-    QLabel * mypCRSLabel;
+    QLabel * mypCRSLabel = nullptr;
 
     //! transform object
     QgsCoordinateTransform mTransform;
@@ -156,9 +156,9 @@ class CoordinateCapture: public QObject, public QgisPlugin
     ////////////////////////////////////////////////////////////////////
 
     //! Pointer to the QGIS interface object
-    QgisInterface *mQGisIface;
+    QgisInterface *mQGisIface = nullptr;
     //!pointer to the qaction for this plugin
-    QAction * mQActionPointer;
+    QAction * mQActionPointer = nullptr;
     ////////////////////////////////////////////////////////////////////
     //
     // ADD YOUR OWN PROPERTY DECLARATIONS AFTER THIS POINT.....

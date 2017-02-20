@@ -110,7 +110,7 @@ class Ogr2OgrDissolve(GdalAlgorithm):
         arguments.append('sqlite')
         arguments.append('-sql')
 
-        sql = "SELECT ST_Union('{}')".format(geometry)
+        sql = "SELECT ST_Union({})".format(geometry)
 
         sqlOpts = ''
         if fields:
@@ -119,13 +119,13 @@ class Ogr2OgrDissolve(GdalAlgorithm):
             sqlOpts += ',{}'.format(field)
 
         if count:
-            sqlOpts += ", COUNT('{}') AS count".format(geometry)
+            sqlOpts += ", COUNT({}) AS count".format(geometry)
 
         if stats:
-            sqlOpts += ", SUM('{0}') AS sum_diss, MIN('{0}') AS min_diss, MAX('{0}') AS max_diss, AVG('{0}') AS avg_diss".format(statsatt)
+            sqlOpts += ", SUM({0}) AS sum_diss, MIN({0}) AS min_diss, MAX({0}) AS max_diss, AVG({0}) AS avg_diss".format(statsatt)
 
         if area:
-            sqlOpts += ", SUM(ST_Area('{0}')) AS area_diss, ST_Perimeter(ST_Union('{0}')) AS peri_diss".format(geometry)
+            sqlOpts += ", SUM(ST_Area({0})) AS area_diss, ST_Perimeter(ST_Union({0})) AS peri_diss".format(geometry)
 
         sql = '{}{} FROM {} GROUP BY {}'.format(sql, sqlOpts, layername, field)
 
@@ -134,7 +134,7 @@ class Ogr2OgrDissolve(GdalAlgorithm):
         if not multi:
             arguments.append('-explodecollections')
 
-        if options is not None and len(options) > 0:
+        if options is not None and len(options.strip()) > 0:
             arguments.append(options)
 
         commands = []

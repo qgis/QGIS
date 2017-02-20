@@ -51,6 +51,7 @@ class TestQgsGeometryUtils: public QObject
     void testCircleCenterRadius();
     void testSqrDistToLine();
     void testAngleThreePoints();
+    void testMidPoint();
 };
 
 
@@ -428,6 +429,7 @@ void TestQgsGeometryUtils::testVerticesAtDistance()
   QVERIFY( QgsGeometryUtils::verticesAtDistance( *outerRing1, 4, previous, next ) );
   QCOMPARE( previous, QgsVertexId( 0, 0, 4 ) );
   QCOMPARE( next, QgsVertexId( 0, 0, 4 ) );
+  delete outerRing1;
 
   // test closed line
   QgsLineString* closedRing1 = new QgsLineString();
@@ -538,7 +540,14 @@ void TestQgsGeometryUtils::testAngleThreePoints()
   ( void )QgsGeometryUtils::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y() );
 }
 
-
+void TestQgsGeometryUtils::testMidPoint()
+{
+  QgsPointV2 p1( 4, 6 );
+  QCOMPARE( QgsGeometryUtils::midpoint( p1, QgsPointV2( 2, 2 ) ), QgsPointV2( 3, 4 ) );
+  QCOMPARE( QgsGeometryUtils::midpoint( p1, QgsPointV2( QgsWkbTypes::PointZ, 2, 2, 2 ) ), QgsPointV2( QgsWkbTypes::PointZ, 3, 4, 1 ) );
+  QCOMPARE( QgsGeometryUtils::midpoint( p1, QgsPointV2( QgsWkbTypes::PointM, 2, 2, 0, 2 ) ), QgsPointV2( QgsWkbTypes::PointM, 3, 4, 0, 1 ) );
+  QCOMPARE( QgsGeometryUtils::midpoint( p1, QgsPointV2( QgsWkbTypes::PointZM, 2, 2, 2, 2 ) ), QgsPointV2( QgsWkbTypes::PointZM, 3, 4, 1, 1 ) );
+}
 
 QGSTEST_MAIN( TestQgsGeometryUtils )
 #include "testqgsgeometryutils.moc"

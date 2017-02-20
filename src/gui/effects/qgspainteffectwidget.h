@@ -76,7 +76,7 @@ class GUI_EXPORT QgsDrawSourceWidget : public QgsPaintEffectWidget, private Ui::
     virtual void setPaintEffect( QgsPaintEffect* effect ) override;
 
   private:
-    QgsDrawSourceEffect* mEffect;
+    QgsDrawSourceEffect* mEffect = nullptr;
 
     void initGui();
     void blockSignals( const bool block );
@@ -109,7 +109,7 @@ class GUI_EXPORT QgsBlurWidget : public QgsPaintEffectWidget, private Ui::Widget
     virtual void setPaintEffect( QgsPaintEffect* effect ) override;
 
   private:
-    QgsBlurEffect* mEffect;
+    QgsBlurEffect* mEffect = nullptr;
 
     void initGui();
     void blockSignals( const bool block );
@@ -144,7 +144,7 @@ class GUI_EXPORT QgsShadowEffectWidget : public QgsPaintEffectWidget, private Ui
     virtual void setPaintEffect( QgsPaintEffect* effect ) override;
 
   private:
-    QgsShadowEffect* mEffect;
+    QgsShadowEffect* mEffect = nullptr;
 
     void initGui();
     void blockSignals( const bool block );
@@ -180,7 +180,7 @@ class GUI_EXPORT QgsGlowWidget : public QgsPaintEffectWidget, private Ui::Widget
     virtual void setPaintEffect( QgsPaintEffect* effect ) override;
 
   private:
-    QgsGlowEffect* mEffect;
+    QgsGlowEffect* mEffect = nullptr;
 
     void initGui();
     void blockSignals( const bool block );
@@ -216,7 +216,7 @@ class GUI_EXPORT QgsTransformWidget : public QgsPaintEffectWidget, private Ui::W
     virtual void setPaintEffect( QgsPaintEffect* effect ) override;
 
   private:
-    QgsTransformEffect* mEffect;
+    QgsTransformEffect* mEffect = nullptr;
 
     void initGui();
     void blockSignals( const bool block );
@@ -255,7 +255,7 @@ class GUI_EXPORT QgsColorEffectWidget : public QgsPaintEffectWidget, private Ui:
     virtual void setPaintEffect( QgsPaintEffect* effect ) override;
 
   private:
-    QgsColorEffect* mEffect;
+    QgsColorEffect* mEffect = nullptr;
 
     void initGui();
     void blockSignals( const bool block );

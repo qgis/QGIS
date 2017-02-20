@@ -20,7 +20,6 @@
 #include "qgsrenderer.h"
 #include "qgssymbol.h"
 #include "qgsexpression.h"
-#include <QScopedPointer>
 
 /** \ingroup core
  * \class QgsSingleSymbolRenderer
@@ -65,7 +64,7 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
     static QgsSingleSymbolRenderer* convertFromRenderer( const QgsFeatureRenderer *renderer );
 
   protected:
-    QScopedPointer<QgsSymbol> mSymbol;
+    std::unique_ptr<QgsSymbol> mSymbol;
 
 };
 

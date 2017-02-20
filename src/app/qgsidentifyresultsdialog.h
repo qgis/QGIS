@@ -99,7 +99,7 @@ class APP_EXPORT QgsIdentifyResultsWebViewItem: public QObject, public QTreeWidg
     void loadFinished( bool ok );
 
   private:
-    QgsIdentifyResultsWebView *mWebView;
+    QgsIdentifyResultsWebView *mWebView = nullptr;
 };
 
 class APP_EXPORT QgsIdentifyPlotCurve
@@ -115,7 +115,7 @@ class APP_EXPORT QgsIdentifyPlotCurve
     QgsIdentifyPlotCurve& operator=( const QgsIdentifyPlotCurve& rh ) = delete;
 
   private:
-    QwtPlotCurve* mPlotCurve;
+    QwtPlotCurve* mPlotCurve = nullptr;
 
 };
 
@@ -234,9 +234,9 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
       GetFeatureInfoUrlRole = Qt::UserRole + 10
     };
 
-    QMenu *mActionPopup;
+    QMenu *mActionPopup = nullptr;
     QMap<QTreeWidgetItem *, QgsHighlight * > mHighlights;
-    QgsMapCanvas *mCanvas;
+    QgsMapCanvas *mCanvas = nullptr;
     QList<QgsFeature> mFeatures;
     QMap< QString, QMap< QString, QVariant > > mWidgetCaches;
 
@@ -262,7 +262,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     void doMapLayerAction( QTreeWidgetItem *item, QgsMapLayerAction* action );
 
-    QgsDockWidget *mDock;
+    QgsDockWidget *mDock = nullptr;
 
     QVector<QgsIdentifyPlotCurve *> mPlotCurves;
 };
@@ -283,9 +283,9 @@ class QgsIdentifyResultsDialogMapLayerAction : public QAction
     void execute();
 
   private:
-    QgsMapLayerAction* mAction;
-    QgsFeature* mFeature;
-    QgsMapLayer* mLayer;
+    QgsMapLayerAction* mAction = nullptr;
+    QgsFeature* mFeature = nullptr;
+    QgsMapLayer* mLayer = nullptr;
 };
 
 #endif

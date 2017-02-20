@@ -61,7 +61,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     void closeEvent( QCloseEvent *e ) override;
 
     //! Show the help for the dialog
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#id38" ) ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#measuring" ) ); }
 
     //! When any external settings change
     void updateSettings();
@@ -113,7 +113,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     QgsDistanceArea mDa;
 
     //! pointer to measure tool which owns this dialog
-    QgsMeasureTool* mTool;
+    QgsMeasureTool* mTool = nullptr;
 
     QgsPoint mLastMousePoint;
 

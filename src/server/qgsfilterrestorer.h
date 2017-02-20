@@ -54,7 +54,7 @@ class SERVER_EXPORT QgsOWSServerFilterRestorer
         QHash<QgsMapLayer*, QString>& originalLayerFilters );
 
   private:
-    const QgsAccessControl* mAccessControl;
+    const QgsAccessControl* mAccessControl = nullptr;
     QHash<QgsMapLayer*, QString> mOriginalLayerFilters;
 
     QgsOWSServerFilterRestorer( const QgsOWSServerFilterRestorer& rh );

@@ -110,7 +110,7 @@ class SERVER_EXPORT QgsAccessControlFilter
   private:
 
     //! The server interface
-    const QgsServerInterface* mServerInterface;
+    const QgsServerInterface* mServerInterface = nullptr;
 
 };
 

@@ -269,10 +269,10 @@ void QgsConfigParserUtils::appendLayerBoundingBox( QDomElement& layerElem, QDomD
 QStringList QgsConfigParserUtils::createCrsListForLayer( QgsMapLayer* theMapLayer )
 {
   QStringList crsNumbers;
-  QString myDatabaseFileName = QgsApplication::srsDbFilePath();
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
+  QString myDatabaseFileName = QgsApplication::srsDatabaseFilePath();
+  sqlite3      *myDatabase = nullptr;
+  const char   *myTail = nullptr;
+  sqlite3_stmt *myPreparedStatement = nullptr;
   int           myResult;
 
   //check the db is available

@@ -8,6 +8,7 @@
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/composer
   ${CMAKE_SOURCE_DIR}/src/core/geometry
@@ -122,7 +123,6 @@ ADD_QGIS_TEST(connectionpooltest testqgsconnectionpool.cpp)
 ADD_QGIS_TEST(contrastenhancementtest  testcontrastenhancements.cpp)
 ADD_QGIS_TEST(coordinatereferencesystemtest testqgscoordinatereferencesystem.cpp)
 ADD_QGIS_TEST(coordinatetransformtest testqgscoordinatetransform.cpp)
-ADD_QGIS_TEST(datadefined testqgsdatadefined.cpp)
 ADD_QGIS_TEST(dataitemtest testqgsdataitem.cpp)
 ADD_QGIS_TEST(datasourceuritest testqgsdatasourceuri.cpp)
 ADD_QGIS_TEST(diagramtest testqgsdiagram.cpp)
@@ -180,7 +180,6 @@ ADD_QGIS_TEST(rastersublayertest testqgsrastersublayer.cpp)
 ADD_QGIS_TEST(rectangletest testqgsrectangle.cpp)
 ADD_QGIS_TEST(rendererstest testqgsrenderers.cpp)
 ADD_QGIS_TEST(rulebasedrenderertest testqgsrulebasedrenderer.cpp)
-ADD_QGIS_TEST(scaleexpressiontest testqgsscaleexpression.cpp)
 ADD_QGIS_TEST(shapebursttest testqgsshapeburst.cpp )
 ADD_QGIS_TEST(simplemarkertest testqgssimplemarker.cpp)
 ADD_QGIS_TEST(snappingutilstest testqgssnappingutils.cpp )

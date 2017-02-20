@@ -76,7 +76,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       menu->addAction( actions->actionRenameGroupOrLayer( menu ) );
 
-      menu->addAction( tr( "&Set Group WMS data" ), QgisApp::instance(), SLOT( legendGroupSetWMSData() ) );
+      menu->addAction( tr( "&Set Group WMS data" ), QgisApp::instance(), SLOT( legendGroupSetWmsData() ) );
 
       menu->addAction( actions->actionMutuallyExclusiveGroup( menu ) );
 
@@ -500,15 +500,15 @@ void QgsAppLayerTreeViewMenuProvider::editVectorSymbol()
   if ( !singleRenderer )
     return;
 
-  QScopedPointer< QgsSymbol > symbol( singleRenderer->symbol() ? singleRenderer->symbol()->clone() : nullptr );
-  QgsSymbolSelectorDialog dlg( symbol.data(), QgsStyle::defaultStyle(), layer, mView->window() );
+  std::unique_ptr< QgsSymbol > symbol( singleRenderer->symbol() ? singleRenderer->symbol()->clone() : nullptr );
+  QgsSymbolSelectorDialog dlg( symbol.get(), QgsStyle::defaultStyle(), layer, mView->window() );
   dlg.setWindowTitle( tr( "Symbol selector" ) );
   QgsSymbolWidgetContext context;
   context.setMapCanvas( mCanvas );
   dlg.setContext( context );
   if ( dlg.exec() )
   {
-    singleRenderer->setSymbol( symbol.take() );
+    singleRenderer->setSymbol( symbol.release() );
     layer->triggerRepaint();
     mView->refreshLayerSymbology( layer->id() );
   }
@@ -576,16 +576,16 @@ void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol()
   if ( !originalSymbol )
     return;
 
-  QScopedPointer< QgsSymbol > symbol( originalSymbol->clone() );
+  std::unique_ptr< QgsSymbol > symbol( originalSymbol->clone() );
   QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( node->layerNode()->layer() );
-  QgsSymbolSelectorDialog dlg( symbol.data(), QgsStyle::defaultStyle(), vlayer, mView->window() );
+  QgsSymbolSelectorDialog dlg( symbol.get(), QgsStyle::defaultStyle(), vlayer, mView->window() );
   dlg.setWindowTitle( tr( "Symbol selector" ) );
   QgsSymbolWidgetContext context;
   context.setMapCanvas( mCanvas );
   dlg.setContext( context );
   if ( dlg.exec() )
   {
-    node->setSymbol( symbol.take() );
+    node->setSymbol( symbol.release() );
     if ( vlayer )
     {
       vlayer->emitStyleChanged();

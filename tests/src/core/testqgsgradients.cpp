@@ -73,10 +73,10 @@ class TestQgsGradients : public QObject
     bool setQml( const QString& theType );
     bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPolysLayer;
-    QgsGradientFillSymbolLayer* mGradientFill;
-    QgsFillSymbol* mFillSymbol;
-    QgsSingleSymbolRenderer* mSymbolRenderer;
+    QgsVectorLayer * mpPolysLayer = nullptr;
+    QgsGradientFillSymbolLayer* mGradientFill = nullptr;
+    QgsFillSymbol* mFillSymbol = nullptr;
+    QgsSingleSymbolRenderer* mSymbolRenderer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };

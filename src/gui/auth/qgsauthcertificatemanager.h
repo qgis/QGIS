@@ -63,7 +63,7 @@ class GUI_EXPORT QgsAuthCertManager : public QDialog
     QgsAuthCertEditors *certEditorsWidget() { return mCertEditors; }
 
   private:
-    QgsAuthCertEditors *mCertEditors;
+    QgsAuthCertEditors *mCertEditors = nullptr;
 };
 
 #endif // QGSAUTHCERTIFICATEMANAGER_H

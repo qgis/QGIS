@@ -898,7 +898,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     AnnotationFormat mGridAnnotationFormat;
 
     QString mGridAnnotationExpressionString;
-    mutable QScopedPointer< QgsExpression > mGridAnnotationExpression;
+    mutable std::unique_ptr< QgsExpression > mGridAnnotationExpression;
 
     FrameStyle mGridFrameStyle;
     FrameSideFlags mGridFrameSides;
@@ -918,8 +918,8 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     //! Divisions for frame on bottom map side
     DisplayMode mBottomFrameDivisions;
 
-    QgsLineSymbol* mGridLineSymbol;
-    QgsMarkerSymbol* mGridMarkerSymbol;
+    QgsLineSymbol* mGridLineSymbol = nullptr;
+    QgsMarkerSymbol* mGridMarkerSymbol = nullptr;
 
     QgsCoordinateReferenceSystem mCRS;
 

@@ -87,10 +87,10 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExp
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key );
 
   protected: // data
-    QgsSymbolLayer* mLayer;
+    QgsSymbolLayer* mLayer = nullptr;
 
-    const QgsSymbol* mSymbol;
-    const QgsVectorLayer* mVectorLayer;
+    const QgsSymbol* mSymbol = nullptr;
+    const QgsVectorLayer* mVectorLayer = nullptr;
 
   private slots:
     void reloadLayer();

@@ -229,7 +229,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     void updateLayerFields();
 
   protected:
-    QgsVectorLayer* L;
+    QgsVectorLayer* L = nullptr;
     friend class QgsVectorLayer;
 
     friend class QgsVectorLayerUndoCommand;

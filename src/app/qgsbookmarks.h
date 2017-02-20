@@ -18,7 +18,7 @@
 #define QGSBOOKMARKS_H
 
 #include <QSqlTableModel>
-#include <QScopedPointer>
+#include <memory>
 
 #include "ui_qgsbookmarksbase.h"
 #include "qgsdockwidget.h"
@@ -78,7 +78,7 @@ class QgsMergedBookmarksTableModel: public QAbstractTableModel
   private:
     QAbstractTableModel& mQgisTableModel;
     QAbstractTableModel& mProjectTableModel;
-    QTreeView* mTreeView;
+    QTreeView* mTreeView = nullptr;
     bool mProjectOpen;
 
     void moveBookmark( QAbstractTableModel& modelFrom, QAbstractTableModel& modelTo, int row );
@@ -119,9 +119,9 @@ class APP_EXPORT QgsBookmarks : public QgsDockWidget, private Ui::QgsBookmarksBa
     void on_lstBookmarks_doubleClicked( const QModelIndex & );
 
   private:
-    QSqlTableModel* mQgisModel;
-    QgsProjectBookmarksTableModel* mProjectModel;
-    QScopedPointer<QgsMergedBookmarksTableModel> mModel;
+    QSqlTableModel* mQgisModel = nullptr;
+    QgsProjectBookmarksTableModel* mProjectModel = nullptr;
+    std::unique_ptr<QgsMergedBookmarksTableModel> mModel;
 
     void saveWindowLocation();
     void restorePosition();

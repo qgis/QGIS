@@ -33,10 +33,8 @@
 #include "qgsmapsettings.h" // TEMPORARY
 #include "qgsprevieweffect.h" //for QgsPreviewEffect::PreviewMode
 
-#ifdef HAVE_TOUCH
 #include <QGestureEvent>
 #include "qgis_gui.h"
-#endif
 
 class QWheelEvent;
 class QPixmap;
@@ -146,9 +144,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Returns the mapUnitsPerPixel (map units per pixel) for the canvas
     double mapUnitsPerPixel() const;
 
-    //! Returns the current zoom exent of the map canvas
+    //! Returns the current zoom extent of the map canvas
     QgsRectangle extent() const;
-    //! Returns the combined exent for all layers on the map canvas
+    //! Returns the combined extent for all layers on the map canvas
     QgsRectangle fullExtent() const;
 
     //! Set the extent of the map canvas
@@ -555,10 +553,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void messageEmitted( const QString& title, const QString& message, QgsMessageBar::MessageLevel = QgsMessageBar::INFO );
 
   protected:
-#ifdef HAVE_TOUCH
+
     //! Overridden standard event to be gestures aware
     bool event( QEvent * e ) override;
-#endif
 
     //! Overridden key press event
     void keyPressEvent( QKeyEvent * e ) override;
@@ -600,7 +597,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     class CanvasProperties;
 
     /// Handle pattern for implementation object
-    QScopedPointer<CanvasProperties> mCanvasProperties;
+    std::unique_ptr<CanvasProperties> mCanvasProperties;
 
 #if 0
 
@@ -611,6 +608,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 #endif
     //! Make sure the datum transform store is properly populated
     void updateDatumTransformEntries();
+
+  private slots:
+
+    void layerRepaintRequested( bool deferred );
+
+    void autoRefreshTriggered();
+
+    void updateAutoRefreshTimer();
 
   private:
     /// this class is non-copyable
@@ -627,7 +632,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QgsMapSettings mSettings;
 
     //! owns pixmap with rendered map and controls rendering
-    QgsMapCanvasMap* mMap;
+    QgsMapCanvasMap* mMap = nullptr;
 
     //! Flag indicating if the map canvas is frozen.
     bool mFrozen;
@@ -639,16 +644,16 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool mRenderFlag;
 
     //! current layer in legend
-    QgsMapLayer* mCurrentLayer;
+    QgsMapLayer* mCurrentLayer = nullptr;
 
     //! graphics scene manages canvas items
-    QGraphicsScene* mScene;
+    QGraphicsScene* mScene = nullptr;
 
     //! pointer to current map tool
-    QgsMapTool* mMapTool;
+    QgsMapTool* mMapTool = nullptr;
 
     //! previous tool if current is for zooming/panning
-    QgsMapTool* mLastNonZoomMapTool;
+    QgsMapTool* mLastNonZoomMapTool = nullptr;
 
     //! recently used extent
     QList <QgsRectangle> mLastExtent;
@@ -661,13 +666,13 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QTimer mMapUpdateTimer;
 
     //! Job that takes care of map rendering in background
-    QgsMapRendererQImageJob* mJob;
+    QgsMapRendererQImageJob* mJob = nullptr;
 
     //! Flag determining whether the active job has been canceled
     bool mJobCanceled;
 
     //! Labeling results from the recently rendered map
-    QgsLabelingResults* mLabelingResults;
+    QgsLabelingResults* mLabelingResults = nullptr;
 
     //! Whether layers are rendered sequentially or in parallel
     bool mUseParallelRendering;
@@ -676,15 +681,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool mDrawRenderingStats;
 
     //! Optionally use cache with rendered map layers for the current map settings
-    QgsMapRendererCache* mCache;
+    QgsMapRendererCache* mCache = nullptr;
 
-    QTimer *mResizeTimer;
+    QTimer *mResizeTimer = nullptr;
 
-    QgsPreviewEffect* mPreviewEffect;
+    QgsPreviewEffect* mPreviewEffect = nullptr;
 
     QgsRectangle imageRect( const QImage& img, const QgsMapSettings& mapSettings );
 
-    QgsSnappingUtils* mSnappingUtils;
+    QgsSnappingUtils* mSnappingUtils = nullptr;
 
     //! lock the scale, so zooming can be performed using magnication
     bool mScaleLocked;
@@ -698,9 +703,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool mZoomDragging;
 
     //! Zoom by rectangle rubber band
-    QScopedPointer< QgsRubberBand > mZoomRubberBand;
+    std::unique_ptr< QgsRubberBand > mZoomRubberBand;
 
     QCursor mZoomCursor;
+
+    QTimer mAutoRefreshTimer;
 
     //! Force a resize of the map canvas item
     //! @note added in 2.16

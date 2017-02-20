@@ -34,7 +34,7 @@ class QgsAfsFeatureSource : public QObject, public QgsAbstractFeatureSource
     void extentRequested( const QgsRectangle & );
 
   protected:
-    QgsAfsProvider* mProvider;
+    QgsAfsProvider* mProvider = nullptr;
 
     friend class QgsAfsFeatureIterator;
 };

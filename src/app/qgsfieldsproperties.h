@@ -127,7 +127,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         QHash< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength > mConstraintStrength;
         QString mConstraint;
         QString mConstraintDescription;
-        QPushButton* mButton;
+        QPushButton* mButton = nullptr;
         QString mEditorWidgetType;
         QMap<QString, QVariant> mEditorWidgetConfig;
     };
@@ -209,10 +209,10 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
 
     QList<QgsRelation> mRelations;
 
-    QgsVectorLayer* mLayer;
-    DesignerTree* mDesignerTree;
-    DragList* mFieldsList;
-    DragList* mRelationsList;
+    QgsVectorLayer* mLayer = nullptr;
+    DesignerTree* mDesignerTree = nullptr;
+    DragList* mFieldsList = nullptr;
+    DragList* mRelationsList = nullptr;
 
     // Holds all the first column items (header: id) of the table.
     // The index in the list is the fieldIdx, and therefore acts as a mapping
@@ -304,7 +304,7 @@ class DesignerTree : public QTreeWidget
     void onItemDoubleClicked( QTreeWidgetItem* item, int column );
 
   private:
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
 };
 
 Q_DECLARE_METATYPE( QgsFieldsProperties::FieldConfig )

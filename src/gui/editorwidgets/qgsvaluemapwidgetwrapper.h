@@ -54,7 +54,7 @@ class GUI_EXPORT QgsValueMapWidgetWrapper : public QgsEditorWidgetWrapper
     void setValue( const QVariant& value ) override;
 
   private:
-    QComboBox* mComboBox;
+    QComboBox* mComboBox = nullptr;
 };
 
 #endif // QGSVALUEMAPWIDGETWRAPPER_H

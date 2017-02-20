@@ -185,23 +185,23 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     bool mCapturing;
 
     //! Rubber band for polylines and polygons
-    QgsRubberBand* mRubberBand;
+    QgsRubberBand* mRubberBand = nullptr;
 
     //! Temporary rubber band for polylines and polygons. this connects the last added point to the mouse cursor position
-    QgsRubberBand* mTempRubberBand;
+    QgsRubberBand* mTempRubberBand = nullptr;
 
     //! List to store the points of digitized lines and polygons (in layer coordinates)
     QgsCompoundCurve mCaptureCurve;
 
     void validateGeometry();
     QStringList mValidationWarnings;
-    QgsGeometryValidator *mValidator;
+    QgsGeometryValidator *mValidator = nullptr;
     QList< QgsGeometry::Error > mGeomErrors;
     QList< QgsVertexMarker * > mGeomErrorMarkers;
 
     bool mCaptureModeFromLayer;
 
-    QgsVertexMarker* mSnappingMarker;
+    QgsVertexMarker* mSnappingMarker = nullptr;
 
 #ifdef Q_OS_WIN
     int mSkipNextContextMenuEvent;

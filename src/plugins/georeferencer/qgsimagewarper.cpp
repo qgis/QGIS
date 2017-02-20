@@ -148,7 +148,7 @@ int QgsImageWarper::warpFile( const QString& input,
 
   CPLErr eErr;
   GDALDatasetH hSrcDS, hDstDS;
-  GDALWarpOptions *psWarpOptions;
+  GDALWarpOptions *psWarpOptions = nullptr;
   if ( !openSrcDSAndGetWarpOpt( input, resampling, georefTransform.GDALTransformer(), hSrcDS, psWarpOptions ) )
   {
     // TODO: be verbose about failures

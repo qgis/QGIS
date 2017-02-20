@@ -95,11 +95,11 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
   private:
     QgsGeometryGeneratorSymbolLayer( const QString& expression );
 
-    QScopedPointer<QgsExpression> mExpression;
-    QgsFillSymbol* mFillSymbol;
-    QgsLineSymbol* mLineSymbol;
-    QgsMarkerSymbol* mMarkerSymbol;
-    QgsSymbol* mSymbol;
+    std::unique_ptr<QgsExpression> mExpression;
+    QgsFillSymbol* mFillSymbol = nullptr;
+    QgsLineSymbol* mLineSymbol = nullptr;
+    QgsMarkerSymbol* mMarkerSymbol = nullptr;
+    QgsSymbol* mSymbol = nullptr;
 
     /**
      * The type of the sub symbol.

@@ -13,7 +13,6 @@
 
 %Include qgis.sip
 
-%Include qgsannotation.sip
 %Include qgsapplication.sip
 %Include qgsaction.sip
 %Include qgsactionmanager.sip
@@ -34,7 +33,6 @@
 %Include qgscoordinatetransform.sip
 %Include qgscredentials.sip
 %Include qgscrscache.sip
-%Include qgsdatadefined.sip
 %Include qgsdataitem.sip
 %Include qgsdataitemprovider.sip
 %Include qgsdataitemproviderregistry.sip
@@ -94,6 +92,7 @@
 %Include qgsmapsettings.sip
 %Include qgsmaptopixel.sip
 %Include qgsmapunitscale.sip
+%Include qgsmargins.sip
 %Include qgsmessagelog.sip
 %Include qgsmessageoutput.sip
 %Include qgsmimedatautils.sip
@@ -108,6 +107,7 @@
 %Include qgspaintenginehack.sip
 %Include qgspainting.sip
 %Include qgspallabeling.sip
+%Include qgspathresolver.sip
 %Include qgspluginlayer.sip
 %Include qgspluginlayerregistry.sip
 %Include qgspoint.sip
@@ -131,7 +131,6 @@
 %Include qgsrunprocess.sip
 %Include qgsruntimeprofiler.sip
 %Include qgsscalecalculator.sip
-%Include qgsscaleexpression.sip
 %Include qgsscaleutils.sip
 %Include qgssimplifymethod.sip
 %Include qgssnapper.sip
@@ -149,12 +148,14 @@
 %Include qgsunittypes.sip
 %Include qgsvectordataprovider.sip
 %Include qgsvectorfilewriter.sip
+%Include qgsvectorfilewritertask.sip
 %Include qgsvectorlayer.sip
 %Include qgsvectorlayercache.sip
 %Include qgsvectorlayereditbuffer.sip
 %Include qgsvectorlayereditpassthrough.sip
 %Include qgsvectorlayerimport.sip
 %Include qgsvectorlayerjoinbuffer.sip
+%Include qgsvectorlayerjoininfo.sip
 %Include qgsvectorlayertools.sip
 %Include qgsvectorlayerundocommand.sip
 %Include qgsvectorlayerutils.sip
@@ -173,6 +174,12 @@
 %Include qgsvirtuallayerdefinitionutils.sip
 %Include qgsmapthemecollection.sip
 %Include qgsxmlutils.sip
+
+%Include annotations/qgsannotation.sip
+%Include annotations/qgsannotationmanager.sip
+%Include annotations/qgshtmlannotation.sip
+%Include annotations/qgssvgannotation.sip
+%Include annotations/qgstextannotation.sip
 
 %Include auth/qgsauthcertutils.sip
 %Include auth/qgsauthconfig.sip
@@ -339,8 +346,6 @@
 %Include symbology-ng/qgsvectorfieldsymbollayer.sip
 %Include symbology-ng/qgsarrowsymbollayer.sip
 
-%Include symbology-ng/qgssymbologyconversion.sip
-
 %Include dxf/qgsdxfexport.sip
 
 %Include geometry/qgsabstractgeometry.sip
@@ -351,6 +356,7 @@
 %Include geometry/qgsgeometry.sip
 %Include geometry/qgsgeometrycollection.sip
 %Include geometry/qgsgeometryengine.sip
+%Include geometry/qgsgeometryutils.sip
 %Include geometry/qgslinestring.sip
 %Include geometry/qgsmulticurve.sip
 %Include geometry/qgsmultilinestring.sip

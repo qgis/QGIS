@@ -62,12 +62,12 @@ class GUI_EXPORT QgsComposerRuler: public QWidget
     QTransform mTransform;
     QPointF mMarkerPos;
     QgsComposition* mComposition; //reference to composition for paper size, nPages
-    QGraphicsLineItem* mLineSnapItem;
+    QGraphicsLineItem* mLineSnapItem = nullptr;
     //items snapped to the current snap line
     QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > > mSnappedItems;
 
-    QFont * mRulerFont;
-    QFontMetrics * mRulerFontMetrics;
+    QFont * mRulerFont = nullptr;
+    QFontMetrics * mRulerFontMetrics = nullptr;
     double mScaleMinPixelsWidth;
     int mRulerMinSize;
     int mMinPixelsPerDivision;

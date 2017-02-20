@@ -48,7 +48,7 @@ class CORE_EXPORT QgsComposerMultiFrameCommand: public QUndoCommand
     const QgsComposerMultiFrame* multiFrame() const { return mMultiFrame; }
 
   protected:
-    QgsComposerMultiFrame* mMultiFrame;
+    QgsComposerMultiFrame* mMultiFrame = nullptr;
 
     QDomDocument mPreviousState;
     QDomDocument mAfterState;

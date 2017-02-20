@@ -234,7 +234,7 @@ QgsTreeWidgetItem *QgsWMSSourceSelect::createItem(
   if ( items.contains( id ) )
     return items[id];
 
-  QgsTreeWidgetItem *item;
+  QgsTreeWidgetItem *item = nullptr;
   if ( layerParents.contains( id ) )
   {
     int parent = layerParents[ id ];

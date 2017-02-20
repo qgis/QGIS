@@ -80,7 +80,7 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget
     void changed();
 
   private:
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
     int mField;
 };
 

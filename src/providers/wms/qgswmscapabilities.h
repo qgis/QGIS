@@ -301,7 +301,7 @@ struct QgsWmtsTheme
   QString identifier;
   QString title, abstract;
   QStringList keywords;
-  QgsWmtsTheme *subTheme;
+  QgsWmtsTheme *subTheme = nullptr;
   QStringList layerRefs;
 
   QgsWmtsTheme() : subTheme( nullptr ) {}
@@ -791,7 +791,7 @@ class QgsWmsCapabilitiesDownload : public QObject
     QgsWmsAuthorization mAuth;
 
     //! The reply to the capabilities request
-    QNetworkReply *mCapabilitiesReply;
+    QNetworkReply *mCapabilitiesReply = nullptr;
 
     //! The error message associated with the last WMS error.
     QString mError;

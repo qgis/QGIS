@@ -322,8 +322,8 @@ bool QgsComposerUtils::decodePresetPaperSize( const QString& presetString, doubl
 
 void QgsComposerUtils::readOldDataDefinedPropertyMap( const QDomElement &itemElem, QgsPropertyCollection& dataDefinedProperties )
 {
-  QgsPropertiesDefinition::const_iterator i = QgsComposerObject::PROPERTY_DEFINITIONS.constBegin();
-  for ( ; i != QgsComposerObject::PROPERTY_DEFINITIONS.constEnd(); ++i )
+  QgsPropertiesDefinition::const_iterator i = QgsComposerObject::propertyDefinitions().constBegin();
+  for ( ; i != QgsComposerObject::propertyDefinitions().constEnd(); ++i )
   {
     QString elemName = i.value().name();
     QDomNodeList ddNodeList = itemElem.elementsByTagName( elemName );
@@ -345,7 +345,6 @@ QgsProperty QgsComposerUtils::readOldDataDefinedProperty( const QgsComposerObjec
     return QgsProperty();
   }
 
-  //set values for QgsDataDefined
   QString active = ddElem.attribute( QStringLiteral( "active" ) );
   bool isActive = false;
   if ( active.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
@@ -488,25 +487,47 @@ void QgsComposerUtils::drawText( QPainter *painter, const QRectF &rect, const QS
   painter->restore();
 }
 
-QgsRenderContext QgsComposerUtils::createRenderContext( QgsComposition* composition, QPainter* painter )
+QgsRenderContext QgsComposerUtils::createRenderContextForMap( QgsComposerMap* map, QPainter* painter, double dpi )
 {
-  QgsComposerMap* referenceMap = composition ? composition->referenceMap() : nullptr;
-  if ( !referenceMap )
+  if ( !map )
   {
-    return QgsRenderContext::fromQPainter( painter );
+    QgsRenderContext context;
+    context.setPainter( painter );
+    if ( dpi < 0 && painter && painter->device() )
+    {
+      context.setScaleFactor( painter->device()->logicalDpiX() / 25.4 );
+    }
+    else if ( dpi > 0 )
+    {
+      context.setScaleFactor( dpi / 25.4 );
+    }
+    else
+    {
+      context.setScaleFactor( 3.465 ); //assume 88 dpi as standard value
+    }
+    return context;
   }
 
   // default to 88 dpi if no painter specified
-  int dpi = ( painter && painter->device() ) ? painter->device()->logicalDpiX() : 88;
+  if ( dpi < 0 )
+  {
+    dpi = ( painter && painter->device() ) ? painter->device()->logicalDpiX() : 88;
+  }
   double dotsPerMM = dpi / 25.4;
 
   // get map settings from reference map
-  QgsRectangle extent = *( referenceMap->currentMapExtent() );
-  QSizeF mapSizeMM = referenceMap->rect().size();
-  QgsMapSettings ms = referenceMap->mapSettings( extent, mapSizeMM * dotsPerMM, dpi );
+  QgsRectangle extent = *( map->currentMapExtent() );
+  QSizeF mapSizeMM = map->rect().size();
+  QgsMapSettings ms = map->mapSettings( extent, mapSizeMM * dotsPerMM, dpi );
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
   if ( painter )
     context.setPainter( painter );
   return context;
+}
+
+QgsRenderContext QgsComposerUtils::createRenderContextForComposition( QgsComposition* composition, QPainter* painter )
+{
+  QgsComposerMap* referenceMap = composition ? composition->referenceMap() : nullptr;
+  return createRenderContextForMap( referenceMap, painter );
 }

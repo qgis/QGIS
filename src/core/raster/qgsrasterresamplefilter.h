@@ -62,9 +62,9 @@ class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
 
   protected:
     //! Resampler used if screen resolution is higher than raster resolution (zoomed in). 0 means no resampling (nearest neighbour)
-    QgsRasterResampler* mZoomedInResampler;
+    QgsRasterResampler* mZoomedInResampler = nullptr;
     //! Resampler used if raster resolution is higher than raster resolution (zoomed out). 0 mean no resampling (nearest neighbour)
-    QgsRasterResampler* mZoomedOutResampler;
+    QgsRasterResampler* mZoomedOutResampler = nullptr;
 
     //! Maximum boundary for oversampling (to avoid too much data traffic). Default: 2.0
     double mMaxOversampling;

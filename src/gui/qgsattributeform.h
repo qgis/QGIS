@@ -279,7 +279,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
           , showLabel( true )
       {}
 
-      QWidget* widget;
+      QWidget* widget = nullptr;
       QString labelText;
       bool labelOnTop;
       bool labelAlignRight;
@@ -319,18 +319,18 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void displayInvalidConstraintMessage( const QStringList& invalidFields,
                                           const QStringList& description );
 
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
     QgsFeature mFeature;
-    QgsMessageBar* mMessageBar;
+    QgsMessageBar* mMessageBar = nullptr;
     bool mOwnsMessageBar;
-    QgsMessageBarItem* mMultiEditUnsavedMessageBarItem;
-    QgsMessageBarItem* mMultiEditMessageBarItem;
-    QLabel* mInvalidConstraintMessage;
-    QWidget* mTopMessageWidget;
+    QgsMessageBarItem* mMultiEditUnsavedMessageBarItem = nullptr;
+    QgsMessageBarItem* mMultiEditMessageBarItem = nullptr;
+    QLabel* mInvalidConstraintMessage = nullptr;
+    QWidget* mTopMessageWidget = nullptr;
     QList<QgsWidgetWrapper*> mWidgets;
     QgsAttributeEditorContext mContext;
-    QDialogButtonBox* mButtonBox;
-    QWidget* mSearchButtonBox;
+    QDialogButtonBox* mButtonBox = nullptr;
+    QWidget* mSearchButtonBox = nullptr;
     QList<QgsAttributeFormInterface*> mInterfaces;
     QMap< int, QgsAttributeFormEditorWidget* > mFormEditorWidgets;
     QgsExpressionContext mExpressionContext;
@@ -351,8 +351,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
           , isVisible( true )
       {}
 
-      QgsTabWidget* tabWidget;
-      QWidget* widget;
+      QgsTabWidget* tabWidget = nullptr;
+      QWidget* widget = nullptr;
       QgsExpression expression;
       bool isVisible;
 

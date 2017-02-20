@@ -216,7 +216,7 @@ QModelIndex QgsSnappingLayerTreeModel::sibling( int row, int column, const QMode
 
 QgsVectorLayer* QgsSnappingLayerTreeModel::vectorLayer( const QModelIndex& idx ) const
 {
-  QgsLayerTreeNode* node;
+  QgsLayerTreeNode* node = nullptr;
   if ( idx.column() == LayerColumn )
   {
     node = mLayerTreeModel->index2node( mapToSource( idx ) );

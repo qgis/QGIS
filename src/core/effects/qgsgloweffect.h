@@ -213,7 +213,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
     double mSpread;
     QgsUnitTypes::RenderUnit mSpreadUnit;
     QgsMapUnitScale mSpreadMapUnitScale;
-    QgsColorRamp* mRamp;
+    QgsColorRamp* mRamp = nullptr;
     int mBlurLevel;
     double mTransparency;
     QColor mColor;

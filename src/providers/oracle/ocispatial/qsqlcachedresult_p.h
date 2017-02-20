@@ -92,7 +92,7 @@ class /* Q_SQL_EXPORT */ QSqlCachedResult: public QSqlResult
     void virtual_hook( int id, void *data );
   private:
     bool cacheNext();
-    QSqlCachedResultPrivate *d;
+    QSqlCachedResultPrivate *d = nullptr;
 };
 
 QT_END_NAMESPACE

@@ -73,7 +73,7 @@ class DlgExportVector(QDialog, Ui_Dialog):
         lastUsedDir = settings.value(self.lastUsedVectorDirSettingsKey, ".")
 
         # get selected filter
-        selectedFilter = self.cboFileFormat.itemData(self.cboFileFormat.currentIndex())
+        selectedFilter = self.cboFileFormat.currentData()
 
         # ask for a filename
         filename, filter = QFileDialog.getSaveFileName(self, self.tr("Choose where to save the file"), lastUsedDir,
@@ -152,7 +152,7 @@ class DlgExportVector(QDialog, Ui_Dialog):
             options = {}
 
             # set the OGR driver will be used
-            driverName = self.cboFileFormat.itemData(self.cboFileFormat.currentIndex())
+            driverName = self.cboFileFormat.currentData()
             options['driverName'] = driverName
 
             # set the output file encoding

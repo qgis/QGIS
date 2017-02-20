@@ -56,6 +56,7 @@
 #include "qgsfeaturerequest.h"
 #include "qgsmaprendererjobproxy.h"
 #include "qgswmsserviceexception.h"
+#include "qgsserverprojectutils.h"
 
 #include <QImage>
 #include <QPainter>
@@ -95,6 +96,7 @@ namespace QgsWms
 
 
   QgsRenderer::QgsRenderer( QgsServerInterface* serverIface,
+                            const QgsProject* project,
                             const QgsServerRequest::Parameters& parameters,
                             QgsWmsConfigParser* parser )
       : mParameters( parameters )
@@ -104,6 +106,7 @@ namespace QgsWms
       , mConfigParser( parser )
       , mAccessControl( serverIface->accessControls() )
       , mSettings( *serverIface->serverSettings() )
+      , mProject( project )
   {
   }
 
@@ -570,7 +573,7 @@ namespace QgsWms
 
     //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
     //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
-    QScopedPointer< QgsOWSServerFilterRestorer > filterRestorer( new QgsOWSServerFilterRestorer( mAccessControl ) );
+    std::unique_ptr< QgsOWSServerFilterRestorer > filterRestorer( new QgsOWSServerFilterRestorer( mAccessControl ) );
 
     applyRequestedLayerFilters( layersList, mapSettings, filterRestorer->originalFilters() );
 
@@ -731,7 +734,7 @@ namespace QgsWms
 
     //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
     //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
-    QScopedPointer< QgsOWSServerFilterRestorer > filterRestorer( new QgsOWSServerFilterRestorer( mAccessControl ) );
+    std::unique_ptr< QgsOWSServerFilterRestorer > filterRestorer( new QgsOWSServerFilterRestorer( mAccessControl ) );
 
     applyRequestedLayerFilters( layersList, mapSettings, filterRestorer->originalFilters() );
 
@@ -748,7 +751,7 @@ namespace QgsWms
 
     applyOpacities( layersList, bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
 
-    QScopedPointer<QPainter> painter;
+    std::unique_ptr<QPainter> painter;
     if ( hitTest )
     {
       runHitTest( mapSettings, *hitTest );
@@ -767,7 +770,7 @@ namespace QgsWms
     if ( mConfigParser )
     {
       //draw configuration format specific overlay items
-      mConfigParser->drawOverlays( painter.data(), theImage->dotsPerMeterX() / 1000.0 * 25.4, theImage->width(), theImage->height() );
+      mConfigParser->drawOverlays( painter.get(), theImage->dotsPerMeterX() / 1000.0 * 25.4, theImage->width(), theImage->height() );
     }
 
     restoreOpacities( bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
@@ -825,9 +828,9 @@ namespace QgsWms
     initializeSLDParser( layersList, stylesList );
 
     QgsMapSettings mapSettings;
-    QScopedPointer<QImage> outputImage( createImage() );
+    std::unique_ptr<QImage> outputImage( createImage() );
 
-    configureMapSettings( outputImage.data(), mapSettings );
+    configureMapSettings( outputImage.get(), mapSettings );
 
     QgsMessageLog::logMessage( "mapSettings.extent(): " +  mapSettings.extent().toString() );
     QgsMessageLog::logMessage( QStringLiteral( "mapSettings width = %1 height = %2" ).arg( mapSettings.outputSize().width() ).arg( mapSettings.outputSize().height() ) );
@@ -889,8 +892,8 @@ namespace QgsWms
     //Normally, I/J or X/Y are mandatory parameters.
     //However, in order to make attribute only queries via the FILTER parameter, it is allowed to skip them if the FILTER parameter is there
 
-    QScopedPointer<QgsRectangle> featuresRect;
-    QScopedPointer<QgsPoint> infoPoint;
+    std::unique_ptr<QgsRectangle> featuresRect;
+    std::unique_ptr<QgsPoint> infoPoint;
 
     if ( i == -1 || j == -1 )
     {
@@ -907,7 +910,7 @@ namespace QgsWms
     else
     {
       infoPoint.reset( new QgsPoint() );
-      infoPointToMapCoordinates( i, j, infoPoint.data(), mapSettings );
+      infoPointToMapCoordinates( i, j, infoPoint.get(), mapSettings );
     }
 
     //get the layer registered in QgsMapLayerRegistry and apply possible filters
@@ -915,7 +918,7 @@ namespace QgsWms
 
     //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
     //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
-    QScopedPointer< QgsOWSServerFilterRestorer > filterRestorer( new QgsOWSServerFilterRestorer( mAccessControl ) );
+    std::unique_ptr< QgsOWSServerFilterRestorer > filterRestorer( new QgsOWSServerFilterRestorer( mAccessControl ) );
     applyRequestedLayerFilters( layersList, mapSettings, filterRestorer->originalFilters() );
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -1013,7 +1016,7 @@ namespace QgsWms
         {
           layerElement = result.createElement( QStringLiteral( "Layer" ) );
           QString layerName =  currentLayer->name();
-          if ( mConfigParser && mConfigParser->useLayerIds() )
+          if ( mConfigParser->useLayerIds() )
             layerName = currentLayer->id();
           else if ( !currentLayer->shortName().isEmpty() )
             layerName = currentLayer->shortName();
@@ -1034,7 +1037,7 @@ namespace QgsWms
 
         if ( vectorLayer )
         {
-          if ( !featureInfoFromVectorLayer( vectorLayer, infoPoint.data(), featureCount, result, layerElement, mapSettings, renderContext, version, infoFormat, featuresRect.data() ) )
+          if ( !featureInfoFromVectorLayer( vectorLayer, infoPoint.get(), featureCount, result, layerElement, mapSettings, renderContext, version, infoFormat, featuresRect.get() ) )
           {
             continue;
           }
@@ -1050,11 +1053,11 @@ namespace QgsWms
           QgsRasterLayer* rasterLayer = qobject_cast<QgsRasterLayer*>( currentLayer );
           if ( rasterLayer )
           {
-            if ( !infoPoint.data() )
+            if ( !infoPoint )
             {
               continue;
             }
-            QgsPoint layerInfoPoint = mapSettings.mapToLayerCoordinates( currentLayer, *( infoPoint.data() ) );
+            QgsPoint layerInfoPoint = mapSettings.mapToLayerCoordinates( currentLayer, *( infoPoint.get() ) );
             if ( !featureInfoFromRasterLayer( rasterLayer, mapSettings, &layerInfoPoint, result, layerElement, version, infoFormat ) )
             {
               continue;
@@ -1077,11 +1080,11 @@ namespace QgsWms
         int gmlVersion = infoFormat.startsWith( QLatin1String( "application/vnd.ogc.gml/3" ) ) ? 3 : 2;
         if ( gmlVersion < 3 )
         {
-          boxElem = QgsOgcUtils::rectangleToGMLBox( featuresRect.data(), result, 8 );
+          boxElem = QgsOgcUtils::rectangleToGMLBox( featuresRect.get(), result, 8 );
         }
         else
         {
-          boxElem = QgsOgcUtils::rectangleToGMLEnvelope( featuresRect.data(), result, 8 );
+          boxElem = QgsOgcUtils::rectangleToGMLEnvelope( featuresRect.get(), result, 8 );
         }
 
         QgsCoordinateReferenceSystem crs = mapSettings.destinationCrs();
@@ -1135,12 +1138,12 @@ namespace QgsWms
       {
         throw QgsException( QStringLiteral( "initializeRendering: The project configuration does not allow datasources defined in the request" ) );
       }
-      QScopedPointer<QDomDocument> gmlDoc( new QDomDocument() );
+      std::unique_ptr<QDomDocument> gmlDoc( new QDomDocument() );
       if ( gmlDoc->setContent( gml, true ) )
       {
         QString layerName = gmlDoc->documentElement().attribute( QStringLiteral( "layerName" ) );
         QgsMessageLog::logMessage( "Adding entry with key: " + layerName + " to external GML data" );
-        mConfigParser->addExternalGMLData( layerName, gmlDoc.take() );
+        mConfigParser->addExternalGMLData( layerName, gmlDoc.release() );
       }
       else
       {
@@ -1148,9 +1151,9 @@ namespace QgsWms
       }
     }
 
-    QScopedPointer<QImage> theImage( createImage() );
+    std::unique_ptr<QImage> theImage( createImage() );
 
-    configureMapSettings( theImage.data(), mapSettings );
+    configureMapSettings( theImage.get(), mapSettings );
 
     //find out the current scale denominater and set it to the SLD parser
     QgsScaleCalculator scaleCalc(( theImage->logicalDpiX() + theImage->logicalDpiY() ) / 2, mapSettings.destinationCrs().mapUnits() );
@@ -1172,7 +1175,7 @@ namespace QgsWms
     // load label settings
     mConfigParser->loadLabelSettings();
 
-    return theImage.take();
+    return theImage.release();
   }
 
   QImage* QgsRenderer::createImage( int width, int height, bool useBbox ) const
@@ -1399,7 +1402,7 @@ namespace QgsWms
     if ( !xml.isEmpty() )
     {
       //ignore LAYERS and STYLES and take those information from the SLD
-      QScopedPointer<QDomDocument> theDocument( new QDomDocument( QStringLiteral( "user.sld" ) ) );
+      std::unique_ptr<QDomDocument> theDocument( new QDomDocument( QStringLiteral( "user.sld" ) ) );
       QString errorMsg;
       int errorLine, errorColumn;
 
@@ -1408,7 +1411,7 @@ namespace QgsWms
         throw QgsException( QStringLiteral( "SLDParser: Could not create DomDocument from SLD: %1" ).arg( errorMsg ) );
       }
 
-      QgsSLDConfigParser* userSLDParser = new QgsSLDConfigParser( theDocument.take(), mParameters );
+      QgsSLDConfigParser* userSLDParser = new QgsSLDConfigParser( theDocument.release(), mParameters );
       userSLDParser->setFallbackParser( mConfigParser );
       mConfigParser = userSLDParser;
       mOwnsConfigParser = true;
@@ -1646,7 +1649,7 @@ namespace QgsWms
         if ( layer->wkbType() != QgsWkbTypes::NoGeometry && addWktGeometry && hasGeometry )
         {
           QgsGeometry geom = feature.geometry();
-          if ( !geom.isEmpty() )
+          if ( !geom.isNull() )
           {
             if ( layer->crs() != outputCrs )
             {
@@ -1792,7 +1795,7 @@ namespace QgsWms
         if ( theMapLayer )
         {
           QString lName =  theMapLayer->name();
-          if ( mConfigParser && mConfigParser->useLayerIds() )
+          if ( mConfigParser->useLayerIds() )
             lName = theMapLayer->id();
           else if ( !theMapLayer->shortName().isEmpty() )
             lName = theMapLayer->shortName();
@@ -2260,23 +2263,26 @@ namespace QgsWms
   bool QgsRenderer::checkMaximumWidthHeight() const
   {
     //test if maxWidth / maxHeight set and WIDTH / HEIGHT parameter is in the range
-    if ( mConfigParser->maxWidth() != -1 )
+    int wmsMaxWidth = QgsServerProjectUtils::wmsMaxWidth( *mProject );
+    if ( wmsMaxWidth != -1 )
     {
       QMap<QString, QString>::const_iterator widthIt = mParameters.find( QStringLiteral( "WIDTH" ) );
       if ( widthIt != mParameters.constEnd() )
       {
-        if ( widthIt->toInt() > mConfigParser->maxWidth() )
+        if ( widthIt->toInt() > wmsMaxWidth )
         {
           return false;
         }
       }
     }
-    if ( mConfigParser->maxHeight() != -1 )
+
+    int wmsMaxHeight = QgsServerProjectUtils::wmsMaxHeight( *mProject );
+    if ( wmsMaxHeight != -1 )
     {
       QMap<QString, QString>::const_iterator heightIt = mParameters.find( QStringLiteral( "HEIGHT" ) );
       if ( heightIt != mParameters.constEnd() )
       {
-        if ( heightIt->toInt() > mConfigParser->maxHeight() )
+        if ( heightIt->toInt() > wmsMaxHeight )
         {
           return false;
         }
@@ -2431,7 +2437,7 @@ namespace QgsWms
     expressionContext.setFeature( *feat );
 
     // always add bounding box info if feature contains geometry
-    if ( !geom.isEmpty() && geom.type() != QgsWkbTypes::UnknownGeometry && geom.type() != QgsWkbTypes::NullGeometry )
+    if ( !geom.isNull() && geom.type() != QgsWkbTypes::UnknownGeometry && geom.type() != QgsWkbTypes::NullGeometry )
     {
       QgsRectangle box = feat->geometry().boundingBox();
       if ( transform.isValid() )
@@ -2466,7 +2472,7 @@ namespace QgsWms
       typeNameElement.appendChild( bbElem );
     }
 
-    if ( withGeom && !geom.isEmpty() )
+    if ( withGeom && !geom.isNull() )
     {
       //add geometry column (as gml)
 

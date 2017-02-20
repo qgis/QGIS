@@ -55,11 +55,11 @@ class GUI_EXPORT QgsCustomLayerOrderWidget : public QWidget
     void modelUpdated();
 
   protected:
-    QgsLayerTreeMapCanvasBridge* mBridge;
+    QgsLayerTreeMapCanvasBridge* mBridge = nullptr;
 
-    QCheckBox* mChkOverride;
-    CustomLayerOrderModel* mModel;
-    QListView* mView;
+    QCheckBox* mChkOverride = nullptr;
+    CustomLayerOrderModel* mModel = nullptr;
+    QListView* mView = nullptr;
 };
 
 
@@ -96,7 +96,7 @@ class CustomLayerOrderModel : public QAbstractListModel
     void updateLayerVisibility( const QString& layerId );
 
   protected:
-    QgsLayerTreeMapCanvasBridge* mBridge;
+    QgsLayerTreeMapCanvasBridge* mBridge = nullptr;
     QStringList mOrder;
 };
 /// @endcond

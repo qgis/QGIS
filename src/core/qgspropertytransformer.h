@@ -25,6 +25,7 @@
 #include <QDomElement>
 #include <QDomDocument>
 #include <QColor>
+#include <memory>
 
 class QgsColorRamp;
 
@@ -43,6 +44,7 @@ class CORE_EXPORT QgsPropertyTransformer
     //! Transformer types
     enum Type
     {
+      GenericNumericTransformer, //!< Generic transformer for numeric values (QgsGenericNumericTransformer)
       SizeScaleTransformer, //!< Size scaling transformer (QgsSizeScaleTransformer)
       ColorRampTransformer, //!< Color ramp transformer (QgsColorRampTransformer)
     };
@@ -126,6 +128,26 @@ class CORE_EXPORT QgsPropertyTransformer
      */
     virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const = 0;
 
+    /**
+     * Converts the transformer to a QGIS expression string. The \a baseExpression string consists
+     * of a sub-expression reflecting the parent property's state.
+     */
+    virtual QString toExpression( const QString& baseExpression ) const = 0;
+
+    /**
+     * Attempts to parse an expression into a corresponding property transformer.
+     * @param expression expression to parse
+     * @param baseExpression will be set to the component of the source expression which
+     * is used to calculate the input to the property transformer. This will be set to an
+     * empty string if a field reference is the transformer input.
+     * @param fieldName will be set to a field name which is used to calculate the input
+     * to the property transformer. This will be set to an
+     * empty string if an expression is the transformer input.
+     * @returns corresponding property transformer, or nullptr if expression could not
+     * be parsed to a transformer.
+     */
+    static QgsPropertyTransformer* fromExpression( const QString& expression, QString& baseExpression, QString& fieldName );
+
   protected:
 
     //! Minimum value expected by the transformer
@@ -136,6 +158,123 @@ class CORE_EXPORT QgsPropertyTransformer
 
 };
 
+/**
+ * \ingroup core
+ * \class QgsGenericNumericTransformer
+ * \brief QgsPropertyTransformer subclass for scaling an input numeric value into an output numeric value.
+ * \note Added in version 3.0
+ */
+
+class CORE_EXPORT QgsGenericNumericTransformer : public QgsPropertyTransformer
+{
+  public:
+
+    /**
+     * Constructor for QgsGenericNumericTransformer.
+     * @param minValue minimum expected input value
+     * @param maxValue maximum expected input value
+     * @param minOutput minimum value to return
+     * @param maxOutput maximum value to return
+     * @param nullOutput value to return for null inputs
+     * @param exponent optional exponential for non-linear scaling
+     */
+    QgsGenericNumericTransformer( double minValue = 0.0,
+                                  double maxValue = 1.0,
+                                  double minOutput = 0.0,
+                                  double maxOutput = 1.0,
+                                  double nullOutput = 0.0,
+                                  double exponent = 1.0 );
+
+    virtual Type transformerType() const override { return GenericNumericTransformer; }
+    virtual QgsGenericNumericTransformer* clone() override;
+    virtual bool writeXml( QDomElement& transformerElem, QDomDocument& doc ) const override;
+    virtual bool readXml( const QDomElement& transformerElem, const QDomDocument& doc ) override;
+    virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const override;
+    virtual QString toExpression( const QString& baseExpression ) const override;
+
+    /**
+     * Attempts to parse an expression into a corresponding QgsSizeScaleTransformer.
+     * @param expression expression to parse
+     * @param baseExpression will be set to the component of the source expression which
+     * is used to calculate the input to the property transformer. This will be set to an
+     * empty string if a field reference is the transformer input.
+     * @param fieldName will be set to a field name which is used to calculate the input
+     * to the property transformer. This will be set to an
+     * empty string if an expression is the transformer input.
+     * @returns corresponding QgsSizeScaleTransformer, or nullptr if expression could not
+     * be parsed to a size scale transformer.
+     */
+    static QgsGenericNumericTransformer* fromExpression( const QString& expression, QString& baseExpression, QString& fieldName );
+
+    /**
+     * Calculates the size corresponding to a specific \a input value.
+     * @returns calculated size using size scale transformer's parameters and type
+     */
+    double value( double input ) const;
+
+    /**
+     * Returns the minimum calculated size.
+     * @see setMinSize()
+     * @see maxSize()
+     */
+    double minOutputValue() const { return mMinOutput; }
+
+    /**
+     * Sets the minimum calculated size.
+     * @param size minimum size
+     * @see minSize()
+     * @see setMaxSize()
+     */
+    void setMinOutputValue( double size ) { mMinOutput = size; }
+
+    /**
+     * Returns the maximum calculated size.
+     * @see minSize()
+     */
+    double maxOutputValue() const { return mMaxOutput; }
+
+    /**
+     * Sets the maximum calculated size.
+     * @param size maximum size
+     * @see maxSize()
+     * @see setMinSize()
+     */
+    void setMaxOutputValue( double size ) { mMaxOutput = size; }
+
+    /**
+     * Returns the size value when an expression evaluates to NULL.
+     * @see setNullSize()
+     */
+    double nullOutputValue() const { return mNullOutput; }
+
+    /**
+     * Sets the size value for when an expression evaluates to NULL.
+     * @param size null size
+     * @see nullSize()
+     */
+    void setNullOutputValue( double size ) { mNullOutput = size; }
+
+    /**
+     * Returns the exponent for an exponential expression.
+     * @see setExponent()
+     * @see type()
+     */
+    double exponent() const { return mExponent; }
+
+    /**
+     * Sets the exponent for an exponential expression.
+     * @param exponent exponent
+     * @see exponent()
+     */
+    void setExponent( double exponent ) { mExponent = exponent; }
+
+  private:
+    double mMinOutput;
+    double mMaxOutput;
+    double mNullOutput;
+    double mExponent;
+
+};
 
 /**
  * \ingroup core
@@ -181,6 +320,21 @@ class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
     virtual bool writeXml( QDomElement& transformerElem, QDomDocument& doc ) const override;
     virtual bool readXml( const QDomElement& transformerElem, const QDomDocument& doc ) override;
     virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const override;
+    virtual QString toExpression( const QString& baseExpression ) const override;
+
+    /**
+     * Attempts to parse an expression into a corresponding QgsSizeScaleTransformer.
+     * @param expression expression to parse
+     * @param baseExpression will be set to the component of the source expression which
+     * is used to calculate the input to the property transformer. This will be set to an
+     * empty string if a field reference is the transformer input.
+     * @param fieldName will be set to a field name which is used to calculate the input
+     * to the property transformer. This will be set to an
+     * empty string if an expression is the transformer input.
+     * @returns corresponding QgsSizeScaleTransformer, or nullptr if expression could not
+     * be parsed to a size scale transformer.
+     */
+    static QgsSizeScaleTransformer* fromExpression( const QString& expression, QString& baseExpression, QString& fieldName );
 
     /**
      * Calculates the size corresponding to a specific value.
@@ -303,6 +457,7 @@ class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
     virtual bool writeXml( QDomElement& transformerElem, QDomDocument& doc ) const override;
     virtual bool readXml( const QDomElement& transformerElem, const QDomDocument& doc ) override;
     virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const override;
+    virtual QString toExpression( const QString& baseExpression ) const override;
 
     /**
      * Calculates the color corresponding to a specific value.
@@ -338,10 +493,25 @@ class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
      */
     void setNullColor( const QColor& color ) { mNullColor = color; }
 
+    /**
+     * Returns the color ramp's name.
+     * @see setRampName()
+     */
+    QString rampName() const { return mRampName; }
+
+    /**
+     * Sets the color ramp's \a name. The ramp name must be set to match
+     * a color ramp available in the style database for conversion to expression
+     * to work correctly.
+     * @see rampName()
+     */
+    void setRampName( const QString& name ) { mRampName = name; }
+
   private:
 
-    QScopedPointer< QgsColorRamp > mGradientRamp;
+    std::unique_ptr< QgsColorRamp > mGradientRamp;
     QColor mNullColor;
+    QString mRampName;
 
 };
 

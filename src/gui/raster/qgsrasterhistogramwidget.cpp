@@ -117,8 +117,8 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget
     QMenu* menu = new QMenu( this );
     menu->setSeparatorsCollapsible( false );
     btnHistoActions->setMenu( menu );
-    QActionGroup* group;
-    QAction* action;
+    QActionGroup* group = nullptr;
+    QAction* action = nullptr;
 
     // min/max options
     group = new QActionGroup( this );

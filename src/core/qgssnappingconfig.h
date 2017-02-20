@@ -236,13 +236,13 @@ class CORE_EXPORT QgsSnappingConfig
     void readLegacySettings();
 
     //! associated project for this snapping configuration
-    QgsProject* mProject;
-    bool mEnabled;
-    SnappingMode mMode;
-    SnappingType mType;
-    double mTolerance;
-    QgsTolerance::UnitType mUnits;
-    bool mIntersectionSnapping;
+    QgsProject* mProject = nullptr;
+    bool mEnabled = false;
+    SnappingMode mMode = ActiveLayer;
+    SnappingType mType = Vertex;
+    double mTolerance = 0.0;
+    QgsTolerance::UnitType mUnits = QgsTolerance::ProjectUnits;
+    bool mIntersectionSnapping = false;
 
     QHash<QgsVectorLayer*, IndividualLayerSettings> mIndividualLayerSettings;
 

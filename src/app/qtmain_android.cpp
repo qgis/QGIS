@@ -47,7 +47,7 @@ extern "C" int main( int, char ** ); //use the standard main method to start the
 static void * startMainMethod( void * /*data*/ )
 {
 
-  char **  params;
+  char **  params = nullptr;
   params = ( char** )malloc( sizeof( char* ) * m_applicationParams.length() );
   for ( int i = 0;i < m_applicationParams.size();i++ )
     params[i] = ( char* )m_applicationParams[i].constData();
@@ -58,7 +58,7 @@ static void * startMainMethod( void * /*data*/ )
   free( params );
   Q_UNUSED( ret );
 
-  JNIEnv* env;
+  JNIEnv* env = nullptr;
   if ( m_javaVM->AttachCurrentThread( &env, NULL ) < 0 )
   {
     qCritical() << "AttachCurrentThread failed";
@@ -147,8 +147,8 @@ static int registerNatives( JNIEnv* env )
 
 typedef union
 {
-  JNIEnv* nativeEnvironment;
-  void* venv;
+  JNIEnv* nativeEnvironment = nullptr;
+  void* venv = nullptr;
 } UnionJNIEnvToVoid;
 
 Q_DECL_EXPORT jint JNICALL JNI_OnLoad( JavaVM* vm, void* /*reserved*/ )

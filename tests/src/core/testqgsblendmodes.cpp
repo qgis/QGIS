@@ -66,12 +66,12 @@ class TestQgsBlendModes : public QObject
     void rasterBlending();
   private:
     bool imageCheck( const QString& theType ); //as above
-    QgsMapSettings *mMapSettings;
-    QgsMapLayer * mpPointsLayer;
-    QgsVectorLayer * mpPolysLayer;
-    QgsVectorLayer * mpLinesLayer;
-    QgsRasterLayer* mRasterLayer1;
-    QgsRasterLayer* mRasterLayer2;
+    QgsMapSettings *mMapSettings = nullptr;
+    QgsMapLayer * mpPointsLayer = nullptr;
+    QgsVectorLayer * mpPolysLayer = nullptr;
+    QgsVectorLayer * mpLinesLayer = nullptr;
+    QgsRasterLayer* mRasterLayer1 = nullptr;
+    QgsRasterLayer* mRasterLayer2 = nullptr;
     QString mTestDataDir;
     QgsRectangle mExtent;
     QString mReport;

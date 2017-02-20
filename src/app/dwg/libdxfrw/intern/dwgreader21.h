@@ -62,7 +62,7 @@ class dwgReader21 : public dwgReader
     bool parseSysPage( duint64 sizeCompressed, duint64 sizeUncompressed, duint64 correctionFactor, duint64 offset, duint8 *decompData );
     bool parseDataPage( dwgSectionInfo si, duint8 *dData );
 
-    duint8 *objData;
+    duint8 *objData = nullptr;
     duint64 dataSize;
 
 };

@@ -82,7 +82,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     struct ItemContext
     {
       //! Painter
-      QPainter* painter;
+      QPainter* painter = nullptr;
       //! Top-left corner of the legend item
       QPointF point;
       //! offset from the left side where label should start
@@ -129,7 +129,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     explicit QgsLayerTreeModelLegendNode( QgsLayerTreeLayer* nodeL, QObject* parent = nullptr );
 
   protected:
-    QgsLayerTreeLayer* mLayerNode;
+    QgsLayerTreeLayer* mLayerNode = nullptr;
     bool mEmbeddedInParent;
     QString mUserLabel;
 };
@@ -342,7 +342,7 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
 
     bool mValid;
 
-    mutable QScopedPointer<QgsImageFetcher> mFetcher;
+    mutable std::unique_ptr<QgsImageFetcher> mFetcher;
 };
 
 #endif // QGSLAYERTREEMODELLEGENDNODE_H

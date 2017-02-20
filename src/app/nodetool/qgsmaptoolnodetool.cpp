@@ -630,7 +630,9 @@ void QgsMapToolNodeTool::canvasDoubleClickEvent( QgsMapMouseEvent* e )
   vlayer->beginEditCommand( tr( "Inserted vertex" ) );
 
   // add vertex
-  vlayer->insertVertex( layerCoords.x(), layerCoords.y(), mSelectedFeature->featureId(), snapResults.first().afterVertexNr );
+  QgsPointV2 p( layerCoords.x(), layerCoords.y() );
+  p.addZValue( defaultZValue() );
+  vlayer->insertVertex( p, mSelectedFeature->featureId(), snapResults.first().afterVertexNr );
 
   if ( topologicalEditing )
   {
@@ -660,7 +662,7 @@ void QgsMapToolNodeTool::deleteNodeSelection()
 
     mSelectedFeature->deleteSelectedVertexes();
 
-    if ( mSelectedFeature->geometry()->isEmpty() )
+    if ( mSelectedFeature->geometry()->isNull() )
     {
       emit messageEmitted( tr( "Geometry has been cleared. Use the add part tool to set geometry for this feature." ) );
     }

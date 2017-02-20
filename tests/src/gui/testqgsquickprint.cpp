@@ -54,10 +54,10 @@ class TestQgsQuickPrint : public QObject
     void basicMapTest();
   private:
     bool imageCheck( QString theType ); //as above
-    QgsMapRenderer * mpMapRenderer;
-    QgsMapLayer * mpPointsLayer;
-    QgsMapLayer * mpLinesLayer;
-    QgsMapLayer * mpPolysLayer;
+    QgsMapRenderer * mpMapRenderer = nullptr;
+    QgsMapLayer * mpPointsLayer = nullptr;
+    QgsMapLayer * mpLinesLayer = nullptr;
+    QgsMapLayer * mpPolysLayer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };

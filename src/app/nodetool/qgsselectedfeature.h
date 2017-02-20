@@ -201,14 +201,14 @@ class QgsSelectedFeature: public QObject
     void validateGeometry( QgsGeometry *g = nullptr );
 
     QgsFeatureId mFeatureId;
-    QgsGeometry *mGeometry;
+    QgsGeometry *mGeometry = nullptr;
     bool mFeatureSelected;
     bool mChangingGeometry;
-    QgsVectorLayer* mVlayer;
+    QgsVectorLayer* mVlayer = nullptr;
     QList<QgsVertexEntry*> mVertexMap;
-    QgsMapCanvas* mCanvas;
+    QgsMapCanvas* mCanvas = nullptr;
 
-    QgsGeometryValidator *mValidator;
+    QgsGeometryValidator *mValidator = nullptr;
     QString mTip;
     QList< QgsGeometry::Error > mGeomErrors;
     QList< QgsVertexMarker * > mGeomErrorMarkers;

@@ -87,5 +87,31 @@ class TestQgsSymbolLayerReadSld(unittest.TestCase):
         testLineWidth()
         testLineOpacity()
 
+    def testSimpleMarkerRotation(self):
+        """
+        Test if pointMarker property sld:Rotation value can be read if format is:
+        <sld:Rotation>50.0</sld:Rotation>
+        or
+        <se:Rotation><ogc:Literal>50</ogc:Literal></se:Rotation>
+        """
+        # technically it's not necessary to use a real shape, but a empty memory
+        # layer. In case these tests will upgrate to a rendering where to
+        # compare also rendering not only properties
+        #myShpFile = os.path.join(unitTestDataPath(), 'points.shp')
+        #layer = QgsVectorLayer(myShpFile, 'points', 'ogr')
+        layer = QgsVectorLayer("Point", "addfeat", "memory")
+        assert(layer.isValid())
+        # test if able to read <sld:Rotation>50.0</sld:Rotation>
+        mFilePath = os.path.join(unitTestDataPath(), 'symbol_layer/external_sld/testSimpleMarkerRotation-directValue.sld')
+        layer.loadSldStyle(mFilePath)
+        props = layer.renderer().symbol().symbolLayers()[0].properties()
+        self.assertEqual(props['angle'], '50')
+        # test if able to read <se:Rotation><ogc:Literal>50</ogc:Literal></se:Rotation>
+        mFilePath = os.path.join(unitTestDataPath(), 'symbol_layer/external_sld/testSimpleMarkerRotation-ogcLiteral.sld')
+        layer.loadSldStyle(mFilePath)
+        props = layer.renderer().symbol().symbolLayers()[0].properties()
+        self.assertEqual(props['angle'], '50')
+
+
 if __name__ == '__main__':
     unittest.main()

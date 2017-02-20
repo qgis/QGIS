@@ -1121,7 +1121,7 @@ void QgsProjectProperties::apply()
   for ( int i = 0; i < twWFSLayers->rowCount(); i++ )
   {
     QString id = twWFSLayers->item( i, 0 )->data( Qt::UserRole ).toString();
-    QCheckBox* cb;
+    QCheckBox* cb = nullptr;
     cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( i, 1 ) );
     if ( cb && cb->isChecked() )
     {
@@ -1157,7 +1157,7 @@ void QgsProjectProperties::apply()
   for ( int i = 0; i < twWCSLayers->rowCount(); i++ )
   {
     QString id = twWCSLayers->item( i, 0 )->data( Qt::UserRole ).toString();
-    QCheckBox* cb;
+    QCheckBox* cb = nullptr;
     cb = qobject_cast<QCheckBox *>( twWCSLayers->cellWidget( i, 1 ) );
     if ( cb && cb->isChecked() )
     {
@@ -1718,8 +1718,8 @@ void QgsProjectProperties::populateStyles()
   for ( int i = 0; i < colorRamps.count(); ++i )
   {
     QString name = colorRamps[i];
-    QScopedPointer< QgsColorRamp > ramp( mStyle->colorRamp( name ) );
-    QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.data(), cboStyleColorRamp->iconSize() );
+    std::unique_ptr< QgsColorRamp > ramp( mStyle->colorRamp( name ) );
+    QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.get(), cboStyleColorRamp->iconSize() );
     cboStyleColorRamp->addItem( icon, name );
   }
 
@@ -1861,9 +1861,9 @@ void QgsProjectProperties::populateEllipsoidList()
   //
   // Populate the ellipsoid list
   //
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
+  sqlite3      *myDatabase = nullptr;
+  const char   *myTail = nullptr;
+  sqlite3_stmt *myPreparedStatement = nullptr;
   int           myResult;
   EllipsoidDefs myItem;
 
@@ -1880,7 +1880,7 @@ void QgsProjectProperties::populateEllipsoidList()
   mEllipsoidList.append( myItem );
 
   //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, nullptr );
+  myResult = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, nullptr );
   if ( myResult )
   {
     QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );

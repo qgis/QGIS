@@ -44,7 +44,7 @@ class FeatureLayer
         , feature( theFeature )
     {}
 
-    QgsVectorLayer* layer;
+    QgsVectorLayer* layer = nullptr;
     QgsFeature feature;
 };
 

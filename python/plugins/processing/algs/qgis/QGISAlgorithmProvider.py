@@ -28,18 +28,10 @@ __revision__ = '$Format:%H$'
 import os
 
 try:
-    import matplotlib.pyplot
-    assert matplotlib  # NOQA silence pyflakes
-    hasMatplotlib = True
+    import plotly
+    hasPlotly = True
 except:
-    hasMatplotlib = False
-
-try:
-    import shapely
-    assert shapely  # silence pyflakes
-    hasShapely = True
-except:
-    hasShapely = False
+    hasPlotly = False
 
 from qgis.PyQt.QtGui import QIcon
 
@@ -190,6 +182,10 @@ from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
 from .ServiceAreaFromPoint import ServiceAreaFromPoint
 from .ServiceAreaFromLayer import ServiceAreaFromLayer
 from .TruncateTable import TruncateTable
+from .Polygonize import Polygonize
+from .FixGeometry import FixGeometry
+from .ExecuteSQL import ExecuteSQL
+from .FindProjection import FindProjection
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -258,10 +254,11 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         RasterCalculator(), Heatmap(), Orthogonalize(),
                         ShortestPathPointToPoint(), ShortestPathPointToLayer(),
                         ShortestPathLayerToPoint(), ServiceAreaFromPoint(),
-                        ServiceAreaFromLayer(), TruncateTable()
+                        ServiceAreaFromLayer(), TruncateTable(), Polygonize(),
+                        FixGeometry(), ExecuteSQL(), FindProjection()
                         ]
 
-        if hasMatplotlib:
+        if hasPlotly:
             from .VectorLayerHistogram import VectorLayerHistogram
             from .RasterLayerHistogram import RasterLayerHistogram
             from .VectorLayerScatterplot import VectorLayerScatterplot
@@ -269,21 +266,12 @@ class QGISAlgorithmProvider(AlgorithmProvider):
             from .BarPlot import BarPlot
             from .PolarPlot import PolarPlot
 
-            self.alglist.extend([
-                VectorLayerHistogram(), RasterLayerHistogram(),
-                VectorLayerScatterplot(), MeanAndStdDevPlot(), BarPlot(),
-                PolarPlot(),
-            ])
+            self.alglist.extend([VectorLayerHistogram(), RasterLayerHistogram(),
+                                 VectorLayerScatterplot(), MeanAndStdDevPlot(),
+                                 BarPlot(), PolarPlot()])
 
-        if hasShapely:
-            from .Polygonize import Polygonize
-            self.alglist.extend([Polygonize()])
-
-        if Qgis.QGIS_VERSION_INT >= 21300:
-            from .ExecuteSQL import ExecuteSQL
-            self.alglist.extend([ExecuteSQL()])
-
-        self.externalAlgs = []  # to store algs added by 3rd party plugins as scripts
+        # to store algs added by 3rd party plugins as scripts
+        self.externalAlgs = []
 
         folder = os.path.join(os.path.dirname(__file__), 'scripts')
         scripts = ScriptUtils.loadFromFolder(folder)

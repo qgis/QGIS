@@ -100,7 +100,7 @@ void QgsComposerPolyline::_draw( QPainter *painter )
 {
   double dotsPerMM = painter->device()->logicalDpiX() / 25.4;
 
-  QgsRenderContext context = QgsComposerUtils::createRenderContext( mComposition, painter );
+  QgsRenderContext context = QgsComposerUtils::createRenderContextForComposition( mComposition, painter );
   context.setForceVectorOutput( true );
 
   QgsExpressionContext expressionContext = createExpressionContext();
@@ -130,7 +130,7 @@ void QgsComposerPolyline::setPolylineStyleSymbol( QgsLineSymbol* symbol )
 void QgsComposerPolyline::_writeXmlStyle( QDomDocument &doc, QDomElement &elmt ) const
 {
   const QDomElement pe = QgsSymbolLayerUtils::saveSymbol( QString(),
-                         mPolylineStyleSymbol.data(),
+                         mPolylineStyleSymbol.get(),
                          doc );
   elmt.appendChild( pe );
 }

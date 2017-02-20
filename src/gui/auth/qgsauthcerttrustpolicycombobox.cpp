@@ -60,7 +60,7 @@ QgsAuthCertTrustPolicyComboBox::QgsAuthCertTrustPolicyComboBox( QWidget *parent,
 
 QgsAuthCertUtils::CertTrustPolicy QgsAuthCertTrustPolicyComboBox::trustPolicy()
 {
-  return ( QgsAuthCertUtils::CertTrustPolicy )itemData( currentIndex() ).toInt();
+  return ( QgsAuthCertUtils::CertTrustPolicy )currentData().toInt();
 }
 
 QgsAuthCertUtils::CertTrustPolicy QgsAuthCertTrustPolicyComboBox::trustPolicyForIndex( int indx )

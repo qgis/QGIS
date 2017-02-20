@@ -60,8 +60,8 @@ OutFile "${INSTALLER_NAME}"
 
 
 ;Tell the installer to show Install and Uninstall details as default
-ShowInstDetails show
-ShowUnInstDetails show
+ShowInstDetails hide
+ShowUnInstDetails hide
 
 ;----------------------------------------------------------------------------------------------------------------------------
 

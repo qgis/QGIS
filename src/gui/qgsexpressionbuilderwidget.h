@@ -301,13 +301,13 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     bool mAutoSave;
     QString mFunctionsPath;
-    QgsVectorLayer *mLayer;
-    QStandardItemModel *mModel;
-    QStringListModel *mValuesModel;
-    QSortFilterProxyModel *mProxyValues;
-    QgsExpressionItemSearchProxy *mProxyModel;
+    QgsVectorLayer *mLayer = nullptr;
+    QStandardItemModel *mModel = nullptr;
+    QStringListModel *mValuesModel = nullptr;
+    QSortFilterProxyModel *mProxyValues = nullptr;
+    QgsExpressionItemSearchProxy *mProxyModel = nullptr;
     QMap<QString, QgsExpressionItem*> mExpressionGroups;
-    QgsExpressionHighlighter* highlighter;
+    QgsExpressionHighlighter* highlighter = nullptr;
     bool mExpressionValid;
     QgsDistanceArea mDa;
     QString mRecentKey;

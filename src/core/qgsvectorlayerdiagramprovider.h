@@ -62,15 +62,6 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
     //! Convenience constructor to initialize the provider from given vector layer
     explicit QgsVectorLayerDiagramProvider( QgsVectorLayer* layer, bool ownFeatureLoop = true );
 
-    //! Construct diagram provider with all the necessary configuration parameters
-    QgsVectorLayerDiagramProvider( const QgsDiagramLayerSettings* diagSettings,
-                                   const QgsDiagramRenderer* diagRenderer,
-                                   const QString& layerId,
-                                   const QgsFields& fields,
-                                   const QgsCoordinateReferenceSystem& crs,
-                                   QgsAbstractFeatureSource* source,
-                                   bool ownsSource );
-
     //! Clean up
     ~QgsVectorLayerDiagramProvider();
 
@@ -113,7 +104,7 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
     //! Diagram layer settings
     QgsDiagramLayerSettings mSettings;
     //! Diagram renderer instance (owned by mSettings)
-    QgsDiagramRenderer* mDiagRenderer;
+    QgsDiagramRenderer* mDiagRenderer = nullptr;
 
     // these are needed only if using own renderer loop
 
@@ -122,7 +113,7 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
     //! Layer's CRS
     QgsCoordinateReferenceSystem mLayerCrs;
     //! Layer's feature source
-    QgsAbstractFeatureSource* mSource;
+    QgsAbstractFeatureSource* mSource = nullptr;
     //! Whether layer's feature source is owned
     bool mOwnsSource;
 

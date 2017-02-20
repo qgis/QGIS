@@ -87,7 +87,7 @@ void QgsEffectStack::draw( QgsRenderContext &context )
       continue;
     }
 
-    QPicture* pic;
+    QPicture* pic = nullptr;
     if ( effect->type() == QLatin1String( "drawSource" ) )
     {
       //draw source is always the original source, regardless of previous effect results

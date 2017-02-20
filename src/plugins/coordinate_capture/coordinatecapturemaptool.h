@@ -56,7 +56,7 @@ class CoordinateCaptureMapTool : public QgsMapTool
   private:
 
     //! Rubber band for highlighting identified feature
-    QgsRubberBand * mpRubberBand;
+    QgsRubberBand * mpRubberBand = nullptr;
     QPointer<QgsMapCanvas> mpMapCanvas;
 
 };

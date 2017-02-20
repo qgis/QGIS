@@ -195,7 +195,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     //! layer name derived from latest layer selection (updated as long it's not edited manually)
     QString mLastLayerName;
 
-    QPushButton *mAddButton;
+    QPushButton *mAddButton = nullptr;
 
     QMap<QString, QString> mCrsNames;
 
@@ -217,7 +217,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     QNetworkRequest::CacheLoadControl selectedCacheLoadControl();
 
     QList<QTreeWidgetItem*> mCurrentSelection;
-    QTableWidgetItem* mCurrentTileset;
+    QTableWidgetItem* mCurrentTileset = nullptr;
 
     //! Name for selected connection
     QString mConnName;

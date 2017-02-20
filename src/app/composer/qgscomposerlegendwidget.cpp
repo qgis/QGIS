@@ -78,7 +78,8 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend )
   mRasterBorderColorButton->setAllowAlpha( true );
   mRasterBorderColorButton->setContext( QStringLiteral( "composer " ) );
 
-  mMapComboBox->setComposition( legend->composition() );
+  if ( legend )
+    mMapComboBox->setComposition( legend->composition() );
   mMapComboBox->setItemType( QgsComposerItem::ComposerMap );
   connect( mMapComboBox, SIGNAL( itemChanged( QgsComposerItem* ) ), this, SLOT( composerMapChanged( QgsComposerItem* ) ) );
 
@@ -725,7 +726,7 @@ void QgsComposerLegendWidget::on_mRemoveToolButton_clicked()
   Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, nodesWithRemoval.keys() )
   {
     QList<int> toDelete = nodesWithRemoval[nodeLayer];
-    qSort( toDelete.begin(), toDelete.end(), qGreater<int>() );
+    std::sort( toDelete.begin(), toDelete.end(), std::greater<int>() );
     QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( nodeLayer );
 
     Q_FOREACH ( int i, toDelete )

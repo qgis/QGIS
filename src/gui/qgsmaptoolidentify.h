@@ -79,7 +79,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
       IdentifyResult( QgsMapLayer * layer, const QString& label, const QgsFields& fields, const QgsFeature& feature, const QMap< QString, QString >& derivedAttributes ):
           mLayer( layer ), mLabel( label ), mFields( fields ), mFeature( feature ), mDerivedAttributes( derivedAttributes ) {}
 
-      QgsMapLayer* mLayer;
+      QgsMapLayer* mLayer = nullptr;
       QString mLabel;
       QgsFields mFields;
       QgsFeature mFeature;
@@ -143,7 +143,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     @return a list of IdentifyResult*/
     QList<IdentifyResult> identify( int x, int y, IdentifyMode mode,  const QList<QgsMapLayer*>& layerList, LayerType layerType = AllLayers );
 
-    QgsIdentifyMenu* mIdentifyMenu;
+    QgsIdentifyMenu* mIdentifyMenu = nullptr;
 
     //! Call the right method depending on layer type
     bool identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, const QgsPoint& point, const QgsRectangle& viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType = AllLayers );

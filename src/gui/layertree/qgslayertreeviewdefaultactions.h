@@ -96,7 +96,7 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     QString uniqueGroupName( QgsLayerTreeGroup* parentGroup );
 
   protected:
-    QgsLayerTreeView* mView;
+    QgsLayerTreeView* mView = nullptr;
 };
 
 

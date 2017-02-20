@@ -94,7 +94,7 @@ class CORE_EXPORT QgsRasterShader
     double mMaximumValue;
 
     //! \brief Pointer to the shader function
-    QgsRasterShaderFunction* mRasterShaderFunction;
+    QgsRasterShaderFunction* mRasterShaderFunction = nullptr;
 
 };
 #endif

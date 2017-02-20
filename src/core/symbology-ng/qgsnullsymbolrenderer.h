@@ -63,7 +63,7 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
   private:
 
     //! Symbol to use for rendering selected features
-    QScopedPointer<QgsSymbol> mSymbol;
+    std::unique_ptr<QgsSymbol> mSymbol;
 
 };
 

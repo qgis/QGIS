@@ -18,7 +18,6 @@
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingprovider.h"
 #include <QObject>
-#include <QSharedPointer>
 #include "qgstest.h"
 
 //dummy provider for testing
@@ -88,6 +87,7 @@ void TestQgsProcessing::addProvider()
   QVERIFY( !r.addProvider( p3 ) );
   QCOMPARE( r.providers().toSet(), QSet< QgsProcessingProvider* >() << p << p2 );
   QCOMPARE( spyProviderAdded.count(), 2 );
+  delete p3;
 }
 
 void TestQgsProcessing::providerById()

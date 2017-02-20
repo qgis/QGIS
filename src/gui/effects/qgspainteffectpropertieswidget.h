@@ -63,7 +63,7 @@ class GUI_EXPORT QgsPaintEffectPropertiesWidget : public QWidget, private Ui::Ef
 
   private:
 
-    QgsPaintEffect* mEffect;
+    QgsPaintEffect* mEffect = nullptr;
 
     void populateEffectTypes();
     void updateEffectWidget( QgsPaintEffect* effect );

@@ -26,8 +26,6 @@ class QgsLineString;
  * \class QgsGeometryUtils
  * \brief Contains various geometry utility functions.
  * \note added in QGIS 2.10
- * \note this API is not considered stable and may change for 2.12
- * \note not available in Python bindings
  */
 class CORE_EXPORT QgsGeometryUtils
 {
@@ -116,6 +114,7 @@ class CORE_EXPORT QgsGeometryUtils
       return t < 0. ? s1 : t > 1. ? s2 : QgsPointV2( s1.x() + ( s2.x() - s1.x() ) * t, s1.y() + ( s2.y() - s1.y() ) * t );
     }
 
+    //! @note not available in Python bindings
     struct SelfIntersection
     {
       int segment1;
@@ -130,6 +129,7 @@ class CORE_EXPORT QgsGeometryUtils
      * @param ring The ring of the geometry part to check
      * @param tolerance The tolerance to use
      * @return The list of self intersections
+     * @note not available in Python bindings
      * @note added in QGIS 2.12
      */
     static QList<SelfIntersection> getSelfIntersections( const QgsAbstractGeometry* geom, int part, int ring, double tolerance );
@@ -172,17 +172,38 @@ class CORE_EXPORT QgsGeometryUtils
     static double circleTangentDirection( const QgsPointV2& tangentPoint, const QgsPointV2& cp1, const QgsPointV2& cp2, const QgsPointV2& cp3 );
 
     /** Returns a list of points contained in a WKT string.
+     * @note not available in Python bindings
      */
     static QgsPointSequence pointsFromWKT( const QString& wktCoordinateList, bool is3D, bool isMeasure );
-    //! Returns a LinearRing { uint32 numPoints; Point points[numPoints]; }
+
+    /**
+     * Returns a LinearRing { uint32 numPoints; Point points[numPoints]; }
+     * @note not available in Python bindings
+     */
     static void pointsToWKB( QgsWkbPtr &wkb, const QgsPointSequence &points, bool is3D, bool isMeasure );
-    //! Returns a WKT coordinate list
+
+    /**
+     * Returns a WKT coordinate list
+     * @note not available in Python bindings
+     */
     static QString pointsToWKT( const QgsPointSequence &points, int precision, bool is3D, bool isMeasure );
-    //! Returns a gml::coordinates DOM element
+
+    /**
+     * Returns a gml::coordinates DOM element.
+     * @note not available in Python bindings
+     */
     static QDomElement pointsToGML2( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString& ns );
-    //! Returns a gml::posList DOM element
+
+    /**
+     * Returns a gml::posList DOM element.
+     * @note not available in Python bindings
+     */
     static QDomElement pointsToGML3( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString& ns, bool is3D );
-    //! Returns a geoJSON coordinates string
+
+    /**
+     * Returns a geoJSON coordinates string.
+     * @note not available in Python bindings
+     */
     static QString pointsToJSON( const QgsPointSequence &points, int precision );
 
     /** Ensures that an angle is in the range 0 <= angle < 2 pi.
@@ -233,17 +254,44 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static double averageAngle( double a1, double a2 );
 
-    /** Parses a WKT block of the format "TYPE( contents )" and returns a pair of geometry type to contents ("Pair(wkbType, "contents")")
+    /**
+     * Parses a WKT block of the format "TYPE( contents )" and returns a pair of geometry type to contents ("Pair(wkbType, "contents")")
+     * @note not available in Python bindings
      */
     static QPair<QgsWkbTypes::Type, QString> wktReadBlock( const QString& wkt );
 
-    /** Parses a WKT string and returns of list of blocks contained in the WKT.
+    /**
+     * Parses a WKT string and returns of list of blocks contained in the WKT.
      * @param wkt WKT string in the format "TYPE1 (contents1), TYPE2 (TYPE3 (contents3), TYPE4 (contents4))"
      * @param defaultType default geometry type for children
      * @returns list of WKT child block strings, e.g., List("TYPE1 (contents1)", "TYPE2 (TYPE3 (contents3), TYPE4 (contents4))")
+     * @note not available in Python bindings
      */
     static QStringList wktGetChildBlocks( const QString& wkt , const QString &defaultType = "" );
 
+    /** Returns a middle point between points pt1 and pt2.
+     * Z value is computed if one of this point have Z.
+     * M value is computed if one of this point have M.
+     * @param pt1 first point.
+     * @param pt2 second point.
+     * @return New point at middle between points pt1 and pt2.
+     * * Example:
+     * \code{.py}
+     *   p = QgsPointV2( 4, 6 ) # 2D point
+     *   pr = midpoint ( p, QgsPointV2( 2, 2 ) )
+     *   # pr is a 2D point: 'Point (3 4)'
+     *   pr = midpoint ( p, QgsPointV2( QgsWkbTypes.PointZ, 2, 2, 2 ) )
+     *   # pr is a 3D point: 'PointZ (3 4 1)'
+     *   pr = midpoint ( p, QgsPointV2( QgsWkbTypes.PointM, 2, 2, 0, 2 ) )
+     *   # pr is a 3D point: 'PointM (3 4 1)'
+     *   pr = midpoint ( p, QgsPointV2( QgsWkbTypes.PointZM, 2, 2, 2, 2 ) )
+     *   # pr is a 3D point: 'PointZM (3 4 1 1)'
+     * \endcode
+     * @note added in QGIS 3.0
+     */
+    static QgsPointV2 midpoint( const QgsPointV2& pt1, const QgsPointV2& pt2 );
+
+    //! @note not available in Python bindings
     enum ComponentType
     {
       Vertex,
@@ -251,6 +299,7 @@ class CORE_EXPORT QgsGeometryUtils
       Part
     };
 
+    //! @note not available in Python bindings
     template<class T> static double closestSegmentFromComponents( T& container, ComponentType ctype, const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon )
     {
       double minDist = std::numeric_limits<double>::max();

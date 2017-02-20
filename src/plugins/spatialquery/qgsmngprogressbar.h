@@ -56,7 +56,7 @@ class MngProgressBar
     void step( int step );
 
   private:
-    QProgressBar * mPb;
+    QProgressBar * mPb = nullptr;
 
 };
 

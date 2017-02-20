@@ -37,6 +37,8 @@ from processing.gui.MessageDialog import MessageDialog
 class MessageBarProgress(QgsProcessingFeedback):
 
     def __init__(self, algname=None):
+        QgsProcessingFeedback.__init__(self)
+
         self.msg = []
         self.progressMessageBar = \
             iface.messageBar().createMessage(self.tr('Executing algorithm <i>{0}</i>'.format(algname if algname else '')))

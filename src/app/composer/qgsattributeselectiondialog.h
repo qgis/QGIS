@@ -67,8 +67,8 @@ class QgsComposerColumnSourceDelegate : public QItemDelegate, private QgsExpress
   public slots:
     void commitAndCloseEditor();
   private:
-    QgsVectorLayer* mVectorLayer;
-    const QgsComposerObject* mComposerObject;
+    QgsVectorLayer* mVectorLayer = nullptr;
+    const QgsComposerObject* mComposerObject = nullptr;
     QgsExpressionContext createExpressionContext() const override;
 };
 
@@ -129,20 +129,20 @@ class QgsAttributeSelectionDialog: public QDialog, private Ui::QgsAttributeSelec
     void on_mSortColumnDownPushButton_clicked();
 
   private:
-    QgsComposerAttributeTableV2* mComposerTable;
+    QgsComposerAttributeTableV2* mComposerTable = nullptr;
 
-    const QgsVectorLayer* mVectorLayer;
+    const QgsVectorLayer* mVectorLayer = nullptr;
 
-    QgsComposerAttributeTableColumnModelV2* mColumnModel;
+    QgsComposerAttributeTableColumnModelV2* mColumnModel = nullptr;
 
-    QgsComposerTableSortColumnsProxyModelV2* mSortedProxyModel;
+    QgsComposerTableSortColumnsProxyModelV2* mSortedProxyModel = nullptr;
 
-    QgsComposerTableSortColumnsProxyModelV2* mAvailableSortProxyModel;
+    QgsComposerTableSortColumnsProxyModelV2* mAvailableSortProxyModel = nullptr;
 
-    QgsComposerColumnAlignmentDelegate *mColumnAlignmentDelegate;
-    QgsComposerColumnSourceDelegate *mColumnSourceDelegate;
-    QgsComposerColumnSortOrderDelegate *mColumnSortOrderDelegate;
-    QgsComposerColumnWidthDelegate *mColumnWidthDelegate;
+    QgsComposerColumnAlignmentDelegate *mColumnAlignmentDelegate = nullptr;
+    QgsComposerColumnSourceDelegate *mColumnSourceDelegate = nullptr;
+    QgsComposerColumnSortOrderDelegate *mColumnSortOrderDelegate = nullptr;
+    QgsComposerColumnWidthDelegate *mColumnWidthDelegate = nullptr;
 
 };
 

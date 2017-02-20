@@ -316,7 +316,7 @@ class QgsWcsCapabilities : public QObject
     /**
      * The reply to the capabilities request
      */
-    QNetworkReply *mCapabilitiesReply;
+    QNetworkReply *mCapabilitiesReply = nullptr;
 
     /**
      * The error caption associated with the last WCS error.

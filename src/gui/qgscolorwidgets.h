@@ -229,8 +229,8 @@ class GUI_EXPORT QgsColorWidgetAction: public QWidgetAction
     void colorChanged( const QColor &color );
 
   private:
-    QMenu* mMenu;
-    QgsColorWidget* mColorWidget;
+    QMenu* mMenu = nullptr;
+    QgsColorWidget* mColorWidget = nullptr;
 
     //used to suppress recursion with hover events
     bool mSuppressRecurse;
@@ -303,13 +303,13 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
     ControlPart mClickedPart;
 
     /*Cached image of hue wheel*/
-    QImage* mWheelImage;
+    QImage* mWheelImage = nullptr;
 
     /*Cached image of inner triangle*/
-    QImage* mTriangleImage;
+    QImage* mTriangleImage = nullptr;
 
     /*Resuable, temporary image for drawing widget*/
-    QImage* mWidgetImage;
+    QImage* mWidgetImage = nullptr;
 
     /*Whether the color wheel image requires redrawing*/
     bool mWheelDirty;
@@ -383,7 +383,7 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
     int mMargin;
 
     /*Cached image for color box*/
-    QImage* mBoxImage;
+    QImage* mBoxImage = nullptr;
 
     /*Whether the cached image requires redrawing*/
     bool mDirty;
@@ -564,10 +564,10 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
   private:
 
     /*Color ramp widget*/
-    QgsColorRampWidget* mRampWidget;
+    QgsColorRampWidget* mRampWidget = nullptr;
 
     /*Spin box widget*/
-    QSpinBox* mSpinBox;
+    QSpinBox* mSpinBox = nullptr;
 
     /** Converts the real value of a color component to a friendly display value. For instance,
      * alpha values from 0-255 have little meaning to users, so we translate them to 0-100%
@@ -636,10 +636,10 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
       Rgba //!< Rgba( r, g, b, a ) format, with alpha
     };
 
-    QLineEdit* mLineEdit;
+    QLineEdit* mLineEdit = nullptr;
 
     /*Dropdown menu button*/
-    QToolButton* mMenuButton;
+    QToolButton* mMenuButton = nullptr;
 
     /*Display format for colors*/
     ColorTextFormat mFormat;

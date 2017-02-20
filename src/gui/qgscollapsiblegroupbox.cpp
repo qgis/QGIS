@@ -56,8 +56,8 @@ void QgsCollapsibleGroupBoxBasic::init()
   mTitleClicked = false;
 
   // init icons
-  mCollapseIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconCollapse.png" ) );
-  mExpandIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpand.png" ) );
+  mCollapseIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconCollapse.svg" ) );
+  mExpandIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpand.svg" ) );
 
   // collapse button
   mCollapseButton = new QgsGroupBoxCollapseButton( this );
@@ -380,7 +380,7 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
     ss += QLatin1String( "  background-color: rgba(0,0,0,0)" );
   }
   ss += '}';
-  setStyleSheet( ss );
+  setStyleSheet( styleSheet() + ss );
 
   // clear toolbutton default background and border and apply offset
   QString ssd;

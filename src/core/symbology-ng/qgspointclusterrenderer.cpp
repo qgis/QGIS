@@ -120,7 +120,7 @@ QgsFeatureRenderer* QgsPointClusterRenderer::create( QDomElement& symbologyElem 
 
 QgsMarkerSymbol* QgsPointClusterRenderer::clusterSymbol()
 {
-  return mClusterSymbol.data();
+  return mClusterSymbol.get();
 }
 
 QDomElement QgsPointClusterRenderer::save( QDomDocument& doc )
@@ -139,7 +139,7 @@ QDomElement QgsPointClusterRenderer::save( QDomDocument& doc )
   }
   if ( mClusterSymbol )
   {
-    QDomElement centerSymbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "centerSymbol" ), mClusterSymbol.data(), doc );
+    QDomElement centerSymbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "centerSymbol" ), mClusterSymbol.get(), doc );
     rendererElement.appendChild( centerSymbolElem );
   }
 

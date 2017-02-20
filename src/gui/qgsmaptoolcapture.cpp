@@ -332,7 +332,7 @@ int QgsMapToolCapture::nextPoint( const QgsPointV2& mapPoint, QgsPointV2& layerP
     QgsPoint mapP( mapPoint.x(), mapPoint.y() );  //#spellok
     layerPoint = QgsPointV2( toLayerCoordinates( vlayer, mapP ) ); //transform snapped point back to layer crs  //#spellok
     if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) )
-      layerPoint.addZValue( 0.0 );
+      layerPoint.addZValue( defaultZValue() );
     if ( QgsWkbTypes::hasM( vlayer->wkbType() ) )
       layerPoint.addMValue( 0.0 );
   }
@@ -635,7 +635,7 @@ void QgsMapToolCapture::validateGeometry()
     delete mGeomErrorMarkers.takeFirst();
   }
 
-  QScopedPointer<QgsGeometry> g;
+  std::unique_ptr<QgsGeometry> g;
 
   switch ( mCaptureMode )
   {
@@ -659,10 +659,10 @@ void QgsMapToolCapture::validateGeometry()
       break;
   }
 
-  if ( !g.data() )
+  if ( !g )
     return;
 
-  mValidator = new QgsGeometryValidator( g.data() );
+  mValidator = new QgsGeometryValidator( g.get() );
   connect( mValidator, SIGNAL( errorFound( QgsGeometry::Error ) ), this, SLOT( addError( QgsGeometry::Error ) ) );
   connect( mValidator, SIGNAL( finished() ), this, SLOT( validationFinished() ) );
   mValidator->start();

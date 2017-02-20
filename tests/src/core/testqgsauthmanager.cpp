@@ -57,7 +57,7 @@ class TestQgsAuthManager: public QObject
 
     QString mPkiData;
     QString mTempDir;
-    const char* mPass;
+    const char* mPass = nullptr;
     QString mReport;
 };
 
@@ -91,7 +91,7 @@ void TestQgsAuthManager::initTestCase()
   mReport += "<p>" + mySettings + "</p>\n";
 
   // verify QGIS_AUTH_DB_DIR_PATH (temp auth db path) worked
-  QString db1( QFileInfo( QgsAuthManager::instance()->authenticationDbPath() ).canonicalFilePath() );
+  QString db1( QFileInfo( QgsAuthManager::instance()->authenticationDatabasePath() ).canonicalFilePath() );
   QString db2( QFileInfo( mTempDir + "/qgis-auth.db" ).canonicalFilePath() );
   QVERIFY2( db1 == db2, "Auth db temp path does not match db path of manager" );
 
@@ -180,7 +180,7 @@ void TestQgsAuthManager::testMasterPassword()
   QgsAuthManager *authm = QgsAuthManager::instance();
 
   QVERIFY( authm->masterPasswordIsSet() );
-  QVERIFY( authm->masterPasswordHashInDb() );
+  QVERIFY( authm->masterPasswordHashInDatabase() );
   QVERIFY( authm->masterPasswordSame( mPass ) );
   QVERIFY( !authm->masterPasswordSame( "wrongpass" ) );
   QVERIFY( authm->setMasterPassword() );

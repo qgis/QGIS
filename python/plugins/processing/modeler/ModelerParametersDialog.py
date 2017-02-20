@@ -146,7 +146,7 @@ class ModelerParametersDialog(QDialog):
             self.wrappers[param.name] = wrapper
 
             widget = wrapper.widget
-            if widget:
+            if widget is not None:
                 self.valueItems[param.name] = widget
                 if param.name in list(tooltips.keys()):
                     tooltip = tooltips[param.name]

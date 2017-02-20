@@ -48,9 +48,9 @@ class QgsNodeEditorModel : public QAbstractTableModel
 
   private:
 
-    QgsVectorLayer* mLayer;
-    QgsSelectedFeature* mSelectedFeature;
-    QgsMapCanvas* mCanvas;
+    QgsVectorLayer* mLayer = nullptr;
+    QgsSelectedFeature* mSelectedFeature = nullptr;
+    QgsMapCanvas* mCanvas = nullptr;
 
     bool mHasZ;
     bool mHasM;
@@ -78,11 +78,11 @@ class QgsNodeEditor : public QgsDockWidget
                    QgsMapCanvas* canvas );
 
   public:
-    QgsVectorLayer* mLayer;
-    QgsSelectedFeature* mSelectedFeature;
-    QgsMapCanvas* mCanvas;
-    QTableView* mTableView;
-    QgsNodeEditorModel* mNodeModel;
+    QgsVectorLayer* mLayer = nullptr;
+    QgsSelectedFeature* mSelectedFeature = nullptr;
+    QgsMapCanvas* mCanvas = nullptr;
+    QTableView* mTableView = nullptr;
+    QgsNodeEditorModel* mNodeModel = nullptr;
 
   signals:
     void deleteSelectedRequested( );

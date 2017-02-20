@@ -26,8 +26,6 @@ __copyright__ = '(C) 2012, Victor Olaya, Carterix Geomatics'
 
 __revision__ = '$Format:%H$'
 
-from qgis.PyQt.QtCore import QSettings
-
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterString
@@ -42,7 +40,12 @@ class PostGISExecuteSQL(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('PostGIS execute SQL')
         self.group, self.i18n_group = self.trAlgorithm('Database')
-        self.addParameter(ParameterString(self.DATABASE, self.tr('Database')))
+        self.addParameter(ParameterString(
+            self.DATABASE,
+            self.tr('Database'),
+            metadata={
+                'widget_wrapper': {
+                    'class': 'processing.gui.wrappers_postgis.ConnectionWidgetWrapper'}}))
         self.addParameter(ParameterString(self.SQL, self.tr('SQL query'), '', True))
 
     def processAlgorithm(self, feedback):

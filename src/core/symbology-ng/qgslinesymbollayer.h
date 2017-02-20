@@ -72,7 +72,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
-    double estimateMaxBleed() const override;
+    double estimateMaxBleed( const QgsRenderContext& context ) const override;
 
     // new stuff
 
@@ -215,7 +215,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
     virtual void setWidth( double width ) override;
     virtual double width() const override;
 
-    double estimateMaxBleed() const override;
+    double estimateMaxBleed( const QgsRenderContext& context ) const override;
 
     // new stuff
 
@@ -343,7 +343,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
     double mInterval;
     QgsUnitTypes::RenderUnit mIntervalUnit;
     QgsMapUnitScale mIntervalMapUnitScale;
-    QgsMarkerSymbol* mMarker;
+    QgsMarkerSymbol* mMarker = nullptr;
     Placement mPlacement;
     double mOffsetAlongLine; //distance to offset along line before marker is drawn
     QgsUnitTypes::RenderUnit mOffsetAlongLineUnit; //unit for offset along line

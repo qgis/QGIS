@@ -155,12 +155,13 @@ namespace QgsWms
   }
 
 
-  void writeGetFeatureInfo( QgsServerInterface* serverIface, const QString& version,
-                            const QgsServerRequest& request, QgsServerResponse& response )
+  void writeGetFeatureInfo( QgsServerInterface* serverIface, const QgsProject* project,
+                            const QString& version, const QgsServerRequest& request,
+                            QgsServerResponse& response )
   {
     Q_UNUSED( version );
     QgsServerRequest::Parameters params = request.parameters();
-    QgsRenderer renderer( serverIface, params, getConfigParser( serverIface ) );
+    QgsRenderer renderer( serverIface, project, params, getConfigParser( serverIface ) );
 
     QDomDocument doc = renderer.getFeatureInfo( version );
     QString outputFormat = params.value( QStringLiteral( "INFO_FORMAT" ), QStringLiteral( "text/plain" ) );

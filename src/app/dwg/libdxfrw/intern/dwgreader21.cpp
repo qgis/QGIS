@@ -209,7 +209,7 @@ bool dwgReader21::readFileHeader()
   DRW_DBG( fileHdrCompLength2 );
 
   int fileHdrDataLength = 0x110;
-  duint8 *fileHdrData;
+  duint8 *fileHdrData = nullptr;
   if ( fileHdrCompLength < 0 )
   {
     fileHdrDataLength = fileHdrCompLength * -1;

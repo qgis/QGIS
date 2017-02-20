@@ -81,7 +81,7 @@ class QgsGrassToolsTreeFilterProxyModel : public QSortFilterProxyModel
 
   protected:
 
-    QAbstractItemModel* mModel;
+    QAbstractItemModel* mModel = nullptr;
     QString mFilter; // filter string provided
     QRegExp mRegExp; // regular expression constructed from filter string
 
@@ -268,7 +268,7 @@ void QgsGrassTools::runModule( QString name, bool direct )
   QgsGrassShell* sh = 0;
 #endif
 
-  QWidget *m;
+  QWidget *m = nullptr;
   if ( name == QLatin1String( "shell" ) )
   {
 #ifdef Q_OS_WIN

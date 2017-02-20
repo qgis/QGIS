@@ -426,15 +426,15 @@ class CORE_EXPORT QgsRasterBlock
 
     // Data block for numerical data types, not used with image data types
     // QByteArray does not seem to be intended for large data blocks, does it?
-    void * mData;
+    void * mData = nullptr;
 
     // Image for image data types, not used with numerical data types
-    QImage *mImage;
+    QImage *mImage = nullptr;
 
     // Bitmap of no data. One bit for each pixel. Bit is 1 if a pixels is no data.
     // Each row is represented by whole number of bytes (last bits may be unused)
     // to make processing rows easy.
-    char *mNoDataBitmap;
+    char *mNoDataBitmap = nullptr;
 
     // number of bytes in mNoDataBitmap row
     int mNoDataBitmapWidth;

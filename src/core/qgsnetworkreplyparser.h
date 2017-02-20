@@ -77,7 +77,7 @@ class CORE_EXPORT QgsNetworkReplyParser : public QObject
     static bool isMultipart( QNetworkReply *reply );
 
   private:
-    QNetworkReply *mReply;
+    QNetworkReply *mReply = nullptr;
 
     bool mValid;
 

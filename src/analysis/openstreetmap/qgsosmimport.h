@@ -42,8 +42,17 @@ class ANALYSIS_EXPORT QgsOSMXmlImport : public QObject
     void setInputXmlFileName( const QString& xmlFileName ) { mXmlFileName = xmlFileName; }
     QString inputXmlFileName() const { return mXmlFileName; }
 
-    void setOutputDbFileName( const QString& dbFileName ) { mDbFileName = dbFileName; }
-    QString outputDbFileName() const { return mDbFileName; }
+    /**
+     * Sets the filename for the output database.
+     * @see outputDatabaseFileName()
+     */
+    void setOutputDatabaseFileName( const QString& fileName ) { mDbFileName = fileName; }
+
+    /**
+     * Returns the filename for the output database.
+     * @see setOutputDatabaseFileName()
+     */
+    QString outputDatabaseFileName() const { return mDbFileName; }
 
     /**
      * Run import. This will parse the XML file and store the data in a SQLite database.
@@ -80,12 +89,12 @@ class ANALYSIS_EXPORT QgsOSMXmlImport : public QObject
 
     QFile mInputFile;
 
-    sqlite3* mDatabase;
-    sqlite3_stmt* mStmtInsertNode;
-    sqlite3_stmt* mStmtInsertNodeTag;
-    sqlite3_stmt* mStmtInsertWay;
-    sqlite3_stmt* mStmtInsertWayNode;
-    sqlite3_stmt* mStmtInsertWayTag;
+    sqlite3* mDatabase = nullptr;
+    sqlite3_stmt* mStmtInsertNode = nullptr;
+    sqlite3_stmt* mStmtInsertNodeTag = nullptr;
+    sqlite3_stmt* mStmtInsertWay = nullptr;
+    sqlite3_stmt* mStmtInsertWayNode = nullptr;
+    sqlite3_stmt* mStmtInsertWayTag = nullptr;
 };
 
 

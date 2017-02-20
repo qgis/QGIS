@@ -77,7 +77,7 @@ class QgsGeometryGapCheckError : public QgsGeometryCheckError
   private:
     QgsFeatureIds mNeighbors;
     QgsRectangle mGapAreaBBox;
-    QgsAbstractGeometry* mGeometry;
+    QgsAbstractGeometry* mGeometry = nullptr;
 };
 
 class QgsGeometryGapCheck : public QgsGeometryCheck

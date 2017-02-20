@@ -172,7 +172,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
     //find baseline for strata
     QVariant strataId = fet.attribute( mStrataIdAttribute );
     QgsGeometry baselineGeom = findBaselineGeometry( strataId.isValid() ? strataId : -1 );
-    if ( baselineGeom.isEmpty() )
+    if ( baselineGeom.isNull() )
     {
       continue;
     }
@@ -218,7 +218,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
       double randomPosition = (( double )mt_rand() / MD_RAND_MAX ) * clippedBaseline.length();
       QgsGeometry samplePoint = clippedBaseline.interpolate( randomPosition );
       ++nIterations;
-      if ( samplePoint.isEmpty() )
+      if ( samplePoint.isNull() )
       {
         continue;
       }
@@ -252,7 +252,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
       lineFarAway << sampleQgsPoint << ptFarAway;
       QgsGeometry lineFarAwayGeom = QgsGeometry::fromPolyline( lineFarAway );
       QgsGeometry lineClipStratum = lineFarAwayGeom.intersection( strataGeom );
-      if ( lineClipStratum.isEmpty() )
+      if ( lineClipStratum.isNull() )
       {
         continue;
       }
@@ -268,7 +268,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
            || lineClipStratum.wkbType() == QgsWkbTypes::MultiLineString25D )
       {
         QgsGeometry singleLine = closestMultilineElement( sampleQgsPoint, lineClipStratum );
-        if ( !singleLine.isEmpty() )
+        if ( !singleLine.isNull() )
         {
           lineClipStratum = singleLine;
         }
@@ -351,13 +351,13 @@ QgsGeometry QgsTransectSample::findBaselineGeometry( const QVariant& strataId )
 bool QgsTransectSample::otherTransectWithinDistance( const QgsGeometry& geom, double minDistLayerUnit, double minDistance, QgsSpatialIndex& sIndex,
     const QMap< QgsFeatureId, QgsGeometry >& lineFeatureMap, QgsDistanceArea& da )
 {
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
   {
     return false;
   }
 
   QgsGeometry buffer = geom.buffer( minDistLayerUnit, 8 );
-  if ( buffer.isEmpty() )
+  if ( buffer.isNull() )
   {
     return false;
   }
@@ -557,7 +557,7 @@ QgsGeometry* QgsTransectSample::clipBufferLine( const QgsGeometry& stratumGeom, 
   {
     //int verticesBefore = usedBaseline->asMultiPolyline().count();
     usedBaseline = clippedBaseline->simplify( mBaselineSimplificationTolerance );
-    if ( usedBaseline.isEmpty() )
+    if ( usedBaseline.isNull() )
     {
       return nullptr;
     }
@@ -576,7 +576,7 @@ QgsGeometry* QgsTransectSample::clipBufferLine( const QgsGeometry& stratumGeom, 
   {
     //loop with tolerance: create buffer, convert buffer to line, clip line by stratum, test if result is (single) line
     QgsGeometry clipBaselineBuffer = usedBaseline.buffer( currentBufferDist, 8 );
-    if ( clipBaselineBuffer.isEmpty() )
+    if ( clipBaselineBuffer.isNull() )
     {
       continue;
     }
@@ -621,7 +621,7 @@ QgsGeometry* QgsTransectSample::clipBufferLine( const QgsGeometry& stratumGeom, 
     }
     bufferLineClipped = bufferLine.intersection( stratumGeom );
 
-    if ( bufferLineClipped.isEmpty() && bufferLineClipped.type() == QgsWkbTypes::LineGeometry )
+    if ( bufferLineClipped.isNull() && bufferLineClipped.type() == QgsWkbTypes::LineGeometry )
     {
       //if stratumGeom is a multipolygon, bufferLineClipped must intersect each part
       bool bufferLineClippedIntersectsStratum = true;

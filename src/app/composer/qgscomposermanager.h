@@ -78,16 +78,16 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
 
     QString mDefaultTemplatesDir;
     QString mUserTemplatesDir;
-    QPushButton* mShowButton;
-    QPushButton* mRemoveButton;
-    QPushButton* mRenameButton;
-    QPushButton* mDuplicateButton;
+    QPushButton* mShowButton = nullptr;
+    QPushButton* mRemoveButton = nullptr;
+    QPushButton* mRenameButton = nullptr;
+    QPushButton* mDuplicateButton = nullptr;
 
 #ifdef Q_OS_MAC
     void showEvent( QShowEvent *event );
     void changeEvent( QEvent * );
 
-    QAction* mWindowAction;
+    QAction* mWindowAction = nullptr;
 #endif
 
   private slots:

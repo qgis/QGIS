@@ -41,7 +41,7 @@ QStringList QgsGPSDevice::importCommand( const QString& babel,
     const QString& in,
     const QString& out ) const
 {
-  const QStringList* original;
+  const QStringList* original = nullptr;
   if ( type == QLatin1String( "-w" ) )
     original = &mWptDlCmd;
   else if ( type == QLatin1String( "-r" ) )
@@ -73,7 +73,7 @@ QStringList QgsGPSDevice::exportCommand( const QString& babel,
     const QString& in,
     const QString& out ) const
 {
-  const QStringList* original;
+  const QStringList* original = nullptr;
   if ( type == QLatin1String( "-w" ) )
     original = &mWptUlCmd;
   else if ( type == QLatin1String( "-r" ) )

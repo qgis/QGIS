@@ -68,7 +68,7 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
   private:
     int mGrayBand;
     Gradient mGradient;
-    QgsContrastEnhancement* mContrastEnhancement;
+    QgsContrastEnhancement* mContrastEnhancement = nullptr;
 
 };
 

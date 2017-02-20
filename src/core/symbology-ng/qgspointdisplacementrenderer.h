@@ -121,7 +121,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
   private:
 
     //! Center symbol for a displacement group
-    QScopedPointer< QgsMarkerSymbol > mCenterSymbol;
+    std::unique_ptr< QgsMarkerSymbol > mCenterSymbol;
 
     //! Displacement placement mode
     Placement mPlacement;

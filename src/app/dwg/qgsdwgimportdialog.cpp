@@ -155,7 +155,7 @@ void QgsDwgImportDialog::on_pbLoadDatabase_clicked()
 
   bool lblVisible = false;
 
-  QScopedPointer<QgsVectorLayer> d( new QgsVectorLayer( QString( "%1|layername=drawing" ).arg( leDatabase->text() ), "layers", "ogr", false ) );
+  std::unique_ptr<QgsVectorLayer> d( new QgsVectorLayer( QString( "%1|layername=drawing" ).arg( leDatabase->text() ), "layers", "ogr", false ) );
   if ( d && d->isValid() )
   {
     int idxPath = d->fields().lookupField( "path" );
@@ -190,7 +190,7 @@ void QgsDwgImportDialog::on_pbLoadDatabase_clicked()
 
   lblMessage->setVisible( lblVisible );
 
-  QScopedPointer<QgsVectorLayer> l( new QgsVectorLayer( QString( "%1|layername=layers" ).arg( leDatabase->text() ), "layers", "ogr", false ) );
+  std::unique_ptr<QgsVectorLayer> l( new QgsVectorLayer( QString( "%1|layername=layers" ).arg( leDatabase->text() ), "layers", "ogr", false ) );
   if ( l && l->isValid() )
   {
     int idxName = l->fields().lookupField( "name" );
@@ -211,7 +211,7 @@ void QgsDwgImportDialog::on_pbLoadDatabase_clicked()
 
       QgsDebugMsg( QString( "name:%1 color:%2 flags:%3" ).arg( f.attribute( idxName ).toString() ).arg( f.attribute( idxColor ).toInt() ).arg( f.attribute( idxFlags ).toString(), 0, 16 ) );
 
-      QTableWidgetItem *item;
+      QTableWidgetItem *item = nullptr;
       item = new QTableWidgetItem( f.attribute( idxName ).toString() );
       item->setFlags( Qt::ItemIsUserCheckable | Qt::ItemIsEnabled );
       item->setCheckState( Qt::Checked );
@@ -297,8 +297,8 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, QString name, QS
     layerFilter = QString( "layer IN (%1) AND " ).arg( exprlist.join( "," ) );
   }
 
-  QgsVectorLayer *l;
-  QgsSymbol *sym;
+  QgsVectorLayer *l = nullptr;
+  QgsSymbol *sym = nullptr;
 
   l = layer( layerGroup, layerFilter, "hatches" );
   if ( l )
@@ -320,7 +320,7 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, QString name, QS
     sll->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineWidth, QgsProperty::fromField( "linewidth" ) );
     // sll->setUseCustomDashPattern( true );
     // sll->setCustomDashPatternUnit( QgsSymbolV2::MapUnit );
-    // sll->setDataDefinedProperty( "customdash", new QgsDataDefined( true, false, "", "linetype" ) );
+    // sll->setDataDefinedProperty( QgsSymbolLayer::PropertyCustomDash, QgsProperty::fromField( "linetype" ) );
     sym = new QgsLineSymbol();
     sym->changeSymbolLayer( 0, sll );
     sym->setOutputUnit( QgsUnitTypes::RenderMillimeters );
@@ -336,7 +336,7 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, QString name, QS
     sll->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineWidth, QgsProperty::fromField( "width" ) );
     // sll->setUseCustomDashPattern( true );
     // sll->setCustomDashPatternUnit( QgsSymbolV2::MapUnit );
-    // sll->setDataDefinedProperty( "customdash", new QgsDataDefined( true, false, "", "linetype" ) );
+    // sll->setDataDefinedProperty( QgsSymbolLayer::PropertyCustomDash, QgsProperty::fromField( "linetype" ) );
     sym = new QgsLineSymbol();
     sym->changeSymbolLayer( 0, sll );
     sym->setOutputUnit( QgsUnitTypes::RenderMapUnits );

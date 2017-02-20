@@ -46,7 +46,7 @@ namespace QgsWcs
       }
 
       void executeRequest( const QgsServerRequest& request, QgsServerResponse& response,
-                           QgsProject* project )
+                           const QgsProject* project )
       {
         Q_UNUSED( project );
 
@@ -69,7 +69,7 @@ namespace QgsWcs
 
         if ( QSTR_COMPARE( req, "GetCapabilities" ) )
         {
-          writeGetCapabilities( mServerIface, versionString, request, response );
+          writeGetCapabilities( mServerIface, project, versionString, request, response );
         }
         else if ( QSTR_COMPARE( req, "DescribeCoverage" ) )
         {
@@ -88,7 +88,7 @@ namespace QgsWcs
       }
 
     private:
-      QgsServerInterface* mServerIface;
+      QgsServerInterface* mServerIface = nullptr;
   };
 
 

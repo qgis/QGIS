@@ -33,8 +33,8 @@ class QgsGrassShell : public QFrame
   private:
     void initTerminal( QTermWidget *terminal );
 
-    QTermWidget *mTerminal;
-    QgsGrassTools *mTools;
-    QTabWidget *mTabWidget;
+    QTermWidget *mTerminal = nullptr;
+    QgsGrassTools *mTools = nullptr;
+    QTabWidget *mTabWidget = nullptr;
     QString mLockFilename;
 };

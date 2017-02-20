@@ -72,9 +72,9 @@ class GUI_EXPORT QgsDefaultSearchWidgetWrapper : public QgsSearchWidgetWrapper
     QCheckBox* caseSensitiveCheckBox();
 
   private:
-    QgsFilterLineEdit* mLineEdit;
-    QCheckBox* mCheckbox;
-    QWidget* mContainer;
+    QgsFilterLineEdit* mLineEdit = nullptr;
+    QCheckBox* mCheckbox = nullptr;
+    QWidget* mContainer = nullptr;
     QString mCaseString;
 };
 

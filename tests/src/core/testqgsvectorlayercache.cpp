@@ -59,9 +59,9 @@ class TestVectorLayerCache : public QObject
     void onCommittedFeaturesAdded( const QString&, const QgsFeatureList& );
 
   private:
-    QgsVectorLayerCache*           mVectorLayerCache;
-    QgsCacheIndexFeatureId*        mFeatureIdIndex;
-    QgsVectorLayer*                mPointsLayer;
+    QgsVectorLayerCache*           mVectorLayerCache = nullptr;
+    QgsCacheIndexFeatureId*        mFeatureIdIndex = nullptr;
+    QgsVectorLayer*                mPointsLayer = nullptr;
     QgsFeatureList                 mAddedFeatures;
     QMap<QString, QString> mTmpFiles;
 };

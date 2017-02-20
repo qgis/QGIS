@@ -58,7 +58,7 @@ class ANALYSIS_EXPORT TriDecorator : public Triangulation
     virtual QList<int>* getPointsAroundEdge( double x, double y ) override;
   protected:
     //! Association with a Triangulation object
-    Triangulation* mTIN;
+    Triangulation* mTIN = nullptr;
 };
 
 inline TriDecorator::TriDecorator(): mTIN( nullptr )

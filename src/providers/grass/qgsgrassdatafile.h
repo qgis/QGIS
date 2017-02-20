@@ -42,7 +42,7 @@ class GRASS_LIB_EXPORT QgsGrassDataFile : public QFile
     virtual qint64 readData( char * data, qint64 len ) override;
 
   private:
-    FILE *mFh;
+    FILE *mFh = nullptr;
 };
 
 #endif // QGSGRASSDATAFILE_H

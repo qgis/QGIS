@@ -33,7 +33,6 @@ QgsMSLayerCache* QgsMSLayerCache::instance()
 }
 
 QgsMSLayerCache::QgsMSLayerCache()
-    : mProjectMaxLayers( 100 )
 {
   QObject::connect( &mFileSystemWatcher, SIGNAL( fileChanged( const QString& ) ), this, SLOT( removeProjectFileLayers( const QString& ) ) );
 }

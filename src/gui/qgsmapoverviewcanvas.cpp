@@ -207,9 +207,10 @@ void QgsMapOverviewCanvas::mapRenderingFinished()
   update();
 }
 
-void QgsMapOverviewCanvas::layerRepaintRequested()
+void QgsMapOverviewCanvas::layerRepaintRequested( bool deferred )
 {
-  refresh();
+  if ( !deferred )
+    refresh();
 }
 
 
@@ -227,14 +228,14 @@ void QgsMapOverviewCanvas::setLayers( const QList<QgsMapLayer*>& layers )
 {
   Q_FOREACH ( QgsMapLayer* ml, mSettings.layers() )
   {
-    disconnect( ml, SIGNAL( repaintRequested() ), this, SLOT( layerRepaintRequested() ) );
+    disconnect( ml, &QgsMapLayer::repaintRequested, this, &QgsMapOverviewCanvas::layerRepaintRequested );
   }
 
   mSettings.setLayers( layers );
 
   Q_FOREACH ( QgsMapLayer* ml, mSettings.layers() )
   {
-    connect( ml, SIGNAL( repaintRequested() ), this, SLOT( layerRepaintRequested() ) );
+    connect( ml, &QgsMapLayer::repaintRequested, this, &QgsMapOverviewCanvas::layerRepaintRequested );
   }
 
   updateFullExtent();

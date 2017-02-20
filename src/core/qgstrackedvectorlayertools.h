@@ -46,7 +46,7 @@ class CORE_EXPORT QgsTrackedVectorLayerTools : public QgsVectorLayerTools
 
   private:
 
-    const QgsVectorLayerTools* mBackend;
+    const QgsVectorLayerTools* mBackend = nullptr;
     // TODO QGIS3: remove mutable once methods are no longer const
     mutable QMap<QgsVectorLayer*, QgsFeatureIds> mAddedFeatures;
 };

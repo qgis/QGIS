@@ -261,7 +261,7 @@ QgsExpressionContext QgsLayerPropertiesWidget::createExpressionContext() const
 
 void QgsLayerPropertiesWidget::registerDataDefinedButton( QgsPropertyOverrideButton* button, QgsSymbolLayer::Property key )
 {
-  button->init( key, mLayer->dataDefinedProperties(), QgsSymbolLayer::PROPERTY_DEFINITIONS, mVectorLayer );
+  button->init( key, mLayer->dataDefinedProperties(), QgsSymbolLayer::propertyDefinitions(), mVectorLayer );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsLayerPropertiesWidget::updateProperty );
   button->registerExpressionContextGenerator( this );
 }

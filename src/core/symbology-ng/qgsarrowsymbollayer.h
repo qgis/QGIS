@@ -42,7 +42,7 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
 
     virtual QgsArrowSymbolLayer* clone() const override;
-    virtual QgsSymbol* subSymbol() override { return mSymbol.data(); }
+    virtual QgsSymbol* subSymbol() override { return mSymbol.get(); }
     virtual bool setSubSymbol( QgsSymbol* symbol ) override;
     virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const override;
 
@@ -144,7 +144,7 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
 
   private:
     //! Filling sub symbol
-    QScopedPointer<QgsFillSymbol> mSymbol;
+    std::unique_ptr<QgsFillSymbol> mSymbol;
 
     double mArrowWidth;
     QgsUnitTypes::RenderUnit mArrowWidthUnit;
@@ -174,7 +174,7 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     HeadType mComputedHeadType;
     ArrowType mComputedArrowType;
 
-    QScopedPointer<QgsExpressionContextScope> mExpressionScope;
+    std::unique_ptr<QgsExpressionContextScope> mExpressionScope;
 
     void _resolveDataDefined( QgsSymbolRenderContext& );
 };

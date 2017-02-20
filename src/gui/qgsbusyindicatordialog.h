@@ -47,7 +47,7 @@ class GUI_EXPORT QgsBusyIndicatorDialog : public QDialog
 
   private:
     QString mMessage;
-    QLabel* mMsgLabel;
+    QLabel* mMsgLabel = nullptr;
 };
 
 #endif // QGSBUSYINDICATORDIALOG_H

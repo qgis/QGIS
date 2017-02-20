@@ -142,10 +142,10 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     QString PyObjectToQString( PyObject* obj );
 
     //! reference to module __main__
-    PyObject* mMainModule;
+    PyObject* mMainModule = nullptr;
 
     //! dictionary of module __main__
-    PyObject* mMainDict;
+    PyObject* mMainDict = nullptr;
 
     //! flag determining that python support is enabled
     bool mPythonEnabled;

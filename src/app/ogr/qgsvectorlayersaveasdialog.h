@@ -20,7 +20,7 @@
 
 #include <ui_qgsvectorlayersaveasdialogbase.h>
 #include <QDialog>
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 #include "qgsfields.h"
 #include "qgsvectorfilewriter.h"
 #include "qgis_app.h"
@@ -112,7 +112,7 @@ class APP_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     void on_leFilename_textChanged( const QString& text );
     void on_browseFilename_clicked();
     void on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem& crs );
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#save-layer-into-file" ) ); }
     void on_mSymbologyExportComboBox_currentIndexChanged( const QString& text );
     void on_mGeometryTypeComboBox_currentIndexChanged( int index );
     void accept() override;
@@ -129,7 +129,7 @@ class APP_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
 
     QgsRectangle mLayerExtent;
     QgsCoordinateReferenceSystem mLayerCrs;
-    QgsVectorLayer *mLayer;
+    QgsVectorLayer *mLayer = nullptr;
     bool mAttributeTableItemChangedSlotEnabled;
     bool mReplaceRawFieldValuesStateChangedSlotEnabled;
     QgsVectorFileWriter::ActionOnExistingFile mActionOnExistingFile;

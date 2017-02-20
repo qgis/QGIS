@@ -104,16 +104,16 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
     };
 
     //! \brief Pointer to the raster layer that this property dilog changes the behavior of.
-    QgsRasterLayer * mRasterLayer;
+    QgsRasterLayer * mRasterLayer = nullptr;
     //! \brief Pointer to the renderer widget, to get/set min/max.
-    QgsRasterRendererWidget* mRendererWidget;
+    QgsRasterRendererWidget* mRendererWidget = nullptr;
     //! \brief Name of the renderer widget (see QgsRasterRendererRegistry).
     QString mRendererName;
 
-    QwtPlotPicker* mHistoPicker;
-    QwtPlotZoomer* mHistoZoomer;
-    QwtPlotMarker* mHistoMarkerMin;
-    QwtPlotMarker* mHistoMarkerMax;
+    QwtPlotPicker* mHistoPicker = nullptr;
+    QwtPlotZoomer* mHistoZoomer = nullptr;
+    QwtPlotMarker* mHistoMarkerMin = nullptr;
+    QwtPlotMarker* mHistoMarkerMax = nullptr;
     double mHistoMin;
     double mHistoMax;
     QVector<QColor> mHistoColors;

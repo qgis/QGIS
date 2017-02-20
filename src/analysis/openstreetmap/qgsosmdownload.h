@@ -96,7 +96,7 @@ class ANALYSIS_EXPORT QgsOSMDownload : public QObject
     QString mQuery;
     QString mError;
 
-    QNetworkReply* mReply;
+    QNetworkReply* mReply = nullptr;
     QFile mFile;
 };
 

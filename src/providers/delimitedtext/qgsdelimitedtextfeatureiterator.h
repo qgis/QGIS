@@ -32,14 +32,14 @@ class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
 
   protected:
     QgsDelimitedTextProvider::GeomRepresentationType mGeomRep;
-    QgsExpression *mSubsetExpression;
+    QgsExpression *mSubsetExpression = nullptr;
     QgsExpressionContext mExpressionContext;
     QgsRectangle mExtent;
     bool mUseSpatialIndex;
-    QgsSpatialIndex *mSpatialIndex;
+    QgsSpatialIndex *mSpatialIndex = nullptr;
     bool mUseSubsetIndex;
     QList<quintptr> mSubsetIndex;
-    QgsDelimitedTextFile *mFile;
+    QgsDelimitedTextFile *mFile = nullptr;
     QgsFields mFields;
     int mFieldCount;  // Note: this includes field count for wkt field
     int mXFieldIndex;

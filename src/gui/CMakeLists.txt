@@ -32,7 +32,6 @@ SET(QGIS_GUI_SRCS
   symbology-ng/qgsrendererwidget.cpp
   symbology-ng/qgsrulebasedrendererwidget.cpp
   symbology-ng/qgssinglesymbolrendererwidget.cpp
-  symbology-ng/qgssizescalewidget.cpp
   symbology-ng/qgssmartgroupeditordialog.cpp
   symbology-ng/qgsstyleexportimportdialog.cpp
   symbology-ng/qgsstylegroupselectiondialog.cpp
@@ -163,7 +162,6 @@ SET(QGIS_GUI_SRCS
   qgsactionmenu.cpp
   qgsadvanceddigitizingcanvasitem.cpp
   qgsadvanceddigitizingdockwidget.cpp
-  qgsannotationitem.cpp
   qgsattributedialog.cpp
   qgsattributeform.cpp
   qgsattributeformeditorwidget.cpp
@@ -195,7 +193,6 @@ SET(QGIS_GUI_SRCS
   qgscredentialdialog.cpp
   qgscursors.cpp
   qgscustomdrophandler.cpp
-  qgsdatadefinedbutton.cpp
   qgsdatumtransformdialog.cpp
   qgsdetaileditemdata.cpp
   qgsdetaileditemdelegate.cpp
@@ -224,7 +221,7 @@ SET(QGIS_GUI_SRCS
   qgsfilterlineedit.cpp
   qgsfloatingwidget.cpp
   qgsfocuswatcher.cpp
-  qgsformannotationitem.cpp
+  qgsformannotation.cpp
   qgsgenericprojectionselector.cpp
   qgsgeometryrubberband.cpp
   qgsgradientcolorrampdialog.cpp
@@ -233,7 +230,6 @@ SET(QGIS_GUI_SRCS
   qgshighlight.cpp
   qgshistogramwidget.cpp
   qgshelp.cpp
-  qgshtmlannotationitem.cpp
   qgsidentifymenu.cpp
   qgskeyvaluewidget.cpp
   qgslistwidget.cpp
@@ -242,6 +238,7 @@ SET(QGIS_GUI_SRCS
   qgsludialog.cpp
   qgsmanageconnectionsdialog.cpp
   qgsmapcanvas.cpp
+  qgsmapcanvasannotationitem.cpp
   qgsmapcanvasitem.cpp
   qgsmapcanvasmap.cpp
   qgsmapcanvassnapper.cpp
@@ -285,6 +282,7 @@ SET(QGIS_GUI_SRCS
   qgsprevieweffect.cpp
   qgsprojectionselectionwidget.cpp
   qgsprojectionselector.cpp
+  qgspropertyassistantwidget.cpp
   qgspropertyoverridebutton.cpp
   qgsquerybuilder.cpp
   qgsrasterformatsaveoptionswidget.cpp
@@ -302,12 +300,10 @@ SET(QGIS_GUI_SRCS
   qgssublayersdialog.cpp
   qgssubstitutionlistwidget.cpp
   qgssqlcomposerdialog.cpp
-  qgssvgannotationitem.cpp
   qgstablewidgetbase.cpp
   qgstabwidget.cpp
   qgstablewidgetitem.cpp
   qgstaskmanagerwidget.cpp
-  qgstextannotationitem.cpp
   qgstextformatwidget.cpp
   qgstextpreview.cpp
   qgstreewidgetitem.cpp
@@ -317,23 +313,6 @@ SET(QGIS_GUI_SRCS
   qgsvertexmarker.cpp
   qgsfiledownloader.cpp
 )
-
-IF (WITH_QTWEBKIT)
-  SET(QGIS_GUI_SRCS
-      ${QGIS_GUI_SRCS}
-      editorwidgets/qgswebviewconfigdlg.cpp
-      editorwidgets/qgswebviewwidgetfactory.cpp
-      editorwidgets/qgswebviewwidgetwrapper.cpp
-  )
-ENDIF (WITH_QTWEBKIT)
-
-
-IF (WITH_TOUCH)
-  SET(QGIS_GUI_SRCS
-      ${QGIS_GUI_SRCS}
-      qgsmaptooltouch.cpp
-  )
-ENDIF (WITH_TOUCH)
 
 SET(QGIS_GUI_MOC_HDRS
   qgisinterface.h
@@ -366,7 +345,6 @@ SET(QGIS_GUI_MOC_HDRS
   qgscompoundcolorwidget.h
   qgsconfigureshortcutsdialog.h
   qgscredentialdialog.h
-  qgsdatadefinedbutton.h
   qgsdatumtransformdialog.h
   qgsdetaileditemdelegate.h
   qgsdetaileditemwidget.h
@@ -394,13 +372,12 @@ SET(QGIS_GUI_MOC_HDRS
   qgsfilterlineedit.h
   qgsfloatingwidget.h
   qgsfocuswatcher.h
-  qgsformannotationitem.h
+  qgsformannotation.h
   qgsgenericprojectionselector.h
   qgsgradientcolorrampdialog.h
   qgsgradientstopeditor.h
   qgsgroupwmsdatadialog.h
   qgshistogramwidget.h
-  qgshtmlannotationitem.h
   qgsidentifymenu.h
   qgskeyvaluewidget.h
   qgslistwidget.h
@@ -410,6 +387,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsludialog.h
   qgsmanageconnectionsdialog.h
   qgsmapcanvas.h
+  qgsmapcanvasannotationitem.h
   qgsmapcanvassnappingutils.h
   qgsmapcanvastracer.h
   qgsmaplayeractionregistry.h
@@ -448,6 +426,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsprevieweffect.h
   qgsprojectionselectionwidget.h
   qgsprojectionselector.h
+  qgspropertyassistantwidget.h
   qgspropertyoverridebutton.h
   qgsquerybuilder.h
   qgsrasterformatsaveoptionswidget.h
@@ -507,7 +486,6 @@ SET(QGIS_GUI_MOC_HDRS
   symbology-ng/qgsrendererwidget.h
   symbology-ng/qgsrulebasedrendererwidget.h
   symbology-ng/qgssinglesymbolrendererwidget.h
-  symbology-ng/qgssizescalewidget.h
   symbology-ng/qgssmartgroupeditordialog.h
   symbology-ng/qgsstyleexportimportdialog.h
   symbology-ng/qgsstylegroupselectiondialog.h
@@ -617,14 +595,6 @@ SET(QGIS_GUI_MOC_HDRS
   layertree/qgslayertreeviewdefaultactions.h
 )
 
-IF (WITH_QTWEBKIT)
-  SET(QGIS_GUI_MOC_HDRS
-      ${QGIS_GUI_MOC_HDRS}
-      editorwidgets/qgswebviewconfigdlg.h
-      editorwidgets/qgswebviewwidgetwrapper.h
-  )
-ENDIF (WITH_QTWEBKIT)
-
 QT5_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
 
 IF(MSVC)
@@ -637,7 +607,6 @@ ENDIF(MSVC)
 
 SET(QGIS_GUI_HDRS
   qgisgui.h
-  qgsannotationitem.h
   qgsattributeeditorcontext.h
   qgsattributeforminterface.h
   qgsattributeformlegacyinterface.h
@@ -658,9 +627,7 @@ SET(QGIS_GUI_HDRS
   qgsmaptip.h
   qgsrubberband.h
   qgssqlcomposerdialog.h
-  qgssvgannotationitem.h
   qgstablewidgetitem.h
-  qgstextannotationitem.h
   qgsuserinputdockwidget.h
   qgsvertexmarker.h
   qgsfiledownloader.h
@@ -715,20 +682,6 @@ SET(QGIS_GUI_HDRS
 
   symbology-ng/qgssymbolwidgetcontext.h
 )
-
-IF (WITH_QTWEBKIT)
-  SET(QGIS_GUI_HDRS
-      ${QGIS_GUI_HDRS}
-      editorwidgets/qgswebviewwidgetfactory.h
-  )
-ENDIF (WITH_QTWEBKIT)
-
-IF (WITH_TOUCH)
-  SET(QGIS_GUI_HDRS
-      ${QGIS_GUI_HDRS}
-      qgsmaptooltouch.h
-  )
-ENDIF (WITH_TOUCH)
 
 SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthauthoritieseditor.h
@@ -785,6 +738,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
   ../core
+  ../core/annotations
   ../core/auth
   ../core/composer
   ../core/fieldformatter

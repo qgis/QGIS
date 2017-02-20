@@ -45,10 +45,11 @@ class TestQgsLayerTree : public QObject
     void testLegendSymbolCategorized();
     void testLegendSymbolGraduated();
     void testLegendSymbolRuleBased();
+    void testResolveReferences();
 
   private:
 
-    QgsLayerTreeGroup* mRoot;
+    QgsLayerTreeGroup* mRoot = nullptr;
 
     void testRendererLegend( QgsFeatureRenderer* renderer );
 
@@ -124,7 +125,9 @@ void TestQgsLayerTree::testLayerNameChanged()
   QCOMPARE( arguments.at( 0 ).value<QgsLayerTreeNode*>(), n );
   QCOMPARE( arguments.at( 1 ).toString(), QString( "changed 1" ) );
 
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << vl );
+  QgsProject project;
+  project.addMapLayer( vl );
+  n->resolveReferences( &project );
 
   // set name via map layer
   vl->setName( "changed 2" );
@@ -141,8 +144,6 @@ void TestQgsLayerTree::testLayerNameChanged()
   arguments = spy.takeFirst();
   QCOMPARE( arguments.at( 0 ).value<QgsLayerTreeNode*>(), n );
   QCOMPARE( arguments.at( 1 ).toString(), QString( "changed 3" ) );
-
-  QgsProject::instance()->removeMapLayers( QList<QgsMapLayer*>() << vl );
 
   mRoot->removeChildNode( n );
 }
@@ -286,7 +287,8 @@ void TestQgsLayerTree::testShowHideAllSymbolNodes()
   QgsVectorLayer* vl = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QVERIFY( vl->isValid() );
 
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << vl );
+  QgsProject project;
+  project.addMapLayer( vl );
 
   //create a categorized renderer for layer
   QgsCategorizedSymbolRenderer* renderer = new QgsCategorizedSymbolRenderer();
@@ -327,7 +329,6 @@ void TestQgsLayerTree::testShowHideAllSymbolNodes()
   //cleanup
   delete m;
   delete root;
-  QgsProject::instance()->removeMapLayers( QList<QgsMapLayer*>() << vl );
 }
 
 void TestQgsLayerTree::testFindLegendNode()
@@ -336,7 +337,8 @@ void TestQgsLayerTree::testFindLegendNode()
   QgsVectorLayer* vl = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QVERIFY( vl->isValid() );
 
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << vl );
+  QgsProject project;
+  project.addMapLayer( vl );
 
   //create a categorized renderer for layer
   QgsCategorizedSymbolRenderer* renderer = new QgsCategorizedSymbolRenderer();
@@ -369,7 +371,6 @@ void TestQgsLayerTree::testFindLegendNode()
   //cleanup
   delete m;
   delete root;
-  QgsProject::instance()->removeMapLayers( QList<QgsMapLayer*>() << vl );
 }
 
 void TestQgsLayerTree::testLegendSymbolCategorized()
@@ -419,6 +420,50 @@ void TestQgsLayerTree::testLegendSymbolRuleBased()
   testRendererLegend( renderer );
 }
 
+void TestQgsLayerTree::testResolveReferences()
+{
+  QgsVectorLayer* vl = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QVERIFY( vl->isValid() );
+
+  QString n1id = vl->id();
+  QString n2id = "XYZ";
+
+  QgsMapLayer* nullLayer = nullptr; // QCOMPARE does not like nullptr directly
+
+  QgsLayerTreeGroup* root = new QgsLayerTreeGroup();
+  QgsLayerTreeLayer* n1 = new QgsLayerTreeLayer( n1id, vl->name() );
+  QgsLayerTreeLayer* n2 = new QgsLayerTreeLayer( n2id, "invalid layer" );
+  root->addChildNode( n1 );
+  root->addChildNode( n2 );
+
+  // layer object not yet accessible
+  QCOMPARE( n1->layer(), nullLayer );
+  QCOMPARE( n1->layerId(), n1id );
+  QCOMPARE( n2->layer(), nullLayer );
+  QCOMPARE( n2->layerId(), n2id );
+
+  QgsProject project;
+  project.addMapLayer( vl );
+
+  root->resolveReferences( &project );
+
+  // now the layer should be accessible
+  QCOMPARE( n1->layer(), vl );
+  QCOMPARE( n1->layerId(), n1id );
+  QCOMPARE( n2->layer(), nullLayer );
+  QCOMPARE( n2->layerId(), n2id );
+
+  project.removeMapLayer( vl ); // deletes the layer
+
+  // layer object not accessible anymore
+  QCOMPARE( n1->layer(), nullLayer );
+  QCOMPARE( n1->layerId(), n1id );
+  QCOMPARE( n2->layer(), nullLayer );
+  QCOMPARE( n2->layerId(), n2id );
+
+  delete root;
+}
+
 void TestQgsLayerTree::testRendererLegend( QgsFeatureRenderer* renderer )
 {
   // runs renderer legend through a bunch of legend symbol tests
@@ -430,7 +475,9 @@ void TestQgsLayerTree::testRendererLegend( QgsFeatureRenderer* renderer )
   QgsVectorLayer* vl = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QVERIFY( vl->isValid() );
 
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << vl );
+  QgsProject project;
+  project.addMapLayer( vl );
+
   vl->setRenderer( renderer );
 
   //create legend with symbology nodes for renderer
@@ -471,7 +518,6 @@ void TestQgsLayerTree::testRendererLegend( QgsFeatureRenderer* renderer )
   //cleanup
   delete m;
   delete root;
-  QgsProject::instance()->removeMapLayers( QList<QgsMapLayer*>() << vl );
 }
 
 

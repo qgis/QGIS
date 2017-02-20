@@ -45,9 +45,10 @@ class TestQgsLabelingEngine : public QObject
     void testEncodeDecodePositionOrder();
     void testSubstitutions();
     void testCapitalization();
+    void testParticipatingLayers();
 
   private:
-    QgsVectorLayer* vl;
+    QgsVectorLayer* vl = nullptr;
 
     QString mReport;
 
@@ -532,6 +533,35 @@ void TestQgsLabelingEngine::testCapitalization()
   provider4->prepare( context, attributes );
   provider4->registerFeature( f, context );
   QCOMPARE( provider4->mLabels.at( 0 )->labelText(), QString( "A TeSt LABEL" ) );
+}
+
+void TestQgsLabelingEngine::testParticipatingLayers()
+{
+  QgsLabelingEngine engine;
+  QVERIFY( engine.participatingLayers().isEmpty() );
+
+  QgsPalLayerSettings settings1;
+  QgsVectorLayerLabelProvider* provider = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test" ), true, &settings1 );
+  engine.addProvider( provider );
+  QCOMPARE( engine.participatingLayers(), QList<QgsMapLayer*>() << vl );
+
+  QgsVectorLayer* layer2 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "layer2" ), QStringLiteral( "memory" ) );
+  QgsPalLayerSettings settings2;
+  QgsVectorLayerLabelProvider* provider2 = new QgsVectorLayerLabelProvider( layer2, QStringLiteral( "test2" ), true, &settings2 );
+  engine.addProvider( provider2 );
+  QCOMPARE( engine.participatingLayers().toSet(), QSet< QgsMapLayer* >() << vl << layer2 );
+
+  // add a rule-based labeling node
+  QgsRuleBasedLabeling::Rule* root = new QgsRuleBasedLabeling::Rule( 0 );
+  QgsPalLayerSettings s1;
+  root->appendChild( new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings( s1 ) ) );
+  QgsPalLayerSettings s2;
+  root->appendChild( new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings( s2 ) ) );
+
+  QgsVectorLayer* layer3 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "layer3" ), QStringLiteral( "memory" ) );
+  QgsRuleBasedLabelProvider* ruleProvider = new QgsRuleBasedLabelProvider( QgsRuleBasedLabeling( root ), layer3 );
+  engine.addProvider( ruleProvider );
+  QCOMPARE( engine.participatingLayers().toSet(), QSet< QgsMapLayer* >() << vl << layer2 << layer3 );
 }
 
 bool TestQgsLabelingEngine::imageCheck( const QString& testName, QImage &image, int mismatchCount )

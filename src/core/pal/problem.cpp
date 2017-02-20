@@ -144,7 +144,7 @@ void Problem::reduce()
 
   double amin[2];
   double amax[2];
-  LabelPosition *lp2;
+  LabelPosition *lp2 = nullptr;
 
   while ( run )
   {
@@ -215,8 +215,8 @@ void Problem::init_sol_empty()
 
 typedef struct
 {
-  PriorityQueue *list;
-  LabelPosition *lp;
+  PriorityQueue *list = nullptr;
+  LabelPosition *lp = nullptr;
   RTree <LabelPosition*, double, 2, double> *candidates;
 } FalpContext;
 
@@ -281,7 +281,7 @@ void Problem::init_sol_falp()
 {
   int i, j;
   int label;
-  PriorityQueue *list;
+  PriorityQueue *list = nullptr;
 
   init_sol_empty();
 
@@ -294,7 +294,7 @@ void Problem::init_sol_falp()
   context->candidates = candidates;
   context->list = list;
 
-  LabelPosition *lp;
+  LabelPosition *lp = nullptr;
 
   for ( i = 0; i < nbft; i++ )
     for ( j = 0; j < featNbLp[i]; j++ )
@@ -546,8 +546,8 @@ void Problem::popmusic()
 typedef struct
 {
   QLinkedList<int> *queue;
-  int *isIn;
-  LabelPosition *lp;
+  int *isIn = nullptr;
+  LabelPosition *lp = nullptr;
 } SubPartContext;
 
 bool subPartCallback( LabelPosition *lp, void *ctx )
@@ -573,7 +573,7 @@ SubPart * Problem::subPart( int r, int featseed, int *isIn )
   QLinkedList<int> *queue = new QLinkedList<int>;
   QLinkedList<int> *ri = new QLinkedList<int>;
 
-  int *sub;
+  int *sub = nullptr;
 
   int id;
   int featS;
@@ -593,7 +593,7 @@ SubPart * Problem::subPart( int r, int featseed, int *isIn )
   queue->append( featseed );
   isIn[featseed] = 1;
 
-  LabelPosition *lp;
+  LabelPosition *lp = nullptr;
 
   while ( ri->size() < r && !queue->isEmpty() )
   {
@@ -661,7 +661,7 @@ double Problem::compute_feature_cost( SubPart *part, int feat_id, int label_id, 
 
   double amin[2];
   double amax[2];
-  LabelPosition *lp;
+  LabelPosition *lp = nullptr;
 
   cost = 0.0;
 
@@ -759,13 +759,13 @@ inline void actualizeCandidateList( int nbOverlap, int *candidateListSize, doubl
 
 typedef struct
 {
-  LabelPosition *lp;
-  Triple **candidates;
-  double *labelPositionCost;
-  int *nbOlap;
+  LabelPosition *lp = nullptr;
+  Triple **candidates = nullptr;
+  double *labelPositionCost = nullptr;
+  int *nbOlap = nullptr;
   double diff_cost;
-  int *featWrap;
-  int *sol;
+  int *featWrap = nullptr;
+  int *sol = nullptr;
   int borderSize;
 } UpdateContext;
 
@@ -1030,7 +1030,7 @@ double Problem::popmusic_tabu( SubPart *part )
 
       double amin[2];
       double amax[2];
-      LabelPosition *lp;
+      LabelPosition *lp = nullptr;
 
       UpdateContext context;
 
@@ -1111,15 +1111,15 @@ double Problem::popmusic_tabu( SubPart *part )
 
 typedef struct
 {
-  LabelPosition *lp;
-  int *tmpsol;
-  int *featWrap;
-  int *feat;
+  LabelPosition *lp = nullptr;
+  int *tmpsol = nullptr;
+  int *featWrap = nullptr;
+  int *feat = nullptr;
   int borderSize;
   QLinkedList<ElemTrans*> *currentChain;
   QLinkedList<int> *conflicts;
-  double *delta_tmp;
-  double *inactiveCost;
+  double *delta_tmp = nullptr;
+  double *inactiveCost = nullptr;
 
 } ChainContext;
 
@@ -1203,7 +1203,7 @@ inline Chain *Problem::chain( SubPart *part, int seed )
   int *tmpsol = new int[subSize];
   memcpy( tmpsol, sol, sizeof( int ) *subSize );
 
-  LabelPosition *lp;
+  LabelPosition *lp = nullptr;
   double amin[2];
   double amax[2];
 
@@ -1277,7 +1277,7 @@ inline Chain *Problem::chain( SubPart *part, int seed )
                 retainedChain->feat  = new int[retainedChain->degree]; // HERE
                 retainedChain->label = new int[retainedChain->degree]; // HERE
                 QLinkedList< ElemTrans* >::iterator current = currentChain->begin();
-                ElemTrans* move;
+                ElemTrans* move = nullptr;
                 j = 0;
                 while ( current != currentChain->end() )
                 {
@@ -1316,7 +1316,7 @@ inline Chain *Problem::chain( SubPart *part, int seed )
               newChain->feat  = new int[newChain->degree]; // HERE
               newChain->label = new int[newChain->degree]; // HERE
               QLinkedList<ElemTrans*>::iterator current = currentChain->begin();
-              ElemTrans* move;
+              ElemTrans* move = nullptr;
               j = 0;
               while ( current != currentChain->end() )
               {
@@ -1374,7 +1374,7 @@ inline Chain *Problem::chain( SubPart *part, int seed )
               retainedChain->feat  = new int[retainedChain->degree]; // HERE
               retainedChain->label = new int[retainedChain->degree]; // HERE
               QLinkedList<ElemTrans*>::iterator current = currentChain->begin();
-              ElemTrans* move;
+              ElemTrans* move = nullptr;
               j = 0;
               while ( current != currentChain->end() )
               {
@@ -1483,7 +1483,7 @@ inline Chain *Problem::chain( int seed )
   int *tmpsol = new int[nbft];
   memcpy( tmpsol, sol->s, sizeof( int ) *nbft );
 
-  LabelPosition *lp;
+  LabelPosition *lp = nullptr;
   double amin[2];
   double amax[2];
 
@@ -1554,7 +1554,7 @@ inline Chain *Problem::chain( int seed )
                 retainedChain->feat  = new int[retainedChain->degree];
                 retainedChain->label = new int[retainedChain->degree];
                 QLinkedList<ElemTrans*>::iterator current = currentChain->begin();
-                ElemTrans* move;
+                ElemTrans* move = nullptr;
                 j = 0;
                 while ( current != currentChain->end() )
                 {
@@ -1593,7 +1593,7 @@ inline Chain *Problem::chain( int seed )
               newChain->feat  = new int[newChain->degree];
               newChain->label = new int[newChain->degree];
               QLinkedList<ElemTrans*>::iterator current = currentChain->begin();
-              ElemTrans* move;
+              ElemTrans* move = nullptr;
               j = 0;
 
               while ( current != currentChain->end() )
@@ -1654,7 +1654,7 @@ inline Chain *Problem::chain( int seed )
               retainedChain->feat  = new int[retainedChain->degree];
               retainedChain->label = new int[retainedChain->degree];
               QLinkedList<ElemTrans*>::iterator current = currentChain->begin();
-              ElemTrans* move;
+              ElemTrans* move = nullptr;
               j = 0;
               while ( current != currentChain->end() )
               {
@@ -2116,9 +2116,9 @@ void Problem::check_solution()
 
 typedef struct _nokContext
 {
-  LabelPosition *lp;
-  bool *ok;
-  int *wrap;
+  LabelPosition *lp = nullptr;
+  bool *ok = nullptr;
+  int *wrap = nullptr;
 } NokContext;
 
 bool nokCallback( LabelPosition *lp, void *context )
@@ -2162,7 +2162,7 @@ void Problem::chain_search()
   context.ok = ok;
   context.wrap = nullptr;
 
-  Chain *retainedChain;
+  Chain *retainedChain = nullptr;
 
   featWrap = nullptr;
 
@@ -2277,7 +2277,7 @@ QList<LabelPosition*> * Problem::getSolution( bool returnInactive )
   // if features collide, order by size, so smaller ones appear on top
   if ( returnInactive )
   {
-    qSort( solList->begin(), solList->end(), compareLabelArea );
+    std::sort( solList->begin(), solList->end(), compareLabelArea );
   }
 
   return solList;
@@ -2350,7 +2350,7 @@ void Problem::solution_cost()
   context.cost = &sol->cost;
   double amin[2];
   double amax[2];
-  LabelPosition *lp;
+  LabelPosition *lp = nullptr;
 
   int nbHidden = 0;
 

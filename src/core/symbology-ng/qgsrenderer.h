@@ -65,7 +65,7 @@ class CORE_EXPORT QgsSymbolLevelItem
     QgsSymbol* symbol() { return mSymbol; }
     int layer() { return mLayer; }
   protected:
-    QgsSymbol* mSymbol;
+    QgsSymbol* mSymbol = nullptr;
     int mLayer;
 };
 
@@ -432,7 +432,7 @@ class CORE_EXPORT QgsFeatureRenderer
     //! The current size of editing marker
     int mCurrentVertexMarkerSize;
 
-    QgsPaintEffect* mPaintEffect;
+    QgsPaintEffect* mPaintEffect = nullptr;
 
     bool mForceRaster;
 

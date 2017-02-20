@@ -32,7 +32,10 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer* 
   mProviderFeatureSource = layer->dataProvider()->featureSource();
   mFields = layer->fields();
 
-  layer->createJoinCaches();
+  // update layer's join caches if necessary
+  if ( layer->mJoinBuffer->containsJoins() )
+    layer->mJoinBuffer->createJoinCaches();
+
   mJoinBuffer = layer->mJoinBuffer->clone();
 
   mExpressionFieldBuffer = new QgsExpressionFieldBuffer( *layer->mExpressionFieldBuffer );
@@ -502,11 +505,12 @@ void QgsVectorLayerFeatureIterator::prepareJoin( int fieldIdx )
     return;
 
   int sourceLayerIndex;
-  const QgsVectorJoinInfo* joinInfo = mSource->mJoinBuffer->joinForFieldIndex( fieldIdx, mSource->mFields, sourceLayerIndex );
+  const QgsVectorLayerJoinInfo* joinInfo = mSource->mJoinBuffer->joinForFieldIndex( fieldIdx, mSource->mFields, sourceLayerIndex );
   Q_ASSERT( joinInfo );
 
-  QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( joinInfo->joinLayerId ) );
-  Q_ASSERT( joinLayer );
+  QgsVectorLayer* joinLayer = joinInfo->joinLayer();
+  if ( !joinLayer )
+    return;  // invalid join (unresolved reference to layer)
 
   if ( !mFetchJoinInfo.contains( joinInfo ) )
   {
@@ -514,16 +518,8 @@ void QgsVectorLayerFeatureIterator::prepareJoin( int fieldIdx )
     info.joinInfo = joinInfo;
     info.joinLayer = joinLayer;
     info.indexOffset = mSource->mJoinBuffer->joinedFieldsOffset( joinInfo, mSource->mFields );
-
-    if ( joinInfo->targetFieldName.isEmpty() )
-      info.targetField = joinInfo->targetFieldIndex;    //for compatibility with 1.x
-    else
-      info.targetField = mSource->mFields.indexFromName( joinInfo->targetFieldName );
-
-    if ( joinInfo->joinFieldName.isEmpty() )
-      info.joinField = joinInfo->joinFieldIndex;      //for compatibility with 1.x
-    else
-      info.joinField = joinLayer->fields().indexFromName( joinInfo->joinFieldName );
+    info.targetField = mSource->mFields.indexFromName( joinInfo->targetFieldName() );
+    info.joinField = joinLayer->fields().indexFromName( joinInfo->joinFieldName() );
 
     // for joined fields, we always need to request the targetField from the provider too
     if ( !mPreparedFields.contains( info.targetField ) && !mFieldsToPrepare.contains( info.targetField ) )
@@ -554,7 +550,7 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
   exp->setDistanceUnits( QgsProject::instance()->distanceUnits() );
   exp->setAreaUnits( QgsProject::instance()->areaUnits() );
 
-  exp->prepare( mExpressionContext.data() );
+  exp->prepare( mExpressionContext.get() );
   mExpressionFieldInfo.insert( fieldIdx, exp );
 
   Q_FOREACH ( const QString& col, exp->referencedColumns() )
@@ -715,7 +711,7 @@ void QgsVectorLayerFeatureIterator::addVirtualAttributes( QgsFeature& f )
 
   QList< int > fetchedVirtualAttributes;
   //first, check through joins for any virtual fields we need
-  QMap<const QgsVectorJoinInfo*, FetchJoinInfo>::const_iterator joinIt = mFetchJoinInfo.constBegin();
+  QMap<const QgsVectorLayerJoinInfo*, FetchJoinInfo>::const_iterator joinIt = mFetchJoinInfo.constBegin();
   for ( ; joinIt != mFetchJoinInfo.constEnd(); ++joinIt )
   {
     if ( mExpressionFieldInfo.contains( joinIt->targetField ) )
@@ -746,10 +742,17 @@ void QgsVectorLayerFeatureIterator::addVirtualAttributes( QgsFeature& f )
 void QgsVectorLayerFeatureIterator::addExpressionAttribute( QgsFeature& f, int attrIndex )
 {
   QgsExpression* exp = mExpressionFieldInfo.value( attrIndex );
-  mExpressionContext->setFeature( f );
-  QVariant val = exp->evaluate( mExpressionContext.data() );
-  mSource->mFields.at( attrIndex ).convertCompatible( val );
-  f.setAttribute( attrIndex, val );
+  if ( exp )
+  {
+    mExpressionContext->setFeature( f );
+    QVariant val = exp->evaluate( mExpressionContext.get() );
+    mSource->mFields.at( attrIndex ).convertCompatible( val );
+    f.setAttribute( attrIndex, val );
+  }
+  else
+  {
+    f.setAttribute( attrIndex, QVariant() );
+  }
 }
 
 bool QgsVectorLayerFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simplifyMethod )
@@ -788,11 +791,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   // no memory cache, query the joined values by setting substring
   QString subsetString;
 
-  QString joinFieldName;
-  if ( joinInfo->joinFieldName.isEmpty() && joinInfo->joinFieldIndex >= 0 && joinInfo->joinFieldIndex < joinLayer->fields().count() )
-    joinFieldName = joinLayer->fields().field( joinInfo->joinFieldIndex ).name();   // for compatibility with 1.x
-  else
-    joinFieldName = joinInfo->joinFieldName;
+  QString joinFieldName = joinInfo->joinFieldName();
 
   subsetString.append( QStringLiteral( "\"%1\"" ).arg( joinFieldName ) );
 

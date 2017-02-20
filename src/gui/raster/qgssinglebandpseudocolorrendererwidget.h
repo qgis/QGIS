@@ -68,7 +68,7 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     void autoLabel();
     void setUnitFromLabels();
 
-    QMenu* contextMenu;
+    QMenu* contextMenu = nullptr;
 
   private slots:
 
@@ -96,7 +96,7 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     void setLineEditValue( QLineEdit *theLineEdit, double theValue );
     double lineEditValue( const QLineEdit *theLineEdit ) const;
     void resetClassifyButton();
-    QgsRasterMinMaxWidget * mMinMaxWidget;
+    QgsRasterMinMaxWidget * mMinMaxWidget = nullptr;
     bool mDisableMinMaxWidgetRefresh;
     int mMinMaxOrigin;
 

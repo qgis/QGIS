@@ -132,23 +132,23 @@ void QgsComposerNodesItem::drawNodes( QPainter *painter ) const
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "cross" ) );
   properties.insert( QStringLiteral( "color_border" ), QStringLiteral( "red" ) );
 
-  QScopedPointer<QgsMarkerSymbol> symbol;
+  std::unique_ptr<QgsMarkerSymbol> symbol;
   symbol.reset( QgsMarkerSymbol::createSimple( properties ) );
-  symbol.data()->setSize( rectSize );
-  symbol.data()->setAngle( 45 );
+  symbol->setSize( rectSize );
+  symbol->setAngle( 45 );
 
-  QgsRenderContext context = QgsComposerUtils::createRenderContext( mComposition, painter );
+  QgsRenderContext context = QgsComposerUtils::createRenderContextForComposition( mComposition, painter );
   context.setForceVectorOutput( true );
 
   QgsExpressionContext expressionContext = createExpressionContext();
   context.setExpressionContext( expressionContext );
 
-  symbol.data()->startRender( context );
+  symbol->startRender( context );
 
   Q_FOREACH ( QPointF pt, mPolygon )
-    symbol.data()->renderPoint( pt, nullptr, context );
+    symbol->renderPoint( pt, nullptr, context );
 
-  symbol.data()->stopRender( context );
+  symbol->stopRender( context );
 
   if ( mSelectedNode >= 0 && mSelectedNode < mPolygon.size() )
     drawSelectedNode( painter );
@@ -164,19 +164,19 @@ void QgsComposerNodesItem::drawSelectedNode( QPainter *painter ) const
   properties.insert( QStringLiteral( "color_border" ), QStringLiteral( "blue" ) );
   properties.insert( QStringLiteral( "width_border" ), QStringLiteral( "4" ) );
 
-  QScopedPointer<QgsMarkerSymbol> symbol;
+  std::unique_ptr<QgsMarkerSymbol> symbol;
   symbol.reset( QgsMarkerSymbol::createSimple( properties ) );
-  symbol.data()->setSize( rectSize );
+  symbol->setSize( rectSize );
 
-  QgsRenderContext context = QgsComposerUtils::createRenderContext( mComposition, painter );
+  QgsRenderContext context = QgsComposerUtils::createRenderContextForComposition( mComposition, painter );
   context.setForceVectorOutput( true );
 
   QgsExpressionContext expressionContext = createExpressionContext();
   context.setExpressionContext( expressionContext );
 
-  symbol.data()->startRender( context );
-  symbol.data()->renderPoint( mPolygon.at( mSelectedNode ), nullptr, context );
-  symbol.data()->stopRender( context );
+  symbol->startRender( context );
+  symbol->renderPoint( mPolygon.at( mSelectedNode ), nullptr, context );
+  symbol->stopRender( context );
 }
 
 void QgsComposerNodesItem::paint( QPainter* painter,

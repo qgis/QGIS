@@ -34,9 +34,9 @@ class QgsGeometryCheckerDialog : public QDialog
     ~QgsGeometryCheckerDialog();
 
   private:
-    QgisInterface* mIface;
-    QDialogButtonBox* mButtonBox;
-    QTabWidget* mTabWidget;
+    QgisInterface* mIface = nullptr;
+    QDialogButtonBox* mButtonBox = nullptr;
+    QTabWidget* mTabWidget = nullptr;
 
     void done( int r ) override;
     void closeEvent( QCloseEvent *ev ) override;

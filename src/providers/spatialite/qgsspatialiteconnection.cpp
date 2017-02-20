@@ -168,9 +168,9 @@ int QgsSpatiaLiteConnection::checkHasMetadataTables( sqlite3* handle )
   bool proj4text = false;
   bool srtext = false;
   int ret;
-  const char *name;
+  const char *name = nullptr;
   int i;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   char *errMsg = nullptr;
@@ -271,7 +271,7 @@ bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 * handle, b
 {
   int ret;
   int i;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   char *errMsg = nullptr;
@@ -382,7 +382,7 @@ bool QgsSpatiaLiteConnection::getTableInfo( sqlite3 * handle, bool loadGeometryl
 {
   int ret;
   int i;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   char *errMsg = nullptr;
@@ -494,7 +494,7 @@ bool QgsSpatiaLiteConnection::checkGeometryColumnsAuth( sqlite3 * handle )
 {
   int ret;
   int i;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   bool exists = false;
@@ -528,7 +528,7 @@ bool QgsSpatiaLiteConnection::checkViewsGeometryColumns( sqlite3 * handle )
 {
   int ret;
   int i;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   bool exists = false;
@@ -561,7 +561,7 @@ bool QgsSpatiaLiteConnection::checkVirtsGeometryColumns( sqlite3 * handle )
 {
   int ret;
   int i;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   bool exists = false;
@@ -595,7 +595,7 @@ bool QgsSpatiaLiteConnection::isRasterlite1Datasource( sqlite3 * handle, const c
 // testing for RasterLite-1 datasources
   int ret;
   int i;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   bool exists = false;
@@ -641,7 +641,7 @@ bool QgsSpatiaLiteConnection::isDeclaredHidden( sqlite3 * handle, const QString&
 {
   int ret;
   int i;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   char *errMsg = nullptr;
@@ -699,7 +699,7 @@ bool QgsSqliteHandle::checkMetadata( sqlite3 *handle )
 {
   int ret;
   int i;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   int spatial_type = 0;
@@ -722,7 +722,7 @@ skip:
 
 QgsSqliteHandle* QgsSqliteHandle::openDb( const QString & dbPath, bool shared )
 {
-  sqlite3 *sqlite_handle;
+  sqlite3 *sqlite_handle = nullptr;
 
   //QMap < QString, QgsSqliteHandle* >&handles = QgsSqliteHandle::handles;
 

@@ -39,10 +39,10 @@ class QgsGeometryCheckerSetupTab : public QWidget
     void checkerFinished( bool );
 
   private:
-    QgisInterface* mIface;
+    QgisInterface* mIface = nullptr;
     Ui::QgsGeometryCheckerSetupTab ui;
-    QPushButton* mRunButton;
-    QPushButton* mAbortButton;
+    QPushButton* mRunButton = nullptr;
+    QPushButton* mAbortButton = nullptr;
     QMutex m_errorListMutex;
     QString mOutputDriverName;
 

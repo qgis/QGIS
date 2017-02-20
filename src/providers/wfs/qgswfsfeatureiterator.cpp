@@ -995,7 +995,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
 
     QgsGeometry constGeom = cachedFeature.geometry();
     if ( !mRequest.filterRect().isNull() &&
-         ( constGeom.isEmpty() || !constGeom.intersects( mRequest.filterRect() ) ) )
+         ( constGeom.isNull() || !constGeom.intersects( mRequest.filterRect() ) ) )
     {
       continue;
     }
@@ -1075,7 +1075,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
 
         QgsGeometry constGeom = feat.geometry();
         if ( !mRequest.filterRect().isNull() &&
-             ( constGeom.isEmpty() || !constGeom.intersects( mRequest.filterRect() ) ) )
+             ( constGeom.isNull() || !constGeom.intersects( mRequest.filterRect() ) ) )
         {
           continue;
         }
@@ -1165,7 +1165,7 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature& srcFeature, QgsFeatur
 {
   //copy the geometry
   QgsGeometry geometry = srcFeature.geometry();
-  if ( !mShared->mGeometryAttribute.isEmpty() && !geometry.isEmpty() )
+  if ( !mShared->mGeometryAttribute.isEmpty() && !geometry.isNull() )
   {
     QgsGeometry g;
     g.fromWkb( geometry.exportToWkb() );

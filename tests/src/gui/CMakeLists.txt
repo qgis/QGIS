@@ -30,6 +30,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${GEOS_INCLUDE_DIR}
   ${QWT_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
+  ${QSCINTILLA_INCLUDE_DIR}
 )
 
 #############################################################
@@ -119,6 +120,7 @@ MACRO (ADD_QGIS_TEST testname testsrc)
 ENDMACRO (ADD_QGIS_TEST)
 
 ADD_QGIS_TEST(zoomtest testqgsmaptoolzoom.cpp)
+ADD_QGIS_TEST(edittooltest testqgsmaptooledit.cpp)
 
 # a simple app for testing GUI of renderers
 # These tests are old and are never run so removed for now.
@@ -146,4 +148,3 @@ ADD_QGIS_TEST(editorwidgetregistrytest testqgseditorwidgetregistry.cpp)
 ADD_QGIS_TEST(keyvaluewidgettest testqgskeyvaluewidget.cpp)
 ADD_QGIS_TEST(listwidgettest testqgslistwidget.cpp)
 ADD_QGIS_TEST(filedownloader testqgsfiledownloader.cpp)
-

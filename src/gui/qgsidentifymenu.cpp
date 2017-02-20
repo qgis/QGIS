@@ -165,7 +165,7 @@ void QgsIdentifyMenu::closeEvent( QCloseEvent* e )
 
 void QgsIdentifyMenu::addRasterLayer( QgsMapLayer* layer )
 {
-  QAction* layerAction;
+  QAction* layerAction = nullptr;
   QMenu* layerMenu = nullptr;
 
   QList<QgsMapLayerAction*> separators = QList<QgsMapLayerAction*>();

@@ -60,12 +60,12 @@ class GUI_EXPORT QgsValueRelationSearchWidgetWrapper : public QgsSearchWidgetWra
     void setExpression( QString exp ) override;
 
   private:
-    QComboBox* mComboBox;
-    QListWidget* mListWidget;
-    QLineEdit* mLineEdit;
+    QComboBox* mComboBox = nullptr;
+    QListWidget* mListWidget = nullptr;
+    QLineEdit* mLineEdit = nullptr;
 
     QgsValueRelationFieldFormatter::ValueRelationCache mCache;
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
 
     friend class QgsValueRelationWidgetFactory;
 };

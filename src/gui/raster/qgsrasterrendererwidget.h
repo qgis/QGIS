@@ -87,7 +87,7 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
     void widgetChanged();
 
   protected:
-    QgsRasterLayer* mRasterLayer;
+    QgsRasterLayer* mRasterLayer = nullptr;
     //! Returns a band name for display. First choice is color name, otherwise band number
     QString displayBandName( int band ) const;
 
@@ -95,7 +95,7 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
     QgsRectangle mExtent;
 
     //! Associated map canvas
-    QgsMapCanvas* mCanvas;
+    QgsMapCanvas* mCanvas = nullptr;
 };
 
 #endif // QGSRASTERRENDERERWIDGET_H

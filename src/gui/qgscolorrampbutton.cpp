@@ -87,7 +87,7 @@ void QgsColorRampButton::showColorRampDialog()
   QgsPanelWidget* panel = QgsPanelWidget::findParentPanel( this );
   bool panelMode = panel && panel->dockMode();
 
-  QScopedPointer< QgsColorRamp > currentRamp( colorRamp() );
+  std::unique_ptr< QgsColorRamp > currentRamp( colorRamp() );
   if ( !currentRamp )
     return;
 
@@ -95,7 +95,7 @@ void QgsColorRampButton::showColorRampDialog()
 
   if ( currentRamp->type() == QLatin1String( "gradient" ) )
   {
-    QgsGradientColorRamp* gradRamp = static_cast<QgsGradientColorRamp*>( currentRamp.data() );
+    QgsGradientColorRamp* gradRamp = static_cast<QgsGradientColorRamp*>( currentRamp.get() );
     QgsGradientColorRampDialog dlg( *gradRamp, this );
     dlg.setWindowTitle( mColorRampDialogTitle );
     if ( dlg.exec() )
@@ -105,7 +105,7 @@ void QgsColorRampButton::showColorRampDialog()
   }
   else if ( currentRamp->type() == QLatin1String( "random" ) )
   {
-    QgsLimitedRandomColorRamp* randRamp = static_cast<QgsLimitedRandomColorRamp*>( currentRamp.data() );
+    QgsLimitedRandomColorRamp* randRamp = static_cast<QgsLimitedRandomColorRamp*>( currentRamp.get() );
     if ( panelMode )
     {
       QgsLimitedRandomColorRampWidget* widget = new QgsLimitedRandomColorRampWidget( *randRamp, this );
@@ -124,7 +124,7 @@ void QgsColorRampButton::showColorRampDialog()
   }
   else if ( currentRamp->type() == QLatin1String( "preset" ) )
   {
-    QgsPresetSchemeColorRamp* presetRamp = static_cast<QgsPresetSchemeColorRamp*>( currentRamp.data() );
+    QgsPresetSchemeColorRamp* presetRamp = static_cast<QgsPresetSchemeColorRamp*>( currentRamp.get() );
     if ( panelMode )
     {
       QgsPresetColorRampWidget* widget = new QgsPresetColorRampWidget( *presetRamp, this );
@@ -143,7 +143,7 @@ void QgsColorRampButton::showColorRampDialog()
   }
   else if ( currentRamp->type() == QLatin1String( "colorbrewer" ) )
   {
-    QgsColorBrewerColorRamp* brewerRamp = static_cast<QgsColorBrewerColorRamp*>( currentRamp.data() );
+    QgsColorBrewerColorRamp* brewerRamp = static_cast<QgsColorBrewerColorRamp*>( currentRamp.get() );
     if ( panelMode )
     {
       QgsColorBrewerColorRampWidget* widget = new QgsColorBrewerColorRampWidget( *brewerRamp, this );
@@ -162,7 +162,7 @@ void QgsColorRampButton::showColorRampDialog()
   }
   else if ( currentRamp->type() == QLatin1String( "cpt-city" ) )
   {
-    QgsCptCityColorRamp* cptCityRamp = static_cast<QgsCptCityColorRamp*>( currentRamp.data() );
+    QgsCptCityColorRamp* cptCityRamp = static_cast<QgsCptCityColorRamp*>( currentRamp.get() );
     QgsCptCityColorRampDialog dlg( *cptCityRamp, this );
     if ( dlg.exec() )
     {
@@ -276,11 +276,11 @@ void QgsColorRampButton::prepareMenu()
   rampNames.sort();
   for ( QStringList::iterator it = rampNames.begin(); it != rampNames.end(); ++it )
   {
-    QScopedPointer< QgsColorRamp > ramp( mStyle->colorRamp( *it ) );
+    std::unique_ptr< QgsColorRamp > ramp( mStyle->colorRamp( *it ) );
 
     if ( !mShowGradientOnly || ( ramp->type() == QLatin1String( "gradient" ) || ramp->type() == QLatin1String( "cpt-city" ) ) )
     {
-      QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.data(), QSize( 16, 16 ) );
+      QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.get(), QSize( 16, 16 ) );
       QAction* ra = new QAction( *it, this );
       ra->setIcon( icon );
       connect( ra, &QAction::triggered, this, &QgsColorRampButton::loadColorRamp );
@@ -296,11 +296,11 @@ void QgsColorRampButton::prepareMenu()
   rampNames.sort();
   for ( QStringList::iterator it = rampNames.begin(); it != rampNames.end(); ++it )
   {
-    QScopedPointer< QgsColorRamp > ramp( mStyle->colorRamp( *it ) );
+    std::unique_ptr< QgsColorRamp > ramp( mStyle->colorRamp( *it ) );
 
     if ( !mShowGradientOnly || ( ramp->type() == QLatin1String( "gradient" ) || ramp->type() == QLatin1String( "cpt-city" ) ) )
     {
-      QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.data(), QSize( 16, 16 ) );
+      QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.get(), QSize( 16, 16 ) );
       QAction* ra = new QAction( *it, this );
       ra->setIcon( icon );
       connect( ra, &QAction::triggered, this, &QgsColorRampButton::loadColorRamp );
@@ -357,7 +357,7 @@ void QgsColorRampButton::createColorRamp()
   if ( !ok || rampType.isEmpty() )
     return;
 
-  QgsColorRamp*  ramp;
+  QgsColorRamp*  ramp = nullptr;
   if ( rampType == tr( "Gradient" ) )
   {
     ramp = new QgsGradientColorRamp();
@@ -486,10 +486,10 @@ void QgsColorRampButton::setColorRampFromName( const QString& name )
 {
   if ( !name.isEmpty() )
   {
-    QScopedPointer< QgsColorRamp > ramp( mStyle->colorRamp( name ) );
+    std::unique_ptr< QgsColorRamp > ramp( mStyle->colorRamp( name ) );
     if ( ramp )
     {
-      setColorRamp( ramp.data() );
+      setColorRamp( ramp.get() );
     }
   }
 }

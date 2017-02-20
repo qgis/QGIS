@@ -50,7 +50,7 @@ class QgsOSMDownloadDialog : public QDialog, private Ui::QgsOSMDownloadDialog
     void onDownloadProgress( qint64, qint64 );
 
   private:
-    QgsOSMDownload* mDownload;
+    QgsOSMDownload* mDownload = nullptr;
 };
 
 #endif // QGSOSMDOWNLOADDIALOG_H

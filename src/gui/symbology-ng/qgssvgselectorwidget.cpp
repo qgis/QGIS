@@ -311,7 +311,7 @@ QgsSvgSelectorGroupsModel::QgsSvgSelectorGroupsModel( QObject* parent )
   for ( int i = 0; i < svgPaths.size(); i++ )
   {
     QDir dir( svgPaths.at( i ) );
-    QStandardItem *baseGroup;
+    QStandardItem *baseGroup = nullptr;
 
     if ( dir.path().contains( QgsApplication::pkgDataPath() ) )
     {

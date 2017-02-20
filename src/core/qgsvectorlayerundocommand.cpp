@@ -171,7 +171,7 @@ void QgsVectorLayerUndoCommandChangeGeometry::undo()
   {
     // existing feature
 
-    if ( mOldGeom.isEmpty() )
+    if ( mOldGeom.isNull() )
     {
       mBuffer->mChangedGeometries.remove( mFid );
 
@@ -417,7 +417,7 @@ void QgsVectorLayerUndoCommandDeleteAttribute::redo()
   if ( mProviderField )
   {
     mBuffer->mDeletedAttributeIds.append( mOriginIndex );
-    qSort( mBuffer->mDeletedAttributeIds ); // keep it sorted
+    std::sort( mBuffer->mDeletedAttributeIds.begin(), mBuffer->mDeletedAttributeIds.end() ); // keep it sorted
   }
   else
   {

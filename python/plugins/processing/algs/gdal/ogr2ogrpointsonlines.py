@@ -90,7 +90,7 @@ class Ogr2OgrPointsOnLines(GdalAlgorithm):
         arguments.append(layername)
         arguments.append('"')
 
-        if len(options) > 0:
+        if options is not None and len(options.strip()) > 0:
             arguments.append(options)
 
         commands = []

@@ -58,7 +58,7 @@ class CORE_EXPORT QgsVectorLayerUndoCommand : public QUndoCommand
 
   protected:
     //! Associated edit buffer
-    QgsVectorLayerEditBuffer* mBuffer;
+    QgsVectorLayerEditBuffer* mBuffer = nullptr;
 };
 
 

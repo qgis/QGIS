@@ -32,7 +32,7 @@ class QgsComposerShapeWidget: public QgsComposerItemBaseWidget, private Ui::QgsC
     ~QgsComposerShapeWidget();
 
   private:
-    QgsComposerShape* mComposerShape;
+    QgsComposerShape* mComposerShape = nullptr;
 
     //! Blocks / unblocks the signal of all GUI elements
     void blockAllSignals( bool block );

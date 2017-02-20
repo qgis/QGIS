@@ -46,8 +46,8 @@ class GUI_EXPORT QgsDateTimeEditWrapper : public QgsEditorWidgetWrapper
     void dateTimeChanged( const QDateTime &dateTime );
 
   private:
-    QDateTimeEdit* mQDateTimeEdit;
-    QgsDateTimeEdit* mQgsDateTimeEdit;
+    QDateTimeEdit* mQDateTimeEdit = nullptr;
+    QgsDateTimeEdit* mQgsDateTimeEdit = nullptr;
 
 
     // QgsEditorWidgetWrapper interface

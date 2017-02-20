@@ -17,6 +17,7 @@
 #include <QString>
 #include <QApplication>
 #include <QCheckBox>
+#include <memory>
 
 //qgis includes...
 #include <qgis.h>
@@ -157,9 +158,9 @@ void TestQgis::qgsround()
 
 void TestQgis::signalBlocker()
 {
-  QScopedPointer< QCheckBox > checkbox( new QCheckBox() );
+  std::unique_ptr< QCheckBox > checkbox( new QCheckBox() );
 
-  QSignalSpy spy( checkbox.data(), SIGNAL( toggled( bool ) ) );
+  QSignalSpy spy( checkbox.get(), SIGNAL( toggled( bool ) ) );
 
   //first check that signals are not blocked
   QVERIFY( !checkbox->signalsBlocked() );
@@ -169,7 +170,7 @@ void TestQgis::signalBlocker()
 
   //block signals
   {
-    QgsSignalBlocker< QCheckBox > blocker( checkbox.data() );
+    QgsSignalBlocker< QCheckBox > blocker( checkbox.get() );
     QVERIFY( checkbox->signalsBlocked() );
 
     checkbox->setChecked( false );
@@ -190,7 +191,7 @@ void TestQgis::signalBlocker()
   // now check that initial blocking state is restored when QgsSignalBlocker goes out of scope
   checkbox->blockSignals( true );
   {
-    QgsSignalBlocker< QCheckBox > blocker( checkbox.data() );
+    QgsSignalBlocker< QCheckBox > blocker( checkbox.get() );
     QVERIFY( checkbox->signalsBlocked() );
   }
   // initial blocked state should be restored
@@ -199,10 +200,10 @@ void TestQgis::signalBlocker()
 
   // nested signal blockers
   {
-    QgsSignalBlocker< QCheckBox > blocker( checkbox.data() );
+    QgsSignalBlocker< QCheckBox > blocker( checkbox.get() );
     QVERIFY( checkbox->signalsBlocked() );
     {
-      QgsSignalBlocker< QCheckBox > blocker2( checkbox.data() );
+      QgsSignalBlocker< QCheckBox > blocker2( checkbox.get() );
       QVERIFY( checkbox->signalsBlocked() );
     }
     QVERIFY( checkbox->signalsBlocked() );
@@ -215,14 +216,14 @@ void TestQgis::signalBlocker()
   QCOMPARE( spy.last().at( 0 ).toBool(), true );
 
   QVERIFY( !checkbox->signalsBlocked() );
-  whileBlocking( checkbox.data() )->setChecked( false );
+  whileBlocking( checkbox.get() )->setChecked( false );
   // should have been no signals emitted
   QCOMPARE( spy.count(), 3 );
   // check that initial state of blocked signals was restored correctly
   QVERIFY( !checkbox->signalsBlocked() );
   checkbox->blockSignals( true );
   QVERIFY( checkbox->signalsBlocked() );
-  whileBlocking( checkbox.data() )->setChecked( true );
+  whileBlocking( checkbox.get() )->setChecked( true );
   QVERIFY( checkbox->signalsBlocked() );
 }
 

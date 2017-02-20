@@ -392,7 +392,6 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     //! View menu actions
     virtual QAction *actionPan() override;
-    virtual QAction *actionTouch() override;
     virtual QAction *actionPanToSelected() override;
     virtual QAction *actionZoomIn() override;
     virtual QAction *actionZoomOut() override;
@@ -528,9 +527,9 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
   private:
 
     //! Pointer to the QgisApp object
-    QgisApp *qgis;
+    QgisApp *qgis = nullptr;
 
-    QTimer *mTimer;
+    QTimer *mTimer = nullptr;
 
     //! Pointer to the PluginManagerInterface object
     QgsAppPluginManagerInterface pluginManagerIface;

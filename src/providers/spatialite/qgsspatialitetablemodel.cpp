@@ -32,7 +32,7 @@ QgsSpatiaLiteTableModel::QgsSpatiaLiteTableModel(): QStandardItemModel(), mTable
 void QgsSpatiaLiteTableModel::addTableEntry( const QString& type, const QString& tableName, const QString& geometryColName, const QString& sql )
 {
   //is there already a root item ?
-  QStandardItem *dbItem;
+  QStandardItem *dbItem = nullptr;
   QList < QStandardItem * >dbItems = findItems( mSqliteDb, Qt::MatchExactly, 0 );
 
   //there is already an item
@@ -100,7 +100,7 @@ void QgsSpatiaLiteTableModel::setGeometryTypesForTable( const QString & table, c
   QStringList typeList = type.split( ',' );
 
   //find schema item and table item
-  QStandardItem *dbItem;
+  QStandardItem *dbItem = nullptr;
   QList < QStandardItem * >dbItems = findItems( mSqliteDb, Qt::MatchExactly, 0 );
 
   if ( dbItems.size() < 1 )

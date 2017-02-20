@@ -48,8 +48,8 @@ class GUI_EXPORT QgsUuidWidgetWrapper : public QgsEditorWidgetWrapper
     void setEnabled( bool enabled ) override;
 
   private:
-    QLabel* mLabel;
-    QLineEdit* mLineEdit;
+    QLabel* mLabel = nullptr;
+    QLineEdit* mLineEdit = nullptr;
 };
 
 #endif // QGSUUIDWIDGETWRAPPER_H

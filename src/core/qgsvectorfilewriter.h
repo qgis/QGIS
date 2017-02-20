@@ -21,7 +21,10 @@
 
 #include "qgis_core.h"
 #include "qgsfields.h"
+#include "qgsfeedback.h"
 #include "qgssymbol.h"
+#include "qgstaskmanager.h"
+#include "qgsvectorlayer.h"
 #include <ogr_api.h>
 
 #include <QPair>
@@ -164,6 +167,7 @@ class CORE_EXPORT QgsVectorFileWriter
       ErrProjection,
       ErrFeatureWriteFailed,
       ErrInvalidLayer,
+      Canceled, //!< Writing was interrupted by manual cancelation
     };
 
     enum SymbologyExport
@@ -390,7 +394,10 @@ class CORE_EXPORT QgsVectorFileWriter
         bool includeZ;
 
         //! Field value converter
-        FieldValueConverter* fieldValueConverter;
+        FieldValueConverter* fieldValueConverter = nullptr;
+
+        //! Optional feedback object allowing cancelation of layer save
+        QgsFeedback* feedback = nullptr;
     };
 
     /** Writes a layer out to a vector file.
@@ -523,7 +530,6 @@ class CORE_EXPORT QgsVectorFileWriter
     OGRDataSourceH mDS;
     OGRLayerH mLayer;
     OGRSpatialReferenceH mOgrRef;
-    OGRGeometryH mGeom;
 
     QgsFields mFields;
 
@@ -531,7 +537,7 @@ class CORE_EXPORT QgsVectorFileWriter
     WriterError mError;
     QString mErrorMessage;
 
-    QTextCodec *mCodec;
+    QTextCodec *mCodec = nullptr;
 
     //! Geometry type which is being used
     QgsWkbTypes::Type mWkbType;
@@ -549,7 +555,7 @@ class CORE_EXPORT QgsVectorFileWriter
     QString mOgrDriverName;
 
     //! Field value converter
-    FieldValueConverter* mFieldValueConverter;
+    FieldValueConverter* mFieldValueConverter = nullptr;
 
   private:
 
@@ -616,5 +622,6 @@ class CORE_EXPORT QgsVectorFileWriter
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsVectorFileWriter::EditionCapabilities )
+
 
 #endif

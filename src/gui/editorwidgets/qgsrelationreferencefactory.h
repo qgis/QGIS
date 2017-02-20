@@ -67,8 +67,8 @@ class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
 
   private:
     QgsAttributeEditorContext mEditorContext;
-    QgsMapCanvas* mCanvas;
-    QgsMessageBar* mMessageBar;
+    QgsMapCanvas* mCanvas = nullptr;
+    QgsMessageBar* mMessageBar = nullptr;
 };
 
 #endif // QGSRELATIONREFERENCEFACTORY_H

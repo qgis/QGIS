@@ -54,8 +54,8 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
     void setShift( QPointF shift ) { mShift = shift; }
 
   private:
-    const QgsDxfPaintDevice* mPaintDevice;
-    QgsDxfExport* mDxf;
+    const QgsDxfPaintDevice* mPaintDevice = nullptr;
+    QgsDxfExport* mDxf = nullptr;
 
     //painter state information
     QTransform mTransform;

@@ -77,7 +77,7 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
     QString name() const override;
 
   private:
-    QgsVectorLayer *mVectorLayer;
+    QgsVectorLayer *mVectorLayer = nullptr;
     int mDirectionFieldId;
     QString mDirectDirectionValue;
     QString mReverseDirectionValue;

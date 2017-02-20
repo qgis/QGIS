@@ -114,7 +114,7 @@ class CORE_EXPORT QgsAttributeEditorElement
   protected:
     AttributeEditorType mType;
     QString mName;
-    QgsAttributeEditorElement* mParent;
+    QgsAttributeEditorElement* mParent = nullptr;
     bool mShowLabel;
 
   private:

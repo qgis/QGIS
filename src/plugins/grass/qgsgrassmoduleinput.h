@@ -90,7 +90,7 @@ class QgsGrassModuleInputModel : public QStandardItemModel
     QStringList watchedDirs() { QStringList l; l << QStringLiteral( "cellhd" ) << QStringLiteral( "vector" ) << QStringLiteral( "tgis" ); return l; }
     // names of
     QStringList locationDirNames();
-    QFileSystemWatcher *mWatcher;
+    QFileSystemWatcher *mWatcher = nullptr;
 
 };
 
@@ -107,7 +107,7 @@ class QgsGrassModuleInputProxy : public QSortFilterProxyModel
     bool lessThan( const QModelIndex & left, const QModelIndex & right ) const override;
 
   private:
-    QgsGrassModuleInputModel *mSourceModel;
+    QgsGrassModuleInputModel *mSourceModel = nullptr;
     QgsGrassObject::Type mType;
 };
 
@@ -183,9 +183,9 @@ class QgsGrassModuleInputComboBox : public QComboBox
 
   protected:
     QgsGrassObject::Type mType;
-    QgsGrassModuleInputModel *mModel;
-    QgsGrassModuleInputProxy *mProxy;
-    QgsGrassModuleInputTreeView *mTreeView;
+    QgsGrassModuleInputModel *mModel = nullptr;
+    QgsGrassModuleInputProxy *mProxy = nullptr;
+    QgsGrassModuleInputTreeView *mTreeView = nullptr;
     // Skip next hidePopup
     bool mSkipHide;
 };
@@ -220,7 +220,7 @@ class QgsGrassModuleInputSelectedView : public QTreeView
     bool eventFilter( QObject *obj, QEvent *event );
 
   private:
-    QgsGrassModuleInputSelectedDelegate *mDelegate;
+    QgsGrassModuleInputSelectedDelegate *mDelegate = nullptr;
 };
 
 
@@ -297,7 +297,7 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
     QgsGrassObject::Type mType;
 
     // Module options
-    QgsGrassModuleStandardOptions *mModuleStandardOptions;
+    QgsGrassModuleStandardOptions *mModuleStandardOptions = nullptr;
 
     //! Vector type mask read from option defined by "typeoption" tag, used for QGIS layers in combo
     //  + type mask defined in configuration file
@@ -310,25 +310,25 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
     QString mVectorLayerOption;
 
     //! Model used in combo
-    QgsGrassModuleInputModel *mModel;
+    QgsGrassModuleInputModel *mModel = nullptr;
 
     //! Model containing currently selected maps
-    QStandardItemModel *mSelectedModel;
+    QStandardItemModel *mSelectedModel = nullptr;
 
     //! Combo box with GRASS layers
-    QgsGrassModuleInputComboBox *mComboBox;
+    QgsGrassModuleInputComboBox *mComboBox = nullptr;
 
     //! Region button
-    QPushButton *mRegionButton;
+    QPushButton *mRegionButton = nullptr;
 
     //! Vector sublayer label
-    QLabel *mLayerLabel;
+    QLabel *mLayerLabel = nullptr;
 
     //! Vector sublayer combo
-    QComboBox *mLayerComboBox;
+    QComboBox *mLayerComboBox = nullptr;
 
     //! List of multiple selected maps
-    QTreeView *mSelectedTreeView;
+    QTreeView *mSelectedTreeView = nullptr;
 
     // Vector type checkboxes
     QMap<int, QCheckBox*> mTypeCheckBoxes;
@@ -339,7 +339,7 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
     QString mMapId;
 
     // Currently selected vector
-    QgsGrassVector * mVector;
+    QgsGrassVector * mVector = nullptr;
 
     // List of vector layers matching mGeometryTypes for currently selected vector
     QList<QgsGrassVectorLayer*> mLayers;

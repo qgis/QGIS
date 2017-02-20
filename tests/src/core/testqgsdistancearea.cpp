@@ -27,7 +27,7 @@
 #include "qgsgeometry.h"
 #include "qgis.h"
 #include "qgstestutils.h"
-
+#include <memory>
 
 class TestQgsDistanceArea: public QObject
 {
@@ -91,7 +91,7 @@ void TestQgsDistanceArea::basic()
   QVERIFY( ! qFuzzyCompare( resultA, resultB ) );
 
   // Test assignment
-  QSharedPointer<QgsDistanceArea> daC( new QgsDistanceArea );
+  std::shared_ptr<QgsDistanceArea> daC( new QgsDistanceArea );
   *daC = daB;
   resultC = daC->measureLine( p1, p2 );
   QCOMPARE( resultB, resultC );

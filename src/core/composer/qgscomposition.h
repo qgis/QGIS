@@ -862,7 +862,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
   private:
 
     //! Pointer to associated project (not null)
-    QgsProject* mProject;
+    QgsProject* mProject = nullptr;
 
     QgsComposition::PlotStyle mPlotStyle;
     double mPageWidth;
@@ -871,7 +871,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     double mSpaceBetweenPages; //space in preview between pages
 
     //! Drawing style for page
-    QgsFillSymbol* mPageStyleSymbol;
+    QgsFillSymbol* mPageStyleSymbol = nullptr;
     void createDefaultPageStyleSymbol();
 
     //! List multiframe objects
@@ -917,12 +917,12 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     bool mBoundingBoxesVisible;
     bool mPagesVisible;
-    QgsComposerMouseHandles* mSelectionHandles;
+    QgsComposerMouseHandles* mSelectionHandles = nullptr;
 
-    QUndoStack* mUndoStack;
+    QUndoStack* mUndoStack = nullptr;
 
-    QgsComposerItemCommand* mActiveItemCommand;
-    QgsComposerMultiFrameCommand* mActiveMultiFrameCommand;
+    QgsComposerItemCommand* mActiveItemCommand = nullptr;
+    QgsComposerMultiFrameCommand* mActiveMultiFrameCommand = nullptr;
 
     //! The atlas composition object. It is held by the QgsComposition
     QgsAtlasComposition mAtlasComposition;
@@ -931,7 +931,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     bool mPreventCursorChange;
 
-    QgsComposerModel * mItemsModel;
+    QgsComposerModel * mItemsModel = nullptr;
 
     QgsPropertyCollection mDataDefinedProperties;
 

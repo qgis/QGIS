@@ -303,15 +303,15 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     //! Attribute source
     ContentSource mSource;
     //! Associated vector layer
-    QgsVectorLayer* mVectorLayer;
+    QgsVectorLayer* mVectorLayer = nullptr;
     //! Relation id, if in relation children mode
     QString mRelationId;
 
     //! Current vector layer, if in atlas feature mode
-    QgsVectorLayer* mCurrentAtlasLayer;
+    QgsVectorLayer* mCurrentAtlasLayer = nullptr;
 
     //! Associated composer map (used to display the visible features)
-    const QgsComposerMap* mComposerMap;
+    const QgsComposerMap* mComposerMap = nullptr;
     //! Maximum number of features that is displayed
     int mMaximumNumberOfFeatures;
 

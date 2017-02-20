@@ -105,9 +105,9 @@ class GUI_EXPORT QgsFileDownloader : public QObject
     void error( QStringList errorMessages );
     void error( QString errorMessage );
     QUrl mUrl;
-    QNetworkReply* mReply;
+    QNetworkReply* mReply = nullptr;
     QFile mFile;
-    QProgressDialog* mProgressDialog;
+    QProgressDialog* mProgressDialog = nullptr;
     bool mDownloadCanceled;
     QStringList mErrors;
     bool mGuiNotificationsEnabled;

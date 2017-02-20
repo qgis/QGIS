@@ -39,7 +39,7 @@ class QgsMapToolCircularStringRadius: public QgsMapToolAddCircularString
   private:
     QgsPointV2 mTemporaryEndPoint;
     double mRadius;
-    QDoubleSpinBox* mRadiusSpinBox;
+    QDoubleSpinBox* mRadiusSpinBox = nullptr;
 
     //! recalculate the rubberband
     void recalculateRubberBand();

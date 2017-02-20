@@ -68,9 +68,4 @@ QStringList QOCISpatialDriverPlugin::keys() const
   return l;
 }
 
-#if QT_VERSION < 0x050000
-Q_EXPORT_STATIC_PLUGIN( QOCISpatialDriverPlugin )
-Q_EXPORT_PLUGIN2( qsqlocispatial, QOCISpatialDriverPlugin )
-#endif
-
 QT_END_NAMESPACE

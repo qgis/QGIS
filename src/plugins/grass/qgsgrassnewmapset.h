@@ -191,16 +191,16 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     bool gisdbaseExists();
 
     //! Pointer to the QGIS interface object
-    QgisInterface *mIface;
+    QgisInterface *mIface = nullptr;
 
     //! Plugin
-    QgsGrassPlugin *mPlugin;
+    QgsGrassPlugin *mPlugin = nullptr;
 
     //! Editing is already running
     static bool sRunning;
 
     //! Projection selector
-    QgsProjectionSelector *mProjectionSelector;
+    QgsProjectionSelector *mProjectionSelector = nullptr;
 
     //! GRASS projection
     struct Cell_head mCellHead;

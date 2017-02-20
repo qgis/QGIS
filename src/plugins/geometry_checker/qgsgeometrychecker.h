@@ -58,11 +58,11 @@ class QgsGeometryChecker : public QObject
         explicit RunCheckWrapper( QgsGeometryChecker* instance ) : mInstance( instance ) {}
         void operator()( const QgsGeometryCheck* check ) { mInstance->runCheck( check ); }
       private:
-        QgsGeometryChecker* mInstance;
+        QgsGeometryChecker* mInstance = nullptr;
     };
 
     QList<QgsGeometryCheck*> mChecks;
-    QgsFeaturePool* mFeaturePool;
+    QgsFeaturePool* mFeaturePool = nullptr;
     QList<QgsGeometryCheckError*> mCheckErrors;
     QStringList mMessages;
     QMutex mErrorListMutex;

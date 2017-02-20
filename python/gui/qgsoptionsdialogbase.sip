@@ -1,3 +1,23 @@
+class QgsSearchHighlightOptionWidget : QObject
+{
+%TypeHeaderCode
+#include <qgsoptionsdialogbase.h>
+%End
+  public:
+    explicit QgsSearchHighlightOptionWidget( QWidget* widget = 0 );
+    ~QgsSearchHighlightOptionWidget();
+
+    bool isValid();
+
+    bool searchHighlight( QString searchText );
+
+    void reset();
+
+    QWidget* widget();
+};
+
+
+
 class QgsOptionsDialogBase : QDialog
 {
 %TypeHeaderCode
@@ -32,6 +52,14 @@ class QgsOptionsDialogBase : QDialog
      */
     bool iconOnly();
 
+  public slots:
+
+    /**
+     * searchText searches for a text in all the pages of the stacked widget and highlight the results
+     * @param text the text to search
+     */
+    void searchText( QString text );
+
   protected slots:
     void updateOptionsListVerticalTabs();
     void optionsStackedWidget_CurrentChanged( int indx );
@@ -43,4 +71,6 @@ class QgsOptionsDialogBase : QDialog
     void paintEvent( QPaintEvent* e );
 
     virtual void updateWindowTitle();
+
+    void registerTextSearchWidgets();
 };

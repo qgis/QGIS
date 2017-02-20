@@ -51,7 +51,7 @@ class dwgFileStream: public dwgBasicStream
     virtual bool good() {return stream->good();}
     virtual dwgBasicStream* clone() {return new dwgFileStream( stream );}
   private:
-    std::ifstream *stream;
+    std::ifstream *stream = nullptr;
     duint64 sz;
 };
 
@@ -72,7 +72,7 @@ class dwgCharStream: public dwgBasicStream
     virtual bool good() {return isOk;}
     virtual dwgBasicStream* clone() {return new dwgCharStream( stream, sz );}
   private:
-    duint8 *stream;
+    duint8 *stream = nullptr;
     duint64 sz;
     duint64 pos;
     bool isOk;
@@ -144,10 +144,10 @@ class dwgBuffer
     duint32 crc32( duint32 seed, dint32 start, dint32 end );
 
 //    duint8 getCurrByte(){return currByte;}
-    DRW_TextCodec *decoder;
+    DRW_TextCodec *decoder = nullptr;
 
   private:
-    dwgBasicStream *filestr;
+    dwgBasicStream *filestr = nullptr;
     int maxSize;
     duint8 currByte;
     duint8 bitPos;

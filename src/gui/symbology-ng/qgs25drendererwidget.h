@@ -53,7 +53,7 @@ class GUI_EXPORT Qgs25DRendererWidget : public QgsRendererWidget, Ui::Qgs25DRend
   private:
     void apply() override;
 
-    Qgs25DRenderer* mRenderer;
+    Qgs25DRenderer* mRenderer = nullptr;
 };
 
 #endif // QGS25DRENDERERWIDGET_H

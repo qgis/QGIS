@@ -56,9 +56,9 @@ class APP_EXPORT QgsAngleMagnetWidget : public QWidget
     void angleSpinBoxValueChanged( double angle );
 
   private:
-    QHBoxLayout* mLayout;
-    QgsDoubleSpinBox* mAngleSpinBox;
-    QgsSpinBox* mMagnetSpinBox;
+    QHBoxLayout* mLayout = nullptr;
+    QgsDoubleSpinBox* mAngleSpinBox = nullptr;
+    QgsSpinBox* mMagnetSpinBox = nullptr;
 };
 
 
@@ -97,7 +97,7 @@ class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolEdit
     QPointF mInitialPos;
 
     //! Rubberband that shows the feature being moved
-    QgsRubberBand* mRubberBand;
+    QgsRubberBand* mRubberBand = nullptr;
 
     //! Id of moved feature
     QgsFeatureIds mRotatedFeatures;
@@ -105,12 +105,12 @@ class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolEdit
     double mRotationOffset;
 
     QPoint mStPoint;
-    QgsVertexMarker* mAnchorPoint;
+    QgsVertexMarker* mAnchorPoint = nullptr;
 
     bool mRotationActive;
 
     //! Shows current angle value and allows numerical editing
-    QgsAngleMagnetWidget* mRotationWidget;
+    QgsAngleMagnetWidget* mRotationWidget = nullptr;
 };
 
 #endif

@@ -151,16 +151,16 @@ namespace pal
       mutable bool mOwnsGeom;
 
       int nbPoints;
-      double *x;
+      double *x = nullptr;
       double *y;   // points order is counterclockwise
 
-      int *cHull;
+      int *cHull = nullptr;
       int cHullSize;
 
       int type;
 
-      PointSet* holeOf;
-      PointSet* parent;
+      PointSet* holeOf = nullptr;
+      PointSet* parent = nullptr;
 
       PointSet( double x, double y );
 

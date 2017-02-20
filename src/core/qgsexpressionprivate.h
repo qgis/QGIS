@@ -18,7 +18,7 @@
 #define QGSEXPRESSIONPRIVATE_H
 
 #include <QString>
-#include <QSharedPointer>
+#include <memory>
 
 #include "qgsexpression.h"
 #include "qgsdistancearea.h"
@@ -60,14 +60,14 @@ class QgsExpressionPrivate
 
     QAtomicInt ref;
 
-    QgsExpression::Node* mRootNode;
+    QgsExpression::Node* mRootNode = nullptr;
 
     QString mParserErrorString;
     QString mEvalErrorString;
 
     QString mExp;
 
-    QSharedPointer<QgsDistanceArea> mCalc;
+    std::shared_ptr<QgsDistanceArea> mCalc;
     QgsUnitTypes::DistanceUnit mDistanceUnit;
     QgsUnitTypes::AreaUnit mAreaUnit;
 };

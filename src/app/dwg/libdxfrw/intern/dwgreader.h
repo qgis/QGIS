@@ -198,8 +198,8 @@ class dwgReader
     duint8 maintenanceVersion;
 
   protected:
-    dwgBuffer *fileBuf;
-    dwgR *parent;
+    dwgBuffer *fileBuf = nullptr;
+    dwgR *parent = nullptr;
     DRW::Version version;
 
 //seeker (position) for the beginning sentinel of the image data (R13 to R15)

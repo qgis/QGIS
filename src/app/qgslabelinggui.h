@@ -55,8 +55,8 @@ class APP_EXPORT QgsLabelingGui : public QgsTextFormatWidget, private QgsExpress
     void syncDefinedCheckboxFrame( QgsPropertyOverrideButton* ddBtn, QCheckBox* chkBx, QFrame* f );
 
   private:
-    QgsVectorLayer* mLayer;
-    const QgsPalLayerSettings* mSettings;
+    QgsVectorLayer* mLayer = nullptr;
+    const QgsPalLayerSettings* mSettings = nullptr;
     QgsPropertyCollection mDataDefinedProperties;
     LabelMode mMode;
 

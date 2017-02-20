@@ -331,7 +331,7 @@ void QgsRelationEditorWidget::addFeature()
 
 void QgsRelationEditorWidget::linkFeature()
 {
-  QgsVectorLayer* layer;
+  QgsVectorLayer* layer = nullptr;
 
   if ( mNmRelation.isValid() )
     layer = mNmRelation.referencedLayer();
@@ -398,7 +398,7 @@ void QgsRelationEditorWidget::linkFeature()
 
 void QgsRelationEditorWidget::deleteFeature()
 {
-  QgsVectorLayer* layer;
+  QgsVectorLayer* layer = nullptr;
 
   if ( mNmRelation.isValid() )
     // So far we expect the database to take care of cleaning up the linking table or restricting

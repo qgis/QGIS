@@ -73,8 +73,8 @@ class GUI_EXPORT QgsDetailedItemDelegate : public QAbstractItemDelegate
                         const QgsDetailedItemData &theData ) const;
     int height( const QStyleOptionViewItem &theOption,
                 const QgsDetailedItemData &theData ) const;
-    QgsDetailedItemWidget * mpWidget;
-    QCheckBox * mpCheckBox;
+    QgsDetailedItemWidget * mpWidget = nullptr;
+    QCheckBox * mpCheckBox = nullptr;
     int mVerticalSpacing;
     int mHorizontalSpacing;
 };

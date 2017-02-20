@@ -251,7 +251,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
     mCheckBoxAttributeLegend->setChecked( dr->attributeLegend() );
     mCheckBoxSizeLegend->setChecked( dr->sizeLegend() );
     mSizeLegendSymbol.reset( dr->sizeLegendSymbol() ? dr->sizeLegendSymbol()->clone() : QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSizeLegendSymbol.data(), mButtonSizeLegendSymbol->iconSize() );
+    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSizeLegendSymbol.get(), mButtonSizeLegendSymbol->iconSize() );
     mButtonSizeLegendSymbol->setIcon( icon );
 
     //assume single category or linearly interpolated diagram renderer for now
@@ -413,10 +413,12 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   registerDataDefinedButton( mLineWidthDDBtn, QgsDiagramLayerSettings::OutlineWidth );
   registerDataDefinedButton( mCoordXDDBtn, QgsDiagramLayerSettings::PositionX );
   registerDataDefinedButton( mCoordYDDBtn, QgsDiagramLayerSettings::PositionY );
+  registerDataDefinedButton( mDistanceDDBtn, QgsDiagramLayerSettings::Distance );
   registerDataDefinedButton( mPriorityDDBtn, QgsDiagramLayerSettings::Priority );
   registerDataDefinedButton( mZOrderDDBtn, QgsDiagramLayerSettings::ZIndex );
   registerDataDefinedButton( mShowDiagramDDBtn, QgsDiagramLayerSettings::Show );
   registerDataDefinedButton( mAlwaysShowDDBtn, QgsDiagramLayerSettings::AlwaysShow );
+  registerDataDefinedButton( mIsObstacleDDBtn, QgsDiagramLayerSettings::IsObstacle );
   registerDataDefinedButton( mStartAngleDDBtn, QgsDiagramLayerSettings::StartAngle );
 }
 
@@ -429,7 +431,7 @@ QgsDiagramProperties::~QgsDiagramProperties()
 
 void QgsDiagramProperties::registerDataDefinedButton( QgsPropertyOverrideButton * button, QgsDiagramLayerSettings::Property key )
 {
-  button->init( key, mDataDefinedProperties, QgsDiagramLayerSettings::PROPERTY_DEFINITIONS, mLayer );
+  button->init( key, mDataDefinedProperties, QgsDiagramLayerSettings::propertyDefinitions(), mLayer );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsDiagramProperties::updateProperty );
   button->registerExpressionContextGenerator( this );
 }
@@ -458,6 +460,7 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int inde
       mTextOptionsFrame->show();
       mBackgroundColorLabel->show();
       mBackgroundColorButton->show();
+      mBackgroundColorDDBtn->show();
       mDiagramFontButton->show();
     }
     else
@@ -465,6 +468,7 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int inde
       mTextOptionsFrame->hide();
       mBackgroundColorLabel->hide();
       mBackgroundColorButton->hide();
+      mBackgroundColorDDBtn->hide();
       mDiagramFontButton->hide();
     }
 
@@ -508,11 +512,13 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int inde
     {
       mAngleOffsetComboBox->show();
       mAngleOffsetLabel->show();
+      mStartAngleDDBtn->show();
     }
     else
     {
       mAngleOffsetComboBox->hide();
       mAngleOffsetLabel->hide();
+      mStartAngleDDBtn->hide();
     }
   }
 }
@@ -938,12 +944,18 @@ void QgsDiagramProperties::on_mPlacementComboBox_currentIndexChanged( int index 
 void QgsDiagramProperties::on_mButtonSizeLegendSymbol_clicked()
 {
   QgsMarkerSymbol* newSymbol = mSizeLegendSymbol->clone();
-  QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), nullptr, this );
+  QgsSymbolWidgetContext context;
+  context.setMapCanvas( mMapCanvas );
+  QgsExpressionContext ec = createExpressionContext();
+  context.setExpressionContext( &ec );
+
+  QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), mLayer, this );
+  d.setContext( context );
 
   if ( d.exec() == QDialog::Accepted )
   {
     mSizeLegendSymbol.reset( newSymbol );
-    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSizeLegendSymbol.data(), mButtonSizeLegendSymbol->iconSize() );
+    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSizeLegendSymbol.get(), mButtonSizeLegendSymbol->iconSize() );
     mButtonSizeLegendSymbol->setIcon( icon );
   }
   else

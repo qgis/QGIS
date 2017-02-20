@@ -100,10 +100,10 @@ class GUI_EXPORT QgsEffectStackPropertiesWidget : public QgsPanelWidget, private
 
   protected:
 
-    QgsEffectStack* mStack;
-    QStandardItemModel* mModel;
-    QWidget* mPresentWidget;
-    QPicture* mPreviewPicture;
+    QgsEffectStack* mStack = nullptr;
+    QStandardItemModel* mModel = nullptr;
+    QWidget* mPresentWidget = nullptr;
+    QPicture* mPreviewPicture = nullptr;
 
     /** Refreshes the widget to reflect the current state of the stack.
      */
@@ -170,7 +170,7 @@ class GUI_EXPORT QgsEffectStackPropertiesDialog: public QgsDialog
 
   protected:
 
-    QgsEffectStackPropertiesWidget* mPropertiesWidget;
+    QgsEffectStackPropertiesWidget* mPropertiesWidget = nullptr;
 
 };
 
@@ -236,10 +236,10 @@ class GUI_EXPORT QgsEffectStackCompactWidget: public QgsPanelWidget
     void updateEffectLive();
 
   private:
-    QgsEffectStack* mStack;
-    QCheckBox* mEnabledCheckBox;
-    QToolButton* mButton;
-    QPicture* mPreviewPicture;
+    QgsEffectStack* mStack = nullptr;
+    QCheckBox* mEnabledCheckBox = nullptr;
+    QToolButton* mButton = nullptr;
+    QPicture* mPreviewPicture = nullptr;
 
 };
 

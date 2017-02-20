@@ -86,7 +86,7 @@ void TestQgsAttributeForm::testFieldConstraint()
   layer->setConstraintExpression( 0, QString() );
 
   // get wrapper
-  QgsEditorWidgetWrapper *ww;
+  QgsEditorWidgetWrapper *ww = nullptr;
   ww = qobject_cast<QgsEditorWidgetWrapper*>( form.mWidgets[0] );
 
   // no constraint so we expect a label with just the field name
@@ -247,7 +247,7 @@ void TestQgsAttributeForm::testOKButtonStatus()
   QPushButton *okButton = form.mButtonBox->button( QDialogButtonBox::Ok );
 
   // get wrapper
-  QgsEditorWidgetWrapper *ww;
+  QgsEditorWidgetWrapper *ww = nullptr;
   ww = qobject_cast<QgsEditorWidgetWrapper*>( form.mWidgets[0] );
 
   // testing stuff

@@ -45,8 +45,8 @@ class GUI_EXPORT QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeature
     void setSelectedFeatures( const QgsFeatureIds& ids );
 
   private:
-    QgsGenericFeatureSelectionManager* mFeatureSelection;
-    QgsVectorLayer* mVectorLayer;
+    QgsGenericFeatureSelectionManager* mFeatureSelection = nullptr;
+    QgsVectorLayer* mVectorLayer = nullptr;
 };
 
 #endif // QGSFEATURESELECTIONDLG_H

@@ -587,7 +587,7 @@ void QgsComposerMapGrid::calculateCrsTransformLines()
       {
         //look for intersections between lines
         QgsGeometry intersects = ( *yLineIt ).intersection(( *xLineIt ) );
-        if ( intersects.isEmpty() )
+        if ( intersects.isNull() )
           continue;
 
         //go through all intersections and draw grid markers/crosses
@@ -636,7 +636,7 @@ void QgsComposerMapGrid::draw( QPainter* p )
   p->scale( 1 / dotsPerMM, 1 / dotsPerMM ); //scale painter from mm to dots
 
   //setup render context
-  QgsRenderContext context = QgsComposerUtils::createRenderContext( mComposition, p );
+  QgsRenderContext context = QgsComposerUtils::createRenderContextForComposition( mComposition, p );
   context.setForceVectorOutput( true );
   QgsExpressionContext expressionContext = createExpressionContext();
   context.setExpressionContext( expressionContext );
@@ -1467,7 +1467,7 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGr
   {
     expressionContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_number" ), value, true ) );
     expressionContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_axis" ), coord == QgsComposerMapGrid::Longitude ? "x" : "y", true ) );
-    if ( !mGridAnnotationExpression.data() )
+    if ( !mGridAnnotationExpression )
     {
       mGridAnnotationExpression.reset( new QgsExpression( mGridAnnotationExpressionString ) );
       mGridAnnotationExpression->prepare( &expressionContext );
@@ -1974,7 +1974,7 @@ QgsComposerMapGrid::BorderSide QgsComposerMapGrid::borderForLineCoord( QPointF p
   distanceToSide << qMakePair( p.y(), QgsComposerMapGrid::Top );
   distanceToSide << qMakePair( mComposerMap->rect().height() - p.y(), QgsComposerMapGrid::Bottom );
 
-  qSort( distanceToSide.begin(), distanceToSide.end(), sortByDistance );
+  std::sort( distanceToSide.begin(), distanceToSide.end(), sortByDistance );
   return distanceToSide.at( 0 ).second;
 }
 
@@ -2056,7 +2056,7 @@ void QgsComposerMapGrid::calculateMaxExtension( double& top, double& right, doub
   }
 
   //setup render context
-  QgsRenderContext context = QgsComposerUtils::createRenderContext( mComposition, nullptr );
+  QgsRenderContext context = QgsComposerUtils::createRenderContextForComposition( mComposition, nullptr );
   QgsExpressionContext expressionContext = createExpressionContext();
   context.setExpressionContext( expressionContext );
 

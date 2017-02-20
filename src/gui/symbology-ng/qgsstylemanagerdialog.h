@@ -146,7 +146,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     //! sets the text of the item with bold font
     void setBold( QStandardItem* );
 
-    QgsStyle* mStyle;
+    QgsStyle* mStyle = nullptr;
 
     QString mStyleFilename;
 
@@ -159,16 +159,16 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     QStringList mTagList;
 
     //! Context menu for the symbols/colorramps
-    QMenu *mGroupMenu;
+    QMenu *mGroupMenu = nullptr;
 
     //! Sub-menu of @c mGroupMenu, dynamically filled to show one entry for every group
-    QMenu *mGroupListMenu;
+    QMenu *mGroupListMenu = nullptr;
 
     //! Context menu for the group tree
-    QMenu* mGroupTreeContextMenu;
+    QMenu* mGroupTreeContextMenu = nullptr;
 
     //! Menu for the "Add item" toolbutton when in colorramp mode
-    QMenu* mMenuBtnAddItemColorRamp;
+    QMenu* mMenuBtnAddItemColorRamp = nullptr;
 };
 
 #endif

@@ -38,6 +38,7 @@ email                : sherman at mrcc.com
 #include <QWheelEvent>
 
 #include "qgis.h"
+#include "qgsmapcanvasannotationitem.h"
 #include "qgsapplication.h"
 #include "qgscsexception.h"
 #include "qgsdatumtransformdialog.h"
@@ -175,6 +176,8 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent )
   QPixmap zoomPixmap = QPixmap(( const char ** )( zoom_in ) );
   mZoomCursor = QCursor( zoomPixmap, 7, 7 );
 
+  connect( &mAutoRefreshTimer, &QTimer::timeout, this, &QgsMapCanvas::autoRefreshTriggered );
+
   setInteractive( false );
 
   refresh();
@@ -294,8 +297,9 @@ void QgsMapCanvas::setLayers( const QList<QgsMapLayer*>& layers )
 
   Q_FOREACH ( QgsMapLayer* layer, oldLayers )
   {
-    disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapCanvas::refresh );
+    disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapCanvas::layerRepaintRequested );
     disconnect( layer, &QgsMapLayer::crsChanged, this, &QgsMapCanvas::layerCrsChange );
+    disconnect( layer, &QgsMapLayer::autoRefreshIntervalChanged, this, &QgsMapCanvas::updateAutoRefreshTimer );
     if ( QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
     {
       disconnect( vlayer, &QgsVectorLayer::selectionChanged, this, &QgsMapCanvas::selectionChangedSlot );
@@ -306,19 +310,20 @@ void QgsMapCanvas::setLayers( const QList<QgsMapLayer*>& layers )
 
   Q_FOREACH ( QgsMapLayer* layer, layers )
   {
-    connect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapCanvas::refresh );
+    connect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapCanvas::layerRepaintRequested );
     connect( layer, &QgsMapLayer::crsChanged, this, &QgsMapCanvas::layerCrsChange );
+    connect( layer, &QgsMapLayer::autoRefreshIntervalChanged, this, &QgsMapCanvas::updateAutoRefreshTimer );
     if ( QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
     {
       connect( vlayer, &QgsVectorLayer::selectionChanged, this, &QgsMapCanvas::selectionChangedSlot );
     }
   }
-
   updateDatumTransformEntries();
 
   QgsDebugMsg( "Layers have changed, refreshing" );
   emit layersChanged();
 
+  updateAutoRefreshTimer();
   refresh();
 }
 
@@ -545,8 +550,11 @@ void QgsMapCanvas::rendererJobFinished()
   {
     // take labeling results before emitting renderComplete, so labeling map tools
     // connected to signal work with correct results
-    delete mLabelingResults;
-    mLabelingResults = mJob->takeLabelingResults();
+    if ( !mJob->usedCachedLabels() )
+    {
+      delete mLabelingResults;
+      mLabelingResults = mJob->takeLabelingResults();
+    }
 
     QImage img = mJob->renderedImage();
 
@@ -647,14 +655,14 @@ void QgsMapCanvas::saveAsImage( const QString& theFileName, QPixmap * theQPixmap
   // draw annotations
   QStyleOptionGraphicsItem option;
   option.initFrom( this );
-  QGraphicsItem* item;
+  QGraphicsItem* item = nullptr;
   QListIterator<QGraphicsItem*> i( items() );
   i.toBack();
   while ( i.hasPrevious() )
   {
     item = i.previous();
 
-    if ( !item || item->data( 0 ).toString() != QLatin1String( "AnnotationItem" ) )
+    if ( !item || dynamic_cast< QgsMapCanvasAnnotationItem* >( item ) )
     {
       continue;
     }
@@ -976,7 +984,7 @@ bool QgsMapCanvas::boundingBoxOfFeatureIds( const QgsFeatureIds& ids, QgsVectorL
   while ( it.nextFeature( fet ) )
   {
     QgsGeometry geom = fet.geometry();
-    if ( geom.isEmpty() )
+    if ( geom.isNull() )
     {
       errorMsg = tr( "Feature does not have a geometry" );
     }
@@ -1156,8 +1164,8 @@ void QgsMapCanvas::mouseDoubleClickEvent( QMouseEvent* e )
   // call handler of current map tool
   if ( mMapTool )
   {
-    QScopedPointer<QgsMapMouseEvent> me( new QgsMapMouseEvent( this, e ) );
-    mMapTool->canvasDoubleClickEvent( me.data() );
+    std::unique_ptr<QgsMapMouseEvent> me( new QgsMapMouseEvent( this, e ) );
+    mMapTool->canvasDoubleClickEvent( me.get() );
   }
 }// mouseDoubleClickEvent
 
@@ -1227,8 +1235,8 @@ void QgsMapCanvas::mousePressEvent( QMouseEvent* e )
       }
       else
       {
-        QScopedPointer<QgsMapMouseEvent> me( new QgsMapMouseEvent( this, e ) );
-        mMapTool->canvasPressEvent( me.data() );
+        std::unique_ptr<QgsMapMouseEvent> me( new QgsMapMouseEvent( this, e ) );
+        mMapTool->canvasPressEvent( me.get() );
       }
     }
   }
@@ -1282,8 +1290,8 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent* e )
         }
         return;
       }
-      QScopedPointer<QgsMapMouseEvent> me( new QgsMapMouseEvent( this, e ) );
-      mMapTool->canvasReleaseEvent( me.data() );
+      std::unique_ptr<QgsMapMouseEvent> me( new QgsMapMouseEvent( this, e ) );
+      mMapTool->canvasReleaseEvent( me.get() );
     }
   }
 
@@ -1444,8 +1452,8 @@ void QgsMapCanvas::mouseMoveEvent( QMouseEvent * e )
     // call handler of current map tool
     if ( mMapTool )
     {
-      QScopedPointer<QgsMapMouseEvent> me( new QgsMapMouseEvent( this, e ) );
-      mMapTool->canvasMoveEvent( me.data() );
+      std::unique_ptr<QgsMapMouseEvent> me( new QgsMapMouseEvent( this, e ) );
+      mMapTool->canvasMoveEvent( me.get() );
     }
   }
 
@@ -1664,7 +1672,46 @@ void QgsMapCanvas::updateDatumTransformEntries()
   }
 }
 
+void QgsMapCanvas::layerRepaintRequested( bool deferred )
+{
+  if ( !deferred )
+    refresh();
+}
 
+void QgsMapCanvas::autoRefreshTriggered()
+{
+  if ( mJob )
+  {
+    // canvas is currently being redrawn, so we skip this auto refresh
+    // otherwise we could get stuck in the situation where an auto refresh is triggered
+    // too often to allow the canvas to ever finish rendering
+    return;
+  }
+
+  refresh();
+}
+
+void QgsMapCanvas::updateAutoRefreshTimer()
+{
+  // min auto refresh interval stores the smallest interval between layer auto refreshes. We automatically
+  // trigger a map refresh on this minimum interval
+  int minAutoRefreshInterval = -1;
+  Q_FOREACH ( QgsMapLayer* layer, mSettings.layers() )
+  {
+    if ( layer->hasAutoRefreshEnabled() && layer->autoRefreshInterval() > 0 )
+      minAutoRefreshInterval = minAutoRefreshInterval > 0 ? qMin( layer->autoRefreshInterval(), minAutoRefreshInterval ) : layer->autoRefreshInterval();
+  }
+
+  if ( minAutoRefreshInterval > 0 )
+  {
+    mAutoRefreshTimer.setInterval( minAutoRefreshInterval );
+    mAutoRefreshTimer.start();
+  }
+  else
+  {
+    mAutoRefreshTimer.stop();
+  }
+}
 
 QgsMapTool* QgsMapCanvas::mapTool()
 {
@@ -1915,26 +1962,23 @@ void QgsMapCanvas::mapToolDestroyed()
   mMapTool = nullptr;
 }
 
-#ifdef HAVE_TOUCH
 bool QgsMapCanvas::event( QEvent * e )
 {
-  bool done = false;
-  if ( e->type() == QEvent::Gesture )
+  if ( !QTouchDevice::devices().empty() )
   {
-    // call handler of current map tool
-    if ( mMapTool )
+    if ( e->type() == QEvent::Gesture )
     {
-      done = mMapTool->gestureEvent( static_cast<QGestureEvent*>( e ) );
+      // call handler of current map tool
+      if ( mMapTool )
+      {
+        return mMapTool->gestureEvent( static_cast<QGestureEvent*>( e ) );
+      }
     }
   }
-  else
-  {
-    // pass other events to base class
-    done = QGraphicsView::event( e );
-  }
-  return done;
+
+  // pass other events to base class
+  return QGraphicsView::event( e );
 }
-#endif
 
 void QgsMapCanvas::refreshAllLayers()
 {

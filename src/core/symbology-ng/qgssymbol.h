@@ -363,7 +363,7 @@ class CORE_EXPORT QgsSymbol
 
   private:
     //! Initialized in startRender, destroyed in stopRender
-    QgsSymbolRenderContext* mSymbolRenderContext;
+    QgsSymbolRenderContext* mSymbolRenderContext = nullptr;
 
     Q_DISABLE_COPY( QgsSymbol )
 
@@ -434,6 +434,23 @@ class CORE_EXPORT QgsSymbolRenderContext
     //! Current feature being rendered - may be null
     const QgsFeature* feature() const { return mFeature; }
 
+    /**
+     * Sets the geometry type for the original feature geometry being rendered.
+     * @see originalGeometryType()
+     * @note added in QGIS 3.0
+     */
+    void setOriginalGeometryType( QgsWkbTypes::GeometryType type ) { mOriginalGeometryType = type; }
+
+    /**
+     * Returns the geometry type for the original feature geometry being rendered. This can be
+     * useful if symbol layers alter their appearance based on geometry type - eg offsetting a
+     * simple line style will look different if the simple line is rendering a polygon feature
+     * (a closed buffer) vs a line feature (an unclosed offset line).
+     * @see originalGeometryType()
+     * @note added in QGIS 3.0
+     */
+    QgsWkbTypes::GeometryType originalGeometryType() const { return mOriginalGeometryType; }
+
     //! Fields of the layer. Currently only available in startRender() calls
     //! to allow symbols with data-defined properties prepare the expressions
     //! (other times fields() returns null)
@@ -484,7 +501,7 @@ class CORE_EXPORT QgsSymbolRenderContext
 
   private:
     QgsRenderContext& mRenderContext;
-    QgsExpressionContextScope* mExpressionContextScope;
+    QgsExpressionContextScope* mExpressionContextScope = nullptr;
     QgsUnitTypes::RenderUnit mOutputUnit;
     QgsMapUnitScale mMapUnitScale;
     qreal mAlpha;
@@ -494,6 +511,7 @@ class CORE_EXPORT QgsSymbolRenderContext
     QgsFields mFields;
     int mGeometryPartCount;
     int mGeometryPartNum;
+    QgsWkbTypes::GeometryType mOriginalGeometryType = QgsWkbTypes::UnknownGeometry;
 
 
     QgsSymbolRenderContext( const QgsSymbolRenderContext& rh );

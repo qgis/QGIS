@@ -114,29 +114,29 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     //! modeChanged determines if widget are visible or not based on mode
     void modeChanged();
 
-    QgsProject* mProject;
+    QgsProject* mProject = nullptr;
     QgsSnappingConfig mConfig;
-    QgsMapCanvas* mCanvas;
+    QgsMapCanvas* mCanvas = nullptr;
 
-    QAction* mEnabledAction;
-    QToolButton* mModeButton;
+    QAction* mEnabledAction = nullptr;
+    QToolButton* mModeButton = nullptr;
     QAction* mModeAction; // hide widget does not work on toolbar, action needed
-    QAction* mAllLayersAction;
-    QAction* mActiveLayerAction;
-    QAction* mAdvancedModeAction;
-    QToolButton* mTypeButton;
+    QAction* mAllLayersAction = nullptr;
+    QAction* mActiveLayerAction = nullptr;
+    QAction* mAdvancedModeAction = nullptr;
+    QToolButton* mTypeButton = nullptr;
     QAction* mTypeAction; // hide widget does not work on toolbar, action needed
-    QAction* mVertexAction;
-    QAction* mSegmentAction;
-    QAction* mVertexAndSegmentAction;
-    QDoubleSpinBox* mToleranceSpinBox;
+    QAction* mVertexAction = nullptr;
+    QAction* mSegmentAction = nullptr;
+    QAction* mVertexAndSegmentAction = nullptr;
+    QDoubleSpinBox* mToleranceSpinBox = nullptr;
     QAction* mToleranceAction; // hide widget does not work on toolbar, action needed
-    QComboBox* mUnitsComboBox;
+    QComboBox* mUnitsComboBox = nullptr;
     QAction* mUnitAction; // hide widget does not work on toolbar, action needed
-    QAction* mTopologicalEditingAction;
-    QAction* mIntersectionSnappingAction;
-    QAction* mEnableTracingAction;
-    QTreeView* mLayerTreeView;
+    QAction* mTopologicalEditingAction = nullptr;
+    QAction* mIntersectionSnappingAction = nullptr;
+    QAction* mEnableTracingAction = nullptr;
+    QTreeView* mLayerTreeView = nullptr;
 
     void cleanGroup( QgsLayerTreeNode* node );
 };

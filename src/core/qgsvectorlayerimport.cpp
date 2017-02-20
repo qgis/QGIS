@@ -63,7 +63,7 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
 
   QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
 
-  QLibrary *myLib = pReg->providerLibrary( providerKey );
+  std::unique_ptr< QLibrary > myLib( pReg->providerLibrary( providerKey ) );
   if ( !myLib )
   {
     mError = ErrInvalidProvider;
@@ -74,13 +74,10 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
   createEmptyLayer_t * pCreateEmpty = reinterpret_cast< createEmptyLayer_t * >( cast_to_fptr( myLib->resolve( "createEmptyLayer" ) ) );
   if ( !pCreateEmpty )
   {
-    delete myLib;
     mError = ErrProviderUnsupportedFeature;
     mErrorMessage = QObject::tr( "Provider %1 has no %2 method" ).arg( providerKey, QStringLiteral( "createEmptyLayer" ) );
     return;
   }
-
-  delete myLib;
 
   // create an empty layer
   QString errMsg;

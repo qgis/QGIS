@@ -84,7 +84,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath,
   QString dbPath = QDir( offlineDataPath ).absoluteFilePath( offlineDbFile );
   if ( createSpatialiteDB( dbPath ) )
   {
-    sqlite3* db;
+    sqlite3* db = nullptr;
     int rc = QgsSLConnect::sqlite3_open( dbPath.toUtf8().constData(), &db );
     if ( rc != SQLITE_OK )
     {
@@ -115,12 +115,12 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath,
         QgsVectorJoinList::iterator joinIt = joins.begin();
         while ( joinIt != joins.end() )
         {
-          if ( joinIt->prefix.isNull() )
+          if ( joinIt->prefix().isNull() )
           {
-            QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( joinIt->joinLayerId ) );
+            QgsVectorLayer* vl = joinIt->joinLayer();
 
             if ( vl )
-              joinIt->prefix = vl->name() + '_';
+              joinIt->setPrefix( vl->name() + '_' );
           }
           ++joinIt;
         }
@@ -157,13 +157,13 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath,
 
         if ( newLayer )
         {
-          Q_FOREACH ( QgsVectorJoinInfo join, it.value() )
+          Q_FOREACH ( QgsVectorLayerJoinInfo join, it.value() )
           {
-            QgsVectorLayer* newJoinedLayer = layerIdMapping.value( join.joinLayerId );
+            QgsVectorLayer* newJoinedLayer = layerIdMapping.value( join.joinLayerId() );
             if ( newJoinedLayer )
             {
               // If the layer has been offline'd, update join information
-              join.joinLayerId = newJoinedLayer->id();
+              join.setJoinLayer( newJoinedLayer );
             }
             newLayer->addJoin( join );
           }
@@ -339,7 +339,7 @@ void QgsOfflineEditing::initializeSpatialMetadata( sqlite3 *sqlite_handle )
   if ( !sqlite_handle )
     return;
   // checking if this DB is really empty
-  char **results;
+  char **results = nullptr;
   int rows, columns;
   int ret = sqlite3_get_table( sqlite_handle, "select count(*) from sqlite_master", &results, &rows, &columns, nullptr );
   if ( ret != SQLITE_OK )
@@ -389,7 +389,7 @@ void QgsOfflineEditing::initializeSpatialMetadata( sqlite3 *sqlite_handle )
 bool QgsOfflineEditing::createSpatialiteDB( const QString& offlineDbPath )
 {
   int ret;
-  sqlite3 *sqlite_handle;
+  sqlite3 *sqlite_handle = nullptr;
   char *errMsg = nullptr;
   QFile newDb( offlineDbPath );
   if ( newDb.exists() )
@@ -1005,7 +1005,7 @@ bool QgsOfflineEditing::isAddedFeature( sqlite3* db, int layerId, QgsFeatureId f
 
 int QgsOfflineEditing::sqlExec( sqlite3* db, const QString& sql )
 {
-  char * errmsg;
+  char * errmsg = nullptr;
   int rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, &errmsg );
   if ( rc != SQLITE_OK )
   {

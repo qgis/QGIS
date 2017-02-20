@@ -25,6 +25,7 @@
 #include "pal.h"
 #include "problem.h"
 #include "qgsrendercontext.h"
+#include "qgsmaplayer.h"
 
 
 // helper function for checking for job cancelation within PAL
@@ -76,16 +77,29 @@ QgsLabelingEngine::QgsLabelingEngine()
     , mCandPoint( 16 )
     , mCandLine( 50 )
     , mCandPolygon( 30 )
-    , mResults( nullptr )
-{
-  mResults = new QgsLabelingResults;
-}
+    , mResults( new QgsLabelingResults )
+{}
 
 QgsLabelingEngine::~QgsLabelingEngine()
 {
-  delete mResults;
   qDeleteAll( mProviders );
   qDeleteAll( mSubProviders );
+}
+
+QList< QgsMapLayer* > QgsLabelingEngine::participatingLayers() const
+{
+  QSet< QgsMapLayer* > layers;
+  Q_FOREACH ( QgsAbstractLabelProvider* provider, mProviders )
+  {
+    if ( provider->layer() )
+      layers << provider->layer();
+  }
+  Q_FOREACH ( QgsAbstractLabelProvider* provider, mSubProviders )
+  {
+    if ( provider->layer() )
+      layers << provider->layer();
+  }
+  return layers.toList();
 }
 
 void QgsLabelingEngine::addProvider( QgsAbstractLabelProvider* provider )
@@ -214,7 +228,7 @@ void QgsLabelingEngine::run( QgsRenderContext& context )
   Q_FOREACH ( QgsAbstractLabelProvider* provider, mProviders )
   {
     bool appendedLayerScope = false;
-    if ( QgsMapLayer* ml = QgsProject::instance()->mapLayer( provider->layerId() ) )
+    if ( QgsMapLayer* ml = provider->layer() )
     {
       appendedLayerScope = true;
       context.expressionContext().appendScope( QgsExpressionContextUtils::layerScope( ml ) );
@@ -247,7 +261,7 @@ void QgsLabelingEngine::run( QgsRenderContext& context )
   double bbox[] = { extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() };
 
   QList<pal::LabelPosition*>* labels;
-  pal::Problem *problem;
+  pal::Problem *problem = nullptr;
   try
   {
     problem = p.extractProblem( bbox );
@@ -310,7 +324,7 @@ void QgsLabelingEngine::run( QgsRenderContext& context )
   painter->setRenderHint( QPainter::Antialiasing );
 
   // sort labels
-  qSort( labels->begin(), labels->end(), QgsLabelSorter( mMapSettings ) );
+  std::sort( labels->begin(), labels->end(), QgsLabelSorter( mMapSettings ) );
 
   // draw the labels
   QList<pal::LabelPosition*>::iterator it = labels->begin();
@@ -341,16 +355,13 @@ void QgsLabelingEngine::run( QgsRenderContext& context )
 
 QgsLabelingResults* QgsLabelingEngine::takeResults()
 {
-  QgsLabelingResults* res = mResults;
-  mResults = nullptr;
-  return res;
+  return mResults.release();
 }
 
 
-void QgsLabelingEngine::readSettingsFromProject()
+void QgsLabelingEngine::readSettingsFromProject( QgsProject* prj )
 {
   bool saved = false;
-  QgsProject* prj = QgsProject::instance();
   mSearchMethod = static_cast< QgsPalLabeling::Search >( prj->readNumEntry( QStringLiteral( "PAL" ), QStringLiteral( "/SearchMethod" ), static_cast< int >( QgsPalLabeling::Chain ), &saved ) );
   mCandPoint = prj->readNumEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPoint" ), 16, &saved );
   mCandLine = prj->readNumEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesLine" ), 50, &saved );
@@ -364,18 +375,30 @@ void QgsLabelingEngine::readSettingsFromProject()
   if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), true, &saved ) ) mFlags |= RenderOutlineLabels;
 }
 
-void QgsLabelingEngine::writeSettingsToProject()
+void QgsLabelingEngine::writeSettingsToProject( QgsProject* project )
 {
-  QgsProject::instance()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/SearchMethod" ), static_cast< int >( mSearchMethod ) );
-  QgsProject::instance()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPoint" ), mCandPoint );
-  QgsProject::instance()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesLine" ), mCandLine );
-  QgsProject::instance()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPolygon" ), mCandPolygon );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/SearchMethod" ), static_cast< int >( mSearchMethod ) );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPoint" ), mCandPoint );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesLine" ), mCandLine );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPolygon" ), mCandPolygon );
 
-  QgsProject::instance()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingCandidates" ), mFlags.testFlag( DrawCandidates ) );
-  QgsProject::instance()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawRectOnly" ), mFlags.testFlag( DrawLabelRectOnly ) );
-  QgsProject::instance()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingAllLabels" ), mFlags.testFlag( UseAllLabels ) );
-  QgsProject::instance()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingPartialsLabels" ), mFlags.testFlag( UsePartialCandidates ) );
-  QgsProject::instance()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), mFlags.testFlag( RenderOutlineLabels ) );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingCandidates" ), mFlags.testFlag( DrawCandidates ) );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawRectOnly" ), mFlags.testFlag( DrawLabelRectOnly ) );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingAllLabels" ), mFlags.testFlag( UseAllLabels ) );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingPartialsLabels" ), mFlags.testFlag( UsePartialCandidates ) );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), mFlags.testFlag( RenderOutlineLabels ) );
+}
+
+void QgsLabelingEngine::clearSettingsInProject( QgsProject* project )
+{
+  project->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/SearchMethod" ) );
+  project->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPoint" ) );
+  project->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesLine" ) );
+  project->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPolygon" ) );
+  project->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingCandidates" ) );
+  project->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingAllLabels" ) );
+  project->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingPartialsLabels" ) );
+  project->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ) );
 }
 
 
@@ -388,9 +411,10 @@ QgsAbstractLabelProvider*QgsLabelFeature::provider() const
 
 }
 
-QgsAbstractLabelProvider::QgsAbstractLabelProvider( const QString& layerId, const QString& providerId )
+QgsAbstractLabelProvider::QgsAbstractLabelProvider( QgsMapLayer* layer, const QString& providerId )
     : mEngine( nullptr )
-    , mLayerId( layerId )
+    , mLayerId( layer ? layer->id() : QString() )
+    , mLayer( layer )
     , mProviderId( providerId )
     , mFlags( DrawLabels )
     , mPlacement( QgsPalLayerSettings::AroundPoint )

@@ -371,6 +371,13 @@ class CORE_EXPORT QgsPalLayerSettings
       AlwaysShow = 20
     };
 
+    /**
+     * Returns the labeling property definitions.
+     * @note added in QGIS 3.0
+     */
+    static const QgsPropertiesDefinition& propertyDefinitions();
+
+
     // whether to label this layer
     bool enabled;
 
@@ -561,10 +568,10 @@ class CORE_EXPORT QgsPalLayerSettings
     void setFormat( const QgsTextFormat& format ) { mFormat = format; }
 
     // temporary stuff: set when layer gets prepared or labeled
-    QgsFeature* mCurFeat;
+    QgsFeature* mCurFeat = nullptr;
     QgsFields mCurFields;
     int fieldIndex;
-    const QgsMapToPixel* xform;
+    const QgsMapToPixel* xform = nullptr;
     QgsCoordinateTransform ct;
 
     QgsPoint ptZero;
@@ -573,9 +580,6 @@ class CORE_EXPORT QgsPalLayerSettings
     int mFeaturesToLabel; // total features that will probably be labeled, may be less (figured before PAL)
     int mFeatsSendingToPal; // total features tested for sending into PAL (relative to maxNumLabels)
     int mFeatsRegPal; // number of features registered in PAL, when using limitNumLabels
-
-    //! Property definitions
-    static const QgsPropertiesDefinition PROPERTY_DEFINITIONS;
 
   private:
 
@@ -636,13 +640,19 @@ class CORE_EXPORT QgsPalLayerSettings
     //! Property collection for data defined label settings
     QgsPropertyCollection mDataDefinedProperties;
 
-    QgsExpression* expression;
+    QgsExpression* expression = nullptr;
 
     QFontDatabase mFontDB;
 
     QgsTextFormat mFormat;
 
     static const QVector< PredefinedPointPosition > DEFAULT_PLACEMENT_ORDER;
+
+    static void initPropertyDefinitions();
+
+    //! Property definitions
+    static QgsPropertiesDefinition sPropertyDefinitions;
+
 };
 
 /** \ingroup core
@@ -681,7 +691,7 @@ class CORE_EXPORT QgsLabelingResults
 
   private:
 
-    QgsLabelSearchTree* mLabelSearchTree;
+    QgsLabelSearchTree* mLabelSearchTree = nullptr;
 
     friend class QgsPalLabeling;
     friend class QgsVectorLayerLabelProvider;
@@ -737,7 +747,6 @@ class CORE_EXPORT QgsPalLabeling
     //! called to find out whether the layer is used for labeling
     //! @note added in 2.4
     static bool staticWillUseLayer( QgsVectorLayer* layer );
-    static bool staticWillUseLayer( const QString& layerID );
 
     //! @note not available in python bindings
     static void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform, QList<QgsLabelCandidate>* candidates = nullptr );
@@ -745,7 +754,6 @@ class CORE_EXPORT QgsPalLabeling
     //! load/save engine settings to project file
     void loadEngineSettings();
     void saveEngineSettings();
-    void clearEngineSettings();
 
     /** Prepares a geometry for registration with PAL. Handles reprojection, rotation, clipping, etc.
      * @param geometry geometry to prepare
@@ -827,7 +835,7 @@ class CORE_EXPORT QgsPalLabeling
     QgsPalLayerSettings mInvalidLayerSettings;
 
     //! New labeling engine to interface with PAL
-    QgsLabelingEngine* mEngine;
+    QgsLabelingEngine* mEngine = nullptr;
 
     // list of candidates from last labeling
     QList<QgsLabelCandidate> mCandidates;

@@ -49,9 +49,9 @@ class TestQgsSymbol : public QObject
     QString mReport;
     QString mTestDataDir;
 
-    QgsVectorLayer * mpPointsLayer;
-    QgsVectorLayer * mpLinesLayer;
-    QgsVectorLayer * mpPolysLayer;
+    QgsVectorLayer * mpPointsLayer = nullptr;
+    QgsVectorLayer * mpLinesLayer = nullptr;
+    QgsVectorLayer * mpPolysLayer = nullptr;
 
     bool imageCheck( QgsMapSettings &ms, const QString &testName );
 
@@ -84,7 +84,7 @@ void TestQgsSymbol::initTestCase()
   // initialize with test settings directory so we don't mess with user's stuff
   QgsApplication::init( QDir::tempPath() + "/dot-qgis" );
   QgsApplication::initQgis();
-  QgsApplication::createDB();
+  QgsApplication::createDatabase();
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
 
   // output test environment

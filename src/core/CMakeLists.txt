@@ -42,7 +42,6 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgssymbollayer.cpp
   symbology-ng/qgssymbollayerregistry.cpp
   symbology-ng/qgssymbollayerutils.cpp
-  symbology-ng/qgssymbologyconversion.cpp
   symbology-ng/qgssymbol.cpp
   symbology-ng/qgsvectorfieldsymbollayer.cpp
 
@@ -78,6 +77,12 @@ SET(QGIS_CORE_SRCS
   auth/qgsauthmethodmetadata.cpp
   auth/qgsauthmethodregistry.cpp
 
+  annotations/qgsannotation.cpp
+  annotations/qgsannotationmanager.cpp
+  annotations/qgshtmlannotation.cpp
+  annotations/qgssvgannotation.cpp
+  annotations/qgstextannotation.cpp
+
   processing/qgsprocessingprovider.cpp
   processing/qgsprocessingregistry.cpp
 
@@ -107,7 +112,6 @@ SET(QGIS_CORE_SRCS
   qgscredentials.cpp
   qgscrscache.cpp
   qgsdartmeasurement.cpp
-  qgsdatadefined.cpp
   qgsdataitem.cpp
   qgsdataitemprovider.cpp
   qgsdataitemproviderregistry.cpp
@@ -165,6 +169,7 @@ SET(QGIS_CORE_SRCS
   qgsmaptopixel.cpp
   qgsmaptopixelgeometrysimplifier.cpp
   qgsmapunitscale.cpp
+  qgsmargins.cpp
   qgsmessagelog.cpp
   qgsmessageoutput.cpp
   qgsmimedatautils.cpp
@@ -182,6 +187,7 @@ SET(QGIS_CORE_SRCS
   qgspaintenginehack.cpp
   qgspainting.cpp
   qgspallabeling.cpp
+  qgspathresolver.cpp
   qgspluginlayer.cpp
   qgspluginlayerregistry.cpp
   qgspoint.cpp
@@ -207,7 +213,6 @@ SET(QGIS_CORE_SRCS
   qgsrunprocess.cpp
   qgsruntimeprofiler.cpp
   qgsscalecalculator.cpp
-  qgsscaleexpression.cpp
   qgsscaleutils.cpp
   qgssimplifymethod.cpp
   qgsslconnect.cpp
@@ -231,6 +236,7 @@ SET(QGIS_CORE_SRCS
   qgsunittypes.cpp
   qgsvectordataprovider.cpp
   qgsvectorfilewriter.cpp
+  qgsvectorfilewritertask.cpp
   qgsvectorlayer.cpp
   qgsvectorlayercache.cpp
   qgsvectorlayerdiagramprovider.cpp
@@ -361,6 +367,7 @@ SET(QGIS_CORE_SRCS
   geometry/qgsgeometrycollection.cpp
   geometry/qgsgeometryeditutils.cpp
   geometry/qgsgeometryfactory.cpp
+  geometry/qgsgeometrymakevalid.cpp
   geometry/qgsgeometryutils.cpp
   geometry/qgsgeos.cpp
   geometry/qgsinternalgeometryengine.cpp
@@ -512,6 +519,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgspointlocator.h
   qgsproject.h
   qgsrelationmanager.h
+  qgsrelation.h
   qgsrunprocess.h
   qgssnappingconfig.h
   qgssnappingutils.h
@@ -522,6 +530,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgstransactiongroup.h
   qgsunittypes.h
   qgsvectordataprovider.h
+  qgsvectorfilewritertask.h
   qgsvectorlayercache.h
   qgsvectorlayereditbuffer.h
   qgsvectorlayereditpassthrough.h
@@ -531,6 +540,12 @@ SET(QGIS_CORE_MOC_HDRS
   qgsmapthemecollection.h
   qgswebpage.h
   qgswebview.h
+
+  annotations/qgsannotation.h
+  annotations/qgsannotationmanager.h
+  annotations/qgshtmlannotation.h
+  annotations/qgssvgannotation.h
+  annotations/qgstextannotation.h
 
   auth/qgsauthmanager.h
   auth/qgsauthmethod.h
@@ -639,7 +654,6 @@ SET(QGIS_CORE_HDRS
   qgsactionscope.h
   qgsactionmanager.h
   qgsaggregatecalculator.h
-  qgsannotation.h
   qgsattributetableconfig.h
   qgsattributeeditorelement.h
   qgsbearingutils.h
@@ -658,7 +672,6 @@ SET(QGIS_CORE_HDRS
   qgscrscache.h
   qgscsexception.h
   qgsdartmeasurement.h
-  qgsdatadefined.h
   qgsdataitem.h
   qgsdataitemprovider.h
   qgsdataitemproviderregistry.h
@@ -671,6 +684,7 @@ SET(QGIS_CORE_HDRS
   qgseditformconfig.h
   qgseditorwidgetsetup.h
   qgsfeaturefilterprovider.h
+  qgsfield_p.h
   qgserror.h
   qgsexception.h
   qgsexpression.h
@@ -696,6 +710,7 @@ SET(QGIS_CORE_HDRS
   qgslegendsettings.h
   qgslegendstyle.h
   qgslogger.h
+  qgsmaplayerref.h
   qgsmaphittest.h
   qgsmaplayerdependency.h
   qgsmaplayerrenderer.h
@@ -704,6 +719,7 @@ SET(QGIS_CORE_HDRS
   qgsmaptopixel.h
   qgsmaptopixelgeometrysimplifier.h
   qgsmapunitscale.h
+  qgsmargins.h
   qgsmimedatautils.h
   qgsmultirenderchecker.h
   qgsobjectcustomproperties.h
@@ -714,6 +730,7 @@ SET(QGIS_CORE_HDRS
   qgspaintenginehack.h
   qgspainting.h
   qgspallabeling.h
+  qgspathresolver.h
   qgspluginlayerregistry.h
   qgspointlocator.h
   qgsprojectbadlayerhandler.h
@@ -721,18 +738,17 @@ SET(QGIS_CORE_HDRS
   qgsprojectproperty.h
   qgsprojectversion.h
   qgsproperty.h
+  qgsproperty_p.h
   qgspropertycollection.h
   qgspropertytransformer.h
   qgsprovidermetadata.h
   qgsproviderregistry.h
   qgspythonrunner.h
   qgsrectangle.h
-  qgsrelation.h
   qgsrenderchecker.h
   qgsrendercontext.h
   qgsruntimeprofiler.h
   qgsscalecalculator.h
-  qgsscaleexpression.h
   qgsscaleutils.h
   qgssimplifymethod.h
   qgssnapper.h
@@ -756,6 +772,7 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayereditutils.h
   qgsvectorlayerfeatureiterator.h
   qgsvectorlayerimport.h
+  qgsvectorlayerjoininfo.h
   qgsvectorlayerlabelprovider.h
   qgsvectorlayerrenderer.h
   qgsvectorlayerundocommand.h
@@ -767,6 +784,8 @@ SET(QGIS_CORE_HDRS
   qgswebframe.h
   qgswebview.h
   qgslocalec.h
+
+  annotations/qgsannotationregistry.h
 
   auth/qgsauthcertutils.h
   auth/qgsauthconfig.h
@@ -868,7 +887,6 @@ SET(QGIS_CORE_HDRS
   symbology-ng/qgssymbollayer.h
   symbology-ng/qgssymbollayerregistry.h
   symbology-ng/qgssymbollayerutils.h
-  symbology-ng/qgssymbologyconversion.h
   symbology-ng/qgssymbol.h
   symbology-ng/qgsvectorfieldsymbollayer.h
   symbology-ng/qgsgeometrygeneratorsymbollayer.h
@@ -921,6 +939,7 @@ ENDIF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
+  annotations
   auth
   composer
   dxf

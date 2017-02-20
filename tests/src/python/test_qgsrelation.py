@@ -81,10 +81,10 @@ class TestQgsRelation(unittest.TestCase):
         rel = QgsRelation()
         assert not rel.isValid()
 
-        rel.setRelationId('rel1')
+        rel.setId('rel1')
         assert not rel.isValid()
 
-        rel.setRelationName('Relation Number One')
+        rel.setName('Relation Number One')
         assert not rel.isValid()
 
         rel.setReferencingLayer(self.referencingLayer.id())
@@ -99,8 +99,8 @@ class TestQgsRelation(unittest.TestCase):
     def test_getRelatedFeatures(self):
         rel = QgsRelation()
 
-        rel.setRelationId('rel1')
-        rel.setRelationName('Relation Number One')
+        rel.setId('rel1')
+        rel.setName('Relation Number One')
         rel.setReferencingLayer(self.referencingLayer.id())
         rel.setReferencedLayer(self.referencedLayer.id())
         rel.addFieldPair('foreignkey', 'y')
@@ -114,8 +114,8 @@ class TestQgsRelation(unittest.TestCase):
 
     def test_getReferencedFeature(self):
         rel = QgsRelation()
-        rel.setRelationId('rel1')
-        rel.setRelationName('Relation Number One')
+        rel.setId('rel1')
+        rel.setName('Relation Number One')
         rel.setReferencingLayer(self.referencingLayer.id())
         rel.setReferencedLayer(self.referencedLayer.id())
         rel.addFieldPair('foreignkey', 'y')
@@ -130,8 +130,8 @@ class TestQgsRelation(unittest.TestCase):
     def test_fieldPairs(self):
         rel = QgsRelation()
 
-        rel.setRelationId('rel1')
-        rel.setRelationName('Relation Number One')
+        rel.setId('rel1')
+        rel.setName('Relation Number One')
         rel.setReferencingLayer(self.referencingLayer.id())
         rel.setReferencedLayer(self.referencedLayer.id())
         rel.addFieldPair('foreignkey', 'y')

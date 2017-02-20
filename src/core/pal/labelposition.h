@@ -242,8 +242,8 @@ namespace pal
 
       typedef struct
       {
-        Pal* pal;
-        FeaturePart *obstacle;
+        Pal* pal = nullptr;
+        FeaturePart *obstacle = nullptr;
       } PruneCtx;
 
       //! Check whether the candidate in ctx overlap with obstacle feat
@@ -252,10 +252,10 @@ namespace pal
       // for counting number of overlaps
       typedef struct
       {
-        LabelPosition *lp;
-        int *nbOv;
-        double *cost;
-        double *inactiveCost;
+        LabelPosition *lp = nullptr;
+        int *nbOv = nullptr;
+        double *cost = nullptr;
+        double *inactiveCost = nullptr;
         //int *feat;
       } CountContext;
 
@@ -275,7 +275,7 @@ namespace pal
 
       int id;
 
-      FeaturePart *feature;
+      FeaturePart *feature = nullptr;
 
       // bug # 1 (maxence 10/23/2008)
       int probFeat;
@@ -286,7 +286,7 @@ namespace pal
       double w;
       double h;
 
-      LabelPosition* nextPart;
+      LabelPosition* nextPart = nullptr;
       int partId;
 
       //True if label direction is the same as line / polygon ring direction.

@@ -19,7 +19,6 @@
 
 class QgsComposition;
 class QgsComposerMap;
-class QgsDataDefinedButton;
 
 /** \ingroup app
  * Struct to hold map composer paper properties.
@@ -90,7 +89,7 @@ class QgsCompositionWidget: public QgsPanelWidget, private Ui::QgsCompositionWid
     void cleanUpStyleSelector( QgsPanelWidget* container );
 
   private:
-    QgsComposition* mComposition;
+    QgsComposition* mComposition = nullptr;
     QMap<QString, QgsCompositionPaper> mPaperMap;
 
     QgsCompositionWidget(); //default constructor is forbidden

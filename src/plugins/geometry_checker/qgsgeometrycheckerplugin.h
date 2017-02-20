@@ -35,9 +35,9 @@ class QgsGeometryCheckerPlugin : public QObject, public QgisPlugin
     void unload() override;
 
   private:
-    QgisInterface* mIface;
-    QgsGeometryCheckerDialog* mDialog;
-    QAction* mMenuAction;
+    QgisInterface* mIface = nullptr;
+    QgsGeometryCheckerDialog* mDialog = nullptr;
+    QAction* mMenuAction = nullptr;
 };
 
 

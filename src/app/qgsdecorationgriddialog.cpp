@@ -178,7 +178,7 @@ QgsDecorationGridDialog::~QgsDecorationGridDialog()
 
 void QgsDecorationGridDialog::on_buttonBox_helpRequested()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#id56" ) );
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#grid" ) );
 }
 
 void QgsDecorationGridDialog::on_buttonBox_accepted()

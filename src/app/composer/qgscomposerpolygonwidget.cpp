@@ -85,9 +85,11 @@ void QgsComposerPolygonWidget::setGuiElementValues()
 
 void QgsComposerPolygonWidget::updateStyleFromWidget()
 {
-  QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( sender() );
-  mComposerPolygon->setPolygonStyleSymbol( dynamic_cast< QgsFillSymbol* >( w->symbol() ) );
-  mComposerPolygon->update();
+  if ( QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( sender() ) )
+  {
+    mComposerPolygon->setPolygonStyleSymbol( dynamic_cast< QgsFillSymbol* >( w->symbol() ) );
+    mComposerPolygon->update();
+  }
 }
 
 void QgsComposerPolygonWidget::cleanUpStyleSelector( QgsPanelWidget* container )

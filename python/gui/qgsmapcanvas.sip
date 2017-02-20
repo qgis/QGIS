@@ -1,5 +1,3 @@
-%Feature HAVE_TOUCH
-
 /** \ingroup gui
  * Map canvas is a class for displaying all GIS data types on a canvas.
  */
@@ -88,9 +86,9 @@ class QgsMapCanvas : QGraphicsView
     //! Returns the mapUnitsPerPixel (map units per pixel) for the canvas
     double mapUnitsPerPixel() const;
 
-    //! Returns the current zoom exent of the map canvas
+    //! Returns the current zoom extent of the map canvas
     QgsRectangle extent() const;
-    //! Returns the combined exent for all layers on the map canvas
+    //! Returns the combined extent for all layers on the map canvas
     QgsRectangle fullExtent() const;
 
     //! Set the extent of the map canvas
@@ -486,10 +484,9 @@ class QgsMapCanvas : QGraphicsView
     void messageEmitted( const QString& title, const QString& message, QgsMessageBar::MessageLevel = QgsMessageBar::INFO );
 
   protected:
-%If (HAVE_TOUCH)
+
     //! Overridden standard event to be gestures aware
     bool event( QEvent * e );
-%End
 
     //! Overridden key press event
     void keyPressEvent( QKeyEvent * e );

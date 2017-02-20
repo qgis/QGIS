@@ -2724,7 +2724,7 @@ July 20, 2002
 
 July 18, 2002
   Point, line and polygon PostGis layers can be drawn. Still issues with
-  map exent and positioning of layers on the canvas. Drawing is manual and
+  map extent and positioning of layers on the canvas. Drawing is manual and
   not tied to the paint event. No zooming or panning yet.
 
 July 10, 2002

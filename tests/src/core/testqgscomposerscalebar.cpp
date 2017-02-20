@@ -56,10 +56,10 @@ class TestQgsComposerScaleBar : public QObject
     void dataDefined();
 
   private:
-    QgsComposition* mComposition;
-    QgsComposerMap* mComposerMap;
-    QgsComposerScaleBar* mComposerScaleBar;
-    QgsRasterLayer* mRasterLayer;
+    QgsComposition* mComposition = nullptr;
+    QgsComposerMap* mComposerMap = nullptr;
+    QgsComposerScaleBar* mComposerScaleBar = nullptr;
+    QgsRasterLayer* mRasterLayer = nullptr;
     QString mReport;
 };
 

@@ -74,13 +74,13 @@ class CORE_EXPORT QgsAuthManager : public QObject
     ~QgsAuthManager();
 
     //! Set up the application instance of the authentication database connection
-    QSqlDatabase authDbConnection() const;
+    QSqlDatabase authDatabaseConnection() const;
 
     //! Name of the authentication database table that stores configs
-    const QString authDbConfigTable() const { return AUTH_CONFIG_TABLE; }
+    const QString authDatabaseConfigTable() const { return AUTH_CONFIG_TABLE; }
 
     //! Name of the authentication database table that stores server exceptions/configs
-    const QString authDbServersTable() const { return AUTH_SERVERS_TABLE; }
+    const QString authDatabaseServersTable() const { return AUTH_SERVERS_TABLE; }
 
     //! Initialize QCA, prioritize qca-ossl plugin and optionally set up the authentication database
     bool init( const QString& pluginPath = QString::null );
@@ -92,9 +92,9 @@ class CORE_EXPORT QgsAuthManager : public QObject
     const QString disabledMessage() const;
 
     /** The standard authentication database file in ~/.qgis3/ or defined location
-     * @see QgsApplication::qgisAuthDbFilePath
+     * @see QgsApplication::qgisAuthDatabaseFilePath
      */
-    const QString authenticationDbPath() const { return mAuthDbPath; }
+    const QString authenticationDatabasePath() const { return mAuthDbPath; }
 
     /** Main call to initially set or continually check master password is set
      * @note If it is not set, the user is asked for its input
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool masterPasswordIsSet() const;
 
     //! Verify a password hash existing in authentication database
-    bool masterPasswordHashInDb() const;
+    bool masterPasswordHashInDatabase() const;
 
     /** Clear supplied master password
      * @note This will not necessarily clear authenticated connections cached in network connection managers
@@ -143,7 +143,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /** Whether there is a scheduled opitonal erase of authentication database.
      * @note not available in Python bindings
      */
-    bool scheduledAuthDbErase() { return mScheduledDbErase; }
+    bool scheduledAuthDatabaseErase() { return mScheduledDbErase; }
 
     /** Schedule an optional erase of authentication database, starting when mutex is lockable.
      * @note When an erase is scheduled, any attempt to set the master password,
@@ -156,7 +156,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * if no access to user interaction occurs wihtin 90 seconds, it cancels the schedule.
      * @note not available in Python bindings
      */
-    void setScheduledAuthDbErase( bool scheduleErase );
+    void setScheduledAuthDatabaseErase( bool scheduleErase );
 
     /** Re-emit a signal to schedule an optional erase of authentication database.
      * @note This can be called from the slot connected to a previously emitted scheduling signal,
@@ -165,7 +165,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * @param emitted Setting to false will cause signal to be emitted by the schedule timer.
      * Setting to true will stop any emitting, but will not stop the schedule timer.
      */
-    void setScheduledAuthDbEraseRequestEmitted( bool emitted ) { mScheduledDbEraseRequestEmitted = emitted; }
+    void setScheduledAuthDatabaseEraseRequestEmitted( bool emitted ) { mScheduledDbEraseRequestEmitted = emitted; }
 
     //! Simple text tag describing authentication system for message logs
     QString authManTag() const { return AUTH_MAN_TAG; }
@@ -533,7 +533,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * the erase. It relies upon a slot connected to the signal in calling application
      * (the one that initiated the erase) to initiate the erase, when it is ready.
      * Upon activation, a receiving slot should get confimation from the user, then
-     * IMMEDIATELY call setScheduledAuthDbErase( false ) to stop the scheduling timer.
+     * IMMEDIATELY call setScheduledAuthDatabaseErase( false ) to stop the scheduling timer.
      * If receiving slot is NOT ready to initiate the erase, e.g. project is still loading,
      * it can skip the confirmation and request another signal emit from the scheduling timer.
      */
@@ -610,7 +610,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool mAuthInit;
     QString mAuthDbPath;
 
-    QCA::Initializer * mQcaInitializer;
+    QCA::Initializer * mQcaInitializer = nullptr;
 
     QHash<QString, QString> mConfigAuthMethods;
     QHash<QString, QgsAuthMethod*> mAuthMethods;
@@ -619,12 +619,12 @@ class CORE_EXPORT QgsAuthManager : public QObject
     int mPassTries;
     bool mAuthDisabled;
     QString mAuthDisabledMessage;
-    QTimer *mScheduledDbEraseTimer;
+    QTimer *mScheduledDbEraseTimer = nullptr;
     bool mScheduledDbErase;
     int mScheduledDbEraseRequestWait; // in seconds
     bool mScheduledDbEraseRequestEmitted;
     int mScheduledDbEraseRequestCount;
-    QMutex *mMutex;
+    QMutex *mMutex = nullptr;
 
 #ifndef QT_NO_SSL
     // mapping of sha1 digest and cert source and cert

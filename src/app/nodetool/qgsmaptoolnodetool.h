@@ -143,16 +143,16 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     QMap<QgsFeatureId, QgsGeometryRubberBand*> mMoveRubberBands;
 
     //! Rubber band for selected feature
-    QgsGeometryRubberBand* mSelectRubberBand;
+    QgsGeometryRubberBand* mSelectRubberBand = nullptr;
 
     //! Vertices of features to move
     QMap<QgsFeatureId, QList< QPair<QgsVertexId, QgsPointV2> > > mMoveVertices;
 
     //! Object containing selected feature and it's vertexes
-    QgsSelectedFeature *mSelectedFeature;
+    QgsSelectedFeature *mSelectedFeature = nullptr;
 
     //! Dock widget which allows editing vertices
-    QgsNodeEditor* mNodeEditor;
+    QgsNodeEditor* mNodeEditor = nullptr;
 
     //! Flag if moving of vertexes is occurring
     bool mMoving;
@@ -170,10 +170,10 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     QgsPoint mClosestMapVertex;
 
     //! Active rubberband for selecting vertexes
-    QRubberBand *mSelectionRubberBand;
+    QRubberBand *mSelectionRubberBand = nullptr;
 
     //! Rectangle defining area for selecting vertexes
-    QRect* mRect;
+    QRect* mRect = nullptr;
 
     //! Flag to tell if edition points
     bool mIsPoint;

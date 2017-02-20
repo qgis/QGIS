@@ -58,9 +58,9 @@ class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
     void textChanged( const QString& text );
 
   private:
-    QTextEdit* mTextEdit;
-    QPlainTextEdit* mPlainTextEdit;
-    QLineEdit* mLineEdit;
+    QTextEdit* mTextEdit = nullptr;
+    QPlainTextEdit* mPlainTextEdit = nullptr;
+    QLineEdit* mLineEdit = nullptr;
     QPalette mReadOnlyPalette;
     QPalette mWritablePalette;
     QString mPlaceholderText;

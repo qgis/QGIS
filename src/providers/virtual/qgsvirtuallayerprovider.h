@@ -80,7 +80,7 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
           , encoding( e )
       {}
       // non-null if it refers to a live layer
-      QgsVectorLayer* layer;
+      QgsVectorLayer* layer = nullptr;
       QString name;
       // non-empty if it is an embedded layer
       QString source;

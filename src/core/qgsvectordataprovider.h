@@ -468,7 +468,13 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * It returns false by default.
      * Must be implemented by providers that support saving and loading styles to db returning true
      */
-    virtual bool isSaveAndLoadStyleToDBSupported() const;
+    virtual bool isSaveAndLoadStyleToDatabaseSupported() const;
+
+    /**
+     * It returns false by default.
+     * Must be implemented by providers that support delete styles from db returning true
+     */
+    virtual bool isDeleteStyleFromDatabaseSupported() const;
 
     static QVariant convertValue( QVariant::Type type, const QString& value );
 
@@ -580,7 +586,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     mutable QMap<int, QVariant> mCacheMinValues, mCacheMaxValues;
 
     //! Encoding
-    QTextCodec* mEncoding;
+    QTextCodec* mEncoding = nullptr;
 
     //! List of attribute indices to fetch with nextFeature calls
     QgsAttributeList mAttributesToFetch;

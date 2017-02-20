@@ -76,7 +76,7 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
 
   private:
     QgsFeatureIds mFeatureIds;
-    QgsVectorLayerCache* mVectorLayerCache;
+    QgsVectorLayerCache* mVectorLayerCache = nullptr;
     QgsFeatureIds::ConstIterator mFeatureIdIterator;
 };
 
@@ -125,7 +125,7 @@ class CORE_EXPORT QgsCachedFeatureWriterIterator : public QgsAbstractFeatureIter
 
   private:
     QgsFeatureIterator mFeatIt;
-    QgsVectorLayerCache* mVectorLayerCache;
+    QgsVectorLayerCache* mVectorLayerCache = nullptr;
     QgsFeatureIds mFids;
 };
 #endif // QGSCACHEDFEATUREITERATOR_H

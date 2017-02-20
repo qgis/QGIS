@@ -67,7 +67,7 @@ struct QgsAlignRasterDialogProgress : public QgsAlignRaster::ProgressHandler
   }
 
 protected:
-  QProgressBar* mPb;
+  QProgressBar* mPb = nullptr;
 };
 
 
@@ -380,6 +380,7 @@ void QgsAlignRasterDialog::runAlign()
 
 QgsAlignRasterLayerConfigDialog::QgsAlignRasterLayerConfigDialog()
 {
+  setWindowTitle( tr( "Configure Layer Resampling" ) );
   QVBoxLayout* layout = new QVBoxLayout();
 
   cboLayers = new QgsMapLayerComboBox( this );

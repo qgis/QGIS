@@ -71,7 +71,7 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
     struct Parameters
     {
       //! Vector point layer
-      QgsVectorLayer* vectorLayer;
+      QgsVectorLayer* vectorLayer = nullptr;
 
       //! Fixed radius, in map units
       double radius;
@@ -146,7 +146,7 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
 
     QgsRectangle calculateBounds() const;
 
-    QgsVectorLayer* mInputLayer;
+    QgsVectorLayer* mInputLayer = nullptr;
 
     QString mOutputFile;
     QString mOutputFormat;

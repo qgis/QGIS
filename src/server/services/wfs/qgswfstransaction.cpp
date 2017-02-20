@@ -485,9 +485,6 @@ namespace QgsWfs
     respElem.appendChild( trElem );
 
     return resp;
-
-
-    return doc;
   }
 
   namespace
@@ -536,7 +533,7 @@ namespace QgsWfs
       }
       else
       {
-        QSharedPointer<QgsExpression> filter( QgsOgcUtils::expressionFromOgcFilter( filterElem ) );
+        std::shared_ptr<QgsExpression> filter( QgsOgcUtils::expressionFromOgcFilter( filterElem ) );
         if ( filter )
         {
           if ( filter->hasParserError() )

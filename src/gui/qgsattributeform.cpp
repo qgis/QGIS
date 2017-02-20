@@ -1584,7 +1584,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       if ( columnCount <= 0 )
         columnCount = 1;
 
-      QWidget* myContainer;
+      QWidget* myContainer = nullptr;
       if ( container->isGroupBox() )
       {
         QGroupBox* groupBox = new QGroupBox( parent );

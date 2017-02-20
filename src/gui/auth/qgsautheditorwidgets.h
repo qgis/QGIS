@@ -43,8 +43,8 @@ class GUI_EXPORT QgsAuthMethodPlugins : public QDialog, private Ui::QgsAuthMetho
   private:
     void setupTable();
 
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout *mAuthNotifyLayout = nullptr;
+    QLabel *mAuthNotify = nullptr;
 };
 
 
@@ -94,13 +94,13 @@ class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEdito
     QgsMessageBar * messageBar();
     int messageTimeout();
 
-    QMenu *mAuthUtilitiesMenu;
-    QAction *mActionSetMasterPassword;
-    QAction *mActionClearCachedMasterPassword;
-    QAction *mActionResetMasterPassword;
-    QAction *mActionClearCachedAuthConfigs;
-    QAction *mActionRemoveAuthConfigs;
-    QAction *mActionEraseAuthDatabase;
+    QMenu *mAuthUtilitiesMenu = nullptr;
+    QAction *mActionSetMasterPassword = nullptr;
+    QAction *mActionClearCachedMasterPassword = nullptr;
+    QAction *mActionResetMasterPassword = nullptr;
+    QAction *mActionClearCachedAuthConfigs = nullptr;
+    QAction *mActionRemoveAuthConfigs = nullptr;
+    QAction *mActionEraseAuthDatabase = nullptr;
 };
 
 #endif // QGSAUTHEDITORWIDGETS_H

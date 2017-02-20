@@ -41,8 +41,8 @@ class QgsGlobeFeatureIdentifyCallback : public osgEarth::Picker::Callback
 #endif
 
   private:
-    QgsMapCanvas* mCanvas;
-    QgsRubberBand* mRubberBand;
+    QgsMapCanvas* mCanvas = nullptr;
+    QgsRubberBand* mRubberBand = nullptr;
 };
 
 #endif // QGSGLOBEFEATUREIDENTIFY_H

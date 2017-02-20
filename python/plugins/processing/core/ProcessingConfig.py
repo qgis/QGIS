@@ -155,7 +155,7 @@ class ProcessingConfig(object):
             ProcessingConfig.tr('Scripts and models repository'),
             'https://raw.githubusercontent.com/qgis/QGIS-Processing/master'))
 
-        invalidFeaturesOptions = [ProcessingConfig.tr('Do not filter (better performance'),
+        invalidFeaturesOptions = [ProcessingConfig.tr('Do not filter (better performance)'),
                                   ProcessingConfig.tr('Ignore features with invalid geometries'),
                                   ProcessingConfig.tr('Stop algorithm execution when a geometry is invalid')]
         ProcessingConfig.addSetting(Setting(

@@ -112,7 +112,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
     int frameWidth() const;
     bool shouldShowClearForValue( const int value ) const;
 
-    QgsSpinBoxLineEdit* mLineEdit;
+    QgsSpinBoxLineEdit* mLineEdit = nullptr;
 
     bool mShowClearButton;
     ClearValueMode mClearValueMode;

@@ -101,8 +101,8 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
 
     QBrush mBrush;
     QPen mPen;
-    QgsGeometry *mGeometry;
-    QgsMapLayer *mLayer;
+    QgsGeometry *mGeometry = nullptr;
+    QgsMapLayer *mLayer = nullptr;
     QgsFeature mFeature;
     double mBuffer; // line / outline buffer in pixels
     double mMinWidth; // line / outline minimum width in pixels

@@ -57,7 +57,7 @@ struct CORE_EXPORT QgsSnappingResult
   //! Index of the snapped geometry
   QgsFeatureId snappedAtGeometry;
   //! Layer where the snap occurred
-  const QgsVectorLayer* layer;
+  const QgsVectorLayer* layer = nullptr;
 };
 
 
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsSnapper
     struct SnapLayer
     {
       //! The layer to which snapping is applied
-      QgsVectorLayer* mLayer;
+      QgsVectorLayer* mLayer = nullptr;
       //! The snapping tolerances for the layers, always in source coordinate systems of the layer
       double mTolerance;
       //! What snapping type to use (snap to segment or to vertex)

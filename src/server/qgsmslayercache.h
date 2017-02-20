@@ -32,7 +32,7 @@ struct QgsMSLayerCacheEntry
   time_t creationTime; //time this layer was created
   time_t lastUsedTime; //last time this layer was in use
   QString url; //datasource url
-  QgsMapLayer* layerPointer;
+  QgsMapLayer* layerPointer = nullptr;
   QList<QString> temporaryFiles; //path to the temporary files written for the layer
   QString configFile; //path to the project file associated with the layer
 
@@ -111,10 +111,10 @@ class QgsMSLayerCache: public QObject
     QFileSystemWatcher mFileSystemWatcher;
 
     //! Maximum number of layers in the cache
-    int mDefaultMaxLayers;
+    int mDefaultMaxLayers = 100;
 
     //! Maximum number of layers in the cache, overrides DEFAULT_MAX_N_LAYERS if larger
-    int mProjectMaxLayers;
+    int mProjectMaxLayers = 100;
 
   private slots:
 

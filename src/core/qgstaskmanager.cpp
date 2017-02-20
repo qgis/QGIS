@@ -17,6 +17,7 @@
 
 #include "qgstaskmanager.h"
 #include "qgsproject.h"
+#include "qgsmaplayerlistutils.h"
 #include <QtConcurrentRun>
 
 
@@ -136,9 +137,14 @@ void QgsTask::addSubTask( QgsTask* subTask, const QgsTaskList& dependencies,
   connect( subTask, &QgsTask::statusChanged, this, &QgsTask::subTaskStatusChanged );
 }
 
-void QgsTask::setDependentLayers( const QStringList& dependentLayerIds )
+QList<QgsMapLayer*> QgsTask::dependentLayers() const
 {
-  mDependentLayerIds = dependentLayerIds;
+  return _qgis_listQPointerToRaw( mDependentLayers );
+}
+
+void QgsTask::setDependentLayers( const QList< QgsMapLayer* >& dependentLayers )
+{
+  mDependentLayers = _qgis_listRawToQPointer( dependentLayers );
 }
 
 void QgsTask::subTaskStatusChanged( int status )
@@ -308,7 +314,7 @@ class QgsTaskRunnableWrapper : public QRunnable
 
   private:
 
-    QgsTask* mTask;
+    QgsTask* mTask = nullptr;
 
 };
 
@@ -325,8 +331,8 @@ QgsTaskManager::QgsTaskManager( QObject* parent )
     , mTaskMutex( new QMutex( QMutex::Recursive ) )
     , mNextTaskId( 0 )
 {
-  connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ),
-           this, SLOT( layersWillBeRemoved( QStringList ) ) );
+  connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QList< QgsMapLayer* >& ) > ( &QgsProject::layersWillBeRemoved ),
+           this, &QgsTaskManager::layersWillBeRemoved );
 }
 
 QgsTaskManager::~QgsTaskManager()
@@ -376,8 +382,8 @@ long QgsTaskManager::addTaskPrivate( QgsTask* task, QgsTaskList dependencies, bo
   {
     mParentTasks << task;
   }
-  if ( !task->dependentLayerIds().isEmpty() )
-    mLayerDependencies.insert( taskId, task->dependentLayerIds() );
+  if ( !task->dependentLayers().isEmpty() )
+    mLayerDependencies.insert( taskId, _qgis_listRawToQPointer( task->dependentLayers() ) );
   mTaskMutex->unlock();
 
   connect( task, &QgsTask::statusChanged, this, &QgsTaskManager::taskStatusChanged );
@@ -546,20 +552,20 @@ bool QgsTaskManager::hasCircularDependencies( long taskId ) const
   return !resolveDependencies( taskId, taskId, d );
 }
 
-QStringList QgsTaskManager::dependentLayers( long taskId ) const
+QList<QgsMapLayer*> QgsTaskManager::dependentLayers( long taskId ) const
 {
   QMutexLocker ml( mTaskMutex );
-  return mLayerDependencies.value( taskId, QStringList() );
+  return _qgis_listQPointerToRaw( mLayerDependencies.value( taskId, QgsWeakMapLayerPointerList() ) );
 }
 
-QList<QgsTask*> QgsTaskManager::tasksDependentOnLayer( const QString& layerId ) const
+QList<QgsTask*> QgsTaskManager::tasksDependentOnLayer( QgsMapLayer* layer ) const
 {
   QMutexLocker ml( mTaskMutex );
   QList< QgsTask* > tasks;
-  QMap< long, QStringList >::const_iterator layerIt = mLayerDependencies.constBegin();
+  QMap< long, QgsWeakMapLayerPointerList >::const_iterator layerIt = mLayerDependencies.constBegin();
   for ( ; layerIt != mLayerDependencies.constEnd(); ++layerIt )
   {
-    if ( layerIt.value().contains( layerId ) )
+    if ( _qgis_listQPointerToRaw( layerIt.value() ).contains( layer ) )
     {
       QgsTask* layerTask = task( layerIt.key() );
       if ( layerTask )
@@ -648,21 +654,21 @@ void QgsTaskManager::taskStatusChanged( int status )
 
 }
 
-void QgsTaskManager::layersWillBeRemoved( const QStringList& layerIds )
+void QgsTaskManager::layersWillBeRemoved( const QList< QgsMapLayer* >& layers )
 {
   mTaskMutex->lock();
   // scan through layers to be removed
-  QMap< long, QStringList > layerDependencies = mLayerDependencies;
+  QMap< long, QgsWeakMapLayerPointerList > layerDependencies = mLayerDependencies;
   layerDependencies.detach();
   mTaskMutex->unlock();
 
-  Q_FOREACH ( const QString& layerId, layerIds )
+  Q_FOREACH ( QgsMapLayer* layer, layers )
   {
     // scan through tasks with layer dependencies
-    for ( QMap< long, QStringList >::const_iterator it = layerDependencies.constBegin();
+    for ( QMap< long, QgsWeakMapLayerPointerList >::const_iterator it = layerDependencies.constBegin();
           it != layerDependencies.constEnd(); ++it )
     {
-      if ( !it.value().contains( layerId ) )
+      if ( !( _qgis_listQPointerToRaw( it.value() ).contains( layer ) ) )
       {
         //task not dependent on this layer
         continue;

@@ -94,12 +94,12 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
   private:
 
     QgsGradientColorRamp mRamp;
-    QwtPlotCurve* mLightnessCurve;
-    QwtPlotCurve* mSaturationCurve;
-    QwtPlotCurve* mHueCurve;
-    QwtPlotCurve* mAlphaCurve;
+    QwtPlotCurve* mLightnessCurve = nullptr;
+    QwtPlotCurve* mSaturationCurve = nullptr;
+    QwtPlotCurve* mHueCurve = nullptr;
+    QwtPlotCurve* mAlphaCurve = nullptr;
     QList< QwtPlotMarker* > mMarkers;
-    QgsGradientPlotEventFilter* mPlotFilter;
+    QgsGradientPlotEventFilter* mPlotFilter = nullptr;
     int mCurrentPlotColorComponent;
     int mCurrentPlotMarkerIndex;
 
@@ -132,7 +132,7 @@ class GUI_EXPORT QgsGradientPlotEventFilter: public QObject
 
   private:
 
-    QwtPlot* mPlot;
+    QwtPlot* mPlot = nullptr;
     QPointF mapPoint( QPointF point ) const;
 };
 ///@endcond

@@ -92,9 +92,9 @@ class [pluginname]: public QObject, public QgisPlugin
 
     int mPluginType;
     //! Pointer to the QGIS interface object
-    QgisInterface *mQGisIface;
+    QgisInterface *mQGisIface = nullptr;
     //!pointer to the qaction for this plugin
-    QAction * mQActionPointer;
+    QAction * mQActionPointer = nullptr;
     ////////////////////////////////////////////////////////////////////
     //
     // ADD YOUR OWN PROPERTY DECLARATIONS AFTER THIS POINT.....

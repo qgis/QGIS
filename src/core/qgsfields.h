@@ -195,7 +195,7 @@ class CORE_EXPORT QgsFields
     class iterator
     {
       public:
-        QgsFields::Field* d;
+        QgsFields::Field* d = nullptr;
         typedef std::random_access_iterator_tag  iterator_category;
         typedef qptrdiff difference_type;
 
@@ -231,7 +231,7 @@ class CORE_EXPORT QgsFields
     class const_iterator // clazy:exclude=rule-of-three
     {
       public:
-        const QgsFields::Field* d;
+        const QgsFields::Field* d = nullptr;
 
         typedef std::random_access_iterator_tag  iterator_category;
         typedef qptrdiff difference_type;

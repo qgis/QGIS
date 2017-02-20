@@ -55,7 +55,7 @@ class QgsAtlasCompositionWidget:
     void updateAtlasFeatures();
 
   private:
-    QgsComposition* mComposition;
+    QgsComposition* mComposition = nullptr;
 
     void blockAllSignals( bool b );
     void checkLayerType( QgsVectorLayer *layer );

@@ -162,7 +162,7 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
     // convenience wrapper around GDALTransformerFunc
     bool gdal_transform( const QgsPoint &src, QgsPoint &dst, int dstToSrc ) const;
 
-    QgsGeorefTransformInterface *mGeorefTransformImplementation;
+    QgsGeorefTransformInterface *mGeorefTransformImplementation = nullptr;
     TransformParametrisation     mTransformParametrisation;
     bool                         mParametersInitialized;
     QgsRasterChangeCoords        mRasterChangeCoords;

@@ -43,7 +43,7 @@ class TestQgsMapLayerStyleManager : public QObject
     void testSwitchingStyles();
 
   private:
-    QgsVectorLayer* mVL;
+    QgsVectorLayer* mVL = nullptr;
 };
 
 void TestQgsMapLayerStyleManager::initTestCase()

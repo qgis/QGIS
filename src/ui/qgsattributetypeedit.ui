@@ -43,7 +43,7 @@
          <bool>false</bool>
         </property>
         <property name="toolTip">
-         <string>Enforcing the unique constraint prevents committing features which do not meet the constraint. Unenforced constraints display a warning to users, but do not prevent committing the feature.</string>
+         <string>&lt;p&gt;Enforcing the unique constraint prevents committing features which do not meet the constraint.&lt;/p&gt;&lt;p&gt;Unenforced constraints display a warning to users, but do not prevent committing the feature.&lt;/p&gt;</string>
         </property>
         <property name="text">
          <string>Enforce unique constraint</string>
@@ -77,7 +77,7 @@
          <bool>false</bool>
         </property>
         <property name="toolTip">
-         <string>Enforcing the not null constraint prevents committing features which do not meet the constraint. Unenforced constraints display a warning to users, but do not prevent committing the feature.</string>
+         <string>&lt;p&gt;Enforcing the not null constraint prevents committing features which do not meet the constraint.&lt;/p&gt;&lt;p&gt;Unenforced constraints display a warning to users, but do not prevent committing the feature.&lt;/p&gt;</string>
         </property>
         <property name="text">
          <string>Enforce not null constraint</string>
@@ -94,7 +94,7 @@
       <item row="4" column="0" colspan="2">
        <widget class="QCheckBox" name="mCheckBoxEnforceExpression">
         <property name="toolTip">
-         <string>Enforcing the expression constraint prevents committing features which do not meet the constraint. Unenforced constraints display a warning to users, but do not prevent committing the feature.</string>
+         <string>&lt;p&gt;Enforcing the expression constraint prevents committing features which do not meet the constraint.&lt;/p&gt;&lt;p&gt;Unenforced constraints display a warning to users, but do not prevent committing the feature.&lt;/p&gt;</string>
         </property>
         <property name="text">
          <string>Enforce expression constraint</string>

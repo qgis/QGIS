@@ -696,7 +696,7 @@ void QgsArrowSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbolRend
     return;
   }
 
-  context.renderContext().expressionContext().appendScope( mExpressionScope.data() );
+  context.renderContext().expressionContext().appendScope( mExpressionScope.get() );
   mExpressionScope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT, points.size() + 1, true ) );
   mExpressionScope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, 1, true ) );
   if ( isCurved() )
@@ -802,7 +802,7 @@ void QgsArrowSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbolRend
 
 void QgsArrowSymbolLayer::setColor( const QColor& c )
 {
-  if ( mSymbol.data() )
+  if ( mSymbol.get() )
     mSymbol->setColor( c );
 
   mColor = c;
@@ -810,6 +810,6 @@ void QgsArrowSymbolLayer::setColor( const QColor& c )
 
 QColor QgsArrowSymbolLayer::color() const
 {
-  return mSymbol.data() ? mSymbol->color() : mColor;
+  return mSymbol.get() ? mSymbol->color() : mColor;
 }
 

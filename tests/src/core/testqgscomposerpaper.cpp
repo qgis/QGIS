@@ -51,7 +51,7 @@ class TestQgsComposerPaper : public QObject
     void hiddenPages(); //test hidden page boundaries
 
   private:
-    QgsComposition* mComposition;
+    QgsComposition* mComposition = nullptr;
     QString mReport;
     // QgsSingleSymbolRenderer* mSymbolRenderer;
 

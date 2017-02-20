@@ -41,7 +41,7 @@ class QgsWMSConnectionItem : public QgsDataCollectionItem
 
   private:
     QString mUri;
-    QgsWmsCapabilitiesDownload *mCapabilitiesDownload;
+    QgsWmsCapabilitiesDownload *mCapabilitiesDownload = nullptr;
 };
 
 // WMS Layers may be nested, so that they may be both QgsDataCollectionItem and QgsLayerItem

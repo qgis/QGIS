@@ -41,6 +41,7 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
     virtual void cancel() override;
     virtual void waitForFinished() override;
     virtual bool isActive() const override;
+    virtual bool usedCachedLabels() const override;
     virtual QgsLabelingResults* takeLabelingResults() override;
 
     //! @note not available in python bindings
@@ -71,25 +72,25 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
      */
     void renderSynchronously();
 
-  protected slots:
+  private slots:
     void futureFinished();
 
-  protected:
+  private:
     static void staticRender( QgsMapRendererCustomPainterJob* self ); // function to be used within the thread
 
     // these methods are called within worker thread
     void doRender();
 
-  private:
-    QPainter* mPainter;
+    QPainter* mPainter = nullptr;
     QFuture<void> mFuture;
     QFutureWatcher<void> mFutureWatcher;
-    QgsRenderContext mLabelingRenderContext;
-    QgsLabelingEngine* mLabelingEngineV2;
+    std::unique_ptr< QgsLabelingEngine > mLabelingEngineV2;
 
     bool mActive;
     LayerRenderJobs mLayerJobs;
+    LabelRenderJob mLabelJob;
     bool mRenderSynchronously;
+
 };
 
 

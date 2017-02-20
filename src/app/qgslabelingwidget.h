@@ -60,12 +60,12 @@ class QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui::QgsLabelin
     void showEngineConfigDialog();
 
   protected:
-    QgsVectorLayer* mLayer;
-    QgsMapCanvas* mCanvas;
+    QgsVectorLayer* mLayer = nullptr;
+    QgsMapCanvas* mCanvas = nullptr;
 
-    QWidget* mWidget;
-    QgsLabelingGui* mLabelGui;
-    QScopedPointer< QgsAbstractVectorLayerLabeling > mOldSettings;
+    QWidget* mWidget = nullptr;
+    QgsLabelingGui* mLabelGui = nullptr;
+    std::unique_ptr< QgsAbstractVectorLayerLabeling > mOldSettings;
     QgsPalLayerSettings mOldPalSettings;
 };
 

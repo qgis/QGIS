@@ -57,7 +57,7 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
     //! Inserts the types supported by the provider into the combo box
     void populateOutputFieldTypes();
 
-    QgsVectorLayer* mVectorLayer;
+    QgsVectorLayer* mVectorLayer = nullptr;
     //! Key: field name, Value: field index
     QMap<QString, int> mFieldMap;
 
@@ -65,12 +65,12 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
     inline QgsField fieldDefinition()
     {
       return QgsField( mOutputFieldNameLineEdit->text(),
-                       static_cast< QVariant::Type >( mOutputFieldTypeComboBox->itemData( mOutputFieldTypeComboBox->currentIndex(), Qt::UserRole ).toInt() ),
-                       mOutputFieldTypeComboBox->itemData( mOutputFieldTypeComboBox->currentIndex(), Qt::UserRole + 1 ).toString(),
+                       static_cast< QVariant::Type >( mOutputFieldTypeComboBox->currentData( Qt::UserRole ).toInt() ),
+                       mOutputFieldTypeComboBox->currentData( Qt::UserRole + 1 ).toString(),
                        mOutputFieldWidthSpinBox->value(),
                        mOutputFieldPrecisionSpinBox->value(),
                        QString(),
-                       static_cast< QVariant::Type >( mOutputFieldTypeComboBox->itemData( mOutputFieldTypeComboBox->currentIndex(), Qt::UserRole + 6 ).toInt() )
+                       static_cast< QVariant::Type >( mOutputFieldTypeComboBox->currentData( Qt::UserRole + 6 ).toInt() )
                      );
     }
 

@@ -1,4 +1,26 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+# ARGUMENTS
+REMOVE_COMMENTS=YES
+while getopts ":c" opt; do
+  case $opt in
+    c)
+      # keep comments
+      REMOVE_COMMENTS=NO
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      exit 1
+      ;;
+  esac
+done
+shift $(expr $OPTIND - 1)
+
+# GNU prefix command for mac os support (gsed, gsplit)
+GP=
+if [[ "$OSTYPE" =~ darwin* ]]; then
+  GP=g
+fi
 
 for file in $*; do
   d=${file#*/}
@@ -6,22 +28,41 @@ for file in $*; do
   f=${file##*/}
   f=${f%.*}
 
-  tempfile=$(mktemp ${f}XXXX --suffix=.h)
+  tempfile=$(${GP}mktemp ${f}XXXX --suffix=.h)
 
   # Remove comments
-  sed 's/a/aA/g;s/__/aB/g;s/#/aC/g' "src/$d/$f.h" | cpp -E $arg - | sed 's/aC/#/g;s/aB/__/g;s/aA/a/g' > $tempfile
+  if [[ "$REMOVE_COMMENTS" =~ YES ]]; then
+    ${GP}sed 's/a/aA/g;s/__/aB/g;s/#/aC/g' "src/$d/$f.h" | cpp -E $arg - | ${GP}sed 's/aC/#/g;s/aB/__/g;s/aA/a/g' > $tempfile
+  else
+    cp "src/$d/$f.h" $tempfile
+  fi
 
   # Remove override keyword
-  sed -i 's/ override;/;/g' $tempfile
+  ${GP}sed -i 's/ override;/;/g' $tempfile
 
   # Remove preprocessor directives
-  sed -i '/^#/d' $tempfile
+  ${GP}sed -i '/^#/d' $tempfile
 
   # Remove CORE_EXPORT etc
-  sed -i 's/ [A-Z]*_EXPORT//g' $tempfile
+  ${GP}sed -i 's/ [A-Z]*_EXPORT//g' $tempfile
 
   # Remove public keyword from inherited classes
-  sed -i 's/\(class.*:\) public\(.*\)/\1\2/g' $tempfile
+  ${GP}sed -i 's/\(class.*:\) public\(.*\)/\1\2/g' $tempfile
+
+  # Remove Q_OBJECT,ENUMS,PROPERTY
+  ${GP}sed -i -r '/^\s*Q_(OBJECT|ENUMS|PROPERTY).*?$/d' $tempfile
+
+  # Remove function definition in header
+  ${GP}sed -i -r 's/^(\s*)?(virtual |static )?(inline )?(void|bool|int|double|Q\w+)(\s+[^ ]*?\(.*?\)( const)?)\s*\{.*?\}$/\1\2\4\5;/g' $tempfile
+
+  # Remove nullptr
+  ${GP}sed -i 's/nullptr/0/g' $tempfile
+
+  # Remove forward declarations
+  ${GP}sed -i -r '/^\s*class Q\w+;$/d' $tempfile
+
+  # Remove Q_INVOKABLE
+  ${GP}sed -i 's/Q_INVOKABLE //g' $tempfile
 
   vimdiff $tempfile python/$d/$f.sip
 

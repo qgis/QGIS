@@ -58,7 +58,7 @@ QgsBrushStyleComboBox::QgsBrushStyleComboBox( QWidget* parent )
 
 Qt::BrushStyle QgsBrushStyleComboBox::brushStyle() const
 {
-  return ( Qt::BrushStyle ) itemData( currentIndex() ).toInt();
+  return ( Qt::BrushStyle ) currentData().toInt();
 }
 
 void QgsBrushStyleComboBox::setBrushStyle( Qt::BrushStyle style )

@@ -16,8 +16,8 @@
 #define QGSEDITORWIDGETAUTOCONF_H
 
 #include <QList>
-#include <QSharedPointer>
 #include "qgis_gui.h"
+#include <memory>
 
 class QgsVectorLayer;
 class QgsEditorWidgetSetup;
@@ -85,7 +85,7 @@ class GUI_EXPORT QgsEditorWidgetAutoConf
     void registerPlugin( QgsEditorWidgetAutoConfPlugin* plugin );
 
   private:
-    QList<QSharedPointer<QgsEditorWidgetAutoConfPlugin> > plugins;
+    QList<std::shared_ptr<QgsEditorWidgetAutoConfPlugin> > plugins;
 };
 ///@endcond
 

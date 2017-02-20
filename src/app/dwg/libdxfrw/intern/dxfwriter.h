@@ -36,7 +36,7 @@ class dxfWriter
     void setCodePage( std::string *c ) {encoder.setCodePage( c, true );}
     std::string getCodePage() {return encoder.getCodePage();}
   protected:
-    std::ofstream *filestr;
+    std::ofstream *filestr = nullptr;
   private:
     DRW_TextCodec encoder;
 };

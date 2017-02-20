@@ -82,7 +82,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     QgsFeatureId mNextFeatureId;
 
     // indexing
-    QgsSpatialIndex* mSpatialIndex;
+    QgsSpatialIndex* mSpatialIndex = nullptr;
 
     QString mSubsetString;
 

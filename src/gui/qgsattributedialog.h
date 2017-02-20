@@ -115,12 +115,12 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
 
     QString mSettingsPath;
     // Used to sync multiple widgets for the same field
-    QgsHighlight *mHighlight;
+    QgsHighlight *mHighlight = nullptr;
     int mFormNr;
     bool mShowDialogButtons;
     QString mReturnvarname;
-    QgsAttributeForm* mAttributeForm;
-    QgsFeature *mOwnedFeature;
+    QgsAttributeForm* mAttributeForm = nullptr;
+    QgsFeature *mOwnedFeature = nullptr;
 
     QgsTrackedVectorLayerTools mTrackedVectorLayerTools;
 

@@ -84,7 +84,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         QSet<QString> checkedLegendItems;
       private:
         //! Weak pointer to the layer
-        QPointer<QgsMapLayer> mLayer;
+        QgsWeakMapLayerPointer mLayer;
     };
 
     /**
@@ -280,7 +280,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     typedef QMap<QString, MapThemeRecord> MapThemeRecordMap;
     MapThemeRecordMap mMapThemes;
     //! project used to retrieve layers from layer IDs
-    QgsProject* mProject;
+    QgsProject* mProject = nullptr;
 };
 
 

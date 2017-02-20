@@ -107,8 +107,8 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     void extentChanged();
 
   private:
-    QgsRasterLayer* mRasterLayer;
-    QgsRasterDataProvider* mDataProvider;
+    QgsRasterLayer* mRasterLayer = nullptr;
+    QgsRasterDataProvider* mDataProvider = nullptr;
     QgsRectangle mCurrentExtent;
     QgsCoordinateReferenceSystem mLayerCrs; // may differ from provider CRS
     QgsCoordinateReferenceSystem mCurrentCrs;

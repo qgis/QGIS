@@ -120,7 +120,7 @@ class CORE_EXPORT QgsContrastEnhancement
     ContrastEnhancementAlgorithm mContrastEnhancementAlgorithm;
 
     //! \brief Pointer to the contrast enhancement function
-    QgsContrastEnhancementFunction* mContrastEnhancementFunction;
+    QgsContrastEnhancementFunction* mContrastEnhancementFunction = nullptr;
 
     //! \brief Flag indicating if the lookup table needs to be regenerated
     bool mEnhancementDirty;
@@ -129,7 +129,7 @@ class CORE_EXPORT QgsContrastEnhancement
     double mLookupTableOffset;
 
     //! \brief Pointer to the lookup table
-    int *mLookupTable;
+    int *mLookupTable = nullptr;
 
     //! \brief User defineable minimum value for the band, used for enhanceContrasting
     double mMinimumValue;

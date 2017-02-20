@@ -195,7 +195,7 @@ class GUI_EXPORT QgsPanelWidgetWrapper: public QgsPanelWidget
     QWidget* widget() { return mWidget; }
 
   private:
-    QWidget* mWidget;
+    QWidget* mWidget = nullptr;
 
 };
 

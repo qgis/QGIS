@@ -74,7 +74,7 @@ class QgsComposerPictureWidget: public QgsComposerItemBaseWidget, private Ui::Qg
     void on_mNorthTypeComboBox_currentIndexChanged( int index );
 
   private:
-    QgsComposerPicture* mPicture;
+    QgsComposerPicture* mPicture = nullptr;
     //! Whether the picture selection previews have been loaded
     bool mPreviewsLoaded;
 

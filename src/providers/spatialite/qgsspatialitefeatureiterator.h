@@ -79,12 +79,12 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
     void getFeatureGeometry( sqlite3_stmt* stmt, int ic, QgsFeature& feature );
 
     //! wrapper of the SQLite database connection
-    QgsSqliteHandle* mHandle;
+    QgsSqliteHandle* mHandle = nullptr;
 
     /**
       * SQLite statement handle
      */
-    sqlite3_stmt *sqliteStatement;
+    sqlite3_stmt *sqliteStatement = nullptr;
 
     //! Geometry column index used when fetching geometry
     int mGeomColIdx;

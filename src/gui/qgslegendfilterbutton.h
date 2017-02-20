@@ -71,14 +71,14 @@ class GUI_EXPORT QgsLegendFilterButton: public QToolButton
     void expressionTextChanged();
 
   private:
-    QMenu* mMenu;
-    QAction* mSetExpressionAction;
-    QAction* mClearExpressionAction;
+    QMenu* mMenu = nullptr;
+    QAction* mSetExpressionAction = nullptr;
+    QAction* mClearExpressionAction = nullptr;
     QString mExpression;
 
     void updateMenu();
 
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
   private slots:
     void onSetLegendFilterExpression();
     void onClearFilterExpression();

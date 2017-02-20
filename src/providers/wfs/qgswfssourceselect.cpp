@@ -456,7 +456,7 @@ class QgsWFSTableSelectedCallback: public QObject, public QgsSQLComposerDialog::
     void tableSelected( const QString& name ) override;
 
   private:
-    QgsSQLComposerDialog* mDialog;
+    QgsSQLComposerDialog* mDialog = nullptr;
     QgsWFSDataSourceURI mURI;
     const QgsWfsCapabilities::Capabilities& mCaps;
 };

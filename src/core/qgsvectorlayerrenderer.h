@@ -104,17 +104,17 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     QgsVectorLayerRendererInterruptionChecker mInterruptionChecker;
 
     //! The rendered layer
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
 
     QgsFields mFields; // TODO: use fields from mSource
 
     QgsFeatureIds mSelectedFeatureIds;
 
-    QgsVectorLayerFeatureSource* mSource;
+    QgsVectorLayerFeatureSource* mSource = nullptr;
 
-    QgsFeatureRenderer *mRenderer;
+    QgsFeatureRenderer *mRenderer = nullptr;
 
-    QgsGeometryCache* mCache;
+    QgsGeometryCache* mCache = nullptr;
 
     bool mDrawVertexMarkers;
     bool mVertexMarkerOnlyForSelection;
@@ -131,10 +131,10 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     //! used with new labeling engine (QgsLabelingEngine): provider for labels.
     //! may be null. no need to delete: if exists it is owned by labeling engine
-    QgsVectorLayerLabelProvider* mLabelProvider;
+    QgsVectorLayerLabelProvider* mLabelProvider = nullptr;
     //! used with new labeling engine (QgsLabelingEngine): provider for diagrams.
     //! may be null. no need to delete: if exists it is owned by labeling engine
-    QgsVectorLayerDiagramProvider* mDiagramProvider;
+    QgsVectorLayerDiagramProvider* mDiagramProvider = nullptr;
 
     QPainter::CompositionMode mFeatureBlendMode;
 

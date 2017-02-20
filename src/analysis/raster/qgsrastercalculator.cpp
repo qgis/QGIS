@@ -188,7 +188,7 @@ QgsRasterCalculator::QgsRasterCalculator()
 
 GDALDriverH QgsRasterCalculator::openOutputDriver()
 {
-  char **driverMetadata;
+  char **driverMetadata = nullptr;
 
   //open driver
   GDALDriverH outputDriver = GDALGetDriverByName( mOutputFormat.toLocal8Bit().data() );

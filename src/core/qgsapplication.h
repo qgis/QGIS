@@ -38,6 +38,7 @@ class QgsDataItemProviderRegistry;
 class QgsPluginLayerRegistry;
 class QgsMessageLog;
 class QgsProcessingRegistry;
+class QgsAnnotationRegistry;
 
 /** \ingroup core
  * Extends QApplication to provide access to QGIS specific resources such
@@ -53,6 +54,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     Q_OBJECT
 
   public:
+
     static const char* QGIS_ORGANIZATION_NAME;
     static const char* QGIS_ORGANIZATION_DOMAIN;
     static const char* QGIS_APPLICATION_NAME;
@@ -156,16 +158,16 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString i18nPath();
 
     //! Returns the path to the master qgis.db file.
-    static QString qgisMasterDbFilePath();
+    static QString qgisMasterDatabaseFilePath();
 
     //! Returns the path to the settings directory in user's home dir
     static QString qgisSettingsDirPath();
 
     //! Returns the path to the user qgis.db file.
-    static QString qgisUserDbFilePath();
+    static QString qgisUserDatabaseFilePath();
 
     //! Returns the path to the user authentication database file: qgis-auth.db.
-    static QString qgisAuthDbFilePath();
+    static QString qgisAuthDatabaseFilePath();
 
     //! Returns the path to the splash screen image directory.
     static QString splashPath();
@@ -174,7 +176,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString iconsPath();
 
     //! Returns the path to the srs.db file.
-    static QString srsDbFilePath();
+    static QString srsDatabaseFilePath();
 
     //! Returns the paths to svg directories.
     static QStringList svgPaths();
@@ -275,13 +277,13 @@ class CORE_EXPORT QgsApplication : public QApplication
     static void setDefaultSvgPaths( const QStringList& pathList );
 
     //! Alters authentication data base directory path - used by 3rd party apps
-    static void setAuthDbDirPath( const QString& theAuthDbDirPath );
+    static void setAuthDatabaseDirPath( const QString& theAuthDbDirPath );
 
     //! loads providers
     static void initQgis();
 
     //! initialize qgis.db
-    static bool createDB( QString* errorMessage = nullptr );
+    static bool createDatabase( QString* errorMessage = nullptr );
 
     //! Create the users theme folder
     static bool createThemeFolder();
@@ -462,6 +464,13 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static QgsProcessingRegistry* processingRegistry();
 
+    /**
+     * Returns the application's annotation registry, used for managing annotation types.
+     * @note added in QGIS 3.0
+     * @note not available in Python bindings
+     */
+    static QgsAnnotationRegistry* annotationRegistry();
+
 #ifdef ANDROID
     //dummy method to workaround sip generation issue issue
     bool x11EventFilter( XEvent * event )
@@ -547,6 +556,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     void nullRepresentationChanged();
 
   private:
+
     static void copyPath( const QString& src, const QString& dst );
     static QObject* ABISYM( mFileOpenEventReceiver );
     static QStringList ABISYM( mFileOpenEventList );
@@ -592,22 +602,37 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     QMap<QString, QIcon> mIconCache;
 
-    QgsActionScopeRegistry* mActionScopeRegistry = nullptr;
-    QgsRuntimeProfiler* mProfiler = nullptr;
-    QgsTaskManager* mTaskManager = nullptr;
-    QgsFieldFormatterRegistry* mFieldFormatterRegistry = nullptr;
-    QgsColorSchemeRegistry* mColorSchemeRegistry = nullptr;
-    QgsPaintEffectRegistry* mPaintEffectRegistry = nullptr;
-    QgsRendererRegistry* mRendererRegistry = nullptr;
-    QgsSvgCache* mSvgCache = nullptr;
-    QgsSymbolLayerRegistry* mSymbolLayerRegistry = nullptr;
-    QgsRasterRendererRegistry* mRasterRendererRegistry = nullptr;
-    QgsGPSConnectionRegistry* mGpsConnectionRegistry = nullptr;
     QgsDataItemProviderRegistry* mDataItemProviderRegistry = nullptr;
-    QgsPluginLayerRegistry* mPluginLayerRegistry = nullptr;
-    QgsMessageLog* mMessageLog = nullptr;
-    QgsProcessingRegistry* mProcessingRegistry = nullptr;
-    QString mNullRepresentation;
+
+    struct ApplicationMembers
+    {
+      QgsActionScopeRegistry* mActionScopeRegistry = nullptr;
+      QgsAnnotationRegistry* mAnnotationRegistry = nullptr;
+      QgsColorSchemeRegistry* mColorSchemeRegistry = nullptr;
+      QgsFieldFormatterRegistry* mFieldFormatterRegistry = nullptr;
+      QgsGPSConnectionRegistry* mGpsConnectionRegistry = nullptr;
+      QgsMessageLog* mMessageLog = nullptr;
+      QgsPaintEffectRegistry* mPaintEffectRegistry = nullptr;
+      QgsPluginLayerRegistry* mPluginLayerRegistry = nullptr;
+      QgsProcessingRegistry* mProcessingRegistry = nullptr;
+      QgsRasterRendererRegistry* mRasterRendererRegistry = nullptr;
+      QgsRendererRegistry* mRendererRegistry = nullptr;
+      QgsRuntimeProfiler* mProfiler = nullptr;
+      QgsSvgCache* mSvgCache = nullptr;
+      QgsSymbolLayerRegistry* mSymbolLayerRegistry = nullptr;
+      QgsTaskManager* mTaskManager = nullptr;
+      QString mNullRepresentation;
+
+      ApplicationMembers();
+      ~ApplicationMembers();
+    };
+
+    // Applications members which belong to an instance of QgsApplication
+    ApplicationMembers* mApplicationMembers = nullptr;
+    // ... but in case QgsApplication is never instantiated (eg with custom designer widgets), we fall back to static members
+    static ApplicationMembers* sApplicationMembers;
+
+    static ApplicationMembers* members();
 };
 
 #endif

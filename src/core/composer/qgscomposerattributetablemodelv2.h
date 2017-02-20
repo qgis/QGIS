@@ -120,7 +120,7 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
     bool moveColumnInSortRank( QgsComposerTableColumn * column, ShiftDirection direction );
 
   private:
-    QgsComposerAttributeTableV2 * mComposerTable;
+    QgsComposerAttributeTableV2 * mComposerTable = nullptr;
 
 };
 
@@ -194,7 +194,7 @@ class CORE_EXPORT QgsComposerTableSortColumnsProxyModelV2: public QSortFilterPro
     bool filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const override;
 
   private:
-    QgsComposerAttributeTableV2 * mComposerTable;
+    QgsComposerAttributeTableV2 * mComposerTable = nullptr;
     ColumnFilterType mFilterType;
 
     /** Returns a list of QgsComposerTableColumns without a set sort rank

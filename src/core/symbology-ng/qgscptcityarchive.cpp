@@ -81,7 +81,7 @@ QgsCptCityArchive::QgsCptCityArchive( const QString& archiveName, const QString&
   }
 
   // make "All Ramps items" (which will contain all ramps without hierarchy)
-  QgsCptCityAllRampsItem* allRampsItem;
+  QgsCptCityAllRampsItem* allRampsItem = nullptr;
   allRampsItem = new QgsCptCityAllRampsItem( nullptr, QObject::tr( "All Ramps" ),
       mRootItems );
   mRootItems.prepend( allRampsItem );

@@ -34,7 +34,7 @@ class CORE_EXPORT QgsPaperGrid: public QGraphicsRectItem
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
   private:
-    QgsComposition* mComposition;
+    QgsComposition* mComposition = nullptr;
 };
 
 /** \ingroup core
@@ -75,7 +75,7 @@ class CORE_EXPORT QgsPaperItem : public QgsComposerItem
 
     void calculatePageMargin();
 
-    QgsPaperGrid* mPageGrid;
+    QgsPaperGrid* mPageGrid = nullptr;
     double mPageMargin;
 };
 

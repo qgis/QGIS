@@ -44,6 +44,7 @@
 #include <cpl_string.h>
 #include <gdal.h>
 #include <ogr_srs_api.h>
+#include <memory>
 
 #define LOG( x ) { QgsDebugMsg( x ); QgsMessageLog::logMessage( x, QObject::tr( "DWG/DXF import" ) ); }
 #define ONCE( x ) { static bool show=true; if( show ) LOG( x ); show=false; }
@@ -614,7 +615,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
   if ( fi.suffix().toLower() == "dxf" )
   {
     //loads dxf
-    QScopedPointer<dxfRW> dxf( new dxfRW( drawing.toUtf8() ) );
+    std::unique_ptr<dxfRW> dxf( new dxfRW( drawing.toUtf8() ) );
     if ( !dxf->read( this, false ) )
     {
       result = DRW::BAD_UNKNOWN;
@@ -623,7 +624,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
   else if ( fi.suffix().toLower() == "dwg" )
   {
     //loads dwg
-    QScopedPointer<dwgR> dwg( new dwgR( drawing.toUtf8() ) );
+    std::unique_ptr<dwgR> dwg( new dwgR( drawing.toUtf8() ) );
     if ( !dwg->read( this, false ) )
     {
       result = dwg->getError();
@@ -635,56 +636,54 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
     return false;
   }
 
+  switch ( result )
+  {
+    case DRW::BAD_NONE:
+      error = QObject::tr( "No error." );
+      break;
+    case DRW::BAD_UNKNOWN:
+      error = QObject::tr( "Unknown error." );
+      break;
+    case DRW::BAD_OPEN:
+      error = QObject::tr( "error opening file." );
+      break;
+    case DRW::BAD_VERSION:
+      error = QObject::tr( "unsupported version." );
+      break;
+    case DRW::BAD_READ_METADATA:
+      error = QObject::tr( "error reading metadata." );
+      break;
+    case DRW::BAD_READ_FILE_HEADER:
+      error = QObject::tr( "error in file header read process." );
+      break;
+    case DRW::BAD_READ_HEADER:
+      error = QObject::tr( "error in header vars read process." );
+      break;
+    case DRW::BAD_READ_HANDLES:
+      error = QObject::tr( "error in object map read process." );
+      break;
+    case DRW::BAD_READ_CLASSES:
+      error = QObject::tr( "error in classes read process." );
+      break;
+    case DRW::BAD_READ_TABLES:
+      error = QObject::tr( "error in tables read process." );
+      result = DRW::BAD_NONE;
+      break;
+    case DRW::BAD_READ_BLOCKS:
+      error = QObject::tr( "error in block read process." );
+      break;
+    case DRW::BAD_READ_ENTITIES:
+      error = QObject::tr( "error in entities read process." );
+      break;
+    case DRW::BAD_READ_OBJECTS:
+      error = QObject::tr( "error in objects read process." );
+      break;
+  }
+
   if ( result != DRW::BAD_NONE )
   {
-    switch ( result )
-    {
-      case DRW::BAD_NONE:
-        error = QObject::tr( "No error." );
-        break;
-      case DRW::BAD_UNKNOWN:
-        error = QObject::tr( "Unknown error." );
-        break;
-      case DRW::BAD_OPEN:
-        error = QObject::tr( "error opening file." );
-        break;
-      case DRW::BAD_VERSION:
-        error = QObject::tr( "unsupported version." );
-        break;
-      case DRW::BAD_READ_METADATA:
-        error = QObject::tr( "error reading metadata." );
-        break;
-      case DRW::BAD_READ_FILE_HEADER:
-        error = QObject::tr( "error in file header read process." );
-        break;
-      case DRW::BAD_READ_HEADER:
-        error = QObject::tr( "error in header vars read process." );
-        break;
-      case DRW::BAD_READ_HANDLES:
-        error = QObject::tr( "error in object map read process." );
-        break;
-      case DRW::BAD_READ_CLASSES:
-        error = QObject::tr( "error in classes read process." );
-        break;
-      case DRW::BAD_READ_TABLES:
-        error = QObject::tr( "error in tables read process." );
-        result = DRW::BAD_NONE;
-        break;
-      case DRW::BAD_READ_BLOCKS:
-        error = QObject::tr( "error in block read process." );
-        break;
-      case DRW::BAD_READ_ENTITIES:
-        error = QObject::tr( "error in entities read process." );
-        break;
-      case DRW::BAD_READ_OBJECTS:
-        error = QObject::tr( "error in objects read process." );
-        break;
-    }
-
     QgsDebugMsg( QString( "error:%1" ).arg( error ) );
-
-    if ( result != DRW::BAD_NONE )
-      return false;
+    return false;
   }
 
   return !doExpandInserts || expandInserts( error );
@@ -1186,13 +1185,13 @@ void QgsDwgImporter::addAppId( const DRW_AppId &data )
 
 bool QgsDwgImporter::createFeature( OGRLayerH layer, OGRFeatureH f, const QgsAbstractGeometry &g0 ) const
 {
-  const QgsAbstractGeometry *g;
-  QScopedPointer<QgsAbstractGeometry> sg( nullptr );
+  const QgsAbstractGeometry *g = nullptr;
+  std::unique_ptr<QgsAbstractGeometry> sg( nullptr );
 
   if ( !mUseCurves && g0.hasCurvedSegments() )
   {
     sg.reset( g0.segmentize() );
-    g = sg.data();
+    g = sg.get();
   }
   else
   {
@@ -1471,7 +1470,7 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
 
   QgsPointSequence s;
   QgsCompoundCurve cc;
-  double width;
+  double width = -1.0; // width is set to correct value during first loop
   bool hadBulge( false );
 
   std::vector<DRW_Vertex2D *>::size_type n = data.flags & 1 ? vertexnum : vertexnum - 1;
@@ -1670,7 +1669,7 @@ void QgsDwgImporter::addPolyline( const DRW_Polyline &data )
 
   QgsPointSequence s;
   QgsCompoundCurve cc;
-  double width;
+  double width = -1.0; // width is set to correct value during first loop
   bool hadBulge( false );
 
   std::vector<DRW_Vertex *>::size_type n = data.flags & 1 ? vertexnum : vertexnum - 1;
@@ -2553,7 +2552,7 @@ bool QgsDwgImporter::expandInserts( QString &error )
 
   OGRFeatureH insert = nullptr;
   int i = 0, errors = 0;
-  for ( int i = 0, errors = 0; true; ++i )
+  for ( int i = 0; true; ++i )
   {
     if ( i % 1000 == 0 )
     {
@@ -2577,7 +2576,7 @@ bool QgsDwgImporter::expandInserts( QString &error )
     }
 
     QgsGeometry g( QgsOgrUtils::ogrGeometryToQgsGeometry( ogrG ) );
-    if ( g.isEmpty() )
+    if ( g.isNull() )
     {
       QgsDebugMsg( QString( "%1: could not copy geometry" ).arg( OGR_F_GetFID( insert ) ) );
       continue;
@@ -2668,7 +2667,7 @@ bool QgsDwgImporter::expandInserts( QString &error )
         }
 
         QgsGeometry g( QgsOgrUtils::ogrGeometryToQgsGeometry( ogrG ) );
-        if ( g.isEmpty() )
+        if ( g.isNull() )
         {
           QgsDebugMsg( QString( "%1: could not copy geometry" ).arg( fid ) );
           continue;
@@ -2731,17 +2730,11 @@ bool QgsDwgImporter::expandInserts( QString &error )
         ++j;
       }
 
-      if ( f )
-        OGR_F_Destroy( f );
-
       OGR_DS_ReleaseResultSet( mDs, src );
 
       QgsDebugMsgLevel( QString( "%1: %2 features copied" ).arg( name ).arg( j ), 5 );
     }
   }
-
-  if ( insert )
-    OGR_F_Destroy( insert );
 
   if ( errors > 0 )
   {

@@ -136,13 +136,13 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem& );
  * CRS Database and Custom CRS
  * ===========================
  *
- * The database of CRS shipped with QGIS is stored in a SQLite database (see QgsApplication::srsDbFilePath())
+ * The database of CRS shipped with QGIS is stored in a SQLite database (see QgsApplication::srsDatabaseFilePath())
  * and it is based on the data files maintained by GDAL project (a variety of .csv and .wkt files).
  *
  * Sometimes it happens that users need to use a CRS definition that is not well known
  * or that has been only created with a specific purpose (and thus its definition is not
  * available in our database of CRS). Whenever a new CRS definition is seen, it will
- * be added to the local databse (in user's home directory, see QgsApplication::qgisUserDbFilePath()).
+ * be added to the local databse (in user's home directory, see QgsApplication::qgisUserDatabaseFilePath()).
  * QGIS also features a GUI for management of local custom CRS definitions.
  *
  * There are therefore two databases: one for shipped CRS definitions and one for custom CRS definitions.
@@ -236,6 +236,15 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     //! Assignment operator
     QgsCoordinateReferenceSystem& operator=( const QgsCoordinateReferenceSystem& srs );
 
+    /**
+     * Returns a list of all valid SRS IDs present in the CRS database. Any of the
+     * returned values can be safely passed to fromSrsId() to create a new, valid
+     * QgsCoordinateReferenceSystem object.
+     * @see fromSrsId()
+     * @note added in QGIS 3.0
+     */
+    static QList< long > validSrsIds();
+
     // static creators
 
     /** Creates a CRS from a given OGC WMS-format Coordinate Reference System string.
@@ -274,6 +283,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @returns matching CRS, or an invalid CRS if ID could not be found
      * @note added in QGIS 3.0
      * @see createFromSrsId()
+     * @see validSrsIds()
     */
     static QgsCoordinateReferenceSystem fromSrsId( long srsId );
 
@@ -555,7 +565,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *   negative number of failed updates in case of errors.
      * @note This is used internally and should not be necessary to call in client code
      */
-    static int syncDb();
+    static int syncDatabase();
 
 
     /** Save the proj4-string as a custom CRS
@@ -659,7 +669,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     //! Open SQLite db and show message if cannot be opened
     //! @return the same code as sqlite3_open
-    static int openDb( const QString& path, sqlite3 **db, bool readonly = true );
+    static int openDatabase( const QString& path, sqlite3 **db, bool readonly = true );
 
     //! Work out the projection units and set the appropriate local variable
     void setMapUnits();
@@ -672,7 +682,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     //! Initialize the CRS object by looking up CRS database in path given in db argument,
     //! using first CRS entry where expression = 'value'
-    bool loadFromDb( const QString& db, const QString& expression, const QString& value );
+    bool loadFromDatabase( const QString& db, const QString& expression, const QString& value );
 
     static bool loadIds( QHash<int, QString> &wkts );
     static bool loadWkts( QHash<int, QString> &wkts, const char *filename );

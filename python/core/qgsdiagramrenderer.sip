@@ -53,6 +53,12 @@ class QgsDiagramLayerSettings
       StartAngle, /*! Angle offset for pie diagram */
     };
 
+    /**
+     * Returns the diagram property definitions.
+     * @note added in QGIS 3.0
+     */
+    static const QgsPropertiesDefinition& propertyDefinitions();
+
     QgsDiagramLayerSettings();
 
     //! Copy constructor
@@ -209,7 +215,6 @@ class QgsDiagramLayerSettings
 
     void setDataDefinedProperties( const QgsPropertyCollection& collection );
 
-    static const QgsPropertiesDefinition PROPERTY_DEFINITIONS;
 
 };
 

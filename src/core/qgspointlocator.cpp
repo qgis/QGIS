@@ -118,10 +118,10 @@ class QgsPointLocator_VisitorNearestVertex : public IVisitor
     }
 
   private:
-    QgsPointLocator* mLocator;
+    QgsPointLocator* mLocator = nullptr;
     QgsPointLocator::Match& mBest;
     QgsPoint mSrcPoint;
-    QgsPointLocator::MatchFilter* mFilter;
+    QgsPointLocator::MatchFilter* mFilter = nullptr;
 };
 
 
@@ -168,10 +168,10 @@ class QgsPointLocator_VisitorNearestEdge : public IVisitor
     }
 
   private:
-    QgsPointLocator* mLocator;
+    QgsPointLocator* mLocator = nullptr;
     QgsPointLocator::Match& mBest;
     QgsPoint mSrcPoint;
-    QgsPointLocator::MatchFilter* mFilter;
+    QgsPointLocator::MatchFilter* mFilter = nullptr;
 };
 
 
@@ -203,7 +203,7 @@ class QgsPointLocator_VisitorArea : public IVisitor
         mList << QgsPointLocator::Match( QgsPointLocator::Area, mLocator->mLayer, id, 0, QgsPoint() );
     }
   private:
-    QgsPointLocator* mLocator;
+    QgsPointLocator* mLocator = nullptr;
     QgsPointLocator::MatchList& mList;
     QgsGeometry mGeomPt;
 };
@@ -548,10 +548,10 @@ class QgsPointLocator_VisitorEdgesInRect : public IVisitor
     }
 
   private:
-    QgsPointLocator* mLocator;
+    QgsPointLocator* mLocator = nullptr;
     QgsPointLocator::MatchList& mList;
     QgsRectangle mSrcRect;
-    QgsPointLocator::MatchFilter* mFilter;
+    QgsPointLocator::MatchFilter* mFilter = nullptr;
 };
 
 

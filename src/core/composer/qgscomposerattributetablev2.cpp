@@ -404,7 +404,7 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
   context.setFields( layer->fields() );
 
   //prepare filter expression
-  QScopedPointer<QgsExpression> filterExpression;
+  std::unique_ptr<QgsExpression> filterExpression;
   bool activeFilter = false;
   if ( mFilterFeatures && !mFeatureFilter.isEmpty() )
   {
@@ -465,7 +465,7 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
   {
     context.setFeature( f );
     //check feature against filter
-    if ( activeFilter && !filterExpression.isNull() )
+    if ( activeFilter && filterExpression )
     {
       QVariant result = filterExpression->evaluate( &context );
       // skip this feature if the filter evaluation is false
@@ -526,7 +526,7 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
   {
     c.setSortColumn( sortColumns.at( i ).first );
     c.setAscending( sortColumns.at( i ).second );
-    qStableSort( contents.begin(), contents.end(), c );
+    std::stable_sort( contents.begin(), contents.end(), c );
   }
 
   recalculateTableSize();
@@ -608,7 +608,7 @@ QList<QPair<int, bool> > QgsComposerAttributeTableV2::sortAttributes() const
   }
 
   //sort columns by rank
-  qSort( sortedColumns.begin(), sortedColumns.end(), columnsBySortRank );
+  std::sort( sortedColumns.begin(), sortedColumns.end(), columnsBySortRank );
 
   //generate list of column index, bool for sort direction (to match 2.0 api)
   QList<QPair<int, bool> > attributesBySortRank;

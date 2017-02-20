@@ -55,11 +55,11 @@ class TestQgsComposerGroup : public QObject
 
     void dumpUndoStack( const QUndoStack&, QString prefix = QLatin1String( QLatin1String( "" ) ) ) const;
 
-    QgsComposition *mComposition;
-    QgsMapSettings *mMapSettings;
-    QgsComposerLabel* mItem1;
-    QgsComposerLabel* mItem2;
-    QgsComposerItemGroup* mGroup;
+    QgsComposition *mComposition = nullptr;
+    QgsMapSettings *mMapSettings = nullptr;
+    QgsComposerLabel* mItem1 = nullptr;
+    QgsComposerLabel* mItem2 = nullptr;
+    QgsComposerItemGroup* mGroup = nullptr;
     QString mReport;
 };
 

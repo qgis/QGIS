@@ -44,7 +44,7 @@ QgsExpressionContext QgsLabelingGui::createExpressionContext() const
 
 void QgsLabelingGui::registerDataDefinedButton( QgsPropertyOverrideButton* button, QgsPalLayerSettings::Property key )
 {
-  button->init( key, mDataDefinedProperties, QgsPalLayerSettings::PROPERTY_DEFINITIONS, mLayer );
+  button->init( key, mDataDefinedProperties, QgsPalLayerSettings::propertyDefinitions(), mLayer );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsLabelingGui::updateProperty );
   button->registerExpressionContextGenerator( this );
 }

@@ -551,7 +551,7 @@ void QgsBrowserDockWidget::addSelectedLayers()
 
   // get a sorted list of selected indexes
   QModelIndexList list = mBrowserView->selectionModel()->selectedIndexes();
-  qSort( list );
+  std::sort( list.begin(), list.end() );
 
   // If any of the layer items are QGIS we just open and exit the loop
   Q_FOREACH ( const QModelIndex& index, list )

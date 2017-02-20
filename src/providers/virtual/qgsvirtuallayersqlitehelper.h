@@ -45,7 +45,7 @@ class QgsScopedSqlite
     void reset( sqlite3* db );
 
   private:
-    sqlite3* db_;
+    sqlite3* db_ = nullptr;
 
     void close_();
 };
@@ -85,8 +85,8 @@ namespace Sqlite
     sqlite3_stmt* stmt();
 
   private:
-    sqlite3* db_;
-    sqlite3_stmt* stmt_;
+    sqlite3* db_ = nullptr;
+    sqlite3_stmt* stmt_ = nullptr;
     int nBind_;
   };
 }

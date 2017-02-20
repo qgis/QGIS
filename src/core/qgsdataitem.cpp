@@ -1175,7 +1175,7 @@ void QgsZipItem::init()
       QgsDebugMsgLevel( "provider " + k, 3 );
       // some providers hangs with empty uri (Postgis) etc...
       // -> using libraries directly
-      QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( k );
+      std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->providerLibrary( k ) );
       if ( library )
       {
         dataCapabilities_t * dataCapabilities = reinterpret_cast< dataCapabilities_t * >( cast_to_fptr( library->resolve( "dataCapabilities" ) ) );

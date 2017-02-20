@@ -53,7 +53,7 @@ class GUI_EXPORT QgsActionMenu : public QMenu
       ActionType actionType;
       QVariant actionData;
       QgsFeatureId featureId;
-      QgsMapLayer* mapLayer;
+      QgsMapLayer* mapLayer = nullptr;
     };
 
     /**
@@ -96,7 +96,7 @@ class GUI_EXPORT QgsActionMenu : public QMenu
     void init();
     QgsFeature feature();
 
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer* mLayer = nullptr;
     QList<QgsAction> mActions;
     QgsFeature mFeature;
     QgsFeatureId mFeatureId;

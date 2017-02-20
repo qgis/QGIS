@@ -113,7 +113,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../../images/images.qrc">
-            <normaloff>:/images/icons/qbrowser-icon-60x60.png</normaloff>:/images/icons/qbrowser-icon-60x60.png</iconset>
+            <normaloff>:/images/icons/qbrowser_icon.svg</normaloff>:/images/icons/qbrowser_icon.svg</iconset>
           </property>
          </item>
          <item>

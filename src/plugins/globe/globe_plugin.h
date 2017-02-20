@@ -119,12 +119,12 @@ class GLOBE_EXPORT GlobePlugin : public QObject, public QgisPlugin
     void syncExtent();
 
   private:
-    QgisInterface *mQGisIface;
+    QgisInterface *mQGisIface = nullptr;
 
-    QAction* mActionToggleGlobe;
-    osgEarth::QtGui::ViewerWidget* mViewerWidget;
-    QgsGlobeWidget* mDockWidget;
-    QgsGlobePluginDialog* mSettingsDialog;
+    QAction* mActionToggleGlobe = nullptr;
+    osgEarth::QtGui::ViewerWidget* mViewerWidget = nullptr;
+    QgsGlobeWidget* mDockWidget = nullptr;
+    QgsGlobePluginDialog* mSettingsDialog = nullptr;
     QString mBaseLayerUrl;
     QList<QgsGlobePluginDialog::LayerDataSource> mImagerySources;
     QList<QgsGlobePluginDialog::LayerDataSource> mElevationSources;
@@ -141,7 +141,7 @@ class GLOBE_EXPORT GlobePlugin : public QObject, public QgisPlugin
     osg::ref_ptr<osgEarth::Util::VerticalScale> mVerticalScale;
 
     //! Creates additional pages in the layer properties for adjusting 3D properties
-    QgsGlobeLayerPropertiesFactory* mLayerPropertiesFactory;
+    QgsGlobeLayerPropertiesFactory* mLayerPropertiesFactory = nullptr;
     osg::ref_ptr<QgsGlobeFrustumHighlightCallback> mFrustumHighlightCallback;
     osg::ref_ptr<QgsGlobeFeatureIdentifyCallback> mFeatureQueryToolIdentifyCb;
     // TODO: How to port highlight to 2.7.0?

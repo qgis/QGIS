@@ -87,6 +87,7 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     QString saveFile() const;
     bool exportMapExtent() const;
     bool layerTitleAsName() const;
+    QString mapTheme() const;
     QString encoding() const;
     QgsCoordinateReferenceSystem crs() const;
 
@@ -104,8 +105,8 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
 
   private:
     void cleanGroup( QgsLayerTreeNode *node );
-    QgsLayerTreeGroup *mLayerTreeGroup;
-    FieldSelectorDelegate *mFieldSelectorDelegate;
+    QgsLayerTreeGroup *mLayerTreeGroup = nullptr;
+    FieldSelectorDelegate *mFieldSelectorDelegate = nullptr;
 
     QgsCoordinateReferenceSystem mCRS;
 };
