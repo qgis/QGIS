@@ -242,6 +242,15 @@ void TestVectorLayerCache::testFullCache()
   {
     QVERIFY( cache.isFidCached( f.id() ) );
   }
+
+  // add a feature to the layer
+  mPointsLayer->startEditing();
+  QgsFeature f2( mPointsLayer->fields() );
+  QVERIFY( mPointsLayer->addFeature( f2 ) );
+  QVERIFY( cache.hasFullCache() );
+  QVERIFY( cache.isFidCached( f2.id() ) );
+
+  mPointsLayer->rollBack();
 }
 
 void TestVectorLayerCache::testFullCacheThroughRequest()
@@ -375,6 +384,13 @@ void TestVectorLayerCache::testCacheGeom()
   {
     QVERIFY( f.hasGeometry() );
   }
+
+  // another test...
+  cache.setCacheGeometry( false );
+  cache.setFullCache( true );
+  QVERIFY( cache.hasFullCache() );
+  cache.setCacheGeometry( true );
+  QVERIFY( !cache.hasFullCache() );
 }
 
 void TestVectorLayerCache::onCommittedFeaturesAdded( const QString &layerId, const QgsFeatureList &features )
