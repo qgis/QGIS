@@ -194,6 +194,17 @@ void TestQgsAttributeTable::testNoGeom()
   dlg.reset( new QgsAttributeTableDialog( tempLayer.get() ) );
   QVERIFY( dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
   QVERIFY( !( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry ) );
+
+  // try changing existing dialog to no geometry mode
+  dlg->filterShowAll();
+  QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
+  QVERIFY( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry );
+
+  // and back to a geometry mode
+  dlg->filterVisible();
+  QVERIFY( dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
+  QVERIFY( !( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry ) );
+
 }
 
 

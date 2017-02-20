@@ -133,6 +133,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QWidget
   mEditorContext.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
 
   QgsFeatureRequest r;
+  bool needsGeom = false;
   if ( mLayer->geometryType() != QgsWkbTypes::NullGeometry &&
        settings.value( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll ).toInt() == QgsAttributeTableFilterModel::ShowVisible )
   {
@@ -144,7 +145,10 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QWidget
     mRubberBand->setToGeometry( QgsGeometry::fromRect( extent ), layer );
 
     mActionShowAllFilter->setText( tr( "Show All Features In Initial Canvas Extent" ) );
+    needsGeom = true;
   }
+  if ( !needsGeom )
+    r.setFlags( QgsFeatureRequest::NoGeometry );
 
   // Initialize dual view
   mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), r, mEditorContext );

@@ -192,6 +192,16 @@ QgsDualView::ViewMode QgsDualView::view() const
 
 void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filterMode )
 {
+  bool needsGeometry = filterMode == QgsAttributeTableFilterModel::ShowVisible;
+
+  QgsFeatureRequest r = mMasterModel->request();
+  if ( !needsGeometry )
+    r.setFlags( r.flags() | QgsFeatureRequest::NoGeometry );
+  else
+    r.setFlags( r.flags() & ~( QgsFeatureRequest::NoGeometry ) );
+  mMasterModel->setRequest( r );
+  whileBlocking( mLayerCache )->setCacheGeometry( needsGeometry );
+
   mFilterModel->setFilterMode( filterMode );
   emit filterChanged();
 }
