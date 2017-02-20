@@ -40,51 +40,37 @@ void QgsSettings::init()
     mGlobalSettings = new QSettings( sGlobalSettingsPath, QSettings::IniFormat );
     mGlobalSettings->setIniCodec( "UTF-8" );
   }
-  else
-  {
-    mGlobalSettings = nullptr;
-  }
 }
 
 
 QgsSettings::QgsSettings( const QString &organization, const QString &application, QObject *parent ):
-    QSettings( organization, application, parent ),
-    mGlobalSettings( nullptr ),
-    mUsingGlobalArray( false )
+    QSettings( organization, application, parent )
 {
   init( );
 }
 
 QgsSettings::QgsSettings( QSettings::Scope scope, const QString &organization,
                           const QString &application, QObject *parent ) :
-    QSettings( scope, organization, application, parent ),
-    mGlobalSettings( nullptr ),
-    mUsingGlobalArray( false )
+    QSettings( scope, organization, application, parent )
 {
   init( );
 }
 
 QgsSettings::QgsSettings( QSettings::Format format, QSettings::Scope scope,
                           const QString &organization, const QString &application, QObject *parent ) :
-    QSettings( format, scope, organization, application, parent ),
-    mGlobalSettings( nullptr ),
-    mUsingGlobalArray( false )
+    QSettings( format, scope, organization, application, parent )
 {
   init( );
 }
 
 QgsSettings::QgsSettings( const QString &fileName, QSettings::Format format, QObject *parent ) :
-    QSettings( fileName, format, parent ),
-    mGlobalSettings( nullptr ),
-    mUsingGlobalArray( false )
+    QSettings( fileName, format, parent )
 {
   init( );
 }
 
 QgsSettings::QgsSettings( QObject *parent ) :
-    QSettings( parent ),
-    mGlobalSettings( nullptr ),
-    mUsingGlobalArray( false )
+    QSettings( parent )
 {
   init( );
 }

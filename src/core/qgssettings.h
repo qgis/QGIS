@@ -194,9 +194,9 @@ class CORE_EXPORT QgsSettings : public QSettings
 
     void init( );
     QString sanitizeKey( QString key ) const;
-    QSettings* mGlobalSettings;
+    QSettings* mGlobalSettings = nullptr;
     static QString sGlobalSettingsPath;
-    bool mUsingGlobalArray;
+    bool mUsingGlobalArray = false;
     Q_DISABLE_COPY( QgsSettings )
 
 };
