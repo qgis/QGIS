@@ -91,7 +91,7 @@ class QgsRectangle
     //! returns a QRectF with same coordinates.
     QRectF toRectF() const;
     //! returns string representation of form xmin,ymin xmax,ymax
-    QString toString( bool automaticPrecision = false ) const;
+    QString toString( bool automaticPrecision /Constrained/ = false ) const;
     //! overloaded toString that allows precision of numbers to be set
     QString toString( int thePrecision ) const;
     //! returns rectangle as a polygon

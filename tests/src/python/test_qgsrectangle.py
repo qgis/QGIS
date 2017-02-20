@@ -196,5 +196,37 @@ class TestQgsRectangle(unittest.TestCase):
                      (myExpectedWkt, myWkt))
         assert compareWkt(myWkt, myExpectedWkt), myMessage
 
+    def testToString(self):
+        """Test the different string representations"""
+        rect = QgsRectangle(0, 0.1, 0.2, 0.3)
+        myExpectedString = '0.0000000000000000,0.1000000000000000 : 0.2000000000000000,0.3000000000000000'
+        myString = rect.toString()
+        myMessage = ('Expected: %s\nGot: %s\n' %
+                     (myExpectedString, myString))
+        assert myString == myExpectedString, myMessage
+
+        myString = rect.toString(False)
+        myMessage = ('Expected: %s\nGot: %s\n' %
+                     (myExpectedString, myString))
+        assert myString == myExpectedString, myMessage
+
+        myExpectedString = '0.00,0.10 : 0.20,0.30'
+        myString = rect.toString(True)
+        myMessage = ('Expected: %s\nGot: %s\n' %
+                     (myExpectedString, myString))
+        assert myString == myExpectedString, myMessage
+
+        myExpectedString = '0.0,0.1 : 0.2,0.3'
+        myString = rect.toString(1)
+        myMessage = ('Expected: %s\nGot: %s\n' %
+                     (myExpectedString, myString))
+        assert myString == myExpectedString, myMessage
+
+        myExpectedString = '0.000,0.100 : 0.200,0.300'
+        myString = rect.toString(3)
+        myMessage = ('Expected: %s\nGot: %s\n' %
+                     (myExpectedString, myString))
+        assert myString == myExpectedString, myMessage
+
 if __name__ == '__main__':
     unittest.main()
