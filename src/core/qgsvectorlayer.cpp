@@ -4166,22 +4166,22 @@ QString QgsVectorLayer::metadata() const
     //
     myMetadata += R"(<p class="glossy">)" + tr( "Layer Spatial Reference System" ) + "</p>\n";
     myMetadata += QLatin1String( "<p>" );
-    myMetadata += crs().toProj4().replace( '"', QLatin1String( R"( " )" ) );
-                                           myMetadata += QLatin1String( " < / p > \n" );
+    myMetadata += crs().toProj4().replace( '"', QLatin1String( " \"" ) );
+    myMetadata += QLatin1String( "</p>\n" );
 
-                                           //
-                                           // Display project (output) spatial ref system
-                                           //
+    //
+    // Display project (output) spatial ref system
+    //
 #if 0
-                                           // TODO: disabled for now, will revisit later [MD]
-                                           //myMetadata += "<tr> < td bgcolor = \"gray\">";
-                                           myMetadata += "<p class=\"glossy\">" + tr( "Project (Output) Spatial Reference System" ) + "</p>\n";
-                                           myMetadata += "<p>";
-                                           myMetadata += coordinateTransform->destCRS().toProj4().replace( '"', " \"" );
-                                           myMetadata += "</p>\n";
+    // TODO: disabled for now, will revisit later [MD]
+    //myMetadata += "<tr> < td bgcolor = \"gray\">";
+    myMetadata += "<p class=\"glossy\">" + tr( "Project (Output) Spatial Reference System" ) + "</p>\n";
+    myMetadata += "<p>";
+    myMetadata += coordinateTransform->destCRS().toProj4().replace( '"', " \"" );
+    myMetadata += "</p>\n";
 #endif
-                                         }
-                                         catch ( QgsCsException &cse )
+  }
+  catch ( QgsCsException &cse )
   {
     Q_UNUSED( cse );
     QgsDebugMsg( cse.what() );
