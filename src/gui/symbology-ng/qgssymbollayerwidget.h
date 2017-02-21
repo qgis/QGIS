@@ -166,7 +166,6 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
 
   public:
     QgsSimpleMarkerSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
-    ~QgsSimpleMarkerSymbolLayerWidget();
 
     static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsSimpleMarkerSymbolLayerWidget( vl ); }
 

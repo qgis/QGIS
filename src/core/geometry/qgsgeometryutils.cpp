@@ -448,25 +448,11 @@ bool QgsGeometryUtils::circleClockwise( double angle1, double angle2, double ang
 {
   if ( angle3 >= angle1 )
   {
-    if ( angle2 > angle1 && angle2 < angle3 )
-    {
-      return false;
-    }
-    else
-    {
-      return true;
-    }
+    return !( angle2 > angle1 && angle2 < angle3 );
   }
   else
   {
-    if ( angle2 > angle1 || angle2 < angle3 )
-    {
-      return false;
-    }
-    else
-    {
-      return true;
-    }
+    return !( angle2 > angle1 || angle2 < angle3 );
   }
 }
 

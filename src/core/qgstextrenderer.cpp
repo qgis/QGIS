@@ -73,18 +73,18 @@ QgsTextBufferSettings::QgsTextBufferSettings()
   d = new QgsTextBufferSettingsPrivate();
 }
 
-QgsTextBufferSettings::QgsTextBufferSettings( const QgsTextBufferSettings &other )
+QgsTextBufferSettings::QgsTextBufferSettings( const QgsTextBufferSettings &other ) //NOLINT
     : d( other.d )
 {
 }
 
-QgsTextBufferSettings &QgsTextBufferSettings::operator=( const QgsTextBufferSettings & other )
+QgsTextBufferSettings &QgsTextBufferSettings::operator=( const QgsTextBufferSettings & other ) //NOLINT
 {
   d = other.d;
   return *this;
 }
 
-QgsTextBufferSettings::~QgsTextBufferSettings()
+QgsTextBufferSettings::~QgsTextBufferSettings() //NOLINT
 {
 
 }
@@ -337,19 +337,19 @@ QgsTextBackgroundSettings::QgsTextBackgroundSettings()
   d = new QgsTextBackgroundSettingsPrivate();
 }
 
-QgsTextBackgroundSettings::QgsTextBackgroundSettings( const QgsTextBackgroundSettings &other )
+QgsTextBackgroundSettings::QgsTextBackgroundSettings( const QgsTextBackgroundSettings &other ) //NOLINT
     : d( other.d )
 {
 
 }
 
-QgsTextBackgroundSettings &QgsTextBackgroundSettings::operator=( const QgsTextBackgroundSettings & other )
+QgsTextBackgroundSettings &QgsTextBackgroundSettings::operator=( const QgsTextBackgroundSettings & other ) //NOLINT
 {
   d = other.d;
   return *this;
 }
 
-QgsTextBackgroundSettings::~QgsTextBackgroundSettings()
+QgsTextBackgroundSettings::~QgsTextBackgroundSettings() //NOLINT
 {
 
 }
@@ -878,19 +878,19 @@ QgsTextShadowSettings::QgsTextShadowSettings()
   d = new QgsTextShadowSettingsPrivate();
 }
 
-QgsTextShadowSettings::QgsTextShadowSettings( const QgsTextShadowSettings &other )
+QgsTextShadowSettings::QgsTextShadowSettings( const QgsTextShadowSettings &other ) //NOLINT
     : d( other.d )
 {
 
 }
 
-QgsTextShadowSettings &QgsTextShadowSettings::operator=( const QgsTextShadowSettings & other )
+QgsTextShadowSettings &QgsTextShadowSettings::operator=( const QgsTextShadowSettings & other ) //NOLINT
 {
   d = other.d;
   return *this;
 }
 
-QgsTextShadowSettings::~QgsTextShadowSettings()
+QgsTextShadowSettings::~QgsTextShadowSettings() //NOLINT
 {
 
 }
@@ -1221,7 +1221,7 @@ QgsTextFormat::QgsTextFormat()
   d = new QgsTextSettingsPrivate();
 }
 
-QgsTextFormat::QgsTextFormat( const QgsTextFormat &other )
+QgsTextFormat::QgsTextFormat( const QgsTextFormat &other ) //NOLINT
     : mBufferSettings( other.mBufferSettings )
     , mBackgroundSettings( other.mBackgroundSettings )
     , mShadowSettings( other.mShadowSettings )
@@ -1232,7 +1232,7 @@ QgsTextFormat::QgsTextFormat( const QgsTextFormat &other )
 
 }
 
-QgsTextFormat &QgsTextFormat::operator=( const QgsTextFormat & other )
+QgsTextFormat &QgsTextFormat::operator=( const QgsTextFormat & other ) //NOLINT
 {
   d = other.d;
   mBufferSettings = other.mBufferSettings;
@@ -1243,7 +1243,7 @@ QgsTextFormat &QgsTextFormat::operator=( const QgsTextFormat & other )
   return *this;
 }
 
-QgsTextFormat::~QgsTextFormat()
+QgsTextFormat::~QgsTextFormat() //NOLINT
 {
 
 }
@@ -1614,7 +1614,7 @@ bool QgsTextFormat::containsAdvancedEffects() const
 
 int QgsTextRenderer::sizeToPixel( double size, const QgsRenderContext& c, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& mapUnitScale )
 {
-  return static_cast< int >( c.convertToPainterUnits( size, unit, mapUnitScale ) + 0.5 );
+  return static_cast< int >( c.convertToPainterUnits( size, unit, mapUnitScale ) + 0.5 ); //NOLINT
 }
 
 void QgsTextRenderer::drawText( const QRectF& rect, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList& textLines, QgsRenderContext& context, const QgsTextFormat& format, bool drawAsOutlines )
@@ -2248,7 +2248,7 @@ void QgsTextRenderer::drawShadow( QgsRenderContext& context, const QgsTextRender
   bool mapUnits = shadow.blurRadiusUnit() == QgsUnitTypes::RenderMapUnits;
   double radius = context.convertToPainterUnits( shadow.blurRadius(), shadow.blurRadiusUnit(), shadow.blurRadiusMapUnitScale() );
   radius /= ( mapUnits ? context.scaleFactor() / component.dpiRatio : 1 );
-  radius = static_cast< int >( radius + 0.5 );
+  radius = static_cast< int >( radius + 0.5 ); //NOLINT
 
   // TODO: add labeling gui option to adjust blurBufferClippingScale to minimize pixels, or
   //       to ensure shadow isn't clipped too tight. (Or, find a better method of buffering)

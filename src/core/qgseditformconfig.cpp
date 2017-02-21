@@ -88,15 +88,15 @@ bool QgsEditFormConfig::removeWidgetConfig( const QString& widgetName )
   return d->mWidgetConfigs.remove( widgetName ) != 0;
 }
 
-QgsEditFormConfig::QgsEditFormConfig( const QgsEditFormConfig& o )
+QgsEditFormConfig::QgsEditFormConfig( const QgsEditFormConfig& o ) //NOLINT
     : d( o.d )
 {
 }
 
-QgsEditFormConfig::~QgsEditFormConfig()
+QgsEditFormConfig::~QgsEditFormConfig() //NOLINT
 {}
 
-QgsEditFormConfig& QgsEditFormConfig::operator=( const QgsEditFormConfig & o )
+QgsEditFormConfig& QgsEditFormConfig::operator=( const QgsEditFormConfig & o ) //NOLINT
 {
   d = o.d;
   return *this;

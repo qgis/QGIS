@@ -93,10 +93,6 @@ QSizeF QgsDiagram::sizeForValue( double value, const QgsDiagramSettings &s, cons
   double scaledValue = value;
   double scaledLowerValue = is.lowerValue;
   double scaledUpperValue = is.upperValue;
-  double scaledLowerSizeWidth = is.lowerSize.width();
-  double scaledLowerSizeHeight = is.lowerSize.height();
-  double scaledUpperSizeWidth = is.upperSize.width();
-  double scaledUpperSizeHeight = is.upperSize.height();
 
   // interpolate the squared value if scale by area
   if ( s.scaleByArea )
@@ -104,10 +100,6 @@ QSizeF QgsDiagram::sizeForValue( double value, const QgsDiagramSettings &s, cons
     scaledValue = sqrt( scaledValue );
     scaledLowerValue = sqrt( scaledLowerValue );
     scaledUpperValue = sqrt( scaledUpperValue );
-    scaledLowerSizeWidth = sqrt( scaledLowerSizeWidth );
-    scaledLowerSizeHeight = sqrt( scaledLowerSizeHeight );
-    scaledUpperSizeWidth = sqrt( scaledUpperSizeWidth );
-    scaledUpperSizeHeight = sqrt( scaledUpperSizeHeight );
   }
 
   //interpolate size

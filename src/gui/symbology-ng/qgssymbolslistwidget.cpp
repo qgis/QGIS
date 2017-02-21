@@ -405,7 +405,7 @@ void QgsSymbolsListWidget::addSymbolToStyle()
   mStyle->addSymbol( name, mSymbol->clone() );
 
   // make sure the symbol is stored
-  mStyle->saveSymbol( name, mSymbol->clone(), 0, QStringList() );
+  mStyle->saveSymbol( name, mSymbol->clone(), false, QStringList() );
   populateSymbolView();
 }
 

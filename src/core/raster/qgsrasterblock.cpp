@@ -494,18 +494,18 @@ bool QgsRasterBlock::setIsNoDataExcept( QRect theExceptRect )
       {
         if ( r >= top && r <= bottom ) continue; // middle
         qgssize i = static_cast< qgssize >( r ) * mWidth;
-        memcpy( reinterpret_cast< char* >( mData ) + i*dataTypeSize, nodataRow, dataTypeSize*mWidth );
+        memcpy( reinterpret_cast< char* >( mData ) + i*dataTypeSize, nodataRow, dataTypeSize* static_cast< qgssize >( mWidth ) );
       }
       // middle
       for ( int r = top; r <= bottom; r++ )
       {
         qgssize i = static_cast< qgssize >( r ) * mWidth;
         // middle left
-        memcpy( reinterpret_cast< char* >( mData ) + i*dataTypeSize, nodataRow, dataTypeSize*left );
+        memcpy( reinterpret_cast< char* >( mData ) + i*dataTypeSize, nodataRow, dataTypeSize* static_cast< qgssize >( left ) );
         // middle right
         i += right + 1;
         int w = mWidth - right - 1;
-        memcpy( reinterpret_cast< char* >( mData ) + i*dataTypeSize, nodataRow, dataTypeSize*w );
+        memcpy( reinterpret_cast< char* >( mData ) + i*dataTypeSize, nodataRow, dataTypeSize* static_cast< qgssize >( w ) );
       }
       delete [] nodataRow;
     }
@@ -595,7 +595,7 @@ bool QgsRasterBlock::setIsNoDataExcept( QRect theExceptRect )
     {
       if ( r >= top && r <= bottom ) continue; // middle
       qgssize i = static_cast< qgssize >( r ) * mWidth;
-      memcpy( reinterpret_cast< void * >( mImage->bits() + rgbSize*i ), nodataRow, rgbSize*mWidth );
+      memcpy( reinterpret_cast< void * >( mImage->bits() + rgbSize*i ), nodataRow, rgbSize* static_cast< qgssize >( mWidth ) );
     }
     // middle
     for ( int r = top; r <= bottom; r++ )
@@ -604,12 +604,12 @@ bool QgsRasterBlock::setIsNoDataExcept( QRect theExceptRect )
       // middle left
       if ( left > 0 )
       {
-        memcpy( reinterpret_cast< void * >( mImage->bits() + rgbSize*i ), nodataRow, rgbSize*( left - 1 ) );
+        memcpy( reinterpret_cast< void * >( mImage->bits() + rgbSize*i ), nodataRow, rgbSize*static_cast< qgssize >( left - 1 ) );
       }
       // middle right
       i += right + 1;
       int w = mWidth - right - 1;
-      memcpy( reinterpret_cast< void * >( mImage->bits() + rgbSize*i ), nodataRow, rgbSize*w );
+      memcpy( reinterpret_cast< void * >( mImage->bits() + rgbSize*i ), nodataRow, rgbSize*static_cast< qgssize >( w ) );
     }
     delete [] nodataRow;
     return true;
@@ -755,7 +755,6 @@ void QgsRasterBlock::applyScaleOffset( double scale, double offset )
   {
     if ( !isNoData( i ) ) setValue( i, value( i ) * scale + offset );
   }
-  return;
 }
 
 void QgsRasterBlock::applyNoDataValues( const QgsRasterRangeList & rangeList )

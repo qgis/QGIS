@@ -487,6 +487,10 @@ class QgsImageFillSymbolLayer: QgsFillSymbolLayer
   protected:
 
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext& context );
+
+  private:
+
+    QgsImageFillSymbolLayer( const QgsImageFillSymbolLayer& other );
 };
 
 /** \ingroup core
@@ -844,6 +848,10 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
 
     QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
+  private:
+
+    QgsLinePatternFillSymbolLayer( const QgsLinePatternFillSymbolLayer& other );
+
 };
 
 class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
@@ -945,6 +953,10 @@ class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
 
   protected:
     void applyDataDefinedSettings( QgsSymbolRenderContext& context );
+
+  private:
+
+    QgsPointPatternFillSymbolLayer( const QgsPointPatternFillSymbolLayer& other );
 };
 
 class QgsCentroidFillSymbolLayer : QgsFillSymbolLayer
@@ -1001,4 +1013,8 @@ class QgsCentroidFillSymbolLayer : QgsFillSymbolLayer
     /** Returns whether a point is drawn for all parts or only on the biggest part of multi-part features.
      * @note added in 2.16 */
     bool pointOnAllParts() const;
+
+  private:
+
+    QgsCentroidFillSymbolLayer( const QgsCentroidFillSymbolLayer& other );
 };

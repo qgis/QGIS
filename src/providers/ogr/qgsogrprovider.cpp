@@ -2056,7 +2056,7 @@ QString createFilters( const QString& type )
     {
       driver = OGRGetDriver( i );
 
-      Q_CHECK_PTR( driver );
+      Q_CHECK_PTR( driver ); // NOLINT
 
       if ( !driver )
       {

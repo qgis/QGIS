@@ -226,7 +226,7 @@ QgsExpressionContext::QgsExpressionContext( const QgsExpressionContext& other )
   mCachedValues = other.mCachedValues;
 }
 
-QgsExpressionContext& QgsExpressionContext::operator=( QgsExpressionContext && other )
+QgsExpressionContext& QgsExpressionContext::operator=( QgsExpressionContext && other ) noexcept
 {
   if ( this != &other )
   {
@@ -588,7 +588,7 @@ class GetNamedProjectColor : public QgsScopedExpressionFunction
       }
     }
 
-    virtual QVariant func( const QVariantList& values, const QgsExpressionContext*, QgsExpression* ) override
+    QVariant func( const QVariantList& values, const QgsExpressionContext*, QgsExpression* ) override
     {
       QString colorName = values.at( 0 ).toString().toLower();
       if ( mColors.contains( colorName ) )
@@ -619,7 +619,7 @@ class GetComposerItemVariables : public QgsScopedExpressionFunction
         , mComposition( c )
     {}
 
-    virtual QVariant func( const QVariantList& values, const QgsExpressionContext*, QgsExpression* ) override
+    QVariant func( const QVariantList& values, const QgsExpressionContext*, QgsExpression* ) override
     {
       if ( !mComposition )
         return QVariant();
@@ -649,12 +649,12 @@ class GetComposerItemVariables : public QgsScopedExpressionFunction
 class GetLayerVisibility : public QgsScopedExpressionFunction
 {
   public:
-    GetLayerVisibility( QList<QgsMapLayer*> layers )
+    GetLayerVisibility( const QList<QgsMapLayer*>& layers )
         : QgsScopedExpressionFunction( QStringLiteral( "is_layer_visible" ), QgsExpression::ParameterList() << QgsExpression::Parameter( QStringLiteral( "id" ) ), QStringLiteral( "General" ) )
         , mLayers( layers )
     {}
 
-    virtual QVariant func( const QVariantList& values, const QgsExpressionContext*, QgsExpression* ) override
+    QVariant func( const QVariantList& values, const QgsExpressionContext*, QgsExpression* ) override
     {
       if ( mLayers.isEmpty() )
       {

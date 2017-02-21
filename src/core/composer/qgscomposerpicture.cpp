@@ -807,14 +807,7 @@ bool QgsComposerPicture::readXml( const QDomElement& itemElem, const QDomDocumen
     QString sourceExpression = itemElem.attribute( QStringLiteral( "sourceExpression" ), QLatin1String( "" ) );
     QString useExpression = itemElem.attribute( QStringLiteral( "useExpression" ) );
     bool expressionActive;
-    if ( useExpression.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
-    {
-      expressionActive = true;
-    }
-    else
-    {
-      expressionActive = false;
-    }
+    expressionActive = ( useExpression.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 );
 
     mDataDefinedProperties.setProperty( QgsComposerObject::PictureSource, QgsProperty::fromExpression( sourceExpression, expressionActive ) );
   }

@@ -283,7 +283,7 @@ QString QgsComposerLabel::displayText() const
   //overwrite layer/feature if they have been set via setExpressionContext
   //TODO remove when setExpressionContext is removed
   if ( mExpressionFeature.get() )
-    context.setFeature( *mExpressionFeature.get() );
+    context.setFeature( *mExpressionFeature );
   if ( mExpressionLayer )
     context.setFields( mExpressionLayer->fields() );
 

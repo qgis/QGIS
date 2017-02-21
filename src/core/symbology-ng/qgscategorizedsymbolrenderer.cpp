@@ -405,8 +405,6 @@ void QgsCategorizedSymbolRenderer::startRender( QgsRenderContext& context, const
   {
     sym->startRender( context, fields );
   }
-
-  return;
 }
 
 void QgsCategorizedSymbolRenderer::stopRender( QgsRenderContext& context )
@@ -481,8 +479,7 @@ void QgsCategorizedSymbolRenderer::toSld( QDomDocument &doc, QDomElement &elemen
   // create a Rule for each range
   for ( QgsCategoryList::const_iterator it = mCategories.constBegin(); it != mCategories.constEnd(); ++it )
   {
-    QgsStringMap catProps( newProps );
-    it->toSld( doc, element, catProps );
+    it->toSld( doc, element, newProps );
   }
 }
 

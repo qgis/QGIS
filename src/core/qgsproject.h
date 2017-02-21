@@ -311,7 +311,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QString writePath( const QString& filename ) const;
 
     //! Turn filename read from the project file to an absolute path
-    QString readPath( QString filename ) const;
+    QString readPath( const QString& filename ) const;
 
     //! Return error message from previous read/write
     QString error() const;

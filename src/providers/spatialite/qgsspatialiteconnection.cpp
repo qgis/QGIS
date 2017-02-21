@@ -17,7 +17,7 @@
 
 #include <QFileInfo>
 #include <QSettings>
-#include <stdlib.h> // atoi
+#include <cstdlib> // atoi
 
 #include "qgslogger.h"
 

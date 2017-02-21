@@ -207,8 +207,6 @@ void QgsProjectFileTransform::transform081to090()
       }
     }
   }
-  return;
-
 }
 
 void QgsProjectFileTransform::transform091to0100()
@@ -265,8 +263,6 @@ void QgsProjectFileTransform::transform091to0100()
     }
 
   }
-  return;
-
 }
 
 void QgsProjectFileTransform::transform0100to0110()

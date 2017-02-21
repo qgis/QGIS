@@ -153,8 +153,6 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
     QgsMarkerLineSymbolLayer( bool rotateMarker = DEFAULT_MARKERLINE_ROTATE,
                               double interval = DEFAULT_MARKERLINE_INTERVAL );
 
-    ~QgsMarkerLineSymbolLayer();
-
     /**
      * Defines how/where the marker should be placed on the line
      */
@@ -343,7 +341,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
     double mInterval;
     QgsUnitTypes::RenderUnit mIntervalUnit;
     QgsMapUnitScale mIntervalMapUnitScale;
-    QgsMarkerSymbol* mMarker = nullptr;
+    std::unique_ptr< QgsMarkerSymbol > mMarker;
     Placement mPlacement;
     double mOffsetAlongLine; //distance to offset along line before marker is drawn
     QgsUnitTypes::RenderUnit mOffsetAlongLineUnit; //unit for offset along line

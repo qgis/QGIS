@@ -446,7 +446,7 @@ QFunctionPointer QgsProviderRegistry::function( QString const & providerKey,
   else
   {
     QgsDebugMsg( "Cannot load library: " + myLib.errorString() );
-    return 0;
+    return nullptr;
   }
 }
 

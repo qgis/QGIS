@@ -24,11 +24,6 @@
 #include <QSettings>
 #include <QDir>
 
-QgsColorScheme::QgsColorScheme()
-{
-
-}
-
 bool QgsColorScheme::setColors( const QgsNamedColorList &colors, const QString &context, const QColor &baseColor )
 {
   //base implementation does nothing

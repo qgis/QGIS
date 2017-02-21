@@ -40,8 +40,8 @@ QString QgsStringUtils::capitalize( const QString& string, QgsStringUtils::Capit
     {
       QString temp = string;
 
-      QTextBoundaryFinder wordSplitter( QTextBoundaryFinder::Word, string.constData(), string.length(), 0, 0 );
-      QTextBoundaryFinder letterSplitter( QTextBoundaryFinder::Grapheme, string.constData(), string.length(), 0, 0 );
+      QTextBoundaryFinder wordSplitter( QTextBoundaryFinder::Word, string.constData(), string.length(), nullptr, 0 );
+      QTextBoundaryFinder letterSplitter( QTextBoundaryFinder::Grapheme, string.constData(), string.length(), nullptr, 0 );
 
       wordSplitter.setPosition( 0 );
       bool first = true;

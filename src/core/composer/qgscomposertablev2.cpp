@@ -1316,13 +1316,6 @@ void QgsComposerTableV2::recalculateTableSize()
 
 bool QgsComposerTableV2::contentsContainsRow( const QgsComposerTableContents &contents, const QgsComposerTableRow &row ) const
 {
-  if ( contents.indexOf( row ) >= 0 )
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return ( contents.indexOf( row ) >= 0 );
 }
 

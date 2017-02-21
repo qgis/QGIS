@@ -867,16 +867,16 @@ bool QgsOgcUtils::readGMLCoordinates( QgsPolyline &coords, const QDomElement &el
     x = tupel_coords.at( 0 ).toDouble( &conversionSuccess );
     if ( !conversionSuccess )
     {
-      return 1;
+      return true;
     }
     y = tupel_coords.at( 1 ).toDouble( &conversionSuccess );
     if ( !conversionSuccess )
     {
-      return 1;
+      return true;
     }
     coords.push_back( QgsPoint( x, y ) );
   }
-  return 0;
+  return false;
 }
 
 QgsRectangle QgsOgcUtils::rectangleFromGMLBox( const QDomNode& boxNode )
@@ -947,16 +947,16 @@ bool QgsOgcUtils::readGMLPositions( QgsPolyline &coords, const QDomElement &elem
     x = pos.at( i * srsDimension ).toDouble( &conversionSuccess );
     if ( !conversionSuccess )
     {
-      return 1;
+      return true;
     }
     y = pos.at( i * srsDimension + 1 ).toDouble( &conversionSuccess );
     if ( !conversionSuccess )
     {
-      return 1;
+      return true;
     }
     coords.push_back( QgsPoint( x, y ) );
   }
-  return 0;
+  return false;
 }
 
 

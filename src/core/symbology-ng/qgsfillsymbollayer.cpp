@@ -1611,8 +1611,7 @@ bool QgsImageFillSymbolLayer::setSubSymbol( QgsSymbol* symbol )
 {
   if ( !symbol ) //unset current outline
   {
-    delete mOutline;
-    mOutline = nullptr;
+    mOutline.reset( nullptr );
     return true;
   }
 
@@ -1625,8 +1624,7 @@ bool QgsImageFillSymbolLayer::setSubSymbol( QgsSymbol* symbol )
   QgsLineSymbol* lineSymbol = dynamic_cast<QgsLineSymbol*>( symbol );
   if ( lineSymbol )
   {
-    delete mOutline;
-    mOutline = lineSymbol;
+    mOutline.reset( lineSymbol );
     return true;
   }
 
@@ -2220,7 +2218,6 @@ void QgsSVGFillSymbolLayer::storeViewBox()
   }
 
   mSvgViewBox = QRectF();
-  return;
 }
 
 void QgsSVGFillSymbolLayer::setDefaultSvgParams()
@@ -3363,11 +3360,6 @@ QgsCentroidFillSymbolLayer::QgsCentroidFillSymbolLayer()
   setSubSymbol( new QgsMarkerSymbol() );
 }
 
-QgsCentroidFillSymbolLayer::~QgsCentroidFillSymbolLayer()
-{
-  delete mMarker;
-}
-
 QgsSymbolLayer* QgsCentroidFillSymbolLayer::create( const QgsStringMap& properties )
 {
   QgsCentroidFillSymbolLayer* sl = new QgsCentroidFillSymbolLayer();
@@ -3495,17 +3487,17 @@ QgsSymbolLayer* QgsCentroidFillSymbolLayer::createFromSld( QDomElement &element 
 
   QgsSymbolLayerList layers;
   layers.append( l );
-  QgsMarkerSymbol *marker = new QgsMarkerSymbol( layers );
+  std::unique_ptr< QgsMarkerSymbol > marker( new QgsMarkerSymbol( layers ) );
 
   QgsCentroidFillSymbolLayer* sl = new QgsCentroidFillSymbolLayer();
-  sl->setSubSymbol( marker );
+  sl->setSubSymbol( marker.release() );
   return sl;
 }
 
 
 QgsSymbol* QgsCentroidFillSymbolLayer::subSymbol()
 {
-  return mMarker;
+  return mMarker.get();
 }
 
 bool QgsCentroidFillSymbolLayer::setSubSymbol( QgsSymbol* symbol )
@@ -3516,8 +3508,7 @@ bool QgsCentroidFillSymbolLayer::setSubSymbol( QgsSymbol* symbol )
     return false;
   }
 
-  delete mMarker;
-  mMarker = static_cast<QgsMarkerSymbol*>( symbol );
+  mMarker.reset( static_cast<QgsMarkerSymbol*>( symbol ) );
   mColor = mMarker->color();
   return true;
 }

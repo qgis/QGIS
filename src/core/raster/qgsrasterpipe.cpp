@@ -341,6 +341,5 @@ bool QgsRasterPipe::setOn( int idx, bool on )
 
 bool QgsRasterPipe::checkBounds( int idx ) const
 {
-  if ( idx < 0 || idx >= mInterfaces.size() ) return false;
-  return true;
+  return !( idx < 0 || idx >= mInterfaces.size() );
 }

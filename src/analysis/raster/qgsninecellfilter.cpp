@@ -43,11 +43,6 @@ QgsNineCellFilter::QgsNineCellFilter()
 {
 }
 
-QgsNineCellFilter::~QgsNineCellFilter()
-{
-
-}
-
 int QgsNineCellFilter::processRaster( QProgressDialog* p )
 {
   GDALAllRegister();

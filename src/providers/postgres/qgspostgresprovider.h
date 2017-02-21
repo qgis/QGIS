@@ -419,14 +419,14 @@ class QgsPostgresUtils
                                 QgsPostgresConn* conn,
                                 QgsPostgresPrimaryKeyType pkType,
                                 const QList<int>& pkAttrs,
-                                std::shared_ptr<QgsPostgresSharedData> sharedData );
+                                const std::shared_ptr<QgsPostgresSharedData>& sharedData );
 
     static QString whereClause( const QgsFeatureIds& featureIds,
                                 const QgsFields& fields,
                                 QgsPostgresConn* conn,
                                 QgsPostgresPrimaryKeyType pkType,
                                 const QList<int>& pkAttrs,
-                                std::shared_ptr<QgsPostgresSharedData> sharedData );
+                                const std::shared_ptr<QgsPostgresSharedData>& sharedData );
 
     static QString andWhereClauses( const QString& c1, const QString& c2 );
 

@@ -710,11 +710,6 @@ QgsMarkerLineSymbolLayer::QgsMarkerLineSymbolLayer( bool rotateMarker, double in
   setSubSymbol( new QgsMarkerSymbol() );
 }
 
-QgsMarkerLineSymbolLayer::~QgsMarkerLineSymbolLayer()
-{
-  delete mMarker;
-}
-
 QgsSymbolLayer* QgsMarkerLineSymbolLayer::create( const QgsStringMap& props )
 {
   bool rotate = DEFAULT_MARKERLINE_ROTATE;
@@ -1262,7 +1257,6 @@ void QgsMarkerLineSymbolLayer::renderOffsetVertexAlongLine( const QPolygonF &poi
   }
 
   //didn't find point
-  return;
 }
 
 void QgsMarkerLineSymbolLayer::renderPolylineCentral( const QPolygonF& points, QgsSymbolRenderContext& context )
@@ -1344,7 +1338,7 @@ QgsStringMap QgsMarkerLineSymbolLayer::properties() const
 
 QgsSymbol* QgsMarkerLineSymbolLayer::subSymbol()
 {
-  return mMarker;
+  return mMarker.get();
 }
 
 bool QgsMarkerLineSymbolLayer::setSubSymbol( QgsSymbol* symbol )
@@ -1355,8 +1349,7 @@ bool QgsMarkerLineSymbolLayer::setSubSymbol( QgsSymbol* symbol )
     return false;
   }
 
-  delete mMarker;
-  mMarker = static_cast<QgsMarkerSymbol*>( symbol );
+  mMarker.reset( static_cast<QgsMarkerSymbol*>( symbol ) );
   mColor = mMarker->color();
   return true;
 }
@@ -1488,14 +1481,14 @@ QgsSymbolLayer* QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
     }
   }
 
-  QgsMarkerSymbol *marker = nullptr;
+  std::unique_ptr< QgsMarkerSymbol > marker;
 
   QgsSymbolLayer *l = QgsSymbolLayerUtils::createMarkerLayerFromSld( graphicStrokeElem );
   if ( l )
   {
     QgsSymbolLayerList layers;
     layers.append( l );
-    marker = new QgsMarkerSymbol( layers );
+    marker.reset( new QgsMarkerSymbol( layers ) );
   }
 
   if ( !marker )
@@ -1524,7 +1517,7 @@ QgsSymbolLayer* QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
   QgsMarkerLineSymbolLayer* x = new QgsMarkerLineSymbolLayer( rotateMarker );
   x->setPlacement( placement );
   x->setInterval( interval );
-  x->setSubSymbol( marker );
+  x->setSubSymbol( marker.release() );
   x->setOffset( offset );
   return x;
 }

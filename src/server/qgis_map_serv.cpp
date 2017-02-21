@@ -22,7 +22,7 @@
 #include "qgsfcgiserverresponse.h"
 
 #include <fcgi_stdio.h>
-#include <stdlib.h>
+#include <cstdlib>
 
 int fcgi_accept()
 {

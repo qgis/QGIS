@@ -66,11 +66,11 @@ class QgsPointLocator_Stream : public IDataStream
         , mIt( mDataList )
     { }
 
-    virtual IData* getNext() override { return mIt.next(); }
-    virtual bool hasNext() override { return mIt.hasNext(); }
+    IData* getNext() override { return mIt.next(); }
+    bool hasNext() override { return mIt.hasNext(); }
 
-    virtual uint32_t size() override { Q_ASSERT( 0 && "not available" ); return 0; }
-    virtual void rewind() override { Q_ASSERT( 0 && "not available" ); }
+    uint32_t size() override { Q_ASSERT( false && "not available" ); return 0; }
+    void rewind() override { Q_ASSERT( false && "not available" ); }
 
   private:
     QLinkedList<RTree::Data*> mDataList;

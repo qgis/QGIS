@@ -35,11 +35,6 @@ QgsInterpolator::QgsInterpolator()
 
 }
 
-QgsInterpolator::~QgsInterpolator()
-{
-
-}
-
 int QgsInterpolator::cacheBaseData()
 {
   if ( mLayerData.size() < 1 )

@@ -1267,7 +1267,7 @@ bool QgsGeos::relation( const QgsAbstractGeometry& geom, Relation r, QString* er
     {
       *errorMsg = e.what();
     }
-    return 0;
+    return false;
   }
 
   return result;

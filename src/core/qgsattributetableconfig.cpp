@@ -108,7 +108,7 @@ bool QgsAttributeTableConfig::actionWidgetVisible() const
 {
   Q_FOREACH ( const ColumnConfig& columnConfig, mColumns )
   {
-    if ( columnConfig.type == Action && columnConfig.hidden == false )
+    if ( columnConfig.type == Action && !columnConfig.hidden )
       return true;
   }
   return false;

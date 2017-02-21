@@ -56,7 +56,7 @@ class CORE_EXPORT QgsAbstractGeometry
     QgsAbstractGeometry();
     virtual ~QgsAbstractGeometry() = default;
     QgsAbstractGeometry( const QgsAbstractGeometry& geom );
-    virtual QgsAbstractGeometry& operator=( const QgsAbstractGeometry& geom );
+    QgsAbstractGeometry& operator=( const QgsAbstractGeometry& geom );
 
     /** Clones the geometry by performing a deep copy
      */

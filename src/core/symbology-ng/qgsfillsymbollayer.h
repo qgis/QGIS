@@ -590,7 +590,7 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
     QgsImageFillSymbolLayer();
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context ) override;
 
-    virtual QgsSymbol* subSymbol() override { return mOutline; }
+    virtual QgsSymbol* subSymbol() override { return mOutline.get(); }
     virtual bool setSubSymbol( QgsSymbol* symbol ) override;
 
     /** Sets the units for the symbol's outline width.
@@ -632,7 +632,7 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
     QgsMapUnitScale mOutlineWidthMapUnitScale;
 
     //! Custom outline
-    QgsLineSymbol* mOutline = nullptr;
+    std::unique_ptr< QgsLineSymbol > mOutline;
 
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext& context ) { Q_UNUSED( context ); }
 };
@@ -1216,7 +1216,6 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
 {
   public:
     QgsCentroidFillSymbolLayer();
-    ~QgsCentroidFillSymbolLayer();
 
     // static stuff
 
@@ -1265,7 +1264,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
     bool pointOnAllParts() const { return mPointOnAllParts; }
 
   protected:
-    QgsMarkerSymbol* mMarker = nullptr;
+    std::unique_ptr< QgsMarkerSymbol > mMarker;
     bool mPointOnSurface;
     bool mPointOnAllParts;
 

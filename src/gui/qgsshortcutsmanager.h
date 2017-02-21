@@ -238,7 +238,7 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
      * @param action The action to append the shortcut.
      * @param sequence The shortcut sequence.
      */
-    void updateActionToolTip( QAction* action, QString sequence );
+    void updateActionToolTip( QAction* action, const QString& sequence );
 };
 
 #endif // QGSSHORTCUTSMANAGER_H

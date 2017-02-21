@@ -150,7 +150,7 @@ void QgsColorRampShader::classifyColorRamp( const int classes, const int band, c
 
         // remove last class when ColorRamp is gradient and discrete, as they are implemented with an extra stop
         QgsGradientColorRamp* colorGradientRamp = dynamic_cast<QgsGradientColorRamp*>( sourceColorRamp() );
-        if ( colorGradientRamp != NULL && colorGradientRamp->isDiscrete() )
+        if ( colorGradientRamp && colorGradientRamp->isDiscrete() )
         {
           numberOfEntries--;
         }
