@@ -1,3 +1,4 @@
+# black list
 PyQgsJSONUtils
 PyQgsLocalServer
 PyQgsPalLabelingServer
@@ -6,3 +7,10 @@ qgis_composerutils
 ProcessingGrass7AlgorithmsImageryTest
 ProcessingGrass7AlgorithmsRasterTest
 PyQgsDBManagerGpkg
+
+# flacky
+qgis_filedownloader
+qgis_openstreetmaptest
+qgis_wcsprovidertest
+PyQgsWFSProviderGUI
+qgis_ziplayertest
