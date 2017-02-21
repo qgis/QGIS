@@ -718,6 +718,26 @@ void TestQgsProperty::genericNumericTransformer()
   //non numeric value
   QCOMPARE( t1.transform( context, QVariant( "ffff" ) ), QVariant( "ffff" ) );
 
+  // add a curve
+  QVERIFY( !t1.curveTransform() );
+  t1.setCurveTransform( new QgsCurveTransform( QList< QgsPoint >() << QgsPoint( 0, 0.8 ) << QgsPoint( 1, 0.2 ) ) );
+  QVERIFY( t1.curveTransform() );
+  QCOMPARE( t1.curveTransform()->controlPoints(), QList< QgsPoint >() << QgsPoint( 0, 0.8 ) << QgsPoint( 1, 0.2 ) );
+
+  QCOMPARE( t1.transform( context, 10 ).toInt(), 180 );
+  QCOMPARE( t1.transform( context, 20 ).toInt(), 120 );
+
+  // copy
+  QgsGenericNumericTransformer s1( t1 );
+  QVERIFY( s1.curveTransform() );
+  QCOMPARE( s1.curveTransform()->controlPoints(), QList< QgsPoint >() << QgsPoint( 0, 0.8 ) << QgsPoint( 1, 0.2 ) );
+
+  // assignment
+  QgsGenericNumericTransformer s2;
+  s2 = t1;
+  QVERIFY( s2.curveTransform() );
+  QCOMPARE( s2.curveTransform()->controlPoints(), QList< QgsPoint >() << QgsPoint( 0, 0.8 ) << QgsPoint( 1, 0.2 ) );
+
   //saving and restoring
 
   //create a test dom element
@@ -733,6 +753,7 @@ void TestQgsProperty::genericNumericTransformer()
                                    250,
                                    -10,
                                    99 );
+  t2.setCurveTransform( new QgsCurveTransform( QList< QgsPoint >() << QgsPoint( 0, 0.8 ) << QgsPoint( 1, 0.2 ) ) );
 
   QDomElement element = doc.createElement( "xform" );
   QVERIFY( t2.writeXml( element, doc ) );
@@ -744,6 +765,8 @@ void TestQgsProperty::genericNumericTransformer()
   QCOMPARE( r1.maxOutputValue(), 250.0 );
   QCOMPARE( r1.nullOutputValue(), -10.0 );
   QCOMPARE( r1.exponent(), 99.0 );
+  QVERIFY( r1.curveTransform() );
+  QCOMPARE( r1.curveTransform()->controlPoints(), QList< QgsPoint >() << QgsPoint( 0, 0.8 ) << QgsPoint( 1, 0.2 ) );
 
   // test cloning
   std::unique_ptr< QgsGenericNumericTransformer > r2( t2.clone() );
@@ -753,6 +776,8 @@ void TestQgsProperty::genericNumericTransformer()
   QCOMPARE( r2->maxOutputValue(), 250.0 );
   QCOMPARE( r2->nullOutputValue(), -10.0 );
   QCOMPARE( r2->exponent(), 99.0 );
+  QVERIFY( r2->curveTransform() );
+  QCOMPARE( r2->curveTransform()->controlPoints(), QList< QgsPoint >() << QgsPoint( 0, 0.8 ) << QgsPoint( 1, 0.2 ) );
 
   //test various min/max value/size and scaling methods
 
@@ -887,6 +912,25 @@ void TestQgsProperty::sizeScaleTransformer()
   //non numeric value
   QCOMPARE( scale.transform( context, QVariant( "ffff" ) ), QVariant( "ffff" ) );
 
+  // add a curve
+  QVERIFY( !scale.curveTransform() );
+  scale.setCurveTransform( new QgsCurveTransform( QList< QgsPoint >() << QgsPoint( 0, 0.2 ) << QgsPoint( 1, 0.8 ) ) );
+  QVERIFY( scale.curveTransform() );
+  QCOMPARE( scale.curveTransform()->controlPoints(), QList< QgsPoint >() << QgsPoint( 0, 0.2 ) << QgsPoint( 1, 0.8 ) );
+  QCOMPARE( scale.transform( context, 10 ).toInt(), 120 );
+  QCOMPARE( scale.transform( context, 20 ).toInt(), 180 );
+
+  // copy
+  QgsSizeScaleTransformer s1( scale );
+  QVERIFY( s1.curveTransform() );
+  QCOMPARE( s1.curveTransform()->controlPoints(), QList< QgsPoint >() << QgsPoint( 0, 0.2 ) << QgsPoint( 1, 0.8 ) );
+
+  // assignment
+  QgsSizeScaleTransformer s2;
+  s2 = scale;
+  QVERIFY( s2.curveTransform() );
+  QCOMPARE( s2.curveTransform()->controlPoints(), QList< QgsPoint >() << QgsPoint( 0, 0.2 ) << QgsPoint( 1, 0.8 ) );
+
   //saving and restoring
 
   //create a test dom element
@@ -903,6 +947,7 @@ void TestQgsProperty::sizeScaleTransformer()
                               250,
                               -10,
                               99 );
+  t1.setCurveTransform( new QgsCurveTransform( QList< QgsPoint >() << QgsPoint( 0, 0.8 ) << QgsPoint( 1, 0.2 ) ) );
 
   QDomElement element = doc.createElement( "xform" );
   QVERIFY( t1.writeXml( element, doc ) );
@@ -915,6 +960,8 @@ void TestQgsProperty::sizeScaleTransformer()
   QCOMPARE( r1.nullSize(), -10.0 );
   QCOMPARE( r1.exponent(), 99.0 );
   QCOMPARE( r1.type(), QgsSizeScaleTransformer::Exponential );
+  QVERIFY( r1.curveTransform() );
+  QCOMPARE( r1.curveTransform()->controlPoints(), QList< QgsPoint >() << QgsPoint( 0, 0.8 ) << QgsPoint( 1, 0.2 ) );
 
   // test cloning
   std::unique_ptr< QgsSizeScaleTransformer > r2( t1.clone() );
@@ -925,6 +972,8 @@ void TestQgsProperty::sizeScaleTransformer()
   QCOMPARE( r2->nullSize(), -10.0 );
   QCOMPARE( r2->exponent(), 99.0 );
   QCOMPARE( r2->type(), QgsSizeScaleTransformer::Exponential );
+  QVERIFY( r2->curveTransform() );
+  QCOMPARE( r2->curveTransform()->controlPoints(), QList< QgsPoint >() << QgsPoint( 0, 0.8 ) << QgsPoint( 1, 0.2 ) );
 
   //test various min/max value/size and scaling methods
 
@@ -1092,6 +1141,26 @@ void TestQgsProperty::colorRampTransformer()
   //non numeric value
   QCOMPARE( scale.transform( context, QVariant( "ffff" ) ), QVariant( "ffff" ) );
 
+  // add a curve
+  QVERIFY( !scale.curveTransform() );
+  scale.setCurveTransform( new QgsCurveTransform( QList< QgsPoint >() << QgsPoint( 0, 0.2 ) << QgsPoint( 1, 0.8 ) ) );
+  QVERIFY( scale.curveTransform() );
+  QCOMPARE( scale.curveTransform()->controlPoints(), QList< QgsPoint >() << QgsPoint( 0, 0.2 ) << QgsPoint( 1, 0.8 ) );
+
+  QCOMPARE( scale.transform( context, 10 ).value<QColor>().name(), QString( "#333333" ) );
+  QCOMPARE( scale.transform( context, 20 ).value<QColor>().name(), QString( "#cccccc" ) );
+
+  // copy
+  QgsColorRampTransformer s1( scale );
+  QVERIFY( s1.curveTransform() );
+  QCOMPARE( s1.curveTransform()->controlPoints(), QList< QgsPoint >() << QgsPoint( 0, 0.2 ) << QgsPoint( 1, 0.8 ) );
+
+  // assignment
+  QgsColorRampTransformer s2;
+  s2 = scale;
+  QVERIFY( s2.curveTransform() );
+  QCOMPARE( s2.curveTransform()->controlPoints(), QList< QgsPoint >() << QgsPoint( 0, 0.2 ) << QgsPoint( 1, 0.8 ) );
+
   //saving and restoring
 
   //create a test dom element
@@ -1106,6 +1175,7 @@ void TestQgsProperty::colorRampTransformer()
                               new QgsGradientColorRamp( QColor( 10, 20, 30 ), QColor( 200, 190, 180 ) ),
                               QColor( 100, 150, 200 ) );
   t1.setRampName( "rampname " );
+  t1.setCurveTransform( new QgsCurveTransform( QList< QgsPoint >() << QgsPoint( 0, 0.8 ) << QgsPoint( 1, 0.2 ) ) );
 
   QDomElement element = doc.createElement( "xform" );
   QVERIFY( t1.writeXml( element, doc ) );
@@ -1118,6 +1188,8 @@ void TestQgsProperty::colorRampTransformer()
   QVERIFY( dynamic_cast< QgsGradientColorRamp* >( r1.colorRamp() ) );
   QCOMPARE( static_cast< QgsGradientColorRamp* >( r1.colorRamp() )->color1(), QColor( 10, 20, 30 ) );
   QCOMPARE( static_cast< QgsGradientColorRamp* >( r1.colorRamp() )->color2(), QColor( 200, 190, 180 ) );
+  QVERIFY( r1.curveTransform() );
+  QCOMPARE( r1.curveTransform()->controlPoints(), QList< QgsPoint >() << QgsPoint( 0, 0.8 ) << QgsPoint( 1, 0.2 ) );
 
   // test cloning
   std::unique_ptr< QgsColorRampTransformer > r2( t1.clone() );
@@ -1127,6 +1199,8 @@ void TestQgsProperty::colorRampTransformer()
   QCOMPARE( r2->rampName(), QStringLiteral( "rampname " ) );
   QCOMPARE( static_cast< QgsGradientColorRamp* >( r2->colorRamp() )->color1(), QColor( 10, 20, 30 ) );
   QCOMPARE( static_cast< QgsGradientColorRamp* >( r2->colorRamp() )->color2(), QColor( 200, 190, 180 ) );
+  QVERIFY( r2->curveTransform() );
+  QCOMPARE( r2->curveTransform()->controlPoints(), QList< QgsPoint >() << QgsPoint( 0, 0.8 ) << QgsPoint( 1, 0.2 ) );
 
   // copy constructor
   QgsColorRampTransformer r3( t1 );
@@ -1136,6 +1210,8 @@ void TestQgsProperty::colorRampTransformer()
   QCOMPARE( r3.rampName(), QStringLiteral( "rampname " ) );
   QCOMPARE( static_cast< QgsGradientColorRamp* >( r3.colorRamp() )->color1(), QColor( 10, 20, 30 ) );
   QCOMPARE( static_cast< QgsGradientColorRamp* >( r3.colorRamp() )->color2(), QColor( 200, 190, 180 ) );
+  QVERIFY( r3.curveTransform() );
+  QCOMPARE( r3.curveTransform()->controlPoints(), QList< QgsPoint >() << QgsPoint( 0, 0.8 ) << QgsPoint( 1, 0.2 ) );
 
   // assignment operator
   QgsColorRampTransformer r4;
@@ -1146,6 +1222,8 @@ void TestQgsProperty::colorRampTransformer()
   QCOMPARE( r4.rampName(), QStringLiteral( "rampname " ) );
   QCOMPARE( static_cast< QgsGradientColorRamp* >( r4.colorRamp() )->color1(), QColor( 10, 20, 30 ) );
   QCOMPARE( static_cast< QgsGradientColorRamp* >( r4.colorRamp() )->color2(), QColor( 200, 190, 180 ) );
+  QVERIFY( r4.curveTransform() );
+  QCOMPARE( r4.curveTransform()->controlPoints(), QList< QgsPoint >() << QgsPoint( 0, 0.8 ) << QgsPoint( 1, 0.2 ) );
 
   //test various min/max value/color and scaling methods
 

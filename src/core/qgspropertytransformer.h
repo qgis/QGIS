@@ -177,6 +177,12 @@ class CORE_EXPORT QgsPropertyTransformer
      */
     QgsPropertyTransformer( double minValue = 0.0, double maxValue = 1.0 );
 
+    /**
+     * Copy constructor.
+     */
+    QgsPropertyTransformer( const QgsPropertyTransformer& other );
+    QgsPropertyTransformer& operator=( const QgsPropertyTransformer& other );
+
     virtual ~QgsPropertyTransformer() = default;
 
     /**
@@ -236,6 +242,21 @@ class CORE_EXPORT QgsPropertyTransformer
     void setMaxValue( double max ) { mMaxValue = max; }
 
     /**
+     * Returns the curve transform applied to input values before they are transformed
+     * by the individual transform subclasses.
+     * @see setCurveTransform()
+     */
+    QgsCurveTransform* curveTransform() const { return mCurveTransform.get(); }
+
+    /**
+     * Sets a curve transform to apply to input values before they are transformed
+     * by the individual transform subclasses. Ownership of \a transform is transferred
+     * to the property transformer.
+     * @see curveTransform()
+     */
+    void setCurveTransform( QgsCurveTransform* transform ) { mCurveTransform.reset( transform ); }
+
+    /**
      * Calculates the transform of a value. Derived classes must implement this to perform their transformations
      * on input values
      * @param context expression context
@@ -271,6 +292,15 @@ class CORE_EXPORT QgsPropertyTransformer
     //! Maximum value expected by the transformer
     double mMaxValue;
 
+    //! Optional curve transform
+    std::unique_ptr< QgsCurveTransform > mCurveTransform;
+
+    /**
+     * Applies base class numeric transformations. Derived classes should call this
+     * to transform an \a input numeric value before they apply any transform to the result.
+     * This applies any curve transforms which may exist on the transformer.
+     */
+    double transformNumeric( double input ) const;
 };
 
 /**
@@ -299,6 +329,12 @@ class CORE_EXPORT QgsGenericNumericTransformer : public QgsPropertyTransformer
                                   double maxOutput = 1.0,
                                   double nullOutput = 0.0,
                                   double exponent = 1.0 );
+
+    /**
+     * Copy constructor.
+     */
+    QgsGenericNumericTransformer( const QgsGenericNumericTransformer& other );
+    QgsGenericNumericTransformer& operator=( const QgsGenericNumericTransformer& other );
 
     virtual Type transformerType() const override { return GenericNumericTransformer; }
     virtual QgsGenericNumericTransformer* clone() override;
@@ -429,6 +465,12 @@ class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
                              double maxSize = 1.0,
                              double nullSize = 0.0,
                              double exponent = 1.0 );
+
+    /**
+     * Copy constructor.
+     */
+    QgsSizeScaleTransformer( const QgsSizeScaleTransformer& other );
+    QgsSizeScaleTransformer& operator=( const QgsSizeScaleTransformer& other );
 
     virtual Type transformerType() const override { return SizeScaleTransformer; }
     virtual QgsSizeScaleTransformer* clone() override;

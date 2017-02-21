@@ -50,11 +50,32 @@ QgsPropertyTransformer::QgsPropertyTransformer( double minValue, double maxValue
     , mMaxValue( maxValue )
 {}
 
+QgsPropertyTransformer::QgsPropertyTransformer( const QgsPropertyTransformer& other )
+    : mMinValue( other.mMinValue )
+    , mMaxValue( other.mMaxValue )
+    , mCurveTransform( other.mCurveTransform ? new QgsCurveTransform( *other.mCurveTransform ) : nullptr )
+{}
+
+QgsPropertyTransformer& QgsPropertyTransformer::operator=( const QgsPropertyTransformer & other )
+{
+  mMinValue = other.mMinValue;
+  mMaxValue = other.mMaxValue;
+  mCurveTransform.reset( other.mCurveTransform ? new QgsCurveTransform( *other.mCurveTransform ) : nullptr );
+  return *this;
+}
+
 bool QgsPropertyTransformer::writeXml( QDomElement& transformerElem, QDomDocument& doc ) const
 {
   Q_UNUSED( doc );
   transformerElem.setAttribute( "minValue", QString::number( mMinValue ) );
   transformerElem.setAttribute( "maxValue", QString::number( mMaxValue ) );
+
+  if ( mCurveTransform )
+  {
+    QDomElement curveElement = doc.createElement( "curve" );
+    mCurveTransform->writeXml( curveElement, doc );
+    transformerElem.appendChild( curveElement );
+  }
   return true;
 }
 
@@ -69,11 +90,35 @@ QgsPropertyTransformer* QgsPropertyTransformer::fromExpression( const QString& e
     return nullptr;
 }
 
+double QgsPropertyTransformer::transformNumeric( double input ) const
+{
+  if ( !mCurveTransform )
+    return input;
+
+  if ( qgsDoubleNear( mMaxValue, mMinValue ) )
+    return input;
+
+  // convert input into target range
+  double scaledInput = ( input - mMinValue ) / ( mMaxValue - mMinValue );
+
+  return mMinValue + ( mMaxValue - mMinValue ) * mCurveTransform->y( scaledInput );
+}
+
 bool QgsPropertyTransformer::readXml( const QDomElement &transformerElem, const QDomDocument &doc )
 {
   Q_UNUSED( doc );
   mMinValue = transformerElem.attribute( "minValue", "0.0" ).toDouble();
   mMaxValue = transformerElem.attribute( "maxValue", "1.0" ).toDouble();
+  mCurveTransform.reset( nullptr );
+
+  QDomNodeList curveNodeList = transformerElem.elementsByTagName( "curve" );
+  if ( !curveNodeList.isEmpty() )
+  {
+    QDomElement curveElem = curveNodeList.at( 0 ).toElement();
+    mCurveTransform.reset( new QgsCurveTransform() );
+    mCurveTransform->readXml( curveElem, doc );
+  }
+
   return true;
 }
 
@@ -89,14 +134,35 @@ QgsGenericNumericTransformer::QgsGenericNumericTransformer( double minValue, dou
     , mExponent( exponent )
 {}
 
+QgsGenericNumericTransformer::QgsGenericNumericTransformer( const QgsGenericNumericTransformer& other )
+    : QgsPropertyTransformer( other )
+    , mMinOutput( other.mMinOutput )
+    , mMaxOutput( other.mMaxOutput )
+    , mNullOutput( other.mNullOutput )
+    , mExponent( other.mExponent )
+{}
+
+QgsGenericNumericTransformer& QgsGenericNumericTransformer::operator=( const QgsGenericNumericTransformer & other )
+{
+  QgsPropertyTransformer::operator=( other );
+  mMinOutput = other.mMinOutput;
+  mMaxOutput = other.mMaxOutput;
+  mNullOutput = other.mNullOutput;
+  mExponent = other.mExponent;
+  return *this;
+}
+
 QgsGenericNumericTransformer *QgsGenericNumericTransformer::clone()
 {
-  return new QgsGenericNumericTransformer( mMinValue,
-         mMaxValue,
-         mMinOutput,
-         mMaxOutput,
-         mNullOutput,
-         mExponent );
+  std::unique_ptr< QgsGenericNumericTransformer > t( new QgsGenericNumericTransformer( mMinValue,
+      mMaxValue,
+      mMinOutput,
+      mMaxOutput,
+      mNullOutput,
+      mExponent ) );
+  if ( mCurveTransform )
+    t->setCurveTransform( new QgsCurveTransform( *mCurveTransform ) );
+  return t.release();
 }
 
 bool QgsGenericNumericTransformer::writeXml( QDomElement &transformerElem, QDomDocument &doc ) const
@@ -145,7 +211,7 @@ QVariant QgsGenericNumericTransformer::transform( const QgsExpressionContext& co
   if ( ok )
   {
     //apply scaling to value
-    return value( dblValue );
+    return value( transformNumeric( dblValue ) );
   }
   else
   {
@@ -257,15 +323,38 @@ QgsSizeScaleTransformer::QgsSizeScaleTransformer( ScaleType type, double minValu
   setType( type );
 }
 
+QgsSizeScaleTransformer::QgsSizeScaleTransformer( const QgsSizeScaleTransformer& other )
+    : QgsPropertyTransformer( other )
+    , mType( other.mType )
+    , mMinSize( other.mMinSize )
+    , mMaxSize( other.mMaxSize )
+    , mNullSize( other.mNullSize )
+    , mExponent( other.mExponent )
+{}
+
+QgsSizeScaleTransformer& QgsSizeScaleTransformer::operator=( const QgsSizeScaleTransformer & other )
+{
+  QgsPropertyTransformer::operator=( other );
+  mType = other.mType;
+  mMinSize = other.mMinSize;
+  mMaxSize = other.mMaxSize;
+  mNullSize = other.mNullSize;
+  mExponent = other.mExponent;
+  return *this;
+}
+
 QgsSizeScaleTransformer *QgsSizeScaleTransformer::clone()
 {
-  return new QgsSizeScaleTransformer( mType,
-                                      mMinValue,
-                                      mMaxValue,
-                                      mMinSize,
-                                      mMaxSize,
-                                      mNullSize,
-                                      mExponent );
+  std::unique_ptr< QgsSizeScaleTransformer > t( new QgsSizeScaleTransformer( mType,
+      mMinValue,
+      mMaxValue,
+      mMinSize,
+      mMaxSize,
+      mNullSize,
+      mExponent ) );
+  if ( mCurveTransform )
+    t->setCurveTransform( new QgsCurveTransform( *mCurveTransform ) );
+  return t.release();
 }
 
 bool QgsSizeScaleTransformer::writeXml( QDomElement &transformerElem, QDomDocument &doc ) const
@@ -344,7 +433,7 @@ QVariant QgsSizeScaleTransformer::transform( const QgsExpressionContext& context
   if ( ok )
   {
     //apply scaling to value
-    return size( dblValue );
+    return size( transformNumeric( dblValue ) );
   }
   else
   {
@@ -483,6 +572,7 @@ QgsColorRampTransformer::QgsColorRampTransformer( const QgsColorRampTransformer 
 
 QgsColorRampTransformer &QgsColorRampTransformer::operator=( const QgsColorRampTransformer & other )
 {
+  QgsPropertyTransformer::operator=( other );
   mMinValue = other.mMinValue;
   mMaxValue = other.mMaxValue;
   mGradientRamp.reset( other.mGradientRamp ? other.mGradientRamp->clone() : nullptr );
@@ -493,11 +583,13 @@ QgsColorRampTransformer &QgsColorRampTransformer::operator=( const QgsColorRampT
 
 QgsColorRampTransformer* QgsColorRampTransformer::clone()
 {
-  QgsColorRampTransformer* c = new QgsColorRampTransformer( mMinValue, mMaxValue,
+  std::unique_ptr< QgsColorRampTransformer > c( new QgsColorRampTransformer( mMinValue, mMaxValue,
       mGradientRamp ? mGradientRamp->clone() : nullptr,
-      mNullColor );
+      mNullColor ) );
   c->setRampName( mRampName );
-  return c;
+  if ( mCurveTransform )
+    c->setCurveTransform( new QgsCurveTransform( *mCurveTransform ) );
+  return c.release();
 }
 
 bool QgsColorRampTransformer::writeXml( QDomElement &transformerElem, QDomDocument &doc ) const
@@ -546,7 +638,7 @@ QVariant QgsColorRampTransformer::transform( const QgsExpressionContext &context
   if ( ok )
   {
     //apply scaling to value
-    return color( dblValue );
+    return color( transformNumeric( dblValue ) );
   }
   else
   {
