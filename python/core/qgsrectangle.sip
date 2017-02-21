@@ -93,7 +93,7 @@ class QgsRectangle
     //! returns string representation of form xmin,ymin xmax,ymax
     QString toString( bool automaticPrecision = false ) const;
     //! overloaded toString that allows precision of numbers to be set
-    QString toString( int thePrecision ) const;
+    QString toString( int precision ) const;
     //! returns rectangle as a polygon
     QString asPolygon() const;
     /** Comparison operator

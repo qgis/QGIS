@@ -25,8 +25,8 @@
 #include <QSettings>
 #include <QStringList>
 
-QgsWfsCapabilities::QgsWfsCapabilities( const QString& theUri )
-    : QgsWfsRequest( theUri )
+QgsWfsCapabilities::QgsWfsCapabilities( const QString& uri )
+    : QgsWfsRequest( uri )
 {
   connect( this, SIGNAL( downloadFinished() ), this, SLOT( capabilitiesReplyFinished() ) );
 }

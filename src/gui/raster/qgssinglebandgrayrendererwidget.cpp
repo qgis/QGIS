@@ -141,29 +141,29 @@ void QgsSingleBandGrayRendererWidget::minMaxModified()
 }
 
 
-void QgsSingleBandGrayRendererWidget::loadMinMax( int theBandNo, double theMin, double theMax )
+void QgsSingleBandGrayRendererWidget::loadMinMax( int bandNo, double min, double max )
 {
-  Q_UNUSED( theBandNo );
+  Q_UNUSED( bandNo );
 
-  QgsDebugMsg( QString( "theBandNo = %1 theMin = %2 theMax = %3" ).arg( theBandNo ).arg( theMin ).arg( theMax ) );
+  QgsDebugMsg( QString( "theBandNo = %1 min = %2 max = %3" ).arg( bandNo ).arg( min ).arg( max ) );
 
   mDisableMinMaxWidgetRefresh = true;
-  if ( qIsNaN( theMin ) )
+  if ( qIsNaN( min ) )
   {
     mMinLineEdit->clear();
   }
   else
   {
-    mMinLineEdit->setText( QString::number( theMin ) );
+    mMinLineEdit->setText( QString::number( min ) );
   }
 
-  if ( qIsNaN( theMax ) )
+  if ( qIsNaN( max ) )
   {
     mMaxLineEdit->clear();
   }
   else
   {
-    mMaxLineEdit->setText( QString::number( theMax ) );
+    mMaxLineEdit->setText( QString::number( max ) );
   }
   mDisableMinMaxWidgetRefresh = false;
 }

@@ -79,7 +79,7 @@ class GLOBE_EXPORT GlobePlugin : public QObject, public QgisPlugin
     Q_OBJECT
 
   public:
-    GlobePlugin( QgisInterface* theQgisInterface );
+    GlobePlugin( QgisInterface* qgisInterface );
     ~GlobePlugin();
 
     //! init the gui

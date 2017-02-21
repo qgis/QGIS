@@ -30,7 +30,7 @@ class QgsDatumTransformStore
 
     void readXml( const QDomNode& parentNode );
 
-    void writeXml( QDomNode& parentNode, QDomDocument& theDoc ) const;
+    void writeXml( QDomNode& parentNode, QDomDocument& doc ) const;
 
     struct Entry
     {

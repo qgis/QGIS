@@ -58,7 +58,7 @@ class QgsGPSPlugin: public QObject, public QgisPlugin
     //! show the help document
     void help();
     //! update the plugins theme when the app tells us its theme is changed
-    void setCurrentTheme( const QString& theThemeName );
+    void setCurrentTheme( const QString& themeName );
 
     //! load a GPX file
     void loadGPXFile( const QString& fileName, bool loadWaypoints, bool loadRoutes,

@@ -25,8 +25,8 @@
 #include <QNetworkCacheMetaData>
 #include <QCryptographicHash> // just for testin file:// fake_qgis_http_endpoint hack
 
-QgsWfsRequest::QgsWfsRequest( const QString& theUri )
-    : mUri( theUri )
+QgsWfsRequest::QgsWfsRequest( const QString& uri )
+    : mUri( uri )
     , mReply( nullptr )
     , mErrorCode( QgsWfsRequest::NoError )
     , mIsAborted( false )
@@ -34,7 +34,7 @@ QgsWfsRequest::QgsWfsRequest( const QString& theUri )
     , mTimedout( false )
     , mGotNonEmptyResponse( false )
 {
-  QgsDebugMsg( "theUri = " + theUri );
+  QgsDebugMsg( "theUri = " + uri );
   connect( QgsNetworkAccessManager::instance(), SIGNAL( requestTimedOut( QNetworkReply* ) ), this, SLOT( requestTimedOut( QNetworkReply* ) ) );
 }
 

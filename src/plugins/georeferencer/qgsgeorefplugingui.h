@@ -52,7 +52,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     Q_OBJECT
 
   public:
-    QgsGeorefPluginGui( QgisInterface* theQgisInterface, QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
+    QgsGeorefPluginGui( QgisInterface* qgisInterface, QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
     ~QgsGeorefPluginGui();
 
   protected:
@@ -117,7 +117,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
 
 
     // when one Layer is removed
-    void layerWillBeRemoved( const QString& theLayerId );
+    void layerWillBeRemoved( const QString& layerId );
     void extentsChanged(); // Use for need add again Raster (case above)
 
     bool updateGeorefTransform();
@@ -180,7 +180,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     QString convertResamplingEnumToString( QgsImageWarper::ResamplingMethod resampling );
     int polynomialOrder( QgsGeorefTransform::TransformParametrisation transform );
     QString guessWorldFileName( const QString &rasterFileName );
-    QIcon getThemeIcon( const QString &theName );
+    QIcon getThemeIcon( const QString &name );
     bool checkFileExisting( const QString& fileName, const QString& title, const QString& question );
     bool equalGCPlists( const QgsGCPList &list1, const QgsGCPList &list2 );
     void logTransformOptions();

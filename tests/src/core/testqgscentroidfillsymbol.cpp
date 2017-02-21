@@ -62,7 +62,7 @@ class TestQgsCentroidFillSymbol : public QObject
   private:
     bool mTestHasError;
 
-    bool imageCheck( const QString& theType );
+    bool imageCheck( const QString& type );
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPolysLayer = nullptr;
     QgsCentroidFillSymbolLayer* mCentroidFill = nullptr;
@@ -147,7 +147,7 @@ void TestQgsCentroidFillSymbol::centroidFillSymbolPartBiggest()
 //
 
 
-bool TestQgsCentroidFillSymbol::imageCheck( const QString& theTestType )
+bool TestQgsCentroidFillSymbol::imageCheck( const QString& testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
@@ -155,9 +155,9 @@ bool TestQgsCentroidFillSymbol::imageCheck( const QString& theTestType )
   mMapSettings.setOutputDpi( 96 );
   QgsRenderChecker myChecker;
   myChecker.setControlPathPrefix( QStringLiteral( "symbol_centroidfill" ) );
-  myChecker.setControlName( "expected_" + theTestType );
+  myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( mMapSettings );
-  bool myResultFlag = myChecker.runTest( theTestType );
+  bool myResultFlag = myChecker.runTest( testType );
   mReport += myChecker.report();
   return myResultFlag;
 }

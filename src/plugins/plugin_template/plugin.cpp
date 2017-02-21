@@ -51,9 +51,9 @@ static const QString sPluginIcon = ":/[pluginlcasename]/[pluginlcasename].png";
  * an interface object that provides access to exposed functions in QGIS.
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
-[pluginname]::[pluginname]( QgisInterface * theQgisInterface ):
+[pluginname]::[pluginname]( QgisInterface * qgisInterface ):
     QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType ),
-    mQGisIface( theQgisInterface )
+    mQGisIface( qgisInterface )
 {
 }
 
@@ -126,9 +126,9 @@ void [pluginname]::unload()
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
+QGISEXTERN QgisPlugin * classFactory( QgisInterface * qgisInterfacePointer )
 {
-  return new [pluginname]( theQgisInterfacePointer );
+  return new [pluginname]( qgisInterfacePointer );
 }
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.
@@ -167,7 +167,7 @@ QGISEXTERN QString icon()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * thePluginPointer )
+QGISEXTERN void unload( QgisPlugin * pluginPointer )
 {
-  delete thePluginPointer;
+  delete pluginPointer;
 }

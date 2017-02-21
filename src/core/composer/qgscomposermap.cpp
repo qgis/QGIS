@@ -325,8 +325,8 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem*, 
     }
 
     mDrawing = true;
-    QPaintDevice* thePaintDevice = painter->device();
-    if ( !thePaintDevice )
+    QPaintDevice* paintDevice = painter->device();
+    if ( !paintDevice )
     {
       return;
     }
@@ -339,15 +339,15 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem*, 
 
     QgsRectangle cExtent = *currentMapExtent();
 
-    QSizeF theSize( cExtent.width() * mapUnitsToMM(), cExtent.height() * mapUnitsToMM() );
+    QSizeF size( cExtent.width() * mapUnitsToMM(), cExtent.height() * mapUnitsToMM() );
 
     painter->save();
     painter->translate( mXOffset, mYOffset );
 
-    double dotsPerMM = thePaintDevice->logicalDpiX() / 25.4;
-    theSize *= dotsPerMM; // output size will be in dots (pixels)
+    double dotsPerMM = paintDevice->logicalDpiX() / 25.4;
+    size *= dotsPerMM; // output size will be in dots (pixels)
     painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
-    draw( painter, cExtent, theSize, thePaintDevice->logicalDpiX() );
+    draw( painter, cExtent, size, paintDevice->logicalDpiX() );
 
     //restore rotation
     painter->restore();

@@ -105,7 +105,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void updateWindowTitle() override;
 
     //! Handle plugin selection
-    void currentPluginChanged( const QModelIndex & theIndex );
+    void currentPluginChanged( const QModelIndex & index );
 
     //! Load/unload plugin when checkbox state changed
     void pluginItemChanged( QStandardItem * item );
@@ -120,7 +120,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void on_wvDetails_linkClicked( const QUrl & url );
 
     //! Update the filter when user changes the filter expression
-    void on_leFilter_textChanged( QString theText );
+    void on_leFilter_textChanged( QString text );
 
     //! Upgrade all upgradeable plugins
     void on_buttonUpgradeAll_clicked();

@@ -1442,13 +1442,13 @@ void QgsIdentifyResultsDialog::handleCurrentItemChanged( QTreeWidgetItem *curren
 
 void QgsIdentifyResultsDialog::layerDestroyed()
 {
-  QObject *theSender = sender();
+  QObject *senderObject = sender();
 
   for ( int i = 0; i < lstResults->topLevelItemCount(); i++ )
   {
     QTreeWidgetItem *layItem = lstResults->topLevelItem( i );
 
-    if ( layItem->data( 0, Qt::UserRole ).value<QObject *>() == sender() )
+    if ( layItem->data( 0, Qt::UserRole ).value<QObject *>() == senderObject )
     {
       for ( int j = 0; j < layItem->childCount(); j++ )
       {
@@ -1457,15 +1457,15 @@ void QgsIdentifyResultsDialog::layerDestroyed()
     }
   }
 
-  disconnectLayer( theSender );
-  delete layerItem( theSender );
+  disconnectLayer( senderObject );
+  delete layerItem( senderObject );
 
   // remove items, starting from last
   for ( int i = tblResults->rowCount() - 1; i >= 0; i-- )
   {
     QgsDebugMsg( QString( "item %1 / %2" ).arg( i ).arg( tblResults->rowCount() ) );
     QTableWidgetItem *layItem = tblResults->item( i, 0 );
-    if ( layItem && layItem->data( Qt::UserRole ).value<QObject *>() == sender() )
+    if ( layItem && layItem->data( Qt::UserRole ).value<QObject *>() == senderObject )
     {
       QgsDebugMsg( QString( "removing row %1" ).arg( i ) );
       tblResults->removeRow( i );

@@ -118,11 +118,11 @@ int getrusage( int who, struct rusage * rusage )
 }
 #endif
 
-QgsBench::QgsBench( int theWidth, int theHeight, int theIterations )
+QgsBench::QgsBench( int width, int height, int iterations )
     : QObject()
-    , mWidth( theWidth )
-    , mHeight( theHeight )
-    , mIterations( theIterations )
+    , mWidth( width )
+    , mHeight( height )
+    , mIterations( iterations )
     , mSetExtent( false )
     , mUserStart( 0.0 )
     , mSysStart( 0.0 )
@@ -139,13 +139,13 @@ QgsBench::~QgsBench()
 {
 }
 
-bool QgsBench::openProject( const QString & theFileName )
+bool QgsBench::openProject( const QString & fileName )
 {
-  if ( ! QgsProject::instance()->read( theFileName ) )
+  if ( ! QgsProject::instance()->read( fileName ) )
   {
     return false;
   }
-  mLogMap.insert( QStringLiteral( "project" ), theFileName );
+  mLogMap.insert( QStringLiteral( "project" ), fileName );
   return true;
 }
 
@@ -299,13 +299,13 @@ void QgsBench::printLog( const QString& printTime )
   }
 }
 
-QString QgsBench::serialize( const QMap<QString, QVariant>& theMap, int level )
+QString QgsBench::serialize( const QMap<QString, QVariant>& map, int level )
 {
   QStringList list;
   QString space = QStringLiteral( " " ).repeated( level * 2 );
   QString space2 = QStringLiteral( " " ).repeated( level * 2 + 2 );
-  QMap<QString, QVariant>::const_iterator i = theMap.constBegin();
-  while ( i != theMap.constEnd() )
+  QMap<QString, QVariant>::const_iterator i = map.constBegin();
+  while ( i != map.constEnd() )
   {
     switch ( static_cast< QMetaType::Type >( i.value().type() ) )
     {

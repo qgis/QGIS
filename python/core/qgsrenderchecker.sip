@@ -21,25 +21,25 @@ class QgsRenderChecker
     unsigned int matchTarget();
     //only records time for actual render part
     int elapsedTime();
-    void setElapsedTimeTarget( int theTarget );
+    void setElapsedTimeTarget( int target );
 
     /** Base directory name for the control image (with control image path
      * suffixed) the path to the image will be constructed like this:
      * controlImagePath + '/' + mControlName + '/' + mControlName + '.png'
      */
-    void setControlName( const QString &theName );
+    void setControlName( const QString &name );
 
     /** Prefix where the control images are kept.
      * This will be appended to controlImagePath
      */
-    void setControlPathPrefix( const QString &theName );
+    void setControlPathPrefix( const QString &name );
 
-    void setControlPathSuffix( const QString& theName );
+    void setControlPathSuffix( const QString& name );
 
     /** Get an md5 hash that uniquely identifies an image */
-    QString imageToHash( const QString& theImageFile );
+    QString imageToHash( const QString& imageFile );
 
-    void setRenderedImage( const QString& theImageFileName );
+    void setRenderedImage( const QString& imageFileName );
 
     /**
      * The path of the rendered image can be retrieved through that method.
@@ -54,11 +54,11 @@ class QgsRenderChecker
 
     /** Set tolerance for color components used by runTest() and compareImages().
      * Default value is 0.
-     * @param theColorTolerance is maximum difference for each color component
+     * @param colorTolerance is maximum difference for each color component
      * including alpha to be considered correct.
      * @note added in 2.1
      */
-    void setColorTolerance( unsigned int theColorTolerance );
+    void setColorTolerance( unsigned int colorTolerance );
 
     /** Sets the largest allowable difference in size between the rendered and the expected image.
      * @param xTolerance x tolerance in pixels
@@ -69,28 +69,28 @@ class QgsRenderChecker
 
     /**
      * Test using renderer to generate the image to be compared.
-     * @param theTestName - to be used as the basis for writing a file to
+     * @param testName - to be used as the basis for writing a file to
      * e.g. /tmp/theTestName.png
-     * @param theMismatchCount - defaults to 0 - the number of pixels that
+     * @param mismatchCount - defaults to 0 - the number of pixels that
      * are allowed to be different from the control image. In some cases
      * rendering may be non-deterministic. This parameter allows you to account
      * for that by providing a tolerance.
      * @note make sure to call setExpectedImage and setMapRenderer first
      */
-    bool runTest( const QString& theTestName, unsigned int theMismatchCount = 0 );
+    bool runTest( const QString& testName, unsigned int mismatchCount = 0 );
 
     /**
      * Test using two arbitrary images (map renderer will not be used)
-     * @param theTestName - to be used as the basis for writing a file to
+     * @param testName - to be used as the basis for writing a file to
      * e.g. /tmp/theTestName.png
-     * @param theMismatchCount - defaults to 0 - the number of pixels that
+     * @param mismatchCount - defaults to 0 - the number of pixels that
      * are allowed to be different from the control image. In some cases
      * rendering may be non-deterministic. This parameter allows you to account
      * for that by providing a tolerance.
-     * @param theRenderedImageFile to optionally override the output filename
+     * @param renderedImageFile to optionally override the output filename
      * @note: make sure to call setExpectedImage and setRenderedImage first.
      */
-    bool compareImages( const QString& theTestName, unsigned int theMismatchCount = 0, const QString& theRenderedImageFile = "" );
+    bool compareImages( const QString& testName, unsigned int mismatchCount = 0, const QString& renderedImageFile = "" );
     /** Get a list of all the anomalies. An anomaly is a rendered difference
      * file where there is some red pixel content (indicating a render check
      * mismatch), but where the output was still acceptable. If the render
@@ -98,7 +98,7 @@ class QgsRenderChecker
      * acceptable.
      * @return a bool indicating if the diff matched one of the anomaly files
      */
-    bool isKnownAnomaly( const QString& theDiffImageFile );
+    bool isKnownAnomaly( const QString& diffImageFile );
 
     /** Draws a checkboard pattern for image backgrounds, so that transparency is visible
      * without requiring a transparent background for the image

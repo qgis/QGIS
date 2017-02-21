@@ -103,13 +103,13 @@ class CORE_EXPORT QgsRasterMinMaxOrigin
     //////// Setter methods /////////////////////
 
     //! \brief Set limits.
-    void setLimits( Limits theLimits ) { mLimits = theLimits; }
+    void setLimits( Limits limits ) { mLimits = limits; }
 
     //! \brief Set extent.
-    void setExtent( Extent theExtent ) { mExtent = theExtent; }
+    void setExtent( Extent extent ) { mExtent = extent; }
 
     //! \brief Set statistics accuracy.
-    void setStatAccuracy( StatAccuracy theAccuracy ) { mAccuracy = theAccuracy; }
+    void setStatAccuracy( StatAccuracy accuracy ) { mAccuracy = accuracy; }
 
     //! \brief Set lower bound of cumulative cut method (between 0 and 1).
     void setCumulativeCutLower( double val ) { mCumulativeCutLower = val; }
@@ -131,22 +131,22 @@ class CORE_EXPORT QgsRasterMinMaxOrigin
     //////// Static methods /////////////////////
 
     //! \brief Return a string to serialize Limits
-    static QString limitsString( Limits theLimits );
+    static QString limitsString( Limits limits );
 
     //! \brief Deserialize Limits
-    static Limits limitsFromString( const QString& theLimits );
+    static Limits limitsFromString( const QString& limits );
 
     //! \brief Return a string to serialize Extent
-    static QString extentString( Extent theExtent );
+    static QString extentString( Extent extent );
 
     //! \brief Deserialize Extent
-    static Extent extentFromString( const QString& theExtent );
+    static Extent extentFromString( const QString& extent );
 
     //! \brief Return a string to serialize StatAccuracy
-    static QString statAccuracyString( StatAccuracy theAccuracy );
+    static QString statAccuracyString( StatAccuracy accuracy );
 
     //! \brief Deserialize StatAccuracy
-    static StatAccuracy statAccuracyFromString( const QString& theAccuracy );
+    static StatAccuracy statAccuracyFromString( const QString& accuracy );
 
   private:
 

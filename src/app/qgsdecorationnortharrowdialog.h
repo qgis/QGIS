@@ -26,15 +26,15 @@ class APP_EXPORT QgsDecorationNorthArrowDialog : public QDialog, private Ui::Qgs
     ~QgsDecorationNorthArrowDialog();
 
   private:
-    void rotatePixmap( int theRotationInt );
+    void rotatePixmap( int rotationInt );
     void resizeEvent( QResizeEvent * ) override; //overloads qwidget
 
   private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
     void on_buttonBox_helpRequested();
-    void on_spinAngle_valueChanged( int theInt );
-    void on_sliderRotation_valueChanged( int theInt );
+    void on_spinAngle_valueChanged( int spinAngle );
+    void on_sliderRotation_valueChanged( int rotationValue );
     void apply();
 
   protected:

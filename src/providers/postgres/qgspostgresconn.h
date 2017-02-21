@@ -151,10 +151,10 @@ struct QgsPostgresLayerProperty
 class QgsPostgresResult
 {
   public:
-    explicit QgsPostgresResult( PGresult *theResult = nullptr ) : mRes( theResult ) {}
+    explicit QgsPostgresResult( PGresult *result = nullptr ) : mRes( result ) {}
     ~QgsPostgresResult();
 
-    QgsPostgresResult &operator=( PGresult *theResult );
+    QgsPostgresResult &operator=( PGresult *result );
     QgsPostgresResult &operator=( const QgsPostgresResult &src );
 
     ExecStatusType PQresultStatus();
@@ -327,13 +327,13 @@ class QgsPostgresConn : public QObject
 
     static QStringList connectionList();
     static QString selectedConnection();
-    static void setSelectedConnection( const QString& theConnName );
-    static QgsDataSourceUri connUri( const QString& theConnName );
-    static bool publicSchemaOnly( const QString& theConnName );
-    static bool geometryColumnsOnly( const QString& theConnName );
-    static bool dontResolveType( const QString& theConnName );
-    static bool allowGeometrylessTables( const QString& theConnName );
-    static void deleteConnection( const QString& theConnName );
+    static void setSelectedConnection( const QString& connName );
+    static QgsDataSourceUri connUri( const QString& connName );
+    static bool publicSchemaOnly( const QString& connName );
+    static bool geometryColumnsOnly( const QString& connName );
+    static bool dontResolveType( const QString& connName );
+    static bool allowGeometrylessTables( const QString& connName );
+    static void deleteConnection( const QString& connName );
 
     //! A connection needs to be locked when it uses transactions, see QgsPostgresConn::{begin,commit,rollback}
     void lock() { mLock.lock(); }

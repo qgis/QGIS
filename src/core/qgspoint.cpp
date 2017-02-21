@@ -106,8 +106,8 @@ QgsVector QgsVector::perpVector() const
 
 double QgsVector::angle() const
 {
-  double theAngle = atan2( mY, mX );
-  return theAngle < 0.0 ? theAngle + 2.0 * M_PI : theAngle;
+  double angle = atan2( mY, mX );
+  return angle < 0.0 ? angle + 2.0 * M_PI : angle;
 }
 
 double QgsVector::angle( QgsVector v ) const
@@ -117,9 +117,9 @@ double QgsVector::angle( QgsVector v ) const
 
 QgsVector QgsVector::rotateBy( double rot ) const
 {
-  double theAngle = atan2( mY, mX ) + rot;
+  double angle = atan2( mY, mX ) + rot;
   double len = length();
-  return QgsVector( len * cos( theAngle ), len * sin( theAngle ) );
+  return QgsVector( len * cos( angle ), len * sin( angle ) );
 }
 
 QgsVector QgsVector::normalized() const
@@ -169,14 +169,14 @@ QString QgsPoint::toString() const
   return rep;
 }
 
-QString QgsPoint::toString( int thePrecision ) const
+QString QgsPoint::toString( int precision ) const
 {
-  QString x = qIsFinite( m_x ) ? QString::number( m_x, 'f', thePrecision ) : QObject::tr( "infinite" );
-  QString y = qIsFinite( m_y ) ? QString::number( m_y, 'f', thePrecision ) : QObject::tr( "infinite" );
+  QString x = qIsFinite( m_x ) ? QString::number( m_x, 'f', precision ) : QObject::tr( "infinite" );
+  QString y = qIsFinite( m_y ) ? QString::number( m_y, 'f', precision ) : QObject::tr( "infinite" );
   return QStringLiteral( "%1,%2" ).arg( x, y );
 }
 
-QString QgsPoint::toDegreesMinutesSeconds( int thePrecision, const bool useSuffix, const bool padded ) const
+QString QgsPoint::toDegreesMinutesSeconds( int precision, const bool useSuffix, const bool padded ) const
 {
   //first, limit longitude to -360 to 360 degree range
   double myWrappedX = fmod( m_x, 360.0 );
@@ -213,7 +213,7 @@ QString QgsPoint::toDegreesMinutesSeconds( int thePrecision, const bool useSuffi
   double mySecondsY = double( myFloatMinutesY - myIntMinutesY ) * 60;
 
   //make sure rounding to specified precision doesn't create seconds >= 60
-  if ( qRound( mySecondsX * pow( 10.0, thePrecision ) ) >= 60 * pow( 10.0, thePrecision ) )
+  if ( qRound( mySecondsX * pow( 10.0, precision ) ) >= 60 * pow( 10.0, precision ) )
   {
     mySecondsX = qMax( mySecondsX - 60, 0.0 );
     myIntMinutesX++;
@@ -223,7 +223,7 @@ QString QgsPoint::toDegreesMinutesSeconds( int thePrecision, const bool useSuffi
       myDegreesX++;
     }
   }
-  if ( qRound( mySecondsY * pow( 10.0, thePrecision ) ) >= 60 * pow( 10.0, thePrecision ) )
+  if ( qRound( mySecondsY * pow( 10.0, precision ) ) >= 60 * pow( 10.0, precision ) )
   {
     mySecondsY = qMax( mySecondsY - 60, 0.0 );
     myIntMinutesY++;
@@ -256,18 +256,18 @@ QString QgsPoint::toDegreesMinutesSeconds( int thePrecision, const bool useSuffi
   }
   //check if coordinate is all zeros for the specified precision, and if so,
   //remove the sign and hemisphere strings
-  if ( myDegreesX == 0 && myIntMinutesX == 0 && qRound( mySecondsX * pow( 10.0, thePrecision ) ) == 0 )
+  if ( myDegreesX == 0 && myIntMinutesX == 0 && qRound( mySecondsX * pow( 10.0, precision ) ) == 0 )
   {
     myXSign = QString();
     myXHemisphere = QString();
   }
-  if ( myDegreesY == 0 && myIntMinutesY == 0 && qRound( mySecondsY * pow( 10.0, thePrecision ) ) == 0 )
+  if ( myDegreesY == 0 && myIntMinutesY == 0 && qRound( mySecondsY * pow( 10.0, precision ) ) == 0 )
   {
     myYSign = QString();
     myYHemisphere = QString();
   }
   //also remove directional prefix from 180 degree longitudes
-  if ( myDegreesX == 180 && myIntMinutesX == 0 && qRound( mySecondsX * pow( 10.0, thePrecision ) ) == 0 )
+  if ( myDegreesX == 180 && myIntMinutesX == 0 && qRound( mySecondsX * pow( 10.0, precision ) ) == 0 )
   {
     myXHemisphere = QString();
   }
@@ -275,9 +275,9 @@ QString QgsPoint::toDegreesMinutesSeconds( int thePrecision, const bool useSuffi
   QString myMinutesX = padded ? QStringLiteral( "%1" ).arg( myIntMinutesX, 2, 10, QChar( '0' ) ) : QString::number( myIntMinutesX );
   QString myMinutesY = padded ? QStringLiteral( "%1" ).arg( myIntMinutesY, 2, 10, QChar( '0' ) ) : QString::number( myIntMinutesY );
   //pad seconds with leading digits if required
-  int digits = 2 + ( thePrecision == 0 ? 0 : 1 + thePrecision ); //1 for decimal place if required
-  QString myStrSecondsX = padded ? QStringLiteral( "%1" ).arg( mySecondsX, digits, 'f', thePrecision, QChar( '0' ) ) : QString::number( mySecondsX, 'f', thePrecision );
-  QString myStrSecondsY = padded ? QStringLiteral( "%1" ).arg( mySecondsY, digits, 'f', thePrecision, QChar( '0' ) ) : QString::number( mySecondsY, 'f', thePrecision );
+  int digits = 2 + ( precision == 0 ? 0 : 1 + precision ); //1 for decimal place if required
+  QString myStrSecondsX = padded ? QStringLiteral( "%1" ).arg( mySecondsX, digits, 'f', precision, QChar( '0' ) ) : QString::number( mySecondsX, 'f', precision );
+  QString myStrSecondsY = padded ? QStringLiteral( "%1" ).arg( mySecondsY, digits, 'f', precision, QChar( '0' ) ) : QString::number( mySecondsY, 'f', precision );
 
   QString rep = myXSign + QString::number( myDegreesX ) + QChar( 176 ) +
                 myMinutesX + QChar( 0x2032 ) +
@@ -290,7 +290,7 @@ QString QgsPoint::toDegreesMinutesSeconds( int thePrecision, const bool useSuffi
   return rep;
 }
 
-QString QgsPoint::toDegreesMinutes( int thePrecision, const bool useSuffix, const bool padded ) const
+QString QgsPoint::toDegreesMinutes( int precision, const bool useSuffix, const bool padded ) const
 {
   //first, limit longitude to -360 to 360 degree range
   double myWrappedX = fmod( m_x, 360.0 );
@@ -311,12 +311,12 @@ QString QgsPoint::toDegreesMinutes( int thePrecision, const bool useSuffix, cons
   double myFloatMinutesY = double(( qAbs( m_y ) - myDegreesY ) * 60 );
 
   //make sure rounding to specified precision doesn't create minutes >= 60
-  if ( qRound( myFloatMinutesX * pow( 10.0, thePrecision ) ) >= 60 * pow( 10.0, thePrecision ) )
+  if ( qRound( myFloatMinutesX * pow( 10.0, precision ) ) >= 60 * pow( 10.0, precision ) )
   {
     myFloatMinutesX = qMax( myFloatMinutesX - 60, 0.0 );
     myDegreesX++;
   }
-  if ( qRound( myFloatMinutesY * pow( 10.0, thePrecision ) ) >= 60 * pow( 10.0, thePrecision ) )
+  if ( qRound( myFloatMinutesY * pow( 10.0, precision ) ) >= 60 * pow( 10.0, precision ) )
   {
     myFloatMinutesY = qMax( myFloatMinutesY - 60, 0.0 );
     myDegreesY++;
@@ -344,26 +344,26 @@ QString QgsPoint::toDegreesMinutes( int thePrecision, const bool useSuffix, cons
   }
   //check if coordinate is all zeros for the specified precision, and if so,
   //remove the sign and hemisphere strings
-  if ( myDegreesX == 0 && qRound( myFloatMinutesX * pow( 10.0, thePrecision ) ) == 0 )
+  if ( myDegreesX == 0 && qRound( myFloatMinutesX * pow( 10.0, precision ) ) == 0 )
   {
     myXSign = QString();
     myXHemisphere = QString();
   }
-  if ( myDegreesY == 0 && qRound( myFloatMinutesY * pow( 10.0, thePrecision ) ) == 0 )
+  if ( myDegreesY == 0 && qRound( myFloatMinutesY * pow( 10.0, precision ) ) == 0 )
   {
     myYSign = QString();
     myYHemisphere = QString();
   }
   //also remove directional prefix from 180 degree longitudes
-  if ( myDegreesX == 180 && qRound( myFloatMinutesX * pow( 10.0, thePrecision ) ) == 0 )
+  if ( myDegreesX == 180 && qRound( myFloatMinutesX * pow( 10.0, precision ) ) == 0 )
   {
     myXHemisphere = QString();
   }
 
   //pad minutes with leading digits if required
-  int digits = 2 + ( thePrecision == 0 ? 0 : 1 + thePrecision ); //1 for decimal place if required
-  QString myStrMinutesX = padded ? QStringLiteral( "%1" ).arg( myFloatMinutesX, digits, 'f', thePrecision, QChar( '0' ) ) : QString::number( myFloatMinutesX, 'f', thePrecision );
-  QString myStrMinutesY = padded ? QStringLiteral( "%1" ).arg( myFloatMinutesY, digits, 'f', thePrecision, QChar( '0' ) ) : QString::number( myFloatMinutesY, 'f', thePrecision );
+  int digits = 2 + ( precision == 0 ? 0 : 1 + precision ); //1 for decimal place if required
+  QString myStrMinutesX = padded ? QStringLiteral( "%1" ).arg( myFloatMinutesX, digits, 'f', precision, QChar( '0' ) ) : QString::number( myFloatMinutesX, 'f', precision );
+  QString myStrMinutesY = padded ? QStringLiteral( "%1" ).arg( myFloatMinutesY, digits, 'f', precision, QChar( '0' ) ) : QString::number( myFloatMinutesY, 'f', precision );
 
   QString rep = myXSign + QString::number( myDegreesX ) + QChar( 176 ) +
                 myStrMinutesX + QChar( 0x2032 ) +

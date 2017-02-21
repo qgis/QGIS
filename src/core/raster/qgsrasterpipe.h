@@ -58,7 +58,7 @@ class CORE_EXPORT QgsRasterPipe
     };
 
     QgsRasterPipe();
-    QgsRasterPipe( const QgsRasterPipe& thePipe );
+    QgsRasterPipe( const QgsRasterPipe& pipe );
 
     ~QgsRasterPipe();
 
@@ -66,11 +66,11 @@ class CORE_EXPORT QgsRasterPipe
 
     /** Try to insert interface at specified index and connect
      * if connection would fail, the interface is not inserted and false is returned */
-    bool insert( int idx, QgsRasterInterface* theInterface );
+    bool insert( int idx, QgsRasterInterface* interface );
 
     /** Try to replace interface at specified index and connect
      * if connection would fail, the interface is not inserted and false is returned */
-    bool replace( int idx, QgsRasterInterface* theInterface );
+    bool replace( int idx, QgsRasterInterface* interface );
 
     /** Insert a new known interface in default place or replace interface of the same
      * role if it already exists. Known interfaces are: QgsRasterDataProvider,
@@ -78,13 +78,13 @@ class CORE_EXPORT QgsRasterPipe
      * subclasses. For unknown interfaces it mus be explicitly specified position
      * where it should be inserted using insert() method.
      */
-    bool set( QgsRasterInterface * theInterface );
+    bool set( QgsRasterInterface * interface );
 
     //! Remove and delete interface at given index if possible
     bool remove( int idx );
 
     //! Remove and delete interface from pipe if possible
-    bool remove( QgsRasterInterface * theInterface );
+    bool remove( QgsRasterInterface * interface );
 
     int size() const { return mInterfaces.size(); }
     QgsRasterInterface * at( int idx ) const { return mInterfaces.at( idx ); }
@@ -116,10 +116,10 @@ class CORE_EXPORT QgsRasterPipe
     QMap<Role, int> mRoleMap;
 
     // Set role in mRoleMap
-    void setRole( QgsRasterInterface * theInterface, int idx );
+    void setRole( QgsRasterInterface * interface, int idx );
 
     // Unset role in mRoleMap
-    void unsetRole( QgsRasterInterface * theInterface );
+    void unsetRole( QgsRasterInterface * interface );
 
     // Check if index is in bounds
     bool checkBounds( int idx ) const;
@@ -129,7 +129,7 @@ class CORE_EXPORT QgsRasterPipe
 
     /** \brief Try to connect interfaces in pipe and to the provider at beginning.
         Returns true if connected or false if connection failed */
-    bool connect( QVector<QgsRasterInterface*> theInterfaces );
+    bool connect( QVector<QgsRasterInterface*> interfaces );
 
 };
 

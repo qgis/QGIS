@@ -97,10 +97,10 @@ void QgsFieldConditionalFormatWidget::presetSet( int index )
   setFormattingFromStyle( style );
 }
 
-void QgsFieldConditionalFormatWidget::setLayer( QgsVectorLayer *theLayer )
+void QgsFieldConditionalFormatWidget::setLayer( QgsVectorLayer *layer )
 {
-  mLayer = theLayer;
-  mFieldCombo->setLayer( theLayer );
+  mLayer = layer;
+  mFieldCombo->setLayer( layer );
   mFieldCombo->setCurrentIndex( 0 );
 }
 

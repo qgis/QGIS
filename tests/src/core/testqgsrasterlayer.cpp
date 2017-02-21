@@ -95,8 +95,8 @@ class TestQgsRasterLayer : public QObject
 
 
   private:
-    bool render( const QString& theFileName, int mismatchCount = 0 );
-    bool setQml( const QString& theType, QString& msg );
+    bool render( const QString& fileName, int mismatchCount = 0 );
+    bool setQml( const QString& type, QString& msg );
     void populateColorRampShader( QgsColorRampShader* colorRampShader,
                                   QgsColorRamp* colorRamp,
                                   int numberOfEntries );
@@ -596,18 +596,18 @@ void TestQgsRasterLayer::registry()
 //
 
 
-bool TestQgsRasterLayer::render( const QString& theTestType, int mismatchCount )
+bool TestQgsRasterLayer::render( const QString& testType, int mismatchCount )
 {
-  mReport += "<h2>" + theTestType + "</h2>\n";
+  mReport += "<h2>" + testType + "</h2>\n";
   QgsRenderChecker myChecker;
-  myChecker.setControlName( "expected_" + theTestType );
+  myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( *mMapSettings );
-  bool myResultFlag = myChecker.runTest( theTestType, mismatchCount );
+  bool myResultFlag = myChecker.runTest( testType, mismatchCount );
   mReport += "\n\n\n" + myChecker.report();
   return myResultFlag;
 }
 
-bool TestQgsRasterLayer::setQml( const QString& theType, QString& msg )
+bool TestQgsRasterLayer::setQml( const QString& type, QString& msg )
 {
   //load a qml style and apply to our layer
   if ( !mpLandsatRasterLayer->isValid() )
@@ -616,7 +616,7 @@ bool TestQgsRasterLayer::setQml( const QString& theType, QString& msg )
     return false;
   }
 
-  QString myFileName = mTestDataDir + "landsat_" + theType + ".qml";
+  QString myFileName = mTestDataDir + "landsat_" + type + ".qml";
   bool myStyleFlag = false;
   QString loadStyleMsg;
   loadStyleMsg = mpLandsatRasterLayer->loadNamedStyle( myFileName, myStyleFlag );

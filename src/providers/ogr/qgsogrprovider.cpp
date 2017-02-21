@@ -663,35 +663,35 @@ QStringList QgsOgrProvider::subLayers() const
   {
     OGRLayerH layer = OGR_DS_GetLayer( ogrDataSource, i );
     OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( layer );
-    QString theLayerName = QString::fromUtf8( OGR_FD_GetName( fdef ) );
+    QString layerName = QString::fromUtf8( OGR_FD_GetName( fdef ) );
     OGRwkbGeometryType layerGeomType = OGR_FD_GetGeomType( fdef );
 
     // ignore this layer if a sublayer was requested and it is not this one
     if ( mIsSubLayer &&
-         (( !mLayerName.isNull() && theLayerName != mLayerName ) ||
+         (( !mLayerName.isNull() && layerName != mLayerName ) ||
           ( mLayerName.isNull() && mLayerIndex >= 0 && i != ( unsigned int )mLayerIndex ) ) )
     {
-      QgsDebugMsg( QString( "subLayers() ignoring layer #%1 (%2)" ).arg( i ).arg( theLayerName ) );
+      QgsDebugMsg( QString( "subLayers() ignoring layer #%1 (%2)" ).arg( i ).arg( layerName ) );
       continue;
     }
 
-    if ( !mIsSubLayer && ( theLayerName == QLatin1String( "layer_styles" ) ||
-                           theLayerName == QLatin1String( "qgis_projects" ) ) )
+    if ( !mIsSubLayer && ( layerName == QLatin1String( "layer_styles" ) ||
+                           layerName == QLatin1String( "qgis_projects" ) ) )
     {
       // Ignore layer_styles (coming from QGIS styling support) and
       // qgis_projects (coming from http://plugins.qgis.org/plugins/QgisGeopackage/)
       continue;
     }
 
-    QgsDebugMsg( QString( "id = %1 name = %2 layerGeomType = %3" ).arg( i ).arg( theLayerName ).arg( layerGeomType ) );
+    QgsDebugMsg( QString( "id = %1 name = %2 layerGeomType = %3" ).arg( i ).arg( layerName ).arg( layerGeomType ) );
 
     if ( wkbFlatten( layerGeomType ) != wkbUnknown )
     {
-      int theLayerFeatureCount = OGR_L_GetFeatureCount( layer, 0 );
+      int layerFeatureCount = OGR_L_GetFeatureCount( layer, 0 );
 
       QString geom = ogrWkbGeometryTypeName( layerGeomType );
 
-      mSubLayerList << QStringLiteral( "%1:%2:%3:%4" ).arg( i ).arg( theLayerName, theLayerFeatureCount == -1 ? tr( "Unknown" ) : QString::number( theLayerFeatureCount ), geom );
+      mSubLayerList << QStringLiteral( "%1:%2:%3:%4" ).arg( i ).arg( layerName, layerFeatureCount == -1 ? tr( "Unknown" ) : QString::number( layerFeatureCount ), geom );
     }
     else
     {
@@ -745,7 +745,7 @@ QStringList QgsOgrProvider::subLayers() const
       {
         QString geom = ogrWkbGeometryTypeName(( bIs25D ) ? wkbSetZ( countIt.key() ) : countIt.key() );
 
-        QString sl = QStringLiteral( "%1:%2:%3:%4" ).arg( i ).arg( theLayerName ).arg( fCount.value( countIt.key() ) ).arg( geom );
+        QString sl = QStringLiteral( "%1:%2:%3:%4" ).arg( i ).arg( layerName ).arg( fCount.value( countIt.key() ) ).arg( geom );
         QgsDebugMsg( "sub layer: " + sl );
         mSubLayerList << sl;
       }
@@ -1677,7 +1677,7 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
       continue;
     }
 
-    OGRGeometryH theNewGeometry = nullptr;
+    OGRGeometryH newGeometry = nullptr;
     QByteArray wkb = it->exportToWkb();
     // We might receive null geometries. It is ok, but don't go through the
     // OGR_G_CreateFromWkb() route then
@@ -1686,28 +1686,28 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
       //create an OGRGeometry
       if ( OGR_G_CreateFromWkb( reinterpret_cast<unsigned char*>( const_cast<char *>( wkb.constData() ) ),
                                 OGR_L_GetSpatialRef( ogrLayer ),
-                                &theNewGeometry,
+                                &newGeometry,
                                 wkb.length() ) != OGRERR_NONE )
       {
         pushError( tr( "OGR error creating geometry for feature %1: %2" ).arg( it.key() ).arg( CPLGetLastErrorMsg() ) );
-        OGR_G_DestroyGeometry( theNewGeometry );
-        theNewGeometry = nullptr;
+        OGR_G_DestroyGeometry( newGeometry );
+        newGeometry = nullptr;
         OGR_F_Destroy( theOGRFeature );
         continue;
       }
 
-      if ( !theNewGeometry )
+      if ( !newGeometry )
       {
         pushError( tr( "OGR error in feature %1: geometry is null" ).arg( it.key() ) );
         OGR_F_Destroy( theOGRFeature );
         continue;
       }
 
-      theNewGeometry = ConvertGeometryIfNecessary( theNewGeometry );
+      newGeometry = ConvertGeometryIfNecessary( newGeometry );
     }
 
     //set the new geometry
-    if ( OGR_F_SetGeometryDirectly( theOGRFeature, theNewGeometry ) != OGRERR_NONE )
+    if ( OGR_F_SetGeometryDirectly( theOGRFeature, newGeometry ) != OGRERR_NONE )
     {
       pushError( tr( "OGR error setting geometry of feature %1: %2" ).arg( it.key() ).arg( CPLGetLastErrorMsg() ) );
       // Shouldn't happen normally. If it happens, ownership of the geometry

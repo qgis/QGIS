@@ -479,7 +479,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** a
   const char* pszLocalName = ( pszSep ) ? pszSep + 1 : el;
   const int nsLen = ( pszSep ) ? ( int )( pszSep - el ) : 0;
   const int localNameLen = ( pszSep ) ? ( int )( elLen - nsLen ) - 1 : elLen;
-  ParseMode theParseMode( mParseModeStack.isEmpty() ? None : mParseModeStack.top() );
+  ParseMode parseMode( mParseModeStack.isEmpty() ? None : mParseModeStack.top() );
 
   // Figure out if the GML namespace is GML_NAMESPACE or GML32_NAMESPACE
   if ( !mGMLNameSpaceURIPtr && pszSep )
@@ -499,8 +499,8 @@ void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** a
   const bool isGMLNS = ( nsLen == mGMLNameSpaceURI.size() && mGMLNameSpaceURIPtr && memcmp( el, mGMLNameSpaceURIPtr, nsLen ) == 0 );
   bool isGeom = false;
 
-  if ( theParseMode == Geometry || theParseMode == Coordinate || theParseMode == PosList ||
-       theParseMode == MultiPoint || theParseMode == MultiLine || theParseMode == MultiPolygon )
+  if ( parseMode == Geometry || parseMode == Coordinate || parseMode == PosList ||
+       parseMode == MultiPoint || parseMode == MultiLine || parseMode == MultiPolygon )
   {
     mGeometryString.append( "<", 1 );
     mGeometryString.append( pszLocalName, localNameLen );
@@ -563,31 +563,31 @@ void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** a
     mCurrentExtent = QgsRectangle();
     mBoundedByNullFound = false;
   }
-  else if ( theParseMode == BoundingBox &&
+  else if ( parseMode == BoundingBox &&
             isGMLNS && LOCALNAME_EQUALS( "null" ) )
   {
     mParseModeStack.push( QgsGmlStreamingParser::Null );
     mBoundedByNullFound = true;
   }
-  else if ( theParseMode == BoundingBox &&
+  else if ( parseMode == BoundingBox &&
             isGMLNS && LOCALNAME_EQUALS( "Envelope" ) )
   {
     isGeom = true;
     mParseModeStack.push( QgsGmlStreamingParser::Envelope );
   }
-  else if ( theParseMode == Envelope &&
+  else if ( parseMode == Envelope &&
             isGMLNS && LOCALNAME_EQUALS( "lowerCorner" ) )
   {
     mParseModeStack.push( QgsGmlStreamingParser::LowerCorner );
     mStringCash.clear();
   }
-  else if ( theParseMode == Envelope &&
+  else if ( parseMode == Envelope &&
             isGMLNS && LOCALNAME_EQUALS( "upperCorner" ) )
   {
     mParseModeStack.push( QgsGmlStreamingParser::UpperCorner );
     mStringCash.clear();
   }
-  else if ( theParseMode == None && !mTypeNamePtr &&
+  else if ( parseMode == None && !mTypeNamePtr &&
             LOCALNAME_EQUALS( "Tuple" ) )
   {
     Q_ASSERT( !mCurrentFeature );
@@ -598,7 +598,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** a
     mParseModeStack.push( QgsGmlStreamingParser::Tuple );
     mCurrentFeatureId.clear();
   }
-  else if ( theParseMode == Tuple )
+  else if ( parseMode == Tuple )
   {
     QString currentTypename( QString::fromUtf8( pszLocalName, localNameLen ) );
     QMap< QString, LayerProperties >::const_iterator iter = mMapTypeNameToProperties.constFind( currentTypename );
@@ -641,7 +641,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** a
       mCurrentFeatureId += id;
     }
   }
-  else if ( theParseMode == None &&
+  else if ( parseMode == None &&
             localNameLen == static_cast<int>( mTypeNameUTF8Len ) &&
             memcmp( pszLocalName, mTypeNamePtr, mTypeNameUTF8Len ) == 0 )
   {
@@ -680,7 +680,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** a
     }
   }
 
-  else if ( theParseMode == BoundingBox && isGMLNS && LOCALNAME_EQUALS( "Box" ) )
+  else if ( parseMode == BoundingBox && isGMLNS && LOCALNAME_EQUALS( "Box" ) )
   {
     isGeom = true;
   }
@@ -717,7 +717,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** a
     isGeom = true;
     mParseModeStack.push( QgsGmlStreamingParser::MultiPolygon );
   }
-  else if ( theParseMode == FeatureTuple )
+  else if ( parseMode == FeatureTuple )
   {
     QString localName( QString::fromUtf8( pszLocalName, localNameLen ) );
     if ( mThematicAttributes.contains( mCurrentTypename + '|' + localName ) )
@@ -727,7 +727,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** a
       mStringCash.clear();
     }
   }
-  else if ( theParseMode == Feature )
+  else if ( parseMode == Feature )
   {
     QString localName( QString::fromUtf8( pszLocalName, localNameLen ) );
     if ( mThematicAttributes.contains( localName ) )
@@ -840,33 +840,33 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
   const char* pszLocalName = ( pszSep ) ? pszSep + 1 : el;
   const int nsLen = ( pszSep ) ? ( int )( pszSep - el ) : 0;
   const int localNameLen = ( pszSep ) ? ( int )( elLen - nsLen ) - 1 : elLen;
-  ParseMode theParseMode( mParseModeStack.isEmpty() ? None : mParseModeStack.top() );
+  ParseMode parseMode( mParseModeStack.isEmpty() ? None : mParseModeStack.top() );
 
   const bool isGMLNS = ( nsLen == mGMLNameSpaceURI.size() && mGMLNameSpaceURIPtr && memcmp( el, mGMLNameSpaceURIPtr, nsLen ) == 0 );
 
-  if ( theParseMode == Coordinate && isGMLNS && LOCALNAME_EQUALS( "coordinates" ) )
+  if ( parseMode == Coordinate && isGMLNS && LOCALNAME_EQUALS( "coordinates" ) )
   {
     mParseModeStack.pop();
   }
-  else if ( theParseMode == PosList && isGMLNS &&
+  else if ( parseMode == PosList && isGMLNS &&
             ( LOCALNAME_EQUALS( "pos" ) || LOCALNAME_EQUALS( "posList" ) ) )
   {
     mParseModeStack.pop();
   }
-  else if ( theParseMode == AttributeTuple &&
+  else if ( parseMode == AttributeTuple &&
             mCurrentTypename + '|' + QString::fromUtf8( pszLocalName, localNameLen ) == mAttributeName ) //add a thematic attribute to the feature
   {
     mParseModeStack.pop();
 
     setAttribute( mAttributeName, mStringCash );
   }
-  else if ( theParseMode == Attribute && QString::fromUtf8( pszLocalName, localNameLen ) == mAttributeName ) //add a thematic attribute to the feature
+  else if ( parseMode == Attribute && QString::fromUtf8( pszLocalName, localNameLen ) == mAttributeName ) //add a thematic attribute to the feature
   {
     mParseModeStack.pop();
 
     setAttribute( mAttributeName, mStringCash );
   }
-  else if ( theParseMode == Geometry &&
+  else if ( parseMode == Geometry &&
             localNameLen == static_cast<int>( mGeometryAttributeUTF8Len ) &&
             memcmp( pszLocalName, mGeometryAttributePtr, localNameLen ) == 0 )
   {
@@ -891,7 +891,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
     }
     mGeometryString.clear();
   }
-  else if ( theParseMode == BoundingBox && isGMLNS && LOCALNAME_EQUALS( "boundedBy" ) )
+  else if ( parseMode == BoundingBox && isGMLNS && LOCALNAME_EQUALS( "boundedBy" ) )
   {
     //create bounding box from mStringCash
     if ( mCurrentExtent.isNull() &&
@@ -909,15 +909,15 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
 
     mParseModeStack.pop();
   }
-  else if ( theParseMode == Null && isGMLNS && LOCALNAME_EQUALS( "null" ) )
+  else if ( parseMode == Null && isGMLNS && LOCALNAME_EQUALS( "null" ) )
   {
     mParseModeStack.pop();
   }
-  else if ( theParseMode == Envelope && isGMLNS && LOCALNAME_EQUALS( "Envelope" ) )
+  else if ( parseMode == Envelope && isGMLNS && LOCALNAME_EQUALS( "Envelope" ) )
   {
     mParseModeStack.pop();
   }
-  else if ( theParseMode == LowerCorner && isGMLNS && LOCALNAME_EQUALS( "lowerCorner" ) )
+  else if ( parseMode == LowerCorner && isGMLNS && LOCALNAME_EQUALS( "lowerCorner" ) )
   {
     QList<QgsPoint> points;
     pointsFromPosListString( points, mStringCash, 2 );
@@ -928,7 +928,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
     }
     mParseModeStack.pop();
   }
-  else if ( theParseMode == UpperCorner && isGMLNS && LOCALNAME_EQUALS( "upperCorner" ) )
+  else if ( parseMode == UpperCorner && isGMLNS && LOCALNAME_EQUALS( "upperCorner" ) )
   {
     QList<QgsPoint> points;
     pointsFromPosListString( points, mStringCash, 2 );
@@ -939,14 +939,14 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
     }
     mParseModeStack.pop();
   }
-  else if ( theParseMode == FeatureTuple && mParseDepth == mFeatureTupleDepth )
+  else if ( parseMode == FeatureTuple && mParseDepth == mFeatureTupleDepth )
   {
     mParseModeStack.pop();
     mFeatureTupleDepth = 0;
   }
-  else if (( theParseMode == Tuple && !mTypeNamePtr &&
+  else if (( parseMode == Tuple && !mTypeNamePtr &&
              LOCALNAME_EQUALS( "Tuple" ) ) ||
-           ( theParseMode == Feature &&
+           ( parseMode == Feature &&
              localNameLen == static_cast<int>( mTypeNameUTF8Len ) &&
              memcmp( pszLocalName, mTypeNamePtr, mTypeNameUTF8Len ) == 0 ) )
   {
@@ -984,7 +984,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
     if ( pointList.isEmpty() )
       return;  // error
 
-    if ( theParseMode == QgsGmlStreamingParser::Geometry )
+    if ( parseMode == QgsGmlStreamingParser::Geometry )
     {
       //directly add WKB point to the feature
       if ( getPointWKB( mCurrentWKB, *( pointList.constBegin() ) ) != 0 )
@@ -1024,7 +1024,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
     {
       //error
     }
-    if ( theParseMode == QgsGmlStreamingParser::Geometry )
+    if ( parseMode == QgsGmlStreamingParser::Geometry )
     {
       if ( getLineWKB( mCurrentWKB, pointList ) != 0 )
       {
@@ -1054,7 +1054,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
       }
     }
   }
-  else if (( theParseMode == Geometry || theParseMode == MultiPolygon ) &&
+  else if (( parseMode == Geometry || parseMode == MultiPolygon ) &&
            isGMLNS && LOCALNAME_EQUALS( "LinearRing" ) )
   {
     QList<QgsPoint> pointList;
@@ -1079,7 +1079,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
       QgsDebugMsg( "no wkb fragments" );
     }
   }
-  else if (( theParseMode == Geometry || theParseMode == MultiPolygon ) && isGMLNS &&
+  else if (( parseMode == Geometry || parseMode == MultiPolygon ) && isGMLNS &&
            LOCALNAME_EQUALS( "Polygon" ) )
   {
     if ( mWkbType != QgsWkbTypes::MultiPolygon )//keep multitype in case of geometry type mix
@@ -1087,26 +1087,26 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
       mWkbType = QgsWkbTypes::Polygon;
     }
 
-    if ( theParseMode == Geometry )
+    if ( parseMode == Geometry )
     {
       createPolygonFromFragments();
     }
   }
-  else if ( theParseMode == MultiPoint &&  isGMLNS &&
+  else if ( parseMode == MultiPoint &&  isGMLNS &&
             LOCALNAME_EQUALS( "MultiPoint" ) )
   {
     mWkbType = QgsWkbTypes::MultiPoint;
     mParseModeStack.pop();
     createMultiPointFromFragments();
   }
-  else if ( theParseMode == MultiLine && isGMLNS &&
+  else if ( parseMode == MultiLine && isGMLNS &&
             ( LOCALNAME_EQUALS( "MultiLineString" )  || LOCALNAME_EQUALS( "MultiCurve" ) ) )
   {
     mWkbType = QgsWkbTypes::MultiLineString;
     mParseModeStack.pop();
     createMultiLineFromFragments();
   }
-  else if ( theParseMode == MultiPolygon && isGMLNS &&
+  else if ( parseMode == MultiPolygon && isGMLNS &&
             ( LOCALNAME_EQUALS( "MultiPolygon" )  || LOCALNAME_EQUALS( "MultiSurface" ) ) )
   {
     mWkbType = QgsWkbTypes::MultiPolygon;
@@ -1117,7 +1117,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
   {
     mParseModeStack.pop();
   }
-  else if ( theParseMode == ExceptionText && LOCALNAME_EQUALS( "ExceptionText" ) )
+  else if ( parseMode == ExceptionText && LOCALNAME_EQUALS( "ExceptionText" ) )
   {
     mExceptionText = mStringCash;
     mParseModeStack.pop();
@@ -1145,14 +1145,14 @@ void QgsGmlStreamingParser::characters( const XML_Char* chars, int len )
     mGeometryString.append( chars, len );
   }
 
-  QgsGmlStreamingParser::ParseMode theParseMode = mParseModeStack.top();
-  if ( theParseMode == QgsGmlStreamingParser::Attribute ||
-       theParseMode == QgsGmlStreamingParser::AttributeTuple ||
-       theParseMode == QgsGmlStreamingParser::Coordinate ||
-       theParseMode == QgsGmlStreamingParser::PosList ||
-       theParseMode == QgsGmlStreamingParser::LowerCorner ||
-       theParseMode == QgsGmlStreamingParser::UpperCorner ||
-       theParseMode == QgsGmlStreamingParser::ExceptionText )
+  QgsGmlStreamingParser::ParseMode parseMode = mParseModeStack.top();
+  if ( parseMode == QgsGmlStreamingParser::Attribute ||
+       parseMode == QgsGmlStreamingParser::AttributeTuple ||
+       parseMode == QgsGmlStreamingParser::Coordinate ||
+       parseMode == QgsGmlStreamingParser::PosList ||
+       parseMode == QgsGmlStreamingParser::LowerCorner ||
+       parseMode == QgsGmlStreamingParser::UpperCorner ||
+       parseMode == QgsGmlStreamingParser::ExceptionText )
   {
     mStringCash.append( QString::fromUtf8( chars, len ) );
   }

@@ -647,11 +647,11 @@ void QgsGrassTools::closeTools()
 //
 // Helper function for Tim's experimental model list
 //
-void QgsGrassTools::on_mFilterInput_textChanged( QString theText )
+void QgsGrassTools::on_mFilterInput_textChanged( QString text )
 {
-  QgsDebugMsg( "GRASS modules filter changed to :" + theText );
-  mTreeModelProxy->setFilter( theText );
-  if ( theText.isEmpty() )
+  QgsDebugMsg( "GRASS modules filter changed to :" + text );
+  mTreeModelProxy->setFilter( text );
+  if ( text.isEmpty() )
   {
     mTreeView->collapseAll();
     mTreeView->expandToDepth( 0 );
@@ -665,25 +665,25 @@ void QgsGrassTools::on_mFilterInput_textChanged( QString theText )
   // there is a filter type switch in UI
   QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::Wildcard );
   Qt::CaseSensitivity myCaseSensitivity = Qt::CaseInsensitive;
-  QRegExp myRegExp( theText, myCaseSensitivity, mySyntax );
+  QRegExp myRegExp( text, myCaseSensitivity, mySyntax );
   mModelProxy->setFilterRegExp( myRegExp );
 }
 
-void QgsGrassTools::itemClicked( const QModelIndex &theIndex )
+void QgsGrassTools::itemClicked( const QModelIndex &index )
 {
-  if ( theIndex.column() == 0 )
+  if ( index.column() == 0 )
   {
     //
     // If the model has been filtered, the index row in the proxy won't match
     // the index row in the underlying model so we need to jump through this
     // little hoop to get the correct item
     //
-    const QSortFilterProxyModel *proxyModel = qobject_cast<const QSortFilterProxyModel *>( theIndex.model() );
+    const QSortFilterProxyModel *proxyModel = qobject_cast<const QSortFilterProxyModel *>( index.model() );
     if ( !proxyModel )
     {
       return;
     }
-    QModelIndex index = proxyModel->mapToSource( theIndex );
+    QModelIndex index = proxyModel->mapToSource( index );
 
     QStandardItemModel *model = 0;
     if ( proxyModel == mTreeModelProxy )

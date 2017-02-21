@@ -91,10 +91,10 @@ class QgsProjectionSelector : QWidget
 
   protected:
     /** Used to ensure the projection list view is actually populated */
-    void showEvent( QShowEvent * theEvent );
+    void showEvent( QShowEvent * event );
 
     /** Used to manage column sizes */
-    void resizeEvent( QResizeEvent * theEvent );
+    void resizeEvent( QResizeEvent * event );
 
   signals:
     void sridSelected( const QString& theSRID );

@@ -544,14 +544,14 @@ void TestQgsWcsPublicServers::test()
   }
 }
 
-void TestQgsWcsPublicServers::writeReport( const QString& theReport )
+void TestQgsWcsPublicServers::writeReport( const QString& report )
 {
   QString myReportFile = mCacheDir.absolutePath() + "/index.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     QTextStream myStream( &myFile );
-    myStream << theReport;
+    myStream << report;
     myFile.close();
   }
   QgsDebugMsg( "Report written to " + myReportFile );
@@ -784,11 +784,11 @@ void TestQgsWcsPublicServers::report()
   writeReport( myRep );
 }
 
-QMap<QString, QString> TestQgsWcsPublicServers::readLog( const QString& theFileName )
+QMap<QString, QString> TestQgsWcsPublicServers::readLog( const QString& fileName )
 {
   QMap<QString, QString> myMap;
 
-  QFile myFile( theFileName );
+  QFile myFile( fileName );
   if ( myFile.open( QIODevice::ReadOnly ) )
   {
     QTextStream myStream( &myFile );
@@ -802,46 +802,46 @@ QMap<QString, QString> TestQgsWcsPublicServers::readLog( const QString& theFileN
   return myMap;
 }
 
-QString TestQgsWcsPublicServers::error( const QString& theMessage )
+QString TestQgsWcsPublicServers::error( const QString& message )
 {
   QString myRow = QStringLiteral( "<font class='errmsg'>Error: " );
-  myRow += theMessage;
+  myRow += message;
   myRow += QLatin1String( "</font>" );
   return myRow;
 }
 
-QString TestQgsWcsPublicServers::cells( const QStringList& theValues, const QString& theClass, int colspan, int rowspan )
+QString TestQgsWcsPublicServers::cells( const QStringList& values, const QString& classStr, int colspan, int rowspan )
 {
   QString myRow;
-  for ( int i = 0; i < theValues.size(); i++ )
+  for ( int i = 0; i < values.size(); i++ )
   {
-    QString val = theValues.value( i );
+    QString val = values.value( i );
     QString colspanStr, rowspanStr;
-    if ( colspan > 1 && i == theValues.size() - 1 )
+    if ( colspan > 1 && i == values.size() - 1 )
     {
-      colspanStr = QStringLiteral( "colspan=%1" ).arg( colspan - theValues.size() + 1 );
+      colspanStr = QStringLiteral( "colspan=%1" ).arg( colspan - values.size() + 1 );
     }
     if ( rowspan > 1 )
     {
       rowspanStr = QStringLiteral( "rowspan=%1" ).arg( rowspan );
     }
-    myRow += QStringLiteral( "<td class='cell %1' %2 %3>%4</td>" ).arg( theClass, colspanStr, rowspanStr, val );
+    myRow += QStringLiteral( "<td class='cell %1' %2 %3>%4</td>" ).arg( classStr, colspanStr, rowspanStr, val );
   }
   return myRow;
 }
 
-QString TestQgsWcsPublicServers::row( const QStringList& theValues, const QString& theClass )
+QString TestQgsWcsPublicServers::row( const QStringList& values, const QString& classStr )
 {
   QString myRow = QStringLiteral( "<tr>" );
-  for ( int i = 0; i < theValues.size(); i++ )
+  for ( int i = 0; i < values.size(); i++ )
   {
-    QString val = theValues.value( i );
+    QString val = values.value( i );
     QString colspan;
-    if ( theValues.size() < mHead.size() && i == ( theValues.size() - 1 ) )
+    if ( values.size() < mHead.size() && i == ( values.size() - 1 ) )
     {
-      colspan = QStringLiteral( "colspan=%1" ).arg( mHead.size() - theValues.size() + 1 );
+      colspan = QStringLiteral( "colspan=%1" ).arg( mHead.size() - values.size() + 1 );
     }
-    myRow += QStringLiteral( "<td class='cell %1' %2>%3</td>" ).arg( theClass, colspan, val );
+    myRow += QStringLiteral( "<td class='cell %1' %2>%3</td>" ).arg( classStr, colspan, val );
   }
   myRow += QLatin1String( "</tr>\n" );
   return myRow;

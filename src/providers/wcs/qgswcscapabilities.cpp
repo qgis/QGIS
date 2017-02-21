@@ -48,8 +48,8 @@
 #include <QDir>
 #endif
 
-QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceUri const &theUri )
-    : mUri( theUri )
+QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceUri const &uri )
+    : mUri( uri )
     , mCapabilitiesReply( nullptr )
     , mCoverageCount( 0 )
     , mCacheLoadControl( QNetworkRequest::PreferNetwork )
@@ -89,9 +89,9 @@ void QgsWcsCapabilities::parseUri()
 }
 
 // TODO: return if successful
-void QgsWcsCapabilities::setUri( QgsDataSourceUri const &theUri )
+void QgsWcsCapabilities::setUri( QgsDataSourceUri const &uri )
 {
-  mUri = theUri;
+  mUri = uri;
 
   clear();
 
@@ -1221,9 +1221,9 @@ void QgsWcsCapabilities::showMessageBox( const QString& title, const QString& te
   message->showMessage();
 }
 
-QgsWcsCoverageSummary QgsWcsCapabilities::coverage( QString const & theIdentifier )
+QgsWcsCoverageSummary QgsWcsCapabilities::coverage( QString const & identifier )
 {
-  QgsWcsCoverageSummary * cp = coverageSummary( theIdentifier );
+  QgsWcsCoverageSummary * cp = coverageSummary( identifier );
   if ( cp ) return *cp;
 
   QgsWcsCoverageSummary c;
@@ -1231,9 +1231,9 @@ QgsWcsCoverageSummary QgsWcsCapabilities::coverage( QString const & theIdentifie
   return c;
 }
 
-QgsWcsCoverageSummary* QgsWcsCapabilities::coverageSummary( QString const & theIdentifier, QgsWcsCoverageSummary* parent )
+QgsWcsCoverageSummary* QgsWcsCapabilities::coverageSummary( QString const & identifier, QgsWcsCoverageSummary* parent )
 {
-  QgsDebugMsgLevel( "theIdentifier = " + theIdentifier, 5 );
+  QgsDebugMsgLevel( "theIdentifier = " + identifier, 5 );
   if ( !parent )
   {
     parent = &( mCapabilities.contents );
@@ -1241,14 +1241,14 @@ QgsWcsCoverageSummary* QgsWcsCapabilities::coverageSummary( QString const & theI
 
   for ( QVector<QgsWcsCoverageSummary>::iterator c = parent->coverageSummary.begin(); c != parent->coverageSummary.end(); ++c )
   {
-    if ( c->identifier == theIdentifier )
+    if ( c->identifier == identifier )
     {
       return c;
     }
     else
     {
       // search sub coverages
-      QgsWcsCoverageSummary * sc = coverageSummary( theIdentifier, c );
+      QgsWcsCoverageSummary * sc = coverageSummary( identifier, c );
       if ( sc )
       {
         return sc;

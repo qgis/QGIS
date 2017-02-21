@@ -66,11 +66,11 @@ static const QString pluginIcon = QStringLiteral( ":/images/themes/default/grass
  * Constructor for the plugin. The plugin is passed a pointer to the main app
  * and an interface object that provides access to exposed functions in QGIS.
  * @param theQGisApp Pointer to the QGIS main window
- * @param theQgisInterFace Pointer to the QGIS interface object
+ * @param qgisInterFace Pointer to the QGIS interface object
  */
-QgsGrassPlugin::QgsGrassPlugin( QgisInterface * theQgisInterFace )
+QgsGrassPlugin::QgsGrassPlugin( QgisInterface * qgisInterFace )
     : mToolBarPointer( 0 )
-    , qGisInterface( theQgisInterFace )
+    , qGisInterface( qgisInterFace )
     , mCanvas( 0 )
     , mRegionAction( 0 )
     , mRegionBand( 0 )
@@ -332,10 +332,10 @@ void QgsGrassPlugin::onGisbaseChanged()
   }
 }
 
-void QgsGrassPlugin::onLayerWasAdded( QgsMapLayer* theMapLayer )
+void QgsGrassPlugin::onLayerWasAdded( QgsMapLayer* mapLayer )
 {
-  QgsDebugMsg( "name = " + theMapLayer->name() );
-  QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( theMapLayer );
+  QgsDebugMsg( "name = " + mapLayer->name() );
+  QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( mapLayer );
   if ( !vectorLayer )
     return;
   QgsGrassProvider* grassProvider = dynamic_cast<QgsGrassProvider*>( vectorLayer->dataProvider() );
@@ -880,9 +880,9 @@ void QgsGrassPlugin::unload()
 }
 
 // Set icons to the current theme
-void QgsGrassPlugin::setCurrentTheme( QString theThemeName )
+void QgsGrassPlugin::setCurrentTheme( QString themeName )
 {
-  Q_UNUSED( theThemeName );
+  Q_UNUSED( themeName );
   if ( mToolBarPointer )
   {
     mOpenMapsetAction->setIcon( getThemeIcon( QStringLiteral( "grass_open_mapset.png" ) ) );
@@ -898,11 +898,11 @@ void QgsGrassPlugin::setCurrentTheme( QString theThemeName )
 // I didn't want to make plugins dependent on qgsapplication
 // and because it needs grass specific path into
 // the GRASS plugin resource bundle [TS]
-QIcon QgsGrassPlugin::getThemeIcon( const QString &theName )
+QIcon QgsGrassPlugin::getThemeIcon( const QString &name )
 {
-  QString myCurThemePath = QgsApplication::activeThemePath() + "/grass/" + theName;
-  QString myDefThemePath = QgsApplication::defaultThemePath() + "/grass/" + theName;
-  QString myQrcPath = ":/default/grass/" + theName;
+  QString myCurThemePath = QgsApplication::activeThemePath() + "/grass/" + name;
+  QString myDefThemePath = QgsApplication::defaultThemePath() + "/grass/" + name;
+  QString myQrcPath = ":/default/grass/" + name;
   if ( QFile::exists( myCurThemePath ) )
   {
     return QIcon( myCurThemePath );
@@ -938,9 +938,9 @@ void QgsGrassPlugin::setTransform()
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
+QGISEXTERN QgisPlugin * classFactory( QgisInterface * qgisInterfacePointer )
 {
-  return new QgsGrassPlugin( theQgisInterfacePointer );
+  return new QgsGrassPlugin( qgisInterfacePointer );
 }
 
 // Return the name of the plugin - note that we do not user class members as
@@ -980,7 +980,7 @@ QGISEXTERN QString icon()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * thePluginPointer )
+QGISEXTERN void unload( QgisPlugin * pluginPointer )
 {
-  delete thePluginPointer;
+  delete pluginPointer;
 }

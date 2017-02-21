@@ -66,9 +66,9 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
 
     /** Insert text at cursor position, or replace any selected text if user has
      * made a selection.
-     * @param theText The text to be inserted
+     * @param text The text to be inserted
      */
-    void insertText( const QString& theText );
+    void insertText( const QString& text );
 
   protected:
 

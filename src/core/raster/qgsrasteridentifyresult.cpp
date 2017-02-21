@@ -28,17 +28,17 @@ QgsRasterIdentifyResult::QgsRasterIdentifyResult()
 {
 }
 
-QgsRasterIdentifyResult::QgsRasterIdentifyResult( QgsRaster::IdentifyFormat theFormat, const QMap<int, QVariant>& theResults )
+QgsRasterIdentifyResult::QgsRasterIdentifyResult( QgsRaster::IdentifyFormat format, const QMap<int, QVariant>& results )
     : mValid( true )
-    , mFormat( theFormat )
-    , mResults( theResults )
+    , mFormat( format )
+    , mResults( results )
 {
 }
 
-QgsRasterIdentifyResult::QgsRasterIdentifyResult( const QgsError& theError )
+QgsRasterIdentifyResult::QgsRasterIdentifyResult( const QgsError& error )
     : mValid( false )
     , mFormat( QgsRaster::IdentifyFormatUndefined )
-    , mError( theError )
+    , mError( error )
 {
 }
 

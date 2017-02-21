@@ -57,7 +57,7 @@ class TestQgsInvertedPolygon : public QObject
   private:
     bool mTestHasError;
     bool setQml( QgsVectorLayer* vlayer, const QString& qmlFile );
-    bool imageCheck( const QString& theType, const QgsRectangle* = 0 );
+    bool imageCheck( const QString& type, const QgsRectangle* = 0 );
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPolysLayer = nullptr;
     QString mTestDataDir;
@@ -188,7 +188,7 @@ bool TestQgsInvertedPolygon::setQml( QgsVectorLayer* vlayer, const QString& qmlF
   return myStyleFlag;
 }
 
-bool TestQgsInvertedPolygon::imageCheck( const QString& theTestType, const QgsRectangle* extent )
+bool TestQgsInvertedPolygon::imageCheck( const QString& testType, const QgsRectangle* extent )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
@@ -203,10 +203,10 @@ bool TestQgsInvertedPolygon::imageCheck( const QString& theTestType, const QgsRe
   mMapSettings.setOutputDpi( 96 );
   QgsMultiRenderChecker myChecker;
   myChecker.setControlPathPrefix( QStringLiteral( "symbol_invertedpolygon" ) );
-  myChecker.setControlName( "expected_" + theTestType );
+  myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( mMapSettings );
   myChecker.setColorTolerance( 20 );
-  bool myResultFlag = myChecker.runTest( theTestType, 100 );
+  bool myResultFlag = myChecker.runTest( testType, 100 );
   mReport += myChecker.report();
   return myResultFlag;
 }

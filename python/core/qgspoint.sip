@@ -179,29 +179,29 @@ class QgsPoint
     QString toString() const;
 
     //! As above but with precision for string representation of a point
-    QString toString( int thePrecision ) const;
+    QString toString( int precision ) const;
 
     /** Return a string representation as degrees minutes seconds.
      *  Its up to the calling function to ensure that this point can
      *  be meaningfully represented in this form.
-     *  @param thePrecision number of decimal points to use for seconds
+     *  @param precision number of decimal points to use for seconds
      *  @param useSuffix set to true to include a direction suffix (e.g., 'N'),
      *  set to false to use a "-" prefix for west and south coordinates
      *  @param padded set to true to force minutes and seconds to use two decimals,
      *  e.g., '05' instead of '5'.
      */
-    QString toDegreesMinutesSeconds( int thePrecision, const bool useSuffix = true, const bool padded = false ) const;
+    QString toDegreesMinutesSeconds( int precision, const bool useSuffix = true, const bool padded = false ) const;
 
     /** Return a string representation as degrees minutes.
      *  Its up to the calling function to ensure that this point can
      *  be meaningfully represented in this form.
-     *  @param thePrecision number of decimal points to use for minutes
+     *  @param precision number of decimal points to use for minutes
      *  @param useSuffix set to true to include a direction suffix (e.g., 'N'),
      *  set to false to use a "-" prefix for west and south coordinates
      *  @param padded set to true to force minutes to use two decimals,
      *  e.g., '05' instead of '5'.
      */
-    QString toDegreesMinutes( int thePrecision, const bool useSuffix = true, const bool padded = false ) const;
+    QString toDegreesMinutes( int precision, const bool useSuffix = true, const bool padded = false ) const;
 
 
     /** Return the well known text representation for the point.

@@ -226,9 +226,9 @@ class NavigationControl : public osgEarth::Util::Controls::ImageControl
 };
 
 
-GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
+GlobePlugin::GlobePlugin( QgisInterface* qgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
-    , mQGisIface( theQgisInterface )
+    , mQGisIface( qgisInterface )
     , mViewerWidget( 0 )
     , mDockWidget( 0 )
     , mSettingsDialog( 0 )
@@ -1201,9 +1201,9 @@ bool KeyboardControlHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GU
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
+QGISEXTERN QgisPlugin * classFactory( QgisInterface * qgisInterfacePointer )
 {
-  return new GlobePlugin( theQgisInterfacePointer );
+  return new GlobePlugin( qgisInterfacePointer );
 }
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.
@@ -1249,7 +1249,7 @@ QGISEXTERN QString experimental()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * thePluginPointer )
+QGISEXTERN void unload( QgisPlugin * pluginPointer )
 {
-  delete thePluginPointer;
+  delete pluginPointer;
 }

@@ -37,7 +37,7 @@ typedef QgsRasterRendererWidget*( *QgsRasterRendererWidgetCreateFunc )( QgsRaste
   */
 struct CORE_EXPORT QgsRasterRendererRegistryEntry
 {
-  QgsRasterRendererRegistryEntry( const QString& theName, const QString& theVisibleName, QgsRasterRendererCreateFunc rendererFunction,
+  QgsRasterRendererRegistryEntry( const QString& name, const QString& visibleName, QgsRasterRendererCreateFunc rendererFunction,
                                   QgsRasterRendererWidgetCreateFunc widgetFunction );
   QgsRasterRendererRegistryEntry();
   QString name;
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsRasterRendererRegistry
 
     /** Creates a default renderer for a raster drawing style (considering user options such as default contrast enhancement).
         Caller takes ownership*/
-    QgsRasterRenderer* defaultRendererForDrawingStyle( QgsRaster::DrawingStyle theDrawingStyle, QgsRasterDataProvider* provider ) const;
+    QgsRasterRenderer* defaultRendererForDrawingStyle( QgsRaster::DrawingStyle drawingStyle, QgsRasterDataProvider* provider ) const;
 
   private:
     QHash< QString, QgsRasterRendererRegistryEntry > mEntries;

@@ -74,7 +74,7 @@ email                : tim at linfiniti.com
 #include <QTime>
 
 // typedefs for provider plugin functions of interest
-typedef bool isvalidrasterfilename_t( QString const & theFileNameQString, QString & retErrMsg );
+typedef bool isvalidrasterfilename_t( QString const & fileNameQString, QString & retErrMsg );
 
 #define ERR(message) QGS_ERROR_MESSAGE(message,"Raster layer")
 
@@ -153,7 +153,7 @@ QgsRasterLayer::~QgsRasterLayer()
 /**
  * This helper checks to see whether the file name appears to be a valid raster file name
  */
-bool QgsRasterLayer::isValidRasterFileName( const QString& theFileNameQString, QString& retErrMsg )
+bool QgsRasterLayer::isValidRasterFileName( const QString& fileNameQString, QString& retErrMsg )
 {
   isvalidrasterfilename_t *pValid = reinterpret_cast< isvalidrasterfilename_t * >( cast_to_fptr( QgsProviderRegistry::instance()->function( "gdal",  "isValidRasterFileName" ) ) );
   if ( ! pValid )
@@ -162,14 +162,14 @@ bool QgsRasterLayer::isValidRasterFileName( const QString& theFileNameQString, Q
     return false;
   }
 
-  bool myIsValid = pValid( theFileNameQString, retErrMsg );
+  bool myIsValid = pValid( fileNameQString, retErrMsg );
   return myIsValid;
 }
 
-bool QgsRasterLayer::isValidRasterFileName( QString const & theFileNameQString )
+bool QgsRasterLayer::isValidRasterFileName( QString const & fileNameQString )
 {
   QString retErrMsg;
-  return isValidRasterFileName( theFileNameQString, retErrMsg );
+  return isValidRasterFileName( fileNameQString, retErrMsg );
 }
 
 QDateTime QgsRasterLayer::lastModified( QString const & name )
@@ -205,14 +205,14 @@ int QgsRasterLayer::bandCount() const
   return mDataProvider->bandCount();
 }
 
-QString QgsRasterLayer::bandName( int theBandNo ) const
+QString QgsRasterLayer::bandName( int bandNo ) const
 {
-  return dataProvider()->generateBandName( theBandNo );
+  return dataProvider()->generateBandName( bandNo );
 }
 
-void QgsRasterLayer::setRendererForDrawingStyle( QgsRaster::DrawingStyle theDrawingStyle )
+void QgsRasterLayer::setRendererForDrawingStyle( QgsRaster::DrawingStyle drawingStyle )
 {
-  setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( theDrawingStyle, mDataProvider ) );
+  setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( drawingStyle, mDataProvider ) );
 }
 
 /**
@@ -246,8 +246,8 @@ QgsMapLayerRenderer *QgsRasterLayer::createMapRenderer( QgsRenderContext& render
 
 
 void QgsRasterLayer::draw( QPainter * theQPainter,
-                           QgsRasterViewPort * theRasterViewPort,
-                           const QgsMapToPixel* theQgsMapToPixel )
+                           QgsRasterViewPort * rasterViewPort,
+                           const QgsMapToPixel* qgsMapToPixel )
 {
   QgsDebugMsgLevel( " 3 arguments", 4 );
   QTime time;
@@ -265,13 +265,13 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
   // params in QgsRasterProjector
   if ( projector )
   {
-    projector->setCrs( theRasterViewPort->mSrcCRS, theRasterViewPort->mDestCRS, theRasterViewPort->mSrcDatumTransform, theRasterViewPort->mDestDatumTransform );
+    projector->setCrs( rasterViewPort->mSrcCRS, rasterViewPort->mDestCRS, rasterViewPort->mSrcDatumTransform, rasterViewPort->mDestDatumTransform );
   }
 
   // Drawer to pipe?
   QgsRasterIterator iterator( mPipe.last() );
   QgsRasterDrawer drawer( &iterator );
-  drawer.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
+  drawer.draw( theQPainter, rasterViewPort, qgsMapToPixel );
 
   QgsDebugMsgLevel( QString( "total raster draw time (ms):     %1" ).arg( time.elapsed(), 5 ), 4 );
 } //end of draw method
@@ -501,21 +501,21 @@ QString QgsRasterLayer::metadata() const
 }
 
 /**
- * @param theBandNumber the number of the band to use for generating a pixmap of the associated palette
+ * @param bandNumber the number of the band to use for generating a pixmap of the associated palette
  * @return a 100x100 pixel QPixmap of the bands palette
  */
-QPixmap QgsRasterLayer::paletteAsPixmap( int theBandNumber )
+QPixmap QgsRasterLayer::paletteAsPixmap( int bandNumber )
 {
   //TODO: This function should take dimensions
   QgsDebugMsgLevel( "entered.", 4 );
 
   // Only do this for the GDAL provider?
   // Maybe WMS can do this differently using QImage::numColors and QImage::color()
-  if ( mDataProvider->colorInterpretation( theBandNumber ) == QgsRaster::PaletteIndex )
+  if ( mDataProvider->colorInterpretation( bandNumber ) == QgsRaster::PaletteIndex )
   {
     QgsDebugMsgLevel( "....found paletted image", 4 );
     QgsColorRampShader myShader;
-    QList<QgsColorRampShader::ColorRampItem> myColorRampItemList = mDataProvider->colorTable( theBandNumber );
+    QList<QgsColorRampShader::ColorRampItem> myColorRampItemList = mDataProvider->colorTable( bandNumber );
     if ( !myColorRampItemList.isEmpty() )
     {
       QgsDebugMsgLevel( "....got color ramp item list", 4 );
@@ -852,24 +852,24 @@ void QgsRasterLayer::computeMinMax( int band,
 }
 
 
-void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm, QgsRasterMinMaxOrigin::Limits theLimits, const QgsRectangle& theExtent, int theSampleSize, bool theGenerateLookupTableFlag )
+void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm, QgsRasterMinMaxOrigin::Limits limits, const QgsRectangle& extent, int sampleSize, bool generateLookupTableFlag )
 {
-  setContrastEnhancement( theAlgorithm,
-                          theLimits,
-                          theExtent,
-                          theSampleSize,
-                          theGenerateLookupTableFlag,
+  setContrastEnhancement( algorithm,
+                          limits,
+                          extent,
+                          sampleSize,
+                          generateLookupTableFlag,
                           mPipe.renderer() );
 }
 
-void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,
-    QgsRasterMinMaxOrigin::Limits theLimits,
-    const QgsRectangle& theExtent,
-    int theSampleSize,
-    bool theGenerateLookupTableFlag,
+void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
+    QgsRasterMinMaxOrigin::Limits limits,
+    const QgsRectangle& extent,
+    int sampleSize,
+    bool generateLookupTableFlag,
     QgsRasterRenderer* rasterRenderer )
 {
-  QgsDebugMsgLevel( QString( "theAlgorithm = %1 theLimits = %2 theExtent.isEmpty() = %3" ).arg( theAlgorithm ).arg( theLimits ).arg( theExtent.isEmpty() ), 4 );
+  QgsDebugMsgLevel( QString( "theAlgorithm = %1 limits = %2 extent.isEmpty() = %3" ).arg( algorithm ).arg( limits ).arg( extent.isEmpty() ), 4 );
   if ( !rasterRenderer || !mDataProvider )
   {
     return;
@@ -927,11 +927,11 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
     {
       Qgis::DataType myType = static_cast< Qgis::DataType >( mDataProvider->dataType( myBand ) );
       std::unique_ptr<QgsContrastEnhancement> myEnhancement( new QgsContrastEnhancement( static_cast< Qgis::DataType >( myType ) ) );
-      myEnhancement->setContrastEnhancementAlgorithm( theAlgorithm, theGenerateLookupTableFlag );
+      myEnhancement->setContrastEnhancementAlgorithm( algorithm, generateLookupTableFlag );
 
       double min;
       double max;
-      computeMinMax( myBand, myMinMaxOrigin, theLimits, theExtent, theSampleSize, min, max );
+      computeMinMax( myBand, myMinMaxOrigin, limits, extent, sampleSize, min, max );
 
       if ( rendererType == QLatin1String( "singlebandpseudocolor" ) )
       {
@@ -942,7 +942,7 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
           QgsColorRampShader* colorRampShader = dynamic_cast<QgsColorRampShader*>( myPseudoColorRenderer->shader()->rasterShaderFunction() );
           if ( colorRampShader )
           {
-            colorRampShader->classifyColorRamp( myPseudoColorRenderer->band(), theExtent, myPseudoColorRenderer->input() );
+            colorRampShader->classifyColorRamp( myPseudoColorRenderer->band(), extent, myPseudoColorRenderer->input() );
           }
         }
       }
@@ -973,8 +973,8 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
   //delete all remaining unused enhancements
   qDeleteAll( myEnhancements );
 
-  myMinMaxOrigin.setLimits( theLimits );
-  if ( theExtent != QgsRectangle() &&
+  myMinMaxOrigin.setLimits( limits );
+  if ( extent != QgsRectangle() &&
        myMinMaxOrigin.extent() == QgsRasterMinMaxOrigin::WholeRaster )
   {
     myMinMaxOrigin.setExtent( QgsRasterMinMaxOrigin::CurrentCanvas );
@@ -992,7 +992,7 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
   }
 }
 
-void QgsRasterLayer::refreshContrastEnhancement( const QgsRectangle& theExtent )
+void QgsRasterLayer::refreshContrastEnhancement( const QgsRectangle& extent )
 {
   QgsSingleBandGrayRenderer* singleBandRenderer = nullptr;
   QgsMultiBandColorRenderer* multiBandRenderer = nullptr;
@@ -1012,7 +1012,7 @@ void QgsRasterLayer::refreshContrastEnhancement( const QgsRectangle& theExtent )
                             QgsContrastEnhancement::StretchToMinimumMaximum : ce->contrastEnhancementAlgorithm(),
                             renderer()->minMaxOrigin().limits() == QgsRasterMinMaxOrigin::None ?
                             QgsRasterMinMaxOrigin::MinMax : renderer()->minMaxOrigin().limits(),
-                            theExtent,
+                            extent,
                             SAMPLE_SIZE,
                             true,
                             renderer() );
@@ -1025,7 +1025,7 @@ void QgsRasterLayer::refreshContrastEnhancement( const QgsRectangle& theExtent )
     {
       setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum,
                               myLimits,
-                              theExtent,
+                              extent,
                               SAMPLE_SIZE,
                               true,
                               renderer() );
@@ -1034,10 +1034,10 @@ void QgsRasterLayer::refreshContrastEnhancement( const QgsRectangle& theExtent )
 }
 
 void QgsRasterLayer::refreshRendererIfNeeded( QgsRasterRenderer* rasterRenderer,
-    const QgsRectangle& theExtent )
+    const QgsRectangle& extent )
 {
   if ( !( mDataProvider &&
-          mLastRectangleUsedByRefreshContrastEnhancementIfNeeded != theExtent &&
+          mLastRectangleUsedByRefreshContrastEnhancementIfNeeded != extent &&
           rasterRenderer->minMaxOrigin().limits() != QgsRasterMinMaxOrigin::None &&
           rasterRenderer->minMaxOrigin().extent() == QgsRasterMinMaxOrigin::UpdatedCanvas ) )
     return;
@@ -1056,12 +1056,12 @@ void QgsRasterLayer::refreshRendererIfNeeded( QgsRasterRenderer* rasterRenderer,
   }
   else if (( sbpcr = dynamic_cast<QgsSingleBandPseudoColorRenderer*>( rasterRenderer ) ) )
   {
-    mLastRectangleUsedByRefreshContrastEnhancementIfNeeded = theExtent;
+    mLastRectangleUsedByRefreshContrastEnhancementIfNeeded = extent;
     double min;
     double max;
     computeMinMax( sbpcr->band(),
                    rasterRenderer->minMaxOrigin(),
-                   rasterRenderer->minMaxOrigin().limits(), theExtent,
+                   rasterRenderer->minMaxOrigin().limits(), extent,
                    SAMPLE_SIZE, min, max );
     sbpcr->setClassificationMin( min );
     sbpcr->setClassificationMax( max );
@@ -1071,7 +1071,7 @@ void QgsRasterLayer::refreshRendererIfNeeded( QgsRasterRenderer* rasterRenderer,
       QgsColorRampShader* colorRampShader = dynamic_cast<QgsColorRampShader*>( sbpcr->shader()->rasterShaderFunction() );
       if ( colorRampShader )
       {
-        colorRampShader->classifyColorRamp( sbpcr->band(), theExtent, rasterRenderer->input() );
+        colorRampShader->classifyColorRamp( sbpcr->band(), extent, rasterRenderer->input() );
       }
     }
 
@@ -1084,7 +1084,7 @@ void QgsRasterLayer::refreshRendererIfNeeded( QgsRasterRenderer* rasterRenderer,
       QgsColorRampShader* colorRampShader = dynamic_cast<QgsColorRampShader*>( r->shader()->rasterShaderFunction() );
       if ( colorRampShader )
       {
-        colorRampShader->classifyColorRamp( sbpcr->band(), theExtent, rasterRenderer->input() );
+        colorRampShader->classifyColorRamp( sbpcr->band(), extent, rasterRenderer->input() );
       }
     }
 
@@ -1097,11 +1097,11 @@ void QgsRasterLayer::refreshRendererIfNeeded( QgsRasterRenderer* rasterRenderer,
   if ( ce &&
        ce->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement )
   {
-    mLastRectangleUsedByRefreshContrastEnhancementIfNeeded = theExtent;
+    mLastRectangleUsedByRefreshContrastEnhancementIfNeeded = extent;
 
     setContrastEnhancement( ce->contrastEnhancementAlgorithm(),
                             rasterRenderer->minMaxOrigin().limits(),
-                            theExtent,
+                            extent,
                             SAMPLE_SIZE,
                             true,
                             rasterRenderer );
@@ -1229,32 +1229,32 @@ QDateTime QgsRasterLayer::timestamp() const
   return mDataProvider->timestamp();
 }
 
-void QgsRasterLayer::setRenderer( QgsRasterRenderer* theRenderer )
+void QgsRasterLayer::setRenderer( QgsRasterRenderer* renderer )
 {
   QgsDebugMsgLevel( "Entered", 4 );
-  if ( !theRenderer )
+  if ( !renderer )
   {
     return;
   }
 
-  mPipe.set( theRenderer );
+  mPipe.set( renderer );
   emit rendererChanged();
   emit styleChanged();
 }
 
-void QgsRasterLayer::showProgress( int theValue )
+void QgsRasterLayer::showProgress( int value )
 {
-  emit progressUpdate( theValue );
+  emit progressUpdate( value );
 }
 
 
-void QgsRasterLayer::showStatusMessage( QString const & theMessage )
+void QgsRasterLayer::showStatusMessage( QString const & message )
 {
   // QgsDebugMsg(QString("entered with '%1'.").arg(theMessage));
 
   // Pass-through
   // TODO: See if we can connect signal-to-signal.  This is a kludge according to the Qt doc.
-  emit statusChanged( theMessage );
+  emit statusChanged( message );
 }
 
 QStringList QgsRasterLayer::subLayers() const
@@ -1314,12 +1314,12 @@ QImage QgsRasterLayer::previewAsImage( QSize size, const QColor& bgColor, QImage
   return myQImage;
 }
 
-void QgsRasterLayer::onProgress( int theType, double theProgress, const QString& theMessage )
+void QgsRasterLayer::onProgress( int type, double progress, const QString& message )
 {
-  Q_UNUSED( theType );
-  Q_UNUSED( theMessage );
-  QgsDebugMsgLevel( QString( "theProgress = %1" ).arg( theProgress ), 4 );
-  emit progressUpdate( static_cast< int >( theProgress ) );
+  Q_UNUSED( type );
+  Q_UNUSED( message );
+  QgsDebugMsgLevel( QString( "theProgress = %1" ).arg( progress ), 4 );
+  emit progressUpdate( static_cast< int >( progress ) );
 }
 
 //////////////////////////////////////////////////////////
@@ -1500,8 +1500,8 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
   setDataProvider( mProviderKey );
   if ( !mValid ) return false;
 
-  QString theError;
-  bool res = readSymbology( layer_node, theError );
+  QString error;
+  bool res = readSymbology( layer_node, error );
 
   // old wms settings we need to correct
   if ( res && mProviderKey == QLatin1String( "wms" ) && ( !renderer() || renderer()->type() != QLatin1String( "singlebandcolordata" ) ) )

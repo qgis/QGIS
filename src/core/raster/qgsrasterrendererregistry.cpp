@@ -30,11 +30,11 @@
 #include <QSettings>
 #include <QIcon>
 
-QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry( const QString& theName, const QString& theVisibleName,
+QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry( const QString& name, const QString& visibleName,
     QgsRasterRendererCreateFunc rendererFunction,
     QgsRasterRendererWidgetCreateFunc widgetFunction )
-    : name( theName )
-    , visibleName( theVisibleName )
+    : name( name )
+    , visibleName( visibleName )
     , rendererCreateFunction( rendererFunction )
     , widgetCreateFunction( widgetFunction )
 {
@@ -108,7 +108,7 @@ QList< QgsRasterRendererRegistryEntry > QgsRasterRendererRegistry::entries() con
   return result;
 }
 
-QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( QgsRaster::DrawingStyle theDrawingStyle, QgsRasterDataProvider* provider ) const
+QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( QgsRaster::DrawingStyle drawingStyle, QgsRasterDataProvider* provider ) const
 {
   if ( !provider || provider->bandCount() < 1 )
   {
@@ -117,7 +117,7 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
 
 
   QgsRasterRenderer* renderer = nullptr;
-  switch ( theDrawingStyle )
+  switch ( drawingStyle )
   {
     case QgsRaster::PalettedColor:
     {

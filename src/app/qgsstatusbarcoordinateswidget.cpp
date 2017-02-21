@@ -188,9 +188,9 @@ void QgsStatusBarCoordinatesWidget::dizzy()
   mMapCanvas->setTransform( matrix );
 }
 
-void QgsStatusBarCoordinatesWidget::extentsViewToggled( bool theFlag )
+void QgsStatusBarCoordinatesWidget::extentsViewToggled( bool flag )
 {
-  if ( theFlag )
+  if ( flag )
   {
     //extents view mode!
     mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "extents.svg" ) ) );

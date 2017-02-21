@@ -55,7 +55,7 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
 
   private slots:
     void showMouseCoordinates( const QgsPoint &p );
-    void extentsViewToggled( bool theFlag );
+    void extentsViewToggled( bool flag );
     void validateCoordinates();
     void dizzy();
     void showExtent();

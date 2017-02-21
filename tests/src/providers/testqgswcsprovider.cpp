@@ -43,7 +43,7 @@ class TestQgsWcsProvider: public QObject
 
     void read();
   private:
-    bool read( const QString& theIdentifier, const QString& theWcsUri, const QString& theFilePath, QString & theReport );
+    bool read( const QString& identifier, const QString& wcsUri, const QString& filePath, QString & report );
     QString mTestDataDir;
     QString mReport;
     QString mUrl;
@@ -149,14 +149,14 @@ void TestQgsWcsProvider::read()
   QVERIFY2( ok, "Reading data failed. See report for details." );
 }
 
-bool TestQgsWcsProvider::read( const QString& theIdentifier, const QString& theWcsUri, const QString& theFilePath, QString & theReport )
+bool TestQgsWcsProvider::read( const QString& identifier, const QString& wcsUri, const QString& filePath, QString & report )
 {
-  theReport += QStringLiteral( "<h2>Identifier (coverage): %1</h2>" ).arg( theIdentifier );
+  report += QStringLiteral( "<h2>Identifier (coverage): %1</h2>" ).arg( identifier );
 
   QgsRasterChecker checker;
-  bool ok = checker.runTest( QStringLiteral( "wcs" ), theWcsUri, QStringLiteral( "gdal" ), theFilePath );
+  bool ok = checker.runTest( QStringLiteral( "wcs" ), wcsUri, QStringLiteral( "gdal" ), filePath );
 
-  theReport += checker.report();
+  report += checker.report();
   return ok;
 }
 

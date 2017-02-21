@@ -14,7 +14,7 @@ class QgsRasterShaderFunction
 
 
   public:
-    QgsRasterShaderFunction( double theMinimumValue = 0.0, double theMaximumValue = 255.0 );
+    QgsRasterShaderFunction( double minimumValue = 0.0, double maximumValue = 255.0 );
     virtual ~QgsRasterShaderFunction();
 
     /** \brief Set the maximum value */

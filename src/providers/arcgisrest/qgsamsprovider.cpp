@@ -374,24 +374,24 @@ QgsImageFetcher* QgsAmsProvider::getLegendGraphicFetcher( const QgsMapSettings* 
   return new QgsAmsLegendFetcher( this );
 }
 
-QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight, int theDpi )
+QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPoint & point, QgsRaster::IdentifyFormat format, const QgsRectangle &extent, int width, int height, int dpi )
 {
   // http://resources.arcgis.com/en/help/rest/apiref/identify.html
   QgsDataSourceUri dataSource( dataSourceUri() );
   QUrl queryUrl( dataSource.param( QStringLiteral( "url" ) ) + "/identify" );
   queryUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
   queryUrl.addQueryItem( QStringLiteral( "geometryType" ), QStringLiteral( "esriGeometryPoint" ) );
-  queryUrl.addQueryItem( QStringLiteral( "geometry" ), QStringLiteral( "{x: %1, y: %2}" ).arg( thePoint.x(), 0, 'f' ).arg( thePoint.y(), 0, 'f' ) );
+  queryUrl.addQueryItem( QStringLiteral( "geometry" ), QStringLiteral( "{x: %1, y: %2}" ).arg( point.x(), 0, 'f' ).arg( point.y(), 0, 'f' ) );
 //  queryUrl.addQueryItem( "sr", mCrs.postgisSrid() );
   queryUrl.addQueryItem( QStringLiteral( "layers" ), QStringLiteral( "all:%1" ).arg( dataSource.param( QStringLiteral( "layer" ) ) ) );
-  queryUrl.addQueryItem( QStringLiteral( "imageDisplay" ), QStringLiteral( "%1,%2,%3" ).arg( theWidth ).arg( theHeight ).arg( theDpi ) );
-  queryUrl.addQueryItem( QStringLiteral( "mapExtent" ), QStringLiteral( "%1,%2,%3,%4" ).arg( theExtent.xMinimum(), 0, 'f' ).arg( theExtent.yMinimum(), 0, 'f' ).arg( theExtent.xMaximum(), 0, 'f' ).arg( theExtent.yMaximum(), 0, 'f' ) );
+  queryUrl.addQueryItem( QStringLiteral( "imageDisplay" ), QStringLiteral( "%1,%2,%3" ).arg( width ).arg( height ).arg( dpi ) );
+  queryUrl.addQueryItem( QStringLiteral( "mapExtent" ), QStringLiteral( "%1,%2,%3,%4" ).arg( extent.xMinimum(), 0, 'f' ).arg( extent.yMinimum(), 0, 'f' ).arg( extent.xMaximum(), 0, 'f' ).arg( extent.yMaximum(), 0, 'f' ) );
   queryUrl.addQueryItem( QStringLiteral( "tolerance" ), QStringLiteral( "10" ) );
   QVariantList queryResults = QgsArcGisRestUtils::queryServiceJSON( queryUrl, mErrorTitle, mError ).value( QStringLiteral( "results" ) ).toList();
 
   QMap<int, QVariant> entries;
 
-  if ( theFormat == QgsRaster::IdentifyFormatText )
+  if ( format == QgsRaster::IdentifyFormatText )
   {
     foreach ( const QVariant& result, queryResults )
     {
@@ -405,7 +405,7 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPoint & thePoint, Qgs
       entries.insert( entries.size(), valueStr );
     }
   }
-  else if ( theFormat == QgsRaster::IdentifyFormatFeature )
+  else if ( format == QgsRaster::IdentifyFormatFeature )
   {
     foreach ( const QVariant& result, queryResults )
     {
@@ -434,7 +434,7 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPoint & thePoint, Qgs
       entries.insert( entries.size(), qVariantFromValue( QList<QgsFeatureStore>() << store ) );
     }
   }
-  return QgsRasterIdentifyResult( theFormat, entries );
+  return QgsRasterIdentifyResult( format, entries );
 }
 
 void QgsAmsProvider::readBlock( int /*bandNo*/, const QgsRectangle & viewExtent, int width, int height, void *data, QgsRasterBlockFeedback* feedback )

@@ -22,9 +22,9 @@ QgsMultiRenderChecker::QgsMultiRenderChecker()
 {
 }
 
-void QgsMultiRenderChecker::setControlName( const QString& theName )
+void QgsMultiRenderChecker::setControlName( const QString& name )
 {
-  mControlName = theName;
+  mControlName = name;
 }
 
 void QgsMultiRenderChecker::setControlPathPrefix( const QString& prefix )
@@ -37,7 +37,7 @@ void QgsMultiRenderChecker::setMapSettings( const QgsMapSettings& mapSettings )
   mMapSettings = mapSettings;
 }
 
-bool QgsMultiRenderChecker::runTest( const QString& theTestName, unsigned int theMismatchCount )
+bool QgsMultiRenderChecker::runTest( const QString& testName, unsigned int mismatchCount )
 {
   bool successful = false;
 
@@ -67,11 +67,11 @@ bool QgsMultiRenderChecker::runTest( const QString& theTestName, unsigned int th
     if ( !mRenderedImage.isNull() )
     {
       checker.setRenderedImage( mRenderedImage );
-      result = checker.compareImages( theTestName, theMismatchCount, mRenderedImage );
+      result = checker.compareImages( testName, mismatchCount, mRenderedImage );
     }
     else
     {
-      result = checker.runTest( theTestName, theMismatchCount );
+      result = checker.runTest( testName, mismatchCount );
       mRenderedImage = checker.renderedImage();
     }
 
@@ -128,7 +128,7 @@ QgsCompositionChecker::QgsCompositionChecker()
 {
 }
 
-bool QgsCompositionChecker::testComposition( QString &theReport, int page, int pixelDiff )
+bool QgsCompositionChecker::testComposition( QString &checkedReport, int page, int pixelDiff )
 {
   if ( !mComposition )
   {
@@ -171,7 +171,7 @@ bool QgsCompositionChecker::testComposition( QString &theReport, int page, int p
 
   bool testResult = runTest( mTestName, pixelDiff );
 
-  theReport += report();
+  checkedReport += report();
 
   return testResult;
 }

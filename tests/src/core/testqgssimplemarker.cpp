@@ -70,7 +70,7 @@ class TestQgsSimpleMarkerSymbol : public QObject
   private:
     bool mTestHasError;
 
-    bool imageCheck( const QString& theType );
+    bool imageCheck( const QString& type );
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPointsLayer = nullptr;
     QgsSimpleMarkerSymbolLayer* mSimpleMarkerLayer = nullptr;
@@ -277,7 +277,7 @@ void TestQgsSimpleMarkerSymbol::colors()
 //
 
 
-bool TestQgsSimpleMarkerSymbol::imageCheck( const QString& theTestType )
+bool TestQgsSimpleMarkerSymbol::imageCheck( const QString& testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
@@ -285,9 +285,9 @@ bool TestQgsSimpleMarkerSymbol::imageCheck( const QString& theTestType )
   mMapSettings.setOutputDpi( 96 );
   QgsRenderChecker myChecker;
   myChecker.setControlPathPrefix( QStringLiteral( "symbol_simplemarker" ) );
-  myChecker.setControlName( "expected_" + theTestType );
+  myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( mMapSettings );
-  bool myResultFlag = myChecker.runTest( theTestType );
+  bool myResultFlag = myChecker.runTest( testType );
   mReport += myChecker.report();
   return myResultFlag;
 }

@@ -299,10 +299,10 @@ QMap<QString, int> QgsVectorDataProvider::fieldNameMap() const
 {
   QMap<QString, int> resultMap;
 
-  QgsFields theFields = fields();
-  for ( int i = 0; i < theFields.count(); ++i )
+  QgsFields fieldsCopy = fields();
+  for ( int i = 0; i < fieldsCopy.count(); ++i )
   {
-    resultMap.insert( theFields.at( i ).name(), i );
+    resultMap.insert( fieldsCopy.at( i ).name(), i );
   }
 
   return resultMap;

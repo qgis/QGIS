@@ -421,10 +421,10 @@ class CORE_EXPORT QgsDataProvider : public QObject
     QgsError mError;
 
     //! Add error message
-    void appendError( const QgsErrorMessage & theMessage ) { mError.append( theMessage );}
+    void appendError( const QgsErrorMessage & message ) { mError.append( message );}
 
     //! Set error message
-    void setError( const QgsError & theError ) { mError = theError;}
+    void setError( const QgsError & error ) { mError = error;}
 
   private:
 

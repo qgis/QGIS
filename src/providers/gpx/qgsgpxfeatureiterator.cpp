@@ -207,7 +207,7 @@ bool QgsGPXFeatureIterator::readRoute( const QgsRoute& rte, QgsFeature& feature 
   if ( rte.points.isEmpty() )
     return false;
 
-  QgsGeometry* theGeometry = readRouteGeometry( rte );
+  QgsGeometry* geometry = readRouteGeometry( rte );
 
   if ( !mRequest.filterRect().isNull() )
   {
@@ -215,25 +215,25 @@ bool QgsGPXFeatureIterator::readRoute( const QgsRoute& rte, QgsFeature& feature 
     if (( rte.xMax < rect.xMinimum() ) || ( rte.xMin > rect.xMaximum() ) ||
         ( rte.yMax < rect.yMinimum() ) || ( rte.yMin > rect.yMaximum() ) )
     {
-      delete theGeometry;
+      delete geometry;
       return false;
     }
 
-    if ( !theGeometry->intersects( rect ) ) //use geos for precise intersection test
+    if ( !geometry->intersects( rect ) ) //use geos for precise intersection test
     {
-      delete theGeometry;
+      delete geometry;
       return false;
     }
   }
 
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
   {
-    feature.setGeometry( *theGeometry );
-    delete theGeometry;
+    feature.setGeometry( *geometry );
+    delete geometry;
   }
   else
   {
-    delete theGeometry;
+    delete geometry;
   }
   feature.setId( rte.id );
   feature.setValid( true );
@@ -250,7 +250,7 @@ bool QgsGPXFeatureIterator::readTrack( const QgsTrack& trk, QgsFeature& feature 
 {
   //QgsDebugMsg( QString( "GPX feature track segments: %1" ).arg( trk.segments.size() ) );
 
-  QgsGeometry* theGeometry = readTrackGeometry( trk );
+  QgsGeometry* geometry = readTrackGeometry( trk );
 
   if ( !mRequest.filterRect().isNull() )
   {
@@ -258,25 +258,25 @@ bool QgsGPXFeatureIterator::readTrack( const QgsTrack& trk, QgsFeature& feature 
     if (( trk.xMax < rect.xMinimum() ) || ( trk.xMin > rect.xMaximum() ) ||
         ( trk.yMax < rect.yMinimum() ) || ( trk.yMin > rect.yMaximum() ) )
     {
-      delete theGeometry;
+      delete geometry;
       return false;
     }
 
-    if ( !theGeometry->intersects( rect ) ) //use geos for precise intersection test
+    if ( !geometry->intersects( rect ) ) //use geos for precise intersection test
     {
-      delete theGeometry;
+      delete geometry;
       return false;
     }
   }
 
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
   {
-    feature.setGeometry( *theGeometry );
-    delete theGeometry;
+    feature.setGeometry( *geometry );
+    delete geometry;
   }
   else
   {
-    delete theGeometry;
+    delete geometry;
   }
   feature.setId( trk.id );
   feature.setValid( true );

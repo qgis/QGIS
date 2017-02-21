@@ -157,7 +157,7 @@ class QgsRasterInterface
     virtual int ySize() const;
 
     /** \brief helper function to create zero padded band names */
-    virtual QString generateBandName( int theBandNumber ) const;
+    virtual QString generateBandName( int bandNumber ) const;
 
     /** Read block of data using given extent and size.
      *  Returns pointer to data.
@@ -190,71 +190,71 @@ class QgsRasterInterface
     virtual QgsRasterInterface *sourceInput();
 
     /** \brief Get band statistics.
-     * @param theBandNo The band (number).
-     * @param theStats Requested statistics
-     * @param theExtent Extent used to calc statistics, if empty, whole raster extent is used.
-     * @param theSampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
+     * @param bandNo The band (number).
+     * @param stats Requested statistics
+     * @param extent Extent used to calc statistics, if empty, whole raster extent is used.
+     * @param sampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
      * @return Band statistics.
      */
-    virtual QgsRasterBandStats bandStatistics( int theBandNo,
-        int theStats = QgsRasterBandStats::All,
-        const QgsRectangle & theExtent = QgsRectangle(),
-        int theSampleSize = 0 );
+    virtual QgsRasterBandStats bandStatistics( int bandNo,
+        int stats = QgsRasterBandStats::All,
+        const QgsRectangle & extent = QgsRectangle(),
+        int sampleSize = 0 );
 
     /** \brief Returns true if histogram is available (cached, already calculated).     *   The parameters are the same as in bandStatistics()
      * @return true if statistics are available (ready to use)
      */
-    virtual bool hasStatistics( int theBandNo,
-                                int theStats = QgsRasterBandStats::All,
-                                const QgsRectangle & theExtent = QgsRectangle(),
-                                int theSampleSize = 0 );
+    virtual bool hasStatistics( int bandNo,
+                                int stats = QgsRasterBandStats::All,
+                                const QgsRectangle & extent = QgsRectangle(),
+                                int sampleSize = 0 );
 
     /** \brief Get histogram. Histograms are cached in providers.
-     * @param theBandNo The band (number).
-     * @param theBinCount Number of bins (intervals,buckets). If 0, the number of bins is decided automatically according to data type, raster size etc.
-     * @param theMinimum Minimum value, if NaN, raster minimum value will be used.
-     * @param theMaximum Maximum value, if NaN, raster minimum value will be used.
-     * @param theExtent Extent used to calc histogram, if empty, whole raster extent is used.
-     * @param theSampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
-     * @param theIncludeOutOfRange include out of range values
+     * @param bandNo The band (number).
+     * @param binCount Number of bins (intervals,buckets). If 0, the number of bins is decided automatically according to data type, raster size etc.
+     * @param minimum Minimum value, if NaN, raster minimum value will be used.
+     * @param maximum Maximum value, if NaN, raster minimum value will be used.
+     * @param extent Extent used to calc histogram, if empty, whole raster extent is used.
+     * @param sampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
+     * @param includeOutOfRange include out of range values
      * @return Vector of non NULL cell counts for each bin.
-     * @note theBinCount, theMinimum and theMaximum not optional in python bindings
+     * @note binCount, minimum and maximum not optional in python bindings
      */
-    virtual QgsRasterHistogram histogram( int theBandNo,
-                                          int theBinCount,
-                                          double theMinimum,
-                                          double theMaximum,
-                                          const QgsRectangle & theExtent,
-                                          int theSampleSize,
-                                          bool theIncludeOutOfRange );
+    virtual QgsRasterHistogram histogram( int bandNo,
+                                          int binCount,
+                                          double minimum,
+                                          double maximum,
+                                          const QgsRectangle & extent,
+                                          int sampleSize,
+                                          bool includeOutOfRange );
 
     /** \brief Returns true if histogram is available (cached, already calculated), the parameters are the same as in histogram()
-     * @note theBinCount, theMinimum and theMaximum not optional in python bindings
+     * @note binCount, minimum and maximum not optional in python bindings
      */
-    virtual bool hasHistogram( int theBandNo,
-                               int theBinCount,
-                               double theMinimum,
-                               double theMaximum,
-                               const QgsRectangle & theExtent,
-                               int theSampleSize,
-                               bool theIncludeOutOfRange );
+    virtual bool hasHistogram( int bandNo,
+                               int binCount,
+                               double minimum,
+                               double maximum,
+                               const QgsRectangle & extent,
+                               int sampleSize,
+                               bool includeOutOfRange );
 
     /** \brief Find values for cumulative pixel count cut.
-     * @param theBandNo The band (number).
-     * @param theLowerCount The lower count as fraction of 1, e.g. 0.02 = 2%
-     * @param theUpperCount The upper count as fraction of 1, e.g. 0.98 = 98%
-     * @param theLowerValue Location into which the lower value will be set.
-     * @param theUpperValue  Location into which the upper value will be set.
-     * @param theExtent Extent used to calc histogram, if empty, whole raster extent is used.
-     * @param theSampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
+     * @param bandNo The band (number).
+     * @param lowerCount The lower count as fraction of 1, e.g. 0.02 = 2%
+     * @param upperCount The upper count as fraction of 1, e.g. 0.98 = 98%
+     * @param lowerValue Location into which the lower value will be set.
+     * @param upperValue  Location into which the upper value will be set.
+     * @param extent Extent used to calc histogram, if empty, whole raster extent is used.
+     * @param sampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
      */
-    virtual void cumulativeCut( int theBandNo,
-                                double theLowerCount,
-                                double theUpperCount,
-                                double &theLowerValue,
-                                double &theUpperValue,
-                                const QgsRectangle & theExtent = QgsRectangle(),
-                                int theSampleSize = 0 );
+    virtual void cumulativeCut( int bandNo,
+                                double lowerCount,
+                                double upperCount,
+                                double &lowerValue,
+                                double &upperValue,
+                                const QgsRectangle & extent = QgsRectangle(),
+                                int sampleSize = 0 );
 
     /** Write base class members to xml. */
     virtual void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
@@ -264,21 +264,21 @@ class QgsRasterInterface
   protected:
 
     /** Fill in histogram defaults if not specified
-     * @note theBinCount, theMinimum and theMaximum not optional in python bindings
+     * @note binCount, minimum and maximum not optional in python bindings
      */
-    void initHistogram( QgsRasterHistogram &theHistogram, int theBandNo,
-                        int theBinCount /* = 0 */,
-                        double theMinimum /*= std::numeric_limits<double>::quiet_NaN()*/,
-                        double theMaximum /*= std::numeric_limits<double>::quiet_NaN()*/,
-                        const QgsRectangle & theExtent = QgsRectangle(),
-                        int theSampleSize = 0,
-                        bool theIncludeOutOfRange = false );
+    void initHistogram( QgsRasterHistogram &histogram, int bandNo,
+                        int binCount /* = 0 */,
+                        double minimum /*= std::numeric_limits<double>::quiet_NaN()*/,
+                        double maximum /*= std::numeric_limits<double>::quiet_NaN()*/,
+                        const QgsRectangle & boundingBox = QgsRectangle(),
+                        int sampleSize = 0,
+                        bool includeOutOfRange = false );
 
-    /** Fill in statistics defaults if not specified */
-    void initStatistics( QgsRasterBandStats &theStatistics, int theBandNo,
-                         int theStats = QgsRasterBandStats::All,
-                         const QgsRectangle & theExtent = QgsRectangle(),
-                         int theBinCount = 0 );
+    //! Fill in statistics defaults if not specified
+    void initStatistics(QgsRasterBandStats &statistics, int bandNo,
+                         int stats = QgsRasterBandStats::All,
+                         const QgsRectangle & boundingBox = QgsRectangle(),
+                         int binCount = 0 );
 
   private:
     QgsRasterInterface(const QgsRasterInterface &);

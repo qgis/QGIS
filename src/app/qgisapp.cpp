@@ -2580,7 +2580,7 @@ void QgisApp::setIconSizes( int size )
   }
 }
 
-void QgisApp::setTheme( const QString& theThemeName )
+void QgisApp::setTheme( const QString& themeName )
 {
   /*****************************************************************
   // Init the toolbar icons by setting the icon for each action.
@@ -2602,8 +2602,8 @@ void QgisApp::setTheme( const QString& theThemeName )
   // for the user to choose from.
   //
   */
-  QgsApplication::setUITheme( theThemeName );
-  //QgsDebugMsg("Setting theme to \n" + theThemeName);
+  QgsApplication::setUITheme( themeName );
+  //QgsDebugMsg("Setting theme to \n" + themeName);
   mActionNewProject->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileNew.svg" ) ) );
   mActionOpenProject->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileOpen.svg" ) ) );
   mActionSaveProject->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileSave.svg" ) ) );
@@ -2754,7 +2754,7 @@ void QgisApp::setTheme( const QString& theThemeName )
     ( *composerIt )->setupTheme();
   }
 
-  emit currentThemeChanged( theThemeName );
+  emit currentThemeChanged( themeName );
 }
 
 void QgisApp::setupConnections()
@@ -3001,9 +3001,9 @@ void QgisApp::createOverview()
   mMapCanvas->setMapUpdateInterval( mySettings.value( QStringLiteral( "/qgis/map_update_interval" ), 250 ).toInt() );
 }
 
-void QgisApp::addDockWidget( Qt::DockWidgetArea theArea, QDockWidget* thepDockWidget )
+void QgisApp::addDockWidget( Qt::DockWidgetArea area, QDockWidget* thepDockWidget )
 {
-  QMainWindow::addDockWidget( theArea, thepDockWidget );
+  QMainWindow::addDockWidget( area, thepDockWidget );
   // Make the right and left docks consume all vertical space and top
   // and bottom docks nest between them
   setCorner( Qt::TopLeftCorner, Qt::LeftDockWidgetArea );
@@ -3636,11 +3636,11 @@ void QgisApp::addVectorLayer()
 }
 
 
-bool QgisApp::addVectorLayers( const QStringList &theLayerQStringList, const QString &enc, const QString &dataSourceType )
+bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType )
 {
   bool wasfrozen = mMapCanvas->isFrozen();
   QList<QgsMapLayer *> myList;
-  Q_FOREACH ( QString src, theLayerQStringList )
+  Q_FOREACH ( QString src, layerQStringList )
   {
     src = src.trimmed();
     QString base;
@@ -4512,12 +4512,12 @@ void QgisApp::fileNewBlank()
 
 
 //as file new but accepts flags to indicate whether we should prompt to save
-void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
+void QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
 {
   if ( checkTasksDependOnProject() )
     return;
 
-  if ( thePromptToSaveFlag )
+  if ( promptToSaveFlag )
   {
     if ( !saveDirty() )
     {
@@ -5577,9 +5577,9 @@ void QgisApp::saveMapAsImage()
 } // saveMapAsImage
 
 //overloaded version of the above function
-void QgisApp::saveMapAsImage( const QString& theImageFileNameQString, QPixmap * theQPixmap )
+void QgisApp::saveMapAsImage( const QString& imageFileNameQString, QPixmap * theQPixmap )
 {
-  if ( theImageFileNameQString == QLatin1String( "" ) )
+  if ( imageFileNameQString == QLatin1String( "" ) )
   {
     //no fileName chosen
     return;
@@ -5589,7 +5589,7 @@ void QgisApp::saveMapAsImage( const QString& theImageFileNameQString, QPixmap * 
     //force the size of the canvas
     mMapCanvas->resize( theQPixmap->width(), theQPixmap->height() );
     //save the mapview to the selected file
-    mMapCanvas->saveAsImage( theImageFileNameQString, theQPixmap );
+    mMapCanvas->saveAsImage( imageFileNameQString, theQPixmap );
   }
 } // saveMapAsImage
 
@@ -7681,24 +7681,24 @@ void QgisApp::pasteAsNewVector()
   delete layer;
 }
 
-QgsVectorLayer *QgisApp::pasteAsNewMemoryVector( const QString & theLayerName )
+QgsVectorLayer *QgisApp::pasteAsNewMemoryVector( const QString & layerName )
 {
 
-  QString layerName = theLayerName;
+  QString layerNameCopy = layerName;
 
-  if ( layerName.isEmpty() )
+  if ( layerNameCopy.isEmpty() )
   {
     bool ok;
     QString defaultName = tr( "Pasted" );
-    layerName = QInputDialog::getText( this, tr( "New temporary scratch layer name" ),
-                                       tr( "Layer name" ), QLineEdit::Normal,
-                                       defaultName, &ok );
+    layerNameCopy = QInputDialog::getText( this, tr( "New temporary scratch layer name" ),
+                                           tr( "Layer name" ), QLineEdit::Normal,
+                                           defaultName, &ok );
     if ( !ok )
       return nullptr;
 
-    if ( layerName.isEmpty() )
+    if ( layerNameCopy.isEmpty() )
     {
-      layerName = defaultName;
+      layerNameCopy = defaultName;
     }
   }
 
@@ -7706,7 +7706,7 @@ QgsVectorLayer *QgisApp::pasteAsNewMemoryVector( const QString & theLayerName )
   if ( !layer )
     return nullptr;
 
-  layer->setName( layerName );
+  layer->setName( layerNameCopy );
 
   mMapCanvas->freeze();
 
@@ -8397,10 +8397,10 @@ void QgisApp::saveLastMousePosition( const QgsPoint & p )
 }
 
 
-void QgisApp::showScale( double theScale )
+void QgisApp::showScale( double scale )
 {
   // Why has MapCanvas the scale inverted?
-  mScaleWidget->setScale( 1.0 / theScale );
+  mScaleWidget->setScale( 1.0 / scale );
 
   // Not sure if the lines below do anything meaningful /Homann
   if ( mScaleWidget->width() > mScaleWidget->minimumWidth() )
@@ -8423,9 +8423,9 @@ void QgisApp::isInOverview()
   mLayerTreeView->defaultActions()->showInOverview();
 }
 
-void QgisApp::removingLayers( const QStringList& theLayers )
+void QgisApp::removingLayers( const QStringList& layers )
 {
-  Q_FOREACH ( const QString &layerId, theLayers )
+  Q_FOREACH ( const QString &layerId, layers )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>(
                                QgsProject::instance()->mapLayer( layerId ) );
@@ -9206,7 +9206,7 @@ void QgisApp::localCumulativeCutStretch()
   histogramStretch( true, QgsRasterMinMaxOrigin::CumulativeCut );
 }
 
-void QgisApp::histogramStretch( bool visibleAreaOnly, QgsRasterMinMaxOrigin::Limits theLimits )
+void QgisApp::histogramStretch( bool visibleAreaOnly, QgsRasterMinMaxOrigin::Limits limits )
 {
   QgsMapLayer * myLayer = mLayerTreeView->currentLayer();
 
@@ -9231,7 +9231,7 @@ void QgisApp::histogramStretch( bool visibleAreaOnly, QgsRasterMinMaxOrigin::Lim
   if ( visibleAreaOnly )
     myRectangle = mMapCanvas->mapSettings().outputExtentToLayerExtent( myRasterLayer, mMapCanvas->extent() );
 
-  myRasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, theLimits, myRectangle );
+  myRasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, limits, myRectangle );
 
   myRasterLayer->triggerRepaint();
 }
@@ -9511,18 +9511,18 @@ QgsVectorLayer* QgisApp::addVectorLayer( const QString& vectorLayerPath, const Q
 
 
 
-void QgisApp::addMapLayer( QgsMapLayer *theMapLayer )
+void QgisApp::addMapLayer( QgsMapLayer *mapLayer )
 {
   mMapCanvas->freeze();
 
 // Let render() do its own cursor management
 //  QApplication::setOverrideCursor(Qt::WaitCursor);
 
-  if ( theMapLayer->isValid() )
+  if ( mapLayer->isValid() )
   {
     // Register this layer with the layers registry
     QList<QgsMapLayer *> myList;
-    myList << theMapLayer;
+    myList << mapLayer;
     QgsProject::instance()->addMapLayers( myList );
     // add it to the mapcanvas collection
     // not necessary since adding to registry adds to canvas mMapCanvas->addLayer(theMapLayer);
@@ -9587,9 +9587,9 @@ void QgisApp::embedLayers()
   }
 }
 
-void QgisApp::setExtent( const QgsRectangle& theRect )
+void QgisApp::setExtent( const QgsRectangle& rect )
 {
-  mMapCanvas->setExtent( theRect );
+  mMapCanvas->setExtent( rect );
 }
 
 /**
@@ -10314,17 +10314,17 @@ void QgisApp::destinationCrsChanged()
   updateCrsStatusBar();
 }
 
-void QgisApp::hasCrsTransformEnabled( bool theFlag )
+void QgisApp::hasCrsTransformEnabled( bool flag )
 {
   // save this information to project
-  QgsProject::instance()->writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), ( theFlag ? 1 : 0 ) );
+  QgsProject::instance()->writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), ( flag ? 1 : 0 ) );
   updateCrsStatusBar();
 }
 
 // slot to update the progress bar in the status bar
-void QgisApp::showProgress( int theProgress, int theTotalSteps )
+void QgisApp::showProgress( int progress, int totalSteps )
 {
-  if ( theProgress == theTotalSteps )
+  if ( progress == totalSteps )
   {
     mProgressBar->reset();
     mProgressBar->hide();
@@ -10336,8 +10336,8 @@ void QgisApp::showProgress( int theProgress, int theTotalSteps )
     {
       mProgressBar->show();
     }
-    mProgressBar->setMaximum( theTotalSteps );
-    mProgressBar->setValue( theProgress );
+    mProgressBar->setMaximum( totalSteps );
+    mProgressBar->setValue( progress );
 
     if ( mProgressBar->maximum() == 0 )
     {
@@ -10399,9 +10399,9 @@ void QgisApp::extentChanged()
   mLayerTreeView->layerTreeModel()->setLegendMapViewData( mMapCanvas->mapUnitsPerPixel(), mMapCanvas->mapSettings().outputDpi(), mMapCanvas->scale() );
 }
 
-void QgisApp::layersWereAdded( const QList<QgsMapLayer *>& theLayers )
+void QgisApp::layersWereAdded( const QList<QgsMapLayer *>& layers )
 {
-  Q_FOREACH ( QgsMapLayer* layer, theLayers )
+  Q_FOREACH ( QgsMapLayer* layer, layers )
   {
     QgsDataProvider *provider = nullptr;
 
@@ -10455,9 +10455,9 @@ void QgisApp::updateMouseCoordinatePrecision()
   mCoordsEdit->setMouseCoordinatesPrecision( QgsCoordinateUtils::calculateCoordinatePrecision( mapCanvas()->mapUnitsPerPixel(), mapCanvas()->mapSettings().destinationCrs() ) );
 }
 
-void QgisApp::showStatusMessage( const QString& theMessage )
+void QgisApp::showStatusMessage( const QString& message )
 {
-  statusBar()->showMessage( theMessage );
+  statusBar()->showMessage( message );
 }
 
 void QgisApp::displayMapToolMessage( const QString& message, QgsMessageBar::MessageLevel level )
@@ -11110,26 +11110,26 @@ void QgisApp::addRasterLayer()
 // of the calling method to manage things such as the frozen state of the mapcanvas and
 // using waitcursors etc. - this method won't and SHOULDN'T do it
 //
-bool QgisApp::addRasterLayer( QgsRasterLayer *theRasterLayer )
+bool QgisApp::addRasterLayer( QgsRasterLayer *rasterLayer )
 {
-  Q_CHECK_PTR( theRasterLayer );
+  Q_CHECK_PTR( rasterLayer );
 
-  if ( ! theRasterLayer )
+  if ( ! rasterLayer )
   {
     // XXX insert meaningful whine to the user here; although be
     // XXX mindful that a null layer may mean exhausted memory resources
     return false;
   }
 
-  if ( !theRasterLayer->isValid() )
+  if ( !rasterLayer->isValid() )
   {
-    delete theRasterLayer;
+    delete rasterLayer;
     return false;
   }
 
   // register this layer with the central layers registry
   QList<QgsMapLayer *> myList;
-  myList << theRasterLayer;
+  myList << rasterLayer;
   QgsProject::instance()->addMapLayers( myList );
 
   return true;
@@ -11259,9 +11259,9 @@ QgsRasterLayer* QgisApp::addRasterLayer(
 
 
 //create a raster layer object and delegate to addRasterLayer(QgsRasterLayer *)
-bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool guiWarning )
+bool QgisApp::addRasterLayers( QStringList const &fileNameQStringList, bool guiWarning )
 {
-  if ( theFileNameQStringList.empty() )
+  if ( fileNameQStringList.empty() )
   {
     // no files selected so bail out, but
     // allow mMapCanvas to handle events
@@ -11276,8 +11276,8 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
   // be ogr layers. We'll set returnValue to false if one or more layers fail
   // to load.
   bool returnValue = true;
-  for ( QStringList::ConstIterator myIterator = theFileNameQStringList.begin();
-        myIterator != theFileNameQStringList.end();
+  for ( QStringList::ConstIterator myIterator = fileNameQStringList.begin();
+        myIterator != fileNameQStringList.end();
         ++myIterator )
   {
     QString errMsg;

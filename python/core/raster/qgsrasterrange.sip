@@ -16,16 +16,16 @@ class QgsRasterRange
     QgsRasterRange();
 
     /** \brief Constructor
-     *  @param theMin minimum value
-     *  @param theMax max value
+     *  @param min minimum value
+     *  @param max max value
      */
-    QgsRasterRange( double theMin, double theMax );
+    QgsRasterRange( double min, double max );
 
     double min() const;
     double max() const;
 
-    double setMin( double theMin );
-    double setMax( double theMax );
+    double setMin( double min );
+    double setMax( double max );
 
     bool operator==( QgsRasterRange o ) const;
 

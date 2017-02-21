@@ -35,7 +35,7 @@ class QgsGCPListWidget : public QTableView
     explicit QgsGCPListWidget( QWidget *parent = nullptr );
 
     void setGCPList( QgsGCPList *theGCPList );
-    void setGeorefTransform( QgsGeorefTransform *theGeorefTransform );
+    void setGeorefTransform( QgsGeorefTransform *georefTransform );
     QgsGCPList *gcpList() { return mGCPList; }
     void updateGCPList();
     void closeEditors();

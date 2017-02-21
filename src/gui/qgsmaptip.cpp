@@ -45,7 +45,7 @@ QgsMapTip::QgsMapTip()
 
 void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
                             QgsPoint & mapPosition,
-                            QPoint & thePixelPosition,
+                            QPoint & pixelPosition,
                             QgsMapCanvas *pMapCanvas )
 {
   // Do the search using the active layer and the preferred label field for the
@@ -126,8 +126,8 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
               "</body>"
               "</html>" ).arg( bodyStyle, containerStyle, tipText );
 
-  mWidget->move( thePixelPosition.x(),
-                 thePixelPosition.y() );
+  mWidget->move( pixelPosition.x(),
+                 pixelPosition.y() );
 
   mWebView->setHtml( tipHtml );
   lastTipText = tipText;

@@ -36,12 +36,12 @@ class FeatureLayer
 
     /**
      * Constructor
-     * @param theLayer layer pointer
-     * @param theFeature QgsFeature
+     * @param layer layer pointer
+     * @param feature QgsFeature
      */
-    FeatureLayer( QgsVectorLayer* theLayer, const QgsFeature& theFeature )
-        : layer( theLayer )
-        , feature( theFeature )
+    FeatureLayer( QgsVectorLayer* layer, const QgsFeature& feature )
+        : layer( layer )
+        , feature( feature )
     {}
 
     QgsVectorLayer* layer = nullptr;
@@ -117,11 +117,11 @@ class TopolError
 
     /**
      * Constructor
-     * @param theBoundingBox bounding box of the two features
-     * @param theConflict geometry representation of the conflict
-     * @param theFeaturePairs FeatureLayer pairs of the two features
+     * @param boundingBox bounding box of the two features
+     * @param conflict geometry representation of the conflict
+     * @param featurePairs FeatureLayer pairs of the two features
      */
-    TopolError( const QgsRectangle& theBoundingBox, const QgsGeometry& theConflict, const QList<FeatureLayer>& theFeaturePairs );
+    TopolError( const QgsRectangle& boundingBox, const QgsGeometry& conflict, const QList<FeatureLayer>& featurePairs );
 
     virtual ~TopolError() = default;
 
@@ -160,91 +160,91 @@ class TopolError
 class TopolErrorIntersection : public TopolError
 {
   public:
-    TopolErrorIntersection( const QgsRectangle& theBoundingBox, const QgsGeometry& theConflict, QList<FeatureLayer> theFeaturePairs );
+    TopolErrorIntersection( const QgsRectangle& boundingBox, const QgsGeometry& conflict, QList<FeatureLayer> featurePairs );
 };
 
 class TopolErrorClose : public TopolError
 {
   public:
-    TopolErrorClose( const QgsRectangle& theBoundingBox, const QgsGeometry& theConflict, const QList<FeatureLayer>& theFeaturePairs );
+    TopolErrorClose( const QgsRectangle& boundingBox, const QgsGeometry& conflict, const QList<FeatureLayer>& featurePairs );
 };
 
 class TopolErrorCovered : public TopolError
 {
   public:
-    TopolErrorCovered( const QgsRectangle& theBoundingBox, const QgsGeometry& theConflict, const QList<FeatureLayer>& theFeaturePairs );
+    TopolErrorCovered( const QgsRectangle& boundingBox, const QgsGeometry& conflict, const QList<FeatureLayer>& featurePairs );
 };
 
 class TopolErrorShort : public TopolError
 {
   public:
-    TopolErrorShort( const QgsRectangle& theBoundingBox, const QgsGeometry& theConflict, const QList<FeatureLayer>& theFeaturePairs );
+    TopolErrorShort( const QgsRectangle& boundingBox, const QgsGeometry& conflict, const QList<FeatureLayer>& featurePairs );
 };
 
 class TopolErrorValid : public TopolError
 {
   public:
-    TopolErrorValid( const QgsRectangle& theBoundingBox, const QgsGeometry& theConflict, const QList<FeatureLayer>& theFeaturePairs );
+    TopolErrorValid( const QgsRectangle& boundingBox, const QgsGeometry& conflict, const QList<FeatureLayer>& featurePairs );
 };
 
 class TopolErrorDangle : public TopolError
 {
   public:
-    TopolErrorDangle( const QgsRectangle& theBoundingBox, const QgsGeometry& theConflict, const QList<FeatureLayer>& theFeaturePairs );
+    TopolErrorDangle( const QgsRectangle& boundingBox, const QgsGeometry& conflict, const QList<FeatureLayer>& featurePairs );
 };
 
 class TopolErrorDuplicates : public TopolError
 {
   public:
-    TopolErrorDuplicates( const QgsRectangle& theBoundingBox, const QgsGeometry& theConflict, const QList<FeatureLayer>& theFeaturePairs );
+    TopolErrorDuplicates( const QgsRectangle& boundingBox, const QgsGeometry& conflict, const QList<FeatureLayer>& featurePairs );
 };
 
 class TopolErrorPseudos : public TopolError
 {
   public:
-    TopolErrorPseudos( const QgsRectangle& theBoundingBox, const QgsGeometry& theConflict, const QList<FeatureLayer>& theFeaturePairs );
+    TopolErrorPseudos( const QgsRectangle& boundingBox, const QgsGeometry& conflict, const QList<FeatureLayer>& featurePairs );
 };
 
 class TopolErrorOverlaps : public TopolError
 {
   public:
-    TopolErrorOverlaps( const QgsRectangle& theBoundingBox, const QgsGeometry& theConflict, const QList<FeatureLayer>& theFeaturePairs );
+    TopolErrorOverlaps( const QgsRectangle& boundingBox, const QgsGeometry& conflict, const QList<FeatureLayer>& featurePairs );
 };
 
 class TopolErrorGaps : public TopolError
 {
   public:
-    TopolErrorGaps( const QgsRectangle& theBoundingBox, const QgsGeometry& theConflict, const QList<FeatureLayer>& theFeaturePairs );
+    TopolErrorGaps( const QgsRectangle& boundingBox, const QgsGeometry& conflict, const QList<FeatureLayer>& featurePairs );
 };
 
 class TopolErrorPointNotCoveredByLineEnds : public TopolError
 {
   public:
-    TopolErrorPointNotCoveredByLineEnds( const QgsRectangle& theBoundingBox, const QgsGeometry& theConflict, const QList<FeatureLayer>& theFeaturePairs );
+    TopolErrorPointNotCoveredByLineEnds( const QgsRectangle& boundingBox, const QgsGeometry& conflict, const QList<FeatureLayer>& featurePairs );
 };
 
 class TopolErrorLineEndsNotCoveredByPoints : public TopolError
 {
   public:
-    TopolErrorLineEndsNotCoveredByPoints( const QgsRectangle& theBoundingBox, const QgsGeometry& theConflict, const QList<FeatureLayer>& theFeaturePairs );
+    TopolErrorLineEndsNotCoveredByPoints( const QgsRectangle& boundingBox, const QgsGeometry& conflict, const QList<FeatureLayer>& featurePairs );
 };
 
 class TopolErrorPointNotInPolygon : public TopolError
 {
   public:
-    TopolErrorPointNotInPolygon( const QgsRectangle& theBoundingBox, const QgsGeometry& theConflict, const QList<FeatureLayer>& theFeaturePairs );
+    TopolErrorPointNotInPolygon( const QgsRectangle& boundingBox, const QgsGeometry& conflict, const QList<FeatureLayer>& featurePairs );
 };
 
 class TopolErrorPolygonContainsPoint : public TopolError
 {
   public:
-    TopolErrorPolygonContainsPoint( const QgsRectangle& theBoundingBox, const QgsGeometry& theConflict, const QList<FeatureLayer>& theFeaturePairs );
+    TopolErrorPolygonContainsPoint( const QgsRectangle& boundingBox, const QgsGeometry& conflict, const QList<FeatureLayer>& featurePairs );
 };
 
 class TopolErroMultiPart : public TopolError
 {
   public:
-    TopolErroMultiPart( const QgsRectangle& theBoundingBox, const QgsGeometry& theConflict, const QList<FeatureLayer>& theFeaturePairs );
+    TopolErroMultiPart( const QgsRectangle& boundingBox, const QgsGeometry& conflict, const QList<FeatureLayer>& featurePairs );
 };
 
 #endif

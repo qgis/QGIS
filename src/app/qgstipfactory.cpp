@@ -296,16 +296,16 @@ QgsTipFactory::~QgsTipFactory()
 
 }
 //private helper method
-void QgsTipFactory::addGuiTip( const QgsTip& theTip )
+void QgsTipFactory::addGuiTip( const QgsTip& tip )
 {
-  mGuiTips << theTip;
-  mAllTips << theTip;
+  mGuiTips << tip;
+  mAllTips << tip;
 }
 //private helper method
-void QgsTipFactory::addGenericTip( const QgsTip& theTip )
+void QgsTipFactory::addGenericTip( const QgsTip& tip )
 {
-  mGenericTips << theTip;
-  mAllTips << theTip;
+  mGenericTips << tip;
+  mAllTips << tip;
 }
 QgsTip QgsTipFactory::getTip()
 {
@@ -314,9 +314,9 @@ QgsTip QgsTipFactory::getTip()
   QgsTip myTip = mAllTips.at( myValue );
   return myTip;
 }
-QgsTip QgsTipFactory::getTip( int thePosition )
+QgsTip QgsTipFactory::getTip( int position )
 {
-  QgsTip myTip = mAllTips.at( thePosition );
+  QgsTip myTip = mAllTips.at( position );
   return myTip;
 }
 QgsTip QgsTipFactory::getGenericTip()
@@ -334,9 +334,9 @@ QgsTip QgsTipFactory::getGuiTip()
   return myTip;
 }
 
-int QgsTipFactory::randomNumber( int theMax )
+int QgsTipFactory::randomNumber( int max )
 {
-  Q_UNUSED( theMax );
+  Q_UNUSED( max );
   return 0;
 }
 

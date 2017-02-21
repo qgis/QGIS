@@ -47,9 +47,9 @@ class APP_EXPORT QgsTip
     // Mutators
     //
     //! Set the tip title
-    void setTitle( const QString& theTitle ) {mTitle = theTitle;}
+    void setTitle( const QString& title ) {mTitle = title;}
     //! Set the tip content
-    void setContent( const QString& theContent ) {mContent = theContent;}
+    void setContent( const QString& content ) {mContent = content;}
   private:
     QString mTitle;
     QString mContent;

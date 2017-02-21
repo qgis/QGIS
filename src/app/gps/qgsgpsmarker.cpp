@@ -32,9 +32,9 @@ QgsGpsMarker::QgsGpsMarker( QgsMapCanvas* mapCanvas )
   }
 }
 
-void QgsGpsMarker::setSize( int theSize )
+void QgsGpsMarker::setSize( int size )
 {
-  mSize = theSize;
+  mSize = size;
 }
 
 void QgsGpsMarker::setCenter( const QgsPoint& point )

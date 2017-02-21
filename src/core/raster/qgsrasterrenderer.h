@@ -90,7 +90,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     const QgsRasterMinMaxOrigin& minMaxOrigin() const { return mMinMaxOrigin; }
 
     //! Sets origin of min/max values
-    void setMinMaxOrigin( const QgsRasterMinMaxOrigin& theOrigin ) { mMinMaxOrigin = theOrigin; }
+    void setMinMaxOrigin( const QgsRasterMinMaxOrigin& origin ) { mMinMaxOrigin = origin; }
 
   protected:
 

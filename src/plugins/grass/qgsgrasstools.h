@@ -92,9 +92,9 @@ class QgsGrassTools: public QgsDockWidget, public Ui::QgsGrassToolsBase
     void closeTools();
 
     //! Update the regex used to filter the modules list (autoconnect to ui)
-    void on_mFilterInput_textChanged( QString theText );
+    void on_mFilterInput_textChanged( QString text );
     //! Run a module when its entry is clicked in the list view
-    void itemClicked( const QModelIndex &theIndex );
+    void itemClicked( const QModelIndex &index );
     //! Run a module given its module name e.g. r.in.gdal
     void runModule( QString name, bool direct );
     void on_mDebugButton_clicked();

@@ -538,10 +538,10 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
 
     /** Sets the angle for the whole symbol. Individual symbol layer sizes
      * will be rotated to maintain their current relative angle to the whole symbol angle.
-     * @param angle new symbol angle
+     * @param symbolAngle new symbol angle
      * @see angle()
      */
-    void setAngle( double angle );
+    void setAngle( double symbolAngle );
 
     /** Returns the marker angle for the whole symbol. Note that for symbols with
      * multiple symbol layers, this will correspond just to the angle of

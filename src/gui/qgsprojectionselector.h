@@ -110,10 +110,10 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
 
   protected:
     // Used to ensure the projection list view is actually populated
-    void showEvent( QShowEvent * theEvent ) override;
+    void showEvent( QShowEvent * event ) override;
 
     // Used to manage column sizes
-    void resizeEvent( QResizeEvent * theEvent ) override;
+    void resizeEvent( QResizeEvent * event ) override;
 
   private:
 
@@ -150,7 +150,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
     QString getSelectedExpression( const QString& e );
 
     //! Show the user a warning if the srs database could not be found
-    void showDBMissingWarning( const QString& theFileName );
+    void showDBMissingWarning( const QString& fileName );
     // List view nodes for the tree view of projections
     //! User defined projections node
     QTreeWidgetItem *mUserProjList = nullptr;
@@ -167,10 +167,10 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
     /**
      * Utility method used in conjunction with name based searching tool
      */
-    long getLargestCrsIdMatch( const QString& theSql );
+    long getLargestCrsIdMatch( const QString& sql );
 
     //! add recently used CRS
-    void insertRecent( long theCrsId );
+    void insertRecent( long crsId );
 
     //! Has the Projection List been populated?
     bool mProjListDone;

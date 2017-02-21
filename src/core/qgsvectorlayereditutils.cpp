@@ -579,9 +579,9 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry& geom )
     case QgsWkbTypes::LineString25D:
     case QgsWkbTypes::LineString:
     {
-      QgsPolyline theLine = geom.asPolyline();
-      QgsPolyline::const_iterator line_it = theLine.constBegin();
-      for ( ; line_it != theLine.constEnd(); ++line_it )
+      QgsPolyline line = geom.asPolyline();
+      QgsPolyline::const_iterator line_it = line.constBegin();
+      for ( ; line_it != line.constEnd(); ++line_it )
       {
         if ( addTopologicalPoints( *line_it ) != 0 )
         {
@@ -595,10 +595,10 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry& geom )
     case QgsWkbTypes::MultiLineString25D:
     case QgsWkbTypes::MultiLineString:
     {
-      QgsMultiPolyline theMultiLine = geom.asMultiPolyline();
+      QgsMultiPolyline multiLine = geom.asMultiPolyline();
       QgsPolyline currentPolyline;
 
-      for ( int i = 0; i < theMultiLine.size(); ++i )
+      for ( int i = 0; i < multiLine.size(); ++i )
       {
         QgsPolyline::const_iterator line_it = currentPolyline.constBegin();
         for ( ; line_it != currentPolyline.constEnd(); ++line_it )
@@ -616,12 +616,12 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry& geom )
     case QgsWkbTypes::Polygon25D:
     case QgsWkbTypes::Polygon:
     {
-      QgsPolygon thePolygon = geom.asPolygon();
+      QgsPolygon polygon = geom.asPolygon();
       QgsPolyline currentRing;
 
-      for ( int i = 0; i < thePolygon.size(); ++i )
+      for ( int i = 0; i < polygon.size(); ++i )
       {
-        currentRing = thePolygon.at( i );
+        currentRing = polygon.at( i );
         QgsPolyline::const_iterator line_it = currentRing.constBegin();
         for ( ; line_it != currentRing.constEnd(); ++line_it )
         {
@@ -638,13 +638,13 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry& geom )
     case QgsWkbTypes::MultiPolygon25D:
     case QgsWkbTypes::MultiPolygon:
     {
-      QgsMultiPolygon theMultiPolygon = geom.asMultiPolygon();
+      QgsMultiPolygon multiPolygon = geom.asMultiPolygon();
       QgsPolygon currentPolygon;
       QgsPolyline currentRing;
 
-      for ( int i = 0; i < theMultiPolygon.size(); ++i )
+      for ( int i = 0; i < multiPolygon.size(); ++i )
       {
-        currentPolygon = theMultiPolygon.at( i );
+        currentPolygon = multiPolygon.at( i );
         for ( int j = 0; j < currentPolygon.size(); ++j )
         {
           currentRing = currentPolygon.at( j );

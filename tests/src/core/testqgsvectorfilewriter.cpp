@@ -82,7 +82,7 @@ class TestQgsVectorFileWriter: public QObject
 
   private:
     // a little util fn used by all tests
-    bool cleanupFile( QString theFileBase );
+    bool cleanupFile( QString fileBase );
     QString mEncoding;
     QgsVectorFileWriter::WriterError mError;
     QgsCoordinateReferenceSystem mCRS;

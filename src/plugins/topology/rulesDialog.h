@@ -37,10 +37,10 @@ class rulesDialog : public QDialog, private Ui::rulesDialog
      * Constructor
      * @param layerList List of layer IDs
      * @param testMap maps test names to test routines
-     * @param theQgisIface pointer to a QgisInterface instance
+     * @param qgisIface pointer to a QgisInterface instance
      * @param parent parent widget
      */
-    rulesDialog( const QMap<QString, TopologyRule>& testMap, QgisInterface* theQgisIface, QWidget *parent );
+    rulesDialog( const QMap<QString, TopologyRule>& testMap, QgisInterface* qgisIface, QWidget *parent );
     ~rulesDialog();
     /*
      * Returns pointer to the test table

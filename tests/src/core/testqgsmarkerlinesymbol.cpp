@@ -63,7 +63,7 @@ class TestQgsMarkerLineSymbol : public QObject
     void pointNumVertex();
 
   private:
-    bool render( const QString& theFileName );
+    bool render( const QString& fileName );
 
     QString mTestDataDir;
     QgsVectorLayer* mLinesLayer = nullptr;
@@ -201,15 +201,15 @@ void TestQgsMarkerLineSymbol::pointNumVertex()
   QVERIFY( render( "point_num_vertex" ) );
 }
 
-bool TestQgsMarkerLineSymbol::render( const QString& theTestType )
+bool TestQgsMarkerLineSymbol::render( const QString& testType )
 {
-  mReport += "<h2>" + theTestType + "</h2>\n";
+  mReport += "<h2>" + testType + "</h2>\n";
   mMapSettings->setOutputDpi( 96 );
   QgsRenderChecker checker;
   checker.setControlPathPrefix( QStringLiteral( "symbol_markerline" ) );
-  checker.setControlName( "expected_" + theTestType );
+  checker.setControlName( "expected_" + testType );
   checker.setMapSettings( *mMapSettings );
-  bool result = checker.runTest( theTestType );
+  bool result = checker.runTest( testType );
   mReport += "\n\n\n" + checker.report();
   return result;
 }

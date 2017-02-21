@@ -298,27 +298,27 @@ QString QgsTransformSettingsDialog::generateModifiedRasterFileName( const QStrin
 
 // Note this code is duplicated from qgisapp.cpp because
 // I didn't want to make plugins on qgsapplication [TS]
-QIcon QgsTransformSettingsDialog::getThemeIcon( const QString &theName )
+QIcon QgsTransformSettingsDialog::getThemeIcon( const QString &name )
 {
-  if ( QFile::exists( QgsApplication::activeThemePath() + theName ) )
+  if ( QFile::exists( QgsApplication::activeThemePath() + name ) )
   {
-    return QIcon( QgsApplication::activeThemePath() + theName );
+    return QIcon( QgsApplication::activeThemePath() + name );
   }
-  else if ( QFile::exists( QgsApplication::defaultThemePath() + theName ) )
+  else if ( QFile::exists( QgsApplication::defaultThemePath() + name ) )
   {
-    return QIcon( QgsApplication::defaultThemePath() + theName );
+    return QIcon( QgsApplication::defaultThemePath() + name );
   }
   else
   {
     QSettings settings;
-    QString themePath = ":/icons/" + settings.value( QStringLiteral( "/Themes" ) ).toString() + theName;
+    QString themePath = ":/icons/" + settings.value( QStringLiteral( "/Themes" ) ).toString() + name;
     if ( QFile::exists( themePath ) )
     {
       return QIcon( themePath );
     }
     else
     {
-      return QIcon( ":/icons/default" + theName );
+      return QIcon( ":/icons/default" + name );
     }
   }
 }

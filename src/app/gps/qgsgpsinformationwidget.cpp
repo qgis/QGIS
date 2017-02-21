@@ -308,11 +308,11 @@ QgsGPSInformationWidget::~QgsGPSInformationWidget()
 
 }
 
-void QgsGPSInformationWidget::on_mSpinTrackWidth_valueChanged( int theValue )
+void QgsGPSInformationWidget::on_mSpinTrackWidth_valueChanged( int value )
 {
   if ( mpRubberBand )
   {
-    mpRubberBand->setWidth( theValue );
+    mpRubberBand->setWidth( value );
   }
 }
 
@@ -360,9 +360,9 @@ void QgsGPSInformationWidget::on_mBtnDebug_clicked()
   mStackedWidget->setCurrentIndex( 4 );
 }
 
-void QgsGPSInformationWidget::on_mConnectButton_toggled( bool theFlag )
+void QgsGPSInformationWidget::on_mConnectButton_toggled( bool flag )
 {
-  if ( theFlag )
+  if ( flag )
   {
     connectGps();
   }

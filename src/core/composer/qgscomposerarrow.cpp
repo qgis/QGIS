@@ -175,10 +175,10 @@ void QgsComposerArrow::drawLine( QPainter *painter )
     return;
   }
 
-  QPaintDevice* thePaintDevice = painter->device();
+  QPaintDevice* paintDevice = painter->device();
   painter->save();
   //setup painter scaling to dots so that raster symbology is drawn to scale
-  double dotsPerMM = thePaintDevice->logicalDpiX() / 25.4;
+  double dotsPerMM = paintDevice->logicalDpiX() / 25.4;
   painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); //scale painter from mm to dots
 
   //setup render context
@@ -219,7 +219,7 @@ void QgsComposerArrow::drawHardcodedMarker( QPainter *p, MarkerType type )
 void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QString &markerPath )
 {
   Q_UNUSED( markerPath );
-  double theAngle = QgsComposerUtils::angle( mStartPoint, mStopPoint );
+  double angle = QgsComposerUtils::angle( mStartPoint, mStopPoint );
 
   double arrowHeadHeight;
   if ( type == StartMarker )
@@ -277,7 +277,7 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
       fixPoint.setY( -arrowHeadHeight / 2.0 );
     }
     QPointF rotatedFixPoint;
-    double angleRad = theAngle / 180 * M_PI;
+    double angleRad = angle / 180 * M_PI;
     rotatedFixPoint.setX( fixPoint.x() * cos( angleRad ) + fixPoint.y() * -sin( angleRad ) );
     rotatedFixPoint.setY( fixPoint.x() * sin( angleRad ) + fixPoint.y() * cos( angleRad ) );
     p->translate( canvasPoint.x() - rotatedFixPoint.x(), canvasPoint.y() - rotatedFixPoint.y() );
@@ -287,7 +287,7 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
     p->translate( canvasPoint.x(), canvasPoint.y() );
   }
 
-  p->rotate( theAngle );
+  p->rotate( angle );
   p->translate( -mArrowHeadWidth / 2.0, -arrowHeadHeight / 2.0 );
   r.render( p, QRectF( 0, 0, mArrowHeadWidth, arrowHeadHeight ) );
   p->restore();

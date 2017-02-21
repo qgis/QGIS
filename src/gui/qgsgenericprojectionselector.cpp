@@ -41,11 +41,11 @@ QgsGenericProjectionSelector::QgsGenericProjectionSelector( QWidget *parent,
   connect( projectionSelector, SIGNAL( projectionDoubleClicked() ), this, SLOT( accept() ) );
 }
 
-void QgsGenericProjectionSelector::setMessage( QString theMessage )
+void QgsGenericProjectionSelector::setMessage( QString message )
 {
   //short term kludge to make the layer selector default to showing
   //a layer projection selection message. If you want the selector
-  if ( theMessage.isEmpty() )
+  if ( message.isEmpty() )
   {
     // Set up text edit pane
     QString format( QStringLiteral( "<h1>%1</h1>%2 %3" ) );
@@ -53,12 +53,12 @@ void QgsGenericProjectionSelector::setMessage( QString theMessage )
     QString sentence1 = tr( "This layer appears to have no projection specification." );
     QString sentence2 = tr( "By default, this layer will now have its projection set to that of the project, "
                             "but you may override this by selecting a different projection below." );
-    theMessage = format.arg( header, sentence1, sentence2 );
+    message = format.arg( header, sentence1, sentence2 );
   }
 
   QString myStyle = QgsApplication::reportStyleSheet();
-  theMessage = "<head><style>" + myStyle + "</style></head><body>" + theMessage + "</body>";
-  textEdit->setHtml( theMessage );
+  message = "<head><style>" + myStyle + "</style></head><body>" + message + "</body>";
+  textEdit->setHtml( message );
   textEdit->show();
 }
 
@@ -68,9 +68,9 @@ QgsGenericProjectionSelector::~QgsGenericProjectionSelector()
   settings.setValue( QStringLiteral( "/Windows/ProjectionSelector/geometry" ), saveGeometry() );
 }
 
-void QgsGenericProjectionSelector::setSelectedCrsName( const QString& theName )
+void QgsGenericProjectionSelector::setSelectedCrsName( const QString& name )
 {
-  projectionSelector->setSelectedCrsName( theName );
+  projectionSelector->setSelectedCrsName( name );
 }
 
 void QgsGenericProjectionSelector::setSelectedCrsId( long theID )

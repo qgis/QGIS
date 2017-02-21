@@ -94,7 +94,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * based on the supplied theme name exists. If it does not the theme name will
      * be reverted to 'default'.
      */
-    static void setThemeName( const QString &theThemeName );
+    static void setThemeName( const QString &themeName );
 
     /** Set the active theme to the specified theme.
      * The theme name should be a single word e.g. 'default','classic'.
@@ -208,11 +208,11 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     //! Helper to get a theme icon. It will fall back to the
     //! default theme if the active theme does not have the required icon.
-    static QIcon getThemeIcon( const QString &theName );
+    static QIcon getThemeIcon( const QString &name );
 
     //! Helper to get a theme icon as a pixmap. It will fall back to the
     //! default theme if the active theme does not have the required icon.
-    static QPixmap getThemePixmap( const QString &theName );
+    static QPixmap getThemePixmap( const QString &name );
 
     //! Returns the path to user's style.
     static QString userStylePath();
@@ -265,19 +265,19 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString libexecPath();
 
     //! Alters prefix path - used by 3rd party apps
-    static void setPrefixPath( const QString &thePrefixPath, bool useDefaultPaths = false );
+    static void setPrefixPath( const QString &prefixPath, bool useDefaultPaths = false );
 
     //! Alters plugin path - used by 3rd party apps
-    static void setPluginPath( const QString &thePluginPath );
+    static void setPluginPath( const QString &pluginPath );
 
     //! Alters pkg data path - used by 3rd party apps
-    static void setPkgDataPath( const QString &thePkgDataPath );
+    static void setPkgDataPath( const QString &pkgDataPath );
 
     //! Alters default svg paths - used by 3rd party apps.
     static void setDefaultSvgPaths( const QStringList& pathList );
 
     //! Alters authentication data base directory path - used by 3rd party apps
-    static void setAuthDatabaseDirPath( const QString& theAuthDbDirPath );
+    static void setAuthDatabaseDirPath( const QString& authDbDirPath );
 
     //! loads providers
     static void initQgis();
@@ -359,13 +359,13 @@ class CORE_EXPORT QgsApplication : public QApplication
      * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
      * driver name should be the short format of the Gdal driver name e.g. GTIFF.
      */
-    static void skipGdalDriver( const QString& theDriver );
+    static void skipGdalDriver( const QString& driver );
 
     /** Sets the GDAL_SKIP environment variable to exclude the specified driver
      * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
      * driver name should be the short format of the Gdal driver name e.g. GTIFF.
      */
-    static void restoreGdalDriver( const QString& theDriver );
+    static void restoreGdalDriver( const QString& driver );
 
     /** Returns the list of gdal drivers that should be skipped (based on
      * GDAL_SKIP environment variable)

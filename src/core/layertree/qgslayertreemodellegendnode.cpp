@@ -650,9 +650,9 @@ QImage QgsWmsLegendNode::renderMessage( const QString& msg ) const
   const int nlines = 1;
 
   const int w = 512, h = fontHeight * nlines + margin * ( nlines + 1 );
-  QImage theImage( w, h, QImage::Format_ARGB32_Premultiplied );
+  QImage image( w, h, QImage::Format_ARGB32_Premultiplied );
   QPainter painter;
-  painter.begin( &theImage );
+  painter.begin( &image );
   painter.setPen( QColor( 255, 0, 0 ) );
   painter.setFont( QFont( QStringLiteral( "Chicago" ), fontHeight ) );
   painter.fillRect( 0, 0, w, h, QColor( 255, 255, 255 ) );
@@ -660,7 +660,7 @@ QImage QgsWmsLegendNode::renderMessage( const QString& msg ) const
   //painter.drawText(0,2*(margin+fontHeight),QString("retrying in 5 seconds..."));
   painter.end();
 
-  return theImage;
+  return image;
 }
 
 void QgsWmsLegendNode::getLegendGraphicProgress( qint64 cur, qint64 tot )
@@ -687,16 +687,16 @@ void QgsWmsLegendNode::getLegendGraphicErrored( const QString& msg )
   //QTimer::singleShot(5000, this, SLOT(invalidateMapBasedData()));
 }
 
-void QgsWmsLegendNode::getLegendGraphicFinished( const QImage& theImage )
+void QgsWmsLegendNode::getLegendGraphicFinished( const QImage& image )
 {
   if ( ! mFetcher ) return; // must be coming after error
 
   //QgsDebugMsg( QString("XXX legend graphic finished, image is %1x%2").arg(theImage.width()).arg(theImage.height()) );
-  if ( ! theImage.isNull() )
+  if ( ! image.isNull() )
   {
-    if ( theImage != mImage )
+    if ( image != mImage )
     {
-      mImage = theImage;
+      mImage = image;
       //QgsDebugMsg( QString("XXX emitting dataChanged") );
       emit dataChanged();
     }

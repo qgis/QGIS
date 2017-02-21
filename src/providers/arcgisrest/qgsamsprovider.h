@@ -83,7 +83,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
     bool supportsLegendGraphic() const override { return true; }
     QImage getLegendGraphic( double scale = 0, bool forceRefresh = false, const QgsRectangle * visibleExtent = 0 ) override;
     QgsImageFetcher* getLegendGraphicFetcher( const QgsMapSettings* mapSettings ) override;
-    QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0, int theDpi = 96 ) override;
+    QgsRasterIdentifyResult identify( const QgsPoint & point, QgsRaster::IdentifyFormat format, const QgsRectangle &extent = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
 
   protected:
     void readBlock( int bandNo, const QgsRectangle & viewExtent, int width, int height, void *data, QgsRasterBlockFeedback* feedback = nullptr ) override;

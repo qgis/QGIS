@@ -79,14 +79,14 @@ class APP_EXPORT QgsPluginRegistry
     void loadPythonPlugin( const QString& packageName );
 
     //! C++ plugin unloader
-    void unloadCppPlugin( const QString& theFullPathName );
+    void unloadCppPlugin( const QString& fullPathName );
     //! Python plugin unloader
     void unloadPythonPlugin( const QString& packageName );
 
     //! Overloaded version of the next method that will load from multiple directories not just one
-    void restoreSessionPlugins( const QStringList& thePluginDirList );
+    void restoreSessionPlugins( const QStringList& pluginDirList );
     //! Load any plugins used in the last qgis session
-    void restoreSessionPlugins( const QString& thePluginDirString );
+    void restoreSessionPlugins( const QString& pluginDirString );
 
     //! Check whether plugin is compatible with current version of QGIS
     bool isPythonPluginCompatible( const QString& packageName ) const;

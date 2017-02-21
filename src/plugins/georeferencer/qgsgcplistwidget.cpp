@@ -83,9 +83,9 @@ void QgsGCPListWidget::setGCPList( QgsGCPList *theGCPList )
   adjustTableContent();
 }
 
-void QgsGCPListWidget::setGeorefTransform( QgsGeorefTransform *theGeorefTransform )
+void QgsGCPListWidget::setGeorefTransform( QgsGeorefTransform *georefTransform )
 {
-  mGCPListModel->setGeorefTransform( theGeorefTransform );
+  mGCPListModel->setGeorefTransform( georefTransform );
   adjustTableContent();
 }
 

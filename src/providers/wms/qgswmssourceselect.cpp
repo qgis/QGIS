@@ -1049,9 +1049,9 @@ void QgsWMSSourceSelect::setConnectionListPosition()
   }
 }
 
-void QgsWMSSourceSelect::showStatusMessage( QString const &theMessage )
+void QgsWMSSourceSelect::showStatusMessage( QString const &message )
 {
-  labelStatus->setText( theMessage );
+  labelStatus->setText( message );
 
   // update the display of this widget
   update();

@@ -38,11 +38,11 @@ class QgsGenericProjectionSelector : QDialog //, private Ui::QgsGenericProjectio
     /** If no parameter is passed, the message will be a generic
      * 'define the CRS for this layer'.
      */
-    void setMessage( QString theMessage = "" );
+    void setMessage( QString message = "" );
     long selectedCrsId();
     QString selectedAuthId();
 
-    void setSelectedCrsName( const QString& theName );
+    void setSelectedCrsName( const QString& name );
     void setSelectedCrsId( long theID );
     void setSelectedAuthId( const QString& authId );
 

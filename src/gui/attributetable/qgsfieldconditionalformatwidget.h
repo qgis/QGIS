@@ -48,9 +48,9 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
     void viewRules();
 
     /** Sets the vector layer associated with the widget.
-     * @param theLayer vector layer
+     * @param layer vector layer
      */
-    void setLayer( QgsVectorLayer* theLayer );
+    void setLayer( QgsVectorLayer* layer );
 
     /** Switches the widget to the edit style mode for the specified style.
      * @param index index of conditional style to edit

@@ -339,19 +339,19 @@ void QgsProjectFileTransform::transform0110to1000()
       QString providerKey = providerNode.toElement().text();
 
       //create the layer to get the provider for int->fieldName conversion
-      QgsVectorLayer* theLayer = new QgsVectorLayer( dataSource, QLatin1String( "" ), providerKey, false );
-      if ( !theLayer->isValid() )
+      QgsVectorLayer* layer = new QgsVectorLayer( dataSource, QLatin1String( "" ), providerKey, false );
+      if ( !layer->isValid() )
       {
-        delete theLayer;
+        delete layer;
         return;
       }
 
-      QgsVectorDataProvider* theProvider = theLayer->dataProvider();
-      if ( !theProvider )
+      QgsVectorDataProvider* provider = layer->dataProvider();
+      if ( !provider )
       {
         return;
       }
-      QgsFields theFields = theProvider->fields();
+      QgsFields fields = provider->fields();
 
       //read classificationfield
       QDomNodeList classificationFieldList = layerElem.elementsByTagName( QStringLiteral( "classificationfield" ) );
@@ -359,9 +359,9 @@ void QgsProjectFileTransform::transform0110to1000()
       {
         QDomElement classificationFieldElem = classificationFieldList.at( j ).toElement();
         int fieldNumber = classificationFieldElem.text().toInt();
-        if ( fieldNumber >= 0 && fieldNumber < theFields.count() )
+        if ( fieldNumber >= 0 && fieldNumber < fields.count() )
         {
-          QDomText fieldName = mDom.createTextNode( theFields.at( fieldNumber ).name() );
+          QDomText fieldName = mDom.createTextNode( fields.at( fieldNumber ).name() );
           QDomNode nameNode = classificationFieldElem.firstChild();
           classificationFieldElem.replaceChild( fieldName, nameNode );
         }

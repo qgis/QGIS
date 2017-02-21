@@ -2364,38 +2364,38 @@ QString QgsWmsProvider::metadata()
   return metadata;
 }
 
-QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight , int /*theDpi*/ )
+QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height , int /*dpi*/ )
 {
-  QgsDebugMsg( QString( "theFormat = %1" ).arg( theFormat ) );
+  QgsDebugMsg( QString( "format = %1" ).arg( format ) );
 
-  QString format;
-  format = mCaps.mIdentifyFormats.value( theFormat );
-  if ( format.isEmpty() )
+  QString formatStr;
+  formatStr = mCaps.mIdentifyFormats.value( format );
+  if ( formatStr.isEmpty() )
   {
     return QgsRasterIdentifyResult( QGS_ERROR( tr( "Format not supported" ) ) );
   }
 
-  QgsDebugMsg( QString( "theFormat = %1 format = %2" ).arg( theFormat ).arg( format ) );
+  QgsDebugMsg( QString( "format = %1 format = %2" ).arg( format ).arg( formatStr ) );
 
   QMap<int, QVariant> results;
-  if ( !extent().contains( thePoint ) )
+  if ( !extent().contains( point ) )
   {
     results.insert( 1, "" );
-    return QgsRasterIdentifyResult( theFormat, results );
+    return QgsRasterIdentifyResult( format, results );
   }
 
-  QgsRectangle myExtent = theExtent;
+  QgsRectangle myExtent = boundingBox;
 
   if ( !myExtent.isEmpty() )
   {
-    // we cannot reliably identify WMS if theExtent is specified but theWidth or theHeight
+    // we cannot reliably identify WMS if boundingBox is specified but width or theHeight
     // are not, because we don't know original resolution
-    if ( theWidth == 0 || theHeight == 0 )
+    if ( width == 0 || height == 0 )
     {
       return QgsRasterIdentifyResult( QGS_ERROR( tr( "Context not fully specified (extent was defined but width and/or height was not)." ) ) );
     }
   }
-  else // context (theExtent, theWidth, theHeight) not defined
+  else // context (boundingBox, width, height) not defined
   {
     // We don't know original source resolution, so we take some small extent around the point.
 
@@ -2432,43 +2432,43 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
 
     // 1x1 should be sufficient but at least we know that GDAL ECW was very unefficient
     // so we use 2x2 (until we find that it is too small for some server)
-    theWidth = theHeight = 2;
+    width = height = 2;
 
-    myExtent = QgsRectangle( thePoint.x() - xRes, thePoint.y() - yRes,
-                             thePoint.x() + xRes, thePoint.y() + yRes );
+    myExtent = QgsRectangle( point.x() - xRes, point.y() - yRes,
+                             point.x() + xRes, point.y() + yRes );
   }
 
   // Point in BBOX/WIDTH/HEIGHT coordinates
   // No need to fiddle with extent origin not covered by layer extent, I believe
-  double xRes = myExtent.width() / theWidth;
-  double yRes = myExtent.height() / theHeight;
+  double xRes = myExtent.width() / width;
+  double yRes = myExtent.height() / height;
 
   // Mapserver (6.0.3, for example) does not seem to work with 1x1 pixel box
   // (seems to be a different issue, not the slownes of GDAL with ECW mentioned above)
   // so we have to enlarge it a bit
-  if ( theWidth == 1 )
+  if ( width == 1 )
   {
-    theWidth += 1;
+    width += 1;
     myExtent.setXMaximum( myExtent.xMaximum() + xRes );
   }
 
-  if ( theHeight == 1 )
+  if ( height == 1 )
   {
-    theHeight += 1;
+    height += 1;
     myExtent.setYMaximum( myExtent.yMaximum() + yRes );
   }
 
   QgsDebugMsg( "myExtent = " + myExtent.toString() );
-  QgsDebugMsg( QString( "theWidth = %1 theHeight = %2" ).arg( theWidth ).arg( theHeight ) );
+  QgsDebugMsg( QString( "theWidth = %1 height = %2" ).arg( width ).arg( height ) );
   QgsDebugMsg( QString( "xRes = %1 yRes = %2" ).arg( xRes ).arg( yRes ) );
 
-  QgsPoint point;
-  point.setX( floor(( thePoint.x() - myExtent.xMinimum() ) / xRes ) );
-  point.setY( floor(( myExtent.yMaximum() - thePoint.y() ) / yRes ) );
+  QgsPoint finalPoint;
+  finalPoint.setX( floor(( finalPoint.x() - myExtent.xMinimum() ) / xRes ) );
+  finalPoint.setY( floor(( myExtent.yMaximum() - finalPoint.y() ) / yRes ) );
 
-  QgsDebugMsg( QString( "point = %1 %2" ).arg( point.x() ).arg( point.y() ) );
+  QgsDebugMsg( QString( "point = %1 %2" ).arg( finalPoint.x() ).arg( finalPoint.y() ) );
 
-  QgsDebugMsg( QString( "recalculated orig point (corner) = %1 %2" ).arg( myExtent.xMinimum() + point.x()*xRes ).arg( myExtent.yMaximum() - point.y()*yRes ) );
+  QgsDebugMsg( QString( "recalculated orig point (corner) = %1 %2" ).arg( myExtent.xMinimum() + finalPoint.x()*xRes ).arg( myExtent.yMaximum() - finalPoint.y()*yRes ) );
 
   // Collect which layers to query on
   //according to the WMS spec for 1.3, the order of x - and y - coordinates is inverted for geographical CRS
@@ -2527,23 +2527,23 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
       setQueryItem( requestUrl, QStringLiteral( "REQUEST" ), QStringLiteral( "GetFeatureInfo" ) );
       setQueryItem( requestUrl, QStringLiteral( "BBOX" ), bbox );
       setSRSQueryItem( requestUrl );
-      setQueryItem( requestUrl, QStringLiteral( "WIDTH" ), QString::number( theWidth ) );
-      setQueryItem( requestUrl, QStringLiteral( "HEIGHT" ), QString::number( theHeight ) );
+      setQueryItem( requestUrl, QStringLiteral( "WIDTH" ), QString::number( width ) );
+      setQueryItem( requestUrl, QStringLiteral( "HEIGHT" ), QString::number( height ) );
       setQueryItem( requestUrl, QStringLiteral( "LAYERS" ), *layers );
       setQueryItem( requestUrl, QStringLiteral( "STYLES" ), *styles );
       setFormatQueryItem( requestUrl );
       setQueryItem( requestUrl, QStringLiteral( "QUERY_LAYERS" ), *layers );
-      setQueryItem( requestUrl, QStringLiteral( "INFO_FORMAT" ), format );
+      setQueryItem( requestUrl, QStringLiteral( "INFO_FORMAT" ), formatStr );
 
       if ( mCaps.mCapabilities.version == QLatin1String( "1.3.0" ) || mCaps.mCapabilities.version == QLatin1String( "1.3" ) )
       {
-        setQueryItem( requestUrl, QStringLiteral( "I" ), QString::number( point.x() ) );
-        setQueryItem( requestUrl, QStringLiteral( "J" ), QString::number( point.y() ) );
+        setQueryItem( requestUrl, QStringLiteral( "I" ), QString::number( finalPoint.x() ) );
+        setQueryItem( requestUrl, QStringLiteral( "J" ), QString::number( finalPoint.y() ) );
       }
       else
       {
-        setQueryItem( requestUrl, QStringLiteral( "X" ), QString::number( point.x() ) );
-        setQueryItem( requestUrl, QStringLiteral( "Y" ), QString::number( point.y() ) );
+        setQueryItem( requestUrl, QStringLiteral( "X" ), QString::number( finalPoint.x() ) );
+        setQueryItem( requestUrl, QStringLiteral( "Y" ), QString::number( finalPoint.y() ) );
       }
 
       if ( mSettings.mFeatureCount > 0 )
@@ -2558,7 +2558,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
   else if ( mTileLayer && mTileLayer->tileMode == WMTS )
   {
     // WMTS FeatureInfo
-    double vres = theExtent.width() / theWidth;
+    double vres = boundingBox.width() / width;
     double tres = vres;
 
     const QgsWmtsTileMatrix *tm = nullptr;
@@ -2595,10 +2595,10 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
                );
 
     QgsDebugMsg( QString( "view extent: %1,%2 %3x%4  res:%5" )
-                 .arg( qgsDoubleToString( theExtent.xMinimum() ),
-                       qgsDoubleToString( theExtent.yMinimum() ) )
-                 .arg( theExtent.width() )
-                 .arg( theExtent.height() )
+                 .arg( qgsDoubleToString( boundingBox.xMinimum() ),
+                       qgsDoubleToString( boundingBox.yMinimum() ) )
+                 .arg( boundingBox.width() )
+                 .arg( boundingBox.height() )
                  .arg( vres, 0, 'f' )
                );
 
@@ -2614,19 +2614,19 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
     double thMap = tm->tileHeight * tres;
     QgsDebugMsg( QString( "tile map size: %1,%2" ).arg( qgsDoubleToString( twMap ), qgsDoubleToString( thMap ) ) );
 
-    int col = ( int ) floor(( thePoint.x() - tm->topLeft.x() ) / twMap );
-    int row = ( int ) floor(( tm->topLeft.y() - thePoint.y() ) / thMap );
+    int col = ( int ) floor(( point.x() - tm->topLeft.x() ) / twMap );
+    int row = ( int ) floor(( tm->topLeft.y() - point.y() ) / thMap );
     double tx = tm->topLeft.x() + col * twMap;
     double ty = tm->topLeft.y() - row * thMap;
-    int i   = ( thePoint.x() - tx ) / tres;
-    int j   = ( ty - thePoint.y() ) / tres;
+    int i   = ( point.x() - tx ) / tres;
+    int j   = ( ty - point.y() ) / tres;
 
     QgsDebugMsg( QString( "col=%1 row=%2 i=%3 j=%4 tx=%5 ty=%6" ).arg( col ).arg( row ).arg( i ).arg( j ).arg( tx, 0, 'f', 1 ).arg( ty, 0, 'f', 1 ) );
 
-    if ( mTileLayer->getFeatureInfoURLs.contains( format ) )
+    if ( mTileLayer->getFeatureInfoURLs.contains( formatStr ) )
     {
       // REST
-      QString url = mTileLayer->getFeatureInfoURLs[ format ];
+      QString url = mTileLayer->getFeatureInfoURLs[ formatStr ];
 
       url.replace( QLatin1String( "{layer}" ), mSettings.mActiveSubLayers[0], Qt::CaseInsensitive );
       url.replace( QLatin1String( "{style}" ), mSettings.mActiveSubStyles[0], Qt::CaseInsensitive );
@@ -2656,7 +2656,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
       setQueryItem( url, QStringLiteral( "VERSION" ), mCaps.mCapabilities.version );
       setQueryItem( url, QStringLiteral( "LAYER" ), mSettings.mActiveSubLayers[0] );
       setQueryItem( url, QStringLiteral( "STYLE" ), mSettings.mActiveSubStyles[0] );
-      setQueryItem( url, QStringLiteral( "INFOFORMAT" ), format );
+      setQueryItem( url, QStringLiteral( "INFOFORMAT" ), formatStr );
       setQueryItem( url, QStringLiteral( "TILEMATRIXSET" ), mTileMatrixSet->identifier );
       setQueryItem( url, QStringLiteral( "TILEMATRIX" ), tm->identifier );
 
@@ -2675,7 +2675,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
     }
     else
     {
-      QgsDebugMsg( QString( "No KVP and no feature info url for format %1" ).arg( format ) );
+      QgsDebugMsg( QString( "No KVP and no feature info url for format %1" ).arg( formatStr ) );
     }
   }
 
@@ -2736,11 +2736,11 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
       }
     }
 
-    if ( theFormat == QgsRaster::IdentifyFormatHtml || theFormat == QgsRaster::IdentifyFormatText )
+    if ( format == QgsRaster::IdentifyFormatHtml || format == QgsRaster::IdentifyFormatText )
     {
       results.insert( results.size(), QString::fromUtf8( mIdentifyResultBodies.value( 0 ) ) );
     }
-    else if ( theFormat == QgsRaster::IdentifyFormatFeature ) // GML
+    else if ( format == QgsRaster::IdentifyFormatFeature ) // GML
     {
       // The response maybe
       // 1) simple GML
@@ -3089,7 +3089,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
     }
   }
 
-  return QgsRasterIdentifyResult( theFormat, results );
+  return QgsRasterIdentifyResult( format, results );
 }
 
 void QgsWmsProvider::identifyReplyFinished()

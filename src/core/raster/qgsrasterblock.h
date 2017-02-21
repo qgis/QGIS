@@ -37,21 +37,21 @@ class CORE_EXPORT QgsRasterBlock
     QgsRasterBlock();
 
     /** \brief Constructor which allocates data block in memory
-     *  @param theDataType raster data type
-     *  @param theWidth width of data matrix
-     *  @param theHeight height of data matrix
+     *  @param dataType raster data type
+     *  @param width width of data matrix
+     *  @param height height of data matrix
      */
-    QgsRasterBlock( Qgis::DataType theDataType, int theWidth, int theHeight );
+    QgsRasterBlock( Qgis::DataType dataType, int width, int height );
 
     virtual ~QgsRasterBlock();
 
     /** \brief Reset block
-     *  @param theDataType raster data type
-     *  @param theWidth width of data matrix
-     *  @param theHeight height of data matrix
+     *  @param dataType raster data type
+     *  @param width width of data matrix
+     *  @param height height of data matrix
      *  @return true on success
      */
-    bool reset( Qgis::DataType theDataType, int theWidth, int theHeight );
+    bool reset( Qgis::DataType dataType, int width, int height );
 
     // TODO: consider if use isValid() at all, isEmpty() should be sufficient
     // and works also if block is valid but empty - difference between valid and empty?
@@ -158,10 +158,10 @@ class CORE_EXPORT QgsRasterBlock
     double noDataValue() const { return mNoDataValue; }
 
     /** Get byte array representing a value.
-     * @param theDataType data type
-     * @param theValue value
+     * @param dataType data type
+     * @param value value
      * @return byte array representing the value */
-    static QByteArray valueBytes( Qgis::DataType theDataType, double theValue );
+    static QByteArray valueBytes( Qgis::DataType dataType, double value );
 
     /** \brief Read a single value if type of block is numeric. If type is color,
      *  returned value is undefined.
@@ -241,7 +241,7 @@ class CORE_EXPORT QgsRasterBlock
 
     /** \brief Set the whole block to no data except specified rectangle
      *  @return true on success */
-    bool setIsNoDataExcept( QRect theExceptRect );
+    bool setIsNoDataExcept( QRect exceptRect );
 
     /** \brief Remove no data flag on pixel. If the raster block does not have an explicit
      * no data value set then an internal map of no data pixels is maintained for the block.
@@ -346,20 +346,20 @@ class CORE_EXPORT QgsRasterBlock
     QgsError error() const { return mError; }
 
     //! \brief Set error
-    void setError( const QgsError & theError ) { mError = theError;}
+    void setError( const QgsError & error ) { mError = error;}
 
     QString toString() const;
 
-    /** \brief For theExtent and theWidth, theHeight find rectangle covered by subextent.
+    /** \brief For extent and width, height find rectangle covered by subextent.
      * The output rect has x oriented from left to right and y from top to bottom
      * (upper-left to lower-right orientation).
-     * @param theExtent extent, usually the larger
-     * @param theWidth numbers of columns in theExtent
-     * @param theHeight numbers of rows in theExtent
-     * @param theSubExtent extent, usually smaller than theExtent
+     * @param extent extent, usually the larger
+     * @param width numbers of columns in theExtent
+     * @param height numbers of rows in theExtent
+     * @param subExtent extent, usually smaller than theExtent
      * @return the rectangle covered by sub extent
      */
-    static QRect subRect( const QgsRectangle &theExtent, int theWidth, int theHeight, const QgsRectangle &theSubExtent );
+    static QRect subRect( const QgsRectangle &extent, int width, int height, const QgsRectangle &subExtent );
 
     /** Returns the width (number of columns) of the raster block.
      * @see height
@@ -374,8 +374,8 @@ class CORE_EXPORT QgsRasterBlock
     int height() const { return mHeight; }
 
   private:
-    static QImage::Format imageFormat( Qgis::DataType theDataType );
-    static Qgis::DataType dataType( QImage::Format theFormat );
+    static QImage::Format imageFormat( Qgis::DataType dataType );
+    static Qgis::DataType dataType( QImage::Format format );
 
     /** Test if value is nodata comparing to noDataValue
      * @param value tested value

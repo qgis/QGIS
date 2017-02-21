@@ -103,17 +103,17 @@ void TestQgsRasterFileWriter::writeTest()
   QVERIFY( allOK );
 }
 
-bool TestQgsRasterFileWriter::writeTest( const QString& theRasterName )
+bool TestQgsRasterFileWriter::writeTest( const QString& rasterName )
 {
-  mReport += "<h2>" + theRasterName + "</h2>\n";
+  mReport += "<h2>" + rasterName + "</h2>\n";
 
-  QString myFileName = mTestDataDir + '/' + theRasterName;
+  QString myFileName = mTestDataDir + '/' + rasterName;
   qDebug() << myFileName;
   QFileInfo myRasterFileInfo( myFileName );
 
   std::unique_ptr<QgsRasterLayer> mpRasterLayer( new QgsRasterLayer( myRasterFileInfo.filePath(),
       myRasterFileInfo.completeBaseName() ) );
-  qDebug() << theRasterName <<  " metadata: " << mpRasterLayer->dataProvider()->metadata();
+  qDebug() << rasterName <<  " metadata: " << mpRasterLayer->dataProvider()->metadata();
 
   if ( !mpRasterLayer->isValid() ) return false;
 

@@ -71,12 +71,12 @@ int QgsInterpolator::cacheBaseData()
 
     QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attList ) );
 
-    QgsFeature theFeature;
-    while ( fit.nextFeature( theFeature ) )
+    QgsFeature feature;
+    while ( fit.nextFeature( feature ) )
     {
       if ( !layer.zCoordInterpolation )
       {
-        QVariant attributeVariant = theFeature.attribute( layer.interpolationAttribute );
+        QVariant attributeVariant = feature.attribute( layer.interpolationAttribute );
         if ( !attributeVariant.isValid() ) //attribute not found, something must be wrong (e.g. NULL value)
         {
           continue;
@@ -88,7 +88,7 @@ int QgsInterpolator::cacheBaseData()
         }
       }
 
-      if ( addVerticesToCache( theFeature.geometry(), layer.zCoordInterpolation, attributeValue ) != 0 )
+      if ( addVerticesToCache( feature.geometry(), layer.zCoordInterpolation, attributeValue ) != 0 )
       {
         return 3;
       }
@@ -107,7 +107,7 @@ int QgsInterpolator::addVerticesToCache( const QgsGeometry& geom, bool zCoord, d
   QByteArray wkb( geom.exportToWkb() );
   QgsConstWkbPtr currentWkbPtr( wkb );
   currentWkbPtr.readHeader();
-  vertexData theVertex; //the current vertex
+  vertexData vertex; //the current vertex
 
   QgsWkbTypes::Type wkbType = geom.wkbType();
   switch ( wkbType )
@@ -118,16 +118,16 @@ int QgsInterpolator::addVerticesToCache( const QgsGeometry& geom, bool zCoord, d
       FALLTHROUGH;
     case QgsWkbTypes::Point:
     {
-      currentWkbPtr >> theVertex.x >> theVertex.y;
+      currentWkbPtr >> vertex.x >> vertex.y;
       if ( zCoord && hasZValue )
       {
-        currentWkbPtr >> theVertex.z;
+        currentWkbPtr >> vertex.z;
       }
       else
       {
-        theVertex.z = attributeValue;
+        vertex.z = attributeValue;
       }
-      mCachedBaseData.push_back( theVertex );
+      mCachedBaseData.push_back( vertex );
       break;
     }
     case QgsWkbTypes::LineString25D:
@@ -140,16 +140,16 @@ int QgsInterpolator::addVerticesToCache( const QgsGeometry& geom, bool zCoord, d
       currentWkbPtr >> nPoints;
       for ( int index = 0; index < nPoints; ++index )
       {
-        currentWkbPtr >> theVertex.x >> theVertex.y;
+        currentWkbPtr >> vertex.x >> vertex.y;
         if ( zCoord && hasZValue ) //skip z-coordinate for 25D geometries
         {
-          currentWkbPtr >> theVertex.z;
+          currentWkbPtr >> vertex.z;
         }
         else
         {
-          theVertex.z = attributeValue;
+          vertex.z = attributeValue;
         }
-        mCachedBaseData.push_back( theVertex );
+        mCachedBaseData.push_back( vertex );
       }
       break;
     }

@@ -1069,10 +1069,10 @@ QgsMarkerSymbol::QgsMarkerSymbol( const QgsSymbolLayerList& layers )
     mLayers.append( new QgsSimpleMarkerSymbolLayer() );
 }
 
-void QgsMarkerSymbol::setAngle( double theAngle )
+void QgsMarkerSymbol::setAngle( double symbolAngle )
 {
   double origAngle = angle();
-  double angleDiff = theAngle - origAngle;
+  double angleDiff = symbolAngle - origAngle;
   Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
     QgsMarkerSymbolLayer* markerLayer = dynamic_cast<QgsMarkerSymbolLayer*>( layer );

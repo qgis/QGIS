@@ -31,8 +31,8 @@
 
 bool QgsImageWarper::sWarpCanceled = false;
 
-QgsImageWarper::QgsImageWarper( QWidget *theParent )
-    : mParent( theParent )
+QgsImageWarper::QgsImageWarper( QWidget *parent )
+    : mParent( parent )
 {
 }
 

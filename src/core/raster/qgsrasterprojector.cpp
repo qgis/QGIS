@@ -64,10 +64,10 @@ Qgis::DataType QgsRasterProjector::dataType( int bandNo ) const
 /// @cond PRIVATE
 
 
-void QgsRasterProjector::setCrs( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS, int srcDatumTransform, int destDatumTransform )
+void QgsRasterProjector::setCrs( const QgsCoordinateReferenceSystem & srcCRS, const QgsCoordinateReferenceSystem & destCRS, int srcDatumTransform, int destDatumTransform )
 {
-  mSrcCRS = theSrcCRS;
-  mDestCRS = theDestCRS;
+  mSrcCRS = srcCRS;
+  mDestCRS = destCRS;
   mSrcDatumTransform = srcDatumTransform;
   mDestDatumTransform = destDatumTransform;
 }
@@ -377,22 +377,22 @@ void ProjectorData::calcSrcRowsCols()
 }
 
 
-inline void ProjectorData::destPointOnCPMatrix( int theRow, int theCol, double *theX, double *theY )
+inline void ProjectorData::destPointOnCPMatrix( int row, int col, double *theX, double *theY )
 {
-  *theX = mDestExtent.xMinimum() + theCol * mDestExtent.width() / ( mCPCols - 1 );
-  *theY = mDestExtent.yMaximum() - theRow * mDestExtent.height() / ( mCPRows - 1 );
+  *theX = mDestExtent.xMinimum() + col * mDestExtent.width() / ( mCPCols - 1 );
+  *theY = mDestExtent.yMaximum() - row * mDestExtent.height() / ( mCPRows - 1 );
 }
 
-inline int ProjectorData::matrixRow( int theDestRow )
+inline int ProjectorData::matrixRow( int destRow )
 {
-  return static_cast< int >( floor(( theDestRow + 0.5 ) / mDestRowsPerMatrixRow ) );
+  return static_cast< int >( floor(( destRow + 0.5 ) / mDestRowsPerMatrixRow ) );
 }
-inline int ProjectorData::matrixCol( int theDestCol )
+inline int ProjectorData::matrixCol( int destCol )
 {
-  return static_cast< int >( floor(( theDestCol + 0.5 ) / mDestColsPerMatrixCol ) );
+  return static_cast< int >( floor(( destCol + 0.5 ) / mDestColsPerMatrixCol ) );
 }
 
-void ProjectorData::calcHelper( int theMatrixRow, QgsPoint *thePoints )
+void ProjectorData::calcHelper( int matrixRow, QgsPoint *points )
 {
   // TODO?: should we also precalc dest cell center coordinates for x and y?
   for ( int myDestCol = 0; myDestCol < mDestCols; myDestCol++ )
@@ -403,18 +403,18 @@ void ProjectorData::calcHelper( int theMatrixRow, QgsPoint *thePoints )
 
     double myDestXMin, myDestYMin, myDestXMax, myDestYMax;
 
-    destPointOnCPMatrix( theMatrixRow, myMatrixCol, &myDestXMin, &myDestYMin );
-    destPointOnCPMatrix( theMatrixRow, myMatrixCol + 1, &myDestXMax, &myDestYMax );
+    destPointOnCPMatrix( matrixRow, myMatrixCol, &myDestXMin, &myDestYMin );
+    destPointOnCPMatrix( matrixRow, myMatrixCol + 1, &myDestXMax, &myDestYMax );
 
     double xfrac = ( myDestX - myDestXMin ) / ( myDestXMax - myDestXMin );
 
-    QgsPoint &mySrcPoint0 = mCPMatrix[theMatrixRow][myMatrixCol];
-    QgsPoint &mySrcPoint1 = mCPMatrix[theMatrixRow][myMatrixCol+1];
+    QgsPoint &mySrcPoint0 = mCPMatrix[matrixRow][myMatrixCol];
+    QgsPoint &mySrcPoint1 = mCPMatrix[matrixRow][myMatrixCol+1];
     double s = mySrcPoint0.x() + ( mySrcPoint1.x() - mySrcPoint0.x() ) * xfrac;
     double t = mySrcPoint0.y() + ( mySrcPoint1.y() - mySrcPoint0.y() ) * xfrac;
 
-    thePoints[myDestCol].setX( s );
-    thePoints[myDestCol].setY( t );
+    points[myDestCol].setX( s );
+    points[myDestCol].setY( t );
   }
 }
 
@@ -429,28 +429,28 @@ void ProjectorData::nextHelper()
   mHelperTopRow++;
 }
 
-bool ProjectorData::srcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol )
+bool ProjectorData::srcRowCol( int destRow, int destCol, int *srcRow, int *srcCol )
 {
   if ( mApproximate )
   {
-    return approximateSrcRowCol( theDestRow, theDestCol, theSrcRow, theSrcCol );
+    return approximateSrcRowCol( destRow, destCol, srcRow, srcCol );
   }
   else
   {
-    return preciseSrcRowCol( theDestRow, theDestCol, theSrcRow, theSrcCol );
+    return preciseSrcRowCol( destRow, destCol, srcRow, srcCol );
   }
 }
 
-bool ProjectorData::preciseSrcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol )
+bool ProjectorData::preciseSrcRowCol( int destRow, int destCol, int *srcRow, int *srcCol )
 {
 #ifdef QGISDEBUG
-  QgsDebugMsgLevel( QString( "theDestRow = %1" ).arg( theDestRow ), 5 );
-  QgsDebugMsgLevel( QString( "theDestRow = %1 mDestExtent.yMaximum() = %2 mDestYRes = %3" ).arg( theDestRow ).arg( mDestExtent.yMaximum() ).arg( mDestYRes ), 5 );
+  QgsDebugMsgLevel( QString( "theDestRow = %1" ).arg( destRow ), 5 );
+  QgsDebugMsgLevel( QString( "theDestRow = %1 mDestExtent.yMaximum() = %2 mDestYRes = %3" ).arg( destRow ).arg( mDestExtent.yMaximum() ).arg( mDestYRes ), 5 );
 #endif
 
   // Get coordinate of center of destination cell
-  double x = mDestExtent.xMinimum() + ( theDestCol + 0.5 ) * mDestXRes;
-  double y = mDestExtent.yMaximum() - ( theDestRow + 0.5 ) * mDestYRes;
+  double x = mDestExtent.xMinimum() + ( destCol + 0.5 ) * mDestXRes;
+  double y = mDestExtent.yMaximum() - ( destRow + 0.5 ) * mDestYRes;
   double z = 0;
 
 #ifdef QGISDEBUG
@@ -471,29 +471,29 @@ bool ProjectorData::preciseSrcRowCol( int theDestRow, int theDestCol, int *theSr
     return false;
   }
   // Get source row col
-  *theSrcRow = static_cast< int >( floor(( mSrcExtent.yMaximum() - y ) / mSrcYRes ) );
-  *theSrcCol = static_cast< int >( floor(( x - mSrcExtent.xMinimum() ) / mSrcXRes ) );
+  *srcRow = static_cast< int >( floor(( mSrcExtent.yMaximum() - y ) / mSrcYRes ) );
+  *srcCol = static_cast< int >( floor(( x - mSrcExtent.xMinimum() ) / mSrcXRes ) );
 #ifdef QGISDEBUG
   QgsDebugMsgLevel( QString( "mSrcExtent.yMinimum() = %1 mSrcExtent.yMaximum() = %2 mSrcYRes = %3" ).arg( mSrcExtent.yMinimum() ).arg( mSrcExtent.yMaximum() ).arg( mSrcYRes ), 5 );
-  QgsDebugMsgLevel( QString( "theSrcRow = %1 theSrcCol = %2" ).arg( *theSrcRow ).arg( *theSrcCol ), 5 );
+  QgsDebugMsgLevel( QString( "theSrcRow = %1 srcCol = %2" ).arg( *srcRow ).arg( *srcCol ), 5 );
 #endif
 
-  // With epsg 32661 (Polar Stereographic) it was happening that *theSrcCol == mSrcCols
+  // With epsg 32661 (Polar Stereographic) it was happening that *srcCol == mSrcCols
   // For now silently correct limits to avoid crashes
   // TODO: review
   // should not happen
-  if ( *theSrcRow >= mSrcRows ) return false;
-  if ( *theSrcRow < 0 ) return false;
-  if ( *theSrcCol >= mSrcCols ) return false;
-  if ( *theSrcCol < 0 ) return false;
+  if ( *srcRow >= mSrcRows ) return false;
+  if ( *srcRow < 0 ) return false;
+  if ( *srcCol >= mSrcCols ) return false;
+  if ( *srcCol < 0 ) return false;
 
   return true;
 }
 
-bool ProjectorData::approximateSrcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol )
+bool ProjectorData::approximateSrcRowCol( int destRow, int destCol, int *srcRow, int *srcCol )
 {
-  int myMatrixRow = matrixRow( theDestRow );
-  int myMatrixCol = matrixCol( theDestCol );
+  int myMatrixRow = matrixRow( destRow );
+  int myMatrixCol = matrixCol( destCol );
 
   if ( myMatrixRow > mHelperTopRow )
   {
@@ -501,7 +501,7 @@ bool ProjectorData::approximateSrcRowCol( int theDestRow, int theDestCol, int *t
     nextHelper();
   }
 
-  double myDestY = mDestExtent.yMaximum() - ( theDestRow + 0.5 ) * mDestYRes;
+  double myDestY = mDestExtent.yMaximum() - ( destRow + 0.5 ) * mDestYRes;
 
   // See the schema in javax.media.jai.WarpGrid doc (but up side down)
   // TODO: use some kind of cache of values which can be reused
@@ -512,8 +512,8 @@ bool ProjectorData::approximateSrcRowCol( int theDestRow, int theDestCol, int *t
 
   double yfrac = ( myDestY - myDestYMin ) / ( myDestYMax - myDestYMin );
 
-  QgsPoint &myTop = pHelperTop[theDestCol];
-  QgsPoint &myBot = pHelperBottom[theDestCol];
+  QgsPoint &myTop = pHelperTop[destCol];
+  QgsPoint &myBot = pHelperBottom[destCol];
 
   // Warning: this is very SLOW compared to the following code!:
   //double mySrcX = myBot.x() + (myTop.x() - myBot.x()) * yfrac;
@@ -533,16 +533,16 @@ bool ProjectorData::approximateSrcRowCol( int theDestRow, int theDestCol, int *t
 
   // TODO: check again cell selection (coor is in the middle)
 
-  *theSrcRow = static_cast< int >( floor(( mSrcExtent.yMaximum() - mySrcY ) / mSrcYRes ) );
-  *theSrcCol = static_cast< int >( floor(( mySrcX - mSrcExtent.xMinimum() ) / mSrcXRes ) );
+  *srcRow = static_cast< int >( floor(( mSrcExtent.yMaximum() - mySrcY ) / mSrcYRes ) );
+  *srcCol = static_cast< int >( floor(( mySrcX - mSrcExtent.xMinimum() ) / mSrcXRes ) );
 
   // For now silently correct limits to avoid crashes
   // TODO: review
   // should not happen
-  if ( *theSrcRow >= mSrcRows ) return false;
-  if ( *theSrcRow < 0 ) return false;
-  if ( *theSrcCol >= mSrcCols ) return false;
-  if ( *theSrcCol < 0 ) return false;
+  if ( *srcRow >= mSrcRows ) return false;
+  if ( *srcRow < 0 ) return false;
+  if ( *srcCol >= mSrcCols ) return false;
+  if ( *srcCol < 0 ) return false;
 
   return true;
 }
@@ -589,48 +589,48 @@ void ProjectorData::insertCols( const QgsCoordinateTransform& ct )
 
 }
 
-void ProjectorData::calcCP( int theRow, int theCol, const QgsCoordinateTransform& ct )
+void ProjectorData::calcCP( int row, int col, const QgsCoordinateTransform& ct )
 {
   double myDestX, myDestY;
-  destPointOnCPMatrix( theRow, theCol, &myDestX, &myDestY );
+  destPointOnCPMatrix( row, col, &myDestX, &myDestY );
   QgsPoint myDestPoint( myDestX, myDestY );
   try
   {
     if ( ct.isValid() )
     {
-      mCPMatrix[theRow][theCol] = ct.transform( myDestPoint );
-      mCPLegalMatrix[theRow][theCol] = true;
+      mCPMatrix[row][col] = ct.transform( myDestPoint );
+      mCPLegalMatrix[row][col] = true;
     }
     else
     {
-      mCPLegalMatrix[theRow][theCol] = false;
+      mCPLegalMatrix[row][col] = false;
     }
   }
   catch ( QgsCsException &e )
   {
     Q_UNUSED( e );
     // Caught an error in transform
-    mCPLegalMatrix[theRow][theCol] = false;
+    mCPLegalMatrix[row][col] = false;
   }
 }
 
-bool ProjectorData::calcRow( int theRow, const QgsCoordinateTransform& ct )
+bool ProjectorData::calcRow( int row, const QgsCoordinateTransform& ct )
 {
-  QgsDebugMsgLevel( QString( "theRow = %1" ).arg( theRow ), 3 );
+  QgsDebugMsgLevel( QString( "theRow = %1" ).arg( row ), 3 );
   for ( int i = 0; i < mCPCols; i++ )
   {
-    calcCP( theRow, i, ct );
+    calcCP( row, i, ct );
   }
 
   return true;
 }
 
-bool ProjectorData::calcCol( int theCol, const QgsCoordinateTransform& ct )
+bool ProjectorData::calcCol( int col, const QgsCoordinateTransform& ct )
 {
-  QgsDebugMsgLevel( QString( "theCol = %1" ).arg( theCol ), 3 );
+  QgsDebugMsgLevel( QString( "theCol = %1" ).arg( col ), 3 );
   for ( int i = 0; i < mCPRows; i++ )
   {
-    calcCP( i, theCol, ct );
+    calcCP( i, col, ct );
   }
 
   return true;
@@ -850,44 +850,44 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
   return outputBlock;
 }
 
-bool QgsRasterProjector::destExtentSize( const QgsRectangle& theSrcExtent, int theSrcXSize, int theSrcYSize,
-    QgsRectangle& theDestExtent, int& theDestXSize, int& theDestYSize )
+bool QgsRasterProjector::destExtentSize( const QgsRectangle& srcExtent, int srcXSize, int srcYSize,
+    QgsRectangle& destExtent, int& destXSize, int& destYSize )
 {
-  if ( theSrcExtent.isEmpty() || theSrcXSize <= 0 || theSrcYSize <= 0 )
+  if ( srcExtent.isEmpty() || srcXSize <= 0 || srcYSize <= 0 )
   {
     return false;
   }
   QgsCoordinateTransform ct = QgsCoordinateTransformCache::instance()->transform( mSrcCRS.authid(), mDestCRS.authid(), mSrcDatumTransform, mDestDatumTransform );
 
-  return extentSize( ct, theSrcExtent, theSrcXSize, theSrcYSize, theDestExtent, theDestXSize, theDestYSize );
+  return extentSize( ct, srcExtent, srcXSize, srcYSize, destExtent, destXSize, destYSize );
 }
 
 bool QgsRasterProjector::extentSize( const QgsCoordinateTransform& ct,
-                                     const QgsRectangle& theSrcExtent, int theSrcXSize, int theSrcYSize,
-                                     QgsRectangle& theDestExtent, int& theDestXSize, int& theDestYSize )
+                                     const QgsRectangle& srcExtent, int srcXSize, int srcYSize,
+                                     QgsRectangle& destExtent, int& destXSize, int& destYSize )
 {
-  if ( theSrcExtent.isEmpty() || theSrcXSize <= 0 || theSrcYSize <= 0 )
+  if ( srcExtent.isEmpty() || srcXSize <= 0 || srcYSize <= 0 )
   {
     return false;
   }
 
-  theDestExtent = ct.transformBoundingBox( theSrcExtent );
+  destExtent = ct.transformBoundingBox( srcExtent );
 
   // We reproject pixel rectangle from 9 points matrix of source extent, of course, it gives
   // bigger xRes,yRes than reprojected edges (envelope)
-  double srcXStep = theSrcExtent.width() / 3;
-  double srcYStep = theSrcExtent.height() / 3;
-  double srcXRes = theSrcExtent.width() / theSrcXSize;
-  double srcYRes = theSrcExtent.height() / theSrcYSize;
+  double srcXStep = srcExtent.width() / 3;
+  double srcYStep = srcExtent.height() / 3;
+  double srcXRes = srcExtent.width() / srcXSize;
+  double srcYRes = srcExtent.height() / srcYSize;
   double destXRes = std::numeric_limits<double>::max();
   double destYRes = std::numeric_limits<double>::max();
 
   for ( int i = 0; i < 3; i++ )
   {
-    double x = theSrcExtent.xMinimum() + i * srcXStep;
+    double x = srcExtent.xMinimum() + i * srcXStep;
     for ( int j = 0; j < 3; j++ )
     {
-      double y = theSrcExtent.yMinimum() + j * srcYStep;
+      double y = srcExtent.yMinimum() + j * srcYStep;
       QgsRectangle srcRectangle( x - srcXRes / 2, y - srcYRes / 2, x + srcXRes / 2, y + srcYRes / 2 );
       QgsRectangle destRectangle = ct.transformBoundingBox( srcRectangle );
       if ( destRectangle.width() > 0 )
@@ -900,8 +900,8 @@ bool QgsRasterProjector::extentSize( const QgsCoordinateTransform& ct,
       }
     }
   }
-  theDestXSize = std::max( 1, static_cast< int >( theDestExtent.width() / destYRes ) );
-  theDestYSize = std::max( 1, static_cast< int >( theDestExtent.height() / destYRes ) );
+  destXSize = std::max( 1, static_cast< int >( destExtent.width() / destYRes ) );
+  destYSize = std::max( 1, static_cast< int >( destExtent.height() / destYRes ) );
 
   return true;
 }

@@ -735,10 +735,10 @@ void QgsComposerLegend::doUpdateFilterByMap()
     QgsRectangle requestRectangle;
     mComposerMap->requestedExtent( requestRectangle );
 
-    QSizeF theSize( requestRectangle.width(), requestRectangle.height() );
-    theSize *= mComposerMap->mapUnitsToMM() * dpi / 25.4;
+    QSizeF size( requestRectangle.width(), requestRectangle.height() );
+    size *= mComposerMap->mapUnitsToMM() * dpi / 25.4;
 
-    QgsMapSettings ms = mComposerMap->mapSettings( requestRectangle, theSize, dpi );
+    QgsMapSettings ms = mComposerMap->mapSettings( requestRectangle, size, dpi );
 
     QgsGeometry filterPolygon;
     if ( mInAtlas )
