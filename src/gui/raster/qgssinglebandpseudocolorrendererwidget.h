@@ -39,7 +39,7 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
 
     QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
 
-    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) { return new QgsSingleBandPseudoColorRendererWidget( layer, theExtent ); }
+    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &extent ) { return new QgsSingleBandPseudoColorRendererWidget( layer, extent ); }
     QgsRasterRenderer* renderer() override;
     void setMapCanvas( QgsMapCanvas* canvas ) override;
     void doComputations() override;
@@ -53,7 +53,7 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
      */
     void classify();
     //! called when new min/max values are loaded
-    void loadMinMax( int theBandNo, double theMin, double theMax );
+    void loadMinMax( int bandNo, double min, double max );
 
   private:
 
@@ -93,8 +93,8 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
 
   private:
 
-    void setLineEditValue( QLineEdit *theLineEdit, double theValue );
-    double lineEditValue( const QLineEdit *theLineEdit ) const;
+    void setLineEditValue( QLineEdit *lineEdit, double value );
+    double lineEditValue( const QLineEdit *lineEdit ) const;
     void resetClassifyButton();
     QgsRasterMinMaxWidget * mMinMaxWidget = nullptr;
     bool mDisableMinMaxWidgetRefresh;

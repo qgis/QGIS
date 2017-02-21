@@ -139,7 +139,7 @@ void QgsLogger::fatal( const QString& msg )
   qFatal( "%s", msg.toLocal8Bit().constData() );
 }
 
-void QgsLogger::logMessageToFile( const QString& theMessage )
+void QgsLogger::logMessageToFile( const QString& message )
 {
   if ( sLogFile.isEmpty() )
     return;
@@ -148,7 +148,7 @@ void QgsLogger::logMessageToFile( const QString& theMessage )
   QFile file( sLogFile );
   if ( !file.open( QIODevice::Append ) )
     return;
-  file.write( theMessage.toLocal8Bit().constData() );
+  file.write( message.toLocal8Bit().constData() );
   file.write( "\n" );
   file.close();
 }

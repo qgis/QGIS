@@ -23,12 +23,12 @@ class QgsGdalLayerItem : public QgsLayerItem
 
   private:
 
-    QStringList sublayers;
+    QStringList mSublayers;
 
   public:
     QgsGdalLayerItem( QgsDataItem* parent,
                       QString name, QString path, QString uri,
-                      QStringList *theSublayers = nullptr );
+                      QStringList *mSublayers = nullptr );
 
     bool setCrs( const QgsCoordinateReferenceSystem& crs ) override;
 

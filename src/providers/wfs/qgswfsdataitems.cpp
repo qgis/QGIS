@@ -197,22 +197,22 @@ QGISEXTERN int dataCapabilities()
   return  QgsDataProvider::Net;
 }
 
-QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
+QGISEXTERN QgsDataItem * dataItem( QString path, QgsDataItem* parentItem )
 {
-  QgsDebugMsg( "thePath = " + thePath );
-  if ( thePath.isEmpty() )
+  QgsDebugMsg( "thePath = " + path );
+  if ( path.isEmpty() )
   {
     return new QgsWfsRootItem( parentItem, QStringLiteral( "WFS" ), QStringLiteral( "wfs:" ) );
   }
 
   // path schema: wfs:/connection name (used by OWS)
-  if ( thePath.startsWith( QLatin1String( "wfs:/" ) ) )
+  if ( path.startsWith( QLatin1String( "wfs:/" ) ) )
   {
-    QString connectionName = thePath.split( '/' ).last();
+    QString connectionName = path.split( '/' ).last();
     if ( QgsWfsConnection::connectionList().contains( connectionName ) )
     {
       QgsWfsConnection connection( connectionName );
-      return new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), thePath, connection.uri().uri() );
+      return new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), path, connection.uri().uri() );
     }
   }
 

@@ -280,23 +280,23 @@ QGISEXTERN int dataCapabilities()
   return  QgsDataProvider::Net;
 }
 
-QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
+QGISEXTERN QgsDataItem * dataItem( QString path, QgsDataItem* parentItem )
 {
-  QgsDebugMsg( "thePath = " + thePath );
-  if ( thePath.isEmpty() )
+  QgsDebugMsg( "thePath = " + path );
+  if ( path.isEmpty() )
   {
     // Top level WCS
     return new QgsWCSRootItem( parentItem, QStringLiteral( "WCS" ), QStringLiteral( "wcs:" ) );
   }
 
   // path schema: wcs:/connection name (used by OWS)
-  if ( thePath.startsWith( QLatin1String( "wcs:/" ) ) )
+  if ( path.startsWith( QLatin1String( "wcs:/" ) ) )
   {
-    QString connectionName = thePath.split( '/' ).last();
+    QString connectionName = path.split( '/' ).last();
     if ( QgsOwsConnection::connectionList( QStringLiteral( "WCS" ) ).contains( connectionName ) )
     {
       QgsOwsConnection connection( QStringLiteral( "WCS" ), connectionName );
-      return new QgsWCSConnectionItem( parentItem, QStringLiteral( "WCS" ), thePath, connection.uri().encodedUri() );
+      return new QgsWCSConnectionItem( parentItem, QStringLiteral( "WCS" ), path, connection.uri().encodedUri() );
     }
   }
 

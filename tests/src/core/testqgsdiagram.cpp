@@ -60,7 +60,7 @@ class TestQgsDiagram : public QObject
     QString mTestDataDir;
     QString mReport;
 
-    bool imageCheck( const QString& theTestType );
+    bool imageCheck( const QString& testType );
 
   private slots:
     // will be called before the first testfunction is executed.
@@ -546,7 +546,7 @@ class TestQgsDiagram : public QObject
 
 };
 
-bool TestQgsDiagram::imageCheck( const QString& theTestType )
+bool TestQgsDiagram::imageCheck( const QString& testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
@@ -557,10 +557,10 @@ bool TestQgsDiagram::imageCheck( const QString& theTestType )
   mMapSettings->setOutputDpi( 96 );
   QgsMultiRenderChecker checker;
   checker.setControlPathPrefix( "diagrams" );
-  checker.setControlName( "expected_" + theTestType );
+  checker.setControlName( "expected_" + testType );
   checker.setMapSettings( *mMapSettings );
   checker.setColorTolerance( 15 );
-  bool resultFlag = checker.runTest( theTestType, 200 );
+  bool resultFlag = checker.runTest( testType, 200 );
   mReport += checker.report();
   return resultFlag;
 }

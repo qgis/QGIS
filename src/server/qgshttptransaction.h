@@ -128,12 +128,12 @@ class QgsHttpTransaction : public QObject
     void setProgress( int done, int total );
 
     //! Signal for progress update
-    void dataReadProgress( int theProgress );
+    void dataReadProgress( int progress );
     //! Signal for adjusted number of steps
-    void totalSteps( int theTotalSteps );
+    void totalSteps( int totalSteps );
 
     //! \brief emit a signal to be caught by qgisapp and display a msg on status bar
-    void statusChanged( const QString& theStatusQString );
+    void statusChanged( const QString& statusQString );
 
 
   private:

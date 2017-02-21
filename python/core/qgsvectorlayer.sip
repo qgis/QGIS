@@ -661,16 +661,16 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
     /**
      * Load a named style from file/local db/datasource db
      * @param theURI the URI of the style or the URI of the layer
-     * @param theResultFlag will be set to true if a named style is correctly loaded
+     * @param resultFlag will be set to true if a named style is correctly loaded
      * @param loadFromLocalDb if true forces to load from local db instead of datasource one
      */
-    virtual QString loadNamedStyle( const QString &theURI, bool &theResultFlag /Out/, bool loadFromLocalDb );
+    virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag /Out/, bool loadFromLocalDb );
 
     /**
-     * Calls loadNamedStyle( theURI, theResultFlag, false );
+     * Calls loadNamedStyle( theURI, resultFlag, false );
      * Retained for backward compatibility
      */
-    virtual QString loadNamedStyle( const QString &theURI, bool &theResultFlag /Out/ );
+    virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag /Out/ );
 
     /** Read the symbology for the current layer from the Dom node supplied.
      * @param node node that will contain the symbology definition for this layer.

@@ -25,9 +25,9 @@ QgsRasterRange::QgsRasterRange()
 {
 }
 
-QgsRasterRange::QgsRasterRange( double theMin, double theMax )
-    : mMin( theMin )
-    , mMax( theMax )
+QgsRasterRange::QgsRasterRange( double min, double max )
+    : mMin( min )
+    , mMax( max )
 {
 }
 

@@ -21,7 +21,7 @@ class QgsHillshadeRendererWidget: QgsRasterRendererWidget
     /**
       * Factory method to create the renderer for this type.
       */
-    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) /Factory/;
+    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &extent ) /Factory/;
 
     /**
      * @brief The renderer for the widget.

@@ -156,14 +156,14 @@ QgsRasterLayer* QgisAppInterface::addRasterLayer( const QString& url, const QStr
   return qgis->addRasterLayer( url, baseName, providerKey );
 }
 
-bool QgisAppInterface::addProject( const QString& theProjectName )
+bool QgisAppInterface::addProject( const QString& projectName )
 {
-  return qgis->addProject( theProjectName );
+  return qgis->addProject( projectName );
 }
 
-void QgisAppInterface::newProject( bool thePromptToSaveFlag )
+void QgisAppInterface::newProject( bool promptToSaveFlag )
 {
-  qgis->fileNew( thePromptToSaveFlag );
+  qgis->fileNew( promptToSaveFlag );
 }
 
 QgsMapLayer *QgisAppInterface::activeLayer()

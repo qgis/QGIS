@@ -65,7 +65,7 @@ class TestQgsFontMarkerSymbol : public QObject
   private:
     bool mTestHasError;
 
-    bool imageCheck( const QString& theType );
+    bool imageCheck( const QString& type );
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPointsLayer = nullptr;
     QgsFontMarkerSymbolLayer* mFontMarkerLayer = nullptr;
@@ -173,7 +173,7 @@ void TestQgsFontMarkerSymbol::bounds()
 //
 
 
-bool TestQgsFontMarkerSymbol::imageCheck( const QString& theTestType )
+bool TestQgsFontMarkerSymbol::imageCheck( const QString& testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
@@ -181,9 +181,9 @@ bool TestQgsFontMarkerSymbol::imageCheck( const QString& theTestType )
   mMapSettings.setOutputDpi( 96 );
   QgsRenderChecker myChecker;
   myChecker.setControlPathPrefix( QStringLiteral( "symbol_fontmarker" ) );
-  myChecker.setControlName( "expected_" + theTestType );
+  myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( mMapSettings );
-  bool myResultFlag = myChecker.runTest( theTestType, 30 );
+  bool myResultFlag = myChecker.runTest( testType, 30 );
   mReport += myChecker.report();
   return myResultFlag;
 }

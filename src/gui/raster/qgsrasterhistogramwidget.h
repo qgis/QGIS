@@ -46,13 +46,13 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
     QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget *parent = nullptr );
 
     //! Save the histogram as an image to disk
-    bool histoSaveAsImage( const QString& theFilename, int width = 600, int height = 600, int quality = -1 );
+    bool histoSaveAsImage( const QString& filename, int width = 600, int height = 600, int quality = -1 );
 
     //! Set the renderer widget (or just its name if there is no widget)
     void setRendererWidget( const QString& name, QgsRasterRendererWidget* rendererWidget = nullptr );
 
     //! Activate the histogram widget
-    void setActive( bool theActiveFlag );
+    void setActive( bool activeFlag );
 
     //! \brief Compute the histogram on demand.
     bool computeHistogram( bool forceComputeFlag );
@@ -127,6 +127,6 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
     QList< int > histoSelectedBands();
     //! \brief Returns a list of selected bands in the renderer widget.
     QList< int > rendererSelectedBands();
-    QPair< QString, QString > rendererMinMax( int theBandNo );
+    QPair< QString, QString > rendererMinMax( int bandNo );
 };
 #endif

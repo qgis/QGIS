@@ -224,51 +224,51 @@ class CORE_EXPORT QgsMapSettings
     const QgsMapToPixel& mapToPixel() const { return mMapToPixel; }
 
     /** Computes an *estimated* conversion factor between layer and map units: layerUnits * layerToMapUnits = mapUnits
-     * @param theLayer The layer
+     * @param layer The layer
      * @param referenceExtent A reference extent based on which to perform the computation. If not specified, the layer extent is used
      * @note added in QGIS 2.12
      */
-    double layerToMapUnits( QgsMapLayer* theLayer, const QgsRectangle& referenceExtent = QgsRectangle() ) const;
+    double layerToMapUnits( QgsMapLayer* layer, const QgsRectangle& referenceExtent = QgsRectangle() ) const;
 
     /**
      * @brief transform bounding box from layer's CRS to output CRS
-     * @see layerToMapCoordinates( QgsMapLayer* theLayer, QgsRectangle rect ) if you want to transform a rectangle
+     * @see layerToMapCoordinates( QgsMapLayer* layer, QgsRectangle rect ) if you want to transform a rectangle
      * @return a bounding box (aligned rectangle) containing the transformed extent
      */
-    QgsRectangle layerExtentToOutputExtent( QgsMapLayer* theLayer, QgsRectangle extent ) const;
+    QgsRectangle layerExtentToOutputExtent( QgsMapLayer* layer, QgsRectangle extent ) const;
 
     /**
      * @brief transform bounding box from output CRS to layer's CRS
-     * @see mapToLayerCoordinates( QgsMapLayer* theLayer,QgsRectangle rect ) if you want to transform a rectangle
+     * @see mapToLayerCoordinates( QgsMapLayer* layer,QgsRectangle rect ) if you want to transform a rectangle
      * @return a bounding box (aligned rectangle) containing the transformed extent
      */
-    QgsRectangle outputExtentToLayerExtent( QgsMapLayer* theLayer, QgsRectangle extent ) const;
+    QgsRectangle outputExtentToLayerExtent( QgsMapLayer* layer, QgsRectangle extent ) const;
 
     /**
      * @brief transform point coordinates from layer's CRS to output CRS
      * @return the transformed point
      */
-    QgsPoint layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint point ) const;
+    QgsPoint layerToMapCoordinates( QgsMapLayer* layer, QgsPoint point ) const;
 
     /**
      * @brief transform rectangle from layer's CRS to output CRS
      * @see layerExtentToOutputExtent() if you want to transform a bounding box
      * @return the transformed rectangle
      */
-    QgsRectangle layerToMapCoordinates( QgsMapLayer* theLayer, QgsRectangle rect ) const;
+    QgsRectangle layerToMapCoordinates( QgsMapLayer* layer, QgsRectangle rect ) const;
 
     /**
      * @brief transform point coordinates from output CRS to layer's CRS
      * @return the transformed point
      */
-    QgsPoint mapToLayerCoordinates( QgsMapLayer* theLayer, QgsPoint point ) const;
+    QgsPoint mapToLayerCoordinates( QgsMapLayer* layer, QgsPoint point ) const;
 
     /**
      * @brief transform rectangle from output CRS to layer's CRS
      * @see outputExtentToLayerExtent() if you want to transform a bounding box
      * @return the transformed rectangle
      */
-    QgsRectangle mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRectangle rect ) const;
+    QgsRectangle mapToLayerCoordinates( QgsMapLayer* layer, QgsRectangle rect ) const;
 
     /**
      * @brief Return coordinate transform from layer's CRS to destination CRS
@@ -282,9 +282,9 @@ class CORE_EXPORT QgsMapSettings
 
     /* serialization */
 
-    void readXml( QDomNode& theNode );
+    void readXml( QDomNode& node );
 
-    void writeXml( QDomNode& theNode, QDomDocument& theDoc );
+    void writeXml( QDomNode& node, QDomDocument& doc );
 
     /** Sets the segmentation tolerance applied when rendering curved geometries
     @param tolerance the segmentation tolerance*/

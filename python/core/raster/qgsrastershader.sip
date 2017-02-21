@@ -7,7 +7,7 @@ class QgsRasterShader
 %End
 
   public:
-    QgsRasterShader( double theMinimumValue = 0.0, double theMaximumValue = 255.0 );
+    QgsRasterShader( double minimumValue = 0.0, double maximumValue = 255.0 );
     ~QgsRasterShader();
 
     /*

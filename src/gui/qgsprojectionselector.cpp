@@ -112,18 +112,18 @@ QgsProjectionSelector::~QgsProjectionSelector()
   settings.setValue( QStringLiteral( "/UI/recentProjectionsAuthId" ), projectionsAuthId );
 }
 
-void QgsProjectionSelector::resizeEvent( QResizeEvent * theEvent )
+void QgsProjectionSelector::resizeEvent( QResizeEvent * event )
 {
-  lstCoordinateSystems->header()->resizeSection( NameColumn, theEvent->size().width() - 240 );
+  lstCoordinateSystems->header()->resizeSection( NameColumn, event->size().width() - 240 );
   lstCoordinateSystems->header()->resizeSection( AuthidColumn, 240 );
   lstCoordinateSystems->header()->resizeSection( QgisCrsIdColumn, 0 );
 
-  lstRecent->header()->resizeSection( NameColumn, theEvent->size().width() - 240 );
+  lstRecent->header()->resizeSection( NameColumn, event->size().width() - 240 );
   lstRecent->header()->resizeSection( AuthidColumn, 240 );
   lstRecent->header()->resizeSection( QgisCrsIdColumn, 0 );
 }
 
-void QgsProjectionSelector::showEvent( QShowEvent * theEvent )
+void QgsProjectionSelector::showEvent( QShowEvent * event )
 {
   // ensure the projection list view is actually populated
   // before we show this widget
@@ -143,7 +143,7 @@ void QgsProjectionSelector::showEvent( QShowEvent * theEvent )
   emit initialized();
 
   // Pass up the inheritance hierarchy
-  QWidget::showEvent( theEvent );
+  QWidget::showEvent( event );
 }
 
 QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * crsFilter )
@@ -259,12 +259,12 @@ void QgsProjectionSelector::applySelection( int column, QString value )
   }
 }
 
-void QgsProjectionSelector::insertRecent( long theCrsId )
+void QgsProjectionSelector::insertRecent( long crsId )
 {
   if ( !mProjListDone || !mUserProjListDone )
     return;
 
-  QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems( QString::number( theCrsId ), Qt::MatchExactly | Qt::MatchRecursive, QgisCrsIdColumn );
+  QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems( QString::number( crsId ), Qt::MatchExactly | Qt::MatchRecursive, QgisCrsIdColumn );
   if ( nodes.isEmpty() )
     return;
 
@@ -794,11 +794,11 @@ void QgsProjectionSelector::on_cbxHideDeprecated_stateChanged()
     hideDeprecated( lstCoordinateSystems->topLevelItem( i ) );
 }
 
-void QgsProjectionSelector::on_leSearch_textChanged( const QString & theFilterTxt )
+void QgsProjectionSelector::on_leSearch_textChanged( const QString & filterTxt )
 {
-  QString filterTxt = theFilterTxt;
-  filterTxt.replace( QRegExp( "\\s+" ), QStringLiteral( ".*" ) );
-  QRegExp re( filterTxt, Qt::CaseInsensitive );
+  QString filterTxtCopy = filterTxt;
+  filterTxtCopy.replace( QRegExp( "\\s+" ), QStringLiteral( ".*" ) );
+  QRegExp re( filterTxtCopy, Qt::CaseInsensitive );
 
   // filter recent crs's
   QTreeWidgetItemIterator itr( lstRecent );
@@ -871,7 +871,7 @@ void QgsProjectionSelector::pushProjectionToFront()
 }
 
 
-long QgsProjectionSelector::getLargestCrsIdMatch( const QString& theSql )
+long QgsProjectionSelector::getLargestCrsIdMatch( const QString& sql )
 {
   long srsId = 0;
 
@@ -901,7 +901,7 @@ long QgsProjectionSelector::getLargestCrsIdMatch( const QString& theSql )
       return 0;
     }
 
-    result = sqlite3_prepare( database, theSql.toUtf8(), theSql.toUtf8().length(), &stmt, &tail );
+    result = sqlite3_prepare( database, sql.toUtf8(), sql.toUtf8().length(), &stmt, &tail );
     // XXX Need to free memory from the error msg if one is set
     if ( result == SQLITE_OK && sqlite3_step( stmt ) == SQLITE_ROW )
     {
@@ -925,7 +925,7 @@ long QgsProjectionSelector::getLargestCrsIdMatch( const QString& theSql )
     }
   }
 
-  result = sqlite3_prepare( database, theSql.toUtf8(), theSql.toUtf8().length(), &stmt, &tail );
+  result = sqlite3_prepare( database, sql.toUtf8(), sql.toUtf8().length(), &stmt, &tail );
   // XXX Need to free memory from the error msg if one is set
   if ( result == SQLITE_OK && sqlite3_step( stmt ) == SQLITE_ROW )
   {
@@ -954,8 +954,8 @@ QStringList QgsProjectionSelector::authorities()
     return QStringList();
   }
 
-  QString theSql = QStringLiteral( "select distinct auth_name from tbl_srs" );
-  result = sqlite3_prepare( database, theSql.toUtf8(), theSql.toUtf8().length(), &stmt, &tail );
+  QString sql = QStringLiteral( "select distinct auth_name from tbl_srs" );
+  result = sqlite3_prepare( database, sql.toUtf8(), sql.toUtf8().length(), &stmt, &tail );
 
   QStringList authorities;
   if ( result == SQLITE_OK )
@@ -993,11 +993,11 @@ const QString QgsProjectionSelector::sqlSafeString( const QString& theSQL )
   return retval;
 }
 
-void QgsProjectionSelector::showDBMissingWarning( const QString& theFileName )
+void QgsProjectionSelector::showDBMissingWarning( const QString& fileName )
 {
 
   QMessageBox::critical( this, tr( "Resource Location Error" ),
                          tr( "Error reading database file from: \n %1\n"
                              "Because of this the projection selector will not work..." )
-                         .arg( theFileName ) );
+                         .arg( fileName ) );
 }

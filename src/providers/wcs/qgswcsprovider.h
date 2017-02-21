@@ -144,7 +144,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
-    void readBlock( int theBandNo, int xBlock, int yBlock, void *block ) override;
+    void readBlock( int bandNo, int xBlock, int yBlock, void *block ) override;
 
     //! Download cache
     void getCache( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QString crs = QString(), QgsRasterBlockFeedback* feedback = nullptr ) const;
@@ -171,7 +171,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     int xSize() const override;
     int ySize() const override;
     QString metadata() override;
-    QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0, int theDpi = 96 ) override;
+    QgsRasterIdentifyResult identify( const QgsPoint & point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
     QString lastErrorTitle() override;
     QString lastError() override;
     QString lastErrorFormat() override;
@@ -195,7 +195,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
   signals:
 
     //! \brief emit a signal to notify of a progress event
-    void progressChanged( int theProgress, int theTotalSteps );
+    void progressChanged( int progress, int totalSteps );
 
     void dataChanged();
 

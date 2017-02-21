@@ -19,8 +19,8 @@
 
 #include <QSettings>
 
-QgsWfsConnection::QgsWfsConnection( const QString & theConnName )
-    : QgsOwsConnection( QStringLiteral( "WFS" ), theConnName )
+QgsWfsConnection::QgsWfsConnection( const QString & connName )
+    : QgsOwsConnection( QStringLiteral( "WFS" ), connName )
 {
   const QString& key = QgsWFSConstants::CONNECTIONS_WFS + mConnName;
 

@@ -23,17 +23,17 @@ QgsDetailedItemWidget::QgsDetailedItemWidget( QWidget * parent )
   setupUi( this );
 }
 
-void QgsDetailedItemWidget::setData( const QgsDetailedItemData& theData )
+void QgsDetailedItemWidget::setData( const QgsDetailedItemData& data )
 {
-  lblTitle->setText( theData.title() );
-  lblDetail->setText( theData.detail() );
-  lblCategory->setText( theData.category() );
-  cbx->setVisible( theData.isCheckable() );
-  cbx->setChecked( theData.isChecked() );
-  lblIcon->setPixmap( theData.icon() );
+  lblTitle->setText( data.title() );
+  lblDetail->setText( data.detail() );
+  lblCategory->setText( data.category() );
+  cbx->setVisible( data.isCheckable() );
+  cbx->setChecked( data.isChecked() );
+  lblIcon->setPixmap( data.icon() );
 }
 
-void QgsDetailedItemWidget::setChecked( bool theFlag )
+void QgsDetailedItemWidget::setChecked( bool flag )
 {
-  cbx->setChecked( theFlag );
+  cbx->setChecked( flag );
 }

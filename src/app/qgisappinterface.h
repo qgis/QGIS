@@ -76,9 +76,9 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgsRasterLayer* addRasterLayer( const QString& url, const QString& baseName, const QString& providerKey ) override;
 
     //! Add a project
-    bool addProject( const QString& theProjectName ) override;
+    bool addProject( const QString& projectName ) override;
     //! Start a new blank project
-    void newProject( bool thePromptToSaveFlag = false ) override;
+    void newProject( bool promptToSaveFlag = false ) override;
 
     //! Get pointer to the active layer (layer selected in the legend)
     QgsMapLayer *activeLayer() override;

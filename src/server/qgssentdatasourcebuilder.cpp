@@ -65,21 +65,21 @@ QgsVectorLayer* QgsSentDataSourceBuilder::vectorLayerFromSentVDS( const QDomElem
       return nullptr;
     }
 
-    QgsVectorLayer* theVectorLayer = new QgsVectorLayer( tmpFile->fileName(), layerNameFromUri( tmpFile->fileName() ), QStringLiteral( "WFS" ) );
-    if ( !theVectorLayer || !theVectorLayer->isValid() )
+    QgsVectorLayer* vectorLayer = new QgsVectorLayer( tmpFile->fileName(), layerNameFromUri( tmpFile->fileName() ), QStringLiteral( "WFS" ) );
+    if ( !vectorLayer || !vectorLayer->isValid() )
     {
       QgsDebugMsg( "invalid maplayer" );
       return nullptr;
     }
     QgsDebugMsg( "returning maplayer" );
 
-    layersToRemove.push_back( theVectorLayer ); //make sure the layer gets deleted after each request
+    layersToRemove.push_back( vectorLayer ); //make sure the layer gets deleted after each request
 
-    if ( !theVectorLayer || !theVectorLayer->isValid() )
+    if ( !vectorLayer || !vectorLayer->isValid() )
     {
       return nullptr;
     }
-    return theVectorLayer;
+    return vectorLayer;
   }
   return nullptr;
 }

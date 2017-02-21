@@ -242,7 +242,7 @@ bool TestRasterHistogram::saveImage( const QString& fileName )
 
 // test resulting image file - relax this test because there are too many possible outputs depending on machine
 // 1 means pass, 0 means warning (different images), -1 means fail (no image output)
-int TestRasterHistogram::testFile( QString theTestType,
+int TestRasterHistogram::testFile( QString testType,
                                    QString rendererName, QgsRasterRendererWidget* rendererWidget,
                                    QStringList actionsList, int selectedBand )
 {
@@ -268,25 +268,25 @@ int TestRasterHistogram::testFile( QString theTestType,
     mHistogramWidget->setSelectedBand( selectedBand );
   }
   QString fileName = QDir::tempPath() + "/" +
-                     theTestType + "_result.png";
+                     testType + "_result.png";
   if ( ! saveImage( fileName ) )
   {
     QWARN( QString( "Did not save image file " + fileName ).toLocal8Bit().data() );
     return -1;
   }
-  mReport += "<h2>" + theTestType + "</h2>\n";
+  mReport += "<h2>" + testType + "</h2>\n";
 
   QgsRenderChecker myChecker;
   myChecker.setControlPathPrefix( mTestPrefix );
-  myChecker.setControlName( "expected_histo_" + theTestType );
+  myChecker.setControlName( "expected_histo_" + testType );
   //  myChecker.setMapRenderer( mpMapRenderer );
-  bool myResultFlag = myChecker.compareImages( theTestType, 0, fileName );
+  bool myResultFlag = myChecker.compareImages( testType, 0, fileName );
   mReport += "\n\n\n" + myChecker.report();
 
   // return myResultFlag;
   if ( ! myResultFlag )
   {
-    QWARN( QString( "Test %1 failed with file %2 " ).arg( theTestType ).arg( fileName ).toLocal8Bit().data() );
+    QWARN( QString( "Test %1 failed with file %2 " ).arg( testType ).arg( fileName ).toLocal8Bit().data() );
     return 0;
   }
   return 1;

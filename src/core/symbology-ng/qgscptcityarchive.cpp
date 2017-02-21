@@ -1088,29 +1088,29 @@ QgsCptCityDataItem* QgsCptCityDirectoryItem::dataItem( QgsCptCityDataItem* paren
     return nullptr;
 
   // fetch sub-dirs and ramps to know what to do with this item
-  QStringList theDirEntries = dirItem->dirEntries();
-  QMap< QString, QStringList > theRampsMap = dirItem->rampsMap();
+  QStringList dirEntries = dirItem->dirEntries();
+  QMap< QString, QStringList > rampsMap = dirItem->rampsMap();
 
-  QgsDebugMsg( QString( "item has %1 dirs and %2 ramps" ).arg( theDirEntries.count() ).arg( theRampsMap.count() ) );
+  QgsDebugMsg( QString( "item has %1 dirs and %2 ramps" ).arg( dirEntries.count() ).arg( rampsMap.count() ) );
 
   // return item if has at least one subdir
-  if ( !theDirEntries.isEmpty() )
+  if ( !dirEntries.isEmpty() )
     return dirItem;
 
   // if 0 ramps, delete item
-  if ( theRampsMap.isEmpty() )
+  if ( rampsMap.isEmpty() )
   {
     delete dirItem;
     return nullptr;
   }
   // if 1 ramp, return this child's item
   // so we don't have a directory with just 1 item (with many variants possibly)
-  else if ( theRampsMap.count() == 1 )
+  else if ( rampsMap.count() == 1 )
   {
     delete dirItem;
     QgsCptCityColorRampItem* rampItem =
-      new QgsCptCityColorRampItem( parent, theRampsMap.begin().key(),
-                                   theRampsMap.begin().key(), theRampsMap.begin().value() );
+      new QgsCptCityColorRampItem( parent, rampsMap.begin().key(),
+                                   rampsMap.begin().key(), rampsMap.begin().value() );
     if ( ! rampItem->isValid() )
     {
       delete rampItem;
@@ -1430,7 +1430,7 @@ int QgsCptCityBrowserModel::columnCount( const QModelIndex &parent ) const
 
 QModelIndex QgsCptCityBrowserModel::findPath( const QString& path )
 {
-  QModelIndex theIndex; // starting from root
+  QModelIndex rootIndex; // starting from root
   bool foundParent = false, foundChild = true;
   QString itemPath;
 
@@ -1439,9 +1439,9 @@ QModelIndex QgsCptCityBrowserModel::findPath( const QString& path )
   // special case if searching for first item "All Ramps", do not search into tree
   if ( path.isEmpty() )
   {
-    for ( int i = 0; i < rowCount( theIndex ); i++ )
+    for ( int i = 0; i < rowCount( rootIndex ); i++ )
     {
-      QModelIndex idx = index( i, 0, theIndex );
+      QModelIndex idx = index( i, 0, rootIndex );
       QgsCptCityDataItem *item = dataItem( idx );
       if ( !item )
         return QModelIndex(); // an error occurred
@@ -1464,9 +1464,9 @@ QModelIndex QgsCptCityBrowserModel::findPath( const QString& path )
     // if root skip first item "All Ramps"
     if ( itemPath.isEmpty() )
       i = 1;
-    for ( ; i < rowCount( theIndex ); i++ )
+    for ( ; i < rowCount( rootIndex ); i++ )
     {
-      QModelIndex idx = index( i, 0, theIndex );
+      QModelIndex idx = index( i, 0, rootIndex );
       QgsCptCityDataItem *item = dataItem( idx );
       if ( !item )
         return QModelIndex(); // an error occurred
@@ -1516,9 +1516,9 @@ QModelIndex QgsCptCityBrowserModel::findPath( const QString& path )
         QgsDebugMsg( "found parent " + path );
         // we have found a preceding item: stop searching on this level and go deeper
         foundChild = true;
-        theIndex = idx;
-        if ( canFetchMore( theIndex ) )
-          fetchMore( theIndex );
+        rootIndex = idx;
+        if ( canFetchMore( rootIndex ) )
+          fetchMore( rootIndex );
         break;
       }
     }
@@ -1582,9 +1582,9 @@ QModelIndex QgsCptCityBrowserModel::findItem( QgsCptCityDataItem *item, QgsCptCi
 }
 
 /* Refresh item */
-void QgsCptCityBrowserModel::refresh( const QModelIndex& theIndex )
+void QgsCptCityBrowserModel::refresh( const QModelIndex& index )
 {
-  QgsCptCityDataItem *item = dataItem( theIndex );
+  QgsCptCityDataItem *item = dataItem( index );
   if ( !item )
     return;
 

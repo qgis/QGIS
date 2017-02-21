@@ -286,16 +286,16 @@ QModelIndex QgsBrowserModel::findPath( QAbstractItemModel *model, const QString&
   if ( !model )
     return QModelIndex();
 
-  QModelIndex theIndex; // starting from root
+  QModelIndex index; // starting from root
   bool foundChild = true;
 
   while ( foundChild )
   {
     foundChild = false; // assume that the next child item will not be found
 
-    for ( int i = 0; i < model->rowCount( theIndex ); i++ )
+    for ( int i = 0; i < model->rowCount( index ); i++ )
     {
-      QModelIndex idx = model->index( i, 0, theIndex );
+      QModelIndex idx = model->index( i, 0, index );
 
       QString itemPath = model->data( idx, PathRole ).toString();
       if ( itemPath == path )
@@ -308,14 +308,14 @@ QModelIndex QgsBrowserModel::findPath( QAbstractItemModel *model, const QString&
       if ( path.startsWith( itemPath + '/' ) )
       {
         foundChild = true;
-        theIndex = idx;
+        index = idx;
         break;
       }
     }
   }
 
   if ( matchFlag == Qt::MatchStartsWith )
-    return theIndex;
+    return index;
 
   QgsDebugMsg( "path not found" );
   return QModelIndex(); // not found
@@ -515,9 +515,9 @@ void QgsBrowserModel::refresh( const QString& path )
 }
 
 /* Refresh item */
-void QgsBrowserModel::refresh( const QModelIndex& theIndex )
+void QgsBrowserModel::refresh( const QModelIndex& index )
 {
-  QgsDataItem *item = dataItem( theIndex );
+  QgsDataItem *item = dataItem( index );
   if ( !item || item->state() == QgsDataItem::Populating )
     return;
 

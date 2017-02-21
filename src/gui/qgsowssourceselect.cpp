@@ -544,27 +544,27 @@ void QgsOWSSourceSelect::setConnectionListPosition()
   QgsOwsConnection::setSelectedConnection( mService, mConnectionsComboBox->currentText() );
 }
 
-void QgsOWSSourceSelect::showStatusMessage( QString const &theMessage )
+void QgsOWSSourceSelect::showStatusMessage( QString const &message )
 {
-  mStatusLabel->setText( theMessage );
+  mStatusLabel->setText( message );
 
   // update the display of this widget
   update();
 }
 
 
-void QgsOWSSourceSelect::showError( QString const &theTitle, QString const &theFormat, QString const &theError )
+void QgsOWSSourceSelect::showError( QString const &title, QString const &format, QString const &error )
 {
   QgsMessageViewer * mv = new QgsMessageViewer( this );
-  mv->setWindowTitle( theTitle );
+  mv->setWindowTitle( title );
 
-  if ( theFormat == QLatin1String( "text/html" ) )
+  if ( format == QLatin1String( "text/html" ) )
   {
-    mv->setMessageAsHtml( theError );
+    mv->setMessageAsHtml( error );
   }
   else
   {
-    mv->setMessageAsPlainText( tr( "Could not understand the response:\n%1" ).arg( theError ) );
+    mv->setMessageAsPlainText( tr( "Could not understand the response:\n%1" ).arg( error ) );
   }
   mv->showMessage( true ); // Is deleted when closed
 }

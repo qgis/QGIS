@@ -508,7 +508,7 @@ private:
                                                      // instance
     bool _haveLoadedAll;
 
-    static KeyboardTranslatorManager * theKeyboardTranslatorManager;
+    static KeyboardTranslatorManager * sKeyboardTranslatorManager;
 };
 
 inline int KeyboardTranslator::Entry::keyCode() const { return _keyCode; }

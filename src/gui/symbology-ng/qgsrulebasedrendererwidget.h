@@ -83,7 +83,7 @@ class GUI_EXPORT QgsRuleBasedRendererModel : public QAbstractItemModel
     void finishedAddingRules(); // call endInsertRows
 
     //! @note not available in python bindungs
-    void setFeatureCounts( const QHash<QgsRuleBasedRenderer::Rule *, QgsRuleBasedRendererCount> &theCountMap );
+    void setFeatureCounts( const QHash<QgsRuleBasedRenderer::Rule *, QgsRuleBasedRendererCount> &countMap );
     void clearFeatureCounts();
 
   protected:

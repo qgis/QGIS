@@ -4376,12 +4376,12 @@ void QgsVectorLayer::saveStyleToDatabase( const QString& name, const QString& de
 
 
 
-QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag )
+QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &resultFlag )
 {
-  return loadNamedStyle( theURI, theResultFlag, false );
+  return loadNamedStyle( theURI, resultFlag, false );
 }
 
-QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag, bool loadFromLocalDB )
+QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &resultFlag, bool loadFromLocalDB )
 {
   QgsDataSourceUri dsUri( theURI );
   if ( !loadFromLocalDB && mDataProvider && mDataProvider->isSaveAndLoadStyleToDatabaseSupported() )
@@ -4398,14 +4398,14 @@ QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &theResultFl
         {
           QDomDocument myDocument( QStringLiteral( "qgis" ) );
           myDocument.setContent( qml );
-          theResultFlag = importNamedStyle( myDocument, errorMsg );
+          resultFlag = importNamedStyle( myDocument, errorMsg );
           return QObject::tr( "Loaded from Provider" );
         }
       }
     }
   }
 
-  return QgsMapLayer::loadNamedStyle( theURI, theResultFlag );
+  return QgsMapLayer::loadNamedStyle( theURI, resultFlag );
 }
 
 QSet<QgsMapLayerDependency> QgsVectorLayer::dependencies() const

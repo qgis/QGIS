@@ -435,7 +435,7 @@ class QgsMarkerSymbol : QgsSymbol
      * @param angle new symbol angle
      * @see angle()
      */
-    void setAngle( double angle );
+    void setAngle( double symbolAngle );
 
     /** Returns the marker angle for the whole symbol. Note that for symbols with
      * multiple symbol layers, this will correspond just to the angle of

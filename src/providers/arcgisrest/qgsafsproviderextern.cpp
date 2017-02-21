@@ -55,21 +55,21 @@ QGISEXTERN int dataCapabilities()
   return  QgsDataProvider::Net;
 }
 
-QGISEXTERN QgsDataItem *dataItem( QString thePath, QgsDataItem *parentItem )
+QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 {
-  if ( thePath.isEmpty() )
+  if ( path.isEmpty() )
   {
     return new QgsAfsRootItem( parentItem, QStringLiteral( "ArcGisFeatureServer" ), QStringLiteral( "arcgisfeatureserver:" ) );
   }
 
   // path schema: afs:/connection name (used by OWS)
-  if ( thePath.startsWith( QLatin1String( "afs:/" ) ) )
+  if ( path.startsWith( QLatin1String( "afs:/" ) ) )
   {
-    QString connectionName = thePath.split( '/' ).last();
+    QString connectionName = path.split( '/' ).last();
     if ( QgsOwsConnection::connectionList( QStringLiteral( "ArcGisFeatureServer" ) ).contains( connectionName ) )
     {
       QgsOwsConnection connection( QStringLiteral( "ArcGisFeatureServer" ), connectionName );
-      return new QgsAfsConnectionItem( parentItem, QStringLiteral( "ArcGisFeatureServer" ), thePath, connection.uri().param( QStringLiteral( "url" ) ) );
+      return new QgsAfsConnectionItem( parentItem, QStringLiteral( "ArcGisFeatureServer" ), path, connection.uri().param( QStringLiteral( "url" ) ) );
     }
   }
 

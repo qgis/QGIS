@@ -148,7 +148,7 @@ class QgsSvgCache : QObject
 
   signals:
     /** Emit a signal to be caught by qgisapp and display a msg on status bar */
-    void statusChanged( const QString&  theStatusQString );
+    void statusChanged( const QString&  statusQString );
 
   protected:
 

@@ -63,7 +63,7 @@ QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &el
   QDomNodeList tinList = interpolationElem.elementsByTagName( QStringLiteral( "TINMethod" ) );
   QDomNodeList idwList = interpolationElem.elementsByTagName( QStringLiteral( "IDWMethod" ) );
 
-  QgsInterpolator* theInterpolator = nullptr;
+  QgsInterpolator* interpolator = nullptr;
   QList<QgsInterpolator::LayerData> layerDataList;
   QgsInterpolator::LayerData currentLayerData;
   currentLayerData.vectorLayer = mVectorLayer;
@@ -96,13 +96,13 @@ QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &el
 
   if ( !idwList.isEmpty() ) //inverse distance interpolator
   {
-    theInterpolator = new QgsIDWInterpolator( layerDataList );
+    interpolator = new QgsIDWInterpolator( layerDataList );
 
     //todo: parse <DistanceWeightingCoefficient>
   }
   else //tin is default
   {
-    theInterpolator = new QgsTINInterpolator( layerDataList );
+    interpolator = new QgsTINInterpolator( layerDataList );
     //todo: parse <InterpolationFunction>
   }
 
@@ -124,7 +124,7 @@ QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &el
     if ( nCols == 0 || nRows == 0 )
     {
       QgsDebugMsg( "Reading of resolution failed" );
-      delete theInterpolator;
+      delete interpolator;
       return nullptr;
     }
   }
@@ -134,12 +134,12 @@ QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &el
   {
     QgsDebugMsg( "Opening temporary file failed" );
     delete tmpFile;
-    delete theInterpolator;
+    delete interpolator;
     return nullptr;
   }
 
   QgsRectangle extent = mVectorLayer->extent();
-  QgsGridFileWriter gridWriter( theInterpolator, tmpFile->fileName(), extent, nCols, nRows, extent.width() / nCols, extent.height() / nRows );
+  QgsGridFileWriter gridWriter( interpolator, tmpFile->fileName(), extent, nCols, nRows, extent.width() / nCols, extent.height() / nRows );
   if ( gridWriter.writeFile( false ) != 0 )
   {
     QgsDebugMsg( "Interpolation of raster failed" );
@@ -147,7 +147,7 @@ QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &el
   }
 
   filesToRemove.push_back( tmpFile ); //store raster in temporary file and remove after request
-  QgsRasterLayer* theRaster = new QgsRasterLayer( tmpFile->fileName() );
-  layersToRemove.push_back( theRaster );
-  return theRaster;
+  QgsRasterLayer* raster = new QgsRasterLayer( tmpFile->fileName() );
+  layersToRemove.push_back( raster );
+  return raster;
 }

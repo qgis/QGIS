@@ -70,8 +70,8 @@ class TestQgsGradients : public QObject
     void gradientSymbolFromQml();
   private:
     bool mTestHasError;
-    bool setQml( const QString& theType );
-    bool imageCheck( const QString& theType );
+    bool setQml( const QString& type );
+    bool imageCheck( const QString& type );
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPolysLayer = nullptr;
     QgsGradientFillSymbolLayer* mGradientFill = nullptr;
@@ -265,12 +265,12 @@ void TestQgsGradients::gradientSymbolFromQml()
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsGradients::setQml( const QString& theType )
+bool TestQgsGradients::setQml( const QString& type )
 {
   //load a qml style and apply to our layer
   //the style will correspond to the renderer
   //type we are testing
-  QString myFileName = mTestDataDir + "polys_" + theType + "_symbol.qml";
+  QString myFileName = mTestDataDir + "polys_" + type + "_symbol.qml";
   bool myStyleFlag = false;
   QString error = mpPolysLayer->loadNamedStyle( myFileName, myStyleFlag );
   if ( !myStyleFlag )
@@ -280,16 +280,16 @@ bool TestQgsGradients::setQml( const QString& theType )
   return myStyleFlag;
 }
 
-bool TestQgsGradients::imageCheck( const QString& theTestType )
+bool TestQgsGradients::imageCheck( const QString& testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
   mMapSettings.setExtent( mpPolysLayer->extent() );
   QgsRenderChecker myChecker;
   myChecker.setControlPathPrefix( QStringLiteral( "symbol_gradient" ) );
-  myChecker.setControlName( "expected_" + theTestType );
+  myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( mMapSettings );
-  bool myResultFlag = myChecker.runTest( theTestType );
+  bool myResultFlag = myChecker.runTest( testType );
   mReport += myChecker.report();
   return myResultFlag;
 }

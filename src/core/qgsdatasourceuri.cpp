@@ -359,9 +359,9 @@ void QgsDataSourceUri::setKeyColumn( const QString& column )
 }
 
 
-void QgsDataSourceUri::setUseEstimatedMetadata( bool theFlag )
+void QgsDataSourceUri::setUseEstimatedMetadata( bool flag )
 {
-  mUseEstimatedMetadata = theFlag;
+  mUseEstimatedMetadata = flag;
 }
 
 bool QgsDataSourceUri::useEstimatedMetadata() const
@@ -369,9 +369,9 @@ bool QgsDataSourceUri::useEstimatedMetadata() const
   return mUseEstimatedMetadata;
 }
 
-void QgsDataSourceUri::disableSelectAtId( bool theFlag )
+void QgsDataSourceUri::disableSelectAtId( bool flag )
 {
-  mSelectAtIdDisabled = theFlag;
+  mSelectAtIdDisabled = flag;
 }
 
 bool QgsDataSourceUri::selectAtIdDisabled() const
@@ -394,14 +394,14 @@ void QgsDataSourceUri::setSchema( const QString& schema )
   mSchema = schema;
 }
 
-QString QgsDataSourceUri::escape( const QString &theVal, QChar delim = '\'' ) const
+QString QgsDataSourceUri::escape( const QString &val, QChar delim = '\'' ) const
 {
-  QString val = theVal;
+  QString escaped = val;
 
-  val.replace( '\\', QLatin1String( "\\\\" ) );
-  val.replace( delim, QStringLiteral( "\\%1" ).arg( delim ) );
+  escaped.replace( '\\', QLatin1String( "\\\\" ) );
+  escaped.replace( delim, QStringLiteral( "\\%1" ).arg( delim ) );
 
-  return val;
+  return escaped;
 }
 
 void QgsDataSourceUri::skipBlanks( const QString &uri, int &i )
@@ -552,32 +552,32 @@ QString QgsDataSourceUri::connectionInfo( bool expandAuthConfig ) const
 
 QString QgsDataSourceUri::uri( bool expandAuthConfig ) const
 {
-  QString theUri = connectionInfo( expandAuthConfig );
+  QString uri = connectionInfo( expandAuthConfig );
 
   if ( !mKeyColumn.isEmpty() )
   {
-    theUri += QStringLiteral( " key='%1'" ).arg( escape( mKeyColumn ) );
+    uri += QStringLiteral( " key='%1'" ).arg( escape( mKeyColumn ) );
   }
 
   if ( mUseEstimatedMetadata )
   {
-    theUri += QStringLiteral( " estimatedmetadata=true" );
+    uri += QStringLiteral( " estimatedmetadata=true" );
   }
 
   if ( !mSrid.isEmpty() )
   {
-    theUri += QStringLiteral( " srid=%1" ).arg( mSrid );
+    uri += QStringLiteral( " srid=%1" ).arg( mSrid );
   }
 
   if ( mWkbType != QgsWkbTypes::Unknown && mWkbType != QgsWkbTypes::NoGeometry )
   {
-    theUri += QLatin1String( " type=" );
-    theUri += QgsWkbTypes::displayString( mWkbType );
+    uri += QLatin1String( " type=" );
+    uri += QgsWkbTypes::displayString( mWkbType );
   }
 
   if ( mSelectAtIdDisabled )
   {
-    theUri += QStringLiteral( " selectatid=false" );
+    uri += QStringLiteral( " selectatid=false" );
   }
 
   for ( QMap<QString, QString>::const_iterator it = mParams.begin(); it != mParams.end(); ++it )
@@ -588,19 +588,19 @@ QString QgsDataSourceUri::uri( bool expandAuthConfig ) const
       continue;
     }
 
-    theUri += ' ' + it.key() + "='" + escape( it.value() ) + '\'';
+    uri += ' ' + it.key() + "='" + escape( it.value() ) + '\'';
   }
 
   QString columnName( mGeometryColumn );
   columnName.replace( '\\', QLatin1String( "\\\\" ) );
   columnName.replace( ')', QLatin1String( "\\)" ) );
 
-  theUri += QStringLiteral( " table=%1%2 sql=%3" )
-            .arg( quotedTablename(),
-                  mGeometryColumn.isNull() ? QString() : QStringLiteral( " (%1)" ).arg( columnName ),
-                  mSql );
+  uri += QStringLiteral( " table=%1%2 sql=%3" )
+         .arg( quotedTablename(),
+               mGeometryColumn.isNull() ? QString() : QStringLiteral( " (%1)" ).arg( columnName ),
+               mSql );
 
-  return theUri;
+  return uri;
 }
 
 QByteArray QgsDataSourceUri::encodedUri() const

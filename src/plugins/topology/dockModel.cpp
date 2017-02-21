@@ -18,7 +18,7 @@
 #include "dockModel.h"
 #include "topolError.h"
 
-DockModel::DockModel( ErrorList& theErrorList, QObject *parent = nullptr ) : mErrorlist( theErrorList )
+DockModel::DockModel( ErrorList& errorList, QObject *parent = nullptr ) : mErrorlist( errorList )
 {
   Q_UNUSED( parent );
   mHeader << QObject::tr( "Error" ) << QObject::tr( "Layer" ) << QObject::tr( "Feature ID" );

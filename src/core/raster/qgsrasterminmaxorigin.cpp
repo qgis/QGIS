@@ -45,9 +45,9 @@ bool QgsRasterMinMaxOrigin::operator ==( const QgsRasterMinMaxOrigin& other ) co
          qAbs( mStdDevFactor - other.mStdDevFactor ) < 1e-5;
 }
 
-QString QgsRasterMinMaxOrigin::limitsString( Limits theLimits )
+QString QgsRasterMinMaxOrigin::limitsString( Limits limits )
 {
-  switch ( theLimits )
+  switch ( limits )
   {
     case MinMax:
       return QStringLiteral( "MinMax" );
@@ -61,17 +61,17 @@ QString QgsRasterMinMaxOrigin::limitsString( Limits theLimits )
   return QStringLiteral( "None" );
 }
 
-QgsRasterMinMaxOrigin::Limits QgsRasterMinMaxOrigin::limitsFromString( const QString& theLimits )
+QgsRasterMinMaxOrigin::Limits QgsRasterMinMaxOrigin::limitsFromString( const QString& limits )
 {
-  if ( theLimits == QLatin1String( "MinMax" ) )
+  if ( limits == QLatin1String( "MinMax" ) )
   {
     return MinMax;
   }
-  else if ( theLimits == QLatin1String( "StdDev" ) )
+  else if ( limits == QLatin1String( "StdDev" ) )
   {
     return StdDev;
   }
-  else if ( theLimits == QLatin1String( "CumulativeCut" ) )
+  else if ( limits == QLatin1String( "CumulativeCut" ) )
   {
     return CumulativeCut;
   }
@@ -92,17 +92,17 @@ QString QgsRasterMinMaxOrigin::extentString( Extent minMaxExtent )
   return QStringLiteral( "WholeRaster" );
 }
 
-QgsRasterMinMaxOrigin::Extent QgsRasterMinMaxOrigin::extentFromString( const QString& theExtent )
+QgsRasterMinMaxOrigin::Extent QgsRasterMinMaxOrigin::extentFromString( const QString& extent )
 {
-  if ( theExtent == QLatin1String( "WholeRaster" ) )
+  if ( extent == QLatin1String( "WholeRaster" ) )
   {
     return WholeRaster;
   }
-  else if ( theExtent == QLatin1String( "CurrentCanvas" ) )
+  else if ( extent == QLatin1String( "CurrentCanvas" ) )
   {
     return CurrentCanvas;
   }
-  else if ( theExtent == QLatin1String( "UpdatedCanvas" ) )
+  else if ( extent == QLatin1String( "UpdatedCanvas" ) )
   {
     return UpdatedCanvas;
   }
@@ -112,16 +112,16 @@ QgsRasterMinMaxOrigin::Extent QgsRasterMinMaxOrigin::extentFromString( const QSt
   }
 }
 
-QString QgsRasterMinMaxOrigin::statAccuracyString( StatAccuracy theAccuracy )
+QString QgsRasterMinMaxOrigin::statAccuracyString( StatAccuracy accuracy )
 {
-  if ( theAccuracy == Exact )
+  if ( accuracy == Exact )
     return QStringLiteral( "Exact" );
   return QStringLiteral( "Estimated" );
 }
 
-QgsRasterMinMaxOrigin::StatAccuracy QgsRasterMinMaxOrigin::statAccuracyFromString( const QString& theAccuracy )
+QgsRasterMinMaxOrigin::StatAccuracy QgsRasterMinMaxOrigin::statAccuracyFromString( const QString& accuracy )
 {
-  if ( theAccuracy == QLatin1String( "Exact" ) )
+  if ( accuracy == QLatin1String( "Exact" ) )
     return Exact;
   return Estimated;
 }

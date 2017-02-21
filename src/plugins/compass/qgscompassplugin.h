@@ -77,8 +77,8 @@ class QgsCompassPlugin: public QObject, public QgisPlugin, private Ui::QgsCompas
     //! show the help document
     void help();
     //! update the plugins theme when the app tells us its theme is changed
-    void setCurrentTheme( QString theThemeName );
-    QIcon getThemeIcon( const QString &theThemeName );
+    void setCurrentTheme( QString themeName );
+    QIcon getThemeIcon( const QString &themeName );
     void about();
   private:
 

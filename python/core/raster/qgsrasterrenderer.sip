@@ -53,7 +53,7 @@ class QgsRasterRenderer : QgsRasterInterface
     const QgsRasterMinMaxOrigin& minMaxOrigin() const;
 
     //! Sets origin of min/max values
-    void setMinMaxOrigin( const QgsRasterMinMaxOrigin& theOrigin );
+    void setMinMaxOrigin( const QgsRasterMinMaxOrigin& origin );
 
   protected:
 

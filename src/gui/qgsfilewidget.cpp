@@ -201,8 +201,8 @@ void QgsFileWidget::openFileDialog()
   }
 
   // If there is no valid value, find a default path to use
-  QUrl theUrl = QUrl::fromUserInput( oldPath );
-  if ( !theUrl.isValid() )
+  QUrl url = QUrl::fromUserInput( oldPath );
+  if ( !url.isValid() )
   {
     QString defPath = QDir::cleanPath( QgsProject::instance()->fileInfo().absolutePath() );
     if ( defPath.isEmpty() )

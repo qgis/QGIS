@@ -65,9 +65,9 @@ void QgsGCPListModel::setGCPList( QgsGCPList *theGCPList )
 }
 
 // ------------------------------- public ---------------------------------- //
-void QgsGCPListModel::setGeorefTransform( QgsGeorefTransform *theGeorefTransform )
+void QgsGCPListModel::setGeorefTransform( QgsGeorefTransform *georefTransform )
 {
-  mGeorefTransform = theGeorefTransform;
+  mGeorefTransform = georefTransform;
   updateModel();
 }
 

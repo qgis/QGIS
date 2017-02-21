@@ -82,7 +82,7 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     virtual ~QgsGrassPlugin();
 
     //! Get an icon from the active theme if possible
-    static QIcon getThemeIcon( const QString &theName );
+    static QIcon getThemeIcon( const QString &name );
 
   public slots:
     //! init the gui
@@ -118,10 +118,10 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     //! New project
     void newProject();
     //! update plugin icons when the app tells us its theme is changed
-    void setCurrentTheme( QString theThemeName );
+    void setCurrentTheme( QString themeName );
     void setTransform();
     //! Called when a new layer was added to map registry
-    void onLayerWasAdded( QgsMapLayer* theMapLayer );
+    void onLayerWasAdded( QgsMapLayer* mapLayer );
     //! Called when editing of a layer started
     void onEditingStarted();
     void onEditingStopped();

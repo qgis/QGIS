@@ -56,7 +56,7 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
     //! Takes ownership
     void setContrastEnhancement( QgsContrastEnhancement* ce );
 
-    void setGradient( Gradient theGradient ) { mGradient = theGradient; }
+    void setGradient( Gradient gradient ) { mGradient = gradient; }
     Gradient gradient() const { return mGradient; }
 
     void writeXml( QDomDocument& doc, QDomElement& parentElem ) const override;

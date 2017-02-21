@@ -55,7 +55,7 @@ class TestQgs25DRenderer : public QObject
     void renderComposition();
 
   private:
-    bool imageCheck( const QString& theType );
+    bool imageCheck( const QString& type );
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPolysLayer = nullptr;
     QString mTestDataDir;
@@ -140,7 +140,7 @@ void TestQgs25DRenderer::renderComposition()
   QVERIFY( checker.testComposition( mReport, 0, 100 ) );
 }
 
-bool TestQgs25DRenderer::imageCheck( const QString& theTestType )
+bool TestQgs25DRenderer::imageCheck( const QString& testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
@@ -152,10 +152,10 @@ bool TestQgs25DRenderer::imageCheck( const QString& theTestType )
   mMapSettings.setExpressionContext( context );
   QgsMultiRenderChecker myChecker;
   myChecker.setControlPathPrefix( QStringLiteral( "25d_renderer" ) );
-  myChecker.setControlName( "expected_" + theTestType );
+  myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( mMapSettings );
   myChecker.setColorTolerance( 20 );
-  bool myResultFlag = myChecker.runTest( theTestType, 500 );
+  bool myResultFlag = myChecker.runTest( testType, 500 );
   mReport += myChecker.report();
   return myResultFlag;
 }

@@ -44,13 +44,13 @@ class CORE_EXPORT QgsErrorMessage
     {}
 
     /** Constructor.
-     *  @param theMessage error message string
-     *  @param theTag error label, for example GDAL, GDAL Provider, Raster layer
-     *  @param theFile the file where error was created
-     *  @param theFunction the function where error was created
-     *  @param theLine the line where error was created
+     *  @param message error message string
+     *  @param tag error label, for example GDAL, GDAL Provider, Raster layer
+     *  @param file the file where error was created
+     *  @param function the function where error was created
+     *  @param line the line where error was created
      */
-    QgsErrorMessage( const QString & theMessage, const QString & theTag = QString::null, const QString & theFile = QString::null, const QString & theFunction = QString::null, int theLine = 0 );
+    QgsErrorMessage( const QString & message, const QString & tag = QString::null, const QString & file = QString::null, const QString & function = QString::null, int line = 0 );
 
     QString message() const { return mMessage; }
     QString tag() const { return mTag; }
@@ -86,21 +86,21 @@ class CORE_EXPORT QgsError
     QgsError() {}
 
     /** Constructor with single message.
-     *  @param theMessage error message
-     *  @param theTag short description, e.g. GDAL, Provider, Layer
+     *  @param message error message
+     *  @param tag short description, e.g. GDAL, Provider, Layer
      */
-    QgsError( const QString & theMessage, const QString & theTag );
+    QgsError( const QString & message, const QString & tag );
 
     /** Append new error message.
-     *  @param theMessage error message string
-     *  @param theTag error label, for example GDAL, GDAL Provider, Raster layer
+     *  @param message error message string
+     *  @param tag error label, for example GDAL, GDAL Provider, Raster layer
      */
-    void append( const QString & theMessage, const QString & theTag );
+    void append( const QString & message, const QString & tag );
 
     /** Append new error message.
-     *  @param theMessage error message
+     *  @param message error message
      */
-    void append( const QgsErrorMessage & theMessage );
+    void append( const QgsErrorMessage & message );
 
     /** Test if any error is set.
      *  @return true if contains error
@@ -108,10 +108,10 @@ class CORE_EXPORT QgsError
     bool isEmpty() const { return mMessageList.isEmpty(); }
 
     /** Full error messages description
-     *  @param theFormat output format
+     *  @param format output format
      *  @return error report
      */
-    QString message( QgsErrorMessage::Format theFormat = QgsErrorMessage::Html ) const;
+    QString message( QgsErrorMessage::Format format = QgsErrorMessage::Html ) const;
 
     /** Short error description, usually the first error in chain, the real error.
      *  @return error description

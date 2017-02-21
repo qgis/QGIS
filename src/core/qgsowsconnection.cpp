@@ -35,11 +35,11 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-QgsOwsConnection::QgsOwsConnection( const QString & theService, const QString & theConnName )
-    : mConnName( theConnName )
-    , mService( theService )
+QgsOwsConnection::QgsOwsConnection( const QString & service, const QString & connName )
+    : mConnName( connName )
+    , mService( service )
 {
-  QgsDebugMsg( "theConnName = " + theConnName );
+  QgsDebugMsg( "theConnName = " + connName );
 
   QSettings settings;
 
@@ -97,28 +97,28 @@ QgsDataSourceUri QgsOwsConnection::uri() const
   return mUri;
 }
 
-QStringList QgsOwsConnection::connectionList( const QString & theService )
+QStringList QgsOwsConnection::connectionList( const QString & service )
 {
   QSettings settings;
-  settings.beginGroup( "/Qgis/connections-" + theService.toLower() );
+  settings.beginGroup( "/Qgis/connections-" + service.toLower() );
   return settings.childGroups();
 }
 
-QString QgsOwsConnection::selectedConnection( const QString & theService )
+QString QgsOwsConnection::selectedConnection( const QString & service )
 {
   QSettings settings;
-  return settings.value( "/Qgis/connections-" + theService.toLower() + "/selected" ).toString();
+  return settings.value( "/Qgis/connections-" + service.toLower() + "/selected" ).toString();
 }
 
-void QgsOwsConnection::setSelectedConnection( const QString & theService, const QString & name )
+void QgsOwsConnection::setSelectedConnection( const QString & service, const QString & name )
 {
   QSettings settings;
-  settings.setValue( "/Qgis/connections-" + theService.toLower() + "/selected", name );
+  settings.setValue( "/Qgis/connections-" + service.toLower() + "/selected", name );
 }
 
-void QgsOwsConnection::deleteConnection( const QString & theService, const QString & name )
+void QgsOwsConnection::deleteConnection( const QString & service, const QString & name )
 {
   QSettings settings;
-  settings.remove( "/Qgis/connections-" + theService.toLower() + '/' + name );
-  settings.remove( "/Qgis/" + theService + '/' + name );
+  settings.remove( "/Qgis/connections-" + service.toLower() + '/' + name );
+  settings.remove( "/Qgis/" + service + '/' + name );
 }

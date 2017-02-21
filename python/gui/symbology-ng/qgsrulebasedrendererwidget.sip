@@ -43,7 +43,7 @@ class QgsRuleBasedRendererModel : QAbstractItemModel
     void finishedAddingRules(); // call endInsertRows
 
     //! @note not available in python bindungs
-    // void setFeatureCounts( QMap<QgsRuleBasedRenderer::Rule*, QgsRuleBasedRendererCount> theCountMap );
+    // void setFeatureCounts( QMap<QgsRuleBasedRenderer::Rule*, QgsRuleBasedRendererCount> countMap );
     void clearFeatureCounts();
 
 };

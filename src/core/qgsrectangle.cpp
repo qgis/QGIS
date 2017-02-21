@@ -286,17 +286,17 @@ QString QgsRectangle::toString( bool automaticPrecision ) const
 
 // overloaded version of above fn to allow precision to be set
 // Return a string representation of the rectangle with high precision
-QString QgsRectangle::toString( int thePrecision ) const
+QString QgsRectangle::toString( int precision ) const
 {
   QString rep;
   if ( isEmpty() )
     rep = QStringLiteral( "Empty" );
   else
     rep = QStringLiteral( "%1,%2 : %3,%4" )
-          .arg( xmin, 0, 'f', thePrecision )
-          .arg( ymin, 0, 'f', thePrecision )
-          .arg( xmax, 0, 'f', thePrecision )
-          .arg( ymax, 0, 'f', thePrecision );
+          .arg( xmin, 0, 'f', precision )
+          .arg( ymin, 0, 'f', precision )
+          .arg( xmax, 0, 'f', precision )
+          .arg( ymax, 0, 'f', precision );
 
   QgsDebugMsgLevel( QString( "Extents : %1" ).arg( rep ), 4 );
 

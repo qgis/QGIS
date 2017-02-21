@@ -39,7 +39,7 @@ class QgsGpsMarker : public QgsMapCanvasItem
 
     virtual void updatePosition() override;
 
-    void setSize( int theSize );
+    void setSize( int size );
 
   protected:
 

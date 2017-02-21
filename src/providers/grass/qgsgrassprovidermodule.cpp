@@ -1225,16 +1225,16 @@ QGISEXTERN int dataCapabilities()
   return QgsDataProvider::Dir;
 }
 
-QGISEXTERN QgsDataItem * dataItem( QString theDirPath, QgsDataItem* parentItem )
+QGISEXTERN QgsDataItem * dataItem( QString dirPath, QgsDataItem* parentItem )
 {
   if ( !QgsGrass::init() )
   {
     return 0;
   }
-  if ( QgsGrass::isLocation( theDirPath ) )
+  if ( QgsGrass::isLocation( dirPath ) )
   {
     QString path;
-    QDir dir( theDirPath );
+    QDir dir( dirPath );
     QString dirName = dir.dirName();
     if ( parentItem )
     {
@@ -1246,7 +1246,7 @@ QGISEXTERN QgsDataItem * dataItem( QString theDirPath, QgsDataItem* parentItem )
       path = dir.path();
     }
     path = path + "/" + "grass:" + dirName;
-    QgsGrassLocationItem * location = new QgsGrassLocationItem( parentItem, theDirPath, path );
+    QgsGrassLocationItem * location = new QgsGrassLocationItem( parentItem, dirPath, path );
     return location;
   }
   return 0;

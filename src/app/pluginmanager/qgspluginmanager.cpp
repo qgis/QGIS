@@ -1166,24 +1166,24 @@ void QgsPluginManager::setCurrentTab( int idx )
 
 
 
-void QgsPluginManager::currentPluginChanged( const QModelIndex & theIndex )
+void QgsPluginManager::currentPluginChanged( const QModelIndex & index )
 {
-  if ( theIndex.column() == 0 )
+  if ( index.column() == 0 )
   {
     // Do exactly the same as if a plugin was clicked
-    on_vwPlugins_clicked( theIndex );
+    on_vwPlugins_clicked( index );
   }
 }
 
 
 
-void QgsPluginManager::on_vwPlugins_clicked( const QModelIndex &theIndex )
+void QgsPluginManager::on_vwPlugins_clicked( const QModelIndex &index )
 {
-  if ( theIndex.column() == 0 )
+  if ( index.column() == 0 )
   {
     // If the model has been filtered, the index row in the proxy won't match the index row in the underlying model
     // so we need to jump through this little hoop to get the correct item
-    QModelIndex realIndex = mModelProxy->mapToSource( theIndex );
+    QModelIndex realIndex = mModelProxy->mapToSource( index );
     QStandardItem* mypItem = mModelPlugins->itemFromIndex( realIndex );
     if ( !mypItem->isEnabled() )
     {
@@ -1198,13 +1198,13 @@ void QgsPluginManager::on_vwPlugins_clicked( const QModelIndex &theIndex )
 
 
 
-void QgsPluginManager::on_vwPlugins_doubleClicked( const QModelIndex & theIndex )
+void QgsPluginManager::on_vwPlugins_doubleClicked( const QModelIndex & index )
 {
-  if ( theIndex.column() == 0 )
+  if ( index.column() == 0 )
   {
     // If the model has been filtered, the index row in the proxy won't match the index row in the underlying model
     // so we need to jump through this little hoop to get the correct item
-    QModelIndex realIndex = mModelProxy->mapToSource( theIndex );
+    QModelIndex realIndex = mModelProxy->mapToSource( index );
     QStandardItem* mypItem = mModelPlugins->itemFromIndex( realIndex );
     if ( mypItem->isCheckable() )
     {
@@ -1261,23 +1261,23 @@ void QgsPluginManager::on_wvDetails_linkClicked( const QUrl & url )
 }
 
 
-void QgsPluginManager::on_leFilter_textChanged( QString theText )
+void QgsPluginManager::on_leFilter_textChanged( QString text )
 {
-  if ( theText.startsWith( QLatin1String( "tag:" ), Qt::CaseInsensitive ) )
+  if ( text.startsWith( QLatin1String( "tag:" ), Qt::CaseInsensitive ) )
   {
-    theText = theText.remove( QStringLiteral( "tag:" ) );
+    text = text.remove( QStringLiteral( "tag:" ) );
     mModelProxy->setFilterRole( PLUGIN_TAGS_ROLE );
-    QgsDebugMsg( "PluginManager TAG filter changed to :" + theText );
+    QgsDebugMsg( "PluginManager TAG filter changed to :" + text );
   }
   else
   {
     mModelProxy->setFilterRole( 0 );
-    QgsDebugMsg( "PluginManager filter changed to :" + theText );
+    QgsDebugMsg( "PluginManager filter changed to :" + text );
   }
 
   QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::RegExp );
   Qt::CaseSensitivity myCaseSensitivity = Qt::CaseInsensitive;
-  QRegExp myRegExp( theText, myCaseSensitivity, mySyntax );
+  QRegExp myRegExp( text, myCaseSensitivity, mySyntax );
   mModelProxy->setFilterRegExp( myRegExp );
 }
 

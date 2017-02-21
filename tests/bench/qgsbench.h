@@ -33,7 +33,7 @@ class QgsBench :  public QObject
 {
     Q_OBJECT
   public:
-    QgsBench( int theWidth, int theHeight, int theCycles );
+    QgsBench( int width, int height, int cycles );
     ~QgsBench();
 
     // start time counter
@@ -54,7 +54,7 @@ class QgsBench :  public QObject
 
     void saveLog( const QString & fileName );
 
-    QString serialize( const QMap<QString, QVariant>& theMap, int level = 0 );
+    QString serialize( const QMap<QString, QVariant>& map, int level = 0 );
 
     void setRenderHints( const QPainter::RenderHints& hints ) { mRendererHints = hints; }
 

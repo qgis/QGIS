@@ -251,15 +251,15 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 class GEOSException // clazy:exclude=rule-of-three
 {
   public:
-    explicit GEOSException( const QString& theMsg )
+    explicit GEOSException( const QString& message )
     {
-      if ( theMsg == QLatin1String( "Unknown exception thrown" ) && lastMsg().isNull() )
+      if ( message == QLatin1String( "Unknown exception thrown" ) && lastMsg().isNull() )
       {
-        msg = theMsg;
+        msg = message;
       }
       else
       {
-        msg = theMsg;
+        msg = message;
         lastMsg() = msg;
       }
     }

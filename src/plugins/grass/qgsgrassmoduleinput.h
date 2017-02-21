@@ -82,7 +82,7 @@ class QgsGrassModuleInputModel : public QStandardItemModel
 
   private:
     void addMapset( const QString & mapset );
-    void refreshMapset( QStandardItem *mapsetItem, const QString & mapset, const QList<QgsGrassObject::Type> & theTypes = QList<QgsGrassObject::Type>() );
+    void refreshMapset( QStandardItem *mapsetItem, const QString & mapset, const QList<QgsGrassObject::Type> & types = QList<QgsGrassObject::Type>() );
     // Add to watched paths if exists and if not yet watched
     void watch( const QString & path );
     QString mLocationPath;

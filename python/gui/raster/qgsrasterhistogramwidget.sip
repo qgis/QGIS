@@ -8,13 +8,13 @@ class QgsRasterHistogramWidget : QgsPanelWidget
     ~QgsRasterHistogramWidget();
 
     /** Save the histogram as an image to disk */
-    bool histoSaveAsImage( const QString& theFilename, int width = 600, int height = 600, int quality = -1 );
+    bool histoSaveAsImage( const QString& filename, int width = 600, int height = 600, int quality = -1 );
 
     /** Set the renderer widget (or just its name if there is no widget) */
     void setRendererWidget( const QString& name, QgsRasterRendererWidget* rendererWidget = NULL );
 
     /** Activate the histogram widget */
-    void setActive( bool theActiveFlag );
+    void setActive( bool activeFlag );
 
     /** \brief Compute the histogram on demand. */
     bool computeHistogram( bool forceComputeFlag );

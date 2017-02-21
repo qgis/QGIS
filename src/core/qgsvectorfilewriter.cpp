@@ -64,8 +64,8 @@ QVariant QgsVectorFileWriter::FieldValueConverter::convert( int /*fieldIdxInLaye
 }
 
 QgsVectorFileWriter::QgsVectorFileWriter(
-  const QString &theVectorFileName,
-  const QString &theFileEncoding,
+  const QString &vectorFileName,
+  const QString &fileEncoding,
   const QgsFields& fields,
   QgsWkbTypes::Type geometryType,
   const QgsCoordinateReferenceSystem& srs,
@@ -85,7 +85,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     , mSymbologyScaleDenominator( 1.0 )
     , mFieldValueConverter( nullptr )
 {
-  init( theVectorFileName, theFileEncoding, fields,  geometryType ,
+  init( vectorFileName, fileEncoding, fields,  geometryType ,
         srs, driverName, datasourceOptions, layerOptions, newFilename, nullptr,
         QString(), CreateOrOverwriteFile );
 }
@@ -2545,9 +2545,9 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
 }
 
 
-bool QgsVectorFileWriter::deleteShapeFile( const QString& theFileName )
+bool QgsVectorFileWriter::deleteShapeFile( const QString& fileName )
 {
-  QFileInfo fi( theFileName );
+  QFileInfo fi( fileName );
   QDir dir = fi.dir();
 
   QStringList filter;

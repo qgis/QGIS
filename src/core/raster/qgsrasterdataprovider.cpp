@@ -43,15 +43,15 @@ void QgsRasterDataProvider::setUseSourceNoDataValue( int bandNo, bool use )
   mUseSrcNoDataValue[bandNo-1] = use;
 }
 
-QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  const & theExtent, int theWidth, int theHeight, QgsRasterBlockFeedback* feedback )
+QgsRasterBlock * QgsRasterDataProvider::block( int bandNo, QgsRectangle  const & boundingBox, int width, int height, QgsRasterBlockFeedback* feedback )
 {
-  QgsDebugMsgLevel( QString( "theBandNo = %1 theWidth = %2 theHeight = %3" ).arg( theBandNo ).arg( theWidth ).arg( theHeight ), 4 );
-  QgsDebugMsgLevel( QString( "theExtent = %1" ).arg( theExtent.toString() ), 4 );
+  QgsDebugMsgLevel( QString( "bandNo = %1 width = %2 height = %3" ).arg( bandNo ).arg( width ).arg( height ), 4 );
+  QgsDebugMsgLevel( QString( "boundingBox = %1" ).arg( boundingBox.toString() ), 4 );
 
-  QgsRasterBlock *block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight );
-  if ( sourceHasNoDataValue( theBandNo ) && useSourceNoDataValue( theBandNo ) )
+  QgsRasterBlock *block = new QgsRasterBlock( dataType( bandNo ), width, height );
+  if ( sourceHasNoDataValue( bandNo ) && useSourceNoDataValue( bandNo ) )
   {
-    block->setNoDataValue( sourceNoDataValue( theBandNo ) );
+    block->setNoDataValue( sourceNoDataValue( bandNo ) );
   }
 
   if ( block->isEmpty() )
@@ -61,7 +61,7 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
   }
 
   // Read necessary extent only
-  QgsRectangle tmpExtent = extent().intersect( &theExtent );
+  QgsRectangle tmpExtent = extent().intersect( &boundingBox );
 
   if ( tmpExtent.isEmpty() )
   {
@@ -70,8 +70,8 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
     return block;
   }
 
-  double xRes = theExtent.width() / theWidth;
-  double yRes = theExtent.height() / theHeight;
+  double xRes = boundingBox.width() / width;
+  double yRes = boundingBox.height() / height;
   double tmpXRes, tmpYRes;
   double providerXRes = 0;
   double providerYRes = 0;
@@ -90,27 +90,27 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
     tmpYRes = yRes;
   }
 
-  if ( tmpExtent != theExtent ||
+  if ( tmpExtent != boundingBox ||
        tmpXRes > xRes || tmpYRes > yRes )
   {
     // Read smaller extent or lower resolution
 
-    if ( !extent().contains( theExtent ) )
+    if ( !extent().contains( boundingBox ) )
     {
-      QRect subRect = QgsRasterBlock::subRect( theExtent, theWidth, theHeight, extent() );
+      QRect subRect = QgsRasterBlock::subRect( boundingBox, width, height, extent() );
       block->setIsNoDataExcept( subRect );
     }
 
     // Calculate row/col limits (before tmpExtent is aligned)
-    int fromRow = qRound(( theExtent.yMaximum() - tmpExtent.yMaximum() ) / yRes );
-    int toRow = qRound(( theExtent.yMaximum() - tmpExtent.yMinimum() ) / yRes ) - 1;
-    int fromCol = qRound(( tmpExtent.xMinimum() - theExtent.xMinimum() ) / xRes );
-    int toCol = qRound(( tmpExtent.xMaximum() - theExtent.xMinimum() ) / xRes ) - 1;
+    int fromRow = qRound(( boundingBox.yMaximum() - tmpExtent.yMaximum() ) / yRes );
+    int toRow = qRound(( boundingBox.yMaximum() - tmpExtent.yMinimum() ) / yRes ) - 1;
+    int fromCol = qRound(( tmpExtent.xMinimum() - boundingBox.xMinimum() ) / xRes );
+    int toCol = qRound(( tmpExtent.xMaximum() - boundingBox.xMinimum() ) / xRes ) - 1;
 
     QgsDebugMsgLevel( QString( "fromRow = %1 toRow = %2 fromCol = %3 toCol = %4" ).arg( fromRow ).arg( toRow ).arg( fromCol ).arg( toCol ), 4 );
 
-    if ( fromRow < 0 || fromRow >= theHeight || toRow < 0 || toRow >= theHeight ||
-         fromCol < 0 || fromCol >= theWidth || toCol < 0 || toCol >= theWidth )
+    if ( fromRow < 0 || fromRow >= height || toRow < 0 || toRow >= height ||
+         fromCol < 0 || fromCol >= width || toCol < 0 || toCol >= width )
     {
       // Should not happen
       QgsDebugMsg( "Row or column limits out of range" );
@@ -138,21 +138,21 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
     tmpXRes = tmpExtent.width() / tmpWidth;
     tmpYRes = tmpExtent.height() / tmpHeight;
 
-    QgsDebugMsgLevel( QString( "Reading smaller block tmpWidth = %1 theHeight = %2" ).arg( tmpWidth ).arg( tmpHeight ), 4 );
+    QgsDebugMsgLevel( QString( "Reading smaller block tmpWidth = %1 height = %2" ).arg( tmpWidth ).arg( tmpHeight ), 4 );
     QgsDebugMsgLevel( QString( "tmpExtent = %1" ).arg( tmpExtent.toString() ), 4 );
 
-    QgsRasterBlock *tmpBlock = new QgsRasterBlock( dataType( theBandNo ), tmpWidth, tmpHeight );
-    if ( sourceHasNoDataValue( theBandNo ) && useSourceNoDataValue( theBandNo ) )
+    QgsRasterBlock *tmpBlock = new QgsRasterBlock( dataType( bandNo ), tmpWidth, tmpHeight );
+    if ( sourceHasNoDataValue( bandNo ) && useSourceNoDataValue( bandNo ) )
     {
-      tmpBlock->setNoDataValue( sourceNoDataValue( theBandNo ) );
+      tmpBlock->setNoDataValue( sourceNoDataValue( bandNo ) );
     }
 
-    readBlock( theBandNo, tmpExtent, tmpWidth, tmpHeight, tmpBlock->bits(), feedback );
+    readBlock( bandNo, tmpExtent, tmpWidth, tmpHeight, tmpBlock->bits(), feedback );
 
-    int pixelSize = dataTypeSize( theBandNo );
+    int pixelSize = dataTypeSize( bandNo );
 
-    double xMin = theExtent.xMinimum();
-    double yMax = theExtent.yMaximum();
+    double xMin = boundingBox.xMinimum();
+    double yMax = boundingBox.yMaximum();
     double tmpXMin = tmpExtent.xMinimum();
     double tmpYMax = tmpExtent.yMaximum();
 
@@ -175,7 +175,7 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
         }
 
         qgssize tmpIndex = static_cast< qgssize >( tmpRow ) * static_cast< qgssize >( tmpWidth ) + tmpCol;
-        qgssize index = row * static_cast< qgssize >( theWidth ) + col;
+        qgssize index = row * static_cast< qgssize >( width ) + col;
 
         char *tmpBits = tmpBlock->bits( tmpIndex );
         char *bits = block->bits( index );
@@ -197,13 +197,13 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
   }
   else
   {
-    readBlock( theBandNo, theExtent, theWidth, theHeight, block->bits(), feedback );
+    readBlock( bandNo, boundingBox, width, height, block->bits(), feedback );
   }
 
   // apply scale and offset
-  block->applyScaleOffset( bandScale( theBandNo ), bandOffset( theBandNo ) );
+  block->applyScaleOffset( bandScale( bandNo ), bandOffset( bandNo ) );
   // apply user no data values
-  block->applyNoDataValues( userNoDataValues( theBandNo ) );
+  block->applyNoDataValues( userNoDataValues( bandNo ) );
   return block;
 }
 
@@ -269,18 +269,18 @@ QString QgsRasterDataProvider::metadata()
 }
 
 // Default implementation for values
-QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight , int /*theDpi*/ )
+QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPoint & point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height , int /*dpi*/ )
 {
   QgsDebugMsgLevel( "Entered", 4 );
   QMap<int, QVariant> results;
 
-  if ( theFormat != QgsRaster::IdentifyFormatValue || !( capabilities() & IdentifyValue ) )
+  if ( format != QgsRaster::IdentifyFormatValue || !( capabilities() & IdentifyValue ) )
   {
     QgsDebugMsg( "Format not supported" );
     return QgsRasterIdentifyResult( ERR( tr( "Format not supported" ) ) );
   }
 
-  if ( !extent().contains( thePoint ) )
+  if ( !extent().contains( point ) )
   {
     // Outside the raster
     for ( int bandNo = 1; bandNo <= bandCount(); bandNo++ )
@@ -290,28 +290,29 @@ QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPoint & thePoi
     return QgsRasterIdentifyResult( QgsRaster::IdentifyFormatValue, results );
   }
 
-  QgsRectangle myExtent = theExtent;
-  if ( myExtent.isEmpty() )  myExtent = extent();
+  QgsRectangle finalExtent = boundingBox;
+  if ( finalExtent.isEmpty() )
+    finalExtent = extent();
 
-  if ( theWidth == 0 )
+  if ( width == 0 )
   {
-    theWidth = capabilities() & Size ? xSize() : 1000;
+    width = capabilities() & Size ? xSize() : 1000;
   }
-  if ( theHeight == 0 )
+  if ( height == 0 )
   {
-    theHeight = capabilities() & Size ? ySize() : 1000;
+    height = capabilities() & Size ? ySize() : 1000;
   }
 
   // Calculate the row / column where the point falls
-  double xres = ( myExtent.width() ) / theWidth;
-  double yres = ( myExtent.height() ) / theHeight;
+  double xres = ( finalExtent.width() ) / width;
+  double yres = ( finalExtent.height() ) / height;
 
-  int col = static_cast< int >( floor(( thePoint.x() - myExtent.xMinimum() ) / xres ) );
-  int row = static_cast< int >( floor(( myExtent.yMaximum() - thePoint.y() ) / yres ) );
+  int col = static_cast< int >( floor(( point.x() - finalExtent.xMinimum() ) / xres ) );
+  int row = static_cast< int >( floor(( finalExtent.yMaximum() - point.y() ) / yres ) );
 
-  double xMin = myExtent.xMinimum() + col * xres;
+  double xMin = finalExtent.xMinimum() + col * xres;
   double xMax = xMin + xres;
-  double yMax = myExtent.yMaximum() - row * yres;
+  double yMax = finalExtent.yMaximum() - row * yres;
   double yMin = yMax - yres;
   QgsRectangle pixelExtent( xMin, yMin, xMax, yMax );
 

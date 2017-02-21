@@ -174,10 +174,10 @@ void QgsRasterTransparencyWidget::transparencyCellTextEdited( const QString &tex
   emit widgetChanged();
 }
 
-void QgsRasterTransparencyWidget::sliderTransparency_valueChanged( int theValue )
+void QgsRasterTransparencyWidget::sliderTransparency_valueChanged( int value )
 {
   //set the transparency percentage label to a suitable value
-  int myInt = static_cast < int >(( theValue / 255.0 ) * 100 );  //255.0 to prevent integer division
+  int myInt = static_cast < int >(( value / 255.0 ) * 100 );  //255.0 to prevent integer division
   lblTransparencyPercent->setText( QString::number( myInt ) + '%' );
 }
 

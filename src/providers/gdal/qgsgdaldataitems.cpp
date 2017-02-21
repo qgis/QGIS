@@ -20,20 +20,20 @@
 #include <QSettings>
 
 // defined in qgsgdalprovider.cpp
-void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString, QStringList & theExtensions, QStringList & theWildcards );
+void buildSupportedRasterFileFilterAndExtensions( QString & fileFiltersString, QStringList & extensions, QStringList & wildcards );
 
 
 QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem* parent,
                                     QString name, QString path, QString uri,
-                                    QStringList *theSublayers )
+                                    QStringList *sublayers )
     : QgsLayerItem( parent, name, path, uri, QgsLayerItem::Raster, QStringLiteral( "gdal" ) )
 {
   mToolTip = uri;
   // save sublayers for subsequent access
   // if there are sublayers, set populated=false so item can be populated on demand
-  if ( theSublayers && !theSublayers->isEmpty() )
+  if ( sublayers && !sublayers->isEmpty() )
   {
-    sublayers = *theSublayers;
+    mSublayers = *sublayers;
     setState( NotPopulated );
   }
   else
@@ -73,13 +73,13 @@ QVector<QgsDataItem*> QgsGdalLayerItem::createChildren()
   QVector<QgsDataItem*> children;
 
   // get children from sublayers
-  if ( !sublayers.isEmpty() )
+  if ( !mSublayers.isEmpty() )
   {
     QgsDataItem * childItem = nullptr;
-    QgsDebugMsg( QString( "got %1 sublayers" ).arg( sublayers.count() ) );
-    for ( int i = 0; i < sublayers.count(); i++ )
+    QgsDebugMsg( QString( "got %1 sublayers" ).arg( mSublayers.count() ) );
+    for ( int i = 0; i < mSublayers.count(); i++ )
     {
-      QString name = sublayers[i];
+      QString name = mSublayers[i];
       // if netcdf/hdf use all text after filename
       // for hdf4 it would be best to get description, because the subdataset_index is not very practical
       if ( name.startsWith( QLatin1String( "netcdf" ), Qt::CaseInsensitive ) ||
@@ -97,7 +97,7 @@ QVector<QgsDataItem*> QgsGdalLayerItem::createChildren()
       if ( name.endsWith( ':' ) ) name.chop( 1 );
       if ( name.endsWith( '\"' ) ) name.chop( 1 );
 
-      childItem = new QgsGdalLayerItem( this, name, sublayers[i], sublayers[i] );
+      childItem = new QgsGdalLayerItem( this, name, mSublayers[i], mSublayers[i] );
       if ( childItem )
         this->addChildItem( childItem );
     }
@@ -127,17 +127,17 @@ QGISEXTERN int dataCapabilities()
   return QgsDataProvider::File | QgsDataProvider::Dir | QgsDataProvider::Net;
 }
 
-QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
+QGISEXTERN QgsDataItem * dataItem( QString path, QgsDataItem* parentItem )
 {
-  if ( thePath.isEmpty() )
+  if ( path.isEmpty() )
     return nullptr;
 
-  QgsDebugMsgLevel( "thePath = " + thePath, 2 );
+  QgsDebugMsgLevel( "thePath = " + path, 2 );
 
   // zip settings + info
   QSettings settings;
   QString scanZipSetting = settings.value( QStringLiteral( "/qgis/scanZipInBrowser2" ), "basic" ).toString();
-  QString vsiPrefix = QgsZipItem::vsiPrefix( thePath );
+  QString vsiPrefix = QgsZipItem::vsiPrefix( path );
   bool is_vsizip = ( vsiPrefix == QLatin1String( "/vsizip/" ) );
   bool is_vsigzip = ( vsiPrefix == QLatin1String( "/vsigzip/" ) );
   bool is_vsitar = ( vsiPrefix == QLatin1String( "/vsitar/" ) );
@@ -159,16 +159,16 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   }
 
   // get suffix, removing .gz if present
-  QString tmpPath = thePath; //path used for testing, not for layer creation
+  QString tmpPath = path; //path used for testing, not for layer creation
   if ( is_vsigzip )
     tmpPath.chop( 3 );
   QFileInfo info( tmpPath );
   QString suffix = info.suffix().toLower();
   // extract basename with extension
-  info.setFile( thePath );
+  info.setFile( path );
   QString name = info.fileName();
 
-  QgsDebugMsgLevel( "thePath= " + thePath + " tmpPath= " + tmpPath + " name= " + name
+  QgsDebugMsgLevel( "thePath= " + path + " tmpPath= " + tmpPath + " name= " + name
                     + " suffix= " + suffix + " vsiPrefix= " + vsiPrefix, 3 );
 
   // allow only normal files or VSIFILE items to continue
@@ -192,13 +192,13 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   // skip *.aux.xml files (GDAL auxiliary metadata files),
   // *.shp.xml files (ESRI metadata) and *.tif.xml files (TIFF metadata)
   // unless that extension is in the list (*.xml might be though)
-  if ( thePath.endsWith( QLatin1String( ".aux.xml" ), Qt::CaseInsensitive ) &&
+  if ( path.endsWith( QLatin1String( ".aux.xml" ), Qt::CaseInsensitive ) &&
        !sExtensions.contains( QStringLiteral( "aux.xml" ) ) )
     return nullptr;
-  if ( thePath.endsWith( QLatin1String( ".shp.xml" ), Qt::CaseInsensitive ) &&
+  if ( path.endsWith( QLatin1String( ".shp.xml" ), Qt::CaseInsensitive ) &&
        !sExtensions.contains( QStringLiteral( "shp.xml" ) ) )
     return nullptr;
-  if ( thePath.endsWith( QLatin1String( ".tif.xml" ), Qt::CaseInsensitive ) &&
+  if ( path.endsWith( QLatin1String( ".tif.xml" ), Qt::CaseInsensitive ) &&
        !sExtensions.contains( QStringLiteral( "tif.xml" ) ) )
     return nullptr;
 
@@ -223,14 +223,14 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   if ( vsiPrefix != QLatin1String( "" ) )
   {
     // add vsiPrefix to path if needed
-    if ( !thePath.startsWith( vsiPrefix ) )
-      thePath = vsiPrefix + thePath;
+    if ( !path.startsWith( vsiPrefix ) )
+      path = vsiPrefix + path;
     // if this is a /vsigzip/path_to_zip.zip/file_inside_zip remove the full path from the name
     // no need to change the name I believe
 #if 0
-    if (( is_vsizip || is_vsitar ) && ( thePath != vsiPrefix + parentItem->path() ) )
+    if (( is_vsizip || is_vsitar ) && ( path != vsiPrefix + parentItem->path() ) )
     {
-      name = thePath;
+      name = path;
       name = name.replace( vsiPrefix + parentItem->path() + '/', "" );
     }
 #endif
@@ -248,7 +248,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
       // do not print errors, but write to debug
       CPLPushErrorHandler( CPLQuietErrorHandler );
       CPLErrorReset();
-      if ( ! GDALIdentifyDriver( thePath.toUtf8().constData(), nullptr ) )
+      if ( ! GDALIdentifyDriver( path.toUtf8().constData(), nullptr ) )
       {
         QgsDebugMsgLevel( "Skipping VRT file because root is not a GDAL VRT", 2 );
         CPLPopErrorHandler();
@@ -258,8 +258,8 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     }
     // add the item
     QStringList sublayers;
-    QgsDebugMsgLevel( QString( "adding item name=%1 thePath=%2" ).arg( name, thePath ), 2 );
-    QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, thePath, &sublayers );
+    QgsDebugMsgLevel( QString( "adding item name=%1 path=%2" ).arg( name, path ), 2 );
+    QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, path, path, &sublayers );
     if ( item )
       return item;
   }
@@ -269,7 +269,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   // do not print errors, but write to debug
   CPLPushErrorHandler( CPLQuietErrorHandler );
   CPLErrorReset();
-  GDALDatasetH hDS = GDALOpen( thePath.toUtf8().constData(), GA_ReadOnly );
+  GDALDatasetH hDS = GDALOpen( path.toUtf8().constData(), GA_ReadOnly );
   CPLPopErrorHandler();
 
   if ( ! hDS )
@@ -282,9 +282,9 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
   GDALClose( hDS );
 
-  QgsDebugMsgLevel( "GdalDataset opened " + thePath, 2 );
+  QgsDebugMsgLevel( "GdalDataset opened " + path, 2 );
 
-  QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, thePath,
+  QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, path, path,
       &sublayers );
 
   return item;

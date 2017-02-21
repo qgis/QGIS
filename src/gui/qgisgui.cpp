@@ -84,7 +84,7 @@ namespace QgisGui
     return false;
   }
 
-  QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget *theParent, const QString& theMessage, const QString& defaultFilename )
+  QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget *parent, const QString& message, const QString& defaultFilename )
   {
     // get a list of supported output image types
     QMap<QString, QString> filterMap;
@@ -128,7 +128,7 @@ namespace QgisGui
     QString outputFileName;
     QString ext;
 #if defined(Q_OS_WIN) || defined(Q_OS_MAC) || defined(Q_OS_LINUX)
-    outputFileName = QFileDialog::getSaveFileName( theParent, theMessage, initialPath, QStringList( filterMap.keys() ).join( QStringLiteral( ";;" ) ), &selectedFilter );
+    outputFileName = QFileDialog::getSaveFileName( parent, message, initialPath, QStringList( filterMap.keys() ).join( QStringLiteral( ";;" ) ), &selectedFilter );
 
     if ( !outputFileName.isNull() )
     {
@@ -140,7 +140,7 @@ namespace QgisGui
 #else
 
     //create a file dialog using the filter list generated above
-    std::unique_ptr<QFileDialog> fileDialog( new QFileDialog( theParent, theMessage, initialPath, QStringList( filterMap.keys() ).join( ";;" ) ) );
+    std::unique_ptr<QFileDialog> fileDialog( new QFileDialog( parent, message, initialPath, QStringList( filterMap.keys() ).join( ";;" ) ) );
 
     // allow for selection of more than one file
     fileDialog->setFileMode( QFileDialog::AnyFile );

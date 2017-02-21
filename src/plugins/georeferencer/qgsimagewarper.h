@@ -32,7 +32,7 @@ class QgsImageWarper
     Q_DECLARE_TR_FUNCTIONS( QgsImageWarper )
 
   public:
-    explicit QgsImageWarper( QWidget *theParent );
+    explicit QgsImageWarper( QWidget *parent );
 
     enum ResamplingMethod
     {

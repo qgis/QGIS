@@ -29,9 +29,9 @@ const int IDX_WHOLE_RASTER = 0;
 const int IDX_CURRENT_CANVAS = 1;
 const int IDX_UPDATED_CANVAS = 2;
 
-QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer* theLayer, QWidget *parent )
+QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer* layer, QWidget *parent )
     : QWidget( parent )
-    , mLayer( theLayer )
+    , mLayer( layer )
     , mCanvas( nullptr )
     , mLastRectangleValid( false )
     , mBandsChanged( false )
@@ -53,10 +53,10 @@ QgsMapCanvas* QgsRasterMinMaxWidget::mapCanvas()
   return mCanvas;
 }
 
-void QgsRasterMinMaxWidget::setBands( const QList<int> & theBands )
+void QgsRasterMinMaxWidget::setBands( const QList<int> & bands )
 {
-  mBandsChanged = theBands != mBands;
-  mBands = theBands;
+  mBandsChanged = bands != mBands;
+  mBands = bands;
 }
 
 QgsRectangle QgsRasterMinMaxWidget::extent()

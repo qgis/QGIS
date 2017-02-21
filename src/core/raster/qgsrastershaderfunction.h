@@ -33,7 +33,7 @@ class CORE_EXPORT QgsRasterShaderFunction
 {
 
   public:
-    QgsRasterShaderFunction( double theMinimumValue = 0.0, double theMaximumValue = 255.0 );
+    QgsRasterShaderFunction( double minimumValue = 0.0, double maximumValue = 255.0 );
     virtual ~QgsRasterShaderFunction() = default;
 
     //! \brief Set the maximum value

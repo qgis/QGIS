@@ -1716,9 +1716,9 @@ QGISEXTERN void *selectWidget( QWidget *parent, Qt::WindowFlags fl )
   return new QgsDb2SourceSelect( parent, fl );
 }
 
-QGISEXTERN QgsDataItem *dataItem( QString thePath, QgsDataItem *parentItem )
+QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 {
-  Q_UNUSED( thePath );
+  Q_UNUSED( path );
   QgsDebugMsg( "DB2: Browser Panel; data item detected." );
   return new QgsDb2RootItem( parentItem, PROVIDER_KEY, QStringLiteral( "DB2:" ) );
 }

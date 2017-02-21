@@ -371,8 +371,8 @@ QGISEXTERN int dataCapabilities()
   return  QgsDataProvider::Database;
 }
 
-QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
+QGISEXTERN QgsDataItem * dataItem( QString path, QgsDataItem* parentItem )
 {
-  Q_UNUSED( thePath );
+  Q_UNUSED( path );
   return new QgsSLRootItem( parentItem, QStringLiteral( "SpatiaLite" ), QStringLiteral( "spatialite:" ) );
 }

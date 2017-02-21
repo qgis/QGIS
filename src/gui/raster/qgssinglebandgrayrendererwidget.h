@@ -33,7 +33,7 @@ class GUI_EXPORT QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget
   public:
     QgsSingleBandGrayRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
 
-    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) { return new QgsSingleBandGrayRendererWidget( layer, theExtent ); }
+    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &extent ) { return new QgsSingleBandGrayRendererWidget( layer, extent ); }
 
     QgsRasterRenderer* renderer() override;
     void setMapCanvas( QgsMapCanvas* canvas ) override;
@@ -50,7 +50,7 @@ class GUI_EXPORT QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget
 
   public slots:
     //! called when new min/max values are loaded
-    void loadMinMax( int theBandNo, double theMin, double theMax );
+    void loadMinMax( int bandNo, double min, double max );
 
   private slots:
     void on_mGrayBandComboBox_currentIndexChanged( int index );

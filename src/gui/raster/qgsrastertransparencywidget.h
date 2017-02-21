@@ -62,7 +62,7 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
     void transparencyCellTextEdited( const QString & text );
 
     //! \brief slot executed when the transparency level changes.
-    void sliderTransparency_valueChanged( int theValue );
+    void sliderTransparency_valueChanged( int value );
 
     //! \brief slot executed when user presses "Add Values From Display" button on the transparency page
     void on_pbnAddValuesFromDisplay_clicked();

@@ -197,7 +197,7 @@ void QgsGrassModuleInputModel::addMapset( const QString & mapset )
   appendRow( mapsetItem );
 }
 
-void QgsGrassModuleInputModel::refreshMapset( QStandardItem *mapsetItem, const QString & mapset, const QList<QgsGrassObject::Type> & theTypes )
+void QgsGrassModuleInputModel::refreshMapset( QStandardItem *mapsetItem, const QString & mapset, const QList<QgsGrassObject::Type> & types )
 {
   QgsDebugMsg( "mapset = " + mapset );
   if ( !mapsetItem )
@@ -205,15 +205,15 @@ void QgsGrassModuleInputModel::refreshMapset( QStandardItem *mapsetItem, const Q
     return;
   }
 
-  QList<QgsGrassObject::Type> types = theTypes;
-  if ( types.isEmpty() )
+  QList<QgsGrassObject::Type> typesCopy = types;
+  if ( typesCopy.isEmpty() )
   {
-    types << QgsGrassObject::Raster << QgsGrassObject::Vector;
+    typesCopy << QgsGrassObject::Raster << QgsGrassObject::Vector;
 #if GRASS_VERSION_MAJOR >= 7
-    types << QgsGrassObject::Strds << QgsGrassObject::Stvds << QgsGrassObject::Str3ds;
+    typesCopy << QgsGrassObject::Strds << QgsGrassObject::Stvds << QgsGrassObject::Str3ds;
 #endif
   }
-  Q_FOREACH ( QgsGrassObject::Type type, types )
+  Q_FOREACH ( QgsGrassObject::Type type, typesCopy )
   {
     QgsGrassObject mapsetObject( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation(), mapset, QLatin1String( "" ), QgsGrassObject::Mapset );
     QStringList maps = QgsGrass::grassObjects( mapsetObject, type );

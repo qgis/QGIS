@@ -32,7 +32,7 @@ class QgsFeatureStore
     QgsFeatureList& features();
 
     /** Set map of optional parameters */
-    void setParams( const QMap<QString, QVariant> &theParams );
+    void setParams( const QMap<QString, QVariant> &params );
 
     /** Get map of optional parameters */
     QMap<QString, QVariant> params() const;

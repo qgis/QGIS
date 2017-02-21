@@ -121,7 +121,7 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
   QgsDebugMsg( QString( "canvas:%1 [%2]" ).arg(( quint64 ) canvas, 0, 16 ).arg( canvas ? canvas->objectName() : "" ) );
   if ( !canvas )
   {
-    QgsDebugMsg( "map canvas theMapCanvas not found" );
+    QgsDebugMsg( "map canvas mapCanvas not found" );
     return;
   }
 

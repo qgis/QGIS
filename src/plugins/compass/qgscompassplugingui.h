@@ -47,7 +47,7 @@ class QgsCompassPluginGui : public QWidget, private Ui::QgsCompassPluginGuiBase
 //    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
     void handleVisibilityChanged( bool visible );
     void handleAzimuth( const QVariant &azimuth, const QVariant &calibrationLevel );
-    void rotatePixmap( QLabel *pixmapLabel, QString myFileNameQString, int theRotationInt );
+    void rotatePixmap( QLabel *pixmapLabel, QString myFileNameQString, int rotationInt );
 };
 
 #endif
