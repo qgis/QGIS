@@ -28,7 +28,7 @@
  */
 class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 {
-public:
+  public:
     QgsTriangle();
     QgsTriangle( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &p3 );
 
@@ -37,9 +37,9 @@ public:
 
     virtual QString geometryType() const override { return QStringLiteral( "Triangle" ); }
     virtual QgsTriangle* clone() const override;
-    // inherited: void clear() override;
+    void clear() override;
 
-    virtual bool fromWkb( QgsConstWkbPtr& wkb ) override;
+    virtual bool fromWkb( QgsConstWkbPtr& wkbPtr ) override;
 
     bool fromWkt( const QString &wkt ) override;
 
@@ -52,13 +52,32 @@ public:
 
     QgsAbstractGeometry* toCurveType() const override;
 
-    void addInteriorRing( QgsCurve* ring ) override;
+    void addInteriorRing( QgsCurve* ring ) override; // NOTE: no interior ring for triangle.
     //overridden to handle LineString25D rings
     virtual void setExteriorRing( QgsCurve* ring ) override;
 
     virtual QgsAbstractGeometry* boundary() const override;
 
     // inherited: double pointDistanceToBoundary( double x, double y ) const;
+
+    // TODO:
+    // length
+    // altitudes (not confuse with Z)
+    // orthocenter
+    // bisectors
+    // medians
+    // medial
+    // circumcenter
+    // circumradius
+    // circumscribedCircle -> need QgsCircle (from CADDigitize.CADCircle)
+    // incenter
+    // inradius
+    // inscribedCircle -> need QgsCircle (from CADDigitize.CADCircle)
+    // isIsocele
+    // isEquilateral
+    // isRight
+    // isScalene
+
 
 };
 #endif // QGSTRIANGLE_H

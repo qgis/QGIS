@@ -3296,6 +3296,50 @@ void TestQgsGeometry::triangle()
   QVERIFY( t3.exteriorRing() );
   QVERIFY( !t3.interiorRing( 0 ) );
 
+  // clone
+  QgsTriangle *t4 = t3.clone();
+  QCOMPARE( t3, *t4 );
+  delete t4;
+
+  // fromWkt
+  QgsTriangle t5;
+  ext = new QgsLineString();
+  ext->setPoints( QgsPointSequence() << QgsPointV2( QgsWkbTypes::PointZM, 0, 0, 1, 5 )
+                  << QgsPointV2( QgsWkbTypes::PointZM, 0, 10, 2, 6 ) << QgsPointV2( QgsWkbTypes::PointZM, 10, 10, 3, 7 )
+                  << QgsPointV2( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) << QgsPointV2( QgsWkbTypes::PointZM, 0, 0, 1, 9 ) );
+  t5.setExteriorRing( ext );
+  QString wkt = t5.asWkt();
+  QVERIFY( !wkt.isEmpty() );
+  QgsTriangle t6;
+  QVERIFY( t6.fromWkt( wkt ) );
+  QCOMPARE( t5, t6 );
+
+  //bad WKT
+  QVERIFY( !t6.fromWkt( "Point()" ) );
+  QVERIFY( t6.isEmpty() );
+  QVERIFY( !t6.exteriorRing() );
+  QCOMPARE( t6.numInteriorRings(), 0 );
+  QVERIFY( !t6.is3D() );
+  QVERIFY( !t6.isMeasure() );
+  QCOMPARE( t6.wkbType(), QgsWkbTypes::Triangle );
+
+  // WKB
+  QByteArray wkb = t5.asWkb();
+  t6.clear();
+  QgsConstWkbPtr wkb16ptr5( wkb );
+  t6.fromWkb( wkb16ptr5 );
+  QCOMPARE( t5, t6 );
+
+  //bad WKB - check for no crash
+  t6.clear();
+  QgsConstWkbPtr nullPtr( nullptr, 0 );
+  QVERIFY( !t6.fromWkb( nullPtr ) );
+  QCOMPARE( t6.wkbType(), QgsWkbTypes::Triangle );
+  QgsPointV2 point( 1, 2 );
+  QByteArray wkbPoint = point.asWkb();
+  QgsConstWkbPtr wkbPointPtr( wkbPoint );
+  QVERIFY( !t6.fromWkb( wkbPointPtr ) );
+  QCOMPARE( t6.wkbType(), QgsWkbTypes::Triangle );
 }
 
 void TestQgsGeometry::compoundCurve()
