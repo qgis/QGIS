@@ -141,11 +141,6 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QWidget
     QgsMapCanvas *mc = QgisApp::instance()->mapCanvas();
     QgsRectangle extent( mc->mapSettings().mapToLayerCoordinates( layer, mc->extent() ) );
     r.setFilterRect( extent );
-
-    mRubberBand = new QgsRubberBand( mc, QgsWkbTypes::PolygonGeometry );
-    mRubberBand->setToGeometry( QgsGeometry::fromRect( extent ), layer );
-
-    mActionShowAllFilter->setText( tr( "Show All Features In Initial Canvas Extent" ) );
     needsGeom = true;
   }
   else if ( initialMode == QgsAttributeTableFilterModel::ShowSelected )
@@ -344,7 +339,6 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QWidget
 QgsAttributeTableDialog::~QgsAttributeTableDialog()
 {
   delete myDa;
-  delete mRubberBand;
 }
 
 void QgsAttributeTableDialog::updateTitle()
@@ -355,7 +349,6 @@ void QgsAttributeTableDialog::updateTitle()
                      .arg( mMainView->featureCount() )
                      .arg( mMainView->filteredFeatureCount() )
                      .arg( mLayer->selectedFeatureCount() )
-                     .arg( mRubberBand ? tr( ", spatially limited" ) : QLatin1String( "" ) )
                    );
 
   if ( mMainView->filterMode() == QgsAttributeTableFilterModel::ShowAll )

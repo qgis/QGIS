@@ -229,7 +229,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     QSignalMapper *mFilterActionMapper = nullptr;
 
     QgsVectorLayer *mLayer = nullptr;
-    QgsRubberBand *mRubberBand = nullptr;
     QgsSearchWidgetWrapper *mCurrentSearchWidgetWrapper = nullptr;
     QStringList mVisibleFields;
     QgsAttributeEditorContext mEditorContext;
