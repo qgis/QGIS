@@ -48,7 +48,7 @@ class GUI_EXPORT QgsPropertyAbstractTransformerWidget : public QWidget
 
     virtual QgsPropertyTransformer* createTransformer( double minValue, double maxValue ) const = 0;
 
-    virtual QList< QgsSymbolLegendNode* > generatePreviews( const QList<double>& breaks, QgsLayerTreeLayer* parent, const QgsSymbol* symbol, double minValue, double maxValue ) const;
+    virtual QList< QgsSymbolLegendNode* > generatePreviews( const QList<double>& breaks, QgsLayerTreeLayer* parent, const QgsSymbol* symbol, double minValue, double maxValue, QgsCurveTransform* curve ) const;
 
   signals:
 
@@ -82,7 +82,7 @@ class GUI_EXPORT QgsPropertySizeAssistantWidget : public QgsPropertyAbstractTran
 
     virtual QgsSizeScaleTransformer* createTransformer( double minValue, double maxValue ) const override;
 
-    QList< QgsSymbolLegendNode* > generatePreviews( const QList<double>& breaks, QgsLayerTreeLayer* parent, const QgsSymbol* symbol, double minValue, double maxValue ) const override;
+    QList< QgsSymbolLegendNode* > generatePreviews( const QList<double>& breaks, QgsLayerTreeLayer* parent, const QgsSymbol* symbol, double minValue, double maxValue, QgsCurveTransform* curve ) const override;
 };
 
 class GUI_EXPORT QgsPropertyColorAssistantWidget : public QgsPropertyAbstractTransformerWidget, private Ui::PropertyColorAssistant
@@ -95,7 +95,7 @@ class GUI_EXPORT QgsPropertyColorAssistantWidget : public QgsPropertyAbstractTra
 
     virtual QgsColorRampTransformer* createTransformer( double minValue, double maxValue ) const override;
 
-    QList< QgsSymbolLegendNode* > generatePreviews( const QList<double>& breaks, QgsLayerTreeLayer* parent, const QgsSymbol* symbol, double minValue, double maxValue ) const override;
+    QList< QgsSymbolLegendNode* > generatePreviews( const QList<double>& breaks, QgsLayerTreeLayer* parent, const QgsSymbol* symbol, double minValue, double maxValue, QgsCurveTransform* curve ) const override;
 };
 
 ///@endcond PRIVATE
