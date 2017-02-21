@@ -39,4 +39,7 @@ class QgsRasterIterator
 
     void setMaximumTileHeight( int h );
     int maximumTileHeight() const;
+
+    static const int DEFAULT_MAXIMUM_TILE_WIDTH;
+    static const int DEFAULT_MAXIMUM_TILE_HEIGHT;
 };

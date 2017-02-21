@@ -68,6 +68,9 @@ class CORE_EXPORT QgsRasterIterator
     void setMaximumTileHeight( int h ) { mMaximumTileHeight = h; }
     int maximumTileHeight() const { return mMaximumTileHeight; }
 
+    static const int DEFAULT_MAXIMUM_TILE_WIDTH = 2000;
+    static const int DEFAULT_MAXIMUM_TILE_HEIGHT = 2000;
+
   private:
     //Stores information about reading of a raster band. Columns and rows are in unsampled coordinates
     struct RasterPartInfo

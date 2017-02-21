@@ -24,6 +24,7 @@
 #include "qgsauthmanager.h"
 #include "qgsraster.h"
 #include "qgsrectangle.h"
+#include "qgsrasteriterator.h"
 
 class QNetworkReply;
 
@@ -569,8 +570,8 @@ class QgsWmsSettings
     /**
      * Step size when iterating the layer
      */
-    int mStepWidth = 2000;
-    int mStepHeight = 2000;
+    int mStepWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
+    int mStepHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
 
     //! Data source URI of the WMS for this layer
     QString mHttpUri;

@@ -38,6 +38,7 @@
 #include "qgsrasterpyramid.h"
 #include "qgsrasterrange.h"
 #include "qgsrectangle.h"
+#include "qgsrasteriterator.h"
 
 class QImage;
 class QByteArray;
@@ -446,14 +447,14 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * @see stepHeight()
      * @note added in QGIS 3.0
      */
-    virtual int stepWidth() const { return 2000; }
+    virtual int stepWidth() const { return QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH; }
 
     /**
      * Step height for raster iterations.
      * @see stepWidth()
      * @note added in QGIS 3.0
      */
-    virtual int stepHeight() const { return 2000; }
+    virtual int stepHeight() const { return QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT; }
 
   signals:
 
