@@ -39,7 +39,7 @@
 #include "qgsnetworkdiskcache.h"
 #include "qgsauthmanager.h"
 
-QgsNetworkAccessManager *QgsNetworkAccessManager::sMainNAM = 0;
+QgsNetworkAccessManager *QgsNetworkAccessManager::sMainNAM = nullptr;
 
 /// @cond PRIVATE
 class QgsNetworkProxyFactory : public QNetworkProxyFactory
@@ -47,7 +47,7 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
   public:
     QgsNetworkProxyFactory() {}
 
-    virtual QList<QNetworkProxy> queryProxy( const QNetworkProxyQuery & query = QNetworkProxyQuery() ) override
+    QList<QNetworkProxy> queryProxy( const QNetworkProxyQuery & query = QNetworkProxyQuery() ) override
     {
       QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
 

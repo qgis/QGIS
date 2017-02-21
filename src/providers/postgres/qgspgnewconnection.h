@@ -32,7 +32,6 @@ class QgsPgNewConnection : public QDialog, private Ui::QgsPgNewConnectionBase
     //! Constructor
     QgsPgNewConnection( QWidget *parent = nullptr, const QString& connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
-    ~QgsPgNewConnection();
     //! Tests the connection using the parameters supplied
     void testConnection();
   public slots:

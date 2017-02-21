@@ -42,7 +42,7 @@ class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
      */
     QgsHtmlAnnotation( QObject* parent = nullptr );
 
-    ~QgsHtmlAnnotation();
+    ~QgsHtmlAnnotation() = default;
 
     QSizeF minimumFrameSize() const override;
 

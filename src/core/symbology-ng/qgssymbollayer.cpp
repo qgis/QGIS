@@ -680,8 +680,7 @@ void QgsFillSymbolLayer::_renderPolygon( QPainter* p, const QPolygonF& points, c
   {
     // polygon with holes must be drawn using painter path
     QPainterPath path;
-    QPolygonF outerRing = points;
-    path.addPolygon( outerRing );
+    path.addPolygon( points );
 
     if ( rings )
     {

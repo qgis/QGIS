@@ -28,7 +28,7 @@ class ANALYSIS_EXPORT QgsRuggednessFilter: public QgsNineCellFilter
 {
   public:
     QgsRuggednessFilter( const QString& inputFile, const QString& outputFile, const QString& outputFormat );
-    ~QgsRuggednessFilter();
+    ~QgsRuggednessFilter() = default;
 
   protected:
 

@@ -50,7 +50,7 @@ class EmbeddedWidgetLegendNode : public QgsLayerTreeModelLegendNode
       mRuleKey = QStringLiteral( "embedded-widget-" ) + QUuid::createUuid().toString();
     }
 
-    virtual QVariant data( int role ) const override
+    QVariant data( int role ) const override
     {
       if ( role == RuleKeyRole )
         return mRuleKey;

@@ -1496,7 +1496,7 @@ QList<QgsMapLayer*> QgsComposerMap::layers() const
   return _qgis_listQPointerToRaw( mLayers );
 }
 
-void QgsComposerMap::setLayers( const QList<QgsMapLayer*> layers )
+void QgsComposerMap::setLayers( const QList<QgsMapLayer*>& layers )
 {
   mLayers = _qgis_listRawToQPointer( layers );
 }

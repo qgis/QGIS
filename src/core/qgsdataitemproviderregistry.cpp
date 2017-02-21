@@ -43,11 +43,11 @@ class QgsDataItemProviderFromPlugin : public QgsDataItemProvider
     {
     }
 
-    virtual QString name() override { return mName; }
+    QString name() override { return mName; }
 
-    virtual int capabilities() override { return mCapabilitiesFunc(); }
+    int capabilities() override { return mCapabilitiesFunc(); }
 
-    virtual QgsDataItem* createDataItem( const QString& path, QgsDataItem* parentItem ) override { return mDataItemFunc( path, parentItem ); }
+    QgsDataItem* createDataItem( const QString& path, QgsDataItem* parentItem ) override { return mDataItemFunc( path, parentItem ); }
 
   protected:
     QString mName;

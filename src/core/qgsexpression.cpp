@@ -24,7 +24,7 @@
 #include <QUuid>
 #include <QMutex>
 
-#include <math.h>
+#include <cmath>
 #include <limits>
 
 #include "qgsdistancearea.h"
@@ -318,8 +318,8 @@ static QgsFeature getFeature( const QVariant& value, QgsExpression* parent )
   return 0;
 }
 
-#define FEAT_FROM_CONTEXT(c, f) if (!c || !c->hasVariable(QgsExpressionContext::EXPR_FEATURE)) return QVariant(); \
-  QgsFeature f = qvariant_cast<QgsFeature>( c->variable( QgsExpressionContext::EXPR_FEATURE ) );
+#define FEAT_FROM_CONTEXT(c, f) if (!(c) || !(c)->hasVariable(QgsExpressionContext::EXPR_FEATURE)) return QVariant(); \
+  QgsFeature f = qvariant_cast<QgsFeature>( (c)->variable( QgsExpressionContext::EXPR_FEATURE ) );
 
 static QgsExpression::Node* getNode( const QVariant& value, QgsExpression* parent )
 {
@@ -1359,7 +1359,7 @@ static QVariant fcnRegexpMatches( const QVariantList& values, const QgsExpressio
     // Skip the first string to only return captured groups
     for ( QStringList::const_iterator it = ++list.constBegin(); it != list.constEnd(); ++it )
     {
-      array += ( *it ).isEmpty() == false ? *it : empty;
+      array += ( !( *it ).isEmpty() ) ? *it : empty;
     }
 
     return QVariant( array );
@@ -1723,10 +1723,10 @@ static QVariant fcnSeconds( const QVariantList& values, const QgsExpressionConte
 
 
 #define ENSURE_GEOM_TYPE(f, g, geomtype) \
-  if ( !f.hasGeometry() ) \
+  if ( !(f).hasGeometry() ) \
     return QVariant(); \
-  QgsGeometry g = f.geometry(); \
-  if ( g.type() != geomtype ) \
+  QgsGeometry g = (f).geometry(); \
+  if ( (g).type() != (geomtype) ) \
     return QVariant();
 
 static QVariant fcnX( const QVariantList&, const QgsExpressionContext* context, QgsExpression* )
@@ -3613,7 +3613,7 @@ static QVariant fcnArrayToString( const QVariantList& values, const QgsExpressio
 
   for ( QVariantList::const_iterator it = array.constBegin(); it != array.constEnd(); ++it )
   {
-    str += ( *it ).toString().isEmpty() == false ? ( *it ).toString() : empty;
+    str += ( !( *it ).toString().isEmpty() ) ? ( *it ).toString() : empty;
     if ( it != ( array.constEnd() - 1 ) )
     {
       str += delimiter;
@@ -3634,7 +3634,7 @@ static QVariant fcnStringToArray( const QVariantList& values, const QgsExpressio
 
   for ( QStringList::const_iterator it = list.constBegin(); it != list.constEnd(); ++it )
   {
-    array += ( *it ).isEmpty() == false ? *it : empty;
+    array += ( !( *it ).isEmpty() ) ? *it : empty;
   }
 
   return array;
@@ -4262,9 +4262,7 @@ QgsExpression::~QgsExpression()
 
 bool QgsExpression::operator==( const QgsExpression& other ) const
 {
-  if ( d == other.d || d->mExp == other.d->mExp )
-    return true;
-  return false;
+  return ( d == other.d || d->mExp == other.d->mExp );
 }
 
 bool QgsExpression::isValid() const
@@ -4590,7 +4588,7 @@ QVariant QgsExpression::NodeUnaryOperator::eval( QgsExpression *parent, const Qg
       else
         SET_EVAL_ERROR( tr( "Unary minus only for numeric values." ) );
     default:
-      Q_ASSERT( 0 && "unknown unary operation" );
+      Q_ASSERT( false && "unknown unary operation" );
   }
   return QVariant();
 }
@@ -5026,7 +5024,7 @@ int QgsExpression::NodeBinaryOperator::precedence() const
     case boConcat:
       return 7;
   }
-  Q_ASSERT( 0 && "unexpected binary operator" );
+  Q_ASSERT( false && "unexpected binary operator" );
   return -1;
 }
 
@@ -5062,7 +5060,7 @@ bool QgsExpression::NodeBinaryOperator::leftAssociative() const
     case boPow:
       return false;
   }
-  Q_ASSERT( 0 && "unexpected binary operator" );
+  Q_ASSERT( false && "unexpected binary operator" );
   return false;
 }
 
@@ -6031,10 +6029,7 @@ QSet<QString> QgsExpression::Function::referencedColumns( const NodeFunction* no
 
 bool QgsExpression::Function::operator==( const QgsExpression::Function& other ) const
 {
-  if ( QString::compare( mName, other.mName, Qt::CaseInsensitive ) == 0 )
-    return true;
-
-  return false;
+  return ( QString::compare( mName, other.mName, Qt::CaseInsensitive ) == 0 );
 }
 
 QgsExpression::StaticFunction::StaticFunction( const QString& fnname, const QgsExpression::ParameterList& params, QgsExpression::FcnEval fcn, const QString& group, const QString& helpText, std::function < bool ( const NodeFunction* node ) > usesGeometry, std::function < QSet<QString>( const NodeFunction* node ) > referencedColumns, bool lazyEval, const QStringList& aliases, bool handlesNull )

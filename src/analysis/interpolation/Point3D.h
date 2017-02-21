@@ -36,7 +36,6 @@ class ANALYSIS_EXPORT Point3D
     //! Constructor with the x-, y- and z-coordinate as arguments
     Point3D( double x, double y, double z );
     Point3D( const Point3D& p );
-    Point3D& operator=( const Point3D& p );
     bool operator==( const Point3D& p ) const;
     bool operator!=( const Point3D& p ) const;
     //! Calculates the three-dimensional distance to another point

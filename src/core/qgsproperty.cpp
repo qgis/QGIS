@@ -227,11 +227,11 @@ QgsProperty QgsProperty::fromValue( const QVariant& value, bool isActive )
   return p;
 }
 
-QgsProperty::QgsProperty( const QgsProperty& other )
+QgsProperty::QgsProperty( const QgsProperty& other ) //NOLINT
     : d( other.d )
 {}
 
-QgsProperty &QgsProperty::operator=( const QgsProperty & other )
+QgsProperty &QgsProperty::operator=( const QgsProperty & other ) //NOLINT
 {
   d = other.d;
   return *this;

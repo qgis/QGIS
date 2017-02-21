@@ -41,10 +41,6 @@ QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem* parent, QString name, QSt
   mIconName = QStringLiteral( "mIconConnect.png" );
 }
 
-QgsPGConnectionItem::~QgsPGConnectionItem()
-{
-}
-
 QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
 {
 
@@ -190,7 +186,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
   return handleDrop( data, QString::null );
 }
 
-bool QgsPGConnectionItem::handleDrop( const QMimeData * data, QString toSchema )
+bool QgsPGConnectionItem::handleDrop( const QMimeData * data, const QString& toSchema )
 {
   if ( !QgsMimeDataUtils::isUriList( data ) )
     return false;
@@ -280,7 +276,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData * data, QString toSchema )
 }
 
 // ---------------------------------------------------------------------------
-QgsPGLayerItem::QgsPGLayerItem( QgsDataItem* parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsPostgresLayerProperty layerProperty )
+QgsPGLayerItem::QgsPGLayerItem( QgsDataItem* parent, const QString& name, const QString& path, QgsLayerItem::LayerType layerType, const QgsPostgresLayerProperty& layerProperty )
     : QgsLayerItem( parent, name, path, QString(), layerType, QStringLiteral( "postgres" ) )
     , mLayerProperty( layerProperty )
 {
@@ -292,10 +288,6 @@ QgsPGLayerItem::QgsPGLayerItem( QgsDataItem* parent, QString name, QString path,
 QString QgsPGLayerItem::comments() const
 {
   return mLayerProperty.tableComment;
-}
-
-QgsPGLayerItem::~QgsPGLayerItem()
-{
 }
 
 QList<QAction*> QgsPGLayerItem::actions()
@@ -457,15 +449,11 @@ QString QgsPGLayerItem::createUri()
 }
 
 // ---------------------------------------------------------------------------
-QgsPGSchemaItem::QgsPGSchemaItem( QgsDataItem* parent, QString connectionName, QString name, QString path )
+QgsPGSchemaItem::QgsPGSchemaItem( QgsDataItem* parent, const QString& connectionName, const QString& name, const QString& path )
     : QgsDataCollectionItem( parent, name, path )
     , mConnectionName( connectionName )
 {
   mIconName = QStringLiteral( "mIconDbSchema.png" );
-}
-
-QgsPGSchemaItem::~QgsPGSchemaItem()
-{
 }
 
 QVector<QgsDataItem*> QgsPGSchemaItem::createChildren()
@@ -708,10 +696,6 @@ QgsPGRootItem::QgsPGRootItem( QgsDataItem* parent, QString name, QString path )
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconPostgis.svg" );
   populate();
-}
-
-QgsPGRootItem::~QgsPGRootItem()
-{
 }
 
 QVector<QgsDataItem*> QgsPGRootItem::createChildren()

@@ -283,4 +283,8 @@ class QgsMarkerLineSymbolLayer : QgsLineSymbolLayer
     void renderPolylineVertex( const QPolygonF& points, QgsSymbolRenderContext& context, Placement placement = Vertex );
     void renderPolylineCentral( const QPolygonF& points, QgsSymbolRenderContext& context );
     double markerAngle( const QPolygonF& points, bool isRing, int vertex );
+
+  private:
+
+    QgsMarkerLineSymbolLayer( const QgsMarkerLineSymbolLayer& other );
 };

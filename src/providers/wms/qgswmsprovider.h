@@ -226,6 +226,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     static QString prepareUri( QString uri );
 
+    int stepWidth() const override { return mSettings.mStepWidth; }
+    int stepHeight() const override { return mSettings.mStepHeight; }
+
     //! Helper struct for tile requests
     struct TileRequest
     {
@@ -308,7 +311,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
     static void parseServiceException( QDomElement const &e, QString& errorTitle, QString& errorText );
 
     void parseOperationMetadata( QDomElement const &e );
-
 
     /**
      * \brief Calculates the combined extent of the layers selected by layersDrawn

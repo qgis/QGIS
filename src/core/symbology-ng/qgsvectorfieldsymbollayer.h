@@ -46,7 +46,6 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
     };
 
     QgsVectorFieldSymbolLayer();
-    ~QgsVectorFieldSymbolLayer();
 
     static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
     static QgsSymbolLayer* createFromSld( QDomElement &element );
@@ -54,7 +53,7 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
     QString layerType() const override { return QStringLiteral( "VectorField" ); }
 
     bool setSubSymbol( QgsSymbol* symbol ) override;
-    QgsSymbol* subSymbol() override { return mLineSymbol; }
+    QgsSymbol* subSymbol() override { return mLineSymbol.get(); }
 
     void setColor( const QColor& color ) override;
     virtual QColor color() const override;
@@ -119,7 +118,7 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
     AngleOrientation mAngleOrientation;
     AngleUnits mAngleUnits;
 
-    QgsLineSymbol* mLineSymbol = nullptr;
+    std::unique_ptr< QgsLineSymbol > mLineSymbol;
 
     //Attribute indices are resolved in startRender method
     int mXIndex;

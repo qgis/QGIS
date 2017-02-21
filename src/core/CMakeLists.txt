@@ -1060,6 +1060,14 @@ IF (Qt5Positioning_FOUND)
   )
 ENDIF (Qt5Positioning_FOUND)
 
+# clang-tidy
+IF(CLANG_TIDY_EXE)
+  SET_TARGET_PROPERTIES(
+    qgis_core PROPERTIES
+    CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
+  )
+ENDIF(CLANG_TIDY_EXE)
+
 # install
 
 INSTALL(TARGETS qgis_core

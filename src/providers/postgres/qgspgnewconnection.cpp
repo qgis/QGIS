@@ -178,10 +178,6 @@ void QgsPgNewConnection::on_cb_geometryColumnsOnly_clicked()
 
 //! End  Autoconnected SLOTS *
 
-QgsPgNewConnection::~QgsPgNewConnection()
-{
-}
-
 void QgsPgNewConnection::testConnection()
 {
   QgsDataSourceUri uri;

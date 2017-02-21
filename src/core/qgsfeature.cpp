@@ -58,12 +58,12 @@ QgsFeature::QgsFeature( const QgsFields &fields, QgsFeatureId id )
   initAttributes( d->fields.count() );
 }
 
-QgsFeature::QgsFeature( const QgsFeature& rhs )
+QgsFeature::QgsFeature( const QgsFeature& rhs ) //NOLINT
     : d( rhs.d )
 {
 }
 
-QgsFeature & QgsFeature::operator=( const QgsFeature & rhs )
+QgsFeature & QgsFeature::operator=( const QgsFeature & rhs ) //NOLINT
 {
   d = rhs.d;
   return *this;
@@ -89,7 +89,7 @@ bool QgsFeature::operator!=( const QgsFeature& other ) const
   return !( *this == other );
 }
 
-QgsFeature::~QgsFeature()
+QgsFeature::~QgsFeature() //NOLINT
 {
 }
 

@@ -566,6 +566,12 @@ class QgsWmsSettings
     int mMaxWidth;
     int mMaxHeight;
 
+    /**
+     * Step size when iterating the layer
+     */
+    int mStepWidth;
+    int mStepHeight;
+
     //! Data source URI of the WMS for this layer
     QString mHttpUri;
 

@@ -51,8 +51,7 @@
 #include <gdal.h>
 
 QgsVectorFileWriter::FieldValueConverter::FieldValueConverter()
-{
-}
+= default;
 
 QgsField QgsVectorFileWriter::FieldValueConverter::fieldDefinition( const QgsField& field )
 {
@@ -472,7 +471,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     {
       case QVariant::LongLong:
       {
-        const char* pszDataTypes = GDALGetMetadataItem( poDriver, GDAL_DMD_CREATIONFIELDDATATYPES, NULL );
+        const char* pszDataTypes = GDALGetMetadataItem( poDriver, GDAL_DMD_CREATIONFIELDDATATYPES, nullptr );
         if ( pszDataTypes && strstr( pszDataTypes, "Integer64" ) )
           ogrType = OFTInteger64;
         else
@@ -3043,9 +3042,9 @@ QgsVectorFileWriter::EditionCapabilities QgsVectorFileWriter::editionCapabilitie
   OGRSFDriverH hDriver = nullptr;
   OGRDataSourceH hDS = OGROpen( datasetName.toUtf8().constData(), TRUE, &hDriver );
   if ( !hDS )
-    return 0;
+    return nullptr;
   QString drvName = OGR_Dr_GetName( hDriver );
-  QgsVectorFileWriter::EditionCapabilities caps = 0;
+  QgsVectorFileWriter::EditionCapabilities caps = nullptr;
   if ( OGR_DS_TestCapability( hDS, ODsCCreateLayer ) )
   {
     // Shapefile driver returns True for a "foo.shp" dataset name,

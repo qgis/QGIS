@@ -548,12 +548,8 @@ int QgsDataItem::findItem( QVector<QgsDataItem*> items, QgsDataItem * item )
 
 bool QgsDataItem::equal( const QgsDataItem *other )
 {
-  if ( metaObject()->className() == other->metaObject()->className() &&
-       mPath == other->path() )
-  {
-    return true;
-  }
-  return false;
+  return ( metaObject()->className() == other->metaObject()->className() &&
+           mPath == other->path() );
 }
 
 QgsDataItem::State QgsDataItem::state() const

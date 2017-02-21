@@ -63,7 +63,7 @@ email                : sherman at mrcc.com
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include "qgscursors.h"
-#include <math.h>
+#include <cmath>
 
 
 /** \ingroup gui

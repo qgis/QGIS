@@ -80,7 +80,6 @@ void QgsHeatmapRenderer::startRender( QgsRenderContext& context, const QgsFields
   }
 
   initializeValues( context );
-  return;
 }
 
 QgsMultiPoint QgsHeatmapRenderer::convertToMultipoint( const QgsGeometry* geom )

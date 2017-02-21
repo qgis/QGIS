@@ -299,7 +299,7 @@ class QgsTaskRunnableWrapper : public QRunnable
 {
   public:
 
-    QgsTaskRunnableWrapper( QgsTask* task )
+    explicit QgsTaskRunnableWrapper( QgsTask* task )
         : QRunnable()
         , mTask( task )
     {

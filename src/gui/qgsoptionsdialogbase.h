@@ -55,7 +55,6 @@ class GUI_EXPORT QgsSearchHighlightOptionWidget : public QObject
      * @param widget the widget used to search text into
      */
     explicit QgsSearchHighlightOptionWidget( QWidget* widget = 0 );
-    ~QgsSearchHighlightOptionWidget();
 
     /**
      * Returns if it valid: if the widget type is handled and if the widget is not still available
@@ -66,7 +65,7 @@ class GUI_EXPORT QgsSearchHighlightOptionWidget : public QObject
      * search for a text pattern and highlight the widget if the text is found
      * @return true if the text pattern is found
      */
-    bool searchHighlight( QString searchText );
+    bool searchHighlight( const QString& searchText );
 
     /**
      *  reset the style to the original state
@@ -148,7 +147,7 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      * @param text the text to search
      * @note added in 3.0
      */
-    void searchText( QString text );
+    void searchText( const QString& text );
 
   protected slots:
     void updateOptionsListVerticalTabs();

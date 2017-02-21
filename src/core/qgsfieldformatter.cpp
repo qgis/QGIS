@@ -19,7 +19,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
-QgsFieldFormatter::QgsFieldFormatter()
+QgsFieldFormatter::QgsFieldFormatter() //NOLINT
 {
 }
 

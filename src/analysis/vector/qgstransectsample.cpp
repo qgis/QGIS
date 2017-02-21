@@ -22,7 +22,7 @@
 #include <QProgressDialog>
 #include <QFileInfo>
 #ifndef _MSC_VER
-#include <stdint.h>
+#include <cstdint>
 #endif
 #include "mersenne-twister.h"
 #include <limits>

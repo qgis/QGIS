@@ -45,11 +45,10 @@ QgsNetworkContentFetcher::~QgsNetworkContentFetcher()
 
 void QgsNetworkContentFetcher::fetchContent( const QUrl& url )
 {
-  QUrl nextUrlToFetch = url;
   mContentLoaded = false;
 
   //get contents
-  QNetworkRequest request( nextUrlToFetch );
+  QNetworkRequest request( url );
 
   if ( mReply )
   {

@@ -40,10 +40,6 @@ QgsPgTableModel::QgsPgTableModel()
   setHorizontalHeaderLabels( headerLabels );
 }
 
-QgsPgTableModel::~QgsPgTableModel()
-{
-}
-
 void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProperty )
 {
   QgsDebugMsg( layerProperty.toString() );

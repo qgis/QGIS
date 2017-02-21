@@ -21,7 +21,6 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 
-#include <stdlib.h> // for random()
 #include <algorithm>
 
 #include <QTime>

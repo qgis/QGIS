@@ -650,7 +650,7 @@ class QgsVectorLayerInterruptionCheckerDuringCountSymbolFeatures: public QgsInte
     {
     }
 
-    virtual bool mustStop() const
+    bool mustStop() const override
     {
       if ( mDialog->isVisible() )
       {
@@ -935,10 +935,7 @@ bool QgsVectorLayer::simplifyDrawingCanbeApplied( const QgsRenderContext& render
     double maximumSimplificationScale = mSimplifyMethod.maximumScale();
 
     // check maximum scale at which generalisation should be carried out
-    if ( maximumSimplificationScale > 1 && renderContext.rendererScale() <= maximumSimplificationScale )
-      return false;
-
-    return true;
+    return !( maximumSimplificationScale > 1 && renderContext.rendererScale() <= maximumSimplificationScale );
   }
   return false;
 }
@@ -1526,7 +1523,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
     QgsDebugMsg( "Beautifying layer name " + name() );
 
     // adjust the display name for postgres layers
-    QRegExp reg( "\"[^\"]+\"\\.\"([^\"]+)\"( \\([^)]+\\))?" );
+    QRegExp reg( R"lit("[^"]+"\."([^"] + )"( \([^)]+\))?)lit" );
     if ( reg.indexIn( name() ) >= 0 )
     {
       QStringList stuff = reg.capturedTexts();
@@ -3989,21 +3986,21 @@ QString QgsVectorLayer::metadata() const
 
   //-------------
 
-  myMetadata += QLatin1String( "<p class=\"subheaderglossy\">" );
+  myMetadata += QLatin1String( R"(<p class="subheaderglossy">)" );
   myMetadata += tr( "General" );
   myMetadata += QLatin1String( "</p>\n" );
 
   // data comment
   if ( !( dataComment().isEmpty() ) )
   {
-    myMetadata += "<p class=\"glossy\">" + tr( "Layer comment" ) + "</p>\n";
+    myMetadata += R"(<p class="glossy">)" + tr( "Layer comment" ) + "</p>\n";
     myMetadata += QLatin1String( "<p>" );
     myMetadata += dataComment();
     myMetadata += QLatin1String( "</p>\n" );
   }
 
   //storage type
-  myMetadata += "<p class=\"glossy\">" + tr( "Storage type of this layer" ) + "</p>\n";
+  myMetadata += R"(<p class="glossy">)" + tr( "Storage type of this layer" ) + "</p>\n";
   myMetadata += QLatin1String( "<p>" );
   myMetadata += storageType();
   myMetadata += QLatin1String( "</p>\n" );
@@ -4011,7 +4008,7 @@ QString QgsVectorLayer::metadata() const
   if ( dataProvider() )
   {
     //provider description
-    myMetadata += "<p class=\"glossy\">" + tr( "Description of this provider" ) + "</p>\n";
+    myMetadata += R"(<p class="glossy">)" + tr( "Description of this provider" ) + "</p>\n";
     myMetadata += QLatin1String( "<p>" );
     myMetadata += dataProvider()->description().replace( '\n', QLatin1String( "<br>" ) );
     myMetadata += QLatin1String( "</p>\n" );
@@ -4019,7 +4016,7 @@ QString QgsVectorLayer::metadata() const
     QVariantMap dataProviderMetadata = mDataProvider->metadata();
     if ( !dataProviderMetadata.isEmpty() )
     {
-      myMetadata += "<p class=\"glossy\">" + tr( "Provider Metadata" ) + "</p>\n";
+      myMetadata += R"(<p class="glossy">)" + tr( "Provider Metadata" ) + "</p>\n";
       myMetadata +=  "<p><table><tr><th>" + tr( "Metadata name" ) + "</th><th>" + tr( "Metadata value" ) + "</th></tr>\n";
       QMapIterator<QString, QVariant> i( dataProviderMetadata );
       while ( i.hasNext() )
@@ -4035,7 +4032,7 @@ QString QgsVectorLayer::metadata() const
   }
 
   // data source
-  myMetadata += "<p class=\"glossy\">" + tr( "Source for this layer" ) + "</p>\n";
+  myMetadata += R"(<p class="glossy">)" + tr( "Source for this layer" ) + "</p>\n";
   myMetadata += QLatin1String( "<p>" );
   myMetadata += publicSource();
   myMetadata += QLatin1String( "</p>\n" );
@@ -4052,14 +4049,14 @@ QString QgsVectorLayer::metadata() const
   {
     QString typeString( QgsWkbTypes::geometryDisplayString( geometryType() ) );
 
-    myMetadata += "<p class=\"glossy\">" + tr( "Geometry type of the features in this layer" ) + "</p>\n";
+    myMetadata += R"(<p class="glossy">)" + tr( "Geometry type of the features in this layer" ) + "</p>\n";
     myMetadata += QStringLiteral( "<p>%1</p>\n" ).arg( typeString );
   }
 
   QgsAttributeList pkAttrList = pkAttributeList();
   if ( !pkAttrList.isEmpty() )
   {
-    myMetadata += "<p class=\"glossy\">" + tr( "Primary key attributes" ) + "</p>\n";
+    myMetadata += R"(<p class="glossy">)" + tr( "Primary key attributes" ) + "</p>\n";
     myMetadata += QLatin1String( "<p>" );
     Q_FOREACH ( int idx, pkAttrList )
     {
@@ -4070,12 +4067,12 @@ QString QgsVectorLayer::metadata() const
 
 
   //feature count
-  myMetadata += "<p class=\"glossy\">" + tr( "The number of features in this layer" ) + "</p>\n";
+  myMetadata += R"(<p class="glossy">)" + tr( "The number of features in this layer" ) + "</p>\n";
   myMetadata += QLatin1String( "<p>" );
   myMetadata += QString::number( featureCount() );
   myMetadata += QLatin1String( "</p>\n" );
   //capabilities
-  myMetadata += "<p class=\"glossy\">" + tr( "Capabilities of this layer" ) + "</p>\n";
+  myMetadata += R"(<p class="glossy">)" + tr( "Capabilities of this layer" ) + "</p>\n";
   myMetadata += QLatin1String( "<p>" );
   myMetadata += capabilitiesString();
   myMetadata += QLatin1String( "</p>\n" );
@@ -4083,12 +4080,12 @@ QString QgsVectorLayer::metadata() const
   //-------------
 
   QgsRectangle myExtent = extent();
-  myMetadata += QLatin1String( "<p class=\"subheaderglossy\">" );
+  myMetadata += QLatin1String( R"(<p class="subheaderglossy">)" );
   myMetadata += tr( "Extents" );
   myMetadata += QLatin1String( "</p>\n" );
 
   //extents in layer cs  TODO...maybe make a little nested table to improve layout...
-  myMetadata += "<p class=\"glossy\">" + tr( "In layer spatial reference system units" ) + "</p>\n";
+  myMetadata += R"(<p class="glossy">)" + tr( "In layer spatial reference system units" ) + "</p>\n";
   myMetadata += QLatin1String( "<p>" );
   // Try to be a bit clever over what number format we use for the
   // extents. Some people don't like it using scientific notation when the
@@ -4167,7 +4164,7 @@ QString QgsVectorLayer::metadata() const
     //
     // Display layer spatial ref system
     //
-    myMetadata += "<p class=\"glossy\">" + tr( "Layer Spatial Reference System" ) + "</p>\n";
+    myMetadata += R"(<p class="glossy">)" + tr( "Layer Spatial Reference System" ) + "</p>\n";
     myMetadata += QLatin1String( "<p>" );
     myMetadata += crs().toProj4().replace( '"', QLatin1String( " \"" ) );
     myMetadata += QLatin1String( "</p>\n" );
@@ -4177,7 +4174,7 @@ QString QgsVectorLayer::metadata() const
     //
 #if 0
     // TODO: disabled for now, will revisit later [MD]
-    //myMetadata += "<tr><td bgcolor=\"gray\">";
+    //myMetadata += "<tr> < td bgcolor = \"gray\">";
     myMetadata += "<p class=\"glossy\">" + tr( "Project (Output) Spatial Reference System" ) + "</p>\n";
     myMetadata += "<p>";
     myMetadata += coordinateTransform->destCRS().toProj4().replace( '"', " \"" );
@@ -4189,7 +4186,7 @@ QString QgsVectorLayer::metadata() const
     Q_UNUSED( cse );
     QgsDebugMsg( cse.what() );
 
-    myMetadata += "<p class=\"glossy\">" + tr( "In project spatial reference system units" ) + "</p>\n";
+    myMetadata += R"(<p class="glossy">)" + tr( "In project spatial reference system units" ) + "</p>\n";
     myMetadata += QLatin1String( "<p>" );
     myMetadata += tr( "(Invalid transformation of layer extents)" );
     myMetadata += QLatin1String( "</p>\n" );
@@ -4474,7 +4471,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency>& oDeps )
 QgsFieldConstraints::Constraints QgsVectorLayer::fieldConstraints( int fieldIndex ) const
 {
   if ( fieldIndex < 0 || fieldIndex >= mFields.count() )
-    return 0;
+    return nullptr;
 
   QgsFieldConstraints::Constraints constraints = mFields.at( fieldIndex ).constraints().constraints();
 
@@ -4495,7 +4492,7 @@ void QgsVectorLayer::setFieldConstraint( int index, QgsFieldConstraints::Constra
   QString name = mFields.at( index ).name();
 
   // add constraint to existing constraints
-  QgsFieldConstraints::Constraints constraints = mFieldConstraints.value( name, 0 );
+  QgsFieldConstraints::Constraints constraints = mFieldConstraints.value( name, nullptr );
   constraints |= constraint;
   mFieldConstraints.insert( name, constraints );
 
@@ -4512,7 +4509,7 @@ void QgsVectorLayer::removeFieldConstraint( int index, QgsFieldConstraints::Cons
   QString name = mFields.at( index ).name();
 
   // remove constraint from existing constraints
-  QgsFieldConstraints::Constraints constraints = mFieldConstraints.value( name, 0 );
+  QgsFieldConstraints::Constraints constraints = mFieldConstraints.value( name, nullptr );
   constraints &= ~constraint;
   mFieldConstraints.insert( name, constraints );
 

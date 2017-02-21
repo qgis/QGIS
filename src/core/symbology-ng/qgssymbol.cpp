@@ -560,7 +560,7 @@ QString QgsSymbol::dump() const
       t = QStringLiteral( "FILL" );
       break;
     default:
-      Q_ASSERT( 0 && "unknown symbol type" );
+      Q_ASSERT( false && "unknown symbol type" );
   }
   QString s = QStringLiteral( "%1 SYMBOL (%2 layers) color %3" ).arg( t ).arg( mLayers.count() ).arg( QgsSymbolLayerUtils::encodeColor( color() ) );
 

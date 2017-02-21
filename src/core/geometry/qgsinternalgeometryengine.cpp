@@ -210,10 +210,10 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision ,
                                     0, polygon ) );
   if ( bboxCell->d > bestCell->d )
   {
-    bestCell.reset( bboxCell.release() );
+    bestCell = std::move( bboxCell );
   }
 
-  while ( cellQueue.size() > 0 )
+  while ( !cellQueue.empty() )
   {
     // pick the most promising cell from the queue
     std::unique_ptr< Cell > cell( cellQueue.top() );
@@ -223,7 +223,7 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision ,
     // update the best cell if we found a better one
     if ( currentCell->d > bestCell->d )
     {
-      bestCell.reset( cell.release() );
+      bestCell = std::move( cell );
     }
 
     // do not drill down further if there's no chance of a better solution
