@@ -28,7 +28,7 @@ if [[ "$OSTYPE" =~ darwin* ]]; then
 fi
 
 # ARGUMENTS
-INTERACTIVE=$(tty -s && echo YES || echo NO)
+INTERACTIVE=$( ( tty -s || [[ $TRAVIS ~= true ]] ) && echo YES || echo NO)
 DEBUG=NO
 OUTPUTLOG=""
 while getopts ":rdl:" opt; do
