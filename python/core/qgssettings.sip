@@ -13,14 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
-
 /** \ingroup core
  * \class QgsSettings
  *
- * This class is a drop-in replacement of QSettings that wraps an additional QSettings instance.
- * The inherited QSettings instance is the standard User Settings and the second one
- * (Global Settings) is meant to provide read-only pre-configuration and defaults to the
- * first one.
+ * This class is a composition of two QSettings instances:
+ * - the main QSettings instance is the standard User Settings and
+ * - the second one (Global Settings) is meant to provide read-only
+ *   pre-configuration and defaults to the first one.
  *
  * Unlike the original QSettings, the keys of QgsSettings are case insensitive.
  *
@@ -41,13 +40,9 @@
  *  - Plugins
  *  - Misc
  *
- * For example, the following getter and setter, will set/get a value from the Gui section:
- *  - setGuiValue( const QString &key, const QVariant &value );
- *  - QVariant guiValue( const QString &key, const QVariant &defaultValue = QVariant() ) const;
- *
  * @note added in QGIS 3
  */
-class QgsSettings : public QSettings
+class QgsSettings : public QObject
 {
 
   %TypeHeaderCode
@@ -156,6 +151,10 @@ class QgsSettings : public QSettings
   void endArray();
   //! Sets the current array index to i. Calls to functions such as setValue(), value(), remove(), and contains() will operate on the array entry at that index.
   void setArrayIndex( int i );
+  //! @note keys are case insensitive
+  void setValue(const QString &key, const QVariant &value);
+  //! Removes the setting key and any sub-settings of key.
+  void remove(const QString &key);
   /** Returns the value for setting key. If the setting doesn't exist, it will be
    * searched in the Global Settings and if not found, returns defaultValue.
    *If no default value is specified, a default QVariant is returned.
@@ -163,29 +162,19 @@ class QgsSettings : public QSettings
   QVariant value( const QString &key, const QVariant &defaultValue = QVariant() ) const;
   //! Overloaded getter that accepts an additional Section argument
   QVariant sectionValue( const QString &key, const Section section, const QVariant &defaultValue = QVariant() ) const;
-  //! Overloaded getter that gets a core prefix
-  QVariant coreValue( const QString &key, const QVariant &defaultValue = QVariant() ) const;
-  //! Overloaded getter that gets a server prefix
-  QVariant serverValue( const QString &key, const QVariant &defaultValue = QVariant() ) const;
-  //! Overloaded getter that gets a gui prefix
-  QVariant guiValue( const QString &key, const QVariant &defaultValue = QVariant() ) const;
-  //! Overloaded getter that gets a plugins prefix
-  QVariant pluginsValue( const QString &key, const QVariant &defaultValue = QVariant() ) const;
-  //! Overloaded getter that gets a misc prefix
-  QVariant miscValue( const QString &key, const QVariant &defaultValue = QVariant() ) const;
   //! Overloaded setValue that accepts an additional Section argument
   void setSectionValue( const QString &key, const Section section, const QVariant &value );
-  //! Overloaded setValue that sets a core prefix
-  void setCoreValue( const QString &key, const QVariant &value );
-  //! Overloaded setValue that sets a server prefix
-  void setServerValue( const QString &key, const QVariant &value );
-  //! Overloaded setValue that sets a gui prefix
-  void setGuiValue( const QString &key, const QVariant &value );
-  //! Overloaded setValue that sets a plugins prefix
-  void setPluginsValue( const QString &key, const QVariant &value );
-  //! Overloaded setValue that sets a misc prefix
-  void setMiscValue( const QString &key, const QVariant &value );
   //! Return the sanitized and prefixed key
   QString prefixedKey( const QString &key, const Section section ) const;
+  //! Returns the path where settings written using this QSettings object are stored.
+  QString fileName() const;
+  //! Writes any unsaved changes to permanent storage, and reloads any settings that have been
+  //! changed in the meantime by another application.
+  //! This function is called automatically from QSettings's destructor and by the event
+  //! loop at regular intervals, so you normally don't need to call it yourself.
+  void sync();
+  //! Returns true if there exists a setting called key; returns false otherwise.
+  //! If a group is set using beginGroup(), key is taken to be relative to that group.
+  bool contains(const QString &key) const;
 
 };

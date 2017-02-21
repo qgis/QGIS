@@ -157,20 +157,20 @@ class TestQgsSettings(unittest.TestCase):
     def test_section_getters_setters(self):
         self.assertEqual(self.settings.allKeys(), [])
 
-        self.settings.setCoreValue('key1', 'core1')
-        self.settings.setCoreValue('key2', 'core2')
+        self.settings.setSectionValue('key1', QgsSettings.Core, 'core1')
+        self.settings.setSectionValue('key2', QgsSettings.Core, 'core2')
 
-        self.settings.setServerValue('key1', 'server1')
-        self.settings.setServerValue('key2', 'server2')
+        self.settings.setSectionValue('key1', QgsSettings.Server, 'server1')
+        self.settings.setSectionValue('key2', QgsSettings.Server, 'server2')
 
-        self.settings.setGuiValue('key1', 'gui1')
-        self.settings.setGuiValue('key2', 'gui2')
+        self.settings.setSectionValue('key1', QgsSettings.Gui, 'gui1')
+        self.settings.setSectionValue('key2', QgsSettings.Gui, 'gui2')
 
-        self.settings.setPluginsValue('key1', 'plugins1')
-        self.settings.setPluginsValue('key2', 'plugins2')
+        self.settings.setSectionValue('key1', QgsSettings.Plugins, 'plugins1')
+        self.settings.setSectionValue('key2', QgsSettings.Plugins, 'plugins2')
 
-        self.settings.setMiscValue('key1', 'misc1')
-        self.settings.setMiscValue('key2', 'misc2')
+        self.settings.setSectionValue('key1', QgsSettings.Misc, 'misc1')
+        self.settings.setSectionValue('key2', QgsSettings.Misc, 'misc2')
 
         # Test that the values are namespaced
         self.assertEqual(self.settings.value('core/key1'), 'core1')
@@ -189,20 +189,31 @@ class TestQgsSettings(unittest.TestCase):
         self.assertEqual(self.settings.value('misc/key2'), 'misc2')
 
         # Test getters
-        self.assertEqual(self.settings.coreValue('key1'), 'core1')
-        self.assertEqual(self.settings.coreValue('key2'), 'core2')
+        self.assertEqual(self.settings.sectionValue('key1', QgsSettings.Core), 'core1')
+        self.assertEqual(self.settings.sectionValue('key2', QgsSettings.Core), 'core2')
 
-        self.assertEqual(self.settings.serverValue('key1'), 'server1')
-        self.assertEqual(self.settings.serverValue('key2'), 'server2')
+        self.assertEqual(self.settings.sectionValue('key1', QgsSettings.Server), 'server1')
+        self.assertEqual(self.settings.sectionValue('key2', QgsSettings.Server), 'server2')
 
-        self.assertEqual(self.settings.guiValue('key1'), 'gui1')
-        self.assertEqual(self.settings.guiValue('key2'), 'gui2')
+        self.assertEqual(self.settings.sectionValue('key1', QgsSettings.Gui), 'gui1')
+        self.assertEqual(self.settings.sectionValue('key2', QgsSettings.Gui), 'gui2')
 
-        self.assertEqual(self.settings.pluginsValue('key1'), 'plugins1')
-        self.assertEqual(self.settings.pluginsValue('key2'), 'plugins2')
+        self.assertEqual(self.settings.sectionValue('key1', QgsSettings.Plugins), 'plugins1')
+        self.assertEqual(self.settings.sectionValue('key2', QgsSettings.Plugins), 'plugins2')
 
-        self.assertEqual(self.settings.miscValue('key1'), 'misc1')
-        self.assertEqual(self.settings.miscValue('key2'), 'misc2')
+        self.assertEqual(self.settings.sectionValue('key1', QgsSettings.Misc), 'misc1')
+        self.assertEqual(self.settings.sectionValue('key2', QgsSettings.Misc), 'misc2')
+
+    def test_contains(self):
+        self.assertEqual(self.settings.allKeys(), [])
+        self.addToDefaults('testqgissettings/name', 'elpaso1')
+        self.addToDefaults('testqgissettings/name2', 'elpaso2')
+
+        self.assertTrue(self.settings.contains('testqgissettings/name'))
+        self.assertTrue(self.settings.contains('testqgissettings/name2'))
+
+        self.settings.setValue('testqgissettings/name3', 'elpaso3')
+        self.assertTrue(self.settings.contains('testqgissettings/name3'))
 
 
 if __name__ == '__main__':

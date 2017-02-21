@@ -848,24 +848,25 @@ int main( int argc, char *argv[] )
     }
   }
 
-  QgsSettings* customizationsettings = nullptr;
+  // TODO: use QgsSettings
+  QSettings* customizationsettings = nullptr;
   if ( !optionpath.isEmpty() || !configpath.isEmpty() )
   {
     // tell QSettings to use INI format and save the file in custom config path
     QSettings::setDefaultFormat( QSettings::IniFormat );
     QString path = optionpath.isEmpty() ? configpath : optionpath;
     QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, path );
-    customizationsettings = new QgsSettings( QSettings::IniFormat, QSettings::UserScope, QStringLiteral( "QGIS" ), QStringLiteral( "QGISCUSTOMIZATION2" ) );
+    customizationsettings = new QSettings( QSettings::IniFormat, QSettings::UserScope, QStringLiteral( "QGIS" ), QStringLiteral( "QGISCUSTOMIZATION2" ) );
   }
   else
   {
-    customizationsettings = new QgsSettings( QStringLiteral( "QGIS" ), QStringLiteral( "QGISCUSTOMIZATION2" ) );
+    customizationsettings = new QSettings( QStringLiteral( "QGIS" ), QStringLiteral( "QGISCUSTOMIZATION2" ) );
   }
 
   // Using the customizationfile option always overrides the option and config path options.
   if ( !customizationfile.isEmpty() )
   {
-    customizationsettings = new QgsSettings( customizationfile, QSettings::IniFormat );
+    customizationsettings = new QSettings( customizationfile, QSettings::IniFormat );
     QgsCustomization::instance()->setEnabled( true );
   }
 

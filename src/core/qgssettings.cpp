@@ -43,47 +43,48 @@ void QgsSettings::init()
 }
 
 
-QgsSettings::QgsSettings( const QString &organization, const QString &application, QObject *parent ):
-    QSettings( organization, application, parent )
+QgsSettings::QgsSettings( const QString &organization, const QString &application, QObject *parent )
 {
+  mUserSettings = new QSettings( organization, application, parent );
   init( );
 }
 
 QgsSettings::QgsSettings( QSettings::Scope scope, const QString &organization,
-                          const QString &application, QObject *parent ) :
-    QSettings( scope, organization, application, parent )
+                          const QString &application, QObject *parent )
 {
+  mUserSettings = new QSettings( scope, organization, application, parent );
   init( );
 }
 
 QgsSettings::QgsSettings( QSettings::Format format, QSettings::Scope scope,
-                          const QString &organization, const QString &application, QObject *parent ) :
-    QSettings( format, scope, organization, application, parent )
+                          const QString &organization, const QString &application, QObject *parent )
 {
+  mUserSettings = new QSettings( format, scope, organization, application, parent );
   init( );
 }
 
-QgsSettings::QgsSettings( const QString &fileName, QSettings::Format format, QObject *parent ) :
-    QSettings( fileName, format, parent )
+QgsSettings::QgsSettings( const QString &fileName, QSettings::Format format, QObject *parent )
 {
+  mUserSettings = new QSettings( fileName, format, parent );
   init( );
 }
 
-QgsSettings::QgsSettings( QObject *parent ) :
-    QSettings( parent )
+QgsSettings::QgsSettings( QObject *parent )
 {
+  mUserSettings = new QSettings( parent );
   init( );
 }
 
 QgsSettings::~QgsSettings()
 {
+  delete mUserSettings;
   delete mGlobalSettings;
 }
 
 
 void QgsSettings::beginGroup( const QString &prefix )
 {
-  QSettings::beginGroup( prefix );
+  mUserSettings->beginGroup( prefix );
   if ( mGlobalSettings )
   {
     mGlobalSettings->beginGroup( prefix );
@@ -92,7 +93,7 @@ void QgsSettings::beginGroup( const QString &prefix )
 
 void QgsSettings::endGroup()
 {
-  QSettings::endGroup( );
+  mUserSettings->endGroup( );
   if ( mGlobalSettings )
   {
     mGlobalSettings->endGroup( );
@@ -102,7 +103,7 @@ void QgsSettings::endGroup()
 
 QStringList QgsSettings::allKeys() const
 {
-  QStringList keys = QSettings::allKeys( );
+  QStringList keys = mUserSettings->allKeys( );
   if ( mGlobalSettings )
   {
   for ( auto &s : mGlobalSettings->allKeys() )
@@ -119,7 +120,7 @@ QStringList QgsSettings::allKeys() const
 
 QStringList QgsSettings::childKeys() const
 {
-  QStringList keys = QSettings::childKeys( );
+  QStringList keys = mUserSettings->childKeys( );
   if ( mGlobalSettings )
   {
   for ( auto &s : mGlobalSettings->childKeys() )
@@ -135,7 +136,7 @@ QStringList QgsSettings::childKeys() const
 
 QStringList QgsSettings::childGroups() const
 {
-  QStringList keys = QSettings::childGroups( );
+  QStringList keys = mUserSettings->childGroups( );
   if ( mGlobalSettings )
   {
   for ( auto &s : mGlobalSettings->childGroups() )
@@ -152,9 +153,9 @@ QStringList QgsSettings::childGroups() const
 
 QVariant QgsSettings::value( const QString &key, const QVariant &defaultValue ) const
 {
-  if ( ! QSettings::value( key ).isNull() )
+  if ( ! mUserSettings->value( key ).isNull() )
   {
-    return QSettings::value( key );
+    return mUserSettings->value( key );
   }
   if ( mGlobalSettings )
   {
@@ -163,65 +164,37 @@ QVariant QgsSettings::value( const QString &key, const QVariant &defaultValue ) 
   return defaultValue;
 }
 
+bool QgsSettings::contains( const QString &key ) const
+{
+  return mUserSettings->contains( key ) ||
+         ( mGlobalSettings && mGlobalSettings->contains( key ) );
+}
+
+QString QgsSettings::fileName() const
+{
+  return mUserSettings->fileName( );
+}
+
+void QgsSettings::sync()
+{
+  return mUserSettings->sync( );
+}
+
+void QgsSettings::remove( const QString &key )
+{
+  mGlobalSettings->remove( key );
+}
+
 QVariant QgsSettings::sectionValue( const QString &key, const Section section, const QVariant &defaultValue ) const
 {
   return value( prefixedKey( key, section ), defaultValue );
 }
 
-QVariant QgsSettings::coreValue( const QString &key, const QVariant &defaultValue ) const
-{
-  return sectionValue( key, Section::Core, defaultValue );
-}
-
-QVariant QgsSettings::serverValue( const QString &key, const QVariant &defaultValue ) const
-{
-  return sectionValue( key, Section::Server, defaultValue );
-}
-
-QVariant QgsSettings::guiValue( const QString &key, const QVariant &defaultValue ) const
-{
-  return sectionValue( key, Section::Gui, defaultValue );
-}
-
-QVariant QgsSettings::pluginsValue( const QString &key, const QVariant &defaultValue ) const
-{
-  return sectionValue( key, Section::Plugins, defaultValue );
-}
-
-QVariant QgsSettings::miscValue( const QString &key, const QVariant &defaultValue ) const
-{
-  return sectionValue( key, Section::Misc, defaultValue );
-}
-
 void QgsSettings::setSectionValue( const QString &key, const Section section, const QVariant &value )
 {
-  QSettings::setValue( prefixedKey( key, section ), value );
+  mUserSettings->setValue( prefixedKey( key, section ), value );
 }
 
-void QgsSettings::setCoreValue( const QString &key, const QVariant &value )
-{
-  setSectionValue( key , Section::Core, value );
-}
-
-void QgsSettings::setServerValue( const QString &key, const QVariant &value )
-{
-  setSectionValue( key , Section::Server, value );
-}
-
-void QgsSettings::setGuiValue( const QString &key, const QVariant &value )
-{
-  setSectionValue( key , Section::Gui, value );
-}
-
-void QgsSettings::setPluginsValue( const QString &key, const QVariant &value )
-{
-  setSectionValue( key , Section::Plugins, value );
-}
-
-void QgsSettings::setMiscValue( const QString &key, const QVariant &value )
-{
-  setSectionValue( key , Section::Misc, value );
-}
 
 QString QgsSettings::prefixedKey( const QString &key, const Section section ) const
 {
@@ -252,7 +225,7 @@ QString QgsSettings::prefixedKey( const QString &key, const Section section ) co
 
 int QgsSettings::beginReadArray( const QString &prefix )
 {
-  int size = QSettings::beginReadArray( prefix );
+  int size = mUserSettings->beginReadArray( prefix );
   if ( 0 == size && mGlobalSettings )
   {
     size = mGlobalSettings->beginReadArray( prefix );
@@ -263,7 +236,7 @@ int QgsSettings::beginReadArray( const QString &prefix )
 
 void QgsSettings::endArray()
 {
-  QSettings::endArray();
+  mUserSettings->endArray();
   if ( mGlobalSettings )
   {
     mGlobalSettings->endArray();
@@ -279,8 +252,14 @@ void QgsSettings::setArrayIndex( int i )
   }
   else
   {
-    QSettings::setArrayIndex( i );
+    mUserSettings->setArrayIndex( i );
   }
+}
+
+void QgsSettings::setValue( const QString &key, const QVariant &value )
+{
+  // TODO: add valueChanged signal
+  mUserSettings->setValue( key, value );
 }
 
 // To lower case and clean the path

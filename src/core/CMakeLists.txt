@@ -540,6 +540,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsmapthemecollection.h
   qgswebpage.h
   qgswebview.h
+  qgssettings.h
 
   annotations/qgsannotation.h
   annotations/qgsannotationmanager.h
