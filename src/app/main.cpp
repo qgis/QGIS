@@ -15,10 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifdef _MSC_VER
-#undef APP_EXPORT
-#define APP_EXPORT __declspec(dllimport)
-#endif
 
 //qt includes
 #include <QBitmap>
