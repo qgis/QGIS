@@ -310,6 +310,10 @@ QString QgsGdalProvider::metadata()
     }
 
   }
+  if ( mMaskBandExposedAsAlpha )
+  {
+    myMetadata += "<p class=\"glossy\">" + tr( "Mask band (exposed as alpha band)" ) + "</p>\n";
+  }
 
   // end my added code
 
@@ -406,7 +410,7 @@ void QgsGdalProvider::readBlock( int bandNo, int xBlock, int yBlock, void *block
 
   //QgsDebugMsg( "yBlock = "  + QString::number( yBlock ) );
 
-  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
+  GDALRasterBandH myGdalBand = getBand( bandNo );
   //GDALReadBlock( myGdalBand, xBlock, yBlock, block );
 
   // We have to read with correct data type consistent with other readBlock functions
@@ -584,7 +588,7 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const & extent, int p
     QgsDebugMsg( QString( "Couldn't allocate temporary buffer of %1 bytes" ).arg( dataSize * tmpWidth * tmpHeight ) );
     return;
   }
-  GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
+  GDALRasterBandH gdalBand = getBand( bandNo );
   GDALDataType type = ( GDALDataType )mGdalDataType.at( bandNo - 1 );
   CPLErrorReset();
 
@@ -1055,6 +1059,9 @@ int QgsGdalProvider::capabilities() const
 
 Qgis::DataType QgsGdalProvider::sourceDataType( int bandNo ) const
 {
+  if ( mMaskBandExposedAsAlpha && bandNo == GDALGetRasterCount( mGdalDataset ) + 1 )
+    return dataTypeFromGdal( GDT_Byte );
+
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
   GDALDataType myGdalDataType = GDALGetRasterDataType( myGdalBand );
   Qgis::DataType myDataType = dataTypeFromGdal( myGdalDataType );
@@ -1094,6 +1101,9 @@ Qgis::DataType QgsGdalProvider::sourceDataType( int bandNo ) const
 
 Qgis::DataType QgsGdalProvider::dataType( int bandNo ) const
 {
+  if ( mMaskBandExposedAsAlpha && bandNo == GDALGetRasterCount( mGdalDataset ) + 1 )
+    return dataTypeFromGdal( GDT_Byte );
+
   if ( bandNo <= 0 || bandNo > mGdalDataType.count() ) return Qgis::UnknownDataType;
 
   return dataTypeFromGdal( mGdalDataType[bandNo-1] );
@@ -1101,7 +1111,7 @@ Qgis::DataType QgsGdalProvider::dataType( int bandNo ) const
 
 double QgsGdalProvider::bandScale( int bandNo ) const
 {
-  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
+  GDALRasterBandH myGdalBand = getBand( bandNo );
   int bGotScale;
   double myScale = GDALGetRasterScale( myGdalBand, &bGotScale );
   if ( bGotScale )
@@ -1112,7 +1122,7 @@ double QgsGdalProvider::bandScale( int bandNo ) const
 
 double QgsGdalProvider::bandOffset( int bandNo ) const
 {
-  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
+  GDALRasterBandH myGdalBand = getBand( bandNo );
   int bGotOffset;
   double myOffset = GDALGetRasterOffset( myGdalBand, &bGotOffset );
   if ( bGotOffset )
@@ -1124,13 +1134,15 @@ double QgsGdalProvider::bandOffset( int bandNo ) const
 int QgsGdalProvider::bandCount() const
 {
   if ( mGdalDataset )
-    return GDALGetRasterCount( mGdalDataset );
+    return GDALGetRasterCount( mGdalDataset ) + ( mMaskBandExposedAsAlpha ? 1 : 0 );
   else
     return 1;
 }
 
 int QgsGdalProvider::colorInterpretation( int bandNo ) const
 {
+  if ( mMaskBandExposedAsAlpha && bandNo == GDALGetRasterCount( mGdalDataset ) + 1 )
+    return colorInterpretationFromGdal( GCI_AlphaBand );
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
   return colorInterpretationFromGdal( GDALGetRasterColorInterpretation( myGdalBand ) );
 }
@@ -1229,7 +1241,7 @@ bool QgsGdalProvider::hasHistogram( int bandNo,
 
   QgsDebugMsg( "Looking for GDAL histogram" );
 
-  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
+  GDALRasterBandH myGdalBand = getBand( bandNo );
   if ( ! myGdalBand )
   {
     return false;
@@ -1315,7 +1327,7 @@ QgsRasterHistogram QgsGdalProvider::histogram( int bandNo,
 
   QgsDebugMsg( "Computing GDAL histogram" );
 
-  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
+  GDALRasterBandH myGdalBand = getBand( bandNo );
 
   int bApproxOK = false;
   if ( sampleSize > 0 )
@@ -2204,7 +2216,7 @@ bool QgsGdalProvider::hasStatistics( int bandNo,
 
   QgsDebugMsg( "Looking for GDAL statistics" );
 
-  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
+  GDALRasterBandH myGdalBand = getBand( bandNo );
   if ( ! myGdalBand )
   {
     return false;
@@ -2298,7 +2310,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, int stats, const
   }
 
   QgsDebugMsg( "Using GDAL statistics." );
-  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
+  GDALRasterBandH myGdalBand = getBand( bandNo );
 
   //int bApproxOK = false; //as we asked for stats, don't get approx values
   // GDAL does not have sample size parameter in API, just bApproxOK or not,
@@ -2551,7 +2563,8 @@ void QgsGdalProvider::initBaseDataset()
   // Determine the nodata value and data type
   //
   //mValidNoDataValue = true;
-  for ( int i = 1; i <= GDALGetRasterCount( mGdalBaseDataset ); i++ )
+  const int bandCount = GDALGetRasterCount( mGdalBaseDataset );
+  for ( int i = 1; i <= bandCount; i++ )
   {
     GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, i );
     GDALDataType myGdalDataType = GDALGetRasterDataType( myGdalBand );
@@ -2657,6 +2670,18 @@ void QgsGdalProvider::initBaseDataset()
     //QgsDebugMsg( QString( "mInternalNoDataValue[%1] = %2" ).arg( i - 1 ).arg( mInternalNoDataValue[i-1] ) );
   }
 
+  // Check if the dataset has a mask band, that applies to the whole dataset
+  // If so then expose it as an alpha band.
+  int nMaskFlags = GDALGetMaskFlags( myGDALBand );
+  if (( nMaskFlags == 0 && bandCount == 1 ) || nMaskFlags == GMF_PER_DATASET )
+  {
+    mMaskBandExposedAsAlpha = true;
+    mSrcNoDataValue.append( std::numeric_limits<double>::quiet_NaN() );
+    mSrcHasNoDataValue.append( false );
+    mUseSrcNoDataValue.append( false );
+    mGdalDataType.append( GDT_Byte );
+  }
+
   mValid = true;
 }
 
@@ -2720,8 +2745,7 @@ bool QgsGdalProvider::write( void* data, int band, int width, int height, int xO
   {
     return false;
   }
-
-  GDALRasterBandH rasterBand = GDALGetRasterBand( mGdalDataset, band );
+  GDALRasterBandH rasterBand = getBand( band );
   if ( !rasterBand )
   {
     return false;
@@ -2736,7 +2760,7 @@ bool QgsGdalProvider::setNoDataValue( int bandNo, double noDataValue )
     return false;
   }
 
-  GDALRasterBandH rasterBand = GDALGetRasterBand( mGdalDataset, bandNo );
+  GDALRasterBandH rasterBand = getBand( bandNo );
   CPLErrorReset();
   CPLErr err = GDALSetRasterNoDataValue( rasterBand, noDataValue );
   if ( err != CPLE_None )
@@ -2960,6 +2984,14 @@ bool QgsGdalProvider::setEditable( bool enabled )
   mGdalDataset = mGdalBaseDataset;
   mValid = true;
   return true;
+}
+
+GDALRasterBandH QgsGdalProvider::getBand( int bandNo ) const
+{
+  if ( mMaskBandExposedAsAlpha && bandNo == GDALGetRasterCount( mGdalDataset ) + 1 )
+    return GDALGetMaskBand( GDALGetRasterBand( mGdalDataset, 1 ) );
+  else
+    return GDALGetRasterBand( mGdalDataset, bandNo );
 }
 
 // pyramids resampling
