@@ -384,6 +384,13 @@ void TestVectorLayerCache::testCacheGeom()
   {
     QVERIFY( f.hasGeometry() );
   }
+
+  // another test...
+  cache.setCacheGeometry( false );
+  cache.setFullCache( true );
+  QVERIFY( cache.hasFullCache() );
+  cache.setCacheGeometry( true );
+  QVERIFY( !cache.hasFullCache() );
 }
 
 void TestVectorLayerCache::onCommittedFeaturesAdded( const QString &layerId, const QgsFeatureList &features )

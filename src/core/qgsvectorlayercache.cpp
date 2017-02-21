@@ -237,7 +237,7 @@ void QgsVectorLayerCache::attributeAdded( int field )
 {
   Q_UNUSED( field )
   mCachedAttributes.append( field );
-  mCache.clear();
+  invalidate();
 }
 
 void QgsVectorLayerCache::attributeDeleted( int field )
@@ -273,6 +273,7 @@ void QgsVectorLayerCache::layerDeleted()
 void QgsVectorLayerCache::invalidate()
 {
   mCache.clear();
+  mFullCache = false;
   emit invalidated();
 }
 

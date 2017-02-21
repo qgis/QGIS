@@ -273,10 +273,8 @@ void QgsDualView::initLayerCache( bool cacheGeometry )
   mLayerCache->setCacheGeometry( cacheGeometry );
   if ( 0 == cacheSize || 0 == ( QgsVectorDataProvider::SelectAtId & mLayer->dataProvider()->capabilities() ) )
   {
-    connect( mLayerCache, &QgsVectorLayerCache::progress, this, &QgsDualView::progress );
-    connect( mLayerCache, &QgsVectorLayerCache::finished, this, &QgsDualView::finished );
-
-    mLayerCache->setFullCache( true );
+    connect( mLayerCache, &QgsVectorLayerCache::invalidated, this, &QgsDualView::rebuildFullLayerCache );
+    rebuildFullLayerCache();
   }
 }
 
@@ -677,6 +675,14 @@ void QgsDualView::panToCurrentFeature()
   {
     canvas->panToFeatureIds( mLayer, ids );
   }
+}
+
+void QgsDualView::rebuildFullLayerCache()
+{
+  connect( mLayerCache, &QgsVectorLayerCache::progress, this, &QgsDualView::progress, Qt::UniqueConnection );
+  connect( mLayerCache, &QgsVectorLayerCache::finished, this, &QgsDualView::finished, Qt::UniqueConnection );
+
+  mLayerCache->setFullCache( true );
 }
 
 void QgsDualView::previewExpressionChanged( const QString &expression )

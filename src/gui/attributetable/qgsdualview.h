@@ -327,6 +327,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     //! Pans to the active feature
     void panToCurrentFeature();
 
+    void rebuildFullLayerCache();
+
   private:
     void initLayerCache( bool cacheGeometry );
     void initModels( QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request );
