@@ -32,5 +32,5 @@ if [ "$CACHE_WARMING" = true ] ; then
   xvfb-run ctest -V -R NOTESTS -S ./qgis-test-travis.ctest --output-on-failure
   false
 else
-  xvfb-run ctest -V -E "qgis_filedownloader|qgis_openstreetmaptest|qgis_wcsprovidertest|PyQgsWFSProviderGUI|qgis_ziplayertest|$(cat ${DIR}/blacklist.txt | paste -sd '|' -)" -S ./qgis-test-travis.ctest --output-on-failure
+  xvfb-run ctest -V -E "$(cat ${DIR}/blacklist.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)" -S ./qgis-test-travis.ctest --output-on-failure
 fi
