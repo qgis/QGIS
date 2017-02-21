@@ -3565,7 +3565,7 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   return c.calculate( aggregate, fieldOrExpression, context, ok );
 }
 
-QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, bool& ok, bool selectedOnly ) const
+QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, bool& ok, bool selectedOnly, QgsFeedback* feedback ) const
 {
   QList<QVariant> values;
 
@@ -3623,12 +3623,17 @@ QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, boo
     {
       values << f.attribute( attrNum );
     }
+    if ( feedback && feedback->isCanceled() )
+    {
+      ok = false;
+      return values;
+    }
   }
   ok = true;
   return values;
 }
 
-QList<double> QgsVectorLayer::getDoubleValues( const QString &fieldOrExpression, bool& ok, bool selectedOnly, int* nullCount ) const
+QList<double> QgsVectorLayer::getDoubleValues( const QString &fieldOrExpression, bool& ok, bool selectedOnly, int* nullCount, QgsFeedback* feedback ) const
 {
   QList<double> values;
 
@@ -3649,6 +3654,11 @@ QList<double> QgsVectorLayer::getDoubleValues( const QString &fieldOrExpression,
     {
       if ( nullCount )
         *nullCount += 1;
+    }
+    if ( feedback && feedback->isCanceled() )
+    {
+      ok = false;
+      return values;
     }
   }
   ok = true;

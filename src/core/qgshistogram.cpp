@@ -47,14 +47,14 @@ void QgsHistogram::setValues( const QList<double> &values )
   prepareValues();
 }
 
-bool QgsHistogram::setValues( QgsVectorLayer *layer, const QString &fieldOrExpression )
+bool QgsHistogram::setValues( QgsVectorLayer *layer, const QString &fieldOrExpression, QgsFeedback* feedback )
 {
   mValues.clear();
   if ( !layer )
     return false;
 
   bool ok;
-  mValues = layer->getDoubleValues( fieldOrExpression, ok );
+  mValues = layer->getDoubleValues( fieldOrExpression, ok, false, nullptr, feedback );
   if ( !ok )
     return false;
 
