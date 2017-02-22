@@ -1045,7 +1045,7 @@ class CORE_EXPORT QgsExpression
 
       protected:
         bool compare( double diff );
-        int computeInt( int x, int y );
+        qlonglong computeInt( qlonglong x, qlonglong y );
         double computeDouble( double x, double y );
 
         /** Computes the result date time calculation from a start datetime and an interval
