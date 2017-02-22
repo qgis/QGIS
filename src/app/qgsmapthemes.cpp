@@ -52,7 +52,7 @@ QgsMapThemes::QgsMapThemes()
 
   mActionRemoveCurrentPreset = mMenu->addAction( tr( "Remove Current Theme" ), this, SLOT( removeCurrentPreset() ) );
 
-  connect( mMenu, SIGNAL( aboutToShow() ), this, SLOT( menuAboutToShow() ) );
+  connect( mMenu, &QMenu::aboutToShow, this, &QgsMapThemes::menuAboutToShow );
 }
 
 
@@ -183,11 +183,11 @@ void QgsMapThemes::menuAboutToShow()
       a->setChecked( true );
       hasCurrent = true;
     }
-    connect( a, SIGNAL( triggered() ), this, SLOT( presetTriggered() ) );
+    connect( a, &QAction::triggered, this, &QgsMapThemes::presetTriggered );
     mMenuPresetActions.append( a );
 
     QAction* replaceAction = new QAction( grpName, mReplaceMenu );
-    connect( replaceAction, SIGNAL( triggered() ), this, SLOT( replaceTriggered() ) );
+    connect( replaceAction, &QAction::triggered, this, &QgsMapThemes::replaceTriggered );
     mReplaceMenu->addAction( replaceAction );
   }
   mMenu->insertActions( mMenuSeparator, mMenuPresetActions );
