@@ -70,76 +70,76 @@ class TestQgsSettings(unittest.TestCase):
 
     def test_basic_functionality(self):
         self.assertEqual(self.settings.value('testqgissettings/doesnotexists', 'notexist'), 'notexist')
-        self.settings.setValue('testqgissettings/name', 'elpaso')
+        self.settings.setValue('testqgissettings/name', 'qgisrocks')
         self.settings.sync()
-        self.assertEqual(self.settings.value('testqgissettings/name'), 'elpaso')
+        self.assertEqual(self.settings.value('testqgissettings/name'), 'qgisrocks')
 
     def test_defaults(self):
         self.assertIsNone(self.settings.value('testqgissettings/name'))
-        self.addToDefaults('testqgissettings/name', 'elpaso')
-        self.assertEqual(self.settings.value('testqgissettings/name'), 'elpaso')
+        self.addToDefaults('testqgissettings/name', 'qgisrocks')
+        self.assertEqual(self.settings.value('testqgissettings/name'), 'qgisrocks')
 
     def test_allkeys(self):
         self.assertEqual(self.settings.allKeys(), [])
-        self.addToDefaults('testqgissettings/name', 'elpaso')
-        self.addToDefaults('testqgissettings/name2', 'elpaso2')
+        self.addToDefaults('testqgissettings/name', 'qgisrocks')
+        self.addToDefaults('testqgissettings/name2', 'qgisrocks2')
         self.settings.setValue('nepoti/eman', 'osaple')
 
         self.assertEqual(3, len(self.settings.allKeys()))
         self.assertIn('testqgissettings/name', self.settings.allKeys())
         self.assertIn('nepoti/eman', self.settings.allKeys())
-        self.assertEqual('elpaso', self.settings.value('testqgissettings/name'))
-        self.assertEqual('elpaso2', self.settings.value('testqgissettings/name2'))
-        self.assertEqual('elpaso', self.globalsettings.value('testqgissettings/name'))
+        self.assertEqual('qgisrocks', self.settings.value('testqgissettings/name'))
+        self.assertEqual('qgisrocks2', self.settings.value('testqgissettings/name2'))
+        self.assertEqual('qgisrocks', self.globalsettings.value('testqgissettings/name'))
         self.assertEqual('osaple', self.settings.value('nepoti/eman'))
         self.assertEqual(3, len(self.settings.allKeys()))
         self.assertEqual(2, len(self.globalsettings.allKeys()))
 
     def test_precedence(self):
         self.assertEqual(self.settings.allKeys(), [])
-        self.addToDefaults('testqgissettings/names/name1', 'elpaso1')
-        self.settings.setValue('testqgissettings/names/name1', 'elpaso-1')
+        self.addToDefaults('testqgissettings/names/name1', 'qgisrocks1')
+        self.settings.setValue('testqgissettings/names/name1', 'qgisrocks-1')
 
-        self.assertEqual(self.settings.value('testqgissettings/names/name1'), 'elpaso-1')
+        self.assertEqual(self.settings.value('testqgissettings/names/name1'), 'qgisrocks-1')
 
     def test_uft8(self):
         self.assertEqual(self.settings.allKeys(), [])
-        self.addToDefaults('testqgissettings/names/namèé↓1', 'elpaso↓1')
-        self.assertEqual(self.settings.value('testqgissettings/names/namèé↓1'), 'elpaso↓1')
+        self.addToDefaults('testqgissettings/names/namèé↓1', 'qgisrocks↓1')
+        self.assertEqual(self.settings.value('testqgissettings/names/namèé↓1'), 'qgisrocks↓1')
 
-        self.settings.setValue('testqgissettings/names/namèé↓2', 'elpaso↓2')
-        self.assertEqual(self.settings.value('testqgissettings/names/namèé↓2'), 'elpaso↓2')
-        self.settings.setValue('testqgissettings/names/namèé↓1', 'elpaso↓-1')
-        self.assertEqual(self.settings.value('testqgissettings/names/namèé↓1'), 'elpaso↓-1')
+        self.settings.setValue('testqgissettings/names/namèé↓2', 'qgisrocks↓2')
+        self.assertEqual(self.settings.value('testqgissettings/names/namèé↓2'), 'qgisrocks↓2')
+        self.settings.setValue('testqgissettings/names/namèé↓1', 'qgisrocks↓-1')
+        self.assertEqual(self.settings.value('testqgissettings/names/namèé↓1'), 'qgisrocks↓-1')
 
     def test_groups(self):
         self.assertEqual(self.settings.allKeys(), [])
-        self.addToDefaults('testqgissettings/names/name1', 'elpaso1')
-        self.addToDefaults('testqgissettings/names/name2', 'elpaso2')
-        self.addToDefaults('testqgissettings/names/name3', 'elpaso3')
-        self.addToDefaults('testqgissettings/name', 'elpaso')
+        self.addToDefaults('testqgissettings/names/name1', 'qgisrocks1')
+        self.addToDefaults('testqgissettings/names/name2', 'qgisrocks2')
+        self.addToDefaults('testqgissettings/names/name3', 'qgisrocks3')
+        self.addToDefaults('testqgissettings/name', 'qgisrocks')
 
         self.settings.beginGroup('testqgissettings')
         self.assertEqual(['names'], self.settings.childGroups())
 
-        self.settings.setValue('surnames/name1', 'elpaso-1')
+        self.settings.setValue('surnames/name1', 'qgisrocks-1')
         self.assertEqual(['surnames', 'names'], self.settings.childGroups())
 
-        self.settings.setValue('names/name1', 'elpaso-1')
-        self.assertEqual('elpaso-1', self.settings.value('names/name1'))
+        self.settings.setValue('names/name1', 'qgisrocks-1')
+        self.assertEqual('qgisrocks-1', self.settings.value('names/name1'))
         self.settings.endGroup()
         self.settings.beginGroup('testqgissettings/names')
-        self.settings.setValue('name4', 'elpaso-4')
+        self.settings.setValue('name4', 'qgisrocks-4')
         keys = list(self.settings.childKeys())
         keys.sort()
         self.assertEqual(keys, ['name1', 'name2', 'name3', 'name4'])
         self.settings.endGroup()
-        self.assertEqual('elpaso-1', self.settings.value('testqgissettings/names/name1'))
-        self.assertEqual('elpaso-4', self.settings.value('testqgissettings/names/name4'))
+        self.assertEqual('qgisrocks-1', self.settings.value('testqgissettings/names/name1'))
+        self.assertEqual('qgisrocks-4', self.settings.value('testqgissettings/names/name4'))
 
     def test_array(self):
         self.assertEqual(self.settings.allKeys(), [])
-        self.addArrayToDefaults('testqgissettings', 'key', ['elpaso1', 'elpaso2', 'elpaso3'])
+        self.addArrayToDefaults('testqgissettings', 'key', ['qgisrocks1', 'qgisrocks2', 'qgisrocks3'])
         self.assertEqual(self.settings.allKeys(), ['testqgissettings/1/key', 'testqgissettings/2/key', 'testqgissettings/3/key', 'testqgissettings/size'])
         self.assertEqual(self.globalsettings.allKeys(), ['testqgissettings/1/key', 'testqgissettings/2/key', 'testqgissettings/3/key', 'testqgissettings/size'])
 
@@ -152,25 +152,25 @@ class TestQgsSettings(unittest.TestCase):
             self.settings.setArrayIndex(i)
             values.append(self.settings.value("key"))
 
-        self.assertEqual(values, ['elpaso1', 'elpaso2', 'elpaso3'])
+        self.assertEqual(values, ['qgisrocks1', 'qgisrocks2', 'qgisrocks3'])
 
     def test_section_getters_setters(self):
         self.assertEqual(self.settings.allKeys(), [])
 
-        self.settings.setSectionValue('key1', QgsSettings.Core, 'core1')
-        self.settings.setSectionValue('key2', QgsSettings.Core, 'core2')
+        self.settings.setValue('key1', 'core1', QgsSettings.Core)
+        self.settings.setValue('key2', 'core2', QgsSettings.Core)
 
-        self.settings.setSectionValue('key1', QgsSettings.Server, 'server1')
-        self.settings.setSectionValue('key2', QgsSettings.Server, 'server2')
+        self.settings.setValue('key1', 'server1', QgsSettings.Server)
+        self.settings.setValue('key2', 'server2', QgsSettings.Server)
 
-        self.settings.setSectionValue('key1', QgsSettings.Gui, 'gui1')
-        self.settings.setSectionValue('key2', QgsSettings.Gui, 'gui2')
+        self.settings.setValue('key1', 'gui1', QgsSettings.Gui)
+        self.settings.setValue('key2', 'gui2', QgsSettings.Gui)
 
-        self.settings.setSectionValue('key1', QgsSettings.Plugins, 'plugins1')
-        self.settings.setSectionValue('key2', QgsSettings.Plugins, 'plugins2')
+        self.settings.setValue('key1', 'plugins1', QgsSettings.Plugins)
+        self.settings.setValue('key2', 'plugins2', QgsSettings.Plugins)
 
-        self.settings.setSectionValue('key1', QgsSettings.Misc, 'misc1')
-        self.settings.setSectionValue('key2', QgsSettings.Misc, 'misc2')
+        self.settings.setValue('key1', 'misc1', QgsSettings.Misc)
+        self.settings.setValue('key2', 'misc2', QgsSettings.Misc)
 
         # Test that the values are namespaced
         self.assertEqual(self.settings.value('core/key1'), 'core1')
@@ -189,30 +189,33 @@ class TestQgsSettings(unittest.TestCase):
         self.assertEqual(self.settings.value('misc/key2'), 'misc2')
 
         # Test getters
-        self.assertEqual(self.settings.sectionValue('key1', QgsSettings.Core), 'core1')
-        self.assertEqual(self.settings.sectionValue('key2', QgsSettings.Core), 'core2')
+        self.assertEqual(self.settings.value('key1', None, QgsSettings.Core), 'core1')
+        self.assertEqual(self.settings.value('key2', None, QgsSettings.Core), 'core2')
 
-        self.assertEqual(self.settings.sectionValue('key1', QgsSettings.Server), 'server1')
-        self.assertEqual(self.settings.sectionValue('key2', QgsSettings.Server), 'server2')
+        self.assertEqual(self.settings.value('key1', None, QgsSettings.Server), 'server1')
+        self.assertEqual(self.settings.value('key2', None, QgsSettings.Server), 'server2')
 
-        self.assertEqual(self.settings.sectionValue('key1', QgsSettings.Gui), 'gui1')
-        self.assertEqual(self.settings.sectionValue('key2', QgsSettings.Gui), 'gui2')
+        self.assertEqual(self.settings.value('key1', None, QgsSettings.Gui), 'gui1')
+        self.assertEqual(self.settings.value('key2', None, QgsSettings.Gui), 'gui2')
 
-        self.assertEqual(self.settings.sectionValue('key1', QgsSettings.Plugins), 'plugins1')
-        self.assertEqual(self.settings.sectionValue('key2', QgsSettings.Plugins), 'plugins2')
+        self.assertEqual(self.settings.value('key1', None, QgsSettings.Plugins), 'plugins1')
+        self.assertEqual(self.settings.value('key2', None, QgsSettings.Plugins), 'plugins2')
 
-        self.assertEqual(self.settings.sectionValue('key1', QgsSettings.Misc), 'misc1')
-        self.assertEqual(self.settings.sectionValue('key2', QgsSettings.Misc), 'misc2')
+        self.assertEqual(self.settings.value('key1', None, QgsSettings.Misc), 'misc1')
+        self.assertEqual(self.settings.value('key2', None, QgsSettings.Misc), 'misc2')
+
+        # Test default values on Section getter
+        self.assertEqual(self.settings.value('key_not_exist', 'misc_not_exist', QgsSettings.Misc), 'misc_not_exist')
 
     def test_contains(self):
         self.assertEqual(self.settings.allKeys(), [])
-        self.addToDefaults('testqgissettings/name', 'elpaso1')
-        self.addToDefaults('testqgissettings/name2', 'elpaso2')
+        self.addToDefaults('testqgissettings/name', 'qgisrocks1')
+        self.addToDefaults('testqgissettings/name2', 'qgisrocks2')
 
         self.assertTrue(self.settings.contains('testqgissettings/name'))
         self.assertTrue(self.settings.contains('testqgissettings/name2'))
 
-        self.settings.setValue('testqgissettings/name3', 'elpaso3')
+        self.settings.setValue('testqgissettings/name3', 'qgisrocks3')
         self.assertTrue(self.settings.contains('testqgissettings/name3'))
 
 

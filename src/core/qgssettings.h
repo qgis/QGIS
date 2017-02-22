@@ -57,6 +57,7 @@ class CORE_EXPORT QgsSettings : public QObject
     //! Sections for namespaced settings
     enum Section
     {
+      NoSection,
       Core,
       Gui,
       Server,
@@ -152,17 +153,21 @@ class CORE_EXPORT QgsSettings : public QObject
     int beginReadArray( const QString &prefix );
     //! Closes the array that was started using beginReadArray() or beginWriteArray().
     void endArray();
-    //! Sets the current array index to i. Calls to functions such as setValue(), value(), remove(), and contains() will operate on the array entry at that index.
+    //! Sets the current array index to i. Calls to functions such as setValue(), value(),
+    //! remove(), and contains() will operate on the array entry at that index.
     void setArrayIndex( int i );
     //! Sets the value of setting key to value. If the key already exists, the previous value is overwritten.
+    //! An optional Section argument can be used to set a value to a specific Section.
     //! @note keys are case insensitive
-    void setValue( const QString &key, const QVariant &value );
+    void setValue( const QString &key, const QVariant &value, const Section section = Section::NoSection );
 
     /** Returns the value for setting key. If the setting doesn't exist, it will be
      * searched in the Global Settings and if not found, returns defaultValue.
-     *If no default value is specified, a default QVariant is returned.
+     * If no default value is specified, a default QVariant is returned.
+     * An optional Section argument can be used to get a value from a specific Section.
      */
-    QVariant value( const QString &key, const QVariant &defaultValue = QVariant() ) const;
+    QVariant value( const QString &key, const QVariant &defaultValue = QVariant(),
+                    const Section section = Section::NoSection ) const;
     //! Returns true if there exists a setting called key; returns false otherwise.
     //! If a group is set using beginGroup(), key is taken to be relative to that group.
     bool contains( const QString &key ) const;
@@ -175,10 +180,6 @@ class CORE_EXPORT QgsSettings : public QObject
     void sync();
     //! Removes the setting key and any sub-settings of key.
     void remove( const QString &key );
-    //! Overloaded getter that accepts an additional Section argument
-    QVariant sectionValue( const QString &key, const Section section, const QVariant &defaultValue = QVariant() ) const;
-    //! Overloaded setValue that accepts an additional Section argument
-    void setSectionValue( const QString &key, const Section section, const QVariant &value );
     //! Return the sanitized and prefixed key
     QString prefixedKey( const QString &key, const Section section ) const;
 

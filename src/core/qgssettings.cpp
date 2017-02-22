@@ -150,16 +150,16 @@ QStringList QgsSettings::childGroups() const
   return keys;
 }
 
-
-QVariant QgsSettings::value( const QString &key, const QVariant &defaultValue ) const
+QVariant QgsSettings::value( const QString &key, const QVariant &defaultValue, const QgsSettings::Section section ) const
 {
-  if ( ! mUserSettings->value( key ).isNull() )
+  QString pKey = prefixedKey( key, section );
+  if ( ! mUserSettings->value( pKey ).isNull() )
   {
-    return mUserSettings->value( key );
+    return mUserSettings->value( pKey );
   }
   if ( mGlobalSettings )
   {
-    return mGlobalSettings->value( key, defaultValue );
+    return mGlobalSettings->value( pKey, defaultValue );
   }
   return defaultValue;
 }
@@ -185,17 +185,6 @@ void QgsSettings::remove( const QString &key )
   mGlobalSettings->remove( key );
 }
 
-QVariant QgsSettings::sectionValue( const QString &key, const Section section, const QVariant &defaultValue ) const
-{
-  return value( prefixedKey( key, section ), defaultValue );
-}
-
-void QgsSettings::setSectionValue( const QString &key, const Section section, const QVariant &value )
-{
-  mUserSettings->setValue( prefixedKey( key, section ), value );
-}
-
-
 QString QgsSettings::prefixedKey( const QString &key, const Section section ) const
 {
   QString prefix;
@@ -216,8 +205,9 @@ QString QgsSettings::prefixedKey( const QString &key, const Section section ) co
     case Section::Misc :
       prefix = "misc";
       break;
+    case Section::NoSection:
     default:
-      break;
+      return sanitizeKey( key );
   }
   return prefix  + "/" + sanitizeKey( key );
 }
@@ -256,10 +246,10 @@ void QgsSettings::setArrayIndex( int i )
   }
 }
 
-void QgsSettings::setValue( const QString &key, const QVariant &value )
+void QgsSettings::setValue( const QString &key, const QVariant &value , const QgsSettings::Section section )
 {
   // TODO: add valueChanged signal
-  mUserSettings->setValue( key, value );
+  mUserSettings->setValue( prefixedKey( key, section ), value );
 }
 
 // To lower case and clean the path
