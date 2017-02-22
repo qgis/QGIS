@@ -26,6 +26,7 @@ ELSE(EXISTS QSCINTILLA_VERSION_STR)
 
   set(QSCINTILLA_LIBRARY_NAMES
     qscintilla2-qt5
+    qscintilla2_qt5
     libqt5scintilla2
     libqscintilla2-qt5
     qt5scintilla2
