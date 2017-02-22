@@ -437,6 +437,9 @@ void TestQgsExpressionContext::setFeature()
   scope.setFeature( feature );
   QVERIFY( scope.hasFeature() );
   QCOMPARE( scope.feature().id(), 50LL );
+  scope.removeFeature();
+  QVERIFY( !scope.hasFeature() );
+  QVERIFY( !scope.feature().isValid() );
 
   //test setting a feature in a context with no scopes
   QgsExpressionContext emptyContext;

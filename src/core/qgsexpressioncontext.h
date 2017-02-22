@@ -269,8 +269,18 @@ class CORE_EXPORT QgsExpressionContextScope
     /** Convenience function for setting a feature for the scope. Any existing
      * feature set by the scope will be overwritten.
      * @param feature feature for scope
+     * @see removeFeature()
+     * @see feature()
      */
     void setFeature( const QgsFeature& feature ) { mHasFeature = true; mFeature = feature; }
+
+    /**
+     * Removes any feature associated with the scope.
+     * @note added in QGIS 3.0
+     * @see setFeature()
+     * @see hasFeature()
+     */
+    void removeFeature() { mHasFeature = false; mFeature = QgsFeature(); }
 
     /** Convenience function for setting a fields for the scope. Any existing
      * fields set by the scope will be overwritten.

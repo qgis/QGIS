@@ -197,10 +197,8 @@ class QgsExpressionContextScope
 
     void setFeature( const QgsFeature& feature );
 
-    /** Convenience function for setting a fields for the scope. Any existing
-     * fields set by the scope will be overwritten.
-     * @param fields fields for scope
-     */
+    void removeFeature();
+
     void setFields( const QgsFields& fields );
 };
 
