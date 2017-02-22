@@ -55,6 +55,7 @@ QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget* parent ,
     if ( initialState.transformer()->curveTransform() )
     {
       mTransformCurveCheckBox->setChecked( true );
+      mTransformCurveCheckBox->setCollapsed( false );
       mCurveEditor->setCurve( *initialState.transformer()->curveTransform() );
     }
   }
