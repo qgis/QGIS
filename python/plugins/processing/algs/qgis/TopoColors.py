@@ -52,6 +52,7 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 class TopoColor(GeoAlgorithm):
     INPUT_LAYER = 'INPUT_LAYER'
     MIN_COLORS = 'MIN_COLORS'
+    MIN_DISTANCE = 'MIN_DISTANCE'
     BALANCE = 'BALANCE'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
@@ -64,6 +65,8 @@ class TopoColor(GeoAlgorithm):
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterNumber(self.MIN_COLORS,
                                           self.tr('Minimum number of colors'), 1, 1000, 4))
+        self.addParameter(ParameterNumber(self.MIN_DISTANCE,
+                                          self.tr('Minimum distance between features'), 0.0, 999999999.0, 0.0))
         balance_by = [self.tr('By feature count'),
                       self.tr('By assigned area'),
                       self.tr('By distance between colors')]
@@ -79,6 +82,7 @@ class TopoColor(GeoAlgorithm):
             self.getParameterValue(self.INPUT_LAYER))
         min_colors = self.getParameterValue(self.MIN_COLORS)
         balance_by = self.getParameterValue(self.BALANCE)
+        min_distance = self.getParameterValue(self.MIN_DISTANCE)
 
         fields = layer.fields()
         fields.append(QgsField('color_id', QVariant.Int))
@@ -91,7 +95,7 @@ class TopoColor(GeoAlgorithm):
 
         features = {f.id(): f for f in vector.features(layer)}
 
-        topology, id_graph = self.compute_graph(features, feedback)
+        topology, id_graph = self.compute_graph(features, feedback, min_distance=min_distance)
         feature_colors = ColoringAlgorithm.balanced(features,
                                                     balance=balance_by,
                                                     graph=topology,
@@ -119,7 +123,7 @@ class TopoColor(GeoAlgorithm):
         del writer
 
     @staticmethod
-    def compute_graph(features, feedback, create_id_graph=False):
+    def compute_graph(features, feedback, create_id_graph=False, min_distance=0):
         """ compute topology from a layer/field """
         s = Graph(sort_graph=False)
         id_graph = None
@@ -134,10 +138,14 @@ class TopoColor(GeoAlgorithm):
 
         i = 0
         for feature_id, f in features_with_geometry.items():
-            engine = QgsGeometry.createGeometryEngine(f.geometry().geometry())
+            g = f.geometry()
+            if min_distance > 0:
+                g = g.buffer(min_distance, 5)
+
+            engine = QgsGeometry.createGeometryEngine(g.geometry())
             engine.prepareGeometry()
 
-            feature_bounds = f.geometry().boundingBox()
+            feature_bounds = g.boundingBox()
             # grow bounds a little so we get touching features
             feature_bounds.grow(feature_bounds.width() * 0.01)
             intersections = index.intersects(feature_bounds)
