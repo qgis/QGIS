@@ -1993,7 +1993,14 @@ QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc
       delete centroid;
     }
     else
-      gmlElem = QgsOgcUtils::geometryToGML( geom, doc, prec );
+    {
+      QgsAbstractGeometryV2* abstractGeom = geom->geometry();
+      if ( abstractGeom )
+      {
+        gmlElem = abstractGeom->asGML2( doc, prec, "http://www.opengis.net/gml" );
+      }
+    }
+
     if ( !gmlElem.isNull() )
     {
       QgsRectangle box = geom->boundingBox();
@@ -2070,7 +2077,14 @@ QDomElement QgsWFSServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc
       delete centroid;
     }
     else
-      gmlElem = QgsOgcUtils::geometryToGML( geom, doc, "GML3", prec );
+    {
+      QgsAbstractGeometryV2* abstractGeom = geom->geometry();
+      if ( abstractGeom )
+      {
+        gmlElem = abstractGeom->asGML3( doc, prec, "http://www.opengis.net/gml" );
+      }
+    }
+
     if ( !gmlElem.isNull() )
     {
       QgsRectangle box = geom->boundingBox();

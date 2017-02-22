@@ -320,18 +320,26 @@ QDomElement QgsCurvePolygonV2::asGML3( QDomDocument& doc, int precision, const Q
 {
   QDomElement elemCurvePolygon = doc.createElementNS( ns, "Polygon" );
   QDomElement elemExterior = doc.createElementNS( ns, "exterior" );
-  QDomElement outerRing = exteriorRing()->asGML2( doc, precision, ns );
-  outerRing.toElement().setTagName( "LinearRing" );
-  elemExterior.appendChild( outerRing );
+  QDomElement curveElem = exteriorRing()->asGML3( doc, precision, ns );
+  if ( curveElem.tagName() == "LineString" )
+  {
+    curveElem.setTagName( "LinearRing" );
+  }
+  elemExterior.appendChild( curveElem );
   elemCurvePolygon.appendChild( elemExterior );
-  QDomElement elemInterior = doc.createElementNS( ns, "interior" );
+
+  elemCurvePolygon.appendChild( elemExterior );
   for ( int i = 0, n = numInteriorRings(); i < n; ++i )
   {
-    QDomElement innerRing = interiorRing( i )->asGML2( doc, precision, ns );
-    innerRing.toElement().setTagName( "LinearRing" );
+    QDomElement elemInterior = doc.createElementNS( ns, "interior" );
+    QDomElement innerRing = interiorRing( i )->asGML3( doc, precision, ns );
+    if ( innerRing.tagName() == "LineString" )
+    {
+      innerRing.setTagName( "LinearRing" );
+    }
     elemInterior.appendChild( innerRing );
+    elemCurvePolygon.appendChild( elemInterior );
   }
-  elemCurvePolygon.appendChild( elemInterior );
   return elemCurvePolygon;
 }
 

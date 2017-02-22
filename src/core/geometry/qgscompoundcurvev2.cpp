@@ -256,33 +256,16 @@ QDomElement QgsCompoundCurveV2::asGML2( QDomDocument& doc, int precision, const 
 
 QDomElement QgsCompoundCurveV2::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
 {
-  QDomElement elemCurve = doc.createElementNS( ns, "Curve" );
-
-  QDomElement elemSegments = doc.createElementNS( ns, "segments" );
-
+  QDomElement compoundCurveElem = doc.createElementNS( ns, "CompositeCurve" );
   Q_FOREACH ( const QgsCurveV2* curve, mCurves )
   {
-    if ( dynamic_cast<const QgsLineStringV2*>( curve ) )
-    {
-      QgsPointSequenceV2 pts;
-      curve->points( pts );
-
-      QDomElement elemLineStringSegment = doc.createElementNS( ns, "LineStringSegment" );
-      elemLineStringSegment.appendChild( QgsGeometryUtils::pointsToGML3( pts, doc, precision, ns, is3D() ) );
-      elemSegments.appendChild( elemLineStringSegment );
-    }
-    else if ( dynamic_cast<const QgsCircularStringV2*>( curve ) )
-    {
-      QgsPointSequenceV2 pts;
-      curve->points( pts );
-
-      QDomElement elemArcString = doc.createElementNS( ns, "ArcString" );
-      elemArcString.appendChild( QgsGeometryUtils::pointsToGML3( pts, doc, precision, ns, is3D() ) );
-      elemSegments.appendChild( elemArcString );
-    }
+    QDomElement curveMemberElem = doc.createElementNS( ns, "curveMember" );
+    QDomElement curveElem = curve->asGML3( doc, precision, ns );
+    curveMemberElem.appendChild( curveElem );
+    compoundCurveElem.appendChild( curveMemberElem );
   }
-  elemCurve.appendChild( elemSegments );
-  return elemCurve;
+
+  return compoundCurveElem;
 }
 
 QString QgsCompoundCurveV2::asJSON( int precision ) const
