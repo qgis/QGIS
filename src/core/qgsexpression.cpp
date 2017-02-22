@@ -1721,6 +1721,18 @@ static QVariant fcnSeconds( const QVariantList& values, const QgsExpressionConte
   }
 }
 
+static QVariant fcnEpoch( const QVariantList& values, const QgsExpressionContext*, QgsExpression *parent )
+{
+  QDateTime dt = getDateTimeValue( values.at( 0 ), parent );
+  if ( dt.isValid() )
+  {
+    return QVariant( dt.toMSecsSinceEpoch() );
+  }
+  else
+  {
+    return QVariant();
+  }
+}
 
 #define ENSURE_GEOM_TYPE(f, g, geomtype) \
   if ( !(f).hasGeometry() ) \
@@ -3903,6 +3915,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( QStringLiteral( "hour" ), 1, fcnHour, QStringLiteral( "Date and Time" ) )
     << new StaticFunction( QStringLiteral( "minute" ), 1, fcnMinute, QStringLiteral( "Date and Time" ) )
     << new StaticFunction( QStringLiteral( "second" ), 1, fcnSeconds, QStringLiteral( "Date and Time" ) )
+    << new StaticFunction( QStringLiteral( "epoch" ), ParameterList() << Parameter( QStringLiteral( "date" ) ), fcnEpoch, QStringLiteral( "Date and Time" ) )
     << new StaticFunction( QStringLiteral( "day_of_week" ), 1, fcnDayOfWeek, QStringLiteral( "Date and Time" ) )
     << new StaticFunction( QStringLiteral( "lower" ), 1, fcnLower, QStringLiteral( "String" ) )
     << new StaticFunction( QStringLiteral( "upper" ), 1, fcnUpper, QStringLiteral( "String" ) )
