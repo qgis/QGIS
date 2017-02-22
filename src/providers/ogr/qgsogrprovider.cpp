@@ -1524,8 +1524,6 @@ bool QgsOgrProvider::renameAttributes( const QgsFieldNameMap& renamedAttributes 
 
 bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
-  bool hasTransaction;
-
   if ( !doInitialActionsForEdition() )
     return false;
 
@@ -1536,7 +1534,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
   setRelevantFields( ogrLayer, true, attributeIndexes() );
 
-  hasTransaction = OGR_L_TestCapability( ogrLayer, OLCTransactions) == TRUE;
+  bool hasTransaction = OGR_L_TestCapability( ogrLayer, OLCTransactions) == TRUE;
   if ( hasTransaction && OGR_L_StartTransaction( ogrLayer ) != OGRERR_NONE)
   {
     pushError( tr( "OGR error commiting transaction: %1" ).arg( CPLGetLastErrorMsg() ) );
