@@ -197,7 +197,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
 
     /** Returns the fill color used for parametrized SVG files.
      * @see setSvgFillColor()
-     * @see svgBorderColor()
+     * @see svgStrokeColor()
      * @note added in QGIS 2.14.1
      */
     QColor svgFillColor() const { return mSvgFillColor; }
@@ -207,44 +207,44 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * @note this setting only has an effect on parametrized SVG files, and is ignored for
      * non-parametrized SVG files.
      * @see svgFillColor()
-     * @see setSvgBorderColor()
+     * @see setSvgStrokeColor()
      * @note added in QGIS 2.14.1
      */
     void setSvgFillColor( const QColor& color );
 
-    /** Returns the border color used for parametrized SVG files.
-     * @see setSvgBorderColor()
+    /** Returns the stroke color used for parametrized SVG files.
+     * @see setSvgStrokeColor()
      * @see svgFillColor()
      * @note added in QGIS 2.14.1
      */
-    QColor svgBorderColor() const { return mSvgBorderColor; }
+    QColor svgStrokeColor() const { return mSvgStrokeColor; }
 
-    /** Sets the border color used for parametrized SVG files.
-     * @param color border color.
+    /** Sets the stroke color used for parametrized SVG files.
+     * @param color stroke color.
      * @note this setting only has an effect on parametrized SVG files, and is ignored for
      * non-parametrized SVG files.
-     * @see svgBorderlColor()
+     * @see svgStrokelColor()
      * @see setSvgFillColor()
      * @note added in QGIS 2.14.1
      */
-    void setSvgBorderColor( const QColor& color );
+    void setSvgStrokeColor( const QColor& color );
 
-    /** Returns the border width (in mm) used for parametrized SVG files.
-     * @see setSvgBorderWidth()
-     * @see svgBorderColor()
+    /** Returns the stroke width (in mm) used for parametrized SVG files.
+     * @see setSvgStrokeWidth()
+     * @see svgStrokeColor()
      * @note added in QGIS 2.14.1
      */
-    double svgBorderWidth() const { return mSvgBorderWidth; }
+    double svgStrokeWidth() const { return mSvgStrokeWidth; }
 
-    /** Sets the border width used for parametrized SVG files.
-     * @param width border width in mm
+    /** Sets the stroke width used for parametrized SVG files.
+     * @param width stroke width in mm
      * @note this setting only has an effect on parametrized SVG files, and is ignored for
      * non-parametrized SVG files.
-     * @see svgBorderWidth()
-     * @see setSvgBorderColor()
+     * @see svgStrokeWidth()
+     * @see setSvgStrokeColor()
      * @note added in QGIS 2.14.1
      */
-    void setSvgBorderWidth( double width );
+    void setSvgStrokeWidth( double width );
 
     /** Returns the current picture mode (image format).
      * @returns picture mode
@@ -325,8 +325,8 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     QgsComposerItem::ItemPositionMode mPictureAnchor;
 
     QColor mSvgFillColor = QColor( 255, 255, 255 );
-    QColor mSvgBorderColor = QColor( 0, 0, 0 );
-    double mSvgBorderWidth = 0.2;
+    QColor mSvgStrokeColor = QColor( 0, 0, 0 );
+    double mSvgStrokeWidth = 0.2;
 
     bool mHasExpressionError;
     bool mLoaded;

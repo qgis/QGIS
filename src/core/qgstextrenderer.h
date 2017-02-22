@@ -120,7 +120,7 @@ class CORE_EXPORT QgsTextBufferSettings
      */
     void setColor( const QColor& color );
 
-    /** Returns whether the interior of the buffer will be filled in. If false, only the outline
+    /** Returns whether the interior of the buffer will be filled in. If false, only the stroke
      * of the text will be drawn as the buffer. The effect of this setting is only visible for
      * semi-transparent text.
      * @see setFillBufferInterior()
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsTextBufferSettings
     bool fillBufferInterior() const;
 
     /** Sets whether the interior of the buffer will be filled in.
-     * @param fill set to false to drawn only the outline of the text as the buffer, or true to also
+     * @param fill set to false to drawn only the stroke of the text as the buffer, or true to also
      * shade the area inside the text. The effect of this setting is only visible for semi-transparent text.
      * @see fillBufferInterior()
      */
@@ -488,71 +488,71 @@ class CORE_EXPORT QgsTextBackgroundSettings
 
     /** Returns the color used for filing the background shape.
      * @see setFillColor()
-     * @see borderColor()
+     * @see strokeColor()
      */
     QColor fillColor() const;
 
     /** Sets the color used for filing the background shape.
      * @param color background color
      * @see fillColor()
-     * @see setBorderColor()
+     * @see setStrokeColor()
      */
     void setFillColor( const QColor& color );
 
     /** Returns the color used for outlining the background shape.
-     * @see setBorderColor()
+     * @see setStrokeColor()
      * @see fillColor()
      */
-    QColor borderColor() const;
+    QColor strokeColor() const;
 
     /** Sets the color used for outlining the background shape.
-     * @param color outline color
-     * @see borderColor()
+     * @param color stroke color
+     * @see strokeColor()
      * @see setFillColor()
      */
-    void setBorderColor( const QColor& color );
+    void setStrokeColor( const QColor& color );
 
-    /** Returns the width of the shape's border (outline). Units are retrieved through
-     * borderWidthUnit().
-     * @see setBorderWidth()
-     * @see borderWidthUnit()
+    /** Returns the width of the shape's stroke (stroke). Units are retrieved through
+     * strokeWidthUnit().
+     * @see setStrokeWidth()
+     * @see strokeWidthUnit()
      */
-    double borderWidth() const;
+    double strokeWidth() const;
 
-    /** Sets the width of the shape's border (outline). Units are specified through
-     * setBorderWidthUnit().
-     * @see borderWidth()
-     * @see setBorderWidthUnit()
+    /** Sets the width of the shape's stroke (stroke). Units are specified through
+     * setStrokeWidthUnit().
+     * @see strokeWidth()
+     * @see setStrokeWidthUnit()
      */
-    void setBorderWidth( double width );
+    void setStrokeWidth( double width );
 
-    /** Returns the units used for the shape's border width.
-     * @see setBorderWidthUnit()
-     * @see borderWidth()
+    /** Returns the units used for the shape's stroke width.
+     * @see setStrokeWidthUnit()
+     * @see strokeWidth()
      */
-    QgsUnitTypes::RenderUnit borderWidthUnit() const;
+    QgsUnitTypes::RenderUnit strokeWidthUnit() const;
 
-    /** Sets the units used for the shape's border width.
-     * @param units border width units
-     * @see borderWidthUnit()
-     * @see setBorderWidth()
+    /** Sets the units used for the shape's stroke width.
+     * @param units stroke width units
+     * @see strokeWidthUnit()
+     * @see setStrokeWidth()
      */
-    void setBorderWidthUnit( QgsUnitTypes::RenderUnit units );
+    void setStrokeWidthUnit( QgsUnitTypes::RenderUnit units );
 
-    /** Returns the map unit scale object for the shape border width. This is only used if the
-     * borderWidthUnit() is set to QgsUnitTypes::RenderMapUnit.
-     * @see setBorderWidthMapUnitScale()
-     * @see borderWidthUnit()
+    /** Returns the map unit scale object for the shape stroke width. This is only used if the
+     * strokeWidthUnit() is set to QgsUnitTypes::RenderMapUnit.
+     * @see setStrokeWidthMapUnitScale()
+     * @see strokeWidthUnit()
      */
-    QgsMapUnitScale borderWidthMapUnitScale() const;
+    QgsMapUnitScale strokeWidthMapUnitScale() const;
 
-    /** Sets the map unit scale object for the shape border width. This is only used if the
-     * borderWidthUnit() is set to QgsUnitTypes::RenderMapUnit.
-     * @param scale scale for shape border width
-     * @see borderWidthMapUnitScale()
-     * @see setBorderWidthUnit()
+    /** Sets the map unit scale object for the shape stroke width. This is only used if the
+     * strokeWidthUnit() is set to QgsUnitTypes::RenderMapUnit.
+     * @param scale scale for shape stroke width
+     * @see strokeWidthMapUnitScale()
+     * @see setStrokeWidthUnit()
      */
-    void setBorderWidthMapUnitScale( const QgsMapUnitScale& scale );
+    void setStrokeWidthMapUnitScale( const QgsMapUnitScale& scale );
 
     /** Returns the join style used for drawing the background shape.
      * @see setJoinStyle

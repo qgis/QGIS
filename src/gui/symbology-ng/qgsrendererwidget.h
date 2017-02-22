@@ -261,7 +261,7 @@ class GUI_EXPORT QgsDataDefinedWidthDialog : public QgsDataDefinedValueDialog
     QgsDataDefinedWidthDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer )
         : QgsDataDefinedValueDialog( symbolList, layer, tr( "Width" ) )
     {
-      init( QgsSymbolLayer::PropertyOutlineWidth );
+      init( QgsSymbolLayer::PropertyStrokeWidth );
     }
 
   protected:

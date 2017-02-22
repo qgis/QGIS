@@ -44,9 +44,9 @@ void QgsSymbolLayer::initPropertyDefinitions()
     { QgsSymbolLayer::PropertyAngle, QgsPropertyDefinition( "angle", QObject::tr( "Rotation angle" ), QgsPropertyDefinition::Rotation ) },
     { QgsSymbolLayer::PropertyName, QgsPropertyDefinition( "name", QObject::tr( "Symbol name" ), QgsPropertyDefinition::String ) },
     { QgsSymbolLayer::PropertyFillColor, QgsPropertyDefinition( "fillColor", QObject::tr( "Symbol fill color" ), QgsPropertyDefinition::ColorWithAlpha ) },
-    { QgsSymbolLayer::PropertyOutlineColor, QgsPropertyDefinition( "outlineColor", QObject::tr( "Symbol outline color" ), QgsPropertyDefinition::ColorWithAlpha ) },
-    { QgsSymbolLayer::PropertyOutlineWidth, QgsPropertyDefinition( "outlineWidth", QObject::tr( "Symbol outline width" ), QgsPropertyDefinition::StrokeWidth ) },
-    { QgsSymbolLayer::PropertyOutlineStyle, QgsPropertyDefinition( "outlineStyle", QObject::tr( "Symbol outline style" ), QgsPropertyDefinition::LineStyle )},
+    { QgsSymbolLayer::PropertyStrokeColor, QgsPropertyDefinition( "outlineColor", QObject::tr( "Symbol stroke color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+    { QgsSymbolLayer::PropertyStrokeWidth, QgsPropertyDefinition( "outlineWidth", QObject::tr( "Symbol stroke width" ), QgsPropertyDefinition::StrokeWidth ) },
+    { QgsSymbolLayer::PropertyStrokeStyle, QgsPropertyDefinition( "outlineStyle", QObject::tr( "Symbol stroke style" ), QgsPropertyDefinition::LineStyle )},
     { QgsSymbolLayer::PropertyOffset, QgsPropertyDefinition( "offset", QObject::tr( "Symbol offset" ), QgsPropertyDefinition::Offset )},
     { QgsSymbolLayer::PropertyCharacter, QgsPropertyDefinition( "char", QObject::tr( "Marker character(s)" ), QgsPropertyDefinition::String )},
     { QgsSymbolLayer::PropertyWidth, QgsPropertyDefinition( "width", QObject::tr( "Symbol width" ), QgsPropertyDefinition::DoublePositive )},
@@ -253,24 +253,24 @@ static const QMap< QString, QgsSymbolLayer::Property > OLD_PROPS
   { "width_field", QgsSymbolLayer::PropertyWidth },
   { "height_field", QgsSymbolLayer::PropertyHeight },
   { "rotation_field", QgsSymbolLayer::PropertyAngle },
-  { "outline_width_field", QgsSymbolLayer::PropertyOutlineWidth },
+  { "outline_width_field", QgsSymbolLayer::PropertyStrokeWidth },
   { "fill_color_field", QgsSymbolLayer::PropertyFillColor },
-  { "outline_color_field", QgsSymbolLayer::PropertyOutlineColor },
+  { "outline_color_field", QgsSymbolLayer::PropertyStrokeColor },
   { "symbol_name_field", QgsSymbolLayer::PropertyName },
-  { "outline_width", QgsSymbolLayer::PropertyOutlineWidth },
-  { "outline_style", QgsSymbolLayer::PropertyOutlineStyle },
+  { "outline_width", QgsSymbolLayer::PropertyStrokeWidth },
+  { "outline_style", QgsSymbolLayer::PropertyStrokeStyle },
   { "join_style", QgsSymbolLayer::PropertyJoinStyle },
   { "fill_color", QgsSymbolLayer::PropertyFillColor },
-  { "outline_color", QgsSymbolLayer::PropertyOutlineColor },
+  { "outline_color", QgsSymbolLayer::PropertyStrokeColor },
   { "width", QgsSymbolLayer::PropertyWidth },
   { "height", QgsSymbolLayer::PropertyHeight },
   { "symbol_name", QgsSymbolLayer::PropertyName },
   { "angle", QgsSymbolLayer::PropertyAngle },
   { "fill_style", QgsSymbolLayer::PropertyFillStyle },
-  { "color_border", QgsSymbolLayer::PropertyOutlineColor },
-  { "width_border", QgsSymbolLayer::PropertyOutlineWidth },
-  { "border_color", QgsSymbolLayer::PropertyOutlineColor },
-  { "border_style", QgsSymbolLayer::PropertyOutlineStyle },
+  { "color_border", QgsSymbolLayer::PropertyStrokeColor },
+  { "width_border", QgsSymbolLayer::PropertyStrokeWidth },
+  { "border_color", QgsSymbolLayer::PropertyStrokeColor },
+  { "border_style", QgsSymbolLayer::PropertyStrokeStyle },
   { "color2", QgsSymbolLayer::PropertySecondaryColor },
   { "gradient_type", QgsSymbolLayer::PropertyGradientType },
   { "coordinate_mode", QgsSymbolLayer::PropertyCoordinateMode },
@@ -286,8 +286,8 @@ static const QMap< QString, QgsSymbolLayer::Property > OLD_PROPS
   { "max_distance", QgsSymbolLayer::PropertyShapeburstMaxDistance },
   { "ignore_rings", QgsSymbolLayer::PropertyShapeburstIgnoreRings },
   { "svgFillColor", QgsSymbolLayer::PropertyFillColor },
-  { "svgOutlineColor", QgsSymbolLayer::PropertyOutlineColor },
-  { "svgOutlineWidth", QgsSymbolLayer::PropertyOutlineWidth },
+  { "svgOutlineColor", QgsSymbolLayer::PropertyStrokeColor },
+  { "svgOutlineWidth", QgsSymbolLayer::PropertyStrokeWidth },
   { "svgFile", QgsSymbolLayer::PropertyFile },
   { "lineangle", QgsSymbolLayer::PropertyLineAngle },
   { "distance", QgsSymbolLayer::PropertyLineDistance },
@@ -298,7 +298,7 @@ static const QMap< QString, QgsSymbolLayer::Property > OLD_PROPS
   { "file", QgsSymbolLayer::PropertyFile },
   { "alpha", QgsSymbolLayer::PropertyAlpha },
   { "customdash", QgsSymbolLayer::PropertyCustomDash },
-  { "line_style", QgsSymbolLayer::PropertyOutlineStyle },
+  { "line_style", QgsSymbolLayer::PropertyStrokeStyle },
   { "joinstyle", QgsSymbolLayer::PropertyJoinStyle },
   { "capstyle", QgsSymbolLayer::PropertyCapStyle },
   { "placement", QgsSymbolLayer::PropertyPlacement },
@@ -307,7 +307,7 @@ static const QMap< QString, QgsSymbolLayer::Property > OLD_PROPS
   { "name", QgsSymbolLayer::PropertyName },
   { "size", QgsSymbolLayer::PropertySize },
   { "fill", QgsSymbolLayer::PropertyFillColor },
-  { "outline", QgsSymbolLayer::PropertyOutlineColor },
+  { "outline", QgsSymbolLayer::PropertyStrokeColor },
   { "char", QgsSymbolLayer::PropertyCharacter },
   { "enabled", QgsSymbolLayer::PropertyLayerEnabled },
   { "rotation", QgsSymbolLayer::PropertyAngle },
@@ -351,9 +351,9 @@ void QgsSymbolLayer::restoreOldDataDefinedProperties( const QgsStringMap &string
     {
       //these keys had different meaning for line symbol layers
       if ( propertyName == "width" )
-        key = QgsSymbolLayer::PropertyOutlineWidth;
+        key = QgsSymbolLayer::PropertyStrokeWidth;
       else if ( propertyName == "color" )
-        key = QgsSymbolLayer::PropertyOutlineColor;
+        key = QgsSymbolLayer::PropertyStrokeColor;
     }
 
     setDataDefinedProperty( key, prop );
@@ -616,7 +616,7 @@ void QgsLineSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext& context, QSize
   stopRender( context );
 }
 
-void QgsLineSymbolLayer::renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context )
+void QgsLineSymbolLayer::renderPolygonStroke( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context )
 {
   renderPolyline( points, context );
   if ( rings )

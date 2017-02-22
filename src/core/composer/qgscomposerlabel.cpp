@@ -520,9 +520,9 @@ void QgsComposerLabel::setFrameEnabled( const bool drawFrame )
   prepareGeometryChange();
 }
 
-void QgsComposerLabel::setFrameOutlineWidth( const double outlineWidth )
+void QgsComposerLabel::setFrameStrokeWidth( const double strokeWidth )
 {
-  QgsComposerItem::setFrameOutlineWidth( outlineWidth );
+  QgsComposerItem::setFrameStrokeWidth( strokeWidth );
   prepareGeometryChange();
 }
 

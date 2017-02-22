@@ -119,7 +119,7 @@ class QgsComposerItemBaseWidget: public QgsPanelWidget
     QgsComposerConfigObject* mConfigObject = nullptr;
 };
 
-/** A class to enter generic properties for composer items (e.g. background, outline, frame).
+/** A class to enter generic properties for composer items (e.g. background, stroke, frame).
  This widget can be embedded into other item widgets*/
 class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBase
 {
@@ -148,7 +148,7 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
     void on_mBackgroundColorButton_colorChanged( const QColor& newBackgroundColor );
 //    void on_mTransparencySlider_valueChanged( int value );
 //    void on_mTransparencySpinBox_valueChanged( int value );
-    void on_mOutlineWidthSpinBox_valueChanged( double d );
+    void on_mStrokeWidthSpinBox_valueChanged( double d );
     void on_mFrameGroupBox_toggled( bool state );
     void on_mFrameJoinStyleCombo_currentIndexChanged( int index );
     void on_mBackgroundGroupBox_toggled( bool state );

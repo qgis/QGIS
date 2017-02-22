@@ -41,9 +41,9 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
   mFillColorButton->setAllowAlpha( true );
   mFillColorButton->setColorDialogTitle( tr( "Select fill color" ) );
   mFillColorButton->setContext( QStringLiteral( "composer" ) );
-  mOutlineColorButton->setAllowAlpha( true );
-  mOutlineColorButton->setColorDialogTitle( tr( "Select outline color" ) );
-  mOutlineColorButton->setContext( QStringLiteral( "composer" ) );
+  mStrokeColorButton->setAllowAlpha( true );
+  mStrokeColorButton->setColorDialogTitle( tr( "Select stroke color" ) );
+  mStrokeColorButton->setContext( QStringLiteral( "composer" ) );
 
   mNorthTypeComboBox->blockSignals( true );
   mNorthTypeComboBox->addItem( tr( "Grid north" ), QgsComposerPicture::GridNorth );
@@ -80,8 +80,8 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
   connect( mSourceDDBtn, &QgsPropertyOverrideButton::activated, mPictureLineEdit, &QLineEdit::setDisabled );
   registerDataDefinedButton( mSourceDDBtn, QgsComposerObject::PictureSource );
   registerDataDefinedButton( mFillColorDDBtn, QgsComposerObject::PictureSvgBackgroundColor );
-  registerDataDefinedButton( mOutlineColorDDBtn, QgsComposerObject::PictureSvgOutlineColor );
-  registerDataDefinedButton( mOutlineWidthDDBtn, QgsComposerObject::PictureSvgOutlineWidth );
+  registerDataDefinedButton( mStrokeColorDDBtn, QgsComposerObject::PictureSvgStrokeColor );
+  registerDataDefinedButton( mStrokeWidthDDBtn, QgsComposerObject::PictureSvgStrokeWidth );
 }
 
 QgsComposerPictureWidget::~QgsComposerPictureWidget()
@@ -345,8 +345,8 @@ void QgsComposerPictureWidget::setGuiElementValues()
     mResizeModeComboBox->blockSignals( true );
     mAnchorPointComboBox->blockSignals( true );
     mFillColorButton->blockSignals( true );
-    mOutlineColorButton->blockSignals( true );
-    mOutlineWidthSpinBox->blockSignals( true );
+    mStrokeColorButton->blockSignals( true );
+    mStrokeWidthSpinBox->blockSignals( true );
 
     mPictureLineEdit->setText( mPicture->picturePath() );
     mPictureRotationSpinBox->setValue( mPicture->pictureRotation() );
@@ -395,8 +395,8 @@ void QgsComposerPictureWidget::setGuiElementValues()
 
     updateSvgParamGui( false );
     mFillColorButton->setColor( mPicture->svgFillColor() );
-    mOutlineColorButton->setColor( mPicture->svgBorderColor() );
-    mOutlineWidthSpinBox->setValue( mPicture->svgBorderWidth() );
+    mStrokeColorButton->setColor( mPicture->svgStrokeColor() );
+    mStrokeWidthSpinBox->setValue( mPicture->svgStrokeWidth() );
 
     mRotationFromComposerMapCheckBox->blockSignals( false );
     mPictureRotationSpinBox->blockSignals( false );
@@ -407,8 +407,8 @@ void QgsComposerPictureWidget::setGuiElementValues()
     mResizeModeComboBox->blockSignals( false );
     mAnchorPointComboBox->blockSignals( false );
     mFillColorButton->blockSignals( false );
-    mOutlineColorButton->blockSignals( false );
-    mOutlineWidthSpinBox->blockSignals( false );
+    mStrokeColorButton->blockSignals( false );
+    mStrokeWidthSpinBox->blockSignals( false );
 
     populateDataDefinedButtons();
   }
@@ -416,29 +416,29 @@ void QgsComposerPictureWidget::setGuiElementValues()
 
 QIcon QgsComposerPictureWidget::svgToIcon( const QString& filePath ) const
 {
-  QColor fill, outline;
-  double outlineWidth, fillOpacity, outlineOpacity;
-  bool fillParam, fillOpacityParam, outlineParam, outlineWidthParam, outlineOpacityParam;
-  bool hasDefaultFillColor = false, hasDefaultFillOpacity = false, hasDefaultOutlineColor = false,
-                             hasDefaultOutlineWidth = false, hasDefaultOutlineOpacity = false;
+  QColor fill, stroke;
+  double strokeWidth, fillOpacity, strokeOpacity;
+  bool fillParam, fillOpacityParam, strokeParam, strokeWidthParam, strokeOpacityParam;
+  bool hasDefaultFillColor = false, hasDefaultFillOpacity = false, hasDefaultStrokeColor = false,
+                             hasDefaultStrokeWidth = false, hasDefaultStrokeOpacity = false;
   QgsApplication::svgCache()->containsParams( filePath, fillParam, hasDefaultFillColor, fill,
       fillOpacityParam, hasDefaultFillOpacity, fillOpacity,
-      outlineParam, hasDefaultOutlineColor, outline,
-      outlineWidthParam, hasDefaultOutlineWidth, outlineWidth,
-      outlineOpacityParam, hasDefaultOutlineOpacity, outlineOpacity );
+      strokeParam, hasDefaultStrokeColor, stroke,
+      strokeWidthParam, hasDefaultStrokeWidth, strokeWidth,
+      strokeOpacityParam, hasDefaultStrokeOpacity, strokeOpacity );
 
   //if defaults not set in symbol, use these values
   if ( !hasDefaultFillColor )
     fill = QColor( 200, 200, 200 );
   fill.setAlphaF( hasDefaultFillOpacity ? fillOpacity : 1.0 );
-  if ( !hasDefaultOutlineColor )
-    outline = Qt::black;
-  outline.setAlphaF( hasDefaultOutlineOpacity ? outlineOpacity : 1.0 );
-  if ( !hasDefaultOutlineWidth )
-    outlineWidth = 0.6;
+  if ( !hasDefaultStrokeColor )
+    stroke = Qt::black;
+  stroke.setAlphaF( hasDefaultStrokeOpacity ? strokeOpacity : 1.0 );
+  if ( !hasDefaultStrokeWidth )
+    strokeWidth = 0.6;
 
   bool fitsInCache; // should always fit in cache at these sizes (i.e. under 559 px ^ 2, or half cache size)
-  const QImage& img = QgsApplication::svgCache()->svgAsImage( filePath, 30.0, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, fitsInCache );
+  const QImage& img = QgsApplication::svgCache()->svgAsImage( filePath, 30.0, fill, stroke, strokeWidth, 3.5 /*appr. 88 dpi*/, fitsInCache );
 
   return QIcon( QPixmap::fromImage( img ) );
 }
@@ -452,21 +452,21 @@ void QgsComposerPictureWidget::updateSvgParamGui( bool resetValues )
   if ( !picturePath.endsWith( QLatin1String( ".svg" ), Qt::CaseInsensitive ) )
   {
     mFillColorButton->setEnabled( false );
-    mOutlineColorButton->setEnabled( false );
-    mOutlineWidthSpinBox->setEnabled( false );
+    mStrokeColorButton->setEnabled( false );
+    mStrokeWidthSpinBox->setEnabled( false );
     return;
   }
 
   //activate gui for svg parameters only if supported by the svg file
-  bool hasFillParam, hasFillOpacityParam, hasOutlineParam, hasOutlineWidthParam, hasOutlineOpacityParam;
-  QColor defaultFill, defaultOutline;
-  double defaultOutlineWidth, defaultFillOpacity, defaultOutlineOpacity;
-  bool hasDefaultFillColor, hasDefaultFillOpacity, hasDefaultOutlineColor, hasDefaultOutlineWidth, hasDefaultOutlineOpacity;
+  bool hasFillParam, hasFillOpacityParam, hasStrokeParam, hasStrokeWidthParam, hasStrokeOpacityParam;
+  QColor defaultFill, defaultStroke;
+  double defaultStrokeWidth, defaultFillOpacity, defaultStrokeOpacity;
+  bool hasDefaultFillColor, hasDefaultFillOpacity, hasDefaultStrokeColor, hasDefaultStrokeWidth, hasDefaultStrokeOpacity;
   QgsApplication::svgCache()->containsParams( picturePath, hasFillParam, hasDefaultFillColor, defaultFill,
       hasFillOpacityParam, hasDefaultFillOpacity, defaultFillOpacity,
-      hasOutlineParam, hasDefaultOutlineColor, defaultOutline,
-      hasOutlineWidthParam, hasDefaultOutlineWidth, defaultOutlineWidth,
-      hasOutlineOpacityParam, hasDefaultOutlineOpacity, defaultOutlineOpacity );
+      hasStrokeParam, hasDefaultStrokeColor, defaultStroke,
+      hasStrokeWidthParam, hasDefaultStrokeWidth, defaultStrokeWidth,
+      hasStrokeOpacityParam, hasDefaultStrokeOpacity, defaultStrokeOpacity );
 
   if ( resetValues )
   {
@@ -483,22 +483,22 @@ void QgsComposerPictureWidget::updateSvgParamGui( bool resetValues )
   mFillColorButton->setAllowAlpha( hasFillOpacityParam );
   if ( resetValues )
   {
-    QColor outline = mOutlineColorButton->color();
-    double newOpacity = hasOutlineOpacityParam ? outline.alphaF() : 1.0;
-    if ( hasDefaultOutlineColor )
+    QColor stroke = mStrokeColorButton->color();
+    double newOpacity = hasStrokeOpacityParam ? stroke.alphaF() : 1.0;
+    if ( hasDefaultStrokeColor )
     {
-      outline = defaultOutline;
+      stroke = defaultStroke;
     }
-    outline.setAlphaF( hasDefaultOutlineOpacity ? defaultOutlineOpacity : newOpacity );
-    mOutlineColorButton->setColor( outline );
+    stroke.setAlphaF( hasDefaultStrokeOpacity ? defaultStrokeOpacity : newOpacity );
+    mStrokeColorButton->setColor( stroke );
   }
-  mOutlineColorButton->setEnabled( hasOutlineParam );
-  mOutlineColorButton->setAllowAlpha( hasOutlineOpacityParam );
-  if ( hasDefaultOutlineWidth && resetValues )
+  mStrokeColorButton->setEnabled( hasStrokeParam );
+  mStrokeColorButton->setAllowAlpha( hasStrokeOpacityParam );
+  if ( hasDefaultStrokeWidth && resetValues )
   {
-    mOutlineWidthSpinBox->setValue( defaultOutlineWidth );
+    mStrokeWidthSpinBox->setValue( defaultStrokeWidth );
   }
-  mOutlineWidthSpinBox->setEnabled( hasOutlineWidthParam );
+  mStrokeWidthSpinBox->setEnabled( hasStrokeWidthParam );
 }
 
 int QgsComposerPictureWidget::addDirectoryToPreview( const QString& path )
@@ -664,18 +664,18 @@ void QgsComposerPictureWidget::on_mFillColorButton_colorChanged( const QColor& c
   mPicture->update();
 }
 
-void QgsComposerPictureWidget::on_mOutlineColorButton_colorChanged( const QColor& color )
+void QgsComposerPictureWidget::on_mStrokeColorButton_colorChanged( const QColor& color )
 {
-  mPicture->beginCommand( tr( "Picture border color changed" ), QgsComposerMergeCommand::ComposerPictureOutlineColor );
-  mPicture->setSvgBorderColor( color );
+  mPicture->beginCommand( tr( "Picture stroke color changed" ), QgsComposerMergeCommand::ComposerPictureStrokeColor );
+  mPicture->setSvgStrokeColor( color );
   mPicture->endCommand();
   mPicture->update();
 }
 
-void QgsComposerPictureWidget::on_mOutlineWidthSpinBox_valueChanged( double d )
+void QgsComposerPictureWidget::on_mStrokeWidthSpinBox_valueChanged( double d )
 {
-  mPicture->beginCommand( tr( "Picture border width changed" ) );
-  mPicture->setSvgBorderWidth( d );
+  mPicture->beginCommand( tr( "Picture stroke width changed" ) );
+  mPicture->setSvgStrokeWidth( d );
   mPicture->endCommand();
   mPicture->update();
 }
@@ -706,8 +706,8 @@ void QgsComposerPictureWidget::populateDataDefinedButtons()
 {
   updateDataDefinedButton( mSourceDDBtn );
   updateDataDefinedButton( mFillColorDDBtn );
-  updateDataDefinedButton( mOutlineColorDDBtn );
-  updateDataDefinedButton( mOutlineWidthDDBtn );
+  updateDataDefinedButton( mStrokeColorDDBtn );
+  updateDataDefinedButton( mStrokeWidthDDBtn );
 
   //initial state of controls - disable related controls when dd buttons are active
   mPictureLineEdit->setEnabled( !mSourceDDBtn->isActive() );

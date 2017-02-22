@@ -128,12 +128,12 @@
           <item row="1" column="0">
            <widget class="QLabel" name="label_5">
             <property name="text">
-             <string>Arrow outline color</string>
+             <string>Arrow stroke color</string>
             </property>
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QgsColorButton" name="mArrowHeadOutlineColorButton">
+           <widget class="QgsColorButton" name="mArrowHeadStrokeColorButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -192,12 +192,12 @@
           <item row="3" column="0">
            <widget class="QLabel" name="label">
             <property name="text">
-             <string>Arrow outline width</string>
+             <string>Arrow stroke width</string>
             </property>
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QgsDoubleSpinBox" name="mOutlineWidthSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mStrokeWidthSpinBox">
             <property name="prefix">
              <string/>
             </property>
@@ -310,9 +310,9 @@
   <tabstop>mDefaultMarkerRadioButton</tabstop>
   <tabstop>mNoMarkerRadioButton</tabstop>
   <tabstop>mSvgMarkerRadioButton</tabstop>
-  <tabstop>mArrowHeadOutlineColorButton</tabstop>
+  <tabstop>mArrowHeadStrokeColorButton</tabstop>
   <tabstop>mArrowHeadFillColorButton</tabstop>
-  <tabstop>mOutlineWidthSpinBox</tabstop>
+  <tabstop>mStrokeWidthSpinBox</tabstop>
   <tabstop>mArrowHeadWidthSpinBox</tabstop>
   <tabstop>mStartMarkerLineEdit</tabstop>
   <tabstop>mStartMarkerToolButton</tabstop>

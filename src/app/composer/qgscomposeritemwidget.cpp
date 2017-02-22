@@ -204,8 +204,8 @@ void QgsComposerItemWidget::on_mFrameColorButton_colorChanged( const QColor& new
   {
     return;
   }
-  mItem->beginCommand( tr( "Frame color changed" ), QgsComposerMergeCommand::ItemOutlineColor );
-  mItem->setFrameOutlineColor( newFrameColor );
+  mItem->beginCommand( tr( "Frame color changed" ), QgsComposerMergeCommand::ItemStrokeColor );
+  mItem->setFrameStrokeColor( newFrameColor );
   mItem->update();
   mItem->endCommand();
 }
@@ -299,15 +299,15 @@ QgsComposerItem::ItemPositionMode QgsComposerItemWidget::positionMode() const
   return QgsComposerItem::UpperLeft;
 }
 
-void QgsComposerItemWidget::on_mOutlineWidthSpinBox_valueChanged( double d )
+void QgsComposerItemWidget::on_mStrokeWidthSpinBox_valueChanged( double d )
 {
   if ( !mItem )
   {
     return;
   }
 
-  mItem->beginCommand( tr( "Item outline width" ), QgsComposerMergeCommand::ItemOutlineWidth );
-  mItem->setFrameOutlineWidth( d );
+  mItem->beginCommand( tr( "Item stroke width" ), QgsComposerMergeCommand::ItemStrokeWidth );
+  mItem->setFrameStrokeWidth( d );
   mItem->endCommand();
 }
 
@@ -495,7 +495,7 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
     return;
   }
 
-  mOutlineWidthSpinBox->blockSignals( true );
+  mStrokeWidthSpinBox->blockSignals( true );
   mFrameGroupBox->blockSignals( true );
   mBackgroundGroupBox->blockSignals( true );
   mItemIdLineEdit->blockSignals( true );
@@ -509,8 +509,8 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
   mExcludeFromPrintsCheckBox->blockSignals( true );
 
   mBackgroundColorButton->setColor( mItem->backgroundColor() );
-  mFrameColorButton->setColor( mItem->frameOutlineColor() );
-  mOutlineWidthSpinBox->setValue( mItem->frameOutlineWidth() );
+  mFrameColorButton->setColor( mItem->frameStrokeColor() );
+  mStrokeWidthSpinBox->setValue( mItem->frameStrokeWidth() );
   mFrameJoinStyleCombo->setPenJoinStyle( mItem->frameJoinStyle() );
   mItemIdLineEdit->setText( mItem->id() );
   mFrameGroupBox->setChecked( mItem->hasFrame() );
@@ -524,7 +524,7 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
   mBackgroundColorButton->blockSignals( false );
   mFrameColorButton->blockSignals( false );
   mFrameJoinStyleCombo->blockSignals( false );
-  mOutlineWidthSpinBox->blockSignals( false );
+  mStrokeWidthSpinBox->blockSignals( false );
   mFrameGroupBox->blockSignals( false );
   mBackgroundGroupBox->blockSignals( false );
   mItemIdLineEdit->blockSignals( false );

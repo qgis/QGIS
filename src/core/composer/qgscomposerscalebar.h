@@ -370,7 +370,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     QColor mLineColor = QColor( 0, 0, 0 );
     //! Line width
     double mLineWidth = 0.3;
-    //! Outline
+    //! Stroke
     QPen mPen;
     //! Fill
     QBrush mBrush;

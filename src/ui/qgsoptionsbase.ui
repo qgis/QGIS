@@ -3290,7 +3290,7 @@
                     <item>
                      <widget class="QDoubleSpinBox" name="mIdentifyHighlightMinWidthSpinBox">
                       <property name="toolTip">
-                       <string>Minimum line / outline width in millimeters.</string>
+                       <string>Minimum line / stroke width in millimeters.</string>
                       </property>
                       <property name="suffix">
                        <string> mm</string>

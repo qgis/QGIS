@@ -47,8 +47,8 @@ class QgsComposerObject : QObject, QgsExpressionContextGenerator
       //composer picture
       PictureSource, /*!< picture source url */
       PictureSvgBackgroundColor, //!< SVG background color
-      PictureSvgOutlineColor, //!< SVG outline color
-      PictureSvgOutlineWidth, //!< SVG outline width
+      PictureSvgStrokeColor, //!< SVG stroke color
+      PictureSvgStrokeWidth, //!< SVG stroke width
       //html item
       SourceUrl /*!< html source url */
       //legend item

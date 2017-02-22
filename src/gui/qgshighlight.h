@@ -60,7 +60,7 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
     QgsHighlight( QgsMapCanvas *mapCanvas, const QgsFeature& feature, QgsVectorLayer *layer );
     ~QgsHighlight();
 
-    /** Set line/outline to color, polygon fill to color with alpha = 63.
+    /** Set line/stroke to color, polygon fill to color with alpha = 63.
      *  This is legacy function, use setFillColor() after setColor() if different fill color is required. */
     void setColor( const QColor & color );
 
@@ -71,11 +71,11 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
     //! Set width. Ignored in feature mode.
     void setWidth( int width );
 
-    /** Set line / outline buffer in millimeters.
+    /** Set line / stroke buffer in millimeters.
      *  @note: added in version 2.3 */
     void setBuffer( double buffer ) { mBuffer = buffer; }
 
-    /** Set minimum line / outline width in millimeters.
+    /** Set minimum line / stroke width in millimeters.
      *  @note: added in version 2.3 */
     void setMinWidth( double width ) { mMinWidth = width; }
 
@@ -104,8 +104,8 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
     QgsGeometry *mGeometry = nullptr;
     QgsMapLayer *mLayer = nullptr;
     QgsFeature mFeature;
-    double mBuffer; // line / outline buffer in pixels
-    double mMinWidth; // line / outline minimum width in pixels
+    double mBuffer; // line / stroke buffer in pixels
+    double mMinWidth; // line / stroke minimum width in pixels
 };
 
 #endif

@@ -154,14 +154,14 @@
       <item row="0" column="0">
        <widget class="QLabel" name="mCircleWidthLabel">
         <property name="text">
-         <string>Outline width</string>
+         <string>Stroke width</string>
         </property>
        </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="mCircleColorLabel">
         <property name="text">
-         <string>Outline color</string>
+         <string>Stroke color</string>
         </property>
        </widget>
       </item>

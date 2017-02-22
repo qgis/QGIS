@@ -43,10 +43,10 @@ class QgsComposerArrowWidget: public QgsComposerItemBaseWidget, private Ui::QgsC
     void updateLineSymbolMarker();
 
   private slots:
-    void on_mOutlineWidthSpinBox_valueChanged( double d );
+    void on_mStrokeWidthSpinBox_valueChanged( double d );
     void on_mArrowHeadWidthSpinBox_valueChanged( double d );
     void on_mArrowHeadFillColorButton_colorChanged( const QColor& newColor );
-    void on_mArrowHeadOutlineColorButton_colorChanged( const QColor& newColor );
+    void on_mArrowHeadStrokeColorButton_colorChanged( const QColor& newColor );
     void on_mDefaultMarkerRadioButton_toggled( bool toggled );
     void on_mNoMarkerRadioButton_toggled( bool toggled );
     void on_mSvgMarkerRadioButton_toggled( bool toggled );

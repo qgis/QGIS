@@ -558,11 +558,11 @@ QSizeF QgsRasterSymbolLegendNode::drawSymbol( const QgsLegendSettings& settings,
     }
     ctx->painter->setBrush( itemColor );
 
-    if ( settings.drawRasterBorder() )
+    if ( settings.drawRasterStroke() )
     {
       QPen pen;
-      pen.setColor( settings.rasterBorderColor() );
-      pen.setWidthF( settings.rasterBorderWidth() );
+      pen.setColor( settings.rasterStrokeColor() );
+      pen.setWidthF( settings.rasterStrokeWidth() );
       pen.setJoinStyle( Qt::MiterJoin );
       ctx->painter->setPen( pen );
     }

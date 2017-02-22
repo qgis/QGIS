@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>244</width>
+    <width>276</width>
     <height>384</height>
    </rect>
   </property>
@@ -184,7 +184,7 @@
    <item row="1" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Pen width</string>
+      <string>Stroke width</string>
      </property>
     </widget>
    </item>
@@ -198,7 +198,7 @@
    <item row="3" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>Pen style</string>
+      <string>Stroke style</string>
      </property>
     </widget>
    </item>
@@ -287,10 +287,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsPropertyOverrideButton</class>
@@ -298,14 +297,15 @@
    <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsUnitSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

@@ -97,10 +97,10 @@ class CORE_EXPORT QgsTextBackgroundSettingsPrivate : public QSharedData
         , radiiUnits( QgsUnitTypes::RenderMillimeters )
         , blendMode( QPainter::CompositionMode_SourceOver )
         , fillColor( Qt::white )
-        , borderColor( Qt::darkGray )
+        , strokeColor( Qt::darkGray )
         , opacity( 1.0 )
-        , borderWidth( 0.0 )
-        , borderWidthUnits( QgsUnitTypes::RenderMillimeters )
+        , strokeWidth( 0.0 )
+        , strokeWidthUnits( QgsUnitTypes::RenderMillimeters )
         , joinStyle( Qt::BevelJoin )
     {
     }
@@ -124,11 +124,11 @@ class CORE_EXPORT QgsTextBackgroundSettingsPrivate : public QSharedData
         , radiiMapUnitScale( other.radiiMapUnitScale )
         , blendMode( other.blendMode )
         , fillColor( other.fillColor )
-        , borderColor( other.borderColor )
+        , strokeColor( other.strokeColor )
         , opacity( other.opacity )
-        , borderWidth( other.borderWidth )
-        , borderWidthUnits( other.borderWidthUnits )
-        , borderWidthMapUnitScale( other.borderWidthMapUnitScale )
+        , strokeWidth( other.strokeWidth )
+        , strokeWidthUnits( other.strokeWidthUnits )
+        , strokeWidthMapUnitScale( other.strokeWidthMapUnitScale )
         , joinStyle( other.joinStyle )
     {
     }
@@ -150,11 +150,11 @@ class CORE_EXPORT QgsTextBackgroundSettingsPrivate : public QSharedData
     QgsMapUnitScale radiiMapUnitScale;
     QPainter::CompositionMode blendMode;
     QColor fillColor;
-    QColor borderColor;
+    QColor strokeColor;
     double opacity;
-    double borderWidth;
-    QgsUnitTypes::RenderUnit borderWidthUnits;
-    QgsMapUnitScale borderWidthMapUnitScale;
+    double strokeWidth;
+    QgsUnitTypes::RenderUnit strokeWidthUnits;
+    QgsMapUnitScale strokeWidthMapUnitScale;
     Qt::PenJoinStyle joinStyle;
 };
 

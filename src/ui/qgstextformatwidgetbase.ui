@@ -2598,7 +2598,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="18" column="1">
-                            <widget class="QgsColorButton" name="mShapeBorderColorBtn">
+                            <widget class="QgsColorButton" name="mShapeStrokeColorBtn">
                              <property name="sizePolicy">
                               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                                <horstretch>0</horstretch>
@@ -2627,21 +2627,21 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="19" column="2">
-                            <widget class="QgsPropertyOverrideButton" name="mShapeBorderWidthDDBtn">
+                            <widget class="QgsPropertyOverrideButton" name="mShapeStrokeWidthDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
                             </widget>
                            </item>
                            <item row="18" column="2">
-                            <widget class="QgsPropertyOverrideButton" name="mShapeBorderColorDDBtn">
+                            <widget class="QgsPropertyOverrideButton" name="mShapeStrokeColorDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
                             </widget>
                            </item>
                            <item row="19" column="1">
-                            <widget class="QgsDoubleSpinBox" name="mShapeBorderWidthSpnBx">
+                            <widget class="QgsDoubleSpinBox" name="mShapeStrokeWidthSpnBx">
                              <property name="decimals">
                               <number>4</number>
                              </property>
@@ -2851,7 +2851,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="18" column="0">
-                            <widget class="QLabel" name="mShapeBorderColorLabel">
+                            <widget class="QLabel" name="mShapeStrokeColorLabel">
                              <property name="sizePolicy">
                               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                                <horstretch>0</horstretch>
@@ -2859,7 +2859,7 @@ font-style: italic;</string>
                               </sizepolicy>
                              </property>
                              <property name="text">
-                              <string>Border color</string>
+                              <string>Stroke color</string>
                              </property>
                             </widget>
                            </item>
@@ -2921,9 +2921,9 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="19" column="0">
-                            <widget class="QLabel" name="mShapeBorderWidthLabel">
+                            <widget class="QLabel" name="mShapeStrokeWidthLabel">
                              <property name="text">
-                              <string>Border width</string>
+                              <string>Stroke width</string>
                              </property>
                             </widget>
                            </item>
@@ -3065,7 +3065,7 @@ font-style: italic;</string>
                            <item row="20" column="1">
                             <layout class="QHBoxLayout" name="horizontalLayout_43">
                              <item>
-                              <widget class="QgsUnitSelectionWidget" name="mShapeBorderWidthUnitWidget" native="true">
+                              <widget class="QgsUnitSelectionWidget" name="mShapeStrokeWidthUnitWidget" native="true">
                                <property name="focusPolicy">
                                 <enum>Qt::StrongFocus</enum>
                                </property>
@@ -3081,7 +3081,7 @@ font-style: italic;</string>
                             </layout>
                            </item>
                            <item row="20" column="2">
-                            <widget class="QgsPropertyOverrideButton" name="mShapeBorderUnitsDDBtn">
+                            <widget class="QgsPropertyOverrideButton" name="mShapeStrokeUnitsDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -6610,12 +6610,12 @@ font-style: italic;</string>
   <tabstop>mShapeSVGParamsBtn</tabstop>
   <tabstop>mShapeFillColorBtn</tabstop>
   <tabstop>mShapeFillColorDDBtn</tabstop>
-  <tabstop>mShapeBorderColorBtn</tabstop>
-  <tabstop>mShapeBorderColorDDBtn</tabstop>
-  <tabstop>mShapeBorderWidthSpnBx</tabstop>
-  <tabstop>mShapeBorderWidthDDBtn</tabstop>
-  <tabstop>mShapeBorderWidthUnitWidget</tabstop>
-  <tabstop>mShapeBorderUnitsDDBtn</tabstop>
+  <tabstop>mShapeStrokeColorBtn</tabstop>
+  <tabstop>mShapeStrokeColorDDBtn</tabstop>
+  <tabstop>mShapeStrokeWidthSpnBx</tabstop>
+  <tabstop>mShapeStrokeWidthDDBtn</tabstop>
+  <tabstop>mShapeStrokeWidthUnitWidget</tabstop>
+  <tabstop>mShapeStrokeUnitsDDBtn</tabstop>
   <tabstop>mShapePenStyleCmbBx</tabstop>
   <tabstop>mShapePenStyleDDBtn</tabstop>
   <tabstop>scrollArea_8</tabstop>

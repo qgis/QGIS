@@ -1379,7 +1379,7 @@ void QgsRuleBasedRenderer::convertToDataDefinedSymbology( QgsSymbol* symbol, con
           {
             QgsLineSymbolLayer* lsl = static_cast<QgsLineSymbolLayer*>( symbol->symbolLayer( j ) );
             sizeExpression = QStringLiteral( "%1*(%2)" ).arg( lsl->width() ).arg( sizeScaleField );
-            lsl->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineWidth, QgsProperty::fromExpression( sizeExpression ) );
+            lsl->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeWidth, QgsProperty::fromExpression( sizeExpression ) );
           }
           if ( symbol->symbolLayer( j )->layerType() == QLatin1String( "MarkerLine" ) )
           {

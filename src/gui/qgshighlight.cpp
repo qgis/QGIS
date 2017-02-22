@@ -111,7 +111,7 @@ QgsHighlight::~QgsHighlight()
 }
 
 /*!
-  Set the outline and fill color.
+  Set the stroke and fill color.
   */
 void QgsHighlight::setColor( const QColor & color )
 {
@@ -163,14 +163,14 @@ void QgsHighlight::setSymbol( QgsSymbol* symbol, const QgsRenderContext & contex
     else
     {
       symbolLayer->setColor( color ); // line symbology layers
-      symbolLayer->setOutlineColor( color ); // marker and fill symbology layers
+      symbolLayer->setStrokeColor( color ); // marker and fill symbology layers
       symbolLayer->setFillColor( fillColor ); // marker and fill symbology layers
 
       // Data defined widths overwrite what we set here (widths do not work with data defined)
       QgsSimpleMarkerSymbolLayer * simpleMarker = dynamic_cast<QgsSimpleMarkerSymbolLayer*>( symbolLayer );
       if ( simpleMarker )
       {
-        simpleMarker->setOutlineWidth( getSymbolWidth( context, simpleMarker->outlineWidth(), simpleMarker->outlineWidthUnit() ) );
+        simpleMarker->setStrokeWidth( getSymbolWidth( context, simpleMarker->strokeWidth(), simpleMarker->strokeWidthUnit() ) );
       }
       QgsSimpleLineSymbolLayer * simpleLine = dynamic_cast<QgsSimpleLineSymbolLayer*>( symbolLayer );
       if ( simpleLine )
@@ -180,10 +180,10 @@ void QgsHighlight::setSymbol( QgsSymbol* symbol, const QgsRenderContext & contex
       QgsSimpleFillSymbolLayer * simpleFill = dynamic_cast<QgsSimpleFillSymbolLayer*>( symbolLayer );
       if ( simpleFill )
       {
-        simpleFill->setBorderWidth( getSymbolWidth( context, simpleFill->borderWidth(), simpleFill->outputUnit() ) );
+        simpleFill->setStrokeWidth( getSymbolWidth( context, simpleFill->strokeWidth(), simpleFill->outputUnit() ) );
       }
       symbolLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty() );
-      symbolLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineColor, QgsProperty() );
+      symbolLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty() );
     }
   }
 }
@@ -201,7 +201,7 @@ double QgsHighlight::getSymbolWidth( const QgsRenderContext & context, double wi
 }
 
 /*!
-  Set the outline width.
+  Set the stroke width.
   */
 void QgsHighlight::setWidth( int width )
 {

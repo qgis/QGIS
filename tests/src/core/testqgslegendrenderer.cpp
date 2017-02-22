@@ -121,7 +121,7 @@ class TestQgsLegendRenderer : public QObject
     void testFilterByMapSameSymbol();
     void testColumns_data();
     void testColumns();
-    void testRasterBorder();
+    void testRasterStroke();
     void testFilterByPolygon();
     void testFilterByExpression();
     void testDiagramAttributeLegend();
@@ -561,7 +561,7 @@ void TestQgsLegendRenderer::testColumns()
   QVERIFY( _testLegendColumns( items, columns, testName ) );
 }
 
-void TestQgsLegendRenderer::testRasterBorder()
+void TestQgsLegendRenderer::testRasterStroke()
 {
   QString testName = QStringLiteral( "legend_raster_border" );
 
@@ -572,8 +572,8 @@ void TestQgsLegendRenderer::testRasterBorder()
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings );
-  settings.setRasterBorderWidth( 2 );
-  settings.setRasterBorderColor( Qt::green );
+  settings.setRasterStrokeWidth( 2 );
+  settings.setRasterStrokeColor( Qt::green );
   _renderLegend( testName, &legendModel, settings );
   QVERIFY( _verifyImage( testName, mReport ) );
 }

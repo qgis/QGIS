@@ -56,7 +56,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
     void renderPolyline( const QPolygonF& points, QgsSymbolRenderContext& context ) override;
 
     //overridden so that clip path can be set when using draw inside polygon option
-    void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context ) override;
+    void renderPolygonStroke( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context ) override;
 
     QgsStringMap properties() const override;
 
@@ -196,7 +196,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
 
     void renderPolyline( const QPolygonF& points, QgsSymbolRenderContext& context ) override;
 
-    void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context ) override;
+    void renderPolygonStroke( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context ) override;
 
     QgsStringMap properties() const override;
 

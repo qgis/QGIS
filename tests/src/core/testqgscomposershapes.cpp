@@ -143,8 +143,8 @@ void TestQgsComposerShapes::symbol()
   QgsFillSymbol* fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::green );
-  simpleFill->setBorderColor( Qt::yellow );
-  simpleFill->setBorderWidth( 6 );
+  simpleFill->setStrokeColor( Qt::yellow );
+  simpleFill->setStrokeWidth( 6 );
 
   mComposerShape->setShapeStyleSymbol( fillSymbol );
   mComposerShape->setUseSymbol( true );

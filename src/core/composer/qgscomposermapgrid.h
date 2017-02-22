@@ -760,22 +760,22 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      */
     double frameWidth() const { return mGridFrameWidth; }
 
-    /** Sets the width of the outline drawn in the grid frame.
-     * @param width width of grid frame outline
+    /** Sets the width of the stroke drawn in the grid frame.
+     * @param width width of grid frame stroke
      * @see framePenSize
      * @see setFramePenColor
      */
     void setFramePenSize( const double width ) { mGridFramePenThickness = width; }
 
-    /** Retrieves the width of the outline drawn in the grid frame.
-     * @returns width of grid frame outline
+    /** Retrieves the width of the stroke drawn in the grid frame.
+     * @returns width of grid frame stroke
      * @see setFramePenSize
      * @see framePenColor
      */
     double framePenSize() const { return mGridFramePenThickness; }
 
-    /** Sets the color of the outline drawn in the grid frame.
-     * @param color color of grid frame outline
+    /** Sets the color of the stroke drawn in the grid frame.
+     * @param color color of grid frame stroke
      * @see framePenColor
      * @see setFramePenSize
      * @see setFrameFillColor1
@@ -783,8 +783,8 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      */
     void setFramePenColor( const QColor& color ) { mGridFramePenColor = color; }
 
-    /** Retrieves the color of the outline drawn in the grid frame.
-     * @returns color of grid frame outline
+    /** Retrieves the color of the stroke drawn in the grid frame.
+     * @returns color of grid frame stroke
      * @see setFramePenColor
      * @see framePenSize
      * @see frameFillColor1

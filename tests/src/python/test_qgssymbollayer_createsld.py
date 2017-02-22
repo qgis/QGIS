@@ -53,7 +53,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
     def testSimpleMarkerRotation(self):
         symbol = QgsSimpleMarkerSymbolLayer(
-            QgsSimpleMarkerSymbolLayerBase.Star, color=QColor(255, 0, 0), borderColor=QColor(0, 255, 0), size=10)
+            QgsSimpleMarkerSymbolLayerBase.Star, color=QColor(255, 0, 0), strokeColor=QColor(0, 255, 0), size=10)
         symbol.setAngle(50)
         dom, root = self.symbolToSld(symbol)
         # print( "Simple marker rotation: " + root.ownerDocument().toString())
@@ -88,8 +88,8 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
     def testSimpleMarkerUnitDefault(self):
         symbol = QgsSimpleMarkerSymbolLayer(
-            QgsSimpleMarkerSymbolLayerBase.Star, color=QColor(255, 0, 0), borderColor=QColor(0, 255, 0), size=10)
-        symbol.setOutlineWidth(3)
+            QgsSimpleMarkerSymbolLayerBase.Star, color=QColor(255, 0, 0), strokeColor=QColor(0, 255, 0), size=10)
+        symbol.setStrokeWidth(3)
         symbol.setOffset(QPointF(5, 10))
         dom, root = self.symbolToSld(symbol)
         # print("Simple marker unit mm: " + root.ownerDocument().toString())
@@ -97,7 +97,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         # Check the size has been rescaled to pixels
         self.assertStaticSize(root, '36')
 
-        # Check the same happened to the outline width
+        # Check the same happened to the stroke width
         self.assertStrokeWidth(root, 2, 11)
         self.assertStaticDisplacement(root, 18, 36)
 
@@ -111,8 +111,8 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
     def testSimpleMarkerUnitPixels(self):
         symbol = QgsSimpleMarkerSymbolLayer(
-            QgsSimpleMarkerSymbolLayerBase.Star, color=QColor(255, 0, 0), borderColor=QColor(0, 255, 0), size=10)
-        symbol.setOutlineWidth(3)
+            QgsSimpleMarkerSymbolLayerBase.Star, color=QColor(255, 0, 0), strokeColor=QColor(0, 255, 0), size=10)
+        symbol.setStrokeWidth(3)
         symbol.setOffset(QPointF(5, 10))
         symbol.setOutputUnit(QgsUnitTypes.RenderPixels)
         dom, root = self.symbolToSld(symbol)
@@ -121,15 +121,15 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         # Check the size has not been rescaled
         self.assertStaticSize(root, '10')
 
-        # Check the same happened to the outline width
+        # Check the same happened to the stroke width
         self.assertStrokeWidth(root, 2, 3)
         self.assertStaticDisplacement(root, 5, 10)
 
     def testSvgMarkerUnitDefault(self):
         symbol = QgsSvgMarkerSymbolLayer('symbols/star.svg', 10, 90)
         symbol.setFillColor(QColor("blue"))
-        symbol.setOutlineWidth(1)
-        symbol.setOutlineColor(QColor('red'))
+        symbol.setStrokeWidth(1)
+        symbol.setStrokeColor(QColor('red'))
         symbol.setPath('symbols/star.svg')
         symbol.setOffset(QPointF(5, 10))
 
@@ -152,8 +152,8 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
     def testSvgMarkerUnitPixels(self):
         symbol = QgsSvgMarkerSymbolLayer('symbols/star.svg', 10, 0)
         symbol.setFillColor(QColor("blue"))
-        symbol.setOutlineWidth(1)
-        symbol.setOutlineColor(QColor('red'))
+        symbol.setStrokeWidth(1)
+        symbol.setStrokeColor(QColor('red'))
         symbol.setPath('symbols/star.svg')
         symbol.setOffset(QPointF(5, 10))
         symbol.setOutputUnit(QgsUnitTypes.RenderPixels)
@@ -321,8 +321,8 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
     def testSvgFillDefault(self):
         symbol = QgsSVGFillSymbolLayer('test/star.svg', 10, 45)
         symbol.setSvgFillColor(QColor('blue'))
-        symbol.setSvgOutlineWidth(3)
-        symbol.setSvgOutlineColor(QColor('yellow'))
+        symbol.setSvgStrokeWidth(3)
+        symbol.setSvgStrokeColor(QColor('yellow'))
         symbol.subSymbol().setWidth(10)
 
         dom, root = self.symbolToSld(symbol)
@@ -336,14 +336,14 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
         self.assertStaticRotation(root, '45')
         self.assertStaticSize(root, '36')
-        # width of the polygon outline
+        # width of the polygon stroke
         lineSymbolizer = root.elementsByTagName('se:LineSymbolizer').item(0).toElement()
         self.assertStrokeWidth(lineSymbolizer, 1, 36)
 
     def testSvgFillPixel(self):
         symbol = QgsSVGFillSymbolLayer('test/star.svg', 10, 45)
         symbol.setSvgFillColor(QColor('blue'))
-        symbol.setSvgOutlineWidth(3)
+        symbol.setSvgStrokeWidth(3)
         symbol.setOutputUnit(QgsUnitTypes.RenderPixels)
         symbol.subSymbol().setWidth(10)
 
@@ -358,7 +358,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
         self.assertStaticRotation(root, '45')
         self.assertStaticSize(root, '10')
-        # width of the polygon outline
+        # width of the polygon stroke
         lineSymbolizer = root.elementsByTagName('se:LineSymbolizer').item(0).toElement()
         self.assertStrokeWidth(lineSymbolizer, 1, 10)
 

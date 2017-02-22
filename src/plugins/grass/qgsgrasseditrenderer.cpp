@@ -57,8 +57,8 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
   QgsMarkerLineSymbolLayer * firstVertexMarkerLine = new QgsMarkerLineSymbolLayer( false );
   QgsSimpleMarkerSymbolLayer *markerSymbolLayer = new QgsSimpleMarkerSymbolLayer( QgsSimpleMarkerSymbolLayerBase::Cross2, 2 );
   markerSymbolLayer->setColor( QColor( 255, 0, 0 ) );
-  markerSymbolLayer->setBorderColor( QColor( 255, 0, 0 ) );
-  markerSymbolLayer->setOutlineWidth( 0.5 );
+  markerSymbolLayer->setStrokeColor( QColor( 255, 0, 0 ) );
+  markerSymbolLayer->setStrokeWidth( 0.5 );
   QgsSymbolLayerList markerLayers;
   markerLayers << markerSymbolLayer;
   QgsMarkerSymbol * markerSymbol = new QgsMarkerSymbol( markerLayers );

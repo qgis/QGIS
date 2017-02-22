@@ -107,7 +107,7 @@ void TestQgsComposerPaper::transparentPaper()
   QgsFillSymbol* fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::transparent );
-  simpleFill->setBorderColor( Qt::transparent );
+  simpleFill->setStrokeColor( Qt::transparent );
   mComposition->setPageStyleSymbol( fillSymbol );
   delete fillSymbol;
 
@@ -122,8 +122,8 @@ void TestQgsComposerPaper::borderedPaper()
   QgsFillSymbol* fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::white );
-  simpleFill->setBorderColor( Qt::black );
-  simpleFill->setBorderWidth( 6 );
+  simpleFill->setStrokeColor( Qt::black );
+  simpleFill->setStrokeWidth( 6 );
   mComposition->setPageStyleSymbol( fillSymbol );
   delete fillSymbol;
 
@@ -151,7 +151,7 @@ void TestQgsComposerPaper::hiddenPages()
   QgsFillSymbol* fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::blue );
-  simpleFill->setBorderColor( Qt::transparent );
+  simpleFill->setStrokeColor( Qt::transparent );
   mComposition->setPageStyleSymbol( fillSymbol );
   delete fillSymbol;
 

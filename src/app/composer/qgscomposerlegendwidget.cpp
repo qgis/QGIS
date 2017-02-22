@@ -74,9 +74,9 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend )
   mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
   mFontColorButton->setContext( QStringLiteral( "composer" ) );
 
-  mRasterBorderColorButton->setColorDialogTitle( tr( "Select border color" ) );
-  mRasterBorderColorButton->setAllowAlpha( true );
-  mRasterBorderColorButton->setContext( QStringLiteral( "composer " ) );
+  mRasterStrokeColorButton->setColorDialogTitle( tr( "Select stroke color" ) );
+  mRasterStrokeColorButton->setAllowAlpha( true );
+  mRasterStrokeColorButton->setContext( QStringLiteral( "composer " ) );
 
   if ( legend )
     mMapComboBox->setComposition( legend->composition() );
@@ -150,9 +150,9 @@ void QgsComposerLegendWidget::setGuiElements()
   mColumnSpaceSpinBox->setValue( mLegend->columnSpace() );
   mLineSpacingSpinBox->setValue( mLegend->lineSpacing() );
 
-  mRasterBorderGroupBox->setChecked( mLegend->drawRasterBorder() );
-  mRasterBorderWidthSpinBox->setValue( mLegend->rasterBorderWidth() );
-  mRasterBorderColorButton->setColor( mLegend->rasterBorderColor() );
+  mRasterStrokeGroupBox->setChecked( mLegend->drawRasterStroke() );
+  mRasterStrokeWidthSpinBox->setValue( mLegend->rasterStrokeWidth() );
+  mRasterStrokeColorButton->setColor( mLegend->rasterStrokeColor() );
 
   mCheckBoxAutoUpdate->setChecked( mLegend->autoUpdateModel() );
 
@@ -621,7 +621,7 @@ void QgsComposerLegendWidget::on_mCheckboxResizeContents_toggled( bool checked )
   mLegend->endCommand();
 }
 
-void QgsComposerLegendWidget::on_mRasterBorderGroupBox_toggled( bool state )
+void QgsComposerLegendWidget::on_mRasterStrokeGroupBox_toggled( bool state )
 {
   if ( !mLegend )
   {
@@ -629,35 +629,35 @@ void QgsComposerLegendWidget::on_mRasterBorderGroupBox_toggled( bool state )
   }
 
   mLegend->beginCommand( tr( "Legend raster borders" ) );
-  mLegend->setDrawRasterBorder( state );
+  mLegend->setDrawRasterStroke( state );
   mLegend->adjustBoxSize();
   mLegend->update();
   mLegend->endCommand();
 }
 
-void QgsComposerLegendWidget::on_mRasterBorderWidthSpinBox_valueChanged( double d )
+void QgsComposerLegendWidget::on_mRasterStrokeWidthSpinBox_valueChanged( double d )
 {
   if ( !mLegend )
   {
     return;
   }
 
-  mLegend->beginCommand( tr( "Legend raster border width" ), QgsComposerMergeCommand::LegendRasterBorderWidth );
-  mLegend->setRasterBorderWidth( d );
+  mLegend->beginCommand( tr( "Legend raster stroke width" ), QgsComposerMergeCommand::LegendRasterStrokeWidth );
+  mLegend->setRasterStrokeWidth( d );
   mLegend->adjustBoxSize();
   mLegend->update();
   mLegend->endCommand();
 }
 
-void QgsComposerLegendWidget::on_mRasterBorderColorButton_colorChanged( const QColor& newColor )
+void QgsComposerLegendWidget::on_mRasterStrokeColorButton_colorChanged( const QColor& newColor )
 {
   if ( !mLegend )
   {
     return;
   }
 
-  mLegend->beginCommand( tr( "Legend raster border color" ), QgsComposerMergeCommand::LegendRasterBorderColor );
-  mLegend->setRasterBorderColor( newColor );
+  mLegend->beginCommand( tr( "Legend raster stroke color" ), QgsComposerMergeCommand::LegendRasterStrokeColor );
+  mLegend->setRasterStrokeColor( newColor );
   mLegend->update();
   mLegend->endCommand();
 }
@@ -930,9 +930,9 @@ void QgsComposerLegendWidget::blockAllSignals( bool b )
   mBoxSpaceSpinBox->blockSignals( b );
   mColumnSpaceSpinBox->blockSignals( b );
   mFontColorButton->blockSignals( b );
-  mRasterBorderGroupBox->blockSignals( b );
-  mRasterBorderColorButton->blockSignals( b );
-  mRasterBorderWidthSpinBox->blockSignals( b );
+  mRasterStrokeGroupBox->blockSignals( b );
+  mRasterStrokeColorButton->blockSignals( b );
+  mRasterStrokeWidthSpinBox->blockSignals( b );
   mWmsLegendWidthSpinBox->blockSignals( b );
   mWmsLegendHeightSpinBox->blockSignals( b );
   mCheckboxResizeContents->blockSignals( b );

@@ -42,11 +42,11 @@ QgsComposerArrowWidget::QgsComposerArrowWidget( QgsComposerArrow* arrow ): QgsCo
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, mArrow );
   mainLayout->addWidget( itemPropertiesWidget );
 
-  mArrowHeadOutlineColorButton->setColorDialogTitle( tr( "Select arrow head outline color" ) );
-  mArrowHeadOutlineColorButton->setAllowAlpha( true );
-  mArrowHeadOutlineColorButton->setContext( QStringLiteral( "composer" ) );
-  mArrowHeadOutlineColorButton->setNoColorString( tr( "Transparent outline" ) );
-  mArrowHeadOutlineColorButton->setShowNoColor( true );
+  mArrowHeadStrokeColorButton->setColorDialogTitle( tr( "Select arrow head stroke color" ) );
+  mArrowHeadStrokeColorButton->setAllowAlpha( true );
+  mArrowHeadStrokeColorButton->setContext( QStringLiteral( "composer" ) );
+  mArrowHeadStrokeColorButton->setNoColorString( tr( "Transparent stroke" ) );
+  mArrowHeadStrokeColorButton->setShowNoColor( true );
   mArrowHeadFillColorButton->setColorDialogTitle( tr( "Select arrow head fill color" ) );
   mArrowHeadFillColorButton->setAllowAlpha( true );
   mArrowHeadFillColorButton->setContext( QStringLiteral( "composer" ) );
@@ -66,15 +66,15 @@ QgsComposerArrowWidget::~QgsComposerArrowWidget()
 
 }
 
-void QgsComposerArrowWidget::on_mOutlineWidthSpinBox_valueChanged( double d )
+void QgsComposerArrowWidget::on_mStrokeWidthSpinBox_valueChanged( double d )
 {
   if ( !mArrow )
   {
     return;
   }
 
-  mArrow->beginCommand( tr( "Arrow head outline width" ), QgsComposerMergeCommand::ArrowOutlineWidth );
-  mArrow->setArrowHeadOutlineWidth( d );
+  mArrow->beginCommand( tr( "Arrow head stroke width" ), QgsComposerMergeCommand::ArrowStrokeWidth );
+  mArrow->setArrowHeadStrokeWidth( d );
   mArrow->update();
   mArrow->endCommand();
 }
@@ -105,15 +105,15 @@ void QgsComposerArrowWidget::on_mArrowHeadFillColorButton_colorChanged( const QC
   mArrow->endCommand();
 }
 
-void QgsComposerArrowWidget::on_mArrowHeadOutlineColorButton_colorChanged( const QColor &newColor )
+void QgsComposerArrowWidget::on_mArrowHeadStrokeColorButton_colorChanged( const QColor &newColor )
 {
   if ( !mArrow )
   {
     return;
   }
 
-  mArrow->beginCommand( tr( "Arrow head outline color" ), QgsComposerMergeCommand::ArrowHeadOutlineColor );
-  mArrow->setArrowHeadOutlineColor( newColor );
+  mArrow->beginCommand( tr( "Arrow head stroke color" ), QgsComposerMergeCommand::ArrowHeadStrokeColor );
+  mArrow->setArrowHeadStrokeColor( newColor );
   mArrow->update();
   mArrow->endCommand();
 }
@@ -122,8 +122,8 @@ void QgsComposerArrowWidget::blockAllSignals( bool block )
 {
   mLineStyleButton->blockSignals( block );
   mArrowHeadFillColorButton->blockSignals( block );
-  mArrowHeadOutlineColorButton->blockSignals( block );
-  mOutlineWidthSpinBox->blockSignals( block );
+  mArrowHeadStrokeColorButton->blockSignals( block );
+  mStrokeWidthSpinBox->blockSignals( block );
   mArrowHeadWidthSpinBox->blockSignals( block );
   mDefaultMarkerRadioButton->blockSignals( block );
   mNoMarkerRadioButton->blockSignals( block );
@@ -143,8 +143,8 @@ void QgsComposerArrowWidget::setGuiElementValues()
 
   blockAllSignals( true );
   mArrowHeadFillColorButton->setColor( mArrow->arrowHeadFillColor() );
-  mArrowHeadOutlineColorButton->setColor( mArrow->arrowHeadOutlineColor() );
-  mOutlineWidthSpinBox->setValue( mArrow->arrowHeadOutlineWidth() );
+  mArrowHeadStrokeColorButton->setColor( mArrow->arrowHeadStrokeColor() );
+  mStrokeWidthSpinBox->setValue( mArrow->arrowHeadStrokeWidth() );
   mArrowHeadWidthSpinBox->setValue( mArrow->arrowHeadWidth() );
 
   QgsComposerArrow::MarkerMode mode = mArrow->markerMode();
