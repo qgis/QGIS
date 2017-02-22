@@ -544,6 +544,19 @@ qgis:symmetricaldifference: >
 qgis:texttofloat: >
   This algorithm modifies the type of a given attribute in a vector layer, converting a text attribute containing numeric strings into a numeric attribute.
 
+qgis:topologicalcoloring: >
+  This algorithm assigns a color index to polygon features in such a way that no adjacent polygons share the same color index, whilst minimizing the number of colors required.
+
+  An optional minimum distance between features assigned the same color can be set to prevent nearby (but non-touching) features from being assigned equal colors.
+
+  The algorithm allows choice of method to use when assigning colors. The default method attempts to assign colors so that the count of features assigned to each individual color index is balanced.
+
+  The 'by assigned area' mode instead assigns colors so that the total area of features assigned to each color is balanced. This mode can be useful to help avoid large features resulting in one of the colors appearing more dominant on a colored map.
+
+  The 'by distance between colors' mode will assign colors in order to maximize the distance between features of the same color. This mode helps to create a more uniform distribution of colors across a map.
+
+  A minimum number of colors can be specified if desired. The color index is saved to a new attribute named color_id.
+
 qgis:translate: >
   This algorithm moves the geometries within a layer, by offsetting them with a specified x and y displacement.
 
@@ -595,3 +608,4 @@ qgis:fixgeometries: >
     This algorithm attempts to create a valid representation of a given invalid geometry without losing any of the input vertices. Already-valid geometries are returned without further intervention. Always outputs multi-geometry layer.
 
     NOTE: M values will be dropped from the output.
+

@@ -186,6 +186,7 @@ from .Polygonize import Polygonize
 from .FixGeometry import FixGeometry
 from .ExecuteSQL import ExecuteSQL
 from .FindProjection import FindProjection
+from .TopoColors import TopoColor
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -255,7 +256,8 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         ShortestPathPointToPoint(), ShortestPathPointToLayer(),
                         ShortestPathLayerToPoint(), ServiceAreaFromPoint(),
                         ServiceAreaFromLayer(), TruncateTable(), Polygonize(),
-                        FixGeometry(), ExecuteSQL(), FindProjection()
+                        FixGeometry(), ExecuteSQL(), FindProjection(),
+                        TopoColor()
                         ]
 
         if hasPlotly:

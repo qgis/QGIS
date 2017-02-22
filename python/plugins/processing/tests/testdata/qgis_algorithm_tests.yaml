@@ -2372,3 +2372,29 @@ tests:
       OUTPUT:
         name: expected/polygon_from_extent.gml
         type: vector
+
+  - algorithm: qgis:topologicalcoloring
+    name: Topological coloring
+    params:
+      INPUT_LAYER:
+        name: custom/adjacent_polys.gml
+        type: vector
+      MIN_COLORS: 4
+    results:
+      OUTPUT_LAYER:
+        name: expected/topocolor_polys.gml
+        type: vector
+
+  - algorithm: qgis:topologicalcoloring
+    name: Topological coloring w/ min distance
+    params:
+      BALANCE: '0'
+      INPUT_LAYER:
+        name: custom/adjacent_polys.gml
+        type: vector
+      MIN_COLORS: 4
+      MIN_DISTANCE: 4.0
+    results:
+      OUTPUT_LAYER:
+        name: expected/topocolor_polys_min_dist.gml
+        type: vector
