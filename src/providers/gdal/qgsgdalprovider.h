@@ -211,6 +211,12 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     //! \brief sublayers list saved for subsequent access
     QStringList mSubLayers;
+
+    //! Whether a per-dataset mask band is exposed as an alpha band for the point of view of the rest of the application.
+    bool mMaskBandExposedAsAlpha = false;
+
+    //! Wrapper for GDALGetRasterBand() that takes into account mMaskBandExposedAsAlpha.
+    GDALRasterBandH getBand( int bandNo ) const;
 };
 
 #endif

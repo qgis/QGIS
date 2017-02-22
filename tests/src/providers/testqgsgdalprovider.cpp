@@ -48,6 +48,7 @@ class TestQgsGdalProvider : public QObject
     void noData();
     void invalidNoDataInSourceIgnored();
     void isRepresentableValue();
+    void mask();
 
   private:
     QString mTestDataDir;
@@ -194,6 +195,29 @@ void TestQgsGdalProvider::isRepresentableValue()
   QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::Float64 ), true );
   QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::max(), Qgis::Float64 ), true );
   QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::max(), Qgis::Float64 ), true );
+}
+
+void TestQgsGdalProvider::mask()
+{
+  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/rgb_with_mask.tif";
+  QgsDataProvider* provider = QgsProviderRegistry::instance()->provider( QStringLiteral( "gdal" ), raster );
+  QVERIFY( provider->isValid() );
+  QgsRasterDataProvider* rp = dynamic_cast< QgsRasterDataProvider* >( provider );
+  QVERIFY( rp );
+  if ( rp )
+  {
+    QCOMPARE( rp->bandCount(), 4 );
+    QCOMPARE( rp->dataType( 4 ), Qgis::Byte );
+    QCOMPARE( rp->sourceDataType( 4 ), Qgis::Byte );
+    QCOMPARE( rp->colorInterpretation( 4 ), static_cast<int>( QgsRaster::AlphaBand ) );
+    QCOMPARE( rp->bandScale( 4 ), 1.0 );
+    QCOMPARE( rp->bandOffset( 4 ), 0.0 );
+    QgsRectangle rect( 0, 0, 162, 150 );
+    QgsRasterBlock* block = rp->block( 4, rect, 162, 150 );
+    QVERIFY( block );
+    delete block;
+  }
+  delete provider;
 }
 
 QGSTEST_MAIN( TestQgsGdalProvider )
