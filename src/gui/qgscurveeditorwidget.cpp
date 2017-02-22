@@ -20,6 +20,7 @@
 #include <QPainter>
 #include <QVBoxLayout>
 #include <QMouseEvent>
+#include <algorithm>
 
 // QWT Charting widget
 #include <qwt_global.h>
@@ -33,6 +34,13 @@
 #include <qwt_plot_layout.h>
 #include <qwt_symbol.h>
 #include <qwt_legend.h>
+
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+#include <qwt_plot_renderer.h>
+#include <qwt_plot_histogram.h>
+#else
+#include "../raster/qwt5_histogram_item.h"
+#endif
 
 QgsCurveEditorWidget::QgsCurveEditorWidget( QWidget* parent, const QgsCurveTransform& transform )
     : QWidget( parent )
@@ -86,11 +94,68 @@ QgsCurveEditorWidget::QgsCurveEditorWidget( QWidget* parent, const QgsCurveTrans
   updatePlot();
 }
 
+QgsCurveEditorWidget::~QgsCurveEditorWidget()
+{
+  if ( mGatherer && mGatherer->isRunning() )
+  {
+    connect( mGatherer.get(), &QgsHistogramValuesGatherer::finished, mGatherer.get(), &QgsHistogramValuesGatherer::deleteLater );
+    mGatherer->stop();
+    ( void )mGatherer.release();
+  }
+}
+
 void QgsCurveEditorWidget::setCurve( const QgsCurveTransform& curve )
 {
   mCurve = curve;
   updatePlot();
   emit changed();
+}
+
+void QgsCurveEditorWidget::setHistogramSource( const QgsVectorLayer* layer, const QString& expression )
+{
+  if ( !mGatherer )
+  {
+    mGatherer.reset( new QgsHistogramValuesGatherer() );
+    connect( mGatherer.get(), &QgsHistogramValuesGatherer::calculatedHistogram, this, [=]
+    {
+      mHistogram.reset( new QgsHistogram( mGatherer->histogram() ) );
+      updateHistogram();
+    } );
+  }
+
+  bool changed = mGatherer->layer() != layer || mGatherer->expression() != expression;
+  if ( changed )
+  {
+    mGatherer->setExpression( expression );
+    mGatherer->setLayer( layer );
+    mGatherer->start();
+    if ( mGatherer->isRunning() )
+    {
+      //stop any currently running task
+      mGatherer->stop();
+      while ( mGatherer->isRunning() )
+      {
+        QCoreApplication::processEvents();
+      }
+    }
+    mGatherer->start();
+  }
+  else
+  {
+    updateHistogram();
+  }
+}
+
+void QgsCurveEditorWidget::setMinHistogramValueRange( double minValueRange )
+{
+  mMinValueRange = minValueRange;
+  updateHistogram();
+}
+
+void QgsCurveEditorWidget::setMaxHistogramValueRange( double maxValueRange )
+{
+  mMaxValueRange = maxValueRange;
+  updateHistogram();
 }
 
 void QgsCurveEditorWidget::keyPressEvent( QKeyEvent* event )
@@ -205,6 +270,63 @@ void QgsCurveEditorWidget::addPlotMarker( double x, double y, bool isSelected )
   mMarkers << marker;
 }
 
+void QgsCurveEditorWidget::updateHistogram()
+{
+  if ( !mHistogram )
+    return;
+
+  //draw histogram
+  QBrush histoBrush( QColor( 0, 0, 0, 70 ) );
+
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+  delete mPlotHistogram;
+  mPlotHistogram = createPlotHistogram( histoBrush );
+  QVector<QwtIntervalSample> dataHisto;
+#else
+  delete mPlotHistogramItem;
+  mPlotHistogramItem = createHistoItem( histoBrush );
+  QwtArray<QwtDoubleInterval> intervalsHisto;
+  QwtArray<double> valuesHisto;
+#endif
+
+  int bins = 40;
+  QList<double> edges = mHistogram->binEdges( bins );
+  QList<int> counts = mHistogram->counts( bins );
+
+  // scale counts to 0->1
+  double max = *std::max_element( counts.constBegin(), counts.constEnd() );
+
+  // scale bin edges to fit in 0->1 range
+  if ( !qgsDoubleNear( mMinValueRange, mMaxValueRange ) )
+  {
+    std::transform( edges.begin(), edges.end(), edges.begin(),
+                    [this]( double d ) -> double { return ( d - mMinValueRange ) / ( mMaxValueRange - mMinValueRange ); } );
+  }
+
+  for ( int bin = 0; bin < bins; ++bin )
+  {
+    double binValue = counts.at( bin ) / max;
+
+    double upperEdge = edges.at( bin + 1 );
+
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+    dataHisto << QwtIntervalSample( binValue, edges.at( bin ), upperEdge );
+#else
+    intervalsHisto.append( QwtDoubleInterval( edges.at( bin ), upperEdge ) );
+    valuesHisto.append( double( binValue ) );
+#endif
+  }
+
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+  mPlotHistogram->setSamples( dataHisto );
+  mPlotHistogram->attach( mPlot );
+#else
+  mPlotHistogramItem->setData( QwtIntervalData( intervalsHisto, valuesHisto ) );
+  mPlotHistogramItem->attach( mPlot );
+#endif
+  mPlot->replot();
+}
+
 void QgsCurveEditorWidget::updatePlot()
 {
   // remove existing markers
@@ -248,6 +370,52 @@ void QgsCurveEditorWidget::updatePlot()
   mPlot->replot();
 }
 
+
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+QwtPlotHistogram* QgsCurveEditorWidget::createPlotHistogram( const QBrush& brush, const QPen& pen ) const
+{
+  QwtPlotHistogram* histogram = new QwtPlotHistogram( QString() );
+  histogram->setBrush( brush );
+  if ( pen != Qt::NoPen )
+  {
+    histogram->setPen( pen );
+  }
+  else if ( brush.color().lightness() > 200 )
+  {
+    QPen p;
+    p.setColor( brush.color().darker( 150 ) );
+    p.setWidth( 0 );
+    p.setCosmetic( true );
+    histogram->setPen( p );
+  }
+  else
+  {
+    histogram->setPen( QPen( Qt::NoPen ) );
+  }
+  return histogram;
+}
+#else
+HistogramItem * QgsCurveEditorWidget::createHistoItem( const QBrush& brush, const QPen& pen ) const
+{
+  HistogramItem* item = new HistogramItem( QString() );
+  item->setColor( brush.color() );
+  item->setFlat( true );
+  item->setSpacing( 0 );
+  if ( pen != Qt::NoPen )
+  {
+    item->setPen( pen );
+  }
+  else if ( brush.color().lightness() > 200 )
+  {
+    QPen p;
+    p.setColor( brush.color().darker( 150 ) );
+    p.setWidth( 0 );
+    p.setCosmetic( true );
+    item->setPen( p );
+  }
+  return item;
+}
+#endif
 
 /// @cond PRIVATE
 
@@ -308,5 +476,6 @@ QPointF QgsCurveEditorPlotEventFilter::mapPoint( QPointF point ) const
   return QPointF( mPlot->canvasMap( QwtPlot::xBottom ).invTransform( point.x() ),
                   mPlot->canvasMap( QwtPlot::yLeft ).invTransform( point.y() ) );
 }
+
 
 ///@endcond

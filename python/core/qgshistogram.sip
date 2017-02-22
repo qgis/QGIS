@@ -22,7 +22,7 @@ class QgsHistogram
      */
     void setValues( const QList<double>& values );
 
-    bool setValues( QgsVectorLayer* layer, const QString& fieldOrExpression, QgsFeedback* feedback = 0 );
+    bool setValues( const QgsVectorLayer* layer, const QString& fieldOrExpression, QgsFeedback* feedback = 0 );
 
     /** Calculates the optimal bin width using the Freedman-Diaconis rule. Bins widths are
      * determined by the inter-quartile range of values and the number of values.

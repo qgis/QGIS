@@ -113,6 +113,18 @@ QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget* parent ,
   {
     mOutputWidget->layout()->addWidget( mTransformerWidget );
     connect( mTransformerWidget, &QgsPropertyAbstractTransformerWidget::widgetChanged, this, &QgsPropertyAssistantWidget::widgetChanged );
+
+    mCurveEditor->setMinHistogramValueRange( minValueSpinBox->value() );
+    mCurveEditor->setMaxHistogramValueRange( maxValueSpinBox->value() );
+
+    mCurveEditor->setHistogramSource( mLayer, mExpressionWidget->currentField() );
+    connect( mExpressionWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString& ) > ( &QgsFieldExpressionWidget::fieldChanged ), this, [=]( const QString & expression )
+    {
+      mCurveEditor->setHistogramSource( mLayer, expression );
+    }
+           );
+    connect( minValueSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), mCurveEditor, &QgsCurveEditorWidget::setMinHistogramValueRange );
+    connect( maxValueSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), mCurveEditor, &QgsCurveEditorWidget::setMaxHistogramValueRange );
   }
   mTransformCurveCheckBox->setVisible( mTransformerWidget );
 
@@ -185,6 +197,10 @@ void QgsPropertyAssistantWidget::computeValuesFromLayer()
 
   whileBlocking( minValueSpinBox )->setValue( minValue );
   whileBlocking( maxValueSpinBox )->setValue( maxValue );
+
+  mCurveEditor->setMinHistogramValueRange( minValueSpinBox->value() );
+  mCurveEditor->setMaxHistogramValueRange( maxValueSpinBox->value() );
+
   emit widgetChanged();
 }
 

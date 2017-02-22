@@ -47,7 +47,7 @@ void QgsHistogram::setValues( const QList<double> &values )
   prepareValues();
 }
 
-bool QgsHistogram::setValues( QgsVectorLayer *layer, const QString &fieldOrExpression, QgsFeedback* feedback )
+bool QgsHistogram::setValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, QgsFeedback* feedback )
 {
   mValues.clear();
   if ( !layer )

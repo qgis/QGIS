@@ -17,13 +17,117 @@
 #define QGSCURVEEDITORWIDGET_H
 
 #include <QWidget>
+#include <QThread>
+#include <QMutex>
+#include <QPen>
+#include <QPointer>
+#include <qwt_global.h>
 #include "qgis_gui.h"
 #include "qgspropertytransformer.h"
+#include "qgshistogram.h"
+#include "qgsvectorlayer.h"
 
 class QwtPlot;
 class QwtPlotCurve;
 class QwtPlotMarker;
+class QwtPlotHistogram;
+class HistogramItem;
 class QgsCurveEditorPlotEventFilter;
+
+// fix for qwt5/qwt6 QwtDoublePoint vs. QPointF
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+typedef QPointF QwtDoublePoint;
+#endif
+
+// just internal guff - definitely not for exposing to public API!
+///@cond PRIVATE
+
+/** \class QgsHistogramValuesGatherer
+ * Calculates a histogram in a thread.
+ */
+class QgsHistogramValuesGatherer: public QThread
+{
+    Q_OBJECT
+
+  public:
+    QgsHistogramValuesGatherer() = default;
+
+    virtual void run() override
+    {
+      mWasCanceled = false;
+      if ( mExpression.isEmpty() || !mLayer )
+      {
+        mHistogram.setValues( QList<double>() );
+        return;
+      }
+
+      // allow responsive cancelation
+      mFeedback = new QgsFeedback();
+
+      mHistogram.setValues( mLayer, mExpression, mFeedback );
+
+      // be overly cautious - it's *possible* stop() might be called between deleting mFeedback and nulling it
+      mFeedbackMutex.lock();
+      delete mFeedback;
+      mFeedback = nullptr;
+      mFeedbackMutex.unlock();
+
+      emit calculatedHistogram();
+    }
+
+    //! Informs the gatherer to immediately stop collecting values
+    void stop()
+    {
+      // be cautious, in case gatherer stops naturally just as we are canceling it and mFeedback gets deleted
+      mFeedbackMutex.lock();
+      if ( mFeedback )
+        mFeedback->cancel();
+      mFeedbackMutex.unlock();
+
+      mWasCanceled = true;
+    }
+
+    //! Returns true if collection was canceled before completion
+    bool wasCanceled() const { return mWasCanceled; }
+
+    const QgsHistogram& histogram() const { return mHistogram; }
+
+    const QgsVectorLayer* layer() const
+    {
+      return mLayer;
+    }
+    void setLayer( const QgsVectorLayer* layer )
+    {
+      mLayer = const_cast< QgsVectorLayer* >( layer );
+    }
+
+    QString expression() const
+    {
+      return mExpression;
+    }
+    void setExpression( const QString& expression )
+    {
+      mExpression = expression;
+    }
+
+  signals:
+
+    /**
+     * Emitted when histogram has been calculated
+     */
+    void calculatedHistogram();
+
+  private:
+
+    QPointer< const QgsVectorLayer > mLayer = nullptr;
+    QString mExpression;
+    QgsHistogram mHistogram;
+    QgsFeedback* mFeedback = nullptr;
+    QMutex mFeedbackMutex;
+    bool mWasCanceled = false;
+};
+
+///@endcond
 
 /** \ingroup gui
  * \class QgsCurveEditorWidget
@@ -41,6 +145,8 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
      */
     QgsCurveEditorWidget( QWidget* parent = nullptr, const QgsCurveTransform& curve = QgsCurveTransform() );
 
+    ~QgsCurveEditorWidget();
+
     /**
      * Returns a curve representing the current curve from the widget.
      * @see setCurve()
@@ -52,6 +158,45 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
      * @see curve()
      */
     void setCurve( const QgsCurveTransform& curve );
+
+    /**
+     * Sets a \a layer and \a expression source for values to show in a histogram
+     * behind the curve. The histogram is generated in a background thread to keep
+     * the widget responsive.
+     * @see minHistogramValueRange()
+     * @see maxHistogramValueRange()
+     */
+    void setHistogramSource( const QgsVectorLayer* layer, const QString& expression );
+
+    /**
+     * Returns the minimum expected value for the range of values shown in the histogram.
+     * @see maxHistogramValueRange()
+     * @see setMinHistogramValueRange()
+     */
+    double minHistogramValueRange() const { return mMinValueRange; }
+
+    /**
+     * Returns the maximum expected value for the range of values shown in the histogram.
+     * @see minHistogramValueRange()
+     * @see setMaxHistogramValueRange()
+     */
+    double maxHistogramValueRange() const { return mMaxValueRange; }
+
+  public slots:
+
+    /**
+     * Sets the minimum expected value for the range of values shown in the histogram.
+     * @see setMaxHistogramValueRange()
+     * @see minHistogramValueRange()
+     */
+    void setMinHistogramValueRange( double minValueRange );
+
+    /**
+     * Sets the maximum expected value for the range of values shown in the histogram.
+     * @see setMinHistogramValueRange()
+     * @see maxHistogramValueRange()
+     */
+    void setMaxHistogramValueRange( double maxValueRange );
 
   signals:
 
@@ -79,11 +224,30 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
     QList< QwtPlotMarker* > mMarkers;
     QgsCurveEditorPlotEventFilter* mPlotFilter = nullptr;
     int mCurrentPlotMarkerIndex;
+    //! Background histogram gatherer thread
+    std::unique_ptr< QgsHistogramValuesGatherer > mGatherer;
+    std::unique_ptr< QgsHistogram > mHistogram;
+    double mMinValueRange = 0.0;
+    double mMaxValueRange = 1.0;
+
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+    QwtPlotHistogram *mPlotHistogram = nullptr;
+#else
+    HistogramItem *mPlotHistogramItem = nullptr;
+#endif
 
     void updatePlot();
     void addPlotMarker( double x, double y, bool isSelected = false );
+    void updateHistogram();
 
     int findNearestControlPoint( QPointF point ) const;
+
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+    QwtPlotHistogram* createPlotHistogram( const QBrush &brush, const QPen &pen = Qt::NoPen ) const;
+#else
+    HistogramItem* createHistoItem( const QBrush& brush, const QPen& pen = Qt::NoPen ) const;
+#endif
+
 };
 
 
