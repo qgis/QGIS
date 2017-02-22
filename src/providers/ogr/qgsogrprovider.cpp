@@ -1655,7 +1655,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
   if ( hasTransaction && OGR_L_CommitTransaction( ogrLayer ) != OGRERR_NONE )
   {
-    pushError( tr( "OGR error commiting transaction: %1" ).arg( CPLGetLastErrorMsg() ) );
+    pushError( tr( "OGR error committing transaction: %1" ).arg( CPLGetLastErrorMsg() ) );
   }
 
   if ( OGR_L_SyncToDisk( ogrLayer ) != OGRERR_NONE )
