@@ -58,6 +58,7 @@
 #endif
 #include <QStatusBar>
 #include <QStringList>
+#include <QSystemTrayIcon>
 #include <QTcpSocket>
 #include <QTextStream>
 #include <QtGlobal>
@@ -1126,6 +1127,12 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
 
 
+  mTray = new QSystemTrayIcon();
+  mTray->setIcon( QIcon( QgsApplication::appIconPath() ) );
+  mTray->show();
+
+  connect( QgsApplication::taskManager(), &QgsTaskManager::statusChanged, this, &QgisApp::onTaskCompleteShowNotify );
+
 #ifdef Q_OS_WIN
   QWinTaskbarButton *taskButton = new QWinTaskbarButton( this );
   taskButton->setWindow( windowHandle() );
@@ -1353,6 +1360,8 @@ QgisApp::~QgisApp()
   delete QgsProject::instance();
 
   delete mPythonUtils;
+
+  delete mTray;
 }
 
 void QgisApp::dragEnterEvent( QDragEnterEvent *event )
@@ -11395,6 +11404,19 @@ void QgisApp::keyPressEvent( QKeyEvent *e )
   else
   {
     e->ignore();
+  }
+}
+
+void QgisApp::onTaskCompleteShowNotify( long taskId, int status )
+{
+  if ( status == QgsTask::Complete && !this->isActiveWindow() )
+  {
+    QgsTask *task = QgsApplication::taskManager()->task( taskId );
+    if ( task )
+    {
+      QString description = task->description();
+      mTray->showMessage( "Task Complete", description );
+    }
   }
 }
 
