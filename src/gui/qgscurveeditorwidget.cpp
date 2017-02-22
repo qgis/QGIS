@@ -260,9 +260,9 @@ void QgsCurveEditorWidget::addPlotMarker( double x, double y, bool isSelected )
 
   QwtPlotMarker *marker = new QwtPlotMarker();
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-  marker->setSymbol( new QwtSymbol( QwtSymbol::Ellipse,  QBrush( brushColor ), QPen( borderColor, isSelected ? 2 : 1 ), QSize( 6, 6 ) ) );
+  marker->setSymbol( new QwtSymbol( QwtSymbol::Ellipse,  QBrush( brushColor ), QPen( borderColor, isSelected ? 2 : 1 ), QSize( 8, 8 ) ) );
 #else
-  marker->setSymbol( QwtSymbol( QwtSymbol::Ellipse,  QBrush( brushColor ), QPen( borderColor, isSelected ? 2 : 1 ), QSize( 6, 6 ) ) );
+  marker->setSymbol( QwtSymbol( QwtSymbol::Ellipse,  QBrush( brushColor ), QPen( borderColor, isSelected ? 2 : 1 ), QSize( 8, 8 ) ) );
 #endif
   marker->setValue( x, y );
   marker->attach( mPlot );
