@@ -36,6 +36,7 @@ class QStringList;
 class QToolButton;
 class QTcpSocket;
 class QValidator;
+class QSystemTrayIcon;
 
 class QgisAppInterface;
 class QgisAppStyleSheet;
@@ -747,6 +748,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 #endif
 
   private slots:
+    void onTaskCompleteShowNotify( long taskId, int status );
+
     void onTransactionGroupsChanged();
 
     void onSnappingConfigChanged();
@@ -1855,6 +1858,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     bool gestureEvent( QGestureEvent *event );
     void tapAndHoldTriggered( QTapAndHoldGesture *gesture );
+
+    QSystemTrayIcon* tray;
 
     friend class TestQgisAppPython;
 };
