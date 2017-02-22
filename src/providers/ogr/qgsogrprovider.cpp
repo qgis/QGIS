@@ -1520,6 +1520,31 @@ bool QgsOgrProvider::renameAttributes( const QgsFieldNameMap &renamedAttributes 
   return result;
 }
 
+bool QgsOgrProvider::startTransaction()
+{
+  bool inTransaction = false;
+  if ( OGR_L_TestCapability( ogrLayer, OLCTransactions ) )
+  {
+    // A transaction might already be active, so be robust on failed
+    // StartTransaction.
+    CPLPushErrorHandler( CPLQuietErrorHandler );
+    inTransaction = ( OGR_L_StartTransaction( ogrLayer ) == OGRERR_NONE );
+    CPLPopErrorHandler();
+  }
+  return inTransaction;
+}
+
+
+bool QgsOgrProvider::commitTransaction()
+{
+  if ( OGR_L_CommitTransaction( ogrLayer ) != OGRERR_NONE )
+  {
+    pushError( tr( "OGR error committing transaction: %1" ).arg( CPLGetLastErrorMsg() ) );
+    return false;
+  }
+  return true;
+}
+
 
 bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
@@ -1532,6 +1557,8 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   clearMinMaxCache();
 
   setRelevantFields( ogrLayer, true, attributeIndexes() );
+
+  const bool inTransaction = startTransaction();
 
   for ( QgsChangedAttributesMap::const_iterator it = attr_map.begin(); it != attr_map.end(); ++it )
   {
@@ -1646,6 +1673,11 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     OGR_F_Destroy( of );
   }
 
+  if ( inTransaction )
+  {
+    commitTransaction();
+  }
+
   if ( OGR_L_SyncToDisk( ogrLayer ) != OGRERR_NONE )
   {
     pushError( tr( "OGR error syncing to disk: %1" ).arg( CPLGetLastErrorMsg() ) );
@@ -1660,6 +1692,8 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
     return false;
 
   setRelevantFields( ogrLayer, true, attributeIndexes() );
+
+  const bool inTransaction = startTransaction();
 
   for ( QgsGeometryMap::const_iterator it = geometry_map.constBegin(); it != geometry_map.constEnd(); ++it )
   {
@@ -1729,6 +1763,12 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 
     OGR_F_Destroy( theOGRFeature );
   }
+
+  if ( inTransaction )
+  {
+    commitTransaction();
+  }
+
   QgsOgrConnPool::instance()->invalidateConnections( dataSourceUri() );
   return syncToDisc();
 }
