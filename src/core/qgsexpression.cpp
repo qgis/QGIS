@@ -318,8 +318,8 @@ static QgsFeature getFeature( const QVariant& value, QgsExpression* parent )
   return 0;
 }
 
-#define FEAT_FROM_CONTEXT(c, f) if (!(c) || !(c)->hasVariable(QgsExpressionContext::EXPR_FEATURE)) return QVariant(); \
-  QgsFeature f = qvariant_cast<QgsFeature>( (c)->variable( QgsExpressionContext::EXPR_FEATURE ) );
+#define FEAT_FROM_CONTEXT(c, f) if (!(c) || !(c)->hasFeature() ) return QVariant(); \
+  QgsFeature f = ( c )->feature();
 
 static QgsExpression::Node* getNode( const QVariant& value, QgsExpression* parent )
 {
@@ -5495,7 +5495,7 @@ QVariant QgsExpression::NodeColumnRef::eval( QgsExpression *parent, const QgsExp
     }
   }
 
-  if ( context && context->hasVariable( QgsExpressionContext::EXPR_FEATURE ) )
+  if ( context && context->hasFeature() )
   {
     QgsFeature feature = context->feature();
     if ( index >= 0 )
