@@ -145,6 +145,7 @@ ADD_PYTHON_TEST(PyQgsLayerDependencies test_layer_dependencies.py)
 ADD_PYTHON_TEST(PyQgsVersionCompare test_versioncompare.py)
 ADD_PYTHON_TEST(PyQgsDBManagerGpkg test_db_manager_gpkg.py)
 ADD_PYTHON_TEST(PyQgsFileDownloader test_qgsfiledownloader.py)
+ADD_PYTHON_TEST(PyQgsSettings test_qgssettings.py)
 
 IF (NOT WIN32)
   ADD_PYTHON_TEST(PyQgsLogger test_qgslogger.py)

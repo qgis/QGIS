@@ -257,6 +257,7 @@ SET(QGIS_CORE_SRCS
   qgsvirtuallayerdefinitionutils.cpp
   qgsmapthemecollection.cpp
   qgsxmlutils.cpp
+  qgssettings.cpp
 
   composer/qgsaddremoveitemcommand.cpp
   composer/qgsaddremovemultiframecommand.cpp
@@ -539,6 +540,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsmapthemecollection.h
   qgswebpage.h
   qgswebview.h
+  qgssettings.h
 
   annotations/qgsannotation.h
   annotations/qgsannotationmanager.h
