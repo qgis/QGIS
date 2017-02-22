@@ -209,14 +209,9 @@ QDomElement QgsLineStringV2::asGML3( QDomDocument& doc, int precision, const QSt
   QgsPointSequenceV2 pts;
   points( pts );
 
-  QDomElement elemCurve = doc.createElementNS( ns, "Curve" );
-  QDomElement elemSegments = doc.createElementNS( ns, "segments" );
-  QDomElement elemArcString = doc.createElementNS( ns, "LineStringSegment" );
-  elemArcString.appendChild( QgsGeometryUtils::pointsToGML3( pts, doc, precision, ns, is3D() ) );
-  elemSegments.appendChild( elemArcString );
-  elemCurve.appendChild( elemSegments );
-
-  return elemCurve;
+  QDomElement elemLineString = doc.createElementNS( ns, "LineString" );
+  elemLineString.appendChild( QgsGeometryUtils::pointsToGML3( pts, doc, precision, ns, is3D() ) );
+  return elemLineString;
 }
 
 QString QgsLineStringV2::asJSON( int precision ) const
