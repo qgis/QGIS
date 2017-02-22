@@ -829,7 +829,11 @@ void QgsMarkerLineSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbo
     if ( exprVal.isValid() )
     {
       QString placementString = exprVal.toString();
-      if ( placementString.compare( QLatin1String( "vertex" ), Qt::CaseInsensitive ) == 0 )
+      if ( placementString.compare( QLatin1String( "interval" ), Qt::CaseInsensitive ) == 0 )
+      {
+        placement = Interval;
+      }
+      else if ( placementString.compare( QLatin1String( "vertex" ), Qt::CaseInsensitive ) == 0 )
       {
         placement = Vertex;
       }
