@@ -1537,7 +1537,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   bool hasTransaction = OGR_L_TestCapability( ogrLayer, OLCTransactions ) == TRUE;
   if ( hasTransaction && OGR_L_StartTransaction( ogrLayer ) != OGRERR_NONE )
   {
-    pushError( tr( "OGR error commiting transaction: %1" ).arg( CPLGetLastErrorMsg() ) );
+    pushError( tr( "OGR error starting transaction: %1" ).arg( CPLGetLastErrorMsg() ) );
   }
 
   for ( QgsChangedAttributesMap::const_iterator it = attr_map.begin(); it != attr_map.end(); ++it )
