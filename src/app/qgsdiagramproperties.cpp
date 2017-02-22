@@ -93,7 +93,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   mDiagramPenColorButton->setAllowAlpha( true );
   mDiagramPenColorButton->setContext( QStringLiteral( "symbology" ) );
   mDiagramPenColorButton->setShowNoColor( true );
-  mDiagramPenColorButton->setNoColorString( tr( "Transparent outline" ) );
+  mDiagramPenColorButton->setNoColorString( tr( "Transparent stroke" ) );
 
   mMaxValueSpinBox->setShowClearButton( false );
 
@@ -409,8 +409,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   connect( mTransparencySpinBox, static_cast < void ( QgsSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mTransparencySlider, &QSlider::setValue );
 
   registerDataDefinedButton( mBackgroundColorDDBtn, QgsDiagramLayerSettings::BackgroundColor );
-  registerDataDefinedButton( mLineColorDDBtn, QgsDiagramLayerSettings::OutlineColor );
-  registerDataDefinedButton( mLineWidthDDBtn, QgsDiagramLayerSettings::OutlineWidth );
+  registerDataDefinedButton( mLineColorDDBtn, QgsDiagramLayerSettings::StrokeColor );
+  registerDataDefinedButton( mLineWidthDDBtn, QgsDiagramLayerSettings::StrokeWidth );
   registerDataDefinedButton( mCoordXDDBtn, QgsDiagramLayerSettings::PositionX );
   registerDataDefinedButton( mCoordYDDBtn, QgsDiagramLayerSettings::PositionY );
   registerDataDefinedButton( mDistanceDDBtn, QgsDiagramLayerSettings::Distance );

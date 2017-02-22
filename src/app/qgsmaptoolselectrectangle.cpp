@@ -38,7 +38,7 @@ QgsMapToolSelectFeatures::QgsMapToolSelectFeatures( QgsMapCanvas* canvas )
   mCursor = QCursor( mySelectQPixmap, 1, 1 );
   mRubberBand = nullptr;
   mFillColor = QColor( 254, 178, 76, 63 );
-  mBorderColor = QColor( 254, 58, 29, 100 );
+  mStrokeColor = QColor( 254, 58, 29, 100 );
 }
 
 
@@ -49,7 +49,7 @@ void QgsMapToolSelectFeatures::canvasPressEvent( QgsMapMouseEvent* e )
   delete mRubberBand;
   mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
   mRubberBand->setFillColor( mFillColor );
-  mRubberBand->setBorderColor( mBorderColor );
+  mRubberBand->setStrokeColor( mStrokeColor );
 }
 
 

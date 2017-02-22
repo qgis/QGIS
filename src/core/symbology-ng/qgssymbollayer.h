@@ -62,9 +62,9 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyAngle, //!< Symbol angle
       PropertyName, //!< Name, eg shape name for simple markers
       PropertyFillColor, //!< Fill color
-      PropertyOutlineColor, //!< Outline color
-      PropertyOutlineWidth, //!< Outline width
-      PropertyOutlineStyle, //!< Outline style (eg solid, dashed)
+      PropertyStrokeColor, //!< Stroke color
+      PropertyStrokeWidth, //!< Stroke width
+      PropertyStrokeStyle, //!< Stroke style (eg solid, dashed)
       PropertyOffset, //!< Symbol offset
       PropertyCharacter, //!< Character, eg for font marker symbol layers
       PropertyWidth, //!< Symbol width
@@ -143,13 +143,13 @@ class CORE_EXPORT QgsSymbolLayer
      */
     virtual void setColor( const QColor& color ) { mColor = color; }
 
-    /** Set outline color. Supported by marker and fill layers.
+    /** Set stroke color. Supported by marker and fill layers.
      * @note added in 2.1 */
-    virtual void setOutlineColor( const QColor& color ) { Q_UNUSED( color ); }
+    virtual void setStrokeColor( const QColor& color ) { Q_UNUSED( color ); }
 
-    /** Get outline color. Supported by marker and fill layers.
+    /** Get stroke color. Supported by marker and fill layers.
      * @note added in 2.1 */
-    virtual QColor outlineColor() const { return QColor(); }
+    virtual QColor strokeColor() const { return QColor(); }
 
     /** Set fill color. Supported by marker and fill layers.
      * @note added in 2.1 */
@@ -201,8 +201,8 @@ class CORE_EXPORT QgsSymbolLayer
 
     /** Returns the estimated maximum distance which the layer style will bleed outside
       the drawn shape when drawn in the specified /a context. For example, polygons
-      drawn with an outline will draw half the width
-      of the outline outside of the polygon. This amount is estimated, since it may
+      drawn with an stroke will draw half the width
+      of the stroke outside of the polygon. This amount is estimated, since it may
       be affected by data defined symbology rules.*/
     virtual double estimateMaxBleed( const QgsRenderContext& context ) const { Q_UNUSED( context ); return 0; }
 
@@ -332,7 +332,7 @@ class CORE_EXPORT QgsSymbolLayer
     // Configuration of selected symbology implementation
     //! Whether styles for selected features ignore symbol alpha
     static const bool SELECTION_IS_OPAQUE = true;
-    //! Whether fill styles for selected features also highlight symbol border
+    //! Whether fill styles for selected features also highlight symbol stroke
     static const bool SELECT_FILL_BORDER = false;
     //! Whether fill styles for selected features uses symbol layer style
     static const bool SELECT_FILL_STYLE = false;
@@ -650,7 +650,7 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
   public:
     virtual void renderPolyline( const QPolygonF& points, QgsSymbolRenderContext& context ) = 0;
 
-    virtual void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context );
+    virtual void renderPolygonStroke( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context );
 
     virtual void setWidth( double width ) { mWidth = width; }
     virtual double width() const { return mWidth; }

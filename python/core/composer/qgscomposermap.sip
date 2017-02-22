@@ -236,8 +236,8 @@ class QgsComposerMap : QgsComposerItem
     /** In case of annotations, the bounding rectangle can be larger than the map item rectangle */
     QRectF boundingRect() const;
 
-    /* reimplement setFrameOutlineWidth, so that updateBoundingRect() is called after setting the frame width */
-    virtual void setFrameOutlineWidth( const double outlineWidth );
+    /* reimplement setFrameStrokeWidth, so that updateBoundingRect() is called after setting the frame width */
+    virtual void setFrameStrokeWidth( const double strokeWidth );
 
     /** Sets rotation for the map - this does not affect the composer item shape, only the
      * way the map is drawn within the item

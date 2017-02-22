@@ -450,7 +450,7 @@ void QgsSymbol::drawPreviewIcon( QPainter* painter, QSize size, QgsRenderContext
     if ( mType == Fill && layer->type() == Line )
     {
       // line symbol layer would normally draw just a line
-      // so we override this case to force it to draw a polygon outline
+      // so we override this case to force it to draw a polygon stroke
       QgsLineSymbolLayer* lsl = dynamic_cast<QgsLineSymbolLayer*>( layer );
 
       if ( lsl )
@@ -458,7 +458,7 @@ void QgsSymbol::drawPreviewIcon( QPainter* painter, QSize size, QgsRenderContext
         // from QgsFillSymbolLayer::drawPreviewIcon()
         QPolygonF poly = QRectF( QPointF( 0, 0 ), QPointF( size.width() - 1, size.height() - 1 ) );
         lsl->startRender( symbolContext );
-        lsl->renderPolygonOutline( poly, nullptr, symbolContext );
+        lsl->renderPolygonStroke( poly, nullptr, symbolContext );
         lsl->stopRender( symbolContext );
       }
     }
@@ -1548,18 +1548,18 @@ void QgsLineSymbol::setDataDefinedWidth( const QgsProperty& property )
     {
       if ( !property )
       {
-        lineLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineWidth, QgsProperty() );
+        lineLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeWidth, QgsProperty() );
         lineLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyOffset, QgsProperty() );
       }
       else
       {
         if ( qgsDoubleNear( symbolWidth, 0.0 ) || qgsDoubleNear( lineLayer->width(), symbolWidth ) )
         {
-          lineLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineWidth, property );
+          lineLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeWidth, property );
         }
         else
         {
-          lineLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineWidth, scaleWholeSymbol( lineLayer->width() / symbolWidth, property ) );
+          lineLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeWidth, scaleWholeSymbol( lineLayer->width() / symbolWidth, property ) );
         }
 
         if ( !qgsDoubleNear( lineLayer->offset(), 0.0 ) )
@@ -1581,9 +1581,9 @@ QgsProperty QgsLineSymbol::dataDefinedWidth() const
   for ( QgsSymbolLayerList::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
     const QgsLineSymbolLayer* layer = dynamic_cast<const QgsLineSymbolLayer*>( *it );
-    if ( layer && qgsDoubleNear( layer->width(), symbolWidth ) && layer->dataDefinedProperties().isActive( QgsSymbolLayer::PropertyOutlineWidth ) )
+    if ( layer && qgsDoubleNear( layer->width(), symbolWidth ) && layer->dataDefinedProperties().isActive( QgsSymbolLayer::PropertyStrokeWidth ) )
     {
-      symbolDD = layer->dataDefinedProperties().property( QgsSymbolLayer::PropertyOutlineWidth );
+      symbolDD = layer->dataDefinedProperties().property( QgsSymbolLayer::PropertyStrokeWidth );
       break;
     }
   }
@@ -1598,7 +1598,7 @@ QgsProperty QgsLineSymbol::dataDefinedWidth() const
       continue;
     const QgsLineSymbolLayer* lineLayer = static_cast<const QgsLineSymbolLayer*>( layer );
 
-    QgsProperty layerWidthDD = lineLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertyOutlineWidth );
+    QgsProperty layerWidthDD = lineLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertyStrokeWidth );
     QgsProperty layerOffsetDD = lineLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertyOffset );
 
     if ( qgsDoubleNear( lineLayer->width(), symbolWidth ) )
@@ -1761,7 +1761,7 @@ void QgsFillSymbol::renderPolygonUsingLayer( QgsSymbolLayer* layer, const QPolyg
     }
     else if ( layertype == QgsSymbol::Line )
     {
-      ( static_cast<QgsLineSymbolLayer*>( layer ) )->renderPolygonOutline( points.translated( -bounds.topLeft() ), translatedRings, context );
+      ( static_cast<QgsLineSymbolLayer*>( layer ) )->renderPolygonStroke( points.translated( -bounds.topLeft() ), translatedRings, context );
     }
     delete translatedRings;
   }
@@ -1773,7 +1773,7 @@ void QgsFillSymbol::renderPolygonUsingLayer( QgsSymbolLayer* layer, const QPolyg
     }
     else if ( layertype == QgsSymbol::Line )
     {
-      ( static_cast<QgsLineSymbolLayer*>( layer ) )->renderPolygonOutline( points, rings, context );
+      ( static_cast<QgsLineSymbolLayer*>( layer ) )->renderPolygonStroke( points, rings, context );
     }
   }
 }

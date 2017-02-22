@@ -74,8 +74,8 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
       //composer picture
       PictureSource, //!< Picture source url
       PictureSvgBackgroundColor, //!< SVG background color
-      PictureSvgOutlineColor, //!< SVG outline color
-      PictureSvgOutlineWidth, //!< SVG outline width
+      PictureSvgStrokeColor, //!< SVG stroke color
+      PictureSvgStrokeWidth, //!< SVG stroke width
       //html item
       SourceUrl, //!< Html source url
       //legend item

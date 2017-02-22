@@ -166,60 +166,60 @@ class QgsComposerLegend : QgsComposerItem
     int equalColumnWidth() const;
     void setEqualColumnWidth( bool s );
 
-    /** Returns whether a border will be drawn around raster symbol items.
-     * @see setDrawRasterBorder()
-     * @see rasterBorderColor()
-     * @see rasterBorderWidth()
+    /** Returns whether a stroke will be drawn around raster symbol items.
+     * @see setDrawRasterStroke()
+     * @see rasterStrokeColor()
+     * @see rasterStrokeWidth()
      * @note added in QGIS 2.12
      */
-    bool drawRasterBorder() const;
+    bool drawRasterStroke() const;
 
-    /** Sets whether a border will be drawn around raster symbol items.
+    /** Sets whether a stroke will be drawn around raster symbol items.
      * @param enabled set to true to draw borders
-     * @see drawRasterBorder()
-     * @see setRasterBorderColor()
-     * @see setRasterBorderWidth()
+     * @see drawRasterStroke()
+     * @see setRasterStrokeColor()
+     * @see setRasterStrokeWidth()
      * @note added in QGIS 2.12
      */
-    void setDrawRasterBorder( bool enabled );
+    void setDrawRasterStroke( bool enabled );
 
-    /** Returns the border color for the border drawn around raster symbol items. The border is
-     * only drawn if drawRasterBorder() is true.
-     * @see setRasterBorderColor()
-     * @see drawRasterBorder()
-     * @see rasterBorderWidth()
+    /** Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
+     * only drawn if drawRasterStroke() is true.
+     * @see setRasterStrokeColor()
+     * @see drawRasterStroke()
+     * @see rasterStrokeWidth()
      * @note added in QGIS 2.12
      */
-    QColor rasterBorderColor() const;
+    QColor rasterStrokeColor() const;
 
-    /** Sets the border color for the border drawn around raster symbol items. The border is
-     * only drawn if drawRasterBorder() is true.
-     * @param color border color
-     * @see rasterBorderColor()
-     * @see setDrawRasterBorder()
-     * @see setRasterBorderWidth()
+    /** Sets the stroke color for the stroke drawn around raster symbol items. The stroke is
+     * only drawn if drawRasterStroke() is true.
+     * @param color stroke color
+     * @see rasterStrokeColor()
+     * @see setDrawRasterStroke()
+     * @see setRasterStrokeWidth()
      * @note added in QGIS 2.12
      */
-    void setRasterBorderColor( const QColor& color );
+    void setRasterStrokeColor( const QColor& color );
 
-    /** Returns the border width (in millimeters) for the border drawn around raster symbol items. The border is
-     * only drawn if drawRasterBorder() is true.
-     * @see setRasterBorderWidth()
-     * @see drawRasterBorder()
-     * @see rasterBorderColor()
+    /** Returns the stroke width (in millimeters) for the stroke drawn around raster symbol items. The stroke is
+     * only drawn if drawRasterStroke() is true.
+     * @see setRasterStrokeWidth()
+     * @see drawRasterStroke()
+     * @see rasterStrokeColor()
      * @note added in QGIS 2.12
      */
-    double rasterBorderWidth() const;
+    double rasterStrokeWidth() const;
 
-    /** Sets the border width for the border drawn around raster symbol items. The border is
-     * only drawn if drawRasterBorder() is true.
-     * @param width border width in millimeters
-     * @see rasterBorderWidth()
-     * @see setDrawRasterBorder()
-     * @see setRasterBorderColor()
+    /** Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
+     * only drawn if drawRasterStroke() is true.
+     * @param width stroke width in millimeters
+     * @see rasterStrokeWidth()
+     * @see setDrawRasterStroke()
+     * @see setRasterStrokeColor()
      * @note added in QGIS 2.12
      */
-    void setRasterBorderWidth( double width );
+    void setRasterStrokeWidth( double width );
 
     void setComposerMap( const QgsComposerMap* map );
     const QgsComposerMap* composerMap() const;

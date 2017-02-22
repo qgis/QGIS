@@ -138,7 +138,7 @@ class QgsSimpleMarkerSymbolLayerBase : QgsMarkerSymbolLayer
 
 /** \ingroup core
  * \class QgsSimpleMarkerSymbolLayer
- * \brief Simple marker symbol layer, consisting of a rendered shape with solid fill color and an outline.
+ * \brief Simple marker symbol layer, consisting of a rendered shape with solid fill color and an stroke.
  */
 class QgsSimpleMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
 {
@@ -154,15 +154,15 @@ class QgsSimpleMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
     * @param angle symbol rotation angle
     * @param scaleMethod scaling method for data defined scaling
     * @param color fill color for symbol
-    * @param borderColor border color for symbol
-    * @param penJoinStyle join style for outline pen
+    * @param strokeColor stroke color for symbol
+    * @param penJoinStyle join style for stroke pen
     */
     QgsSimpleMarkerSymbolLayer( Shape shape = Circle,
                                   double size = DEFAULT_SIMPLEMARKER_SIZE,
                                   double angle = DEFAULT_SIMPLEMARKER_ANGLE,
                                   QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD,
                                   const QColor& color = DEFAULT_SIMPLEMARKER_COLOR,
-                                  const QColor& borderColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR,
+                                  const QColor& strokeColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR,
                                   Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEMARKER_JOINSTYLE );
 
     // static methods
@@ -194,8 +194,6 @@ class QgsSimpleMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
     void setMapUnitScale( const QgsMapUnitScale& scale );
     QgsMapUnitScale mapUnitScale() const;
     QRectF bounds( QPointF point, QgsSymbolRenderContext& context );
-    QColor outlineColor() const;
-    void setOutlineColor( const QColor& color );
     QColor fillColor() const;
     void setFillColor( const QColor& color );
     void setColor( const QColor& color );
@@ -203,106 +201,106 @@ class QgsSimpleMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
 
     // new methods
 
-    /** Returns the marker's border color.
-     * @see setBorderColor()
-     * @see outlineStyle()
+    /** Returns the marker's stroke color.
+     * @see setStrokeColor()
+     * @see strokeStyle()
      * @see penJoinStyle()
      */
-    QColor borderColor() const;
+    QColor strokeColor() const;
 
-    /** Sets the marker's border color.
-     * @param color border color
-     * @see borderColor()
-     * @see setOutlineStyle()
+    /** Sets the marker's stroke color.
+     * @param color stroke color
+     * @see strokeColor()
+     * @see setStrokeStyle()
      * @see setPenJoinStyle()
      */
-    void setBorderColor( const QColor& color );
+    void setStrokeColor( const QColor& color );
 
-    /** Returns the marker's outline style (e.g., solid, dashed, etc)
+    /** Returns the marker's stroke style (e.g., solid, dashed, etc)
      * @note added in 2.4
-     * @see setOutlineStyle()
-     * @see borderColor()
+     * @see setStrokeStyle()
+     * @see strokeColor()
      * @see penJoinStyle()
     */
-    Qt::PenStyle outlineStyle() const;
+    Qt::PenStyle strokeStyle() const;
 
-    /** Sets the marker's outline style (e.g., solid, dashed, etc)
-     * @param outlineStyle style
+    /** Sets the marker's stroke style (e.g., solid, dashed, etc)
+     * @param strokeStyle style
      * @note added in 2.4
-     * @see outlineStyle()
-     * @see setBorderColor()
+     * @see strokeStyle()
+     * @see setStrokeColor()
      * @see setPenJoinStyle()
     */
-    void setOutlineStyle( Qt::PenStyle outlineStyle );
+    void setStrokeStyle( Qt::PenStyle strokeStyle );
 
-    /** Returns the marker's outline join style (e.g., miter, bevel, etc).
+    /** Returns the marker's stroke join style (e.g., miter, bevel, etc).
      * @note added in 2.16
      * @see setPenJoinStyle()
-     * @see borderColor()
-     * @see outlineStyle()
+     * @see strokeColor()
+     * @see strokeStyle()
     */
     Qt::PenJoinStyle penJoinStyle() const;
 
-    /** Sets the marker's outline join style (e.g., miter, bevel, etc).
+    /** Sets the marker's stroke join style (e.g., miter, bevel, etc).
      * @param style join style
      * @note added in 2.16
      * @see penJoinStyle()
-     * @see setBorderColor()
-     * @see setOutlineStyle()
+     * @see setStrokeColor()
+     * @see setStrokeStyle()
     */
     void setPenJoinStyle( Qt::PenJoinStyle style );
 
-    /** Returns the width of the marker's outline.
-     * @see setOutlineWidth()
-     * @see outlineWidthUnit()
-     * @see outlineWidthMapUnitScale()
+    /** Returns the width of the marker's stroke.
+     * @see setStrokeWidth()
+     * @see strokeWidthUnit()
+     * @see strokeWidthMapUnitScale()
      */
-    double outlineWidth() const;
+    double strokeWidth() const;
 
-    /** Sets the width of the marker's outline.
-     * @param w outline width. See outlineWidthUnit() for units.
-     * @see outlineWidth()
-     * @see setOutlineWidthUnit()
-     * @see setOutlineWidthMapUnitScale()
+    /** Sets the width of the marker's stroke.
+     * @param w stroke width. See strokeWidthUnit() for units.
+     * @see strokeWidth()
+     * @see setStrokeWidthUnit()
+     * @see setStrokeWidthMapUnitScale()
      */
-    void setOutlineWidth( double w );
+    void setStrokeWidth( double w );
 
-    /** Sets the unit for the width of the marker's outline.
-     * @param u outline width unit
-     * @see outlineWidthUnit()
-     * @see setOutlineWidth()
-     * @see setOutlineWidthMapUnitScale()
+    /** Sets the unit for the width of the marker's stroke.
+     * @param u stroke width unit
+     * @see strokeWidthUnit()
+     * @see setStrokeWidth()
+     * @see setStrokeWidthMapUnitScale()
      */
-    void setOutlineWidthUnit( QgsUnitTypes::RenderUnit u );
+    void setStrokeWidthUnit( QgsUnitTypes::RenderUnit u );
 
-    /** Returns the unit for the width of the marker's outline.
-     * @see setOutlineWidthUnit()
-     * @see outlineWidth()
-     * @see outlineWidthMapUnitScale()
+    /** Returns the unit for the width of the marker's stroke.
+     * @see setStrokeWidthUnit()
+     * @see strokeWidth()
+     * @see strokeWidthMapUnitScale()
      */
-    QgsUnitTypes::RenderUnit outlineWidthUnit() const;
+    QgsUnitTypes::RenderUnit strokeWidthUnit() const;
 
-    /** Sets the map scale for the width of the marker's outline.
-     * @param scale outline width map unit scale
-     * @see outlineWidthMapUnitScale()
-     * @see setOutlineWidth()
-     * @see setOutlineWidthUnit()
+    /** Sets the map scale for the width of the marker's stroke.
+     * @param scale stroke width map unit scale
+     * @see strokeWidthMapUnitScale()
+     * @see setStrokeWidth()
+     * @see setStrokeWidthUnit()
      */
-    void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale );
+    void setStrokeWidthMapUnitScale( const QgsMapUnitScale& scale );
 
-    /** Returns the map scale for the width of the marker's outline.
-     * @see setOutlineWidthMapUnitScale()
-     * @see outlineWidth()
-     * @see outlineWidthUnit()
+    /** Returns the map scale for the width of the marker's stroke.
+     * @see setStrokeWidthMapUnitScale()
+     * @see strokeWidth()
+     * @see strokeWidthUnit()
      */
-    const QgsMapUnitScale& outlineWidthMapUnitScale() const;
+    const QgsMapUnitScale& strokeWidthMapUnitScale() const;
 
   protected:
 
     /** Draws the marker shape in the specified painter.
      * @param p destination QPainter
      * @param context symbol context
-     * @note this method does not handle setting the painter pen or brush to match the symbol's fill or outline
+     * @note this method does not handle setting the painter pen or brush to match the symbol's fill or stroke
      */
     void drawMarker( QPainter* p, QgsSymbolRenderContext& context );
 
@@ -321,7 +319,7 @@ class QgsSimpleMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
 /** \ingroup core
  * \class QgsFilledMarkerSymbolLayer
  * \brief Filled marker symbol layer, consisting of a shape which is rendered using a QgsFillSymbol. This allows
- * the symbol to support advanced styling of the interior and outline of the shape.
+ * the symbol to support advanced styling of the interior and stroke of the shape.
  * \note Added in version 2.16
  */
 class QgsFilledMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
@@ -407,25 +405,25 @@ class QgsSvgMarkerSymbolLayer : QgsMarkerSymbolLayer
     QColor fillColor() const;
     void setFillColor( const QColor& c );
 
-    QColor outlineColor() const;
-    void setOutlineColor( const QColor& c );
+    QColor strokeColor() const;
+    void setStrokeColor( const QColor& c );
 
-    double outlineWidth() const;
-    void setOutlineWidth( double w );
+    double strokeWidth() const;
+    void setStrokeWidth( double w );
 
-    /** Sets the units for the outline width.
+    /** Sets the units for the stroke width.
      * @param unit width units
-     * @see outlineWidthUnit()
+     * @see strokeWidthUnit()
     */
-    void setOutlineWidthUnit( QgsUnitTypes::RenderUnit unit );
+    void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit );
 
-    /** Returns the units for the outline width.
-     * @see outlineWidthUnit()
+    /** Returns the units for the stroke width.
+     * @see strokeWidthUnit()
     */
-    QgsUnitTypes::RenderUnit outlineWidthUnit() const;
+    QgsUnitTypes::RenderUnit strokeWidthUnit() const;
 
-    void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale);
-    const QgsMapUnitScale& outlineWidthMapUnitScale() const;
+    void setStrokeWidthMapUnitScale( const QgsMapUnitScale& scale);
+    const QgsMapUnitScale& strokeWidthMapUnitScale() const;
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit );
     QgsUnitTypes::RenderUnit outputUnit() const;
@@ -482,38 +480,38 @@ class QgsFontMarkerSymbolLayer : QgsMarkerSymbolLayer
     QChar character() const;
     void setCharacter( QChar ch );
 
-    /** Get outline color.
+    /** Get stroke color.
      * @note added in 2.16 */
-    QColor outlineColor() const;
-    /** Set outline color.
+    QColor strokeColor() const;
+    /** Set stroke color.
      * @note added in 2.16 */
-    void setOutlineColor( const QColor& color );
+    void setStrokeColor( const QColor& color );
 
-    /** Get outline width.
+    /** Get stroke width.
      * @note added in 2.16 */
-    double outlineWidth() const;
-    /** Set outline width.
+    double strokeWidth() const;
+    /** Set stroke width.
      * @note added in 2.16 */
-    void setOutlineWidth( double width );
+    void setStrokeWidth( double width );
 
-    /** Get outline width unit.
+    /** Get stroke width unit.
      * @note added in 2.16 */
-    QgsUnitTypes::RenderUnit outlineWidthUnit() const;
-    /** Set outline width unit.
+    QgsUnitTypes::RenderUnit strokeWidthUnit() const;
+    /** Set stroke width unit.
      * @note added in 2.16 */
-    void setOutlineWidthUnit( QgsUnitTypes::RenderUnit unit );
+    void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit );
 
-    /** Get outline width map unit scale.
+    /** Get stroke width map unit scale.
      * @note added in 2.16 */
-    const QgsMapUnitScale& outlineWidthMapUnitScale() const;
-    /** Set outline width map unit scale.
+    const QgsMapUnitScale& strokeWidthMapUnitScale() const;
+    /** Set stroke width map unit scale.
      * @note added in 2.16 */
-    void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale );
+    void setStrokeWidthMapUnitScale( const QgsMapUnitScale& scale );
 
-    /** Get outline join style.
+    /** Get stroke join style.
      * @note added in 2.16 */
     Qt::PenJoinStyle penJoinStyle() const;
-    /** Set outline join style.
+    /** Set stroke join style.
      * @note added in 2.16 */
     void setPenJoinStyle( Qt::PenJoinStyle style );
 

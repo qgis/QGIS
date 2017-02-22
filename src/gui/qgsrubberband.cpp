@@ -54,11 +54,11 @@ QgsRubberBand::QgsRubberBand()
 }
 
 /*!
-  Set the outline and fill color.
+  Set the stroke and fill color.
   */
 void QgsRubberBand::setColor( const QColor & color )
 {
-  setBorderColor( color );
+  setStrokeColor( color );
   setFillColor( color );
 }
 
@@ -72,9 +72,9 @@ void QgsRubberBand::setFillColor( const QColor & color )
 }
 
 /*!
-  Set the outline
+  Set the stroke
   */
-void QgsRubberBand::setBorderColor( const QColor & color )
+void QgsRubberBand::setStrokeColor( const QColor & color )
 {
   QColor penColor( color.red(), color.green(), color.blue(), color.alpha() );
   mPen.setColor( penColor );
@@ -82,7 +82,7 @@ void QgsRubberBand::setBorderColor( const QColor & color )
 
 
 /*!
-  Set the outline width.
+  Set the stroke width.
   */
 void QgsRubberBand::setWidth( int width )
 {

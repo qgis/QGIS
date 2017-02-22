@@ -7,9 +7,9 @@ class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
   public:
     QgsSimpleFillSymbolLayer( const QColor& color = DEFAULT_SIMPLEFILL_COLOR,
                                 Qt::BrushStyle style = DEFAULT_SIMPLEFILL_STYLE,
-                                const QColor& borderColor = DEFAULT_SIMPLEFILL_BORDERCOLOR,
-                                Qt::PenStyle borderStyle = DEFAULT_SIMPLEFILL_BORDERSTYLE,
-                                double borderWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH,
+                                const QColor& strokeColor = DEFAULT_SIMPLEFILL_BORDERCOLOR,
+                                Qt::PenStyle strokeStyle = DEFAULT_SIMPLEFILL_BORDERSTYLE,
+                                double strokeWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH,
                                 Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEFILL_JOINSTYLE
                               );
 
@@ -39,15 +39,12 @@ class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
     Qt::BrushStyle brushStyle() const;
     void setBrushStyle( Qt::BrushStyle style );
 
-    QColor borderColor() const;
-    void setBorderColor( const QColor& borderColor );
-
-    /** Get outline color.
+    /** Get stroke color.
      * @note added in 2.1 */
-    QColor outlineColor() const;
-    /** Set outline color.
+    QColor strokeColor() const;
+    /** Set stroke color.
      * @note added in 2.1 */
-    void setOutlineColor( const QColor& color );
+    void setStrokeColor( const QColor& color );
 
     /** Get fill color.
      * @note added in 2.1 */
@@ -56,11 +53,11 @@ class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
      * @note added in 2.1 */
     void setFillColor( const QColor& color );
 
-    Qt::PenStyle borderStyle() const;
-    void setBorderStyle( Qt::PenStyle borderStyle );
+    Qt::PenStyle strokeStyle() const;
+    void setStrokeStyle( Qt::PenStyle strokeStyle );
 
-    double borderWidth() const;
-    void setBorderWidth( double borderWidth );
+    double strokeWidth() const;
+    void setStrokeWidth( double strokeWidth );
 
     Qt::PenJoinStyle penJoinStyle() const;
     void setPenJoinStyle( Qt::PenJoinStyle style );
@@ -68,19 +65,19 @@ class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
     void setOffset( QPointF offset );
     QPointF offset();
 
-    /** Sets the units for the width of the fill's border.
+    /** Sets the units for the width of the fill's stroke.
      * @param unit width units
-     * @see borderWidthUnit()
+     * @see strokeWidthUnit()
     */
-    void setBorderWidthUnit( QgsUnitTypes::RenderUnit unit );
+    void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit );
 
-    /** Returns the units for the width of the fill's border.
-     * @see setBorderWidthUnit()
+    /** Returns the units for the width of the fill's stroke.
+     * @see setStrokeWidthUnit()
     */
-    QgsUnitTypes::RenderUnit borderWidthUnit() const;
+    QgsUnitTypes::RenderUnit strokeWidthUnit() const;
 
-    void setBorderWidthMapUnitScale( const QgsMapUnitScale& scale);
-    const QgsMapUnitScale& borderWidthMapUnitScale() const;
+    void setStrokeWidthMapUnitScale( const QgsMapUnitScale& scale);
+    const QgsMapUnitScale& strokeWidthMapUnitScale() const;
 
     /** Sets the units for the fill's offset.
      * @param unit offset units
@@ -456,19 +453,19 @@ class QgsImageFillSymbolLayer: QgsFillSymbolLayer
     virtual QgsSymbol* subSymbol();
     virtual bool setSubSymbol( QgsSymbol* symbol /Transfer/ );
 
-    /** Sets the units for the symbol's outline width.
+    /** Sets the units for the symbol's stroke width.
      * @param unit symbol units
-     * @see outlineWidthUnit()
+     * @see strokeWidthUnit()
     */
-    void setOutlineWidthUnit( QgsUnitTypes::RenderUnit unit );
+    void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit );
 
-    /** Returns the units for the symbol's outline width.
-     * @see setOutlineWidthUnit()
+    /** Returns the units for the symbol's stroke width.
+     * @see setStrokeWidthUnit()
     */
-    QgsUnitTypes::RenderUnit outlineWidthUnit() const;
+    QgsUnitTypes::RenderUnit strokeWidthUnit() const;
 
-    void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale);
-    const QgsMapUnitScale& outlineWidthMapUnitScale() const;
+    void setStrokeWidthMapUnitScale( const QgsMapUnitScale& scale);
+    const QgsMapUnitScale& strokeWidthMapUnitScale() const;
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit );
     QgsUnitTypes::RenderUnit outputUnit() const;
@@ -699,10 +696,10 @@ class QgsSVGFillSymbolLayer: QgsImageFillSymbolLayer
 
     void setSvgFillColor( const QColor& c );
     QColor svgFillColor() const;
-    void setSvgOutlineColor( const QColor& c );
-    QColor svgOutlineColor() const;
-    void setSvgOutlineWidth( double w );
-    double svgOutlineWidth() const;
+    void setSvgStrokeColor( const QColor& c );
+    QColor svgStrokeColor() const;
+    void setSvgStrokeWidth( double w );
+    double svgStrokeWidth() const;
 
     /** Sets the units for the width of the SVG images in the pattern.
      * @param unit width units
@@ -718,19 +715,19 @@ class QgsSVGFillSymbolLayer: QgsImageFillSymbolLayer
     void setPatternWidthMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& patternWidthMapUnitScale() const;
 
-    /** Sets the units for the outline width.
+    /** Sets the units for the stroke width.
      * @param unit width units
-     * @see svgOutlineWidthUnit()
+     * @see svgStrokeWidthUnit()
     */
-    void setSvgOutlineWidthUnit( QgsUnitTypes::RenderUnit unit );
+    void setSvgStrokeWidthUnit( QgsUnitTypes::RenderUnit unit );
 
-    /** Returns the units for the outline width.
-     * @see setSvgOutlineWidthUnit()
+    /** Returns the units for the stroke width.
+     * @see setSvgStrokeWidthUnit()
     */
-    QgsUnitTypes::RenderUnit svgOutlineWidthUnit() const;
+    QgsUnitTypes::RenderUnit svgStrokeWidthUnit() const;
 
-    void setSvgOutlineWidthMapUnitScale( const QgsMapUnitScale& scale);
-    const QgsMapUnitScale& svgOutlineWidthMapUnitScale() const;
+    void setSvgStrokeWidthMapUnitScale( const QgsMapUnitScale& scale);
+    const QgsMapUnitScale& svgStrokeWidthMapUnitScale() const;
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit );
     QgsUnitTypes::RenderUnit outputUnit() const;

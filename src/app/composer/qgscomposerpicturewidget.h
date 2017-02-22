@@ -68,8 +68,8 @@ class QgsComposerPictureWidget: public QgsComposerItemBaseWidget, private Ui::Qg
     void loadPicturePreviews( bool collapsed );
 
     void on_mFillColorButton_colorChanged( const QColor& color );
-    void on_mOutlineColorButton_colorChanged( const QColor& color );
-    void on_mOutlineWidthSpinBox_valueChanged( double d );
+    void on_mStrokeColorButton_colorChanged( const QColor& color );
+    void on_mStrokeWidthSpinBox_valueChanged( double d );
     void on_mPictureRotationOffsetSpinBox_valueChanged( double d );
     void on_mNorthTypeComboBox_currentIndexChanged( int index );
 

@@ -39,9 +39,9 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
   public:
     QgsSimpleFillSymbolLayer( const QColor& color = DEFAULT_SIMPLEFILL_COLOR,
                               Qt::BrushStyle style = DEFAULT_SIMPLEFILL_STYLE,
-                              const QColor& borderColor = DEFAULT_SIMPLEFILL_BORDERCOLOR,
-                              Qt::PenStyle borderStyle = DEFAULT_SIMPLEFILL_BORDERSTYLE,
-                              double borderWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH,
+                              const QColor& strokeColor = DEFAULT_SIMPLEFILL_BORDERCOLOR,
+                              Qt::PenStyle strokeStyle = DEFAULT_SIMPLEFILL_BORDERSTYLE,
+                              double strokeWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH,
                               Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEFILL_JOINSTYLE
                             );
 
@@ -71,19 +71,17 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
     Qt::BrushStyle brushStyle() const { return mBrushStyle; }
     void setBrushStyle( Qt::BrushStyle style ) { mBrushStyle = style; }
 
-    QColor borderColor() const { return mBorderColor; }
-    void setBorderColor( const QColor& borderColor ) { mBorderColor = borderColor; }
+    QColor strokeColor() const override { return mStrokeColor; }
+    void setStrokeColor( const QColor& strokeColor ) override { mStrokeColor = strokeColor; }
 
-    QColor outlineColor() const override { return borderColor(); }
-    void setOutlineColor( const QColor& color ) override { setBorderColor( color ); }
     QColor fillColor() const override { return color(); }
     void setFillColor( const QColor& color ) override { setColor( color ); }
 
-    Qt::PenStyle borderStyle() const { return mBorderStyle; }
-    void setBorderStyle( Qt::PenStyle borderStyle ) { mBorderStyle = borderStyle; }
+    Qt::PenStyle strokeStyle() const { return mStrokeStyle; }
+    void setStrokeStyle( Qt::PenStyle strokeStyle ) { mStrokeStyle = strokeStyle; }
 
-    double borderWidth() const { return mBorderWidth; }
-    void setBorderWidth( double borderWidth ) { mBorderWidth = borderWidth; }
+    double strokeWidth() const { return mStrokeWidth; }
+    void setStrokeWidth( double strokeWidth ) { mStrokeWidth = strokeWidth; }
 
     Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
     void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
@@ -91,19 +89,19 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
     void setOffset( QPointF offset ) { mOffset = offset; }
     QPointF offset() { return mOffset; }
 
-    /** Sets the units for the width of the fill's border.
+    /** Sets the units for the width of the fill's stroke.
      * @param unit width units
-     * @see borderWidthUnit()
+     * @see strokeWidthUnit()
     */
-    void setBorderWidthUnit( QgsUnitTypes::RenderUnit unit ) { mBorderWidthUnit = unit; }
+    void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mStrokeWidthUnit = unit; }
 
-    /** Returns the units for the width of the fill's border.
-     * @see setBorderWidthUnit()
+    /** Returns the units for the width of the fill's stroke.
+     * @see setStrokeWidthUnit()
     */
-    QgsUnitTypes::RenderUnit borderWidthUnit() const { return mBorderWidthUnit; }
+    QgsUnitTypes::RenderUnit strokeWidthUnit() const { return mStrokeWidthUnit; }
 
-    void setBorderWidthMapUnitScale( const QgsMapUnitScale& scale ) { mBorderWidthMapUnitScale = scale; }
-    const QgsMapUnitScale& borderWidthMapUnitScale() const { return mBorderWidthMapUnitScale; }
+    void setStrokeWidthMapUnitScale( const QgsMapUnitScale& scale ) { mStrokeWidthMapUnitScale = scale; }
+    const QgsMapUnitScale& strokeWidthMapUnitScale() const { return mStrokeWidthMapUnitScale; }
 
     /** Sets the units for the fill's offset.
      * @param unit offset units
@@ -139,11 +137,11 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
     QBrush mBrush;
     QBrush mSelBrush;
     Qt::BrushStyle mBrushStyle;
-    QColor mBorderColor;
-    Qt::PenStyle mBorderStyle;
-    double mBorderWidth;
-    QgsUnitTypes::RenderUnit mBorderWidthUnit;
-    QgsMapUnitScale mBorderWidthMapUnitScale;
+    QColor mStrokeColor;
+    Qt::PenStyle mStrokeStyle;
+    double mStrokeWidth;
+    QgsUnitTypes::RenderUnit mStrokeWidthUnit;
+    QgsMapUnitScale mStrokeWidthMapUnitScale;
     Qt::PenJoinStyle mPenJoinStyle;
     QPen mPen;
     QPen mSelPen;
@@ -590,22 +588,22 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
     QgsImageFillSymbolLayer();
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context ) override;
 
-    virtual QgsSymbol* subSymbol() override { return mOutline.get(); }
+    virtual QgsSymbol* subSymbol() override { return mStroke.get(); }
     virtual bool setSubSymbol( QgsSymbol* symbol ) override;
 
-    /** Sets the units for the symbol's outline width.
+    /** Sets the units for the symbol's stroke width.
      * @param unit symbol units
-     * @see outlineWidthUnit()
+     * @see strokeWidthUnit()
     */
-    void setOutlineWidthUnit( QgsUnitTypes::RenderUnit unit ) { mOutlineWidthUnit = unit; }
+    void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mStrokeWidthUnit = unit; }
 
-    /** Returns the units for the symbol's outline width.
-     * @see setOutlineWidthUnit()
+    /** Returns the units for the symbol's stroke width.
+     * @see setStrokeWidthUnit()
     */
-    QgsUnitTypes::RenderUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
+    QgsUnitTypes::RenderUnit strokeWidthUnit() const { return mStrokeWidthUnit; }
 
-    void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale ) { mOutlineWidthMapUnitScale = scale; }
-    const QgsMapUnitScale& outlineWidthMapUnitScale() const { return mOutlineWidthMapUnitScale; }
+    void setStrokeWidthMapUnitScale( const QgsMapUnitScale& scale ) { mStrokeWidthMapUnitScale = scale; }
+    const QgsMapUnitScale& strokeWidthMapUnitScale() const { return mStrokeWidthMapUnitScale; }
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
@@ -626,13 +624,13 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
     QBrush mBrush;
     double mNextAngle; // mAngle / data defined angle
 
-    //! Outline width
-    double mOutlineWidth;
-    QgsUnitTypes::RenderUnit mOutlineWidthUnit;
-    QgsMapUnitScale mOutlineWidthMapUnitScale;
+    //! Stroke width
+    double mStrokeWidth;
+    QgsUnitTypes::RenderUnit mStrokeWidthUnit;
+    QgsMapUnitScale mStrokeWidthMapUnitScale;
 
-    //! Custom outline
-    std::unique_ptr< QgsLineSymbol > mOutline;
+    //! Custom stroke
+    std::unique_ptr< QgsLineSymbol > mStroke;
 
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext& context ) { Q_UNUSED( context ); }
 };
@@ -864,10 +862,10 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     void setSvgFillColor( const QColor& c ) { setColor( c );  }
     QColor svgFillColor() const { return color(); }
 
-    void setSvgOutlineColor( const QColor& c ) { mSvgOutlineColor = c; }
-    QColor svgOutlineColor() const { return mSvgOutlineColor; }
-    void setSvgOutlineWidth( double w ) { mSvgOutlineWidth = w; }
-    double svgOutlineWidth() const { return mSvgOutlineWidth; }
+    void setSvgStrokeColor( const QColor& c ) { mSvgStrokeColor = c; }
+    QColor svgStrokeColor() const { return mSvgStrokeColor; }
+    void setSvgStrokeWidth( double w ) { mSvgStrokeWidth = w; }
+    double svgStrokeWidth() const { return mSvgStrokeWidth; }
 
     /** Sets the units for the width of the SVG images in the pattern.
      * @param unit width units
@@ -883,19 +881,19 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     void setPatternWidthMapUnitScale( const QgsMapUnitScale& scale ) { mPatternWidthMapUnitScale = scale; }
     const QgsMapUnitScale& patternWidthMapUnitScale() const { return mPatternWidthMapUnitScale; }
 
-    /** Sets the units for the outline width.
+    /** Sets the units for the stroke width.
      * @param unit width units
-     * @see svgOutlineWidthUnit()
+     * @see svgStrokeWidthUnit()
     */
-    void setSvgOutlineWidthUnit( QgsUnitTypes::RenderUnit unit ) { mSvgOutlineWidthUnit = unit; }
+    void setSvgStrokeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mSvgStrokeWidthUnit = unit; }
 
-    /** Returns the units for the outline width.
-     * @see setSvgOutlineWidthUnit()
+    /** Returns the units for the stroke width.
+     * @see setSvgStrokeWidthUnit()
     */
-    QgsUnitTypes::RenderUnit svgOutlineWidthUnit() const { return mSvgOutlineWidthUnit; }
+    QgsUnitTypes::RenderUnit svgStrokeWidthUnit() const { return mSvgStrokeWidthUnit; }
 
-    void setSvgOutlineWidthMapUnitScale( const QgsMapUnitScale& scale ) { mSvgOutlineWidthMapUnitScale = scale; }
-    const QgsMapUnitScale& svgOutlineWidthMapUnitScale() const { return mSvgOutlineWidthMapUnitScale; }
+    void setSvgStrokeWidthMapUnitScale( const QgsMapUnitScale& scale ) { mSvgStrokeWidthMapUnitScale = scale; }
+    const QgsMapUnitScale& svgStrokeWidthMapUnitScale() const { return mSvgStrokeWidthMapUnitScale; }
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
@@ -918,23 +916,23 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     //! SVG pattern image
     QImage* mSvgPattern = nullptr;
 
-    //param(fill), param(outline), param(outline-width) are going
+    //param(fill), param(stroke), param(stroke-width) are going
     //to be replaced in memory
-    QColor mSvgOutlineColor;
-    double mSvgOutlineWidth;
-    QgsUnitTypes::RenderUnit mSvgOutlineWidthUnit;
-    QgsMapUnitScale mSvgOutlineWidthMapUnitScale;
+    QColor mSvgStrokeColor;
+    double mSvgStrokeWidth;
+    QgsUnitTypes::RenderUnit mSvgStrokeWidthUnit;
+    QgsMapUnitScale mSvgStrokeWidthMapUnitScale;
 
     void applyDataDefinedSettings( QgsSymbolRenderContext& context ) override;
 
   private:
     //! Helper function that gets the view box from the byte array
     void storeViewBox();
-    void setDefaultSvgParams(); //fills mSvgFillColor, mSvgOutlineColor, mSvgOutlineWidth with default values for mSvgFilePath
+    void setDefaultSvgParams(); //fills mSvgFillColor, mSvgStrokeColor, mSvgStrokeWidth with default values for mSvgFilePath
 
     //! Applies the svg pattern to the brush
-    void applyPattern( QBrush& brush, const QString& svgFilePath, double patternWidth, QgsUnitTypes::RenderUnit patternWidthUnit, const QColor& svgFillColor, const QColor& svgOutlineColor,
-                       double svgOutlineWidth, QgsUnitTypes::RenderUnit svgOutlineWidthUnit, const QgsSymbolRenderContext& context, const QgsMapUnitScale& patternWidthMapUnitScale, const QgsMapUnitScale &svgOutlineWidthMapUnitScale );
+    void applyPattern( QBrush& brush, const QString& svgFilePath, double patternWidth, QgsUnitTypes::RenderUnit patternWidthUnit, const QColor& svgFillColor, const QColor& svgStrokeColor,
+                       double svgStrokeWidth, QgsUnitTypes::RenderUnit svgStrokeWidthUnit, const QgsSymbolRenderContext& context, const QgsMapUnitScale& patternWidthMapUnitScale, const QgsMapUnitScale &svgStrokeWidthMapUnitScale );
 };
 
 /** \ingroup core

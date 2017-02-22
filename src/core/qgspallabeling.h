@@ -317,9 +317,9 @@ class CORE_EXPORT QgsPalLayerSettings
       ShapeTransparency = 63,
       ShapeBlendMode = 64,
       ShapeFillColor = 58,
-      ShapeBorderColor = 59,
-      ShapeBorderWidth = 60,
-      ShapeBorderWidthUnits = 61,
+      ShapeStrokeColor = 59,
+      ShapeStrokeWidth = 60,
+      ShapeStrokeWidthUnits = 61,
       ShapeJoinStyle = 62,
 
       // drop shadow

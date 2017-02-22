@@ -393,7 +393,7 @@ void TestQgsComposition::resizeToContents()
   QgsFillSymbol* fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::yellow );
-  simpleFill->setBorderColor( Qt::transparent );
+  simpleFill->setStrokeColor( Qt::transparent );
   composition->setPageStyleSymbol( fillSymbol );
   delete fillSymbol;
 
@@ -434,7 +434,7 @@ void TestQgsComposition::resizeToContentsMargin()
   QgsFillSymbol* fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::yellow );
-  simpleFill->setBorderColor( Qt::transparent );
+  simpleFill->setStrokeColor( Qt::transparent );
   composition->setPageStyleSymbol( fillSymbol );
   delete fillSymbol;
 
@@ -475,7 +475,7 @@ void TestQgsComposition::resizeToContentsMultiPage()
   QgsFillSymbol* fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::yellow );
-  simpleFill->setBorderColor( Qt::transparent );
+  simpleFill->setStrokeColor( Qt::transparent );
   composition->setPageStyleSymbol( fillSymbol );
   delete fillSymbol;
 

@@ -48,7 +48,7 @@ class APP_EXPORT QgsMapToolSelectFreehand : public QgsMapTool
     bool mDragging;
 
     QColor mFillColor;
-    QColor mBorderColor;
+    QColor mStrokeColor;
 };
 
 #endif

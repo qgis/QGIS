@@ -34,13 +34,13 @@
 #include <QDomDocument>
 #include <QDomElement>
 
-QgsSimpleFillSymbolLayer::QgsSimpleFillSymbolLayer( const QColor& color, Qt::BrushStyle style, const QColor& borderColor, Qt::PenStyle borderStyle, double borderWidth,
+QgsSimpleFillSymbolLayer::QgsSimpleFillSymbolLayer( const QColor& color, Qt::BrushStyle style, const QColor& strokeColor, Qt::PenStyle strokeStyle, double strokeWidth,
     Qt::PenJoinStyle penJoinStyle )
     : mBrushStyle( style )
-    , mBorderColor( borderColor )
-    , mBorderStyle( borderStyle )
-    , mBorderWidth( borderWidth )
-    , mBorderWidthUnit( QgsUnitTypes::RenderMillimeters )
+    , mStrokeColor( strokeColor )
+    , mStrokeStyle( strokeStyle )
+    , mStrokeWidth( strokeWidth )
+    , mStrokeWidthUnit( QgsUnitTypes::RenderMillimeters )
     , mPenJoinStyle( penJoinStyle )
     , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
 {
@@ -49,13 +49,13 @@ QgsSimpleFillSymbolLayer::QgsSimpleFillSymbolLayer( const QColor& color, Qt::Bru
 
 void QgsSimpleFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
-  mBorderWidthUnit = unit;
+  mStrokeWidthUnit = unit;
   mOffsetUnit = unit;
 }
 
 QgsUnitTypes::RenderUnit QgsSimpleFillSymbolLayer::outputUnit() const
 {
-  QgsUnitTypes::RenderUnit unit = mBorderWidthUnit;
+  QgsUnitTypes::RenderUnit unit = mStrokeWidthUnit;
   if ( mOffsetUnit != unit )
   {
     return QgsUnitTypes::RenderUnknownUnit;
@@ -65,15 +65,15 @@ QgsUnitTypes::RenderUnit QgsSimpleFillSymbolLayer::outputUnit() const
 
 void QgsSimpleFillSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
 {
-  mBorderWidthMapUnitScale = scale;
+  mStrokeWidthMapUnitScale = scale;
   mOffsetMapUnitScale = scale;
 }
 
 QgsMapUnitScale QgsSimpleFillSymbolLayer::mapUnitScale() const
 {
-  if ( mBorderWidthMapUnitScale == mOffsetMapUnitScale )
+  if ( mStrokeWidthMapUnitScale == mOffsetMapUnitScale )
   {
-    return mBorderWidthMapUnitScale;
+    return mStrokeWidthMapUnitScale;
   }
   return QgsMapUnitScale();
 }
@@ -97,27 +97,27 @@ void QgsSimpleFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
     if ( exprVal.isValid() )
       brush.setStyle( QgsSymbolLayerUtils::decodeBrushStyle( exprVal.toString() ) );
   }
-  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOutlineColor ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeColor ) )
   {
-    context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mBorderColor ) );
-    pen.setColor( mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyOutlineColor, context.renderContext().expressionContext(), mBorderColor ) );
+    context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mStrokeColor ) );
+    pen.setColor( mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyStrokeColor, context.renderContext().expressionContext(), mStrokeColor ) );
   }
-  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOutlineWidth ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth ) )
   {
-    context.setOriginalValueVariable( mBorderWidth );
-    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyOutlineWidth, context.renderContext().expressionContext() );
+    context.setOriginalValueVariable( mStrokeWidth );
+    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext() );
     double width = exprVal.toDouble( &ok );
     if ( ok )
     {
-      width = context.renderContext().convertToPainterUnits( width, mBorderWidthUnit, mBorderWidthMapUnitScale );
+      width = context.renderContext().convertToPainterUnits( width, mStrokeWidthUnit, mStrokeWidthMapUnitScale );
       pen.setWidthF( width );
       selPen.setWidthF( width );
     }
   }
-  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOutlineStyle ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeStyle ) )
   {
-    context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenStyle( mBorderStyle ) );
-    QString style = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyOutlineStyle, context.renderContext().expressionContext(), QString(), &ok );
+    context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenStyle( mStrokeStyle ) );
+    QString style = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyStrokeStyle, context.renderContext().expressionContext(), QString(), &ok );
     if ( ok )
     {
       pen.setStyle( QgsSymbolLayerUtils::decodePenStyle( style ) );
@@ -141,9 +141,9 @@ QgsSymbolLayer* QgsSimpleFillSymbolLayer::create( const QgsStringMap& props )
 {
   QColor color = DEFAULT_SIMPLEFILL_COLOR;
   Qt::BrushStyle style = DEFAULT_SIMPLEFILL_STYLE;
-  QColor borderColor = DEFAULT_SIMPLEFILL_BORDERCOLOR;
-  Qt::PenStyle borderStyle = DEFAULT_SIMPLEFILL_BORDERSTYLE;
-  double borderWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH;
+  QColor strokeColor = DEFAULT_SIMPLEFILL_BORDERCOLOR;
+  Qt::PenStyle strokeStyle = DEFAULT_SIMPLEFILL_BORDERSTYLE;
+  double strokeWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH;
   Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEFILL_JOINSTYLE;
   QPointF offset;
 
@@ -154,67 +154,67 @@ QgsSymbolLayer* QgsSimpleFillSymbolLayer::create( const QgsStringMap& props )
   if ( props.contains( QStringLiteral( "color_border" ) ) )
   {
     //pre 2.5 projects used "color_border"
-    borderColor = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "color_border" )] );
+    strokeColor = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "color_border" )] );
   }
   else if ( props.contains( QStringLiteral( "outline_color" ) ) )
   {
-    borderColor = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "outline_color" )] );
+    strokeColor = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "outline_color" )] );
   }
   else if ( props.contains( QStringLiteral( "line_color" ) ) )
   {
-    borderColor = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "line_color" )] );
+    strokeColor = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "line_color" )] );
   }
 
   if ( props.contains( QStringLiteral( "style_border" ) ) )
   {
     //pre 2.5 projects used "style_border"
-    borderStyle = QgsSymbolLayerUtils::decodePenStyle( props[QStringLiteral( "style_border" )] );
+    strokeStyle = QgsSymbolLayerUtils::decodePenStyle( props[QStringLiteral( "style_border" )] );
   }
   else if ( props.contains( QStringLiteral( "outline_style" ) ) )
   {
-    borderStyle = QgsSymbolLayerUtils::decodePenStyle( props[QStringLiteral( "outline_style" )] );
+    strokeStyle = QgsSymbolLayerUtils::decodePenStyle( props[QStringLiteral( "outline_style" )] );
   }
   else if ( props.contains( QStringLiteral( "line_style" ) ) )
   {
-    borderStyle = QgsSymbolLayerUtils::decodePenStyle( props[QStringLiteral( "line_style" )] );
+    strokeStyle = QgsSymbolLayerUtils::decodePenStyle( props[QStringLiteral( "line_style" )] );
   }
   if ( props.contains( QStringLiteral( "width_border" ) ) )
   {
     //pre 2.5 projects used "width_border"
-    borderWidth = props[QStringLiteral( "width_border" )].toDouble();
+    strokeWidth = props[QStringLiteral( "width_border" )].toDouble();
   }
   else if ( props.contains( QStringLiteral( "outline_width" ) ) )
   {
-    borderWidth = props[QStringLiteral( "outline_width" )].toDouble();
+    strokeWidth = props[QStringLiteral( "outline_width" )].toDouble();
   }
   else if ( props.contains( QStringLiteral( "line_width" ) ) )
   {
-    borderWidth = props[QStringLiteral( "line_width" )].toDouble();
+    strokeWidth = props[QStringLiteral( "line_width" )].toDouble();
   }
   if ( props.contains( QStringLiteral( "offset" ) ) )
     offset = QgsSymbolLayerUtils::decodePoint( props[QStringLiteral( "offset" )] );
   if ( props.contains( QStringLiteral( "joinstyle" ) ) )
     penJoinStyle = QgsSymbolLayerUtils::decodePenJoinStyle( props[QStringLiteral( "joinstyle" )] );
 
-  QgsSimpleFillSymbolLayer* sl = new QgsSimpleFillSymbolLayer( color, style, borderColor, borderStyle, borderWidth, penJoinStyle );
+  QgsSimpleFillSymbolLayer* sl = new QgsSimpleFillSymbolLayer( color, style, strokeColor, strokeStyle, strokeWidth, penJoinStyle );
   sl->setOffset( offset );
   if ( props.contains( QStringLiteral( "border_width_unit" ) ) )
   {
-    sl->setBorderWidthUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "border_width_unit" )] ) );
+    sl->setStrokeWidthUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "border_width_unit" )] ) );
   }
   else if ( props.contains( QStringLiteral( "outline_width_unit" ) ) )
   {
-    sl->setBorderWidthUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "outline_width_unit" )] ) );
+    sl->setStrokeWidthUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "outline_width_unit" )] ) );
   }
   else if ( props.contains( QStringLiteral( "line_width_unit" ) ) )
   {
-    sl->setBorderWidthUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "line_width_unit" )] ) );
+    sl->setStrokeWidthUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "line_width_unit" )] ) );
   }
   if ( props.contains( QStringLiteral( "offset_unit" ) ) )
     sl->setOffsetUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "offset_unit" )] ) );
 
   if ( props.contains( QStringLiteral( "border_width_map_unit_scale" ) ) )
-    sl->setBorderWidthMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "border_width_map_unit_scale" )] ) );
+    sl->setStrokeWidthMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "border_width_map_unit_scale" )] ) );
   if ( props.contains( QStringLiteral( "offset_map_unit_scale" ) ) )
     sl->setOffsetMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "offset_map_unit_scale" )] ) );
 
@@ -236,7 +236,7 @@ void QgsSimpleFillSymbolLayer::startRender( QgsSymbolRenderContext& context )
   mBrush = QBrush( fillColor, mBrushStyle );
 
   QColor selColor = context.renderContext().selectionColor();
-  QColor selPenColor = selColor == mColor ? selColor : mBorderColor;
+  QColor selPenColor = selColor == mColor ? selColor : mStrokeColor;
   if ( ! SELECTION_IS_OPAQUE ) selColor.setAlphaF( context.alpha() );
   mSelBrush = QBrush( selColor );
   // N.B. unless a "selection line color" is implemented in addition to the "selection color" option
@@ -244,12 +244,12 @@ void QgsSimpleFillSymbolLayer::startRender( QgsSymbolRenderContext& context )
   if ( SELECT_FILL_STYLE )
     mSelBrush.setStyle( mBrushStyle );
 
-  QColor borderColor = mBorderColor;
-  borderColor.setAlphaF( context.alpha() * mBorderColor.alphaF() );
-  mPen = QPen( borderColor );
+  QColor strokeColor = mStrokeColor;
+  strokeColor.setAlphaF( context.alpha() * mStrokeColor.alphaF() );
+  mPen = QPen( strokeColor );
   mSelPen = QPen( selPenColor );
-  mPen.setStyle( mBorderStyle );
-  mPen.setWidthF( context.renderContext().convertToPainterUnits( mBorderWidth, mBorderWidthUnit, mBorderWidthMapUnitScale ) );
+  mPen.setStyle( mStrokeStyle );
+  mPen.setWidthF( context.renderContext().convertToPainterUnits( mStrokeWidth, mStrokeWidthUnit, mStrokeWidthMapUnitScale ) );
   mPen.setJoinStyle( mPenJoinStyle );
 }
 
@@ -292,11 +292,11 @@ QgsStringMap QgsSimpleFillSymbolLayer::properties() const
   QgsStringMap map;
   map[QStringLiteral( "color" )] = QgsSymbolLayerUtils::encodeColor( mColor );
   map[QStringLiteral( "style" )] = QgsSymbolLayerUtils::encodeBrushStyle( mBrushStyle );
-  map[QStringLiteral( "outline_color" )] = QgsSymbolLayerUtils::encodeColor( mBorderColor );
-  map[QStringLiteral( "outline_style" )] = QgsSymbolLayerUtils::encodePenStyle( mBorderStyle );
-  map[QStringLiteral( "outline_width" )] = QString::number( mBorderWidth );
-  map[QStringLiteral( "outline_width_unit" )] = QgsUnitTypes::encodeUnit( mBorderWidthUnit );
-  map[QStringLiteral( "border_width_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mBorderWidthMapUnitScale );
+  map[QStringLiteral( "outline_color" )] = QgsSymbolLayerUtils::encodeColor( mStrokeColor );
+  map[QStringLiteral( "outline_style" )] = QgsSymbolLayerUtils::encodePenStyle( mStrokeStyle );
+  map[QStringLiteral( "outline_width" )] = QString::number( mStrokeWidth );
+  map[QStringLiteral( "outline_width_unit" )] = QgsUnitTypes::encodeUnit( mStrokeWidthUnit );
+  map[QStringLiteral( "border_width_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mStrokeWidthMapUnitScale );
   map[QStringLiteral( "joinstyle" )] = QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle );
   map[QStringLiteral( "offset" )] = QgsSymbolLayerUtils::encodePoint( mOffset );
   map[QStringLiteral( "offset_unit" )] = QgsUnitTypes::encodeUnit( mOffsetUnit );
@@ -306,12 +306,12 @@ QgsStringMap QgsSimpleFillSymbolLayer::properties() const
 
 QgsSimpleFillSymbolLayer* QgsSimpleFillSymbolLayer::clone() const
 {
-  QgsSimpleFillSymbolLayer* sl = new QgsSimpleFillSymbolLayer( mColor, mBrushStyle, mBorderColor, mBorderStyle, mBorderWidth, mPenJoinStyle );
+  QgsSimpleFillSymbolLayer* sl = new QgsSimpleFillSymbolLayer( mColor, mBrushStyle, mStrokeColor, mStrokeStyle, mStrokeWidth, mPenJoinStyle );
   sl->setOffset( mOffset );
   sl->setOffsetUnit( mOffsetUnit );
   sl->setOffsetMapUnitScale( mOffsetMapUnitScale );
-  sl->setBorderWidthUnit( mBorderWidthUnit );
-  sl->setBorderWidthMapUnitScale( mBorderWidthMapUnitScale );
+  sl->setStrokeWidthUnit( mStrokeWidthUnit );
+  sl->setStrokeWidthMapUnitScale( mStrokeWidthMapUnitScale );
   copyDataDefinedProperties( sl );
   copyPaintEffect( sl );
   return sl;
@@ -319,7 +319,7 @@ QgsSimpleFillSymbolLayer* QgsSimpleFillSymbolLayer::clone() const
 
 void QgsSimpleFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const
 {
-  if ( mBrushStyle == Qt::NoBrush && mBorderStyle == Qt::NoPen )
+  if ( mBrushStyle == Qt::NoBrush && mStrokeStyle == Qt::NoPen )
     return;
 
   QDomElement symbolizerElem = doc.createElement( QStringLiteral( "se:PolygonSymbolizer" ) );
@@ -338,13 +338,13 @@ void QgsSimpleFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
     QgsSymbolLayerUtils::fillToSld( doc, fillElem, mBrushStyle, mColor );
   }
 
-  if ( mBorderStyle != Qt::NoPen )
+  if ( mStrokeStyle != Qt::NoPen )
   {
     // <Stroke>
     QDomElement strokeElem = doc.createElement( QStringLiteral( "se:Stroke" ) );
     symbolizerElem.appendChild( strokeElem );
-    double borderWidth = QgsSymbolLayerUtils::rescaleUom( mBorderWidth, mBorderWidthUnit, props );
-    QgsSymbolLayerUtils::lineToSld( doc, strokeElem, mBorderStyle, borderWidth, borderWidth, &mPenJoinStyle );
+    double strokeWidth = QgsSymbolLayerUtils::rescaleUom( mStrokeWidth, mStrokeWidthUnit, props );
+    QgsSymbolLayerUtils::lineToSld( doc, strokeElem, mStrokeStyle, strokeWidth, strokeWidth, &mPenJoinStyle );
   }
 
   // <se:Displacement>
@@ -359,7 +359,7 @@ QString QgsSimpleFillSymbolLayer::ogrFeatureStyle( double mmScaleFactor, double 
   symbolStyle.append( QgsSymbolLayerUtils::ogrFeatureStyleBrush( mColor ) );
   symbolStyle.append( ';' );
   //pen
-  symbolStyle.append( QgsSymbolLayerUtils::ogrFeatureStylePen( mBorderWidth, mmScaleFactor, mapUnitScaleFactor, mBorderColor, mPenJoinStyle ) );
+  symbolStyle.append( QgsSymbolLayerUtils::ogrFeatureStylePen( mStrokeWidth, mmScaleFactor, mapUnitScaleFactor, mStrokeColor, mPenJoinStyle ) );
   return symbolStyle;
 }
 
@@ -367,50 +367,50 @@ QgsSymbolLayer* QgsSimpleFillSymbolLayer::createFromSld( QDomElement &element )
 {
   QgsDebugMsg( "Entered." );
 
-  QColor color, borderColor;
+  QColor color, strokeColor;
   Qt::BrushStyle fillStyle;
-  Qt::PenStyle borderStyle;
-  double borderWidth;
+  Qt::PenStyle strokeStyle;
+  double strokeWidth;
 
   QDomElement fillElem = element.firstChildElement( QStringLiteral( "Fill" ) );
   QgsSymbolLayerUtils::fillFromSld( fillElem, fillStyle, color );
 
   QDomElement strokeElem = element.firstChildElement( QStringLiteral( "Stroke" ) );
-  QgsSymbolLayerUtils::lineFromSld( strokeElem, borderStyle, borderColor, borderWidth );
+  QgsSymbolLayerUtils::lineFromSld( strokeElem, strokeStyle, strokeColor, strokeWidth );
 
   QPointF offset;
   QgsSymbolLayerUtils::displacementFromSldElement( element, offset );
 
-  QgsSimpleFillSymbolLayer* sl = new QgsSimpleFillSymbolLayer( color, fillStyle, borderColor, borderStyle, borderWidth );
+  QgsSimpleFillSymbolLayer* sl = new QgsSimpleFillSymbolLayer( color, fillStyle, strokeColor, strokeStyle, strokeWidth );
   sl->setOffset( offset );
   return sl;
 }
 
 double QgsSimpleFillSymbolLayer::estimateMaxBleed( const QgsRenderContext& context ) const
 {
-  double penBleed = context.convertToPainterUnits( mBorderStyle == Qt::NoPen ? 0 : ( mBorderWidth / 2.0 ), mBorderWidthUnit, mBorderWidthMapUnitScale );
+  double penBleed = context.convertToPainterUnits( mStrokeStyle == Qt::NoPen ? 0 : ( mStrokeWidth / 2.0 ), mStrokeWidthUnit, mStrokeWidthMapUnitScale );
   double offsetBleed = context.convertToPainterUnits( qMax( qAbs( mOffset.x() ), qAbs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
   return penBleed + offsetBleed;
 }
 
 double QgsSimpleFillSymbolLayer::dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext &context ) const
 {
-  double width = mBorderWidth;
-  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOutlineWidth ) )
+  double width = mStrokeWidth;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth ) )
   {
-    context.setOriginalValueVariable( mBorderWidth );
-    width = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOutlineWidth, context.renderContext().expressionContext(), mBorderWidth );
+    context.setOriginalValueVariable( mStrokeWidth );
+    width = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext(), mStrokeWidth );
   }
-  return width * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), mBorderWidthUnit, e.mapUnits() );
+  return width * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), mStrokeWidthUnit, e.mapUnits() );
 }
 
 QColor QgsSimpleFillSymbolLayer::dxfColor( QgsSymbolRenderContext &context ) const
 {
-  QColor c = mBorderColor;
-  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOutlineColor ) )
+  QColor c = mStrokeColor;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeColor ) )
   {
-    context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mBorderColor ) );
-    c = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyOutlineColor, context.renderContext().expressionContext(), c );
+    context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mStrokeColor ) );
+    c = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyStrokeColor, context.renderContext().expressionContext(), c );
   }
   return c;
 }
@@ -428,7 +428,7 @@ double QgsSimpleFillSymbolLayer::dxfAngle( QgsSymbolRenderContext &context ) con
 
 Qt::PenStyle QgsSimpleFillSymbolLayer::dxfPenStyle() const
 {
-  return mBorderStyle;
+  return mStrokeStyle;
 }
 
 QColor QgsSimpleFillSymbolLayer::dxfBrushColor( QgsSymbolRenderContext& context ) const
@@ -1177,7 +1177,7 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF& points, QList
     mTwoColorGradientRamp = new QgsGradientColorRamp( color1, color2 );
   }
 
-  //no border for shapeburst fills
+  //no stroke for shapeburst fills
   p->setPen( QPen( Qt::NoPen ) );
 
   //calculate margin size in pixels so that QImage of polygon has sufficient space to draw the full blur effect
@@ -1543,9 +1543,9 @@ QgsMapUnitScale QgsShapeburstFillSymbolLayer::mapUnitScale() const
 
 QgsImageFillSymbolLayer::QgsImageFillSymbolLayer()
     : mNextAngle( 0.0 )
-    , mOutlineWidth( 0.0 )
-    , mOutlineWidthUnit( QgsUnitTypes::RenderMillimeters )
-    , mOutline( nullptr )
+    , mStrokeWidth( 0.0 )
+    , mStrokeWidthUnit( QgsUnitTypes::RenderMillimeters )
+    , mStroke( nullptr )
 {
   setSubSymbol( new QgsLineSymbol() );
 }
@@ -1591,15 +1591,15 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPol
   }
   p->setBrush( mBrush );
   _renderPolygon( p, points, rings, context );
-  if ( mOutline )
+  if ( mStroke )
   {
-    mOutline->renderPolyline( points, context.feature(), context.renderContext(), -1, SELECT_FILL_BORDER && context.selected() );
+    mStroke->renderPolyline( points, context.feature(), context.renderContext(), -1, SELECT_FILL_BORDER && context.selected() );
     if ( rings )
     {
       QList<QPolygonF>::const_iterator ringIt = rings->constBegin();
       for ( ; ringIt != rings->constEnd(); ++ringIt )
       {
-        mOutline->renderPolyline( *ringIt, context.feature(), context.renderContext(), -1, SELECT_FILL_BORDER && context.selected() );
+        mStroke->renderPolyline( *ringIt, context.feature(), context.renderContext(), -1, SELECT_FILL_BORDER && context.selected() );
       }
     }
   }
@@ -1609,9 +1609,9 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPol
 
 bool QgsImageFillSymbolLayer::setSubSymbol( QgsSymbol* symbol )
 {
-  if ( !symbol ) //unset current outline
+  if ( !symbol ) //unset current stroke
   {
-    mOutline.reset( nullptr );
+    mStroke.reset( nullptr );
     return true;
   }
 
@@ -1624,7 +1624,7 @@ bool QgsImageFillSymbolLayer::setSubSymbol( QgsSymbol* symbol )
   QgsLineSymbol* lineSymbol = dynamic_cast<QgsLineSymbol*>( symbol );
   if ( lineSymbol )
   {
-    mOutline.reset( lineSymbol );
+    mStroke.reset( lineSymbol );
     return true;
   }
 
@@ -1634,29 +1634,29 @@ bool QgsImageFillSymbolLayer::setSubSymbol( QgsSymbol* symbol )
 
 void QgsImageFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
-  mOutlineWidthUnit = unit;
+  mStrokeWidthUnit = unit;
 }
 
 QgsUnitTypes::RenderUnit QgsImageFillSymbolLayer::outputUnit() const
 {
-  return mOutlineWidthUnit;
+  return mStrokeWidthUnit;
 }
 
 void QgsImageFillSymbolLayer::setMapUnitScale( const QgsMapUnitScale& scale )
 {
-  mOutlineWidthMapUnitScale = scale;
+  mStrokeWidthMapUnitScale = scale;
 }
 
 QgsMapUnitScale QgsImageFillSymbolLayer::mapUnitScale() const
 {
-  return mOutlineWidthMapUnitScale;
+  return mStrokeWidthMapUnitScale;
 }
 
 double QgsImageFillSymbolLayer::estimateMaxBleed( const QgsRenderContext& context ) const
 {
-  if ( mOutline && mOutline->symbolLayer( 0 ) )
+  if ( mStroke && mStroke->symbolLayer( 0 ) )
   {
-    double subLayerBleed = mOutline->symbolLayer( 0 )->estimateMaxBleed( context );
+    double subLayerBleed = mStroke->symbolLayer( 0 )->estimateMaxBleed( context );
     return subLayerBleed;
   }
   return 0;
@@ -1664,36 +1664,36 @@ double QgsImageFillSymbolLayer::estimateMaxBleed( const QgsRenderContext& contex
 
 double QgsImageFillSymbolLayer::dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext &context ) const
 {
-  double width = mOutlineWidth;
+  double width = mStrokeWidth;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyWidth ) )
   {
-    context.setOriginalValueVariable( mOutlineWidth );
-    width = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyWidth, context.renderContext().expressionContext(), mOutlineWidth );
+    context.setOriginalValueVariable( mStrokeWidth );
+    width = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyWidth, context.renderContext().expressionContext(), mStrokeWidth );
   }
-  return width * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), mOutlineWidthUnit, e.mapUnits() );
+  return width * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), mStrokeWidthUnit, e.mapUnits() );
 }
 
 QColor QgsImageFillSymbolLayer::dxfColor( QgsSymbolRenderContext &context ) const
 {
   Q_UNUSED( context );
-  if ( !mOutline )
+  if ( !mStroke )
   {
     return QColor( Qt::black );
   }
-  return mOutline->color();
+  return mStroke->color();
 }
 
 Qt::PenStyle QgsImageFillSymbolLayer::dxfPenStyle() const
 {
   return Qt::SolidLine;
 #if 0
-  if ( !mOutline )
+  if ( !mStroke )
   {
     return Qt::SolidLine;
   }
   else
   {
-    return mOutline->dxfPenStyle();
+    return mStroke->dxfPenStyle();
   }
 #endif //0
 }
@@ -1701,8 +1701,8 @@ Qt::PenStyle QgsImageFillSymbolLayer::dxfPenStyle() const
 QSet<QString> QgsImageFillSymbolLayer::usedAttributes( const QgsRenderContext& context ) const
 {
   QSet<QString> attr = QgsFillSymbolLayer::usedAttributes( context );
-  if ( mOutline )
-    attr.unite( mOutline->usedAttributes( context ) );
+  if ( mStroke )
+    attr.unite( mStroke->usedAttributes( context ) );
   return attr;
 }
 
@@ -1713,14 +1713,14 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QString& svgFilePath, double
     : QgsImageFillSymbolLayer()
     , mPatternWidth( width )
     , mPatternWidthUnit( QgsUnitTypes::RenderMillimeters )
-    , mSvgOutlineWidthUnit( QgsUnitTypes::RenderMillimeters )
+    , mSvgStrokeWidthUnit( QgsUnitTypes::RenderMillimeters )
 {
   setSvgFilePath( svgFilePath );
-  mOutlineWidth = 0.3;
+  mStrokeWidth = 0.3;
   mAngle = angle;
   mColor = QColor( 255, 255, 255 );
-  mSvgOutlineColor = QColor( 0, 0, 0 );
-  mSvgOutlineWidth = 0.2;
+  mSvgStrokeColor = QColor( 0, 0, 0 );
+  mSvgStrokeWidth = 0.2;
   setDefaultSvgParams();
   mSvgPattern = nullptr;
 }
@@ -1730,14 +1730,14 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray& svgData, double 
     , mPatternWidth( width )
     , mPatternWidthUnit( QgsUnitTypes::RenderMillimeters )
     , mSvgData( svgData )
-    , mSvgOutlineWidthUnit( QgsUnitTypes::RenderMillimeters )
+    , mSvgStrokeWidthUnit( QgsUnitTypes::RenderMillimeters )
 {
   storeViewBox();
-  mOutlineWidth = 0.3;
+  mStrokeWidth = 0.3;
   mAngle = angle;
   mColor = QColor( 255, 255, 255 );
-  mSvgOutlineColor = QColor( 0, 0, 0 );
-  mSvgOutlineWidth = 0.2;
+  mSvgStrokeColor = QColor( 0, 0, 0 );
+  mSvgStrokeWidth = 0.2;
   setSubSymbol( new QgsLineSymbol() );
   setDefaultSvgParams();
   mSvgPattern = nullptr;
@@ -1752,15 +1752,15 @@ void QgsSVGFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   QgsImageFillSymbolLayer::setOutputUnit( unit );
   mPatternWidthUnit = unit;
-  mSvgOutlineWidthUnit = unit;
-  mOutlineWidthUnit = unit;
-  mOutline->setOutputUnit( unit );
+  mSvgStrokeWidthUnit = unit;
+  mStrokeWidthUnit = unit;
+  mStroke->setOutputUnit( unit );
 }
 
 QgsUnitTypes::RenderUnit QgsSVGFillSymbolLayer::outputUnit() const
 {
   QgsUnitTypes::RenderUnit unit = QgsImageFillSymbolLayer::outputUnit();
-  if ( mPatternWidthUnit != unit || mSvgOutlineWidthUnit != unit || mOutlineWidthUnit != unit )
+  if ( mPatternWidthUnit != unit || mSvgStrokeWidthUnit != unit || mStrokeWidthUnit != unit )
   {
     return QgsUnitTypes::RenderUnknownUnit;
   }
@@ -1771,15 +1771,15 @@ void QgsSVGFillSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
 {
   QgsImageFillSymbolLayer::setMapUnitScale( scale );
   mPatternWidthMapUnitScale = scale;
-  mSvgOutlineWidthMapUnitScale = scale;
-  mOutlineWidthMapUnitScale = scale;
+  mSvgStrokeWidthMapUnitScale = scale;
+  mStrokeWidthMapUnitScale = scale;
 }
 
 QgsMapUnitScale QgsSVGFillSymbolLayer::mapUnitScale() const
 {
   if ( QgsImageFillSymbolLayer::mapUnitScale() == mPatternWidthMapUnitScale &&
-       mPatternWidthMapUnitScale == mSvgOutlineWidthMapUnitScale &&
-       mSvgOutlineWidthMapUnitScale == mOutlineWidthMapUnitScale )
+       mPatternWidthMapUnitScale == mSvgStrokeWidthMapUnitScale &&
+       mSvgStrokeWidthMapUnitScale == mStrokeWidthMapUnitScale )
   {
     return mPatternWidthMapUnitScale;
   }
@@ -1844,28 +1844,28 @@ QgsSymbolLayer* QgsSVGFillSymbolLayer::create( const QgsStringMap& properties )
   if ( properties.contains( QStringLiteral( "svgOutlineColor" ) ) )
   {
     //pre 2.5 projects used "svgOutlineColor"
-    symbolLayer->setSvgOutlineColor( QgsSymbolLayerUtils::decodeColor( properties[QStringLiteral( "svgOutlineColor" )] ) );
+    symbolLayer->setSvgStrokeColor( QgsSymbolLayerUtils::decodeColor( properties[QStringLiteral( "svgOutlineColor" )] ) );
   }
   else if ( properties.contains( QStringLiteral( "outline_color" ) ) )
   {
-    symbolLayer->setSvgOutlineColor( QgsSymbolLayerUtils::decodeColor( properties[QStringLiteral( "outline_color" )] ) );
+    symbolLayer->setSvgStrokeColor( QgsSymbolLayerUtils::decodeColor( properties[QStringLiteral( "outline_color" )] ) );
   }
   else if ( properties.contains( QStringLiteral( "line_color" ) ) )
   {
-    symbolLayer->setSvgOutlineColor( QgsSymbolLayerUtils::decodeColor( properties[QStringLiteral( "line_color" )] ) );
+    symbolLayer->setSvgStrokeColor( QgsSymbolLayerUtils::decodeColor( properties[QStringLiteral( "line_color" )] ) );
   }
   if ( properties.contains( QStringLiteral( "svgOutlineWidth" ) ) )
   {
     //pre 2.5 projects used "svgOutlineWidth"
-    symbolLayer->setSvgOutlineWidth( properties[QStringLiteral( "svgOutlineWidth" )].toDouble() );
+    symbolLayer->setSvgStrokeWidth( properties[QStringLiteral( "svgOutlineWidth" )].toDouble() );
   }
   else if ( properties.contains( QStringLiteral( "outline_width" ) ) )
   {
-    symbolLayer->setSvgOutlineWidth( properties[QStringLiteral( "outline_width" )].toDouble() );
+    symbolLayer->setSvgStrokeWidth( properties[QStringLiteral( "outline_width" )].toDouble() );
   }
   else if ( properties.contains( QStringLiteral( "line_width" ) ) )
   {
-    symbolLayer->setSvgOutlineWidth( properties[QStringLiteral( "line_width" )].toDouble() );
+    symbolLayer->setSvgStrokeWidth( properties[QStringLiteral( "line_width" )].toDouble() );
   }
 
   //units
@@ -1879,19 +1879,19 @@ QgsSymbolLayer* QgsSVGFillSymbolLayer::create( const QgsStringMap& properties )
   }
   if ( properties.contains( QStringLiteral( "svg_outline_width_unit" ) ) )
   {
-    symbolLayer->setSvgOutlineWidthUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "svg_outline_width_unit" )] ) );
+    symbolLayer->setSvgStrokeWidthUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "svg_outline_width_unit" )] ) );
   }
   if ( properties.contains( QStringLiteral( "svg_outline_width_map_unit_scale" ) ) )
   {
-    symbolLayer->setSvgOutlineWidthMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "svg_outline_width_map_unit_scale" )] ) );
+    symbolLayer->setSvgStrokeWidthMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "svg_outline_width_map_unit_scale" )] ) );
   }
   if ( properties.contains( QStringLiteral( "outline_width_unit" ) ) )
   {
-    symbolLayer->setOutlineWidthUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "outline_width_unit" )] ) );
+    symbolLayer->setStrokeWidthUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "outline_width_unit" )] ) );
   }
   if ( properties.contains( QStringLiteral( "outline_width_map_unit_scale" ) ) )
   {
-    symbolLayer->setOutlineWidthMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "outline_width_map_unit_scale" )] ) );
+    symbolLayer->setStrokeWidthMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "outline_width_map_unit_scale" )] ) );
   }
 
   symbolLayer->restoreOldDataDefinedProperties( properties );
@@ -1905,9 +1905,9 @@ QString QgsSVGFillSymbolLayer::layerType() const
 }
 
 void QgsSVGFillSymbolLayer::applyPattern( QBrush& brush, const QString& svgFilePath, double patternWidth, QgsUnitTypes::RenderUnit patternWidthUnit,
-    const QColor& svgFillColor, const QColor& svgOutlineColor, double svgOutlineWidth,
-    QgsUnitTypes::RenderUnit svgOutlineWidthUnit, const QgsSymbolRenderContext& context,
-    const QgsMapUnitScale& patternWidthMapUnitScale, const QgsMapUnitScale& svgOutlineWidthMapUnitScale )
+    const QColor& svgFillColor, const QColor& svgStrokeColor, double svgStrokeWidth,
+    QgsUnitTypes::RenderUnit svgStrokeWidthUnit, const QgsSymbolRenderContext& context,
+    const QgsMapUnitScale& patternWidthMapUnitScale, const QgsMapUnitScale& svgStrokeWidthMapUnitScale )
 {
   if ( mSvgViewBox.isNull() )
   {
@@ -1926,12 +1926,12 @@ void QgsSVGFillSymbolLayer::applyPattern( QBrush& brush, const QString& svgFileP
   else
   {
     bool fitsInCache = true;
-    double outlineWidth = context.renderContext().convertToPainterUnits( svgOutlineWidth, svgOutlineWidthUnit, svgOutlineWidthMapUnitScale );
-    const QImage& patternImage = QgsApplication::svgCache()->svgAsImage( svgFilePath, size, svgFillColor, svgOutlineColor, outlineWidth,
+    double strokeWidth = context.renderContext().convertToPainterUnits( svgStrokeWidth, svgStrokeWidthUnit, svgStrokeWidthMapUnitScale );
+    const QImage& patternImage = QgsApplication::svgCache()->svgAsImage( svgFilePath, size, svgFillColor, svgStrokeColor, strokeWidth,
                                  context.renderContext().scaleFactor(), fitsInCache );
     if ( !fitsInCache )
     {
-      const QPicture& patternPict = QgsApplication::svgCache()->svgAsPicture( svgFilePath, size, svgFillColor, svgOutlineColor, outlineWidth,
+      const QPicture& patternPict = QgsApplication::svgCache()->svgAsPicture( svgFilePath, size, svgFillColor, svgStrokeColor, strokeWidth,
                                     context.renderContext().scaleFactor() );
       double hwRatio = 1.0;
       if ( patternPict.width() > 0 )
@@ -1963,19 +1963,19 @@ void QgsSVGFillSymbolLayer::applyPattern( QBrush& brush, const QString& svgFileP
 void QgsSVGFillSymbolLayer::startRender( QgsSymbolRenderContext& context )
 {
 
-  applyPattern( mBrush, mSvgFilePath, mPatternWidth, mPatternWidthUnit, mColor, mSvgOutlineColor, mSvgOutlineWidth, mSvgOutlineWidthUnit, context, mPatternWidthMapUnitScale, mSvgOutlineWidthMapUnitScale );
+  applyPattern( mBrush, mSvgFilePath, mPatternWidth, mPatternWidthUnit, mColor, mSvgStrokeColor, mSvgStrokeWidth, mSvgStrokeWidthUnit, context, mPatternWidthMapUnitScale, mSvgStrokeWidthMapUnitScale );
 
-  if ( mOutline )
+  if ( mStroke )
   {
-    mOutline->startRender( context.renderContext(), context.fields() );
+    mStroke->startRender( context.renderContext(), context.fields() );
   }
 }
 
 void QgsSVGFillSymbolLayer::stopRender( QgsSymbolRenderContext& context )
 {
-  if ( mOutline )
+  if ( mStroke )
   {
-    mOutline->stopRender( context.renderContext() );
+    mStroke->stopRender( context.renderContext() );
   }
 }
 
@@ -1996,16 +1996,16 @@ QgsStringMap QgsSVGFillSymbolLayer::properties() const
 
   //svg parameters
   map.insert( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
-  map.insert( QStringLiteral( "outline_color" ), QgsSymbolLayerUtils::encodeColor( mSvgOutlineColor ) );
-  map.insert( QStringLiteral( "outline_width" ), QString::number( mSvgOutlineWidth ) );
+  map.insert( QStringLiteral( "outline_color" ), QgsSymbolLayerUtils::encodeColor( mSvgStrokeColor ) );
+  map.insert( QStringLiteral( "outline_width" ), QString::number( mSvgStrokeWidth ) );
 
   //units
   map.insert( QStringLiteral( "pattern_width_unit" ), QgsUnitTypes::encodeUnit( mPatternWidthUnit ) );
   map.insert( QStringLiteral( "pattern_width_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mPatternWidthMapUnitScale ) );
-  map.insert( QStringLiteral( "svg_outline_width_unit" ), QgsUnitTypes::encodeUnit( mSvgOutlineWidthUnit ) );
-  map.insert( QStringLiteral( "svg_outline_width_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mSvgOutlineWidthMapUnitScale ) );
-  map.insert( QStringLiteral( "outline_width_unit" ), QgsUnitTypes::encodeUnit( mOutlineWidthUnit ) );
-  map.insert( QStringLiteral( "outline_width_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mOutlineWidthMapUnitScale ) );
+  map.insert( QStringLiteral( "svg_outline_width_unit" ), QgsUnitTypes::encodeUnit( mSvgStrokeWidthUnit ) );
+  map.insert( QStringLiteral( "svg_outline_width_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mSvgStrokeWidthMapUnitScale ) );
+  map.insert( QStringLiteral( "outline_width_unit" ), QgsUnitTypes::encodeUnit( mStrokeWidthUnit ) );
+  map.insert( QStringLiteral( "outline_width_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mStrokeWidthMapUnitScale ) );
   return map;
 }
 
@@ -2016,8 +2016,8 @@ QgsSVGFillSymbolLayer* QgsSVGFillSymbolLayer::clone() const
   {
     clonedLayer = new QgsSVGFillSymbolLayer( mSvgFilePath, mPatternWidth, mAngle );
     clonedLayer->setSvgFillColor( mColor );
-    clonedLayer->setSvgOutlineColor( mSvgOutlineColor );
-    clonedLayer->setSvgOutlineWidth( mSvgOutlineWidth );
+    clonedLayer->setSvgStrokeColor( mSvgStrokeColor );
+    clonedLayer->setSvgStrokeWidth( mSvgStrokeWidth );
   }
   else
   {
@@ -2026,14 +2026,14 @@ QgsSVGFillSymbolLayer* QgsSVGFillSymbolLayer::clone() const
 
   clonedLayer->setPatternWidthUnit( mPatternWidthUnit );
   clonedLayer->setPatternWidthMapUnitScale( mPatternWidthMapUnitScale );
-  clonedLayer->setSvgOutlineWidthUnit( mSvgOutlineWidthUnit );
-  clonedLayer->setSvgOutlineWidthMapUnitScale( mSvgOutlineWidthMapUnitScale );
-  clonedLayer->setOutlineWidthUnit( mOutlineWidthUnit );
-  clonedLayer->setOutlineWidthMapUnitScale( mOutlineWidthMapUnitScale );
+  clonedLayer->setSvgStrokeWidthUnit( mSvgStrokeWidthUnit );
+  clonedLayer->setSvgStrokeWidthMapUnitScale( mSvgStrokeWidthMapUnitScale );
+  clonedLayer->setStrokeWidthUnit( mStrokeWidthUnit );
+  clonedLayer->setStrokeWidthMapUnitScale( mStrokeWidthMapUnitScale );
 
-  if ( mOutline )
+  if ( mStroke )
   {
-    clonedLayer->setSubSymbol( mOutline->clone() );
+    clonedLayer->setSubSymbol( mStroke->clone() );
   }
   copyDataDefinedProperties( clonedLayer );
   copyPaintEffect( clonedLayer );
@@ -2062,8 +2062,8 @@ void QgsSVGFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, cons
   {
     // encode a parametric SVG reference
     double patternWidth = QgsSymbolLayerUtils::rescaleUom( mPatternWidth, mPatternWidthUnit, props );
-    double outlineWidth = QgsSymbolLayerUtils::rescaleUom( mSvgOutlineWidth, mSvgOutlineWidthUnit, props );
-    QgsSymbolLayerUtils::parametricSvgToSld( doc, graphicElem, mSvgFilePath, mColor, patternWidth, mSvgOutlineColor, outlineWidth );
+    double strokeWidth = QgsSymbolLayerUtils::rescaleUom( mSvgStrokeWidth, mSvgStrokeWidthUnit, props );
+    QgsSymbolLayerUtils::parametricSvgToSld( doc, graphicElem, mSvgFilePath, mColor, patternWidth, mSvgStrokeColor, strokeWidth );
   }
   else
   {
@@ -2086,12 +2086,12 @@ void QgsSVGFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, cons
   }
   QgsSymbolLayerUtils::createRotationElement( doc, graphicElem, angleFunc );
 
-  if ( mOutline )
+  if ( mStroke )
   {
-    // the outline sub symbol should be stored within the Stroke element,
+    // the stroke sub symbol should be stored within the Stroke element,
     // but it will be stored in a separated LineSymbolizer because it could
     // have more than one layer
-    mOutline->toSld( doc, element, props );
+    mStroke->toSld( doc, element, props );
   }
 }
 
@@ -2100,9 +2100,9 @@ QgsSymbolLayer* QgsSVGFillSymbolLayer::createFromSld( QDomElement &element )
   QgsDebugMsg( "Entered." );
 
   QString path, mimeType;
-  QColor fillColor, borderColor;
+  QColor fillColor, strokeColor;
   Qt::PenStyle penStyle;
-  double size, borderWidth;
+  double size, strokeWidth;
 
   QDomElement fillElem = element.firstChildElement( QStringLiteral( "Fill" ) );
   if ( fillElem.isNull() )
@@ -2122,7 +2122,7 @@ QgsSymbolLayer* QgsSVGFillSymbolLayer::createFromSld( QDomElement &element )
   if ( mimeType != QLatin1String( "image/svg+xml" ) )
     return nullptr;
 
-  QgsSymbolLayerUtils::lineFromSld( graphicElem, penStyle, borderColor, borderWidth );
+  QgsSymbolLayerUtils::lineFromSld( graphicElem, penStyle, strokeColor, strokeWidth );
 
   double angle = 0.0;
   QString angleFunc;
@@ -2136,10 +2136,10 @@ QgsSymbolLayer* QgsSVGFillSymbolLayer::createFromSld( QDomElement &element )
 
   QgsSVGFillSymbolLayer* sl = new QgsSVGFillSymbolLayer( path, size, angle );
   sl->setSvgFillColor( fillColor );
-  sl->setSvgOutlineColor( borderColor );
-  sl->setSvgOutlineWidth( borderWidth );
+  sl->setSvgStrokeColor( strokeColor );
+  sl->setSvgStrokeWidth( strokeWidth );
 
-  // try to get the outline
+  // try to get the stroke
   QDomElement strokeElem = element.firstChildElement( QStringLiteral( "Stroke" ) );
   if ( !strokeElem.isNull() )
   {
@@ -2158,8 +2158,8 @@ QgsSymbolLayer* QgsSVGFillSymbolLayer::createFromSld( QDomElement &element )
 void QgsSVGFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext &context )
 {
   if ( !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyWidth ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFile )
-       && !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFillColor ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOutlineColor )
-       && !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOutlineWidth ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyAngle ) )
+       && !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFillColor ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeColor )
+       && !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyAngle ) )
   {
     return; //no data defined settings
   }
@@ -2188,20 +2188,20 @@ void QgsSVGFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext &co
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mColor ) );
     svgFillColor = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyFillColor, context.renderContext().expressionContext(), mColor );
   }
-  QColor svgOutlineColor = mSvgOutlineColor;
-  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOutlineColor ) )
+  QColor svgStrokeColor = mSvgStrokeColor;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeColor ) )
   {
-    context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mSvgOutlineColor ) );
-    svgOutlineColor = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyOutlineColor, context.renderContext().expressionContext(), mSvgOutlineColor );
+    context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mSvgStrokeColor ) );
+    svgStrokeColor = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyStrokeColor, context.renderContext().expressionContext(), mSvgStrokeColor );
   }
-  double outlineWidth = mSvgOutlineWidth;
-  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOutlineWidth ) )
+  double strokeWidth = mSvgStrokeWidth;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth ) )
   {
-    context.setOriginalValueVariable( mSvgOutlineWidth );
-    outlineWidth = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOutlineWidth, context.renderContext().expressionContext(), mSvgOutlineWidth );
+    context.setOriginalValueVariable( mSvgStrokeWidth );
+    strokeWidth = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext(), mSvgStrokeWidth );
   }
-  applyPattern( mBrush, svgFile, width, mPatternWidthUnit, svgFillColor, svgOutlineColor, outlineWidth,
-                mSvgOutlineWidthUnit, context, mPatternWidthMapUnitScale, mSvgOutlineWidthMapUnitScale );
+  applyPattern( mBrush, svgFile, width, mPatternWidthUnit, svgFillColor, svgStrokeColor, strokeWidth,
+                mSvgStrokeWidthUnit, context, mPatternWidthMapUnitScale, mSvgStrokeWidthMapUnitScale );
 
 }
 
@@ -2227,18 +2227,18 @@ void QgsSVGFillSymbolLayer::setDefaultSvgParams()
     return;
   }
 
-  bool hasFillParam, hasFillOpacityParam, hasOutlineParam, hasOutlineWidthParam, hasOutlineOpacityParam;
-  bool hasDefaultFillColor, hasDefaultFillOpacity, hasDefaultOutlineColor, hasDefaultOutlineWidth, hasDefaultOutlineOpacity;
-  QColor defaultFillColor, defaultOutlineColor;
-  double defaultOutlineWidth, defaultFillOpacity, defaultOutlineOpacity;
+  bool hasFillParam, hasFillOpacityParam, hasStrokeParam, hasStrokeWidthParam, hasStrokeOpacityParam;
+  bool hasDefaultFillColor, hasDefaultFillOpacity, hasDefaultStrokeColor, hasDefaultStrokeWidth, hasDefaultStrokeOpacity;
+  QColor defaultFillColor, defaultStrokeColor;
+  double defaultStrokeWidth, defaultFillOpacity, defaultStrokeOpacity;
   QgsApplication::svgCache()->containsParams( mSvgFilePath, hasFillParam, hasDefaultFillColor, defaultFillColor,
       hasFillOpacityParam, hasDefaultFillOpacity, defaultFillOpacity,
-      hasOutlineParam, hasDefaultOutlineColor, defaultOutlineColor,
-      hasOutlineWidthParam, hasDefaultOutlineWidth, defaultOutlineWidth,
-      hasOutlineOpacityParam, hasDefaultOutlineOpacity, defaultOutlineOpacity );
+      hasStrokeParam, hasDefaultStrokeColor, defaultStrokeColor,
+      hasStrokeWidthParam, hasDefaultStrokeWidth, defaultStrokeWidth,
+      hasStrokeOpacityParam, hasDefaultStrokeOpacity, defaultStrokeOpacity );
 
   double newFillOpacity = hasFillOpacityParam ? mColor.alphaF() : 1.0;
-  double newOutlineOpacity = hasOutlineOpacityParam ? mSvgOutlineColor.alphaF() : 1.0;
+  double newStrokeOpacity = hasStrokeOpacityParam ? mSvgStrokeColor.alphaF() : 1.0;
 
   if ( hasDefaultFillColor )
   {
@@ -2249,18 +2249,18 @@ void QgsSVGFillSymbolLayer::setDefaultSvgParams()
   {
     mColor.setAlphaF( defaultFillOpacity );
   }
-  if ( hasDefaultOutlineColor )
+  if ( hasDefaultStrokeColor )
   {
-    mSvgOutlineColor = defaultOutlineColor;
-    mSvgOutlineColor.setAlphaF( newOutlineOpacity );
+    mSvgStrokeColor = defaultStrokeColor;
+    mSvgStrokeColor.setAlphaF( newStrokeOpacity );
   }
-  if ( hasDefaultOutlineOpacity )
+  if ( hasDefaultStrokeOpacity )
   {
-    mSvgOutlineColor.setAlphaF( defaultOutlineOpacity );
+    mSvgStrokeColor.setAlphaF( defaultStrokeOpacity );
   }
-  if ( hasDefaultOutlineWidth )
+  if ( hasDefaultStrokeWidth )
   {
-    mSvgOutlineWidth = defaultOutlineWidth;
+    mSvgStrokeWidth = defaultStrokeWidth;
   }
 }
 
@@ -2277,7 +2277,7 @@ QgsLinePatternFillSymbolLayer::QgsLinePatternFillSymbolLayer()
     , mFillLineSymbol( nullptr )
 {
   setSubSymbol( new QgsLineSymbol() );
-  QgsImageFillSymbolLayer::setSubSymbol( nullptr ); //no outline
+  QgsImageFillSymbolLayer::setSubSymbol( nullptr ); //no stroke
 }
 
 void QgsLinePatternFillSymbolLayer::setLineWidth( double w )
@@ -2473,11 +2473,11 @@ QgsSymbolLayer* QgsLinePatternFillSymbolLayer::create( const QgsStringMap& prope
   }
   if ( properties.contains( QStringLiteral( "outline_width_unit" ) ) )
   {
-    patternLayer->setOutlineWidthUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "outline_width_unit" )] ) );
+    patternLayer->setStrokeWidthUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "outline_width_unit" )] ) );
   }
   if ( properties.contains( QStringLiteral( "outline_width_map_unit_scale" ) ) )
   {
-    patternLayer->setOutlineWidthMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "outline_width_map_unit_scale" )] ) );
+    patternLayer->setStrokeWidthMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "outline_width_map_unit_scale" )] ) );
   }
 
   patternLayer->restoreOldDataDefinedProperties( properties );
@@ -2506,7 +2506,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext& 
   }
 
   const QgsRenderContext& ctx = context.renderContext();
-  //double outlinePixelWidth = lineWidth * QgsSymbolLayerUtils::pixelSizeScaleFactor( ctx,  mLineWidthUnit, mLineWidthMapUnitScale );
+  //double strokePixelWidth = lineWidth * QgsSymbolLayerUtils::pixelSizeScaleFactor( ctx,  mLineWidthUnit, mLineWidthMapUnitScale );
   double outputPixelDist = ctx.convertToPainterUnits( distance, mDistanceUnit, mDistanceMapUnitScale );
   double outputPixelOffset = ctx.convertToPainterUnits( mOffset, mOffsetUnit, mOffsetMapUnitScale );
 
@@ -2795,8 +2795,8 @@ QgsStringMap QgsLinePatternFillSymbolLayer::properties() const
   map.insert( QStringLiteral( "distance_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mDistanceMapUnitScale ) );
   map.insert( QStringLiteral( "line_width_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mLineWidthMapUnitScale ) );
   map.insert( QStringLiteral( "offset_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale ) );
-  map.insert( QStringLiteral( "outline_width_unit" ), QgsUnitTypes::encodeUnit( mOutlineWidthUnit ) );
-  map.insert( QStringLiteral( "outline_width_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mOutlineWidthMapUnitScale ) );
+  map.insert( QStringLiteral( "outline_width_unit" ), QgsUnitTypes::encodeUnit( mStrokeWidthUnit ) );
+  map.insert( QStringLiteral( "outline_width_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mStrokeWidthMapUnitScale ) );
   return map;
 }
 
@@ -2947,7 +2947,7 @@ QgsSymbolLayer* QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &eleme
   sl->setOffset( offset );
   sl->setDistance( size );
 
-  // try to get the outline
+  // try to get the stroke
   QDomElement strokeElem = element.firstChildElement( QStringLiteral( "Stroke" ) );
   if ( !strokeElem.isNull() )
   {
@@ -2983,7 +2983,7 @@ QgsPointPatternFillSymbolLayer::QgsPointPatternFillSymbolLayer()
   mDisplacementX = 0;
   mDisplacementY = 0;
   setSubSymbol( new QgsMarkerSymbol() );
-  QgsImageFillSymbolLayer::setSubSymbol( nullptr ); //no outline
+  QgsImageFillSymbolLayer::setSubSymbol( nullptr ); //no stroke
 }
 
 QgsPointPatternFillSymbolLayer::~QgsPointPatternFillSymbolLayer()
@@ -3090,11 +3090,11 @@ QgsSymbolLayer* QgsPointPatternFillSymbolLayer::create( const QgsStringMap& prop
   }
   if ( properties.contains( QStringLiteral( "outline_width_unit" ) ) )
   {
-    layer->setOutlineWidthUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "outline_width_unit" )] ) );
+    layer->setStrokeWidthUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "outline_width_unit" )] ) );
   }
   if ( properties.contains( QStringLiteral( "outline_width_map_unit_scale" ) ) )
   {
-    layer->setOutlineWidthMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "outline_width_map_unit_scale" )] ) );
+    layer->setStrokeWidthMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "outline_width_map_unit_scale" )] ) );
   }
 
   layer->restoreOldDataDefinedProperties( properties );
@@ -3177,17 +3177,17 @@ void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolRenderContext& contex
 {
   applyPattern( context, mBrush, mDistanceX, mDistanceY, mDisplacementX, mDisplacementY );
 
-  if ( mOutline )
+  if ( mStroke )
   {
-    mOutline->startRender( context.renderContext(), context.fields() );
+    mStroke->startRender( context.renderContext(), context.fields() );
   }
 }
 
 void QgsPointPatternFillSymbolLayer::stopRender( QgsSymbolRenderContext& context )
 {
-  if ( mOutline )
+  if ( mStroke )
   {
-    mOutline->stopRender( context.renderContext() );
+    mStroke->stopRender( context.renderContext() );
   }
 }
 
@@ -3206,8 +3206,8 @@ QgsStringMap QgsPointPatternFillSymbolLayer::properties() const
   map.insert( QStringLiteral( "distance_y_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mDistanceYMapUnitScale ) );
   map.insert( QStringLiteral( "displacement_x_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mDisplacementXMapUnitScale ) );
   map.insert( QStringLiteral( "displacement_y_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mDisplacementYMapUnitScale ) );
-  map.insert( QStringLiteral( "outline_width_unit" ), QgsUnitTypes::encodeUnit( mOutlineWidthUnit ) );
-  map.insert( QStringLiteral( "outline_width_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mOutlineWidthMapUnitScale ) );
+  map.insert( QStringLiteral( "outline_width_unit" ), QgsUnitTypes::encodeUnit( mStrokeWidthUnit ) );
+  map.insert( QStringLiteral( "outline_width_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mStrokeWidthMapUnitScale ) );
   return map;
 }
 

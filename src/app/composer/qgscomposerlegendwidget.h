@@ -71,9 +71,9 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     void composerMapChanged( QgsComposerItem* item );
     void on_mCheckboxResizeContents_toggled( bool checked );
 
-    void on_mRasterBorderGroupBox_toggled( bool state );
-    void on_mRasterBorderWidthSpinBox_valueChanged( double d );
-    void on_mRasterBorderColorButton_colorChanged( const QColor& newColor );
+    void on_mRasterStrokeGroupBox_toggled( bool state );
+    void on_mRasterStrokeWidthSpinBox_valueChanged( double d );
+    void on_mRasterStrokeColorButton_colorChanged( const QColor& newColor );
 
     //item manipulation
     void on_mMoveDownToolButton_clicked();

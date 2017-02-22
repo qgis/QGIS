@@ -204,7 +204,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
       @param width item width (mm)
       @param height item height (mm)
       @param itemPoint reference point which coincides with specified position
-      @param posIncludesFrame set to true if the position and size arguments include the item's frame border
+      @param posIncludesFrame set to true if the position and size arguments include the item's frame stroke
       @param page if page > 0, y is interpreted as relative to the origin of the specified page, if page <= 0, y is in absolute canvas coordinates.
        a page number of 1 corresponds to the first page.
       */
@@ -227,83 +227,83 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     /** Whether this item has a frame or not.
      * @returns true if there is a frame around this item, otherwise false.
      * @see setFrameEnabled
-     * @see frameOutlineWidth
+     * @see frameStrokeWidth
      * @see frameJoinStyle
-     * @see frameOutlineColor
+     * @see frameStrokeColor
      */
     bool hasFrame() const {return mFrame;}
 
     /** Set whether this item has a frame drawn around it or not.
      * @param drawFrame draw frame
      * @see hasFrame
-     * @see setFrameOutlineWidth
+     * @see setFrameStrokeWidth
      * @see setFrameJoinStyle
-     * @see setFrameOutlineColor
+     * @see setFrameStrokeColor
      */
     virtual void setFrameEnabled( const bool drawFrame );
 
-    /** Sets frame outline color
-     * @param color new color for outline frame
+    /** Sets frame stroke color
+     * @param color new color for stroke frame
      * @note introduced in 2.6
-     * @see frameOutlineColor
+     * @see frameStrokeColor
      * @see setFrameEnabled
      * @see setFrameJoinStyle
-     * @see setFrameOutlineWidth
+     * @see setFrameStrokeWidth
      */
-    virtual void setFrameOutlineColor( const QColor& color );
+    virtual void setFrameStrokeColor( const QColor& color );
 
-    /** Returns the frame's outline color. Only used if hasFrame is true.
-     * @returns frame outline color
+    /** Returns the frame's stroke color. Only used if hasFrame is true.
+     * @returns frame stroke color
      * @note introduced in 2.6
      * @see hasFrame
-     * @see setFrameOutlineColor
+     * @see setFrameStrokeColor
      * @see frameJoinStyle
-     * @see setFrameOutlineColor
+     * @see setFrameStrokeColor
      */
-    QColor frameOutlineColor() const { return mFrameColor; }
+    QColor frameStrokeColor() const { return mFrameColor; }
 
-    /** Sets frame outline width
-     * @param outlineWidth new width for outline frame
+    /** Sets frame stroke width
+     * @param strokeWidth new width for stroke frame
      * @note introduced in 2.2
-     * @see frameOutlineWidth
+     * @see frameStrokeWidth
      * @see setFrameEnabled
      * @see setFrameJoinStyle
-     * @see setFrameOutlineColor
+     * @see setFrameStrokeColor
      */
-    virtual void setFrameOutlineWidth( const double outlineWidth );
+    virtual void setFrameStrokeWidth( const double strokeWidth );
 
-    /** Returns the frame's outline width. Only used if hasFrame is true.
-     * @returns Frame outline width
+    /** Returns the frame's stroke width. Only used if hasFrame is true.
+     * @returns Frame stroke width
      * @note introduced in 2.3
      * @see hasFrame
-     * @see setFrameOutlineWidth
+     * @see setFrameStrokeWidth
      * @see frameJoinStyle
-     * @see frameOutlineColor
+     * @see frameStrokeColor
      */
-    double frameOutlineWidth() const { return mFrameWidth; }
+    double frameStrokeWidth() const { return mFrameWidth; }
 
     /** Returns the join style used for drawing the item's frame
-     * @returns Join style for outline frame
+     * @returns Join style for stroke frame
      * @note introduced in 2.3
      * @see hasFrame
      * @see setFrameJoinStyle
-     * @see frameOutlineWidth
-     * @see frameOutlineColor
+     * @see frameStrokeWidth
+     * @see frameStrokeColor
      */
     Qt::PenJoinStyle frameJoinStyle() const { return mFrameJoinStyle; }
 
     /** Sets join style used when drawing the item's frame
-     * @param style Join style for outline frame
+     * @param style Join style for stroke frame
      * @note introduced in 2.3
      * @see setFrameEnabled
      * @see frameJoinStyle
-     * @see setFrameOutlineWidth
-     * @see setFrameOutlineColor
+     * @see setFrameStrokeWidth
+     * @see setFrameStrokeColor
      */
     void setFrameJoinStyle( const Qt::PenJoinStyle style );
 
     /** Returns the estimated amount the item's frame bleeds outside the item's
-     * actual rectangle. For instance, if the item has a 2mm frame outline, then
+     * actual rectangle. For instance, if the item has a 2mm frame stroke, then
      * 1mm of this frame is drawn outside the item's rect. In this case the
      * return value will be 1.0
      * @note introduced in 2.2

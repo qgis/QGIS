@@ -111,7 +111,7 @@ QgsGeometryRubberBand* QgsMapToolEdit::createGeometryRubberBand( QgsWkbTypes::Ge
     rb->setLineStyle( Qt::DotLine );
   }
   color.setAlphaF( myAlpha );
-  rb->setOutlineColor( color );
+  rb->setStrokeColor( color );
   rb->setFillColor( color );
   rb->show();
   return rb;

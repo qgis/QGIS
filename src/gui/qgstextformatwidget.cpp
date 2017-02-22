@@ -85,7 +85,7 @@ void QgsTextFormatWidget::initWidget()
   mShapeRadiusUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits
                                     << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderPercentage
                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mShapeBorderWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mShapeStrokeWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                          << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mShadowOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                      << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
@@ -150,8 +150,8 @@ void QgsTextFormatWidget::initWidget()
   btnBufferColor->setColorDialogTitle( tr( "Select buffer color" ) );
   btnBufferColor->setContext( QStringLiteral( "labeling" ) );
   btnBufferColor->setDefaultColor( Qt::white );
-  mShapeBorderColorBtn->setColorDialogTitle( tr( "Select border color" ) );
-  mShapeBorderColorBtn->setContext( QStringLiteral( "labeling" ) );
+  mShapeStrokeColorBtn->setColorDialogTitle( tr( "Select stroke color" ) );
+  mShapeStrokeColorBtn->setContext( QStringLiteral( "labeling" ) );
   mShapeFillColorBtn->setColorDialogTitle( tr( "Select fill color" ) );
   mShapeFillColorBtn->setContext( QStringLiteral( "labeling" ) );
   mShadowColorBtn->setColorDialogTitle( tr( "Select shadow color" ) );
@@ -405,12 +405,12 @@ void QgsTextFormatWidget::initWidget()
   << mShadowUnderDDBtn
   << mShapeBlendCmbBx
   << mShapeBlendModeDDBtn
-  << mShapeBorderColorBtn
-  << mShapeBorderColorDDBtn
-  << mShapeBorderUnitsDDBtn
-  << mShapeBorderWidthDDBtn
-  << mShapeBorderWidthSpnBx
-  << mShapeBorderWidthUnitWidget
+  << mShapeStrokeColorBtn
+  << mShapeStrokeColorDDBtn
+  << mShapeStrokeUnitsDDBtn
+  << mShapeStrokeWidthDDBtn
+  << mShapeStrokeWidthSpnBx
+  << mShapeStrokeWidthUnitWidget
   << mShapeDrawChkBx
   << mShapeDrawDDBtn
   << mShapeFillColorBtn
@@ -670,10 +670,10 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat& format )
   mShapeRadiusUnitWidget->setMapUnitScale( background.radiiMapUnitScale() );
 
   mShapeFillColorBtn->setColor( background.fillColor() );
-  mShapeBorderColorBtn->setColor( background.borderColor() );
-  mShapeBorderWidthSpnBx->setValue( background.borderWidth() );
-  mShapeBorderWidthUnitWidget->setUnit( background.borderWidthUnit() );
-  mShapeBorderWidthUnitWidget->setMapUnitScale( background.borderWidthMapUnitScale() );
+  mShapeStrokeColorBtn->setColor( background.strokeColor() );
+  mShapeStrokeWidthSpnBx->setValue( background.strokeWidth() );
+  mShapeStrokeWidthUnitWidget->setUnit( background.strokeWidthUnit() );
+  mShapeStrokeWidthUnitWidget->setMapUnitScale( background.strokeWidthMapUnitScale() );
   mShapePenStyleCmbBx->setPenJoinStyle( background.joinStyle() );
 
   mShapeTranspSpinBox->setValue( 100 - background.opacity() * 100.0 );
@@ -756,10 +756,10 @@ QgsTextFormat QgsTextFormatWidget::format() const
   background.setRadiiMapUnitScale( mShapeRadiusUnitWidget->getMapUnitScale() );
 
   background.setFillColor( mShapeFillColorBtn->color() );
-  background.setBorderColor( mShapeBorderColorBtn->color() );
-  background.setBorderWidth( mShapeBorderWidthSpnBx->value() );
-  background.setBorderWidthUnit( mShapeBorderWidthUnitWidget->unit() );
-  background.setBorderWidthMapUnitScale( mShapeBorderWidthUnitWidget->getMapUnitScale() );
+  background.setStrokeColor( mShapeStrokeColorBtn->color() );
+  background.setStrokeWidth( mShapeStrokeWidthSpnBx->value() );
+  background.setStrokeWidthUnit( mShapeStrokeWidthUnitWidget->unit() );
+  background.setStrokeWidthMapUnitScale( mShapeStrokeWidthUnitWidget->getMapUnitScale() );
   background.setJoinStyle( mShapePenStyleCmbBx->penJoinStyle() );
   background.setOpacity( 1.0 - mShapeTranspSpinBox->value() / 100.0 );
   background.setBlendMode( mShapeBlendCmbBx->blendMode() );
@@ -1138,8 +1138,8 @@ void QgsTextFormatWidget::on_mShapeTypeCmbBx_currentIndexChanged( int index )
   // SVG parameter setting doesn't support color's alpha component yet
   mShapeFillColorBtn->setAllowAlpha( !isSVG );
   mShapeFillColorBtn->setButtonBackground();
-  mShapeBorderColorBtn->setAllowAlpha( !isSVG );
-  mShapeBorderColorBtn->setButtonBackground();
+  mShapeStrokeColorBtn->setAllowAlpha( !isSVG );
+  mShapeStrokeColorBtn->setButtonBackground();
 
   // configure SVG parameter widgets
   mShapeSVGParamsBtn->setVisible( isSVG );
@@ -1152,18 +1152,18 @@ void QgsTextFormatWidget::on_mShapeTypeCmbBx_currentIndexChanged( int index )
     mShapeFillColorLabel->setEnabled( true );
     mShapeFillColorBtn->setEnabled( true );
     mShapeFillColorDDBtn->setEnabled( true );
-    mShapeBorderColorLabel->setEnabled( true );
-    mShapeBorderColorBtn->setEnabled( true );
-    mShapeBorderColorDDBtn->setEnabled( true );
-    mShapeBorderWidthLabel->setEnabled( true );
-    mShapeBorderWidthSpnBx->setEnabled( true );
-    mShapeBorderWidthDDBtn->setEnabled( true );
+    mShapeStrokeColorLabel->setEnabled( true );
+    mShapeStrokeColorBtn->setEnabled( true );
+    mShapeStrokeColorDDBtn->setEnabled( true );
+    mShapeStrokeWidthLabel->setEnabled( true );
+    mShapeStrokeWidthSpnBx->setEnabled( true );
+    mShapeStrokeWidthDDBtn->setEnabled( true );
   }
-  // TODO: fix overriding SVG symbol's border width units in QgsSvgCache
+  // TODO: fix overriding SVG symbol's stroke width units in QgsSvgCache
   // currently broken, fall back to symbol units only
-  mShapeBorderWidthUnitWidget->setVisible( !isSVG );
+  mShapeStrokeWidthUnitWidget->setVisible( !isSVG );
   mShapeSVGUnitsLabel->setVisible( isSVG );
-  mShapeBorderUnitsDDBtn->setEnabled( !isSVG );
+  mShapeStrokeUnitsDDBtn->setEnabled( !isSVG );
 }
 
 void QgsTextFormatWidget::on_mShapeSVGPathLineEdit_textChanged( const QString& text )
@@ -1217,15 +1217,15 @@ void QgsTextFormatWidget::updateSvgWidgets( const QString& svgPath )
   mShapeSVGPathLineEdit->setStyleSheet( QString( !validSVG ? "QLineEdit{ color: rgb(225, 0, 0); }" : "" ) );
   mShapeSVGPathLineEdit->setToolTip( !validSVG ? tr( "File not found" ) : resolvedPath );
 
-  QColor fill, outline;
-  double outlineWidth = 0.0;
-  bool fillParam = false, outlineParam = false, outlineWidthParam = false;
+  QColor fill, stroke;
+  double strokeWidth = 0.0;
+  bool fillParam = false, strokeParam = false, strokeWidthParam = false;
   if ( validSVG )
   {
-    QgsApplication::svgCache()->containsParams( resolvedPath, fillParam, fill, outlineParam, outline, outlineWidthParam, outlineWidth );
+    QgsApplication::svgCache()->containsParams( resolvedPath, fillParam, fill, strokeParam, stroke, strokeWidthParam, strokeWidth );
   }
 
-  mShapeSVGParamsBtn->setEnabled( validSVG && ( fillParam || outlineParam || outlineWidthParam ) );
+  mShapeSVGParamsBtn->setEnabled( validSVG && ( fillParam || strokeParam || strokeWidthParam ) );
 
   mShapeFillColorLabel->setEnabled( validSVG && fillParam );
   mShapeFillColorBtn->setEnabled( validSVG && fillParam );
@@ -1233,23 +1233,23 @@ void QgsTextFormatWidget::updateSvgWidgets( const QString& svgPath )
   if ( mLoadSvgParams && validSVG && fillParam )
     mShapeFillColorBtn->setColor( fill );
 
-  mShapeBorderColorLabel->setEnabled( validSVG && outlineParam );
-  mShapeBorderColorBtn->setEnabled( validSVG && outlineParam );
-  mShapeBorderColorDDBtn->setEnabled( validSVG && outlineParam );
-  if ( mLoadSvgParams && validSVG && outlineParam )
-    mShapeBorderColorBtn->setColor( outline );
+  mShapeStrokeColorLabel->setEnabled( validSVG && strokeParam );
+  mShapeStrokeColorBtn->setEnabled( validSVG && strokeParam );
+  mShapeStrokeColorDDBtn->setEnabled( validSVG && strokeParam );
+  if ( mLoadSvgParams && validSVG && strokeParam )
+    mShapeStrokeColorBtn->setColor( stroke );
 
-  mShapeBorderWidthLabel->setEnabled( validSVG && outlineWidthParam );
-  mShapeBorderWidthSpnBx->setEnabled( validSVG && outlineWidthParam );
-  mShapeBorderWidthDDBtn->setEnabled( validSVG && outlineWidthParam );
-  if ( mLoadSvgParams && validSVG && outlineWidthParam )
-    mShapeBorderWidthSpnBx->setValue( outlineWidth );
+  mShapeStrokeWidthLabel->setEnabled( validSVG && strokeWidthParam );
+  mShapeStrokeWidthSpnBx->setEnabled( validSVG && strokeWidthParam );
+  mShapeStrokeWidthDDBtn->setEnabled( validSVG && strokeWidthParam );
+  if ( mLoadSvgParams && validSVG && strokeWidthParam )
+    mShapeStrokeWidthSpnBx->setValue( strokeWidth );
 
-  // TODO: fix overriding SVG symbol's border width units in QgsSvgCache
+  // TODO: fix overriding SVG symbol's stroke width units in QgsSvgCache
   // currently broken, fall back to symbol's
-  //mShapeBorderWidthUnitWidget->setEnabled( validSVG && outlineWidthParam );
-  //mShapeBorderUnitsDDBtn->setEnabled( validSVG && outlineWidthParam );
-  mShapeSVGUnitsLabel->setEnabled( validSVG && outlineWidthParam );
+  //mShapeStrokeWidthUnitWidget->setEnabled( validSVG && strokeWidthParam );
+  //mShapeStrokeUnitsDDBtn->setEnabled( validSVG && strokeWidthParam );
+  mShapeSVGUnitsLabel->setEnabled( validSVG && strokeWidthParam );
 }
 
 void QgsTextFormatWidget::on_mShapeSVGSelectorBtn_clicked()

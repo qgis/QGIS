@@ -534,44 +534,44 @@ void QgsTextBackgroundSettings::setFillColor( const QColor &color )
   d->fillColor = color;
 }
 
-QColor QgsTextBackgroundSettings::borderColor() const
+QColor QgsTextBackgroundSettings::strokeColor() const
 {
-  return d->borderColor;
+  return d->strokeColor;
 }
 
-void QgsTextBackgroundSettings::setBorderColor( const QColor &color )
+void QgsTextBackgroundSettings::setStrokeColor( const QColor &color )
 {
-  d->borderColor = color;
+  d->strokeColor = color;
 }
 
-double QgsTextBackgroundSettings::borderWidth() const
+double QgsTextBackgroundSettings::strokeWidth() const
 {
-  return d->borderWidth;
+  return d->strokeWidth;
 }
 
-void QgsTextBackgroundSettings::setBorderWidth( double width )
+void QgsTextBackgroundSettings::setStrokeWidth( double width )
 {
-  d->borderWidth = width;
+  d->strokeWidth = width;
 }
 
-QgsUnitTypes::RenderUnit QgsTextBackgroundSettings::borderWidthUnit() const
+QgsUnitTypes::RenderUnit QgsTextBackgroundSettings::strokeWidthUnit() const
 {
-  return d->borderWidthUnits;
+  return d->strokeWidthUnits;
 }
 
-void QgsTextBackgroundSettings::setBorderWidthUnit( QgsUnitTypes::RenderUnit units )
+void QgsTextBackgroundSettings::setStrokeWidthUnit( QgsUnitTypes::RenderUnit units )
 {
-  d->borderWidthUnits = units;
+  d->strokeWidthUnits = units;
 }
 
-QgsMapUnitScale QgsTextBackgroundSettings::borderWidthMapUnitScale() const
+QgsMapUnitScale QgsTextBackgroundSettings::strokeWidthMapUnitScale() const
 {
-  return d->borderWidthMapUnitScale;
+  return d->strokeWidthMapUnitScale;
 }
 
-void QgsTextBackgroundSettings::setBorderWidthMapUnitScale( const QgsMapUnitScale &scale )
+void QgsTextBackgroundSettings::setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale )
 {
-  d->borderWidthMapUnitScale = scale;
+  d->strokeWidthMapUnitScale = scale;
 }
 
 Qt::PenJoinStyle QgsTextBackgroundSettings::joinStyle() const
@@ -660,25 +660,25 @@ void QgsTextBackgroundSettings::readFromLayer( QgsVectorLayer* layer )
     d->radiiMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( QStringLiteral( "labeling/shapeRadiiMapUnitScale" ) ).toString() );
   }
   d->fillColor = _readColor( layer, QStringLiteral( "labeling/shapeFillColor" ), Qt::white, true );
-  d->borderColor = _readColor( layer, QStringLiteral( "labeling/shapeBorderColor" ), Qt::darkGray, true );
-  d->borderWidth = layer->customProperty( QStringLiteral( "labeling/shapeBorderWidth" ), QVariant( .0 ) ).toDouble();
+  d->strokeColor = _readColor( layer, QStringLiteral( "labeling/shapeBorderColor" ), Qt::darkGray, true );
+  d->strokeWidth = layer->customProperty( QStringLiteral( "labeling/shapeBorderWidth" ), QVariant( .0 ) ).toDouble();
   if ( layer->customProperty( QStringLiteral( "labeling/shapeBorderWidthUnit" ) ).toString().isEmpty() )
   {
-    d->borderWidthUnits = convertFromOldLabelUnit( layer->customProperty( QStringLiteral( "labeling/shapeBorderWidthUnits" ), 0 ).toUInt() );
+    d->strokeWidthUnits = convertFromOldLabelUnit( layer->customProperty( QStringLiteral( "labeling/shapeBorderWidthUnits" ), 0 ).toUInt() );
   }
   else
   {
-    d->borderWidthUnits = QgsUnitTypes::decodeRenderUnit( layer->customProperty( QStringLiteral( "labeling/shapeBorderWidthUnit" ) ).toString() );
+    d->strokeWidthUnits = QgsUnitTypes::decodeRenderUnit( layer->customProperty( QStringLiteral( "labeling/shapeBorderWidthUnit" ) ).toString() );
   }
   if ( layer->customProperty( QStringLiteral( "labeling/shapeBorderWidthMapUnitScale" ) ).toString().isEmpty() )
   {
     //fallback to older property
-    d->borderWidthMapUnitScale.minScale = layer->customProperty( QStringLiteral( "labeling/shapeBorderWidthMapUnitMinScale" ), 0.0 ).toDouble();
-    d->borderWidthMapUnitScale.maxScale = layer->customProperty( QStringLiteral( "labeling/shapeBorderWidthMapUnitMaxScale" ), 0.0 ).toDouble();
+    d->strokeWidthMapUnitScale.minScale = layer->customProperty( QStringLiteral( "labeling/shapeBorderWidthMapUnitMinScale" ), 0.0 ).toDouble();
+    d->strokeWidthMapUnitScale.maxScale = layer->customProperty( QStringLiteral( "labeling/shapeBorderWidthMapUnitMaxScale" ), 0.0 ).toDouble();
   }
   else
   {
-    d->borderWidthMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( QStringLiteral( "labeling/shapeBorderWidthMapUnitScale" ) ).toString() );
+    d->strokeWidthMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( QStringLiteral( "labeling/shapeBorderWidthMapUnitScale" ) ).toString() );
   }
   d->joinStyle = static_cast< Qt::PenJoinStyle >( layer->customProperty( QStringLiteral( "labeling/shapeJoinStyle" ), QVariant( Qt::BevelJoin ) ).toUInt() );
 
@@ -715,10 +715,10 @@ void QgsTextBackgroundSettings::writeToLayer( QgsVectorLayer* layer ) const
   layer->setCustomProperty( QStringLiteral( "labeling/shapeRadiiUnit" ), QgsUnitTypes::encodeUnit( d->radiiUnits ) );
   layer->setCustomProperty( QStringLiteral( "labeling/shapeRadiiMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->radiiMapUnitScale ) );
   _writeColor( layer, QStringLiteral( "labeling/shapeFillColor" ), d->fillColor, true );
-  _writeColor( layer, QStringLiteral( "labeling/shapeBorderColor" ), d->borderColor, true );
-  layer->setCustomProperty( QStringLiteral( "labeling/shapeBorderWidth" ), d->borderWidth );
-  layer->setCustomProperty( QStringLiteral( "labeling/shapeBorderWidthUnit" ), QgsUnitTypes::encodeUnit( d->borderWidthUnits ) );
-  layer->setCustomProperty( QStringLiteral( "labeling/shapeBorderWidthMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->borderWidthMapUnitScale ) );
+  _writeColor( layer, QStringLiteral( "labeling/shapeBorderColor" ), d->strokeColor, true );
+  layer->setCustomProperty( QStringLiteral( "labeling/shapeBorderWidth" ), d->strokeWidth );
+  layer->setCustomProperty( QStringLiteral( "labeling/shapeBorderWidthUnit" ), QgsUnitTypes::encodeUnit( d->strokeWidthUnits ) );
+  layer->setCustomProperty( QStringLiteral( "labeling/shapeBorderWidthMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->strokeWidthMapUnitScale ) );
   layer->setCustomProperty( QStringLiteral( "labeling/shapeJoinStyle" ), static_cast< unsigned int >( d->joinStyle ) );
   layer->setCustomProperty( QStringLiteral( "labeling/shapeOpacity" ), d->opacity );
   layer->setCustomProperty( QStringLiteral( "labeling/shapeBlendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
@@ -799,26 +799,26 @@ void QgsTextBackgroundSettings::readXml( const QDomElement& elem )
     d->radiiMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( backgroundElem.attribute( QStringLiteral( "shapeRadiiMapUnitScale" ) ) );
   }
   d->fillColor = QgsSymbolLayerUtils::decodeColor( backgroundElem.attribute( QStringLiteral( "shapeFillColor" ), QgsSymbolLayerUtils::encodeColor( Qt::white ) ) );
-  d->borderColor = QgsSymbolLayerUtils::decodeColor( backgroundElem.attribute( QStringLiteral( "shapeBorderColor" ), QgsSymbolLayerUtils::encodeColor( Qt::darkGray ) ) );
-  d->borderWidth = backgroundElem.attribute( QStringLiteral( "shapeBorderWidth" ), QStringLiteral( "0" ) ).toDouble();
+  d->strokeColor = QgsSymbolLayerUtils::decodeColor( backgroundElem.attribute( QStringLiteral( "shapeBorderColor" ), QgsSymbolLayerUtils::encodeColor( Qt::darkGray ) ) );
+  d->strokeWidth = backgroundElem.attribute( QStringLiteral( "shapeBorderWidth" ), QStringLiteral( "0" ) ).toDouble();
 
   if ( !backgroundElem.hasAttribute( QStringLiteral( "shapeBorderWidthUnit" ) ) )
   {
-    d->borderWidthUnits = convertFromOldLabelUnit( backgroundElem.attribute( QStringLiteral( "shapeBorderWidthUnits" ) ).toUInt() );
+    d->strokeWidthUnits = convertFromOldLabelUnit( backgroundElem.attribute( QStringLiteral( "shapeBorderWidthUnits" ) ).toUInt() );
   }
   else
   {
-    d->borderWidthUnits = QgsUnitTypes::decodeRenderUnit( backgroundElem.attribute( QStringLiteral( "shapeBorderWidthUnit" ) ) );
+    d->strokeWidthUnits = QgsUnitTypes::decodeRenderUnit( backgroundElem.attribute( QStringLiteral( "shapeBorderWidthUnit" ) ) );
   }
   if ( !backgroundElem.hasAttribute( QStringLiteral( "shapeBorderWidthMapUnitScale" ) ) )
   {
     //fallback to older property
-    d->borderWidthMapUnitScale.minScale = backgroundElem.attribute( QStringLiteral( "shapeBorderWidthMapUnitMinScale" ), QStringLiteral( "0" ) ).toDouble();
-    d->borderWidthMapUnitScale.maxScale = backgroundElem.attribute( QStringLiteral( "shapeBorderWidthMapUnitMaxScale" ), QStringLiteral( "0" ) ).toDouble();
+    d->strokeWidthMapUnitScale.minScale = backgroundElem.attribute( QStringLiteral( "shapeBorderWidthMapUnitMinScale" ), QStringLiteral( "0" ) ).toDouble();
+    d->strokeWidthMapUnitScale.maxScale = backgroundElem.attribute( QStringLiteral( "shapeBorderWidthMapUnitMaxScale" ), QStringLiteral( "0" ) ).toDouble();
   }
   else
   {
-    d->borderWidthMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( backgroundElem.attribute( QStringLiteral( "shapeBorderWidthMapUnitScale" ) ) );
+    d->strokeWidthMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( backgroundElem.attribute( QStringLiteral( "shapeBorderWidthMapUnitScale" ) ) );
   }
   d->joinStyle = static_cast< Qt::PenJoinStyle >( backgroundElem.attribute( QStringLiteral( "shapeJoinStyle" ), QString::number( Qt::BevelJoin ) ).toUInt() );
 
@@ -858,10 +858,10 @@ QDomElement QgsTextBackgroundSettings::writeXml( QDomDocument& doc ) const
   backgroundElem.setAttribute( QStringLiteral( "shapeRadiiUnit" ), QgsUnitTypes::encodeUnit( d->radiiUnits ) );
   backgroundElem.setAttribute( QStringLiteral( "shapeRadiiMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->radiiMapUnitScale ) );
   backgroundElem.setAttribute( QStringLiteral( "shapeFillColor" ), QgsSymbolLayerUtils::encodeColor( d->fillColor ) );
-  backgroundElem.setAttribute( QStringLiteral( "shapeBorderColor" ), QgsSymbolLayerUtils::encodeColor( d->borderColor ) );
-  backgroundElem.setAttribute( QStringLiteral( "shapeBorderWidth" ), d->borderWidth );
-  backgroundElem.setAttribute( QStringLiteral( "shapeBorderWidthUnit" ), QgsUnitTypes::encodeUnit( d->borderWidthUnits ) );
-  backgroundElem.setAttribute( QStringLiteral( "shapeBorderWidthMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->borderWidthMapUnitScale ) );
+  backgroundElem.setAttribute( QStringLiteral( "shapeBorderColor" ), QgsSymbolLayerUtils::encodeColor( d->strokeColor ) );
+  backgroundElem.setAttribute( QStringLiteral( "shapeBorderWidth" ), d->strokeWidth );
+  backgroundElem.setAttribute( QStringLiteral( "shapeBorderWidthUnit" ), QgsUnitTypes::encodeUnit( d->strokeWidthUnits ) );
+  backgroundElem.setAttribute( QStringLiteral( "shapeBorderWidthMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->strokeWidthMapUnitScale ) );
   backgroundElem.setAttribute( QStringLiteral( "shapeJoinStyle" ), static_cast< unsigned int >( d->joinStyle ) );
   backgroundElem.setAttribute( QStringLiteral( "shapeOpacity" ), d->opacity );
   backgroundElem.setAttribute( QStringLiteral( "shapeBlendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
@@ -2011,9 +2011,9 @@ void QgsTextRenderer::drawBackground( QgsRenderContext& context, QgsTextRenderer
     //                       tmpLyr.shapeOffsetUnits == QgsPalLayerSettings::MapUnits ? QgsUnitTypes::MapUnit : QgsUnitTypes::MM );
 
     map[QStringLiteral( "fill" )] = background.fillColor().name();
-    map[QStringLiteral( "outline" )] = background.borderColor().name();
-    map[QStringLiteral( "outline-width" )] = QString::number( background.borderWidth() );
-    map[QStringLiteral( "outline_width_unit" )] = QgsUnitTypes::encodeUnit( background.borderWidthUnit() );
+    map[QStringLiteral( "outline" )] = background.strokeColor().name();
+    map[QStringLiteral( "outline-width" )] = QString::number( background.strokeWidth() );
+    map[QStringLiteral( "outline_width_unit" )] = QgsUnitTypes::encodeUnit( background.strokeWidthUnit() );
 
     if ( format.shadow().enabled() && format.shadow().shadowPlacement() == QgsTextShadowSettings::ShadowShape )
     {
@@ -2048,7 +2048,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext& context, QgsTextRenderer
       svgp.end();
 
       component.picture = svgPict;
-      // TODO: when SVG symbol's border width/units is fixed in QgsSvgCache, adjust for it here
+      // TODO: when SVG symbol's stroke width/units is fixed in QgsSvgCache, adjust for it here
       component.pictureBuffer = 0.0;
 
       component.size = QSizeF( sizeOut, sizeOut );
@@ -2164,12 +2164,12 @@ void QgsTextRenderer::drawBackground( QgsRenderContext& context, QgsTextRenderer
     p->translate( QPointF( xoff, yoff ) );
     p->rotate( component.rotationOffset );
 
-    double penSize = context.convertToPainterUnits( background.borderWidth(), background.borderWidthUnit(), background.borderWidthMapUnitScale() );
+    double penSize = context.convertToPainterUnits( background.strokeWidth(), background.strokeWidthUnit(), background.strokeWidthMapUnitScale() );
 
     QPen pen;
-    if ( background.borderWidth() > 0 )
+    if ( background.strokeWidth() > 0 )
     {
-      pen.setColor( background.borderColor() );
+      pen.setColor( background.strokeColor() );
       pen.setWidthF( penSize );
       if ( background.type() == QgsTextBackgroundSettings::ShapeRectangle )
         pen.setJoinStyle( background.joinStyle() );

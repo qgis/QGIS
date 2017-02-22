@@ -325,14 +325,14 @@ void QgsComposerLegend::setSplitLayer( bool s ) { mSettings.setSplitLayer( s ); 
 bool QgsComposerLegend::equalColumnWidth() const { return mSettings.equalColumnWidth(); }
 void QgsComposerLegend::setEqualColumnWidth( bool s ) { mSettings.setEqualColumnWidth( s ); }
 
-bool QgsComposerLegend::drawRasterBorder() const { return mSettings.drawRasterBorder(); }
-void QgsComposerLegend::setDrawRasterBorder( bool enabled ) { mSettings.setDrawRasterBorder( enabled ); }
+bool QgsComposerLegend::drawRasterStroke() const { return mSettings.drawRasterStroke(); }
+void QgsComposerLegend::setDrawRasterStroke( bool enabled ) { mSettings.setDrawRasterStroke( enabled ); }
 
-QColor QgsComposerLegend::rasterBorderColor() const { return mSettings.rasterBorderColor(); }
-void QgsComposerLegend::setRasterBorderColor( const QColor& color ) { mSettings.setRasterBorderColor( color ); }
+QColor QgsComposerLegend::rasterStrokeColor() const { return mSettings.rasterStrokeColor(); }
+void QgsComposerLegend::setRasterStrokeColor( const QColor& color ) { mSettings.setRasterStrokeColor( color ); }
 
-double QgsComposerLegend::rasterBorderWidth() const { return mSettings.rasterBorderWidth(); }
-void QgsComposerLegend::setRasterBorderWidth( double width ) { mSettings.setRasterBorderWidth( width ); }
+double QgsComposerLegend::rasterStrokeWidth() const { return mSettings.rasterStrokeWidth(); }
+void QgsComposerLegend::setRasterStrokeWidth( double width ) { mSettings.setRasterStrokeWidth( width ); }
 
 void QgsComposerLegend::synchronizeWithModel()
 {
@@ -376,9 +376,9 @@ bool QgsComposerLegend::writeXml( QDomElement& elem, QDomDocument & doc ) const
   composerLegendElem.setAttribute( QStringLiteral( "symbolHeight" ), QString::number( mSettings.symbolSize().height() ) );
   composerLegendElem.setAttribute( QStringLiteral( "lineSpacing" ), QString::number( mSettings.lineSpacing() ) );
 
-  composerLegendElem.setAttribute( QStringLiteral( "rasterBorder" ), mSettings.drawRasterBorder() );
-  composerLegendElem.setAttribute( QStringLiteral( "rasterBorderColor" ), QgsSymbolLayerUtils::encodeColor( mSettings.rasterBorderColor() ) );
-  composerLegendElem.setAttribute( QStringLiteral( "rasterBorderWidth" ), QString::number( mSettings.rasterBorderWidth() ) );
+  composerLegendElem.setAttribute( QStringLiteral( "rasterBorder" ), mSettings.drawRasterStroke() );
+  composerLegendElem.setAttribute( QStringLiteral( "rasterBorderColor" ), QgsSymbolLayerUtils::encodeColor( mSettings.rasterStrokeColor() ) );
+  composerLegendElem.setAttribute( QStringLiteral( "rasterBorderWidth" ), QString::number( mSettings.rasterStrokeWidth() ) );
 
   composerLegendElem.setAttribute( QStringLiteral( "wmsLegendWidth" ), QString::number( mSettings.wmsLegendSize().width() ) );
   composerLegendElem.setAttribute( QStringLiteral( "wmsLegendHeight" ), QString::number( mSettings.wmsLegendSize().height() ) );
@@ -510,9 +510,9 @@ bool QgsComposerLegend::readXml( const QDomElement& itemElem, const QDomDocument
   mSettings.setWmsLegendSize( QSizeF( itemElem.attribute( QStringLiteral( "wmsLegendWidth" ), QStringLiteral( "50" ) ).toDouble(), itemElem.attribute( QStringLiteral( "wmsLegendHeight" ), QStringLiteral( "25" ) ).toDouble() ) );
   mSettings.setLineSpacing( itemElem.attribute( QStringLiteral( "lineSpacing" ), "1.0" ).toDouble() );
 
-  mSettings.setDrawRasterBorder( itemElem.attribute( QStringLiteral( "rasterBorder" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
-  mSettings.setRasterBorderColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "rasterBorderColor" ), QStringLiteral( "0,0,0" ) ) ) );
-  mSettings.setRasterBorderWidth( itemElem.attribute( QStringLiteral( "rasterBorderWidth" ), QStringLiteral( "0" ) ).toDouble() );
+  mSettings.setDrawRasterStroke( itemElem.attribute( QStringLiteral( "rasterBorder" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
+  mSettings.setRasterStrokeColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "rasterBorderColor" ), QStringLiteral( "0,0,0" ) ) ) );
+  mSettings.setRasterStrokeWidth( itemElem.attribute( QStringLiteral( "rasterBorderWidth" ), QStringLiteral( "0" ) ).toDouble() );
 
   mSettings.setWrapChar( itemElem.attribute( QStringLiteral( "wrapChar" ) ) );
 

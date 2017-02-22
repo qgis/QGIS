@@ -73,13 +73,13 @@ class QgsComposerMergeCommand : QgsComposerItemCommand
       LegendIconSymbolSpace,
       LegendBoxSpace,
       LegendColumnSpace,
-      LegendRasterBorderWidth,
+      LegendRasterStrokeWidth,
       LegendFontColor,
-      LegendRasterBorderColor,
+      LegendRasterStrokeColor,
       //composer picture
       ComposerPictureRotation,
       ComposerPictureFillColor,
-      ComposerPictureOutlineColor,
+      ComposerPictureStrokeColor,
       // composer scalebar
       ScaleBarLineWidth,
       ScaleBarHeight,
@@ -100,15 +100,15 @@ class QgsComposerMergeCommand : QgsComposerItemCommand
       TableGridStrokeWidth,
       //composer shape
       ShapeCornerRadius,
-      ShapeOutlineWidth,
+      ShapeStrokeWidth,
       //composer arrow
-      ArrowOutlineWidth,
+      ArrowStrokeWidth,
       ArrowHeadFillColor,
-      ArrowHeadOutlineColor,
+      ArrowHeadStrokeColor,
       ArrowHeadWidth,
       //item
-      ItemOutlineWidth,
-      ItemOutlineColor,
+      ItemStrokeWidth,
+      ItemStrokeColor,
       ItemBackgroundColor,
       ItemMove,
       ItemRotation,

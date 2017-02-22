@@ -132,12 +132,12 @@ void QgsGeometryRubberBand::setFillColor( const QColor& c )
   mBrush.setColor( c );
 }
 
-void QgsGeometryRubberBand::setOutlineColor( const QColor& c )
+void QgsGeometryRubberBand::setStrokeColor( const QColor& c )
 {
   mPen.setColor( c );
 }
 
-void QgsGeometryRubberBand::setOutlineWidth( int width )
+void QgsGeometryRubberBand::setStrokeWidth( int width )
 {
   mPen.setWidth( width );
 }

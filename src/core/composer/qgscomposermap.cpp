@@ -1602,9 +1602,9 @@ void QgsComposerMap::updateBoundingRect()
   }
 }
 
-void QgsComposerMap::setFrameOutlineWidth( const double outlineWidth )
+void QgsComposerMap::setFrameStrokeWidth( const double strokeWidth )
 {
-  QgsComposerItem::setFrameOutlineWidth( outlineWidth );
+  QgsComposerItem::setFrameStrokeWidth( strokeWidth );
   updateBoundingRect();
 }
 

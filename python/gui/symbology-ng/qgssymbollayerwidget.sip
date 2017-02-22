@@ -105,16 +105,16 @@ class QgsSimpleMarkerSymbolLayerWidget : QgsSymbolLayerWidget
     virtual QgsSymbolLayer* symbolLayer();
 
   public slots:
-    void setColorBorder( const QColor& color );
+    void setColorStroke( const QColor& color );
     void setColorFill( const QColor& color );
     void setSize();
     void setAngle();
     void setOffset();
     void on_mSizeUnitWidget_changed();
     void on_mOffsetUnitWidget_changed();
-    void on_mOutlineWidthUnitWidget_changed();
-    void on_mOutlineStyleComboBox_currentIndexChanged( int index );
-    void on_mOutlineWidthSpinBox_valueChanged( double d );
+    void on_mStrokeWidthUnitWidget_changed();
+    void on_mStrokeStyleComboBox_currentIndexChanged( int index );
+    void on_mStrokeWidthSpinBox_valueChanged( double d );
     void on_mHorizontalAnchorComboBox_currentIndexChanged( int index );
     void on_mVerticalAnchorComboBox_currentIndexChanged( int index );
 };
@@ -138,12 +138,12 @@ class QgsSimpleFillSymbolLayerWidget : QgsSymbolLayerWidget
 
   public slots:
     void setColor( const QColor& color );
-    void setBorderColor( const QColor& color );
+    void setStrokeColor( const QColor& color );
     void setBrushStyle();
-    void borderWidthChanged();
-    void borderStyleChanged();
+    void strokeWidthChanged();
+    void strokeStyleChanged();
     void offsetChanged();
-    void on_mBorderWidthUnitWidget_changed();
+    void on_mStrokeWidthUnitWidget_changed();
     void on_mOffsetUnitWidget_changed();
 };
 
@@ -300,10 +300,10 @@ class QgsSvgMarkerSymbolLayerWidget : QgsSymbolLayerWidget
     void on_mFileLineEdit_textEdited( const QString& text );
     void on_mFileLineEdit_editingFinished();
     void on_mChangeColorButton_colorChanged( const QColor& color );
-    void on_mChangeBorderColorButton_colorChanged( const QColor& color );
-    void on_mBorderWidthSpinBox_valueChanged( double d );
+    void on_mChangeStrokeColorButton_colorChanged( const QColor& color );
+    void on_mStrokeWidthSpinBox_valueChanged( double d );
     void on_mSizeUnitWidget_changed();
-    void on_mBorderWidthUnitWidget_changed();
+    void on_mStrokeWidthUnitWidget_changed();
     void on_mOffsetUnitWidget_changed();
     void on_mHorizontalAnchorComboBox_currentIndexChanged( int index );
     void on_mVerticalAnchorComboBox_currentIndexChanged( int index );
@@ -353,9 +353,9 @@ class QgsSVGFillSymbolLayerWidget : QgsSymbolLayerWidget
 
   protected:
     void insertIcons();
-    /** Enables or disables svg fill color, border color and border width based on whether the
+    /** Enables or disables svg fill color, stroke color and stroke width based on whether the
      * svg file supports custom parameters.
-     * @param resetValues set to true to overwrite existing layer fill color, border color and border width
+     * @param resetValues set to true to overwrite existing layer fill color, stroke color and stroke width
      * with default values from svg file
      */
     void updateParamGui( bool resetValues = true );
@@ -416,17 +416,17 @@ class QgsFontMarkerSymbolLayerWidget : QgsSymbolLayerWidget
     void setFontFamily( const QFont& font );
     void setColor( const QColor& color );
 
-    /** Set outline color.
+    /** Set stroke color.
      * @note added in 2.16 */
-    void setColorBorder( const QColor& color );
+    void setColorStroke( const QColor& color );
     void setSize( double size );
     void setAngle( double angle );
     void setCharacter( QChar chr );
     void setOffset();
     void on_mSizeUnitWidget_changed();
     void on_mOffsetUnitWidget_changed();
-    void on_mBorderWidthUnitWidget_changed();
-    void on_mBorderWidthSpinBox_valueChanged( double d );
+    void on_mStrokeWidthUnitWidget_changed();
+    void on_mStrokeWidthSpinBox_valueChanged( double d );
     void on_mHorizontalAnchorComboBox_currentIndexChanged( int index );
     void on_mVerticalAnchorComboBox_currentIndexChanged( int index );
 };

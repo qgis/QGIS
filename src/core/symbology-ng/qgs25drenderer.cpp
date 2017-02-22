@@ -227,7 +227,7 @@ QColor Qgs25DRenderer::wallColor() const
 void Qgs25DRenderer::setWallColor( const QColor& wallColor )
 {
   wallLayer()->setFillColor( wallColor );
-  wallLayer()->setOutlineColor( wallColor );
+  wallLayer()->setStrokeColor( wallColor );
 }
 
 void Qgs25DRenderer::setWallShadingEnabled( bool enabled )
@@ -248,7 +248,7 @@ QColor Qgs25DRenderer::roofColor() const
 void Qgs25DRenderer::setRoofColor( const QColor& roofColor )
 {
   roofLayer()->setFillColor( roofColor );
-  roofLayer()->setOutlineColor( roofColor );
+  roofLayer()->setStrokeColor( roofColor );
 }
 
 Qgs25DRenderer* Qgs25DRenderer::convertFromRenderer( QgsFeatureRenderer* renderer )

@@ -35,13 +35,13 @@ class TestQgsComposerItem(unittest.TestCase):
         item = QgsComposerLabel(composition)
         composition.addComposerLabel(item)
 
-        item.setFrameOutlineColor(QColor(255, 0, 0))
-        self.assertEqual(item.frameOutlineColor(), QColor(255, 0, 0))
+        item.setFrameStrokeColor(QColor(255, 0, 0))
+        self.assertEqual(item.frameStrokeColor(), QColor(255, 0, 0))
         self.assertEqual(item.pen().color().name(), QColor(255, 0, 0).name())
 
         item.dataDefinedProperties().setProperty(QgsComposerObject.FrameColor, QgsProperty.fromExpression("'blue'"))
         item.refreshDataDefinedProperty()
-        self.assertEqual(item.frameOutlineColor(), QColor(255, 0, 0)) # should not change
+        self.assertEqual(item.frameStrokeColor(), QColor(255, 0, 0)) # should not change
         self.assertEqual(item.pen().color().name(), QColor(0, 0, 255).name())
 
     def testDataDefinedBackgroundColor(self):

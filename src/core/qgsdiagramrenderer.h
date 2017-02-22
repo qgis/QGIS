@@ -82,8 +82,8 @@ class CORE_EXPORT QgsDiagramLayerSettings
     enum Property
     {
       BackgroundColor, //!< Diagram background color
-      OutlineColor, //!< Outline color
-      OutlineWidth, //!< Outline width
+      StrokeColor, //!< Stroke color
+      StrokeWidth, //!< Stroke width
       PositionX, //! x-coordinate data defined diagram position
       PositionY, //! y-coordinate data defined diagram position
       Distance, //! Distance to diagram from feature

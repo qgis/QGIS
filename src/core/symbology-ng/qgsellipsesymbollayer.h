@@ -54,25 +54,25 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     void setSymbolHeight( double h ) { mSymbolHeight = h; }
     double symbolHeight() const { return mSymbolHeight; }
 
-    Qt::PenStyle outlineStyle() const { return mOutlineStyle; }
-    void setOutlineStyle( Qt::PenStyle outlineStyle ) { mOutlineStyle = outlineStyle; }
+    Qt::PenStyle strokeStyle() const { return mStrokeStyle; }
+    void setStrokeStyle( Qt::PenStyle strokeStyle ) { mStrokeStyle = strokeStyle; }
 
-    /** Get outline join style.
+    /** Get stroke join style.
      * @note added in 2.16 */
     Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
 
-    /** Set outline join style.
+    /** Set stroke join style.
      * @note added in 2.16 */
     void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
 
-    void setOutlineWidth( double w ) { mOutlineWidth = w; }
-    double outlineWidth() const { return mOutlineWidth; }
+    void setStrokeWidth( double w ) { mStrokeWidth = w; }
+    double strokeWidth() const { return mStrokeWidth; }
 
     void setFillColor( const QColor& c ) override { setColor( c ); }
     QColor fillColor() const override { return color(); }
 
-    void setOutlineColor( const QColor& c ) override { mOutlineColor = c; }
-    QColor outlineColor() const override { return mOutlineColor; }
+    void setStrokeColor( const QColor& c ) override { mStrokeColor = c; }
+    QColor strokeColor() const override { return mStrokeColor; }
 
     /** Sets the units for the symbol's width.
      * @param unit symbol units
@@ -106,19 +106,19 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     void setSymbolHeightMapUnitScale( const QgsMapUnitScale& scale ) { mSymbolHeightMapUnitScale = scale; }
     const QgsMapUnitScale& symbolHeightMapUnitScale() const { return mSymbolHeightMapUnitScale; }
 
-    /** Sets the units for the symbol's outline width.
+    /** Sets the units for the symbol's stroke width.
      * @param unit symbol units
-     * @see outlineWidthUnit()
+     * @see strokeWidthUnit()
     */
-    void setOutlineWidthUnit( QgsUnitTypes::RenderUnit unit ) { mOutlineWidthUnit = unit; }
+    void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mStrokeWidthUnit = unit; }
 
-    /** Returns the units for the symbol's outline width.
-     * @see setOutlineWidthUnit()
+    /** Returns the units for the symbol's stroke width.
+     * @see setStrokeWidthUnit()
     */
-    QgsUnitTypes::RenderUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
+    QgsUnitTypes::RenderUnit strokeWidthUnit() const { return mStrokeWidthUnit; }
 
-    void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale ) { mOutlineWidthMapUnitScale = scale; }
-    const QgsMapUnitScale& outlineWidthMapUnitScale() const { return mOutlineWidthMapUnitScale; }
+    void setStrokeWidthMapUnitScale( const QgsMapUnitScale& scale ) { mStrokeWidthMapUnitScale = scale; }
+    const QgsMapUnitScale& strokeWidthMapUnitScale() const { return mStrokeWidthMapUnitScale; }
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
@@ -136,12 +136,12 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     double mSymbolHeight;
     QgsUnitTypes::RenderUnit mSymbolHeightUnit;
     QgsMapUnitScale mSymbolHeightMapUnitScale;
-    QColor mOutlineColor;
-    Qt::PenStyle mOutlineStyle;
+    QColor mStrokeColor;
+    Qt::PenStyle mStrokeStyle;
     Qt::PenJoinStyle mPenJoinStyle;
-    double mOutlineWidth;
-    QgsUnitTypes::RenderUnit mOutlineWidthUnit;
-    QgsMapUnitScale mOutlineWidthMapUnitScale;
+    double mStrokeWidth;
+    QgsUnitTypes::RenderUnit mStrokeWidthUnit;
+    QgsMapUnitScale mStrokeWidthMapUnitScale;
 
     QPainterPath mPainterPath;
 
