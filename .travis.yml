@@ -79,7 +79,6 @@ before_script:
 
 script:
   - ./ci/travis/${TRAVIS_OS_NAME}/script.sh
-  - ./ci/travis/check_spelling.sh
 
 after_script:
   - ./ci/travis/${TRAVIS_OS_NAME}/after_script.sh
