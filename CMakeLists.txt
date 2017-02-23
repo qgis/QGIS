@@ -505,7 +505,7 @@ ELSE (WIN32)
     SET (QGIS_PLUGIN_SUBDIR_REV  ../../MacOS)
     SET (DEFAULT_INCLUDE_SUBDIR  include/qgis)
 
-    # Set server moodules path to DEFAULT_LIBEXEC_SUBDIR+'/server' 
+    # Set server moodules path to DEFAULT_LIBEXEC_SUBDIR+'/server'
     SET (DEFAULT_SERVER_MODULE_SUBDIR ${DEFAULT_LIBEXEC_SUBDIR}/server)
 
     # path for framework references when running from build directory
