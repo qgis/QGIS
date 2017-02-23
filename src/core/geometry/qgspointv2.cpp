@@ -23,6 +23,7 @@
 #include "qgsmaptopixel.h"
 #include "qgswkbptr.h"
 #include <QPainter>
+#include <QRegularExpression>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -134,7 +135,8 @@ bool QgsPointV2::fromWkt( const QString& wkt )
     return false;
   mWkbType = parts.first;
 
-  QStringList coordinates = parts.second.split( ' ', QString::SkipEmptyParts );
+  QRegularExpression rx( "\\s" );
+  QStringList coordinates = parts.second.split( rx, QString::SkipEmptyParts );
   if ( coordinates.size() < 2 )
   {
     clear();

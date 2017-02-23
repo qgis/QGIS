@@ -73,52 +73,53 @@ QgsAbstractGeometry* QgsGeometryFactory::geomFromWkb( QgsConstWkbPtr& wkbPtr )
 
 QgsAbstractGeometry* QgsGeometryFactory::geomFromWkt( const QString& text )
 {
+  QString trimmed = text.trimmed();
   QgsAbstractGeometry* geom = nullptr;
-  if ( text.startsWith( QLatin1String( "Point" ), Qt::CaseInsensitive ) )
+  if ( trimmed.startsWith( QLatin1String( "Point" ), Qt::CaseInsensitive ) )
   {
     geom = new QgsPointV2();
   }
-  else if ( text.startsWith( QLatin1String( "LineString" ), Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( QLatin1String( "LineString" ), Qt::CaseInsensitive ) )
   {
     geom = new QgsLineString();
   }
-  else if ( text.startsWith( QLatin1String( "CircularString" ), Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( QLatin1String( "CircularString" ), Qt::CaseInsensitive ) )
   {
     geom = new QgsCircularString();
   }
-  else if ( text.startsWith( QLatin1String( "CompoundCurve" ) , Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( QLatin1String( "CompoundCurve" ) , Qt::CaseInsensitive ) )
   {
     geom = new QgsCompoundCurve();
   }
-  else if ( text.startsWith( QLatin1String( "Polygon" ), Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( QLatin1String( "Polygon" ), Qt::CaseInsensitive ) )
   {
     geom = new QgsPolygonV2();
   }
-  else if ( text.startsWith( QLatin1String( "CurvePolygon" ), Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( QLatin1String( "CurvePolygon" ), Qt::CaseInsensitive ) )
   {
     geom = new QgsCurvePolygon();
   }
-  else if ( text.startsWith( QLatin1String( "MultiPoint" ), Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( QLatin1String( "MultiPoint" ), Qt::CaseInsensitive ) )
   {
     geom = new QgsMultiPointV2();
   }
-  else if ( text.startsWith( QLatin1String( "MultiCurve" ), Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( QLatin1String( "MultiCurve" ), Qt::CaseInsensitive ) )
   {
     geom = new QgsMultiCurve();
   }
-  else if ( text.startsWith( QLatin1String( "MultiLineString" ), Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( QLatin1String( "MultiLineString" ), Qt::CaseInsensitive ) )
   {
     geom = new QgsMultiLineString();
   }
-  else if ( text.startsWith( QLatin1String( "MultiSurface" ), Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( QLatin1String( "MultiSurface" ), Qt::CaseInsensitive ) )
   {
     geom = new QgsMultiSurface();
   }
-  else if ( text.startsWith( QLatin1String( "MultiPolygon" ), Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( QLatin1String( "MultiPolygon" ), Qt::CaseInsensitive ) )
   {
     geom = new QgsMultiPolygonV2();
   }
-  else if ( text.startsWith( QLatin1String( "GeometryCollection" ), Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( QLatin1String( "GeometryCollection" ), Qt::CaseInsensitive ) )
   {
     geom = new QgsGeometryCollection();
   }
