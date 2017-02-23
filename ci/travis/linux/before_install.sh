@@ -32,4 +32,4 @@ wget https://www.orfeo-toolbox.org/packages/archives/OTB/OTB-5.6.0-Linux64.run -
 
 popd
 
-pip install psycopg2 numpy nose2 pyyaml mock future termcolor autopep8
+pip install psycopg2 numpy nose2 pyyaml mock future termcolor
