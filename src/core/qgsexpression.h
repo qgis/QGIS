@@ -1043,7 +1043,7 @@ class CORE_EXPORT QgsExpression
         int precedence() const;
         bool leftAssociative() const;
 
-      protected:
+      private:
         bool compare( double diff );
         qlonglong computeInt( qlonglong x, qlonglong y );
         double computeDouble( double x, double y );
