@@ -1536,14 +1536,9 @@ QgisAppStyleSheet* QgisApp::styleSheetBuilder()
   return mStyleSheetBuilder;
 }
 
-// restore any application settings stored in QSettings
-void QgisApp::readSettings()
+void QgisApp::readRecentProjects()
 {
   QSettings settings;
-  QString themename = settings.value( QStringLiteral( "UI/UITheme" ), "default" ).toString();
-  setTheme( themename );
-
-  // Read legacy settings
   mRecentProjects.clear();
 
   settings.beginGroup( QStringLiteral( "/UI" ) );
@@ -1587,6 +1582,16 @@ void QgisApp::readSettings()
     mRecentProjects.append( data );
   }
   settings.endGroup();
+}
+
+void QgisApp::readSettings()
+{
+  QSettings settings;
+  QString themename = settings.value( QStringLiteral( "UI/UITheme" ), "default" ).toString();
+  setTheme( themename );
+
+  // Read legacy settings
+  readRecentProjects();
 
   // this is a new session! reset enable macros value to "ask"
   // whether set to "just for this session"
@@ -3354,6 +3359,10 @@ void QgisApp::updateRecentProjectPaths()
 // add this file to the recently opened/saved projects list
 void QgisApp::saveRecentProjectPath( const QString& projectPath, bool savePreviewImage )
 {
+  // first, re-read the recent project paths. This prevents loss of recent
+  // projects when multiple QGIS sessions are open
+  readRecentProjects();
+
   QSettings settings;
 
   // Get canonical absolute path
