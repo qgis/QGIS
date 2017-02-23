@@ -31,7 +31,7 @@
    <item row="1" column="0">
     <widget class="QLabel" name="mDistanceLabel">
      <property name="text">
-      <string>Distance</string>
+      <string>Spacing</string>
      </property>
     </widget>
    </item>
@@ -170,6 +170,13 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mAngleSpinBox</tabstop>
+  <tabstop>mAngleDDBtn</tabstop>
+  <tabstop>mDistanceSpinBox</tabstop>
+  <tabstop>mDistanceDDBtn</tabstop>
+  <tabstop>mOffsetSpinBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
