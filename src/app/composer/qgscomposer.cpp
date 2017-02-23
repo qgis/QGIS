@@ -1753,7 +1753,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
       if ( !printReady )
       {
         QMessageBox::warning( this, tr( "Atlas processing error" ),
-                              QString( tr( "Error creating %1." ) ).arg( outputFileName ),
+                              QString( tr( "Cannot write to %1.\n\nThis file may be open in another application." ) ).arg( outputFileName ),
                               QMessageBox::Ok,
                               QMessageBox::Ok );
         mView->setPaintingEnabled( true );
@@ -1799,7 +1799,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
         if ( !printReady )
         {
           QMessageBox::warning( this, tr( "Atlas processing error" ),
-                                QString( tr( "Error creating %1." ) ).arg( outputFileName ),
+                                QString( tr( "Cannot write to %1.\n\nThis file may be open in another application." ) ).arg( outputFileName ),
                                 QMessageBox::Ok,
                                 QMessageBox::Ok );
           mView->setPaintingEnabled( true );
@@ -1830,7 +1830,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
     if ( !exportOk )
     {
       QMessageBox::warning( this, tr( "Atlas processing error" ),
-                            QString( tr( "Error creating %1." ) ).arg( outputFileName ),
+                            QString( tr( "Cannot write to %1.\n\nThis file may be open in another application." ) ).arg( outputFileName ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       mView->setPaintingEnabled( true );
@@ -2146,7 +2146,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
       if ( !saveOk )
       {
         QMessageBox::warning( this, tr( "Image export error" ),
-                              QString( tr( "Error creating %1." ) ).arg( fileNExt.first ),
+                              QString( tr( "Cannot write to %1.\n\nThis file may be open in another application." ) ).arg( fileNExt.first ),
                               QMessageBox::Ok,
                               QMessageBox::Ok );
         mView->setPaintingEnabled( true );
@@ -2371,7 +2371,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
         if ( !saveOk )
         {
           QMessageBox::warning( this, tr( "Atlas processing error" ),
-                                QString( tr( "Error creating %1." ) ).arg( imageFilename ),
+                                QString( tr( "Cannot write to %1.\n\nThis file may be open in another application." ) ).arg( imageFilename ),
                                 QMessageBox::Ok,
                                 QMessageBox::Ok );
           mView->setPaintingEnabled( true );
@@ -2721,7 +2721,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
         if ( !createOk )
         {
           QMessageBox::warning( this, tr( "SVG export error" ),
-                                QString( tr( "Error creating %1." ) ).arg( currentFileName ),
+                                QString( tr( "Cannot write to %1.\n\nThis file may be open in another application." ) ).arg( currentFileName ),
                                 QMessageBox::Ok,
                                 QMessageBox::Ok );
           mView->setPaintingEnabled( true );
@@ -2879,7 +2879,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
         if ( !openOk )
         {
           QMessageBox::warning( this, tr( "SVG export error" ),
-                                QString( tr( "Error creating %1." ) ).arg( currentFileName ),
+                                QString( tr( "Cannot write to %1.\n\nThis file may be open in another application." ) ).arg( currentFileName ),
                                 QMessageBox::Ok,
                                 QMessageBox::Ok );
           mView->setPaintingEnabled( true );
