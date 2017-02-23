@@ -77,7 +77,7 @@ void QgsMeasureDialog::updateSettings()
   // Configure QgsDistanceArea
   mDistanceUnits = QgsProject::instance()->distanceUnits();
   mAreaUnits = QgsProject::instance()->areaUnits();
-  mDa.setSourceCrs( mTool->canvas()->mapSettings().destinationCrs().srsid() );
+  mDa.setSourceCrs( mTool->canvas()->mapSettings().destinationCrs() );
   mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
   mDa.setEllipsoidalMode( true );
 

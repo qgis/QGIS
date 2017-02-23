@@ -199,7 +199,7 @@ void QgsAttributeActionPropertiesDialog::init( const QSet<QString>& actionScopes
   }
 
   QgsDistanceArea myDa;
-  myDa.setSourceCrs( mLayer->crs().srsid() );
+  myDa.setSourceCrs( mLayer->crs() );
   myDa.setEllipsoidalMode( true );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 

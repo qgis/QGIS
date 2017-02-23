@@ -697,7 +697,7 @@ QgsAttributeDialog* QgisAppInterface::getFeatureForm( QgsVectorLayer *l, QgsFeat
 {
   QgsDistanceArea myDa;
 
-  myDa.setSourceCrs( l->crs().srsid() );
+  myDa.setSourceCrs( l->crs() );
   myDa.setEllipsoidalMode( true );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 

@@ -123,7 +123,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
 
   //configure distanceArea depending on minDistance units and output CRS
   QgsDistanceArea distanceArea;
-  distanceArea.setSourceCrs( mStrataLayer->crs().srsid() );
+  distanceArea.setSourceCrs( mStrataLayer->crs() );
   if ( mMinDistanceUnits == Meters )
   {
     distanceArea.setEllipsoidalMode( true );
