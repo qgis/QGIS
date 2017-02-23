@@ -1094,7 +1094,7 @@ void QgsTextFormatWidget::on_mBufferUnitWidget_changed()
   updateFont( mRefFont );
 }
 
-void QgsTextFormatWidget::on_mCoordXDDBtn_dataDefinedActivated( bool active )
+void QgsTextFormatWidget::on_mCoordXDDBtn_activated( bool active )
 {
   if ( !active ) //no data defined alignment without data defined position
   {
@@ -1106,7 +1106,7 @@ void QgsTextFormatWidget::on_mCoordXDDBtn_dataDefinedActivated( bool active )
   }
 }
 
-void QgsTextFormatWidget::on_mCoordYDDBtn_dataDefinedActivated( bool active )
+void QgsTextFormatWidget::on_mCoordYDDBtn_activated( bool active )
 {
   if ( !active ) //no data defined alignment without data defined position
   {
