@@ -196,8 +196,7 @@ class EliminateSelection(GeoAlgorithm):
 
         # End while
         if not processLayer.commitChanges():
-            raise GeoAlgorithmExecutionException(
-                            self.tr('Could not commit changes'))
+            raise GeoAlgorithmExecutionException(self.tr('Could not commit changes'))
 
         for feature in featNotEliminated:
             writer.addFeature(feature)
