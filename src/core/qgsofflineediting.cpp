@@ -32,6 +32,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsrelationmanager.h"
 
 #include <QDir>
 #include <QDomDocument>
