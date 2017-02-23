@@ -43,40 +43,21 @@ matrix:
     - os: linux
       language: python # This lets us use newer python versions from virtualenv
       env:
-        - BUILD=qt5
-        - QT_VERSION=5
-        - LLVM_VERSION=3.8
         - TRAVIS_CONFIG=code_layout
       dist: trusty
       sudo: false
       cache:
         apt: true
-        directories:
-          - $HOME/.ccache
-        timeout: 1000
-      compiler: clang
-      python: "3.3"
+      #compiler: clang
+      #python: "3.3"
       addons:
         apt:
           sources:
-            #- ubuntu-toolchain-r-test
-            #- george-edison55-precise-backports # doxygen 1.8.3
-            #- sourceline: 'ppa:nomeata/travis-backports'
             - sourceline: 'ppa:jonathonf/backports'  # silversearcher-ag backport
           packages:
-            - doxygen
-            #- bison
-            #- flex
-            #- graphviz
-            #- libpq-dev
-            #- libfcgi-dev
-            #- libfftw3-3
             - pkg-config
-            - poppler-utils
-            - txt2tags
             - xvfb
             - flip
-            - clang-3.8
             # used for spell checks
             - perl  # lookahead regex in spell check script
             - silversearcher-ag

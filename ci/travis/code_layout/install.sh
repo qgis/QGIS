@@ -17,12 +17,12 @@ mkdir build
 cd build
 
 
-export CXX="clang++-${LLVM_VERSION}"
-export CC="clang-${LLVM_VERSION}"
+#export CXX="clang++-${LLVM_VERSION}"
+#export CC="clang-${LLVM_VERSION}"
 
 
-cmake --version
-${CC} --version
-${CXX} --version
+#cmake --version
+#${CC} --version
+#${CXX} --version
 
 cmake ../ci/travis/code_layout
