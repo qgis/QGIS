@@ -8,6 +8,10 @@ ProcessingGrass7AlgorithmsImageryTest
 ProcessingGrass7AlgorithmsRasterTest
 PyQgsDBManagerGpkg
 
+# layout tests are run on separate build
+qgis_indentation
+qgis_spelling
+
 # flacky
 qgis_filedownloader
 qgis_openstreetmaptest
