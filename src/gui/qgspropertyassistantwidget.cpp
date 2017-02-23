@@ -538,12 +538,12 @@ QgsPropertyGenericNumericAssistantWidget::QgsPropertyGenericNumericAssistantWidg
     minOutputSpinBox->setValue( 0.0 );
     minOutputSpinBox->setShowClearButton( true );
     minOutputSpinBox->setClearValue( 0.0 );
-    minOutputSpinBox->setSuffix( tr( " °" ) );
+    minOutputSpinBox->setSuffix( trUtf8( " °" ) );
     maxOutputSpinBox->setMaximum( 360.0 );
     maxOutputSpinBox->setValue( 360.0 );
     maxOutputSpinBox->setShowClearButton( true );
     maxOutputSpinBox->setClearValue( 360.0 );
-    maxOutputSpinBox->setSuffix( tr( " °" ) );
+    maxOutputSpinBox->setSuffix( trUtf8( " °" ) );
     exponentSpinBox->hide();
     mExponentLabel->hide();
     mLabelMinOutput->setText( tr( "Angle from" ) );

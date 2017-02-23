@@ -137,7 +137,7 @@ void QgsMapThemes::replaceTriggered()
     return;
 
   int res = QMessageBox::question( mMenu, tr( "Replace theme" ),
-                                   tr( "Are you sure you want to replace the existing theme “%1”?" ).arg( actionPreset->text() ),
+                                   trUtf8( "Are you sure you want to replace the existing theme “%1”?" ).arg( actionPreset->text() ),
                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
   if ( res != QMessageBox::Yes )
     return;
