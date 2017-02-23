@@ -586,7 +586,7 @@ void QgsAttributeTableDialog::filterExpressionBuilder()
   dlg.setWindowTitle( tr( "Expression based filter" ) );
 
   QgsDistanceArea myDa;
-  myDa.setSourceCrs( mLayer->crs().srsid() );
+  myDa.setSourceCrs( mLayer->crs() );
   myDa.setEllipsoidalMode( true );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
   dlg.setGeomCalculator( myDa );
@@ -947,7 +947,7 @@ void QgsAttributeTableDialog::setFilterExpression( const QString& filterString, 
   QgsFeatureIds filteredFeatures;
   QgsDistanceArea myDa;
 
-  myDa.setSourceCrs( mLayer->crs().srsid() );
+  myDa.setSourceCrs( mLayer->crs() );
   myDa.setEllipsoidalMode( true );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 

@@ -107,7 +107,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer* mapLayer )
 
   mFieldExpressionWidget->setLayer( mLayer );
   QgsDistanceArea da;
-  da.setSourceCrs( mLayer->crs().srsid() );
+  da.setSourceCrs( mLayer->crs() );
   da.setEllipsoidalMode( true );
   da.setEllipsoid( QgsProject::instance()->ellipsoid() );
   mFieldExpressionWidget->setGeomCalculator( da );

@@ -46,7 +46,7 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
         , mCtfEnabled( ctfEnabled )
         , mTopologyTolerance( topologyTolerance )
     {
-      mDa.setSourceCrs( mCrs.srsid() );
+      mDa.setSourceCrs( mCrs );
       mDa.setEllipsoid( ellipsoidID );
       mDa.setEllipsoidalMode( ctfEnabled );
     }
