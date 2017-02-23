@@ -16,4 +16,4 @@
 export DEBIAN_FRONTEND=noninteractive
 export CORES=2
 
-pip install nose2 pyyaml mock future termcolor autopep8
+pip install autopep8
