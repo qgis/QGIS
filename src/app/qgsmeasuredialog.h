@@ -43,7 +43,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     void restorePosition();
 
     //! Add new point
-    void addPoint( const QgsPoint &point );
+    void addPoint();
 
     //! Mose move
     void mouseMove( const QgsPoint &point );

@@ -106,7 +106,7 @@ void TestQgsMeasureTool::testLengthCalculation()
   tool->addPoint( QgsPoint( 2484588, 2425722 ) );
   tool->addPoint( QgsPoint( 2482767, 2398853 ) );
   //force dialog recalculation
-  dlg->addPoint( QgsPoint( 0, 0 ) );
+  dlg->addPoint();
 
   // check result
   QString measureString = dlg->editTotal->text();
@@ -123,7 +123,7 @@ void TestQgsMeasureTool::testLengthCalculation()
   tool2->addPoint( QgsPoint( 2484588, 2425722 ) );
   tool2->addPoint( QgsPoint( 2482767, 2398853 ) );
   //force dialog recalculation
-  dlg2->addPoint( QgsPoint( 0, 0 ) );
+  dlg2->addPoint();
 
   // check result
   measureString = dlg2->editTotal->text();
@@ -175,7 +175,7 @@ void TestQgsMeasureTool::testAreaCalculation()
   tool->addPoint( QgsPoint( 2520109, 2397715 ) );
   tool->addPoint( QgsPoint( 2520792, 2425494 ) );
   //force dialog recalculation
-  dlg->addPoint( QgsPoint( 0, 0 ) );
+  dlg->addPoint();
 
   // check result
   QString measureString = dlg->editTotal->text();
@@ -194,7 +194,7 @@ void TestQgsMeasureTool::testAreaCalculation()
   tool2->addPoint( QgsPoint( 2520109, 2397715 ) );
   tool2->addPoint( QgsPoint( 2520792, 2425494 ) );
   //force dialog recalculation
-  dlg2->addPoint( QgsPoint( 0, 0 ) );
+  dlg2->addPoint();
 
   // check result
   measureString = dlg2->editTotal->text();

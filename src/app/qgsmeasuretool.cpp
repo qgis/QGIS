@@ -166,7 +166,7 @@ void QgsMeasureTool::updateSettings()
   if ( !mDone && mRubberBand->size() > 0 )
   {
     mRubberBand->addPoint( mPoints.last() );
-    mDialog->addPoint( mPoints.last() );
+    mDialog->addPoint();
   }
   if ( mRubberBand->size() > 0 )
   {
@@ -280,7 +280,7 @@ void QgsMeasureTool::addPoint( const QgsPoint &point )
   mRubberBandPoints->addPoint( point );
   if ( ! mDone )    // Prevent the insertion of a new item in segments measure table
   {
-    mDialog->addPoint( point );
+    mDialog->addPoint();
   }
 }
 

@@ -81,14 +81,6 @@ void QgsMeasureDialog::updateSettings()
   mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
   mDa.setEllipsoidalMode( true );
 
-  QgsDebugMsg( "****************" );
-  QgsDebugMsg( QString( "Ellipsoid ID : %1" ).arg( mDa.ellipsoid() ) );
-  QgsDebugMsg( QString( "Ellipsoidal  : %1" ).arg( mDa.ellipsoidalEnabled() ? "true" : "false" ) );
-  QgsDebugMsg( QString( "Decimalplaces: %1" ).arg( mDecimalPlaces ) );
-  QgsDebugMsg( QString( "Distance units: %1" ).arg( QgsUnitTypes::encodeUnit( mDistanceUnits ) ) );
-  QgsDebugMsg( QString( "Area units: %1" ).arg( QgsUnitTypes::encodeUnit( mAreaUnits ) ) );
-  QgsDebugMsg( QString( "Canvas units : %1" ).arg( QgsUnitTypes::encodeUnit( mCanvasUnits ) ) );
-
   mTable->clear();
   mTotal = 0;
   updateUi();
@@ -107,7 +99,7 @@ void QgsMeasureDialog::unitsChanged( int index )
   if ( !mTool->done() )
   {
     // re-add temporary mouse cursor position
-    addPoint( mLastMousePoint );
+    addPoint();
     mouseMove( mLastMousePoint );
   }
 }
@@ -149,15 +141,12 @@ void QgsMeasureDialog::mouseMove( const QgsPoint &point )
     if ( item )
     {
       item->setText( 0, QLocale::system().toString( d, 'f', mDecimalPlaces ) );
-      QgsDebugMsg( QString( "Final result is %1" ).arg( item->text( 0 ) ) );
     }
   }
 }
 
-void QgsMeasureDialog::addPoint( const QgsPoint &p )
+void QgsMeasureDialog::addPoint()
 {
-  Q_UNUSED( p );
-
   int numPoints = mTool->points().size();
   if ( mMeasureArea && numPoints > 2 )
   {
@@ -179,7 +168,6 @@ void QgsMeasureDialog::addPoint( const QgsPoint &p )
       editTotal->setText( formatDistance( mTotal ) );
     }
   }
-  QgsDebugMsg( "Exiting" );
 }
 
 void QgsMeasureDialog::removeLastPoint()
