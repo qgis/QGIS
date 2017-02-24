@@ -147,6 +147,7 @@
 %Include qgstracer.sip
 %Include qgstrackedvectorlayertools.sip
 %Include qgsunittypes.sip
+%Include qgsvector.sip
 %Include qgsvectordataprovider.sip
 %Include qgsvectorfilewriter.sip
 %Include qgsvectorfilewritertask.sip

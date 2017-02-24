@@ -17,147 +17,22 @@
 
 
 #include "qgspoint.h"
-#include "qgis.h"
+
 #include <cmath>
 #include <QTextStream>
 #include <QObject> // for tr()
 
 #include "qgsexception.h"
 
-//
-// QgsVector
-//
-
-QgsVector::QgsVector()
-    : mX( 0.0 )
-    , mY( 0.0 )
-{
-}
-
-QgsVector::QgsVector( double x, double y )
-    : mX( x )
-    , mY( y )
-{
-}
-
-QgsVector QgsVector::operator-() const
-{
-  return QgsVector( -mX, -mY );
-}
-
-QgsVector QgsVector::operator*( double scalar ) const
-{
-  return QgsVector( mX * scalar, mY * scalar );
-}
-
-QgsVector QgsVector::operator/( double scalar ) const
-{
-  return *this * ( 1.0 / scalar );
-}
-
-double QgsVector::operator*( QgsVector v ) const
-{
-  return mX * v.mX + mY * v.mY;
-}
-
-QgsVector QgsVector::operator+( QgsVector other ) const
-{
-  return QgsVector( mX + other.mX, mY + other.mY );
-}
-
-QgsVector& QgsVector::operator+=( QgsVector other )
-{
-  mX += other.mX;
-  mY += other.mY;
-  return *this;
-}
-
-QgsVector QgsVector::operator-( QgsVector other ) const
-{
-  return QgsVector( mX - other.mX, mY - other.mY );
-}
-
-QgsVector& QgsVector::operator-=( QgsVector other )
-{
-  mX -= other.mX;
-  mY -= other.mY;
-  return *this;
-}
-
-double QgsVector::length() const
-{
-  return sqrt( mX * mX + mY * mY );
-}
-
-double QgsVector::x() const
-{
-  return mX;
-}
-
-double QgsVector::y() const
-{
-  return mY;
-}
-
-QgsVector QgsVector::perpVector() const
-{
-  return QgsVector( -mY, mX );
-}
-
-double QgsVector::angle() const
-{
-  double angle = atan2( mY, mX );
-  return angle < 0.0 ? angle + 2.0 * M_PI : angle;
-}
-
-double QgsVector::angle( QgsVector v ) const
-{
-  return v.angle() - angle();
-}
-
-QgsVector QgsVector::rotateBy( double rot ) const
-{
-  double angle = atan2( mY, mX ) + rot;
-  double len = length();
-  return QgsVector( len * cos( angle ), len * sin( angle ) );
-}
-
-QgsVector QgsVector::normalized() const
-{
-  double len = length();
-
-  if ( len == 0.0 )
-  {
-    throw QgsException( QStringLiteral( "normalized vector of null vector undefined" ) );
-  }
-
-  return *this / len;
-}
-
-bool QgsVector::operator==( QgsVector other ) const
-{
-  return qgsDoubleNear( mX, other.mX ) && qgsDoubleNear( mY, other.mY );
-}
-
-bool QgsVector::operator!=( QgsVector other ) const
-{
-  return !qgsDoubleNear( mX, other.mX ) || !qgsDoubleNear( mY, other.mY );
-}
-
-
-//
-// QgsPoint
-//
-
 QgsPoint::QgsPoint( const QgsPoint& p )
 {
-  m_x = p.x();
-  m_y = p.y();
+  mX = p.x();
+  mY = p.y();
 }
 
 QPointF QgsPoint::toQPointF() const
 {
-  return QPointF( m_x, m_y );
+  return QPointF( mX, mY );
 }
 
 QString QgsPoint::toString() const
@@ -165,21 +40,21 @@ QString QgsPoint::toString() const
   QString rep;
   QTextStream ot( &rep );
   ot.setRealNumberPrecision( 12 );
-  ot << m_x << ", " << m_y;
+  ot << mX << ", " << mY;
   return rep;
 }
 
 QString QgsPoint::toString( int precision ) const
 {
-  QString x = qIsFinite( m_x ) ? QString::number( m_x, 'f', precision ) : QObject::tr( "infinite" );
-  QString y = qIsFinite( m_y ) ? QString::number( m_y, 'f', precision ) : QObject::tr( "infinite" );
+  QString x = qIsFinite( mX ) ? QString::number( mX, 'f', precision ) : QObject::tr( "infinite" );
+  QString y = qIsFinite( mY ) ? QString::number( mY, 'f', precision ) : QObject::tr( "infinite" );
   return QStringLiteral( "%1,%2" ).arg( x, y );
 }
 
 QString QgsPoint::toDegreesMinutesSeconds( int precision, const bool useSuffix, const bool padded ) const
 {
   //first, limit longitude to -360 to 360 degree range
-  double myWrappedX = fmod( m_x, 360.0 );
+  double myWrappedX = fmod( mX, 360.0 );
   //next, wrap around longitudes > 180 or < -180 degrees, so that, e.g., "190E" -> "170W"
   if ( myWrappedX > 180.0 )
   {
@@ -191,7 +66,7 @@ QString QgsPoint::toDegreesMinutesSeconds( int precision, const bool useSuffix, 
   }
 
   //first, limit latitude to -180 to 180 degree range
-  double myWrappedY = fmod( m_y, 180.0 );
+  double myWrappedY = fmod( mY, 180.0 );
   //next, wrap around latitudes > 90 or < -90 degrees, so that, e.g., "110S" -> "70N"
   if ( myWrappedY > 90.0 )
   {
@@ -293,7 +168,7 @@ QString QgsPoint::toDegreesMinutesSeconds( int precision, const bool useSuffix, 
 QString QgsPoint::toDegreesMinutes( int precision, const bool useSuffix, const bool padded ) const
 {
   //first, limit longitude to -360 to 360 degree range
-  double myWrappedX = fmod( m_x, 360.0 );
+  double myWrappedX = fmod( mX, 360.0 );
   //next, wrap around longitudes > 180 or < -180 degrees, so that, e.g., "190E" -> "170W"
   if ( myWrappedX > 180.0 )
   {
@@ -307,8 +182,8 @@ QString QgsPoint::toDegreesMinutes( int precision, const bool useSuffix, const b
   int myDegreesX = int( qAbs( myWrappedX ) );
   double myFloatMinutesX = double(( qAbs( myWrappedX ) - myDegreesX ) * 60 );
 
-  int myDegreesY = int( qAbs( m_y ) );
-  double myFloatMinutesY = double(( qAbs( m_y ) - myDegreesY ) * 60 );
+  int myDegreesY = int( qAbs( mY ) );
+  double myFloatMinutesY = double(( qAbs( mY ) - myDegreesY ) * 60 );
 
   //make sure rounding to specified precision doesn't create minutes >= 60
   if ( qRound( myFloatMinutesX * pow( 10.0, precision ) ) >= 60 * pow( 10.0, precision ) )
@@ -329,7 +204,7 @@ QString QgsPoint::toDegreesMinutes( int precision, const bool useSuffix, const b
   if ( useSuffix )
   {
     myXHemisphere = myWrappedX < 0 ? QObject::tr( "W" ) : QObject::tr( "E" );
-    myYHemisphere = m_y < 0 ? QObject::tr( "S" ) : QObject::tr( "N" );
+    myYHemisphere = mY < 0 ? QObject::tr( "S" ) : QObject::tr( "N" );
   }
   else
   {
@@ -337,7 +212,7 @@ QString QgsPoint::toDegreesMinutes( int precision, const bool useSuffix, const b
     {
       myXSign = QObject::tr( "-" );
     }
-    if ( m_y < 0 )
+    if ( mY < 0 )
     {
       myYSign = QObject::tr( "-" );
     }
@@ -376,12 +251,12 @@ QString QgsPoint::toDegreesMinutes( int precision, const bool useSuffix, const b
 
 QString QgsPoint::wellKnownText() const
 {
-  return QStringLiteral( "POINT(%1 %2)" ).arg( qgsDoubleToString( m_x ), qgsDoubleToString( m_y ) );
+  return QStringLiteral( "POINT(%1 %2)" ).arg( qgsDoubleToString( mX ), qgsDoubleToString( mY ) );
 }
 
 double QgsPoint::sqrDist( double x, double y ) const
 {
-  return ( m_x - x ) * ( m_x - x ) + ( m_y - y ) * ( m_y - y );
+  return ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y );
 }
 
 double QgsPoint::sqrDist( const QgsPoint& other ) const
@@ -401,8 +276,8 @@ double QgsPoint::distance( const QgsPoint& other ) const
 
 double QgsPoint::azimuth( const QgsPoint& other ) const
 {
-  double dx = other.x() - m_x;
-  double dy = other.y() - m_y;
+  double dx = other.x() - mX;
+  double dy = other.y() - mY;
   return ( atan2( dx, dy ) * 180.0 / M_PI );
 }
 
@@ -411,31 +286,31 @@ QgsPoint QgsPoint::project( double distance, double bearing ) const
   double rads = bearing * M_PI / 180.0;
   double dx = distance * sin( rads );
   double dy = distance * cos( rads );
-  return QgsPoint( m_x + dx, m_y + dy );
+  return QgsPoint( mX + dx, mY + dy );
 }
 
 bool QgsPoint::compare( const QgsPoint &other, double epsilon ) const
 {
-  return ( qgsDoubleNear( m_x, other.x(), epsilon ) && qgsDoubleNear( m_y, other.y(), epsilon ) );
+  return ( qgsDoubleNear( mX, other.x(), epsilon ) && qgsDoubleNear( mY, other.y(), epsilon ) );
 }
 
 // operators
 bool QgsPoint::operator==( const QgsPoint & other )
 {
-  return ( qgsDoubleNear( m_x, other.x() ) && qgsDoubleNear( m_y, other.y() ) );
+  return ( qgsDoubleNear( mX, other.x() ) && qgsDoubleNear( mY, other.y() ) );
 }
 
 bool QgsPoint::operator!=( const QgsPoint & other ) const
 {
-  return !( qgsDoubleNear( m_x, other.x() ) && qgsDoubleNear( m_y, other.y() ) );
+  return !( qgsDoubleNear( mX, other.x() ) && qgsDoubleNear( mY, other.y() ) );
 }
 
 QgsPoint & QgsPoint::operator=( const QgsPoint & other )
 {
   if ( &other != this )
   {
-    m_x = other.x();
-    m_y = other.y();
+    mX = other.x();
+    mY = other.y();
   }
 
   return *this;
@@ -443,33 +318,33 @@ QgsPoint & QgsPoint::operator=( const QgsPoint & other )
 
 void QgsPoint::multiply( double scalar )
 {
-  m_x *= scalar;
-  m_y *= scalar;
+  mX *= scalar;
+  mY *= scalar;
 }
 
 int QgsPoint::onSegment( const QgsPoint& a, const QgsPoint& b ) const
 {
   //algorithm from 'graphics GEMS', A. Paeth: 'A Fast 2D Point-on-line test'
   if (
-    qAbs(( b.y() - a.y() ) *( m_x - a.x() ) - ( m_y - a.y() ) *( b.x() - a.x() ) )
+    qAbs(( b.y() - a.y() ) *( mX - a.x() ) - ( mY - a.y() ) *( b.x() - a.x() ) )
     >= qMax( qAbs( b.x() - a.x() ), qAbs( b.y() - a.y() ) )
   )
   {
     return 0;
   }
-  if (( b.x() < a.x() && a.x() < m_x ) || ( b.y() < a.y() && a.y() < m_y ) )
+  if (( b.x() < a.x() && a.x() < mX ) || ( b.y() < a.y() && a.y() < mY ) )
   {
     return 1;
   }
-  if (( m_x < a.x() && a.x() < b.x() ) || ( m_y < a.y() && a.y() < b.y() ) )
+  if (( mX < a.x() && a.x() < b.x() ) || ( mY < a.y() && a.y() < b.y() ) )
   {
     return 1;
   }
-  if (( a.x() < b.x() && b.x() < m_x ) || ( a.y() < b.y() && b.y() < m_y ) )
+  if (( a.x() < b.x() && b.x() < mX ) || ( a.y() < b.y() && b.y() < mY ) )
   {
     return 3;
   }
-  if (( m_x < b.x() && b.x() < a.x() ) || ( m_y < b.y() && b.y() < a.y() ) )
+  if (( mX < b.x() && b.x() < a.x() ) || ( mY < b.y() && b.y() < a.y() ) )
   {
     return 3;
   }
@@ -485,7 +360,7 @@ double QgsPoint::sqrDistToSegment( double x1, double y1, double x2, double y2, Q
   ny = -( x2 - x1 );
 
   double t;
-  t = ( m_x * ny - m_y * nx - x1 * ny + y1 * nx ) / (( x2 - x1 ) * ny - ( y2 - y1 ) * nx );
+  t = ( mX * ny - mY * nx - x1 * ny + y1 * nx ) / (( x2 - x1 ) * ny - ( y2 - y1 ) * nx );
 
   if ( t < 0.0 )
   {
@@ -507,8 +382,8 @@ double QgsPoint::sqrDistToSegment( double x1, double y1, double x2, double y2, Q
   //prevent rounding errors if the point is directly on the segment
   if ( qgsDoubleNear( dist, 0.0, epsilon ) )
   {
-    minDistPoint.setX( m_x );
-    minDistPoint.setY( m_y );
+    minDistPoint.setX( mX );
+    minDistPoint.setY( mY );
     return 0.0;
   }
   return dist;
