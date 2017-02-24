@@ -377,13 +377,13 @@ double QgsMapSettings::scale() const
 }
 
 
-QgsCoordinateTransform QgsMapSettings::layerTransform( QgsMapLayer *layer ) const
+QgsCoordinateTransform QgsMapSettings::layerTransform( const QgsMapLayer *layer ) const
 {
   return mDatumTransformStore.transformation( layer );
 }
 
 
-double QgsMapSettings::layerToMapUnits( QgsMapLayer *layer, const QgsRectangle& referenceExtent ) const
+double QgsMapSettings::layerToMapUnits( const QgsMapLayer *layer, const QgsRectangle& referenceExtent ) const
 {
   QgsRectangle extent = referenceExtent.isEmpty() ? layer->extent() : referenceExtent;
   QgsPoint l1( extent.xMinimum(), extent.yMinimum() );
@@ -396,7 +396,7 @@ double QgsMapSettings::layerToMapUnits( QgsMapLayer *layer, const QgsRectangle& 
 }
 
 
-QgsRectangle QgsMapSettings::layerExtentToOutputExtent( QgsMapLayer* layer, QgsRectangle extent ) const
+QgsRectangle QgsMapSettings::layerExtentToOutputExtent( const QgsMapLayer* layer, QgsRectangle extent ) const
 {
   if ( hasCrsTransformEnabled() )
   {
@@ -423,7 +423,7 @@ QgsRectangle QgsMapSettings::layerExtentToOutputExtent( QgsMapLayer* layer, QgsR
 }
 
 
-QgsRectangle QgsMapSettings::outputExtentToLayerExtent( QgsMapLayer* layer, QgsRectangle extent ) const
+QgsRectangle QgsMapSettings::outputExtentToLayerExtent( const QgsMapLayer* layer, QgsRectangle extent ) const
 {
   if ( hasCrsTransformEnabled() )
   {
@@ -450,7 +450,7 @@ QgsRectangle QgsMapSettings::outputExtentToLayerExtent( QgsMapLayer* layer, QgsR
 }
 
 
-QgsPoint QgsMapSettings::layerToMapCoordinates( QgsMapLayer* layer, QgsPoint point ) const
+QgsPoint QgsMapSettings::layerToMapCoordinates( const QgsMapLayer* layer, QgsPoint point ) const
 {
   if ( hasCrsTransformEnabled() )
   {
@@ -473,7 +473,7 @@ QgsPoint QgsMapSettings::layerToMapCoordinates( QgsMapLayer* layer, QgsPoint poi
 }
 
 
-QgsRectangle QgsMapSettings::layerToMapCoordinates( QgsMapLayer* layer, QgsRectangle rect ) const
+QgsRectangle QgsMapSettings::layerToMapCoordinates( const QgsMapLayer* layer, QgsRectangle rect ) const
 {
   if ( hasCrsTransformEnabled() )
   {
@@ -496,7 +496,7 @@ QgsRectangle QgsMapSettings::layerToMapCoordinates( QgsMapLayer* layer, QgsRecta
 }
 
 
-QgsPoint QgsMapSettings::mapToLayerCoordinates( QgsMapLayer* layer, QgsPoint point ) const
+QgsPoint QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer* layer, QgsPoint point ) const
 {
   if ( hasCrsTransformEnabled() )
   {
@@ -519,7 +519,7 @@ QgsPoint QgsMapSettings::mapToLayerCoordinates( QgsMapLayer* layer, QgsPoint poi
 }
 
 
-QgsRectangle QgsMapSettings::mapToLayerCoordinates( QgsMapLayer* layer, QgsRectangle rect ) const
+QgsRectangle QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer* layer, QgsRectangle rect ) const
 {
   if ( hasCrsTransformEnabled() )
   {

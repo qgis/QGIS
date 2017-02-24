@@ -50,7 +50,7 @@ bool QgsDatumTransformStore::hasEntryForLayer( QgsMapLayer* layer ) const
   return mEntries.contains( layer->id() );
 }
 
-QgsCoordinateTransform QgsDatumTransformStore::transformation( QgsMapLayer* layer ) const
+QgsCoordinateTransform QgsDatumTransformStore::transformation( const QgsMapLayer* layer ) const
 {
   if ( !layer )
     return QgsCoordinateTransform();

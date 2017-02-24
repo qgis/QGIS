@@ -48,7 +48,7 @@ class CORE_EXPORT QgsDatumTransformStore
      *  @returns transformation associated with layer, or an invalid QgsCoordinateTransform
      *  if no transform is associated with the layer
      */
-    QgsCoordinateTransform transformation( QgsMapLayer* layer ) const;
+    QgsCoordinateTransform transformation( const QgsMapLayer* layer ) const;
 
     void readXml( const QDomNode& parentNode );
 

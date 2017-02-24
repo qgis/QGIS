@@ -43,30 +43,30 @@ QgsPoint QgsMapTool::toMapCoordinates( QPoint point )
   return mCanvas->getCoordinateTransform()->toMapCoordinates( point );
 }
 
-QgsPointV2 QgsMapTool::toMapCoordinates( QgsMapLayer* layer, const QgsPointV2& point )
+QgsPointV2 QgsMapTool::toMapCoordinates( const QgsMapLayer* layer, const QgsPointV2& point )
 {
   QgsPoint result = mCanvas->mapSettings().layerToMapCoordinates( layer, QgsPoint( point.x(), point.y() ) );
   return QgsPointV2( result.x(), result.y() );
 }
 
 
-QgsPoint QgsMapTool::toLayerCoordinates( QgsMapLayer* layer, QPoint point )
+QgsPoint QgsMapTool::toLayerCoordinates( const QgsMapLayer* layer, QPoint point )
 {
   QgsPoint pt = toMapCoordinates( point );
   return toLayerCoordinates( layer, pt );
 }
 
-QgsPoint QgsMapTool::toLayerCoordinates( QgsMapLayer* layer, const QgsPoint& point )
+QgsPoint QgsMapTool::toLayerCoordinates( const QgsMapLayer* layer, const QgsPoint& point )
 {
   return mCanvas->mapSettings().mapToLayerCoordinates( layer, point );
 }
 
-QgsPoint QgsMapTool::toMapCoordinates( QgsMapLayer* layer, const QgsPoint& point )
+QgsPoint QgsMapTool::toMapCoordinates( const QgsMapLayer* layer, const QgsPoint& point )
 {
   return mCanvas->mapSettings().layerToMapCoordinates( layer, point );
 }
 
-QgsRectangle QgsMapTool::toLayerCoordinates( QgsMapLayer* layer, const QgsRectangle& rect )
+QgsRectangle QgsMapTool::toLayerCoordinates( const QgsMapLayer* layer, const QgsRectangle& rect )
 {
   return mCanvas->mapSettings().mapToLayerCoordinates( layer, rect );
 }
