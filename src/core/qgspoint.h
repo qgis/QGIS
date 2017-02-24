@@ -19,126 +19,17 @@
 #define QGSPOINT_H
 
 #include "qgis_core.h"
-#include <qgis.h>
+#include "qgsvector.h"
 
-#include <iostream>
+#include "qgis.h"
+
 #include <QString>
 #include <QPoint>
-
-/** \ingroup core
- * A class to represent a vector.
- * Currently no Z axis / 2.5D support is implemented.
- */
-
-class CORE_EXPORT QgsVector
-{
-
-  public:
-
-    /** Default constructor for QgsVector. Creates a vector with length of 0.0.
-     */
-    QgsVector();
-
-    /** Constructor for QgsVector taking x and y component values.
-     * @param x x-component
-     * @param y y-component
-     */
-    QgsVector( double x, double y );
-
-    //! Swaps the sign of the x and y components of the vector.
-    QgsVector operator-() const;
-
-    /** Returns a vector where the components have been multiplied by a scalar value.
-     * @param scalar factor to multiply by
-     */
-    QgsVector operator*( double scalar ) const;
-
-    /** Returns a vector where the components have been divided by a scalar value.
-     * @param scalar factor to divide by
-     */
-    QgsVector operator/( double scalar ) const;
-
-    /** Returns the dot product of two vectors, which is the sum of the x component
-     *  of this vector multiplied by the x component of another
-     *  vector plus the y component of this vector multiplied by the y component of another vector.
-     */
-    double operator*( QgsVector v ) const;
-
-    /**
-     * Adds another vector to this vector.
-     * @note added in QGIS 3.0
-     */
-    QgsVector operator+( QgsVector other ) const;
-
-    /**
-     * Adds another vector to this vector in place.
-     * @note added in QGIS 3.0
-     */
-    QgsVector& operator+=( QgsVector other );
-
-    /**
-     * Subtracts another vector to this vector.
-     * @note added in QGIS 3.0
-     */
-    QgsVector operator-( QgsVector other ) const;
-
-    /**
-     * Subtracts another vector to this vector in place.
-     * @note added in QGIS 3.0
-     */
-    QgsVector& operator-=( QgsVector other );
-
-    /** Returns the length of the vector.
-     */
-    double length() const;
-
-    /** Returns the vector's x-component.
-     * @see y()
-     */
-    double x() const;
-
-    /** Returns the vector's y-component.
-     * @see x()
-     */
-    double y() const;
-
-    /** Returns the perpendicular vector to this vector (rotated 90 degrees counter-clockwise)
-     */
-    QgsVector perpVector() const;
-
-    /** Returns the angle of the vector in radians.
-     */
-    double angle() const;
-
-    /** Returns the angle between this vector and another vector in radians.
-     */
-    double angle( QgsVector v ) const;
-
-    /** Rotates the vector by a specified angle.
-     * @param rot angle in radians
-     */
-    QgsVector rotateBy( double rot ) const;
-
-    /** Returns the vector's normalized (or "unit") vector (ie same angle but length of 1.0). Will throw an exception
-     * if called on a vector with length of 0.
-     */
-    QgsVector normalized() const;
-
-    //! Equality operator
-    bool operator==( QgsVector other ) const;
-
-    //! Inequality operator
-    bool operator!=( QgsVector other ) const;
-
-  private:
-
-    double mX, mY;
-
-};
+#include <QObject>
 
 /** \ingroup core
  * A class to represent a point.
- * Currently no Z axis / 2.5D support is implemented.
+ * For Z and M support prefer QgsPointV2.
  */
 class CORE_EXPORT QgsPoint
 {
@@ -150,8 +41,8 @@ class CORE_EXPORT QgsPoint
   public:
     /// Default constructor
     QgsPoint()
-        : m_x( 0.0 )
-        , m_y( 0.0 )
+        : mX( 0.0 )
+        , mY( 0.0 )
     {}
 
     //! Create a point from another point
@@ -162,8 +53,8 @@ class CORE_EXPORT QgsPoint
      * @param y y coordinate
      */
     QgsPoint( double x, double y )
-        : m_x( x )
-        , m_y( y )
+        : mX( x )
+        , mY( y )
     {}
 
     /** Create a point from a QPointF
@@ -171,8 +62,8 @@ class CORE_EXPORT QgsPoint
      * @note added in QGIS 2.7
      */
     QgsPoint( QPointF point )
-        : m_x( point.x() )
-        , m_y( point.y() )
+        : mX( point.x() )
+        , mY( point.y() )
     {}
 
     /** Create a point from a QPoint
@@ -180,8 +71,8 @@ class CORE_EXPORT QgsPoint
      * @note added in QGIS 2.7
      */
     QgsPoint( QPoint point )
-        : m_x( point.x() )
-        , m_y( point.y() )
+        : mX( point.x() )
+        , mY( point.y() )
     {}
 
     ~QgsPoint()
@@ -192,7 +83,7 @@ class CORE_EXPORT QgsPoint
      */
     void setX( double x )
     {
-      m_x = x;
+      mX = x;
     }
 
     /** Sets the y value of the point
@@ -200,14 +91,14 @@ class CORE_EXPORT QgsPoint
      */
     void setY( double y )
     {
-      m_y = y;
+      mY = y;
     }
 
     //! Sets the x and y value of the point
     void set( double x, double y )
     {
-      m_x = x;
-      m_y = y;
+      mX = x;
+      mY = y;
     }
 
     /** Get the x value of the point
@@ -215,7 +106,7 @@ class CORE_EXPORT QgsPoint
      */
     double x() const
     {
-      return m_x;
+      return mX;
     }
 
     /** Get the y value of the point
@@ -223,7 +114,7 @@ class CORE_EXPORT QgsPoint
      */
     double y() const
     {
-      return m_y;
+      return mY;
     }
 
     /** Converts a point to a QPointF
@@ -333,7 +224,7 @@ class CORE_EXPORT QgsPoint
     QgsPoint & operator=( const QgsPoint &other );
 
     //! Calculates the vector obtained by subtracting a point from this point
-    QgsVector operator-( const QgsPoint& p ) const { return QgsVector( m_x - p.m_x, m_y - p.m_y ); }
+    QgsVector operator-( const QgsPoint& p ) const { return QgsVector( mX - p.mX, mY - p.mY ); }
 
     //! Adds a vector to this point in place
     QgsPoint &operator+=( QgsVector v ) { *this = *this + v; return *this; }
@@ -342,30 +233,30 @@ class CORE_EXPORT QgsPoint
     QgsPoint &operator-=( QgsVector v ) { *this = *this - v; return *this; }
 
     //! Adds a vector to this point
-    QgsPoint operator+( QgsVector v ) const { return QgsPoint( m_x + v.x(), m_y + v.y() ); }
+    QgsPoint operator+( QgsVector v ) const { return QgsPoint( mX + v.x(), mY + v.y() ); }
 
     //! Subtracts a vector from this point
-    QgsPoint operator-( QgsVector v ) const { return QgsPoint( m_x - v.x(), m_y - v.y() ); }
+    QgsPoint operator-( QgsVector v ) const { return QgsPoint( mX - v.x(), mY - v.y() ); }
 
     //! Multiplies the coordinates in this point by a scalar quantity
-    QgsPoint operator*( double scalar ) const { return QgsPoint( m_x * scalar, m_y * scalar ); }
+    QgsPoint operator*( double scalar ) const { return QgsPoint( mX * scalar, mY * scalar ); }
 
     //! Divides the coordinates in this point by a scalar quantity
-    QgsPoint operator/( double scalar ) const { return QgsPoint( m_x / scalar, m_y / scalar ); }
+    QgsPoint operator/( double scalar ) const { return QgsPoint( mX / scalar, mY / scalar ); }
 
     //! Multiplies the coordinates in this point by a scalar quantity in place
-    QgsPoint &operator*=( double scalar ) { m_x *= scalar; m_y *= scalar; return *this; }
+    QgsPoint &operator*=( double scalar ) { mX *= scalar; mY *= scalar; return *this; }
 
     //! Divides the coordinates in this point by a scalar quantity in place
-    QgsPoint &operator/=( double scalar ) { m_x /= scalar; m_y /= scalar; return *this; }
+    QgsPoint &operator/=( double scalar ) { mX /= scalar; mY /= scalar; return *this; }
 
   private:
 
     //! x coordinate
-    double m_x;
+    double mX;
 
     //! y coordinate
-    double m_y;
+    double mY;
 
     friend uint qHash( const QgsPoint& pnt );
 
@@ -390,8 +281,8 @@ inline std::ostream& operator << ( std::ostream& os, const QgsPoint &p )
 inline uint qHash( const QgsPoint& p )
 {
   uint hash;
-  uint h1 = qHash( static_cast< quint64 >( p.m_x ) );
-  uint h2 = qHash( static_cast< quint64 >( p.m_y ) );
+  uint h1 = qHash( static_cast< quint64 >( p.mX ) );
+  uint h2 = qHash( static_cast< quint64 >( p.mY ) );
   hash = h1 ^( h2 << 1 );
   return hash;
 }

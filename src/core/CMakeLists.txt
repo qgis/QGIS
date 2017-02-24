@@ -234,6 +234,7 @@ SET(QGIS_CORE_SRCS
   qgstransaction.cpp
   qgstransactiongroup.cpp
   qgsunittypes.cpp
+  qgsvector.cpp
   qgsvectordataprovider.cpp
   qgsvectorfilewriter.cpp
   qgsvectorfilewritertask.cpp
@@ -781,6 +782,7 @@ SET(QGIS_CORE_HDRS
   qgsvectorsimplifymethod.h
   qgsmapthemecollection.h
   qgsxmlutils.h
+  qgsvector.h
   qgswebpage.h
   qgswebframe.h
   qgswebview.h
