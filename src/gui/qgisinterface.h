@@ -129,9 +129,9 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QgsRasterLayer* addRasterLayer( const QString& url, const QString& layerName, const QString& providerKey ) = 0;
 
     //! Add a project
-    virtual bool addProject( const QString& theProject ) = 0;
+    virtual bool addProject( const QString& project ) = 0;
     //! Start a blank project
-    virtual void newProject( bool thePromptToSaveFlag = false ) = 0;
+    virtual void newProject( bool promptToSaveFlag = false ) = 0;
 
     //! Get pointer to the active layer (layer selected in the legend)
     virtual QgsMapLayer *activeLayer() = 0;

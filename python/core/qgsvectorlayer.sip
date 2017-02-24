@@ -661,16 +661,16 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
     /**
      * Load a named style from file/local db/datasource db
      * @param theURI the URI of the style or the URI of the layer
-     * @param theResultFlag will be set to true if a named style is correctly loaded
+     * @param resultFlag will be set to true if a named style is correctly loaded
      * @param loadFromLocalDb if true forces to load from local db instead of datasource one
      */
-    virtual QString loadNamedStyle( const QString &theURI, bool &theResultFlag /Out/, bool loadFromLocalDb );
+    virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag /Out/, bool loadFromLocalDb );
 
     /**
-     * Calls loadNamedStyle( theURI, theResultFlag, false );
+     * Calls loadNamedStyle( theURI, resultFlag, false );
      * Retained for backward compatibility
      */
-    virtual QString loadNamedStyle( const QString &theURI, bool &theResultFlag /Out/ );
+    virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag /Out/ );
 
     /** Read the symbology for the current layer from the Dom node supplied.
      * @param node node that will contain the symbology definition for this layer.
@@ -1352,27 +1352,9 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
                         QgsExpressionContext* context = nullptr,
                         bool* ok = nullptr ) const;
 
-    /** Fetches all values from a specified field name or expression.
-     * @param fieldOrExpression field name or an expression string
-     * @param ok will be set to false if field or expression is invalid, otherwise true
-     * @param selectedOnly set to true to get values from selected features only
-     * @returns list of fetched values
-     * @note added in QGIS 2.9
-     * @see getDoubleValues
-     */
-    QList< QVariant > getValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false ) const;
+    QList< QVariant > getValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, QgsFeedback* feedback = 0 ) const;
 
-    /** Fetches all double values from a specified field name or expression. Null values or
-     * invalid expression results are skipped.
-     * @param fieldOrExpression field name or an expression string evaluating to a double value
-     * @param ok will be set to false if field or expression is invalid, otherwise true
-     * @param selectedOnly set to true to get values from selected features only
-     * @param nullCount optional pointer to integer to store number of null values encountered in
-     * @returns list of fetched values
-     * @note added in QGIS 2.9
-     * @see getValues
-     */
-    QList< double > getDoubleValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int* nullCount = 0 ) const;
+    QList< double > getDoubleValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int* nullCount = 0, QgsFeedback* feedback = 0 ) const;
 
     /** Set the blending mode used for rendering each feature */
     void setFeatureBlendMode( QPainter::CompositionMode blendMode );

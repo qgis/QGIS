@@ -65,7 +65,7 @@ static const QgisPlugin::PluginType sPluginType = QgisPlugin::UI;
  * an interface object that provides access to exposed functions in QGIS.
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
-CoordinateCapture::CoordinateCapture( QgisInterface * theQgisInterface )
+CoordinateCapture::CoordinateCapture( QgisInterface * qgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
     , mpMapTool( nullptr )
     , mpTrackMouseButton( nullptr )
@@ -74,7 +74,7 @@ CoordinateCapture::CoordinateCapture( QgisInterface * theQgisInterface )
     , mypCRSLabel( nullptr )
     , mCanvasDisplayPrecision( 5 )
     , mUserCrsDisplayPrecision( 5 )
-    , mQGisIface( theQgisInterface )
+    , mQGisIface( qgisInterface )
     , mQActionPointer( nullptr )
 {
 }
@@ -200,31 +200,31 @@ void CoordinateCapture::setSourceCrs()
   mCanvasDisplayPrecision = ( mQGisIface->mapCanvas()->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees ) ? 5 : 3; // for the map canvas coordinate display
 }
 
-void CoordinateCapture::mouseClicked( const QgsPoint& thePoint )
+void CoordinateCapture::mouseClicked( const QgsPoint& point )
 {
   //clicking on the canvas will update the widgets and then disable
   //tracking so the user can copy the click point coords
   mpTrackMouseButton->setChecked( false );
-  update( thePoint );
+  update( point );
 }
-void CoordinateCapture::mouseMoved( const QgsPoint& thePoint )
+void CoordinateCapture::mouseMoved( const QgsPoint& point )
 {
   //mouse movements will only update the widgets if the
   //tracking button is checked
   if ( mpTrackMouseButton->isChecked() )
   {
-    update( thePoint );
+    update( point );
   }
 }
-void CoordinateCapture::update( const QgsPoint& thePoint )
+void CoordinateCapture::update( const QgsPoint& point )
 {
   //this is the coordinate resolved back to lat / lon
-  QgsPoint myUserCrsPoint = mTransform.transform( thePoint );
+  QgsPoint myUserCrsPoint = mTransform.transform( point );
   mpUserCrsEdit->setText( QString::number( myUserCrsPoint.x(), 'f', mUserCrsDisplayPrecision ) + ',' +
                           QString::number( myUserCrsPoint.y(), 'f', mUserCrsDisplayPrecision ) );
   // This is the coordinate space of the map canvas
-  mpCanvasEdit->setText( QString::number( thePoint.x(), 'f', mCanvasDisplayPrecision ) + ',' +
-                         QString::number( thePoint.y(), 'f', mCanvasDisplayPrecision ) );
+  mpCanvasEdit->setText( QString::number( point.x(), 'f', mCanvasDisplayPrecision ) + ',' +
+                         QString::number( point.y(), 'f', mCanvasDisplayPrecision ) );
 }
 void CoordinateCapture::copy()
 {
@@ -279,9 +279,9 @@ void CoordinateCapture::unload()
 }
 
 // Set icons to the current theme
-void CoordinateCapture::setCurrentTheme( const QString& theThemeName )
+void CoordinateCapture::setCurrentTheme( const QString& themeName )
 {
-  Q_UNUSED( theThemeName );
+  Q_UNUSED( themeName );
   if ( mQActionPointer )
     mQActionPointer->setIcon( QIcon( getIconPath( "coordinate_capture.png" ) ) );
   if ( mpDockWidget )
@@ -294,11 +294,11 @@ void CoordinateCapture::setCurrentTheme( const QString& theThemeName )
 }
 
 // Get path to the best available icon file
-QString CoordinateCapture::getIconPath( const QString& theName )
+QString CoordinateCapture::getIconPath( const QString& name )
 {
-  QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/coordinate_capture/" + theName;
-  QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/coordinate_capture/" + theName;
-  QString myQrcPath = ":/coordinate_capture/" + theName;
+  QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/coordinate_capture/" + name;
+  QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/coordinate_capture/" + name;
+  QString myQrcPath = ":/coordinate_capture/" + name;
   if ( QFile::exists( myCurThemePath ) )
   {
     return myCurThemePath;
@@ -335,9 +335,9 @@ QString CoordinateCapture::getIconPath( const QString& theName )
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
+QGISEXTERN QgisPlugin * classFactory( QgisInterface * qgisInterfacePointer )
 {
-  return new CoordinateCapture( theQgisInterfacePointer );
+  return new CoordinateCapture( qgisInterfacePointer );
 }
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.
@@ -376,7 +376,7 @@ QGISEXTERN QString icon()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * thePluginPointer )
+QGISEXTERN void unload( QgisPlugin * pluginPointer )
 {
-  delete thePluginPointer;
+  delete pluginPointer;
 }

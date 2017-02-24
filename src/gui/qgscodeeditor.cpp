@@ -146,19 +146,19 @@ void QgsCodeEditor::setFoldingVisible( bool folding )
   }
 }
 
-void QgsCodeEditor::insertText( const QString& theText )
+void QgsCodeEditor::insertText( const QString& text )
 {
   // Insert the text or replace selected text
   if ( hasSelectedText() )
   {
-    replaceSelectedText( theText );
+    replaceSelectedText( text );
   }
   else
   {
     int line, index;
     getCursorPosition( &line, &index );
-    insertAt( theText, line, index );
-    setCursorPosition( line, index + theText.length() );
+    insertAt( text, line, index );
+    setCursorPosition( line, index + text.length() );
   }
 }
 

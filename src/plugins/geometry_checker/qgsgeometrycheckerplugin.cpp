@@ -63,9 +63,9 @@ void QgsGeometryCheckerPlugin::unload()
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
+QGISEXTERN QgisPlugin * classFactory( QgisInterface * qgisInterfacePointer )
 {
-  return new QgsGeometryCheckerPlugin( theQgisInterfacePointer );
+  return new QgsGeometryCheckerPlugin( qgisInterfacePointer );
 }
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.
@@ -104,7 +104,7 @@ QGISEXTERN QString icon()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * thePluginPointer )
+QGISEXTERN void unload( QgisPlugin * pluginPointer )
 {
-  delete thePluginPointer;
+  delete pluginPointer;
 }

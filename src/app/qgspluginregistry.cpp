@@ -313,11 +313,11 @@ void QgsPluginRegistry::loadPythonPlugin( const QString& packageName )
 }
 
 
-void QgsPluginRegistry::loadCppPlugin( const QString& theFullPathName )
+void QgsPluginRegistry::loadCppPlugin( const QString& fullPathName )
 {
   QSettings settings;
 
-  QString baseName = QFileInfo( theFullPathName ).baseName();
+  QString baseName = QFileInfo( fullPathName ).baseName();
 
   // first check to see if its already loaded
   if ( isLoaded( baseName ) )
@@ -327,7 +327,7 @@ void QgsPluginRegistry::loadCppPlugin( const QString& theFullPathName )
     return;
   }
 
-  QLibrary myLib( theFullPathName );
+  QLibrary myLib( fullPathName );
 
   QString myError; //we will only show detailed diagnostics if something went wrong
   myError += QObject::tr( "Library name is %1\n" ).arg( myLib.fileName() );
@@ -403,14 +403,14 @@ void QgsPluginRegistry::loadCppPlugin( const QString& theFullPathName )
       }
       else
       {
-        QgsMessageLog::logMessage( QObject::tr( "Unable to find the class factory for %1." ).arg( theFullPathName ), QObject::tr( "Plugins" ) );
+        QgsMessageLog::logMessage( QObject::tr( "Unable to find the class factory for %1." ).arg( fullPathName ), QObject::tr( "Plugins" ) );
       }
 
     }
     break;
     default:
       // type is unknown
-      QgsMessageLog::logMessage( QObject::tr( "Plugin %1 did not return a valid type and cannot be loaded" ).arg( theFullPathName ), QObject::tr( "Plugins" ) );
+      QgsMessageLog::logMessage( QObject::tr( "Plugin %1 did not return a valid type and cannot be loaded" ).arg( fullPathName ), QObject::tr( "Plugins" ) );
       break;
   }
 }
@@ -438,10 +438,10 @@ void QgsPluginRegistry::unloadPythonPlugin( const QString& packageName )
 }
 
 
-void QgsPluginRegistry::unloadCppPlugin( const QString& theFullPathName )
+void QgsPluginRegistry::unloadCppPlugin( const QString& fullPathName )
 {
   QSettings settings;
-  QString baseName = QFileInfo( theFullPathName ).baseName();
+  QString baseName = QFileInfo( fullPathName ).baseName();
   settings.setValue( "/Plugins/" + baseName, false );
   if ( isLoaded( baseName ) )
   {
@@ -458,16 +458,16 @@ void QgsPluginRegistry::unloadCppPlugin( const QString& theFullPathName )
 
 
 //overloaded version of the next method that will load from multiple directories not just one
-void QgsPluginRegistry::restoreSessionPlugins( const QStringList& thePluginDirList )
+void QgsPluginRegistry::restoreSessionPlugins( const QStringList& pluginDirList )
 {
-  QStringListIterator myIterator( thePluginDirList );
+  QStringListIterator myIterator( pluginDirList );
   while ( myIterator.hasNext() )
   {
     restoreSessionPlugins( myIterator.next() );
   }
 }
 
-void QgsPluginRegistry::restoreSessionPlugins( const QString& thePluginDirString )
+void QgsPluginRegistry::restoreSessionPlugins( const QString& pluginDirString )
 {
   QSettings mySettings;
 
@@ -480,11 +480,11 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString& thePluginDirString
 #endif
 
   // check all libs in the current plugin directory and get name and descriptions
-  QDir myPluginDir( thePluginDirString, pluginExt, QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks );
+  QDir myPluginDir( pluginDirString, pluginExt, QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks );
 
   for ( uint i = 0; i < myPluginDir.count(); i++ )
   {
-    QString myFullPath = thePluginDirString + '/' + myPluginDir[i];
+    QString myFullPath = pluginDirString + '/' + myPluginDir[i];
     if ( checkCppPlugin( myFullPath ) )
     {
       // check if the plugin was active on last session

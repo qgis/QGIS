@@ -355,7 +355,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
   QgsDistanceArea calc;
   calc.setEllipsoidalMode( true );
   calc.setEllipsoid( ellipsoid );
-  calc.setSourceCrs( layer->crs().srsid() );
+  calc.setSourceCrs( layer->crs() );
 
   QgsWkbTypes::Type wkbType = QgsWkbTypes::NoGeometry;
   QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::NullGeometry;

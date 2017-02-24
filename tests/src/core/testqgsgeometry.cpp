@@ -113,19 +113,20 @@ class TestQgsGeometry : public QObject
     void wkbInOut();
 
     void segmentizeCircularString();
+    void directionNeutralSegmentation();
     void poleOfInaccessibility();
 
     void makeValid();
 
   private:
     //! A helper method to do a render check to see if the geometry op is as expected
-    bool renderCheck( const QString& theTestName, const QString& theComment = QLatin1String( QLatin1String( "" ) ), int mismatchCount = 0 );
+    bool renderCheck( const QString& testName, const QString& comment = QLatin1String( QLatin1String( "" ) ), int mismatchCount = 0 );
     //! A helper method to dump to qdebug the geometry of a multipolygon
-    void dumpMultiPolygon( QgsMultiPolygon &theMultiPolygon );
+    void dumpMultiPolygon( QgsMultiPolygon &multiPolygon );
     //! A helper method to dump to qdebug the geometry of a polygon
-    void dumpPolygon( QgsPolygon &thePolygon );
+    void dumpPolygon( QgsPolygon &polygon );
     //! A helper method to dump to qdebug the geometry of a polyline
-    void dumpPolyline( QgsPolyline &thePolyline );
+    void dumpPolyline( QgsPolyline &polyline );
 
     // Release return with delete []
     unsigned char * hex2bytes( const char *hex, int *size )
@@ -4137,38 +4138,38 @@ void TestQgsGeometry::exportToGeoJSON()
   QCOMPARE( obtained, geojson );
 }
 
-bool TestQgsGeometry::renderCheck( const QString& theTestName, const QString& theComment, int mismatchCount )
+bool TestQgsGeometry::renderCheck( const QString& testName, const QString& comment, int mismatchCount )
 {
-  mReport += "<h2>" + theTestName + "</h2>\n";
-  mReport += "<h3>" + theComment + "</h3>\n";
+  mReport += "<h2>" + testName + "</h2>\n";
+  mReport += "<h3>" + comment + "</h3>\n";
   QString myTmpDir = QDir::tempPath() + '/';
-  QString myFileName = myTmpDir + theTestName + ".png";
+  QString myFileName = myTmpDir + testName + ".png";
   mImage.save( myFileName, "PNG" );
   QgsRenderChecker myChecker;
-  myChecker.setControlName( "expected_" + theTestName );
+  myChecker.setControlName( "expected_" + testName );
   myChecker.setRenderedImage( myFileName );
-  bool myResultFlag = myChecker.compareImages( theTestName, mismatchCount );
+  bool myResultFlag = myChecker.compareImages( testName, mismatchCount );
   mReport += myChecker.report();
   return myResultFlag;
 }
 
-void TestQgsGeometry::dumpMultiPolygon( QgsMultiPolygon &theMultiPolygon )
+void TestQgsGeometry::dumpMultiPolygon( QgsMultiPolygon &multiPolygon )
 {
   qDebug( "Multipolygon Geometry Dump" );
-  for ( int i = 0; i < theMultiPolygon.size(); i++ )
+  for ( int i = 0; i < multiPolygon.size(); i++ )
   {
-    QgsPolygon myPolygon = theMultiPolygon.at( i );
+    QgsPolygon myPolygon = multiPolygon.at( i );
     qDebug( "\tPolygon in multipolygon: %d", i );
     dumpPolygon( myPolygon );
   }
 }
 
-void TestQgsGeometry::dumpPolygon( QgsPolygon &thePolygon )
+void TestQgsGeometry::dumpPolygon( QgsPolygon &polygon )
 {
   QVector<QPointF> myPoints;
-  for ( int j = 0; j < thePolygon.size(); j++ )
+  for ( int j = 0; j < polygon.size(); j++ )
   {
-    QgsPolyline myPolyline = thePolygon.at( j ); //rings of polygon
+    QgsPolyline myPolyline = polygon.at( j ); //rings of polygon
     qDebug( "\t\tRing in polygon: %d", j );
 
     for ( int k = 0; k < myPolyline.size(); k++ )
@@ -4181,14 +4182,14 @@ void TestQgsGeometry::dumpPolygon( QgsPolygon &thePolygon )
   mpPainter->drawPolygon( myPoints );
 }
 
-void TestQgsGeometry::dumpPolyline( QgsPolyline &thePolyline )
+void TestQgsGeometry::dumpPolyline( QgsPolyline &polyline )
 {
   QVector<QPointF> myPoints;
-//  QgsPolyline myPolyline = thePolyline.at( j ); //rings of polygon
-  for ( int j = 0; j < thePolyline.size(); j++ )
+//  QgsPolyline myPolyline = polyline.at( j ); //rings of polygon
+  for ( int j = 0; j < polyline.size(); j++ )
   {
-    QgsPoint myPoint = thePolyline.at( j );
-//    QgsPolyline myPolyline = thePolygon.at( j ); //rings of polygon
+    QgsPoint myPoint = polyline.at( j );
+//    QgsPolyline myPolyline = polygon.at( j ); //rings of polygon
     myPoints << QPointF( myPoint.x(), myPoint.y() );
     qDebug( "\t\tPoint in line: %d", j );
 
@@ -4252,6 +4253,29 @@ void TestQgsGeometry::segmentizeCircularString()
 
   //make sure the curve point is part of the segmentized result
   QVERIFY( points.contains( QgsPointV2( 0.5, 0.5 ) ) );
+}
+
+void TestQgsGeometry::directionNeutralSegmentation()
+{
+  //Tests, if segmentation of a circularstring is the same in both directions
+  QString CWCircularStringWkt( QStringLiteral( "CIRCULARSTRING( 0 0, 0.5 0.5, 0.83 7.33 )" ) );
+  QgsCircularString* CWCircularString = dynamic_cast<QgsCircularString*>( QgsGeometryFactory::geomFromWkt( CWCircularStringWkt ) );
+  QgsLineString* CWLineString = CWCircularString->curveToLine();
+
+  QString CCWCircularStringWkt( QStringLiteral( "CIRCULARSTRING( 0.83 7.33, 0.5 0.5, 0 0 )" ) );
+  QgsCircularString* CCWCircularString = dynamic_cast<QgsCircularString*>( QgsGeometryFactory::geomFromWkt( CCWCircularStringWkt ) );
+  QgsLineString* CCWLineString = CCWCircularString->curveToLine();
+  QgsLineString* reversedCCWLineString = CCWLineString->reversed();
+
+  bool equal = ( *CWLineString == *reversedCCWLineString );
+
+  delete CWCircularString;
+  delete CCWCircularString;
+  delete CWLineString;
+  delete CCWLineString;
+  delete reversedCCWLineString;
+
+  QVERIFY( equal );
 }
 
 void TestQgsGeometry::poleOfInaccessibility()

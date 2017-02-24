@@ -62,9 +62,9 @@ static const QString icon_ = QStringLiteral( ":/gps_importer.svg" );
  * @param qgis Pointer to the QGIS main window
  * @param _qI Pointer to the QGIS interface object
  */
-QgsGPSPlugin::QgsGPSPlugin( QgisInterface * theQgisInterFace )
+QgsGPSPlugin::QgsGPSPlugin( QgisInterface * qgisInterFace )
     : QgisPlugin( name_, description_, category_, version_, type_ )
-    , mQGisInterface( theQgisInterFace )
+    , mQGisInterface( qgisInterFace )
     , mQActionPointer( nullptr )
     , mCreateGPXAction( nullptr )
 {
@@ -201,12 +201,12 @@ void QgsGPSPlugin::createGPX()
   }
 }
 
-void QgsGPSPlugin::drawVectorLayer( const QString& thePathNameQString,
-                                    const QString& theBaseNameQString,
-                                    const QString& theProviderQString )
+void QgsGPSPlugin::drawVectorLayer( const QString& pathNameQString,
+                                    const QString& baseNameQString,
+                                    const QString& providerQString )
 {
-  mQGisInterface->addVectorLayer( thePathNameQString, theBaseNameQString,
-                                  theProviderQString );
+  mQGisInterface->addVectorLayer( pathNameQString, baseNameQString,
+                                  providerQString );
 }
 
 // Unload the plugin by cleaning up the GUI
@@ -675,9 +675,9 @@ void QgsGPSPlugin::setupBabel()
 }
 
 //! Set icons to the current theme
-void QgsGPSPlugin::setCurrentTheme( const QString& theThemeName )
+void QgsGPSPlugin::setCurrentTheme( const QString& themeName )
 {
-  Q_UNUSED( theThemeName );
+  Q_UNUSED( themeName );
   QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/gps_importer/";
   QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/gps_importer/";
   QString myQrcPath = QStringLiteral( ":/" );
@@ -712,9 +712,9 @@ void QgsGPSPlugin::setCurrentTheme( const QString& theThemeName )
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
+QGISEXTERN QgisPlugin * classFactory( QgisInterface * qgisInterfacePointer )
 {
-  return new QgsGPSPlugin( theQgisInterfacePointer );
+  return new QgsGPSPlugin( qgisInterfacePointer );
 }
 
 // Return the name of the plugin - note that we do not user class members as
@@ -754,7 +754,7 @@ QGISEXTERN QString icon()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * thePluginPointer )
+QGISEXTERN void unload( QgisPlugin * pluginPointer )
 {
-  delete thePluginPointer;
+  delete pluginPointer;
 }

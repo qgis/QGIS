@@ -1245,9 +1245,9 @@ void QgsRuleBasedRendererModel::finishedAddingRules()
   emit endInsertRows();
 }
 
-void QgsRuleBasedRendererModel::setFeatureCounts( const QHash<QgsRuleBasedRenderer::Rule*, QgsRuleBasedRendererCount>& theCountMap )
+void QgsRuleBasedRendererModel::setFeatureCounts( const QHash<QgsRuleBasedRenderer::Rule*, QgsRuleBasedRendererCount>& countMap )
 {
-  mFeatureCountMap = theCountMap;
+  mFeatureCountMap = countMap;
   updateRule( QModelIndex() );
 }
 

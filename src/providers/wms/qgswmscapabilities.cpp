@@ -117,6 +117,14 @@ bool QgsWmsSettings::parseUri( const QString& uriString )
     mMaxHeight = uri.param( QStringLiteral( "maxHeight" ) ).toInt();
   }
 
+  mStepWidth = 2000;
+  mStepHeight = 2000;
+  if ( uri.hasParam( QStringLiteral( "stepWidth" ) ) && uri.hasParam( QStringLiteral( "stepHeight" ) ) )
+  {
+    mStepWidth = uri.param( QStringLiteral( "stepWidth" ) ).toInt();
+    mStepHeight = uri.param( QStringLiteral( "stepHeight" ) ).toInt();
+  }
+
   if ( uri.hasParam( QStringLiteral( "tileMatrixSet" ) ) )
   {
     mTiled = true;
@@ -1867,8 +1875,8 @@ bool QgsWmsCapabilities::shouldInvertAxisOrientation( const QString& ogcCrs )
     }
 
     //create CRS from string
-    QgsCoordinateReferenceSystem theSrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( ogcCrs );
-    if ( theSrs.isValid() && theSrs.hasAxisInverted() )
+    QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( ogcCrs );
+    if ( srs.isValid() && srs.hasAxisInverted() )
     {
       changeXY = true;
     }

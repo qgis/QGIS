@@ -255,9 +255,9 @@ QGISEXTERN int dataCapabilities()
   return QgsDataProvider::Net;
 }
 
-QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
+QGISEXTERN QgsDataItem * dataItem( QString path, QgsDataItem* parentItem )
 {
-  if ( thePath.isEmpty() )
+  if ( path.isEmpty() )
   {
     return new QgsOWSRootItem( parentItem, QStringLiteral( "OWS" ), QStringLiteral( "ows:" ) );
   }

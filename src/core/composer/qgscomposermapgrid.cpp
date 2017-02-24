@@ -612,8 +612,8 @@ void QgsComposerMapGrid::draw( QPainter* p )
   {
     return;
   }
-  QPaintDevice* thePaintDevice = p->device();
-  if ( !thePaintDevice )
+  QPaintDevice* paintDevice = p->device();
+  if ( !paintDevice )
   {
     return;
   }
@@ -632,7 +632,7 @@ void QgsComposerMapGrid::draw( QPainter* p )
   }
 
   //setup painter scaling to dots so that raster symbology is drawn to scale
-  double dotsPerMM = thePaintDevice->logicalDpiX() / 25.4;
+  double dotsPerMM = paintDevice->logicalDpiX() / 25.4;
   p->scale( 1 / dotsPerMM, 1 / dotsPerMM ); //scale painter from mm to dots
 
   //setup render context

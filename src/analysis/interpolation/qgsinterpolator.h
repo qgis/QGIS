@@ -57,7 +57,7 @@ class ANALYSIS_EXPORT QgsInterpolator
 
     QgsInterpolator( const QList<LayerData>& layerData );
 
-    virtual ~QgsInterpolator();
+    virtual ~QgsInterpolator() = default;
 
     /** Calculates interpolation value for map coordinates x, y
        @param x x-coordinate (in map units)

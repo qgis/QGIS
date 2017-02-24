@@ -76,25 +76,25 @@ class QgsComposerArrow: QgsComposerItem
      */
     QString endMarker() const;
 
-    /** Returns the color used to draw outline around the the arrow head.
-     * @returns arrow head outline color
+    /** Returns the color used to draw stroke around the the arrow head.
+     * @returns arrow head stroke color
      * @see arrowHeadFillColor
-     * @see setArrowHeadOutlineColor
+     * @see setArrowHeadStrokeColor
      * @note added in 2.5
      */
-    QColor arrowHeadOutlineColor() const;
+    QColor arrowHeadStrokeColor() const;
 
-    /** Sets the color used to draw the outline around the arrow head.
-     * @param color arrow head outline color
+    /** Sets the color used to draw the stroke around the arrow head.
+     * @param color arrow head stroke color
      * @see setArrowHeadFillColor
-     * @see arrowHeadOutlineColor
+     * @see arrowHeadStrokeColor
      * @note added in 2.5
      */
-    void setArrowHeadOutlineColor( const QColor& color );
+    void setArrowHeadStrokeColor( const QColor& color );
 
     /** Returns the color used to fill the arrow head.
      * @returns arrow head fill color
-     * @see arrowHeadOutlineColor
+     * @see arrowHeadStrokeColor
      * @see setArrowHeadFillColor
      * @note added in 2.5
      */
@@ -103,26 +103,26 @@ class QgsComposerArrow: QgsComposerItem
     /** Sets the color used to fill the arrow head.
      * @param color arrow head fill color
      * @see arrowHeadFillColor
-     * @see setArrowHeadOutlineColor
+     * @see setArrowHeadStrokeColor
      * @note added in 2.5
      */
     void setArrowHeadFillColor( const QColor& color );
 
-    /** Sets the pen width for the outline of the arrow head
-     * @param width pen width for arrow head outline
-     * @see arrowHeadOutlineWidth
-     * @see setArrowHeadOutlineColor
+    /** Sets the pen width for the stroke of the arrow head
+     * @param width pen width for arrow head stroke
+     * @see arrowHeadStrokeWidth
+     * @see setArrowHeadStrokeColor
      * @note added in 2.5
      */
-    void setArrowHeadOutlineWidth( const double width );
+    void setArrowHeadStrokeWidth( const double width );
 
-    /** Returns the pen width for the outline of the arrow head
-     * @returns pen width for arrow head outline
-     * @see setArrowHeadOutlineWidth
-     * @see arrowHeadOutlineColor
+    /** Returns the pen width for the stroke of the arrow head
+     * @returns pen width for arrow head stroke
+     * @see setArrowHeadStrokeWidth
+     * @see arrowHeadStrokeColor
      * @note added in 2.5
      */
-    double arrowHeadOutlineWidth() const;
+    double arrowHeadStrokeWidth() const;
 
     /** Sets the line symbol used for drawing the line portion of the arrow
      * @param symbol line symbol

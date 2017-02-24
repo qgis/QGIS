@@ -99,7 +99,7 @@ class HubDistanceLines(GeoAlgorithm):
         index = vector.spatialindex(layerHubs)
 
         distance = QgsDistanceArea()
-        distance.setSourceCrs(layerPoints.crs().srsid())
+        distance.setSourceCrs(layerPoints.crs())
         distance.setEllipsoidalMode(True)
 
         # Scan source points, find nearest hub, and write to output file

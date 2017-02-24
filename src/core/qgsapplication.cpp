@@ -350,9 +350,9 @@ void QgsApplication::setFileOpenEventReceiver( QObject * receiver )
   }
 }
 
-void QgsApplication::setPrefixPath( const QString &thePrefixPath, bool useDefaultPaths )
+void QgsApplication::setPrefixPath( const QString &prefixPath, bool useDefaultPaths )
 {
-  ABISYM( mPrefixPath ) = thePrefixPath;
+  ABISYM( mPrefixPath ) = prefixPath;
 #if defined(_MSC_VER)
   if ( ABISYM( mPrefixPath ).endsWith( "/bin" ) )
   {
@@ -368,15 +368,15 @@ void QgsApplication::setPrefixPath( const QString &thePrefixPath, bool useDefaul
   ABISYM( mLibexecPath ) = ABISYM( mPrefixPath ) + '/' + QGIS_LIBEXEC_SUBDIR + '/';
 }
 
-void QgsApplication::setPluginPath( const QString &thePluginPath )
+void QgsApplication::setPluginPath( const QString &pluginPath )
 {
-  ABISYM( mPluginPath ) = thePluginPath;
+  ABISYM( mPluginPath ) = pluginPath;
 }
 
-void QgsApplication::setPkgDataPath( const QString &thePkgDataPath )
+void QgsApplication::setPkgDataPath( const QString &pkgDataPath )
 {
-  ABISYM( mPkgDataPath ) = thePkgDataPath;
-  QString mySvgPath = thePkgDataPath + ( ABISYM( mRunningFromBuildDir ) ? "/images/svg/" : "/svg/" );
+  ABISYM( mPkgDataPath ) = pkgDataPath;
+  QString mySvgPath = pkgDataPath + ( ABISYM( mRunningFromBuildDir ) ? "/images/svg/" : "/svg/" );
   // avoid duplicate entries
   if ( !ABISYM( mDefaultSvgPaths ).contains( mySvgPath ) )
     ABISYM( mDefaultSvgPaths ) << mySvgPath;
@@ -387,9 +387,9 @@ void QgsApplication::setDefaultSvgPaths( const QStringList& pathList )
   ABISYM( mDefaultSvgPaths ) = pathList;
 }
 
-void QgsApplication::setAuthDatabaseDirPath( const QString& theAuthDbDirPath )
+void QgsApplication::setAuthDatabaseDirPath( const QString& authDbDirPath )
 {
-  QFileInfo fi( theAuthDbDirPath );
+  QFileInfo fi( authDbDirPath );
   if ( fi.exists() && fi.isDir() && fi.isWritable() )
   {
     ABISYM( mAuthDbDirPath ) = fi.canonicalFilePath() + QDir::separator();
@@ -441,16 +441,16 @@ QString QgsApplication::iconPath( const QString& iconFile )
   return defaultThemePath() + iconFile;
 }
 
-QIcon QgsApplication::getThemeIcon( const QString &theName )
+QIcon QgsApplication::getThemeIcon( const QString &name )
 {
   QgsApplication* app = instance();
-  if ( app && app->mIconCache.contains( theName ) )
-    return app->mIconCache.value( theName );
+  if ( app && app->mIconCache.contains( name ) )
+    return app->mIconCache.value( name );
 
   QIcon icon;
 
-  QString myPreferredPath = activeThemePath() + QDir::separator() + theName;
-  QString myDefaultPath = defaultThemePath() + QDir::separator() + theName;
+  QString myPreferredPath = activeThemePath() + QDir::separator() + name;
+  QString myDefaultPath = defaultThemePath() + QDir::separator() + name;
   if ( QFile::exists( myPreferredPath ) )
   {
     icon = QIcon( myPreferredPath );
@@ -467,15 +467,15 @@ QIcon QgsApplication::getThemeIcon( const QString &theName )
   }
 
   if ( app )
-    app->mIconCache.insert( theName, icon );
+    app->mIconCache.insert( name, icon );
   return icon;
 }
 
 // TODO: add some caching mechanism ?
-QPixmap QgsApplication::getThemePixmap( const QString &theName )
+QPixmap QgsApplication::getThemePixmap( const QString &name )
 {
-  QString myPreferredPath = activeThemePath() + QDir::separator() + theName;
-  QString myDefaultPath = defaultThemePath() + QDir::separator() + theName;
+  QString myPreferredPath = activeThemePath() + QDir::separator() + name;
+  QString myDefaultPath = defaultThemePath() + QDir::separator() + name;
   if ( QFile::exists( myPreferredPath ) )
   {
     return QPixmap( myPreferredPath );
@@ -491,9 +491,9 @@ QPixmap QgsApplication::getThemePixmap( const QString &theName )
 /*!
   Set the theme path to the specified theme.
 */
-void QgsApplication::setThemeName( const QString &theThemeName )
+void QgsApplication::setThemeName( const QString &themeName )
 {
-  ABISYM( mThemeName ) = theThemeName;
+  ABISYM( mThemeName ) = themeName;
 }
 /*!
  * Get the active theme name
@@ -1207,23 +1207,23 @@ QString QgsApplication::relativePathToAbsolutePath( const QString& rpath, const 
   return targetElems.join( QStringLiteral( "/" ) );
 }
 
-void QgsApplication::skipGdalDriver( const QString& theDriver )
+void QgsApplication::skipGdalDriver( const QString& driver )
 {
-  if ( ABISYM( mGdalSkipList ).contains( theDriver ) || theDriver.isEmpty() )
+  if ( ABISYM( mGdalSkipList ).contains( driver ) || driver.isEmpty() )
   {
     return;
   }
-  ABISYM( mGdalSkipList ) << theDriver;
+  ABISYM( mGdalSkipList ) << driver;
   applyGdalSkippedDrivers();
 }
 
-void QgsApplication::restoreGdalDriver( const QString& theDriver )
+void QgsApplication::restoreGdalDriver( const QString& driver )
 {
-  if ( !ABISYM( mGdalSkipList ).contains( theDriver ) )
+  if ( !ABISYM( mGdalSkipList ).contains( driver ) )
   {
     return;
   }
-  int myPos = ABISYM( mGdalSkipList ).indexOf( theDriver );
+  int myPos = ABISYM( mGdalSkipList ).indexOf( driver );
   if ( myPos >= 0 )
   {
     ABISYM( mGdalSkipList ).removeAt( myPos );

@@ -20,14 +20,14 @@
 
 QgsCredentials *QgsCredentials::sInstance = nullptr;
 
-void QgsCredentials::setInstance( QgsCredentials *theInstance )
+void QgsCredentials::setInstance( QgsCredentials *instance )
 {
   if ( sInstance )
   {
     QgsDebugMsg( "already registered an instance of QgsCredentials" );
   }
 
-  sInstance = theInstance;
+  sInstance = instance;
 }
 
 QgsCredentials *QgsCredentials::instance()

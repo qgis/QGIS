@@ -48,14 +48,14 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     ~QgsGPSInformationWidget();
 
   private slots:
-    void on_mConnectButton_toggled( bool theFlag );
+    void on_mConnectButton_toggled( bool flag );
     void displayGPSInformation( const QgsGPSInformation& info );
     void logNmeaSentence( const QString& nmeaString ); // added to handle 'raw' data
     void updateCloseFeatureButton( QgsMapLayer * lyr );
     void layerEditStateChanged();
 //   void setTrackColor(); // no longer used
     void on_mBtnTrackColor_clicked();
-    void on_mSpinTrackWidth_valueChanged( int theValue );
+    void on_mSpinTrackWidth_valueChanged( int value );
     void on_mBtnPosition_clicked();
     void on_mBtnSignal_clicked();
     void on_mBtnSatellites_clicked();
@@ -65,7 +65,7 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     void on_mBtnAddVertex_clicked();
     void on_mBtnCloseFeature_clicked();
     void on_mBtnResetFeature_clicked();
-// not needed    void on_mCbxAutoAddVertices_toggled( bool theFlag );
+// not needed    void on_mCbxAutoAddVertices_toggled( bool flag );
     void on_mBtnLogFile_clicked();
 
     void connected( QgsGPSConnection * );

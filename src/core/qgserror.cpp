@@ -22,32 +22,32 @@
 
 #include <QRegExp>
 
-QgsErrorMessage::QgsErrorMessage( const QString & theMessage, const QString & theTag, const QString & theFile, const QString & theFunction, int theLine )
-    : mMessage( theMessage )
-    , mTag( theTag )
-    , mFile( theFile )
-    , mFunction( theFunction )
-    , mLine( theLine )
+QgsErrorMessage::QgsErrorMessage( const QString & message, const QString & tag, const QString & file, const QString & function, int line )
+    : mMessage( message )
+    , mTag( tag )
+    , mFile( file )
+    , mFunction( function )
+    , mLine( line )
     , mFormat( Text )
 {
 }
 
-QgsError::QgsError( const QString & theMessage, const QString & theTag )
+QgsError::QgsError( const QString & message, const QString & tag )
 {
-  append( theMessage, theTag );
+  append( message, tag );
 }
 
-void QgsError::append( const QString & theMessage, const QString & theTag )
+void QgsError::append( const QString & message, const QString & tag )
 {
-  mMessageList.append( QgsErrorMessage( theMessage, theTag ) );
+  mMessageList.append( QgsErrorMessage( message, tag ) );
 }
 
-void QgsError::append( const QgsErrorMessage & theMessage )
+void QgsError::append( const QgsErrorMessage & message )
 {
-  mMessageList.append( theMessage );
+  mMessageList.append( message );
 }
 
-QString QgsError::message( QgsErrorMessage::Format theFormat ) const
+QString QgsError::message( QgsErrorMessage::Format format ) const
 {
   QString str;
 
@@ -79,7 +79,7 @@ QString QgsError::message( QgsErrorMessage::Format theFormat ) const
 #endif
 #endif
 
-    if ( theFormat == QgsErrorMessage::Text )
+    if ( format == QgsErrorMessage::Text )
     {
       if ( !str.isEmpty() )
       {

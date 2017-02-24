@@ -49,7 +49,7 @@ class CORE_EXPORT QgsPythonRunner
 
   protected:
     //! Protected constructor: can be instantiated only from children
-    QgsPythonRunner();
+    QgsPythonRunner() = default;
     virtual ~QgsPythonRunner() = default;
 
     virtual bool runCommand( QString command, QString messageOnError = QString() ) = 0;

@@ -84,7 +84,7 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     void on_lstLayers_itemSelectionChanged();
 
     //! Set status message to theMessage
-    void showStatusMessage( QString const &theMessage );
+    void showStatusMessage( QString const &message );
 
     //! show whatever error is exposed by the QgsWmsProvider.
     void showError( QgsWmsProvider *wms );

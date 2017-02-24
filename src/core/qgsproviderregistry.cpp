@@ -37,7 +37,7 @@ typedef QString providerkey_t();
 typedef QString description_t();
 typedef bool    isprovider_t();
 typedef QString fileVectorFilters_t();
-typedef void buildsupportedrasterfilefilter_t( QString & theFileFiltersString );
+typedef void buildsupportedrasterfilefilter_t( QString & fileFiltersString );
 typedef QString databaseDrivers_t();
 typedef QString directoryDrivers_t();
 typedef QString protocolDrivers_t();
@@ -446,7 +446,7 @@ QFunctionPointer QgsProviderRegistry::function( QString const & providerKey,
   else
   {
     QgsDebugMsg( "Cannot load library: " + myLib.errorString() );
-    return 0;
+    return nullptr;
   }
 }
 

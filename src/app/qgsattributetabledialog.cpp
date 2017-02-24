@@ -79,14 +79,14 @@ void QgsAttributeTableDialog::updateMultiEditButtonState()
   }
 }
 
-QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWidget *parent, Qt::WindowFlags flags )
+QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QWidget *parent, Qt::WindowFlags flags )
     : QDialog( parent, flags )
     , mDock( nullptr )
-    , mLayer( theLayer )
+    , mLayer( layer )
     , mRubberBand( nullptr )
     , mCurrentSearchWidgetWrapper( nullptr )
 {
-  setObjectName( QStringLiteral( "QgsAttributeTableDialog/" ) + theLayer->id() );
+  setObjectName( QStringLiteral( "QgsAttributeTableDialog/" ) + layer->id() );
   setupUi( this );
 
   Q_FOREACH ( const QgsField& field, mLayer->fields() )
@@ -137,11 +137,11 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
        settings.value( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll ).toInt() == QgsAttributeTableFilterModel::ShowVisible )
   {
     QgsMapCanvas *mc = QgisApp::instance()->mapCanvas();
-    QgsRectangle extent( mc->mapSettings().mapToLayerCoordinates( theLayer, mc->extent() ) );
+    QgsRectangle extent( mc->mapSettings().mapToLayerCoordinates( layer, mc->extent() ) );
     r.setFilterRect( extent );
 
     mRubberBand = new QgsRubberBand( mc, QgsWkbTypes::PolygonGeometry );
-    mRubberBand->setToGeometry( QgsGeometry::fromRect( extent ), theLayer );
+    mRubberBand->setToGeometry( QgsGeometry::fromRect( extent ), layer );
 
     mActionShowAllFilter->setText( tr( "Show All Features In Initial Canvas Extent" ) );
   }
@@ -586,7 +586,7 @@ void QgsAttributeTableDialog::filterExpressionBuilder()
   dlg.setWindowTitle( tr( "Expression based filter" ) );
 
   QgsDistanceArea myDa;
-  myDa.setSourceCrs( mLayer->crs().srsid() );
+  myDa.setSourceCrs( mLayer->crs() );
   myDa.setEllipsoidalMode( true );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
   dlg.setGeomCalculator( myDa );
@@ -947,7 +947,7 @@ void QgsAttributeTableDialog::setFilterExpression( const QString& filterString, 
   QgsFeatureIds filteredFeatures;
   QgsDistanceArea myDa;
 
-  myDa.setSourceCrs( mLayer->crs().srsid() );
+  myDa.setSourceCrs( mLayer->crs() );
   myDa.setEllipsoidalMode( true );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 

@@ -15,8 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff/>
-   </iconset>
+    <normaloff>.</normaloff>.</iconset>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
@@ -66,11 +65,11 @@
        </item>
        <item row="1" column="0" colspan="2">
         <widget class="QPushButton" name="btnConnect">
-        <property name="toolTip">
-          <string>Connect to selected service</string>
-         </property>
          <property name="enabled">
           <bool>false</bool>
+         </property>
+         <property name="toolTip">
+          <string>Connect to selected service</string>
          </property>
          <property name="text">
           <string>C&amp;onnect</string>
@@ -89,11 +88,11 @@
        </item>
        <item row="1" column="4">
         <widget class="QPushButton" name="btnEdit">
-         <property name="toolTip">
-          <string>Edit selected service connection</string>
-         </property>
          <property name="enabled">
           <bool>false</bool>
+         </property>
+         <property name="toolTip">
+          <string>Edit selected service connection</string>
          </property>
          <property name="text">
           <string>Edit</string>
@@ -102,11 +101,11 @@
        </item>
        <item row="1" column="5">
         <widget class="QPushButton" name="btnDelete">
-         <property name="toolTip">
-          <string>Remove connection to selected service</string>
-         </property>
          <property name="enabled">
           <bool>false</bool>
+         </property>
+         <property name="toolTip">
+          <string>Remove connection to selected service</string>
          </property>
          <property name="text">
           <string>Remove</string>
@@ -220,29 +219,6 @@
           <string>Options</string>
          </property>
          <layout class="QGridLayout">
-          <item row="3" column="0" colspan="2">
-           <widget class="QLabel" name="labelCoordRefSys">
-            <property name="text">
-             <string>Coordinate Reference System</string>
-            </property>
-            <property name="buddy">
-             <cstring>btnChangeSpatialRefSys</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="2">
-           <widget class="QPushButton" name="btnChangeSpatialRefSys">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>Change...</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="mTileWidth"/>
-          </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
@@ -253,10 +229,14 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
-           <widget class="QLineEdit" name="mTileHeight"/>
+          <item row="5" column="0">
+           <widget class="QCheckBox" name="mContextualLegendCheckbox">
+            <property name="text">
+             <string>Use contextual WMS Legend</string>
+            </property>
+           </widget>
           </item>
-          <item row="2" column="0" colspan="2">
+          <item row="3" column="0" colspan="2">
            <widget class="QLabel" name="label_3">
             <property name="text">
              <string>Feature limit for GetFeatureInfo</string>
@@ -266,19 +246,54 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="2">
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="mTileWidth"/>
+          </item>
+          <item row="3" column="2">
            <widget class="QLineEdit" name="mFeatureCount">
             <property name="text">
              <string>10</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
-           <widget class="QCheckBox" name="mContextualLegendCheckbox">
+          <item row="4" column="2">
+           <widget class="QPushButton" name="btnChangeSpatialRefSys">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
-             <string>Use contextual WMS Legend</string>
+             <string>Change...</string>
             </property>
            </widget>
+          </item>
+          <item row="4" column="0" colspan="2">
+           <widget class="QLabel" name="labelCoordRefSys">
+            <property name="text">
+             <string>Coordinate Reference System</string>
+            </property>
+            <property name="buddy">
+             <cstring>btnChangeSpatialRefSys</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QLineEdit" name="mTileHeight"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Request step size</string>
+            </property>
+            <property name="buddy">
+             <cstring>mTileWidth</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="mStepWidth"/>
+          </item>
+          <item row="2" column="2">
+           <widget class="QLineEdit" name="mStepHeight"/>
           </item>
          </layout>
         </widget>
@@ -496,19 +511,20 @@
   <tabstop>lstLayers</tabstop>
   <tabstop>mTileWidth</tabstop>
   <tabstop>mTileHeight</tabstop>
+  <tabstop>mStepWidth</tabstop>
+  <tabstop>mStepHeight</tabstop>
   <tabstop>mFeatureCount</tabstop>
   <tabstop>btnChangeSpatialRefSys</tabstop>
   <tabstop>mContextualLegendCheckbox</tabstop>
-  <tabstop>mLayerUpButton</tabstop>
-  <tabstop>mLayerDownButton</tabstop>
-  <tabstop>mLayerOrderTreeWidget</tabstop>
+  <tabstop>leLayerName</tabstop>
   <tabstop>lstTilesets</tabstop>
   <tabstop>leSearchTerm</tabstop>
   <tabstop>btnSearch</tabstop>
   <tabstop>tableWidgetWMSList</tabstop>
   <tabstop>btnAddWMS</tabstop>
-  <tabstop>leLayerName</tabstop>
-  <tabstop>buttonBox</tabstop>
+  <tabstop>mLayerOrderTreeWidget</tabstop>
+  <tabstop>mLayerDownButton</tabstop>
+  <tabstop>mLayerUpButton</tabstop>
  </tabstops>
  <resources/>
  <connections>

@@ -39,10 +39,10 @@
 /**
 * Constructor for the id style tool, this tool inherits the QgsMapTool and requires a pointer to
 * to the map canvas.
-* @param theCanvas - Pointer to the QGIS map canvas
+* @param canvas - Pointer to the QGIS map canvas
 */
-eVisEventIdTool::eVisEventIdTool( QgsMapCanvas* theCanvas )
-    : QgsMapTool( theCanvas )
+eVisEventIdTool::eVisEventIdTool( QgsMapCanvas* canvas )
+    : QgsMapTool( canvas )
     , mBrowser( nullptr )
 {
   //set cursor
@@ -58,11 +58,11 @@ eVisEventIdTool::eVisEventIdTool( QgsMapCanvas* theCanvas )
 
 /**
 * Mouse release, i.e., select, event
-* @param theMouseEvent - Pointer to a QMouseEvent
+* @param mouseEvent - Pointer to a QMouseEvent
 */
-void eVisEventIdTool::canvasReleaseEvent( QgsMapMouseEvent* theMouseEvent )
+void eVisEventIdTool::canvasReleaseEvent( QgsMapMouseEvent* mouseEvent )
 {
-  if ( !mCanvas || !theMouseEvent )
+  if ( !mCanvas || !mouseEvent )
     return;
 
 //Check to see if there is a layer selected
@@ -71,7 +71,7 @@ void eVisEventIdTool::canvasReleaseEvent( QgsMapMouseEvent* theMouseEvent )
     //Check to see if the current layer is a vector layer
     if ( QgsMapLayer::VectorLayer == mCanvas->currentLayer()->type() )
     {
-      select( mCanvas->getCoordinateTransform()->toMapCoordinates( theMouseEvent->x(), theMouseEvent->y() ) );
+      select( mCanvas->getCoordinateTransform()->toMapCoordinates( mouseEvent->x(), mouseEvent->y() ) );
     }
     else
     {
@@ -86,9 +86,9 @@ void eVisEventIdTool::canvasReleaseEvent( QgsMapMouseEvent* theMouseEvent )
 
 /**
 * Selection routine called by the mouse release event
-* @param thePoint = QgsPoint representing the x, y coordinates of the mouse release event
+* @param point = QgsPoint representing the x, y coordinates of the mouse release event
 */
-void eVisEventIdTool::select( const QgsPoint& thePoint )
+void eVisEventIdTool::select( const QgsPoint& point )
 {
 
   if ( !mCanvas )
@@ -100,10 +100,10 @@ void eVisEventIdTool::select( const QgsPoint& thePoint )
   double searchWidth = QgsMapTool::searchRadiusMU( mCanvas );
 
   QgsRectangle myRectangle;
-  myRectangle.setXMinimum( thePoint.x() - searchWidth );
-  myRectangle.setXMaximum( thePoint.x() + searchWidth );
-  myRectangle.setYMinimum( thePoint.y() - searchWidth );
-  myRectangle.setYMaximum( thePoint.y() + searchWidth );
+  myRectangle.setXMinimum( point.x() - searchWidth );
+  myRectangle.setXMaximum( point.x() + searchWidth );
+  myRectangle.setYMinimum( point.y() - searchWidth );
+  myRectangle.setYMaximum( point.y() + searchWidth );
 
   //Transform rectangle to map coordinates
   myRectangle = toLayerCoordinates( myLayer, myRectangle );

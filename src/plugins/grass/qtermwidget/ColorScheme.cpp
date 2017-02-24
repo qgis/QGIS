@@ -778,11 +778,11 @@ const ColorScheme* ColorSchemeManager::findColorScheme(const QString& name)
     }
 }
 
-ColorSchemeManager* ColorSchemeManager::theColorSchemeManager = 0;
-//K_GLOBAL_STATIC( ColorSchemeManager , theColorSchemeManager )
+ColorSchemeManager* ColorSchemeManager::sColorSchemeManager = 0;
+//K_GLOBAL_STATIC( ColorSchemeManager , colorSchemeManager )
 ColorSchemeManager* ColorSchemeManager::instance()
 {
-    if (! theColorSchemeManager)
-        theColorSchemeManager = new ColorSchemeManager();
-    return theColorSchemeManager;
+    if (! sColorSchemeManager)
+        sColorSchemeManager = new ColorSchemeManager();
+    return sColorSchemeManager;
 }

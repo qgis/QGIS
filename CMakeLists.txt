@@ -255,8 +255,8 @@ FIND_PACKAGE(Qt5Concurrent REQUIRED)
 FIND_PACKAGE(Qt5PrintSupport REQUIRED)
 FIND_PACKAGE(Qt5Positioning)
 IF (WITH_QTWEBKIT)
-FIND_PACKAGE(Qt5WebKit REQUIRED)
-FIND_PACKAGE(Qt5WebKitWidgets REQUIRED)
+  FIND_PACKAGE(Qt5WebKit REQUIRED)
+  FIND_PACKAGE(Qt5WebKitWidgets REQUIRED)
 ENDIF(WITH_QTWEBKIT)
 FIND_PACKAGE(Qt5Test REQUIRED)
 FIND_PACKAGE(Qt5UiTools REQUIRED)
@@ -265,8 +265,12 @@ FIND_PACKAGE(Qt5Sql REQUIRED)
 INCLUDE("cmake/modules/ECMQt4To5Porting.cmake")
 MESSAGE(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
 
+IF(WITH_QTWEBKIT)
+  SET(OPTIONAL_QTWEBKIT ${QT_QTWEBKIT_LIBRARY})
+ENDIF(WITH_QTWEBKIT)
+
 IF (WITH_QTMOBILITY)
-    FIND_PACKAGE(QtMobility 1.1.0)
+  FIND_PACKAGE(QtMobility 1.1.0)
 ENDIF (WITH_QTMOBILITY)
 
 # search for QScintilla2 (C++ lib)
@@ -314,10 +318,10 @@ ENDIF (SUPPRESS_QT_WARNINGS)
 ADD_DEFINITIONS(-DQT_NO_CAST_TO_ASCII)
 
 FIND_PROGRAM(QT_LRELEASE_EXECUTABLE
-    NAMES lrelease
-    PATHS ${QT_BINARY_DIR}
-    NO_DEFAULT_PATH
-    )
+  NAMES lrelease
+  PATHS ${QT_BINARY_DIR}
+  NO_DEFAULT_PATH
+)
 
 #############################################################
 # enable use of c++11 features where available
@@ -505,7 +509,7 @@ ELSE (WIN32)
     SET (QGIS_PLUGIN_SUBDIR_REV  ../../MacOS)
     SET (DEFAULT_INCLUDE_SUBDIR  include/qgis)
 
-    # Set server moodules path to DEFAULT_LIBEXEC_SUBDIR+'/server' 
+    # Set server moodules path to DEFAULT_LIBEXEC_SUBDIR+'/server'
     SET (DEFAULT_SERVER_MODULE_SUBDIR ${DEFAULT_LIBEXEC_SUBDIR}/server)
 
     # path for framework references when running from build directory
@@ -538,9 +542,9 @@ ELSE (WIN32)
 ENDIF (WIN32)
 
 IF (ANDROID)
-    SET (DEFAULT_PLUGIN_SUBDIR  lib)
-    SET (DEFAULT_DATA_SUBDIR    files/share)
-    string(REPLACE "<CMAKE_SHARED_LIBRARY_SONAME_CXX_FLAG><TARGET_SONAME>" "" CMAKE_CXX_CREATE_SHARED_MODULE "${CMAKE_CXX_CREATE_SHARED_MODULE}")
+  SET (DEFAULT_PLUGIN_SUBDIR  lib)
+  SET (DEFAULT_DATA_SUBDIR    files/share)
+  string(REPLACE "<CMAKE_SHARED_LIBRARY_SONAME_CXX_FLAG><TARGET_SONAME>" "" CMAKE_CXX_CREATE_SHARED_MODULE "${CMAKE_CXX_CREATE_SHARED_MODULE}")
 ENDIF (ANDROID)
 
 #assume we have escaped compiler directives
@@ -670,6 +674,20 @@ INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
 # Added by Jef to prevent python core and gui libs linking to other qgisCore and qgisGui libs
 # that may be in the same install prefix
 LINK_DIRECTORIES(${CMAKE_BINARY_DIR}/src/core ${CMAKE_BINARY_DIR}/src/gui)
+
+####################################################
+# clang-tidy
+FIND_PROGRAM(
+  CLANG_TIDY_EXE
+  NAMES "clang-tidy"
+  DOC "Path to clang-tidy executable"
+  )
+IF(NOT CLANG_TIDY_EXE)
+  MESSAGE(STATUS "clang-tidy not found.")
+ELSE(NOT CLANG_TIDY_EXE)
+  MESSAGE(STATUS "clang-tidy found: ${CLANG_TIDY_EXE}")
+  SET(DO_CLANG_TIDY "${CLANG_TIDY_EXE}" "-checks=*,-clang-analyzer-alpha.*,-cppcoreguidelines*,-readability-implicit-bool-cast,-llvm-include-order,-cert-err58-cpp,-modernize-pass-by-value,-google-readability-braces-around-statements,-modernize-use-auto,-modernize-loop-convert,-readability-else-after-return,-readability-braces-around-statements,-google-runtime-references,-readability-named-parameter,-google-default-arguments,-google-readability-todo,-readability-inconsistent-declaration-parameter-name,-cert-flp30-c,-google-readability-casting,-clang-analyzer-security.FloatLoopCounter,-google-runtime-int,-modernize-use-using,-google-explicit-constructor,-google-build-using-namespace,-cert-err34-c,-clang-analyzer-core.CallAndMessage,-google-readability-function-size,-modernize-make-shared,-modernize-use-nullptr,-clang-analyzer-cplusplus.NewDeleteLeaks,-clang-analyzer-core.NonNullParamChecker,performance-unnecessary-copy-initialization,-readability-simplify-boolean-expr,-modernize-raw-string-literal,-performance-unnecessary-copy-initialization")
+ENDIF(NOT CLANG_TIDY_EXE)
 
 #############################################################
 # create qgsversion.h

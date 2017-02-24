@@ -299,6 +299,7 @@ General changes        {#qgis_api_break_3_0_global}
 - All destCrs() methods have been renamed to destinationCrs()
 - All exportXML() methods have been renamed to exportXml()
 - All importXML() methods have been renamed to importXml()
+- All methods relating to "border" or "outline" color or width have been renamed to stroke
 - All methods taking or returning QGis::WkbType have been changed to use QgsWkbTypes::Type
 - All methods taking or returning QGis::GeometryType have been changed to use QgsWkbTypes::GeometryType
 - Network analysis library has been merged into analysis library
@@ -991,6 +992,12 @@ QgsExpressionItem        {#qgis_api_break_3_0_QgsExpressionItem}
 
 - CustomSortRole was renamed to CUSTOM_SORT_ROLE
 - ItemTypeRole was renamed to ITEM_TYPE_ROLE
+
+QgsExpressionContext      {#qgis_api_break_3_0_QgsExpressionContext}
+--------------------
+
+- EXPR_FEATURE was removed. Use the direct feature manipulation methods feature(), hasFeature() and setFeature() instead
+
 
 QgsExpressionContextUtils       {#qgis_api_break_3_0_QgsExpressionContextUtils}
 -------------------------

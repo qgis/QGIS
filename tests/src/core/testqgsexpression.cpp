@@ -968,6 +968,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "date - date" ) << "to_date('2013-03-04') - to_date('2013-03-01')" << false << QVariant( QgsInterval( 3*24*60*60 ) );
       QTest::newRow( "datetime - datetime" ) << "to_datetime('2013-03-04 08:30:00') - to_datetime('2013-03-01 05:15:00')" << false << QVariant( QgsInterval( 3*24*60*60 + 3 * 60*60 + 15*60 ) );
       QTest::newRow( "time - time" ) << "to_time('08:30:00') - to_time('05:15:00')" << false << QVariant( QgsInterval( 3 * 60*60 + 15*60 ) );
+      QTest::newRow( "epoch" ) << "epoch(to_datetime('2017-01-01T00:00:01+00:00'))" << false << QVariant( 1483228801000LL );
+      QTest::newRow( "epoch invalid date" ) << "epoch('invalid')" << true << QVariant();
 
       // Color functions
       QTest::newRow( "ramp color" ) << "ramp_color('Spectral',0.3)" << false << QVariant( "254,190,116,255" );
@@ -1101,13 +1103,21 @@ class TestQgsExpression: public QObject
 
       Q_ASSERT( exp.prepare( &context ) );
 
-      QCOMPARE( result.type(), expected.type() );
-      switch ( result.type() )
+      QVariant::Type resultType = result.type();
+      QVariant::Type expectedType = expected.type();
+
+      if ( resultType == QVariant::Int )
+        resultType = QVariant::LongLong;
+      if ( expectedType == QVariant::Int )
+        expectedType = QVariant::LongLong;
+
+      QCOMPARE( resultType, expectedType );
+      switch ( resultType )
       {
         case QVariant::Invalid:
           break; // nothing more to check
-        case QVariant::Int:
-          QCOMPARE( result.toInt(), expected.toInt() );
+        case QVariant::LongLong:
+          QCOMPARE( result.toLongLong(), expected.toLongLong() );
           break;
         case QVariant::Double:
           QCOMPARE( result.toDouble(), expected.toDouble() );
@@ -1190,7 +1200,7 @@ class TestQgsExpression: public QObject
       QCOMPARE( prepareRes, true );
       QCOMPARE( exp.hasEvalError(), false );
       QVariant res = exp.evaluate( &context );
-      QCOMPARE( res.type(), QVariant::Int );
+      QCOMPARE( res.type(), QVariant::LongLong );
       QCOMPARE( res.toInt(), 21 );
 
       // bad exp

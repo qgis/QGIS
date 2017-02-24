@@ -25,7 +25,7 @@ class QgsSimpleLineSymbolLayer : QgsLineSymbolLayer
     void renderPolyline( const QPolygonF& points, QgsSymbolRenderContext& context );
 
     //overridden so that clip path can be set when using draw inside polygon option
-    void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context );
+    void renderPolygonStroke( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context );
 
     QgsStringMap properties() const;
 
@@ -144,7 +144,7 @@ class QgsMarkerLineSymbolLayer : QgsLineSymbolLayer
 
     void renderPolyline( const QPolygonF& points, QgsSymbolRenderContext& context );
 
-    void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context );
+    void renderPolygonStroke( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context );
 
     QgsStringMap properties() const;
 
@@ -283,4 +283,8 @@ class QgsMarkerLineSymbolLayer : QgsLineSymbolLayer
     void renderPolylineVertex( const QPolygonF& points, QgsSymbolRenderContext& context, Placement placement = Vertex );
     void renderPolylineCentral( const QPolygonF& points, QgsSymbolRenderContext& context );
     double markerAngle( const QPolygonF& points, bool isRing, int vertex );
+
+  private:
+
+    QgsMarkerLineSymbolLayer( const QgsMarkerLineSymbolLayer& other );
 };

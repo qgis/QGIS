@@ -41,6 +41,14 @@ TARGET_LINK_LIBRARIES(delimitedtextprovider
   qgis_gui
 )
 
+# clang-tidy
+IF(CLANG_TIDY_EXE)
+  SET_TARGET_PROPERTIES(
+    delimitedtextprovider PROPERTIES
+    CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
+  )
+ENDIF(CLANG_TIDY_EXE)
+
 ########################################################
 # Install
 

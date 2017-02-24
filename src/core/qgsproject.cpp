@@ -698,7 +698,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
     return false;
   }
 
-  Q_CHECK_PTR( mapLayer );
+  Q_CHECK_PTR( mapLayer ); // NOLINT
 
   // have the layer restore state that is stored in Dom node
   if ( mapLayer->readLayerXml( layerElem, pathResolver() ) && mapLayer->isValid() )
@@ -1544,7 +1544,7 @@ QgsPathResolver QgsProject::pathResolver() const
   return QgsPathResolver( absolutePaths ? QString() : fileName() );
 }
 
-QString QgsProject::readPath( QString src ) const
+QString QgsProject::readPath( const QString& src ) const
 {
   return pathResolver().readPath( src );
 }

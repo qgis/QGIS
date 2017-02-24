@@ -146,7 +146,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     void setConnectionName( QString const & connName );
 
     void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data, QgsRasterBlockFeedback* feedback = nullptr ) override;
-    //void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS, void *data );
+    //void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem srcCRS, QgsCoordinateReferenceSystem destCRS, void *data );
 
     virtual QgsRectangle extent() const override;
 
@@ -200,7 +200,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     Qgis::DataType sourceDataType( int bandNo ) const override;
     int bandCount() const override;
     QString metadata() override;
-    QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0, int theDpi = 96 ) override;
+    QgsRasterIdentifyResult identify( const QgsPoint & point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
     QString lastErrorTitle() override;
     QString lastError() override;
     QString lastErrorFormat() override;
@@ -225,6 +225,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * \retval prepared uri
      */
     static QString prepareUri( QString uri );
+
+    int stepWidth() const override { return mSettings.mStepWidth; }
+    int stepHeight() const override { return mSettings.mStepHeight; }
 
     //! Helper struct for tile requests
     struct TileRequest
@@ -253,7 +256,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
   signals:
 
     //! \brief emit a signal to notify of a progress event
-    void progressChanged( int theProgress, int theTotalSteps );
+    void progressChanged( int progress, int totalSteps );
 
     void dataChanged();
 
@@ -308,7 +311,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
     static void parseServiceException( QDomElement const &e, QString& errorTitle, QString& errorText );
 
     void parseOperationMetadata( QDomElement const &e );
-
 
     /**
      * \brief Calculates the combined extent of the layers selected by layersDrawn

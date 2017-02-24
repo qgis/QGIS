@@ -66,14 +66,14 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     virtual Qgis::DataType sourceDataType( int bandNo ) const = 0;
 
     /** Returns data type for the band specified by number */
-    virtual int colorInterpretation( int theBandNo ) const;
+    virtual int colorInterpretation( int bandNo ) const;
 
     QString colorName( int colorInterpretation ) const;
 
     /** Reload data (data could change) */
     virtual bool reload();
 
-    virtual QString colorInterpretationName( int theBandNo ) const;
+    virtual QString colorInterpretationName( int bandNo ) const;
 
     /** Read band scale for raster value
      * @note added in 2.3
@@ -92,8 +92,8 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     virtual int xSize() const;
     virtual int ySize() const;
 
-    /** Read block of data using given extent and size. */
-    virtual QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight, QgsRasterBlockFeedback* feedback = nullptr ) / Factory /;
+    //! Read block of data using given extent and size.
+    virtual QgsRasterBlock *block(int bandNo, const QgsRectangle &boundingBox, int width, int height, QgsRasterBlockFeedback* feedback = 0 );
 
     /** Return true if source band has no data value */
     virtual bool sourceHasNoDataValue( int bandNo ) const;
@@ -147,10 +147,10 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     virtual QgsImageFetcher* getLegendGraphicFetcher( const QgsMapSettings* mapSettings ) /Factory/;
 
     /** \brief Create pyramid overviews */
-    virtual QString buildPyramids( const QList<QgsRasterPyramid> & thePyramidList,
-                                   const QString & theResamplingMethod = "NEAREST",
-                                   QgsRaster::RasterPyramidsFormat theFormat = QgsRaster::PyramidsGTiff,
-                                   const QStringList & theConfigOptions = QStringList() );
+    virtual QString buildPyramids( const QList<QgsRasterPyramid> & pyramidList,
+                                   const QString & resamplingMethod = "NEAREST",
+                                   QgsRaster::RasterPyramidsFormat format = QgsRaster::PyramidsGTiff,
+                                   const QStringList & configOptions = QStringList() );
 
     /** \brief Accessor for the raster layers pyramid list.
      * @param overviewList used to construct the pyramid list (optional), when empty the list is defined by the provider.
@@ -171,7 +171,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     virtual QString metadata() = 0;
 
     /** \brief Identify raster value(s) found on the point position. The context
-     *         parameters theExtent, theWidth and theHeight are important to identify
+     *         parameters extent, width and height are important to identify
      *         on the same zoom level as a displayed map and to do effective
      *         caching (WCS). If context params are not specified the highest
      *         resolution is used. capabilities() may be used to test if format
@@ -180,12 +180,12 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
      *
      * \note  The arbitraryness of the returned document is enforced by WMS standards
      *        up to at least v1.3.0
-     * @param thePoint coordinates in data source CRS
-     * @param theFormat result format
-     * @param theExtent context extent
-     * @param theWidth context width
-     * @param theHeight context height
-     * @param theDpi context dpi
+     * @param point coordinates in data source CRS
+     * @param format result format
+     * @param extent context extent
+     * @param width context width
+     * @param height context height
+     * @param dpi context dpi
      * @return QgsRaster::IdentifyFormatValue: map of values for each band, keys are band numbers
      *         (from 1).
      *         QgsRaster::IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer
@@ -193,8 +193,8 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
      *         QgsRaster::IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
      *         Empty if failed or there are no results (TODO: better error reporting).
      */
-    //virtual QMap<int, QVariant> identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
-    virtual QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0, int theDpi = 96 );
+    //virtual QMap<int, QVariant> identify( const QgsPoint & point, QgsRaster::IdentifyFormat format, const QgsRectangle &extent = QgsRectangle(), int width = 0, int height = 0 );
+    virtual QgsRasterIdentifyResult identify(const QgsPoint & point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
 
     /**
      * \brief   Returns the caption error text for the last error in this provider
@@ -305,18 +305,22 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
      * @note used by GDAL provider only
      */
     virtual QString validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
-        const QStringList & theConfigOptions, const QString & fileFormat );
+        const QStringList & configOptions, const QString & fileFormat );
 
     static QString identifyFormatName( QgsRaster::IdentifyFormat format );
     static QgsRaster::IdentifyFormat identifyFormatFromName( const QString& formatName );
     static QString identifyFormatLabel( QgsRaster::IdentifyFormat format );
     static Capability identifyFormatToCapability( QgsRaster::IdentifyFormat format );
 
+    //! Step width and height for raster iterations
+    virtual int stepWidth() const;
+    virtual int stepHeight() const;
+
   signals:
     /** Emit a signal to notify of the progress event.
-      * Emitted theProgress is in percents (0.0-100.0) */
-    void progress( int theType, double theProgress, const QString& theMessage );
-    void progressUpdate( int theProgress );
+      * Emitted progress is in percents (0.0-100.0) */
+    void progress( int type, double progress, const QString& message );
+    void progressUpdate( int progress );
 
     /** Emit a message to be displayed on status bar, usually used by network providers (WMS,WCS)
      * @note added in 2.14
@@ -348,6 +352,6 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
 
     /** Source no data value is available and is set to be used or internal no data
      *  is available. Used internally only  */
-    //bool hasNoDataValue ( int theBandNo );
+    //bool hasNoDataValue ( int bandNo );
 
 };

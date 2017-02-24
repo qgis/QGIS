@@ -260,23 +260,23 @@ void QgsMultiBandColorRendererWidget::minMaxModified()
   }
 }
 
-void QgsMultiBandColorRendererWidget::loadMinMax( int theBandNo, double theMin, double theMax )
+void QgsMultiBandColorRendererWidget::loadMinMax( int bandNo, double min, double max )
 {
-  QgsDebugMsg( QString( "theBandNo = %1 theMin = %2 theMax = %3" ).arg( theBandNo ).arg( theMin ).arg( theMax ) );
+  QgsDebugMsg( QString( "theBandNo = %1 min = %2 max = %3" ).arg( bandNo ).arg( min ).arg( max ) );
 
   QLineEdit *myMinLineEdit, *myMaxLineEdit;
 
-  if ( mRedBandComboBox->currentData().toInt() == theBandNo )
+  if ( mRedBandComboBox->currentData().toInt() == bandNo )
   {
     myMinLineEdit = mRedMinLineEdit;
     myMaxLineEdit = mRedMaxLineEdit;
   }
-  else if ( mGreenBandComboBox->currentData().toInt() == theBandNo )
+  else if ( mGreenBandComboBox->currentData().toInt() == bandNo )
   {
     myMinLineEdit = mGreenMinLineEdit;
     myMaxLineEdit = mGreenMaxLineEdit;
   }
-  else if ( mBlueBandComboBox->currentData().toInt() == theBandNo )
+  else if ( mBlueBandComboBox->currentData().toInt() == bandNo )
   {
     myMinLineEdit = mBlueMinLineEdit;
     myMaxLineEdit = mBlueMaxLineEdit;
@@ -288,22 +288,22 @@ void QgsMultiBandColorRendererWidget::loadMinMax( int theBandNo, double theMin, 
   }
 
   mDisableMinMaxWidgetRefresh = true;
-  if ( qIsNaN( theMin ) )
+  if ( qIsNaN( min ) )
   {
     myMinLineEdit->clear();
   }
   else
   {
-    myMinLineEdit->setText( QString::number( theMin ) );
+    myMinLineEdit->setText( QString::number( min ) );
   }
 
-  if ( qIsNaN( theMax ) )
+  if ( qIsNaN( max ) )
   {
     myMaxLineEdit->clear();
   }
   else
   {
-    myMaxLineEdit->setText( QString::number( theMax ) );
+    myMaxLineEdit->setText( QString::number( max ) );
   }
   mDisableMinMaxWidgetRefresh = false;
 }

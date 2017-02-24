@@ -668,11 +668,11 @@ QStringList QgsOracleConn::connectionList()
   return settings.childGroups();
 }
 
-void QgsOracleConn::deleteConnection( QString theConnName )
+void QgsOracleConn::deleteConnection( QString connName )
 {
   QSettings settings;
 
-  QString key = "/Oracle/connections/" + theConnName;
+  QString key = "/Oracle/connections/" + connName;
   settings.remove( key + "/host" );
   settings.remove( key + "/port" );
   settings.remove( key + "/database" );
@@ -702,13 +702,13 @@ void QgsOracleConn::setSelectedConnection( QString name )
   return settings.setValue( "/Oracle/connections/selected", name );
 }
 
-QgsDataSourceUri QgsOracleConn::connUri( QString theConnName )
+QgsDataSourceUri QgsOracleConn::connUri( QString connName )
 {
-  QgsDebugMsgLevel( "theConnName = " + theConnName, 3 );
+  QgsDebugMsgLevel( "theConnName = " + connName, 3 );
 
   QSettings settings;
 
-  QString key = "/Oracle/connections/" + theConnName;
+  QString key = "/Oracle/connections/" + connName;
 
   QString database = settings.value( key + "/database" ).toString();
 
@@ -748,34 +748,34 @@ QgsDataSourceUri QgsOracleConn::connUri( QString theConnName )
   return uri;
 }
 
-bool QgsOracleConn::userTablesOnly( QString theConnName )
+bool QgsOracleConn::userTablesOnly( QString connName )
 {
   QSettings settings;
-  return settings.value( "/Oracle/connections/" + theConnName + "/userTablesOnly", false ).toBool();
+  return settings.value( "/Oracle/connections/" + connName + "/userTablesOnly", false ).toBool();
 }
 
-bool QgsOracleConn::geometryColumnsOnly( QString theConnName )
+bool QgsOracleConn::geometryColumnsOnly( QString connName )
 {
   QSettings settings;
-  return settings.value( "/Oracle/connections/" + theConnName + "/geometryColumnsOnly", true ).toBool();
+  return settings.value( "/Oracle/connections/" + connName + "/geometryColumnsOnly", true ).toBool();
 }
 
-bool QgsOracleConn::allowGeometrylessTables( QString theConnName )
+bool QgsOracleConn::allowGeometrylessTables( QString connName )
 {
   QSettings settings;
-  return settings.value( "/Oracle/connections/" + theConnName + "/allowGeometrylessTables", false ).toBool();
+  return settings.value( "/Oracle/connections/" + connName + "/allowGeometrylessTables", false ).toBool();
 }
 
-bool QgsOracleConn::estimatedMetadata( QString theConnName )
+bool QgsOracleConn::estimatedMetadata( QString connName )
 {
   QSettings settings;
-  return settings.value( "/Oracle/connections/" + theConnName + "/estimatedMetadata", false ).toBool();
+  return settings.value( "/Oracle/connections/" + connName + "/estimatedMetadata", false ).toBool();
 }
 
-bool QgsOracleConn::onlyExistingTypes( QString theConnName )
+bool QgsOracleConn::onlyExistingTypes( QString connName )
 {
   QSettings settings;
-  return settings.value( "/Oracle/connections/" + theConnName + "/onlyExistingTypes", false ).toBool();
+  return settings.value( "/Oracle/connections/" + connName + "/onlyExistingTypes", false ).toBool();
 }
 
 QString QgsOracleConn::databaseName( QString database, QString host, QString port )

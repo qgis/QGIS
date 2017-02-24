@@ -428,7 +428,7 @@ void QgsAppLayerTreeViewMenuProvider::addCustomLayerActions( QMenu* menu, QgsMap
   if ( ! lyrActions.isEmpty() )
   {
     menu->addSeparator();
-    QList<QMenu*> theMenus;
+    QList<QMenu*> menus;
     for ( int i = 0; i < lyrActions.count(); i++ )
     {
       if ( lyrActions[i].allLayers || lyrActions[i].layers.contains( layer ) )
@@ -450,7 +450,7 @@ void QgsAppLayerTreeViewMenuProvider::addCustomLayerActions( QMenu* menu, QgsMap
           QMenu* newMenu = nullptr;
           QString dst = menuName;
           dst.remove( QChar( '&' ) );
-          Q_FOREACH ( QMenu* menu, theMenus )
+          Q_FOREACH ( QMenu* menu, menus )
           {
             QString src = menu->title();
             src.remove( QChar( '&' ) );
@@ -472,11 +472,11 @@ void QgsAppLayerTreeViewMenuProvider::addCustomLayerActions( QMenu* menu, QgsMap
           {
             // It doesn't exist, so create
             newMenu = new QMenu( menuName );
-            theMenus.append( newMenu );
+            menus.append( newMenu );
             // Where to put it? - we worked that out above...
             menu->insertMenu( before, newMenu );
           }
-          // QMenu* menu = getMenu( lyrActions[i].menu, &theBeforeSep, &theAfterSep, &theMenu );
+          // QMenu* menu = getMenu( lyrActions[i].menu, &beforeSep, &afterSep, &menu );
           newMenu->addAction( lyrActions[i].action );
         }
       }

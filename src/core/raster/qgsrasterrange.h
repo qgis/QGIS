@@ -38,16 +38,16 @@ class CORE_EXPORT QgsRasterRange
     QgsRasterRange();
 
     /** \brief Constructor
-     *  @param theMin minimum value
-     *  @param theMax max value
+     *  @param min minimum value
+     *  @param max max value
      */
-    QgsRasterRange( double theMin, double theMax );
+    QgsRasterRange( double min, double max );
 
     double min() const { return mMin; }
     double max() const { return mMax; }
 
-    double setMin( double theMin ) { return mMin = theMin; }
-    double setMax( double theMax ) { return mMax = theMax; }
+    double setMin( double min ) { return mMin = min; }
+    double setMax( double max ) { return mMax = max; }
 
     inline bool operator==( QgsRasterRange o ) const
     {

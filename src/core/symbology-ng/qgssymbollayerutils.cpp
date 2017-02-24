@@ -1051,7 +1051,7 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement& element,
       {
         case QgsWkbTypes::PolygonGeometry:
         case QgsWkbTypes::LineGeometry:
-          // polygon layer and line symbolizer: draw polygon outline
+          // polygon layer and line symbolizer: draw polygon stroke
           // line layer and line symbolizer: draw line
           l = createLineLayerFromSld( element );
           if ( l )
@@ -1096,14 +1096,14 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement& element,
           {
             layers.append( l );
 
-            // SVGFill and SimpleFill symbolLayerV2 supports outline internally,
-            // so don't go forward to create a different symbolLayerV2 for outline
+            // SVGFill and SimpleFill symbolLayerV2 supports stroke internally,
+            // so don't go forward to create a different symbolLayerV2 for stroke
             if ( l->layerType() == QLatin1String( "SimpleFill" ) || l->layerType() == QLatin1String( "SVGFill" ) )
               break;
           }
 
-          // now create polygon outline
-          // polygon layer and polygon symbolizer: draw polygon outline
+          // now create polygon stroke
+          // polygon layer and polygon symbolizer: draw polygon stroke
           l = createLineLayerFromSld( element );
           if ( l )
             layers.append( l );
@@ -1349,10 +1349,10 @@ bool QgsSymbolLayerUtils::needLinePatternFill( QDomElement &element )
   // line pattern fill uses horline wellknown marker with an angle
 
   QString name;
-  QColor fillColor, borderColor;
-  double size, borderWidth;
-  Qt::PenStyle borderStyle;
-  if ( !wellKnownMarkerFromSld( graphicElem, name, fillColor, borderColor, borderStyle, borderWidth, size ) )
+  QColor fillColor, strokeColor;
+  double size, strokeWidth;
+  Qt::PenStyle strokeStyle;
+  if ( !wellKnownMarkerFromSld( graphicElem, name, fillColor, strokeColor, strokeStyle, strokeWidth, size ) )
     return false;
 
   if ( name != QLatin1String( "horline" ) )
@@ -1408,7 +1408,7 @@ bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &el
 
   // first symbol layer
   {
-    bool validFill = false, validBorder = false;
+    bool validFill = false, validStroke = false;
 
     // check for simple fill
     // Fill element can contain some SvgParameter elements
@@ -1418,23 +1418,23 @@ bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &el
     if ( fillFromSld( fillElem, fillStyle, fillColor ) )
       validFill = true;
 
-    // check for simple outline
+    // check for simple stroke
     // Stroke element can contain some SvgParameter elements
-    QColor borderColor;
-    Qt::PenStyle borderStyle;
-    double borderWidth = 1.0, dashOffset = 0.0;
+    QColor strokeColor;
+    Qt::PenStyle strokeStyle;
+    double strokeWidth = 1.0, dashOffset = 0.0;
     QVector<qreal> customDashPattern;
 
-    if ( lineFromSld( strokeElem, borderStyle, borderColor, borderWidth,
+    if ( lineFromSld( strokeElem, strokeStyle, strokeColor, strokeWidth,
                       nullptr, nullptr, &customDashPattern, &dashOffset ) )
-      validBorder = true;
+      validStroke = true;
 
-    if ( validFill || validBorder )
+    if ( validFill || validStroke )
     {
       QgsStringMap map;
       map[QStringLiteral( "name" )] = QStringLiteral( "square" );
       map[QStringLiteral( "color" )] = encodeColor( validFill ? fillColor : Qt::transparent );
-      map[QStringLiteral( "color_border" )] = encodeColor( validBorder ? borderColor : Qt::transparent );
+      map[QStringLiteral( "color_border" )] = encodeColor( validStroke ? strokeColor : Qt::transparent );
       map[QStringLiteral( "size" )] = QString::number( 6 );
       map[QStringLiteral( "angle" )] = QString::number( 0 );
       map[QStringLiteral( "offset" )] = encodePoint( QPointF( 0, 0 ) );
@@ -1444,13 +1444,13 @@ bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &el
 
   // second symbol layer
   {
-    bool validFill = false, validBorder = false;
+    bool validFill = false, validStroke = false;
 
     // check for graphic fill
     QString name, format;
     int markIndex = -1;
-    QColor fillColor, borderColor;
-    double borderWidth = 1.0, size = 0.0, angle = 0.0;
+    QColor fillColor, strokeColor;
+    double strokeWidth = 1.0, size = 0.0, angle = 0.0;
     QPointF anchor, offset;
 
     // Fill element can contain a GraphicFill element
@@ -1562,16 +1562,16 @@ bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &el
           if ( fillFromSld( markFillElem, markFillStyle, fillColor ) )
             validFill = true;
 
-          // check for simple outline
+          // check for simple stroke
           // Stroke element can contain some SvgParameter elements
-          Qt::PenStyle borderStyle;
-          double borderWidth = 1.0, dashOffset = 0.0;
+          Qt::PenStyle strokeStyle;
+          double strokeWidth = 1.0, dashOffset = 0.0;
           QVector<qreal> customDashPattern;
 
           QDomElement markStrokeElem = graphicChildElem.firstChildElement( QStringLiteral( "Stroke" ) );
-          if ( lineFromSld( markStrokeElem, borderStyle, borderColor, borderWidth,
+          if ( lineFromSld( markStrokeElem, strokeStyle, strokeColor, strokeWidth,
                             nullptr, nullptr, &customDashPattern, &dashOffset ) )
-            validBorder = true;
+            validStroke = true;
         }
 
         if ( found )
@@ -1604,15 +1604,15 @@ bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &el
       }
     }
 
-    if ( validFill || validBorder )
+    if ( validFill || validStroke )
     {
       if ( format == QLatin1String( "image/svg+xml" ) )
       {
         QgsStringMap map;
         map[QStringLiteral( "name" )] = name;
         map[QStringLiteral( "fill" )] = fillColor.name();
-        map[QStringLiteral( "outline" )] = borderColor.name();
-        map[QStringLiteral( "outline-width" )] = QString::number( borderWidth );
+        map[QStringLiteral( "outline" )] = strokeColor.name();
+        map[QStringLiteral( "outline-width" )] = QString::number( strokeWidth );
         if ( !qgsDoubleNear( size, 0.0 ) )
           map[QStringLiteral( "size" )] = QString::number( size );
         if ( !qgsDoubleNear( angle, 0.0 ) )
@@ -1691,10 +1691,10 @@ void QgsSymbolLayerUtils::fillToSld( QDomDocument &doc, QDomElement &element, Qt
   graphicFillElem.appendChild( graphicElem );
 
   QColor fillColor = patternName.startsWith( QLatin1String( "brush://" ) ) ? color : QColor();
-  QColor borderColor = !patternName.startsWith( QLatin1String( "brush://" ) ) ? color : QColor();
+  QColor strokeColor = !patternName.startsWith( QLatin1String( "brush://" ) ) ? color : QColor();
 
   /* Use WellKnownName tag to handle QT brush styles. */
-  wellKnownMarkerToSld( doc, graphicElem, patternName, fillColor, borderColor, Qt::SolidLine, -1, -1 );
+  wellKnownMarkerToSld( doc, graphicElem, patternName, fillColor, strokeColor, Qt::SolidLine, -1, -1 );
 }
 
 bool QgsSymbolLayerUtils::fillFromSld( QDomElement &element, Qt::BrushStyle &brushStyle, QColor &color )
@@ -1733,17 +1733,17 @@ bool QgsSymbolLayerUtils::fillFromSld( QDomElement &element, Qt::BrushStyle &bru
       return false; // Graphic is required within GraphicFill
 
     QString patternName = QStringLiteral( "square" );
-    QColor fillColor, borderColor;
-    double borderWidth, size;
-    Qt::PenStyle borderStyle;
-    if ( !wellKnownMarkerFromSld( graphicElem, patternName, fillColor, borderColor, borderStyle, borderWidth, size ) )
+    QColor fillColor, strokeColor;
+    double strokeWidth, size;
+    Qt::PenStyle strokeStyle;
+    if ( !wellKnownMarkerFromSld( graphicElem, patternName, fillColor, strokeColor, strokeStyle, strokeWidth, size ) )
       return false;
 
     brushStyle = decodeSldBrushStyle( patternName );
     if ( brushStyle == Qt::NoBrush )
       return false; // unable to decode brush style
 
-    QColor c = patternName.startsWith( QLatin1String( "brush://" ) ) ? fillColor : borderColor;
+    QColor c = patternName.startsWith( QLatin1String( "brush://" ) ) ? fillColor : strokeColor;
     if ( c.isValid() )
       color = c;
   }
@@ -1980,7 +1980,7 @@ void QgsSymbolLayerUtils::externalGraphicToSld( QDomDocument &doc, QDomElement &
 }
 
 void QgsSymbolLayerUtils::parametricSvgToSld( QDomDocument &doc, QDomElement &graphicElem,
-    const QString& path, const QColor& fillColor, double size, const QColor& outlineColor, double outlineWidth )
+    const QString& path, const QColor& fillColor, double size, const QColor& strokeColor, double strokeWidth )
 {
   // Parametric SVG paths are an extension that few systems will understand, but se:Graphic allows for fallback
   // symbols, this encodes the full parametric path first, the pure shape second, and a mark with the right colors as
@@ -1988,14 +1988,14 @@ void QgsSymbolLayerUtils::parametricSvgToSld( QDomDocument &doc, QDomElement &gr
 
   // encode parametric version with all coloring details (size is going to be encoded by the last fallback)
   graphicElem.appendChild( doc.createComment( QStringLiteral( "Parametric SVG" ) ) );
-  QString parametricPath = getSvgParametricPath( path, fillColor, outlineColor, outlineWidth );
+  QString parametricPath = getSvgParametricPath( path, fillColor, strokeColor, strokeWidth );
   QgsSymbolLayerUtils::externalGraphicToSld( doc, graphicElem, parametricPath, QStringLiteral( "image/svg+xml" ), fillColor, -1 );
   // also encode a fallback version without parameters, in case a renderer gets confused by the parameters
   graphicElem.appendChild( doc.createComment( QStringLiteral( "Plain SVG fallback, no parameters" ) ) );
   QgsSymbolLayerUtils::externalGraphicToSld( doc, graphicElem, path, QStringLiteral( "image/svg+xml" ), fillColor, -1 );
   // finally encode a simple mark with the right colors/outlines for renderers that cannot do SVG at all
   graphicElem.appendChild( doc.createComment( QStringLiteral( "Well known marker fallback" ) ) );
-  QgsSymbolLayerUtils::wellKnownMarkerToSld( doc, graphicElem, QStringLiteral( "square" ), fillColor, outlineColor, Qt::PenStyle::SolidLine, outlineWidth, -1 );
+  QgsSymbolLayerUtils::wellKnownMarkerToSld( doc, graphicElem, QStringLiteral( "square" ), fillColor, strokeColor, Qt::PenStyle::SolidLine, strokeWidth, -1 );
 
   // size is encoded here, it's part of se:Graphic, not attached to the single symbol
   if ( size >= 0 )
@@ -2007,7 +2007,7 @@ void QgsSymbolLayerUtils::parametricSvgToSld( QDomDocument &doc, QDomElement &gr
 }
 
 
-QString QgsSymbolLayerUtils::getSvgParametricPath( const QString& basePath, const QColor& fillColor, const QColor& borderColor, double borderWidth )
+QString QgsSymbolLayerUtils::getSvgParametricPath( const QString& basePath, const QColor& fillColor, const QColor& strokeColor, double strokeWidth )
 {
   QUrl url = QUrl();
   if ( fillColor.isValid() )
@@ -2020,17 +2020,17 @@ QString QgsSymbolLayerUtils::getSvgParametricPath( const QString& basePath, cons
     url.addQueryItem( "fill", QStringLiteral( "#000000" ) );
     url.addQueryItem( "fill-opacity", QStringLiteral( "1" ) );
   }
-  if ( borderColor.isValid() )
+  if ( strokeColor.isValid() )
   {
-    url.addQueryItem( QStringLiteral( "outline" ), borderColor.name() );
-    url.addQueryItem( QStringLiteral( "outline-opacity" ), encodeSldAlpha( borderColor.alpha() ) );
+    url.addQueryItem( QStringLiteral( "outline" ), strokeColor.name() );
+    url.addQueryItem( QStringLiteral( "outline-opacity" ), encodeSldAlpha( strokeColor.alpha() ) );
   }
   else
   {
     url.addQueryItem( QStringLiteral( "outline" ), QStringLiteral( "#000000" ) );
     url.addQueryItem( QStringLiteral( "outline-opacity" ), QStringLiteral( "1" ) );
   }
-  url.addQueryItem( QStringLiteral( "outline-width" ), QString::number( borderWidth ) );
+  url.addQueryItem( QStringLiteral( "outline-width" ), QString::number( strokeWidth ) );
   QString params = url.encodedQuery();
   if ( params.isEmpty() )
   {
@@ -2142,8 +2142,8 @@ bool QgsSymbolLayerUtils::externalMarkerFromSld( QDomElement &element,
 }
 
 void QgsSymbolLayerUtils::wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
-    const QString& name, const QColor& color, const QColor& borderColor, Qt::PenStyle borderStyle,
-    double borderWidth, double size )
+    const QString& name, const QColor& color, const QColor& strokeColor, Qt::PenStyle strokeStyle,
+    double strokeWidth, double size )
 {
   QDomElement markElem = doc.createElement( QStringLiteral( "se:Mark" ) );
   element.appendChild( markElem );
@@ -2161,10 +2161,10 @@ void QgsSymbolLayerUtils::wellKnownMarkerToSld( QDomDocument &doc, QDomElement &
   }
 
   // <Stroke>
-  if ( borderColor.isValid() )
+  if ( strokeColor.isValid() )
   {
     QDomElement strokeElem = doc.createElement( QStringLiteral( "se:Stroke" ) );
-    lineToSld( doc, strokeElem, borderStyle, borderColor, borderWidth );
+    lineToSld( doc, strokeElem, strokeStyle, strokeColor, strokeWidth );
     markElem.appendChild( strokeElem );
   }
 
@@ -2178,15 +2178,15 @@ void QgsSymbolLayerUtils::wellKnownMarkerToSld( QDomDocument &doc, QDomElement &
 }
 
 bool QgsSymbolLayerUtils::wellKnownMarkerFromSld( QDomElement &element,
-    QString &name, QColor &color, QColor &borderColor, Qt::PenStyle &borderStyle,
-    double &borderWidth, double &size )
+    QString &name, QColor &color, QColor &strokeColor, Qt::PenStyle &strokeStyle,
+    double &strokeWidth, double &size )
 {
   QgsDebugMsg( "Entered." );
 
   name = QStringLiteral( "square" );
   color = QColor();
-  borderColor = QColor( "#000000" );
-  borderWidth = 1;
+  strokeColor = QColor( "#000000" );
+  strokeWidth = 1;
   size = 6;
 
   QDomElement markElem = element.firstChildElement( QStringLiteral( "Mark" ) );
@@ -2208,8 +2208,8 @@ bool QgsSymbolLayerUtils::wellKnownMarkerFromSld( QDomElement &element,
 
   // <Stroke>
   QDomElement strokeElem = markElem.firstChildElement( QStringLiteral( "Stroke" ) );
-  lineFromSld( strokeElem, borderStyle, borderColor, borderWidth );
-  // ignore border style, solid expected
+  lineFromSld( strokeElem, strokeStyle, strokeColor, strokeWidth );
+  // ignore stroke style, solid expected
 
   // <Size>
   QDomElement sizeElem = element.firstChildElement( QStringLiteral( "Size" ) );
@@ -3757,7 +3757,6 @@ QList<double> QgsSymbolLayerUtils::prettyBreaks( double minimum, double maximum,
   int divisions = classes;
   double h = highBias;
   double cell;
-  int U;
   bool small = false;
   double dx = maximum - minimum;
 
@@ -3765,10 +3764,10 @@ QList<double> QgsSymbolLayerUtils::prettyBreaks( double minimum, double maximum,
   {
     cell = 1.0;
     small = true;
-    U = 1;
   }
   else
   {
+    int U = 1;
     cell = qMax( qAbs( minimum ), qAbs( maximum ) );
     if ( adjustBias >= 1.5 * h + 0.5 )
     {

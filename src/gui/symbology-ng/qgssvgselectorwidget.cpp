@@ -237,29 +237,29 @@ int QgsSvgSelectorListModel::rowCount( const QModelIndex& parent ) const
 QPixmap QgsSvgSelectorListModel::createPreview( const QString& entry ) const
 {
   // render SVG file
-  QColor fill, outline;
-  double outlineWidth, fillOpacity, outlineOpacity;
-  bool fillParam, fillOpacityParam, outlineParam, outlineWidthParam, outlineOpacityParam;
-  bool hasDefaultFillColor = false, hasDefaultFillOpacity = false, hasDefaultOutlineColor = false,
-                             hasDefaultOutlineWidth = false, hasDefaultOutlineOpacity = false;
+  QColor fill, stroke;
+  double strokeWidth, fillOpacity, strokeOpacity;
+  bool fillParam, fillOpacityParam, strokeParam, strokeWidthParam, strokeOpacityParam;
+  bool hasDefaultFillColor = false, hasDefaultFillOpacity = false, hasDefaultStrokeColor = false,
+                             hasDefaultStrokeWidth = false, hasDefaultStrokeOpacity = false;
   QgsApplication::svgCache()->containsParams( entry, fillParam, hasDefaultFillColor, fill,
       fillOpacityParam, hasDefaultFillOpacity, fillOpacity,
-      outlineParam, hasDefaultOutlineColor, outline,
-      outlineWidthParam, hasDefaultOutlineWidth, outlineWidth,
-      outlineOpacityParam, hasDefaultOutlineOpacity, outlineOpacity );
+      strokeParam, hasDefaultStrokeColor, stroke,
+      strokeWidthParam, hasDefaultStrokeWidth, strokeWidth,
+      strokeOpacityParam, hasDefaultStrokeOpacity, strokeOpacity );
 
   //if defaults not set in symbol, use these values
   if ( !hasDefaultFillColor )
     fill = QColor( 200, 200, 200 );
   fill.setAlphaF( hasDefaultFillOpacity ? fillOpacity : 1.0 );
-  if ( !hasDefaultOutlineColor )
-    outline = Qt::black;
-  outline.setAlphaF( hasDefaultOutlineOpacity ? outlineOpacity : 1.0 );
-  if ( !hasDefaultOutlineWidth )
-    outlineWidth = 0.2;
+  if ( !hasDefaultStrokeColor )
+    stroke = Qt::black;
+  stroke.setAlphaF( hasDefaultStrokeOpacity ? strokeOpacity : 1.0 );
+  if ( !hasDefaultStrokeWidth )
+    strokeWidth = 0.2;
 
   bool fitsInCache; // should always fit in cache at these sizes (i.e. under 559 px ^ 2, or half cache size)
-  const QImage& img = QgsApplication::svgCache()->svgAsImage( entry, 30.0, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, fitsInCache );
+  const QImage& img = QgsApplication::svgCache()->svgAsImage( entry, 30.0, fill, stroke, strokeWidth, 3.5 /*appr. 88 dpi*/, fitsInCache );
   return QPixmap::fromImage( img );
 }
 

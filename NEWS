@@ -1,6 +1,6 @@
 QGIS News
 Change history for the QGIS Project
-Monday January 09, 2017
+Wednesday February 22, 2017
 
 
 ------------------------------------------------------------------------
@@ -39,8 +39,8 @@ Monday January 09, 2017
 ------------------------------------------------------------------------
 
 
-Last Updated: Monday January 09, 2017
-Last Change : Sunday January 01, 2017
+Last Updated: Wednesday February 22, 2017
+Last Change : Tuesday January 31, 2017
 
 
   1. What's new in Version 2.16 'Nødebo'?
@@ -1952,7 +1952,7 @@ Beginnings of generic vector file writer - incomplete and doesn't do anything us
    to create a new point shapefile:
 
    QgsVectorFileWriter myFileWriter("/tmp/test.shp", wkbPoint);
-   if (myFileWriter.initialize())
+   if (myFileWriter.initialise())  //#spellok
    {
      myFileWriter.createField("TestInt",OFTInteger,8,0);
      myFileWriter.createField("TestRead",OFTReal,8,3);

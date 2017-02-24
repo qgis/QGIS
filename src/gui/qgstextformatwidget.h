@@ -173,8 +173,8 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
     void on_mFontMinPixelSpinBox_valueChanged( int px );
     void on_mFontMaxPixelSpinBox_valueChanged( int px );
     void on_mBufferUnitWidget_changed();
-    void on_mCoordXDDBtn_dataDefinedActivated( bool active );
-    void on_mCoordYDDBtn_dataDefinedActivated( bool active );
+    void on_mCoordXDDBtn_activated( bool active );
+    void on_mCoordYDDBtn_activated( bool active );
     void on_mShapeTypeCmbBx_currentIndexChanged( int index );
     void on_mShapeRotationCmbBx_currentIndexChanged( int index );
     void on_mShapeSVGParamsBtn_clicked();

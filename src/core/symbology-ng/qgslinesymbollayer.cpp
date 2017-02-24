@@ -236,7 +236,7 @@ void QgsSimpleLineSymbolLayer::stopRender( QgsSymbolRenderContext& context )
   Q_UNUSED( context );
 }
 
-void QgsSimpleLineSymbolLayer::renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context )
+void QgsSimpleLineSymbolLayer::renderPolygonStroke( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context )
 {
   QPainter* p = context.renderContext().painter();
   if ( !p )
@@ -478,11 +478,11 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
 
   //data defined properties
   bool hasStrokeWidthExpression = false;
-  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOutlineWidth ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth ) )
   {
     context.setOriginalValueVariable( mWidth );
     double scaledWidth = context.renderContext().convertToPainterUnits(
-                           mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOutlineWidth, context.renderContext().expressionContext(), mWidth ),
+                           mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext(), mWidth ),
                            mWidthUnit, mWidthMapUnitScale );
     pen.setWidthF( scaledWidth );
     selPen.setWidthF( scaledWidth );
@@ -490,10 +490,10 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   }
 
   //color
-  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOutlineColor ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeColor ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mColor ) );
-    pen.setColor( mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyOutlineColor, context.renderContext().expressionContext(), mColor ) );
+    pen.setColor( mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyStrokeColor, context.renderContext().expressionContext(), mColor ) );
   }
 
   //offset
@@ -539,10 +539,10 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   }
 
   //line style
-  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOutlineStyle ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeStyle ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenStyle( mPenStyle ) );
-    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyOutlineStyle, context.renderContext().expressionContext() );
+    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyStrokeStyle, context.renderContext().expressionContext() );
     if ( exprVal.isValid() )
       pen.setStyle( QgsSymbolLayerUtils::decodePenStyle( exprVal.toString() ) );
   }
@@ -595,10 +595,10 @@ double QgsSimpleLineSymbolLayer::dxfWidth( const QgsDxfExport& e, QgsSymbolRende
 {
   double width = mWidth;
 
-  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOutlineWidth ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth ) )
   {
     context.setOriginalValueVariable( mWidth );
-    width = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOutlineWidth, context.renderContext().expressionContext(), mWidth )
+    width = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext(), mWidth )
             * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() );
   }
 
@@ -607,10 +607,10 @@ double QgsSimpleLineSymbolLayer::dxfWidth( const QgsDxfExport& e, QgsSymbolRende
 
 QColor QgsSimpleLineSymbolLayer::dxfColor( QgsSymbolRenderContext& context ) const
 {
-  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOutlineColor ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeColor ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mColor ) );
-    return mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyOutlineColor, context.renderContext().expressionContext(), mColor );
+    return mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyStrokeColor, context.renderContext().expressionContext(), mColor );
   }
   return mColor;
 }
@@ -708,11 +708,6 @@ QgsMarkerLineSymbolLayer::QgsMarkerLineSymbolLayer( bool rotateMarker, double in
   mOffsetAlongLineUnit = QgsUnitTypes::RenderMillimeters;
 
   setSubSymbol( new QgsMarkerSymbol() );
-}
-
-QgsMarkerLineSymbolLayer::~QgsMarkerLineSymbolLayer()
-{
-  delete mMarker;
 }
 
 QgsSymbolLayer* QgsMarkerLineSymbolLayer::create( const QgsStringMap& props )
@@ -834,7 +829,11 @@ void QgsMarkerLineSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbo
     if ( exprVal.isValid() )
     {
       QString placementString = exprVal.toString();
-      if ( placementString.compare( QLatin1String( "vertex" ), Qt::CaseInsensitive ) == 0 )
+      if ( placementString.compare( QLatin1String( "interval" ), Qt::CaseInsensitive ) == 0 )
+      {
+        placement = Interval;
+      }
+      else if ( placementString.compare( QLatin1String( "vertex" ), Qt::CaseInsensitive ) == 0 )
       {
         placement = Vertex;
       }
@@ -894,7 +893,7 @@ void QgsMarkerLineSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbo
   context.renderContext().painter()->restore();
 }
 
-void QgsMarkerLineSymbolLayer::renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context )
+void QgsMarkerLineSymbolLayer::renderPolygonStroke( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context )
 {
   const QgsCurvePolygon* curvePolygon = dynamic_cast<const QgsCurvePolygon*>( context.renderContext().geometry() );
 
@@ -1262,7 +1261,6 @@ void QgsMarkerLineSymbolLayer::renderOffsetVertexAlongLine( const QPolygonF &poi
   }
 
   //didn't find point
-  return;
 }
 
 void QgsMarkerLineSymbolLayer::renderPolylineCentral( const QPolygonF& points, QgsSymbolRenderContext& context )
@@ -1344,7 +1342,7 @@ QgsStringMap QgsMarkerLineSymbolLayer::properties() const
 
 QgsSymbol* QgsMarkerLineSymbolLayer::subSymbol()
 {
-  return mMarker;
+  return mMarker.get();
 }
 
 bool QgsMarkerLineSymbolLayer::setSubSymbol( QgsSymbol* symbol )
@@ -1355,8 +1353,7 @@ bool QgsMarkerLineSymbolLayer::setSubSymbol( QgsSymbol* symbol )
     return false;
   }
 
-  delete mMarker;
-  mMarker = static_cast<QgsMarkerSymbol*>( symbol );
+  mMarker.reset( static_cast<QgsMarkerSymbol*>( symbol ) );
   mColor = mMarker->color();
   return true;
 }
@@ -1488,14 +1485,14 @@ QgsSymbolLayer* QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
     }
   }
 
-  QgsMarkerSymbol *marker = nullptr;
+  std::unique_ptr< QgsMarkerSymbol > marker;
 
   QgsSymbolLayer *l = QgsSymbolLayerUtils::createMarkerLayerFromSld( graphicStrokeElem );
   if ( l )
   {
     QgsSymbolLayerList layers;
     layers.append( l );
-    marker = new QgsMarkerSymbol( layers );
+    marker.reset( new QgsMarkerSymbol( layers ) );
   }
 
   if ( !marker )
@@ -1524,7 +1521,7 @@ QgsSymbolLayer* QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
   QgsMarkerLineSymbolLayer* x = new QgsMarkerLineSymbolLayer( rotateMarker );
   x->setPlacement( placement );
   x->setInterval( interval );
-  x->setSubSymbol( marker );
+  x->setSubSymbol( marker.release() );
   x->setOffset( offset );
   return x;
 }

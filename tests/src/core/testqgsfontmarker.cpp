@@ -59,13 +59,13 @@ class TestQgsFontMarkerSymbol : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void fontMarkerSymbol();
-    void fontMarkerSymbolOutline();
+    void fontMarkerSymbolStroke();
     void bounds();
 
   private:
     bool mTestHasError;
 
-    bool imageCheck( const QString& theType );
+    bool imageCheck( const QString& type );
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPointsLayer = nullptr;
     QgsFontMarkerSymbolLayer* mFontMarkerLayer = nullptr;
@@ -139,14 +139,14 @@ void TestQgsFontMarkerSymbol::fontMarkerSymbol()
   QVERIFY( imageCheck( "fontmarker" ) );
 }
 
-void TestQgsFontMarkerSymbol::fontMarkerSymbolOutline()
+void TestQgsFontMarkerSymbol::fontMarkerSymbolStroke()
 {
   mFontMarkerLayer->setColor( Qt::blue );
   QFont font = QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) );
   mFontMarkerLayer->setFontFamily( font.family() );
   mFontMarkerLayer->setCharacter( 'A' );
   mFontMarkerLayer->setSize( 30 );
-  mFontMarkerLayer->setOutlineWidth( 3.5 );
+  mFontMarkerLayer->setStrokeWidth( 3.5 );
   QVERIFY( imageCheck( "fontmarker_outline" ) );
 }
 
@@ -158,7 +158,7 @@ void TestQgsFontMarkerSymbol::bounds()
   //use a narrow character to test that width is correctly calculated
   mFontMarkerLayer->setCharacter( 'l' );
   mFontMarkerLayer->setSize( 12 );
-  mFontMarkerLayer->setOutlineWidth( 0 );
+  mFontMarkerLayer->setStrokeWidth( 0 );
   mFontMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty::fromExpression( QStringLiteral( "min(\"importance\" * 4.47214, 7.07106)" ) ) );
 
   mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, true );
@@ -173,7 +173,7 @@ void TestQgsFontMarkerSymbol::bounds()
 //
 
 
-bool TestQgsFontMarkerSymbol::imageCheck( const QString& theTestType )
+bool TestQgsFontMarkerSymbol::imageCheck( const QString& testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
@@ -181,9 +181,9 @@ bool TestQgsFontMarkerSymbol::imageCheck( const QString& theTestType )
   mMapSettings.setOutputDpi( 96 );
   QgsRenderChecker myChecker;
   myChecker.setControlPathPrefix( QStringLiteral( "symbol_fontmarker" ) );
-  myChecker.setControlName( "expected_" + theTestType );
+  myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( mMapSettings );
-  bool myResultFlag = myChecker.runTest( theTestType, 30 );
+  bool myResultFlag = myChecker.runTest( testType, 30 );
   mReport += myChecker.report();
   return myResultFlag;
 }

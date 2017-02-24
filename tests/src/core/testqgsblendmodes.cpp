@@ -65,7 +65,7 @@ class TestQgsBlendModes : public QObject
     void vectorLayerTransparency();
     void rasterBlending();
   private:
-    bool imageCheck( const QString& theType ); //as above
+    bool imageCheck( const QString& type ); //as above
     QgsMapSettings *mMapSettings = nullptr;
     QgsMapLayer * mpPointsLayer = nullptr;
     QgsVectorLayer * mpPolysLayer = nullptr;
@@ -226,16 +226,16 @@ void TestQgsBlendModes::rasterBlending()
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsBlendModes::imageCheck( const QString& theTestType )
+bool TestQgsBlendModes::imageCheck( const QString& testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
   mMapSettings->setOutputDpi( 96 );
   QgsMultiRenderChecker myChecker;
-  myChecker.setControlName( "expected_" + theTestType );
+  myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( *mMapSettings );
   myChecker.setColorTolerance( 5 );
-  bool myResultFlag = myChecker.runTest( theTestType, 20 );
+  bool myResultFlag = myChecker.runTest( testType, 20 );
   mReport += myChecker.report();
   return myResultFlag;
 }

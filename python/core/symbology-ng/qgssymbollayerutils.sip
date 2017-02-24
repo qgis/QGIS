@@ -220,13 +220,13 @@ class QgsSymbolLayerUtils
                                         QColor &color, double &size );
 
     static void wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
-                                      const QString& name, const QColor& color, const QColor& borderColor, Qt::PenStyle borderStyle,
-                                      double borderWidth = -1, double size = -1 );
+                                      const QString& name, const QColor& color, const QColor& strokeColor, Qt::PenStyle strokeStyle,
+                                      double strokeWidth = -1, double size = -1 );
 
     //! @note available in python as wellKnownMarkerFromSld2
     static bool wellKnownMarkerFromSld( QDomElement &element,
-                                        QString &name, QColor &color, QColor &borderColor, Qt::PenStyle &borderStyle,
-                                        double &borderWidth, double &size ) /PyName=wellKnownMarkerFromSld2/;
+                                        QString &name, QColor &color, QColor &strokeColor, Qt::PenStyle &strokeStyle,
+                                        double &strokeWidth, double &size ) /PyName=wellKnownMarkerFromSld2/;
 
     static void externalMarkerToSld( QDomDocument &doc, QDomElement &element,
                                      const QString& path, const QString& format, int *markIndex = 0,
@@ -475,18 +475,18 @@ class QgsSymbolLayerUtils
 
     /**
      * Encodes a reference to a parametric SVG into SLD, as a succession of parametric SVG using URL parameters,
-     * a fallback SVG without parameters, and a final fallback as a mark with the right colors and outline for systems
+     * a fallback SVG without parameters, and a final fallback as a mark with the right colors and stroke for systems
      * that cannot do SVG at all
      * @note added in 3.0
      */
     static void parametricSvgToSld( QDomDocument &doc, QDomElement &graphicElem,
                                     const QString& path,
-                                    const QColor& fillColor, double size, const QColor& outlineColor, double outlineWidth );
+                                    const QColor& fillColor, double size, const QColor& strokeColor, double strokeWidth );
 
     /**
      * Encodes a reference to a parametric SVG into a path with parameters according to the SVG Parameters spec
      * @note added in 3.0
      */
-    static QString getSvgParametricPath( const QString& basePath, const QColor& fillColor, const QColor& borderColor, double borderWidth );
+    static QString getSvgParametricPath( const QString& basePath, const QColor& fillColor, const QColor& strokeColor, double strokeWidth );
 
 };

@@ -94,13 +94,13 @@ namespace QgisGui
 
   /** A helper function to get an image name from the user. It will nicely
    * provide filters with all available writable image formats.
-   * @param theParent widget that should act as the parent for the file dialog
-   * @param theMessage the message to display to the user
+   * @param parent widget that should act as the parent for the file dialog
+   * @param message the message to display to the user
    * @param defaultFilename default file name (empty by default)
    * @return QPair<QString, QString> where first is the file name and second is
    * the file type
    */
-  QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget * theParent, const QString& theMessage, const QString& defaultFilename = QString::null );
+  QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget * parent, const QString& message, const QString& defaultFilename = QString::null );
 
   /**
     Convenience function for readily creating file filters.

@@ -26,7 +26,7 @@ class QgsWfsCapabilities : public QgsWfsRequest
 {
     Q_OBJECT
   public:
-    explicit QgsWfsCapabilities( const QString& theUri );
+    explicit QgsWfsCapabilities( const QString& uri );
     virtual ~QgsWfsCapabilities();
 
     //! start network connection to get capabilities

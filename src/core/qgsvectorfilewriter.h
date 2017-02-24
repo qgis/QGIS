@@ -466,10 +466,10 @@ class CORE_EXPORT QgsVectorFileWriter
     ~QgsVectorFileWriter();
 
     /** Delete a shapefile (and its accompanying shx / dbf / prf)
-     * @param theFileName /path/to/file.shp
+     * @param fileName /path/to/file.shp
      * @return bool true if the file was deleted successfully
      */
-    static bool deleteShapeFile( const QString& theFileName );
+    static bool deleteShapeFile( const QString& fileName );
 
     SymbologyExport symbologyExport() const { return mSymbologyExport; }
     void setSymbologyExport( SymbologyExport symExport ) { mSymbologyExport = symExport; }

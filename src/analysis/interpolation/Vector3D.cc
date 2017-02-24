@@ -29,21 +29,6 @@ void Vector3D::standardise()
   setZ( getZ() / length );
 }
 
-Vector3D::Vector3D( const Vector3D& v )
-    : mX( v.mX )
-    , mY( v.mY )
-    , mZ( v.mZ )
-{
-}
-
-Vector3D& Vector3D::operator=( const Vector3D & v )
-{
-  mX = v.mX;
-  mY = v.mY;
-  mZ = v.mZ;
-  return ( *this );
-}
-
 bool Vector3D::operator==( const Vector3D& v ) const
 {
   return ( mX == v.getX() && mY == v.getY() && mZ == v.getZ() );

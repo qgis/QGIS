@@ -64,7 +64,7 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     Qgis::DataType dataType( int bandNo ) const override;
 
     //! \brief set source and destination CRS
-    void setCrs( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS,
+    void setCrs( const QgsCoordinateReferenceSystem & srcCRS, const QgsCoordinateReferenceSystem & destCRS,
                  int srcDatumTransform = -1, int destDatumTransform = -1 );
 
     //! \brief Get source CRS
@@ -81,13 +81,13 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
     //! Calculate destination extent and size from source extent and size
-    bool destExtentSize( const QgsRectangle& theSrcExtent, int theSrcXSize, int theSrcYSize,
-                         QgsRectangle& theDestExtent, int& theDestXSize, int& theDestYSize );
+    bool destExtentSize( const QgsRectangle& srcExtent, int srcXSize, int srcYSize,
+                         QgsRectangle& destExtent, int& destXSize, int& destYSize );
 
     //! Calculate destination extent and size from source extent and size
     static bool extentSize( const QgsCoordinateTransform& ct,
-                            const QgsRectangle& theSrcExtent, int theSrcXSize, int theSrcYSize,
-                            QgsRectangle& theDestExtent, int& theDestXSize, int& theDestYSize );
+                            const QgsRectangle& srcExtent, int srcXSize, int srcYSize,
+                            QgsRectangle& destExtent, int& destXSize, int& destYSize );
 
   private:
 
@@ -126,10 +126,10 @@ class ProjectorData
     ProjectorData& operator=( const ProjectorData& other ) = delete;
 
     /** \brief Get source row and column indexes for current source extent and resolution
-        If source pixel is outside source extent theSrcRow and theSrcCol are left unchanged.
+        If source pixel is outside source extent srcRow and srcCol are left unchanged.
         @return true if inside source
      */
-    bool srcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol );
+    bool srcRowCol( int destRow, int destCol, int *srcRow, int *srcCol );
 
     QgsRectangle srcExtent() const { return mSrcExtent; }
     int srcRows() const { return mSrcRows; }
@@ -138,17 +138,17 @@ class ProjectorData
   private:
 
     //! \brief get destination point for _current_ destination position
-    void destPointOnCPMatrix( int theRow, int theCol, double *theX, double *theY );
+    void destPointOnCPMatrix( int row, int col, double *theX, double *theY );
 
     //! \brief Get matrix upper left row/col indexes for destination row/col
-    int matrixRow( int theDestRow );
-    int matrixCol( int theDestCol );
+    int matrixRow( int destRow );
+    int matrixCol( int destCol );
 
     //! \brief Get precise source row and column indexes for current source extent and resolution
-    inline bool preciseSrcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol );
+    inline bool preciseSrcRowCol( int destRow, int destCol, int *srcRow, int *srcCol );
 
     //! \brief Get approximate source row and column indexes for current source extent and resolution
-    inline bool approximateSrcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol );
+    inline bool approximateSrcRowCol( int destRow, int destCol, int *srcRow, int *srcCol );
 
     //! \brief insert rows to matrix
     void insertRows( const QgsCoordinateTransform& ct );
@@ -157,13 +157,13 @@ class ProjectorData
     void insertCols( const QgsCoordinateTransform& ct );
 
     //! Calculate single control point in current matrix
-    void calcCP( int theRow, int theCol, const QgsCoordinateTransform& ct );
+    void calcCP( int row, int col, const QgsCoordinateTransform& ct );
 
     //! \brief calculate matrix row
-    bool calcRow( int theRow, const QgsCoordinateTransform& ct );
+    bool calcRow( int row, const QgsCoordinateTransform& ct );
 
     //! \brief calculate matrix column
-    bool calcCol( int theCol, const QgsCoordinateTransform& ct );
+    bool calcCol( int col, const QgsCoordinateTransform& ct );
 
     //! \brief calculate source extent
     void calcSrcExtent();
@@ -180,7 +180,7 @@ class ProjectorData
     bool checkRows( const QgsCoordinateTransform& ct );
 
     //! Calculate array of src helper points
-    void calcHelper( int theMatrixRow, QgsPoint *thePoints );
+    void calcHelper( int matrixRow, QgsPoint *points );
 
     //! Calc / switch helper
     void nextHelper();

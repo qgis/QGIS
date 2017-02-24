@@ -79,7 +79,7 @@ void QgsCompassPluginGui::handleAzimuth( const QVariant &azimuth, const QVariant
 }
 
 //Copied from QgsDecorationNorthArrowDialog adapted to be portable
-void QgsCompassPluginGui::rotatePixmap( QLabel * pixmapLabel, QString myFileNameQString, int theRotationInt )
+void QgsCompassPluginGui::rotatePixmap( QLabel * pixmapLabel, QString myFileNameQString, int rotationInt )
 {
   QPixmap myQPixmap;
   if ( myQPixmap.load( myFileNameQString ) )
@@ -98,11 +98,11 @@ void QgsCompassPluginGui::rotatePixmap( QLabel * pixmapLabel, QString myFileName
     //myQPainter.translate( (int)centerXDouble, (int)centerYDouble );
 
     //rotate the canvas
-    myQPainter.rotate( theRotationInt );
+    myQPainter.rotate( rotationInt );
     //work out how to shift the image so that it appears in the center of the canvas
     //(x cos a + y sin a - x, -x sin a + y cos a - y)
     const double PI = 3.14159265358979323846;
-    double myRadiansDouble = ( PI / 180 ) * theRotationInt;
+    double myRadiansDouble = ( PI / 180 ) * rotationInt;
     int xShift = static_cast<int>((
                                     ( centerXDouble * cos( myRadiansDouble ) ) +
                                     ( centerYDouble * sin( myRadiansDouble ) )

@@ -80,13 +80,13 @@ class QgsRasterMinMaxOrigin
     //////// Setter methods /////////////////////
 
     //! \brief Set limits.
-    void setLimits(QgsRasterMinMaxOrigin::Limits theLimits);
+    void setLimits(QgsRasterMinMaxOrigin::Limits limits);
 
     //! \brief Set extent.
-    void setExtent(QgsRasterMinMaxOrigin::Extent theExtent);
+    void setExtent(QgsRasterMinMaxOrigin::Extent extent);
 
     //! \brief Set statistics accuracy.
-    void setStatAccuracy(QgsRasterMinMaxOrigin::StatAccuracy theAccuracy);
+    void setStatAccuracy(QgsRasterMinMaxOrigin::StatAccuracy accuracy);
 
     //! \brief Set lower bound of cumulative cut method (between 0 and 1).
     void setCumulativeCutLower(double val);
@@ -108,20 +108,20 @@ class QgsRasterMinMaxOrigin
     //////// Static methods /////////////////////
 
      //! \brief Return a string to serialize Limits
-    static QString limitsString( QgsRasterMinMaxOrigin::Limits theLimits );
+    static QString limitsString( QgsRasterMinMaxOrigin::Limits limits );
 
      //! \brief Deserialize Limits
-    static QgsRasterMinMaxOrigin::Limits limitsFromString( const QString& theLimits );
+    static QgsRasterMinMaxOrigin::Limits limitsFromString( const QString& limits );
 
     //! \brief Return a string to serialize Extent
-    static QString extentString( QgsRasterMinMaxOrigin::Extent theExtent );
+    static QString extentString( QgsRasterMinMaxOrigin::Extent extent );
 
     //! \brief Deserialize Extent
-    static QgsRasterMinMaxOrigin::Extent extentFromString( const QString& theExtent );
+    static QgsRasterMinMaxOrigin::Extent extentFromString( const QString& extent );
 
     //! \brief Return a string to serialize StatAccuracy
-    static QString statAccuracyString( QgsRasterMinMaxOrigin::StatAccuracy theAccuracy );
+    static QString statAccuracyString( QgsRasterMinMaxOrigin::StatAccuracy accuracy );
 
     //! \brief Deserialize StatAccuracy
-    static QgsRasterMinMaxOrigin::StatAccuracy statAccuracyFromString( const QString& theAccuracy );
+    static QgsRasterMinMaxOrigin::StatAccuracy statAccuracyFromString( const QString& accuracy );
 };

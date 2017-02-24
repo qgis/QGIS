@@ -27,7 +27,7 @@ class QgsWfsRequest : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsWfsRequest( const QString& theUri );
+    explicit QgsWfsRequest( const QString& uri );
 
     virtual ~QgsWfsRequest();
 

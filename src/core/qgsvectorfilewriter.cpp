@@ -51,8 +51,7 @@
 #include <gdal.h>
 
 QgsVectorFileWriter::FieldValueConverter::FieldValueConverter()
-{
-}
+= default;
 
 QgsField QgsVectorFileWriter::FieldValueConverter::fieldDefinition( const QgsField& field )
 {
@@ -65,8 +64,8 @@ QVariant QgsVectorFileWriter::FieldValueConverter::convert( int /*fieldIdxInLaye
 }
 
 QgsVectorFileWriter::QgsVectorFileWriter(
-  const QString &theVectorFileName,
-  const QString &theFileEncoding,
+  const QString &vectorFileName,
+  const QString &fileEncoding,
   const QgsFields& fields,
   QgsWkbTypes::Type geometryType,
   const QgsCoordinateReferenceSystem& srs,
@@ -86,7 +85,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     , mSymbologyScaleDenominator( 1.0 )
     , mFieldValueConverter( nullptr )
 {
-  init( theVectorFileName, theFileEncoding, fields,  geometryType ,
+  init( vectorFileName, fileEncoding, fields,  geometryType ,
         srs, driverName, datasourceOptions, layerOptions, newFilename, nullptr,
         QString(), CreateOrOverwriteFile );
 }
@@ -472,7 +471,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     {
       case QVariant::LongLong:
       {
-        const char* pszDataTypes = GDALGetMetadataItem( poDriver, GDAL_DMD_CREATIONFIELDDATATYPES, NULL );
+        const char* pszDataTypes = GDALGetMetadataItem( poDriver, GDAL_DMD_CREATIONFIELDDATATYPES, nullptr );
         if ( pszDataTypes && strstr( pszDataTypes, "Integer64" ) )
           ogrType = OFTInteger64;
         else
@@ -2546,9 +2545,9 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
 }
 
 
-bool QgsVectorFileWriter::deleteShapeFile( const QString& theFileName )
+bool QgsVectorFileWriter::deleteShapeFile( const QString& fileName )
 {
-  QFileInfo fi( theFileName );
+  QFileInfo fi( fileName );
   QDir dir = fi.dir();
 
   QStringList filter;
@@ -3043,9 +3042,9 @@ QgsVectorFileWriter::EditionCapabilities QgsVectorFileWriter::editionCapabilitie
   OGRSFDriverH hDriver = nullptr;
   OGRDataSourceH hDS = OGROpen( datasetName.toUtf8().constData(), TRUE, &hDriver );
   if ( !hDS )
-    return 0;
+    return nullptr;
   QString drvName = OGR_Dr_GetName( hDriver );
-  QgsVectorFileWriter::EditionCapabilities caps = 0;
+  QgsVectorFileWriter::EditionCapabilities caps = nullptr;
   if ( OGR_DS_TestCapability( hDS, ODsCCreateLayer ) )
   {
     // Shapefile driver returns True for a "foo.shp" dataset name,

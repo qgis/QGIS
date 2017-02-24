@@ -24,7 +24,7 @@
    <item row="3" column="0">
     <widget class="QLabel" name="label_4">
      <property name="text">
-      <string>Outline style</string>
+      <string>Stroke style</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -34,7 +34,7 @@
    <item row="5" column="0">
     <widget class="QLabel" name="label_5">
      <property name="text">
-      <string>Outline width</string>
+      <string>Stroke width</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -72,7 +72,7 @@
     </widget>
    </item>
    <item row="5" column="2">
-    <widget class="QgsPropertyOverrideButton" name="mBorderWidthDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mStrokeWidthDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -81,7 +81,7 @@
    <item row="3" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_5">
      <item>
-      <widget class="QgsPenStyleComboBox" name="cboBorderStyle"/>
+      <widget class="QgsPenStyleComboBox" name="cboStrokeStyle"/>
      </item>
     </layout>
    </item>
@@ -153,7 +153,7 @@
    <item row="5" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <widget class="QgsDoubleSpinBox" name="spinBorderWidth">
+      <widget class="QgsDoubleSpinBox" name="spinStrokeWidth">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>1</horstretch>
@@ -178,7 +178,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsUnitSelectionWidget" name="mBorderWidthUnitWidget" native="true">
+      <widget class="QgsUnitSelectionWidget" name="mStrokeWidthUnitWidget" native="true">
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -195,7 +195,7 @@
    <item row="1" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_7">
      <item>
-      <widget class="QgsColorButton" name="btnChangeBorderColor">
+      <widget class="QgsColorButton" name="btnChangeStrokeColor">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -232,7 +232,7 @@
     </widget>
    </item>
    <item row="1" column="2">
-    <widget class="QgsPropertyOverrideButton" name="mBorderColorDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mStrokeColorDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -285,7 +285,7 @@
     </widget>
    </item>
    <item row="3" column="2">
-    <widget class="QgsPropertyOverrideButton" name="mBorderStyleDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mStrokeStyleDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -300,7 +300,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Outline</string>
+      <string>Stroke</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -370,12 +370,12 @@
  </customwidgets>
  <tabstops>
   <tabstop>btnChangeColor</tabstop>
-  <tabstop>btnChangeBorderColor</tabstop>
+  <tabstop>btnChangeStrokeColor</tabstop>
   <tabstop>cboFillStyle</tabstop>
-  <tabstop>cboBorderStyle</tabstop>
+  <tabstop>cboStrokeStyle</tabstop>
   <tabstop>cboJoinStyle</tabstop>
-  <tabstop>spinBorderWidth</tabstop>
-  <tabstop>mBorderWidthUnitWidget</tabstop>
+  <tabstop>spinStrokeWidth</tabstop>
+  <tabstop>mStrokeWidthUnitWidget</tabstop>
   <tabstop>spinOffsetX</tabstop>
   <tabstop>mOffsetUnitWidget</tabstop>
  </tabstops>

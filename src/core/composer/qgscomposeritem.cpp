@@ -410,7 +410,7 @@ void QgsComposerItem::setFrameEnabled( const bool drawFrame )
   emit frameChanged();
 }
 
-void QgsComposerItem::setFrameOutlineColor( const QColor &color )
+void QgsComposerItem::setFrameStrokeColor( const QColor &color )
 {
   if ( mFrameColor == color )
   {
@@ -427,14 +427,14 @@ void QgsComposerItem::setFrameOutlineColor( const QColor &color )
   emit frameChanged();
 }
 
-void QgsComposerItem::setFrameOutlineWidth( const double outlineWidth )
+void QgsComposerItem::setFrameStrokeWidth( const double strokeWidth )
 {
-  if ( qgsDoubleNear( mFrameWidth, outlineWidth ) )
+  if ( qgsDoubleNear( mFrameWidth, strokeWidth ) )
   {
     //no change
     return;
   }
-  mFrameWidth = outlineWidth;
+  mFrameWidth = strokeWidth;
   QPen itemPen = pen();
   itemPen.setWidthF( mFrameWidth );
   setPen( itemPen );
@@ -896,10 +896,8 @@ void QgsComposerItem::setTransparency( const int transparency )
 
 void QgsComposerItem::refreshTransparency( const bool updateItem, const QgsExpressionContext& context )
 {
-  int transparency = mTransparency;
-
   //data defined transparency set?
-  transparency = mDataDefinedProperties.valueAsInt( QgsComposerObject::Transparency, context, mTransparency );
+  int transparency = mDataDefinedProperties.valueAsInt( QgsComposerObject::Transparency, context, mTransparency );
 
   // Set the QGraphicItem's opacity
   setOpacity( 1. - ( transparency / 100. ) );
@@ -912,7 +910,7 @@ void QgsComposerItem::refreshTransparency( const bool updateItem, const QgsExpre
 
 void QgsComposerItem::refreshFrameColor( const bool updateItem, const QgsExpressionContext& context )
 {
-  //data defined outline color set?
+  //data defined stroke color set?
   bool ok = false;
   QColor frameColor = mDataDefinedProperties.valueAsColor( QgsComposerObject::FrameColor, context, mFrameColor, &ok );
   if ( ok )

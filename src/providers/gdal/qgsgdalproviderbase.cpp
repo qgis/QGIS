@@ -32,22 +32,22 @@ QgsGdalProviderBase::QgsGdalProviderBase()
 }
 
 /**
- * @param theBandNumber the number of the band for which you want a color table
- * @param theList a pointer the object that will hold the color table
+ * @param bandNumber the number of the band for which you want a color table
+ * @param list a pointer the object that will hold the color table
  * @return true of a color table was able to be read, false otherwise
  */
-QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDatasetH gdalDataset, int theBandNumber )const
+QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDatasetH gdalDataset, int bandNumber )const
 {
   QList<QgsColorRampShader::ColorRampItem> ct;
 
   //Invalid band number, segfault prevention
-  if ( 0 >= theBandNumber )
+  if ( 0 >= bandNumber )
   {
     QgsDebugMsg( "Invalid parameter" );
     return ct;
   }
 
-  GDALRasterBandH myGdalBand = GDALGetRasterBand( gdalDataset, theBandNumber );
+  GDALRasterBandH myGdalBand = GDALGetRasterBand( gdalDataset, bandNumber );
   GDALColorTableH myGdalColorTable = GDALGetRasterColorTable( myGdalBand );
 
   if ( myGdalColorTable )
@@ -132,7 +132,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
   }
   else
   {
-    QgsDebugMsg( "No color table found for band " + QString::number( theBandNumber ) );
+    QgsDebugMsg( "No color table found for band " + QString::number( bandNumber ) );
     return ct;
   }
 
@@ -140,9 +140,9 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
   return ct;
 }
 
-Qgis::DataType QgsGdalProviderBase::dataTypeFromGdal( const GDALDataType theGdalDataType ) const
+Qgis::DataType QgsGdalProviderBase::dataTypeFromGdal( const GDALDataType gdalDataType ) const
 {
-  switch ( theGdalDataType )
+  switch ( gdalDataType )
   {
     case GDT_Byte:
       return Qgis::Byte;
@@ -280,7 +280,7 @@ CPLErr QgsGdalProviderBase::gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWF
 {
   GDALRasterIOExtraArg extra;
   INIT_RASTERIO_EXTRA_ARG( extra );
-  if ( 0 && feedback )  // disabled!
+  if ( false && feedback )  // disabled!
   {
     // Currently the cancelation is disabled... When RasterIO call is canceled,
     // GDAL returns CE_Failure with error code = 0 (CPLE_None), however one would

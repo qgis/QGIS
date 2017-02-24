@@ -32,6 +32,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsrelationmanager.h"
 
 #include <QDir>
 #include <QDomDocument>
@@ -254,6 +255,7 @@ void QgsOfflineEditing::synchronize()
 
       // copy style
       copySymbology( offlineLayer, remoteLayer );
+      updateRelations( offlineLayer, remoteLayer );
 
       // apply layer edit log
       QString qgisLayerId = layer->id();
@@ -611,6 +613,7 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
         }
       }
 
+      updateRelations( layer, newLayer );
       // copy features
       newLayer->startEditing();
       QgsFeature f;
@@ -895,6 +898,29 @@ void QgsOfflineEditing::copySymbology( QgsVectorLayer* sourceLayer, QgsVectorLay
   if ( !error.isEmpty() )
   {
     showWarning( error );
+  }
+}
+
+void QgsOfflineEditing::updateRelations( QgsVectorLayer* sourceLayer, QgsVectorLayer* targetLayer )
+{
+  QgsRelationManager* relationManager = QgsProject::instance()->relationManager();
+  QList<QgsRelation> relations;
+  relations = relationManager->referencedRelations( sourceLayer );
+
+  Q_FOREACH ( QgsRelation relation, relations )
+  {
+    relationManager->removeRelation( relation );
+    relation.setReferencedLayer( targetLayer->id() );
+    relationManager->addRelation( relation );
+  }
+
+  relations = relationManager->referencingRelations( sourceLayer );
+
+  Q_FOREACH ( QgsRelation relation, relations )
+  {
+    relationManager->removeRelation( relation );
+    relation.setReferencingLayer( targetLayer->id() );
+    relationManager->addRelation( relation );
   }
 }
 

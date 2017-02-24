@@ -63,7 +63,7 @@ email                : sherman at mrcc.com
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include "qgscursors.h"
-#include <math.h>
+#include <cmath>
 
 
 /** \ingroup gui
@@ -244,14 +244,14 @@ double QgsMapCanvas::magnificationFactor() const
   return mSettings.magnificationFactor();
 }
 
-void QgsMapCanvas::enableAntiAliasing( bool theFlag )
+void QgsMapCanvas::enableAntiAliasing( bool flag )
 {
-  mSettings.setFlag( QgsMapSettings::Antialiasing, theFlag );
+  mSettings.setFlag( QgsMapSettings::Antialiasing, flag );
 } // anti aliasing
 
-void QgsMapCanvas::enableMapTileRendering( bool theFlag )
+void QgsMapCanvas::enableMapTileRendering( bool flag )
 {
-  mSettings.setFlag( QgsMapSettings::RenderMapTile, theFlag );
+  mSettings.setFlag( QgsMapSettings::RenderMapTile, flag );
 }
 
 QgsMapLayer* QgsMapCanvas::layer( int index )
@@ -627,7 +627,7 @@ void QgsMapCanvas::stopRendering()
 }
 
 //the format defaults to "PNG" if not specified
-void QgsMapCanvas::saveAsImage( const QString& theFileName, QPixmap * theQPixmap, const QString& theFormat )
+void QgsMapCanvas::saveAsImage( const QString& fileName, QPixmap * theQPixmap, const QString& format )
 {
   QPainter painter;
   QImage image;
@@ -678,7 +678,7 @@ void QgsMapCanvas::saveAsImage( const QString& theFileName, QPixmap * theQPixmap
   }
 
   painter.end();
-  image.save( theFileName, theFormat.toLocal8Bit().data() );
+  image.save( fileName, format.toLocal8Bit().data() );
 
   //create a world file to go with the image...
   QgsRectangle myRect = mapSettings().visibleExtent();
@@ -697,7 +697,7 @@ void QgsMapCanvas::saveAsImage( const QString& theFileName, QPixmap * theQPixmap
   myHeader += qgsDoubleToString( myRect.xMinimum() + ( mapUnitsPerPixel() / 2 ) ) + "\r\n";
   //Origin Y (center of top left cell)
   myHeader += qgsDoubleToString( myRect.yMaximum() - ( mapUnitsPerPixel() / 2 ) ) + "\r\n";
-  QFileInfo myInfo  = QFileInfo( theFileName );
+  QFileInfo myInfo  = QFileInfo( fileName );
   // build the world file name
   QString outputSuffix = myInfo.suffix();
   QString myWorldFileName = myInfo.absolutePath() + '/' + myInfo.baseName() + '.'
@@ -1522,17 +1522,17 @@ void QgsMapCanvas::unsetMapTool( QgsMapTool* tool )
 }
 
 //! Write property of QColor bgColor.
-void QgsMapCanvas::setCanvasColor( const QColor & theColor )
+void QgsMapCanvas::setCanvasColor( const QColor & color )
 {
   // background of map's pixmap
-  mSettings.setBackgroundColor( theColor );
+  mSettings.setBackgroundColor( color );
 
   // background of the QGraphicsView
-  QBrush bgBrush( theColor );
+  QBrush bgBrush( color );
   setBackgroundBrush( bgBrush );
 #if 0
   QPalette palette;
-  palette.setColor( backgroundRole(), theColor );
+  palette.setColor( backgroundRole(), color );
   setPalette( palette );
 #endif
 
@@ -1573,8 +1573,7 @@ void QgsMapCanvas::layerStateChange()
 void QgsMapCanvas::layerCrsChange()
 {
   // called when a layer's CRS has been changed
-  QObject *theSender = sender();
-  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( theSender );
+  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
   QString destAuthId = mSettings.destinationCrs().authid();
   getDatumTransformInfo( layer, layer->crs().authid(), destAuthId );
 
@@ -1634,9 +1633,9 @@ void QgsMapCanvas::setLayerStyleOverrides( const QMap<QString, QString>& overrid
 }
 
 
-void QgsMapCanvas::setRenderFlag( bool theFlag )
+void QgsMapCanvas::setRenderFlag( bool flag )
 {
-  mRenderFlag = theFlag;
+  mRenderFlag = flag;
 
   if ( mRenderFlag )
   {

@@ -266,7 +266,7 @@ void QgsConfigParserUtils::appendLayerBoundingBox( QDomElement& layerElem, QDomD
   }
 }
 
-QStringList QgsConfigParserUtils::createCrsListForLayer( QgsMapLayer* theMapLayer )
+QStringList QgsConfigParserUtils::createCrsListForLayer( QgsMapLayer* mapLayer )
 {
   QStringList crsNumbers;
   QString myDatabaseFileName = QgsApplication::srsDatabaseFilePath();
@@ -277,10 +277,10 @@ QStringList QgsConfigParserUtils::createCrsListForLayer( QgsMapLayer* theMapLaye
 
   //check the db is available
   myResult = sqlite3_open( myDatabaseFileName.toLocal8Bit().data(), &myDatabase );
-  if ( myResult && theMapLayer )
+  if ( myResult && mapLayer )
   {
     //if the database cannot be opened, add at least the epsg number of the source coordinate system
-    crsNumbers.push_back( theMapLayer->crs().authid() );
+    crsNumbers.push_back( mapLayer->crs().authid() );
     return crsNumbers;
   };
   QString mySql = QStringLiteral( "select upper(auth_name||':'||auth_id) from tbl_srs" );

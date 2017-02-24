@@ -105,25 +105,25 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      */
     QString endMarker() const { return mEndMarkerFile; }
 
-    /** Returns the color used to draw outline around the the arrow head.
-     * @returns arrow head outline color
+    /** Returns the color used to draw stroke around the the arrow head.
+     * @returns arrow head stroke color
      * @see arrowHeadFillColor
-     * @see setArrowHeadOutlineColor
+     * @see setArrowHeadStrokeColor
      * @note added in 2.5
      */
-    QColor arrowHeadOutlineColor() const { return mArrowHeadOutlineColor; }
+    QColor arrowHeadStrokeColor() const { return mArrowHeadStrokeColor; }
 
-    /** Sets the color used to draw the outline around the arrow head.
-     * @param color arrow head outline color
+    /** Sets the color used to draw the stroke around the arrow head.
+     * @param color arrow head stroke color
      * @see setArrowHeadFillColor
-     * @see arrowHeadOutlineColor
+     * @see arrowHeadStrokeColor
      * @note added in 2.5
      */
-    void setArrowHeadOutlineColor( const QColor& color );
+    void setArrowHeadStrokeColor( const QColor& color );
 
     /** Returns the color used to fill the arrow head.
      * @returns arrow head fill color
-     * @see arrowHeadOutlineColor
+     * @see arrowHeadStrokeColor
      * @see setArrowHeadFillColor
      * @note added in 2.5
      */
@@ -132,26 +132,26 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     /** Sets the color used to fill the arrow head.
      * @param color arrow head fill color
      * @see arrowHeadFillColor
-     * @see setArrowHeadOutlineColor
+     * @see setArrowHeadStrokeColor
      * @note added in 2.5
      */
     void setArrowHeadFillColor( const QColor& color );
 
-    /** Sets the pen width for the outline of the arrow head
-     * @param width pen width for arrow head outline
-     * @see arrowHeadOutlineWidth
-     * @see setArrowHeadOutlineColor
+    /** Sets the pen width for the stroke of the arrow head
+     * @param width pen width for arrow head stroke
+     * @see arrowHeadStrokeWidth
+     * @see setArrowHeadStrokeColor
      * @note added in 2.5
      */
-    void setArrowHeadOutlineWidth( const double width );
+    void setArrowHeadStrokeWidth( const double width );
 
-    /** Returns the pen width for the outline of the arrow head
-     * @returns pen width for arrow head outline
-     * @see setArrowHeadOutlineWidth
-     * @see arrowHeadOutlineColor
+    /** Returns the pen width for the stroke of the arrow head
+     * @returns pen width for arrow head stroke
+     * @see setArrowHeadStrokeWidth
+     * @see arrowHeadStrokeColor
      * @note added in 2.5
      */
-    double arrowHeadOutlineWidth() const { return mArrowHeadOutlineWidth; }
+    double arrowHeadStrokeWidth() const { return mArrowHeadStrokeWidth; }
 
     /** Sets the line symbol used for drawing the line portion of the arrow
      * @param symbol line symbol
@@ -224,8 +224,8 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     //! Default marker, no marker or svg marker
     MarkerMode mMarkerMode;
 
-    double mArrowHeadOutlineWidth;
-    QColor mArrowHeadOutlineColor;
+    double mArrowHeadStrokeWidth;
+    QColor mArrowHeadStrokeColor;
     QColor mArrowHeadFillColor;
 
     /** Indicates QGIS version to mimic bounding box behavior for. The line placement changed in version 2.4, so a value
@@ -235,8 +235,8 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
 
     QgsLineSymbol* mLineSymbol = nullptr;
 
-    /** Adapts the item scene rect to contain the start point, the stop point including the arrow marker and the outline.
-     *  Needs to be called whenever the arrow width/height, the outline with or the endpoints are changed
+    /** Adapts the item scene rect to contain the start point, the stop point including the arrow marker and the stroke.
+     *  Needs to be called whenever the arrow width/height, the stroke with or the endpoints are changed
      */
     void adaptItemSceneRect();
     //! Computes the margin around the line necessary to include the markers

@@ -28,7 +28,7 @@
 #include <QResizeEvent>
 #include <QMouseEvent>
 #include "qgslogger.h"
-#include <limits.h>
+#include <limits>
 
 
 QgsMapOverviewCanvas::QgsMapOverviewCanvas( QWidget * parent, QgsMapCanvas* mapCanvas )

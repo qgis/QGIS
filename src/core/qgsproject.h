@@ -311,7 +311,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QString writePath( const QString& filename ) const;
 
     //! Turn filename read from the project file to an absolute path
-    QString readPath( QString filename ) const;
+    QString readPath( const QString& filename ) const;
 
     //! Return error message from previous read/write
     QString error() const;
@@ -565,7 +565,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * The layersAdded() and layerWasAdded() signals will always be emitted.
      * The legendLayersAdded() signal is emitted only if addToLegend is true.
      *
-     * @param theMapLayers  A list of layer which should be added to the registry
+     * @param mapLayers  A list of layer which should be added to the registry
      * @param addToLegend   If true (by default), the layers will be added to the
      *                      legend and to the main canvas. If you have a private
      *                      layer you can set this parameter to false to hide it.
@@ -583,7 +583,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * @note added in QGIS 1.8
      * @see addMapLayer()
      */
-    QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer*>& theMapLayers,
+    QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer*>& mapLayers,
                                        bool addToLegend = true,
                                        bool takeOwnership = true );
 
@@ -596,7 +596,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * If you are adding multiple layers at once, you should use
      * addMapLayers() instead.
      *
-     * @param theMapLayer A layer to add to the registry
+     * @param mapLayer A layer to add to the registry
      * @param addToLegend If true (by default), the layer will be added to the
      *                    legend and to the main canvas. If you have a private
      *                    layer you can set this parameter to false to hide it.
@@ -614,7 +614,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * take ownership
      * @see addMapLayers()
      */
-    QgsMapLayer* addMapLayer( QgsMapLayer * theMapLayer, bool addToLegend = true, bool takeOwnership = true );
+    QgsMapLayer* addMapLayer( QgsMapLayer * mapLayer, bool addToLegend = true, bool takeOwnership = true );
 
     /**
      * @brief

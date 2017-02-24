@@ -93,7 +93,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   mDiagramPenColorButton->setAllowAlpha( true );
   mDiagramPenColorButton->setContext( QStringLiteral( "symbology" ) );
   mDiagramPenColorButton->setShowNoColor( true );
-  mDiagramPenColorButton->setNoColorString( tr( "Transparent outline" ) );
+  mDiagramPenColorButton->setNoColorString( tr( "Transparent stroke" ) );
 
   mMaxValueSpinBox->setShowClearButton( false );
 
@@ -173,7 +173,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   // field combo and expression button
   mSizeFieldExpressionWidget->setLayer( mLayer );
   QgsDistanceArea myDa;
-  myDa.setSourceCrs( mLayer->crs().srsid() );
+  myDa.setSourceCrs( mLayer->crs() );
   myDa.setEllipsoidalMode( true );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
   mSizeFieldExpressionWidget->setGeomCalculator( myDa );
@@ -409,8 +409,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   connect( mTransparencySpinBox, static_cast < void ( QgsSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mTransparencySlider, &QSlider::setValue );
 
   registerDataDefinedButton( mBackgroundColorDDBtn, QgsDiagramLayerSettings::BackgroundColor );
-  registerDataDefinedButton( mLineColorDDBtn, QgsDiagramLayerSettings::OutlineColor );
-  registerDataDefinedButton( mLineWidthDDBtn, QgsDiagramLayerSettings::OutlineWidth );
+  registerDataDefinedButton( mLineColorDDBtn, QgsDiagramLayerSettings::StrokeColor );
+  registerDataDefinedButton( mLineWidthDDBtn, QgsDiagramLayerSettings::StrokeWidth );
   registerDataDefinedButton( mCoordXDDBtn, QgsDiagramLayerSettings::PositionX );
   registerDataDefinedButton( mCoordYDDBtn, QgsDiagramLayerSettings::PositionY );
   registerDataDefinedButton( mDistanceDDBtn, QgsDiagramLayerSettings::Distance );
@@ -865,7 +865,7 @@ QString QgsDiagramProperties::showExpressionBuilder( const QString& initialExpre
   dlg.setWindowTitle( tr( "Expression based attribute" ) );
 
   QgsDistanceArea myDa;
-  myDa.setSourceCrs( mLayer->crs().srsid() );
+  myDa.setSourceCrs( mLayer->crs() );
   myDa.setEllipsoidalMode( true );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
   dlg.setGeomCalculator( myDa );

@@ -51,6 +51,13 @@ QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget* parent ,
   {
     minValueSpinBox->setValue( initialState.transformer()->minValue() );
     maxValueSpinBox->setValue( initialState.transformer()->maxValue() );
+
+    if ( initialState.transformer()->curveTransform() )
+    {
+      mTransformCurveCheckBox->setChecked( true );
+      mTransformCurveCheckBox->setCollapsed( false );
+      mCurveEditor->setCurve( *initialState.transformer()->curveTransform() );
+    }
   }
 
   connect( computeValuesButton, &QPushButton::clicked, this, &QgsPropertyAssistantWidget::computeValuesFromLayer );
@@ -107,11 +114,25 @@ QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget* parent ,
   {
     mOutputWidget->layout()->addWidget( mTransformerWidget );
     connect( mTransformerWidget, &QgsPropertyAbstractTransformerWidget::widgetChanged, this, &QgsPropertyAssistantWidget::widgetChanged );
+
+    mCurveEditor->setMinHistogramValueRange( minValueSpinBox->value() );
+    mCurveEditor->setMaxHistogramValueRange( maxValueSpinBox->value() );
+
+    mCurveEditor->setHistogramSource( mLayer, mExpressionWidget->currentField() );
+    connect( mExpressionWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString& ) > ( &QgsFieldExpressionWidget::fieldChanged ), this, [=]( const QString & expression )
+    {
+      mCurveEditor->setHistogramSource( mLayer, expression );
+    }
+           );
+    connect( minValueSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), mCurveEditor, &QgsCurveEditorWidget::setMinHistogramValueRange );
+    connect( maxValueSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), mCurveEditor, &QgsCurveEditorWidget::setMaxHistogramValueRange );
   }
+  mTransformCurveCheckBox->setVisible( mTransformerWidget );
 
   connect( minValueSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertyAssistantWidget::widgetChanged );
   connect( maxValueSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertyAssistantWidget::widgetChanged );
   connect( mExpressionWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString& ) > ( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsPropertyAssistantWidget::widgetChanged );
+  connect( mCurveEditor, &QgsCurveEditorWidget::changed, this, &QgsPropertyAssistantWidget::widgetChanged );
   connect( this, &QgsPropertyAssistantWidget::widgetChanged, this, &QgsPropertyAssistantWidget::updatePreview );
   updatePreview();
 }
@@ -131,7 +152,18 @@ void QgsPropertyAssistantWidget::updateProperty( QgsProperty& property )
     property.setField( mExpressionWidget->currentField() );
 
   if ( mTransformerWidget )
-    property.setTransformer( mTransformerWidget->createTransformer( minValueSpinBox->value(), maxValueSpinBox->value() ) );
+  {
+    std::unique_ptr< QgsPropertyTransformer> t( mTransformerWidget->createTransformer( minValueSpinBox->value(), maxValueSpinBox->value() ) );
+    if ( mTransformCurveCheckBox->isChecked() )
+    {
+      t->setCurveTransform( new QgsCurveTransform( mCurveEditor->curve() ) );
+    }
+    else
+    {
+      t->setCurveTransform( nullptr );
+    }
+    property.setTransformer( t.release() );
+  }
 }
 
 void QgsPropertyAssistantWidget::setDockMode( bool dockMode )
@@ -166,6 +198,10 @@ void QgsPropertyAssistantWidget::computeValuesFromLayer()
 
   whileBlocking( minValueSpinBox )->setValue( minValue );
   whileBlocking( maxValueSpinBox )->setValue( maxValue );
+
+  mCurveEditor->setMinHistogramValueRange( minValueSpinBox->value() );
+  mCurveEditor->setMaxHistogramValueRange( maxValueSpinBox->value() );
+
   emit widgetChanged();
 }
 
@@ -180,8 +216,9 @@ void QgsPropertyAssistantWidget::updatePreview()
   QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( minValueSpinBox->value(),
                          maxValueSpinBox->value(), 8 );
 
+  QgsCurveTransform curve = mCurveEditor->curve();
   QList< QgsSymbolLegendNode* > nodes = mTransformerWidget->generatePreviews( breaks, mLayerTreeLayer, mSymbol.get(), minValueSpinBox->value(),
-                                        maxValueSpinBox->value() );
+                                        maxValueSpinBox->value(), mTransformCurveCheckBox->isChecked() ? &curve : nullptr );
 
   int widthMax = 0;
   int i = 0;
@@ -353,7 +390,7 @@ QgsSizeScaleTransformer* QgsPropertySizeAssistantWidget::createTransformer( doub
   return transformer;
 }
 
-QList< QgsSymbolLegendNode* > QgsPropertySizeAssistantWidget::generatePreviews( const QList<double>& breaks, QgsLayerTreeLayer* parent, const QgsSymbol* symbol, double minValue, double maxValue ) const
+QList< QgsSymbolLegendNode* > QgsPropertySizeAssistantWidget::generatePreviews( const QList<double>& breaks, QgsLayerTreeLayer* parent, const QgsSymbol* symbol, double minValue, double maxValue, QgsCurveTransform* curve ) const
 {
   QList< QgsSymbolLegendNode* > nodes;
 
@@ -376,6 +413,8 @@ QList< QgsSymbolLegendNode* > QgsPropertySizeAssistantWidget::generatePreviews( 
     return nodes;
 
   std::unique_ptr< QgsSizeScaleTransformer > t( createTransformer( minValue, maxValue ) );
+  if ( curve )
+    t->setCurveTransform( new QgsCurveTransform( *curve ) );
 
   for ( int i = 0; i < breaks.length(); i++ )
   {
@@ -401,7 +440,7 @@ QList< QgsSymbolLegendNode* > QgsPropertySizeAssistantWidget::generatePreviews( 
   return nodes;
 }
 
-QList<QgsSymbolLegendNode*> QgsPropertyAbstractTransformerWidget::generatePreviews( const QList<double>& , QgsLayerTreeLayer* , const QgsSymbol*, double, double ) const
+QList<QgsSymbolLegendNode*> QgsPropertyAbstractTransformerWidget::generatePreviews( const QList<double>& , QgsLayerTreeLayer* , const QgsSymbol*, double, double, QgsCurveTransform* ) const
 {
   return QList< QgsSymbolLegendNode* >();
 }
@@ -451,7 +490,7 @@ QgsColorRampTransformer* QgsPropertyColorAssistantWidget::createTransformer( dou
   return transformer;
 }
 
-QList<QgsSymbolLegendNode*> QgsPropertyColorAssistantWidget::generatePreviews( const QList<double>& breaks, QgsLayerTreeLayer* parent, const QgsSymbol* symbol, double minValue, double maxValue ) const
+QList<QgsSymbolLegendNode*> QgsPropertyColorAssistantWidget::generatePreviews( const QList<double>& breaks, QgsLayerTreeLayer* parent, const QgsSymbol* symbol, double minValue, double maxValue , QgsCurveTransform* curve ) const
 {
   QList< QgsSymbolLegendNode* > nodes;
 
@@ -467,6 +506,8 @@ QList<QgsSymbolLegendNode*> QgsPropertyColorAssistantWidget::generatePreviews( c
     return nodes;
 
   std::unique_ptr< QgsColorRampTransformer > t( createTransformer( minValue, maxValue ) );
+  if ( curve )
+    t->setCurveTransform( new QgsCurveTransform( *curve ) );
 
   for ( int i = 0; i < breaks.length(); i++ )
   {
@@ -497,12 +538,12 @@ QgsPropertyGenericNumericAssistantWidget::QgsPropertyGenericNumericAssistantWidg
     minOutputSpinBox->setValue( 0.0 );
     minOutputSpinBox->setShowClearButton( true );
     minOutputSpinBox->setClearValue( 0.0 );
-    minOutputSpinBox->setSuffix( tr( " °" ) );
+    minOutputSpinBox->setSuffix( trUtf8( " °" ) );
     maxOutputSpinBox->setMaximum( 360.0 );
     maxOutputSpinBox->setValue( 360.0 );
     maxOutputSpinBox->setShowClearButton( true );
     maxOutputSpinBox->setClearValue( 360.0 );
-    maxOutputSpinBox->setSuffix( tr( " °" ) );
+    maxOutputSpinBox->setSuffix( trUtf8( " °" ) );
     exponentSpinBox->hide();
     mExponentLabel->hide();
     mLabelMinOutput->setText( tr( "Angle from" ) );

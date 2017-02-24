@@ -94,9 +94,9 @@ void QgsMapToolNodeTool::createTopologyRubberBands()
           settings.value( QStringLiteral( "/qgis/digitizing/line_color_blue" ), 0 ).toInt() );
         double myAlpha = settings.value( QStringLiteral( "/qgis/digitizing/line_color_alpha" ), 30 ).toInt() / 255.0 ;
         color.setAlphaF( myAlpha );
-        rb->setOutlineColor( color );
+        rb->setStrokeColor( color );
         rb->setBrushStyle( Qt::NoBrush );
-        rb->setOutlineWidth( settings.value( QStringLiteral( "/qgis/digitizing/line_width" ), 1 ).toInt() );
+        rb->setStrokeWidth( settings.value( QStringLiteral( "/qgis/digitizing/line_width" ), 1 ).toInt() );
         QgsAbstractGeometry* rbGeom = feature.geometry().geometry()->clone();
         if ( mCanvas->mapSettings().layerTransform( vlayer ).isValid() )
           rbGeom->transform( mCanvas->mapSettings().layerTransform( vlayer ) );
@@ -137,9 +137,9 @@ void QgsMapToolNodeTool::canvasMoveEvent( QgsMapMouseEvent* e )
         settings.value( QStringLiteral( "/qgis/digitizing/line_color_blue" ), 0 ).toInt() );
       double myAlpha = settings.value( QStringLiteral( "/qgis/digitizing/line_color_alpha" ), 30 ).toInt() / 255.0 ;
       color.setAlphaF( myAlpha );
-      rb->setOutlineColor( color );
+      rb->setStrokeColor( color );
       rb->setBrushStyle( Qt::NoBrush );
-      rb->setOutlineWidth( settings.value( QStringLiteral( "/qgis/digitizing/line_width" ), 1 ).toInt() );
+      rb->setStrokeWidth( settings.value( QStringLiteral( "/qgis/digitizing/line_width" ), 1 ).toInt() );
       QgsAbstractGeometry* rbGeom = mSelectedFeature->geometry()->geometry()->clone();
       if ( mCanvas->mapSettings().layerTransform( vlayer ).isValid() )
         rbGeom->transform( mCanvas->mapSettings().layerTransform( vlayer ) );

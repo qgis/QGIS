@@ -25,13 +25,13 @@ class QgsRasterPipe
 
     QgsRasterPipe();
     //made private for python bindings
-    //QgsRasterPipe( const QgsRasterPipe& thePipe );
+    //QgsRasterPipe( const QgsRasterPipe& pipe );
 
     ~QgsRasterPipe();
 
     /** Try to insert interface at specified index and connect
      * if connection would fail, the interface is not inserted and false is returned */
-    bool insert( int idx, QgsRasterInterface* theInterface /Transfer/ );
+    bool insert( int idx, QgsRasterInterface* interface /Transfer/ );
 %MethodCode
       sipRes = sipCpp->insert( a0, a1 );
       if( !sipRes )
@@ -45,7 +45,7 @@ class QgsRasterPipe
 
     /** Try to replace interface at specified index and connect
      * if connection would fail, the interface is not inserted and false is returned */
-    bool replace( int idx, QgsRasterInterface* theInterface /Transfer/ );
+    bool replace( int idx, QgsRasterInterface* interface /Transfer/ );
 
     /** Insert a new known interface in default place or replace interface of the same
      * role if it already exists. Known interfaces are: QgsRasterDataProvider,
@@ -53,13 +53,13 @@ class QgsRasterPipe
      * subclasses. For unknown interfaces it mus be explicitly specified position
      * where it should be inserted using insert() method.
      */
-    bool set( QgsRasterInterface * theInterface /Transfer/ );
+    bool set( QgsRasterInterface * interface /Transfer/ );
 
     /** Remove and delete interface at given index if possible */
     bool remove( int idx );
 
     /** Remove and delete interface from pipe if possible */
-    bool remove( QgsRasterInterface * theInterface );
+    bool remove( QgsRasterInterface * interface );
 
     int size() const;
     QgsRasterInterface * at( int idx ) const;
@@ -83,6 +83,6 @@ class QgsRasterPipe
 
   private:
 
-    QgsRasterPipe( const QgsRasterPipe& thePipe );
+    QgsRasterPipe( const QgsRasterPipe& pipe );
 
 };

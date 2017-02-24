@@ -21,6 +21,7 @@
 #include <QList>
 
 #include "qgis_core.h"
+#include "qgsfeedback.h"
 
 class QgsVectorLayer;
 
@@ -49,9 +50,10 @@ class CORE_EXPORT QgsHistogram
      * result of an expression.
      * @param layer vector layer
      * @param fieldOrExpression field name or expression to be evaluated
+     * @param feedback optional feedback object to allow cancelation of calculation
      * @returns true if values were successfully set
      */
-    bool setValues( QgsVectorLayer* layer, const QString& fieldOrExpression );
+    bool setValues( const QgsVectorLayer* layer, const QString& fieldOrExpression, QgsFeedback* feedback = nullptr );
 
     /** Calculates the optimal bin width using the Freedman-Diaconis rule. Bins widths are
      * determined by the inter-quartile range of values and the number of values.

@@ -9,7 +9,7 @@ class QgsSingleBandPseudoColorRendererWidget : QgsRasterRendererWidget
     QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
     ~QgsSingleBandPseudoColorRendererWidget();
 
-    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) /Factory/;
+    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &extent ) /Factory/;
     QgsRasterRenderer* renderer();
     void setMapCanvas( QgsMapCanvas* canvas );
 
@@ -22,7 +22,7 @@ class QgsSingleBandPseudoColorRendererWidget : QgsRasterRendererWidget
     /** Executes the single band pseudo raster classficiation
      */
     void classify();
-    void loadMinMax( int theBandNo, double theMin, double theMax );
+    void loadMinMax( int bandNo, double min, double max );
 
 };
 

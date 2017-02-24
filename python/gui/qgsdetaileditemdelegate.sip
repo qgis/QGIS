@@ -13,18 +13,18 @@ class QgsDetailedItemDelegate : QAbstractItemDelegate
     QgsDetailedItemDelegate( QObject * parent /TransferThis/ = 0 );
     ~QgsDetailedItemDelegate();
     /** Reimplement for parent class */
-    void paint( QPainter * thePainter,
-                const QStyleOptionViewItem & theOption,
-                const QModelIndex & theIndex ) const;
+    void paint( QPainter * painter,
+                const QStyleOptionViewItem & option,
+                const QModelIndex & index ) const;
     /** Reimplement for parent class */
-    QSize sizeHint( const QStyleOptionViewItem & theOption,
-                    const QModelIndex & theIndex ) const;
+    QSize sizeHint( const QStyleOptionViewItem & option,
+                    const QModelIndex & index ) const;
 
-    void setVerticalSpacing( int theValue );
+    void setVerticalSpacing( int value );
 
     int verticalSpacing() const;
 
-    void setHorizontalSpacing( int theValue );
+    void setHorizontalSpacing( int value );
 
     int horizontalSpacing() const;
 };

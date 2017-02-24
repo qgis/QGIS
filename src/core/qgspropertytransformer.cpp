@@ -50,11 +50,32 @@ QgsPropertyTransformer::QgsPropertyTransformer( double minValue, double maxValue
     , mMaxValue( maxValue )
 {}
 
+QgsPropertyTransformer::QgsPropertyTransformer( const QgsPropertyTransformer& other )
+    : mMinValue( other.mMinValue )
+    , mMaxValue( other.mMaxValue )
+    , mCurveTransform( other.mCurveTransform ? new QgsCurveTransform( *other.mCurveTransform ) : nullptr )
+{}
+
+QgsPropertyTransformer& QgsPropertyTransformer::operator=( const QgsPropertyTransformer & other )
+{
+  mMinValue = other.mMinValue;
+  mMaxValue = other.mMaxValue;
+  mCurveTransform.reset( other.mCurveTransform ? new QgsCurveTransform( *other.mCurveTransform ) : nullptr );
+  return *this;
+}
+
 bool QgsPropertyTransformer::writeXml( QDomElement& transformerElem, QDomDocument& doc ) const
 {
   Q_UNUSED( doc );
   transformerElem.setAttribute( "minValue", QString::number( mMinValue ) );
   transformerElem.setAttribute( "maxValue", QString::number( mMaxValue ) );
+
+  if ( mCurveTransform )
+  {
+    QDomElement curveElement = doc.createElement( "curve" );
+    mCurveTransform->writeXml( curveElement, doc );
+    transformerElem.appendChild( curveElement );
+  }
   return true;
 }
 
@@ -69,11 +90,35 @@ QgsPropertyTransformer* QgsPropertyTransformer::fromExpression( const QString& e
     return nullptr;
 }
 
+double QgsPropertyTransformer::transformNumeric( double input ) const
+{
+  if ( !mCurveTransform )
+    return input;
+
+  if ( qgsDoubleNear( mMaxValue, mMinValue ) )
+    return input;
+
+  // convert input into target range
+  double scaledInput = ( input - mMinValue ) / ( mMaxValue - mMinValue );
+
+  return mMinValue + ( mMaxValue - mMinValue ) * mCurveTransform->y( scaledInput );
+}
+
 bool QgsPropertyTransformer::readXml( const QDomElement &transformerElem, const QDomDocument &doc )
 {
   Q_UNUSED( doc );
   mMinValue = transformerElem.attribute( "minValue", "0.0" ).toDouble();
   mMaxValue = transformerElem.attribute( "maxValue", "1.0" ).toDouble();
+  mCurveTransform.reset( nullptr );
+
+  QDomNodeList curveNodeList = transformerElem.elementsByTagName( "curve" );
+  if ( !curveNodeList.isEmpty() )
+  {
+    QDomElement curveElem = curveNodeList.at( 0 ).toElement();
+    mCurveTransform.reset( new QgsCurveTransform() );
+    mCurveTransform->readXml( curveElem, doc );
+  }
+
   return true;
 }
 
@@ -89,14 +134,35 @@ QgsGenericNumericTransformer::QgsGenericNumericTransformer( double minValue, dou
     , mExponent( exponent )
 {}
 
+QgsGenericNumericTransformer::QgsGenericNumericTransformer( const QgsGenericNumericTransformer& other )
+    : QgsPropertyTransformer( other )
+    , mMinOutput( other.mMinOutput )
+    , mMaxOutput( other.mMaxOutput )
+    , mNullOutput( other.mNullOutput )
+    , mExponent( other.mExponent )
+{}
+
+QgsGenericNumericTransformer& QgsGenericNumericTransformer::operator=( const QgsGenericNumericTransformer & other )
+{
+  QgsPropertyTransformer::operator=( other );
+  mMinOutput = other.mMinOutput;
+  mMaxOutput = other.mMaxOutput;
+  mNullOutput = other.mNullOutput;
+  mExponent = other.mExponent;
+  return *this;
+}
+
 QgsGenericNumericTransformer *QgsGenericNumericTransformer::clone()
 {
-  return new QgsGenericNumericTransformer( mMinValue,
-         mMaxValue,
-         mMinOutput,
-         mMaxOutput,
-         mNullOutput,
-         mExponent );
+  std::unique_ptr< QgsGenericNumericTransformer > t( new QgsGenericNumericTransformer( mMinValue,
+      mMaxValue,
+      mMinOutput,
+      mMaxOutput,
+      mNullOutput,
+      mExponent ) );
+  if ( mCurveTransform )
+    t->setCurveTransform( new QgsCurveTransform( *mCurveTransform ) );
+  return t.release();
 }
 
 bool QgsGenericNumericTransformer::writeXml( QDomElement &transformerElem, QDomDocument &doc ) const
@@ -126,6 +192,7 @@ bool QgsGenericNumericTransformer::readXml( const QDomElement &transformerElem, 
 
 double QgsGenericNumericTransformer::value( double input ) const
 {
+  input = transformNumeric( input );
   if ( qgsDoubleNear( mExponent, 1.0 ) )
     return mMinOutput + ( qBound( mMinValue, input, mMaxValue ) - mMinValue ) * ( mMaxOutput - mMinOutput ) / ( mMaxValue - mMinValue );
   else
@@ -257,15 +324,38 @@ QgsSizeScaleTransformer::QgsSizeScaleTransformer( ScaleType type, double minValu
   setType( type );
 }
 
+QgsSizeScaleTransformer::QgsSizeScaleTransformer( const QgsSizeScaleTransformer& other )
+    : QgsPropertyTransformer( other )
+    , mType( other.mType )
+    , mMinSize( other.mMinSize )
+    , mMaxSize( other.mMaxSize )
+    , mNullSize( other.mNullSize )
+    , mExponent( other.mExponent )
+{}
+
+QgsSizeScaleTransformer& QgsSizeScaleTransformer::operator=( const QgsSizeScaleTransformer & other )
+{
+  QgsPropertyTransformer::operator=( other );
+  mType = other.mType;
+  mMinSize = other.mMinSize;
+  mMaxSize = other.mMaxSize;
+  mNullSize = other.mNullSize;
+  mExponent = other.mExponent;
+  return *this;
+}
+
 QgsSizeScaleTransformer *QgsSizeScaleTransformer::clone()
 {
-  return new QgsSizeScaleTransformer( mType,
-                                      mMinValue,
-                                      mMaxValue,
-                                      mMinSize,
-                                      mMaxSize,
-                                      mNullSize,
-                                      mExponent );
+  std::unique_ptr< QgsSizeScaleTransformer > t( new QgsSizeScaleTransformer( mType,
+      mMinValue,
+      mMaxValue,
+      mMinSize,
+      mMaxSize,
+      mNullSize,
+      mExponent ) );
+  if ( mCurveTransform )
+    t->setCurveTransform( new QgsCurveTransform( *mCurveTransform ) );
+  return t.release();
 }
 
 bool QgsSizeScaleTransformer::writeXml( QDomElement &transformerElem, QDomDocument &doc ) const
@@ -297,6 +387,8 @@ bool QgsSizeScaleTransformer::readXml( const QDomElement &transformerElem, const
 
 double QgsSizeScaleTransformer::size( double value ) const
 {
+  value = transformNumeric( value );
+
   switch ( mType )
   {
     case Linear:
@@ -483,6 +575,7 @@ QgsColorRampTransformer::QgsColorRampTransformer( const QgsColorRampTransformer 
 
 QgsColorRampTransformer &QgsColorRampTransformer::operator=( const QgsColorRampTransformer & other )
 {
+  QgsPropertyTransformer::operator=( other );
   mMinValue = other.mMinValue;
   mMaxValue = other.mMaxValue;
   mGradientRamp.reset( other.mGradientRamp ? other.mGradientRamp->clone() : nullptr );
@@ -493,11 +586,13 @@ QgsColorRampTransformer &QgsColorRampTransformer::operator=( const QgsColorRampT
 
 QgsColorRampTransformer* QgsColorRampTransformer::clone()
 {
-  QgsColorRampTransformer* c = new QgsColorRampTransformer( mMinValue, mMaxValue,
+  std::unique_ptr< QgsColorRampTransformer > c( new QgsColorRampTransformer( mMinValue, mMaxValue,
       mGradientRamp ? mGradientRamp->clone() : nullptr,
-      mNullColor );
+      mNullColor ) );
   c->setRampName( mRampName );
-  return c;
+  if ( mCurveTransform )
+    c->setCurveTransform( new QgsCurveTransform( *mCurveTransform ) );
+  return c.release();
 }
 
 bool QgsColorRampTransformer::writeXml( QDomElement &transformerElem, QDomDocument &doc ) const
@@ -569,6 +664,7 @@ QString QgsColorRampTransformer::toExpression( const QString& baseExpression ) c
 
 QColor QgsColorRampTransformer::color( double value ) const
 {
+  value = transformNumeric( value );
   double scaledVal = qBound( 0.0, ( value - mMinValue ) / ( mMaxValue - mMinValue ), 1.0 );
 
   if ( !mGradientRamp )
@@ -586,3 +682,340 @@ void QgsColorRampTransformer::setColorRamp( QgsColorRamp* ramp )
 {
   mGradientRamp.reset( ramp );
 }
+
+
+//
+// QgsCurveTransform
+//
+
+bool sortByX( const QgsPoint& a, const QgsPoint& b )
+{
+  return a.x() < b.x();
+}
+
+QgsCurveTransform::QgsCurveTransform()
+{
+  mControlPoints << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 );
+  calcSecondDerivativeArray();
+}
+
+QgsCurveTransform::QgsCurveTransform( const QList<QgsPoint>& controlPoints )
+    : mControlPoints( controlPoints )
+{
+  std::sort( mControlPoints.begin(), mControlPoints.end(), sortByX );
+  calcSecondDerivativeArray();
+}
+
+QgsCurveTransform::~QgsCurveTransform()
+{
+  delete [] mSecondDerivativeArray;
+}
+
+QgsCurveTransform::QgsCurveTransform( const QgsCurveTransform& other )
+    : mControlPoints( other.mControlPoints )
+{
+  if ( other.mSecondDerivativeArray )
+  {
+    mSecondDerivativeArray = new double[ mControlPoints.count()];
+    memcpy( mSecondDerivativeArray, other.mSecondDerivativeArray, sizeof( double ) * mControlPoints.count() );
+  }
+}
+
+QgsCurveTransform& QgsCurveTransform::operator=( const QgsCurveTransform & other )
+{
+  mControlPoints = other.mControlPoints;
+  if ( other.mSecondDerivativeArray )
+  {
+    delete [] mSecondDerivativeArray;
+    mSecondDerivativeArray = new double[ mControlPoints.count()];
+    memcpy( mSecondDerivativeArray, other.mSecondDerivativeArray, sizeof( double ) * mControlPoints.count() );
+  }
+  return *this;
+}
+
+void QgsCurveTransform::setControlPoints( const QList<QgsPoint>& points )
+{
+  mControlPoints = points;
+  std::sort( mControlPoints.begin(), mControlPoints.end(), sortByX );
+  for ( int i = 0; i < mControlPoints.count(); ++i )
+  {
+    mControlPoints[ i ] = QgsPoint( qBound( 0.0, mControlPoints.at( i ).x(), 1.0 ),
+                                    qBound( 0.0, mControlPoints.at( i ).y(), 1.0 ) );
+  }
+  calcSecondDerivativeArray();
+}
+
+void QgsCurveTransform::addControlPoint( double x, double y )
+{
+  QgsPoint point( x, y );
+  if ( mControlPoints.contains( point ) )
+    return;
+
+  mControlPoints << point;
+  std::sort( mControlPoints.begin(), mControlPoints.end(), sortByX );
+  calcSecondDerivativeArray();
+}
+
+void QgsCurveTransform::removeControlPoint( double x, double y )
+{
+  for ( int i = 0; i < mControlPoints.count(); ++i )
+  {
+    if ( qgsDoubleNear( mControlPoints.at( i ).x(), x )
+         && qgsDoubleNear( mControlPoints.at( i ).y(), y ) )
+    {
+      mControlPoints.removeAt( i );
+      break;
+    }
+  }
+  calcSecondDerivativeArray();
+}
+
+// this code is adapted from https://github.com/OpenFibers/Photoshop-Curves
+// which in turn was adapted from
+// http://www.developpez.net/forums/d331608-3/autres-langages/algorithmes/contribuez/image-interpolation-spline-cubique/#post3513925  //#spellok
+
+double QgsCurveTransform::y( double x ) const
+{
+  int n = mControlPoints.count();
+  if ( n < 2 )
+    return qBound( 0.0, x, 1.0 ); // invalid
+  else if ( n < 3 )
+  {
+    // linear
+    if ( x <= mControlPoints.at( 0 ).x() )
+      return qBound( 0.0, mControlPoints.at( 0 ).y(), 1.0 );
+    else if ( x >=  mControlPoints.at( n - 1 ).x() )
+      return qBound( 0.0, mControlPoints.at( 1 ).y(), 1.0 );
+    else
+    {
+      double dx = mControlPoints.at( 1 ).x() - mControlPoints.at( 0 ).x();
+      double dy = mControlPoints.at( 1 ).y() - mControlPoints.at( 0 ).y();
+      return qBound( 0.0, ( x - mControlPoints.at( 0 ).x() ) * ( dy / dx ) + mControlPoints.at( 0 ).y(), 1.0 );
+    }
+  }
+
+  // safety check
+  if ( x <= mControlPoints.at( 0 ).x() )
+    return qBound( 0.0, mControlPoints.at( 0 ).y(), 1.0 );
+  if ( x >= mControlPoints.at( n - 1 ).x() )
+    return qBound( 0.0, mControlPoints.at( n - 1 ).y(), 1.0 );
+
+  // find corresponding segment
+  QList<QgsPoint>::const_iterator pointIt = mControlPoints.constBegin();
+  QgsPoint currentControlPoint = *pointIt;
+  ++pointIt;
+  QgsPoint nextControlPoint = *pointIt;
+
+  for ( int i = 0; i < n - 1; ++i )
+  {
+    if ( x < nextControlPoint.x() )
+    {
+      // found segment
+      double h = nextControlPoint.x() - currentControlPoint.x();
+      double t = ( x - currentControlPoint.x() ) / h;
+
+      double a = 1 - t;
+
+      return qBound( 0.0, a*currentControlPoint.y() + t*nextControlPoint.y() + ( h*h / 6 )*(( a*a*a - a )*mSecondDerivativeArray[i] + ( t*t*t - t )*mSecondDerivativeArray[i+1] ),
+                     1.0 );
+    }
+
+    ++pointIt;
+    if ( pointIt == mControlPoints.constEnd() )
+      break;
+
+    currentControlPoint = nextControlPoint;
+    nextControlPoint = *pointIt;
+  }
+
+  //should not happen
+  return qBound( 0.0, x, 1.0 );
+}
+
+// this code is adapted from https://github.com/OpenFibers/Photoshop-Curves
+// which in turn was adapted from
+// http://www.developpez.net/forums/d331608-3/autres-langages/algorithmes/contribuez/image-interpolation-spline-cubique/#post3513925  //#spellok
+
+QVector<double> QgsCurveTransform::y( const QVector<double>& x ) const
+{
+  QVector<double> result;
+
+  int n = mControlPoints.count();
+  if ( n < 3 )
+  {
+    // invalid control points - use simple transform
+    Q_FOREACH ( double i, x )
+      result << y( i );
+
+    return result;
+  }
+
+  // find corresponding segment
+  QList<QgsPoint>::const_iterator pointIt = mControlPoints.constBegin();
+  QgsPoint currentControlPoint = *pointIt;
+  ++pointIt;
+  QgsPoint nextControlPoint = *pointIt;
+
+  int xIndex = 0;
+  double currentX = x.at( xIndex );
+  // safety check
+  while ( currentX <= currentControlPoint.x() )
+  {
+    result << qBound( 0.0, currentControlPoint.y(), 1.0 );
+    xIndex++;
+    currentX = x.at( xIndex );
+  }
+
+  for ( int i = 0; i < n - 1; ++i )
+  {
+    while ( currentX < nextControlPoint.x() )
+    {
+      // found segment
+      double h = nextControlPoint.x() - currentControlPoint.x();
+
+      double t = ( currentX - currentControlPoint.x() ) / h;
+
+      double a = 1 - t;
+
+      result << qBound( 0.0, a*currentControlPoint.y() + t*nextControlPoint.y() + ( h*h / 6 )*(( a*a*a - a )*mSecondDerivativeArray[i] + ( t*t*t - t )*mSecondDerivativeArray[i+1] ), 1.0 );
+      xIndex++;
+      if ( xIndex == x.count() )
+        return result;
+
+      currentX = x.at( xIndex );
+    }
+
+    ++pointIt;
+    if ( pointIt == mControlPoints.constEnd() )
+      break;
+
+    currentControlPoint = nextControlPoint;
+    nextControlPoint = *pointIt;
+  }
+
+  // safety check
+  while ( xIndex < x.count() )
+  {
+    result << qBound( 0.0, nextControlPoint.y(), 1.0 );
+    xIndex++;
+  }
+
+  return result;
+}
+
+bool QgsCurveTransform::readXml( const QDomElement& elem, const QDomDocument& )
+{
+  QString xString = elem.attribute( QStringLiteral( "x" ) );
+  QString yString = elem.attribute( QStringLiteral( "y" ) );
+
+  QStringList xVals = xString.split( ',' );
+  QStringList yVals = yString.split( ',' );
+  if ( xVals.count() != yVals.count() )
+    return false;
+
+  QList< QgsPoint > newPoints;
+  bool ok = false;
+  for ( int i = 0; i < xVals.count(); ++i )
+  {
+    double x = xVals.at( i ).toDouble( &ok );
+    if ( !ok )
+      return false;
+    double y = yVals.at( i ).toDouble( &ok );
+    if ( !ok )
+      return false;
+    newPoints << QgsPoint( x, y );
+  }
+  setControlPoints( newPoints );
+  return true;
+}
+
+bool QgsCurveTransform::writeXml( QDomElement& transformElem, QDomDocument& ) const
+{
+  QStringList x;
+  QStringList y;
+  Q_FOREACH ( const QgsPoint& p, mControlPoints )
+  {
+    x << qgsDoubleToString( p.x() );
+    y << qgsDoubleToString( p.y() );
+  }
+
+  transformElem.setAttribute( QStringLiteral( "x" ), x.join( ',' ) );
+  transformElem.setAttribute( QStringLiteral( "y" ), y.join( ',' ) );
+
+  return true;
+}
+
+// this code is adapted from https://github.com/OpenFibers/Photoshop-Curves
+// which in turn was adapted from
+// http://www.developpez.net/forums/d331608-3/autres-langages/algorithmes/contribuez/image-interpolation-spline-cubique/#post3513925  //#spellok
+
+void QgsCurveTransform::calcSecondDerivativeArray()
+{
+  int n = mControlPoints.count();
+  if ( n < 3 )
+    return; // cannot proceed
+
+  delete[] mSecondDerivativeArray;
+
+  double* matrix = new double[ n * 3 ];
+  double* result = new double[ n ];
+  matrix[0] = 0;
+  matrix[1] = 1;
+  matrix[2] = 0;
+  result[0] = 0;
+  QList<QgsPoint>::const_iterator pointIt = mControlPoints.constBegin();
+  QgsPoint pointIm1 = *pointIt;
+  ++pointIt;
+  QgsPoint pointI = *pointIt;
+  ++pointIt;
+  QgsPoint pointIp1 = *pointIt;
+
+  for ( int i = 1; i < n - 1; ++i )
+  {
+    matrix[i * 3 + 0 ] = ( pointI.x() - pointIm1.x() ) / 6.0;
+    matrix[i * 3 + 1 ] = ( pointIp1.x() - pointIm1.x() ) / 3.0;
+    matrix[i * 3 + 2 ] = ( pointIp1.x() - pointI.x() ) / 6.0;
+    result[i] = ( pointIp1.y() - pointI.y() ) / ( pointIp1.x() - pointI.x() ) - ( pointI.y() - pointIm1.y() ) / ( pointI.x() - pointIm1.x() );
+
+    // shuffle points
+    pointIm1 = pointI;
+    pointI = pointIp1;
+    ++pointIt;
+    if ( pointIt == mControlPoints.constEnd() )
+      break;
+
+    pointIp1 = *pointIt;
+  }
+  matrix[( n-1 )*3 + 0] = 0;
+  matrix[( n-1 )*3 + 1] = 1;
+  matrix[( n-1 ) * 3 +2] = 0;
+  result[n-1] = 0;
+
+  // solving pass1 (up->down)
+  for ( int i = 1; i < n; ++i )
+  {
+    double k = matrix[i * 3 + 0] / matrix[( i-1 ) * 3 + 1];
+    matrix[i * 3 + 1] -= k * matrix[( i-1 )*3+2];
+    matrix[i * 3 + 0] = 0;
+    result[i] -= k * result[i-1];
+  }
+  // solving pass2 (down->up)
+  for ( int i = n - 2; i >= 0; --i )
+  {
+    double k = matrix[i*3+2] / matrix[( i+1 )*3+1];
+    matrix[i*3+1] -= k * matrix[( i+1 )*3+0];
+    matrix[i*3+2] = 0;
+    result[i] -= k * result[i+1];
+  }
+
+  // return second derivative value for each point
+  mSecondDerivativeArray = new double[n];
+  for ( int i = 0;i < n;++i )
+  {
+    mSecondDerivativeArray[i] = result[i] / matrix[( i*3 )+1];
+  }
+
+  delete[] result;
+  delete[] matrix;
+}
+

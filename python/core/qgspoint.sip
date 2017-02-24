@@ -1,113 +1,4 @@
 /** \ingroup core
- * A class to represent a vector.
- * Currently no Z axis / 2.5D support is implemented.
- */
-
-class QgsVector
-{
-%TypeHeaderCode
-#include <qgspoint.h>
-%End
-
-  public:
-
-    /** Default constructor for QgsVector. Creates a vector with length of 0.0.
-     */
-    QgsVector();
-
-    /** Constructor for QgsVector taking x and y component values.
-     * @param x x-component
-     * @param y y-component
-     */
-    QgsVector( double x, double y );
-
-    //! Swaps the sign of the x and y components of the vector.
-    QgsVector operator-() const;
-
-    /** Returns a vector where the components have been multiplied by a scalar value.
-     * @param scalar factor to multiply by
-     */
-    QgsVector operator*( double scalar ) const;
-
-    /** Returns a vector where the components have been divided by a scalar value.
-     * @param scalar factor to divide by
-     */
-    QgsVector operator/( double scalar ) const;
-
-    /** Returns the sum of the x component of this vector multiplied by the x component of another
-     * vector plus the y component of this vector multiplied by the y component of another vector.
-     */
-    double operator*( QgsVector v ) const;
-
-    /**
-     * Adds another vector to this vector.
-     * @node added in QGIS 3.0
-     */
-    QgsVector operator+( QgsVector other ) const;
-
-    /**
-     * Adds another vector to this vector in place.
-     * @node added in QGIS 3.0
-     */
-    QgsVector& operator+=( QgsVector other );
-
-    /**
-     * Subtracts another vector to this vector.
-     * @node added in QGIS 3.0
-     */
-    QgsVector operator-( QgsVector other ) const;
-
-    /**
-     * Subtracts another vector to this vector in place.
-     * @node added in QGIS 3.0
-     */
-    QgsVector& operator-=( QgsVector other );
-
-    /** Returns the length of the vector.
-     */
-    double length() const;
-
-    /** Returns the vector's x-component.
-     * @see y()
-     */
-    double x() const;
-
-    /** Returns the vector's y-component.
-     * @see x()
-     */
-    double y() const;
-
-    /** Returns the perpendicular vector to this vector (rotated 90 degrees counter-clockwise)
-     */
-    QgsVector perpVector() const;
-
-    /** Returns the angle of the vector in radians.
-     */
-    double angle() const;
-
-    /** Returns the angle between this vector and another vector in radians.
-     */
-    double angle( QgsVector v ) const;
-
-    /** Rotates the vector by a specified angle.
-     * @param rot angle in radians
-     */
-    QgsVector rotateBy( double rot ) const;
-
-    /** Returns the vector's normalized (or "unit") vector (ie same angle but length of 1.0). Will throw an exception
-     * if called on a vector with length of 0.
-     */
-    QgsVector normalized() const;
-
-    //! Equality operator
-    bool operator==( QgsVector other ) const;
-
-    //! Inequality operator
-    bool operator!=( QgsVector other ) const;
-};
-
-
-/** \ingroup core
  * A class to represent a point.
  * Currently no Z axis / 2.5D support is implemented.
  */
@@ -179,29 +70,29 @@ class QgsPoint
     QString toString() const;
 
     //! As above but with precision for string representation of a point
-    QString toString( int thePrecision ) const;
+    QString toString( int precision ) const;
 
     /** Return a string representation as degrees minutes seconds.
      *  Its up to the calling function to ensure that this point can
      *  be meaningfully represented in this form.
-     *  @param thePrecision number of decimal points to use for seconds
+     *  @param precision number of decimal points to use for seconds
      *  @param useSuffix set to true to include a direction suffix (e.g., 'N'),
      *  set to false to use a "-" prefix for west and south coordinates
      *  @param padded set to true to force minutes and seconds to use two decimals,
      *  e.g., '05' instead of '5'.
      */
-    QString toDegreesMinutesSeconds( int thePrecision, const bool useSuffix = true, const bool padded = false ) const;
+    QString toDegreesMinutesSeconds( int precision, const bool useSuffix = true, const bool padded = false ) const;
 
     /** Return a string representation as degrees minutes.
      *  Its up to the calling function to ensure that this point can
      *  be meaningfully represented in this form.
-     *  @param thePrecision number of decimal points to use for minutes
+     *  @param precision number of decimal points to use for minutes
      *  @param useSuffix set to true to include a direction suffix (e.g., 'N'),
      *  set to false to use a "-" prefix for west and south coordinates
      *  @param padded set to true to force minutes to use two decimals,
      *  e.g., '05' instead of '5'.
      */
-    QString toDegreesMinutes( int thePrecision, const bool useSuffix = true, const bool padded = false ) const;
+    QString toDegreesMinutes( int precision, const bool useSuffix = true, const bool padded = false ) const;
 
 
     /** Return the well known text representation for the point.

@@ -241,20 +241,20 @@ class ModelerGraphicItem(QGraphicsItem):
 
         if isinstance(self.element, ModelerParameter):
             color = QColor(238, 242, 131)
-            outline = QColor(234, 226, 118)
+            stroke = QColor(234, 226, 118)
             selected = QColor(116, 113, 68)
         elif isinstance(self.element, Algorithm):
             color = QColor(255, 255, 255)
-            outline = Qt.gray
+            stroke = Qt.gray
             selected = QColor(50, 50, 50)
         else:
             color = QColor(172, 196, 114)
-            outline = QColor(90, 140, 90)
+            stroke = QColor(90, 140, 90)
             selected = QColor(42, 65, 42)
         if self.isSelected():
-            outline = selected
+            stroke = selected
             color = color.darker(110)
-        painter.setPen(QPen(outline, 0)) # 0 width "cosmetic" pen
+        painter.setPen(QPen(stroke, 0)) # 0 width "cosmetic" pen
         painter.setBrush(QBrush(color, Qt.SolidPattern))
         painter.drawRect(rect)
         font = QFont('Verdana', 8)

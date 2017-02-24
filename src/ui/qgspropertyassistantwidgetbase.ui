@@ -6,22 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>522</width>
-    <height>332</height>
+    <width>525</width>
+    <height>426</height>
    </rect>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0">
-   <item row="0" column="1" rowspan="2">
-    <widget class="QTreeView" name="mLegendPreview">
-     <property name="minimumSize">
-      <size>
-       <width>200</width>
-       <height>0</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
+  <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0,0">
+   <item row="2" column="0">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
       <string>Output</string>
@@ -60,6 +50,16 @@
      </layout>
     </widget>
    </item>
+   <item row="3" column="0">
+    <widget class="QFrame" name="mLegendVerticalFrame">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
@@ -86,10 +86,10 @@
          <number>6</number>
         </property>
         <property name="minimum">
-         <double>-99999999.000000000000000</double>
+         <double>-99999999999999.000000000000000</double>
         </property>
         <property name="maximum">
-         <double>99999999.000000000000000</double>
+         <double>99999999999999.000000000000000</double>
         </property>
        </widget>
       </item>
@@ -99,10 +99,10 @@
          <number>6</number>
         </property>
         <property name="minimum">
-         <double>-99999999.000000000000000</double>
+         <double>-99999999999999.000000000000000</double>
         </property>
         <property name="maximum">
-         <double>99999999.000000000000000</double>
+         <double>99999999999999.000000000000000</double>
         </property>
        </widget>
       </item>
@@ -153,14 +153,60 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QFrame" name="mLegendVerticalFrame">
-     <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
+   <item row="0" column="1" rowspan="3">
+    <widget class="QTreeView" name="mLegendPreview">
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>0</height>
+      </size>
      </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QgsCollapsibleGroupBoxBasic" name="mTransformCurveCheckBox">
+     <property name="title">
+      <string>Apply transform curve</string>
      </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <property name="collapsed" stdset="0">
+      <bool>true</bool>
+     </property>
+     <property name="syncGroup" stdset="0">
+      <string notr="true">composeritem</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QgsCurveEditorWidget" name="mCurveEditor" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>100</height>
+         </size>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
@@ -181,6 +227,18 @@
    <class>QgsPanelWidget</class>
    <extends>QWidget</extends>
    <header>qgspanelwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCurveEditorWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">qgscurveeditorwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -74,12 +74,12 @@ void QgsTipGui::showTip( QgsTip myTip )
   txtTip->setHtml( content );
 }
 
-void QgsTipGui::on_cbxDisableTips_toggled( bool theFlag )
+void QgsTipGui::on_cbxDisableTips_toggled( bool flag )
 {
   QSettings settings;
   //note the ! below as when the cbx is checked (true) we want to
   //change the setting to false
-  settings.setValue( QStringLiteral( "/qgis/showTips%1" ).arg( Qgis::QGIS_VERSION_INT / 100 ), !theFlag );
+  settings.setValue( QStringLiteral( "/qgis/showTips%1" ).arg( Qgis::QGIS_VERSION_INT / 100 ), !flag );
   hide();
 }
 

@@ -21,7 +21,7 @@
 #include <QDomDocument>
 #include <QStringList>
 
-QgsProjectProperty::QgsProjectProperty()
+QgsProjectProperty::QgsProjectProperty() //NOLINT
 {
 }
 

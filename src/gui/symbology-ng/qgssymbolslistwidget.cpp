@@ -100,7 +100,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyle* style, 
   connect( mRotationDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsSymbolsListWidget::updateDataDefinedMarkerAngle );
   registerDataDefinedButton( mSizeDDBtn, QgsSymbolLayer::PropertySize );
   connect( mSizeDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsSymbolsListWidget::updateDataDefinedMarkerSize );
-  registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::PropertyOutlineWidth );
+  registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::PropertyStrokeWidth );
   connect( mWidthDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsSymbolsListWidget::updateDataDefinedLineWidth );
 
   connect( this, &QgsSymbolsListWidget::changed, this, &QgsSymbolsListWidget::updateAssistantSymbol );
@@ -405,7 +405,7 @@ void QgsSymbolsListWidget::addSymbolToStyle()
   mStyle->addSymbol( name, mSymbol->clone() );
 
   // make sure the symbol is stored
-  mStyle->saveSymbol( name, mSymbol->clone(), 0, QStringList() );
+  mStyle->saveSymbol( name, mSymbol->clone(), false, QStringList() );
   populateSymbolView();
 }
 
@@ -537,7 +537,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
     if ( mLayer )
     {
       QgsProperty dd( lineSymbol->dataDefinedWidth() );
-      mWidthDDBtn->init( QgsSymbolLayer::PropertyOutlineWidth, dd, QgsSymbolLayer::propertyDefinitions(), mLayer );
+      mWidthDDBtn->init( QgsSymbolLayer::PropertyStrokeWidth, dd, QgsSymbolLayer::propertyDefinitions(), mLayer );
       spinWidth->setEnabled( !mWidthDDBtn->isActive() );
     }
     else

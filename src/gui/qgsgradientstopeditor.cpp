@@ -307,7 +307,6 @@ int QgsGradientStopEditor::findClosestStop( int x, int threshold ) const
   if (( threshold < 0 || currentDiff < threshold ) && currentDiff < closestDiff )
   {
     closestStop = mGradient.count() - 1;
-    closestDiff = currentDiff;
   }
 
   return closestStop;

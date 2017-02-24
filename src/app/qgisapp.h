@@ -168,14 +168,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     @param dataSourceType type of ogr datasource
      @returns true if successfully added layer
      */
-    bool addVectorLayers( const QStringList &theLayerQStringList, const QString &enc, const QString &dataSourceType );
+    bool addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType );
 
     /** Overloaded vesion of the private addRasterLayer()
       Method that takes a list of file names instead of prompting
       user with a dialog.
       @returns true if successfully added layer(s)
       */
-    bool addRasterLayers( const QStringList &theLayerQStringList, bool guiWarning = true );
+    bool addRasterLayers( const QStringList &layerQStringList, bool guiWarning = true );
 
     /** Open a raster layer for the given file
       @returns false if unable to open a raster layer for rasterFile
@@ -190,10 +190,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QString crsAndFormatAdjustedLayerUri( const QString& uri, const QStringList& supportedCrs, const QStringList& supportedFormats ) const;
 
     //! Add a 'pre-made' map layer to the project
-    void addMapLayer( QgsMapLayer *theMapLayer );
+    void addMapLayer( QgsMapLayer *mapLayer );
 
     //! Set the extents of the map canvas
-    void setExtent( const QgsRectangle& theRect );
+    void setExtent( const QgsRectangle& rect );
     //! Remove all layers from the map and legend - reimplements same method from qgisappbase
     void removeAllLayers();
 
@@ -645,7 +645,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! copies features on the clipboard to a new vector layer
     void pasteAsNewVector();
     //! copies features on the clipboard to a new memory vector layer
-    QgsVectorLayer *pasteAsNewMemoryVector( const QString & theLayerName = QString() );
+    QgsVectorLayer *pasteAsNewMemoryVector( const QString & layerName = QString() );
     //! copies style of the active layer to the clipboard
 
     /**
@@ -789,7 +789,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Store the position for map tool tip
     void saveLastMousePosition( const QgsPoint & );
     //! Slot to show current map scale;
-    void showScale( double theScale );
+    void showScale( double scale );
     //! Slot to handle user rotation input;
     //! @note added in 2.8
     void userRotation();
@@ -999,7 +999,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Create a new blank project (no template)
     void fileNewBlank();
     //! As above but allows forcing without prompt and forcing blank project
-    void fileNew( bool thePromptToSaveFlag, bool forceBlank = false );
+    void fileNew( bool promptToSaveFlag, bool forceBlank = false );
     //! What type of project to open after launch
     void fileOpenAfterLaunch();
     //! After project read, set any auto-opened project as successful
@@ -1186,15 +1186,15 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void selectionChanged( QgsMapLayer *layer );
 
-    void showProgress( int theProgress, int theTotalSteps );
+    void showProgress( int progress, int totalSteps );
     void extentChanged();
     void showRotation();
-    void showStatusMessage( const QString& theMessage );
+    void showStatusMessage( const QString& message );
     void displayMapToolMessage( const QString& message, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO );
     void displayMessage( const QString& title, const QString& message, QgsMessageBar::MessageLevel level );
     void removeMapToolMessage();
     void updateMouseCoordinatePrecision();
-    void hasCrsTransformEnabled( bool theFlag );
+    void hasCrsTransformEnabled( bool flag );
     void destinationCrsChanged();
     //    void debugHook();
     //! Add a Layer Definition file
@@ -1462,7 +1462,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** Add a raster layer to the map (passed in as a ptr).
      * It won't force a refresh.
      */
-    bool addRasterLayer( QgsRasterLayer * theRasterLayer );
+    bool addRasterLayer( QgsRasterLayer * rasterLayer );
 
     //! Open a raster layer - this is the generic function which takes all parameters
     QgsRasterLayer* addRasterLayerPrivate( const QString & uri, const QString & baseName,
@@ -1526,13 +1526,16 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void createDecorations();
 
     //! Do histogram stretch for singleband gray / multiband color rasters
-    void histogramStretch( bool visibleAreaOnly = false, QgsRasterMinMaxOrigin::Limits theLimits = QgsRasterMinMaxOrigin::MinMax );
+    void histogramStretch( bool visibleAreaOnly = false, QgsRasterMinMaxOrigin::Limits limits = QgsRasterMinMaxOrigin::MinMax );
 
     //! Apply raster brightness
     void adjustBrightnessContrast( int delta, bool updateBrightness = true );
 
     //! Copy a vector style from a layer to another one, if they have the same geometry type
     void duplicateVectorStyle( QgsVectorLayer* srcLayer, QgsVectorLayer* destLayer );
+
+    //! Loads the list of recent projects from settings
+    void readRecentProjects();
 
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
 

@@ -233,7 +233,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @see layers()
      * @see keepLayerSet()
      */
-    void setLayers( const QList<QgsMapLayer*> layers );
+    void setLayers( const QList<QgsMapLayer*>& layers );
 
     //! Getter for flag that determines if current styles of layers should be overridden by previously stored styles. @note added in 2.8
     bool keepLayerStyles() const { return mKeepLayerStyles; }
@@ -330,8 +330,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     //! In case of annotations, the bounding rectangle can be larger than the map item rectangle
     QRectF boundingRect() const override;
 
-    /* reimplement setFrameOutlineWidth, so that updateBoundingRect() is called after setting the frame width */
-    virtual void setFrameOutlineWidth( const double outlineWidth ) override;
+    /* reimplement setFrameStrokeWidth, so that updateBoundingRect() is called after setting the frame width */
+    virtual void setFrameStrokeWidth( const double strokeWidth ) override;
 
     /** Sets rotation for the map - this does not affect the composer item shape, only the
      * way the map is drawn within the item

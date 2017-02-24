@@ -32,10 +32,10 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
     , mFeedback( new Feedback( this ) )
 {
   mPainter = rendererContext.painter();
-  const QgsMapToPixel& theQgsMapToPixel = rendererContext.mapToPixel();
-  mMapToPixel = &theQgsMapToPixel;
+  const QgsMapToPixel& qgsMapToPixel = rendererContext.mapToPixel();
+  mMapToPixel = &qgsMapToPixel;
 
-  QgsMapToPixel mapToPixel = theQgsMapToPixel;
+  QgsMapToPixel mapToPixel = qgsMapToPixel;
   if ( mapToPixel.mapRotation() )
   {
     // unset rotation for the sake of local computations.

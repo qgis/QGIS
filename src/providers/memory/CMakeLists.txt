@@ -18,6 +18,14 @@ TARGET_LINK_LIBRARIES(memoryprovider
   qgis_core
 )
 
+# clang-tidy
+IF(CLANG_TIDY_EXE)
+  SET_TARGET_PROPERTIES(
+    memoryprovider PROPERTIES
+    CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
+  )
+ENDIF(CLANG_TIDY_EXE)
+
 
 INSTALL (TARGETS memoryprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}

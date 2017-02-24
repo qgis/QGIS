@@ -72,11 +72,11 @@ QgsGeorefDockWidget::QgsGeorefDockWidget( const QString & title, QWidget * paren
   setObjectName( QStringLiteral( "GeorefDockWidget" ) ); // set object name so the position can be saved
 }
 
-QgsGeorefPluginGui::QgsGeorefPluginGui( QgisInterface* theQgisInterface, QWidget* parent, Qt::WindowFlags fl )
+QgsGeorefPluginGui::QgsGeorefPluginGui( QgisInterface* qgisInterface, QWidget* parent, Qt::WindowFlags fl )
     : QMainWindow( parent, fl )
     , mMousePrecisionDecimalPlaces( 0 )
     , mTransformParam( QgsGeorefTransform::InvalidTransform )
-    , mIface( theQgisInterface )
+    , mIface( qgisInterface )
     , mLayer( nullptr )
     , mAgainAddRaster( false )
     , mMovingPoint( nullptr )
@@ -834,9 +834,9 @@ void QgsGeorefPluginGui::extentsChanged()
 }
 
 // Registry layer QGis
-void QgsGeorefPluginGui::layerWillBeRemoved( const QString& theLayerId )
+void QgsGeorefPluginGui::layerWillBeRemoved( const QString& layerId )
 {
-  mAgainAddRaster = mLayer && mLayer->id().compare( theLayerId ) == 0;
+  mAgainAddRaster = mLayer && mLayer->id().compare( layerId ) == 0;
 }
 
 // ------------------------------ private ---------------------------------- //
@@ -2097,27 +2097,27 @@ QString QgsGeorefPluginGui::guessWorldFileName( const QString &rasterFileName )
 
 // Note this code is duplicated from qgisapp.cpp because
 // I didn't want to make plugins on qgsapplication [TS]
-QIcon QgsGeorefPluginGui::getThemeIcon( const QString &theName )
+QIcon QgsGeorefPluginGui::getThemeIcon( const QString &name )
 {
-  if ( QFile::exists( QgsApplication::activeThemePath() + theName ) )
+  if ( QFile::exists( QgsApplication::activeThemePath() + name ) )
   {
-    return QIcon( QgsApplication::activeThemePath() + theName );
+    return QIcon( QgsApplication::activeThemePath() + name );
   }
-  else if ( QFile::exists( QgsApplication::defaultThemePath() + theName ) )
+  else if ( QFile::exists( QgsApplication::defaultThemePath() + name ) )
   {
-    return QIcon( QgsApplication::defaultThemePath() + theName );
+    return QIcon( QgsApplication::defaultThemePath() + name );
   }
   else
   {
     QSettings settings;
-    QString themePath = ":/icons/" + settings.value( QStringLiteral( "/Themes" ) ).toString() + theName;
+    QString themePath = ":/icons/" + settings.value( QStringLiteral( "/Themes" ) ).toString() + name;
     if ( QFile::exists( themePath ) )
     {
       return QIcon( themePath );
     }
     else
     {
-      return QIcon( ":/icons/default" + theName );
+      return QIcon( ":/icons/default" + name );
     }
   }
 }

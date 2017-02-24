@@ -55,16 +55,13 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateTransform& o 
   d = o.d;
 }
 
-QgsCoordinateTransform& QgsCoordinateTransform::operator=( const QgsCoordinateTransform & o )
+QgsCoordinateTransform& QgsCoordinateTransform::operator=( const QgsCoordinateTransform & o ) //NOLINT
 {
   d = o.d;
   return *this;
 }
 
-QgsCoordinateTransform::~QgsCoordinateTransform()
-{
-
-}
+QgsCoordinateTransform::~QgsCoordinateTransform() {} //NOLINT
 
 void QgsCoordinateTransform::setSourceCrs( const QgsCoordinateReferenceSystem& crs )
 {
@@ -89,14 +86,14 @@ QgsCoordinateReferenceSystem QgsCoordinateTransform::destinationCrs() const
   return d->mDestCRS;
 }
 
-QgsPoint QgsCoordinateTransform::transform( const QgsPoint &thePoint, TransformDirection direction ) const
+QgsPoint QgsCoordinateTransform::transform( const QgsPoint &point, TransformDirection direction ) const
 {
   if ( !d->mIsValid || d->mShortCircuit )
-    return thePoint;
+    return point;
 
   // transform x
-  double x = thePoint.x();
-  double y = thePoint.y();
+  double x = point.x();
+  double y = point.y();
   double z = 0.0;
   try
   {
@@ -127,15 +124,15 @@ QgsPoint QgsCoordinateTransform::transform( const double theX, const double theY
   }
 }
 
-QgsRectangle QgsCoordinateTransform::transform( const QgsRectangle &theRect, TransformDirection direction ) const
+QgsRectangle QgsCoordinateTransform::transform( const QgsRectangle &rect, TransformDirection direction ) const
 {
   if ( !d->mIsValid || d->mShortCircuit )
-    return theRect;
+    return rect;
   // transform x
-  double x1 = theRect.xMinimum();
-  double y1 = theRect.yMinimum();
-  double x2 = theRect.xMaximum();
-  double y2 = theRect.yMaximum();
+  double x1 = rect.xMinimum();
+  double y1 = rect.yMinimum();
+  double x2 = rect.xMaximum();
+  double y2 = rect.yMaximum();
 
   // Number of points to reproject------+
   //                                    |
@@ -155,10 +152,10 @@ QgsRectangle QgsCoordinateTransform::transform( const QgsRectangle &theRect, Tra
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
   QgsDebugMsg( "Rect projection..." );
-  QgsDebugMsg( QString( "Xmin : %1 --> %2" ).arg( theRect.xMinimum() ).arg( x1 ) );
-  QgsDebugMsg( QString( "Ymin : %1 --> %2" ).arg( theRect.yMinimum() ).arg( y1 ) );
-  QgsDebugMsg( QString( "Xmax : %1 --> %2" ).arg( theRect.xMaximum() ).arg( x2 ) );
-  QgsDebugMsg( QString( "Ymax : %1 --> %2" ).arg( theRect.yMaximum() ).arg( y2 ) );
+  QgsDebugMsg( QString( "Xmin : %1 --> %2" ).arg( rect.xMinimum() ).arg( x1 ) );
+  QgsDebugMsg( QString( "Ymin : %1 --> %2" ).arg( rect.yMinimum() ).arg( y1 ) );
+  QgsDebugMsg( QString( "Xmax : %1 --> %2" ).arg( rect.xMaximum() ).arg( x2 ) );
+  QgsDebugMsg( QString( "Ymax : %1 --> %2" ).arg( rect.yMaximum() ).arg( y2 ) );
 #endif
   return QgsRectangle( x1, y1, x2, y2 );
 }
@@ -567,37 +564,37 @@ bool QgsCoordinateTransform::isShortCircuited() const
   return !d->mIsValid || d->mShortCircuit;
 }
 
-bool QgsCoordinateTransform::readXml( const QDomNode & theNode )
+bool QgsCoordinateTransform::readXml( const QDomNode & node )
 {
   d.detach();
 
   QgsDebugMsg( "Reading Coordinate Transform from xml ------------------------!" );
 
-  QDomNode mySrcNode = theNode.namedItem( QStringLiteral( "sourcesrs" ) );
+  QDomNode mySrcNode = node.namedItem( QStringLiteral( "sourcesrs" ) );
   d->mSourceCRS.readXml( mySrcNode );
 
-  QDomNode myDestNode = theNode.namedItem( QStringLiteral( "destinationsrs" ) );
+  QDomNode myDestNode = node.namedItem( QStringLiteral( "destinationsrs" ) );
   d->mDestCRS.readXml( myDestNode );
 
-  d->mSourceDatumTransform = theNode.toElement().attribute( QStringLiteral( "sourceDatumTransform" ), QStringLiteral( "-1" ) ).toInt();
-  d->mDestinationDatumTransform = theNode.toElement().attribute( QStringLiteral( "destinationDatumTransform" ), QStringLiteral( "-1" ) ).toInt();
+  d->mSourceDatumTransform = node.toElement().attribute( QStringLiteral( "sourceDatumTransform" ), QStringLiteral( "-1" ) ).toInt();
+  d->mDestinationDatumTransform = node.toElement().attribute( QStringLiteral( "destinationDatumTransform" ), QStringLiteral( "-1" ) ).toInt();
 
   return d->initialize();
 }
 
-bool QgsCoordinateTransform::writeXml( QDomNode & theNode, QDomDocument & theDoc ) const
+bool QgsCoordinateTransform::writeXml( QDomNode & node, QDomDocument & doc ) const
 {
-  QDomElement myNodeElement = theNode.toElement();
-  QDomElement myTransformElement = theDoc.createElement( QStringLiteral( "coordinatetransform" ) );
+  QDomElement myNodeElement = node.toElement();
+  QDomElement myTransformElement = doc.createElement( QStringLiteral( "coordinatetransform" ) );
   myTransformElement.setAttribute( QStringLiteral( "sourceDatumTransform" ), QString::number( d->mSourceDatumTransform ) );
   myTransformElement.setAttribute( QStringLiteral( "destinationDatumTransform" ), QString::number( d->mDestinationDatumTransform ) );
 
-  QDomElement mySourceElement = theDoc.createElement( QStringLiteral( "sourcesrs" ) );
-  d->mSourceCRS.writeXml( mySourceElement, theDoc );
+  QDomElement mySourceElement = doc.createElement( QStringLiteral( "sourcesrs" ) );
+  d->mSourceCRS.writeXml( mySourceElement, doc );
   myTransformElement.appendChild( mySourceElement );
 
-  QDomElement myDestElement = theDoc.createElement( QStringLiteral( "destinationsrs" ) );
-  d->mDestCRS.writeXml( myDestElement, theDoc );
+  QDomElement myDestElement = doc.createElement( QStringLiteral( "destinationsrs" ) );
+  d->mDestCRS.writeXml( myDestElement, doc );
   myTransformElement.appendChild( myDestElement );
 
   myNodeElement.appendChild( myTransformElement );
@@ -690,7 +687,7 @@ QList< QList< int > > QgsCoordinateTransform::datumTransformations( const QgsCoo
 void QgsCoordinateTransform::searchDatumTransform( const QString& sql, QList< int >& transforms )
 {
   sqlite3* db = nullptr;
-  int openResult = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().constData(), &db, SQLITE_OPEN_READONLY, 0 );
+  int openResult = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().constData(), &db, SQLITE_OPEN_READONLY, nullptr );
   if ( openResult != SQLITE_OK )
   {
     sqlite3_close( db );
@@ -724,7 +721,7 @@ QString QgsCoordinateTransform::datumTransformString( int datumTransform )
 bool QgsCoordinateTransform::datumTransformCrsInfo( int datumTransform, int& epsgNr, QString& srcProjection, QString& dstProjection, QString &remarks, QString &scope, bool &preferred, bool &deprecated )
 {
   sqlite3* db = nullptr;
-  int openResult = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().constData(), &db, SQLITE_OPEN_READONLY, 0 );
+  int openResult = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().constData(), &db, SQLITE_OPEN_READONLY, nullptr );
   if ( openResult != SQLITE_OK )
   {
     sqlite3_close( db );

@@ -87,7 +87,6 @@ from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 from .SelectByLocation import SelectByLocation
 from .Union import Union
 from .DensifyGeometriesInterval import DensifyGeometriesInterval
-from .Eliminate import Eliminate
 from .SpatialJoin import SpatialJoin
 from .DeleteColumn import DeleteColumn
 from .DeleteHoles import DeleteHoles
@@ -186,6 +185,8 @@ from .Polygonize import Polygonize
 from .FixGeometry import FixGeometry
 from .ExecuteSQL import ExecuteSQL
 from .FindProjection import FindProjection
+from .TopoColors import TopoColor
+from .EliminateSelection import EliminateSelection
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -207,7 +208,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         DensifyGeometries(), DensifyGeometriesInterval(),
                         MultipartToSingleparts(), SinglePartsToMultiparts(),
                         PolygonsToLines(), LinesToPolygons(), ExtractNodes(),
-                        Eliminate(), ConvexHull(), FixedDistanceBuffer(),
+                        ConvexHull(), FixedDistanceBuffer(),
                         VariableDistanceBuffer(), Dissolve(), Difference(),
                         Intersection(), Union(), Clip(), ExtentFromLayer(),
                         RandomSelection(), RandomSelectionWithinSubsets(),
@@ -255,7 +256,8 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         ShortestPathPointToPoint(), ShortestPathPointToLayer(),
                         ShortestPathLayerToPoint(), ServiceAreaFromPoint(),
                         ServiceAreaFromLayer(), TruncateTable(), Polygonize(),
-                        FixGeometry(), ExecuteSQL(), FindProjection()
+                        FixGeometry(), ExecuteSQL(), FindProjection(),
+                        TopoColor(), EliminateSelection()
                         ]
 
         if hasPlotly:

@@ -554,12 +554,12 @@ namespace QgsWms
   {
     QStringList layersList, stylesList, layerIdList;
     QgsMapSettings mapSettings;
-    QImage* theImage = initializeRendering( layersList, stylesList, layerIdList, mapSettings );
-    if ( !theImage )
+    QImage* image = initializeRendering( layersList, stylesList, layerIdList, mapSettings );
+    if ( !image )
     {
       return nullptr;
     }
-    delete theImage;
+    delete image;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers() )
@@ -709,7 +709,7 @@ namespace QgsWms
                                     QStringLiteral( "The requested map size is too large" ) );
     }
     QStringList layersList, stylesList, layerIdList;
-    QImage* theImage = initializeRendering( layersList, stylesList, layerIdList, mapSettings );
+    QImage* image = initializeRendering( layersList, stylesList, layerIdList, mapSettings );
 
     QStringList layerSetIds = mapSettings.layerIds();
 
@@ -763,14 +763,14 @@ namespace QgsWms
       mAccessControl->resolveFilterFeatures( mapSettings.layers() );
 #endif
       QgsMapRendererJobProxy renderJob( mSettings.parallelRendering(), mSettings.maxThreads(), mAccessControl );
-      renderJob.render( mapSettings, theImage );
+      renderJob.render( mapSettings, image );
       painter.reset( renderJob.takePainter() );
     }
 
     if ( mConfigParser )
     {
       //draw configuration format specific overlay items
-      mConfigParser->drawOverlays( painter.get(), theImage->dotsPerMeterX() / 1000.0 * 25.4, theImage->width(), theImage->height() );
+      mConfigParser->drawOverlays( painter.get(), image->dotsPerMeterX() / 1000.0 * 25.4, image->width(), image->height() );
     }
 
     restoreOpacities( bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
@@ -785,13 +785,13 @@ namespace QgsWms
     //test if width / height ratio of image is the same as the ratio of WIDTH / HEIGHT parameters. If not, the image has to be scaled (required by WMS spec)
     int widthParam = mParameters.value( "WIDTH", "0" ).toInt();
     int heightParam = mParameters.value( "HEIGHT", "0" ).toInt();
-    if ( widthParam != theImage->width() || heightParam != theImage->height() )
+    if ( widthParam != image->width() || heightParam != image->height() )
     {
       //scale image
-      *theImage = theImage->scaled( widthParam, heightParam, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
+      *image = image->scaled( widthParam, heightParam, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
     }
 
-    return theImage;
+    return image;
   }
 
   static void infoPointToMapCoordinates( int i, int j, QgsPoint* infoPoint, const QgsMapSettings& mapSettings )
@@ -1151,14 +1151,14 @@ namespace QgsWms
       }
     }
 
-    std::unique_ptr<QImage> theImage( createImage() );
+    std::unique_ptr<QImage> image( createImage() );
 
-    configureMapSettings( theImage.get(), mapSettings );
+    configureMapSettings( image.get(), mapSettings );
 
     //find out the current scale denominater and set it to the SLD parser
-    QgsScaleCalculator scaleCalc(( theImage->logicalDpiX() + theImage->logicalDpiY() ) / 2, mapSettings.destinationCrs().mapUnits() );
+    QgsScaleCalculator scaleCalc(( image->logicalDpiX() + image->logicalDpiY() ) / 2, mapSettings.destinationCrs().mapUnits() );
     QgsRectangle mapExtent = mapSettings.extent();
-    mConfigParser->setScaleDenominator( scaleCalc.calculate( mapExtent, theImage->width() ) );
+    mConfigParser->setScaleDenominator( scaleCalc.calculate( mapExtent, image->width() ) );
 
     layerIdList = layerSet( layersList, stylesList, mapSettings.destinationCrs() );
 #ifdef QGISDEBUG
@@ -1175,7 +1175,7 @@ namespace QgsWms
     // load label settings
     mConfigParser->loadLabelSettings();
 
-    return theImage.release();
+    return image.release();
   }
 
   QImage* QgsRenderer::createImage( int width, int height, bool useBbox ) const
@@ -1241,7 +1241,7 @@ namespace QgsWms
       throw QgsException( QStringLiteral( "createImage: Invalid width / height parameters" ) );
     }
 
-    QImage* theImage = nullptr;
+    QImage* image = nullptr;
 
     //Define the image background color in case of map settings is not used
     //is format jpeg?
@@ -1269,13 +1269,13 @@ namespace QgsWms
     //use alpha channel only if necessary because it slows down performance
     if ( transparent && !jpeg )
     {
-      theImage = new QImage( width, height, QImage::Format_ARGB32_Premultiplied );
-      theImage->fill( 0 );
+      image = new QImage( width, height, QImage::Format_ARGB32_Premultiplied );
+      image->fill( 0 );
     }
     else
     {
-      theImage = new QImage( width, height, QImage::Format_RGB32 );
-      theImage->fill( backgroundColor );
+      image = new QImage( width, height, QImage::Format_RGB32 );
+      image->fill( backgroundColor );
     }
 
     //apply DPI parameter if present. This is an extension of Qgis Mapserver compared to WMS 1.3.
@@ -1290,9 +1290,9 @@ namespace QgsWms
         dpm = dpi / 0.0254;
       }
     }
-    theImage->setDotsPerMeterX( dpm );
-    theImage->setDotsPerMeterY( dpm );
-    return theImage;
+    image->setDotsPerMeterX( dpm );
+    image->setDotsPerMeterY( dpm );
+    return image;
   }
 
   void QgsRenderer::configureMapSettings( const QPaintDevice* paintDevice, QgsMapSettings& mapSettings ) const
@@ -1402,16 +1402,16 @@ namespace QgsWms
     if ( !xml.isEmpty() )
     {
       //ignore LAYERS and STYLES and take those information from the SLD
-      std::unique_ptr<QDomDocument> theDocument( new QDomDocument( QStringLiteral( "user.sld" ) ) );
+      std::unique_ptr<QDomDocument> document( new QDomDocument( QStringLiteral( "user.sld" ) ) );
       QString errorMsg;
       int errorLine, errorColumn;
 
-      if ( !theDocument->setContent( xml, true, &errorMsg, &errorLine, &errorColumn ) )
+      if ( !document->setContent( xml, true, &errorMsg, &errorLine, &errorColumn ) )
       {
         throw QgsException( QStringLiteral( "SLDParser: Could not create DomDocument from SLD: %1" ).arg( errorMsg ) );
       }
 
-      QgsSLDConfigParser* userSLDParser = new QgsSLDConfigParser( theDocument.release(), mParameters );
+      QgsSLDConfigParser* userSLDParser = new QgsSLDConfigParser( document.release(), mParameters );
       userSLDParser->setFallbackParser( mConfigParser );
       mConfigParser = userSLDParser;
       mOwnsConfigParser = true;
@@ -1766,7 +1766,7 @@ namespace QgsWms
     QStringList layerKeys;
     QStringList::const_iterator llstIt;
     QStringList::const_iterator slstIt;
-    QgsMapLayer* theMapLayer = nullptr;
+    QgsMapLayer* mapLayer = nullptr;
     QgsMessageLog::logMessage( QStringLiteral( "Calculating layerset using %1 layers, %2 styles and CRS %3" ).arg( layersList.count() ).arg( stylesList.count() ).arg( destCRS.description() ) );
     for ( llstIt = layersList.begin(), slstIt = stylesList.begin(); llstIt != layersList.end(); ++llstIt )
     {
@@ -1791,23 +1791,23 @@ namespace QgsWms
 
       for ( listIndex = layerList.size() - 1; listIndex >= 0; listIndex-- )
       {
-        theMapLayer = layerList.at( listIndex );
-        if ( theMapLayer )
+        mapLayer = layerList.at( listIndex );
+        if ( mapLayer )
         {
-          QString lName =  theMapLayer->name();
+          QString lName =  mapLayer->name();
           if ( mConfigParser->useLayerIds() )
-            lName = theMapLayer->id();
-          else if ( !theMapLayer->shortName().isEmpty() )
-            lName = theMapLayer->shortName();
+            lName = mapLayer->id();
+          else if ( !mapLayer->shortName().isEmpty() )
+            lName = mapLayer->shortName();
           QgsMessageLog::logMessage( QStringLiteral( "Checking layer: %1" ).arg( lName ) );
           //test if layer is visible in requested scale
-          bool useScaleConstraint = ( scaleDenominator > 0 && theMapLayer->hasScaleBasedVisibility() );
+          bool useScaleConstraint = ( scaleDenominator > 0 && mapLayer->hasScaleBasedVisibility() );
           if ( !useScaleConstraint ||
-               ( theMapLayer->minimumScale() <= scaleDenominator && theMapLayer->maximumScale() >= scaleDenominator ) )
+               ( mapLayer->minimumScale() <= scaleDenominator && mapLayer->maximumScale() >= scaleDenominator ) )
           {
-            layerKeys.push_front( theMapLayer->id() );
+            layerKeys.push_front( mapLayer->id() );
             QgsProject::instance()->addMapLayers(
-              QList<QgsMapLayer *>() << theMapLayer, false, false );
+              QList<QgsMapLayer *>() << mapLayer, false, false );
           }
         }
         else

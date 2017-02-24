@@ -1891,9 +1891,9 @@ void QgsOptions::on_mClearCache_clicked()
   QgsNetworkAccessManager::instance()->cache()->clear();
 }
 
-void QgsOptions::on_mOptionsStackedWidget_currentChanged( int theIndx )
+void QgsOptions::on_mOptionsStackedWidget_currentChanged( int indx )
 {
-  Q_UNUSED( theIndx );
+  Q_UNUSED( indx );
   // load gdal driver list when gdal tab is first opened
   if ( mOptionsStackedWidget->currentWidget()->objectName() == QLatin1String( "mOptionsPageGDAL" )
        && ! mLoadedGdalDriverList )

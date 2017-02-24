@@ -29,12 +29,12 @@
 #include "rulesDialog.h"
 #include "topolTest.h"
 
-rulesDialog::rulesDialog( const QMap<QString, TopologyRule>& testMap, QgisInterface *theQgisIface, QWidget *parent )
+rulesDialog::rulesDialog( const QMap<QString, TopologyRule>& testMap, QgisInterface *qgisIface, QWidget *parent )
     : QDialog( parent ), Ui::rulesDialog()
 {
   setupUi( this );
 
-  mQgisIface = theQgisIface;
+  mQgisIface = qgisIface;
 
   //setHorizontalHeaderItems();
   mRulesTable->hideColumn( 4 );

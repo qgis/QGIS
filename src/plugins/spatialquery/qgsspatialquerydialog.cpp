@@ -404,22 +404,22 @@ QgsVectorLayer * QgsSpatialQueryDialog::getLayerFromCombobox( bool isTarget, int
 
 QIcon QgsSpatialQueryDialog::getIconTypeGeometry( QgsWkbTypes::GeometryType geomType )
 {
-  QString theName;
+  QString name;
   if ( geomType == QgsWkbTypes::PointGeometry )
   {
-    theName = QStringLiteral( "/mIconPointLayer.svg" );
+    name = QStringLiteral( "/mIconPointLayer.svg" );
   }
   else if ( geomType == QgsWkbTypes::LineGeometry )
   {
-    theName = QStringLiteral( "/mIconLineLayer.svg" );
+    name = QStringLiteral( "/mIconLineLayer.svg" );
   }
   else // Polygon
   {
-    theName = QStringLiteral( "/mIconPolygonLayer.svg" );
+    name = QStringLiteral( "/mIconPolygonLayer.svg" );
   }
   // Copy from qgisapp.cpp
-  QString myPreferredPath = QgsApplication::activeThemePath() + QDir::separator() + theName;
-  QString myDefaultPath = QgsApplication::defaultThemePath() + QDir::separator() + theName;
+  QString myPreferredPath = QgsApplication::activeThemePath() + QDir::separator() + name;
+  QString myDefaultPath = QgsApplication::defaultThemePath() + QDir::separator() + name;
   if ( QFile::exists( myPreferredPath ) )
   {
     return QIcon( myPreferredPath );

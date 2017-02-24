@@ -467,7 +467,7 @@ QString QgsPostgresProvider::whereClause( QgsFeatureId featureId ) const
 }
 
 
-QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields& fields, QgsPostgresConn* conn, QgsPostgresPrimaryKeyType pkType, const QList<int>& pkAttrs, std::shared_ptr<QgsPostgresSharedData> sharedData )
+QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields& fields, QgsPostgresConn* conn, QgsPostgresPrimaryKeyType pkType, const QList<int>& pkAttrs, const std::shared_ptr<QgsPostgresSharedData>& sharedData )
 {
   QString whereClause;
 
@@ -532,7 +532,7 @@ QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields& 
   return whereClause;
 }
 
-QString QgsPostgresUtils::whereClause( const QgsFeatureIds& featureIds, const QgsFields& fields, QgsPostgresConn* conn, QgsPostgresPrimaryKeyType pkType, const QList<int>& pkAttrs, std::shared_ptr<QgsPostgresSharedData> sharedData )
+QString QgsPostgresUtils::whereClause( const QgsFeatureIds& featureIds, const QgsFields& fields, QgsPostgresConn* conn, QgsPostgresPrimaryKeyType pkType, const QList<int>& pkAttrs, const std::shared_ptr<QgsPostgresSharedData>& sharedData )
 {
   switch ( pkType )
   {
@@ -4249,9 +4249,9 @@ QGISEXTERN int dataCapabilities()
   return QgsDataProvider::Database;
 }
 
-QGISEXTERN QgsDataItem *dataItem( QString thePath, QgsDataItem *parentItem )
+QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 {
-  Q_UNUSED( thePath );
+  Q_UNUSED( path );
   return new QgsPGRootItem( parentItem, QStringLiteral( "PostGIS" ), QStringLiteral( "pg:" ) );
 }
 

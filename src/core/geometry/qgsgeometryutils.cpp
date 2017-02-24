@@ -23,6 +23,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include <QStringList>
 #include <QVector>
+#include <QRegularExpression>
 
 QList<QgsLineString*> QgsGeometryUtils::extractLineStrings( const QgsAbstractGeometry* geom )
 {
@@ -448,25 +449,11 @@ bool QgsGeometryUtils::circleClockwise( double angle1, double angle2, double ang
 {
   if ( angle3 >= angle1 )
   {
-    if ( angle2 > angle1 && angle2 < angle3 )
-    {
-      return false;
-    }
-    else
-    {
-      return true;
-    }
+    return !( angle2 > angle1 && angle2 < angle3 );
   }
   else
   {
-    if ( angle2 > angle1 || angle2 < angle3 )
-    {
-      return false;
-    }
-    else
-    {
-      return true;
-    }
+    return !( angle2 > angle1 || angle2 < angle3 );
   }
 }
 
@@ -616,9 +603,10 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
   //first scan through for extra unexpected dimensions
   bool foundZ = false;
   bool foundM = false;
+  QRegularExpression rx( "\\s" );
   Q_FOREACH ( const QString& pointCoordinates, coordList )
   {
-    QStringList coordinates = pointCoordinates.split( ' ', QString::SkipEmptyParts );
+    QStringList coordinates = pointCoordinates.split( rx, QString::SkipEmptyParts );
     if ( coordinates.size() == 3 && !foundZ && !foundM && !is3D && !isMeasure )
     {
       // 3 dimensional coordinates, but not specifically marked as such. We allow this
@@ -636,7 +624,7 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
 
   Q_FOREACH ( const QString& pointCoordinates, coordList )
   {
-    QStringList coordinates = pointCoordinates.split( ' ', QString::SkipEmptyParts );
+    QStringList coordinates = pointCoordinates.split( rx, QString::SkipEmptyParts );
     if ( coordinates.size() < dim )
       continue;
 
@@ -778,8 +766,10 @@ QPair<QgsWkbTypes::Type, QString> QgsGeometryUtils::wktReadBlock( const QString 
 {
   QgsWkbTypes::Type wkbType = QgsWkbTypes::parseType( wkt );
 
-  QRegExp cooRegEx( "^[^\\(]*\\((.*)\\)[^\\)]*$" );
-  QString contents = cooRegEx.indexIn( wkt ) >= 0 ? cooRegEx.cap( 1 ) : QString();
+  QRegularExpression cooRegEx( "^[^\\(]*\\((.*)\\)[^\\)]*$" );
+  cooRegEx.setPatternOptions( QRegularExpression::DotMatchesEverythingOption );
+  QRegularExpressionMatch match = cooRegEx.match( wkt );
+  QString contents = match.hasMatch() ? match.captured( 1 ) : QString();
   return qMakePair( wkbType, contents );
 }
 
@@ -790,7 +780,7 @@ QStringList QgsGeometryUtils::wktGetChildBlocks( const QString &wkt, const QStri
   QStringList blocks;
   for ( int i = 0, n = wkt.length(); i < n; ++i )
   {
-    if ( wkt[i].isSpace() && level == 0 )
+    if (( wkt[i].isSpace() || wkt[i] == '\n' || wkt[i] == '\t' ) && level == 0 )
       continue;
 
     if ( wkt[i] == ',' && level == 0 )

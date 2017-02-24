@@ -24,6 +24,7 @@
 #include "qgsauthmanager.h"
 #include "qgsraster.h"
 #include "qgsrectangle.h"
+#include "qgsrasteriterator.h"
 
 class QNetworkReply;
 
@@ -566,6 +567,12 @@ class QgsWmsSettings
     int mMaxWidth;
     int mMaxHeight;
 
+    /**
+     * Step size when iterating the layer
+     */
+    int mStepWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
+    int mStepHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
+
     //! Data source URI of the WMS for this layer
     QString mHttpUri;
 
@@ -775,7 +782,7 @@ class QgsWmsCapabilitiesDownload : public QObject
 
   signals:
     //! \brief emit a signal to be caught by qgisapp and display a msg on status bar
-    void statusChanged( QString const &  theStatusQString );
+    void statusChanged( QString const &  statusQString );
 
     //! \brief emit a signal once the download is finished
     void downloadFinished();

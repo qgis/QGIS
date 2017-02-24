@@ -159,7 +159,7 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider* provider, Qgs
       upsdnlabels = pal::Layer::ShowAll;
       break;
     default:
-      Q_ASSERT( "unsupported upside-down label setting" && 0 );
+      Q_ASSERT( "unsupported upside-down label setting" && false );
       return;
   }
   l->setUpsidedownLabels( upsdnlabels );

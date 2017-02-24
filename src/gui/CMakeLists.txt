@@ -193,6 +193,7 @@ SET(QGIS_GUI_SRCS
   qgscredentialdialog.cpp
   qgscursors.cpp
   qgscustomdrophandler.cpp
+  qgscurveeditorwidget.cpp
   qgsdatumtransformdialog.cpp
   qgsdetaileditemdata.cpp
   qgsdetaileditemdelegate.cpp
@@ -345,6 +346,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgscompoundcolorwidget.h
   qgsconfigureshortcutsdialog.h
   qgscredentialdialog.h
+  qgscurveeditorwidget.h
   qgsdatumtransformdialog.h
   qgsdetaileditemdelegate.h
   qgsdetaileditemwidget.h
@@ -827,6 +829,14 @@ IF(WIN32)
   ADD_DEFINITIONS(-DQWT_DLL)
   ADD_DEFINITIONS(-DQSCINTILLA_DLL)
 ENDIF(WIN32)
+
+# clang-tidy
+IF(CLANG_TIDY_EXE)
+  SET_TARGET_PROPERTIES(
+    qgis_gui PROPERTIES
+    CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
+  )
+ENDIF(CLANG_TIDY_EXE)
 
 # install
 

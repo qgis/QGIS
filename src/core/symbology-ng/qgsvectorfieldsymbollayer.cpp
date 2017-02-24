@@ -34,11 +34,6 @@ QgsVectorFieldSymbolLayer::QgsVectorFieldSymbolLayer()
   setSubSymbol( new QgsLineSymbol() );
 }
 
-QgsVectorFieldSymbolLayer::~QgsVectorFieldSymbolLayer()
-{
-  delete mLineSymbol;
-}
-
 void QgsVectorFieldSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   QgsMarkerSymbolLayer::setOutputUnit( unit );
@@ -135,8 +130,7 @@ bool QgsVectorFieldSymbolLayer::setSubSymbol( QgsSymbol* symbol )
 {
   if ( symbol->type() == QgsSymbol::Line )
   {
-    delete mLineSymbol;
-    mLineSymbol = static_cast<QgsLineSymbol*>( symbol );
+    mLineSymbol.reset( static_cast<QgsLineSymbol*>( symbol ) );
     return true;
   }
   return false;

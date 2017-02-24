@@ -187,14 +187,14 @@ void QgsAuthBasicMethod::removeMethodConfig( const QString &authcfg )
   }
 }
 
-QString QgsAuthBasicMethod::escapeUserPass( const QString &theVal, QChar delim ) const
+QString QgsAuthBasicMethod::escapeUserPass( const QString &val, QChar delim ) const
 {
-  QString val = theVal;
+  QString escaped = val;
 
-  val.replace( '\\', QLatin1String( "\\\\" ) );
-  val.replace( delim, QStringLiteral( "\\%1" ).arg( delim ) );
+  escaped.replace( '\\', QLatin1String( "\\\\" ) );
+  escaped.replace( delim, QStringLiteral( "\\%1" ).arg( delim ) );
 
-  return val;
+  return escaped;
 }
 
 //////////////////////////////////////////////

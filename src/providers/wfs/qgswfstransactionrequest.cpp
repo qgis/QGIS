@@ -16,8 +16,8 @@
 #include "qgswfstransactionrequest.h"
 #include "qgslogger.h"
 
-QgsWFSTransactionRequest::QgsWFSTransactionRequest( const QString& theUri )
-    : QgsWfsRequest( theUri )
+QgsWFSTransactionRequest::QgsWFSTransactionRequest( const QString& uri )
+    : QgsWfsRequest( uri )
 {
 }
 

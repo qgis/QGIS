@@ -305,7 +305,7 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, QString name, QS
   {
     QgsSimpleFillSymbolLayer *sfl = new QgsSimpleFillSymbolLayer();
     sfl->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromField( "color" ) );
-    sfl->setBorderStyle( Qt::NoPen );
+    sfl->setStrokeStyle( Qt::NoPen );
     sym = new QgsFillSymbol();
     sym->changeSymbolLayer( 0, sfl );
     l->setRenderer( new QgsSingleSymbolRenderer( sym ) );
@@ -315,9 +315,9 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, QString name, QS
   if ( l )
   {
     QgsSimpleLineSymbolLayer *sll = new QgsSimpleLineSymbolLayer();
-    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineColor, QgsProperty::fromField( "color" ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty::fromField( "color" ) );
     sll->setPenJoinStyle( Qt::MiterJoin );
-    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineWidth, QgsProperty::fromField( "linewidth" ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeWidth, QgsProperty::fromField( "linewidth" ) );
     // sll->setUseCustomDashPattern( true );
     // sll->setCustomDashPatternUnit( QgsSymbolV2::MapUnit );
     // sll->setDataDefinedProperty( QgsSymbolLayer::PropertyCustomDash, QgsProperty::fromField( "linetype" ) );
@@ -331,9 +331,9 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, QString name, QS
   if ( l )
   {
     QgsSimpleLineSymbolLayer *sll = new QgsSimpleLineSymbolLayer();
-    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineColor, QgsProperty::fromField( "color" ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty::fromField( "color" ) );
     sll->setPenJoinStyle( Qt::MiterJoin );
-    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineWidth, QgsProperty::fromField( "width" ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeWidth, QgsProperty::fromField( "width" ) );
     // sll->setUseCustomDashPattern( true );
     // sll->setCustomDashPatternUnit( QgsSymbolV2::MapUnit );
     // sll->setDataDefinedProperty( QgsSymbolLayer::PropertyCustomDash, QgsProperty::fromField( "linetype" ) );

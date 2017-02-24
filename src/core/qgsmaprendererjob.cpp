@@ -220,6 +220,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
   if ( mCache )
   {
     bool cacheValid = mCache->init( mSettings.visibleExtent(), mSettings.scale() );
+    Q_UNUSED( cacheValid );
     QgsDebugMsg( QString( "CACHE VALID: %1" ).arg( cacheValid ) );
   }
 

@@ -50,7 +50,7 @@ bool QgsDatumTransformStore::hasEntryForLayer( QgsMapLayer* layer ) const
   return mEntries.contains( layer->id() );
 }
 
-QgsCoordinateTransform QgsDatumTransformStore::transformation( QgsMapLayer* layer ) const
+QgsCoordinateTransform QgsDatumTransformStore::transformation( const QgsMapLayer* layer ) const
 {
   if ( !layer )
     return QgsCoordinateTransform();
@@ -102,14 +102,14 @@ void QgsDatumTransformStore::readXml( const QDomNode& parentNode )
   }
 }
 
-void QgsDatumTransformStore::writeXml( QDomNode& parentNode, QDomDocument& theDoc ) const
+void QgsDatumTransformStore::writeXml( QDomNode& parentNode, QDomDocument& doc ) const
 {
   // layer coordinate transform infos
-  QDomElement layerCoordTransformInfo = theDoc.createElement( QStringLiteral( "layer_coordinate_transform_info" ) );
+  QDomElement layerCoordTransformInfo = doc.createElement( QStringLiteral( "layer_coordinate_transform_info" ) );
 
   for ( QHash< QString, Entry >::const_iterator coordIt = mEntries.constBegin(); coordIt != mEntries.constEnd(); ++coordIt )
   {
-    QDomElement layerCoordTransformElem = theDoc.createElement( QStringLiteral( "layer_coordinate_transform" ) );
+    QDomElement layerCoordTransformElem = doc.createElement( QStringLiteral( "layer_coordinate_transform" ) );
     layerCoordTransformElem.setAttribute( QStringLiteral( "layerid" ), coordIt.key() );
     layerCoordTransformElem.setAttribute( QStringLiteral( "srcAuthId" ), coordIt->srcAuthId );
     layerCoordTransformElem.setAttribute( QStringLiteral( "destAuthId" ), coordIt->destAuthId );

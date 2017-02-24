@@ -48,11 +48,11 @@ class CORE_EXPORT QgsDatumTransformStore
      *  @returns transformation associated with layer, or an invalid QgsCoordinateTransform
      *  if no transform is associated with the layer
      */
-    QgsCoordinateTransform transformation( QgsMapLayer* layer ) const;
+    QgsCoordinateTransform transformation( const QgsMapLayer* layer ) const;
 
     void readXml( const QDomNode& parentNode );
 
-    void writeXml( QDomNode& parentNode, QDomDocument& theDoc ) const;
+    void writeXml( QDomNode& parentNode, QDomDocument& doc ) const;
 
     struct CORE_EXPORT Entry
     {

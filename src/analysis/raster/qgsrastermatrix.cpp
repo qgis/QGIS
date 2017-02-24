@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgsrastermatrix.h"
-#include <string.h>
+#include <cstring>
 #include <qmath.h>
 
 QgsRasterMatrix::QgsRasterMatrix()

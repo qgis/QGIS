@@ -217,6 +217,13 @@ ENDIF (NOT ANDROID)
 
 TARGET_LINK_LIBRARIES(qgis_analysis qgis_core)
 
+# clang-tidy
+IF(CLANG_TIDY_EXE)
+  SET_TARGET_PROPERTIES(
+    qgis_analysis PROPERTIES
+    CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
+  )
+ENDIF(CLANG_TIDY_EXE)
 
 # install
 

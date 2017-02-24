@@ -396,7 +396,6 @@ void QgsGraduatedSymbolRenderer::startRender( QgsRenderContext& context, const Q
 
     range.symbol()->startRender( context, fields );
   }
-  return;
 }
 
 void QgsGraduatedSymbolRenderer::stopRender( QgsRenderContext& context )
@@ -517,8 +516,7 @@ void QgsGraduatedSymbolRenderer::toSld( QDomDocument& doc, QDomElement &element,
   bool first = true;
   for ( QgsRangeList::const_iterator it = mRanges.constBegin(); it != mRanges.constEnd(); ++it )
   {
-    QgsStringMap catProps( newProps );
-    it->toSld( doc, element, catProps, first );
+    it->toSld( doc, element, newProps, first );
     first = false;
   }
 }

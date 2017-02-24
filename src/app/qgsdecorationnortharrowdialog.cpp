@@ -80,14 +80,14 @@ void QgsDecorationNorthArrowDialog::on_buttonBox_rejected()
 }
 
 
-void QgsDecorationNorthArrowDialog::on_spinAngle_valueChanged( int theInt )
+void QgsDecorationNorthArrowDialog::on_spinAngle_valueChanged( int spinAngle )
 {
-  Q_UNUSED( theInt );
+  Q_UNUSED( spinAngle );
 }
 
-void QgsDecorationNorthArrowDialog::on_sliderRotation_valueChanged( int theInt )
+void QgsDecorationNorthArrowDialog::on_sliderRotation_valueChanged( int rotationValue )
 {
-  rotatePixmap( theInt );
+  rotatePixmap( rotationValue );
 }
 
 void QgsDecorationNorthArrowDialog::apply()
@@ -102,7 +102,7 @@ void QgsDecorationNorthArrowDialog::apply()
   mDeco.update();
 }
 
-void QgsDecorationNorthArrowDialog::rotatePixmap( int theRotationInt )
+void QgsDecorationNorthArrowDialog::rotatePixmap( int rotationInt )
 {
   QPixmap myQPixmap;
   QString myFileNameQString = QStringLiteral( ":/images/north_arrows/default.png" );
@@ -123,11 +123,11 @@ void QgsDecorationNorthArrowDialog::rotatePixmap( int theRotationInt )
     //myQPainter.translate( (int)centerXDouble, (int)centerYDouble );
 
     //rotate the canvas
-    myQPainter.rotate( theRotationInt );
+    myQPainter.rotate( rotationInt );
     //work out how to shift the image so that it appears in the center of the canvas
     //(x cos a + y sin a - x, -x sin a + y cos a - y)
     const double PI = 3.14159265358979323846;
-    double myRadiansDouble = ( PI / 180 ) * theRotationInt;
+    double myRadiansDouble = ( PI / 180 ) * rotationInt;
     int xShift = static_cast<int>((
                                     ( centerXDouble * cos( myRadiansDouble ) ) +
                                     ( centerYDouble * sin( myRadiansDouble ) )
@@ -165,8 +165,8 @@ void QgsDecorationNorthArrowDialog::rotatePixmap( int theRotationInt )
 // Called when the widget has been resized.
 //
 
-void QgsDecorationNorthArrowDialog::resizeEvent( QResizeEvent *theResizeEvent )
+void QgsDecorationNorthArrowDialog::resizeEvent( QResizeEvent *resizeEvent )
 {
-  Q_UNUSED( theResizeEvent );
+  Q_UNUSED( resizeEvent );
   rotatePixmap( sliderRotation->value() );
 }

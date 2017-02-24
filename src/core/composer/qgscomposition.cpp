@@ -685,7 +685,7 @@ const QgsComposerMap* QgsComposition::getComposerMapById( const int id ) const
   return nullptr;
 }
 
-const QgsComposerItem* QgsComposition::getComposerItemById( const QString& theId ) const
+const QgsComposerItem* QgsComposition::getComposerItemById( const QString& id ) const
 {
   QList<QGraphicsItem *> itemList = items();
   QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
@@ -694,7 +694,7 @@ const QgsComposerItem* QgsComposition::getComposerItemById( const QString& theId
     const QgsComposerItem* mypItem = dynamic_cast<const QgsComposerItem *>( *itemIt );
     if ( mypItem )
     {
-      if ( mypItem->id() == theId )
+      if ( mypItem->id() == id )
       {
         return mypItem;
       }
@@ -704,7 +704,7 @@ const QgsComposerItem* QgsComposition::getComposerItemById( const QString& theId
 }
 
 #if 0
-const QgsComposerItem* QgsComposition::getComposerItemByUuid( QString theUuid, bool inAllComposers ) const
+const QgsComposerItem* QgsComposition::getComposerItemByUuid( QString uuid, bool inAllComposers ) const
 {
   //This does not work since it seems impossible to get the QgisApp::instance() from here... Is there a workaround ?
   QSet<QgsComposer*> composers = QSet<QgsComposer*>();
@@ -728,7 +728,7 @@ const QgsComposerItem* QgsComposition::getComposerItemByUuid( QString theUuid, b
       const QgsComposerItem* mypItem = dynamic_cast<const QgsComposerItem *>( *itemIt );
       if ( mypItem )
       {
-        if ( mypItem->uuid() == theUuid )
+        if ( mypItem->uuid() == uuid )
         {
           return mypItem;
         }
@@ -740,7 +740,7 @@ const QgsComposerItem* QgsComposition::getComposerItemByUuid( QString theUuid, b
 }
 #endif
 
-const QgsComposerItem* QgsComposition::getComposerItemByUuid( const QString& theUuid ) const
+const QgsComposerItem* QgsComposition::getComposerItemByUuid( const QString& uuid ) const
 {
   QList<QGraphicsItem *> itemList = items();
   QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
@@ -749,7 +749,7 @@ const QgsComposerItem* QgsComposition::getComposerItemByUuid( const QString& the
     const QgsComposerItem* mypItem = dynamic_cast<const QgsComposerItem *>( *itemIt );
     if ( mypItem )
     {
-      if ( mypItem->uuid() == theUuid )
+      if ( mypItem->uuid() == uuid )
       {
         return mypItem;
       }
@@ -979,7 +979,7 @@ bool QgsComposition::readXml( const QDomElement& compositionElem, const QDomDocu
   mPrintAsRaster = compositionElem.attribute( QStringLiteral( "printAsRaster" ) ).toInt();
   mPrintResolution = compositionElem.attribute( QStringLiteral( "printResolution" ), QStringLiteral( "300" ) ).toInt();
 
-  mGenerateWorldFile = compositionElem.attribute( QStringLiteral( "generateWorldFile" ), QStringLiteral( "0" ) ).toInt() == 1 ? true : false;
+  mGenerateWorldFile = compositionElem.attribute( QStringLiteral( "generateWorldFile" ), QStringLiteral( "0" ) ).toInt() == 1;
   mWorldFileMapId = compositionElem.attribute( QStringLiteral( "worldFileMap" ) );
 
   //data defined properties
@@ -2038,8 +2038,8 @@ QPointF QgsComposition::snapPointToGrid( QPointF scenePoint ) const
   double yPage = scenePoint.y() - yOffset; //y-coordinate relative to current page
 
   //snap x coordinate
-  int xRatio = static_cast< int >(( scenePoint.x() - mSnapGridOffsetX ) / mSnapGridResolution + 0.5 );
-  int yRatio = static_cast< int >(( yPage - mSnapGridOffsetY ) / mSnapGridResolution + 0.5 );
+  int xRatio = static_cast< int >(( scenePoint.x() - mSnapGridOffsetX ) / mSnapGridResolution + 0.5 ); //NOLINT
+  int yRatio = static_cast< int >(( yPage - mSnapGridOffsetY ) / mSnapGridResolution + 0.5 ); //NOLINT
 
   double xSnapped = xRatio * mSnapGridResolution + mSnapGridOffsetX;
   double ySnapped = yRatio * mSnapGridResolution + mSnapGridOffsetY + yOffset;

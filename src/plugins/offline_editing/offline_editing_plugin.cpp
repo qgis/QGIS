@@ -35,9 +35,9 @@ static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PluginType sPluginType = QgisPlugin::UI;
 static const QString sPluginIcon = QStringLiteral( ":/offline_editing/offline_editing_copy.png" );
 
-QgsOfflineEditingPlugin::QgsOfflineEditingPlugin( QgisInterface* theQgisInterface )
+QgsOfflineEditingPlugin::QgsOfflineEditingPlugin( QgisInterface* qgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
-    , mQGisIface( theQgisInterface )
+    , mQGisIface( qgisInterface )
     , mActionConvertProject( nullptr )
     , mActionSynchronize( nullptr )
     , mOfflineEditing( nullptr )
@@ -214,9 +214,9 @@ void QgsOfflineEditingPlugin::hideProgress()
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
+QGISEXTERN QgisPlugin * classFactory( QgisInterface * qgisInterfacePointer )
 {
-  return new QgsOfflineEditingPlugin( theQgisInterfacePointer );
+  return new QgsOfflineEditingPlugin( qgisInterfacePointer );
 }
 
 // Return the name of the plugin - note that we do not user class members as
@@ -256,7 +256,7 @@ QGISEXTERN QString icon()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * thePluginPointer )
+QGISEXTERN void unload( QgisPlugin * pluginPointer )
 {
-  delete thePluginPointer;
+  delete pluginPointer;
 }

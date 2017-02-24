@@ -58,7 +58,7 @@ class CORE_EXPORT QgsFeatureStore
     QgsFeatureList& features() { return mFeatures; }
 
     //! Set map of optional parameters
-    void setParams( const QMap<QString, QVariant> &theParams ) { mParams = theParams; }
+    void setParams( const QMap<QString, QVariant> &params ) { mParams = params; }
 
     //! Get map of optional parameters
     QMap<QString, QVariant> params() const { return mParams; }

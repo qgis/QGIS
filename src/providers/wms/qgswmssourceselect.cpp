@@ -75,6 +75,8 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WindowFlags fl, bo
 
   mTileWidth->setValidator( new QIntValidator( 0, 9999, this ) );
   mTileHeight->setValidator( new QIntValidator( 0, 9999, this ) );
+  mStepWidth->setValidator( new QIntValidator( 0, 999999, this ) );
+  mStepHeight->setValidator( new QIntValidator( 0, 999999, this ) );
   mFeatureCount->setValidator( new QIntValidator( 0, 9999, this ) );
 
   mImageFormatGroup = new QButtonGroup;
@@ -490,6 +492,12 @@ void QgsWMSSourceSelect::addClicked()
   {
     uri.setParam( QStringLiteral( "maxWidth" ), mTileWidth->text() );
     uri.setParam( QStringLiteral( "maxHeight" ), mTileHeight->text() );
+  }
+
+  if ( mStepWidth->text().toInt() > 0 && mStepHeight->text().toInt() > 0 )
+  {
+    uri.setParam( QStringLiteral( "stepWidth" ), mStepWidth->text() );
+    uri.setParam( QStringLiteral( "stepHeight" ), mStepHeight->text() );
   }
 
   if ( lstTilesets->selectedItems().isEmpty() )
@@ -1041,9 +1049,9 @@ void QgsWMSSourceSelect::setConnectionListPosition()
   }
 }
 
-void QgsWMSSourceSelect::showStatusMessage( QString const &theMessage )
+void QgsWMSSourceSelect::showStatusMessage( QString const &message )
 {
-  labelStatus->setText( theMessage );
+  labelStatus->setText( message );
 
   // update the display of this widget
   update();

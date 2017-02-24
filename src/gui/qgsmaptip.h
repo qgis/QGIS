@@ -59,15 +59,15 @@ class GUI_EXPORT QgsMapTip : public QWidget
     /** Show a maptip at a given point on the map canvas
      * @param thepLayer a qgis vector map layer pointer that will
      *        be used to provide the attribute data for the map tip.
-     * @param theMapPosition a reference to the position of the cursor
+     * @param mapPosition a reference to the position of the cursor
      *        in map coordinatess.
-     * @param thePixelPosition a reference to the position of the cursor
+     * @param pixelPosition a reference to the position of the cursor
      *        in pixel coordinates.
      * @param mpMapCanvas a map canvas on which the tip is drawn
      */
     void showMapTip( QgsMapLayer * thepLayer,
-                     QgsPoint & theMapPosition,
-                     QPoint & thePixelPosition,
+                     QgsPoint & mapPosition,
+                     QPoint & pixelPosition,
                      QgsMapCanvas *mpMapCanvas );
 
     /** Clear the current maptip if it exists
@@ -78,7 +78,7 @@ class GUI_EXPORT QgsMapTip : public QWidget
     // Fetch the feature to use for the maptip text.
     // Only the first feature in the search radius is used
     QString fetchFeature( QgsMapLayer * thepLayer,
-                          QgsPoint & theMapPosition,
+                          QgsPoint & mapPosition,
                           QgsMapCanvas *mapCanvas );
 
     QString replaceText(

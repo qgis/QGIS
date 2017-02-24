@@ -46,11 +46,11 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
     /**
      * Constructor
-     * @param theLayer layer pointer
+     * @param layer layer pointer
      * @param parent parent object
      * @param flags window flags
      */
-    QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::Window );
+    QgsAttributeTableDialog( QgsVectorLayer *layer, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::Window );
     ~QgsAttributeTableDialog();
 
     QgsExpressionContext createExpressionContext() const override;

@@ -29,7 +29,7 @@
 #include "qgsnewnamedialog.h"
 
 #include <QInputDialog>
-
+#include <QMessageBox>
 
 QgsMapThemes* QgsMapThemes::sInstance;
 
@@ -52,7 +52,7 @@ QgsMapThemes::QgsMapThemes()
 
   mActionRemoveCurrentPreset = mMenu->addAction( tr( "Remove Current Theme" ), this, SLOT( removeCurrentPreset() ) );
 
-  connect( mMenu, SIGNAL( aboutToShow() ), this, SLOT( menuAboutToShow() ) );
+  connect( mMenu, &QMenu::aboutToShow, this, &QgsMapThemes::menuAboutToShow );
 }
 
 
@@ -136,6 +136,12 @@ void QgsMapThemes::replaceTriggered()
   if ( !actionPreset )
     return;
 
+  int res = QMessageBox::question( mMenu, tr( "Replace theme" ),
+                                   trUtf8( "Are you sure you want to replace the existing theme “%1”?" ).arg( actionPreset->text() ),
+                                   QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+  if ( res != QMessageBox::Yes )
+    return;
+
   //adding preset with same name is effectively a replace
   addPreset( actionPreset->text() );
 }
@@ -183,11 +189,11 @@ void QgsMapThemes::menuAboutToShow()
       a->setChecked( true );
       hasCurrent = true;
     }
-    connect( a, SIGNAL( triggered() ), this, SLOT( presetTriggered() ) );
+    connect( a, &QAction::triggered, this, &QgsMapThemes::presetTriggered );
     mMenuPresetActions.append( a );
 
     QAction* replaceAction = new QAction( grpName, mReplaceMenu );
-    connect( replaceAction, SIGNAL( triggered() ), this, SLOT( replaceTriggered() ) );
+    connect( replaceAction, &QAction::triggered, this, &QgsMapThemes::replaceTriggered );
     mReplaceMenu->addAction( replaceAction );
   }
   mMenu->insertActions( mMenuSeparator, mMenuPresetActions );

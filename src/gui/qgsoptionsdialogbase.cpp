@@ -214,7 +214,7 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString& title )
   mOptListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
 }
 
-void QgsOptionsDialogBase::searchText( QString text )
+void QgsOptionsDialogBase::searchText( const QString& text )
 {
   mSearchLineEdit->setMinimumWidth( text.isEmpty() ? 0 : 70 );
 
@@ -431,11 +431,7 @@ QgsSearchHighlightOptionWidget::QgsSearchHighlightOptionWidget( QWidget* widget 
   }
 }
 
-QgsSearchHighlightOptionWidget::~QgsSearchHighlightOptionWidget()
-{
-}
-
-bool QgsSearchHighlightOptionWidget::searchHighlight( QString searchText )
+bool QgsSearchHighlightOptionWidget::searchHighlight( const QString& searchText )
 {
   bool found = false;
   if ( !mWidget )

@@ -1973,10 +1973,10 @@ void QgsComposerView::wheelEvent( QWheelEvent* event )
 
     QPointF scenePoint = mapToScene( event->pos() );
     //select topmost item at position of event
-    QgsComposerItem* theItem = composition()->composerItemAt( scenePoint, true );
-    if ( theItem )
+    QgsComposerItem* item = composition()->composerItemAt( scenePoint, true );
+    if ( item )
     {
-      if ( theItem->isSelected() )
+      if ( item->isSelected() )
       {
         QSettings settings;
         //read zoom mode
@@ -1995,10 +1995,10 @@ void QgsComposerView::wheelEvent( QWheelEvent* event )
         }
         zoomFactor = event->delta() > 0 ? zoomFactor : 1 / zoomFactor;
 
-        QPointF itemPoint = theItem->mapFromScene( scenePoint );
-        theItem->beginCommand( tr( "Zoom item content" ), QgsComposerMergeCommand::ItemZoomContent );
-        theItem->zoomContent( zoomFactor, itemPoint, zoomMode );
-        theItem->endCommand();
+        QPointF itemPoint = item->mapFromScene( scenePoint );
+        item->beginCommand( tr( "Zoom item content" ), QgsComposerMergeCommand::ItemZoomContent );
+        item->zoomContent( zoomFactor, itemPoint, zoomMode );
+        item->endCommand();
       }
     }
   }

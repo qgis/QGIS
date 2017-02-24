@@ -97,13 +97,13 @@ class QgsWcsCapabilities : public QObject
      *                otherwise we contact the host directly.
      *
      */
-    explicit QgsWcsCapabilities( QgsDataSourceUri const & theUri );
+    explicit QgsWcsCapabilities( QgsDataSourceUri const & uri );
     QgsWcsCapabilities();
 
 
     ~QgsWcsCapabilities();
 
-    void setUri( QgsDataSourceUri const &theUri );
+    void setUri( QgsDataSourceUri const &uri );
 
     QgsWcsCapabilitiesProperty capabilities();
 
@@ -123,7 +123,7 @@ class QgsWcsCapabilities : public QObject
     void coverageParents( QMap<int, int> &parents, QMap<int, QStringList> &parentNames ) const;
 
     //! Get coverage summary for identifier
-    QgsWcsCoverageSummary coverage( QString const & theIdentifier );
+    QgsWcsCoverageSummary coverage( QString const & identifier );
 
     //! Get list of all coverage summaries
     QList<QgsWcsCoverageSummary> coverages();
@@ -218,10 +218,10 @@ class QgsWcsCapabilities : public QObject
 
   signals:
     //! \brief emit a signal to notify of a progress event
-    void progressChanged( int theProgress, int theTotalSteps );
+    void progressChanged( int progress, int totalSteps );
 
     //! \brief emit a signal to be caught by qgisapp and display a msg on status bar
-    void statusChanged( QString const &  theStatusQString );
+    void statusChanged( QString const &  statusQString );
 
     void downloadFinished();
 
@@ -233,7 +233,7 @@ class QgsWcsCapabilities : public QObject
     void parseUri();
 
     //! Get coverage summary for identifier
-    QgsWcsCoverageSummary * coverageSummary( QString const & theIdentifier, QgsWcsCoverageSummary* parent = nullptr );
+    QgsWcsCoverageSummary * coverageSummary( QString const & identifier, QgsWcsCoverageSummary* parent = nullptr );
 
     // ! Get list of all sub coverages
     QList<QgsWcsCoverageSummary> coverageSummaries( QgsWcsCoverageSummary* parent = nullptr );

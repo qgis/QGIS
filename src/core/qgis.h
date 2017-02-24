@@ -104,7 +104,7 @@ class CORE_EXPORT Qgis
      *  @note added in 2.3 */
     static const double DEFAULT_HIGHLIGHT_BUFFER_MM;
 
-    /** Default highlight line/outline minimum width in mm.
+    /** Default highlight line/stroke minimum width in mm.
      *  @note added in 2.3 */
     static const double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
 

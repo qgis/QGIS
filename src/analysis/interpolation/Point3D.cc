@@ -17,14 +17,6 @@
 #include "Point3D.h"
 #include "qgslogger.h"
 
-Point3D& Point3D::operator=( const Point3D & p )
-{
-  mX = p.mX;
-  mY = p.mY;
-  mZ = p.mZ;
-  return ( *this );
-}
-
 bool Point3D::operator==( const Point3D& p ) const
 {
   return ( mX == p.getX() && mY == p.getY() && mZ == p.getZ() );

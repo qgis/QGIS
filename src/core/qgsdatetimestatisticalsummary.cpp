@@ -20,7 +20,7 @@
 #include <QObject>
 #include <QVariant>
 #include <QVariantList>
-#include "limits.h"
+#include <limits>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with

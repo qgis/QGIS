@@ -103,7 +103,7 @@ class FieldsMapper(GeoAlgorithm):
         expressions = []
 
         da = QgsDistanceArea()
-        da.setSourceCrs(layer.crs().srsid())
+        da.setSourceCrs(layer.crs())
         da.setEllipsoidalMode(
             iface.mapCanvas().mapSettings().hasCrsTransformEnabled())
         da.setEllipsoid(QgsProject.instance().readEntry(

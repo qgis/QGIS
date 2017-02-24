@@ -39,31 +39,31 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
     ~QgsCustomizationDialog();
 
     // get item by path
-    QTreeWidgetItem *item( const QString& thePath, QTreeWidgetItem *theItem = nullptr );
+    QTreeWidgetItem *item( const QString& path, QTreeWidgetItem *widgetItem = nullptr );
 
     //
 
     // return current item state for given path
-    bool itemChecked( const QString& thePath );
+    bool itemChecked( const QString& path );
     // set item state for given path
-    void setItemChecked( const QString& thePath, bool on );
+    void setItemChecked( const QString& path, bool on );
 
     // recursively save tree item to settings
-    void itemToSettings( const QString& thePath, QTreeWidgetItem *theItem, QSettings *theSettings );
+    void itemToSettings( const QString& path, QTreeWidgetItem *item, QSettings *settings );
     // recursively save settings to tree items
-    void settingsToItem( const QString& thePath, QTreeWidgetItem *theItem, QSettings *theSettings );
+    void settingsToItem( const QString& path, QTreeWidgetItem *item, QSettings *settings );
 
     // save current tree to settings
-    void treeToSettings( QSettings *theSettings );
+    void treeToSettings( QSettings *settings );
 
     // restore current tree from settings
-    void settingsToTree( QSettings *theSettings );
+    void settingsToTree( QSettings *settings );
 
     // switch widget item in tree
     bool switchWidget( QWidget * widget, QMouseEvent *event );
 
     // Get path of the widget
-    QString widgetPath( QWidget * theWidget, const QString& thePath = QString() );
+    QString widgetPath( QWidget * widget, const QString& path = QString() );
 
     void setCatch( bool on );
     bool catchOn();
@@ -95,7 +95,7 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
   private:
     void init();
     QTreeWidgetItem * createTreeItemWidgets();
-    QTreeWidgetItem * readWidgetsXmlNode( const QDomNode& theNode );
+    QTreeWidgetItem * readWidgetsXmlNode( const QDomNode& node );
 
     QString mLastDirSettingsName;
     QSettings* mSettings = nullptr;
@@ -119,9 +119,9 @@ class APP_EXPORT QgsCustomization : public QObject
     void openDialog( QWidget *parent );
     static void customizeWidget( QWidget * widget, QEvent * event, QSettings* settings );
     static void customizeWidget( const QString& path, QWidget * widget, QSettings* settings );
-    static void removeFromLayout( QLayout *theLayout, QWidget * widget );
+    static void removeFromLayout( QLayout *layout, QWidget * widget );
 
-    void updateMainWindow( QMenu * theToolBarMenu );
+    void updateMainWindow( QMenu * toolBarMenu );
 
     // make sure to enable/disable before creating QgisApp in order to get it customized (or not)
     void setEnabled( bool enabled ) { mEnabled = enabled; }

@@ -107,7 +107,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer* mapLayer )
 
   mFieldExpressionWidget->setLayer( mLayer );
   QgsDistanceArea da;
-  da.setSourceCrs( mLayer->crs().srsid() );
+  da.setSourceCrs( mLayer->crs() );
   da.setEllipsoidalMode( true );
   da.setEllipsoid( QgsProject::instance()->ellipsoid() );
   mFieldExpressionWidget->setGeomCalculator( da );
@@ -521,9 +521,9 @@ void QgsLabelingGui::populateDataDefinedButtons()
   registerDataDefinedButton( mShapeTranspDDBtn, QgsPalLayerSettings::ShapeTransparency );
   registerDataDefinedButton( mShapeBlendModeDDBtn, QgsPalLayerSettings::ShapeBlendMode );
   registerDataDefinedButton( mShapeFillColorDDBtn, QgsPalLayerSettings::ShapeFillColor );
-  registerDataDefinedButton( mShapeBorderColorDDBtn, QgsPalLayerSettings::ShapeBorderColor );
-  registerDataDefinedButton( mShapeBorderWidthDDBtn, QgsPalLayerSettings::ShapeBorderWidth );
-  registerDataDefinedButton( mShapeBorderUnitsDDBtn, QgsPalLayerSettings::ShapeBorderWidthUnits );
+  registerDataDefinedButton( mShapeStrokeColorDDBtn, QgsPalLayerSettings::ShapeStrokeColor );
+  registerDataDefinedButton( mShapeStrokeWidthDDBtn, QgsPalLayerSettings::ShapeStrokeWidth );
+  registerDataDefinedButton( mShapeStrokeUnitsDDBtn, QgsPalLayerSettings::ShapeStrokeWidthUnits );
   registerDataDefinedButton( mShapePenStyleDDBtn, QgsPalLayerSettings::ShapeJoinStyle );
 
   // drop shadows

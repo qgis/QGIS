@@ -1032,7 +1032,7 @@ bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &
 {
   QgsDebugMsg( QString( "db = %1 uri = %2" ).arg( db, uri ) );
 
-  bool theResultFlag = false;
+  bool resultFlag = false;
 
   // read from database
   sqlite3 *myDatabase = nullptr;
@@ -1061,7 +1061,7 @@ bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &
          sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
     {
       qml = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 0 ) ) );
-      theResultFlag = true;
+      resultFlag = true;
     }
 
     sqlite3_finalize( myPreparedStatement );
@@ -1069,7 +1069,7 @@ bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &
 
   sqlite3_close( myDatabase );
 
-  return theResultFlag;
+  return resultFlag;
 }
 
 

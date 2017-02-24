@@ -242,7 +242,6 @@ bool QgsFontUtils::loadStandardTestFonts( const QStringList& loadstyles )
 
     if ( fontFamilyHasStyle( fontFamily, fontstyle ) )
     {
-      fontsLoaded = ( fontsLoaded || false );
       QgsDebugMsg( QString( "Test font '%1 %2' already available" ).arg( fontFamily, fontstyle ) );
     }
     else

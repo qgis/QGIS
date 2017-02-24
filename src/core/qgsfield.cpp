@@ -50,7 +50,7 @@ QgsField::QgsField( const QString& name, QVariant::Type type,
   d = new QgsFieldPrivate( name, type, subType, typeName, len, prec, comment );
 }
 
-QgsField::QgsField( const QgsField &other )
+QgsField::QgsField( const QgsField &other ) //NOLINT
     : d( other.d )
 {
 
@@ -62,7 +62,7 @@ QgsField::QgsField( const QgsField &other )
  * See details in QEP #17
  ****************************************************************************/
 
-QgsField &QgsField::operator =( const QgsField & other )
+QgsField &QgsField::operator =( const QgsField & other ) //NOLINT
 {
   d = other.d;
   return *this;

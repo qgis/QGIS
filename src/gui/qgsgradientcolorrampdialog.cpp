@@ -101,6 +101,14 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
   mPlot->setAxisScale( QwtPlot::yLeft, 0.0, 1.0 );
   mPlot->enableAxis( QwtPlot::yLeft, false );
 
+  // add a grid
+  QwtPlotGrid * grid = new QwtPlotGrid();
+  QwtScaleDiv gridDiv( 0.0, 1.0, QList<double>(), QList<double>(), QList<double>() << 0.2 << 0.4 << 0.6 << 0.8 );
+  grid->setXDiv( gridDiv );
+  grid->setYDiv( gridDiv );
+  grid->setPen( QPen( QColor( 0, 0, 0, 50 ) ) );
+  grid->attach( mPlot );
+
   mLightnessCurve = new QwtPlotCurve();
   mLightnessCurve->setTitle( QStringLiteral( "Lightness" ) );
   mLightnessCurve->setPen( QPen( QColor( 70, 150, 255 ), 0.0 ) ),
@@ -453,9 +461,9 @@ void QgsGradientColorRampDialog::addPlotMarker( double x, double y, const QColor
 
   QwtPlotMarker *marker = new QwtPlotMarker();
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-  marker->setSymbol( new QwtSymbol( QwtSymbol::Ellipse,  QBrush( brushColor ), QPen( borderColor, isSelected ? 2 : 1 ), QSize( 10, 10 ) ) );
+  marker->setSymbol( new QwtSymbol( QwtSymbol::Ellipse,  QBrush( brushColor ), QPen( borderColor, isSelected ? 2 : 1 ), QSize( 8, 8 ) ) );
 #else
-  marker->setSymbol( QwtSymbol( QwtSymbol::Ellipse,  QBrush( brushColor ), QPen( borderColor, isSelected ? 2 : 1 ), QSize( 10, 10 ) ) );
+  marker->setSymbol( QwtSymbol( QwtSymbol::Ellipse,  QBrush( brushColor ), QPen( borderColor, isSelected ? 2 : 1 ), QSize( 8, 8 ) ) );
 #endif
   marker->setValue( x, y );
   marker->attach( mPlot );

@@ -38,6 +38,7 @@
 #include "qgsrasterpyramid.h"
 #include "qgsrasterrange.h"
 #include "qgsrectangle.h"
+#include "qgsrasteriterator.h"
 
 class QImage;
 class QByteArray;
@@ -102,9 +103,9 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual Qgis::DataType sourceDataType( int bandNo ) const override = 0;
 
     //! Returns data type for the band specified by number
-    virtual int colorInterpretation( int theBandNo ) const
+    virtual int colorInterpretation( int bandNo ) const
     {
-      Q_UNUSED( theBandNo );
+      Q_UNUSED( bandNo );
       return QgsRaster::UndefinedColorInterpretation;
     }
 
@@ -171,9 +172,9 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     //! Reload data (data could change)
     virtual bool reload() { return true; }
 
-    virtual QString colorInterpretationName( int theBandNo ) const
+    virtual QString colorInterpretationName( int bandNo ) const
     {
-      return colorName( colorInterpretation( theBandNo ) );
+      return colorName( colorInterpretation( bandNo ) );
     }
 
     /** Read band scale for raster value
@@ -189,7 +190,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     // TODO: remove or make protected all readBlock working with void*
 
     //! Read block of data using given extent and size.
-    virtual QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight, QgsRasterBlockFeedback* feedback = nullptr ) override;
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &boundingBox, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
     //! Return true if source band has no data value
     virtual bool sourceHasNoDataValue( int bandNo ) const { return mSrcHasNoDataValue.value( bandNo -1 ); }
@@ -257,15 +258,15 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     }
 
     //! \brief Create pyramid overviews
-    virtual QString buildPyramids( const QList<QgsRasterPyramid> & thePyramidList,
-                                   const QString & theResamplingMethod = "NEAREST",
-                                   QgsRaster::RasterPyramidsFormat theFormat = QgsRaster::PyramidsGTiff,
-                                   const QStringList & theConfigOptions = QStringList() )
+    virtual QString buildPyramids( const QList<QgsRasterPyramid> & pyramidList,
+                                   const QString & resamplingMethod = "NEAREST",
+                                   QgsRaster::RasterPyramidsFormat format = QgsRaster::PyramidsGTiff,
+                                   const QStringList & configOptions = QStringList() )
     {
-      Q_UNUSED( thePyramidList );
-      Q_UNUSED( theResamplingMethod );
-      Q_UNUSED( theFormat );
-      Q_UNUSED( theConfigOptions );
+      Q_UNUSED( pyramidList );
+      Q_UNUSED( resamplingMethod );
+      Q_UNUSED( format );
+      Q_UNUSED( configOptions );
       return QStringLiteral( "FAILED_NOT_SUPPORTED" );
     }
 
@@ -289,7 +290,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual QString metadata() = 0;
 
     /** \brief Identify raster value(s) found on the point position. The context
-     *         parameters theExtent, theWidth and theHeight are important to identify
+     *         parameters extent, width and height are important to identify
      *         on the same zoom level as a displayed map and to do effective
      *         caching (WCS). If context params are not specified the highest
      *         resolution is used. capabilities() may be used to test if format
@@ -298,12 +299,12 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      *
      * \note  The arbitraryness of the returned document is enforced by WMS standards
      *        up to at least v1.3.0
-     * @param thePoint coordinates in data source CRS
-     * @param theFormat result format
-     * @param theExtent context extent
-     * @param theWidth context width
-     * @param theHeight context height
-     * @param theDpi context dpi
+     * @param point coordinates in data source CRS
+     * @param format result format
+     * @param boundingBox context bounding box
+     * @param width context width
+     * @param height context height
+     * @param dpi context dpi
      * @return QgsRaster::IdentifyFormatValue: map of values for each band, keys are band numbers
      *         (from 1).
      *         QgsRaster::IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer
@@ -311,8 +312,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      *         QgsRaster::IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
      *         Empty if failed or there are no results (TODO: better error reporting).
      */
-    //virtual QMap<int, QVariant> identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
-    virtual QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0, int theDpi = 96 );
+    //virtual QMap<int, QVariant> identify( const QgsPoint & point, QgsRaster::IdentifyFormat format, const QgsRectangle &extent = QgsRectangle(), int width = 0, int height = 0 );
+    virtual QgsRasterIdentifyResult identify( const QgsPoint & point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
 
     /**
      * \brief   Returns the caption error text for the last error in this provider
@@ -433,20 +434,34 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * @note used by GDAL provider only
      */
     virtual QString validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
-        const QStringList & theConfigOptions, const QString & fileFormat )
-    { Q_UNUSED( pyramidsFormat ); Q_UNUSED( theConfigOptions ); Q_UNUSED( fileFormat ); return QString(); }
+        const QStringList & configOptions, const QString & fileFormat )
+    { Q_UNUSED( pyramidsFormat ); Q_UNUSED( configOptions ); Q_UNUSED( fileFormat ); return QString(); }
 
     static QString identifyFormatName( QgsRaster::IdentifyFormat format );
     static QgsRaster::IdentifyFormat identifyFormatFromName( const QString& formatName );
     static QString identifyFormatLabel( QgsRaster::IdentifyFormat format );
     static Capability identifyFormatToCapability( QgsRaster::IdentifyFormat format );
 
+    /**
+     * Step width for raster iterations.
+     * @see stepHeight()
+     * @note added in QGIS 3.0
+     */
+    virtual int stepWidth() const { return QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH; }
+
+    /**
+     * Step height for raster iterations.
+     * @see stepWidth()
+     * @note added in QGIS 3.0
+     */
+    virtual int stepHeight() const { return QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT; }
+
   signals:
 
     /** Emit a signal to notify of the progress event.
-      * Emitted theProgress is in percents (0.0-100.0) */
-    void progress( int theType, double theProgress, const QString& theMessage );
-    void progressUpdate( int theProgress );
+      * Emitted progress is in percents (0.0-100.0) */
+    void progress( int type, double progress, const QString& message );
+    void progressUpdate( int progress );
 
     /** Emit a message to be displayed on status bar, usually used by network providers (WMS,WCS)
      * @note added in 2.14
@@ -485,7 +500,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /** Source no data value is available and is set to be used or internal no data
      *  is available. Used internally only  */
-    //bool hasNoDataValue ( int theBandNo );
+    //bool hasNoDataValue ( int bandNo );
 
     //! \brief Cell value representing original source no data. e.g. -9999, indexed from 0
     QList<double> mSrcNoDataValue;

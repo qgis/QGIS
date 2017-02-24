@@ -64,11 +64,11 @@ class GUI_EXPORT QgsGenericProjectionSelector : public QDialog, private Ui::QgsG
     /** If no parameter is passed, the message will be a generic
      * 'define the CRS for this layer'.
      */
-    void setMessage( QString theMessage = QStringLiteral( "" ) );
+    void setMessage( QString message = QStringLiteral( "" ) );
     long selectedCrsId();
     QString selectedAuthId();
 
-    void setSelectedCrsName( const QString& theName );
+    void setSelectedCrsName( const QString& name );
     void setSelectedCrsId( long theID );
     void setSelectedAuthId( const QString& authId );
 

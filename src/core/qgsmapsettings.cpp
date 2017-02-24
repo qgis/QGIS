@@ -377,32 +377,32 @@ double QgsMapSettings::scale() const
 }
 
 
-QgsCoordinateTransform QgsMapSettings::layerTransform( QgsMapLayer *layer ) const
+QgsCoordinateTransform QgsMapSettings::layerTransform( const QgsMapLayer *layer ) const
 {
   return mDatumTransformStore.transformation( layer );
 }
 
 
-double QgsMapSettings::layerToMapUnits( QgsMapLayer *theLayer, const QgsRectangle& referenceExtent ) const
+double QgsMapSettings::layerToMapUnits( const QgsMapLayer *layer, const QgsRectangle& referenceExtent ) const
 {
-  QgsRectangle extent = referenceExtent.isEmpty() ? theLayer->extent() : referenceExtent;
+  QgsRectangle extent = referenceExtent.isEmpty() ? layer->extent() : referenceExtent;
   QgsPoint l1( extent.xMinimum(), extent.yMinimum() );
   QgsPoint l2( extent.xMaximum(), extent.yMaximum() );
   double distLayerUnits = std::sqrt( l1.sqrDist( l2 ) );
-  QgsPoint m1 = layerToMapCoordinates( theLayer, l1 );
-  QgsPoint m2 = layerToMapCoordinates( theLayer, l2 );
+  QgsPoint m1 = layerToMapCoordinates( layer, l1 );
+  QgsPoint m2 = layerToMapCoordinates( layer, l2 );
   double distMapUnits = std::sqrt( m1.sqrDist( m2 ) );
   return distMapUnits / distLayerUnits;
 }
 
 
-QgsRectangle QgsMapSettings::layerExtentToOutputExtent( QgsMapLayer* theLayer, QgsRectangle extent ) const
+QgsRectangle QgsMapSettings::layerExtentToOutputExtent( const QgsMapLayer* layer, QgsRectangle extent ) const
 {
   if ( hasCrsTransformEnabled() )
   {
     try
     {
-      QgsCoordinateTransform ct = layerTransform( theLayer );
+      QgsCoordinateTransform ct = layerTransform( layer );
       if ( ct.isValid() )
       {
         QgsDebugMsg( QString( "sourceCrs = " + ct.sourceCrs().authid() ) );
@@ -423,13 +423,13 @@ QgsRectangle QgsMapSettings::layerExtentToOutputExtent( QgsMapLayer* theLayer, Q
 }
 
 
-QgsRectangle QgsMapSettings::outputExtentToLayerExtent( QgsMapLayer* theLayer, QgsRectangle extent ) const
+QgsRectangle QgsMapSettings::outputExtentToLayerExtent( const QgsMapLayer* layer, QgsRectangle extent ) const
 {
   if ( hasCrsTransformEnabled() )
   {
     try
     {
-      QgsCoordinateTransform ct = layerTransform( theLayer );
+      QgsCoordinateTransform ct = layerTransform( layer );
       if ( ct.isValid() )
       {
         QgsDebugMsg( QString( "sourceCrs = " + ct.sourceCrs().authid() ) );
@@ -450,13 +450,13 @@ QgsRectangle QgsMapSettings::outputExtentToLayerExtent( QgsMapLayer* theLayer, Q
 }
 
 
-QgsPoint QgsMapSettings::layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint point ) const
+QgsPoint QgsMapSettings::layerToMapCoordinates( const QgsMapLayer* layer, QgsPoint point ) const
 {
   if ( hasCrsTransformEnabled() )
   {
     try
     {
-      QgsCoordinateTransform ct = layerTransform( theLayer );
+      QgsCoordinateTransform ct = layerTransform( layer );
       if ( ct.isValid() )
         point = ct.transform( point, QgsCoordinateTransform::ForwardTransform );
     }
@@ -473,13 +473,13 @@ QgsPoint QgsMapSettings::layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint 
 }
 
 
-QgsRectangle QgsMapSettings::layerToMapCoordinates( QgsMapLayer* theLayer, QgsRectangle rect ) const
+QgsRectangle QgsMapSettings::layerToMapCoordinates( const QgsMapLayer* layer, QgsRectangle rect ) const
 {
   if ( hasCrsTransformEnabled() )
   {
     try
     {
-      QgsCoordinateTransform ct = layerTransform( theLayer );
+      QgsCoordinateTransform ct = layerTransform( layer );
       if ( ct.isValid() )
         rect = ct.transform( rect, QgsCoordinateTransform::ForwardTransform );
     }
@@ -496,13 +496,13 @@ QgsRectangle QgsMapSettings::layerToMapCoordinates( QgsMapLayer* theLayer, QgsRe
 }
 
 
-QgsPoint QgsMapSettings::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsPoint point ) const
+QgsPoint QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer* layer, QgsPoint point ) const
 {
   if ( hasCrsTransformEnabled() )
   {
     try
     {
-      QgsCoordinateTransform ct = layerTransform( theLayer );
+      QgsCoordinateTransform ct = layerTransform( layer );
       if ( ct.isValid() )
         point = ct.transform( point, QgsCoordinateTransform::ReverseTransform );
     }
@@ -519,13 +519,13 @@ QgsPoint QgsMapSettings::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsPoint 
 }
 
 
-QgsRectangle QgsMapSettings::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRectangle rect ) const
+QgsRectangle QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer* layer, QgsRectangle rect ) const
 {
   if ( hasCrsTransformEnabled() )
   {
     try
     {
-      QgsCoordinateTransform ct = layerTransform( theLayer );
+      QgsCoordinateTransform ct = layerTransform( layer );
       if ( ct.isValid() )
         rect = ct.transform( rect, QgsCoordinateTransform::ReverseTransform );
     }
@@ -599,30 +599,30 @@ QgsRectangle QgsMapSettings::fullExtent() const
 }
 
 
-void QgsMapSettings::readXml( QDomNode& theNode )
+void QgsMapSettings::readXml( QDomNode& node )
 {
   // set units
-  QDomNode mapUnitsNode = theNode.namedItem( QStringLiteral( "units" ) );
+  QDomNode mapUnitsNode = node.namedItem( QStringLiteral( "units" ) );
   QgsUnitTypes::DistanceUnit units = QgsXmlUtils::readMapUnits( mapUnitsNode.toElement() );
   setMapUnits( units );
 
   // set projections flag
-  QDomNode projNode = theNode.namedItem( QStringLiteral( "projections" ) );
+  QDomNode projNode = node.namedItem( QStringLiteral( "projections" ) );
   setCrsTransformEnabled( projNode.toElement().text().toInt() );
 
   // set destination CRS
   QgsCoordinateReferenceSystem srs;
-  QDomNode srsNode = theNode.namedItem( QStringLiteral( "destinationsrs" ) );
+  QDomNode srsNode = node.namedItem( QStringLiteral( "destinationsrs" ) );
   srs.readXml( srsNode );
   setDestinationCrs( srs );
 
   // set extent
-  QDomNode extentNode = theNode.namedItem( QStringLiteral( "extent" ) );
+  QDomNode extentNode = node.namedItem( QStringLiteral( "extent" ) );
   QgsRectangle aoi = QgsXmlUtils::readRectangle( extentNode.toElement() );
   setExtent( aoi );
 
   // set rotation
-  QDomNode rotationNode = theNode.namedItem( QStringLiteral( "rotation" ) );
+  QDomNode rotationNode = node.namedItem( QStringLiteral( "rotation" ) );
   QString rotationVal = rotationNode.toElement().text();
   if ( ! rotationVal.isEmpty() )
   {
@@ -631,47 +631,47 @@ void QgsMapSettings::readXml( QDomNode& theNode )
   }
 
   //render map tile
-  QDomElement renderMapTileElem = theNode.firstChildElement( QStringLiteral( "rendermaptile" ) );
+  QDomElement renderMapTileElem = node.firstChildElement( QStringLiteral( "rendermaptile" ) );
   if ( !renderMapTileElem.isNull() )
   {
-    setFlag( QgsMapSettings::RenderMapTile, renderMapTileElem.text() == QLatin1String( "1" ) ? true : false );
+    setFlag( QgsMapSettings::RenderMapTile, renderMapTileElem.text() == QLatin1String( "1" ) );
   }
 
-  mDatumTransformStore.readXml( theNode );
+  mDatumTransformStore.readXml( node );
 }
 
 
 
-void QgsMapSettings::writeXml( QDomNode& theNode, QDomDocument& theDoc )
+void QgsMapSettings::writeXml( QDomNode& node, QDomDocument& doc )
 {
   // units
-  theNode.appendChild( QgsXmlUtils::writeMapUnits( mapUnits(), theDoc ) );
+  node.appendChild( QgsXmlUtils::writeMapUnits( mapUnits(), doc ) );
 
   // Write current view extents
-  theNode.appendChild( QgsXmlUtils::writeRectangle( extent(), theDoc ) );
+  node.appendChild( QgsXmlUtils::writeRectangle( extent(), doc ) );
 
   // Write current view rotation
-  QDomElement rotNode = theDoc.createElement( QStringLiteral( "rotation" ) );
+  QDomElement rotNode = doc.createElement( QStringLiteral( "rotation" ) );
   rotNode.appendChild(
-    theDoc.createTextNode( qgsDoubleToString( rotation() ) )
+    doc.createTextNode( qgsDoubleToString( rotation() ) )
   );
-  theNode.appendChild( rotNode );
+  node.appendChild( rotNode );
 
   // projections enabled
-  QDomElement projNode = theDoc.createElement( QStringLiteral( "projections" ) );
-  projNode.appendChild( theDoc.createTextNode( QString::number( hasCrsTransformEnabled() ) ) );
-  theNode.appendChild( projNode );
+  QDomElement projNode = doc.createElement( QStringLiteral( "projections" ) );
+  projNode.appendChild( doc.createTextNode( QString::number( hasCrsTransformEnabled() ) ) );
+  node.appendChild( projNode );
 
   // destination CRS
-  QDomElement srsNode = theDoc.createElement( QStringLiteral( "destinationsrs" ) );
-  theNode.appendChild( srsNode );
-  destinationCrs().writeXml( srsNode, theDoc );
+  QDomElement srsNode = doc.createElement( QStringLiteral( "destinationsrs" ) );
+  node.appendChild( srsNode );
+  destinationCrs().writeXml( srsNode, doc );
 
   //render map tile
-  QDomElement renderMapTileElem = theDoc.createElement( QStringLiteral( "rendermaptile" ) );
-  QDomText renderMapTileText = theDoc.createTextNode( testFlag( QgsMapSettings::RenderMapTile ) ? "1" : "0" );
+  QDomElement renderMapTileElem = doc.createElement( QStringLiteral( "rendermaptile" ) );
+  QDomText renderMapTileText = doc.createTextNode( testFlag( QgsMapSettings::RenderMapTile ) ? "1" : "0" );
   renderMapTileElem.appendChild( renderMapTileText );
-  theNode.appendChild( renderMapTileElem );
+  node.appendChild( renderMapTileElem );
 
-  mDatumTransformStore.writeXml( theNode, theDoc );
+  mDatumTransformStore.writeXml( node, doc );
 }

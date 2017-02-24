@@ -234,7 +234,7 @@ int GRASS_LIB_EXPORT QgsGrassGisLib::G__gisinit( const char * version, const cha
       mCrs.saveAsUserCRS( myName );
     }
   }
-  mDistanceArea.setSourceCrs( mCrs.srsid() );
+  mDistanceArea.setSourceCrs( mCrs );
 
   // Read region fron environment variable
   // QGIS_GRASS_REGION=west,south,east,north,cols,rows

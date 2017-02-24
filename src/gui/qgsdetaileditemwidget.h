@@ -31,8 +31,8 @@ class GUI_EXPORT QgsDetailedItemWidget :
     Q_OBJECT
   public:
     QgsDetailedItemWidget( QWidget * parent = nullptr );
-    void setData( const QgsDetailedItemData& theData );
-    void setChecked( bool theFlag );
+    void setData( const QgsDetailedItemData& data );
+    void setChecked( bool flag );
   private:
     QgsDetailedItemData mData;
 };

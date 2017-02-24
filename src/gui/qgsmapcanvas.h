@@ -296,13 +296,13 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool scaleLocked() const { return mScaleLocked;}
 
     //! used to determine if anti-aliasing is enabled or not
-    void enableAntiAliasing( bool theFlag );
+    void enableAntiAliasing( bool flag );
 
     //! true if antialising is enabled
     bool antiAliasingEnabled() const { return mSettings.testFlag( QgsMapSettings::Antialiasing ); }
 
     //! sets map tile rendering flag
-    void enableMapTileRendering( bool theFlag );
+    void enableMapTileRendering( bool flag );
 
     // following 2 methods should be moved elsewhere or changed to private
     // currently used by pan map tool
@@ -405,7 +405,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void selectionChangedSlot();
 
     //! Save the convtents of the map canvas to disk as an image
-    void saveAsImage( const QString& theFileName, QPixmap * QPixmap = nullptr, const QString& = "PNG" );
+    void saveAsImage( const QString& fileName, QPixmap * QPixmap = nullptr, const QString& = "PNG" );
 
     //! This slot is connected to the visibility change of one or more layers
     void layerStateChange();
@@ -414,7 +414,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void layerCrsChange();
 
     //! Whether to suppress rendering or not
-    void setRenderFlag( bool theFlag );
+    void setRenderFlag( bool flag );
     //! State of render suppression flag
     bool renderFlag() {return mRenderFlag;}
 

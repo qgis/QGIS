@@ -16,13 +16,24 @@
 #include "qgsrasterinterface.h"
 #include "qgsrasterprojector.h"
 #include "qgsrasterviewport.h"
+#include "qgsrasterdataprovider.h"
 
 QgsRasterIterator::QgsRasterIterator( QgsRasterInterface* input )
     : mInput( input )
     , mFeedback( nullptr )
-    , mMaximumTileWidth( 2000 )
-    , mMaximumTileHeight( 2000 )
+    , mMaximumTileWidth( DEFAULT_MAXIMUM_TILE_WIDTH )
+    , mMaximumTileHeight( DEFAULT_MAXIMUM_TILE_HEIGHT )
 {
+  for ( QgsRasterInterface *ri = input; ri; ri = ri->input() )
+  {
+    QgsRasterDataProvider *rdp = dynamic_cast<QgsRasterDataProvider*>( ri );
+    if ( rdp )
+    {
+      mMaximumTileWidth = rdp->stepWidth();
+      mMaximumTileHeight = rdp->stepHeight();
+      break;
+    }
+  }
 }
 
 void QgsRasterIterator::startRasterRead( int bandNumber, int nCols, int nRows, const QgsRectangle& extent, QgsRasterBlockFeedback* feedback )

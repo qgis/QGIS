@@ -35,8 +35,8 @@ void QgsDiagramLayerSettings::initPropertyDefinitions()
   sPropertyDefinitions = QgsPropertiesDefinition
   {
     { QgsDiagramLayerSettings::BackgroundColor, QgsPropertyDefinition( "backgroundColor", QObject::tr( "Background color" ), QgsPropertyDefinition::ColorWithAlpha ) },
-    { QgsDiagramLayerSettings::OutlineColor, QgsPropertyDefinition( "outlineColor", QObject::tr( "Outline color" ), QgsPropertyDefinition::ColorWithAlpha ) },
-    { QgsDiagramLayerSettings::OutlineWidth, QgsPropertyDefinition( "outlineWidth", QObject::tr( "Outline width" ), QgsPropertyDefinition::StrokeWidth ) },
+    { QgsDiagramLayerSettings::StrokeColor, QgsPropertyDefinition( "strokeColor", QObject::tr( "Stroke color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+    { QgsDiagramLayerSettings::StrokeWidth, QgsPropertyDefinition( "strokeWidth", QObject::tr( "Stroke width" ), QgsPropertyDefinition::StrokeWidth ) },
     { QgsDiagramLayerSettings::PositionX, QgsPropertyDefinition( "positionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double ) },
     { QgsDiagramLayerSettings::PositionY, QgsPropertyDefinition( "positionY", QObject::tr( "Position (Y)" ), QgsPropertyDefinition::Double ) },
     { QgsDiagramLayerSettings::Distance, QgsPropertyDefinition( "distance", QObject::tr( "Placement distance" ), QgsPropertyDefinition::DoublePositive ) },
@@ -460,9 +460,9 @@ void QgsDiagramRenderer::renderDiagram( const QgsFeature& feature, QgsRenderCont
     c.expressionContext().setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( s.backgroundColor ) );
     s.backgroundColor = properties.valueAsColor( QgsDiagramLayerSettings::BackgroundColor, c.expressionContext(), s.backgroundColor );
     c.expressionContext().setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( s.penColor ) );
-    s.penColor = properties.valueAsColor( QgsDiagramLayerSettings::OutlineColor, c.expressionContext(), s.penColor );
+    s.penColor = properties.valueAsColor( QgsDiagramLayerSettings::StrokeColor, c.expressionContext(), s.penColor );
     c.expressionContext().setOriginalValueVariable( s.penWidth );
-    s.penWidth = properties.valueAsDouble( QgsDiagramLayerSettings::OutlineWidth, c.expressionContext(), s.penWidth );
+    s.penWidth = properties.valueAsDouble( QgsDiagramLayerSettings::StrokeWidth, c.expressionContext(), s.penWidth );
     c.expressionContext().setOriginalValueVariable( s.angleOffset / 16.0 );
     s.angleOffset = 16.0 * properties.valueAsDouble( QgsDiagramLayerSettings::StartAngle, c.expressionContext(), s.angleOffset / 16.0 );
   }

@@ -39,7 +39,7 @@
 #include "qgsnetworkdiskcache.h"
 #include "qgsauthmanager.h"
 
-QgsNetworkAccessManager *QgsNetworkAccessManager::sMainNAM = 0;
+QgsNetworkAccessManager *QgsNetworkAccessManager::sMainNAM = nullptr;
 
 /// @cond PRIVATE
 class QgsNetworkProxyFactory : public QNetworkProxyFactory
@@ -47,7 +47,7 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
   public:
     QgsNetworkProxyFactory() {}
 
-    virtual QList<QNetworkProxy> queryProxy( const QNetworkProxyQuery & query = QNetworkProxyQuery() ) override
+    QList<QNetworkProxy> queryProxy( const QNetworkProxyQuery & query = QNetworkProxyQuery() ) override
     {
       QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
 
@@ -241,9 +241,9 @@ void QgsNetworkAccessManager::abortRequest()
 }
 
 
-QString QgsNetworkAccessManager::cacheLoadControlName( QNetworkRequest::CacheLoadControl theControl )
+QString QgsNetworkAccessManager::cacheLoadControlName( QNetworkRequest::CacheLoadControl control )
 {
-  switch ( theControl )
+  switch ( control )
   {
     case QNetworkRequest::AlwaysNetwork:
       return QStringLiteral( "AlwaysNetwork" );
@@ -259,21 +259,21 @@ QString QgsNetworkAccessManager::cacheLoadControlName( QNetworkRequest::CacheLoa
   return QStringLiteral( "PreferNetwork" );
 }
 
-QNetworkRequest::CacheLoadControl QgsNetworkAccessManager::cacheLoadControlFromName( const QString &theName )
+QNetworkRequest::CacheLoadControl QgsNetworkAccessManager::cacheLoadControlFromName( const QString &name )
 {
-  if ( theName == QLatin1String( "AlwaysNetwork" ) )
+  if ( name == QLatin1String( "AlwaysNetwork" ) )
   {
     return QNetworkRequest::AlwaysNetwork;
   }
-  else if ( theName == QLatin1String( "PreferNetwork" ) )
+  else if ( name == QLatin1String( "PreferNetwork" ) )
   {
     return QNetworkRequest::PreferNetwork;
   }
-  else if ( theName == QLatin1String( "PreferCache" ) )
+  else if ( name == QLatin1String( "PreferCache" ) )
   {
     return QNetworkRequest::PreferCache;
   }
-  else if ( theName == QLatin1String( "AlwaysCache" ) )
+  else if ( name == QLatin1String( "AlwaysCache" ) )
   {
     return QNetworkRequest::AlwaysCache;
   }

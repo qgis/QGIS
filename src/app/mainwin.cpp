@@ -5,11 +5,12 @@
 #include <iostream>
 #include <fstream>
 #include <list>
+#include <memory>
 
 std::string moduleExeBaseName( void )
 {
   DWORD l = MAX_PATH;
-  std::auto_ptr<char> filepath;
+  std::unique_ptr<char> filepath;
   for ( ;; )
   {
     filepath.reset( new char[l] );
@@ -104,10 +105,10 @@ int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     }
   }
 
-  HINSTANCE hGetProcIDDLL = LoadLibrary( MAINWIN_DLL );
+  HINSTANCE hGetProcIDDLL = LoadLibrary( "qgis_app.dll" );
   if ( !hGetProcIDDLL )
   {
-    std::cerr << "Could not load the " MAINWIN_DLL << std::endl;
+    std::cerr << "Could not load the qgis_app.dll" << std::endl;
     return EXIT_FAILURE;
   }
 

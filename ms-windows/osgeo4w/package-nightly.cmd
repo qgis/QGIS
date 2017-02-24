@@ -313,6 +313,7 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	--exclude "*.pyc" ^
 	apps/%PACKAGENAME% ^
 	bin/%PACKAGENAME%-bin.exe ^
+	bin/%PACKAGENAME%-bin.vars ^
 	%batches% ^
 	bin/%PACKAGENAME%-designer.bat.tmpl ^
 	bin/python-%PACKAGENAME%.bat.tmpl ^

@@ -234,6 +234,7 @@ SET(QGIS_CORE_SRCS
   qgstransaction.cpp
   qgstransactiongroup.cpp
   qgsunittypes.cpp
+  qgsvector.cpp
   qgsvectordataprovider.cpp
   qgsvectorfilewriter.cpp
   qgsvectorfilewritertask.cpp
@@ -257,6 +258,7 @@ SET(QGIS_CORE_SRCS
   qgsvirtuallayerdefinitionutils.cpp
   qgsmapthemecollection.cpp
   qgsxmlutils.cpp
+  qgssettings.cpp
 
   composer/qgsaddremoveitemcommand.cpp
   composer/qgsaddremovemultiframecommand.cpp
@@ -540,6 +542,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsmapthemecollection.h
   qgswebpage.h
   qgswebview.h
+  qgssettings.h
 
   annotations/qgsannotation.h
   annotations/qgsannotationmanager.h
@@ -780,6 +783,7 @@ SET(QGIS_CORE_HDRS
   qgsvectorsimplifymethod.h
   qgsmapthemecollection.h
   qgsxmlutils.h
+  qgsvector.h
   qgswebpage.h
   qgswebframe.h
   qgswebview.h
@@ -1043,7 +1047,7 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${QT_QTGUI_LIBRARY}
   ${QT_QTNETWORK_LIBRARY}
   ${QT_QTSVG_LIBRARY}
-  ${QT_QTWEBKIT_LIBRARY}
+  ${OPTIONAL_QTWEBKIT}
   ${QT_QTSQL_LIBRARY}
   ${QCA_LIBRARY}
 
@@ -1061,6 +1065,14 @@ IF (Qt5Positioning_FOUND)
     Qt5::Positioning
   )
 ENDIF (Qt5Positioning_FOUND)
+
+# clang-tidy
+IF(CLANG_TIDY_EXE)
+  SET_TARGET_PROPERTIES(
+    qgis_core PROPERTIES
+    CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
+  )
+ENDIF(CLANG_TIDY_EXE)
 
 # install
 

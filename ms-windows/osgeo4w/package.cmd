@@ -289,6 +289,11 @@ for %%g IN (%GRASS_VERSIONS%) do (
 	set packages=!packages! "-grass-plugin!w!"
 )
 
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' preremove-grass-plugin-common.bat >%OSGEO4W_ROOT%\etc\preremove\%PACKAGENAME%-grass-plugin-common.bat
+if errorlevel 1 (echo creation of grass common preremove failed & goto error)
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' postinstall-grass-plugin-common.bat >%OSGEO4W_ROOT%\etc\postinstall\%PACKAGENAME%-grass-plugin-common.bat
+if errorlevel 1 (echo creation of grass common postinstall failed & goto error)
+
 touch exclude
 
 for %%i in (%packages%) do (
@@ -415,7 +420,9 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-grass-plugin-common
 	--exclude "apps/%PACKAGENAME%/grass/modules/qgis.v.in7.exe" ^
 	--exclude "apps/%PACKAGENAME%/grass/bin/qgis.g.browser6.exe" ^
 	--exclude "apps/%PACKAGENAME%/grass/bin/qgis.g.browser7.exe" ^
-	"apps/%PACKAGENAME%/grass"
+	"apps/%PACKAGENAME%/grass" ^
+	"etc/postinstall/%PACKAGENAME%-grass-plugin-common.bat" ^
+	"etc/preremove/%PACKAGENAME%-grass-plugin-common.bat"
 if errorlevel 1 (echo tar grass-plugin failed & goto error)
 
 for %%g IN (%GRASS_VERSIONS%) do (

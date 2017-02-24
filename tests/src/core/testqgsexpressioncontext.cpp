@@ -432,10 +432,14 @@ void TestQgsExpressionContext::evaluate()
 void TestQgsExpressionContext::setFeature()
 {
   QgsFeature feature( 50LL );
+  feature.setValid( true );
   QgsExpressionContextScope scope;
   scope.setFeature( feature );
-  QVERIFY( scope.hasVariable( QgsExpressionContext::EXPR_FEATURE ) );
-  QCOMPARE(( qvariant_cast<QgsFeature>( scope.variable( QgsExpressionContext::EXPR_FEATURE ) ) ).id(), 50LL );
+  QVERIFY( scope.hasFeature() );
+  QCOMPARE( scope.feature().id(), 50LL );
+  scope.removeFeature();
+  QVERIFY( !scope.hasFeature() );
+  QVERIFY( !scope.feature().isValid() );
 
   //test setting a feature in a context with no scopes
   QgsExpressionContext emptyContext;
@@ -443,16 +447,16 @@ void TestQgsExpressionContext::setFeature()
   emptyContext.setFeature( feature );
   //setFeature should have created a scope
   QCOMPARE( emptyContext.scopeCount(), 1 );
-  QVERIFY( emptyContext.hasVariable( QgsExpressionContext::EXPR_FEATURE ) );
-  QCOMPARE(( qvariant_cast<QgsFeature>( emptyContext.variable( QgsExpressionContext::EXPR_FEATURE ) ) ).id(), 50LL );
+  QVERIFY( emptyContext.feature().isValid() );
+  QCOMPARE( emptyContext.feature().id(), 50LL );
   QCOMPARE( emptyContext.feature().id(), 50LL );
 
   QgsExpressionContext contextWithScope;
   contextWithScope << new QgsExpressionContextScope();
   contextWithScope.setFeature( feature );
   QCOMPARE( contextWithScope.scopeCount(), 1 );
-  QVERIFY( contextWithScope.hasVariable( QgsExpressionContext::EXPR_FEATURE ) );
-  QCOMPARE(( qvariant_cast<QgsFeature>( contextWithScope.variable( QgsExpressionContext::EXPR_FEATURE ) ) ).id(), 50LL );
+  QVERIFY( contextWithScope.feature().isValid() );
+  QCOMPARE( contextWithScope.feature().id(), 50LL );
   QCOMPARE( contextWithScope.feature().id(), 50LL );
 }
 
@@ -652,7 +656,7 @@ void TestQgsExpressionContext::featureBasedContext()
 
   QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, fields );
 
-  QgsFeature evalFeature = qvariant_cast<QgsFeature>( context.variable( QStringLiteral( "_feature_" ) ) );
+  QgsFeature evalFeature = context.feature();
   QgsFields evalFields = qvariant_cast<QgsFields>( context.variable( QStringLiteral( "_fields_" ) ) );
   QCOMPARE( evalFeature.attributes(), f.attributes() );
   QCOMPARE( evalFields, fields );

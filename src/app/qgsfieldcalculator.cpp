@@ -55,7 +55,7 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl, QWidget* parent )
   connect( mOutputFieldWidthSpinBox, SIGNAL( editingFinished() ), this, SLOT( setPrecisionMinMax() ) );
 
   QgsDistanceArea myDa;
-  myDa.setSourceCrs( vl->crs().srsid() );
+  myDa.setSourceCrs( vl->crs() );
   myDa.setEllipsoidalMode( true );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
   builder->setGeomCalculator( myDa );
@@ -155,7 +155,7 @@ void QgsFieldCalculator::accept()
   // Set up QgsDistanceArea each time we (re-)calculate
   QgsDistanceArea myDa;
 
-  myDa.setSourceCrs( mVectorLayer->crs().srsid() );
+  myDa.setSourceCrs( mVectorLayer->crs() );
   myDa.setEllipsoidalMode( true );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 

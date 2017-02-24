@@ -46,7 +46,7 @@ class QgsCredentials
     virtual bool requestMasterPassword( QString &password /In,Out/, bool stored = false ) = 0;
 
     //! register instance
-    void setInstance( QgsCredentials *theInstance );
+    void setInstance( QgsCredentials *instance );
 
   private:
     QgsCredentials( const QgsCredentials& );

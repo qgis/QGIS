@@ -284,11 +284,11 @@ void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const & viewEx
   memcpy( block, data.data(), size );
 }
 
-QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int theBandNo, int theStats, const QgsRectangle & theExtent, int theSampleSize )
+QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int bandNo, int stats, const QgsRectangle & boundingBox, int sampleSize )
 {
-  QgsDebugMsg( QString( "theBandNo = %1 theSampleSize = %2" ).arg( theBandNo ).arg( theSampleSize ) );
+  QgsDebugMsg( QString( "theBandNo = %1 sampleSize = %2" ).arg( bandNo ).arg( sampleSize ) );
   QgsRasterBandStats myRasterBandStats;
-  initStatistics( myRasterBandStats, theBandNo, theStats, theExtent, theSampleSize );
+  initStatistics( myRasterBandStats, bandNo, stats, boundingBox, sampleSize );
 
   Q_FOREACH ( const QgsRasterBandStats& stats, mStatistics )
   {
@@ -412,22 +412,22 @@ int QgsGrassRasterProvider::yBlockSize() const
 int QgsGrassRasterProvider::xSize() const { return mCols; }
 int QgsGrassRasterProvider::ySize() const { return mRows; }
 
-QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight, int /*theDpi*/ )
+QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
-  Q_UNUSED( theExtent );
-  Q_UNUSED( theWidth );
-  Q_UNUSED( theHeight );
+  Q_UNUSED( boundingBox );
+  Q_UNUSED( width );
+  Q_UNUSED( height );
   QMap<int, QVariant> results;
   QMap<int, QVariant> noDataResults;
   noDataResults.insert( 1, QVariant() );
   QgsRasterIdentifyResult noDataResult( QgsRaster::IdentifyFormatValue, results );
 
-  if ( theFormat != QgsRaster::IdentifyFormatValue )
+  if ( format != QgsRaster::IdentifyFormatValue )
   {
     return QgsRasterIdentifyResult( QGS_ERROR( tr( "Format not supported" ) ) );
   }
 
-  if ( !extent().contains( thePoint ) )
+  if ( !extent().contains( point ) )
   {
     return noDataResult;
   }
@@ -437,7 +437,7 @@ QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & thePo
   // attention, value tool does his own tricks with grass identify() so it stops to refresh values outside extent or null values e.g.
 
   bool ok;
-  double value = mRasterValue.value( thePoint.x(), thePoint.y(), &ok );
+  double value = mRasterValue.value( point.x(), point.y(), &ok );
 
   if ( !ok )
   {

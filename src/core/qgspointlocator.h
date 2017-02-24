@@ -160,6 +160,17 @@ class CORE_EXPORT QgsPointLocator : public QObject
         pt2 = mEdgePoints[1];
       }
 
+      bool operator==( const Match& other ) const
+      {
+        return mType == other.mType &&
+               mDist == other.mDist &&
+               mPoint == other.mPoint &&
+               mLayer == other.mLayer &&
+               mFid == other.mFid &&
+               mVertexIndex == other.mVertexIndex &&
+               mEdgePoints == other.mEdgePoints;
+      }
+
     protected:
       Type mType;
       double mDist;

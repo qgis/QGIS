@@ -150,9 +150,9 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { QgsPalLayerSettings::ShapeTransparency, QgsPropertyDefinition( "ShapeTransparency", QObject::tr( "Shape transparency" ), QgsPropertyDefinition::Transparency ) },
     { QgsPalLayerSettings::ShapeBlendMode, QgsPropertyDefinition( "ShapeBlendMode", QObject::tr( "Shape blend mode" ), QgsPropertyDefinition::BlendMode ) },
     { QgsPalLayerSettings::ShapeFillColor, QgsPropertyDefinition( "ShapeFillColor", QObject::tr( "Shape fill color" ), QgsPropertyDefinition::ColorWithAlpha ) },
-    { QgsPalLayerSettings::ShapeBorderColor, QgsPropertyDefinition( "ShapeBorderColor", QObject::tr( "Shape border color" ), QgsPropertyDefinition::ColorWithAlpha ) },
-    { QgsPalLayerSettings::ShapeBorderWidth, QgsPropertyDefinition( "ShapeBorderWidth", QObject::tr( "Shape border width" ), QgsPropertyDefinition::StrokeWidth ) },
-    { QgsPalLayerSettings::ShapeBorderWidthUnits, QgsPropertyDefinition( "ShapeBorderWidthUnits", QObject::tr( "Shape border width units" ), QgsPropertyDefinition::RenderUnits ) },
+    { QgsPalLayerSettings::ShapeStrokeColor, QgsPropertyDefinition( "ShapeBorderColor", QObject::tr( "Shape stroke color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+    { QgsPalLayerSettings::ShapeStrokeWidth, QgsPropertyDefinition( "ShapeBorderWidth", QObject::tr( "Shape stroke width" ), QgsPropertyDefinition::StrokeWidth ) },
+    { QgsPalLayerSettings::ShapeStrokeWidthUnits, QgsPropertyDefinition( "ShapeBorderWidthUnits", QObject::tr( "Shape stroke width units" ), QgsPropertyDefinition::RenderUnits ) },
     { QgsPalLayerSettings::ShapeJoinStyle, QgsPropertyDefinition( "ShapeJoinStyle", QObject::tr( "Shape join style" ), QgsPropertyDefinition::PenJoinStyle ) },
     { QgsPalLayerSettings::ShadowDraw, QgsPropertyDefinition( "ShadowDraw", QObject::tr( "Draw shadow" ), QgsPropertyDefinition::Boolean ) },
     { QgsPalLayerSettings::ShadowUnder, QgsPropertyDefinition( "ShadowUnder", QgsPropertyDefinition::DataTypeString, QObject::tr( "Symbol size" ), QObject::tr( "string " ) + QStringLiteral( "[<b>Lowest</b>|<b>Text</b>|<br>"
@@ -1474,7 +1474,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
       return;
     }
 
-    int divNum = static_cast< int >(( static_cast< double >( mFeaturesToLabel ) / maxNumLabels ) + 0.5 );
+    int divNum = static_cast< int >(( static_cast< double >( mFeaturesToLabel ) / maxNumLabels ) + 0.5 ); // NOLINT
     if ( divNum && ( mFeatsRegPal == static_cast< int >( mFeatsSendingToPal / divNum ) ) )
     {
       mFeatsSendingToPal += 1;
@@ -2628,14 +2628,14 @@ void QgsPalLayerSettings::parseShapeBackground( QgsRenderContext &context )
   // data defined shape fill color?
   dataDefinedValEval( DDColor, QgsPalLayerSettings::ShapeFillColor, exprVal, context.expressionContext(), QgsSymbolLayerUtils::encodeColor( background.fillColor() ) );
 
-  // data defined shape border color?
-  dataDefinedValEval( DDColor, QgsPalLayerSettings::ShapeBorderColor, exprVal, context.expressionContext(), QgsSymbolLayerUtils::encodeColor( background.borderColor() ) );
+  // data defined shape stroke color?
+  dataDefinedValEval( DDColor, QgsPalLayerSettings::ShapeStrokeColor, exprVal, context.expressionContext(), QgsSymbolLayerUtils::encodeColor( background.strokeColor() ) );
 
-  // data defined shape border width?
-  dataDefinedValEval( DDDoublePos, QgsPalLayerSettings::ShapeBorderWidth, exprVal, context.expressionContext(), background.borderWidth() );
+  // data defined shape stroke width?
+  dataDefinedValEval( DDDoublePos, QgsPalLayerSettings::ShapeStrokeWidth, exprVal, context.expressionContext(), background.strokeWidth() );
 
-  // data defined shape border width units?
-  dataDefinedValEval( DDUnits, QgsPalLayerSettings::ShapeBorderWidthUnits, exprVal, context.expressionContext() );
+  // data defined shape stroke width units?
+  dataDefinedValEval( DDUnits, QgsPalLayerSettings::ShapeStrokeWidthUnits, exprVal, context.expressionContext() );
 
   // data defined shape join style?
   dataDefinedValEval( DDJoinStyle, QgsPalLayerSettings::ShapeJoinStyle, exprVal, context.expressionContext(), QgsSymbolLayerUtils::encodePenJoinStyle( background.joinStyle() ) );
@@ -3224,10 +3224,10 @@ void QgsPalLabeling::dataDefinedShapeBackground( QgsPalLayerSettings& tmpLyr,
     changed = true;
   }
 
-  if ( ddValues.contains( QgsPalLayerSettings::ShapeBorderColor ) )
+  if ( ddValues.contains( QgsPalLayerSettings::ShapeStrokeColor ) )
   {
-    QVariant ddColor = ddValues.value( QgsPalLayerSettings::ShapeBorderColor );
-    background.setBorderColor( ddColor.value<QColor>() );
+    QVariant ddColor = ddValues.value( QgsPalLayerSettings::ShapeStrokeColor );
+    background.setStrokeColor( ddColor.value<QColor>() );
     changed = true;
   }
 
@@ -3237,15 +3237,15 @@ void QgsPalLabeling::dataDefinedShapeBackground( QgsPalLayerSettings& tmpLyr,
     changed = true;
   }
 
-  if ( ddValues.contains( QgsPalLayerSettings::ShapeBorderWidth ) )
+  if ( ddValues.contains( QgsPalLayerSettings::ShapeStrokeWidth ) )
   {
-    background.setBorderWidth( ddValues.value( QgsPalLayerSettings::ShapeBorderWidth ).toDouble() );
+    background.setStrokeWidth( ddValues.value( QgsPalLayerSettings::ShapeStrokeWidth ).toDouble() );
     changed = true;
   }
 
-  if ( ddValues.contains( QgsPalLayerSettings::ShapeBorderWidthUnits ) )
+  if ( ddValues.contains( QgsPalLayerSettings::ShapeStrokeWidthUnits ) )
   {
-    background.setBorderWidthUnit( static_cast< QgsUnitTypes::RenderUnit >( ddValues.value( QgsPalLayerSettings::ShapeBorderWidthUnits ).toInt() ) );
+    background.setStrokeWidthUnit( static_cast< QgsUnitTypes::RenderUnit >( ddValues.value( QgsPalLayerSettings::ShapeStrokeWidthUnits ).toInt() ) );
     changed = true;
   }
 

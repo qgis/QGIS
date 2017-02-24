@@ -744,51 +744,51 @@ void QgsSingleBandPseudoColorRendererWidget::on_mColorInterpolationComboBox_curr
   emit widgetChanged();
 }
 
-void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int theBandNo, double theMin, double theMax )
+void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int bandNo, double min, double max )
 {
-  Q_UNUSED( theBandNo );
-  QgsDebugMsg( QString( "theBandNo = %1 theMin = %2 theMax = %3" ).arg( theBandNo ).arg( theMin ).arg( theMax ) );
+  Q_UNUSED( bandNo );
+  QgsDebugMsg( QString( "theBandNo = %1 min = %2 max = %3" ).arg( bandNo ).arg( min ).arg( max ) );
 
   mDisableMinMaxWidgetRefresh = true;
-  if ( qIsNaN( theMin ) )
+  if ( qIsNaN( min ) )
   {
     mMinLineEdit->clear();
   }
   else
   {
-    mMinLineEdit->setText( QString::number( theMin ) );
+    mMinLineEdit->setText( QString::number( min ) );
   }
 
-  if ( qIsNaN( theMax ) )
+  if ( qIsNaN( max ) )
   {
     mMaxLineEdit->clear();
   }
   else
   {
-    mMaxLineEdit->setText( QString::number( theMax ) );
+    mMaxLineEdit->setText( QString::number( max ) );
   }
   mDisableMinMaxWidgetRefresh = false;
   classify();
 }
 
-void QgsSingleBandPseudoColorRendererWidget::setLineEditValue( QLineEdit * theLineEdit, double theValue )
+void QgsSingleBandPseudoColorRendererWidget::setLineEditValue( QLineEdit * lineEdit, double value )
 {
   QString s;
-  if ( !qIsNaN( theValue ) )
+  if ( !qIsNaN( value ) )
   {
-    s = QString::number( theValue );
+    s = QString::number( value );
   }
-  theLineEdit->setText( s );
+  lineEdit->setText( s );
 }
 
-double QgsSingleBandPseudoColorRendererWidget::lineEditValue( const QLineEdit * theLineEdit ) const
+double QgsSingleBandPseudoColorRendererWidget::lineEditValue( const QLineEdit * lineEdit ) const
 {
-  if ( theLineEdit->text().isEmpty() )
+  if ( lineEdit->text().isEmpty() )
   {
     return std::numeric_limits<double>::quiet_NaN();
   }
 
-  return theLineEdit->text().toDouble();
+  return lineEdit->text().toDouble();
 }
 
 void QgsSingleBandPseudoColorRendererWidget::resetClassifyButton()

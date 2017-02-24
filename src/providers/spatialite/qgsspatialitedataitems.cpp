@@ -78,7 +78,7 @@ QgsSLConnectionItem::QgsSLConnectionItem( QgsDataItem* parent, QString name, QSt
   mToolTip = mDbPath;
 }
 
-static QgsLayerItem::LayerType _layerTypeFromDb( QString dbType )
+static QgsLayerItem::LayerType _layerTypeFromDb( const QString& dbType )
 {
   if ( dbType == QLatin1String( "POINT" ) || dbType == QLatin1String( "MULTIPOINT" ) )
   {
@@ -371,8 +371,8 @@ QGISEXTERN int dataCapabilities()
   return  QgsDataProvider::Database;
 }
 
-QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
+QGISEXTERN QgsDataItem * dataItem( QString path, QgsDataItem* parentItem )
 {
-  Q_UNUSED( thePath );
+  Q_UNUSED( path );
   return new QgsSLRootItem( parentItem, QStringLiteral( "SpatiaLite" ), QStringLiteral( "spatialite:" ) );
 }

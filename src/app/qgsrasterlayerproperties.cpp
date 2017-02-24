@@ -69,7 +69,7 @@
 #include <QMouseEvent>
 #include <QVector>
 
-QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanvas* theCanvas, QWidget *parent, Qt::WindowFlags fl )
+QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanvas* canvas, QWidget *parent, Qt::WindowFlags fl )
     : QgsOptionsDialogBase( QStringLiteral( "RasterLayerProperties" ), parent, fl )
     // Constant that signals property not used.
     , TRSTRING_NOT_SET( tr( "Not Set" ) )
@@ -81,7 +81,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     , mRendererWidget( nullptr )
     , mGradientHeight( 0.0 )
     , mGradientWidth( 0.0 )
-    , mMapCanvas( theCanvas )
+    , mMapCanvas( canvas )
     , mHistogramWidget( nullptr )
 {
   mGrayMinimumMaximumEstimated = true;
@@ -162,7 +162,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   mPixelSelectorTool = nullptr;
   if ( mMapCanvas )
   {
-    mPixelSelectorTool = new QgsMapToolEmitPoint( theCanvas );
+    mPixelSelectorTool = new QgsMapToolEmitPoint( canvas );
     connect( mPixelSelectorTool, SIGNAL( canvasClicked( const QgsPoint&, Qt::MouseButton ) ), this, SLOT( pixelSelected( const QgsPoint& ) ) );
   }
   else
@@ -1633,10 +1633,10 @@ void QgsRasterLayerProperties::pixelSelected( const QgsPoint& canvasPoint )
   tableTransparency->resizeRowsToContents();
 }
 
-void QgsRasterLayerProperties::sliderTransparency_valueChanged( int theValue )
+void QgsRasterLayerProperties::sliderTransparency_valueChanged( int value )
 {
   //set the transparency percentage label to a suitable value
-  int myInt = static_cast < int >(( theValue / 255.0 ) * 100 );  //255.0 to prevent integer division
+  int myInt = static_cast < int >(( value / 255.0 ) * 100 );  //255.0 to prevent integer division
   lblTransparencyPercent->setText( QString::number( myInt ) + '%' );
 }//sliderTransparency_valueChanged
 

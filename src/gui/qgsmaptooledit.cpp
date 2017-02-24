@@ -34,34 +34,52 @@ double QgsMapToolEdit::defaultZValue() const
   return QSettings().value( QStringLiteral( "/qgis/digitizing/default_z_value" ), Qgis::DEFAULT_Z_COORDINATE ).toDouble();
 }
 
-QgsRubberBand* QgsMapToolEdit::createRubberBand( QgsWkbTypes::GeometryType geometryType, bool alternativeBand )
+QColor QgsMapToolEdit::digitizingStrokeColor()
 {
   QSettings settings;
-  QgsRubberBand* rb = new QgsRubberBand( mCanvas, geometryType );
-  rb->setWidth( settings.value( QStringLiteral( "/qgis/digitizing/line_width" ), 1 ).toInt() );
   QColor color(
     settings.value( QStringLiteral( "/qgis/digitizing/line_color_red" ), 255 ).toInt(),
     settings.value( QStringLiteral( "/qgis/digitizing/line_color_green" ), 0 ).toInt(),
     settings.value( QStringLiteral( "/qgis/digitizing/line_color_blue" ), 0 ).toInt() );
   double myAlpha = settings.value( QStringLiteral( "/qgis/digitizing/line_color_alpha" ), 200 ).toInt() / 255.0;
-  if ( alternativeBand )
-  {
-    myAlpha = myAlpha * settings.value( QStringLiteral( "/qgis/digitizing/line_color_alpha_scale" ), 0.75 ).toDouble();
-    rb->setLineStyle( Qt::DotLine );
-  }
-  if ( geometryType == QgsWkbTypes::PolygonGeometry )
-  {
-    color.setAlphaF( myAlpha );
-  }
   color.setAlphaF( myAlpha );
-  rb->setColor( color );
+  return color;
+}
 
+int QgsMapToolEdit::digitizingStrokeWidth()
+{
+  QSettings settings;
+  return settings.value( QStringLiteral( "/qgis/digitizing/line_width" ), 1 ).toInt();
+}
+
+QColor QgsMapToolEdit::digitizingFillColor()
+{
+  QSettings settings;
   QColor fillColor(
     settings.value( QStringLiteral( "/qgis/digitizing/fill_color_red" ), 255 ).toInt(),
     settings.value( QStringLiteral( "/qgis/digitizing/fill_color_green" ), 0 ).toInt(),
     settings.value( QStringLiteral( "/qgis/digitizing/fill_color_blue" ), 0 ).toInt() );
-  myAlpha = settings.value( QStringLiteral( "/qgis/digitizing/fill_color_alpha" ), 30 ).toInt() / 255.0 ;
+  double myAlpha = settings.value( QStringLiteral( "/qgis/digitizing/fill_color_alpha" ), 30 ).toInt() / 255.0 ;
   fillColor.setAlphaF( myAlpha );
+  return fillColor;
+}
+
+
+QgsRubberBand* QgsMapToolEdit::createRubberBand( QgsWkbTypes::GeometryType geometryType, bool alternativeBand )
+{
+  QSettings settings;
+  QgsRubberBand* rb = new QgsRubberBand( mCanvas, geometryType );
+  rb->setWidth( digitizingStrokeWidth() );
+  QColor color = digitizingStrokeColor();
+  if ( alternativeBand )
+  {
+    double alphaScale = settings.value( QStringLiteral( "/qgis/digitizing/line_color_alpha_scale" ), 0.75 ).toDouble();
+    color.setAlphaF( color.alphaF() * alphaScale );
+    rb->setLineStyle( Qt::DotLine );
+  }
+  rb->setStrokeColor( color );
+
+  QColor fillColor = digitizingFillColor();
   rb->setFillColor( fillColor );
 
   rb->show();
@@ -111,7 +129,7 @@ QgsGeometryRubberBand* QgsMapToolEdit::createGeometryRubberBand( QgsWkbTypes::Ge
     rb->setLineStyle( Qt::DotLine );
   }
   color.setAlphaF( myAlpha );
-  rb->setOutlineColor( color );
+  rb->setStrokeColor( color );
   rb->setFillColor( color );
   rb->show();
   return rb;
