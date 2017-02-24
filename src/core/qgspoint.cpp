@@ -17,6 +17,7 @@
 
 
 #include "qgspoint.h"
+#include "qgspointv2.h"
 
 #include <cmath>
 #include <QTextStream>
@@ -28,6 +29,12 @@ QgsPoint::QgsPoint( const QgsPoint& p )
 {
   mX = p.x();
   mY = p.y();
+}
+
+QgsPoint::QgsPoint( const QgsPointV2& point )
+    : mX( point.x() )
+    , mY( point.y() )
+{
 }
 
 QPointF QgsPoint::toQPointF() const

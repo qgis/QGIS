@@ -27,6 +27,8 @@
 #include <QPoint>
 #include <QObject>
 
+class QgsPointV2;
+
 /** \ingroup core
  * A class to represent a point.
  * For Z and M support prefer QgsPointV2.
@@ -74,6 +76,14 @@ class CORE_EXPORT QgsPoint
         : mX( point.x() )
         , mY( point.y() )
     {}
+
+    /**
+     * Create a new point.
+     * Z and M values will be dropped.
+     *
+     * @note Added in QGIS 3.0
+     */
+    QgsPoint( const QgsPointV2& point );
 
     ~QgsPoint()
     {}
