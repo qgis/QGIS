@@ -67,4 +67,10 @@ class QgsGeometryUtils
 
     static QgsPointV2 midpoint (const QgsPointV2& pt1, const QgsPointV2& pt2);
 
+    static double slope( const QgsPointV2& pt1, const QgsPointV2& pt2 );
+
+    static QVector<double> coefficients(const QgsPointV2 &pt1, const QgsPointV2 &pt2);
+
+    static QgsLineString* perpendicularSegment( const QgsPointV2& p, const QgsPointV2& s1, const QgsPointV2& s2 );
+
 };

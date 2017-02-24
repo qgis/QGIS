@@ -3328,6 +3328,7 @@ void TestQgsGeometry::triangle()
   t6.clear();
   QgsConstWkbPtr wkb16ptr5( wkb );
   t6.fromWkb( wkb16ptr5 );
+  QCOMPARE( t5.wkbType(), QgsWkbTypes::TriangleZM );
   QCOMPARE( t5, t6 );
 
   //bad WKB - check for no crash
@@ -3340,6 +3341,62 @@ void TestQgsGeometry::triangle()
   QgsConstWkbPtr wkbPointPtr( wkbPoint );
   QVERIFY( !t6.fromWkb( wkbPointPtr ) );
   QCOMPARE( t6.wkbType(), QgsWkbTypes::Triangle );
+
+  // lengths and angles
+  QgsTriangle t7( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) );
+
+  QVector<double> a_tested, a_t7 = t7.angles();
+  a_tested.append( M_PI / 4.0 );
+  a_tested.append( M_PI / 2.0 );
+  a_tested.append( M_PI / 4.0 );
+  QGSCOMPARENEAR( a_tested.at( 0 ), a_t7.at( 0 ), 0.0001 );
+  QGSCOMPARENEAR( a_tested.at( 1 ), a_t7.at( 1 ), 0.0001 );
+  QGSCOMPARENEAR( a_tested.at( 2 ), a_t7.at( 2 ), 0.0001 );
+
+  QVector<double> l_tested, l_t7 = t7.lengths();
+  l_tested.append( 5 );
+  l_tested.append( 5 );
+  l_tested.append( sqrt( 5*5 + 5*5 ) );
+  QGSCOMPARENEAR( l_tested.at( 0 ), l_t7.at( 0 ), 0.0001 );
+  QGSCOMPARENEAR( l_tested.at( 1 ), l_t7.at( 1 ), 0.0001 );
+  QGSCOMPARENEAR( l_tested.at( 2 ), l_t7.at( 2 ), 0.0001 );
+
+  // type of triangle
+  QVERIFY( t7.isRight() );
+  QVERIFY( t7.isIsocele() );
+  QVERIFY( !t7.isScalene() );
+  QVERIFY( !t7.isEquilateral() );
+
+  QgsTriangle t8( QgsPointV2( 7.2825, 4.2368 ), QgsPointV2( 13.0058, 3.3218 ), QgsPointV2( 9.2145, 6.5242 ) );
+  // angles in radians 58.8978;31.1036;89.9985
+  // length 5.79598;4.96279;2.99413
+  QVERIFY( t8.isRight() );
+  QVERIFY( !t8.isIsocele() );
+  QVERIFY( t8.isScalene() );
+  QVERIFY( !t8.isEquilateral() );
+
+  QgsTriangle t9( QgsPointV2( 10, 10 ), QgsPointV2( 16, 10 ), QgsPointV2( 13, 15.1962 ) );
+  QVERIFY( !t9.isRight() );
+  QVERIFY( t9.isIsocele() );
+  QVERIFY( !t9.isScalene() );
+  QVERIFY( t9.isEquilateral() );
+
+  // vertex
+  QCOMPARE( t9.vertexAt( -1 ), QgsPointV2( 0, 0 ) );
+  QCOMPARE( t9.vertexAt( 0 ), QgsPointV2( 10, 10 ) );
+  QCOMPARE( t9.vertexAt( 1 ), QgsPointV2( 16, 10 ) );
+  QCOMPARE( t9.vertexAt( 2 ), QgsPointV2( 13, 15.1962 ) );
+  QCOMPARE( t9.vertexAt( 3 ), QgsPointV2( 10, 10 ) );
+  QCOMPARE( t9.vertexAt( 4 ), QgsPointV2( 0, 0 ) );
+
+  // altitudes
+  QgsTriangle t10( QgsPointV2( 20, 2 ), QgsPointV2( 16, 6 ), QgsPointV2( 26, 2 ) );
+  QVector<QgsLineString *> alt = t10.altitudes();
+  QGSCOMPARENEARPOINT( alt.at( 0 )->pointN( 1 ), QgsPointV2( 20.8276, 4.0690 ), 0.0001 );
+  QGSCOMPARENEARPOINT( alt.at( 1 )->pointN( 1 ), QgsPointV2( 16, 2 ), 0.0001 );
+  QGSCOMPARENEARPOINT( alt.at( 2 )->pointN( 1 ), QgsPointV2( 23, -1 ), 0.0001 );
+
+
 }
 
 void TestQgsGeometry::compoundCurve()

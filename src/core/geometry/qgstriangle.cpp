@@ -158,12 +158,6 @@ bool QgsTriangle::fromWkt( const QString &wkt )
   return true;
 }
 
-/*
-QByteArray QgsTriangle::asWkb() const
-{
-    return QByteArray();
-}*/
-
 QgsAbstractGeometry *QgsTriangle::toCurveType() const
 {
   QgsCurvePolygon* curvePolygon = new QgsCurvePolygon();
@@ -231,3 +225,92 @@ QgsAbstractGeometry *QgsTriangle::boundary() const
 
   return mExteriorRing->clone();
 }
+
+QgsPointV2 QgsTriangle::vertexAt( int atVertex ) const
+{
+  QgsVertexId id( 0, 0, atVertex );
+  return mExteriorRing->vertexAt( id );
+}
+
+QVector<double> QgsTriangle::lengths() const
+{
+  QVector<double> lengths;
+  lengths.append( vertexAt( 0 ).distance( vertexAt( 1 ) ) );
+  lengths.append( vertexAt( 1 ).distance( vertexAt( 2 ) ) );
+  lengths.append( vertexAt( 2 ).distance( vertexAt( 0 ) ) );
+
+  return lengths;
+}
+
+QVector<double> QgsTriangle::angles() const
+{
+  QVector<double> angles;
+  double ax, ay, bx, by, cx, cy;
+
+  ax = vertexAt( 0 ).x();
+  ay = vertexAt( 0 ).y();
+  bx = vertexAt( 1 ).x();
+  by = vertexAt( 1 ).y();
+  cx = vertexAt( 2 ).x();
+  cy = vertexAt( 2 ).y();
+
+  double a1 = fmod( QgsGeometryUtils::angleBetweenThreePoints( cx, cy, ax, ay, bx, by ), M_PI );
+  double a2 = fmod( QgsGeometryUtils::angleBetweenThreePoints( ax, ay, bx, by, cx, cy ), M_PI );
+  double a3 = fmod( QgsGeometryUtils::angleBetweenThreePoints( bx, by, cx, cy, ax, ay ), M_PI );
+
+  angles.append(( a1 > M_PI / 2 ? a1 - M_PI / 2 : a1 ) );
+  angles.append(( a2 > M_PI / 2 ? a2 - M_PI / 2 : a2 ) );
+  angles.append(( a3 > M_PI / 2 ? a3 - M_PI / 2 : a3 ) );
+
+  return angles;
+}
+
+bool QgsTriangle::isIsocele( double lengthTolerance ) const
+{
+  QVector<double> sides = lengths();
+  bool ab_bc = qgsDoubleNear( sides.at( 0 ), sides.at( 1 ), lengthTolerance );
+  bool bc_ca = qgsDoubleNear( sides.at( 1 ), sides.at( 2 ), lengthTolerance );
+  bool ca_ab = qgsDoubleNear( sides.at( 2 ), sides.at( 0 ), lengthTolerance );
+
+  return ( ab_bc || bc_ca || ca_ab );
+}
+
+bool QgsTriangle::isEquilateral( double lengthTolerance ) const
+{
+  QVector<double> sides = lengths();
+  bool ab_bc = qgsDoubleNear( sides.at( 0 ), sides.at( 1 ), lengthTolerance );
+  bool bc_ca = qgsDoubleNear( sides.at( 1 ), sides.at( 2 ), lengthTolerance );
+  bool ca_ab = qgsDoubleNear( sides.at( 2 ), sides.at( 0 ), lengthTolerance );
+
+  return ( ab_bc && bc_ca && ca_ab );
+}
+
+bool QgsTriangle::isRight( double angleTolerance ) const
+{
+  QVector<double> a = angles();
+  QVector<double>::iterator ita = a.begin();
+  while ( ita != a.end() )
+  {
+    if ( qgsDoubleNear( *ita, M_PI / 2.0, angleTolerance ) )
+      return true;
+    ita++;
+  }
+  return false;
+}
+
+bool QgsTriangle::isScalene( double lengthTolerance ) const
+{
+  return !isIsocele( lengthTolerance );
+}
+
+QVector<QgsLineString *> QgsTriangle::altitudes() const
+{
+  QVector<QgsLineString *> alt;
+  alt.append( QgsGeometryUtils::perpendicularSegment( vertexAt( 0 ), vertexAt( 2 ), vertexAt( 1 ) ) );
+  alt.append( QgsGeometryUtils::perpendicularSegment( vertexAt( 1 ), vertexAt( 0 ), vertexAt( 2 ) ) );
+  alt.append( QgsGeometryUtils::perpendicularSegment( vertexAt( 2 ), vertexAt( 0 ), vertexAt( 1 ) ) );
+
+  return alt;
+}
+
+

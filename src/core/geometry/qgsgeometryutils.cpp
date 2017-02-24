@@ -844,6 +844,82 @@ QgsPointV2 QgsGeometryUtils::midpoint( const QgsPointV2 &pt1, const QgsPointV2 &
   return QgsPointV2( pType, x, y, z, m );
 }
 
+double QgsGeometryUtils::slope( const QgsPointV2 &pt1, const QgsPointV2 &pt2 )
+{
+  double delta_x = pt2.x() - pt1.x();
+  double delta_y = pt2.y() - pt1.y();
+  if ( qgsDoubleNear( delta_x, 0.0 ) )
+  {
+    return INFINITY;
+  }
+  return delta_y / delta_x;
+}
+
+QVector<double> QgsGeometryUtils::coefficients( const QgsPointV2 &pt1, const QgsPointV2 &pt2 )
+{
+  QVector<double> coef;
+  if ( qgsDoubleNear( pt1.x(), pt2.x() ) )
+  {
+    coef.append( 1 );
+    coef.append( 0 );
+    coef.append( -pt1.x() );
+  }
+  else if ( qgsDoubleNear( pt1.y(), pt2.y() ) )
+  {
+    coef.append( 0 );
+    coef.append( 1 );
+    coef.append( -pt1.y() );
+  }
+  else
+  {
+    coef.append( pt1.y() - pt2.y() );
+    coef.append( pt2.x() - pt1.x() );
+    coef.append( pt1.x() * pt2.y() - pt1.y() * pt2.x() );
+  }
+
+  return coef;
+}
+
+QgsLineString* QgsGeometryUtils::perpendicularSegment( const QgsPointV2 &p, const QgsPointV2 &s1, const QgsPointV2 &s2 )
+{
+  QgsLineString *line = new QgsLineString;
+  QgsPointV2 p2;
+
+  if (( p == s1 ) || ( p == s2 ) )
+  {
+    return line;
+  }
+
+  QVector<double> coef = coefficients( s1, s2 );
+  double a = coef.at( 0 );
+  double b = coef.at( 1 );
+  double c = coef.at( 2 );
+
+  if ( qgsDoubleNear( a, 0 ) )
+  {
+    p2 = QgsPointV2( p.x(), s1.y() );
+  }
+  else if ( qgsDoubleNear( b, 0 ) )
+  {
+    p2 = QgsPointV2( s1.x(), p.y() );
+  }
+  else
+  {
+    double y = ( -c - a * p.x() ) / b;
+    double m = slope( s1, s2 );
+    double d2 = 1 + m * m;
+    double H = p.y() - y;
+    double dx = m * H / d2;
+    double dy = m * dx;
+    p2 = QgsPointV2( p.x() + dx, y + dy );
+  }
+
+  line->addVertex( p );
+  line->addVertex( p2 );
+
+  return line;
+}
+
 double QgsGeometryUtils::lineAngle( double x1, double y1, double x2, double y2 )
 {
   double at = atan2( y2 - y1, x2 - x1 );
