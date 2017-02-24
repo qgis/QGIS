@@ -345,6 +345,8 @@
 
 #include "nodetool/qgsmaptoolnodetool.h"
 
+#include "nodetool/qgsnodetool2.h"
+
 // Editor widgets
 #include "qgseditorwidgetregistry.h"
 //
@@ -1323,6 +1325,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mMoveFeatureCopy;
   delete mMapTools.mMoveLabel;
   delete mMapTools.mNodeTool;
+  delete mMapTools.mNodeTool2;
   delete mMapTools.mOffsetCurve;
   delete mMapTools.mPinLabels;
   delete mMapTools.mReshapeFeatures;
@@ -1740,6 +1743,7 @@ void QgisApp::createActions()
   connect( mActionMergeFeatureAttributes, &QAction::triggered, this, &QgisApp::mergeAttributesOfSelectedFeatures );
   connect( mActionMultiEditAttributes, &QAction::triggered, this, &QgisApp::modifyAttributesOfSelectedFeatures );
   connect( mActionNodeTool, &QAction::triggered, this, &QgisApp::nodeTool );
+  connect( mActionNodeTool2, &QAction::triggered, this, &QgisApp::nodeTool2 );
   connect( mActionRotatePointSymbols, &QAction::triggered, this, &QgisApp::rotatePointSymbols );
   connect( mActionOffsetPointSymbol, &QAction::triggered, this, &QgisApp::offsetPointSymbol );
   connect( mActionSnappingOptions, &QAction::triggered, this, &QgisApp::snappingOptions );
@@ -2011,6 +2015,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionMergeFeatures );
   mMapToolGroup->addAction( mActionMergeFeatureAttributes );
   mMapToolGroup->addAction( mActionNodeTool );
+  mMapToolGroup->addAction( mActionNodeTool2 );
   mMapToolGroup->addAction( mActionRotatePointSymbols );
   mMapToolGroup->addAction( mActionOffsetPointSymbol );
   mMapToolGroup->addAction( mActionPinLabels );
@@ -2766,6 +2771,7 @@ void QgisApp::setTheme( const QString &themeName )
   mActionSplitParts->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSplitParts.svg" ) ) );
   mActionDeleteSelected->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ) );
   mActionNodeTool->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNodeTool.svg" ) ) );
+  mActionNodeTool2->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNodeTool.svg" ) ) );
   mActionSimplifyFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSimplify.svg" ) ) );
   mActionUndo->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUndo.svg" ) ) );
   mActionRedo->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRedo.svg" ) ) );
@@ -3029,6 +3035,8 @@ void QgisApp::createCanvasTools()
   mMapTools.mDeletePart->setAction( mActionDeletePart );
   mMapTools.mNodeTool = new QgsMapToolNodeTool( mMapCanvas );
   mMapTools.mNodeTool->setAction( mActionNodeTool );
+  mMapTools.mNodeTool2 = new QgsNodeTool2( mMapCanvas, mAdvancedDigitizingDockWidget );
+  mMapTools.mNodeTool2->setAction( mActionNodeTool2 );
   mMapTools.mRotatePointSymbolsTool = new QgsMapToolRotatePointSymbols( mMapCanvas );
   mMapTools.mRotatePointSymbolsTool->setAction( mActionRotatePointSymbols );
   mMapTools.mOffsetPointSymbolTool = new QgsMapToolOffsetPointSymbol( mMapCanvas );
@@ -7561,6 +7569,11 @@ void QgisApp::nodeTool()
   mMapCanvas->setMapTool( mMapTools.mNodeTool );
 }
 
+void QgisApp::nodeTool2()
+{
+  mMapCanvas->setMapTool( mMapTools.mNodeTool2 );
+}
+
 void QgisApp::rotatePointSymbols()
 {
   mMapCanvas->setMapTool( mMapTools.mRotatePointSymbolsTool );
@@ -10928,6 +10941,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionRotateFeature->setEnabled( false );
     mActionOffsetCurve->setEnabled( false );
     mActionNodeTool->setEnabled( false );
+    mActionNodeTool2->setEnabled( false );
     mActionDeleteSelected->setEnabled( false );
     mActionCutFeatures->setEnabled( false );
     mActionCopyFeatures->setEnabled( false );
@@ -11086,6 +11100,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionMoveFeatureCopy->setEnabled( isEditable && canChangeGeometry );
       mActionRotateFeature->setEnabled( isEditable && canChangeGeometry );
       mActionNodeTool->setEnabled( isEditable && canChangeGeometry );
+      mActionNodeTool2->setEnabled( isEditable && canChangeGeometry );
 
       if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
       {
@@ -11232,6 +11247,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionFillRing->setEnabled( false );
     mActionAddPart->setEnabled( false );
     mActionNodeTool->setEnabled( false );
+    mActionNodeTool2->setEnabled( false );
     mActionMoveFeature->setEnabled( false );
     mActionMoveFeatureCopy->setEnabled( false );
     mActionRotateFeature->setEnabled( false );
