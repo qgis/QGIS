@@ -13,7 +13,4 @@
 #                                                                         #
 ###########################################################################
 
-export DEBIAN_FRONTEND=noninteractive
-export CORES=2
-
 pip install autopep8

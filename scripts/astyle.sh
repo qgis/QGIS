@@ -14,7 +14,7 @@
 #                                                                         #
 ###########################################################################
 
-for ASTYLE in $(dirname $0)/qgisstyle $(dirname $0)/RelWithDebInfo/qgisstyle
+for ASTYLE in ${QGISSTYLE} $(dirname $0)/qgisstyle $(dirname $0)/RelWithDebInfo/qgisstyle
 do
 	if type -p $ASTYLE >/dev/null; then
 		break
