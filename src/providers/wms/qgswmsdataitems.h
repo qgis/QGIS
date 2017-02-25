@@ -144,6 +144,7 @@ class QgsXyzLayerItem : public QgsLayerItem
     virtual QList<QAction*> actions() override;
 
   public slots:
+    void editConnection();
     void deleteConnection();
 };
 

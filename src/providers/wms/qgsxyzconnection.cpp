@@ -24,6 +24,10 @@ QString QgsXyzConnection::encodedUri() const
   QgsDataSourceUri uri;
   uri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
   uri.setParam( QStringLiteral( "url" ), url );
+  if ( zMin != -1 )
+    uri.setParam( QStringLiteral( "zmin" ), QString::number( zMin ) );
+  if ( zMax != -1 )
+    uri.setParam( QStringLiteral( "zmax" ), QString::number( zMax ) );
   return uri.encodedUri();
 }
 
@@ -42,6 +46,8 @@ QgsXyzConnection QgsXyzConnectionUtils::connection( const QString &name )
   QgsXyzConnection conn;
   conn.name = name;
   conn.url = settings.value( QStringLiteral( "url" ) ).toString();
+  conn.zMin = settings.value( QStringLiteral( "zmin" ), -1 ).toInt();
+  conn.zMax = settings.value( QStringLiteral( "zmax" ), -1 ).toInt();
   return conn;
 }
 
@@ -56,4 +62,6 @@ void QgsXyzConnectionUtils::addConnection( const QgsXyzConnection &conn )
   QSettings settings;
   settings.beginGroup( "/Qgis/connections-xyz/" + conn.name );
   settings.setValue( QStringLiteral( "url" ), conn.url );
+  settings.setValue( QStringLiteral( "zmin" ), conn.zMin );
+  settings.setValue( QStringLiteral( "zmax" ), conn.zMax );
 }

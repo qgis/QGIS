@@ -22,6 +22,8 @@ struct QgsXyzConnection
 {
   QString name;
   QString url;
+  int zMin = -1;
+  int zMax = -1;
 
   QString encodedUri() const;
 };
