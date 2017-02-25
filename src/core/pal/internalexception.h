@@ -53,7 +53,7 @@ namespace pal
           }
       };
 
-      /** \brief Thrown when trying to access an empty dada set
+      /** \brief Thrown when trying to access an empty data set
        * \ingroup core
       */
       class Empty : public std::exception
