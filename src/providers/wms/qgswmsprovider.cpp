@@ -3922,8 +3922,6 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
       {
         QgsMessageLog::logMessage( tr( "Returned image is flawed [Content-Type:%1; URL: %2]" )
                                    .arg( contentType, reply->url().toString() ), tr( "WMS" ) );
-
-        repeatTileRequest( reply->request() );
       }
     }
     else
@@ -3948,7 +3946,9 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
         QgsWmsStatistics::Stat& stat = QgsWmsStatistics::statForUri( mProviderUri );
         stat.errors++;
 
-        repeatTileRequest( reply->request() );
+        // if we reached timeout, let's try again (e.g. in case of slow connection or slow server)
+        if ( reply->error() == QNetworkReply::TimeoutError )
+          repeatTileRequest( reply->request() );
       }
     }
 
