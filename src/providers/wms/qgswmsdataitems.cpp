@@ -24,6 +24,7 @@
 #include "qgsnewhttpconnection.h"
 #include "qgstilescalewidget.h"
 #include "qgsxyzconnection.h"
+#include "qgsxyzconnectiondialog.h"
 
 #include <QInputDialog>
 
@@ -504,20 +505,11 @@ QList<QAction *> QgsXyzTileRootItem::actions()
 
 void QgsXyzTileRootItem::newConnection()
 {
-  QString url = QInputDialog::getText( nullptr, tr( "New XYZ tile layer" ),
-                                       tr( "Please enter XYZ tile layer URL. {x}, {y}, {z} will be replaced by actual tile coordinates." ) );
-  if ( url.isEmpty() )
+  QgsXyzConnectionDialog dlg;
+  if ( !dlg.exec() )
     return;
 
-  QString name = QInputDialog::getText( nullptr, tr( "New XYZ tile layer" ),
-                                        tr( "Please enter name of the tile layer:" ) );
-  if ( name.isEmpty() )
-    return;
-
-  QgsXyzConnection conn;
-  conn.name = name;
-  conn.url = url;
-  QgsXyzConnectionUtils::addConnection( conn );
+  QgsXyzConnectionUtils::addConnection( dlg.connection() );
 
   refresh();
 }
@@ -536,11 +528,28 @@ QList<QAction *> QgsXyzLayerItem::actions()
 {
   QList<QAction*> lst = QgsLayerItem::actions();
 
+  QAction* actionEdit = new QAction( tr( "Edit..." ), this );
+  connect( actionEdit, &QAction::triggered, this, &QgsXyzLayerItem::editConnection );
+  lst << actionEdit;
+
   QAction* actionDelete = new QAction( tr( "Delete" ), this );
   connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteConnection() ) );
   lst << actionDelete;
 
   return lst;
+}
+
+void QgsXyzLayerItem::editConnection()
+{
+  QgsXyzConnectionDialog dlg;
+  dlg.setConnection( QgsXyzConnectionUtils::connection( mName ) );
+  if ( !dlg.exec() )
+    return;
+
+  QgsXyzConnectionUtils::deleteConnection( mName );
+  QgsXyzConnectionUtils::addConnection( dlg.connection() );
+
+  mParent->refresh();
 }
 
 void QgsXyzLayerItem::deleteConnection()

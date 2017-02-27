@@ -36,7 +36,6 @@ matrix:
             - poppler-utils
             - txt2tags
             - xvfb
-            - flip
             - clang-3.8
 
 
