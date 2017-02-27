@@ -23,7 +23,7 @@
 
 class QStandardItemModel;
 class QSortFilterProxyModel;
-class QgsGenericProjectionSelector;
+class QgsProjectionSelectionDialog;
 class QgsOwsConnection;
 
 /** \ingroup gui
@@ -53,7 +53,7 @@ class GUI_EXPORT QgsSourceSelectDialog : public QDialog, protected Ui::QgsSource
   protected:
     QString mServiceName;
     ServiceType mServiceType;
-    QgsGenericProjectionSelector* mProjectionSelector = nullptr;
+    QgsProjectionSelectionDialog* mProjectionSelector = nullptr;
     //  Available CRS for a server connection, key=typename, value=list("EPSG:XXXX")
     QMap<QString, QStringList> mAvailableCRS;
     QStandardItemModel* mModel = nullptr;

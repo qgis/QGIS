@@ -17,15 +17,11 @@
  ***************************************************************************/
 #include "qgsapplication.h"
 
-#include <qgsgenericprojectionselector.h>
+#include "qgsprojectionselectiondialog.h"
 #include <QApplication>
 #include <QSettings>
 
-/**
- * \class QgsGenericProjectionSelector
- * \brief A generic dialog to prompt the user for a Coordinate Reference System
- */
-QgsGenericProjectionSelector::QgsGenericProjectionSelector( QWidget *parent,
+QgsProjectionSelectionDialog::QgsProjectionSelectionDialog( QWidget *parent,
     Qt::WindowFlags fl )
     : QDialog( parent, fl )
 {
@@ -38,14 +34,15 @@ QgsGenericProjectionSelector::QgsGenericProjectionSelector( QWidget *parent,
   textEdit->hide();
 
   //apply selected projection upon double click on item
-  connect( projectionSelector, SIGNAL( projectionDoubleClicked() ), this, SLOT( accept() ) );
+  connect( projectionSelector, &QgsProjectionSelectionTreeWidget::projectionDoubleClicked, this, &QgsProjectionSelectionDialog::accept );
 }
 
-void QgsGenericProjectionSelector::setMessage( QString message )
+void QgsProjectionSelectionDialog::setMessage( const QString& message )
 {
+  QString m = message;
   //short term kludge to make the layer selector default to showing
   //a layer projection selection message. If you want the selector
-  if ( message.isEmpty() )
+  if ( m.isEmpty() )
   {
     // Set up text edit pane
     QString format( QStringLiteral( "<h1>%1</h1>%2 %3" ) );
@@ -53,48 +50,32 @@ void QgsGenericProjectionSelector::setMessage( QString message )
     QString sentence1 = tr( "This layer appears to have no projection specification." );
     QString sentence2 = tr( "By default, this layer will now have its projection set to that of the project, "
                             "but you may override this by selecting a different projection below." );
-    message = format.arg( header, sentence1, sentence2 );
+    m = format.arg( header, sentence1, sentence2 );
   }
 
   QString myStyle = QgsApplication::reportStyleSheet();
-  message = "<head><style>" + myStyle + "</style></head><body>" + message + "</body>";
-  textEdit->setHtml( message );
+  m = "<head><style>" + myStyle + "</style></head><body>" + m + "</body>";
+  textEdit->setHtml( m );
   textEdit->show();
 }
 
-QgsGenericProjectionSelector::~QgsGenericProjectionSelector()
+QgsProjectionSelectionDialog::~QgsProjectionSelectionDialog()
 {
   QSettings settings;
   settings.setValue( QStringLiteral( "/Windows/ProjectionSelector/geometry" ), saveGeometry() );
 }
 
-void QgsGenericProjectionSelector::setSelectedCrsName( const QString& name )
+QgsCoordinateReferenceSystem QgsProjectionSelectionDialog::crs() const
 {
-  projectionSelector->setSelectedCrsName( name );
+  return projectionSelector->crs();
 }
 
-void QgsGenericProjectionSelector::setSelectedCrsId( long theID )
+void QgsProjectionSelectionDialog::setCrs( const QgsCoordinateReferenceSystem& crs )
 {
-  projectionSelector->setSelectedCrsId( theID );
+  projectionSelector->setCrs( crs );
 }
 
-void QgsGenericProjectionSelector::setSelectedAuthId( const QString& theID )
-{
-  projectionSelector->setSelectedAuthId( theID );
-}
-
-long QgsGenericProjectionSelector::selectedCrsId()
-{
-  //@note don't use getSelectedWkt as that just returns the name part!
-  return projectionSelector->selectedCrsId();
-}
-
-QString QgsGenericProjectionSelector::selectedAuthId()
-{
-  return projectionSelector->selectedAuthId();
-}
-
-void QgsGenericProjectionSelector::setOgcWmsCrsFilter( const QSet<QString>& crsFilter )
+void QgsProjectionSelectionDialog::setOgcWmsCrsFilter( const QSet<QString>& crsFilter )
 {
   projectionSelector->setOgcWmsCrsFilter( crsFilter );
 }

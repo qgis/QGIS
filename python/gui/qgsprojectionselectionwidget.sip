@@ -30,7 +30,7 @@ class QgsProjectionSelectionWidget : QWidget
      * Can be used to modify how the projection selector dialog behaves.
      * @returns projection selector dialog
      */
-    QgsGenericProjectionSelector* dialog();
+    QgsProjectionSelectionDialog* dialog();
 
     /** Returns the currently selected CRS for the widget
      * @returns current CRS

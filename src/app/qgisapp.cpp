@@ -167,7 +167,7 @@
 #include "qgsfieldformatterregistry.h"
 #include "qgsformannotation.h"
 #include "qgshtmlannotation.h"
-#include "qgsgenericprojectionselector.h"
+#include "qgsprojectionselectiondialog.h"
 #include "qgsgpsinformationwidget.h"
 #include "qgsguivectorlayertools.h"
 #include "qgslabelingwidget.h"
@@ -525,7 +525,7 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
     // @note this class is not a descendent of QWidget so we can't pass
     // it in the ctor of the layer projection selector
 
-    QgsGenericProjectionSelector *mySelector = new QgsGenericProjectionSelector();
+    QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog();
     mySelector->setMessage( srs.validationHint() ); //shows a generic message, if not specified
     if ( sAuthId.isNull() )
       sAuthId = QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().authid();
@@ -533,7 +533,7 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
     QgsCoordinateReferenceSystem defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( sAuthId );
     if ( defaultCrs.isValid() )
     {
-      mySelector->setSelectedCrsId( defaultCrs.srsid() );
+      mySelector->setCrs( defaultCrs );
     }
 
     bool waiting = QApplication::overrideCursor() && QApplication::overrideCursor()->shape() == Qt::WaitCursor;
@@ -542,9 +542,9 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
 
     if ( mySelector->exec() )
     {
-      QgsDebugMsg( "Layer srs set from dialog: " + QString::number( mySelector->selectedCrsId() ) );
-      sAuthId = mySelector->selectedAuthId();
-      srs.createFromOgcWmsCrs( mySelector->selectedAuthId() );
+      QgsDebugMsg( "Layer srs set from dialog: " + QString::number( mySelector->crs().srsid() ) );
+      srs = mySelector->crs();
+      sAuthId = srs.authid();
     }
 
     if ( waiting )
@@ -8740,16 +8740,16 @@ void QgisApp::setLayerCrs()
     return;
   }
 
-  QgsGenericProjectionSelector mySelector( this );
-  mySelector.setSelectedCrsId( mLayerTreeView->currentLayer()->crs().srsid() );
-  mySelector.setMessage();
+  QgsProjectionSelectionDialog mySelector( this );
+  mySelector.setCrs( mLayerTreeView->currentLayer()->crs() );
+  mySelector.setMessage( QString() );
   if ( !mySelector.exec() )
   {
     QApplication::restoreOverrideCursor();
     return;
   }
 
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromSrsId( mySelector.selectedCrsId() );
+  QgsCoordinateReferenceSystem crs = mySelector.crs();
 
   Q_FOREACH ( QgsLayerTreeNode* node, mLayerTreeView->selectedNodes() )
   {
@@ -8897,15 +8897,15 @@ void QgisApp::legendGroupSetCrs()
   if ( !currentGroup )
     return;
 
-  QgsGenericProjectionSelector mySelector( this );
-  mySelector.setMessage();
+  QgsProjectionSelectionDialog mySelector( this );
+  mySelector.setMessage( QString() );
   if ( !mySelector.exec() )
   {
     QApplication::restoreOverrideCursor();
     return;
   }
 
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromSrsId( mySelector.selectedCrsId() );
+  QgsCoordinateReferenceSystem crs = mySelector.crs();
   Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, currentGroup->findLayers() )
   {
     if ( nodeLayer->layer() )

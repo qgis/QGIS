@@ -18,7 +18,7 @@
 #include "qgssourceselectdialog.h"
 #include "qgsowsconnection.h"
 #include "qgsnewhttpconnection.h"
-#include "qgsgenericprojectionselector.h"
+#include "qgsprojectionselectiondialog.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgscontexthelp.h"
 #include "qgsproject.h"
@@ -74,8 +74,8 @@ QgsSourceSelectDialog::QgsSourceSelectDialog( const QString& serviceName, Servic
   connect( btnChangeSpatialRefSys, SIGNAL( clicked() ), this, SLOT( changeCrs() ) );
   connect( lineFilter, SIGNAL( textChanged( QString ) ), this, SLOT( filterChanged( QString ) ) );
   populateConnectionList();
-  mProjectionSelector = new QgsGenericProjectionSelector( this );
-  mProjectionSelector->setMessage();
+  mProjectionSelector = new QgsProjectionSelectionDialog( this );
+  mProjectionSelector->setMessage( QString() );
 
   treeView->setItemDelegate( new QgsSourceSelectItemDelegate( treeView ) );
 
@@ -367,7 +367,7 @@ void QgsSourceSelectDialog::changeCrs()
 {
   if ( mProjectionSelector->exec() )
   {
-    QString crsString = mProjectionSelector->selectedAuthId();
+    QString crsString = mProjectionSelector->crs().authid();
     labelCoordRefSys->setText( crsString );
   }
 }
@@ -397,7 +397,7 @@ void QgsSourceSelectDialog::changeCrsFilter()
         if ( !preferredCRS.isEmpty() )
         {
           QgsCoordinateReferenceSystem refSys = QgsCoordinateReferenceSystem::fromOgcWmsCrs( preferredCRS );
-          mProjectionSelector->setSelectedCrsId( refSys.srsid() );
+          mProjectionSelector->setCrs( refSys );
 
           labelCoordRefSys->setText( preferredCRS );
         }

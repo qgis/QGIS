@@ -22,7 +22,7 @@
 class QgsGrassPlugin;
 class QgisInterface;
 class QgsPoint;
-class QgsProjectionSelector;
+class QgsProjectionSelectionTreeWidget;
 
 extern "C"
 {
@@ -109,7 +109,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     void setProjectionPage();
 
     //! Projection selected
-    void sridSelected( QString );
+    void sridSelected();
     void projectionSelected();
 
     //! Location radio switched
@@ -200,7 +200,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     static bool sRunning;
 
     //! Projection selector
-    QgsProjectionSelector *mProjectionSelector = nullptr;
+    QgsProjectionSelectionTreeWidget *mProjectionSelector = nullptr;
 
     //! GRASS projection
     struct Cell_head mCellHead;

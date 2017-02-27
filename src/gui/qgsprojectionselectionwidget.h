@@ -25,7 +25,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgis_gui.h"
 
-class QgsGenericProjectionSelector;
+class QgsProjectionSelectionDialog;
 
 /**
  * \class QgsProjectionSelectionWidget
@@ -56,7 +56,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      * Can be used to modify how the projection selector dialog behaves.
      * @returns projection selector dialog
      */
-    QgsGenericProjectionSelector* dialog() { return mDialog; }
+    QgsProjectionSelectionDialog* dialog() { return mDialog; }
 
     /** Returns the currently selected CRS for the widget
      * @returns current CRS
@@ -121,7 +121,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
     QgsCoordinateReferenceSystem mDefaultCrs;
     QComboBox* mCrsComboBox = nullptr;
     QToolButton* mButton = nullptr;
-    QgsGenericProjectionSelector* mDialog = nullptr;
+    QgsProjectionSelectionDialog* mDialog = nullptr;
     QString mNotSetText;
 
     void addNotSetOption();

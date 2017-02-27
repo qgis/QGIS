@@ -257,6 +257,7 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 - QgsFormAnnotationItem. Use QgsFormAnnotation instead.
 - QgsHtmlAnnotationItem. Use QgsHtmlAnnotation instead.
 - QgsHttpTransaction. This class was outdated and code should be ported to native Qt or Python implementations.
+- QgsGenericProjectionSelector. Use QgsProjectionSelectionTreeWidget instead.
 - QgsLabel and QgsLabelAttributes. Replaced by labeling based on PAL library, see QgsLabelingEngine.
 - QgsLabelingEngineInterface. Replaced by QgsLabelingEngine.
 - QgsLegendInterface was removed. It was replaced by layer tree API (QgsLayerTreeNode class and others).
@@ -276,6 +277,7 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 - QgsRendererV2DataDefinedMenus was removed. Use QgsPropertyOverrideButton instead.
 - QgsSizeScaleWidget. Use QgsPropertyAssistantWidget instead.
 - QgsLegacyHelpers.
+- QgsProjectionSelector. Use QgsProjectionSelectionDialog instead.
 - QgsProviderCountCalcEvent and QgsProviderExtentCalcEvent. These classes were unused in QGIS core and unmaintained.
 - QgsWebviewWidgetWrapper was removed. Use QgsExternalResourceWidgetWrapper instead.
 - QgsEditorWidgetConfig was removed. Use QVariantMap instead.

@@ -81,7 +81,6 @@
 %Include qgsfloatingwidget.sip
 %Include qgsfocuswatcher.sip
 %Include qgsformannotation.sip
-%Include qgsgenericprojectionselector.sip
 %Include qgsgeometryrubberband.sip
 %Include qgsgradientcolorrampdialog.sip
 %Include qgsgradientstopeditor.sip
@@ -138,8 +137,9 @@
 %Include qgspluginmanagerinterface.sip
 %Include qgspresetcolorrampdialog.sip
 %Include qgsprevieweffect.sip
+%Include qgsprojectionselectiondialog.sip
+%Include qgsprojectionselectiontreewidget.sip
 %Include qgsprojectionselectionwidget.sip
-%Include qgsprojectionselector.sip
 %Include qgspropertyassistantwidget.sip
 %Include qgspropertyoverridebutton.sip
 %Include qgsquerybuilder.sip

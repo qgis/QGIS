@@ -26,7 +26,7 @@
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 
-class QgsGenericProjectionSelector;
+class QgsProjectionSelectionDialog;
 class QgsWfsCapabilities;
 class QgsSQLComposerDialog;
 
@@ -56,7 +56,7 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
 
   private:
     QgsWFSSourceSelect(); //default constructor is forbidden
-    QgsGenericProjectionSelector* mProjectionSelector = nullptr;
+    QgsProjectionSelectionDialog* mProjectionSelector = nullptr;
 
     /** Stores the available CRS for a server connections.
      The first string is the typename, the corresponding list

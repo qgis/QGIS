@@ -770,7 +770,7 @@
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_21">
                   <item>
-                   <widget class="QgsProjectionSelector" name="projectionSelector" native="true"/>
+                   <widget class="QgsProjectionSelectionTreeWidget" name="projectionSelector" native="true"/>
                   </item>
                  </layout>
                 </widget>
@@ -2604,9 +2604,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsProjectionSelector</class>
+   <class>QgsProjectionSelectionTreeWidget</class>
    <extends>QWidget</extends>
-   <header>qgsprojectionselector.h</header>
+   <header>qgsprojectionselectiontreewidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

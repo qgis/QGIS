@@ -56,7 +56,7 @@ from qgis.gui import (
     QgsFieldComboBox,
     QgsFieldExpressionWidget,
     QgsFieldProxyModel,
-    QgsGenericProjectionSelector,
+    QgsProjectionSelectionDialog,
     QgsMapLayerComboBox,
     QgsProjectionSelectionWidget,
 )
@@ -311,13 +311,13 @@ class CrsWidgetWrapper(WidgetWrapper):
             return widget
 
     def selectProjection(self):
-        dialog = QgsGenericProjectionSelector(self.widget)
+        dialog = QgsProjectionSelectionDialog(self.widget)
         current_crs = QgsCoordinateReferenceSystem(self.combo.currentText())
         if current_crs.isValid():
-            dialog.setSelectedCrsId(current_crs.srsid())
+            dialog.setCrs(current_crs)
 
         if dialog.exec_():
-            self.setValue(dialog.selectedAuthId())
+            self.setValue(dialog.crs().authid())
 
     def setValue(self, value):
         if self.dialogType == DIALOG_MODELER:

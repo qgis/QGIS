@@ -23,7 +23,7 @@
 #include "qgswfsdatasourceuri.h"
 #include "qgswfsutils.h"
 #include "qgsnewhttpconnection.h"
-#include "qgsgenericprojectionselector.h"
+#include "qgsprojectionselectiondialog.h"
 #include "qgscontexthelp.h"
 #include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
@@ -82,8 +82,8 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, Qt::WindowFlags fl, boo
   connect( btnChangeSpatialRefSys, SIGNAL( clicked() ), this, SLOT( changeCRS() ) );
   connect( lineFilter, SIGNAL( textChanged( QString ) ), this, SLOT( filterChanged( QString ) ) );
   populateConnectionList();
-  mProjectionSelector = new QgsGenericProjectionSelector( this );
-  mProjectionSelector->setMessage();
+  mProjectionSelector = new QgsProjectionSelectionDialog( this );
+  mProjectionSelector->setMessage( QString() );
 
   mItemDelegate = new QgsWFSItemDelegate( treeView );
   treeView->setItemDelegate( mItemDelegate );
@@ -677,7 +677,7 @@ void QgsWFSSourceSelect::changeCRS()
 {
   if ( mProjectionSelector->exec() )
   {
-    QString crsString = mProjectionSelector->selectedAuthId();
+    QString crsString = mProjectionSelector->crs().authid();
     labelCoordRefSys->setText( crsString );
   }
 }
@@ -704,7 +704,7 @@ void QgsWFSSourceSelect::changeCRSFilter()
         if ( !preferredCRS.isEmpty() )
         {
           QgsCoordinateReferenceSystem refSys = QgsCoordinateReferenceSystem::fromOgcWmsCrs( preferredCRS );
-          mProjectionSelector->setSelectedCrsId( refSys.srsid() );
+          mProjectionSelector->setCrs( refSys );
 
           labelCoordRefSys->setText( preferredCRS );
         }

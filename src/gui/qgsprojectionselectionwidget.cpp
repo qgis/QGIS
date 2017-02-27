@@ -18,14 +18,14 @@
 
 #include "qgsprojectionselectionwidget.h"
 #include "qgsapplication.h"
-#include "qgsgenericprojectionselector.h"
+#include "qgsprojectionselectiondialog.h"
 #include "qgsproject.h"
 #include <QSettings>
 
 QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
     : QWidget( parent )
 {
-  mDialog = new QgsGenericProjectionSelector( this );
+  mDialog = new QgsProjectionSelectionDialog( this );
 
   QHBoxLayout* layout = new QHBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
@@ -66,7 +66,7 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
   setFocusPolicy( Qt::StrongFocus );
   setFocusProxy( mButton );
 
-  connect( mButton, SIGNAL( clicked() ), this, SLOT( selectCrs() ) );
+  connect( mButton, &QToolButton::clicked, this, &QgsProjectionSelectionWidget::selectCrs );
   connect( mCrsComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( comboIndexChanged( int ) ) );
 }
 
@@ -173,7 +173,7 @@ void QgsProjectionSelectionWidget::selectCrs()
   //find out crs id of current proj4 string
   if ( mCrs.isValid() )
   {
-    mDialog->setSelectedCrsId( mCrs.srsid() );
+    mDialog->setCrs( mCrs );
   }
 
   if ( mDialog->exec() )
@@ -181,7 +181,7 @@ void QgsProjectionSelectionWidget::selectCrs()
     mCrsComboBox->blockSignals( true );
     mCrsComboBox->setCurrentIndex( mCrsComboBox->findData( QgsProjectionSelectionWidget::CurrentCrs ) );
     mCrsComboBox->blockSignals( false );
-    QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mDialog->selectedAuthId() );
+    QgsCoordinateReferenceSystem crs = mDialog->crs();
     setCrs( crs );
     emit crsChanged( crs );
   }

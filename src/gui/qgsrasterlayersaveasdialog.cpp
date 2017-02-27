@@ -21,7 +21,7 @@
 #include "qgsrasterformatsaveoptionswidget.h"
 #include "qgsrasterrenderer.h"
 #include "qgsrastertransparency.h"
-#include "qgsgenericprojectionselector.h"
+#include "qgsprojectionselectiondialog.h"
 
 #include "gdal.h"
 
