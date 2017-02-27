@@ -185,6 +185,7 @@
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapcanvasdockwidget.h"
 #include "qgsmapcanvassnappingutils.h"
 #include "qgsmapcanvastracer.h"
 #include "qgsmaplayer.h"
@@ -3113,19 +3114,18 @@ QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name )
     }
   }
 
-  QgsMapCanvas *mapCanvas = new QgsMapCanvas( this );
-  \
+  QgsMapCanvasDockWidget *mapCanvasWidget = new QgsMapCanvasDockWidget( name, this );
+  mapCanvasWidget->setAllowedAreas( Qt::AllDockWidgetAreas );
+
+  QgsMapCanvas *mapCanvas = mapCanvasWidget->mapCanvas();
   mapCanvas->freeze( true );
   mapCanvas->setObjectName( name );
 
-  QDockWidget *mapWidget = new QDockWidget( name, this );
-  mapWidget->setAllowedAreas( Qt::AllDockWidgetAreas );
-  mapWidget->setWidget( mapCanvas );
   applyProjectSettingsToCanvas( mapCanvas );
 
   mapCanvas->setDestinationCrs( QgsProject::instance()->crs() );
 
-  addDockWidget( Qt::RightDockWidgetArea, mapWidget );
+  addDockWidget( Qt::RightDockWidgetArea, mapCanvasWidget );
   mapCanvas->freeze( false );
   return mapCanvas;
 }
