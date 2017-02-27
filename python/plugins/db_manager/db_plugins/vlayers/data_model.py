@@ -26,7 +26,7 @@ from .plugin import LVectorTable
 from ..plugin import DbError
 
 from qgis.PyQt.QtCore import QUrl, QTime, QTemporaryFile
-from qgis.core import Qgis, QgsVectorLayer, QgsWkbTypes, QgsWkbTypes
+from qgis.core import Qgis, QgsVectorLayer, QgsWkbTypes, QgsWkbTypes, QgsVirtualLayerDefinition
 
 
 class LTableDataModel(TableDataModel):
@@ -68,7 +68,6 @@ class LSqlResultModel(BaseTableModel):
 
     def __init__(self, db, sql, parent=None):
         # create a virtual layer with non-geometry results
-        q = QUrl.toPercentEncoding(sql)
         t = QTime()
         t.start()
 
@@ -77,7 +76,10 @@ class LSqlResultModel(BaseTableModel):
         tmp = tf.fileName()
         tf.close()
 
-        p = QgsVectorLayer("%s?query=%s" % (QUrl.fromLocalFile(tmp).toString(), q), "vv", "virtual")
+        df = QgsVirtualLayerDefinition()
+        df.setFilePath(tmp)
+        df.setQuery(sql)
+        p = QgsVectorLayer(df.toString(), "vv", "virtual")
         self._secs = t.elapsed() / 1000.0
 
         if not p.isValid():
