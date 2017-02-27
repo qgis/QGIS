@@ -418,7 +418,14 @@ void QgsSnappingUtils::setConfig( const QgsSnappingConfig& config )
     onIndividualLayerSettingsChanged( config.individualLayerSettings() );
 
   mSnappingConfig = config;
-  emit configChanged();
+
+  emit configChanged( mSnappingConfig );
+}
+
+void QgsSnappingUtils::toggleEnabled()
+{
+  mSnappingConfig.setEnabled( !mSnappingConfig.enabled() );
+  emit configChanged( mSnappingConfig );
 }
 
 QgsPointLocator::Match QgsSnappingUtils::snapToCurrentLayer( QPoint point, int type, QgsPointLocator::MatchFilter* filter )

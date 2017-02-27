@@ -469,13 +469,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsSnappingConfig snappingConfig() const;
 
     /**
-     * The snapping configuration for this project.
-     *
-     * @note Added in QGIS 3.0
-     */
-    void setSnappingConfig( const QgsSnappingConfig& snappingConfig );
-
-    /**
      * A list of layers with which intersections should be avoided.
      *
      * @note Added in QGIS 3.0
@@ -749,7 +742,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void homePathChanged();
 
     //! emitted whenever the configuration for snapping has changed
-    void snappingConfigChanged();
+    void snappingConfigChanged( const QgsSnappingConfig& config );
 
     /** Emitted whenever the expression variables stored in the project have been changed.
      * @note added in QGIS 3.0
@@ -893,6 +886,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void legendLayersAdded( const QList<QgsMapLayer*>& layers );
 
   public slots:
+
+    /**
+     * The snapping configuration for this project.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void setSnappingConfig( const QgsSnappingConfig& snappingConfig );
 
     /**
      * Flag the project as dirty (modified). If this flag is set, the user will
