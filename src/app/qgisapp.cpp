@@ -1605,6 +1605,22 @@ void QgisApp::readRecentProjects()
   settings.endGroup();
 }
 
+void QgisApp::applyProjectSettingsToCanvas( QgsMapCanvas *canvas )
+{
+  int red = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), 255 );
+  int green = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), 255 );
+  int blue = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), 255 );
+  QColor myColor = QColor( red, green, blue );
+  canvas->setCanvasColor( myColor );
+
+  int alpha = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorAlphaPart" ), 255 );
+  red = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorRedPart" ), 255 );
+  green = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorGreenPart" ), 255 );
+  blue = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorBluePart" ), 0 );
+  myColor = QColor( red, green, blue, alpha );
+  canvas->setSelectionColor( myColor );
+}
+
 void QgisApp::readSettings()
 {
   QgsSettings settings;
@@ -4564,27 +4580,27 @@ void QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   //set the color for selections
   //the default can be set in qgisoptions
   //use project properties to override the color on a per project basis
-  int myRed = settings.value( QStringLiteral( "/qgis/default_selection_color_red" ), 255 ).toInt();
-  int myGreen = settings.value( QStringLiteral( "/qgis/default_selection_color_green" ), 255 ).toInt();
-  int myBlue = settings.value( QStringLiteral( "/qgis/default_selection_color_blue" ), 0 ).toInt();
-  int myAlpha = settings.value( QStringLiteral( "/qgis/default_selection_color_alpha" ), 255 ).toInt();
-  prj->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorRedPart" ), myRed );
-  prj->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorGreenPart" ), myGreen );
-  prj->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorBluePart" ), myBlue );
-  prj->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorAlphaPart" ), myAlpha );
-  mMapCanvas->setSelectionColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
+  int red = settings.value( QStringLiteral( "/qgis/default_selection_color_red" ), 255 ).toInt();
+  int green = settings.value( QStringLiteral( "/qgis/default_selection_color_green" ), 255 ).toInt();
+  int blue = settings.value( QStringLiteral( "/qgis/default_selection_color_blue" ), 0 ).toInt();
+  int alpha = settings.value( QStringLiteral( "/qgis/default_selection_color_alpha" ), 255 ).toInt();
+  prj->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorRedPart" ), red );
+  prj->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorGreenPart" ), green );
+  prj->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorBluePart" ), blue );
+  prj->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorAlphaPart" ), alpha );
 
   //set the canvas to the default background color
   //the default can be set in qgisoptions
   //use project properties to override the color on a per project basis
-  myRed = settings.value( QStringLiteral( "/qgis/default_canvas_color_red" ), 255 ).toInt();
-  myGreen = settings.value( QStringLiteral( "/qgis/default_canvas_color_green" ), 255 ).toInt();
-  myBlue = settings.value( QStringLiteral( "/qgis/default_canvas_color_blue" ), 255 ).toInt();
-  prj->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), myRed );
-  prj->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), myGreen );
-  prj->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), myBlue );
-  mMapCanvas->setCanvasColor( QColor( myRed, myGreen, myBlue ) );
-  mOverviewCanvas->setBackgroundColor( QColor( myRed, myGreen, myBlue ) );
+  red = settings.value( QStringLiteral( "/qgis/default_canvas_color_red" ), 255 ).toInt();
+  green = settings.value( QStringLiteral( "/qgis/default_canvas_color_green" ), 255 ).toInt();
+  blue = settings.value( QStringLiteral( "/qgis/default_canvas_color_blue" ), 255 ).toInt();
+  prj->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), red );
+  prj->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), green );
+  prj->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), blue );
+
+  mOverviewCanvas->setBackgroundColor( QColor( red, green, blue ) );
+  applyProjectSettingsToCanvas( mMapCanvas );
 
   prj->setDirty( false );
 
@@ -5027,16 +5043,9 @@ bool QgisApp::addProject( const QString &projectFile )
   int  myGreenInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), 255 );
   int  myBlueInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), 255 );
   QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt );
-  mMapCanvas->setCanvasColor( myColor ); //this is fill color before rendering starts
   mOverviewCanvas->setBackgroundColor( myColor );
 
-  QgsDebugMsg( "Canvas background color restored..." );
-  int myAlphaInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorAlphaPart" ), 255 );
-  myRedInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorRedPart" ), 255 );
-  myGreenInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorGreenPart" ), 255 );
-  myBlueInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorBluePart" ), 0 );
-  myColor = QColor( myRedInt, myGreenInt, myBlueInt, myAlphaInt );
-  mMapCanvas->setSelectionColor( myColor ); //this is selection color before rendering starts
+  applyProjectSettingsToCanvas( mMapCanvas );
 
   //load project scales
   bool projectScales = QgsProject::instance()->readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) );
