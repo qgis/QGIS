@@ -3723,9 +3723,26 @@ static QVariant fcnMapAVals( const QVariantList& values, const QgsExpressionCont
   return getMapValue( values.at( 0 ), parent ).values();
 }
 
-static QVariant fcnEnvVar( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+static QVariant fcnEnvVar( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent )
 {
+  QString blacklistString = context->variable( "EXPRESSION_ENV_BLACKLIST" ).toString();
+
+  QStringList blacklist;
+
+  Q_FOREACH ( const QString& val, blacklistString.split( ',' ) )
+  {
+    blacklist.append( val.trimmed() );
+  }
+
   QString envVarName = values.at( 0 ).toString();
+
+  if ( blacklist.contains( envVarName ) )
+  {
+    parent->setEvalErrorString( QObject::tr( "Environment variable blacklisted." ) );
+    QgsApplication::messageLog()->logMessage( QObject::tr( "Access to environment variable '%1' denied by blacklist." ).arg( envVarName ) );
+    return QVariant( QVariant::String );
+  }
+
   return QProcessEnvironment::systemEnvironment().value( envVarName );
 }
 
