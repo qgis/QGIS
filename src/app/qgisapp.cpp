@@ -1663,6 +1663,7 @@ void QgisApp::createActions()
   connect( mActionSaveProject, SIGNAL( triggered() ), this, SLOT( fileSave() ) );
   connect( mActionSaveProjectAs, SIGNAL( triggered() ), this, SLOT( fileSaveAs() ) );
   connect( mActionSaveMapAsImage, SIGNAL( triggered() ), this, SLOT( saveMapAsImage() ) );
+  connect( mActionNewMapCanvas, &QAction::triggered, this, &QgisApp::newMapCanvas );
   connect( mActionNewPrintComposer, SIGNAL( triggered() ), this, SLOT( newPrintComposer() ) );
   connect( mActionShowComposerManager, SIGNAL( triggered() ), this, SLOT( showComposerManager() ) );
   connect( mActionExit, SIGNAL( triggered() ), this, SLOT( fileExit() ) );
@@ -3098,6 +3099,35 @@ QgsMapCanvas *QgisApp::mapCanvas()
 {
   Q_ASSERT( mMapCanvas );
   return mMapCanvas;
+}
+
+QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name )
+{
+  Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
+  {
+    if ( canvas->objectName() == name )
+    {
+      QString errorMessage = tr( "A map canvas with name '%1' already exists!" ).arg( name );
+      QgsDebugMsg( errorMessage );
+      return nullptr;
+    }
+  }
+
+  QgsMapCanvas *mapCanvas = new QgsMapCanvas( this );
+  \
+  mapCanvas->freeze( true );
+  mapCanvas->setObjectName( name );
+
+  QDockWidget *mapWidget = new QDockWidget( name, this );
+  mapWidget->setAllowedAreas( Qt::AllDockWidgetAreas );
+  mapWidget->setWidget( mapCanvas );
+  applyProjectSettingsToCanvas( mapCanvas );
+
+  mapCanvas->setDestinationCrs( QgsProject::instance()->crs() );
+
+  addDockWidget( Qt::RightDockWidgetArea, mapWidget );
+  mapCanvas->freeze( false );
+  return mapCanvas;
 }
 
 QgsMessageBar *QgisApp::messageBar()
@@ -7042,6 +7072,11 @@ QList<QgsMapCanvasAnnotationItem *> QgisApp::annotationItems()
   return itemList;
 }
 
+QList<QgsMapCanvas *> QgisApp::mapCanvases()
+{
+  return findChildren< QgsMapCanvas * >();
+}
+
 void QgisApp::removeAnnotationItems()
 {
   if ( !mMapCanvas )
@@ -9593,6 +9628,30 @@ void QgisApp::embedLayers()
       mMapCanvas->refresh();
     }
   }
+}
+
+void QgisApp::newMapCanvas()
+{
+  int i = 1;
+
+  bool existing = true;
+  QList< QgsMapCanvas * > existingCanvases = mapCanvases();
+  QString name;
+  while ( existing )
+  {
+    name = tr( "Map %1" ).arg( i++ );
+    existing = false;
+    Q_FOREACH ( QgsMapCanvas *canvas, existingCanvases )
+    {
+      if ( canvas->objectName() == name )
+      {
+        existing = true;
+        break;
+      }
+    }
+  }
+
+  createNewMapCanvas( name );
 }
 
 void QgisApp::setExtent( const QgsRectangle &rect )

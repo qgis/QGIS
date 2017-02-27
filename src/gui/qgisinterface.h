@@ -104,6 +104,18 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual bool removeCustomActionForLayerType( QAction *action ) = 0;
 
+    /**
+     * Returns a list of all map canvases open in the app.
+     * @note added in QGIS 3.0
+     */
+    virtual QList< QgsMapCanvas * > mapCanvases() = 0;
+
+    /**
+     * Create a new map canvas with the specified unique \a name.
+     * @note added in QGIS 3.0
+     */
+    virtual QgsMapCanvas *createNewMapCanvas( const QString &name ) = 0;
+
   public slots: // TODO: do these functions really need to be slots?
 
     /* Exposed functions */

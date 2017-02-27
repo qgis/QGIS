@@ -58,7 +58,15 @@ class QgisInterface : QObject
 
     /* Exposed functions */
 
-    //! Zoom to full extent of map layers
+    virtual QList< QgsMapCanvas* > mapCanvases() = 0;
+
+    virtual QgsMapCanvas* createNewMapCanvas( const QString& name ) = 0;
+
+  public slots:
+
+
+
+
     virtual void zoomFull() = 0;
 
     //! Zoom to previous view extent

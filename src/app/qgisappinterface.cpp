@@ -331,6 +331,16 @@ QgsMapCanvas *QgisAppInterface::mapCanvas()
   return qgis->mapCanvas();
 }
 
+QList<QgsMapCanvas *> QgisAppInterface::mapCanvases()
+{
+  return qgis->mapCanvases();
+}
+
+QgsMapCanvas *QgisAppInterface::createNewMapCanvas( const QString &name )
+{
+  return qgis->createNewMapCanvas( name );
+}
+
 QgsLayerTreeMapCanvasBridge *QgisAppInterface::layerTreeCanvasBridge()
 {
   return qgis->layerTreeCanvasBridge();

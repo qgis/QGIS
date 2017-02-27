@@ -179,6 +179,9 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     //! Return a pointer to the map canvas used by qgisapp
     QgsMapCanvas *mapCanvas() override;
 
+    QList< QgsMapCanvas * > mapCanvases() override;
+    QgsMapCanvas *createNewMapCanvas( const QString &name ) override;
+
     /**
      * Returns a pointer to the layer tree canvas bridge
      *
