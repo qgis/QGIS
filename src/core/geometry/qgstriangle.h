@@ -115,16 +115,60 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
      * @return Three altitudes from this triangle
      */
     QVector<QgsLineString *> altitudes( ) const;
-    // orthocenter
-    // bisectors
-    // medians
-    // medial
-    // circumcenter
-    // circumradius
-    // circumscribedCircle -> need QgsCircle (from CADDigitize.CADCircle)
-    // incenter
-    // inradius
-    // inscribedCircle -> need QgsCircle (from CADDigitize.CADCircle)
+
+    /**
+     * Medians
+     * @return Three medians from this triangle
+     */
+    QVector<QgsLineString *> medians( ) const;
+
+    /**
+     * Bisectors
+     * @return Three angle bisector from this triangle
+     */
+    QVector<QgsLineString *> bisectors( double lengthTolerance = 0.0001 ) const;
+
+    /**
+     * Medial
+     * @return The medial from this triangle
+     */
+    QgsTriangle medial( ) const;
+
+    /**
+     * Orthocenter
+     * @return The orthocenter of the triangle (intersection of the altitudes of a triangle.)
+     */
+    QgsPointV2 orthocenter( double lengthTolerance = 0.0001 ) const;
+
+    /**
+     * Center of the circumscribed circle of the triangle
+     * @return The center of the circumscribed circle of the triangle
+     */
+    QgsPointV2 circumscribedCenter( ) const;
+
+    /**
+     * Radius of the circumscribed circle of the triangle
+     * @return The radius of the circumscribed circle of the triangle
+     */
+    double circumscribedRadius( ) const;
+
+    // TODO:
+    // QgsCircle circumscribedCircle ( ) const; // need QgsCircle (from CADDigitize.CADCircle)
+
+    /**
+     * Center of the inscribed circle of the triangle
+     * @return The center of the inscribed circle of the triangle
+     */
+    QgsPointV2 inscribedCenter( ) const;
+
+    /**
+     * Radius of the inscribed circle of the triangle
+     * @return The radius of the inscribed circle of the triangle
+     */
+    double inscribedRadius( ) const;
+
+    // TODO:
+    // QgsCircle inscribedCircle ( ) const; // need QgsCircle (from CADDigitize.CADCircle)
 
 };
 #endif // QGSTRIANGLE_H

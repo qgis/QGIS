@@ -3397,6 +3397,70 @@ void TestQgsGeometry::triangle()
   QGSCOMPARENEARPOINT( alt.at( 1 )->pointN( 1 ), QgsPointV2( 16, 2 ), 0.0001 );
   QGSCOMPARENEARPOINT( alt.at( 2 )->pointN( 1 ), QgsPointV2( 23, -1 ), 0.0001 );
 
+  // orthocenter
+  QCOMPARE( QgsPointV2( 16, -8 ), t10.orthocenter() );
+  QCOMPARE( QgsPointV2( 0, 5 ), t7.orthocenter() );
+  QGSCOMPARENEARPOINT( QgsPointV2( 13, 11.7321 ), t9.orthocenter(), 0.0001 );
+
+  // circumscribed circle
+  QCOMPARE( QgsPointV2( 2.5, 2.5 ), t7.circumscribedCenter() );
+  QGSCOMPARENEAR( 3.5355, t7.circumscribedRadius(), 0.0001 );
+  QCOMPARE( QgsPointV2( 23, 9 ), t10.circumscribedCenter() );
+  QGSCOMPARENEAR( 7.6158, t10.circumscribedRadius(), 0.0001 );
+  QGSCOMPARENEARPOINT( QgsPointV2( 13, 11.7321 ), t9.circumscribedCenter(), 0.0001 );
+  QGSCOMPARENEAR( 3.4641, t9.circumscribedRadius(), 0.0001 );
+
+  // inscribed circle
+  QGSCOMPARENEARPOINT( QgsPointV2( 1.4645, 3.5355 ), t7.inscribedCenter(), 0.001 );
+  QGSCOMPARENEAR( 1.4645, t7.inscribedRadius(), 0.0001 );
+  QGSCOMPARENEARPOINT( QgsPointV2( 20.4433, 3.0701 ), t10.inscribedCenter(), 0.001 );
+  QGSCOMPARENEAR( 1.0701, t10.inscribedRadius(), 0.0001 );
+  QGSCOMPARENEARPOINT( QgsPointV2( 13, 11.7321 ), t9.inscribedCenter(), 0.0001 );
+  QGSCOMPARENEAR( 1.7321, t9.inscribedRadius(), 0.0001 );
+
+  // medians
+  QVector<QgsLineString *> med = t7.medians();
+  QCOMPARE( med.at( 0 )->pointN( 0 ), t7.vertexAt( 0 ) );
+  QGSCOMPARENEARPOINT( med.at( 0 )->pointN( 1 ), QgsPointV2( 2.5, 5 ), 0.0001 );
+  QCOMPARE( med.at( 1 )->pointN( 0 ), t7.vertexAt( 1 ) );
+  QGSCOMPARENEARPOINT( med.at( 1 )->pointN( 1 ), QgsPointV2( 2.5, 2.5 ), 0.0001 );
+  QCOMPARE( med.at( 2 )->pointN( 0 ), t7.vertexAt( 2 ) );
+  QGSCOMPARENEARPOINT( med.at( 2 )->pointN( 1 ), QgsPointV2( 0, 2.5 ), 0.0001 );
+  med.clear();
+
+  med = t10.medians();
+  QCOMPARE( med.at( 0 )->pointN( 0 ), t10.vertexAt( 0 ) );
+  QGSCOMPARENEARPOINT( med.at( 0 )->pointN( 1 ), QgsPointV2( 21, 4 ), 0.0001 );
+  QCOMPARE( med.at( 1 )->pointN( 0 ), t10.vertexAt( 1 ) );
+  QGSCOMPARENEARPOINT( med.at( 1 )->pointN( 1 ), QgsPointV2( 23, 2 ), 0.0001 );
+  QCOMPARE( med.at( 2 )->pointN( 0 ), t10.vertexAt( 2 ) );
+  QGSCOMPARENEARPOINT( med.at( 2 )->pointN( 1 ), QgsPointV2( 18, 4 ), 0.0001 );
+  med.clear();
+  alt.clear();
+
+  med = t9.medians();
+  alt = t9.altitudes();
+  QGSCOMPARENEARPOINT( med.at( 0 )->pointN( 0 ), alt.at( 0 )->pointN( 0 ), 0.0001 );
+  QGSCOMPARENEARPOINT( med.at( 0 )->pointN( 1 ), alt.at( 0 )->pointN( 1 ), 0.0001 );
+  QGSCOMPARENEARPOINT( med.at( 1 )->pointN( 0 ), alt.at( 1 )->pointN( 0 ), 0.0001 );
+  QGSCOMPARENEARPOINT( med.at( 1 )->pointN( 1 ), alt.at( 1 )->pointN( 1 ), 0.0001 );
+  QGSCOMPARENEARPOINT( med.at( 2 )->pointN( 0 ), alt.at( 2 )->pointN( 0 ), 0.0001 );
+  QGSCOMPARENEARPOINT( med.at( 2 )->pointN( 1 ), alt.at( 2 )->pointN( 1 ), 0.0001 );
+
+  // medial
+  QCOMPARE( t7.medial(), QgsTriangle( QgsPointV2( 0, 2.5 ), QgsPointV2( 2.5, 5 ), QgsPointV2( 2.5, 2.5 ) ) );
+  QCOMPARE( t9.medial(), QgsTriangle( QgsGeometryUtils::midpoint( t9.vertexAt( 0 ), t9.vertexAt( 1 ) ),
+                                      QgsGeometryUtils::midpoint( t9.vertexAt( 1 ), t9.vertexAt( 2 ) ),
+                                      QgsGeometryUtils::midpoint( t9.vertexAt( 2 ), t9.vertexAt( 0 ) ) ) );
+
+  // bisectors
+  QVector<QgsLineString *> bis = t7.bisectors();
+  QCOMPARE( bis.at( 0 )->pointN( 0 ), t7.vertexAt( 0 ) );
+  QGSCOMPARENEARPOINT( bis.at( 0 )->pointN( 1 ), QgsPointV2( 2.0711, 5 ), 0.0001 );
+  QCOMPARE( bis.at( 1 )->pointN( 0 ), t7.vertexAt( 1 ) );
+  QGSCOMPARENEARPOINT( bis.at( 1 )->pointN( 1 ), QgsPointV2( 2.5, 2.5 ), 0.0001 );
+  QCOMPARE( bis.at( 2 )->pointN( 0 ), t7.vertexAt( 2 ) );
+  QGSCOMPARENEARPOINT( bis.at( 2 )->pointN( 1 ), QgsPointV2( 0, 2.9289 ), 0.0001 );
 
 }
 

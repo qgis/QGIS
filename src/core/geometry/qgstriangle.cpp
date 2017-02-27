@@ -313,4 +313,109 @@ QVector<QgsLineString *> QgsTriangle::altitudes() const
   return alt;
 }
 
+QVector<QgsLineString *> QgsTriangle::medians() const
+{
+  QVector<QgsLineString *> med;
+  QgsLineString *med1 = new QgsLineString();
+  QgsLineString *med2 = new QgsLineString();
+  QgsLineString *med3 = new QgsLineString();
+  med1->setPoints( QgsPointSequence() << vertexAt( 0 ) << QgsGeometryUtils::midpoint( vertexAt( 1 ), vertexAt( 2 ) ) );
+  med2->setPoints( QgsPointSequence() << vertexAt( 1 ) << QgsGeometryUtils::midpoint( vertexAt( 0 ), vertexAt( 2 ) ) );
+  med3->setPoints( QgsPointSequence() << vertexAt( 2 ) << QgsGeometryUtils::midpoint( vertexAt( 0 ), vertexAt( 1 ) ) );
+  med.append( med1 );
+  med.append( med2 );
+  med.append( med3 );
+
+  return med;
+}
+
+QVector<QgsLineString *> QgsTriangle::bisectors( double lengthTolerance ) const
+{
+  QVector<QgsLineString *> bis;
+  QgsLineString *bis1 = new QgsLineString();
+  QgsLineString *bis2 = new QgsLineString();
+  QgsLineString *bis3 = new QgsLineString();
+  QgsPointV2 incenter = inscribedCenter();
+  QgsPointV2 out;
+
+  QgsGeometryUtils::segmentIntersection( vertexAt( 0 ), incenter, vertexAt( 1 ), vertexAt( 2 ), out, lengthTolerance );
+  bis1->setPoints( QgsPointSequence() <<  vertexAt( 0 ) << out );
+
+  QgsGeometryUtils::segmentIntersection( vertexAt( 1 ), incenter, vertexAt( 0 ), vertexAt( 2 ), out, lengthTolerance );
+  bis2->setPoints( QgsPointSequence() <<  vertexAt( 1 ) << out );
+
+  QgsGeometryUtils::segmentIntersection( vertexAt( 2 ), incenter, vertexAt( 0 ), vertexAt( 1 ), out, lengthTolerance );
+  bis3->setPoints( QgsPointSequence() <<  vertexAt( 2 ) << out );
+
+  bis.append( bis1 );
+  bis.append( bis2 );
+  bis.append( bis3 );
+
+  return bis;
+}
+
+QgsTriangle QgsTriangle::medial() const
+{
+  QgsPointV2 p1, p2, p3;
+  p1 = QgsGeometryUtils::midpoint( vertexAt( 0 ), vertexAt( 1 ) );
+  p2 = QgsGeometryUtils::midpoint( vertexAt( 1 ), vertexAt( 2 ) );
+  p3 = QgsGeometryUtils::midpoint( vertexAt( 2 ), vertexAt( 0 ) );
+  return QgsTriangle( p1, p2, p3 );
+}
+
+QgsPointV2 QgsTriangle::orthocenter( double lengthTolerance ) const
+{
+  QVector<QgsLineString *> alt = altitudes();
+  QgsPointV2 ortho;
+  QgsGeometryUtils::segmentIntersection( alt.at( 0 )->pointN( 0 ), alt.at( 0 )->pointN( 1 ), alt.at( 1 )->pointN( 0 ), alt.at( 1 )->pointN( 1 ), ortho, lengthTolerance );
+
+  return ortho;
+}
+
+QgsPointV2 QgsTriangle::circumscribedCenter() const
+{
+  double r, x, y;
+  QgsGeometryUtils::circleCenterRadius( vertexAt( 0 ), vertexAt( 1 ), vertexAt( 2 ), r, x, y );
+  return QgsPointV2( x, y );
+}
+
+double QgsTriangle::circumscribedRadius() const
+{
+  double r, x, y;
+  QgsGeometryUtils::circleCenterRadius( vertexAt( 0 ), vertexAt( 1 ), vertexAt( 2 ), r, x, y );
+  return r;
+}
+
+/*
+QgsCircle QgsTriangle::circumscribedCircle() const
+{
+
+}*/
+
+QgsPointV2 QgsTriangle::inscribedCenter() const
+{
+
+  QVector<double> l = lengths();
+  double x = ( l.at( 0 ) * vertexAt( 2 ).x() +
+               l.at( 1 ) * vertexAt( 0 ).x() +
+               l.at( 2 ) * vertexAt( 1 ).x() ) / perimeter();
+  double y = ( l.at( 0 ) * vertexAt( 2 ).y() +
+               l.at( 1 ) * vertexAt( 0 ).y() +
+               l.at( 2 ) * vertexAt( 1 ).y() ) / perimeter();
+
+  return QgsPointV2( x, y );
+}
+
+double QgsTriangle::inscribedRadius() const
+{
+  return ( 2.0 * area() / perimeter() );
+}
+
+/*
+QgsCircle QgsTriangle::inscribedCircle() const
+{
+
+}*/
+
+
 
