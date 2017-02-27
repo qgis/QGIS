@@ -18,7 +18,7 @@
 #include <QMessageBox>
 #include <QSettings>
 
-#include "qgsprojectionselector.h"
+#include "qgsprojectionselectiontreewidget.h"
 
 #include "qgsapplication.h"
 #include "qgsrasterlayer.h"

@@ -34,7 +34,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsscaleutils.h"
-#include "qgsgenericprojectionselector.h"
+#include "qgsprojectionselectiondialog.h"
 #include "qgsstyle.h"
 #include "qgssymbol.h"
 #include "qgsstylemanagerdialog.h"
@@ -106,8 +106,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
 
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
-  connect( projectionSelector, SIGNAL( sridSelected( QString ) ), this, SLOT( srIdUpdated() ) );
-  connect( projectionSelector, SIGNAL( initialized() ), this, SLOT( projectionSelectorInitialized() ) );
+  connect( projectionSelector, &QgsProjectionSelectionTreeWidget::crsSelected, this, &QgsProjectProperties::srIdUpdated );
+  connect( projectionSelector, &QgsProjectionSelectionTreeWidget::initialized, this, &QgsProjectProperties::projectionSelectorInitialized );
 
   connect( cmbEllipsoid, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateEllipsoidUI( int ) ) );
 
@@ -130,7 +130,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   updateGuiForMapUnits( srs.mapUnits() );
 
   QgsDebugMsg( "Read project CRSID: " + QString::number( mProjectSrsId ) );
-  projectionSelector->setSelectedCrsId( mProjectSrsId );
+  projectionSelector->setCrs( srs );
 
   mMapTileRenderingCheckBox->setChecked( mMapCanvas->mapSettings().testFlag( QgsMapSettings::RenderMapTile ) );
 
@@ -776,14 +776,14 @@ void QgsProjectProperties::apply()
   // selected that has an srid. This prevents error if the user
   // selects a top-level node rather than an actual coordinate
   // system
-  long myCRSID = projectionSelector->selectedCrsId();
+  long myCRSID = projectionSelector->crs().srsid();
   if ( myCRSID )
   {
     QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromSrsId( myCRSID );
     mMapCanvas->setDestinationCrs( srs );
     QgsDebugMsg( QString( "Selected CRS " ) + srs.description() );
     // write the currently selected projections _proj string_ to project settings
-    QgsDebugMsg( QString( "SpatialRefSys/ProjectCRSProj4String: %1" ).arg( projectionSelector->selectedProj4String() ) );
+    QgsDebugMsg( QString( "SpatialRefSys/ProjectCRSProj4String: %1" ).arg( projectionSelector->crs().toProj4() ) );
     QgsProject::instance()->setCrs( srs );
 
     // Set the map units to the projected coordinates if we are projecting
@@ -1212,20 +1212,22 @@ void QgsProjectProperties::on_cbxProjectionEnabled_toggled( bool onFlyEnabled )
     // reset projection to default
     const QMap<QString, QgsMapLayer*> &mapLayers = QgsProject::instance()->mapLayers();
 
+    QgsCoordinateReferenceSystem crs;
     if ( mMapCanvas->currentLayer() )
     {
-      mLayerSrsId = mMapCanvas->currentLayer()->crs().srsid();
+      crs = mMapCanvas->currentLayer()->crs();
     }
     else if ( !mapLayers.isEmpty() )
     {
-      mLayerSrsId = mapLayers.begin().value()->crs().srsid();
+      crs = mapLayers.begin().value()->crs();
     }
     else
     {
-      mLayerSrsId = mProjectSrsId;
+      crs = QgsCoordinateReferenceSystem::fromSrsId( mProjectSrsId );
     }
+    mLayerSrsId = crs.srsid();
     mProjectSrsId = mLayerSrsId;
-    projectionSelector->setSelectedCrsId( mLayerSrsId );
+    projectionSelector->setCrs( crs );
 
     // unset ellipsoid
     mEllipsoidIndex = 0;
@@ -1234,9 +1236,9 @@ void QgsProjectProperties::on_cbxProjectionEnabled_toggled( bool onFlyEnabled )
   {
     if ( !mLayerSrsId )
     {
-      mLayerSrsId = projectionSelector->selectedCrsId();
+      mLayerSrsId = projectionSelector->crs().srsid();
     }
-    projectionSelector->setSelectedCrsId( mProjectSrsId );
+    projectionSelector->setCrs( QgsCoordinateReferenceSystem::fromSrsId( mProjectSrsId ) );
   }
 
   srIdUpdated();
@@ -1303,11 +1305,10 @@ void QgsProjectProperties::updateGuiForMapUnits( QgsUnitTypes::DistanceUnit unit
 
 void QgsProjectProperties::srIdUpdated()
 {
-  long myCRSID = projectionSelector->selectedCrsId();
-  if ( !isProjected() || !myCRSID )
+  QgsCoordinateReferenceSystem srs = projectionSelector->crs();
+  if ( !isProjected() || !srs.isValid() )
     return;
 
-  QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromSrsId( myCRSID );
   //set radio button to crs map unit type
   QgsUnitTypes::DistanceUnit units = srs.mapUnits();
 
@@ -1354,15 +1355,15 @@ void QgsProjectProperties::on_pbnWMSExtCanvas_clicked()
 
 void QgsProjectProperties::on_pbnWMSAddSRS_clicked()
 {
-  QgsGenericProjectionSelector *mySelector = new QgsGenericProjectionSelector( this );
-  mySelector->setMessage();
+  QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog( this );
+  mySelector->setMessage( QString() );
   if ( mWMSList->count() > 0 )
   {
-    mySelector->setSelectedAuthId( mWMSList->item( mWMSList->count() - 1 )->text() );
+    mySelector->setCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( mWMSList->item( mWMSList->count() - 1 )->text() ) );
   }
-  if ( mySelector->exec() && mySelector->selectedCrsId() != 0 )
+  if ( mySelector->exec() && mySelector->crs().isValid() )
   {
-    QString authid = mySelector->selectedAuthId();
+    QString authid = mySelector->crs().authid();
 
     QList<QListWidgetItem *> items = mWMSList->findItems( authid.mid( 5 ), Qt::MatchFixedString );
     if ( items.isEmpty() )
@@ -1400,7 +1401,7 @@ void QgsProjectProperties::on_pbnWMSSetUsedSRS_clicked()
 
   if ( cbxProjectionEnabled->isChecked() )
   {
-    QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromSrsId( projectionSelector->selectedCrsId() );
+    QgsCoordinateReferenceSystem srs = projectionSelector->crs();
     crsList << srs.authid();
   }
 

@@ -23,7 +23,7 @@
 #include "qgisapp.h" //<--theme icons
 #include "qgsapplication.h"
 #include "qgslogger.h"
-#include "qgsgenericprojectionselector.h"
+#include "qgsprojectionselectiondialog.h"
 #include "qgscrscache.h"
 
 //qt includes
@@ -369,12 +369,10 @@ void QgsCustomProjectionDialog::on_leNameList_currentItemChanged( QTreeWidgetIte
 
 void QgsCustomProjectionDialog::on_pbnCopyCRS_clicked()
 {
-  QgsGenericProjectionSelector *mySelector = new QgsGenericProjectionSelector( this );
+  QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog( this );
   if ( mySelector->exec() )
   {
-    QgsCoordinateReferenceSystem srs;
-    QString id = mySelector->selectedAuthId();
-    srs.createFromOgcWmsCrs( id );
+    QgsCoordinateReferenceSystem srs = mySelector->crs();
     if ( leNameList->topLevelItemCount() == 0 )
     {
       on_pbnAdd_clicked();

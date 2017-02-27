@@ -26,7 +26,7 @@
 #include "qgscontrastenhancement.h"
 #include "qgscoordinatetransform.h"
 #include "qgscubicrasterresampler.h"
-#include "qgsgenericprojectionselector.h"
+#include "qgsprojectionselectiondialog.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerstyleguiutils.h"

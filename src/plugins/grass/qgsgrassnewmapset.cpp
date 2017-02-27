@@ -25,7 +25,7 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
-#include "qgsprojectionselector.h"
+#include "qgsprojectionselectiontreewidget.h"
 #include "qgslocalec.h"
 #include "qgscsexception.h"
 
@@ -354,9 +354,8 @@ void QgsGrassNewMapset::setProjectionPage()
   setGrassProjection();
 }
 
-void QgsGrassNewMapset::sridSelected( QString theSRID )
+void QgsGrassNewMapset::sridSelected()
 {
-  Q_UNUSED( theSRID );
   projectionSelected();
 }
 
@@ -383,7 +382,7 @@ void QgsGrassNewMapset::setGrassProjection()
 {
   setError( mProjErrorLabel );
 
-  QString proj4 = mProjectionSelector->selectedProj4String();
+  QString proj4 = mProjectionSelector->crs().toProj4();
 
   // Not defined
   if ( mNoProjRadioButton->isChecked() )
@@ -481,11 +480,11 @@ void QgsGrassNewMapset::setRegionPage()
   QgsCoordinateReferenceSystem newCrs;
   if ( mProjRadioButton->isChecked() )
   {
-    QgsDebugMsg( QString( "selectedCrsId() = %1" ).arg( mProjectionSelector->selectedCrsId() ) );
+    QgsDebugMsg( QString( "selectedCrsId() = %1" ).arg( mProjectionSelector->crs().srsid() ) );
 
-    if ( mProjectionSelector->selectedCrsId() > 0 )
+    if ( mProjectionSelector->crs().srsid() > 0 )
     {
-      newCrs.createFromSrsId( mProjectionSelector->selectedCrsId() );
+      newCrs = mProjectionSelector->crs();
       if ( ! newCrs.isValid() )
       {
         QgsGrass::warning( tr( "Cannot create projection." ) );
@@ -592,7 +591,7 @@ void QgsGrassNewMapset::setGrassRegionDefaults()
   if ( extSet &&
        ( mNoProjRadioButton->isChecked() ||
          ( mProjRadioButton->isChecked()
-           && srs.srsid() == mProjectionSelector->selectedCrsId() )
+           && srs.srsid() == mProjectionSelector->crs().srsid() )
        )
      )
   {
@@ -814,7 +813,7 @@ void QgsGrassNewMapset::setSelectedRegion()
 
 
   // Warning: seems that crashes if source == dest
-  if ( mProjectionSelector->selectedCrsId() != GEOCRS_ID )
+  if ( mProjectionSelector->crs().srsid() != GEOCRS_ID )
   {
     // Warning: QgsCoordinateReferenceSystem::EpsgCrsId is broken (using epsg_id)
     //QgsCoordinateReferenceSystem source ( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
@@ -826,7 +825,7 @@ void QgsGrassNewMapset::setSelectedRegion()
       return;
     }
 
-    QgsCoordinateReferenceSystem dest = QgsCoordinateReferenceSystem::fromSrsId( mProjectionSelector->selectedCrsId() );
+    QgsCoordinateReferenceSystem dest = mProjectionSelector->crs();
 
     if ( !dest.isValid() )
     {
@@ -1024,9 +1023,9 @@ void QgsGrassNewMapset::drawRegion()
   points << points[0]; // close polygon
 
   // Warning: seems that crashes if source == dest
-  if ( mProjectionSelector->selectedCrsId() != GEOCRS_ID )
+  if ( mProjectionSelector->crs().srsid() != GEOCRS_ID )
   {
-    QgsCoordinateReferenceSystem source = QgsCoordinateReferenceSystem::fromSrsId( mProjectionSelector->selectedCrsId() );
+    QgsCoordinateReferenceSystem source = mProjectionSelector->crs();
 
     if ( !source.isValid() )
     {
@@ -1358,21 +1357,21 @@ void QgsGrassNewMapset::pageSelected( int index )
       {
         QGridLayout *projectionLayout = new QGridLayout( mProjectionFrame );
 
-        mProjectionSelector = new QgsProjectionSelector( mProjectionFrame, "Projection", 0 );
+        mProjectionSelector = new QgsProjectionSelectionTreeWidget( mProjectionFrame );
         mProjectionSelector->setEnabled( false );
         projectionLayout->addWidget( mProjectionSelector, 0, 0 );
 
         mProjectionSelector->show();
 
-        connect( mProjectionSelector, SIGNAL( sridSelected( QString ) ),
-                 this, SLOT( sridSelected( QString ) ) );
+        connect( mProjectionSelector, &QgsProjectionSelectionTreeWidget::crsSelected,
+                 this, &QgsGrassNewMapset::sridSelected );
 
         QgsCoordinateReferenceSystem  srs = mIface->mapCanvas()->mapSettings().destinationCrs();
         QgsDebugMsg( "srs = " + srs.toWkt() );
 
         if ( srs.isValid() )
         {
-          mProjectionSelector->setSelectedCrsId( srs.srsid() );
+          mProjectionSelector->setCrs( srs );
           mProjRadioButton->setChecked( true );
           projRadioSwitched();
         }

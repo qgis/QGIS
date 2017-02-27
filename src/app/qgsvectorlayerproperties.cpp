@@ -33,7 +33,7 @@
 #include "qgsfieldcalculator.h"
 #include "qgsfieldsproperties.h"
 #include "qgslabelingwidget.h"
-#include "qgsgenericprojectionselector.h"
+#include "qgsprojectionselectiondialog.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerconfigwidgetfactory.h"

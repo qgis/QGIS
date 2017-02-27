@@ -22,7 +22,7 @@ email                : hugo dot mercier at oslandia dot com
 #include <qgsvectorlayer.h>
 #include <qgsvectordataprovider.h>
 #include <qgsproject.h>
-#include <qgsgenericprojectionselector.h>
+#include <qgsprojectionselectiondialog.h>
 #include <layertree/qgslayertreemodel.h>
 #include <layertree/qgslayertreegroup.h>
 #include <layertree/qgslayertreelayer.h>
@@ -176,14 +176,14 @@ void QgsVirtualLayerSourceSelect::onLayerComboChanged( int idx )
 
 void QgsVirtualLayerSourceSelect::onBrowseCRS()
 {
-  QgsGenericProjectionSelector crsSelector( this );
+  QgsProjectionSelectionDialog crsSelector( this );
   QgsCoordinateReferenceSystem crs( mSrid );
-  crsSelector.setSelectedCrsId( crs.srsid() ); // convert postgis srid to internal id
-  crsSelector.setMessage();
+  crsSelector.setCrs( crs );
+  crsSelector.setMessage( QString() );
   if ( crsSelector.exec() )
   {
-    mCRS->setText( crsSelector.selectedAuthId() );
-    QgsCoordinateReferenceSystem newCrs = QgsCoordinateReferenceSystem::fromSrsId( crsSelector.selectedCrsId() );
+    mCRS->setText( crsSelector.crs().authid() );
+    QgsCoordinateReferenceSystem newCrs = crsSelector.crs();
     mSrid = newCrs.postgisSrid();
   }
 }

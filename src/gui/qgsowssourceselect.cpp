@@ -24,7 +24,7 @@
 #include "qgscontexthelp.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdatasourceuri.h"
-#include "qgsgenericprojectionselector.h"
+#include "qgsprojectionselectiondialog.h"
 #include "qgslogger.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsmessageviewer.h"
@@ -376,20 +376,20 @@ void QgsOWSSourceSelect::on_mChangeCRSButton_clicked()
       layers << layer;
   }
 
-  QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector( this );
-  mySelector->setMessage();
+  QgsProjectionSelectionDialog * mySelector = new QgsProjectionSelectionDialog( this );
+  mySelector->setMessage( QString() );
   mySelector->setOgcWmsCrsFilter( mSelectedLayersCRSs );
 
   QgsCoordinateReferenceSystem defaultCRS = QgsProject::instance()->crs();
   if ( defaultCRS.isValid() )
   {
-    mySelector->setSelectedCrsId( defaultCRS.srsid() );
+    mySelector->setCrs( defaultCRS );
   }
 
   if ( !mySelector->exec() )
     return;
 
-  mSelectedCRS = mySelector->selectedAuthId();
+  mSelectedCRS = mySelector->crs().authid();
   delete mySelector;
 
   mSelectedCRSLabel->setText( descriptionForAuthId( mSelectedCRS ) );

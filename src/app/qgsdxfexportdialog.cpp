@@ -28,7 +28,7 @@
 #include "qgslayertreemapcanvasbridge.h"
 #include "qgsmapthemecollection.h"
 #include "qgsmapcanvas.h"
-#include "qgsgenericprojectionselector.h"
+#include "qgsprojectionselectiondialog.h"
 #include "qgscrscache.h"
 
 #include <QFileDialog>

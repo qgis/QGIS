@@ -27,7 +27,7 @@
 #include <qgis.h>
 #include <qgscoordinatereferencesystem.h>
 #include <qgscoordinatetransform.h>
-#include <qgsgenericprojectionselector.h>
+#include <qgsprojectionselectiondialog.h>
 #include "qgsdockwidget.h"
 
 #include "coordinatecapture.h"
@@ -184,11 +184,11 @@ void CoordinateCapture::help()
 
 void CoordinateCapture::setCRS()
 {
-  QgsGenericProjectionSelector mySelector( mQGisIface->mainWindow() );
-  mySelector.setSelectedCrsId( mCrs.srsid() );
+  QgsProjectionSelectionDialog mySelector( mQGisIface->mainWindow() );
+  mySelector.setCrs( mCrs );
   if ( mySelector.exec() )
   {
-    mCrs.createFromSrsId( mySelector.selectedCrsId() );
+    mCrs = mySelector.crs();
     mTransform.setDestinationCrs( mCrs );
     mUserCrsDisplayPrecision = ( mCrs.mapUnits() == QgsUnitTypes::DistanceDegrees ) ? 5 : 3; //precision depends on CRS units
   }

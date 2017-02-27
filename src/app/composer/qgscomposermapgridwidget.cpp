@@ -22,7 +22,7 @@
 #include "qgsproject.h"
 #include "qgssymbollayerutils.h"
 #include "qgsstyle.h"
-#include "qgsgenericprojectionselector.h"
+#include "qgsprojectionselectiondialog.h"
 #include "qgscomposition.h"
 #include "qgsmapsettings.h"
 #include "qgsexpressionbuilderdialog.h"
@@ -1033,18 +1033,16 @@ void QgsComposerMapGridWidget::on_mMapGridCRSButton_clicked()
     return;
   }
 
-  QgsGenericProjectionSelector crsDialog( this );
+  QgsProjectionSelectionDialog crsDialog( this );
   QgsCoordinateReferenceSystem crs = mComposerMapGrid->crs();
-  QString currentAuthId = crs.isValid() ? crs.authid() : mComposerMap->crs().authid();
-  crsDialog.setSelectedAuthId( currentAuthId );
+  crsDialog.setCrs( crs.isValid() ? crs : mComposerMap->crs() );
 
   if ( crsDialog.exec() == QDialog::Accepted )
   {
     mComposerMap->beginCommand( tr( "Grid CRS changed" ) );
-    QString selectedAuthId = crsDialog.selectedAuthId();
-    mComposerMapGrid->setCrs( QgsCoordinateReferenceSystem( selectedAuthId ) );
+    mComposerMapGrid->setCrs( crsDialog.crs() );
     mComposerMap->updateBoundingRect();
-    mMapGridCRSButton->setText( selectedAuthId );
+    mMapGridCRSButton->setText( crsDialog.crs().authid() );
     mComposerMap->endCommand();
   }
 }

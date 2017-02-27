@@ -8,7 +8,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  ***************************************************************************/
-#include <qgsprojectionselector.h>
+#include "qgsprojectionselectiontreewidget.h"
 
 //standard includes
 #include <sqlite3.h>
@@ -27,24 +27,23 @@
 #include <QMessageBox>
 #include <QSettings>
 
-QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name, Qt::WindowFlags fl )
-    : QWidget( parent, fl )
+QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget* parent )
+    : QWidget( parent )
     , mUserProjList( nullptr )
     , mGeoList( nullptr )
     , mProjList( nullptr )
     , mProjListDone( false )
     , mUserProjListDone( false )
     , mRecentProjListDone( false )
-    , mSearchColumn( QgsProjectionSelector::None )
+    , mSearchColumn( QgsProjectionSelectionTreeWidget::None )
     , mPushProjectionToFront( false )
 {
-  Q_UNUSED( name );
   setupUi( this );
 
-  if ( qobject_cast<QDialog*>( parent ) )
+  if ( QDialog* dlg = qobject_cast<QDialog*>( parent ) )
   {
     // mark selected projection for push to front if parent dialog is accepted
-    connect( parent, SIGNAL( accepted() ), this, SLOT( pushProjectionToFront() ) );
+    connect( dlg, &QDialog::accepted, this, &QgsProjectionSelectionTreeWidget::pushProjectionToFront );
   }
 
   // Get the full path name to the sqlite3 spatial reference database.
@@ -67,7 +66,7 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name,
   mRecentProjections = QgsCoordinateReferenceSystem::recentProjections();
 }
 
-QgsProjectionSelector::~QgsProjectionSelector()
+QgsProjectionSelectionTreeWidget::~QgsProjectionSelectionTreeWidget()
 {
   if ( !mPushProjectionToFront )
   {
@@ -112,7 +111,7 @@ QgsProjectionSelector::~QgsProjectionSelector()
   settings.setValue( QStringLiteral( "/UI/recentProjectionsAuthId" ), projectionsAuthId );
 }
 
-void QgsProjectionSelector::resizeEvent( QResizeEvent * event )
+void QgsProjectionSelectionTreeWidget::resizeEvent( QResizeEvent * event )
 {
   lstCoordinateSystems->header()->resizeSection( NameColumn, event->size().width() - 240 );
   lstCoordinateSystems->header()->resizeSection( AuthidColumn, 240 );
@@ -123,7 +122,7 @@ void QgsProjectionSelector::resizeEvent( QResizeEvent * event )
   lstRecent->header()->resizeSection( QgisCrsIdColumn, 0 );
 }
 
-void QgsProjectionSelector::showEvent( QShowEvent * event )
+void QgsProjectionSelectionTreeWidget::showEvent( QShowEvent * event )
 {
   // ensure the projection list view is actually populated
   // before we show this widget
@@ -146,7 +145,7 @@ void QgsProjectionSelector::showEvent( QShowEvent * event )
   QWidget::showEvent( event );
 }
 
-QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * crsFilter )
+QString QgsProjectionSelectionTreeWidget::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * crsFilter )
 {
   QString sqlExpression = QStringLiteral( "1" );           // it's "SQL" for "true"
   QMap<QString, QStringList> authParts;
@@ -204,22 +203,7 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
   return sqlExpression;
 }
 
-void QgsProjectionSelector::setSelectedCrsName( const QString& theCRSName )
-{
-  applySelection( NameColumn, theCRSName );
-}
-
-void QgsProjectionSelector::setSelectedCrsId( long theCRSID )
-{
-  applySelection( QgisCrsIdColumn, QString::number( theCRSID ) );
-}
-
-void QgsProjectionSelector::setSelectedAuthId( const QString& id )
-{
-  applySelection( AuthidColumn, id );
-}
-
-void QgsProjectionSelector::applySelection( int column, QString value )
+void QgsProjectionSelectionTreeWidget::applySelection( int column, QString value )
 {
   if ( !mProjListDone || !mUserProjListDone )
   {
@@ -229,17 +213,17 @@ void QgsProjectionSelector::applySelection( int column, QString value )
     return;
   }
 
-  if ( column == QgsProjectionSelector::None )
+  if ( column == QgsProjectionSelectionTreeWidget::None )
   {
     // invoked deferred selection
     column = mSearchColumn;
     value  = mSearchValue;
 
-    mSearchColumn = QgsProjectionSelector::None;
+    mSearchColumn = QgsProjectionSelectionTreeWidget::None;
     mSearchValue.clear();
   }
 
-  if ( column == QgsProjectionSelector::None )
+  if ( column == QgsProjectionSelectionTreeWidget::None )
     return;
 
   QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems( value, Qt::MatchExactly | Qt::MatchRecursive, column );
@@ -259,7 +243,7 @@ void QgsProjectionSelector::applySelection( int column, QString value )
   }
 }
 
-void QgsProjectionSelector::insertRecent( long crsId )
+void QgsProjectionSelectionTreeWidget::insertRecent( long crsId )
 {
   if ( !mProjListDone || !mUserProjListDone )
     return;
@@ -275,15 +259,20 @@ void QgsProjectionSelector::insertRecent( long crsId )
 }
 
 //note this line just returns the projection name!
-QString QgsProjectionSelector::selectedName()
+QString QgsProjectionSelectionTreeWidget::selectedName()
 {
   // return the selected wkt name from the list view
   QTreeWidgetItem *lvi = lstCoordinateSystems->currentItem();
   return lvi ? lvi->text( NameColumn ) : QString::null;
 }
 
+void QgsProjectionSelectionTreeWidget::setCrs( const QgsCoordinateReferenceSystem& crs )
+{
+  applySelection( AuthidColumn, crs.authid() );
+}
+
 // Returns the whole proj4 string for the selected projection node
-QString QgsProjectionSelector::selectedProj4String()
+QString QgsProjectionSelectionTreeWidget::selectedProj4String()
 {
   // Only return the projection if there is a node in the tree
   // selected that has an srid. This prevents error if the user
@@ -351,7 +340,7 @@ QString QgsProjectionSelector::selectedProj4String()
   return projString;
 }
 
-QString QgsProjectionSelector::getSelectedExpression( const QString& expression )
+QString QgsProjectionSelectionTreeWidget::getSelectedExpression( const QString& expression ) const
 {
   // Only return the attribute if there is a node in the tree
   // selected that has an srs_id.  This prevents error if the user
@@ -391,7 +380,9 @@ QString QgsProjectionSelector::getSelectedExpression( const QString& expression 
   int rc = sqlite3_open_v2( databaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
   if ( rc )
   {
-    showDBMissingWarning( databaseFileName );
+    QgsMessageLog::logMessage( tr( "Resource Location Error" ), tr( "Error reading database file from: \n %1\n"
+                               "Because of this the projection selector will not work..." ).arg( databaseFileName ),
+                               QgsMessageLog::CRITICAL );
     return QString();
   }
 
@@ -421,23 +412,16 @@ QString QgsProjectionSelector::getSelectedExpression( const QString& expression 
   return attributeValue;
 }
 
-
-long QgsProjectionSelector::selectedPostgresSrId()
-{
-  return getSelectedExpression( QStringLiteral( "srid" ) ).toLong();
-}
-
-
-QString QgsProjectionSelector::selectedAuthId()
+QgsCoordinateReferenceSystem QgsProjectionSelectionTreeWidget::crs() const
 {
   int srid = getSelectedExpression( QStringLiteral( "srs_id" ) ).toLong();
   if ( srid >= USER_CRS_START_ID )
-    return QStringLiteral( "USER:%1" ).arg( srid );
+    return QgsCoordinateReferenceSystem::fromOgcWmsCrs( QString( "USER:%1" ).arg( srid ) );
   else
-    return getSelectedExpression( QStringLiteral( "upper(auth_name||':'||auth_id)" ) );
+    return QgsCoordinateReferenceSystem::fromOgcWmsCrs( getSelectedExpression( QStringLiteral( "upper(auth_name||':'||auth_id)" ) ) );
 }
 
-long QgsProjectionSelector::selectedCrsId()
+long QgsProjectionSelectionTreeWidget::selectedCrsId()
 {
   QTreeWidgetItem* item = lstCoordinateSystems->currentItem();
 
@@ -448,7 +432,7 @@ long QgsProjectionSelector::selectedCrsId()
 }
 
 
-void QgsProjectionSelector::setOgcWmsCrsFilter( const QSet<QString>& crsFilter )
+void QgsProjectionSelectionTreeWidget::setOgcWmsCrsFilter( const QSet<QString>& crsFilter )
 {
   mCrsFilter = crsFilter;
   mProjListDone = false;
@@ -456,7 +440,7 @@ void QgsProjectionSelector::setOgcWmsCrsFilter( const QSet<QString>& crsFilter )
   lstCoordinateSystems->clear();
 }
 
-void QgsProjectionSelector::loadUserCrsList( QSet<QString> *crsFilter )
+void QgsProjectionSelectionTreeWidget::loadUserCrsList( QSet<QString> *crsFilter )
 {
   if ( mUserProjListDone )
     return;
@@ -532,7 +516,7 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> *crsFilter )
   mUserProjListDone = true;
 }
 
-void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
+void QgsProjectionSelectionTreeWidget::loadCrsList( QSet<QString> *crsFilter )
 {
   if ( mProjListDone )
     return;
@@ -674,7 +658,7 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
 }
 
 // New coordinate system selected from the list
-void QgsProjectionSelector::on_lstCoordinateSystems_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
+void QgsProjectionSelectionTreeWidget::on_lstCoordinateSystems_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
 {
   QgsDebugMsg( "Entered." );
 
@@ -691,7 +675,7 @@ void QgsProjectionSelector::on_lstCoordinateSystems_currentItemChanged( QTreeWid
   if ( current->childCount() == 0 )
   {
     // Found a real CRS
-    emit sridSelected( QString::number( selectedCrsId() ) );
+    emit crsSelected();
 
     teProjection->setText( selectedProj4String() );
     teSelected->setText( selectedName() );
@@ -719,7 +703,7 @@ void QgsProjectionSelector::on_lstCoordinateSystems_currentItemChanged( QTreeWid
   }
 }
 
-void QgsProjectionSelector::on_lstCoordinateSystems_itemDoubleClicked( QTreeWidgetItem *current, int column )
+void QgsProjectionSelectionTreeWidget::on_lstCoordinateSystems_itemDoubleClicked( QTreeWidgetItem *current, int column )
 {
   Q_UNUSED( column );
 
@@ -737,7 +721,7 @@ void QgsProjectionSelector::on_lstCoordinateSystems_itemDoubleClicked( QTreeWidg
     emit projectionDoubleClicked();
 }
 
-void QgsProjectionSelector::on_lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
+void QgsProjectionSelectionTreeWidget::on_lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
 {
   QgsDebugMsg( "Entered." );
 
@@ -754,7 +738,7 @@ void QgsProjectionSelector::on_lstRecent_currentItemChanged( QTreeWidgetItem *cu
     lstCoordinateSystems->setCurrentItem( nodes.first() );
 }
 
-void QgsProjectionSelector::on_lstRecent_itemDoubleClicked( QTreeWidgetItem *current, int column )
+void QgsProjectionSelectionTreeWidget::on_lstRecent_itemDoubleClicked( QTreeWidgetItem *current, int column )
 {
   Q_UNUSED( column );
 
@@ -771,7 +755,7 @@ void QgsProjectionSelector::on_lstRecent_itemDoubleClicked( QTreeWidgetItem *cur
     emit projectionDoubleClicked();
 }
 
-void QgsProjectionSelector::hideDeprecated( QTreeWidgetItem *item )
+void QgsProjectionSelectionTreeWidget::hideDeprecated( QTreeWidgetItem *item )
 {
   if ( item->data( 0, Qt::UserRole ).toBool() )
   {
@@ -788,13 +772,13 @@ void QgsProjectionSelector::hideDeprecated( QTreeWidgetItem *item )
     hideDeprecated( item->child( i ) );
 }
 
-void QgsProjectionSelector::on_cbxHideDeprecated_stateChanged()
+void QgsProjectionSelectionTreeWidget::on_cbxHideDeprecated_stateChanged()
 {
   for ( int i = 0; i < lstCoordinateSystems->topLevelItemCount(); i++ )
     hideDeprecated( lstCoordinateSystems->topLevelItem( i ) );
 }
 
-void QgsProjectionSelector::on_leSearch_textChanged( const QString & filterTxt )
+void QgsProjectionSelectionTreeWidget::on_leSearch_textChanged( const QString & filterTxt )
 {
   QString filterTxtCopy = filterTxt;
   filterTxtCopy.replace( QRegExp( "\\s+" ), QStringLiteral( ".*" ) );
@@ -864,14 +848,14 @@ void QgsProjectionSelector::on_leSearch_textChanged( const QString & filterTxt )
 }
 
 
-void QgsProjectionSelector::pushProjectionToFront()
+void QgsProjectionSelectionTreeWidget::pushProjectionToFront()
 {
   // set flag to push selected projection to front in destructor
   mPushProjectionToFront = true;
 }
 
 
-long QgsProjectionSelector::getLargestCrsIdMatch( const QString& sql )
+long QgsProjectionSelectionTreeWidget::getLargestCrsIdMatch( const QString& sql )
 {
   long srsId = 0;
 
@@ -940,7 +924,7 @@ long QgsProjectionSelector::getLargestCrsIdMatch( const QString& sql )
   return srsId;
 }
 
-QStringList QgsProjectionSelector::authorities()
+QStringList QgsProjectionSelectionTreeWidget::authorities()
 {
   sqlite3      *database = nullptr;
   const char   *tail = nullptr;
@@ -983,7 +967,7 @@ QStringList QgsProjectionSelector::authorities()
 * \arg const QString in The input string to make safe.
 * \return The string made safe for SQL statements.
 */
-const QString QgsProjectionSelector::sqlSafeString( const QString& theSQL )
+const QString QgsProjectionSelectionTreeWidget::sqlSafeString( const QString& theSQL )
 {
   QString retval = theSQL;
   retval.replace( '\\', QLatin1String( "\\\\" ) );
@@ -993,7 +977,7 @@ const QString QgsProjectionSelector::sqlSafeString( const QString& theSQL )
   return retval;
 }
 
-void QgsProjectionSelector::showDBMissingWarning( const QString& fileName )
+void QgsProjectionSelectionTreeWidget::showDBMissingWarning( const QString& fileName )
 {
 
   QMessageBox::critical( this, tr( "Resource Location Error" ),

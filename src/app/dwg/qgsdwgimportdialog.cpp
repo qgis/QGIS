@@ -38,7 +38,7 @@
 #include "qgslinesymbollayer.h"
 #include "qgspallabeling.h"
 #include "qgsmapcanvas.h"
-#include "qgsgenericprojectionselector.h"
+#include "qgsprojectionselectiondialog.h"
 #include "qgsmessagelog.h"
 #include "qgslogger.h"
 #include "qgsproperty.h"

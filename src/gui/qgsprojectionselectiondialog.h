@@ -24,8 +24,10 @@
 
 #include "qgscontexthelp.h"
 #include "qgis_gui.h"
+#include "qgscoordinatereferencesystem.h"
 
 /**
+ * \class QgsProjectionSelectionDialog
  * \ingroup gui
  * A generic dialog to prompt the user for a Coordinate Reference System.
  *
@@ -33,46 +35,55 @@
  * a coordinate system identifier e.g. from a plugin you might do this
  * to get an epsg code:
  * \code
- * QgsGenericProjectionSelector mySelector( mQGisIface->mainWindow() );
- * mySelector.setSelectedEpsg( mEpsgId );
+ * QgsProjectionSelectionDialog mySelector( mQGisIface->mainWindow() );
+ * mySelector.setCrs( crs );
  * if ( mySelector.exec() )
  * {
- *   mEpsgId = mySelector.selectedEpsg();
+ *   mCrs = mySelector.crs();
  * }
  * \endcode
  *
  * If you wish to embed the projection selector into an existing dialog
- * the you probably want to look at QgsProjectionSelector rather.
+ * the you probably want to look at QgsProjectionSelectionWidget instead.
+ * @note added in QGIS 3.0
  */
 
-class GUI_EXPORT QgsGenericProjectionSelector : public QDialog, private Ui::QgsGenericProjectionSelectorBase
+class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog, private Ui::QgsGenericProjectionSelectorBase
 {
     Q_OBJECT
   public:
 
     /**
-     * Constructor
+     * Constructor for QgsProjectionSelectionDialog.
      */
-    QgsGenericProjectionSelector( QWidget *parent = nullptr,
+    QgsProjectionSelectionDialog( QWidget *parent = nullptr,
                                   Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
 
-    ~QgsGenericProjectionSelector();
+    ~QgsProjectionSelectionDialog();
+
+    /**
+     * Returns the CRS currently selected in the widget.
+     * @note added in QGIS 3.0
+     * @see setCrs()
+     */
+    QgsCoordinateReferenceSystem crs() const;
+
+    /**
+     * Sets a \a message to show in the dialog. If an empty string is
+     * passed, the message will be a generic
+     * 'define the CRS for this layer'.
+     */
+    void setMessage( const QString& message );
 
   public slots:
 
-    /** If no parameter is passed, the message will be a generic
-     * 'define the CRS for this layer'.
+    /**
+     * Sets the initial \a crs to show within the dialog.
+     * @note added in QGIS 3.0
+     * @see crs()
      */
-    void setMessage( QString message = QStringLiteral( "" ) );
-    long selectedCrsId();
-    QString selectedAuthId();
-
-    void setSelectedCrsName( const QString& name );
-    void setSelectedCrsId( long theID );
-    void setSelectedAuthId( const QString& authId );
-
-    void on_mButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void setCrs( const QgsCoordinateReferenceSystem& crs );
 
     /**
      * \brief filters this dialog by the given CRSs
@@ -87,6 +98,10 @@ class GUI_EXPORT QgsGenericProjectionSelector : public QDialog, private Ui::QgsG
      * \warning This function's behavior is undefined if it is called after the dialog is shown.
      */
     void setOgcWmsCrsFilter( const QSet<QString>& crsFilter );
+
+  private slots:
+
+    void on_mButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 };
 
 #endif // #ifndef QGSLAYERCRSSELECTOR_H
