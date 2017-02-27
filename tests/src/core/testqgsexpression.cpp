@@ -2670,6 +2670,32 @@ class TestQgsExpression: public QObject
       QCOMPARE( result.toString(), QString( "f2" ) );
     }
 
+    void test_env()
+    {
+      QgsExpressionContext context;
+
+      setenv( "TESTENV_STRING", "Hello World", 1 );
+      QgsExpression e( "env('TESTENV_STRING')" );
+
+      QVariant result = e.evaluate( &context );
+
+      QCOMPARE( result.toString(), QStringLiteral( "Hello World" ) );
+      unsetenv( "TESTENV_STRING" );
+
+      setenv( "TESTENV_INT", "5", 1 );
+      QgsExpression e2( "env('TESTENV_INT')" );
+
+      QVariant result2 = e2.evaluate( &context );
+
+      QCOMPARE( result2.toString(), QStringLiteral( "5" ) );
+      unsetenv( "TESTENV_INT" );
+
+      QgsExpression e3( "env('TESTENV_I_DO_NOT_EXIST')" );
+      QVariant result3 = e3.evaluate( &context );
+
+      Q_ASSERT( result3.isNull() );
+    }
+
     void test_formatPreviewString()
     {
       QCOMPARE( QgsExpression::formatPreviewString( QVariant( "hello" ) ), QString( "'hello'" ) );
@@ -2691,7 +2717,6 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression::formatPreviewString( QVariant( stringList ) ),
                 QString( "<i>&lt;array: 'One', 'Two', 'A very long string that is going to be trunca...&gt;</i>" ) );
     }
-
 };
 
 QGSTEST_MAIN( TestQgsExpression )

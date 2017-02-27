@@ -3723,6 +3723,11 @@ static QVariant fcnMapAVals( const QVariantList& values, const QgsExpressionCont
   return getMapValue( values.at( 0 ), parent ).values();
 }
 
+static QVariant fcnEnvVar( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QString envVarName = values.at( 0 ).toString();
+  return QProcessEnvironment::systemEnvironment().value( envVarName );
+}
 
 bool QgsExpression::registerFunction( QgsExpression::Function* function, bool transferOwnership )
 {
@@ -4115,6 +4120,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     // QgsFeatureRequest::setSubsetOfAttributes and causes all attributes to be fetched by the
     // feature request
     << new StaticFunction( QStringLiteral( "eval" ), 1, fcnEval, QStringLiteral( "General" ), QString(), true, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES )
+    << new StaticFunction( QStringLiteral( "env" ), 1, fcnEnvVar, QStringLiteral( "General" ), QString() )
     << new StaticFunction( QStringLiteral( "attribute" ), 2, fcnAttribute, QStringLiteral( "Record" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES )
 
     // functions for arrays
