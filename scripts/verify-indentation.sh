@@ -19,18 +19,17 @@ set -e
 ASTYLEDIFF=/tmp/astyle.diff
 >$ASTYLEDIFF
 
-case "${TRAVIS_COMMIT_RANGE}" in
-*...*)
-	curl https://api.github.com/repos/$TRAVIS_REPO_SLUG/compare/$TRAVIS_COMMIT_RANGE | jq -r .files[].filename >/tmp/changed-files
-	;;
 
-*)
-	git diff --name-only $TRAVIS_COMMIT_RANGE >/tmp/changed-files
-	;;
-esac
+if [[ ! -z  $TRAVIS_PULL_REQUEST_BRANCH  ]]; then
+  # if on a PR, just analyse the changed files
+  echo "TRAVIS PR BRANCH: $TRAVIS_PULL_REQUEST_BRANCH"
+  FILES=$(git diff --diff-filter=AM --name-only $(git merge-base HEAD master) | tr '\n' ' ' )
+elif [[ ! -z  $TRAVIS_COMMIT_RANGE  ]]; then
+  echo "TRAVIS COMMIT RANGE: $TRAVIS_COMMIT_RANGE"
+  FILES=$(git diff --diff-filter=AM --name-only ${TRAVIS_COMMIT_RANGE/.../..} | tr '\n' ' ' )
+fi
 
-while read f
-do
+for f in $FILES; do
 	if ! [ -f "$f" ]; then
 		echo "$f was removed." >>/tmp/ctest-important.log
 		continue
@@ -59,7 +58,7 @@ do
 	else
 		echo "File $f needs indentation"
 	fi
-done </tmp/changed-files
+done
 
 if [ -s "$ASTYLEDIFF" ]; then
 	echo
