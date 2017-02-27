@@ -539,7 +539,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
     void homePathChanged();
 
     //! emitted whenever the configuration for snapping has changed
-    void snappingConfigChanged();
+    void snappingConfigChanged( const QgsSnappingConfig& config );
 
     /** Emitted whenever the expression variables stored in the project have been changed.
      * @note added in QGIS 3.0

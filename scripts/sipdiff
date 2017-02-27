@@ -53,7 +53,7 @@ for file in $*; do
   ${GP}sed -i -r '/^\s*Q_(OBJECT|ENUMS|PROPERTY).*?$/d' $tempfile
 
   # Remove function definition in header
-  ${GP}sed -i -r 's/^(\s*)?(virtual |static )?(inline )?(void|bool|int|double|Q\w+)(\s+[^ ]*?\(.*?\)( const)?)\s*\{.*?\}$/\1\2\4\5;/g' $tempfile
+  ${GP}sed -i -r 's/^(\s*)?(virtual |static )?(inline )?(void|bool|int|double|Q\w+)(\*?)(\s+[^ ]*?\(.*?\)( const)?)\s*\{.*?\}$/\1\2\4\5\6;/g' $tempfile
 
   # Remove nullptr
   ${GP}sed -i 's/nullptr/0/g' $tempfile

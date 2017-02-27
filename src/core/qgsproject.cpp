@@ -459,7 +459,7 @@ void QgsProject::clear()
   mRelationManager->clear();
   mAnnotationManager->clear();
   mSnappingConfig.reset();
-  emit snappingConfigChanged();
+  emit snappingConfigChanged( mSnappingConfig );
 
   mMapThemeCollection.reset( new QgsMapThemeCollection( this ) );
   emit mapThemeCollectionChanged();
@@ -610,7 +610,7 @@ void QgsProject::setSnappingConfig( const QgsSnappingConfig& snappingConfig )
 
   mSnappingConfig = snappingConfig;
   setDirty();
-  emit snappingConfigChanged();
+  emit snappingConfigChanged( mSnappingConfig );
 }
 
 bool QgsProject::_getMapLayers( const QDomDocument& doc, QList<QDomNode>& brokenNodes )
@@ -897,7 +897,7 @@ bool QgsProject::read()
   }
 
   mSnappingConfig.readProject( *doc );
-  emit snappingConfigChanged();
+  emit snappingConfigChanged( mSnappingConfig );
 
   //add variables defined in project file
   QStringList variableNames = readListEntry( QStringLiteral( "Variables" ), QStringLiteral( "/variableNames" ) );
@@ -1081,13 +1081,13 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer*>& layers )
   }
 
   if ( mSnappingConfig.addLayers( layers ) )
-    emit snappingConfigChanged();
+    emit snappingConfigChanged( mSnappingConfig );
 }
 
 void QgsProject::onMapLayersRemoved( const QList<QgsMapLayer*>& layers )
 {
   if ( mSnappingConfig.removeLayers( layers ) )
-    emit snappingConfigChanged();
+    emit snappingConfigChanged( mSnappingConfig );
 }
 
 void QgsProject::cleanTransactionGroups( bool force )

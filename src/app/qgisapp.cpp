@@ -772,7 +772,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   startProfile( QStringLiteral( "Snapping utils" ) );
   mSnappingUtils = new QgsMapCanvasSnappingUtils( mMapCanvas, this );
   mMapCanvas->setSnappingUtils( mSnappingUtils );
-  connect( QgsProject::instance(), &QgsProject::snappingConfigChanged, this, &QgisApp::onSnappingConfigChanged );
+  connect( QgsProject::instance(), &QgsProject::snappingConfigChanged, mSnappingUtils, &QgsSnappingUtils::setConfig );
+  connect( mSnappingUtils, &QgsSnappingUtils::configChanged, QgsProject::instance(), &QgsProject::setSnappingConfig );
+
 
   endProfile();
 
@@ -1077,21 +1079,26 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   QShortcut* zoomInShortCut = new QShortcut( QKeySequence( tr( "Ctrl++" ) ), this );
   connect( zoomInShortCut, &QShortcut::activated, mMapCanvas, &QgsMapCanvas::zoomIn );
   zoomInShortCut->setObjectName( QStringLiteral( "ZoomInToCanvas" ) );
-  zoomInShortCut->setWhatsThis( QStringLiteral( "Zoom in to canvas" ) );
+  zoomInShortCut->setWhatsThis( tr( "Zoom in to canvas" ) );
   QShortcut* zoomShortCut2 = new QShortcut( QKeySequence( tr( "Ctrl+=" ) ), this );
   connect( zoomShortCut2, &QShortcut::activated, mMapCanvas, &QgsMapCanvas::zoomIn );
   zoomShortCut2->setObjectName( QStringLiteral( "ZoomInToCanvas2" ) );
-  zoomShortCut2->setWhatsThis( QStringLiteral( "Zoom in to canvas (secondary)" ) );
+  zoomShortCut2->setWhatsThis( tr( "Zoom in to canvas (secondary)" ) );
   QShortcut* zoomOutShortCut = new QShortcut( QKeySequence( tr( "Ctrl+-" ) ), this );
   connect( zoomOutShortCut, &QShortcut::activated, mMapCanvas, &QgsMapCanvas::zoomOut );
   zoomOutShortCut->setObjectName( QStringLiteral( "ZoomOutOfCanvas" ) );
-  zoomOutShortCut->setWhatsThis( QStringLiteral( "Zoom out of canvas" ) );
+  zoomOutShortCut->setWhatsThis( tr( "Zoom out of canvas" ) );
 
   //also make ctrl+alt+= a shortcut to switch to zoom in map tool
   QShortcut* zoomInToolShortCut = new QShortcut( QKeySequence( tr( "Ctrl+Alt+=" ) ), this );
   connect( zoomInToolShortCut, SIGNAL( activated() ), this, SLOT( zoomIn() ) );
   zoomInToolShortCut->setObjectName( QStringLiteral( "ZoomIn2" ) );
-  zoomInToolShortCut->setWhatsThis( QStringLiteral( "Zoom in (secondary)" ) );
+  zoomInToolShortCut->setWhatsThis( tr( "Zoom in (secondary)" ) );
+
+  QShortcut* toggleSnapping = new QShortcut( QKeySequence( tr( "S" ) ), this );
+  toggleSnapping->setObjectName( "toggleSnapping" );
+  toggleSnapping->setWhatsThis( tr( "Toggle snapping" ) );
+  connect( toggleSnapping, &QShortcut::activated, mSnappingUtils, &QgsSnappingUtils::toggleEnabled );
 
   // Show a nice tip of the day
   if ( settings.value( QStringLiteral( "/qgis/showTips%1" ).arg( Qgis::QGIS_VERSION_INT / 100 ), true ).toBool() )

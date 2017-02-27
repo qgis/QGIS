@@ -75,7 +75,6 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     //! The current layer used if mode is SnapCurrentLayer
     QgsVectorLayer* currentLayer() const { return mCurrentLayer; }
 
-
     // configuration
 
     //! modes for "snap to background"
@@ -162,17 +161,26 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
      */
     QgsSnappingConfig config() const;
 
+  public slots:
+
     /**
      * The snapping configuration controls the behavior of this object
      */
     void setConfig( const QgsSnappingConfig& snappingConfig );
+
+    /**
+     * Toggles the state of snapping
+     *
+     * @note Added in QGIS 3.0
+     */
+    void toggleEnabled();
 
   signals:
 
     /**
      * Emitted when the snapping settings object changes.
      */
-    void configChanged();
+    void configChanged( const QgsSnappingConfig& snappingConfig );
 
   protected:
     //! Called when starting to index - can be overridden and e.g. progress dialog can be provided
