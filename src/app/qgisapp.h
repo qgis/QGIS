@@ -1539,6 +1539,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Loads the list of recent projects from settings
     void readRecentProjects();
 
+    /**
+     * Applies project map canvas settings to the specified canvas
+     */
+    void applyProjectSettingsToCanvas( QgsMapCanvas *canvas );
+
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
 
     // actions for menus and toolbars -----------------
