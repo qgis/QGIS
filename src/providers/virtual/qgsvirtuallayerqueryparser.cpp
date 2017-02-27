@@ -116,7 +116,7 @@ namespace QgsVirtualLayerQueryParser
       int pos = geometryTypeRx.indexIn( columnType, 0 );
       if ( pos != -1 )
       {
-        QgsWkbTypes::Type type = static_cast<QgsWkbTypes::Type>( geometryTypeRx.cap( 1 ).toInt() );
+        QgsWkbTypes::Type type = static_cast<QgsWkbTypes::Type>( geometryTypeRx.cap( 1 ).toLong() );
         long srid = geometryTypeRx.cap( 2 ).toLong();
         d.setGeometry( type );
         d.setSrid( srid );
