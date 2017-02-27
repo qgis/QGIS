@@ -1,5 +1,4 @@
 #!/bin/bash
-
 cd $(git rev-parse --show-toplevel)
 
 export PATH=$PATH:$PWD/scripts
