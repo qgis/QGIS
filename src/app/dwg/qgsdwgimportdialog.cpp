@@ -73,7 +73,7 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   pbImportDrawing->setHidden( true );
   lblMessage->setHidden( true );
 
-  int crsid = s.value( "/DwgImport/lastCrs", QString::number( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().srsid() ) ).toInt();
+  int crsid = s.value( "/DwgImport/lastCrs", QString::number( QgsProject::instance()->crs().srsid() ) ).toInt();
 
   QgsCoordinateReferenceSystem crs( crsid, QgsCoordinateReferenceSystem::InternalCrsId );
   mCrsSelector->setCrs( crs );

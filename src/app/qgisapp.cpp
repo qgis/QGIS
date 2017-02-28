@@ -3367,7 +3367,7 @@ void QgisApp::saveRecentProjectPath( const QString& projectPath, bool savePrevie
   if ( projectData.title.isEmpty() )
     projectData.title = projectData.path;
 
-  projectData.crs = mMapCanvas->mapSettings().destinationCrs().authid();
+  projectData.crs = QgsProject::instance()->crs().authid();
 
   if ( savePreviewImage )
   {
