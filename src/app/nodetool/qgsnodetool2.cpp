@@ -429,7 +429,7 @@ void QgsNodeTool2::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       QgsRectangle layerRect = toLayerCoordinates( vlayer, map_rect );
       QgsFeature f;
-      QgsFeatureIterator fi = vlayer->getFeatures( QgsFeatureRequest( layerRect ) );
+      QgsFeatureIterator fi = vlayer->getFeatures( QgsFeatureRequest( layerRect ).setSubsetOfAttributes( QgsAttributeList() ) );
       while ( fi.nextFeature( f ) )
       {
         QgsGeometry g = f.geometry();
@@ -793,7 +793,7 @@ void QgsNodeTool2::keyPressEvent( QKeyEvent *e )
   if ( !mDraggingVertex && mSelectedNodes.count() == 0 )
     return;
 
-  if ( e->key() == Qt::Key_Delete )
+  if ( e->key() == Qt::Key_Delete || e->key() == Qt::Key_Backspace )
   {
     e->ignore();  // Override default shortcut management
     deleteVertex();
@@ -826,7 +826,7 @@ QgsGeometry QgsNodeTool2::cachedGeometry( const QgsVectorLayer *layer, QgsFeatur
   if ( !layerCache.contains( fid ) )
   {
     QgsFeature f;
-    layer->getFeatures( QgsFeatureRequest( fid ) ).nextFeature( f );
+    layer->getFeatures( QgsFeatureRequest( fid ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f );
     layerCache[fid] = f.geometry();
   }
 
@@ -1090,7 +1090,7 @@ QgsPoint QgsNodeTool2::matchToLayerPoint( const QgsVectorLayer *destLayer, const
   if ( match && match->hasVertex() && match->layer() && match->layer()->crs() == destLayer->crs() )
   {
     QgsFeature f;
-    QgsFeatureIterator fi = match->layer()->getFeatures( QgsFeatureRequest( match->featureId() ) );
+    QgsFeatureIterator fi = match->layer()->getFeatures( QgsFeatureRequest( match->featureId() ).setSubsetOfAttributes( QgsAttributeList() ) );
     if ( fi.nextFeature( f ) )
       return f.geometry().vertexAt( match->vertexIndex() );
   }

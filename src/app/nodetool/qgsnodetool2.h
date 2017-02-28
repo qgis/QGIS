@@ -16,6 +16,8 @@
 #ifndef QGSNODETOOL2_H
 #define QGSNODETOOL2_H
 
+#include <memory>
+
 #include "qgsmaptooladvanceddigitizing.h"
 
 class QRubberBand;
@@ -172,20 +174,20 @@ class QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
     // members used for temporary highlight of stuff
 
     //! marker of a snap match (if any) when dragging a vertex
-    QgsVertexMarker* mSnapMarker;
+    QgsVertexMarker* mSnapMarker = nullptr;
     //! marker in the middle of an edge while pointer is close to a vertex and not dragging anything
     //! (highlighting point that can be clicked to add a new vertex)
-    QgsVertexMarker* mEdgeCenterMarker;
+    QgsVertexMarker* mEdgeCenterMarker = nullptr;
     //! rubber band for highlight of a whole feature on mouse over and not dragging anything
-    QgsRubberBand* mFeatureBand;
+    QgsRubberBand* mFeatureBand = nullptr;
     //! source layer for feature_band (null if feature_band is null)
-    const QgsVectorLayer* mFeatureBandLayer;
+    const QgsVectorLayer* mFeatureBandLayer = nullptr;
     //! source feature id for feature_band (zero if feature_band is null)
     QgsFeatureId mFeatureBandFid;
     //! highlight of a vertex while mouse pointer is close to a vertex and not dragging anything
-    QgsRubberBand* mVertexBand;
+    QgsRubberBand* mVertexBand = nullptr;
     //! highlight of an edge while mouse pointer is close to an edge and not dragging anything
-    QgsRubberBand* mEdgeBand;
+    QgsRubberBand* mEdgeBand = nullptr;
 
     // members for dragging operation
 
@@ -199,16 +201,16 @@ class QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
 
     //! marker for a point used only for moving standalone point geoetry
     //! (there are no adjacent vertices so drag_bands is empty in that case)
-    QgsVertexMarker* mDragPointMarker;
+    QgsVertexMarker* mDragPointMarker = nullptr;
     //! list of QgsRubberBand instances used when dragging
     QList<QgsRubberBand*> drag_bands;
     //! instance of Vertex that is being currently moved or nothing
     //! (vertex_id when adding is a tuple (vid, adding_at_endpoint))
-    QScopedPointer<Vertex> mDraggingVertex;
+    std::unique_ptr<Vertex> mDraggingVertex;
     //! whether moving a vertex or adding one
     DraggingVertexType mDraggingVertexType = NotDragging;
     //! instance of Edge that is being currently moved or nothing
-    QScopedPointer<Edge> mDraggingEdge;
+    std::unique_ptr<Edge> mDraggingEdge;
     //! list of Vertex instances of other vertices that are topologically
     //! connected to the vertex being currently dragged
     QList<Vertex> mDraggingTopo;
@@ -223,25 +225,25 @@ class QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
     // members for rectangle for selection
 
     //! QPoint if user is dragging a selection rect
-    QScopedPointer<QPoint> mSelectionRectStartPos;
+    std::unique_ptr<QPoint> mSelectionRectStartPos;
     //! QRect in screen coordinates or null
-    QScopedPointer<QRect> mSelectionRect;
+    std::unique_ptr<QRect> mSelectionRect;
     //! QRubberBand to show selection_rect
     QRubberBand* mSelectionRectItem = nullptr;
 
     // members for addition of vertices at the end of a curve
 
     //! Vertex instance or None
-    QScopedPointer<Vertex> mMouseAtEndpoint;
+    std::unique_ptr<Vertex> mMouseAtEndpoint;
     //! QgsPoint or None (can't get center from QgsVertexMarker)
-    QScopedPointer<QgsPoint> mEndpointMarkerCenter;
+    std::unique_ptr<QgsPoint> mEndpointMarkerCenter;
     //! marker shown near the end of a curve to suggest that the user
     //! may add a new vertex at the end of the curve
     QgsVertexMarker* mEndpointMarker = nullptr;
 
     //! keeps information about previously used snap match
     //! to stick with the same highlighted feature next time if there are more options
-    QScopedPointer<QgsPointLocator::Match> mLastSnap;
+    std::unique_ptr<QgsPointLocator::Match> mLastSnap;
 
     //! List of two points that will be forced into CAD dock with fake mouse events
     //! to allow correct functioning of node tool with CAD dock.
@@ -250,7 +252,7 @@ class QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
 
     //! When double-clicking to add a new vertex, this member keeps the snap
     //! match from "press" event used to be used in following "release" event
-    QScopedPointer<QgsPointLocator::Match> mNewVertexFromDoubleClick;
+    std::unique_ptr<QgsPointLocator::Match> mNewVertexFromDoubleClick;
 
     //! Geometry cache for fast access to geometries
     QHash<const QgsVectorLayer*, QHash<QgsFeatureId, QgsGeometry> > mCache;
