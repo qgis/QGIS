@@ -53,7 +53,7 @@ class Ogr2OgrBuffer(GdalAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Buffer vectors')
-        self.group, self.i18n_group = self.trAlgorithm('[OGR] Geoprocessing')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geoprocessing')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))

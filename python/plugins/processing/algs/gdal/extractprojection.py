@@ -49,7 +49,7 @@ class ExtractProjection(GdalAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Extract projection')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Projections')
+        self.group, self.i18n_group = self.trAlgorithm('Raster projections')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input file')))
         self.addParameter(ParameterBoolean(self.PRJ_FILE,
                                            self.tr('Create also .prj file'), False))

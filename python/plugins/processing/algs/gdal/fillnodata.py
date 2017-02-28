@@ -54,7 +54,7 @@ class fillnodata(GdalAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Fill nodata')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
+        self.group, self.i18n_group = self.trAlgorithm('Raster analysis')
         self.addParameter(ParameterRaster(
             self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(self.DISTANCE,
