@@ -30,6 +30,7 @@
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsslconnect.h"
+#include "qgsvisibilitypresetcollection.h"
 
 #include <QDir>
 #include <QDomDocument>
@@ -257,6 +258,7 @@ void QgsOfflineEditing::synchronize()
       // copy style
       copySymbology( offlineLayer, remoteLayer );
       updateRelations( offlineLayer, remoteLayer );
+      updateVisibilityPresets( offlineLayer, remoteLayer );
 
       // apply layer edit log
       QString qgisLayerId = layer->id();
@@ -632,6 +634,7 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
       }
 
       updateRelations( layer, newLayer );
+      updateVisibilityPresets( layer, newLayer );
       // copy features
       newLayer->startEditing();
       QgsFeature f;
@@ -967,6 +970,36 @@ void QgsOfflineEditing::updateRelations( QgsVectorLayer* sourceLayer, QgsVectorL
     relationManager->removeRelation( relation );
     relation.setReferencingLayer( targetLayer->id() );
     relationManager->addRelation( relation );
+  }
+}
+
+void QgsOfflineEditing::updateVisibilityPresets( QgsVectorLayer* sourceLayer, QgsVectorLayer* targetLayer )
+{
+  QgsVisibilityPresetCollection* presetCollection = QgsProject::instance()->visibilityPresetCollection();
+  QStringList visibilityPresets = presetCollection->presets();
+
+  Q_FOREACH ( const QString& preset, visibilityPresets )
+  {
+    QgsVisibilityPresetCollection::PresetRecord record = presetCollection->presetState( preset );
+
+    if ( record.mVisibleLayerIDs.removeOne( sourceLayer->id() ) )
+      record.mVisibleLayerIDs.append( targetLayer->id() );
+
+    QString style = record.mPerLayerCurrentStyle.value( sourceLayer->id() );
+    if ( !style.isNull() )
+    {
+      record.mPerLayerCurrentStyle.remove( sourceLayer->id() );
+      record.mPerLayerCurrentStyle.insert( targetLayer->id(), style );
+    }
+
+    if ( !record.mPerLayerCheckedLegendSymbols.contains( sourceLayer->id() ) )
+    {
+      QSet<QString> checkedSymbols = record.mPerLayerCheckedLegendSymbols.value( sourceLayer->id() );
+      record.mPerLayerCheckedLegendSymbols.remove( sourceLayer->id() );
+      record.mPerLayerCheckedLegendSymbols.insert( targetLayer->id(), checkedSymbols );
+    }
+
+    QgsProject::instance()->visibilityPresetCollection()->update( preset, record );
   }
 }
 

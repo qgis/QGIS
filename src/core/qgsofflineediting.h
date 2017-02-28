@@ -112,6 +112,11 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
      * Updates all relations that reference or are referenced by the source layer to the targetLayer.
      */
     void updateRelations( QgsVectorLayer* sourceLayer, QgsVectorLayer* targetLayer );
+    /**
+     * Update all visibility presets that affect the source layer.
+     */
+    void updateVisibilityPresets( QgsVectorLayer* sourceLayer, QgsVectorLayer* targetLayer );
+
     QMap<int, int> attributeLookup( QgsVectorLayer* offlineLayer, QgsVectorLayer* remoteLayer );
 
     void showWarning( const QString& message );
