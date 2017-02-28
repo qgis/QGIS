@@ -61,7 +61,6 @@ const QMap<QgsWkbTypes::Type, QgsWkbTypes::wkbEntry> QgsWkbTypes::ENTRIES
   { TriangleZ, wkbEntry( QStringLiteral( "TriangleZ" ), false, Unknown, TriangleZ, Triangle, PolygonGeometry, true, false ) },
   { TriangleM, wkbEntry( QStringLiteral( "TriangleM" ), false, Unknown, TriangleM, Triangle, PolygonGeometry, false, true ) },
   { TriangleZM, wkbEntry( QStringLiteral( "TriangleZM" ), false, Unknown, TriangleZM, Triangle, PolygonGeometry, true, true ) },
-  { Triangle25D, wkbEntry( QStringLiteral( "Triangle25D" ), false, Unknown, Triangle25D, Triangle, PolygonGeometry, true, false ) },
   //curvepolygon
   { CurvePolygon, wkbEntry( QStringLiteral( "CurvePolygon" ), false, MultiSurface, CurvePolygon, CurvePolygon, PolygonGeometry, false, false ) },
   { CurvePolygonZ, wkbEntry( QStringLiteral( "CurvePolygonZ" ), false, MultiSurfaceZ, CurvePolygonZ, CurvePolygon, PolygonGeometry, true, false ) },
