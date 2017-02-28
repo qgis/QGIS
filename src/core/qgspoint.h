@@ -23,6 +23,7 @@
 
 #include "qgis.h"
 
+#include <iostream>
 #include <QString>
 #include <QPoint>
 #include <QObject>
