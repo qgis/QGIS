@@ -1314,7 +1314,7 @@ QgsMapCanvas        {#qgis_api_break_3_0_QgsMapCanvas}
 - updateMap(), showError(), useImageToRender() have been removed. They did nothing since 2.4.
 - setProgress() signal has been removed. It was not emitted since 2.0.
 - enableOverviewMode() and updateOverview() have been removed. Map canvas does not keep pointer to overview canvas anymore. Use QgsLayerTreeMapCanvasBridge::setOverviewCanvas() to set up updates of overview canvas together with main canvas.
-
+- the duplicate mapToolSet signal with a single QgsMapTool argument has been removed. Use the signal with arguments for new and old map tool instead.
 
 QgsMapCanvasItem        {#qgis_api_break_3_0_QgsMapCanvasItem}
 ----------------

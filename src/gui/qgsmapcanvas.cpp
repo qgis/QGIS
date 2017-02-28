@@ -129,16 +129,16 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent )
 
   mResizeTimer = new QTimer( this );
   mResizeTimer->setSingleShot( true );
-  connect( mResizeTimer, SIGNAL( timeout() ), this, SLOT( refresh() ) );
+  connect( mResizeTimer, &QTimer::timeout, this, &QgsMapCanvas::refresh );
 
   // create map canvas item which will show the map
   mMap = new QgsMapCanvasMap( this );
 
   // project handling
-  connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ),
-           this, SLOT( readProject( const QDomDocument & ) ) );
-  connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ),
-           this, SLOT( writeProject( QDomDocument & ) ) );
+  connect( QgsProject::instance(), &QgsProject::readProject,
+           this, &QgsMapCanvas::readProject );
+  connect( QgsProject::instance(), &QgsProject::writeProject,
+           this, &QgsMapCanvas::writeProject );
 
   mSettings.setFlag( QgsMapSettings::DrawEditingInfo );
   mSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
@@ -504,7 +504,7 @@ void QgsMapCanvas::refreshMap()
     mJob = new QgsMapRendererParallelJob( mSettings );
   else
     mJob = new QgsMapRendererSequentialJob( mSettings );
-  connect( mJob, SIGNAL( finished() ), SLOT( rendererJobFinished() ) );
+  connect( mJob, &QgsMapRendererJob::finished, this, &QgsMapCanvas::rendererJobFinished );
   mJob->setCache( mCache );
 
   QStringList layersForGeometryCache;
@@ -1473,7 +1473,7 @@ void QgsMapCanvas::setMapTool( QgsMapTool* tool )
 
   if ( mMapTool )
   {
-    disconnect( mMapTool, SIGNAL( destroyed() ), this, SLOT( mapToolDestroyed() ) );
+    disconnect( mMapTool, &QObject::destroyed, this, &QgsMapCanvas::mapToolDestroyed );
     mMapTool->deactivate();
   }
 
@@ -1496,11 +1496,10 @@ void QgsMapCanvas::setMapTool( QgsMapTool* tool )
   mMapTool = tool;
   if ( mMapTool )
   {
-    connect( mMapTool, SIGNAL( destroyed() ), this, SLOT( mapToolDestroyed() ) );
+    connect( mMapTool, &QObject::destroyed, this, &QgsMapCanvas::mapToolDestroyed );
     mMapTool->activate();
   }
 
-  emit mapToolSet( mMapTool );
   emit mapToolSet( mMapTool, oldTool );
 } // setMapTool
 
@@ -1510,7 +1509,6 @@ void QgsMapCanvas::unsetMapTool( QgsMapTool* tool )
   {
     mMapTool->deactivate();
     mMapTool = nullptr;
-    emit mapToolSet( nullptr );
     emit mapToolSet( nullptr, mMapTool );
     setCursor( Qt::ArrowCursor );
   }
