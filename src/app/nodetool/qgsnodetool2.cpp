@@ -468,7 +468,7 @@ void QgsNodeTool2::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     }
     else if ( e->button() == Qt::RightButton )
     {
-      // cancelling action
+      // cancel action
       stopDragging();
     }
   }
