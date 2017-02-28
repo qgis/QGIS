@@ -202,21 +202,18 @@ bool QgsMapToolShowHideLabels::selectedFeatures( QgsVectorLayer* vlayer,
   // and then click somewhere off the globe, an exception will be thrown.
   QgsGeometry selectGeomTrans( selectGeometry );
 
-  if ( mCanvas->hasCrsTransformEnabled() )
+  try
   {
-    try
-    {
-      QgsCoordinateTransform ct( mCanvas->mapSettings().destinationCrs(), vlayer->crs() );
-      selectGeomTrans.transform( ct );
-    }
-    catch ( QgsCsException &cse )
-    {
-      Q_UNUSED( cse );
-      // catch exception for 'invalid' point and leave existing selection unchanged
-      QgsLogger::warning( "Caught CRS exception " + QStringLiteral( __FILE__ ) + ": " + QString::number( __LINE__ ) );
-      emit messageEmitted( tr( "CRS Exception: selection extends beyond layer's coordinate system." ), QgsMessageBar::WARNING );
-      return false;
-    }
+    QgsCoordinateTransform ct( mCanvas->mapSettings().destinationCrs(), vlayer->crs() );
+    selectGeomTrans.transform( ct );
+  }
+  catch ( QgsCsException &cse )
+  {
+    Q_UNUSED( cse );
+    // catch exception for 'invalid' point and leave existing selection unchanged
+    QgsLogger::warning( "Caught CRS exception " + QStringLiteral( __FILE__ ) + ": " + QString::number( __LINE__ ) );
+    emit messageEmitted( tr( "CRS Exception: selection extends beyond layer's coordinate system." ), QgsMessageBar::WARNING );
+    return false;
   }
 
   QApplication::setOverrideCursor( Qt::WaitCursor );

@@ -65,9 +65,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     //! Accessor for projection
     QString projectionWkt();
 
-    //! Indicates that the projection switch is on
-    bool isProjected();
-
   public slots:
     /*!
      * Slot called when apply button is pressed or dialog is accepted
@@ -143,7 +140,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
      */
     void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "introduction/qgis_configuration.html#project-properties" ) ); }
 
-    void on_cbxProjectionEnabled_toggled( bool onFlyEnabled );
+    void updateProjectionWidget();
 
     /*!
      * Slot to link WFS checkboxes

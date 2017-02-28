@@ -109,7 +109,7 @@ void QgsGrassRegionEdit::calcSrcRegion()
 {
   mSrcRectangle.set( mStartPoint, mEndPoint );
 
-  if ( mCanvas->hasCrsTransformEnabled() && mCrs.isValid() && mCanvas->mapSettings().destinationCrs().isValid() )
+  if ( mCrs.isValid() && mCanvas->mapSettings().destinationCrs().isValid() )
   {
     QgsCoordinateTransform coordinateTransform;
     coordinateTransform.setSourceCrs( mCanvas->mapSettings().destinationCrs() );
@@ -127,25 +127,22 @@ void QgsGrassRegionEdit::setTransform()
   }
 }
 
-void QgsGrassRegionEdit::transform( QgsMapCanvas *canvas, QVector<QgsPoint> &points, const QgsCoordinateTransform& coordinateTransform, QgsCoordinateTransform::TransformDirection direction )
+void QgsGrassRegionEdit::transform( QgsMapCanvas *, QVector<QgsPoint> &points, const QgsCoordinateTransform& coordinateTransform, QgsCoordinateTransform::TransformDirection direction )
 {
   //! Coordinate transform
-  if ( canvas->hasCrsTransformEnabled() )
+  //QgsDebugMsg ( "srcCrs = " +  coordinateTransform->sourceCrs().toWkt() );
+  //QgsDebugMsg ( "destCrs = " +  coordinateTransform->destCRS().toWkt() );
+  try
   {
-    //QgsDebugMsg ( "srcCrs = " +  coordinateTransform->sourceCrs().toWkt() );
-    //QgsDebugMsg ( "destCrs = " +  coordinateTransform->destCRS().toWkt() );
-    try
+    for ( int i = 0; i < points.size(); i++ )
     {
-      for ( int i = 0; i < points.size(); i++ )
-      {
-        points[i] = coordinateTransform.transform( points[i], direction );
-      }
+      points[i] = coordinateTransform.transform( points[i], direction );
     }
-    catch ( QgsCsException &cse )
-    {
-      Q_UNUSED( cse );
-      QgsDebugMsg( QString( "transformation failed: %1" ).arg( cse.what() ) );
-    }
+  }
+  catch ( QgsCsException &cse )
+  {
+    Q_UNUSED( cse );
+    QgsDebugMsg( QString( "transformation failed: %1" ).arg( cse.what() ) );
   }
 }
 

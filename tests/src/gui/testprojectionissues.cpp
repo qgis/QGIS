@@ -40,7 +40,6 @@ class TestProjectionIssues : public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void issue5895();// test for #5895
-    void issue15183();// test for #15183
 
   private:
     QgsRasterLayer* mRasterLayer = nullptr;
@@ -83,7 +82,6 @@ void TestProjectionIssues::initTestCase()
   QgsCoordinateReferenceSystem destCRS;
   destCRS.createFromId( 3006, QgsCoordinateReferenceSystem::EpsgCrsId );
   mMapCanvas->setDestinationCrs( destCRS );
-  mMapCanvas->setCrsTransformEnabled( true );
 
 }
 
@@ -109,29 +107,6 @@ void TestProjectionIssues::issue5895()
   QgsRectangle largeExtent( -610861, 5101721, 2523921, 6795055 );
   mMapCanvas->setExtent( largeExtent );
   mMapCanvas->zoomByFactor( 2.0 ); // Zoom out. This should exceed the transform limits.
-}
-
-void TestProjectionIssues::issue15183()
-{
-  QgsRectangle largeExtent( -610861, 5101721, 2523921, 6795055 );
-  mMapCanvas->setExtent( largeExtent );
-
-  // Set to CRS's
-  QgsCoordinateReferenceSystem sourceCRS;
-  sourceCRS = mMapCanvas->mapSettings().destinationCrs();
-  QgsCoordinateReferenceSystem targetCRS;
-  targetCRS.createFromId( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
-
-  QgsCoordinateTransform ct( sourceCRS, targetCRS );
-  QgsRectangle initialExtent = ct.transformBoundingBox( mMapCanvas->extent() );
-
-  mMapCanvas->setCrsTransformEnabled( false );
-  mMapCanvas->setDestinationCrs( targetCRS );
-
-  QgsRectangle currentExtent = mMapCanvas->extent();
-
-  // Compare center
-  QGSCOMPARENEARPOINT( initialExtent.center(), currentExtent.center(), 0.00001 );
 }
 
 QGSTEST_MAIN( TestProjectionIssues )

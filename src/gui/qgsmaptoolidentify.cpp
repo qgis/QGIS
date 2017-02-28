@@ -496,7 +496,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
 
   QgsRasterIdentifyResult identifyResult;
   // We can only use current map canvas context (extent, width, height) if layer is not reprojected,
-  if ( mCanvas->hasCrsTransformEnabled() && dprovider->crs() != mCanvas->mapSettings().destinationCrs() )
+  if ( dprovider->crs() != mCanvas->mapSettings().destinationCrs() )
   {
     // To get some reasonable response for point/line WMS vector layers we must
     // use a context with approximately a resolution in layer CRS units

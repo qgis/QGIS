@@ -311,7 +311,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>12</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -340,8 +340,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>680</height>
+                <width>843</width>
+                <height>702</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -1027,7 +1027,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>843</width>
-                <height>1065</height>
+                <height>1110</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1557,7 +1557,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>843</width>
-                <height>685</height>
+                <height>787</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1925,7 +1925,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>843</width>
-                <height>936</height>
+                <height>1110</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -2676,7 +2676,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>857</width>
-                <height>680</height>
+                <height>674</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -2827,7 +2827,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>857</width>
-                <height>680</height>
+                <height>674</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3170,7 +3170,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>857</width>
-                <height>680</height>
+                <height>674</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3601,7 +3601,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>857</width>
-                <height>680</height>
+                <height>674</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -3869,8 +3869,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>680</height>
+                <width>843</width>
+                <height>828</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4448,7 +4448,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>857</width>
-                <height>680</height>
+                <height>674</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4587,140 +4587,11 @@
                 <x>0</x>
                 <y>0</y>
                 <width>857</width>
-                <height>680</height>
+                <height>674</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
-               <item row="5" column="0">
-                <spacer name="verticalSpacer">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>40</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="2" column="0">
-                <widget class="QgsCollapsibleGroupBox" name="grpProjectionBehavior">
-                 <property name="title">
-                  <string>CRS for new layers</string>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_14" columnstretch="0,1">
-                  <item row="0" column="0" colspan="2">
-                   <widget class="QLabel" name="label_8">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>When a new layer is created, or when a layer is loaded that has no CRS</string>
-                    </property>
-                    <property name="wordWrap">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QRadioButton" name="radPromptForProjection">
-                    <property name="text">
-                     <string>Pro&amp;mpt for CRS</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QRadioButton" name="radUseProjectProjection">
-                    <property name="text">
-                     <string>Use pro&amp;ject CRS</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="0">
-                   <widget class="QRadioButton" name="radUseGlobalProjection">
-                    <property name="text">
-                     <string>Use a default CRS</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="1">
-                   <widget class="QgsProjectionSelectionWidget" name="leLayerGlobalCrs" native="true">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                    <property name="focusPolicy">
-                     <enum>Qt::StrongFocus</enum>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item row="1" column="0">
-                <widget class="QgsCollapsibleGroupBox" name="grpOtfTransform">
-                 <property name="title">
-                  <string>Default CRS for new projects</string>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_16" columnstretch="0,1">
-                  <item row="0" column="0">
-                   <widget class="QRadioButton" name="radOtfNone">
-                    <property name="text">
-                     <string>Don't enable 'on the fl&amp;y' reprojection</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1">
-                   <spacer name="horizontalSpacer_43">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QRadioButton" name="radOtfAuto">
-                    <property name="whatsThis">
-                     <string>Automatically enable 'on the fly' reprojection if CRS of a new added layer differ from CRS of layer(s) already present. CRS of present layer(s) will be used.</string>
-                    </property>
-                    <property name="text">
-                     <string>Automatically enable 'on the fly' reprojection if layers ha&amp;ve different CRS</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QRadioButton" name="radOtfTransform">
-                    <property name="text">
-                     <string>Enable 'on t&amp;he fly' reprojection by default</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="0">
-                   <widget class="QLabel" name="label_16">
-                    <property name="text">
-                     <string>Always start new projects with following CRS</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="4" column="0" colspan="2">
-                   <widget class="QgsProjectionSelectionWidget" name="leProjectGlobalCrs" native="true">
-                    <property name="focusPolicy">
-                     <enum>Qt::StrongFocus</enum>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item row="3" column="0" rowspan="2">
+               <item row="5" column="0" rowspan="2">
                 <widget class="QgsCollapsibleGroupBox" name="mDefaultDatumTransformGroupBox">
                  <property name="title">
                   <string>Default datum transformations</string>
@@ -4799,6 +4670,102 @@
                  </layout>
                 </widget>
                </item>
+               <item row="2" column="0">
+                <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,1">
+                 <property name="topMargin">
+                  <number>3</number>
+                 </property>
+                 <item>
+                  <widget class="QLabel" name="label_16">
+                   <property name="text">
+                    <string>Default CRS for new projects</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QgsProjectionSelectionWidget" name="leProjectGlobalCrs" native="true">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>5</height>
+                    </size>
+                   </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::StrongFocus</enum>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="4" column="0">
+                <widget class="QgsCollapsibleGroupBox" name="grpProjectionBehavior">
+                 <property name="title">
+                  <string>CRS for new layers</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_14" columnstretch="0,1">
+                  <item row="0" column="0" colspan="2">
+                   <widget class="QLabel" name="label_8">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>When a new layer is created, or when a layer is loaded that has no CRS</string>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QRadioButton" name="radPromptForProjection">
+                    <property name="text">
+                     <string>Pro&amp;mpt for CRS</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QRadioButton" name="radUseProjectProjection">
+                    <property name="text">
+                     <string>Use pro&amp;ject CRS</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QRadioButton" name="radUseGlobalProjection">
+                    <property name="text">
+                     <string>Use a default CRS</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1">
+                   <widget class="QgsProjectionSelectionWidget" name="leLayerGlobalCrs" native="true">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="focusPolicy">
+                     <enum>Qt::StrongFocus</enum>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item row="7" column="0">
+                <spacer name="verticalSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
               </layout>
              </widget>
             </widget>
@@ -4833,7 +4800,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>857</width>
-                <height>680</height>
+                <height>674</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -4942,7 +4909,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>843</width>
-                <height>689</height>
+                <height>790</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -5456,6 +5423,11 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
@@ -5501,11 +5473,6 @@
    <extends>QTabWidget</extends>
    <header>qgsautheditorwidgets.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -5708,11 +5675,6 @@
   <tabstop>pbnEditPyramidsOptions</tabstop>
   <tabstop>lstGdalDrivers</tabstop>
   <tabstop>mOptionsScrollArea_08</tabstop>
-  <tabstop>grpOtfTransform</tabstop>
-  <tabstop>radOtfNone</tabstop>
-  <tabstop>radOtfAuto</tabstop>
-  <tabstop>radOtfTransform</tabstop>
-  <tabstop>leProjectGlobalCrs</tabstop>
   <tabstop>radPromptForProjection</tabstop>
   <tabstop>radUseProjectProjection</tabstop>
   <tabstop>radUseGlobalProjection</tabstop>

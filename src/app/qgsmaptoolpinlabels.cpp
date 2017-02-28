@@ -362,13 +362,10 @@ bool QgsMapToolPinLabels::pinUnpinCurrentLabel( bool pin )
     double labelY = referencePoint.y();
     double labelR = labelpos.rotation * 180 / M_PI;
 
-    // transform back to layer crs, if on-fly on
-    if ( mCanvas->mapSettings().hasCrsTransformEnabled() )
-    {
-      QgsPoint transformedPoint = mCanvas->mapSettings().mapToLayerCoordinates( vlayer, referencePoint );
-      labelX = transformedPoint.x();
-      labelY = transformedPoint.y();
-    }
+    // transform back to layer crs
+    QgsPoint transformedPoint = mCanvas->mapSettings().mapToLayerCoordinates( vlayer, referencePoint );
+    labelX = transformedPoint.x();
+    labelY = transformedPoint.y();
 
     vlayer->beginEditCommand( tr( "Pinned label" ) + QStringLiteral( " '%1'" ).arg( labelText ) );
     writeFailed = !vlayer->changeAttributeValue( fid, xCol, labelX );
@@ -456,13 +453,10 @@ bool QgsMapToolPinLabels::pinUnpinCurrentDiagram( bool pin )
     double labelX = referencePoint.x();
     double labelY = referencePoint.y();
 
-    // transform back to layer crs, if on-fly on
-    if ( mCanvas->mapSettings().hasCrsTransformEnabled() )
-    {
-      QgsPoint transformedPoint = mCanvas->mapSettings().mapToLayerCoordinates( vlayer, referencePoint );
-      labelX = transformedPoint.x();
-      labelY = transformedPoint.y();
-    }
+    // transform back to layer crs
+    QgsPoint transformedPoint = mCanvas->mapSettings().mapToLayerCoordinates( vlayer, referencePoint );
+    labelX = transformedPoint.x();
+    labelY = transformedPoint.y();
 
     vlayer->beginEditCommand( tr( "Pinned diagram" ) + QStringLiteral( " '%1'" ).arg( labelText ) );
     writeFailed = !vlayer->changeAttributeValue( fid, xCol, labelX );

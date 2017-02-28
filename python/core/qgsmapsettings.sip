@@ -83,11 +83,6 @@ class QgsMapSettings
      */
     void setCustomRenderFlags( const QString& customRenderFlags );
 
-    //! sets whether to use projections for this layer set
-    void setCrsTransformEnabled( bool enabled );
-    //! returns true if projections are enabled for this layer set
-    bool hasCrsTransformEnabled() const;
-
     //! sets destination coordinate reference system
     void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
     //! returns CRS of destination coordinate reference system

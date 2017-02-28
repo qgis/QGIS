@@ -43,7 +43,6 @@ class TestQgsComposerMap(unittest.TestCase):
         self.mMapSettings = QgsMapSettings()
         crs = QgsCoordinateReferenceSystem(32633)
         self.mMapSettings.setDestinationCrs(crs)
-        self.mMapSettings.setCrsTransformEnabled(False)
         self.mComposition = QgsComposition(QgsProject.instance())
         self.mComposition.setPaperSize(297, 210)
         self.mComposerMap = QgsComposerMap(self.mComposition, 20, 20, 200, 100)

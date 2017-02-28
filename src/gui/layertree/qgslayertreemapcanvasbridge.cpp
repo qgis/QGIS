@@ -31,7 +31,6 @@ QgsLayerTreeMapCanvasBridge::QgsLayerTreeMapCanvasBridge( QgsLayerTreeGroup *roo
     , mPendingCanvasUpdate( false )
     , mHasCustomLayerOrder( false )
     , mAutoSetupOnFirstLayer( true )
-    , mAutoEnableCrsTransform( true )
     , mLastLayerCount( !root->findLayers().isEmpty() )
 {
   connect( root, &QgsLayerTreeGroup::addedChildren, this, &QgsLayerTreeMapCanvasBridge::nodeAddedChildren );
@@ -141,27 +140,6 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
   int currentLayerCount = layerNodes.count();
   bool firstLayers = mAutoSetupOnFirstLayer && mLastLayerCount == 0 && currentLayerCount != 0;
 
-  if ( firstLayers )
-  {
-    // also setup destination CRS and map units if the OTF projections are not yet enabled
-    if ( !mCanvas->mapSettings().hasCrsTransformEnabled() )
-    {
-      Q_FOREACH ( QgsLayerTreeLayer* layerNode, layerNodes )
-      {
-        if ( !layerNode->layer() )
-          continue;
-
-        if ( layerNode->layer()->isSpatial() )
-        {
-          mCanvas->setDestinationCrs( layerNode->layer()->crs() );
-          QgsProject::instance()->setCrs( layerNode->layer()->crs() );
-          mCanvas->setMapUnits( layerNode->layer()->crs().mapUnits() );
-          break;
-        }
-      }
-    }
-  }
-
   mCanvas->setLayers( canvasLayers );
   if ( mOverviewCanvas )
     mOverviewCanvas->setLayers( overviewLayers );
@@ -185,19 +163,10 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
     }
   }
 
-  if ( mAutoEnableCrsTransform && mFirstCRS.isValid() && !mCanvas->mapSettings().hasCrsTransformEnabled() )
+  if ( mFirstCRS.isValid() && firstLayers )
   {
-    // check whether all layers still have the same CRS
-    Q_FOREACH ( QgsLayerTreeLayer* layerNode, layerNodes )
-    {
-      if ( layerNode->layer() && layerNode->layer()->crs().isValid() && layerNode->layer()->crs() != mFirstCRS )
-      {
-        mCanvas->setDestinationCrs( mFirstCRS );
-        QgsProject::instance()->setCrs( mFirstCRS );
-        mCanvas->setCrsTransformEnabled( true );
-        break;
-      }
-    }
+    mCanvas->setDestinationCrs( mFirstCRS );
+    QgsProject::instance()->setCrs( mFirstCRS );
   }
 
   mLastLayerCount = currentLayerCount;

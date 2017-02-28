@@ -122,8 +122,6 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   // Properties stored in map canvas's QgsMapRenderer
   // these ones are propagated to QgsProject by a signal
 
-  // we need to initialize it, since the on_cbxProjectionEnabled_toggled()
-  // slot triggered by setChecked() might use it.
   mProjectSrsId = mMapCanvas->mapSettings().destinationCrs().srsid();
 
   QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromSrsId( mProjectSrsId );
@@ -707,16 +705,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   }
   mRelationManagerDlg->setLayers( vectorLayers );
 
-  // Update projection selector (after mLayerSrsId is set)
-  bool myProjectionEnabled = mMapCanvas->mapSettings().hasCrsTransformEnabled();
-  bool onFlyChecked = cbxProjectionEnabled->isChecked();
-  cbxProjectionEnabled->setChecked( myProjectionEnabled );
-
-  if ( onFlyChecked == myProjectionEnabled )
-  {
-    // ensure selector is updated if cbxProjectionEnabled->toggled signal not sent
-    on_cbxProjectionEnabled_toggled( myProjectionEnabled );
-  }
+  // Update projection selector
+  updateProjectionWidget();
 
   mAutoTransaction->setChecked( QgsProject::instance()->autoTransaction() );
   mEvaluateDefaultValues->setChecked( QgsProject::instance()->evaluateDefaultValues() );
@@ -768,8 +758,6 @@ void QgsProjectProperties::title( QString const & title )
 //when user clicks apply button
 void QgsProjectProperties::apply()
 {
-  mMapCanvas->setCrsTransformEnabled( cbxProjectionEnabled->isChecked() );
-
   mMapCanvas->enableMapTileRendering( mMapTileRenderingCheckBox->isChecked() );
 
   // Only change the projection if there is a node in the tree
@@ -787,19 +775,14 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->setCrs( srs );
 
     // Set the map units to the projected coordinates if we are projecting
-    if ( isProjected() )
-    {
-      // If we couldn't get the map units, default to the value in the
-      // projectproperties dialog box (set above)
-      if ( srs.mapUnits() != QgsUnitTypes::DistanceUnknownUnit )
-        mMapCanvas->setMapUnits( srs.mapUnits() );
-    }
 
-    if ( cbxProjectionEnabled->isChecked() )
-    {
-      // mark selected projection for push to front
-      projectionSelector->pushProjectionToFront();
-    }
+    // If we couldn't get the map units, default to the value in the
+    // projectproperties dialog box (set above)
+    if ( srs.mapUnits() != QgsUnitTypes::DistanceUnknownUnit )
+      mMapCanvas->setMapUnits( srs.mapUnits() );
+
+    // mark selected projection for push to front
+    projectionSelector->pushProjectionToFront();
   }
 
   // Set the project title
@@ -1195,51 +1178,18 @@ void QgsProjectProperties::apply()
   emit refresh();
 }
 
-bool QgsProjectProperties::isProjected()
-{
-  return cbxProjectionEnabled->isChecked();
-}
-
 void QgsProjectProperties::showProjectionsTab()
 {
   mOptionsListWidget->setCurrentRow( 1 );
 }
 
-void QgsProjectProperties::on_cbxProjectionEnabled_toggled( bool onFlyEnabled )
+void QgsProjectProperties::updateProjectionWidget()
 {
-  if ( !onFlyEnabled )
+  if ( !mLayerSrsId )
   {
-    // reset projection to default
-    const QMap<QString, QgsMapLayer*> &mapLayers = QgsProject::instance()->mapLayers();
-
-    QgsCoordinateReferenceSystem crs;
-    if ( mMapCanvas->currentLayer() )
-    {
-      crs = mMapCanvas->currentLayer()->crs();
-    }
-    else if ( !mapLayers.isEmpty() )
-    {
-      crs = mapLayers.begin().value()->crs();
-    }
-    else
-    {
-      crs = QgsCoordinateReferenceSystem::fromSrsId( mProjectSrsId );
-    }
-    mLayerSrsId = crs.srsid();
-    mProjectSrsId = mLayerSrsId;
-    projectionSelector->setCrs( crs );
-
-    // unset ellipsoid
-    mEllipsoidIndex = 0;
+    mLayerSrsId = projectionSelector->crs().srsid();
   }
-  else
-  {
-    if ( !mLayerSrsId )
-    {
-      mLayerSrsId = projectionSelector->crs().srsid();
-    }
-    projectionSelector->setCrs( QgsCoordinateReferenceSystem::fromSrsId( mProjectSrsId ) );
-  }
+  projectionSelector->setCrs( QgsCoordinateReferenceSystem::fromSrsId( mProjectSrsId ) );
 
   srIdUpdated();
 
@@ -1306,7 +1256,7 @@ void QgsProjectProperties::updateGuiForMapUnits( QgsUnitTypes::DistanceUnit unit
 void QgsProjectProperties::srIdUpdated()
 {
   QgsCoordinateReferenceSystem srs = projectionSelector->crs();
-  if ( !isProjected() || !srs.isValid() )
+  if ( !srs.isValid() )
     return;
 
   //set radio button to crs map unit type
@@ -1399,11 +1349,8 @@ void QgsProjectProperties::on_pbnWMSSetUsedSRS_clicked()
 
   QSet<QString> crsList;
 
-  if ( cbxProjectionEnabled->isChecked() )
-  {
-    QgsCoordinateReferenceSystem srs = projectionSelector->crs();
-    crsList << srs.authid();
-  }
+  QgsCoordinateReferenceSystem srs = projectionSelector->crs();
+  crsList << srs.authid();
 
   const QMap<QString, QgsMapLayer*> &mapLayers = QgsProject::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer*>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )

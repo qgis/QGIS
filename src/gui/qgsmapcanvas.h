@@ -94,10 +94,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @note added in 2.4
     const QgsMapSettings& mapSettings() const;
 
-    //! sets whether to use projections for this layer set
-    //! @note added in 2.4
-    void setCrsTransformEnabled( bool enabled );
-
     //! sets destination coordinate reference system
     //! @note added in 2.4
     void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
@@ -418,9 +414,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! State of render suppression flag
     bool renderFlag() {return mRenderFlag;}
 
-    //! A simple helper method to find out if on the fly projections are enabled or not
-    bool hasCrsTransformEnabled();
-
     //! stop rendering (if there is any right now)
     //! @note added in 2.4
     void stopRendering();
@@ -525,10 +518,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Emitted when zoom next status changed
     void zoomNextStatusChanged( bool );
-
-    //! Emitted when on-the-fly projection has been turned on/off
-    //! @note added in 2.4
-    void hasCrsTransformEnabledChanged( bool flag );
 
     //! Emitted when map CRS has changed
     //! @note added in 2.4

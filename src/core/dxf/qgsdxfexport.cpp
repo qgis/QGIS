@@ -545,7 +545,6 @@ int QgsDxfExport::writeToFile( QIODevice* d, const QString& encoding )
   mMapSettings.setOutputDpi( dpi );
   if ( mCrs.isValid() )
     mMapSettings.setDestinationCrs( mCrs );
-  mMapSettings.setCrsTransformEnabled( mCrs.isValid() );
 
   writeHeader( dxfEncoding( encoding ) );
   writeTables();
@@ -1048,7 +1047,7 @@ void QgsDxfExport::writeEntities()
 
     QgsFeatureIterator featureIt = vl->getFeatures( freq );
 
-    QgsCoordinateTransform ct = mMapSettings.hasCrsTransformEnabled() ? mMapSettings.layerTransform( vl ) : QgsCoordinateTransform();
+    QgsCoordinateTransform ct = mMapSettings.layerTransform( vl );
 
     QgsFeature fet;
     while ( featureIt.nextFeature( fet ) )
@@ -1183,7 +1182,7 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer* layer )
     }
   }
 
-  QgsCoordinateTransform ct = mMapSettings.hasCrsTransformEnabled() ? mMapSettings.layerTransform( layer ) : QgsCoordinateTransform();
+  QgsCoordinateTransform ct = mMapSettings.layerTransform( layer );
 
   // export symbol layers and symbology
   for ( int l = 0; l < levels.count(); l++ )

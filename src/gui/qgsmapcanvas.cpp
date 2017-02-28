@@ -333,20 +333,6 @@ const QgsMapSettings &QgsMapCanvas::mapSettings() const
   return mSettings;
 }
 
-void QgsMapCanvas::setCrsTransformEnabled( bool enabled )
-{
-  if ( mSettings.hasCrsTransformEnabled() == enabled )
-    return;
-
-  mSettings.setCrsTransformEnabled( enabled );
-
-  updateDatumTransformEntries();
-
-  refresh();
-
-  emit hasCrsTransformEnabledChanged( enabled );
-}
-
 void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
 {
   if ( mSettings.destinationCrs() == crs )
@@ -368,10 +354,6 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
     }
   }
 
-  if ( !mSettings.hasCrsTransformEnabled() )
-  {
-    mSettings.setMapUnits( crs.mapUnits() );
-  }
   if ( !rect.isEmpty() )
   {
     setExtent( rect );
@@ -887,12 +869,6 @@ void QgsMapCanvas::clearExtentHistory()
   emit zoomLastStatusChanged( mLastExtentIndex > 0 );
   emit zoomNextStatusChanged( mLastExtentIndex < mLastExtent.size() - 1 );
 }// clearExtentHistory
-
-
-bool QgsMapCanvas::hasCrsTransformEnabled()
-{
-  return mapSettings().hasCrsTransformEnabled();
-}
 
 void QgsMapCanvas::zoomToSelected( QgsVectorLayer* layer )
 {
@@ -1653,9 +1629,6 @@ void QgsMapCanvas::connectNotify( const char * signal )
 
 void QgsMapCanvas::updateDatumTransformEntries()
 {
-  if ( !mSettings.hasCrsTransformEnabled() )
-    return;
-
   QString destAuthId = mSettings.destinationCrs().authid();
   Q_FOREACH ( QgsMapLayer* layer, mSettings.layers() )
   {
@@ -1822,7 +1795,6 @@ void QgsMapCanvas::readProject( const QDomDocument & doc )
     QgsMapSettings tmpSettings;
     tmpSettings.readXml( node );
     setMapUnits( tmpSettings.mapUnits() );
-    setCrsTransformEnabled( tmpSettings.hasCrsTransformEnabled() );
     setDestinationCrs( tmpSettings.destinationCrs() );
     setExtent( tmpSettings.extent() );
     setRotation( tmpSettings.rotation() );

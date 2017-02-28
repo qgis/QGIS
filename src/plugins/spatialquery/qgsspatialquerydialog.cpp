@@ -687,10 +687,8 @@ void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
     if ( sHasMsg )
     {
       QString crsMapcanvas = srcMapcanvas.authid();
-      bool isFly = mIface->mapCanvas()->mapSettings().hasCrsTransformEnabled();
-      QString msgFly = tr( "Map \"%1\" \"on the fly\" transformation." ).arg( isFly ? tr( "enable" ) : tr( "disable" ) );
       QString msg = tr( "Coordinate reference system(CRS) of\n\"%1\" is invalid(see CRS of provider)." ).arg( lyr->name() );
-      msg.append( tr( "\n\nCRS of map is %1.\n%2." ).arg( crsMapcanvas, msgFly ) );
+      msg.append( tr( "\n\nCRS of map is %1." ).arg( crsMapcanvas ) );
       msg.append( "\n\nUsing CRS of map for all features!" );
 
       QMessageBox::warning( this, tr( "Zoom to feature" ), msg, QMessageBox::Ok );

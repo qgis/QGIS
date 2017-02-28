@@ -259,8 +259,6 @@ def mapSettingsString(ms):
     s += '  visibleExtent():\n    {0}\n'.format(
         ms.visibleExtent().toString().replace(' : ', '\n    '))
     s += '  fullExtent():\n    {0}\n'.format(full_ext.replace(' : ', '\n    '))
-    s += '  hasCrsTransformEnabled(): {0}\n'.format(
-        ms.hasCrsTransformEnabled())
     s += '  destinationCrs(): {0}\n'.format(
         ms.destinationCrs().authid())
     s += '  flag.Antialiasing: {0}\n'.format(

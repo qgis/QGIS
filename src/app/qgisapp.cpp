@@ -2810,8 +2810,6 @@ void QgisApp::setupConnections()
            this, &QgisApp::mapCanvas_keyPressed );
 
   // connect renderer
-  connect( mMapCanvas, &QgsMapCanvas::hasCrsTransformEnabledChanged,
-           this, &QgisApp::hasCrsTransformEnabled );
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged,
            this, &QgisApp::destinationCrsChanged );
 
@@ -3201,9 +3199,6 @@ void QgisApp::initLayerTreeView()
   mLayerTreeCanvasBridge = new QgsLayerTreeMapCanvasBridge( QgsProject::instance()->layerTreeRoot(), mMapCanvas, this );
   connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument& ) ), mLayerTreeCanvasBridge, SLOT( writeProject( QDomDocument& ) ) );
   connect( QgsProject::instance(), SIGNAL( readProject( QDomDocument ) ), mLayerTreeCanvasBridge, SLOT( readProject( QDomDocument ) ) );
-
-  bool otfTransformAutoEnable = QSettings().value( QStringLiteral( "/Projections/otfTransformAutoEnable" ), true ).toBool();
-  mLayerTreeCanvasBridge->setAutoEnableCrsTransform( otfTransformAutoEnable );
 
   mMapLayerOrder = new QgsCustomLayerOrderWidget( mLayerTreeCanvasBridge, this );
   mMapLayerOrder->setObjectName( QStringLiteral( "theMapLayerOrder" ) );
@@ -4607,9 +4602,6 @@ void QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
     mMapCanvas->setMapUnits( srs.mapUnits() );
   }
 
-  // enable OTF CRS transformation if necessary
-  mMapCanvas->setCrsTransformEnabled( settings.value( QStringLiteral( "/Projections/otfTransformEnabled" ), 0 ).toBool() );
-
   updateCrsStatusBar();
 
   /** New Empty Project Created
@@ -5357,11 +5349,6 @@ void QgisApp::openProject( QAction *action )
   QString debugme = action->data().toString();
   if ( saveDirty() )
     addProject( debugme );
-
-  //set the projections enabled icon in the status bar
-  int myProjectionEnabledFlag =
-    QgsProject::instance()->readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), 0 );
-  mMapCanvas->setCrsTransformEnabled( myProjectionEnabledFlag );
 }
 
 void QgisApp::runScript( const QString &filePath )
@@ -7582,15 +7569,7 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
     return;
 
   pasteVectorLayer->beginEditCommand( tr( "Features pasted" ) );
-  QgsFeatureList features;
-  if ( mMapCanvas->mapSettings().hasCrsTransformEnabled() )
-  {
-    features = clipboard()->transformedCopyOf( pasteVectorLayer->crs(), pasteVectorLayer->fields() );
-  }
-  else
-  {
-    features = clipboard()->copyOf( pasteVectorLayer->fields() );
-  }
+  QgsFeatureList features = clipboard()->transformedCopyOf( pasteVectorLayer->crs(), pasteVectorLayer->fields() );
   int nTotalFeatures = features.count();
 
   QHash<int, int> remap;
@@ -8822,23 +8801,17 @@ void QgisApp::legendLayerZoomNative()
     QgsDebugMsg( "Raster units per pixel  : " + QString::number( layer->rasterUnitsPerPixelX() ) );
     QgsDebugMsg( "MapUnitsPerPixel before : " + QString::number( mMapCanvas->mapUnitsPerPixel() ) );
 
-    if ( mMapCanvas->hasCrsTransformEnabled() )
-    {
-      // get length of central canvas pixel width in source raster crs
-      QgsRectangle e = mMapCanvas->extent();
-      QSize s = mMapCanvas->mapSettings().outputSize();
-      QgsPoint p1( e.center().x(), e.center().y() );
-      QgsPoint p2( e.center().x() + e.width() / s.width(), e.center().y() + e.height() / s.height() );
-      QgsCoordinateTransform ct( mMapCanvas->mapSettings().destinationCrs(), layer->crs() );
-      p1 = ct.transform( p1 );
-      p2 = ct.transform( p2 );
-      double width = sqrt( p1.sqrDist( p2 ) ); // width (actually the diagonal) of reprojected pixel
-      mMapCanvas->zoomByFactor( sqrt( layer->rasterUnitsPerPixelX() * layer->rasterUnitsPerPixelX() + layer->rasterUnitsPerPixelY() * layer->rasterUnitsPerPixelY() ) / width );
-    }
-    else
-    {
-      mMapCanvas->zoomByFactor( qAbs( layer->rasterUnitsPerPixelX() / mMapCanvas->mapUnitsPerPixel() ) );
-    }
+    // get length of central canvas pixel width in source raster crs
+    QgsRectangle e = mMapCanvas->extent();
+    QSize s = mMapCanvas->mapSettings().outputSize();
+    QgsPoint p1( e.center().x(), e.center().y() );
+    QgsPoint p2( e.center().x() + e.width() / s.width(), e.center().y() + e.height() / s.height() );
+    QgsCoordinateTransform ct( mMapCanvas->mapSettings().destinationCrs(), layer->crs() );
+    p1 = ct.transform( p1 );
+    p2 = ct.transform( p2 );
+    double width = sqrt( p1.sqrDist( p2 ) ); // width (actually the diagonal) of reprojected pixel
+    mMapCanvas->zoomByFactor( sqrt( layer->rasterUnitsPerPixelX() * layer->rasterUnitsPerPixelX() + layer->rasterUnitsPerPixelY() * layer->rasterUnitsPerPixelY() ) / width );
+
     mMapCanvas->refresh();
     QgsDebugMsg( "MapUnitsPerPixel after  : " + QString::number( mMapCanvas->mapUnitsPerPixel() ) );
   }
@@ -9188,9 +9161,6 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString& currentPage )
     qobject_cast<QgsMeasureTool*>( mMapTools.mMeasureDist )->updateSettings();
     qobject_cast<QgsMeasureTool*>( mMapTools.mMeasureArea )->updateSettings();
     qobject_cast<QgsMapToolMeasureAngle*>( mMapTools.mMeasureAngle )->updateSettings();
-
-    bool otfTransformAutoEnable = mySettings.value( QStringLiteral( "/Projections/otfTransformAutoEnable" ), true ).toBool();
-    mLayerTreeCanvasBridge->setAutoEnableCrsTransform( otfTransformAutoEnable );
 
     mMapCanvas->setSegmentationTolerance( mySettings.value( QStringLiteral( "/qgis/segmentationTolerance" ), "0.01745" ).toDouble() );
     mMapCanvas->setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType( mySettings.value( QStringLiteral( "/qgis/segmentationToleranceType" ), "0" ).toInt() ) );
@@ -10311,30 +10281,13 @@ void QgisApp::updateCrsStatusBar()
 {
   mOnTheFlyProjectionStatusButton->setText( mMapCanvas->mapSettings().destinationCrs().authid() );
 
-  if ( mMapCanvas->mapSettings().hasCrsTransformEnabled() )
-  {
-    mOnTheFlyProjectionStatusButton->setToolTip(
-      tr( "Current CRS: %1 (OTF enabled)" ).arg( mMapCanvas->mapSettings().destinationCrs().description() ) );
-    mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconProjectionEnabled.svg" ) ) );
-  }
-  else
-  {
-    mOnTheFlyProjectionStatusButton->setText( tr( "%1 (OTF off)" ).arg( mOnTheFlyProjectionStatusButton->text() ) );
-    mOnTheFlyProjectionStatusButton->setToolTip(
-      tr( "Current CRS: %1 (OTF disabled)" ).arg( mMapCanvas->mapSettings().destinationCrs().description() ) );
-    mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconProjectionDisabled.svg" ) ) );
-  }
+  mOnTheFlyProjectionStatusButton->setToolTip(
+    tr( "Current CRS: %1" ).arg( mMapCanvas->mapSettings().destinationCrs().description() ) );
+  mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconProjectionEnabled.svg" ) ) );
 }
 
 void QgisApp::destinationCrsChanged()
 {
-  updateCrsStatusBar();
-}
-
-void QgisApp::hasCrsTransformEnabled( bool flag )
-{
-  // save this information to project
-  QgsProject::instance()->writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), ( flag ? 1 : 0 ) );
   updateCrsStatusBar();
 }
 
@@ -11605,15 +11558,10 @@ void QgisApp::readProject( const QDomDocument &doc )
   projectChanged( doc );
 
   // force update of canvas, without automatic changes to extent and OTF projections
-  bool autoEnableCrsTransform = mLayerTreeCanvasBridge->autoEnableCrsTransform();
   bool autoSetupOnFirstLayer = mLayerTreeCanvasBridge->autoSetupOnFirstLayer();
-  mLayerTreeCanvasBridge->setAutoEnableCrsTransform( false );
   mLayerTreeCanvasBridge->setAutoSetupOnFirstLayer( false );
 
   mLayerTreeCanvasBridge->setCanvasLayers();
-
-  if ( autoEnableCrsTransform )
-    mLayerTreeCanvasBridge->setAutoEnableCrsTransform( true );
 
   if ( autoSetupOnFirstLayer )
     mLayerTreeCanvasBridge->setAutoSetupOnFirstLayer( true );

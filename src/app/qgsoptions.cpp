@@ -392,21 +392,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   mLayerDefaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( myLayerDefaultCrs );
   leLayerGlobalCrs->setCrs( mLayerDefaultCrs );
 
-  //on the fly CRS transformation settings
-  //it would be logical to have single settings value but originally the radio buttons were checkboxes
-  if ( mSettings->value( QStringLiteral( "/Projections/otfTransformAutoEnable" ), true ).toBool() )
-  {
-    radOtfAuto->setChecked( true );
-  }
-  else if ( mSettings->value( QStringLiteral( "/Projections/otfTransformEnabled" ), false ).toBool() )
-  {
-    radOtfTransform->setChecked( true );
-  }
-  else
-  {
-    radOtfNone->setChecked( true ); // default
-  }
-
   QString myDefaultCrs = mSettings->value( QStringLiteral( "/Projections/projectDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString();
   mDefaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( myDefaultCrs );
   leProjectGlobalCrs->setCrs( mDefaultCrs );
@@ -1304,10 +1289,6 @@ void QgsOptions::saveOptions()
   }
 
   mSettings->setValue( QStringLiteral( "/Projections/layerDefaultCrs" ), mLayerDefaultCrs.authid() );
-
-  // save 'on the fly' CRS transformation settings
-  mSettings->setValue( QStringLiteral( "/Projections/otfTransformAutoEnable" ), radOtfAuto->isChecked() );
-  mSettings->setValue( QStringLiteral( "/Projections/otfTransformEnabled" ), radOtfTransform->isChecked() );
   mSettings->setValue( QStringLiteral( "/Projections/projectDefaultCrs" ), mDefaultCrs.authid() );
 
   mSettings->setValue( QStringLiteral( "/Projections/showDatumTransformDialog" ), chkShowDatumTransformDialog->isChecked() );

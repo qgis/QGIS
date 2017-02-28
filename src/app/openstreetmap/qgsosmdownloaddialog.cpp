@@ -101,17 +101,14 @@ void QgsOSMDownloadDialog::onExtentCanvas()
 {
   QgsRectangle r( QgisApp::instance()->mapCanvas()->extent() );
 
-  if ( QgisApp::instance()->mapCanvas()->hasCrsTransformEnabled() )
-  {
-    QgsCoordinateReferenceSystem dst = QgsCoordinateReferenceSystem::fromSrsId( GEOCRS_ID );
+  QgsCoordinateReferenceSystem dst = QgsCoordinateReferenceSystem::fromSrsId( GEOCRS_ID );
 
-    QgsCoordinateTransform ct( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(), dst );
-    r = ct.transformBoundingBox( r );
-    if ( !r.isFinite() )
-    {
-      QMessageBox::information( this, tr( "OpenStreetMap download" ), tr( "Could not transform canvas extent." ) );
-      return;
-    }
+  QgsCoordinateTransform ct( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(), dst );
+  r = ct.transformBoundingBox( r );
+  if ( !r.isFinite() )
+  {
+    QMessageBox::information( this, tr( "OpenStreetMap download" ), tr( "Could not transform canvas extent." ) );
+    return;
   }
 
   setRect( r );
