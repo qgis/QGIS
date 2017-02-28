@@ -829,6 +829,7 @@ void QgsProjectProperties::apply()
   {
     canvas->setCanvasColor( canvasColor );
     canvas->setSelectionColor( selectionColor );
+    canvas->enableMapTileRendering( mMapTileRenderingCheckBox->isChecked() );
   }
   QgisApp::instance()->mapOverviewCanvas()->setBackgroundColor( canvasColor );
 

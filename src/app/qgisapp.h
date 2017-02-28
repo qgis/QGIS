@@ -239,6 +239,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Create a new map canvas with the specified unique \a name
     QgsMapCanvas *createNewMapCanvas( const QString &name );
 
+    /**
+     * Freezes all map canvases (or thaws them if the \a frozen argument is false).
+     */
+    void freezeCanvases( bool frozen = true );
+
     //! Return the messageBar object which allows displaying unobtrusive messages to the user.
     QgsMessageBar *messageBar();
 

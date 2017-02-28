@@ -130,7 +130,7 @@ bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer *layer, bool allowCance
         break;
 
       case QMessageBox::Discard:
-        QgisApp::instance()->mapCanvas()->freeze( true );
+        QgisApp::instance()->freezeCanvases();
         if ( !layer->rollBack() )
         {
           QgisApp::instance()->messageBar()->pushMessage( tr( "Error" ),
@@ -138,7 +138,7 @@ bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer *layer, bool allowCance
               QgsMessageBar::CRITICAL );
           res = false;
         }
-        QgisApp::instance()->mapCanvas()->freeze( false );
+        QgisApp::instance()->freezeCanvases( false );
 
         layer->triggerRepaint();
         break;
@@ -149,9 +149,9 @@ bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer *layer, bool allowCance
   }
   else //layer not modified
   {
-    QgisApp::instance()->mapCanvas()->freeze( true );
+    QgisApp::instance()->freezeCanvases( true );
     layer->rollBack();
-    QgisApp::instance()->mapCanvas()->freeze( false );
+    QgisApp::instance()->freezeCanvases( false );
     res = true;
     layer->triggerRepaint();
   }
