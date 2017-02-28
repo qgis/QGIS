@@ -443,7 +443,7 @@ void QgsMapCanvas::refresh()
     return;
   }
 
-  if ( !mRenderFlag || mFrozen )  // do we really need two flags controlling rendering?
+  if ( !mRenderFlag || mFrozen )
   {
     QgsDebugMsg( "CANVAS render flag off" );
     return;
@@ -1555,15 +1555,15 @@ void QgsMapCanvas::layerCrsChange()
 } // layerCrsChange
 
 
-void QgsMapCanvas::freeze( bool frz )
+void QgsMapCanvas::freeze( bool frozen )
 {
-  mFrozen = frz;
-} // freeze
+  mFrozen = frozen;
+}
 
-bool QgsMapCanvas::isFrozen()
+bool QgsMapCanvas::isFrozen() const
 {
   return mFrozen;
-} // freeze
+}
 
 
 double QgsMapCanvas::mapUnitsPerPixel() const

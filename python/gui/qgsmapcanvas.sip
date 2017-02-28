@@ -170,23 +170,9 @@ class QgsMapCanvas : QGraphicsView
 
     //! return list of layers within map canvas.
     QList<QgsMapLayer*> layers() const;
-
-    /**
-     * Freeze/thaw the map canvas. This is used to prevent the canvas from
-     * responding to events while layers are being added/removed etc.
-     * @param frz Boolean specifying if the canvas should be frozen (true) or
-     * thawed (false). Default is true.
-     *
-     * TODO remove in QGIS 3
-     */
-    void freeze( bool frz = true );
-
-    /**
-     * Accessor for frozen status of canvas
-     *
-     * TODO remove in QGIS 3
-     */
-    bool isFrozen();
+    void freeze( bool frozen = true );
+    bool isFrozen() const;
+    bool renderFlag() const;
 
     //! Get the current canvas map units
     QgsUnitTypes::DistanceUnit mapUnits() const;
@@ -347,11 +333,7 @@ class QgsMapCanvas : QGraphicsView
 
     //! This slot is connected to the layer's CRS change
     void layerCrsChange();
-
-    //! Whether to suppress rendering or not
     void setRenderFlag( bool flag );
-    //! State of render suppression flag
-    bool renderFlag();
 
     //! stop rendering (if there is any right now)
     //! @note added in 2.4

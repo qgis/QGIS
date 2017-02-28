@@ -232,19 +232,32 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /**
      * Freeze/thaw the map canvas. This is used to prevent the canvas from
      * responding to events while layers are being added/removed etc.
-     * @param frz Boolean specifying if the canvas should be frozen (true) or
+     * @param frozen Boolean specifying if the canvas should be frozen (true) or
      * thawed (false). Default is true.
-     *
-     * TODO remove in QGIS 3
+     * @see isFrozen()
+     * @see setRenderFlag(). freeze() should be used to programmatically halt map updates,
+     * while setRenderFlag() should only be used when users disable rendering via GUI.
      */
-    void freeze( bool frz = true );
+    void freeze( bool frozen = true );
 
     /**
-     * Accessor for frozen status of canvas
-     *
-     * TODO remove in QGIS 3
+     * Returns true if canvas is frozen.
+     * @see renderFlag(). isFrozen() should be used to determine whether map updates
+     * have been halted programmatically, while renderFlag() should be used to
+     * determine whether a user has disabled rendering via GUI.
+     * @see freeze()
      */
-    bool isFrozen();
+    bool isFrozen() const;
+
+    /**
+     * Returns true if canvas render is disabled as a result of user disabling
+     * renders via the GUI.
+     * @see setRenderFlag()
+     * @see isFrozen(). isFrozen() should be used to determine whether map updates
+     * have been halted programmatically, while renderFlag() should be used to
+     * determine whether a user has disabled rendering via GUI.
+     */
+    bool renderFlag() const { return mRenderFlag; }
 
     /**
      * Convience function for returning the current canvas map units. The map units
@@ -409,10 +422,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! This slot is connected to the layer's CRS change
     void layerCrsChange();
 
-    //! Whether to suppress rendering or not
+    /**
+     * Sets whether a user has disabled canvas renders via the GUI.
+     * @param flag set to false to indicate that user has disabled renders
+     * @see renderFlag()
+     * @see freeze(). freeze() should be used to programmatically halt map updates,
+     * while setRenderFlag() should only be used when users disable rendering via GUI.
+     */
     void setRenderFlag( bool flag );
-    //! State of render suppression flag
-    bool renderFlag() {return mRenderFlag;}
 
     //! stop rendering (if there is any right now)
     //! @note added in 2.4
