@@ -1655,18 +1655,6 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
   updateFields();
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( checkJoinLayerRemove( QString ) ) );
 
-  QDomNode prevExpNode = layer_node.namedItem( "previewExpression" );
-
-  if ( prevExpNode.isNull() )
-  {
-    mDisplayExpression = "";
-  }
-  else
-  {
-    QDomElement prevExpElem = prevExpNode.toElement();
-    mDisplayExpression = prevExpElem.text();
-  }
-
   QString errorMsg;
   if ( !readSymbology( layer_node, errorMsg ) )
   {
@@ -1852,12 +1840,6 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
     layer_node.appendChild( provider );
   }
 
-  // save preview expression
-  QDomElement prevExpElem = document.createElement( "previewExpression" );
-  QDomText prevExpText = document.createTextNode( mDisplayExpression );
-  prevExpElem.appendChild( prevExpText );
-  layer_node.appendChild( prevExpElem );
-
   //save joins
   mJoinBuffer->writeXml( layer_node, document );
 
@@ -1976,12 +1958,24 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
 
   mConditionalStyles->readXml( node );
 
+  QDomNode prevExpNode = node.namedItem( "previewExpression" );
+
+  if ( prevExpNode.isNull() )
+  {
+    mDisplayExpression = "";
+  }
+  else
+  {
+    QDomElement prevExpElem = prevExpNode.toElement();
+    mDisplayExpression = prevExpElem.text();
+  }
+
+
   readCustomProperties( node, "variable" );
 
   QDomElement mapLayerNode = node.toElement();
   if ( mapLayerNode.attribute( "readOnly", "0" ).toInt() == 1 )
     mReadOnly = true;
-
 
   return true;
 }
@@ -2192,6 +2186,12 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     defaultsElem.appendChild( defaultElem );
   }
   node.appendChild( defaultsElem );
+
+  // preview expression
+  QDomElement prevExpElem = doc.createElement( "previewExpression" );
+  QDomText prevExpText = doc.createTextNode( mDisplayExpression );
+  prevExpElem.appendChild( prevExpText );
+  node.appendChild( prevExpElem );
 
   return true;
 }
