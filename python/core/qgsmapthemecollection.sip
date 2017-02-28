@@ -27,16 +27,18 @@ class QgsMapThemeCollection : QObject
         bool operator==( const QgsMapThemeCollection::MapThemeLayerRecord& other ) const;
         bool operator!=( const QgsMapThemeCollection::MapThemeLayerRecord& other ) const;
 
-        //! Returns map layer or null if the layer does not exist anymore
         QgsMapLayer* layer() const;
 
-        //! Whether current style is valid and should be applied
+
+        void setLayer( QgsMapLayer* layer );
+
+
         bool usingCurrentStyle;
-        //! Name of the current style of the layer
+
         QString currentStyle;
-        //! Whether checkedLegendItems should be applied
+
         bool usingLegendItems;
-        //! Rule keys of check legend items in layer tree model
+
         QSet<QString> checkedLegendItems;
     };
 
@@ -55,6 +57,10 @@ class QgsMapThemeCollection : QObject
 
         //! Sets layer records for the theme.
         void setLayerRecords( const QList<QgsMapThemeCollection::MapThemeLayerRecord>& records );
+        void removeLayerRecord( QgsMapLayer* layer );
+
+
+        void addLayerRecord( const QgsMapThemeCollection::MapThemeLayerRecord& record );
 
         //! Return set with only records for valid layers
         //! @note not available in python bindings

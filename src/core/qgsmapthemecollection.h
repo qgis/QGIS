@@ -74,6 +74,9 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         //! Returns map layer or null if the layer does not exist anymore
         QgsMapLayer* layer() const { return mLayer; }
 
+        //! Set the map layer for this record
+        void setLayer( QgsMapLayer* layer );
+
         //! Whether current style is valid and should be applied
         bool usingCurrentStyle;
         //! Name of the current style of the layer
@@ -111,6 +114,12 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
         //! Sets layer records for the theme.
         void setLayerRecords( const QList<MapThemeLayerRecord>& records ) { mLayerRecords = records; }
+
+        //! Removes a record for \a layer if present.
+        void removeLayerRecord( QgsMapLayer* layer );
+
+        //! Add a new record for a layer.
+        void addLayerRecord( const MapThemeLayerRecord& record );
 
         //! Return set with only records for valid layers
         //! @note not available in python bindings

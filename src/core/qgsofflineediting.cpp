@@ -33,6 +33,7 @@
 #include "qgslogger.h"
 #include "qgsvectorlayerutils.h"
 #include "qgsrelationmanager.h"
+#include "qgsmapthemecollection.h"
 
 #include <QDir>
 #include <QDomDocument>
@@ -256,6 +257,7 @@ void QgsOfflineEditing::synchronize()
       // copy style
       copySymbology( offlineLayer, remoteLayer );
       updateRelations( offlineLayer, remoteLayer );
+      updateMapThemes( offlineLayer, remoteLayer );
 
       // apply layer edit log
       QString qgisLayerId = layer->id();
@@ -614,6 +616,7 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
       }
 
       updateRelations( layer, newLayer );
+      updateMapThemes( layer, newLayer );
       // copy features
       newLayer->startEditing();
       QgsFeature f;
@@ -921,6 +924,29 @@ void QgsOfflineEditing::updateRelations( QgsVectorLayer* sourceLayer, QgsVectorL
     relationManager->removeRelation( relation );
     relation.setReferencingLayer( targetLayer->id() );
     relationManager->addRelation( relation );
+  }
+}
+
+void QgsOfflineEditing::updateMapThemes( QgsVectorLayer* sourceLayer, QgsVectorLayer* targetLayer )
+{
+  QgsMapThemeCollection* mapThemeCollection = QgsProject::instance()->mapThemeCollection();
+  QStringList mapThemeNames = mapThemeCollection->mapThemes();
+
+  Q_FOREACH ( const QString& mapThemeName, mapThemeNames )
+  {
+    QgsMapThemeCollection::MapThemeRecord record = mapThemeCollection->mapThemeState( mapThemeName );
+
+    Q_FOREACH ( QgsMapThemeCollection::MapThemeLayerRecord layerRecord, record.layerRecords() )
+    {
+      if ( layerRecord.layer() == sourceLayer )
+      {
+        layerRecord.setLayer( targetLayer );
+        record.removeLayerRecord( sourceLayer );
+        record.addLayerRecord( layerRecord );
+      }
+    }
+
+    QgsProject::instance()->mapThemeCollection()->update( mapThemeName, record );
   }
 }
 

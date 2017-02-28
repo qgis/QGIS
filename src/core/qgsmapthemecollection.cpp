@@ -465,6 +465,20 @@ void QgsMapThemeCollection::layerStyleRenamed( const QString& oldName, const QSt
   emit mapThemesChanged();
 }
 
+void QgsMapThemeCollection::MapThemeRecord::removeLayerRecord( QgsMapLayer* layer )
+{
+  for ( int i = 0; i < mLayerRecords.length(); ++i )
+  {
+    if ( mLayerRecords.at( i ).layer() == layer )
+      mLayerRecords.removeAt( i );
+  }
+}
+
+void QgsMapThemeCollection::MapThemeRecord::addLayerRecord( const QgsMapThemeCollection::MapThemeLayerRecord& record )
+{
+  mLayerRecords.append( record );
+}
+
 QHash<QgsMapLayer*, QgsMapThemeCollection::MapThemeLayerRecord> QgsMapThemeCollection::MapThemeRecord::validLayerRecords() const
 {
   QHash<QgsMapLayer*, MapThemeLayerRecord> validSet;
@@ -474,4 +488,9 @@ QHash<QgsMapLayer*, QgsMapThemeCollection::MapThemeLayerRecord> QgsMapThemeColle
       validSet.insert( layerRec.layer(), layerRec );
   }
   return validSet;
+}
+
+void QgsMapThemeCollection::MapThemeLayerRecord::setLayer( QgsMapLayer* layer )
+{
+  mLayer = layer;
 }
