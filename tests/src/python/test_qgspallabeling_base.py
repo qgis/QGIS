@@ -212,7 +212,6 @@ class TestQgsPalLabeling(unittest.TestCase):
         ms.setFlag(QgsMapSettings.UseAdvancedEffects, False)
         ms.setFlag(QgsMapSettings.ForceVectorOutput, False)  # no caching?
         ms.setDestinationCrs(crs)
-        ms.setMapUnits(crs.mapUnits())  # meters
         ms.setExtent(cls.aoiExtent())
         return ms
 
@@ -227,7 +226,6 @@ class TestQgsPalLabeling(unittest.TestCase):
         ms.setOutputDpi(oms.outputDpi())
         ms.setFlags(oms.flags())
         ms.setDestinationCrs(oms.destinationCrs())
-        ms.setMapUnits(oms.mapUnits())
         ms.setExtent(oms.extent())
         ms.setOutputImageFormat(oms.outputImageFormat())
 

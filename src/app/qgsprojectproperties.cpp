@@ -727,23 +727,6 @@ QgsProjectProperties::~QgsProjectProperties()
   saveState();
 }
 
-// return the map units
-QgsUnitTypes::DistanceUnit QgsProjectProperties::mapUnits() const
-{
-  return mMapCanvas->mapSettings().mapUnits();
-}
-
-void QgsProjectProperties::setMapUnits( QgsUnitTypes::DistanceUnit unit )
-{
-  // select the button
-  if ( unit == QgsUnitTypes::DistanceUnknownUnit )
-  {
-    unit = QgsUnitTypes::DistanceMeters;
-  }
-
-  mMapCanvas->setMapUnits( unit );
-}
-
 QString QgsProjectProperties::title() const
 {
   return titleEdit->text();
@@ -773,13 +756,6 @@ void QgsProjectProperties::apply()
     // write the currently selected projections _proj string_ to project settings
     QgsDebugMsg( QString( "SpatialRefSys/ProjectCRSProj4String: %1" ).arg( projectionSelector->crs().toProj4() ) );
     QgsProject::instance()->setCrs( srs );
-
-    // Set the map units to the projected coordinates if we are projecting
-
-    // If we couldn't get the map units, default to the value in the
-    // projectproperties dialog box (set above)
-    if ( srs.mapUnits() != QgsUnitTypes::DistanceUnknownUnit )
-      mMapCanvas->setMapUnits( srs.mapUnits() );
 
     // mark selected projection for push to front
     projectionSelector->pushProjectionToFront();

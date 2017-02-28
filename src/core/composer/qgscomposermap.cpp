@@ -151,7 +151,6 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF s
   jobMapSettings.setExtent( extent );
   jobMapSettings.setOutputSize( size.toSize() );
   jobMapSettings.setOutputDpi( dpi );
-  jobMapSettings.setMapUnits( renderCrs.mapUnits() );
   jobMapSettings.setBackgroundColor( Qt::transparent );
   jobMapSettings.setRotation( mEvaluatedMapRotation );
 

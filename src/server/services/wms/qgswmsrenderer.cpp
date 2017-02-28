@@ -1313,8 +1313,6 @@ namespace QgsWms
         throw QgsBadRequestException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Invalid BBOX parameter" ) );
     }
 
-    QgsUnitTypes::DistanceUnit mapUnits = QgsUnitTypes::DistanceDegrees;
-
     QString crs = mParameters.value( QStringLiteral( "CRS" ), mParameters.value( QStringLiteral( "SRS" ) ) );
     if ( crs.compare( "CRS:84", Qt::CaseInsensitive ) == 0 )
     {
@@ -1336,9 +1334,6 @@ namespace QgsWms
 
     //then set destinationCrs
     mapSettings.setDestinationCrs( outputCRS );
-    mapUnits = outputCRS.mapUnits();
-
-    mapSettings.setMapUnits( mapUnits );
 
     // Change x- and y- of BBOX for WMS 1.3.0 if axis inverted
     QString version = mParameters.value( QStringLiteral( "VERSION" ), QStringLiteral( "1.3.0" ) );

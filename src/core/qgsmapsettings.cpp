@@ -50,10 +50,10 @@ QgsMapSettings::QgsMapSettings()
     , mMapUnitsPerPixel( 1 )
     , mScale( 1 )
 {
-  updateDerived();
-
   // set default map units - we use WGS 84 thus use degrees
-  setMapUnits( QgsUnitTypes::DistanceDegrees );
+  mScaleCalculator.setMapUnits( QgsUnitTypes::DistanceDegrees );
+
+  updateDerived();
 }
 
 void QgsMapSettings::setMagnificationFactor( double factor )
@@ -284,20 +284,15 @@ void QgsMapSettings::setDestinationCrs( const QgsCoordinateReferenceSystem& crs 
 {
   mDestCRS = crs;
   mDatumTransformStore.setDestinationCrs( crs );
+
+  mScaleCalculator.setMapUnits( crs.mapUnits() );
+  // Since the map units have changed, force a recalculation of the scale.
+  updateDerived();
 }
 
 QgsCoordinateReferenceSystem QgsMapSettings::destinationCrs() const
 {
   return mDestCRS;
-}
-
-
-void QgsMapSettings::setMapUnits( QgsUnitTypes::DistanceUnit u )
-{
-  mScaleCalculator.setMapUnits( u );
-
-  // Since the map units have changed, force a recalculation of the scale.
-  updateDerived();
 }
 
 void QgsMapSettings::setFlags( QgsMapSettings::Flags flags )
@@ -563,11 +558,6 @@ QgsRectangle QgsMapSettings::fullExtent() const
 
 void QgsMapSettings::readXml( QDomNode& node )
 {
-  // set units
-  QDomNode mapUnitsNode = node.namedItem( QStringLiteral( "units" ) );
-  QgsUnitTypes::DistanceUnit units = QgsXmlUtils::readMapUnits( mapUnitsNode.toElement() );
-  setMapUnits( units );
-
   // set destination CRS
   QgsCoordinateReferenceSystem srs;
   QDomNode srsNode = node.namedItem( QStringLiteral( "destinationsrs" ) );

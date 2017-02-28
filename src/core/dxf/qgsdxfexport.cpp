@@ -536,11 +536,11 @@ int QgsDxfExport::writeToFile( QIODevice* d, const QString& encoding )
     }
   }
 
-  mMapSettings.setMapUnits( mMapUnits );
+  QgsUnitTypes::DistanceUnit mapUnits = mCrs.mapUnits();
   mMapSettings.setExtent( mExtent );
 
   int dpi = 96;
-  mFactor = 1000 * dpi / mSymbologyScaleDenominator / 25.4 * QgsUnitTypes::fromUnitToUnitFactor( mMapUnits, QgsUnitTypes::DistanceMeters );
+  mFactor = 1000 * dpi / mSymbologyScaleDenominator / 25.4 * QgsUnitTypes::fromUnitToUnitFactor( mapUnits, QgsUnitTypes::DistanceMeters );
   mMapSettings.setOutputSize( QSize( mExtent.width() * mFactor, mExtent.height() * mFactor ) );
   mMapSettings.setOutputDpi( dpi );
   if ( mCrs.isValid() )
@@ -553,6 +553,11 @@ int QgsDxfExport::writeToFile( QIODevice* d, const QString& encoding )
   writeEndFile();
 
   return 0;
+}
+
+QgsUnitTypes::DistanceUnit QgsDxfExport::mapUnits() const
+{
+  return mMapUnits;
 }
 
 void QgsDxfExport::writeHeader( const QString& codepage )
@@ -4434,6 +4439,7 @@ void QgsDxfExport::registerDxfLayer( const QString& layerId, QgsFeatureId fid, c
 void QgsDxfExport::setDestinationCrs( const QgsCoordinateReferenceSystem& crs )
 {
   mCrs = crs;
+  mMapUnits = crs.mapUnits();
 }
 
 QgsCoordinateReferenceSystem QgsDxfExport::destinationCrs() const

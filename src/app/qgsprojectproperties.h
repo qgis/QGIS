@@ -47,15 +47,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     ~QgsProjectProperties();
 
-    /** Gets the currently select map units
-     */
-    QgsUnitTypes::DistanceUnit mapUnits() const;
-
-    /*!
-     * Set the map units
-     */
-    void setMapUnits( QgsUnitTypes::DistanceUnit );
-
     /*!
        Every project has a title
      */

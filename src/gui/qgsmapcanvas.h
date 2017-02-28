@@ -246,10 +246,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     bool isFrozen();
 
-    //! Set map units (needed by project properties dialog)
-    void setMapUnits( QgsUnitTypes::DistanceUnit mapUnits );
-
-    //! Get the current canvas map units
+    /**
+     * Convience function for returning the current canvas map units. The map units
+     * are dictated by the canvas' destinationCrs() map units.
+     */
     QgsUnitTypes::DistanceUnit mapUnits() const;
 
     //! Getter for stored overrides of styles for layers.
@@ -522,10 +522,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Emitted when map CRS has changed
     //! @note added in 2.4
     void destinationCrsChanged();
-
-    //! Emitted when map units are changed
-    //! @note added in 2.4
-    void mapUnitsChanged();
 
     //! Emitted when the current layer is changed
     //! @note added in 2.8

@@ -65,17 +65,6 @@ class QgsDxfExport
      */
     double symbologyScaleDenominator() const;
 
-    /**
-     * Set map units
-     * @param u unit
-     */
-    void setMapUnits( QgsUnitTypes::DistanceUnit u );
-
-    /**
-     * Retrieve map units
-     * @returns unit
-     * @see setMapUnits
-     */
     QgsUnitTypes::DistanceUnit mapUnits() const;
 
     /**

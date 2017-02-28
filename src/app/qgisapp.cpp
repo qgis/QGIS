@@ -4597,10 +4597,6 @@ void QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   // write the projections _proj string_ to project settings
   prj->setCrs( srs );
   prj->setDirty( false );
-  if ( srs.mapUnits() != QgsUnitTypes::DistanceUnknownUnit )
-  {
-    mMapCanvas->setMapUnits( srs.mapUnits() );
-  }
 
   updateCrsStatusBar();
 
@@ -5252,7 +5248,6 @@ void QgisApp::dxfExport()
     dxfExport.setDestinationCrs( d.crs() );
     if ( mapCanvas() )
     {
-      dxfExport.setMapUnits( mapCanvas()->mapUnits() );
       //extent
       if ( d.exportMapExtent() )
       {
@@ -8776,10 +8771,6 @@ void QgisApp::setProjectCrsFromLayer()
   mMapCanvas->freeze();
   mMapCanvas->setDestinationCrs( crs );
   QgsProject::instance()->setCrs( crs );
-  if ( crs.mapUnits() != QgsUnitTypes::DistanceUnknownUnit )
-  {
-    mMapCanvas->setMapUnits( crs.mapUnits() );
-  }
   mMapCanvas->freeze( false );
   mMapCanvas->refresh();
 }

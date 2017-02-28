@@ -90,8 +90,6 @@ class QgsMapSettings
 
     //! Get units of map's geographical coordinates - used for scale calculation
     QgsUnitTypes::DistanceUnit mapUnits() const;
-    //! Set units of map's geographical coordinates - used for scale calculation
-    void setMapUnits( QgsUnitTypes::DistanceUnit u );
 
     //! Set the background color of the map
     void setBackgroundColor( const QColor& color );

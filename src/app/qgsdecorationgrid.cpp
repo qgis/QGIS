@@ -62,8 +62,8 @@ QgsDecorationGrid::QgsDecorationGrid( QObject* parent )
   mMarkerSymbol = nullptr;
   projectRead();
 
-  connect( QgisApp::instance()->mapCanvas(), SIGNAL( mapUnitsChanged() ),
-           this, SLOT( checkMapUnitsChanged() ) );
+  connect( QgisApp::instance()->mapCanvas(), &QgsMapCanvas::destinationCrsChanged,
+           this, &QgsDecorationGrid::checkMapUnitsChanged );
 }
 
 QgsDecorationGrid::~QgsDecorationGrid()

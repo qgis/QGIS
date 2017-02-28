@@ -359,10 +359,11 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
     setExtent( rect );
   }
 
+  mSettings.setDestinationCrs( crs );
+  updateScale();
+
   QgsDebugMsg( "refreshing after destination CRS changed" );
   refresh();
-
-  mSettings.setDestinationCrs( crs );
 
   updateDatumTransformEntries();
 
@@ -1570,23 +1571,6 @@ double QgsMapCanvas::mapUnitsPerPixel() const
   return mapSettings().mapUnitsPerPixel();
 } // mapUnitsPerPixel
 
-
-void QgsMapCanvas::setMapUnits( QgsUnitTypes::DistanceUnit u )
-{
-  if ( mSettings.mapUnits() == u )
-    return;
-
-  QgsDebugMsg( "Setting map units to " + QString::number( static_cast<int>( u ) ) );
-  mSettings.setMapUnits( u );
-
-  updateScale();
-
-  refresh(); // this will force the scale bar to be updated
-
-  emit mapUnitsChanged();
-}
-
-
 QgsUnitTypes::DistanceUnit QgsMapCanvas::mapUnits() const
 {
   return mapSettings().mapUnits();
@@ -1794,7 +1778,6 @@ void QgsMapCanvas::readProject( const QDomDocument & doc )
 
     QgsMapSettings tmpSettings;
     tmpSettings.readXml( node );
-    setMapUnits( tmpSettings.mapUnits() );
     setDestinationCrs( tmpSettings.destinationCrs() );
     setExtent( tmpSettings.extent() );
     setRotation( tmpSettings.rotation() );
