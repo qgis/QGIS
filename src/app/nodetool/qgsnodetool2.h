@@ -83,7 +83,7 @@ class QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
 
     virtual void deactivate() override;
 
-    void keyPressEvent( QKeyEvent* e );
+    void keyPressEvent( QKeyEvent* e ) override;
 
     QgsGeometry cachedGeometry( const QgsVectorLayer* layer, QgsFeatureId fid );
 
