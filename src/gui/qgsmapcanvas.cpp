@@ -1544,7 +1544,6 @@ void QgsMapCanvas::unsetMapTool( QgsMapTool *tool )
   }
 }
 
-//! Write property of QColor bgColor.
 void QgsMapCanvas::setCanvasColor( const QColor &color )
 {
   // background of map's pixmap
@@ -1561,7 +1560,7 @@ void QgsMapCanvas::setCanvasColor( const QColor &color )
 
   // background of QGraphicsScene
   mScene->setBackgroundBrush( bgBrush );
-} // setBackgroundColor
+}
 
 QColor QgsMapCanvas::canvasColor() const
 {

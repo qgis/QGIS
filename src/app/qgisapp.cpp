@@ -3129,7 +3129,6 @@ QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name )
 
   mapCanvas->setLayers( mMapCanvas->layers() );
   mapCanvas->setExtent( mMapCanvas->extent() );
-  mapCanvas->setCachingEnabled( true );
 
   mapCanvas->setDestinationCrs( QgsProject::instance()->crs() );
 
@@ -10609,11 +10608,6 @@ void QgisApp::projectProperties()
            &QgsStatusBarScaleWidget::updateScales );
   QApplication::restoreOverrideCursor();
 
-  //pass any refresh signals off to canvases
-  // Line below was commented out by wonder three years ago (r4949).
-  // It is needed to refresh scale bar after changing display units.
-  connect( pp, SIGNAL( refresh() ), mMapCanvas, SLOT( refresh() ) );
-
   // Display the modal dialog box.
   pp->exec();
 
@@ -10626,7 +10620,7 @@ void QgisApp::projectProperties()
 
   // delete the property sheet object
   delete pp;
-} // QgisApp::projectProperties
+}
 
 
 QgsClipboard *QgisApp::clipboard()
