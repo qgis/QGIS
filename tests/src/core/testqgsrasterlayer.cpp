@@ -359,6 +359,7 @@ void TestQgsRasterLayer::landsatBasic()
   QVERIFY2( mpLandsatRasterLayer->isValid(), "landsat.tif layer is not valid!" );
   mpLandsatRasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRasterMinMaxOrigin::MinMax );
   mMapSettings->setLayers( QList<QgsMapLayer*>() << mpLandsatRasterLayer );
+  mMapSettings->setDestinationCrs( mpLandsatRasterLayer->crs() );
   mMapSettings->setExtent( mpLandsatRasterLayer->extent() );
   QVERIFY( render( "landsat_basic" ) );
 }
@@ -660,6 +661,7 @@ void TestQgsRasterLayer::transparency()
   rasterRenderer->setRasterTransparency( rasterTransparency );
 
   mMapSettings->setLayers( QList<QgsMapLayer*>() << mpFloat32RasterLayer );
+  mMapSettings->setDestinationCrs( mpFloat32RasterLayer->crs() );
   mMapSettings->setExtent( mpFloat32RasterLayer->extent() );
   QVERIFY( render( "raster_transparency" ) );
 }
@@ -669,6 +671,7 @@ void TestQgsRasterLayer::multiBandColorRenderer()
   QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mPngRasterLayer->dataProvider(), 1, 2, 3 );
   mPngRasterLayer->setRenderer( rasterRenderer );
   mMapSettings->setLayers( QList<QgsMapLayer*>() << mPngRasterLayer );
+  mMapSettings->setDestinationCrs( mPngRasterLayer->crs() );
   mMapSettings->setExtent( mPngRasterLayer->extent() );
   QVERIFY( render( "raster_multibandrenderer" ) );
 }
@@ -692,6 +695,7 @@ void TestQgsRasterLayer::regression992()
     QSKIP( "This test requires the JPEG2000 GDAL driver", SkipAll );
   }
 
+  mMapSettings->setDestinationCrs( mGeoJp2RasterLayer->crs() );
   mMapSettings->setExtent( mGeoJp2RasterLayer->extent() );
   mMapSettings->setLayers( QList<QgsMapLayer*>() << mGeoJp2RasterLayer );
   QVERIFY( render( "raster_geojp2", 400 ) );

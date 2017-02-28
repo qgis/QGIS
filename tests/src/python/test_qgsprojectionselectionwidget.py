@@ -47,11 +47,6 @@ class TestQgsProjectionSelectionWidget(unittest.TestCase):
         QgsProject.instance().setCrs(QgsCoordinateReferenceSystem('EPSG:3113'))
         w = QgsProjectionSelectionWidget()
         w.setOptionVisible(QgsProjectionSelectionWidget.ProjectCrs, True)
-        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.ProjectCrs))
-        # should still be hidden, because otf reprojection not active
-        QgsProject.instance().writeEntry("SpatialRefSys", "/ProjectionsEnabled", 1)
-        w = QgsProjectionSelectionWidget()
-        w.setOptionVisible(QgsProjectionSelectionWidget.ProjectCrs, True)
         self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.ProjectCrs))
         w.setOptionVisible(QgsProjectionSelectionWidget.ProjectCrs, False)
         self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.ProjectCrs))
