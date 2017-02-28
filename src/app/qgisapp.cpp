@@ -1081,24 +1081,31 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   connect( zoomInShortCut, SIGNAL( activated() ), mMapCanvas, SLOT( zoomIn() ) );
   zoomInShortCut->setObjectName( QStringLiteral( "ZoomInToCanvas" ) );
   zoomInShortCut->setWhatsThis( tr( "Zoom in to canvas" ) );
+  zoomInShortCut->setProperty( "Icon", QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomIn.svg" ) ) );
+
   QShortcut* zoomShortCut2 = new QShortcut( QKeySequence( tr( "Ctrl+=" ) ), this );
   connect( zoomShortCut2, SIGNAL( activated() ), mMapCanvas, SLOT( zoomIn() ) );
   zoomShortCut2->setObjectName( QStringLiteral( "ZoomInToCanvas2" ) );
   zoomShortCut2->setWhatsThis( tr( "Zoom in to canvas (secondary)" ) );
+  zoomShortCut2->setProperty( "Icon", QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomIn.svg" ) ) );
+
   QShortcut* zoomOutShortCut = new QShortcut( QKeySequence( tr( "Ctrl+-" ) ), this );
   connect( zoomOutShortCut, SIGNAL( activated() ), mMapCanvas, SLOT( zoomOut() ) );
   zoomOutShortCut->setObjectName( QStringLiteral( "ZoomOutOfCanvas" ) );
   zoomOutShortCut->setWhatsThis( tr( "Zoom out of canvas" ) );
+  zoomOutShortCut->setProperty( "Icon", QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomOut.svg" ) ) );
 
   //also make ctrl+alt+= a shortcut to switch to zoom in map tool
   QShortcut* zoomInToolShortCut = new QShortcut( QKeySequence( tr( "Ctrl+Alt+=" ) ), this );
   connect( zoomInToolShortCut, SIGNAL( activated() ), this, SLOT( zoomIn() ) );
   zoomInToolShortCut->setObjectName( QStringLiteral( "ZoomIn2" ) );
   zoomInToolShortCut->setWhatsThis( tr( "Zoom in (secondary)" ) );
+  zoomInToolShortCut->setProperty( "Icon", QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomIn.svg" ) ) );
 
   QShortcut* toggleSnapping = new QShortcut( QKeySequence( tr( "S" ) ), this );
   toggleSnapping->setObjectName( "toggleSnapping" );
   toggleSnapping->setWhatsThis( tr( "Toggle snapping" ) );
+  toggleSnapping->setProperty( "Icon", QgsApplication::getThemeIcon( "/mIconSnapping.svg" ) );
   connect( toggleSnapping, &QShortcut::activated, mSnappingUtils, &QgsSnappingUtils::toggleEnabled );
 
   // Show a nice tip of the day

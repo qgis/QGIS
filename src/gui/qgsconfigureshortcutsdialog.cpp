@@ -102,6 +102,7 @@ void QgsConfigureShortcutsDialog::populateActions()
     {
       actionText = shortcut->whatsThis();
       sequence = shortcut->key().toString();
+      icon = shortcut->property( "Icon" ).value<QIcon>();
     }
     else
     {
