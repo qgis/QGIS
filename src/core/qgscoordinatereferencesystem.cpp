@@ -758,8 +758,8 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
     int myLength1 = 0;
     int myStart2 = 0;
     int myLength2 = 0;
-    QString lat1Str = QLatin1String( "" );
-    QString lat2Str = QLatin1String( "" );
+    QString lat1Str;
+    QString lat2Str;
     myStart1 = myLat1RegExp.indexIn( myProj4String, myStart1 );
     myStart2 = myLat2RegExp.indexIn( myProj4String, myStart2 );
     if ( myStart1 != -1 && myStart2 != -1 )
@@ -770,7 +770,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
       lat2Str = myProj4String.mid( myStart2 + LAT_PREFIX_LEN, myLength2 - LAT_PREFIX_LEN );
     }
     // If we found the lat_1 and lat_2 we need to swap and check to see if we can find it...
-    if ( lat1Str != QLatin1String( "" ) && lat2Str != QLatin1String( "" ) )
+    if ( !lat1Str.isEmpty() && !lat2Str.isEmpty() )
     {
       // Make our new string to check...
       QString proj4StringModified = myProj4String;
@@ -793,7 +793,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
     // - retry without datum, if no match is found (looks like +datum<>WGS84 was dropped in GDAL)
 
     QString sql = QStringLiteral( "SELECT * FROM tbl_srs WHERE " );
-    QString delim = QLatin1String( "" );
+    QString delim;
     QString datum;
 
     // split on spaces followed by a plus sign (+) to deal
@@ -1022,7 +1022,7 @@ QString QgsCoordinateReferenceSystem::description() const
 {
   if ( d->mDescription.isNull() )
   {
-    return QLatin1String( "" );
+    return QString();
   }
   else
   {
@@ -1034,7 +1034,7 @@ QString QgsCoordinateReferenceSystem::projectionAcronym() const
 {
   if ( d->mProjectionAcronym.isNull() )
   {
-    return QLatin1String( "" );
+    return QString();
   }
   else
   {
@@ -1046,7 +1046,7 @@ QString QgsCoordinateReferenceSystem::ellipsoidAcronym() const
 {
   if ( d->mEllipsoidAcronym.isNull() )
   {
-    return QLatin1String( "" );
+    return QString();
   }
   else
   {
@@ -1057,7 +1057,7 @@ QString QgsCoordinateReferenceSystem::ellipsoidAcronym() const
 QString QgsCoordinateReferenceSystem::toProj4() const
 {
   if ( !d->mIsValid )
-    return QLatin1String( "" );
+    return QString();
 
   if ( d->mProj4.isEmpty() )
   {
@@ -2363,7 +2363,7 @@ QString QgsCoordinateReferenceSystem::geographicCrsAuthId() const
   }
   else
   {
-    return QLatin1String( "" );
+    return QString();
   }
 }
 
