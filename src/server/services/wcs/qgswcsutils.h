@@ -22,8 +22,11 @@
 #define QGSWCSUTILS_H
 
 #include "qgsmodule.h"
-#include "qgswcsprojectparser.h"
 #include "qgswcsserviceexception.h"
+
+#include "qgsrasterlayer.h"
+
+#include <QDomDocument>
 
 /**
  * \ingroup server
@@ -40,12 +43,9 @@ namespace QgsWcs
   QString implementationVersion();
 
   /**
-   * Return the wms config parser (Transitional)
-   *
-   * XXX This is needed in the current implementation.
-   * This should disappear as soon we get rid of singleton.
+   * CoverageOffering or CoverageOfferingBrief element
    */
-  QgsWCSProjectParser* getConfigParser( QgsServerInterface* serverIface );
+  QDomElement getCoverageOffering( QDomDocument& doc, const QgsRasterLayer* layer, bool brief = false );
 
   /**
    * Service URL string

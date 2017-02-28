@@ -698,8 +698,8 @@ class TestQgsServerAccessControl(unittest.TestCase):
             headers.get("Content-Type"), "text/xml; charset=utf-8",
             "Content type for GetMap is wrong: %s" % headers.get("Content-Type"))
         self.assertTrue(
-            str(response).find('<ServiceException code="Security">') != -1,
-            "Not allowed GetCoverage")
+            str(response).find('<ServiceException code="RequestNotWellFormed">') != -1,
+            "The layer for the COVERAGE 'dem' is not found")
 
 
 # # WFS/Transactions # #

@@ -566,7 +566,7 @@ QString QgsRasterLayer::providerType() const
 /**
  * @return the horizontal units per pixel as reported in the  GDAL geotramsform[1]
  */
-double QgsRasterLayer::rasterUnitsPerPixelX()
+double QgsRasterLayer::rasterUnitsPerPixelX() const
 {
 // We return one raster pixel per map unit pixel
 // One raster pixel can have several raster units...
@@ -581,7 +581,7 @@ double QgsRasterLayer::rasterUnitsPerPixelX()
   return 1;
 }
 
-double QgsRasterLayer::rasterUnitsPerPixelY()
+double QgsRasterLayer::rasterUnitsPerPixelY() const
 {
   if ( mDataProvider->capabilities() & QgsRasterDataProvider::Size && mDataProvider->xSize() > 0 )
   {
