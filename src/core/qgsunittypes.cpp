@@ -166,6 +166,37 @@ QString QgsUnitTypes::toString( DistanceUnit unit )
   return QString();
 }
 
+QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::DistanceUnit unit )
+{
+  switch ( unit )
+  {
+    case DistanceMeters:
+      return QCoreApplication::translate( "UnitType", "m" );
+
+    case DistanceKilometers:
+      return QCoreApplication::translate( "UnitType", "km" );
+
+    case DistanceFeet:
+      return QCoreApplication::translate( "UnitType", "ft" );
+
+    case DistanceYards:
+      return QCoreApplication::translate( "UnitType", "yd" );
+
+    case DistanceMiles:
+      return QCoreApplication::translate( "UnitType", "mi" );
+
+    case DistanceDegrees:
+      return QCoreApplication::translate( "UnitType", "deg" );
+
+    case DistanceUnknownUnit:
+      return QString();
+
+    case DistanceNauticalMiles:
+      return QCoreApplication::translate( "UnitType", "NM" );
+  }
+  return QString();
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in test_qgsunittypes.py.
@@ -481,6 +512,34 @@ QString QgsUnitTypes::toString( QgsUnitTypes::AreaUnit unit )
       return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "square degrees" );
     case AreaUnknownUnit:
       return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "<unknown>" );
+  }
+  return QString();
+}
+
+QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::AreaUnit unit )
+{
+  switch ( unit )
+  {
+    case AreaSquareMeters:
+      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "m²" );
+    case AreaSquareKilometers:
+      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "km²" );
+    case AreaSquareFeet:
+      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "ft²" );
+    case AreaSquareYards:
+      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "yd²" );
+    case AreaSquareMiles:
+      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "mi²" );
+    case AreaHectares:
+      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "ha²" );
+    case AreaAcres:
+      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "ac²" );
+    case AreaSquareNauticalMiles:
+      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "NM²" );
+    case AreaSquareDegrees:
+      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "deg²" );
+    case AreaUnknownUnit:
+      return QString();
   }
   return QString();
 }
