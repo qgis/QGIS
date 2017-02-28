@@ -1052,6 +1052,9 @@ bool QgsCoordinateReferenceSystem::isGeographic() const
 
 QgsUnitTypes::DistanceUnit QgsCoordinateReferenceSystem::mapUnits() const
 {
+  if ( !d->mIsValid )
+    return QgsUnitTypes::DistanceUnknownUnit;
+
   return d->mMapUnits;
 }
 
