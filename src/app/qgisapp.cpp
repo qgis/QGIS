@@ -1488,8 +1488,11 @@ void QgisApp::dropEventTimeout()
 void QgisApp::annotationCreated( QgsAnnotation *annotation )
 {
   // create canvas annotation item for annotation
-  QgsMapCanvasAnnotationItem *canvasItem = new QgsMapCanvasAnnotationItem( annotation, mMapCanvas );
-  Q_UNUSED( canvasItem ); //item is already added automatically to canvas scene
+  Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
+  {
+    QgsMapCanvasAnnotationItem *canvasItem = new QgsMapCanvasAnnotationItem( annotation, canvas );
+    Q_UNUSED( canvasItem ); //item is already added automatically to canvas scene
+  }
 }
 
 void QgisApp::registerCustomDropHandler( QgsCustomDropHandler *handler )
@@ -3120,6 +3123,13 @@ QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name )
   QgsMapCanvas *mapCanvas = mapCanvasWidget->mapCanvas();
   mapCanvas->freeze( true );
   mapCanvas->setObjectName( name );
+
+  // add existing annotations to canvas
+  Q_FOREACH ( QgsAnnotation *annotation, QgsProject::instance()->annotationManager()->annotations() )
+  {
+    QgsMapCanvasAnnotationItem *canvasItem = new QgsMapCanvasAnnotationItem( annotation, mapCanvas );
+    Q_UNUSED( canvasItem ); //item is already added automatically to canvas scene
+  }
 
   applyProjectSettingsToCanvas( mapCanvas );
 
