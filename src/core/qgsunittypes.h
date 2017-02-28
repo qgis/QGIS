@@ -130,6 +130,14 @@ class CORE_EXPORT QgsUnitTypes
      */
     Q_INVOKABLE static QString toString( QgsUnitTypes::DistanceUnit unit );
 
+    /** Returns a translated abbreviation representing a distance unit.
+     * @param unit unit to convert to string
+     * @see stringToDistanceUnit()
+     *
+     * @note Added in QGIS 3.0
+     */
+    Q_INVOKABLE static QString toAbbreviatedString( QgsUnitTypes::DistanceUnit unit );
+
     /** Converts a translated string to a distance unit.
      * @param string string representing a distance unit
      * @param ok optional boolean, will be set to true if string was converted successfully
@@ -170,6 +178,14 @@ class CORE_EXPORT QgsUnitTypes
      * @see stringToAreaUnit()
      */
     Q_INVOKABLE static QString toString( AreaUnit unit );
+
+    /** Returns a translated abbreviation representing an areal unit.
+     * @param unit unit to convert to string
+     * @see stringToAreaUnit()
+     *
+     * @note Added in QGIS 3.0
+     */
+    Q_INVOKABLE static QString toAbbreviatedString( AreaUnit unit );
 
     /** Converts a translated string to an areal unit.
      * @param string string representing an areal unit

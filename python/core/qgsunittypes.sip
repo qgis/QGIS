@@ -101,11 +101,8 @@ class QgsUnitTypes
      */
     static QString toString( QgsUnitTypes::DistanceUnit unit );
 
-    /** Converts a translated string to a distance unit.
-     * @param string string representing a distance unit
-     * @param ok optional boolean, will be set to true if string was converted successfully
-     * @see toString()
-     */
+    static QString toAbbreviatedString( QgsUnitTypes::DistanceUnit unit );
+
     static QgsUnitTypes::DistanceUnit stringToDistanceUnit( const QString& string, bool *ok /Out/ = 0 );
 
     /** Returns the conversion factor between the specified distance units.
@@ -140,11 +137,8 @@ class QgsUnitTypes
      */
     static QString toString( AreaUnit unit );
 
-    /** Converts a translated string to an areal unit.
-     * @param string string representing an areal unit
-     * @param ok optional boolean, will be set to true if string was converted successfully
-     * @see toString()
-     */
+    static QString toAbbreviatedString( AreaUnit unit );
+
     static AreaUnit stringToAreaUnit( const QString& string, bool *ok /Out/ = 0 );
 
     /** Returns the conversion factor between the specified areal units.
