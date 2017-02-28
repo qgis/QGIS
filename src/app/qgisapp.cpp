@@ -4437,10 +4437,11 @@ void QgisApp::addAfsLayer()
   connect( afss, SIGNAL( addLayer( QString, QString ) ),
            this, SLOT( addAfsLayer( QString, QString ) ) );
 
-  bool bkRenderFlag = mapCanvas()->renderFlag();
-  mapCanvas()->setRenderFlag( false );
+  bool wasFrozen = mapCanvas()->isFrozen();
+  mapCanvas()->freeze( true );
   afss->exec();
-  mapCanvas()->setRenderFlag( bkRenderFlag );
+  if ( !wasFrozen )
+    mapCanvas()->freeze( false );
   delete afss;
 }
 
@@ -4470,10 +4471,11 @@ void QgisApp::addAmsLayer()
   connect( amss, SIGNAL( addLayer( QString, QString ) ),
            this, SLOT( addAmsLayer( QString, QString ) ) );
 
-  bool bkRenderFlag = mapCanvas()->renderFlag();
-  mapCanvas()->setRenderFlag( false );
+  bool wasFrozen = mapCanvas()->isFrozen();
+  mapCanvas()->freeze( true );
   amss->exec();
-  mapCanvas()->setRenderFlag( bkRenderFlag );
+  if ( !wasFrozen )
+    mapCanvas()->freeze( false );
   delete amss;
 }
 
@@ -5627,13 +5629,12 @@ void QgisApp::toggleFullScreen()
       // showMaxmized() is a work-around. Turn off rendering for this as it
       // would otherwise cause two re-renders of the map, which can take a
       // long time.
-      bool renderFlag = mapCanvas()->renderFlag();
-      if ( renderFlag )
-        mapCanvas()->setRenderFlag( false );
+      bool wasFrozen = mapCanvas()->isFrozen();
+      mapCanvas()->freeze();
       showNormal();
       showMaximized();
-      if ( renderFlag )
-        mapCanvas()->setRenderFlag( true );
+      if ( !wasFrozen )
+        mapCanvas()->freeze( false );
       mPrevScreenModeMaximized = false;
     }
     else
@@ -7393,9 +7394,8 @@ void QgisApp::selectByRadius()
 void QgisApp::deselectAll()
 {
   // Turn off rendering to improve speed.
-  bool renderFlagState = mMapCanvas->renderFlag();
-  if ( renderFlagState )
-    mMapCanvas->setRenderFlag( false );
+  bool wasFrozen = mMapCanvas->isFrozen();
+  mMapCanvas->freeze();
 
   QMap<QString, QgsMapLayer*> layers = QgsProject::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer*>::iterator it = layers.begin(); it != layers.end(); ++it )
@@ -7408,8 +7408,8 @@ void QgisApp::deselectAll()
   }
 
   // Turn on rendering (if it was on previously)
-  if ( renderFlagState )
-    mMapCanvas->setRenderFlag( true );
+  if ( !wasFrozen )
+    mMapCanvas->freeze( false );
 }
 
 void QgisApp::invertSelection()
@@ -7426,15 +7426,14 @@ void QgisApp::invertSelection()
   }
 
   // Turn off rendering to improve speed.
-  bool renderFlagState = mMapCanvas->renderFlag();
-  if ( renderFlagState )
-    mMapCanvas->setRenderFlag( false );
+  bool wasFrozen = mMapCanvas->isFrozen();
+  mMapCanvas->freeze();
 
   vlayer->invertSelection();
 
   // Turn on rendering (if it was on previously)
-  if ( renderFlagState )
-    mMapCanvas->setRenderFlag( true );
+  if ( !wasFrozen )
+    mMapCanvas->freeze( false );
 }
 
 void QgisApp::selectAll()
@@ -7451,15 +7450,14 @@ void QgisApp::selectAll()
   }
 
   // Turn off rendering to improve speed.
-  bool renderFlagState = mMapCanvas->renderFlag();
-  if ( renderFlagState )
-    mMapCanvas->setRenderFlag( false );
+  bool wasFrozen = mMapCanvas->isFrozen();
+  mMapCanvas->freeze();
 
   vlayer->selectAll();
 
   // Turn on rendering (if it was on previously)
-  if ( renderFlagState )
-    mMapCanvas->setRenderFlag( true );
+  if ( !wasFrozen )
+    mMapCanvas->freeze( false );
 }
 
 void QgisApp::selectByExpression()
