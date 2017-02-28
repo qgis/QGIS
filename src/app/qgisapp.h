@@ -1563,6 +1563,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void applyProjectSettingsToCanvas( QgsMapCanvas *canvas );
 
+    /**
+     * Applies global qgis settings to the specified canvas
+     */
+    void applyDefaultSettingsToCanvas( QgsMapCanvas *canvas );
+
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
 
     // actions for menus and toolbars -----------------

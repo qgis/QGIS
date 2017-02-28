@@ -787,7 +787,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   functionProfile( &QgisApp::createToolBars, this, QStringLiteral( "Toolbars" ) );
   functionProfile( &QgisApp::createStatusBar, this, QStringLiteral( "Status bar" ) );
   functionProfile( &QgisApp::createCanvasTools, this, QStringLiteral( "Create canvas tools" ) );
+
   mMapCanvas->freeze();
+  applyDefaultSettingsToCanvas( mMapCanvas );
+
   functionProfile( &QgisApp::initLayerTreeView, this, QStringLiteral( "Init Layer tree view" ) );
   functionProfile( &QgisApp::createOverview, this, QStringLiteral( "Create overview" ) );
   functionProfile( &QgisApp::createMapTips, this, QStringLiteral( "Create map tips" ) );
@@ -1629,6 +1632,17 @@ void QgisApp::applyProjectSettingsToCanvas( QgsMapCanvas *canvas )
   blue = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorBluePart" ), 0 );
   myColor = QColor( red, green, blue, alpha );
   canvas->setSelectionColor( myColor );
+}
+
+void QgisApp::applyDefaultSettingsToCanvas( QgsMapCanvas *canvas )
+{
+  QgsSettings settings;
+  canvas->enableAntiAliasing( settings.value( QStringLiteral( "qgis/enable_anti_aliasing" ), true ).toBool() );
+  double zoomFactor = settings.value( QStringLiteral( "qgis/zoom_factor" ), 2 ).toDouble();
+  canvas->setWheelFactor( zoomFactor );
+  canvas->setCachingEnabled( settings.value( QStringLiteral( "qgis/enable_render_caching" ), true ).toBool() );
+  canvas->setParallelRenderingEnabled( settings.value( QStringLiteral( "qgis/parallel_rendering" ), true ).toBool() );
+  canvas->setMapUpdateInterval( settings.value( QStringLiteral( "qgis/map_update_interval" ), 250 ).toInt() );
 }
 
 void QgisApp::readSettings()
@@ -3032,20 +3046,6 @@ void QgisApp::createOverview()
   mPanelMenu->addAction( mOverviewDock->toggleViewAction() );
 
   mLayerTreeCanvasBridge->setOvervewCanvas( mOverviewCanvas );
-
-  // moved here to set anti aliasing to both map canvas and overview
-  QgsSettings mySettings;
-  // Anti Aliasing enabled by default as of QGIS 1.7
-  mMapCanvas->enableAntiAliasing( mySettings.value( QStringLiteral( "qgis/enable_anti_aliasing" ), true ).toBool() );
-
-  double zoomFactor = mySettings.value( QStringLiteral( "qgis/zoom_factor" ), 2 ).toDouble();
-  mMapCanvas->setWheelFactor( zoomFactor );
-
-  mMapCanvas->setCachingEnabled( mySettings.value( QStringLiteral( "qgis/enable_render_caching" ), true ).toBool() );
-
-  mMapCanvas->setParallelRenderingEnabled( mySettings.value( QStringLiteral( "qgis/parallel_rendering" ), true ).toBool() );
-
-  mMapCanvas->setMapUpdateInterval( mySettings.value( QStringLiteral( "qgis/map_update_interval" ), 250 ).toInt() );
 }
 
 void QgisApp::addDockWidget( Qt::DockWidgetArea area, QDockWidget *thepDockWidget )
@@ -3124,16 +3124,22 @@ QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name )
   mapCanvas->freeze( true );
   mapCanvas->setObjectName( name );
 
+  applyProjectSettingsToCanvas( mapCanvas );
+  applyDefaultSettingsToCanvas( mapCanvas );
+
+  mapCanvas->setLayers( mMapCanvas->layers() );
+  mapCanvas->setExtent( mMapCanvas->extent() );
+  mapCanvas->setCachingEnabled( true );
+
+  mapCanvas->setDestinationCrs( QgsProject::instance()->crs() );
+
+
   // add existing annotations to canvas
   Q_FOREACH ( QgsAnnotation *annotation, QgsProject::instance()->annotationManager()->annotations() )
   {
     QgsMapCanvasAnnotationItem *canvasItem = new QgsMapCanvasAnnotationItem( annotation, mapCanvas );
     Q_UNUSED( canvasItem ); //item is already added automatically to canvas scene
   }
-
-  applyProjectSettingsToCanvas( mapCanvas );
-
-  mapCanvas->setDestinationCrs( QgsProject::instance()->crs() );
 
   addDockWidget( Qt::RightDockWidgetArea, mapCanvasWidget );
   mapCanvas->freeze( false );
@@ -9177,16 +9183,10 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage )
 
     setupLayerTreeViewFromSettings();
 
-    mMapCanvas->enableAntiAliasing( mySettings.value( QStringLiteral( "qgis/enable_anti_aliasing" ) ).toBool() );
-
-    double zoomFactor = mySettings.value( QStringLiteral( "qgis/zoom_factor" ), 2 ).toDouble();
-    mMapCanvas->setWheelFactor( zoomFactor );
-
-    mMapCanvas->setCachingEnabled( mySettings.value( QStringLiteral( "qgis/enable_render_caching" ), true ).toBool() );
-
-    mMapCanvas->setParallelRenderingEnabled( mySettings.value( QStringLiteral( "qgis/parallel_rendering" ), true ).toBool() );
-
-    mMapCanvas->setMapUpdateInterval( mySettings.value( QStringLiteral( "qgis/map_update_interval" ), 250 ).toInt() );
+    Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
+    {
+      applyDefaultSettingsToCanvas( canvas );
+    }
 
     if ( oldCapitalize != mySettings.value( QStringLiteral( "qgis/capitalizeLayerName" ), QVariant( false ) ).toBool() )
     {
