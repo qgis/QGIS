@@ -236,8 +236,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     QList< QgsMapCanvas * > mapCanvases();
 
-    //! Create a new map canvas with the specified unique \a name
-    QgsMapCanvas *createNewMapCanvas( const QString &name );
+    /**
+     * Create a new map canvas with the specified unique \a name. The \a isFloating
+     * and \a dockGeometry arguments can be used to specify an initial floating state
+     * and widget geometry rect for the dock.
+     */
+    QgsMapCanvas *createNewMapCanvas( const QString &name, bool isFloating = false, const QRect &dockGeometry = QRect() );
 
     /**
      * Closes any additional map canvases. The main map canvas will not

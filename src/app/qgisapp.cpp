@@ -3112,7 +3112,7 @@ QgsMapCanvas *QgisApp::mapCanvas()
   return mMapCanvas;
 }
 
-QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name )
+QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name, bool isFloating, const QRect &dockGeometry )
 {
   Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
   {
@@ -3126,6 +3126,16 @@ QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name )
 
   QgsMapCanvasDockWidget *mapCanvasWidget = new QgsMapCanvasDockWidget( name, this );
   mapCanvasWidget->setAllowedAreas( Qt::AllDockWidgetAreas );
+
+  mapCanvasWidget->setFloating( isFloating );
+  if ( dockGeometry.isEmpty() )
+  {
+    mapCanvasWidget->resize( 400, 400 );
+  }
+  else
+  {
+    mapCanvasWidget->setGeometry( dockGeometry );
+  }
 
   QgsMapCanvas *mapCanvas = mapCanvasWidget->mapCanvas();
   mapCanvas->freeze( true );
@@ -11686,9 +11696,25 @@ void QgisApp::writeProject( QDomDocument &doc )
   QDomElement oldLegendElem = QgsLayerTreeUtils::writeOldLegend( doc, QgsLayerTree::toGroup( clonedRoot ),
                               mLayerTreeCanvasBridge->hasCustomLayerOrder(), mLayerTreeCanvasBridge->customLayerOrder() );
   delete clonedRoot;
-  doc.firstChildElement( QStringLiteral( "qgis" ) ).appendChild( oldLegendElem );
+  QDomElement qgisNode = doc.firstChildElement( QStringLiteral( "qgis" ) );
+  qgisNode.appendChild( oldLegendElem );
 
   QgsProject::instance()->writeEntry( QStringLiteral( "Legend" ), QStringLiteral( "filterByMap" ), static_cast< bool >( layerTreeView()->layerTreeModel()->legendFilterMapSettings() ) );
+
+  // Save the position of the map view docks
+  QDomElement mapViewNode = doc.createElement( QStringLiteral( "mapViewDocks" ) );
+  Q_FOREACH ( QgsMapCanvasDockWidget *w, findChildren< QgsMapCanvasDockWidget * >() )
+  {
+    QDomElement node = doc.createElement( QStringLiteral( "view" ) );
+    node.setAttribute( QStringLiteral( "name" ), w->mapCanvas()->objectName() );
+    node.setAttribute( QStringLiteral( "x" ), w->x() );
+    node.setAttribute( QStringLiteral( "y" ), w->y() );
+    node.setAttribute( QStringLiteral( "width" ), w->width() );
+    node.setAttribute( QStringLiteral( "height" ), w->height() );
+    node.setAttribute( QStringLiteral( "floating" ), w->isFloating() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+    mapViewNode.appendChild( node );
+  }
+  qgisNode.appendChild( mapViewNode );
 
   projectChanged( doc );
 }
@@ -11705,6 +11731,26 @@ void QgisApp::readProject( const QDomDocument &doc )
 
   if ( autoSetupOnFirstLayer )
     mLayerTreeCanvasBridge->setAutoSetupOnFirstLayer( true );
+
+  QDomNodeList nodes = doc.elementsByTagName( QStringLiteral( "mapViewDocks" ) );
+  if ( !nodes.isEmpty() )
+  {
+    QDomNode viewNode = nodes.at( 0 );
+    nodes = viewNode.childNodes();
+    for ( int i = 0; i < nodes.size(); ++i )
+    {
+      QDomElement elementNode = nodes.at( i ).toElement();
+      QString mapName = elementNode.attribute( QStringLiteral( "name" ) );
+      int x = elementNode.attribute( QStringLiteral( "x" ), QStringLiteral( "0" ) ).toInt();
+      int y = elementNode.attribute( QStringLiteral( "y" ), QStringLiteral( "0" ) ).toInt();
+      int w = elementNode.attribute( QStringLiteral( "width" ), QStringLiteral( "400" ) ).toInt();
+      int h = elementNode.attribute( QStringLiteral( "height" ), QStringLiteral( "400" ) ).toInt();
+      bool floating = elementNode.attribute( QStringLiteral( "floating" ), QStringLiteral( "0" ) ).toInt();
+
+      QgsMapCanvas *mapCanvas = createNewMapCanvas( mapName, floating, QRect( x, y, w, h ) );
+      mapCanvas->readProject( doc );
+    }
+  }
 }
 
 void QgisApp::showLayerProperties( QgsMapLayer *ml )
