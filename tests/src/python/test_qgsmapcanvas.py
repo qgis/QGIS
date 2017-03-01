@@ -14,7 +14,8 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsCoordinateReferenceSystem,
+from qgis.core import (QgsMapSettings,
+                       QgsCoordinateReferenceSystem,
                        QgsRectangle,
                        QgsVectorLayer,
                        QgsFeature,
@@ -23,10 +24,13 @@ from qgis.core import (QgsCoordinateReferenceSystem,
                        QgsFillSymbol,
                        QgsSingleSymbolRenderer,
                        QgsMapThemeCollection,
-                       QgsProject)
+                       QgsProject,
+                       QgsApplication)
 from qgis.gui import (QgsMapCanvas)
 
-from qgis.PyQt.QtCore import QDir
+from qgis.PyQt.QtCore import (Qt,
+                              QDir)
+from qgis.PyQt.QtXml import (QDomDocument, QDomElement)
 import time
 from qgis.testing import start_app, unittest
 
@@ -336,6 +340,35 @@ class TestQgsMapCanvas(unittest.TestCase):
         self.report += checker.report()
         print((self.report))
         return result
+
+    def testSaveMultipleCanvasesToProject(self):
+        # test saving/restoring canvas state to project with multiple canvases
+        c1 = QgsMapCanvas()
+        c1.setObjectName('c1')
+        c1.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        c1.setRotation(45)
+        c2 = QgsMapCanvas()
+        c2.setObjectName('c2')
+        c2.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        c2.setRotation(65)
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("qgis")
+        doc.appendChild(elem)
+        c1.writeProject(doc)
+        c2.writeProject(doc)
+
+        c3 = QgsMapCanvas()
+        c3.setObjectName('c1')
+        c4 = QgsMapCanvas()
+        c4.setObjectName('c2')
+        c3.readProject(doc)
+        c4.readProject(doc)
+
+        self.assertEqual(c3.mapSettings().destinationCrs().authid(), 'EPSG:3111')
+        self.assertEqual(c3.rotation(), 45)
+        self.assertEqual(c4.mapSettings().destinationCrs().authid(), 'EPSG:4326')
+        self.assertEqual(c4.rotation(), 65)
 
 
 if __name__ == '__main__':

@@ -1857,6 +1857,21 @@ void QgsMapCanvas::readProject( const QDomDocument &doc )
   {
     QDomNode node = nodes.item( 0 );
 
+    // Search the specific MapCanvas node using the name
+    if ( nodes.count() > 1 )
+    {
+      for ( int i = 0; i < nodes.size(); ++i )
+      {
+        QDomElement elementNode = nodes.at( i ).toElement();
+
+        if ( elementNode.hasAttribute( "name" ) && elementNode.attribute( "name" ) == objectName() )
+        {
+          node = nodes.at( i );
+          break;
+        }
+      }
+    }
+
     QgsMapSettings tmpSettings;
     tmpSettings.readXml( node );
     setDestinationCrs( tmpSettings.destinationCrs() );
@@ -1886,6 +1901,7 @@ void QgsMapCanvas::writeProject( QDomDocument &doc )
   QDomNode qgisNode = nl.item( 0 );  // there should only be one, so zeroth element ok
 
   QDomElement mapcanvasNode = doc.createElement( QStringLiteral( "mapcanvas" ) );
+  mapcanvasNode.setAttribute( "name", objectName() );
   qgisNode.appendChild( mapcanvasNode );
 
   mSettings.writeXml( mapcanvasNode, doc );
