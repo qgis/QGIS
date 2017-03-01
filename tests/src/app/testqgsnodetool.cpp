@@ -54,6 +54,7 @@ class TestQgsNodeTool : public QObject
     void testMoveVertex();
     void testMoveEdge();
     void testAddVertex();
+    void testAddVertexAtEndpoint();
     void testDeleteVertex();
 
   private:
@@ -61,6 +62,12 @@ class TestQgsNodeTool : public QObject
     {
       QgsPoint pt = mCanvas->mapSettings().mapToPixel().transform( mapX, mapY );
       return QPoint( qRound( pt.x() ), qRound( pt.y() ) );
+    }
+
+    void mouseMove( double mapX, double mapY )
+    {
+      QgsMapMouseEvent e( mCanvas, QEvent::MouseMove, mapToScreen( mapX, mapY ) );
+      mNodeTool->cadCanvasMoveEvent( &e );
     }
 
     void mouseClick( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers() )
@@ -170,6 +177,8 @@ void TestQgsNodeTool::initTestCase()
 
   mCanvas->setLayers( QList<QgsMapLayer*>() << mLayerLine << mLayerPolygon << mLayerPoint );
 
+  qApp->processEvents(); // will this fix travis?
+
   // TODO: set up snapping
 
   // create node tool
@@ -194,6 +203,8 @@ void TestQgsNodeTool::testMoveVertex()
 
   mouseClick( 2, 1, Qt::LeftButton );
   mouseClick( 2, 2, Qt::LeftButton );
+
+  qApp->processEvents(); // will this fix travis?
 
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
   QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 2, 1 1, 1 3)" ) );
@@ -327,6 +338,41 @@ void TestQgsNodeTool::testAddVertex()
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
   QCOMPARE( mLayerPolygon->undoStack()->index(), 1 );
   QCOMPARE( mLayerPoint->undoStack()->index(), 1 );
+}
+
+
+void TestQgsNodeTool::testAddVertexAtEndpoint()
+{
+  // offset of the endpoint marker - currently set as 15px away from the last node in direction of the line
+  double offsetInMapUnits = 15 * mCanvas->mapSettings().mapUnitsPerPixel();
+
+  // add vertex at the end
+
+  mouseMove( 1, 3 ); // first we need to move to the vertex
+  mouseClick( 1, 3 + offsetInMapUnits, Qt::LeftButton );
+  mouseClick( 2, 3, Qt::LeftButton );
+
+  QCOMPARE( mLayerLine->undoStack()->index(), 2 );
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3, 2 3)" ) );
+
+  mLayerLine->undoStack()->undo();
+  QCOMPARE( mLayerLine->undoStack()->index(), 1 );
+
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
+
+  // add vertex at the start
+
+  mouseMove( 2, 1 ); // first we need to move to the vertex
+  mouseClick( 2 + offsetInMapUnits, 1, Qt::LeftButton );
+  mouseClick( 2, 2, Qt::LeftButton );
+
+  QCOMPARE( mLayerLine->undoStack()->index(), 2 );
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 2, 2 1, 1 1, 1 3)" ) );
+
+  mLayerLine->undoStack()->undo();
+  QCOMPARE( mLayerLine->undoStack()->index(), 1 );
+
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
 }
 
 
