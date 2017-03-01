@@ -41,6 +41,7 @@ class TestQgsMeasureTool : public QObject
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
     void testLengthCalculation();
+    void testLengthCalculationNoCrs();
     void testAreaCalculation();
 
   private:
@@ -90,9 +91,7 @@ void TestQgsMeasureTool::testLengthCalculation()
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
 
   // set project CRS and ellipsoid
-  QgisApp::instance()->mapCanvas()->setCrsTransformEnabled( true );
   QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
-  mCanvas->setCrsTransformEnabled( true );
   mCanvas->setDestinationCrs( srs );
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
@@ -150,6 +149,33 @@ void TestQgsMeasureTool::testLengthCalculation()
   QGSCOMPARENEAR( p1.y(), n1.y(), 0.001 );
 }
 
+void TestQgsMeasureTool::testLengthCalculationNoCrs()
+{
+  // test length measurement when no projection is set
+  QSettings s;
+  s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
+
+  // set project CRS and ellipsoid
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem() );
+  QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem() );
+
+  // run length calculation
+  std::unique_ptr< QgsMeasureTool > tool( new QgsMeasureTool( mCanvas, false ) );
+  std::unique_ptr< QgsMeasureDialog > dlg( new QgsMeasureDialog( tool.get() ) );
+
+  tool->restart();
+  tool->addPoint( QgsPoint( 2484588, 2425722 ) );
+  tool->addPoint( QgsPoint( 2482767, 2398853 ) );
+  //force dialog recalculation
+  dlg->addPoint();
+
+  // check result
+  QString measureString = dlg->editTotal->text();
+  double measured = measureString.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
+  double expected = 26930.63686584482;
+  QGSCOMPARENEAR( measured, expected, 0.001 );
+}
+
 void TestQgsMeasureTool::testAreaCalculation()
 {
   //test area measurement
@@ -157,9 +183,7 @@ void TestQgsMeasureTool::testAreaCalculation()
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
 
   // set project CRS and ellipsoid
-  QgisApp::instance()->mapCanvas()->setCrsTransformEnabled( true );
   QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
-  mCanvas->setCrsTransformEnabled( true );
   mCanvas->setDestinationCrs( srs );
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );

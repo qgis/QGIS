@@ -416,12 +416,9 @@ namespace QgsWms
         continue;
       }
 
-      if ( mapSettings.hasCrsTransformEnabled() )
-      {
-        QgsCoordinateTransform tr = mapSettings.layerTransform( vl );
-        context.setCoordinateTransform( tr );
-        context.setExtent( tr.transformBoundingBox( mapSettings.extent(), QgsCoordinateTransform::ReverseTransform ) );
-      }
+      QgsCoordinateTransform tr = mapSettings.layerTransform( vl );
+      context.setCoordinateTransform( tr );
+      context.setExtent( tr.transformBoundingBox( mapSettings.extent(), QgsCoordinateTransform::ReverseTransform ) );
 
       SymbolSet& usedSymbols = hitTest[vl];
       runHitTestLayer( vl, usedSymbols, context );
@@ -1316,8 +1313,6 @@ namespace QgsWms
         throw QgsBadRequestException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Invalid BBOX parameter" ) );
     }
 
-    QgsUnitTypes::DistanceUnit mapUnits = QgsUnitTypes::DistanceDegrees;
-
     QString crs = mParameters.value( QStringLiteral( "CRS" ), mParameters.value( QStringLiteral( "SRS" ) ) );
     if ( crs.compare( "CRS:84", Qt::CaseInsensitive ) == 0 )
     {
@@ -1328,32 +1323,17 @@ namespace QgsWms
     QgsCoordinateReferenceSystem outputCRS;
 
     //wms spec says that CRS parameter is mandatory.
-    //we don't reject the request if it is not there but disable reprojection on the fly
-    if ( crs.isEmpty() )
-    {
-      //disable on the fly projection
-      QgsProject::instance()->writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), 0 );
-    }
-    else
-    {
-      //enable on the fly projection
-      QgsMessageLog::logMessage( QStringLiteral( "enable on the fly projection" ) );
-      QgsProject::instance()->writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), 1 );
 
-      //destination SRS
-      outputCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
-      if ( !outputCRS.isValid() )
-      {
-        QgsMessageLog::logMessage( QStringLiteral( "Error, could not create output CRS from EPSG" ) );
-        throw QgsBadRequestException( QStringLiteral( "InvalidCRS" ), QStringLiteral( "Could not create output CRS" ) );
-      }
-
-      //then set destinationCrs
-      mapSettings.setDestinationCrs( outputCRS );
-      mapSettings.setCrsTransformEnabled( true );
-      mapUnits = outputCRS.mapUnits();
+    //destination SRS
+    outputCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
+    if ( !outputCRS.isValid() )
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "Error, could not create output CRS from EPSG" ) );
+      throw QgsBadRequestException( QStringLiteral( "InvalidCRS" ), QStringLiteral( "Could not create output CRS" ) );
     }
-    mapSettings.setMapUnits( mapUnits );
+
+    //then set destinationCrs
+    mapSettings.setDestinationCrs( outputCRS );
 
     // Change x- and y- of BBOX for WMS 1.3.0 if axis inverted
     QString version = mParameters.value( QStringLiteral( "VERSION" ), QStringLiteral( "1.3.0" ) );
@@ -1561,7 +1541,7 @@ namespace QgsWms
       }
 
       QgsCoordinateReferenceSystem outputCrs = layer->crs();
-      if ( layer->crs() != mapSettings.destinationCrs() && mapSettings.hasCrsTransformEnabled() )
+      if ( layer->crs() != mapSettings.destinationCrs() )
       {
         outputCrs = mapSettings.destinationCrs();
       }
@@ -1712,7 +1692,7 @@ namespace QgsWms
     // use context extent, width height (comes with request) to use WCS cache
     // We can only use context if raster is not reprojected, otherwise it is difficult
     // to guess correct source resolution
-    if ( mapSettings.hasCrsTransformEnabled() && layer->dataProvider()->crs() != mapSettings.destinationCrs() )
+    if ( layer->dataProvider()->crs() != mapSettings.destinationCrs() )
     {
       attributes = layer->dataProvider()->identify( *infoPoint, QgsRaster::IdentifyFormatValue ).results();
     }

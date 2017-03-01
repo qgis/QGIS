@@ -99,8 +99,8 @@ def run(item, action, mainwindow):
     template_dir = os.path.join(current_path, 'templates')
 
     # do not refresh the canvas until all the layers are added
-    prevRenderFlagState = iface.mapCanvas().renderFlag()
-    iface.mapCanvas().setRenderFlag(False)
+    wasFrozen = iface.mapCanvas().isFrozen()
+    iface.mapCanvas().freeze()
     try:
         provider = db.dbplugin().providerName()
         uri = db.uri()
@@ -264,6 +264,7 @@ def run(item, action, mainwindow):
             canvas.setExtent(ext)
 
         # restore canvas render flag
-        iface.mapCanvas().setRenderFlag(prevRenderFlagState)
+        if not wasFrozen:
+            iface.mapCanvas().freeze(False)
 
     return True

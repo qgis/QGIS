@@ -203,7 +203,7 @@ class ShortestPathPointToLayer(GeoAlgorithm):
 
         director.addStrategy(strategy)
         builder = QgsGraphBuilder(iface.mapCanvas().mapSettings().destinationCrs(),
-                                  iface.mapCanvas().hasCrsTransformEnabled(),
+                                  True,
                                   tolerance)
 
         feedback.pushInfo(self.tr('Loading end points...'))

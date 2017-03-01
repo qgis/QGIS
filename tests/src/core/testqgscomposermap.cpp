@@ -254,7 +254,6 @@ void TestQgsComposerMap::dataDefinedLayers()
   delete mComposition;
   QgsMapSettings ms;
   ms.setLayers( QList<QgsMapLayer*>() << mRasterLayer << mPolysLayer << mPointsLayer << mLinesLayer );
-  ms.setCrsTransformEnabled( true );
 
   mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape

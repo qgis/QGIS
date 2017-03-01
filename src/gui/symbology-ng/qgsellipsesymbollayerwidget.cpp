@@ -28,7 +28,7 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( const QgsVectorLayer* 
   mSymbolHeightUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                      << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mStrokeWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+                                    << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 

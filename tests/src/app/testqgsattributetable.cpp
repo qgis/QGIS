@@ -87,7 +87,6 @@ void TestQgsAttributeTable::testFieldCalculation()
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
   // set project CRS and ellipsoid
-  QgisApp::instance()->mapCanvas()->setCrsTransformEnabled( true );
   QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
@@ -138,7 +137,6 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
   // set project CRS and ellipsoid
-  QgisApp::instance()->mapCanvas()->setCrsTransformEnabled( true );
   QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );

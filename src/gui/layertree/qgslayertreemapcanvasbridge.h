@@ -73,11 +73,6 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
     void setAutoSetupOnFirstLayer( bool enabled ) { mAutoSetupOnFirstLayer = enabled; }
     bool autoSetupOnFirstLayer() const { return mAutoSetupOnFirstLayer; }
 
-    //! if enabled, will automatically turn on on-the-fly reprojection of layers if a layer
-    //! with different source CRS is added
-    void setAutoEnableCrsTransform( bool enabled ) { mAutoEnableCrsTransform = enabled; }
-    bool autoEnableCrsTransform() const { return mAutoEnableCrsTransform; }
-
   public slots:
     void setHasCustomLayerOrder( bool state );
     void setCustomLayerOrder( const QStringList& order );
@@ -125,7 +120,6 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
     QStringList mCustomLayerOrder;
 
     bool mAutoSetupOnFirstLayer;
-    bool mAutoEnableCrsTransform;
 
     bool mHasFirstLayer;
     bool mLastLayerCount;

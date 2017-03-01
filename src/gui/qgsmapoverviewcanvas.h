@@ -66,9 +66,6 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     //! used for overview canvas to reflect changed extent in main map canvas
     void drawExtentRect();
 
-    // ### QGIS 3: rename so it does not look like getter, make protected
-    void hasCrsTransformEnabled( bool flag );
-
     // ### QGIS 3: make protected
     //! Should be called when the canvas destination CRS is changed
     void destinationCrsChanged();

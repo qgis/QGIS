@@ -47,15 +47,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     ~QgsProjectProperties();
 
-    /** Gets the currently select map units
-     */
-    QgsUnitTypes::DistanceUnit mapUnits() const;
-
-    /*!
-     * Set the map units
-     */
-    void setMapUnits( QgsUnitTypes::DistanceUnit );
-
     /*!
        Every project has a title
      */
@@ -64,9 +55,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     //! Accessor for projection
     QString projectionWkt();
-
-    //! Indicates that the projection switch is on
-    bool isProjected();
 
   public slots:
     /*!
@@ -143,8 +131,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
      */
     void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "introduction/qgis_configuration.html#project-properties" ) ); }
 
-    void on_cbxProjectionEnabled_toggled( bool onFlyEnabled );
-
     /*!
      * Slot to link WFS checkboxes
      */
@@ -211,9 +197,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
      * Reset the python macros
      */
     void resetPythonMacros();
-
-    long mProjectSrsId;
-    long mLayerSrsId;
 
     // List for all ellispods, also None and Custom
     struct EllipsoidDefs

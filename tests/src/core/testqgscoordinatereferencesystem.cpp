@@ -669,6 +669,9 @@ void TestQgsCoordinateReferenceSystem::mapUnits()
   myCrs.createFromSrid( GEOSRID );
   QVERIFY( myCrs.mapUnits() == QgsUnitTypes::DistanceDegrees );
   debugPrint( myCrs );
+
+  // an invalid crs should return unknown unit
+  QCOMPARE( QgsCoordinateReferenceSystem().mapUnits(), QgsUnitTypes::DistanceUnknownUnit );
 }
 void TestQgsCoordinateReferenceSystem::setValidationHint()
 {

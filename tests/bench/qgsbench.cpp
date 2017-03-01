@@ -188,9 +188,6 @@ void QgsBench::render()
   //mMapRenderer->setMapUnits( outputCRS.mapUnits() );
   //mMapRenderer->setDestinationCrs( outputCRS );
 
-  // TODO: this should be probably set according to project
-  mMapSettings.setCrsTransformEnabled( true );
-
   // Enable labeling
   mMapSettings.setFlag( QgsMapSettings::DrawLabeling );
 

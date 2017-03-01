@@ -76,6 +76,22 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog, private Ui::QgsG
      */
     void setMessage( const QString& message );
 
+    /**
+     * Sets whether a "no/invalid" projection option should be shown. If this
+     * option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
+     * @see showNoProjection()
+     * @note added in QGIS 3.0
+     */
+    void setShowNoProjection( bool show );
+
+    /**
+     * Returns whether the "no/invalid" projection option is shown. If this
+     * option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
+     * @note added in QGIS 3.0
+     * @see setShowNoProjection()
+     */
+    bool showNoProjection() const;
+
   public slots:
 
     /**

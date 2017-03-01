@@ -436,6 +436,9 @@ void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs )
 
 QString QgsProject::ellipsoid() const
 {
+  if ( !crs().isValid() )
+    return GEO_NONE;
+
   return readEntry( QStringLiteral( "Measure" ), QStringLiteral( "/Ellipsoid" ), GEO_NONE );
 }
 

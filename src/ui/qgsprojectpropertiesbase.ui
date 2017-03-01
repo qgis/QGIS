@@ -230,7 +230,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="mProjOpts_01">
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -260,7 +260,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>685</width>
-                <height>784</height>
+                <height>778</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -749,8 +749,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>341</width>
-                <height>51</height>
+                <width>685</width>
+                <height>778</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -763,10 +763,10 @@
                <item>
                 <widget class="QGroupBox" name="cbxProjectionEnabled">
                  <property name="title">
-                  <string>Enable 'on the fly' CRS transformation (OTF)</string>
+                  <string>Project Coordinate Reference System (CRS)</string>
                  </property>
                  <property name="checkable">
-                  <bool>true</bool>
+                  <bool>false</bool>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_21">
                   <item>
@@ -808,8 +808,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>133</width>
-                <height>100</height>
+                <width>685</width>
+                <height>778</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -894,8 +894,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>369</width>
-                <height>528</height>
+                <width>685</width>
+                <height>778</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1361,8 +1361,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>607</width>
-                <height>2181</height>
+                <width>671</width>
+                <height>2451</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2441,8 +2441,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>161</width>
-                <height>51</height>
+                <width>165</width>
+                <height>57</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -2586,27 +2586,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsCodeEditorPython</class>
-   <extends>QWidget</extends>
-   <header>qgscodeeditorpython.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsProjectionSelectionTreeWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsprojectionselectiontreewidget.h</header>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2619,6 +2607,18 @@
    <class>QgsVariableEditorWidget</class>
    <extends>QWidget</extends>
    <header location="global">qgsvariableeditorwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCodeEditorPython</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditorpython.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsProjectionSelectionTreeWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectiontreewidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

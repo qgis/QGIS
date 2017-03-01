@@ -333,20 +333,6 @@ const QgsMapSettings &QgsMapCanvas::mapSettings() const
   return mSettings;
 }
 
-void QgsMapCanvas::setCrsTransformEnabled( bool enabled )
-{
-  if ( mSettings.hasCrsTransformEnabled() == enabled )
-    return;
-
-  mSettings.setCrsTransformEnabled( enabled );
-
-  updateDatumTransformEntries();
-
-  refresh();
-
-  emit hasCrsTransformEnabledChanged( enabled );
-}
-
 void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
 {
   if ( mSettings.destinationCrs() == crs )
@@ -368,19 +354,16 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
     }
   }
 
-  if ( !mSettings.hasCrsTransformEnabled() )
-  {
-    mSettings.setMapUnits( crs.mapUnits() );
-  }
   if ( !rect.isEmpty() )
   {
     setExtent( rect );
   }
 
+  mSettings.setDestinationCrs( crs );
+  updateScale();
+
   QgsDebugMsg( "refreshing after destination CRS changed" );
   refresh();
-
-  mSettings.setDestinationCrs( crs );
 
   updateDatumTransformEntries();
 
@@ -460,7 +443,7 @@ void QgsMapCanvas::refresh()
     return;
   }
 
-  if ( !mRenderFlag || mFrozen )  // do we really need two flags controlling rendering?
+  if ( !mRenderFlag || mFrozen )
   {
     QgsDebugMsg( "CANVAS render flag off" );
     return;
@@ -887,12 +870,6 @@ void QgsMapCanvas::clearExtentHistory()
   emit zoomLastStatusChanged( mLastExtentIndex > 0 );
   emit zoomNextStatusChanged( mLastExtentIndex < mLastExtent.size() - 1 );
 }// clearExtentHistory
-
-
-bool QgsMapCanvas::hasCrsTransformEnabled()
-{
-  return mapSettings().hasCrsTransformEnabled();
-}
 
 void QgsMapCanvas::zoomToSelected( QgsVectorLayer* layer )
 {
@@ -1578,38 +1555,21 @@ void QgsMapCanvas::layerCrsChange()
 } // layerCrsChange
 
 
-void QgsMapCanvas::freeze( bool frz )
+void QgsMapCanvas::freeze( bool frozen )
 {
-  mFrozen = frz;
-} // freeze
+  mFrozen = frozen;
+}
 
-bool QgsMapCanvas::isFrozen()
+bool QgsMapCanvas::isFrozen() const
 {
   return mFrozen;
-} // freeze
+}
 
 
 double QgsMapCanvas::mapUnitsPerPixel() const
 {
   return mapSettings().mapUnitsPerPixel();
 } // mapUnitsPerPixel
-
-
-void QgsMapCanvas::setMapUnits( QgsUnitTypes::DistanceUnit u )
-{
-  if ( mSettings.mapUnits() == u )
-    return;
-
-  QgsDebugMsg( "Setting map units to " + QString::number( static_cast<int>( u ) ) );
-  mSettings.setMapUnits( u );
-
-  updateScale();
-
-  refresh(); // this will force the scale bar to be updated
-
-  emit mapUnitsChanged();
-}
-
 
 QgsUnitTypes::DistanceUnit QgsMapCanvas::mapUnits() const
 {
@@ -1653,9 +1613,6 @@ void QgsMapCanvas::connectNotify( const char * signal )
 
 void QgsMapCanvas::updateDatumTransformEntries()
 {
-  if ( !mSettings.hasCrsTransformEnabled() )
-    return;
-
   QString destAuthId = mSettings.destinationCrs().authid();
   Q_FOREACH ( QgsMapLayer* layer, mSettings.layers() )
   {
@@ -1821,8 +1778,6 @@ void QgsMapCanvas::readProject( const QDomDocument & doc )
 
     QgsMapSettings tmpSettings;
     tmpSettings.readXml( node );
-    setMapUnits( tmpSettings.mapUnits() );
-    setCrsTransformEnabled( tmpSettings.hasCrsTransformEnabled() );
     setDestinationCrs( tmpSettings.destinationCrs() );
     setExtent( tmpSettings.extent() );
     setRotation( tmpSettings.rotation() );

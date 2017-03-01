@@ -43,7 +43,6 @@ QgsMapOverviewCanvas::QgsMapOverviewCanvas( QWidget * parent, QgsMapCanvas* mapC
   mSettings.setFlag( QgsMapSettings::DrawLabeling, false );
 
   connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsMapOverviewCanvas::drawExtentRect );
-  connect( mMapCanvas, &QgsMapCanvas::hasCrsTransformEnabledChanged, this, &QgsMapOverviewCanvas::hasCrsTransformEnabled );
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapOverviewCanvas::destinationCrsChanged );
 }
 
@@ -256,11 +255,6 @@ void QgsMapOverviewCanvas::updateFullExtent()
 
   mSettings.setExtent( rect );
   drawExtentRect();
-}
-
-void QgsMapOverviewCanvas::hasCrsTransformEnabled( bool flag )
-{
-  mSettings.setCrsTransformEnabled( flag );
 }
 
 void QgsMapOverviewCanvas::destinationCrsChanged()

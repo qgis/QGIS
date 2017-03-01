@@ -72,6 +72,8 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Open configuration tab
     void openConfigTab();
 
+    void crsChanged();
+
   private:
 
     //! formats distance to most appropriate units

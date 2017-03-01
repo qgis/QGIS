@@ -249,19 +249,16 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
     QgsRectangle r1 = mSettings.visibleExtent(), r2;
     QgsCoordinateTransform ct;
 
-    if ( mSettings.hasCrsTransformEnabled() )
+    ct = mSettings.layerTransform( ml );
+    if ( ct.isValid() )
     {
-      ct = mSettings.layerTransform( ml );
-      if ( ct.isValid() )
-      {
-        reprojectToLayerExtent( ml, ct, r1, r2 );
-      }
-      QgsDebugMsgLevel( "extent: " + r1.toString(), 3 );
-      if ( !r1.isFinite() || !r2.isFinite() )
-      {
-        mErrors.append( Error( ml->id(), tr( "There was a problem transforming the layer's extent. Layer skipped." ) ) );
-        continue;
-      }
+      reprojectToLayerExtent( ml, ct, r1, r2 );
+    }
+    QgsDebugMsgLevel( "extent: " + r1.toString(), 3 );
+    if ( !r1.isFinite() || !r2.isFinite() )
+    {
+      mErrors.append( Error( ml->id(), tr( "There was a problem transforming the layer's extent. Layer skipped." ) ) );
+      continue;
     }
 
     // Force render of layers that are being edited

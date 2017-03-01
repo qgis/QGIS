@@ -127,7 +127,6 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
 
   // set project CRS and ellipsoid
   QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
-  canvas->setCrsTransformEnabled( true );
   canvas->setDestinationCrs( srs );
   canvas->setExtent( f1.geometry().boundingBox() );
   QgsProject::instance()->setCrs( srs );
@@ -181,7 +180,6 @@ void TestQgsMapToolIdentifyAction::perimeterCalculation()
 
   // set project CRS and ellipsoid
   QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
-  canvas->setCrsTransformEnabled( true );
   canvas->setDestinationCrs( srs );
   canvas->setExtent( f1.geometry().boundingBox() );
   QgsProject::instance()->setCrs( srs );
@@ -236,7 +234,6 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
 
   // set project CRS and ellipsoid
   QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
-  canvas->setCrsTransformEnabled( true );
   canvas->setDestinationCrs( srs );
   canvas->setExtent( f1.geometry().boundingBox() );
   QgsProject::instance()->setCrs( srs );

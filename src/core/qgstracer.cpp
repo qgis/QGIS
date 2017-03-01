@@ -454,8 +454,7 @@ void extractLinework( const QgsGeometry& g, QgsMultiPolyline& mpl )
 
 
 QgsTracer::QgsTracer()
-    : mReprojectionEnabled( false )
-    , mMaxFeatureCount( 0 )
+    : mMaxFeatureCount( 0 )
     , mHasTopologyProblem( false )
 {
 }
@@ -486,7 +485,7 @@ bool QgsTracer::initGraph()
     QgsFeatureRequest request;
     request.setSubsetOfAttributes( QgsAttributeList() );
     if ( !mExtent.isEmpty() )
-      request.setFilterRect( mReprojectionEnabled ? ct.transformBoundingBox( mExtent, QgsCoordinateTransform::ReverseTransform ) : mExtent );
+      request.setFilterRect( ct.transformBoundingBox( mExtent, QgsCoordinateTransform::ReverseTransform ) );
 
     QgsFeatureIterator fi = vl->getFeatures( request );
     while ( fi.nextFeature( f ) )
@@ -494,7 +493,7 @@ bool QgsTracer::initGraph()
       if ( !f.hasGeometry() )
         continue;
 
-      if ( mReprojectionEnabled && !ct.isShortCircuited() )
+      if ( !ct.isShortCircuited() )
       {
         try
         {
@@ -600,15 +599,6 @@ void QgsTracer::setLayers( const QList<QgsVectorLayer*>& layers )
     connect( layer, SIGNAL( destroyed( QObject* ) ), this, SLOT( onLayerDestroyed( QObject* ) ) );
   }
 
-  invalidateGraph();
-}
-
-void QgsTracer::setCrsTransformEnabled( bool enabled )
-{
-  if ( mReprojectionEnabled == enabled )
-    return;
-
-  mReprojectionEnabled = enabled;
   invalidateGraph();
 }
 

@@ -224,7 +224,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas,
   // connect settings changed and map units changed to properly update the widget
   connect( project, &QgsProject::snappingConfigChanged, this, &QgsSnappingWidget::projectSnapSettingsChanged );
   connect( project, &QgsProject::topologicalEditingChanged, this, &QgsSnappingWidget::projectTopologicalEditingChanged );
-  connect( mCanvas, SIGNAL( mapUnitsChanged() ), this, SLOT( updateToleranceDecimals() ) );
+  connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsSnappingWidget::updateToleranceDecimals );
 
 
   // Slightly modify the config so the settings changed code doesn't early exit

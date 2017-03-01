@@ -91,7 +91,7 @@ class LayerPreview(QgsMapCanvas):
     def _loadTablePreview(self, table, limit=False):
         """ if has geometry column load to map canvas """
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        self.setRenderFlag(False)
+        self.freeze()
         vl = None
 
         if table and table.geomType:
@@ -130,5 +130,5 @@ class LayerPreview(QgsMapCanvas):
 
         self.currentLayer = vl
 
-        self.setRenderFlag(True)
+        self.freeze(False)
         QApplication.restoreOverrideCursor()

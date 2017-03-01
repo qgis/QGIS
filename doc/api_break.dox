@@ -936,7 +936,7 @@ QgsDxfExport        {#qgis_api_break_3_0_QgsDxfExport}
 - writeSolid() was removed. Use writePolygon() instead.
 - The signature for writeLine() has changed.
 - writePoint(), writeFilledCircle(), writeCircle(), writeText() and writeMText() now take QgsPointV2 arguments
-
+- setMapUnits() was removed. The map units are dictated by the units for the destination CRS.
 
 
 QgsEditFormConfig        {#qgis_api_break_3_0_QgsEditFormConfig}
@@ -1257,6 +1257,12 @@ QgsLayerTreeNode        {#qgis_api_break_3_0_QgsLayerTreeNode}
 - readXml() does not resolve layers from the layer IDs anymore. Call resolveReferences() or use readXml() override with QgsProject as the second argument.
 
 
+QgsLayerTreeMapCanvasBridge        {#qgis_api_break_3_0_QgsLayerTreeMapCanvasBridge}
+-----------------
+
+- setAutoEnableCrsTransform() and autoEnableCrsTransform() were removed. CRS transformation is now always enabled.
+
+
 QgsLayerTreeModel        {#qgis_api_break_3_0_QgsLayerTreeMode}
 -----------------
 
@@ -1315,6 +1321,9 @@ QgsMapCanvas        {#qgis_api_break_3_0_QgsMapCanvas}
 - setProgress() signal has been removed. It was not emitted since 2.0.
 - enableOverviewMode() and updateOverview() have been removed. Map canvas does not keep pointer to overview canvas anymore. Use QgsLayerTreeMapCanvasBridge::setOverviewCanvas() to set up updates of overview canvas together with main canvas.
 - the duplicate mapToolSet signal with a single QgsMapTool argument has been removed. Use the signal with arguments for new and old map tool instead.
+- setCrsTransformEnabled(), hasCrsTransformEnabled(), hasCrsTransformEnabledChanged() were removed. CRS transformation is now always enabled.
+- setMapUnits() was removed. The map units are dictated by the units for the destination CRS.
+- The mapUnitsChanged() signal was removed. Listen for the destinationCrsChanged() signal instead, as the destination CRS dictates the map units.
 
 QgsMapCanvasItem        {#qgis_api_break_3_0_QgsMapCanvasItem}
 ----------------
@@ -1354,6 +1363,7 @@ QgsMapOverviewCanvas        {#qgis_api_break_3_0_QgsMapOverviewCanvas}
 
 - layerSet() and setLayerSet() have been replaced by layers() and setLayers() which work with list of layers instead of layer IDs
 - destinationSrsChanged() was renamed to destinationCrsChanged()
+- hasCrsTransformEnabled() was removed. CRS transformation is now always enabled.
 
 
 QgsMapRenderer        {#qgis_api_break_3_0_QgsMapRenderer}
@@ -1421,6 +1431,8 @@ QgsMapSettings        {#qgis_api_break_3_0_QgsMapSettings}
 be returned instead of a null pointer if no transformation is required.
 - destinationCrs() now returns a copy instead of a reference to the CRS. This has no effect on PyQGIS code, but c++
 plugins calling this method will need to be updated.
+- setCrsTransformEnabled() and hasCrsTransformEnabled() were removed. CRS transformation is now always enabled.
+- setMapUnits() was removed. The map units are dictated by the units for the destination CRS.
 
 
 QgsMarkerSymbolLayer        {#qgis_api_break_3_0_QgsMarkerSymbolLayer}
@@ -1894,6 +1906,12 @@ QgsTolerance        {#qgis_api_break_3_0_QgsTolerance}
 
 - vertexSearchRadius(), defaultTolerance(), toleranceInMapUnits() do not have variant with QgsMapRenderer anymore. Use the variants with QgsMapSettings.
 - The MapUnits UnitType was removed. Use LayerUnits or ProjectUnits instead.
+
+
+QgsTracer        {#qgis_api_break_3_0_QgsTracer}
+---------
+
+- hasCrsTransformEnabled() and setCrsTransformEnabled() were removed. CRS transformation is now always enabled when required.
 
 
 QgsTreeWidgetItem        {#qgis_api_break_3_0_QgsTreeWidgetItem}

@@ -536,16 +536,15 @@ int QgsDxfExport::writeToFile( QIODevice* d, const QString& encoding )
     }
   }
 
-  mMapSettings.setMapUnits( mMapUnits );
+  QgsUnitTypes::DistanceUnit mapUnits = mCrs.mapUnits();
   mMapSettings.setExtent( mExtent );
 
   int dpi = 96;
-  mFactor = 1000 * dpi / mSymbologyScaleDenominator / 25.4 * QgsUnitTypes::fromUnitToUnitFactor( mMapUnits, QgsUnitTypes::DistanceMeters );
+  mFactor = 1000 * dpi / mSymbologyScaleDenominator / 25.4 * QgsUnitTypes::fromUnitToUnitFactor( mapUnits, QgsUnitTypes::DistanceMeters );
   mMapSettings.setOutputSize( QSize( mExtent.width() * mFactor, mExtent.height() * mFactor ) );
   mMapSettings.setOutputDpi( dpi );
   if ( mCrs.isValid() )
     mMapSettings.setDestinationCrs( mCrs );
-  mMapSettings.setCrsTransformEnabled( mCrs.isValid() );
 
   writeHeader( dxfEncoding( encoding ) );
   writeTables();
@@ -554,6 +553,11 @@ int QgsDxfExport::writeToFile( QIODevice* d, const QString& encoding )
   writeEndFile();
 
   return 0;
+}
+
+QgsUnitTypes::DistanceUnit QgsDxfExport::mapUnits() const
+{
+  return mMapUnits;
 }
 
 void QgsDxfExport::writeHeader( const QString& codepage )
@@ -1048,7 +1052,7 @@ void QgsDxfExport::writeEntities()
 
     QgsFeatureIterator featureIt = vl->getFeatures( freq );
 
-    QgsCoordinateTransform ct = mMapSettings.hasCrsTransformEnabled() ? mMapSettings.layerTransform( vl ) : QgsCoordinateTransform();
+    QgsCoordinateTransform ct = mMapSettings.layerTransform( vl );
 
     QgsFeature fet;
     while ( featureIt.nextFeature( fet ) )
@@ -1183,7 +1187,7 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer* layer )
     }
   }
 
-  QgsCoordinateTransform ct = mMapSettings.hasCrsTransformEnabled() ? mMapSettings.layerTransform( layer ) : QgsCoordinateTransform();
+  QgsCoordinateTransform ct = mMapSettings.layerTransform( layer );
 
   // export symbol layers and symbology
   for ( int l = 0; l < levels.count(); l++ )
@@ -4435,6 +4439,7 @@ void QgsDxfExport::registerDxfLayer( const QString& layerId, QgsFeatureId fid, c
 void QgsDxfExport::setDestinationCrs( const QgsCoordinateReferenceSystem& crs )
 {
   mCrs = crs;
+  mMapUnits = crs.mapUnits();
 }
 
 QgsCoordinateReferenceSystem QgsDxfExport::destinationCrs() const

@@ -714,14 +714,7 @@ bool QgsGrassModuleStandardOptions::inputRegion( struct Cell_head *window, QgsCo
   if ( mDirect && mode == RegionCurrent )
   {
     // TODO: warn if outside region
-    if ( mCanvas->hasCrsTransformEnabled() )
-    {
-      crs = mCanvas->mapSettings().destinationCrs();
-    }
-    else
-    {
-      crs = QgsCoordinateReferenceSystem();
-    }
+    crs = mCanvas->mapSettings().destinationCrs();
     QgsRectangle rect = mCanvas->extent();
 
     QgsGrass::initRegion( window );

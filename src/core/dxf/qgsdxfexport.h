@@ -90,17 +90,10 @@ class CORE_EXPORT QgsDxfExport
     double symbologyScaleDenominator() const { return mSymbologyScaleDenominator; }
 
     /**
-     * Set map units
-     * @param u unit
-     */
-    void setMapUnits( QgsUnitTypes::DistanceUnit u ) { mMapUnits = u; }
-
-    /**
      * Retrieve map units
      * @returns unit
-     * @see setMapUnits
      */
-    QgsUnitTypes::DistanceUnit mapUnits() const { return mMapUnits; }
+    QgsUnitTypes::DistanceUnit mapUnits() const;
 
     /**
      * Set destination CRS

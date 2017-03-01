@@ -2810,8 +2810,6 @@ void QgisApp::setupConnections()
            this, &QgisApp::mapCanvas_keyPressed );
 
   // connect renderer
-  connect( mMapCanvas, &QgsMapCanvas::hasCrsTransformEnabledChanged,
-           this, &QgisApp::hasCrsTransformEnabled );
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged,
            this, &QgisApp::destinationCrsChanged );
 
@@ -3201,9 +3199,6 @@ void QgisApp::initLayerTreeView()
   mLayerTreeCanvasBridge = new QgsLayerTreeMapCanvasBridge( QgsProject::instance()->layerTreeRoot(), mMapCanvas, this );
   connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument& ) ), mLayerTreeCanvasBridge, SLOT( writeProject( QDomDocument& ) ) );
   connect( QgsProject::instance(), SIGNAL( readProject( QDomDocument ) ), mLayerTreeCanvasBridge, SLOT( readProject( QDomDocument ) ) );
-
-  bool otfTransformAutoEnable = QSettings().value( QStringLiteral( "/Projections/otfTransformAutoEnable" ), true ).toBool();
-  mLayerTreeCanvasBridge->setAutoEnableCrsTransform( otfTransformAutoEnable );
 
   mMapLayerOrder = new QgsCustomLayerOrderWidget( mLayerTreeCanvasBridge, this );
   mMapLayerOrder->setObjectName( QStringLiteral( "theMapLayerOrder" ) );
@@ -4442,10 +4437,11 @@ void QgisApp::addAfsLayer()
   connect( afss, SIGNAL( addLayer( QString, QString ) ),
            this, SLOT( addAfsLayer( QString, QString ) ) );
 
-  bool bkRenderFlag = mapCanvas()->renderFlag();
-  mapCanvas()->setRenderFlag( false );
+  bool wasFrozen = mapCanvas()->isFrozen();
+  mapCanvas()->freeze( true );
   afss->exec();
-  mapCanvas()->setRenderFlag( bkRenderFlag );
+  if ( !wasFrozen )
+    mapCanvas()->freeze( false );
   delete afss;
 }
 
@@ -4475,10 +4471,11 @@ void QgisApp::addAmsLayer()
   connect( amss, SIGNAL( addLayer( QString, QString ) ),
            this, SLOT( addAmsLayer( QString, QString ) ) );
 
-  bool bkRenderFlag = mapCanvas()->renderFlag();
-  mapCanvas()->setRenderFlag( false );
+  bool wasFrozen = mapCanvas()->isFrozen();
+  mapCanvas()->freeze( true );
   amss->exec();
-  mapCanvas()->setRenderFlag( bkRenderFlag );
+  if ( !wasFrozen )
+    mapCanvas()->freeze( false );
   delete amss;
 }
 
@@ -4602,13 +4599,6 @@ void QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   // write the projections _proj string_ to project settings
   prj->setCrs( srs );
   prj->setDirty( false );
-  if ( srs.mapUnits() != QgsUnitTypes::DistanceUnknownUnit )
-  {
-    mMapCanvas->setMapUnits( srs.mapUnits() );
-  }
-
-  // enable OTF CRS transformation if necessary
-  mMapCanvas->setCrsTransformEnabled( settings.value( QStringLiteral( "/Projections/otfTransformEnabled" ), 0 ).toBool() );
 
   updateCrsStatusBar();
 
@@ -5260,7 +5250,6 @@ void QgisApp::dxfExport()
     dxfExport.setDestinationCrs( d.crs() );
     if ( mapCanvas() )
     {
-      dxfExport.setMapUnits( mapCanvas()->mapUnits() );
       //extent
       if ( d.exportMapExtent() )
       {
@@ -5357,11 +5346,6 @@ void QgisApp::openProject( QAction *action )
   QString debugme = action->data().toString();
   if ( saveDirty() )
     addProject( debugme );
-
-  //set the projections enabled icon in the status bar
-  int myProjectionEnabledFlag =
-    QgsProject::instance()->readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), 0 );
-  mMapCanvas->setCrsTransformEnabled( myProjectionEnabledFlag );
 }
 
 void QgisApp::runScript( const QString &filePath )
@@ -5645,13 +5629,12 @@ void QgisApp::toggleFullScreen()
       // showMaxmized() is a work-around. Turn off rendering for this as it
       // would otherwise cause two re-renders of the map, which can take a
       // long time.
-      bool renderFlag = mapCanvas()->renderFlag();
-      if ( renderFlag )
-        mapCanvas()->setRenderFlag( false );
+      bool wasFrozen = mapCanvas()->isFrozen();
+      mapCanvas()->freeze();
       showNormal();
       showMaximized();
-      if ( renderFlag )
-        mapCanvas()->setRenderFlag( true );
+      if ( !wasFrozen )
+        mapCanvas()->freeze( false );
       mPrevScreenModeMaximized = false;
     }
     else
@@ -7411,9 +7394,8 @@ void QgisApp::selectByRadius()
 void QgisApp::deselectAll()
 {
   // Turn off rendering to improve speed.
-  bool renderFlagState = mMapCanvas->renderFlag();
-  if ( renderFlagState )
-    mMapCanvas->setRenderFlag( false );
+  bool wasFrozen = mMapCanvas->isFrozen();
+  mMapCanvas->freeze();
 
   QMap<QString, QgsMapLayer*> layers = QgsProject::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer*>::iterator it = layers.begin(); it != layers.end(); ++it )
@@ -7426,8 +7408,8 @@ void QgisApp::deselectAll()
   }
 
   // Turn on rendering (if it was on previously)
-  if ( renderFlagState )
-    mMapCanvas->setRenderFlag( true );
+  if ( !wasFrozen )
+    mMapCanvas->freeze( false );
 }
 
 void QgisApp::invertSelection()
@@ -7444,15 +7426,14 @@ void QgisApp::invertSelection()
   }
 
   // Turn off rendering to improve speed.
-  bool renderFlagState = mMapCanvas->renderFlag();
-  if ( renderFlagState )
-    mMapCanvas->setRenderFlag( false );
+  bool wasFrozen = mMapCanvas->isFrozen();
+  mMapCanvas->freeze();
 
   vlayer->invertSelection();
 
   // Turn on rendering (if it was on previously)
-  if ( renderFlagState )
-    mMapCanvas->setRenderFlag( true );
+  if ( !wasFrozen )
+    mMapCanvas->freeze( false );
 }
 
 void QgisApp::selectAll()
@@ -7469,15 +7450,14 @@ void QgisApp::selectAll()
   }
 
   // Turn off rendering to improve speed.
-  bool renderFlagState = mMapCanvas->renderFlag();
-  if ( renderFlagState )
-    mMapCanvas->setRenderFlag( false );
+  bool wasFrozen = mMapCanvas->isFrozen();
+  mMapCanvas->freeze();
 
   vlayer->selectAll();
 
   // Turn on rendering (if it was on previously)
-  if ( renderFlagState )
-    mMapCanvas->setRenderFlag( true );
+  if ( !wasFrozen )
+    mMapCanvas->freeze( false );
 }
 
 void QgisApp::selectByExpression()
@@ -7582,15 +7562,7 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
     return;
 
   pasteVectorLayer->beginEditCommand( tr( "Features pasted" ) );
-  QgsFeatureList features;
-  if ( mMapCanvas->mapSettings().hasCrsTransformEnabled() )
-  {
-    features = clipboard()->transformedCopyOf( pasteVectorLayer->crs(), pasteVectorLayer->fields() );
-  }
-  else
-  {
-    features = clipboard()->copyOf( pasteVectorLayer->fields() );
-  }
+  QgsFeatureList features = clipboard()->transformedCopyOf( pasteVectorLayer->crs(), pasteVectorLayer->fields() );
   int nTotalFeatures = features.count();
 
   QHash<int, int> remap;
@@ -8797,10 +8769,6 @@ void QgisApp::setProjectCrsFromLayer()
   mMapCanvas->freeze();
   mMapCanvas->setDestinationCrs( crs );
   QgsProject::instance()->setCrs( crs );
-  if ( crs.mapUnits() != QgsUnitTypes::DistanceUnknownUnit )
-  {
-    mMapCanvas->setMapUnits( crs.mapUnits() );
-  }
   mMapCanvas->freeze( false );
   mMapCanvas->refresh();
 }
@@ -8822,23 +8790,17 @@ void QgisApp::legendLayerZoomNative()
     QgsDebugMsg( "Raster units per pixel  : " + QString::number( layer->rasterUnitsPerPixelX() ) );
     QgsDebugMsg( "MapUnitsPerPixel before : " + QString::number( mMapCanvas->mapUnitsPerPixel() ) );
 
-    if ( mMapCanvas->hasCrsTransformEnabled() )
-    {
-      // get length of central canvas pixel width in source raster crs
-      QgsRectangle e = mMapCanvas->extent();
-      QSize s = mMapCanvas->mapSettings().outputSize();
-      QgsPoint p1( e.center().x(), e.center().y() );
-      QgsPoint p2( e.center().x() + e.width() / s.width(), e.center().y() + e.height() / s.height() );
-      QgsCoordinateTransform ct( mMapCanvas->mapSettings().destinationCrs(), layer->crs() );
-      p1 = ct.transform( p1 );
-      p2 = ct.transform( p2 );
-      double width = sqrt( p1.sqrDist( p2 ) ); // width (actually the diagonal) of reprojected pixel
-      mMapCanvas->zoomByFactor( sqrt( layer->rasterUnitsPerPixelX() * layer->rasterUnitsPerPixelX() + layer->rasterUnitsPerPixelY() * layer->rasterUnitsPerPixelY() ) / width );
-    }
-    else
-    {
-      mMapCanvas->zoomByFactor( qAbs( layer->rasterUnitsPerPixelX() / mMapCanvas->mapUnitsPerPixel() ) );
-    }
+    // get length of central canvas pixel width in source raster crs
+    QgsRectangle e = mMapCanvas->extent();
+    QSize s = mMapCanvas->mapSettings().outputSize();
+    QgsPoint p1( e.center().x(), e.center().y() );
+    QgsPoint p2( e.center().x() + e.width() / s.width(), e.center().y() + e.height() / s.height() );
+    QgsCoordinateTransform ct( mMapCanvas->mapSettings().destinationCrs(), layer->crs() );
+    p1 = ct.transform( p1 );
+    p2 = ct.transform( p2 );
+    double width = sqrt( p1.sqrDist( p2 ) ); // width (actually the diagonal) of reprojected pixel
+    mMapCanvas->zoomByFactor( sqrt( layer->rasterUnitsPerPixelX() * layer->rasterUnitsPerPixelX() + layer->rasterUnitsPerPixelY() * layer->rasterUnitsPerPixelY() ) / width );
+
     mMapCanvas->refresh();
     QgsDebugMsg( "MapUnitsPerPixel after  : " + QString::number( mMapCanvas->mapUnitsPerPixel() ) );
   }
@@ -9188,9 +9150,6 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString& currentPage )
     qobject_cast<QgsMeasureTool*>( mMapTools.mMeasureDist )->updateSettings();
     qobject_cast<QgsMeasureTool*>( mMapTools.mMeasureArea )->updateSettings();
     qobject_cast<QgsMapToolMeasureAngle*>( mMapTools.mMeasureAngle )->updateSettings();
-
-    bool otfTransformAutoEnable = mySettings.value( QStringLiteral( "/Projections/otfTransformAutoEnable" ), true ).toBool();
-    mLayerTreeCanvasBridge->setAutoEnableCrsTransform( otfTransformAutoEnable );
 
     mMapCanvas->setSegmentationTolerance( mySettings.value( QStringLiteral( "/qgis/segmentationTolerance" ), "0.01745" ).toDouble() );
     mMapCanvas->setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType( mySettings.value( QStringLiteral( "/qgis/segmentationToleranceType" ), "0" ).toInt() ) );
@@ -10309,32 +10268,24 @@ void QgisApp::removeWebToolBarIcon( QAction *qAction )
 
 void QgisApp::updateCrsStatusBar()
 {
-  mOnTheFlyProjectionStatusButton->setText( mMapCanvas->mapSettings().destinationCrs().authid() );
-
-  if ( mMapCanvas->mapSettings().hasCrsTransformEnabled() )
+  if ( QgsProject::instance()->crs().isValid() )
   {
+    mOnTheFlyProjectionStatusButton->setText( QgsProject::instance()->crs().authid() );
+
     mOnTheFlyProjectionStatusButton->setToolTip(
-      tr( "Current CRS: %1 (OTF enabled)" ).arg( mMapCanvas->mapSettings().destinationCrs().description() ) );
+      tr( "Current CRS: %1" ).arg( mMapCanvas->mapSettings().destinationCrs().description() ) );
     mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconProjectionEnabled.svg" ) ) );
   }
   else
   {
-    mOnTheFlyProjectionStatusButton->setText( tr( "%1 (OTF off)" ).arg( mOnTheFlyProjectionStatusButton->text() ) );
-    mOnTheFlyProjectionStatusButton->setToolTip(
-      tr( "Current CRS: %1 (OTF disabled)" ).arg( mMapCanvas->mapSettings().destinationCrs().description() ) );
+    mOnTheFlyProjectionStatusButton->setText( QString() );
+    mOnTheFlyProjectionStatusButton->setToolTip( tr( "No projection" ) );
     mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconProjectionDisabled.svg" ) ) );
   }
 }
 
 void QgisApp::destinationCrsChanged()
 {
-  updateCrsStatusBar();
-}
-
-void QgisApp::hasCrsTransformEnabled( bool flag )
-{
-  // save this information to project
-  QgsProject::instance()->writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), ( flag ? 1 : 0 ) );
   updateCrsStatusBar();
 }
 
@@ -11605,15 +11556,10 @@ void QgisApp::readProject( const QDomDocument &doc )
   projectChanged( doc );
 
   // force update of canvas, without automatic changes to extent and OTF projections
-  bool autoEnableCrsTransform = mLayerTreeCanvasBridge->autoEnableCrsTransform();
   bool autoSetupOnFirstLayer = mLayerTreeCanvasBridge->autoSetupOnFirstLayer();
-  mLayerTreeCanvasBridge->setAutoEnableCrsTransform( false );
   mLayerTreeCanvasBridge->setAutoSetupOnFirstLayer( false );
 
   mLayerTreeCanvasBridge->setCanvasLayers();
-
-  if ( autoEnableCrsTransform )
-    mLayerTreeCanvasBridge->setAutoEnableCrsTransform( true );
 
   if ( autoSetupOnFirstLayer )
     mLayerTreeCanvasBridge->setAutoSetupOnFirstLayer( true );

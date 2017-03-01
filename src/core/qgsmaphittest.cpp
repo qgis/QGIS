@@ -70,11 +70,8 @@ void QgsMapHitTest::run()
         continue;
       }
 
-      if ( mSettings.hasCrsTransformEnabled() )
-      {
-        context.setCoordinateTransform( mSettings.layerTransform( vl ) );
-        context.setExtent( mSettings.outputExtentToLayerExtent( vl, mSettings.visibleExtent() ) );
-      }
+      context.setCoordinateTransform( mSettings.layerTransform( vl ) );
+      context.setExtent( mSettings.outputExtentToLayerExtent( vl, mSettings.visibleExtent() ) );
     }
 
     context.expressionContext() << QgsExpressionContextUtils::layerScope( vl );

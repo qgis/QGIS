@@ -94,10 +94,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @note added in 2.4
     const QgsMapSettings& mapSettings() const;
 
-    //! sets whether to use projections for this layer set
-    //! @note added in 2.4
-    void setCrsTransformEnabled( bool enabled );
-
     //! sets destination coordinate reference system
     //! @note added in 2.4
     void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
@@ -236,24 +232,37 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /**
      * Freeze/thaw the map canvas. This is used to prevent the canvas from
      * responding to events while layers are being added/removed etc.
-     * @param frz Boolean specifying if the canvas should be frozen (true) or
+     * @param frozen Boolean specifying if the canvas should be frozen (true) or
      * thawed (false). Default is true.
-     *
-     * TODO remove in QGIS 3
+     * @see isFrozen()
+     * @see setRenderFlag(). freeze() should be used to programmatically halt map updates,
+     * while setRenderFlag() should only be used when users disable rendering via GUI.
      */
-    void freeze( bool frz = true );
+    void freeze( bool frozen = true );
 
     /**
-     * Accessor for frozen status of canvas
-     *
-     * TODO remove in QGIS 3
+     * Returns true if canvas is frozen.
+     * @see renderFlag(). isFrozen() should be used to determine whether map updates
+     * have been halted programmatically, while renderFlag() should be used to
+     * determine whether a user has disabled rendering via GUI.
+     * @see freeze()
      */
-    bool isFrozen();
+    bool isFrozen() const;
 
-    //! Set map units (needed by project properties dialog)
-    void setMapUnits( QgsUnitTypes::DistanceUnit mapUnits );
+    /**
+     * Returns true if canvas render is disabled as a result of user disabling
+     * renders via the GUI.
+     * @see setRenderFlag()
+     * @see isFrozen(). isFrozen() should be used to determine whether map updates
+     * have been halted programmatically, while renderFlag() should be used to
+     * determine whether a user has disabled rendering via GUI.
+     */
+    bool renderFlag() const { return mRenderFlag; }
 
-    //! Get the current canvas map units
+    /**
+     * Convience function for returning the current canvas map units. The map units
+     * are dictated by the canvas' destinationCrs() map units.
+     */
     QgsUnitTypes::DistanceUnit mapUnits() const;
 
     //! Getter for stored overrides of styles for layers.
@@ -413,13 +422,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! This slot is connected to the layer's CRS change
     void layerCrsChange();
 
-    //! Whether to suppress rendering or not
+    /**
+     * Sets whether a user has disabled canvas renders via the GUI.
+     * @param flag set to false to indicate that user has disabled renders
+     * @see renderFlag()
+     * @see freeze(). freeze() should be used to programmatically halt map updates,
+     * while setRenderFlag() should only be used when users disable rendering via GUI.
+     */
     void setRenderFlag( bool flag );
-    //! State of render suppression flag
-    bool renderFlag() {return mRenderFlag;}
-
-    //! A simple helper method to find out if on the fly projections are enabled or not
-    bool hasCrsTransformEnabled();
 
     //! stop rendering (if there is any right now)
     //! @note added in 2.4
@@ -526,17 +536,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Emitted when zoom next status changed
     void zoomNextStatusChanged( bool );
 
-    //! Emitted when on-the-fly projection has been turned on/off
-    //! @note added in 2.4
-    void hasCrsTransformEnabledChanged( bool flag );
-
     //! Emitted when map CRS has changed
     //! @note added in 2.4
     void destinationCrsChanged();
-
-    //! Emitted when map units are changed
-    //! @note added in 2.4
-    void mapUnitsChanged();
 
     //! Emitted when the current layer is changed
     //! @note added in 2.8

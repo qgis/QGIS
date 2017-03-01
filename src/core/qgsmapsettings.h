@@ -133,11 +133,6 @@ class CORE_EXPORT QgsMapSettings
      */
     void setCustomRenderFlags( const QString& customRenderFlags ) { mCustomRenderFlags = customRenderFlags; }
 
-    //! sets whether to use projections for this layer set
-    void setCrsTransformEnabled( bool enabled );
-    //! returns true if projections are enabled for this layer set
-    bool hasCrsTransformEnabled() const;
-
     //! sets destination coordinate reference system
     void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
     //! returns CRS of destination coordinate reference system
@@ -145,8 +140,6 @@ class CORE_EXPORT QgsMapSettings
 
     //! Get units of map's geographical coordinates - used for scale calculation
     QgsUnitTypes::DistanceUnit mapUnits() const;
-    //! Set units of map's geographical coordinates - used for scale calculation
-    void setMapUnits( QgsUnitTypes::DistanceUnit u );
 
     //! Set the background color of the map
     void setBackgroundColor( const QColor& color ) { mBackgroundColor = color; }
@@ -315,7 +308,6 @@ class CORE_EXPORT QgsMapSettings
     QString mCustomRenderFlags;
     QgsExpressionContext mExpressionContext;
 
-    bool mProjectionsEnabled;
     QgsCoordinateReferenceSystem mDestCRS;
     QgsDatumTransformStore mDatumTransformStore;
 

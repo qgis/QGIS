@@ -36,10 +36,6 @@ class QgsMapCanvas : QGraphicsView
     //! @note added in 2.4
     const QgsMapSettings& mapSettings() const /KeepReference/;
 
-    //! sets whether to use projections for this layer set
-    //! @note added in 2.4
-    void setCrsTransformEnabled( bool enabled );
-
     //! sets destination coordinate reference system
     //! @note added in 2.4
     void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
@@ -174,26 +170,9 @@ class QgsMapCanvas : QGraphicsView
 
     //! return list of layers within map canvas.
     QList<QgsMapLayer*> layers() const;
-
-    /**
-     * Freeze/thaw the map canvas. This is used to prevent the canvas from
-     * responding to events while layers are being added/removed etc.
-     * @param frz Boolean specifying if the canvas should be frozen (true) or
-     * thawed (false). Default is true.
-     *
-     * TODO remove in QGIS 3
-     */
-    void freeze( bool frz = true );
-
-    /**
-     * Accessor for frozen status of canvas
-     *
-     * TODO remove in QGIS 3
-     */
-    bool isFrozen();
-
-    //! Set map units (needed by project properties dialog)
-    void setMapUnits( QgsUnitTypes::DistanceUnit mapUnits );
+    void freeze( bool frozen = true );
+    bool isFrozen() const;
+    bool renderFlag() const;
 
     //! Get the current canvas map units
     QgsUnitTypes::DistanceUnit mapUnits() const;
@@ -354,14 +333,7 @@ class QgsMapCanvas : QGraphicsView
 
     //! This slot is connected to the layer's CRS change
     void layerCrsChange();
-
-    //! Whether to suppress rendering or not
     void setRenderFlag( bool flag );
-    //! State of render suppression flag
-    bool renderFlag();
-
-    //! A simple helper method to find out if on the fly projections are enabled or not
-    bool hasCrsTransformEnabled();
 
     //! stop rendering (if there is any right now)
     //! @note added in 2.4
@@ -454,17 +426,9 @@ class QgsMapCanvas : QGraphicsView
     //! Emitted when zoom next status changed
     void zoomNextStatusChanged( bool );
 
-    //! Emitted when on-the-fly projection has been turned on/off
-    //! @note added in 2.4
-    void hasCrsTransformEnabledChanged( bool flag );
-
     //! Emitted when map CRS has changed
     //! @note added in 2.4
     void destinationCrsChanged();
-
-    //! Emitted when map units are changed
-    //! @note added in 2.4
-    void mapUnitsChanged();
 
     //! Emitted when the current layer is changed
     //! @note added in 2.8

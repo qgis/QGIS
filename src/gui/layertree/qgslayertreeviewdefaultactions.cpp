@@ -292,9 +292,8 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas* canvas, const Q
     if ( layerExtent.isNull() )
       continue;
 
-    //transform extent if otf-projection is on
-    if ( canvas->hasCrsTransformEnabled() )
-      layerExtent = canvas->mapSettings().layerExtentToOutputExtent( layer, layerExtent );
+    //transform extent
+    layerExtent = canvas->mapSettings().layerExtentToOutputExtent( layer, layerExtent );
 
     extent.combineExtentWith( layerExtent );
   }

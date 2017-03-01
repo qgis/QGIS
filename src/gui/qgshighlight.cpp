@@ -83,23 +83,21 @@ QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, const QgsFeature& feature, 
 
 void QgsHighlight::init()
 {
-  if ( mMapCanvas->mapSettings().hasCrsTransformEnabled() )
+  QgsCoordinateTransform ct = mMapCanvas->mapSettings().layerTransform( mLayer );
+  if ( ct.isValid() )
   {
-    QgsCoordinateTransform ct = mMapCanvas->mapSettings().layerTransform( mLayer );
-    if ( ct.isValid() )
+    if ( mGeometry )
     {
-      if ( mGeometry )
-      {
-        mGeometry->transform( ct );
-      }
-      else if ( mFeature.hasGeometry() )
-      {
-        QgsGeometry g = mFeature.geometry();
-        g.transform( ct );
-        mFeature.setGeometry( g );
-      }
+      mGeometry->transform( ct );
+    }
+    else if ( mFeature.hasGeometry() )
+    {
+      QgsGeometry g = mFeature.geometry();
+      g.transform( ct );
+      mFeature.setGeometry( g );
     }
   }
+
   updateRect();
   update();
   setColor( QColor( Qt::lightGray ) );

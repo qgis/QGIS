@@ -55,10 +55,20 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WindowFlags f )
   else
     mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsProject::instance()->distanceUnits() ) );
 
+  if ( !mTool->canvas()->mapSettings().destinationCrs().isValid() )
+  {
+    mUnitsCombo->setEnabled( false );
+    if ( mMeasureArea )
+      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsUnitTypes::DistanceUnknownUnit ) );
+    else
+      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsUnitTypes::AreaUnknownUnit ) );
+  }
+
   updateSettings();
 
   connect( mUnitsCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( unitsChanged( int ) ) );
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  connect( mTool->canvas(), &QgsMapCanvas::destinationCrsChanged, this, &QgsMeasureDialog::crsChanged );
 
   groupBox->setCollapsed( true );
 }
@@ -66,6 +76,23 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WindowFlags f )
 void QgsMeasureDialog::openConfigTab()
 {
   QgisApp::instance()->showOptionsDialog( this, QStringLiteral( "mOptionsPageMapTools" ) );
+}
+
+void QgsMeasureDialog::crsChanged()
+{
+  if ( !mTool->canvas()->mapSettings().destinationCrs().isValid() )
+  {
+    mUnitsCombo->setEnabled( false );
+    if ( mMeasureArea )
+      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsUnitTypes::DistanceUnknownUnit ) );
+    else
+      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsUnitTypes::AreaUnknownUnit ) );
+  }
+  else
+  {
+    mUnitsCombo->setEnabled( true );
+  }
+  updateUi();
 }
 
 void QgsMeasureDialog::updateSettings()
@@ -268,8 +295,16 @@ void QgsMeasureDialog::updateUi()
 
   if ( mMeasureArea )
   {
-    if ( mTool->canvas()->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees
-         && ( mAreaUnits == QgsUnitTypes::AreaSquareDegrees || mAreaUnits == QgsUnitTypes::AreaUnknownUnit ) )
+    if ( !mTool->canvas()->mapSettings().destinationCrs().isValid() )
+    {
+      // no CRS => no units, newb!
+      toolTip += "<br> * " + tr( "No map projection set, so area is calculated using cartesian calculations." );
+      toolTip += "<br> * " + tr( "Units are unknown." );
+      forceCartesian = true;
+      convertToDisplayUnits = false;
+    }
+    else if ( mTool->canvas()->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees
+              && ( mAreaUnits == QgsUnitTypes::AreaSquareDegrees || mAreaUnits == QgsUnitTypes::AreaUnknownUnit ) )
     {
       //both source and destination units are degrees
       toolTip += "<br> * " + tr( "Both project CRS (%1) and measured area are in degrees, so area is calculated using cartesian calculations in square degrees." ).arg(
@@ -294,7 +329,7 @@ void QgsMeasureDialog::updateUi()
         toolTip += tr( "Area is calculated in %1, based on project CRS (%2)." ).arg( QgsUnitTypes::toString( resultUnit ),
                    mTool->canvas()->mapSettings().destinationCrs().description() );
       }
-      setWindowTitle( tr( "Measure (OTF on)" ) );
+      setWindowTitle( tr( "Measure" ) );
 
       if ( QgsUnitTypes::unitType( resultUnit ) == QgsUnitTypes::Geographic &&
            QgsUnitTypes::unitType( mAreaUnits ) == QgsUnitTypes::Standard )
@@ -330,8 +365,16 @@ void QgsMeasureDialog::updateUi()
   }
   else
   {
-    if ( mTool->canvas()->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees
-         && mDistanceUnits == QgsUnitTypes::DistanceDegrees )
+    if ( !mTool->canvas()->mapSettings().destinationCrs().isValid() )
+    {
+      // no CRS => no units, newb!
+      toolTip += "<br> * " + tr( "No map projection set, so distance is calculated using cartesian calculations." );
+      toolTip += "<br> * " + tr( "Units are unknown." );
+      forceCartesian = true;
+      convertToDisplayUnits = false;
+    }
+    else if ( mTool->canvas()->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees
+              && mDistanceUnits == QgsUnitTypes::DistanceDegrees )
     {
       //both source and destination units are degrees
       toolTip += "<br> * " + tr( "Both project CRS (%1) and measured length are in degrees, so distance is calculated using cartesian calculations in degrees." ).arg(
@@ -356,7 +399,7 @@ void QgsMeasureDialog::updateUi()
         toolTip += tr( "Distance is calculated in %1, based on project CRS (%2)." ).arg( QgsUnitTypes::toString( resultUnit ),
                    mTool->canvas()->mapSettings().destinationCrs().description() );
       }
-      setWindowTitle( tr( "Measure (OTF on)" ) );
+      setWindowTitle( tr( "Measure" ) );
 
       if ( QgsUnitTypes::unitType( resultUnit ) == QgsUnitTypes::Geographic &&
            QgsUnitTypes::unitType( mDistanceUnits ) == QgsUnitTypes::Standard )
@@ -402,7 +445,14 @@ void QgsMeasureDialog::updateUi()
   else
   {
     mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( mDistanceUnits ) );
-    mTable->setHeaderLabels( QStringList( tr( "Segments [%1]" ).arg( QgsUnitTypes::toString( mDistanceUnits ) ) ) );
+    if ( mDistanceUnits != QgsUnitTypes::DistanceUnknownUnit )
+    {
+      mTable->setHeaderLabels( QStringList( tr( "Segments [%1]" ).arg( QgsUnitTypes::toString( mDistanceUnits ) ) ) );
+    }
+    else
+    {
+      mTable->setHeaderLabels( QStringList( tr( "Segments" ) ) );
+    }
   }
 
   if ( mMeasureArea )
@@ -481,6 +531,7 @@ void QgsMeasureDialog::repopulateComboBoxUnits( bool isArea )
     mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceMiles ), QgsUnitTypes::DistanceMiles );
     mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceDegrees ), QgsUnitTypes::DistanceDegrees );
     mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceNauticalMiles ), QgsUnitTypes::DistanceNauticalMiles );
+    mUnitsCombo->addItem( tr( "map units" ), QgsUnitTypes::DistanceUnknownUnit );
   }
 }
 

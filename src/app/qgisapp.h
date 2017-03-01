@@ -1194,7 +1194,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void displayMessage( const QString& title, const QString& message, QgsMessageBar::MessageLevel level );
     void removeMapToolMessage();
     void updateMouseCoordinatePrecision();
-    void hasCrsTransformEnabled( bool flag );
     void destinationCrsChanged();
     //    void debugHook();
     //! Add a Layer Definition file
