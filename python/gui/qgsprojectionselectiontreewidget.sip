@@ -5,11 +5,17 @@ class QgsProjectionSelectionTreeWidget : QWidget
 %End
 
   public:
-    QgsProjectionSelectionTreeWidget( QWidget* parent /TransferThis/ );
+    QgsProjectionSelectionTreeWidget( QWidget* parent /TransferThis/ = 0 );
 
     ~QgsProjectionSelectionTreeWidget();
 
     QgsCoordinateReferenceSystem crs() const;
+
+    void setShowNoProjection( bool show );
+
+    bool showNoProjection() const;
+
+    bool hasValidSelection() const;
 
   public slots:
 

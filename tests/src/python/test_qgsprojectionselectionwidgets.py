@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""QGIS Unit tests for QgsProjectionSelectionWidget.
+"""QGIS Unit tests for various projection selection widgets.
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -14,14 +14,16 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.gui import QgsProjectionSelectionWidget
+from qgis.gui import (QgsProjectionSelectionWidget,
+QgsProjectionSelectionTreeWidget,
+                      QgsProjectionSelectionDialog)
 from qgis.core import QgsCoordinateReferenceSystem, QgsProject
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtGui import QColor
 start_app()
 
 
-class TestQgsProjectionSelectionWidget(unittest.TestCase):
+class TestQgsProjectionSelectionWidgets(unittest.TestCase):
 
     def testShowingHiding(self):
         """ test showing and hiding options """
@@ -111,6 +113,53 @@ class TestQgsProjectionSelectionWidget(unittest.TestCase):
         # both current and not set options should be shown
         self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CurrentCrs))
         self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CrsNotSet))
+
+    def testTreeWidgetGettersSetters(self):
+        """ basic tests for QgsProjectionSelectionTreeWidget """
+        w = QgsProjectionSelectionTreeWidget()
+        w.show()
+        self.assertFalse(w.hasValidSelection())
+        w.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(w.crs().authid(),'EPSG:3111')
+        self.assertTrue(w.hasValidSelection())
+
+
+    def testTreeWidgetNotSetOption(self):
+        """ test allowing no projection option for QgsProjectionSelectionTreeWidget """
+        w = QgsProjectionSelectionTreeWidget()
+        w.show()
+        w.setShowNoProjection(True)
+        self.assertTrue(w.showNoProjection())
+        w.setShowNoProjection(False)
+        self.assertFalse(w.showNoProjection())
+
+        w.setShowNoProjection(True)
+        # no projection should be a valid selection
+        w.setCrs(QgsCoordinateReferenceSystem())
+        self.assertTrue(w.hasValidSelection())
+        self.assertFalse(w.crs().isValid())
+
+    def testDialogGettersSetters(self):
+        """ basic tests for QgsProjectionSelectionTreeWidget """
+        w = QgsProjectionSelectionDialog()
+        w.show()
+        w.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(w.crs().authid(),'EPSG:3111')
+
+    def testDialogNotSetOption(self):
+        """ test allowing no projection option for QgsProjectionSelectionTreeWidget """
+        w = QgsProjectionSelectionDialog()
+        w.show()
+        w.setShowNoProjection(True)
+        self.assertTrue(w.showNoProjection())
+        w.setShowNoProjection(False)
+        self.assertFalse(w.showNoProjection())
+
+        w.setShowNoProjection(True)
+        w.setCrs(QgsCoordinateReferenceSystem())
+        self.assertFalse(w.crs().isValid())
+
+
 
 
 if __name__ == '__main__':

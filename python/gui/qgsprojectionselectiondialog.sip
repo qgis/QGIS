@@ -18,6 +18,10 @@ class QgsProjectionSelectionDialog : QDialog //, private Ui::QgsGenericProjectio
 
     void setMessage( const QString& message );
 
+    void setShowNoProjection( bool show );
+
+    bool showNoProjection() const;
+
   public slots:
 
 

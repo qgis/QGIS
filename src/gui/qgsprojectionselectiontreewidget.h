@@ -56,6 +56,30 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      */
     QgsCoordinateReferenceSystem crs() const;
 
+    /**
+     * Sets whether a "no/invalid" projection option should be shown. If this
+     * option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
+     * @see showNoProjection()
+     * @note added in QGIS 3.0
+     */
+    void setShowNoProjection( bool show );
+
+    /**
+     * Returns whether the "no/invalid" projection option is shown. If this
+     * option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
+     * @note added in QGIS 3.0
+     * @see setShowNoProjection()
+     */
+    bool showNoProjection() const;
+
+    /**
+     * Returns true if the current selection in the widget is a valid choice. Valid
+     * selections include any projection and also the "no/invalid projection" option
+     * (if setShowNoProjection() was called). Invalid selections are the group
+     * headers (such as "Geographic Coordinate Systems"
+     */
+    bool hasValidSelection() const;
+
   public slots:
 
     /**
@@ -189,6 +213,8 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     QTreeWidgetItem *mGeoList = nullptr;
     //! PROJCS node
     QTreeWidgetItem *mProjList = nullptr;
+    //! "No projection" item
+    QTreeWidgetItem* mNoProjItem = nullptr;
 
     //! Users custom coordinate system file
     QString mCustomCsFile;

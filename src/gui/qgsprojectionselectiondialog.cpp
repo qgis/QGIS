@@ -59,6 +59,16 @@ void QgsProjectionSelectionDialog::setMessage( const QString& message )
   textEdit->show();
 }
 
+void QgsProjectionSelectionDialog::setShowNoProjection( bool show )
+{
+  projectionSelector->setShowNoProjection( show );
+}
+
+bool QgsProjectionSelectionDialog::showNoProjection() const
+{
+  return projectionSelector->showNoProjection();
+}
+
 QgsProjectionSelectionDialog::~QgsProjectionSelectionDialog()
 {
   QSettings settings;

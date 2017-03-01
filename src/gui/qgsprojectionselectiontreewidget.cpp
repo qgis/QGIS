@@ -64,6 +64,9 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget* par
   lstRecent->setColumnHidden( QgisCrsIdColumn, true );
 
   mRecentProjections = QgsCoordinateReferenceSystem::recentProjections();
+
+  mNoProjItem = new QTreeWidgetItem( lstCoordinateSystems, QStringList( tr( "No projection" ) ) );
+  mNoProjItem->setHidden( true );
 }
 
 QgsProjectionSelectionTreeWidget::~QgsProjectionSelectionTreeWidget()
@@ -268,7 +271,14 @@ QString QgsProjectionSelectionTreeWidget::selectedName()
 
 void QgsProjectionSelectionTreeWidget::setCrs( const QgsCoordinateReferenceSystem& crs )
 {
-  applySelection( AuthidColumn, crs.authid() );
+  if ( !crs.isValid() )
+  {
+    lstCoordinateSystems->setCurrentItem( mNoProjItem );
+  }
+  else
+  {
+    applySelection( AuthidColumn, crs.authid() );
+  }
 }
 
 // Returns the whole proj4 string for the selected projection node
@@ -414,11 +424,33 @@ QString QgsProjectionSelectionTreeWidget::getSelectedExpression( const QString& 
 
 QgsCoordinateReferenceSystem QgsProjectionSelectionTreeWidget::crs() const
 {
+  if ( lstCoordinateSystems->currentItem() == mNoProjItem )
+    return QgsCoordinateReferenceSystem();
+
   int srid = getSelectedExpression( QStringLiteral( "srs_id" ) ).toLong();
   if ( srid >= USER_CRS_START_ID )
     return QgsCoordinateReferenceSystem::fromOgcWmsCrs( QString( "USER:%1" ).arg( srid ) );
   else
     return QgsCoordinateReferenceSystem::fromOgcWmsCrs( getSelectedExpression( QStringLiteral( "upper(auth_name||':'||auth_id)" ) ) );
+}
+
+void QgsProjectionSelectionTreeWidget::setShowNoProjection( bool show )
+{
+  mNoProjItem->setHidden( !show );
+}
+
+bool QgsProjectionSelectionTreeWidget::showNoProjection() const
+{
+  return !mNoProjItem->isHidden();
+}
+
+bool QgsProjectionSelectionTreeWidget::hasValidSelection() const
+{
+  QTreeWidgetItem* item = lstCoordinateSystems->currentItem();
+  if ( item == mNoProjItem )
+    return true;
+  else
+    return item && !item->text( QgisCrsIdColumn ).isEmpty();
 }
 
 long QgsProjectionSelectionTreeWidget::selectedCrsId()
