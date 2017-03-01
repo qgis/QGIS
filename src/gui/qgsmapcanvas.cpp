@@ -198,6 +198,14 @@ QgsMapCanvas::~QgsMapCanvas()
   }
   mLastNonZoomMapTool = nullptr;
 
+  // rendering job may still end up writing into canvas map item
+  // so kill it before deleting canvas items
+  if ( mJob )
+  {
+    whileBlocking( mJob )->cancel();
+    Q_ASSERT( !mJob );
+  }
+
   // delete canvas items prior to deleting the canvas
   // because they might try to update canvas when it's
   // already being destructed, ends with segfault
@@ -214,12 +222,6 @@ QgsMapCanvas::~QgsMapCanvas()
 
   // mCanvasProperties auto-deleted via QScopedPointer
   // CanvasProperties struct has its own dtor for freeing resources
-
-  if ( mJob )
-  {
-    whileBlocking( mJob )->cancel();
-    delete mJob;
-  }
 
   delete mCache;
 
