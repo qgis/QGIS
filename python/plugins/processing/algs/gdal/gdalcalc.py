@@ -61,7 +61,7 @@ class gdalcalc(GdalAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Raster calculator')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Miscellaneous')
+        self.group, self.i18n_group = self.trAlgorithm('Raster miscellaneous')
         self.addParameter(ParameterRaster(
             self.INPUT_A, self.tr('Input layer A'), False))
         self.addParameter(ParameterString(self.BAND_A,
