@@ -37,6 +37,7 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   mMainWidget->layout()->addWidget( mMapCanvas );
 
   connect( mActionSetCrs, &QAction::triggered, this, &QgsMapCanvasDockWidget::setMapCrs );
+  connect( mActionSyncView, &QAction::toggled, this, &QgsMapCanvasDockWidget::syncView );
 }
 
 QgsMapCanvas *QgsMapCanvasDockWidget::mapCanvas()
@@ -74,4 +75,34 @@ void QgsMapCanvasDockWidget::setMapCrs()
   {
     mMapCanvas->setDestinationCrs( dlg.crs() );
   }
+}
+
+void QgsMapCanvasDockWidget::syncView( bool enabled )
+{
+  if ( enabled )
+  {
+    connect( mMainCanvas, &QgsMapCanvas::extentsChanged, this, &QgsMapCanvasDockWidget::mapExtentChanged, Qt::UniqueConnection );
+    connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsMapCanvasDockWidget::mapExtentChanged, Qt::UniqueConnection );
+  }
+  else
+  {
+    disconnect( mMainCanvas, &QgsMapCanvas::extentsChanged, this, &QgsMapCanvasDockWidget::mapExtentChanged );
+    disconnect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsMapCanvasDockWidget::mapExtentChanged );
+  }
+}
+
+void QgsMapCanvasDockWidget::mapExtentChanged()
+{
+  QgsMapCanvas *sourceCanvas = qobject_cast< QgsMapCanvas * >( sender() );
+  if ( !sourceCanvas )
+    return;
+
+  // avoid infinite recursion
+  syncView( false );
+
+  QgsMapCanvas *destCanvas = sourceCanvas == mMapCanvas ? mMainCanvas : mMapCanvas;
+  destCanvas->setExtent( sourceCanvas->extent() );
+  destCanvas->refresh();
+
+  syncView( true );
 }

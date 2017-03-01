@@ -42,6 +42,7 @@
        <bool>false</bool>
       </property>
       <addaction name="mActionSetCrs"/>
+      <addaction name="mActionSyncView"/>
      </widget>
     </item>
     <item>
@@ -77,6 +78,21 @@
    </property>
    <property name="toolTip">
     <string>Set Map CRS</string>
+   </property>
+  </action>
+  <action name="mActionSyncView">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/sync_views.svg</normaloff>:/images/themes/default/sync_views.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Synchronize view</string>
+   </property>
+   <property name="toolTip">
+    <string>Synchronize View with Main Map</string>
    </property>
   </action>
  </widget>

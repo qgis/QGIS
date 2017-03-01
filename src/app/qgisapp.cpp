@@ -3126,6 +3126,7 @@ QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name, bool isFloating,
 
   QgsMapCanvasDockWidget *mapCanvasWidget = new QgsMapCanvasDockWidget( name, this );
   mapCanvasWidget->setAllowedAreas( Qt::AllDockWidgetAreas );
+  mapCanvasWidget->setMainCanvas( mMapCanvas );
 
   mapCanvasWidget->setFloating( isFloating );
   if ( dockGeometry.isEmpty() )

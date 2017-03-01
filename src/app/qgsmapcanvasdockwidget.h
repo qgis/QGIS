@@ -29,6 +29,11 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     explicit QgsMapCanvasDockWidget( const QString &name, QWidget *parent = nullptr );
 
     /**
+     * Sets the main app map canvas.
+     */
+    void setMainCanvas( QgsMapCanvas *canvas ) { mMainCanvas = canvas; }
+
+    /**
      * Returns the map canvas contained in the dock widget.
      */
     QgsMapCanvas *mapCanvas();
@@ -45,10 +50,13 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
   private slots:
 
     void setMapCrs();
+    void syncView( bool enabled );
+    void mapExtentChanged();
 
   private:
 
     QgsMapCanvas *mMapCanvas = nullptr;
+    QgsMapCanvas *mMainCanvas = nullptr;
     bool mShowCloseWarning = true;
 
 
