@@ -2694,6 +2694,30 @@ class TestQgsExpression: public QObject
       QVariant result3 = e3.evaluate( &context );
 
       Q_ASSERT( result3.isNull() );
+
+      QgsExpressionContextScope* scope = new QgsExpressionContextScope();
+      scope->setVariable( QStringLiteral( "EXPRESSION_ENV_BLACKLIST" ), QStringLiteral( "password, PROTECTED_VALUE" ) );
+      context << scope;
+
+      setenv( "password", "1234", 1 );
+      setenv( "PROTECTED_VALUE", "password", 1 );
+
+      QgsExpression e4( "env('password')" );
+      QVariant result4 = e4.evaluate( &context );
+
+      Q_ASSERT( result4.isNull() );
+      Q_ASSERT( e4.hasEvalError() );
+
+      QgsExpression e5( "env('PROTECTED_VALUE')" );
+      QVariant result5 = e5.evaluate( &context );
+
+      Q_ASSERT( result5.isNull() );
+      Q_ASSERT( e5.hasEvalError() );
+
+
+
+      unsetenv( "password" );
+      unsetenv( "PROTECTED_VALUE" );
     }
 
     void test_formatPreviewString()
