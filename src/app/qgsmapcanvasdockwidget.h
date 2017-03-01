@@ -33,6 +33,10 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
      */
     QgsMapCanvas *mapCanvas();
 
+  protected:
+
+    virtual void closeEvent( QCloseEvent *event ) override;
+
   private slots:
 
     void setMapCrs();

@@ -15,11 +15,13 @@
 #include "qgsmapcanvasdockwidget.h"
 #include "qgsmapcanvas.h"
 #include "qgsprojectionselectiondialog.h"
+#include <QMessageBox>
 
 QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *parent )
   : QgsDockWidget( parent )
 {
   setupUi( this );
+  setAttribute( Qt::WA_DeleteOnClose );
 
   mContents->layout()->setContentsMargins( 0, 0, 0, 0 );
   mContents->layout()->setMargin( 0 );
@@ -42,9 +44,24 @@ QgsMapCanvas *QgsMapCanvasDockWidget::mapCanvas()
   return mMapCanvas;
 }
 
+void QgsMapCanvasDockWidget::closeEvent( QCloseEvent *event )
+{
+  if ( mMapCanvas->layerCount() > 0
+       && QMessageBox::question( this, tr( "Close map view" ),
+                                 tr( "Are you sure you want to close this map view?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::No )
+  {
+    event->ignore();
+  }
+  else
+  {
+    event->accept();
+  }
+}
+
 void QgsMapCanvasDockWidget::setMapCrs()
 {
   QgsProjectionSelectionDialog dlg;
+  dlg.setShowNoProjection( true );
   dlg.setCrs( mMapCanvas->mapSettings().destinationCrs() );
 
   if ( dlg.exec() )
