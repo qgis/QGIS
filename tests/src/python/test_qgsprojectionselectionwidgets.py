@@ -15,7 +15,7 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 from qgis.gui import (QgsProjectionSelectionWidget,
-QgsProjectionSelectionTreeWidget,
+                      QgsProjectionSelectionTreeWidget,
                       QgsProjectionSelectionDialog)
 from qgis.core import QgsCoordinateReferenceSystem, QgsProject
 from qgis.testing import start_app, unittest
@@ -120,9 +120,8 @@ class TestQgsProjectionSelectionWidgets(unittest.TestCase):
         w.show()
         self.assertFalse(w.hasValidSelection())
         w.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
-        self.assertEqual(w.crs().authid(),'EPSG:3111')
+        self.assertEqual(w.crs().authid(), 'EPSG:3111')
         self.assertTrue(w.hasValidSelection())
-
 
     def testTreeWidgetNotSetOption(self):
         """ test allowing no projection option for QgsProjectionSelectionTreeWidget """
@@ -144,7 +143,7 @@ class TestQgsProjectionSelectionWidgets(unittest.TestCase):
         w = QgsProjectionSelectionDialog()
         w.show()
         w.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
-        self.assertEqual(w.crs().authid(),'EPSG:3111')
+        self.assertEqual(w.crs().authid(), 'EPSG:3111')
 
     def testDialogNotSetOption(self):
         """ test allowing no projection option for QgsProjectionSelectionTreeWidget """
@@ -158,8 +157,6 @@ class TestQgsProjectionSelectionWidgets(unittest.TestCase):
         w.setShowNoProjection(True)
         w.setCrs(QgsCoordinateReferenceSystem())
         self.assertFalse(w.crs().isValid())
-
-
 
 
 if __name__ == '__main__':

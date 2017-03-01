@@ -30,6 +30,7 @@ QgsApplication instance!
 
 
 class TestQgsNoApplication(unittest.TestCase):
+
     def testMembers(self):
         self.assertTrue(QgsApplication.actionScopeRegistry())
         # self.assertTrue(QgsApplication.annotationRegistry()) NOT AVAILABLE IN BINDINGS
