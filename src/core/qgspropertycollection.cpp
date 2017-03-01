@@ -109,6 +109,7 @@ QgsPropertyCollection::QgsPropertyCollection( const QgsPropertyCollection& other
 
 QgsPropertyCollection&QgsPropertyCollection::operator=( const QgsPropertyCollection & other )
 {
+  QgsAbstractPropertyCollection::operator=( other );
   mProperties = other.mProperties;
   mProperties.detach();
   mDirty = other.mDirty;

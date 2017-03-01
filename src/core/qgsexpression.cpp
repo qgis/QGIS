@@ -3723,7 +3723,7 @@ static QVariant fcnMapAVals( const QVariantList& values, const QgsExpressionCont
   return getMapValue( values.at( 0 ), parent ).values();
 }
 
-static QVariant fcnEnvVar( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+static QVariant fcnEnvVar( const QVariantList& values, const QgsExpressionContext*, QgsExpression* )
 {
   QString envVarName = values.at( 0 ).toString();
   return QProcessEnvironment::systemEnvironment().value( envVarName );
