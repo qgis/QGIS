@@ -18,6 +18,7 @@
 
 #include <memory>
 
+#include "qgis_app.h"
 #include "qgsmaptooladvanceddigitizing.h"
 
 class QRubberBand;
@@ -63,7 +64,7 @@ struct Edge
 
 
 
-class QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
+class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
 {
     Q_OBJECT
   public:
@@ -95,8 +96,6 @@ class QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
 
 
   private:
-
-    bool canUseCurrentLayer();
 
     void addDragBand( const QgsPoint& v1, const QgsPoint& v2 );
 

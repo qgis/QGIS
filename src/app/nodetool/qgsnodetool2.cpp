@@ -343,16 +343,6 @@ void QgsNodeTool2::deactivate()
   QgsMapToolAdvancedDigitizing::deactivate();
 }
 
-bool QgsNodeTool2::canUseCurrentLayer()
-{
-  if ( QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( canvas()->currentLayer() ) )
-  {
-    if ( layer->isEditable() )
-      return true;
-  }
-  return false;
-}
-
 void QgsNodeTool2::addDragBand( const QgsPoint &v1, const QgsPoint &v2 )
 {
   QgsRubberBand* dragBand = createRubberBand( QgsWkbTypes::LineGeometry, true );
@@ -372,9 +362,6 @@ void QgsNodeTool2::clearDragBands()
 
 void QgsNodeTool2::cadCanvasPressEvent( QgsMapMouseEvent *e )
 {
-  if ( !canUseCurrentLayer() )
-    return;
-
   setHighlightedNodes( QList<Vertex>() ); // reset selection
 
   if ( e->button() == Qt::LeftButton )
@@ -399,9 +386,6 @@ void QgsNodeTool2::cadCanvasPressEvent( QgsMapMouseEvent *e )
 
 void QgsNodeTool2::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  if ( !canUseCurrentLayer() )
-    return;
-
   if ( mNewVertexFromDoubleClick )
   {
     QgsPointLocator::Match m( *mNewVertexFromDoubleClick );
