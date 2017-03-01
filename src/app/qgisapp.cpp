@@ -3150,7 +3150,19 @@ QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name )
 
   addDockWidget( Qt::RightDockWidgetArea, mapCanvasWidget );
   mapCanvas->freeze( false );
+  markDirty();
+  connect( mapCanvasWidget, &QgsMapCanvasDockWidget::closed, this, &QgisApp::markDirty );
   return mapCanvas;
+}
+
+void QgisApp::closeAdditionalMapCanvases()
+{
+  freezeCanvases( true ); // closing docks may cause canvases to resize, and we don't want a map refresh occurring
+  Q_FOREACH ( QgsMapCanvasDockWidget *w, findChildren< QgsMapCanvasDockWidget * >() )
+  {
+    w->closeWithoutWarning();
+  }
+  freezeCanvases( false );
 }
 
 void QgisApp::freezeCanvases( bool frozen )
@@ -9793,6 +9805,8 @@ void QgisApp::closeProject()
   mLegendExpressionFilterButton->setExpressionText( QLatin1String( "" ) );
   mLegendExpressionFilterButton->setChecked( false );
   mActionFilterLegend->setChecked( false );
+
+  closeAdditionalMapCanvases();
 
   deletePrintComposers();
   removeAnnotationItems();

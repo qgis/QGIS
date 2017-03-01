@@ -44,9 +44,15 @@ QgsMapCanvas *QgsMapCanvasDockWidget::mapCanvas()
   return mMapCanvas;
 }
 
+void QgsMapCanvasDockWidget::closeWithoutWarning()
+{
+  mShowCloseWarning = false;
+  close();
+}
+
 void QgsMapCanvasDockWidget::closeEvent( QCloseEvent *event )
 {
-  if ( mMapCanvas->layerCount() > 0
+  if ( mShowCloseWarning && mMapCanvas->layerCount() > 0
        && QMessageBox::question( this, tr( "Close map view" ),
                                  tr( "Are you sure you want to close this map view?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::No )
   {

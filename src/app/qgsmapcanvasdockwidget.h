@@ -33,6 +33,11 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
      */
     QgsMapCanvas *mapCanvas();
 
+    /**
+     * Closes the dock, bypassing the usual warning prompt.
+     */
+    void closeWithoutWarning();
+
   protected:
 
     virtual void closeEvent( QCloseEvent *event ) override;
@@ -44,6 +49,7 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
   private:
 
     QgsMapCanvas *mMapCanvas = nullptr;
+    bool mShowCloseWarning = true;
 
 
 };

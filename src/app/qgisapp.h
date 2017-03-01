@@ -240,6 +240,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsMapCanvas *createNewMapCanvas( const QString &name );
 
     /**
+     * Closes any additional map canvases. The main map canvas will not
+     * be affected.
+     */
+    void closeAdditionalMapCanvases();
+
+    /**
      * Freezes all map canvases (or thaws them if the \a frozen argument is false).
      */
     void freezeCanvases( bool frozen = true );
