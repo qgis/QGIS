@@ -39,6 +39,8 @@ class TestQgsMapSettings: public QObject
     void visiblePolygon();
     void testIsLayerVisible();
     void testMapLayerListUtils();
+    void testXmlReadWrite();
+
   private:
     QString toString( const QPolygonF& p, int decimalPlaces = 2 ) const;
 };
@@ -239,6 +241,37 @@ void TestQgsMapSettings::testMapLayerListUtils()
   QCOMPARE( listIDs2[0], vlB->id() );
 
   delete vlB;
+}
+
+void TestQgsMapSettings::testXmlReadWrite()
+{
+  //create a test dom element
+  QDomImplementation DomImplementation;
+  QDomDocumentType documentType =
+    DomImplementation.createDocumentType(
+      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+  QDomDocument doc( documentType );
+  QDomElement element = doc.createElement( "s" );
+
+  //create a map settings object
+  QgsMapSettings s1;
+  s1.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) );
+
+  //write to xml
+  s1.writeXml( element, doc );
+
+  // read a copy from xml
+  QgsMapSettings s2;
+  s2.readXml( element );
+
+  QCOMPARE( s2.destinationCrs().authid(), QStringLiteral( "EPSG:3111" ) );
+
+  // test writing a map settings without a valid CRS
+  element = doc.createElement( "s" );
+  s1.setDestinationCrs( QgsCoordinateReferenceSystem() );
+  s1.writeXml( element, doc );
+  s2.readXml( element );
+  QVERIFY( !s2.destinationCrs().isValid() );
 }
 
 QGSTEST_MAIN( TestQgsMapSettings )

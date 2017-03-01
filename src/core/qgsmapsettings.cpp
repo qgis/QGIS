@@ -561,7 +561,10 @@ void QgsMapSettings::readXml( QDomNode& node )
   // set destination CRS
   QgsCoordinateReferenceSystem srs;
   QDomNode srsNode = node.namedItem( QStringLiteral( "destinationsrs" ) );
-  srs.readXml( srsNode );
+  if ( !srsNode.isNull() )
+  {
+    srs.readXml( srsNode );
+  }
   setDestinationCrs( srs );
 
   // set extent
@@ -606,9 +609,12 @@ void QgsMapSettings::writeXml( QDomNode& node, QDomDocument& doc )
   node.appendChild( rotNode );
 
   // destination CRS
-  QDomElement srsNode = doc.createElement( QStringLiteral( "destinationsrs" ) );
-  node.appendChild( srsNode );
-  destinationCrs().writeXml( srsNode, doc );
+  if ( mDestCRS.isValid() )
+  {
+    QDomElement srsNode = doc.createElement( QStringLiteral( "destinationsrs" ) );
+    node.appendChild( srsNode );
+    mDestCRS.writeXml( srsNode, doc );
+  }
 
   //render map tile
   QDomElement renderMapTileElem = doc.createElement( QStringLiteral( "rendermaptile" ) );

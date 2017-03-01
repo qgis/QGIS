@@ -104,6 +104,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   mAreaUnitsCombo->addItem( tr( "Square degrees" ), QgsUnitTypes::AreaSquareDegrees );
   mAreaUnitsCombo->addItem( tr( "Map units" ), QgsUnitTypes::AreaUnknownUnit );
 
+  projectionSelector->setShowNoProjection( true );
+
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
   connect( projectionSelector, &QgsProjectionSelectionTreeWidget::crsSelected, this, &QgsProjectProperties::srIdUpdated );
@@ -122,13 +124,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   // Properties stored in map canvas's QgsMapRenderer
   // these ones are propagated to QgsProject by a signal
 
-  mProjectSrsId = mMapCanvas->mapSettings().destinationCrs().srsid();
-
-  QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromSrsId( mProjectSrsId );
-  updateGuiForMapUnits( srs.mapUnits() );
-
-  QgsDebugMsg( "Read project CRSID: " + QString::number( mProjectSrsId ) );
-  projectionSelector->setCrs( srs );
+  updateGuiForMapUnits( QgsProject::instance()->crs().mapUnits() );
+  projectionSelector->setCrs( QgsProject::instance()->crs() );
 
   mMapTileRenderingCheckBox->setChecked( mMapCanvas->mapSettings().testFlag( QgsMapSettings::RenderMapTile ) );
 
@@ -174,6 +171,12 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   // selection of the ellipsoid from settings is defferred to a later point, because it would
   // be overridden in the meanwhile by the projection selector
   populateEllipsoidList();
+
+  if ( !QgsProject::instance()->crs().isValid() )
+  {
+    cmbEllipsoid->setCurrentIndex( 0 );
+    cmbEllipsoid->setEnabled( false );
+  }
 
   QString format = QgsProject::instance()->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), QStringLiteral( "MU" ) );
   if ( format == QLatin1String( "MU" ) )
@@ -237,19 +240,6 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   QStringList noIdentifyLayerIdList = QgsProject::instance()->nonIdentifiableLayers();
 
   const QMap<QString, QgsMapLayer*> &mapLayers = QgsProject::instance()->mapLayers();
-
-  if ( mMapCanvas->currentLayer() )
-  {
-    mLayerSrsId = mMapCanvas->currentLayer()->crs().srsid();
-  }
-  else if ( !mapLayers.isEmpty() )
-  {
-    mLayerSrsId = mapLayers.begin().value()->crs().srsid();
-  }
-  else
-  {
-    mLayerSrsId = mProjectSrsId;
-  }
 
   twIdentifyLayers->setColumnCount( 4 );
   twIdentifyLayers->horizontalHeader()->setVisible( true );
@@ -705,9 +695,6 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   }
   mRelationManagerDlg->setLayers( vectorLayers );
 
-  // Update projection selector
-  updateProjectionWidget();
-
   mAutoTransaction->setChecked( QgsProject::instance()->autoTransaction() );
   mEvaluateDefaultValues->setChecked( QgsProject::instance()->evaluateDefaultValues() );
 
@@ -743,19 +730,21 @@ void QgsProjectProperties::apply()
 {
   mMapCanvas->enableMapTileRendering( mMapTileRenderingCheckBox->isChecked() );
 
-  // Only change the projection if there is a node in the tree
-  // selected that has an srid. This prevents error if the user
-  // selects a top-level node rather than an actual coordinate
-  // system
-  long myCRSID = projectionSelector->crs().srsid();
-  if ( myCRSID )
+  if ( projectionSelector->hasValidSelection() )
   {
-    QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromSrsId( myCRSID );
-    mMapCanvas->setDestinationCrs( srs );
-    QgsDebugMsg( QString( "Selected CRS " ) + srs.description() );
-    // write the currently selected projections _proj string_ to project settings
-    QgsDebugMsg( QString( "SpatialRefSys/ProjectCRSProj4String: %1" ).arg( projectionSelector->crs().toProj4() ) );
+    QgsCoordinateReferenceSystem srs = projectionSelector->crs();
     QgsProject::instance()->setCrs( srs );
+    mMapCanvas->setDestinationCrs( srs );
+    if ( srs.isValid() )
+    {
+      QgsDebugMsg( QString( "Selected CRS " ) + srs.description() );
+      // write the currently selected projections _proj string_ to project settings
+      QgsDebugMsg( QString( "SpatialRefSys/ProjectCRSProj4String: %1" ).arg( srs.toProj4() ) );
+    }
+    else
+    {
+      QgsDebugMsg( QString( "CRS set to no projection!" ) );
+    }
 
     // mark selected projection for push to front
     projectionSelector->pushProjectionToFront();
@@ -1159,20 +1148,6 @@ void QgsProjectProperties::showProjectionsTab()
   mOptionsListWidget->setCurrentRow( 1 );
 }
 
-void QgsProjectProperties::updateProjectionWidget()
-{
-  if ( !mLayerSrsId )
-  {
-    mLayerSrsId = projectionSelector->crs().srsid();
-  }
-  projectionSelector->setCrs( QgsCoordinateReferenceSystem::fromSrsId( mProjectSrsId ) );
-
-  srIdUpdated();
-
-  // Enable/Disable selector and update tool-tip
-  updateEllipsoidUI( mEllipsoidIndex ); // maybe already done by setMapUnitsToCurrentProjection
-}
-
 void QgsProjectProperties::cbxWFSPubliedStateChanged( int aIdx )
 {
   QCheckBox* cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 1 ) );
@@ -1209,48 +1184,90 @@ void QgsProjectProperties::cbxWCSPubliedStateChanged( int aIdx )
 
 void QgsProjectProperties::updateGuiForMapUnits( QgsUnitTypes::DistanceUnit units )
 {
-  //make sure map units option is shown in coordinate display combo
-  int idx = mCoordinateDisplayComboBox->findData( MapUnits );
-  QString mapUnitString = tr( "Map units (%1)" ).arg( QgsUnitTypes::toString( units ) );
-  mCoordinateDisplayComboBox->setItemText( idx, mapUnitString );
-
-  //also update unit combo boxes
-  idx = mDistanceUnitsCombo->findData( QgsUnitTypes::DistanceUnknownUnit );
-  if ( idx >= 0 )
+  if ( !projectionSelector->crs().isValid() )
   {
-    QString mapUnitString = tr( "Map units (%1)" ).arg( QgsUnitTypes::toString( units ) );
-    mDistanceUnitsCombo->setItemText( idx, mapUnitString );
+    // no projection set - disable everything!
+    int idx = mDistanceUnitsCombo->findData( QgsUnitTypes::DistanceUnknownUnit );
+    if ( idx >= 0 )
+    {
+      mDistanceUnitsCombo->setItemText( idx, tr( "Unknown units" ) );
+      mDistanceUnitsCombo->setCurrentIndex( idx );
+    }
+    idx = mAreaUnitsCombo->findData( QgsUnitTypes::AreaUnknownUnit );
+    if ( idx >= 0 )
+    {
+      mAreaUnitsCombo->setItemText( idx, tr( "Unknown units" ) );
+      mAreaUnitsCombo->setCurrentIndex( idx );
+    }
+    idx = mCoordinateDisplayComboBox->findData( MapUnits );
+    if ( idx >= 0 )
+    {
+      mCoordinateDisplayComboBox->setItemText( idx, tr( "Unknown units" ) );
+      mCoordinateDisplayComboBox->setCurrentIndex( idx );
+    }
+    mDistanceUnitsCombo->setEnabled( false );
+    mAreaUnitsCombo->setEnabled( false );
+    mCoordinateDisplayComboBox->setEnabled( false );
   }
-  idx = mAreaUnitsCombo->findData( QgsUnitTypes::AreaUnknownUnit );
-  if ( idx >= 0 )
+  else
   {
-    QString mapUnitString = tr( "Map units (%1)" ).arg( QgsUnitTypes::toString( QgsUnitTypes::distanceToAreaUnit( units ) ) );
-    mAreaUnitsCombo->setItemText( idx, mapUnitString );
+    mDistanceUnitsCombo->setEnabled( true );
+    mAreaUnitsCombo->setEnabled( true );
+    mCoordinateDisplayComboBox->setEnabled( true );
+
+    //make sure map units option is shown in coordinate display combo
+    int idx = mCoordinateDisplayComboBox->findData( MapUnits );
+    QString mapUnitString = tr( "Map units (%1)" ).arg( QgsUnitTypes::toString( units ) );
+    mCoordinateDisplayComboBox->setItemText( idx, mapUnitString );
+
+    //also update unit combo boxes
+    idx = mDistanceUnitsCombo->findData( QgsUnitTypes::DistanceUnknownUnit );
+    if ( idx >= 0 )
+    {
+      QString mapUnitString = tr( "Map units (%1)" ).arg( QgsUnitTypes::toString( units ) );
+      mDistanceUnitsCombo->setItemText( idx, mapUnitString );
+    }
+    idx = mAreaUnitsCombo->findData( QgsUnitTypes::AreaUnknownUnit );
+    if ( idx >= 0 )
+    {
+      QString mapUnitString = tr( "Map units (%1)" ).arg( QgsUnitTypes::toString( QgsUnitTypes::distanceToAreaUnit( units ) ) );
+      mAreaUnitsCombo->setItemText( idx, mapUnitString );
+    }
   }
 }
 
 void QgsProjectProperties::srIdUpdated()
 {
-  QgsCoordinateReferenceSystem srs = projectionSelector->crs();
-  if ( !srs.isValid() )
+  if ( !projectionSelector->hasValidSelection() )
     return;
+
+  QgsCoordinateReferenceSystem srs = projectionSelector->crs();
 
   //set radio button to crs map unit type
   QgsUnitTypes::DistanceUnit units = srs.mapUnits();
 
   updateGuiForMapUnits( units );
 
-  // attempt to reset the projection ellipsoid according to the srs
-  int myIndex = 0;
-  for ( int i = 0; i < mEllipsoidList.length(); i++ )
+  if ( srs.isValid() )
   {
-    if ( mEllipsoidList[ i ].acronym == srs.ellipsoidAcronym() )
+    cmbEllipsoid->setEnabled( true );
+    // attempt to reset the projection ellipsoid according to the srs
+    int myIndex = 0;
+    for ( int i = 0; i < mEllipsoidList.length(); i++ )
     {
-      myIndex = i;
-      break;
+      if ( mEllipsoidList[ i ].acronym == srs.ellipsoidAcronym() )
+      {
+        myIndex = i;
+        break;
+      }
     }
+    updateEllipsoidUI( myIndex );
   }
-  updateEllipsoidUI( myIndex );
+  else
+  {
+    cmbEllipsoid->setCurrentIndex( 0 );
+    cmbEllipsoid->setEnabled( false );
+  }
 }
 
 /*!
@@ -1326,7 +1343,8 @@ void QgsProjectProperties::on_pbnWMSSetUsedSRS_clicked()
   QSet<QString> crsList;
 
   QgsCoordinateReferenceSystem srs = projectionSelector->crs();
-  crsList << srs.authid();
+  if ( srs.isValid() )
+    crsList << srs.authid();
 
   const QMap<QString, QgsMapLayer*> &mapLayers = QgsProject::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer*>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
@@ -1892,7 +1910,7 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
   leSemiMajor->setText( QLatin1String( "" ) );
   leSemiMinor->setText( QLatin1String( "" ) );
 
-  cmbEllipsoid->setEnabled( true );
+  cmbEllipsoid->setEnabled( projectionSelector->crs().isValid() );
   cmbEllipsoid->setToolTip( QLatin1String( "" ) );
   if ( mEllipsoidList.at( mEllipsoidIndex ).acronym.startsWith( QLatin1String( "PARAMETER:" ) ) )
   {
@@ -1910,7 +1928,8 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
     leSemiMinor->setText( QLocale::system().toString( myMinor, 'f', 3 ) );
   }
 
-  cmbEllipsoid->setCurrentIndex( mEllipsoidIndex ); // Not always necessary
+  if ( projectionSelector->crs().isValid() )
+    cmbEllipsoid->setCurrentIndex( mEllipsoidIndex ); // Not always necessary
 }
 
 void QgsProjectProperties::projectionSelectorInitialized()

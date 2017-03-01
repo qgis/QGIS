@@ -53,8 +53,7 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea )
   mDialog->setWindowFlags( mDialog->windowFlags() | Qt::Tool );
   mDialog->restorePosition();
 
-  connect( canvas, SIGNAL( destinationCrsChanged() ),
-           this, SLOT( updateSettings() ) );
+  connect( canvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMeasureTool::updateSettings );
 }
 
 QgsMeasureTool::~QgsMeasureTool()
@@ -81,7 +80,8 @@ void QgsMeasureTool::activate()
 
   // If we suspect that they have data that is projected, yet the
   // map CRS is set to a geographic one, warn them.
-  if ( mCanvas->mapSettings().destinationCrs().isGeographic() &&
+  if ( mCanvas->mapSettings().destinationCrs().isValid() &&
+       mCanvas->mapSettings().destinationCrs().isGeographic() &&
        ( mCanvas->extent().height() > 360 ||
          mCanvas->extent().width() > 720 ) )
   {
@@ -129,7 +129,7 @@ void QgsMeasureTool::updateSettings()
   mRubberBandPoints->setColor( QColor( myRed, myGreen, myBlue, 150 ) );
 
   // Reproject the points to the new destination CoordinateReferenceSystem
-  if ( mRubberBand->size() > 0 && mDestinationCrs != mCanvas->mapSettings().destinationCrs() )
+  if ( mRubberBand->size() > 0 && mDestinationCrs != mCanvas->mapSettings().destinationCrs() && mCanvas->mapSettings().destinationCrs().isValid() )
   {
     QList<QgsPoint> points = mPoints;
     bool lastDone = mDone;

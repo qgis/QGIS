@@ -10268,11 +10268,20 @@ void QgisApp::removeWebToolBarIcon( QAction *qAction )
 
 void QgisApp::updateCrsStatusBar()
 {
-  mOnTheFlyProjectionStatusButton->setText( mMapCanvas->mapSettings().destinationCrs().authid() );
+  if ( QgsProject::instance()->crs().isValid() )
+  {
+    mOnTheFlyProjectionStatusButton->setText( QgsProject::instance()->crs().authid() );
 
-  mOnTheFlyProjectionStatusButton->setToolTip(
-    tr( "Current CRS: %1" ).arg( mMapCanvas->mapSettings().destinationCrs().description() ) );
-  mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconProjectionEnabled.svg" ) ) );
+    mOnTheFlyProjectionStatusButton->setToolTip(
+      tr( "Current CRS: %1" ).arg( mMapCanvas->mapSettings().destinationCrs().description() ) );
+    mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconProjectionEnabled.svg" ) ) );
+  }
+  else
+  {
+    mOnTheFlyProjectionStatusButton->setText( QString() );
+    mOnTheFlyProjectionStatusButton->setToolTip( tr( "No projection" ) );
+    mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconProjectionDisabled.svg" ) ) );
+  }
 }
 
 void QgisApp::destinationCrsChanged()

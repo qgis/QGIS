@@ -127,8 +127,13 @@ class TestQgsProject(unittest.TestCase):
         prj = QgsProject.instance()
         prj.clear()
 
+        prj.setCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:3111'))
         prj.setEllipsoid('WGS84')
         self.assertEqual(prj.ellipsoid(), 'WGS84')
+
+        # if project has NO crs, then ellipsoid should always be none
+        prj.setCrs(QgsCoordinateReferenceSystem())
+        self.assertEqual(prj.ellipsoid(), 'NONE')
 
     def testDistanceUnits(self):
         prj = QgsProject.instance()
