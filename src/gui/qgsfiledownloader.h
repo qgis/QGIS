@@ -95,8 +95,11 @@ class GUI_EXPORT QgsFileDownloader : public QObject
      */
     void onSslErrors( QNetworkReply *reply, const QList<QSslError> &errors );
 #endif
-  private:
+
+  protected:
     ~QgsFileDownloader();
+
+  private:
 
     /**
      * Abort current request and show an error if the instance has GUI
