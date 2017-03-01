@@ -291,21 +291,23 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static QgsPointV2 midpoint( const QgsPointV2& pt1, const QgsPointV2& pt2 );
 
-    /** Return the slope of a line defined by points pt1 and pt2.
+    /** Return the gradient of a line defined by points \a pt1 and \a pt2.
      * @param pt1 first point.
      * @param pt2 second point.
-     * @return The slope of this linear entity, or infinity if vertical
+     * @return The gradient of this linear entity, or infinity if vertical
      * @note added in QGIS 3.0
      */
-    static double slope( const QgsPointV2& pt1, const QgsPointV2& pt2 );
+    static double gradient( const QgsPointV2& pt1, const QgsPointV2& pt2 );
 
-    /** Return the coefficients (a, b, c for equation "ax + by + c = 0") of a line defined by points pt1 and pt2.
+    /** Return the coefficients (a, b, c for equation "ax + by + c = 0") of a line defined by points \a pt1 and \a pt2.
      * @param pt1 first point.
      * @param pt2 second point.
-     * @return The coefficients of this linear entity
+     * @param a Output parameter, a coefficient of the equation.
+     * @param b Output parameter, b coefficient of the equation.
+     * @param c Output parameter, c coefficient of the equation.
      * @note added in QGIS 3.0
      */
-    static QVector<double> coefficients( const QgsPointV2& pt1, const QgsPointV2& pt2 );
+    static void coefficients( const QgsPointV2& pt1, const QgsPointV2& pt2, double& a, double& b, double &c );
 
     /**
      * @brief Create a perpendicular line segment from p to segment [s1, s2]

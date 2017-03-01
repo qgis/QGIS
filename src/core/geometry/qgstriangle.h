@@ -31,6 +31,12 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 {
   public:
     QgsTriangle();
+
+    /** Construct a triangle from three QgsPointV2.
+     * @param p1 first point
+     * @param p2 second point
+     * @param p3 third point
+     */
     QgsTriangle( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &p3 );
 
     // inherited: bool operator==( const QgsTriangle& other ) const;
@@ -72,7 +78,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /**
      * Returns the three lengths of the triangle.
-     * @return Lenghts of triangle ABC where [AB] is at 0, [BC] is at 1, [CA] is at 2
+     * @return Lengths of triangle ABC where [AB] is at 0, [BC] is at 1, [CA] is at 2
      */
     QVector<double> lengths() const;
 
@@ -84,28 +90,28 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /**
      * Is the triangle isocele (two sides with the same length)?
-     * @param lengthTolerance Tolerance to apply for comparison
+     * @param lengthTolerance The tolerance to use
      * @return True or False
      */
     bool isIsocele( double lengthTolerance = 0.0001 ) const;
 
     /**
      * Is the triangle equilateral (three sides with the same length)?
-     * @param lengthTolerance Tolerance to apply for comparison
+     * @param lengthTolerance The tolerance to use
      * @return True or False
      */
     bool isEquilateral( double lengthTolerance = 0.0001 ) const;
 
     /**
      * Is the triangle right-angled?
-     * @param angleTolerance Tolerance to apply for comparison
+     * @param angleTolerance The tolerance to use
      * @return True or False
      */
     bool isRight( double angleTolerance = 0.0001 ) const;
 
     /**
      * Is the triangle scalene (all sides have differen lengths)?
-     * @param lengthTolerance Tolerance to apply for comparison
+     * @param lengthTolerance The tolerance to use
      * @return True or False
      */
     bool isScalene( double lengthTolerance = 0.0001 ) const;
@@ -124,6 +130,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /**
      * Bisectors
+     * @param lengthTolerance The tolerance to use
      * @return Three angle bisector from this triangle
      */
     QVector<QgsLineString *> bisectors( double lengthTolerance = 0.0001 ) const;
@@ -136,6 +143,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /**
      * Orthocenter
+     * @param lengthTolerance The tolerance to use
      * @return The orthocenter of the triangle (intersection of the altitudes of a triangle.)
      */
     QgsPointV2 orthocenter( double lengthTolerance = 0.0001 ) const;

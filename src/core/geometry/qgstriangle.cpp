@@ -20,6 +20,8 @@
 #include "qgslinestring.h"
 #include "qgswkbptr.h"
 
+#include <memory>
+
 QgsTriangle::QgsTriangle()
     : QgsPolygonV2()
 {
@@ -75,9 +77,6 @@ bool QgsTriangle::fromWkb( QgsConstWkbPtr &wkbPtr )
     case QgsWkbTypes::TriangleZM:
       ringType = QgsWkbTypes::LineStringZM;
       break;
-    case QgsWkbTypes::Triangle25D:
-      ringType = QgsWkbTypes::LineString25D;
-      break;
     default:
       ringType = QgsWkbTypes::LineString;
       break;
@@ -112,7 +111,7 @@ bool QgsTriangle::fromWkt( const QString &wkt )
 
   mWkbType = parts.first;
 
-  QString defaultChildWkbType = QStringLiteral( "LineString%1%2" ).arg( is3D() ? "Z" : "", isMeasure() ? "M" : "" );
+  QString defaultChildWkbType = QStringLiteral( "LineString%1%2" ).arg( is3D() ? "Z" : QString(), isMeasure() ? "M" : QString() );
 
   Q_FOREACH ( const QString& childWkt, QgsGeometryUtils::wktGetChildBlocks( parts.second, defaultChildWkbType ) )
   {
@@ -160,10 +159,10 @@ bool QgsTriangle::fromWkt( const QString &wkt )
 
 QgsAbstractGeometry *QgsTriangle::toCurveType() const
 {
-  QgsCurvePolygon* curvePolygon = new QgsCurvePolygon();
+  std::unique_ptr<QgsCurvePolygon> curvePolygon( new QgsCurvePolygon() );
   curvePolygon->setExteriorRing( mExteriorRing->clone() );
 
-  return curvePolygon;
+  return curvePolygon.release();
 }
 
 void QgsTriangle::addInteriorRing( QgsCurve *ring )
@@ -316,6 +315,7 @@ QVector<QgsLineString *> QgsTriangle::altitudes() const
 QVector<QgsLineString *> QgsTriangle::medians() const
 {
   QVector<QgsLineString *> med;
+
   QgsLineString *med1 = new QgsLineString();
   QgsLineString *med2 = new QgsLineString();
   QgsLineString *med3 = new QgsLineString();

@@ -52,7 +52,7 @@ class TestQgsGeometryUtils: public QObject
     void testSqrDistToLine();
     void testAngleThreePoints();
     void testMidPoint();
-    void testSlope();
+    void testGradient();
     void testCoefficients();
     void testPerpendicularSegment();
 };
@@ -552,38 +552,39 @@ void TestQgsGeometryUtils::testMidPoint()
   QCOMPARE( QgsGeometryUtils::midpoint( p1, QgsPointV2( QgsWkbTypes::PointZM, 2, 2, 2, 2 ) ), QgsPointV2( QgsWkbTypes::PointZM, 3, 4, 1, 1 ) );
 }
 
-void TestQgsGeometryUtils::testSlope()
+void TestQgsGeometryUtils::testGradient()
 {
-  QVERIFY( QgsGeometryUtils::slope( QgsPointV2( 4, 6 ), QgsPointV2( 4, 8 ) ) == INFINITY );
-  QGSCOMPARENEAR( QgsGeometryUtils::slope( QgsPointV2( 2, 8 ), QgsPointV2( 3, 20 ) ), 12, 0.00000001 );
-  QGSCOMPARENEAR( QgsGeometryUtils::slope( QgsPointV2( 2, -88 ), QgsPointV2( 4, -4 ) ), 42, 0.00000001 );
-  QGSCOMPARENEAR( QgsGeometryUtils::slope( QgsPointV2( 4, 6 ), QgsPointV2( 8, 6 ) ), 0, 0.00000001 );
+  QVERIFY( QgsGeometryUtils::gradient( QgsPointV2( 4, 6 ), QgsPointV2( 4, 8 ) ) == INFINITY );
+  QGSCOMPARENEAR( QgsGeometryUtils::gradient( QgsPointV2( 2, 8 ), QgsPointV2( 3, 20 ) ), 12, 0.00000001 );
+  QGSCOMPARENEAR( QgsGeometryUtils::gradient( QgsPointV2( 2, -88 ), QgsPointV2( 4, -4 ) ), 42, 0.00000001 );
+  QGSCOMPARENEAR( QgsGeometryUtils::gradient( QgsPointV2( 4, 6 ), QgsPointV2( 8, 6 ) ), 0, 0.00000001 );
 }
 
 void TestQgsGeometryUtils::testCoefficients()
 {
-  QVector<double> coef;
+  double a, b, c;
+
   // pt1.x == pt2.x
-  coef = QgsGeometryUtils::coefficients( QgsPointV2( 4, 6 ), QgsPointV2( 4, 8 ) );
-  QGSCOMPARENEAR( coef.at( 0 ), 1, 0.00000001 );
-  QGSCOMPARENEAR( coef.at( 1 ), 0, 0.00000001 );
-  QGSCOMPARENEAR( coef.at( 2 ), -4, 0.00000001 );
+  QgsGeometryUtils::coefficients( QgsPointV2( 4, 6 ), QgsPointV2( 4, 8 ), a, b, c );
+  QGSCOMPARENEAR( a, 1, 0.00000001 );
+  QGSCOMPARENEAR( b, 0, 0.00000001 );
+  QGSCOMPARENEAR( c, -4, 0.00000001 );
 
   // pt1.y == pt2.y
-  coef = QgsGeometryUtils::coefficients( QgsPointV2( 6, 4 ), QgsPointV2( 8, 4 ) );
-  QGSCOMPARENEAR( coef.at( 0 ), 0, 0.00000001 );
-  QGSCOMPARENEAR( coef.at( 1 ), 1, 0.00000001 );
-  QGSCOMPARENEAR( coef.at( 2 ), -4, 0.00000001 );
+  QgsGeometryUtils::coefficients( QgsPointV2( 6, 4 ), QgsPointV2( 8, 4 ), a, b, c );
+  QGSCOMPARENEAR( a, 0, 0.00000001 );
+  QGSCOMPARENEAR( b, 1, 0.00000001 );
+  QGSCOMPARENEAR( c, -4, 0.00000001 );
 
   // else
-  coef = QgsGeometryUtils::coefficients( QgsPointV2( 6, 4 ), QgsPointV2( 4, 8 ) );
-  QGSCOMPARENEAR( coef.at( 0 ), -4, 0.00000001 );
-  QGSCOMPARENEAR( coef.at( 1 ), -2, 0.00000001 );
-  QGSCOMPARENEAR( coef.at( 2 ), 32, 0.00000001 );
-  coef = QgsGeometryUtils::coefficients( QgsPointV2( -4, -2 ), QgsPointV2( 4, 2 ) );
-  QGSCOMPARENEAR( coef.at( 0 ), -4, 0.00000001 );
-  QGSCOMPARENEAR( coef.at( 1 ), 8, 0.00000001 );
-  QGSCOMPARENEAR( coef.at( 2 ), 0, 0.00000001 );
+  QgsGeometryUtils::coefficients( QgsPointV2( 6, 4 ), QgsPointV2( 4, 8 ), a, b, c );
+  QGSCOMPARENEAR( a, -4, 0.00000001 );
+  QGSCOMPARENEAR( b, -2, 0.00000001 );
+  QGSCOMPARENEAR( c, 32, 0.00000001 );
+  QgsGeometryUtils::coefficients( QgsPointV2( -4, -2 ), QgsPointV2( 4, 2 ), a, b, c );
+  QGSCOMPARENEAR( a, -4, 0.00000001 );
+  QGSCOMPARENEAR( b, 8, 0.00000001 );
+  QGSCOMPARENEAR( c, 0, 0.00000001 );
 }
 void TestQgsGeometryUtils::testPerpendicularSegment()
 {
@@ -632,6 +633,7 @@ void TestQgsGeometryUtils::testPerpendicularSegment()
   QCOMPARE( line->pointN( 1 ), line_r->pointN( 1 ) );
 
   delete line;
+  delete line_r;
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )
