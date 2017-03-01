@@ -172,6 +172,38 @@ class TestQgsServerSecurity(unittest.TestCase):
         d, h = self.handle_request_wms_getfeatureinfo(filter_sql)
         self.assertTrue(self.check_service_exception_report(d))
 
+    def test_wms_getfeatureinfo_filter_patternmatching(self):
+        """
+        The aim is to retrieve the table's name thanks to pattern matching.
+
+        If you remove the safety check, this is a valid injection.
+        """
+
+        filter_sql = "point:\"name\" = 'b'"
+        injection_sql = "or ( select name from sqlite_master where type='table' and name like '{0}') != ''"
+        query = "{0} {1}".format(filter_sql, injection_sql)
+
+        # there's no table named as 'az%'
+        name = "az%"
+        sql = query.format(name)
+        d, h = self.handle_request_wms_getfeatureinfo(sql)
+        # self.assertTrue(b"name = 'b'" in d) #true if sanity check deactivated
+        self.assertTrue(self.check_service_exception_report(d))
+
+        # a table named as 'ao%' exist
+        name = "ao%"
+        sql = query.format(name)
+        d, h = self.handle_request_wms_getfeatureinfo(sql)
+        # self.assertTrue(b"name = 'a'" in d) #true if sanity check deactivated
+        self.assertTrue(self.check_service_exception_report(d))
+
+        # a table named as 'aoi' exist
+        name = "aoi"
+        sql = query.format(name)
+        d, h = self.handle_request_wms_getfeatureinfo(sql)
+        # self.assertTrue(b"name = 'a'" in d) #true if sanity check deactivated
+        self.assertTrue(self.check_service_exception_report(d))
+
     def test_wms_getfeatureinfo_filter_whitelist(self):
         """
         The aim is to check that some tokens cannot pass the safety check
