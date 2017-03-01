@@ -261,6 +261,13 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
     QgsPropertyCollection( const QString& name = QString() );
 
     /**
+     * Copy constructor.
+     */
+    QgsPropertyCollection( const QgsPropertyCollection& other );
+
+    QgsPropertyCollection& operator=( const QgsPropertyCollection& other );
+
+    /**
      * Returns the number of properties contained within the collection.
      */
     int count() const;

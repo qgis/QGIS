@@ -96,6 +96,28 @@ QgsPropertyCollection::QgsPropertyCollection( const QString& name )
     , mHasDynamicProperties( false )
 {}
 
+QgsPropertyCollection::QgsPropertyCollection( const QgsPropertyCollection& other )
+    : QgsAbstractPropertyCollection( other )
+    , mProperties( other.mProperties )
+    , mDirty( other.mDirty )
+    , mHasActiveProperties( other.mHasActiveProperties )
+    , mHasDynamicProperties( other.mHasDynamicProperties )
+    , mCount( other.mCount )
+{
+  mProperties.detach();
+}
+
+QgsPropertyCollection&QgsPropertyCollection::operator=( const QgsPropertyCollection & other )
+{
+  mProperties = other.mProperties;
+  mProperties.detach();
+  mDirty = other.mDirty;
+  mHasActiveProperties = other.mHasActiveProperties;
+  mHasDynamicProperties = other.mHasDynamicProperties;
+  mCount = other.mCount;
+  return *this;
+}
+
 int QgsPropertyCollection::count() const
 {
   if ( !mDirty )
