@@ -2674,21 +2674,35 @@ class TestQgsExpression: public QObject
     {
       QgsExpressionContext context;
 
+#ifdef Q_OS_WIN
+      _putenv( "TESTENV_STRING=Hello World" );
+#else
       setenv( "TESTENV_STRING", "Hello World", 1 );
+#endif
+
       QgsExpression e( "env('TESTENV_STRING')" );
 
       QVariant result = e.evaluate( &context );
 
       QCOMPARE( result.toString(), QStringLiteral( "Hello World" ) );
+#ifdef Q_OS_WIN
+      _putenv( "TESTENV_STRING=" );
+      _putenv( "TESTENV_INT=5" );
+#else
       unsetenv( "TESTENV_STRING" );
-
       setenv( "TESTENV_INT", "5", 1 );
+#endif
+
       QgsExpression e2( "env('TESTENV_INT')" );
 
       QVariant result2 = e2.evaluate( &context );
 
       QCOMPARE( result2.toString(), QStringLiteral( "5" ) );
+#ifdef Q_OS_WIN
+      _putenv( "TESTENV_INT=" );
+#else
       unsetenv( "TESTENV_INT" );
+#endif
 
       QgsExpression e3( "env('TESTENV_I_DO_NOT_EXIST')" );
       QVariant result3 = e3.evaluate( &context );

@@ -48,7 +48,7 @@ class TestTransformer : public QgsPropertyTransformer
     {
       return new TestTransformer( mMinValue, mMaxValue );
     }
-    virtual QString toExpression( const QString& ) const override { return QStringLiteral(); }
+    virtual QString toExpression( const QString& ) const override { return QString(); }
 
   private:
 
@@ -104,10 +104,10 @@ void TestQgsProperty::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-  mDefinitions.insert( Property1, QgsPropertyDefinition( "p1", QgsPropertyDefinition::DataTypeString, QStringLiteral(), QStringLiteral() ) );
-  mDefinitions.insert( Property2, QgsPropertyDefinition( "p2", QgsPropertyDefinition::DataTypeString, QStringLiteral(), QStringLiteral() ) );
-  mDefinitions.insert( Property3, QgsPropertyDefinition( "p3", QgsPropertyDefinition::DataTypeString, QStringLiteral(), QStringLiteral() ) );
-  mDefinitions.insert( Property4, QgsPropertyDefinition( "p4", QgsPropertyDefinition::DataTypeString, QStringLiteral(), QStringLiteral() ) );
+  mDefinitions.insert( Property1, QgsPropertyDefinition( "p1", QgsPropertyDefinition::DataTypeString, QString(), QString() ) );
+  mDefinitions.insert( Property2, QgsPropertyDefinition( "p2", QgsPropertyDefinition::DataTypeString, QString(), QString() ) );
+  mDefinitions.insert( Property3, QgsPropertyDefinition( "p3", QgsPropertyDefinition::DataTypeString, QString(), QString() ) );
+  mDefinitions.insert( Property4, QgsPropertyDefinition( "p4", QgsPropertyDefinition::DataTypeString, QString(), QString() ) );
 }
 
 void TestQgsProperty::cleanupTestCase()
@@ -388,7 +388,7 @@ void TestQgsProperty::fieldBasedProperty()
   property.setField( "bad_field" );
   QCOMPARE( property.value( context, -1 ).toInt(), -1 );
   // unset field name
-  QgsProperty defaultProperty = QgsProperty::fromField( QStringLiteral() );
+  QgsProperty defaultProperty = QgsProperty::fromField( QString() );
   QCOMPARE( defaultProperty.value( context, -1 ).toInt(), -1 );
   QVERIFY( defaultProperty.referencedFields( context ).isEmpty() );
   defaultProperty.setActive( true );
@@ -493,7 +493,7 @@ void TestQgsProperty::expressionBasedProperty()
   QCOMPARE( property.value( context, -1 ).toInt(), -1 );
   QVERIFY( property.referencedFields( context ).isEmpty() );
   // unset expression
-  QgsProperty defaultProperty = QgsProperty::fromExpression( QStringLiteral() );
+  QgsProperty defaultProperty = QgsProperty::fromExpression( QString() );
   QCOMPARE( defaultProperty.value( context, -1 ).toInt(), -1 );
   QVERIFY( defaultProperty.referencedFields( context ).isEmpty() );
   defaultProperty.setActive( true );
