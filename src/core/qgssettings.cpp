@@ -182,7 +182,7 @@ void QgsSettings::sync()
 
 void QgsSettings::remove( const QString &key )
 {
-  mGlobalSettings->remove( key );
+  mUserSettings->remove( key );
 }
 
 QString QgsSettings::prefixedKey( const QString &key, const Section section ) const
