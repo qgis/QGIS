@@ -673,6 +673,7 @@ bool QgsPointLocator::hasIndex() const
 
 bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
 {
+  qDebug( "rebuild index" );
   destroyIndex();
 
   QLinkedList<RTree::Data *> dataList;
@@ -699,12 +700,15 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
         QgsDebugMsg( QString( "could not transform bounding box to map, skipping the snap filter (%1)" ).arg( e.what() ) );
       }
     }
+    qDebug( "index extent %s", rect.toString().toAscii().data() );
     request.setFilterRect( rect );
   }
   QgsFeatureIterator fi = mLayer->getFeatures( request );
   int indexedCount = 0;
   while ( fi.nextFeature( f ) )
   {
+    qDebug( "feature %d", ( int )f.id() );
+
     if ( !f.hasGeometry() )
       continue;
 
@@ -724,6 +728,8 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
         continue;
       }
     }
+
+    qDebug( "adding feature to index" );
 
     SpatialIndex::Region r( rect2region( f.geometry().boundingBox() ) );
     dataList << new RTree::Data( 0, nullptr, r, f.id() );
@@ -751,6 +757,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
 
   if ( dataList.isEmpty() )
   {
+    qDebug( "empty :(" );
     mIsEmptyLayer = true;
     return true; // no features
   }

@@ -184,6 +184,8 @@ void TestQgsNodeTool::initTestCase()
 
   mCanvas->setLayers( QList<QgsMapLayer*>() << mLayerLine << mLayerPolygon << mLayerPoint );
 
+  qDebug( "line layer extent: %s", mLayerLine->extent().toString().toAscii().data() );
+
   // TODO: set up snapping
 
   // create node tool
