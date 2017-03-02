@@ -310,6 +310,8 @@ void QgsMapCanvas::setLayers( const QList<QgsMapLayer*>& layers )
 
   Q_FOREACH ( QgsMapLayer* layer, layers )
   {
+    if ( !layer )
+      continue;
     connect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapCanvas::layerRepaintRequested );
     connect( layer, &QgsMapLayer::crsChanged, this, &QgsMapCanvas::layerCrsChange );
     connect( layer, &QgsMapLayer::autoRefreshIntervalChanged, this, &QgsMapCanvas::updateAutoRefreshTimer );
