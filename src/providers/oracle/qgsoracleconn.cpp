@@ -123,7 +123,7 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri )
   {
     QSqlQuery qry( mDatabase );
 
-    if ( !qry.exec( QString( "BEGIN\nDBMS_WM.GotoWorkspace(%1);\nEND;" ).arg( quotedValue( workspace ) ) ) )
+    if ( !qry.prepare( QString( "BEGIN\nDBMS_WM.GotoWorkspace(?);\nEND;" ) ) || !( qry.addBindValue( workspace ), qry.exec() ) )
     {
       mDatabase.close();
       QgsMessageLog::logMessage( tr( "Could not switch to workspace %1 [%2]" ).arg( workspace, qry.lastError().databaseText() ), tr( "Oracle" ) );
@@ -172,11 +172,22 @@ void QgsOracleConn::disconnect()
   deleteLater();
 }
 
-bool QgsOracleConn::exec( QSqlQuery &qry, QString sql )
+bool QgsOracleConn::exec( QSqlQuery &qry, QString sql, const QVariantList &params )
 {
   QgsDebugMsgLevel( QString( "SQL: %1" ).arg( sql ), 4 );
 
-  bool res = qry.exec( sql );
+  bool res = qry.prepare( sql );
+  if ( res )
+  {
+  for ( const auto &param: params )
+    {
+      QgsDebugMsgLevel( QString( " ARG: %1 [%2]" ).arg( param.toString() ).arg( param.typeName() ), 4 );
+      qry.addBindValue( param );
+    }
+
+    res = qry.exec();
+  }
+
   if ( !res )
   {
     QgsDebugMsg( QString( "SQL: %1\nERROR: %2" )
@@ -192,10 +203,10 @@ QStringList QgsOracleConn::pkCandidates( QString ownerName, QString viewName )
   QStringList cols;
 
   QSqlQuery qry( mDatabase );
-  if ( !exec( qry, QString( "SELECT column_name FROM all_tab_columns WHERE owner=%1 AND table_name=%2 ORDER BY column_id" )
-              .arg( quotedValue( ownerName ) ).arg( quotedValue( viewName ) ) ) )
+  if ( !exec( qry, QString( "SELECT column_name FROM all_tab_columns WHERE owner=? AND table_name=? ORDER BY column_id" ),
+              QVariantList() << ownerName << viewName ) )
   {
-    QgsMessageLog::logMessage( tr( "SQL:%1\nerror:%2\n" ).arg( qry.lastQuery() ).arg( qry.lastError().text() ), tr( "Oracle" ) );
+    QgsMessageLog::logMessage( tr( "SQL:%1 [owner:%2 table_name:%3]\nerror:%4\n" ).arg( qry.lastQuery(), qry.lastError().text(), ownerName, viewName ), tr( "Oracle" ) );
     return cols;
   }
 
@@ -242,7 +253,7 @@ bool QgsOracleConn::tableInfo( bool geometryColumnsOnly, bool userTablesOnly, bo
   // sql += " ORDER BY owner,isview,table_name,column_name";
 
   QSqlQuery qry( mDatabase );
-  if ( !exec( qry, sql ) )
+  if ( !exec( qry, sql, QVariantList() ) )
   {
     QgsMessageLog::logMessage( tr( "Querying available tables failed.\nSQL:%1\nerror:%2\n" ).arg( qry.lastQuery() ).arg( qry.lastError().text() ), tr( "Oracle" ) );
     return false;
@@ -451,7 +462,7 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
   if ( !exec( qry, sql
               .arg( quotedIdentifier( layerProperty.geometryColName ) )
               .arg( table )
-              .arg( where.isEmpty() ? "" : QString( " AND (%1)" ).arg( where ) ) ) )
+              .arg( where.isEmpty() ? "" : QString( " AND (%1)" ).arg( where ) ), QVariantList() ) )
   {
     QgsMessageLog::logMessage( tr( "SQL:%1\nerror:%2\n" )
                                .arg( qry.lastQuery() )
@@ -809,7 +820,7 @@ bool QgsOracleConn::hasSpatial()
   if ( mHasSpatial == -1 )
   {
     QSqlQuery qry( mDatabase );
-    mHasSpatial = exec( qry, "SELECT 1 FROM v$option WHERE parameter='Spatial' AND value='TRUE'" ) && qry.next();
+    mHasSpatial = exec( qry, "SELECT 1 FROM v$option WHERE parameter='Spatial' AND value='TRUE'", QVariantList() ) && qry.next();
   }
 
   return mHasSpatial;
@@ -820,7 +831,7 @@ QString QgsOracleConn::currentUser()
   if ( mCurrentUser.isNull() )
   {
     QSqlQuery qry( mDatabase );
-    if ( exec( qry, "SELECT user FROM dual" ) && qry.next() )
+    if ( exec( qry, "SELECT user FROM dual", QVariantList() ) && qry.next() )
     {
       mCurrentUser = qry.value( 0 ).toString();
     }

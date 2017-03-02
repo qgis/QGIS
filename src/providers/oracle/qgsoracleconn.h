@@ -24,6 +24,7 @@
 #include <QMap>
 #include <QSet>
 #include <QThread>
+#include <QVariant>
 
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
@@ -172,7 +173,7 @@ class QgsOracleConn : public QObject
     explicit QgsOracleConn( QgsDataSourceUri uri );
     ~QgsOracleConn();
 
-    bool exec( QSqlQuery &qry, QString sql );
+    bool exec( QSqlQuery &qry, QString sql, const QVariantList &params );
 
     //! reference count
     int mRef;

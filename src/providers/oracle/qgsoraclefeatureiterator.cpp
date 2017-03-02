@@ -38,6 +38,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
     return;
   }
 
+  QVariantList args;
   mQry = QSqlQuery( *mConnection );
 
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
@@ -79,17 +80,15 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
       if ( mSource->mHasSpatialIndex )
       {
         QgsRectangle rect( mRequest.filterRect() );
-        QString bbox = QString( "mdsys.sdo_geometry(2003,%1,NULL,"
-                                "mdsys.sdo_elem_info_array(1,1003,3),"
-                                "mdsys.sdo_ordinate_array(%2,%3,%4,%5)"
-                                ")" )
-                       .arg( mSource->mSrid < 1 ? "NULL" : QString::number( mSource->mSrid ) )
-                       .arg( qgsDoubleToString( rect.xMinimum() ) )
-                       .arg( qgsDoubleToString( rect.yMinimum() ) )
-                       .arg( qgsDoubleToString( rect.xMaximum() ) )
-                       .arg( qgsDoubleToString( rect.yMaximum() ) );
+        QString bbox = QStringLiteral( "mdsys.sdo_geometry(2003,?,NULL,"
+                                       "mdsys.sdo_elem_info_array(1,1003,3),"
+                                       "mdsys.sdo_ordinate_array(?,?,?,?)"
+                                       ")" );
 
-        whereClause = QString( "sdo_filter(%1,%2)='TRUE'" ).arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ) ).arg( bbox );
+        whereClause = QStringLiteral( "sdo_filter(%1,%2)='TRUE'" )
+                      .arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ) ).arg( bbox );
+
+        args << ( mSource->mSrid < 1 ? QVariant( QVariant::Int ) : mSource->mSrid ) << rect.xMinimum() << rect.yMinimum() << rect.xMaximum() << rect.yMaximum();
 
         if (( mRequest.flags() & QgsFeatureRequest::ExactIntersect ) != 0 )
         {
@@ -99,6 +98,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
             whereClause += QString( " AND sdo_relate(%1,%2,'mask=ANYINTERACT')='TRUE'" )
                            .arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ) )
                            .arg( bbox );
+            args << ( mSource->mSrid < 1 ? QVariant( QVariant::Int ) : mSource->mSrid ) << rect.xMinimum() << rect.yMinimum() << rect.xMaximum() << rect.yMaximum();
           }
           else
           {
@@ -123,14 +123,14 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
   {
     case QgsFeatureRequest::FilterFid:
     {
-      QString fidWhereClause = QgsOracleUtils::whereClause( mRequest.filterFid(), mSource->mFields, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared );
+      QString fidWhereClause = QgsOracleUtils::whereClause( mRequest.filterFid(), mSource->mFields, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared, args );
       whereClause = QgsOracleUtils::andWhereClauses( whereClause, fidWhereClause );
     }
     break;
 
     case QgsFeatureRequest::FilterFids:
     {
-      QString fidsWhereClause = QgsOracleUtils::whereClause( mRequest.filterFids(), mSource->mFields, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared );
+      QString fidsWhereClause = QgsOracleUtils::whereClause( mRequest.filterFids(), mSource->mFields, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared, args );
       whereClause = QgsOracleUtils::andWhereClauses( whereClause, fidsWhereClause );
     }
     break;
@@ -205,14 +205,15 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
     if ( !whereClause.isEmpty() )
       whereClause += " AND ";
 
-    whereClause += QString( "rownum<=%1" ).arg( mRequest.limit() );
-    fallbackStatement += QString( "rownum<=%1" ).arg( mRequest.limit() );
+    whereClause += QStringLiteral( "rownum<=?" );
+    fallbackStatement += QStringLiteral( "rownum<=?" );
+    args << QVariant::fromValue( mRequest.limit() );
   }
 
-  bool result = openQuery( whereClause, !useFallback );
+  bool result = openQuery( whereClause, args, !useFallback );
   if ( !result && useFallback )
   {
-    result = openQuery( fallbackStatement );
+    result = openQuery( fallbackStatement, args );
     if ( result )
     {
       mExpressionCompiled = false;
@@ -249,7 +250,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
     if ( mRewind )
     {
       mRewind = false;
-      if ( !QgsOracleProvider::exec( mQry, mSql ) )
+      if ( !QgsOracleProvider::exec( mQry, mSql, mArgs ) )
       {
         QgsMessageLog::logMessage( QObject::tr( "Fetching features failed.\nSQL:%1\nError: %2" )
                                    .arg( mQry.lastQuery() )
@@ -418,14 +419,14 @@ bool QgsOracleFeatureIterator::close()
 
   if ( mConnection )
     QgsOracleConnPool::instance()->releaseConnection( mConnection );
-  mConnection = 0;
+  mConnection = nullptr;
 
   iteratorClosed();
 
   return true;
 }
 
-bool QgsOracleFeatureIterator::openQuery( QString whereClause, bool showLog )
+bool QgsOracleFeatureIterator::openQuery( QString whereClause, QVariantList args, bool showLog )
 {
   try
   {
@@ -478,7 +479,8 @@ bool QgsOracleFeatureIterator::openQuery( QString whereClause, bool showLog )
 
     QgsDebugMsg( QString( "Fetch features: %1" ).arg( query ) );
     mSql = query;
-    if ( !QgsOracleProvider::exec( mQry, query ) )
+    mArgs = args;
+    if ( !QgsOracleProvider::exec( mQry, query, args ) )
     {
       if ( showLog )
       {

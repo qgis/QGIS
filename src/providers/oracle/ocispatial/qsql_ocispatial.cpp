@@ -2920,11 +2920,11 @@ void QOCISpatialCols::getValues( QVector<QVariant> &v, int index )
 
 QOCISpatialResultPrivate::QOCISpatialResultPrivate( QOCISpatialResult *q, const QOCISpatialDriver *drv )
     : QSqlCachedResultPrivate( q, drv )
-    , cols( 0 )
+    , cols( nullptr )
     , env( drv_d_func()->env )
-    , err( 0 )
+    , err( nullptr )
     , svc( const_cast<OCISvcCtx*&>( drv_d_func()->svc ) )
-    , sql( 0 )
+    , sql( nullptr )
     , sdoobj()
     , sdoind()
     , transaction( drv_d_func()->transaction )
@@ -2932,8 +2932,8 @@ QOCISpatialResultPrivate::QOCISpatialResultPrivate( QOCISpatialResult *q, const 
     , prefetchRows( drv_d_func()->prefetchRows )
     , prefetchMem( drv_d_func()->prefetchMem )
     , geometryTDO( drv_d_func()->geometryTDO )
-    , geometryObj( 0 )
-    , geometryInd( 0 )
+    , geometryObj( nullptr )
+    , geometryInd( nullptr )
 {
   ENTER
   int r = OCIHandleAlloc( env,
@@ -2960,7 +2960,14 @@ QOCISpatialResultPrivate::~QOCISpatialResultPrivate()
 
   r = OCIHandleFree( err, OCI_HTYPE_ERROR );
   if ( r != OCI_SUCCESS )
-    qWarning( "~QOCISpatialResult: unable to free statement handle" );
+    qWarning( "~QOCISpatialResult: unable to free error handle" );
+
+  if ( sql )
+  {
+    r = OCIHandleFree( sql, OCI_HTYPE_STMT );
+    if ( r != OCI_SUCCESS )
+      qWarning( "~QOCISpatialResult: unable to free statement handle" );
+  }
 }
 
 
@@ -3009,6 +3016,7 @@ bool QOCISpatialResult::gotoNext( QSqlCachedResult::ValueCache &values, int inde
       break;
     case OCI_SUCCESS_WITH_INFO:
       qOraWarning( "QOCISpatialResult::gotoNext: SuccessWithInfo: ", d->err );
+      qDebug() << "QOCISpatialResult::gotoNext: statement " << lastQuery();
       r = OCI_SUCCESS; //ignore it
       break;
     case OCI_NO_DATA:
@@ -3114,6 +3122,7 @@ bool QOCISpatialResult::prepare( const QString& query )
     r = OCIHandleFree( d->sql, OCI_HTYPE_STMT );
     if ( r != OCI_SUCCESS )
       qOraWarning( "QOCISpatialResult::prepare: unable to free statement handle:", d->err );
+    d->sql = nullptr;
   }
   if ( query.isEmpty() )
     return false;

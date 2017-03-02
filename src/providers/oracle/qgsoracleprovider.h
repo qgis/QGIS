@@ -152,7 +152,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     QString description() const override;
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
 
-    static bool exec( QSqlQuery &qry, QString sql );
+    static bool exec( QSqlQuery &qry, QString sql, const QVariantList &args );
 
     virtual bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
 
@@ -167,7 +167,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     QString getWorkspace() const;
 
   private:
-    QString whereClause( QgsFeatureId featureId ) const;
+    QString whereClause( QgsFeatureId featureId, QVariantList &args ) const;
     QString pkParamWhereClause() const;
     QString paramValue( QString fieldvalue, const QString &defaultValue ) const;
     void appendGeomParam( const QgsGeometry& geom, QSqlQuery &qry ) const;
@@ -315,13 +315,15 @@ class QgsOracleUtils
                                 const QgsFields& fields,
                                 QgsOraclePrimaryKeyType primaryKeyType,
                                 const QList<int>& primaryKeyAttrs,
-                                QSharedPointer<QgsOracleSharedData> sharedData );
+                                QSharedPointer<QgsOracleSharedData> sharedData,
+                                QVariantList &params );
 
     static QString whereClause( QgsFeatureIds featureIds,
                                 const QgsFields& fields,
                                 QgsOraclePrimaryKeyType primaryKeyType,
                                 const QList<int>& primaryKeyAttrs,
-                                QSharedPointer<QgsOracleSharedData> sharedData );
+                                QSharedPointer<QgsOracleSharedData> sharedData,
+                                QVariantList &params );
 
     static QString andWhereClauses( const QString& c1, const QString& c2 );
 };

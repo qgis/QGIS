@@ -70,7 +70,7 @@ class QgsOracleFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Qgs
     virtual bool fetchFeature( QgsFeature& feature ) override;
     bool nextFeatureFilterExpression( QgsFeature& f ) override;
 
-    bool openQuery( QString whereClause, bool showLog = true );
+    bool openQuery( QString whereClause, QVariantList args, bool showLog = true );
 
     QgsOracleConn *mConnection = nullptr;
     QSqlQuery mQry;
@@ -79,6 +79,7 @@ class QgsOracleFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Qgs
     bool mFetchGeometry;
     QgsAttributeList mAttributeList;
     QString mSql;
+    QVariantList mArgs;
 };
 
 #endif // QGSORACLEFEATUREITERATOR_H
