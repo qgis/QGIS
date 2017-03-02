@@ -65,39 +65,6 @@ static bool isEndpointAtVertexIndex( const QgsGeometry& geom, int vertexIndex )
 }
 
 
-//! Get coordinates of the vertex at particular index
-static QgsPoint vertexAtVertexIndex( const QgsGeometry& geom, int vertexIndex )
-{
-  QgsAbstractGeometry* g = geom.geometry();
-  QgsPointV2 p;
-  if ( QgsCurve* curve = dynamic_cast<QgsCurve*>( g ) )
-  {
-    QgsVertexId::VertexType typeUnused;
-    curve->pointAt( vertexIndex, p, typeUnused );
-  }
-  else if ( QgsMultiCurve* multiCurve = dynamic_cast<QgsMultiCurve*>( g ) )
-  {
-    for ( int i = 0; i < multiCurve->numGeometries(); ++i )
-    {
-      QgsCurve* part = dynamic_cast<QgsCurve*>( multiCurve->geometryN( i ) );
-      Q_ASSERT( part );
-      if ( vertexIndex < part->numPoints() )
-      {
-        QgsVertexId::VertexType typeUnused;
-        part->pointAt( vertexIndex, p, typeUnused );
-        break;
-      }
-      vertexIndex -= part->numPoints();
-    }
-  }
-  else
-  {
-    QgsDebugMsg( "vertex_at_vertex_index: unexpected geometry type!" );
-  }
-  return QgsPoint( p.x(), p.y() );
-}
-
-
 //! Return index of vertex adjacent to the given endpoint. Assuming linear geometries.
 int adjacentVertexIndexToEndpoint( const QgsGeometry& geom, int vertexIndex )
 {
@@ -125,95 +92,6 @@ int adjacentVertexIndexToEndpoint( const QgsGeometry& geom, int vertexIndex )
   }
   return -1;
 }
-
-
-//! Return details from vertex index:  part, ring, vertex
-static void vertexIndexInfo( const QgsAbstractGeometry* g, int vertexIndex, int& partIndex, int& ringIndex, int& vertex )
-{
-  if ( const QgsGeometryCollection* geomCollection = dynamic_cast<const QgsGeometryCollection*>( g ) )
-  {
-    partIndex = 0;
-    int offset = 0;
-    for ( int i = 0; i < geomCollection->numGeometries(); ++i )
-    {
-      const QgsAbstractGeometry* part = geomCollection->geometryN( i );
-      int numPoints = part->vertexCount();  // TODO: probably does not work with multipolygons with holes
-      if ( vertexIndex < numPoints )
-      {
-        int nothing;
-        vertexIndexInfo( part, vertexIndex, nothing, ringIndex, vertex ); // set ring_index + index
-        return;
-      }
-      vertexIndex -= numPoints;
-      offset += numPoints;
-      partIndex++;
-    }
-  }
-  else if ( dynamic_cast<const QgsCurve*>( g ) )
-  {
-    partIndex = 0;
-    ringIndex = 0;
-    vertex = vertexIndex;
-  }
-  else if ( const QgsCurvePolygon* curvePolygon = dynamic_cast<const QgsCurvePolygon*>( g ) )
-  {
-    const QgsCurve* ring = curvePolygon->exteriorRing();
-    if ( vertexIndex < ring->numPoints() )
-    {
-      partIndex = 0;
-      ringIndex = 0;
-      vertex = vertexIndex;
-      return;
-    }
-    vertexIndex -= ring->numPoints();
-    ringIndex = 1;
-    for ( int i = 0; i < curvePolygon->numInteriorRings(); ++i )
-    {
-      const QgsCurve* ring = curvePolygon->interiorRing( i );
-      if ( vertexIndex < ring->numPoints() )
-      {
-        partIndex = 0;
-        vertex = vertexIndex;
-        return;
-      }
-      vertexIndex -= ring->numPoints();
-      ringIndex += 1;
-    }
-  }
-}
-
-
-//! Find out whether geom (QgsGeometry) has a circular vertex on the given index
-static bool isCircularVertex( const QgsGeometry& geom, int vertex_index )
-{
-  if ( geom.type() != QgsWkbTypes::LineGeometry and geom.type() != QgsWkbTypes::PolygonGeometry )
-    return false;
-  QgsVertexId v_id;
-  bool res = geom.vertexIdFromVertexNr( vertex_index, v_id );
-
-  // we need to get vertex type in this painful way because the above function
-  // does not actually set "type" attribute (surprise surprise)
-  const QgsAbstractGeometry* g = geom.geometry();
-  if ( const QgsGeometryCollection* geomCollection = dynamic_cast<const QgsGeometryCollection*>( g ) )
-  {
-    g = geomCollection->geometryN( v_id.part );
-  }
-  if ( const QgsCurvePolygon* curvePolygon = dynamic_cast<const QgsCurvePolygon*>( g ) )
-  {
-    g = v_id.ring == 0 ? curvePolygon->exteriorRing() : curvePolygon->interiorRing( v_id.ring - 1 );
-  }
-
-  const QgsCurve* curve = dynamic_cast<const QgsCurve*>( g );
-  Q_ASSERT( curve );
-  QgsPointV2 p;
-  QgsVertexId::VertexType v_type;
-  res = curve->pointAt( v_id.vertex, p, v_type );
-  if ( !res )
-    return false;
-
-  return v_type == QgsVertexId::CurveVertex;
-}
-
 
 //
 // snapping match filters
@@ -362,6 +240,8 @@ void QgsNodeTool2::clearDragBands()
 
 void QgsNodeTool2::cadCanvasPressEvent( QgsMapMouseEvent *e )
 {
+  qDebug( "PRESS %d,%d", e->pos().x(), e->pos().y() );
+
   setHighlightedNodes( QList<Vertex>() ); // reset selection
 
   if ( e->button() == Qt::LeftButton )
@@ -386,6 +266,8 @@ void QgsNodeTool2::cadCanvasPressEvent( QgsMapMouseEvent *e )
 
 void QgsNodeTool2::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
+  qDebug( "RELEASE %d,%d", e->pos().x(), e->pos().y() );
+
   if ( mNewVertexFromDoubleClick )
   {
     QgsPointLocator::Match m( *mNewVertexFromDoubleClick );
@@ -636,7 +518,7 @@ bool QgsNodeTool2::isNearEndpointMarker( const QgsPoint& mapPoint )
   double tol = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
 
   QgsGeometry geom = cachedGeometryForVertex( *mMouseAtEndpoint );
-  QgsPoint vertexPointV2 = vertexAtVertexIndex( geom, mMouseAtEndpoint->vertexId );
+  QgsPoint vertexPointV2 = geom.vertexAt( mMouseAtEndpoint->vertexId );
   QgsPoint vertexPoint = QgsPoint( vertexPointV2.x(), vertexPointV2.y() );
   double distVertex = sqrt( vertexPoint.sqrDist( mapPoint ) );
 
@@ -657,8 +539,8 @@ QgsPoint QgsNodeTool2::positionForEndpointMarker( const QgsPointLocator::Match &
 {
   QgsGeometry geom = cachedGeometry( match.layer(), match.featureId() );
 
-  QgsPoint pt0 = vertexAtVertexIndex( geom, adjacentVertexIndexToEndpoint( geom, match.vertexIndex() ) );
-  QgsPoint pt1 = vertexAtVertexIndex( geom, match.vertexIndex() );
+  QgsPoint pt0 = geom.vertexAt( adjacentVertexIndexToEndpoint( geom, match.vertexIndex() ) );
+  QgsPoint pt1 = geom.vertexAt( match.vertexIndex() );
   double dx = pt1.x() - pt0.x();
   double dy = pt1.y() - pt0.y();
   double dist = 15 * canvas()->mapSettings().mapUnitsPerPixel();
@@ -697,7 +579,9 @@ void QgsNodeTool2::mouseMoveNotDragging( QgsMapMouseEvent *e )
     if ( m.layer() )
     {
       QgsGeometry geom = cachedGeometry( m.layer(), m.featureId() );
-      isCircular = isCircularVertex( geom, m.vertexIndex() );
+      QgsVertexId v_id;
+      if ( geom.vertexIdFromVertexNr( m.vertexIndex(), v_id ) )
+        isCircular = ( v_id.type == QgsVertexId::CurveVertex );
     }
 
     mVertexBand->setIcon( isCircular ? QgsRubberBand::ICON_FULL_BOX : QgsRubberBand::ICON_CIRCLE );
@@ -1002,8 +886,8 @@ void QgsNodeTool2::startDraggingAddVertexAtEndpoint( const QgsPoint &map_point )
   addDragBand( map_v0, map_point );
 
   // setup CAD dock previous points to endpoint and the previous point
-  QgsPoint pt0 = vertexAtVertexIndex( geom, adjacentVertexIndexToEndpoint( geom, mMouseAtEndpoint->vertexId ) );
-  QgsPoint pt1 = vertexAtVertexIndex( geom, mMouseAtEndpoint->vertexId );
+  QgsPoint pt0 = geom.vertexAt( adjacentVertexIndexToEndpoint( geom, mMouseAtEndpoint->vertexId ) );
+  QgsPoint pt1 = geom.vertexAt( mMouseAtEndpoint->vertexId );
   mOverrideCadPoints.clear();
   mOverrideCadPoints << pt0 << pt1;
 }
@@ -1133,31 +1017,37 @@ void QgsNodeTool2::moveVertex( const QgsPoint &mapPoint, const QgsPointLocator::
 
   QgsPoint layerPoint = matchToLayerPoint( dragLayer, mapPoint, mapPointMatch );
 
+  QgsVertexId vid;
+  if ( !geom.vertexIdFromVertexNr( dragVertexId, vid ) )
+  {
+    QgsDebugMsg( "invalid vertex index" );
+    return;
+  }
+
+  QgsAbstractGeometry* geomTmp = geom.geometry()->clone();
+
   // add/move vertex
   if ( addingVertex )
   {
-    // ordinary geom.insertVertex does not support appending so we use geometry V2
-    int dragPart, dragRing, dragVertex;
-    vertexIndexInfo( geom.geometry(), dragVertexId, dragPart, dragRing, dragVertex );
-    if ( addingAtEndpoint && dragVertex != 0 )  // appending?
-      dragVertex++;
-    QgsVertexId vid( dragPart, dragRing, dragVertex, QgsVertexId::SegmentVertex );
-    QgsAbstractGeometry* geomTmp = geom.geometry()->clone();
+    if ( addingAtEndpoint && vid.vertex != 0 )  // appending?
+      vid.vertex++;
+
     if ( !geomTmp->insertVertex( vid, QgsPointV2( layerPoint ) ) )
     {
       QgsDebugMsg( "append vertex failed!" );
       return;
     }
-    geom.setGeometry( geomTmp );
   }
   else
   {
-    if ( !geom.moveVertex( layerPoint.x(), layerPoint.y(), dragVertexId ) )
+    if ( !geomTmp->moveVertex( vid, QgsPointV2( layerPoint ) ) )
     {
       QgsDebugMsg( "move vertex failed!" );
       return;
     }
   }
+
+  geom.setGeometry( geomTmp );
 
   QHash<QgsVectorLayer*, QHash<QgsFeatureId, QgsGeometry> > edits;  // dict { layer : { fid : geom } }
   edits[dragLayer][dragFid] = geom;

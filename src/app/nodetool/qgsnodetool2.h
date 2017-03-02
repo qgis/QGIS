@@ -49,13 +49,13 @@ struct Edge
       , edgeVertex0( vertexId )
       , startMapPoint( startMapPoint ) {}
 
-  QgsVectorLayer* layer;
+  QgsVectorLayer* layer = nullptr;
   QgsFeatureId fid;
   int edgeVertex0;    //!< First vertex (with lower index)
   QgsPoint startMapPoint;  //!< Map point where edge drag started
 
   //! rubber band between the edge's endpoints (owned by drag_bands, not this instance)
-  QgsRubberBand* band0to1;
+  QgsRubberBand* band0to1 = nullptr;
   //! rubber bands from other edges to our edge's first endpoint (owned by drag_bands, not this instance)
   QList<QgsRubberBand*> bandsTo0;
   //! rubber bands from other edges to our edge's second endpoint (owned by drag_bands, not this instance)

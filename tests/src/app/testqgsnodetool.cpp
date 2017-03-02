@@ -25,7 +25,10 @@
 
 bool operator==( const QgsGeometry& g1, const QgsGeometry& g2 )
 {
-  return g1.isGeosEqual( g2 );
+  if ( g1.isNull() && g2.isNull() )
+    return true;
+  else
+    return g1.isGeosEqual( g2 );
 }
 
 namespace QTest
@@ -56,6 +59,8 @@ class TestQgsNodeTool : public QObject
     void testAddVertex();
     void testAddVertexAtEndpoint();
     void testDeleteVertex();
+
+    void undoChanged(); // TODO
 
   private:
     QPoint mapToScreen( double mapX, double mapY )
@@ -167,6 +172,8 @@ void TestQgsNodeTool::initTestCase()
   QCOMPARE( mLayerPolygon->undoStack()->index(), 1 );
   QCOMPARE( mLayerPoint->undoStack()->index(), 1 );
 
+  connect( mLayerLine->undoStack(), &QUndoStack::indexChanged, this, &TestQgsNodeTool::undoChanged );
+
   mCanvas->setFrameStyle( QFrame::NoFrame );
   mCanvas->resize( 512, 512 );
   mCanvas->setExtent( QgsRectangle( 0, 0, 8, 8 ) );
@@ -176,8 +183,6 @@ void TestQgsNodeTool::initTestCase()
   QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
 
   mCanvas->setLayers( QList<QgsMapLayer*>() << mLayerLine << mLayerPolygon << mLayerPoint );
-
-  qApp->processEvents(); // will this fix travis?
 
   // TODO: set up snapping
 
@@ -196,15 +201,20 @@ void TestQgsNodeTool::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 
+void TestQgsNodeTool::undoChanged()
+{
+  qDebug( "UNDO CHANGED" );
+}
 
 void TestQgsNodeTool::testMoveVertex()
 {
+  QCOMPARE( mCanvas->mapSettings().outputSize(), QSize( 512, 512 ) );
+  QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
+
   // move vertex of linestring
 
   mouseClick( 2, 1, Qt::LeftButton );
   mouseClick( 2, 2, Qt::LeftButton );
-
-  qApp->processEvents(); // will this fix travis?
 
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
   QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 2, 1 1, 1 3)" ) );
@@ -402,6 +412,18 @@ void TestQgsNodeTool::testDeleteVertex()
   mLayerPolygon->undoStack()->undo();
 
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
+
+  // delete vertex in point - deleting its geometry
+
+  mouseClick( 2, 3, Qt::LeftButton );
+  keyClick( Qt::Key_Delete );
+
+  QCOMPARE( mLayerPoint->undoStack()->index(), 2 );
+  QCOMPARE( mLayerPoint->getFeature( mFidPointF1 ).geometry(), QgsGeometry() );
+
+  mLayerPoint->undoStack()->undo();
+
+  QCOMPARE( mLayerPoint->getFeature( mFidPointF1 ).geometry(), QgsGeometry::fromWkt( "POINT(2 3)" ) );
 
   // no other unexpected changes happened
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
