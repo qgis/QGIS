@@ -300,7 +300,7 @@ class ProcessingToolbox(BASE, WIDGET):
                     if recentItem.text(0) == self.tr('Recently used algorithms'):
                         treeWidget = recentItem.treeWidget()
                         treeWidget.takeTopLevelItem(
-                                    treeWidget.indexOfTopLevelItem(recentItem))
+                            treeWidget.indexOfTopLevelItem(recentItem))
 
                 recentItem = QTreeWidgetItem()
                 recentItem.setText(0, self.tr('Recently used algorithms'))
