@@ -35,6 +35,7 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
 
     virtual void start() override;
     virtual void cancel() override;
+    virtual void cancelWithoutBlocking() override;
     virtual void waitForFinished() override;
     virtual bool isActive() const override;
 

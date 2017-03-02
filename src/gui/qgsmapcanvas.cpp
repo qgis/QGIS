@@ -835,8 +835,10 @@ void QgsMapCanvas::stopRendering()
   {
     QgsDebugMsg( "CANVAS stop rendering!" );
     mJobCancelled = true;
-    mJob->cancel();
-    Q_ASSERT( !mJob ); // no need to delete here: already deleted in finished()
+    disconnect( mJob, SIGNAL( finished() ), this, SLOT( rendererJobFinished() ) );
+    connect( mJob, SIGNAL( finished() ), mJob, SLOT( deleteLater() ) );
+    mJob->cancelWithoutBlocking();
+    mJob = nullptr;
   }
 }
 

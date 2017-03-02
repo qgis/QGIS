@@ -38,6 +38,7 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
 
     virtual void start() override;
     virtual void cancel() override;
+    virtual void cancelWithoutBlocking() override;
     virtual void waitForFinished() override;
     virtual bool isActive() const override;
     virtual QgsLabelingResults* takeLabelingResults() override;

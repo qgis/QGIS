@@ -19,6 +19,7 @@ class QgsMapRendererCustomPainterJob : QgsMapRendererJob
 
     virtual void start();
     virtual void cancel();
+    virtual void cancelWithoutBlocking();
     virtual void waitForFinished();
     virtual bool isActive() const;
     virtual QgsLabelingResults* takeLabelingResults() /Transfer/;

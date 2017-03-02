@@ -123,6 +123,28 @@ void QgsMapRendererParallelJob::cancel()
   Q_ASSERT( mStatus == Idle );
 }
 
+void QgsMapRendererParallelJob::cancelWithoutBlocking()
+{
+  if ( !isActive() )
+    return;
+
+  QgsDebugMsg( QString( "PARALLEL cancel at status %1" ).arg( mStatus ) );
+
+  mLabelingRenderContext.setRenderingStopped( true );
+  for ( LayerRenderJobs::iterator it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
+  {
+    it->context.setRenderingStopped( true );
+    if ( it->renderer && it->renderer->feedback() )
+      it->renderer->feedback()->cancel();
+  }
+
+  if ( mStatus == RenderingLayers )
+  {
+    disconnect( &mFutureWatcher, SIGNAL( finished() ), this, SLOT( renderLayersFinished() ) );
+    connect( &mFutureWatcher, SIGNAL( finished() ), this, SLOT( renderingFinished() ) );
+  }
+}
+
 void QgsMapRendererParallelJob::waitForFinished()
 {
   if ( !isActive() )

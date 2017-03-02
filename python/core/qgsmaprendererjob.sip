@@ -56,6 +56,8 @@ class QgsMapRendererJob : QObject
     //! Does nothing if the rendering is not active.
     virtual void cancel() = 0;
 
+    virtual void cancelWithoutBlocking() = 0;
+
     //! Block until the job has finished.
     virtual void waitForFinished() = 0;
 
