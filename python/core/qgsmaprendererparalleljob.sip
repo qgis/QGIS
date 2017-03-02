@@ -18,6 +18,7 @@ class QgsMapRendererParallelJob : QgsMapRendererQImageJob
 
     virtual void start();
     virtual void cancel();
+    virtual void cancelWithoutBlocking();
     virtual void waitForFinished();
     virtual bool isActive() const;
 
