@@ -314,21 +314,25 @@ void QgsNodeTool2::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   }
   else  // selection rect is not being dragged
   {
+    qDebug( "release: no selection rect!" );
     if ( e->button() == Qt::LeftButton )
     {
       // accepting action
       if ( mDraggingVertex )
       {
         QgsPointLocator::Match match = e->mapPointMatch();
+        qDebug( "release: move vertex" );
         moveVertex( e->mapPoint(), &match );
       }
       else if ( mDraggingEdge )
       {
         // do not use e.mapPoint() as it may be snapped
+        qDebug( "release: move edge" );
         moveEdge( toMapCoordinates( e->pos() ) );
       }
       else
       {
+        qDebug( "release: start dragging" );
         startDragging( e );
       }
     }
@@ -1016,11 +1020,12 @@ void QgsNodeTool2::moveVertex( const QgsPoint &mapPoint, const QgsPointLocator::
   stopDragging();
 
   QgsPoint layerPoint = matchToLayerPoint( dragLayer, mapPoint, mapPointMatch );
+  qDebug( "layer pt: %f,%f", layerPoint.x(), layerPoint.y() );
 
   QgsVertexId vid;
   if ( !geom.vertexIdFromVertexNr( dragVertexId, vid ) )
   {
-    QgsDebugMsg( "invalid vertex index" );
+    qDebug( "invalid vertex index" );
     return;
   }
 
@@ -1034,7 +1039,7 @@ void QgsNodeTool2::moveVertex( const QgsPoint &mapPoint, const QgsPointLocator::
 
     if ( !geomTmp->insertVertex( vid, QgsPointV2( layerPoint ) ) )
     {
-      QgsDebugMsg( "append vertex failed!" );
+      qDebug( "append vertex failed!" );
       return;
     }
   }
@@ -1042,7 +1047,7 @@ void QgsNodeTool2::moveVertex( const QgsPoint &mapPoint, const QgsPointLocator::
   {
     if ( !geomTmp->moveVertex( vid, QgsPointV2( layerPoint ) ) )
     {
-      QgsDebugMsg( "move vertex failed!" );
+      qDebug( "move vertex failed!" );
       return;
     }
   }
@@ -1070,7 +1075,7 @@ void QgsNodeTool2::moveVertex( const QgsPoint &mapPoint, const QgsPointLocator::
 
     if ( !topoGeom.moveVertex( point.x(), point.y(), topo.vertexId ) )
     {
-      QgsDebugMsg( "[topo] move vertex failed!" );
+      qDebug( "[topo] move vertex failed!" );
       continue;
     }
     edits[topo.layer][topo.fid] = topoGeom;
@@ -1079,6 +1084,8 @@ void QgsNodeTool2::moveVertex( const QgsPoint &mapPoint, const QgsPointLocator::
   // TODO: topo editing: add points when adding a vertex on a common edge
 
   // TODO: add topological points: when moving vertex - if snapped to something
+
+  qDebug( "writing changes now" );
 
   // do the changes to layers
   QHash<QgsVectorLayer*, QHash<QgsFeatureId, QgsGeometry> >::iterator it = edits.begin();
