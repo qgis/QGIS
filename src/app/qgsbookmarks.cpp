@@ -337,7 +337,7 @@ void QgsBookmarks::exportToXML()
     return;
   }
 
-  // ensure the user never ommited the extension from the file name
+  // ensure the user never omitted the extension from the file name
   if ( !fileName.endsWith( ".xml", Qt::CaseInsensitive ) )
   {
     fileName += ".xml";
@@ -351,8 +351,7 @@ void QgsBookmarks::exportToXML()
   int colCount = mModel->columnCount();
 
   QList<QString> headerList;
-  headerList << "id" << "name" << "project" << "xmin"
-  << "ymin" << "xmax" << "ymax" << "sr_id";
+  headerList << "id" << "name" << "project" << "xmin" << "ymin" << "xmax" << "ymax" << "sr_id";
 
   for ( int i = 0; i < rowCount; ++i )
   {
@@ -406,8 +405,7 @@ int QgsProjectBookmarksTableModel::rowCount( const QModelIndex& parent ) const
 int QgsProjectBookmarksTableModel::columnCount( const QModelIndex& parent ) const
 {
   Q_UNUSED( parent );
-
-  return 8;
+  return 7;
 }
 
 QVariant QgsProjectBookmarksTableModel::data( const QModelIndex& index, int role ) const
