@@ -36,7 +36,7 @@ ELSE(EXISTS QSCINTILLA_VERSION_STR)
   if(ENABLE_QT5)
     set(QSCINTILLA_LIBRARY_NAMES qscintilla2-qt5 qscintilla2_qt5 libqt5scintilla2 libqscintilla2-qt5 qt5scintilla2 libqscintilla2-qt5.dylib)
   else(ENABLE_QT5)
-    set(QSCINTILLA_LIBRARY_NAMES qscintilla2 libqscintilla2 libqscintilla2.dylib)
+    set(QSCINTILLA_LIBRARY_NAMES qscintilla2 qscintilla2_qt4 libqscintilla2 libqscintilla2.dylib)
   endif(ENABLE_QT5)
 
   find_library(QSCINTILLA_LIBRARY
