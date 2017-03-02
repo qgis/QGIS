@@ -109,14 +109,7 @@ void QgsMapRendererCustomPainterJob::cancel()
 
   QgsDebugMsg( "QPAINTER canceling" );
   disconnect( &mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererCustomPainterJob::futureFinished );
-
-  mLabelJob.context.setRenderingStopped( true );
-  for ( LayerRenderJobs::iterator it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
-  {
-    it->context.setRenderingStopped( true );
-    if ( it->renderer && it->renderer->feedback() )
-      it->renderer->feedback()->cancel();
-  }
+  cancelWithoutBlocking();
 
   QTime t;
   t.start();
@@ -128,6 +121,23 @@ void QgsMapRendererCustomPainterJob::cancel()
   futureFinished();
 
   QgsDebugMsg( "QPAINTER canceled" );
+}
+
+void QgsMapRendererCustomPainterJob::cancelWithoutBlocking()
+{
+  if ( !isActive() )
+  {
+    QgsDebugMsg( "QPAINTER not running!" );
+    return;
+  }
+
+  mLabelJob.context.setRenderingStopped( true );
+  for ( LayerRenderJobs::iterator it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
+  {
+    it->context.setRenderingStopped( true );
+    if ( it->renderer && it->renderer->feedback() )
+      it->renderer->feedback()->cancel();
+  }
 }
 
 void QgsMapRendererCustomPainterJob::waitForFinished()

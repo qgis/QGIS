@@ -83,6 +83,15 @@ void QgsMapRendererSequentialJob::cancel()
   Q_ASSERT( !mInternalJob && !mPainter );
 }
 
+void QgsMapRendererSequentialJob::cancelWithoutBlocking()
+{
+  if ( !isActive() )
+    return;
+
+  QgsDebugMsg( "sequential - cancel internal" );
+  mInternalJob->cancelWithoutBlocking();
+}
+
 void QgsMapRendererSequentialJob::waitForFinished()
 {
   if ( !isActive() )
