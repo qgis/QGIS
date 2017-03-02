@@ -139,7 +139,7 @@ class RAlgorithm(GeoAlgorithm):
                 self.commands.append(line)
             self.script += line + '\n'
             try:
-                line = lines.next().strip('\n').strip('\r')
+                line = next(lines).strip('\n').strip('\r')
             except:
                 break
 
