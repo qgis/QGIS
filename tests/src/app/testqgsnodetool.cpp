@@ -127,6 +127,9 @@ void TestQgsNodeTool::initTestCase()
 
   mCanvas = new QgsMapCanvas();
 
+  qDebug( "canvas otf %d crs %s", mCanvas->hasCrsTransformEnabled(), mCanvas->mapSettings().destinationCrs().authid().toAscii().data() );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( "EPSG:27700" ) );
+
   mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mCanvas );
 
   // make testing layers
