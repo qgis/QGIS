@@ -349,8 +349,15 @@ void QgsBookmarks::exportToXml()
   int colCount = mModel->columnCount();
 
   QList<QString> headerList;
-  headerList << QStringLiteral( "id" ) << QStringLiteral( "name" ) << QStringLiteral( "project" ) << QStringLiteral( "xmin" )
-  << QStringLiteral( "ymin" ) << QStringLiteral( "xmax" ) << QStringLiteral( "ymax" ) << QStringLiteral( "sr_id" );
+  headerList
+  << QStringLiteral( "id" )
+  << QStringLiteral( "name" )
+  << QStringLiteral( "project" )
+  << QStringLiteral( "xmin" )
+  << QStringLiteral( "ymin" )
+  << QStringLiteral( "xmax" )
+  << QStringLiteral( "ymax" )
+  << QStringLiteral( "sr_id" );
 
   for ( int i = 0; i < rowCount; ++i )
   {
@@ -386,7 +393,6 @@ void QgsBookmarks::exportToXml()
   settings.setValue( QStringLiteral( "/Windows/Bookmarks/LastUsedDirectory" ), QFileInfo( fileName ).path() );
 }
 
-
 QgsProjectBookmarksTableModel::QgsProjectBookmarksTableModel()
 {
   QObject::connect(
@@ -404,8 +410,7 @@ int QgsProjectBookmarksTableModel::rowCount( const QModelIndex& parent ) const
 int QgsProjectBookmarksTableModel::columnCount( const QModelIndex& parent ) const
 {
   Q_UNUSED( parent );
-
-  return 8;
+  return 7;
 }
 
 QVariant QgsProjectBookmarksTableModel::data( const QModelIndex& index, int role ) const
