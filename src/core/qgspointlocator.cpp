@@ -104,17 +104,29 @@ class QgsPointLocator_VisitorNearestVertex : public IVisitor
       QgsGeometry *geom = mLocator->mGeoms.value( id );
       int vertexIndex, beforeVertex, afterVertex;
       double sqrDist;
+      qDebug( "VISIT %s", geom->exportToWkt().toAscii().data() );
+
       QgsPoint pt = geom->closestVertex( mSrcPoint, vertexIndex, beforeVertex, afterVertex, sqrDist );
       if ( sqrDist < 0 )
+      {
+        qDebug( "negative res!!!! (closestVertex)" );
         return;  // probably empty geometry
+      }
 
       QgsPointLocator::Match m( QgsPointLocator::Vertex, mLocator->mLayer, id, sqrt( sqrDist ), pt, vertexIndex );
+      qDebug( "closest vertex dist %f", sqrt( sqrDist ) );
       // in range queries the filter may reject some matches
       if ( mFilter && !mFilter->acceptMatch( m ) )
+      {
+        qDebug( "filtered out!!!!" );
         return;
+      }
 
       if ( !mBest.isValid() || m.distance() < mBest.distance() )
+      {
         mBest = m;
+        qDebug( "is best!" );
+      }
     }
 
   private:
@@ -848,19 +860,28 @@ void QgsPointLocator::onGeometryChanged( QgsFeatureId fid, const QgsGeometry &ge
 
 QgsPointLocator::Match QgsPointLocator::nearestVertex( const QgsPoint &point, double tolerance, MatchFilter *filter )
 {
+  qDebug( "nearestVertex %f,%f tol %f", point.x(), point.y(), tolerance );
   if ( !mRTree )
   {
     init();
     if ( !mRTree ) // still invalid?
+    {
+      qDebug( "!!!!!" );
       return Match();
+    }
   }
 
   Match m;
   QgsPointLocator_VisitorNearestVertex visitor( this, m, point, filter );
   QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
+  qDebug( "search rect %s", rect.toString().toAscii().data() );
   mRTree->intersectsWithQuery( rect2region( rect ), visitor );
+  qDebug( "nearestVertex res %d..%f", m.type(), m.distance() );
   if ( m.isValid() && m.distance() > tolerance )
+  {
+    qDebug( "outside!" );
     return Match(); // make sure that only match strictly within the tolerance is returned
+  }
   return m;
 }
 
