@@ -38,8 +38,6 @@ class AlgorithmList(QObject):
     # and values are list with all algorithms from that provider
     algs = {}
 
-    providers = []
-
     def removeProvider(self, provider_id):
         if provider_id in self.algs:
             del self.algs[provider_id]
@@ -47,7 +45,7 @@ class AlgorithmList(QObject):
         QgsApplication.processingRegistry().removeProvider(provider_id)
 
     def reloadProvider(self, provider_id):
-        for p in self.providers:
+        for p in QgsApplication.processingRegistry().providers():
             if p.id() == provider_id:
                 p.loadAlgorithms()
                 self.algs[p.id()] = {a.commandLineName(): a for a in p.algs}

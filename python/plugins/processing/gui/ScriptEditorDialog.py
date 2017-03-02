@@ -49,6 +49,7 @@ from processing.algs.r.RAlgorithm import RAlgorithm
 from processing.algs.r.RUtils import RUtils
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.script.ScriptUtils import ScriptUtils
+from processing.core.alglist import algList
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -169,11 +170,20 @@ class ScriptEditorDialog(BASE, WIDGET):
                                        QMessageBox.Yes | QMessageBox.No, QMessageBox.No
                                        )
             if ret == QMessageBox.Yes:
+                self.updateProviders()
                 evt.accept()
             else:
                 evt.ignore()
         else:
+            self.updateProviders()
             evt.accept()
+
+    def updateProviders(self):
+        if self.update:
+            if self.algType == self.SCRIPT_PYTHON:
+                algList.reloadProvider('script')
+            elif self.algType == self.SCRIPT_R:
+                algList.reloadProvider('r')
 
     def editHelp(self):
         if self.alg is None:

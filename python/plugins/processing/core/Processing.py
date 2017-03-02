@@ -172,11 +172,12 @@ class Processing(object):
     def updateAlgsList():
         """Call this method when there has been any change that
         requires the list of algorithms to be created again from
-        algorithm providers.
+        algorithm providers. Use reloadProvider() for a more fine-grained
+        update.
         """
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         for p in Processing.providers:
-            Processing.reloadProvider(p)
+            Processing.reloadProvider(p.id())
         QApplication.restoreOverrideCursor()
 
     @staticmethod

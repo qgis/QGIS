@@ -50,9 +50,3 @@ class EditScriptAction(ContextAction):
     def execute(self):
         dlg = ScriptEditorDialog(self.scriptType, self.itemData)
         dlg.show()
-        dlg.exec_()
-        if dlg.update:
-            if self.scriptType == ScriptEditorDialog.SCRIPT_PYTHON:
-                algList.reloadProvider('script')
-            elif self.scriptType == ScriptEditorDialog.SCRIPT_R:
-                algList.reloadProvider('r')
