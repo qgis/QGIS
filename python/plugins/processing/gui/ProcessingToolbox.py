@@ -297,9 +297,10 @@ class ProcessingToolbox(BASE, WIDGET):
                 found = False
                 if updating:
                     recentItem = self.algorithmTree.topLevelItem(0)
-                    treeWidget = recentItem.treeWidget()
-                    treeWidget.takeTopLevelItem(
-                        treeWidget.indexOfTopLevelItem(recentItem))
+                    if recentItem.text(0) == self.tr('Recently used algorithms'):
+                        treeWidget = recentItem.treeWidget()
+                        treeWidget.takeTopLevelItem(
+                                    treeWidget.indexOfTopLevelItem(recentItem))
 
                 recentItem = QTreeWidgetItem()
                 recentItem.setText(0, self.tr('Recently used algorithms'))
