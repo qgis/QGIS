@@ -560,9 +560,7 @@ class Grass7Algorithm(GeoAlgorithm):
         return command
 
     def getTempFilename(self):
-        filename = 'tmp' + str(time.time()).replace('.', '') \
-            + str(system.getNumExportedLayers())
-        return filename
+        return system.getTempFilename()
 
     def commandLineName(self):
         return 'grass7:' + self.name[:self.name.find(' ')]
