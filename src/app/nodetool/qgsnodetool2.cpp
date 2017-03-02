@@ -474,12 +474,14 @@ QgsPointLocator::Match QgsNodeTool2::snapToEditableLayer( QgsMapMouseEvent *e )
 {
   QgsPoint mapPoint = toMapCoordinates( e->pos() );
   double tol = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
+  qDebug( "snap: pt %f,%f tol %f", mapPoint.x(), mapPoint.y(), tol );
 
   QgsSnappingConfig config( QgsProject::instance() );
   config.setEnabled( true );
   config.setMode( QgsSnappingConfig::AdvancedConfiguration );
   config.setIntersectionSnapping( false );  // only snap to layers
 
+  qDebug( "canvas layers: %d", canvas()->layers().count() );
   Q_FOREACH ( QgsMapLayer* layer, canvas()->layers() )
   {
     QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( layer );
@@ -488,6 +490,7 @@ QgsPointLocator::Match QgsNodeTool2::snapToEditableLayer( QgsMapMouseEvent *e )
 
     config.setIndividualLayerSettings( vlayer, QgsSnappingConfig::IndividualLayerSettings(
                                          true, QgsSnappingConfig::VertexAndSegment, tol, QgsTolerance::ProjectUnits ) );
+    qDebug( "will use layer %s tolerance %f", vlayer->name().toAscii().data(), tol );
   }
 
   QgsSnappingUtils* snapUtils = canvas()->snappingUtils();
@@ -733,11 +736,13 @@ void QgsNodeTool2::startDragging( QgsMapMouseEvent *e )
   QgsPoint mapPoint = toMapCoordinates( e->pos() );
   if ( isNearEndpointMarker( mapPoint ) )
   {
+    qDebug( "start drag at endpoint" );
     startDraggingAddVertexAtEndpoint( mapPoint );
     return;
   }
 
   QgsPointLocator::Match m = snapToEditableLayer( e );
+  qDebug( "match type: %d", m.type() );
   if ( !m.isValid() )
     return;
 
@@ -747,6 +752,7 @@ void QgsNodeTool2::startDragging( QgsMapMouseEvent *e )
   // adding a new vertex instead of moving a vertex
   if ( m.hasEdge() )
   {
+    qDebug( "dragging edge!" );
     // only start dragging if we are near edge center
     mapPoint = toMapCoordinates( e->pos() );
     bool isNearCenter = matchEdgeCenterTest( m, mapPoint );
@@ -757,6 +763,7 @@ void QgsNodeTool2::startDragging( QgsMapMouseEvent *e )
   }
   else   // vertex
   {
+    qDebug( "dragging vertex!" );
     startDraggingMoveVertex( e->mapPoint(), m );
   }
 }
