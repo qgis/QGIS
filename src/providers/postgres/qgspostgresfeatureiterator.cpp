@@ -57,6 +57,30 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     return;
   }
 
+  //tweak queue size
+  if ( !( request.flags() & QgsFeatureRequest::NoGeometry ) )
+  {
+    // fetching geom => we tweak the feature queue size depending
+    // on the geometry type. This based on the assumption that
+    // line and polygon geometries will be much larger than point
+    // geometries
+    switch ( QgsWkbTypes::geometryType( source->mRequestedGeomType ) )
+    {
+      case QgsWkbTypes::LineGeometry:
+        mFeatureQueueSize /= 30; // magic number... assuming average line is about 30x larger than a point
+        break;
+
+      case QgsWkbTypes::PolygonGeometry:
+        mFeatureQueueSize /= 100; // magic number... assume average polygon is about 100x larger than a point
+        break;
+
+      case QgsWkbTypes::PointGeometry:
+      case QgsWkbTypes::UnknownGeometry:
+      case QgsWkbTypes::NullGeometry:
+        break; // no change
+    }
+  }
+
   mCursorName = mConn->uniqueCursorName();
   QString whereClause;
 
