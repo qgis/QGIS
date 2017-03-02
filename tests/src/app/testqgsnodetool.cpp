@@ -18,6 +18,7 @@
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapcanvassnappingutils.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
@@ -187,6 +188,8 @@ void TestQgsNodeTool::initTestCase()
   qDebug( "line layer extent: %s", mLayerLine->extent().toString().toAscii().data() );
 
   // TODO: set up snapping
+
+  mCanvas->setSnappingUtils( new QgsMapCanvasSnappingUtils( mCanvas, this ) );
 
   // create node tool
   mNodeTool = new QgsNodeTool2( mCanvas, mAdvancedDigitizingDockWidget );

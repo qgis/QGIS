@@ -741,7 +741,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
       }
     }
 
-    qDebug( "adding feature to index" );
+    qDebug( "adding feature to index: %d %s", ( int )f.id(), f.geometry().boundingBox().toString().toAscii().data() );
 
     SpatialIndex::Region r( rect2region( f.geometry().boundingBox() ) );
     dataList << new RTree::Data( 0, nullptr, r, f.id() );
