@@ -23,10 +23,14 @@ from qgis.core import (QgsMapRendererCache,
                        QgsProject,
                        QgsFeature,
                        QgsGeometry,
-                       QgsMapSettings)
+                       QgsMapSettings,
+                       QgsPoint)
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QSize, QThreadPool
 from qgis.PyQt.QtGui import QPainter, QImage
+from qgis.PyQt.QtTest import QSignalSpy
+from random import uniform
+
 
 app = start_app()
 
@@ -378,6 +382,51 @@ class TestQgsMapRenderer(unittest.TestCase):
         self.assertFalse(cache.hasCacheImage('_labels_'))
         self.assertTrue(job.takeLabelingResults())
 
+    def checkCancel(self, job_type):
+        """test canceling a render job"""
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer1", "memory")
+
+        # add a ton of random points
+        for i in range(2000):
+            x = uniform(5, 25)
+            y = uniform(25, 45)
+            g = QgsGeometry.fromPoint(QgsPoint(x, y))
+            f = QgsFeature()
+            f.setGeometry(g)
+            f.initAttributes(1)
+            layer.dataProvider().addFeatures([f])
+
+        settings = QgsMapSettings()
+        settings.setExtent(QgsRectangle(5, 25, 25, 45))
+        settings.setOutputSize(QSize(600, 400))
+        settings.setLayers([layer])
+
+        # first try non-blocking cancelWithoutBlocking() call
+        job = job_type(settings)
+        finished_spy = QSignalSpy(job.finished)
+        job.start()
+
+        # insta cancel!
+        job.cancelWithoutBlocking()
+        # should still be active immediately after
+        self.assertTrue(job.isActive())
+
+        while job.isActive():
+            app.processEvents()
+        self.assertEqual(len(finished_spy), 1)
+
+        # try blocking cancel() call
+        job = job_type(settings)
+        finished_spy = QSignalSpy(job.finished)
+        job.start()
+
+        # insta cancel!
+        job.cancel()
+        # should not be active anymore
+        self.assertFalse(job.isActive())
+        self.assertEqual(len(finished_spy), 1)
+
     def runRendererChecks(self, renderer):
         """ runs all checks on the specified renderer """
         self.checkRendererUseCachedLabels(renderer)
@@ -388,6 +437,7 @@ class TestQgsMapRenderer(unittest.TestCase):
         self.checkAddingNewNonLabeledLayerKeepsLabelCache(renderer)
         self.checkRemovingNonLabeledLayerKeepsLabelCache(renderer)
         self.checkLabeledLayerWithBlendModesCannotBeCached(renderer)
+        self.checkCancel(renderer)
 
     def testParallelRenderer(self):
         """ run test suite on QgsMapRendererParallelJob"""
