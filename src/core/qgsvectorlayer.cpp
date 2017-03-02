@@ -159,7 +159,7 @@ QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
   connect( mJoinBuffer, &QgsVectorLayerJoinBuffer::joinedFieldsChanged, this, &QgsVectorLayer::onJoinedFieldsChanged );
 
   // if we're given a provider type, try to create and bind one to this layer
-  if ( ! mProviderKey.isEmpty() )
+  if ( !vectorLayerPath.isEmpty() && !mProviderKey.isEmpty() )
   {
     setDataSource( vectorLayerPath, baseName, providerKey, loadDefaultStyleFlag );
   }
