@@ -18,6 +18,7 @@
 #define WKBPTR_H
 
 #include <QSharedData>
+#include <QVector>
 
 union wkbPtr
 {

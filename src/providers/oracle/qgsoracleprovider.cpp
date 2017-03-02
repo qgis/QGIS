@@ -2244,9 +2244,9 @@ QgsRectangle QgsOracleProvider::extent() const
 
     if ( ok && qry.next() )
     {
-      QByteArray *ba = static_cast<QByteArray*>( qry.value( 0 ).data() );
+      QByteArray ba( qry.value( 0 ).toByteArray() );
       QgsGeometry g;
-      g.fromWkb( *ba );
+      g.fromWkb( ba );
       mLayerExtent = g.boundingBox();
       QgsDebugMsg( "extent: " + mLayerExtent.toString() );
     }

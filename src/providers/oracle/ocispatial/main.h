@@ -41,21 +41,16 @@
 **
 ****************************************************************************/
 
-#ifndef QOCISPATIAL_MAIN_H
-#define QOCISPATIAL_MAIN_H
-
-#include <QSqlDriverPlugin>
-#include <QStringList>
+#include <qsqldriverplugin.h>
+#include "qsql_ocispatial.h"
 
 class QOCISpatialDriverPlugin : public QSqlDriverPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA( IID "org.qt-project.Qt.QSqlDriverFactoryInterface" FILE "qocispatial.json" )
+
   public:
     QOCISpatialDriverPlugin();
 
     QSqlDriver* create( const QString & );
-    QStringList keys() const;
 };
-
-#endif

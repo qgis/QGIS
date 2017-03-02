@@ -267,11 +267,11 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
 
     if ( mFetchGeometry )
     {
-      QByteArray *ba = static_cast<QByteArray*>( mQry.value( col++ ).data() );
-      if ( ba->size() > 0 )
+      QByteArray ba( mQry.value( col++ ).toByteArray() );
+      if ( ba.size() > 0 )
       {
         QgsGeometry g;
-        g.fromWkb( *ba );
+        g.fromWkb( ba );
         feature.setGeometry( g );
       }
       else
@@ -375,11 +375,11 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
       QVariant v = mQry.value( col );
       if ( fld.type() == QVariant::ByteArray && fld.typeName().endsWith( ".SDO_GEOMETRY" ) )
       {
-        QByteArray *ba = static_cast<QByteArray*>( v.data() );
-        if ( ba->size() > 0 )
+        QByteArray ba( v.toByteArray() );
+        if ( ba.size() > 0 )
         {
           QgsGeometry g;
-          g.fromWkb( *ba );
+          g.fromWkb( ba );
           v = g.exportToWkt();
         }
         else
