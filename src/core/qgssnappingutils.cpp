@@ -166,6 +166,7 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPoint &p
 
 static void _replaceIfBetter( QgsPointLocator::Match &mBest, const QgsPointLocator::Match &mNew, double maxDistance )
 {
+  qDebug( "replace: old %d..%f / new %d..%f", mBest.type(), mBest.distance(), mNew.type(), mNew.distance() );
   // is other match relevant?
   if ( !mNew.isValid() || mNew.distance() > maxDistance )
     return;
@@ -179,6 +180,7 @@ static void _replaceIfBetter( QgsPointLocator::Match &mBest, const QgsPointLocat
     return;
 
   mBest = mNew; // the other match is better!
+  qDebug( "using it!" );
 }
 
 
@@ -209,7 +211,10 @@ inline QgsRectangle _areaOfInterest( const QgsPoint &point, double tolerance )
 QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint &pointMap, QgsPointLocator::MatchFilter *filter )
 {
   if ( !mMapSettings.hasValidSettings() || !mSnappingConfig.enabled() )
+  {
+    qDebug( "snapToMap invalid" );
     return QgsPointLocator::Match();
+  }
 
   if ( mSnappingConfig.mode() == QgsSnappingConfig::ActiveLayer )
   {
@@ -241,6 +246,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint &pointMap, Qg
   }
   else if ( mSnappingConfig.mode() == QgsSnappingConfig::AdvancedConfiguration )
   {
+    qDebug( "snap to map advanced" );
     QList<LayerAndAreaOfInterest> layers;
     Q_FOREACH ( const LayerConfig &layerConfig, mLayers )
     {
@@ -255,9 +261,11 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint &pointMap, Qg
 
     Q_FOREACH ( const LayerConfig &layerConfig, mLayers )
     {
+      qDebug( "snap - layer - %s", layerConfig.layer->name().toAscii().data() );
       double tolerance = QgsTolerance::toleranceInProjectUnits( layerConfig.tolerance, layerConfig.layer, mMapSettings, layerConfig.unit );
       if ( QgsPointLocator *loc = locatorForLayerUsingStrategy( layerConfig.layer, pointMap, tolerance ) )
       {
+        qDebug( "got locator" );
         _updateBestMatch( bestMatch, pointMap, loc, layerConfig.type, tolerance, filter );
 
         if ( mSnappingConfig.intersectionSnapping() )
@@ -313,6 +321,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint &pointMap, Qg
 
 void QgsSnappingUtils::prepareIndex( const QList<LayerAndAreaOfInterest> &layers )
 {
+  qDebug( "prep index" );
   if ( mIsIndexing )
     return;
   mIsIndexing = true;
@@ -328,6 +337,7 @@ void QgsSnappingUtils::prepareIndex( const QList<LayerAndAreaOfInterest> &layers
     if ( !isIndexPrepared( vl, entry.second ) )
       layersToIndex << entry;
   }
+  qDebug( "layers to index: %d", layersToIndex.count() );
   if ( !layersToIndex.isEmpty() )
   {
     // build indexes
@@ -397,9 +407,11 @@ void QgsSnappingUtils::prepareIndex( const QList<LayerAndAreaOfInterest> &layers
         loc->init();
 
       QgsDebugMsg( QString( "Index init: %1 ms (%2)" ).arg( tt.elapsed() ).arg( vl->id() ) );
+      qDebug( "Index init: %d ms (%s)", tt.elapsed(), vl->name().toAscii().data() );
       prepareIndexProgress( ++i );
     }
     QgsDebugMsg( QString( "Prepare index total: %1 ms" ).arg( t.elapsed() ) );
+    qDebug( "Prepare index total: %d ms", t.elapsed() );
   }
   mIsIndexing = false;
 }
