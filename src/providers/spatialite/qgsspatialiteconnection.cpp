@@ -763,7 +763,7 @@ QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared )
   return handle;
 }
 
-void QgsSqliteHandle::closeDb( QgsSqliteHandle*&handle )
+void QgsSqliteHandle::closeDb( QgsSqliteHandle *&handle )
 {
   if ( handle->ref == -1 )
   {
