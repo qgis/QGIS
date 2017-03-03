@@ -59,6 +59,7 @@ from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider
 from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider
 from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider
 from processing.algs.r.RAlgorithmProvider import RAlgorithmProvider
+from processing.algs.perl.PerlAlgorithmProvider import PerlAlgorithmProvider
 from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
 from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
 from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider
