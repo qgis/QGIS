@@ -126,10 +126,7 @@ class MessageLogger(QObject):
 
     def logMessage(self, msg, tag, level):
         if tag == self.tag or not self.tag:
-            if sys.version_info.major == 2:
-                self.log.append(str(msg))
-            else:
-                self.log.append(str(msg))
+            self.log.append(str(msg))
 
     def messages(self):
         return self.log
@@ -240,10 +237,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
                 for field in f.fields():
                     fields.append(str(field.name()))
                     fieldTypes.append(str(field.typeName()))
-            if sys.version_info.major == 2:
-                fielddata = dict((name, str(f[name])) for name in fields)
-            else:
-                fielddata = dict((name, str(f[name])) for name in fields)
+            fielddata = dict((name, str(f[name])) for name in fields)
             g = f.geometry()
             if not g.isNull():
                 fielddata[geomkey] = str(g.exportToWkt())

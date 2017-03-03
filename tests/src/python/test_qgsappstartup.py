@@ -119,8 +119,6 @@ class TestPyQgsAppStartup(unittest.TestCase):
         for t in ['test_plugins', 'test plugins', 'test_pluginsé€']:
 
             # get a unicode test dir
-            if sys.version_info.major == 2:
-                t = t.encode(locale.getpreferredencoding())
             testDir = os.path.join(self.TMP_DIR, t)
 
             # copy from testdata

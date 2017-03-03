@@ -27,10 +27,7 @@ import sys
 
 
 def strToUrl(s):
-    if sys.version_info.major == 3:
-        return QUrl.fromEncoded(bytes(s, "utf8"))
-    else:
-        return QUrl.fromEncoded(s)
+    return QUrl.fromEncoded(bytes(s, "utf8"))
 
 
 class TestQgsVirtualLayerDefinition(unittest.TestCase):

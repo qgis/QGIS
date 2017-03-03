@@ -643,7 +643,7 @@ _plugin_modules = {}
 def _import(name, globals={}, locals={}, fromlist=[], level=None):
     """ wrapper around builtin import that keeps track of loaded plugin modules """
     if level is None:
-        level = -1 if sys.version_info[0] < 3 else 0
+        level = 0
     mod = _builtin_import(name, globals, locals, fromlist, level)
 
     if mod and '__file__' in mod.__dict__:
