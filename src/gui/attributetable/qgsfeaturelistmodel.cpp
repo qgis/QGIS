@@ -27,18 +27,18 @@ QgsFeatureListModel::QgsFeatureListModel( QgsAttributeTableFilterModel *sourceMo
   , mInjectNull( false )
 {
   setSourceModel( sourceModel );
-  mExpression = new QgsExpression( QLatin1String( "" ) );
 }
 
 QgsFeatureListModel::~QgsFeatureListModel()
 {
-  delete mExpression;
 }
 
 void QgsFeatureListModel::setSourceModel( QgsAttributeTableFilterModel *sourceModel )
 {
   QAbstractProxyModel::setSourceModel( sourceModel );
+  mExpressionContext = sourceModel->layer()->createExpressionContext();
   mFilterModel = sourceModel;
+
   if ( mFilterModel )
   {
     // rewire (filter-)change events in the source model so this proxy reflects the changes
@@ -91,9 +91,8 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
 
     mFilterModel->layerCache()->featureAtId( idxToFid( index ), feat );
 
-    QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mFilterModel->layer() ) );
-    context.setFeature( feat );
-    return mExpression->evaluate( &context );
+    mExpressionContext.setFeature( feat );
+    return mDisplayExpression.evaluate( &mExpressionContext );
   }
 
   if ( role == FeatureInfoRole )
@@ -133,6 +132,57 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
     return Qt::AlignLeft;
   }
 
+
+  if ( role == Qt::BackgroundColorRole
+       || Qt::TextColorRole
+       || Qt::DecorationRole
+       || Qt::FontRole )
+  {
+    QgsVectorLayer *layer = mFilterModel->layer();
+    QgsFeature feat;
+    QgsFeatureId fid = idxToFid( index );
+    mFilterModel->layerCache()->featureAtId( fid, feat );
+    mExpressionContext.setFeature( feat );
+    QList<QgsConditionalStyle> styles;
+
+    if ( mRowStylesMap.contains( fid ) )
+    {
+      styles = mRowStylesMap.value( fid );
+    }
+    else
+    {
+      styles = QgsConditionalStyle::matchingConditionalStyles( layer->conditionalStyles()->rowStyles(), QVariant(),  mExpressionContext );
+      mRowStylesMap.insert( fid, styles );
+    }
+
+    QgsConditionalStyle rowstyle = QgsConditionalStyle::compressStyles( styles );
+
+    if ( mDisplayExpression.isField() )
+    {
+      QString fieldName = *mDisplayExpression.referencedColumns().constBegin();
+      styles = layer->conditionalStyles()->fieldStyles( fieldName );
+      styles = QgsConditionalStyle::matchingConditionalStyles( styles, feat.attribute( fieldName ),  mExpressionContext );
+    }
+
+    styles.insert( 0, rowstyle );
+
+    QgsConditionalStyle style = QgsConditionalStyle::compressStyles( styles );
+
+    if ( style.isValid() )
+    {
+      if ( role == Qt::BackgroundColorRole && style.validBackgroundColor() )
+        return style.backgroundColor();
+      if ( role == Qt::TextColorRole && style.validTextColor() )
+        return style.textColor();
+      if ( role == Qt::DecorationRole )
+        return style.icon();
+      if ( role == Qt::FontRole )
+        return style.font();
+    }
+
+    return QVariant();
+  }
+
   return sourceModel()->data( mapToSource( index ), role );
 }
 
@@ -170,21 +220,17 @@ QgsAttributeTableModel *QgsFeatureListModel::masterModel()
 
 bool QgsFeatureListModel::setDisplayExpression( const QString &expression )
 {
-  QgsExpression *exp = new QgsExpression( expression );
+  QgsExpression exp = QgsExpression( expression );
 
-  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mFilterModel->layer() ) );
+  exp.prepare( &mExpressionContext );
 
-  exp->prepare( &context );
-
-  if ( exp->hasParserError() )
+  if ( exp.hasParserError() )
   {
-    mParserErrorString = exp->parserErrorString();
-    delete exp;
+    mParserErrorString = exp.parserErrorString();
     return false;
   }
 
-  delete mExpression;
-  mExpression = exp;
+  mDisplayExpression = exp;
 
   emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
   return true;
@@ -197,7 +243,7 @@ QString QgsFeatureListModel::parserErrorString()
 
 QString QgsFeatureListModel::displayExpression() const
 {
-  return mExpression->expression();
+  return mDisplayExpression.expression();
 }
 
 bool QgsFeatureListModel::featureByIndex( const QModelIndex &index, QgsFeature &feat )

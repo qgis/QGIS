@@ -515,10 +515,25 @@ void QgsRelationReferenceWidget::init()
       mFilterContainer->hide();
     }
 
-    QgsExpression exp( mReferencedLayer->displayExpression() );
+    QgsExpression displayExpression( mReferencedLayer->displayExpression() );
 
-    requestedAttrs += exp.referencedColumns();
+    requestedAttrs += displayExpression.referencedColumns();
     requestedAttrs << mRelation.fieldPairs().at( 0 ).second;
+
+    Q_FOREACH ( const QgsConditionalStyle &style, mReferencedLayer->conditionalStyles()->rowStyles() )
+    {
+      QgsExpression exp( style.rule() );
+      requestedAttrs += exp.referencedColumns();
+    }
+
+    if ( displayExpression.isField() )
+    {
+      Q_FOREACH ( const QgsConditionalStyle &style, mReferencedLayer->conditionalStyles()->fieldStyles( *displayExpression.referencedColumns().constBegin() ) )
+      {
+        QgsExpression exp( style.rule() );
+        requestedAttrs += exp.referencedColumns();
+      }
+    }
 
     QgsAttributeList attributes;
     Q_FOREACH ( const QString &attr, requestedAttrs )
