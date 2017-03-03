@@ -169,7 +169,7 @@ class QgsSqliteHandle
 
     static QgsSqliteHandle *openDb( const QString &dbPath, bool shared = true );
     static bool checkMetadata( sqlite3 *handle );
-    static void closeDb( QgsSqliteHandle*&handle );
+    static void closeDb( QgsSqliteHandle *&handle );
 
     /**
      * Will close any cached connection
