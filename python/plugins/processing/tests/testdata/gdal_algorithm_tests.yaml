@@ -667,7 +667,7 @@ tests:
         type: rasterhash
 
   - algorithm: gdal:griddatametrics
-    name: Test (gdal:griddatametrics)
+    name: Data Metrics interpolation
     params:
       ANGLE: 0.0
       INPUT:
@@ -683,4 +683,22 @@ tests:
     results:
       OUTPUT:
         hash: 220953299b18286b57ce093a054323e59add7c78c0429a02e51b4ad4
+        type: rasterhash
+
+  - algorithm: gdal:gridaverage
+    name: Moving Average interpolation
+    params:
+      ANGLE: 0.0
+      INPUT:
+        name: custom/points_values.gml
+        type: vector
+      MIN_POINTS: 0.0
+      NODATA: 0.0
+      RADIUS_1: 0.01
+      RADIUS_2: 0.01
+      RTYPE: '5'
+      Z_FIELD: EC
+    results:
+      OUTPUT:
+        hash: 3542d928bccee955b1c426cac7b698c603c9a385429ca529758083bf
         type: rasterhash
