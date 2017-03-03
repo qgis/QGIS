@@ -630,3 +630,17 @@ tests:
       OUTPUT:
         hash: a497763f44380ec33acab572a926a6516e875f2284fc55e702abbdfc
         type: rasterhash
+
+  - algorithm: gdal:rastercalculator
+    name: Simple Raster Calculator test with only 1 raster
+    params:
+      BAND_A: '1'
+      FORMULA: A/2
+      INPUT_A:
+        name: dem.tif
+        type: raster
+      RTYPE: '5'
+    results:
+      OUTPUT:
+        hash: 2d0585dc8166fbe3cec7d9e6fd66e95cc9bdb1043b3b0fa7cbdfef4c
+        type: rasterhash
