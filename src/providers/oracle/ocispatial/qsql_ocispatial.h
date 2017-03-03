@@ -66,8 +66,8 @@ class Q_EXPORT_SQLDRIVER_OCISPATIAL QOCISpatialDriver : public QSqlDriver
     friend class QOCISpatialResultPrivate;
 
   public:
-    explicit QOCISpatialDriver( QObject* parent = nullptr );
-    QOCISpatialDriver( OCIEnv* env, OCISvcCtx* ctx, QObject* parent = nullptr );
+    explicit QOCISpatialDriver( QObject *parent = nullptr );
+    QOCISpatialDriver( OCIEnv *env, OCISvcCtx *ctx, QObject *parent = nullptr );
     ~QOCISpatialDriver();
     bool hasFeature( DriverFeature f ) const;
     bool open( const QString &db,
@@ -79,8 +79,8 @@ class Q_EXPORT_SQLDRIVER_OCISPATIAL QOCISpatialDriver : public QSqlDriver
     void close();
     QSqlResult *createResult() const;
     QStringList tables( QSql::TableType ) const override;
-    QSqlRecord record( const QString& tablename ) const override;
-    QSqlIndex primaryIndex( const QString& tablename ) const override;
+    QSqlRecord record( const QString &tablename ) const override;
+    QSqlIndex primaryIndex( const QString &tablename ) const override;
     QString formatValue( const QSqlField &field,
                          bool trimStrings ) const override;
     QVariant handle() const;

@@ -25,11 +25,11 @@
 #include <QObject>
 #include <QSettings>
 
-QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* source, bool ownSource, const QgsFeatureRequest &request )
-    : QgsAbstractFeatureIteratorFromSource<QgsOracleFeatureSource>( source, ownSource, request )
-    , mRewind( false )
-    , mExpressionCompiled( false )
-    , mFetchGeometry( false )
+QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
+  : QgsAbstractFeatureIteratorFromSource<QgsOracleFeatureSource>( source, ownSource, request )
+  , mRewind( false )
+  , mExpressionCompiled( false )
+  , mFetchGeometry( false )
 {
   mConnection = QgsOracleConnPool::instance()->acquireConnection( QgsOracleConn::toPoolName( mSource->mUri ) );
   if ( !mConnection )
@@ -50,7 +50,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
     // ensure that all attributes required for expression filter are being fetched
     if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
     {
-      Q_FOREACH ( const QString& field, mRequest.filterExpression()->referencedColumns() )
+      Q_FOREACH ( const QString &field, mRequest.filterExpression()->referencedColumns() )
       {
         int attrIdx = mSource->mFields.lookupField( field );
         if ( !mAttributeList.contains( attrIdx ) )
@@ -90,7 +90,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
 
         args << ( mSource->mSrid < 1 ? QVariant( QVariant::Int ) : mSource->mSrid ) << rect.xMinimum() << rect.yMinimum() << rect.xMaximum() << rect.yMaximum();
 
-        if (( mRequest.flags() & QgsFeatureRequest::ExactIntersect ) != 0 )
+        if ( ( mRequest.flags() & QgsFeatureRequest::ExactIntersect ) != 0 )
         {
           // sdo_relate requires Spatial
           if ( mConnection->hasSpatial() )
@@ -227,7 +227,7 @@ QgsOracleFeatureIterator::~QgsOracleFeatureIterator()
   close();
 }
 
-bool QgsOracleFeatureIterator::nextFeatureFilterExpression( QgsFeature& f )
+bool QgsOracleFeatureIterator::nextFeatureFilterExpression( QgsFeature &f )
 {
   if ( !mExpressionCompiled )
     return QgsAbstractFeatureIterator::nextFeatureFilterExpression( f );
@@ -235,7 +235,7 @@ bool QgsOracleFeatureIterator::nextFeatureFilterExpression( QgsFeature& f )
     return fetchFeature( f );
 }
 
-bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
+bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
 {
   feature.setValid( false );
 
@@ -288,7 +288,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
           continue;
         }
 
-        if (( mRequest.flags() & QgsFeatureRequest::ExactIntersect ) == 0 )
+        if ( ( mRequest.flags() & QgsFeatureRequest::ExactIntersect ) == 0 )
         {
           // couldn't use sdo_filter earlier
           if ( !mSource->mHasSpatialIndex )
@@ -502,23 +502,23 @@ bool QgsOracleFeatureIterator::openQuery( QString whereClause, QVariantList args
 
 // -----------
 
-QgsOracleFeatureSource::QgsOracleFeatureSource( const QgsOracleProvider* p )
-    : mUri( p->mUri )
-    , mFields( p->mAttributeFields )
-    , mGeometryColumn( p->mGeometryColumn )
-    , mSrid( p->mSrid )
-    , mHasSpatialIndex( p->mHasSpatialIndex )
-    , mDetectedGeomType( p->mDetectedGeomType )
-    , mRequestedGeomType( p->mRequestedGeomType )
-    , mSqlWhereClause( p->mSqlWhereClause )
-    , mPrimaryKeyType( p->mPrimaryKeyType )
-    , mPrimaryKeyAttrs( p->mPrimaryKeyAttrs )
-    , mQuery( p->mQuery )
-    , mShared( p->mShared )
+QgsOracleFeatureSource::QgsOracleFeatureSource( const QgsOracleProvider *p )
+  : mUri( p->mUri )
+  , mFields( p->mAttributeFields )
+  , mGeometryColumn( p->mGeometryColumn )
+  , mSrid( p->mSrid )
+  , mHasSpatialIndex( p->mHasSpatialIndex )
+  , mDetectedGeomType( p->mDetectedGeomType )
+  , mRequestedGeomType( p->mRequestedGeomType )
+  , mSqlWhereClause( p->mSqlWhereClause )
+  , mPrimaryKeyType( p->mPrimaryKeyType )
+  , mPrimaryKeyAttrs( p->mPrimaryKeyAttrs )
+  , mQuery( p->mQuery )
+  , mShared( p->mShared )
 {
 }
 
-QgsFeatureIterator QgsOracleFeatureSource::getFeatures( const QgsFeatureRequest& request )
+QgsFeatureIterator QgsOracleFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {
   return QgsFeatureIterator( new QgsOracleFeatureIterator( this, false, request ) );
 }

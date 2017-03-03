@@ -28,9 +28,9 @@
 
 QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, const QString &output,
     int countGCPpoints, QWidget *parent )
-    : QDialog( parent )
-    , mSourceRasterFile( raster )
-    , mCountGCPpoints( countGCPpoints )
+  : QDialog( parent )
+  , mSourceRasterFile( raster )
+  , mCountGCPpoints( countGCPpoints )
 {
   setupUi( this );
 
@@ -53,7 +53,7 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
   mListCompression.append( QStringLiteral( "PACKBITS" ) );
   mListCompression.append( QStringLiteral( "DEFLATE" ) );
   QStringList listCompressionTr;
-  Q_FOREACH ( const QString& item, mListCompression )
+  Q_FOREACH ( const QString &item, mListCompression )
   {
     listCompressionTr.append( tr( item.toLatin1().data() ) );
   }
@@ -91,8 +91,8 @@ QgsTransformSettingsDialog::~QgsTransformSettingsDialog()
 void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::TransformParametrisation &tp,
     QgsImageWarper::ResamplingMethod &rm,
     QString &comprMethod, QString &raster,
-    QgsCoordinateReferenceSystem &proj, QString& pdfMapFile, QString& pdfReportFile, bool &zt, bool &loadInQgis,
-    double& resX, double& resY )
+    QgsCoordinateReferenceSystem &proj, QString &pdfMapFile, QString &pdfReportFile, bool &zt, bool &loadInQgis,
+    double &resX, double &resY )
 {
   if ( cmbTransformType->currentIndex() == -1 )
     tp = QgsGeorefTransform::InvalidTransform;
@@ -246,7 +246,7 @@ void QgsTransformSettingsDialog::on_tbnReportFile_clicked()
   }
 }
 
-void QgsTransformSettingsDialog::on_cmbTransformType_currentIndexChanged( const QString& text )
+void QgsTransformSettingsDialog::on_cmbTransformType_currentIndexChanged( const QString &text )
 {
   if ( text == tr( "Linear" ) )
   {
@@ -275,7 +275,7 @@ void QgsTransformSettingsDialog::on_mWorldFileCheckBox_stateChanged( int state )
 bool QgsTransformSettingsDialog::checkGCPpoints( int count, int &minGCPpoints )
 {
   QgsGeorefTransform georefTransform;
-  georefTransform.selectTransformParametrisation(( QgsGeorefTransform::TransformParametrisation )count );
+  georefTransform.selectTransformParametrisation( ( QgsGeorefTransform::TransformParametrisation )count );
   minGCPpoints = georefTransform.getMinimumGCPCount();
   return ( mCountGCPpoints >= minGCPpoints );
 }

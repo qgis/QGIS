@@ -23,10 +23,10 @@ class QgsGeometryMultipartCheck : public QgsGeometryCheck
     Q_OBJECT
 
   public:
-    explicit QgsGeometryMultipartCheck( QgsFeaturePool* featurePool )
-        : QgsGeometryCheck( FeatureCheck, featurePool ) {}
-    void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &messages, QAtomicInt* progressCounter = nullptr, const QgsFeatureIds& ids = QgsFeatureIds() ) const override;
-    void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
+    explicit QgsGeometryMultipartCheck( QgsFeaturePool *featurePool )
+      : QgsGeometryCheck( FeatureCheck, featurePool ) {}
+    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QgsFeatureIds &ids = QgsFeatureIds() ) const override;
+    void fixError( QgsGeometryCheckError *error, int method, int mergeAttributeIndex, Changes &changes ) const override;
     QStringList getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Multipart object with only one feature" ); }
     QString errorName() const override { return QStringLiteral( "QgsGeometryMultipartCheck" ); }

@@ -47,12 +47,12 @@ struct QgsOracleLayerProperty
   QString              sql;
 
   QgsOracleLayerProperty()
-      : isView( false )
+    : isView( false )
   {}
 
   int size() const { Q_ASSERT( types.size() == srids.size() ); return types.size(); }
 
-  bool operator==( const QgsOracleLayerProperty& other )
+  bool operator==( const QgsOracleLayerProperty &other )
   {
     return types == other.types && srids == other.srids && ownerName == other.ownerName &&
            tableName == other.tableName && geometryColName == other.geometryColName &&
@@ -165,7 +165,7 @@ class QgsOracleConn : public QObject
     static bool onlyExistingTypes( QString connName );
     static void deleteConnection( QString connName );
     static QString databaseName( QString database, QString host, QString port );
-    static QString toPoolName( const QgsDataSourceUri& uri );
+    static QString toPoolName( const QgsDataSourceUri &uri );
 
     operator QSqlDatabase() { return mDatabase; }
 

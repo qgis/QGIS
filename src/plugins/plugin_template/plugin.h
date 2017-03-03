@@ -68,7 +68,7 @@ class [pluginname]: public QObject, public QgisPlugin
     * QGIS when it attempts to instantiate the plugin.
     * @param interface Pointer to the QgisInterface object.
      */
-    [pluginname]( QgisInterface * interface );
+    [pluginname]( QgisInterface *interface );
     //! Destructor
     virtual ~[pluginname]();
 
@@ -94,7 +94,7 @@ class [pluginname]: public QObject, public QgisPlugin
     //! Pointer to the QGIS interface object
     QgisInterface *mQGisIface = nullptr;
     //!pointer to the qaction for this plugin
-    QAction * mQActionPointer = nullptr;
+    QAction *mQActionPointer = nullptr;
     ////////////////////////////////////////////////////////////////////
     //
     // ADD YOUR OWN PROPERTY DECLARATIONS AFTER THIS POINT.....

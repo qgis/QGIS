@@ -27,23 +27,23 @@
 #include "qgsglobefeaturesource.h"
 
 
-QgsGlobeFeatureSource::QgsGlobeFeatureSource( const QgsGlobeFeatureOptions& options ) :
-    mOptions( options ),
-    mLayer( 0 ),
-    mProfile( 0 )
+QgsGlobeFeatureSource::QgsGlobeFeatureSource( const QgsGlobeFeatureOptions &options ) :
+  mOptions( options ),
+  mLayer( 0 ),
+  mProfile( 0 )
 {
 }
 
-void QgsGlobeFeatureSource::initialize( const osgDB::Options* dbOptions )
+void QgsGlobeFeatureSource::initialize( const osgDB::Options *dbOptions )
 {
   Q_UNUSED( dbOptions )
   mLayer = mOptions.layer();
 
   connect( mLayer, SIGNAL( attributeValueChanged( QgsFeatureId, int, QVariant ) ), this, SLOT( attributeValueChanged( QgsFeatureId, int, QVariant ) ) );
-  connect( mLayer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ), this, SLOT( geometryChanged( QgsFeatureId, const QgsGeometry& ) ) );
+  connect( mLayer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry & ) ), this, SLOT( geometryChanged( QgsFeatureId, const QgsGeometry & ) ) );
 
   // create the profile
-  osgEarth::SpatialReference* ref = osgEarth::SpatialReference::create( mLayer->crs().toWkt().toStdString() );
+  osgEarth::SpatialReference *ref = osgEarth::SpatialReference::create( mLayer->crs().toWkt().toStdString() );
   if ( 0 == ref )
   {
     std::cout << "Cannot find the spatial reference" << std::endl;
@@ -55,7 +55,7 @@ void QgsGlobeFeatureSource::initialize( const osgDB::Options* dbOptions )
   mSchema = QgsGlobeFeatureUtils::schemaForFields( mLayer->pendingFields() );
 }
 
-osgEarth::Features::FeatureCursor* QgsGlobeFeatureSource::createFeatureCursor( const osgEarth::Symbology::Query& query )
+osgEarth::Features::FeatureCursor *QgsGlobeFeatureSource::createFeatureCursor( const osgEarth::Symbology::Query &query )
 {
   QgsFeatureRequest request;
 
@@ -74,11 +74,11 @@ osgEarth::Features::FeatureCursor* QgsGlobeFeatureSource::createFeatureCursor( c
   return new QgsGlobeFeatureCursor( mLayer, it );
 }
 
-osgEarth::Features::Feature* QgsGlobeFeatureSource::getFeature( osgEarth::Features::FeatureID fid )
+osgEarth::Features::Feature *QgsGlobeFeatureSource::getFeature( osgEarth::Features::FeatureID fid )
 {
   QgsFeature feat;
   mLayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) ).nextFeature( feat );
-  osgEarth::Features::Feature* feature = QgsGlobeFeatureUtils::featureFromQgsFeature( mLayer, feat );
+  osgEarth::Features::Feature *feature = QgsGlobeFeatureUtils::featureFromQgsFeature( mLayer, feat );
   FeatureMap_t::iterator it = mFeatures.find( fid );
   if ( it == mFeatures.end() )
   {
@@ -116,22 +116,22 @@ int QgsGlobeFeatureSource::getFeatureCount() const
   return mLayer->featureCount();
 }
 
-void QgsGlobeFeatureSource::attributeValueChanged( const QgsFeatureId& featureId, int idx, const QVariant& value )
+void QgsGlobeFeatureSource::attributeValueChanged( const QgsFeatureId &featureId, int idx, const QVariant &value )
 {
   FeatureMap_t::iterator it = mFeatures.find( featureId );
   if ( it != mFeatures.end() )
   {
-    osgEarth::Features::Feature* feature = it->second.get();
+    osgEarth::Features::Feature *feature = it->second.get();
     QgsGlobeFeatureUtils::setFeatureField( feature, mLayer->pendingFields().at( idx ), value );
   }
 }
 
-void QgsGlobeFeatureSource::geometryChanged( const QgsFeatureId& featureId, const QgsGeometry& geometry )
+void QgsGlobeFeatureSource::geometryChanged( const QgsFeatureId &featureId, const QgsGeometry &geometry )
 {
   FeatureMap_t::iterator it = mFeatures.find( featureId );
   if ( it != mFeatures.end() )
   {
-    osgEarth::Features::Feature* feature = it->second.get();
+    osgEarth::Features::Feature *feature = it->second.get();
     feature->setGeometry( QgsGlobeFeatureUtils::geometryFromQgsGeometry( geometry ) );
   }
 }
@@ -145,7 +145,7 @@ class QgsGlobeFeatureSourceFactory : public osgEarth::Features::FeatureSourceDri
       supportsExtension( "osgearth_feature_qgis", "QGIS feature driver for osgEarth" );
     }
 
-    virtual osgDB::ReaderWriter::ReadResult readObject( const std::string& file_name, const osgDB::Options* options ) const override
+    virtual osgDB::ReaderWriter::ReadResult readObject( const std::string &file_name, const osgDB::Options *options ) const override
     {
       // this function seems to be called for every plugin
       // we declare supporting the special extension "osgearth_feature_qgis"

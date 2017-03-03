@@ -51,7 +51,7 @@ QgsXyzConnection QgsXyzConnectionUtils::connection( const QString &name )
   return conn;
 }
 
-void QgsXyzConnectionUtils::deleteConnection( const QString& name )
+void QgsXyzConnectionUtils::deleteConnection( const QString &name )
 {
   QSettings settings;
   settings.remove( "/Qgis/connections-xyz/" + name );

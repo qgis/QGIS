@@ -82,12 +82,12 @@ static const QString sIcon = QStringLiteral( ":/evis/eVisEventBrowser.png" );
 
 
 
-eVis::eVis( QgisInterface * qgisInterface )
-    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
-    , mQGisIface( qgisInterface )
-    , mDatabaseConnectionActionPointer( nullptr )
-    , mEventIdToolActionPointer( nullptr )
-    , mEventBrowserActionPointer( nullptr )
+eVis::eVis( QgisInterface *qgisInterface )
+  : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+  , mQGisIface( qgisInterface )
+  , mDatabaseConnectionActionPointer( nullptr )
+  , mEventIdToolActionPointer( nullptr )
+  , mEventBrowserActionPointer( nullptr )
 {
   mIdTool = nullptr;
 }
@@ -184,7 +184,7 @@ void eVis::unload()
 
   while ( !mTemporaryFileList.isEmpty() )
   {
-    delete( mTemporaryFileList.takeLast() );
+    delete ( mTemporaryFileList.takeLast() );
   }
 
   if ( mIdTool )
@@ -193,7 +193,7 @@ void eVis::unload()
   }
 }
 
-void eVis::drawVectorLayer( const QString& pathNameQString, const QString& baseNameQString, const QString& providerQString )
+void eVis::drawVectorLayer( const QString &pathNameQString, const QString &baseNameQString, const QString &providerQString )
 {
   mQGisIface->addVectorLayer( pathNameQString, baseNameQString, providerQString );
 }
@@ -215,7 +215,7 @@ void eVis::drawVectorLayer( const QString& pathNameQString, const QString& baseN
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * qgisInterfacePointer )
+QGISEXTERN QgisPlugin *classFactory( QgisInterface *qgisInterfacePointer )
 {
   return new eVis( qgisInterfacePointer );
 }
@@ -257,7 +257,7 @@ QGISEXTERN QString version()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * pluginPointer )
+QGISEXTERN void unload( QgisPlugin *pluginPointer )
 {
   delete pluginPointer;
 }

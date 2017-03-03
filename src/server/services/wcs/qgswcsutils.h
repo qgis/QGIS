@@ -45,18 +45,18 @@ namespace QgsWcs
   /**
    * CoverageOffering or CoverageOfferingBrief element
    */
-  QDomElement getCoverageOffering( QDomDocument& doc, const QgsRasterLayer* layer, bool brief = false );
+  QDomElement getCoverageOffering( QDomDocument &doc, const QgsRasterLayer *layer, bool brief = false );
 
   /**
    * Service URL string
    */
-  QString serviceUrl( const QgsServerRequest& request, const QgsProject* project );
+  QString serviceUrl( const QgsServerRequest &request, const QgsProject *project );
 
   /**
    * Parse bounding box
    */
   //XXX At some point, should be moved to common library
-  QgsRectangle parseBbox( const QString& bboxStr );
+  QgsRectangle parseBbox( const QString &bboxStr );
 
   // Define namespaces used in WFS documents
   const QString WCS_NAMESPACE = QStringLiteral( "http://www.opengis.net/wcs" );

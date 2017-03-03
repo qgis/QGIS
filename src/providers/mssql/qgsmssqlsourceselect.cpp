@@ -118,11 +118,11 @@ void QgsMssqlSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemM
 }
 
 QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
-    : QDialog( parent, fl )
-    , mManagerMode( managerMode )
-    , mEmbeddedMode( embeddedMode )
-    , mColumnTypeThread( nullptr )
-    , mUseEstimatedMetadata( false )
+  : QDialog( parent, fl )
+  , mManagerMode( managerMode )
+  , mEmbeddedMode( embeddedMode )
+  , mColumnTypeThread( nullptr )
+  , mUseEstimatedMetadata( false )
 {
   setupUi( this );
 
@@ -173,7 +173,7 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
   mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
   mTablesTreeView->setItemDelegate( new QgsMssqlSourceSelectDelegate( this ) );
 
-  connect( mTablesTreeView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ), this, SLOT( treeWidgetSelectionChanged( const QItemSelection&, const QItemSelection& ) ) );
+  connect( mTablesTreeView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ), this, SLOT( treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & ) ) );
 
   QSettings settings;
   mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "/qgis/addMSSQLDC" ), false ).toBool() ?
@@ -231,7 +231,7 @@ void QgsMssqlSourceSelect::on_btnDelete_clicked()
   emit connectionsChanged();
 }
 
-void QgsMssqlSourceSelect::deleteConnection( const QString& name )
+void QgsMssqlSourceSelect::deleteConnection( const QString &name )
 {
   QString key = "/MSSQL/connections/" + name;
   QSettings settings;
@@ -330,7 +330,7 @@ void QgsMssqlSourceSelect::on_mSearchGroupBox_toggled( bool checked )
   on_mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : QLatin1String( "" ) );
 }
 
-void QgsMssqlSourceSelect::on_mSearchTableEdit_textChanged( const QString & text )
+void QgsMssqlSourceSelect::on_mSearchTableEdit_textChanged( const QString &text )
 {
   if ( mSearchModeComboBox->currentText() == tr( "Wildcard" ) )
   {
@@ -342,7 +342,7 @@ void QgsMssqlSourceSelect::on_mSearchTableEdit_textChanged( const QString & text
   }
 }
 
-void QgsMssqlSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QString & text )
+void QgsMssqlSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QString &text )
 {
   if ( text == tr( "All" ) )
   {
@@ -378,13 +378,13 @@ void QgsMssqlSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const Q
   }
 }
 
-void QgsMssqlSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QString & text )
+void QgsMssqlSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QString &text )
 {
   Q_UNUSED( text );
   on_mSearchTableEdit_textChanged( mSearchTableEdit->text() );
 }
 
-void QgsMssqlSourceSelect::setLayerType( const QgsMssqlLayerProperty& layerProperty )
+void QgsMssqlSourceSelect::setLayerType( const QgsMssqlLayerProperty &layerProperty )
 {
   mTableModel.setGeometryTypesForTable( layerProperty );
 }
@@ -434,7 +434,7 @@ void QgsMssqlSourceSelect::addTables()
   QgsDebugMsg( QString( "mConnInfo:%1" ).arg( mConnInfo ) );
   mSelectedTables.clear();
 
-  Q_FOREACH ( const QModelIndex& idx, mTablesTreeView->selectionModel()->selection().indexes() )
+  Q_FOREACH ( const QModelIndex &idx, mTablesTreeView->selectionModel()->selection().indexes() )
   {
     if ( idx.column() != QgsMssqlTableModel::DbtmTable )
       continue;
@@ -686,7 +686,7 @@ void QgsMssqlSourceSelect::setSql( const QModelIndex &index )
   delete vlayer;
 }
 
-void QgsMssqlSourceSelect::addSearchGeometryColumn( const QString& connectionName, const QgsMssqlLayerProperty& layerProperty, bool estimateMetadata )
+void QgsMssqlSourceSelect::addSearchGeometryColumn( const QString &connectionName, const QgsMssqlLayerProperty &layerProperty, bool estimateMetadata )
 {
   // store the column details and do the query in a thread
   if ( !mColumnTypeThread )
@@ -705,7 +705,7 @@ void QgsMssqlSourceSelect::addSearchGeometryColumn( const QString& connectionNam
   emit addGeometryColumn( layerProperty );
 }
 
-QString QgsMssqlSourceSelect::fullDescription( const QString& schema, const QString& table, const QString& column, const QString& type )
+QString QgsMssqlSourceSelect::fullDescription( const QString &schema, const QString &table, const QString &column, const QString &type )
 {
   QString full_desc = QLatin1String( "" );
   if ( !schema.isEmpty() )
@@ -730,7 +730,7 @@ void QgsMssqlSourceSelect::setConnectionListPosition()
   }
 }
 
-void QgsMssqlSourceSelect::setSearchExpression( const QString& regexp )
+void QgsMssqlSourceSelect::setSearchExpression( const QString &regexp )
 {
   Q_UNUSED( regexp );
 }
@@ -741,16 +741,16 @@ void QgsMssqlSourceSelect::treeWidgetSelectionChanged( const QItemSelection &sel
   mAddButton->setEnabled( !selected.isEmpty() );
 }
 
-QgsMssqlGeomColumnTypeThread::QgsMssqlGeomColumnTypeThread( const QString& connectionName, bool useEstimatedMetadata )
-    : QThread()
-    , mConnectionName( connectionName )
-    , mUseEstimatedMetadata( useEstimatedMetadata )
-    , mStopped( false )
+QgsMssqlGeomColumnTypeThread::QgsMssqlGeomColumnTypeThread( const QString &connectionName, bool useEstimatedMetadata )
+  : QThread()
+  , mConnectionName( connectionName )
+  , mUseEstimatedMetadata( useEstimatedMetadata )
+  , mStopped( false )
 {
   qRegisterMetaType<QgsMssqlLayerProperty>( "QgsMssqlLayerProperty" );
 }
 
-void QgsMssqlGeomColumnTypeThread::addGeometryColumn( const QgsMssqlLayerProperty& layerProperty )
+void QgsMssqlGeomColumnTypeThread::addGeometryColumn( const QgsMssqlLayerProperty &layerProperty )
 {
   layerProperties << layerProperty;
 }

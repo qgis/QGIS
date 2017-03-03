@@ -31,11 +31,11 @@ namespace QgsWfs
   }
 
   // Return the wms config parser (Transitional)
-  QgsWfsProjectParser* getConfigParser( QgsServerInterface* serverIface )
+  QgsWfsProjectParser *getConfigParser( QgsServerInterface *serverIface )
   {
     QString configFilePath = serverIface->configFilePath();
 
-    QgsWfsProjectParser* parser  = QgsConfigCache::instance()->wfsConfiguration( configFilePath, serverIface->accessControls() );
+    QgsWfsProjectParser *parser  = QgsConfigCache::instance()->wfsConfiguration( configFilePath, serverIface->accessControls() );
     if ( !parser )
     {
       throw QgsServiceException(
@@ -45,7 +45,7 @@ namespace QgsWfs
     return parser;
   }
 
-  QString serviceUrl( const QgsServerRequest& request, const QgsProject* project )
+  QString serviceUrl( const QgsServerRequest &request, const QgsProject *project )
   {
     QString href;
     if ( project )

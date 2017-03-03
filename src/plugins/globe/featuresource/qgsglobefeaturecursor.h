@@ -27,9 +27,9 @@
 class QgsGlobeFeatureCursor : public osgEarth::Features::FeatureCursor
 {
   public:
-    QgsGlobeFeatureCursor( QgsVectorLayer* layer, const QgsFeatureIterator& iterator )
-        : mIterator( iterator )
-        , mLayer( layer )
+    QgsGlobeFeatureCursor( QgsVectorLayer *layer, const QgsFeatureIterator &iterator )
+      : mIterator( iterator )
+      , mLayer( layer )
     {
       mIterator.nextFeature( mFeature );
     }
@@ -39,7 +39,7 @@ class QgsGlobeFeatureCursor : public osgEarth::Features::FeatureCursor
       return mFeature.isValid();
     }
 
-    osgEarth::Features::Feature* nextFeature() override
+    osgEarth::Features::Feature *nextFeature() override
     {
       if ( mFeature.isValid() )
       {
@@ -56,7 +56,7 @@ class QgsGlobeFeatureCursor : public osgEarth::Features::FeatureCursor
 
   private:
     QgsFeatureIterator mIterator;
-    QgsVectorLayer* mLayer = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
     // Cached feature which will be returned next.
     // Always contains the next feature which will be returned
     // (Because hasMore() needs to know if we are able to return a next feature)

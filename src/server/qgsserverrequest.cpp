@@ -21,30 +21,30 @@
 #include <QUrlQuery>
 
 QgsServerRequest::QgsServerRequest()
-    : mUrl()
-    , mMethod( GetMethod )
-    , mDecoded( false )
+  : mUrl()
+  , mMethod( GetMethod )
+  , mDecoded( false )
 {
 
 }
 
-QgsServerRequest::QgsServerRequest( const QString& url, Method method )
-    : mUrl( url )
-    , mMethod( method )
-    , mDecoded( false )
+QgsServerRequest::QgsServerRequest( const QString &url, Method method )
+  : mUrl( url )
+  , mMethod( method )
+  , mDecoded( false )
 {
 
 }
 
-QgsServerRequest::QgsServerRequest( const QUrl& url, Method method )
-    : mUrl( url )
-    , mMethod( method )
-    , mDecoded( false )
+QgsServerRequest::QgsServerRequest( const QUrl &url, Method method )
+  : mUrl( url )
+  , mMethod( method )
+  , mDecoded( false )
 {
 
 }
 
-QString QgsServerRequest::getHeader( const QString& name ) const
+QString QgsServerRequest::getHeader( const QString &name ) const
 {
   Q_UNUSED( name );
   return QString();
@@ -69,7 +69,7 @@ QMap<QString, QString> QgsServerRequest::parameters() const
 
     QUrlQuery query( mUrl );
     QList<pair_t> items = query.queryItems( QUrl::FullyDecoded );
-    Q_FOREACH ( const pair_t& pair, items )
+    Q_FOREACH ( const pair_t &pair, items )
     {
       mParams.insert( pair.first.toUpper(), pair.second );
     }
@@ -83,25 +83,25 @@ QByteArray QgsServerRequest::data() const
   return QByteArray();
 }
 
-void QgsServerRequest::setParameter( const QString& key, const QString& value )
+void QgsServerRequest::setParameter( const QString &key, const QString &value )
 {
   parameters();
   mParams.insert( key, value );
 }
 
-QString QgsServerRequest::getParameter( const QString& key ) const
+QString QgsServerRequest::getParameter( const QString &key ) const
 {
   parameters();
   return mParams.value( key );
 }
 
-void QgsServerRequest::removeParameter( const QString& key )
+void QgsServerRequest::removeParameter( const QString &key )
 {
   parameters();
   mParams.remove( key );
 }
 
-void QgsServerRequest::setUrl( const QUrl& url )
+void QgsServerRequest::setUrl( const QUrl &url )
 {
   mUrl = url;
   mDecoded = false;

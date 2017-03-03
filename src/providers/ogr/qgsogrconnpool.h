@@ -28,12 +28,12 @@ struct QgsOgrConn
   bool valid;
 };
 
-inline QString qgsConnectionPool_ConnectionToName( QgsOgrConn* c )
+inline QString qgsConnectionPool_ConnectionToName( QgsOgrConn *c )
 {
   return c->path;
 }
 
-inline void qgsConnectionPool_ConnectionCreate( const QString& connInfo, QgsOgrConn*& c )
+inline void qgsConnectionPool_ConnectionCreate( const QString &connInfo, QgsOgrConn *&c )
 {
   c = new QgsOgrConn;
   QString filePath = connInfo.left( connInfo.indexOf( QLatin1String( "|" ) ) );
@@ -42,30 +42,30 @@ inline void qgsConnectionPool_ConnectionCreate( const QString& connInfo, QgsOgrC
   c->valid = true;
 }
 
-inline void qgsConnectionPool_ConnectionDestroy( QgsOgrConn* c )
+inline void qgsConnectionPool_ConnectionDestroy( QgsOgrConn *c )
 {
   QgsOgrProviderUtils::OGRDestroyWrapper( c->ds );
   delete c;
 }
 
-inline void qgsConnectionPool_InvalidateConnection( QgsOgrConn* c )
+inline void qgsConnectionPool_InvalidateConnection( QgsOgrConn *c )
 {
   c->valid = false;
 }
 
-inline bool qgsConnectionPool_ConnectionIsValid( QgsOgrConn* c )
+inline bool qgsConnectionPool_ConnectionIsValid( QgsOgrConn *c )
 {
   return c->valid;
 }
 
-class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgrConn*>
+class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgrConn *>
 {
     Q_OBJECT
 
   public:
-    explicit QgsOgrConnPoolGroup( const QString& name )
-        : QgsConnectionPoolGroup<QgsOgrConn*>( name )
-        , mRefCount( 0 )
+    explicit QgsOgrConnPoolGroup( const QString &name )
+      : QgsConnectionPoolGroup<QgsOgrConn*>( name )
+      , mRefCount( 0 )
     { initTimer( this ); }
     void ref() { ++mRefCount; }
     bool unref()
@@ -88,7 +88,7 @@ class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgr
 };
 
 //! Ogr connection pool - singleton
-class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup>
+class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn *, QgsOgrConnPoolGroup>
 {
   public:
 
@@ -98,7 +98,7 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup
     //          in multiple instances being created, and memory
     //          leaking at exit.
     //
-    static QgsOgrConnPool* instance();
+    static QgsOgrConnPool *instance();
 
     // Singleton cleanup
     //
@@ -119,7 +119,7 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup
      *     releasing all acquired connections to ensure that all open OGR handles
      *     are freed when and only when no one is using the pool anymore.
      */
-    void ref( const QString& connInfo )
+    void ref( const QString &connInfo )
     {
       mMutex.lock();
       T_Groups::const_iterator it = mGroups.constFind( connInfo );
@@ -133,7 +133,7 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup
      * @brief Decrease the reference count on the connection pool for the specified connection.
      * @param connInfo The connection string.
      */
-    void unref( const QString& connInfo )
+    void unref( const QString &connInfo )
     {
       mMutex.lock();
       T_Groups::iterator it = mGroups.find( connInfo );

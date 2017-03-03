@@ -20,13 +20,13 @@
 #include <QSettings>
 
 // defined in qgsgdalprovider.cpp
-void buildSupportedRasterFileFilterAndExtensions( QString & fileFiltersString, QStringList & extensions, QStringList & wildcards );
+void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QStringList &extensions, QStringList &wildcards );
 
 
-QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem* parent,
+QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem *parent,
                                     QString name, QString path, QString uri,
                                     QStringList *sublayers )
-    : QgsLayerItem( parent, name, path, uri, QgsLayerItem::Raster, QStringLiteral( "gdal" ) )
+  : QgsLayerItem( parent, name, path, uri, QgsLayerItem::Raster, QStringLiteral( "gdal" ) )
 {
   mToolTip = uri;
   // save sublayers for subsequent access
@@ -67,15 +67,15 @@ bool QgsGdalLayerItem::setCrs( const QgsCoordinateReferenceSystem &crs )
   return true;
 }
 
-QVector<QgsDataItem*> QgsGdalLayerItem::createChildren()
+QVector<QgsDataItem *> QgsGdalLayerItem::createChildren()
 {
   QgsDebugMsg( "Entered, path=" + path() );
-  QVector<QgsDataItem*> children;
+  QVector<QgsDataItem *> children;
 
   // get children from sublayers
   if ( !mSublayers.isEmpty() )
   {
-    QgsDataItem * childItem = nullptr;
+    QgsDataItem *childItem = nullptr;
     QgsDebugMsg( QString( "got %1 sublayers" ).arg( mSublayers.count() ) );
     for ( int i = 0; i < mSublayers.count(); i++ )
     {
@@ -127,7 +127,7 @@ QGISEXTERN int dataCapabilities()
   return QgsDataProvider::File | QgsDataProvider::Dir | QgsDataProvider::Net;
 }
 
-QGISEXTERN QgsDataItem * dataItem( QString path, QgsDataItem* parentItem )
+QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 {
   if ( path.isEmpty() )
     return nullptr;
@@ -147,13 +147,13 @@ QGISEXTERN QgsDataItem * dataItem( QString path, QgsDataItem* parentItem )
   // TODO - do this in dir item, but this requires a way to inform which extensions are supported by provider
   // maybe a callback function or in the provider registry?
   bool scanExtSetting = false;
-  if (( settings.value( QStringLiteral( "/qgis/scanItemsInBrowser2" ),
-                        "extension" ).toString() == QLatin1String( "extension" ) ) ||
-      ( parentItem && settings.value( QStringLiteral( "/qgis/scanItemsFastScanUris" ),
-                                      QStringList() ).toStringList().contains( parentItem->path() ) ) ||
-      (( is_vsizip || is_vsitar ) && parentItem && parentItem->parent() &&
-       settings.value( QStringLiteral( "/qgis/scanItemsFastScanUris" ),
-                       QStringList() ).toStringList().contains( parentItem->parent()->path() ) ) )
+  if ( ( settings.value( QStringLiteral( "/qgis/scanItemsInBrowser2" ),
+                         "extension" ).toString() == QLatin1String( "extension" ) ) ||
+       ( parentItem && settings.value( QStringLiteral( "/qgis/scanItemsFastScanUris" ),
+                                       QStringList() ).toStringList().contains( parentItem->path() ) ) ||
+       ( ( is_vsizip || is_vsitar ) && parentItem && parentItem->parent() &&
+         settings.value( QStringLiteral( "/qgis/scanItemsFastScanUris" ),
+                         QStringList() ).toStringList().contains( parentItem->parent()->path() ) ) )
   {
     scanExtSetting = true;
   }
@@ -206,7 +206,7 @@ QGISEXTERN QgsDataItem * dataItem( QString path, QgsDataItem* parentItem )
   if ( !sExtensions.contains( suffix ) )
   {
     bool matches = false;
-    Q_FOREACH ( const QString& wildcard, sWildcards )
+    Q_FOREACH ( const QString &wildcard, sWildcards )
     {
       QRegExp rx( wildcard, Qt::CaseInsensitive, QRegExp::Wildcard );
       if ( rx.exactMatch( info.fileName() ) )
@@ -228,7 +228,7 @@ QGISEXTERN QgsDataItem * dataItem( QString path, QgsDataItem* parentItem )
     // if this is a /vsigzip/path_to_zip.zip/file_inside_zip remove the full path from the name
     // no need to change the name I believe
 #if 0
-    if (( is_vsizip || is_vsitar ) && ( path != vsiPrefix + parentItem->path() ) )
+    if ( ( is_vsizip || is_vsitar ) && ( path != vsiPrefix + parentItem->path() ) )
     {
       name = path;
       name = name.replace( vsiPrefix + parentItem->path() + '/', "" );
@@ -240,7 +240,7 @@ QGISEXTERN QgsDataItem * dataItem( QString path, QgsDataItem* parentItem )
   // scanExtSetting
   // or zipfile and scan zip == "Basic scan"
   if ( scanExtSetting ||
-       (( is_vsizip || is_vsitar ) && scanZipSetting == QLatin1String( "basic" ) ) )
+       ( ( is_vsizip || is_vsitar ) && scanZipSetting == QLatin1String( "basic" ) ) )
   {
     // if this is a VRT file make sure it is raster VRT to avoid duplicates
     if ( suffix == QLatin1String( "vrt" ) )
@@ -259,7 +259,7 @@ QGISEXTERN QgsDataItem * dataItem( QString path, QgsDataItem* parentItem )
     // add the item
     QStringList sublayers;
     QgsDebugMsgLevel( QString( "adding item name=%1 path=%2" ).arg( name, path ), 2 );
-    QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, path, path, &sublayers );
+    QgsLayerItem *item = new QgsGdalLayerItem( parentItem, name, path, path, &sublayers );
     if ( item )
       return item;
   }
@@ -284,7 +284,7 @@ QGISEXTERN QgsDataItem * dataItem( QString path, QgsDataItem* parentItem )
 
   QgsDebugMsgLevel( "GdalDataset opened " + path, 2 );
 
-  QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, path, path,
+  QgsLayerItem *item = new QgsGdalLayerItem( parentItem, name, path, path,
       &sublayers );
 
   return item;

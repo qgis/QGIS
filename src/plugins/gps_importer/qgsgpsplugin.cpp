@@ -62,11 +62,11 @@ static const QString icon_ = QStringLiteral( ":/gps_importer.svg" );
  * @param qgis Pointer to the QGIS main window
  * @param _qI Pointer to the QGIS interface object
  */
-QgsGPSPlugin::QgsGPSPlugin( QgisInterface * qgisInterFace )
-    : QgisPlugin( name_, description_, category_, version_, type_ )
-    , mQGisInterface( qgisInterFace )
-    , mQActionPointer( nullptr )
-    , mCreateGPXAction( nullptr )
+QgsGPSPlugin::QgsGPSPlugin( QgisInterface *qgisInterFace )
+  : QgisPlugin( name_, description_, category_, version_, type_ )
+  , mQGisInterface( qgisInterFace )
+  , mQActionPointer( nullptr )
+  , mCreateGPXAction( nullptr )
 {
   setupBabel();
 }
@@ -77,7 +77,7 @@ QgsGPSPlugin::~QgsGPSPlugin()
   BabelMap::iterator iter;
   for ( iter = mImporters.begin(); iter != mImporters.end(); ++iter )
     delete iter->second;
-  std::map<QString, QgsGPSDevice*>::iterator iter2;
+  std::map<QString, QgsGPSDevice *>::iterator iter2;
   for ( iter2 = mDevices.begin(); iter2 != mDevices.end(); ++iter2 )
     delete iter2->second;
 }
@@ -121,15 +121,15 @@ void QgsGPSPlugin::help()
 void QgsGPSPlugin::run()
 {
   // find all GPX layers
-  std::vector<QgsVectorLayer*> gpxLayers;
-  QMap<QString, QgsMapLayer*>::const_iterator iter;
-  QMap<QString, QgsMapLayer*> layers = QgsProject::instance()->mapLayers();
+  std::vector<QgsVectorLayer *> gpxLayers;
+  QMap<QString, QgsMapLayer *>::const_iterator iter;
+  QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
   for ( iter = layers.constBegin();
         iter != layers.constEnd(); ++iter )
   {
     if ( iter.value()->type() == QgsMapLayer::VectorLayer )
     {
-      QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer *>( iter.value() );
+      QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( iter.value() );
       if ( vLayer->providerType() == QLatin1String( "gpx" ) )
         gpxLayers.push_back( vLayer );
     }
@@ -144,9 +144,9 @@ void QgsGPSPlugin::run()
            this, SLOT( drawVectorLayer( QString, QString, QString ) ) );
   connect( myPluginGui, SIGNAL( loadGPXFile( QString, bool, bool, bool ) ),
            this, SLOT( loadGPXFile( QString, bool, bool, bool ) ) );
-  connect( myPluginGui, SIGNAL( importGPSFile( QString, QgsBabelFormat*, bool,
+  connect( myPluginGui, SIGNAL( importGPSFile( QString, QgsBabelFormat *, bool,
                                 bool, bool, QString, QString ) ),
-           this, SLOT( importGPSFile( QString, QgsBabelFormat*, bool, bool,
+           this, SLOT( importGPSFile( QString, QgsBabelFormat *, bool, bool,
                                       bool, QString, QString ) ) );
   connect( myPluginGui, SIGNAL( convertGPSFile( QString, int,
                                 QString, QString ) ),
@@ -156,8 +156,8 @@ void QgsGPSPlugin::run()
                                 bool, QString, QString ) ),
            this, SLOT( downloadFromGPS( QString, QString, bool, bool, bool,
                                         QString, QString ) ) );
-  connect( myPluginGui, SIGNAL( uploadToGPS( QgsVectorLayer*, QString, QString ) ),
-           this, SLOT( uploadToGPS( QgsVectorLayer*, QString, QString ) ) );
+  connect( myPluginGui, SIGNAL( uploadToGPS( QgsVectorLayer *, QString, QString ) ),
+           this, SLOT( uploadToGPS( QgsVectorLayer *, QString, QString ) ) );
   connect( this, SIGNAL( closeGui() ), myPluginGui, SLOT( close() ) );
 
   myPluginGui->show();
@@ -201,9 +201,9 @@ void QgsGPSPlugin::createGPX()
   }
 }
 
-void QgsGPSPlugin::drawVectorLayer( const QString& pathNameQString,
-                                    const QString& baseNameQString,
-                                    const QString& providerQString )
+void QgsGPSPlugin::drawVectorLayer( const QString &pathNameQString,
+                                    const QString &baseNameQString,
+                                    const QString &providerQString )
 {
   mQGisInterface->addVectorLayer( pathNameQString, baseNameQString,
                                   providerQString );
@@ -221,7 +221,7 @@ void QgsGPSPlugin::unload()
   mQActionPointer = nullptr;
 }
 
-void QgsGPSPlugin::loadGPXFile( const QString& fileName, bool loadWaypoints, bool loadRoutes,
+void QgsGPSPlugin::loadGPXFile( const QString &fileName, bool loadWaypoints, bool loadRoutes,
                                 bool loadTracks )
 {
   //check if input file is readable
@@ -248,10 +248,10 @@ void QgsGPSPlugin::loadGPXFile( const QString& fileName, bool loadWaypoints, boo
   emit closeGui();
 }
 
-void QgsGPSPlugin::importGPSFile( const QString& inputFileName, QgsBabelFormat* importer,
+void QgsGPSPlugin::importGPSFile( const QString &inputFileName, QgsBabelFormat *importer,
                                   bool importWaypoints, bool importRoutes,
-                                  bool importTracks, const QString& outputFileName,
-                                  const QString& layerName )
+                                  bool importTracks, const QString &outputFileName,
+                                  const QString &layerName )
 {
   // what features does the user want to import?
   QString typeArg;
@@ -315,10 +315,10 @@ void QgsGPSPlugin::importGPSFile( const QString& inputFileName, QgsBabelFormat* 
   emit closeGui();
 }
 
-void QgsGPSPlugin::convertGPSFile( const QString& inputFileName,
+void QgsGPSPlugin::convertGPSFile( const QString &inputFileName,
                                    int convertType,
-                                   const QString& outputFileName,
-                                   const QString& layerName )
+                                   const QString &outputFileName,
+                                   const QString &layerName )
 {
   // what features does the user want to import?
   QStringList convertStrings;
@@ -345,7 +345,7 @@ void QgsGPSPlugin::convertGPSFile( const QString& inputFileName,
   // try to start the gpsbabel process
   QStringList babelArgs;
   babelArgs << mBabelPath << QStringLiteral( "-i" ) << QStringLiteral( "gpx" ) << QStringLiteral( "-f" ) << QStringLiteral( "\"%1\"" ).arg( inputFileName )
-  << convertStrings << QStringLiteral( "-o" ) << QStringLiteral( "gpx" ) << QStringLiteral( "-F" ) << QStringLiteral( "\"%1\"" ).arg( outputFileName );
+            << convertStrings << QStringLiteral( "-o" ) << QStringLiteral( "gpx" ) << QStringLiteral( "-F" ) << QStringLiteral( "\"%1\"" ).arg( outputFileName );
   QgsDebugMsg( QString( "Conversion command: " ) + babelArgs.join( "|" ) );
 
   QProcess babelProcess;
@@ -402,10 +402,10 @@ void QgsGPSPlugin::convertGPSFile( const QString& inputFileName,
   emit closeGui();
 }
 
-void QgsGPSPlugin::downloadFromGPS( const QString& device, const QString& port,
+void QgsGPSPlugin::downloadFromGPS( const QString &device, const QString &port,
                                     bool downloadWaypoints, bool downloadRoutes,
-                                    bool downloadTracks, const QString& outputFileName,
-                                    const QString& layerName )
+                                    bool downloadTracks, const QString &outputFileName,
+                                    const QString &layerName )
 {
   // what does the user want to download?
   QString typeArg, features;
@@ -487,10 +487,10 @@ void QgsGPSPlugin::downloadFromGPS( const QString& device, const QString& port,
   emit closeGui();
 }
 
-void QgsGPSPlugin::uploadToGPS( QgsVectorLayer* gpxLayer, const QString& device,
-                                const QString& port )
+void QgsGPSPlugin::uploadToGPS( QgsVectorLayer *gpxLayer, const QString &device,
+                                const QString &port )
 {
-  const QString& source( gpxLayer->dataProvider()->dataSourceUri() );
+  const QString &source( gpxLayer->dataProvider()->dataSourceUri() );
 
   // what kind of data does the user want to upload?
   QString typeArg, features;
@@ -675,7 +675,7 @@ void QgsGPSPlugin::setupBabel()
 }
 
 //! Set icons to the current theme
-void QgsGPSPlugin::setCurrentTheme( const QString& themeName )
+void QgsGPSPlugin::setCurrentTheme( const QString &themeName )
 {
   Q_UNUSED( themeName );
   QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/gps_importer/";
@@ -712,7 +712,7 @@ void QgsGPSPlugin::setCurrentTheme( const QString& themeName )
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * qgisInterfacePointer )
+QGISEXTERN QgisPlugin *classFactory( QgisInterface *qgisInterfacePointer )
 {
   return new QgsGPSPlugin( qgisInterfacePointer );
 }
@@ -754,7 +754,7 @@ QGISEXTERN QString icon()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * pluginPointer )
+QGISEXTERN void unload( QgisPlugin *pluginPointer )
 {
   delete pluginPointer;
 }

@@ -46,18 +46,18 @@ class ANALYSIS_EXPORT QgsOSMDownload : public QObject
     static QString defaultServiceUrl();
 
     //! Create query (in Overpass Query Language) that fetches everything in given rectangle
-    static QString queryFromRect( const QgsRectangle& rect );
+    static QString queryFromRect( const QgsRectangle &rect );
 
     QgsOSMDownload();
     ~QgsOSMDownload();
 
-    void setServiceUrl( const QString& serviceUrl ) { mServiceUrl = serviceUrl; }
+    void setServiceUrl( const QString &serviceUrl ) { mServiceUrl = serviceUrl; }
     QString serviceUrl() const { return mServiceUrl; }
 
-    void setQuery( const QString& query ) { mQuery = query; }
+    void setQuery( const QString &query ) { mQuery = query; }
     QString query() const { return mQuery; }
 
-    void setOutputFileName( const QString& outputFileName ) { mFile.setFileName( outputFileName ); }
+    void setOutputFileName( const QString &outputFileName ) { mFile.setFileName( outputFileName ); }
     QString outputFileName() const { return mFile.fileName(); }
 
     bool hasError() const { return !mError.isNull(); }
@@ -96,7 +96,7 @@ class ANALYSIS_EXPORT QgsOSMDownload : public QObject
     QString mQuery;
     QString mError;
 
-    QNetworkReply* mReply = nullptr;
+    QNetworkReply *mReply = nullptr;
     QFile mFile;
 };
 

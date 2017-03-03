@@ -27,7 +27,7 @@ class QgsInterpolationLayerBuilder: public QgsMSLayerBuilder
 {
   public:
 
-    explicit QgsInterpolationLayerBuilder( QgsVectorLayer* vl );
+    explicit QgsInterpolationLayerBuilder( QgsVectorLayer *vl );
 
     /** Creates a maplayer from xml tag
        @param elem xml element containing description of datasource
@@ -35,12 +35,12 @@ class QgsInterpolationLayerBuilder: public QgsMSLayerBuilder
        @param layersToRemove list to append layers that should be removed after the request
        @param allowCaching flag if layers are allowed to be fetched from layer cache or not
      @return the created layer or 0 in case of error*/
-    QgsMapLayer* createMapLayer( const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching = true ) const override;
+    QgsMapLayer *createMapLayer( const QDomElement &elem, const QString &layerName, QList<QTemporaryFile *> &filesToRemove, QList<QgsMapLayer *> &layersToRemove, bool allowCaching = true ) const override;
 
   private:
     QgsInterpolationLayerBuilder(); //forbidden
 
-    QgsVectorLayer* mVectorLayer = nullptr;
+    QgsVectorLayer *mVectorLayer = nullptr;
 };
 
 #endif

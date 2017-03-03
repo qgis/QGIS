@@ -25,14 +25,14 @@
 #include <cassert>
 #include <cstdlib>
 
-QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap& importers,
-                                  std::map<QString, QgsGPSDevice*>& devices,
-                                  const std::vector<QgsVectorLayer*>& gpxMapLayers,
-                                  QWidget* parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mGPXLayers( gpxMapLayers )
-    , mImporters( importers )
-    , mDevices( devices )
+QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap &importers,
+                                  std::map<QString, QgsGPSDevice *> &devices,
+                                  const std::vector<QgsVectorLayer *> &gpxMapLayers,
+                                  QWidget *parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mGPXLayers( gpxMapLayers )
+  , mImporters( importers )
+  , mDevices( devices )
 {
   setupUi( this );
 
@@ -51,25 +51,25 @@ QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap& importers,
   // click it
   pbnOK = buttonBox->button( QDialogButtonBox::Ok );
   pbnOK->setEnabled( false );
-  connect( leGPXFile, SIGNAL( textChanged( const QString& ) ),
+  connect( leGPXFile, SIGNAL( textChanged( const QString & ) ),
            this, SLOT( enableRelevantControls() ) );
-  connect( leIMPInput, SIGNAL( textChanged( const QString& ) ),
+  connect( leIMPInput, SIGNAL( textChanged( const QString & ) ),
            this, SLOT( enableRelevantControls() ) );
-  connect( leIMPOutput, SIGNAL( textChanged( const QString& ) ),
+  connect( leIMPOutput, SIGNAL( textChanged( const QString & ) ),
            this, SLOT( enableRelevantControls() ) );
-  connect( leIMPLayer, SIGNAL( textChanged( const QString& ) ),
+  connect( leIMPLayer, SIGNAL( textChanged( const QString & ) ),
            this, SLOT( enableRelevantControls() ) );
-  connect( leCONVInput, SIGNAL( textChanged( const QString& ) ),
+  connect( leCONVInput, SIGNAL( textChanged( const QString & ) ),
            this, SLOT( enableRelevantControls() ) );
-  connect( leCONVOutput, SIGNAL( textChanged( const QString& ) ),
+  connect( leCONVOutput, SIGNAL( textChanged( const QString & ) ),
            this, SLOT( enableRelevantControls() ) );
-  connect( leCONVLayer, SIGNAL( textChanged( const QString& ) ),
+  connect( leCONVLayer, SIGNAL( textChanged( const QString & ) ),
            this, SLOT( enableRelevantControls() ) );
-  connect( leDLOutput, SIGNAL( textChanged( const QString& ) ),
+  connect( leDLOutput, SIGNAL( textChanged( const QString & ) ),
            this, SLOT( enableRelevantControls() ) );
-  connect( leDLBasename, SIGNAL( textChanged( const QString& ) ),
+  connect( leDLBasename, SIGNAL( textChanged( const QString & ) ),
            this, SLOT( enableRelevantControls() ) );
-  connect( cmbULLayer, SIGNAL( editTextChanged( const QString& ) ),
+  connect( cmbULLayer, SIGNAL( editTextChanged( const QString & ) ),
            this, SLOT( enableRelevantControls() ) );
   connect( tabWidget, SIGNAL( currentChanged( int ) ),
            this, SLOT( enableRelevantControls() ) );
@@ -99,7 +99,7 @@ void QgsGPSPluginGui::on_buttonBox_accepted()
     case 1:
     {
       // or import other file?
-      const QString& typeString( cmbIMPFeature->currentText() );
+      const QString &typeString( cmbIMPFeature->currentText() );
       emit importGPSFile( leIMPInput->text(),
                           mImporters.find( mImpFormat )->second,
                           typeString == tr( "Waypoints" ),
@@ -180,7 +180,7 @@ void QgsGPSPluginGui::enableRelevantControls()
   // load GPX
   if ( tabWidget->currentIndex() == 0 )
   {
-    if (( leGPXFile->text() == QLatin1String( "" ) ) )
+    if ( ( leGPXFile->text() == QLatin1String( "" ) ) )
     {
       pbnOK->setEnabled( false );
       cbGPXWaypoints->setEnabled( false );
@@ -205,8 +205,8 @@ void QgsGPSPluginGui::enableRelevantControls()
   // import other file
   else if ( tabWidget->currentIndex() == 1 )
   {
-    if (( leIMPInput->text() == QLatin1String( "" ) ) || ( leIMPOutput->text() == QLatin1String( "" ) ) ||
-        ( leIMPLayer->text() == QLatin1String( "" ) ) )
+    if ( ( leIMPInput->text() == QLatin1String( "" ) ) || ( leIMPOutput->text() == QLatin1String( "" ) ) ||
+         ( leIMPLayer->text() == QLatin1String( "" ) ) )
       pbnOK->setEnabled( false );
     else
       pbnOK->setEnabled( true );
@@ -234,8 +234,8 @@ void QgsGPSPluginGui::enableRelevantControls()
   // convert between waypoint/routes
   else if ( tabWidget->currentIndex() == 4 )
   {
-    if (( leCONVInput->text() == QLatin1String( "" ) ) || ( leCONVOutput->text() == QLatin1String( "" ) ) ||
-        ( leCONVLayer->text() == QLatin1String( "" ) ) )
+    if ( ( leCONVInput->text() == QLatin1String( "" ) ) || ( leCONVOutput->text() == QLatin1String( "" ) ) ||
+         ( leCONVLayer->text() == QLatin1String( "" ) ) )
       pbnOK->setEnabled( false );
     else
       pbnOK->setEnabled( true );
@@ -283,7 +283,7 @@ void QgsGPSPluginGui::on_pbnIMPInput_clicked()
     settings.setValue( QStringLiteral( "/Plugin-GPS/lastImportFilter" ), myFileType );
 
     mImpFormat = myFileType.left( myFileType.length() - 6 );
-    std::map<QString, QgsBabelFormat*>::const_iterator iter;
+    std::map<QString, QgsBabelFormat *>::const_iterator iter;
     iter = mImporters.find( mImpFormat );
     if ( iter == mImporters.end() )
     {
@@ -363,7 +363,7 @@ void QgsGPSPluginGui::populateCONVDialog()
 
 void QgsGPSPluginGui::populateULLayerComboBox()
 {
-  for ( std::vector<QgsVectorLayer*>::size_type i = 0; i < mGPXLayers.size(); ++i )
+  for ( std::vector<QgsVectorLayer *>::size_type i = 0; i < mGPXLayers.size(); ++i )
     cmbULLayer->addItem( mGPXLayers[i]->name() );
 }
 
@@ -380,7 +380,7 @@ void QgsGPSPluginGui::populateIMPBabelFormats()
     mBabelFilter.append( iter->first ).append( " (*.*);;" );
   mBabelFilter.chop( 2 ); // Remove the trailing ;;, which otherwise leads to an empty filetype
   int u = -1, d = -1;
-  std::map<QString, QgsGPSDevice*>::const_iterator iter2;
+  std::map<QString, QgsGPSDevice *>::const_iterator iter2;
   for ( iter2 = mDevices.begin(); iter2 != mDevices.end(); ++iter2 )
   {
     cmbULDevice->addItem( iter2->first );
@@ -434,7 +434,7 @@ void QgsGPSPluginGui::on_pbnCONVOutput_clicked()
 
 void QgsGPSPluginGui::openDeviceEditor()
 {
-  QgsGPSDeviceDialog* dlg = new QgsGPSDeviceDialog( mDevices );
+  QgsGPSDeviceDialog *dlg = new QgsGPSDeviceDialog( mDevices );
   dlg->show();
   connect( dlg, SIGNAL( devicesChanged() ), this, SLOT( devicesUpdated() ) );
 }

@@ -56,30 +56,30 @@ static const int SUBSET_ID_THRESHOLD_FACTOR = 10;
 QRegExp QgsDelimitedTextProvider::sWktPrefixRegexp( "^\\s*(?:\\d+\\s+|SRID\\=\\d+\\;)", Qt::CaseInsensitive );
 QRegExp QgsDelimitedTextProvider::sCrdDmsRegexp( "^\\s*(?:([-+nsew])\\s*)?(\\d{1,3})(?:[^0-9.]+([0-5]?\\d))?[^0-9.]+([0-5]?\\d(?:\\.\\d+)?)[^0-9.]*([-+nsew])?\\s*$", Qt::CaseInsensitive );
 
-QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString& uri )
-    : QgsVectorDataProvider( uri )
-    , mLayerValid( false )
-    , mValid( false )
-    , mFile( nullptr )
-    , mGeomRep( GeomNone )
-    , mFieldCount( 0 )
-    , mXFieldIndex( -1 )
-    , mYFieldIndex( -1 )
-    , mWktFieldIndex( -1 )
-    , mWktHasPrefix( false )
-    , mXyDms( false )
-    , mSubsetString( QLatin1String( "" ) )
-    , mSubsetExpression( nullptr )
-    , mBuildSubsetIndex( true )
-    , mUseSubsetIndex( false )
-    , mMaxInvalidLines( 50 )
-    , mShowInvalidLines( true )
-    , mRescanRequired( false )
-    , mCrs()
-    , mWkbType( QgsWkbTypes::NoGeometry )
-    , mGeometryType( QgsWkbTypes::UnknownGeometry )
-    , mBuildSpatialIndex( false )
-    , mSpatialIndex( nullptr )
+QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri )
+  : QgsVectorDataProvider( uri )
+  , mLayerValid( false )
+  , mValid( false )
+  , mFile( nullptr )
+  , mGeomRep( GeomNone )
+  , mFieldCount( 0 )
+  , mXFieldIndex( -1 )
+  , mYFieldIndex( -1 )
+  , mWktFieldIndex( -1 )
+  , mWktHasPrefix( false )
+  , mXyDms( false )
+  , mSubsetString( QLatin1String( "" ) )
+  , mSubsetExpression( nullptr )
+  , mBuildSubsetIndex( true )
+  , mUseSubsetIndex( false )
+  , mMaxInvalidLines( 50 )
+  , mShowInvalidLines( true )
+  , mRescanRequired( false )
+  , mCrs()
+  , mWkbType( QgsWkbTypes::NoGeometry )
+  , mGeometryType( QgsWkbTypes::UnknownGeometry )
+  , mBuildSpatialIndex( false )
+  , mSpatialIndex( nullptr )
 {
 
   // Add supported types to enable creating expression fields in field calculator
@@ -154,7 +154,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString& uri )
   if ( url.hasQueryItem( QStringLiteral( "subset" ) ) )
   {
     // We need to specify FullyDecoded so that %25 is decoded as %
-    subset = QUrlQuery( url ).queryItemValue( QStringLiteral( "subset" ) , QUrl::FullyDecoded );
+    subset = QUrlQuery( url ).queryItemValue( QStringLiteral( "subset" ), QUrl::FullyDecoded );
     QgsDebugMsg( "subset is: " + subset );
   }
 
@@ -197,13 +197,13 @@ QgsAbstractFeatureSource *QgsDelimitedTextProvider::featureSource() const
 {
   // If the file has become invalid, rescan to check that it is still invalid.
   //
-  if (( mLayerValid && ! mValid ) || mRescanRequired )
-    const_cast<QgsDelimitedTextProvider*>( this )->rescanFile();
+  if ( ( mLayerValid && ! mValid ) || mRescanRequired )
+    const_cast<QgsDelimitedTextProvider *>( this )->rescanFile();
 
   return new QgsDelimitedTextFeatureSource( this );
 }
 
-QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString& filename, QString *message )
+QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString &filename, QString *message )
 {
   // Look for a file with the same name as the data file, but an extra 't' or 'T' at the end
   QStringList types;
@@ -260,7 +260,7 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString& filenam
   int pos = 0;
   QRegExp reType( "(integer|real|string|date|datetime|time)" );
 
-  while (( pos = reType.indexIn( strTypeList, pos ) ) != -1 )
+  while ( ( pos = reType.indexIn( strTypeList, pos ) ) != -1 )
   {
     QgsDebugMsg( QString( "Found type: %1" ).arg( reType.cap( 1 ) ) );
     types << reType.cap( 1 );
@@ -791,7 +791,7 @@ void QgsDelimitedTextProvider::rescanFile() const
       }
       if ( buildSpatialIndex ) mSpatialIndex->insertFeature( f );
     }
-    if ( buildSubsetIndex ) mSubsetIndex.append(( quintptr ) f.id() );
+    if ( buildSubsetIndex ) mSubsetIndex.append( ( quintptr ) f.id() );
     mNumberFeatures++;
   }
   if ( buildSubsetIndex )
@@ -860,7 +860,7 @@ double QgsDelimitedTextProvider::dmsStringToDouble( const QString &sX, bool *xOk
   return x;
 }
 
-bool QgsDelimitedTextProvider::pointFromXY( QString &sX, QString &sY, QgsPoint &pt, const QString& decimalPoint, bool xyDms )
+bool QgsDelimitedTextProvider::pointFromXY( QString &sX, QString &sY, QgsPoint &pt, const QString &decimalPoint, bool xyDms )
 {
   if ( ! decimalPoint.isEmpty() )
   {
@@ -896,11 +896,11 @@ QString QgsDelimitedTextProvider::storageType() const
   return QStringLiteral( "Delimited text file" );
 }
 
-QgsFeatureIterator QgsDelimitedTextProvider::getFeatures( const QgsFeatureRequest& request ) const
+QgsFeatureIterator QgsDelimitedTextProvider::getFeatures( const QgsFeatureRequest &request ) const
 {
   // If the file has become invalid, rescan to check that it is still invalid.
   //
-  if (( mLayerValid && ! mValid ) || mRescanRequired ) rescanFile();
+  if ( ( mLayerValid && ! mValid ) || mRescanRequired ) rescanFile();
 
   return QgsFeatureIterator( new QgsDelimitedTextFeatureIterator( new QgsDelimitedTextFeatureSource( this ), true, request ) );
 }
@@ -913,14 +913,14 @@ void QgsDelimitedTextProvider::clearInvalidLines() const
 
 bool QgsDelimitedTextProvider::recordIsEmpty( QStringList &record )
 {
-  Q_FOREACH ( const QString& s, record )
+  Q_FOREACH ( const QString &s, record )
   {
     if ( ! s.isEmpty() ) return false;
   }
   return true;
 }
 
-void QgsDelimitedTextProvider::recordInvalidLine( const QString& message )
+void QgsDelimitedTextProvider::recordInvalidLine( const QString &message )
 {
   if ( mInvalidLines.size() < mMaxInvalidLines )
   {
@@ -932,13 +932,13 @@ void QgsDelimitedTextProvider::recordInvalidLine( const QString& message )
   }
 }
 
-void QgsDelimitedTextProvider::reportErrors( const QStringList& messages, bool showDialog ) const
+void QgsDelimitedTextProvider::reportErrors( const QStringList &messages, bool showDialog ) const
 {
   if ( !mInvalidLines.isEmpty() || ! messages.isEmpty() )
   {
     QString tag( QStringLiteral( "DelimitedText" ) );
     QgsMessageLog::logMessage( tr( "Errors in file %1" ).arg( mFile->fileName() ), tag );
-    Q_FOREACH ( const QString& message, messages )
+    Q_FOREACH ( const QString &message, messages )
     {
       QgsMessageLog::logMessage( message, tag );
     }
@@ -954,10 +954,10 @@ void QgsDelimitedTextProvider::reportErrors( const QStringList& messages, bool s
     // Display errors in a dialog...
     if ( mShowInvalidLines && showDialog )
     {
-      QgsMessageOutput* output = QgsMessageOutput::createMessageOutput();
+      QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
       output->setTitle( tr( "Delimited text file errors" ) );
       output->setMessage( tr( "Errors in file %1" ).arg( mFile->fileName() ), QgsMessageOutput::MessageText );
-      Q_FOREACH ( const QString& message, messages )
+      Q_FOREACH ( const QString &message, messages )
       {
         output->appendMessage( message );
       }
@@ -977,7 +977,7 @@ void QgsDelimitedTextProvider::reportErrors( const QStringList& messages, bool s
   }
 }
 
-bool QgsDelimitedTextProvider::setSubsetString( const QString& subset, bool updateFeatureCount )
+bool QgsDelimitedTextProvider::setSubsetString( const QString &subset, bool updateFeatureCount )
 {
   QString nonNullSubset = subset.isNull() ? QLatin1String( "" ) : subset;
 
@@ -1022,7 +1022,7 @@ bool QgsDelimitedTextProvider::setSubsetString( const QString& subset, bool upda
 
   if ( valid )
   {
-    QgsExpression * tmpSubsetExpression = mSubsetExpression;
+    QgsExpression *tmpSubsetExpression = mSubsetExpression;
     // using a tmp pointer to avoid the pointer being dereferenced by
     // a friend class after it has been freed but before it has been
     // reassigned
@@ -1081,7 +1081,7 @@ bool QgsDelimitedTextProvider::setSubsetString( const QString& subset, bool upda
   return valid;
 }
 
-void QgsDelimitedTextProvider::setUriParameter( const QString& parameter, const QString& value )
+void QgsDelimitedTextProvider::setUriParameter( const QString &parameter, const QString &value )
 {
   QUrl url = QUrl::fromEncoded( dataSourceUri().toLatin1() );
   if ( url.hasQueryItem( parameter ) ) url.removeAllQueryItems( parameter );

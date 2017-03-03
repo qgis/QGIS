@@ -97,7 +97,7 @@ class ANALYSIS_EXPORT QgsGraphVertex
      * This constructor initializes QgsGraphVertex object and associates a vertex with a point
      */
 
-    QgsGraphVertex( const QgsPoint& point );
+    QgsGraphVertex( const QgsPoint &point );
 
     /**
      * Returns outgoing edges ids
@@ -138,12 +138,12 @@ class ANALYSIS_EXPORT QgsGraph
     /**
      * Add a vertex to the graph
      */
-    int addVertex( const QgsPoint& pt );
+    int addVertex( const QgsPoint &pt );
 
     /**
      * Add an edge to the graph
      */
-    int addEdge( int outVertexIdx, int inVertexIdx, const QVector< QVariant >& strategies );
+    int addEdge( int outVertexIdx, int inVertexIdx, const QVector< QVariant > &strategies );
 
     /**
      * Returns number of graph vertices
@@ -153,7 +153,7 @@ class ANALYSIS_EXPORT QgsGraph
     /**
      * Returns vertex at given index
      */
-    const QgsGraphVertex& vertex( int idx ) const;
+    const QgsGraphVertex &vertex( int idx ) const;
 
     /**
       * Returns number of graph edges
@@ -163,13 +163,13 @@ class ANALYSIS_EXPORT QgsGraph
     /**
      * Returns edge at given index
      */
-    const QgsGraphEdge& edge( int idx ) const;
+    const QgsGraphEdge &edge( int idx ) const;
 
     /**
      * Find vertex by associated point
      * \return vertex index
      */
-    int findVertex( const QgsPoint& pt ) const;
+    int findVertex( const QgsPoint &pt ) const;
 
   private:
     QVector<QgsGraphVertex> mGraphVertexes;

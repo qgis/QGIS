@@ -30,9 +30,9 @@ class QgsSpatiaLiteProvider;
 class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    explicit QgsSpatiaLiteFeatureSource( const QgsSpatiaLiteProvider* p );
+    explicit QgsSpatiaLiteFeatureSource( const QgsSpatiaLiteProvider *p );
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   protected:
     QString mGeometryColumn;
@@ -56,7 +56,7 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
 class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsSpatiaLiteFeatureSource>
 {
   public:
-    QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
+    QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
     ~QgsSpatiaLiteFeatureIterator();
     virtual bool rewind() override;
@@ -64,22 +64,22 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
 
   protected:
 
-    virtual bool fetchFeature( QgsFeature& feature ) override;
-    bool nextFeatureFilterExpression( QgsFeature& f ) override;
+    virtual bool fetchFeature( QgsFeature &feature ) override;
+    bool nextFeatureFilterExpression( QgsFeature &f ) override;
 
     QString whereClauseRect();
     QString whereClauseFid();
     QString whereClauseFids();
-    QString mbr( const QgsRectangle& rect );
-    bool prepareStatement( const QString& whereClause, long limit = -1 , const QString& orderBy = QString() );
+    QString mbr( const QgsRectangle &rect );
+    bool prepareStatement( const QString &whereClause, long limit = -1, const QString &orderBy = QString() );
     QString quotedPrimaryKey();
     bool getFeature( sqlite3_stmt *stmt, QgsFeature &feature );
-    QString fieldName( const QgsField& fld );
-    QVariant getFeatureAttribute( sqlite3_stmt* stmt, int ic, QVariant::Type type, QVariant::Type subType );
-    void getFeatureGeometry( sqlite3_stmt* stmt, int ic, QgsFeature& feature );
+    QString fieldName( const QgsField &fld );
+    QVariant getFeatureAttribute( sqlite3_stmt *stmt, int ic, QVariant::Type type, QVariant::Type subType );
+    void getFeatureGeometry( sqlite3_stmt *stmt, int ic, QgsFeature &feature );
 
     //! wrapper of the SQLite database connection
-    QgsSqliteHandle* mHandle = nullptr;
+    QgsSqliteHandle *mHandle = nullptr;
 
     /**
       * SQLite statement handle

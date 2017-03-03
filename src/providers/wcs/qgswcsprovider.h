@@ -52,10 +52,10 @@ class QNetworkRequest;
 // TODO: merge with QgsWmsAuthorization?
 struct QgsWcsAuthorization
 {
-  QgsWcsAuthorization( const QString& userName = QString(), const QString& password = QString(), const QString& authcfg = QString() )
-      : mUserName( userName )
-      , mPassword( password )
-      , mAuthCfg( authcfg )
+  QgsWcsAuthorization( const QString &userName = QString(), const QString &password = QString(), const QString &authcfg = QString() )
+    : mUserName( userName )
+    , mPassword( password )
+    , mAuthCfg( authcfg )
   {}
 
   //! set authorization header
@@ -73,7 +73,7 @@ struct QgsWcsAuthorization
   }
 
   //! set authorization reply
-  bool setAuthorizationReply( QNetworkReply * reply ) const
+  bool setAuthorizationReply( QNetworkReply *reply ) const
   {
     if ( !mAuthCfg.isEmpty() )
     {
@@ -114,12 +114,12 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      *                otherwise we contact the host directly.
      *
      */
-    explicit QgsWcsProvider( const QString& uri = QString() );
+    explicit QgsWcsProvider( const QString &uri = QString() );
 
 
     virtual ~QgsWcsProvider();
 
-    QgsWcsProvider * clone() const override;
+    QgsWcsProvider *clone() const override;
 
     virtual QgsCoordinateReferenceSystem crs() const override;
 
@@ -131,23 +131,23 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     /**
      * Set the coverage format used in the transfer from the WCS server
      */
-    void setFormat( QString const & format );
+    void setFormat( QString const &format );
 
     /**
      * Set the image projection (in WCS CRS format) used in the transfer from the WCS server
      *
      * \note an empty crs value will result in the previous CRS being retained.
      */
-    void setCoverageCrs( QString const & crs );
+    void setCoverageCrs( QString const &crs );
 
     // TODO: Document this better.
 
-    void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data, QgsRasterBlockFeedback* feedback = nullptr ) override;
+    void readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     void readBlock( int bandNo, int xBlock, int yBlock, void *block ) override;
 
     //! Download cache
-    void getCache( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QString crs = QString(), QgsRasterBlockFeedback* feedback = nullptr ) const;
+    void getCache( int bandNo, QgsRectangle  const &viewExtent, int width, int height, QString crs = QString(), QgsRasterBlockFeedback *feedback = nullptr ) const;
 
     virtual QgsRectangle extent() const override;
 
@@ -171,7 +171,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     int xSize() const override;
     int ySize() const override;
     QString metadata() override;
-    QgsRasterIdentifyResult identify( const QgsPoint & point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
+    QgsRasterIdentifyResult identify( const QgsPoint &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
     QString lastErrorTitle() override;
     QString lastError() override;
     QString lastErrorFormat() override;
@@ -189,7 +189,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      *
      * \note errorTitle and errorText are updated to suit the results of this function.
      */
-    static bool parseServiceExceptionReportDom( QByteArray const &xml, const QString& wcsVersion, QString& errorTitle, QString& errorText );
+    static bool parseServiceExceptionReportDom( QByteArray const &xml, const QString &wcsVersion, QString &errorTitle, QString &errorText );
 
 
   signals:
@@ -201,10 +201,10 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
   private:
     // case insensitive attribute value lookup
-    static QString nodeAttribute( const QDomElement &e, const QString& name, const QString& defValue = QString::null );
+    static QString nodeAttribute( const QDomElement &e, const QString &name, const QString &defValue = QString::null );
 
     //! parse the WCS ServiceException XML element
-    static void parseServiceException( QDomElement const &e, const QString& wcsVersion, QString& errorTitle, QString& errorText );
+    static void parseServiceException( QDomElement const &e, const QString &wcsVersion, QString &errorTitle, QString &errorText );
 
     /**
      * \brief Calculates the combined extent of the layers selected by layersDrawn
@@ -222,7 +222,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      *
      */
 
-    bool parseUri( const QString& uri );
+    bool parseUri( const QString &uri );
 
     /**
      * \brief Prepare the URI so that we can later simply append param=value
@@ -231,10 +231,10 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      */
     QString prepareUri( QString uri ) const;
 
-    QString coverageMetadata( const QgsWcsCoverageSummary& c );
+    QString coverageMetadata( const QgsWcsCoverageSummary &c );
 
     //! remove query item and replace it with a new value
-    void setQueryItem( QUrl &url, const QString& key, const QString& value ) const;
+    void setQueryItem( QUrl &url, const QString &key, const QString &value ) const;
 
     //! Release cache resources
     void clearCache() const;
@@ -333,7 +333,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     //! Name of memory file for cached data
     QString mCachedMemFilename;
 
-    mutable VSILFILE * mCachedMemFile;
+    mutable VSILFILE *mCachedMemFile;
 
     //! Pointer to cached GDAL dataset
     mutable GDALDatasetH mCachedGdalDataset;
@@ -404,7 +404,7 @@ class QgsWcsDownloadHandler : public QObject
 {
     Q_OBJECT
   public:
-    QgsWcsDownloadHandler( const QUrl& url, QgsWcsAuthorization& auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray& cachedData, const QString& wcsVersion, QgsError& cachedError, QgsRasterBlockFeedback* feedback );
+    QgsWcsDownloadHandler( const QUrl &url, QgsWcsAuthorization &auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray &cachedData, const QString &wcsVersion, QgsError &cachedError, QgsRasterBlockFeedback *feedback );
     ~QgsWcsDownloadHandler();
 
     void blockingDownload();
@@ -417,16 +417,16 @@ class QgsWcsDownloadHandler : public QObject
   protected:
     void finish() { QMetaObject::invokeMethod( mEventLoop, "quit", Qt::QueuedConnection ); }
 
-    QgsWcsAuthorization& mAuth;
-    QEventLoop* mEventLoop = nullptr;
+    QgsWcsAuthorization &mAuth;
+    QEventLoop *mEventLoop = nullptr;
 
-    QNetworkReply* mCacheReply = nullptr;
+    QNetworkReply *mCacheReply = nullptr;
 
-    QByteArray& mCachedData;
+    QByteArray &mCachedData;
     QString mWcsVersion;
-    QgsError& mCachedError;
+    QgsError &mCachedError;
 
-    QgsRasterBlockFeedback* mFeedback = nullptr;
+    QgsRasterBlockFeedback *mFeedback = nullptr;
 
     static int sErrors; // this should be ideally per-provider...?
 };

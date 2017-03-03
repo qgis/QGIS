@@ -41,10 +41,10 @@ class QgsMSLayerBuilder
        @param layersToRemove list to append layers that should be removed after the request
        @param allowCaching flag if layers are allowed to be fetched from layer cache or not
      @return the created layer or 0 in case of error*/
-    virtual QgsMapLayer* createMapLayer( const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching = true ) const = 0;
+    virtual QgsMapLayer *createMapLayer( const QDomElement &elem, const QString &layerName, QList<QTemporaryFile *> &filesToRemove, QList<QgsMapLayer *> &layersToRemove, bool allowCaching = true ) const = 0;
   protected:
     //! Tries to create a suitable layer name from a URL.
-    virtual QString layerNameFromUri( const QString& uri ) const;
+    virtual QString layerNameFromUri( const QString &uri ) const;
 
     /** Helper function that creates a new temporary file with random name under /tmp/qgis_wms_serv/
     and returns the path of the file (Unix). On Windows, it is created in the current working directory
@@ -53,7 +53,7 @@ class QgsMSLayerBuilder
 
     /** Resets the former symbology of a raster layer. This is important for single band layers (e.g. dems)
      coming from the cash*/
-    void clearRasterSymbology( QgsRasterLayer* rl ) const;
+    void clearRasterSymbology( QgsRasterLayer *rl ) const;
 };
 
 #endif

@@ -24,16 +24,16 @@
 namespace QgsWms
 {
 
-  void writeGetSchemaExtension( QgsServerInterface* serverIface, const QString& version,
-                                const QgsServerRequest& request, QgsServerResponse& response )
+  void writeGetSchemaExtension( QgsServerInterface *serverIface, const QString &version,
+                                const QgsServerRequest &request, QgsServerResponse &response )
   {
     QDomDocument doc = getSchemaExtension( serverIface, version, request );
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
     response.write( doc.toByteArray() );
   }
 
-  QDomDocument getSchemaExtension( QgsServerInterface* serverIface, const QString& version,
-                                   const QgsServerRequest& request )
+  QDomDocument getSchemaExtension( QgsServerInterface *serverIface, const QString &version,
+                                   const QgsServerRequest &request )
   {
     Q_UNUSED( version );
     Q_UNUSED( serverIface );

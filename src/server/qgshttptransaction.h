@@ -47,14 +47,14 @@ class QgsHttpTransaction : public QObject
     /**
      * Constructor.
      */
-    QgsHttpTransaction( const QString& uri,
-                        const QString& proxyHost = QString(),
+    QgsHttpTransaction( const QString &uri,
+                        const QString &proxyHost = QString(),
                         int     proxyPort = 80,
-                        const QString& proxyUser = QString(),
-                        const QString& proxyPass = QString(),
+                        const QString &proxyUser = QString(),
+                        const QString &proxyPass = QString(),
                         QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy,
-                        const QString& userName = QString(),
-                        const QString& password = QString() );
+                        const QString &userName = QString(),
+                        const QString &password = QString() );
 
     //! Destructor
     virtual ~QgsHttpTransaction();
@@ -76,7 +76,7 @@ class QgsHttpTransaction : public QObject
 
         @return true in case of success
      */
-    bool getSynchronously( QByteArray &respondedContent, int redirections = 0, const QByteArray* postData = nullptr );
+    bool getSynchronously( QByteArray &respondedContent, int redirections = 0, const QByteArray *postData = nullptr );
 
     QString responseContentType();
 
@@ -90,10 +90,10 @@ class QgsHttpTransaction : public QObject
 
     /** Apply proxy settings from QSettings to a http object
     @return true if proxy settings was applied, false else*/
-    static bool applyProxySettings( QHttp& http, const QString& url );
+    static bool applyProxySettings( QHttp &http, const QString &url );
 
     //! Set the credentials (username and password)
-    void setCredentials( const QString& username, const QString &password );
+    void setCredentials( const QString &username, const QString &password );
 
     //! Returns the network timeout in msec
     int networkTimeout() const { return mNetworkTimeoutMsec;}
@@ -105,9 +105,9 @@ class QgsHttpTransaction : public QObject
 
     void dataStarted( int id );
 
-    void dataHeaderReceived( const QHttpResponseHeader& resp );
+    void dataHeaderReceived( const QHttpResponseHeader &resp );
 
-    void dataReceived( const QHttpResponseHeader& resp );
+    void dataReceived( const QHttpResponseHeader &resp );
 
     void dataProgress( int done, int total );
 
@@ -133,7 +133,7 @@ class QgsHttpTransaction : public QObject
     void totalSteps( int totalSteps );
 
     //! \brief emit a signal to be caught by qgisapp and display a msg on status bar
-    void statusChanged( const QString& statusQString );
+    void statusChanged( const QString &statusQString );
 
 
   private:
@@ -148,7 +148,7 @@ class QgsHttpTransaction : public QObject
      *        but strange things were happening with the signals -
      *        therefore we use the "pointer to" instead.
      */
-    QHttp* http = nullptr;
+    QHttp *http = nullptr;
 
     /**
      * Indicates the QHttp ID
@@ -198,7 +198,7 @@ class QgsHttpTransaction : public QObject
     /**
      * Indicates the associated QTimer object - used to detect network timeouts
      */
-    QTimer * mWatchdogTimer = nullptr;
+    QTimer *mWatchdogTimer = nullptr;
 
     /**
      * The error message associated with the last HTTP error.

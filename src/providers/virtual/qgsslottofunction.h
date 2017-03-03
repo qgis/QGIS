@@ -28,12 +28,12 @@ class QgsSlotToFunction : public QObject
     Q_OBJECT
   public:
     QgsSlotToFunction() : mCallback( nullptr ), mArg( nullptr ) {}
-    QgsSlotToFunction( void ( *callback )( void* ), void* arg ) : mCallback( callback ), mArg( arg ) {}
+    QgsSlotToFunction( void ( *callback )( void * ), void *arg ) : mCallback( callback ), mArg( arg ) {}
   private slots:
     void onSignal() { if ( mCallback ) mCallback( mArg ); }
   private:
-    void ( *mCallback )( void* );
-    void* mArg = nullptr;
+    void ( *mCallback )( void * );
+    void *mArg = nullptr;
 };
 
 #endif

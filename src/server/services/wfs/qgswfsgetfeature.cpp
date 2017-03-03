@@ -42,46 +42,46 @@ namespace QgsWfs
   namespace
   {
 
-    QString createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes,
-                                  const QSet<QString>& excludedAttributes, const QString& typeName, bool withGeom,
-                                  const QString& geometryName );
+    QString createFeatureGeoJSON( QgsFeature *feat, int prec, QgsCoordinateReferenceSystem &crs, const QgsAttributeList &attrIndexes,
+                                  const QSet<QString> &excludedAttributes, const QString &typeName, bool withGeom,
+                                  const QString &geometryName );
 
-    QDomElement createFeatureGML2( QgsFeature* feat, QDomDocument& doc, int prec, QgsCoordinateReferenceSystem& crs,
-                                   const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes, const QString& typeName,
-                                   bool withGeom, const QString& geometryName );
+    QDomElement createFeatureGML2( QgsFeature *feat, QDomDocument &doc, int prec, QgsCoordinateReferenceSystem &crs,
+                                   const QgsAttributeList &attrIndexes, const QSet<QString> &excludedAttributes, const QString &typeName,
+                                   bool withGeom, const QString &geometryName );
 
-    QDomElement createFeatureGML3( QgsFeature* feat, QDomDocument& doc, int prec, QgsCoordinateReferenceSystem& crs,
-                                   const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes, const QString& typeName,
+    QDomElement createFeatureGML3( QgsFeature *feat, QDomDocument &doc, int prec, QgsCoordinateReferenceSystem &crs,
+                                   const QgsAttributeList &attrIndexes, const QSet<QString> &excludedAttributes, const QString &typeName,
                                    bool withGeom, const QString geometryName );
 
-    void startGetFeature( const QgsServerRequest& request, QgsServerResponse& response, const QgsProject* project, const QString& format,
-                          int prec, QgsCoordinateReferenceSystem& crs, QgsRectangle* rect, const QStringList& typeNames );
+    void startGetFeature( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project, const QString &format,
+                          int prec, QgsCoordinateReferenceSystem &crs, QgsRectangle *rect, const QStringList &typeNames );
 
-    void setGetFeature( QgsServerResponse& response, const QString& format, QgsFeature* feat, int featIdx, int prec,
-                        QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes,
-                        const QString& typeName, bool withGeom, const QString& geometryName );
+    void setGetFeature( QgsServerResponse &response, const QString &format, QgsFeature *feat, int featIdx, int prec,
+                        QgsCoordinateReferenceSystem &crs, const QgsAttributeList &attrIndexes, const QSet<QString> &excludedAttributes,
+                        const QString &typeName, bool withGeom, const QString &geometryName );
 
-    void endGetFeature( QgsServerResponse& response, const QString& format );
+    void endGetFeature( QgsServerResponse &response, const QString &format );
 
   }
 
   /** Output WFS  GetCapabilities response
    */
-  void writeGetFeature( QgsServerInterface* serverIface, const QgsProject* project,
-                        const QString& version, const QgsServerRequest& request,
-                        QgsServerResponse& response )
+  void writeGetFeature( QgsServerInterface *serverIface, const QgsProject *project,
+                        const QString &version, const QgsServerRequest &request,
+                        QgsServerResponse &response )
   {
     Q_UNUSED( version );
 
-    QgsWfsProjectParser* configParser = getConfigParser( serverIface );
+    QgsWfsProjectParser *configParser = getConfigParser( serverIface );
 
     QgsServerRequest::Parameters parameters = request.parameters();
-    QgsAccessControl* accessControl = serverIface->accessControls();
+    QgsAccessControl *accessControl = serverIface->accessControls();
 
     QStringList wfsLayersId = configParser->wfsLayers();
 
-    QList<QgsMapLayer*> layerList;
-    QgsMapLayer* currentLayer = nullptr;
+    QList<QgsMapLayer *> layerList;
+    QgsMapLayer *currentLayer = nullptr;
     QgsCoordinateReferenceSystem layerCrs;
     QgsRectangle searchRect( 0, 0, 0, 0 );
 
@@ -104,7 +104,7 @@ namespace QgsWfs
 
     QgsExpressionContext expressionContext;
     expressionContext << QgsExpressionContextUtils::globalScope()
-    << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+                      << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 
     QDomDocument doc;
     QString errorMsg;
@@ -155,7 +155,7 @@ namespace QgsWfs
         }
 
         currentLayer = layerList.at( 0 );
-        QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( currentLayer );
+        QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( currentLayer );
         if ( layer && wfsLayersId.contains( layer->id() ) )
         {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -181,13 +181,13 @@ namespace QgsWfs
           }
 
           //excluded attributes for this layer
-          const QSet<QString>& layerExcludedAttributes = layer->excludeAttributesWfs();
+          const QSet<QString> &layerExcludedAttributes = layer->excludeAttributesWfs();
 
           //get layer precision
           layerPrec = configParser->wfsLayerPrecision( layer->id() );
 
           //do a select with searchRect and go through all the features
-          QgsVectorDataProvider* provider = layer->dataProvider();
+          QgsVectorDataProvider *provider = layer->dataProvider();
           if ( !provider )
           {
             errors << QStringLiteral( "The layer's provider for the TypeName '%1' is not found" ).arg( typeName );
@@ -577,7 +577,7 @@ namespace QgsWfs
 
       currentLayer = layerList.at( 0 );
 
-      QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( currentLayer );
+      QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( currentLayer );
       if ( layer && wfsLayersId.contains( layer->id() ) )
       {
         expressionContext << QgsExpressionContextUtils::layerScope( layer );
@@ -596,13 +596,13 @@ namespace QgsWfs
         }
 
         //excluded attributes for this layer
-        const QSet<QString>& layerExcludedAttributes = layer->excludeAttributesWfs();
+        const QSet<QString> &layerExcludedAttributes = layer->excludeAttributesWfs();
 
         //get layer precision
         int layerPrec = configParser->wfsLayerPrecision( layer->id() );
 
         //do a select with searchRect and go through all the features
-        QgsVectorDataProvider* provider = layer->dataProvider();
+        QgsVectorDataProvider *provider = layer->dataProvider();
         if ( !provider )
         {
           errors << QStringLiteral( "The layer's provider for the TypeName '%1' is not found" ).arg( tnStr );
@@ -909,8 +909,8 @@ namespace QgsWfs
   namespace
   {
 
-    void startGetFeature( const QgsServerRequest& request, QgsServerResponse& response, const QgsProject* project, const QString& format,
-                          int prec, QgsCoordinateReferenceSystem& crs, QgsRectangle* rect, const QStringList& typeNames )
+    void startGetFeature( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project, const QString &format,
+                          int prec, QgsCoordinateReferenceSystem &crs, QgsRectangle *rect, const QStringList &typeNames )
     {
       QString fcString;
 
@@ -1026,9 +1026,9 @@ namespace QgsWfs
       }
     }
 
-    void setGetFeature( QgsServerResponse& response, const QString& format, QgsFeature* feat, int featIdx, int prec,
-                        QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes,
-                        const QString& typeName, bool withGeom, const QString& geometryName )
+    void setGetFeature( QgsServerResponse &response, const QString &format, QgsFeature *feat, int featIdx, int prec,
+                        QgsCoordinateReferenceSystem &crs, const QgsAttributeList &attrIndexes, const QSet<QString> &excludedAttributes,
+                        const QString &typeName, bool withGeom, const QString &geometryName )
     {
       if ( !feat->isValid() )
         return;
@@ -1066,7 +1066,7 @@ namespace QgsWfs
       response.flush();
     }
 
-    void endGetFeature( QgsServerResponse& response, const QString& format )
+    void endGetFeature( QgsServerResponse &response, const QString &format )
     {
       QString fcString;
       if ( format == QLatin1String( "GeoJSON" ) )
@@ -1082,7 +1082,7 @@ namespace QgsWfs
     }
 
 
-    QString createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes, const QString& typeName, bool withGeom, const QString& geometryName )
+    QString createFeatureGeoJSON( QgsFeature *feat, int prec, QgsCoordinateReferenceSystem &crs, const QgsAttributeList &attrIndexes, const QSet<QString> &excludedAttributes, const QString &typeName, bool withGeom, const QString &geometryName )
     {
       QString id = QStringLiteral( "%1.%2" ).arg( typeName, FID_TO_STRING( feat->id() ) );
 
@@ -1137,7 +1137,7 @@ namespace QgsWfs
     }
 
 
-    QDomElement createFeatureGML2( QgsFeature* feat, QDomDocument& doc, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes, const QString& typeName, bool withGeom, const QString& geometryName )
+    QDomElement createFeatureGML2( QgsFeature *feat, QDomDocument &doc, int prec, QgsCoordinateReferenceSystem &crs, const QgsAttributeList &attrIndexes, const QSet<QString> &excludedAttributes, const QString &typeName, bool withGeom, const QString &geometryName )
     {
       //gml:FeatureMember
       QDomElement featureElement = doc.createElement( QStringLiteral( "gml:featureMember" )/*wfs:FeatureMember*/ );
@@ -1157,7 +1157,7 @@ namespace QgsWfs
         if ( geometryName == QLatin1String( "EXTENT" ) )
         {
           QgsGeometry bbox = QgsGeometry::fromRect( geom.boundingBox() );
-          gmlElem = QgsOgcUtils::geometryToGML( &bbox , doc, prec );
+          gmlElem = QgsOgcUtils::geometryToGML( &bbox, doc, prec );
         }
         else if ( geometryName == QLatin1String( "CENTROID" ) )
         {
@@ -1166,7 +1166,7 @@ namespace QgsWfs
         }
         else
         {
-          QgsAbstractGeometry* abstractGeom = geom.geometry();
+          QgsAbstractGeometry *abstractGeom = geom.geometry();
           if ( abstractGeom )
           {
             gmlElem = abstractGeom->asGML2( doc, prec, "http://www.opengis.net/gml" );
@@ -1219,7 +1219,7 @@ namespace QgsWfs
       return featureElement;
     }
 
-    QDomElement createFeatureGML3( QgsFeature* feat, QDomDocument& doc, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes, const QString& typeName, bool withGeom, const QString geometryName )
+    QDomElement createFeatureGML3( QgsFeature *feat, QDomDocument &doc, int prec, QgsCoordinateReferenceSystem &crs, const QgsAttributeList &attrIndexes, const QSet<QString> &excludedAttributes, const QString &typeName, bool withGeom, const QString geometryName )
     {
       //gml:FeatureMember
       QDomElement featureElement = doc.createElement( QStringLiteral( "gml:featureMember" )/*wfs:FeatureMember*/ );
@@ -1248,7 +1248,7 @@ namespace QgsWfs
         }
         else
         {
-          QgsAbstractGeometry* abstractGeom = geom.geometry();
+          QgsAbstractGeometry *abstractGeom = geom.geometry();
           if ( abstractGeom )
           {
             gmlElem = abstractGeom->asGML3( doc, prec, "http://www.opengis.net/gml" );

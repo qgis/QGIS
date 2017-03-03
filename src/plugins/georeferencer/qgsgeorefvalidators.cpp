@@ -18,7 +18,7 @@
 #include "qgsgeorefvalidators.h"
 
 QgsDMSAndDDValidator::QgsDMSAndDDValidator( QObject *parent )
-    : QValidator( parent )
+  : QValidator( parent )
 {
 }
 

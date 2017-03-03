@@ -36,19 +36,19 @@
 QString QgsGeometryCheckFactory::sSettingsGroup = QStringLiteral( "/geometry_checker/previous_values/" );
 
 
-template<> void QgsGeometryCheckFactoryT<QgsGeometryAngleCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab& ui ) const
+template<> void QgsGeometryCheckFactoryT<QgsGeometryAngleCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab &ui ) const
 {
   ui.checkBoxAngle->setChecked( QSettings().value( sSettingsGroup + "checkAngle" ).toBool() );
   ui.doubleSpinBoxAngle->setValue( QSettings().value( sSettingsGroup + "minimalAngle" ).toDouble() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometryAngleCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QgsWkbTypes::GeometryType geomType ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryAngleCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, QgsWkbTypes::GeometryType geomType ) const
 {
   ui.checkBoxAngle->setEnabled( geomType == QgsWkbTypes::PolygonGeometry || geomType == QgsWkbTypes::LineGeometry );
   return ui.checkBoxAngle->isEnabled();
 }
 
-template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometryAngleCheck>::createInstance( QgsFeaturePool* featurePool, const Ui::QgsGeometryCheckerSetupTab& ui, double /*mapToLayerUnits*/ ) const
+template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometryAngleCheck>::createInstance( QgsFeaturePool *featurePool, const Ui::QgsGeometryCheckerSetupTab &ui, double /*mapToLayerUnits*/ ) const
 {
   QSettings().setValue( sSettingsGroup + "checkAngle", ui.checkBoxAngle->isChecked() );
   QSettings().setValue( sSettingsGroup + "minimalAngle", ui.doubleSpinBoxAngle->value() );
@@ -66,19 +66,19 @@ REGISTER_QGS_GEOMETRY_CHECK_FACTORY( QgsGeometryCheckFactoryT<QgsGeometryAngleCh
 
 ///////////////////////////////////////////////////////////////////////////////
 
-template<> void QgsGeometryCheckFactoryT<QgsGeometryAreaCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab& ui ) const
+template<> void QgsGeometryCheckFactoryT<QgsGeometryAreaCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab &ui ) const
 {
   ui.checkBoxArea->setChecked( QSettings().value( sSettingsGroup + "checkArea" ).toBool() );
   ui.doubleSpinBoxArea->setValue( QSettings().value( sSettingsGroup + "minimalArea" ).toDouble() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometryAreaCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QgsWkbTypes::GeometryType geomType ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryAreaCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, QgsWkbTypes::GeometryType geomType ) const
 {
   ui.checkBoxArea->setEnabled( geomType == QgsWkbTypes::PolygonGeometry );
   return ui.checkBoxArea->isEnabled();
 }
 
-template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometryAreaCheck>::createInstance( QgsFeaturePool* featurePool, const Ui::QgsGeometryCheckerSetupTab& ui, double mapToLayerUnits ) const
+template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometryAreaCheck>::createInstance( QgsFeaturePool *featurePool, const Ui::QgsGeometryCheckerSetupTab &ui, double mapToLayerUnits ) const
 {
   QSettings().setValue( sSettingsGroup + "checkArea", ui.checkBoxArea->isChecked() );
   QSettings().setValue( sSettingsGroup + "minimalArea", ui.doubleSpinBoxArea->value() );
@@ -96,18 +96,18 @@ REGISTER_QGS_GEOMETRY_CHECK_FACTORY( QgsGeometryCheckFactoryT<QgsGeometryAreaChe
 
 ///////////////////////////////////////////////////////////////////////////////
 
-template<> void QgsGeometryCheckFactoryT<QgsGeometryContainedCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab& ui ) const
+template<> void QgsGeometryCheckFactoryT<QgsGeometryContainedCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab &ui ) const
 {
   ui.checkBoxCovered->setChecked( QSettings().value( sSettingsGroup + "checkCovers" ).toBool() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometryContainedCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QgsWkbTypes::GeometryType geomType ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryContainedCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, QgsWkbTypes::GeometryType geomType ) const
 {
   ui.checkBoxCovered->setEnabled( geomType == QgsWkbTypes::PolygonGeometry );
   return ui.checkBoxCovered->isEnabled();
 }
 
-template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometryContainedCheck>::createInstance( QgsFeaturePool* featurePool, const Ui::QgsGeometryCheckerSetupTab& ui, double /*mapToLayerUnits*/ ) const
+template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometryContainedCheck>::createInstance( QgsFeaturePool *featurePool, const Ui::QgsGeometryCheckerSetupTab &ui, double /*mapToLayerUnits*/ ) const
 {
   QSettings().setValue( sSettingsGroup + "checkCovers", ui.checkBoxCovered->isChecked() );
   if ( ui.checkBoxCovered->isEnabled() && ui.checkBoxCovered->isChecked() )
@@ -124,18 +124,18 @@ REGISTER_QGS_GEOMETRY_CHECK_FACTORY( QgsGeometryCheckFactoryT<QgsGeometryContain
 
 ///////////////////////////////////////////////////////////////////////////////
 
-template<> void QgsGeometryCheckFactoryT<QgsGeometryDegeneratePolygonCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab& ui ) const
+template<> void QgsGeometryCheckFactoryT<QgsGeometryDegeneratePolygonCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab &ui ) const
 {
   ui.checkBoxDegeneratePolygon->setChecked( QSettings().value( sSettingsGroup + "checkDegeneratePolygon" ).toBool() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometryDegeneratePolygonCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QgsWkbTypes::GeometryType geomType ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryDegeneratePolygonCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, QgsWkbTypes::GeometryType geomType ) const
 {
   ui.checkBoxDegeneratePolygon->setEnabled( geomType == QgsWkbTypes::PolygonGeometry );
   return ui.checkBoxDegeneratePolygon->isEnabled();
 }
 
-template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometryDegeneratePolygonCheck>::createInstance( QgsFeaturePool* featurePool, const Ui::QgsGeometryCheckerSetupTab& ui, double /*mapToLayerUnits*/ ) const
+template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometryDegeneratePolygonCheck>::createInstance( QgsFeaturePool *featurePool, const Ui::QgsGeometryCheckerSetupTab &ui, double /*mapToLayerUnits*/ ) const
 {
   QSettings().setValue( sSettingsGroup + "checkDegeneratePolygon", ui.checkBoxDegeneratePolygon->isChecked() );
   if ( ui.checkBoxDegeneratePolygon->isEnabled() && ui.checkBoxDegeneratePolygon->isChecked() )
@@ -152,18 +152,18 @@ REGISTER_QGS_GEOMETRY_CHECK_FACTORY( QgsGeometryCheckFactoryT<QgsGeometryDegener
 
 ///////////////////////////////////////////////////////////////////////////////
 
-template<> void QgsGeometryCheckFactoryT<QgsGeometryDuplicateCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab& ui ) const
+template<> void QgsGeometryCheckFactoryT<QgsGeometryDuplicateCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab &ui ) const
 {
   ui.checkBoxDuplicates->setChecked( QSettings().value( sSettingsGroup + "checkDuplicates" ).toBool() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometryDuplicateCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QgsWkbTypes::GeometryType geomType ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryDuplicateCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, QgsWkbTypes::GeometryType geomType ) const
 {
   ui.checkBoxDuplicates->setEnabled( geomType == QgsWkbTypes::PolygonGeometry );
   return ui.checkBoxDuplicates->isEnabled();
 }
 
-template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometryDuplicateCheck>::createInstance( QgsFeaturePool* featurePool, const Ui::QgsGeometryCheckerSetupTab& ui, double /*mapToLayerUnits*/ ) const
+template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometryDuplicateCheck>::createInstance( QgsFeaturePool *featurePool, const Ui::QgsGeometryCheckerSetupTab &ui, double /*mapToLayerUnits*/ ) const
 {
   QSettings().setValue( sSettingsGroup + "checkDuplicates", ui.checkBoxDuplicates->isChecked() );
   if ( ui.checkBoxDuplicates->isEnabled() && ui.checkBoxDuplicates->isChecked() )
@@ -180,18 +180,18 @@ REGISTER_QGS_GEOMETRY_CHECK_FACTORY( QgsGeometryCheckFactoryT<QgsGeometryDuplica
 
 ///////////////////////////////////////////////////////////////////////////////
 
-template<> void QgsGeometryCheckFactoryT<QgsGeometryDuplicateNodesCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab& ui ) const
+template<> void QgsGeometryCheckFactoryT<QgsGeometryDuplicateNodesCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab &ui ) const
 {
   ui.checkBoxDuplicateNodes->setChecked( QSettings().value( sSettingsGroup + "checkDuplicateNodes" ).toBool() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometryDuplicateNodesCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QgsWkbTypes::GeometryType geomType ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryDuplicateNodesCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, QgsWkbTypes::GeometryType geomType ) const
 {
   ui.checkBoxDuplicateNodes->setEnabled( geomType == QgsWkbTypes::PolygonGeometry || geomType == QgsWkbTypes::LineGeometry );
   return ui.checkBoxDuplicateNodes->isEnabled();
 }
 
-template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometryDuplicateNodesCheck>::createInstance( QgsFeaturePool* featurePool, const Ui::QgsGeometryCheckerSetupTab& ui, double /*mapToLayerUnits*/ ) const
+template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometryDuplicateNodesCheck>::createInstance( QgsFeaturePool *featurePool, const Ui::QgsGeometryCheckerSetupTab &ui, double /*mapToLayerUnits*/ ) const
 {
   QSettings().setValue( sSettingsGroup + "checkDuplicateNodes", ui.checkBoxDuplicateNodes->isChecked() );
   if ( ui.checkBoxDuplicateNodes->isEnabled() && ui.checkBoxDuplicateNodes->isChecked() )
@@ -208,20 +208,20 @@ REGISTER_QGS_GEOMETRY_CHECK_FACTORY( QgsGeometryCheckFactoryT<QgsGeometryDuplica
 
 ///////////////////////////////////////////////////////////////////////////////
 
-template<> void QgsGeometryCheckFactoryT<QgsGeometryGapCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab& ui ) const
+template<> void QgsGeometryCheckFactoryT<QgsGeometryGapCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab &ui ) const
 {
   ui.checkBoxGaps->setChecked( QSettings().value( sSettingsGroup + "checkGaps" ).toBool() );
   ui.doubleSpinBoxGapArea->setValue( QSettings().value( sSettingsGroup + "maxGapArea" ).toDouble() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometryGapCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QgsWkbTypes::GeometryType geomType ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryGapCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, QgsWkbTypes::GeometryType geomType ) const
 {
   ui.checkBoxGaps->setEnabled( geomType == QgsWkbTypes::PolygonGeometry );
   ui.doubleSpinBoxGapArea->setEnabled( ui.checkBoxGaps->isEnabled() );
   return ui.checkBoxGaps->isEnabled();
 }
 
-template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometryGapCheck>::createInstance( QgsFeaturePool* featurePool, const Ui::QgsGeometryCheckerSetupTab& ui, double mapToLayerUnits ) const
+template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometryGapCheck>::createInstance( QgsFeaturePool *featurePool, const Ui::QgsGeometryCheckerSetupTab &ui, double mapToLayerUnits ) const
 {
   QSettings().setValue( sSettingsGroup + "checkGaps", ui.checkBoxGaps->isChecked() );
   QSettings().setValue( sSettingsGroup + "maxGapArea", ui.doubleSpinBoxGapArea->value() );
@@ -239,18 +239,18 @@ REGISTER_QGS_GEOMETRY_CHECK_FACTORY( QgsGeometryCheckFactoryT<QgsGeometryGapChec
 
 ///////////////////////////////////////////////////////////////////////////////
 
-template<> void QgsGeometryCheckFactoryT<QgsGeometryHoleCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab& ui ) const
+template<> void QgsGeometryCheckFactoryT<QgsGeometryHoleCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab &ui ) const
 {
   ui.checkBoxNoHoles->setChecked( QSettings().value( sSettingsGroup + "checkHoles" ).toBool() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometryHoleCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QgsWkbTypes::GeometryType geomType ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryHoleCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, QgsWkbTypes::GeometryType geomType ) const
 {
   ui.checkBoxNoHoles->setEnabled( geomType == QgsWkbTypes::PolygonGeometry );
   return ui.checkBoxNoHoles->isEnabled();
 }
 
-template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometryHoleCheck>::createInstance( QgsFeaturePool* featurePool, const Ui::QgsGeometryCheckerSetupTab& ui, double /*mapToLayerUnits*/ ) const
+template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometryHoleCheck>::createInstance( QgsFeaturePool *featurePool, const Ui::QgsGeometryCheckerSetupTab &ui, double /*mapToLayerUnits*/ ) const
 {
   QSettings().setValue( sSettingsGroup + "checkHoles", ui.checkBoxNoHoles->isChecked() );
   if ( ui.checkBoxNoHoles->isEnabled() && ui.checkBoxNoHoles->isChecked() )
@@ -267,17 +267,17 @@ REGISTER_QGS_GEOMETRY_CHECK_FACTORY( QgsGeometryCheckFactoryT<QgsGeometryHoleChe
 
 ///////////////////////////////////////////////////////////////////////////////
 
-template<> void QgsGeometryCheckFactoryT<QgsGeometryMultipartCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab& ui ) const
+template<> void QgsGeometryCheckFactoryT<QgsGeometryMultipartCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab &ui ) const
 {
   ui.checkBoxMultipart->setChecked( QSettings().value( sSettingsGroup + "checkMultipart" ).toBool() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometryMultipartCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& /*ui*/, QgsWkbTypes::GeometryType /*geomType*/ ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryMultipartCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab & /*ui*/, QgsWkbTypes::GeometryType /*geomType*/ ) const
 {
   return true;
 }
 
-template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometryMultipartCheck>::createInstance( QgsFeaturePool* featurePool, const Ui::QgsGeometryCheckerSetupTab& ui, double /*mapToLayerUnits*/ ) const
+template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometryMultipartCheck>::createInstance( QgsFeaturePool *featurePool, const Ui::QgsGeometryCheckerSetupTab &ui, double /*mapToLayerUnits*/ ) const
 {
   QSettings().setValue( sSettingsGroup + "checkMultipart", ui.checkBoxMultipart->isChecked() );
   if ( ui.checkBoxMultipart->isEnabled() && ui.checkBoxMultipart->isChecked() )
@@ -294,20 +294,20 @@ REGISTER_QGS_GEOMETRY_CHECK_FACTORY( QgsGeometryCheckFactoryT<QgsGeometryMultipa
 
 ///////////////////////////////////////////////////////////////////////////////
 
-template<> void QgsGeometryCheckFactoryT<QgsGeometryOverlapCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab& ui ) const
+template<> void QgsGeometryCheckFactoryT<QgsGeometryOverlapCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab &ui ) const
 {
   ui.checkBoxOverlaps->setChecked( QSettings().value( sSettingsGroup + "checkOverlaps" ).toBool() );
   ui.doubleSpinBoxOverlapArea->setValue( QSettings().value( sSettingsGroup + "maxOverlapArea" ).toDouble() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometryOverlapCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QgsWkbTypes::GeometryType geomType ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryOverlapCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, QgsWkbTypes::GeometryType geomType ) const
 {
   ui.checkBoxOverlaps->setEnabled( geomType == QgsWkbTypes::PolygonGeometry );
   ui.doubleSpinBoxOverlapArea->setEnabled( ui.checkBoxOverlaps->isEnabled() );
   return ui.checkBoxOverlaps->isEnabled();
 }
 
-template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometryOverlapCheck>::createInstance( QgsFeaturePool* featurePool, const Ui::QgsGeometryCheckerSetupTab& ui, double mapToLayerUnits ) const
+template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometryOverlapCheck>::createInstance( QgsFeaturePool *featurePool, const Ui::QgsGeometryCheckerSetupTab &ui, double mapToLayerUnits ) const
 {
   QSettings().setValue( sSettingsGroup + "checkOverlaps", ui.checkBoxOverlaps->isChecked() );
   QSettings().setValue( sSettingsGroup + "maxOverlapArea", ui.doubleSpinBoxOverlapArea->value() );
@@ -325,20 +325,20 @@ REGISTER_QGS_GEOMETRY_CHECK_FACTORY( QgsGeometryCheckFactoryT<QgsGeometryOverlap
 
 ///////////////////////////////////////////////////////////////////////////////
 
-template<> void QgsGeometryCheckFactoryT<QgsGeometrySegmentLengthCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab& ui ) const
+template<> void QgsGeometryCheckFactoryT<QgsGeometrySegmentLengthCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab &ui ) const
 {
   ui.checkBoxSegmentLength->setChecked( QSettings().value( sSettingsGroup + "checkSegmentLength" ).toBool() );
   ui.doubleSpinBoxSegmentLength->setValue( QSettings().value( sSettingsGroup + "minSegmentLength" ).toDouble() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometrySegmentLengthCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QgsWkbTypes::GeometryType geomType ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometrySegmentLengthCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, QgsWkbTypes::GeometryType geomType ) const
 {
   ui.checkBoxSegmentLength->setEnabled( geomType == QgsWkbTypes::PolygonGeometry || geomType == QgsWkbTypes::LineGeometry );
   ui.doubleSpinBoxSegmentLength->setEnabled( ui.checkBoxSegmentLength->isEnabled() );
   return ui.checkBoxSegmentLength->isEnabled();
 }
 
-template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometrySegmentLengthCheck>::createInstance( QgsFeaturePool* featurePool, const Ui::QgsGeometryCheckerSetupTab& ui, double mapToLayerUnits ) const
+template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometrySegmentLengthCheck>::createInstance( QgsFeaturePool *featurePool, const Ui::QgsGeometryCheckerSetupTab &ui, double mapToLayerUnits ) const
 {
   QSettings().setValue( sSettingsGroup + "checkSegmentLength", ui.checkBoxSegmentLength->isChecked() );
   QSettings().setValue( sSettingsGroup + "minSegmentLength", ui.doubleSpinBoxSegmentLength->value() );
@@ -356,18 +356,18 @@ REGISTER_QGS_GEOMETRY_CHECK_FACTORY( QgsGeometryCheckFactoryT<QgsGeometrySegment
 
 ///////////////////////////////////////////////////////////////////////////////
 
-template<> void QgsGeometryCheckFactoryT<QgsGeometrySelfIntersectionCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab& ui ) const
+template<> void QgsGeometryCheckFactoryT<QgsGeometrySelfIntersectionCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab &ui ) const
 {
   ui.checkBoxSelfIntersections->setChecked( QSettings().value( sSettingsGroup + "checkSelfIntersections" ).toBool() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometrySelfIntersectionCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QgsWkbTypes::GeometryType geomType ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometrySelfIntersectionCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, QgsWkbTypes::GeometryType geomType ) const
 {
   ui.checkBoxSelfIntersections->setEnabled( geomType == QgsWkbTypes::PolygonGeometry || geomType == QgsWkbTypes::LineGeometry );
   return ui.checkBoxSelfIntersections->isEnabled();
 }
 
-template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometrySelfIntersectionCheck>::createInstance( QgsFeaturePool* featurePool, const Ui::QgsGeometryCheckerSetupTab& ui, double /*mapToLayerUnits*/ ) const
+template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometrySelfIntersectionCheck>::createInstance( QgsFeaturePool *featurePool, const Ui::QgsGeometryCheckerSetupTab &ui, double /*mapToLayerUnits*/ ) const
 {
   QSettings().setValue( sSettingsGroup + "checkSelfIntersections", ui.checkBoxSelfIntersections->isChecked() );
   if ( ui.checkBoxSelfIntersections->isEnabled() && ui.checkBoxSelfIntersections->isChecked() )
@@ -384,7 +384,7 @@ REGISTER_QGS_GEOMETRY_CHECK_FACTORY( QgsGeometryCheckFactoryT<QgsGeometrySelfInt
 
 ///////////////////////////////////////////////////////////////////////////////
 
-template<> void QgsGeometryCheckFactoryT<QgsGeometrySliverPolygonCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab& ui ) const
+template<> void QgsGeometryCheckFactoryT<QgsGeometrySliverPolygonCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab &ui ) const
 {
   ui.checkBoxSliverPolygons->setChecked( QSettings().value( sSettingsGroup + "checkSliverPolygons" ).toBool() );
   ui.checkBoxSliverArea->setChecked( QSettings().value( sSettingsGroup + "sliverPolygonsAreaThresholdEnabled" ).toBool() );
@@ -393,13 +393,13 @@ template<> void QgsGeometryCheckFactoryT<QgsGeometrySliverPolygonCheck>::restore
   ui.checkBoxSliverPolygons->setChecked( QSettings().value( sSettingsGroup + "checkSliverPolygons" ).toBool() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometrySliverPolygonCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QgsWkbTypes::GeometryType geomType ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometrySliverPolygonCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, QgsWkbTypes::GeometryType geomType ) const
 {
   ui.checkBoxSliverPolygons->setEnabled( geomType == QgsWkbTypes::PolygonGeometry );
   return ui.checkBoxSliverPolygons->isEnabled();
 }
 
-template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometrySliverPolygonCheck>::createInstance( QgsFeaturePool* featurePool, const Ui::QgsGeometryCheckerSetupTab& ui, double mapToLayerUnits ) const
+template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometrySliverPolygonCheck>::createInstance( QgsFeaturePool *featurePool, const Ui::QgsGeometryCheckerSetupTab &ui, double mapToLayerUnits ) const
 {
   double threshold = ui.doubleSpinBoxSliverThinness->value();
   double maxArea = ui.checkBoxSliverArea->isChecked() ? ui.doubleSpinBoxSliverArea->value() : 0.;
@@ -421,7 +421,7 @@ REGISTER_QGS_GEOMETRY_CHECK_FACTORY( QgsGeometryCheckFactoryT<QgsGeometrySliverP
 
 ///////////////////////////////////////////////////////////////////////////////
 
-template<> void QgsGeometryCheckFactoryT<QgsGeometryTypeCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab& ui ) const
+template<> void QgsGeometryCheckFactoryT<QgsGeometryTypeCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab &ui ) const
 {
   ui.checkBoxPoint->setChecked( QSettings().value( sSettingsGroup + "checkTypePoint" ).toBool() );
   ui.checkBoxMultipoint->setChecked( QSettings().value( sSettingsGroup + "checkTypeMultipoint" ).toBool() );
@@ -431,12 +431,12 @@ template<> void QgsGeometryCheckFactoryT<QgsGeometryTypeCheck>::restorePrevious(
   ui.checkBoxMultipolygon->setChecked( QSettings().value( sSettingsGroup + "checkTypeMultipolygon" ).toBool() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometryTypeCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab& /*ui*/, QgsWkbTypes::GeometryType /*geomType*/ ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryTypeCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab & /*ui*/, QgsWkbTypes::GeometryType /*geomType*/ ) const
 {
   return true;
 }
 
-template<> QgsGeometryCheck* QgsGeometryCheckFactoryT<QgsGeometryTypeCheck>::createInstance( QgsFeaturePool* featurePool, const Ui::QgsGeometryCheckerSetupTab& ui, double /*mapToLayerUnits*/ ) const
+template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometryTypeCheck>::createInstance( QgsFeaturePool *featurePool, const Ui::QgsGeometryCheckerSetupTab &ui, double /*mapToLayerUnits*/ ) const
 {
   QSettings().setValue( sSettingsGroup + "checkTypePoint", ui.checkBoxPoint->isChecked() );
   QSettings().setValue( sSettingsGroup + "checkTypeMultipoint", ui.checkBoxMultipoint->isChecked() );

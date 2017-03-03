@@ -33,8 +33,8 @@ namespace QgsWcs
   /**
    * Output WCS DescribeCoverage response
    */
-  void writeDescribeCoverage( QgsServerInterface* serverIface, const QgsProject* project, const QString& version,
-                              const QgsServerRequest& request, QgsServerResponse& response )
+  void writeDescribeCoverage( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
+                              const QgsServerRequest &request, QgsServerResponse &response )
   {
     QDomDocument doc = createDescribeCoverageDocument( serverIface, project, version, request );
 
@@ -43,8 +43,8 @@ namespace QgsWcs
   }
 
 
-  QDomDocument createDescribeCoverageDocument( QgsServerInterface* serverIface, const QgsProject* project, const QString& version,
-      const QgsServerRequest& request )
+  QDomDocument createDescribeCoverageDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
+      const QgsServerRequest &request )
   {
     Q_UNUSED( version );
 
@@ -53,7 +53,7 @@ namespace QgsWcs
     QgsServerRequest::Parameters parameters = request.parameters();
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    QgsAccessControl* accessControl = serverIface->accessControls();
+    QgsAccessControl *accessControl = serverIface->accessControls();
 #endif
 
     //wcs:WCS_Capabilities element

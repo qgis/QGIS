@@ -68,22 +68,22 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
         double noDataValue; // output no data value
 
         Raster()
-            : provider( 0 )
-            , projector( 0 )
-            , input( 0 )
-            , band( 1 )
-            , row( 0 )
-            , fd( -1 )
-            , noDataValue( -1 )
+          : provider( 0 )
+          , projector( 0 )
+          , input( 0 )
+          , band( 1 )
+          , row( 0 )
+          , fd( -1 )
+          , noDataValue( -1 )
         {}
     };
 
-    static QgsGrassGisLib* instance();
+    static QgsGrassGisLib *instance();
 
     QgsGrassGisLib();
 
-    int G__gisinit( const char * version, const char * programName );
-    char *G_find_cell2( const char * name, const char * mapset );
+    int G__gisinit( const char *version, const char *programName );
+    char *G_find_cell2( const char *name, const char *mapset );
     int G_open_cell_old( const char *name, const char *mapset );
     int G_open_raster_new( const char *name, RASTER_MAP_TYPE wr_type );
     int G_open_fp_cell_new( const char *name );
@@ -93,7 +93,7 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
     //int G_raster_map_is_fp( const char *name, const char *mapset );
     int G_read_fp_range( const char *name, const char *mapset, struct FPRange *drange );
 
-    int readRasterRow( int fd, void * buf, int row, RASTER_MAP_TYPE data_type, bool noDataAsZero = false );
+    int readRasterRow( int fd, void *buf, int row, RASTER_MAP_TYPE data_type, bool noDataAsZero = false );
     int G_get_null_value_row( int fd, char *flags, int row );
     int putRasterRow( int fd, const void *buf, RASTER_MAP_TYPE data_type );
     int G_get_cellhd( const char *name, const char *mapset, struct Cell_head *cellhd );
@@ -126,7 +126,7 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
     //! Get raster from map of opened rasters, open it if it is not yet open
     Raster raster( QString name );
 
-    void * resolve( const char * symbol );
+    void *resolve( const char *symbol );
 
     // Print error function set to be called by GRASS lib
     static int errorRoutine( const char *msg, int fatal );
@@ -137,7 +137,7 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
 
   private:
     //! Pointer to canonical Singleton object
-    static QgsGrassGisLib* _instance;
+    static QgsGrassGisLib *_instance;
 
     //! Original GRASS library handle
     QLibrary mLibrary;

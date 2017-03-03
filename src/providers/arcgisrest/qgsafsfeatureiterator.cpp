@@ -19,26 +19,26 @@
 #include "geometry/qgsgeometry.h"
 
 
-QgsAfsFeatureSource::QgsAfsFeatureSource( const QgsAfsProvider* provider )
+QgsAfsFeatureSource::QgsAfsFeatureSource( const QgsAfsProvider *provider )
 // FIXME: ugly const_cast...
-    : mProvider( const_cast<QgsAfsProvider*>( provider ) )
+  : mProvider( const_cast<QgsAfsProvider *>( provider ) )
 {
 }
 
-QgsFeatureIterator QgsAfsFeatureSource::getFeatures( const QgsFeatureRequest& request )
+QgsFeatureIterator QgsAfsFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {
   return QgsFeatureIterator( new QgsAfsFeatureIterator( this, false, request ) );
 }
 
-QgsAfsProvider* QgsAfsFeatureSource::provider() const
+QgsAfsProvider *QgsAfsFeatureSource::provider() const
 {
   return mProvider;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsAfsFeatureIterator::QgsAfsFeatureIterator( QgsAfsFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIteratorFromSource<QgsAfsFeatureSource>( source, ownSource, request )
+QgsAfsFeatureIterator::QgsAfsFeatureIterator( QgsAfsFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
+  : QgsAbstractFeatureIteratorFromSource<QgsAfsFeatureSource>( source, ownSource, request )
 {
   mFeatureIterator = 0;
 }
@@ -48,7 +48,7 @@ QgsAfsFeatureIterator::~QgsAfsFeatureIterator()
   close();
 }
 
-bool QgsAfsFeatureIterator::fetchFeature( QgsFeature& f )
+bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
 {
   if ( mClosed )
     return false;
@@ -58,7 +58,7 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature& f )
 
   bool fetchGeometries = ( mRequest.flags() & QgsFeatureRequest::NoGeometry ) == 0;
   QgsAttributeList fetchAttribures;
-  if (( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes ) != 0 )
+  if ( ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes ) != 0 )
     fetchAttribures = mRequest.subsetOfAttributes();
   else
   {

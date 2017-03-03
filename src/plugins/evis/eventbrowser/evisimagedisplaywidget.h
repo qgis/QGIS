@@ -49,15 +49,15 @@ class eVisImageDisplayWidget : public QWidget
 
   public:
     //! \brief Constructor
-    eVisImageDisplayWidget( QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
+    eVisImageDisplayWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = 0 );
 
     ~eVisImageDisplayWidget();
 
     //! \brief Load an image from disk and display
-    void displayImage( const QString& );
+    void displayImage( const QString & );
 
     //! \brief Load an image from a remote location using http and display
-    void displayUrlImage( const QString& );
+    void displayUrlImage( const QString & );
 
     /*
      * There needs to be more logic around setting the zoom steps as you could change it mid display
@@ -81,19 +81,19 @@ class eVisImageDisplayWidget : public QWidget
     int mCurrentZoomStep;
 
     //! \brief widget to display the image in
-    QScrollArea* mDisplayArea = nullptr;
+    QScrollArea *mDisplayArea = nullptr;
 
     //! \brief Method that actually display the image in the widget
     void displayImage();
 
     //! \brief Pointer to the http buffer
-    QBuffer* mHttpBuffer = nullptr;
+    QBuffer *mHttpBuffer = nullptr;
 
     //! \brief This is a point to the actual image being displayed
-    QPixmap* mImage = nullptr;
+    QPixmap *mImage = nullptr;
 
     //! \brief Label to hold the image
-    QLabel* mImageLabel = nullptr;
+    QLabel *mImageLabel = nullptr;
 
     //! \brief Flag to indicate the success of the last load request
     bool mImageLoaded;
@@ -114,13 +114,13 @@ class eVisImageDisplayWidget : public QWidget
     double mScaleToFit;
 
     //! \brief Zoom in button
-    QPushButton* pbtnZoomIn = nullptr;
+    QPushButton *pbtnZoomIn = nullptr;
 
     //! \brief Zoom out button
-    QPushButton* pbtnZoomOut = nullptr;
+    QPushButton *pbtnZoomOut = nullptr;
 
     //! \brief Zoom to full extent button
-    QPushButton* pbtnZoomFull = nullptr;
+    QPushButton *pbtnZoomFull = nullptr;
 
     //! \brief Method called to compute the various scaling parameters
     void setScalers();

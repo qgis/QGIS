@@ -58,10 +58,10 @@ class GRASS_LIB_EXPORT QgsGrassRasterValue
     QgsGrassRasterValue();
     ~QgsGrassRasterValue();
 
-    QgsGrassRasterValue( const QgsGrassRasterValue& other ) = delete;
-    QgsGrassRasterValue& operator=( const QgsGrassRasterValue& other ) = delete;
+    QgsGrassRasterValue( const QgsGrassRasterValue &other ) = delete;
+    QgsGrassRasterValue &operator=( const QgsGrassRasterValue &other ) = delete;
 
-    void set( const QString & gisdbase, const QString & location, const QString & mapset, const QString & map );
+    void set( const QString &gisdbase, const QString &location, const QString &mapset, const QString &map );
     void stop();
     // returns raster value, NaN for no data
     // ok is set to true if ok or false on error
@@ -99,12 +99,12 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
      *                otherwise we contact the host directly.
      *
      */
-    explicit QgsGrassRasterProvider( QString const & uri = 0 );
+    explicit QgsGrassRasterProvider( QString const &uri = 0 );
 
 
     ~QgsGrassRasterProvider();
 
-    QgsRasterInterface * clone() const override;
+    QgsRasterInterface *clone() const override;
 
     /** Return a provider name
      *
@@ -144,7 +144,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
 
     bool isValid() const override;
 
-    QgsRasterIdentifyResult identify( const QgsPoint & point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
+    QgsRasterIdentifyResult identify( const QgsPoint &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
 
     /**
      * \brief   Returns the caption error text for the last error in this provider
@@ -188,11 +188,11 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     int ySize() const override;
 
     void readBlock( int bandNo, int xBlock, int yBlock, void *data ) override;
-    void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data, QgsRasterBlockFeedback* feedback = nullptr ) override;
+    void readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     QgsRasterBandStats bandStatistics( int bandNo,
                                        int stats = QgsRasterBandStats::All,
-                                       const QgsRectangle & boundingBox = QgsRectangle(),
+                                       const QgsRectangle &boundingBox = QgsRectangle(),
                                        int sampleSize = 0 ) override;
 
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const override;

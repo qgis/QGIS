@@ -28,17 +28,17 @@ namespace QgsWfs
 {
   namespace
   {
-    void addTransactionResult( QDomDocument& responseDoc, QDomElement& responseElem, const QString& status,
-                               const QString& locator, const QString& message );
+    void addTransactionResult( QDomDocument &responseDoc, QDomElement &responseElem, const QString &status,
+                               const QString &locator, const QString &message );
 
 
-    QgsFeatureIds getFeatureIdsFromFilter( const QDomElement& filterElem, QgsVectorLayer* layer );
+    QgsFeatureIds getFeatureIdsFromFilter( const QDomElement &filterElem, QgsVectorLayer *layer );
 
   }
 
 
-  void writeTransaction( QgsServerInterface* serverIface, const QString& version,
-                         const QgsServerRequest& request, QgsServerResponse& response )
+  void writeTransaction( QgsServerInterface *serverIface, const QString &version,
+                         const QgsServerRequest &request, QgsServerResponse &response )
 
   {
     QDomDocument doc = createTransactionDocument( serverIface, version, request );
@@ -48,16 +48,16 @@ namespace QgsWfs
   }
 
 
-  QDomDocument createTransactionDocument( QgsServerInterface* serverIface, const QString& version,
-                                          const QgsServerRequest& request )
+  QDomDocument createTransactionDocument( QgsServerInterface *serverIface, const QString &version,
+                                          const QgsServerRequest &request )
   {
     Q_UNUSED( version );
 
     QDomDocument doc;
 
-    QgsWfsProjectParser* configParser = getConfigParser( serverIface );
+    QgsWfsProjectParser *configParser = getConfigParser( serverIface );
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    QgsAccessControl* accessControl = serverIface->accessControls();
+    QgsAccessControl *accessControl = serverIface->accessControls();
 #endif
     const QString requestBody = request.getParameter( QStringLiteral( "REQUEST_BODY" ) );
 
@@ -137,8 +137,8 @@ namespace QgsWfs
     // Get the WFS layers id
     QStringList wfsLayersId = configParser->wfsLayers();;
 
-    QList<QgsMapLayer*> layerList;
-    QgsMapLayer* currentLayer = nullptr;
+    QList<QgsMapLayer *> layerList;
+    QgsMapLayer *currentLayer = nullptr;
 
     // Loop through the layer transaction elements
     docChildNodes = mDocElem.childNodes();
@@ -159,7 +159,7 @@ namespace QgsWfs
         throw QgsRequestNotWellFormedException( QStringLiteral( "Wrong TypeName: %1" ).arg( typeName ) );
       }
 
-      QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( currentLayer );
+      QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( currentLayer );
       // it's a vectorlayer and defined by the administrator as a WFS layer
       if ( layer && wfsLayersId.contains( layer->id() ) )
       {
@@ -188,7 +188,7 @@ namespace QgsWfs
 #endif
 
         // Get the provider and it's capabilities
-        QgsVectorDataProvider* provider = layer->dataProvider();
+        QgsVectorDataProvider *provider = layer->dataProvider();
         if ( !provider )
         {
           continue;
@@ -198,7 +198,7 @@ namespace QgsWfs
 
         // Start the update transaction
         layer->startEditing();
-        if (( cap & QgsVectorDataProvider::ChangeAttributeValues ) && ( cap & QgsVectorDataProvider::ChangeGeometries ) )
+        if ( ( cap & QgsVectorDataProvider::ChangeAttributeValues ) && ( cap & QgsVectorDataProvider::ChangeGeometries ) )
         {
           // Loop through the update elements for this layer
           QDomNodeList upNodeList = typeNameElem.elementsByTagNameNS( WFS_NAMESPACE, QStringLiteral( "Update" ) );
@@ -314,7 +314,7 @@ namespace QgsWfs
         }
         // Start the delete transaction
         layer->startEditing();
-        if (( cap & QgsVectorDataProvider::DeleteFeatures ) )
+        if ( ( cap & QgsVectorDataProvider::DeleteFeatures ) )
         {
           // Loop through the delete elements
           QDomNodeList delNodeList = typeNameElem.elementsByTagNameNS( WFS_NAMESPACE, QStringLiteral( "Delete" ) );
@@ -491,8 +491,8 @@ namespace QgsWfs
   {
 
 
-    void addTransactionResult( QDomDocument& responseDoc, QDomElement& responseElem, const QString& status,
-                               const QString& locator, const QString& message )
+    void addTransactionResult( QDomDocument &responseDoc, QDomElement &responseElem, const QString &status,
+                               const QString &locator, const QString &message )
     {
       QDomElement trElem = responseDoc.createElement( QStringLiteral( "TransactionResult" ) );
       QDomElement stElem = responseDoc.createElement( QStringLiteral( "Status" ) );
@@ -510,7 +510,7 @@ namespace QgsWfs
       trElem.appendChild( mesElem );
     }
 
-    QgsFeatureIds getFeatureIdsFromFilter( const QDomElement& filterElem, QgsVectorLayer* layer )
+    QgsFeatureIds getFeatureIdsFromFilter( const QDomElement &filterElem, QgsVectorLayer *layer )
     {
       QgsFeatureIds fids;
 

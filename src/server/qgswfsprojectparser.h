@@ -29,32 +29,32 @@ class SERVER_EXPORT QgsWfsProjectParser
 {
   public:
     QgsWfsProjectParser(
-      const QString& filePath
-      , const QgsAccessControl* ac
+      const QString &filePath
+      , const QgsAccessControl *ac
     );
     ~QgsWfsProjectParser();
 
-    QgsWfsProjectParser( const QgsWfsProjectParser& rh ) = delete;
-    QgsWfsProjectParser& operator=( const QgsWfsProjectParser& rh ) = delete;
+    QgsWfsProjectParser( const QgsWfsProjectParser &rh ) = delete;
+    QgsWfsProjectParser &operator=( const QgsWfsProjectParser &rh ) = delete;
 
-    void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
-    void featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const;
+    void serviceCapabilities( QDomElement &parentElement, QDomDocument &doc ) const;
+    void featureTypeList( QDomElement &parentElement, QDomDocument &doc ) const;
 
-    void describeFeatureType( const QString& aTypeName, QDomElement& parentElement, QDomDocument& doc ) const;
+    void describeFeatureType( const QString &aTypeName, QDomElement &parentElement, QDomDocument &doc ) const;
 
     QStringList wfsLayers() const;
     QSet<QString> wfsLayerSet() const;
-    int wfsLayerPrecision( const QString& aLayerId ) const;
+    int wfsLayerPrecision( const QString &aLayerId ) const;
 
-    QList<QgsMapLayer*> mapLayerFromTypeName( const QString& aTypeName, bool useCache = true ) const;
+    QList<QgsMapLayer *> mapLayerFromTypeName( const QString &aTypeName, bool useCache = true ) const;
 
     QSet<QString> wfstUpdateLayers() const;
     QSet<QString> wfstInsertLayers() const;
     QSet<QString> wfstDeleteLayers() const;
 
   private:
-    QgsServerProjectParser* mProjectParser = nullptr;
-    const QgsAccessControl* mAccessControl = nullptr;
+    QgsServerProjectParser *mProjectParser = nullptr;
+    const QgsAccessControl *mAccessControl = nullptr;
 
 };
 

@@ -60,34 +60,34 @@ static QString DEFAULT_LATLON_CRS = QStringLiteral( "CRS:84" );
 
 // TODO: colortable - use comon baseclass with gdal, mapserver does not support http://trac.osgeo.org/mapserver/ticket/1671
 
-QgsWcsProvider::QgsWcsProvider( const QString& uri )
-    : QgsRasterDataProvider( uri )
-    , QgsGdalProviderBase()
-    , mHttpUri( QString::null )
-    , mCoverageSummary()
-    , mWidth( 0 )
-    , mHeight( 0 )
-    , mXBlockSize( 0 )
-    , mYBlockSize( 0 )
-    , mHasSize( false )
-    , mBandCount( 0 )
-    , mCoverageCrs()
-    , mCachedMemFile( nullptr )
-    , mCachedGdalDataset( nullptr )
-    , mCachedViewExtent( 0 )
-    , mCachedViewWidth( 0 )
-    , mCachedViewHeight( 0 )
-    , mExtentDirty( true )
-    , mGetFeatureInfoUrlBase( QLatin1String( "" ) )
-    , mErrors( 0 )
-    , mFixBox( false )
-    , mFixRotate( false )
-    , mCacheLoadControl( QNetworkRequest::PreferNetwork )
+QgsWcsProvider::QgsWcsProvider( const QString &uri )
+  : QgsRasterDataProvider( uri )
+  , QgsGdalProviderBase()
+  , mHttpUri( QString::null )
+  , mCoverageSummary()
+  , mWidth( 0 )
+  , mHeight( 0 )
+  , mXBlockSize( 0 )
+  , mYBlockSize( 0 )
+  , mHasSize( false )
+  , mBandCount( 0 )
+  , mCoverageCrs()
+  , mCachedMemFile( nullptr )
+  , mCachedGdalDataset( nullptr )
+  , mCachedViewExtent( 0 )
+  , mCachedViewWidth( 0 )
+  , mCachedViewHeight( 0 )
+  , mExtentDirty( true )
+  , mGetFeatureInfoUrlBase( QLatin1String( "" ) )
+  , mErrors( 0 )
+  , mFixBox( false )
+  , mFixRotate( false )
+  , mCacheLoadControl( QNetworkRequest::PreferNetwork )
 {
   QgsDebugMsg( "constructing with uri '" + mHttpUri + "'." );
 
   mValid = false;
-  mCachedMemFilename = QStringLiteral( "/vsimem/qgis/wcs/%0.dat" ).arg(( qlonglong )this );
+  mCachedMemFilename = QStringLiteral( "/vsimem/qgis/wcs/%0.dat" ).arg( ( qlonglong )this );
 
   if ( !parseUri( uri ) ) return;
 
@@ -245,8 +245,8 @@ QgsWcsProvider::QgsWcsProvider( const QString& uri )
   QgsDebugMsg( QString( "requestWidth = %1 requestHeight = %2 responseWidth = %3 responseHeight = %4)" ).arg( requestWidth ).arg( requestHeight ).arg( responseWidth ).arg( responseHeight ) );
   // GeoServer and ArcGIS are using for 1.1 box "pixel" edges
   // Mapserver is using pixel centers according to 1.1. specification
-  if (( responseWidth == requestWidth - 1 && responseHeight == requestHeight - 1 ) ||
-      ( responseWidth == requestHeight - 1 && responseHeight == requestWidth - 1 ) )
+  if ( ( responseWidth == requestWidth - 1 && responseHeight == requestHeight - 1 ) ||
+       ( responseWidth == requestHeight - 1 && responseHeight == requestWidth - 1 ) )
   {
     mFixBox = true;
     QgsDebugMsg( "Test response size is smaller by pixel, using mFixBox" );
@@ -254,8 +254,8 @@ QgsWcsProvider::QgsWcsProvider( const QString& uri )
   // Geoserver is giving rotated raster for geographic CRS - switched axis,
   // Geoserver developers argue that changed axis order applies also to
   // returned raster, that is exaggerated IMO but we have to handle that.
-  if (( responseWidth == requestHeight && responseHeight == requestWidth ) ||
-      ( responseWidth == requestHeight - 1 && responseHeight == requestWidth - 1 ) )
+  if ( ( responseWidth == requestHeight && responseHeight == requestWidth ) ||
+       ( responseWidth == requestHeight - 1 && responseHeight == requestWidth - 1 ) )
   {
     mFixRotate = true;
     QgsDebugMsg( "Test response is rotated, using mFixRotate" );
@@ -331,7 +331,7 @@ QgsWcsProvider::QgsWcsProvider( const QString& uri )
     }
     mGdalDataType.append( myInternalGdalDataType );
     mInternalNoDataValue.append( myInternalNoDataValue );
-    QgsDebugMsg( QString( "mInternalNoDataValue[%1] = %2" ).arg( i - 1 ).arg( mInternalNoDataValue[i-1] ) );
+    QgsDebugMsg( QString( "mInternalNoDataValue[%1] = %2" ).arg( i - 1 ).arg( mInternalNoDataValue[i - 1] ) );
 #endif
     mGdalDataType.append( myGdalDataType );
 
@@ -370,7 +370,7 @@ QgsWcsProvider::QgsWcsProvider( const QString& uri )
   QgsDebugMsg( "Constructed ok, provider valid." );
 }
 
-bool QgsWcsProvider::parseUri( const QString& uriString )
+bool QgsWcsProvider::parseUri( const QString &uriString )
 {
 
   QgsDebugMsg( "uriString = " + uriString );
@@ -443,9 +443,9 @@ QgsWcsProvider::~QgsWcsProvider()
   clearCache();
 }
 
-QgsWcsProvider* QgsWcsProvider::clone() const
+QgsWcsProvider *QgsWcsProvider::clone() const
 {
-  QgsWcsProvider * provider = new QgsWcsProvider( dataSourceUri() );
+  QgsWcsProvider *provider = new QgsWcsProvider( dataSourceUri() );
   provider->copyBaseSettings( *this );
   return provider;
 }
@@ -460,14 +460,14 @@ QString QgsWcsProvider::format() const
   return mFormat;
 }
 
-void QgsWcsProvider::setFormat( QString const & format )
+void QgsWcsProvider::setFormat( QString const &format )
 {
   QgsDebugMsg( "Setting format to " + format + '.' );
   mFormat = format;
 }
 
 
-void QgsWcsProvider::setCoverageCrs( QString const & crs )
+void QgsWcsProvider::setCoverageCrs( QString const &crs )
 {
   QgsDebugMsg( "Setting coverage CRS to " + crs + '.' );
 
@@ -484,13 +484,13 @@ void QgsWcsProvider::setCoverageCrs( QString const & crs )
   }
 }
 
-void QgsWcsProvider::setQueryItem( QUrl &url, const QString& item, const QString& value ) const
+void QgsWcsProvider::setQueryItem( QUrl &url, const QString &item, const QString &value ) const
 {
   url.removeQueryItem( item );
   url.addQueryItem( item, value );
 }
 
-void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight, void *block, QgsRasterBlockFeedback* feedback )
+void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int pixelWidth, int pixelHeight, void *block, QgsRasterBlockFeedback *feedback )
 {
   // TODO: set block to null values, move that to function and call only if fails
   memset( block, 0, pixelWidth * pixelHeight * QgsRasterBlock::typeSize( dataType( bandNo ) ) );
@@ -564,7 +564,7 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
       int pixelSize = QgsRasterBlock::typeSize( dataType( bandNo ) );
       QgsDebugMsg( QString( "pixelSize = %1" ).arg( pixelSize ) );
       int size = width * height * pixelSize;
-      void * tmpData = malloc( size );
+      void *tmpData = malloc( size );
       if ( ! tmpData )
       {
         QgsDebugMsg( QString( "Couldn't allocate memory of %1 bytes" ).arg( size ) );
@@ -580,7 +580,7 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
         {
           int destIndex = pixelSize * ( i * pixelWidth + j );
           int srcIndex = pixelSize * ( j * width + ( width - i - 1 ) );
-          memcpy(( char* )block + destIndex, ( char* )tmpData + srcIndex, pixelSize );
+          memcpy( ( char * )block + destIndex, ( char * )tmpData + srcIndex, pixelSize );
         }
       }
       free( tmpData );
@@ -608,7 +608,7 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
   }
 }
 
-void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight, QString crs, QgsRasterBlockFeedback* feedback ) const
+void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const &viewExtent, int pixelWidth, int pixelHeight, QString crs, QgsRasterBlockFeedback *feedback ) const
 {
   Q_UNUSED( bandNo );
   // delete cached data
@@ -783,7 +783,7 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
 #endif
 
   mCachedMemFile = VSIFileFromMemBuffer( mCachedMemFilename.toUtf8().constData(),
-                                         ( GByte* )mCachedData.data(),
+                                         ( GByte * )mCachedData.data(),
                                          ( vsi_l_offset )mCachedData.size(),
                                          FALSE );
 
@@ -841,7 +841,7 @@ Qgis::DataType QgsWcsProvider::sourceDataType( int bandNo ) const
     return Qgis::UnknownDataType;
   }
 
-  return dataTypeFromGdal( mSrcGdalDataType[bandNo-1] );
+  return dataTypeFromGdal( mSrcGdalDataType[bandNo - 1] );
 }
 
 Qgis::DataType QgsWcsProvider::dataType( int bandNo ) const
@@ -851,7 +851,7 @@ Qgis::DataType QgsWcsProvider::dataType( int bandNo ) const
     return Qgis::UnknownDataType;
   }
 
-  return dataTypeFromGdal( mGdalDataType[bandNo-1] );
+  return dataTypeFromGdal( mGdalDataType[bandNo - 1] );
 }
 
 int QgsWcsProvider::bandCount() const
@@ -907,7 +907,7 @@ int QgsWcsProvider::colorInterpretation( int bandNo ) const
 }
 
 
-bool QgsWcsProvider::parseServiceExceptionReportDom( QByteArray const & xml, const QString& wcsVersion, QString& errorTitle, QString& errorText )
+bool QgsWcsProvider::parseServiceExceptionReportDom( QByteArray const &xml, const QString &wcsVersion, QString &errorTitle, QString &errorText )
 {
 
 #ifdef QGISDEBUG
@@ -961,7 +961,7 @@ bool QgsWcsProvider::parseServiceExceptionReportDom( QByteArray const & xml, con
   return true;
 }
 
-void QgsWcsProvider::parseServiceException( QDomElement const & e, const QString& wcsVersion, QString& errorTitle, QString& errorText )
+void QgsWcsProvider::parseServiceException( QDomElement const &e, const QString &wcsVersion, QString &errorTitle, QString &errorText )
 {
 
   errorTitle = tr( "Service Exception" );
@@ -1282,7 +1282,7 @@ QString QgsWcsProvider::metadata()
   metadata += tr( "Value" );
   metadata += QLatin1String( "</th></tr>" );
 
-  metadata += htmlRow(( "WCS Version" ), mCapabilities.version() );
+  metadata += htmlRow( ( "WCS Version" ), mCapabilities.version() );
   metadata += htmlRow( tr( "Title" ), mCapabilities.capabilities().title );
   metadata +=  htmlRow( tr( "Abstract" ), mCapabilities.capabilities().abstract );
 #if 0
@@ -1311,7 +1311,7 @@ QString QgsWcsProvider::metadata()
 
   // Dialog takes too long to open if there are too many coverages (1000 for example)
   int count = 0;
-  Q_FOREACH ( const QgsWcsCoverageSummary& c, mCapabilities.coverages() )
+  Q_FOREACH ( const QgsWcsCoverageSummary &c, mCapabilities.coverages() )
   {
     metadata += coverageMetadata( c );
     count++;
@@ -1338,7 +1338,7 @@ QString QgsWcsProvider:: htmlRow( const QString &text1, const QString &text2 )
   return "<tr>" + htmlCell( text1 ) +  htmlCell( text2 ) + "</tr>";
 }
 
-QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPoint & point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height , int /*dpi*/ )
+QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPoint &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
   QgsDebugMsg( QString( "thePoint =  %1 %2" ).arg( point.x(), 0, 'g', 10 ).arg( point.y(), 0, 'g', 10 ) );
   QgsDebugMsg( QString( "theWidth = %1 height = %2" ).arg( width ).arg( height ) );
@@ -1479,8 +1479,8 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPoint & point, QgsRas
   double yRes = mCachedViewExtent.height() / mCachedViewHeight;
 
   // Offset, not the cell index -> flor
-  int col = ( int ) floor(( x - mCachedViewExtent.xMinimum() ) / xRes );
-  int row = ( int ) floor(( mCachedViewExtent.yMaximum() - y ) / yRes );
+  int col = ( int ) floor( ( x - mCachedViewExtent.xMinimum() ) / xRes );
+  int row = ( int ) floor( ( mCachedViewExtent.yMaximum() - y ) / yRes );
 
   QgsDebugMsg( "row = " + QString::number( row ) + " col = " + QString::number( col ) );
 
@@ -1499,9 +1499,9 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPoint & point, QgsRas
     }
 
     // Apply no data and user no data
-    if (( sourceHasNoDataValue( i ) && useSourceNoDataValue( i ) &&
-          ( qIsNaN( value ) || qgsDoubleNear( value, sourceNoDataValue( i ) ) ) ) ||
-        ( QgsRasterRange::contains( value, userNoDataValues( i ) ) ) )
+    if ( ( sourceHasNoDataValue( i ) && useSourceNoDataValue( i ) &&
+           ( qIsNaN( value ) || qgsDoubleNear( value, sourceNoDataValue( i ) ) ) ) ||
+         ( QgsRasterRange::contains( value, userNoDataValues( i ) ) ) )
     {
       results.insert( i, QVariant() );
     }
@@ -1550,7 +1550,7 @@ void QgsWcsProvider::reloadData()
   clearCache();
 }
 
-QString QgsWcsProvider::nodeAttribute( const QDomElement &e, const QString& name, const QString& defValue )
+QString QgsWcsProvider::nodeAttribute( const QDomElement &e, const QString &name, const QString &defValue )
 {
   if ( e.hasAttribute( name ) )
     return e.attribute( name );
@@ -1598,7 +1598,7 @@ QMap<QString, QString> QgsWcsProvider::supportedMimes()
   return mimes;
 }
 
-QGISEXTERN QgsWcsProvider * classFactory( const QString *uri )
+QGISEXTERN QgsWcsProvider *classFactory( const QString *uri )
 {
   return new QgsWcsProvider( *uri );
 }
@@ -1623,14 +1623,14 @@ QGISEXTERN bool isProvider()
 
 int QgsWcsDownloadHandler::sErrors = 0;
 
-QgsWcsDownloadHandler::QgsWcsDownloadHandler( const QUrl& url, QgsWcsAuthorization& auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray& cachedData, const QString& wcsVersion, QgsError& cachedError, QgsRasterBlockFeedback* feedback )
-    : mAuth( auth )
-    , mEventLoop( new QEventLoop )
-    , mCacheReply( nullptr )
-    , mCachedData( cachedData )
-    , mWcsVersion( wcsVersion )
-    , mCachedError( cachedError )
-    , mFeedback( feedback )
+QgsWcsDownloadHandler::QgsWcsDownloadHandler( const QUrl &url, QgsWcsAuthorization &auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray &cachedData, const QString &wcsVersion, QgsError &cachedError, QgsRasterBlockFeedback *feedback )
+  : mAuth( auth )
+  , mEventLoop( new QEventLoop )
+  , mCacheReply( nullptr )
+  , mCachedData( cachedData )
+  , mWcsVersion( wcsVersion )
+  , mCachedError( cachedError )
+  , mFeedback( feedback )
 {
   if ( feedback )
   {
@@ -1748,10 +1748,10 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
     {
       QString errorTitle, errorText;
       QByteArray text = mCacheReply->readAll();
-      if (( contentType.toLower() == QLatin1String( "text/xml" ) ||
-            contentType.toLower() == QLatin1String( "application/xml" ) ||
-            contentType.startsWith( QLatin1String( "application/vnd.ogc.se_xml" ), Qt::CaseInsensitive ) )
-          && QgsWcsProvider::parseServiceExceptionReportDom( text, mWcsVersion, errorTitle, errorText ) )
+      if ( ( contentType.toLower() == QLatin1String( "text/xml" ) ||
+             contentType.toLower() == QLatin1String( "application/xml" ) ||
+             contentType.startsWith( QLatin1String( "application/vnd.ogc.se_xml" ), Qt::CaseInsensitive ) )
+           && QgsWcsProvider::parseServiceExceptionReportDom( text, mWcsVersion, errorTitle, errorText ) )
       {
         mCachedError.append( SRVERR( tr( "Map request error:<br>Title: %1<br>Error: %2<br>URL: <a href='%3'>%3</a>)" )
                                      .arg( errorTitle, errorText,

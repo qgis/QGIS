@@ -62,7 +62,7 @@ class SERVER_EXPORT QgsServiceRegistry
      *
      * If the version is not provided the higher version of the service is returned
      */
-    QgsService* getService( const QString& name, const QString& version = QString() );
+    QgsService *getService( const QString &name, const QString &version = QString() );
 
     /**
      * Register a service by its name and version
@@ -74,7 +74,7 @@ class SERVER_EXPORT QgsServiceRegistry
      *
      * @param service a QgsServerResponse to be registered
      */
-    void registerService( QgsService* service );
+    void registerService( QgsService *service );
 
     /**
      * Unregister service from its name and version
@@ -86,14 +86,14 @@ class SERVER_EXPORT QgsServiceRegistry
      * If the version is not specified then all versions from the specified service
      * are unloaded
      */
-    int unregisterService( const QString& name, const QString& version = QString() );
+    int unregisterService( const QString &name, const QString &version = QString() );
 
     /**
      * Initialize registry, load modules and auto register services
      * @param serverIface the server interface
      * @param nativeModulepath the native module path
      */
-    void init( const QString& nativeModulepath, QgsServerInterface* serverIface = nullptr );
+    void init( const QString &nativeModulepath, QgsServerInterface *serverIface = nullptr );
 
     /**
      * Clean up registered service and unregister modules

@@ -48,12 +48,12 @@ class QgsWFSSharedData : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsWFSSharedData( const QString& uri );
+    explicit QgsWFSSharedData( const QString &uri );
     ~QgsWFSSharedData();
 
     /** Used by a QgsWFSFeatureIterator to start a downloader and get the
         generation counter. */
-    int registerToCache( QgsWFSFeatureIterator* iterator, const QgsRectangle &rect = QgsRectangle() );
+    int registerToCache( QgsWFSFeatureIterator *iterator, const QgsRectangle &rect = QgsRectangle() );
 
     /** Used by the rewind() method of an iterator so as to get the up-to-date
         generation counter. */
@@ -61,7 +61,7 @@ class QgsWFSSharedData : public QObject
 
     /** Used by the background downloader to serialize downloaded features into
         the cache. Also used by a WFS-T insert operation */
-    void serializeFeatures( QVector<QgsWFSFeatureGmlIdPair>& featureList );
+    void serializeFeatures( QVector<QgsWFSFeatureGmlIdPair> &featureList );
 
     //! Called by QgsWFSFeatureDownloader::run() at the end of the download process.
     void endOfDownload( bool success, int featureCount, bool truncatedResponse, bool interrupted, const QString &errorMsg );
@@ -74,7 +74,7 @@ class QgsWFSSharedData : public QObject
     QString findGmlId( QgsFeatureId fid );
 
     //! Delete from the on-disk cache the features of given fid. Used by WFS-T
-    bool deleteFeatures( const QgsFeatureIds& fidlist );
+    bool deleteFeatures( const QgsFeatureIds &fidlist );
 
     //! Change into the on-disk cache the passed geometries. Used by WFS-T
     bool changeGeometryValues( const QgsGeometryMap &geometry_map );
@@ -95,7 +95,7 @@ class QgsWFSSharedData : public QObject
     bool supportsHits() const { return mCaps.supportsHits; }
 
     //! Compute WFS filter from the sql or filter in the URI
-    bool computeFilter( QString& errorMsg );
+    bool computeFilter( QString &errorMsg );
 
     //! Return extent computed from currently downloaded features
     QgsRectangle computedExtent();
@@ -109,7 +109,7 @@ class QgsWFSSharedData : public QObject
   signals:
 
     //! Raise error
-    void raiseError( const QString& errorMsg );
+    void raiseError( const QString &errorMsg );
 
     //! Extent has been updated
     void extentUpdated();
@@ -142,7 +142,7 @@ class QgsWFSSharedData : public QObject
     QMap< QString, QPair<QString, QString> > mMapFieldNameToSrcLayerNameFieldName;
 
     //! The data provider of the on-disk cache
-    QgsVectorDataProvider* mCacheDataProvider = nullptr;
+    QgsVectorDataProvider *mCacheDataProvider = nullptr;
 
     //! Current BBOX used by the downloader
     QgsRectangle mRect;
@@ -169,7 +169,7 @@ class QgsWFSSharedData : public QObject
     bool mHasWarnedAboutMissingFeatureId;
 
     //! Create GML parser
-    QgsGmlStreamingParser* createParser();
+    QgsGmlStreamingParser *createParser();
 
     /** If the server (typically MapServer WFS 1.1) honours EPSG axis order, but returns
         EPSG:XXXX srsName and not EPSG urns */
@@ -193,7 +193,7 @@ class QgsWFSSharedData : public QObject
     QString mSortBy;
 
     //! The background feature downloader
-    QgsWFSThreadedFeatureDownloader* mDownloader = nullptr;
+    QgsWFSThreadedFeatureDownloader *mDownloader = nullptr;
 
     //! Whether the downloader has finished (or been canceled)
     bool mDownloadFinished;
@@ -237,17 +237,17 @@ class QgsWFSSharedData : public QObject
 
     /** Returns the set of gmlIds that have already been downloaded and
         cached, so as to avoid to cache duplicates. */
-    QSet<QString> getExistingCachedGmlIds( const QVector<QgsWFSFeatureGmlIdPair>& featureList );
+    QSet<QString> getExistingCachedGmlIds( const QVector<QgsWFSFeatureGmlIdPair> &featureList );
 
     /** Returns the set of md5 of features that have already been downloaded and
         cached, so as to avoid to cache duplicates. */
-    QSet<QString> getExistingCachedMD5( const QVector<QgsWFSFeatureGmlIdPair>& featureList );
+    QSet<QString> getExistingCachedMD5( const QVector<QgsWFSFeatureGmlIdPair> &featureList );
 
     //! Create the on-disk cache and connect to it
     bool createCache();
 
     //! Log error to QgsMessageLog and raise it to the provider
-    void pushError( const QString& errorMsg );
+    void pushError( const QString &errorMsg );
 };
 
 //! Utility class to issue a GetFeature resultType=hits request
@@ -255,14 +255,14 @@ class QgsWFSFeatureHitsRequest: public QgsWfsRequest
 {
     Q_OBJECT
   public:
-    explicit QgsWFSFeatureHitsRequest( QgsWFSDataSourceURI& uri );
+    explicit QgsWFSFeatureHitsRequest( QgsWFSDataSourceURI &uri );
     ~QgsWFSFeatureHitsRequest();
 
     //! Return the feature count, or -1 in case of error
-    int getFeatureCount( const QString& WFSVersion, const QString& filter );
+    int getFeatureCount( const QString &WFSVersion, const QString &filter );
 
   protected:
-    virtual QString errorMessageWithReason( const QString& reason ) override;
+    virtual QString errorMessageWithReason( const QString &reason ) override;
 };
 
 /** Utility class to issue a GetFeature requets with maxfeatures/count=1
@@ -271,17 +271,17 @@ class QgsWFSSingleFeatureRequest: public QgsWfsRequest
 {
     Q_OBJECT
   public:
-    explicit QgsWFSSingleFeatureRequest( QgsWFSSharedData* shared );
+    explicit QgsWFSSingleFeatureRequest( QgsWFSSharedData *shared );
     ~QgsWFSSingleFeatureRequest();
 
     //! Return the feature  extent of the single feature requested
     QgsRectangle getExtent();
 
   protected:
-    virtual QString errorMessageWithReason( const QString& reason ) override;
+    virtual QString errorMessageWithReason( const QString &reason ) override;
 
   private:
-    QgsWFSSharedData* mShared = nullptr;
+    QgsWFSSharedData *mShared = nullptr;
 };
 
 #endif // QGSWFSSHAREDDATA_H

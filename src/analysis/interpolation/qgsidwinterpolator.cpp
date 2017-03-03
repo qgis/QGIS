@@ -19,7 +19,7 @@
 #include <cmath>
 #include <limits>
 
-QgsIDWInterpolator::QgsIDWInterpolator( const QList<LayerData>& layerData ): QgsInterpolator( layerData ), mDistanceCoefficient( 2.0 )
+QgsIDWInterpolator::QgsIDWInterpolator( const QList<LayerData> &layerData ): QgsInterpolator( layerData ), mDistanceCoefficient( 2.0 )
 {
 
 }
@@ -29,7 +29,7 @@ QgsIDWInterpolator::QgsIDWInterpolator(): QgsInterpolator( QList<LayerData>() ),
 
 }
 
-int QgsIDWInterpolator::interpolatePoint( double x, double y, double& result )
+int QgsIDWInterpolator::interpolatePoint( double x, double y, double &result )
 {
   if ( !mDataIsCached )
   {
@@ -42,10 +42,10 @@ int QgsIDWInterpolator::interpolatePoint( double x, double y, double& result )
   double sumCounter = 0;
   double sumDenominator = 0;
 
-  Q_FOREACH ( const vertexData& vertex_it, mCachedBaseData )
+  Q_FOREACH ( const vertexData &vertex_it, mCachedBaseData )
   {
-    distance = sqrt(( vertex_it.x - x ) * ( vertex_it.x - x ) + ( vertex_it.y - y ) * ( vertex_it.y - y ) );
-    if (( distance - 0 ) < std::numeric_limits<double>::min() )
+    distance = sqrt( ( vertex_it.x - x ) * ( vertex_it.x - x ) + ( vertex_it.y - y ) * ( vertex_it.y - y ) );
+    if ( ( distance - 0 ) < std::numeric_limits<double>::min() )
     {
       result = vertex_it.z;
       return 0;

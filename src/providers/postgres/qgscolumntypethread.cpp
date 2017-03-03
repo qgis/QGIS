@@ -22,13 +22,13 @@ email                : jef at norbit dot de
 #include <QMetaType>
 #include <climits>
 
-QgsGeomColumnTypeThread::QgsGeomColumnTypeThread( const QString& name, bool useEstimatedMetaData, bool allowGeometrylessTables )
-    : QThread()
-    , mConn( nullptr )
-    , mName( name )
-    , mUseEstimatedMetadata( useEstimatedMetaData )
-    , mAllowGeometrylessTables( allowGeometrylessTables )
-    , mStopped( false )
+QgsGeomColumnTypeThread::QgsGeomColumnTypeThread( const QString &name, bool useEstimatedMetaData, bool allowGeometrylessTables )
+  : QThread()
+  , mConn( nullptr )
+  , mName( name )
+  , mUseEstimatedMetadata( useEstimatedMetaData )
+  , mAllowGeometrylessTables( allowGeometrylessTables )
+  , mStopped( false )
 {
   qRegisterMetaType<QgsPostgresLayerProperty>( "QgsPostgresLayerProperty" );
 }
@@ -74,7 +74,7 @@ void QgsGeomColumnTypeThread::run()
         end = layerProperties.end();
         it != end; ++it )
   {
-    QgsPostgresLayerProperty& layerProperty = *it;
+    QgsPostgresLayerProperty &layerProperty = *it;
     if ( !mStopped )
     {
       emit progress( i++, n );

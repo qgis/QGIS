@@ -55,7 +55,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
     QgsDebugMsg( "Color table found" );
 
     // load category labels
-    char ** categoryNames = GDALGetRasterCategoryNames( myGdalBand );
+    char **categoryNames = GDALGetRasterCategoryNames( myGdalBand );
     QVector<QString> labels;
     if ( categoryNames )
     {
@@ -73,7 +73,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
     GDALPaletteInterp myPaletteInterpretation  = GDALGetPaletteInterpretation( myGdalColorTable );
     QgsDebugMsg( "Palette Interpretation: " + QString::number( static_cast< int >( myPaletteInterpretation ) ) );
 
-    const GDALColorEntry* myColorEntry = nullptr;
+    const GDALColorEntry *myColorEntry = nullptr;
     for ( int myIterator = 0; myIterator < myEntryCount; myIterator++ )
     {
       myColorEntry = GDALGetColorEntry( myGdalColorTable, myIterator );
@@ -271,12 +271,12 @@ int CPL_STDCALL _gdalProgressFnWithFeedback( double dfComplete, const char *pszM
   Q_UNUSED( dfComplete );
   Q_UNUSED( pszMessage );
 
-  QgsRasterBlockFeedback* feedback = static_cast<QgsRasterBlockFeedback*>( pProgressArg );
+  QgsRasterBlockFeedback *feedback = static_cast<QgsRasterBlockFeedback *>( pProgressArg );
   return !feedback->isCanceled();
 }
 
 
-CPLErr QgsGdalProviderBase::gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWFlag, int nXOff, int nYOff, int nXSize, int nYSize, void * pData, int nBufXSize, int nBufYSize, GDALDataType eBufType, int nPixelSpace, int nLineSpace, QgsRasterBlockFeedback* feedback )
+CPLErr QgsGdalProviderBase::gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWFlag, int nXOff, int nYOff, int nXSize, int nYSize, void *pData, int nBufXSize, int nBufYSize, GDALDataType eBufType, int nPixelSpace, int nLineSpace, QgsRasterBlockFeedback *feedback )
 {
   GDALRasterIOExtraArg extra;
   INIT_RASTERIO_EXTRA_ARG( extra );
@@ -288,7 +288,7 @@ CPLErr QgsGdalProviderBase::gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWF
     // caused by the cancelation and not that something dodgy is going on.
     // Are both error codes acceptable?
     extra.pfnProgress = _gdalProgressFnWithFeedback;
-    extra.pProgressData = ( void* ) feedback;
+    extra.pProgressData = ( void * ) feedback;
   }
   CPLErr err = GDALRasterIOEx( hBand, eRWFlag, nXOff, nYOff, nXSize, nYSize, pData, nBufXSize, nBufYSize, eBufType, nPixelSpace, nLineSpace, &extra );
 

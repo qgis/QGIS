@@ -53,7 +53,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     //! Constructor
     QgsGrassNewMapset( QgisInterface *iface,
                        QgsGrassPlugin *plugin,
-                       QWidget * parent = 0, Qt::WindowFlags f = 0 );
+                       QWidget *parent = 0, Qt::WindowFlags f = 0 );
 
 
     ~QgsGrassNewMapset();
@@ -94,7 +94,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     {
       existingLocationChanged( txt );
     }
-    void existingLocationChanged( const QString& );
+    void existingLocationChanged( const QString & );
 
     //! New location name has changed
     void on_mLocationLineEdit_returnPressed() { newLocationChanged(); }
@@ -179,7 +179,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     void closeEvent( QCloseEvent *e ) override;
 
     //! Key event
-    void keyPressEvent( QKeyEvent * e ) override;
+    void keyPressEvent( QKeyEvent *e ) override;
 
     //! Set error line
     void setError( QLabel *line, const QString &err = QString() );

@@ -37,21 +37,21 @@ static int HTTP_PORT_DEFAULT = 80;
 //XXX in qgswmsprovider. When creating a QgsHttpTransaction, pass
 //XXX the user/pass combination to the constructor. Then set the
 //XXX username and password using QHttp::setUser.
-QgsHttpTransaction::QgsHttpTransaction( const QString& uri,
-                                        const QString& proxyHost,
+QgsHttpTransaction::QgsHttpTransaction( const QString &uri,
+                                        const QString &proxyHost,
                                         int     proxyPort,
-                                        const QString& proxyUser,
-                                        const QString& proxyPass,
+                                        const QString &proxyUser,
+                                        const QString &proxyPass,
                                         QNetworkProxy::ProxyType proxyType,
-                                        const QString& userName,
-                                        const QString& password )
-    : http( nullptr )
-    , httpid( 0 )
-    , httpactive( false )
-    , httpurl( uri )
-    , httphost( proxyHost )
-    , httpredirections( 0 )
-    , mWatchdogTimer( nullptr )
+                                        const QString &userName,
+                                        const QString &password )
+  : http( nullptr )
+  , httpid( 0 )
+  , httpactive( false )
+  , httpurl( uri )
+  , httphost( proxyHost )
+  , httpredirections( 0 )
+  , mWatchdogTimer( nullptr )
 {
   Q_UNUSED( proxyPort );
   Q_UNUSED( proxyUser );
@@ -64,11 +64,11 @@ QgsHttpTransaction::QgsHttpTransaction( const QString& uri,
 }
 
 QgsHttpTransaction::QgsHttpTransaction()
-    : http( nullptr )
-    , httpid( 0 )
-    , httpactive( false )
-    , httpredirections( 0 )
-    , mWatchdogTimer( nullptr )
+  : http( nullptr )
+  , httpid( 0 )
+  , httpactive( false )
+  , httpredirections( 0 )
+  , mWatchdogTimer( nullptr )
 {
   QSettings s;
   mNetworkTimeoutMsec = s.value( "/qgis/networkAndProxy/networkTimeout", "60000" ).toInt();
@@ -80,7 +80,7 @@ QgsHttpTransaction::~QgsHttpTransaction()
 }
 
 
-void QgsHttpTransaction::setCredentials( const QString& username, const QString& password )
+void QgsHttpTransaction::setCredentials( const QString &username, const QString &password )
 {
   mUserName = username;
   mPassword = password;
@@ -92,7 +92,7 @@ void QgsHttpTransaction::getAsynchronously()
 
 }
 
-bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int redirections, const QByteArray* postData )
+bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int redirections, const QByteArray *postData )
 {
 
   httpredirections = redirections;
@@ -173,11 +173,11 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
   connect( http, SIGNAL( requestStarted( int ) ),
            this,      SLOT( dataStarted( int ) ) );
 
-  connect( http, SIGNAL( responseHeaderReceived( const QHttpResponseHeader& ) ),
-           this,       SLOT( dataHeaderReceived( const QHttpResponseHeader& ) ) );
+  connect( http, SIGNAL( responseHeaderReceived( const QHttpResponseHeader & ) ),
+           this,       SLOT( dataHeaderReceived( const QHttpResponseHeader & ) ) );
 
-  connect( http,  SIGNAL( readyRead( const QHttpResponseHeader& ) ),
-           this, SLOT( dataReceived( const QHttpResponseHeader& ) ) );
+  connect( http,  SIGNAL( readyRead( const QHttpResponseHeader & ) ),
+           this, SLOT( dataReceived( const QHttpResponseHeader & ) ) );
 
   connect( http, SIGNAL( dataReadProgress( int, int ) ),
            this,       SLOT( dataProgress( int, int ) ) );
@@ -267,7 +267,7 @@ void QgsHttpTransaction::dataStarted( int id )
 }
 
 
-void QgsHttpTransaction::dataHeaderReceived( const QHttpResponseHeader& resp )
+void QgsHttpTransaction::dataHeaderReceived( const QHttpResponseHeader &resp )
 {
   QgsDebugMsg( "statuscode " +
                QString::number( resp.statusCode() ) + ", reason '" + resp.reasonPhrase() + "', content type: '" +
@@ -298,14 +298,14 @@ void QgsHttpTransaction::dataHeaderReceived( const QHttpResponseHeader& resp )
 }
 
 
-void QgsHttpTransaction::dataReceived( const QHttpResponseHeader& resp )
+void QgsHttpTransaction::dataReceived( const QHttpResponseHeader &resp )
 {
   Q_UNUSED( resp );
   // TODO: Match 'resp' with 'http' if we move to multiple http connections
 
 #if 0
   // Comment this out for now - leave the coding of progressive rendering to another day.
-  char* temp = nullptr;
+  char *temp = nullptr;
 
   if ( 0 < http->readBlock( temp, http->bytesAvailable() ) )
   {
@@ -505,7 +505,7 @@ QString QgsHttpTransaction::errorString()
   return mError;
 }
 
-bool QgsHttpTransaction::applyProxySettings( QHttp& http, const QString& url )
+bool QgsHttpTransaction::applyProxySettings( QHttp &http, const QString &url )
 {
   QSettings settings;
   //check if proxy is enabled

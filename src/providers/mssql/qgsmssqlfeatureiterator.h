@@ -30,9 +30,9 @@ class QgsMssqlProvider;
 class QgsMssqlFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    explicit QgsMssqlFeatureSource( const QgsMssqlProvider* p );
+    explicit QgsMssqlFeatureSource( const QgsMssqlProvider *p );
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   protected:
     QgsFields mFields;
@@ -71,7 +71,7 @@ class QgsMssqlFeatureSource : public QgsAbstractFeatureSource
 class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsMssqlFeatureSource>
 {
   public:
-    QgsMssqlFeatureIterator( QgsMssqlFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
+    QgsMssqlFeatureIterator( QgsMssqlFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
     ~QgsMssqlFeatureIterator();
 
@@ -79,10 +79,10 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
     virtual bool close() override;
 
   protected:
-    void BuildStatement( const QgsFeatureRequest& request );
+    void BuildStatement( const QgsFeatureRequest &request );
 
-    virtual bool fetchFeature( QgsFeature& feature ) override;
-    bool nextFeatureFilterExpression( QgsFeature& f ) override;
+    virtual bool fetchFeature( QgsFeature &feature ) override;
+    bool nextFeatureFilterExpression( QgsFeature &f ) override;
 
   private:
 
@@ -92,7 +92,7 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
     QSqlDatabase mDatabase;
 
     // The current sql query
-    QSqlQuery* mQuery = nullptr;
+    QSqlQuery *mQuery = nullptr;
 
     // The current sql statement
     QString mStatement;

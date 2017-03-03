@@ -26,7 +26,7 @@ namespace QgsVirtualLayerQueryParser
 
   //!
   //! Return the list of tables referenced in the SQL query
-  QStringList referencedTables( const QString& q );
+  QStringList referencedTables( const QString &q );
 
   /**
    * Type used to define a column
@@ -38,25 +38,25 @@ namespace QgsVirtualLayerQueryParser
   {
     public:
       ColumnDef()
-          : mType( QVariant::Invalid )
-          , mWkbType( QgsWkbTypes::Unknown )
-          , mSrid( -1 )
+        : mType( QVariant::Invalid )
+        , mWkbType( QgsWkbTypes::Unknown )
+        , mSrid( -1 )
       {}
-      ColumnDef( const QString& name, QgsWkbTypes::Type aWkbType, long aSrid )
-          : mName( name )
-          , mType( QVariant::UserType )
-          , mWkbType( aWkbType )
-          , mSrid( aSrid )
+      ColumnDef( const QString &name, QgsWkbTypes::Type aWkbType, long aSrid )
+        : mName( name )
+        , mType( QVariant::UserType )
+        , mWkbType( aWkbType )
+        , mSrid( aSrid )
       {}
-      ColumnDef( const QString& name, QVariant::Type aType )
-          : mName( name )
-          , mType( aType )
-          , mWkbType( QgsWkbTypes::NoGeometry )
-          , mSrid( -1 )
+      ColumnDef( const QString &name, QVariant::Type aType )
+        : mName( name )
+        , mType( aType )
+        , mWkbType( QgsWkbTypes::NoGeometry )
+        , mSrid( -1 )
       {}
 
       QString name() const { return mName; }
-      void setName( const QString& name ) { mName = name; }
+      void setName( const QString &name ) { mName = name; }
 
       bool isGeometry() const { return mType == QVariant::UserType; }
       void setGeometry( QgsWkbTypes::Type wkbType ) { mType = QVariant::UserType; mWkbType = wkbType; }
@@ -84,10 +84,10 @@ namespace QgsVirtualLayerQueryParser
   //! For instance 'SELECT t+1 /*:int*/ FROM table' will type the column 't' as integer
   //! A geometry column can also be set by specifying a type and an SRID
   //! For instance 'SELECT t, GeomFromText('POINT(0 0)',4326) as geom /*:point:4326*/
-  TableDef columnDefinitionsFromQuery( sqlite3* db, const QString& query );
+  TableDef columnDefinitionsFromQuery( sqlite3 *db, const QString &query );
 
   //! Get the column types of a virtual table
-  TableDef tableDefinitionFromVirtualTable( sqlite3* db, const QString& tableName );
+  TableDef tableDefinitionFromVirtualTable( sqlite3 *db, const QString &tableName );
 
 }
 

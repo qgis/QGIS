@@ -17,9 +17,9 @@
 #include "qgsoracleconn.h"
 #include "qgslogger.h"
 
-QgsOracleConnPool* QgsOracleConnPool::sInstance = nullptr;
+QgsOracleConnPool *QgsOracleConnPool::sInstance = nullptr;
 
-QgsOracleConnPool* QgsOracleConnPool::instance()
+QgsOracleConnPool *QgsOracleConnPool::instance()
 {
   if ( !sInstance )
     sInstance = new QgsOracleConnPool();
@@ -32,7 +32,7 @@ void QgsOracleConnPool::cleanupInstance()
   sInstance = nullptr;
 }
 
-QgsOracleConnPool::QgsOracleConnPool() : QgsConnectionPool<QgsOracleConn*, QgsOracleConnPoolGroup>()
+QgsOracleConnPool::QgsOracleConnPool() : QgsConnectionPool<QgsOracleConn *, QgsOracleConnPoolGroup>()
 {
   QgsDebugCall;
 }

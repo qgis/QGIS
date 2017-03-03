@@ -30,19 +30,19 @@ class QgsGeometryCheckerDialog : public QDialog
 {
     Q_OBJECT
   public:
-    QgsGeometryCheckerDialog( QgisInterface* iface, QWidget* parent = nullptr );
+    QgsGeometryCheckerDialog( QgisInterface *iface, QWidget *parent = nullptr );
     ~QgsGeometryCheckerDialog();
 
   private:
-    QgisInterface* mIface = nullptr;
-    QDialogButtonBox* mButtonBox = nullptr;
-    QTabWidget* mTabWidget = nullptr;
+    QgisInterface *mIface = nullptr;
+    QDialogButtonBox *mButtonBox = nullptr;
+    QTabWidget *mTabWidget = nullptr;
 
     void done( int r ) override;
     void closeEvent( QCloseEvent *ev ) override;
 
   private slots:
-    void onCheckerStarted( QgsGeometryChecker* checker, QgsFeaturePool* featurePool );
+    void onCheckerStarted( QgsGeometryChecker *checker, QgsFeaturePool *featurePool );
     void onCheckerFinished( bool successful );
 };
 

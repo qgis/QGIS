@@ -46,8 +46,8 @@
 * @param parent - Pointer the to parent QWidget for modality
 * @param fl - Windown flags
 */
-eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile*>* temporaryFileList, QWidget* parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile *> *temporaryFileList, QWidget *parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
 
@@ -102,7 +102,7 @@ eVisDatabaseConnectionGui::~eVisDatabaseConnectionGui()
 * @param xCoordinate - Name of the field containing the x coordinate
 * @param yCoordinate - Name of the field containing the y coordinate
 */
-void eVisDatabaseConnectionGui::drawNewVectorLayer( const QString& layerName, const QString& xCoordinate, const QString& yCoordinate )
+void eVisDatabaseConnectionGui::drawNewVectorLayer( const QString &layerName, const QString &xCoordinate, const QString &yCoordinate )
 {
   //if coorindate fields are defined, load as a delimited text layer
   if ( !xCoordinate.isEmpty() && !yCoordinate.isEmpty() && !mTempOutputFileList->isEmpty() )
@@ -129,12 +129,12 @@ void eVisDatabaseConnectionGui::on_buttonBox_accepted()
   if ( mDatabaseConnection )
   {
     mDatabaseConnection->close();
-    delete( mDatabaseConnection );
+    delete ( mDatabaseConnection );
   }
 
   if ( mDatabaseLayerFieldSelector )
   {
-    delete( mDatabaseLayerFieldSelector );
+    delete ( mDatabaseLayerFieldSelector );
   }
 
   if ( mQueryDefinitionMap )
@@ -330,7 +330,7 @@ void eVisDatabaseConnectionGui::on_pbtnLoadPredefinedQueries_clicked()
         cboxPredefinedQueryList->clear();
         if ( !mQueryDefinitionMap->empty() )
         {
-          delete( mQueryDefinitionMap );
+          delete ( mQueryDefinitionMap );
           mQueryDefinitionMap = new QMap<int, eVisQueryDefinition>;
         }
 
@@ -467,7 +467,7 @@ void eVisDatabaseConnectionGui::on_pbtnRunQuery_clicked()
     if ( mDatabaseConnection )
     {
       //Execute query
-      QSqlQuery* myResults = mDatabaseConnection->query( teditSqlStatement->toPlainText() );
+      QSqlQuery *myResults = mDatabaseConnection->query( teditSqlStatement->toPlainText() );
       if ( !myResults )
       {
         teditConsole->append( tr( "Error: Query failed: %1" ).arg( mDatabaseConnection->lastError() ) );

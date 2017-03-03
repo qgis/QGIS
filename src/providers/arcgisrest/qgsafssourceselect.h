@@ -27,16 +27,16 @@ class QgsAfsSourceSelect: public QgsSourceSelectDialog
     Q_OBJECT
 
   public:
-    QgsAfsSourceSelect( QWidget* parent, Qt::WindowFlags fl, bool embeddedMode = false );
+    QgsAfsSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode = false );
 
   protected:
-    bool connectToService( const QgsOwsConnection& connection ) override;
-    void buildQuery( const QgsOwsConnection &connection, const QModelIndex& ) override;
+    bool connectToService( const QgsOwsConnection &connection ) override;
+    void buildQuery( const QgsOwsConnection &connection, const QModelIndex & ) override;
     QString getLayerURI( const QgsOwsConnection &connection,
-                         const QString& layerTitle, const QString& layerName,
-                         const QString& crs = QString(),
-                         const QString& filter = QString(),
-                         const QgsRectangle& bBox = QgsRectangle() ) const override;
+                         const QString &layerTitle, const QString &layerName,
+                         const QString &crs = QString(),
+                         const QString &filter = QString(),
+                         const QgsRectangle &bBox = QgsRectangle() ) const override;
 };
 
 #endif // QGSAFSSOURCESELECT_H

@@ -29,15 +29,15 @@
 const int QgsPostgresFeatureIterator::FEATURE_QUEUE_SIZE = 2000;
 
 
-QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIteratorFromSource<QgsPostgresFeatureSource>( source, ownSource, request )
-    , mFeatureQueueSize( FEATURE_QUEUE_SIZE )
-    , mFetched( 0 )
-    , mFetchGeometry( false )
-    , mExpressionCompiled( false )
-    , mOrderByCompiled( false )
-    , mLastFetch( false )
-    , mFilterRequiresGeometry( false )
+QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
+  : QgsAbstractFeatureIteratorFromSource<QgsPostgresFeatureSource>( source, ownSource, request )
+  , mFeatureQueueSize( FEATURE_QUEUE_SIZE )
+  , mFetched( 0 )
+  , mFetchGeometry( false )
+  , mExpressionCompiled( false )
+  , mOrderByCompiled( false )
+  , mLastFetch( false )
+  , mFilterRequiresGeometry( false )
 {
   if ( !source->mTransactionConnection )
   {
@@ -138,7 +138,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
 #if 0
   if ( QSettings().value( "/qgis/compileExpressions", true ).toBool() )
   {
-    Q_FOREACH ( const QgsFeatureRequest::OrderByClause& clause, request.orderBy() )
+    Q_FOREACH ( const QgsFeatureRequest::OrderByClause &clause, request.orderBy() )
     {
       QgsPostgresExpressionCompiler compiler = QgsPostgresExpressionCompiler( source );
       QgsExpression expression = clause.expression();
@@ -215,7 +215,7 @@ QgsPostgresFeatureIterator::~QgsPostgresFeatureIterator()
 }
 
 
-bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature& feature )
+bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature &feature )
 {
   feature.setValid( false );
 
@@ -280,7 +280,7 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature& feature )
   return true;
 }
 
-bool QgsPostgresFeatureIterator::nextFeatureFilterExpression( QgsFeature& f )
+bool QgsPostgresFeatureIterator::nextFeatureFilterExpression( QgsFeature &f )
 {
   if ( !mExpressionCompiled )
     return QgsAbstractFeatureIterator::nextFeatureFilterExpression( f );
@@ -288,7 +288,7 @@ bool QgsPostgresFeatureIterator::nextFeatureFilterExpression( QgsFeature& f )
     return fetchFeature( f );
 }
 
-bool QgsPostgresFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simplifyMethod )
+bool QgsPostgresFeatureIterator::prepareSimplification( const QgsSimplifyMethod &simplifyMethod )
 {
   // setup simplification of geometries to fetch
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) &&
@@ -314,7 +314,7 @@ bool QgsPostgresFeatureIterator::providerCanSimplify( QgsSimplifyMethod::MethodT
   return methodType == QgsSimplifyMethod::OptimizeForRendering || methodType == QgsSimplifyMethod::PreserveTopology;
 }
 
-bool QgsPostgresFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause>& orderBys )
+bool QgsPostgresFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys )
 {
   Q_UNUSED( orderBys )
   // Preparation has already been done in the constructor, so we just communicate the result
@@ -449,7 +449,7 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
 
 
 
-bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause, long limit, bool closeOnFail, const QString& orderBy )
+bool QgsPostgresFeatureIterator::declareCursor( const QString &whereClause, long limit, bool closeOnFail, const QString &orderBy )
 {
   mFetchGeometry = ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) || mFilterRequiresGeometry ) && !mSource->mGeometryColumn.isNull();
 #if 0
@@ -511,8 +511,8 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause, long
           // Default to st_snaptogrid
           simplifyPostgisMethod = QStringLiteral( "st_snaptogrid" );
 
-          if (( mConn->majorVersion() == 2 && mConn->minorVersion() >= 2 ) ||
-              mConn->majorVersion() > 2 )
+          if ( ( mConn->majorVersion() == 2 && mConn->minorVersion() >= 2 ) ||
+               mConn->majorVersion() > 2 )
           {
             // For postgis >= 2.2 Use ST_RemoveRepeatedPoints instead
             // Do it only if threshold is <= 1 pixel to avoid holes in adjacent polygons
@@ -652,7 +652,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
       memcpy( &wkbType, featureGeom + 1, sizeof( wkbType ) );
       QgsWkbTypes::Type newType = QgsPostgresConn::wkbTypeFromOgcWkbType( wkbType );
 
-      if (( unsigned int )newType != wkbType )
+      if ( ( unsigned int )newType != wkbType )
       {
         // overwrite type
         unsigned int n = newType;
@@ -773,7 +773,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
   return true;
 }
 
-void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult& queryResult, int row, int& col, QgsFeature& feature )
+void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult &queryResult, int row, int &col, QgsFeature &feature )
 {
   if ( mSource->mPrimaryKeyAttrs.contains( idx ) )
     return;
@@ -788,20 +788,20 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
 
 //  ------------------
 
-QgsPostgresFeatureSource::QgsPostgresFeatureSource( const QgsPostgresProvider* p )
-    : mConnInfo( p->mUri.connectionInfo( false ) )
-    , mGeometryColumn( p->mGeometryColumn )
-    , mFields( p->mAttributeFields )
-    , mSpatialColType( p->mSpatialColType )
-    , mRequestedSrid( p->mRequestedSrid )
-    , mDetectedSrid( p->mDetectedSrid )
-    , mForce2d( p->mForce2d )
-    , mRequestedGeomType( p->mRequestedGeomType )
-    , mDetectedGeomType( p->mDetectedGeomType )
-    , mPrimaryKeyType( p->mPrimaryKeyType )
-    , mPrimaryKeyAttrs( p->mPrimaryKeyAttrs )
-    , mQuery( p->mQuery )
-    , mShared( p->mShared )
+QgsPostgresFeatureSource::QgsPostgresFeatureSource( const QgsPostgresProvider *p )
+  : mConnInfo( p->mUri.connectionInfo( false ) )
+  , mGeometryColumn( p->mGeometryColumn )
+  , mFields( p->mAttributeFields )
+  , mSpatialColType( p->mSpatialColType )
+  , mRequestedSrid( p->mRequestedSrid )
+  , mDetectedSrid( p->mDetectedSrid )
+  , mForce2d( p->mForce2d )
+  , mRequestedGeomType( p->mRequestedGeomType )
+  , mDetectedGeomType( p->mDetectedGeomType )
+  , mPrimaryKeyType( p->mPrimaryKeyType )
+  , mPrimaryKeyAttrs( p->mPrimaryKeyAttrs )
+  , mQuery( p->mQuery )
+  , mShared( p->mShared )
 {
   mSqlWhereClause = p->filterWhereClause();
 
@@ -827,7 +827,7 @@ QgsPostgresFeatureSource::~QgsPostgresFeatureSource()
   }
 }
 
-QgsFeatureIterator QgsPostgresFeatureSource::getFeatures( const QgsFeatureRequest& request )
+QgsFeatureIterator QgsPostgresFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {
   return QgsFeatureIterator( new QgsPostgresFeatureIterator( this, false, request ) );
 }

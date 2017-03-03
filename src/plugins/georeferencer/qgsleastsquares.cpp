@@ -23,9 +23,9 @@
 #include "qgsleastsquares.h"
 
 
-void QgsLeastSquares::linear( const QVector<QgsPoint>& mapCoords,
-                              const QVector<QgsPoint>& pixelCoords,
-                              QgsPoint& origin, double& pixelXSize, double& pixelYSize )
+void QgsLeastSquares::linear( const QVector<QgsPoint> &mapCoords,
+                              const QVector<QgsPoint> &pixelCoords,
+                              QgsPoint &origin, double &pixelXSize, double &pixelYSize )
 {
   int n = mapCoords.size();
   if ( n < 2 )
@@ -62,10 +62,10 @@ void QgsLeastSquares::linear( const QVector<QgsPoint>& mapCoords,
 }
 
 
-void QgsLeastSquares::helmert( const QVector<QgsPoint>& mapCoords,
-                               const QVector<QgsPoint>& pixelCoords,
-                               QgsPoint& origin, double& pixelSize,
-                               double& rotation )
+void QgsLeastSquares::helmert( const QVector<QgsPoint> &mapCoords,
+                               const QVector<QgsPoint> &pixelCoords,
+                               QgsPoint &origin, double &pixelSize,
+                               double &rotation )
 {
   int n = mapCoords.size();
   if ( n < 2 )
@@ -104,8 +104,8 @@ void QgsLeastSquares::helmert( const QVector<QgsPoint>& mapCoords,
   // we want to solve the equation M*x = b, where x = [a b x0 y0]
   gsl_matrix_view M = gsl_matrix_view_array( MData, 4, 4 );
   gsl_vector_view b = gsl_vector_view_array( bData, 4 );
-  gsl_vector* x = gsl_vector_alloc( 4 );
-  gsl_permutation* p = gsl_permutation_alloc( 4 );
+  gsl_vector *x = gsl_vector_alloc( 4 );
+  gsl_permutation *p = gsl_permutation_alloc( 4 );
   int s;
   gsl_linalg_LU_decomp( &M.matrix, p, &s );
   gsl_linalg_LU_solve( &M.matrix, p, &b.vector, x );
@@ -129,7 +129,7 @@ void QgsLeastSquares::affine( QVector<QgsPoint> mapCoords,
   }
 
   double A = 0, B = 0, C = 0, D = 0, E = 0, F = 0,
-                                         G = 0, H = 0, I = 0, J = 0, K = 0;
+         G = 0, H = 0, I = 0, J = 0, K = 0;
   for ( int i = 0; i < n; ++i )
   {
     A += pixelCoords[i].x();
@@ -163,8 +163,8 @@ void QgsLeastSquares::affine( QVector<QgsPoint> mapCoords,
   // we want to solve the equation M*x = b, where x = [a b c d x0 y0]
   gsl_matrix_view M = gsl_matrix_view_array( MData, 6, 6 );
   gsl_vector_view b = gsl_vector_view_array( bData, 6 );
-  gsl_vector* x = gsl_vector_alloc( 6 );
-  gsl_permutation* p = gsl_permutation_alloc( 6 );
+  gsl_vector *x = gsl_vector_alloc( 6 );
+  gsl_permutation *p = gsl_permutation_alloc( 6 );
   int s;
   gsl_linalg_LU_decomp( &M.matrix, p, &s );
   gsl_linalg_LU_solve( &M.matrix, p, &b.vector, x );
@@ -206,7 +206,7 @@ void normalizeCoordinates( const QVector<QgsPoint> &coords, QVector<QgsPoint> &n
   normalizedCoords.resize( coords.size() );
   for ( int i = 0; i < coords.size(); i++ )
   {
-    normalizedCoords[i] = QgsPoint(( coords[i].x() - cogX ) * D, ( coords[i].y() - cogY ) * D );
+    normalizedCoords[i] = QgsPoint( ( coords[i].x() - cogX ) * D, ( coords[i].y() - cogY ) * D );
   }
 
   normalizeMatrix[0] =   D;
@@ -261,29 +261,29 @@ void QgsLeastSquares::projective( QVector<QgsPoint> mapCoords,
 
   for ( int i = 0; i < mapCoords.size(); i++ )
   {
-    gsl_matrix_set( S, i*2, 0, pixelCoords[i].x() );
-    gsl_matrix_set( S, i*2, 1, pixelCoords[i].y() );
-    gsl_matrix_set( S, i*2, 2, 1.0 );
+    gsl_matrix_set( S, i * 2, 0, pixelCoords[i].x() );
+    gsl_matrix_set( S, i * 2, 1, pixelCoords[i].y() );
+    gsl_matrix_set( S, i * 2, 2, 1.0 );
 
-    gsl_matrix_set( S, i*2, 3, 0.0 );
-    gsl_matrix_set( S, i*2, 4, 0.0 );
-    gsl_matrix_set( S, i*2, 5, 0.0 );
+    gsl_matrix_set( S, i * 2, 3, 0.0 );
+    gsl_matrix_set( S, i * 2, 4, 0.0 );
+    gsl_matrix_set( S, i * 2, 5, 0.0 );
 
-    gsl_matrix_set( S, i*2, 6, -mapCoords[i].x()*pixelCoords[i].x() );
-    gsl_matrix_set( S, i*2, 7, -mapCoords[i].x()*pixelCoords[i].y() );
-    gsl_matrix_set( S, i*2, 8, -mapCoords[i].x()*1.0 );
+    gsl_matrix_set( S, i * 2, 6, -mapCoords[i].x()*pixelCoords[i].x() );
+    gsl_matrix_set( S, i * 2, 7, -mapCoords[i].x()*pixelCoords[i].y() );
+    gsl_matrix_set( S, i * 2, 8, -mapCoords[i].x() * 1.0 );
 
-    gsl_matrix_set( S, i*2 + 1, 0, 0.0 );
-    gsl_matrix_set( S, i*2 + 1, 1, 0.0 );
-    gsl_matrix_set( S, i*2 + 1, 2, 0.0 );
+    gsl_matrix_set( S, i * 2 + 1, 0, 0.0 );
+    gsl_matrix_set( S, i * 2 + 1, 1, 0.0 );
+    gsl_matrix_set( S, i * 2 + 1, 2, 0.0 );
 
-    gsl_matrix_set( S, i*2 + 1, 3, pixelCoords[i].x() );
-    gsl_matrix_set( S, i*2 + 1, 4, pixelCoords[i].y() );
-    gsl_matrix_set( S, i*2 + 1, 5, 1.0 );
+    gsl_matrix_set( S, i * 2 + 1, 3, pixelCoords[i].x() );
+    gsl_matrix_set( S, i * 2 + 1, 4, pixelCoords[i].y() );
+    gsl_matrix_set( S, i * 2 + 1, 5, 1.0 );
 
-    gsl_matrix_set( S, i*2 + 1, 6, -mapCoords[i].y()*pixelCoords[i].x() );
-    gsl_matrix_set( S, i*2 + 1, 7, -mapCoords[i].y()*pixelCoords[i].y() );
-    gsl_matrix_set( S, i*2 + 1, 8, -mapCoords[i].y()*1.0 );
+    gsl_matrix_set( S, i * 2 + 1, 6, -mapCoords[i].y()*pixelCoords[i].x() );
+    gsl_matrix_set( S, i * 2 + 1, 7, -mapCoords[i].y()*pixelCoords[i].y() );
+    gsl_matrix_set( S, i * 2 + 1, 8, -mapCoords[i].y() * 1.0 );
   }
 
   if ( mapCoords.size() == 4 )

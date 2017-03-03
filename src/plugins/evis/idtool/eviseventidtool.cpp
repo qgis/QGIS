@@ -41,12 +41,12 @@
 * to the map canvas.
 * @param canvas - Pointer to the QGIS map canvas
 */
-eVisEventIdTool::eVisEventIdTool( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
-    , mBrowser( nullptr )
+eVisEventIdTool::eVisEventIdTool( QgsMapCanvas *canvas )
+  : QgsMapTool( canvas )
+  , mBrowser( nullptr )
 {
   //set cursor
-  QPixmap myIdentifyQPixmap = QPixmap(( const char ** ) identify_cursor );
+  QPixmap myIdentifyQPixmap = QPixmap( ( const char ** ) identify_cursor );
   mCursor = QCursor( myIdentifyQPixmap, 1, 1 );
 
   //set the current tool to this object
@@ -60,7 +60,7 @@ eVisEventIdTool::eVisEventIdTool( QgsMapCanvas* canvas )
 * Mouse release, i.e., select, event
 * @param mouseEvent - Pointer to a QMouseEvent
 */
-void eVisEventIdTool::canvasReleaseEvent( QgsMapMouseEvent* mouseEvent )
+void eVisEventIdTool::canvasReleaseEvent( QgsMapMouseEvent *mouseEvent )
 {
   if ( !mCanvas || !mouseEvent )
     return;
@@ -88,13 +88,13 @@ void eVisEventIdTool::canvasReleaseEvent( QgsMapMouseEvent* mouseEvent )
 * Selection routine called by the mouse release event
 * @param point = QgsPoint representing the x, y coordinates of the mouse release event
 */
-void eVisEventIdTool::select( const QgsPoint& point )
+void eVisEventIdTool::select( const QgsPoint &point )
 {
 
   if ( !mCanvas )
     return;
 
-  QgsVectorLayer* myLayer = ( QgsVectorLayer* )mCanvas->currentLayer();
+  QgsVectorLayer *myLayer = ( QgsVectorLayer * )mCanvas->currentLayer();
 
   // create the search rectangle. this was modeled after the QgsMapIdentifyTool in core QGIS application
   double searchWidth = QgsMapTool::searchRadiusMU( mCanvas );

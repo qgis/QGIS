@@ -24,24 +24,24 @@
 #include <QDomElement>
 #include <QTemporaryFile>
 
-QgsRemoteOWSBuilder::QgsRemoteOWSBuilder( const QMap<QString, QString>& parameterMap )
-    : QgsMSLayerBuilder()
-    , mParameterMap( parameterMap )
+QgsRemoteOWSBuilder::QgsRemoteOWSBuilder( const QMap<QString, QString> &parameterMap )
+  : QgsMSLayerBuilder()
+  , mParameterMap( parameterMap )
 {
 
 }
 
 QgsRemoteOWSBuilder::QgsRemoteOWSBuilder()
-    : QgsMSLayerBuilder()
+  : QgsMSLayerBuilder()
 {
 
 }
 
-QgsMapLayer* QgsRemoteOWSBuilder::createMapLayer(
-  const QDomElement& elem,
-  const QString& layerName,
-  QList<QTemporaryFile*>& filesToRemove,
-  QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
+QgsMapLayer *QgsRemoteOWSBuilder::createMapLayer(
+  const QDomElement &elem,
+  const QString &layerName,
+  QList<QTemporaryFile *> &filesToRemove,
+  QList<QgsMapLayer *> &layersToRemove, bool allowCaching ) const
 {
   if ( elem.isNull() )
   {
@@ -68,7 +68,7 @@ QgsMapLayer* QgsRemoteOWSBuilder::createMapLayer(
   QDomElement onlineResourceElement = onlineResourceNode.toElement();
   QString url = onlineResourceElement.attribute( QStringLiteral( "href" ) );
 
-  QgsMapLayer* result = nullptr;
+  QgsMapLayer *result = nullptr;
   QString serviceName = serviceNode.toElement().text();
 
   //append missing ? or & at the end of the url, but only for WFS and WMS
@@ -145,16 +145,16 @@ QgsMapLayer* QgsRemoteOWSBuilder::createMapLayer(
   return result;
 }
 
-QgsRasterLayer* QgsRemoteOWSBuilder::wmsLayerFromUrl( const QString& url, const QString& layerName, QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
+QgsRasterLayer *QgsRemoteOWSBuilder::wmsLayerFromUrl( const QString &url, const QString &layerName, QList<QgsMapLayer *> &layersToRemove, bool allowCaching ) const
 {
   QgsDebugMsg( "Entering" );
-  QgsRasterLayer* result = nullptr;
+  QgsRasterLayer *result = nullptr;
   QString baseUrl, format, crs;
   QStringList layerList, styleList;
 
   if ( allowCaching )
   {
-    result = qobject_cast<QgsRasterLayer*>( QgsMSLayerCache::instance()->searchLayer( url, layerName ) );
+    result = qobject_cast<QgsRasterLayer *>( QgsMSLayerCache::instance()->searchLayer( url, layerName ) );
   }
 
   if ( result )
@@ -225,10 +225,10 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wmsLayerFromUrl( const QString& url, const 
   return result;
 }
 
-QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString &url,
+QgsRasterLayer *QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString &url,
     const QString &layerName,
-    QList<QTemporaryFile*> &filesToRemove,
-    QList<QgsMapLayer*> &layersToRemove,
+    QList<QTemporaryFile *> &filesToRemove,
+    QList<QgsMapLayer *> &layersToRemove,
     bool allowCaching ) const
 {
   Q_UNUSED( layerName );
@@ -240,7 +240,7 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString &url,
   return nullptr;
 }
 
-QgsVectorLayer* QgsRemoteOWSBuilder::sosLayer( const QDomElement& remoteOWSElem, const QString& url, const QString& layerName, QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
+QgsVectorLayer *QgsRemoteOWSBuilder::sosLayer( const QDomElement &remoteOWSElem, const QString &url, const QString &layerName, QList<QgsMapLayer *> &layersToRemove, bool allowCaching ) const
 {
   //url for sos provider is: "url=... method=... xml=....
   QString method = remoteOWSElem.attribute( QStringLiteral( "method" ), QStringLiteral( "POST" ) ); //possible GET/POST/SOAP
@@ -283,10 +283,10 @@ QgsVectorLayer* QgsRemoteOWSBuilder::sosLayer( const QDomElement& remoteOWSElem,
   QString providerUrl = "url=" + url + " method=" + method + " xml=" + requestDoc.toString();
 
   //check if layer is already in cache
-  QgsVectorLayer* sosLayer = nullptr;
+  QgsVectorLayer *sosLayer = nullptr;
   if ( allowCaching )
   {
-    sosLayer = qobject_cast<QgsVectorLayer*>( QgsMSLayerCache::instance()->searchLayer( providerUrl, layerName ) );
+    sosLayer = qobject_cast<QgsVectorLayer *>( QgsMSLayerCache::instance()->searchLayer( providerUrl, layerName ) );
     if ( sosLayer )
     {
       return sosLayer;

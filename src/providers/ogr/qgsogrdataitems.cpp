@@ -31,9 +31,9 @@ QGISEXTERN QStringList fileExtensions();
 QGISEXTERN QStringList wildcards();
 
 
-QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem* parent,
+QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem *parent,
                                   QString name, QString path, QString uri, LayerType layerType )
-    : QgsLayerItem( parent, name, path, uri, layerType, QStringLiteral( "ogr" ) )
+  : QgsLayerItem( parent, name, path, uri, layerType, QStringLiteral( "ogr" ) )
 {
   mToolTip = uri;
   setState( Populated ); // children are not expected
@@ -55,7 +55,7 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem* parent,
   }
 }
 
-bool QgsOgrLayerItem::setCrs( const QgsCoordinateReferenceSystem& crs )
+bool QgsOgrLayerItem::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
   if ( !( mCapabilities & SetCrs ) )
     return false;
@@ -66,7 +66,7 @@ bool QgsOgrLayerItem::setCrs( const QgsCoordinateReferenceSystem& crs )
   // save ordinary .prj file
   OGRSpatialReferenceH hSRS = OSRNewSpatialReference( wkt.toLocal8Bit().data() );
   OSRMorphToESRI( hSRS ); // this is the important stuff for shapefile .prj
-  char* pszOutWkt = nullptr;
+  char *pszOutWkt = nullptr;
   OSRExportToWkt( hSRS, &pszOutWkt );
   QFile prjFile( layerName + ".prj" );
   if ( prjFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
@@ -111,7 +111,7 @@ QString QgsOgrLayerItem::layerName() const
 
 // -------
 
-static QgsOgrLayerItem* dataItemForLayer( QgsDataItem* parentItem, QString name, QString path, OGRDataSourceH hDataSource, int layerId )
+static QgsOgrLayerItem *dataItemForLayer( QgsDataItem *parentItem, QString name, QString path, OGRDataSourceH hDataSource, int layerId )
 {
   OGRLayerH hLayer = OGR_DS_GetLayer( hDataSource, layerId );
   OGRFeatureDefnH hDef = OGR_L_GetLayerDefn( hLayer );
@@ -170,14 +170,14 @@ static QgsOgrLayerItem* dataItemForLayer( QgsDataItem* parentItem, QString name,
 
 // ----
 
-QgsOgrDataCollectionItem::QgsOgrDataCollectionItem( QgsDataItem* parent, QString name, QString path )
-    : QgsDataCollectionItem( parent, name, path )
+QgsOgrDataCollectionItem::QgsOgrDataCollectionItem( QgsDataItem *parent, QString name, QString path )
+  : QgsDataCollectionItem( parent, name, path )
 {
 }
 
-QVector<QgsDataItem*> QgsOgrDataCollectionItem::createChildren()
+QVector<QgsDataItem *> QgsOgrDataCollectionItem::createChildren()
 {
-  QVector<QgsDataItem*> children;
+  QVector<QgsDataItem *> children;
 
   OGRSFDriverH hDriver;
   OGRDataSourceH hDataSource = QgsOgrProviderUtils::OGROpenWrapper( mPath.toUtf8().constData(), false, &hDriver );
@@ -188,7 +188,7 @@ QVector<QgsDataItem*> QgsOgrDataCollectionItem::createChildren()
   children.reserve( numLayers );
   for ( int i = 0; i < numLayers; ++i )
   {
-    QgsOgrLayerItem* item = dataItemForLayer( this, QString(), mPath, hDataSource, i );
+    QgsOgrLayerItem *item = dataItemForLayer( this, QString(), mPath, hDataSource, i );
     children.append( item );
   }
 
@@ -204,7 +204,7 @@ QGISEXTERN int dataCapabilities()
   return  QgsDataProvider::File | QgsDataProvider::Dir;
 }
 
-QGISEXTERN QgsDataItem * dataItem( QString path, QgsDataItem* parentItem )
+QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 {
   if ( path.isEmpty() )
     return nullptr;
@@ -224,13 +224,13 @@ QGISEXTERN QgsDataItem * dataItem( QString path, QgsDataItem* parentItem )
   // TODO - do this in dir item, but this requires a way to inform which extensions are supported by provider
   // maybe a callback function or in the provider registry?
   bool scanExtSetting = false;
-  if (( settings.value( QStringLiteral( "/qgis/scanItemsInBrowser2" ),
-                        "extension" ).toString() == QLatin1String( "extension" ) ) ||
-      ( parentItem && settings.value( QStringLiteral( "/qgis/scanItemsFastScanUris" ),
-                                      QStringList() ).toStringList().contains( parentItem->path() ) ) ||
-      (( is_vsizip || is_vsitar ) && parentItem && parentItem->parent() &&
-       settings.value( QStringLiteral( "/qgis/scanItemsFastScanUris" ),
-                       QStringList() ).toStringList().contains( parentItem->parent()->path() ) ) )
+  if ( ( settings.value( QStringLiteral( "/qgis/scanItemsInBrowser2" ),
+                         "extension" ).toString() == QLatin1String( "extension" ) ) ||
+       ( parentItem && settings.value( QStringLiteral( "/qgis/scanItemsFastScanUris" ),
+                                       QStringList() ).toStringList().contains( parentItem->path() ) ) ||
+       ( ( is_vsizip || is_vsitar ) && parentItem && parentItem->parent() &&
+         settings.value( QStringLiteral( "/qgis/scanItemsFastScanUris" ),
+                         QStringList() ).toStringList().contains( parentItem->parent()->path() ) ) )
   {
     scanExtSetting = true;
   }
@@ -272,7 +272,7 @@ QGISEXTERN QgsDataItem * dataItem( QString path, QgsDataItem* parentItem )
   if ( myExtensions.indexOf( suffix ) < 0 )
   {
     bool matches = false;
-    Q_FOREACH ( const QString& wildcard, wildcards() )
+    Q_FOREACH ( const QString &wildcard, wildcards() )
     {
       QRegExp rx( wildcard, Qt::CaseInsensitive, QRegExp::Wildcard );
       if ( rx.exactMatch( info.fileName() ) )
@@ -302,7 +302,7 @@ QGISEXTERN QgsDataItem * dataItem( QString path, QgsDataItem* parentItem )
     // if this is a /vsigzip/path_to_zip.zip/file_inside_zip remove the full path from the name
     // no need to change the name I believe
 #if 0
-    if (( is_vsizip || is_vsitar ) && ( path != vsiPrefix + parentItem->path() ) )
+    if ( ( is_vsizip || is_vsitar ) && ( path != vsiPrefix + parentItem->path() ) )
     {
       name = path;
       name = name.replace( vsiPrefix + parentItem->path() + '/', "" );
@@ -314,7 +314,7 @@ QGISEXTERN QgsDataItem * dataItem( QString path, QgsDataItem* parentItem )
   // scanExtSetting
   // or zipfile and scan zip == "Basic scan"
   if ( scanExtSetting ||
-       (( is_vsizip || is_vsitar ) && scanZipSetting == QLatin1String( "basic" ) ) )
+       ( ( is_vsizip || is_vsitar ) && scanZipSetting == QLatin1String( "basic" ) ) )
   {
     // if this is a VRT file make sure it is vector VRT to avoid duplicates
     if ( suffix == QLatin1String( "vrt" ) )
@@ -337,7 +337,7 @@ QGISEXTERN QgsDataItem * dataItem( QString path, QgsDataItem* parentItem )
     }
     // add the item
     // TODO: how to handle collections?
-    QgsLayerItem * item = new QgsOgrLayerItem( parentItem, name, path, path, QgsLayerItem::Vector );
+    QgsLayerItem *item = new QgsOgrLayerItem( parentItem, name, path, path, QgsLayerItem::Vector );
     if ( item )
       return item;
   }
@@ -361,7 +361,7 @@ QGISEXTERN QgsDataItem * dataItem( QString path, QgsDataItem* parentItem )
 
   int numLayers = OGR_DS_GetLayerCount( hDataSource );
 
-  QgsDataItem* item = nullptr;
+  QgsDataItem *item = nullptr;
 
   if ( numLayers == 1 )
   {

@@ -26,18 +26,18 @@ class QgsGeometryEngine;
 namespace QgsGeometryCheckerUtils
 {
 
-  QgsGeometryEngine *createGeomEngine( QgsAbstractGeometry* geometry, double tolerance );
+  QgsGeometryEngine *createGeomEngine( QgsAbstractGeometry *geometry, double tolerance );
 
-  QgsAbstractGeometry* getGeomPart( QgsAbstractGeometry* geom, int partIdx );
+  QgsAbstractGeometry *getGeomPart( QgsAbstractGeometry *geom, int partIdx );
 
-  void filter1DTypes( QgsAbstractGeometry* geom );
+  void filter1DTypes( QgsAbstractGeometry *geom );
 
   /**
    * @brief Return the number of points in a polyline, accounting for duplicate start and end point if the polyline is closed
    * @param polyLine The polyline
    * @return The number of distinct points of the polyline
    */
-  inline int polyLineSize( const QgsAbstractGeometry* geom, int iPart, int iRing, bool* isClosed = nullptr )
+  inline int polyLineSize( const QgsAbstractGeometry *geom, int iPart, int iRing, bool *isClosed = nullptr )
   {
     if ( !geom->isEmpty() )
     {
@@ -57,7 +57,7 @@ namespace QgsGeometryCheckerUtils
     }
   }
 
-  double sharedEdgeLength( const QgsAbstractGeometry* geom1, const QgsAbstractGeometry* geom2, double tol );
+  double sharedEdgeLength( const QgsAbstractGeometry *geom1, const QgsAbstractGeometry *geom2, double tol );
 
   /**
      * @brief Determine whether two points are equal up to the specified tolerance
@@ -66,13 +66,13 @@ namespace QgsGeometryCheckerUtils
      * @param tol The tolerance
      * @return Whether the points are equal
      */
-  inline bool pointsFuzzyEqual( const QgsPointV2& p1, const QgsPointV2& p2, double tol )
+  inline bool pointsFuzzyEqual( const QgsPointV2 &p1, const QgsPointV2 &p2, double tol )
   {
     double dx = p1.x() - p2.x(), dy = p1.y() - p2.y();
     return ( dx * dx + dy * dy ) < tol * tol;
   }
 
-  inline bool canDeleteVertex( const QgsAbstractGeometry* geom, int iPart, int iRing )
+  inline bool canDeleteVertex( const QgsAbstractGeometry *geom, int iPart, int iRing )
   {
     int nVerts = geom->vertexCount( iPart, iRing );
     QgsPointV2 front = geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) );

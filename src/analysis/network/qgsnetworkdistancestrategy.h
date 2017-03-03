@@ -28,7 +28,7 @@
 class ANALYSIS_EXPORT QgsNetworkDistanceStrategy : public QgsNetworkStrategy
 {
   public:
-    virtual QVariant cost( double distance, const QgsFeature& ) const override;
+    virtual QVariant cost( double distance, const QgsFeature & ) const override;
 };
 
 #endif // QGSNETWORKDISTANCESTRATEGY_H

@@ -126,7 +126,7 @@ void QgsServerSettings::initSettings()
                                "Specify the cache size",
                                "/cache/size",
                                QVariant::LongLong,
-                               QVariant( 50*1024*1024 ),
+                               QVariant( 50 * 1024 * 1024 ),
                                QVariant()
                              };
   mSettings[ sCacheSize.envVar ] = sCacheSize;
@@ -148,7 +148,7 @@ void QgsServerSettings::load()
   prioritize( env );
 }
 
-bool QgsServerSettings::load( const QString& envVarName )
+bool QgsServerSettings::load( const QString &envVarName )
 {
   bool rc( false );
   const QMetaEnum metaEnum( QMetaEnum::fromType<QgsServerSettingsEnv::EnvVar>() );
@@ -189,7 +189,7 @@ QVariant QgsServerSettings::value( QgsServerSettingsEnv::EnvVar envVar ) const
   }
 }
 
-void QgsServerSettings::loadQSettings( const QString& envOptPath ) const
+void QgsServerSettings::loadQSettings( const QString &envOptPath ) const
 {
   if ( ! envOptPath.isEmpty() )
   {
@@ -198,9 +198,9 @@ void QgsServerSettings::loadQSettings( const QString& envOptPath ) const
   }
 }
 
-void QgsServerSettings::prioritize( const QMap<QgsServerSettingsEnv::EnvVar, QString>& env )
+void QgsServerSettings::prioritize( const QMap<QgsServerSettingsEnv::EnvVar, QString> &env )
 {
-for ( QgsServerSettingsEnv::EnvVar e : env.keys() )
+  for ( QgsServerSettingsEnv::EnvVar e : env.keys() )
   {
     Setting s = mSettings[ e ];
 
@@ -244,7 +244,7 @@ void QgsServerSettings::logSummary() const
   const QMetaEnum metaEnumEnv( QMetaEnum::fromType<QgsServerSettingsEnv::EnvVar>() );
 
   QgsMessageLog::logMessage( "Qgis Server Settings: ", "Server", QgsMessageLog::INFO );
-for ( Setting s : mSettings )
+  for ( Setting s : mSettings )
   {
     const QString src = metaEnumSrc.valueToKey( s.src );
     const QString var = metaEnumEnv.valueToKey( s.envVar );

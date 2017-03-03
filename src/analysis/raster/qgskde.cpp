@@ -23,20 +23,20 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-QgsKernelDensityEstimation::QgsKernelDensityEstimation( const QgsKernelDensityEstimation::Parameters& parameters, const QString& outputFile, const QString& outputFormat )
-    : mInputLayer( parameters.vectorLayer )
-    , mOutputFile( outputFile )
-    , mOutputFormat( outputFormat )
-    , mRadiusField( -1 )
-    , mWeightField( -1 )
-    , mRadius( parameters.radius )
-    , mPixelSize( parameters.pixelSize )
-    , mShape( parameters.shape )
-    , mDecay( parameters.decayRatio )
-    , mOutputValues( parameters.outputValues )
-    , mBufferSize( -1 )
-    , mDatasetH( nullptr )
-    , mRasterBandH( nullptr )
+QgsKernelDensityEstimation::QgsKernelDensityEstimation( const QgsKernelDensityEstimation::Parameters &parameters, const QString &outputFile, const QString &outputFormat )
+  : mInputLayer( parameters.vectorLayer )
+  , mOutputFile( outputFile )
+  , mOutputFormat( outputFormat )
+  , mRadiusField( -1 )
+  , mWeightField( -1 )
+  , mRadius( parameters.radius )
+  , mPixelSize( parameters.pixelSize )
+  , mShape( parameters.shape )
+  , mDecay( parameters.decayRatio )
+  , mOutputValues( parameters.outputValues )
+  , mBufferSize( -1 )
+  , mDatasetH( nullptr )
+  , mRasterBandH( nullptr )
 {
   if ( !parameters.radiusField.isEmpty() )
     mRadiusField = mInputLayer->fields().lookupField( parameters.radiusField );
@@ -107,7 +107,7 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::prepare()
   return Success;
 }
 
-QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const QgsFeature& feature )
+QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const QgsFeature &feature )
 {
   QgsGeometry featureGeometry = feature.geometry();
   if ( featureGeometry.isNull() )
@@ -160,8 +160,8 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
     }
 
     // calculate the pixel position
-    unsigned int xPosition = ((( *pointIt ).x() - mBounds.xMinimum() ) / mPixelSize ) - buffer;
-    unsigned int yPosition = ((( *pointIt ).y() - mBounds.yMinimum() ) / mPixelSize ) - buffer;
+    unsigned int xPosition = ( ( ( *pointIt ).x() - mBounds.xMinimum() ) / mPixelSize ) - buffer;
+    unsigned int yPosition = ( ( ( *pointIt ).y() - mBounds.yMinimum() ) / mPixelSize ) - buffer;
 
     // get the data
     float *dataBuffer = ( float * ) CPLMalloc( sizeof( float ) * blockSize * blockSize );
@@ -208,7 +208,7 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
 
 QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::finalise()
 {
-  GDALClose(( GDALDatasetH ) mDatasetH );
+  GDALClose( ( GDALDatasetH ) mDatasetH );
   mDatasetH = nullptr;
   mRasterBandH = nullptr;
   return Success;
@@ -224,7 +224,7 @@ int QgsKernelDensityEstimation::radiusSizeInPixels( double radius ) const
   return buffer;
 }
 
-bool QgsKernelDensityEstimation::createEmptyLayer( GDALDriverH driver, const QgsRectangle& bounds, int rows, int columns ) const
+bool QgsKernelDensityEstimation::createEmptyLayer( GDALDriverH driver, const QgsRectangle &bounds, int rows, int columns ) const
 {
   double geoTransform[6] = { bounds.xMinimum(), mPixelSize, 0, bounds.yMinimum(), 0, mPixelSize };
   GDALDatasetH emptyDataset = GDALCreate( driver, mOutputFile.toUtf8(), columns, rows, 1, GDT_Float32, nullptr );
@@ -245,7 +245,7 @@ bool QgsKernelDensityEstimation::createEmptyLayer( GDALDriverH driver, const Qgs
   if ( GDALSetRasterNoDataValue( poBand, NO_DATA ) != CE_None )
     return false;
 
-  float* line = static_cast< float * >( CPLMalloc( sizeof( float ) * columns ) );
+  float *line = static_cast< float * >( CPLMalloc( sizeof( float ) * columns ) );
   for ( int i = 0; i < columns; i++ )
   {
     line[i] = NO_DATA;
@@ -380,7 +380,7 @@ double QgsKernelDensityEstimation::triangularKernel( const double distance, cons
 
       if ( mDecay >= 0 )
       {
-        double k = 3. / (( 1. + 2. * mDecay ) * M_PI * pow( bandwidth, 2 ) );
+        double k = 3. / ( ( 1. + 2. * mDecay ) * M_PI * pow( bandwidth, 2 ) );
 
         // Derived from Wand and Jones (1995), p. 175 (with addition of decay parameter)
         return k * ( 1. - ( 1. - mDecay ) * ( distance / bandwidth ) );

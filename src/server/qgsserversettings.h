@@ -89,7 +89,7 @@ class SERVER_EXPORT QgsServerSettings
     /** Load setting for a specific environment variable name.
       * @return true if loading is successful, false in case of an invalid name.
       */
-    bool load( const QString& envVarName );
+    bool load( const QString &envVarName );
 
     /** Log a summary of settings currently loaded.
       */
@@ -145,8 +145,8 @@ class SERVER_EXPORT QgsServerSettings
     void initSettings();
     QVariant value( QgsServerSettingsEnv::EnvVar envVar ) const;
     QMap<QgsServerSettingsEnv::EnvVar, QString> getEnv() const;
-    void loadQSettings( const QString& envOptPath ) const;
-    void prioritize( const QMap<QgsServerSettingsEnv::EnvVar, QString>& env );
+    void loadQSettings( const QString &envOptPath ) const;
+    void prioritize( const QMap<QgsServerSettingsEnv::EnvVar, QString> &env );
 
     QMap< QgsServerSettingsEnv::EnvVar, Setting > mSettings;
 };

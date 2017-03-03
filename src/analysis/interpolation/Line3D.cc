@@ -46,12 +46,12 @@ bool Line3D::empty() const
   return ( head->getNext() == z );
 }
 
-void Line3D::insertPoint( Point3D* p )
+void Line3D::insertPoint( Point3D *p )
 {
   if ( currentNode != z )//we can't insert a node behind the z-node
   {
     //create a new Node after the current Node
-    Node* thenode = new Node();
+    Node *thenode = new Node();
     thenode->setPoint( p );
     thenode->setNext( currentNode->getNext() );
     currentNode->setNext( thenode );
@@ -64,7 +64,7 @@ void Line3D::insertPoint( Point3D* p )
 
 void Line3D::removePoint()
 {
-  Node* x = currentNode->getNext();
+  Node *x = currentNode->getNext();
   if ( x != z )//don't remove the end node of the list
   {
     currentNode->setNext( x->getNext() );

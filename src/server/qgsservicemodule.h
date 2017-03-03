@@ -50,8 +50,8 @@ class SERVER_EXPORT QgsServiceModule
      * Ask module to register all provided services
      * @param registry QgsServiceRegistry
      */
-    virtual void registerSelf( QgsServiceRegistry& registry,
-                               QgsServerInterface* serverIface = nullptr ) = 0;
+    virtual void registerSelf( QgsServiceRegistry &registry,
+                               QgsServerInterface *serverIface = nullptr ) = 0;
 };
 
 #endif

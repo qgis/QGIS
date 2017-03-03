@@ -21,9 +21,9 @@
 #include <qgslogger.h>
 
 
-QgsDb2GeometryColumns::QgsDb2GeometryColumns( const QSqlDatabase& db )
-    : mDatabase( db )
-    , mEnvironment( ENV_LUW )
+QgsDb2GeometryColumns::QgsDb2GeometryColumns( const QSqlDatabase &db )
+  : mDatabase( db )
+  , mEnvironment( ENV_LUW )
 {
   QgsDebugMsg( "constructing" );
 }
@@ -148,7 +148,7 @@ bool QgsDb2GeometryColumns::populateLayerProperty( QgsDb2LayerProperty &layer )
   {
     QSqlField pkFld = pk.field( 0 );
     QVariant::Type pkType = pkFld.type();
-    if (( pkType == QVariant::Int ||  pkType == QVariant::LongLong ) )
+    if ( ( pkType == QVariant::Int ||  pkType == QVariant::LongLong ) )
     {
       QString fidColName = pk.fieldName( 0 );
       layer.pkCols.append( fidColName );

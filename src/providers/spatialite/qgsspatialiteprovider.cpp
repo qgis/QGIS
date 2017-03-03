@@ -112,10 +112,10 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
 
 
 QgsVectorLayerImport::ImportError
-QgsSpatiaLiteProvider::createEmptyLayer( const QString& uri,
+QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
     const QgsFields &fields,
     QgsWkbTypes::Type wkbType,
-    const QgsCoordinateReferenceSystem& srs,
+    const QgsCoordinateReferenceSystem &srs,
     bool overwrite,
     QMap<int, int> *oldToNewAttrIdxMap,
     QString *errorMessage,
@@ -430,23 +430,23 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString& uri,
 
 
 QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
-    : QgsVectorDataProvider( uri )
-    , mValid( false )
-    , mIsQuery( false )
-    , mTableBased( false )
-    , mViewBased( false )
-    , mVShapeBased( false )
-    , mReadOnly( false )
-    , mGeomType( QgsWkbTypes::Unknown )
-    , mSqliteHandle( nullptr )
-    , mSrid( -1 )
-    , mNumberFeatures( 0 )
-    , mSpatialIndexRTree( false )
-    , mSpatialIndexMbrCache( false )
-    , mEnabledCapabilities( 0 )
-    , mGotSpatialiteVersion( false )
-    , mSpatialiteVersionMajor( 0 )
-    , mSpatialiteVersionMinor( 0 )
+  : QgsVectorDataProvider( uri )
+  , mValid( false )
+  , mIsQuery( false )
+  , mTableBased( false )
+  , mViewBased( false )
+  , mVShapeBased( false )
+  , mReadOnly( false )
+  , mGeomType( QgsWkbTypes::Unknown )
+  , mSqliteHandle( nullptr )
+  , mSrid( -1 )
+  , mNumberFeatures( 0 )
+  , mSpatialIndexRTree( false )
+  , mSpatialIndexMbrCache( false )
+  , mEnabledCapabilities( 0 )
+  , mGotSpatialiteVersion( false )
+  , mSpatialiteVersionMajor( 0 )
+  , mSpatialiteVersionMinor( 0 )
 {
   nDims = GAIA_XY;
   QgsDataSourceUri anUri = QgsDataSourceUri( uri );
@@ -470,9 +470,9 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   if ( mSqliteHandle )
   {
     QStringList pragmaList = anUri.params( QStringLiteral( "pragma" ) );
-    Q_FOREACH ( const QString& pragma, pragmaList )
+    Q_FOREACH ( const QString &pragma, pragmaList )
     {
-      char* errMsg = nullptr;
+      char *errMsg = nullptr;
       int ret = sqlite3_exec( mSqliteHandle, ( "PRAGMA " + pragma ).toUtf8(), nullptr, nullptr, &errMsg );
       if ( ret != SQLITE_OK )
       {
@@ -529,7 +529,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
     return;
   }
   mEnabledCapabilities = mPrimaryKey.isEmpty() ? QgsVectorDataProvider::Capabilities() : ( QgsVectorDataProvider::SelectAtId );
-  if (( mTableBased || mViewBased ) &&  !mReadOnly )
+  if ( ( mTableBased || mViewBased ) &&  !mReadOnly )
   {
     // enabling editing only for Tables [excluding Views and VirtualShapes]
     mEnabledCapabilities |= QgsVectorDataProvider::DeleteFeatures | QgsVectorDataProvider::FastTruncate;
@@ -626,7 +626,7 @@ QgsSpatiaLiteProvider::~QgsSpatiaLiteProvider()
   invalidateConnections( mSqlitePath );
 }
 
-QgsAbstractFeatureSource* QgsSpatiaLiteProvider::featureSource() const
+QgsAbstractFeatureSource *QgsSpatiaLiteProvider::featureSource() const
 {
   return new QgsSpatiaLiteFeatureSource( this );
 }
@@ -645,7 +645,7 @@ void QgsSpatiaLiteProvider::updatePrimaryKeyCapabilities()
 
 typedef QPair<QVariant::Type, QVariant::Type> TypeSubType;
 
-static TypeSubType getVariantType( const QString& type )
+static TypeSubType getVariantType( const QString &type )
 {
   // making some assumptions in order to guess a more realistic type
   if ( type == QLatin1String( "int" ) ||
@@ -740,12 +740,14 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
 
       const int fieldIndex = mAttributeFields.indexFromName( name );
       if ( fieldIndex >= 0 )
-      { // set the actual type name, as given by sqlite
-        QgsField& field = mAttributeFields[fieldIndex];
+      {
+        // set the actual type name, as given by sqlite
+        QgsField &field = mAttributeFields[fieldIndex];
         field.setTypeName( type );
         // TODO: column 4 tells us if the field is nullable. Should use that info...
         if ( field.type() == QVariant::String )
-        { // if the type seems unknown, fix it with what we actually have
+        {
+          // if the type seems unknown, fix it with what we actually have
           TypeSubType typeSubType = getVariantType( type );
           field.setType( typeSubType.first );
           field.setSubType( typeSubType.second );
@@ -911,7 +913,7 @@ void QgsSpatiaLiteProvider::insertDefaultValue( int fieldIndex, QString defaultV
   }
 }
 
-void QgsSpatiaLiteProvider::handleError( const QString& sql, char* errorMessage, bool rollback )
+void QgsSpatiaLiteProvider::handleError( const QString &sql, char *errorMessage, bool rollback )
 {
   QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, errorMessage ? errorMessage : tr( "unknown cause" ) ), tr( "SpatiaLite" ) );
   // unexpected error
@@ -1119,7 +1121,7 @@ QString QgsSpatiaLiteProvider::storageType() const
   return QStringLiteral( "SQLite database with SpatiaLite extension" );
 }
 
-QgsFeatureIterator QgsSpatiaLiteProvider::getFeatures( const QgsFeatureRequest& request ) const
+QgsFeatureIterator QgsSpatiaLiteProvider::getFeatures( const QgsFeatureRequest &request ) const
 {
   if ( !mValid )
   {
@@ -1144,7 +1146,7 @@ int QgsSpatiaLiteProvider::computeSizeFromGeosWKB2D( const unsigned char *blob,
 
   switch ( type )
   {
-      // compunting the required size
+    // compunting the required size
     case GAIA_POINT:
       switch ( nDims )
       {
@@ -1235,7 +1237,7 @@ int QgsSpatiaLiteProvider::computeSizeFromMultiWKB2D( const unsigned char *p_in,
     size += 5;
     switch ( type )
     {
-        // compunting the required size
+      // compunting the required size
       case GAIA_POINT:
         switch ( nDims )
         {
@@ -1316,7 +1318,7 @@ int QgsSpatiaLiteProvider::computeSizeFromGeosWKB3D( const unsigned char *blob,
 
   switch ( type )
   {
-      // compunting the required size
+    // compunting the required size
     case GEOS_3D_POINT:
       switch ( nDims )
       {
@@ -1407,7 +1409,7 @@ int QgsSpatiaLiteProvider::computeSizeFromMultiWKB3D( const unsigned char *p_in,
     size += 5;
     switch ( type )
     {
-        // compunting the required size
+      // compunting the required size
       case GEOS_3D_POINT:
         switch ( nDims )
         {
@@ -1569,7 +1571,7 @@ void QgsSpatiaLiteProvider::convertFromGeosWKB2D( const unsigned char *blob,
   type = gaiaImport32( blob + 1, little_endian, endian_arch );
   switch ( type )
   {
-      // setting Geometry TYPE
+    // setting Geometry TYPE
     case GAIA_POINT:
       switch ( nDims )
       {
@@ -1694,7 +1696,7 @@ void QgsSpatiaLiteProvider::convertFromGeosWKB2D( const unsigned char *blob,
   p_out += 4;
   switch ( type )
   {
-      // setting Geometry values
+    // setting Geometry values
     case GAIA_POINT:
       coord = gaiaImport64( p_in, little_endian, endian_arch );
       gaiaExport64( p_out, coord, 1, endian_arch );  // X
@@ -1999,7 +2001,7 @@ void QgsSpatiaLiteProvider::convertFromGeosWKB2D( const unsigned char *blob,
         p_out += 4;
         switch ( type2 )
         {
-            // setting sub-Geometry values
+          // setting sub-Geometry values
           case GAIA_POINT:
             coord = gaiaImport64( p_in, little_endian, endian_arch );
             gaiaExport64( p_out, coord, 1, endian_arch );  // X
@@ -2114,7 +2116,7 @@ void QgsSpatiaLiteProvider::convertFromGeosWKB3D( const unsigned char *blob,
   type = gaiaImport32( blob + 1, little_endian, endian_arch );
   switch ( type )
   {
-      // setting Geometry TYPE
+    // setting Geometry TYPE
     case GEOS_3D_POINT:
       switch ( nDims )
       {
@@ -2239,7 +2241,7 @@ void QgsSpatiaLiteProvider::convertFromGeosWKB3D( const unsigned char *blob,
   p_out += 4;
   switch ( type )
   {
-      // setting Geometry values
+    // setting Geometry values
     case GEOS_3D_POINT:
       coord = gaiaImport64( p_in, little_endian, endian_arch );
       gaiaExport64( p_out, coord, 1, endian_arch );  // X
@@ -2556,7 +2558,7 @@ void QgsSpatiaLiteProvider::convertFromGeosWKB3D( const unsigned char *blob,
         p_out += 4;
         switch ( type2 )
         {
-            // setting sub-Geometry values
+          // setting sub-Geometry values
           case GEOS_3D_POINT:
             coord = gaiaImport64( p_in, little_endian, endian_arch );
             gaiaExport64( p_out, coord, 1, endian_arch );  // X
@@ -2718,7 +2720,7 @@ void QgsSpatiaLiteProvider::convertToGeosWKB( const unsigned char *blob,
   p_in = blob + 5;
   switch ( type )
   {
-      // compunting the required size
+    // compunting the required size
     case GAIA_POINTZ:
     case GAIA_POINTM:
     case GAIA_POINTZM:
@@ -2771,7 +2773,7 @@ void QgsSpatiaLiteProvider::convertToGeosWKB( const unsigned char *blob,
   type = gaiaImport32( blob + 1, little_endian, endian_arch );
   switch ( type )
   {
-      // setting Geometry TYPE
+    // setting Geometry TYPE
     case GAIA_POINTZ:
     case GAIA_POINTM:
     case GAIA_POINTZM:
@@ -2812,7 +2814,7 @@ void QgsSpatiaLiteProvider::convertToGeosWKB( const unsigned char *blob,
   p_out = wkbGeom + 5;
   switch ( type )
   {
-      // setting Geometry values
+    // setting Geometry values
     case GAIA_POINTM:
       coord = gaiaImport64( p_in, little_endian, endian_arch );
       gaiaExport64( p_out, coord, 1, endian_arch );  // X
@@ -3176,7 +3178,7 @@ void QgsSpatiaLiteProvider::convertToGeosWKB( const unsigned char *blob,
         p_out += 4;
         switch ( type2 )
         {
-            // setting sub-Geometry values
+          // setting sub-Geometry values
           case GAIA_POINTM:
             coord = gaiaImport64( p_in, little_endian, endian_arch );
             gaiaExport64( p_out, coord, 1, endian_arch );  // X
@@ -3339,7 +3341,7 @@ int QgsSpatiaLiteProvider::computeMultiWKB3Dsize( const unsigned char *p_in, int
     size += 5;
     switch ( type )
     {
-        // compunting the required size
+      // compunting the required size
       case GAIA_POINTZ:
       case GAIA_POINTM:
         size += 3 * sizeof( double );
@@ -3402,7 +3404,7 @@ QString QgsSpatiaLiteProvider::subsetString() const
   return mSubsetString;
 }
 
-bool QgsSpatiaLiteProvider::setSubsetString( const QString& theSQL, bool updateFeatureCount )
+bool QgsSpatiaLiteProvider::setSubsetString( const QString &theSQL, bool updateFeatureCount )
 {
   QString prevSubsetString = mSubsetString;
   mSubsetString = theSQL;
@@ -3698,7 +3700,7 @@ void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueV
           uniqueValues.append( QVariant( sqlite3_column_double( stmt, 0 ) ) );
           break;
         case SQLITE_TEXT:
-          uniqueValues.append( QVariant( QString::fromUtf8(( const char * ) sqlite3_column_text( stmt, 0 ) ) ) );
+          uniqueValues.append( QVariant( QString::fromUtf8( ( const char * ) sqlite3_column_text( stmt, 0 ) ) ) );
           break;
         default:
           uniqueValues.append( QVariant( mAttributeFields.at( index ).type() ) );
@@ -3718,7 +3720,7 @@ void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueV
   return;
 }
 
-QStringList QgsSpatiaLiteProvider::uniqueStringsMatching( int index, const QString& substring, int limit, QgsFeedback* feedback ) const
+QStringList QgsSpatiaLiteProvider::uniqueStringsMatching( int index, const QString &substring, int limit, QgsFeedback *feedback ) const
 {
   QStringList results;
 
@@ -3755,7 +3757,7 @@ QStringList QgsSpatiaLiteProvider::uniqueStringsMatching( int index, const QStri
     return results;
   }
 
-  while (( limit < 0 || results.size() < limit ) && ( !feedback || !feedback->isCanceled() ) )
+  while ( ( limit < 0 || results.size() < limit ) && ( !feedback || !feedback->isCanceled() ) )
   {
     // this one is an infinitive loop, intended to fetch any row
     int ret = sqlite3_step( stmt );
@@ -3772,7 +3774,7 @@ QStringList QgsSpatiaLiteProvider::uniqueStringsMatching( int index, const QStri
       switch ( sqlite3_column_type( stmt, 0 ) )
       {
         case SQLITE_TEXT:
-          results.append( QString::fromUtf8(( const char * ) sqlite3_column_text( stmt, 0 ) ) );
+          results.append( QString::fromUtf8( ( const char * ) sqlite3_column_text( stmt, 0 ) ) );
           break;
         default:
           break;
@@ -3816,12 +3818,12 @@ QString QgsSpatiaLiteProvider::geomParam() const
   return geometry;
 }
 
-static void deleteWkbBlob( void* wkbBlob )
+static void deleteWkbBlob( void *wkbBlob )
 {
-  delete[]( char* )wkbBlob;
+  delete[]( char * )wkbBlob;
 }
 
-bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
+bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist )
 {
   sqlite3_stmt *stmt = nullptr;
   char *errMsg = nullptr;
@@ -3896,7 +3898,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
             unsigned char *wkb = nullptr;
             int wkb_size;
             QByteArray featureWkb = feature->geometry().exportToWkb();
-            convertFromGeosWKB( reinterpret_cast<const unsigned char*>( featureWkb.constData() ),
+            convertFromGeosWKB( reinterpret_cast<const unsigned char *>( featureWkb.constData() ),
                                 featureWkb.length(),
                                 &wkb, &wkb_size, nDims );
             if ( !wkb )
@@ -3977,7 +3979,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
         {
           // some unexpected error occurred
           const char *err = sqlite3_errmsg( mSqliteHandle );
-          errMsg = ( char * ) sqlite3_malloc(( int ) strlen( err ) + 1 );
+          errMsg = ( char * ) sqlite3_malloc( ( int ) strlen( err ) + 1 );
           strcpy( errMsg, err );
           break;
         }
@@ -4101,7 +4103,7 @@ bool QgsSpatiaLiteProvider::deleteFeatures( const QgsFeatureIds &id )
     {
       // some unexpected error occurred
       const char *err = sqlite3_errmsg( mSqliteHandle );
-      errMsg = ( char * ) sqlite3_malloc(( int ) strlen( err ) + 1 );
+      errMsg = ( char * ) sqlite3_malloc( ( int ) strlen( err ) + 1 );
       strcpy( errMsg, err );
       handleError( sql, errMsg, true );
       return false;
@@ -4240,7 +4242,7 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
       try
       {
         QgsField fld = field( siter.key() );
-        const QVariant& val = siter.value();
+        const QVariant &val = siter.value();
 
         if ( !first )
           sql += ',';
@@ -4257,7 +4259,7 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
         else if ( type == QVariant::Int || type == QVariant::LongLong || type == QVariant::Double )
         {
           // binding a NUMERIC value
-          sql += QStringLiteral( "%1=%2" ).arg( quotedIdentifier( fld.name() ) , val.toString() );
+          sql += QStringLiteral( "%1=%2" ).arg( quotedIdentifier( fld.name() ), val.toString() );
         }
         else if ( type == QVariant::StringList || type == QVariant::List )
         {
@@ -4333,7 +4335,7 @@ bool QgsSpatiaLiteProvider::changeGeometryValues( const QgsGeometryMap &geometry
     unsigned char *wkb = nullptr;
     int wkb_size;
     QByteArray iterWkb = iter->exportToWkb();
-    convertFromGeosWKB( reinterpret_cast<const unsigned char*>( iterWkb.constData() ), iterWkb.length(), &wkb, &wkb_size, nDims );
+    convertFromGeosWKB( reinterpret_cast<const unsigned char *>( iterWkb.constData() ), iterWkb.length(), &wkb, &wkb_size, nDims );
     if ( !wkb )
       sqlite3_bind_null( stmt, 1 );
     else
@@ -4348,7 +4350,7 @@ bool QgsSpatiaLiteProvider::changeGeometryValues( const QgsGeometryMap &geometry
     {
       // some unexpected error occurred
       const char *err = sqlite3_errmsg( mSqliteHandle );
-      errMsg = ( char * ) sqlite3_malloc(( int ) strlen( err ) + 1 );
+      errMsg = ( char * ) sqlite3_malloc( ( int ) strlen( err ) + 1 );
       strcpy( errMsg, err );
       handleError( sql, errMsg, true );
       return false;
@@ -5228,7 +5230,7 @@ QgsField QgsSpatiaLiteProvider::field( int index ) const
   return mAttributeFields.at( index );
 }
 
-void QgsSpatiaLiteProvider::invalidateConnections( const QString& connection )
+void QgsSpatiaLiteProvider::invalidateConnections( const QString &connection )
 {
   QgsSpatiaLiteConnPool::instance()->invalidateConnections( connection );
 }
@@ -5237,7 +5239,7 @@ void QgsSpatiaLiteProvider::invalidateConnections( const QString& connection )
  * Class factory to return a pointer to a newly created
  * QgsSpatiaLiteProvider object
  */
-QGISEXTERN QgsSpatiaLiteProvider *classFactory( const QString * uri )
+QGISEXTERN QgsSpatiaLiteProvider *classFactory( const QString *uri )
 {
   return new QgsSpatiaLiteProvider( *uri );
 }
@@ -5267,10 +5269,10 @@ QGISEXTERN bool isProvider()
 }
 
 QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
-  const QString& uri,
+  const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type wkbType,
-  const QgsCoordinateReferenceSystem& srs,
+  const QgsCoordinateReferenceSystem &srs,
   bool overwrite,
   QMap<int, int> *oldToNewAttrIdxMap,
   QString *errorMessage,
@@ -5284,7 +5286,7 @@ QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
 
 // -------------
 
-static bool initializeSpatialMetadata( sqlite3 *sqlite_handle, QString& errCause )
+static bool initializeSpatialMetadata( sqlite3 *sqlite_handle, QString &errCause )
 {
   // attempting to perform self-initialization for a newly created DB
   if ( !sqlite_handle )
@@ -5338,7 +5340,7 @@ static bool initializeSpatialMetadata( sqlite3 *sqlite_handle, QString& errCause
   return true;
 }
 
-QGISEXTERN bool createDb( const QString& dbPath, QString& errCause )
+QGISEXTERN bool createDb( const QString &dbPath, QString &errCause )
 {
   QgsDebugMsg( "creating a new db" );
 
@@ -5380,17 +5382,17 @@ QGISEXTERN bool createDb( const QString& dbPath, QString& errCause )
 
 // -------------
 
-QGISEXTERN bool deleteLayer( const QString& dbPath, const QString& tableName, QString& errCause )
+QGISEXTERN bool deleteLayer( const QString &dbPath, const QString &tableName, QString &errCause )
 {
   QgsDebugMsg( "deleting layer " + tableName );
 
-  QgsSqliteHandle* hndl = QgsSqliteHandle::openDb( dbPath );
+  QgsSqliteHandle *hndl = QgsSqliteHandle::openDb( dbPath );
   if ( !hndl )
   {
     errCause = QObject::tr( "Connection to database failed" );
     return false;
   }
-  sqlite3* sqlite_handle = hndl->handle();
+  sqlite3 *sqlite_handle = hndl->handle();
   int ret;
 #ifdef SPATIALITE_VERSION_GE_4_0_0
   // only if libspatialite version is >= 4.0.0
@@ -5446,12 +5448,12 @@ QgsAttributeList QgsSpatiaLiteProvider::pkAttributeIndexes() const
   return mPrimaryKeyAttrs;
 }
 
-QList<QgsVectorLayer*> QgsSpatiaLiteProvider::searchLayers( const QList<QgsVectorLayer*>& layers, const QString& connectionInfo, const QString& tableName )
+QList<QgsVectorLayer *> QgsSpatiaLiteProvider::searchLayers( const QList<QgsVectorLayer *> &layers, const QString &connectionInfo, const QString &tableName )
 {
-  QList<QgsVectorLayer*> result;
-  Q_FOREACH ( QgsVectorLayer* layer, layers )
+  QList<QgsVectorLayer *> result;
+  Q_FOREACH ( QgsVectorLayer *layer, layers )
   {
-    const QgsSpatiaLiteProvider* slProvider = qobject_cast<QgsSpatiaLiteProvider*>( layer->dataProvider() );
+    const QgsSpatiaLiteProvider *slProvider = qobject_cast<QgsSpatiaLiteProvider *>( layer->dataProvider() );
     if ( slProvider && slProvider->mSqlitePath == connectionInfo && slProvider->mTableName == tableName )
     {
       result.append( layer );
@@ -5461,7 +5463,7 @@ QList<QgsVectorLayer*> QgsSpatiaLiteProvider::searchLayers( const QList<QgsVecto
 }
 
 
-QList<QgsRelation> QgsSpatiaLiteProvider::discoverRelations( const QgsVectorLayer* self, const QList<QgsVectorLayer*>& layers ) const
+QList<QgsRelation> QgsSpatiaLiteProvider::discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const
 {
   QList<QgsRelation> output;
   const QString sql = QStringLiteral( "PRAGMA foreign_key_list(%1)" ).arg( QgsSpatiaLiteProvider::quotedIdentifier( mTableName ) );
@@ -5481,9 +5483,10 @@ QList<QgsRelation> QgsSpatiaLiteProvider::discoverRelations( const QgsVectorLaye
       const QString fkColumn = QString::fromUtf8( results[row * columns + 3] );
       const QString refColumn = QString::fromUtf8( results[row * columns + 4] );
       if ( position == QLatin1String( "0" ) )
-      { // first reference field => try to find if we have layers for the referenced table
-        const QList<QgsVectorLayer*> foundLayers = searchLayers( layers, mSqlitePath, refTable );
-        Q_FOREACH ( const QgsVectorLayer* foundLayer, foundLayers )
+      {
+        // first reference field => try to find if we have layers for the referenced table
+        const QList<QgsVectorLayer *> foundLayers = searchLayers( layers, mSqlitePath, refTable );
+        Q_FOREACH ( const QgsVectorLayer *foundLayer, foundLayers )
         {
           QgsRelation relation;
           relation.setName( name );
@@ -5503,7 +5506,8 @@ QList<QgsRelation> QgsSpatiaLiteProvider::discoverRelations( const QgsVectorLaye
         }
       }
       else
-      { // multi reference field => add the field pair to all the referenced layers found
+      {
+        // multi reference field => add the field pair to all the referenced layers found
         for ( int i = 0; i < nbFound; ++i )
         {
           output[output.size() - 1 - i].addFieldPair( fkColumn, refColumn );
@@ -5522,9 +5526,9 @@ QList<QgsRelation> QgsSpatiaLiteProvider::discoverRelations( const QgsVectorLaye
 
 // ---------------------------------------------------------------------------
 
-QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QString& sldStyle,
-                           const QString& styleName, const QString& styleDescription,
-                           const QString& uiFileContent, bool useAsDefault, QString& errCause )
+QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle,
+                           const QString &styleName, const QString &styleDescription,
+                           const QString &uiFileContent, bool useAsDefault, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
   QString sqlitePath = dsUri.database();
@@ -5703,7 +5707,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
 }
 
 
-QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
+QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
   QString sqlitePath = dsUri.database();
@@ -5752,7 +5756,7 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
 }
 
 QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &names,
-                           QStringList &descriptions, QString& errCause )
+                           QStringList &descriptions, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
   QString sqlitePath = dsUri.database();
@@ -5857,7 +5861,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
   return numberOfRelatedStyles;
 }
 
-QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& errCause )
+QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
   QString sqlitePath = dsUri.database();

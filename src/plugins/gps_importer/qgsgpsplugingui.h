@@ -36,10 +36,10 @@ class QgsGPSPluginGui : public QDialog, private Ui::QgsGPSPluginGuiBase
     Q_OBJECT
 
   public:
-    QgsGPSPluginGui( const BabelMap& importers,
-                     std::map<QString, QgsGPSDevice*>& devices,
-                     const std::vector<QgsVectorLayer*>& gpxMapLayers,
-                     QWidget* parent, Qt::WindowFlags );
+    QgsGPSPluginGui( const BabelMap &importers,
+                     std::map<QString, QgsGPSDevice *> &devices,
+                     const std::vector<QgsVectorLayer *> &gpxMapLayers,
+                     QWidget *parent, Qt::WindowFlags );
     ~QgsGPSPluginGui();
 
   public slots:
@@ -83,28 +83,28 @@ class QgsGPSPluginGui : public QDialog, private Ui::QgsGPSPluginGuiBase
     void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_gps/plugins_gps.html" ) ); }
 
   signals:
-    void drawRasterLayer( const QString& );
-    void drawVectorLayer( const QString&, const QString&, const QString& );
-    void loadGPXFile( const QString& fileName, bool showWaypoints, bool showRoutes,
+    void drawRasterLayer( const QString & );
+    void drawVectorLayer( const QString &, const QString &, const QString & );
+    void loadGPXFile( const QString &fileName, bool showWaypoints, bool showRoutes,
                       bool showTracks );
-    void importGPSFile( const QString& inputFileName, QgsBabelFormat* importer,
+    void importGPSFile( const QString &inputFileName, QgsBabelFormat *importer,
                         bool importWaypoints, bool importRoutes,
-                        bool importTracks, const QString& outputFileName,
-                        const QString& layerName );
-    void convertGPSFile( const QString& inputFileName,
+                        bool importTracks, const QString &outputFileName,
+                        const QString &layerName );
+    void convertGPSFile( const QString &inputFileName,
                          int convertType,
-                         const QString& outputFileName,
-                         const QString& layerName );
-    void downloadFromGPS( const QString& device, const QString& port, bool downloadWaypoints,
+                         const QString &outputFileName,
+                         const QString &layerName );
+    void downloadFromGPS( const QString &device, const QString &port, bool downloadWaypoints,
                           bool downloadRoutes, bool downloadTracks,
-                          const QString& outputFileName, const QString& layerName );
-    void uploadToGPS( QgsVectorLayer* gpxLayer, const QString& device, const QString& port );
+                          const QString &outputFileName, const QString &layerName );
+    void uploadToGPS( QgsVectorLayer *gpxLayer, const QString &device, const QString &port );
 
   private:
 
-    std::vector<QgsVectorLayer*> mGPXLayers;
-    const BabelMap& mImporters;
-    std::map<QString, QgsGPSDevice*>& mDevices;
+    std::vector<QgsVectorLayer *> mGPXLayers;
+    const BabelMap &mImporters;
+    std::map<QString, QgsGPSDevice *> &mDevices;
     QString mBabelFilter;
     QString mImpFormat;
     QAbstractButton *pbnOK = nullptr;

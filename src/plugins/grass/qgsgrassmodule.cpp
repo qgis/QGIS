@@ -86,11 +86,11 @@ QProcessEnvironment QgsGrassModule::processEnvironment( bool direct )
 
 QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisInterface *iface,
                                 bool direct, QWidget *parent, Qt::WindowFlags f )
-    : QWidget( parent, f )
-    , QgsGrassModuleBase()
-    , mOptions( 0 )
-    , mSuccess( false )
-    , mDirect( direct )
+  : QWidget( parent, f )
+  , QgsGrassModuleBase()
+  , mOptions( 0 )
+  , mSuccess( false )
+  , mDirect( direct )
 {
   Q_UNUSED( f );
   QgsDebugMsg( "called" );
@@ -208,7 +208,7 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   connect( &mProcess, SIGNAL( finished( int, QProcess::ExitStatus ) ), this, SLOT( finished( int, QProcess::ExitStatus ) ) );
 
   const char *env = "GRASS_MESSAGE_FORMAT=gui";
-  char *envstr = new char[strlen( env )+1];
+  char *envstr = new char[strlen( env ) + 1];
   strcpy( envstr, env );
   putenv( envstr );
 
@@ -434,7 +434,7 @@ QPixmap QgsGrassModule::pixmap( QString path, int height )
       painter.drawPixmap( pos, 0, plusPixmap );
       pos += buffer + plusWidth;
     }
-    if (( i == 1 && pixmaps.size() == 2 ) || ( i == 2 && pixmaps.size() == 3 ) ) // ->
+    if ( ( i == 1 && pixmaps.size() == 2 ) || ( i == 2 && pixmaps.size() == 3 ) ) // ->
     {
       pos += buffer;
       painter.drawPixmap( pos, 0, arrowPixmap );
@@ -587,7 +587,7 @@ void QgsGrassModule::run()
      * G_GISRC_MODE_MEMORY mode, the variable remains set in variable when a module is run
      * -> unset GISRC_MODE_MEMORY. Remove later once 6.1.x / 6.0.1 is widespread.
     *   */
-    putenv(( char* ) "GISRC_MODE_MEMORY" );  // unset
+    putenv( ( char * ) "GISRC_MODE_MEMORY" ); // unset
 
     mOutputTextBrowser->clear();
 
@@ -627,7 +627,7 @@ void QgsGrassModule::run()
 
       // Print some important variables
       variables << QStringLiteral( "QGIS_PREFIX_PATH" ) << QStringLiteral( "QGIS_GRASS_CRS" ) << QStringLiteral( "GRASS_REGION" );
-      Q_FOREACH ( const QString& v, variables )
+      Q_FOREACH ( const QString &v, variables )
       {
         mOutputTextBrowser->append( v + "=" + environment.value( v ) + "<BR>" );
       }
@@ -951,7 +951,7 @@ QString QgsGrassModule::libraryPathVariable()
 #endif
 }
 
-void QgsGrassModule::setDirectLibraryPath( QProcessEnvironment & environment )
+void QgsGrassModule::setDirectLibraryPath( QProcessEnvironment &environment )
 {
   QString pathVariable = libraryPathVariable();
   QString separator;

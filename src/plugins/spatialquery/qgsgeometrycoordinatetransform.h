@@ -43,7 +43,7 @@ class QgsGeometryCoordinateTransform
      * \param lyrTarget      target layer.
      * \param lyrReference   reference layer.
      */
-    void setCoordinateTransform( QgsVectorLayer* lyrTarget, QgsVectorLayer* lyrReference );
+    void setCoordinateTransform( QgsVectorLayer *lyrTarget, QgsVectorLayer *lyrReference );
 
     /**
      * \brief Transform the coordinates reference system of the geometry, if target have the different system of reference
@@ -68,8 +68,8 @@ class QgsGeometryCoordinateTransform
     QgsCoordinateTransform mCoordTransform;
     void ( QgsGeometryCoordinateTransform::* mFuncTransform )( QgsGeometry * );
 
-    QgsGeometryCoordinateTransform( const QgsGeometryCoordinateTransform& rh );
-    QgsGeometryCoordinateTransform& operator=( const QgsGeometryCoordinateTransform& rh );
+    QgsGeometryCoordinateTransform( const QgsGeometryCoordinateTransform &rh );
+    QgsGeometryCoordinateTransform &operator=( const QgsGeometryCoordinateTransform &rh );
 };
 
 #endif // GEOMETRYCOORDINATETRANSFORM_H

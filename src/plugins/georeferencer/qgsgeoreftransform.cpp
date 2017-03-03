@@ -66,7 +66,7 @@ class QgsHelmertGeorefTransform : public QgsGeorefTransformInterface
       double   angle;
     };
 
-    bool getOriginScaleRotation( QgsPoint &origin, double& scale, double& rotation ) const;
+    bool getOriginScaleRotation( QgsPoint &origin, double &scale, double &rotation ) const;
     bool updateParametersFromGCPs( const QVector<QgsPoint> &mapCoords, const QVector<QgsPoint> &pixelCoords ) override;
     int getMinimumGCPCount() const override;
 
@@ -198,7 +198,7 @@ bool QgsGeorefTransform::updateParametersFromGCPs( const QVector<QgsPoint> &mapC
   }
   if ( mapCoords.size() != pixelCoords.size() ) // Defensive sanity check
   {
-    throw( std::domain_error( "Internal error: GCP mapping is not one-to-one" ) );
+    throw ( std::domain_error( "Internal error: GCP mapping is not one-to-one" ) );
   }
   if ( mapCoords.size() < getMinimumGCPCount() )
   {
@@ -227,7 +227,7 @@ GDALTransformerFunc QgsGeorefTransform::GDALTransformer() const
   return mGeorefTransformImplementation ? mGeorefTransformImplementation->GDALTransformer() : nullptr;
 }
 
-void* QgsGeorefTransform::GDALTransformerArgs() const
+void *QgsGeorefTransform::GDALTransformerArgs() const
 {
   return mGeorefTransformImplementation ? mGeorefTransformImplementation->GDALTransformerArgs() : nullptr;
 }
@@ -285,23 +285,23 @@ bool QgsGeorefTransform::getLinearOriginScale( QgsPoint &origin, double &scaleX,
   {
     return false;
   }
-  QgsLinearGeorefTransform* transform = dynamic_cast<QgsLinearGeorefTransform *>( mGeorefTransformImplementation );
+  QgsLinearGeorefTransform *transform = dynamic_cast<QgsLinearGeorefTransform *>( mGeorefTransformImplementation );
   return transform && transform->getOriginScale( origin, scaleX, scaleY );
 }
 
-bool QgsGeorefTransform::getOriginScaleRotation( QgsPoint &origin, double &scaleX, double &scaleY, double& rotation ) const
+bool QgsGeorefTransform::getOriginScaleRotation( QgsPoint &origin, double &scaleX, double &scaleY, double &rotation ) const
 {
 
   if ( mTransformParametrisation == Linear )
   {
     rotation = 0.0;
-    QgsLinearGeorefTransform* transform = dynamic_cast<QgsLinearGeorefTransform *>( mGeorefTransformImplementation );
+    QgsLinearGeorefTransform *transform = dynamic_cast<QgsLinearGeorefTransform *>( mGeorefTransformImplementation );
     return transform && transform->getOriginScale( origin, scaleX, scaleY );
   }
   else if ( mTransformParametrisation == Helmert )
   {
     double scale;
-    QgsHelmertGeorefTransform* transform = dynamic_cast<QgsHelmertGeorefTransform*>( mGeorefTransformImplementation );
+    QgsHelmertGeorefTransform *transform = dynamic_cast<QgsHelmertGeorefTransform *>( mGeorefTransformImplementation );
     if ( !transform || ! transform->getOriginScaleRotation( origin, scale, rotation ) )
     {
       return false;
@@ -363,7 +363,7 @@ int QgsLinearGeorefTransform::linear_transform( void *pTransformerArg, int bDstT
     double *x, double *y, double *z, int *panSuccess )
 {
   Q_UNUSED( z );
-  LinearParameters* t = static_cast<LinearParameters*>( pTransformerArg );
+  LinearParameters *t = static_cast<LinearParameters *>( pTransformerArg );
   if ( !t )
     return false;
 
@@ -421,10 +421,10 @@ GDALTransformerFunc QgsHelmertGeorefTransform::GDALTransformer() const
 
 void *QgsHelmertGeorefTransform::GDALTransformerArgs() const
 {
-  return ( void* )&mHelmertParameters;
+  return ( void * )&mHelmertParameters;
 }
 
-bool QgsHelmertGeorefTransform::getOriginScaleRotation( QgsPoint &origin, double& scale, double& rotation ) const
+bool QgsHelmertGeorefTransform::getOriginScaleRotation( QgsPoint &origin, double &scale, double &rotation ) const
 {
   origin = mHelmertParameters.origin;
   scale = mHelmertParameters.scale;
@@ -436,7 +436,7 @@ int QgsHelmertGeorefTransform::helmert_transform( void *pTransformerArg, int bDs
     double *x, double *y, double *z, int *panSuccess )
 {
   Q_UNUSED( z );
-  HelmertParameters* t = static_cast<HelmertParameters*>( pTransformerArg );
+  HelmertParameters *t = static_cast<HelmertParameters *>( pTransformerArg );
   if ( !t )
     return false;
 
@@ -486,8 +486,8 @@ int QgsHelmertGeorefTransform::helmert_transform( void *pTransformerArg, int bDs
 }
 
 QgsGDALGeorefTransform::QgsGDALGeorefTransform( bool useTPS, unsigned int polynomialOrder )
-    : mPolynomialOrder( qMin( 3u, polynomialOrder ) )
-    , mIsTPSTransform( useTPS )
+  : mPolynomialOrder( qMin( 3u, polynomialOrder ) )
+  , mIsTPSTransform( useTPS )
 {
   mGDALTransformer     = nullptr;
   mGDALTransformerArgs = nullptr;
@@ -538,7 +538,7 @@ int QgsGDALGeorefTransform::getMinimumGCPCount() const
   if ( mIsTPSTransform )
     return 1;
   else
-    return (( mPolynomialOrder + 2 )*( mPolynomialOrder + 1 ) ) / 2;
+    return ( ( mPolynomialOrder + 2 ) * ( mPolynomialOrder + 1 ) ) / 2;
 }
 
 GDALTransformerFunc QgsGDALGeorefTransform::GDALTransformer() const
@@ -577,7 +577,7 @@ bool QgsProjectiveGeorefTransform::updateParametersFromGCPs( const QVector<QgsPo
   // HACK: flip y coordinates, because georeferencer and gdal use different conventions
   QVector<QgsPoint> flippedPixelCoords;
   flippedPixelCoords.reserve( pixelCoords.size() );
-  Q_FOREACH ( const QgsPoint& coord, pixelCoords )
+  Q_FOREACH ( const QgsPoint &coord, pixelCoords )
   {
     flippedPixelCoords << QgsPoint( coord.x(), -coord.y() );
   }
@@ -602,7 +602,7 @@ bool QgsProjectiveGeorefTransform::updateParametersFromGCPs( const QVector<QgsPo
 
   double det = H[0] * adjoint[0] + H[3] * adjoint[1] + H[6] * adjoint[2];
 
-  if ( qAbs( det ) < 1024.0*std::numeric_limits<double>::epsilon() )
+  if ( qAbs( det ) < 1024.0 * std::numeric_limits<double>::epsilon() )
   {
     mParameters.hasInverse = false;
   }
@@ -627,7 +627,7 @@ int QgsProjectiveGeorefTransform::projective_transform( void *pTransformerArg, i
     double *x, double *y, double *z, int *panSuccess )
 {
   Q_UNUSED( z );
-  ProjectiveParameters* t = static_cast<ProjectiveParameters*>( pTransformerArg );
+  ProjectiveParameters *t = static_cast<ProjectiveParameters *>( pTransformerArg );
   if ( !t )
     return false;
 
@@ -654,7 +654,7 @@ int QgsProjectiveGeorefTransform::projective_transform( void *pTransformerArg, i
   {
     double Z = x[i] * H[6] + y[i] * H[7] + H[8];
     // Projects to infinity?
-    if ( qAbs( Z ) < 1024.0*std::numeric_limits<double>::epsilon() )
+    if ( qAbs( Z ) < 1024.0 * std::numeric_limits<double>::epsilon() )
     {
       panSuccess[i] = false;
       continue;

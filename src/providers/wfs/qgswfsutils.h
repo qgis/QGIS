@@ -37,20 +37,20 @@ class QgsWFSUtils
     static void init();
 
     //! Removes a possible namespace prefix from a typename
-    static QString removeNamespacePrefix( const QString& tname );
+    static QString removeNamespacePrefix( const QString &tname );
     //! Returns namespace prefix (or an empty string if there is no prefix)
-    static QString nameSpacePrefix( const QString& tname );
+    static QString nameSpacePrefix( const QString &tname );
 
     //! Return a unique identifier made from feature content
-    static QString getMD5( const QgsFeature& f );
+    static QString getMD5( const QgsFeature &f );
 
   protected:
     friend class QgsWFSUtilsKeepAlive;
-    static QSharedMemory* createAndAttachSHM();
+    static QSharedMemory *createAndAttachSHM();
 
   private:
     static QMutex sMutex;
-    static QThread* sThread;
+    static QThread *sThread;
     static bool sKeepAliveWorks;
     static int sCounter;
 
@@ -75,7 +75,7 @@ class QgsWFSUtilsKeepAlive: public QThread
   private slots:
     void updateTimestamp();
   private:
-    QSharedMemory* mSharedMemory = nullptr;
+    QSharedMemory *mSharedMemory = nullptr;
 };
 
 #endif // QGSWFSUTILS_H

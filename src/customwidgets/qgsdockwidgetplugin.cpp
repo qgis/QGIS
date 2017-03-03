@@ -19,8 +19,8 @@
 
 
 QgsDockWidgetPlugin::QgsDockWidgetPlugin( QObject *parent )
-    : QObject( parent )
-    , mInitialized( false )
+  : QObject( parent )
+  , mInitialized( false )
 {
 }
 

@@ -24,10 +24,10 @@
 #include <QTimer>
 
 
-QgsGeometryChecker::QgsGeometryChecker( const QList<QgsGeometryCheck*>& checks, QgsFeaturePool *featurePool )
-    : mChecks( checks )
-    , mFeaturePool( featurePool )
-    , mMergeAttributeIndex( -1 )
+QgsGeometryChecker::QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, QgsFeaturePool *featurePool )
+  : mChecks( checks )
+  , mFeaturePool( featurePool )
+  , mMergeAttributeIndex( -1 )
 {
 }
 
@@ -43,7 +43,7 @@ QFuture<void> QgsGeometryChecker::execute( int *totalSteps )
   {
     *totalSteps = 0;
     int nCheckFeatures = mFeaturePool->getFeatureIds().size();
-    Q_FOREACH ( QgsGeometryCheck* check, mChecks )
+    Q_FOREACH ( QgsGeometryCheck *check, mChecks )
     {
       if ( check->getCheckType() <= QgsGeometryCheck::FeatureCheck )
       {
@@ -58,9 +58,9 @@ QFuture<void> QgsGeometryChecker::execute( int *totalSteps )
 
   QFuture<void> future = QtConcurrent::map( mChecks, RunCheckWrapper( this ) );
 
-  QFutureWatcher<void>* watcher = new QFutureWatcher<void>();
+  QFutureWatcher<void> *watcher = new QFutureWatcher<void>();
   watcher->setFuture( future );
-  QTimer* timer = new QTimer();
+  QTimer *timer = new QTimer();
   connect( timer, SIGNAL( timeout() ), this, SLOT( emitProgressValue() ) );
   connect( watcher, SIGNAL( finished() ), timer, SLOT( deleteLater() ) );
   connect( watcher, SIGNAL( finished() ), watcher, SLOT( deleteLater() ) );
@@ -74,7 +74,7 @@ void QgsGeometryChecker::emitProgressValue()
   emit progressValue( mProgressCounter );
 }
 
-bool QgsGeometryChecker::fixError( QgsGeometryCheckError* error, int method )
+bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method )
 {
   mMessages.clear();
   if ( error->status() >= QgsGeometryCheckError::StatusFixed )
@@ -103,7 +103,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError* error, int method )
   Q_FOREACH ( QgsFeatureId id, changes.keys() )
   {
     bool removed = false;
-    Q_FOREACH ( const QgsGeometryCheck::Change& change, changes.value( id ) )
+    Q_FOREACH ( const QgsGeometryCheck::Change &change, changes.value( id ) )
     {
       if ( change.what == QgsGeometryCheck::ChangeFeature && change.type == QgsGeometryCheck::ChangeRemoved )
       {
@@ -122,7 +122,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError* error, int method )
     }
   }
   // - Determine extent to recheck for gaps
-  Q_FOREACH ( QgsGeometryCheckError* err, mCheckErrors )
+  Q_FOREACH ( QgsGeometryCheckError *err, mCheckErrors )
   {
     if ( err->check()->getCheckType() == QgsGeometryCheck::LayerCheck )
     {
@@ -142,8 +142,8 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError* error, int method )
   }
 
   // Recheck feature / changed area to detect new errors
-  QList<QgsGeometryCheckError*> recheckErrors;
-  Q_FOREACH ( const QgsGeometryCheck* check, mChecks )
+  QList<QgsGeometryCheckError *> recheckErrors;
+  Q_FOREACH ( const QgsGeometryCheck *check, mChecks )
   {
     if ( check->getCheckType() == QgsGeometryCheck::LayerCheck )
     {
@@ -158,7 +158,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError* error, int method )
   // Remove just-fixed error from newly-found errors if no changes occurred (needed in case error was fixed with "no change")
   if ( changes.isEmpty() )
   {
-    Q_FOREACH ( QgsGeometryCheckError* recheckErr, recheckErrors )
+    Q_FOREACH ( QgsGeometryCheckError *recheckErr, recheckErrors )
     {
       if ( recheckErr->isEqual( error ) )
       {
@@ -170,7 +170,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError* error, int method )
   }
 
   // Go through error list, update other errors of the checked feature
-  Q_FOREACH ( QgsGeometryCheckError* err, mCheckErrors )
+  Q_FOREACH ( QgsGeometryCheckError *err, mCheckErrors )
   {
     if ( err == error || err->status() == QgsGeometryCheckError::StatusObsolete )
     {
@@ -188,9 +188,9 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError* error, int method )
     }
 
     // Check if this error now matches one found when rechecking the feature/area
-    QgsGeometryCheckError* matchErr = nullptr;
+    QgsGeometryCheckError *matchErr = nullptr;
     int nMatch = 0;
-    Q_FOREACH ( QgsGeometryCheckError* recheckErr, recheckErrors )
+    Q_FOREACH ( QgsGeometryCheckError *recheckErr, recheckErrors )
     {
       if ( recheckErr->isEqual( err ) )
       {
@@ -231,7 +231,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError* error, int method )
   }
 
   // Add new errors
-  Q_FOREACH ( QgsGeometryCheckError* recheckErr, recheckErrors )
+  Q_FOREACH ( QgsGeometryCheckError *recheckErr, recheckErrors )
   {
     emit errorAdded( recheckErr );
     mCheckErrors.append( recheckErr );
@@ -240,22 +240,22 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError* error, int method )
   return true;
 }
 
-QgsMapLayer* QgsGeometryChecker::getLayer() const
+QgsMapLayer *QgsGeometryChecker::getLayer() const
 {
   return mFeaturePool->getLayer();
 }
 
-void QgsGeometryChecker::runCheck( const QgsGeometryCheck* check )
+void QgsGeometryChecker::runCheck( const QgsGeometryCheck *check )
 {
   // Run checks
-  QList<QgsGeometryCheckError*> errors;
+  QList<QgsGeometryCheckError *> errors;
   QStringList messages;
   check->collectErrors( errors, messages, &mProgressCounter );
   mErrorListMutex.lock();
   mCheckErrors.append( errors );
   mMessages.append( messages );
   mErrorListMutex.unlock();
-  Q_FOREACH ( QgsGeometryCheckError* error, errors )
+  Q_FOREACH ( QgsGeometryCheckError *error, errors )
   {
     emit errorAdded( error );
   }

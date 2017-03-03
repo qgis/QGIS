@@ -82,14 +82,14 @@ QString QgsGrassUtils::htmlBrowserPath()
 }
 
 QgsGrassElementDialog::QgsGrassElementDialog( QWidget *parent )
-    : QObject()
-    , mDialog( 0 )
-    , mLineEdit( 0 )
-    , mLabel( 0 )
-    , mErrorLabel( 0 )
-    , mOkButton( 0 )
-    , mCancelButton( 0 )
-    , mParent( parent )
+  : QObject()
+  , mDialog( 0 )
+  , mLineEdit( 0 )
+  , mLabel( 0 )
+  , mErrorLabel( 0 )
+  , mOkButton( 0 )
+  , mCancelButton( 0 )
+  , mParent( parent )
 {
 }
 
@@ -97,7 +97,7 @@ QgsGrassElementDialog::~QgsGrassElementDialog() {}
 
 QString QgsGrassElementDialog::getItem( QString element,
                                         QString title, QString label,
-                                        QString text, QString source, bool * ok )
+                                        QString text, QString source, bool *ok )
 {
   if ( ok )
     *ok = false;

@@ -29,7 +29,7 @@ class ANALYSIS_EXPORT CloughTocherInterpolator : public TriangleInterpolator
 {
   protected:
     //! Association with a triangulation object
-    NormVecDecorator* mTIN = nullptr;
+    NormVecDecorator *mTIN = nullptr;
     //! Tolerance of the barycentric coordinates at the borders of the triangles (to prevent errors because of very small negativ baricentric coordinates)
     double mEdgeTolerance;
     //! First point of the triangle in x-,y-,z-coordinates
@@ -81,13 +81,13 @@ class ANALYSIS_EXPORT CloughTocherInterpolator : public TriangleInterpolator
     //! Standard constructor
     CloughTocherInterpolator();
     //! Constructor with a pointer to the triangulation as argument
-    CloughTocherInterpolator( NormVecDecorator* tin );
+    CloughTocherInterpolator( NormVecDecorator *tin );
     virtual ~CloughTocherInterpolator();
     //! Calculates the normal vector and assigns it to vec (not implemented at the moment)
-    virtual bool calcNormVec( double x, double y, Vector3D* result ) override;
+    virtual bool calcNormVec( double x, double y, Vector3D *result ) override;
     //! Performs a linear interpolation in a triangle and assigns the x-,y- and z-coordinates to point
-    virtual bool calcPoint( double x, double y, Point3D* result ) override;
-    virtual void setTriangulation( NormVecDecorator* tin );
+    virtual bool calcPoint( double x, double y, Point3D *result ) override;
+    virtual void setTriangulation( NormVecDecorator *tin );
 };
 
 #endif

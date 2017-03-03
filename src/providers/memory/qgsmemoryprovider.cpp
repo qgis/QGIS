@@ -30,9 +30,9 @@
 static const QString TEXT_PROVIDER_KEY = QStringLiteral( "memory" );
 static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "Memory provider" );
 
-QgsMemoryProvider::QgsMemoryProvider( const QString& uri )
-    : QgsVectorDataProvider( uri )
-    , mSpatialIndex( nullptr )
+QgsMemoryProvider::QgsMemoryProvider( const QString &uri )
+  : QgsVectorDataProvider( uri )
+  , mSpatialIndex( nullptr )
 {
   // Initialize the geometry with the uri to support old style uri's
   // (ie, just 'point', 'line', 'polygon')
@@ -166,7 +166,8 @@ QgsMemoryProvider::QgsMemoryProvider( const QString& uri )
           precision = reFieldDef.cap( 3 ).toInt();
         }
         if ( reFieldDef.cap( 4 ) != QLatin1String( "" ) )
-        {  //array
+        {
+          //array
           subType = type;
           type = ( subType == QVariant::String ? QVariant::StringList : QVariant::List );
         }
@@ -189,7 +190,7 @@ QgsMemoryProvider::~QgsMemoryProvider()
   delete mSpatialIndex;
 }
 
-QgsAbstractFeatureSource* QgsMemoryProvider::featureSource() const
+QgsAbstractFeatureSource *QgsMemoryProvider::featureSource() const
 {
   return new QgsMemoryFeatureSource( this );
 }
@@ -247,7 +248,7 @@ QString QgsMemoryProvider::storageType() const
   return QStringLiteral( "Memory storage" );
 }
 
-QgsFeatureIterator QgsMemoryProvider::getFeatures( const QgsFeatureRequest& request ) const
+QgsFeatureIterator QgsMemoryProvider::getFeatures( const QgsFeatureRequest &request ) const
 {
   return QgsFeatureIterator( new QgsMemoryFeatureIterator( new QgsMemoryFeatureSource( this ), true, request ) );
 }
@@ -296,7 +297,7 @@ QgsCoordinateReferenceSystem QgsMemoryProvider::crs() const
 }
 
 
-bool QgsMemoryProvider::addFeatures( QgsFeatureList & flist )
+bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist )
 {
   // TODO: sanity checks of fields and geometries
   for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it )
@@ -318,7 +319,7 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList & flist )
   return true;
 }
 
-bool QgsMemoryProvider::deleteFeatures( const QgsFeatureIds & id )
+bool QgsMemoryProvider::deleteFeatures( const QgsFeatureIds &id )
 {
   for ( QgsFeatureIds::const_iterator it = id.begin(); it != id.end(); ++it )
   {
@@ -365,7 +366,7 @@ bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
 
     for ( QgsFeatureMap::iterator fit = mFeatures.begin(); fit != mFeatures.end(); ++fit )
     {
-      QgsFeature& f = fit.value();
+      QgsFeature &f = fit.value();
       QgsAttributes attr = f.attributes();
       attr.append( QVariant() );
       f.setAttributes( attr );
@@ -374,7 +375,7 @@ bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
   return true;
 }
 
-bool QgsMemoryProvider::renameAttributes( const QgsFieldNameMap& renamedAttributes )
+bool QgsMemoryProvider::renameAttributes( const QgsFieldNameMap &renamedAttributes )
 {
   QgsFieldNameMap::const_iterator renameIt = renamedAttributes.constBegin();
   bool result = true;
@@ -398,7 +399,7 @@ bool QgsMemoryProvider::renameAttributes( const QgsFieldNameMap& renamedAttribut
   return result;
 }
 
-bool QgsMemoryProvider::deleteAttributes( const QgsAttributeIds& attributes )
+bool QgsMemoryProvider::deleteAttributes( const QgsAttributeIds &attributes )
 {
   QList<int> attrIdx = attributes.toList();
   std::sort( attrIdx.begin(), attrIdx.end(), std::greater<int>() );
@@ -411,7 +412,7 @@ bool QgsMemoryProvider::deleteAttributes( const QgsAttributeIds& attributes )
 
     for ( QgsFeatureMap::iterator fit = mFeatures.begin(); fit != mFeatures.end(); ++fit )
     {
-      QgsFeature& f = fit.value();
+      QgsFeature &f = fit.value();
       QgsAttributes attr = f.attributes();
       attr.remove( idx );
       f.setAttributes( attr );
@@ -428,7 +429,7 @@ bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap &at
     if ( fit == mFeatures.end() )
       continue;
 
-    const QgsAttributeMap& attrs = it.value();
+    const QgsAttributeMap &attrs = it.value();
     for ( QgsAttributeMap::const_iterator it2 = attrs.constBegin(); it2 != attrs.constEnd(); ++it2 )
       fit->setAttribute( it2.key(), it2.value() );
   }
@@ -464,7 +465,7 @@ QString QgsMemoryProvider::subsetString() const
   return mSubsetString;
 }
 
-bool QgsMemoryProvider::setSubsetString( const QString& theSQL, bool updateFeatureCount )
+bool QgsMemoryProvider::setSubsetString( const QString &theSQL, bool updateFeatureCount )
 {
   Q_UNUSED( updateFeatureCount );
 
@@ -514,7 +515,7 @@ void QgsMemoryProvider::updateExtent()
   else
   {
     mExtent.setMinimal();
-    Q_FOREACH ( const QgsFeature& feat, mFeatures )
+    Q_FOREACH ( const QgsFeature &feat, mFeatures )
     {
       if ( feat.hasGeometry() )
         mExtent.unionRect( feat.geometry().boundingBox() );

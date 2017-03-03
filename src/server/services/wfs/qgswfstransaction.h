@@ -28,15 +28,15 @@ namespace QgsWfs
   /**
    * Output WFS  transaction response
    */
-  void writeTransaction( QgsServerInterface* serverIface, const QString& version,
-                         const QgsServerRequest& request, QgsServerResponse& response );
+  void writeTransaction( QgsServerInterface *serverIface, const QString &version,
+                         const QgsServerRequest &request, QgsServerResponse &response );
 
 
   /**
    * Create a wfs transaction document
    */
-  QDomDocument createTransactionDocument( QgsServerInterface* serverIface, const QString& version,
-                                          const QgsServerRequest& request );
+  QDomDocument createTransactionDocument( QgsServerInterface *serverIface, const QString &version,
+                                          const QgsServerRequest &request );
 
 } // samespace QgsWfs
 

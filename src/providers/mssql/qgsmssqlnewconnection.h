@@ -30,13 +30,13 @@ class QgsMssqlNewConnection : public QDialog, private Ui::QgsMssqlNewConnectionB
     Q_OBJECT
   public:
     //! Constructor
-    QgsMssqlNewConnection( QWidget *parent = nullptr, const QString& connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsMssqlNewConnection( QWidget *parent = nullptr, const QString &connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
 
     ~QgsMssqlNewConnection();
 
     //! Tests the connection using the parameters supplied
-    bool testConnection( const QString& testDatabase = QString() );
+    bool testConnection( const QString &testDatabase = QString() );
 
     /**
      * @brief List all databases found for the given server.

@@ -24,13 +24,13 @@ QgsGraph::QgsGraph()
 {
 }
 
-int QgsGraph::addVertex( const QgsPoint& pt )
+int QgsGraph::addVertex( const QgsPoint &pt )
 {
   mGraphVertexes.append( QgsGraphVertex( pt ) );
   return mGraphVertexes.size() - 1;
 }
 
-int QgsGraph::addEdge( int outVertexIdx, int inVertexIdx, const QVector< QVariant >& strategies )
+int QgsGraph::addEdge( int outVertexIdx, int inVertexIdx, const QVector< QVariant > &strategies )
 {
   QgsGraphEdge e;
 
@@ -46,12 +46,12 @@ int QgsGraph::addEdge( int outVertexIdx, int inVertexIdx, const QVector< QVarian
   return mGraphEdges.size() - 1;
 }
 
-const QgsGraphVertex& QgsGraph::vertex( int idx ) const
+const QgsGraphVertex &QgsGraph::vertex( int idx ) const
 {
   return mGraphVertexes[ idx ];
 }
 
-const QgsGraphEdge& QgsGraph::edge( int idx ) const
+const QgsGraphEdge &QgsGraph::edge( int idx ) const
 {
   return mGraphEdges[ idx ];
 }
@@ -66,7 +66,7 @@ int QgsGraph::edgeCount() const
   return mGraphEdges.size();
 }
 
-int QgsGraph::findVertex( const QgsPoint& pt ) const
+int QgsGraph::findVertex( const QgsPoint &pt ) const
 {
   int i = 0;
   for ( i = 0; i < mGraphVertexes.size(); ++i )
@@ -80,8 +80,8 @@ int QgsGraph::findVertex( const QgsPoint& pt ) const
 }
 
 QgsGraphEdge::QgsGraphEdge()
-    : mOut( 0 )
-    , mIn( 0 )
+  : mOut( 0 )
+  , mIn( 0 )
 {
 
 }
@@ -106,8 +106,8 @@ int QgsGraphEdge::outVertex() const
   return mOut;
 }
 
-QgsGraphVertex::QgsGraphVertex( const QgsPoint& point )
-    : mCoordinate( point )
+QgsGraphVertex::QgsGraphVertex( const QgsPoint &point )
+  : mCoordinate( point )
 {
 
 }

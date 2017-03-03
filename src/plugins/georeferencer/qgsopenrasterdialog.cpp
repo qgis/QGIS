@@ -24,7 +24,7 @@
 #include "qgsopenrasterdialog.h"
 
 QgsOpenRasterDialog::QgsOpenRasterDialog( QWidget *parent ) :
-    QDialog( parent )
+  QDialog( parent )
 {
   setupUi( this );
 
@@ -91,7 +91,7 @@ void QgsOpenRasterDialog::on_tbnSelectRaster_clicked()
   leModifiedRasterFileName->setText( modifiedFileName );
 
   // What DOING this code?
-  QgsProject* prj = QgsProject::instance();
+  QgsProject *prj = QgsProject::instance();
   QString projBehavior = settings.value( "/Projections/defaultBehavior", "prompt" ).toString();
   QString projectCRS = prj->readEntry( "SpatialRefSys", "/ProjectCRSProj4String" );
   int projectCrsId = prj->readNumEntry( "SpatialRefSys", "/ProjectCrsId" );

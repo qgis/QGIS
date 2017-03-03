@@ -31,20 +31,20 @@ class QProgressDialog;
 class ANALYSIS_EXPORT QgsPointSample
 {
   public:
-    QgsPointSample( QgsVectorLayer* inputLayer, const QString& outputLayer, const QString& nPointsAttribute, const QString& minDistAttribute = QString() );
+    QgsPointSample( QgsVectorLayer *inputLayer, const QString &outputLayer, const QString &nPointsAttribute, const QString &minDistAttribute = QString() );
 
     /** Starts calculation of random points
         @return 0 in case of success*/
-    int createRandomPoints( QProgressDialog* pd );
+    int createRandomPoints( QProgressDialog *pd );
 
   private:
 
     QgsPointSample(); //default constructor is forbidden
-    void addSamplePoints( QgsFeature& inputFeature, QgsVectorFileWriter& writer, int nPoints, double minDistance );
-    bool checkMinDistance( QgsPoint& pt, QgsSpatialIndex& index, double minDistance, QMap< QgsFeatureId, QgsPoint >& pointMap );
+    void addSamplePoints( QgsFeature &inputFeature, QgsVectorFileWriter &writer, int nPoints, double minDistance );
+    bool checkMinDistance( QgsPoint &pt, QgsSpatialIndex &index, double minDistance, QMap< QgsFeatureId, QgsPoint > &pointMap );
 
     //! Layer id of input polygon/multipolygon layer
-    QgsVectorLayer* mInputLayer = nullptr;
+    QgsVectorLayer *mInputLayer = nullptr;
     //! Output path of result layer
     QString mOutputLayer;
     //! Attribute containing number of points per feature

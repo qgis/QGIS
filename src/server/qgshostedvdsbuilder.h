@@ -24,7 +24,7 @@ class QgsHostedVDSBuilder: public QgsMSLayerBuilder
 {
   public:
     QgsHostedVDSBuilder();
-    QgsMapLayer* createMapLayer( const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching = true ) const override;
+    QgsMapLayer *createMapLayer( const QDomElement &elem, const QString &layerName, QList<QTemporaryFile *> &filesToRemove, QList<QgsMapLayer *> &layersToRemove, bool allowCaching = true ) const override;
 };
 
 #endif

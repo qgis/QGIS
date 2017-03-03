@@ -20,7 +20,7 @@
 #include "qgis.h"
 
 QgsGeorefConfigDialog::QgsGeorefConfigDialog( QWidget *parent )
-    : QDialog( parent )
+  : QDialog( parent )
 {
   setupUi( this );
 

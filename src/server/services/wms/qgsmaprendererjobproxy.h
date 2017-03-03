@@ -39,23 +39,23 @@ namespace QgsWms
       QgsMapRendererJobProxy(
         bool parallelRendering
         , int maxThreads
-        , QgsAccessControl* accessControl
+        , QgsAccessControl *accessControl
       );
 
       /** Sequential or parallel map rendering according to qsettings.
         * @param mapSettings passed to MapRendererJob
         * @param the rendered image
         */
-      void render( const QgsMapSettings& mapSettings, QImage* image );
+      void render( const QgsMapSettings &mapSettings, QImage *image );
 
       /** Take ownership of the painter used for rendering.
         * @return painter
         */
-      QPainter* takePainter();
+      QPainter *takePainter();
 
     private:
       bool mParallelRendering;
-      QgsAccessControl* mAccessControl = nullptr;
+      QgsAccessControl *mAccessControl = nullptr;
       std::unique_ptr<QPainter> mPainter;
   };
 

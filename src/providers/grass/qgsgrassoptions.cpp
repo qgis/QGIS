@@ -29,10 +29,10 @@ extern "C"
 }
 
 QgsGrassOptions::QgsGrassOptions( QWidget *parent )
-    : QgsOptionsDialogBase( QStringLiteral( "GrassOptions" ), parent )
-    , QgsGrassOptionsBase()
-    , mImportSettingsPath( QStringLiteral( "/GRASS/browser/import" ) )
-    , mModulesSettingsPath( QStringLiteral( "/GRASS/modules/config" ) )
+  : QgsOptionsDialogBase( QStringLiteral( "GrassOptions" ), parent )
+  , QgsGrassOptionsBase()
+  , mImportSettingsPath( QStringLiteral( "/GRASS/browser/import" ) )
+  , mModulesSettingsPath( QStringLiteral( "/GRASS/modules/config" ) )
 {
   setupUi( this );
   initOptionsBase( false );

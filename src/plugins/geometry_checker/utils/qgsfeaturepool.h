@@ -30,39 +30,39 @@ class QgsVectorLayer;
 class QgsFeaturePool
 {
   public:
-    QgsFeaturePool( QgsVectorLayer* layer, bool selectedOnly = false );
-    bool get( QgsFeatureId id, QgsFeature& feature );
+    QgsFeaturePool( QgsVectorLayer *layer, bool selectedOnly = false );
+    bool get( QgsFeatureId id, QgsFeature &feature );
     void addFeature( QgsFeature &feature );
     void updateFeature( QgsFeature &feature );
     void deleteFeature( QgsFeature &feature );
-    QgsFeatureIds getIntersects( const QgsRectangle& rect );
-    QgsVectorLayer* getLayer() const { return mLayer; }
-    const QgsFeatureIds& getFeatureIds() const { return mFeatureIds; }
+    QgsFeatureIds getIntersects( const QgsRectangle &rect );
+    QgsVectorLayer *getLayer() const { return mLayer; }
+    const QgsFeatureIds &getFeatureIds() const { return mFeatureIds; }
     bool getSelectedOnly() const { return mSelectedOnly; }
     void clearLayer() { mLayer = nullptr; }
 
   private:
     struct MapEntry
     {
-      MapEntry( QgsFeature* _feature, QLinkedList<QgsFeatureId>::iterator _ageIt )
-          : feature( _feature )
-          , ageIt( _ageIt )
+      MapEntry( QgsFeature *_feature, QLinkedList<QgsFeatureId>::iterator _ageIt )
+        : feature( _feature )
+        , ageIt( _ageIt )
       {}
-      QgsFeature* feature = nullptr;
+      QgsFeature *feature = nullptr;
       QLinkedList<QgsFeatureId>::iterator ageIt;
     };
 
     static const int CACHE_SIZE = 1000;
 
     QCache<QgsFeatureId, QgsFeature> mFeatureCache;
-    QgsVectorLayer* mLayer = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
     QgsFeatureIds mFeatureIds;
     QMutex mLayerMutex;
     QMutex mIndexMutex;
     QgsSpatialIndex mIndex;
     bool mSelectedOnly;
 
-    bool getTouchingWithSharedEdge( QgsFeature &feature, QgsFeatureId &touchingId, const double& ( *comparator )( const double&, const double& ), double init );
+    bool getTouchingWithSharedEdge( QgsFeature &feature, QgsFeatureId &touchingId, const double & ( *comparator )( const double &, const double & ), double init );
 };
 
 #endif // QGS_FEATUREPOOL_H

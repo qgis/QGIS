@@ -29,11 +29,11 @@
 #include <QNetworkReply>
 
 
-QgsAfsProvider::QgsAfsProvider( const QString& uri )
-    : QgsVectorDataProvider( uri )
-    , mValid( false )
-    , mGeometryType( QgsWkbTypes::Unknown )
-    , mObjectIdFieldIdx( -1 )
+QgsAfsProvider::QgsAfsProvider( const QString &uri )
+  : QgsVectorDataProvider( uri )
+  , mValid( false )
+  , mGeometryType( QgsWkbTypes::Unknown )
+  , mObjectIdFieldIdx( -1 )
 {
   mDataSource = QgsDataSourceUri( uri );
 
@@ -87,7 +87,7 @@ QgsAfsProvider::QgsAfsProvider( const QString& uri )
   }
 
   // Read fields
-  foreach ( const QVariant& fieldData, layerData["fields"].toList() )
+  foreach ( const QVariant &fieldData, layerData["fields"].toList() )
   {
     QVariantMap fieldDataMap = fieldData.toMap();
     QString fieldName = fieldDataMap[QStringLiteral( "name" )].toString();
@@ -142,7 +142,7 @@ QgsAfsProvider::QgsAfsProvider( const QString& uri )
       break;
     }
   }
-  foreach ( const QVariant& objectId, objectIdData["objectIds"].toList() )
+  foreach ( const QVariant &objectId, objectIdData["objectIds"].toList() )
   {
     mObjectIds.append( objectId.toInt() );
   }
@@ -150,17 +150,17 @@ QgsAfsProvider::QgsAfsProvider( const QString& uri )
   mValid = true;
 }
 
-QgsAbstractFeatureSource* QgsAfsProvider::featureSource() const
+QgsAbstractFeatureSource *QgsAfsProvider::featureSource() const
 {
   return new QgsAfsFeatureSource( this );
 }
 
-QgsFeatureIterator QgsAfsProvider::getFeatures( const QgsFeatureRequest& request ) const
+QgsFeatureIterator QgsAfsProvider::getFeatures( const QgsFeatureRequest &request ) const
 {
   return new QgsAfsFeatureIterator( new QgsAfsFeatureSource( this ), true, request );
 }
 
-bool QgsAfsProvider::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeometry, const QList<int>& /*fetchAttributes*/, const QgsRectangle& filterRect )
+bool QgsAfsProvider::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeometry, const QList<int> & /*fetchAttributes*/, const QgsRectangle &filterRect )
 {
   // If cached, return cached feature
   QMap<QgsFeatureId, QgsFeature>::const_iterator it = mCache.find( id );
@@ -206,7 +206,7 @@ bool QgsAfsProvider::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeome
                             filterRect, errorTitle, errorMessage );
   if ( queryData.isEmpty() )
   {
-    const_cast<QgsAfsProvider*>( this )->pushError( errorTitle + ": " + errorMessage );
+    const_cast<QgsAfsProvider *>( this )->pushError( errorTitle + ": " + errorMessage );
     QgsDebugMsg( "Query returned empty result" );
     return false;
   }
@@ -242,7 +242,7 @@ bool QgsAfsProvider::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeome
     if ( fetchGeometry )
     {
       QVariantMap geometryData = featureData[QStringLiteral( "geometry" )].toMap();
-      QgsAbstractGeometry* geometry = QgsArcGisRestUtils::parseEsriGeoJSON( geometryData, queryData[QStringLiteral( "geometryType" )].toString(),
+      QgsAbstractGeometry *geometry = QgsArcGisRestUtils::parseEsriGeoJSON( geometryData, queryData[QStringLiteral( "geometryType" )].toString(),
                                       QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ) );
       // Above might return 0, which is ok since in theory empty geometries are allowed
       feature.setGeometry( QgsGeometry( geometry ) );

@@ -36,11 +36,11 @@ class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
     QgsFcgiServerResponse( QgsServerRequest::Method method = QgsServerRequest::GetMethod );
     ~QgsFcgiServerResponse();
 
-    virtual void setHeader( const QString& key, const QString& value ) override;
+    virtual void setHeader( const QString &key, const QString &value ) override;
 
-    virtual void clearHeader( const QString& key ) override;
+    virtual void clearHeader( const QString &key ) override;
 
-    virtual QString getHeader( const QString& key ) const override;
+    virtual QString getHeader( const QString &key ) const override;
 
     virtual QList<QString> headerKeys() const override;
 
@@ -48,9 +48,9 @@ class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
 
     virtual void setReturnCode( int code ) override;
 
-    virtual void sendError( int code,  const QString& message ) override;
+    virtual void sendError( int code,  const QString &message ) override;
 
-    virtual QIODevice* io() override;
+    virtual QIODevice *io() override;
 
     virtual void finish() override;
 

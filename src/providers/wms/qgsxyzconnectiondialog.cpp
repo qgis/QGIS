@@ -18,12 +18,12 @@
 #include "qgsxyzconnection.h"
 
 QgsXyzConnectionDialog::QgsXyzConnectionDialog( QWidget *parent )
-    : QDialog( parent )
+  : QDialog( parent )
 {
   setupUi( this );
 }
 
-void QgsXyzConnectionDialog::setConnection( const QgsXyzConnection& conn )
+void QgsXyzConnectionDialog::setConnection( const QgsXyzConnection &conn )
 {
   mEditName->setText( conn.name );
   mEditUrl->setText( conn.url );

@@ -48,10 +48,10 @@ static const QString sPluginIcon = QStringLiteral( ":/topology/mActionTopologyCh
  * an interface object that provides access to exposed functions in QGIS.
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
-Topol::Topol( QgisInterface * qgisInterface )
-    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
-    , mQGisIface( qgisInterface )
-    , mQActionPointer( nullptr )
+Topol::Topol( QgisInterface *qgisInterface )
+  : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+  , mQGisIface( qgisInterface )
+  , mQActionPointer( nullptr )
 {
   mDock = nullptr;
 }
@@ -95,11 +95,10 @@ void Topol::showOrHide()
 {
   if ( !mDock )
     run();
+  else if ( mQActionPointer->isChecked() )
+    mDock->show();
   else
-    if ( mQActionPointer->isChecked() )
-      mDock->show();
-    else
-      mDock->hide();
+    mDock->hide();
 }
 
 // Slot called when the menu item is triggered
@@ -140,7 +139,7 @@ void Topol::unload()
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * qgisInterfacePointer )
+QGISEXTERN QgisPlugin *classFactory( QgisInterface *qgisInterfacePointer )
 {
   return new Topol( qgisInterfacePointer );
 }
@@ -181,7 +180,7 @@ QGISEXTERN QString icon()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * pluginPointer )
+QGISEXTERN void unload( QgisPlugin *pluginPointer )
 {
   delete pluginPointer;
 }

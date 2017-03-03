@@ -25,7 +25,7 @@
 class QgsStandardItem : public QStandardItem
 {
   public:
-    explicit QgsStandardItem( const QString& text ) : QStandardItem( text )
+    explicit QgsStandardItem( const QString &text ) : QStandardItem( text )
     {
       // In addition to the DisplayRole, also set the user role, which is used for sorting.
       // This is needed for numerical sorting to work correctly (otherwise sorting is lexicographic).
@@ -50,9 +50,9 @@ class QgsStandardItem : public QStandardItem
 };
 
 QgsGCPListModel::QgsGCPListModel( QObject *parent )
-    : QStandardItemModel( parent )
-    , mGCPList( nullptr )
-    , mGeorefTransform( nullptr )
+  : QStandardItemModel( parent )
+  , mGCPList( nullptr )
+  , mGeorefTransform( nullptr )
 {
   // Use data provided by Qt::UserRole as sorting key (needed for numerical sorting).
   setSortRole( Qt::UserRole );
@@ -105,14 +105,14 @@ void QgsGCPListModel::updateModel()
   }
 
   itemLabels << tr( "Visible" )
-  << tr( "ID" )
-  << tr( "Source X" )
-  << tr( "Source Y" )
-  << tr( "Dest. X" )
-  << tr( "Dest. Y" )
-  << tr( "dX (%1)" ).arg( unitType )
-  << tr( "dY (%1)" ).arg( unitType )
-  << tr( "Residual (%1)" ).arg( unitType );
+             << tr( "ID" )
+             << tr( "Source X" )
+             << tr( "Source Y" )
+             << tr( "Dest. X" )
+             << tr( "Dest. Y" )
+             << tr( "dX (%1)" ).arg( unitType )
+             << tr( "dY (%1)" ).arg( unitType )
+             << tr( "Residual (%1)" ).arg( unitType );
 
   setHorizontalHeaderLabels( itemLabels );
   setRowCount( mGCPList->size() );

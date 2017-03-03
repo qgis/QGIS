@@ -39,8 +39,8 @@
 class SERVER_EXPORT QgsMapServiceException : public QgsOgcServiceException
 {
   public:
-    QgsMapServiceException( const QString& code, const QString& message )
-        : QgsOgcServiceException( code, message )
+    QgsMapServiceException( const QString &code, const QString &message )
+      : QgsOgcServiceException( code, message )
     {}
 };
 
