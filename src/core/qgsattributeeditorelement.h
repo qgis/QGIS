@@ -35,7 +35,7 @@ class QgsRelationManager;
 class CORE_EXPORT QgsAttributeEditorElement
 {
   public:
-    enum AttributeEditorType
+         enum AttributeEditorType
     {
       AeTypeContainer, //!< A container
       AeTypeField,     //!< A field
@@ -52,7 +52,8 @@ class CORE_EXPORT QgsAttributeEditorElement
      */
     QgsAttributeEditorElement( AttributeEditorType type, const QString& name, QgsAttributeEditorElement* parent = nullptr )
         : mType( type )
-        , mName( name )
+        ,
+         mName( name )
         , mParent( parent )
         , mShowLabel( true )
     {}
