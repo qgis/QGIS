@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsunittypes.h"
+#include "qgis.h"
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -32,6 +33,8 @@ QgsUnitTypes::DistanceUnitType QgsUnitTypes::unitType( DistanceUnit unit )
     case DistanceYards:
     case DistanceMiles:
     case DistanceKilometers:
+    case DistanceCentimeters:
+    case DistanceMillimeters:
       return Standard;
 
     case DistanceDegrees:
@@ -94,6 +97,12 @@ QString QgsUnitTypes::encodeUnit( DistanceUnit unit )
 
     case DistanceNauticalMiles:
       return QStringLiteral( "nautical miles" );
+
+    case DistanceCentimeters:
+      return QStringLiteral( "cm" );
+
+    case DistanceMillimeters:
+      return QStringLiteral( "mm" );
   }
   return QString();
 }
@@ -125,6 +134,10 @@ QgsUnitTypes::DistanceUnit QgsUnitTypes::decodeDistanceUnit( const QString &stri
     return DistanceYards;
   if ( normalized == encodeUnit( DistanceMiles ) )
     return DistanceMiles;
+  if ( normalized == encodeUnit( DistanceCentimeters ) )
+    return DistanceCentimeters;
+  if ( normalized == encodeUnit( DistanceMillimeters ) )
+    return DistanceMillimeters;
   if ( normalized == encodeUnit( DistanceUnknownUnit ) )
     return DistanceUnknownUnit;
 
@@ -156,6 +169,12 @@ QString QgsUnitTypes::toString( DistanceUnit unit )
     case DistanceDegrees:
       return QObject::tr( "degrees", "distance" );
 
+    case DistanceCentimeters:
+      return QObject::tr( "UnitType", "centimeters" );
+
+    case DistanceMillimeters:
+      return QObject::tr( "UnitType", "millimeters" );
+
     case DistanceUnknownUnit:
       return QObject::tr( "<unknown>", "distance" );
 
@@ -186,6 +205,12 @@ QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::DistanceUnit unit )
 
     case DistanceDegrees:
       return QObject::tr( "deg", "distance" );
+
+    case DistanceCentimeters:
+      return QObject::tr( "cm", "distance" );
+
+    case DistanceMillimeters:
+      return QObject::tr( "mm", "distance" );
 
     case DistanceUnknownUnit:
       return QString();
@@ -221,6 +246,10 @@ QgsUnitTypes::DistanceUnit QgsUnitTypes::stringToDistanceUnit( const QString &st
     return DistanceMiles;
   if ( normalized == toString( DistanceDegrees ) )
     return DistanceDegrees;
+  if ( normalized == toString( DistanceCentimeters ) )
+    return DistanceCentimeters;
+  if ( normalized == toString( DistanceCentimeters ) )
+    return DistanceCentimeters;
   if ( normalized == toString( DistanceNauticalMiles ) )
     return DistanceNauticalMiles;
   if ( normalized == toString( DistanceUnknownUnit ) )
@@ -244,6 +273,8 @@ double QgsUnitTypes::fromUnitToUnitFactor( DistanceUnit fromUnit, DistanceUnit t
 #define FEET_TO_METER 0.3048
 #define NMILE_TO_METER 1852.0
 #define KILOMETERS_TO_METER 1000.0
+#define CENTIMETERS_TO_METER 0.01
+#define MILLIMETERS_TO_METER 0.001
 #define YARDS_TO_METER 0.9144
 #define YARDS_TO_FEET 3.0
 #define MILES_TO_METER 1609.344
@@ -259,6 +290,10 @@ double QgsUnitTypes::fromUnitToUnitFactor( DistanceUnit fromUnit, DistanceUnit t
           return 1.0;
         case DistanceKilometers:
           return 1.0 / KILOMETERS_TO_METER;
+        case DistanceMillimeters:
+          return 1.0 / MILLIMETERS_TO_METER;
+        case DistanceCentimeters:
+          return 1.0 / CENTIMETERS_TO_METER;
         case DistanceFeet:
           return 1.0 / FEET_TO_METER;
         case DistanceYards:
@@ -283,6 +318,10 @@ double QgsUnitTypes::fromUnitToUnitFactor( DistanceUnit fromUnit, DistanceUnit t
           return KILOMETERS_TO_METER;
         case DistanceKilometers:
           return 1.0;
+        case DistanceCentimeters:
+          return KILOMETERS_TO_METER / CENTIMETERS_TO_METER;
+        case DistanceMillimeters:
+          return KILOMETERS_TO_METER / MILLIMETERS_TO_METER;
         case DistanceFeet:
           return KILOMETERS_TO_METER / FEET_TO_METER;
         case DistanceYards:
@@ -307,6 +346,10 @@ double QgsUnitTypes::fromUnitToUnitFactor( DistanceUnit fromUnit, DistanceUnit t
           return FEET_TO_METER;
         case DistanceKilometers:
           return FEET_TO_METER / KILOMETERS_TO_METER;
+        case DistanceCentimeters:
+          return FEET_TO_METER / CENTIMETERS_TO_METER;
+        case DistanceMillimeters:
+          return FEET_TO_METER / MILLIMETERS_TO_METER;
         case DistanceFeet:
           return 1.0;
         case DistanceYards:
@@ -331,6 +374,10 @@ double QgsUnitTypes::fromUnitToUnitFactor( DistanceUnit fromUnit, DistanceUnit t
           return YARDS_TO_METER;
         case DistanceKilometers:
           return YARDS_TO_METER / KILOMETERS_TO_METER;
+        case DistanceCentimeters:
+          return YARDS_TO_METER / CENTIMETERS_TO_METER;
+        case DistanceMillimeters:
+          return YARDS_TO_METER / MILLIMETERS_TO_METER;
         case DistanceFeet:
           return YARDS_TO_FEET;
         case DistanceYards:
@@ -355,6 +402,10 @@ double QgsUnitTypes::fromUnitToUnitFactor( DistanceUnit fromUnit, DistanceUnit t
           return MILES_TO_METER;
         case DistanceKilometers:
           return MILES_TO_METER / KILOMETERS_TO_METER;
+        case DistanceCentimeters:
+          return MILES_TO_METER / CENTIMETERS_TO_METER;
+        case DistanceMillimeters:
+          return MILES_TO_METER / MILLIMETERS_TO_METER;
         case DistanceFeet:
           return MILES_TO_METER / FEET_TO_METER;
         case DistanceYards:
@@ -379,6 +430,10 @@ double QgsUnitTypes::fromUnitToUnitFactor( DistanceUnit fromUnit, DistanceUnit t
           return DEGREE_TO_METER;
         case DistanceKilometers:
           return DEGREE_TO_METER / KILOMETERS_TO_METER;
+        case DistanceCentimeters:
+          return DEGREE_TO_METER / CENTIMETERS_TO_METER;
+        case DistanceMillimeters:
+          return DEGREE_TO_METER / MILLIMETERS_TO_METER;
         case DistanceFeet:
           return DEGREE_TO_METER / FEET_TO_METER;
         case DistanceYards:
@@ -403,6 +458,10 @@ double QgsUnitTypes::fromUnitToUnitFactor( DistanceUnit fromUnit, DistanceUnit t
           return NMILE_TO_METER;
         case DistanceKilometers:
           return NMILE_TO_METER / KILOMETERS_TO_METER;
+        case DistanceCentimeters:
+          return NMILE_TO_METER / CENTIMETERS_TO_METER;
+        case DistanceMillimeters:
+          return NMILE_TO_METER / MILLIMETERS_TO_METER;
         case DistanceFeet:
           return NMILE_TO_METER / FEET_TO_METER;
         case DistanceYards:
@@ -413,6 +472,62 @@ double QgsUnitTypes::fromUnitToUnitFactor( DistanceUnit fromUnit, DistanceUnit t
           return NMILE_TO_METER / DEGREE_TO_METER;
         case DistanceNauticalMiles:
           return 1.0;
+        case DistanceUnknownUnit:
+          break;
+      }
+
+      break;
+    }
+    case DistanceCentimeters:
+    {
+      switch ( toUnit )
+      {
+        case DistanceMeters:
+          return CENTIMETERS_TO_METER;
+        case DistanceKilometers:
+          return CENTIMETERS_TO_METER / KILOMETERS_TO_METER;;
+        case DistanceCentimeters:
+          return 1.0;
+        case DistanceMillimeters:
+          return CENTIMETERS_TO_METER / MILLIMETERS_TO_METER;
+        case DistanceFeet:
+          return CENTIMETERS_TO_METER / FEET_TO_METER;
+        case DistanceYards:
+          return CENTIMETERS_TO_METER / YARDS_TO_METER;
+        case DistanceMiles:
+          return CENTIMETERS_TO_METER / MILES_TO_METER;
+        case DistanceDegrees:
+          return CENTIMETERS_TO_METER / DEGREE_TO_METER;
+        case DistanceNauticalMiles:
+          return CENTIMETERS_TO_METER / NMILE_TO_METER;
+        case DistanceUnknownUnit:
+          break;
+      }
+
+      break;
+    }
+    case DistanceMillimeters:
+    {
+      switch ( toUnit )
+      {
+        case DistanceMeters:
+          return MILLIMETERS_TO_METER;
+        case DistanceKilometers:
+          return MILLIMETERS_TO_METER / KILOMETERS_TO_METER;
+        case DistanceCentimeters:
+          return MILLIMETERS_TO_METER / CENTIMETERS_TO_METER;
+        case DistanceMillimeters:
+          return 1.0;
+        case DistanceFeet:
+          return MILLIMETERS_TO_METER / FEET_TO_METER;
+        case DistanceYards:
+          return MILLIMETERS_TO_METER / YARDS_TO_METER;
+        case DistanceMiles:
+          return MILLIMETERS_TO_METER / MILES_TO_METER;
+        case DistanceDegrees:
+          return MILLIMETERS_TO_METER / DEGREE_TO_METER;
+        case DistanceNauticalMiles:
+          return MILLIMETERS_TO_METER / NMILE_TO_METER;
         case DistanceUnknownUnit:
           break;
       }
@@ -864,6 +979,12 @@ QgsUnitTypes::AreaUnit QgsUnitTypes::distanceToAreaUnit( DistanceUnit distanceUn
     case DistanceKilometers:
       return AreaSquareKilometers;
 
+    case DistanceCentimeters:
+      return AreaSquareMeters;
+
+    case DistanceMillimeters:
+      return AreaSquareMeters;
+
     case DistanceFeet:
       return AreaSquareFeet;
 
@@ -1123,6 +1244,292 @@ QString QgsUnitTypes::formatAngle( double angle, int decimals, QgsUnitTypes::Ang
   }
 
   return QStringLiteral( "%L1%2" ).arg( angle, 0, 'f', decimals ).arg( unitLabel );
+}
+
+
+QgsUnitTypes::DistanceValue QgsUnitTypes::scaledDistance( double distance, QgsUnitTypes::DistanceUnit unit, int decimals, bool keepBaseUnit )
+{
+  DistanceValue result;
+
+  switch ( unit )
+  {
+    case DistanceMeters:
+      if ( keepBaseUnit )
+      {
+        result.value = qgsRound( distance, decimals );
+        result.unit = QgsUnitTypes::DistanceMeters;
+      }
+      else if ( qAbs( distance ) > 1000.0 )
+      {
+        result.value = qgsRound( distance / 1000, decimals );
+        result.unit = QgsUnitTypes::DistanceKilometers;
+      }
+      else if ( qAbs( distance ) < 0.01 )
+      {
+        result.value = qgsRound( distance * 1000, decimals );
+        result.unit = QgsUnitTypes::DistanceMillimeters;
+      }
+      else if ( qAbs( distance ) < 0.1 )
+      {
+
+        result.value = qgsRound( distance * 100, decimals );
+        result.unit = QgsUnitTypes::DistanceCentimeters;
+      }
+      else
+      {
+        result.value = qgsRound( distance, decimals );
+        result.unit = QgsUnitTypes::DistanceMeters;
+      }
+      break;
+
+    case DistanceKilometers:
+      if ( keepBaseUnit || qAbs( distance ) >= 1.0 )
+      {
+        result.value = qgsRound( distance, decimals );
+        result.unit = QgsUnitTypes::DistanceKilometers;
+      }
+      else
+      {
+        result.value = qgsRound( distance * 1000, decimals );
+        result.unit = QgsUnitTypes::DistanceMeters;
+      }
+      break;
+
+    case DistanceFeet:
+      if ( qAbs( distance ) <= 5280.0 || keepBaseUnit )
+      {
+        result.value = qgsRound( distance, decimals );
+        result.unit = QgsUnitTypes::DistanceFeet;
+      }
+      else
+      {
+        result.value = qgsRound( distance / 5280.0, decimals );
+        result.unit = QgsUnitTypes::DistanceMiles;
+      }
+      break;
+
+    case DistanceYards:
+      if ( qAbs( distance ) <= 1760.0 || keepBaseUnit )
+      {
+        result.value = qgsRound( distance, decimals );
+        result.unit = QgsUnitTypes::DistanceYards;
+      }
+      else
+      {
+        result.value = qgsRound( distance / 1760.0, decimals );
+        result.unit = QgsUnitTypes::DistanceMiles;
+      }
+      break;
+
+    case DistanceMiles:
+      if ( qAbs( distance ) >= 1.0 || keepBaseUnit )
+      {
+        result.value = qgsRound( distance, decimals );
+        result.unit = QgsUnitTypes::DistanceMiles;
+      }
+      else
+      {
+        result.value = qgsRound( distance * 5280.0, decimals );
+        result.unit = QgsUnitTypes::DistanceFeet;
+      }
+      break;
+
+    case DistanceNauticalMiles:
+      result.value = qgsRound( distance, decimals );
+      result.unit = QgsUnitTypes::DistanceNauticalMiles;
+      break;
+
+    case DistanceDegrees:
+      result.value = qgsRound( distance, decimals );
+      result.unit = QgsUnitTypes::DistanceDegrees;
+      break;
+
+    case DistanceUnknownUnit:
+      result.value = qgsRound( distance, decimals );
+      result.unit = QgsUnitTypes::DistanceUnknownUnit;
+      break;
+
+    default:
+      result.value = qgsRound( distance, decimals );
+      result.unit = unit;
+      break;
+  }
+
+  return result;
+}
+
+QgsUnitTypes::AreaValue QgsUnitTypes::scaledArea( double area, QgsUnitTypes::AreaUnit unit, int decimals, bool keepBaseUnit )
+{
+  AreaValue result;
+
+  switch ( unit )
+  {
+    case AreaSquareMeters:
+    {
+      if ( keepBaseUnit )
+      {
+        result.value = qgsRound( area, decimals );
+        result.unit = QgsUnitTypes::AreaSquareMeters;
+      }
+      else if ( qAbs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareKilometers, QgsUnitTypes::AreaSquareMeters ) )
+      {
+        result.value = qgsRound( area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareMeters, QgsUnitTypes::AreaSquareKilometers ), decimals );
+        result.unit = QgsUnitTypes::AreaSquareKilometers;
+      }
+      else if ( qAbs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaHectares, QgsUnitTypes::AreaSquareMeters ) )
+      {
+        result.value = qgsRound( area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareMeters, QgsUnitTypes::AreaHectares ), decimals );
+        result.unit = QgsUnitTypes::AreaHectares;
+      }
+      else
+      {
+        result.value = qgsRound( area, decimals );
+        result.unit = QgsUnitTypes::AreaSquareMeters;
+      }
+      break;
+    }
+
+    case AreaSquareKilometers:
+    {
+      result.value = qgsRound( area, decimals );
+      result.unit = QgsUnitTypes::AreaSquareKilometers;
+      break;
+    }
+
+    case AreaSquareFeet:
+    {
+      if ( keepBaseUnit )
+      {
+        result.value = qgsRound( area, decimals );
+        result.unit = QgsUnitTypes::AreaSquareFeet;
+      }
+      else if ( qAbs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareMiles, QgsUnitTypes::AreaSquareFeet ) )
+      {
+        result.value = qgsRound( area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareFeet, QgsUnitTypes::AreaSquareMiles ), decimals );
+        result.unit = QgsUnitTypes::AreaSquareMiles;
+      }
+      else
+      {
+        result.value = qgsRound( area, decimals );
+        result.unit = QgsUnitTypes::AreaSquareFeet;
+      }
+      break;
+    }
+
+    case AreaSquareYards:
+    {
+      if ( keepBaseUnit )
+      {
+        result.value = qgsRound( area, decimals );
+        result.unit = QgsUnitTypes::AreaSquareYards;
+      }
+      else if ( qAbs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareMiles, QgsUnitTypes::AreaSquareYards ) )
+      {
+        result.value = qgsRound( area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareYards, QgsUnitTypes::AreaSquareMiles ), decimals );
+        result.unit = QgsUnitTypes::AreaSquareMiles;
+      }
+      else
+      {
+        result.value = qgsRound( area, decimals );
+        result.unit = QgsUnitTypes::AreaSquareYards;
+      }
+      break;
+    }
+
+    case AreaSquareMiles:
+    {
+      result.value = qgsRound( area, decimals );
+      result.unit = QgsUnitTypes::AreaSquareMiles;
+      break;
+    }
+
+    case AreaHectares:
+    {
+      if ( keepBaseUnit )
+      {
+        result.value = qgsRound( area, decimals );
+        result.unit = QgsUnitTypes::AreaHectares;
+      }
+      else if ( qAbs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareKilometers, QgsUnitTypes::AreaHectares ) )
+      {
+        result.value = qgsRound( area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaHectares, QgsUnitTypes::AreaSquareKilometers ), decimals );
+        result.unit = QgsUnitTypes::AreaSquareKilometers;
+      }
+      else
+      {
+        result.value = qgsRound( area, decimals );
+        result.unit = QgsUnitTypes::AreaHectares;
+      }
+      break;
+    }
+
+    case AreaAcres:
+    {
+      if ( keepBaseUnit )
+      {
+        result.value = qgsRound( area, decimals );
+        result.unit = QgsUnitTypes::AreaAcres;
+      }
+      else if ( qAbs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareMiles, QgsUnitTypes::AreaAcres ) )
+      {
+        result.value = qgsRound( area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaAcres, QgsUnitTypes::AreaSquareMiles ), decimals );
+        result.unit = QgsUnitTypes::AreaSquareMiles;
+      }
+      else
+      {
+        result.value = qgsRound( area, decimals );
+        result.unit = QgsUnitTypes::AreaAcres;
+      }
+      break;
+    }
+
+    case AreaSquareNauticalMiles:
+    {
+      result.value = qgsRound( area, decimals );
+      result.unit = QgsUnitTypes::AreaSquareNauticalMiles;
+      break;
+    }
+
+    case AreaSquareDegrees:
+    {
+      result.value = qgsRound( area, decimals );
+      result.unit = QgsUnitTypes::AreaSquareDegrees;
+      break;
+    }
+
+    case AreaUnknownUnit:
+    {
+      result.value = qgsRound( area, decimals );
+      result.unit = QgsUnitTypes::AreaUnknownUnit;
+      break;
+    }
+  }
+  return result;
+}
+
+
+QString QgsUnitTypes::formatDistance( double distance, int decimals, QgsUnitTypes::DistanceUnit unit, bool keepBaseUnit )
+{
+  DistanceValue dist = scaledDistance( distance, unit, decimals, keepBaseUnit );
+
+  QString unitText;
+
+  if ( dist.unit != DistanceUnknownUnit )
+    unitText = QChar( ' ' ) + QgsUnitTypes::toAbbreviatedString( dist.unit );
+
+  return QStringLiteral( "%L1%2" ).arg( dist.value, 0, 'f', decimals ).arg( unitText );
+}
+
+QString QgsUnitTypes::formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit )
+{
+  AreaValue areaValue = scaledArea( area, unit, decimals, keepBaseUnit );
+
+  QString unitText;
+
+  if ( areaValue.unit != AreaUnknownUnit )
+    unitText = QChar( ' ' ) + QgsUnitTypes::toAbbreviatedString( areaValue.unit );
+
+  return QStringLiteral( "%L1%2" ).arg( areaValue.value, 0, 'f', decimals ).arg( unitText );
 }
 
 QString QgsUnitTypes::encodeUnit( RenderUnit unit )
