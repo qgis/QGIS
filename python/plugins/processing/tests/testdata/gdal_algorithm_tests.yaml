@@ -665,3 +665,22 @@ tests:
       OUTPUT:
         hash: 2033731d6fd653da391a2633158f0ea755d96e1b2b2c60a9100332b1
         type: rasterhash
+
+  - algorithm: gdal:griddatametrics
+    name: Test (gdal:griddatametrics)
+    params:
+      ANGLE: 0.0
+      INPUT:
+        name: custom/points_values.gml
+        type: vector
+      METRIC: '1'
+      MIN_POINTS: 0.0
+      NODATA: 0.0
+      RADIUS_1: 0.01
+      RADIUS_2: 0.02
+      RTYPE: '5'
+      Z_FIELD: EC
+    results:
+      OUTPUT:
+        hash: 220953299b18286b57ce093a054323e59add7c78c0429a02e51b4ad4
+        type: rasterhash
