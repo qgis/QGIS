@@ -613,3 +613,20 @@ tests:
       OUTPUT:
         hash: cbf7b8ca91e7d6cab5ef76eeed6ce80e5dbe173afb7b8eb4aed2e969
         type: rasterhash
+
+  - algorithm: gdal:proximity
+    name: Proximity raster
+    params:
+      BUF_VAL: -1
+      INPUT:
+        name: custom/dem_boolean.tif
+        type: raster
+      MAX_DIST: -1
+      NODATA: -1
+      RTYPE: '5'
+      UNITS: '0'
+      VALUES: '1'
+    results:
+      OUTPUT:
+        hash: a497763f44380ec33acab572a926a6516e875f2284fc55e702abbdfc
+        type: rasterhash
