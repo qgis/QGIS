@@ -27,23 +27,23 @@
 #include <QTextCharFormat>
 #include <QCalendarWidget>
 
-QgsDateTimeEditWrapper::QgsDateTimeEditWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mQDateTimeEdit( nullptr )
-    , mQgsDateTimeEdit( nullptr )
+QgsDateTimeEditWrapper::QgsDateTimeEditWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
+  : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+  , mQDateTimeEdit( nullptr )
+  , mQgsDateTimeEdit( nullptr )
 {
 }
 
 QWidget *QgsDateTimeEditWrapper::createWidget( QWidget *parent )
 {
-  QgsDateTimeEdit* widget = new QgsDateTimeEdit( parent );
+  QgsDateTimeEdit *widget = new QgsDateTimeEdit( parent );
   widget->setDateTime( QDateTime::currentDateTime() );
   return widget;
 }
 
 void QgsDateTimeEditWrapper::initWidget( QWidget *editor )
 {
-  QgsDateTimeEdit* qgsEditor = dynamic_cast<QgsDateTimeEdit*>( editor );
+  QgsDateTimeEdit *qgsEditor = dynamic_cast<QgsDateTimeEdit *>( editor );
   if ( qgsEditor )
   {
     mQgsDateTimeEdit = qgsEditor;
@@ -51,7 +51,7 @@ void QgsDateTimeEditWrapper::initWidget( QWidget *editor )
   // assign the Qt editor also if the QGIS editor has been previously assigned
   // this avoids testing each time which widget to use
   // the QGIS editor must be used for non-virtual methods (dateTime, setDateTime)
-  QDateTimeEdit* qtEditor = dynamic_cast<QDateTimeEdit*>( editor );
+  QDateTimeEdit *qtEditor = dynamic_cast<QDateTimeEdit *>( editor );
   if ( qtEditor )
   {
     mQDateTimeEdit = qtEditor;
@@ -110,7 +110,7 @@ void QgsDateTimeEditWrapper::showIndeterminateState()
     mQgsDateTimeEdit->setEmpty();
 }
 
-void QgsDateTimeEditWrapper::dateTimeChanged( const QDateTime& dateTime )
+void QgsDateTimeEditWrapper::dateTimeChanged( const QDateTime &dateTime )
 {
   const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
   emit valueChanged( dateTime.toString( fieldFormat ) );

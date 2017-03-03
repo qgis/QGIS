@@ -46,13 +46,13 @@
 
 ///@cond PRIVATE
 
-QgsCategorizedSymbolRendererModel::QgsCategorizedSymbolRendererModel( QObject * parent ) : QAbstractItemModel( parent )
-    , mRenderer( nullptr )
-    , mMimeFormat( QStringLiteral( "application/x-qgscategorizedsymbolrendererv2model" ) )
+QgsCategorizedSymbolRendererModel::QgsCategorizedSymbolRendererModel( QObject *parent ) : QAbstractItemModel( parent )
+  , mRenderer( nullptr )
+  , mMimeFormat( QStringLiteral( "application/x-qgscategorizedsymbolrendererv2model" ) )
 {
 }
 
-void QgsCategorizedSymbolRendererModel::setRenderer( QgsCategorizedSymbolRenderer* renderer )
+void QgsCategorizedSymbolRendererModel::setRenderer( QgsCategorizedSymbolRenderer *renderer )
 {
   if ( mRenderer )
   {
@@ -83,7 +83,7 @@ QgsRendererCategory QgsCategorizedSymbolRendererModel::category( const QModelInd
   {
     return QgsRendererCategory();
   }
-  const QgsCategoryList& catList = mRenderer->categories();
+  const QgsCategoryList &catList = mRenderer->categories();
   int row = index.row();
   if ( row >= catList.size() )
   {
@@ -93,7 +93,7 @@ QgsRendererCategory QgsCategorizedSymbolRendererModel::category( const QModelInd
 }
 
 
-Qt::ItemFlags QgsCategorizedSymbolRendererModel::flags( const QModelIndex & index ) const
+Qt::ItemFlags QgsCategorizedSymbolRendererModel::flags( const QModelIndex &index ) const
 {
   if ( !index.isValid() )
   {
@@ -160,7 +160,7 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
   return QVariant();
 }
 
-bool QgsCategorizedSymbolRendererModel::setData( const QModelIndex & index, const QVariant & value, int role )
+bool QgsCategorizedSymbolRendererModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
   if ( !index.isValid() )
     return false;
@@ -227,7 +227,7 @@ int QgsCategorizedSymbolRendererModel::rowCount( const QModelIndex &parent ) con
   return mRenderer->categories().size();
 }
 
-int QgsCategorizedSymbolRendererModel::columnCount( const QModelIndex & index ) const
+int QgsCategorizedSymbolRendererModel::columnCount( const QModelIndex &index ) const
 {
   Q_UNUSED( index );
   return 3;
@@ -359,11 +359,11 @@ void QgsCategorizedSymbolRendererModel::updateSymbology()
 }
 
 // ------------------------------ View style --------------------------------
-QgsCategorizedSymbolRendererViewStyle::QgsCategorizedSymbolRendererViewStyle( QStyle* style )
-    : QProxyStyle( style )
+QgsCategorizedSymbolRendererViewStyle::QgsCategorizedSymbolRendererViewStyle( QStyle *style )
+  : QProxyStyle( style )
 {}
 
-void QgsCategorizedSymbolRendererViewStyle::drawPrimitive( PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget ) const
+void QgsCategorizedSymbolRendererViewStyle::drawPrimitive( PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget ) const
 {
   if ( element == QStyle::PE_IndicatorItemViewItemDrop && !option->rect.isNull() )
   {
@@ -381,15 +381,15 @@ void QgsCategorizedSymbolRendererViewStyle::drawPrimitive( PrimitiveElement elem
 ///@endcond
 
 // ------------------------------ Widget ------------------------------------
-QgsRendererWidget* QgsCategorizedSymbolRendererWidget::create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
+QgsRendererWidget *QgsCategorizedSymbolRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {
   return new QgsCategorizedSymbolRendererWidget( layer, style, renderer );
 }
 
-QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
-    : QgsRendererWidget( layer, style )
-    , mRenderer( nullptr )
-    , mModel( nullptr )
+QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
+  : QgsRendererWidget( layer, style )
+  , mRenderer( nullptr )
+  , mModel( nullptr )
 {
 
   // try to recognize the previous renderer
@@ -447,7 +447,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   connect( mExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( categoryColumnChanged( QString ) ) );
 
   connect( viewCategories, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( categoriesDoubleClicked( const QModelIndex & ) ) );
-  connect( viewCategories, SIGNAL( customContextMenuRequested( const QPoint& ) ),  this, SLOT( contextMenuViewCategories( const QPoint& ) ) );
+  connect( viewCategories, SIGNAL( customContextMenuRequested( const QPoint & ) ),  this, SLOT( contextMenuViewCategories( const QPoint & ) ) );
 
   connect( btnChangeCategorizedSymbol, SIGNAL( clicked() ), this, SLOT( changeCategorizedSymbol() ) );
   connect( btnAddCategories, SIGNAL( clicked() ), this, SLOT( addCategories() ) );
@@ -458,7 +458,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsCategorizedSymbolRendererWidget::applyColorRamp );
 
   // menus for data-defined rotation/size
-  QMenu* advMenu = new QMenu;
+  QMenu *advMenu = new QMenu;
 
   advMenu->addAction( tr( "Match to saved symbols" ), this, SLOT( matchToSymbolsFromLibrary() ) );
   advMenu->addAction( tr( "Match to symbols from file..." ), this, SLOT( matchToSymbolsFromXml() ) );
@@ -505,7 +505,7 @@ void QgsCategorizedSymbolRendererWidget::updateUiFromRenderer()
   }
 }
 
-QgsFeatureRenderer* QgsCategorizedSymbolRendererWidget::renderer()
+QgsFeatureRenderer *QgsCategorizedSymbolRendererWidget::renderer()
 {
   return mRenderer;
 }
@@ -516,7 +516,7 @@ void QgsCategorizedSymbolRendererWidget::changeSelectedSymbols()
 
   if ( !selectedCats.isEmpty() )
   {
-    QgsSymbol* newSymbol = mCategorizedSymbol->clone();
+    QgsSymbol *newSymbol = mCategorizedSymbol->clone();
     QgsSymbolSelectorDialog dlg( newSymbol, mStyle, mLayer, this );
     dlg.setContext( context() );
     if ( !dlg.exec() )
@@ -529,7 +529,7 @@ void QgsCategorizedSymbolRendererWidget::changeSelectedSymbols()
     {
       QgsRendererCategory category = mRenderer->categories().value( idx );
 
-      QgsSymbol* newCatSymbol = newSymbol->clone();
+      QgsSymbol *newCatSymbol = newSymbol->clone();
       newCatSymbol->setColor( mRenderer->categories()[idx].symbol()->color() );
       mRenderer->updateCategorySymbol( idx, newCatSymbol );
     }
@@ -538,12 +538,12 @@ void QgsCategorizedSymbolRendererWidget::changeSelectedSymbols()
 
 void QgsCategorizedSymbolRendererWidget::changeCategorizedSymbol()
 {
-  QgsSymbol* newSymbol = mCategorizedSymbol->clone();
-  QgsSymbolSelectorWidget* dlg = new QgsSymbolSelectorWidget( newSymbol, mStyle, mLayer, nullptr );
+  QgsSymbol *newSymbol = mCategorizedSymbol->clone();
+  QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( newSymbol, mStyle, mLayer, nullptr );
   dlg->setContext( mContext );
 
   connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateSymbolsFromWidget() ) );
-  connect( dlg, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget* ) ) );
+  connect( dlg, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget * ) ) );
   openPanel( dlg );
 }
 
@@ -557,13 +557,13 @@ void QgsCategorizedSymbolRendererWidget::populateCategories()
 {
 }
 
-void QgsCategorizedSymbolRendererWidget::categoryColumnChanged( const QString& field )
+void QgsCategorizedSymbolRendererWidget::categoryColumnChanged( const QString &field )
 {
   mRenderer->setClassAttribute( field );
   emit widgetChanged();
 }
 
-void QgsCategorizedSymbolRendererWidget::categoriesDoubleClicked( const QModelIndex & idx )
+void QgsCategorizedSymbolRendererWidget::categoriesDoubleClicked( const QModelIndex &idx )
 {
   if ( idx.isValid() && idx.column() == 0 )
     changeCategorySymbol();
@@ -583,14 +583,14 @@ void QgsCategorizedSymbolRendererWidget::changeCategorySymbol()
     symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
   }
 
-  QgsSymbolSelectorWidget* dlg = new QgsSymbolSelectorWidget( symbol, mStyle, mLayer, nullptr );
+  QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( symbol, mStyle, mLayer, nullptr );
   dlg->setContext( mContext );
   connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateSymbolsFromWidget() ) );
-  connect( dlg, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget* ) ) );
+  connect( dlg, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget * ) ) );
   openPanel( dlg );
 }
 
-static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, QgsSymbol* symbol )
+static void _createCategories( QgsCategoryList &cats, QList<QVariant> &values, QgsSymbol *symbol )
 {
   // sort the categories first
   QgsSymbolLayerUtils::sortVariantList( values, Qt::AscendingOrder );
@@ -606,7 +606,7 @@ static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, Q
     {
       hasNull = true;
     }
-    QgsSymbol* newSymbol = symbol->clone();
+    QgsSymbol *newSymbol = symbol->clone();
 
     cats.append( QgsRendererCategory( value, newSymbol, value.toString(), true ) );
   }
@@ -614,7 +614,7 @@ static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, Q
   // add null (default) value if not exists
   if ( !hasNull )
   {
-    QgsSymbol* newSymbol = symbol->clone();
+    QgsSymbol *newSymbol = symbol->clone();
     cats.append( QgsRendererCategory( QVariant( "" ), newSymbol, QString(), true ) );
   }
 }
@@ -627,12 +627,12 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
   if ( idx == -1 )
   {
     // Lets assume it's an expression
-    QgsExpression* expression = new QgsExpression( attrName );
+    QgsExpression *expression = new QgsExpression( attrName );
     QgsExpressionContext context;
     context << QgsExpressionContextUtils::globalScope()
-    << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-    << QgsExpressionContextUtils::atlasScope( nullptr )
-    << QgsExpressionContextUtils::layerScope( mLayer );
+            << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+            << QgsExpressionContextUtils::atlasScope( nullptr )
+            << QgsExpressionContextUtils::layerScope( mLayer );
 
     expression->prepare( &context );
     QgsFeatureIterator fit = mLayer->getFeatures();
@@ -773,7 +773,7 @@ QList<int> QgsCategorizedSymbolRendererWidget::selectedCategories()
   QList<int> rows;
   QModelIndexList selectedRows = viewCategories->selectionModel()->selectedRows();
 
-  Q_FOREACH ( const QModelIndex& r, selectedRows )
+  Q_FOREACH ( const QModelIndex &r, selectedRows )
   {
     if ( r.isValid() )
     {
@@ -805,21 +805,21 @@ void QgsCategorizedSymbolRendererWidget::addCategory()
   emit widgetChanged();
 }
 
-QList<QgsSymbol*> QgsCategorizedSymbolRendererWidget::selectedSymbols()
+QList<QgsSymbol *> QgsCategorizedSymbolRendererWidget::selectedSymbols()
 {
-  QList<QgsSymbol*> selectedSymbols;
+  QList<QgsSymbol *> selectedSymbols;
 
-  QItemSelectionModel* m = viewCategories->selectionModel();
+  QItemSelectionModel *m = viewCategories->selectionModel();
   QModelIndexList selectedIndexes = m->selectedRows( 1 );
 
   if ( m && !selectedIndexes.isEmpty() )
   {
-    const QgsCategoryList& categories = mRenderer->categories();
+    const QgsCategoryList &categories = mRenderer->categories();
     QModelIndexList::const_iterator indexIt = selectedIndexes.constBegin();
     for ( ; indexIt != selectedIndexes.constEnd(); ++indexIt )
     {
       int row = ( *indexIt ).row();
-      QgsSymbol* s = categories[row].symbol();
+      QgsSymbol *s = categories[row].symbol();
       if ( s )
       {
         selectedSymbols.append( s );
@@ -833,7 +833,7 @@ QgsCategoryList QgsCategorizedSymbolRendererWidget::selectedCategoryList()
 {
   QgsCategoryList cl;
 
-  QItemSelectionModel* m = viewCategories->selectionModel();
+  QItemSelectionModel *m = viewCategories->selectionModel();
   QModelIndexList selectedIndexes = m->selectedRows( 1 );
 
   if ( m && !selectedIndexes.isEmpty() )
@@ -878,7 +878,7 @@ void QgsCategorizedSymbolRendererWidget::matchToSymbolsFromLibrary()
   }
 }
 
-int QgsCategorizedSymbolRendererWidget::matchToSymbols( QgsStyle* style )
+int QgsCategorizedSymbolRendererWidget::matchToSymbols( QgsStyle *style )
 {
   if ( !mLayer || !style )
     return 0;
@@ -887,11 +887,11 @@ int QgsCategorizedSymbolRendererWidget::matchToSymbols( QgsStyle* style )
   for ( int catIdx = 0; catIdx < mRenderer->categories().count(); ++catIdx )
   {
     QString val = mRenderer->categories().at( catIdx ).value().toString();
-    QgsSymbol* symbol = style->symbol( val );
+    QgsSymbol *symbol = style->symbol( val );
     if ( symbol &&
-         (( symbol->type() == QgsSymbol::Marker && mLayer->geometryType() == QgsWkbTypes::PointGeometry )
-          || ( symbol->type() == QgsSymbol::Line && mLayer->geometryType() == QgsWkbTypes::LineGeometry )
-          || ( symbol->type() == QgsSymbol::Fill && mLayer->geometryType() == QgsWkbTypes::PolygonGeometry ) ) )
+         ( ( symbol->type() == QgsSymbol::Marker && mLayer->geometryType() == QgsWkbTypes::PointGeometry )
+           || ( symbol->type() == QgsSymbol::Line && mLayer->geometryType() == QgsWkbTypes::LineGeometry )
+           || ( symbol->type() == QgsSymbol::Fill && mLayer->geometryType() == QgsWkbTypes::PolygonGeometry ) ) )
     {
       matched++;
       mRenderer->updateCategorySymbol( catIdx, symbol->clone() );
@@ -939,7 +939,7 @@ void QgsCategorizedSymbolRendererWidget::matchToSymbolsFromXml()
 
 void QgsCategorizedSymbolRendererWidget::cleanUpSymbolSelector( QgsPanelWidget *container )
 {
-  QgsSymbolSelectorWidget* dlg = qobject_cast<QgsSymbolSelectorWidget*>( container );
+  QgsSymbolSelectorWidget *dlg = qobject_cast<QgsSymbolSelectorWidget *>( container );
   if ( !dlg )
     return;
 
@@ -948,14 +948,14 @@ void QgsCategorizedSymbolRendererWidget::cleanUpSymbolSelector( QgsPanelWidget *
 
 void QgsCategorizedSymbolRendererWidget::updateSymbolsFromWidget()
 {
-  QgsSymbolSelectorWidget* dlg = qobject_cast<QgsSymbolSelectorWidget*>( sender() );
+  QgsSymbolSelectorWidget *dlg = qobject_cast<QgsSymbolSelectorWidget *>( sender() );
   delete mCategorizedSymbol;
   mCategorizedSymbol = dlg->symbol()->clone();
 
   updateCategorizedSymbolIcon();
 
   // When there is a slection, change the selected symbols alone
-  QItemSelectionModel* m = viewCategories->selectionModel();
+  QItemSelectionModel *m = viewCategories->selectionModel();
   QModelIndexList i = m->selectedRows();
 
   if ( m && !i.isEmpty() )
@@ -966,7 +966,7 @@ void QgsCategorizedSymbolRendererWidget::updateSymbolsFromWidget()
     {
       Q_FOREACH ( int idx, selectedCats )
       {
-        QgsSymbol* newCatSymbol = mCategorizedSymbol->clone();
+        QgsSymbol *newCatSymbol = mCategorizedSymbol->clone();
         if ( selectedCats.count() > 1 )
         {
           //if updating multiple categories, retain the existing category colors
@@ -983,7 +983,7 @@ void QgsCategorizedSymbolRendererWidget::updateSymbolsFromWidget()
   emit widgetChanged();
 }
 
-void QgsCategorizedSymbolRendererWidget::keyPressEvent( QKeyEvent* event )
+void QgsCategorizedSymbolRendererWidget::keyPressEvent( QKeyEvent *event )
 {
   if ( !event )
   {
@@ -1009,13 +1009,13 @@ QgsExpressionContext QgsCategorizedSymbolRendererWidget::createExpressionContext
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-  << QgsExpressionContextUtils::atlasScope( nullptr );
+             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+             << QgsExpressionContextUtils::atlasScope( nullptr );
 
   if ( mContext.mapCanvas() )
   {
     expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
-    << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
+               << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
   }
   else
   {
@@ -1026,7 +1026,7 @@ QgsExpressionContext QgsCategorizedSymbolRendererWidget::createExpressionContext
     expContext << QgsExpressionContextUtils::layerScope( vectorLayer() );
 
   // additional scopes
-  Q_FOREACH ( const QgsExpressionContextScope& scope, mContext.additionalExpressionContextScopes() )
+  Q_FOREACH ( const QgsExpressionContextScope &scope, mContext.additionalExpressionContextScopes() )
   {
     expContext.appendScope( new QgsExpressionContextScope( scope ) );
   }

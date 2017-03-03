@@ -41,17 +41,17 @@ class GUI_EXPORT QgsMapLayerStyleManagerWidget : public QgsMapLayerConfigWidget
      * @param canvas The canvas object.
      * @param parent The parent.
      */
-    QgsMapLayerStyleManagerWidget( QgsMapLayer* layer, QgsMapCanvas* canvas, QWidget *parent = 0 );
+    QgsMapLayerStyleManagerWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
 
   public slots:
     void apply() override {}
 
   private slots:
-    void styleClicked( const QModelIndex& index );
+    void styleClicked( const QModelIndex &index );
     void currentStyleChanged( const QString &name );
-    void styleAdded( const QString& name );
-    void styleRemoved( const QString& name );
-    void styleRenamed( const QString& oldname, const QString& newname );
+    void styleAdded( const QString &name );
+    void styleRemoved( const QString &name );
+    void styleRenamed( const QString &oldname, const QString &newname );
     void addStyle();
     void removeStyle();
     void saveAsDefault();
@@ -60,8 +60,8 @@ class GUI_EXPORT QgsMapLayerStyleManagerWidget : public QgsMapLayerConfigWidget
     void loadStyle();
 
   private:
-    QStandardItemModel* mModel = nullptr;
-    QListView* mStyleList = nullptr;
+    QStandardItemModel *mModel = nullptr;
+    QListView *mStyleList = nullptr;
 };
 
 #endif // QGSMAPLAYERSTYLEMANAGERWIDGET_H

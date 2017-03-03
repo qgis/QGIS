@@ -39,16 +39,16 @@ class QgsFieldValuesLineEditValuesGatherer: public QThread
     Q_OBJECT
 
   public:
-    QgsFieldValuesLineEditValuesGatherer( QgsVectorLayer* layer, int attributeIndex )
-        : mLayer( layer )
-        , mAttributeIndex( attributeIndex )
-        , mFeedback( nullptr )
-        , mWasCanceled( false )
+    QgsFieldValuesLineEditValuesGatherer( QgsVectorLayer *layer, int attributeIndex )
+      : mLayer( layer )
+      , mAttributeIndex( attributeIndex )
+      , mFeedback( nullptr )
+      , mWasCanceled( false )
     {}
 
     /** Sets the substring to find matching values containing
      */
-    void setSubstring( const QString& string ) { mSubstring = string; }
+    void setSubstring( const QString &string ) { mSubstring = string; }
 
     virtual void run() override
     {
@@ -93,15 +93,15 @@ class QgsFieldValuesLineEditValuesGatherer: public QThread
     /** Emitted when values have been collected
      * @param values list of unique matching string values
      */
-    void collectedValues( const QStringList& values );
+    void collectedValues( const QStringList &values );
 
   private:
 
-    QgsVectorLayer* mLayer = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
     int mAttributeIndex;
     QString mSubstring;
     QStringList mValues;
-    QgsFeedback* mFeedback = nullptr;
+    QgsFeedback *mFeedback = nullptr;
     QMutex mFeedbackMutex;
     bool mWasCanceled;
 };
@@ -119,7 +119,7 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
 {
     Q_OBJECT
 
-    Q_PROPERTY( QgsVectorLayer* layer READ layer WRITE setLayer NOTIFY layerChanged )
+    Q_PROPERTY( QgsVectorLayer *layer READ layer WRITE setLayer NOTIFY layerChanged )
     Q_PROPERTY( int attributeIndex READ attributeIndex WRITE setAttributeIndex NOTIFY attributeIndexChanged )
 
   public:
@@ -136,13 +136,13 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
      * @see layer()
      * @see setAttributeIndex()
      */
-    void setLayer( QgsVectorLayer* layer );
+    void setLayer( QgsVectorLayer *layer );
 
     /** Returns the layer containing the field that values will be shown from.
      * @see setLayer()
      * @see attributeIndex()
      */
-    QgsVectorLayer* layer() const { return mLayer; }
+    QgsVectorLayer *layer() const { return mLayer; }
 
     /** Sets the attribute index for the field containing values to show in the widget.
      * @param index index of attribute
@@ -162,7 +162,7 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
     /** Emitted when the layer associated with the widget changes.
      * @param layer vector layer
      */
-    void layerChanged( QgsVectorLayer* layer );
+    void layerChanged( QgsVectorLayer *layer );
 
     /** Emitted when the field associated with the widget changes.
      * @param index new attribute index for field
@@ -184,7 +184,7 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
     /** Updates the values shown in the completer list.
      * @param values list of string values to show
      */
-    void updateCompleter( const QStringList& values );
+    void updateCompleter( const QStringList &values );
 
     /** Called when the gatherer thread is complete, regardless of whether it finished collecting values.
      * Cleans up the gatherer thread and triggers a new background thread if the widget's text has changed
@@ -194,7 +194,7 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
 
   private:
 
-    QgsVectorLayer* mLayer = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
     int mAttributeIndex;
 
     //! Will be true when a background update of the completer values is occurring
@@ -204,13 +204,13 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
     QTimer mShowPopupTimer;
 
     //! Background value gatherer thread
-    QgsFieldValuesLineEditValuesGatherer* mGatherer = nullptr;
+    QgsFieldValuesLineEditValuesGatherer *mGatherer = nullptr;
 
     //! Will be set to the latest completion text string which should be requested
     QString mRequestedCompletionText;
 
     //! Kicks off the gathering of completer text values for a specified substring
-    void updateCompletionList( const QString& substring );
+    void updateCompletionList( const QString &substring );
 
 };
 

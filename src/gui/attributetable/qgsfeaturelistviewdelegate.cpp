@@ -28,11 +28,11 @@
 #include <QObject>
 
 QgsFeatureListViewDelegate::QgsFeatureListViewDelegate( QgsFeatureListModel *listModel, QObject *parent )
-    : QItemDelegate( parent )
-    , mFeatureSelectionModel( nullptr )
-    , mEditSelectionModel( nullptr )
-    , mListModel( listModel )
-    , mCurrentFeatureEdited( false )
+  : QItemDelegate( parent )
+  , mFeatureSelectionModel( nullptr )
+  , mEditSelectionModel( nullptr )
+  , mListModel( listModel )
+  , mCurrentFeatureEdited( false )
 {
 }
 
@@ -58,12 +58,12 @@ void QgsFeatureListViewDelegate::setCurrentFeatureEdited( bool state )
   mCurrentFeatureEdited = state;
 }
 
-void QgsFeatureListViewDelegate::setEditSelectionModel( QItemSelectionModel* editSelectionModel )
+void QgsFeatureListViewDelegate::setEditSelectionModel( QItemSelectionModel *editSelectionModel )
 {
   mEditSelectionModel = editSelectionModel;
 }
 
-QSize QgsFeatureListViewDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
+QSize QgsFeatureListViewDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( index )
   int height = ICON_SIZE;

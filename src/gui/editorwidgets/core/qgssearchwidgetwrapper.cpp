@@ -78,10 +78,10 @@ QString QgsSearchWidgetWrapper::toString( QgsSearchWidgetWrapper::FilterFlag fla
   return QString();
 }
 
-QgsSearchWidgetWrapper::QgsSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsWidgetWrapper( vl, nullptr, parent )
-    , mExpression( QString() )
-    , mFieldIdx( fieldIdx )
+QgsSearchWidgetWrapper::QgsSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
+  : QgsWidgetWrapper( vl, nullptr, parent )
+  , mExpression( QString() )
+  , mFieldIdx( fieldIdx )
 {
 }
 
@@ -96,7 +96,7 @@ QgsSearchWidgetWrapper::FilterFlags QgsSearchWidgetWrapper::defaultFlags() const
 }
 
 
-void QgsSearchWidgetWrapper::setFeature( const QgsFeature& feature )
+void QgsSearchWidgetWrapper::setFeature( const QgsFeature &feature )
 {
   Q_UNUSED( feature )
 }

@@ -25,7 +25,7 @@
 #include <QSettings>
 #include <QLineEdit>
 
-QgsBlendModeComboBox::QgsBlendModeComboBox( QWidget* parent ) : QComboBox( parent )
+QgsBlendModeComboBox::QgsBlendModeComboBox( QWidget *parent ) : QComboBox( parent )
 {
   updateModes();
 }
@@ -98,7 +98,7 @@ void QgsBlendModeComboBox::updateModes()
 //! Function to read the selected blend mode
 QPainter::CompositionMode QgsBlendModeComboBox::blendMode()
 {
-  return QgsPainting::getCompositionMode(( QgsPainting::BlendMode ) mListIndexToBlendMode[ currentIndex()] );
+  return QgsPainting::getCompositionMode( ( QgsPainting::BlendMode ) mListIndexToBlendMode[ currentIndex()] );
 }
 
 //! Function to set the selected blend mode

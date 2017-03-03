@@ -26,13 +26,13 @@ email                : even.rouault at spatialys.com
 
 #include <Qsci/qscilexer.h>
 
-QgsSQLComposerDialog::QgsSQLComposerDialog( QWidget * parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mTableSelectedCallback( nullptr )
-    , mSQLValidatorCallback( nullptr )
-    , mFocusedObject( nullptr )
-    , mAlreadyModifyingFields( false )
-    , mDistinct( false )
+QgsSQLComposerDialog::QgsSQLComposerDialog( QWidget *parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mTableSelectedCallback( nullptr )
+  , mSQLValidatorCallback( nullptr )
+  , mFocusedObject( nullptr )
+  , mAlreadyModifyingFields( false )
+  , mDistinct( false )
 {
   setupUi( this );
 
@@ -133,12 +133,12 @@ bool QgsSQLComposerDialog::eventFilter( QObject *obj, QEvent *event )
   // Custom search in table combobox
   if ( event->type() == QEvent::KeyPress && obj == mTablesCombo->view() )
   {
-    QString currentString = (( QKeyEvent* )event )->text();
-    if ( !currentString.isEmpty() && (( currentString[0] >= 'a' && currentString[0] <= 'z' ) ||
-                                      ( currentString[0] >= 'A' && currentString[0] <= 'Z' ) ||
-                                      ( currentString[0] >= '0' && currentString[0] <= '9' ) ||
-                                      currentString[0] == ':' || currentString[0] == '_' || currentString[0] == ' ' ||
-                                      currentString[0] == '(' || currentString[0] == ')' ) )
+    QString currentString = ( ( QKeyEvent * )event )->text();
+    if ( !currentString.isEmpty() && ( ( currentString[0] >= 'a' && currentString[0] <= 'z' ) ||
+                                       ( currentString[0] >= 'A' && currentString[0] <= 'Z' ) ||
+                                       ( currentString[0] >= '0' && currentString[0] <= '9' ) ||
+                                       currentString[0] == ':' || currentString[0] == '_' || currentString[0] == ' ' ||
+                                       currentString[0] == '(' || currentString[0] == ')' ) )
     {
       // First attempt is concatenation of existing search text
       // Second attempt is just the new character
@@ -177,17 +177,17 @@ bool QgsSQLComposerDialog::eventFilter( QObject *obj, QEvent *event )
   return QObject::eventFilter( obj, event );
 }
 
-void QgsSQLComposerDialog::setTableSelectedCallback( TableSelectedCallback* tableSelectedCallback )
+void QgsSQLComposerDialog::setTableSelectedCallback( TableSelectedCallback *tableSelectedCallback )
 {
   mTableSelectedCallback = tableSelectedCallback;
 }
 
-void QgsSQLComposerDialog::setSQLValidatorCallback( SQLValidatorCallback* sqlValidatorCallback )
+void QgsSQLComposerDialog::setSQLValidatorCallback( SQLValidatorCallback *sqlValidatorCallback )
 {
   mSQLValidatorCallback = sqlValidatorCallback;
 }
 
-void QgsSQLComposerDialog::setSql( const QString& sql )
+void QgsSQLComposerDialog::setSql( const QString &sql )
 {
   mResetSql = sql;
   mQueryEdit->setText( sql );
@@ -231,10 +231,10 @@ void QgsSQLComposerDialog::buildSQLFromFields()
   sql += mTablesEditor->text();
 
   int rows = mTableJoins->rowCount();
-  for ( int i = 0;i < rows;i++ )
+  for ( int i = 0; i < rows; i++ )
   {
-    QTableWidgetItem * itemTable = mTableJoins->item( i, 0 );
-    QTableWidgetItem * itemOn = mTableJoins->item( i, 1 );
+    QTableWidgetItem *itemTable = mTableJoins->item( i, 0 );
+    QTableWidgetItem *itemOn = mTableJoins->item( i, 1 );
     if ( itemTable && !itemTable->text().isEmpty() &&
          itemOn && !itemOn->text().isEmpty() )
     {
@@ -267,22 +267,22 @@ void QgsSQLComposerDialog::splitSQLIntoFields()
   QgsSQLStatement sql( mQueryEdit->text() );
   if ( sql.hasParserError() )
     return;
-  const QgsSQLStatement::NodeSelect* nodeSelect = dynamic_cast<const QgsSQLStatement::NodeSelect*>( sql.rootNode() );
+  const QgsSQLStatement::NodeSelect *nodeSelect = dynamic_cast<const QgsSQLStatement::NodeSelect *>( sql.rootNode() );
   if ( nodeSelect == nullptr )
     return;
   mDistinct = nodeSelect->distinct();
-  QList<QgsSQLStatement::NodeSelectedColumn*> columns = nodeSelect->columns();
+  QList<QgsSQLStatement::NodeSelectedColumn *> columns = nodeSelect->columns();
   QString columnText;
-  Q_FOREACH ( QgsSQLStatement::NodeSelectedColumn* column, columns )
+  Q_FOREACH ( QgsSQLStatement::NodeSelectedColumn *column, columns )
   {
     if ( !columnText.isEmpty() )
       columnText += QLatin1String( ", " );
     columnText += column->dump();
   }
 
-  QList<QgsSQLStatement::NodeTableDef*> tables = nodeSelect->tables();
+  QList<QgsSQLStatement::NodeTableDef *> tables = nodeSelect->tables();
   QString tablesText;
-  Q_FOREACH ( QgsSQLStatement::NodeTableDef* table, tables )
+  Q_FOREACH ( QgsSQLStatement::NodeTableDef *table, tables )
   {
     if ( !tablesText.isEmpty() )
       tablesText += QLatin1String( ", " );
@@ -291,20 +291,20 @@ void QgsSQLComposerDialog::splitSQLIntoFields()
   }
 
   QString whereText;
-  QgsSQLStatement::Node* where = nodeSelect->where();
+  QgsSQLStatement::Node *where = nodeSelect->where();
   if ( where != nullptr )
     whereText = where->dump();
 
   QString orderText;
-  QList<QgsSQLStatement::NodeColumnSorted*> orderColumns = nodeSelect->orderBy();
-  Q_FOREACH ( QgsSQLStatement::NodeColumnSorted* column, orderColumns )
+  QList<QgsSQLStatement::NodeColumnSorted *> orderColumns = nodeSelect->orderBy();
+  Q_FOREACH ( QgsSQLStatement::NodeColumnSorted *column, orderColumns )
   {
     if ( !orderText.isEmpty() )
       orderText += QLatin1String( ", " );
     orderText += column->dump();
   }
 
-  QList<QgsSQLStatement::NodeJoin*> joins = nodeSelect->joins();
+  QList<QgsSQLStatement::NodeJoin *> joins = nodeSelect->joins();
 
   mAlreadyModifyingFields = true;
   mColumnsEditor->setPlainText( columnText );
@@ -314,14 +314,14 @@ void QgsSQLComposerDialog::splitSQLIntoFields()
 
   mTableJoins->setRowCount( joins.size() + 1 );
   int iRow = 0;
-  Q_FOREACH ( QgsSQLStatement::NodeJoin* join, joins )
+  Q_FOREACH ( QgsSQLStatement::NodeJoin *join, joins )
   {
     loadTableColumns( QgsSQLStatement::quotedIdentifierIfNeeded( join->tableDef()->name() ) );
-    mTableJoins->setItem( iRow, 0 , new QTableWidgetItem( join->tableDef()->dump() ) );
+    mTableJoins->setItem( iRow, 0, new QTableWidgetItem( join->tableDef()->dump() ) );
     if ( join->onExpr() )
-      mTableJoins->setItem( iRow, 1 , new QTableWidgetItem( join->onExpr()->dump() ) );
+      mTableJoins->setItem( iRow, 1, new QTableWidgetItem( join->onExpr()->dump() ) );
     else
-      mTableJoins->setItem( iRow, 1 , new QTableWidgetItem( QLatin1String( "" ) ) );
+      mTableJoins->setItem( iRow, 1, new QTableWidgetItem( QLatin1String( "" ) ) );
     iRow ++;
   }
   mTableJoins->setItem( iRow, 0, new QTableWidgetItem( QLatin1String( "" ) ) );
@@ -330,19 +330,19 @@ void QgsSQLComposerDialog::splitSQLIntoFields()
   mAlreadyModifyingFields = false;
 }
 
-void QgsSQLComposerDialog::addTableNames( const QStringList& list )
+void QgsSQLComposerDialog::addTableNames( const QStringList &list )
 {
-  Q_FOREACH ( const QString& name, list )
+  Q_FOREACH ( const QString &name, list )
     mapTableEntryTextToName[name] = name;
   mTablesCombo->addItems( list );
   addApis( list );
 }
 
-void QgsSQLComposerDialog::addTableNames( const QList<PairNameTitle> & listNameTitle )
+void QgsSQLComposerDialog::addTableNames( const QList<PairNameTitle> &listNameTitle )
 {
   QStringList listCombo;
   QStringList listApi;
-  Q_FOREACH ( const PairNameTitle& pair, listNameTitle )
+  Q_FOREACH ( const PairNameTitle &pair, listNameTitle )
   {
     listApi << pair.first;
     QString entryText( pair.first );
@@ -360,10 +360,10 @@ void QgsSQLComposerDialog::addTableNames( const QList<PairNameTitle> & listNameT
   addApis( listApi );
 }
 
-void QgsSQLComposerDialog::addColumnNames( const QStringList& list, const QString& tableName )
+void QgsSQLComposerDialog::addColumnNames( const QStringList &list, const QString &tableName )
 {
   QList<PairNameType> listPair;
-  Q_FOREACH ( const QString& name, list )
+  Q_FOREACH ( const QString &name, list )
     listPair << PairNameType( name, QString() );
   addColumnNames( listPair, tableName );
 }
@@ -379,7 +379,7 @@ static QString sanitizeType( QString type )
   return type;
 }
 
-void QgsSQLComposerDialog::addColumnNames( const QList<PairNameType>& list, const QString& tableName )
+void QgsSQLComposerDialog::addColumnNames( const QList<PairNameType> &list, const QString &tableName )
 {
   mAlreadySelectedTables.insert( tableName );
   if ( mColumnsCombo->count() > 1 )
@@ -387,7 +387,7 @@ void QgsSQLComposerDialog::addColumnNames( const QList<PairNameType>& list, cons
 
   QStringList listCombo;
   QStringList listApi;
-  Q_FOREACH ( const PairNameType& pair, list )
+  Q_FOREACH ( const PairNameType &pair, list )
   {
     listApi << pair.first;
     QString entryText( pair.first );
@@ -403,13 +403,13 @@ void QgsSQLComposerDialog::addColumnNames( const QList<PairNameType>& list, cons
   addApis( listApi );
 }
 
-void QgsSQLComposerDialog::addOperators( const QStringList& list )
+void QgsSQLComposerDialog::addOperators( const QStringList &list )
 {
   mOperatorsCombo->addItems( list );
   addApis( list );
 }
 
-static QString getFunctionAbbridgedParameters( const QgsSQLComposerDialog::Function& f )
+static QString getFunctionAbbridgedParameters( const QgsSQLComposerDialog::Function &f )
 {
   if ( f.minArgs >= 0 && f.maxArgs > f.minArgs )
   {
@@ -438,19 +438,19 @@ static QString getFunctionAbbridgedParameters( const QgsSQLComposerDialog::Funct
 }
 
 
-void QgsSQLComposerDialog::getFunctionList( const QList<Function>& list,
-    QStringList& listApi,
-    QStringList& listCombo,
-    QMap<QString, QString>& mapEntryTextToName )
+void QgsSQLComposerDialog::getFunctionList( const QList<Function> &list,
+    QStringList &listApi,
+    QStringList &listCombo,
+    QMap<QString, QString> &mapEntryTextToName )
 {
-  Q_FOREACH ( const Function& f, list )
+  Q_FOREACH ( const Function &f, list )
   {
     listApi << f.name;
     QString entryText( f.name );
     entryText += QLatin1String( "(" );
     if ( !f.argumentList.isEmpty() )
     {
-      for ( int i = 0;i < f.argumentList.size();i++ )
+      for ( int i = 0; i < f.argumentList.size(); i++ )
       {
         if ( f.minArgs >= 0 && i >= f.minArgs ) entryText += QLatin1String( "[" );
         if ( i > 0 ) entryText += QLatin1String( ", " );
@@ -490,10 +490,10 @@ void QgsSQLComposerDialog::getFunctionList( const QList<Function>& list,
   }
 }
 
-void QgsSQLComposerDialog::addSpatialPredicates( const QStringList& list )
+void QgsSQLComposerDialog::addSpatialPredicates( const QStringList &list )
 {
   QList<Function> listFunction;
-  Q_FOREACH ( const QString& name, list )
+  Q_FOREACH ( const QString &name, list )
   {
     Function f;
     f.name = name;
@@ -502,7 +502,7 @@ void QgsSQLComposerDialog::addSpatialPredicates( const QStringList& list )
   addSpatialPredicates( listFunction );
 }
 
-void QgsSQLComposerDialog::addSpatialPredicates( const QList<Function>& list )
+void QgsSQLComposerDialog::addSpatialPredicates( const QList<Function> &list )
 {
   QStringList listApi;
   QStringList listCombo;
@@ -512,10 +512,10 @@ void QgsSQLComposerDialog::addSpatialPredicates( const QList<Function>& list )
   addApis( listApi );
 }
 
-void QgsSQLComposerDialog::addFunctions( const QStringList& list )
+void QgsSQLComposerDialog::addFunctions( const QStringList &list )
 {
   QList<Function> listFunction;
-  Q_FOREACH ( const QString& name, list )
+  Q_FOREACH ( const QString &name, list )
   {
     Function f;
     f.name = name;
@@ -524,7 +524,7 @@ void QgsSQLComposerDialog::addFunctions( const QStringList& list )
   addFunctions( listFunction );
 }
 
-void QgsSQLComposerDialog::addFunctions( const QList<Function>& list )
+void QgsSQLComposerDialog::addFunctions( const QList<Function> &list )
 {
   QStringList listApi;
   QStringList listCombo;
@@ -534,7 +534,7 @@ void QgsSQLComposerDialog::addFunctions( const QList<Function>& list )
   addApis( listApi );
 }
 
-void QgsSQLComposerDialog::loadTableColumns( const QString& table )
+void QgsSQLComposerDialog::loadTableColumns( const QString &table )
 {
   if ( mTableSelectedCallback )
   {
@@ -546,7 +546,7 @@ void QgsSQLComposerDialog::loadTableColumns( const QString& table )
   }
 }
 
-static void resetCombo( QComboBox* combo )
+static void resetCombo( QComboBox *combo )
 {
   // We do it in a deferred way, otherwise Valgrind complains when using QTest
   // since basically this call a recursive call to QComboBox::setCurrentIndex()
@@ -561,7 +561,7 @@ void QgsSQLComposerDialog::on_mTablesCombo_currentIndexChanged( int )
   int index = mTablesCombo->currentIndex();
   if ( index <= 0 )
     return;
-  QObject* obj = mFocusedObject;
+  QObject *obj = mFocusedObject;
   QString newText = mapTableEntryTextToName[mTablesCombo->currentText()];
   loadTableColumns( newText );
   if ( obj == mTablesEditor )
@@ -599,7 +599,7 @@ void QgsSQLComposerDialog::on_mColumnsCombo_currentIndexChanged( int )
   int index = mColumnsCombo->currentIndex();
   if ( index <= 0 )
     return;
-  QObject* obj = mFocusedObject;
+  QObject *obj = mFocusedObject;
   QString newText = mapColumnEntryTextToName[mColumnsCombo->currentText()];
   if ( obj == mColumnsEditor )
   {
@@ -646,13 +646,13 @@ void QgsSQLComposerDialog::on_mSpatialPredicatesCombo_currentIndexChanged( int )
   functionCurrentIndexChanged( mSpatialPredicatesCombo, mapSpatialPredicateEntryTextToName );
 }
 
-void QgsSQLComposerDialog::functionCurrentIndexChanged( QComboBox* combo,
-    const QMap<QString, QString>& mapEntryTextToName )
+void QgsSQLComposerDialog::functionCurrentIndexChanged( QComboBox *combo,
+    const QMap<QString, QString> &mapEntryTextToName )
 {
   int index = combo->currentIndex();
   if ( index <= 0 )
     return;
-  QObject* obj = mFocusedObject;
+  QObject *obj = mFocusedObject;
   QString newText = mapEntryTextToName[combo->currentText()];
   if ( obj == mColumnsEditor )
   {
@@ -674,7 +674,7 @@ void QgsSQLComposerDialog::on_mOperatorsCombo_currentIndexChanged( int )
   int index = mOperatorsCombo->currentIndex();
   if ( index <= 0 )
     return;
-  QObject* obj = mFocusedObject;
+  QObject *obj = mFocusedObject;
   QString newText = mOperatorsCombo->currentText();
   if ( obj == mColumnsEditor )
   {
@@ -712,8 +712,8 @@ void QgsSQLComposerDialog::on_mAddJoinButton_clicked()
     mTableJoins->setItem( row, 0, mTableJoins->takeItem( row - 1, 0 ) );
     mTableJoins->setItem( row, 1, mTableJoins->takeItem( row - 1, 1 ) );
   }
-  mTableJoins->setItem(( insertRow == rowCount ) ? insertRow : insertRow + 1, 0, new QTableWidgetItem( QLatin1String( "" ) ) );
-  mTableJoins->setItem(( insertRow == rowCount ) ? insertRow : insertRow + 1, 1, new QTableWidgetItem( QLatin1String( "" ) ) );
+  mTableJoins->setItem( ( insertRow == rowCount ) ? insertRow : insertRow + 1, 0, new QTableWidgetItem( QLatin1String( "" ) ) );
+  mTableJoins->setItem( ( insertRow == rowCount ) ? insertRow : insertRow + 1, 1, new QTableWidgetItem( QLatin1String( "" ) ) );
 }
 
 void QgsSQLComposerDialog::on_mRemoveJoinButton_clicked()
@@ -742,14 +742,14 @@ void QgsSQLComposerDialog::on_mTableJoins_itemSelectionChanged()
   mRemoveJoinButton->setEnabled( mTableJoins->selectedItems().size() == 1 );
 }
 
-void QgsSQLComposerDialog::addApis( const QStringList& list )
+void QgsSQLComposerDialog::addApis( const QStringList &list )
 {
   mApiList += list;
 
   delete mQueryEdit->lexer()->apis();
-  QsciAPIs* apis = new QsciAPIs( mQueryEdit->lexer() );
+  QsciAPIs *apis = new QsciAPIs( mQueryEdit->lexer() );
 
-  Q_FOREACH ( const QString& str, mApiList )
+  Q_FOREACH ( const QString &str, mApiList )
   {
     apis->add( str );
   }
@@ -758,7 +758,7 @@ void QgsSQLComposerDialog::addApis( const QStringList& list )
   mQueryEdit->lexer()->setAPIs( apis );
 }
 
-void QgsSQLComposerDialog::setSupportMultipleTables( bool on, const QString& mainTypename )
+void QgsSQLComposerDialog::setSupportMultipleTables( bool on, const QString &mainTypename )
 {
   mJoinsLabels->setVisible( on );
   mTableJoins->setVisible( on );

@@ -39,7 +39,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     Q_PROPERTY( QString colorRampDialogTitle READ colorRampDialogTitle WRITE setColorRampDialogTitle )
     Q_PROPERTY( bool acceptLiveUpdates READ acceptLiveUpdates WRITE setAcceptLiveUpdates )
     Q_PROPERTY( bool showMenu READ showMenu WRITE setShowMenu )
-    Q_PROPERTY( QgsColorRamp* defaultColorRamp READ defaultColorRamp WRITE setDefaultColorRamp )
+    Q_PROPERTY( QgsColorRamp *defaultColorRamp READ defaultColorRamp WRITE setDefaultColorRamp )
     Q_PROPERTY( QString context READ context WRITE setContext )
 
   public:
@@ -48,7 +48,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      * @param parent The parent QWidget for the dialog
      * @param dialogTitle The title to show in the color ramp dialog
      */
-    QgsColorRampButton( QWidget *parent = nullptr, const QString& dialogTitle = QString() );
+    QgsColorRampButton( QWidget *parent = nullptr, const QString &dialogTitle = QString() );
 
     virtual ~QgsColorRampButton();
 
@@ -57,13 +57,13 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     /** Return a copy of the current color ramp.
      * @see setColorRamp()
      */
-    QgsColorRamp* colorRamp() const;
+    QgsColorRamp *colorRamp() const;
 
     /** Set the title for the color ramp dialog window.
      * @param title Title for the color ramp dialog
      * @see colorRampDialogTitle
      */
-    void setColorRampDialogTitle( const QString& title );
+    void setColorRampDialogTitle( const QString &title );
 
     /** Returns the title for the color ramp dialog window.
      * @returns title for the color ramp dialog
@@ -103,7 +103,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      * ramp option. The ramp will be cloned and ownership is not transferred.
      * @see defaultColorRamp
      */
-    void setDefaultColorRamp( QgsColorRamp* colorramp );
+    void setDefaultColorRamp( QgsColorRamp *colorramp );
 
     /** Returns a copy of the default color ramp for the button, which is shown in the button's drop down menu for the
      * "default color ramp" option.
@@ -111,7 +111,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      * option is disabled.
      * @see setDefaultColorRamp
      */
-    QgsColorRamp* defaultColorRamp() const { return mDefaultColorRamp ? mDefaultColorRamp->clone() : nullptr ; }
+    QgsColorRamp *defaultColorRamp() const { return mDefaultColorRamp ? mDefaultColorRamp->clone() : nullptr ; }
 
     /** Sets whether a random colors option is shown in the button's drop down menu.
      * @param showRandom set to true to show a random colors option
@@ -155,7 +155,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      * @param context context string for the color dialog button's color ramp preview icons
      * @see context
      */
-    void setContext( const QString& context ) { mContext = context; }
+    void setContext( const QString &context ) { mContext = context; }
 
     /** Returns the context string for the color ramp button. The context string is passed to all color ramp
      * preview icons shown in the button's drop down menu, to (eventually) allow them to customise their display colors
@@ -180,7 +180,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      * @param name Name of the saved color ramp
      * @see colorRampName
      */
-    void setColorRampName( const QString& name ) { mColorRampName = name; }
+    void setColorRampName( const QString &name ) { mColorRampName = name; }
 
     /** Returns the name of the current color ramp when it's available in the style manager
      * @see setColorRampName
@@ -194,7 +194,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      * @param colorramp New color ramp for the button. The ramp will be cloned and ownership is not transferred.
      * @see setRandomColorRamp, setColorRampFromName, colorRamp
      */
-    void setColorRamp( QgsColorRamp* colorramp );
+    void setColorRamp( QgsColorRamp *colorramp );
 
     /** Sets the current color ramp for the button to random colors. Will emit a colorRampChanged() signal
      * if the color ramp is different to the previous color ramp.
@@ -207,13 +207,13 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      * @param name Name of saved color ramp
      * @see setColorRamp, setRandomColorRamp, colorRamp
      */
-    void setColorRampFromName( const QString& name = QString() );
+    void setColorRampFromName( const QString &name = QString() );
 
     /** Sets the background pixmap for the button based upon current color ramp.
      * @param colorramp Color ramp for button background. If no color ramp is specified, the button's current
      * color ramp will be used
      */
-    void setButtonBackground( QgsColorRamp* colorramp = nullptr );
+    void setButtonBackground( QgsColorRamp *colorramp = nullptr );
 
     /** Sets color ramp to the button's default color ramp, if set.
      * @see setDefaultColorRamp
@@ -241,31 +241,31 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
   protected:
 
     bool event( QEvent *e ) override;
-    void changeEvent( QEvent* e ) override;
-    void showEvent( QShowEvent* e ) override;
+    void changeEvent( QEvent *e ) override;
+    void showEvent( QShowEvent *e ) override;
     void resizeEvent( QResizeEvent *event ) override;
 
     /**
      * Reimplemented to detect right mouse button clicks on the color ramp button
      */
-    void mousePressEvent( QMouseEvent* e ) override;
+    void mousePressEvent( QMouseEvent *e ) override;
 
   private:
 
     QString mColorRampDialogTitle;
     bool mShowGradientOnly;
-    QgsColorRamp* mColorRamp = nullptr;
+    QgsColorRamp *mColorRamp = nullptr;
     QString mColorRampName;
-    QgsStyle* mStyle = nullptr;
+    QgsStyle *mStyle = nullptr;
 
-    QgsColorRamp* mDefaultColorRamp = nullptr;
+    QgsColorRamp *mDefaultColorRamp = nullptr;
     QString mContext;
     bool mAcceptLiveUpdates;
     bool mColorRampSet;
     bool mShowRandomColorRamp;
     bool mShowNull;
 
-    QMenu* mMenu = nullptr;
+    QMenu *mMenu = nullptr;
     QMenu *mAllRampsMenu = nullptr;
 
     QSize mIconSize;
@@ -273,7 +273,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     /** Create a color ramp icon for display in the drop down menu
      * @param colorramp Color ramp to create an icon from
      */
-    QPixmap createMenuIcon( QgsColorRamp* colorramp );
+    QPixmap createMenuIcon( QgsColorRamp *colorramp );
 
   private slots:
 

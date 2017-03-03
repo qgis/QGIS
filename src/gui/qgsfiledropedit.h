@@ -36,7 +36,7 @@ class GUI_EXPORT QgsFileDropEdit: public QLineEdit
     void setFileOnly( bool isFileOnly );
 
     QString suffixFilter() const { return mSuffix; }
-    void setSuffixFilter( const QString& suffix );
+    void setSuffixFilter( const QString &suffix );
 
   protected:
 

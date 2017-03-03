@@ -45,13 +45,13 @@ class GUI_EXPORT QgsAuthGuiUtils
     static QColor yellowColor();
 
     //! Green text stylesheet representing valid, trusted, etc. certificate
-    static QString greenTextStyleSheet( const QString& selector = "*" );
+    static QString greenTextStyleSheet( const QString &selector = "*" );
 
     //! Orange text stylesheet representing loaded component, but not stored in database
-    static QString orangeTextStyleSheet( const QString& selector = "*" );
+    static QString orangeTextStyleSheet( const QString &selector = "*" );
 
     //! Red text stylesheet representing invalid, untrusted, etc. certificate
-    static QString redTextStyleSheet( const QString& selector = "*" );
+    static QString redTextStyleSheet( const QString &selector = "*" );
 
 
     //! Verify the authentication system is active, else notify user
@@ -76,10 +76,10 @@ class GUI_EXPORT QgsAuthGuiUtils
     static void eraseAuthenticationDatabase( QgsMessageBar *msgbar, int timeout = 0, QWidget *parent = nullptr );
 
     //! Color a widget via a stylesheet if a file path is found or not
-    static void fileFound( bool found, QWidget * widget );
+    static void fileFound( bool found, QWidget *widget );
 
     //! Open file dialog for auth associated widgets
-    static QString getOpenFileName( QWidget *parent, const QString& title, const QString& extfilter );
+    static QString getOpenFileName( QWidget *parent, const QString &title, const QString &extfilter );
 };
 
 #endif // QGSAUTHGUIUTILS_H

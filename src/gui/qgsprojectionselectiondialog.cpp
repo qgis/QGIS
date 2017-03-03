@@ -23,7 +23,7 @@
 
 QgsProjectionSelectionDialog::QgsProjectionSelectionDialog( QWidget *parent,
     Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
 
@@ -37,7 +37,7 @@ QgsProjectionSelectionDialog::QgsProjectionSelectionDialog( QWidget *parent,
   connect( projectionSelector, &QgsProjectionSelectionTreeWidget::projectionDoubleClicked, this, &QgsProjectionSelectionDialog::accept );
 }
 
-void QgsProjectionSelectionDialog::setMessage( const QString& message )
+void QgsProjectionSelectionDialog::setMessage( const QString &message )
 {
   QString m = message;
   //short term kludge to make the layer selector default to showing
@@ -80,12 +80,12 @@ QgsCoordinateReferenceSystem QgsProjectionSelectionDialog::crs() const
   return projectionSelector->crs();
 }
 
-void QgsProjectionSelectionDialog::setCrs( const QgsCoordinateReferenceSystem& crs )
+void QgsProjectionSelectionDialog::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
   projectionSelector->setCrs( crs );
 }
 
-void QgsProjectionSelectionDialog::setOgcWmsCrsFilter( const QSet<QString>& crsFilter )
+void QgsProjectionSelectionDialog::setOgcWmsCrsFilter( const QSet<QString> &crsFilter )
 {
   projectionSelector->setOgcWmsCrsFilter( crsFilter );
 }

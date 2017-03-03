@@ -40,17 +40,17 @@
 #include "qgslogger.h"
 
 QgsAuthAuthoritiesEditor::QgsAuthAuthoritiesEditor( QWidget *parent )
-    : QWidget( parent )
-    , mAuthNotifyLayout( nullptr )
-    , mAuthNotify( nullptr )
-    , mRootCaSecItem( nullptr )
-    , mFileCaSecItem( nullptr )
-    , mDbCaSecItem( nullptr )
-    , mDefaultTrustPolicy( QgsAuthCertUtils::DefaultTrust )
-    , mUtilitiesMenu( nullptr )
-    , mDisabled( false )
-    , mActionDefaultTrustPolicy( nullptr )
-    , mActionShowTrustedCAs( nullptr )
+  : QWidget( parent )
+  , mAuthNotifyLayout( nullptr )
+  , mAuthNotify( nullptr )
+  , mRootCaSecItem( nullptr )
+  , mFileCaSecItem( nullptr )
+  , mDbCaSecItem( nullptr )
+  , mDefaultTrustPolicy( QgsAuthCertUtils::DefaultTrust )
+  , mUtilitiesMenu( nullptr )
+  , mDisabled( false )
+  , mActionDefaultTrustPolicy( nullptr )
+  , mActionShowTrustedCAs( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -64,16 +64,16 @@ QgsAuthAuthoritiesEditor::QgsAuthAuthoritiesEditor( QWidget *parent )
   {
     setupUi( this );
 
-    connect( QgsAuthManager::instance(), SIGNAL( messageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ),
-             this, SLOT( authMessageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ) );
+    connect( QgsAuthManager::instance(), SIGNAL( messageOut( const QString &, const QString &, QgsAuthManager::MessageLevel ) ),
+             this, SLOT( authMessageOut( const QString &, const QString &, QgsAuthManager::MessageLevel ) ) );
 
     connect( QgsAuthManager::instance(), SIGNAL( authDatabaseChanged() ),
              this, SLOT( refreshCaCertsView() ) );
 
     setupCaCertsTree();
 
-    connect( treeWidgetCAs->selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ),
-             this, SLOT( selectionChanged( const QItemSelection&, const QItemSelection& ) ) );
+    connect( treeWidgetCAs->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ),
+             this, SLOT( selectionChanged( const QItemSelection &, const QItemSelection & ) ) );
 
     connect( treeWidgetCAs, SIGNAL( itemDoubleClicked( QTreeWidgetItem *, int ) ),
              this, SLOT( handleDoubleClick( QTreeWidgetItem *, int ) ) );
@@ -99,7 +99,7 @@ QgsAuthAuthoritiesEditor::QgsAuthAuthoritiesEditor( QWidget *parent )
   }
 }
 
-static void setItemBold_( QTreeWidgetItem* item )
+static void setItemBold_( QTreeWidgetItem *item )
 {
   item->setFirstColumnSpanned( true );
   QFont secf( item->font( 0 ) );
@@ -162,9 +162,9 @@ void QgsAuthAuthoritiesEditor::refreshCaCertsView()
   populateCaCertsView();
 }
 
-static void removeChildren_( QTreeWidgetItem* item )
+static void removeChildren_( QTreeWidgetItem *item )
 {
-  Q_FOREACH ( QTreeWidgetItem* child, item->takeChildren() )
+  Q_FOREACH ( QTreeWidgetItem *child, item->takeChildren() )
   {
     delete child;
   }
@@ -203,7 +203,7 @@ void QgsAuthAuthoritiesEditor::populateRootCaCerts()
   mRootCaSecItem->setExpanded( expanded );
 }
 
-void QgsAuthAuthoritiesEditor::populateCaCertsSection( QTreeWidgetItem* item, const QList<QSslCertificate>& certs,
+void QgsAuthAuthoritiesEditor::populateCaCertsSection( QTreeWidgetItem *item, const QList<QSslCertificate> &certs,
     QgsAuthAuthoritiesEditor::CaType catype )
 {
   if ( btnGroupByOrg->isChecked() )
@@ -216,7 +216,7 @@ void QgsAuthAuthoritiesEditor::populateCaCertsSection( QTreeWidgetItem* item, co
   }
 }
 
-void QgsAuthAuthoritiesEditor::appendCertsToGroup( const QList<QSslCertificate>& certs,
+void QgsAuthAuthoritiesEditor::appendCertsToGroup( const QList<QSslCertificate> &certs,
     QgsAuthAuthoritiesEditor::CaType catype,
     QTreeWidgetItem *parent )
 {
@@ -235,9 +235,9 @@ void QgsAuthAuthoritiesEditor::appendCertsToGroup( const QList<QSslCertificate>&
   QMap< QString, QList<QSslCertificate> >::const_iterator it = orgcerts.constBegin();
   for ( ; it != orgcerts.constEnd(); ++it )
   {
-    QTreeWidgetItem * grpitem( new QTreeWidgetItem( parent,
-                               QStringList() << it.key(),
-                               ( int )QgsAuthAuthoritiesEditor::OrgName ) );
+    QTreeWidgetItem *grpitem( new QTreeWidgetItem( parent,
+                              QStringList() << it.key(),
+                              ( int )QgsAuthAuthoritiesEditor::OrgName ) );
     grpitem->setFirstColumnSpanned( true );
     grpitem->setFlags( Qt::ItemIsEnabled );
     grpitem->setExpanded( true );
@@ -255,7 +255,7 @@ void QgsAuthAuthoritiesEditor::appendCertsToGroup( const QList<QSslCertificate>&
   parent->sortChildren( 0, Qt::AscendingOrder );
 }
 
-void QgsAuthAuthoritiesEditor::appendCertsToItem( const QList<QSslCertificate>& certs,
+void QgsAuthAuthoritiesEditor::appendCertsToItem( const QList<QSslCertificate> &certs,
     QgsAuthAuthoritiesEditor::CaType catype,
     QTreeWidgetItem *parent )
 {
@@ -274,7 +274,7 @@ void QgsAuthAuthoritiesEditor::appendCertsToItem( const QList<QSslCertificate>& 
   QStringList untrustedids = mCertTrustCache.value( QgsAuthCertUtils::Untrusted );
 
   // Columns: Common Name, Serial #, Expiry Date
-  Q_FOREACH ( const QSslCertificate& cert, certs )
+  Q_FOREACH ( const QSslCertificate &cert, certs )
   {
     QString id( QgsAuthCertUtils::shaHexForCert( cert ) );
 
@@ -295,7 +295,7 @@ void QgsAuthAuthoritiesEditor::appendCertsToItem( const QList<QSslCertificate>& 
     }
     coltxts << policy;
 
-    QTreeWidgetItem * item( new QTreeWidgetItem( parent, coltxts, ( int )catype ) );
+    QTreeWidgetItem *item( new QTreeWidgetItem( parent, coltxts, ( int )catype ) );
 
     item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ) );
     if ( !cert.isValid() )
@@ -356,7 +356,7 @@ void QgsAuthAuthoritiesEditor::showCertInfo( QTreeWidgetItem *item )
 
   QString digest( item->data( 0, Qt::UserRole ).toString() );
 
-  QMap<QString, QPair<QgsAuthCertUtils::CaCertSource , QSslCertificate> > cacertscache(
+  QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate> > cacertscache(
     QgsAuthManager::instance()->getCaCertsCache() );
 
   if ( !cacertscache.contains( digest ) )
@@ -367,7 +367,7 @@ void QgsAuthAuthoritiesEditor::showCertInfo( QTreeWidgetItem *item )
 
   QSslCertificate cert( cacertscache.value( digest ).second );
 
-  QgsAuthCertInfoDialog * dlg = new QgsAuthCertInfoDialog( cert, true, this );
+  QgsAuthCertInfoDialog *dlg = new QgsAuthCertInfoDialog( cert, true, this );
   dlg->setWindowModality( Qt::WindowModal );
   dlg->resize( 675, 500 );
   dlg->exec();
@@ -379,7 +379,7 @@ void QgsAuthAuthoritiesEditor::showCertInfo( QTreeWidgetItem *item )
   dlg->deleteLater();
 }
 
-void QgsAuthAuthoritiesEditor::selectionChanged( const QItemSelection& selected , const QItemSelection& deselected )
+void QgsAuthAuthoritiesEditor::selectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
   Q_UNUSED( selected );
   Q_UNUSED( deselected );
@@ -392,9 +392,9 @@ void QgsAuthAuthoritiesEditor::checkSelection()
   bool isdbcert = false;
   if ( treeWidgetCAs->selectionModel()->selection().length() > 0 )
   {
-    QTreeWidgetItem* item( treeWidgetCAs->currentItem() );
+    QTreeWidgetItem *item( treeWidgetCAs->currentItem() );
 
-    switch (( QgsAuthAuthoritiesEditor::CaType )item->type() )
+    switch ( ( QgsAuthAuthoritiesEditor::CaType )item->type() )
     {
       case QgsAuthAuthoritiesEditor::RootCaCert:
         iscert = true;
@@ -420,7 +420,7 @@ void QgsAuthAuthoritiesEditor::handleDoubleClick( QTreeWidgetItem *item, int col
   Q_UNUSED( col );
   bool iscert = true;
 
-  switch (( QgsAuthAuthoritiesEditor::CaType )item->type() )
+  switch ( ( QgsAuthAuthoritiesEditor::CaType )item->type() )
   {
     case QgsAuthAuthoritiesEditor::Section:
       iscert = false;
@@ -445,7 +445,7 @@ void QgsAuthAuthoritiesEditor::on_btnAddCa_clicked()
   dlg->resize( 400, 450 );
   if ( dlg->exec() )
   {
-    const QList<QSslCertificate>& certs( dlg->certificatesToImport() );
+    const QList<QSslCertificate> &certs( dlg->certificatesToImport() );
     if ( !QgsAuthManager::instance()->storeCertAuthorities( certs ) )
     {
       messageBar()->pushMessage( tr( "ERROR storing CA(s) in authentication database" ),
@@ -456,7 +456,7 @@ void QgsAuthAuthoritiesEditor::on_btnAddCa_clicked()
 
     if ( dlg->certTrustPolicy() != QgsAuthCertUtils::DefaultTrust )
     {
-      Q_FOREACH ( const QSslCertificate& cert, certs )
+      Q_FOREACH ( const QSslCertificate &cert, certs )
       {
         if ( !QgsAuthManager::instance()->storeCertTrustPolicy( cert, dlg->certTrustPolicy() ) )
         {
@@ -478,7 +478,7 @@ void QgsAuthAuthoritiesEditor::on_btnAddCa_clicked()
 
 void QgsAuthAuthoritiesEditor::on_btnRemoveCa_clicked()
 {
-  QTreeWidgetItem* item( treeWidgetCAs->currentItem() );
+  QTreeWidgetItem *item( treeWidgetCAs->currentItem() );
 
   if ( !item )
   {
@@ -553,7 +553,7 @@ void QgsAuthAuthoritiesEditor::on_btnInfoCa_clicked()
 {
   if ( treeWidgetCAs->selectionModel()->selection().length() > 0 )
   {
-    QTreeWidgetItem* item( treeWidgetCAs->currentItem() );
+    QTreeWidgetItem *item( treeWidgetCAs->currentItem() );
     handleDoubleClick( item, 0 );
   }
 }
@@ -571,13 +571,13 @@ void QgsAuthAuthoritiesEditor::on_btnGroupByOrg_toggled( bool checked )
 
 void QgsAuthAuthoritiesEditor::editDefaultTrustPolicy()
 {
-  QDialog * dlg = new QDialog( this );
+  QDialog *dlg = new QDialog( this );
   dlg->setWindowTitle( tr( "Default Trust Policy" ) );
   QVBoxLayout *layout = new QVBoxLayout( dlg );
 
   QHBoxLayout *hlayout = new QHBoxLayout();
 
-  QLabel * lblwarn = new QLabel( dlg );
+  QLabel *lblwarn = new QLabel( dlg );
   QStyle *style = QApplication::style();
   lblwarn->setPixmap( style->standardIcon( QStyle::SP_MessageBoxWarning ).pixmap( 48, 48 ) );
   lblwarn->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
@@ -601,15 +601,15 @@ void QgsAuthAuthoritiesEditor::editDefaultTrustPolicy()
   QList < QPair<QgsAuthCertUtils::CertTrustPolicy, QString> > policies;
   policies << qMakePair( QgsAuthCertUtils::Trusted,
                          QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Trusted ) )
-  << qMakePair( QgsAuthCertUtils::Untrusted,
-                QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Untrusted ) );
+           << qMakePair( QgsAuthCertUtils::Untrusted,
+                         QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Untrusted ) );
 
   for ( int i = 0; i < policies.size(); i++ )
   {
-    cmbpolicy->addItem( policies.at( i ).second, QVariant(( int )policies.at( i ).first ) );
+    cmbpolicy->addItem( policies.at( i ).second, QVariant( ( int )policies.at( i ).first ) );
   }
 
-  int idx = cmbpolicy->findData( QVariant(( int )mDefaultTrustPolicy ) );
+  int idx = cmbpolicy->findData( QVariant( ( int )mDefaultTrustPolicy ) );
   cmbpolicy->setCurrentIndex( idx == -1 ? 0 : idx );
   hlayout2->addWidget( cmbpolicy );
 
@@ -670,7 +670,7 @@ void QgsAuthAuthoritiesEditor::on_btnCaFile_clicked()
       on_btnCaFileClear_clicked();
     }
 
-    const QString& fn = dlg->certFileToImport();
+    const QString &fn = dlg->certFileToImport();
     leCaFile->setText( fn );
 
     if ( !QgsAuthManager::instance()->storeAuthSetting( QStringLiteral( "cafile" ), QVariant( fn ) ) )
@@ -692,7 +692,7 @@ void QgsAuthAuthoritiesEditor::on_btnCaFile_clicked()
     if ( dlg->certTrustPolicy() != QgsAuthCertUtils::DefaultTrust )
     {
       QList<QSslCertificate> certs( QgsAuthManager::instance()->getExtraFileCAs() );
-      Q_FOREACH ( const QSslCertificate& cert, certs )
+      Q_FOREACH ( const QSslCertificate &cert, certs )
       {
         if ( !QgsAuthManager::instance()->storeCertTrustPolicy( cert, dlg->certTrustPolicy() ) )
         {
@@ -765,13 +765,13 @@ void QgsAuthAuthoritiesEditor::showTrustedCertificateAuthorities()
   dlg->deleteLater();
 }
 
-void QgsAuthAuthoritiesEditor::authMessageOut( const QString& message, const QString& authtag, QgsAuthManager::MessageLevel level )
+void QgsAuthAuthoritiesEditor::authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level )
 {
   int levelint = ( int )level;
   messageBar()->pushMessage( authtag, message, ( QgsMessageBar::MessageLevel )levelint, 7 );
 }
 
-void QgsAuthAuthoritiesEditor::showEvent( QShowEvent * e )
+void QgsAuthAuthoritiesEditor::showEvent( QShowEvent *e )
 {
   if ( !mDisabled )
   {
@@ -780,7 +780,7 @@ void QgsAuthAuthoritiesEditor::showEvent( QShowEvent * e )
   QWidget::showEvent( e );
 }
 
-QgsMessageBar * QgsAuthAuthoritiesEditor::messageBar()
+QgsMessageBar *QgsAuthAuthoritiesEditor::messageBar()
 {
   return msgBar;
 }

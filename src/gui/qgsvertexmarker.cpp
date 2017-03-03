@@ -18,8 +18,8 @@
 #include "qgsvertexmarker.h"
 
 
-QgsVertexMarker::QgsVertexMarker( QgsMapCanvas* mapCanvas )
-    : QgsMapCanvasItem( mapCanvas )
+QgsVertexMarker::QgsVertexMarker( QgsMapCanvas *mapCanvas )
+  : QgsMapCanvasItem( mapCanvas )
 {
   mIconSize = 10;
   mIconType = ICON_X;
@@ -37,14 +37,14 @@ void QgsVertexMarker::setIconSize( int iconSize )
   mIconSize = iconSize;
 }
 
-void QgsVertexMarker::setCenter( const QgsPoint& point )
+void QgsVertexMarker::setCenter( const QgsPoint &point )
 {
   mCenter = point;
   QPointF pt = toCanvasCoordinates( mCenter );
   setPos( pt );
 }
 
-void QgsVertexMarker::setColor( const QColor& color )
+void QgsVertexMarker::setColor( const QColor &color )
 {
   mColor = color;
 }
@@ -54,7 +54,7 @@ void QgsVertexMarker::setPenWidth( int width )
   mPenWidth = width;
 }
 
-void QgsVertexMarker::paint( QPainter* p )
+void QgsVertexMarker::paint( QPainter *p )
 {
   qreal s = ( mIconSize - 1 ) / 2.0;
 
@@ -94,7 +94,7 @@ void QgsVertexMarker::paint( QPainter* p )
 QRectF QgsVertexMarker::boundingRect() const
 {
   qreal s = qreal( mIconSize + mPenWidth ) / 2.0;
-  return QRectF( -s, -s, 2.0*s, 2.0*s );
+  return QRectF( -s, -s, 2.0 * s, 2.0 * s );
 }
 
 void QgsVertexMarker::updatePosition()

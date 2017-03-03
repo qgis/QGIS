@@ -37,7 +37,7 @@ class GUI_EXPORT QgsFormAnnotation: public QgsAnnotation
     /**
      * Constructor for QgsFormAnnotation.
      */
-    QgsFormAnnotation( QObject* parent = nullptr );
+    QgsFormAnnotation( QObject *parent = nullptr );
 
     QSizeF minimumFrameSize() const override;
     //! Returns the optimal frame size
@@ -47,7 +47,7 @@ class GUI_EXPORT QgsFormAnnotation: public QgsAnnotation
      * Sets the path to the Qt Designer UI file to show in the annotation.
      * @see designerForm()
      */
-    void setDesignerForm( const QString& uiFile );
+    void setDesignerForm( const QString &uiFile );
 
     /**
      * Returns the path to the Qt Designer UI file to show in the annotation.
@@ -55,19 +55,19 @@ class GUI_EXPORT QgsFormAnnotation: public QgsAnnotation
      */
     QString designerForm() const { return mDesignerForm; }
 
-    virtual void writeXml( QDomElement& elem, QDomDocument & doc ) const override;
-    virtual void readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    virtual void writeXml( QDomElement &elem, QDomDocument &doc ) const override;
+    virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
-    void setAssociatedFeature( const QgsFeature& feature ) override;
+    void setAssociatedFeature( const QgsFeature &feature ) override;
 
     /**
      * Returns a new QgsFormAnnotation object.
      */
-    static QgsFormAnnotation* create() { return new QgsFormAnnotation(); }
+    static QgsFormAnnotation *create() { return new QgsFormAnnotation(); }
 
   protected:
 
-    void renderAnnotation( QgsRenderContext& context, QSizeF size ) const override;
+    void renderAnnotation( QgsRenderContext &context, QSizeF size ) const override;
 
   private:
 
@@ -76,7 +76,7 @@ class GUI_EXPORT QgsFormAnnotation: public QgsAnnotation
     //! Path to (and including) the .ui file
     QString mDesignerForm;
 
-    QWidget* createDesignerWidget( const QString& filePath );
+    QWidget *createDesignerWidget( const QString &filePath );
 };
 
 #endif // QGSFORMANNOTATION_H

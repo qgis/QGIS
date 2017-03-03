@@ -34,7 +34,7 @@ class GUI_EXPORT QgsKeyValueWidgetWrapper : public QgsEditorWidgetWrapper
     /**
      * Constructor.
      */
-    explicit QgsKeyValueWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = nullptr, QWidget* parent = nullptr );
+    explicit QgsKeyValueWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor = nullptr, QWidget *parent = nullptr );
 
     // QgsEditorWidgetWrapper interface
   public:
@@ -42,12 +42,12 @@ class GUI_EXPORT QgsKeyValueWidgetWrapper : public QgsEditorWidgetWrapper
     void showIndeterminateState() override;
 
   protected:
-    QWidget* createWidget( QWidget* parent ) override;
-    void initWidget( QWidget* editor ) override;
+    QWidget *createWidget( QWidget *parent ) override;
+    void initWidget( QWidget *editor ) override;
     bool valid() const override;
 
   public slots:
-    void setValue( const QVariant& value ) override;
+    void setValue( const QVariant &value ) override;
 
   private slots:
     void onValueChanged();
@@ -55,7 +55,7 @@ class GUI_EXPORT QgsKeyValueWidgetWrapper : public QgsEditorWidgetWrapper
   private:
     void updateConstraintWidgetStatus( ConstraintResult status ) override;
 
-    QgsKeyValueWidget* mWidget = nullptr;
+    QgsKeyValueWidget *mWidget = nullptr;
 };
 
 #endif // QGSKEYVALUEWIDGETWRAPPER_H

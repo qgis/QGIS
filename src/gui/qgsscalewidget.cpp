@@ -20,11 +20,11 @@
 #include "qgsmapcanvas.h"
 
 QgsScaleWidget::QgsScaleWidget( QWidget *parent )
-    : QWidget( parent )
-    , mCanvas( nullptr )
-    , mShowCurrentScaleButton( false )
+  : QWidget( parent )
+  , mCanvas( nullptr )
+  , mShowCurrentScaleButton( false )
 {
-  QHBoxLayout* layout = new QHBoxLayout( this );
+  QHBoxLayout *layout = new QHBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->setSpacing( 2 );
 
@@ -47,7 +47,7 @@ void QgsScaleWidget::setShowCurrentScaleButton( bool showCurrentScaleButton )
   mCurrentScaleButton->setVisible( mShowCurrentScaleButton && mCanvas );
 }
 
-void QgsScaleWidget::setMapCanvas( QgsMapCanvas* canvas )
+void QgsScaleWidget::setMapCanvas( QgsMapCanvas *canvas )
 {
   mCanvas = canvas;
   mCurrentScaleButton->setVisible( mShowCurrentScaleButton && mCanvas );

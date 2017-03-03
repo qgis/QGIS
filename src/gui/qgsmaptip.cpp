@@ -37,15 +37,15 @@
 #include "qgsmaptip.h"
 
 QgsMapTip::QgsMapTip()
-    : mWidget( nullptr ), mWebView( nullptr )
+  : mWidget( nullptr ), mWebView( nullptr )
 {
   // init the visible flag
   mMapTipVisible = false;
 }
 
 void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
-                            QgsPoint & mapPosition,
-                            QPoint & pixelPosition,
+                            QgsPoint &mapPosition,
+                            QPoint &pixelPosition,
                             QgsMapCanvas *pMapCanvas )
 {
   // Do the search using the active layer and the preferred label field for the
@@ -56,7 +56,7 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
 
   // Show the maptip on the canvas
   QString tipText, lastTipText, tipHtml, bodyStyle, containerStyle,
-  backgroundColor, strokeColor;
+          backgroundColor, strokeColor;
 
   delete mWidget;
   mWidget = new QWidget( pMapCanvas );
@@ -74,7 +74,7 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
   mWebView->page()->settings()->setAttribute(
     QWebSettings::JavascriptEnabled, true );
 
-  QHBoxLayout* layout = new QHBoxLayout;
+  QHBoxLayout *layout = new QHBoxLayout;
   layout->addWidget( mWebView );
 
   mWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );

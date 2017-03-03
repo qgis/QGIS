@@ -37,16 +37,16 @@ class GUI_EXPORT QgsMapCanvasSnapper
 
     /** Constructor
      @param canvas the map canvas to snap to*/
-    QgsMapCanvasSnapper( QgsMapCanvas* canvas );
+    QgsMapCanvasSnapper( QgsMapCanvas *canvas );
 
     QgsMapCanvasSnapper();
 
     ~QgsMapCanvasSnapper();
 
     //! QgsMapCanvasSnapper cannot be copied
-    QgsMapCanvasSnapper( const QgsMapCanvasSnapper& rh ) = delete;
+    QgsMapCanvasSnapper( const QgsMapCanvasSnapper &rh ) = delete;
     //! QgsMapCanvasSnapper cannot be copied
-    QgsMapCanvasSnapper& operator=( const QgsMapCanvasSnapper& rh ) = delete;
+    QgsMapCanvasSnapper &operator=( const QgsMapCanvasSnapper &rh ) = delete;
 
     /** Does a snap to the current layer. Uses snap mode
      * QgsSnapper::SnapWithResultsForSamePosition if topological editing is enabled
@@ -60,7 +60,7 @@ class GUI_EXPORT QgsMapCanvasSnapper
      * @param excludePoints a list with (map coordinate) points that should be excluded in the snapping result. Useful e.g. for vertex moves where a vertex should not be snapped to its original position
      * @param allResutInTolerance return all thew results in the tolerance
      */
-    int snapToCurrentLayer( QPoint p, QList<QgsSnappingResult>& results, QgsSnapper::SnappingType snap_to, double snappingTol = -1, const QList<QgsPoint>& excludePoints = QList<QgsPoint>(), bool allResutInTolerance = false );
+    int snapToCurrentLayer( QPoint p, QList<QgsSnappingResult> &results, QgsSnapper::SnappingType snap_to, double snappingTol = -1, const QList<QgsPoint> &excludePoints = QList<QgsPoint>(), bool allResutInTolerance = false );
 
     /** Snaps to the background layers. This method is useful to align the features of the
      * edited layers to those of other layers (as described in the project properties).
@@ -71,18 +71,18 @@ class GUI_EXPORT QgsMapCanvasSnapper
      * @param excludePoints a list with (map coordinate) points that should be excluded in the snapping result. Useful e.g. for vertex moves where a vertex should not be snapped to its original position
      * @return 0 in case of success
      */
-    int snapToBackgroundLayers( QPoint p, QList<QgsSnappingResult>& results, const QList<QgsPoint>& excludePoints = QList<QgsPoint>() );
+    int snapToBackgroundLayers( QPoint p, QList<QgsSnappingResult> &results, const QList<QgsPoint> &excludePoints = QList<QgsPoint>() );
 
     // @note not available in python bindings
-    int snapToBackgroundLayers( const QgsPoint& point, QList<QgsSnappingResult>& results, const QList<QgsPoint>& excludePoints = QList<QgsPoint>() );
+    int snapToBackgroundLayers( const QgsPoint &point, QList<QgsSnappingResult> &results, const QList<QgsPoint> &excludePoints = QList<QgsPoint>() );
 
-    void setMapCanvas( QgsMapCanvas* canvas );
+    void setMapCanvas( QgsMapCanvas *canvas );
 
   private:
     //! Pointer to the map canvas
-    QgsMapCanvas* mMapCanvas = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
     //! The object which does the snapping operations
-    QgsSnapper* mSnapper = nullptr;
+    QgsSnapper *mSnapper = nullptr;
 
 };
 

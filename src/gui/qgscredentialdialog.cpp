@@ -24,14 +24,14 @@
 #include <QSettings>
 #include <QThread>
 
-static QString invalidStyle_( const QString& selector = QStringLiteral( "QLineEdit" ) )
+static QString invalidStyle_( const QString &selector = QStringLiteral( "QLineEdit" ) )
 {
   return QStringLiteral( "%1{color: rgb(200, 0, 0);}" ).arg( selector );
 }
 
 QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mOkButton( nullptr )
+  : QDialog( parent, fl )
+  , mOkButton( nullptr )
 {
   setupUi( this );
   setInstance( this );
@@ -46,7 +46,7 @@ QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
   leUsername->setFocus();
 }
 
-bool QgsCredentialDialog::request( const QString& realm, QString &username, QString &password, const QString& message )
+bool QgsCredentialDialog::request( const QString &realm, QString &username, QString &password, const QString &message )
 {
   bool ok;
   if ( qApp->thread() != QThread::currentThread() )
@@ -62,7 +62,7 @@ bool QgsCredentialDialog::request( const QString& realm, QString &username, QStr
   return ok;
 }
 
-void QgsCredentialDialog::requestCredentials( const QString& realm, QString *username, QString *password, const QString& message, bool *ok )
+void QgsCredentialDialog::requestCredentials( const QString &realm, QString *username, QString *password, const QString &message, bool *ok )
 {
   Q_ASSERT( qApp->thread() == thread() && thread() == QThread::currentThread() );
   QgsDebugMsg( "Entering." );
@@ -97,7 +97,7 @@ void QgsCredentialDialog::requestCredentials( const QString& realm, QString *use
   }
 }
 
-bool QgsCredentialDialog::requestMasterPassword( QString &password , bool stored )
+bool QgsCredentialDialog::requestMasterPassword( QString &password, bool stored )
 {
   bool ok;
   if ( qApp->thread() != QThread::currentThread() )
@@ -112,7 +112,7 @@ bool QgsCredentialDialog::requestMasterPassword( QString &password , bool stored
   return ok;
 }
 
-void QgsCredentialDialog::requestCredentialsMasterPassword( QString * password, bool stored , bool *ok )
+void QgsCredentialDialog::requestCredentialsMasterPassword( QString *password, bool stored, bool *ok )
 {
   QgsDebugMsg( "Entering." );
   stackedWidget->setCurrentIndex( 1 );
@@ -218,8 +218,8 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString * password, 
 
 void QgsCredentialDialog::on_chkMasterPassShow_stateChanged( int state )
 {
-  leMasterPass->setEchoMode(( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
-  leMasterPassVerify->setEchoMode(( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
+  leMasterPass->setEchoMode( ( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
+  leMasterPassVerify->setEchoMode( ( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
 }
 
 void QgsCredentialDialog::on_leMasterPass_textChanged( const QString &pass )

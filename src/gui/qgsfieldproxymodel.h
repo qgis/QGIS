@@ -54,26 +54,26 @@ class GUI_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
     explicit QgsFieldProxyModel( QObject *parent = nullptr );
 
     //! Returns the QgsFieldModel used in this QSortFilterProxyModel
-    QgsFieldModel* sourceFieldModel() { return mModel; }
+    QgsFieldModel *sourceFieldModel() { return mModel; }
 
     /**
      * Set flags that affect how fields are filtered in the model.
      * @param filters are Filter flags
      * @see filters()
      */
-    QgsFieldProxyModel* setFilters( QgsFieldProxyModel::Filters filters );
+    QgsFieldProxyModel *setFilters( QgsFieldProxyModel::Filters filters );
 
     /** Returns the filters controlling displayed fields.
      * @see setFilters()
      */
-    const Filters& filters() const { return mFilters; }
+    const Filters &filters() const { return mFilters; }
 
   private:
     Filters mFilters;
-    QgsFieldModel* mModel = nullptr;
+    QgsFieldModel *mModel = nullptr;
 
     //! Returns true if the specified index represents a read only field
-    bool isReadOnly( const QModelIndex& index ) const;
+    bool isReadOnly( const QModelIndex &index ) const;
 
     // QSortFilterProxyModel interface
   public:

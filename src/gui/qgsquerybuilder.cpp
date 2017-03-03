@@ -26,9 +26,9 @@
 // connection to the database
 QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
                                   QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mPreviousFieldRow( -1 )
-    , mLayer( layer )
+  : QDialog( parent, fl )
+  , mPreviousFieldRow( -1 )
+  , mLayer( layer )
 {
   setupUi( this );
 
@@ -69,7 +69,7 @@ void QgsQueryBuilder::showEvent( QShowEvent *event )
 
 void QgsQueryBuilder::populateFields()
 {
-  const QgsFields& fields = mLayer->fields();
+  const QgsFields &fields = mLayer->fields();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
     if ( fields.fieldOrigin( idx ) != QgsFields::OriginProvider )
@@ -305,7 +305,7 @@ QString QgsQueryBuilder::sql()
   return txtSQL->text();
 }
 
-void QgsQueryBuilder::setSql( const QString& sqlStatement )
+void QgsQueryBuilder::setSql( const QString &sqlStatement )
 {
   txtSQL->setText( sqlStatement );
 }
@@ -393,7 +393,7 @@ void QgsQueryBuilder::on_btnILike_clicked()
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::setDatasourceDescription( const QString& uri )
+void QgsQueryBuilder::setDatasourceDescription( const QString &uri )
 {
   lblDataUri->setText( uri );
 }

@@ -40,13 +40,13 @@ class GUI_EXPORT QgsPaintEffectWidget : public QWidget
     Q_OBJECT
 
   public:
-    QgsPaintEffectWidget( QWidget* parent = nullptr ) : QWidget( parent ) {}
+    QgsPaintEffectWidget( QWidget *parent = nullptr ) : QWidget( parent ) {}
 
     /**
      * Sets the paint effect to modify with the widget
      * @param effect paint effect
      */
-    virtual void setPaintEffect( QgsPaintEffect* effect ) = 0;
+    virtual void setPaintEffect( QgsPaintEffect *effect ) = 0;
 
   signals:
 
@@ -69,14 +69,14 @@ class GUI_EXPORT QgsDrawSourceWidget : public QgsPaintEffectWidget, private Ui::
     Q_OBJECT
 
   public:
-    QgsDrawSourceWidget( QWidget* parent = nullptr );
+    QgsDrawSourceWidget( QWidget *parent = nullptr );
 
-    static QgsPaintEffectWidget* create() { return new QgsDrawSourceWidget(); }
+    static QgsPaintEffectWidget *create() { return new QgsDrawSourceWidget(); }
 
-    virtual void setPaintEffect( QgsPaintEffect* effect ) override;
+    virtual void setPaintEffect( QgsPaintEffect *effect ) override;
 
   private:
-    QgsDrawSourceEffect* mEffect = nullptr;
+    QgsDrawSourceEffect *mEffect = nullptr;
 
     void initGui();
     void blockSignals( const bool block );
@@ -102,14 +102,14 @@ class GUI_EXPORT QgsBlurWidget : public QgsPaintEffectWidget, private Ui::Widget
     Q_OBJECT
 
   public:
-    QgsBlurWidget( QWidget* parent = nullptr );
+    QgsBlurWidget( QWidget *parent = nullptr );
 
-    static QgsPaintEffectWidget* create() { return new QgsBlurWidget(); }
+    static QgsPaintEffectWidget *create() { return new QgsBlurWidget(); }
 
-    virtual void setPaintEffect( QgsPaintEffect* effect ) override;
+    virtual void setPaintEffect( QgsPaintEffect *effect ) override;
 
   private:
-    QgsBlurEffect* mEffect = nullptr;
+    QgsBlurEffect *mEffect = nullptr;
 
     void initGui();
     void blockSignals( const bool block );
@@ -137,14 +137,14 @@ class GUI_EXPORT QgsShadowEffectWidget : public QgsPaintEffectWidget, private Ui
     Q_OBJECT
 
   public:
-    QgsShadowEffectWidget( QWidget* parent = nullptr );
+    QgsShadowEffectWidget( QWidget *parent = nullptr );
 
-    static QgsPaintEffectWidget* create() { return new QgsShadowEffectWidget(); }
+    static QgsPaintEffectWidget *create() { return new QgsShadowEffectWidget(); }
 
-    virtual void setPaintEffect( QgsPaintEffect* effect ) override;
+    virtual void setPaintEffect( QgsPaintEffect *effect ) override;
 
   private:
-    QgsShadowEffect* mEffect = nullptr;
+    QgsShadowEffect *mEffect = nullptr;
 
     void initGui();
     void blockSignals( const bool block );
@@ -155,7 +155,7 @@ class GUI_EXPORT QgsShadowEffectWidget : public QgsPaintEffectWidget, private Ui
     void on_mShadowOffsetSpnBx_valueChanged( double value );
     void on_mOffsetUnitWidget_changed();
     void on_mShadowTranspSpnBx_valueChanged( double value );
-    void on_mShadowColorBtn_colorChanged( const QColor& color );
+    void on_mShadowColorBtn_colorChanged( const QColor &color );
     void on_mDrawModeComboBox_currentIndexChanged( int index );
     void on_mShadowBlendCmbBx_currentIndexChanged( int index );
     void on_mShadowRadiuSpnBx_valueChanged( int value );
@@ -173,14 +173,14 @@ class GUI_EXPORT QgsGlowWidget : public QgsPaintEffectWidget, private Ui::Widget
     Q_OBJECT
 
   public:
-    QgsGlowWidget( QWidget* parent = nullptr );
+    QgsGlowWidget( QWidget *parent = nullptr );
 
-    static QgsPaintEffectWidget* create() { return new QgsGlowWidget(); }
+    static QgsPaintEffectWidget *create() { return new QgsGlowWidget(); }
 
-    virtual void setPaintEffect( QgsPaintEffect* effect ) override;
+    virtual void setPaintEffect( QgsPaintEffect *effect ) override;
 
   private:
-    QgsGlowEffect* mEffect = nullptr;
+    QgsGlowEffect *mEffect = nullptr;
 
     void initGui();
     void blockSignals( const bool block );
@@ -190,7 +190,7 @@ class GUI_EXPORT QgsGlowWidget : public QgsPaintEffectWidget, private Ui::Widget
     void on_mSpreadSpnBx_valueChanged( double value );
     void on_mSpreadUnitWidget_changed();
     void on_mTranspSpnBx_valueChanged( double value );
-    void on_mColorBtn_colorChanged( const QColor& color );
+    void on_mColorBtn_colorChanged( const QColor &color );
     void on_mBlendCmbBx_currentIndexChanged( int index );
     void on_mDrawModeComboBox_currentIndexChanged( int index );
     void on_mBlurRadiusSpnBx_valueChanged( int value );
@@ -209,14 +209,14 @@ class GUI_EXPORT QgsTransformWidget : public QgsPaintEffectWidget, private Ui::W
     Q_OBJECT
 
   public:
-    QgsTransformWidget( QWidget* parent = nullptr );
+    QgsTransformWidget( QWidget *parent = nullptr );
 
-    static QgsPaintEffectWidget* create() { return new QgsTransformWidget(); }
+    static QgsPaintEffectWidget *create() { return new QgsTransformWidget(); }
 
-    virtual void setPaintEffect( QgsPaintEffect* effect ) override;
+    virtual void setPaintEffect( QgsPaintEffect *effect ) override;
 
   private:
-    QgsTransformEffect* mEffect = nullptr;
+    QgsTransformEffect *mEffect = nullptr;
 
     void initGui();
     void blockSignals( const bool block );
@@ -248,14 +248,14 @@ class GUI_EXPORT QgsColorEffectWidget : public QgsPaintEffectWidget, private Ui:
     Q_OBJECT
 
   public:
-    QgsColorEffectWidget( QWidget* parent = nullptr );
+    QgsColorEffectWidget( QWidget *parent = nullptr );
 
-    static QgsPaintEffectWidget* create() { return new QgsColorEffectWidget(); }
+    static QgsPaintEffectWidget *create() { return new QgsColorEffectWidget(); }
 
-    virtual void setPaintEffect( QgsPaintEffect* effect ) override;
+    virtual void setPaintEffect( QgsPaintEffect *effect ) override;
 
   private:
-    QgsColorEffect* mEffect = nullptr;
+    QgsColorEffect *mEffect = nullptr;
 
     void initGui();
     void blockSignals( const bool block );
@@ -272,7 +272,7 @@ class GUI_EXPORT QgsColorEffectWidget : public QgsPaintEffectWidget, private Ui:
     void on_mSaturationSpinBox_valueChanged( int value );
     void on_mColorizeStrengthSpinBox_valueChanged( int value );
     void on_mColorizeCheck_stateChanged( int state );
-    void on_mColorizeColorButton_colorChanged( const QColor& color );
+    void on_mColorizeColorButton_colorChanged( const QColor &color );
     void on_mGrayscaleCombo_currentIndexChanged( int index );
 
 };

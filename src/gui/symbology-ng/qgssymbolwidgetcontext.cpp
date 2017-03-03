@@ -17,12 +17,12 @@
 #include "qgsproject.h"
 
 QgsSymbolWidgetContext::QgsSymbolWidgetContext()
-    : mMapCanvas( nullptr )
+  : mMapCanvas( nullptr )
 {}
 
-QgsSymbolWidgetContext::QgsSymbolWidgetContext( const QgsSymbolWidgetContext& other )
-    : mMapCanvas( other.mMapCanvas )
-    , mAdditionalScopes( other.mAdditionalScopes )
+QgsSymbolWidgetContext::QgsSymbolWidgetContext( const QgsSymbolWidgetContext &other )
+  : mMapCanvas( other.mMapCanvas )
+  , mAdditionalScopes( other.mAdditionalScopes )
 {
   if ( other.mExpressionContext )
   {
@@ -30,7 +30,7 @@ QgsSymbolWidgetContext::QgsSymbolWidgetContext( const QgsSymbolWidgetContext& ot
   }
 }
 
-QgsSymbolWidgetContext& QgsSymbolWidgetContext::operator=( const QgsSymbolWidgetContext & other )
+QgsSymbolWidgetContext &QgsSymbolWidgetContext::operator=( const QgsSymbolWidgetContext &other )
 {
   mMapCanvas = other.mMapCanvas;
   mAdditionalScopes = other.mAdditionalScopes;
@@ -45,17 +45,17 @@ QgsSymbolWidgetContext& QgsSymbolWidgetContext::operator=( const QgsSymbolWidget
   return *this;
 }
 
-void QgsSymbolWidgetContext::setMapCanvas( QgsMapCanvas* canvas )
+void QgsSymbolWidgetContext::setMapCanvas( QgsMapCanvas *canvas )
 {
   mMapCanvas = canvas;
 }
 
-QgsMapCanvas* QgsSymbolWidgetContext::mapCanvas() const
+QgsMapCanvas *QgsSymbolWidgetContext::mapCanvas() const
 {
   return mMapCanvas;
 }
 
-void QgsSymbolWidgetContext::setExpressionContext( QgsExpressionContext* context )
+void QgsSymbolWidgetContext::setExpressionContext( QgsExpressionContext *context )
 {
   if ( context )
     mExpressionContext.reset( new QgsExpressionContext( *context ) );
@@ -63,12 +63,12 @@ void QgsSymbolWidgetContext::setExpressionContext( QgsExpressionContext* context
     mExpressionContext.reset();
 }
 
-QgsExpressionContext* QgsSymbolWidgetContext::expressionContext() const
+QgsExpressionContext *QgsSymbolWidgetContext::expressionContext() const
 {
   return mExpressionContext.get();
 }
 
-void QgsSymbolWidgetContext::setAdditionalExpressionContextScopes( const QList<QgsExpressionContextScope>& scopes )
+void QgsSymbolWidgetContext::setAdditionalExpressionContextScopes( const QList<QgsExpressionContextScope> &scopes )
 {
   mAdditionalScopes = scopes;
 }
@@ -78,16 +78,16 @@ QList<QgsExpressionContextScope> QgsSymbolWidgetContext::additionalExpressionCon
   return mAdditionalScopes;
 }
 
-QList<QgsExpressionContextScope *> QgsSymbolWidgetContext::globalProjectAtlasMapLayerScopes( const QgsMapLayer* layer ) const
+QList<QgsExpressionContextScope *> QgsSymbolWidgetContext::globalProjectAtlasMapLayerScopes( const QgsMapLayer *layer ) const
 {
   QList<QgsExpressionContextScope *> scopes;
   scopes << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-  << QgsExpressionContextUtils::atlasScope( nullptr );
+         << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+         << QgsExpressionContextUtils::atlasScope( nullptr );
   if ( mMapCanvas )
   {
     scopes << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
-    << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
+           << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
   }
   else
   {

@@ -24,11 +24,11 @@
 
 #include "qgsmanageconnectionsdialog.h"
 
-QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mode, Type type, const QString& fileName )
-    : QDialog( parent )
-    , mFileName( fileName )
-    , mDialogMode( mode )
-    , mConnectionType( type )
+QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mode, Type type, const QString &fileName )
+  : QDialog( parent )
+  , mFileName( fileName )
+  , mDialogMode( mode )
+  , mConnectionType( type )
 {
   setupUi( this );
 
@@ -350,7 +350,7 @@ bool QgsManageConnectionsDialog::populateConnections()
   return true;
 }
 
-QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &connections, const QString & service )
+QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &connections, const QString &service )
 {
   QDomDocument doc( QStringLiteral( "connections" ) );
   QDomElement root = doc.createElement( "qgs" + service.toUpper() + "Connections" );

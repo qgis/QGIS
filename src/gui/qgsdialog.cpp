@@ -20,7 +20,7 @@
 QgsDialog::QgsDialog( QWidget *parent, Qt::WindowFlags fl,
                       QDialogButtonBox::StandardButtons buttons,
                       Qt::Orientation orientation )
-    : QDialog( parent, fl )
+  : QDialog( parent, fl )
 {
   // create buttonbox
   mButtonBox = new QDialogButtonBox( buttons, orientation, this );

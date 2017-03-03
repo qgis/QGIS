@@ -43,7 +43,7 @@ class GUI_EXPORT QgsOrganizeTableColumnsDialog : public QDialog, private Ui::Qgs
      * @param parent parent object
      * @param flags window flags
      */
-    QgsOrganizeTableColumnsDialog( const QgsVectorLayer* vl, QWidget* parent = nullptr, Qt::WindowFlags flags = Qt::Window );
+    QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::Window );
 
     ~QgsOrganizeTableColumnsDialog();
 

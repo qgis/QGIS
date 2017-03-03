@@ -42,24 +42,24 @@ class GUI_EXPORT QgsCustomLayerOrderWidget : public QWidget
 {
     Q_OBJECT
   public:
-    explicit QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridge* bridge, QWidget *parent = nullptr );
+    explicit QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridge *bridge, QWidget *parent = nullptr );
 
   signals:
 
   protected slots:
     void bridgeHasCustomLayerOrderChanged( bool state );
-    void bridgeCustomLayerOrderChanged( const QStringList& order );
+    void bridgeCustomLayerOrderChanged( const QStringList &order );
     //! Slot triggered when the ivsibility of a node changes
-    void nodeVisibilityChanged( QgsLayerTreeNode* node );
+    void nodeVisibilityChanged( QgsLayerTreeNode *node );
 
     void modelUpdated();
 
   protected:
-    QgsLayerTreeMapCanvasBridge* mBridge = nullptr;
+    QgsLayerTreeMapCanvasBridge *mBridge = nullptr;
 
-    QCheckBox* mChkOverride = nullptr;
-    CustomLayerOrderModel* mModel = nullptr;
-    QListView* mView = nullptr;
+    QCheckBox *mChkOverride = nullptr;
+    CustomLayerOrderModel *mModel = nullptr;
+    QListView *mView = nullptr;
 };
 
 
@@ -69,7 +69,7 @@ class CustomLayerOrderModel : public QAbstractListModel
     Q_OBJECT
 
   public:
-    CustomLayerOrderModel( QgsLayerTreeMapCanvasBridge* bridge, QObject* parent = nullptr );
+    CustomLayerOrderModel( QgsLayerTreeMapCanvasBridge *bridge, QObject *parent = nullptr );
 
     int rowCount( const QModelIndex & ) const override;
 
@@ -83,20 +83,20 @@ class CustomLayerOrderModel : public QAbstractListModel
 
     QStringList mimeTypes() const override;
 
-    QMimeData* mimeData( const QModelIndexList& indexes ) const override;
+    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
 
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
 
-    bool removeRows( int row, int count, const QModelIndex& parent ) override;
+    bool removeRows( int row, int count, const QModelIndex &parent ) override;
 
-    void refreshModel( const QStringList& order );
+    void refreshModel( const QStringList &order );
 
     QStringList order() const { return mOrder; }
 
-    void updateLayerVisibility( const QString& layerId );
+    void updateLayerVisibility( const QString &layerId );
 
   protected:
-    QgsLayerTreeMapCanvasBridge* mBridge = nullptr;
+    QgsLayerTreeMapCanvasBridge *mBridge = nullptr;
     QStringList mOrder;
 };
 /// @endcond

@@ -27,7 +27,7 @@ class GUI_EXPORT QgsPenStyleComboBox : public QComboBox
     Q_OBJECT
 
   public:
-    QgsPenStyleComboBox( QWidget* parent = nullptr );
+    QgsPenStyleComboBox( QWidget *parent = nullptr );
 
     Qt::PenStyle penStyle() const;
 
@@ -46,7 +46,7 @@ class GUI_EXPORT QgsPenJoinStyleComboBox : public QComboBox
     Q_OBJECT
 
   public:
-    QgsPenJoinStyleComboBox( QWidget* parent = nullptr );
+    QgsPenJoinStyleComboBox( QWidget *parent = nullptr );
 
     Qt::PenJoinStyle penJoinStyle() const;
 
@@ -61,7 +61,7 @@ class GUI_EXPORT QgsPenCapStyleComboBox : public QComboBox
     Q_OBJECT
 
   public:
-    QgsPenCapStyleComboBox( QWidget* parent = nullptr );
+    QgsPenCapStyleComboBox( QWidget *parent = nullptr );
 
     Qt::PenCapStyle penCapStyle() const;
 

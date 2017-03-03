@@ -17,8 +17,8 @@
 #include "qgslistwidget.h"
 #include "qgsattributeform.h"
 
-QgsListWidgetWrapper::QgsListWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ):
-    QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent ), mWidget( nullptr )
+QgsListWidgetWrapper::QgsListWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ):
+  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent ), mWidget( nullptr )
 {
 }
 
@@ -27,14 +27,14 @@ void QgsListWidgetWrapper::showIndeterminateState()
   mWidget->setList( QVariantList() );
 }
 
-QWidget* QgsListWidgetWrapper::createWidget( QWidget* parent )
+QWidget *QgsListWidgetWrapper::createWidget( QWidget *parent )
 {
   if ( isInTable( parent ) )
   {
     // if to be put in a table, draw a border and set a decent size
-    QFrame* ret = new QFrame( parent );
+    QFrame *ret = new QFrame( parent );
     ret->setFrameShape( QFrame::StyledPanel );
-    QHBoxLayout* layout = new QHBoxLayout( ret );
+    QHBoxLayout *layout = new QHBoxLayout( ret );
     layout->addWidget( new QgsListWidget( field().subType(), ret ) );
     ret->setMinimumSize( QSize( 320, 110 ) );
     return ret;
@@ -45,12 +45,12 @@ QWidget* QgsListWidgetWrapper::createWidget( QWidget* parent )
   }
 }
 
-void QgsListWidgetWrapper::initWidget( QWidget* editor )
+void QgsListWidgetWrapper::initWidget( QWidget *editor )
 {
-  mWidget = qobject_cast<QgsListWidget*>( editor );
+  mWidget = qobject_cast<QgsListWidget *>( editor );
   if ( !mWidget )
   {
-    mWidget = editor->findChild<QgsListWidget*>();
+    mWidget = editor->findChild<QgsListWidget *>();
   }
 
   connect( mWidget, SIGNAL( valueChanged() ), this, SLOT( onValueChanged() ) );
@@ -61,7 +61,7 @@ bool QgsListWidgetWrapper::valid() const
   return mWidget ? mWidget->valid() : true;
 }
 
-void QgsListWidgetWrapper::setValue( const QVariant& value )
+void QgsListWidgetWrapper::setValue( const QVariant &value )
 {
   mWidget->setList( value.toList() );
 }

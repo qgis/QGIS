@@ -23,8 +23,8 @@
 
 class QgsDefaultSearchWidgetWrapper;
 
-QgsEditorWidgetFactory::QgsEditorWidgetFactory( const QString& name )
-    : mName( name )
+QgsEditorWidgetFactory::QgsEditorWidgetFactory( const QString &name )
+  : mName( name )
 {
 }
 
@@ -32,7 +32,7 @@ QgsEditorWidgetFactory::QgsEditorWidgetFactory( const QString& name )
  * By default a simple QgsFilterLineEdit is returned as search widget.
  * Override in own factory to get something different than the default.
  */
-QgsSearchWidgetWrapper* QgsEditorWidgetFactory::createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
+QgsSearchWidgetWrapper *QgsEditorWidgetFactory::createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
 {
   return new QgsDefaultSearchWidgetWrapper( vl, fieldIdx, parent );
 }
@@ -42,7 +42,7 @@ QString QgsEditorWidgetFactory::name()
   return mName;
 }
 
-unsigned int QgsEditorWidgetFactory::fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const
+unsigned int QgsEditorWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
   Q_UNUSED( vl )
   Q_UNUSED( fieldIdx )

@@ -31,14 +31,14 @@ class GUI_EXPORT QgsSingleSymbolRendererWidget : public QgsRendererWidget
     Q_OBJECT
 
   public:
-    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
 
-    QgsSingleSymbolRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    QgsSingleSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
     ~QgsSingleSymbolRendererWidget();
 
-    virtual QgsFeatureRenderer* renderer() override;
+    virtual QgsFeatureRenderer *renderer() override;
 
-    virtual void setContext( const QgsSymbolWidgetContext& context ) override;
+    virtual void setContext( const QgsSymbolWidgetContext &context ) override;
 
     /**
      * Set the widget in dock mode which tells the widget to emit panel
@@ -54,9 +54,9 @@ class GUI_EXPORT QgsSingleSymbolRendererWidget : public QgsRendererWidget
 
   protected:
 
-    QgsSingleSymbolRenderer* mRenderer = nullptr;
-    QgsSymbolSelectorWidget* mSelector = nullptr;
-    QgsSymbol* mSingleSymbol = nullptr;
+    QgsSingleSymbolRenderer *mRenderer = nullptr;
+    QgsSymbolSelectorWidget *mSelector = nullptr;
+    QgsSymbol *mSingleSymbol = nullptr;
 };
 
 

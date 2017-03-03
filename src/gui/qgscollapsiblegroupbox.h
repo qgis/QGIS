@@ -37,9 +37,9 @@ class GUI_EXPORT QgsGroupBoxCollapseButton : public QToolButton
 
   public:
     QgsGroupBoxCollapseButton( QWidget *parent = nullptr )
-        : QToolButton( parent )
-        , mAltDown( false )
-        , mShiftDown( false )
+      : QToolButton( parent )
+      , mAltDown( false )
+      , mShiftDown( false )
     {}
 
     bool altDown() const { return mAltDown; }
@@ -117,7 +117,7 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     /**
      * Named group which synchronizes collapsing action when triangle is clicked while holding alt modifier key
      */
-    void setSyncGroup( const QString& grp );
+    void setSyncGroup( const QString &grp );
 
     //! Set this to false to not automatically scroll parent QScrollArea to this widget's contents when expanded
     void setScrollOnExpand( bool scroll ) { mScrollOnExpand = scroll; }
@@ -154,9 +154,9 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     bool mInitFlatChecked;
     bool mScrollOnExpand;
     bool mShown;
-    QScrollArea* mParentScrollArea = nullptr;
-    QgsGroupBoxCollapseButton* mCollapseButton = nullptr;
-    QWidget* mSyncParent = nullptr;
+    QScrollArea *mParentScrollArea = nullptr;
+    QgsGroupBoxCollapseButton *mCollapseButton = nullptr;
+    QWidget *mSyncParent = nullptr;
     QString mSyncGroup;
     bool mAltDown;
     bool mShiftDown;
@@ -192,12 +192,12 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
     Q_PROPERTY( bool saveCheckedState READ saveCheckedState WRITE setSaveCheckedState )
 
   public:
-    QgsCollapsibleGroupBox( QWidget *parent = nullptr, QSettings* settings = nullptr );
-    QgsCollapsibleGroupBox( const QString &title, QWidget *parent = nullptr, QSettings* settings = nullptr );
+    QgsCollapsibleGroupBox( QWidget *parent = nullptr, QSettings *settings = nullptr );
+    QgsCollapsibleGroupBox( const QString &title, QWidget *parent = nullptr, QSettings *settings = nullptr );
     ~QgsCollapsibleGroupBox();
 
     // set custom QSettings pointer if group box was already created from QtDesigner promotion
-    void setSettings( QSettings* settings );
+    void setSettings( QSettings *settings );
 
     //! set this to false to not save/restore collapsed state
     void setSaveCollapsedState( bool save ) { mSaveCollapsedState = save; }

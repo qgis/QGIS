@@ -50,12 +50,12 @@ QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent )
   layerProperties.append( QStringLiteral( "memoryid=%1" ).arg( QUuid::createUuid().toString() ) );
 
   QString name = dialog.layerName().isEmpty() ? tr( "New scratch layer" ) : dialog.layerName();
-  QgsVectorLayer* newLayer = new QgsVectorLayer( layerProperties, name, QStringLiteral( "memory" ) );
+  QgsVectorLayer *newLayer = new QgsVectorLayer( layerProperties, name, QStringLiteral( "memory" ) );
   return newLayer;
 }
 
 QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
 

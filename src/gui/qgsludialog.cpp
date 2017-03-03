@@ -19,7 +19,7 @@
 
 
 QgsLUDialog::QgsLUDialog( QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
 }
@@ -34,12 +34,12 @@ QString QgsLUDialog::upperValue() const
   return mUpperEdit->text();
 }
 
-void QgsLUDialog::setLowerValue( const QString& val )
+void QgsLUDialog::setLowerValue( const QString &val )
 {
   mLowerEdit->setText( val );
 }
 
-void QgsLUDialog::setUpperValue( const QString& val )
+void QgsLUDialog::setUpperValue( const QString &val )
 {
   mUpperEdit->setText( val );
 }

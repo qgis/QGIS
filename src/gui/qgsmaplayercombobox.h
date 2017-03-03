@@ -52,17 +52,17 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     QgsMapLayerProxyModel::Filters filters() const { return mProxyModel->filters(); }
 
     //! except a list of layers not to be listed
-    void setExceptedLayerList( const QList<QgsMapLayer*>& layerList ) { mProxyModel->setExceptedLayerList( layerList );}
+    void setExceptedLayerList( const QList<QgsMapLayer *> &layerList ) { mProxyModel->setExceptedLayerList( layerList );}
 
     //! returns the list of excepted layers
-    QList<QgsMapLayer*> exceptedLayerList() const {return mProxyModel->exceptedLayerList();}
+    QList<QgsMapLayer *> exceptedLayerList() const {return mProxyModel->exceptedLayerList();}
 
     /**
      * Sets a list of data providers which should be excluded from the combobox.
      * @note added in QGIS 3.0
      * @see excludedProviders()
      */
-    void setExcludedProviders( const QStringList& providers );
+    void setExcludedProviders( const QStringList &providers );
 
     /**
      * Returns the list of data providers which are excluded from the combobox.
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
      * @see additionalItems()
      * @note added in QGIS 3.0
      */
-    void setAdditionalItems( const QStringList& items );
+    void setAdditionalItems( const QStringList &items );
 
     /**
      * Return the list of additional (non map layer) items included at the end of the combo box.
@@ -118,29 +118,29 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     /** Returns the current layer selected in the combo box.
      * @see layer
      */
-    QgsMapLayer* currentLayer() const;
+    QgsMapLayer *currentLayer() const;
 
     /** Return the layer currently shown at the specified index within the combo box.
      * @param layerIndex position of layer to return
      * @note added in QGIS 2.10
      * @see currentLayer
      */
-    QgsMapLayer* layer( int layerIndex ) const;
+    QgsMapLayer *layer( int layerIndex ) const;
 
   public slots:
     //! setLayer set the current layer selected in the combo
-    void setLayer( QgsMapLayer* layer );
+    void setLayer( QgsMapLayer *layer );
 
   signals:
     //! layerChanged this signal is emitted whenever the currently selected layer changes
-    void layerChanged( QgsMapLayer* layer );
+    void layerChanged( QgsMapLayer *layer );
 
   protected slots:
     void indexChanged( int i );
     void rowsChanged();
 
   private:
-    QgsMapLayerProxyModel* mProxyModel = nullptr;
+    QgsMapLayerProxyModel *mProxyModel = nullptr;
 };
 
 #endif // QGSMAPLAYERCOMBOBOX_H

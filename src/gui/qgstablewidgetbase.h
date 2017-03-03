@@ -37,7 +37,7 @@ class GUI_EXPORT QgsTableWidgetBase: public QWidget, public Ui::QgsTableWidgetBa
     /**
      * Constructor.
      */
-    explicit QgsTableWidgetBase( QWidget* parent );
+    explicit QgsTableWidgetBase( QWidget *parent );
 
   protected:
 
@@ -45,7 +45,7 @@ class GUI_EXPORT QgsTableWidgetBase: public QWidget, public Ui::QgsTableWidgetBa
      * Initialize the table with the given model.
      * Must be called once in the child class' constructor.
      */
-    void init( QAbstractTableModel* model );
+    void init( QAbstractTableModel *model );
 
   signals:
 

@@ -41,14 +41,14 @@
 #include <QPushButton>
 
 
-QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyle* style, QMenu* menu, QWidget* parent, const QgsVectorLayer * layer )
-    : QWidget( parent )
-    , mSymbol( symbol )
-    , mStyle( style )
-    , mAdvancedMenu( nullptr )
-    , mClipFeaturesAction( nullptr )
-    , mLayer( layer )
-    , mMapCanvas( nullptr )
+QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent, const QgsVectorLayer *layer )
+  : QWidget( parent )
+  , mSymbol( symbol )
+  , mStyle( style )
+  , mAdvancedMenu( nullptr )
+  , mClipFeaturesAction( nullptr )
+  , mLayer( layer )
+  , mMapCanvas( nullptr )
 {
   setupUi( this );
 
@@ -70,12 +70,12 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyle* style, 
   mClipFeaturesAction->setCheckable( true );
   connect( mClipFeaturesAction, &QAction::toggled, this, &QgsSymbolsListWidget::clipFeaturesToggled );
 
-  QStandardItemModel* model = new QStandardItemModel( viewSymbols );
+  QStandardItemModel *model = new QStandardItemModel( viewSymbols );
   viewSymbols->setModel( model );
   connect( viewSymbols->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( setSymbolFromStyle( const QModelIndex & ) ) );
 
-  connect( mStyle, &QgsStyle::symbolSaved , this, &QgsSymbolsListWidget::symbolAddedToStyle );
-  connect( mStyle, &QgsStyle::groupsModified , this, &QgsSymbolsListWidget::populateGroups );
+  connect( mStyle, &QgsStyle::symbolSaved, this, &QgsSymbolsListWidget::symbolAddedToStyle );
+  connect( mStyle, &QgsStyle::groupsModified, this, &QgsSymbolsListWidget::populateGroups );
 
   connect( openStyleManagerButton, &QPushButton::pressed, this, &QgsSymbolsListWidget::openStyleManager );
 
@@ -91,7 +91,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyle* style, 
   // select correct page in stacked widget
   // there's a correspondence between symbol type number and page numbering => exploit it!
   stackedWidget->setCurrentIndex( symbol->type() );
-  connect( btnColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setSymbolColor( const QColor& ) ) );
+  connect( btnColor, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setSymbolColor( const QColor & ) ) );
   connect( spinAngle, SIGNAL( valueChanged( double ) ), this, SLOT( setMarkerAngle( double ) ) );
   connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setMarkerSize( double ) ) );
   connect( spinWidth, SIGNAL( valueChanged( double ) ), this, SLOT( setLineWidth( double ) ) );
@@ -122,21 +122,21 @@ QgsSymbolsListWidget::~QgsSymbolsListWidget()
   btnAdvanced->menu()->removeAction( mClipFeaturesAction );
 }
 
-void QgsSymbolsListWidget::registerDataDefinedButton( QgsPropertyOverrideButton * button, QgsSymbolLayer::Property key )
+void QgsSymbolsListWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key )
 {
   button->setProperty( "propertyKey", key );
   button->registerExpressionContextGenerator( this );
 }
 
-void QgsSymbolsListWidget::setContext( const QgsSymbolWidgetContext& context )
+void QgsSymbolsListWidget::setContext( const QgsSymbolWidgetContext &context )
 {
   mContext = context;
-  Q_FOREACH ( QgsUnitSelectionWidget* unitWidget, findChildren<QgsUnitSelectionWidget*>() )
+  Q_FOREACH ( QgsUnitSelectionWidget *unitWidget, findChildren<QgsUnitSelectionWidget *>() )
   {
     unitWidget->setMapCanvas( mContext.mapCanvas() );
   }
 #if 0
-  Q_FOREACH ( QgsPropertyOverrideButton* ddButton, findChildren<QgsPropertyOverrideButton*>() )
+  Q_FOREACH ( QgsPropertyOverrideButton *ddButton, findChildren<QgsPropertyOverrideButton *>() )
   {
     if ( ddButton->assistant() )
       ddButton->assistant()->setMapCanvas( mContext.mapCanvas() );
@@ -163,7 +163,7 @@ void QgsSymbolsListWidget::populateGroups()
   {
     tags.sort();
     groupsCombo->insertSeparator( index );
-    Q_FOREACH ( const QString& tag, tags )
+    Q_FOREACH ( const QString &tag, tags )
     {
       groupsCombo->addItem( tag, QVariant( "tag" ) );
       index++;
@@ -175,7 +175,7 @@ void QgsSymbolsListWidget::populateGroups()
   {
     groups.sort();
     groupsCombo->insertSeparator( index + 1 );
-    Q_FOREACH ( const QString& group, groups )
+    Q_FOREACH ( const QString &group, groups )
     {
       groupsCombo->addItem( group, QVariant( "smartgroup" ) );
     }
@@ -218,11 +218,11 @@ void QgsSymbolsListWidget::populateSymbolView()
   populateSymbols( symbols );
 }
 
-void QgsSymbolsListWidget::populateSymbols( const QStringList& names )
+void QgsSymbolsListWidget::populateSymbols( const QStringList &names )
 {
   QSize previewSize = viewSymbols->iconSize();
 
-  QStandardItemModel* model = qobject_cast<QStandardItemModel*>( viewSymbols->model() );
+  QStandardItemModel *model = qobject_cast<QStandardItemModel *>( viewSymbols->model() );
   if ( !model )
   {
     return;
@@ -231,14 +231,14 @@ void QgsSymbolsListWidget::populateSymbols( const QStringList& names )
 
   for ( int i = 0; i < names.count(); i++ )
   {
-    QgsSymbol* s = mStyle->symbol( names[i] );
+    QgsSymbol *s = mStyle->symbol( names[i] );
     if ( s->type() != mSymbol->type() )
     {
       delete s;
       continue;
     }
     QStringList tags = mStyle->tagsOfSymbol( QgsStyle::SymbolEntity, names[i] );
-    QStandardItem* item = new QStandardItem( names[i] );
+    QStandardItem *item = new QStandardItem( names[i] );
     item->setData( names[i], Qt::UserRole ); //so we can load symbol with that name
     item->setText( names[i] );
     item->setToolTip( QString( "<b>%1</b><br><i>%2</i>" ).arg( names[i] ).arg( tags.count() > 0 ? tags.join( ", " ) : tr( "Not tagged" ) ) );
@@ -273,7 +273,7 @@ void QgsSymbolsListWidget::clipFeaturesToggled( bool checked )
   emit changed();
 }
 
-void QgsSymbolsListWidget::setSymbolColor( const QColor& color )
+void QgsSymbolsListWidget::setSymbolColor( const QColor &color )
 {
   mSymbol->setColor( color );
   emit changed();
@@ -281,7 +281,7 @@ void QgsSymbolsListWidget::setSymbolColor( const QColor& color )
 
 void QgsSymbolsListWidget::setMarkerAngle( double angle )
 {
-  QgsMarkerSymbol* markerSymbol = static_cast<QgsMarkerSymbol*>( mSymbol );
+  QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( mSymbol );
   if ( markerSymbol->angle() == angle )
     return;
   markerSymbol->setAngle( angle );
@@ -290,7 +290,7 @@ void QgsSymbolsListWidget::setMarkerAngle( double angle )
 
 void QgsSymbolsListWidget::updateDataDefinedMarkerAngle()
 {
-  QgsMarkerSymbol* markerSymbol = static_cast<QgsMarkerSymbol*>( mSymbol );
+  QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( mSymbol );
   QgsProperty dd( mRotationDDBtn->toProperty() );
 
   spinAngle->setEnabled( !mRotationDDBtn->isActive() );
@@ -309,7 +309,7 @@ void QgsSymbolsListWidget::updateDataDefinedMarkerAngle()
 
 void QgsSymbolsListWidget::setMarkerSize( double size )
 {
-  QgsMarkerSymbol* markerSymbol = static_cast<QgsMarkerSymbol*>( mSymbol );
+  QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( mSymbol );
   if ( markerSymbol->size() == size )
     return;
   markerSymbol->setSize( size );
@@ -318,7 +318,7 @@ void QgsSymbolsListWidget::setMarkerSize( double size )
 
 void QgsSymbolsListWidget::updateDataDefinedMarkerSize()
 {
-  QgsMarkerSymbol* markerSymbol = static_cast<QgsMarkerSymbol*>( mSymbol );
+  QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( mSymbol );
   QgsProperty dd( mSizeDDBtn->toProperty() );
 
   spinSize->setEnabled( !mSizeDDBtn->isActive() );
@@ -338,7 +338,7 @@ void QgsSymbolsListWidget::updateDataDefinedMarkerSize()
 
 void QgsSymbolsListWidget::setLineWidth( double width )
 {
-  QgsLineSymbol* lineSymbol = static_cast<QgsLineSymbol*>( mSymbol );
+  QgsLineSymbol *lineSymbol = static_cast<QgsLineSymbol *>( mSymbol );
   if ( lineSymbol->width() == width )
     return;
   lineSymbol->setWidth( width );
@@ -347,7 +347,7 @@ void QgsSymbolsListWidget::setLineWidth( double width )
 
 void QgsSymbolsListWidget::updateDataDefinedLineWidth()
 {
-  QgsLineSymbol* lineSymbol = static_cast<QgsLineSymbol*>( mSymbol );
+  QgsLineSymbol *lineSymbol = static_cast<QgsLineSymbol *>( mSymbol );
   QgsProperty dd( mWidthDDBtn->toProperty() );
 
   spinWidth->setEnabled( !mWidthDDBtn->isActive() );
@@ -373,7 +373,7 @@ void QgsSymbolsListWidget::updateAssistantSymbol()
     mWidthDDBtn->setSymbol( mAssistantSymbol );
 }
 
-void QgsSymbolsListWidget::symbolAddedToStyle( const QString& name, QgsSymbol* symbol )
+void QgsSymbolsListWidget::symbolAddedToStyle( const QString &name, QgsSymbol *symbol )
 {
   Q_UNUSED( name );
   Q_UNUSED( symbol );
@@ -467,7 +467,7 @@ void QgsSymbolsListWidget::on_mTransparencySlider_valueChanged( int value )
 void QgsSymbolsListWidget::displayTransparency( double alpha )
 {
   double transparencyPercent = ( 1 - alpha ) * 100;
-  mTransparencyLabel->setText( tr( "Transparency %1%" ).arg(( int ) transparencyPercent ) );
+  mTransparencyLabel->setText( tr( "Transparency %1%" ).arg( ( int ) transparencyPercent ) );
 }
 
 void QgsSymbolsListWidget::updateSymbolColor()
@@ -486,7 +486,7 @@ QgsExpressionContext QgsSymbolsListWidget::createExpressionContext() const
   QgsExpressionContext expContext( mContext.globalProjectAtlasMapLayerScopes( layer() ) );
 
   // additional scopes
-  Q_FOREACH ( const QgsExpressionContextScope& scope, mContext.additionalExpressionContextScopes() )
+  Q_FOREACH ( const QgsExpressionContextScope &scope, mContext.additionalExpressionContextScopes() )
   {
     expContext.appendScope( new QgsExpressionContextScope( scope ) );
   }
@@ -503,14 +503,14 @@ void QgsSymbolsListWidget::updateSymbolInfo()
 {
   updateSymbolColor();
 
-  Q_FOREACH ( QgsPropertyOverrideButton* button, findChildren< QgsPropertyOverrideButton* >() )
+  Q_FOREACH ( QgsPropertyOverrideButton *button, findChildren< QgsPropertyOverrideButton * >() )
   {
     button->registerExpressionContextGenerator( this );
   }
 
   if ( mSymbol->type() == QgsSymbol::Marker )
   {
-    QgsMarkerSymbol* markerSymbol = static_cast<QgsMarkerSymbol*>( mSymbol );
+    QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( mSymbol );
     spinSize->setValue( markerSymbol->size() );
     spinAngle->setValue( markerSymbol->angle() );
 
@@ -531,7 +531,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
   }
   else if ( mSymbol->type() == QgsSymbol::Line )
   {
-    QgsLineSymbol* lineSymbol = static_cast<QgsLineSymbol*>( mSymbol );
+    QgsLineSymbol *lineSymbol = static_cast<QgsLineSymbol *>( mSymbol );
     spinWidth->setValue( lineSymbol->width() );
 
     if ( mLayer )
@@ -573,19 +573,19 @@ void QgsSymbolsListWidget::updateSymbolInfo()
   mClipFeaturesAction->blockSignals( false );
 }
 
-void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex & index )
+void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex &index )
 {
   QString symbolName = index.data( Qt::UserRole ).toString();
   lblSymbolName->setText( symbolName );
   // get new instance of symbol from style
-  QgsSymbol* s = mStyle->symbol( symbolName );
+  QgsSymbol *s = mStyle->symbol( symbolName );
   // remove all symbol layers from original symbolgroupsCombo
   while ( mSymbol->symbolLayerCount() )
     mSymbol->deleteSymbolLayer( 0 );
   // move all symbol layers to our symbol
   while ( s->symbolLayerCount() )
   {
-    QgsSymbolLayer* sl = s->takeSymbolLayer( 0 );
+    QgsSymbolLayer *sl = s->takeSymbolLayer( 0 );
     mSymbol->appendSymbolLayer( sl );
   }
   mSymbol->setAlpha( s->alpha() );

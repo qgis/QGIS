@@ -46,7 +46,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      *
      * @param name A human readable name for this widget type
      */
-    QgsEditorWidgetFactory( const QString& name );
+    QgsEditorWidgetFactory( const QString &name );
 
     virtual ~QgsEditorWidgetFactory() = default;
 
@@ -62,9 +62,9 @@ class GUI_EXPORT QgsEditorWidgetFactory
      *
      * @return         A new widget wrapper
      */
-    virtual QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const = 0;
+    virtual QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const = 0;
 
-    virtual QgsSearchWidgetWrapper* createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const;
+    virtual QgsSearchWidgetWrapper *createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const;
 
     /**
      * Return The human readable identifier name of this widget type
@@ -83,7 +83,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      *
      * @return         A configuration widget
      */
-    virtual QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const = 0;
+    virtual QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const = 0;
 
     /**
      * Check if this editor widget type supports a certain field.
@@ -94,7 +94,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      *
      * @see fieldScore( const QgsVectorLayer* vl, ind fieldIdx )
      */
-    inline bool supportsField( const QgsVectorLayer* vl, int fieldIdx ) { return fieldScore( vl, fieldIdx ) > 0; }
+    inline bool supportsField( const QgsVectorLayer *vl, int fieldIdx ) { return fieldScore( vl, fieldIdx ) > 0; }
 
     /**
      * Returns a list of widget types which this editor widget supports.
@@ -104,7 +104,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      * @return A map of widget type names and weight values
      * @note not available in Python bindings
      */
-    virtual QHash<const char*, int> supportedWidgetTypes() { return QHash<const char*, int>(); }
+    virtual QHash<const char *, int> supportedWidgetTypes() { return QHash<const char *, int>(); }
 
     /**
      * This method allows disabling this editor widget type for a certain field.
@@ -124,7 +124,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      *
      * @see supportsField( QgsVectorLayer* vl, fieldIdx )
      */
-    virtual unsigned int fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const;
+    virtual unsigned int fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const;
 
   private:
     QString mName;

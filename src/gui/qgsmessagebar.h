@@ -80,11 +80,11 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     bool popWidget( QgsMessageBarItem *item );
 
     //! make out a widget containing a message to be displayed on the bar
-    static QgsMessageBarItem* createMessage( const QString &text, QWidget *parent = nullptr );
+    static QgsMessageBarItem *createMessage( const QString &text, QWidget *parent = nullptr );
     //! make out a widget containing title and message to be displayed on the bar
-    static QgsMessageBarItem* createMessage( const QString &title, const QString &text, QWidget *parent = nullptr );
+    static QgsMessageBarItem *createMessage( const QString &title, const QString &text, QWidget *parent = nullptr );
     //! make out a widget containing title and message to be displayed on the bar
-    static QgsMessageBarItem* createMessage( QWidget *widget, QWidget *parent = nullptr );
+    static QgsMessageBarItem *createMessage( QWidget *widget, QWidget *parent = nullptr );
 
     //! convenience method for pushing a message to the bar
     void pushMessage( const QString &text, MessageLevel level = INFO, int duration = 5 ) { return pushMessage( QString::null, text, level, duration ); }
@@ -119,7 +119,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
      * @param message The message to be displayed
      * @note added in 2.8
      */
-    void pushSuccess( const QString& title, const QString& message );
+    void pushSuccess( const QString &title, const QString &message );
 
     /**
      * Pushes a information message with default timeout to the message bar
@@ -127,7 +127,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
      * @param message The message to be displayed
      * @note added in 2.8
      */
-    void pushInfo( const QString& title, const QString& message );
+    void pushInfo( const QString &title, const QString &message );
 
     /**
      * Pushes a warning with default timeout to the message bar
@@ -135,7 +135,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
      * @param message The message to be displayed
      * @note added in 2.8
      */
-    void pushWarning( const QString& title, const QString& message );
+    void pushWarning( const QString &title, const QString &message );
 
     /**
      * Pushes a critical warning with default timeout to the message bar
@@ -143,10 +143,10 @@ class GUI_EXPORT QgsMessageBar: public QFrame
      * @param message The message to be displayed
      * @note added in 2.8
      */
-    void pushCritical( const QString& title, const QString& message );
+    void pushCritical( const QString &title, const QString &message );
 
   protected:
-    void mousePressEvent( QMouseEvent * e ) override;
+    void mousePressEvent( QMouseEvent *e ) override;
 
   private:
     void popItem( QgsMessageBarItem *item );

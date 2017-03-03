@@ -25,11 +25,11 @@
 #include <QSettings>
 #include <QStringListModel>
 
-QgsRelationReferenceSearchWidgetWrapper::QgsRelationReferenceSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QgsMapCanvas* canvas, QWidget* parent )
-    : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
-    , mWidget( nullptr )
-    , mLayer( nullptr )
-    , mCanvas( canvas )
+QgsRelationReferenceSearchWidgetWrapper::QgsRelationReferenceSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QgsMapCanvas *canvas, QWidget *parent )
+  : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
+  , mWidget( nullptr )
+  , mLayer( nullptr )
+  , mCanvas( canvas )
 {
 
 }
@@ -127,7 +127,7 @@ bool QgsRelationReferenceSearchWidgetWrapper::valid() const
   return true;
 }
 
-void QgsRelationReferenceSearchWidgetWrapper::onValueChanged( const QVariant& value )
+void QgsRelationReferenceSearchWidgetWrapper::onValueChanged( const QVariant &value )
 {
   if ( !value.isValid() )
   {
@@ -164,14 +164,14 @@ void QgsRelationReferenceSearchWidgetWrapper::setExpression( QString exp )
   mExpression = str;
 }
 
-QWidget* QgsRelationReferenceSearchWidgetWrapper::createWidget( QWidget* parent )
+QWidget *QgsRelationReferenceSearchWidgetWrapper::createWidget( QWidget *parent )
 {
   return new QgsRelationReferenceWidget( parent );
 }
 
-void QgsRelationReferenceSearchWidgetWrapper::initWidget( QWidget* editor )
+void QgsRelationReferenceSearchWidgetWrapper::initWidget( QWidget *editor )
 {
-  mWidget = qobject_cast<QgsRelationReferenceWidget*>( editor );
+  mWidget = qobject_cast<QgsRelationReferenceWidget *>( editor );
   if ( !mWidget )
     return;
 

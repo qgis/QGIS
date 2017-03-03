@@ -16,12 +16,12 @@
 #include "qgsmultiedittoolbutton.h"
 #include "qgsapplication.h"
 #include <QMenu>
-QgsMultiEditToolButton::QgsMultiEditToolButton( QWidget* parent )
-    : QToolButton( parent )
-    , mIsMixedValues( false )
-    , mIsChanged( false )
-    , mState( Default )
-    , mMenu( nullptr )
+QgsMultiEditToolButton::QgsMultiEditToolButton( QWidget *parent )
+  : QToolButton( parent )
+  , mIsMixedValues( false )
+  , mIsChanged( false )
+  , mState( Default )
+  , mMenu( nullptr )
 {
   setFocusPolicy( Qt::StrongFocus );
 
@@ -47,7 +47,7 @@ void QgsMultiEditToolButton::aboutToShowMenu()
   {
     case Default:
     {
-      QAction* noAction = mMenu->addAction( tr( "No changes to commit" ) );
+      QAction *noAction = mMenu->addAction( tr( "No changes to commit" ) );
       noAction->setEnabled( false );
       break;
     }
@@ -55,13 +55,13 @@ void QgsMultiEditToolButton::aboutToShowMenu()
     {
       QString title = !mField.name().isEmpty() ? tr( "Set %1 for all selected features" ).arg( mField.name() )
                       : tr( "Set field for all selected features" );
-      QAction* setFieldAction = mMenu->addAction( title );
+      QAction *setFieldAction = mMenu->addAction( title );
       connect( setFieldAction, SIGNAL( triggered( bool ) ), this, SLOT( setFieldTriggered() ) );
       break;
     }
     case Changed:
     {
-      QAction* resetFieldAction = mMenu->addAction( tr( "Reset to original values" ) );
+      QAction *resetFieldAction = mMenu->addAction( tr( "Reset to original values" ) );
       connect( resetFieldAction, SIGNAL( triggered( bool ) ), this, SLOT( resetFieldTriggered() ) );
       break;
     }

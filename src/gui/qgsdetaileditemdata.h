@@ -31,10 +31,10 @@ class GUI_EXPORT QgsDetailedItemData
 {
   public:
     QgsDetailedItemData();
-    void setTitle( const QString& title );
-    void setDetail( const QString& detail );
-    void setCategory( const QString& category );
-    void setIcon( const QPixmap& icon );
+    void setTitle( const QString &title );
+    void setDetail( const QString &detail );
+    void setCategory( const QString &category );
+    void setIcon( const QPixmap &icon );
     void setCheckable( const bool flag );
     void setChecked( const bool flag );
     void setEnabled( bool flag );

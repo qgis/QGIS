@@ -74,7 +74,7 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog, private Ui::QgsG
      * passed, the message will be a generic
      * 'define the CRS for this layer'.
      */
-    void setMessage( const QString& message );
+    void setMessage( const QString &message );
 
     /**
      * Sets whether a "no/invalid" projection option should be shown. If this
@@ -99,7 +99,7 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog, private Ui::QgsG
      * @note added in QGIS 3.0
      * @see crs()
      */
-    void setCrs( const QgsCoordinateReferenceSystem& crs );
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
 
     /**
      * \brief filters this dialog by the given CRSs
@@ -113,7 +113,7 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog, private Ui::QgsG
      *
      * \warning This function's behavior is undefined if it is called after the dialog is shown.
      */
-    void setOgcWmsCrsFilter( const QSet<QString>& crsFilter );
+    void setOgcWmsCrsFilter( const QSet<QString> &crsFilter );
 
   private slots:
 

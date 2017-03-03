@@ -15,10 +15,10 @@
 
 #include "qgscheckboxwidgetwrapper.h"
 
-QgsCheckboxWidgetWrapper::QgsCheckboxWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mCheckBox( nullptr )
-    , mGroupBox( nullptr )
+QgsCheckboxWidgetWrapper::QgsCheckboxWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
+  : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+  , mCheckBox( nullptr )
+  , mGroupBox( nullptr )
 {
 }
 
@@ -45,15 +45,15 @@ void QgsCheckboxWidgetWrapper::showIndeterminateState()
   }
 }
 
-QWidget* QgsCheckboxWidgetWrapper::createWidget( QWidget* parent )
+QWidget *QgsCheckboxWidgetWrapper::createWidget( QWidget *parent )
 {
   return new QCheckBox( parent );
 }
 
-void QgsCheckboxWidgetWrapper::initWidget( QWidget* editor )
+void QgsCheckboxWidgetWrapper::initWidget( QWidget *editor )
 {
-  mCheckBox = qobject_cast<QCheckBox*>( editor );
-  mGroupBox = qobject_cast<QGroupBox*>( editor );
+  mCheckBox = qobject_cast<QCheckBox *>( editor );
+  mGroupBox = qobject_cast<QGroupBox *>( editor );
 
   if ( mCheckBox )
     connect( mCheckBox, SIGNAL( toggled( bool ) ), this, SLOT( valueChanged( bool ) ) );
@@ -66,7 +66,7 @@ bool QgsCheckboxWidgetWrapper::valid() const
   return mCheckBox || mGroupBox;
 }
 
-void QgsCheckboxWidgetWrapper::setValue( const QVariant& value )
+void QgsCheckboxWidgetWrapper::setValue( const QVariant &value )
 {
   bool state = ( value == config( QStringLiteral( "CheckedState" ) ) );
   if ( mGroupBox )

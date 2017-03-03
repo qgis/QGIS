@@ -31,8 +31,8 @@
 //
 
 QgsDrawSourceWidget::QgsDrawSourceWidget( QWidget *parent )
-    : QgsPaintEffectWidget( parent )
-    , mEffect( nullptr )
+  : QgsPaintEffectWidget( parent )
+  , mEffect( nullptr )
 {
   setupUi( this );
   initGui();
@@ -44,7 +44,7 @@ void QgsDrawSourceWidget::setPaintEffect( QgsPaintEffect *effect )
   if ( !effect || effect->type() != QLatin1String( "drawSource" ) )
     return;
 
-  mEffect = static_cast<QgsDrawSourceEffect*>( effect );
+  mEffect = static_cast<QgsDrawSourceEffect *>( effect );
   initGui();
 }
 
@@ -119,8 +119,8 @@ void QgsDrawSourceWidget::on_mTransparencySlider_valueChanged( int value )
 //
 
 QgsBlurWidget::QgsBlurWidget( QWidget *parent )
-    : QgsPaintEffectWidget( parent )
-    , mEffect( nullptr )
+  : QgsPaintEffectWidget( parent )
+  , mEffect( nullptr )
 {
   setupUi( this );
 
@@ -136,7 +136,7 @@ void QgsBlurWidget::setPaintEffect( QgsPaintEffect *effect )
   if ( !effect || effect->type() != QLatin1String( "blur" ) )
     return;
 
-  mEffect = static_cast<QgsBlurEffect*>( effect );
+  mEffect = static_cast<QgsBlurEffect *>( effect );
   initGui();
 }
 
@@ -246,8 +246,8 @@ void QgsBlurWidget::on_mTransparencySlider_valueChanged( int value )
 //
 
 QgsShadowEffectWidget::QgsShadowEffectWidget( QWidget *parent )
-    : QgsPaintEffectWidget( parent )
-    , mEffect( nullptr )
+  : QgsPaintEffectWidget( parent )
+  , mEffect( nullptr )
 {
   setupUi( this );
 
@@ -266,7 +266,7 @@ void QgsShadowEffectWidget::setPaintEffect( QgsPaintEffect *effect )
   if ( !effect || ( effect->type() != QLatin1String( "dropShadow" ) && effect->type() != QLatin1String( "innerShadow" ) ) )
     return;
 
-  mEffect = static_cast<QgsShadowEffect*>( effect );
+  mEffect = static_cast<QgsShadowEffect *>( effect );
   initGui();
 }
 
@@ -412,8 +412,8 @@ void QgsShadowEffectWidget::on_mShadowBlendCmbBx_currentIndexChanged( int index 
 //
 
 QgsGlowWidget::QgsGlowWidget( QWidget *parent )
-    : QgsPaintEffectWidget( parent )
-    , mEffect( nullptr )
+  : QgsPaintEffectWidget( parent )
+  , mEffect( nullptr )
 {
   setupUi( this );
 
@@ -437,7 +437,7 @@ void QgsGlowWidget::setPaintEffect( QgsPaintEffect *effect )
   if ( !effect || ( effect->type() != QLatin1String( "outerGlow" ) && effect->type() != QLatin1String( "innerGlow" ) ) )
     return;
 
-  mEffect = static_cast<QgsGlowEffect*>( effect );
+  mEffect = static_cast<QgsGlowEffect *>( effect );
   initGui();
 }
 
@@ -593,7 +593,7 @@ void QgsGlowWidget::applyColorRamp()
     return;
   }
 
-  QgsColorRamp* ramp = btnColorRamp->colorRamp();
+  QgsColorRamp *ramp = btnColorRamp->colorRamp();
   if ( !ramp )
     return;
 
@@ -606,8 +606,8 @@ void QgsGlowWidget::applyColorRamp()
 //
 
 QgsTransformWidget::QgsTransformWidget( QWidget *parent )
-    : QgsPaintEffectWidget( parent )
-    , mEffect( nullptr )
+  : QgsPaintEffectWidget( parent )
+  , mEffect( nullptr )
 {
   setupUi( this );
 
@@ -629,7 +629,7 @@ void QgsTransformWidget::setPaintEffect( QgsPaintEffect *effect )
   if ( !effect || effect->type() != QLatin1String( "transform" ) )
     return;
 
-  mEffect = static_cast<QgsTransformEffect*>( effect );
+  mEffect = static_cast<QgsTransformEffect *>( effect );
   initGui();
 }
 
@@ -784,8 +784,8 @@ void QgsTransformWidget::on_mRotationSpinBox_valueChanged( double value )
 //
 
 QgsColorEffectWidget::QgsColorEffectWidget( QWidget *parent )
-    : QgsPaintEffectWidget( parent )
-    , mEffect( nullptr )
+  : QgsPaintEffectWidget( parent )
+  , mEffect( nullptr )
 {
   setupUi( this );
 
@@ -807,7 +807,7 @@ void QgsColorEffectWidget::setPaintEffect( QgsPaintEffect *effect )
   if ( !effect || effect->type() != QLatin1String( "color" ) )
     return;
 
-  mEffect = static_cast<QgsColorEffect*>( effect );
+  mEffect = static_cast<QgsColorEffect *>( effect );
   initGui();
 }
 
@@ -822,11 +822,11 @@ void QgsColorEffectWidget::initGui()
 
   mSliderBrightness->setValue( mEffect->brightness() );
   mSliderContrast->setValue( mEffect->contrast() );
-  mSliderSaturation->setValue(( mEffect->saturation() - 1.0 ) * 100.0 );
+  mSliderSaturation->setValue( ( mEffect->saturation() - 1.0 ) * 100.0 );
   mColorizeCheck->setChecked( mEffect->colorizeOn() );
   mSliderColorizeStrength->setValue( mEffect->colorizeStrength() );
   mColorizeColorButton->setColor( mEffect->colorizeColor() );
-  int grayscaleIdx = mGrayscaleCombo->findData( QVariant(( int ) mEffect->grayscaleMode() ) );
+  int grayscaleIdx = mGrayscaleCombo->findData( QVariant( ( int ) mEffect->grayscaleMode() ) );
   mGrayscaleCombo->setCurrentIndex( grayscaleIdx == -1 ? 0 : grayscaleIdx );
   mTranspSpnBx->setValue( mEffect->transparency() * 100.0 );
   mTranspSlider->setValue( mEffect->transparency() * 1000.0 );
@@ -961,6 +961,6 @@ void QgsColorEffectWidget::on_mGrayscaleCombo_currentIndexChanged( int index )
   if ( !mEffect )
     return;
 
-  mEffect->setGrayscaleMode(( QgsImageOperation::GrayscaleMode ) mGrayscaleCombo->currentData().toInt() );
+  mEffect->setGrayscaleMode( ( QgsImageOperation::GrayscaleMode ) mGrayscaleCombo->currentData().toInt() );
   emit changed();
 }

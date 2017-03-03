@@ -29,13 +29,13 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
     Q_OBJECT
 
   public:
-    QgsExpressionBuilderDialog( QgsVectorLayer* layer, const QString& startText = QString(), QWidget* parent = nullptr, const QString& key = "generic",
-                                const QgsExpressionContext& context = QgsExpressionContext() );
+    QgsExpressionBuilderDialog( QgsVectorLayer *layer, const QString &startText = QString(), QWidget *parent = nullptr, const QString &key = "generic",
+                                const QgsExpressionContext &context = QgsExpressionContext() );
 
     //! The builder widget that is used by the dialog
-    QgsExpressionBuilderWidget* expressionBuilder();
+    QgsExpressionBuilderWidget *expressionBuilder();
 
-    void setExpressionText( const QString& text );
+    void setExpressionText( const QString &text );
 
     QString expressionText();
 
@@ -52,10 +52,10 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
      * @see expressionContext
      * @note added in QGIS 2.12
      */
-    void setExpressionContext( const QgsExpressionContext& context );
+    void setExpressionContext( const QgsExpressionContext &context );
 
     //! Sets geometry calculator used in distance/area calculations.
-    void setGeomCalculator( const QgsDistanceArea & da );
+    void setGeomCalculator( const QgsDistanceArea &da );
 
   protected:
 

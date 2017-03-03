@@ -17,9 +17,9 @@
 #include "qgsvectorlayer.h"
 #include <QColorDialog>
 
-QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerWidget( parent, vl )
-    , mLayer( nullptr )
+QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+  : QgsSymbolLayerWidget( parent, vl )
+  , mLayer( nullptr )
 {
   setupUi( this );
 
@@ -51,16 +51,16 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( const QgsVectorLayer* 
   names << QStringLiteral( "circle" ) << QStringLiteral( "rectangle" ) << QStringLiteral( "diamond" ) << QStringLiteral( "cross" ) << QStringLiteral( "triangle" ) << QStringLiteral( "right_half_triangle" ) << QStringLiteral( "left_half_triangle" ) << QStringLiteral( "semi_circle" );
   QSize iconSize = mShapeListWidget->iconSize();
 
-  Q_FOREACH ( const QString& name, names )
+  Q_FOREACH ( const QString &name, names )
   {
-    QgsEllipseSymbolLayer* lyr = new QgsEllipseSymbolLayer();
+    QgsEllipseSymbolLayer *lyr = new QgsEllipseSymbolLayer();
     lyr->setSymbolName( name );
     lyr->setStrokeColor( QColor( 0, 0, 0 ) );
     lyr->setFillColor( QColor( 200, 200, 200 ) );
     lyr->setSymbolWidth( 4 );
     lyr->setSymbolHeight( 2 );
     QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, QgsUnitTypes::RenderMillimeters, iconSize );
-    QListWidgetItem* item = new QListWidgetItem( icon, QLatin1String( "" ), mShapeListWidget );
+    QListWidgetItem *item = new QListWidgetItem( icon, QLatin1String( "" ), mShapeListWidget );
     item->setToolTip( name );
     item->setData( Qt::UserRole, name );
     delete lyr;
@@ -71,14 +71,14 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( const QgsVectorLayer* 
   connect( cboJoinStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( penJoinStyleChanged() ) );
 }
 
-void QgsEllipseSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
+void QgsEllipseSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
   if ( !layer || layer->layerType() != QLatin1String( "EllipseMarker" ) )
   {
     return;
   }
 
-  mLayer = static_cast<QgsEllipseSymbolLayer*>( layer );
+  mLayer = static_cast<QgsEllipseSymbolLayer *>( layer );
   mWidthSpinBox->setValue( mLayer->symbolWidth() );
   mHeightSpinBox->setValue( mLayer->symbolHeight() );
   mRotationSpinBox->setValue( mLayer->angle() );
@@ -126,7 +126,7 @@ void QgsEllipseSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
 
 }
 
-QgsSymbolLayer* QgsEllipseSymbolLayerWidget::symbolLayer()
+QgsSymbolLayer *QgsEllipseSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }
@@ -135,7 +135,7 @@ void QgsEllipseSymbolLayerWidget::on_mShapeListWidget_itemSelectionChanged()
 {
   if ( mLayer )
   {
-    QListWidgetItem* item = mShapeListWidget->currentItem();
+    QListWidgetItem *item = mShapeListWidget->currentItem();
     if ( item )
     {
       mLayer->setSymbolName( item->data( Qt::UserRole ).toString() );
@@ -191,7 +191,7 @@ void QgsEllipseSymbolLayerWidget::on_mStrokeWidthSpinBox_valueChanged( double d 
   }
 }
 
-void QgsEllipseSymbolLayerWidget::on_btnChangeColorStroke_colorChanged( const QColor& newColor )
+void QgsEllipseSymbolLayerWidget::on_btnChangeColorStroke_colorChanged( const QColor &newColor )
 {
   if ( !mLayer )
   {
@@ -202,7 +202,7 @@ void QgsEllipseSymbolLayerWidget::on_btnChangeColorStroke_colorChanged( const QC
   emit changed();
 }
 
-void QgsEllipseSymbolLayerWidget::on_btnChangeColorFill_colorChanged( const QColor& newColor )
+void QgsEllipseSymbolLayerWidget::on_btnChangeColorFill_colorChanged( const QColor &newColor )
 {
   if ( !mLayer )
   {
@@ -277,7 +277,7 @@ void QgsEllipseSymbolLayerWidget::on_mHorizontalAnchorComboBox_currentIndexChang
 {
   if ( mLayer )
   {
-    mLayer->setHorizontalAnchorPoint(( QgsMarkerSymbolLayer::HorizontalAnchorPoint ) index );
+    mLayer->setHorizontalAnchorPoint( ( QgsMarkerSymbolLayer::HorizontalAnchorPoint ) index );
     emit changed();
   }
 }
@@ -286,7 +286,7 @@ void QgsEllipseSymbolLayerWidget::on_mVerticalAnchorComboBox_currentIndexChanged
 {
   if ( mLayer )
   {
-    mLayer->setVerticalAnchorPoint(( QgsMarkerSymbolLayer::VerticalAnchorPoint ) index );
+    mLayer->setVerticalAnchorPoint( ( QgsMarkerSymbolLayer::VerticalAnchorPoint ) index );
     emit changed();
   }
 }

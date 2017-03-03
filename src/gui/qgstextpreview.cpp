@@ -17,10 +17,10 @@
 #include <QDesktopWidget>
 #include <QPainter>
 
-QgsTextPreview::QgsTextPreview( QWidget* parent )
-    : QLabel( parent )
-    , mScale( -1 )
-    , mMapUnits( QgsUnitTypes::DistanceMeters )
+QgsTextPreview::QgsTextPreview( QWidget *parent )
+  : QLabel( parent )
+  , mScale( -1 )
+  , mMapUnits( QgsUnitTypes::DistanceMeters )
 {
   // initially use a basic transform with no scale
   QgsMapToPixel newCoordXForm;
@@ -64,11 +64,11 @@ void QgsTextPreview::paintEvent( QPaintEvent *e )
     textRect.setWidth( 2000 );
 
   mContext.setPainter( &p );
-  QgsTextRenderer::drawText( textRect, 0 , QgsTextRenderer::AlignLeft, QStringList() << text(),
+  QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::AlignLeft, QStringList() << text(),
                              mContext, mFormat );
 }
 
-void QgsTextPreview::setFormat( const QgsTextFormat& format )
+void QgsTextPreview::setFormat( const QgsTextFormat &format )
 {
   mFormat = format;
   update();

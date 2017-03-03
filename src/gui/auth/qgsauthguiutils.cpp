@@ -201,8 +201,8 @@ void QgsAuthGuiUtils::eraseAuthenticationDatabase( QgsMessageBar *msgbar, int ti
                                        parent,
                                        QObject::tr( "Erase Database" ),
                                        QObject::tr( "Are you sure you want to ERASE the entire authentication database?\n\n"
-                                                    "Operation can NOT be undone!\n\n"
-                                                    "(Current database will be backed up and new one created.)" ),
+                                           "Operation can NOT be undone!\n\n"
+                                           "(Current database will be backed up and new one created.)" ),
                                        QMessageBox::Ok | QMessageBox::Cancel,
                                        QMessageBox::Cancel );
 

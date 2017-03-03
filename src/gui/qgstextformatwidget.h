@@ -56,7 +56,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
      * @param mapCanvas associated map canvas
      * @param parent parent widget
      */
-    QgsTextFormatWidget( const QgsTextFormat& format = QgsTextFormat(), QgsMapCanvas* mapCanvas = nullptr, QWidget* parent = nullptr );
+    QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = nullptr, QWidget *parent = nullptr );
 
     ~QgsTextFormatWidget();
 
@@ -90,17 +90,17 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
      * @param parent parent widget
      * @param mode widget mode
      */
-    QgsTextFormatWidget( QgsMapCanvas* mapCanvas, QWidget* parent, Mode mode );
+    QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent, Mode mode );
 
     /** Updates the widget's state to reflect the settings in a QgsTextFormat.
      * @param format source format
      */
-    void updateWidgetForFormat( const QgsTextFormat& format );
+    void updateWidgetForFormat( const QgsTextFormat &format );
 
     /** Sets the background color for the text preview widget.
      * @param color background color
      */
-    void setPreviewBackground( const QColor& color );
+    void setPreviewBackground( const QColor &color );
 
     /** Controls whether data defined alignment buttons are enabled.
      * @param enable set to true to enable alignment controls
@@ -110,17 +110,17 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
     //! Text substitution list
     QgsStringReplacementCollection mSubstitutions;
     //! Quadrant button group
-    QButtonGroup* mQuadrantBtnGrp = nullptr;
+    QButtonGroup *mQuadrantBtnGrp = nullptr;
     //! Symbol direction button group
-    QButtonGroup* mDirectSymbBtnGrp = nullptr;
+    QButtonGroup *mDirectSymbBtnGrp = nullptr;
     //! Upside down labels button group
-    QButtonGroup* mUpsidedownBtnGrp = nullptr;
+    QButtonGroup *mUpsidedownBtnGrp = nullptr;
     //! Point placement button group
-    QButtonGroup* mPlacePointBtnGrp = nullptr;
+    QButtonGroup *mPlacePointBtnGrp = nullptr;
     //! Line placement button group
-    QButtonGroup* mPlaceLineBtnGrp = nullptr;
+    QButtonGroup *mPlaceLineBtnGrp = nullptr;
     //! Polygon placement button group
-    QButtonGroup* mPlacePolygonBtnGrp = nullptr;
+    QButtonGroup *mPlacePolygonBtnGrp = nullptr;
     //! Pixel size font limit
     int mMinPixelLimit;
 
@@ -134,8 +134,8 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
 
   private:
     Mode mWidgetMode;
-    QgsMapCanvas* mMapCanvas = nullptr;
-    QgsCharacterSelectorDialog* mCharDlg = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
+    QgsCharacterSelectorDialog *mCharDlg = nullptr;
 
     QFontDatabase mFontDB;
 
@@ -151,20 +151,20 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
     void blockFontChangeSignals( bool blk );
     void populateFontCapitalsComboBox();
     void populateFontStyleComboBox();
-    void updateFont( const QFont& font );
-    void connectValueChanged( const QList<QWidget *> &widgets, const char* slot );
+    void updateFont( const QFont &font );
+    void connectValueChanged( const QList<QWidget *> &widgets, const char *slot );
 
   private slots:
     void optionsStackedWidget_CurrentChanged( int indx );
     void showBackgroundRadius( bool show );
     void showBackgroundPenStyle( bool show );
-    void on_mShapeSVGPathLineEdit_textChanged( const QString& text );
-    void onSubstitutionsChanged( const QgsStringReplacementCollection& substitutions );
+    void on_mShapeSVGPathLineEdit_textChanged( const QString &text );
+    void onSubstitutionsChanged( const QgsStringReplacementCollection &substitutions );
     void previewScaleChanged( double scale );
     void on_mFontSizeSpinBox_valueChanged( double d );
     void on_mFontCapitalsComboBox_currentIndexChanged( int index );
-    void on_mFontFamilyCmbBx_currentFontChanged( const QFont& f );
-    void on_mFontStyleComboBox_currentIndexChanged( const QString & text );
+    void on_mFontFamilyCmbBx_currentFontChanged( const QFont &f );
+    void on_mFontStyleComboBox_currentIndexChanged( const QString &text );
     void on_mFontUnderlineBtn_toggled( bool ckd );
     void on_mFontStrikethroughBtn_toggled( bool ckd );
     void on_mFontWordSpacingSpinBox_valueChanged( double spacing );
@@ -179,7 +179,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
     void on_mShapeRotationCmbBx_currentIndexChanged( int index );
     void on_mShapeSVGParamsBtn_clicked();
     void on_mShapeSVGSelectorBtn_clicked();
-    void on_mPreviewTextEdit_textChanged( const QString & text );
+    void on_mPreviewTextEdit_textChanged( const QString &text );
     void on_mPreviewTextBtn_clicked();
     void on_mPreviewBackgroundBtn_colorChanged( const QColor &color );
     void on_mDirectSymbLeftToolBtn_clicked();
@@ -192,7 +192,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
     void changeBufferColor( const QColor &color );
     void updatePreview();
     void scrollPreview();
-    void updateSvgWidgets( const QString& svgPath );
+    void updateSvgWidgets( const QString &svgPath );
 };
 
 
@@ -219,7 +219,7 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
      * @param parent parent widget
      * @param fl window flags for dialog
      */
-    QgsTextFormatDialog( const QgsTextFormat& format, QgsMapCanvas* mapCanvas = nullptr, QWidget* parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
     virtual ~QgsTextFormatDialog();
 
@@ -229,7 +229,7 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
 
   private:
 
-    QgsTextFormatWidget* mFormatWidget = nullptr;
+    QgsTextFormatWidget *mFormatWidget = nullptr;
 };
 
 /** \class QgsTextFormatPanelWidget
@@ -254,7 +254,7 @@ class GUI_EXPORT QgsTextFormatPanelWidget : public QgsPanelWidgetWrapper
      * @param mapCanvas optional associated map canvas
      * @param parent parent widget
      */
-    QgsTextFormatPanelWidget( const QgsTextFormat& format, QgsMapCanvas* mapCanvas = nullptr, QWidget* parent = nullptr );
+    QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent = nullptr );
 
     /** Returns the current formatting settings defined by the widget.
      */
@@ -264,7 +264,7 @@ class GUI_EXPORT QgsTextFormatPanelWidget : public QgsPanelWidgetWrapper
 
   private:
 
-    QgsTextFormatWidget* mFormatWidget = nullptr;
+    QgsTextFormatWidget *mFormatWidget = nullptr;
 };
 
 #endif //QGSTEXTFORMATWIDGET_H

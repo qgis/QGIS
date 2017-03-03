@@ -47,13 +47,13 @@ class GUI_EXPORT QgsActionMenu : public QMenu
     struct GUI_EXPORT ActionData
     {
       ActionData();
-      ActionData( const QgsAction& action, QgsFeatureId featureId, QgsMapLayer* mapLayer );
-      ActionData( QgsMapLayerAction* action, QgsFeatureId featureId, QgsMapLayer* mapLayer );
+      ActionData( const QgsAction &action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
+      ActionData( QgsMapLayerAction *action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
 
       ActionType actionType;
       QVariant actionData;
       QgsFeatureId featureId;
-      QgsMapLayer* mapLayer = nullptr;
+      QgsMapLayer *mapLayer = nullptr;
     };
 
     /**
@@ -65,7 +65,7 @@ class GUI_EXPORT QgsActionMenu : public QMenu
      * @param parent   The usual QWidget parent.
      * @param actionScope The action scope this menu will run in
      */
-    explicit QgsActionMenu( QgsVectorLayer* layer, const QgsFeature& feature, const QString& actionScope, QWidget *parent = nullptr );
+    explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeature &feature, const QString &actionScope, QWidget *parent = nullptr );
 
     /**
      * Constructs a new QgsActionMenu
@@ -75,7 +75,7 @@ class GUI_EXPORT QgsActionMenu : public QMenu
      * @param parent   The usual QWidget parent.
      * @param actionScope The action scope this menu will run in
      */
-    explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeatureId fid, const QString& actionScope, QWidget *parent = nullptr );
+    explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeatureId fid, const QString &actionScope, QWidget *parent = nullptr );
 
     /**
      * Change the feature on which actions are performed
@@ -83,7 +83,7 @@ class GUI_EXPORT QgsActionMenu : public QMenu
      * @param feature  A feature. Will not take ownership. It's the callers responsibility to keep the feature
      *                 as long as the menu is displayed and the action is running.
      */
-    void setFeature( const QgsFeature& feature );
+    void setFeature( const QgsFeature &feature );
 
   signals:
     void reinit();
@@ -96,7 +96,7 @@ class GUI_EXPORT QgsActionMenu : public QMenu
     void init();
     QgsFeature feature();
 
-    QgsVectorLayer* mLayer = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
     QList<QgsAction> mActions;
     QgsFeature mFeature;
     QgsFeatureId mFeatureId;

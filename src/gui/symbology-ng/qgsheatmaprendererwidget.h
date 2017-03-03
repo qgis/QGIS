@@ -36,20 +36,20 @@ class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererWidget, private Ui
      * @param style
      * @param renderer the mask renderer (will not take ownership)
      */
-    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
 
     /** Constructor
      * @param layer the layer where this renderer is applied
      * @param style
      * @param renderer the mask renderer (will not take ownership)
      */
-    QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    QgsHeatmapRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
 
-    virtual QgsFeatureRenderer* renderer() override;
-    virtual void setContext( const QgsSymbolWidgetContext& context ) override;
+    virtual QgsFeatureRenderer *renderer() override;
+    virtual void setContext( const QgsSymbolWidgetContext &context ) override;
 
   private:
-    QgsHeatmapRenderer* mRenderer = nullptr;
+    QgsHeatmapRenderer *mRenderer = nullptr;
 
     QgsExpressionContext createExpressionContext() const override;
 
@@ -60,7 +60,7 @@ class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererWidget, private Ui
     void on_mRadiusSpinBox_valueChanged( double d );
     void on_mMaxSpinBox_valueChanged( double d );
     void on_mQualitySlider_valueChanged( int v );
-    void weightExpressionChanged( const QString& expression );
+    void weightExpressionChanged( const QString &expression );
 
 };
 

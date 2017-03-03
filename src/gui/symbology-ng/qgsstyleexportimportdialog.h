@@ -47,20 +47,20 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
 
     // constructor
     // mode argument must be 0 for saving and 1 for loading
-    QgsStyleExportImportDialog( QgsStyle* style, QWidget *parent = nullptr, Mode mode = Export );
+    QgsStyleExportImportDialog( QgsStyle *style, QWidget *parent = nullptr, Mode mode = Export );
     ~QgsStyleExportImportDialog();
 
     /**
      * @brief selectSymbols select symbols by name
      * @param symbolNames list of symbol names
      */
-    void selectSymbols( const QStringList& symbolNames );
+    void selectSymbols( const QStringList &symbolNames );
 
     /**
      * @brief deselectSymbols deselect symbols by name
      * @param symbolNames list of symbol names
      */
-    void deselectSymbols( const QStringList& symbolNames );
+    void deselectSymbols( const QStringList &symbolNames );
 
   public slots:
     void doExportImport();
@@ -84,25 +84,25 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
      * Select the symbols belonging to the given tag
      * @param tagName the name of the group to be selected
      */
-    void selectTag( const QString& tagName );
+    void selectTag( const QString &tagName );
 
     /**
      * Deselect the symbols belonging to the given tag
      * @param tagName the name of the group to be deselected
      */
-    void deselectTag( const QString& tagName );
+    void deselectTag( const QString &tagName );
 
     /**
      * @brief selectSmartgroup selects all symbols from a smart group
      * @param groupName
      */
-    void selectSmartgroup( const QString& groupName );
+    void selectSmartgroup( const QString &groupName );
 
     /**
      * @brief deselectSmartgroup deselects all symbols from a smart group
      * @param groupName
      */
-    void deselectSmartgroup( const QString& groupName );
+    void deselectSmartgroup( const QString &groupName );
 
     void importTypeChanged( int );
     void browse();
@@ -112,12 +112,12 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     void fileReadyRead();
     void updateProgress( qint64, qint64 );
     void downloadCanceled();
-    void selectionChanged( const QItemSelection & selected, const QItemSelection & deselected );
+    void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 
   private:
-    void downloadStyleXml( const QUrl& url );
-    bool populateStyles( QgsStyle* style );
-    void moveStyles( QModelIndexList* selection, QgsStyle* src, QgsStyle* dst );
+    void downloadStyleXml( const QUrl &url );
+    bool populateStyles( QgsStyle *style );
+    void moveStyles( QModelIndexList *selection, QgsStyle *src, QgsStyle *dst );
 
     QProgressDialog *mProgressDlg = nullptr;
     QgsStyleGroupSelectionDialog *mGroupSelectionDlg = nullptr;
@@ -128,8 +128,8 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     QString mFileName;
     Mode mDialogMode;
 
-    QgsStyle* mStyle = nullptr;
-    QgsStyle* mTempStyle = nullptr;
+    QgsStyle *mStyle = nullptr;
+    QgsStyle *mTempStyle = nullptr;
 };
 
 #endif // QGSSTYLEV2EXPORTIMPORTDIALOG_H

@@ -16,9 +16,9 @@
 #include "qgscomposeritemcombobox.h"
 #include "qgscomposermodel.h"
 
-QgsComposerItemComboBox::QgsComposerItemComboBox( QWidget *parent, QgsComposition* composition )
-    : QComboBox( parent )
-    , mProxyModel( nullptr )
+QgsComposerItemComboBox::QgsComposerItemComboBox( QWidget *parent, QgsComposition *composition )
+  : QComboBox( parent )
+  , mProxyModel( nullptr )
 {
   setComposition( composition );
 
@@ -39,12 +39,12 @@ void QgsComposerItemComboBox::setComposition( QgsComposition *composition )
   mProxyModel->sort( 0, Qt::AscendingOrder );
 }
 
-void QgsComposerItemComboBox::setItem( const QgsComposerItem* item )
+void QgsComposerItemComboBox::setItem( const QgsComposerItem *item )
 {
   if ( !mProxyModel->sourceLayerModel() )
     return;
 
-  QModelIndex idx = mProxyModel->sourceLayerModel()->indexForItem( const_cast< QgsComposerItem* >( item ) );
+  QModelIndex idx = mProxyModel->sourceLayerModel()->indexForItem( const_cast< QgsComposerItem * >( item ) );
   if ( idx.isValid() )
   {
     QModelIndex proxyIdx = mProxyModel->mapFromSource( idx );
@@ -59,7 +59,7 @@ void QgsComposerItemComboBox::setItem( const QgsComposerItem* item )
   emit itemChanged( currentItem() );
 }
 
-QgsComposerItem* QgsComposerItemComboBox::currentItem() const
+QgsComposerItem *QgsComposerItemComboBox::currentItem() const
 {
   return item( currentIndex() );
 }
@@ -93,16 +93,16 @@ QgsComposerItem::ItemType QgsComposerItemComboBox::itemType() const
   return mProxyModel->filterType();
 }
 
-void QgsComposerItemComboBox::setExceptedItemList( const QList< QgsComposerItem*>& exceptList )
+void QgsComposerItemComboBox::setExceptedItemList( const QList< QgsComposerItem *> &exceptList )
 {
   mProxyModel->setExceptedItemList( exceptList );
 }
 
-QList< QgsComposerItem*> QgsComposerItemComboBox::exceptedItemList() const
+QList< QgsComposerItem *> QgsComposerItemComboBox::exceptedItemList() const
 {
   return mProxyModel->exceptedItemList();
 }
-QgsComposerItem* QgsComposerItemComboBox::item( int index ) const
+QgsComposerItem *QgsComposerItemComboBox::item( int index ) const
 {
   const QModelIndex proxyIndex = mProxyModel->index( index, 0 );
   if ( !proxyIndex.isValid() )

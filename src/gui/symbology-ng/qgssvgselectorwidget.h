@@ -53,7 +53,7 @@ class GUI_EXPORT QgsSvgSelectorLoader : public QThread
     /** Constructor for QgsSvgSelectorLoader
      * @param parent parent object
      */
-    QgsSvgSelectorLoader( QObject* parent = nullptr );
+    QgsSvgSelectorLoader( QObject *parent = nullptr );
 
     ~QgsSvgSelectorLoader();
 
@@ -71,7 +71,7 @@ class GUI_EXPORT QgsSvgSelectorLoader : public QThread
     /** Sets the root path containing SVG images to load. If no path is set, the default SVG
      * search paths will be used instead.
      */
-    void setPath( const QString& path )
+    void setPath( const QString &path )
     {
       mPath = path;
     }
@@ -94,8 +94,8 @@ class GUI_EXPORT QgsSvgSelectorLoader : public QThread
     int mTimerThreshold;
     QSet< QString > mTraversedPaths;
 
-    void loadPath( const QString& path );
-    void loadImages( const QString& path );
+    void loadPath( const QString &path );
+    void loadImages( const QString &path );
 
 };
 
@@ -113,7 +113,7 @@ class GUI_EXPORT QgsSvgGroupLoader : public QThread
     /** Constructor for QgsSvgGroupLoader
      * @param parent parent object
      */
-    QgsSvgGroupLoader( QObject* parent = nullptr );
+    QgsSvgGroupLoader( QObject *parent = nullptr );
 
     ~QgsSvgGroupLoader();
 
@@ -130,7 +130,7 @@ class GUI_EXPORT QgsSvgGroupLoader : public QThread
     /** Sets the root path containing child paths to find. If no path is set, the default SVG
      * search paths will be used instead.
      */
-    void setParentPaths( const QStringList& parentPaths )
+    void setParentPaths( const QStringList &parentPaths )
     {
       mParentPaths = parentPaths;
     }
@@ -141,7 +141,7 @@ class GUI_EXPORT QgsSvgGroupLoader : public QThread
      * of SVG images to prevent spamming any connected model.
      * @param svgs list of SVGs and preview images found.
      */
-    void foundPath( const QString& parentPath, const QString& path );
+    void foundPath( const QString &parentPath, const QString &path );
 
   private:
 
@@ -149,7 +149,7 @@ class GUI_EXPORT QgsSvgGroupLoader : public QThread
     bool mCanceled;
     QSet< QString > mTraversedPaths;
 
-    void loadGroup( const QString& parentPath );
+    void loadGroup( const QString &parentPath );
 
 };
 
@@ -172,30 +172,30 @@ class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
      * search paths will be shown.
      * @param parent parent object
      */
-    QgsSvgSelectorListModel( QObject* parent );
+    QgsSvgSelectorListModel( QObject *parent );
 
     /** Constructor for creating a model for SVG files in a specific path.
      * @param parent parent object
      * @param path initial path, which is recursively searched
      */
-    QgsSvgSelectorListModel( QObject* parent, const QString& path );
+    QgsSvgSelectorListModel( QObject *parent, const QString &path );
 
-    int rowCount( const QModelIndex & parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const override;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
 
   protected:
     QStringList mSvgFiles;
 
   private:
-    QPixmap createPreview( const QString& entry ) const;
-    QgsSvgSelectorLoader* mSvgLoader = nullptr;
+    QPixmap createPreview( const QString &entry ) const;
+    QgsSvgSelectorLoader *mSvgLoader = nullptr;
 
   private slots:
 
     /** Called to add SVG files to the model.
      * @param svgs list of SVG files to add to model.
      */
-    void addSvgs( const QStringList& svgs );
+    void addSvgs( const QStringList &svgs );
 
 };
 
@@ -211,16 +211,16 @@ class GUI_EXPORT QgsSvgSelectorGroupsModel : public QStandardItemModel
     Q_OBJECT
 
   public:
-    QgsSvgSelectorGroupsModel( QObject* parent );
+    QgsSvgSelectorGroupsModel( QObject *parent );
     ~QgsSvgSelectorGroupsModel();
 
   private:
-    QgsSvgGroupLoader* mLoader = nullptr;
-    QHash< QString, QStandardItem* > mPathItemHash;
+    QgsSvgGroupLoader *mLoader = nullptr;
+    QHash< QString, QStandardItem * > mPathItemHash;
 
   private slots:
 
-    void addPath( const QString& parentPath, const QString& path );
+    void addPath( const QString &parentPath, const QString &path );
 };
 
 /** \ingroup gui
@@ -231,39 +231,39 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     Q_OBJECT
 
   public:
-    QgsSvgSelectorWidget( QWidget* parent = nullptr );
+    QgsSvgSelectorWidget( QWidget *parent = nullptr );
     ~QgsSvgSelectorWidget();
 
-    static QgsSvgSelectorWidget* create( QWidget* parent = nullptr ) { return new QgsSvgSelectorWidget( parent ); }
+    static QgsSvgSelectorWidget *create( QWidget *parent = nullptr ) { return new QgsSvgSelectorWidget( parent ); }
 
     QString currentSvgPath() const;
     QString currentSvgPathToName() const;
 
-    QTreeView* groupsTreeView() { return mGroupsTreeView; }
-    QListView* imagesListView() { return mImagesListView; }
-    QLineEdit* filePathLineEdit() { return mFileLineEdit; }
-    QPushButton* filePathButton() { return mFilePushButton; }
-    QCheckBox* relativePathCheckbox() { return mRelativePathChkBx; }
-    QLayout* selectorLayout() { return this->layout(); }
+    QTreeView *groupsTreeView() { return mGroupsTreeView; }
+    QListView *imagesListView() { return mImagesListView; }
+    QLineEdit *filePathLineEdit() { return mFileLineEdit; }
+    QPushButton *filePathButton() { return mFilePushButton; }
+    QCheckBox *relativePathCheckbox() { return mRelativePathChkBx; }
+    QLayout *selectorLayout() { return this->layout(); }
 
   public slots:
     //! Accepts absolute and relative paths
-    void setSvgPath( const QString& svgPath );
+    void setSvgPath( const QString &svgPath );
 
   signals:
-    void svgSelected( const QString& path );
+    void svgSelected( const QString &path );
 
   protected:
     void populateList();
 
   private slots:
-    void populateIcons( const QModelIndex& idx );
-    void svgSelectionChanged( const QModelIndex& idx );
-    void updateCurrentSvgPath( const QString& svgPath );
+    void populateIcons( const QModelIndex &idx );
+    void svgSelectionChanged( const QModelIndex &idx );
+    void updateCurrentSvgPath( const QString &svgPath );
 
     void on_mFilePushButton_clicked();
-    void updateLineEditFeedback( bool ok, const QString& tip = QString() );
-    void on_mFileLineEdit_textChanged( const QString& text );
+    void updateLineEditFeedback( bool ok, const QString &tip = QString() );
+    void on_mFileLineEdit_textChanged( const QString &text );
 
   private:
     QString mCurrentSvgPath; // always stored as absolute path
@@ -281,24 +281,24 @@ class GUI_EXPORT QgsSvgSelectorDialog : public QDialog
     /**
      * Constructor for QgsSvgSelectorDialog.
      */
-    QgsSvgSelectorDialog( QWidget* parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
+    QgsSvgSelectorDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
                           QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok,
                           Qt::Orientation orientation = Qt::Horizontal );
     ~QgsSvgSelectorDialog();
 
     //! Returns the central layout. Widgets added to it must have this dialog as parent
-    QVBoxLayout* layout() { return mLayout; }
+    QVBoxLayout *layout() { return mLayout; }
 
     //! Returns the button box
-    QDialogButtonBox* buttonBox() { return mButtonBox; }
+    QDialogButtonBox *buttonBox() { return mButtonBox; }
 
     //! Returns pointer to the embedded SVG selector widget
-    QgsSvgSelectorWidget* svgSelector() { return mSvgSelector; }
+    QgsSvgSelectorWidget *svgSelector() { return mSvgSelector; }
 
   protected:
-    QVBoxLayout* mLayout = nullptr;
-    QDialogButtonBox* mButtonBox = nullptr;
-    QgsSvgSelectorWidget* mSvgSelector = nullptr;
+    QVBoxLayout *mLayout = nullptr;
+    QDialogButtonBox *mButtonBox = nullptr;
+    QgsSvgSelectorWidget *mSvgSelector = nullptr;
 };
 
 #endif // QGSSVGSELECTORWIDGET_H

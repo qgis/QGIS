@@ -49,7 +49,7 @@ class GUI_EXPORT QgsAuthConfigEdit : public QDialog, private Ui::QgsAuthConfigEd
      * @param authcfg Authentication config id for a existing config in auth database
      * @param dataprovider The provider origin of the edit, to allow for customized code and filtering
      */
-    explicit QgsAuthConfigEdit( QWidget *parent = nullptr, const QString& authcfg = QString(),
+    explicit QgsAuthConfigEdit( QWidget *parent = nullptr, const QString &authcfg = QString(),
                                 const QString &dataprovider = QString() );
 
     //! Authentication config id, updated with generated id when a new config is saved to auth database
@@ -57,10 +57,10 @@ class GUI_EXPORT QgsAuthConfigEdit : public QDialog, private Ui::QgsAuthConfigEd
 
   signals:
     //! Emit generated id when a new config is saved to auth database
-    void authenticationConfigStored( const QString& authcfg );
+    void authenticationConfigStored( const QString &authcfg );
 
     //! Emit current id when an existing config is updated in auth database
-    void authenticationConfigUpdated( const QString& authcfg );
+    void authenticationConfigUpdated( const QString &authcfg );
 
   private slots:
     void populateAuthMethods();
@@ -74,7 +74,7 @@ class GUI_EXPORT QgsAuthConfigEdit : public QDialog, private Ui::QgsAuthConfigEd
 
     void validateAuth();
 
-    void on_leName_textChanged( const QString& txt );
+    void on_leName_textChanged( const QString &txt );
 
   private:
     int authMethodIndex( const QString &authMethodKey );

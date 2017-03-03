@@ -20,12 +20,12 @@
 #include "qgsrasterlayer.h"
 #include "qgsmapcanvas.h"
 
-void QgsRasterRendererWidget::setMapCanvas( QgsMapCanvas* canvas )
+void QgsRasterRendererWidget::setMapCanvas( QgsMapCanvas *canvas )
 {
   mCanvas = canvas;
 }
 
-QgsMapCanvas* QgsRasterRendererWidget::mapCanvas()
+QgsMapCanvas *QgsRasterRendererWidget::mapCanvas()
 {
   return mCanvas;
 }
@@ -38,7 +38,7 @@ QString QgsRasterRendererWidget::displayBandName( int band ) const
     return name;
   }
 
-  const QgsRasterDataProvider* provider = mRasterLayer->dataProvider();
+  const QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
   if ( !provider )
   {
     return name;

@@ -27,11 +27,11 @@
 #define CLEAR_ICON_SIZE 16
 
 QgsSpinBox::QgsSpinBox( QWidget *parent )
-    : QSpinBox( parent )
-    , mShowClearButton( true )
-    , mClearValueMode( MinimumValue )
-    , mCustomClearValue( 0 )
-    , mExpressionsEnabled( true )
+  : QSpinBox( parent )
+  , mShowClearButton( true )
+  , mClearValueMode( MinimumValue )
+  , mCustomClearValue( 0 )
+  , mExpressionsEnabled( true )
 {
   mLineEdit = new QgsSpinBoxLineEdit();
 
@@ -78,7 +78,7 @@ void QgsSpinBox::clear()
   setValue( clearValue() );
 }
 
-void QgsSpinBox::setClearValue( int customValue, const QString& specialValueText )
+void QgsSpinBox::setClearValue( int customValue, const QString &specialValueText )
 {
   mClearValueMode = CustomValue;
   mCustomClearValue = customValue;
@@ -92,7 +92,7 @@ void QgsSpinBox::setClearValue( int customValue, const QString& specialValueText
   }
 }
 
-void QgsSpinBox::setClearValueMode( QgsSpinBox::ClearValueMode mode, const QString& specialValueText )
+void QgsSpinBox::setClearValueMode( QgsSpinBox::ClearValueMode mode, const QString &specialValueText )
 {
   mClearValueMode = mode;
   mCustomClearValue = 0;

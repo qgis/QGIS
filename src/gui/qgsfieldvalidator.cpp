@@ -30,11 +30,11 @@
 #include "qgsfields.h"
 #include "qgsapplication.h"
 
-QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, const QString& defaultValue, const QString& dateFormat )
-    : QValidator( parent )
-    , mField( field )
-    , mDefaultValue( defaultValue )
-    , mDateFormat( dateFormat )
+QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, const QString &defaultValue, const QString &dateFormat )
+  : QValidator( parent )
+  , mField( field )
+  , mDefaultValue( defaultValue )
+  , mDateFormat( dateFormat )
 {
   switch ( mField.type() )
   {

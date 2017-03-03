@@ -16,10 +16,10 @@
 #include "qgseditorconfigwidget.h"
 
 
-QgsEditorConfigWidget::QgsEditorConfigWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QWidget( parent )
-    , mLayer( vl )
-    , mField( fieldIdx )
+QgsEditorConfigWidget::QgsEditorConfigWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
+  : QWidget( parent )
+  , mLayer( vl )
+  , mField( fieldIdx )
 
 {
 }
@@ -29,7 +29,7 @@ int QgsEditorConfigWidget::field()
   return mField;
 }
 
-QgsVectorLayer*QgsEditorConfigWidget::layer()
+QgsVectorLayer *QgsEditorConfigWidget::layer()
 {
   return mLayer;
 }

@@ -23,11 +23,11 @@
 
 #include <QSettings>
 
-QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer* layer, const QString& startText, QWidget* parent )
-    : QDialog( parent )
-    , mLayer( layer )
-    , mMessageBar( nullptr )
-    , mMapCanvas( nullptr )
+QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *layer, const QString &startText, QWidget *parent )
+  : QDialog( parent )
+  , mLayer( layer )
+  , mMessageBar( nullptr )
+  , mMapCanvas( nullptr )
 {
   setupUi( this );
 
@@ -59,12 +59,12 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer* laye
   restoreGeometry( settings.value( QStringLiteral( "/Windows/ExpressionSelectionDialog/geometry" ) ).toByteArray() );
 }
 
-QgsExpressionBuilderWidget* QgsExpressionSelectionDialog::expressionBuilder()
+QgsExpressionBuilderWidget *QgsExpressionSelectionDialog::expressionBuilder()
 {
   return mExpressionBuilder;
 }
 
-void QgsExpressionSelectionDialog::setExpressionText( const QString& text )
+void QgsExpressionSelectionDialog::setExpressionText( const QString &text )
 {
   mExpressionBuilder->setExpressionText( text );
 }
@@ -74,18 +74,18 @@ QString QgsExpressionSelectionDialog::expressionText()
   return mExpressionBuilder->expressionText();
 }
 
-void QgsExpressionSelectionDialog::setGeomCalculator( const QgsDistanceArea & da )
+void QgsExpressionSelectionDialog::setGeomCalculator( const QgsDistanceArea &da )
 {
   // Store in child widget only.
   mExpressionBuilder->setGeomCalculator( da );
 }
 
-void QgsExpressionSelectionDialog::setMessageBar( QgsMessageBar* messageBar )
+void QgsExpressionSelectionDialog::setMessageBar( QgsMessageBar *messageBar )
 {
   mMessageBar = messageBar;
 }
 
-void QgsExpressionSelectionDialog::setMapCanvas( QgsMapCanvas* canvas )
+void QgsExpressionSelectionDialog::setMapCanvas( QgsMapCanvas *canvas )
 {
   mMapCanvas = canvas;
   mButtonZoomToFeatures->setVisible( true );

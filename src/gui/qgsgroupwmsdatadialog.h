@@ -45,13 +45,13 @@ class GUI_EXPORT QgsGroupWmsDataDialog: public QDialog, private Ui::QgsGroupWMSD
 
   public slots:
     //! set group WMS title
-    void setGroupTitle( const QString& title );
+    void setGroupTitle( const QString &title );
 
     //! set group WMS short name
-    void setGroupShortName( const QString& shortName );
+    void setGroupShortName( const QString &shortName );
 
     //! set group WMS abstract
-    void setGroupAbstract( const QString& abstract );
+    void setGroupAbstract( const QString &abstract );
 
 
   private:

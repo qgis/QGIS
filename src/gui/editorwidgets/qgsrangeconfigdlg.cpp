@@ -17,8 +17,8 @@
 
 #include "qgsvectorlayer.h"
 
-QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent )
-    : QgsEditorConfigWidget( vl, fieldIdx, parent )
+QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
+  : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
 
@@ -109,7 +109,7 @@ QVariantMap QgsRangeConfigDlg::config()
   return cfg;
 }
 
-void QgsRangeConfigDlg::setConfig( const QVariantMap& config )
+void QgsRangeConfigDlg::setConfig( const QVariantMap &config )
 {
   minimumDoubleSpinBox->setValue( config.value( QStringLiteral( "Min" ), -std::numeric_limits<double>::max() ).toDouble() );
   maximumDoubleSpinBox->setValue( config.value( QStringLiteral( "Max" ), std::numeric_limits<double>::max() ).toDouble() );

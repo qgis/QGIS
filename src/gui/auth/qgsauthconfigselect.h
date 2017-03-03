@@ -42,7 +42,7 @@ class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfig
     explicit QgsAuthConfigSelect( QWidget *parent = nullptr, const QString &dataprovider = QString() );
 
     //! Set the authentication config id for the resource
-    void setConfigId( const QString& authcfg );
+    void setConfigId( const QString &authcfg );
 
     //! Get the authentication config id for the resource
     const QString configId() const { return mAuthCfg; }
@@ -52,10 +52,10 @@ class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfig
 
   signals:
     //! Emitted when authentication config is changed or missing
-    void selectedConfigIdChanged( const QString& authcfg );
+    void selectedConfigIdChanged( const QString &authcfg );
 
     //! Emitted when authentication config is removed
-    void selectedConfigIdRemoved( const QString& authcfg );
+    void selectedConfigIdRemoved( const QString &authcfg );
 
   public slots:
     //! Show a small message bar with a close button

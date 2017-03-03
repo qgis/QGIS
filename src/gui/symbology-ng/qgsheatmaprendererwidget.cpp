@@ -28,7 +28,7 @@
 #include <QGridLayout>
 #include <QLabel>
 
-QgsRendererWidget* QgsHeatmapRendererWidget::create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
+QgsRendererWidget *QgsHeatmapRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {
   return new QgsHeatmapRendererWidget( layer, style, renderer );
 }
@@ -37,13 +37,13 @@ QgsExpressionContext QgsHeatmapRendererWidget::createExpressionContext() const
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-  << QgsExpressionContextUtils::atlasScope( nullptr );
+             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+             << QgsExpressionContextUtils::atlasScope( nullptr );
 
   if ( mContext.mapCanvas() )
   {
     expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
-    << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
+               << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
   }
   else
   {
@@ -54,7 +54,7 @@ QgsExpressionContext QgsHeatmapRendererWidget::createExpressionContext() const
     expContext << QgsExpressionContextUtils::layerScope( vectorLayer() );
 
   // additional scopes
-  Q_FOREACH ( const QgsExpressionContextScope& scope, mContext.additionalExpressionContextScopes() )
+  Q_FOREACH ( const QgsExpressionContextScope &scope, mContext.additionalExpressionContextScopes() )
   {
     expContext.appendScope( new QgsExpressionContextScope( scope ) );
   }
@@ -62,9 +62,9 @@ QgsExpressionContext QgsHeatmapRendererWidget::createExpressionContext() const
   return expContext;
 }
 
-QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
-    : QgsRendererWidget( layer, style )
-    , mRenderer( nullptr )
+QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
+  : QgsRendererWidget( layer, style )
+  , mRenderer( nullptr )
 {
   if ( !layer )
   {
@@ -75,7 +75,7 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsSt
   {
     //setup blank dialog
     mRenderer = nullptr;
-    QLabel* label = new QLabel( tr( "The heatmap renderer only applies to point and multipoint layers. \n"
+    QLabel *label = new QLabel( tr( "The heatmap renderer only applies to point and multipoint layers. \n"
                                     "'%1' is not a point layer and cannot be rendered as a heatmap." )
                                 .arg( layer->name() ), this );
     layout()->addWidget( label );
@@ -127,12 +127,12 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsSt
   connect( mWeightExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( weightExpressionChanged( QString ) ) );
 }
 
-QgsFeatureRenderer* QgsHeatmapRendererWidget::renderer()
+QgsFeatureRenderer *QgsHeatmapRendererWidget::renderer()
 {
   return mRenderer;
 }
 
-void QgsHeatmapRendererWidget::setContext( const QgsSymbolWidgetContext& context )
+void QgsHeatmapRendererWidget::setContext( const QgsSymbolWidgetContext &context )
 {
   QgsRendererWidget::setContext( context );
   if ( context.mapCanvas() )
@@ -146,7 +146,7 @@ void QgsHeatmapRendererWidget::applyColorRamp()
     return;
   }
 
-  QgsColorRamp* ramp = btnColorRamp->colorRamp();
+  QgsColorRamp *ramp = btnColorRamp->colorRamp();
   if ( !ramp )
     return;
 
@@ -199,7 +199,7 @@ void QgsHeatmapRendererWidget::on_mQualitySlider_valueChanged( int v )
   emit widgetChanged();
 }
 
-void QgsHeatmapRendererWidget::weightExpressionChanged( const QString& expression )
+void QgsHeatmapRendererWidget::weightExpressionChanged( const QString &expression )
 {
   mRenderer->setWeightExpression( expression );
   emit widgetChanged();

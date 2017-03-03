@@ -50,7 +50,7 @@ class GUI_EXPORT QgsFileDownloader : public QObject
      * @param outputFileName file name where the downloaded content will be stored
      * @param guiNotificationsEnabled if false, the downloader will not display any progress bar or error message
      */
-    QgsFileDownloader( const QUrl& url, const QString& outputFileName, bool guiNotificationsEnabled = true );
+    QgsFileDownloader( const QUrl &url, const QString &outputFileName, bool guiNotificationsEnabled = true );
 
   signals:
     //! Emitted when the download has completed successfully
@@ -105,12 +105,12 @@ class GUI_EXPORT QgsFileDownloader : public QObject
      * Abort current request and show an error if the instance has GUI
      * notifications enabled.
      */
-    void error( const QStringList& errorMessages );
-    void error( const QString& errorMessage );
+    void error( const QStringList &errorMessages );
+    void error( const QString &errorMessage );
     QUrl mUrl;
-    QNetworkReply* mReply = nullptr;
+    QNetworkReply *mReply = nullptr;
     QFile mFile;
-    QProgressDialog* mProgressDialog = nullptr;
+    QProgressDialog *mProgressDialog = nullptr;
     bool mDownloadCanceled;
     QStringList mErrors;
     bool mGuiNotificationsEnabled;

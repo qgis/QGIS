@@ -33,26 +33,26 @@ class GUI_EXPORT QgsStyleGroupSelectionDialog : public QDialog, private Ui::Symb
     Q_OBJECT
 
   public:
-    QgsStyleGroupSelectionDialog( QgsStyle* style, QWidget *parent = nullptr );
+    QgsStyleGroupSelectionDialog( QgsStyle *style, QWidget *parent = nullptr );
     //! Set bold font for item
     void setBold( QStandardItem *item );
 
   signals:
     //! tag with tagName has been selected
-    void tagSelected( const QString& tagName );
+    void tagSelected( const QString &tagName );
     //! tag with tagName has been deselected
-    void tagDeselected( const QString& tagName );
+    void tagDeselected( const QString &tagName );
     //! smartgroup with groupName has been selected
-    void smartgroupSelected( const QString& groupName );
+    void smartgroupSelected( const QString &groupName );
     //! smart group with groupName has been deselected
-    void smartgroupDeselected( const QString& groupName );
+    void smartgroupDeselected( const QString &groupName );
     //! all deselected
     void allDeselected();
     //! all selected
     void allSelected();
 
   private slots:
-    void groupTreeSelectionChanged( const QItemSelection& selected, const QItemSelection& deselected );
+    void groupTreeSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 
   private:
 
@@ -61,7 +61,7 @@ class GUI_EXPORT QgsStyleGroupSelectionDialog : public QDialog, private Ui::Symb
      * @param parent
      */
     void buildTagTree( QStandardItem *&parent );
-    QgsStyle* mStyle = nullptr;
+    QgsStyle *mStyle = nullptr;
 
 };
 

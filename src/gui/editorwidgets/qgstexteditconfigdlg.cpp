@@ -15,8 +15,8 @@
 
 #include "qgstexteditconfigdlg.h"
 
-QgsTextEditConfigDlg::QgsTextEditConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsEditorConfigWidget( vl, fieldIdx, parent )
+QgsTextEditConfigDlg::QgsTextEditConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
+  : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
   connect( mIsMultiline, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
@@ -34,7 +34,7 @@ QVariantMap QgsTextEditConfigDlg::config()
   return cfg;
 }
 
-void QgsTextEditConfigDlg::setConfig( const QVariantMap& config )
+void QgsTextEditConfigDlg::setConfig( const QVariantMap &config )
 {
   mIsMultiline->setChecked( config.value( QStringLiteral( "IsMultiline" ) ).toBool() );
   mUseHtml->setChecked( config.value( QStringLiteral( "UseHtml" ) ).toBool() );

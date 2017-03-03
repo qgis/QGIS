@@ -32,7 +32,7 @@ class GUI_EXPORT QgsFloatingWidget: public QWidget
 {
     Q_OBJECT
     Q_ENUMS( AnchorPoint )
-    Q_PROPERTY( QWidget* anchorWidget READ anchorWidget WRITE setAnchorWidget NOTIFY anchorWidgetChanged )
+    Q_PROPERTY( QWidget *anchorWidget READ anchorWidget WRITE setAnchorWidget NOTIFY anchorWidgetChanged )
     Q_PROPERTY( AnchorPoint anchorPoint READ anchorPoint WRITE setAnchorPoint NOTIFY anchorPointChanged )
     Q_PROPERTY( AnchorPoint anchorWidgetPoint READ anchorWidgetPoint WRITE setAnchorWidgetPoint NOTIFY anchorWidgetPointChanged )
 
@@ -55,20 +55,20 @@ class GUI_EXPORT QgsFloatingWidget: public QWidget
     /** Constructor for QgsFloatingWidget.
      * @param parent parent widget
      */
-    QgsFloatingWidget( QWidget* parent = nullptr );
+    QgsFloatingWidget( QWidget *parent = nullptr );
 
     /** Sets the widget to "anchor" the floating widget to. The floating widget will be repositioned whenever the
      * anchor widget moves or is resized so that it maintains the same relative position to the anchor widget.
      * @param widget anchor widget. Both the floating widget and the anchor widget must share some common parent.
      * @see anchorWidget()
      */
-    void setAnchorWidget( QWidget* widget );
+    void setAnchorWidget( QWidget *widget );
 
     /** Returns the widget that the floating widget is "anchored" tto. The floating widget will be repositioned whenever the
      * anchor widget moves or is resized so that it maintains the same relative position to the anchor widget.
      * @see setAnchorWidget()
      */
-    QWidget* anchorWidget();
+    QWidget *anchorWidget();
 
     /** Returns the floating widget's anchor point, which corresponds to the point on the widget which should remain
      * fixed in the same relative position whenever the widget's parent is resized or moved.
@@ -100,7 +100,7 @@ class GUI_EXPORT QgsFloatingWidget: public QWidget
   signals:
 
     //! Emitted when the anchor widget changes
-    void anchorWidgetChanged( QWidget* widget );
+    void anchorWidgetChanged( QWidget *widget );
 
     //! Emitted when the anchor point changes
     void anchorPointChanged( AnchorPoint point );
@@ -109,8 +109,8 @@ class GUI_EXPORT QgsFloatingWidget: public QWidget
     void anchorWidgetPointChanged( AnchorPoint point );
 
   protected:
-    void showEvent( QShowEvent* e ) override;
-    virtual void paintEvent( QPaintEvent* e ) override;
+    void showEvent( QShowEvent *e ) override;
+    virtual void paintEvent( QPaintEvent *e ) override;
 
   private slots:
 
@@ -119,9 +119,9 @@ class GUI_EXPORT QgsFloatingWidget: public QWidget
 
   private:
 
-    QWidget* mAnchorWidget = nullptr;
-    QgsFloatingWidgetEventFilter* mParentEventFilter = nullptr;
-    QgsFloatingWidgetEventFilter* mAnchorEventFilter = nullptr;
+    QWidget *mAnchorWidget = nullptr;
+    QgsFloatingWidgetEventFilter *mParentEventFilter = nullptr;
+    QgsFloatingWidgetEventFilter *mAnchorEventFilter = nullptr;
     AnchorPoint mFloatAnchorPoint;
     AnchorPoint mAnchorWidgetAnchorPoint;
 
@@ -135,9 +135,9 @@ class QgsFloatingWidgetEventFilter: public QObject
 
   public:
 
-    QgsFloatingWidgetEventFilter( QWidget* parent = nullptr );
+    QgsFloatingWidgetEventFilter( QWidget *parent = nullptr );
 
-    virtual bool eventFilter( QObject* object, QEvent* event ) override;
+    virtual bool eventFilter( QObject *object, QEvent *event ) override;
 
   signals:
 

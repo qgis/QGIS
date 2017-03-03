@@ -23,14 +23,14 @@
 #include <QFocusEvent>
 #include <QPainter>
 
-QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent, const QString& nullValue )
-    : QLineEdit( parent )
-    , mClearButtonVisible( true )
-    , mSearchIconVisible( false )
-    , mClearMode( ClearToNull )
-    , mNullValue( nullValue )
-    , mFocusInEvent( false )
-    , mClearHover( false )
+QgsFilterLineEdit::QgsFilterLineEdit( QWidget *parent, const QString &nullValue )
+  : QLineEdit( parent )
+  , mClearButtonVisible( true )
+  , mSearchIconVisible( false )
+  , mClearMode( ClearToNull )
+  , mNullValue( nullValue )
+  , mFocusInEvent( false )
+  , mClearHover( false )
 {
   // need mouse tracking to handle cursor changes
   setMouseTracking( true );
@@ -45,8 +45,8 @@ QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent, const QString& nullValue 
   mSearchIconSize = QSize( 16, 16 );
   mSearchIconPixmap = searchIcon.pixmap( mSearchIconSize );
 
-  connect( this, SIGNAL( textChanged( const QString& ) ), this,
-           SLOT( onTextChanged( const QString& ) ) );
+  connect( this, SIGNAL( textChanged( const QString & ) ), this,
+           SLOT( onTextChanged( const QString & ) ) );
 }
 
 void QgsFilterLineEdit::setShowClearButton( bool visible )
@@ -70,7 +70,7 @@ void QgsFilterLineEdit::setShowSearchIcon( bool visible )
   }
 }
 
-void QgsFilterLineEdit::mousePressEvent( QMouseEvent* e )
+void QgsFilterLineEdit::mousePressEvent( QMouseEvent *e )
 {
   if ( !mFocusInEvent )
     QLineEdit::mousePressEvent( e );
@@ -83,7 +83,7 @@ void QgsFilterLineEdit::mousePressEvent( QMouseEvent* e )
   }
 }
 
-void QgsFilterLineEdit::mouseMoveEvent( QMouseEvent* e )
+void QgsFilterLineEdit::mouseMoveEvent( QMouseEvent *e )
 {
   QLineEdit::mouseMoveEvent( e );
   if ( shouldShowClear() && clearRect().contains( e->pos() ) )
@@ -103,7 +103,7 @@ void QgsFilterLineEdit::mouseMoveEvent( QMouseEvent* e )
   }
 }
 
-void QgsFilterLineEdit::focusInEvent( QFocusEvent* e )
+void QgsFilterLineEdit::focusInEvent( QFocusEvent *e )
 {
   QLineEdit::focusInEvent( e );
   if ( e->reason() == Qt::MouseFocusReason && isNull() )
@@ -137,7 +137,7 @@ void QgsFilterLineEdit::clearValue()
   emit cleared();
 }
 
-void QgsFilterLineEdit::paintEvent( QPaintEvent* e )
+void QgsFilterLineEdit::paintEvent( QPaintEvent *e )
 {
   QLineEdit::paintEvent( e );
   if ( shouldShowClear() )
@@ -145,20 +145,20 @@ void QgsFilterLineEdit::paintEvent( QPaintEvent* e )
     QRect r = clearRect();
     QPainter p( this );
     if ( mClearHover )
-      p.drawPixmap( r.left() , r.top() , mClearHoverPixmap );
+      p.drawPixmap( r.left(), r.top(), mClearHoverPixmap );
     else
-      p.drawPixmap( r.left() , r.top() , mClearIconPixmap );
+      p.drawPixmap( r.left(), r.top(), mClearIconPixmap );
   }
 
   if ( mSearchIconVisible && !shouldShowClear() )
   {
     QRect r = searchRect();
     QPainter p( this );
-    p.drawPixmap( r.left() , r.top() , mSearchIconPixmap );
+    p.drawPixmap( r.left(), r.top(), mSearchIconPixmap );
   }
 }
 
-void QgsFilterLineEdit::leaveEvent( QEvent* e )
+void QgsFilterLineEdit::leaveEvent( QEvent *e )
 {
   if ( mClearHover )
   {

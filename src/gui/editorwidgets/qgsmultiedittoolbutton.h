@@ -54,7 +54,7 @@ class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
      * and tooltips to match the field properties.
      * @param field associated field
      */
-    void setField( const QgsField& field ) { mField = field; }
+    void setField( const QgsField &field ) { mField = field; }
 
   public slots:
 
@@ -107,7 +107,7 @@ class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
     State mState;
     QgsField mField;
 
-    QMenu* mMenu = nullptr;
+    QMenu *mMenu = nullptr;
 
     void updateState();
 

@@ -23,11 +23,11 @@
 #include <QSettings>
 
 QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
-    : QWidget( parent )
+  : QWidget( parent )
 {
   mDialog = new QgsProjectionSelectionDialog( this );
 
-  QHBoxLayout* layout = new QHBoxLayout();
+  QHBoxLayout *layout = new QHBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->setSpacing( 0 );
   setLayout( layout );
@@ -67,7 +67,7 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
 
 QgsCoordinateReferenceSystem QgsProjectionSelectionWidget::crs() const
 {
-  switch (( CrsOption )mCrsComboBox->currentData().toInt() )
+  switch ( ( CrsOption )mCrsComboBox->currentData().toInt() )
   {
     case QgsProjectionSelectionWidget::LayerCrs:
       return mLayerCrs;
@@ -147,7 +147,7 @@ void QgsProjectionSelectionWidget::setOptionVisible( const QgsProjectionSelectio
   }
 }
 
-void QgsProjectionSelectionWidget::setNotSetText( const QString& text )
+void QgsProjectionSelectionWidget::setNotSetText( const QString &text )
 {
   mNotSetText = text;
   int optionIndex = mCrsComboBox->findData( CrsNotSet );
@@ -195,7 +195,7 @@ void QgsProjectionSelectionWidget::addNotSetOption()
 
 void QgsProjectionSelectionWidget::comboIndexChanged( int idx )
 {
-  switch (( CrsOption )mCrsComboBox->itemData( idx ).toInt() )
+  switch ( ( CrsOption )mCrsComboBox->itemData( idx ).toInt() )
   {
     case QgsProjectionSelectionWidget::LayerCrs:
       emit crsChanged( mLayerCrs );
@@ -223,7 +223,7 @@ void QgsProjectionSelectionWidget::comboIndexChanged( int idx )
   }
 }
 
-void QgsProjectionSelectionWidget::setCrs( const QgsCoordinateReferenceSystem& crs )
+void QgsProjectionSelectionWidget::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
   if ( crs.isValid() )
   {
@@ -297,7 +297,7 @@ void QgsProjectionSelectionWidget::addCurrentCrsOption()
 
 }
 
-QString QgsProjectionSelectionWidget::currentCrsOptionText( const QgsCoordinateReferenceSystem& crs ) const
+QString QgsProjectionSelectionWidget::currentCrsOptionText( const QgsCoordinateReferenceSystem &crs ) const
 {
   if ( crs.isValid() )
     return tr( "Selected CRS (%1, %2)" ).arg( crs.authid(), crs.description() );
@@ -309,7 +309,7 @@ void QgsProjectionSelectionWidget::addRecentCrs()
 {
   QStringList recentProjections = QgsCoordinateReferenceSystem::recentProjections();
   int i = 0;
-  Q_FOREACH ( const QString& projection, recentProjections )
+  Q_FOREACH ( const QString &projection, recentProjections )
   {
     long srsid = projection.toLong();
 
@@ -324,7 +324,7 @@ void QgsProjectionSelectionWidget::addRecentCrs()
     if ( crs.isValid() )
     {
       mCrsComboBox->addItem( tr( "%1 - %2" ).arg( crs.authid(), crs.description() ), QgsProjectionSelectionWidget::RecentCrs );
-      mCrsComboBox->setItemData( mCrsComboBox->count() - 1, QVariant(( long long )srsid ), Qt::UserRole + 1 );
+      mCrsComboBox->setItemData( mCrsComboBox->count() - 1, QVariant( ( long long )srsid ), Qt::UserRole + 1 );
     }
     if ( i >= 4 )
     {
@@ -343,7 +343,7 @@ int QgsProjectionSelectionWidget::firstRecentCrsIndex() const
 {
   for ( int i = 0; i < mCrsComboBox->count(); ++i )
   {
-    if (( CrsOption )mCrsComboBox->itemData( i ).toInt() == RecentCrs )
+    if ( ( CrsOption )mCrsComboBox->itemData( i ).toInt() == RecentCrs )
     {
       return i;
     }

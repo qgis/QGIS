@@ -31,7 +31,7 @@ class GUI_EXPORT QgsScaleVisibilityDialog : public QDialog
     Q_OBJECT
 
   public:
-    explicit QgsScaleVisibilityDialog( QWidget *parent = nullptr, const QString& title = QString(), QgsMapCanvas* mapCanvas = nullptr );
+    explicit QgsScaleVisibilityDialog( QWidget *parent = nullptr, const QString &title = QString(), QgsMapCanvas *mapCanvas = nullptr );
 
     //! return if scale visibilty is enabled
     bool hasScaleVisibility();
@@ -55,8 +55,8 @@ class GUI_EXPORT QgsScaleVisibilityDialog : public QDialog
 
 
   private:
-    QGroupBox* mGroupBox = nullptr;
-    QgsScaleRangeWidget* mScaleWidget = nullptr;
+    QGroupBox *mGroupBox = nullptr;
+    QgsScaleRangeWidget *mScaleWidget = nullptr;
 
 };
 

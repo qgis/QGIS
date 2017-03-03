@@ -50,7 +50,7 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     explicit QgsAuthSslConfigWidget( QWidget *parent = nullptr,
                                      const QSslCertificate &cert = QSslCertificate(),
                                      const QString &hostport = QString(),
-                                     const QList<QSslCertificate>& connectionCAs = QList<QSslCertificate>() );
+                                     const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
 
     //! Access to the certificate's group box widget
     QGroupBox *certificateGroupBox();
@@ -86,10 +86,10 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
 
     // may also load existing config, if found
     //! Set SSl certificate and any associated host:port
-    void setSslCertificate( const QSslCertificate& cert, const QString &hostport = QString() );
+    void setSslCertificate( const QSslCertificate &cert, const QString &hostport = QString() );
 
     //! Load an existing SSL server configuration
-    void loadSslCustomConfig( const QgsAuthConfigSslServer& config = QgsAuthConfigSslServer() );
+    void loadSslCustomConfig( const QgsAuthConfigSslServer &config = QgsAuthConfigSslServer() );
 
     //! Save the current SSL server configuration to the authentication database
     void saveSslCertConfig();
@@ -104,13 +104,13 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     void resetSslProtocol();
 
     //! Add to SSL errors to ignore for the connection
-    void appendSslIgnoreErrors( const QList<QSslError>& errors );
+    void appendSslIgnoreErrors( const QList<QSslError> &errors );
 
     //! Set the SSL errors (as enums) to ignore for the connection
-    void setSslIgnoreErrorEnums( const QList<QSslError::SslError>& errorenums );
+    void setSslIgnoreErrorEnums( const QList<QSslError::SslError> &errorenums );
 
     //! Set the SSL errors to ignore for the connection
-    void setSslIgnoreErrors( const QList<QSslError>& errors );
+    void setSslIgnoreErrors( const QList<QSslError> &errors );
 
     //! Clear the SSL errors to ignore for the connection
     void resetSslIgnoreErrors();
@@ -122,7 +122,7 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     void resetSslPeerVerify();
 
     //! Set the host of the server
-    void setSslHost( const QString& host );
+    void setSslHost( const QString &host );
 
     //! Set whether the config group box is checkable
     void setConfigCheckable( bool checkable );
@@ -159,7 +159,7 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     bool validateHostPort( const QString &txt );
 
     void setUpSslConfigTree();
-    QTreeWidgetItem* addRootItem( const QString& label );
+    QTreeWidgetItem *addRootItem( const QString &label );
 
     QSslCertificate mCert;
     QList<QSslCertificate> mConnectionCAs;
@@ -197,7 +197,7 @@ class GUI_EXPORT QgsAuthSslConfigDialog : public QDialog
      * @param hostport Unique host:port to associate with the server certificate
      */
     explicit QgsAuthSslConfigDialog( QWidget *parent = nullptr,
-                                     const QSslCertificate& cert = QSslCertificate(),
+                                     const QSslCertificate &cert = QSslCertificate(),
                                      const QString &hostport = QString() );
 
     //! Access the embedded SSL server configuration widget

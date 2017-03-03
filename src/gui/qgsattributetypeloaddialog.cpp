@@ -37,8 +37,8 @@
 #include <QFileDialog>
 
 QgsAttributeTypeLoadDialog::QgsAttributeTypeLoadDialog( QgsVectorLayer *vl )
-    : QDialog()
-    , mLayer( vl )
+  : QDialog()
+  , mLayer( vl )
 {
   setupUi( this );
 
@@ -123,8 +123,8 @@ void QgsAttributeTypeLoadDialog::createPreview( int fieldIndex, bool full )
   }
   int idx = keyComboBox->currentData().toInt();
   int idx2 = valueComboBox->currentData().toInt();
-  QgsMapLayer* dataLayer = QgsProject::instance()->mapLayer( layerComboBox->currentData().toString() );
-  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
+  QgsMapLayer *dataLayer = QgsProject::instance()->mapLayer( layerComboBox->currentData().toString() );
+  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
   if ( !vLayer )
     return;
 
@@ -172,8 +172,8 @@ void QgsAttributeTypeLoadDialog::loadDataToValueMap()
   mValueMap.clear();
   int idx = keyComboBox->currentData().toInt();
   int idx2 = valueComboBox->currentData().toInt();
-  QgsMapLayer* dataLayer = QgsProject::instance()->mapLayer( layerComboBox->currentData().toString() );
-  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
+  QgsMapLayer *dataLayer = QgsProject::instance()->mapLayer( layerComboBox->currentData().toString() );
+  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
   if ( !vLayer )
     return;
 

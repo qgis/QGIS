@@ -22,20 +22,20 @@
 #include "qgsdial.h"
 #include "qgsslider.h"
 
-QgsRangeWidgetWrapper::QgsRangeWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mIntSpinBox( nullptr )
-    , mDoubleSpinBox( nullptr )
-    , mSlider( nullptr )
-    , mDial( nullptr )
-    , mQgsSlider( nullptr )
-    , mQgsDial( nullptr )
+QgsRangeWidgetWrapper::QgsRangeWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
+  : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+  , mIntSpinBox( nullptr )
+  , mDoubleSpinBox( nullptr )
+  , mSlider( nullptr )
+  , mDial( nullptr )
+  , mQgsSlider( nullptr )
+  , mQgsDial( nullptr )
 {
 }
 
-QWidget* QgsRangeWidgetWrapper::createWidget( QWidget* parent )
+QWidget *QgsRangeWidgetWrapper::createWidget( QWidget *parent )
 {
-  QWidget* editor = nullptr;
+  QWidget *editor = nullptr;
 
   if ( config( QStringLiteral( "Style" ) ).toString() == QLatin1String( "Dial" ) )
   {
@@ -66,7 +66,7 @@ QWidget* QgsRangeWidgetWrapper::createWidget( QWidget* parent )
 }
 
 template<class T>
-static void setupIntEditor( const QVariant& min, const QVariant& max, const QVariant& step, T* slider, QgsRangeWidgetWrapper* wrapper )
+static void setupIntEditor( const QVariant &min, const QVariant &max, const QVariant &step, T *slider, QgsRangeWidgetWrapper *wrapper )
 {
   // must use a template function because those methods are overloaded and not inherited by some classes
   slider->setMinimum( min.isValid() ? min.toInt() : std::numeric_limits<int>::min() );
@@ -75,15 +75,15 @@ static void setupIntEditor( const QVariant& min, const QVariant& max, const QVar
   QObject::connect( slider, SIGNAL( valueChanged( int ) ), wrapper, SLOT( valueChanged( int ) ) );
 }
 
-void QgsRangeWidgetWrapper::initWidget( QWidget* editor )
+void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
 {
-  mDoubleSpinBox = qobject_cast<QDoubleSpinBox*>( editor );
-  mIntSpinBox = qobject_cast<QSpinBox*>( editor );
+  mDoubleSpinBox = qobject_cast<QDoubleSpinBox *>( editor );
+  mIntSpinBox = qobject_cast<QSpinBox *>( editor );
 
-  mDial = qobject_cast<QDial*>( editor );
-  mSlider = qobject_cast<QSlider*>( editor );
-  mQgsDial = qobject_cast<QgsDial*>( editor );
-  mQgsSlider = qobject_cast<QgsSlider*>( editor );
+  mDial = qobject_cast<QDial *>( editor );
+  mSlider = qobject_cast<QSlider *>( editor );
+  mQgsDial = qobject_cast<QgsDial *>( editor );
+  mQgsSlider = qobject_cast<QgsSlider *>( editor );
 
   bool allowNull = config( QStringLiteral( "AllowNull" ), true ).toBool();
 
@@ -102,7 +102,7 @@ void QgsRangeWidgetWrapper::initWidget( QWidget* editor )
 
     double minval = min.toDouble();
     double stepval = step.toDouble();
-    QgsDoubleSpinBox* qgsWidget = dynamic_cast<QgsDoubleSpinBox*>( mDoubleSpinBox );
+    QgsDoubleSpinBox *qgsWidget = dynamic_cast<QgsDoubleSpinBox *>( mDoubleSpinBox );
     if ( qgsWidget )
       qgsWidget->setShowClearButton( allowNull );
     if ( allowNull )
@@ -128,7 +128,7 @@ void QgsRangeWidgetWrapper::initWidget( QWidget* editor )
   }
   else if ( mIntSpinBox )
   {
-    QgsSpinBox* qgsWidget = dynamic_cast<QgsSpinBox*>( mIntSpinBox );
+    QgsSpinBox *qgsWidget = dynamic_cast<QgsSpinBox *>( mIntSpinBox );
     if ( qgsWidget )
       qgsWidget->setShowClearButton( allowNull );
     if ( allowNull )
@@ -160,7 +160,7 @@ bool QgsRangeWidgetWrapper::valid() const
   return mSlider || mDial || mQgsDial || mQgsSlider || mIntSpinBox || mDoubleSpinBox;
 }
 
-void QgsRangeWidgetWrapper::valueChangedVariant( const QVariant& v )
+void QgsRangeWidgetWrapper::valueChangedVariant( const QVariant &v )
 {
   if ( v.type() == QVariant::Int )
     valueChanged( v.toInt() );
@@ -208,7 +208,7 @@ QVariant QgsRangeWidgetWrapper::value() const
   return value;
 }
 
-void QgsRangeWidgetWrapper::setValue( const QVariant& value )
+void QgsRangeWidgetWrapper::setValue( const QVariant &value )
 {
   if ( mDoubleSpinBox )
   {

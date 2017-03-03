@@ -49,8 +49,8 @@ class QgsSourceSelectItemDelegate : public QItemDelegate
 };
 
 
-QgsSourceSelectDialog::QgsSourceSelectDialog( const QString& serviceName, ServiceType serviceType, QWidget* parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl ), mServiceName( serviceName ), mServiceType( serviceType ), mBuildQueryButton( 0 ), mImageEncodingGroup( 0 )
+QgsSourceSelectDialog::QgsSourceSelectDialog( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl ), mServiceName( serviceName ), mServiceType( serviceType ), mBuildQueryButton( 0 ), mImageEncodingGroup( 0 )
 {
   setupUi( this );
   setWindowTitle( QStringLiteral( "Add %1 Layer from a Server" ).arg( mServiceName ) );
@@ -104,8 +104,8 @@ QgsSourceSelectDialog::QgsSourceSelectDialog( const QString& serviceName, Servic
   mModelProxy->setSortCaseSensitivity( Qt::CaseInsensitive );
   treeView->setModel( mModelProxy );
 
-  connect( treeView, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( treeWidgetItemDoubleClicked( const QModelIndex& ) ) );
-  connect( treeView->selectionModel(), SIGNAL( currentRowChanged( QModelIndex, QModelIndex ) ), this, SLOT( treeWidgetCurrentRowChanged( const QModelIndex&, const QModelIndex& ) ) );
+  connect( treeView, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( treeWidgetItemDoubleClicked( const QModelIndex & ) ) );
+  connect( treeView->selectionModel(), SIGNAL( currentRowChanged( QModelIndex, QModelIndex ) ), this, SLOT( treeWidgetCurrentRowChanged( const QModelIndex &, const QModelIndex & ) ) );
 }
 
 QgsSourceSelectDialog::~QgsSourceSelectDialog()
@@ -119,26 +119,26 @@ QgsSourceSelectDialog::~QgsSourceSelectDialog()
   delete mModelProxy;
 }
 
-void QgsSourceSelectDialog::setCurrentExtentAndCrs( const QgsRectangle& canvasExtent, const QgsCoordinateReferenceSystem& canvasCrs )
+void QgsSourceSelectDialog::setCurrentExtentAndCrs( const QgsRectangle &canvasExtent, const QgsCoordinateReferenceSystem &canvasCrs )
 {
   mCanvasExtent = canvasExtent;
   mCanvasCrs = canvasCrs;
 }
 
-void QgsSourceSelectDialog::populateImageEncodings( const QStringList& availableEncodings )
+void QgsSourceSelectDialog::populateImageEncodings( const QStringList &availableEncodings )
 {
-  QLayoutItem* item = nullptr;
-  while (( item = gbImageEncoding->layout()->takeAt( 0 ) ) != nullptr )
+  QLayoutItem *item = nullptr;
+  while ( ( item = gbImageEncoding->layout()->takeAt( 0 ) ) != nullptr )
   {
     delete item->widget();
     delete item;
   }
   bool first = true;
   QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
-  foreach ( const QString& encoding, availableEncodings )
+  foreach ( const QString &encoding, availableEncodings )
   {
     bool supported = false;
-    foreach ( const QByteArray& fmt, supportedFormats )
+    foreach ( const QByteArray &fmt, supportedFormats )
     {
       if ( encoding.startsWith( fmt, Qt::CaseInsensitive ) )
       {
@@ -150,7 +150,7 @@ void QgsSourceSelectDialog::populateImageEncodings( const QStringList& available
       continue;
     }
 
-    QRadioButton* button = new QRadioButton( encoding, this );
+    QRadioButton *button = new QRadioButton( encoding, this );
     button->setChecked( first );
     gbImageEncoding->layout()->addWidget( button );
     mImageEncodingGroup->addButton( button );
@@ -167,7 +167,7 @@ void QgsSourceSelectDialog::populateConnectionList()
 {
   QStringList conns = QgsOwsConnection::connectionList( mServiceName );
   cmbConnections->clear();
-  foreach ( const QString& item, conns )
+  foreach ( const QString &item, conns )
   {
     cmbConnections->addItem( item );
   }
@@ -186,7 +186,7 @@ void QgsSourceSelectDialog::populateConnectionList()
   }
 }
 
-QString QgsSourceSelectDialog::getPreferredCrs( const QSet<QString>& crsSet ) const
+QString QgsSourceSelectDialog::getPreferredCrs( const QSet<QString> &crsSet ) const
 {
   if ( crsSet.size() < 1 )
   {
@@ -326,7 +326,7 @@ void QgsSourceSelectDialog::addButtonClicked()
       QgsDebugMsg( QString( "canvas transform: Canvas CRS=%1, Provider CRS=%2, BBOX=%3" )
                    .arg( mCanvasCrs.authid(), pCrs.authid(), extent.asWktCoordinates() ) );
     }
-    catch ( const QgsCsException& )
+    catch ( const QgsCsException & )
     {
       // Extent is not in range for specified CRS, leave extent empty.
     }
@@ -335,7 +335,8 @@ void QgsSourceSelectDialog::addButtonClicked()
   //create layers that user selected from this feature source
   QModelIndexList list = treeView->selectionModel()->selectedRows();
   for ( int i = 0; i < list.size(); i++ )
-  { //add a wfs layer to the map
+  {
+    //add a wfs layer to the map
     QModelIndex idx = mModelProxy->mapToSource( list[i] );
     if ( !idx.isValid() )
     {
@@ -386,7 +387,7 @@ void QgsSourceSelectDialog::changeCrsFilter()
     if ( crsIterator != mAvailableCRS.end() )
     {
       QSet<QString> crsNames;
-      foreach ( const QString& crsName, crsIterator.value() )
+      foreach ( const QString &crsName, crsIterator.value() )
       {
         crsNames.insert( crsName );
       }
@@ -412,14 +413,14 @@ void QgsSourceSelectDialog::on_cmbConnections_activated( int index )
   QgsOwsConnection::setSelectedConnection( mServiceName, cmbConnections->currentText() );
 }
 
-void QgsSourceSelectDialog::treeWidgetItemDoubleClicked( const QModelIndex & index )
+void QgsSourceSelectDialog::treeWidgetItemDoubleClicked( const QModelIndex &index )
 {
   QgsDebugMsg( "double click called" );
   QgsOwsConnection connection( mServiceName, cmbConnections->currentText() );
   buildQuery( connection, index );
 }
 
-void QgsSourceSelectDialog::treeWidgetCurrentRowChanged( const QModelIndex & current, const QModelIndex & previous )
+void QgsSourceSelectDialog::treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous )
 {
   Q_UNUSED( previous )
   QgsDebugMsg( "treeWidget_currentRowChanged called" );
@@ -438,7 +439,7 @@ void QgsSourceSelectDialog::buildQueryButtonClicked()
   buildQuery( connection, treeView->selectionModel()->currentIndex() );
 }
 
-void QgsSourceSelectDialog::filterChanged( const QString& text )
+void QgsSourceSelectDialog::filterChanged( const QString &text )
 {
   QgsDebugMsg( "FeatureType filter changed to :" + text );
   QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::RegExp );
@@ -448,7 +449,7 @@ void QgsSourceSelectDialog::filterChanged( const QString& text )
   mModelProxy->sort( mModelProxy->sortColumn(), mModelProxy->sortOrder() );
 }
 
-QSize QgsSourceSelectItemDelegate::sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const
+QSize QgsSourceSelectItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   QVariant indexData = index.data( Qt::DisplayRole );
   if ( indexData.isNull() )

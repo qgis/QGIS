@@ -105,9 +105,9 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
     bool validatePkiPkcs12();
 
     void fileFound( bool found, QWidget *widget );
-    QString getOpenFileName( const QString& title, const QString& extfilter );
+    QString getOpenFileName( const QString &title, const QString &extfilter );
 
-    QPushButton* okButton();
+    QPushButton *okButton();
 
     QgsAuthImportIdentityDialog::IdentityType  mIdentityType;
     QPair<QSslCertificate, QSslKey> mCertBundle;

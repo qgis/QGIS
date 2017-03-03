@@ -24,10 +24,10 @@
 #include <QSettings>
 #include <QLineEdit>
 
-QgsScaleComboBox::QgsScaleComboBox( QWidget* parent )
-    : QComboBox( parent )
-    , mScale( 1.0 )
-    , mMinScale( 0.0 )
+QgsScaleComboBox::QgsScaleComboBox( QWidget *parent )
+  : QComboBox( parent )
+  , mScale( 1.0 )
+  , mMinScale( 0.0 )
 {
   updateScales();
 
@@ -121,7 +121,7 @@ QString QgsScaleComboBox::scaleString()
 }
 
 //! Function to set the selected scale from text
-bool QgsScaleComboBox::setScaleString( const QString& scaleTxt )
+bool QgsScaleComboBox::setScaleString( const QString &scaleTxt )
 {
   bool ok;
   double newScale = toDouble( scaleTxt, &ok );
@@ -200,7 +200,7 @@ QString QgsScaleComboBox::toString( double scale )
   }
 }
 
-double QgsScaleComboBox::toDouble( const QString& scaleString, bool * returnOk )
+double QgsScaleComboBox::toDouble( const QString &scaleString, bool *returnOk )
 {
   bool ok = false;
   QString scaleTxt( scaleString );

@@ -27,7 +27,7 @@ namespace QgisGui
 {
 
   bool GUI_EXPORT openFilesRememberingFilter( QString const &filterName,
-      QString const &filters, QStringList & selectedFiles, QString& enc, QString &title,
+      QString const &filters, QStringList &selectedFiles, QString &enc, QString &title,
       bool cancelAll )
   {
     Q_UNUSED( enc );
@@ -43,7 +43,7 @@ namespace QgisGui
     }
     else //we have to use non-native dialog to add cancel all button
     {
-      QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog( nullptr, title, lastUsedDir, filters, QString() );
+      QgsEncodingFileDialog *openFileDialog = new QgsEncodingFileDialog( nullptr, title, lastUsedDir, filters, QString() );
 
       // allow for selection of more than one file
       openFileDialog->setFileMode( QFileDialog::ExistingFiles );
@@ -84,11 +84,11 @@ namespace QgisGui
     return false;
   }
 
-  QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget *parent, const QString& message, const QString& defaultFilename )
+  QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget *parent, const QString &message, const QString &defaultFilename )
   {
     // get a list of supported output image types
     QMap<QString, QString> filterMap;
-    Q_FOREACH ( const QByteArray& format, QImageWriter::supportedImageFormats() )
+    Q_FOREACH ( const QByteArray &format, QImageWriter::supportedImageFormats() )
     {
       //svg doesn't work so skip it
       if ( format ==  "svg" )

@@ -29,7 +29,7 @@ class GUI_EXPORT QgsBlendModeComboBox : public QComboBox
 {
     Q_OBJECT
   public:
-    QgsBlendModeComboBox( QWidget* parent = nullptr );
+    QgsBlendModeComboBox( QWidget *parent = nullptr );
 
     //! Function to read the selected blend mode as QPainter::CompositionMode
     QPainter::CompositionMode blendMode();

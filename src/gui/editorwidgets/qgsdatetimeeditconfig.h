@@ -29,14 +29,14 @@ class GUI_EXPORT QgsDateTimeEditConfig : public QgsEditorConfigWidget, private U
 {
     Q_OBJECT
   public:
-    QgsDateTimeEditConfig( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = nullptr );
+    QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
     QVariantMap config() override;
     void setConfig( const QVariantMap &config ) override;
 
   private slots:
     void updateDemoWidget();
     void updateFieldFormat( int idx );
-    void updateDisplayFormat( const QString& fieldFormat );
+    void updateDisplayFormat( const QString &fieldFormat );
     void displayFormatChanged( int idx );
     void showHelp( bool buttonChecked );
 };

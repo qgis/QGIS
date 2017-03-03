@@ -19,14 +19,14 @@
 #include <QLayout>
 #include <QLabel>
 
-QgsRendererWidget* QgsNullSymbolRendererWidget::create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
+QgsRendererWidget *QgsNullSymbolRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {
   return new QgsNullSymbolRendererWidget( layer, style, renderer );
 }
 
-QgsNullSymbolRendererWidget::QgsNullSymbolRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
-    : QgsRendererWidget( layer, style )
-    , mRenderer( nullptr )
+QgsNullSymbolRendererWidget::QgsNullSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
+  : QgsRendererWidget( layer, style )
+  , mRenderer( nullptr )
 {
   if ( renderer )
   {
@@ -37,8 +37,8 @@ QgsNullSymbolRendererWidget::QgsNullSymbolRendererWidget( QgsVectorLayer* layer,
     mRenderer = new QgsNullSymbolRenderer();
   }
 
-  QGridLayout* layout = new QGridLayout( this );
-  QLabel* label = new QLabel( tr( "No symbols will be rendered for features in this layer." ) );
+  QGridLayout *layout = new QGridLayout( this );
+  QLabel *label = new QLabel( tr( "No symbols will be rendered for features in this layer." ) );
   layout->addWidget( label );
 }
 
@@ -47,7 +47,7 @@ QgsNullSymbolRendererWidget::~QgsNullSymbolRendererWidget()
   delete mRenderer;
 }
 
-QgsFeatureRenderer* QgsNullSymbolRendererWidget::renderer()
+QgsFeatureRenderer *QgsNullSymbolRendererWidget::renderer()
 {
   return mRenderer;
 }

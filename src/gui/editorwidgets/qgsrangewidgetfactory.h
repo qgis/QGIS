@@ -27,12 +27,12 @@
 class GUI_EXPORT QgsRangeWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
-    QgsRangeWidgetFactory( const QString& name );
+    QgsRangeWidgetFactory( const QString &name );
 
     // QgsEditorWidgetFactory interface
   public:
-    virtual QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const override;
-    virtual QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
+    virtual QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const override;
+    virtual QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
     virtual QHash<const char *, int> supportedWidgetTypes() override;
 
   private:

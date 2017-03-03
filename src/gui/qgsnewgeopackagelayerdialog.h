@@ -41,11 +41,11 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNew
     void on_mFieldTypeBox_currentIndexChanged( int index );
     void on_mGeometryTypeBox_currentIndexChanged( int index );
     void on_mSelectDatabaseButton_clicked();
-    void on_mDatabaseEdit_textChanged( const QString& text );
-    void on_mTableNameEdit_textChanged( const QString& text );
-    void on_mTableNameEdit_textEdited( const QString& text );
-    void on_mLayerIdentifierEdit_textEdited( const QString& text );
-    void fieldNameChanged( const QString& );
+    void on_mDatabaseEdit_textChanged( const QString &text );
+    void on_mTableNameEdit_textChanged( const QString &text );
+    void on_mTableNameEdit_textEdited( const QString &text );
+    void on_mLayerIdentifierEdit_textEdited( const QString &text );
+    void fieldNameChanged( const QString & );
     void selectionChanged();
     void checkOk();
 

@@ -16,9 +16,9 @@
 #include "qgspanelwidget.h"
 
 QgsMapLayerConfigWidget::QgsMapLayerConfigWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
-    : QgsPanelWidget( parent )
-    , mLayer( layer )
-    , mMapCanvas( canvas )
+  : QgsPanelWidget( parent )
+  , mLayer( layer )
+  , mMapCanvas( canvas )
 {
 
 }

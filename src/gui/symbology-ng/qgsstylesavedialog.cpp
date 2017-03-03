@@ -23,8 +23,8 @@
 #include <QLineEdit>
 #include <QCheckBox>
 
-QgsStyleSaveDialog::QgsStyleSaveDialog( QWidget* parent, QgsStyle::StyleEntity type )
-    : QDialog( parent )
+QgsStyleSaveDialog::QgsStyleSaveDialog( QWidget *parent, QgsStyle::StyleEntity type )
+  : QDialog( parent )
 {
   setupUi( this );
 
