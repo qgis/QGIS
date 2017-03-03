@@ -30,6 +30,7 @@
 #include "checks/qgsgeometryselfintersectioncheck.h"
 #include "checks/qgsgeometrysliverpolygoncheck.h"
 #include "checks/qgsgeometrytypecheck.h"
+
 #include "utils/qgsfeaturepool.h"
 
 

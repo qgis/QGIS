@@ -12,6 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgstest.h"
+
 #include <QApplication>
 #include <QObject>
 #include <QSplashScreen>

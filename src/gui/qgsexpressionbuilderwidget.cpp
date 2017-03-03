@@ -35,7 +35,6 @@
 #include <QPropertyAnimation>
 
 
-
 QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   : QWidget( parent )
   , mAutoSave( true )

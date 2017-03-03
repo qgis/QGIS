@@ -17,12 +17,12 @@
 #ifndef QGSMESSAGEVIEWER_H
 #define QGSMESSAGEVIEWER_H
 
-#include <ui_qgsmessageviewer.h>
-#include <qgisgui.h>
+#include "ui_qgsmessageviewer.h"
+#include "qgisgui.h"
 #include "qgsmessageoutput.h"
+#include "qgis_gui.h"
 
 #include <QString>
-#include "qgis_gui.h"
 
 
 /** \ingroup gui

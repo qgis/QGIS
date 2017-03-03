@@ -27,11 +27,9 @@
 #include <QRegularExpression>
 #include <QNetworkProxy>
 #include <QNetworkProxyFactory>
+
 #include <memory>
 
-#include "qgis.h"
-#include "qgsapplication.h"
-#include "qgsexpressioncontext.h"
 
 void QgsHelp::openHelp( const QString &key )
 {

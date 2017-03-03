@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstest.h"
+
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"

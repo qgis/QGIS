@@ -19,8 +19,7 @@
 #include "qgsdb2dataitems.h"
 #include "qgsdb2newconnection.h"
 #include "qgsdb2geometrycolumns.h"
-#include <qgslogger.h>
-//#include <qaction.h>
+#include "qgslogger.h"
 #include "qgsmimedatautils.h"
 #include "qgsvectorlayerimport.h"
 #include "qgsvectorlayer.h"

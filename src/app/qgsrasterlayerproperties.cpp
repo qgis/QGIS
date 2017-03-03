@@ -56,7 +56,6 @@
 
 #include <QTableWidgetItem>
 #include <QHeaderView>
-
 #include <QTextStream>
 #include <QFileDialog>
 #include <QMessageBox>

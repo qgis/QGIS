@@ -25,6 +25,7 @@
 #include "qgslogger.h"
 #include "qgsgeometry.h"
 
+
 QgsMapCanvasSnapper::QgsMapCanvasSnapper( QgsMapCanvas *canvas )
   : mMapCanvas( canvas )
   , mSnapper( nullptr )

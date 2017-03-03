@@ -28,12 +28,13 @@
 #include "qgspluginregistry.h"
 #include "qgspluginmetadata.h"
 #include "qgisplugin.h"
-#ifdef WITH_BINDINGS
-#include "qgspythonutils.h"
-#endif
 #include "qgisapp.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+
+#ifdef WITH_BINDINGS
+#include "qgspythonutils.h"
+#endif
 
 /* typedefs for plugins */
 typedef QgisPlugin *create_ui( QgisInterface *qI );

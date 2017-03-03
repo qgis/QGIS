@@ -47,10 +47,10 @@
 #include <QTextDocument>
 #include <QDebug>
 
-#include "gdalwarper.h"
-#include "ogr_spatialref.h"
-#include "cpl_conv.h"
-#include "cpl_string.h"
+#include <gdalwarper.h>
+#include <ogr_spatialref.h>
+#include <cpl_conv.h>
+#include <cpl_string.h>
 
 #define ERRMSG(message) QGS_ERROR_MESSAGE(message,"GDAL provider")
 #define ERR(message) QgsError(message,"GDAL provider")

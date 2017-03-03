@@ -25,7 +25,6 @@
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
-
 #include "qgsspatialquerydialog.h"
 #include "qgsspatialquery.h"
 #include "qgsrubberselectid.h"

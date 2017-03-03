@@ -15,8 +15,8 @@
 
 #include "qgsvectorlayerrenderer.h"
 
-//#include "qgsfeatureiterator.h"
 #include "diagram/qgsdiagram.h"
+
 #include "qgsdiagramrenderer.h"
 #include "qgsgeometrycache.h"
 #include "qgsmessagelog.h"

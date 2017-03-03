@@ -26,6 +26,7 @@
 
 #include <QAction>
 
+
 QHash<QgsMapCanvas *, QgsMapCanvasTracer *> QgsMapCanvasTracer::sTracers;
 
 

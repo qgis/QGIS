@@ -19,13 +19,13 @@
 
 #include "qgsdb2sourceselect.h"
 #include "qgsdb2dataitems.h"
-#include "qgslogger.h"
-#include "qgsapplication.h"
-#include "qgscontexthelp.h"
 #include "qgsdb2provider.h"
 #include "qgsdb2newconnection.h"
 #include "qgsdb2geometrycolumns.h"
 
+#include "qgslogger.h"
+#include "qgsapplication.h"
+#include "qgscontexthelp.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsquerybuilder.h"
 #include "qgsdatasourceuri.h"

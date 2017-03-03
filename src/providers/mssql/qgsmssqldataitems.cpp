@@ -15,8 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-
-
 #include "qgsmssqldataitems.h"
 
 #include "qgsmssqlsourceselect.h"

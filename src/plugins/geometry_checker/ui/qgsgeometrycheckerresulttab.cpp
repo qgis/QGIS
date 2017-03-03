@@ -22,9 +22,11 @@
 
 #include "qgsgeometrycheckerresulttab.h"
 #include "qgsgeometrycheckfixdialog.h"
+
 #include "../qgsgeometrychecker.h"
 #include "../checks/qgsgeometrycheck.h"
 #include "../utils/qgsfeaturepool.h"
+
 #include "qgsgeometry.h"
 #include "qgisinterface.h"
 #include "qgsmapcanvas.h"

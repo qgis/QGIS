@@ -15,7 +15,6 @@
 
 #include <QHBoxLayout>
 
-
 #include "qgsprojectionselectionwidget.h"
 #include "qgsapplication.h"
 #include "qgsprojectionselectiondialog.h"

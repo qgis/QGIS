@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QMessageBox>

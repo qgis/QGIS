@@ -40,6 +40,7 @@
 //
 #include "qgsdetaileditemdata.h"
 #include "qgsdetaileditemdelegate.h"
+
 #include <QSortFilterProxyModel>
 #include <QStandardItem>
 

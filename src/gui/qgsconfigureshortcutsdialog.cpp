@@ -22,7 +22,6 @@
 #include <QKeyEvent>
 #include <QKeySequence>
 #include <QMessageBox>
-
 #include <QShortcut>
 #include <QDomDocument>
 #include <QFileDialog>

@@ -57,6 +57,7 @@
 #include <QDir>
 
 #include <limits>
+
 #include "gdal.h"
 #include "cpl_conv.h"
 

@@ -48,7 +48,6 @@
 #include <QTextStream>
 #include <QTemporaryFile>
 #include <QHash>
-
 #include <QTextCodec>
 
 extern "C"

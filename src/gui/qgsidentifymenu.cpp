@@ -16,7 +16,6 @@
 #include <QMouseEvent>
 
 #include "qgsidentifymenu.h"
-
 #include "qgsapplication.h"
 #include "qgsactionmanager.h"
 #include "qgshighlight.h"

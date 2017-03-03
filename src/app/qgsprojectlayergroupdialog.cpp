@@ -16,7 +16,6 @@
 #include "qgsproject.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
-
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeutils.h"
