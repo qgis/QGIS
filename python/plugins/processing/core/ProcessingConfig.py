@@ -36,8 +36,8 @@ import processing.tools.dataobjects
 
 
 class SettingsWatcher(QObject):
-
     settingsChanged = pyqtSignal()
+
 
 settingsWatcher = SettingsWatcher()
 

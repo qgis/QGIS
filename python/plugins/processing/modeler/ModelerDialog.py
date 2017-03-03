@@ -140,10 +140,6 @@ class ModelerDialog(BASE, WIDGET):
             QGraphicsView.enterEvent(self.view, e)
             self.view.viewport().setCursor(Qt.ArrowCursor)
 
-        def _mousePressEvent(e):
-            QGraphicsView.mousePressEvent(self.view, e)
-            self.view.viewport().setCursor(Qt.ArrowCursor)
-
         def _mouseReleaseEvent(e):
             QGraphicsView.mouseReleaseEvent(self.view, e)
             self.view.viewport().setCursor(Qt.ArrowCursor)
@@ -170,7 +166,6 @@ class ModelerDialog(BASE, WIDGET):
         self.view.dragMoveEvent = _dragMoveEvent
         self.view.wheelEvent = _wheelEvent
         self.view.enterEvent = _enterEvent
-        self.view.mousePressEvent = _mousePressEvent
         self.view.mousePressEvent = _mousePressEvent
         self.view.mouseMoveEvent = _mouseMoveEvent
 
@@ -572,8 +567,8 @@ class ModelerDialog(BASE, WIDGET):
                 dlg.alg.pos = QPointF(pos)
             from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
             for i, out in enumerate(dlg.alg.outputs):
-                dlg.alg.outputs[out].pos = dlg.alg.pos + QPointF(ModelerGraphicItem.BOX_WIDTH, (i + 1.5)
-                                                                 * ModelerGraphicItem.BOX_HEIGHT)
+                dlg.alg.outputs[out].pos = dlg.alg.pos + QPointF(ModelerGraphicItem.BOX_WIDTH, (i + 1.5) *
+                                                                 ModelerGraphicItem.BOX_HEIGHT)
             self.alg.addAlgorithm(dlg.alg)
             self.repaintModel()
             self.hasChanged = True
@@ -586,8 +581,8 @@ class ModelerDialog(BASE, WIDGET):
             maxX = max([alg.pos.x() for alg in list(self.alg.algs.values())])
             maxY = max([alg.pos.y() for alg in list(self.alg.algs.values())])
             newX = min(MARGIN + BOX_WIDTH + maxX, self.CANVAS_SIZE - BOX_WIDTH)
-            newY = min(MARGIN + BOX_HEIGHT + maxY, self.CANVAS_SIZE
-                       - BOX_HEIGHT)
+            newY = min(MARGIN + BOX_HEIGHT + maxY, self.CANVAS_SIZE -
+                       BOX_HEIGHT)
         else:
             newX = MARGIN + BOX_WIDTH / 2
             newY = MARGIN * 2 + BOX_HEIGHT + BOX_HEIGHT / 2

@@ -27,7 +27,7 @@ from builtins import object
 #
 ###############################################################################
 
-#avoid PendingDeprecationWarning from PyQt4.uic
+# avoid PendingDeprecationWarning from PyQt4.uic
 import warnings
 warnings.filterwarnings("ignore", category=PendingDeprecationWarning)
 

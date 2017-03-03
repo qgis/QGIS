@@ -43,7 +43,7 @@ from processing.core.ProcessingLog import ProcessingLog
 from processing.tools.system import isWindows, isMac
 
 try:
-    from osgeo import gdal
+    from osgeo import gdal  # NOQA
     gdalAvailable = True
 except:
     gdalAvailable = False
@@ -64,7 +64,7 @@ class GdalUtils(object):
         isDarwin = False
         try:
             isDarwin = platform.system() == 'Darwin'
-        except IOError: # https://travis-ci.org/m-kuhn/QGIS#L1493-L1526
+        except IOError:  # https://travis-ci.org/m-kuhn/QGIS#L1493-L1526
             pass
         if isDarwin and os.path.isfile(os.path.join(QgsApplication.prefixPath(), "bin", "gdalinfo")):
             # Looks like there's a bundled gdal. Let's use it.
@@ -85,7 +85,7 @@ class GdalUtils(object):
         feedback.pushInfo('GDAL command output:')
         success = False
         retry_count = 0
-        while success == False:
+        while not success:
             loglines = []
             loglines.append('GDAL execution console output')
             try:
@@ -133,11 +133,11 @@ class GdalUtils(object):
                 continue
             shortName = driver.ShortName
             metadata = driver.GetMetadata()
-            #===================================================================
+            # ===================================================================
             # if gdal.DCAP_CREATE not in metadata \
             #         or metadata[gdal.DCAP_CREATE] != 'YES':
             #     continue
-            #===================================================================
+            # ===================================================================
             if gdal.DMD_EXTENSION in metadata:
                 extensions = metadata[gdal.DMD_EXTENSION].split('/')
                 if extensions:

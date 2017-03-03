@@ -138,8 +138,8 @@ class RUtils(object):
             ]
 
         else:
-            os.chmod(RUtils.getRScriptFilename(), stat.S_IEXEC | stat.S_IREAD
-                     | stat.S_IWRITE)
+            os.chmod(RUtils.getRScriptFilename(), stat.S_IEXEC | stat.S_IREAD |
+                     stat.S_IWRITE)
             command = 'R CMD BATCH --vanilla ' + RUtils.getRScriptFilename() \
                 + ' ' + RUtils.getConsoleOutputFilename()
 

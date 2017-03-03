@@ -102,9 +102,9 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
         self.setWindowTitle(self.alg.displayName())
 
-        #~ desktop = QDesktopWidget()
-        #~ if desktop.physicalDpiX() > 96:
-        #~ self.txtHelp.setZoomFactor(desktop.physicalDpiX() / 96)
+        # desktop = QDesktopWidget()
+        # if desktop.physicalDpiX() > 96:
+        # self.txtHelp.setZoomFactor(desktop.physicalDpiX() / 96)
 
         algHelp = self.alg.shortHelp()
         if algHelp is None:
@@ -137,7 +137,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
                     rq = QNetworkRequest(algHelp)
                     self.reply = QgsNetworkAccessManager.instance().get(rq)
                     self.reply.finished.connect(self.requestFinished)
-            except Exception as e:
+            except Exception:
                 self.tabWidget.removeTab(2)
         else:
             self.tabWidget.removeTab(2)

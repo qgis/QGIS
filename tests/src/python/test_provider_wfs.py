@@ -43,8 +43,8 @@ from providertestbase import ProviderTestCase
 def sanitize(endpoint, x):
     if len(endpoint + x) > 256:
         ret = endpoint + hashlib.md5(x.encode()).hexdigest()
-        #print('Before: ' + endpoint + x)
-        #print('After:  ' + ret)
+        # print('Before: ' + endpoint + x)
+        # print('After:  ' + ret)
         return ret
     return endpoint + x.replace('?', '_').replace('&', '_').replace('<', '_').replace('>', '_').replace('"', '_').replace("'", '_').replace(' ', '_').replace(':', '_').replace('/', '_').replace('\n', '_')
 
@@ -2362,6 +2362,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         assert vl.isValid()
         self.assertNotEqual(vl.dataProvider().capabilities() & vl.dataProvider().EditingCapabilities, vl.dataProvider().NoCapabilities)
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -42,7 +42,7 @@ from processing.gui.ParametersPanel import ParametersPanel
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterRaster, ParameterVector, ParameterMultipleInput, ParameterTable, Parameter, ParameterExtent
+from processing.core.parameters import ParameterRaster, ParameterVector, ParameterMultipleInput, ParameterTable, Parameter
 from processing.core.outputs import OutputVector, OutputRaster, OutputTable, OutputHTML, Output
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools import dataobjects, vector

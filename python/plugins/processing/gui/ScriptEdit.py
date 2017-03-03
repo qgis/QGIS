@@ -138,16 +138,16 @@ class ScriptEdit(QsciScintilla):
         # Disable some shortcuts
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('D') + ctrl)
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl)
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl
-                           + shift)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl +
+                           shift)
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('T') + ctrl)
 
-        #self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Z") + ctrl)
-        #self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Y") + ctrl)
+        # self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Z") + ctrl)
+        # self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Y") + ctrl)
 
         # Use Ctrl+Space for autocompletion
-        self.shortcutAutocomplete = QShortcut(QKeySequence(Qt.CTRL
-                                                           + Qt.Key_Space), self)
+        self.shortcutAutocomplete = QShortcut(QKeySequence(Qt.CTRL +
+                                                           Qt.Key_Space), self)
         self.shortcutAutocomplete.setContext(Qt.WidgetShortcut)
         self.shortcutAutocomplete.activated.connect(self.autoComplete)
 

@@ -265,7 +265,7 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         elif settings.value("pythonConsole/autoCompleteSourceEditor") == 'fromDocAPI':
             self.autoCompFromDocAPIEditor.setChecked(True)
 
-        ## Setting font lexer color
+        # Setting font lexer color
         self.defaultFontColor.setColor(QColor(settings.value("pythonConsole/defaultFontColor", QColor(Qt.black))))
         self.defaultFontColorEditor.setColor(QColor(settings.value("pythonConsole/defaultFontColorEditor", QColor(Qt.black))))
         self.keywordFontColor.setColor(QColor(settings.value("pythonConsole/keywordFontColor", QColor(Qt.darkGreen))))

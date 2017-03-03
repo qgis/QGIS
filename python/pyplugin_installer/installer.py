@@ -568,14 +568,13 @@ class QgsPluginInstaller(QObject):
         except:
             error = True
             infoString = (self.tr("Plugin installation failed"),
-                          self.tr("Failed to unzip the plugin package\n{}.\nProbably it is broken".format(zipFilePath)))
+                          self.tr("Failed to unzip the plugin package\n{}.\nProbably it is broken".format(filePath)))
 
         if infoString is None:
             updateAvailablePlugins()
             loadPlugin(pluginName)
             plugins.getAllInstalled(testLoad=True)
             plugins.rebuild()
-            plugin = plugins.all()[pluginName]
 
             if settings.contains('/PythonPlugins/' + pluginName):
                 if settings.value('/PythonPlugins/' + pluginName, False, bool):

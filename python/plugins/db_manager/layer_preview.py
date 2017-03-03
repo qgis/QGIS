@@ -77,7 +77,7 @@ class LayerPreview(QgsMapCanvas):
     def _clear(self):
         """ remove any layers from preview canvas """
         if self.item is not None:
-            ## skip exception on RuntimeError fixes #6892
+            # skip exception on RuntimeError fixes #6892
             try:
                 self.item.aboutToChange.disconnect(self.setDirty)
             except RuntimeError:

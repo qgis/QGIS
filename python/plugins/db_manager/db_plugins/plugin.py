@@ -296,7 +296,7 @@ class Database(DbItemObject):
     def registerSubPluginActions(self, mainWindow):
         # load plugins!
         try:
-            exec (u"from .%s.plugins import load" % self.dbplugin().typeName(), globals())
+            exec(u"from .%s.plugins import load" % self.dbplugin().typeName(), globals())
         except ImportError:
             pass
         else:

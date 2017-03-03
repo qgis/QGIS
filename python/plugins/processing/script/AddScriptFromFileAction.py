@@ -75,5 +75,5 @@ class AddScriptFromFileAction(ToolboxAction):
             if wrongAlgs:
                 QMessageBox.warning(self.toolbox,
                                     self.tr('Error reading scripts', 'AddScriptFromFileAction'),
-                                    self.tr('The following files do not contain a valid script:\n-', 'AddScriptFromFileAction')
-                                    + "\n-".join(wrongAlgs))
+                                    self.tr('The following files do not contain a valid script:\n-', 'AddScriptFromFileAction') +
+                                    "\n-".join(wrongAlgs))

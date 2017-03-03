@@ -83,5 +83,6 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(
             QDate(2004, 3, 4), QTime(13, 41, 52)))
 
+
 if __name__ == '__main__':
     unittest.main()

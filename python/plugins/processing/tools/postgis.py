@@ -160,8 +160,8 @@ class TableField(object):
         ALTER TABLE command.
         """
 
-        data_type = (self.data_type if not self.modifier or self.modifier
-                     < 0 else '%s(%d)' % (self.data_type, self.modifier))
+        data_type = (self.data_type if not self.modifier or self.modifier <
+                     0 else '%s(%d)' % (self.data_type, self.modifier))
         txt = '%s %s %s' % (self._quote(self.name), data_type,
                             self.is_null_txt())
         if self.default and len(self.default) > 0:

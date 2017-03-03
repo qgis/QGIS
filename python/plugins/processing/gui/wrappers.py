@@ -82,7 +82,7 @@ from processing.core.parameters import (ParameterBoolean,
                                         _resolveLayers)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.FileSelectionPanel import FileSelectionPanel
-from processing.core.outputs import (OutputFile, OutputRaster, OutputVector, OutputNumber,
+from processing.core.outputs import (OutputFile, OutputRaster, OutputVector,
                                      OutputString, OutputTable, OutputExtent)
 from processing.tools import dataobjects
 from processing.gui.MultipleInputPanel import MultipleInputPanel

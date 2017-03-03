@@ -12,9 +12,7 @@ __copyright__ = 'Copyright 2016, Even Rouault'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import hashlib
 import os
-import sys
 import tempfile
 import shutil
 
@@ -272,6 +270,7 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
 
     def accepted_slot(self):
         self.accepted = True
+
 
 if __name__ == '__main__':
     unittest.main()

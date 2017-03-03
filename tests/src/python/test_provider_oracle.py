@@ -154,5 +154,6 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(self.provider.defaultValue(1), NULL)
         self.assertEqual(self.provider.defaultValue(2), "'qgis'")
 
+
 if __name__ == '__main__':
     unittest.main()

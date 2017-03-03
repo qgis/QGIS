@@ -147,9 +147,9 @@ class ShellOutputScintilla(QsciScintilla):
                                              "Python Console \n"
                                              "Use iface to access QGIS API interface or Type help(iface) for more info")
 
-        ## some translation string for the console header ends without '\n'
-        ## and the first command in console will be appended at the header text.
-        ## The following code add a '\n' at the end of the string if not present.
+        # some translation string for the console header ends without '\n'
+        # and the first command in console will be appended at the header text.
+        # The following code add a '\n' at the end of the string if not present.
         if txtInit.endswith('\n'):
             self.setText(txtInit)
         else:

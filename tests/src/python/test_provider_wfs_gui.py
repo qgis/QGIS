@@ -13,7 +13,6 @@ __copyright__ = 'Copyright 2016, Even Rouault'
 __revision__ = '$Format:%H$'
 
 import hashlib
-import os
 import sys
 import tempfile
 import shutil
@@ -88,7 +87,7 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
         # This test is quite fragile as it depends on windows manager behavior
         # regarding focus, so not surprising it doesn't pass
         # on other platforms than Linux.
-        #if 'TRAVIS_OS_NAME' in os.environ and os.environ['TRAVIS_OS_NAME'] == 'osx':
+        # if 'TRAVIS_OS_NAME' in os.environ and os.environ['TRAVIS_OS_NAME'] == 'osx':
         #    return
 
         main_dialog = QgsProviderRegistry.instance().selectWidget("WFS")
@@ -296,12 +295,13 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
         self.assertEqual(self.addWfsLayer_uri, ' restrictToRequestBBOX=\'1\' srsname=\'EPSG:4326\' typename=\'my:typename\' url=\'' + "http://" + expected_endpoint + '\' version=\'auto\' table="" sql=SELECT * FROM typename WHERE 1 = 1')
         self.assertEqual(self.addWfsLayer_layer_name, 'my:typename')
 
-        #main_dialog.setProperty("hideDialogs", None)
-        #main_dialog.exec_()
+        # main_dialog.setProperty("hideDialogs", None)
+        # main_dialog.exec_()
 
     def slotAddWfsLayer(self, uri, layer_name):
         self.addWfsLayer_uri = uri
         self.addWfsLayer_layer_name = layer_name
+
 
 if __name__ == '__main__':
     unittest.main()

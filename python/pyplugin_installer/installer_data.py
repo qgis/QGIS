@@ -45,7 +45,7 @@ try:
 except ImportError:
     from imp import reload
 import qgis.utils
-from qgis.core import Qgis, QgsNetworkAccessManager, QgsAuthManager, QgsWkbTypes
+from qgis.core import Qgis, QgsNetworkAccessManager, QgsAuthManager
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface, plugin_paths
 from .version_compare import compareVersions, normalizeVersion, isCompatible
@@ -236,10 +236,10 @@ class Repositories(QObject):
     # ----------------------------------------- #
     def urlParams(self):
         """ return GET parameters to be added to every request """
-        v = str(Qgis.QGIS_VERSION_INT)
+        # v = str(Qgis.QGIS_VERSION_INT)
         # TODO: make this proper again after 3.0 release, by uncommenting
         # the line below and removing the other return line:
-        #return "?qgis=%d.%d" % (int(v[0]), int(v[1:3]))
+        # return "?qgis=%d.%d" % (int(v[0]), int(v[1:3]))
         return "?qgis=3.0"
 
     # ----------------------------------------- #
@@ -354,8 +354,8 @@ class Repositories(QObject):
         """ start fetching the repository given by key """
         self.mRepositories[key]["state"] = 1
         url = QUrl(self.mRepositories[key]["url"] + self.urlParams())
-        #v=str(Qgis.QGIS_VERSION_INT)
-        #url.addQueryItem('qgis', '.'.join([str(int(s)) for s in [v[0], v[1:3]]]) ) # don't include the bugfix version!
+        # v=str(Qgis.QGIS_VERSION_INT)
+        # url.addQueryItem('qgis', '.'.join([str(int(s)) for s in [v[0], v[1:3]]]) ) # don't include the bugfix version!
 
         self.mRepositories[key]["QRequest"] = QNetworkRequest(url)
         authcfg = self.mRepositories[key]["authcfg"]
@@ -475,10 +475,10 @@ class Repositories(QObject):
                     qgisMaximumVersion = pluginNodes.item(i).firstChildElement("qgis_maximum_version").text().strip()
                     if not qgisMaximumVersion:
                         qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
-                    #if compatible, add the plugin to the list
+                    # if compatible, add the plugin to the list
                     if not pluginNodes.item(i).firstChildElement("disabled").text().strip().upper() in ["TRUE", "YES"]:
                         if isCompatible(Qgis.QGIS_VERSION, qgisMinimumVersion, qgisMaximumVersion):
-                            #add the plugin to the cache
+                            # add the plugin to the cache
                             plugins.addFromRepository(plugin)
                 self.mRepositories[reposName]["state"] = 2
             else:
@@ -625,7 +625,7 @@ class Plugins(QObject):
             qgisMaximumVersion = pluginMetadata("qgisMaximumVersion").strip()
             if not qgisMaximumVersion:
                 qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
-            #if compatible, add the plugin to the list
+            # if compatible, add the plugin to the list
             if not isCompatible(Qgis.QGIS_VERSION, qgisMinimumVersion, qgisMaximumVersion):
                 error = "incompatible"
                 errorDetails = "%s - %s" % (qgisMinimumVersion, qgisMaximumVersion)

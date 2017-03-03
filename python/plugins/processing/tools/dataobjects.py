@@ -75,7 +75,7 @@ def getSupportedOutputVectorLayerExtensions():
         if extension.lower() != 'shp':
             exts.append(extension)
     exts.sort()
-    exts.insert(0, 'shp') # shp is the default, should be the first
+    exts.insert(0, 'shp')  # shp is the default, should be the first
     return exts
 
 
@@ -86,7 +86,7 @@ def getSupportedOutputRasterLayerExtensions():
             if ext != 'tif' and ext not in allexts:
                 allexts.append(ext)
     allexts.sort()
-    allexts.insert(0, 'tif') # tif is the default, should be the first
+    allexts.insert(0, 'tif')  # tif is the default, should be the first
     return allexts
 
 
@@ -216,8 +216,8 @@ def load(fileName, name=None, crs=None, style=None):
         else:
             if prjSetting:
                 settings.setValue('/Projections/defaultBehavior', prjSetting)
-            raise RuntimeError('Could not load layer: ' + str(fileName)
-                               + '\nCheck the processing framework log to look for errors')
+            raise RuntimeError('Could not load layer: ' + str(fileName) +
+                               '\nCheck the processing framework log to look for errors')
     if prjSetting:
         settings.setValue('/Projections/defaultBehavior', prjSetting)
 
@@ -320,7 +320,6 @@ def exportVectorLayer(layer, supported=None):
         output = getTempFilenameInTempFolder(basename)
     else:
         output = getTempFilename("shp")
-    provider = layer.dataProvider()
     useSelection = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
     if useSelection and layer.selectedFeatureCount() != 0:
         writer = QgsVectorFileWriter(output, systemEncoding,
@@ -388,7 +387,7 @@ def exportTable(table):
         or str(table.source()).endswith('shp')
     if not isDbf or not isASCII:
         writer = QgsVectorFileWriter(output, systemEncoding,
-                                     layer.fields(), QgsWkbTypes.NullGeometry,
+                                     table.fields(), QgsWkbTypes.NullGeometry,
                                      QgsCoordinateReferenceSystem('4326'))
         for feat in table.getFeatures():
             writer.addFeature(feat)

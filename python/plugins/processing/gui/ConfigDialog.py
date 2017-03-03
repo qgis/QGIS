@@ -56,7 +56,7 @@ from processing.core.ProcessingConfig import (ProcessingConfig,
                                               Setting)
 from processing.core.Processing import Processing
 from processing.gui.DirectorySelectorDialog import DirectorySelectorDialog
-from processing.gui.menus import defaultMenuEntries, updateMenus, menusSettingsGroup
+from processing.gui.menus import defaultMenuEntries, menusSettingsGroup
 
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]

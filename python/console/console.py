@@ -64,6 +64,7 @@ def show_console():
 
     return _console
 
+
 _console_output = None
 
 # hook for python console so all output will be redirected
@@ -81,7 +82,7 @@ class PythonConsole(QDockWidget):
         QDockWidget.__init__(self, parent)
         self.setObjectName("PythonConsole")
         self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
-        #self.setAllowedAreas(Qt.BottomDockWidgetArea)
+        # self.setAllowedAreas(Qt.BottomDockWidgetArea)
 
         self.console = PythonConsoleWidget(self)
         self.setWidget(self.console)
@@ -114,7 +115,7 @@ class PythonConsoleWidget(QWidget):
         self.shellOut = ShellOutputScintilla(self)
         self.tabEditorWidget = EditorTabWidget(self)
 
-        ##------------ UI -------------------------------
+        # ------------ UI -------------------------------
 
         self.splitterEditor = QSplitter(self)
         self.splitterEditor.setOrientation(Qt.Horizontal)
@@ -133,13 +134,13 @@ class PythonConsoleWidget(QWidget):
         self.splitter.addWidget(self.shellOutWidget)
         self.splitter.addWidget(self.shell)
 
-        #self.splitterEditor.addWidget(self.tabEditorWidget)
+        # self.splitterEditor.addWidget(self.tabEditorWidget)
 
         self.splitterObj = QSplitter(self.splitterEditor)
         self.splitterObj.setHandleWidth(3)
         self.splitterObj.setOrientation(Qt.Horizontal)
-        #self.splitterObj.setSizes([0, 0])
-        #self.splitterObj.setStretchFactor(0, 1)
+        # self.splitterObj.setSizes([0, 0])
+        # self.splitterObj.setStretchFactor(0, 1)
 
         self.widgetEditor = QWidget(self.splitterObj)
         self.widgetFind = QWidget(self)
@@ -151,9 +152,9 @@ class PythonConsoleWidget(QWidget):
         self.listClassMethod.setColumnHidden(1, True)
         self.listClassMethod.setAlternatingRowColors(True)
 
-        #self.splitterEditor.addWidget(self.widgetEditor)
-        #self.splitterObj.addWidget(self.listClassMethod)
-        #self.splitterObj.addWidget(self.widgetEditor)
+        # self.splitterEditor.addWidget(self.widgetEditor)
+        # self.splitterObj.addWidget(self.listClassMethod)
+        # self.splitterObj.addWidget(self.widgetEditor)
 
         # Hide side editor on start up
         self.splitterObj.hide()
@@ -164,13 +165,13 @@ class PythonConsoleWidget(QWidget):
         sizes = self.splitter.sizes()
         self.splitter.setSizes(sizes)
 
-        ##----------------Restore Settings------------------------------------
+        # ----------------Restore Settings------------------------------------
 
         self.restoreSettingsConsole()
 
-        ##------------------Toolbar Editor-------------------------------------
+        # ------------------Toolbar Editor-------------------------------------
 
-        ## Action for Open File
+        # Action for Open File
         openFileBt = QCoreApplication.translate("PythonConsole", "Open Script...")
         self.openFileButton = QAction(self)
         self.openFileButton.setCheckable(False)
@@ -190,7 +191,7 @@ class PythonConsoleWidget(QWidget):
         self.openInEditorButton.setIconVisibleInMenu(True)
         self.openInEditorButton.setToolTip(openExtEditorBt)
         self.openInEditorButton.setText(openExtEditorBt)
-        ## Action for Save File
+        # Action for Save File
         saveFileBt = QCoreApplication.translate("PythonConsole", "Save")
         self.saveFileButton = QAction(self)
         self.saveFileButton.setCheckable(False)
@@ -200,7 +201,7 @@ class PythonConsoleWidget(QWidget):
         self.saveFileButton.setIconVisibleInMenu(True)
         self.saveFileButton.setToolTip(saveFileBt)
         self.saveFileButton.setText(saveFileBt)
-        ## Action for Save File As
+        # Action for Save File As
         saveAsFileBt = QCoreApplication.translate("PythonConsole", "Save As...")
         self.saveAsFileButton = QAction(self)
         self.saveAsFileButton.setCheckable(False)
@@ -210,7 +211,7 @@ class PythonConsoleWidget(QWidget):
         self.saveAsFileButton.setIconVisibleInMenu(True)
         self.saveAsFileButton.setToolTip(saveAsFileBt)
         self.saveAsFileButton.setText(saveAsFileBt)
-        ## Action Cut
+        # Action Cut
         cutEditorBt = QCoreApplication.translate("PythonConsole", "Cut")
         self.cutEditorButton = QAction(self)
         self.cutEditorButton.setCheckable(False)
@@ -220,7 +221,7 @@ class PythonConsoleWidget(QWidget):
         self.cutEditorButton.setIconVisibleInMenu(True)
         self.cutEditorButton.setToolTip(cutEditorBt)
         self.cutEditorButton.setText(cutEditorBt)
-        ## Action Copy
+        # Action Copy
         copyEditorBt = QCoreApplication.translate("PythonConsole", "Copy")
         self.copyEditorButton = QAction(self)
         self.copyEditorButton.setCheckable(False)
@@ -230,7 +231,7 @@ class PythonConsoleWidget(QWidget):
         self.copyEditorButton.setIconVisibleInMenu(True)
         self.copyEditorButton.setToolTip(copyEditorBt)
         self.copyEditorButton.setText(copyEditorBt)
-        ## Action Paste
+        # Action Paste
         pasteEditorBt = QCoreApplication.translate("PythonConsole", "Paste")
         self.pasteEditorButton = QAction(self)
         self.pasteEditorButton.setCheckable(False)
@@ -240,7 +241,7 @@ class PythonConsoleWidget(QWidget):
         self.pasteEditorButton.setIconVisibleInMenu(True)
         self.pasteEditorButton.setToolTip(pasteEditorBt)
         self.pasteEditorButton.setText(pasteEditorBt)
-        ## Action Run Script (subprocess)
+        # Action Run Script (subprocess)
         runScriptEditorBt = QCoreApplication.translate("PythonConsole", "Run script")
         self.runScriptEditorButton = QAction(self)
         self.runScriptEditorButton.setCheckable(False)
@@ -250,7 +251,7 @@ class PythonConsoleWidget(QWidget):
         self.runScriptEditorButton.setIconVisibleInMenu(True)
         self.runScriptEditorButton.setToolTip(runScriptEditorBt)
         self.runScriptEditorButton.setText(runScriptEditorBt)
-        ## Action Run Script (subprocess)
+        # Action Run Script (subprocess)
         commentEditorBt = QCoreApplication.translate("PythonConsole", "Comment")
         self.commentEditorButton = QAction(self)
         self.commentEditorButton.setCheckable(False)
@@ -260,7 +261,7 @@ class PythonConsoleWidget(QWidget):
         self.commentEditorButton.setIconVisibleInMenu(True)
         self.commentEditorButton.setToolTip(commentEditorBt)
         self.commentEditorButton.setText(commentEditorBt)
-        ## Action Run Script (subprocess)
+        # Action Run Script (subprocess)
         uncommentEditorBt = QCoreApplication.translate("PythonConsole", "Uncomment")
         self.uncommentEditorButton = QAction(self)
         self.uncommentEditorButton.setCheckable(False)
@@ -270,7 +271,7 @@ class PythonConsoleWidget(QWidget):
         self.uncommentEditorButton.setIconVisibleInMenu(True)
         self.uncommentEditorButton.setToolTip(uncommentEditorBt)
         self.uncommentEditorButton.setText(uncommentEditorBt)
-        ## Action for Object browser
+        # Action for Object browser
         objList = QCoreApplication.translate("PythonConsole", "Object Inspector...")
         self.objectListButton = QAction(self)
         self.objectListButton.setCheckable(True)
@@ -281,7 +282,7 @@ class PythonConsoleWidget(QWidget):
         self.objectListButton.setIconVisibleInMenu(True)
         self.objectListButton.setToolTip(objList)
         self.objectListButton.setText(objList)
-        ## Action for Find text
+        # Action for Find text
         findText = QCoreApplication.translate("PythonConsole", "Find Text")
         self.findTextButton = QAction(self)
         self.findTextButton.setCheckable(True)
@@ -292,9 +293,9 @@ class PythonConsoleWidget(QWidget):
         self.findTextButton.setToolTip(findText)
         self.findTextButton.setText(findText)
 
-        ##----------------Toolbar Console-------------------------------------
+        # ----------------Toolbar Console-------------------------------------
 
-        ## Action Show Editor
+        # Action Show Editor
         showEditor = QCoreApplication.translate("PythonConsole", "Show Editor")
         self.showEditorButton = QAction(self)
         self.showEditorButton.setEnabled(True)
@@ -304,7 +305,7 @@ class PythonConsoleWidget(QWidget):
         self.showEditorButton.setIconVisibleInMenu(True)
         self.showEditorButton.setToolTip(showEditor)
         self.showEditorButton.setText(showEditor)
-        ## Action for Clear button
+        # Action for Clear button
         clearBt = QCoreApplication.translate("PythonConsole", "Clear Console")
         self.clearButton = QAction(self)
         self.clearButton.setCheckable(False)
@@ -314,7 +315,7 @@ class PythonConsoleWidget(QWidget):
         self.clearButton.setIconVisibleInMenu(True)
         self.clearButton.setToolTip(clearBt)
         self.clearButton.setText(clearBt)
-        ## Action for settings
+        # Action for settings
         optionsBt = QCoreApplication.translate("PythonConsole", "Options...")
         self.optionsButton = QAction(self)
         self.optionsButton.setCheckable(False)
@@ -324,7 +325,7 @@ class PythonConsoleWidget(QWidget):
         self.optionsButton.setIconVisibleInMenu(True)
         self.optionsButton.setToolTip(optionsBt)
         self.optionsButton.setText(optionsBt)
-        ## Action menu for class
+        # Action menu for class
         actionClassBt = QCoreApplication.translate("PythonConsole", "Import Class")
         self.actionClass = QAction(self)
         self.actionClass.setCheckable(False)
@@ -334,7 +335,7 @@ class PythonConsoleWidget(QWidget):
         self.actionClass.setIconVisibleInMenu(True)
         self.actionClass.setToolTip(actionClassBt)
         self.actionClass.setText(actionClassBt)
-        ## Action for Run script
+        # Action for Run script
         runBt = QCoreApplication.translate("PythonConsole", "Run Command")
         self.runButton = QAction(self)
         self.runButton.setCheckable(False)
@@ -344,7 +345,7 @@ class PythonConsoleWidget(QWidget):
         self.runButton.setIconVisibleInMenu(True)
         self.runButton.setToolTip(runBt)
         self.runButton.setText(runBt)
-        ## Help action
+        # Help action
         helpBt = QCoreApplication.translate("PythonConsole", "Help...")
         self.helpButton = QAction(self)
         self.helpButton.setCheckable(False)
@@ -399,7 +400,7 @@ class PythonConsoleWidget(QWidget):
         self.toolBarEditor.addSeparator()
         self.toolBarEditor.addAction(self.objectListButton)
 
-        ## Menu Import Class
+        # Menu Import Class
         default_command = {
             (QCoreApplication.translate("PythonConsole", "Import Processing Class"),
              QgsApplication.getThemeIcon("console/iconProcessingConsole.png")):
@@ -444,7 +445,7 @@ class PythonConsoleWidget(QWidget):
         self.shellOut.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.shell.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
-        ##------------ Layout -------------------------------
+        # ------------ Layout -------------------------------
 
         self.mainLayout = QGridLayout(self)
         self.mainLayout.setMargin(0)
@@ -462,7 +463,7 @@ class PythonConsoleWidget(QWidget):
         self.layoutEditor.addWidget(self.tabEditorWidget, 1, 1, 1, 1)
         self.layoutEditor.addWidget(self.widgetFind, 2, 1, 1, 1)
 
-        ## Layout for the find widget
+        #  Layout for the find widget
         self.layoutFind = QGridLayout(self.widgetFind)
         self.layoutFind.setContentsMargins(0, 0, 0, 0)
         self.lineEditFind = QgsFilterLineEdit()
@@ -500,11 +501,11 @@ class PythonConsoleWidget(QWidget):
         self.layoutFind.addWidget(self.wholeWord, 0, 5, 1, 1)
         self.layoutFind.addWidget(self.wrapAround, 0, 6, 1, 1)
 
-        ##------------ Add first Tab in Editor -------------------------------
+        # ------------ Add first Tab in Editor -------------------------------
 
-        #self.tabEditorWidget.newTabEditor(tabName='first', filename=None)
+        # self.tabEditorWidget.newTabEditor(tabName='first', filename=None)
 
-        ##------------ Signal -------------------------------
+        # ------------ Signal -------------------------------
 
         self.findTextButton.triggered.connect(self._toggleFind)
         self.objectListButton.toggled.connect(self.toggleObjectListWidget)
@@ -727,6 +728,7 @@ class PythonConsoleWidget(QWidget):
         self.splitter.restoreState(self.settings.value("pythonConsole/splitterConsole", QByteArray()))
         self.splitterEditor.restoreState(self.settings.value("pythonConsole/splitterEditor", QByteArray()))
         self.splitterObj.restoreState(self.settings.value("pythonConsole/splitterObj", QByteArray()))
+
 
 if __name__ == '__main__':
     a = QApplication(sys.argv)
