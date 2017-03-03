@@ -905,10 +905,13 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
   {
     QgsExpression groupByExp( groupBy );
     QVariant groupByValue = groupByExp.evaluate( context );
+    QString groupByClause = QStringLiteral( "%1 %2 %3" ).arg( groupBy,
+                            groupByValue.isNull() ? "is" : "=",
+                            QgsExpression::quotedValue( groupByValue ) );
     if ( !parameters.filter.isEmpty() )
-      parameters.filter = QStringLiteral( "(%1) AND (%2=%3)" ).arg( parameters.filter, groupBy, QgsExpression::quotedValue( groupByValue ) );
+      parameters.filter = QStringLiteral( "(%1) AND (%2)" ).arg( parameters.filter, groupByClause );
     else
-      parameters.filter = QStringLiteral( "(%2 = %3)" ).arg( groupBy, QgsExpression::quotedValue( groupByValue ) );
+      parameters.filter = groupByClause;
   }
 
   QString cacheKey = QStringLiteral( "agg:%1:%2:%3:%4" ).arg( vl->id(),

@@ -120,38 +120,44 @@ class TestQgsExpression: public QObject
       QgsProject::instance()->addMapLayer( mMemoryLayer );
 
       // test layer for aggregates
-      mAggregatesLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:string&field=col3:integer" ), QStringLiteral( "aggregate_layer" ), QStringLiteral( "memory" ) );
+      mAggregatesLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:string&field=col3:integer&field=col4:string" ), QStringLiteral( "aggregate_layer" ), QStringLiteral( "memory" ) );
       QVERIFY( mAggregatesLayer->isValid() );
       QgsFeature af1( mAggregatesLayer->dataProvider()->fields(), 1 );
       af1.setGeometry( QgsGeometry::fromPoint( QgsPoint( 0, 0 ) ) );
       af1.setAttribute( QStringLiteral( "col1" ), 4 );
       af1.setAttribute( QStringLiteral( "col2" ), "test" );
       af1.setAttribute( QStringLiteral( "col3" ), 2 );
+      af1.setAttribute( QStringLiteral( "col4" ), QVariant( QVariant::String ) );
       QgsFeature af2( mAggregatesLayer->dataProvider()->fields(), 2 );
       af2.setGeometry( QgsGeometry::fromPoint( QgsPoint( 1, 0 ) ) );
       af2.setAttribute( QStringLiteral( "col1" ), 2 );
       af2.setAttribute( QStringLiteral( "col2" ), QVariant( QVariant::String ) );
       af2.setAttribute( QStringLiteral( "col3" ), 1 );
+      af2.setAttribute( QStringLiteral( "col4" ), QVariant( QVariant::String ) );
       QgsFeature af3( mAggregatesLayer->dataProvider()->fields(), 3 );
       af3.setGeometry( QgsGeometry::fromPoint( QgsPoint( 2, 0 ) ) );
       af3.setAttribute( QStringLiteral( "col1" ), 3 );
       af3.setAttribute( QStringLiteral( "col2" ), "test333" );
       af3.setAttribute( QStringLiteral( "col3" ), 2 );
+      af3.setAttribute( QStringLiteral( "col4" ), QVariant( QVariant::String ) );
       QgsFeature af4( mAggregatesLayer->dataProvider()->fields(), 4 );
       af4.setGeometry( QgsGeometry::fromPoint( QgsPoint( 3, 0 ) ) );
       af4.setAttribute( QStringLiteral( "col1" ), 2 );
       af4.setAttribute( QStringLiteral( "col2" ), "test4" );
       af4.setAttribute( QStringLiteral( "col3" ), 2 );
+      af4.setAttribute( QStringLiteral( "col4" ), "" );
       QgsFeature af5( mAggregatesLayer->dataProvider()->fields(), 5 );
       af5.setGeometry( QgsGeometry::fromPoint( QgsPoint( 4, 0 ) ) );
       af5.setAttribute( QStringLiteral( "col1" ), 5 );
       af5.setAttribute( QStringLiteral( "col2" ), QVariant( QVariant::String ) );
       af5.setAttribute( QStringLiteral( "col3" ), 3 );
+      af5.setAttribute( QStringLiteral( "col4" ), "test" );
       QgsFeature af6( mAggregatesLayer->dataProvider()->fields(), 6 );
       af6.setGeometry( QgsGeometry::fromPoint( QgsPoint( 5, 0 ) ) );
       af6.setAttribute( QStringLiteral( "col1" ), 8 );
       af6.setAttribute( QStringLiteral( "col2" ), "test4" );
       af6.setAttribute( QStringLiteral( "col3" ), 3 );
+      af6.setAttribute( QStringLiteral( "col4" ), "test" );
       mAggregatesLayer->dataProvider()->addFeatures( QgsFeatureList() << af1 << af2 << af3 << af4 << af5 << af6 );
       QgsProject::instance()->addMapLayer( mAggregatesLayer );
 
@@ -1417,12 +1423,13 @@ class TestQgsExpression: public QObject
       QTest::newRow( "filter" ) << "sum(\"col1\", NULL, \"col1\" >= 5)" << false << QVariant( 13 );
       QTest::newRow( "filter named" ) << "sum(expression:=\"col1\", filter:=\"col1\" >= 5)" << false << QVariant( 13 );
       QTest::newRow( "filter no matching" ) << "sum(expression:=\"col1\", filter:=\"col1\" <= -5)" << false << QVariant( 0 );
-      QTest::newRow( "filter no matching max" ) << "maximum('test',\"xcvxcv\" * 2)" << false << QVariant();
+      QTest::newRow( "filter no matching max" ) << "maximum(\"col1\", filter:=\"col1\" <= -5)" << false << QVariant();
 
       QTest::newRow( "group by" ) << "sum(\"col1\", \"col3\")" << false << QVariant( 9 );
       QTest::newRow( "group by and filter" ) << "sum(\"col1\", \"col3\", \"col1\">=3)" << false << QVariant( 7 );
       QTest::newRow( "group by and filter named" ) << "sum(expression:=\"col1\", group_by:=\"col3\", filter:=\"col1\">=3)" << false << QVariant( 7 );
       QTest::newRow( "group by expression" ) << "sum(\"col1\", \"col1\" % 2)" << false << QVariant( 16 );
+      QTest::newRow( "group by with null value" ) << "sum(\"col1\", \"col4\")" << false << QVariant( 9 );
     }
 
     void selection()
@@ -1483,6 +1490,7 @@ class TestQgsExpression: public QObject
       af1.setAttribute( QStringLiteral( "col1" ), 4 );
       af1.setAttribute( QStringLiteral( "col2" ), "test" );
       af1.setAttribute( QStringLiteral( "col3" ), 2 );
+      af1.setAttribute( QStringLiteral( "col4" ), QVariant() );
       context.setFeature( af1 );
 
       QFETCH( QString, string );
