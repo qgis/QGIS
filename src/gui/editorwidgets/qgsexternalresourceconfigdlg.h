@@ -42,11 +42,22 @@ class GUI_EXPORT QgsExternalResourceConfigDlg : public QgsEditorConfigWidget, pr
     //! Choose a base directory for rootPath
     void chooseDefaultPath();
 
+    void rootPathPropertyChanged();
+
     //! Modify RelativeDefault according to mRootPath content
     void enableRelativeDefault();
 
-    //! Dynamic activation of RelativeGroupBox
-    void enableRelative( bool state );
+  private:
+    enum Properties
+    {
+      RootPath
+    };
+
+    void setRootPathExpression( const QString &expression );
+
+    const QgsPropertiesDefinition &propertyDefinitions();
+
+    QgsPropertyCollection mPropertyCollection;
 };
 
 #endif // QGSEXTERNALRESOURCECONFIGDLG_H

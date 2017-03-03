@@ -51,6 +51,7 @@ class GUI_EXPORT QgsExternalResourceWidgetWrapper : public QgsEditorWidgetWrappe
     bool valid() const override;
 
   public slots:
+    void setFeature( const QgsFeature &feature ) override;
     void setValue( const QVariant &value ) override;
     void setEnabled( bool enabled ) override;
 
@@ -61,7 +62,7 @@ class GUI_EXPORT QgsExternalResourceWidgetWrapper : public QgsEditorWidgetWrappe
     QLabel *mLabel = nullptr;
     QgsExternalResourceWidget *mQgsWidget = nullptr;
 
-
+    QgsExpression mDefaultRootExpression;
 };
 
 #endif // QGSEXTERNALRESOURCEWIDGETWRAPPER_H

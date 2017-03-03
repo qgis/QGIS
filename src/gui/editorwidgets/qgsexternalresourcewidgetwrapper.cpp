@@ -19,7 +19,7 @@
 #include <QSettings>
 #include <QLabel>
 
-
+#include "qgsproject.h"
 #include "qgsexternalresourcewidget.h"
 #include "qgsfilterlineedit.h"
 
@@ -77,6 +77,21 @@ bool QgsExternalResourceWidgetWrapper::valid() const
   return mLineEdit || mLabel || mQgsWidget;
 }
 
+void QgsExternalResourceWidgetWrapper::setFeature( const QgsFeature &feature )
+{
+  if ( mQgsWidget && mDefaultRootExpression.isValid() )
+  {
+    QgsExpressionContext expressionContext = QgsExpressionContextUtils::createFeatureBasedContext( feature, layer()->fields() );
+
+    QVariant value = mDefaultRootExpression.evaluate( &expressionContext );
+    qWarning() << "Default root << " << value.toString();
+
+    mQgsWidget->setDefaultRoot( value.toString() );
+  }
+
+  QgsEditorWidgetWrapper::setFeature( feature );
+}
+
 QWidget *QgsExternalResourceWidgetWrapper::createWidget( QWidget *parent )
 {
   return new QgsExternalResourceWidget( parent );
@@ -102,41 +117,50 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget *editor )
   if ( mQgsWidget )
   {
     mQgsWidget->fileWidget()->setStorageMode( QgsFileWidget::GetFile );
-    if ( config().contains( QStringLiteral( "UseLink" ) ) )
+
+    QVariantMap cfg = config();
+
+    if ( cfg.contains( QStringLiteral( "UseLink" ) ) )
     {
-      mQgsWidget->fileWidget()->setUseLink( config( QStringLiteral( "UseLink" ) ).toBool() );
+      mQgsWidget->fileWidget()->setUseLink( cfg.value( QStringLiteral( "UseLink" ) ).toBool() );
     }
-    if ( config().contains( QStringLiteral( "FullUrl" ) ) )
+    if ( cfg.contains( QStringLiteral( "FullUrl" ) ) )
     {
-      mQgsWidget->fileWidget()->setFullUrl( config( QStringLiteral( "FullUrl" ) ).toBool() );
+      mQgsWidget->fileWidget()->setFullUrl( cfg.value( QStringLiteral( "FullUrl" ) ).toBool() );
     }
-    if ( config().contains( QStringLiteral( "DefaultRoot" ) ) )
+
+    qWarning() << "Default root style " << cfg.value( QStringLiteral( "DefaultRootStyle" ) );
+    if ( cfg.value( QStringLiteral( "DefaultRootStyle" ) ).toString() == QStringLiteral( "expression" ) )
     {
-      mQgsWidget->setDefaultRoot( config( QStringLiteral( "DefaultRoot" ) ).toString() );
+      mDefaultRootExpression = QgsExpression( cfg.value( QStringLiteral( "DefaultRootExpression" ) ).toString() );
     }
-    if ( config().contains( QStringLiteral( "StorageMode" ) ) )
+    else
     {
-      mQgsWidget->fileWidget()->setStorageMode( ( QgsFileWidget::StorageMode )config( QStringLiteral( "StorageMode" ) ).toInt() );
+      mQgsWidget->setDefaultRoot( cfg.value( QStringLiteral( "DefaultRoot" ) ).toString() );
     }
-    if ( config().contains( QStringLiteral( "RelativeStorage" ) ) )
+    if ( cfg.contains( QStringLiteral( "StorageMode" ) ) )
     {
-      mQgsWidget->setRelativeStorage( ( QgsFileWidget::RelativeStorage )config( QStringLiteral( "RelativeStorage" ) ).toInt() );
+      mQgsWidget->fileWidget()->setStorageMode( ( QgsFileWidget::StorageMode )cfg.value( QStringLiteral( "StorageMode" ) ).toInt() );
     }
-    if ( config().contains( QStringLiteral( "FileWidget" ) ) )
+    if ( cfg.contains( QStringLiteral( "RelativeStorage" ) ) )
     {
-      mQgsWidget->setFileWidgetVisible( config( QStringLiteral( "FileWidget" ) ).toBool() );
+      mQgsWidget->setRelativeStorage( ( QgsFileWidget::RelativeStorage )cfg.value( QStringLiteral( "RelativeStorage" ) ).toInt() );
     }
-    if ( config().contains( QStringLiteral( "FileWidgetButton" ) ) )
+    if ( cfg.contains( QStringLiteral( "FileWidget" ) ) )
     {
-      mQgsWidget->fileWidget()->setFileWidgetButtonVisible( config( QStringLiteral( "FileWidgetButton" ) ).toBool() );
+      mQgsWidget->setFileWidgetVisible( cfg.value( QStringLiteral( "FileWidget" ) ).toBool() );
     }
-    if ( config().contains( QStringLiteral( "DocumentViewer" ) ) )
+    if ( cfg.contains( QStringLiteral( "FileWidgetButton" ) ) )
     {
-      mQgsWidget->setDocumentViewerContent( ( QgsExternalResourceWidget::DocumentViewerContent )config( QStringLiteral( "DocumentViewer" ) ).toInt() );
+      mQgsWidget->fileWidget()->setFileWidgetButtonVisible( cfg.value( QStringLiteral( "FileWidgetButton" ) ).toBool() );
     }
-    if ( config().contains( QStringLiteral( "FileWidgetFilter" ) ) )
+    if ( cfg.contains( QStringLiteral( "DocumentViewer" ) ) )
     {
-      mQgsWidget->fileWidget()->setFilter( config( QStringLiteral( "FileWidgetFilter" ) ).toString() );
+      mQgsWidget->setDocumentViewerContent( ( QgsExternalResourceWidget::DocumentViewerContent )cfg.value( QStringLiteral( "DocumentViewer" ) ).toInt() );
+    }
+    if ( cfg.contains( QStringLiteral( "FileWidgetFilter" ) ) )
+    {
+      mQgsWidget->fileWidget()->setFilter( cfg.value( QStringLiteral( "FileWidgetFilter" ) ).toString() );
     }
   }
 
