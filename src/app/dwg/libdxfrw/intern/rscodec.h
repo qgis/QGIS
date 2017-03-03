@@ -47,13 +47,13 @@ class RScodec
     bool encode( unsigned char *data, unsigned char *parity );
     int decode( unsigned char *data );
     bool isOkey() {return isOk;}
-    const unsigned int* indexOf() {return index_of;}
-    const int* alphaTo() {return alpha_to;}
+    const unsigned int *indexOf() {return index_of;}
+    const int *alphaTo() {return alpha_to;}
 
   private:
     void RSgenerate_gf( unsigned int pp );
     void RSgen_poly();
-    int calcDecode( unsigned char* data, int* recd, int** elp, int* d, int* l, int* u_lu, int* s, int* root, int* loc, int* z, int* err, int* reg, int bb );
+    int calcDecode( unsigned char *data, int *recd, int **elp, int *d, int *l, int *u_lu, int *s, int *root, int *loc, int *z, int *err, int *reg, int bb );
 
 
   private:

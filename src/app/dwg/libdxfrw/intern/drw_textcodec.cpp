@@ -226,7 +226,7 @@ std::string DRW_ConvTable::toUtf8( std::string *s )
     }
     else  //end c < 0x80
     {
-      res += encodeNum( table[c-0x80] ); //translate from table
+      res += encodeNum( table[c - 0x80] ); //translate from table
     }
   } //end for
 
@@ -281,19 +281,19 @@ std::string DRW_Converter::encodeNum( int c )
   else if ( c < 0x10000 )   //800-FFFF 3 bytes
   {
     ret[0] = 0xe0 | ( c >> 12 );
-    ret[1] = 0x80 | (( c >> 6 ) & 0x3f );
+    ret[1] = 0x80 | ( ( c >> 6 ) & 0x3f );
     ret[2] = 0x80 | ( c & 0x3f );
     ret[3] = 0;
   }
   else   //10000-10FFFF 4 bytes
   {
     ret[0] = 0xf0 | ( c >> 18 );
-    ret[1] = 0x80 | (( c >> 12 ) & 0x3f );
-    ret[2] = 0x80 | (( c >> 6 ) & 0x3f );
+    ret[1] = 0x80 | ( ( c >> 12 ) & 0x3f );
+    ret[2] = 0x80 | ( ( c >> 6 ) & 0x3f );
     ret[3] = 0x80 | ( c & 0x3f );
     ret[4] = 0;
   }
-  return std::string(( char* )ret );
+  return std::string( ( char * )ret );
 }
 
 /** 's' is a string with at least 4 bytes lenght
@@ -303,24 +303,24 @@ int DRW_Converter::decodeNum( std::string s, int *b )
 {
   int code = 0;
   unsigned char c = s.at( 0 );
-  if (( c& 0xE0 )  == 0xC0 ) //2 bytes
+  if ( ( c & 0xE0 )  == 0xC0 ) //2 bytes
   {
     code = ( c & 0x1F ) << 6;
     code = ( s.at( 1 ) & 0x3F ) | code;
     *b = 2;
   }
-  else if (( c& 0xF0 )  == 0xE0 ) //3 bytes
+  else if ( ( c & 0xF0 )  == 0xE0 ) //3 bytes
   {
     code = ( c & 0x0F ) << 12;
-    code = (( s.at( 1 ) & 0x3F ) << 6 ) | code;
+    code = ( ( s.at( 1 ) & 0x3F ) << 6 ) | code;
     code = ( s.at( 2 ) & 0x3F ) | code;
     *b = 3;
   }
-  else if (( c& 0xF8 )  == 0xF0 ) //4 bytes
+  else if ( ( c & 0xF8 )  == 0xF0 ) //4 bytes
   {
     code = ( c & 0x07 ) << 18;
-    code = (( s.at( 1 ) & 0x3F ) << 12 ) | code;
-    code = (( s.at( 2 ) & 0x3F ) << 6 ) | code;
+    code = ( ( s.at( 1 ) & 0x3F ) << 12 ) | code;
+    code = ( ( s.at( 2 ) & 0x3F ) << 6 ) | code;
     code = ( s.at( 3 ) & 0x3F ) | code;
     *b = 4;
   }
@@ -407,8 +407,8 @@ std::string DRW_ConvDBCSTable::toUtf8( std::string *s )
     {
       ++it;
       int code = ( c << 8 ) | ( unsigned char )( *it );
-      int sta = leadTable[c-0x81];
-      int end = leadTable[c-0x80];
+      int sta = leadTable[c - 0x81];
+      int end = leadTable[c - 0x80];
       for ( int k = sta; k < end; k++ )
       {
         if ( doubleTable[k][0] == code )
@@ -518,13 +518,13 @@ std::string DRW_Conv932Table::toUtf8( std::string *s )
       int end = 0;
       if ( c > 0x80 && c < 0xA0 )
       {
-        sta = DRW_LeadTable932[c-0x81];
-        end = DRW_LeadTable932[c-0x80];
+        sta = DRW_LeadTable932[c - 0x81];
+        end = DRW_LeadTable932[c - 0x80];
       }
       else if ( c > 0xDF && c < 0xFD )
       {
-        sta = DRW_LeadTable932[c-0xC1];
-        end = DRW_LeadTable932[c-0xC0];
+        sta = DRW_LeadTable932[c - 0xC1];
+        end = DRW_LeadTable932[c - 0xC0];
       }
       if ( end > 0 )
       {
@@ -568,7 +568,7 @@ std::string DRW_ConvUTF16::toUtf8( std::string *s ) //RLZ: pending to write
   return res;
 }
 
-std::string DRW_TextCodec::correctCodePage( const std::string& s )
+std::string DRW_TextCodec::correctCodePage( const std::string &s )
 {
   //stringstream cause crash in OS/X, bug#3597944
   std::string cp = s;

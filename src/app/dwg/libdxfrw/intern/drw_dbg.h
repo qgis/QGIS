@@ -54,7 +54,7 @@ class DRW_dbg
     DRW_dbg();
     static DRW_dbg *instance;
     LEVEL level;
-    print_none* prClass = nullptr;
+    print_none *prClass = nullptr;
 };
 
 

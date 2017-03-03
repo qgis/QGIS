@@ -21,8 +21,8 @@
 
 #include <QPushButton>
 
-QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QWidget* parent )
-    : QDialog( parent )
+QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QWidget *parent )
+  : QDialog( parent )
 {
   setupUi( this );
 
@@ -56,7 +56,7 @@ void QgsLabelEngineConfigDialog::onOK()
   QgsLabelingEngine engine;
 
   // save
-  engine.setSearchMethod(( QgsPalLabeling::Search ) cboSearchMethod->currentIndex() );
+  engine.setSearchMethod( ( QgsPalLabeling::Search ) cboSearchMethod->currentIndex() );
 
   engine.setNumCandidatePositions( spinCandPoint->value(),
                                    spinCandLine->value(),
@@ -75,7 +75,7 @@ void QgsLabelEngineConfigDialog::onOK()
 void QgsLabelEngineConfigDialog::setDefaults()
 {
   pal::Pal p;
-  cboSearchMethod->setCurrentIndex(( int )p.getSearch() );
+  cboSearchMethod->setCurrentIndex( ( int )p.getSearch() );
   spinCandPoint->setValue( p.getPointP() );
   spinCandLine->setValue( p.getLineP() );
   spinCandPolygon->setValue( p.getPolyP() );

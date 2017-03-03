@@ -24,8 +24,8 @@
 #include "qgsdoublespinbox.h"
 #include "qgisgui.h"
 
-QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget( QWidget* parent )
-    : QWidget( parent )
+QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget( QWidget *parent )
+  : QWidget( parent )
 {
   QSettings settings;
   int minimumFactor = 100 * QgisGui::CANVAS_MAGNIFICATION_MIN;
@@ -72,10 +72,10 @@ QgsStatusBarMagnifierWidget::~QgsStatusBarMagnifierWidget()
 
 void QgsStatusBarMagnifierWidget::setDefaultFactor( double factor )
 {
-  mSpinBox->setClearValue(( int )100*factor );
+  mSpinBox->setClearValue( ( int )100 * factor );
 }
 
-void QgsStatusBarMagnifierWidget::setFont( const QFont& myFont )
+void QgsStatusBarMagnifierWidget::setFont( const QFont &myFont )
 {
   mLabel->setFont( myFont );
   mSpinBox->setFont( myFont );

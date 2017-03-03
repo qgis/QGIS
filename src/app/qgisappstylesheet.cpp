@@ -30,7 +30,7 @@
  */
 
 QgisAppStyleSheet::QgisAppStyleSheet( QObject *parent )
-    : QObject( parent )
+  : QObject( parent )
 {
   setActiveValues();
 }
@@ -97,7 +97,7 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   return opts;
 }
 
-void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
+void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
 {
   QString ss;
 
@@ -180,7 +180,7 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
   emit appStyleSheetChanged( ss );
 }
 
-void QgisAppStyleSheet::saveToSettings( const QMap<QString, QVariant>& opts )
+void QgisAppStyleSheet::saveToSettings( const QMap<QString, QVariant> &opts )
 {
   QSettings settings;
   settings.beginGroup( QStringLiteral( "qgis/stylesheet" ) );

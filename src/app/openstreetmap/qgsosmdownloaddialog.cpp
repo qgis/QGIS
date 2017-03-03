@@ -29,9 +29,9 @@
 
 #include "qgsosmdownload.h"
 
-QgsOSMDownloadDialog::QgsOSMDownloadDialog( QWidget* parent )
-    : QDialog( parent )
-    , mDownload( new QgsOSMDownload )
+QgsOSMDownloadDialog::QgsOSMDownloadDialog( QWidget *parent )
+  : QDialog( parent )
+  , mDownload( new QgsOSMDownload )
 {
   setupUi( this );
 
@@ -63,8 +63,8 @@ QgsOSMDownloadDialog::~QgsOSMDownloadDialog()
 
 void QgsOSMDownloadDialog::populateLayers()
 {
-  QMap<QString, QgsMapLayer*> layers = QgsProject::instance()->mapLayers();
-  QMap<QString, QgsMapLayer*>::iterator it;
+  QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
+  QMap<QString, QgsMapLayer *>::iterator it;
   for ( it = layers.begin(); it != layers.end(); ++it )
   {
     cboLayers->addItem( it.value()->name(), it.key() );
@@ -72,7 +72,7 @@ void QgsOSMDownloadDialog::populateLayers()
   cboLayers->setCurrentIndex( 0 );
 }
 
-void QgsOSMDownloadDialog::setRect( const QgsRectangle& rect )
+void QgsOSMDownloadDialog::setRect( const QgsRectangle &rect )
 {
   // these coords should be already lat/lon
   editXMin->setText( QString::number( rect.xMinimum() ) );
@@ -135,7 +135,7 @@ void QgsOSMDownloadDialog::onCurrentLayerChanged( int index )
     return;
 
   QString layerId = cboLayers->itemData( index ).toString();
-  QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerId );
+  QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerId );
   if ( !layer )
     return;
 

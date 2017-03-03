@@ -45,7 +45,7 @@ class QgsVectorLayerAndAttributeModel : public QgsLayerTreeModel
 {
     Q_OBJECT
   public:
-    QgsVectorLayerAndAttributeModel( QgsLayerTreeGroup* rootNode, QObject *parent = nullptr );
+    QgsVectorLayerAndAttributeModel( QgsLayerTreeGroup *rootNode, QObject *parent = nullptr );
     ~QgsVectorLayerAndAttributeModel();
 
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -77,7 +77,7 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
 {
     Q_OBJECT
   public:
-    QgsDxfExportDialog( QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsDxfExportDialog( QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsDxfExportDialog();
 
     QList< QPair<QgsVectorLayer *, int> > layers() const;

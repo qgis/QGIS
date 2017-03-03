@@ -22,13 +22,13 @@
 
 #include <QMouseEvent>
 
-QgsMapToolPointSymbol::QgsMapToolPointSymbol( QgsMapCanvas* canvas )
-    : QgsMapToolEdit( canvas )
-    , mActiveLayer( nullptr )
-    , mFeatureNumber( -1 )
+QgsMapToolPointSymbol::QgsMapToolPointSymbol( QgsMapCanvas *canvas )
+  : QgsMapToolEdit( canvas )
+  , mActiveLayer( nullptr )
+  , mFeatureNumber( -1 )
 {}
 
-void QgsMapToolPointSymbol::canvasPressEvent( QgsMapMouseEvent* e )
+void QgsMapToolPointSymbol::canvasPressEvent( QgsMapMouseEvent *e )
 {
   if ( !mCanvas )
   {
@@ -71,7 +71,7 @@ void QgsMapToolPointSymbol::canvasPressEvent( QgsMapMouseEvent* e )
   }
 
   //check whether selected feature has a modifiable symbol
-  QgsFeatureRenderer* renderer = mActiveLayer->renderer();
+  QgsFeatureRenderer *renderer = mActiveLayer->renderer();
   if ( !renderer )
     return;
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
@@ -84,20 +84,20 @@ void QgsMapToolPointSymbol::canvasPressEvent( QgsMapMouseEvent* e )
   if ( renderer->capabilities() & QgsFeatureRenderer::MoreSymbolsPerFeature )
   {
     //could be multiple symbols for this feature, so check them all
-    Q_FOREACH ( QgsSymbol* s, renderer->originalSymbolsForFeature( feature, context ) )
+    Q_FOREACH ( QgsSymbol *s, renderer->originalSymbolsForFeature( feature, context ) )
     {
       if ( s && s->type() == QgsSymbol::Marker )
       {
-        hasCompatibleSymbol = hasCompatibleSymbol || checkSymbolCompatibility( static_cast< QgsMarkerSymbol* >( s ), context );
+        hasCompatibleSymbol = hasCompatibleSymbol || checkSymbolCompatibility( static_cast< QgsMarkerSymbol * >( s ), context );
       }
     }
   }
   else
   {
-    QgsSymbol* s = renderer->originalSymbolForFeature( feature, context );
+    QgsSymbol *s = renderer->originalSymbolForFeature( feature, context );
     if ( s && s->type() == QgsSymbol::Marker )
     {
-      hasCompatibleSymbol = hasCompatibleSymbol || checkSymbolCompatibility( static_cast< QgsMarkerSymbol* >( s ), context );
+      hasCompatibleSymbol = hasCompatibleSymbol || checkSymbolCompatibility( static_cast< QgsMarkerSymbol * >( s ), context );
     }
   }
 

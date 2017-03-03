@@ -35,9 +35,9 @@ class QgsNodeEditorModel : public QAbstractTableModel
     Q_OBJECT
   public:
 
-    QgsNodeEditorModel( QgsVectorLayer* layer,
-                        QgsSelectedFeature* selectedFeature,
-                        QgsMapCanvas* canvas, QObject* parent = nullptr );
+    QgsNodeEditorModel( QgsVectorLayer *layer,
+                        QgsSelectedFeature *selectedFeature,
+                        QgsMapCanvas *canvas, QObject *parent = nullptr );
 
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -48,9 +48,9 @@ class QgsNodeEditorModel : public QAbstractTableModel
 
   private:
 
-    QgsVectorLayer* mLayer = nullptr;
-    QgsSelectedFeature* mSelectedFeature = nullptr;
-    QgsMapCanvas* mCanvas = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
+    QgsSelectedFeature *mSelectedFeature = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
 
     bool mHasZ;
     bool mHasM;
@@ -62,7 +62,7 @@ class QgsNodeEditorModel : public QAbstractTableModel
 
     QFont mWidgetFont;
 
-    bool calcR( int row, double& r, double &minRadius ) const;
+    bool calcR( int row, double &r, double &minRadius ) const;
 
   private slots:
 
@@ -73,26 +73,26 @@ class QgsNodeEditor : public QgsDockWidget
 {
     Q_OBJECT
   public:
-    QgsNodeEditor( QgsVectorLayer* layer,
-                   QgsSelectedFeature* selectedFeature,
-                   QgsMapCanvas* canvas );
+    QgsNodeEditor( QgsVectorLayer *layer,
+                   QgsSelectedFeature *selectedFeature,
+                   QgsMapCanvas *canvas );
 
   public:
-    QgsVectorLayer* mLayer = nullptr;
-    QgsSelectedFeature* mSelectedFeature = nullptr;
-    QgsMapCanvas* mCanvas = nullptr;
-    QTableView* mTableView = nullptr;
-    QgsNodeEditorModel* mNodeModel = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
+    QgsSelectedFeature *mSelectedFeature = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
+    QTableView *mTableView = nullptr;
+    QgsNodeEditorModel *mNodeModel = nullptr;
 
   signals:
     void deleteSelectedRequested( );
 
   protected:
-    void keyPressEvent( QKeyEvent * event );
+    void keyPressEvent( QKeyEvent *event );
 
   private slots:
     void updateTableSelection();
-    void updateNodeSelection( const QItemSelection& selected, const QItemSelection& deselected );
+    void updateNodeSelection( const QItemSelection &selected, const QItemSelection &deselected );
     void zoomToNode( int idx );
 
   private:
@@ -107,10 +107,10 @@ class CoordinateItemDelegate : public QStyledItemDelegate
     Q_OBJECT
 
   public:
-    QString displayText( const QVariant & value, const QLocale & locale ) const override;
+    QString displayText( const QVariant &value, const QLocale &locale ) const override;
 
   protected:
-    QWidget* createEditor( QWidget * parent, const QStyleOptionViewItem & /*option*/, const QModelIndex & index ) const override;
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
 };
 

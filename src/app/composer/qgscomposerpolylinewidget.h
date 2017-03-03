@@ -30,11 +30,11 @@ class QgsComposerPolylineWidget: public QgsComposerItemBaseWidget, private Ui::Q
 {
     Q_OBJECT
   public:
-    explicit QgsComposerPolylineWidget( QgsComposerPolyline* composerPolyline );
+    explicit QgsComposerPolylineWidget( QgsComposerPolyline *composerPolyline );
     ~QgsComposerPolylineWidget();
 
   private:
-    QgsComposerPolyline* mComposerPolyline = nullptr;
+    QgsComposerPolyline *mComposerPolyline = nullptr;
 
     void updatePolylineStyle();
 
@@ -45,7 +45,7 @@ class QgsComposerPolylineWidget: public QgsComposerItemBaseWidget, private Ui::Q
     void setGuiElementValues();
 
     void updateStyleFromWidget();
-    void cleanUpStyleSelector( QgsPanelWidget* container );
+    void cleanUpStyleSelector( QgsPanelWidget *container );
 };
 
 #endif // QGSCOMPOSERPOLYLINEWIDGET_H

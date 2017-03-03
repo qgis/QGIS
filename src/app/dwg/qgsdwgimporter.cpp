@@ -59,20 +59,20 @@
 
 
 QgsDwgImporter::QgsDwgImporter( const QString &database, const QgsCoordinateReferenceSystem &crs )
-    : mDs( nullptr )
-    , mDatabase( database )
-    , mInTransaction( false )
-    , mSplineSegs( 8 )
-    , mBlockHandle( -1 )
-    , mCrs( crs.srsid() )
-    , mCrsH( nullptr )
-    , mUseCurves( true )
+  : mDs( nullptr )
+  , mDatabase( database )
+  , mInTransaction( false )
+  , mSplineSegs( 8 )
+  , mBlockHandle( -1 )
+  , mCrs( crs.srsid() )
+  , mCrsH( nullptr )
+  , mUseCurves( true )
 {
   QgsDebugCall;
 
   QString crswkt( crs.toWkt() );
   mCrsH = OSRNewSpatialReference( crswkt.toLocal8Bit().constData() );
-  QgsDebugMsg( QString( "CRS %1[%2]: %3" ).arg( mCrs ).arg(( qint64 ) mCrsH, 0, 16 ).arg( crswkt ) );
+  QgsDebugMsg( QString( "CRS %1[%2]: %3" ).arg( mCrs ).arg( ( qint64 ) mCrsH, 0, 16 ).arg( crswkt ) );
 }
 
 bool QgsDwgImporter::exec( QString sql, bool logError )
@@ -267,7 +267,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
   struct field
   {
     field( QString name, OGRFieldType ogrType, int width = -1, int precision = -1 )
-        : mName( name ), mOgrType( ogrType ), mWidth( width ), mPrecision( precision )
+      : mName( name ), mOgrType( ogrType ), mWidth( width ), mPrecision( precision )
     {}
 
     QString mName;
@@ -279,7 +279,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
   struct table
   {
     table( QString name, QString desc, OGRwkbGeometryType wkbType, QList<field> fields )
-        : mName( name ), mDescription( desc ), mWkbType( wkbType ), mFields( fields )
+      : mName( name ), mDescription( desc ), mWkbType( wkbType ), mFields( fields )
     {}
 
     QString mName;
@@ -289,21 +289,21 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
   };
 
 #define ENTITY_ATTRIBUTES \
-  << field( "handle", OFTInteger ) \
-  << field( "block", OFTInteger ) \
-  << field( "etype", OFTInteger ) \
-  << field( "space", OFTInteger ) \
-  << field( "layer", OFTString ) \
-  << field( "olinetype", OFTString ) \
-  << field( "linetype", OFTString ) \
-  << field( "color", OFTString ) \
-  << field( "ocolor", OFTInteger) \
-  << field( "color24", OFTInteger) \
-  << field( "transparency", OFTInteger) \
-  << field( "lweight", OFTInteger ) \
-  << field( "linewidth", OFTReal ) \
-  << field( "ltscale", OFTReal ) \
-  << field( "visible", OFTInteger )
+      << field( "handle", OFTInteger ) \
+      << field( "block", OFTInteger ) \
+      << field( "etype", OFTInteger ) \
+      << field( "space", OFTInteger ) \
+      << field( "layer", OFTString ) \
+      << field( "olinetype", OFTString ) \
+      << field( "linetype", OFTString ) \
+      << field( "color", OFTString ) \
+      << field( "ocolor", OFTInteger) \
+      << field( "color24", OFTInteger) \
+      << field( "transparency", OFTInteger) \
+      << field( "lweight", OFTInteger ) \
+      << field( "linewidth", OFTReal ) \
+      << field( "ltscale", OFTReal ) \
+      << field( "visible", OFTInteger )
 
 
   QList<table> tables = QList<table>()
@@ -725,7 +725,7 @@ void QgsDwgImporter::addHeader( const DRW_Header *data )
   int kIdx = OGR_FD_GetFieldIndex( dfn, "k" );
   int vIdx = OGR_FD_GetFieldIndex( dfn, "v" );
 
-  for ( std::map<std::string, DRW_Variant*>::const_iterator it = data->vars.begin(); it != data->vars.end(); ++it )
+  for ( std::map<std::string, DRW_Variant *>::const_iterator it = data->vars.begin(); it != data->vars.end(); ++it )
   {
     OGRFeatureH f = OGR_F_Create( dfn );
 
@@ -807,7 +807,7 @@ void QgsDwgImporter::addLType( const DRW_LType &data )
       continue;
     }
 
-    if (( upath.back() < 0. && path[i] < 0. ) || ( upath.back() > 0. && path[i] > 0. ) )
+    if ( ( upath.back() < 0. && path[i] < 0. ) || ( upath.back() > 0. && path[i] > 0. ) )
     {
       upath.back() += path[i];
     }
@@ -880,9 +880,9 @@ QString QgsDwgImporter::colorString( int color, int color24, int transparency, c
   else
   {
     return QString( "%1,%2,%3,%4" )
-           .arg(( color24 & 0xff0000 ) >> 16 )
-           .arg(( color24 & 0x00ff00 ) >> 8 )
-           .arg(( color24 & 0x0000ff ) )
+           .arg( ( color24 & 0xff0000 ) >> 16 )
+           .arg( ( color24 & 0x00ff00 ) >> 8 )
+           .arg( ( color24 & 0x0000ff ) )
            .arg( 255 - ( transparency & 0xff ) );
   }
 }
@@ -1200,7 +1200,7 @@ bool QgsDwgImporter::createFeature( OGRLayerH layer, OGRFeatureH f, const QgsAbs
 
   QByteArray wkb = g->asWkb();
   OGRGeometryH geom;
-  if ( OGR_G_CreateFromWkb(( unsigned char * ) wkb.constData(), nullptr, &geom, wkb.size() ) != OGRERR_NONE )
+  if ( OGR_G_CreateFromWkb( ( unsigned char * ) wkb.constData(), nullptr, &geom, wkb.size() ) != OGRERR_NONE )
   {
     LOG( QObject::tr( "Could not create geometry [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
   }
@@ -1584,7 +1584,7 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
 
       QgsPoint ps( p0.x(), p0.y() );
       QgsPoint pe( p1.x(), p1.y() );
-      QgsVector v(( pe - ps ).perpVector().normalized() );
+      QgsVector v( ( pe - ps ).perpVector().normalized() );
       QgsVector vs( v * 0.5 * staWidth );
       QgsVector ve( v * 0.5 * endWidth );
 
@@ -1786,7 +1786,7 @@ void QgsDwgImporter::addPolyline( const DRW_Polyline &data )
 
       QgsPoint ps( p0.x(), p0.y() );
       QgsPoint pe( p1.x(), p1.y() );
-      QgsVector v(( pe - ps ).perpVector().normalized() );
+      QgsVector v( ( pe - ps ).perpVector().normalized() );
       QgsVector vs( v * 0.5 * staWidth );
       QgsVector ve( v * 0.5 * endWidth );
 
@@ -1916,7 +1916,7 @@ static std::vector<double> rbasis( int c, double t, int npts,
   // calculate the first order nonrational basis functions n[i]
   for ( int i = 0; i < nplusc - 1; ++i )
   {
-    if ( t >= x[i] && t < x[i+1] )
+    if ( t >= x[i] && t < x[i + 1] )
       temp[i] = 1;
   }
 
@@ -1927,17 +1927,17 @@ static std::vector<double> rbasis( int c, double t, int npts,
     {
       // if the lower order basis function is zero skip the calculation
       if ( temp[i] != 0 )
-        temp[i] = (( t - x[i] ) * temp[i] ) / ( x[i+k-1] - x[i] );
+        temp[i] = ( ( t - x[i] ) * temp[i] ) / ( x[i + k - 1] - x[i] );
 
       // if the lower order basis function is zero skip the calculation
-      if ( temp[i+1] != 0 )
-        temp[i] += (( x[i+k] - t ) * temp[i+1] ) / ( x[i+k] - x[i+1] );
+      if ( temp[i + 1] != 0 )
+        temp[i] += ( ( x[i + k] - t ) * temp[i + 1] ) / ( x[i + k] - x[i + 1] );
     }
   }
 
   // pick up last point
-  if ( t >= x[nplusc-1] )
-    temp[ npts-1 ] = 1;
+  if ( t >= x[nplusc - 1] )
+    temp[ npts - 1 ] = 1;
 
   // calculate sum for denominator of rational basis functions
   double sum = 0.;
@@ -1977,11 +1977,11 @@ static void rbspline( const DRW_Spline &data,
   // calculate the points on the rational B-spline curve
   double t = 0.;
 
-  double step = x[nplusc-1] / ( p1 - 1 );
+  double step = x[nplusc - 1] / ( p1 - 1 );
   for ( size_t i = 0; i < p.size(); ++i, t += step )
   {
-    if ( x[nplusc-1] - t < 5e-6 )
-      t = x[nplusc-1];
+    if ( x[nplusc - 1] - t < 5e-6 )
+      t = x[nplusc - 1];
 
     // generate the basis function for this value of t
     std::vector<double> nbasis( rbasis( k, t, npts, x, h ) );
@@ -2010,8 +2010,8 @@ static void rbsplinu( const DRW_Spline &data,
 
   for ( size_t i = 0; i < p.size(); ++i, t += step )
   {
-    if ( x[nplusc-1] - t < 5e-6 )
-      t = x[nplusc-1];
+    if ( x[nplusc - 1] - t < 5e-6 )
+      t = x[nplusc - 1];
 
     // generate the base function for this value of t
     std::vector<double> nbasis( rbasis( k, t, npts, x, h ) );
@@ -2407,7 +2407,7 @@ void QgsDwgImporter::addHatch( const DRW_Hatch *pdata )
   }
 }
 
-void QgsDwgImporter::addLine( const DRW_Line& data )
+void QgsDwgImporter::addLine( const DRW_Line &data )
 {
   OGRLayerH layer = OGR_DS_GetLayerByName( mDs, "lines" );
   Q_ASSERT( layer );
@@ -2680,7 +2680,7 @@ bool QgsDwgImporter::expandInserts( QString &error )
         }
 
         QByteArray wkb = g.geometry()->asWkb();
-        if ( OGR_G_CreateFromWkb(( unsigned char * ) wkb.constData(), nullptr, &ogrG, wkb.size() ) != OGRERR_NONE )
+        if ( OGR_G_CreateFromWkb( ( unsigned char * ) wkb.constData(), nullptr, &ogrG, wkb.size() ) != OGRERR_NONE )
         {
           QgsDebugMsg( QString( "%1/%2: could not create ogr geometry" ).arg( name ).arg( fid ) );
           continue;

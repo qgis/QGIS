@@ -24,39 +24,39 @@ class QgsMapToolAddCircularString: public QgsMapToolCapture
 {
     Q_OBJECT
   public:
-    QgsMapToolAddCircularString( QgsMapToolCapture* parentTool, QgsMapCanvas* canvas, CaptureMode mode = CaptureLine );
+    QgsMapToolAddCircularString( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
     ~QgsMapToolAddCircularString();
 
-    void keyPressEvent( QKeyEvent* e ) override;
-    void keyReleaseEvent( QKeyEvent* e ) override;
+    void keyPressEvent( QKeyEvent *e ) override;
+    void keyReleaseEvent( QKeyEvent *e ) override;
 
     void deactivate() override;
 
     void activate() override;
 
   private slots:
-    void setParentTool( QgsMapTool* newTool, QgsMapTool* oldTool );
+    void setParentTool( QgsMapTool *newTool, QgsMapTool *oldTool );
 
   protected:
-    explicit QgsMapToolAddCircularString( QgsMapCanvas* canvas ); //forbidden
+    explicit QgsMapToolAddCircularString( QgsMapCanvas *canvas ); //forbidden
 
     /** The parent map tool, e.g. the add feature tool.
      *  Completed circular strings will be added to this tool by calling its addCurve() method.
      * */
-    QgsMapToolCapture* mParentTool = nullptr;
+    QgsMapToolCapture *mParentTool = nullptr;
     //! Circular string points (in map coordinates)
     QgsPointSequence mPoints;
     //! The rubberband to show the already completed circular strings
-    QgsGeometryRubberBand* mRubberBand = nullptr;
+    QgsGeometryRubberBand *mRubberBand = nullptr;
     //! The rubberband to show the circular string currently working on
-    QgsGeometryRubberBand* mTempRubberBand = nullptr;
+    QgsGeometryRubberBand *mTempRubberBand = nullptr;
 
     //center point rubber band
     bool mShowCenterPointRubberBand;
-    QgsGeometryRubberBand* mCenterPointRubberBand = nullptr;
+    QgsGeometryRubberBand *mCenterPointRubberBand = nullptr;
 
     void createCenterPointRubberBand();
-    void updateCenterPointRubberBand( const QgsPointV2& pt );
+    void updateCenterPointRubberBand( const QgsPointV2 &pt );
     void removeCenterPointRubberBand();
 };
 

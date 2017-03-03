@@ -28,12 +28,12 @@ class QgsComposerAttributeTableWidget: public QgsComposerItemBaseWidget, private
 {
     Q_OBJECT
   public:
-    QgsComposerAttributeTableWidget( QgsComposerAttributeTableV2* table, QgsComposerFrame* frame );
+    QgsComposerAttributeTableWidget( QgsComposerAttributeTableV2 *table, QgsComposerFrame *frame );
     ~QgsComposerAttributeTableWidget();
 
   private:
-    QgsComposerAttributeTableV2* mComposerTable = nullptr;
-    QgsComposerFrame* mFrame = nullptr;
+    QgsComposerAttributeTableV2 *mComposerTable = nullptr;
+    QgsComposerFrame *mFrame = nullptr;
 
     //! Blocks / unblocks the signals of all GUI elements
     void blockAllSignals( bool b );
@@ -45,16 +45,16 @@ class QgsComposerAttributeTableWidget: public QgsComposerItemBaseWidget, private
   private slots:
     void on_mRefreshPushButton_clicked();
     void on_mAttributesPushButton_clicked();
-    void composerMapChanged( QgsComposerItem* item );
+    void composerMapChanged( QgsComposerItem *item );
     void on_mMaximumRowsSpinBox_valueChanged( int i );
     void on_mMarginSpinBox_valueChanged( double d );
     void on_mGridStrokeWidthSpinBox_valueChanged( double d );
-    void on_mGridColorButton_colorChanged( const QColor& newColor );
+    void on_mGridColorButton_colorChanged( const QColor &newColor );
     void on_mBackgroundColorButton_colorChanged( const QColor &newColor );
     void on_mHeaderFontPushButton_clicked();
-    void on_mHeaderFontColorButton_colorChanged( const QColor& newColor );
+    void on_mHeaderFontColorButton_colorChanged( const QColor &newColor );
     void on_mContentFontPushButton_clicked();
-    void on_mContentFontColorButton_colorChanged( const QColor& newColor );
+    void on_mContentFontColorButton_colorChanged( const QColor &newColor );
     void on_mDrawHorizontalGrid_toggled( bool state );
     void on_mDrawVerticalGrid_toggled( bool state );
     void on_mShowGridGroupCheckBox_toggled( bool state );
@@ -65,7 +65,7 @@ class QgsComposerAttributeTableWidget: public QgsComposerItemBaseWidget, private
     void on_mHeaderHAlignmentComboBox_currentIndexChanged( int index );
     void on_mHeaderModeComboBox_currentIndexChanged( int index );
     void on_mWrapStringLineEdit_editingFinished();
-    void changeLayer( QgsMapLayer* layer );
+    void changeLayer( QgsMapLayer *layer );
     void on_mAddFramePushButton_clicked();
     void on_mResizeModeComboBox_currentIndexChanged( int index );
     void on_mSourceComboBox_currentIndexChanged( int index );

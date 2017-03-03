@@ -35,7 +35,7 @@ class APP_EXPORT QgsFeatureAction : public QAction
     Q_OBJECT
 
   public:
-    QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *vl, const QUuid& actionId = QString(), int defaultAttr = -1, QObject *parent = nullptr );
+    QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *vl, const QUuid &actionId = QString(), int defaultAttr = -1, QObject *parent = nullptr );
 
   public slots:
     void execute();
@@ -51,16 +51,16 @@ class APP_EXPORT QgsFeatureAction : public QAction
      *
      * @return true if feature was added if showModal is true. If showModal is false, returns true in every case
      */
-    bool addFeature( const QgsAttributeMap& defaultAttributes = QgsAttributeMap(), bool showModal = true );
+    bool addFeature( const QgsAttributeMap &defaultAttributes = QgsAttributeMap(), bool showModal = true );
 
   private slots:
-    void onFeatureSaved( const QgsFeature& feature );
+    void onFeatureSaved( const QgsFeature &feature );
 
   private:
     QgsAttributeDialog *newDialog( bool cloneFeature );
 
-    QgsVectorLayer* mLayer = nullptr;
-    QgsFeature* mFeature = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
+    QgsFeature *mFeature = nullptr;
     QUuid mActionId;
     int mIdx;
 

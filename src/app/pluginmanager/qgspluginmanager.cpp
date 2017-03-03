@@ -60,8 +60,8 @@
 #endif
 
 
-QgsPluginManager::QgsPluginManager( QWidget * parent, bool pluginsAreEnabled, Qt::WindowFlags fl )
-    : QgsOptionsDialogBase( QStringLiteral( "PluginManager" ), parent, fl )
+QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt::WindowFlags fl )
+  : QgsOptionsDialogBase( QStringLiteral( "PluginManager" ), parent, fl )
 {
   // initialize pointer
   mPythonUtils = nullptr;
@@ -145,7 +145,7 @@ QgsPluginManager::~QgsPluginManager()
 
 
 
-void QgsPluginManager::setPythonUtils( QgsPythonUtils* pythonUtils )
+void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
 {
   mPythonUtils = pythonUtils;
 
@@ -161,15 +161,15 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils* pythonUtils )
   buttonDeleteRep->setEnabled( false );
 
   // Add context menu to the plugins list view
-  QAction* actionSortByName = new QAction( tr( "sort by name" ), vwPlugins );
-  QAction* actionSortByDownloads = new QAction( tr( "sort by downloads" ), vwPlugins );
-  QAction* actionSortByVote = new QAction( tr( "sort by vote" ), vwPlugins );
-  QAction* actionSortByStatus = new QAction( tr( "sort by status" ), vwPlugins );
+  QAction *actionSortByName = new QAction( tr( "sort by name" ), vwPlugins );
+  QAction *actionSortByDownloads = new QAction( tr( "sort by downloads" ), vwPlugins );
+  QAction *actionSortByVote = new QAction( tr( "sort by vote" ), vwPlugins );
+  QAction *actionSortByStatus = new QAction( tr( "sort by status" ), vwPlugins );
   actionSortByName->setCheckable( true );
   actionSortByDownloads->setCheckable( true );
   actionSortByVote->setCheckable( true );
   actionSortByStatus->setCheckable( true );
-  QActionGroup * group = new QActionGroup( vwPlugins );
+  QActionGroup *group = new QActionGroup( vwPlugins );
   actionSortByName->setActionGroup( group );
   actionSortByDownloads->setActionGroup( group );
   actionSortByVote->setActionGroup( group );
@@ -217,9 +217,9 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils* pythonUtils )
 
 
 
-void QgsPluginManager::loadPlugin( const QString& id )
+void QgsPluginManager::loadPlugin( const QString &id )
 {
-  const QMap<QString, QString>* plugin = pluginMetadata( id );
+  const QMap<QString, QString> *plugin = pluginMetadata( id );
 
   if ( ! plugin )
   {
@@ -248,9 +248,9 @@ void QgsPluginManager::loadPlugin( const QString& id )
 
 
 
-void QgsPluginManager::unloadPlugin( const QString& id )
+void QgsPluginManager::unloadPlugin( const QString &id )
 {
-  const QMap<QString, QString>* plugin = pluginMetadata( id );
+  const QMap<QString, QString> *plugin = pluginMetadata( id );
 
   if ( ! plugin )
   {
@@ -277,7 +277,7 @@ void QgsPluginManager::unloadPlugin( const QString& id )
 
 void QgsPluginManager::savePluginState( QString id, bool state )
 {
-  const QMap<QString, QString>* plugin = pluginMetadata( id );
+  const QMap<QString, QString> *plugin = pluginMetadata( id );
   if ( ! plugin )
   {
     return;
@@ -389,7 +389,7 @@ void QgsPluginManager::getCppPluginsMetadata()
       description_t *pDesc = ( description_t * ) cast_to_fptr( myLib->resolve( "description" ) );
       category_t *pCat = ( category_t * ) cast_to_fptr( myLib->resolve( "category" ) );
       version_t *pVersion = ( version_t * ) cast_to_fptr( myLib->resolve( "version" ) );
-      icon_t* pIcon = ( icon_t * ) cast_to_fptr( myLib->resolve( "icon" ) );
+      icon_t *pIcon = ( icon_t * ) cast_to_fptr( myLib->resolve( "icon" ) );
       experimental_t *pExperimental = ( experimental_t * ) cast_to_fptr( myLib->resolve( "experimental" ) );
 
       // show the values (or lack of) for each function
@@ -462,9 +462,9 @@ void QgsPluginManager::getCppPluginsMetadata()
 
 
 
-QStandardItem * QgsPluginManager::createSpacerItem( const QString& text, const QString& value )
+QStandardItem *QgsPluginManager::createSpacerItem( const QString &text, const QString &value )
 {
-  QStandardItem * mySpacerltem = new QStandardItem( text );
+  QStandardItem *mySpacerltem = new QStandardItem( text );
   mySpacerltem->setData( value, PLUGIN_STATUS_ROLE );
   mySpacerltem->setData( "status", SPACER_ROLE );
   mySpacerltem->setEnabled( false );
@@ -503,7 +503,7 @@ void QgsPluginManager::reloadModelData()
       QString status = it->value( QStringLiteral( "status" ) );
       QString error = it->value( QStringLiteral( "error" ) );
 
-      QStandardItem * mypDetailItem = new QStandardItem( pluginName.left( 32 ) );
+      QStandardItem *mypDetailItem = new QStandardItem( pluginName.left( 32 ) );
 
       mypDetailItem->setData( baseName, PLUGIN_BASE_NAME_ROLE );
       mypDetailItem->setData( status, PLUGIN_STATUS_ROLE );
@@ -585,7 +585,7 @@ void QgsPluginManager::reloadModelData()
 
 
 
-void QgsPluginManager::pluginItemChanged( QStandardItem * item )
+void QgsPluginManager::pluginItemChanged( QStandardItem *item )
 {
   QString id = item->data( PLUGIN_BASE_NAME_ROLE ).toString();
 
@@ -612,9 +612,9 @@ void QgsPluginManager::pluginItemChanged( QStandardItem * item )
 
 
 
-void QgsPluginManager::showPluginDetails( QStandardItem * item )
+void QgsPluginManager::showPluginDetails( QStandardItem *item )
 {
-  const QMap<QString, QString> * metadata = pluginMetadata( item->data( PLUGIN_BASE_NAME_ROLE ).toString() );
+  const QMap<QString, QString> *metadata = pluginMetadata( item->data( PLUGIN_BASE_NAME_ROLE ).toString() );
 
   if ( !metadata )
   {
@@ -967,14 +967,14 @@ void QgsPluginManager::clearPythonPluginMetadata()
 
 
 
-void QgsPluginManager::addPluginMetadata( const QString& key, const QMap<QString, QString>& metadata )
+void QgsPluginManager::addPluginMetadata( const QString &key, const QMap<QString, QString> &metadata )
 {
   mPlugins.insert( key, metadata );
 }
 
 
 
-const QMap<QString, QString> * QgsPluginManager::pluginMetadata( const QString& key ) const
+const QMap<QString, QString> *QgsPluginManager::pluginMetadata( const QString &key ) const
 {
   QMap<QString, QMap<QString, QString> >::const_iterator it = mPlugins.find( key );
   if ( it != mPlugins.end() )
@@ -993,7 +993,7 @@ void QgsPluginManager::clearRepositoryList()
   buttonRefreshRepos->setEnabled( false );
   buttonEditRep->setEnabled( false );
   buttonDeleteRep->setEnabled( false );
-  Q_FOREACH ( QAction * action, treeRepositories->actions() )
+  Q_FOREACH ( QAction *action, treeRepositories->actions() )
   {
     treeRepositories->removeAction( action );
   }
@@ -1002,17 +1002,17 @@ void QgsPluginManager::clearRepositoryList()
 
 
 //! Add repository to the repository listWidget
-void QgsPluginManager::addToRepositoryList( const QMap<QString, QString>& repository )
+void QgsPluginManager::addToRepositoryList( const QMap<QString, QString> &repository )
 {
   // If it's the second item on the tree, change the button text to plural form and add the filter context menu
   if ( buttonRefreshRepos->isEnabled() && treeRepositories->actions().count() < 1 )
   {
     buttonRefreshRepos->setText( tr( "Reload all repositories" ) );
-    QAction* actionEnableThisRepositoryOnly = new QAction( tr( "Only show plugins from selected repository" ), treeRepositories );
+    QAction *actionEnableThisRepositoryOnly = new QAction( tr( "Only show plugins from selected repository" ), treeRepositories );
     treeRepositories->addAction( actionEnableThisRepositoryOnly );
     connect( actionEnableThisRepositoryOnly, SIGNAL( triggered() ), this, SLOT( setRepositoryFilter() ) );
     treeRepositories->setContextMenuPolicy( Qt::ActionsContextMenu );
-    QAction* actionClearFilter = new QAction( tr( "Clear filter" ), treeRepositories );
+    QAction *actionClearFilter = new QAction( tr( "Clear filter" ), treeRepositories );
     actionClearFilter->setEnabled( repository.value( QStringLiteral( "inspection_filter" ) ) == QLatin1String( "true" ) );
     treeRepositories->addAction( actionClearFilter );
     connect( actionClearFilter, SIGNAL( triggered() ), this, SLOT( clearRepositoryFilter() ) );
@@ -1021,7 +1021,7 @@ void QgsPluginManager::addToRepositoryList( const QMap<QString, QString>& reposi
   QString key = repository.value( QStringLiteral( "name" ) );
   if ( ! key.isEmpty() )
   {
-    QTreeWidgetItem * a = new QTreeWidgetItem( treeRepositories );
+    QTreeWidgetItem *a = new QTreeWidgetItem( treeRepositories );
     a->setText( 1, key );
     a->setText( 2, repository.value( QStringLiteral( "url" ) ) );
     if ( repository.value( QStringLiteral( "enabled" ) ) == QLatin1String( "true" ) && repository.value( QStringLiteral( "valid" ) ) == QLatin1String( "true" ) )
@@ -1166,7 +1166,7 @@ void QgsPluginManager::setCurrentTab( int idx )
 
 
 
-void QgsPluginManager::currentPluginChanged( const QModelIndex & index )
+void QgsPluginManager::currentPluginChanged( const QModelIndex &index )
 {
   if ( index.column() == 0 )
   {
@@ -1184,7 +1184,7 @@ void QgsPluginManager::on_vwPlugins_clicked( const QModelIndex &index )
     // If the model has been filtered, the index row in the proxy won't match the index row in the underlying model
     // so we need to jump through this little hoop to get the correct item
     QModelIndex realIndex = mModelProxy->mapToSource( index );
-    QStandardItem* mypItem = mModelPlugins->itemFromIndex( realIndex );
+    QStandardItem *mypItem = mModelPlugins->itemFromIndex( realIndex );
     if ( !mypItem->isEnabled() )
     {
       //The item is inactive (uncompatible or broken plugin), so it can't be selected. Display it's data anyway.
@@ -1198,14 +1198,14 @@ void QgsPluginManager::on_vwPlugins_clicked( const QModelIndex &index )
 
 
 
-void QgsPluginManager::on_vwPlugins_doubleClicked( const QModelIndex & index )
+void QgsPluginManager::on_vwPlugins_doubleClicked( const QModelIndex &index )
 {
   if ( index.column() == 0 )
   {
     // If the model has been filtered, the index row in the proxy won't match the index row in the underlying model
     // so we need to jump through this little hoop to get the correct item
     QModelIndex realIndex = mModelProxy->mapToSource( index );
-    QStandardItem* mypItem = mModelPlugins->itemFromIndex( realIndex );
+    QStandardItem *mypItem = mModelPlugins->itemFromIndex( realIndex );
     if ( mypItem->isCheckable() )
     {
       if ( mypItem->checkState() == Qt::Checked )
@@ -1244,7 +1244,7 @@ void QgsPluginManager::sendVote( int pluginId, int vote )
   }
 }
 
-void QgsPluginManager::on_wvDetails_linkClicked( const QUrl & url )
+void QgsPluginManager::on_wvDetails_linkClicked( const QUrl &url )
 {
   if ( url.scheme() == QLatin1String( "rpc2" ) )
   {
@@ -1312,7 +1312,7 @@ void QgsPluginManager::on_treeRepositories_itemSelectionChanged()
 
 
 
-void QgsPluginManager::on_treeRepositories_doubleClicked( const QModelIndex& )
+void QgsPluginManager::on_treeRepositories_doubleClicked( const QModelIndex & )
 {
   on_buttonEditRep_clicked();
 }
@@ -1321,7 +1321,7 @@ void QgsPluginManager::on_treeRepositories_doubleClicked( const QModelIndex& )
 
 void QgsPluginManager::setRepositoryFilter()
 {
-  QTreeWidgetItem * current = treeRepositories->currentItem();
+  QTreeWidgetItem *current = treeRepositories->currentItem();
   if ( current )
   {
     QString key = current->text( 1 );
@@ -1359,7 +1359,7 @@ void QgsPluginManager::on_buttonAddRep_clicked()
 
 void QgsPluginManager::on_buttonEditRep_clicked()
 {
-  QTreeWidgetItem * current = treeRepositories->currentItem();
+  QTreeWidgetItem *current = treeRepositories->currentItem();
   if ( current )
   {
     QString key = current->text( 1 );
@@ -1373,7 +1373,7 @@ void QgsPluginManager::on_buttonEditRep_clicked()
 
 void QgsPluginManager::on_buttonDeleteRep_clicked()
 {
-  QTreeWidgetItem * current = treeRepositories->currentItem();
+  QTreeWidgetItem *current = treeRepositories->currentItem();
   if ( current )
   {
     QString key = current->text( 1 );
@@ -1411,7 +1411,7 @@ void QgsPluginManager::on_ckbDeprecated_toggled( bool state )
 
 bool QgsPluginManager::isPluginEnabled( QString key )
 {
-  const QMap<QString, QString>* plugin = pluginMetadata( key );
+  const QMap<QString, QString> *plugin = pluginMetadata( key );
   if ( plugin->isEmpty() )
   {
     // No such plugin in the metadata registry
@@ -1557,7 +1557,7 @@ void QgsPluginManager::updateWindowTitle()
 
 
 
-void QgsPluginManager::showEvent( QShowEvent* e )
+void QgsPluginManager::showEvent( QShowEvent *e )
 {
   if ( mInit )
   {

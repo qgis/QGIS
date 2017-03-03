@@ -48,9 +48,9 @@ class dwgReader18 : public dwgReader
 {
   public:
     dwgReader18( std::ifstream *stream, dwgR *p )
-        : dwgReader( stream, p )
-        , objData( nullptr )
-        , uncompSize( 0 )
+      : dwgReader( stream, p )
+      , objData( nullptr )
+      , uncompSize( 0 )
     {
     }
     virtual ~dwgReader18()
@@ -60,31 +60,31 @@ class dwgReader18 : public dwgReader
     }
     bool readMetaData();
     bool readFileHeader();
-    bool readDwgHeader( DRW_Header& hdr );
+    bool readDwgHeader( DRW_Header &hdr );
     bool readDwgClasses();
     bool readDwgHandles();
-    bool readDwgTables( DRW_Header& hdr );
-    bool readDwgBlocks( DRW_Interface& intfa )
+    bool readDwgTables( DRW_Header &hdr );
+    bool readDwgBlocks( DRW_Interface &intfa )
     {
       dwgBuffer dataBuf( objData, uncompSize, &decoder );
       return dwgReader::readDwgBlocks( intfa, &dataBuf );
     }
 
-    virtual bool readDwgEntities( DRW_Interface& intfa )
+    virtual bool readDwgEntities( DRW_Interface &intfa )
     {
       bool ret = true;
       dwgBuffer dataBuf( objData, uncompSize, &decoder );
       ret = dwgReader::readDwgEntities( intfa, &dataBuf );
       return ret;
     }
-    virtual bool readDwgObjects( DRW_Interface& intfa )
+    virtual bool readDwgObjects( DRW_Interface &intfa )
     {
       dwgBuffer dataBuf( objData, uncompSize, &decoder );
       return dwgReader::readDwgObjects( intfa, &dataBuf );
     }
 
 #if 0
-    bool readDwgEntity( objHandle& obj, DRW_Interface& intfa )
+    bool readDwgEntity( objHandle &obj, DRW_Interface &intfa )
     {
       bool ret = true;
       return ret;
@@ -100,7 +100,7 @@ class dwgReader18 : public dwgReader
 //    dwgBuffer* bufObj;
     void parseSysPage( duint8 *decompSec, duint32 decompSize ); //called: Section page map: 0x41630e3b
     bool parseDataPage( dwgSectionInfo si/*, duint8 *dData*/ ); //called ???: Section map: 0x4163003b
-    duint32 checksum( duint32 seed, duint8* data, duint32 sz );
+    duint32 checksum( duint32 seed, duint8 *data, duint32 sz );
 
   private:
     duint32 securityFlags;

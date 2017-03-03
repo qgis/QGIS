@@ -64,7 +64,7 @@ class APP_EXPORT QgsIdentifyResultsWebView : public QgsWebView
     void downloadRequested( const QNetworkRequest &request );
     void unsupportedContent( QNetworkReply *reply );
   protected:
-    void contextMenuEvent( QContextMenuEvent* ) override;
+    void contextMenuEvent( QContextMenuEvent * ) override;
     QgsWebView *createWindow( QWebPage::WebWindowType type ) override;
   private:
     void handleDownload( QUrl url );
@@ -73,7 +73,7 @@ class APP_EXPORT QgsIdentifyResultsWebView : public QgsWebView
 class APP_EXPORT QgsIdentifyResultsFeatureItem: public QTreeWidgetItem
 {
   public:
-    QgsIdentifyResultsFeatureItem( const QgsFields &fields, const QgsFeature &feature, const QgsCoordinateReferenceSystem &crs, const QStringList & strings = QStringList() );
+    QgsIdentifyResultsFeatureItem( const QgsFields &fields, const QgsFeature &feature, const QgsCoordinateReferenceSystem &crs, const QStringList &strings = QStringList() );
     const QgsFields &fields() const { return mFields; }
     const QgsFeature &feature() const { return mFeature; }
     QgsCoordinateReferenceSystem crs() const { return mCrs; }
@@ -93,7 +93,7 @@ class APP_EXPORT QgsIdentifyResultsWebViewItem: public QObject, public QTreeWidg
     QgsIdentifyResultsWebView *webView() { return mWebView; }
     void setHtml( const QString &html );
     //! @note added in 2.1
-    void setContent( const QByteArray & data, const QString & mimeType = QString(), const QUrl & baseUrl = QUrl() );
+    void setContent( const QByteArray &data, const QString &mimeType = QString(), const QUrl &baseUrl = QUrl() );
 
   public slots:
     void loadFinished( bool ok );
@@ -108,14 +108,14 @@ class APP_EXPORT QgsIdentifyPlotCurve
 
     QgsIdentifyPlotCurve() { mPlotCurve = nullptr; }
     QgsIdentifyPlotCurve( const QMap<QString, QString> &attributes,
-                          QwtPlot* plot, const QString &title = QString(), QColor color = QColor() );
+                          QwtPlot *plot, const QString &title = QString(), QColor color = QColor() );
     ~QgsIdentifyPlotCurve();
 
-    QgsIdentifyPlotCurve( const QgsIdentifyPlotCurve& rh ) = delete;
-    QgsIdentifyPlotCurve& operator=( const QgsIdentifyPlotCurve& rh ) = delete;
+    QgsIdentifyPlotCurve( const QgsIdentifyPlotCurve &rh ) = delete;
+    QgsIdentifyPlotCurve &operator=( const QgsIdentifyPlotCurve &rh ) = delete;
 
   private:
-    QwtPlotCurve* mPlotCurve = nullptr;
+    QwtPlotCurve *mPlotCurve = nullptr;
 
 };
 
@@ -132,13 +132,13 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     ~QgsIdentifyResultsDialog();
 
     //! Add add feature from vector layer
-    void addFeature( QgsVectorLayer * layer,
+    void addFeature( QgsVectorLayer *layer,
                      const QgsFeature &f,
                      const QMap< QString, QString > &derivedAttributes );
 
     //! Add add feature from other layer
-    void addFeature( QgsRasterLayer * layer,
-                     const QString& label,
+    void addFeature( QgsRasterLayer *layer,
+                     const QString &label,
                      const QMap< QString, QString > &attributes,
                      const QMap< QString, QString > &derivedAttributes,
                      const QgsFields &fields = QgsFields(),
@@ -146,7 +146,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
                      const QMap<QString, QVariant> &params = ( QMap<QString, QVariant>() ) );
 
     //! Add feature from identify results
-    void addFeature( const QgsMapToolIdentify::IdentifyResult& result );
+    void addFeature( const QgsMapToolIdentify::IdentifyResult &result );
 
     //! Map tool was deactivated
     void deactivate();
@@ -160,7 +160,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     // Emitted when raster identify format of a layer changed
     void formatChanged( QgsRasterLayer *layer );
 
-    void copyToClipboard( QgsFeatureStore& featureStore );
+    void copyToClipboard( QgsFeatureStore &featureStore );
 
     void activateLayer( QgsMapLayer * );
 
@@ -172,7 +172,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     void show();
 
-    void contextMenuEvent( QContextMenuEvent* ) override;
+    void contextMenuEvent( QContextMenuEvent * ) override;
 
     void layerDestroyed();
     void editingToggled();
@@ -227,7 +227,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void mapLayerActionDestroyed();
 
   private:
-    QString representValue( QgsVectorLayer* vlayer, const QgsEditorWidgetSetup& setup, const QString& fieldName, const QVariant& value );
+    QString representValue( QgsVectorLayer *vlayer, const QgsEditorWidgetSetup &setup, const QString &fieldName, const QVariant &value );
 
     enum ItemDataRole
     {
@@ -253,14 +253,14 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     void saveWindowLocation();
 
-    void setColumnText( int column, const QString & label );
+    void setColumnText( int column, const QString &label );
     void expandColumnsToFit();
 
     void highlightFeature( QTreeWidgetItem *item );
 
-    void doAction( QTreeWidgetItem *item, const QString& action );
+    void doAction( QTreeWidgetItem *item, const QString &action );
 
-    void doMapLayerAction( QTreeWidgetItem *item, QgsMapLayerAction* action );
+    void doMapLayerAction( QTreeWidgetItem *item, QgsMapLayerAction *action );
 
     QgsDockWidget *mDock = nullptr;
 
@@ -272,20 +272,20 @@ class QgsIdentifyResultsDialogMapLayerAction : public QAction
     Q_OBJECT
 
   public:
-    QgsIdentifyResultsDialogMapLayerAction( const QString &name, QObject *parent, QgsMapLayerAction* action, QgsMapLayer* layer, QgsFeature * f )
-        : QAction( name, parent )
-        , mAction( action )
-        , mFeature( f )
-        , mLayer( layer )
+    QgsIdentifyResultsDialogMapLayerAction( const QString &name, QObject *parent, QgsMapLayerAction *action, QgsMapLayer *layer, QgsFeature *f )
+      : QAction( name, parent )
+      , mAction( action )
+      , mFeature( f )
+      , mLayer( layer )
     {}
 
   public slots:
     void execute();
 
   private:
-    QgsMapLayerAction* mAction = nullptr;
-    QgsFeature* mFeature = nullptr;
-    QgsMapLayer* mLayer = nullptr;
+    QgsMapLayerAction *mAction = nullptr;
+    QgsFeature *mFeature = nullptr;
+    QgsMapLayer *mLayer = nullptr;
 };
 
 #endif

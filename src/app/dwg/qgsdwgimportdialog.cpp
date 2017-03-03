@@ -59,7 +59,7 @@ struct CursorOverride
 
 
 QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
-    : QDialog( parent, f )
+  : QDialog( parent, f )
 {
   setupUi( this );
 
@@ -219,7 +219,7 @@ void QgsDwgImportDialog::on_pbLoadDatabase_clicked()
 
       item = new QTableWidgetItem();
       item->setFlags( Qt::ItemIsUserCheckable | Qt::ItemIsEnabled );
-      item->setCheckState(( f.attribute( idxColor ).toInt() >= 0 && ( f.attribute( idxFlags ).toInt() & 1 ) == 0 ) ? Qt::Checked : Qt::Unchecked );
+      item->setCheckState( ( f.attribute( idxColor ).toInt() >= 0 && ( f.attribute( idxFlags ).toInt() & 1 ) == 0 ) ? Qt::Checked : Qt::Unchecked );
       mLayers->setItem( row, 1, item );
     }
 

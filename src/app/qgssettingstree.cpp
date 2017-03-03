@@ -48,7 +48,7 @@
 #include "qgslogger.h"
 
 QgsSettingsTree::QgsSettingsTree( QWidget *parent )
-    : QTreeWidget( parent )
+  : QTreeWidget( parent )
 {
   setItemDelegate( new QgsVariantDelegate( this ) );
 
@@ -135,8 +135,8 @@ void QgsSettingsTree::refresh()
   if ( !settings )
     return;
 
-  disconnect( this, SIGNAL( itemChanged( QTreeWidgetItem*, int ) ),
-              this, SLOT( updateSetting( QTreeWidgetItem* ) ) );
+  disconnect( this, SIGNAL( itemChanged( QTreeWidgetItem *, int ) ),
+              this, SLOT( updateSetting( QTreeWidgetItem * ) ) );
 
   settings->sync();
 
@@ -156,8 +156,8 @@ void QgsSettingsTree::refresh()
 
   updateChildItems( nullptr );
 
-  connect( this, SIGNAL( itemChanged( QTreeWidgetItem*, int ) ),
-           this, SLOT( updateSetting( QTreeWidgetItem* ) ) );
+  connect( this, SIGNAL( itemChanged( QTreeWidgetItem *, int ) ),
+           this, SLOT( updateSetting( QTreeWidgetItem * ) ) );
 }
 
 bool QgsSettingsTree::event( QEvent *event )
@@ -185,7 +185,7 @@ void QgsSettingsTree::updateChildItems( QTreeWidgetItem *parent )
 {
   int dividerIndex = 0;
 
-  Q_FOREACH ( const QString& group, settings->childGroups() )
+  Q_FOREACH ( const QString &group, settings->childGroups() )
   {
     QTreeWidgetItem *child = nullptr;
     int childIndex = findChild( parent, group, dividerIndex );
@@ -209,7 +209,7 @@ void QgsSettingsTree::updateChildItems( QTreeWidgetItem *parent )
     settings->endGroup();
   }
 
-  Q_FOREACH ( const QString& key, settings->childKeys() )
+  Q_FOREACH ( const QString &key, settings->childKeys() )
   {
     QTreeWidgetItem *child = nullptr;
     int childIndex = findChild( parent, key, 0 );

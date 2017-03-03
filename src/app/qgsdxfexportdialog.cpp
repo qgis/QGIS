@@ -36,7 +36,7 @@
 #include <QSettings>
 
 FieldSelectorDelegate::FieldSelectorDelegate( QObject *parent )
-    : QItemDelegate( parent )
+  : QItemDelegate( parent )
 {
 }
 
@@ -94,8 +94,8 @@ void FieldSelectorDelegate::setModelData( QWidget *editor, QAbstractItemModel *m
   model->setData( index, vl->fields().lookupField( fcb->currentField() ) );
 }
 
-QgsVectorLayerAndAttributeModel::QgsVectorLayerAndAttributeModel( QgsLayerTreeGroup* rootNode, QObject *parent )
-    : QgsLayerTreeModel( rootNode, parent )
+QgsVectorLayerAndAttributeModel::QgsVectorLayerAndAttributeModel( QgsLayerTreeGroup *rootNode, QObject *parent )
+  : QgsLayerTreeModel( rootNode, parent )
 {
 }
 
@@ -155,7 +155,7 @@ QVariant QgsVectorLayerAndAttributeModel::headerData( int section, Qt::Orientati
   return QVariant();
 }
 
-QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex& idx, int role ) const
+QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex &idx, int role ) const
 {
   if ( idx.column() == 0 )
   {
@@ -312,7 +312,7 @@ QList< QPair<QgsVectorLayer *, int> > QgsVectorLayerAndAttributeModel::layers() 
     }
   }
 
-  QgsLayerTreeMapCanvasBridge* bridge = QgisApp::instance()->layerTreeCanvasBridge();
+  QgsLayerTreeMapCanvasBridge *bridge = QgisApp::instance()->layerTreeCanvasBridge();
   QStringList inDrawingOrder = bridge->hasCustomLayerOrder() ? bridge->customLayerOrder() : bridge->defaultLayerOrder();
   QList< QPair<QgsVectorLayer *, int> > layersInROrder;
 
@@ -418,7 +418,7 @@ void QgsVectorLayerAndAttributeModel::deSelectAll()
 }
 
 QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
-    : QDialog( parent, f )
+  : QDialog( parent, f )
 {
   setupUi( this );
 
@@ -429,13 +429,13 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   mTreeView->setEditTriggers( QAbstractItemView::AllEditTriggers );
   mTreeView->setItemDelegate( mFieldSelectorDelegate );
 
-  QgsLayerTreeModel* model = new QgsVectorLayerAndAttributeModel( mLayerTreeGroup, this );
+  QgsLayerTreeModel *model = new QgsVectorLayerAndAttributeModel( mLayerTreeGroup, this );
   model->setFlags( 0 );
   mTreeView->setModel( model );
   mTreeView->resizeColumnToContents( 0 );
   mTreeView->header()->show();
 
-  connect( mFileLineEdit, SIGNAL( textChanged( const QString& ) ), this, SLOT( setOkEnabled() ) );
+  connect( mFileLineEdit, SIGNAL( textChanged( const QString & ) ), this, SLOT( setOkEnabled() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( saveSettings() ) );
   connect( mSelectAllButton, SIGNAL( clicked() ), this, SLOT( selectAll() ) );
   connect( mDeselectAllButton, SIGNAL( clicked() ), this, SLOT( deSelectAll() ) );
@@ -579,7 +579,7 @@ void QgsDxfExportDialog::on_mFileSelectionButton_clicked()
 
 void QgsDxfExportDialog::setOkEnabled()
 {
-  QPushButton* btn = buttonBox->button( QDialogButtonBox::Ok );
+  QPushButton *btn = buttonBox->button( QDialogButtonBox::Ok );
 
   QString filePath = mFileLineEdit->text();
   if ( filePath.isEmpty() )

@@ -33,8 +33,8 @@
 #include <QDialog>
 #include <QMouseEvent>
 
-QgsMapToolAnnotation::QgsMapToolAnnotation( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
+QgsMapToolAnnotation::QgsMapToolAnnotation( QgsMapCanvas *canvas )
+  : QgsMapTool( canvas )
 {
   mCursor = QCursor( Qt::ArrowCursor );
 }
@@ -43,34 +43,34 @@ QgsMapToolAnnotation::~QgsMapToolAnnotation()
 {
 }
 
-QDialog* QgsMapToolAnnotation::createItemEditor( QgsMapCanvasAnnotationItem *item )
+QDialog *QgsMapToolAnnotation::createItemEditor( QgsMapCanvasAnnotationItem *item )
 {
   if ( !item || !item->annotation() )
   {
     return nullptr;
   }
 
-  QgsAnnotation* annotation = item->annotation();
+  QgsAnnotation *annotation = item->annotation();
 
-  QgsTextAnnotation* tItem = dynamic_cast<QgsTextAnnotation*>( annotation );
+  QgsTextAnnotation *tItem = dynamic_cast<QgsTextAnnotation *>( annotation );
   if ( tItem )
   {
     return new QgsTextAnnotationDialog( item );
   }
 
-  QgsFormAnnotation* fItem = dynamic_cast<QgsFormAnnotation*>( annotation );
+  QgsFormAnnotation *fItem = dynamic_cast<QgsFormAnnotation *>( annotation );
   if ( fItem )
   {
     return new QgsFormAnnotationDialog( item );
   }
 
-  QgsHtmlAnnotation* hItem = dynamic_cast<QgsHtmlAnnotation*>( annotation );
+  QgsHtmlAnnotation *hItem = dynamic_cast<QgsHtmlAnnotation *>( annotation );
   if ( hItem )
   {
     return new QgsHtmlAnnotationDialog( item );
   }
 
-  QgsSvgAnnotation* sItem = dynamic_cast<QgsSvgAnnotation*>( annotation );
+  QgsSvgAnnotation *sItem = dynamic_cast<QgsSvgAnnotation *>( annotation );
   if ( sItem )
   {
     return new QgsSvgAnnotationDialog( item );
@@ -79,7 +79,7 @@ QDialog* QgsMapToolAnnotation::createItemEditor( QgsMapCanvasAnnotationItem *ite
   return nullptr;
 }
 
-void QgsMapToolAnnotation::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolAnnotation::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e );
 
@@ -87,7 +87,7 @@ void QgsMapToolAnnotation::canvasReleaseEvent( QgsMapMouseEvent* e )
   mCanvas->setCursor( mCursor );
 }
 
-void QgsMapToolAnnotation::canvasPressEvent( QgsMapMouseEvent* e )
+void QgsMapToolAnnotation::canvasPressEvent( QgsMapMouseEvent *e )
 {
   if ( !mCanvas )
   {
@@ -96,7 +96,7 @@ void QgsMapToolAnnotation::canvasPressEvent( QgsMapMouseEvent* e )
 
   mLastMousePosition = e->posF();
 
-  QgsMapCanvasAnnotationItem* item = selectedItem();
+  QgsMapCanvasAnnotationItem *item = selectedItem();
   if ( item )
   {
     mCurrentMoveAction = item->moveActionForPosition( e->posF() );
@@ -110,7 +110,7 @@ void QgsMapToolAnnotation::canvasPressEvent( QgsMapMouseEvent* e )
   {
     //select a new item if there is one at this position
     mCanvas->scene()->clearSelection();
-    QgsMapCanvasAnnotationItem* existingItem = itemAtPos( e->posF() );
+    QgsMapCanvasAnnotationItem *existingItem = itemAtPos( e->posF() );
     if ( existingItem )
     {
       existingItem->setSelected( true );
@@ -118,7 +118,7 @@ void QgsMapToolAnnotation::canvasPressEvent( QgsMapMouseEvent* e )
     else
     {
       //otherwise create new one
-      QgsAnnotation* annotation = createItem();
+      QgsAnnotation *annotation = createItem();
       if ( annotation )
       {
         QgsPoint mapPos = transformCanvasToAnnotation( toMapCoordinates( e->pos() ), annotation );
@@ -130,9 +130,9 @@ void QgsMapToolAnnotation::canvasPressEvent( QgsMapMouseEvent* e )
         QgsProject::instance()->annotationManager()->addAnnotation( annotation );
 
         // select newly added item
-        Q_FOREACH ( QGraphicsItem* item , mCanvas->items() )
+        Q_FOREACH ( QGraphicsItem *item, mCanvas->items() )
         {
-          if ( QgsMapCanvasAnnotationItem* annotationItem = dynamic_cast< QgsMapCanvasAnnotationItem* >( item ) )
+          if ( QgsMapCanvasAnnotationItem *annotationItem = dynamic_cast< QgsMapCanvasAnnotationItem * >( item ) )
           {
             if ( annotationItem->annotation() == annotation )
             {
@@ -146,14 +146,14 @@ void QgsMapToolAnnotation::canvasPressEvent( QgsMapMouseEvent* e )
   }
 }
 
-void QgsMapToolAnnotation::keyPressEvent( QKeyEvent* e )
+void QgsMapToolAnnotation::keyPressEvent( QKeyEvent *e )
 {
   if ( e->key() == Qt::Key_T && e->modifiers() == Qt::ControlModifier )
   {
     toggleTextItemVisibilities();
   }
 
-  QgsMapCanvasAnnotationItem* item = selectedItem();
+  QgsMapCanvasAnnotationItem *item = selectedItem();
   if ( item )
   {
     if ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete )
@@ -169,13 +169,13 @@ void QgsMapToolAnnotation::keyPressEvent( QKeyEvent* e )
   }
 }
 
-void QgsMapToolAnnotation::canvasMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolAnnotation::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  QgsMapCanvasAnnotationItem* item = selectedItem();
+  QgsMapCanvasAnnotationItem *item = selectedItem();
   if ( !item || !item->annotation() )
     return;
 
-  QgsAnnotation* annotation = item->annotation();
+  QgsAnnotation *annotation = item->annotation();
 
   if ( e->buttons() & Qt::LeftButton )
   {
@@ -278,14 +278,14 @@ void QgsMapToolAnnotation::canvasMoveEvent( QgsMapMouseEvent* e )
   mLastMousePosition = e->posF();
 }
 
-void QgsMapToolAnnotation::canvasDoubleClickEvent( QgsMapMouseEvent* e )
+void QgsMapToolAnnotation::canvasDoubleClickEvent( QgsMapMouseEvent *e )
 {
-  QgsMapCanvasAnnotationItem* item = itemAtPos( e->posF() );
+  QgsMapCanvasAnnotationItem *item = itemAtPos( e->posF() );
   if ( !item )
   {
     return;
   }
-  QDialog* itemEditor = createItemEditor( item );
+  QDialog *itemEditor = createItemEditor( item );
   if ( itemEditor )
   {
     if ( itemEditor->exec() )
@@ -294,7 +294,7 @@ void QgsMapToolAnnotation::canvasDoubleClickEvent( QgsMapMouseEvent* e )
   }
 }
 
-QgsMapCanvasAnnotationItem* QgsMapToolAnnotation::itemAtPos( QPointF pos ) const
+QgsMapCanvasAnnotationItem *QgsMapToolAnnotation::itemAtPos( QPointF pos ) const
 {
   if ( !mCanvas )
   {
@@ -305,7 +305,7 @@ QgsMapCanvasAnnotationItem* QgsMapToolAnnotation::itemAtPos( QPointF pos ) const
   QList<QGraphicsItem *>::iterator gIt = graphicItems.begin();
   for ( ; gIt != graphicItems.end(); ++gIt )
   {
-    QgsMapCanvasAnnotationItem* annotationItem = dynamic_cast<QgsMapCanvasAnnotationItem*>( *gIt );
+    QgsMapCanvasAnnotationItem *annotationItem = dynamic_cast<QgsMapCanvasAnnotationItem *>( *gIt );
     if ( annotationItem )
     {
       return annotationItem;
@@ -314,7 +314,7 @@ QgsMapCanvasAnnotationItem* QgsMapToolAnnotation::itemAtPos( QPointF pos ) const
   return nullptr;
 }
 
-QgsMapCanvasAnnotationItem* QgsMapToolAnnotation::selectedItem() const
+QgsMapCanvasAnnotationItem *QgsMapToolAnnotation::selectedItem() const
 {
   if ( !mCanvas || !mCanvas->scene() )
   {
@@ -324,7 +324,7 @@ QgsMapCanvasAnnotationItem* QgsMapToolAnnotation::selectedItem() const
   QList<QGraphicsItem *>::iterator it = gItemList.begin();
   for ( ; it != gItemList.end(); ++it )
   {
-    QgsMapCanvasAnnotationItem* aItem = dynamic_cast<QgsMapCanvasAnnotationItem*>( *it );
+    QgsMapCanvasAnnotationItem *aItem = dynamic_cast<QgsMapCanvasAnnotationItem *>( *it );
     if ( aItem )
     {
       return aItem;
@@ -333,9 +333,9 @@ QgsMapCanvasAnnotationItem* QgsMapToolAnnotation::selectedItem() const
   return nullptr;
 }
 
-QList<QgsMapCanvasAnnotationItem*> QgsMapToolAnnotation::annotationItems() const
+QList<QgsMapCanvasAnnotationItem *> QgsMapToolAnnotation::annotationItems() const
 {
-  QList<QgsMapCanvasAnnotationItem*> annotationItemList;
+  QList<QgsMapCanvasAnnotationItem *> annotationItemList;
   if ( !mCanvas || !mCanvas->scene() )
   {
     return annotationItemList;
@@ -345,7 +345,7 @@ QList<QgsMapCanvasAnnotationItem*> QgsMapToolAnnotation::annotationItems() const
   QList<QGraphicsItem *>::iterator it = itemList.begin();
   for ( ; it != itemList.end(); ++it )
   {
-    QgsMapCanvasAnnotationItem* aItem = dynamic_cast<QgsMapCanvasAnnotationItem*>( *it );
+    QgsMapCanvasAnnotationItem *aItem = dynamic_cast<QgsMapCanvasAnnotationItem *>( *it );
     if ( aItem )
     {
       annotationItemList.push_back( aItem );
@@ -357,10 +357,10 @@ QList<QgsMapCanvasAnnotationItem*> QgsMapToolAnnotation::annotationItems() const
 
 void QgsMapToolAnnotation::toggleTextItemVisibilities()
 {
-  QList<QgsMapCanvasAnnotationItem*> itemList = annotationItems();
-  Q_FOREACH ( QgsMapCanvasAnnotationItem* item, itemList )
+  QList<QgsMapCanvasAnnotationItem *> itemList = annotationItems();
+  Q_FOREACH ( QgsMapCanvasAnnotationItem *item, itemList )
   {
-    QgsTextAnnotation* textItem = dynamic_cast<QgsTextAnnotation*>( item->annotation() );
+    QgsTextAnnotation *textItem = dynamic_cast<QgsTextAnnotation *>( item->annotation() );
     if ( textItem )
     {
       textItem->setVisible( !textItem->isVisible() );
@@ -368,7 +368,7 @@ void QgsMapToolAnnotation::toggleTextItemVisibilities()
   }
 }
 
-QgsPoint QgsMapToolAnnotation::transformCanvasToAnnotation( QgsPoint p, QgsAnnotation* annotation ) const
+QgsPoint QgsMapToolAnnotation::transformCanvasToAnnotation( QgsPoint p, QgsAnnotation *annotation ) const
 {
   if ( annotation->mapPositionCrs() != mCanvas->mapSettings().destinationCrs() )
   {

@@ -55,7 +55,7 @@ class QgsAlignRasterDialog : public QDialog, private Ui::QgsAlignRasterDialog
     void updateAlignedRasterInfo();
 
   protected:
-    QgsAlignRaster* mAlign = nullptr;
+    QgsAlignRaster *mAlign = nullptr;
 };
 
 
@@ -74,18 +74,18 @@ class QgsAlignRasterLayerConfigDialog : public QDialog
     QgsAlignRaster::ResampleAlg resampleMethod() const;
     bool rescaleValues() const;
 
-    void setItem( const QString& inputFilename, const QString& outputFilename, QgsAlignRaster::ResampleAlg resampleMethod, bool rescaleValues );
+    void setItem( const QString &inputFilename, const QString &outputFilename, QgsAlignRaster::ResampleAlg resampleMethod, bool rescaleValues );
 
   protected slots:
     void browseOutputFilename();
 
   protected:
-    QgsMapLayerComboBox* cboLayers = nullptr;
-    QLineEdit* editOutput = nullptr;
-    QPushButton* btnBrowse = nullptr;
-    QComboBox* cboResample = nullptr;
-    QCheckBox* chkRescale = nullptr;
-    QDialogButtonBox* btnBox = nullptr;
+    QgsMapLayerComboBox *cboLayers = nullptr;
+    QLineEdit *editOutput = nullptr;
+    QPushButton *btnBrowse = nullptr;
+    QComboBox *cboResample = nullptr;
+    QCheckBox *chkRescale = nullptr;
+    QDialogButtonBox *btnBox = nullptr;
 };
 
 

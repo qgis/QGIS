@@ -38,9 +38,9 @@ RScodec::RScodec( unsigned int pp, int mm, int tt )
   kk = nn - ( tt * 2 );
   isOk = true;
 
-  alpha_to = new( std::nothrow ) int[nn+1];
-  index_of = new( std::nothrow ) unsigned int[nn+1];
-  gg = new( std::nothrow ) int[nn-kk+1];
+  alpha_to = new ( std::nothrow ) int[nn + 1];
+  index_of = new ( std::nothrow ) unsigned int[nn + 1];
+  gg = new ( std::nothrow ) int[nn - kk + 1];
 
   RSgenerate_gf( pp ) ;
   /* compute the generator polynomial for this RS code */
@@ -82,11 +82,11 @@ void RScodec::RSgenerate_gf( unsigned int pp )
   mask >>= 1 ;
   for ( i = mm + 1; i < nn; i++ )
   {
-    if ( alpha_to[i-1] >= mask )
+    if ( alpha_to[i - 1] >= mask )
     {
-      alpha_to[i] = alpha_to[mm] ^(( alpha_to[i-1] ^ mask ) << 1 ) ;
+      alpha_to[i] = alpha_to[mm] ^ ( ( alpha_to[i - 1] ^ mask ) << 1 ) ;
     }
-    else alpha_to[i] = alpha_to[i-1] << 1 ;
+    else alpha_to[i] = alpha_to[i - 1] << 1 ;
     index_of[alpha_to[i]] = i ;
   }
   index_of[0] = UINT_MAX;
@@ -113,11 +113,11 @@ void RScodec::RSgen_poly()
         if ( gg[j] < 0 ) { isOk = false; return; }
         tmp = ( index_of[gg[j]] + i ) % nn;
         if ( tmp < 0 ) { isOk = false; return; }
-        gg[j] = gg[j-1] ^ alpha_to[tmp] ;
+        gg[j] = gg[j - 1] ^ alpha_to[tmp] ;
       }
       else
       {
-        gg[j] = gg[j-1] ;
+        gg[j] = gg[j - 1] ;
       }
     gg[0] = alpha_to[( index_of[gg[0]] + i ) % nn] ;     /* gg[0] can never be zero */
   }
@@ -125,7 +125,7 @@ void RScodec::RSgen_poly()
   for ( i = 0; i <= bb; i++ )  gg[i] = index_of[gg[i]] ;
 }
 
-int RScodec::calcDecode( unsigned char* data, int* recd, int** elp, int* d, int* l, int* u_lu, int* s, int* root, int* loc, int* z, int* err, int* reg, int bb )
+int RScodec::calcDecode( unsigned char *data, int *recd, int **elp, int *d, int *l, int *u_lu, int *s, int *root, int *loc, int *z, int *err, int *reg, int bb )
 {
   if ( !isOk ) return -1;
   int count = 0;
@@ -201,7 +201,7 @@ int RScodec::calcDecode( unsigned char* data, int* recd, int** elp, int* d, int*
     {
       /* search for words with greatest u_lu[q] for which d[q]!=0 */
       q = u - 1;
-      while (( d[q] == -1 ) && ( q > 0 ) ) q--;
+      while ( ( d[q] == -1 ) && ( q > 0 ) ) q--;
       /* have found first non-zero d[q]  */
       if ( q > 0 )
       {
@@ -209,7 +209,7 @@ int RScodec::calcDecode( unsigned char* data, int* recd, int** elp, int* d, int*
         do
         {
           j--;
-          if (( d[j] != -1 ) && ( u_lu[q] < u_lu[j] ) )
+          if ( ( d[j] != -1 ) && ( u_lu[q] < u_lu[j] ) )
             q = j;
         }
         while ( j > 0 );
@@ -256,7 +256,7 @@ int RScodec::calcDecode( unsigned char* data, int* recd, int** elp, int* d, int*
       }
       for ( i = 1; i <= l[u + 1]; i++ )
       {
-        if (( s[u + 1 - i] != -1 ) && ( elp[u + 1][i] != 0 ) )
+        if ( ( s[u + 1 - i] != -1 ) && ( elp[u + 1][i] != 0 ) )
         {
           d[u + 1] ^= alpha_to[( s[u + 1 - i] + index_of[elp[u + 1][i]] ) % nn];
         }
@@ -264,7 +264,7 @@ int RScodec::calcDecode( unsigned char* data, int* recd, int** elp, int* d, int*
       d[u + 1] = index_of[d[u + 1]];    /* put d[u+1] into index form */
     }
   }
-  while (( u < bb ) && ( l[u + 1] <= tt ) );
+  while ( ( u < bb ) && ( l[u + 1] <= tt ) );
 
   u++;
   if ( l[u] > tt )            /* elp has degree has degree >tt hence cannot solve */
@@ -310,15 +310,15 @@ int RScodec::calcDecode( unsigned char* data, int* recd, int** elp, int* d, int*
   /* form polynomial z(x) */
   for ( i = 1; i <= l[u]; i++ )       /* Z[0] = 1 always - do not need */
   {
-    if (( s[i] != -1 ) && ( elp[u][i] != -1 ) )
+    if ( ( s[i] != -1 ) && ( elp[u][i] != -1 ) )
     {
       z[i] = alpha_to[s[i]] ^ alpha_to[elp[u][i]];
     }
-    else if (( s[i] != -1 ) && ( elp[u][i] == -1 ) )
+    else if ( ( s[i] != -1 ) && ( elp[u][i] == -1 ) )
     {
       z[i] = alpha_to[s[i]];
     }
-    else if (( s[i] == -1 ) && ( elp[u][i] != -1 ) )
+    else if ( ( s[i] == -1 ) && ( elp[u][i] != -1 ) )
     {
       z[i] = alpha_to[elp[u][i]];
     }
@@ -328,7 +328,7 @@ int RScodec::calcDecode( unsigned char* data, int* recd, int** elp, int* d, int*
     }
     for ( j = 1; j < i; j++ )
     {
-      if (( s[j] != -1 ) && ( elp[u][i - j] != -1 ) )
+      if ( ( s[j] != -1 ) && ( elp[u][i - j] != -1 ) )
       {
         z[i] ^= alpha_to[( elp[u][i - j] + s[j] ) % nn];
       }
@@ -385,20 +385,20 @@ bool RScodec::encode( unsigned char *data, unsigned char *parity )
   for ( i = 0; i < bb; i++ )   bd[i] = 0 ;
   for ( i = kk - 1; i >= 0; i-- )
   {
-    feedback = index_of[idata[i] ^ bd[bb-1]] ;
+    feedback = index_of[idata[i] ^ bd[bb - 1]] ;
     if ( feedback != -1 )
     {
       for ( j = bb - 1; j > 0; j-- )
         if ( gg[j] != -1 )
-          bd[j] = bd[j-1] ^ alpha_to[( gg[j] + feedback ) % nn] ;
+          bd[j] = bd[j - 1] ^ alpha_to[( gg[j] + feedback ) % nn] ;
         else
-          bd[j] = bd[j-1] ;
+          bd[j] = bd[j - 1] ;
       bd[0] = alpha_to[( gg[0] + feedback ) % nn] ;
     }
     else
     {
       for ( j = bb - 1; j > 0; j-- )
-        bd[j] = bd[j-1] ;
+        bd[j] = bd[j - 1] ;
       bd[0] = 0 ;
     }
   }
@@ -430,8 +430,8 @@ int RScodec::decode( unsigned char *data )
   if ( !isOk ) return -1;
   int bb = nn - kk;; //nn-kk length of parity data
 
-  int *recd = new( std::nothrow ) int[nn];
-  int **elp = new int*[bb + 2];
+  int *recd = new ( std::nothrow ) int[nn];
+  int **elp = new int *[bb + 2];
   for ( int i = 0; i < bb + 2; ++i )
     elp[i] = new int[bb];
   int *d = new int[bb + 2];
@@ -440,11 +440,11 @@ int RScodec::decode( unsigned char *data )
   int *s = new int[bb + 1];
   int *root = new int[tt];
   int *loc = new int[tt];
-  int *z = new int[tt+1];
+  int *z = new int[tt + 1];
   int *err = new int[nn];
   int *reg = new int[tt + 1];
 
-  int res = calcDecode( data, recd, elp , d , l, u_lu, s, root, loc , z, err, reg, bb );
+  int res = calcDecode( data, recd, elp, d, l, u_lu, s, root, loc, z, err, reg, bb );
 
   delete[] recd;
   for ( int i = 0; i < bb + 2; ++i )

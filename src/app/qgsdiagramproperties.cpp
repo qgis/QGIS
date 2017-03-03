@@ -47,17 +47,17 @@ QgsExpressionContext QgsDiagramProperties::createExpressionContext() const
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-  << QgsExpressionContextUtils::atlasScope( nullptr )
-  << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
-  << QgsExpressionContextUtils::layerScope( mLayer );
+             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+             << QgsExpressionContextUtils::atlasScope( nullptr )
+             << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
+             << QgsExpressionContextUtils::layerScope( mLayer );
 
   return expContext;
 }
 
-QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* parent, QgsMapCanvas *canvas )
-    : QWidget( parent )
-    , mMapCanvas( canvas )
+QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *parent, QgsMapCanvas *canvas )
+  : QWidget( parent )
+  , mMapCanvas( canvas )
 {
   mLayer = layer;
   if ( !layer )
@@ -179,7 +179,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   mSizeFieldExpressionWidget->setGeomCalculator( myDa );
 
   //insert all attributes into the combo boxes
-  const QgsFields& layerFields = layer->fields();
+  const QgsFields &layerFields = layer->fields();
   for ( int idx = 0; idx < layerFields.count(); ++idx )
   {
     QTreeWidgetItem *newItem = new QTreeWidgetItem( mAttributesTreeWidget );
@@ -189,7 +189,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
     newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
   }
 
-  const QgsDiagramRenderer* dr = layer->diagramRenderer();
+  const QgsDiagramRenderer *dr = layer->diagramRenderer();
   if ( !dr ) //no diagram renderer yet, insert reasonable default
   {
     mDiagramTypeComboBox->blockSignals( true );
@@ -266,7 +266,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
       mTransparencySlider->setValue( mTransparencySpinBox->value() );
       mDiagramPenColorButton->setColor( settingList.at( 0 ).penColor );
       mPenWidthSpinBox->setValue( settingList.at( 0 ).penWidth );
-      mDiagramSizeSpinBox->setValue(( size.width() + size.height() ) / 2.0 );
+      mDiagramSizeSpinBox->setValue( ( size.width() + size.height() ) / 2.0 );
       // caution: layer uses scale denoms, widget uses true scales
       mScaleRangeWidget->setScaleRange( 1.0 / ( settingList.at( 0 ).maxScaleDenominator > 0 ? settingList.at( 0 ).maxScaleDenominator : layer->maximumScale() ),
                                         1.0 / ( settingList.at( 0 ).minScaleDenominator > 0 ? settingList.at( 0 ).minScaleDenominator : layer->minimumScale() ) );
@@ -349,13 +349,13 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
 
     if ( dr->rendererName() == QLatin1String( "LinearlyInterpolated" ) )
     {
-      const QgsLinearlyInterpolatedDiagramRenderer* lidr = dynamic_cast<const QgsLinearlyInterpolatedDiagramRenderer*>( dr );
+      const QgsLinearlyInterpolatedDiagramRenderer *lidr = dynamic_cast<const QgsLinearlyInterpolatedDiagramRenderer *>( dr );
       if ( lidr )
       {
         mDiagramSizeSpinBox->setEnabled( false );
         mLinearScaleFrame->setEnabled( true );
         mMaxValueSpinBox->setValue( lidr->upperValue() );
-        mSizeSpinBox->setValue(( lidr->upperSize().width() + lidr->upperSize().height() ) / 2 );
+        mSizeSpinBox->setValue( ( lidr->upperSize().width() + lidr->upperSize().height() ) / 2 );
         if ( lidr->classificationAttributeIsExpression() )
         {
           mSizeFieldExpressionWidget->setField( lidr->classificationAttributeExpression() );
@@ -429,7 +429,7 @@ QgsDiagramProperties::~QgsDiagramProperties()
   settings.setValue( QStringLiteral( "/Windows/Diagrams/Tab" ), mDiagramOptionsListWidget->currentRow() );
 }
 
-void QgsDiagramProperties::registerDataDefinedButton( QgsPropertyOverrideButton * button, QgsDiagramLayerSettings::Property key )
+void QgsDiagramProperties::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsDiagramLayerSettings::Property key )
 {
   button->init( key, mDataDefinedProperties, QgsDiagramLayerSettings::propertyDefinitions(), mLayer );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsDiagramProperties::updateProperty );
@@ -438,7 +438,7 @@ void QgsDiagramProperties::registerDataDefinedButton( QgsPropertyOverrideButton 
 
 void QgsDiagramProperties::updateProperty()
 {
-  QgsPropertyOverrideButton* button = qobject_cast<QgsPropertyOverrideButton*>( sender() );
+  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   QgsDiagramLayerSettings::Property key = static_cast<  QgsDiagramLayerSettings::Property >( button->propertyKey() );
   mDataDefinedProperties.setProperty( key, button->toProperty() );
 }
@@ -522,7 +522,7 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int inde
     }
   }
 }
-QString QgsDiagramProperties::guessLegendText( const QString& expression )
+QString QgsDiagramProperties::guessLegendText( const QString &expression )
 {
   //trim unwanted characters from expression text for legend
   QString text = expression.mid( expression.startsWith( '\"' ) ? 1 : 0 );
@@ -531,14 +531,14 @@ QString QgsDiagramProperties::guessLegendText( const QString& expression )
   return text;
 }
 
-void QgsDiagramProperties::addAttribute( QTreeWidgetItem * item )
+void QgsDiagramProperties::addAttribute( QTreeWidgetItem *item )
 {
   QTreeWidgetItem *newItem = new QTreeWidgetItem( mDiagramAttributesTreeWidget );
 
   newItem->setText( 0, item->text( 0 ) );
   newItem->setText( 2, guessLegendText( item->text( 0 ) ) );
   newItem->setData( 0, RoleAttributeExpression, item->data( 0, RoleAttributeExpression ) );
-  newItem->setFlags(( newItem->flags() | Qt::ItemIsEditable ) & ~Qt::ItemIsDropEnabled );
+  newItem->setFlags( ( newItem->flags() | Qt::ItemIsEditable ) & ~Qt::ItemIsDropEnabled );
 
   //set initial color for diagram category
   int red = 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) );
@@ -557,7 +557,7 @@ void QgsDiagramProperties::on_mAddCategoryPushButton_clicked()
   }
 }
 
-void QgsDiagramProperties::on_mAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column )
+void QgsDiagramProperties::on_mAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column )
 {
   Q_UNUSED( column );
   addAttribute( item );
@@ -585,9 +585,9 @@ void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
     QgsExpression exp( sizeFieldNameOrExp );
     QgsExpressionContext context;
     context << QgsExpressionContextUtils::globalScope()
-    << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-    << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
-    << QgsExpressionContextUtils::layerScope( mLayer );
+            << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+            << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
+            << QgsExpressionContextUtils::layerScope( mLayer );
 
     exp.prepare( &context );
     if ( !exp.hasEvalError() )
@@ -621,7 +621,7 @@ void QgsDiagramProperties::on_mDiagramFontButton_clicked()
 }
 
 
-void QgsDiagramProperties::on_mDiagramAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column )
+void QgsDiagramProperties::on_mDiagramAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column )
 {
   switch ( column )
   {
@@ -664,7 +664,7 @@ void QgsDiagramProperties::apply()
   int index = mDiagramTypeComboBox->currentIndex();
   bool diagramsEnabled = ( index != 0 );
 
-  QgsDiagram* diagram = nullptr;
+  QgsDiagram *diagram = nullptr;
 
   if ( diagramsEnabled && 0 == mDiagramAttributesTreeWidget->topLevelItemCount() )
   {
@@ -682,7 +682,7 @@ void QgsDiagramProperties::apply()
   if ( !mFixedSizeRadio->isChecked() && !scaleAttributeValueOk )
   {
     double maxVal = DBL_MIN;
-    QgsVectorDataProvider* provider = mLayer->dataProvider();
+    QgsVectorDataProvider *provider = mLayer->dataProvider();
 
     if ( provider )
     {
@@ -791,16 +791,16 @@ void QgsDiagramProperties::apply()
 
   ds.barWidth = mBarWidthSpinBox->value();
 
-  QgsDiagramRenderer* renderer = nullptr;
+  QgsDiagramRenderer *renderer = nullptr;
   if ( mFixedSizeRadio->isChecked() )
   {
-    QgsSingleCategoryDiagramRenderer* dr = new QgsSingleCategoryDiagramRenderer();
+    QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
     dr->setDiagramSettings( ds );
     renderer = dr;
   }
   else
   {
-    QgsLinearlyInterpolatedDiagramRenderer* dr = new QgsLinearlyInterpolatedDiagramRenderer();
+    QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
     dr->setLowerValue( 0.0 );
     dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
     dr->setUpperValue( mMaxValueSpinBox->value() );
@@ -832,7 +832,7 @@ void QgsDiagramProperties::apply()
   dls.setPriority( mPrioritySlider->value() );
   dls.setZIndex( mZIndexSpinBox->value() );
   dls.setShowAllDiagrams( mShowAllCheckBox->isChecked() );
-  dls.setPlacement(( QgsDiagramLayerSettings::Placement )mPlacementComboBox->currentData().toInt() );
+  dls.setPlacement( ( QgsDiagramLayerSettings::Placement )mPlacementComboBox->currentData().toInt() );
 
   QgsDiagramLayerSettings::LinePlacementFlags flags = 0;
   if ( chkLineAbove->isChecked() )
@@ -852,14 +852,14 @@ void QgsDiagramProperties::apply()
   mLayer->triggerRepaint();
 }
 
-QString QgsDiagramProperties::showExpressionBuilder( const QString& initialExpression )
+QString QgsDiagramProperties::showExpressionBuilder( const QString &initialExpression )
 {
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-  << QgsExpressionContextUtils::atlasScope( nullptr )
-  << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
-  << QgsExpressionContextUtils::layerScope( mLayer );
+          << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+          << QgsExpressionContextUtils::atlasScope( nullptr )
+          << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
+          << QgsExpressionContextUtils::layerScope( mLayer );
 
   QgsExpressionBuilderDialog dlg( mLayer, initialExpression, this, QStringLiteral( "generic" ), context );
   dlg.setWindowTitle( tr( "Expression based attribute" ) );
@@ -899,7 +899,7 @@ void QgsDiagramProperties::showAddAttributeExpressionDialog()
     newItem->setText( 0, newExpression );
     newItem->setText( 2, newExpression );
     newItem->setData( 0, RoleAttributeExpression, newExpression );
-    newItem->setFlags(( newItem->flags() | Qt::ItemIsEditable ) & ~Qt::ItemIsDropEnabled );
+    newItem->setFlags( ( newItem->flags() | Qt::ItemIsEditable ) & ~Qt::ItemIsDropEnabled );
 
     //set initial color for diagram category
     int red = 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) );
@@ -943,7 +943,7 @@ void QgsDiagramProperties::on_mPlacementComboBox_currentIndexChanged( int index 
 
 void QgsDiagramProperties::on_mButtonSizeLegendSymbol_clicked()
 {
-  QgsMarkerSymbol* newSymbol = mSizeLegendSymbol->clone();
+  QgsMarkerSymbol *newSymbol = mSizeLegendSymbol->clone();
   QgsSymbolWidgetContext context;
   context.setMapCanvas( mMapCanvas );
   QgsExpressionContext ec = createExpressionContext();

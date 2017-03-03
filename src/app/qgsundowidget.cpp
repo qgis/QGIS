@@ -20,8 +20,8 @@
 #include "qgsmapcanvas.h"
 
 
-QgsUndoWidget::QgsUndoWidget( QWidget * parent, QgsMapCanvas * mapCanvas )
-    : QgsPanelWidget( parent )
+QgsUndoWidget::QgsUndoWidget( QWidget *parent, QgsMapCanvas *mapCanvas )
+  : QgsPanelWidget( parent )
 {
   setupUi( this );
 
@@ -120,7 +120,7 @@ void QgsUndoWidget::redo()
     mUndoStack->redo();
 }
 
-void QgsUndoWidget::setUndoStack( QUndoStack* undoStack )
+void QgsUndoWidget::setUndoStack( QUndoStack *undoStack )
 {
   if ( mUndoView )
   {

@@ -52,9 +52,9 @@ class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCust
     //helper functions
     void populateList();
     QString quotedValue( QString value );
-    bool deleteCrs( const QString& id );
-    bool saveCrs( QgsCoordinateReferenceSystem myParameters, const QString& myName, QString myId, bool newEntry );
-    void insertProjection( const QString& myProjectionAcronym );
+    bool deleteCrs( const QString &id );
+    bool saveCrs( QgsCoordinateReferenceSystem myParameters, const QString &myName, QString myId, bool newEntry );
+    void insertProjection( const QString &myProjectionAcronym );
 
     //These two QMap store the values as they are on the database when loading
     QMap <QString, QString> existingCRSparameters;

@@ -30,10 +30,10 @@
 QgsSelectedFeature::QgsSelectedFeature( QgsFeatureId featureId,
                                         QgsVectorLayer *vlayer,
                                         QgsMapCanvas *canvas )
-    : mFeatureId( featureId )
-    , mGeometry( nullptr )
-    , mChangingGeometry( false )
-    , mValidator( nullptr )
+  : mFeatureId( featureId )
+  , mGeometry( nullptr )
+  , mChangingGeometry( false )
+  , mValidator( nullptr )
 {
   setSelectedFeature( featureId, vlayer, canvas );
 }
@@ -83,7 +83,7 @@ void QgsSelectedFeature::updateGeometry( const QgsGeometry *geom )
   }
 }
 
-void QgsSelectedFeature::setSelectedFeature( QgsFeatureId featureId, QgsVectorLayer* vlayer, QgsMapCanvas* canvas )
+void QgsSelectedFeature::setSelectedFeature( QgsFeatureId featureId, QgsVectorLayer *vlayer, QgsMapCanvas *canvas )
 {
   mFeatureId = featureId;
   mVlayer = vlayer;
@@ -93,7 +93,7 @@ void QgsSelectedFeature::setSelectedFeature( QgsFeatureId featureId, QgsVectorLa
   mGeometry = nullptr;
 
   // signal changing of current layer
-  connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
+  connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer * ) ), this, SLOT( currentLayerChanged( QgsMapLayer * ) ) );
 
   // feature was deleted
   connect( mVlayer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
@@ -416,7 +416,7 @@ void QgsSelectedFeature::createVertexMap()
     return;
   }
 
-  const QgsAbstractGeometry* geom = mGeometry->geometry();
+  const QgsAbstractGeometry *geom = mGeometry->geometry();
   if ( !geom )
   {
     return;
@@ -474,7 +474,7 @@ void QgsSelectedFeature::invertVertexSelection( int vertexNr )
   emit selectionChanged();
 }
 
-void QgsSelectedFeature::invertVertexSelection( const QVector<int>& vertexIndices )
+void QgsSelectedFeature::invertVertexSelection( const QVector<int> &vertexIndices )
 {
   Q_FOREACH ( int index, vertexIndices )
   {
@@ -489,7 +489,7 @@ void QgsSelectedFeature::invertVertexSelection( const QVector<int>& vertexIndice
 
 void QgsSelectedFeature::updateVertexMarkersPosition()
 {
-  Q_FOREACH ( QgsVertexEntry* vertexEntry, mVertexMap )
+  Q_FOREACH ( QgsVertexEntry *vertexEntry, mVertexMap )
   {
     vertexEntry->placeMarker();
   }
@@ -500,12 +500,12 @@ QgsFeatureId QgsSelectedFeature::featureId()
   return mFeatureId;
 }
 
-QList<QgsVertexEntry*> &QgsSelectedFeature::vertexMap()
+QList<QgsVertexEntry *> &QgsSelectedFeature::vertexMap()
 {
   return mVertexMap;
 }
 
-QgsVectorLayer* QgsSelectedFeature::vlayer()
+QgsVectorLayer *QgsSelectedFeature::vlayer()
 {
   return mVlayer;
 }

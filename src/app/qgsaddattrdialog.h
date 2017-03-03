@@ -31,7 +31,7 @@ class APP_EXPORT QgsAddAttrDialog: public QDialog, private Ui::QgsAddAttrDialogB
   public:
     QgsAddAttrDialog( QgsVectorLayer *vlayer,
                       QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
-    QgsAddAttrDialog( const std::list<QString>& typelist,
+    QgsAddAttrDialog( const std::list<QString> &typelist,
                       QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
     QgsField field() const;

@@ -33,8 +33,8 @@
 #include "qgscontexthelp.h"
 #include "qgsapplication.h"
 
-QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget* parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget *parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
 
@@ -69,7 +69,7 @@ QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget* parent, Qt::WindowF
   for ( int i = 0; i < dbDrivers.count(); i++ )
   {
     QString dbDriver = dbDrivers.at( i );
-    if (( !dbDriver.isEmpty() ) && ( !dbDriver.isNull() ) )
+    if ( ( !dbDriver.isEmpty() ) && ( !dbDriver.isNull() ) )
       cmbDatabaseTypes->addItem( dbDriver.split( ',' ).at( 0 ) );
   }
 
@@ -78,7 +78,7 @@ QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget* parent, Qt::WindowF
   for ( int i = 0; i < dirDrivers.count(); i++ )
   {
     QString dirDriver = dirDrivers.at( i );
-    if (( !dirDriver.isEmpty() ) && ( !dirDriver.isNull() ) )
+    if ( ( !dirDriver.isEmpty() ) && ( !dirDriver.isNull() ) )
       cmbDirectoryTypes->addItem( dirDriver.split( ',' ).at( 0 ) );
   }
 
@@ -87,7 +87,7 @@ QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget* parent, Qt::WindowF
   for ( int i = 0; i < proDrivers.count(); i++ )
   {
     QString proDriver = proDrivers.at( i );
-    if (( !proDriver.isEmpty() ) && ( !proDriver.isNull() ) )
+    if ( ( !proDriver.isEmpty() ) && ( !proDriver.isNull() ) )
       cmbProtocolTypes->addItem( proDriver.split( ',' ).at( 0 ) );
   }
   cmbDatabaseTypes->blockSignals( false );
@@ -335,13 +335,13 @@ void QgsOpenVectorLayerDialog::accept()
     if ( makeConnection || !pass.isEmpty() )
     {
       mDataSources << createDatabaseURI(
-        cmbDatabaseTypes->currentText(),
-        host,
-        database,
-        port,
-        user,
-        pass
-      );
+                     cmbDatabaseTypes->currentText(),
+                     host,
+                     database,
+                     port,
+                     user,
+                     pass
+                   );
     }
   }
   else if ( radioSrcProtocol->isChecked() )
@@ -462,14 +462,14 @@ void QgsOpenVectorLayerDialog::on_btnEdit_clicked()
   editConnection();
 }
 
-void QgsOpenVectorLayerDialog::on_cmbDatabaseTypes_currentIndexChanged( const QString & text )
+void QgsOpenVectorLayerDialog::on_cmbDatabaseTypes_currentIndexChanged( const QString &text )
 {
   Q_UNUSED( text );
   populateConnectionList();
   setSelectedConnectionType();
 }
 
-void QgsOpenVectorLayerDialog::on_cmbConnections_currentIndexChanged( const QString & text )
+void QgsOpenVectorLayerDialog::on_cmbConnections_currentIndexChanged( const QString &text )
 {
   Q_UNUSED( text );
   setSelectedConnection();

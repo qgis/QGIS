@@ -26,12 +26,12 @@ class dwgBasicStream
     dwgBasicStream() {}
   public:
     virtual ~dwgBasicStream() = default;
-    virtual bool read( duint8* s, duint64 n ) = 0;
+    virtual bool read( duint8 *s, duint64 n ) = 0;
     virtual duint64 size() = 0;
     virtual duint64 getPos() = 0;
     virtual bool setPos( duint64 p ) = 0;
     virtual bool good() = 0;
-    virtual dwgBasicStream* clone() = 0;
+    virtual dwgBasicStream *clone() = 0;
 };
 
 class dwgFileStream: public dwgBasicStream
@@ -44,12 +44,12 @@ class dwgFileStream: public dwgBasicStream
       sz = stream->tellg();
       stream->seekg( 0, std::ios_base::beg );
     }
-    virtual bool read( duint8* s, duint64 n );
+    virtual bool read( duint8 *s, duint64 n );
     virtual duint64 size() {return sz;}
     virtual duint64 getPos() {return stream->tellg();}
     virtual bool setPos( duint64 p );
     virtual bool good() {return stream->good();}
-    virtual dwgBasicStream* clone() {return new dwgFileStream( stream );}
+    virtual dwgBasicStream *clone() {return new dwgFileStream( stream );}
   private:
     std::ifstream *stream = nullptr;
     duint64 sz;
@@ -65,12 +65,12 @@ class dwgCharStream: public dwgBasicStream
       pos = 0;
       isOk = true;
     }
-    virtual bool read( duint8* s, duint64 n );
+    virtual bool read( duint8 *s, duint64 n );
     virtual duint64 size() {return sz;}
     virtual duint64 getPos() {return pos;}
     virtual bool setPos( duint64 p );
     virtual bool good() {return isOk;}
-    virtual dwgBasicStream* clone() {return new dwgCharStream( stream, sz );}
+    virtual dwgBasicStream *clone() {return new dwgCharStream( stream, sz );}
   private:
     duint8 *stream = nullptr;
     duint64 sz;
@@ -83,8 +83,8 @@ class dwgBuffer
   public:
     dwgBuffer( std::ifstream *stream, DRW_TextCodec *decoder = nullptr );
     dwgBuffer( duint8 *buf, int size, DRW_TextCodec *decoder = nullptr );
-    dwgBuffer( const dwgBuffer& org );
-    dwgBuffer& operator=( const dwgBuffer& org );
+    dwgBuffer( const dwgBuffer &org );
+    dwgBuffer &operator=( const dwgBuffer &org );
     ~dwgBuffer();
     duint64 size() {return filestr->size();}
     bool setPosition( duint64 pos );

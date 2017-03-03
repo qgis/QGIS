@@ -62,15 +62,15 @@
 #include <QHeaderView>  // Qt 4.4
 #include <QMessageBox>
 
-const char * QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );
+const char *QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );
 
 //stdc++ includes
 
-QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *parent, Qt::WindowFlags fl )
-    : QgsOptionsDialogBase( QStringLiteral( "ProjectProperties" ), parent, fl )
-    , mMapCanvas( mapCanvas )
-    , mEllipsoidList()
-    , mEllipsoidIndex( 0 )
+QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags fl )
+  : QgsOptionsDialogBase( QStringLiteral( "ProjectProperties" ), parent, fl )
+  , mMapCanvas( mapCanvas )
+  , mEllipsoidList()
+  , mEllipsoidIndex( 0 )
 
 {
   setupUi( this );
@@ -134,7 +134,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   ///////////////////////////////////////////////////////////
   // Properties stored in QgsProject
 
-  Q_FOREACH ( QgsVectorLayer* layer, QgsProject::instance()->layers<QgsVectorLayer*>() )
+  Q_FOREACH ( QgsVectorLayer *layer, QgsProject::instance()->layers<QgsVectorLayer *>() )
   {
     if ( layer->isEditable() )
     {
@@ -226,20 +226,20 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   QStringList myScales = QgsProject::instance()->readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) );
   if ( !myScales.isEmpty() )
   {
-    Q_FOREACH ( const QString& scale, myScales )
+    Q_FOREACH ( const QString &scale, myScales )
     {
       addScaleToScaleList( scale );
     }
   }
-  connect( lstScales, SIGNAL( itemChanged( QListWidgetItem* ) ), this, SLOT( scaleItemChanged( QListWidgetItem* ) ) );
+  connect( lstScales, SIGNAL( itemChanged( QListWidgetItem * ) ), this, SLOT( scaleItemChanged( QListWidgetItem * ) ) );
 
   grpProjectScales->setChecked( QgsProject::instance()->readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) ) );
 
-  QgsMapLayer* currentLayer = nullptr;
+  QgsMapLayer *currentLayer = nullptr;
 
   QStringList noIdentifyLayerIdList = QgsProject::instance()->nonIdentifiableLayers();
 
-  const QMap<QString, QgsMapLayer*> &mapLayers = QgsProject::instance()->mapLayers();
+  const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
 
   twIdentifyLayers->setColumnCount( 4 );
   twIdentifyLayers->horizontalHeader()->setVisible( true );
@@ -251,7 +251,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   twIdentifyLayers->verticalHeader()->setResizeMode( QHeaderView::ResizeToContents );
 
   int i = 0;
-  for ( QMap<QString, QgsMapLayer*>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it, i++ )
+  for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it, i++ )
   {
     currentLayer = it.value();
 
@@ -484,7 +484,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     if ( grpWMSList->isChecked() )
     {
       QStringList list;
-      Q_FOREACH ( const QString& value, values )
+      Q_FOREACH ( const QString &value, values )
       {
         list << QStringLiteral( "EPSG:%1" ).arg( value );
       }
@@ -559,7 +559,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
 
   i = 0;
   int j = 0;
-  for ( QMap<QString, QgsMapLayer*>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it, i++ )
+  for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it, i++ )
   {
     currentLayer = it.value();
     if ( currentLayer->type() == QgsMapLayer::VectorLayer )
@@ -573,34 +573,34 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
       twi->setFlags( twi->flags() & ~Qt::ItemIsEditable );
       twWFSLayers->setItem( j, 0, twi );
 
-      QCheckBox* cbp = new QCheckBox();
+      QCheckBox *cbp = new QCheckBox();
       cbp->setChecked( wfsLayerIdList.contains( currentLayer->id() ) );
       twWFSLayers->setCellWidget( j, 1, cbp );
 
       smPublied->setMapping( cbp, j );
       connect( cbp, SIGNAL( stateChanged( int ) ), smPublied, SLOT( map() ) );
 
-      QSpinBox* psb = new QSpinBox();
+      QSpinBox *psb = new QSpinBox();
       psb->setValue( QgsProject::instance()->readNumEntry( QStringLiteral( "WFSLayersPrecision" ), "/" + currentLayer->id(), 8 ) );
       twWFSLayers->setCellWidget( j, 2, psb );
 
-      QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( currentLayer );
-      QgsVectorDataProvider* provider = vlayer->dataProvider();
-      if (( provider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) && ( provider->capabilities() & QgsVectorDataProvider::ChangeGeometries ) )
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
+      QgsVectorDataProvider *provider = vlayer->dataProvider();
+      if ( ( provider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) && ( provider->capabilities() & QgsVectorDataProvider::ChangeGeometries ) )
       {
-        QCheckBox* cbu = new QCheckBox();
+        QCheckBox *cbu = new QCheckBox();
         cbu->setChecked( wfstUpdateLayerIdList.contains( currentLayer->id() ) );
         twWFSLayers->setCellWidget( j, 3, cbu );
       }
-      if (( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) )
+      if ( ( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) )
       {
-        QCheckBox* cbi = new QCheckBox();
+        QCheckBox *cbi = new QCheckBox();
         cbi->setChecked( wfstInsertLayerIdList.contains( currentLayer->id() ) );
         twWFSLayers->setCellWidget( j, 4, cbi );
       }
-      if (( provider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
+      if ( ( provider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
       {
-        QCheckBox* cbd = new QCheckBox();
+        QCheckBox *cbd = new QCheckBox();
         cbd->setChecked( wfstDeleteLayerIdList.contains( currentLayer->id() ) );
         twWFSLayers->setCellWidget( j, 5, cbd );
       }
@@ -623,7 +623,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
 
   i = 0;
   j = 0;
-  for ( QMap<QString, QgsMapLayer*>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it, i++ )
+  for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it, i++ )
   {
     currentLayer = it.value();
     if ( currentLayer->type() == QgsMapLayer::RasterLayer )
@@ -637,7 +637,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
       twi->setFlags( twi->flags() & ~Qt::ItemIsEditable );
       twWCSLayers->setItem( j, 0, twi );
 
-      QCheckBox* cbp = new QCheckBox();
+      QCheckBox *cbp = new QCheckBox();
       cbp->setChecked( wcsLayerIdList.contains( currentLayer->id() ) );
       twWCSLayers->setCellWidget( j, 1, cbp );
 
@@ -685,12 +685,12 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   mRelationManagerDlg = new QgsRelationManagerDialog( QgsProject::instance()->relationManager(), mTabRelations );
   mTabRelations->layout()->addWidget( mRelationManagerDlg );
 
-  QList<QgsVectorLayer*> vectorLayers;
-  Q_FOREACH ( QgsMapLayer* mapLayer, mapLayers )
+  QList<QgsVectorLayer *> vectorLayers;
+  Q_FOREACH ( QgsMapLayer *mapLayer, mapLayers )
   {
     if ( QgsMapLayer::VectorLayer == mapLayer->type() )
     {
-      vectorLayers.append( qobject_cast<QgsVectorLayer*>( mapLayer ) );
+      vectorLayers.append( qobject_cast<QgsVectorLayer *>( mapLayer ) );
     }
   }
   mRelationManagerDlg->setLayers( vectorLayers );
@@ -719,7 +719,7 @@ QString QgsProjectProperties::title() const
   return titleEdit->text();
 } //  QgsProjectPropertires::title() const
 
-void QgsProjectProperties::title( QString const & title )
+void QgsProjectProperties::title( QString const &title )
 {
   titleEdit->setText( title );
   QgsProject::instance()->setTitle( title );
@@ -866,7 +866,7 @@ void QgsProjectProperties::apply()
       noIdentifyLayerList << id;
     }
     bool readonly = twIdentifyLayers->item( i, 3 )->checkState() == Qt::Checked;
-    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( id ) );
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( id ) );
     if ( vl )
       vl->setReadOnly( readonly );
   }
@@ -1069,13 +1069,13 @@ void QgsProjectProperties::apply()
   for ( int i = 0; i < twWFSLayers->rowCount(); i++ )
   {
     QString id = twWFSLayers->item( i, 0 )->data( Qt::UserRole ).toString();
-    QCheckBox* cb = nullptr;
+    QCheckBox *cb = nullptr;
     cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( i, 1 ) );
     if ( cb && cb->isChecked() )
     {
       wfsLayerList << id;
 
-      QSpinBox* sb = qobject_cast<QSpinBox *>( twWFSLayers->cellWidget( i, 2 ) );
+      QSpinBox *sb = qobject_cast<QSpinBox *>( twWFSLayers->cellWidget( i, 2 ) );
       QgsProject::instance()->writeEntry( QStringLiteral( "WFSLayersPrecision" ), "/" + id, sb->value() );
 
       cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( i, 3 ) );
@@ -1105,7 +1105,7 @@ void QgsProjectProperties::apply()
   for ( int i = 0; i < twWCSLayers->rowCount(); i++ )
   {
     QString id = twWCSLayers->item( i, 0 )->data( Qt::UserRole ).toString();
-    QCheckBox* cb = nullptr;
+    QCheckBox *cb = nullptr;
     cb = qobject_cast<QCheckBox *>( twWCSLayers->cellWidget( i, 1 ) );
     if ( cb && cb->isChecked() )
     {
@@ -1150,20 +1150,20 @@ void QgsProjectProperties::showProjectionsTab()
 
 void QgsProjectProperties::cbxWFSPubliedStateChanged( int aIdx )
 {
-  QCheckBox* cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 1 ) );
+  QCheckBox *cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 1 ) );
   if ( cb && !cb->isChecked() )
   {
-    QCheckBox* cbUpdate = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 3 ) );
+    QCheckBox *cbUpdate = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 3 ) );
     if ( cbUpdate )
     {
       cbUpdate->setChecked( false );
     }
-    QCheckBox* cbInsert = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 4 ) );
+    QCheckBox *cbInsert = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 4 ) );
     if ( cbInsert )
     {
       cbInsert->setChecked( false );
     }
-    QCheckBox* cbDelete = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 5 ) );
+    QCheckBox *cbDelete = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 5 ) );
     if ( cbDelete )
     {
       cbDelete->setChecked( false );
@@ -1173,10 +1173,10 @@ void QgsProjectProperties::cbxWFSPubliedStateChanged( int aIdx )
 
 void QgsProjectProperties::cbxWCSPubliedStateChanged( int aIdx )
 {
-  QCheckBox* cb = qobject_cast<QCheckBox *>( twWCSLayers->cellWidget( aIdx, 1 ) );
+  QCheckBox *cb = qobject_cast<QCheckBox *>( twWCSLayers->cellWidget( aIdx, 1 ) );
   if ( cb && !cb->isChecked() )
   {
-    QCheckBox* cbn = qobject_cast<QCheckBox *>( twWCSLayers->cellWidget( aIdx, 2 ) );
+    QCheckBox *cbn = qobject_cast<QCheckBox *>( twWCSLayers->cellWidget( aIdx, 2 ) );
     if ( cbn )
       cbn->setChecked( false );
   }
@@ -1346,8 +1346,8 @@ void QgsProjectProperties::on_pbnWMSSetUsedSRS_clicked()
   if ( srs.isValid() )
     crsList << srs.authid();
 
-  const QMap<QString, QgsMapLayer*> &mapLayers = QgsProject::instance()->mapLayers();
-  for ( QMap<QString, QgsMapLayer*>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
+  const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
+  for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
   {
     crsList << it.value()->crs().authid();
   }
@@ -1358,9 +1358,9 @@ void QgsProjectProperties::on_pbnWMSSetUsedSRS_clicked()
 
 void QgsProjectProperties::on_mAddWMSComposerButton_clicked()
 {
-  QSet<QgsComposer*> projectComposers = QgisApp::instance()->printComposers();
+  QSet<QgsComposer *> projectComposers = QgisApp::instance()->printComposers();
   QStringList composerTitles;
-  QSet<QgsComposer*>::const_iterator cIt = projectComposers.constBegin();
+  QSet<QgsComposer *>::const_iterator cIt = projectComposers.constBegin();
   for ( ; cIt != projectComposers.constEnd(); ++cIt )
   {
     composerTitles << ( *cIt )->title();
@@ -1379,7 +1379,7 @@ void QgsProjectProperties::on_mAddWMSComposerButton_clicked()
 
 void QgsProjectProperties::on_mRemoveWMSComposerButton_clicked()
 {
-  QListWidgetItem* currentItem = mComposerListWidget->currentItem();
+  QListWidgetItem *currentItem = mComposerListWidget->currentItem();
   if ( currentItem )
   {
     delete mComposerListWidget->takeItem( mComposerListWidget->row( currentItem ) );
@@ -1416,7 +1416,7 @@ void QgsProjectProperties::on_mAddLayerRestrictionButton_clicked()
 
 void QgsProjectProperties::on_mRemoveLayerRestrictionButton_clicked()
 {
-  QListWidgetItem* currentItem = mLayerRestrictionsListWidget->currentItem();
+  QListWidgetItem *currentItem = mLayerRestrictionsListWidget->currentItem();
   if ( currentItem )
   {
     delete mLayerRestrictionsListWidget->takeItem( mLayerRestrictionsListWidget->row( currentItem ) );
@@ -1485,7 +1485,7 @@ void QgsProjectProperties::on_pbnLaunchOWSChecker_clicked()
 
   QStringList duplicateNames, regExpMessages;
   QRegExp snRegExp = QgsApplication::shortNameRegExp();
-  Q_FOREACH ( const QString& name, owsNames )
+  Q_FOREACH ( const QString &name, owsNames )
   {
     if ( !snRegExp.exactMatch( name ) )
       regExpMessages << tr( "Use short name for \"%1\"" ).arg( name );
@@ -1542,7 +1542,7 @@ void QgsProjectProperties::on_pbnAddScale_clicked()
 
   if ( myScale != -1 )
   {
-    QListWidgetItem* newItem = addScaleToScaleList( QStringLiteral( "1:%1" ).arg( myScale ) );
+    QListWidgetItem *newItem = addScaleToScaleList( QStringLiteral( "1:%1" ).arg( myScale ) );
     lstScales->setCurrentItem( newItem );
   }
 }
@@ -1550,7 +1550,7 @@ void QgsProjectProperties::on_pbnAddScale_clicked()
 void QgsProjectProperties::on_pbnRemoveScale_clicked()
 {
   int currentRow = lstScales->currentRow();
-  QListWidgetItem* itemToRemove = lstScales->takeItem( currentRow );
+  QListWidgetItem *itemToRemove = lstScales->takeItem( currentRow );
   delete itemToRemove;
 }
 
@@ -1570,7 +1570,7 @@ void QgsProjectProperties::on_pbnImportScales_clicked()
     QgsDebugMsg( msg );
   }
 
-  Q_FOREACH ( const QString& scale, myScales )
+  Q_FOREACH ( const QString &scale, myScales )
   {
     addScaleToScaleList( scale );
   }
@@ -1610,7 +1610,7 @@ void QgsProjectProperties::populateStyles()
 
   // use QComboBox and QString lists for shorter code
   QStringList prefList;
-  QList<QComboBox*> cboList;
+  QList<QComboBox *> cboList;
   cboList << cboStyleMarker;
   prefList << QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Marker" ), QLatin1String( "" ) );
   cboList << cboStyleLine;
@@ -1630,8 +1630,8 @@ void QgsProjectProperties::populateStyles()
   for ( int i = 0; i < symbolNames.count(); ++i )
   {
     QString name = symbolNames[i];
-    QgsSymbol* symbol = mStyle->symbol( name );
-    QComboBox* cbo = nullptr;
+    QgsSymbol *symbol = mStyle->symbol( name );
+    QComboBox *cbo = nullptr;
     switch ( symbol->type() )
     {
       case QgsSymbol::Marker :
@@ -1724,7 +1724,7 @@ void QgsProjectProperties::on_mTransparencySpinBox_valueChanged( int value )
   mTransparencySlider->blockSignals( false );
 }
 
-void QgsProjectProperties::editSymbol( QComboBox* cbo )
+void QgsProjectProperties::editSymbol( QComboBox *cbo )
 {
   QString symbolName = cbo->currentText();
   if ( symbolName.isEmpty() )
@@ -1732,7 +1732,7 @@ void QgsProjectProperties::editSymbol( QComboBox* cbo )
     QMessageBox::information( this, QLatin1String( "" ), tr( "Select a valid symbol" ) );
     return;
   }
-  QgsSymbol* symbol = mStyle->symbol( symbolName );
+  QgsSymbol *symbol = mStyle->symbol( symbolName );
   if ( ! symbol )
   {
     QMessageBox::warning( this, QLatin1String( "" ), tr( "Invalid symbol : " ) + symbolName );
@@ -1763,15 +1763,15 @@ void QgsProjectProperties::resetPythonMacros()
                             "def closeProject():\n    pass\n" );
 }
 
-void QgsProjectProperties::checkOWS( QgsLayerTreeGroup* treeGroup, QStringList& owsNames, QStringList& encodingMessages )
+void QgsProjectProperties::checkOWS( QgsLayerTreeGroup *treeGroup, QStringList &owsNames, QStringList &encodingMessages )
 {
   QList< QgsLayerTreeNode * > treeGroupChildren = treeGroup->children();
   for ( int i = 0; i < treeGroupChildren.size(); ++i )
   {
-    QgsLayerTreeNode* treeNode = treeGroupChildren.at( i );
+    QgsLayerTreeNode *treeNode = treeGroupChildren.at( i );
     if ( treeNode->nodeType() == QgsLayerTreeNode::NodeGroup )
     {
-      QgsLayerTreeGroup* treeGroupChild = static_cast<QgsLayerTreeGroup *>( treeNode );
+      QgsLayerTreeGroup *treeGroupChild = static_cast<QgsLayerTreeGroup *>( treeNode );
       QString shortName = treeGroupChild->customProperty( QStringLiteral( "wmsShortName" ) ).toString();
       if ( shortName.isEmpty() )
         owsNames << treeGroupChild->name();
@@ -1781,8 +1781,8 @@ void QgsProjectProperties::checkOWS( QgsLayerTreeGroup* treeGroup, QStringList& 
     }
     else
     {
-      QgsLayerTreeLayer* treeLayer = static_cast<QgsLayerTreeLayer *>( treeNode );
-      QgsMapLayer* l = treeLayer->layer();
+      QgsLayerTreeLayer *treeLayer = static_cast<QgsLayerTreeLayer *>( treeNode );
+      QgsMapLayer *l = treeLayer->layer();
       QString shortName = l->shortName();
       if ( shortName.isEmpty() )
         owsNames << l->name();
@@ -1790,7 +1790,7 @@ void QgsProjectProperties::checkOWS( QgsLayerTreeGroup* treeGroup, QStringList& 
         owsNames << shortName;
       if ( l->type() == QgsMapLayer::VectorLayer )
       {
-        QgsVectorLayer* vl = static_cast<QgsVectorLayer *>( l );
+        QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( l );
         if ( vl->dataProvider()->encoding() == QLatin1String( "System" ) )
           encodingMessages << tr( "Update layer \"%1\" encoding" ).arg( l->name() );
       }
@@ -1875,7 +1875,7 @@ void QgsProjectProperties::populateEllipsoidList()
 
   // Add all items to selector
 
-  Q_FOREACH ( const EllipsoidDefs& i, mEllipsoidList )
+  Q_FOREACH ( const EllipsoidDefs &i, mEllipsoidList )
   {
     cmbEllipsoid->addItem( i.description );
   }
@@ -1971,18 +1971,18 @@ void QgsProjectProperties::on_mButtonAddColor_clicked()
   mTreeProjectColors->addColor( newColor, QgsSymbolLayerUtils::colorToName( newColor ) );
 }
 
-QListWidgetItem* QgsProjectProperties::addScaleToScaleList( const QString &newScale )
+QListWidgetItem *QgsProjectProperties::addScaleToScaleList( const QString &newScale )
 {
   // TODO QGIS3: Rework the scale list widget to be a reusable piece of code, see PR #2558
-  QListWidgetItem* newItem = new QListWidgetItem( newScale );
+  QListWidgetItem *newItem = new QListWidgetItem( newScale );
   addScaleToScaleList( newItem );
   return newItem;
 }
 
-void QgsProjectProperties::addScaleToScaleList( QListWidgetItem* newItem )
+void QgsProjectProperties::addScaleToScaleList( QListWidgetItem *newItem )
 {
   // If the new scale already exists, delete it.
-  QListWidgetItem* duplicateItem = lstScales->findItems( newItem->text(), Qt::MatchExactly ).value( 0 );
+  QListWidgetItem *duplicateItem = lstScales->findItems( newItem->text(), Qt::MatchExactly ).value( 0 );
   delete duplicateItem;
 
   int newDenominator = newItem->text().split( QStringLiteral( ":" ) ).value( 1 ).toInt();
@@ -1999,7 +1999,7 @@ void QgsProjectProperties::addScaleToScaleList( QListWidgetItem* newItem )
   lstScales->insertItem( i, newItem );
 }
 
-void QgsProjectProperties::scaleItemChanged( QListWidgetItem* changedScaleItem )
+void QgsProjectProperties::scaleItemChanged( QListWidgetItem *changedScaleItem )
 {
   // Check if the new value is valid, restore the old value if not.
   QRegExp regExp( "1:0*[1-9]\\d*" );

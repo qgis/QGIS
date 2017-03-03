@@ -60,13 +60,13 @@ class dwgPageInfo
   public:
     dwgPageInfo() {}
     dwgPageInfo( duint64 i, duint64 ad, duint32 sz )
-        : Id( i )
-        , address( ad )
-        , size( sz )
-        , dataSize( 0 )
-        , startOffset( 0 )
-        , cSize( 0 )
-        , uSize( 0 )
+      : Id( i )
+      , address( ad )
+      , size( sz )
+      , dataSize( 0 )
+      , startOffset( 0 )
+      , cSize( 0 )
+      , uSize( 0 )
     {
     }
 
@@ -94,11 +94,11 @@ class dwgSectionInfo
 {
   public:
     dwgSectionInfo()
-        : Id( -1 )
-        , compressed( 1 ) //1=no, 2=yes
-        , encrypted( 0 ) //???
-        , pageCount( 0 )
-        , address( 0 )
+      : Id( -1 )
+      , compressed( 1 ) //1=no, 2=yes
+      , encrypted( 0 ) //???
+      , pageCount( 0 )
+      , address( 0 )
     {
     }
 
@@ -137,11 +137,11 @@ class dwgReader
     friend class dwgR;
   public:
     dwgReader( std::ifstream *stream, dwgR *p )
-        : maintenanceVersion( 0 )
-        , fileBuf( new dwgBuffer( stream ) )
-        , parent( p )
-        , nextEntLink( 0 )
-        , prevEntLink( 0 )
+      : maintenanceVersion( 0 )
+      , fileBuf( new dwgBuffer( stream ) )
+      , parent( p )
+      , nextEntLink( 0 )
+      , prevEntLink( 0 )
     {
       decoder.setVersion( DRW::AC1021, false );//default 2007 in utf8(no convert)
       decoder.setCodePage( "UTF-16", false );
@@ -157,43 +157,43 @@ class dwgReader
     virtual bool readMetaData() = 0;
     virtual bool readPreview() {return false;}
     virtual bool readFileHeader() = 0;
-    virtual bool readDwgHeader( DRW_Header& hdr ) = 0;
+    virtual bool readDwgHeader( DRW_Header &hdr ) = 0;
     virtual bool readDwgClasses() = 0;
     virtual bool readDwgHandles() = 0;
-    virtual bool readDwgTables( DRW_Header& hdr ) = 0;
-    virtual bool readDwgBlocks( DRW_Interface& intfa ) = 0;
-    virtual bool readDwgEntities( DRW_Interface& intfa ) = 0;
-    virtual bool readDwgObjects( DRW_Interface& intfa ) = 0;
+    virtual bool readDwgTables( DRW_Header &hdr ) = 0;
+    virtual bool readDwgBlocks( DRW_Interface &intfa ) = 0;
+    virtual bool readDwgEntities( DRW_Interface &intfa ) = 0;
+    virtual bool readDwgObjects( DRW_Interface &intfa ) = 0;
 
-    virtual bool readDwgEntity( dwgBuffer *dbuf, objHandle& obj, DRW_Interface& intfa );
-    bool readDwgObject( dwgBuffer *dbuf, objHandle& obj, DRW_Interface& intfa );
-    void parseAttribs( DRW_Entity* e );
+    virtual bool readDwgEntity( dwgBuffer *dbuf, objHandle &obj, DRW_Interface &intfa );
+    bool readDwgObject( dwgBuffer *dbuf, objHandle &obj, DRW_Interface &intfa );
+    void parseAttribs( DRW_Entity *e );
     std::string findTableName( DRW::TTYPE table, dint32 handle );
 
     void setCodePage( std::string *c ) {decoder.setCodePage( c, false );}
     std::string getCodePage() { return decoder.getCodePage();}
-    bool readDwgHeader( DRW_Header& hdr, dwgBuffer *buf, dwgBuffer *hBuf );
+    bool readDwgHeader( DRW_Header &hdr, dwgBuffer *buf, dwgBuffer *hBuf );
     bool readDwgHandles( dwgBuffer *dbuf, duint32 offset, duint32 size );
-    bool readDwgTables( DRW_Header& hdr, dwgBuffer *dbuf );
+    bool readDwgTables( DRW_Header &hdr, dwgBuffer *dbuf );
     bool checkSentinel( dwgBuffer *buf, enum secEnum::DWGSection, bool start );
 
-    bool readDwgBlocks( DRW_Interface& intfa, dwgBuffer *dbuf );
-    bool readDwgEntities( DRW_Interface& intfa, dwgBuffer *dbuf );
-    bool readDwgObjects( DRW_Interface& intfa, dwgBuffer *dbuf );
-    bool readPlineVertex( DRW_Polyline& pline, dwgBuffer *dbuf );
+    bool readDwgBlocks( DRW_Interface &intfa, dwgBuffer *dbuf );
+    bool readDwgEntities( DRW_Interface &intfa, dwgBuffer *dbuf );
+    bool readDwgObjects( DRW_Interface &intfa, dwgBuffer *dbuf );
+    bool readPlineVertex( DRW_Polyline &pline, dwgBuffer *dbuf );
 
   public:
     std::map<duint32, objHandle>ObjectMap;
     std::map<duint32, objHandle>objObjectMap; //stores the objects & entities not read in readDwgEntities
     std::map<duint32, objHandle>remainingMap; //stores the objects & entities not read in all processes, for debug only
-    std::map<duint32, DRW_LType*> ltypemap;
-    std::map<duint32, DRW_Layer*> layermap;
-    std::map<duint32, DRW_Block*> blockmap;
-    std::map<duint32, DRW_Textstyle*> stylemap;
-    std::map<duint32, DRW_Dimstyle*> dimstylemap;
-    std::map<duint32, DRW_Vport*> vportmap;
-    std::map<duint32, DRW_Block_Record*> blockRecordmap;
-    std::map<duint32, DRW_AppId*> appIdmap;
+    std::map<duint32, DRW_LType *> ltypemap;
+    std::map<duint32, DRW_Layer *> layermap;
+    std::map<duint32, DRW_Block *> blockmap;
+    std::map<duint32, DRW_Textstyle *> stylemap;
+    std::map<duint32, DRW_Dimstyle *> dimstylemap;
+    std::map<duint32, DRW_Vport *> vportmap;
+    std::map<duint32, DRW_Block_Record *> blockRecordmap;
+    std::map<duint32, DRW_AppId *> appIdmap;
 //    duint32 currBlock;
     duint8 maintenanceVersion;
 
@@ -207,7 +207,7 @@ class dwgReader
 
 //sections map
     std::map<enum secEnum::DWGSection, dwgSectionInfo >sections;
-    std::map<duint32, DRW_Class*> classesmap;
+    std::map<duint32, DRW_Class *> classesmap;
 
   protected:
     DRW_TextCodec decoder;

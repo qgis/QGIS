@@ -23,8 +23,8 @@
 #include "qgis_app.h"
 
 class APP_EXPORT QgsHandleBadLayersHandler
-      : public QObject
-      , public QgsProjectBadLayerHandler
+  : public QObject
+  , public QgsProjectBadLayerHandler
 {
     Q_OBJECT
 
@@ -32,20 +32,20 @@ class APP_EXPORT QgsHandleBadLayersHandler
     QgsHandleBadLayersHandler();
 
     //! Implementation of the handler
-    virtual void handleBadLayers( const QList<QDomNode>& layers ) override;
+    virtual void handleBadLayers( const QList<QDomNode> &layers ) override;
 };
 
 
 class QPushButton;
 
 class APP_EXPORT QgsHandleBadLayers
-      : public QDialog
-      , private Ui::QgsHandleBadLayersBase
+  : public QDialog
+  , private Ui::QgsHandleBadLayersBase
 {
     Q_OBJECT
 
   public:
-    QgsHandleBadLayers( const QList<QDomNode>& layers );
+    QgsHandleBadLayers( const QList<QDomNode> &layers );
     ~QgsHandleBadLayers();
 
     int layerCount();
@@ -66,7 +66,7 @@ class APP_EXPORT QgsHandleBadLayers
     QString mRasterFileFilter;
 
     QString filename( int row );
-    void setFilename( int row, const QString& filename );
+    void setFilename( int row, const QString &filename );
 };
 
 #endif

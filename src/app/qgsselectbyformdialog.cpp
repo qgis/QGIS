@@ -19,10 +19,10 @@
 #include <QLayout>
 #include <QSettings>
 
-QgsSelectByFormDialog::QgsSelectByFormDialog( QgsVectorLayer* layer, const QgsAttributeEditorContext& context, QWidget* parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mLayer( layer )
-    , mMessageBar( nullptr )
+QgsSelectByFormDialog::QgsSelectByFormDialog( QgsVectorLayer *layer, const QgsAttributeEditorContext &context, QWidget *parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mLayer( layer )
+  , mMessageBar( nullptr )
 {
   QgsAttributeEditorContext dlgContext = context;
   dlgContext.setFormMode( QgsAttributeEditorContext::StandaloneDialog );
@@ -31,7 +31,7 @@ QgsSelectByFormDialog::QgsSelectByFormDialog( QgsVectorLayer* layer, const QgsAt
   mForm = new QgsAttributeForm( layer, QgsFeature(), dlgContext, this );
   mForm->setMode( QgsAttributeForm::SearchMode );
 
-  QVBoxLayout* vLayout = new QVBoxLayout();
+  QVBoxLayout *vLayout = new QVBoxLayout();
   vLayout->setMargin( 0 );
   vLayout->setContentsMargins( 0, 0, 0, 0 );
   setLayout( vLayout );
@@ -52,19 +52,19 @@ QgsSelectByFormDialog::~QgsSelectByFormDialog()
   settings.setValue( QStringLiteral( "/Windows/SelectByForm/geometry" ), saveGeometry() );
 }
 
-void QgsSelectByFormDialog::setMessageBar( QgsMessageBar* messageBar )
+void QgsSelectByFormDialog::setMessageBar( QgsMessageBar *messageBar )
 {
   mMessageBar = messageBar;
   mForm->setMessageBar( messageBar );
 }
 
-void QgsSelectByFormDialog::setMapCanvas( QgsMapCanvas* canvas )
+void QgsSelectByFormDialog::setMapCanvas( QgsMapCanvas *canvas )
 {
   mMapCanvas = canvas;
   connect( mForm, &QgsAttributeForm::zoomToFeatures, this, &QgsSelectByFormDialog::zoomToFeatures );
 }
 
-void QgsSelectByFormDialog::zoomToFeatures( const QString& filter )
+void QgsSelectByFormDialog::zoomToFeatures( const QString &filter )
 {
   QgsFeatureIds ids;
 

@@ -23,16 +23,16 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 
-QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyright& deco, QWidget* parent )
-    : QDialog( parent )
-    , mDeco( deco )
+QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyright &deco, QWidget *parent )
+  : QDialog( parent )
+  , mDeco( deco )
 {
   setupUi( this );
 
   QSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/DecorationCopyright/geometry" ) ).toByteArray() );
 
-  QPushButton* applyButton = buttonBox->button( QDialogButtonBox::Apply );
+  QPushButton *applyButton = buttonBox->button( QDialogButtonBox::Apply );
   connect( applyButton, SIGNAL( clicked() ), this, SLOT( apply() ) );
 
   grpEnable->setChecked( mDeco.enabled() );
@@ -77,7 +77,7 @@ void QgsDecorationCopyrightDialog::on_buttonBox_rejected()
   reject();
 }
 
-void QgsDecorationCopyrightDialog::on_pbnColorChooser_colorChanged( const QColor& c )
+void QgsDecorationCopyrightDialog::on_pbnColorChooser_colorChanged( const QColor &c )
 {
   QTextCursor cursor = txtCopyrightText->textCursor();
   txtCopyrightText->selectAll();

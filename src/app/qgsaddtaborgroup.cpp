@@ -26,10 +26,10 @@
 #include <QRadioButton>
 #include <QSettings>
 
-QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList < TabPair >& tabList, QWidget * parent )
-    : QDialog( parent )
-    , mLayer( lyr )
-    , mTabs( tabList )
+QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList < TabPair > &tabList, QWidget *parent )
+  : QDialog( parent )
+  , mLayer( lyr )
+  , mTabs( tabList )
 {
   setupUi( this );
 
@@ -38,7 +38,7 @@ QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList < TabPair >
   if ( !mTabs.isEmpty() )
   {
     int i = 0;
-    Q_FOREACH ( const TabPair& tab, mTabs )
+    Q_FOREACH ( const TabPair &tab, mTabs )
     {
       mTabList->addItem( tab.first, i );
       ++i;
@@ -66,7 +66,7 @@ QString QgsAddTabOrGroup::name()
   return mName->text();
 }
 
-QTreeWidgetItem* QgsAddTabOrGroup::tab()
+QTreeWidgetItem *QgsAddTabOrGroup::tab()
 {
   TabPair tab = mTabs.at( mTabList->currentData().toInt() );
   return tab.second;

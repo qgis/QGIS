@@ -36,17 +36,17 @@ class QgsVertexEntry
   public:
     QgsVertexEntry( QgsMapCanvas *canvas,
                     QgsMapLayer *layer,
-                    const QgsPointV2& p,
+                    const QgsPointV2 &p,
                     QgsVertexId vertexId,
-                    const QString& tooltip = QString::null,
+                    const QString &tooltip = QString::null,
                     QgsVertexMarker::IconType type = QgsVertexMarker::ICON_BOX,
                     int penWidth = 2 );
     ~QgsVertexEntry();
 
-    QgsVertexEntry( const QgsVertexEntry& rh ) = delete;
-    QgsVertexEntry& operator=( const QgsVertexEntry& rh ) = delete;
+    QgsVertexEntry( const QgsVertexEntry &rh ) = delete;
+    QgsVertexEntry &operator=( const QgsVertexEntry &rh ) = delete;
 
-    const QgsPointV2& point() const { return mPoint; }
+    const QgsPointV2 &point() const { return mPoint; }
     QgsPoint pointV1() const { return QgsPoint( mPoint.x(), mPoint.y() ); }
     QgsVertexId vertexId() const { return mVertexId; }
     bool isSelected() const { return mSelected; }

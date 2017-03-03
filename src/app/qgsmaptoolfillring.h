@@ -24,7 +24,7 @@ class APP_EXPORT QgsMapToolFillRing: public QgsMapToolCapture
 {
     Q_OBJECT
   public:
-    QgsMapToolFillRing( QgsMapCanvas* canvas );
+    QgsMapToolFillRing( QgsMapCanvas *canvas );
     virtual ~QgsMapToolFillRing();
-    void cadCanvasReleaseEvent( QgsMapMouseEvent * e ) override;
+    void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 };

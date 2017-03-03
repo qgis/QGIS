@@ -31,7 +31,7 @@ class APP_EXPORT QgisAppStyleSheet: public QObject
     Q_OBJECT
 
   public:
-    QgisAppStyleSheet( QObject * parent = nullptr );
+    QgisAppStyleSheet( QObject *parent = nullptr );
     ~QgisAppStyleSheet();
 
     //! Return changeable options built from settings and/or defaults
@@ -41,10 +41,10 @@ class APP_EXPORT QgisAppStyleSheet: public QObject
      * @param opts generated default option values, or a changed copy of them
      * @note on success emits appStyleSheetChanged
      */
-    void buildStyleSheet( const QMap<QString, QVariant>& opts );
+    void buildStyleSheet( const QMap<QString, QVariant> &opts );
 
     //! Save changed default option keys/values to user settings
-    void saveToSettings( const QMap<QString, QVariant>& opts );
+    void saveToSettings( const QMap<QString, QVariant> &opts );
 
     //! Get reference font for initial qApp
     QFont defaultFont() { return mDefaultFont; }
@@ -54,7 +54,7 @@ class APP_EXPORT QgisAppStyleSheet: public QObject
     /** Signal the successful stylesheet build results
      * @note connect to (app|widget)->setStyleSheet or similar custom slot
      */
-    void appStyleSheetChanged( const QString& appStyleSheet );
+    void appStyleSheetChanged( const QString &appStyleSheet );
 
   private:
     //! Set active configuration values

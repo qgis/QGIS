@@ -112,7 +112,7 @@ int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     return EXIT_FAILURE;
   }
 
-  int ( *realmain )( int, char*[] ) = ( int ( * )( int, char * [] ) ) GetProcAddress( hGetProcIDDLL, "main" );
+  int ( *realmain )( int, char *[] ) = ( int ( * )( int, char *[] ) ) GetProcAddress( hGetProcIDDLL, "main" );
   if ( !realmain )
   {
     std::cerr << "could not locate main function in qgis_app.dll" << std::endl;

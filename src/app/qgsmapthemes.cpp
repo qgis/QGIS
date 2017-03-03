@@ -31,11 +31,11 @@
 #include <QInputDialog>
 #include <QMessageBox>
 
-QgsMapThemes* QgsMapThemes::sInstance;
+QgsMapThemes *QgsMapThemes::sInstance;
 
 
 QgsMapThemes::QgsMapThemes()
-    : mMenu( new QMenu )
+  : mMenu( new QMenu )
 {
 
   mMenu->addAction( QgisApp::instance()->actionShowAllLayers() );
@@ -58,12 +58,12 @@ QgsMapThemes::QgsMapThemes()
 
 QgsMapThemeCollection::MapThemeRecord QgsMapThemes::currentState()
 {
-  QgsLayerTreeGroup* root = QgsProject::instance()->layerTreeRoot();
-  QgsLayerTreeModel* model = QgisApp::instance()->layerTreeView()->layerTreeModel();
+  QgsLayerTreeGroup *root = QgsProject::instance()->layerTreeRoot();
+  QgsLayerTreeModel *model = QgisApp::instance()->layerTreeView()->layerTreeModel();
   return QgsMapThemeCollection::createThemeFromCurrentState( root, model );
 }
 
-QgsMapThemes* QgsMapThemes::instance()
+QgsMapThemes *QgsMapThemes::instance()
 {
   if ( !sInstance )
     sInstance = new QgsMapThemes();
@@ -71,36 +71,36 @@ QgsMapThemes* QgsMapThemes::instance()
   return sInstance;
 }
 
-void QgsMapThemes::addPreset( const QString& name )
+void QgsMapThemes::addPreset( const QString &name )
 {
   QgsProject::instance()->mapThemeCollection()->insert( name, currentState() );
 }
 
-void QgsMapThemes::updatePreset( const QString& name )
+void QgsMapThemes::updatePreset( const QString &name )
 {
   QgsProject::instance()->mapThemeCollection()->update( name, currentState() );
 }
 
-QList<QgsMapLayer*> QgsMapThemes::orderedPresetVisibleLayers( const QString& name ) const
+QList<QgsMapLayer *> QgsMapThemes::orderedPresetVisibleLayers( const QString &name ) const
 {
   QStringList visibleIds = QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayerIds( name );
 
   // also make sure to order the layers according to map canvas order
-  QgsLayerTreeMapCanvasBridge* bridge = QgisApp::instance()->layerTreeCanvasBridge();
+  QgsLayerTreeMapCanvasBridge *bridge = QgisApp::instance()->layerTreeCanvasBridge();
   QStringList order = bridge->hasCustomLayerOrder() ? bridge->customLayerOrder() : bridge->defaultLayerOrder();
-  QList<QgsMapLayer*> lst;
-  Q_FOREACH ( const QString& layerID, order )
+  QList<QgsMapLayer *> lst;
+  Q_FOREACH ( const QString &layerID, order )
   {
     if ( visibleIds.contains( layerID ) )
     {
-      if ( QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerID ) )
+      if ( QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerID ) )
         lst << layer;
     }
   }
   return lst;
 }
 
-QMenu* QgsMapThemes::menu()
+QMenu *QgsMapThemes::menu()
 {
   return mMenu;
 }
@@ -109,7 +109,7 @@ QMenu* QgsMapThemes::menu()
 void QgsMapThemes::addPreset()
 {
   QStringList existingNames = QgsProject::instance()->mapThemeCollection()->mapThemes();
-  QgsNewNameDialog dlg( tr( "theme" ) , tr( "Theme" ), QStringList(), existingNames, QRegExp(), Qt::CaseInsensitive, mMenu );
+  QgsNewNameDialog dlg( tr( "theme" ), tr( "Theme" ), QStringList(), existingNames, QRegExp(), Qt::CaseInsensitive, mMenu );
   dlg.setWindowTitle( tr( "Map Themes" ) );
   dlg.setHintString( tr( "Name of the new theme" ) );
   dlg.setOverwriteEnabled( false );
@@ -123,7 +123,7 @@ void QgsMapThemes::addPreset()
 
 void QgsMapThemes::presetTriggered()
 {
-  QAction* actionPreset = qobject_cast<QAction*>( sender() );
+  QAction *actionPreset = qobject_cast<QAction *>( sender() );
   if ( !actionPreset )
     return;
 
@@ -132,7 +132,7 @@ void QgsMapThemes::presetTriggered()
 
 void QgsMapThemes::replaceTriggered()
 {
-  QAction* actionPreset = qobject_cast<QAction*>( sender() );
+  QAction *actionPreset = qobject_cast<QAction *>( sender() );
   if ( !actionPreset )
     return;
 
@@ -147,19 +147,19 @@ void QgsMapThemes::replaceTriggered()
 }
 
 
-void QgsMapThemes::applyState( const QString& presetName )
+void QgsMapThemes::applyState( const QString &presetName )
 {
   if ( !QgsProject::instance()->mapThemeCollection()->hasMapTheme( presetName ) )
     return;
 
-  QgsLayerTreeGroup* root = QgsProject::instance()->layerTreeRoot();
-  QgsLayerTreeModel* model = QgisApp::instance()->layerTreeView()->layerTreeModel();
+  QgsLayerTreeGroup *root = QgsProject::instance()->layerTreeRoot();
+  QgsLayerTreeModel *model = QgisApp::instance()->layerTreeView()->layerTreeModel();
   QgsProject::instance()->mapThemeCollection()->applyTheme( presetName, root, model );
 }
 
 void QgsMapThemes::removeCurrentPreset()
 {
-  Q_FOREACH ( QAction* a, mMenuPresetActions )
+  Q_FOREACH ( QAction *a, mMenuPresetActions )
   {
     if ( a->isChecked() )
     {
@@ -180,9 +180,9 @@ void QgsMapThemes::menuAboutToShow()
   QgsMapThemeCollection::MapThemeRecord rec = currentState();
   bool hasCurrent = false;
 
-  Q_FOREACH ( const QString& grpName, QgsProject::instance()->mapThemeCollection()->mapThemes() )
+  Q_FOREACH ( const QString &grpName, QgsProject::instance()->mapThemeCollection()->mapThemes() )
   {
-    QAction* a = new QAction( grpName, mMenu );
+    QAction *a = new QAction( grpName, mMenu );
     a->setCheckable( true );
     if ( !hasCurrent && rec == QgsProject::instance()->mapThemeCollection()->mapThemeState( grpName ) )
     {
@@ -192,7 +192,7 @@ void QgsMapThemes::menuAboutToShow()
     connect( a, &QAction::triggered, this, &QgsMapThemes::presetTriggered );
     mMenuPresetActions.append( a );
 
-    QAction* replaceAction = new QAction( grpName, mReplaceMenu );
+    QAction *replaceAction = new QAction( grpName, mReplaceMenu );
     connect( replaceAction, &QAction::triggered, this, &QgsMapThemes::replaceTriggered );
     mReplaceMenu->addAction( replaceAction );
   }

@@ -25,11 +25,11 @@
 #include <QMouseEvent>
 #include <cmath>
 
-QgsMapToolCircularStringRadius::QgsMapToolCircularStringRadius( QgsMapToolCapture* parentTool, QgsMapCanvas* canvas, CaptureMode mode )
-    : QgsMapToolAddCircularString( parentTool, canvas, mode )
-    , mTemporaryEndPoint( QgsPointV2() )
-    , mRadius( 0.0 )
-    , mRadiusSpinBox( nullptr )
+QgsMapToolCircularStringRadius::QgsMapToolCircularStringRadius( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode )
+  : QgsMapToolAddCircularString( parentTool, canvas, mode )
+  , mTemporaryEndPoint( QgsPointV2() )
+  , mRadius( 0.0 )
+  , mRadiusSpinBox( nullptr )
 {
 
 }
@@ -45,7 +45,7 @@ void QgsMapToolCircularStringRadius::deactivate()
   QgsMapToolAddCircularString::deactivate();
 }
 
-void QgsMapToolCircularStringRadius::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolCircularStringRadius::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   QgsPointV2 mapPoint( e->mapPoint() );
 
@@ -97,7 +97,7 @@ void QgsMapToolCircularStringRadius::cadCanvasReleaseEvent( QgsMapMouseEvent* e 
   }
 }
 
-void QgsMapToolCircularStringRadius::cadCanvasMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolCircularStringRadius::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( !mPoints.isEmpty() )
   {
@@ -110,17 +110,17 @@ void QgsMapToolCircularStringRadius::recalculateRubberBand()
 {
   if ( mPoints.size() >= 3 )
   {
-    QgsCircularString* cString = new QgsCircularString();
+    QgsCircularString *cString = new QgsCircularString();
     int rubberBandSize = mPoints.size() - ( mPoints.size() + 1 ) % 2;
     cString->setPoints( mPoints.mid( 0, rubberBandSize ) );
     delete mRubberBand;
-    mRubberBand = createGeometryRubberBand(( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
+    mRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
     mRubberBand->setGeometry( cString );
     mRubberBand->show();
   }
 }
 
-void QgsMapToolCircularStringRadius::recalculateTempRubberBand( const QgsPoint& mousePosition )
+void QgsMapToolCircularStringRadius::recalculateTempRubberBand( const QgsPoint &mousePosition )
 {
   QgsPointSequence rubberBandPoints;
   if ( !( mPoints.size() % 2 ) )
@@ -142,10 +142,10 @@ void QgsMapToolCircularStringRadius::recalculateTempRubberBand( const QgsPoint& 
     rubberBandPoints.append( mPoints.last() );
     rubberBandPoints.append( QgsPointV2( mousePosition ) );
   }
-  QgsCircularString* cString = new QgsCircularString();
+  QgsCircularString *cString = new QgsCircularString();
   cString->setPoints( rubberBandPoints );
   delete mTempRubberBand;
-  mTempRubberBand = createGeometryRubberBand(( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
+  mTempRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
   mTempRubberBand->setGeometry( cString );
   mTempRubberBand->show();
 }

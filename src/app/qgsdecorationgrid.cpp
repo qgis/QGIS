@@ -53,8 +53,8 @@
 #define FONT_WORKAROUND_SCALE 10 //scale factor for upscaling fontsize and downscaling painter
 
 
-QgsDecorationGrid::QgsDecorationGrid( QObject* parent )
-    : QgsDecorationItem( parent )
+QgsDecorationGrid::QgsDecorationGrid( QObject *parent )
+  : QgsDecorationItem( parent )
 {
   setName( "Grid" );
 
@@ -74,14 +74,14 @@ QgsDecorationGrid::~QgsDecorationGrid()
     delete mMarkerSymbol;
 }
 
-void QgsDecorationGrid::setLineSymbol( QgsLineSymbol* symbol )
+void QgsDecorationGrid::setLineSymbol( QgsLineSymbol *symbol )
 {
   if ( mLineSymbol )
     delete mLineSymbol;
   mLineSymbol = symbol;
 }
 
-void QgsDecorationGrid::setMarkerSymbol( QgsMarkerSymbol* symbol )
+void QgsDecorationGrid::setMarkerSymbol( QgsMarkerSymbol *symbol )
 {
   if ( mMarkerSymbol )
     delete mMarkerSymbol;
@@ -208,7 +208,7 @@ void QgsDecorationGrid::run()
   }
 }
 
-void QgsDecorationGrid::render( QPainter * p )
+void QgsDecorationGrid::render( QPainter *p )
 {
   if ( ! mEnabled )
     return;
@@ -336,7 +336,7 @@ void QgsDecorationGrid::render( QPainter * p )
   }
 }
 
-void QgsDecorationGrid::drawCoordinateAnnotations( QPainter* p, const QList< QPair< qreal, QLineF > >& hLines, const QList< QPair< qreal, QLineF > >& vLines )
+void QgsDecorationGrid::drawCoordinateAnnotations( QPainter *p, const QList< QPair< qreal, QLineF > > &hLines, const QList< QPair< qreal, QLineF > > &vLines )
 {
   if ( !p )
   {
@@ -361,7 +361,7 @@ void QgsDecorationGrid::drawCoordinateAnnotations( QPainter* p, const QList< QPa
   }
 }
 
-void QgsDecorationGrid::drawCoordinateAnnotation( QPainter* p, QPointF pos, const QString& annotationString )
+void QgsDecorationGrid::drawCoordinateAnnotation( QPainter *p, QPointF pos, const QString &annotationString )
 {
   Border frameBorder = borderForLineCoord( pos, p );
   double textWidth = textWidthMillimeters( mGridAnnotationFont, annotationString );
@@ -501,7 +501,7 @@ void QgsDecorationGrid::drawCoordinateAnnotation( QPainter* p, QPointF pos, cons
   drawAnnotation( p, QPointF( xpos, ypos ), rotation, annotationString );
 }
 
-void QgsDecorationGrid::drawAnnotation( QPainter* p, QPointF pos, int rotation, const QString& annotationText )
+void QgsDecorationGrid::drawAnnotation( QPainter *p, QPointF pos, int rotation, const QString &annotationText )
 {
   p->save();
   p->translate( pos );
@@ -511,7 +511,7 @@ void QgsDecorationGrid::drawAnnotation( QPainter* p, QPointF pos, int rotation, 
   p->restore();
 }
 
-const QgsMapCanvas& canvas()
+const QgsMapCanvas &canvas()
 {
   return *QgisApp::instance()->mapCanvas();
 }
@@ -520,12 +520,12 @@ QPolygonF canvasPolygon()
 {
   QPolygonF poly;
 
-  const QgsMapCanvas& mapCanvas = canvas();
-  const QgsMapSettings& mapSettings = mapCanvas.mapSettings();
+  const QgsMapCanvas &mapCanvas = canvas();
+  const QgsMapSettings &mapSettings = mapCanvas.mapSettings();
   return mapSettings.visiblePolygon();
 }
 
-bool clipByRect( QLineF& line, const QPolygonF& rect )
+bool clipByRect( QLineF &line, const QPolygonF &rect )
 {
   QVector<QLineF> borderLines;
   borderLines << QLineF( rect.at( 0 ), rect.at( 1 ) );
@@ -564,7 +564,7 @@ QPolygonF canvasExtent()
   return poly;
 }
 
-int QgsDecorationGrid::xGridLines( QList< QPair< qreal, QLineF > >& lines ) const
+int QgsDecorationGrid::xGridLines( QList< QPair< qreal, QLineF > > &lines ) const
 {
   // prepare horizontal lines
   lines.clear();
@@ -573,9 +573,9 @@ int QgsDecorationGrid::xGridLines( QList< QPair< qreal, QLineF > >& lines ) cons
     return 1;
   }
 
-  const QgsMapCanvas& mapCanvas = canvas();
-  const QgsMapSettings& mapSettings = mapCanvas.mapSettings();
-  const QgsMapToPixel& m2p = mapSettings.mapToPixel();
+  const QgsMapCanvas &mapCanvas = canvas();
+  const QgsMapSettings &mapSettings = mapCanvas.mapSettings();
+  const QgsMapToPixel &m2p = mapSettings.mapToPixel();
 
   // draw nothing if the distance between grid lines would be less than 1px
   // otherwise the grid lines would completely cover the whole map
@@ -583,9 +583,9 @@ int QgsDecorationGrid::xGridLines( QList< QPair< qreal, QLineF > >& lines ) cons
   if ( mGridIntervalY / mapSettings.mapUnitsPerPixel() < 1 )
     return 1;
 
-  const QPolygonF& canvasPoly = canvasPolygon();
-  const QPolygonF& mapPolygon = canvasExtent();
-  const QRectF& mapBoundingRect = mapPolygon.boundingRect();
+  const QPolygonF &canvasPoly = canvasPolygon();
+  const QPolygonF &mapPolygon = canvasExtent();
+  const QRectF &mapBoundingRect = mapPolygon.boundingRect();
   QLineF lineEast( mapPolygon[2], mapPolygon[1] );
   QLineF lineWest( mapPolygon[3], mapPolygon[0] );
 
@@ -593,7 +593,7 @@ int QgsDecorationGrid::xGridLines( QList< QPair< qreal, QLineF > >& lines ) cons
   Q_ASSERT( fabs( len - lineWest.length() ) < 1e-6 ); // no shear
 
   double roundCorrection = mapBoundingRect.top() > 0 ? 1.0 : 0.0;
-  double dist = static_cast< int >(( mapBoundingRect.top() - mGridOffsetY ) / mGridIntervalY + roundCorrection ) * mGridIntervalY + mGridOffsetY;
+  double dist = static_cast< int >( ( mapBoundingRect.top() - mGridOffsetY ) / mGridIntervalY + roundCorrection ) * mGridIntervalY + mGridOffsetY;
   dist = dist - mapBoundingRect.top();
   while ( dist < len )
   {
@@ -610,7 +610,7 @@ int QgsDecorationGrid::xGridLines( QList< QPair< qreal, QLineF > >& lines ) cons
   return 0;
 }
 
-int QgsDecorationGrid::yGridLines( QList< QPair< qreal, QLineF > >& lines ) const
+int QgsDecorationGrid::yGridLines( QList< QPair< qreal, QLineF > > &lines ) const
 {
   // prepare vertical lines
 
@@ -620,9 +620,9 @@ int QgsDecorationGrid::yGridLines( QList< QPair< qreal, QLineF > >& lines ) cons
     return 1;
   }
 
-  const QgsMapCanvas& mapCanvas = canvas();
-  const QgsMapSettings& mapSettings = mapCanvas.mapSettings();
-  const QgsMapToPixel& m2p = mapSettings.mapToPixel();
+  const QgsMapCanvas &mapCanvas = canvas();
+  const QgsMapSettings &mapSettings = mapCanvas.mapSettings();
+  const QgsMapToPixel &m2p = mapSettings.mapToPixel();
 
   // draw nothing if the distance between grid lines would be less than 1px
   // otherwise the grid lines would completely cover the whole map
@@ -630,17 +630,17 @@ int QgsDecorationGrid::yGridLines( QList< QPair< qreal, QLineF > >& lines ) cons
   if ( mGridIntervalX / mapSettings.mapUnitsPerPixel() < 1 )
     return 1;
 
-  const QPolygonF& canvasPoly = canvasPolygon();
-  const QPolygonF& mapPolygon = canvasExtent();
+  const QPolygonF &canvasPoly = canvasPolygon();
+  const QPolygonF &mapPolygon = canvasExtent();
   QLineF lineSouth( mapPolygon[3], mapPolygon[2] );
   QLineF lineNorth( mapPolygon[0], mapPolygon[1] );
 
   double len = lineSouth.length();
   Q_ASSERT( fabs( len - lineNorth.length() ) < 1e-6 ); // no shear
 
-  const QRectF& mapBoundingRect = mapPolygon.boundingRect();
+  const QRectF &mapBoundingRect = mapPolygon.boundingRect();
   double roundCorrection = mapBoundingRect.left() > 0 ? 1.0 : 0.0;
-  double dist = static_cast< int >(( mapBoundingRect.left() - mGridOffsetX ) / mGridIntervalX + roundCorrection ) * mGridIntervalX + mGridOffsetX;
+  double dist = static_cast< int >( ( mapBoundingRect.left() - mGridOffsetX ) / mGridIntervalX + roundCorrection ) * mGridIntervalX + mGridOffsetX;
   dist = dist - mapBoundingRect.left();
   while ( dist < len )
   {
@@ -657,7 +657,7 @@ int QgsDecorationGrid::yGridLines( QList< QPair< qreal, QLineF > >& lines ) cons
   return 0;
 }
 
-QgsDecorationGrid::Border QgsDecorationGrid::borderForLineCoord( QPointF point, QPainter* p ) const
+QgsDecorationGrid::Border QgsDecorationGrid::borderForLineCoord( QPointF point, QPainter *p ) const
 {
   if ( point.x() <= mGridPen.widthF() )
   {
@@ -677,7 +677,7 @@ QgsDecorationGrid::Border QgsDecorationGrid::borderForLineCoord( QPointF point, 
   }
 }
 
-void QgsDecorationGrid::drawText( QPainter* p, double x, double y, const QString& text, const QFont& font ) const
+void QgsDecorationGrid::drawText( QPainter *p, double x, double y, const QString &text, const QFont &font ) const
 {
   QFont textFont = scaledFontPixelSize( font );
 
@@ -690,7 +690,7 @@ void QgsDecorationGrid::drawText( QPainter* p, double x, double y, const QString
   p->restore();
 }
 
-void QgsDecorationGrid::drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment, Qt::AlignmentFlag valignment ) const
+void QgsDecorationGrid::drawText( QPainter *p, const QRectF &rect, const QString &text, const QFont &font, Qt::AlignmentFlag halignment, Qt::AlignmentFlag valignment ) const
 {
   QFont textFont = scaledFontPixelSize( font );
 
@@ -705,21 +705,21 @@ void QgsDecorationGrid::drawText( QPainter* p, const QRectF& rect, const QString
   p->restore();
 }
 
-double QgsDecorationGrid::textWidthMillimeters( const QFont& font, const QString& text ) const
+double QgsDecorationGrid::textWidthMillimeters( const QFont &font, const QString &text ) const
 {
   QFont metricsFont = scaledFontPixelSize( font );
   QFontMetrics fontMetrics( metricsFont );
   return ( fontMetrics.width( text ) / FONT_WORKAROUND_SCALE );
 }
 
-double QgsDecorationGrid::fontHeightCharacterMM( const QFont& font, QChar c ) const
+double QgsDecorationGrid::fontHeightCharacterMM( const QFont &font, QChar c ) const
 {
   QFont metricsFont = scaledFontPixelSize( font );
   QFontMetricsF fontMetrics( metricsFont );
   return ( fontMetrics.boundingRect( c ).height() / FONT_WORKAROUND_SCALE );
 }
 
-double QgsDecorationGrid::fontAscentMillimeters( const QFont& font ) const
+double QgsDecorationGrid::fontAscentMillimeters( const QFont &font ) const
 {
   QFont metricsFont = scaledFontPixelSize( font );
   QFontMetricsF fontMetrics( metricsFont );
@@ -733,7 +733,7 @@ double QgsDecorationGrid::pixelFontSize( double pointSize ) const
   return pointSize;
 }
 
-QFont QgsDecorationGrid::scaledFontPixelSize( const QFont& font ) const
+QFont QgsDecorationGrid::scaledFontPixelSize( const QFont &font ) const
 {
   QFont scaledFont = font;
   double pixelSize = pixelFontSize( font.pointSizeF() ) * FONT_WORKAROUND_SCALE + 0.5;
@@ -782,7 +782,7 @@ void QgsDecorationGrid::setDirty( bool dirty )
   }
 }
 
-bool QgsDecorationGrid::getIntervalFromExtent( double* values, bool useXAxis )
+bool QgsDecorationGrid::getIntervalFromExtent( double *values, bool useXAxis )
 {
   // get default interval from current extents
   // calculate a default interval that is approx (extent width)/5, adjusted so that it is a rounded number
@@ -811,10 +811,10 @@ bool QgsDecorationGrid::getIntervalFromExtent( double* values, bool useXAxis )
   return true;
 }
 
-bool QgsDecorationGrid::getIntervalFromCurrentLayer( double* values )
+bool QgsDecorationGrid::getIntervalFromCurrentLayer( double *values )
 {
   // get current layer and make sure it is a raster layer and CRSs match
-  QgsMapLayer* layer = QgisApp::instance()->mapCanvas()->currentLayer();
+  QgsMapLayer *layer = QgisApp::instance()->mapCanvas()->currentLayer();
   if ( ! layer )
   {
     QMessageBox::warning( nullptr, tr( "Error" ), tr( "No active layer" ) );
@@ -825,7 +825,7 @@ bool QgsDecorationGrid::getIntervalFromCurrentLayer( double* values )
     QMessageBox::warning( nullptr, tr( "Error" ), tr( "Please select a raster layer" ) );
     return false;
   }
-  QgsRasterLayer* rlayer = dynamic_cast<QgsRasterLayer*>( layer );
+  QgsRasterLayer *rlayer = dynamic_cast<QgsRasterLayer *>( layer );
   if ( !rlayer || rlayer->width() == 0 || rlayer->height() == 0 )
   {
     QMessageBox::warning( nullptr, tr( "Error" ), tr( "Invalid raster layer" ) );

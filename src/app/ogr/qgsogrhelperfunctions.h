@@ -19,7 +19,7 @@
 #include <QString>
 
 /* Create database uri from connection parameters */
-QString createDatabaseURI( const QString& connectionType, const QString& host, const QString& database, QString port, const QString& user, const QString& password );
+QString createDatabaseURI( const QString &connectionType, const QString &host, const QString &database, QString port, const QString &user, const QString &password );
 
 /* Create protocol uri from connection parameters */
-QString createProtocolURI( const QString& type, const QString& url );
+QString createProtocolURI( const QString &type, const QString &url );

@@ -38,7 +38,7 @@ QgsHandleBadLayersHandler::QgsHandleBadLayersHandler()
 {
 }
 
-void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode>& layers )
+void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode> &layers )
 {
   QApplication::setOverrideCursor( Qt::ArrowCursor );
   QgsHandleBadLayers *dialog = new QgsHandleBadLayers( layers );
@@ -59,9 +59,9 @@ void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode>& layers )
 }
 
 
-QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode>& layers )
-    : QDialog( QgisApp::instance() )
-    , mLayers( layers )
+QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
+  : QDialog( QgisApp::instance() )
+  , mLayers( layers )
 {
   setupUi( this );
 
@@ -206,7 +206,7 @@ QString QgsHandleBadLayers::filename( int row )
   return QString::null;
 }
 
-void QgsHandleBadLayers::setFilename( int row, const QString& filename )
+void QgsHandleBadLayers::setFilename( int row, const QString &filename )
 {
   if ( !QFileInfo::exists( filename ) )
     return;
@@ -324,7 +324,7 @@ void QgsHandleBadLayers::browseClicked()
 
 void QgsHandleBadLayers::editAuthCfg()
 {
-  QToolButton *btn = qobject_cast<QToolButton*>( sender() );
+  QToolButton *btn = qobject_cast<QToolButton *>( sender() );
   int row = -1;
   for ( int i = 0; i < mLayerList->rowCount(); i++ )
   {

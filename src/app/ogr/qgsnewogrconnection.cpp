@@ -26,9 +26,9 @@
 #include <ogr_api.h>
 #include <cpl_error.h>
 
-QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString& connType, const QString& connName, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mOriginalConnName( connName )
+QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString &connType, const QString &connName, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mOriginalConnName( connName )
 {
   setupUi( this );
 
@@ -103,12 +103,12 @@ void QgsNewOgrConnection::accept()
   settings.setValue( baseKey + "selected", txtName->text() );
 
   // warn if entry was renamed to an existing connection
-  if (( mOriginalConnName.isNull() || mOriginalConnName != txtName->text() ) &&
-      settings.contains( baseKey + txtName->text() + "/host" ) &&
-      QMessageBox::question( this,
-                             tr( "Save connection" ),
-                             tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
-                             QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( ( mOriginalConnName.isNull() || mOriginalConnName != txtName->text() ) &&
+       settings.contains( baseKey + txtName->text() + "/host" ) &&
+       QMessageBox::question( this,
+                              tr( "Save connection" ),
+                              tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
+                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
   }

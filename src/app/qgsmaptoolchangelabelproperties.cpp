@@ -21,7 +21,7 @@
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 
-QgsMapToolChangeLabelProperties::QgsMapToolChangeLabelProperties( QgsMapCanvas* canvas ): QgsMapToolLabel( canvas )
+QgsMapToolChangeLabelProperties::QgsMapToolChangeLabelProperties( QgsMapCanvas *canvas ): QgsMapToolLabel( canvas )
 {
 }
 
@@ -29,7 +29,7 @@ QgsMapToolChangeLabelProperties::~QgsMapToolChangeLabelProperties()
 {
 }
 
-void QgsMapToolChangeLabelProperties::canvasPressEvent( QgsMapMouseEvent* e )
+void QgsMapToolChangeLabelProperties::canvasPressEvent( QgsMapMouseEvent *e )
 {
   deleteRubberBands();
 
@@ -49,7 +49,7 @@ void QgsMapToolChangeLabelProperties::canvasPressEvent( QgsMapMouseEvent* e )
   createRubberBands();
 }
 
-void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e );
   if ( mLabelRubberBand && mCurrentLabel.valid )
@@ -76,9 +76,9 @@ void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QgsMapMouseEvent* e )
   }
 }
 
-void QgsMapToolChangeLabelProperties::applyChanges( const QgsAttributeMap& changes )
+void QgsMapToolChangeLabelProperties::applyChanges( const QgsAttributeMap &changes )
 {
-  QgsVectorLayer* vlayer = mCurrentLabel.layer;
+  QgsVectorLayer *vlayer = mCurrentLabel.layer;
   if ( !vlayer )
     return;
 
@@ -99,7 +99,7 @@ void QgsMapToolChangeLabelProperties::applyChanges( const QgsAttributeMap& chang
 
 void QgsMapToolChangeLabelProperties::dialogPropertiesApplied()
 {
-  QgsLabelPropertyDialog* dlg = qobject_cast<QgsLabelPropertyDialog*>( sender() );
+  QgsLabelPropertyDialog *dlg = qobject_cast<QgsLabelPropertyDialog *>( sender() );
   if ( !dlg )
     return;
 

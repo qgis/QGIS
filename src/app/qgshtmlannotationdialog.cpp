@@ -23,10 +23,10 @@
 #include <QFileInfo>
 #include <QGraphicsScene>
 
-QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsMapCanvasAnnotationItem* item, QWidget * parent, Qt::WindowFlags f )
-    : QDialog( parent, f )
-    , mItem( item )
-    , mEmbeddedWidget( nullptr )
+QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
+  : QDialog( parent, f )
+  , mItem( item )
+  , mEmbeddedWidget( nullptr )
 {
   setupUi( this );
   setWindowTitle( tr( "HTML annotation" ) );
@@ -36,12 +36,12 @@ QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsMapCanvasAnnotationItem* it
 
   if ( item && item->annotation() )
   {
-    QgsHtmlAnnotation* annotation = static_cast< QgsHtmlAnnotation* >( item->annotation() );
+    QgsHtmlAnnotation *annotation = static_cast< QgsHtmlAnnotation * >( item->annotation() );
     mFileLineEdit->setText( annotation->sourceFile() );
   }
 
   QObject::connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsHtmlAnnotationDialog::applySettingsToItem );
-  QPushButton* deleteButton = new QPushButton( tr( "Delete" ) );
+  QPushButton *deleteButton = new QPushButton( tr( "Delete" ) );
   QObject::connect( deleteButton, &QPushButton::clicked, this, &QgsHtmlAnnotationDialog::deleteItem );
   mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
 }
@@ -61,7 +61,7 @@ void QgsHtmlAnnotationDialog::applySettingsToItem()
 
   if ( mItem && mItem->annotation() )
   {
-    QgsHtmlAnnotation* annotation = static_cast< QgsHtmlAnnotation* >( mItem->annotation() );
+    QgsHtmlAnnotation *annotation = static_cast< QgsHtmlAnnotation * >( mItem->annotation() );
     annotation->setSourceFile( mFileLineEdit->text() );
     mItem->update();
   }
@@ -90,7 +90,7 @@ void QgsHtmlAnnotationDialog::deleteItem()
   mItem = nullptr;
 }
 
-void QgsHtmlAnnotationDialog::on_mButtonBox_clicked( QAbstractButton* button )
+void QgsHtmlAnnotationDialog::on_mButtonBox_clicked( QAbstractButton *button )
 {
   if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
   {

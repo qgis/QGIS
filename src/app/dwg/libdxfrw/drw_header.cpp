@@ -22,18 +22,18 @@
 #include <assert.h>
 
 DRW_Header::DRW_Header()
-    : curr( nullptr )
-    , version( DRW::AC1021 )
-    , linetypeCtrl( 0 )
-    , layerCtrl( 0 )
-    , styleCtrl( 0 )
-    , dimstyleCtrl( 0 )
-    , appidCtrl( 0 )
-    , blockCtrl( 0 )
-    , viewCtrl( 0 )
-    , ucsCtrl( 0 )
-    , vportCtrl( 0 )
-    , vpEntHeaderCtrl( 0 )
+  : curr( nullptr )
+  , version( DRW::AC1021 )
+  , linetypeCtrl( 0 )
+  , layerCtrl( 0 )
+  , styleCtrl( 0 )
+  , dimstyleCtrl( 0 )
+  , appidCtrl( 0 )
+  , blockCtrl( 0 )
+  , viewCtrl( 0 )
+  , ucsCtrl( 0 )
+  , vportCtrl( 0 )
+  , vpEntHeaderCtrl( 0 )
 {
 }
 
@@ -154,9 +154,9 @@ void DRW_Header::write( dxfWriter *writer, DRW::Version ver )
     case DRW::AC1018: //acad 2004
       varStr = "AC1018";
       break;
-      /*    case DRW::AC1021: //acad 2007
-              varStr = "AC1021";
-              break;*/
+    /*    case DRW::AC1021: //acad 2007
+            varStr = "AC1021";
+            break;*/
     case DRW::AC1024: //acad 2010
       varStr = "AC1024";
       break;
@@ -1836,7 +1836,7 @@ void DRW_Header::write( dxfWriter *writer, DRW::Version ver )
   std::map<std::string, DRW_Variant *>::const_iterator it;
   for ( it = vars.begin() ; it != vars.end(); ++it )
   {
-    QgsDebugMsg( QString( "%1" ).arg(( *it ).first.c_str() ) );
+    QgsDebugMsg( QString( "%1" ).arg( ( *it ).first.c_str() ) );
   }
 }
 
@@ -1963,7 +1963,7 @@ bool DRW_Header::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbu
     QgsDebugMsg( QString( "size in bits: %1" ).arg( bitSize ) );
     endBitPos += bitSize;
     hBbuf->setPosition( endBitPos >> 3 );
-    hBbuf->setBitPos( endBitPos&7 );
+    hBbuf->setBitPos( endBitPos & 7 );
   }
 
   if ( version > DRW::AC1024 )  //2013+
@@ -2614,12 +2614,12 @@ bool DRW_Header::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbu
   {
     duint32 strStartPos = endBitPos - 1;
     buf->setPosition( strStartPos >> 3 );
-    buf->setBitPos( strStartPos&7 );
+    buf->setBitPos( strStartPos & 7 );
     if ( buf->getBit() == 1 )
     {
       strStartPos -= 16;
       buf->setPosition( strStartPos >> 3 );
-      buf->setBitPos( strStartPos&7 );
+      buf->setBitPos( strStartPos & 7 );
       duint32 strDataSize = buf->getRawShort16();
       if ( strDataSize & 0x8000 )
       {
@@ -2670,7 +2670,7 @@ bool DRW_Header::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbu
   QgsDebugMsg( QString( "string buf position:%1, string buf bit position:%2" ).arg( buf->getPosition() ).arg( buf->getBitPos() ) );
 
 #ifdef QGISDEBUG
-  for ( std::map<std::string, DRW_Variant*>::iterator it = vars.begin(); it != vars.end(); ++it )
+  for ( std::map<std::string, DRW_Variant *>::iterator it = vars.begin(); it != vars.end(); ++it )
   {
     switch ( it->second->type() )
     {
@@ -2705,7 +2705,7 @@ bool DRW_Header::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbu
   QgsDebugMsg( QString( "buf position: %1" ).arg( buf->getPosition() ) );
 
   QStringList l;
-  for ( int i = 0; i < 16;i++ )
+  for ( int i = 0; i < 16; i++ )
   {
     t = buf->getRawChar8();
     l << QString( "0x%1" ).arg( t, 0, 16 );

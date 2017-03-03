@@ -27,23 +27,23 @@ class APP_EXPORT QgsMapToolSelectFreehand : public QgsMapTool
 {
     Q_OBJECT
   public:
-    QgsMapToolSelectFreehand( QgsMapCanvas* canvas );
+    QgsMapToolSelectFreehand( QgsMapCanvas *canvas );
 
     virtual ~QgsMapToolSelectFreehand();
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
   private:
 
     //! used for storing all of the maps point for the freehand sketch
-    QgsRubberBand* mRubberBand = nullptr;
+    QgsRubberBand *mRubberBand = nullptr;
 
     bool mDragging;
 

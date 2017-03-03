@@ -32,22 +32,22 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
     Q_OBJECT
 
   public:
-    QgsDiagramProperties( QgsVectorLayer* layer, QWidget* parent, QgsMapCanvas *canvas );
+    QgsDiagramProperties( QgsVectorLayer *layer, QWidget *parent, QgsMapCanvas *canvas );
 
     ~QgsDiagramProperties();
 
     //! Adds an attribute from the list of available attributes to the assigned attributes with a random color.
-    void addAttribute( QTreeWidgetItem * item );
+    void addAttribute( QTreeWidgetItem *item );
 
   public slots:
     void apply();
     void on_mDiagramTypeComboBox_currentIndexChanged( int index );
     void on_mAddCategoryPushButton_clicked();
-    void on_mAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column );
+    void on_mAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
     void on_mFindMaximumValueButton_clicked();
     void on_mRemoveCategoryPushButton_clicked();
     void on_mDiagramFontButton_clicked();
-    void on_mDiagramAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column );
+    void on_mDiagramAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
     void on_mEngineSettingsButton_clicked();
     void showAddAttributeExpressionDialog();
     void on_mDiagramStackedWidget_currentChanged( int index );
@@ -58,7 +58,7 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
   protected:
     QFont mDiagramFont;
 
-    QgsVectorLayer* mLayer = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
 
   private:
 
@@ -74,7 +74,7 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
       RoleAttributeExpression = Qt::UserRole,
     };
 
-    QString showExpressionBuilder( const QString& initialExpression );
+    QString showExpressionBuilder( const QString &initialExpression );
 
     QgsPropertyCollection mDataDefinedProperties;
 
@@ -97,11 +97,11 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
 class EditBlockerDelegate: public QStyledItemDelegate
 {
   public:
-    EditBlockerDelegate( QObject* parent = nullptr )
-        : QStyledItemDelegate( parent )
+    EditBlockerDelegate( QObject *parent = nullptr )
+      : QStyledItemDelegate( parent )
     {}
 
-    virtual QWidget* createEditor( QWidget *, const QStyleOptionViewItem &, const QModelIndex & ) const override
+    virtual QWidget *createEditor( QWidget *, const QStyleOptionViewItem &, const QModelIndex & ) const override
     {
       return nullptr;
     }

@@ -52,22 +52,22 @@ class QgsComposerConfigObject: public QObject
 {
     Q_OBJECT
   public:
-    QgsComposerConfigObject( QWidget* parent, QgsComposerObject* composerObject );
+    QgsComposerConfigObject( QWidget *parent, QgsComposerObject *composerObject );
     ~QgsComposerConfigObject();
 
     /** Registers a data defined button, setting up its initial value, connections and description.
      * @param button button to register
      * @param key corresponding data defined property key
      */
-    void initializeDataDefinedButton( QgsPropertyOverrideButton* button, QgsComposerObject::DataDefinedProperty key );
+    void initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsComposerObject::DataDefinedProperty key );
 
     /**
      * Updates a data defined button to reflect the item's current properties.
      */
-    void updateDataDefinedButton( QgsPropertyOverrideButton* button );
+    void updateDataDefinedButton( QgsPropertyOverrideButton *button );
 
     //! Returns the current atlas coverage layer (if set)
-    QgsVectorLayer* atlasCoverageLayer() const;
+    QgsVectorLayer *atlasCoverageLayer() const;
 
     //! Returns the atlas for the composition
     QgsAtlasComposition *atlasComposition() const;
@@ -81,7 +81,7 @@ class QgsComposerConfigObject: public QObject
 
   private:
 
-    QgsComposerObject* mComposerObject = nullptr;
+    QgsComposerObject *mComposerObject = nullptr;
 };
 
 /**
@@ -93,7 +93,7 @@ class QgsComposerItemBaseWidget: public QgsPanelWidget
     Q_OBJECT
 
   public:
-    QgsComposerItemBaseWidget( QWidget* parent, QgsComposerObject* composerObject );
+    QgsComposerItemBaseWidget( QWidget *parent, QgsComposerObject *composerObject );
 
   protected:
 
@@ -101,22 +101,22 @@ class QgsComposerItemBaseWidget: public QgsPanelWidget
      * @param button button to register
      * @param property corresponding data defined property key
      */
-    void registerDataDefinedButton( QgsPropertyOverrideButton* button, QgsComposerObject::DataDefinedProperty property );
+    void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsComposerObject::DataDefinedProperty property );
 
     /**
      * Updates a previously registered data defined button to reflect the item's current properties.
      */
-    void updateDataDefinedButton( QgsPropertyOverrideButton* button );
+    void updateDataDefinedButton( QgsPropertyOverrideButton *button );
 
     //! Returns the current atlas coverage layer (if set)
-    QgsVectorLayer* atlasCoverageLayer() const;
+    QgsVectorLayer *atlasCoverageLayer() const;
 
     //! Returns the atlas for the composition
     QgsAtlasComposition *atlasComposition() const;
 
   private:
 
-    QgsComposerConfigObject* mConfigObject = nullptr;
+    QgsComposerConfigObject *mConfigObject = nullptr;
 };
 
 /** A class to enter generic properties for composer items (e.g. background, stroke, frame).
@@ -125,7 +125,7 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
 {
     Q_OBJECT
   public:
-    QgsComposerItemWidget( QWidget* parent, QgsComposerItem* item );
+    QgsComposerItemWidget( QWidget *parent, QgsComposerItem *item );
     ~QgsComposerItemWidget();
 
     //! A combination of upper/middle/lower and left/middle/right
@@ -140,12 +140,12 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
 
     /** Set the frame color
      */
-    void on_mFrameColorButton_colorChanged( const QColor& newFrameColor );
+    void on_mFrameColorButton_colorChanged( const QColor &newFrameColor );
     void on_mBackgroundColorButton_clicked();
 
     /** Set the background color
      */
-    void on_mBackgroundColorButton_colorChanged( const QColor& newBackgroundColor );
+    void on_mBackgroundColorButton_colorChanged( const QColor &newBackgroundColor );
 //    void on_mTransparencySlider_valueChanged( int value );
 //    void on_mTransparencySpinBox_valueChanged( int value );
     void on_mStrokeWidthSpinBox_valueChanged( double d );
@@ -191,8 +191,8 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
 
   private:
 
-    QgsComposerItem* mItem = nullptr;
-    QgsComposerConfigObject* mConfigObject = nullptr;
+    QgsComposerItem *mItem = nullptr;
+    QgsComposerConfigObject *mConfigObject = nullptr;
 
     bool mFreezeXPosSpin;
     bool mFreezeYPosSpin;

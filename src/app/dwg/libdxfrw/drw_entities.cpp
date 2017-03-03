@@ -217,7 +217,7 @@ bool DRW_Entity::parseDxfGroups( int code, dxfReader *reader )
   return true;
 }
 
-bool DRW_Entity::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer* strBuf, duint32 bs )
+bool DRW_Entity::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer *strBuf, duint32 bs )
 {
   objSize = 0;
   QgsDebugMsg( "***************************** parsing entity *********************************************" );
@@ -248,12 +248,12 @@ bool DRW_Entity::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer* strB
       strBuf->moveBitPos( -17 );
       duint16 strDataSize = strBuf->getRawShort16();
       QgsDebugMsgLevel( QString( "strDataSize: %1" ).arg( strDataSize ), 4 );
-      if (( strDataSize& 0x8000 ) == 0x8000 )
+      if ( ( strDataSize & 0x8000 ) == 0x8000 )
       {
         QgsDebugMsgLevel( "string 0x8000 bit is set", 4 );
         strBuf->moveBitPos( -33 );//RLZ pending to verify
         duint16 hiSize = strBuf->getRawShort16();
-        strDataSize = (( strDataSize & 0x7fff ) | ( hiSize << 15 ) );
+        strDataSize = ( ( strDataSize & 0x7fff ) | ( hiSize << 15 ) );
       }
       strBuf->moveBitPos( -strDataSize - 16 ); //-14
 
@@ -296,7 +296,7 @@ bool DRW_Entity::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer* strB
         Q_UNUSED( cp );
 
         QStringList l;
-        for ( int i = 0;i < strLength + 1; i++ )  //string length + null terminating char
+        for ( int i = 0; i < strLength + 1; i++ ) //string length + null terminating char
         {
           duint8 dxfChar = tmpExtDataBuf.getRawChar8();
           l << QString( "0x%1" ).arg( dxfChar, 0, 16 );
@@ -1502,7 +1502,7 @@ bool DRW_LWPolyline::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs 
     vertex->x = buf->getRawDouble();
     vertex->y = buf->getRawDouble();
     vertlist.push_back( vertex );
-    DRW_Vertex2D* pv = vertex;
+    DRW_Vertex2D *pv = vertex;
     for ( std::vector<DRW_Vertex2D *>::size_type i = 1; i < vertexnum; i++ )
     {
       vertex = new DRW_Vertex2D();
@@ -1556,7 +1556,7 @@ bool DRW_LWPolyline::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs 
   QgsDebugMsgLevel( "Vertex list: ", 5 );
   for ( std::vector<DRW_Vertex2D *>::iterator it = vertlist.begin() ; it != vertlist.end(); ++it )
   {
-    DRW_Vertex2D* pv = *it;
+    DRW_Vertex2D *pv = *it;
 
     QgsDebugMsgLevel( QString( "x:%1 y:%2 bulge:%3 stawidth:%4 endwidth:%5" )
                       .arg( pv->x ).arg( pv->y )
@@ -2374,7 +2374,7 @@ bool DRW_Hatch::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
           RESERVE( spline->controllist, spline->ncontrol );
           for ( dint32 j = 0; j < spline->ncontrol && buf->isGood(); ++j )
           {
-            DRW_Coord* crd = new DRW_Coord( buf->get2RawDouble() );
+            DRW_Coord *crd = new DRW_Coord( buf->get2RawDouble() );
             spline->controllist.push_back( crd );
             if ( isRational )
               crd->z = buf->getBitDouble(); //RLZ: investigate how store weight
@@ -2391,7 +2391,7 @@ bool DRW_Hatch::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
             RESERVE( spline->fitlist, spline->nfit );
             for ( dint32 j = 0; j < spline->nfit && buf->isGood(); ++j )
             {
-              DRW_Coord* crd = new DRW_Coord( buf->get2RawDouble() );
+              DRW_Coord *crd = new DRW_Coord( buf->get2RawDouble() );
               spline->fitlist.push_back( crd );
 
               QgsDebugMsg( QString( "  fit %1: %2" )
@@ -2691,7 +2691,7 @@ bool DRW_Spline::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
   RESERVE( controllist, ncontrol );
   for ( dint32 i = 0; i < ncontrol; ++i )
   {
-    DRW_Coord* crd = new DRW_Coord( buf->get3BitDouble() );
+    DRW_Coord *crd = new DRW_Coord( buf->get3BitDouble() );
     controllist.push_back( crd );
     QgsDebugMsgLevel( QString( "cp %1: %2,%3,%4 rem:%5" )
                       .arg( i ).arg( crd->x, 0, 'g', 17 ).arg( crd->y, 0, 'g', 17 ).arg( crd->z, 0, 'g', 17 ).arg( buf->numRemainingBytes() ), 4
@@ -2709,7 +2709,7 @@ bool DRW_Spline::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
   RESERVE( fitlist, nfit );
   for ( dint32 i = 0; i < nfit; ++i )
   {
-    DRW_Coord* crd = new DRW_Coord( buf->get3BitDouble() );
+    DRW_Coord *crd = new DRW_Coord( buf->get3BitDouble() );
     fitlist.push_back( crd );
     QgsDebugMsgLevel( QString( "fp %1: %2,%3,%4 rem:%5" )
                       .arg( i ).arg( crd->x, 0, 'g', 17 ).arg( crd->y, 0, 'g', 17 ).arg( crd->z, 0, 'g', 17 ).arg( buf->numRemainingBytes() ), 4
@@ -3526,7 +3526,7 @@ bool DRW_Leader::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
   // add vertices
   for ( int i = 0; i < nPt; i++ )
   {
-    DRW_Coord* vertex = new DRW_Coord( buf->get3BitDouble() );
+    DRW_Coord *vertex = new DRW_Coord( buf->get3BitDouble() );
     vertexlist.push_back( vertex );
     QgsDebugMsg( QString( " vertex %1: %2,%3,%4" ).arg( i ).arg( vertex->x ).arg( vertex->y ).arg( vertex->z ) );
   }

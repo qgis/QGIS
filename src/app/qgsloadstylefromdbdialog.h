@@ -33,7 +33,7 @@ class APP_EXPORT QgsLoadStyleFromDBDialog : public QDialog, private Ui::QgsLoadS
 
     ~QgsLoadStyleFromDBDialog();
 
-    void initializeLists( const QStringList& ids, const QStringList& names, const QStringList& descriptions, int sectionLimit );
+    void initializeLists( const QStringList &ids, const QStringList &names, const QStringList &descriptions, int sectionLimit );
     QString getSelectedStyleId();
     void selectionChanged( QTableWidget *styleTable );
     void setLayer( QgsVectorLayer *l );

@@ -27,8 +27,8 @@
 
 #include <QMouseEvent>
 
-QgsMapToolAddPart::QgsMapToolAddPart( QgsMapCanvas* canvas )
-    : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget() )
+QgsMapToolAddPart::QgsMapToolAddPart( QgsMapCanvas *canvas )
+  : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget() )
 {
   mToolName = tr( "Add part" );
 }
@@ -37,7 +37,7 @@ QgsMapToolAddPart::~QgsMapToolAddPart()
 {
 }
 
-void QgsMapToolAddPart::canvasReleaseEvent( QgsMapMouseEvent * e )
+void QgsMapToolAddPart::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( checkSelection() )
   {
@@ -49,7 +49,7 @@ void QgsMapToolAddPart::canvasReleaseEvent( QgsMapMouseEvent * e )
   }
 }
 
-void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
+void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   //check if we operate on a vector layer
   QgsVectorLayer *vlayer = currentVectorLayer();
@@ -136,7 +136,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
       bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
       bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
 
-      QgsCurve* curveToAdd = nullptr;
+      QgsCurve *curveToAdd = nullptr;
       if ( hasCurvedSegments && providerSupportsCurvedSegments )
       {
         curveToAdd = captureCurve()->clone();
@@ -150,12 +150,12 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
       if ( mode() == CapturePolygon )
       {
         //avoid intersections
-        QgsCurvePolygon* cp = new QgsCurvePolygon();
+        QgsCurvePolygon *cp = new QgsCurvePolygon();
         cp->setExteriorRing( curveToAdd );
-        QgsGeometry* geom = new QgsGeometry( cp );
+        QgsGeometry *geom = new QgsGeometry( cp );
         geom->avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
 
-        const QgsCurvePolygon* cpGeom = dynamic_cast<const QgsCurvePolygon*>( geom->geometry() );
+        const QgsCurvePolygon *cpGeom = dynamic_cast<const QgsCurvePolygon *>( geom->geometry() );
         if ( !cpGeom )
         {
           stopCapturing();
@@ -199,7 +199,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
 
       vlayer->triggerRepaint();
 
-      if (( !isGeometryEmpty ) && QgsWkbTypes::isSingleType( vlayer->wkbType() ) )
+      if ( ( !isGeometryEmpty ) && QgsWkbTypes::isSingleType( vlayer->wkbType() ) )
       {
         emit messageEmitted( tr( "Add part: Feature geom is single part and you've added more than one" ), QgsMessageBar::WARNING );
       }

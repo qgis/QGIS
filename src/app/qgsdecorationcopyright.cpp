@@ -41,10 +41,10 @@ email                : tim@linfiniti.com
 #include <cmath>
 
 
-QgsDecorationCopyright::QgsDecorationCopyright( QObject* parent )
-    : QgsDecorationItem( parent )
-    , mMarginHorizontal( 0 )
-    , mMarginVertical( 0 )
+QgsDecorationCopyright::QgsDecorationCopyright( QObject *parent )
+  : QgsDecorationItem( parent )
+  , mMarginHorizontal( 0 )
+  , mMarginVertical( 0 )
 {
   mPlacement = BottomRight;
   mMarginUnit = QgsUnitTypes::RenderMillimeters;
@@ -64,7 +64,7 @@ void QgsDecorationCopyright::projectRead()
   // there is no font setting in the UI, so just use the Qt/QGIS default font (what mQFont gets when created)
   //  mQFont.setFamily( QgsProject::instance()->readEntry( "CopyrightLabel", "/FontName", "Sans Serif" ) );
   //  mQFont.setPointSize( QgsProject::instance()->readNumEntry( "CopyrightLabel", "/FontSize", 9 ) );
-  QgsProject* prj = QgsProject::instance();
+  QgsProject *prj = QgsProject::instance();
   mLabelQString = prj->readEntry( mNameConfig, QStringLiteral( "/Label" ), defString );
   mMarginHorizontal = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginH" ), 0 );
   mMarginVertical = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginV" ), 0 );
@@ -74,7 +74,7 @@ void QgsDecorationCopyright::projectRead()
 void QgsDecorationCopyright::saveToProject()
 {
   QgsDecorationItem::saveToProject();
-  QgsProject* prj = QgsProject::instance();
+  QgsProject *prj = QgsProject::instance();
   prj->writeEntry( mNameConfig, QStringLiteral( "/FontName" ), mQFont.family() );
   prj->writeEntry( mNameConfig, QStringLiteral( "/FontSize" ), mQFont.pointSize() );
   prj->writeEntry( mNameConfig, QStringLiteral( "/Label" ), mLabelQString );
@@ -91,7 +91,7 @@ void QgsDecorationCopyright::run()
 }
 
 
-void QgsDecorationCopyright::render( QPainter * theQPainter )
+void QgsDecorationCopyright::render( QPainter *theQPainter )
 {
   //Large IF statement to enable/disable copyright label
   if ( enabled() )
@@ -128,8 +128,8 @@ void QgsDecorationCopyright::render( QPainter * theQPainter )
         break;
 
       case QgsUnitTypes::RenderPercentage:
-        myXOffset = (( myWidth - size.width() ) / 100. ) * mMarginHorizontal;
-        myYOffset = (( myHeight - size.height() ) / 100. ) * mMarginVertical;
+        myXOffset = ( ( myWidth - size.width() ) / 100. ) * mMarginHorizontal;
+        myYOffset = ( ( myHeight - size.height() ) / 100. ) * mMarginVertical;
         break;
 
       default:  // Use default of top left

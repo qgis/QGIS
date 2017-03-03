@@ -28,8 +28,8 @@
 #include <QStandardItemModel>
 
 QgsOSMExportDialog::QgsOSMExportDialog( QWidget *parent )
-    : QDialog( parent )
-    , mDatabase( new QgsOSMDatabase )
+  : QDialog( parent )
+  , mDatabase( new QgsOSMDatabase )
 {
   setupUi( this );
 
@@ -112,16 +112,16 @@ void QgsOSMExportDialog::onLoadTags()
 
   for ( int i = 0; i < pairs.count(); ++i )
   {
-    const QgsOSMTagCountPair& p = pairs[i];
-    QStandardItem* item = new QStandardItem( p.first );
+    const QgsOSMTagCountPair &p = pairs[i];
+    QStandardItem *item = new QStandardItem( p.first );
     item->setCheckable( true );
     mTagsModel->setItem( i, 0, item );
 
-    QStandardItem* item2 = new QStandardItem();
+    QStandardItem *item2 = new QStandardItem();
     item2->setData( p.second, Qt::DisplayRole );
     mTagsModel->setItem( i, 1, item2 );
 
-    QStandardItem* item3 = new QStandardItem();
+    QStandardItem *item3 = new QStandardItem();
     item3->setData( "Not null", Qt::DisplayRole );
     item3->setCheckable( true );
     mTagsModel->setItem( i, 2, item3 );
@@ -155,11 +155,11 @@ void QgsOSMExportDialog::onOK()
 
   for ( int i = 0; i < mTagsModel->rowCount(); ++i )
   {
-    QStandardItem* item = mTagsModel->item( i, 0 );
+    QStandardItem *item = mTagsModel->item( i, 0 );
     if ( item->checkState() == Qt::Checked )
       tagKeys << item->text();
 
-    QStandardItem* item2 = mTagsModel->item( i, 2 );
+    QStandardItem *item2 = mTagsModel->item( i, 2 );
     if ( item2->checkState() == Qt::Checked )
       notNullTagKeys << item->text();
   }
@@ -172,7 +172,7 @@ void QgsOSMExportDialog::onOK()
     QgsDataSourceUri uri;
     uri.setDatabase( editDbFileName->text() );
     uri.setDataSource( QString(), editLayerName->text(), QStringLiteral( "geometry" ) );
-    QgsVectorLayer* vlayer = new QgsVectorLayer( uri.uri(), editLayerName->text(), QStringLiteral( "spatialite" ) );
+    QgsVectorLayer *vlayer = new QgsVectorLayer( uri.uri(), editLayerName->text(), QStringLiteral( "spatialite" ) );
     if ( vlayer->isValid() )
       QgsProject::instance()->addMapLayer( vlayer );
   }

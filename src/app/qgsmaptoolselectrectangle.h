@@ -33,16 +33,16 @@ class APP_EXPORT QgsMapToolSelectFeatures : public QgsMapTool
 {
     Q_OBJECT
   public:
-    QgsMapToolSelectFeatures( QgsMapCanvas* canvas );
+    QgsMapToolSelectFeatures( QgsMapCanvas *canvas );
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
   private:
 
@@ -52,7 +52,7 @@ class APP_EXPORT QgsMapToolSelectFeatures : public QgsMapTool
     //! stores actual select rect
     QRect mSelectRect;
 
-    QgsRubberBand* mRubberBand = nullptr;
+    QgsRubberBand *mRubberBand = nullptr;
 
     QColor mFillColor;
 

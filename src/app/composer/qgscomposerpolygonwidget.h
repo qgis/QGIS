@@ -30,11 +30,11 @@ class QgsComposerPolygonWidget: public QgsComposerItemBaseWidget, private Ui::Qg
 {
     Q_OBJECT
   public:
-    explicit QgsComposerPolygonWidget( QgsComposerPolygon* composerPolygon );
+    explicit QgsComposerPolygonWidget( QgsComposerPolygon *composerPolygon );
     ~QgsComposerPolygonWidget();
 
   private:
-    QgsComposerPolygon* mComposerPolygon = nullptr;
+    QgsComposerPolygon *mComposerPolygon = nullptr;
 
     void updatePolygonStyle();
 
@@ -45,7 +45,7 @@ class QgsComposerPolygonWidget: public QgsComposerItemBaseWidget, private Ui::Qg
     void setGuiElementValues();
 
     void updateStyleFromWidget();
-    void cleanUpStyleSelector( QgsPanelWidget* container );
+    void cleanUpStyleSelector( QgsPanelWidget *container );
 };
 
 #endif // QGSCOMPOSERPOLYGONWIDGET_H

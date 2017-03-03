@@ -23,18 +23,18 @@
 
 #include <QSettings>
 
-QgsDelAttrDialog::QgsDelAttrDialog( const QgsVectorLayer* vl )
-    : QDialog()
+QgsDelAttrDialog::QgsDelAttrDialog( const QgsVectorLayer *vl )
+  : QDialog()
 {
   setupUi( this );
   if ( vl )
   {
     bool canDeleteAttributes = vl->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteAttributes;
     listBox2->clear();
-    const QgsFields& layerAttributes = vl->fields();
+    const QgsFields &layerAttributes = vl->fields();
     for ( int idx = 0; idx < layerAttributes.count(); ++idx )
     {
-      QListWidgetItem* item = new QListWidgetItem( layerAttributes.at( idx ).name(), listBox2 );
+      QListWidgetItem *item = new QListWidgetItem( layerAttributes.at( idx ).name(), listBox2 );
       switch ( vl->fields().fieldOrigin( idx ) )
       {
         case QgsFields::OriginExpression:
@@ -77,7 +77,7 @@ QList<int> QgsDelAttrDialog::selectedAttributes()
   QList<QListWidgetItem *>::const_iterator itemIter = selection.constBegin();
   for ( ; itemIter != selection.constEnd(); ++itemIter )
   {
-    selectionList.push_back(( *itemIter )->data( Qt::UserRole ).toInt() );
+    selectionList.push_back( ( *itemIter )->data( Qt::UserRole ).toInt() );
   }
   return selectionList;
 }

@@ -76,7 +76,7 @@ bool dwgReader21::parseSysPage( duint64 sizeCompressed, duint64 sizeUncompressed
   //round to 8
   duint64 alsize = ( sizeCompressed + 7 ) & ( -8 );
   //minimum RS chunk:
-  duint32 chunks = ((( alsize * correctionFactor ) + 238 ) / 239 );
+  duint32 chunks = ( ( ( alsize * correctionFactor ) + 238 ) / 239 );
   duint64 fpsize = chunks * 255;
 
   if ( ! fileBuf->setPosition( offset ) )
@@ -105,9 +105,9 @@ bool dwgReader21::parseDataPage( dwgSectionInfo si, duint8 *dData )
     fileBuf->getBytes( tmpPageRaw, pi.size );
 #ifdef DRW_DBG_DUMP
     DRW_DBG( "\nSection OBJECTS raw data=\n" );
-    for ( unsigned int i = 0, j = 0; i < pi.size;i++ )
+    for ( unsigned int i = 0, j = 0; i < pi.size; i++ )
     {
-      DRW_DBGH(( unsigned char )tmpPageRaw[i] );
+      DRW_DBGH( ( unsigned char )tmpPageRaw[i] );
       if ( j == 7 )
       {
         DRW_DBG( "\n" );
@@ -123,9 +123,9 @@ bool dwgReader21::parseDataPage( dwgSectionInfo si, duint8 *dData )
     dwgRSCodec::decode251I( tmpPageRaw, tmpPageRS, chunks );
 #ifdef DRW_DBG_DUMP
     DRW_DBG( "\nSection OBJECTS RS data=\n" );
-    for ( unsigned int i = 0, j = 0; i < pi.size;i++ )
+    for ( unsigned int i = 0, j = 0; i < pi.size; i++ )
     {
-      DRW_DBGH(( unsigned char )tmpPageRS[i] );
+      DRW_DBGH( ( unsigned char )tmpPageRS[i] );
       if ( j == 7 )
       {
         DRW_DBG( "\n" );
@@ -147,9 +147,9 @@ bool dwgReader21::parseDataPage( dwgSectionInfo si, duint8 *dData )
 
 #ifdef DRW_DBG_DUMP
     DRW_DBG( "\n\nSection OBJECTS decompressed data=\n" );
-    for ( unsigned int i = 0, j = 0; i < pi.uSize;i++ )
+    for ( unsigned int i = 0, j = 0; i < pi.uSize; i++ )
     {
-      DRW_DBGH(( unsigned char )pageData[i] );
+      DRW_DBGH( ( unsigned char )pageData[i] );
       if ( j == 7 )
       {
         DRW_DBG( "\n" );
@@ -183,7 +183,7 @@ bool dwgReader21::readFileHeader()
   int j = 0;
   for ( int i = 0, j = 0; i < 0x2CD; i++ )
   {
-    DRW_DBGH(( unsigned char )fileHdrdRS[i] );
+    DRW_DBGH( ( unsigned char )fileHdrdRS[i] );
     if ( j == 15 )
     {
       j = 0;
@@ -230,7 +230,7 @@ bool dwgReader21::readFileHeader()
   DRW_DBG( "\ndwgReader21::parsed file header:\n" );
   for ( int i = 0, j = 0; i < fileHdrDataLength; i++ )
   {
-    DRW_DBGH(( unsigned char )fileHdrData[i] );
+    DRW_DBGH( ( unsigned char )fileHdrData[i] );
     if ( j == 15 )
     {
       j = 0;
@@ -461,7 +461,7 @@ bool dwgReader21::readFileHeader()
   return true;
 }
 
-bool dwgReader21::readDwgHeader( DRW_Header& hdr )
+bool dwgReader21::readDwgHeader( DRW_Header &hdr )
 {
   DRW_DBG( "\ndwgReader21::readDwgHeader\n" );
   dwgSectionInfo si = sections[secEnum::HEADER];
@@ -575,7 +575,7 @@ bool dwgReader21::readDwgClasses()
   duint32 endDataPos = maxClassNum - 499;
   DRW_DBG( "\nbuff.getPosition: " );
   DRW_DBG( buff.getPosition() );
-  for ( duint32 i = 0; i < endDataPos;i++ )
+  for ( duint32 i = 0; i < endDataPos; i++ )
   {
     DRW_Class *cl = new DRW_Class();
     cl->parseDwg( version, &buff, &strBuff );
@@ -626,7 +626,7 @@ bool dwgReader21::readDwgHandles()
  * Reads all the object referenced in the object map section of the DWG file
  * (using their object file offsets)
  */
-bool dwgReader21::readDwgTables( DRW_Header& hdr )
+bool dwgReader21::readDwgTables( DRW_Header &hdr )
 {
   DRW_DBG( "\ndwgReader21::readDwgTables\n" );
   dwgSectionInfo si = sections[secEnum::OBJECTS];
@@ -649,7 +649,7 @@ bool dwgReader21::readDwgTables( DRW_Header& hdr )
 }
 
 
-bool dwgReader21::readDwgBlocks( DRW_Interface& intfa )
+bool dwgReader21::readDwgBlocks( DRW_Interface &intfa )
 {
   dwgBuffer dataBuf( objData, dataSize, &decoder );
   return dwgReader::readDwgBlocks( intfa, &dataBuf );

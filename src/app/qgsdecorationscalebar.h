@@ -34,7 +34,7 @@ class APP_EXPORT QgsDecorationScaleBar: public QgsDecorationItem
     Q_OBJECT
   public:
     //! Constructor
-    QgsDecorationScaleBar( QObject* parent = nullptr );
+    QgsDecorationScaleBar( QObject *parent = nullptr );
 
     virtual ~ QgsDecorationScaleBar();
 

@@ -113,7 +113,7 @@ bool dxfReaderBinary::readCode( int *code )
   filestr->read( buffer, 2 );
   int16p = ( unsigned short * ) buffer;
 //exist a 32bits int (code 90) with 2 bytes???
-  if (( *code == 90 ) && ( *int16p > 2000 ) )
+  if ( ( *code == 90 ) && ( *int16p > 2000 ) )
   {
     QgsDebugMsg( QString( "%1 de 16bits" ).arg( *code ) );
 
@@ -152,7 +152,7 @@ bool dxfReaderBinary::readInt16()
   type = INT32;
   char buffer[2];
   filestr->read( buffer, 2 );
-  intData = ( int )(( buffer[1] << 8 ) | buffer[0] );
+  intData = ( int )( ( buffer[1] << 8 ) | buffer[0] );
 
   QgsDebugMsg( QString( "%1" ).arg( intData ) );
 
@@ -190,7 +190,7 @@ bool dxfReaderBinary::readInt64()
 bool dxfReaderBinary::readDouble()
 {
   type = DOUBLE;
-  filestr->read(( char* ) &doubleData, sizeof doubleData );
+  filestr->read( ( char * ) &doubleData, sizeof doubleData );
 
   QgsDebugMsg( QString( "%1" ).arg( doubleData ) );
 

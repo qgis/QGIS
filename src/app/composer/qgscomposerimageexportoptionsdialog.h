@@ -35,7 +35,7 @@ class QgsComposerImageExportOptionsDialog: public QDialog, private Ui::QgsCompos
      * @param parent parent widget
      * @param flags window flags
      */
-    QgsComposerImageExportOptionsDialog( QWidget* parent = nullptr, Qt::WindowFlags flags = 0 );
+    QgsComposerImageExportOptionsDialog( QWidget *parent = nullptr, Qt::WindowFlags flags = 0 );
 
     ~QgsComposerImageExportOptionsDialog();
 
@@ -84,7 +84,7 @@ class QgsComposerImageExportOptionsDialog: public QDialog, private Ui::QgsCompos
      * @param bottomMargin destination for bottom margin
      * @param leftMargin destination for left margin
      */
-    void getCropMargins( int& topMargin, int& rightMargin, int& bottomMargin, int& leftMargin ) const;
+    void getCropMargins( int &topMargin, int &rightMargin, int &bottomMargin, int &leftMargin ) const;
 
     /** Sets the current crop to contents margin values, in pixels.
      * @param topMargin top margin

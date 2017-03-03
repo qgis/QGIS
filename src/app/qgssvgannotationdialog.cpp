@@ -25,10 +25,10 @@
 #include <QFileInfo>
 #include <QGraphicsScene>
 
-QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem* item, QWidget * parent, Qt::WindowFlags f )
-    : QDialog( parent, f )
-    , mItem( item )
-    , mEmbeddedWidget( nullptr )
+QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
+  : QDialog( parent, f )
+  , mItem( item )
+  , mEmbeddedWidget( nullptr )
 {
   setupUi( this );
   setWindowTitle( tr( "SVG annotation" ) );
@@ -38,20 +38,20 @@ QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem* item
 
   if ( mItem && mItem->annotation() )
   {
-    QgsSvgAnnotation* annotation = static_cast< QgsSvgAnnotation* >( mItem->annotation() );
+    QgsSvgAnnotation *annotation = static_cast< QgsSvgAnnotation * >( mItem->annotation() );
     mFileLineEdit->setText( annotation->filePath() );
   }
 
   QObject::connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsSvgAnnotationDialog::applySettingsToItem );
-  QPushButton* deleteButton = new QPushButton( tr( "Delete" ) );
+  QPushButton *deleteButton = new QPushButton( tr( "Delete" ) );
   QObject::connect( deleteButton, &QPushButton::clicked, this, &QgsSvgAnnotationDialog::deleteItem );
   mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
 }
 
 QgsSvgAnnotationDialog::QgsSvgAnnotationDialog()
-    : QDialog()
-    , mItem( nullptr )
-    , mEmbeddedWidget( nullptr )
+  : QDialog()
+  , mItem( nullptr )
+  , mEmbeddedWidget( nullptr )
 {
 
 }
@@ -82,7 +82,7 @@ void QgsSvgAnnotationDialog::applySettingsToItem()
 
   if ( mItem && mItem->annotation() )
   {
-    QgsSvgAnnotation* annotation = static_cast< QgsSvgAnnotation* >( mItem->annotation() );
+    QgsSvgAnnotation *annotation = static_cast< QgsSvgAnnotation * >( mItem->annotation() );
     annotation->setFilePath( mFileLineEdit->text() );
     mItem->update();
   }
@@ -96,7 +96,7 @@ void QgsSvgAnnotationDialog::deleteItem()
   mItem = nullptr;
 }
 
-void QgsSvgAnnotationDialog::on_mButtonBox_clicked( QAbstractButton* button )
+void QgsSvgAnnotationDialog::on_mButtonBox_clicked( QAbstractButton *button )
 {
   if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
   {

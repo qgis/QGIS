@@ -20,7 +20,7 @@ class DRW_TextCodec
     std::string getCodePage() {return cp;}
 
   private:
-    std::string correctCodePage( const std::string& s );
+    std::string correctCodePage( const std::string &s );
 
   private:
     int version;

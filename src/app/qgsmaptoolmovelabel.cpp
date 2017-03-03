@@ -21,10 +21,10 @@
 #include "qgsvectorlayer.h"
 #include <QMouseEvent>
 
-QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas* canvas )
-    : QgsMapToolLabel( canvas )
-    , mClickOffsetX( 0 )
-    , mClickOffsetY( 0 )
+QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas *canvas )
+  : QgsMapToolLabel( canvas )
+  , mClickOffsetX( 0 )
+  , mClickOffsetY( 0 )
 {
   mToolName = tr( "Move label" );
 }
@@ -33,7 +33,7 @@ QgsMapToolMoveLabel::~QgsMapToolMoveLabel()
 {
 }
 
-void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent* e )
+void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent *e )
 {
   deleteRubberBands();
 
@@ -46,7 +46,7 @@ void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent* e )
 
   mCurrentLabel = LabelDetails( labelPos );
 
-  QgsVectorLayer* vlayer = mCurrentLabel.layer;
+  QgsVectorLayer *vlayer = mCurrentLabel.layer;
   if ( !vlayer || !vlayer->isEditable() )
   {
     return;
@@ -69,7 +69,7 @@ void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent* e )
   }
 }
 
-void QgsMapToolMoveLabel::canvasMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolMoveLabel::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( mLabelRubberBand )
   {
@@ -85,7 +85,7 @@ void QgsMapToolMoveLabel::canvasMoveEvent( QgsMapMouseEvent* e )
   }
 }
 
-void QgsMapToolMoveLabel::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolMoveLabel::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( !mLabelRubberBand )
   {
@@ -94,7 +94,7 @@ void QgsMapToolMoveLabel::canvasReleaseEvent( QgsMapMouseEvent* e )
 
   deleteRubberBands();
 
-  QgsVectorLayer* vlayer = mCurrentLabel.layer;
+  QgsVectorLayer *vlayer = mCurrentLabel.layer;
   if ( !vlayer || !vlayer->isEditable() )
   {
     return;
@@ -123,7 +123,7 @@ void QgsMapToolMoveLabel::canvasReleaseEvent( QgsMapMouseEvent* e )
   else
   {
     //transform to map crs first, because xdiff,ydiff are in map coordinates
-    const QgsMapSettings& ms = mCanvas->mapSettings();
+    const QgsMapSettings &ms = mCanvas->mapSettings();
     QgsPoint transformedPoint = ms.layerToMapCoordinates( vlayer, QgsPoint( xPosOrig, yPosOrig ) );
     xPosOrig = transformedPoint.x();
     yPosOrig = transformedPoint.y();
@@ -134,7 +134,7 @@ void QgsMapToolMoveLabel::canvasReleaseEvent( QgsMapMouseEvent* e )
   //transform back to layer crs
   if ( mCanvas )
   {
-    const QgsMapSettings& s = mCanvas->mapSettings();
+    const QgsMapSettings &s = mCanvas->mapSettings();
     QgsPoint transformedPoint = s.mapToLayerCoordinates( vlayer, QgsPoint( xPosNew, yPosNew ) );
     xPosNew = transformedPoint.x();
     yPosNew = transformedPoint.y();
