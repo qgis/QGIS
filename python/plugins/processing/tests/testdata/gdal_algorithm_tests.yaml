@@ -702,3 +702,20 @@ tests:
       OUTPUT:
         hash: 3542d928bccee955b1c426cac7b698c603c9a385429ca529758083bf
         type: rasterhash
+
+  - algorithm: gdal:gridnearestneighbor
+    name: Nearest Neighbor interpolation
+    params:
+      ANGLE: 0.0
+      INPUT:
+        name: custom/points_values.gml
+        type: vector
+      NODATA: 0.0
+      RADIUS_1: 0.01
+      RADIUS_2: 0.02
+      RTYPE: '5'
+      Z_FIELD: EC
+    results:
+      OUTPUT:
+        hash: 6ee933d53e1a2ffadfd88333919255e68bb945e833e50d112124bfd5
+        type: rasterhash
