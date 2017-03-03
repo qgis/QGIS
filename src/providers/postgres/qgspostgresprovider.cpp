@@ -897,9 +897,13 @@ bool QgsPostgresProvider::loadFields()
         fieldType = QVariant::DateTime;
         fieldSize = -1;
       }
+      else if ( fieldTypeName == QLatin1String( "geometry" ) )
+      {
+        fieldType = static_cast< QVariant::Type >( QMetaType::type( "QgsGeometry" ) );
+        fieldSize = -1;
+      }
       else if ( fieldTypeName == QLatin1String( "text" ) ||
                 fieldTypeName == QLatin1String( "bool" ) ||
-                fieldTypeName == QLatin1String( "geometry" ) ||
                 fieldTypeName == QLatin1String( "inet" ) ||
                 fieldTypeName == QLatin1String( "money" ) ||
                 fieldTypeName == QLatin1String( "ltree" ) ||
