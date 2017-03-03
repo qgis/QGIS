@@ -147,7 +147,7 @@ class TestQgsExpression: public QObject
       af4.setAttribute( QStringLiteral( "col3" ), 2 );
       af4.setAttribute( QStringLiteral( "col4" ), "" );
       QgsFeature af5( mAggregatesLayer->dataProvider()->fields(), 5 );
-      af5.setGeometry( QgsGeometry::fromPoint( QgsPoint( 4, 0 ) ) );
+      af5.setGeometry( QgsGeometry() );
       af5.setAttribute( QStringLiteral( "col1" ), 5 );
       af5.setAttribute( QStringLiteral( "col2" ), QVariant( QVariant::String ) );
       af5.setAttribute( QStringLiteral( "col3" ), 3 );
@@ -1327,7 +1327,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "string aggregate 2" ) << "aggregate('test','min_length',\"col2\")" << false << QVariant( 5 );
       QTest::newRow( "string concatenate" ) << "aggregate('test','concatenate',\"col2\",concatenator:=' , ')" << false << QVariant( "test1 , test2 , test3 , test4" );
 
-      QTest::newRow( "geometry collect" ) << "geom_to_wkt(aggregate('aggregate_layer','collect',$geometry))" << false << QVariant( QStringLiteral( "MultiPoint ((0 0),(1 0),(2 0),(3 0),(4 0),(5 0))" ) );
+      QTest::newRow( "geometry collect" ) << "geom_to_wkt(aggregate('aggregate_layer','collect',$geometry))" << false << QVariant( QStringLiteral( "MultiPoint ((0 0),(1 0),(2 0),(3 0),(5 0))" ) );
 
       QTest::newRow( "sub expression" ) << "aggregate('test','sum',\"col1\" * 2)" << false << QVariant( 65 * 2 );
       QTest::newRow( "bad sub expression" ) << "aggregate('test','sum',\"xcvxcv\" * 2)" << true << QVariant();
@@ -1411,7 +1411,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "max_length" ) << "max_length(\"col2\")" << false << QVariant( 7 );
       QTest::newRow( "concatenate" ) << "concatenate(\"col2\",concatenator:=',')" << false << QVariant( "test,,test333,test4,,test4" );
 
-      QTest::newRow( "geometry collect" ) << "geom_to_wkt(collect($geometry))" << false << QVariant( QStringLiteral( "MultiPoint ((0 0),(1 0),(2 0),(3 0),(4 0),(5 0))" ) );
+      QTest::newRow( "geometry collect" ) << "geom_to_wkt(collect($geometry))" << false << QVariant( QStringLiteral( "MultiPoint ((0 0),(1 0),(2 0),(3 0),(5 0))" ) );
+      QTest::newRow( "geometry collect with null geometry first" ) << "geom_to_wkt(collect($geometry, filter:=\"col3\"=3))" << false << QVariant( QStringLiteral( "MultiPoint ((5 0))" ) );
 
       QTest::newRow( "bad expression" ) << "sum(\"xcvxcvcol1\")" << true << QVariant();
       QTest::newRow( "aggregate named" ) << "sum(expression:=\"col1\")" << false << QVariant( 24.0 );
@@ -1707,16 +1708,17 @@ class TestQgsExpression: public QObject
       QTest::addColumn<QString>( "string" );
       QTest::addColumn<QgsGeometry>( "geom" );
       QTest::addColumn<bool>( "evalError" );
-      QTest::addColumn<double>( "result" );
+      QTest::addColumn<QVariant>( "result" );
 
       QgsPoint point( 123, 456 );
       QgsPolyline line;
       line << QgsPoint( 1, 1 ) << QgsPoint( 4, 2 ) << QgsPoint( 3, 1 );
 
-      QTest::newRow( "geom x" ) << "$x" << QgsGeometry::fromPoint( point ) << false << 123.;
-      QTest::newRow( "geom y" ) << "$y" << QgsGeometry::fromPoint( point ) << false << 456.;
-      QTest::newRow( "geom xat" ) << "xat(-1)" << QgsGeometry::fromPolyline( line ) << false << 3.;
-      QTest::newRow( "geom yat" ) << "yat(1)" << QgsGeometry::fromPolyline( line ) << false << 2.;
+      QTest::newRow( "geom x" ) << "$x" << QgsGeometry::fromPoint( point ) << false << QVariant( 123. );
+      QTest::newRow( "geom y" ) << "$y" << QgsGeometry::fromPoint( point ) << false << QVariant( 456. );
+      QTest::newRow( "geom xat" ) << "xat(-1)" << QgsGeometry::fromPolyline( line ) << false << QVariant( 3. );
+      QTest::newRow( "geom yat" ) << "yat(1)" << QgsGeometry::fromPolyline( line ) << false << QVariant( 2. );
+      QTest::newRow( "null geometry" ) << "$geometry" << QgsGeometry() << false << QVariant( QVariant::UserType );
     }
 
     void eval_geometry()
@@ -1724,7 +1726,7 @@ class TestQgsExpression: public QObject
       QFETCH( QString, string );
       QFETCH( QgsGeometry, geom );
       QFETCH( bool, evalError );
-      QFETCH( double, result );
+      QFETCH( QVariant, result );
 
       QgsFeature f;
       f.setGeometry( geom );
@@ -1736,7 +1738,7 @@ class TestQgsExpression: public QObject
       QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, QgsFields() );
       QVariant out = exp.evaluate( &context );
       QCOMPARE( exp.hasEvalError(), evalError );
-      QCOMPARE( out.toDouble(), result );
+      QCOMPARE( out, result );
     }
 
     void eval_geometry_calc()
