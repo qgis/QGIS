@@ -834,13 +834,18 @@ class CORE_EXPORT QgsWkbTypes
         return Unknown;
       else if ( type == NoGeometry )
         return NoGeometry;
-      else if ( type == Point25D ||
-                type == LineString25D ||
-                type == Polygon25D ||
-                type == MultiPoint25D ||
-                type == MultiLineString25D ||
-                type == MultiPolygon25D )
-        return type; //can't add M dimension to these types
+      else if ( type == Point25D )
+        return PointZM;
+      else if ( type == LineString25D )
+        return LineStringZM;
+      else if ( type == Polygon25D )
+        return PolygonZM;
+      else if ( type == MultiPoint25D )
+        return MultiPointZM;
+      else if ( type == MultiLineString25D )
+        return MultiLineString;
+      else if ( type == MultiPolygon25D )
+        return MultiPolygonZM;
 
       //upgrade with m dimension
       Type flat = flatType( type );

@@ -64,8 +64,8 @@ QgsPointV2::QgsPointV2( QPointF p )
 QgsPointV2::QgsPointV2( QgsWkbTypes::Type type, double x, double y, double z, double m )
     : mX( x )
     , mY( y )
-    , mZ( z )
-    , mM( m )
+    , mZ( QgsWkbTypes::hasZ( type ) ? z : 0.0 )
+    , mM( QgsWkbTypes::hasM( type ) ? m : 0.0 )
 {
   //protect against non-point WKB types
   Q_ASSERT( QgsWkbTypes::flatType( type ) == QgsWkbTypes::Point );
