@@ -26,9 +26,9 @@
 #include <QTextCodec>
 #include <QMessageBox>
 
-QgsRunProcess::QgsRunProcess( const QString& action, bool capture )
-    : mProcess( nullptr )
-    , mOutput( nullptr )
+QgsRunProcess::QgsRunProcess( const QString &action, bool capture )
+  : mProcess( nullptr )
+  , mOutput( nullptr )
 {
   // Make up a string from the command and arguments that we'll use
   // for display purposes
@@ -56,7 +56,7 @@ QgsRunProcess::QgsRunProcess( const QString& action, bool capture )
     mOutput->showMessage( false ); // non-blocking
 
     // get notification of delete if it's derived from QObject
-    QObject* mOutputObj = dynamic_cast<QObject *>( mOutput );
+    QObject *mOutputObj = dynamic_cast<QObject *>( mOutput );
     if ( mOutputObj )
     {
       connect( mOutputObj, SIGNAL( destroyed() ), this, SLOT( dialogGone() ) );
@@ -153,7 +153,7 @@ void QgsRunProcess::processError( QProcess::ProcessError err )
 {
   if ( err == QProcess::FailedToStart )
   {
-    QgsMessageOutput* output = mOutput ? mOutput : QgsMessageOutput::createMessageOutput();
+    QgsMessageOutput *output = mOutput ? mOutput : QgsMessageOutput::createMessageOutput();
     output->setMessage( tr( "Unable to run command %1" ).arg( mCommand ), QgsMessageOutput::MessageText );
     // Didn't work, so no need to hang around
     die();

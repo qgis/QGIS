@@ -49,12 +49,12 @@ class CORE_EXPORT QgsFeatureFilterProvider
      * @param layer the layer to filter
      * @param featureRequest the feature request to update
      */
-    virtual void filterFeatures( const QgsVectorLayer* layer, QgsFeatureRequest& featureRequest ) const = 0;
+    virtual void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &featureRequest ) const = 0;
 
     /** Create a clone of the feature filter provider
      * @return a new clone
      */
-    virtual QgsFeatureFilterProvider* clone() const = 0;
+    virtual QgsFeatureFilterProvider *clone() const = 0;
 };
 
 #endif

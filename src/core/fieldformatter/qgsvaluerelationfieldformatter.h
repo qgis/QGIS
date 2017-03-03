@@ -35,9 +35,9 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
   public:
     struct ValueRelationItem
     {
-      ValueRelationItem( const QVariant& key, const QString& value )
-          : key( key )
-          , value( value )
+      ValueRelationItem( const QVariant &key, const QString &value )
+        : key( key )
+        , value( value )
       {}
 
       ValueRelationItem()
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
      *
      * \note Added in QGIS 3.0
      */
-    static ValueRelationCache createCache( const QVariantMap& config );
+    static ValueRelationCache createCache( const QVariantMap &config );
 };
 
 Q_DECLARE_METATYPE( QgsValueRelationFieldFormatter::ValueRelationCache )

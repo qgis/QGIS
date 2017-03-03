@@ -44,20 +44,20 @@ class CORE_EXPORT QgsPoint
   public:
     /// Default constructor
     QgsPoint()
-        : mX( 0.0 )
-        , mY( 0.0 )
+      : mX( 0.0 )
+      , mY( 0.0 )
     {}
 
     //! Create a point from another point
-    QgsPoint( const QgsPoint& p );
+    QgsPoint( const QgsPoint &p );
 
     /** Create a point from x,y coordinates
      * @param x x coordinate
      * @param y y coordinate
      */
     QgsPoint( double x, double y )
-        : mX( x )
-        , mY( y )
+      : mX( x )
+      , mY( y )
     {}
 
     /** Create a point from a QPointF
@@ -65,8 +65,8 @@ class CORE_EXPORT QgsPoint
      * @note added in QGIS 2.7
      */
     QgsPoint( QPointF point )
-        : mX( point.x() )
-        , mY( point.y() )
+      : mX( point.x() )
+      , mY( point.y() )
     {}
 
     /** Create a point from a QPoint
@@ -74,8 +74,8 @@ class CORE_EXPORT QgsPoint
      * @note added in QGIS 2.7
      */
     QgsPoint( QPoint point )
-        : mX( point.x() )
-        , mY( point.y() )
+      : mX( point.x() )
+      , mY( point.y() )
     {}
 
     /**
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsPoint
      *
      * @note Added in QGIS 3.0
      */
-    QgsPoint( const QgsPointV2& point );
+    QgsPoint( const QgsPointV2 &point );
 
     ~QgsPoint()
     {}
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsPoint
     /** Returns the squared distance between this point another point.
      * @see distance()
     */
-    double sqrDist( const QgsPoint& other ) const;
+    double sqrDist( const QgsPoint &other ) const;
 
     /** Returns the distance between this point and a specified x, y coordinate.
      * @param x x-coordniate
@@ -192,13 +192,13 @@ class CORE_EXPORT QgsPoint
      * @see sqrDist()
      * @note added in QGIS 2.16
     */
-    double distance( const QgsPoint& other ) const;
+    double distance( const QgsPoint &other ) const;
 
     //! Returns the minimum distance between this point and a segment
-    double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPoint& minDistPoint, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
+    double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPoint &minDistPoint, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
 
     //! Calculates azimuth between this point and other one (clockwise in degree, starting from north)
-    double azimuth( const QgsPoint& other ) const;
+    double azimuth( const QgsPoint &other ) const;
 
     /** Returns a new point which corresponds to this point projected by a specified distance
      * in a specified bearing.
@@ -229,13 +229,13 @@ class CORE_EXPORT QgsPoint
     //! @return 0 if this point is not on the open ray through a and b,
     //! 1 if point is on open ray a, 2 if point is within line segment,
     //! 3 if point is on open ray b.
-    int onSegment( const QgsPoint& a, const QgsPoint& b ) const;
+    int onSegment( const QgsPoint &a, const QgsPoint &b ) const;
 
     //! Assignment
-    QgsPoint & operator=( const QgsPoint &other );
+    QgsPoint &operator=( const QgsPoint &other );
 
     //! Calculates the vector obtained by subtracting a point from this point
-    QgsVector operator-( const QgsPoint& p ) const { return QgsVector( mX - p.mX, mY - p.mY ); }
+    QgsVector operator-( const QgsPoint &p ) const { return QgsVector( mX - p.mX, mY - p.mY ); }
 
     //! Adds a vector to this point in place
     QgsPoint &operator+=( QgsVector v ) { *this = *this + v; return *this; }
@@ -269,7 +269,7 @@ class CORE_EXPORT QgsPoint
     //! y coordinate
     double mY;
 
-    friend uint qHash( const QgsPoint& pnt );
+    friend uint qHash( const QgsPoint &pnt );
 
 }; // class QgsPoint
 
@@ -277,24 +277,24 @@ class CORE_EXPORT QgsPoint
 inline bool operator==( const QgsPoint &p1, const QgsPoint &p2 )
 {
   if ( qgsDoubleNear( p1.x(), p2.x() ) && qgsDoubleNear( p1.y(), p2.y() ) )
-    { return true; }
+  { return true; }
   else
-    { return false; }
+  { return false; }
 }
 
-inline std::ostream& operator << ( std::ostream& os, const QgsPoint &p )
+inline std::ostream &operator << ( std::ostream &os, const QgsPoint &p )
 {
   // Use Local8Bit for printouts
   os << p.toString().toLocal8Bit().data();
   return os;
 }
 
-inline uint qHash( const QgsPoint& p )
+inline uint qHash( const QgsPoint &p )
 {
   uint hash;
   uint h1 = qHash( static_cast< quint64 >( p.mX ) );
   uint h2 = qHash( static_cast< quint64 >( p.mY ) );
-  hash = h1 ^( h2 << 1 );
+  hash = h1 ^ ( h2 << 1 );
   return hash;
 }
 

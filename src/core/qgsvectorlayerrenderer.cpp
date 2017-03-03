@@ -43,18 +43,18 @@
 // - passing of cache to QgsVectorLayer
 
 
-QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRenderContext& context )
-    : QgsMapLayerRenderer( layer->id() )
-    , mContext( context )
-    , mInterruptionChecker( context )
-    , mLayer( layer )
-    , mFields( layer->fields() )
-    , mRenderer( nullptr )
-    , mCache( nullptr )
-    , mLabeling( false )
-    , mDiagrams( false )
-    , mLabelProvider( nullptr )
-    , mDiagramProvider( nullptr )
+QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRenderContext &context )
+  : QgsMapLayerRenderer( layer->id() )
+  , mContext( context )
+  , mInterruptionChecker( context )
+  , mLayer( layer )
+  , mFields( layer->fields() )
+  , mRenderer( nullptr )
+  , mCache( nullptr )
+  , mLabeling( false )
+  , mDiagrams( false )
+  , mLabelProvider( nullptr )
+  , mDiagramProvider( nullptr )
 {
   mSource = new QgsVectorLayerFeatureSource( layer );
 
@@ -160,7 +160,7 @@ bool QgsVectorLayerRenderer::render()
     featureRequest.setOrderBy( mRenderer->orderBy() );
   }
 
-  const QgsFeatureFilterProvider* featureFilterProvider = mContext.featureFilterProvider();
+  const QgsFeatureFilterProvider *featureFilterProvider = mContext.featureFilterProvider();
   if ( featureFilterProvider )
   {
     featureFilterProvider->filterFeatures( mLayer, featureRequest );
@@ -176,7 +176,7 @@ bool QgsVectorLayerRenderer::render()
     double map2pixelTol = mSimplifyMethod.threshold();
     bool validTransform = true;
 
-    const QgsMapToPixel& mtp = mContext.mapToPixel();
+    const QgsMapToPixel &mtp = mContext.mapToPixel();
     map2pixelTol *= mtp.mapUnitsPerPixel();
     QgsCoordinateTransform ct = mContext.coordinateTransform();
 
@@ -252,7 +252,7 @@ bool QgsVectorLayerRenderer::render()
   // in drawRenderer()
   fit.setInterruptionChecker( &mInterruptionChecker );
 
-  if (( mRenderer->capabilities() & QgsFeatureRenderer::SymbolLevels ) && mRenderer->usingSymbolLevels() )
+  if ( ( mRenderer->capabilities() & QgsFeatureRenderer::SymbolLevels ) && mRenderer->usingSymbolLevels() )
     drawRendererLevels( fit );
   else
     drawRenderer( fit );
@@ -265,7 +265,7 @@ bool QgsVectorLayerRenderer::render()
   return true;
 }
 
-void QgsVectorLayerRenderer::setGeometryCachePointer( QgsGeometryCache* cache )
+void QgsVectorLayerRenderer::setGeometryCachePointer( QgsGeometryCache *cache )
 {
   mCache = cache;
 
@@ -278,9 +278,9 @@ void QgsVectorLayerRenderer::setGeometryCachePointer( QgsGeometryCache* cache )
 
 
 
-void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator& fit )
+void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
 {
-  QgsExpressionContextScope* symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
+  QgsExpressionContextScope *symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
   mContext.expressionContext().appendScope( symbolScope );
 
   QgsFeature fet;
@@ -354,11 +354,11 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator& fit )
   stopRenderer( nullptr );
 }
 
-void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator& fit )
+void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
 {
-  QHash< QgsSymbol*, QList<QgsFeature> > features; // key = symbol, value = array of features
+  QHash< QgsSymbol *, QList<QgsFeature> > features; // key = symbol, value = array of features
 
-  QgsSingleSymbolRenderer* selRenderer = nullptr;
+  QgsSingleSymbolRenderer *selRenderer = nullptr;
   if ( !mSelectedFeatureIds.isEmpty() )
   {
     selRenderer = new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( mGeometryType ) ) ;
@@ -367,7 +367,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator& fit )
     selRenderer->startRender( mContext, mFields );
   }
 
-  QgsExpressionContextScope* symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
+  QgsExpressionContextScope *symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
   mContext.expressionContext().appendScope( symbolScope );
 
   // 1. fetch features
@@ -386,7 +386,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator& fit )
       continue; // skip features without geometry
 
     mContext.expressionContext().setFeature( fet );
-    QgsSymbol* sym = mRenderer->symbolForFeature( fet, mContext );
+    QgsSymbol *sym = mRenderer->symbolForFeature( fet, mContext );
     if ( !sym )
     {
       continue;
@@ -438,7 +438,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator& fit )
   QgsSymbolList symbols = mRenderer->symbols( mContext );
   for ( int i = 0; i < symbols.count(); i++ )
   {
-    QgsSymbol* sym = symbols[i];
+    QgsSymbol *sym = symbols[i];
     for ( int j = 0; j < sym->symbolLayerCount(); j++ )
     {
       int level = sym->symbolLayer( j )->renderingPass();
@@ -454,17 +454,17 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator& fit )
   // 2. draw features in correct order
   for ( int l = 0; l < levels.count(); l++ )
   {
-    QgsSymbolLevel& level = levels[l];
+    QgsSymbolLevel &level = levels[l];
     for ( int i = 0; i < level.count(); i++ )
     {
-      QgsSymbolLevelItem& item = level[i];
+      QgsSymbolLevelItem &item = level[i];
       if ( !features.contains( item.symbol() ) )
       {
         QgsDebugMsg( "level item's symbol not found!" );
         continue;
       }
       int layer = item.layer();
-      QList<QgsFeature>& lst = features[item.symbol()];
+      QList<QgsFeature> &lst = features[item.symbol()];
       QList<QgsFeature>::iterator fit;
       for ( fit = lst.begin(); fit != lst.end(); ++fit )
       {
@@ -498,7 +498,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator& fit )
 }
 
 
-void QgsVectorLayerRenderer::stopRenderer( QgsSingleSymbolRenderer* selRenderer )
+void QgsVectorLayerRenderer::stopRenderer( QgsSingleSymbolRenderer *selRenderer )
 {
   mRenderer->stopRender( mContext );
   if ( selRenderer )
@@ -511,9 +511,9 @@ void QgsVectorLayerRenderer::stopRenderer( QgsSingleSymbolRenderer* selRenderer 
 
 
 
-void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer* layer, QSet<QString>& attributeNames )
+void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer *layer, QSet<QString> &attributeNames )
 {
-  if ( QgsLabelingEngine* engine2 = mContext.labelingEngine() )
+  if ( QgsLabelingEngine *engine2 = mContext.labelingEngine() )
   {
     if ( layer->labeling() )
     {
@@ -531,7 +531,7 @@ void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer* layer, QSet<QStrin
   }
 
 #if 0 // TODO: limit of labels, font not found
-  QgsPalLayerSettings& palyr = mContext.labelingEngine()->layer( mLayerID );
+  QgsPalLayerSettings &palyr = mContext.labelingEngine()->layer( mLayerID );
 
   // see if feature count limit is set for labeling
   if ( palyr.limitNumLabels && palyr.maxNumLabels > 0 )
@@ -559,9 +559,9 @@ void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer* layer, QSet<QStrin
 #endif
 }
 
-void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer* layer, QSet<QString>& attributeNames )
+void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer *layer, QSet<QString> &attributeNames )
 {
-  if ( QgsLabelingEngine* engine2 = mContext.labelingEngine() )
+  if ( QgsLabelingEngine *engine2 = mContext.labelingEngine() )
   {
     if ( layer->diagramsEnabled() )
     {
@@ -582,8 +582,8 @@ void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer* layer, QSet<QStrin
 /*  -----------------------------------------  */
 
 QgsVectorLayerRendererInterruptionChecker::QgsVectorLayerRendererInterruptionChecker
-( const QgsRenderContext& context )
-    : mContext( context )
+( const QgsRenderContext &context )
+  : mContext( context )
 {
 }
 

@@ -18,15 +18,15 @@
 #include "qgsrasterviewport.h"
 #include "qgsrasterdataprovider.h"
 
-QgsRasterIterator::QgsRasterIterator( QgsRasterInterface* input )
-    : mInput( input )
-    , mFeedback( nullptr )
-    , mMaximumTileWidth( DEFAULT_MAXIMUM_TILE_WIDTH )
-    , mMaximumTileHeight( DEFAULT_MAXIMUM_TILE_HEIGHT )
+QgsRasterIterator::QgsRasterIterator( QgsRasterInterface *input )
+  : mInput( input )
+  , mFeedback( nullptr )
+  , mMaximumTileWidth( DEFAULT_MAXIMUM_TILE_WIDTH )
+  , mMaximumTileHeight( DEFAULT_MAXIMUM_TILE_HEIGHT )
 {
   for ( QgsRasterInterface *ri = input; ri; ri = ri->input() )
   {
-    QgsRasterDataProvider *rdp = dynamic_cast<QgsRasterDataProvider*>( ri );
+    QgsRasterDataProvider *rdp = dynamic_cast<QgsRasterDataProvider *>( ri );
     if ( rdp )
     {
       mMaximumTileWidth = rdp->stepWidth();
@@ -36,7 +36,7 @@ QgsRasterIterator::QgsRasterIterator( QgsRasterInterface* input )
   }
 }
 
-void QgsRasterIterator::startRasterRead( int bandNumber, int nCols, int nRows, const QgsRectangle& extent, QgsRasterBlockFeedback* feedback )
+void QgsRasterIterator::startRasterRead( int bandNumber, int nCols, int nRows, const QgsRectangle &extent, QgsRasterBlockFeedback *feedback )
 {
   if ( !mInput )
   {
@@ -60,9 +60,9 @@ void QgsRasterIterator::startRasterRead( int bandNumber, int nCols, int nRows, c
 }
 
 bool QgsRasterIterator::readNextRasterPart( int bandNumber,
-    int& nCols, int& nRows,
+    int &nCols, int &nRows,
     QgsRasterBlock **block,
-    int& topLeftCol, int& topLeftRow )
+    int &topLeftCol, int &topLeftRow )
 {
   QgsDebugMsgLevel( "Entered", 4 );
   *block = nullptr;
@@ -73,7 +73,7 @@ bool QgsRasterIterator::readNextRasterPart( int bandNumber,
     return false;
   }
 
-  RasterPartInfo& pInfo = partIt.value();
+  RasterPartInfo &pInfo = partIt.value();
 
   // If we started with zero cols or zero rows, just return (avoids divide by zero below)
   if ( 0 ==  pInfo.nCols || 0 == pInfo.nRows )
@@ -134,7 +134,7 @@ void QgsRasterIterator::removePartInfo( int bandNumber )
   QMap<int, RasterPartInfo>::iterator partIt = mRasterPartInfos.find( bandNumber );
   if ( partIt != mRasterPartInfos.end() )
   {
-    RasterPartInfo& pInfo = partIt.value();
+    RasterPartInfo &pInfo = partIt.value();
     delete pInfo.prj;
     mRasterPartInfos.remove( bandNumber );
   }

@@ -43,17 +43,17 @@ class CORE_EXPORT QgsRasterShaderFunction
     virtual void setMinimumValue( double );
 
     //! \brief generates and new RGBA value based on one input value
-    virtual bool shade( double, int*, int*, int*, int* );
+    virtual bool shade( double, int *, int *, int *, int * );
 
     //! \brief generates and new RGBA value based on original RGBA value
-    virtual bool shade( double, double, double, double, int*, int*, int*, int* );
+    virtual bool shade( double, double, double, double, int *, int *, int *, int * );
 
     double minimumMaximumRange() const { return mMinimumMaximumRange; }
 
     double minimumValue() const { return mMinimumValue; }
     double maximumValue() const { return mMaximumValue; }
 
-    virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const { Q_UNUSED( symbolItems ); }
+    virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems ) const { Q_UNUSED( symbolItems ); }
 
   protected:
     //! \brief User defineable maximum value for the shading function

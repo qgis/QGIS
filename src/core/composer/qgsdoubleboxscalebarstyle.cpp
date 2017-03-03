@@ -20,7 +20,7 @@
 #include <QList>
 #include <QPainter>
 
-QgsDoubleBoxScaleBarStyle::QgsDoubleBoxScaleBarStyle( const QgsComposerScaleBar* bar ): QgsScaleBarStyle( bar )
+QgsDoubleBoxScaleBarStyle::QgsDoubleBoxScaleBarStyle( const QgsComposerScaleBar *bar ): QgsScaleBarStyle( bar )
 {
 
 }
@@ -35,7 +35,7 @@ QString QgsDoubleBoxScaleBarStyle::name() const
   return QStringLiteral( "Double Box" );
 }
 
-void QgsDoubleBoxScaleBarStyle::draw( QPainter* p, double xOffset ) const
+void QgsDoubleBoxScaleBarStyle::draw( QPainter *p, double xOffset ) const
 {
   if ( !mScaleBar )
   {

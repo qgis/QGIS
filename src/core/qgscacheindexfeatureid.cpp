@@ -18,9 +18,9 @@
 #include "qgscachedfeatureiterator.h"
 #include "qgsvectorlayercache.h"
 
-QgsCacheIndexFeatureId::QgsCacheIndexFeatureId( QgsVectorLayerCache* cachedVectorLayer )
-    : QgsAbstractCacheIndex()
-    , C( cachedVectorLayer )
+QgsCacheIndexFeatureId::QgsCacheIndexFeatureId( QgsVectorLayerCache *cachedVectorLayer )
+  : QgsAbstractCacheIndex()
+  , C( cachedVectorLayer )
 {
 
 }
@@ -34,7 +34,7 @@ void QgsCacheIndexFeatureId::flush()
 {
 }
 
-void QgsCacheIndexFeatureId::requestCompleted( const QgsFeatureRequest& featureRequest, const QgsFeatureIds& fids )
+void QgsCacheIndexFeatureId::requestCompleted( const QgsFeatureRequest &featureRequest, const QgsFeatureIds &fids )
 {
   Q_UNUSED( featureRequest )
   Q_UNUSED( fids )

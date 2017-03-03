@@ -39,25 +39,25 @@ class CORE_EXPORT QgsOptional
      * A QgsOptional is disabled by default if default constructed.
      */
     QgsOptional()
-        : mEnabled( false )
+      : mEnabled( false )
     {
     }
 
     /**
      * A QgsOptional is enabled by default if constructed with payload.
      */
-    QgsOptional( const T& data )
-        : mEnabled( true )
-        , mData( data )
+    QgsOptional( const T &data )
+      : mEnabled( true )
+      , mData( data )
     {
     }
 
     /**
      * A QgsOptional constructed with enabled status and data
      */
-    QgsOptional( const T& data, bool enabled )
-        : mEnabled( enabled )
-        , mData( data )
+    QgsOptional( const T &data, bool enabled )
+      : mEnabled( enabled )
+      , mData( data )
     {
     }
 
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsOptional
      *
      * @note Added in QGIS 3.0
      */
-    bool operator== ( const QgsOptional<T>& other ) const
+    bool operator== ( const QgsOptional<T> &other ) const
     {
       return mEnabled == other.mEnabled && mData == other.mData;
     }
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsOptional
      *
      * @note Added in QGIS 3.0
      */
-    const T* operator->() const
+    const T *operator->() const
     {
       return &mData;
     }
@@ -127,7 +127,7 @@ class CORE_EXPORT QgsOptional
      *
      * @note Added in QGIS 3.0
      */
-    void setData( const T& data )
+    void setData( const T &data )
     {
       mData = data;
     }

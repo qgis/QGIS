@@ -41,17 +41,17 @@
 
 const QString QgsMapRendererJob::LABEL_CACHE_ID = QStringLiteral( "_labels_" );
 
-QgsMapRendererJob::QgsMapRendererJob( const QgsMapSettings& settings )
-    : mSettings( settings )
-    , mCache( nullptr )
-    , mRenderingTime( 0 )
-    , mFeatureFilterProvider( nullptr )
+QgsMapRendererJob::QgsMapRendererJob( const QgsMapSettings &settings )
+  : mSettings( settings )
+  , mCache( nullptr )
+  , mRenderingTime( 0 )
+  , mFeatureFilterProvider( nullptr )
 {
 }
 
 
-QgsMapRendererQImageJob::QgsMapRendererQImageJob( const QgsMapSettings& settings )
-    : QgsMapRendererJob( settings )
+QgsMapRendererQImageJob::QgsMapRendererQImageJob( const QgsMapSettings &settings )
+  : QgsMapRendererJob( settings )
 {
 }
 
@@ -61,12 +61,12 @@ QgsMapRendererJob::Errors QgsMapRendererJob::errors() const
   return mErrors;
 }
 
-void QgsMapRendererJob::setCache( QgsMapRendererCache* cache )
+void QgsMapRendererJob::setCache( QgsMapRendererCache *cache )
 {
   mCache = cache;
 }
 
-const QgsMapSettings& QgsMapRendererJob::mapSettings() const
+const QgsMapSettings &QgsMapRendererJob::mapSettings() const
 {
   return mSettings;
 }
@@ -76,10 +76,10 @@ bool QgsMapRendererJob::prepareLabelCache() const
   bool canCache = mCache;
 
   // calculate which layers will be labeled
-  QSet< QgsMapLayer* > labeledLayers;
-  Q_FOREACH ( const QgsMapLayer* ml, mSettings.layers() )
+  QSet< QgsMapLayer * > labeledLayers;
+  Q_FOREACH ( const QgsMapLayer *ml, mSettings.layers() )
   {
-    QgsVectorLayer* vl = const_cast< QgsVectorLayer* >( qobject_cast<const QgsVectorLayer *>( ml ) );
+    QgsVectorLayer *vl = const_cast< QgsVectorLayer * >( qobject_cast<const QgsVectorLayer *>( ml ) );
     if ( vl && QgsPalLabeling::staticWillUseLayer( vl ) )
       labeledLayers << vl;
     if ( vl && vl->labeling() && vl->labeling()->requiresAdvancedEffects( vl ) )
@@ -105,7 +105,7 @@ bool QgsMapRendererJob::prepareLabelCache() const
 }
 
 
-bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const QgsCoordinateTransform& ct, QgsRectangle &extent, QgsRectangle &r2 )
+bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const QgsCoordinateTransform &ct, QgsRectangle &extent, QgsRectangle &r2 )
 {
   bool split = false;
 
@@ -209,12 +209,12 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
 
 
 
-LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEngine* labelingEngine2 )
+LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEngine *labelingEngine2 )
 {
   LayerRenderJobs layerJobs;
 
   // render all layers in the stack, starting at the base
-  QListIterator<QgsMapLayer*> li( mSettings.layers() );
+  QListIterator<QgsMapLayer *> li( mSettings.layers() );
   li.toBack();
 
   if ( mCache )
@@ -230,7 +230,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
 
   while ( li.hasPrevious() )
   {
-    QgsMapLayer* ml = li.previous();
+    QgsMapLayer *ml = li.previous();
 
     QgsDebugMsgLevel( QString( "layer %1:  minscale:%2  maxscale:%3  scaledepvis:%4  blendmode:%5" )
                       .arg( ml->name() )
@@ -265,7 +265,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
     // or if there's a labeling engine that needs the layer to register features
     if ( mCache && ml->type() == QgsMapLayer::VectorLayer )
     {
-      QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
       bool requiresLabeling = false;
       requiresLabeling = ( labelingEngine2 && QgsPalLabeling::staticWillUseLayer( vl ) ) && requiresLabelRedraw;
       if ( vl->isEditable() || requiresLabeling )
@@ -275,12 +275,12 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
     }
 
     layerJobs.append( LayerRenderJob() );
-    LayerRenderJob& job = layerJobs.last();
+    LayerRenderJob &job = layerJobs.last();
     job.cached = false;
     job.img = nullptr;
     job.blendMode = ml->blendMode();
     job.opacity = 1.0;
-    if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml ) )
+    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml ) )
     {
       job.opacity = 1.0 - vl->layerTransparency() / 100.0;
     }
@@ -313,7 +313,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
     if ( mCache || !painter || needTemporaryImage( ml ) )
     {
       // Flattened image for drawing when a blending mode is set
-      QImage * mypFlattenedImage = nullptr;
+      QImage *mypFlattenedImage = nullptr;
       mypFlattenedImage = new QImage( mSettings.outputSize().width(),
                                       mSettings.outputSize().height(),
                                       mSettings.outputImageFormat() );
@@ -326,7 +326,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
       }
 
       job.img = mypFlattenedImage;
-      QPainter* mypPainter = new QPainter( job.img );
+      QPainter *mypPainter = new QPainter( job.img );
       mypPainter->setRenderHint( QPainter::Antialiasing, mSettings.testFlag( QgsMapSettings::Antialiasing ) );
       job.context.setPainter( mypPainter );
     }
@@ -342,7 +342,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
 
     if ( mRequestedGeomCacheForLayers.contains( ml->id() ) )
     {
-      if ( QgsVectorLayerRenderer* vlr = dynamic_cast<QgsVectorLayerRenderer*>( job.renderer ) )
+      if ( QgsVectorLayerRenderer *vlr = dynamic_cast<QgsVectorLayerRenderer *>( job.renderer ) )
       {
         vlr->setGeometryCachePointer( &mGeometryCaches[ ml->id()] );
       }
@@ -353,7 +353,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
   return layerJobs;
 }
 
-LabelRenderJob QgsMapRendererJob::prepareLabelingJob( QPainter* painter, QgsLabelingEngine* labelingEngine2, bool canUseLabelCache )
+LabelRenderJob QgsMapRendererJob::prepareLabelingJob( QPainter *painter, QgsLabelingEngine *labelingEngine2, bool canUseLabelCache )
 {
   LabelRenderJob job;
   job.context = QgsRenderContext::fromMapSettings( mSettings );
@@ -375,7 +375,7 @@ LabelRenderJob QgsMapRendererJob::prepareLabelingJob( QPainter* painter, QgsLabe
     if ( canUseLabelCache && ( mCache || !painter ) )
     {
       // Flattened image for drawing labels
-      QImage * mypFlattenedImage = nullptr;
+      QImage *mypFlattenedImage = nullptr;
       mypFlattenedImage = new QImage( mSettings.outputSize().width(),
                                       mSettings.outputSize().height(),
                                       mSettings.outputImageFormat() );
@@ -395,11 +395,11 @@ LabelRenderJob QgsMapRendererJob::prepareLabelingJob( QPainter* painter, QgsLabe
 }
 
 
-void QgsMapRendererJob::cleanupJobs( LayerRenderJobs& jobs )
+void QgsMapRendererJob::cleanupJobs( LayerRenderJobs &jobs )
 {
   for ( LayerRenderJobs::iterator it = jobs.begin(); it != jobs.end(); ++it )
   {
-    LayerRenderJob& job = *it;
+    LayerRenderJob &job = *it;
     if ( job.img )
     {
       delete job.context.painter();
@@ -408,7 +408,7 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs& jobs )
       if ( mCache && !job.cached && !job.context.renderingStopped() && job.layer )
       {
         QgsDebugMsg( "caching image for " + ( job.layer ? job.layer->id() : QString() ) );
-        mCache->setCacheImage( job.layer->id(), *job.img, QList< QgsMapLayer* >() << job.layer );
+        mCache->setCacheImage( job.layer->id(), *job.img, QList< QgsMapLayer * >() << job.layer );
       }
 
       delete job.img;
@@ -417,7 +417,7 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs& jobs )
 
     if ( job.renderer )
     {
-      Q_FOREACH ( const QString& message, job.renderer->errors() )
+      Q_FOREACH ( const QString &message, job.renderer->errors() )
         mErrors.append( Error( job.renderer->layerId(), message ) );
 
       delete job.renderer;
@@ -431,7 +431,7 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs& jobs )
   updateLayerGeometryCaches();
 }
 
-void QgsMapRendererJob::cleanupLabelJob( LabelRenderJob& job )
+void QgsMapRendererJob::cleanupLabelJob( LabelRenderJob &job )
 {
   if ( job.img )
   {
@@ -447,7 +447,7 @@ void QgsMapRendererJob::cleanupLabelJob( LabelRenderJob& job )
 }
 
 
-QImage QgsMapRendererJob::composeImage( const QgsMapSettings& settings, const LayerRenderJobs& jobs, const LabelRenderJob& labelJob )
+QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings, const LayerRenderJobs &jobs, const LabelRenderJob &labelJob )
 {
   QImage image( settings.outputSize(), settings.outputImageFormat() );
   image.fill( settings.backgroundColor().rgba() );
@@ -457,7 +457,7 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings& settings, const La
 
   for ( LayerRenderJobs::const_iterator it = jobs.constBegin(); it != jobs.constEnd(); ++it )
   {
-    const LayerRenderJob& job = *it;
+    const LayerRenderJob &job = *it;
 
     if ( job.layer && job.layer->customProperty( QStringLiteral( "rendering/renderAboveLabels" ) ).toBool() )
       continue; // skip layer for now, it will be rendered after labels
@@ -483,7 +483,7 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings& settings, const La
   // render any layers with the renderAboveLabels flag now
   for ( LayerRenderJobs::const_iterator it = jobs.constBegin(); it != jobs.constEnd(); ++it )
   {
-    const LayerRenderJob& job = *it;
+    const LayerRenderJob &job = *it;
 
     if ( !job.layer || !job.layer->customProperty( QStringLiteral( "rendering/renderAboveLabels" ) ).toBool() )
       continue;
@@ -500,14 +500,14 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings& settings, const La
   return image;
 }
 
-void QgsMapRendererJob::logRenderingTime( const LayerRenderJobs& jobs, const LabelRenderJob& labelJob )
+void QgsMapRendererJob::logRenderingTime( const LayerRenderJobs &jobs, const LabelRenderJob &labelJob )
 {
   QSettings settings;
   if ( !settings.value( QStringLiteral( "/Map/logCanvasRefreshEvent" ), false ).toBool() )
     return;
 
   QMultiMap<int, QString> elapsed;
-  Q_FOREACH ( const LayerRenderJob& job, jobs )
+  Q_FOREACH ( const LayerRenderJob &job, jobs )
     elapsed.insert( job.renderingTime, job.layer ? job.layer->id() : QString() );
 
   elapsed.insert( labelJob.renderingTime, tr( "Labeling" ) );

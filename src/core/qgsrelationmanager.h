@@ -46,7 +46,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
      *
      * @param relations A list of relations to set.
      */
-    void setRelations( const QList<QgsRelation>& relations );
+    void setRelations( const QList<QgsRelation> &relations );
 
     /**
      * Get access to the relations managed by this class.
@@ -60,21 +60,21 @@ class CORE_EXPORT QgsRelationManager : public QObject
      *
      * @param relation The relation to add.
      */
-    void addRelation( const QgsRelation& relation );
+    void addRelation( const QgsRelation &relation );
 
     /**
      * Remove a relation.
      *
      * @param id The id of the relation to remove.
      */
-    void removeRelation( const QString& id );
+    void removeRelation( const QString &id );
 
     /**
      * Remove a relation.
      *
      * @param relation The relation to remove.
      */
-    void removeRelation( const QgsRelation& relation );
+    void removeRelation( const QgsRelation &relation );
 
     /**
      * Get access to a relation by its id.
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
      * @return A relation. Invalid if not found.
      * @see relationsByName()
      */
-    Q_INVOKABLE QgsRelation relation( const QString& id ) const;
+    Q_INVOKABLE QgsRelation relation( const QString &id ) const;
 
     /** Returns a list of relations with matching names.
      * @param name relation name to search for. Searching is case insensitive.
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
      * @note added in QGIS 2.16
      * @see relation()
      */
-    QList<QgsRelation> relationsByName( const QString& name ) const;
+    QList<QgsRelation> relationsByName( const QString &name ) const;
 
     /**
      * Remove any relation managed by this class.
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
      *
      * @return A list of relations matching the given layer and fieldIdx.
      */
-    QList<QgsRelation> referencingRelations( const QgsVectorLayer* layer = nullptr, int fieldIdx = -2 ) const;
+    QList<QgsRelation> referencingRelations( const QgsVectorLayer *layer = nullptr, int fieldIdx = -2 ) const;
 
     /**
      * Get all relations where this layer is the referenced part (i.e. the parent table with the primary key being referenced from another layer).
@@ -126,7 +126,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
      * @return the list of discovered relations
      * @note added in QGIS 3.0
      */
-    static QList<QgsRelation> discoverRelations( const QList<QgsRelation>& existingRelations, const QList<QgsVectorLayer*>& layers );
+    static QList<QgsRelation> discoverRelations( const QList<QgsRelation> &existingRelations, const QList<QgsVectorLayer *> &layers );
 
   signals:
     //! This signal is emitted when the relations were loaded after reading a project
@@ -141,13 +141,13 @@ class CORE_EXPORT QgsRelationManager : public QObject
   private slots:
     void readProject( const QDomDocument &doc );
     void writeProject( QDomDocument &doc );
-    void layersRemoved( const QStringList& layers );
+    void layersRemoved( const QStringList &layers );
 
   private:
     //! The references
     QMap<QString, QgsRelation> mRelations;
 
-    QgsProject* mProject = nullptr;
+    QgsProject *mProject = nullptr;
 };
 
 #endif // QGSRELATIONMANAGER_H

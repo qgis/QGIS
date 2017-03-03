@@ -63,10 +63,10 @@ class QgsConnectionPoolGroup
       QTime lastUsedTime;
     };
 
-    QgsConnectionPoolGroup( const QString& ci )
-        : connInfo( ci )
-        , sem( CONN_POOL_MAX_CONCURRENT_CONNS )
-        , expirationTimer( nullptr )
+    QgsConnectionPoolGroup( const QString &ci )
+      : connInfo( ci )
+      , sem( CONN_POOL_MAX_CONCURRENT_CONNS )
+      , expirationTimer( nullptr )
     {
     }
 
@@ -79,9 +79,9 @@ class QgsConnectionPoolGroup
     }
 
     //! QgsConnectionPoolGroup cannot be copied
-    QgsConnectionPoolGroup( const QgsConnectionPoolGroup& other ) = delete;
+    QgsConnectionPoolGroup( const QgsConnectionPoolGroup &other ) = delete;
     //! QgsConnectionPoolGroup cannot be copied
-    QgsConnectionPoolGroup& operator=( const QgsConnectionPoolGroup& other ) = delete;
+    QgsConnectionPoolGroup &operator=( const QgsConnectionPoolGroup &other ) = delete;
 
     T acquire()
     {
@@ -171,7 +171,7 @@ class QgsConnectionPoolGroup
 
   protected:
 
-    void initTimer( QObject* parent )
+    void initTimer( QObject *parent )
     {
       expirationTimer = new QTimer( parent );
       expirationTimer->setInterval( CONN_POOL_EXPIRATION_TIME * 1000 );
@@ -217,7 +217,7 @@ class QgsConnectionPoolGroup
     QList<T> acquiredConns;
     QMutex connMutex;
     QSemaphore sem;
-    QTimer* expirationTimer = nullptr;
+    QTimer *expirationTimer = nullptr;
 
 };
 
@@ -242,12 +242,12 @@ class QgsConnectionPool
 {
   public:
 
-    typedef QMap<QString, T_Group*> T_Groups;
+    typedef QMap<QString, T_Group *> T_Groups;
 
     virtual ~QgsConnectionPool()
     {
       mMutex.lock();
-      Q_FOREACH ( T_Group* group, mGroups )
+      Q_FOREACH ( T_Group *group, mGroups )
       {
         delete group;
       }
@@ -257,7 +257,7 @@ class QgsConnectionPool
 
     //! Try to acquire a connection: if no connections are available, the thread will get blocked.
     //! @return initialized connection or null on error
-    T acquireConnection( const QString& connInfo )
+    T acquireConnection( const QString &connInfo )
     {
       mMutex.lock();
       typename T_Groups::iterator it = mGroups.find( connInfo );
@@ -265,7 +265,7 @@ class QgsConnectionPool
       {
         it = mGroups.insert( connInfo, new T_Group( connInfo ) );
       }
-      T_Group* group = *it;
+      T_Group *group = *it;
       mMutex.unlock();
 
       return group->acquire();
@@ -277,7 +277,7 @@ class QgsConnectionPool
       mMutex.lock();
       typename T_Groups::iterator it = mGroups.find( qgsConnectionPool_ConnectionToName( conn ) );
       Q_ASSERT( it != mGroups.end() );
-      T_Group* group = *it;
+      T_Group *group = *it;
       mMutex.unlock();
 
       group->release( conn );
@@ -288,7 +288,7 @@ class QgsConnectionPool
     //! when a dataset is modified. Consquently, all open handles need to be
     //! invalidated when such datasets are changed to ensure the handles are
     //! refreshed. See the OGR provider for an example where this is needed.
-    void invalidateConnections( const QString& connInfo )
+    void invalidateConnections( const QString &connInfo )
     {
       mMutex.lock();
       if ( mGroups.contains( connInfo ) )

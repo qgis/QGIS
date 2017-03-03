@@ -31,17 +31,17 @@
 static int sRenderCounter = 0;
 
 QgsRenderChecker::QgsRenderChecker()
-    : mReport( QLatin1String( "" ) )
-    , mMatchTarget( 0 )
-    , mElapsedTime( 0 )
-    , mRenderedImageFile( QLatin1String( "" ) )
-    , mExpectedImageFile( QLatin1String( "" ) )
-    , mMismatchCount( 0 )
-    , mColorTolerance( 0 )
-    , mMaxSizeDifferenceX( 0 )
-    , mMaxSizeDifferenceY( 0 )
-    , mElapsedTimeTarget( 0 )
-    , mBufferDashMessages( false )
+  : mReport( QLatin1String( "" ) )
+  , mMatchTarget( 0 )
+  , mElapsedTime( 0 )
+  , mRenderedImageFile( QLatin1String( "" ) )
+  , mExpectedImageFile( QLatin1String( "" ) )
+  , mMismatchCount( 0 )
+  , mColorTolerance( 0 )
+  , mMaxSizeDifferenceX( 0 )
+  , mMaxSizeDifferenceY( 0 )
+  , mElapsedTimeTarget( 0 )
+  , mBufferDashMessages( false )
 {
 }
 
@@ -58,7 +58,7 @@ void QgsRenderChecker::setControlName( const QString &name )
   mExpectedImageFile = controlImagePath() + name + '/' + mControlPathSuffix + name + ".png";
 }
 
-void QgsRenderChecker::setControlPathSuffix( const QString& name )
+void QgsRenderChecker::setControlPathSuffix( const QString &name )
 {
   if ( !name.isEmpty() )
     mControlPathSuffix = name + '/';
@@ -66,7 +66,7 @@ void QgsRenderChecker::setControlPathSuffix( const QString& name )
     mControlPathSuffix.clear();
 }
 
-QString QgsRenderChecker::imageToHash( const QString& imageFile )
+QString QgsRenderChecker::imageToHash( const QString &imageFile )
 {
   QImage myImage;
   myImage.load( imageFile );
@@ -79,12 +79,12 @@ QString QgsRenderChecker::imageToHash( const QString& imageFile )
   return myHash.result().toHex().constData();
 }
 
-void QgsRenderChecker::setMapSettings( const QgsMapSettings& mapSettings )
+void QgsRenderChecker::setMapSettings( const QgsMapSettings &mapSettings )
 {
   mMapSettings = mapSettings;
 }
 
-void QgsRenderChecker::drawBackground( QImage* image )
+void QgsRenderChecker::drawBackground( QImage *image )
 {
   // create a 2x2 checker-board image
   uchar pixDataRGB[] = { 255, 255, 255, 255,
@@ -105,7 +105,7 @@ void QgsRenderChecker::drawBackground( QImage* image )
   p.end();
 }
 
-bool QgsRenderChecker::isKnownAnomaly( const QString& diffImageFile )
+bool QgsRenderChecker::isKnownAnomaly( const QString &diffImageFile )
 {
   QString myControlImageDir = controlImagePath() + mControlName + '/';
   QDir myDirectory = QDir( myControlImageDir );
@@ -152,7 +152,7 @@ bool QgsRenderChecker::isKnownAnomaly( const QString& diffImageFile )
   return false;
 }
 
-void QgsRenderChecker::emitDashMessage( const QgsDartMeasurement& dashMessage )
+void QgsRenderChecker::emitDashMessage( const QgsDartMeasurement &dashMessage )
 {
   if ( mBufferDashMessages )
     mDashMessages << dashMessage;
@@ -160,12 +160,12 @@ void QgsRenderChecker::emitDashMessage( const QgsDartMeasurement& dashMessage )
     dashMessage.send();
 }
 
-void QgsRenderChecker::emitDashMessage( const QString& name, QgsDartMeasurement::Type type, const QString& value )
+void QgsRenderChecker::emitDashMessage( const QString &name, QgsDartMeasurement::Type type, const QString &value )
 {
   emitDashMessage( QgsDartMeasurement( name, type, value ) );
 }
 
-bool QgsRenderChecker::runTest( const QString& testName,
+bool QgsRenderChecker::runTest( const QString &testName,
                                 unsigned int mismatchCount )
 {
   if ( mExpectedImageFile.isEmpty() )
@@ -236,19 +236,19 @@ bool QgsRenderChecker::runTest( const QString& testName,
 
     QTextStream stream( &wldFile );
     stream << QStringLiteral( "%1\r\n0 \r\n0 \r\n%2\r\n%3\r\n%4\r\n" )
-    .arg( qgsDoubleToString( mMapSettings.mapUnitsPerPixel() ),
-          qgsDoubleToString( -mMapSettings.mapUnitsPerPixel() ),
-          qgsDoubleToString( r.xMinimum() + mMapSettings.mapUnitsPerPixel() / 2.0 ),
-          qgsDoubleToString( r.yMaximum() - mMapSettings.mapUnitsPerPixel() / 2.0 ) );
+           .arg( qgsDoubleToString( mMapSettings.mapUnitsPerPixel() ),
+                 qgsDoubleToString( -mMapSettings.mapUnitsPerPixel() ),
+                 qgsDoubleToString( r.xMinimum() + mMapSettings.mapUnitsPerPixel() / 2.0 ),
+                 qgsDoubleToString( r.yMaximum() - mMapSettings.mapUnitsPerPixel() / 2.0 ) );
   }
 
   return compareImages( testName, mismatchCount );
 }
 
 
-bool QgsRenderChecker::compareImages( const QString& testName,
+bool QgsRenderChecker::compareImages( const QString &testName,
                                       unsigned int mismatchCount,
-                                      const QString& renderedImageFile )
+                                      const QString &renderedImageFile )
 {
   if ( mExpectedImageFile.isEmpty() )
   {
@@ -301,7 +301,7 @@ bool QgsRenderChecker::compareImages( const QString& testName,
   QString maskImagePath = mExpectedImageFile;
   maskImagePath.chop( 4 ); //remove .png extension
   maskImagePath += QLatin1String( "_mask.png" );
-  QImage* maskImage = new QImage( maskImagePath );
+  QImage *maskImage = new QImage( maskImagePath );
   bool hasMask = !maskImage->isNull();
   if ( hasMask )
   {
@@ -411,10 +411,10 @@ bool QgsRenderChecker::compareImages( const QString& testName,
   int colorTolerance = static_cast< int >( mColorTolerance );
   for ( int y = 0; y < maxHeight; ++y )
   {
-    const QRgb* expectedScanline = reinterpret_cast< const QRgb* >( myExpectedImage.constScanLine( y ) );
-    const QRgb* resultScanline = reinterpret_cast< const QRgb* >( myResultImage.constScanLine( y ) );
-    const QRgb* maskScanline = hasMask ? reinterpret_cast< const QRgb* >( maskImage->constScanLine( y ) ) : nullptr;
-    QRgb* diffScanline = reinterpret_cast< QRgb* >( myDifferenceImage.scanLine( y ) );
+    const QRgb *expectedScanline = reinterpret_cast< const QRgb * >( myExpectedImage.constScanLine( y ) );
+    const QRgb *resultScanline = reinterpret_cast< const QRgb * >( myResultImage.constScanLine( y ) );
+    const QRgb *maskScanline = hasMask ? reinterpret_cast< const QRgb * >( maskImage->constScanLine( y ) ) : nullptr;
+    QRgb *diffScanline = reinterpret_cast< QRgb * >( myDifferenceImage.scanLine( y ) );
 
     for ( int x = 0; x < maxWidth; ++x )
     {

@@ -19,7 +19,7 @@
 #include "qgscoordinatetransform.h"
 #include <QVector>
 
-QgsCoordinateTransformCache* QgsCoordinateTransformCache::instance()
+QgsCoordinateTransformCache *QgsCoordinateTransformCache::instance()
 {
   static QgsCoordinateTransformCache sInstance;
   return &sInstance;
@@ -29,7 +29,7 @@ QgsCoordinateTransformCache::QgsCoordinateTransformCache()
 {
 }
 
-QgsCoordinateTransform QgsCoordinateTransformCache::transform( const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform, int destDatumTransform )
+QgsCoordinateTransform QgsCoordinateTransformCache::transform( const QString &srcAuthId, const QString &destAuthId, int srcDatumTransform, int destDatumTransform )
 {
   QList< QgsCoordinateTransform > values =
     mTransforms.values( qMakePair( srcAuthId, destAuthId ) );
@@ -37,9 +37,9 @@ QgsCoordinateTransform QgsCoordinateTransformCache::transform( const QString& sr
   QList< QgsCoordinateTransform >::const_iterator valIt = values.constBegin();
   for ( ; valIt != values.constEnd(); ++valIt )
   {
-    if (( *valIt ).isValid() &&
-        ( *valIt ).sourceDatumTransform() == srcDatumTransform &&
-        ( *valIt ).destinationDatumTransform() == destDatumTransform )
+    if ( ( *valIt ).isValid() &&
+         ( *valIt ).sourceDatumTransform() == srcDatumTransform &&
+         ( *valIt ).destinationDatumTransform() == destDatumTransform )
     {
       return *valIt;
     }
@@ -56,7 +56,7 @@ QgsCoordinateTransform QgsCoordinateTransformCache::transform( const QString& sr
   return ct;
 }
 
-void QgsCoordinateTransformCache::invalidateCrs( const QString& crsAuthId )
+void QgsCoordinateTransformCache::invalidateCrs( const QString &crsAuthId )
 {
   //get keys to remove first
   QHash< QPair< QString, QString >, QgsCoordinateTransform >::const_iterator it = mTransforms.constBegin();

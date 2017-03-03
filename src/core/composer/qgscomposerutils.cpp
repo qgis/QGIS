@@ -76,7 +76,7 @@ double QgsComposerUtils::angle( QPointF p1, QPointF p2 )
     return 0;
   }
 
-  double angle = acos(( -yDiff * length ) / ( length * length ) ) * 180 / M_PI;
+  double angle = acos( ( -yDiff * length ) / ( length * length ) ) * 180 / M_PI;
   if ( xDiff < 0 )
   {
     return ( 360 - angle );
@@ -164,22 +164,22 @@ QRectF QgsComposerUtils::largestRotatedRectWithinBounds( const QRectF &originalR
     double rectScale;
     if ( qgsDoubleNear( clippedRotation, 0.0 ) || qgsDoubleNear( clippedRotation, 180.0 ) )
     {
-      rectScale = (( originalWidth / originalHeight ) > ratioBoundsRect ) ? boundsWidth / originalWidth : boundsHeight / originalHeight;
+      rectScale = ( ( originalWidth / originalHeight ) > ratioBoundsRect ) ? boundsWidth / originalWidth : boundsHeight / originalHeight;
     }
     else
     {
-      rectScale = (( originalHeight / originalWidth ) > ratioBoundsRect ) ? boundsWidth / originalHeight : boundsHeight / originalWidth;
+      rectScale = ( ( originalHeight / originalWidth ) > ratioBoundsRect ) ? boundsWidth / originalHeight : boundsHeight / originalWidth;
     }
     double rectScaledWidth = rectScale * originalWidth;
     double rectScaledHeight = rectScale * originalHeight;
 
     if ( qgsDoubleNear( clippedRotation, 0.0 ) || qgsDoubleNear( clippedRotation, 180.0 ) )
     {
-      return QRectF(( boundsWidth - rectScaledWidth ) / 2.0, ( boundsHeight - rectScaledHeight ) / 2.0, rectScaledWidth, rectScaledHeight );
+      return QRectF( ( boundsWidth - rectScaledWidth ) / 2.0, ( boundsHeight - rectScaledHeight ) / 2.0, rectScaledWidth, rectScaledHeight );
     }
     else
     {
-      return QRectF(( boundsWidth - rectScaledHeight ) / 2.0, ( boundsHeight - rectScaledWidth ) / 2.0, rectScaledWidth, rectScaledHeight );
+      return QRectF( ( boundsWidth - rectScaledHeight ) / 2.0, ( boundsHeight - rectScaledWidth ) / 2.0, rectScaledWidth, rectScaledHeight );
     }
   }
 
@@ -240,7 +240,7 @@ double QgsComposerUtils::mmToPoints( const double mmSize )
   return ( mmSize / 0.3527 );
 }
 
-void QgsComposerUtils::relativeResizeRect( QRectF& rectToResize, const QRectF& boundsBefore, const QRectF& boundsAfter )
+void QgsComposerUtils::relativeResizeRect( QRectF &rectToResize, const QRectF &boundsBefore, const QRectF &boundsAfter )
 {
   //linearly scale rectToResize relative to the scaling from boundsBefore to boundsAfter
   double left = relativePosition( rectToResize.left(), boundsBefore.left(), boundsBefore.right(), boundsAfter.left(), boundsAfter.right() );
@@ -261,7 +261,7 @@ double QgsComposerUtils::relativePosition( const double position, const double b
   return m * position + c;
 }
 
-QgsComposition::PaperOrientation QgsComposerUtils::decodePaperOrientation( const QString& orientationString, bool &ok )
+QgsComposition::PaperOrientation QgsComposerUtils::decodePaperOrientation( const QString &orientationString, bool &ok )
 {
   if ( orientationString.compare( QLatin1String( "Portrait" ), Qt::CaseInsensitive ) == 0 )
   {
@@ -277,7 +277,7 @@ QgsComposition::PaperOrientation QgsComposerUtils::decodePaperOrientation( const
   return QgsComposition::Landscape; // default to landscape
 }
 
-bool QgsComposerUtils::decodePresetPaperSize( const QString& presetString, double &width, double &height )
+bool QgsComposerUtils::decodePresetPaperSize( const QString &presetString, double &width, double &height )
 {
   QList< QPair< QString, QSizeF > > presets;
   presets << qMakePair( QStringLiteral( "A5" ), QSizeF( 148, 210 ) );
@@ -308,9 +308,9 @@ bool QgsComposerUtils::decodePresetPaperSize( const QString& presetString, doubl
   presets << qMakePair( QStringLiteral( "Arch E1" ), QSizeF( 762, 1066.8 ) );
 
   QList< QPair< QString, QSizeF > >::const_iterator presetIt = presets.constBegin();
-  for ( ;presetIt != presets.constEnd(); ++presetIt )
+  for ( ; presetIt != presets.constEnd(); ++presetIt )
   {
-    if ( presetString.compare(( *presetIt ).first, Qt::CaseInsensitive ) == 0 )
+    if ( presetString.compare( ( *presetIt ).first, Qt::CaseInsensitive ) == 0 )
     {
       width = ( *presetIt ).second.width();
       height = ( *presetIt ).second.height();
@@ -320,7 +320,7 @@ bool QgsComposerUtils::decodePresetPaperSize( const QString& presetString, doubl
   return false;
 }
 
-void QgsComposerUtils::readOldDataDefinedPropertyMap( const QDomElement &itemElem, QgsPropertyCollection& dataDefinedProperties )
+void QgsComposerUtils::readOldDataDefinedPropertyMap( const QDomElement &itemElem, QgsPropertyCollection &dataDefinedProperties )
 {
   QgsPropertiesDefinition::const_iterator i = QgsComposerObject::propertyDefinitions().constBegin();
   for ( ; i != QgsComposerObject::propertyDefinitions().constEnd(); ++i )
@@ -433,7 +433,7 @@ double QgsComposerUtils::textHeightMM( const QFont &font, const QString &text, d
   QFontMetricsF fontMetrics( metricsFont );
 
   double fontHeight = fontMetrics.ascent() + fontMetrics.descent(); // ignore +1 for baseline
-  double textHeight = fontMetrics.ascent() + static_cast< double >(( lines - 1 ) * fontHeight * multiLineHeight );
+  double textHeight = fontMetrics.ascent() + static_cast< double >( ( lines - 1 ) * fontHeight * multiLineHeight );
 
   return textHeight / FONT_WORKAROUND_SCALE;
 }
@@ -487,7 +487,7 @@ void QgsComposerUtils::drawText( QPainter *painter, const QRectF &rect, const QS
   painter->restore();
 }
 
-QgsRenderContext QgsComposerUtils::createRenderContextForMap( QgsComposerMap* map, QPainter* painter, double dpi )
+QgsRenderContext QgsComposerUtils::createRenderContextForMap( QgsComposerMap *map, QPainter *painter, double dpi )
 {
   if ( !map )
   {
@@ -526,8 +526,8 @@ QgsRenderContext QgsComposerUtils::createRenderContextForMap( QgsComposerMap* ma
   return context;
 }
 
-QgsRenderContext QgsComposerUtils::createRenderContextForComposition( QgsComposition* composition, QPainter* painter )
+QgsRenderContext QgsComposerUtils::createRenderContextForComposition( QgsComposition *composition, QPainter *painter )
 {
-  QgsComposerMap* referenceMap = composition ? composition->referenceMap() : nullptr;
+  QgsComposerMap *referenceMap = composition ? composition->referenceMap() : nullptr;
   return createRenderContextForMap( referenceMap, painter );
 }

@@ -94,7 +94,7 @@ QgsRendererRegistry::~QgsRendererRegistry()
   qDeleteAll( mRenderers );
 }
 
-bool QgsRendererRegistry::addRenderer( QgsRendererAbstractMetadata* metadata )
+bool QgsRendererRegistry::addRenderer( QgsRendererAbstractMetadata *metadata )
 {
   if ( !metadata || mRenderers.contains( metadata->name() ) )
     return false;
@@ -104,7 +104,7 @@ bool QgsRendererRegistry::addRenderer( QgsRendererAbstractMetadata* metadata )
   return true;
 }
 
-bool QgsRendererRegistry::removeRenderer( const QString& rendererName )
+bool QgsRendererRegistry::removeRenderer( const QString &rendererName )
 {
   if ( !mRenderers.contains( rendererName ) )
     return false;
@@ -115,7 +115,7 @@ bool QgsRendererRegistry::removeRenderer( const QString& rendererName )
   return true;
 }
 
-QgsRendererAbstractMetadata* QgsRendererRegistry::rendererMetadata( const QString& rendererName )
+QgsRendererAbstractMetadata *QgsRendererRegistry::rendererMetadata( const QString &rendererName )
 {
   return mRenderers.value( rendererName );
 }
@@ -123,16 +123,16 @@ QgsRendererAbstractMetadata* QgsRendererRegistry::rendererMetadata( const QStrin
 QStringList QgsRendererRegistry::renderersList( QgsRendererAbstractMetadata::LayerTypes layerTypes ) const
 {
   QStringList renderers;
-  Q_FOREACH ( const QString& renderer, mRenderersOrder )
+  Q_FOREACH ( const QString &renderer, mRenderersOrder )
   {
-    QgsRendererAbstractMetadata* r = mRenderers.value( renderer );
+    QgsRendererAbstractMetadata *r = mRenderers.value( renderer );
     if ( r && r->compatibleLayerTypes() & layerTypes )
       renderers << renderer;
   }
   return renderers;
 }
 
-QStringList QgsRendererRegistry::renderersList( const QgsVectorLayer* layer ) const
+QStringList QgsRendererRegistry::renderersList( const QgsVectorLayer *layer ) const
 {
   QgsRendererAbstractMetadata::LayerType layerType = QgsRendererAbstractMetadata::All;
 

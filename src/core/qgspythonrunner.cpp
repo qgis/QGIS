@@ -15,7 +15,7 @@
 #include "qgspythonrunner.h"
 #include "qgslogger.h"
 
-QgsPythonRunner* QgsPythonRunner::sInstance = nullptr;
+QgsPythonRunner *QgsPythonRunner::sInstance = nullptr;
 
 ///////////////////////////
 // static methods
@@ -25,7 +25,7 @@ bool QgsPythonRunner::isValid()
   return nullptr != sInstance;
 }
 
-bool QgsPythonRunner::run( const QString& command, const QString& messageOnError )
+bool QgsPythonRunner::run( const QString &command, const QString &messageOnError )
 {
   if ( sInstance )
   {
@@ -39,7 +39,7 @@ bool QgsPythonRunner::run( const QString& command, const QString& messageOnError
   }
 }
 
-bool QgsPythonRunner::eval( const QString& command, QString& result )
+bool QgsPythonRunner::eval( const QString &command, QString &result )
 {
   if ( sInstance )
   {
@@ -52,7 +52,7 @@ bool QgsPythonRunner::eval( const QString& command, QString& result )
   }
 }
 
-void QgsPythonRunner::setInstance( QgsPythonRunner* runner )
+void QgsPythonRunner::setInstance( QgsPythonRunner *runner )
 {
   delete sInstance;
   sInstance = runner;

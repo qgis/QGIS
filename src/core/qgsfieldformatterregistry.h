@@ -43,7 +43,7 @@ class CORE_EXPORT QgsFieldFormatterRegistry : public QObject
      *
      * Use the one provided by `QgsApplication::fieldFormatterRegistry()` instead.
      */
-    explicit QgsFieldFormatterRegistry( QObject* parent = nullptr );
+    explicit QgsFieldFormatterRegistry( QObject *parent = nullptr );
     ~QgsFieldFormatterRegistry();
 
     /**
@@ -52,46 +52,46 @@ class CORE_EXPORT QgsFieldFormatterRegistry : public QObject
      *
      * Ownership is transferred to the registry.
      */
-    void addFieldFormatter( QgsFieldFormatter* formatter );
+    void addFieldFormatter( QgsFieldFormatter *formatter );
 
     /**
      * Remove a field formatter from the registry.
      * The field formatter will be deleted.
      */
-    void removeFieldFormatter( QgsFieldFormatter* formatter );
+    void removeFieldFormatter( QgsFieldFormatter *formatter );
 
     /**
      * Remove the field formatter with the specified id.
      */
-    void removeFieldFormatter( const QString& id );
+    void removeFieldFormatter( const QString &id );
 
     /**
      * Get a field formatter by its id. If there is no such id registered,
      * a default QgsFallbackFieldFormatter with a null id will be returned instead.
      */
-    QgsFieldFormatter* fieldFormatter( const QString& id ) const;
+    QgsFieldFormatter *fieldFormatter( const QString &id ) const;
 
     /**
      * Returns a basic fallback field formatter which can be used
      * to represent any field in an unspectacular manner.
      */
-    QgsFieldFormatter* fallbackFieldFormatter() const;
+    QgsFieldFormatter *fallbackFieldFormatter() const;
 
   signals:
 
     /**
      * Will be emitted after a new field formatter has been added.
      */
-    void fieldFormatterAdded( QgsFieldFormatter* formatter );
+    void fieldFormatterAdded( QgsFieldFormatter *formatter );
 
     /**
      * Will be emitted just before a field formatter is removed and deleted.
      */
-    void fieldFormatterRemoved( QgsFieldFormatter* formatter );
+    void fieldFormatterRemoved( QgsFieldFormatter *formatter );
 
   private:
-    QHash<QString, QgsFieldFormatter*> mFieldFormatters;
-    QgsFieldFormatter* mFallbackFieldFormatter = nullptr;
+    QHash<QString, QgsFieldFormatter *> mFieldFormatters;
+    QgsFieldFormatter *mFallbackFieldFormatter = nullptr;
 };
 
 #endif // QGSFIELDKITREGISTRY_H

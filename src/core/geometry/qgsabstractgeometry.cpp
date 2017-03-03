@@ -27,12 +27,12 @@ QgsAbstractGeometry::QgsAbstractGeometry(): mWkbType( QgsWkbTypes::Unknown )
 {
 }
 
-QgsAbstractGeometry::QgsAbstractGeometry( const QgsAbstractGeometry& geom )
+QgsAbstractGeometry::QgsAbstractGeometry( const QgsAbstractGeometry &geom )
 {
   mWkbType = geom.mWkbType;
 }
 
-QgsAbstractGeometry& QgsAbstractGeometry::operator=( const QgsAbstractGeometry & geom )
+QgsAbstractGeometry &QgsAbstractGeometry::operator=( const QgsAbstractGeometry &geom )
 {
   if ( &geom != this )
   {
@@ -53,7 +53,7 @@ bool QgsAbstractGeometry::isMeasure() const
 }
 
 #if 0
-void QgsAbstractGeometry::clip( const QgsRectangle& rect )
+void QgsAbstractGeometry::clip( const QgsRectangle &rect )
 {
   // TODO
   // - Implementation
@@ -63,7 +63,7 @@ void QgsAbstractGeometry::clip( const QgsRectangle& rect )
 }
 #endif
 
-void QgsAbstractGeometry::setZMTypeFromSubGeometry( const QgsAbstractGeometry* subgeom, QgsWkbTypes::Type baseGeomType )
+void QgsAbstractGeometry::setZMTypeFromSubGeometry( const QgsAbstractGeometry *subgeom, QgsWkbTypes::Type baseGeomType )
 {
   if ( !subgeom )
   {
@@ -248,7 +248,7 @@ bool QgsAbstractGeometry::isEmpty() const
 }
 
 
-QgsAbstractGeometry* QgsAbstractGeometry::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
+QgsAbstractGeometry *QgsAbstractGeometry::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
 {
   Q_UNUSED( tolerance );
   Q_UNUSED( toleranceType );

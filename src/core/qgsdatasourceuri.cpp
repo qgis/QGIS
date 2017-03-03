@@ -26,21 +26,21 @@
 #include <QUrl>
 
 QgsDataSourceUri::QgsDataSourceUri()
-    : mSSLmode( SslPrefer )
-    , mKeyColumn( QLatin1String( "" ) )
-    , mUseEstimatedMetadata( false )
-    , mSelectAtIdDisabled( false )
-    , mWkbType( QgsWkbTypes::Unknown )
+  : mSSLmode( SslPrefer )
+  , mKeyColumn( QLatin1String( "" ) )
+  , mUseEstimatedMetadata( false )
+  , mSelectAtIdDisabled( false )
+  , mWkbType( QgsWkbTypes::Unknown )
 {
   // do nothing
 }
 
 QgsDataSourceUri::QgsDataSourceUri( QString uri )
-    : mSSLmode( SslPrefer )
-    , mKeyColumn( QLatin1String( "" ) )
-    , mUseEstimatedMetadata( false )
-    , mSelectAtIdDisabled( false )
-    , mWkbType( QgsWkbTypes::Unknown )
+  : mSSLmode( SslPrefer )
+  , mKeyColumn( QLatin1String( "" ) )
+  , mUseEstimatedMetadata( false )
+  , mSelectAtIdDisabled( false )
+  , mWkbType( QgsWkbTypes::Unknown )
 {
   int i = 0;
   while ( i < uri.length() )
@@ -232,7 +232,7 @@ QgsDataSourceUri::QgsDataSourceUri( QString uri )
   }
 }
 
-QString QgsDataSourceUri::removePassword( const QString& aUri )
+QString QgsDataSourceUri::removePassword( const QString &aUri )
 {
   QRegExp regexp;
   regexp.setMinimal( true );
@@ -252,8 +252,8 @@ QString QgsDataSourceUri::removePassword( const QString& aUri )
     regexp.setPattern( QStringLiteral( " pass=.* " ) );
     safeName.replace( regexp, QStringLiteral( " " ) );
   }
-  else if (( aUri.contains( QLatin1String( "OCI:" ) ) )
-           || ( aUri.contains( QLatin1String( "ODBC:" ) ) ) )
+  else if ( ( aUri.contains( QLatin1String( "OCI:" ) ) )
+            || ( aUri.contains( QLatin1String( "ODBC:" ) ) ) )
   {
     regexp.setPattern( QStringLiteral( "/.*@" ) );
     safeName.replace( regexp, QStringLiteral( "/@" ) );
@@ -276,7 +276,7 @@ QString QgsDataSourceUri::username() const
   return mUsername;
 }
 
-void QgsDataSourceUri::setUsername( const QString& username )
+void QgsDataSourceUri::setUsername( const QString &username )
 {
   mUsername = username;
 }
@@ -301,7 +301,7 @@ QString QgsDataSourceUri::password() const
   return mPassword;
 }
 
-void QgsDataSourceUri::setPassword( const QString& password )
+void QgsDataSourceUri::setPassword( const QString &password )
 {
   mPassword = password;
 }
@@ -347,13 +347,13 @@ QString QgsDataSourceUri::keyColumn() const
 }
 
 
-void QgsDataSourceUri::setDriver( const QString& driver )
+void QgsDataSourceUri::setDriver( const QString &driver )
 {
   mDriver = driver;
 }
 
 
-void QgsDataSourceUri::setKeyColumn( const QString& column )
+void QgsDataSourceUri::setKeyColumn( const QString &column )
 {
   mKeyColumn = column;
 }
@@ -379,7 +379,7 @@ bool QgsDataSourceUri::selectAtIdDisabled() const
   return mSelectAtIdDisabled;
 }
 
-void QgsDataSourceUri::setSql( const QString& sql )
+void QgsDataSourceUri::setSql( const QString &sql )
 {
   mSql = sql;
 }
@@ -389,7 +389,7 @@ void QgsDataSourceUri::clearSchema()
   mSchema = QLatin1String( "" );
 }
 
-void QgsDataSourceUri::setSchema( const QString& schema )
+void QgsDataSourceUri::setSchema( const QString &schema )
 {
   mSchema = schema;
 }
@@ -606,9 +606,9 @@ QString QgsDataSourceUri::uri( bool expandAuthConfig ) const
 QByteArray QgsDataSourceUri::encodedUri() const
 {
   QUrl url;
-  Q_FOREACH ( const QString& key, mParams.uniqueKeys() )
+  Q_FOREACH ( const QString &key, mParams.uniqueKeys() )
   {
-    Q_FOREACH ( const QString& value, mParams.values( key ) )
+    Q_FOREACH ( const QString &value, mParams.values( key ) )
     {
       url.addQueryItem( key, value );
     }
@@ -616,7 +616,7 @@ QByteArray QgsDataSourceUri::encodedUri() const
   return url.encodedQuery();
 }
 
-void QgsDataSourceUri::setEncodedUri( const QByteArray & uri )
+void QgsDataSourceUri::setEncodedUri( const QByteArray &uri )
 {
   mParams.clear();
   QUrl url;
@@ -628,7 +628,7 @@ void QgsDataSourceUri::setEncodedUri( const QByteArray & uri )
   }
 }
 
-void QgsDataSourceUri::setEncodedUri( const QString & uri )
+void QgsDataSourceUri::setEncodedUri( const QString &uri )
 {
   setEncodedUri( uri.toLatin1() );
 }
@@ -714,7 +714,7 @@ QString QgsDataSourceUri::srid() const
   return mSrid;
 }
 
-void QgsDataSourceUri::setSrid( const QString& srid )
+void QgsDataSourceUri::setSrid( const QString &srid )
 {
   mSrid = srid;
 }
@@ -727,7 +727,7 @@ void QgsDataSourceUri::setParam( const QString &key, const QString &value )
 
 void QgsDataSourceUri::setParam( const QString &key, const QStringList &value )
 {
-  Q_FOREACH ( const QString& val, value )
+  Q_FOREACH ( const QString &val, value )
   {
     mParams.insertMulti( key, val );
   }

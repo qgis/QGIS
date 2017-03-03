@@ -56,7 +56,7 @@ class CORE_EXPORT QgsNetworkReplyParser : public QObject
       * @param part part index
       * @param headerName header name
       * @return raw header */
-    QByteArray rawHeader( int part, const QByteArray & headerName ) const { return mHeaders.value( part ).value( headerName ); }
+    QByteArray rawHeader( int part, const QByteArray &headerName ) const { return mHeaders.value( part ).value( headerName ); }
 
     //! Get headers
     QList< RawHeaderMap > headers() const { return mHeaders; }

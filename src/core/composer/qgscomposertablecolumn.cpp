@@ -17,19 +17,19 @@
 
 #include "qgscomposertablecolumn.h"
 
-QgsComposerTableColumn::QgsComposerTableColumn( const QString& heading )
-    : mBackgroundColor( Qt::transparent )
-    , mHAlignment( Qt::AlignLeft )
-    , mVAlignment( Qt::AlignVCenter )
-    , mHeading( heading )
-    , mSortByRank( 0 )
-    , mSortOrder( Qt::AscendingOrder )
-    , mWidth( 0.0 )
+QgsComposerTableColumn::QgsComposerTableColumn( const QString &heading )
+  : mBackgroundColor( Qt::transparent )
+  , mHAlignment( Qt::AlignLeft )
+  , mVAlignment( Qt::AlignVCenter )
+  , mHeading( heading )
+  , mSortByRank( 0 )
+  , mSortOrder( Qt::AscendingOrder )
+  , mWidth( 0.0 )
 {
 
 }
 
-bool QgsComposerTableColumn::writeXml( QDomElement& columnElem, QDomDocument& doc ) const
+bool QgsComposerTableColumn::writeXml( QDomElement &columnElem, QDomDocument &doc ) const
 {
   //background color
   QDomElement bgColorElem = doc.createElement( QStringLiteral( "backgroundColor" ) );
@@ -53,7 +53,7 @@ bool QgsComposerTableColumn::writeXml( QDomElement& columnElem, QDomDocument& do
   return true;
 }
 
-bool QgsComposerTableColumn::readXml( const QDomElement& columnElem )
+bool QgsComposerTableColumn::readXml( const QDomElement &columnElem )
 {
   mHAlignment = static_cast< Qt::AlignmentFlag >( columnElem.attribute( QStringLiteral( "hAlignment" ), QString::number( Qt::AlignLeft ) ).toInt() );
   mVAlignment = static_cast< Qt::AlignmentFlag >( columnElem.attribute( QStringLiteral( "vAlignment" ), QString::number( Qt::AlignVCenter ) ).toInt() );
@@ -82,9 +82,9 @@ bool QgsComposerTableColumn::readXml( const QDomElement& columnElem )
   return true;
 }
 
-QgsComposerTableColumn* QgsComposerTableColumn::clone()
+QgsComposerTableColumn *QgsComposerTableColumn::clone()
 {
-  QgsComposerTableColumn* newColumn = new QgsComposerTableColumn;
+  QgsComposerTableColumn *newColumn = new QgsComposerTableColumn;
   newColumn->setAttribute( mAttribute );
   newColumn->setHeading( mHeading );
   newColumn->setHAlignment( mHAlignment );

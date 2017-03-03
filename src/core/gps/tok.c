@@ -47,7 +47,7 @@
 int nmea_calc_crc( const char *buff, int buff_sz )
 {
   int chsum = 0,
-              it;
+      it;
 
   for ( it = 0; it < buff_sz; ++it )
     chsum ^= ( int )buff[it];
@@ -165,7 +165,7 @@ int nmea_scanf( const char *buff, int buff_sz, const char *format, ... )
         width = 0;
         beg_fmt = format;
         tok_type = NMEA_TOKS_WIDTH;
-        //intentional fall-through
+      //intentional fall-through
       case NMEA_TOKS_WIDTH:
         if ( isdigit( *format ) )
           break;
@@ -208,7 +208,7 @@ int nmea_scanf( const char *buff, int buff_sz, const char *format, ... )
           case 'C':
             parg_target = ( void * )va_arg( arg_ptr, char * );
             if ( width && 0 != ( parg_target ) )
-              *(( char * )parg_target ) = *beg_tok;
+              *( ( char * )parg_target ) = *beg_tok;
             break;
           case 's':
           case 'S':
@@ -216,7 +216,7 @@ int nmea_scanf( const char *buff, int buff_sz, const char *format, ... )
             if ( width && 0 != ( parg_target ) )
             {
               memcpy( parg_target, beg_tok, width );
-              (( char * )parg_target )[width] = '\0';
+              ( ( char * )parg_target )[width] = '\0';
             }
             break;
           case 'f':
@@ -226,7 +226,7 @@ int nmea_scanf( const char *buff, int buff_sz, const char *format, ... )
           case 'E':
             parg_target = ( void * )va_arg( arg_ptr, double * );
             if ( width && 0 != ( parg_target ) )
-              *(( double * )parg_target ) = nmea_atof( beg_tok, width );
+              *( ( double * )parg_target ) = nmea_atof( beg_tok, width );
             break;
         };
 

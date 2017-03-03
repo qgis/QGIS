@@ -35,13 +35,13 @@ class CORE_EXPORT QgsLegendSymbolItem
     QgsLegendSymbolItem();
     //! Construct item. Does not take ownership of symbol (makes internal clone)
     //! @note parentRuleKey added in 2.8
-    QgsLegendSymbolItem( QgsSymbol* symbol, const QString& label, const QString& ruleKey, bool checkable = false, int scaleMinDenom = -1, int scaleMaxDenom = -1, int level = 0, const QString& parentRuleKey = QString() );
+    QgsLegendSymbolItem( QgsSymbol *symbol, const QString &label, const QString &ruleKey, bool checkable = false, int scaleMinDenom = -1, int scaleMaxDenom = -1, int level = 0, const QString &parentRuleKey = QString() );
     ~QgsLegendSymbolItem();
-    QgsLegendSymbolItem( const QgsLegendSymbolItem& other );
-    QgsLegendSymbolItem& operator=( const QgsLegendSymbolItem& other );
+    QgsLegendSymbolItem( const QgsLegendSymbolItem &other );
+    QgsLegendSymbolItem &operator=( const QgsLegendSymbolItem &other );
 
     //! Return associated symbol. May be null.
-    QgsSymbol* symbol() const { return mSymbol; }
+    QgsSymbol *symbol() const { return mSymbol; }
     //! Return text label
     QString label() const { return mLabel; }
     //! Return unique identifier of the rule for identification of the item within renderer
@@ -50,7 +50,7 @@ class CORE_EXPORT QgsLegendSymbolItem
     bool isCheckable() const { return mCheckable; }
 
     //! Used for older code that identifies legend entries from symbol pointer within renderer
-    QgsSymbol* legacyRuleKey() const { return mOriginalSymbolPointer; }
+    QgsSymbol *legacyRuleKey() const { return mOriginalSymbolPointer; }
 
     //! Determine whether given scale is within the scale range. Returns true if scale or scale range is invalid (value <= 0)
     bool isScaleOK( double scale ) const;
@@ -69,11 +69,11 @@ class CORE_EXPORT QgsLegendSymbolItem
     QString parentRuleKey() const { return mParentKey; }
 
     //! Set symbol of the item. Takes ownership of symbol.
-    void setSymbol( QgsSymbol* s );
+    void setSymbol( QgsSymbol *s );
 
   private:
     //! symbol. owned by the struct. can be null.
-    QgsSymbol* mSymbol = nullptr;
+    QgsSymbol *mSymbol = nullptr;
     //! label of the item (may be empty or non-unique)
     QString mLabel;
     //! unique identifier of the symbol item (within renderer)
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsLegendSymbolItem
     //! whether it can be enabled/disabled
     bool mCheckable;
 
-    QgsSymbol* mOriginalSymbolPointer = nullptr;
+    QgsSymbol *mOriginalSymbolPointer = nullptr;
 
     // additional data that may be used for filtering
 

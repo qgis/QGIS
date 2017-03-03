@@ -17,7 +17,7 @@
 #include "qgsvectordataprovider.h"
 #include <QRegularExpression>
 
-bool QgsVectorLayerUtils::valueExists( const QgsVectorLayer* layer, int fieldIndex, const QVariant& value, const QgsFeatureIds& ignoreIds )
+bool QgsVectorLayerUtils::valueExists( const QgsVectorLayer *layer, int fieldIndex, const QVariant &value, const QgsFeatureIds &ignoreIds )
 {
   if ( !layer )
     return false;
@@ -54,7 +54,7 @@ bool QgsVectorLayerUtils::valueExists( const QgsVectorLayer* layer, int fieldInd
   return false;
 }
 
-QVariant QgsVectorLayerUtils::createUniqueValue( const QgsVectorLayer* layer, int fieldIndex, const QVariant& seed )
+QVariant QgsVectorLayerUtils::createUniqueValue( const QgsVectorLayer *layer, int fieldIndex, const QVariant &seed )
 {
   if ( !layer )
     return QVariant();
@@ -134,7 +134,7 @@ QVariant QgsVectorLayerUtils::createUniqueValue( const QgsVectorLayer* layer, in
   return QVariant();
 }
 
-bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer* layer, const QgsFeature& feature, int attributeIndex, QStringList& errors,
+bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const QgsFeature &feature, int attributeIndex, QStringList &errors,
     QgsFieldConstraints::ConstraintStrength strength, QgsFieldConstraints::ConstraintOrigin origin )
 {
   if ( !layer )
@@ -226,15 +226,15 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer* layer, const 
   return valid;
 }
 
-QgsFeature QgsVectorLayerUtils::createFeature( QgsVectorLayer* layer, const QgsGeometry& geometry,
-    const QgsAttributeMap& attributes, QgsExpressionContext* context )
+QgsFeature QgsVectorLayerUtils::createFeature( QgsVectorLayer *layer, const QgsGeometry &geometry,
+    const QgsAttributeMap &attributes, QgsExpressionContext *context )
 {
   if ( !layer )
   {
     return QgsFeature();
   }
 
-  QgsExpressionContext* evalContext = context;
+  QgsExpressionContext *evalContext = context;
   std::unique_ptr< QgsExpressionContext > tempContext;
   if ( !evalContext )
   {

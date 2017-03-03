@@ -39,20 +39,20 @@ class CORE_EXPORT QgsGPSConnectionRegistry
     ~QgsGPSConnectionRegistry();
 
     //! QgsGPSConnectionRegistry cannot be copied.
-    QgsGPSConnectionRegistry( const QgsGPSConnectionRegistry& rh ) = delete;
+    QgsGPSConnectionRegistry( const QgsGPSConnectionRegistry &rh ) = delete;
     //! QgsGPSConnectionRegistry cannot be copied.
-    QgsGPSConnectionRegistry& operator=( const QgsGPSConnectionRegistry& rh ) = delete;
+    QgsGPSConnectionRegistry &operator=( const QgsGPSConnectionRegistry &rh ) = delete;
 
     //! Inserts a connection into the registry. The connection is owned by the registry class until it is unregistered again
-    void registerConnection( QgsGPSConnection* c );
+    void registerConnection( QgsGPSConnection *c );
     //! Unregisters connection. The registry does no longer own the connection
-    void unregisterConnection( QgsGPSConnection* c );
+    void unregisterConnection( QgsGPSConnection *c );
 
     QList< QgsGPSConnection *> connectionList() const;
 
   private:
 
-    QSet<QgsGPSConnection*> mConnections;
+    QSet<QgsGPSConnection *> mConnections;
 };
 
 #endif // QGSGPSCONNECTIONREGISTRY_H

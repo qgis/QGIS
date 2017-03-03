@@ -50,13 +50,13 @@ class CORE_EXPORT QgsSvgCacheEntry
      * @param stroke color of stroke
      * @param lookupKey the key string used in QgsSvgCache for quick lookup of this entry (relative or absolute path)
      */
-    QgsSvgCacheEntry( const QString& file, double size, double strokeWidth, double widthScaleFactor, const QColor& fill, const QColor& stroke, const QString& lookupKey = QString() );
+    QgsSvgCacheEntry( const QString &file, double size, double strokeWidth, double widthScaleFactor, const QColor &fill, const QColor &stroke, const QString &lookupKey = QString() );
     ~QgsSvgCacheEntry();
 
     //! QgsSvgCacheEntry cannot be copied.
-    QgsSvgCacheEntry( const QgsSvgCacheEntry& rh ) = delete;
+    QgsSvgCacheEntry( const QgsSvgCacheEntry &rh ) = delete;
     //! QgsSvgCacheEntry cannot be copied.
-    QgsSvgCacheEntry& operator=( const QgsSvgCacheEntry& rh ) = delete;
+    QgsSvgCacheEntry &operator=( const QgsSvgCacheEntry &rh ) = delete;
 
     //! Absolute path to SVG file
     QString file;
@@ -73,17 +73,17 @@ class CORE_EXPORT QgsSvgCacheEntry
 
     QColor fill;
     QColor stroke;
-    QImage* image = nullptr;
-    QPicture* picture = nullptr;
+    QImage *image = nullptr;
+    QPicture *picture = nullptr;
     //content (with params replaced)
     QByteArray svgContent;
 
     //keep entries on a least, sorted by last access
-    QgsSvgCacheEntry* nextEntry = nullptr;
-    QgsSvgCacheEntry* previousEntry = nullptr;
+    QgsSvgCacheEntry *nextEntry = nullptr;
+    QgsSvgCacheEntry *previousEntry = nullptr;
 
     //! Don't consider image, picture, last used timestamp for comparison
-    bool operator==( const QgsSvgCacheEntry& other ) const;
+    bool operator==( const QgsSvgCacheEntry &other ) const;
     //! Return memory usage in bytes
     int dataSize() const;
 
@@ -106,7 +106,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
     /**
      * Constructor for QgsSvgCache.
      */
-    QgsSvgCache( QObject * parent = nullptr );
+    QgsSvgCache( QObject *parent = nullptr );
 
     ~QgsSvgCache();
 
@@ -119,8 +119,8 @@ class CORE_EXPORT QgsSvgCache : public QObject
      * @param widthScaleFactor width scale factor
      * @param fitsInCache
      */
-    QImage svgAsImage( const QString& file, double size, const QColor& fill, const QColor& stroke, double strokeWidth,
-                       double widthScaleFactor, bool& fitsInCache );
+    QImage svgAsImage( const QString &file, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
+                       double widthScaleFactor, bool &fitsInCache );
 
     /** Get SVG  as QPicture&.
      * @param file Absolute or relative path to SVG file.
@@ -131,7 +131,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
      * @param widthScaleFactor width scale factor
      * @param forceVectorOutput
      */
-    QPicture svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& stroke, double strokeWidth,
+    QPicture svgAsPicture( const QString &file, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                            double widthScaleFactor, bool forceVectorOutput = false );
 
     /** Calculates the viewbox size of a (possibly cached) SVG file.
@@ -144,13 +144,13 @@ class CORE_EXPORT QgsSvgCache : public QObject
      * @returns viewbox size set in SVG file
      * @note added in QGIS 2.14
      */
-    QSizeF svgViewboxSize( const QString& file, double size, const QColor& fill, const QColor& stroke, double strokeWidth,
+    QSizeF svgViewboxSize( const QString &file, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                            double widthScaleFactor );
 
     /** Tests if an svg file contains parameters for fill, stroke color, stroke width. If yes, possible default values are returned. If there are several
       default values in the svg file, only the first one is considered*/
-    void containsParams( const QString& path, bool& hasFillParam, QColor& defaultFillColor, bool& hasStrokeParam, QColor& defaultStrokeColor, bool& hasStrokeWidthParam,
-                         double& defaultStrokeWidth ) const;
+    void containsParams( const QString &path, bool &hasFillParam, QColor &defaultFillColor, bool &hasStrokeParam, QColor &defaultStrokeColor, bool &hasStrokeWidthParam,
+                         double &defaultStrokeWidth ) const;
 
     /** Tests if an svg file contains parameters for fill, stroke color, stroke width. If yes, possible default values are returned. If there are several
      * default values in the svg file, only the first one is considered.
@@ -173,22 +173,22 @@ class CORE_EXPORT QgsSvgCache : public QObject
      * @note available in python bindings as containsParamsV3
      * @note added in QGIS 2.14
      */
-    void containsParams( const QString& path, bool& hasFillParam, bool& hasDefaultFillParam, QColor& defaultFillColor,
-                         bool& hasFillOpacityParam, bool& hasDefaultFillOpacity, double& defaultFillOpacity,
-                         bool& hasStrokeParam, bool& hasDefaultStrokeColor, QColor& defaultStrokeColor,
-                         bool& hasStrokeWidthParam, bool& hasDefaultStrokeWidth, double& defaultStrokeWidth,
-                         bool& hasStrokeOpacityParam, bool& hasDefaultStrokeOpacity, double& defaultStrokeOpacity ) const;
+    void containsParams( const QString &path, bool &hasFillParam, bool &hasDefaultFillParam, QColor &defaultFillColor,
+                         bool &hasFillOpacityParam, bool &hasDefaultFillOpacity, double &defaultFillOpacity,
+                         bool &hasStrokeParam, bool &hasDefaultStrokeColor, QColor &defaultStrokeColor,
+                         bool &hasStrokeWidthParam, bool &hasDefaultStrokeWidth, double &defaultStrokeWidth,
+                         bool &hasStrokeOpacityParam, bool &hasDefaultStrokeOpacity, double &defaultStrokeOpacity ) const;
 
     //! Get image data
     QByteArray getImageData( const QString &path ) const;
 
     //! Get SVG content
-    QByteArray svgContent( const QString& file, double size, const QColor& fill, const QColor& stroke, double strokeWidth,
+    QByteArray svgContent( const QString &file, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                            double widthScaleFactor );
 
   signals:
     //! Emit a signal to be caught by qgisapp and display a msg on status bar
-    void statusChanged( const QString&  statusQString );
+    void statusChanged( const QString  &statusQString );
 
   protected:
 
@@ -201,54 +201,54 @@ class CORE_EXPORT QgsSvgCache : public QObject
      * @param strokeWidth width of stroke
      * @param widthScaleFactor width scale factor
      */
-    QgsSvgCacheEntry* insertSVG( const QString& file, double size, const QColor& fill, const QColor& stroke, double strokeWidth,
+    QgsSvgCacheEntry *insertSVG( const QString &file, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                                  double widthScaleFactor );
 
-    void replaceParamsAndCacheSvg( QgsSvgCacheEntry* entry );
-    void cacheImage( QgsSvgCacheEntry* entry );
-    void cachePicture( QgsSvgCacheEntry* entry, bool forceVectorOutput = false );
+    void replaceParamsAndCacheSvg( QgsSvgCacheEntry *entry );
+    void cacheImage( QgsSvgCacheEntry *entry );
+    void cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput = false );
     //! Returns entry from cache or creates a new entry if it does not exist already
-    QgsSvgCacheEntry* cacheEntry( const QString& file, double size, const QColor& fill, const QColor& stroke, double strokeWidth,
+    QgsSvgCacheEntry *cacheEntry( const QString &file, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                                   double widthScaleFactor );
 
     //! Removes the least used items until the maximum size is under the limit
     void trimToMaximumSize();
 
     //Removes entry from the ordered list (but does not delete the entry itself)
-    void takeEntryFromList( QgsSvgCacheEntry* entry );
+    void takeEntryFromList( QgsSvgCacheEntry *entry );
 
   private slots:
     void downloadProgress( qint64, qint64 );
 
   private:
     //! Entry pointers accessible by file name
-    QMultiHash< QString, QgsSvgCacheEntry* > mEntryLookup;
+    QMultiHash< QString, QgsSvgCacheEntry * > mEntryLookup;
     //! Estimated total size of all images, pictures and svgContent
     long mTotalSize;
 
     //The svg cache keeps the entries on a double connected list, moving the current entry to the front.
     //That way, removing entries for more space can start with the least used objects.
-    QgsSvgCacheEntry* mLeastRecentEntry = nullptr;
-    QgsSvgCacheEntry* mMostRecentEntry = nullptr;
+    QgsSvgCacheEntry *mLeastRecentEntry = nullptr;
+    QgsSvgCacheEntry *mMostRecentEntry = nullptr;
 
     //! Maximum cache size
     static const long MAXIMUM_SIZE = 20000000;
 
     //! Replaces parameters in elements of a dom node and calls method for all child nodes
-    void replaceElemParams( QDomElement& elem, const QColor& fill, const QColor& stroke, double strokeWidth );
+    void replaceElemParams( QDomElement &elem, const QColor &fill, const QColor &stroke, double strokeWidth );
 
-    void containsElemParams( const QDomElement& elem,
-                             bool& hasFillParam, bool& hasDefaultFill, QColor& defaultFill,
-                             bool& hasFillOpacityParam, bool& hasDefaultFillOpacity, double& defaultFillOpacity,
-                             bool& hasStrokeParam, bool& hasDefaultStroke, QColor& defaultStroke,
-                             bool& hasStrokeWidthParam, bool& hasDefaultStrokeWidth, double& defaultStrokeWidth,
-                             bool& hasStrokeOpacityParam, bool& hasDefaultStrokeOpacity, double& defaultStrokeOpacity ) const;
+    void containsElemParams( const QDomElement &elem,
+                             bool &hasFillParam, bool &hasDefaultFill, QColor &defaultFill,
+                             bool &hasFillOpacityParam, bool &hasDefaultFillOpacity, double &defaultFillOpacity,
+                             bool &hasStrokeParam, bool &hasDefaultStroke, QColor &defaultStroke,
+                             bool &hasStrokeWidthParam, bool &hasDefaultStrokeWidth, double &defaultStrokeWidth,
+                             bool &hasStrokeOpacityParam, bool &hasDefaultStrokeOpacity, double &defaultStrokeOpacity ) const;
 
     //! Calculates scaling for rendered image sizes to SVG logical sizes
-    double calcSizeScaleFactor( QgsSvgCacheEntry* entry, const QDomElement& docElem, QSizeF& viewboxSize ) const;
+    double calcSizeScaleFactor( QgsSvgCacheEntry *entry, const QDomElement &docElem, QSizeF &viewboxSize ) const;
 
     //! Release memory and remove cache entry from mEntryLookup
-    void removeCacheEntry( const QString& s, QgsSvgCacheEntry* entry );
+    void removeCacheEntry( const QString &s, QgsSvgCacheEntry *entry );
 
     //! For debugging
     void printEntryList();

@@ -20,7 +20,7 @@
 #include "qgscomposereffect.h"
 
 QgsComposerEffect::QgsComposerEffect()
-    : mCompositionMode( QPainter::CompositionMode_SourceOver )
+  : mCompositionMode( QPainter::CompositionMode_SourceOver )
 {
 }
 

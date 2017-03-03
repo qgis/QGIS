@@ -29,9 +29,9 @@
 
 
 // helper function for checking for job cancelation within PAL
-static bool _palIsCancelled( void* ctx )  //#spellok
+static bool _palIsCancelled( void *ctx )  //#spellok
 {
-  return ( reinterpret_cast< QgsRenderContext* >( ctx ) )->renderingStopped();
+  return ( reinterpret_cast< QgsRenderContext * >( ctx ) )->renderingStopped();
 }
 
 /** \ingroup core
@@ -42,14 +42,14 @@ class QgsLabelSorter
 {
   public:
 
-    explicit QgsLabelSorter( const QgsMapSettings& mapSettings )
-        : mMapSettings( mapSettings )
+    explicit QgsLabelSorter( const QgsMapSettings &mapSettings )
+      : mMapSettings( mapSettings )
     {}
 
-    bool operator()( pal::LabelPosition* lp1, pal::LabelPosition* lp2 ) const
+    bool operator()( pal::LabelPosition *lp1, pal::LabelPosition *lp2 ) const
     {
-      QgsLabelFeature* lf1 = lp1->getFeaturePart()->feature();
-      QgsLabelFeature* lf2 = lp2->getFeaturePart()->feature();
+      QgsLabelFeature *lf1 = lp1->getFeaturePart()->feature();
+      QgsLabelFeature *lf2 = lp2->getFeaturePart()->feature();
 
       if ( !qgsDoubleNear( lf1->zIndex(), lf2->zIndex() ) )
         return lf1->zIndex() < lf2->zIndex();
@@ -67,17 +67,17 @@ class QgsLabelSorter
 
   private:
 
-    const QgsMapSettings& mMapSettings;
+    const QgsMapSettings &mMapSettings;
 };
 
 
 QgsLabelingEngine::QgsLabelingEngine()
-    : mFlags( RenderOutlineLabels | UsePartialCandidates )
-    , mSearchMethod( QgsPalLabeling::Chain )
-    , mCandPoint( 16 )
-    , mCandLine( 50 )
-    , mCandPolygon( 30 )
-    , mResults( new QgsLabelingResults )
+  : mFlags( RenderOutlineLabels | UsePartialCandidates )
+  , mSearchMethod( QgsPalLabeling::Chain )
+  , mCandPoint( 16 )
+  , mCandLine( 50 )
+  , mCandPolygon( 30 )
+  , mResults( new QgsLabelingResults )
 {}
 
 QgsLabelingEngine::~QgsLabelingEngine()
@@ -86,15 +86,15 @@ QgsLabelingEngine::~QgsLabelingEngine()
   qDeleteAll( mSubProviders );
 }
 
-QList< QgsMapLayer* > QgsLabelingEngine::participatingLayers() const
+QList< QgsMapLayer * > QgsLabelingEngine::participatingLayers() const
 {
-  QSet< QgsMapLayer* > layers;
-  Q_FOREACH ( QgsAbstractLabelProvider* provider, mProviders )
+  QSet< QgsMapLayer * > layers;
+  Q_FOREACH ( QgsAbstractLabelProvider *provider, mProviders )
   {
     if ( provider->layer() )
       layers << provider->layer();
   }
-  Q_FOREACH ( QgsAbstractLabelProvider* provider, mSubProviders )
+  Q_FOREACH ( QgsAbstractLabelProvider *provider, mSubProviders )
   {
     if ( provider->layer() )
       layers << provider->layer();
@@ -102,13 +102,13 @@ QList< QgsMapLayer* > QgsLabelingEngine::participatingLayers() const
   return layers.toList();
 }
 
-void QgsLabelingEngine::addProvider( QgsAbstractLabelProvider* provider )
+void QgsLabelingEngine::addProvider( QgsAbstractLabelProvider *provider )
 {
   provider->setEngine( this );
   mProviders << provider;
 }
 
-void QgsLabelingEngine::removeProvider( QgsAbstractLabelProvider* provider )
+void QgsLabelingEngine::removeProvider( QgsAbstractLabelProvider *provider )
 {
   int idx = mProviders.indexOf( provider );
   if ( idx >= 0 )
@@ -117,12 +117,12 @@ void QgsLabelingEngine::removeProvider( QgsAbstractLabelProvider* provider )
   }
 }
 
-void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider* provider, QgsRenderContext& context, pal::Pal& p ) //#spellok
+void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider *provider, QgsRenderContext &context, pal::Pal &p ) //#spellok
 {
   QgsAbstractLabelProvider::Flags flags = provider->flags();
 
   // create the pal layer
-  pal::Layer* l = p.addLayer( provider,
+  pal::Layer *l = p.addLayer( provider,
                               provider->name(),
                               provider->placement(),
                               provider->priority(),
@@ -165,9 +165,9 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider* provider, Qgs
   l->setUpsidedownLabels( upsdnlabels );
 
 
-  QList<QgsLabelFeature*> features = provider->labelFeatures( context );
+  QList<QgsLabelFeature *> features = provider->labelFeatures( context );
 
-  Q_FOREACH ( QgsLabelFeature* feature, features )
+  Q_FOREACH ( QgsLabelFeature *feature, features )
   {
     try
     {
@@ -182,7 +182,7 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider* provider, Qgs
   }
 
   // any sub-providers?
-  Q_FOREACH ( QgsAbstractLabelProvider* subProvider, provider->subProviders() )
+  Q_FOREACH ( QgsAbstractLabelProvider *subProvider, provider->subProviders() )
   {
     mSubProviders << subProvider;
     processProvider( subProvider, context, p );  //#spellok
@@ -190,7 +190,7 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider* provider, Qgs
 }
 
 
-void QgsLabelingEngine::run( QgsRenderContext& context )
+void QgsLabelingEngine::run( QgsRenderContext &context )
 {
   pal::Pal p;
 
@@ -225,10 +225,10 @@ void QgsLabelingEngine::run( QgsRenderContext& context )
 
 
   // for each provider: get labels and register them in PAL
-  Q_FOREACH ( QgsAbstractLabelProvider* provider, mProviders )
+  Q_FOREACH ( QgsAbstractLabelProvider *provider, mProviders )
   {
     bool appendedLayerScope = false;
-    if ( QgsMapLayer* ml = provider->layer() )
+    if ( QgsMapLayer *ml = provider->layer() )
     {
       appendedLayerScope = true;
       context.expressionContext().appendScope( QgsExpressionContextUtils::layerScope( ml ) );
@@ -241,7 +241,7 @@ void QgsLabelingEngine::run( QgsRenderContext& context )
 
   // NOW DO THE LAYOUT (from QgsPalLabeling::drawLabeling)
 
-  QPainter* painter = context.painter();
+  QPainter *painter = context.painter();
 
   QgsGeometry extentGeom = QgsGeometry::fromRect( mMapSettings.visibleExtent() );
   if ( !qgsDoubleNear( mMapSettings.rotation(), 0.0 ) )
@@ -252,7 +252,7 @@ void QgsLabelingEngine::run( QgsRenderContext& context )
 
   QgsRectangle extent = extentGeom.boundingBox();
 
-  p.registerCancellationCallback( &_palIsCancelled, reinterpret_cast< void* >( &context ) );  //#spellok
+  p.registerCancellationCallback( &_palIsCancelled, reinterpret_cast< void * >( &context ) ); //#spellok
 
   QTime t;
   t.start();
@@ -260,13 +260,13 @@ void QgsLabelingEngine::run( QgsRenderContext& context )
   // do the labeling itself
   double bbox[] = { extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() };
 
-  QList<pal::LabelPosition*>* labels;
+  QList<pal::LabelPosition *> *labels;
   pal::Problem *problem = nullptr;
   try
   {
     problem = p.extractProblem( bbox );
   }
-  catch ( std::exception& e )
+  catch ( std::exception &e )
   {
     Q_UNUSED( e );
     QgsDebugMsgLevel( "PAL EXCEPTION :-( " + QString::fromLatin1( e.what() ), 4 );
@@ -288,7 +288,7 @@ void QgsLabelingEngine::run( QgsRenderContext& context )
   QgsMapToPixel xform = mMapSettings.mapToPixel();
   xform.setMapRotation( 0, 0, 0 );
 #else
-  const QgsMapToPixel& xform = mMapSettings->mapToPixel();
+  const QgsMapToPixel &xform = mMapSettings->mapToPixel();
 #endif
 
   // draw rectangles with all candidates
@@ -302,7 +302,7 @@ void QgsLabelingEngine::run( QgsRenderContext& context )
     {
       for ( int j = 0; j < problem->getFeatureCandidateCount( i ); j++ )
       {
-        pal::LabelPosition* lp = problem->getFeatureCandidate( i, j );
+        pal::LabelPosition *lp = problem->getFeatureCandidate( i, j );
 
         QgsPalLabeling::drawLabelCandidateRect( lp, painter, &xform );
       }
@@ -327,13 +327,13 @@ void QgsLabelingEngine::run( QgsRenderContext& context )
   std::sort( labels->begin(), labels->end(), QgsLabelSorter( mMapSettings ) );
 
   // draw the labels
-  QList<pal::LabelPosition*>::iterator it = labels->begin();
+  QList<pal::LabelPosition *>::iterator it = labels->begin();
   for ( ; it != labels->end(); ++it )
   {
     if ( context.renderingStopped() )
       break;
 
-    QgsLabelFeature* lf = ( *it )->getFeaturePart()->feature();
+    QgsLabelFeature *lf = ( *it )->getFeaturePart()->feature();
     if ( !lf )
     {
       continue;
@@ -353,13 +353,13 @@ void QgsLabelingEngine::run( QgsRenderContext& context )
 
 }
 
-QgsLabelingResults* QgsLabelingEngine::takeResults()
+QgsLabelingResults *QgsLabelingEngine::takeResults()
 {
   return mResults.release();
 }
 
 
-void QgsLabelingEngine::readSettingsFromProject( QgsProject* prj )
+void QgsLabelingEngine::readSettingsFromProject( QgsProject *prj )
 {
   bool saved = false;
   mSearchMethod = static_cast< QgsPalLabeling::Search >( prj->readNumEntry( QStringLiteral( "PAL" ), QStringLiteral( "/SearchMethod" ), static_cast< int >( QgsPalLabeling::Chain ), &saved ) );
@@ -375,7 +375,7 @@ void QgsLabelingEngine::readSettingsFromProject( QgsProject* prj )
   if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), true, &saved ) ) mFlags |= RenderOutlineLabels;
 }
 
-void QgsLabelingEngine::writeSettingsToProject( QgsProject* project )
+void QgsLabelingEngine::writeSettingsToProject( QgsProject *project )
 {
   project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/SearchMethod" ), static_cast< int >( mSearchMethod ) );
   project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPoint" ), mCandPoint );
@@ -389,7 +389,7 @@ void QgsLabelingEngine::writeSettingsToProject( QgsProject* project )
   project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), mFlags.testFlag( RenderOutlineLabels ) );
 }
 
-void QgsLabelingEngine::clearSettingsInProject( QgsProject* project )
+void QgsLabelingEngine::clearSettingsInProject( QgsProject *project )
 {
   project->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/SearchMethod" ) );
   project->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPoint" ) );
@@ -405,23 +405,23 @@ void QgsLabelingEngine::clearSettingsInProject( QgsProject* project )
 
 ////
 
-QgsAbstractLabelProvider*QgsLabelFeature::provider() const
+QgsAbstractLabelProvider *QgsLabelFeature::provider() const
 {
   return mLayer ? mLayer->provider() : nullptr;
 
 }
 
-QgsAbstractLabelProvider::QgsAbstractLabelProvider( QgsMapLayer* layer, const QString& providerId )
-    : mEngine( nullptr )
-    , mLayerId( layer ? layer->id() : QString() )
-    , mLayer( layer )
-    , mProviderId( providerId )
-    , mFlags( DrawLabels )
-    , mPlacement( QgsPalLayerSettings::AroundPoint )
-    , mLinePlacementFlags( 0 )
-    , mPriority( 0.5 )
-    , mObstacleType( QgsPalLayerSettings::PolygonInterior )
-    , mUpsidedownLabels( QgsPalLayerSettings::Upright )
+QgsAbstractLabelProvider::QgsAbstractLabelProvider( QgsMapLayer *layer, const QString &providerId )
+  : mEngine( nullptr )
+  , mLayerId( layer ? layer->id() : QString() )
+  , mLayer( layer )
+  , mProviderId( providerId )
+  , mFlags( DrawLabels )
+  , mPlacement( QgsPalLayerSettings::AroundPoint )
+  , mLinePlacementFlags( 0 )
+  , mPriority( 0.5 )
+  , mObstacleType( QgsPalLayerSettings::PolygonInterior )
+  , mUpsidedownLabels( QgsPalLayerSettings::Upright )
 {
 }
 
@@ -430,7 +430,7 @@ QgsAbstractLabelProvider::QgsAbstractLabelProvider( QgsMapLayer* layer, const QS
 // QgsLabelingUtils
 //
 
-QString QgsLabelingUtils::encodePredefinedPositionOrder( const QVector<QgsPalLayerSettings::PredefinedPointPosition>& positions )
+QString QgsLabelingUtils::encodePredefinedPositionOrder( const QVector<QgsPalLayerSettings::PredefinedPointPosition> &positions )
 {
   QStringList predefinedOrderString;
   Q_FOREACH ( QgsPalLayerSettings::PredefinedPointPosition position, positions )
@@ -478,11 +478,11 @@ QString QgsLabelingUtils::encodePredefinedPositionOrder( const QVector<QgsPalLay
   return predefinedOrderString.join( QStringLiteral( "," ) );
 }
 
-QVector<QgsPalLayerSettings::PredefinedPointPosition> QgsLabelingUtils::decodePredefinedPositionOrder( const QString& positionString )
+QVector<QgsPalLayerSettings::PredefinedPointPosition> QgsLabelingUtils::decodePredefinedPositionOrder( const QString &positionString )
 {
   QVector<QgsPalLayerSettings::PredefinedPointPosition> result;
   QStringList predefinedOrderList = positionString.split( ',' );
-  Q_FOREACH ( const QString& position, predefinedOrderList )
+  Q_FOREACH ( const QString &position, predefinedOrderList )
   {
     QString cleaned = position.trimmed().toUpper();
     if ( cleaned == QLatin1String( "TL" ) )

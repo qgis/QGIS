@@ -20,16 +20,16 @@
 
 #include <QFileInfo>
 
-void QgsProjectBadLayerHandler::handleBadLayers( const QList<QDomNode>& layers )
+void QgsProjectBadLayerHandler::handleBadLayers( const QList<QDomNode> &layers )
 {
   QgsApplication::messageLog()->logMessage( QStringLiteral( "%1 bad layers dismissed:" ).arg( layers.size() ) );
-  Q_FOREACH ( const QDomNode& layer, layers )
+  Q_FOREACH ( const QDomNode &layer, layers )
   {
     QgsApplication::messageLog()->logMessage( QStringLiteral( " * %1" ).arg( dataSource( layer ) ) );
   }
 }
 
-QgsProjectBadLayerHandler::DataType QgsProjectBadLayerHandler::dataType( const QDomNode& layerNode )
+QgsProjectBadLayerHandler::DataType QgsProjectBadLayerHandler::dataType( const QDomNode &layerNode )
 {
   QString type = layerNode.toElement().attribute( QStringLiteral( "type" ) );
 
@@ -58,7 +58,7 @@ QgsProjectBadLayerHandler::DataType QgsProjectBadLayerHandler::dataType( const Q
   return IS_BOGUS;
 }
 
-QString QgsProjectBadLayerHandler::dataSource( const QDomNode& layerNode )
+QString QgsProjectBadLayerHandler::dataSource( const QDomNode &layerNode )
 {
   QDomNode dataSourceNode = layerNode.namedItem( QStringLiteral( "datasource" ) );
 
@@ -72,7 +72,7 @@ QString QgsProjectBadLayerHandler::dataSource( const QDomNode& layerNode )
   return dataSourceNode.toElement().text();
 }
 
-QgsProjectBadLayerHandler::ProviderType QgsProjectBadLayerHandler::providerType( const QDomNode& layerNode )
+QgsProjectBadLayerHandler::ProviderType QgsProjectBadLayerHandler::providerType( const QDomNode &layerNode )
 {
   // XXX but what about rasters that can be URLs?  _Can_ they be URLs?
 
@@ -109,7 +109,7 @@ QgsProjectBadLayerHandler::ProviderType QgsProjectBadLayerHandler::providerType(
   return IS_Unknown;
 }
 
-void QgsProjectBadLayerHandler::setDataSource( QDomNode& layerNode, const QString& dataSource )
+void QgsProjectBadLayerHandler::setDataSource( QDomNode &layerNode, const QString &dataSource )
 {
   QDomNode dataSourceNode = layerNode.namedItem( QStringLiteral( "datasource" ) );
   QDomElement dataSourceElement = dataSourceNode.toElement();

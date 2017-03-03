@@ -32,11 +32,11 @@
 #include <QImage>
 #include <QPainter>
 
-QgsRasterResampleFilter::QgsRasterResampleFilter( QgsRasterInterface* input )
-    : QgsRasterInterface( input )
-    , mZoomedInResampler( nullptr )
-    , mZoomedOutResampler( nullptr )
-    , mMaxOversampling( 2.0 )
+QgsRasterResampleFilter::QgsRasterResampleFilter( QgsRasterInterface *input )
+  : QgsRasterInterface( input )
+  , mZoomedInResampler( nullptr )
+  , mZoomedOutResampler( nullptr )
+  , mMaxOversampling( 2.0 )
 {
 }
 
@@ -46,10 +46,10 @@ QgsRasterResampleFilter::~QgsRasterResampleFilter()
   delete mZoomedOutResampler;
 }
 
-QgsRasterResampleFilter* QgsRasterResampleFilter::clone() const
+QgsRasterResampleFilter *QgsRasterResampleFilter::clone() const
 {
   QgsDebugMsgLevel( "Entered", 4 );
-  QgsRasterResampleFilter * resampler = new QgsRasterResampleFilter( nullptr );
+  QgsRasterResampleFilter *resampler = new QgsRasterResampleFilter( nullptr );
   if ( mZoomedInResampler )
   {
     resampler->setZoomedInResampler( mZoomedInResampler->clone() );
@@ -80,7 +80,7 @@ Qgis::DataType QgsRasterResampleFilter::dataType( int bandNo ) const
   return Qgis::UnknownDataType;
 }
 
-bool QgsRasterResampleFilter::setInput( QgsRasterInterface* input )
+bool QgsRasterResampleFilter::setInput( QgsRasterInterface *input )
 {
   QgsDebugMsgLevel( "Entered", 4 );
 
@@ -117,19 +117,19 @@ bool QgsRasterResampleFilter::setInput( QgsRasterInterface* input )
   return true;
 }
 
-void QgsRasterResampleFilter::setZoomedInResampler( QgsRasterResampler* r )
+void QgsRasterResampleFilter::setZoomedInResampler( QgsRasterResampler *r )
 {
   delete mZoomedInResampler;
   mZoomedInResampler = r;
 }
 
-void QgsRasterResampleFilter::setZoomedOutResampler( QgsRasterResampler* r )
+void QgsRasterResampleFilter::setZoomedOutResampler( QgsRasterResampler *r )
 {
   delete mZoomedOutResampler;
   mZoomedOutResampler = r;
 }
 
-QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback )
+QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   Q_UNUSED( bandNo );
   QgsDebugMsgLevel( QString( "width = %1 height = %2 extent = %3" ).arg( width ).arg( height ).arg( extent.toString() ), 4 );
@@ -140,7 +140,7 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
 
   if ( mZoomedInResampler || mZoomedOutResampler )
   {
-    QgsRasterDataProvider *provider = dynamic_cast<QgsRasterDataProvider*>( mInput->sourceInput() );
+    QgsRasterDataProvider *provider = dynamic_cast<QgsRasterDataProvider *>( mInput->sourceInput() );
     if ( provider && ( provider->capabilities() & QgsRasterDataProvider::Size ) )
     {
       double xRes = extent.width() / width;
@@ -165,7 +165,7 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
   // Do no oversampling if no resampler for zoomed in / zoomed out (nearest neighbour)
   // We do mZoomedInResampler if oversampling == 1 (otherwise for example reprojected
   // zoom in rasters are never resampled because projector limits resolution.
-  if ((( oversampling < 1.0 || qgsDoubleNear( oversampling, 1.0 ) ) && !mZoomedInResampler ) || ( oversampling > 1.0 && !mZoomedOutResampler ) )
+  if ( ( ( oversampling < 1.0 || qgsDoubleNear( oversampling, 1.0 ) ) && !mZoomedInResampler ) || ( oversampling > 1.0 && !mZoomedOutResampler ) )
   {
     QgsDebugMsgLevel( "No oversampling.", 4 );
     delete outputBlock;
@@ -223,7 +223,7 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
   return outputBlock; // No resampling
 }
 
-void QgsRasterResampleFilter::writeXml( QDomDocument& doc, QDomElement& parentElem ) const
+void QgsRasterResampleFilter::writeXml( QDomDocument &doc, QDomElement &parentElem ) const
 {
   if ( parentElem.isNull() )
   {
@@ -244,7 +244,7 @@ void QgsRasterResampleFilter::writeXml( QDomDocument& doc, QDomElement& parentEl
   parentElem.appendChild( rasterRendererElem );
 }
 
-void QgsRasterResampleFilter::readXml( const QDomElement& filterElem )
+void QgsRasterResampleFilter::readXml( const QDomElement &filterElem )
 {
   if ( filterElem.isNull() )
   {

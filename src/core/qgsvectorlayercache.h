@@ -57,8 +57,8 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
          * @param feat     The feature to cache. A copy will be made.
          * @param vlCache  The cache to inform when the feature has been removed from the cache.
          */
-        QgsCachedFeature( const QgsFeature& feat, QgsVectorLayerCache* vlCache )
-            : mCache( vlCache )
+        QgsCachedFeature( const QgsFeature &feat, QgsVectorLayerCache *vlCache )
+          : mCache( vlCache )
         {
           mFeature = new QgsFeature( feat );
         }
@@ -71,18 +71,18 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
           delete mFeature;
         }
 
-        inline const QgsFeature* feature() { return mFeature; }
+        inline const QgsFeature *feature() { return mFeature; }
 
       private:
-        QgsFeature* mFeature = nullptr;
-        QgsVectorLayerCache* mCache = nullptr;
+        QgsFeature *mFeature = nullptr;
+        QgsVectorLayerCache *mCache = nullptr;
 
         friend class QgsVectorLayerCache;
         Q_DISABLE_COPY( QgsCachedFeature )
     };
 
   public:
-    QgsVectorLayerCache( QgsVectorLayer* layer, int cacheSize, QObject* parent = nullptr );
+    QgsVectorLayerCache( QgsVectorLayer *layer, int cacheSize, QObject *parent = nullptr );
     ~QgsVectorLayerCache();
 
     /**
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      *
      * @param attributes   The attributes to be cached
      */
-    void setCacheSubsetOfAttributes( const QgsAttributeList& attributes );
+    void setCacheSubsetOfAttributes( const QgsAttributeList &attributes );
 
     /**
      * If this is enabled, the subset of cached attributes will automatically be extended
@@ -165,12 +165,12 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * @param featureRequest  The request specifying filter and required data.
      * @return An iterator over the requested data.
      */
-    QgsFeatureIterator getFeatures( const QgsFeatureRequest& featureRequest = QgsFeatureRequest() );
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &featureRequest = QgsFeatureRequest() );
 
     /**
      * Query the layer for features matching a given expression.
      */
-    inline QgsFeatureIterator getFeatures( const QString& expression )
+    inline QgsFeatureIterator getFeatures( const QString &expression )
     {
       return getFeatures( QgsFeatureRequest( expression ) );
     }
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     /**
      * Query the layer for the features with the given ids.
      */
-    inline QgsFeatureIterator getFeatures( const QgsFeatureIds& fids )
+    inline QgsFeatureIterator getFeatures( const QgsFeatureIds &fids )
     {
       return getFeatures( QgsFeatureRequest( fids ) );
     }
@@ -197,7 +197,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     /**
      * Query the layer for the features which intersect the specified rectangle.
      */
-    inline QgsFeatureIterator getFeatures( const QgsRectangle& rectangle )
+    inline QgsFeatureIterator getFeatures( const QgsRectangle &rectangle )
     {
       return getFeatures( QgsFeatureRequest( rectangle ) );
     }
@@ -235,7 +235,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     /**
      * Returns the layer to which this cache belongs
      */
-    QgsVectorLayer* layer();
+    QgsVectorLayer *layer();
 
   protected:
 
@@ -247,7 +247,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * @param featureRequest  The feature request that was answered
      * @param fids            The feature ids that have been returned
      */
-    void requestCompleted( const QgsFeatureRequest& featureRequest, const QgsFeatureIds& fids );
+    void requestCompleted( const QgsFeatureRequest &featureRequest, const QgsFeatureIds &fids );
 
     /**
      * @brief
@@ -268,7 +268,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * @param featureRequest  The {@link QgsFeatureRequest} to be answered
      * @return                True if the information is being cached, false if not
      */
-    bool checkInformationCovered( const QgsFeatureRequest& featureRequest );
+    bool checkInformationCovered( const QgsFeatureRequest &featureRequest );
 
 
   signals:
@@ -282,7 +282,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      *
      * @note not available in python bindings
      */
-    void progress( int i, bool& cancel );
+    void progress( int i, bool &cancel );
 
     /**
      * When filling the cache, this signal gets emitted once the cache is fully initialized.
@@ -317,29 +317,29 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     void invalidated();
 
   private slots:
-    void onAttributeValueChanged( QgsFeatureId fid, int field, const QVariant& value );
+    void onAttributeValueChanged( QgsFeatureId fid, int field, const QVariant &value );
     void featureDeleted( QgsFeatureId fid );
     void onFeatureAdded( QgsFeatureId fid );
     void attributeAdded( int field );
     void attributeDeleted( int field );
-    void geometryChanged( QgsFeatureId fid, const QgsGeometry& geom );
+    void geometryChanged( QgsFeatureId fid, const QgsGeometry &geom );
     void layerDeleted();
     void invalidate();
 
   private:
 
-    inline void cacheFeature( QgsFeature& feat )
+    inline void cacheFeature( QgsFeature &feat )
     {
-      QgsCachedFeature* cachedFeature = new QgsCachedFeature( feat, this );
+      QgsCachedFeature *cachedFeature = new QgsCachedFeature( feat, this );
       mCache.insert( feat.id(), cachedFeature );
     }
 
-    QgsVectorLayer* mLayer = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
     QCache< QgsFeatureId, QgsCachedFeature > mCache;
 
     bool mCacheGeometry;
     bool mFullCache;
-    QList<QgsAbstractCacheIndex*> mCacheIndices;
+    QList<QgsAbstractCacheIndex *> mCacheIndices;
 
     QgsAttributeList mCachedAttributes;
 
@@ -354,7 +354,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * @note this method only checks for available features, not whether the cache
      * contains required attributes or geometry. For that, use checkInformationCovered()
      */
-    bool canUseCacheForRequest( const QgsFeatureRequest& featureRequest, QgsFeatureIterator& it );
+    bool canUseCacheForRequest( const QgsFeatureRequest &featureRequest, QgsFeatureIterator &it );
 
     friend class TestVectorLayerCache;
 };

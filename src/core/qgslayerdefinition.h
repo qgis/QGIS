@@ -41,13 +41,13 @@ class CORE_EXPORT QgsLayerDefinition
 {
   public:
     //! Loads the QLR at path into QGIS.  New layers are added to given project into layer tree specified by rootGroup
-    static bool loadLayerDefinition( const QString & path, QgsProject* project, QgsLayerTreeGroup* rootGroup, QString &errorMessage );
+    static bool loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage );
     //! Loads the QLR from the XML document.  New layers are added to given project into layer tree specified by rootGroup
-    static bool loadLayerDefinition( QDomDocument doc,  QgsProject* project, QgsLayerTreeGroup* rootGroup, QString &errorMessage, const QgsPathResolver& pathResolver );
+    static bool loadLayerDefinition( QDomDocument doc,  QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage, const QgsPathResolver &pathResolver );
     //! Export the selected layer tree nodes to a QLR file
-    static bool exportLayerDefinition( QString path, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage );
+    static bool exportLayerDefinition( QString path, const QList<QgsLayerTreeNode *> &selectedTreeNodes, QString &errorMessage );
     //! Export the selected layer tree nodes to a QLR-XML document
-    static bool exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage, const QgsPathResolver& pathResolver );
+    static bool exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode *> &selectedTreeNodes, QString &errorMessage, const QgsPathResolver &pathResolver );
 
     /** Returns the given layer as a layer definition document
      *  Layer definitions store the data source as well as styling and custom properties.
@@ -57,16 +57,16 @@ class CORE_EXPORT QgsLayerDefinition
      *  This is a low-level routine that does not write layer tree.
      *  @see exportLayerDefinition()
      */
-    static QDomDocument exportLayerDefinitionLayers( const QList<QgsMapLayer*>& layers, const QgsPathResolver& pathResolver );
+    static QDomDocument exportLayerDefinitionLayers( const QList<QgsMapLayer *> &layers, const QgsPathResolver &pathResolver );
 
     //! Creates new layers from a layer definition document.
     //! This is a low-level routine that does not resolve layer ID conflicts, dependencies and joins
     //! @see loadLayerDefinition()
-    static QList<QgsMapLayer*> loadLayerDefinitionLayers( QDomDocument& document, const QgsPathResolver& pathResolver );
+    static QList<QgsMapLayer *> loadLayerDefinitionLayers( QDomDocument &document, const QgsPathResolver &pathResolver );
     //! Creates new layers from a layer definition file (.QLR)
     //! This is a low-level routine that does not resolve layer ID conflicts, dependencies and joins
     //! @see loadLayerDefinition()
-    static QList<QgsMapLayer*> loadLayerDefinitionLayers( const QString &qlrfile );
+    static QList<QgsMapLayer *> loadLayerDefinitionLayers( const QString &qlrfile );
 
     /**
      * \ingroup core
@@ -79,12 +79,12 @@ class CORE_EXPORT QgsLayerDefinition
         /** Constructor
          * @param doc The XML document containing maplayer elements
          */
-        DependencySorter( const QDomDocument& doc );
+        DependencySorter( const QDomDocument &doc );
 
         /** Constructor
          * @param fileName The filename where the XML document is stored
          */
-        DependencySorter( const QString& fileName );
+        DependencySorter( const QString &fileName );
 
         //! Get the layer nodes in an order where they can be loaded incrementally without dependency break
         QVector<QDomNode> sortedLayerNodes() const { return mSortedLayerNodes; }
@@ -103,7 +103,7 @@ class CORE_EXPORT QgsLayerDefinition
         QStringList mSortedLayerIds;
         bool mHasCycle;
         bool mHasMissingDependency;
-        void init( const QDomDocument& doc );
+        void init( const QDomDocument &doc );
     };
 };
 

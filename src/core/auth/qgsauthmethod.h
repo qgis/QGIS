@@ -145,9 +145,9 @@ class CORE_EXPORT QgsAuthMethod : public QObject
      * @note Non-public since this is an abstract base class
      */
     explicit QgsAuthMethod()
-        : mExpansions( QgsAuthMethod::Expansions( nullptr ) )
-        , mDataProviders( QStringList() )
-        , mVersion( 0 )
+      : mExpansions( QgsAuthMethod::Expansions( nullptr ) )
+      , mDataProviders( QStringList() )
+      , mVersion( 0 )
     {}
 
     //! Tag signifying that this is an authentcation method (e.g. for use as title in message log panel output)
@@ -159,7 +159,7 @@ class CORE_EXPORT QgsAuthMethod : public QObject
     //! Set the support expansions (points in providers where the authentication is injected) of the auth method
     void setExpansions( QgsAuthMethod::Expansions expansions ) { mExpansions = expansions; }
     //! Set list of data providers this auth method supports
-    void setDataProviders( const QStringList& dataproviders ) { mDataProviders = dataproviders; }
+    void setDataProviders( const QStringList &dataproviders ) { mDataProviders = dataproviders; }
 
     QgsAuthMethod::Expansions mExpansions;
     QStringList mDataProviders;
@@ -167,6 +167,6 @@ class CORE_EXPORT QgsAuthMethod : public QObject
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAuthMethod::Expansions )
 
-typedef QHash<QString, QgsAuthMethod*> QgsAuthMethodsMap;
+typedef QHash<QString, QgsAuthMethod *> QgsAuthMethodsMap;
 
 #endif // QGSAUTHMETHOD_H

@@ -45,8 +45,8 @@ class CORE_EXPORT QgsVectorLayerUndoCommand : public QUndoCommand
      * @param buffer associated edit buffer
      */
     QgsVectorLayerUndoCommand( QgsVectorLayerEditBuffer *buffer )
-        : QUndoCommand()
-        , mBuffer( buffer )
+      : QUndoCommand()
+      , mBuffer( buffer )
     {}
 
     //! Returns the layer associated with the undo command
@@ -58,7 +58,7 @@ class CORE_EXPORT QgsVectorLayerUndoCommand : public QUndoCommand
 
   protected:
     //! Associated edit buffer
-    QgsVectorLayerEditBuffer* mBuffer = nullptr;
+    QgsVectorLayerEditBuffer *mBuffer = nullptr;
 };
 
 
@@ -75,7 +75,7 @@ class CORE_EXPORT QgsVectorLayerUndoCommandAddFeature : public QgsVectorLayerUnd
      * @param buffer associated edit buffer
      * @param f feature to add to layer
      */
-    QgsVectorLayerUndoCommandAddFeature( QgsVectorLayerEditBuffer* buffer, QgsFeature& f );
+    QgsVectorLayerUndoCommandAddFeature( QgsVectorLayerEditBuffer *buffer, QgsFeature &f );
 
     virtual void undo() override;
     virtual void redo() override;
@@ -98,7 +98,7 @@ class CORE_EXPORT QgsVectorLayerUndoCommandDeleteFeature : public QgsVectorLayer
      * @param buffer associated edit buffer
      * @param fid feature ID of feature to delete from layer
      */
-    QgsVectorLayerUndoCommandDeleteFeature( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid );
+    QgsVectorLayerUndoCommandDeleteFeature( QgsVectorLayerEditBuffer *buffer, QgsFeatureId fid );
 
     virtual void undo() override;
     virtual void redo() override;
@@ -122,7 +122,7 @@ class CORE_EXPORT QgsVectorLayerUndoCommandChangeGeometry : public QgsVectorLaye
      * @param fid feature ID of feature to modify geometry of
      * @param newGeom new geometry for feature
      */
-    QgsVectorLayerUndoCommandChangeGeometry( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid, const QgsGeometry &newGeom );
+    QgsVectorLayerUndoCommandChangeGeometry( QgsVectorLayerEditBuffer *buffer, QgsFeatureId fid, const QgsGeometry &newGeom );
 
     virtual void undo() override;
     virtual void redo() override;
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsVectorLayerUndoCommandChangeAttribute : public QgsVectorLay
      * @param newValue new value of attribute
      * @param oldValue previous value of attribute
      */
-    QgsVectorLayerUndoCommandChangeAttribute( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid, int fieldIndex, const QVariant &newValue, const QVariant &oldValue );
+    QgsVectorLayerUndoCommandChangeAttribute( QgsVectorLayerEditBuffer *buffer, QgsFeatureId fid, int fieldIndex, const QVariant &newValue, const QVariant &oldValue );
     virtual void undo() override;
     virtual void redo() override;
 
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsVectorLayerUndoCommandAddAttribute : public QgsVectorLayerU
      * @param buffer associated edit buffer
      * @param field definition of new field to add
      */
-    QgsVectorLayerUndoCommandAddAttribute( QgsVectorLayerEditBuffer* buffer, const QgsField& field );
+    QgsVectorLayerUndoCommandAddAttribute( QgsVectorLayerEditBuffer *buffer, const QgsField &field );
 
     virtual void undo() override;
     virtual void redo() override;
@@ -200,7 +200,7 @@ class CORE_EXPORT QgsVectorLayerUndoCommandDeleteAttribute : public QgsVectorLay
      * @param buffer associated edit buffer
      * @param fieldIndex index of field to delete
      */
-    QgsVectorLayerUndoCommandDeleteAttribute( QgsVectorLayerEditBuffer* buffer, int fieldIndex );
+    QgsVectorLayerUndoCommandDeleteAttribute( QgsVectorLayerEditBuffer *buffer, int fieldIndex );
 
     virtual void undo() override;
     virtual void redo() override;
@@ -233,7 +233,7 @@ class CORE_EXPORT QgsVectorLayerUndoCommandRenameAttribute : public QgsVectorLay
      * @param fieldIndex index of field to rename
      * @param newName new name for field
      */
-    QgsVectorLayerUndoCommandRenameAttribute( QgsVectorLayerEditBuffer* buffer, int fieldIndex, const QString& newName );
+    QgsVectorLayerUndoCommandRenameAttribute( QgsVectorLayerEditBuffer *buffer, int fieldIndex, const QString &newName );
 
     virtual void undo() override;
     virtual void redo() override;

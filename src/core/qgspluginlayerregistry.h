@@ -33,21 +33,21 @@ class CORE_EXPORT QgsPluginLayerType
 {
   public:
 
-    QgsPluginLayerType( const QString& name );
+    QgsPluginLayerType( const QString &name );
     virtual ~QgsPluginLayerType() = default;
 
     QString name();
 
     //! Return new layer of this type. Return NULL on error
-    virtual QgsPluginLayer* createLayer();
+    virtual QgsPluginLayer *createLayer();
 
     /** Return new layer of this type, using layer URI (specific to this plugin layer type). Return NULL on error.
      * @note added in 2.10
      */
-    virtual QgsPluginLayer* createLayer( const QString& uri );
+    virtual QgsPluginLayer *createLayer( const QString &uri );
 
     //! Show plugin layer properties dialog. Return false if the dialog cannot be shown.
-    virtual bool showLayerProperties( QgsPluginLayer* layer );
+    virtual bool showLayerProperties( QgsPluginLayer *layer );
 
   protected:
     QString mName;
@@ -69,31 +69,31 @@ class CORE_EXPORT QgsPluginLayerRegistry
     ~QgsPluginLayerRegistry();
 
     //! QgsPluginLayerRegistry cannot be copied.
-    QgsPluginLayerRegistry( const QgsPluginLayerRegistry& rh ) = delete;
+    QgsPluginLayerRegistry( const QgsPluginLayerRegistry &rh ) = delete;
     //! QgsPluginLayerRegistry cannot be copied.
-    QgsPluginLayerRegistry& operator=( const QgsPluginLayerRegistry& rh ) = delete;
+    QgsPluginLayerRegistry &operator=( const QgsPluginLayerRegistry &rh ) = delete;
 
     /** List all known layer types
      *  \note added in v2.1 */
     QStringList pluginLayerTypes();
 
     //! Add plugin layer type (take ownership) and return true on success
-    bool addPluginLayerType( QgsPluginLayerType* pluginLayerType );
+    bool addPluginLayerType( QgsPluginLayerType *pluginLayerType );
 
     //! Remove plugin layer type and return true on success
-    bool removePluginLayerType( const QString& typeName );
+    bool removePluginLayerType( const QString &typeName );
 
     //! Return plugin layer type metadata or NULL if doesn't exist
-    QgsPluginLayerType* pluginLayerType( const QString& typeName );
+    QgsPluginLayerType *pluginLayerType( const QString &typeName );
 
     /** Return new layer if corresponding plugin has been found, else return NULL.
      * @note optional param uri added in 2.10
      */
-    QgsPluginLayer* createLayer( const QString& typeName, const QString& uri = QString() );
+    QgsPluginLayer *createLayer( const QString &typeName, const QString &uri = QString() );
 
   private:
 
-    typedef QMap<QString, QgsPluginLayerType*> PluginLayerTypes;
+    typedef QMap<QString, QgsPluginLayerType *> PluginLayerTypes;
 
     PluginLayerTypes mPluginLayerTypes;
 };

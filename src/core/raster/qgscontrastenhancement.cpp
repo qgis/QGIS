@@ -30,11 +30,11 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 #include <QDomElement>
 
 QgsContrastEnhancement::QgsContrastEnhancement( Qgis::DataType dataType )
-    : mContrastEnhancementAlgorithm( NoEnhancement )
-    , mContrastEnhancementFunction( nullptr )
-    , mEnhancementDirty( false )
-    , mLookupTable( nullptr )
-    , mRasterDataType( dataType )
+  : mContrastEnhancementAlgorithm( NoEnhancement )
+  , mContrastEnhancementFunction( nullptr )
+  , mEnhancementDirty( false )
+  , mLookupTable( nullptr )
+  , mRasterDataType( dataType )
 {
   mMinimumValue = minimumValuePossible( mRasterDataType );
   mMaximumValue = maximumValuePossible( mRasterDataType );
@@ -47,19 +47,19 @@ QgsContrastEnhancement::QgsContrastEnhancement( Qgis::DataType dataType )
   //If the data type is larger than 16-bit do not generate a lookup table
   if ( mRasterDataTypeRange <= 65535.0 )
   {
-    mLookupTable = new int[static_cast <int>( mRasterDataTypeRange+1 )];
+    mLookupTable = new int[static_cast <int>( mRasterDataTypeRange + 1 )];
   }
 
 }
 
-QgsContrastEnhancement::QgsContrastEnhancement( const QgsContrastEnhancement& ce )
-    : mContrastEnhancementFunction( nullptr )
-    , mEnhancementDirty( true )
-    , mLookupTable( nullptr )
-    , mMinimumValue( ce.mMinimumValue )
-    , mMaximumValue( ce.mMaximumValue )
-    , mRasterDataType( ce.mRasterDataType )
-    , mRasterDataTypeRange( ce.mRasterDataTypeRange )
+QgsContrastEnhancement::QgsContrastEnhancement( const QgsContrastEnhancement &ce )
+  : mContrastEnhancementFunction( nullptr )
+  , mEnhancementDirty( true )
+  , mLookupTable( nullptr )
+  , mMinimumValue( ce.mMinimumValue )
+  , mMaximumValue( ce.mMaximumValue )
+  , mRasterDataType( ce.mRasterDataType )
+  , mRasterDataTypeRange( ce.mRasterDataTypeRange )
 {
   mLookupTableOffset = minimumValuePossible( mRasterDataType ) * -1;
 
@@ -69,7 +69,7 @@ QgsContrastEnhancement::QgsContrastEnhancement( const QgsContrastEnhancement& ce
   //If the data type is larger than 16-bit do not generate a lookup table
   if ( mRasterDataTypeRange <= 65535.0 )
   {
-    mLookupTable = new int[static_cast <int>( mRasterDataTypeRange+1 )];
+    mLookupTable = new int[static_cast <int>( mRasterDataTypeRange + 1 )];
   }
 }
 
@@ -283,7 +283,7 @@ void QgsContrastEnhancement::setContrastEnhancementAlgorithm( ContrastEnhancemen
 
     @param function The new contrast enhancement function
 */
-void QgsContrastEnhancement::setContrastEnhancementFunction( QgsContrastEnhancementFunction* function )
+void QgsContrastEnhancement::setContrastEnhancementFunction( QgsContrastEnhancementFunction *function )
 {
   QgsDebugMsgLevel( "called", 4 );
 
@@ -360,7 +360,7 @@ void QgsContrastEnhancement::setMinimumValue( double value, bool generateTable )
   }
 }
 
-void QgsContrastEnhancement::writeXml( QDomDocument& doc, QDomElement& parentElem ) const
+void QgsContrastEnhancement::writeXml( QDomDocument &doc, QDomElement &parentElem ) const
 {
   //minimum value
   QDomElement minElem = doc.createElement( QStringLiteral( "minValue" ) );
@@ -381,7 +381,7 @@ void QgsContrastEnhancement::writeXml( QDomDocument& doc, QDomElement& parentEle
   parentElem.appendChild( algorithmElem );
 }
 
-void QgsContrastEnhancement::readXml( const QDomElement& elem )
+void QgsContrastEnhancement::readXml( const QDomElement &elem )
 {
   QDomElement minValueElem = elem.firstChildElement( QStringLiteral( "minValue" ) );
   if ( !minValueElem.isNull() )
@@ -446,7 +446,7 @@ QString QgsContrastEnhancement::contrastEnhancementAlgorithmString( ContrastEnha
   return QStringLiteral( "NoEnhancement" );
 }
 
-QgsContrastEnhancement::ContrastEnhancementAlgorithm QgsContrastEnhancement::contrastEnhancementAlgorithmFromString( const QString& contrastEnhancementString )
+QgsContrastEnhancement::ContrastEnhancementAlgorithm QgsContrastEnhancement::contrastEnhancementAlgorithmFromString( const QString &contrastEnhancementString )
 {
   if ( contrastEnhancementString == QLatin1String( "StretchToMinimumMaximum" ) )
   {

@@ -38,8 +38,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
   public:
     QgsLineString();
 
-    bool operator==( const QgsCurve& other ) const override;
-    bool operator!=( const QgsCurve& other ) const override;
+    bool operator==( const QgsCurve &other ) const override;
+    bool operator!=( const QgsCurve &other ) const override;
 
     /** Returns the specified point from inside the line string.
      * @param i index of point, starting at 0 for the first point
@@ -106,19 +106,19 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     /** Appends the contents of another line string to the end of this line string.
      * @param line line to append. Ownership is not transferred.
      */
-    void append( const QgsLineString* line );
+    void append( const QgsLineString *line );
 
     /** Adds a new vertex to the end of the line string.
      * @param pt vertex to add
      */
-    void addVertex( const QgsPointV2& pt );
+    void addVertex( const QgsPointV2 &pt );
 
     //! Closes the line string by appending the first point to the end of the line, if it is not already closed.
     void close();
 
     /** Returns the geometry converted to the more generic curve type QgsCompoundCurve
         @return the converted geometry. Caller takes ownership*/
-    QgsAbstractGeometry* toCurveType() const override;
+    QgsAbstractGeometry *toCurveType() const override;
 
     /**
      * Extends the line geometry by extrapolating out the start or end of the line
@@ -132,17 +132,17 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     virtual QString geometryType() const override { return QStringLiteral( "LineString" ); }
     virtual int dimension() const override { return 1; }
-    virtual QgsLineString* clone() const override;
+    virtual QgsLineString *clone() const override;
     virtual void clear() override;
     bool isEmpty() const override;
 
-    virtual bool fromWkb( QgsConstWkbPtr& wkb ) override;
-    virtual bool fromWkt( const QString& wkt ) override;
+    virtual bool fromWkb( QgsConstWkbPtr &wkb ) override;
+    virtual bool fromWkt( const QString &wkt ) override;
 
     QByteArray asWkb() const override;
     QString asWkt( int precision = 17 ) const override;
-    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
-    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
+    QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
     QString asJSON( int precision = 17 ) const override;
 
     //curve interface
@@ -154,33 +154,33 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * of the curve.
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    virtual QgsLineString* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
+    virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
 
     int numPoints() const override;
     virtual int nCoordinates() const override { return mX.size(); }
     void points( QgsPointSequence &pt ) const override;
 
-    void draw( QPainter& p ) const override;
+    void draw( QPainter &p ) const override;
 
-    void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
+    void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
                     bool transformZ = false ) override;
-    void transform( const QTransform& t ) override;
+    void transform( const QTransform &t ) override;
 
-    void addToPainterPath( QPainterPath& path ) const override;
-    void drawAsPolygon( QPainter& p ) const override;
+    void addToPainterPath( QPainterPath &path ) const override;
+    void drawAsPolygon( QPainter &p ) const override;
 
-    virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex ) override;
-    virtual bool moveVertex( QgsVertexId position, const QgsPointV2& newPos ) override;
+    virtual bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex ) override;
+    virtual bool moveVertex( QgsVertexId position, const QgsPointV2 &newPos ) override;
     virtual bool deleteVertex( QgsVertexId position ) override;
 
-    virtual QgsLineString* reversed() const override;
+    virtual QgsLineString *reversed() const override;
 
-    double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
-    bool pointAt( int node, QgsPointV2& point, QgsVertexId::VertexType& type ) const override;
+    double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const override;
+    bool pointAt( int node, QgsPointV2 &point, QgsVertexId::VertexType &type ) const override;
 
     virtual QgsPointV2 centroid() const override;
 
-    void sumUpArea( double& sum ) const override;
+    void sumUpArea( double &sum ) const override;
     double vertexAngle( QgsVertexId vertex ) const override;
 
     virtual bool addZValue( double zValue = 0 ) override;
@@ -201,13 +201,13 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     QVector<double> mZ;
     QVector<double> mM;
 
-    void importVerticesFromWkb( const QgsConstWkbPtr& wkb );
+    void importVerticesFromWkb( const QgsConstWkbPtr &wkb );
 
     /** Resets the line string to match the line string in a WKB geometry.
      * @param type WKB type
      * @param wkb WKB representation of line geometry
      */
-    void fromWkbPoints( QgsWkbTypes::Type type, const QgsConstWkbPtr& wkb );
+    void fromWkbPoints( QgsWkbTypes::Type type, const QgsConstWkbPtr &wkb );
 
     friend class QgsPolygonV2;
 

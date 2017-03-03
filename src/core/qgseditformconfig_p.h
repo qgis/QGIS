@@ -27,28 +27,28 @@ class QgsEditFormConfigPrivate : public QSharedData
 {
   public:
     QgsEditFormConfigPrivate()
-        : mInvisibleRootContainer( new QgsAttributeEditorContainer( QString::null, nullptr ) )
-        , mConfiguredRootContainer( false )
-        , mEditorLayout( QgsEditFormConfig::GeneratedLayout )
-        , mInitCodeSource( QgsEditFormConfig::CodeSourceNone )
-        , mSuppressForm( QgsEditFormConfig::SuppressDefault )
+      : mInvisibleRootContainer( new QgsAttributeEditorContainer( QString::null, nullptr ) )
+      , mConfiguredRootContainer( false )
+      , mEditorLayout( QgsEditFormConfig::GeneratedLayout )
+      , mInitCodeSource( QgsEditFormConfig::CodeSourceNone )
+      , mSuppressForm( QgsEditFormConfig::SuppressDefault )
     {}
 
-    QgsEditFormConfigPrivate( const QgsEditFormConfigPrivate& o )
-        : QSharedData( o )
-        , mInvisibleRootContainer( static_cast<QgsAttributeEditorContainer*>( o.mInvisibleRootContainer->clone( nullptr ) ) )
-        , mConfiguredRootContainer( o.mConfiguredRootContainer )
-        , mFieldEditables( o.mFieldEditables )
-        , mLabelOnTop( o.mLabelOnTop )
-        , mEditorWidgetTypes( o.mEditorWidgetTypes )
-        , mWidgetConfigs( o.mWidgetConfigs )
-        , mEditorLayout( o.mEditorLayout )
-        , mUiFormPath( o.mUiFormPath )
-        , mInitFunction( o.mInitFunction )
-        , mInitCodeSource( o.mInitCodeSource )
-        , mInitCode( o.mInitCode )
-        , mSuppressForm( o.mSuppressForm )
-        , mFields( o.mFields )
+    QgsEditFormConfigPrivate( const QgsEditFormConfigPrivate &o )
+      : QSharedData( o )
+      , mInvisibleRootContainer( static_cast<QgsAttributeEditorContainer *>( o.mInvisibleRootContainer->clone( nullptr ) ) )
+      , mConfiguredRootContainer( o.mConfiguredRootContainer )
+      , mFieldEditables( o.mFieldEditables )
+      , mLabelOnTop( o.mLabelOnTop )
+      , mEditorWidgetTypes( o.mEditorWidgetTypes )
+      , mWidgetConfigs( o.mWidgetConfigs )
+      , mEditorLayout( o.mEditorLayout )
+      , mUiFormPath( o.mUiFormPath )
+      , mInitFunction( o.mInitFunction )
+      , mInitCodeSource( o.mInitCodeSource )
+      , mInitCode( o.mInitCode )
+      , mSuppressForm( o.mSuppressForm )
+      , mFields( o.mFields )
     {}
 
     ~QgsEditFormConfigPrivate()
@@ -57,7 +57,7 @@ class QgsEditFormConfigPrivate : public QSharedData
     }
 
     //! The invisible root container for attribute editors in the drag and drop designer
-    QgsAttributeEditorContainer* mInvisibleRootContainer = nullptr;
+    QgsAttributeEditorContainer *mInvisibleRootContainer = nullptr;
 
     //! This flag is set if the root container was configured by the user
     bool mConfiguredRootContainer;

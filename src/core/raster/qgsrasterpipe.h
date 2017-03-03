@@ -58,19 +58,19 @@ class CORE_EXPORT QgsRasterPipe
     };
 
     QgsRasterPipe();
-    QgsRasterPipe( const QgsRasterPipe& pipe );
+    QgsRasterPipe( const QgsRasterPipe &pipe );
 
     ~QgsRasterPipe();
 
-    QgsRasterPipe& operator=( const QgsRasterPipe& rh ) = delete;
+    QgsRasterPipe &operator=( const QgsRasterPipe &rh ) = delete;
 
     /** Try to insert interface at specified index and connect
      * if connection would fail, the interface is not inserted and false is returned */
-    bool insert( int idx, QgsRasterInterface* interface );
+    bool insert( int idx, QgsRasterInterface *interface );
 
     /** Try to replace interface at specified index and connect
      * if connection would fail, the interface is not inserted and false is returned */
-    bool replace( int idx, QgsRasterInterface* interface );
+    bool replace( int idx, QgsRasterInterface *interface );
 
     /** Insert a new known interface in default place or replace interface of the same
      * role if it already exists. Known interfaces are: QgsRasterDataProvider,
@@ -78,17 +78,17 @@ class CORE_EXPORT QgsRasterPipe
      * subclasses. For unknown interfaces it mus be explicitly specified position
      * where it should be inserted using insert() method.
      */
-    bool set( QgsRasterInterface * interface );
+    bool set( QgsRasterInterface *interface );
 
     //! Remove and delete interface at given index if possible
     bool remove( int idx );
 
     //! Remove and delete interface from pipe if possible
-    bool remove( QgsRasterInterface * interface );
+    bool remove( QgsRasterInterface *interface );
 
     int size() const { return mInterfaces.size(); }
-    QgsRasterInterface * at( int idx ) const { return mInterfaces.at( idx ); }
-    QgsRasterInterface * last() const { return mInterfaces.last(); }
+    QgsRasterInterface *at( int idx ) const { return mInterfaces.at( idx ); }
+    QgsRasterInterface *last() const { return mInterfaces.last(); }
 
     /** Set interface at index on/off
      *  Returns true on success */
@@ -98,38 +98,38 @@ class CORE_EXPORT QgsRasterPipe
     bool canSetOn( int idx, bool on );
 
     // Getters for special types of interfaces
-    QgsRasterDataProvider * provider() const;
-    QgsRasterRenderer * renderer() const;
-    QgsRasterResampleFilter * resampleFilter() const;
-    QgsBrightnessContrastFilter * brightnessFilter() const;
-    QgsHueSaturationFilter * hueSaturationFilter() const;
-    QgsRasterProjector * projector() const;
-    QgsRasterNuller * nuller() const;
+    QgsRasterDataProvider *provider() const;
+    QgsRasterRenderer *renderer() const;
+    QgsRasterResampleFilter *resampleFilter() const;
+    QgsBrightnessContrastFilter *brightnessFilter() const;
+    QgsHueSaturationFilter *hueSaturationFilter() const;
+    QgsRasterProjector *projector() const;
+    QgsRasterNuller *nuller() const;
 
   private:
     //! Get known parent type_info of interface parent
-    Role interfaceRole( QgsRasterInterface * iface ) const;
+    Role interfaceRole( QgsRasterInterface *iface ) const;
 
     // Interfaces in pipe, the first is always provider
-    QVector<QgsRasterInterface*> mInterfaces;
+    QVector<QgsRasterInterface *> mInterfaces;
 
     QMap<Role, int> mRoleMap;
 
     // Set role in mRoleMap
-    void setRole( QgsRasterInterface * interface, int idx );
+    void setRole( QgsRasterInterface *interface, int idx );
 
     // Unset role in mRoleMap
-    void unsetRole( QgsRasterInterface * interface );
+    void unsetRole( QgsRasterInterface *interface );
 
     // Check if index is in bounds
     bool checkBounds( int idx ) const;
 
     //! Get known interface by role
-    QgsRasterInterface * interface( Role role ) const;
+    QgsRasterInterface *interface( Role role ) const;
 
     /** \brief Try to connect interfaces in pipe and to the provider at beginning.
         Returns true if connected or false if connection failed */
-    bool connect( QVector<QgsRasterInterface*> interfaces );
+    bool connect( QVector<QgsRasterInterface *> interfaces );
 
 };
 

@@ -40,39 +40,39 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
 {
     Q_OBJECT
   public:
-    explicit QgsLayerTreeLayer( QgsMapLayer* layer );
-    QgsLayerTreeLayer( const QgsLayerTreeLayer& other );
+    explicit QgsLayerTreeLayer( QgsMapLayer *layer );
+    QgsLayerTreeLayer( const QgsLayerTreeLayer &other );
 
-    explicit QgsLayerTreeLayer( const QString& layerId, const QString& name = QString() );
+    explicit QgsLayerTreeLayer( const QString &layerId, const QString &name = QString() );
 
     QString layerId() const { return mRef.layerId; }
 
-    QgsMapLayer* layer() const { return mRef.layer.data(); }
+    QgsMapLayer *layer() const { return mRef.layer.data(); }
 
     //! Get layer's name
     //! @note added in 3.0
     QString name() const override;
     //! Set layer's name
     //! @note added in 3.0
-    void setName( const QString& n ) override;
+    void setName( const QString &n ) override;
 
     //! Read layer node from XML. Returns new instance.
     //! Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
-    static QgsLayerTreeLayer* readXml( QDomElement& element );
+    static QgsLayerTreeLayer *readXml( QDomElement &element );
     //! Read layer node from XML. Returns new instance.
     //! Also resolves textual references to layers from the project (calls resolveReferences() internally).
     //! @note added in 3.0
-    static QgsLayerTreeLayer* readXml( QDomElement& element, const QgsProject* project );
+    static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsProject *project );
 
-    virtual void writeXml( QDomElement& parentElement ) override;
+    virtual void writeXml( QDomElement &parentElement ) override;
 
     virtual QString dump() const override;
 
-    virtual QgsLayerTreeLayer* clone() const override;
+    virtual QgsLayerTreeLayer *clone() const override;
 
     //! Resolves reference to layer from stored layer ID (if it has not been resolved already)
     //! @note added in 3.0
-    virtual void resolveReferences( const QgsProject* project ) override;
+    virtual void resolveReferences( const QgsProject *project ) override;
 
   private slots:
     //! Emits a nameChanged() signal if layer's name has changed

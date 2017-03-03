@@ -32,17 +32,17 @@
 #include <QDomElement>
 
 QgsHeatmapRenderer::QgsHeatmapRenderer()
-    : QgsFeatureRenderer( QStringLiteral( "heatmapRenderer" ) )
-    , mCalculatedMaxValue( 0 )
-    , mRadius( 10 )
-    , mRadiusPixels( 0 )
-    , mRadiusSquared( 0 )
-    , mRadiusUnit( QgsUnitTypes::RenderMillimeters )
-    , mWeightAttrNum( -1 )
-    , mGradientRamp( nullptr )
-    , mExplicitMax( 0.0 )
-    , mRenderQuality( 3 )
-    , mFeaturesRendered( 0 )
+  : QgsFeatureRenderer( QStringLiteral( "heatmapRenderer" ) )
+  , mCalculatedMaxValue( 0 )
+  , mRadius( 10 )
+  , mRadiusPixels( 0 )
+  , mRadiusSquared( 0 )
+  , mRadiusUnit( QgsUnitTypes::RenderMillimeters )
+  , mWeightAttrNum( -1 )
+  , mGradientRamp( nullptr )
+  , mExplicitMax( 0.0 )
+  , mRenderQuality( 3 )
+  , mFeaturesRendered( 0 )
 {
   mGradientRamp = new QgsGradientColorRamp( QColor( 255, 255, 255 ), QColor( 0, 0, 0 ) );
 
@@ -53,7 +53,7 @@ QgsHeatmapRenderer::~QgsHeatmapRenderer()
   delete mGradientRamp;
 }
 
-void QgsHeatmapRenderer::initializeValues( QgsRenderContext& context )
+void QgsHeatmapRenderer::initializeValues( QgsRenderContext &context )
 {
   mValues.resize( context.painter()->device()->width() * context.painter()->device()->height() / ( mRenderQuality * mRenderQuality ) );
   mValues.fill( 0 );
@@ -63,7 +63,7 @@ void QgsHeatmapRenderer::initializeValues( QgsRenderContext& context )
   mRadiusSquared = mRadiusPixels * mRadiusPixels;
 }
 
-void QgsHeatmapRenderer::startRender( QgsRenderContext& context, const QgsFields& fields )
+void QgsHeatmapRenderer::startRender( QgsRenderContext &context, const QgsFields &fields )
 {
   Q_UNUSED( fields );
   if ( !context.painter() )
@@ -82,7 +82,7 @@ void QgsHeatmapRenderer::startRender( QgsRenderContext& context, const QgsFields
   initializeValues( context );
 }
 
-QgsMultiPoint QgsHeatmapRenderer::convertToMultipoint( const QgsGeometry* geom )
+QgsMultiPoint QgsHeatmapRenderer::convertToMultipoint( const QgsGeometry *geom )
 {
   QgsMultiPoint multiPoint;
   if ( !geom->isMultipart() )
@@ -97,7 +97,7 @@ QgsMultiPoint QgsHeatmapRenderer::convertToMultipoint( const QgsGeometry* geom )
   return multiPoint;
 }
 
-bool QgsHeatmapRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
+bool QgsHeatmapRenderer::renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
 {
   Q_UNUSED( layer );
   Q_UNUSED( selected );
@@ -221,13 +221,13 @@ double QgsHeatmapRenderer::triangularKernel( const double distance, const int ba
   return ( 1. - ( distance / static_cast< double >( bandwidth ) ) );
 }
 
-void QgsHeatmapRenderer::stopRender( QgsRenderContext& context )
+void QgsHeatmapRenderer::stopRender( QgsRenderContext &context )
 {
   renderImage( context );
   mWeightExpression.reset();
 }
 
-void QgsHeatmapRenderer::renderImage( QgsRenderContext& context )
+void QgsHeatmapRenderer::renderImage( QgsRenderContext &context )
 {
   if ( !context.painter() || !mGradientRamp )
   {
@@ -246,11 +246,11 @@ void QgsHeatmapRenderer::renderImage( QgsRenderContext& context )
   QColor pixColor;
   for ( int heightIndex = 0; heightIndex < image.height(); ++heightIndex )
   {
-    QRgb* scanLine = reinterpret_cast< QRgb* >( image.scanLine( heightIndex ) );
+    QRgb *scanLine = reinterpret_cast< QRgb * >( image.scanLine( heightIndex ) );
     for ( int widthIndex = 0; widthIndex < image.width(); ++widthIndex )
     {
       //scale result to fit in the range [0, 1]
-      pixVal = mValues.at( idx ) > 0 ? qMin(( mValues.at( idx ) / scaleMax ), 1.0 ) : 0;
+      pixVal = mValues.at( idx ) > 0 ? qMin( ( mValues.at( idx ) / scaleMax ), 1.0 ) : 0;
 
       //convert value to color from ramp
       pixColor = mGradientRamp->color( pixVal );
@@ -277,9 +277,9 @@ QString QgsHeatmapRenderer::dump() const
   return QStringLiteral( "[HEATMAP]" );
 }
 
-QgsHeatmapRenderer* QgsHeatmapRenderer::clone() const
+QgsHeatmapRenderer *QgsHeatmapRenderer::clone() const
 {
-  QgsHeatmapRenderer* newRenderer = new QgsHeatmapRenderer();
+  QgsHeatmapRenderer *newRenderer = new QgsHeatmapRenderer();
   if ( mGradientRamp )
   {
     newRenderer->setColorRamp( mGradientRamp->clone() );
@@ -295,7 +295,7 @@ QgsHeatmapRenderer* QgsHeatmapRenderer::clone() const
   return newRenderer;
 }
 
-void QgsHeatmapRenderer::modifyRequestExtent( QgsRectangle &extent, QgsRenderContext& context )
+void QgsHeatmapRenderer::modifyRequestExtent( QgsRectangle &extent, QgsRenderContext &context )
 {
   //we need to expand out the request extent so that it includes points which are up to the heatmap radius outside of the
   //actual visible extent
@@ -306,9 +306,9 @@ void QgsHeatmapRenderer::modifyRequestExtent( QgsRectangle &extent, QgsRenderCon
   extent.setYMaximum( extent.yMaximum() + extension );
 }
 
-QgsFeatureRenderer* QgsHeatmapRenderer::create( QDomElement& element )
+QgsFeatureRenderer *QgsHeatmapRenderer::create( QDomElement &element )
 {
-  QgsHeatmapRenderer* r = new QgsHeatmapRenderer();
+  QgsHeatmapRenderer *r = new QgsHeatmapRenderer();
   r->setRadius( element.attribute( QStringLiteral( "radius" ), QStringLiteral( "50.0" ) ).toFloat() );
   r->setRadiusUnit( static_cast< QgsUnitTypes::RenderUnit >( element.attribute( QStringLiteral( "radius_unit" ), QStringLiteral( "0" ) ).toInt() ) );
   r->setRadiusMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( element.attribute( QStringLiteral( "radius_map_unit_scale" ), QString() ) ) );
@@ -324,7 +324,7 @@ QgsFeatureRenderer* QgsHeatmapRenderer::create( QDomElement& element )
   return r;
 }
 
-QDomElement QgsHeatmapRenderer::save( QDomDocument& doc )
+QDomElement QgsHeatmapRenderer::save( QDomDocument &doc )
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "heatmapRenderer" ) );
@@ -355,18 +355,18 @@ QDomElement QgsHeatmapRenderer::save( QDomDocument& doc )
   return rendererElem;
 }
 
-QgsSymbol* QgsHeatmapRenderer::symbolForFeature( QgsFeature& feature, QgsRenderContext& )
+QgsSymbol *QgsHeatmapRenderer::symbolForFeature( QgsFeature &feature, QgsRenderContext & )
 {
   Q_UNUSED( feature );
   return nullptr;
 }
 
-QgsSymbolList QgsHeatmapRenderer::symbols( QgsRenderContext& )
+QgsSymbolList QgsHeatmapRenderer::symbols( QgsRenderContext & )
 {
   return QgsSymbolList();
 }
 
-QSet<QString> QgsHeatmapRenderer::usedAttributes( const QgsRenderContext& ) const
+QSet<QString> QgsHeatmapRenderer::usedAttributes( const QgsRenderContext & ) const
 {
   QSet<QString> attributes;
 
@@ -383,11 +383,11 @@ QSet<QString> QgsHeatmapRenderer::usedAttributes( const QgsRenderContext& ) cons
   return attributes;
 }
 
-QgsHeatmapRenderer* QgsHeatmapRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
+QgsHeatmapRenderer *QgsHeatmapRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {
   if ( renderer->type() == QLatin1String( "heatmapRenderer" ) )
   {
-    return dynamic_cast<QgsHeatmapRenderer*>( renderer->clone() );
+    return dynamic_cast<QgsHeatmapRenderer *>( renderer->clone() );
   }
   else
   {

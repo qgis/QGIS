@@ -34,40 +34,40 @@ extern "C"
 {
 #endif
 
-  /*
-   * high level
-   */
+/*
+ * high level
+ */
 
-  typedef struct _nmeaPARSER
-  {
-    void *top_node = nullptr;
-    void *end_node = nullptr;
-    unsigned char *buffer;
-    int buff_size;
-    int buff_use;
+typedef struct _nmeaPARSER
+{
+  void *top_node = nullptr;
+  void *end_node = nullptr;
+  unsigned char *buffer;
+  int buff_size;
+  int buff_use;
 
-  } nmeaPARSER;
+} nmeaPARSER;
 
-  int     nmea_parser_init( nmeaPARSER *parser );
-  void    nmea_parser_destroy( nmeaPARSER *parser );
+int     nmea_parser_init( nmeaPARSER *parser );
+void    nmea_parser_destroy( nmeaPARSER *parser );
 
-  int     nmea_parse(
-    nmeaPARSER *parser,
-    const char *buff, int buff_sz,
-    nmeaINFO *info
-  );
+int     nmea_parse(
+  nmeaPARSER *parser,
+  const char *buff, int buff_sz,
+  nmeaINFO *info
+);
 
-  /*
-   * low level
-   */
+/*
+ * low level
+ */
 
-  int     nmea_parser_push( nmeaPARSER *parser, const char *buff, int buff_sz );
-  int     nmea_parser_top( nmeaPARSER *parser );
-  int     nmea_parser_pop( nmeaPARSER *parser, void **pack_ptr );
-  int     nmea_parser_peek( nmeaPARSER *parser, void **pack_ptr );
-  int     nmea_parser_drop( nmeaPARSER *parser );
-  int     nmea_parser_buff_clear( nmeaPARSER *parser );
-  int     nmea_parser_queue_clear( nmeaPARSER *parser );
+int     nmea_parser_push( nmeaPARSER *parser, const char *buff, int buff_sz );
+int     nmea_parser_top( nmeaPARSER *parser );
+int     nmea_parser_pop( nmeaPARSER *parser, void **pack_ptr );
+int     nmea_parser_peek( nmeaPARSER *parser, void **pack_ptr );
+int     nmea_parser_drop( nmeaPARSER *parser );
+int     nmea_parser_buff_clear( nmeaPARSER *parser );
+int     nmea_parser_queue_clear( nmeaPARSER *parser );
 
 #ifdef  __cplusplus
 }

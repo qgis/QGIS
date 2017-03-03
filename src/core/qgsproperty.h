@@ -114,7 +114,7 @@ class CORE_EXPORT QgsPropertyDefinition
      * The name is used internally and should be a unique, alphanumeric string.
      * Description can be any localised string describing what the property is used for.
      */
-    QgsPropertyDefinition( const QString& name, const QString& description, StandardPropertyTemplate type );
+    QgsPropertyDefinition( const QString &name, const QString &description, StandardPropertyTemplate type );
 
     /**
      * Constructor for custom QgsPropertyDefinitions.
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsPropertyDefinition
      * The helpText parameter should specify a descriptive string for users outlining the types
      * of value acceptable by the property (eg 'dashed' or 'solid' for a line style property).
      */
-    QgsPropertyDefinition( const QString& name, DataType dataTypes, const QString& description, const QString& helpText );
+    QgsPropertyDefinition( const QString &name, DataType dataTypes, const QString &description, const QString &helpText );
 
     /**
      * Returns the name of the property. This is used internally and should be a unique, alphanumeric string.
@@ -206,30 +206,30 @@ class CORE_EXPORT QgsProperty
     /**
      * Returns a new ExpressionBasedProperty created from the specified expression.
      */
-    static QgsProperty fromExpression( const QString& expression, bool isActive = true );
+    static QgsProperty fromExpression( const QString &expression, bool isActive = true );
 
     /**
      * Returns a new FieldBasedProperty created from the specified field name.
      */
-    static QgsProperty fromField( const QString& fieldName, bool isActive = true );
+    static QgsProperty fromField( const QString &fieldName, bool isActive = true );
 
     /**
      * Returns a new StaticProperty created from the specified value.
      */
-    static QgsProperty fromValue( const QVariant& value, bool isActive = true );
+    static QgsProperty fromValue( const QVariant &value, bool isActive = true );
 
     //! Copy constructor
-    QgsProperty( const QgsProperty& other );
+    QgsProperty( const QgsProperty &other );
 
-    QgsProperty& operator=( const QgsProperty& other );
+    QgsProperty &operator=( const QgsProperty &other );
 
     /**
      * Returns true if the property is not an invalid type.
      */
     operator bool() const;
 
-    bool operator==( const QgsProperty& other ) const;
-    bool operator!=( const QgsProperty& other ) const;
+    bool operator==( const QgsProperty &other ) const;
+    bool operator!=( const QgsProperty &other ) const;
 
     /**
      * Returns the property type.
@@ -253,7 +253,7 @@ class CORE_EXPORT QgsProperty
      * transform the property into an StaticProperty.
      * @see staticValue()
      */
-    void setStaticValue( const QVariant& value );
+    void setStaticValue( const QVariant &value );
 
     /**
      * Returns the current static value for the property. If the property
@@ -267,7 +267,7 @@ class CORE_EXPORT QgsProperty
      * transform the property into an FieldBasedProperty.
      * @see field()
      */
-    void setField( const QString& field );
+    void setField( const QString &field );
 
     /**
      * Returns the current field name the property references. If the property
@@ -281,7 +281,7 @@ class CORE_EXPORT QgsProperty
      * transform the property into an ExpressionBasedProperty.
      * @see expressionString()
      */
-    void setExpressionString( const QString& expression );
+    void setExpressionString( const QString &expression );
 
     /**
      * Returns the expression used for the property value. If the property
@@ -301,13 +301,13 @@ class CORE_EXPORT QgsProperty
      * property multiple times allows precalculation of expensive setup tasks such as parsing expressions.
      * Returns true if preparation was successful.
      */
-    bool prepare( const QgsExpressionContext& context = QgsExpressionContext() ) const;
+    bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 
     /**
      * Returns the set of any fields referenced by the property for a specified
      * expression context.
      */
-    QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const;
+    QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 
     /**
      * Calculates the current value of the property, including any transforms which are set for the property
@@ -323,7 +323,7 @@ class CORE_EXPORT QgsProperty
      * @see valueAsInt()
      * @see valueAsBool()
      */
-    QVariant value( const QgsExpressionContext& context, const QVariant& defaultValue = QVariant(), bool* ok = nullptr ) const;
+    QVariant value( const QgsExpressionContext &context, const QVariant &defaultValue = QVariant(), bool *ok = nullptr ) const;
 
     /**
      * Calculates the current value of the property and interprets it as a string.
@@ -337,7 +337,7 @@ class CORE_EXPORT QgsProperty
      * @see valueAsInt()
      * @see valueAsBool()
      */
-    QString valueAsString( const QgsExpressionContext& context, const QString& defaultString = QString(), bool* ok = nullptr ) const;
+    QString valueAsString( const QgsExpressionContext &context, const QString &defaultString = QString(), bool *ok = nullptr ) const;
 
     /**
      * Calculates the current value of the property and interprets it as a color.
@@ -351,7 +351,7 @@ class CORE_EXPORT QgsProperty
      * @see valueAsInt()
      * @see valueAsBool()
      */
-    QColor valueAsColor( const QgsExpressionContext& context, const QColor& defaultColor = QColor(), bool* ok = nullptr ) const;
+    QColor valueAsColor( const QgsExpressionContext &context, const QColor &defaultColor = QColor(), bool *ok = nullptr ) const;
 
     /**
      * Calculates the current value of the property and interprets it as a double.
@@ -365,7 +365,7 @@ class CORE_EXPORT QgsProperty
      * @see valueAsInt()
      * @see valueAsBool()
      */
-    double valueAsDouble( const QgsExpressionContext& context, double defaultValue = 0.0, bool* ok = nullptr ) const;
+    double valueAsDouble( const QgsExpressionContext &context, double defaultValue = 0.0, bool *ok = nullptr ) const;
 
     /**
      * Calculates the current value of the property and interprets it as an integer.
@@ -379,7 +379,7 @@ class CORE_EXPORT QgsProperty
      * @see valueAsDouble()
      * @see valueAsBool()
      */
-    int valueAsInt( const QgsExpressionContext& context, int defaultValue = 0, bool* ok = nullptr ) const;
+    int valueAsInt( const QgsExpressionContext &context, int defaultValue = 0, bool *ok = nullptr ) const;
 
     /**
      * Calculates the current value of the property and interprets it as an boolean.
@@ -393,7 +393,7 @@ class CORE_EXPORT QgsProperty
      * @see valueAsDouble()
      * @see valueAsInt()
      */
-    bool valueAsBool( const QgsExpressionContext& context, bool defaultValue = false, bool* ok = nullptr ) const;
+    bool valueAsBool( const QgsExpressionContext &context, bool defaultValue = false, bool *ok = nullptr ) const;
 
     /**
      * Writes the current state of the property into an XML element
@@ -401,7 +401,7 @@ class CORE_EXPORT QgsProperty
      * @param doc DOM document
      * @see readXml()
     */
-    bool writeXml( QDomElement& propertyElem, QDomDocument& doc ) const;
+    bool writeXml( QDomElement &propertyElem, QDomDocument &doc ) const;
 
     /**
      * Reads property state from an XML element.
@@ -409,7 +409,7 @@ class CORE_EXPORT QgsProperty
      * @param doc DOM document
      * @see writeXml()
     */
-    bool readXml( const QDomElement& propertyElem, const QDomDocument& doc );
+    bool readXml( const QDomElement &propertyElem, const QDomDocument &doc );
 
     /**
      * Sets an optional transformer to use for manipulating the calculated values for the property.
@@ -417,13 +417,13 @@ class CORE_EXPORT QgsProperty
      * existing transformer will be deleted. Set to null to remove an existing transformer.
      * @see transformer()
      */
-    void setTransformer( QgsPropertyTransformer* transformer );
+    void setTransformer( QgsPropertyTransformer *transformer );
 
     /**
      * Returns the existing transformer used for manipulating the calculated values for the property, if set.
      * @see setTransformer()
      */
-    const QgsPropertyTransformer* transformer() const;
+    const QgsPropertyTransformer *transformer() const;
 
     /**
      * Attempts to convert an existing expression based property to a base expression with
@@ -441,7 +441,7 @@ class CORE_EXPORT QgsProperty
      * Calculates the current value of the property, before any transformations or
      * conversions are applied.
      */
-    QVariant propertyValue( const QgsExpressionContext& context, const QVariant& defaultValue = QVariant(), bool* ok = nullptr ) const;
+    QVariant propertyValue( const QgsExpressionContext &context, const QVariant &defaultValue = QVariant(), bool *ok = nullptr ) const;
 
 };
 

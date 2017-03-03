@@ -48,6 +48,6 @@ void QgsPaintEngineHack::fixEngineFlags( QPaintEngine *engine )
   if ( !engine )
     return;
 
-  QgsPaintEngineHack *hack = static_cast<QgsPaintEngineHack*>( engine );
+  QgsPaintEngineHack *hack = static_cast<QgsPaintEngineHack *>( engine );
   hack->fixFlags();
 }

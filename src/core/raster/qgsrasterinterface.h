@@ -39,7 +39,7 @@ class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
 {
   public:
     //! Construct a new raster block feedback object
-    QgsRasterBlockFeedback( QObject* parent = nullptr ) : QgsFeedback( parent ), mPreviewOnly( false ), mRenderPartialOutput( false ) {}
+    QgsRasterBlockFeedback( QObject *parent = nullptr ) : QgsFeedback( parent ), mPreviewOnly( false ), mRenderPartialOutput( false ) {}
 
     //! May be emitted by raster data provider to indicate that some partial data are available
     //! and a new preview image may be produced
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsRasterInterface
       IdentifyFeature  = 1 << 9, // WMS GML -> feature
     };
 
-    QgsRasterInterface( QgsRasterInterface * input = nullptr );
+    QgsRasterInterface( QgsRasterInterface *input = nullptr );
 
     virtual ~QgsRasterInterface() = default;
 
@@ -152,14 +152,14 @@ class CORE_EXPORT QgsRasterInterface
      * @param height pixel height of block
      * @param feedback optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
      */
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) = 0;
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) = 0;
 
     /** Set input.
       * Returns true if set correctly, false if cannot use that input */
-    virtual bool setInput( QgsRasterInterface* input ) { mInput = input; return true; }
+    virtual bool setInput( QgsRasterInterface *input ) { mInput = input; return true; }
 
     //! Current input
-    virtual QgsRasterInterface * input() const { return mInput; }
+    virtual QgsRasterInterface *input() const { return mInput; }
 
     //! Is on/off
     virtual bool on() const { return mOn; }
@@ -181,7 +181,7 @@ class CORE_EXPORT QgsRasterInterface
      *  It may be used to get info about original data, e.g. resolution to decide
      *  resampling etc.
      */
-    virtual QgsRasterInterface * sourceInput()
+    virtual QgsRasterInterface *sourceInput()
     {
       QgsDebugMsgLevel( "Entered", 4 );
       return mInput ? mInput->sourceInput() : this;
@@ -196,7 +196,7 @@ class CORE_EXPORT QgsRasterInterface
      */
     virtual QgsRasterBandStats bandStatistics( int bandNo,
         int stats = QgsRasterBandStats::All,
-        const QgsRectangle & extent = QgsRectangle(),
+        const QgsRectangle &extent = QgsRectangle(),
         int sampleSize = 0 );
 
     /** \brief Returns true if histogram is available (cached, already calculated).     *   The parameters are the same as in bandStatistics()
@@ -204,7 +204,7 @@ class CORE_EXPORT QgsRasterInterface
      */
     virtual bool hasStatistics( int bandNo,
                                 int stats = QgsRasterBandStats::All,
-                                const QgsRectangle & extent = QgsRectangle(),
+                                const QgsRectangle &extent = QgsRectangle(),
                                 int sampleSize = 0 );
 
     /** \brief Get histogram. Histograms are cached in providers.
@@ -222,7 +222,7 @@ class CORE_EXPORT QgsRasterInterface
                                           int binCount = 0,
                                           double minimum = std::numeric_limits<double>::quiet_NaN(),
                                           double maximum = std::numeric_limits<double>::quiet_NaN(),
-                                          const QgsRectangle & extent = QgsRectangle(),
+                                          const QgsRectangle &extent = QgsRectangle(),
                                           int sampleSize = 0,
                                           bool includeOutOfRange = false );
 
@@ -233,7 +233,7 @@ class CORE_EXPORT QgsRasterInterface
                                int binCount,
                                double minimum = std::numeric_limits<double>::quiet_NaN(),
                                double maximum = std::numeric_limits<double>::quiet_NaN(),
-                               const QgsRectangle & extent = QgsRectangle(),
+                               const QgsRectangle &extent = QgsRectangle(),
                                int sampleSize = 0,
                                bool includeOutOfRange = false );
 
@@ -251,17 +251,17 @@ class CORE_EXPORT QgsRasterInterface
                                 double upperCount,
                                 double &lowerValue,
                                 double &upperValue,
-                                const QgsRectangle & extent = QgsRectangle(),
+                                const QgsRectangle &extent = QgsRectangle(),
                                 int sampleSize = 0 );
 
     //! Write base class members to xml.
-    virtual void writeXml( QDomDocument& doc, QDomElement& parentElem ) const { Q_UNUSED( doc ); Q_UNUSED( parentElem ); }
+    virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const { Q_UNUSED( doc ); Q_UNUSED( parentElem ); }
     //! Sets base class members from xml. Usually called from create() methods of subclasses
-    virtual void readXml( const QDomElement& filterElem ) { Q_UNUSED( filterElem ); }
+    virtual void readXml( const QDomElement &filterElem ) { Q_UNUSED( filterElem ); }
 
   protected:
     // QgsRasterInterface used as input
-    QgsRasterInterface* mInput = nullptr;
+    QgsRasterInterface *mInput = nullptr;
 
     //! \brief List  of cached statistics, all bands mixed
     QList <QgsRasterBandStats> mStatistics;
@@ -279,14 +279,14 @@ class CORE_EXPORT QgsRasterInterface
                         int binCount = 0,
                         double minimum = std::numeric_limits<double>::quiet_NaN(),
                         double maximum = std::numeric_limits<double>::quiet_NaN(),
-                        const QgsRectangle & boundingBox = QgsRectangle(),
+                        const QgsRectangle &boundingBox = QgsRectangle(),
                         int sampleSize = 0,
                         bool includeOutOfRange = false );
 
     //! Fill in statistics defaults if not specified
     void initStatistics( QgsRasterBandStats &statistics, int bandNo,
                          int stats = QgsRasterBandStats::All,
-                         const QgsRectangle & boundingBox = QgsRectangle(),
+                         const QgsRectangle &boundingBox = QgsRectangle(),
                          int binCount = 0 );
 
   private:

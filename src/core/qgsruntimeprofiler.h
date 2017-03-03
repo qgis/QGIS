@@ -24,7 +24,7 @@ class CORE_EXPORT QgsRuntimeProfiler
      * front of the profile tag set using start.
      * @param name The name of the group.
      */
-    void beginGroup( const QString& name );
+    void beginGroup( const QString &name );
 
     /**
      * @brief End the current active group.
@@ -36,7 +36,7 @@ class CORE_EXPORT QgsRuntimeProfiler
      * @param name The name of the profile event. Will have the name of
      * the active group appended after ending.
      */
-    void start( const QString& name );
+    void start( const QString &name );
 
     /**
      * @brief End the current profile event.

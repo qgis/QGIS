@@ -85,7 +85,7 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
      * @param values list of variants
      * @see addValue()
      */
-    void calculate( const QVariantList& values );
+    void calculate( const QVariantList &values );
 
     /** Adds a single datetime to the statistics calculation. Calling this method
      * allows datetimes to be added to the calculation one at a time. For large
@@ -99,7 +99,7 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
      * @see calculate()
      * @see finalize()
      */
-    void addValue( const QVariant& value );
+    void addValue( const QVariant &value );
 
     /** Must be called after adding all datetimes with addValue() and before retrieving
      * any calculated datetime statistics.
@@ -157,7 +157,7 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
     QDateTime mMax;
     bool mIsTimes;
 
-    void testDateTime( const QDateTime& dateTime );
+    void testDateTime( const QDateTime &dateTime );
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDateTimeStatisticalSummary::Statistics )

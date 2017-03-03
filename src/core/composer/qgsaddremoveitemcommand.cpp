@@ -21,8 +21,8 @@
 #include "qgsproject.h"
 #include "qgscomposermodel.h"
 
-QgsAddRemoveItemCommand::QgsAddRemoveItemCommand( State s, QgsComposerItem* item, QgsComposition* c, const QString& text, QUndoCommand* parent ):
-    QUndoCommand( text, parent ), mItem( item ), mComposition( c ), mState( s ), mFirstRun( true )
+QgsAddRemoveItemCommand::QgsAddRemoveItemCommand( State s, QgsComposerItem *item, QgsComposition *c, const QString &text, QUndoCommand *parent ):
+  QUndoCommand( text, parent ), mItem( item ), mComposition( c ), mState( s ), mFirstRun( true )
 {
 }
 

@@ -140,9 +140,9 @@ class CORE_EXPORT QgsFieldConstraints
      * @see constraintDescription()
      * @see constraints()
      */
-    void setConstraintExpression( const QString& expression, const QString& description = QString() );
+    void setConstraintExpression( const QString &expression, const QString &description = QString() );
 
-    bool operator==( const QgsFieldConstraints& other ) const;
+    bool operator==( const QgsFieldConstraints &other ) const;
 
   private:
 

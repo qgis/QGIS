@@ -36,7 +36,7 @@ class CORE_EXPORT QgsDateTimeFieldFormatter : public QgsFieldFormatter
 
     virtual QString id() const override;
 
-    virtual QString representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const override;
+    virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;
 
     /**
      * Get the default format in function of the type.

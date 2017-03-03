@@ -89,22 +89,22 @@ class CORE_EXPORT QgsAggregateCalculator
     /** Constructor for QgsAggregateCalculator.
      * @param layer vector layer to calculate aggregate from
      */
-    QgsAggregateCalculator( const QgsVectorLayer* layer );
+    QgsAggregateCalculator( const QgsVectorLayer *layer );
 
     /** Returns the associated vector layer.
      */
-    const QgsVectorLayer* layer() const;
+    const QgsVectorLayer *layer() const;
 
     /** Sets all aggregate parameters from a parameter bundle.
      * @param parameters aggregate parameters
      */
-    void setParameters( const AggregateParameters& parameters );
+    void setParameters( const AggregateParameters &parameters );
 
     /** Sets a filter to limit the features used during the aggregate calculation.
      * @param filterExpression expression for filtering features, or empty string to remove filter
      * @see filter()
      */
-    void setFilter( const QString& filterExpression ) { mFilterExpression = filterExpression; }
+    void setFilter( const QString &filterExpression ) { mFilterExpression = filterExpression; }
 
     /** Returns the filter which limits the features used during the aggregate calculation.
      * @see setFilter()
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsAggregateCalculator
      * @param delimiter string delimiter
      * @see delimiter()
      */
-    void setDelimiter( const QString& delimiter ) { mDelimiter = delimiter; }
+    void setDelimiter( const QString &delimiter ) { mDelimiter = delimiter; }
 
     /** Returns the delimiter used for joining values with the StringConcatenate aggregate.
      * @see setDelimiter()
@@ -130,20 +130,20 @@ class CORE_EXPORT QgsAggregateCalculator
      * @param ok if specified, will be set to true if aggregate calculation was successful
      * @returns calculated aggregate value
      */
-    QVariant calculate( Aggregate aggregate, const QString& fieldOrExpression,
-                        QgsExpressionContext* context = nullptr, bool* ok = nullptr ) const;
+    QVariant calculate( Aggregate aggregate, const QString &fieldOrExpression,
+                        QgsExpressionContext *context = nullptr, bool *ok = nullptr ) const;
 
     /** Converts a string to a aggregate type.
      * @param string string to convert
      * @param ok if specified, will be set to true if conversion was successful
      * @returns aggregate type
      */
-    static Aggregate stringToAggregate( const QString& string, bool* ok = nullptr );
+    static Aggregate stringToAggregate( const QString &string, bool *ok = nullptr );
 
   private:
 
     //! Source layer
-    const QgsVectorLayer* mLayer = nullptr;
+    const QgsVectorLayer *mLayer = nullptr;
 
     //! Filter expression, or empty for no filter
     QString mFilterExpression;
@@ -151,26 +151,26 @@ class CORE_EXPORT QgsAggregateCalculator
     //! Delimiter to use for concatenate aggregate
     QString mDelimiter;
 
-    static QgsStatisticalSummary::Statistic numericStatFromAggregate( Aggregate aggregate, bool* ok = nullptr );
-    static QgsStringStatisticalSummary::Statistic stringStatFromAggregate( Aggregate aggregate, bool* ok = nullptr );
-    static QgsDateTimeStatisticalSummary::Statistic dateTimeStatFromAggregate( Aggregate aggregate, bool* ok = nullptr );
+    static QgsStatisticalSummary::Statistic numericStatFromAggregate( Aggregate aggregate, bool *ok = nullptr );
+    static QgsStringStatisticalSummary::Statistic stringStatFromAggregate( Aggregate aggregate, bool *ok = nullptr );
+    static QgsDateTimeStatisticalSummary::Statistic dateTimeStatFromAggregate( Aggregate aggregate, bool *ok = nullptr );
 
-    static QVariant calculateNumericAggregate( QgsFeatureIterator& fit, int attr, QgsExpression* expression,
-        QgsExpressionContext* context, QgsStatisticalSummary::Statistic stat );
+    static QVariant calculateNumericAggregate( QgsFeatureIterator &fit, int attr, QgsExpression *expression,
+        QgsExpressionContext *context, QgsStatisticalSummary::Statistic stat );
 
-    static QVariant calculateStringAggregate( QgsFeatureIterator& fit, int attr, QgsExpression* expression,
-        QgsExpressionContext* context, QgsStringStatisticalSummary::Statistic stat );
+    static QVariant calculateStringAggregate( QgsFeatureIterator &fit, int attr, QgsExpression *expression,
+        QgsExpressionContext *context, QgsStringStatisticalSummary::Statistic stat );
 
-    static QVariant calculateDateTimeAggregate( QgsFeatureIterator& fit, int attr, QgsExpression* expression,
-        QgsExpressionContext* context, QgsDateTimeStatisticalSummary::Statistic stat );
-    static QVariant calculateGeometryAggregate( QgsFeatureIterator& fit, QgsExpression* expression, QgsExpressionContext* context );
+    static QVariant calculateDateTimeAggregate( QgsFeatureIterator &fit, int attr, QgsExpression *expression,
+        QgsExpressionContext *context, QgsDateTimeStatisticalSummary::Statistic stat );
+    static QVariant calculateGeometryAggregate( QgsFeatureIterator &fit, QgsExpression *expression, QgsExpressionContext *context );
 
-    static QVariant calculate( Aggregate aggregate, QgsFeatureIterator& fit, QVariant::Type resultType,
-                               int attr, QgsExpression* expression,
-                               const QString& delimiter,
-                               QgsExpressionContext* context, bool* ok = nullptr );
-    static QVariant concatenateStrings( QgsFeatureIterator& fit, int attr, QgsExpression* expression,
-                                        QgsExpressionContext* context, const QString& delimiter );
+    static QVariant calculate( Aggregate aggregate, QgsFeatureIterator &fit, QVariant::Type resultType,
+                               int attr, QgsExpression *expression,
+                               const QString &delimiter,
+                               QgsExpressionContext *context, bool *ok = nullptr );
+    static QVariant concatenateStrings( QgsFeatureIterator &fit, int attr, QgsExpression *expression,
+                                        QgsExpressionContext *context, const QString &delimiter );
 
     QVariant defaultValue( Aggregate aggregate ) const;
 };

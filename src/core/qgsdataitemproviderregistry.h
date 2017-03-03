@@ -40,23 +40,23 @@ class CORE_EXPORT QgsDataItemProviderRegistry
     ~QgsDataItemProviderRegistry();
 
     //! QgsDataItemProviderRegistry cannot be copied.
-    QgsDataItemProviderRegistry( const QgsDataItemProviderRegistry& rh ) = delete;
+    QgsDataItemProviderRegistry( const QgsDataItemProviderRegistry &rh ) = delete;
     //! QgsDataItemProviderRegistry cannot be copied.
-    QgsDataItemProviderRegistry& operator=( const QgsDataItemProviderRegistry& rh ) = delete;
+    QgsDataItemProviderRegistry &operator=( const QgsDataItemProviderRegistry &rh ) = delete;
 
     //! Get list of available providers
-    QList<QgsDataItemProvider*> providers() const { return mProviders; }
+    QList<QgsDataItemProvider *> providers() const { return mProviders; }
 
     //! Add a provider implementation. Takes ownership of the object.
-    void addProvider( QgsDataItemProvider* provider );
+    void addProvider( QgsDataItemProvider *provider );
 
     //! Remove provider implementation from the list (provider object is deleted)
-    void removeProvider( QgsDataItemProvider* provider );
+    void removeProvider( QgsDataItemProvider *provider );
 
   private:
 
     //! available providers. this class owns the pointers
-    QList<QgsDataItemProvider*> mProviders;
+    QList<QgsDataItemProvider *> mProviders;
 
 };
 

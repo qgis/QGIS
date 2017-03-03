@@ -59,7 +59,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     /**
      * @brief QgsMapLayerModel creates a model to display a specific list of layers in a widget.
      */
-    explicit QgsMapLayerModel( const QList<QgsMapLayer*>& layers, QObject *parent = nullptr );
+    explicit QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent = nullptr );
 
     /**
      * @brief setItemsCheckable defines if layers should be selectable in the widget
@@ -102,14 +102,14 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     /**
      * @brief layersChecked returns the list of layers which are checked (or unchecked)
      */
-    QList<QgsMapLayer*> layersChecked( Qt::CheckState checkState = Qt::Checked );
+    QList<QgsMapLayer *> layersChecked( Qt::CheckState checkState = Qt::Checked );
     //! returns if the items can be checked or not
     bool itemsCheckable() const { return mItemCheckable; }
 
     /**
      * @brief indexFromLayer returns the model index for a given layer
      */
-    QModelIndex indexFromLayer( QgsMapLayer* layer ) const;
+    QModelIndex indexFromLayer( QgsMapLayer *layer ) const;
 
     /**
      * Sets a list of additional (non map layer) items to include at the end of the model.
@@ -118,7 +118,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      * @see additionalItems()
      * @note added in QGIS 3.0
      */
-    void setAdditionalItems( const QStringList& items );
+    void setAdditionalItems( const QStringList &items );
 
     /**
      * Return the list of additional (non map layer) items included at the end of the model.
@@ -128,11 +128,11 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     QStringList additionalItems() const { return mAdditionalItems; }
 
   protected slots:
-    void removeLayers( const QStringList& layerIds );
-    void addLayers( const QList<QgsMapLayer*>& layers );
+    void removeLayers( const QStringList &layerIds );
+    void addLayers( const QList<QgsMapLayer *> &layers );
 
   protected:
-    QList<QgsMapLayer*> mLayers;
+    QList<QgsMapLayer *> mLayers;
     QMap<QString, Qt::CheckState> mLayersChecked;
     bool mItemCheckable;
 

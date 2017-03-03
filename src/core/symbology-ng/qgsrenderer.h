@@ -38,11 +38,11 @@ class QgsPaintEffect;
 
 typedef QMap<QString, QString> QgsStringMap;
 
-typedef QList<QgsSymbol*> QgsSymbolList;
-typedef QMap<QString, QgsSymbol* > QgsSymbolMap;
+typedef QList<QgsSymbol *> QgsSymbolList;
+typedef QMap<QString, QgsSymbol * > QgsSymbolMap;
 
 typedef QList< QPair<QString, QPixmap> > QgsLegendSymbologyList;
-typedef QList< QPair<QString, QgsSymbol*> > QgsLegendSymbolList;
+typedef QList< QPair<QString, QgsSymbol *> > QgsLegendSymbolList;
 
 #include "qgslegendsymbolitem.h"
 
@@ -58,14 +58,14 @@ typedef QList< QPair<QString, QgsSymbol*> > QgsLegendSymbolList;
 class CORE_EXPORT QgsSymbolLevelItem
 {
   public:
-    QgsSymbolLevelItem( QgsSymbol* symbol, int layer )
-        : mSymbol( symbol )
-        , mLayer( layer )
+    QgsSymbolLevelItem( QgsSymbol *symbol, int layer )
+      : mSymbol( symbol )
+      , mLayer( layer )
     {}
-    QgsSymbol* symbol() { return mSymbol; }
+    QgsSymbol *symbol() { return mSymbol; }
     int layer() { return mLayer; }
   protected:
-    QgsSymbol* mSymbol = nullptr;
+    QgsSymbol *mSymbol = nullptr;
     int mLayer;
 };
 
@@ -88,7 +88,7 @@ class CORE_EXPORT QgsFeatureRenderer
     // renderer takes ownership of its symbols!
 
     //! return a new renderer - used by default in vector layers
-    static QgsFeatureRenderer* defaultRenderer( QgsWkbTypes::GeometryType geomType );
+    static QgsFeatureRenderer *defaultRenderer( QgsWkbTypes::GeometryType geomType );
 
     QString type() const { return mType; }
 
@@ -100,7 +100,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * @return returns pointer to symbol or 0 if symbol was not found
      * @note added in QGIS 2.12
      */
-    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) = 0;
+    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) = 0;
 
     /**
      * Return symbol for feature. The difference compared to symbolForFeature() is that it returns original
@@ -108,13 +108,13 @@ class CORE_EXPORT QgsFeatureRenderer
      * of a symbol for use in rendering.
      * @note added in 2.12
      */
-    virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context );
+    virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context );
 
     /**
      * Return legend keys matching a specified feature.
      * @note added in 2.14
      */
-    virtual QSet< QString > legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context );
+    virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context );
 
     /**
      * Needs to be called when a new render cycle is started
@@ -123,12 +123,12 @@ class CORE_EXPORT QgsFeatureRenderer
      * @param fields   The fields available for rendering
      * @return         Information passed back from the renderer that can e.g. be used to reduce the amount of requested features
      */
-    virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) = 0;
+    virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) = 0;
 
     /**
      * Needs to be called when a render cycle has finished to clean up.
      */
-    virtual void stopRender( QgsRenderContext& context ) = 0;
+    virtual void stopRender( QgsRenderContext &context ) = 0;
 
     /**
      * If a renderer does not require all the features this method may be overridden
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsFeatureRenderer
      *
      * @return An expression used as where clause
      */
-    virtual QString filter( const QgsFields& fields = QgsFields() ) { Q_UNUSED( fields ); return QString::null; }
+    virtual QString filter( const QgsFields &fields = QgsFields() ) { Q_UNUSED( fields ); return QString::null; }
 
     /**
      * Return a list of attributes required by this renderer. Attributes not listed in here may
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsFeatureRenderer
      *
      * @return A set of attributes
      */
-    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const = 0;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const = 0;
 
     /**
      * Returns true if this renderer requires the geometry to apply the filter.
@@ -164,7 +164,7 @@ class CORE_EXPORT QgsFeatureRenderer
      *
      * @return A copy of this renderer
      */
-    virtual QgsFeatureRenderer* clone() const = 0;
+    virtual QgsFeatureRenderer *clone() const = 0;
 
     /**
      * Render a feature using this renderer in the given context.
@@ -176,7 +176,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * If layer is not -1, the renderer should draw only a particula layer from symbols
      * (in order to support symbol level rendering).
      */
-    virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+    virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
     //! Returns debug information about this renderer
     virtual QString dump() const;
@@ -213,20 +213,20 @@ class CORE_EXPORT QgsFeatureRenderer
      * @param context render context
      * @note added in QGIS 2.12
      */
-    virtual QgsSymbolList symbols( QgsRenderContext& context ) { Q_UNUSED( context ); return QgsSymbolList(); }
+    virtual QgsSymbolList symbols( QgsRenderContext &context ) { Q_UNUSED( context ); return QgsSymbolList(); }
 
     bool usingSymbolLevels() const { return mUsingSymbolLevels; }
     void setUsingSymbolLevels( bool usingSymbolLevels ) { mUsingSymbolLevels = usingSymbolLevels; }
 
     //! create a renderer from XML element
-    static QgsFeatureRenderer* load( QDomElement& symbologyElem );
+    static QgsFeatureRenderer *load( QDomElement &symbologyElem );
 
     //! store renderer info to XML element
-    virtual QDomElement save( QDomDocument& doc );
+    virtual QDomElement save( QDomDocument &doc );
 
     //! create the SLD UserStyle element following the SLD v1.1 specs with the given name
     //! @note added in 2.8
-    virtual QDomElement writeSld( QDomDocument& doc, const QString& styleName, const QgsStringMap &props = QgsStringMap() ) const;
+    virtual QDomElement writeSld( QDomDocument &doc, const QString &styleName, const QgsStringMap &props = QgsStringMap() ) const;
 
     /** Create a new renderer according to the information contained in
      * the UserStyle element of a SLD style document
@@ -238,10 +238,10 @@ class CORE_EXPORT QgsFeatureRenderer
      * went wrong
      * @return the renderer
      */
-    static QgsFeatureRenderer* loadSld( const QDomNode &node, QgsWkbTypes::GeometryType geomType, QString &errorMessage );
+    static QgsFeatureRenderer *loadSld( const QDomNode &node, QgsWkbTypes::GeometryType geomType, QString &errorMessage );
 
     //! used from subclasses to create SLD Rule elements following SLD v1.1 specs
-    virtual void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props = QgsStringMap() ) const
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const
     {
       element.appendChild( doc.createComment( QStringLiteral( "FeatureRendererV2 %1 not implemented yet" ).arg( type() ) ) );
       ( void ) props; // warning avoidance
@@ -256,22 +256,22 @@ class CORE_EXPORT QgsFeatureRenderer
 
     //! items of symbology items in legend is checked
     //! @note added in 2.5
-    virtual bool legendSymbolItemChecked( const QString& key );
+    virtual bool legendSymbolItemChecked( const QString &key );
 
     //! item in symbology was checked
     //! @note added in 2.5
-    virtual void checkLegendSymbolItem( const QString& key, bool state = true );
+    virtual void checkLegendSymbolItem( const QString &key, bool state = true );
 
     /** Sets the symbol to be used for a legend symbol item.
      * @param key rule key for legend symbol
      * @param symbol new symbol for legend item. Ownership is transferred to renderer.
      * @note added in QGIS 2.14
      */
-    virtual void setLegendSymbolItem( const QString& key, QgsSymbol* symbol );
+    virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol );
 
     //! return a list of item text / symbol
     //! @note not available in python bindings
-    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = "" );
+    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" );
 
     //! Return a list of symbology items for the legend. Better choice than legendSymbolItems().
     //! Default fallback implementation just uses legendSymbolItems() implementation
@@ -290,20 +290,20 @@ class CORE_EXPORT QgsFeatureRenderer
      * Default implementation uses symbolForFeature().
      * @note added in QGIS 2.12
      */
-    virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context );
+    virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context );
 
     /** Returns list of symbols used for rendering the feature.
      * For renderers that do not support MoreSymbolsPerFeature it is more efficient
      * to use symbolForFeature()
      * @note added in QGIS 2.12
      */
-    virtual QgsSymbolList symbolsForFeature( QgsFeature& feat, QgsRenderContext& context );
+    virtual QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext &context );
 
     /** Equivalent of originalSymbolsForFeature() call
      * extended to support renderers that may use more symbols per feature - similar to symbolsForFeature()
      * @note added in 2.12
      */
-    virtual QgsSymbolList originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context );
+    virtual QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context );
 
     /** Allows for a renderer to modify the extent of a feature request prior to rendering
      * @param extent reference to request's filter extent. Modify extent to change the
@@ -311,21 +311,21 @@ class CORE_EXPORT QgsFeatureRenderer
      * @param context render context
      * @note added in QGIS 2.7
      */
-    virtual void modifyRequestExtent( QgsRectangle& extent, QgsRenderContext& context ) { Q_UNUSED( extent ); Q_UNUSED( context ); }
+    virtual void modifyRequestExtent( QgsRectangle &extent, QgsRenderContext &context ) { Q_UNUSED( extent ); Q_UNUSED( context ); }
 
     /** Returns the current paint effect for the renderer.
      * @returns paint effect
      * @note added in QGIS 2.9
      * @see setPaintEffect
      */
-    QgsPaintEffect* paintEffect() const;
+    QgsPaintEffect *paintEffect() const;
 
     /** Sets the current paint effect for the renderer.
      * @param effect paint effect. Ownership is transferred to the renderer.
      * @note added in QGIS 2.9
      * @see paintEffect
      */
-    void setPaintEffect( QgsPaintEffect* effect );
+    void setPaintEffect( QgsPaintEffect *effect );
 
     /** Returns whether the renderer must render as a raster.
      * @note added in QGIS 2.12
@@ -356,7 +356,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * @note added in QGIS 2.14
      * @see setOrderByEnabled()
      */
-    void setOrderBy( const QgsFeatureRequest::OrderBy& orderBy );
+    void setOrderBy( const QgsFeatureRequest::OrderBy &orderBy );
 
     /**
      * Returns whether custom ordering will be applied before features are processed by this renderer.
@@ -381,37 +381,37 @@ class CORE_EXPORT QgsFeatureRenderer
      * @see embeddedRenderer()
      * @note added in QGIS 2.16
      */
-    virtual void setEmbeddedRenderer( QgsFeatureRenderer* subRenderer ) { delete subRenderer; }
+    virtual void setEmbeddedRenderer( QgsFeatureRenderer *subRenderer ) { delete subRenderer; }
 
     /** Returns the current embedded renderer (subrenderer) for this feature renderer. The base class
      * implementation does not use subrenderers and will always return null.
      * @see setEmbeddedRenderer()
      * @note added in QGIS 2.16
      */
-    virtual const QgsFeatureRenderer* embeddedRenderer() const { return nullptr; }
+    virtual const QgsFeatureRenderer *embeddedRenderer() const { return nullptr; }
 
   protected:
-    QgsFeatureRenderer( const QString& type );
+    QgsFeatureRenderer( const QString &type );
 
-    void renderFeatureWithSymbol( QgsFeature& feature,
-                                  QgsSymbol* symbol,
-                                  QgsRenderContext& context,
+    void renderFeatureWithSymbol( QgsFeature &feature,
+                                  QgsSymbol *symbol,
+                                  QgsRenderContext &context,
                                   int layer,
                                   bool selected,
                                   bool drawVertexMarker );
 
     //! render editing vertex marker at specified point
-    void renderVertexMarker( QPointF pt, QgsRenderContext& context );
+    void renderVertexMarker( QPointF pt, QgsRenderContext &context );
     //! render editing vertex marker for a polyline
-    void renderVertexMarkerPolyline( QPolygonF& pts, QgsRenderContext& context );
+    void renderVertexMarkerPolyline( QPolygonF &pts, QgsRenderContext &context );
     //! render editing vertex marker for a polygon
-    void renderVertexMarkerPolygon( QPolygonF& pts, QList<QPolygonF>* rings, QgsRenderContext& context );
+    void renderVertexMarkerPolygon( QPolygonF &pts, QList<QPolygonF> *rings, QgsRenderContext &context );
 
     /**
      * Creates a point in screen coordinates from a wkb string in map
      * coordinates
      */
-    static QPointF _getPoint( QgsRenderContext& context, const QgsPointV2& point );
+    static QPointF _getPoint( QgsRenderContext &context, const QgsPointV2 &point );
 
     /**
      * Clones generic renderer data to another renderer.
@@ -432,19 +432,19 @@ class CORE_EXPORT QgsFeatureRenderer
     //! The current size of editing marker
     int mCurrentVertexMarkerSize;
 
-    QgsPaintEffect* mPaintEffect = nullptr;
+    QgsPaintEffect *mPaintEffect = nullptr;
 
     bool mForceRaster;
 
     /** @note this function is used to convert old sizeScale expressions to symbol
      * level DataDefined size
      */
-    static void convertSymbolSizeScale( QgsSymbol * symbol, QgsSymbol::ScaleMethod method, const QString & field );
+    static void convertSymbolSizeScale( QgsSymbol *symbol, QgsSymbol::ScaleMethod method, const QString &field );
 
     /** @note this function is used to convert old rotations expressions to symbol
      * level DataDefined angle
      */
-    static void convertSymbolRotation( QgsSymbol * symbol, const QString & field );
+    static void convertSymbolRotation( QgsSymbol *symbol, const QString &field );
 
     QgsFeatureRequest::OrderBy mOrderBy;
 

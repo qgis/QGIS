@@ -46,21 +46,21 @@ class CORE_EXPORT QgsProjectFileTransform
      * @param domDocument The Dom document to use as content
      * @param version Version number
      */
-    QgsProjectFileTransform( QDomDocument & domDocument,
-                             const QgsProjectVersion& version )
+    QgsProjectFileTransform( QDomDocument &domDocument,
+                             const QgsProjectVersion &version )
     {
       mDom = domDocument;
       mCurrentVersion = version;
     }
 
 
-    bool updateRevision( const QgsProjectVersion& version );
+    bool updateRevision( const QgsProjectVersion &version );
 
     /** Prints the contents via QgsDebugMsg()
      */
     void dump();
 
-    static void convertRasterProperties( QDomDocument& doc, QDomNode& parentNode, QDomElement& rasterPropertiesElem, QgsRasterLayer* rlayer );
+    static void convertRasterProperties( QDomDocument &doc, QDomNode &parentNode, QDomElement &rasterPropertiesElem, QgsRasterLayer *rlayer );
 
   private:
 
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsProjectFileTransform
     //helper functions
     static int rasterBandNumber( const QDomElement &rasterPropertiesElem, const QString &bandName, QgsRasterLayer *rlayer );
     static void transformContrastEnhancement( QDomDocument &doc, const QDomElement &rasterproperties, QDomElement &rendererElem );
-    static void transformRasterTransparency( QDomDocument& doc, const QDomElement& orig, QDomElement& rendererElem );
+    static void transformRasterTransparency( QDomDocument &doc, const QDomElement &orig, QDomElement &rendererElem );
 };
 
 

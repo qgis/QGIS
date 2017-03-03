@@ -32,23 +32,23 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 
 QgsMapSettings::QgsMapSettings()
-    : mDpi( qt_defaultDpiX() ) // DPI that will be used by default for QImage instances
-    , mSize( QSize( 0, 0 ) )
-    , mExtent()
-    , mRotation( 0.0 )
-    , mMagnificationFactor( 1.0 )
-    , mDestCRS( QgsCoordinateReferenceSystem::fromSrsId( GEOCRS_ID ) )  // WGS 84
-    , mDatumTransformStore( mDestCRS )
-    , mBackgroundColor( Qt::white )
-    , mSelectionColor( Qt::yellow )
-    , mFlags( Antialiasing | UseAdvancedEffects | DrawLabeling | DrawSelection )
-    , mImageFormat( QImage::Format_ARGB32_Premultiplied )
-    , mSegmentationTolerance( M_PI_2 / 90 )
-    , mSegmentationToleranceType( QgsAbstractGeometry::MaximumAngle )
-    , mValid( false )
-    , mVisibleExtent()
-    , mMapUnitsPerPixel( 1 )
-    , mScale( 1 )
+  : mDpi( qt_defaultDpiX() ) // DPI that will be used by default for QImage instances
+  , mSize( QSize( 0, 0 ) )
+  , mExtent()
+  , mRotation( 0.0 )
+  , mMagnificationFactor( 1.0 )
+  , mDestCRS( QgsCoordinateReferenceSystem::fromSrsId( GEOCRS_ID ) )  // WGS 84
+  , mDatumTransformStore( mDestCRS )
+  , mBackgroundColor( Qt::white )
+  , mSelectionColor( Qt::yellow )
+  , mFlags( Antialiasing | UseAdvancedEffects | DrawLabeling | DrawSelection )
+  , mImageFormat( QImage::Format_ARGB32_Premultiplied )
+  , mSegmentationTolerance( M_PI_2 / 90 )
+  , mSegmentationToleranceType( QgsAbstractGeometry::MaximumAngle )
+  , mValid( false )
+  , mVisibleExtent()
+  , mMapUnitsPerPixel( 1 )
+  , mScale( 1 )
 {
   // set default map units - we use WGS 84 thus use degrees
   mScaleCalculator.setMapUnits( QgsUnitTypes::DistanceDegrees );
@@ -87,7 +87,7 @@ QgsRectangle QgsMapSettings::extent() const
   return mExtent;
 }
 
-void QgsMapSettings::setExtent( const QgsRectangle& extent, bool magnified )
+void QgsMapSettings::setExtent( const QgsRectangle &extent, bool magnified )
 {
   QgsRectangle magnifiedExtent = extent;
 
@@ -173,17 +173,17 @@ void QgsMapSettings::updateDerived()
 
   // calculate the actual extent of the mapCanvas
   double dxmin = mExtent.xMinimum(), dxmax = mExtent.xMaximum(),
-                 dymin = mExtent.yMinimum(), dymax = mExtent.yMaximum(), whitespace;
+         dymin = mExtent.yMinimum(), dymax = mExtent.yMaximum(), whitespace;
 
   if ( mapUnitsPerPixelY > mapUnitsPerPixelX )
   {
-    whitespace = (( myWidth * mMapUnitsPerPixel ) - mExtent.width() ) * 0.5;
+    whitespace = ( ( myWidth * mMapUnitsPerPixel ) - mExtent.width() ) * 0.5;
     dxmin -= whitespace;
     dxmax += whitespace;
   }
   else
   {
-    whitespace = (( myHeight * mMapUnitsPerPixel ) - mExtent.height() ) * 0.5;
+    whitespace = ( ( myHeight * mMapUnitsPerPixel ) - mExtent.height() ) * 0.5;
     dymin -= whitespace;
     dymax += whitespace;
   }
@@ -260,12 +260,12 @@ QStringList QgsMapSettings::layerIds() const
 }
 
 
-QList<QgsMapLayer*> QgsMapSettings::layers() const
+QList<QgsMapLayer *> QgsMapSettings::layers() const
 {
   return _qgis_listQPointerToRaw( mLayers );
 }
 
-void QgsMapSettings::setLayers( const QList<QgsMapLayer*>& layers )
+void QgsMapSettings::setLayers( const QList<QgsMapLayer *> &layers )
 {
   mLayers = _qgis_listRawToQPointer( layers );
 }
@@ -275,12 +275,12 @@ QMap<QString, QString> QgsMapSettings::layerStyleOverrides() const
   return mLayerStyleOverrides;
 }
 
-void QgsMapSettings::setLayerStyleOverrides( const QMap<QString, QString>& overrides )
+void QgsMapSettings::setLayerStyleOverrides( const QMap<QString, QString> &overrides )
 {
   mLayerStyleOverrides = overrides;
 }
 
-void QgsMapSettings::setDestinationCrs( const QgsCoordinateReferenceSystem& crs )
+void QgsMapSettings::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
 {
   mDestCRS = crs;
   mDatumTransformStore.setDestinationCrs( crs );
@@ -338,8 +338,8 @@ QPolygonF QgsMapSettings::visiblePolygon() const
 {
   QPolygonF poly;
 
-  const QSize& sz = outputSize();
-  const QgsMapToPixel& m2p = mapToPixel();
+  const QSize &sz = outputSize();
+  const QgsMapToPixel &m2p = mapToPixel();
 
   poly << m2p.toMapCoordinatesF( 0,          0 ).toQPointF();
   poly << m2p.toMapCoordinatesF( sz.width(), 0 ).toQPointF();
@@ -366,7 +366,7 @@ QgsCoordinateTransform QgsMapSettings::layerTransform( const QgsMapLayer *layer 
 }
 
 
-double QgsMapSettings::layerToMapUnits( const QgsMapLayer *layer, const QgsRectangle& referenceExtent ) const
+double QgsMapSettings::layerToMapUnits( const QgsMapLayer *layer, const QgsRectangle &referenceExtent ) const
 {
   QgsRectangle extent = referenceExtent.isEmpty() ? layer->extent() : referenceExtent;
   QgsPoint l1( extent.xMinimum(), extent.yMinimum() );
@@ -379,7 +379,7 @@ double QgsMapSettings::layerToMapUnits( const QgsMapLayer *layer, const QgsRecta
 }
 
 
-QgsRectangle QgsMapSettings::layerExtentToOutputExtent( const QgsMapLayer* layer, QgsRectangle extent ) const
+QgsRectangle QgsMapSettings::layerExtentToOutputExtent( const QgsMapLayer *layer, QgsRectangle extent ) const
 {
   try
   {
@@ -403,7 +403,7 @@ QgsRectangle QgsMapSettings::layerExtentToOutputExtent( const QgsMapLayer* layer
 }
 
 
-QgsRectangle QgsMapSettings::outputExtentToLayerExtent( const QgsMapLayer* layer, QgsRectangle extent ) const
+QgsRectangle QgsMapSettings::outputExtentToLayerExtent( const QgsMapLayer *layer, QgsRectangle extent ) const
 {
   try
   {
@@ -427,7 +427,7 @@ QgsRectangle QgsMapSettings::outputExtentToLayerExtent( const QgsMapLayer* layer
 }
 
 
-QgsPoint QgsMapSettings::layerToMapCoordinates( const QgsMapLayer* layer, QgsPoint point ) const
+QgsPoint QgsMapSettings::layerToMapCoordinates( const QgsMapLayer *layer, QgsPoint point ) const
 {
   try
   {
@@ -444,7 +444,7 @@ QgsPoint QgsMapSettings::layerToMapCoordinates( const QgsMapLayer* layer, QgsPoi
 }
 
 
-QgsRectangle QgsMapSettings::layerToMapCoordinates( const QgsMapLayer* layer, QgsRectangle rect ) const
+QgsRectangle QgsMapSettings::layerToMapCoordinates( const QgsMapLayer *layer, QgsRectangle rect ) const
 {
   try
   {
@@ -461,7 +461,7 @@ QgsRectangle QgsMapSettings::layerToMapCoordinates( const QgsMapLayer* layer, Qg
 }
 
 
-QgsPoint QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer* layer, QgsPoint point ) const
+QgsPoint QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, QgsPoint point ) const
 {
   try
   {
@@ -478,7 +478,7 @@ QgsPoint QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer* layer, QgsPoi
 }
 
 
-QgsRectangle QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer* layer, QgsRectangle rect ) const
+QgsRectangle QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, QgsRectangle rect ) const
 {
   try
   {
@@ -508,9 +508,9 @@ QgsRectangle QgsMapSettings::fullExtent() const
   // iterate through the map layers and test each layers extent
   // against the current min and max values
   QgsDebugMsg( QString( "Layer count: %1" ).arg( mLayers.count() ) );
-  Q_FOREACH ( const QgsWeakMapLayerPointer& layerPtr, mLayers )
+  Q_FOREACH ( const QgsWeakMapLayerPointer &layerPtr, mLayers )
   {
-    if ( QgsMapLayer* lyr = layerPtr.data() )
+    if ( QgsMapLayer *lyr = layerPtr.data() )
     {
       QgsDebugMsg( "Updating extent using " + lyr->name() );
       QgsDebugMsg( "Input extent: " + lyr->extent().toString() );
@@ -556,7 +556,7 @@ QgsRectangle QgsMapSettings::fullExtent() const
 }
 
 
-void QgsMapSettings::readXml( QDomNode& node )
+void QgsMapSettings::readXml( QDomNode &node )
 {
   // set destination CRS
   QgsCoordinateReferenceSystem srs;
@@ -593,7 +593,7 @@ void QgsMapSettings::readXml( QDomNode& node )
 
 
 
-void QgsMapSettings::writeXml( QDomNode& node, QDomDocument& doc )
+void QgsMapSettings::writeXml( QDomNode &node, QDomDocument &doc )
 {
   // units
   node.appendChild( QgsXmlUtils::writeMapUnits( mapUnits(), doc ) );

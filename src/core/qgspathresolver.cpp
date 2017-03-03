@@ -20,13 +20,13 @@
 #include <QFileInfo>
 
 
-QgsPathResolver::QgsPathResolver( const QString& baseFileName )
-    : mBaseFileName( baseFileName )
+QgsPathResolver::QgsPathResolver( const QString &baseFileName )
+  : mBaseFileName( baseFileName )
 {
 }
 
 
-QString QgsPathResolver::readPath( const QString& filename ) const
+QString QgsPathResolver::readPath( const QString &filename ) const
 {
   QString src = filename;
 
@@ -123,7 +123,7 @@ QString QgsPathResolver::readPath( const QString& filename ) const
 
   // resolve ..
   int pos;
-  while (( pos = projElems.indexOf( QStringLiteral( ".." ) ) ) > 0 )
+  while ( ( pos = projElems.indexOf( QStringLiteral( ".." ) ) ) > 0 )
   {
     // remove preceding element and ..
     projElems.removeAt( pos - 1 );
@@ -139,7 +139,7 @@ QString QgsPathResolver::readPath( const QString& filename ) const
 }
 
 
-QString QgsPathResolver::writePath( const QString& src ) const
+QString QgsPathResolver::writePath( const QString &src ) const
 {
   if ( mBaseFileName.isEmpty() || src.isEmpty() )
   {

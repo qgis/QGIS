@@ -24,14 +24,14 @@
 #include "feature.h"
 #include "labelposition.h"
 
-QgsVectorLayerDiagramProvider::QgsVectorLayerDiagramProvider( QgsVectorLayer* layer, bool ownFeatureLoop )
-    : QgsAbstractLabelProvider( layer )
-    , mSettings( *layer->diagramLayerSettings() )
-    , mDiagRenderer( layer->diagramRenderer()->clone() )
-    , mFields( layer->fields() )
-    , mLayerCrs( layer->crs() )
-    , mSource( ownFeatureLoop ? new QgsVectorLayerFeatureSource( layer ) : nullptr )
-    , mOwnsSource( ownFeatureLoop )
+QgsVectorLayerDiagramProvider::QgsVectorLayerDiagramProvider( QgsVectorLayer *layer, bool ownFeatureLoop )
+  : QgsAbstractLabelProvider( layer )
+  , mSettings( *layer->diagramLayerSettings() )
+  , mDiagRenderer( layer->diagramRenderer()->clone() )
+  , mFields( layer->fields() )
+  , mLayerCrs( layer->crs() )
+  , mSource( ownFeatureLoop ? new QgsVectorLayerFeatureSource( layer ) : nullptr )
+  , mOwnsSource( ownFeatureLoop )
 {
   init();
 }
@@ -57,7 +57,7 @@ QgsVectorLayerDiagramProvider::~QgsVectorLayerDiagramProvider()
 }
 
 
-QList<QgsLabelFeature*> QgsVectorLayerDiagramProvider::labelFeatures( QgsRenderContext &context )
+QList<QgsLabelFeature *> QgsVectorLayerDiagramProvider::labelFeatures( QgsRenderContext &context )
 {
   if ( !mSource )
   {
@@ -68,7 +68,7 @@ QList<QgsLabelFeature*> QgsVectorLayerDiagramProvider::labelFeatures( QgsRenderC
 
   QSet<QString> attributeNames;
   if ( !prepare( context, attributeNames ) )
-    return QList<QgsLabelFeature*>();
+    return QList<QgsLabelFeature *>();
 
   QgsRectangle layerExtent = context.extent();
   if ( mSettings.coordinateTransform().isValid() )
@@ -90,7 +90,7 @@ QList<QgsLabelFeature*> QgsVectorLayerDiagramProvider::labelFeatures( QgsRenderC
 }
 
 
-void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const
+void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const
 {
 #if 1 // XXX strk
   // features are pre-rotated but not scaled/translated,
@@ -100,10 +100,10 @@ void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext& context, pal::L
   QgsMapToPixel xform = context.mapToPixel();
   xform.setMapRotation( 0, 0, 0 );
 #else
-  const QgsMapToPixel& xform = context.mapToPixel();
+  const QgsMapToPixel &xform = context.mapToPixel();
 #endif
 
-  QgsDiagramLabelFeature* dlf = dynamic_cast<QgsDiagramLabelFeature*>( label->getFeaturePart()->feature() );
+  QgsDiagramLabelFeature *dlf = dynamic_cast<QgsDiagramLabelFeature *>( label->getFeaturePart()->feature() );
 
   QgsFeature feature;
   feature.setFields( mFields );
@@ -136,10 +136,10 @@ void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext& context, pal::L
 }
 
 
-bool QgsVectorLayerDiagramProvider::prepare( const QgsRenderContext& context, QSet<QString>& attributeNames )
+bool QgsVectorLayerDiagramProvider::prepare( const QgsRenderContext &context, QSet<QString> &attributeNames )
 {
-  QgsDiagramLayerSettings& s2 = mSettings;
-  const QgsMapSettings& mapSettings = mEngine->mapSettings();
+  QgsDiagramLayerSettings &s2 = mSettings;
+  const QgsMapSettings &mapSettings = mEngine->mapSettings();
 
   if ( context.coordinateTransform().isValid() )
     // this is context for layer rendering - use its CT as it includes correct datum transform
@@ -159,19 +159,19 @@ bool QgsVectorLayerDiagramProvider::prepare( const QgsRenderContext& context, QS
 }
 
 
-void QgsVectorLayerDiagramProvider::registerFeature( QgsFeature& feature, QgsRenderContext& context, QgsGeometry* obstacleGeometry )
+void QgsVectorLayerDiagramProvider::registerFeature( QgsFeature &feature, QgsRenderContext &context, QgsGeometry *obstacleGeometry )
 {
-  QgsLabelFeature* label = registerDiagram( feature, context, obstacleGeometry );
+  QgsLabelFeature *label = registerDiagram( feature, context, obstacleGeometry );
   if ( label )
     mFeatures << label;
 }
 
 
-QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& feat, QgsRenderContext &context, QgsGeometry* obstacleGeometry )
+QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &feat, QgsRenderContext &context, QgsGeometry *obstacleGeometry )
 {
-  const QgsMapSettings& mapSettings = mEngine->mapSettings();
+  const QgsMapSettings &mapSettings = mEngine->mapSettings();
 
-  const QgsDiagramRenderer* dr = mSettings.renderer();
+  const QgsDiagramRenderer *dr = mSettings.renderer();
   if ( dr )
   {
     QList<QgsDiagramSettings> settingList = dr->diagramSettings();
@@ -207,12 +207,12 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
     extentGeom.rotate( -mapSettings.rotation(), mapSettings.visibleExtent().center() );
   }
 
-  GEOSGeometry* geomCopy = nullptr;
+  GEOSGeometry *geomCopy = nullptr;
   std::unique_ptr<QgsGeometry> scopedPreparedGeom;
   if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, mSettings.coordinateTransform(), &extentGeom ) )
   {
     scopedPreparedGeom.reset( new QgsGeometry( QgsPalLabeling::prepareGeometry( geom, context, mSettings.coordinateTransform(), &extentGeom ) ) );
-    QgsGeometry* preparedGeom = scopedPreparedGeom.get();
+    QgsGeometry *preparedGeom = scopedPreparedGeom.get();
     if ( preparedGeom->isNull() )
       return nullptr;
     geomCopy = preparedGeom->exportToGeos();
@@ -225,7 +225,7 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
   if ( !geomCopy )
     return nullptr; // invalid geometry
 
-  GEOSGeometry* geosObstacleGeomClone = nullptr;
+  GEOSGeometry *geosObstacleGeomClone = nullptr;
   std::unique_ptr<QgsGeometry> scopedObstacleGeom;
   if ( isObstacle && obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( *obstacleGeometry, context, mSettings.coordinateTransform(), &extentGeom ) )
   {
@@ -282,7 +282,7 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
     }
   }
 
-  QgsDiagramLabelFeature* lf = new QgsDiagramLabelFeature( feat.id(), geomCopy, QSizeF( diagramWidth, diagramHeight ) );
+  QgsDiagramLabelFeature *lf = new QgsDiagramLabelFeature( feat.id(), geomCopy, QSizeF( diagramWidth, diagramHeight ) );
   lf->setHasFixedPosition( ddPos );
   lf->setFixedPosition( QgsPoint( ddPosX, ddPosY ) );
   lf->setHasFixedAngle( true );

@@ -37,15 +37,15 @@ class CORE_EXPORT QgsPythonRunner
     static bool isValid();
 
     //! Execute a python statement
-    static bool run( const QString& command, const QString& messageOnError = QString() );
+    static bool run( const QString &command, const QString &messageOnError = QString() );
 
     //! Eval a python statement
-    static bool eval( const QString& command, QString& result );
+    static bool eval( const QString &command, QString &result );
 
     /** Assign an instance of python runner so that run() can be used.
       This method should be called during app initialization.
       Takes ownership of the object, deletes previous instance. */
-    static void setInstance( QgsPythonRunner* runner );
+    static void setInstance( QgsPythonRunner *runner );
 
   protected:
     //! Protected constructor: can be instantiated only from children
@@ -54,9 +54,9 @@ class CORE_EXPORT QgsPythonRunner
 
     virtual bool runCommand( QString command, QString messageOnError = QString() ) = 0;
 
-    virtual bool evalCommand( QString command, QString& result ) = 0;
+    virtual bool evalCommand( QString command, QString &result ) = 0;
 
-    static QgsPythonRunner* sInstance;
+    static QgsPythonRunner *sInstance;
 };
 
 #endif // QGSPYTHONRUNNER_H

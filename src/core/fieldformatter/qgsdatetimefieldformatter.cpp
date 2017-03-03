@@ -30,7 +30,7 @@ QString QgsDateTimeFieldFormatter::id() const
   return QStringLiteral( "DateTime" );
 }
 
-QString QgsDateTimeFieldFormatter::representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QString QgsDateTimeFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
   Q_UNUSED( cache )
 

@@ -18,26 +18,26 @@
 #include <QDebug>
 
 QgsMultiRenderChecker::QgsMultiRenderChecker()
-    : mColorTolerance( 0 )
+  : mColorTolerance( 0 )
 {
 }
 
-void QgsMultiRenderChecker::setControlName( const QString& name )
+void QgsMultiRenderChecker::setControlName( const QString &name )
 {
   mControlName = name;
 }
 
-void QgsMultiRenderChecker::setControlPathPrefix( const QString& prefix )
+void QgsMultiRenderChecker::setControlPathPrefix( const QString &prefix )
 {
   mControlPathPrefix = prefix;
 }
 
-void QgsMultiRenderChecker::setMapSettings( const QgsMapSettings& mapSettings )
+void QgsMultiRenderChecker::setMapSettings( const QgsMapSettings &mapSettings )
 {
   mMapSettings = mapSettings;
 }
 
-bool QgsMultiRenderChecker::runTest( const QString& testName, unsigned int mismatchCount )
+bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int mismatchCount )
 {
   bool successful = false;
 
@@ -52,7 +52,7 @@ bool QgsMultiRenderChecker::runTest( const QString& testName, unsigned int misma
 
   QVector<QgsDartMeasurement> dartMeasurements;
 
-  Q_FOREACH ( const QString& suffix, subDirs )
+  Q_FOREACH ( const QString &suffix, subDirs )
   {
     qDebug() << "Checking subdir " << suffix;
     bool result;
@@ -84,7 +84,7 @@ bool QgsMultiRenderChecker::runTest( const QString& testName, unsigned int misma
 
   if ( !successful )
   {
-    Q_FOREACH ( const QgsDartMeasurement& measurement, dartMeasurements )
+    Q_FOREACH ( const QgsDartMeasurement &measurement, dartMeasurements )
       measurement.send();
 
     QgsDartMeasurement msg( QStringLiteral( "Image not accepted by test" ), QgsDartMeasurement::Text, "This may be caused because the test is supposed to fail or rendering inconsistencies."
@@ -111,20 +111,20 @@ QString QgsMultiRenderChecker::controlImagePath() const
 
 ///@cond PRIVATE
 
-QgsCompositionChecker::QgsCompositionChecker( const QString& testName, QgsComposition* composition )
-    : QgsMultiRenderChecker()
-    , mTestName( testName )
-    , mComposition( composition )
-    , mSize( 1122, 794 )
-    , mDotsPerMeter( 96 / 25.4 * 1000 )
+QgsCompositionChecker::QgsCompositionChecker( const QString &testName, QgsComposition *composition )
+  : QgsMultiRenderChecker()
+  , mTestName( testName )
+  , mComposition( composition )
+  , mSize( 1122, 794 )
+  , mDotsPerMeter( 96 / 25.4 * 1000 )
 {
   // The composer has some slight render inconsistencies on the whole image sometimes
   setColorTolerance( 5 );
 }
 
 QgsCompositionChecker::QgsCompositionChecker()
-    : mComposition( nullptr )
-    , mDotsPerMeter( 96 / 25.4 * 1000 )
+  : mComposition( nullptr )
+  , mDotsPerMeter( 96 / 25.4 * 1000 )
 {
 }
 

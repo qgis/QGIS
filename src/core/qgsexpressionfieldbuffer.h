@@ -36,9 +36,9 @@ class CORE_EXPORT QgsExpressionFieldBuffer
   public:
     typedef struct ExpressionField
     {
-      ExpressionField( const QString& exp, const QgsField& fld )
-          : cachedExpression( exp )
-          , field( fld )
+      ExpressionField( const QString &exp, const QgsField &fld )
+        : cachedExpression( exp )
+        , field( fld )
       {}
 
       QgsExpression cachedExpression;
@@ -53,7 +53,7 @@ class CORE_EXPORT QgsExpressionFieldBuffer
      * @param exp expression to add
      * @param fld field to add
      */
-    void addExpression( const QString& exp, const QgsField& fld );
+    void addExpression( const QString &exp, const QgsField &fld );
 
     /**
      * Remove an expression from the buffer
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsExpressionFieldBuffer
      *
      * @note added in 3.0
      */
-    void renameExpression( int index, const QString& name );
+    void renameExpression( int index, const QString &name );
 
     /**
      * Changes the expression at a given index
@@ -80,24 +80,24 @@ class CORE_EXPORT QgsExpressionFieldBuffer
      *
      * @note added in 2.9
      */
-    void updateExpression( int index, const QString& exp );
+    void updateExpression( int index, const QString &exp );
 
     /**
      * Saves expressions to xml under the layer node
      */
-    void writeXml( QDomNode& layer_node, QDomDocument& document ) const;
+    void writeXml( QDomNode &layer_node, QDomDocument &document ) const;
 
     /**
      * Reads expressions from project file
      */
-    void readXml( const QDomNode& layer_node );
+    void readXml( const QDomNode &layer_node );
 
     /**
      * Adds fields with the expressions buffered in this object to a QgsFields object
      *
      * @param flds The fields to be updated
      */
-    void updateFields( QgsFields& flds );
+    void updateFields( QgsFields &flds );
 
     QList<ExpressionField> expressions() const { return mExpressions; }
 

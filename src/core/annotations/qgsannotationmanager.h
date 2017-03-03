@@ -47,7 +47,7 @@ class CORE_EXPORT QgsAnnotationManager : public QObject
      * Constructor for QgsAnnotationManager. The project will become the parent object for this
      * manager.
      */
-    explicit QgsAnnotationManager( QgsProject* project = nullptr );
+    explicit QgsAnnotationManager( QgsProject *project = nullptr );
 
     ~QgsAnnotationManager();
 
@@ -57,7 +57,7 @@ class CORE_EXPORT QgsAnnotationManager : public QObject
      * @see removeAnnotation()
      * @see annotationAdded()
      */
-    bool addAnnotation( QgsAnnotation* annotation );
+    bool addAnnotation( QgsAnnotation *annotation );
 
     /**
      * Removes an annotation from the manager. The annotation is deleted.
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsAnnotationManager : public QObject
      * @see compositionAboutToBeRemoved()
      * @see clear()
      */
-    bool removeAnnotation( QgsAnnotation* annotation );
+    bool removeAnnotation( QgsAnnotation *annotation );
 
     /**
      * Removes and deletes all annotations from the manager.
@@ -79,39 +79,39 @@ class CORE_EXPORT QgsAnnotationManager : public QObject
     /**
      * Returns a list of all annotations contained in the manager.
      */
-    QList< QgsAnnotation* > annotations() const;
+    QList< QgsAnnotation * > annotations() const;
 
     /**
      * Reads the manager's state from a DOM element, restoring all annotations
      * present in the XML document.
      * @see writeXml()
      */
-    bool readXml( const QDomElement& element, const QDomDocument& doc );
+    bool readXml( const QDomElement &element, const QDomDocument &doc );
 
     /**
      * Returns a DOM element representing the state of the manager.
      * @see readXml()
      */
-    QDomElement writeXml( QDomDocument& doc ) const;
+    QDomElement writeXml( QDomDocument &doc ) const;
 
   signals:
 
     //! Emitted when a annotation has been added to the manager
-    void annotationAdded( QgsAnnotation* annotation );
+    void annotationAdded( QgsAnnotation *annotation );
 
     //! Emitted when an annotation was removed from the manager
     void annotationRemoved();
 
     //! Emitted when an annotation is about to be removed from the manager
-    void annotationAboutToBeRemoved( QgsAnnotation* annotation );
+    void annotationAboutToBeRemoved( QgsAnnotation *annotation );
 
   private:
 
-    QgsProject* mProject = nullptr;
+    QgsProject *mProject = nullptr;
 
-    QList< QgsAnnotation* > mAnnotations;
+    QList< QgsAnnotation * > mAnnotations;
 
-    void createAnnotationFromXml( const QDomElement& element, const QDomDocument& doc );
+    void createAnnotationFromXml( const QDomElement &element, const QDomDocument &doc );
 
 };
 

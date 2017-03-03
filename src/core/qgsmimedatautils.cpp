@@ -25,14 +25,14 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
-static const char* QGIS_URILIST_MIMETYPE = "application/x-vnd.qgis.qgis.uri";
+static const char *QGIS_URILIST_MIMETYPE = "application/x-vnd.qgis.qgis.uri";
 
 
 QgsMimeDataUtils::Uri::Uri()
 {
 }
 
-QgsMimeDataUtils::Uri::Uri( QString& encData )
+QgsMimeDataUtils::Uri::Uri( QString &encData )
 {
   QgsDebugMsg( "encData: " + encData );
   QStringList decoded = decode( encData );
@@ -68,12 +68,12 @@ QString QgsMimeDataUtils::Uri::data() const
 
 // -----
 
-bool QgsMimeDataUtils::isUriList( const QMimeData* data )
+bool QgsMimeDataUtils::isUriList( const QMimeData *data )
 {
   return data->hasFormat( QGIS_URILIST_MIMETYPE );
 }
 
-QMimeData* QgsMimeDataUtils::encodeUriList( const QgsMimeDataUtils::UriList& layers )
+QMimeData *QgsMimeDataUtils::encodeUriList( const QgsMimeDataUtils::UriList &layers )
 {
   QMimeData *mimeData = new QMimeData();
 
@@ -82,7 +82,7 @@ QMimeData* QgsMimeDataUtils::encodeUriList( const QgsMimeDataUtils::UriList& lay
 }
 
 
-QgsMimeDataUtils::UriList QgsMimeDataUtils::decodeUriList( const QMimeData* data )
+QgsMimeDataUtils::UriList QgsMimeDataUtils::decodeUriList( const QMimeData *data )
 {
   QByteArray encodedData = data->data( QGIS_URILIST_MIMETYPE );
   QDataStream stream( &encodedData, QIODevice::ReadOnly );
@@ -98,28 +98,28 @@ QgsMimeDataUtils::UriList QgsMimeDataUtils::decodeUriList( const QMimeData* data
 }
 
 
-static void _addLayerTreeNodeToUriList( QgsLayerTreeNode* node, QgsMimeDataUtils::UriList& uris )
+static void _addLayerTreeNodeToUriList( QgsLayerTreeNode *node, QgsMimeDataUtils::UriList &uris )
 {
   if ( QgsLayerTree::isGroup( node ) )
   {
-    Q_FOREACH ( QgsLayerTreeNode* child, QgsLayerTree::toGroup( node )->children() )
+    Q_FOREACH ( QgsLayerTreeNode *child, QgsLayerTree::toGroup( node )->children() )
       _addLayerTreeNodeToUriList( child, uris );
   }
   else if ( QgsLayerTree::isLayer( node ) )
   {
-    QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
+    QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
     if ( !nodeLayer->layer() )
       return;
 
     QgsMimeDataUtils::Uri uri;
-    if ( QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( nodeLayer->layer() ) )
+    if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() ) )
     {
       uri.layerType = QStringLiteral( "vector" );
       uri.name = vlayer->name();
       uri.providerKey = vlayer->dataProvider()->name();
       uri.uri = vlayer->dataProvider()->dataSourceUri();
     }
-    else if ( QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer*>( nodeLayer->layer() ) )
+    else if ( QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( nodeLayer->layer() ) )
     {
       uri.layerType = QStringLiteral( "raster" );
       uri.name = rlayer->name();
@@ -135,18 +135,18 @@ static void _addLayerTreeNodeToUriList( QgsLayerTreeNode* node, QgsMimeDataUtils
   }
 }
 
-QByteArray QgsMimeDataUtils::layerTreeNodesToUriList( const QList<QgsLayerTreeNode *>& nodes )
+QByteArray QgsMimeDataUtils::layerTreeNodesToUriList( const QList<QgsLayerTreeNode *> &nodes )
 {
   UriList uris;
-  Q_FOREACH ( QgsLayerTreeNode* node, nodes )
+  Q_FOREACH ( QgsLayerTreeNode *node, nodes )
     _addLayerTreeNodeToUriList( node, uris );
   return uriListToByteArray( uris );
 }
 
-QString QgsMimeDataUtils::encode( const QStringList& items )
+QString QgsMimeDataUtils::encode( const QStringList &items )
 {
   QString encoded;
-  Q_FOREACH ( const QString& item, items )
+  Q_FOREACH ( const QString &item, items )
   {
     QString str = item;
     str.replace( '\\', QLatin1String( "\\\\" ) );
@@ -156,7 +156,7 @@ QString QgsMimeDataUtils::encode( const QStringList& items )
   return encoded.left( encoded.length() - 1 );
 }
 
-QStringList QgsMimeDataUtils::decode( const QString& encoded )
+QStringList QgsMimeDataUtils::decode( const QString &encoded )
 {
   QStringList items;
   QString item;
@@ -187,12 +187,12 @@ QStringList QgsMimeDataUtils::decode( const QString& encoded )
 }
 
 
-QByteArray QgsMimeDataUtils::uriListToByteArray( const QgsMimeDataUtils::UriList& layers )
+QByteArray QgsMimeDataUtils::uriListToByteArray( const QgsMimeDataUtils::UriList &layers )
 {
   QByteArray encodedData;
 
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
-  Q_FOREACH ( const Uri& u, layers )
+  Q_FOREACH ( const Uri &u, layers )
   {
     stream << u.data();
   }

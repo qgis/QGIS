@@ -105,7 +105,7 @@ QString QgsUnitTypes::encodeUnit( DistanceUnit unit )
  * See details in QEP #17
  ****************************************************************************/
 
-QgsUnitTypes::DistanceUnit QgsUnitTypes::decodeDistanceUnit( const QString& string, bool* ok )
+QgsUnitTypes::DistanceUnit QgsUnitTypes::decodeDistanceUnit( const QString &string, bool *ok )
 {
   QString normalized = string.trimmed().toLower();
 
@@ -203,7 +203,7 @@ QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::DistanceUnit unit )
  * See details in QEP #17
  ****************************************************************************/
 
-QgsUnitTypes::DistanceUnit QgsUnitTypes::stringToDistanceUnit( const QString& string, bool* ok )
+QgsUnitTypes::DistanceUnit QgsUnitTypes::stringToDistanceUnit( const QString &string, bool *ok )
 {
   QString normalized = string.trimmed().toLower();
 
@@ -454,7 +454,7 @@ QString QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaUnit unit )
   return QString();
 }
 
-QgsUnitTypes::AreaUnit QgsUnitTypes::decodeAreaUnit( const QString& string, bool* ok )
+QgsUnitTypes::AreaUnit QgsUnitTypes::decodeAreaUnit( const QString &string, bool *ok )
 {
   QString normalized = string.trimmed().toLower();
 
@@ -544,7 +544,7 @@ QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::AreaUnit unit )
   return QString();
 }
 
-QgsUnitTypes::AreaUnit QgsUnitTypes::stringToAreaUnit( const QString& string, bool* ok )
+QgsUnitTypes::AreaUnit QgsUnitTypes::stringToAreaUnit( const QString &string, bool *ok )
 {
   QString normalized = string.trimmed().toLower();
 
@@ -909,7 +909,7 @@ QString QgsUnitTypes::encodeUnit( QgsUnitTypes::AngleUnit unit )
   return QString();
 }
 
-QgsUnitTypes::AngleUnit QgsUnitTypes::decodeAngleUnit( const QString& string, bool* ok )
+QgsUnitTypes::AngleUnit QgsUnitTypes::decodeAngleUnit( const QString &string, bool *ok )
 {
   QString normalized = string.trimmed().toLower();
 
@@ -1148,7 +1148,7 @@ QString QgsUnitTypes::encodeUnit( RenderUnit unit )
   return QString();
 }
 
-QgsUnitTypes::RenderUnit QgsUnitTypes::decodeRenderUnit( const QString& string, bool* ok )
+QgsUnitTypes::RenderUnit QgsUnitTypes::decodeRenderUnit( const QString &string, bool *ok )
 {
   QString normalized = string.trimmed().toLower();
 

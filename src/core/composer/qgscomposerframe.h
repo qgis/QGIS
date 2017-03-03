@@ -30,31 +30,31 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
     Q_OBJECT
 
   public:
-    QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf, qreal x, qreal y, qreal width, qreal height );
+    QgsComposerFrame( QgsComposition *c, QgsComposerMultiFrame *mf, qreal x, qreal y, qreal width, qreal height );
 
     /** Sets the visible part of the multiframe's content which is visible within
      * this frame (relative to the total multiframe extent in mm).
      * @param section visible portion of content
      * @see extent
      */
-    void setContentSection( const QRectF& section ) { mSection = section; }
+    void setContentSection( const QRectF &section ) { mSection = section; }
 
     /** Returns the parent multiframe for the frame.
      * @returns parent multiframe
      */
-    QgsComposerMultiFrame* multiFrame() const { return mMultiFrame; }
+    QgsComposerMultiFrame *multiFrame() const { return mMultiFrame; }
 
     //Overridden to allow multiframe to set display name
     virtual QString displayName() const override;
 
     //Overridden to handle fixed frame sizes set by multi frame
-    void setSceneRect( const QRectF& rectangle ) override;
+    void setSceneRect( const QRectF &rectangle ) override;
 
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
-    void beginItemCommand( const QString& text ) override;
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
+    void beginItemCommand( const QString &text ) override;
     void endItemCommand() override;
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
-    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
     int type() const override { return ComposerFrame; }
 
     /** Returns the visible portion of the multi frame's content which
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
 
   private:
     QgsComposerFrame(); //forbidden
-    QgsComposerMultiFrame* mMultiFrame = nullptr;
+    QgsComposerMultiFrame *mMultiFrame = nullptr;
     QRectF mSection;
 
     //! If true, composition will not export page if this frame is empty

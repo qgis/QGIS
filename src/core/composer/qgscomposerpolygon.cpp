@@ -22,16 +22,16 @@
 #include "qgsmapsettings.h"
 #include <limits>
 
-QgsComposerPolygon::QgsComposerPolygon( QgsComposition* c )
-    : QgsComposerNodesItem( QStringLiteral( "ComposerPolygon" ), c )
-    , mPolygonStyleSymbol( nullptr )
+QgsComposerPolygon::QgsComposerPolygon( QgsComposition *c )
+  : QgsComposerNodesItem( QStringLiteral( "ComposerPolygon" ), c )
+  , mPolygonStyleSymbol( nullptr )
 {
   createDefaultPolygonStyleSymbol();
 }
 
-QgsComposerPolygon::QgsComposerPolygon( const QPolygonF& polygon, QgsComposition* c )
-    : QgsComposerNodesItem( QStringLiteral( "ComposerPolygon" ), polygon, c )
-    , mPolygonStyleSymbol( nullptr )
+QgsComposerPolygon::QgsComposerPolygon( const QPolygonF &polygon, QgsComposition *c )
+  : QgsComposerNodesItem( QStringLiteral( "ComposerPolygon" ), polygon, c )
+  , mPolygonStyleSymbol( nullptr )
 {
   createDefaultPolygonStyleSymbol();
 }
@@ -96,9 +96,9 @@ void QgsComposerPolygon::_readXmlStyle( const QDomElement &elmt )
   mPolygonStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( elmt ) );
 }
 
-void QgsComposerPolygon::setPolygonStyleSymbol( QgsFillSymbol* symbol )
+void QgsComposerPolygon::setPolygonStyleSymbol( QgsFillSymbol *symbol )
 {
-  mPolygonStyleSymbol.reset( static_cast<QgsFillSymbol*>( symbol->clone() ) );
+  mPolygonStyleSymbol.reset( static_cast<QgsFillSymbol *>( symbol->clone() ) );
   update();
   emit frameChanged();
 }
