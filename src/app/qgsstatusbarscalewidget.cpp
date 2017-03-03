@@ -26,8 +26,8 @@
 #include "qgsscalecombobox.h"
 
 QgsStatusBarScaleWidget::QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget *parent )
-    : QWidget( parent )
-    , mMapCanvas( canvas )
+  : QWidget( parent )
+  , mMapCanvas( canvas )
 {
   // add a label to show current scale
   mLabel = new QLabel();

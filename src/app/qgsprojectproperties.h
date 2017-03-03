@@ -42,7 +42,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
   public:
     //! Constructor
-    QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
 
     ~QgsProjectProperties();
@@ -51,7 +51,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
        Every project has a title
      */
     QString title() const;
-    void title( QString const & title );
+    void title( QString const &title );
 
     //! Accessor for projection
     QString projectionWkt();
@@ -82,7 +82,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void on_pbnExportScales_clicked();
 
     //! A scale in the list of project scales changed
-    void scaleItemChanged( QListWidgetItem* changedScaleItem );
+    void scaleItemChanged( QListWidgetItem *changedScaleItem );
 
     /*!
      * Slots for WMS project settings
@@ -177,11 +177,11 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     };
 
     QgsRelationManagerDialog *mRelationManagerDlg = nullptr;
-    QgsMapCanvas* mMapCanvas = nullptr;
-    QgsStyle* mStyle = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
+    QgsStyle *mStyle = nullptr;
 
     void populateStyles();
-    void editSymbol( QComboBox* cbo );
+    void editSymbol( QComboBox *cbo );
 
     /*!
      * Function to save non-base dialog states
@@ -210,18 +210,18 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     int mEllipsoidIndex;
 
     //! Check OWS configuration
-    void checkOWS( QgsLayerTreeGroup* treeGroup, QStringList& owsNames, QStringList& encodingMessages );
+    void checkOWS( QgsLayerTreeGroup *treeGroup, QStringList &owsNames, QStringList &encodingMessages );
 
     //! Populates list with ellipsoids from Sqlite3 db
     void populateEllipsoidList();
 
     //! Create a new scale item and add it to the list of scales
-    QListWidgetItem* addScaleToScaleList( const QString &newScale );
+    QListWidgetItem *addScaleToScaleList( const QString &newScale );
 
     //! Add a scale item to the list of scales
-    void addScaleToScaleList( QListWidgetItem* newItem );
+    void addScaleToScaleList( QListWidgetItem *newItem );
 
-    static const char * GEO_NONE_DESC;
+    static const char *GEO_NONE_DESC;
 
     void updateGuiForMapUnits( QgsUnitTypes::DistanceUnit units );
 };

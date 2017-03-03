@@ -19,9 +19,9 @@
 #include "qgsnetworkaccessmanager.h"
 
 QgsVersionInfo::QgsVersionInfo( QObject *parent )
-    : QObject( parent )
-    , mLatestVersion( 0 )
-    , mError( QNetworkReply::NoError )
+  : QObject( parent )
+  , mLatestVersion( 0 )
+  , mError( QNetworkReply::NoError )
 {
 
 }
@@ -44,7 +44,7 @@ bool QgsVersionInfo::isDevelopmentVersion() const
 
 void QgsVersionInfo::versionReplyFinished()
 {
-  QNetworkReply *reply = qobject_cast<QNetworkReply*>( sender() );
+  QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
   Q_ASSERT( reply );
 
   mError = reply->error();

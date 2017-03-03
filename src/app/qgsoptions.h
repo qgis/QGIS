@@ -53,7 +53,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     /** Sets the page with the specified widget name as the current page
      * @note added in QGIS 2.1
      */
-    void setCurrentPage( const QString& pageWidgetName );
+    void setCurrentPage( const QString &pageWidgetName );
 
   public slots:
     void on_cbxProjectDefaultNew_toggled( bool checked );
@@ -62,13 +62,13 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void on_pbnTemplateFolderBrowse_pressed();
     void on_pbnTemplateFolderReset_pressed();
     //! Slot called when user chooses to change the project wide projection.
-    void on_leProjectGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem& crs );
+    void on_leProjectGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem &crs );
     //! Slot called when user chooses to change the default 'on the fly' projection.
-    void on_leLayerGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem& crs );
-    void on_lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem * item, int column );
+    void on_leLayerGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem &crs );
+    void on_lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem *item, int column );
     void on_pbnEditCreateOptions_pressed();
     void on_pbnEditPyramidsOptions_pressed();
-    void editGdalDriver( const QString& driverName );
+    void editGdalDriver( const QString &driverName );
     void saveOptions();
     /*!
     * Slot to reset any temporarily applied options on dialog close/cancel */
@@ -103,7 +103,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void on_mFontFamilyRadioCustom_released();
 
     //! Slot to select custom font family choice for app
-    void on_mFontFamilyComboBox_currentFontChanged( const QFont& font );
+    void on_mFontFamilyComboBox_currentFontChanged( const QFont &font );
 
     //! Slot to set whether to use custom group boxes
     void on_mCustomGroupBoxChkBx_clicked( bool chkd );
@@ -205,7 +205,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void on_mOptionsStackedWidget_currentChanged( int indx );
 
     //! A scale in the list of predefined scales changed
-    void scaleItemChanged( QListWidgetItem* changedScaleItem );
+    void scaleItemChanged( QListWidgetItem *changedScaleItem );
 
     /* Load the list of drivers available in GDAL */
     void loadGdalDriverList();
@@ -221,24 +221,24 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
   private:
     QSettings *mSettings = nullptr;
     QStringList i18nList();
-    void initContrastEnhancement( QComboBox *cbox, const QString& name, const QString& defaultVal );
-    void saveContrastEnhancement( QComboBox *cbox, const QString& name );
-    void initMinMaxLimits( QComboBox *cbox, const QString& name, const QString& defaultVal );
-    void saveMinMaxLimits( QComboBox *cbox, const QString& name );
+    void initContrastEnhancement( QComboBox *cbox, const QString &name, const QString &defaultVal );
+    void saveContrastEnhancement( QComboBox *cbox, const QString &name );
+    void initMinMaxLimits( QComboBox *cbox, const QString &name, const QString &defaultVal );
+    void saveMinMaxLimits( QComboBox *cbox, const QString &name );
     QgsCoordinateReferenceSystem mDefaultCrs;
     QgsCoordinateReferenceSystem mLayerDefaultCrs;
     bool mLoadedGdalDriverList;
 
     //! Generate table row for custom environment variables
-    void addCustomEnvVarRow( const QString& varName, const QString& varVal, const QString& varApply = QString() );
+    void addCustomEnvVarRow( const QString &varName, const QString &varVal, const QString &varApply = QString() );
 
     void saveDefaultDatumTransformations();
 
-    QListWidgetItem* addScaleToScaleList( const QString &newScale );
-    void addScaleToScaleList( QListWidgetItem* newItem );
+    QListWidgetItem *addScaleToScaleList( const QString &newScale );
+    void addScaleToScaleList( QListWidgetItem *newItem );
 
   protected:
-    QgisAppStyleSheet* mStyleSheetBuilder = nullptr;
+    QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
     QMap<QString, QVariant> mStyleSheetNewOpts;
     QMap<QString, QVariant> mStyleSheetOldOpts;
 

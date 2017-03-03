@@ -100,49 +100,49 @@ typedef SInt32 SRefCon;
 
 /** Print usage text
  */
-void usage( const QString& appName )
+void usage( const QString &appName )
 {
   QStringList msg;
 
   msg
-  << QStringLiteral( "QGIS - " ) << VERSION << QStringLiteral( " '" ) << RELEASE_NAME << QStringLiteral( "' (" )
-  << QGSVERSION << QStringLiteral( ")\n" )
-  << QStringLiteral( "QGIS is a user friendly Open Source Geographic Information System.\n" )
-  << QStringLiteral( "Usage: " ) << appName <<  QStringLiteral( " [OPTION] [FILE]\n" )
-  << QStringLiteral( "  OPTION:\n" )
-  << QStringLiteral( "\t[--snapshot filename]\temit snapshot of loaded datasets to given file\n" )
-  << QStringLiteral( "\t[--width width]\twidth of snapshot to emit\n" )
-  << QStringLiteral( "\t[--height height]\theight of snapshot to emit\n" )
-  << QStringLiteral( "\t[--lang language]\tuse language for interface text\n" )
-  << QStringLiteral( "\t[--project projectfile]\tload the given QGIS project\n" )
-  << QStringLiteral( "\t[--extent xmin,ymin,xmax,ymax]\tset initial map extent\n" )
-  << QStringLiteral( "\t[--nologo]\thide splash screen\n" )
-  << QStringLiteral( "\t[--noversioncheck]\tdon't check for new version of QGIS at startup\n" )
-  << QStringLiteral( "\t[--noplugins]\tdon't restore plugins on startup\n" )
-  << QStringLiteral( "\t[--nocustomization]\tdon't apply GUI customization\n" )
-  << QStringLiteral( "\t[--customizationfile path]\tuse the given ini file as GUI customization\n" )
-  << QStringLiteral( "\t[--globalsettingsfile path]\tuse the given ini file as Global Settings (defaults)\n" )
-  << QStringLiteral( "\t[--optionspath path]\tuse the given QSettings path\n" )
-  << QStringLiteral( "\t[--configpath path]\tuse the given path for all user configuration\n" )
-  << QStringLiteral( "\t[--authdbdirectory path] use the given directory for authentication database\n" )
-  << QStringLiteral( "\t[--code path]\trun the given python file on load\n" )
-  << QStringLiteral( "\t[--defaultui]\tstart by resetting user ui settings to default\n" )
-  << QStringLiteral( "\t[--dxf-export filename.dxf]\temit dxf output of loaded datasets to given file\n" )
-  << QStringLiteral( "\t[--dxf-extent xmin,ymin,xmax,ymax]\tset extent to export to dxf\n" )
-  << QStringLiteral( "\t[--dxf-symbology-mode none|symbollayer|feature]\tsymbology mode for dxf output\n" )
-  << QStringLiteral( "\t[--dxf-scale-denom scale]\tscale for dxf output\n" )
-  << QStringLiteral( "\t[--dxf-encoding encoding]\tencoding to use for dxf output\n" )
-  << QStringLiteral( "\t[--dxf-preset maptheme]\tmap theme to use for dxf output\n" )
-  << QStringLiteral( "\t[--help]\t\tthis text\n" )
-  << QStringLiteral( "\t[--]\t\ttreat all following arguments as FILEs\n\n" )
-  << QStringLiteral( "  FILE:\n" )
-  << QStringLiteral( "    Files specified on the command line can include rasters,\n" )
-  << QStringLiteral( "    vectors, and QGIS project files (.qgs): \n" )
-  << QStringLiteral( "     1. Rasters - supported formats include GeoTiff, DEM \n" )
-  << QStringLiteral( "        and others supported by GDAL\n" )
-  << QStringLiteral( "     2. Vectors - supported formats include ESRI Shapefiles\n" )
-  << QStringLiteral( "        and others supported by OGR and PostgreSQL layers using\n" )
-  << QStringLiteral( "        the PostGIS extension\n" )  ; // OK
+      << QStringLiteral( "QGIS - " ) << VERSION << QStringLiteral( " '" ) << RELEASE_NAME << QStringLiteral( "' (" )
+      << QGSVERSION << QStringLiteral( ")\n" )
+      << QStringLiteral( "QGIS is a user friendly Open Source Geographic Information System.\n" )
+      << QStringLiteral( "Usage: " ) << appName <<  QStringLiteral( " [OPTION] [FILE]\n" )
+      << QStringLiteral( "  OPTION:\n" )
+      << QStringLiteral( "\t[--snapshot filename]\temit snapshot of loaded datasets to given file\n" )
+      << QStringLiteral( "\t[--width width]\twidth of snapshot to emit\n" )
+      << QStringLiteral( "\t[--height height]\theight of snapshot to emit\n" )
+      << QStringLiteral( "\t[--lang language]\tuse language for interface text\n" )
+      << QStringLiteral( "\t[--project projectfile]\tload the given QGIS project\n" )
+      << QStringLiteral( "\t[--extent xmin,ymin,xmax,ymax]\tset initial map extent\n" )
+      << QStringLiteral( "\t[--nologo]\thide splash screen\n" )
+      << QStringLiteral( "\t[--noversioncheck]\tdon't check for new version of QGIS at startup\n" )
+      << QStringLiteral( "\t[--noplugins]\tdon't restore plugins on startup\n" )
+      << QStringLiteral( "\t[--nocustomization]\tdon't apply GUI customization\n" )
+      << QStringLiteral( "\t[--customizationfile path]\tuse the given ini file as GUI customization\n" )
+      << QStringLiteral( "\t[--globalsettingsfile path]\tuse the given ini file as Global Settings (defaults)\n" )
+      << QStringLiteral( "\t[--optionspath path]\tuse the given QSettings path\n" )
+      << QStringLiteral( "\t[--configpath path]\tuse the given path for all user configuration\n" )
+      << QStringLiteral( "\t[--authdbdirectory path] use the given directory for authentication database\n" )
+      << QStringLiteral( "\t[--code path]\trun the given python file on load\n" )
+      << QStringLiteral( "\t[--defaultui]\tstart by resetting user ui settings to default\n" )
+      << QStringLiteral( "\t[--dxf-export filename.dxf]\temit dxf output of loaded datasets to given file\n" )
+      << QStringLiteral( "\t[--dxf-extent xmin,ymin,xmax,ymax]\tset extent to export to dxf\n" )
+      << QStringLiteral( "\t[--dxf-symbology-mode none|symbollayer|feature]\tsymbology mode for dxf output\n" )
+      << QStringLiteral( "\t[--dxf-scale-denom scale]\tscale for dxf output\n" )
+      << QStringLiteral( "\t[--dxf-encoding encoding]\tencoding to use for dxf output\n" )
+      << QStringLiteral( "\t[--dxf-preset maptheme]\tmap theme to use for dxf output\n" )
+      << QStringLiteral( "\t[--help]\t\tthis text\n" )
+      << QStringLiteral( "\t[--]\t\ttreat all following arguments as FILEs\n\n" )
+      << QStringLiteral( "  FILE:\n" )
+      << QStringLiteral( "    Files specified on the command line can include rasters,\n" )
+      << QStringLiteral( "    vectors, and QGIS project files (.qgs): \n" )
+      << QStringLiteral( "     1. Rasters - supported formats include GeoTiff, DEM \n" )
+      << QStringLiteral( "        and others supported by GDAL\n" )
+      << QStringLiteral( "     2. Vectors - supported formats include ESRI Shapefiles\n" )
+      << QStringLiteral( "        and others supported by OGR and PostgreSQL layers using\n" )
+      << QStringLiteral( "        the PostGIS extension\n" )  ; // OK
 
 #ifdef Q_OS_WIN
   MessageBox( nullptr,
@@ -451,7 +451,7 @@ int main( int argc, char *argv[] )
     rlim_t newHard( std::min( oldHard, newSoft ) );
 #else
     rlim_t newSoft( 4096 );
-    rlim_t newHard( std::min(( rlim_t )8192, oldHard ) );
+    rlim_t newHard( std::min( ( rlim_t )8192, oldHard ) );
 #endif
     if ( rescLimit.rlim_cur < newSoft )
     {
@@ -849,7 +849,7 @@ int main( int argc, char *argv[] )
   }
 
   // TODO: use QgsSettings
-  QSettings* customizationsettings = nullptr;
+  QSettings *customizationsettings = nullptr;
   if ( !optionpath.isEmpty() || !configpath.isEmpty() )
   {
     // tell QSettings to use INI format and save the file in custom config path
@@ -889,9 +889,9 @@ int main( int argc, char *argv[] )
     QStringList gdalShares;
     QString appResources( QDir::cleanPath( QgsApplication::pkgDataPath() ) );
     gdalShares << QCoreApplication::applicationDirPath().append( "/share/gdal" )
-    << appResources.append( "/share/gdal" )
-    << appResources.append( "/gdal" );
-    Q_FOREACH ( const QString& gdalShare, gdalShares )
+               << appResources.append( "/share/gdal" )
+               << appResources.append( "/gdal" );
+    Q_FOREACH ( const QString &gdalShare, gdalShares )
     {
       if ( QFile::exists( gdalShare ) )
       {
@@ -1133,7 +1133,7 @@ int main( int argc, char *argv[] )
   QgsDebugMsg( QString( "Number of files in myFileList: %1" ).arg( sFileList.count() ) );
   for ( QStringList::Iterator myIterator = sFileList.begin(); myIterator != sFileList.end(); ++myIterator )
   {
-    QgsDebugMsg( QString( "Trying to load file : %1" ).arg(( *myIterator ) ) );
+    QgsDebugMsg( QString( "Trying to load file : %1" ).arg( ( *myIterator ) ) );
     QString myLayerName = *myIterator;
     // don't load anything with a .qgs extension - these are project files
     if ( !myLayerName.contains( QLatin1String( ".qgs" ) ) )
@@ -1217,7 +1217,7 @@ int main( int argc, char *argv[] )
       */
     //qgis->show();
     myApp.processEvents();
-    QPixmap * myQPixmap = new QPixmap( mySnapshotWidth, mySnapshotHeight );
+    QPixmap *myQPixmap = new QPixmap( mySnapshotWidth, mySnapshotHeight );
     myQPixmap->fill();
     qgis->saveMapAsImage( mySnapshotFileName, myQPixmap );
     myApp.processEvents();
@@ -1239,7 +1239,7 @@ int main( int argc, char *argv[] )
     QList< QPair<QgsVectorLayer *, int > > layers;
     if ( !dxfPreset.isEmpty() )
     {
-      Q_FOREACH ( QgsMapLayer* layer, QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( dxfPreset ) )
+      Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( dxfPreset ) )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
         if ( !vl )

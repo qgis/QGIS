@@ -28,10 +28,10 @@
 #include <QMessageBox>
 #include <QSettings>
 
-QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl, QWidget* parent )
-    : QDialog( parent )
-    , mVectorLayer( vl )
-    , mAttributeId( -1 )
+QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
+  : QDialog( parent )
+  , mVectorLayer( vl )
+  , mAttributeId( -1 )
 {
   setupUi( this );
 
@@ -114,7 +114,7 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl, QWidget* parent )
     mNewFieldGroupBox->setCheckable( false );
   }
 
-  if (( mNewFieldGroupBox->isChecked() && mCreateVirtualFieldCheckbox->isChecked() ) || mVectorLayer->isEditable() )
+  if ( ( mNewFieldGroupBox->isChecked() && mCreateVirtualFieldCheckbox->isChecked() ) || mVectorLayer->isEditable() )
   {
     mEditModeAutoTurnOnLabel->setVisible( false );
     mInfoIcon->setVisible( false );
@@ -224,7 +224,7 @@ void QgsFieldCalculator::accept()
       }
 
       //get index of the new field
-      const QgsFields& fields = mVectorLayer->fields();
+      const QgsFields &fields = mVectorLayer->fields();
 
       for ( int idx = 0; idx < fields.count(); ++idx )
       {
@@ -323,7 +323,7 @@ void QgsFieldCalculator::populateOutputFieldTypes()
     return;
   }
 
-  QgsVectorDataProvider* provider = mVectorLayer->dataProvider();
+  QgsVectorDataProvider *provider = mVectorLayer->dataProvider();
   if ( !provider )
   {
     return;
@@ -359,7 +359,7 @@ void QgsFieldCalculator::on_mNewFieldGroupBox_toggled( bool on )
     mOnlyVirtualFieldsInfoLabel->setVisible( false );
   }
 
-  if (( mNewFieldGroupBox->isChecked() && mCreateVirtualFieldCheckbox->isChecked() ) || mVectorLayer->isEditable() )
+  if ( ( mNewFieldGroupBox->isChecked() && mCreateVirtualFieldCheckbox->isChecked() ) || mVectorLayer->isEditable() )
   {
     mEditModeAutoTurnOnLabel->setVisible( false );
   }
@@ -391,7 +391,7 @@ void QgsFieldCalculator::on_mCreateVirtualFieldCheckbox_stateChanged( int state 
   mOnlyUpdateSelectedCheckBox->setChecked( false );
   mOnlyUpdateSelectedCheckBox->setEnabled( state != Qt::Checked && mVectorLayer->selectedFeatureCount() > 0 );
 
-  if (( mNewFieldGroupBox->isChecked() && mCreateVirtualFieldCheckbox->isChecked() ) || mVectorLayer->isEditable() )
+  if ( ( mNewFieldGroupBox->isChecked() && mCreateVirtualFieldCheckbox->isChecked() ) || mVectorLayer->isEditable() )
   {
     mEditModeAutoTurnOnLabel->setVisible( false );
   }
@@ -428,7 +428,7 @@ void QgsFieldCalculator::populateFields()
   if ( !mVectorLayer )
     return;
 
-  const QgsFields& fields = mVectorLayer->fields();
+  const QgsFields &fields = mVectorLayer->fields();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
     if ( fields.fieldOrigin( idx ) != QgsFields::OriginExpression && fields.fieldOrigin( idx ) != QgsFields::OriginJoin )
@@ -454,10 +454,10 @@ void QgsFieldCalculator::populateFields()
 
 void QgsFieldCalculator::setOkButtonState()
 {
-  QPushButton* okButton = mButtonBox->button( QDialogButtonBox::Ok );
+  QPushButton *okButton = mButtonBox->button( QDialogButtonBox::Ok );
 
-  if (( mNewFieldGroupBox->isChecked() || !mUpdateExistingGroupBox->isEnabled() )
-      && mOutputFieldNameLineEdit->text().isEmpty() )
+  if ( ( mNewFieldGroupBox->isChecked() || !mUpdateExistingGroupBox->isEnabled() )
+       && mOutputFieldNameLineEdit->text().isEmpty() )
   {
     okButton->setToolTip( tr( "Please enter a field name" ) );
     okButton->setEnabled( false );

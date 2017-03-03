@@ -80,7 +80,7 @@ class APP_EXPORT QgsClipboard : public QObject
      *  Place a copy of features on the internal clipboard,
      *  destroying the previous contents.
      */
-    void replaceWithCopyOf( QgsFeatureStore & featureStore );
+    void replaceWithCopyOf( QgsFeatureStore &featureStore );
 
     /**
      *  Returns a copy of features on the internal clipboard.
@@ -95,7 +95,7 @@ class APP_EXPORT QgsClipboard : public QObject
     /**
      *  Inserts a copy of the feature on the internal clipboard.
      */
-    void insert( const QgsFeature& feature );
+    void insert( const QgsFeature &feature );
 
     /**
      *  Returns true if the internal clipboard is empty, else false.
@@ -106,7 +106,7 @@ class APP_EXPORT QgsClipboard : public QObject
      *  Returns a copy of features on the internal clipboard, transformed
      *  from the clipboard CRS to the destCRS.
      */
-    QgsFeatureList transformedCopyOf( const QgsCoordinateReferenceSystem& destCRS, const QgsFields &fields = QgsFields() ) const;
+    QgsFeatureList transformedCopyOf( const QgsCoordinateReferenceSystem &destCRS, const QgsFields &fields = QgsFields() ) const;
 
     /**
      *  Get the clipboard CRS
@@ -116,24 +116,24 @@ class APP_EXPORT QgsClipboard : public QObject
     /**
      * Stores a MimeData together with a text into the system clipboard
      */
-    void setData( const QString& mimeType, const QByteArray& data, const QString& text = QString() );
+    void setData( const QString &mimeType, const QByteArray &data, const QString &text = QString() );
 
     /**
      * Stores a text into the system clipboard
      */
-    void setText( const QString& text );
+    void setText( const QString &text );
 
     /**
      * Proxy to QMimeData::hasFormat
      * Tests whether the system clipboard contains data of a given MIME type
      */
-    bool hasFormat( const QString& mimeType ) const;
+    bool hasFormat( const QString &mimeType ) const;
 
     /**
      * Retrieve data from the system clipboard.
      * No copy is involved, since the return QByteArray is implicitly shared
      */
-    QByteArray data( const QString& mimeType ) const;
+    QByteArray data( const QString &mimeType ) const;
 
     /**
      * Source fields
@@ -165,7 +165,7 @@ class APP_EXPORT QgsClipboard : public QObject
      * @param fields fields for resultant features
      * @returns list of features if conversion was successful
      */
-    QgsFeatureList stringToFeatureList( const QString& string, const QgsFields& fields ) const;
+    QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields ) const;
 
     /** Attempts to parse the clipboard contents and return a QgsFields object representing the fields
      * present in the clipboard.

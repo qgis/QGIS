@@ -31,12 +31,12 @@
 
 
 QgsGuiVectorLayerTools::QgsGuiVectorLayerTools()
-    : QgsVectorLayerTools()
+  : QgsVectorLayerTools()
 {}
 
-bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer* layer, const QgsAttributeMap& defaultValues, const QgsGeometry& defaultGeometry, QgsFeature* feat ) const
+bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feat ) const
 {
-  QgsFeature* f = feat;
+  QgsFeature *f = feat;
   if ( !feat )
     f = new QgsFeature();
 
@@ -49,7 +49,7 @@ bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer* layer, const QgsAttribu
   return added;
 }
 
-bool QgsGuiVectorLayerTools::startEditing( QgsVectorLayer* layer ) const
+bool QgsGuiVectorLayerTools::startEditing( QgsVectorLayer *layer ) const
 {
   if ( !layer )
   {
@@ -74,7 +74,7 @@ bool QgsGuiVectorLayerTools::startEditing( QgsVectorLayer* layer ) const
   return res;
 }
 
-bool QgsGuiVectorLayerTools::saveEdits( QgsVectorLayer* layer ) const
+bool QgsGuiVectorLayerTools::saveEdits( QgsVectorLayer *layer ) const
 {
   bool res = true;
 
@@ -97,7 +97,7 @@ bool QgsGuiVectorLayerTools::saveEdits( QgsVectorLayer* layer ) const
   return res;
 }
 
-bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer* layer, bool allowCancel ) const
+bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer *layer, bool allowCancel ) const
 {
   bool res = true;
 
@@ -159,7 +159,7 @@ bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer* layer, bool allowCance
   return res;
 }
 
-void QgsGuiVectorLayerTools::commitError( QgsVectorLayer* vlayer ) const
+void QgsGuiVectorLayerTools::commitError( QgsVectorLayer *vlayer ) const
 {
   QgsMessageViewer *mv = new QgsMessageViewer();
   mv->setWindowTitle( tr( "Commit errors" ) );
@@ -178,8 +178,8 @@ void QgsGuiVectorLayerTools::commitError( QgsVectorLayer* vlayer ) const
   showMore->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
   showMore->addAction( act );
   showMore->setDefaultAction( act );
-  connect( showMore, SIGNAL( triggered( QAction* ) ), mv, SLOT( exec() ) );
-  connect( showMore, SIGNAL( triggered( QAction* ) ), showMore, SLOT( deleteLater() ) );
+  connect( showMore, SIGNAL( triggered( QAction * ) ), mv, SLOT( exec() ) );
+  connect( showMore, SIGNAL( triggered( QAction * ) ), showMore, SLOT( deleteLater() ) );
 
   // no timeout set, since notice needs attention and is only shown first time layer is labeled
   QgsMessageBarItem *errorMsg = new QgsMessageBarItem(

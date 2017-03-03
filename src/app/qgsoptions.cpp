@@ -75,8 +75,8 @@
  * Constructor
  */
 QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
-    : QgsOptionsDialogBase( QStringLiteral( "Options" ), parent, fl )
-    , mSettings( nullptr )
+  : QgsOptionsDialogBase( QStringLiteral( "Options" ), parent, fl )
+  , mSettings( nullptr )
 {
   setupUi( this );
 
@@ -92,9 +92,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
 
   connect( mFontFamilyRadioCustom, SIGNAL( toggled( bool ) ), mFontFamilyComboBox, SLOT( setEnabled( bool ) ) );
 
-  connect( cmbIconSize, SIGNAL( activated( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
-  connect( cmbIconSize, SIGNAL( highlighted( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
-  connect( cmbIconSize, SIGNAL( editTextChanged( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
+  connect( cmbIconSize, SIGNAL( activated( const QString & ) ), this, SLOT( iconSizeChanged( const QString & ) ) );
+  connect( cmbIconSize, SIGNAL( highlighted( const QString & ) ), this, SLOT( iconSizeChanged( const QString & ) ) );
+  connect( cmbIconSize, SIGNAL( editTextChanged( const QString & ) ), this, SLOT( iconSizeChanged( const QString & ) ) );
 
   connect( this, SIGNAL( accepted() ), this, SLOT( saveOptions() ) );
   connect( this, SIGNAL( rejected() ), this, SLOT( rejectOptions() ) );
@@ -105,7 +105,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   QStringList themes = QgsApplication::uiThemes().keys();
   cmbUITheme->addItems( themes );
 
-  connect( cmbUITheme, SIGNAL( currentIndexChanged( const QString& ) ), this, SLOT( uiThemeChanged( const QString& ) ) );
+  connect( cmbUITheme, SIGNAL( currentIndexChanged( const QString & ) ), this, SLOT( uiThemeChanged( const QString & ) ) );
 
   mIdentifyHighlightColorButton->setColorDialogTitle( tr( "Identify highlight color" ) );
   mIdentifyHighlightColorButton->setAllowAlpha( true );
@@ -201,7 +201,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
     QFont fItm;
     for ( int i = 0; i < varStrItms.size(); ++i )
     {
-      QTableWidgetItem* varNameItm = new QTableWidgetItem( varStrItms.at( i ) );
+      QTableWidgetItem *varNameItm = new QTableWidgetItem( varStrItms.at( i ) );
       varNameItm->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable
                             | Qt::ItemIsEditable | Qt::ItemIsDragEnabled );
       fItm = varNameItm->font();
@@ -222,9 +222,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
 
   //local directories to search when loading c++ plugins
   QStringList pathList = mSettings->value( QStringLiteral( "plugins/searchPathsForPlugins" ) ).toStringList();
-  Q_FOREACH ( const QString& path, pathList )
+  Q_FOREACH ( const QString &path, pathList )
   {
-    QListWidgetItem* newItem = new QListWidgetItem( mListPluginPaths );
+    QListWidgetItem *newItem = new QListWidgetItem( mListPluginPaths );
     newItem->setText( path );
     newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     mListPluginPaths->addItem( newItem );
@@ -234,9 +234,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   pathList = QgsApplication::svgPaths();
   if ( !pathList.isEmpty() )
   {
-    Q_FOREACH ( const QString& path, pathList )
+    Q_FOREACH ( const QString &path, pathList )
     {
-      QListWidgetItem* newItem = new QListWidgetItem( mListSVGPaths );
+      QListWidgetItem *newItem = new QListWidgetItem( mListSVGPaths );
       newItem->setText( path );
       newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
       mListSVGPaths->addItem( newItem );
@@ -247,9 +247,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   pathList = QgsApplication::composerTemplatePaths();
   if ( !pathList.isEmpty() )
   {
-    Q_FOREACH ( const QString& path, pathList )
+    Q_FOREACH ( const QString &path, pathList )
     {
-      QListWidgetItem* newItem = new QListWidgetItem( mListComposerTemplatePaths );
+      QListWidgetItem *newItem = new QListWidgetItem( mListComposerTemplatePaths );
       newItem->setText( path );
       newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
       mListComposerTemplatePaths->addItem( newItem );
@@ -258,18 +258,18 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
 
   //paths hidden from browser
   pathList = mSettings->value( QStringLiteral( "/browser/hiddenPaths" ) ).toStringList();
-  Q_FOREACH ( const QString& path, pathList )
+  Q_FOREACH ( const QString &path, pathList )
   {
-    QListWidgetItem* newItem = new QListWidgetItem( mListHiddenBrowserPaths );
+    QListWidgetItem *newItem = new QListWidgetItem( mListHiddenBrowserPaths );
     newItem->setText( path );
     mListHiddenBrowserPaths->addItem( newItem );
   }
 
   //locations of the QGIS help
   QStringList helpPathList = mSettings->value( QStringLiteral( "help/helpSearchPath" ) ).toStringList();
-  Q_FOREACH ( const QString& path, helpPathList )
+  Q_FOREACH ( const QString &path, helpPathList )
   {
-    QTreeWidgetItem* item = new QTreeWidgetItem();
+    QTreeWidgetItem *item = new QTreeWidgetItem();
     item->setText( 0, path );
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
     mHelpPathTreeWidget->addTopLevelItem( item );
@@ -306,9 +306,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
 
   //URLs excluded not going through proxies
   pathList = mSettings->value( QStringLiteral( "proxy/proxyExcludedUrls" ) ).toStringList();
-  Q_FOREACH ( const QString& path, pathList )
+  Q_FOREACH ( const QString &path, pathList )
   {
-    QListWidgetItem* newItem = new QListWidgetItem( mExcludeUrlListWidget );
+    QListWidgetItem *newItem = new QListWidgetItem( mExcludeUrlListWidget );
     newItem->setText( path );
     newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     mExcludeUrlListWidget->addItem( newItem );
@@ -321,7 +321,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   mCacheSize->setMaximum( std::numeric_limits<int>::max() );
   mCacheSize->setSingleStep( 1024 );
   qint64 cacheSize = mSettings->value( QStringLiteral( "cache/size" ), 50 * 1024 * 1024 ).toULongLong();
-  mCacheSize->setValue(( int )( cacheSize / 1024 ) );
+  mCacheSize->setValue( ( int )( cacheSize / 1024 ) );
 
   //wms search server
   leWmsSearch->setText( mSettings->value( QStringLiteral( "/qgis/WMSSearchUrl" ), "http://geopole.org/wms/search?search=%1&type=rss" ).toString() );
@@ -437,8 +437,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   QMap< QPair< QString, QString >, QPair< int, int > >::const_iterator transformIt = transforms.constBegin();
   for ( ; transformIt != transforms.constEnd(); ++transformIt )
   {
-    const QPair< int, int >& v = transformIt.value();
-    QTreeWidgetItem* item = new QTreeWidgetItem();
+    const QPair< int, int > &v = transformIt.value();
+    QTreeWidgetItem *item = new QTreeWidgetItem();
     item->setText( 0, transformIt.key().first );
     item->setText( 1, transformIt.key().second );
     item->setText( 2, QString::number( v.first ) );
@@ -720,12 +720,12 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   if ( !myPaths.isEmpty() )
   {
     QStringList myScalesList = myPaths.split( ',' );
-    Q_FOREACH ( const QString& scale, myScalesList )
+    Q_FOREACH ( const QString &scale, myScalesList )
     {
       addScaleToScaleList( scale );
     }
   }
-  connect( mListGlobalScales, SIGNAL( itemChanged( QListWidgetItem* ) ), this, SLOT( scaleItemChanged( QListWidgetItem* ) ) );
+  connect( mListGlobalScales, SIGNAL( itemChanged( QListWidgetItem * ) ), this, SLOT( scaleItemChanged( QListWidgetItem * ) ) );
 
   //
   // Color palette
@@ -809,7 +809,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   lblSystemLocale->setText( tr( "Detected active locale on your system: %1" ).arg( mySystemLocale ) );
   QString myUserLocale = mSettings->value( QStringLiteral( "locale/userLocale" ), "" ).toString();
   QStringList myI18nList = i18nList();
-  Q_FOREACH ( const QString& l, myI18nList )
+  Q_FOREACH ( const QString &l, myI18nList )
   {
     // QTBUG-57802: eo locale is improperly handled
     QString displayName = l.startsWith( QLatin1String( "eo" ) ) ? QLocale::languageToString( QLocale::Esperanto ) : QLocale( l ).nativeLanguageName();
@@ -936,12 +936,12 @@ QgsOptions::~QgsOptions()
   delete mSettings;
 }
 
-void QgsOptions::setCurrentPage( const QString& pageWidgetName )
+void QgsOptions::setCurrentPage( const QString &pageWidgetName )
 {
   //find the page with a matching widget name
   for ( int idx = 0; idx < mOptionsStackedWidget->count(); ++idx )
   {
-    QWidget* currentPage = mOptionsStackedWidget->widget( idx );
+    QWidget *currentPage = mOptionsStackedWidget->widget( idx );
     if ( currentPage->objectName() == pageWidgetName )
     {
       //found the page, set it as current
@@ -1056,7 +1056,7 @@ void QgsOptions::saveOptions()
   {
     if ( mCustomVariablesTable->item( i, 1 )->text().isEmpty() )
       continue;
-    QComboBox* varApplyCmbBx = qobject_cast<QComboBox*>( mCustomVariablesTable->cellWidget( i, 0 ) );
+    QComboBox *varApplyCmbBx = qobject_cast<QComboBox *>( mCustomVariablesTable->cellWidget( i, 0 ) );
     QString customVar = varApplyCmbBx->currentData().toString();
     customVar += '|';
     customVar += mCustomVariablesTable->item( i, 1 )->text();
@@ -1100,7 +1100,7 @@ void QgsOptions::saveOptions()
   QStringList helpPaths;
   for ( int i = 0; i < mHelpPathTreeWidget->topLevelItemCount(); ++i )
   {
-    if ( QTreeWidgetItem* item = mHelpPathTreeWidget->topLevelItem( i ) )
+    if ( QTreeWidgetItem *item = mHelpPathTreeWidget->topLevelItem( i ) )
     {
       helpPaths << item->text( 0 );
     }
@@ -1133,7 +1133,7 @@ void QgsOptions::saveOptions()
   else
     mSettings->remove( QStringLiteral( "cache/directory" ) );
 
-  mSettings->setValue( QStringLiteral( "cache/size" ), QVariant::fromValue( mCacheSize->value()*1024L ) );
+  mSettings->setValue( QStringLiteral( "cache/size" ), QVariant::fromValue( mCacheSize->value() * 1024L ) );
 
   //url to exclude from proxys
   QString proxyExcludeString;
@@ -1234,8 +1234,8 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/askToSaveProjectChanges" ), chbAskToSaveProjectChanges->isChecked() );
   mSettings->setValue( QStringLiteral( "qgis/askToDeleteLayers" ), mLayerDeleteConfirmationChkBx->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/warnOldProjectVersion" ), chbWarnOldProjectVersion->isChecked() );
-  if (( mSettings->value( QStringLiteral( "/qgis/projectTemplateDir" ) ).toString() != leTemplateFolder->text() ) ||
-      ( mSettings->value( QStringLiteral( "/qgis/newProjectDefault" ) ).toBool() != cbxProjectDefaultNew->isChecked() ) )
+  if ( ( mSettings->value( QStringLiteral( "/qgis/projectTemplateDir" ) ).toString() != leTemplateFolder->text() ) ||
+       ( mSettings->value( QStringLiteral( "/qgis/newProjectDefault" ) ).toBool() != cbxProjectDefaultNew->isChecked() ) )
   {
     mSettings->setValue( QStringLiteral( "/qgis/newProjectDefault" ), cbxProjectDefaultNew->isChecked() );
     mSettings->setValue( QStringLiteral( "/qgis/projectTemplateDir" ), leTemplateFolder->text() );
@@ -1508,7 +1508,7 @@ void QgsOptions::on_mFontFamilyRadioCustom_released()
   }
 }
 
-void QgsOptions::on_mFontFamilyComboBox_currentFontChanged( const QFont& font )
+void QgsOptions::on_mFontFamilyComboBox_currentFontChanged( const QFont &font )
 {
   if ( mFontFamilyRadioCustom->isChecked()
        && mStyleSheetNewOpts.value( QStringLiteral( "fontFamily" ) ).toString() != font.family() )
@@ -1524,17 +1524,17 @@ void QgsOptions::on_mCustomGroupBoxChkBx_clicked( bool chkd )
   mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
 }
 
-void QgsOptions::on_leProjectGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem& crs )
+void QgsOptions::on_leProjectGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
   mDefaultCrs = crs;
 }
 
-void QgsOptions::on_leLayerGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem& crs )
+void QgsOptions::on_leLayerGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
   mLayerDefaultCrs = crs;
 }
 
-void QgsOptions::on_lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem * item, int column )
+void QgsOptions::on_lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem *item, int column )
 {
   Q_UNUSED( column );
   // edit driver if driver supports write
@@ -1554,7 +1554,7 @@ void QgsOptions::on_pbnEditPyramidsOptions_pressed()
   editGdalDriver( QStringLiteral( "_pyramids" ) );
 }
 
-void QgsOptions::editGdalDriver( const QString& driverName )
+void QgsOptions::editGdalDriver( const QString &driverName )
 {
   if ( driverName.isEmpty() )
     return;
@@ -1567,7 +1567,7 @@ void QgsOptions::editGdalDriver( const QString& driverName )
   dlg.setWindowTitle( title );
   if ( driverName == QLatin1String( "_pyramids" ) )
   {
-    QgsRasterPyramidsOptionsWidget* optionsWidget =
+    QgsRasterPyramidsOptionsWidget *optionsWidget =
       new QgsRasterPyramidsOptionsWidget( &dlg, QStringLiteral( "gdal" ) );
     layout->addWidget( optionsWidget );
     dlg.resize( 400, 400 );
@@ -1576,7 +1576,7 @@ void QgsOptions::editGdalDriver( const QString& driverName )
   }
   else
   {
-    QgsRasterFormatSaveOptionsWidget* optionsWidget =
+    QgsRasterFormatSaveOptionsWidget *optionsWidget =
       new QgsRasterFormatSaveOptionsWidget( &dlg, driverName,
                                             QgsRasterFormatSaveOptionsWidget::Full, QStringLiteral( "gdal" ) );
     layout->addWidget( optionsWidget );
@@ -1628,12 +1628,12 @@ void QgsOptions::on_mCustomVariablesChkBx_toggled( bool chkd )
   mCustomVariablesTable->setEnabled( chkd );
 }
 
-void QgsOptions::addCustomEnvVarRow( const QString& varName, const QString& varVal, const QString& varApply )
+void QgsOptions::addCustomEnvVarRow( const QString &varName, const QString &varVal, const QString &varApply )
 {
   int rowCnt = mCustomVariablesTable->rowCount();
   mCustomVariablesTable->insertRow( rowCnt );
 
-  QComboBox* varApplyCmbBx = new QComboBox( this );
+  QComboBox *varApplyCmbBx = new QComboBox( this );
   varApplyCmbBx->addItem( tr( "Overwrite" ), QVariant( "overwrite" ) );
   varApplyCmbBx->addItem( tr( "If Undefined" ), QVariant( "undefined" ) );
   varApplyCmbBx->addItem( tr( "Unset" ), QVariant( "unset" ) );
@@ -1650,11 +1650,11 @@ void QgsOptions::addCustomEnvVarRow( const QString& varName, const QString& varV
   Qt::ItemFlags itmFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable
                            | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
 
-  QTableWidgetItem* varNameItm = new QTableWidgetItem( varName );
+  QTableWidgetItem *varNameItm = new QTableWidgetItem( varName );
   varNameItm->setFlags( itmFlags );
   mCustomVariablesTable->setItem( rowCnt, 1, varNameItm );
 
-  QTableWidgetItem* varValueItm = new QTableWidgetItem( varVal );
+  QTableWidgetItem *varValueItm = new QTableWidgetItem( varVal );
   varNameItm->setFlags( itmFlags );
   mCustomVariablesTable->setItem( rowCnt, 2, varValueItm );
 
@@ -1707,7 +1707,7 @@ void QgsOptions::on_mBtnAddPluginPath_clicked()
 
   if ( ! myDir.isEmpty() )
   {
-    QListWidgetItem* newItem = new QListWidgetItem( mListPluginPaths );
+    QListWidgetItem *newItem = new QListWidgetItem( mListPluginPaths );
     newItem->setText( myDir );
     newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     mListPluginPaths->addItem( newItem );
@@ -1718,13 +1718,13 @@ void QgsOptions::on_mBtnAddPluginPath_clicked()
 void QgsOptions::on_mBtnRemovePluginPath_clicked()
 {
   int currentRow = mListPluginPaths->currentRow();
-  QListWidgetItem* itemToRemove = mListPluginPaths->takeItem( currentRow );
+  QListWidgetItem *itemToRemove = mListPluginPaths->takeItem( currentRow );
   delete itemToRemove;
 }
 
 void QgsOptions::on_mBtnAddHelpPath_clicked()
 {
-  QTreeWidgetItem* item = new QTreeWidgetItem();
+  QTreeWidgetItem *item = new QTreeWidgetItem();
   item->setText( 0, QString() );
   item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
   mHelpPathTreeWidget->addTopLevelItem( item );
@@ -1732,7 +1732,7 @@ void QgsOptions::on_mBtnAddHelpPath_clicked()
 
 void QgsOptions::on_mBtnRemoveHelpPath_clicked()
 {
-  QList<QTreeWidgetItem*> items = mHelpPathTreeWidget->selectedItems();
+  QList<QTreeWidgetItem *> items = mHelpPathTreeWidget->selectedItems();
   for ( int i = 0; i < items.size(); ++i )
   {
     int idx = mHelpPathTreeWidget->indexOfTopLevelItem( items.at( i ) );
@@ -1745,8 +1745,8 @@ void QgsOptions::on_mBtnRemoveHelpPath_clicked()
 
 void QgsOptions::on_mBtnMoveHelpUp_clicked()
 {
-  QList<QTreeWidgetItem*> selectedItems = mHelpPathTreeWidget->selectedItems();
-  QList<QTreeWidgetItem*>::iterator itemIt = selectedItems.begin();
+  QList<QTreeWidgetItem *> selectedItems = mHelpPathTreeWidget->selectedItems();
+  QList<QTreeWidgetItem *>::iterator itemIt = selectedItems.begin();
   for ( ; itemIt != selectedItems.end(); ++itemIt )
   {
     int currentIndex = mHelpPathTreeWidget->indexOfTopLevelItem( *itemIt );
@@ -1761,8 +1761,8 @@ void QgsOptions::on_mBtnMoveHelpUp_clicked()
 
 void QgsOptions::on_mBtnMoveHelpDown_clicked()
 {
-  QList<QTreeWidgetItem*> selectedItems = mHelpPathTreeWidget->selectedItems();
-  QList<QTreeWidgetItem*>::iterator itemIt = selectedItems.begin();
+  QList<QTreeWidgetItem *> selectedItems = mHelpPathTreeWidget->selectedItems();
+  QList<QTreeWidgetItem *>::iterator itemIt = selectedItems.begin();
   for ( ; itemIt != selectedItems.end(); ++itemIt )
   {
     int currentIndex = mHelpPathTreeWidget->indexOfTopLevelItem( *itemIt );
@@ -1786,7 +1786,7 @@ void QgsOptions::on_mBtnAddTemplatePath_clicked()
 
   if ( ! myDir.isEmpty() )
   {
-    QListWidgetItem* newItem = new QListWidgetItem( mListComposerTemplatePaths );
+    QListWidgetItem *newItem = new QListWidgetItem( mListComposerTemplatePaths );
     newItem->setText( myDir );
     newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     mListComposerTemplatePaths->addItem( newItem );
@@ -1797,7 +1797,7 @@ void QgsOptions::on_mBtnAddTemplatePath_clicked()
 void QgsOptions::on_mBtnRemoveTemplatePath_clicked()
 {
   int currentRow = mListComposerTemplatePaths->currentRow();
-  QListWidgetItem* itemToRemove = mListComposerTemplatePaths->takeItem( currentRow );
+  QListWidgetItem *itemToRemove = mListComposerTemplatePaths->takeItem( currentRow );
   delete itemToRemove;
 }
 
@@ -1813,7 +1813,7 @@ void QgsOptions::on_mBtnAddSVGPath_clicked()
 
   if ( ! myDir.isEmpty() )
   {
-    QListWidgetItem* newItem = new QListWidgetItem( mListSVGPaths );
+    QListWidgetItem *newItem = new QListWidgetItem( mListSVGPaths );
     newItem->setText( myDir );
     newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     mListSVGPaths->addItem( newItem );
@@ -1824,20 +1824,20 @@ void QgsOptions::on_mBtnAddSVGPath_clicked()
 void QgsOptions::on_mBtnRemoveHiddenPath_clicked()
 {
   int currentRow = mListHiddenBrowserPaths->currentRow();
-  QListWidgetItem* itemToRemove = mListHiddenBrowserPaths->takeItem( currentRow );
+  QListWidgetItem *itemToRemove = mListHiddenBrowserPaths->takeItem( currentRow );
   delete itemToRemove;
 }
 
 void QgsOptions::on_mBtnRemoveSVGPath_clicked()
 {
   int currentRow = mListSVGPaths->currentRow();
-  QListWidgetItem* itemToRemove = mListSVGPaths->takeItem( currentRow );
+  QListWidgetItem *itemToRemove = mListSVGPaths->takeItem( currentRow );
   delete itemToRemove;
 }
 
 void QgsOptions::on_mAddUrlPushButton_clicked()
 {
-  QListWidgetItem* newItem = new QListWidgetItem( mExcludeUrlListWidget );
+  QListWidgetItem *newItem = new QListWidgetItem( mExcludeUrlListWidget );
   newItem->setText( QStringLiteral( "URL" ) );
   newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
   mExcludeUrlListWidget->addItem( newItem );
@@ -1847,7 +1847,7 @@ void QgsOptions::on_mAddUrlPushButton_clicked()
 void QgsOptions::on_mRemoveUrlPushButton_clicked()
 {
   int currentRow = mExcludeUrlListWidget->currentRow();
-  QListWidgetItem* itemToRemove = mExcludeUrlListWidget->takeItem( currentRow );
+  QListWidgetItem *itemToRemove = mExcludeUrlListWidget->takeItem( currentRow );
   delete itemToRemove;
 }
 
@@ -1954,13 +1954,13 @@ void QgsOptions::loadGdalDriverList()
   // myDrivers.sort();
   // sort list case insensitive - no existing function for this!
   QMap<QString, QString> strMap;
-  Q_FOREACH ( const QString& str, myDrivers )
+  Q_FOREACH ( const QString &str, myDrivers )
     strMap.insert( str.toLower(), str );
   myDrivers = strMap.values();
 
-  Q_FOREACH ( const QString& myName, myDrivers )
+  Q_FOREACH ( const QString &myName, myDrivers )
   {
-    QTreeWidgetItem * mypItem = new QTreeWidgetItem( QStringList( myName ) );
+    QTreeWidgetItem *mypItem = new QTreeWidgetItem( QStringList( myName ) );
     if ( mySkippedDrivers.contains( myName ) )
     {
       mypItem->setCheckState( 0, Qt::Unchecked );
@@ -1986,13 +1986,13 @@ void QgsOptions::loadGdalDriverList()
 
   // populate cmbEditCreateOptions with gdal write drivers - sorted, GTiff first
   strMap.clear();
-  Q_FOREACH ( const QString& str, myGdalWriteDrivers )
+  Q_FOREACH ( const QString &str, myGdalWriteDrivers )
     strMap.insert( str.toLower(), str );
   myGdalWriteDrivers = strMap.values();
   myGdalWriteDrivers.removeAll( QStringLiteral( "Gtiff" ) );
   myGdalWriteDrivers.prepend( QStringLiteral( "GTiff" ) );
   cmbEditCreateOptions->clear();
-  Q_FOREACH ( const QString& myName, myGdalWriteDrivers )
+  Q_FOREACH ( const QString &myName, myGdalWriteDrivers )
   {
     cmbEditCreateOptions->addItem( myName );
   }
@@ -2003,7 +2003,7 @@ void QgsOptions::saveGdalDriverList()
 {
   for ( int i = 0; i < lstGdalDrivers->topLevelItemCount(); i++ )
   {
-    QTreeWidgetItem * mypItem = lstGdalDrivers->topLevelItem( i );
+    QTreeWidgetItem *mypItem = lstGdalDrivers->topLevelItem( i );
     if ( mypItem->checkState( 0 ) == Qt::Unchecked )
     {
       QgsApplication::skipGdalDriver( mypItem->text( 0 ) );
@@ -2028,7 +2028,7 @@ void QgsOptions::on_pbnAddScale_clicked()
 
   if ( myScale != -1 )
   {
-    QListWidgetItem* newItem = addScaleToScaleList( QStringLiteral( "1:%1" ).arg( myScale ) );
+    QListWidgetItem *newItem = addScaleToScaleList( QStringLiteral( "1:%1" ).arg( myScale ) );
     mListGlobalScales->setCurrentItem( newItem );
   }
 }
@@ -2036,7 +2036,7 @@ void QgsOptions::on_pbnAddScale_clicked()
 void QgsOptions::on_pbnRemoveScale_clicked()
 {
   int currentRow = mListGlobalScales->currentRow();
-  QListWidgetItem* itemToRemove = mListGlobalScales->takeItem( currentRow );
+  QListWidgetItem *itemToRemove = mListGlobalScales->takeItem( currentRow );
   delete itemToRemove;
 }
 
@@ -2045,7 +2045,7 @@ void QgsOptions::on_pbnDefaultScaleValues_clicked()
   mListGlobalScales->clear();
 
   QStringList myScalesList = PROJECT_SCALES.split( ',' );
-  Q_FOREACH ( const QString& scale, myScalesList )
+  Q_FOREACH ( const QString &scale, myScalesList )
   {
     addScaleToScaleList( scale );
   }
@@ -2067,7 +2067,7 @@ void QgsOptions::on_pbnImportScales_clicked()
     QgsDebugMsg( msg );
   }
 
-  Q_FOREACH ( const QString& scale, myScales )
+  Q_FOREACH ( const QString &scale, myScales )
   {
     addScaleToScaleList( scale );
   }
@@ -2102,7 +2102,7 @@ void QgsOptions::on_pbnExportScales_clicked()
   }
 }
 
-void QgsOptions::initContrastEnhancement( QComboBox *cbox, const QString& name, const QString& defaultVal )
+void QgsOptions::initContrastEnhancement( QComboBox *cbox, const QString &name, const QString &defaultVal )
 {
   QSettings settings;
 
@@ -2120,14 +2120,14 @@ void QgsOptions::initContrastEnhancement( QComboBox *cbox, const QString& name, 
   cbox->setCurrentIndex( cbox->findData( contrastEnhancement ) );
 }
 
-void QgsOptions::saveContrastEnhancement( QComboBox *cbox, const QString& name )
+void QgsOptions::saveContrastEnhancement( QComboBox *cbox, const QString &name )
 {
   QSettings settings;
   QString value = cbox->currentData().toString();
   mSettings->setValue( "/Raster/defaultContrastEnhancementAlgorithm/" + name, value );
 }
 
-void QgsOptions::initMinMaxLimits( QComboBox *cbox, const QString& name, const QString& defaultVal )
+void QgsOptions::initMinMaxLimits( QComboBox *cbox, const QString &name, const QString &defaultVal )
 {
   QSettings settings;
 
@@ -2143,7 +2143,7 @@ void QgsOptions::initMinMaxLimits( QComboBox *cbox, const QString& name, const Q
   cbox->setCurrentIndex( cbox->findData( contrastLimits ) );
 }
 
-void QgsOptions::saveMinMaxLimits( QComboBox *cbox, const QString& name )
+void QgsOptions::saveMinMaxLimits( QComboBox *cbox, const QString &name )
 {
   QSettings settings;
   QString value = cbox->currentData().toString();
@@ -2152,7 +2152,7 @@ void QgsOptions::saveMinMaxLimits( QComboBox *cbox, const QString& name )
 
 void QgsOptions::on_mRemoveDefaultTransformButton_clicked()
 {
-  QList<QTreeWidgetItem*> items = mDefaultDatumTransformTreeWidget->selectedItems();
+  QList<QTreeWidgetItem *> items = mDefaultDatumTransformTreeWidget->selectedItems();
   for ( int i = 0; i < items.size(); ++i )
   {
     int idx = mDefaultDatumTransformTreeWidget->indexOfTopLevelItem( items.at( i ) );
@@ -2165,7 +2165,7 @@ void QgsOptions::on_mRemoveDefaultTransformButton_clicked()
 
 void QgsOptions::on_mAddDefaultTransformButton_clicked()
 {
-  QTreeWidgetItem* item = new QTreeWidgetItem();
+  QTreeWidgetItem *item = new QTreeWidgetItem();
   item->setText( 0, QLatin1String( "" ) );
   item->setText( 1, QLatin1String( "" ) );
   item->setText( 2, QLatin1String( "" ) );
@@ -2191,7 +2191,7 @@ void QgsOptions::saveDefaultDatumTransformations()
   int nDefaultTransforms = mDefaultDatumTransformTreeWidget->topLevelItemCount();
   for ( int i = 0; i < nDefaultTransforms; ++i )
   {
-    QTreeWidgetItem* item = mDefaultDatumTransformTreeWidget->topLevelItem( i );
+    QTreeWidgetItem *item = mDefaultDatumTransformTreeWidget->topLevelItem( i );
     QString srcAuthId = item->text( 0 );
     QString destAuthId = item->text( 1 );
     if ( srcAuthId.isEmpty() || destAuthId.isEmpty() )
@@ -2228,17 +2228,17 @@ void QgsOptions::on_mButtonAddColor_clicked()
   mTreeCustomColors->addColor( newColor, QgsSymbolLayerUtils::colorToName( newColor ) );
 }
 
-QListWidgetItem* QgsOptions::addScaleToScaleList( const QString &newScale )
+QListWidgetItem *QgsOptions::addScaleToScaleList( const QString &newScale )
 {
-  QListWidgetItem* newItem = new QListWidgetItem( newScale );
+  QListWidgetItem *newItem = new QListWidgetItem( newScale );
   addScaleToScaleList( newItem );
   return newItem;
 }
 
-void QgsOptions::addScaleToScaleList( QListWidgetItem* newItem )
+void QgsOptions::addScaleToScaleList( QListWidgetItem *newItem )
 {
   // If the new scale already exists, delete it.
-  QListWidgetItem* duplicateItem = mListGlobalScales->findItems( newItem->text(), Qt::MatchExactly ).value( 0 );
+  QListWidgetItem *duplicateItem = mListGlobalScales->findItems( newItem->text(), Qt::MatchExactly ).value( 0 );
   delete duplicateItem;
 
   int newDenominator = newItem->text().split( QStringLiteral( ":" ) ).value( 1 ).toInt();
@@ -2255,7 +2255,7 @@ void QgsOptions::addScaleToScaleList( QListWidgetItem* newItem )
   mListGlobalScales->insertItem( i, newItem );
 }
 
-void QgsOptions::scaleItemChanged( QListWidgetItem* changedScaleItem )
+void QgsOptions::scaleItemChanged( QListWidgetItem *changedScaleItem )
 {
   // Check if the new value is valid, restore the old value if not.
   QRegExp regExp( "1:0*[1-9]\\d*" );

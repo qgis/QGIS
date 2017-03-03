@@ -42,7 +42,7 @@
 #include <spatialite.h>
 
 QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
 
@@ -217,7 +217,7 @@ void QgsNewSpatialiteLayerDialog::on_pbnFindSRID_clicked()
     // get the first row of the result set
     while ( sqlite3_step( ppStmt ) == SQLITE_ROW )
     {
-      myCRSs.insert( QString::fromUtf8(( const char * )sqlite3_column_text( ppStmt, 0 ) ) );
+      myCRSs.insert( QString::fromUtf8( ( const char * )sqlite3_column_text( ppStmt, 0 ) ) );
     }
   }
   else
@@ -254,7 +254,7 @@ void QgsNewSpatialiteLayerDialog::on_pbnFindSRID_clicked()
   delete mySelector;
 }
 
-void QgsNewSpatialiteLayerDialog::nameChanged( const QString& name )
+void QgsNewSpatialiteLayerDialog::nameChanged( const QString &name )
 {
   mAddAttributeButton->setDisabled( name.isEmpty() || ! mAttributeView->findItems( name, Qt::MatchExactly ).isEmpty() );
 }
@@ -277,13 +277,13 @@ bool QgsNewSpatialiteLayerDialog::createDb()
     bool res = false;
 
     QString spatialite_lib = QgsProviderRegistry::instance()->library( QStringLiteral( "spatialite" ) );
-    QLibrary* myLib = new QLibrary( spatialite_lib );
+    QLibrary *myLib = new QLibrary( spatialite_lib );
     bool loaded = myLib->load();
     if ( loaded )
     {
       QgsDebugMsg( "spatialite provider loaded" );
 
-      typedef bool ( *createDbProc )( const QString&, QString& );
+      typedef bool ( *createDbProc )( const QString &, QString & );
       createDbProc createDbPtr = ( createDbProc ) cast_to_fptr( myLib->resolve( "createDb" ) );
       if ( createDbPtr )
       {
@@ -352,7 +352,7 @@ bool QgsNewSpatialiteLayerDialog::apply()
   QTreeWidgetItemIterator it( mAttributeView );
   while ( *it )
   {
-    sql += delim + QStringLiteral( "%1 %2" ).arg( quotedIdentifier(( *it )->text( 0 ) ), ( *it )->text( 1 ) );
+    sql += delim + QStringLiteral( "%1 %2" ).arg( quotedIdentifier( ( *it )->text( 0 ) ), ( *it )->text( 1 ) );
     delim = QStringLiteral( "," );
     ++it;
   }
@@ -386,7 +386,7 @@ bool QgsNewSpatialiteLayerDialog::apply()
   }
   else
   {
-    char * errmsg = nullptr;
+    char *errmsg = nullptr;
     rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, &errmsg );
     if ( rc != SQLITE_OK )
     {

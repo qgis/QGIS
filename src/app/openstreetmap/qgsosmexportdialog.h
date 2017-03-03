@@ -45,8 +45,8 @@ class QgsOSMExportDialog : public QDialog, private Ui::QgsOSMExportDialog
     void onClose();
 
   private:
-    QgsOSMDatabase* mDatabase = nullptr;
-    QStandardItemModel* mTagsModel = nullptr;
+    QgsOSMDatabase *mDatabase = nullptr;
+    QStandardItemModel *mTagsModel = nullptr;
 };
 
 #endif // QGSOSMEXPORTDIALOG_H

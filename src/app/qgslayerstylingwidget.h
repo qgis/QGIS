@@ -52,7 +52,7 @@ class APP_EXPORT QgsLayerStyleManagerWidgetFactory : public QgsMapLayerConfigWid
 class APP_EXPORT QgsMapLayerStyleCommand : public QUndoCommand
 {
   public:
-    QgsMapLayerStyleCommand( QgsMapLayer* layer, const QString& text, const QDomNode& current, const QDomNode& last );
+    QgsMapLayerStyleCommand( QgsMapLayer *layer, const QString &text, const QDomNode &current, const QDomNode &last );
 
     /** Return unique ID for this kind of undo command.
      * Currently we do not have a central registry of undo command IDs, so it is a random magic number.
@@ -63,10 +63,10 @@ class APP_EXPORT QgsMapLayerStyleCommand : public QUndoCommand
     virtual void redo() override;
 
     //! Try to merge with other commands of this type when they are created in small time interval
-    virtual bool mergeWith( const QUndoCommand* other ) override;
+    virtual bool mergeWith( const QUndoCommand *other ) override;
 
   private:
-    QgsMapLayer* mLayer = nullptr;
+    QgsMapLayer *mLayer = nullptr;
     QDomNode mXml;
     QDomNode mLastState;
     QTime mTime;
@@ -88,7 +88,7 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
 
     QgsLayerStylingWidget( QgsMapCanvas *canvas, const QList<QgsMapLayerConfigWidgetFactory *> &pages, QWidget *parent = 0 );
     ~QgsLayerStylingWidget();
-    QgsMapLayer* layer() { return mCurrentLayer; }
+    QgsMapLayer *layer() { return mCurrentLayer; }
 
     void setPageFactories( const QList<QgsMapLayerConfigWidgetFactory *> &factories );
 
@@ -100,10 +100,10 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     void blockUpdates( bool blocked );
 
   signals:
-    void styleChanged( QgsMapLayer* layer );
+    void styleChanged( QgsMapLayer *layer );
 
   public slots:
-    void setLayer( QgsMapLayer* layer );
+    void setLayer( QgsMapLayer *layer );
     void apply();
     void autoApply();
     void undo();
@@ -117,24 +117,24 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
 
   private slots:
 
-    void layerAboutToBeRemoved( QgsMapLayer* layer );
+    void layerAboutToBeRemoved( QgsMapLayer *layer );
     void liveApplyToggled( bool value );
 
   private:
-    void pushUndoItem( const QString& name );
+    void pushUndoItem( const QString &name );
     int mNotSupportedPage;
     int mLayerPage;
-    QTimer* mAutoApplyTimer = nullptr;
+    QTimer *mAutoApplyTimer = nullptr;
     QDomNode mLastStyleXml;
-    QgsMapCanvas* mMapCanvas = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
     bool mBlockAutoApply;
-    QgsUndoWidget* mUndoWidget = nullptr;
-    QgsMapLayer* mCurrentLayer = nullptr;
+    QgsUndoWidget *mUndoWidget = nullptr;
+    QgsMapLayer *mCurrentLayer = nullptr;
     QgsLabelingWidget *mLabelingWidget = nullptr;
-    QgsRendererRasterPropertiesWidget* mRasterStyleWidget = nullptr;
-    QList<QgsMapLayerConfigWidgetFactory*> mPageFactories;
-    QMap<int, QgsMapLayerConfigWidgetFactory*> mUserPages;
-    QgsLayerStyleManagerWidgetFactory* mStyleManagerFactory = nullptr;
+    QgsRendererRasterPropertiesWidget *mRasterStyleWidget = nullptr;
+    QList<QgsMapLayerConfigWidgetFactory *> mPageFactories;
+    QMap<int, QgsMapLayerConfigWidgetFactory *> mUserPages;
+    QgsLayerStyleManagerWidgetFactory *mStyleManagerFactory = nullptr;
 };
 
 #endif // QGSLAYERSTYLESDOCK_H

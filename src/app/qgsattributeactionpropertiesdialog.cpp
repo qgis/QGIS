@@ -31,9 +31,9 @@
 #include <QFileDialog>
 #include <QImageWriter>
 
-QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsAction::ActionType type, const QString& description, const QString& shortTitle, const QString& iconPath, const QString& actionText, bool capture, QSet<QString> actionScopes, QgsVectorLayer* layer, QWidget* parent )
-    : QDialog( parent )
-    , mLayer( layer )
+QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsAction::ActionType type, const QString &description, const QString &shortTitle, const QString &iconPath, const QString &actionText, bool capture, QSet<QString> actionScopes, QgsVectorLayer *layer, QWidget *parent )
+  : QDialog( parent )
+  , mLayer( layer )
 {
   setupUi( this );
 
@@ -48,17 +48,17 @@ QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsActio
   init( actionScopes );
 }
 
-QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsVectorLayer* layer, QWidget* parent )
-    : QDialog( parent )
-    , mLayer( layer )
+QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsVectorLayer *layer, QWidget *parent )
+  : QDialog( parent )
+  , mLayer( layer )
 {
   setupUi( this );
 
   QSet<QString> defaultActionScopes;
   defaultActionScopes << QStringLiteral( "Canvas" )
-  << QStringLiteral( "FieldSpecific" )
-  << QStringLiteral( "AttributeTableRow" )
-  << QStringLiteral( "FeatureForm" );
+                      << QStringLiteral( "FieldSpecific" )
+                      << QStringLiteral( "AttributeTableRow" )
+                      << QStringLiteral( "FeatureForm" );
 
   init( defaultActionScopes );
 }
@@ -92,7 +92,7 @@ QSet<QString> QgsAttributeActionPropertiesDialog::actionScopes() const
 {
   QSet<QString> actionScopes;
 
-  Q_FOREACH ( QCheckBox* cb, mActionScopeCheckBoxes )
+  Q_FOREACH ( QCheckBox *cb, mActionScopeCheckBoxes )
   {
     if ( cb->isChecked() )
       actionScopes.insert( cb->property( "ActionScopeName" ).toString() );
@@ -110,7 +110,7 @@ QgsExpressionContext QgsAttributeActionPropertiesDialog::createExpressionContext
 {
   QgsExpressionContext context = mLayer->createExpressionContext();
 
-  Q_FOREACH ( QCheckBox* cb, mActionScopeCheckBoxes )
+  Q_FOREACH ( QCheckBox *cb, mActionScopeCheckBoxes )
   {
     if ( cb->isChecked() )
     {
@@ -147,7 +147,7 @@ void QgsAttributeActionPropertiesDialog::chooseIcon()
 {
   QList<QByteArray> list = QImageWriter::supportedImageFormats();
   QStringList formatList;
-  Q_FOREACH ( const QByteArray& format, list )
+  Q_FOREACH ( const QByteArray &format, list )
     formatList << QStringLiteral( "*.%1" ).arg( QString( format ) );
 
   QString filter = tr( "Images( %1 ); All( *.* )" ).arg( formatList.join( QStringLiteral( " " ) ) );
@@ -172,13 +172,13 @@ void QgsAttributeActionPropertiesDialog::updateButtons()
   }
 }
 
-void QgsAttributeActionPropertiesDialog::init( const QSet<QString>& actionScopes )
+void QgsAttributeActionPropertiesDialog::init( const QSet<QString> &actionScopes )
 {
   QSet<QgsActionScope> availableActionScopes = QgsApplication::actionScopeRegistry()->actionScopes();
 
-  Q_FOREACH ( const QgsActionScope& scope, availableActionScopes )
+  Q_FOREACH ( const QgsActionScope &scope, availableActionScopes )
   {
-    QCheckBox* actionScopeCheckBox = new QCheckBox( scope.title() );
+    QCheckBox *actionScopeCheckBox = new QCheckBox( scope.title() );
     if ( actionScopes.contains( scope.id() ) )
       actionScopeCheckBox->setChecked( true );
     QStringList variables = scope.expressionContextScope().variableNames();

@@ -84,7 +84,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QString metadata();
 
     //! Slot to update layer display name as original is edited
-    void on_mLayerOrigNameLineEdit_textEdited( const QString& text );
+    void on_mLayerOrigNameLineEdit_textEdited( const QString &text );
 
     //! Called when apply button is pressed or dialog is accepted
     void apply();
@@ -98,7 +98,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     void on_pbnQueryBuilder_clicked();
     void on_pbnIndex_clicked();
-    void on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem& crs );
+    void on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
     void loadDefaultStyle_clicked();
     void saveDefaultStyle_clicked();
     void loadStyle_clicked();
@@ -117,8 +117,8 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
   signals:
 
     //! Emitted when changes to layer were saved to update legend
-    void refreshLegend( const QString& layerID, bool expandItem );
-    void refreshLegend( const QString& layerID );
+    void refreshLegend( const QString &layerID, bool expandItem );
+    void refreshLegend( const QString &layerID );
 
     void toggleEditing( QgsMapLayer * );
 
@@ -163,25 +163,25 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QMenu *mSaveAsMenu = nullptr;
     QMenu *mLoadStyleMenu = nullptr;
 
-    QAction* mActionLoadStyle = nullptr;
-    QAction* mActionSaveStyleAs = nullptr;
+    QAction *mActionLoadStyle = nullptr;
+    QAction *mActionSaveStyleAs = nullptr;
 
     //! Renderer dialog which is shown
-    QgsRendererPropertiesDialog* mRendererDialog = nullptr;
+    QgsRendererPropertiesDialog *mRendererDialog = nullptr;
     //! Labeling dialog. If apply is pressed, options are applied to vector's QgsLabel
-    QgsLabelingWidget* labelingDialog = nullptr;
+    QgsLabelingWidget *labelingDialog = nullptr;
     //! Actions dialog. If apply is pressed, the actions are stored for later use
-    QgsAttributeActionDialog* mActionDialog = nullptr;
+    QgsAttributeActionDialog *mActionDialog = nullptr;
     //! Diagram dialog. If apply is pressed, options are applied to vector's diagrams
-    QgsDiagramProperties* diagramPropertiesDialog = nullptr;
+    QgsDiagramProperties *diagramPropertiesDialog = nullptr;
     //! Fields dialog. If apply is pressed, options are applied to vector's diagrams
-    QgsFieldsProperties* mFieldsPropertiesDialog = nullptr;
+    QgsFieldsProperties *mFieldsPropertiesDialog = nullptr;
 
     //! List of joins of a layer at the time of creation of the dialog. Used to return joins to previous state if dialog is canceled
     QList< QgsVectorLayerJoinInfo > mOldJoins;
 
     //! A list of additional pages provided by plugins
-    QList<QgsMapLayerConfigWidget*> mLayerPropertiesPages;
+    QList<QgsMapLayerConfigWidget *> mLayerPropertiesPages;
 
     /** Previous layer style. Used to reset style to previous state if new style
      * was loaded but dialog is canceled */
@@ -190,7 +190,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void initDiagramTab();
 
     //! Adds a new join to mJoinTreeWidget
-    void addJoinToTreeWidget( const QgsVectorLayerJoinInfo& join , const int insertIndex = -1 );
+    void addJoinToTreeWidget( const QgsVectorLayerJoinInfo &join, const int insertIndex = -1 );
 
     QgsExpressionContext mContext;
 
@@ -200,7 +200,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     std::unique_ptr<QgsLayerTreeModel> mLayersDependenciesTreeModel;
 
   private slots:
-    void openPanel( QgsPanelWidget* panel );
+    void openPanel( QgsPanelWidget *panel );
 };
 
 inline QString QgsVectorLayerProperties::displayName()

@@ -63,10 +63,10 @@
 #include <QPixmap>
 #include <QPen>
 
-QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWidget * parent, Qt::WindowFlags f )
-    : QWidget( parent, f )
-    , mNmea( nullptr )
-    , mpCanvas( thepCanvas )
+QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas *thepCanvas, QWidget *parent, Qt::WindowFlags f )
+  : QWidget( parent, f )
+  , mNmea( nullptr )
+  , mpCanvas( thepCanvas )
 {
   setupUi( this );
 
@@ -77,7 +77,7 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
   mpMapMarker = nullptr;
   mpRubberBand = nullptr;
   populateDevices();
-  QWidget * mpHistogramWidget = mStackedWidget->widget( 1 );
+  QWidget *mpHistogramWidget = mStackedWidget->widget( 1 );
 #ifndef WITH_QWTPOLAR
   mBtnSatellites->setVisible( false );
 #endif
@@ -115,7 +115,7 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
   // Set up the polar graph for satellite pos
   //
 #ifdef WITH_QWTPOLAR
-  QWidget * mpPolarWidget = mStackedWidget->widget( 2 );
+  QWidget *mpPolarWidget = mStackedWidget->widget( 2 );
   mpSatellitesWidget = new QwtPolarPlot( /*QwtText( tr( "Satellite View" ), QwtText::PlainText ),*/ mpPolarWidget );  // possible title for graph removed for now as it is too large in small windows
   mpSatellitesWidget->setAutoReplot( false );   // plot on demand (after all data has been handled)
   mpSatellitesWidget->setPlotBackground( Qt::white );
@@ -238,8 +238,8 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
   //SLM - added functionality
   mLogFile = nullptr;
 
-  connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
-           this, SLOT( updateCloseFeatureButton( QgsMapLayer* ) ) );
+  connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
+           this, SLOT( updateCloseFeatureButton( QgsMapLayer * ) ) );
 
   mStackedWidget->setCurrentIndex( 3 ); // force to Options
   mBtnPosition->setFocus( Qt::TabFocusReason );
@@ -436,8 +436,8 @@ void QgsGPSInformationWidget::timedout()
 void QgsGPSInformationWidget::connected( QgsGPSConnection *conn )
 {
   mNmea = conn;
-  connect( mNmea, SIGNAL( stateChanged( const QgsGPSInformation& ) ),
-           this, SLOT( displayGPSInformation( const QgsGPSInformation& ) ) );
+  connect( mNmea, SIGNAL( stateChanged( const QgsGPSInformation & ) ),
+           this, SLOT( displayGPSInformation( const QgsGPSInformation & ) ) );
   mGPSPlainTextEdit->appendPlainText( tr( "Connected!" ) );
   mConnectButton->setText( tr( "Dis&connect" ) );
   //insert connection into registry such that it can also be used by other dialogs or plugins
@@ -458,7 +458,7 @@ void QgsGPSInformationWidget::connected( QgsGPSConnection *conn )
       // crude way to separate chunks - use when manually editing file - NMEA parsers should discard
       mLogFileTextStream << "====" << "\r\n";
 
-      connect( mNmea, SIGNAL( nmeaSentenceReceived( const QString& ) ), this, SLOT( logNmeaSentence( const QString& ) ) ); // added to handle raw data
+      connect( mNmea, SIGNAL( nmeaSentenceReceived( const QString & ) ), this, SLOT( logNmeaSentence( const QString & ) ) ); // added to handle raw data
     }
     else  // error opening file
     {
@@ -475,7 +475,7 @@ void QgsGPSInformationWidget::disconnectGps()
 {
   if ( mLogFile && mLogFile->isOpen() )
   {
-    disconnect( mNmea, SIGNAL( nmeaSentenceReceived( const QString& ) ), this, SLOT( logNmeaSentence( const QString& ) ) );
+    disconnect( mNmea, SIGNAL( nmeaSentenceReceived( const QString & ) ), this, SLOT( logNmeaSentence( const QString & ) ) );
     mLogFile->close();
     delete mLogFile;
     mLogFile = nullptr;
@@ -497,7 +497,7 @@ void QgsGPSInformationWidget::disconnectGps()
   setStatusIndicator( NoData );
 }
 
-void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& info )
+void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation &info )
 {
 #if QWT_VERSION<0x060000
   QwtArray<double> myXData;//qwtarray is just a wrapped qvector
@@ -722,7 +722,8 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
   if ( mGroupShowMarker->isChecked() ) // show marker
   {
     if ( validFlag ) // update cursor position if valid position
-    {                // initially, cursor isn't drawn until first valid fix; remains visible until GPS disconnect
+    {
+      // initially, cursor isn't drawn until first valid fix; remains visible until GPS disconnect
       if ( ! mpMapMarker )
       {
         mpMapMarker = new QgsGpsMarker( mpCanvas );
@@ -778,7 +779,7 @@ void QgsGPSInformationWidget::addVertex()
 
 void QgsGPSInformationWidget::on_mBtnResetFeature_clicked()
 {
-  mNmea->disconnect( this, SLOT( displayGPSInformation( const QgsGPSInformation& ) ) );
+  mNmea->disconnect( this, SLOT( displayGPSInformation( const QgsGPSInformation & ) ) );
   createRubberBand(); //deletes existing rubberband
   mCaptureList.clear();
   connectGpsSlot();
@@ -814,7 +815,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
   //
   if ( layerWKBType == QgsWkbTypes::Point )
   {
-    QgsFeature* f = new QgsFeature( 0 );
+    QgsFeature *f = new QgsFeature( 0 );
 
     QgsCoordinateTransform t( mWgs84CRS, vlayer->crs() );
     QgsPoint myPoint = t.transform( mLastGpsPosition );
@@ -854,10 +855,10 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
   } // layerWKBType == QgsWkbTypes::Point
   else // Line or poly
   {
-    mNmea->disconnect( this, SLOT( displayGPSInformation( const QgsGPSInformation& ) ) );
+    mNmea->disconnect( this, SLOT( displayGPSInformation( const QgsGPSInformation & ) ) );
 
     //create QgsFeature with wkb representation
-    QgsFeature* f = new QgsFeature( 0 );
+    QgsFeature *f = new QgsFeature( 0 );
 
     if ( layerWKBType == QgsWkbTypes::LineString )
     {
@@ -976,8 +977,8 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
 
 void QgsGPSInformationWidget::connectGpsSlot()
 {
-  connect( mNmea, SIGNAL( stateChanged( const QgsGPSInformation& ) ),
-           this, SLOT( displayGPSInformation( const QgsGPSInformation& ) ) );
+  connect( mNmea, SIGNAL( stateChanged( const QgsGPSInformation & ) ),
+           this, SLOT( displayGPSInformation( const QgsGPSInformation & ) ) );
 }
 
 void QgsGPSInformationWidget::on_mBtnRefreshDevices_clicked()
@@ -1044,7 +1045,7 @@ void QgsGPSInformationWidget::on_mBtnLogFile_clicked()
   mTxtLogFile->setToolTip( saveFilePath );
 }
 
-void QgsGPSInformationWidget::logNmeaSentence( const QString& nmeaString )
+void QgsGPSInformationWidget::logNmeaSentence( const QString &nmeaString )
 {
   if ( mLogFileGroupBox->isChecked() && mLogFile && mLogFile->isOpen() )
   {
@@ -1052,7 +1053,7 @@ void QgsGPSInformationWidget::logNmeaSentence( const QString& nmeaString )
   }
 }
 
-void QgsGPSInformationWidget::updateCloseFeatureButton( QgsMapLayer * lyr )
+void QgsGPSInformationWidget::updateCloseFeatureButton( QgsMapLayer *lyr )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( lyr );
 
@@ -1079,7 +1080,7 @@ void QgsGPSInformationWidget::updateCloseFeatureButton( QgsMapLayer * lyr )
   QString buttonLabel = tr( "&Add feature" );
   if ( vlayer ) // must be vector layer
   {
-    QgsVectorDataProvider* provider = vlayer->dataProvider();
+    QgsVectorDataProvider *provider = vlayer->dataProvider();
     QgsWkbTypes::Type layerWKBType = vlayer->wkbType();
 
     QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( layerWKBType );
@@ -1140,7 +1141,7 @@ void QgsGPSInformationWidget::setStatusIndicator( const FixStatus statusValue )
   mLblStatusIndicator->setPixmap( status );
 }
 
-void QgsGPSInformationWidget::showStatusBarMessage( const QString& msg )
+void QgsGPSInformationWidget::showStatusBarMessage( const QString &msg )
 {
   QgisApp::instance()->statusBar()->showMessage( msg );
 }

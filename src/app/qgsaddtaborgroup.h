@@ -31,15 +31,15 @@ class APP_EXPORT QgsAddTabOrGroup : public QDialog, private Ui::QgsAddTabOrGroup
     Q_OBJECT
 
   public:
-    typedef QPair<QString, QTreeWidgetItem*> TabPair;
+    typedef QPair<QString, QTreeWidgetItem *> TabPair;
 
   public:
-    QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList<TabPair>& tabList, QWidget *parent = nullptr );
+    QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList<TabPair> &tabList, QWidget *parent = nullptr );
     ~QgsAddTabOrGroup();
 
     QString name();
 
-    QTreeWidgetItem* tab();
+    QTreeWidgetItem *tab();
 
     int columnCount() const;
 

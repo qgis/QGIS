@@ -29,11 +29,11 @@ class QPainter;
 class QgsGpsMarker : public QgsMapCanvasItem
 {
   public:
-    explicit QgsGpsMarker( QgsMapCanvas* mapCanvas );
+    explicit QgsGpsMarker( QgsMapCanvas *mapCanvas );
 
-    void setCenter( const QgsPoint& point );
+    void setCenter( const QgsPoint &point );
 
-    void paint( QPainter* p ) override;
+    void paint( QPainter *p ) override;
 
     QRectF boundingRect() const override;
 

@@ -52,7 +52,7 @@ class QgsSelectedFeature: public QObject
      * @param vlayer vector layer in which feature is selected
      * @param canvas mapCanvas on which we are working
      */
-    void setSelectedFeature( QgsFeatureId featureId, QgsVectorLayer* vlayer, QgsMapCanvas* canvas );
+    void setSelectedFeature( QgsFeatureId featureId, QgsVectorLayer *vlayer, QgsMapCanvas *canvas );
 
     /**
      * Function to select vertex with number
@@ -111,7 +111,7 @@ class QgsSelectedFeature: public QObject
      * Getting vertex map of vertexes
      * @return currently used vertex map
      */
-    QList<QgsVertexEntry*> &vertexMap();
+    QList<QgsVertexEntry *> &vertexMap();
 
     /**
      * Updates whole selection object from the selected object
@@ -160,7 +160,7 @@ class QgsSelectedFeature: public QObject
     /*
      * the geometry of a feature from the layer was changed - might be the selected
      */
-    void geometryChanged( QgsFeatureId, const QgsGeometry& );
+    void geometryChanged( QgsFeatureId, const QgsGeometry & );
 
     /*
      * the current layer changed - destroy
@@ -193,7 +193,7 @@ class QgsSelectedFeature: public QObject
      * Updates stored geometry to actual one loaded from layer
      * (or already available geometry)
      */
-    void updateGeometry( const QgsGeometry* geom );
+    void updateGeometry( const QgsGeometry *geom );
 
     /**
      * Validates the geometry
@@ -204,9 +204,9 @@ class QgsSelectedFeature: public QObject
     QgsGeometry *mGeometry = nullptr;
     bool mFeatureSelected;
     bool mChangingGeometry;
-    QgsVectorLayer* mVlayer = nullptr;
-    QList<QgsVertexEntry*> mVertexMap;
-    QgsMapCanvas* mCanvas = nullptr;
+    QgsVectorLayer *mVlayer = nullptr;
+    QList<QgsVertexEntry *> mVertexMap;
+    QgsMapCanvas *mCanvas = nullptr;
 
     QgsGeometryValidator *mValidator = nullptr;
     QString mTip;

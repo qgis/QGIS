@@ -32,7 +32,7 @@
 #include <QUrl>
 #include <QSettings>
 
-QgsComposerManager::QgsComposerManager( QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f )
+QgsComposerManager::QgsComposerManager( QWidget *parent, Qt::WindowFlags f ): QDialog( parent, f )
 {
   setupUi( this );
 
@@ -42,8 +42,8 @@ QgsComposerManager::QgsComposerManager( QWidget * parent, Qt::WindowFlags f ): Q
   mComposerListWidget->setItemDelegate( new QgsComposerNameDelegate( mComposerListWidget ) );
 
   connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
-  connect( QgisApp::instance(), SIGNAL( composerAdded( QgsComposerView* ) ), this, SLOT( refreshComposers() ) );
-  connect( QgisApp::instance(), SIGNAL( composerRemoved( QgsComposerView* ) ), this, SLOT( refreshComposers() ) );
+  connect( QgisApp::instance(), SIGNAL( composerAdded( QgsComposerView * ) ), this, SLOT( refreshComposers() ) );
+  connect( QgisApp::instance(), SIGNAL( composerRemoved( QgsComposerView * ) ), this, SLOT( refreshComposers() ) );
 
   connect( mComposerListWidget, SIGNAL( itemSelectionChanged() ), this, SLOT( toggleButtons() ) );
 
@@ -92,9 +92,9 @@ void QgsComposerManager::refreshComposers()
 {
   // Backup selection
   QSet<QgsComposer *> selectedComposers;
-  Q_FOREACH ( QListWidgetItem* item, mComposerListWidget->selectedItems() )
+  Q_FOREACH ( QListWidgetItem *item, mComposerListWidget->selectedItems() )
   {
-    QMap<QListWidgetItem*, QgsComposer*>::const_iterator it = mItemComposerMap.constFind( item );
+    QMap<QListWidgetItem *, QgsComposer *>::const_iterator it = mItemComposerMap.constFind( item );
     if ( it != mItemComposerMap.constEnd() )
     {
       selectedComposers << it.value();
@@ -104,11 +104,11 @@ void QgsComposerManager::refreshComposers()
   mItemComposerMap.clear();
   mComposerListWidget->clear();
 
-  QSet<QgsComposer*> composers = QgisApp::instance()->printComposers();
-  QSet<QgsComposer*>::const_iterator it = composers.constBegin();
+  QSet<QgsComposer *> composers = QgisApp::instance()->printComposers();
+  QSet<QgsComposer *>::const_iterator it = composers.constBegin();
   for ( ; it != composers.constEnd(); ++it )
   {
-    QListWidgetItem* item = new QListWidgetItem(( *it )->title(), mComposerListWidget );
+    QListWidgetItem *item = new QListWidgetItem( ( *it )->title(), mComposerListWidget );
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
     mItemComposerMap.insert( item, *it );
   }
@@ -118,7 +118,7 @@ void QgsComposerManager::refreshComposers()
   bool selectionRestored = false;
   if ( !selectedComposers.isEmpty() )
   {
-    QMap<QListWidgetItem*, QgsComposer*>::const_iterator i = mItemComposerMap.constBegin();
+    QMap<QListWidgetItem *, QgsComposer *>::const_iterator i = mItemComposerMap.constBegin();
     while ( i != mItemComposerMap.constEnd() )
     {
       // This composer was selected: reselect it !
@@ -171,7 +171,7 @@ void QgsComposerManager::toggleButtons()
   }
 }
 
-void QgsComposerManager::addTemplates( const QMap<QString, QString>& templates )
+void QgsComposerManager::addTemplates( const QMap<QString, QString> &templates )
 {
   if ( !templates.isEmpty() )
   {
@@ -203,7 +203,7 @@ QMap<QString, QString> QgsComposerManager::otherTemplates() const
 {
   QMap<QString, QString> templateMap;
   QStringList paths = QgsApplication::composerTemplatePaths();
-  Q_FOREACH ( const QString& path, paths )
+  Q_FOREACH ( const QString &path, paths )
   {
     QMap<QString, QString> templates = templatesFromPath( path );
     QMap<QString, QString>::const_iterator templateIt = templates.constBegin();
@@ -215,7 +215,7 @@ QMap<QString, QString> QgsComposerManager::otherTemplates() const
   return templateMap;
 }
 
-QMap<QString, QString> QgsComposerManager::templatesFromPath( const QString& path ) const
+QMap<QString, QString> QgsComposerManager::templatesFromPath( const QString &path ) const
 {
   QMap<QString, QString> templateMap;
 
@@ -264,7 +264,7 @@ void QgsComposerManager::on_mAddButton_clicked()
     }
   }
 
-  QgsComposer* newComposer = nullptr;
+  QgsComposer *newComposer = nullptr;
   bool loadedOK = false;
 
   QString title;
@@ -337,7 +337,7 @@ void QgsComposerManager::on_mTemplatesUserDirBtn_pressed()
   openLocalDirectory( mUserTemplatesDir );
 }
 
-void QgsComposerManager::openLocalDirectory( const QString& localDirPath )
+void QgsComposerManager::openLocalDirectory( const QString &localDirPath )
 {
   QDir localDir;
   if ( !localDir.mkpath( localDirPath ) )
@@ -349,7 +349,7 @@ void QgsComposerManager::openLocalDirectory( const QString& localDirPath )
 }
 
 #ifdef Q_OS_MAC
-void QgsComposerManager::showEvent( QShowEvent* event )
+void QgsComposerManager::showEvent( QShowEvent *event )
 {
   if ( !event->spontaneous() )
   {
@@ -357,7 +357,7 @@ void QgsComposerManager::showEvent( QShowEvent* event )
   }
 }
 
-void QgsComposerManager::changeEvent( QEvent* event )
+void QgsComposerManager::changeEvent( QEvent *event )
 {
   QDialog::changeEvent( event );
   switch ( event->type() )
@@ -391,7 +391,7 @@ void QgsComposerManager::remove_clicked()
   if ( composerItems.count() == 1 )
   {
     title = tr( "Remove composer" );
-    QListWidgetItem* uniqItem = composerItems.at( 0 );
+    QListWidgetItem *uniqItem = composerItems.at( 0 );
     message = tr( "Do you really want to remove the map composer '%1'?" ).arg( uniqItem->text() );
   }
 
@@ -401,9 +401,9 @@ void QgsComposerManager::remove_clicked()
   }
 
   // Find the QgsComposers that need to be deleted
-  Q_FOREACH ( QListWidgetItem* item, composerItems )
+  Q_FOREACH ( QListWidgetItem *item, composerItems )
   {
-    QMap<QListWidgetItem*, QgsComposer*>::const_iterator it = mItemComposerMap.constFind( item );
+    QMap<QListWidgetItem *, QgsComposer *>::const_iterator it = mItemComposerMap.constFind( item );
     if ( it != mItemComposerMap.constEnd() )
     {
       composerList << it.value();
@@ -411,7 +411,7 @@ void QgsComposerManager::remove_clicked()
   }
 
   // Once we have the composer list, we can delete all of them !
-  Q_FOREACH ( QgsComposer* c, composerList )
+  Q_FOREACH ( QgsComposer *c, composerList )
   {
     QgisApp::instance()->deleteComposer( c );
   }
@@ -419,12 +419,12 @@ void QgsComposerManager::remove_clicked()
 
 void QgsComposerManager::show_clicked()
 {
-  Q_FOREACH ( QListWidgetItem* item, mComposerListWidget->selectedItems() )
+  Q_FOREACH ( QListWidgetItem *item, mComposerListWidget->selectedItems() )
   {
-    QMap<QListWidgetItem*, QgsComposer*>::const_iterator it = mItemComposerMap.constFind( item );
+    QMap<QListWidgetItem *, QgsComposer *>::const_iterator it = mItemComposerMap.constFind( item );
     if ( it != mItemComposerMap.constEnd() )
     {
-      QgsComposer* c = nullptr;
+      QgsComposer *c = nullptr;
       if ( it.value() ) //a normal composer
       {
         c = it.value();
@@ -453,11 +453,11 @@ void QgsComposerManager::duplicate_clicked()
     return;
   }
 
-  QgsComposer* currentComposer = nullptr;
+  QgsComposer *currentComposer = nullptr;
   QString currentTitle;
 
-  QListWidgetItem* item = mComposerListWidget->selectedItems().at( 0 );
-  QMap<QListWidgetItem*, QgsComposer*>::const_iterator it = mItemComposerMap.constFind( item );
+  QListWidgetItem *item = mComposerListWidget->selectedItems().at( 0 );
+  QMap<QListWidgetItem *, QgsComposer *>::const_iterator it = mItemComposerMap.constFind( item );
   if ( it != mItemComposerMap.constEnd() )
   {
     currentComposer = it.value();
@@ -475,11 +475,11 @@ void QgsComposerManager::duplicate_clicked()
   }
 
   // provide feedback, since loading of template into duplicate composer will be hidden
-  QDialog* dlg = new QgsBusyIndicatorDialog( tr( "Duplicating composer..." ) );
+  QDialog *dlg = new QgsBusyIndicatorDialog( tr( "Duplicating composer..." ) );
   dlg->setStyleSheet( QgisApp::instance()->styleSheet() );
   dlg->show();
 
-  QgsComposer* newComposer = QgisApp::instance()->duplicateComposer( currentComposer, newTitle );
+  QgsComposer *newComposer = QgisApp::instance()->duplicateComposer( currentComposer, newTitle );
 
   dlg->close();
   delete dlg;
@@ -505,10 +505,10 @@ void QgsComposerManager::rename_clicked()
   }
 
   QString currentTitle;
-  QgsComposer* currentComposer = nullptr;
+  QgsComposer *currentComposer = nullptr;
 
-  QListWidgetItem* item = mComposerListWidget->selectedItems().at( 0 );
-  QMap<QListWidgetItem*, QgsComposer*>::const_iterator it = mItemComposerMap.constFind( item );
+  QListWidgetItem *item = mComposerListWidget->selectedItems().at( 0 );
+  QMap<QListWidgetItem *, QgsComposer *>::const_iterator it = mItemComposerMap.constFind( item );
   if ( it != mItemComposerMap.constEnd() )
   {
     currentComposer = it.value();
@@ -530,9 +530,9 @@ void QgsComposerManager::rename_clicked()
   mComposerListWidget->sortItems();
 }
 
-void QgsComposerManager::on_mComposerListWidget_itemChanged( QListWidgetItem * item )
+void QgsComposerManager::on_mComposerListWidget_itemChanged( QListWidgetItem *item )
 {
-  QMap<QListWidgetItem*, QgsComposer*>::const_iterator it = mItemComposerMap.constFind( item );
+  QMap<QListWidgetItem *, QgsComposer *>::const_iterator it = mItemComposerMap.constFind( item );
   if ( it != mItemComposerMap.constEnd() )
   {
     it.value()->setTitle( item->text() );
@@ -546,7 +546,7 @@ void QgsComposerManager::on_mComposerListWidget_itemChanged( QListWidgetItem * i
 //
 
 QgsComposerNameDelegate::QgsComposerNameDelegate( QObject *parent )
-    : QItemDelegate( parent )
+  : QItemDelegate( parent )
 {
 
 }
@@ -564,13 +564,13 @@ QWidget *QgsComposerNameDelegate::createEditor( QWidget *parent, const QStyleOpt
 void QgsComposerNameDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
   QString text = index.model()->data( index, Qt::EditRole ).toString();
-  QLineEdit *lineEdit = static_cast<QLineEdit*>( editor );
+  QLineEdit *lineEdit = static_cast<QLineEdit *>( editor );
   lineEdit->setText( text );
 }
 
 void QgsComposerNameDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  QLineEdit *lineEdit = static_cast<QLineEdit*>( editor );
+  QLineEdit *lineEdit = static_cast<QLineEdit *>( editor );
   QString value = lineEdit->text();
 
   //has name changed?
@@ -578,7 +578,7 @@ void QgsComposerNameDelegate::setModelData( QWidget *editor, QAbstractItemModel 
 
   //check if name already exists
   QStringList cNames;
-  Q_FOREACH ( QgsComposer* c, QgisApp::instance()->printComposers() )
+  Q_FOREACH ( QgsComposer *c, QgisApp::instance()->printComposers() )
   {
     cNames << c->title();
   }

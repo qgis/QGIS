@@ -49,15 +49,15 @@ email                : sbr00pwb@users.sourceforge.net
 #include <cmath>
 
 
-QgsDecorationScaleBar::QgsDecorationScaleBar( QObject* parent )
-    : QgsDecorationItem( parent )
-    , mMarginHorizontal( 0 )
-    , mMarginVertical( 0 )
+QgsDecorationScaleBar::QgsDecorationScaleBar( QObject *parent )
+  : QgsDecorationItem( parent )
+  , mMarginHorizontal( 0 )
+  , mMarginVertical( 0 )
 {
   mPlacement = TopLeft;
   mMarginUnit = QgsUnitTypes::RenderMillimeters;
   mStyleLabels << tr( "Tick Down" ) << tr( "Tick Up" )
-  << tr( "Bar" ) << tr( "Box" );
+               << tr( "Bar" ) << tr( "Box" );
 
   setName( "Scale Bar" );
   projectRead();
@@ -103,9 +103,9 @@ void QgsDecorationScaleBar::run()
 }
 
 
-void QgsDecorationScaleBar::render( QPainter * theQPainter )
+void QgsDecorationScaleBar::render( QPainter *theQPainter )
 {
-  QgsMapCanvas* canvas = QgisApp::instance()->mapCanvas();
+  QgsMapCanvas *canvas = QgisApp::instance()->mapCanvas();
 
   int myBufferSize = 1; //softcode this later
 
@@ -278,8 +278,8 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
       {
         float myMarginDoubledW = myMarginW * 2.0;
         float myMarginDoubledH = myMarginH * 2.0;
-        myOriginX = (( myCanvasWidth - myMarginDoubledW - myTotalScaleBarWidth ) / 100. ) * mMarginHorizontal;
-        myOriginY = (( myCanvasHeight - myMarginDoubledH ) / 100. ) * mMarginVertical;
+        myOriginX = ( ( myCanvasWidth - myMarginDoubledW - myTotalScaleBarWidth ) / 100. ) * mMarginHorizontal;
+        myOriginY = ( ( myCanvasHeight - myMarginDoubledH ) / 100. ) * mMarginVertical;
         break;
       }
 

@@ -34,7 +34,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
   public:
 
     //! Constructor
-    QgsMeasureDialog( QgsMeasureTool* tool, Qt::WindowFlags f = 0 );
+    QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f = 0 );
 
     //! Save position
     void saveWindowLocation();
@@ -115,7 +115,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     QgsDistanceArea mDa;
 
     //! pointer to measure tool which owns this dialog
-    QgsMeasureTool* mTool = nullptr;
+    QgsMeasureTool *mTool = nullptr;
 
     QgsPoint mLastMousePoint;
 

@@ -36,8 +36,8 @@
 #include <QMouseEvent>
 #include <QStatusBar>
 
-QgsMapToolFeatureAction::QgsMapToolFeatureAction( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
+QgsMapToolFeatureAction::QgsMapToolFeatureAction( QgsMapCanvas *canvas )
+  : QgsMapTool( canvas )
 {
 }
 
@@ -45,17 +45,17 @@ QgsMapToolFeatureAction::~QgsMapToolFeatureAction()
 {
 }
 
-void QgsMapToolFeatureAction::canvasMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolFeatureAction::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapToolFeatureAction::canvasPressEvent( QgsMapMouseEvent* e )
+void QgsMapToolFeatureAction::canvasPressEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapToolFeatureAction::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolFeatureAction::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   QgsMapLayer *layer = mCanvas->currentLayer();
 
@@ -116,7 +116,7 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
   {
     r = toLayerCoordinates( layer, r );
   }
-  catch ( QgsCsException & cse )
+  catch ( QgsCsException &cse )
   {
     Q_UNUSED( cse );
     // catch exception for 'invalid' point and proceed with no features found
@@ -134,9 +134,9 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
       // define custom substitutions: layer id and clicked coords
       QgsExpressionContext context;
       context << QgsExpressionContextUtils::globalScope()
-      << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-      << QgsExpressionContextUtils::mapSettingsScope( mCanvas->mapSettings() );
-      QgsExpressionContextScope* actionScope = new QgsExpressionContextScope();
+              << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+              << QgsExpressionContextUtils::mapSettingsScope( mCanvas->mapSettings() );
+      QgsExpressionContextScope *actionScope = new QgsExpressionContextScope();
       actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "click_x" ), point.x(), true ) );
       actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "click_y" ), point.y(), true ) );
       actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "action_scope" ), QStringLiteral( "Canvas" ), true ) );
@@ -146,7 +146,7 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
     }
     else
     {
-      QgsMapLayerAction* mapLayerAction = QgsMapLayerActionRegistry::instance()->defaultActionForLayer( layer );
+      QgsMapLayerAction *mapLayerAction = QgsMapLayerActionRegistry::instance()->defaultActionForLayer( layer );
       if ( mapLayerAction )
       {
         mapLayerAction->triggerForFeature( layer, &feat );

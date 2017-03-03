@@ -25,17 +25,17 @@
 #include <QColorDialog>
 
 
-QgsAnnotationWidget::QgsAnnotationWidget( QgsMapCanvasAnnotationItem* item, QWidget * parent, Qt::WindowFlags f )
-    : QWidget( parent, f )
-    , mItem( item )
-    , mMarkerSymbol( nullptr )
+QgsAnnotationWidget::QgsAnnotationWidget( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
+  : QWidget( parent, f )
+  , mItem( item )
+  , mMarkerSymbol( nullptr )
 {
   setupUi( this );
   mLayerComboBox->setAllowEmptyLayer( true );
 
   if ( mItem && mItem->annotation() )
   {
-    QgsAnnotation* annotation = mItem->annotation();
+    QgsAnnotation *annotation = mItem->annotation();
     blockAllSignals( true );
 
     if ( annotation->hasFixedMapPosition() )
@@ -54,13 +54,13 @@ QgsAnnotationWidget::QgsAnnotationWidget( QgsMapCanvasAnnotationItem* item, QWid
 
     mLayerComboBox->setLayer( annotation->mapLayer() );
 
-    const QgsMarkerSymbol* symbol = annotation->markerSymbol();
+    const QgsMarkerSymbol *symbol = annotation->markerSymbol();
     if ( symbol )
     {
       mMarkerSymbol.reset( symbol->clone() );
       updateCenterIcon();
     }
-    const QgsFillSymbol* fill = annotation->fillSymbol();
+    const QgsFillSymbol *fill = annotation->fillSymbol();
     if ( fill )
     {
       mFillSymbol.reset( fill->clone() );
@@ -79,7 +79,7 @@ void QgsAnnotationWidget::apply()
 {
   if ( mItem )
   {
-    QgsAnnotation* annotation = mItem->annotation();
+    QgsAnnotation *annotation = mItem->annotation();
     if ( annotation )
     {
       annotation->setHasFixedMapPosition( mMapPositionFixedCheckBox->checkState() == Qt::Checked );
@@ -108,7 +108,7 @@ void QgsAnnotationWidget::on_mMapMarkerButton_clicked()
   {
     return;
   }
-  QgsMarkerSymbol* markerSymbol = mMarkerSymbol->clone();
+  QgsMarkerSymbol *markerSymbol = mMarkerSymbol->clone();
   QgsSymbolSelectorDialog dlg( markerSymbol, QgsStyle::defaultStyle(), nullptr, this );
   if ( dlg.exec() == QDialog::Rejected )
   {
@@ -127,7 +127,7 @@ void QgsAnnotationWidget::on_mFrameStyleButton_clicked()
   {
     return;
   }
-  QgsFillSymbol* fillSymbol = mFillSymbol->clone();
+  QgsFillSymbol *fillSymbol = mFillSymbol->clone();
   QgsSymbolSelectorDialog dlg( fillSymbol, QgsStyle::defaultStyle(), nullptr, this );
   if ( dlg.exec() == QDialog::Rejected )
   {

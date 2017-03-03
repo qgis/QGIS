@@ -31,9 +31,9 @@
 #include <QPushButton>
 
 
-QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WindowFlags f )
-    : QDialog( tool->canvas()->topLevelWidget(), f )
-    , mTool( tool )
+QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
+  : QDialog( tool->canvas()->topLevelWidget(), f )
+  , mTool( tool )
 {
   setupUi( this );
 
@@ -42,7 +42,7 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WindowFlags f )
   connect( nb, SIGNAL( clicked() ), this, SLOT( restart() ) );
 
   // Add a configuration button
-  QPushButton* cb = new QPushButton( tr( "&Configuration" ) );
+  QPushButton *cb = new QPushButton( tr( "&Configuration" ) );
   buttonBox->addButton( cb, QDialogButtonBox::ActionRole );
   connect( cb, SIGNAL( clicked() ), this, SLOT( openConfigTab() ) );
 
@@ -184,7 +184,7 @@ void QgsMeasureDialog::addPoint()
   {
     if ( !mTool->done() )
     {
-      QTreeWidgetItem * item = new QTreeWidgetItem( QStringList( QLocale::system().toString( 0.0, 'f', mDecimalPlaces ) ) );
+      QTreeWidgetItem *item = new QTreeWidgetItem( QStringList( QLocale::system().toString( 0.0, 'f', mDecimalPlaces ) ) );
       item->setTextAlignment( 0, Qt::AlignRight );
       mTable->addTopLevelItem( item );
       mTable->scrollToItem( item );

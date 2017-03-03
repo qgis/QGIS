@@ -54,7 +54,7 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
      * @param parent is the parent widget. Based on the type of parent, it will
      * be displayed a tool bar, in the status bar or as a widget/dialog.
      */
-    QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas, QWidget* parent = nullptr );
+    QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
 
     virtual ~QgsSnappingWidget();
@@ -67,12 +67,12 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     /**
      * The snapping configuration is what is managed by this widget.
      */
-    void setConfig( const QgsSnappingConfig& config );
+    void setConfig( const QgsSnappingConfig &config );
 
     /**
      * Returns the enable tracing action widget
      */
-    QAction* enableTracingAction() { return mEnableTracingAction; }
+    QAction *enableTracingAction() { return mEnableTracingAction; }
 
   signals:
     void snappingConfigChanged( );
@@ -95,8 +95,8 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
 
     void enableIntersectionSnapping( bool enabled );
 
-    void modeButtonTriggered( QAction* action );
-    void typeButtonTriggered( QAction* action );
+    void modeButtonTriggered( QAction *action );
+    void typeButtonTriggered( QAction *action );
 
     //! number of decimals of the tolerance spin box depends on map units
     void updateToleranceDecimals();
@@ -114,31 +114,31 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     //! modeChanged determines if widget are visible or not based on mode
     void modeChanged();
 
-    QgsProject* mProject = nullptr;
+    QgsProject *mProject = nullptr;
     QgsSnappingConfig mConfig;
-    QgsMapCanvas* mCanvas = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
 
-    QAction* mEnabledAction = nullptr;
-    QToolButton* mModeButton = nullptr;
-    QAction* mModeAction; // hide widget does not work on toolbar, action needed
-    QAction* mAllLayersAction = nullptr;
-    QAction* mActiveLayerAction = nullptr;
-    QAction* mAdvancedModeAction = nullptr;
-    QToolButton* mTypeButton = nullptr;
-    QAction* mTypeAction; // hide widget does not work on toolbar, action needed
-    QAction* mVertexAction = nullptr;
-    QAction* mSegmentAction = nullptr;
-    QAction* mVertexAndSegmentAction = nullptr;
-    QDoubleSpinBox* mToleranceSpinBox = nullptr;
-    QAction* mToleranceAction; // hide widget does not work on toolbar, action needed
-    QComboBox* mUnitsComboBox = nullptr;
-    QAction* mUnitAction; // hide widget does not work on toolbar, action needed
-    QAction* mTopologicalEditingAction = nullptr;
-    QAction* mIntersectionSnappingAction = nullptr;
-    QAction* mEnableTracingAction = nullptr;
-    QTreeView* mLayerTreeView = nullptr;
+    QAction *mEnabledAction = nullptr;
+    QToolButton *mModeButton = nullptr;
+    QAction *mModeAction; // hide widget does not work on toolbar, action needed
+    QAction *mAllLayersAction = nullptr;
+    QAction *mActiveLayerAction = nullptr;
+    QAction *mAdvancedModeAction = nullptr;
+    QToolButton *mTypeButton = nullptr;
+    QAction *mTypeAction; // hide widget does not work on toolbar, action needed
+    QAction *mVertexAction = nullptr;
+    QAction *mSegmentAction = nullptr;
+    QAction *mVertexAndSegmentAction = nullptr;
+    QDoubleSpinBox *mToleranceSpinBox = nullptr;
+    QAction *mToleranceAction; // hide widget does not work on toolbar, action needed
+    QComboBox *mUnitsComboBox = nullptr;
+    QAction *mUnitAction; // hide widget does not work on toolbar, action needed
+    QAction *mTopologicalEditingAction = nullptr;
+    QAction *mIntersectionSnappingAction = nullptr;
+    QAction *mEnableTracingAction = nullptr;
+    QTreeView *mLayerTreeView = nullptr;
 
-    void cleanGroup( QgsLayerTreeNode* node );
+    void cleanGroup( QgsLayerTreeNode *node );
 };
 
 #endif

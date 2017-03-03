@@ -29,12 +29,12 @@
 #include <QRect>
 
 
-QgsMapToolSelectFeatures::QgsMapToolSelectFeatures( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
-    , mDragging( false )
+QgsMapToolSelectFeatures::QgsMapToolSelectFeatures( QgsMapCanvas *canvas )
+  : QgsMapTool( canvas )
+  , mDragging( false )
 {
   mToolName = tr( "Select features" );
-  QPixmap mySelectQPixmap = QPixmap(( const char ** ) select_cursor );
+  QPixmap mySelectQPixmap = QPixmap( ( const char ** ) select_cursor );
   mCursor = QCursor( mySelectQPixmap, 1, 1 );
   mRubberBand = nullptr;
   mFillColor = QColor( 254, 178, 76, 63 );
@@ -42,7 +42,7 @@ QgsMapToolSelectFeatures::QgsMapToolSelectFeatures( QgsMapCanvas* canvas )
 }
 
 
-void QgsMapToolSelectFeatures::canvasPressEvent( QgsMapMouseEvent* e )
+void QgsMapToolSelectFeatures::canvasPressEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e );
   mSelectRect.setRect( 0, 0, 0, 0 );
@@ -53,7 +53,7 @@ void QgsMapToolSelectFeatures::canvasPressEvent( QgsMapMouseEvent* e )
 }
 
 
-void QgsMapToolSelectFeatures::canvasMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolSelectFeatures::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( e->buttons() != Qt::LeftButton )
     return;
@@ -68,9 +68,9 @@ void QgsMapToolSelectFeatures::canvasMoveEvent( QgsMapMouseEvent* e )
 }
 
 
-void QgsMapToolSelectFeatures::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolSelectFeatures::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
+  QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
   if ( !vlayer )
   {
     delete mRubberBand;

@@ -28,20 +28,20 @@ class QgsWelcomePage : public QWidget
     Q_OBJECT
 
   public:
-    explicit QgsWelcomePage( bool skipVersionCheck = false, QWidget* parent = nullptr );
+    explicit QgsWelcomePage( bool skipVersionCheck = false, QWidget *parent = nullptr );
 
     ~QgsWelcomePage();
 
-    void setRecentProjects( const QList<QgsWelcomePageItemsModel::RecentProjectData>& recentProjects );
+    void setRecentProjects( const QList<QgsWelcomePageItemsModel::RecentProjectData> &recentProjects );
 
   private slots:
-    void itemActivated( const QModelIndex& index );
+    void itemActivated( const QModelIndex &index );
     void versionInfoReceived();
 
   private:
-    QgsWelcomePageItemsModel* mModel = nullptr;
-    QLabel* mVersionInformation = nullptr;
-    QgsVersionInfo* mVersionInfo = nullptr;
+    QgsWelcomePageItemsModel *mModel = nullptr;
+    QLabel *mVersionInformation = nullptr;
+    QgsVersionInfo *mVersionInfo = nullptr;
 };
 
 #endif // QGSWELCOMEDIALOG_H

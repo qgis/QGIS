@@ -35,19 +35,19 @@ class dwgReader21 : public dwgReader
     }
     bool readMetaData();
     bool readFileHeader();
-    bool readDwgHeader( DRW_Header& hdr );
+    bool readDwgHeader( DRW_Header &hdr );
     bool readDwgClasses();
     bool readDwgHandles();
-    bool readDwgTables( DRW_Header& hdr );
-    bool readDwgBlocks( DRW_Interface& intfa );
-    virtual bool readDwgEntities( DRW_Interface& intfa )
+    bool readDwgTables( DRW_Header &hdr );
+    bool readDwgBlocks( DRW_Interface &intfa );
+    virtual bool readDwgEntities( DRW_Interface &intfa )
     {
       bool ret = true;
       dwgBuffer dataBuf( objData, dataSize, &decoder );
       ret = dwgReader::readDwgEntities( intfa, &dataBuf );
       return ret;
     }
-    virtual bool readDwgObjects( DRW_Interface& intfa )
+    virtual bool readDwgObjects( DRW_Interface &intfa )
     {
       bool ret = true;
       dwgBuffer dataBuf( objData, dataSize, &decoder );

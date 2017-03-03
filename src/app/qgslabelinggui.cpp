@@ -26,9 +26,9 @@ QgsExpressionContext QgsLabelingGui::createExpressionContext() const
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-  << QgsExpressionContextUtils::atlasScope( nullptr )
-  << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() );
+             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+             << QgsExpressionContextUtils::atlasScope( nullptr )
+             << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() );
 
   if ( mLayer )
     expContext << QgsExpressionContextUtils::layerScope( mLayer );
@@ -42,7 +42,7 @@ QgsExpressionContext QgsLabelingGui::createExpressionContext() const
   return expContext;
 }
 
-void QgsLabelingGui::registerDataDefinedButton( QgsPropertyOverrideButton* button, QgsPalLayerSettings::Property key )
+void QgsLabelingGui::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsPalLayerSettings::Property key )
 {
   button->init( key, mDataDefinedProperties, QgsPalLayerSettings::propertyDefinitions(), mLayer );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsLabelingGui::updateProperty );
@@ -51,16 +51,16 @@ void QgsLabelingGui::registerDataDefinedButton( QgsPropertyOverrideButton* butto
 
 void QgsLabelingGui::updateProperty()
 {
-  QgsPropertyOverrideButton* button = qobject_cast<QgsPropertyOverrideButton*>( sender() );
+  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   QgsPalLayerSettings::Property key = static_cast< QgsPalLayerSettings::Property >( button->propertyKey() );
   mDataDefinedProperties.setProperty( key, button->toProperty() );
 }
 
-QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsPalLayerSettings* layerSettings, QWidget* parent )
-    : QgsTextFormatWidget( mapCanvas, parent, QgsTextFormatWidget::Labeling )
-    , mLayer( layer )
-    , mSettings( layerSettings )
-    , mMode( NoLabels )
+QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings *layerSettings, QWidget *parent )
+  : QgsTextFormatWidget( mapCanvas, parent, QgsTextFormatWidget::Labeling )
+  , mLayer( layer )
+  , mSettings( layerSettings )
+  , mMode( NoLabels )
 {
   // connections for groupboxes with separate activation checkboxes (that need to honor data defined setting)
   connect( mBufferDrawChkBx, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
@@ -76,7 +76,7 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   setLayer( layer );
 }
 
-void QgsLabelingGui::setLayer( QgsMapLayer* mapLayer )
+void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 {
   if ( !mapLayer || mapLayer->type() != QgsMapLayer::VectorLayer )
   {
@@ -88,7 +88,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer* mapLayer )
     setEnabled( true );
   }
 
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( mapLayer );
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mapLayer );
   mLayer = layer;
 
   // load labeling settings from layer
@@ -163,7 +163,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer* mapLayer )
   mLineDistanceUnitWidget->setUnit( lyr.distInMapUnits ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters );
   mLineDistanceUnitWidget->setMapUnitScale( lyr.distMapUnitScale );
   mOffsetTypeComboBox->setCurrentIndex( mOffsetTypeComboBox->findData( lyr.offsetType ) );
-  mQuadrantBtnGrp->button(( int )lyr.quadOffset )->setChecked( true );
+  mQuadrantBtnGrp->button( ( int )lyr.quadOffset )->setChecked( true );
   mPointOffsetXSpinBox->setValue( lyr.xOffset );
   mPointOffsetYSpinBox->setValue( lyr.yOffset );
   mPointOffsetUnitWidget->setUnit( lyr.labelOffsetInMapUnits ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters );
@@ -231,8 +231,8 @@ void QgsLabelingGui::setLayer( QgsMapLayer* mapLayer )
   mDirectSymbRightLineEdit->setText( lyr.rightDirectionSymbol );
   mDirectSymbRevChkBx->setChecked( lyr.reverseDirectionSymbol );
 
-  mDirectSymbBtnGrp->button(( int )lyr.placeDirectionSymbol )->setChecked( true );
-  mUpsidedownBtnGrp->button(( int )lyr.upsidedownLabels )->setChecked( true );
+  mDirectSymbBtnGrp->button( ( int )lyr.placeDirectionSymbol )->setChecked( true );
+  mUpsidedownBtnGrp->button( ( int )lyr.upsidedownLabels )->setChecked( true );
 
   // curved label max character angles
   mMaxCharAngleInDSpinBox->setValue( lyr.maxCurvedCharAngleIn );
@@ -240,7 +240,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer* mapLayer )
   mMaxCharAngleOutDSpinBox->setValue( qAbs( lyr.maxCurvedCharAngleOut ) );
 
   wrapCharacterEdit->setText( lyr.wrapChar );
-  mFontMultiLineAlignComboBox->setCurrentIndex(( unsigned int ) lyr.multilineAlign );
+  mFontMultiLineAlignComboBox->setCurrentIndex( ( unsigned int ) lyr.multilineAlign );
   chkPreserveRotation->setChecked( lyr.preserveRotation );
 
   mPreviewBackgroundBtn->setColor( lyr.previewBkgrdColor );
@@ -328,7 +328,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.dist = 0;
   lyr.placementFlags = 0;
 
-  QWidget* curPlacementWdgt = stackedPlacement->currentWidget();
+  QWidget *curPlacementWdgt = stackedPlacement->currentWidget();
   lyr.centroidWhole = mCentroidRadioWhole->isChecked();
   lyr.centroidInside = mCentroidInsideCheckBox->isChecked();
   lyr.fitInPolygonOnly = mFitInsidePolygonCheckBox->isChecked();
@@ -353,13 +353,13 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
     lyr.placementFlags |= QgsPalLayerSettings::OnLine;
   if ( ! chkLineOrientationDependent->isChecked() )
     lyr.placementFlags |= QgsPalLayerSettings::MapOrientation;
-  if (( curPlacementWdgt == pagePoint && radAroundPoint->isChecked() )
-      || ( curPlacementWdgt == pagePolygon && radAroundCentroid->isChecked() ) )
+  if ( ( curPlacementWdgt == pagePoint && radAroundPoint->isChecked() )
+       || ( curPlacementWdgt == pagePolygon && radAroundCentroid->isChecked() ) )
   {
     lyr.placement = QgsPalLayerSettings::AroundPoint;
   }
-  else if (( curPlacementWdgt == pagePoint && radOverPoint->isChecked() )
-           || ( curPlacementWdgt == pagePolygon && radOverCentroid->isChecked() ) )
+  else if ( ( curPlacementWdgt == pagePoint && radOverPoint->isChecked() )
+            || ( curPlacementWdgt == pagePolygon && radOverCentroid->isChecked() ) )
   {
     lyr.placement = QgsPalLayerSettings::OverPoint;
   }
@@ -367,8 +367,8 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   {
     lyr.placement = QgsPalLayerSettings::OrderedPositionsAroundPoint;
   }
-  else if (( curPlacementWdgt == pageLine && radLineParallel->isChecked() )
-           || ( curPlacementWdgt == pagePolygon && radPolygonPerimeter->isChecked() ) )
+  else if ( ( curPlacementWdgt == pageLine && radLineParallel->isChecked() )
+            || ( curPlacementWdgt == pagePolygon && radPolygonPerimeter->isChecked() ) )
   {
     lyr.placement = QgsPalLayerSettings::Line;
   }
@@ -380,8 +380,8 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   {
     lyr.placement = QgsPalLayerSettings::PerimeterCurved;
   }
-  else if (( curPlacementWdgt == pageLine && radLineHorizontal->isChecked() )
-           || ( curPlacementWdgt == pagePolygon && radPolygonHorizontal->isChecked() ) )
+  else if ( ( curPlacementWdgt == pageLine && radLineHorizontal->isChecked() )
+            || ( curPlacementWdgt == pagePolygon && radPolygonHorizontal->isChecked() ) )
   {
     lyr.placement = QgsPalLayerSettings::Horizontal;
   }
@@ -596,7 +596,7 @@ void QgsLabelingGui::populateDataDefinedButtons()
   registerDataDefinedButton( mZIndexDDBtn, QgsPalLayerSettings::ZIndex );
 }
 
-void QgsLabelingGui::syncDefinedCheckboxFrame( QgsPropertyOverrideButton* ddBtn, QCheckBox* chkBx, QFrame* f )
+void QgsLabelingGui::syncDefinedCheckboxFrame( QgsPropertyOverrideButton *ddBtn, QCheckBox *chkBx, QFrame *f )
 {
   if ( ddBtn->isActive() && !chkBx->isChecked() )
   {

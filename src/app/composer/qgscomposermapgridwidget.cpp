@@ -27,10 +27,10 @@
 #include "qgsmapsettings.h"
 #include "qgsexpressionbuilderdialog.h"
 
-QgsComposerMapGridWidget::QgsComposerMapGridWidget( QgsComposerMapGrid* mapGrid, QgsComposerMap* composerMap )
-    : QgsComposerItemBaseWidget( nullptr, mapGrid )
-    , mComposerMap( composerMap )
-    , mComposerMapGrid( mapGrid )
+QgsComposerMapGridWidget::QgsComposerMapGridWidget( QgsComposerMapGrid *mapGrid, QgsComposerMap *composerMap )
+  : QgsComposerItemBaseWidget( nullptr, mapGrid )
+  , mComposerMap( composerMap )
+  , mComposerMapGrid( mapGrid )
 {
   setupUi( this );
   setPanelTitle( tr( "Map grid properties" ) );
@@ -119,14 +119,14 @@ void QgsComposerMapGridWidget::updateGridLineStyleFromWidget()
     return;
   }
 
-  QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( sender() );
-  mComposerMapGrid->setLineSymbol( dynamic_cast< QgsLineSymbol* >( w->symbol()->clone() ) );
+  QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( sender() );
+  mComposerMapGrid->setLineSymbol( dynamic_cast< QgsLineSymbol * >( w->symbol()->clone() ) );
   mComposerMap->update();
 }
 
-void QgsComposerMapGridWidget::cleanUpGridLineStyleSelector( QgsPanelWidget* container )
+void QgsComposerMapGridWidget::cleanUpGridLineStyleSelector( QgsPanelWidget *container )
 {
-  QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( container );
+  QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( container );
   if ( !w )
     return;
 
@@ -148,14 +148,14 @@ void QgsComposerMapGridWidget::updateGridMarkerStyleFromWidget()
     return;
   }
 
-  QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( sender() );
-  mComposerMapGrid->setMarkerSymbol( dynamic_cast< QgsMarkerSymbol* >( w->symbol()->clone() ) );
+  QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( sender() );
+  mComposerMapGrid->setMarkerSymbol( dynamic_cast< QgsMarkerSymbol * >( w->symbol()->clone() ) );
   mComposerMap->update();
 }
 
-void QgsComposerMapGridWidget::cleanUpGridMarkerStyleSelector( QgsPanelWidget* container )
+void QgsComposerMapGridWidget::cleanUpGridMarkerStyleSelector( QgsPanelWidget *container )
 {
-  QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( container );
+  QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( container );
   if ( !w )
     return;
 
@@ -304,13 +304,13 @@ void QgsComposerMapGridWidget::toggleFrameControls( bool frameEnabled, bool fram
   mBottomDivisionsLabel->setEnabled( frameEnabled );
 }
 
-void QgsComposerMapGridWidget::insertAnnotationPositionEntries( QComboBox* c )
+void QgsComposerMapGridWidget::insertAnnotationPositionEntries( QComboBox *c )
 {
   c->insertItem( 0, tr( "Inside frame" ) );
   c->insertItem( 1, tr( "Outside frame" ) );
 }
 
-void QgsComposerMapGridWidget::insertAnnotationDirectionEntries( QComboBox* c )
+void QgsComposerMapGridWidget::insertAnnotationDirectionEntries( QComboBox *c )
 {
   c->addItem( tr( "Horizontal" ), QgsComposerMapGrid::Horizontal );
   c->addItem( tr( "Vertical ascending" ), QgsComposerMapGrid::Vertical );
@@ -351,7 +351,7 @@ void QgsComposerMapGridWidget::initAnnotationDisplayBox( QComboBox *c, QgsCompos
   }
 }
 
-void QgsComposerMapGridWidget::handleChangedAnnotationPosition( QgsComposerMapGrid::BorderSide border, const QString& text )
+void QgsComposerMapGridWidget::handleChangedAnnotationPosition( QgsComposerMapGrid::BorderSide border, const QString &text )
 {
   if ( !mComposerMapGrid || !mComposerMap )
   {
@@ -402,7 +402,7 @@ void QgsComposerMapGridWidget::insertAnnotationDisplayEntries( QComboBox *c )
   c->insertItem( 3, tr( "Disabled" ) );
 }
 
-void QgsComposerMapGridWidget::initAnnotationPositionBox( QComboBox* c, QgsComposerMapGrid::AnnotationPosition pos )
+void QgsComposerMapGridWidget::initAnnotationPositionBox( QComboBox *c, QgsComposerMapGrid::AnnotationPosition pos )
 {
   if ( !c )
   {
@@ -419,7 +419,7 @@ void QgsComposerMapGridWidget::initAnnotationPositionBox( QComboBox* c, QgsCompo
   }
 }
 
-void QgsComposerMapGridWidget::initAnnotationDirectionBox( QComboBox* c, QgsComposerMapGrid::AnnotationDirection dir )
+void QgsComposerMapGridWidget::initAnnotationDirectionBox( QComboBox *c, QgsComposerMapGrid::AnnotationDirection dir )
 {
   if ( !c )
   {
@@ -607,7 +607,7 @@ void QgsComposerMapGridWidget::updateGridLineSymbolMarker()
 {
   if ( mComposerMapGrid )
   {
-    QgsLineSymbol* nonConstSymbol = const_cast<QgsLineSymbol*>( mComposerMapGrid->lineSymbol() ); //bad
+    QgsLineSymbol *nonConstSymbol = const_cast<QgsLineSymbol *>( mComposerMapGrid->lineSymbol() ); //bad
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( nonConstSymbol, mGridLineStyleButton->iconSize() );
     mGridLineStyleButton->setIcon( icon );
   }
@@ -617,7 +617,7 @@ void QgsComposerMapGridWidget::updateGridMarkerSymbolMarker()
 {
   if ( mComposerMapGrid )
   {
-    QgsMarkerSymbol* nonConstSymbol = const_cast<QgsMarkerSymbol*>( mComposerMapGrid->markerSymbol() ); //bad
+    QgsMarkerSymbol *nonConstSymbol = const_cast<QgsMarkerSymbol *>( mComposerMapGrid->markerSymbol() ); //bad
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( nonConstSymbol, mGridMarkerStyleButton->iconSize() );
     mGridMarkerStyleButton->setIcon( icon );
   }
@@ -631,18 +631,18 @@ void QgsComposerMapGridWidget::on_mGridLineStyleButton_clicked()
   }
 
   // use the atlas coverage layer, if any
-  QgsVectorLayer* coverageLayer = atlasCoverageLayer();
+  QgsVectorLayer *coverageLayer = atlasCoverageLayer();
 
-  QgsLineSymbol* newSymbol = static_cast<QgsLineSymbol*>( mComposerMapGrid->lineSymbol()->clone() );
+  QgsLineSymbol *newSymbol = static_cast<QgsLineSymbol *>( mComposerMapGrid->lineSymbol()->clone() );
   QgsExpressionContext context = mComposerMap->createExpressionContext();
 
-  QgsSymbolSelectorWidget* d = new QgsSymbolSelectorWidget( newSymbol, QgsStyle::defaultStyle(), coverageLayer, nullptr );
+  QgsSymbolSelectorWidget *d = new QgsSymbolSelectorWidget( newSymbol, QgsStyle::defaultStyle(), coverageLayer, nullptr );
   QgsSymbolWidgetContext symbolContext;
   symbolContext.setExpressionContext( &context );
   d->setContext( symbolContext );
 
   connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateGridLineStyleFromWidget() ) );
-  connect( d, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpGridLineStyleSelector( QgsPanelWidget* ) ) );
+  connect( d, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( cleanUpGridLineStyleSelector( QgsPanelWidget * ) ) );
   openPanel( d );
   mComposerMap->beginCommand( tr( "Grid line style changed" ) );
 }
@@ -655,18 +655,18 @@ void QgsComposerMapGridWidget::on_mGridMarkerStyleButton_clicked()
   }
 
   // use the atlas coverage layer, if any
-  QgsVectorLayer* coverageLayer = atlasCoverageLayer();
+  QgsVectorLayer *coverageLayer = atlasCoverageLayer();
 
-  QgsMarkerSymbol* newSymbol = static_cast<QgsMarkerSymbol*>( mComposerMapGrid->markerSymbol()->clone() );
+  QgsMarkerSymbol *newSymbol = static_cast<QgsMarkerSymbol *>( mComposerMapGrid->markerSymbol()->clone() );
   QgsExpressionContext context = mComposerMap->createExpressionContext();
 
-  QgsSymbolSelectorWidget* d = new QgsSymbolSelectorWidget( newSymbol, QgsStyle::defaultStyle(), coverageLayer, nullptr );
+  QgsSymbolSelectorWidget *d = new QgsSymbolSelectorWidget( newSymbol, QgsStyle::defaultStyle(), coverageLayer, nullptr );
   QgsSymbolWidgetContext symbolContext;
   symbolContext.setExpressionContext( &context );
   d->setContext( symbolContext );
 
   connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateGridMarkerStyleFromWidget() ) );
-  connect( d, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpGridMarkerStyleSelector( QgsPanelWidget* ) ) );
+  connect( d, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( cleanUpGridMarkerStyleSelector( QgsPanelWidget * ) ) );
   openPanel( d );
   mComposerMap->beginCommand( tr( "Grid markers style changed" ) );
 }
@@ -844,7 +844,7 @@ void QgsComposerMapGridWidget::on_mGridFramePenSizeSpinBox_valueChanged( double 
   mComposerMap->endCommand();
 }
 
-void QgsComposerMapGridWidget::on_mGridFramePenColorButton_colorChanged( const QColor& newColor )
+void QgsComposerMapGridWidget::on_mGridFramePenColorButton_colorChanged( const QColor &newColor )
 {
   if ( !mComposerMapGrid || !mComposerMap )
   {
@@ -857,7 +857,7 @@ void QgsComposerMapGridWidget::on_mGridFramePenColorButton_colorChanged( const Q
   mComposerMap->endCommand();
 }
 
-void QgsComposerMapGridWidget::on_mGridFrameFill1ColorButton_colorChanged( const QColor& newColor )
+void QgsComposerMapGridWidget::on_mGridFrameFill1ColorButton_colorChanged( const QColor &newColor )
 {
   if ( !mComposerMapGrid || !mComposerMap )
   {
@@ -870,7 +870,7 @@ void QgsComposerMapGridWidget::on_mGridFrameFill1ColorButton_colorChanged( const
   mComposerMap->endCommand();
 }
 
-void QgsComposerMapGridWidget::on_mGridFrameFill2ColorButton_colorChanged( const QColor& newColor )
+void QgsComposerMapGridWidget::on_mGridFrameFill2ColorButton_colorChanged( const QColor &newColor )
 {
   if ( !mComposerMapGrid || !mComposerMap )
   {
@@ -883,7 +883,7 @@ void QgsComposerMapGridWidget::on_mGridFrameFill2ColorButton_colorChanged( const
   mComposerMap->endCommand();
 }
 
-void QgsComposerMapGridWidget::on_mFrameStyleComboBox_currentIndexChanged( const QString& text )
+void QgsComposerMapGridWidget::on_mFrameStyleComboBox_currentIndexChanged( const QString &text )
 {
   if ( !mComposerMapGrid || !mComposerMap )
   {
@@ -926,7 +926,7 @@ void QgsComposerMapGridWidget::on_mFrameStyleComboBox_currentIndexChanged( const
   mComposerMap->endCommand();
 }
 
-void QgsComposerMapGridWidget::on_mMapGridUnitComboBox_currentIndexChanged( const QString& text )
+void QgsComposerMapGridWidget::on_mMapGridUnitComboBox_currentIndexChanged( const QString &text )
 {
   if ( !mComposerMapGrid || !mComposerMap )
   {
@@ -964,7 +964,7 @@ void QgsComposerMapGridWidget::on_mGridBlendComboBox_currentIndexChanged( int in
 
 }
 
-void QgsComposerMapGridWidget::on_mGridTypeComboBox_currentIndexChanged( const QString& text )
+void QgsComposerMapGridWidget::on_mGridTypeComboBox_currentIndexChanged( const QString &text )
 {
   if ( !mComposerMapGrid || !mComposerMap )
   {
@@ -1104,22 +1104,22 @@ void QgsComposerMapGridWidget::on_mAnnotationDisplayBottomComboBox_currentIndexC
   handleChangedAnnotationDisplay( QgsComposerMapGrid::Bottom, text );
 }
 
-void QgsComposerMapGridWidget::on_mAnnotationPositionLeftComboBox_currentIndexChanged( const QString& text )
+void QgsComposerMapGridWidget::on_mAnnotationPositionLeftComboBox_currentIndexChanged( const QString &text )
 {
   handleChangedAnnotationPosition( QgsComposerMapGrid::Left, text );
 }
 
-void QgsComposerMapGridWidget::on_mAnnotationPositionRightComboBox_currentIndexChanged( const QString& text )
+void QgsComposerMapGridWidget::on_mAnnotationPositionRightComboBox_currentIndexChanged( const QString &text )
 {
   handleChangedAnnotationPosition( QgsComposerMapGrid::Right, text );
 }
 
-void QgsComposerMapGridWidget::on_mAnnotationPositionTopComboBox_currentIndexChanged( const QString& text )
+void QgsComposerMapGridWidget::on_mAnnotationPositionTopComboBox_currentIndexChanged( const QString &text )
 {
   handleChangedAnnotationPosition( QgsComposerMapGrid::Top, text );
 }
 
-void QgsComposerMapGridWidget::on_mAnnotationPositionBottomComboBox_currentIndexChanged( const QString& text )
+void QgsComposerMapGridWidget::on_mAnnotationPositionBottomComboBox_currentIndexChanged( const QString &text )
 {
   handleChangedAnnotationPosition( QgsComposerMapGrid::Bottom, text );
 }
@@ -1177,7 +1177,7 @@ void QgsComposerMapGridWidget::on_mAnnotationFontButton_clicked()
   }
 }
 
-void QgsComposerMapGridWidget::on_mAnnotationFontColorButton_colorChanged( const QColor& color )
+void QgsComposerMapGridWidget::on_mAnnotationFontColorButton_colorChanged( const QColor &color )
 {
   if ( !mComposerMapGrid || !mComposerMap )
   {
@@ -1199,7 +1199,7 @@ void QgsComposerMapGridWidget::on_mAnnotationFormatComboBox_currentIndexChanged(
 
   mComposerMap->beginCommand( tr( "Annotation format changed" ) );
 
-  mComposerMapGrid->setAnnotationFormat(( QgsComposerMapGrid::AnnotationFormat )mAnnotationFormatComboBox->itemData( index ).toInt() );
+  mComposerMapGrid->setAnnotationFormat( ( QgsComposerMapGrid::AnnotationFormat )mAnnotationFormatComboBox->itemData( index ).toInt() );
   mAnnotationFormatButton->setEnabled( mComposerMapGrid->annotationFormat() == QgsComposerMapGrid::CustomFormat );
 
   mComposerMap->updateBoundingRect();

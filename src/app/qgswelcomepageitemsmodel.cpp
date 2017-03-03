@@ -25,13 +25,13 @@
 #include <QPainter>
 #include <QTextDocument>
 
-QgsWelcomePageItemDelegate::QgsWelcomePageItemDelegate( QObject * parent )
-    : QStyledItemDelegate( parent )
+QgsWelcomePageItemDelegate::QgsWelcomePageItemDelegate( QObject *parent )
+  : QStyledItemDelegate( parent )
 {
 
 }
 
-void QgsWelcomePageItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem & option, const QModelIndex &index ) const
+void QgsWelcomePageItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   painter->save();
 
@@ -90,7 +90,7 @@ void QgsWelcomePageItemDelegate::paint( QPainter* painter, const QStyleOptionVie
   painter->restore();
 }
 
-QSize QgsWelcomePageItemDelegate::sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const
+QSize QgsWelcomePageItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   QTextDocument doc;
   QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
@@ -114,16 +114,16 @@ QSize QgsWelcomePageItemDelegate::sizeHint( const QStyleOptionViewItem & option,
                      index.data( QgsWelcomePageItemsModel::CrsRole ).toString() ) );
   doc.setTextWidth( width - ( !icon.isNull() ? icon.width() + 35 : 35 ) );
 
-  return QSize( width, qMax(( double ) doc.size().height() + 10, ( double )icon.height() ) + 20 );
+  return QSize( width, qMax( ( double ) doc.size().height() + 10, ( double )icon.height() ) + 20 );
 }
 
-QgsWelcomePageItemsModel::QgsWelcomePageItemsModel( QObject* parent )
-    : QAbstractListModel( parent )
+QgsWelcomePageItemsModel::QgsWelcomePageItemsModel( QObject *parent )
+  : QAbstractListModel( parent )
 {
 
 }
 
-void QgsWelcomePageItemsModel::setRecentProjects( const QList<RecentProjectData>& recentProjects )
+void QgsWelcomePageItemsModel::setRecentProjects( const QList<RecentProjectData> &recentProjects )
 {
   beginResetModel();
   mRecentProjects = recentProjects;
@@ -131,13 +131,13 @@ void QgsWelcomePageItemsModel::setRecentProjects( const QList<RecentProjectData>
 }
 
 
-int QgsWelcomePageItemsModel::rowCount( const QModelIndex& parent ) const
+int QgsWelcomePageItemsModel::rowCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
   return mRecentProjects.size();
 }
 
-QVariant QgsWelcomePageItemsModel::data( const QModelIndex& index, int role ) const
+QVariant QgsWelcomePageItemsModel::data( const QModelIndex &index, int role ) const
 {
   switch ( role )
   {
@@ -190,13 +190,13 @@ QVariant QgsWelcomePageItemsModel::data( const QModelIndex& index, int role ) co
 }
 
 
-Qt::ItemFlags QgsWelcomePageItemsModel::flags( const QModelIndex& index ) const
+Qt::ItemFlags QgsWelcomePageItemsModel::flags( const QModelIndex &index ) const
 {
   Qt::ItemFlags flags = QAbstractItemModel::flags( index );
 
-  const RecentProjectData& projectData = mRecentProjects.at( index.row() );
+  const RecentProjectData &projectData = mRecentProjects.at( index.row() );
 
-  if ( !QFile::exists(( projectData.path ) ) )
+  if ( !QFile::exists( ( projectData.path ) ) )
     flags &= ~Qt::ItemIsEnabled;
 
   return flags;

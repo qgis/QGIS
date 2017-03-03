@@ -25,7 +25,7 @@ class QgsComposerMap;
  */
 struct QgsCompositionPaper
 {
-  QgsCompositionPaper( const QString& name, double width, double height ) {mName = name; mWidth = width; mHeight = height;}
+  QgsCompositionPaper( const QString &name, double width, double height ) {mName = name; mWidth = width; mHeight = height;}
   QString mName;
   double mWidth;
   double mHeight;
@@ -38,13 +38,13 @@ class QgsCompositionWidget: public QgsPanelWidget, private Ui::QgsCompositionWid
 {
     Q_OBJECT
   public:
-    QgsCompositionWidget( QWidget* parent, QgsComposition* c );
+    QgsCompositionWidget( QWidget *parent, QgsComposition *c );
     ~QgsCompositionWidget();
 
   public slots:
-    void on_mPaperSizeComboBox_currentIndexChanged( const QString& text );
-    void on_mPaperUnitsComboBox_currentIndexChanged( const QString& text );
-    void on_mPaperOrientationComboBox_currentIndexChanged( const QString& text );
+    void on_mPaperSizeComboBox_currentIndexChanged( const QString &text );
+    void on_mPaperUnitsComboBox_currentIndexChanged( const QString &text );
+    void on_mPaperOrientationComboBox_currentIndexChanged( const QString &text );
     void on_mPaperWidthDoubleSpinBox_editingFinished();
     void on_mPaperHeightDoubleSpinBox_editingFinished();
     void on_mNumPagesSpinBox_valueChanged( int value );
@@ -53,7 +53,7 @@ class QgsCompositionWidget: public QgsPanelWidget, private Ui::QgsCompositionWid
     void on_mResolutionSpinBox_valueChanged( const int value );
     void on_mPrintAsRasterCheckBox_toggled( bool state );
     void on_mGenerateWorldFileCheckBox_toggled( bool state );
-    void referenceMapChanged( QgsComposerItem* );
+    void referenceMapChanged( QgsComposerItem * );
 
     void on_mGridResolutionSpinBox_valueChanged( double d );
     void on_mOffsetXSpinBox_valueChanged( double d );
@@ -69,7 +69,7 @@ class QgsCompositionWidget: public QgsPanelWidget, private Ui::QgsCompositionWid
 
   signals:
     //! Is emitted when page orientation changes
-    void pageOrientationChanged( const QString& orientation );
+    void pageOrientationChanged( const QString &orientation );
 
   private slots:
 
@@ -86,10 +86,10 @@ class QgsCompositionWidget: public QgsPanelWidget, private Ui::QgsCompositionWid
     void updateVariables();
 
     void updateStyleFromWidget();
-    void cleanUpStyleSelector( QgsPanelWidget* container );
+    void cleanUpStyleSelector( QgsPanelWidget *container );
 
   private:
-    QgsComposition* mComposition = nullptr;
+    QgsComposition *mComposition = nullptr;
     QMap<QString, QgsCompositionPaper> mPaperMap;
 
     QgsCompositionWidget(); //default constructor is forbidden

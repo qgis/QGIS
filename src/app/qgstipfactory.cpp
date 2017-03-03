@@ -299,13 +299,13 @@ QgsTipFactory::~QgsTipFactory()
 
 }
 //private helper method
-void QgsTipFactory::addGuiTip( const QgsTip& tip )
+void QgsTipFactory::addGuiTip( const QgsTip &tip )
 {
   mGuiTips << tip;
   mAllTips << tip;
 }
 //private helper method
-void QgsTipFactory::addGenericTip( const QgsTip& tip )
+void QgsTipFactory::addGenericTip( const QgsTip &tip )
 {
   mGenericTips << tip;
   mAllTips << tip;

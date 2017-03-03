@@ -26,10 +26,10 @@
 #include <QSettings>
 #include <cmath>
 
-QgsMapToolMeasureAngle::QgsMapToolMeasureAngle( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
-    , mRubberBand( nullptr )
-    , mResultDisplay( nullptr )
+QgsMapToolMeasureAngle::QgsMapToolMeasureAngle( QgsMapCanvas *canvas )
+  : QgsMapTool( canvas )
+  , mRubberBand( nullptr )
+  , mResultDisplay( nullptr )
 {
   mToolName = tr( "Measure angle" );
 
@@ -42,7 +42,7 @@ QgsMapToolMeasureAngle::~QgsMapToolMeasureAngle()
   stopMeasuring();
 }
 
-void QgsMapToolMeasureAngle::canvasMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolMeasureAngle::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( !mRubberBand || mAnglePoints.size() < 1 || mAnglePoints.size() > 2 )
   {
@@ -81,7 +81,7 @@ void QgsMapToolMeasureAngle::canvasMoveEvent( QgsMapMouseEvent* e )
   }
 }
 
-void QgsMapToolMeasureAngle::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolMeasureAngle::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   //add points until we have three
   if ( mAnglePoints.size() == 3 )

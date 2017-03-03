@@ -44,14 +44,14 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
 {
     Q_OBJECT
   public:
-    QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsGPSInformationWidget( QgsMapCanvas *thepCanvas, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsGPSInformationWidget();
 
   private slots:
     void on_mConnectButton_toggled( bool flag );
-    void displayGPSInformation( const QgsGPSInformation& info );
-    void logNmeaSentence( const QString& nmeaString ); // added to handle 'raw' data
-    void updateCloseFeatureButton( QgsMapLayer * lyr );
+    void displayGPSInformation( const QgsGPSInformation &info );
+    void logNmeaSentence( const QString &nmeaString ); // added to handle 'raw' data
+    void updateCloseFeatureButton( QgsMapLayer *lyr );
     void layerEditStateChanged();
 //   void setTrackColor(); // no longer used
     void on_mBtnTrackColor_clicked();
@@ -82,27 +82,27 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     void disconnectGps();
     void populateDevices();
     void setStatusIndicator( const FixStatus statusValue );
-    void showStatusBarMessage( const QString& msg );
-    QgsGPSConnection* mNmea = nullptr;
-    QgsMapCanvas * mpCanvas = nullptr;
-    QgsGpsMarker * mpMapMarker = nullptr;
-    QwtPlot * mpPlot = nullptr;
-    QwtPlotCurve * mpCurve = nullptr;
+    void showStatusBarMessage( const QString &msg );
+    QgsGPSConnection *mNmea = nullptr;
+    QgsMapCanvas *mpCanvas = nullptr;
+    QgsGpsMarker *mpMapMarker = nullptr;
+    QwtPlot *mpPlot = nullptr;
+    QwtPlotCurve *mpCurve = nullptr;
 #ifdef WITH_QWTPOLAR
-    QwtPolarPlot * mpSatellitesWidget = nullptr;
+    QwtPolarPlot *mpSatellitesWidget = nullptr;
     QwtPolarGrid *mpSatellitesGrid = nullptr;
     QList< QwtPolarMarker * > mMarkerList;
 #endif
     void createRubberBand();
     QgsCoordinateReferenceSystem mWgs84CRS;
 // not used    QPointF gpsToPixelPosition( const QgsPoint& point );
-    QgsRubberBand * mpRubberBand = nullptr;
+    QgsRubberBand *mpRubberBand = nullptr;
     QgsPoint mLastGpsPosition;
     QList<QgsPoint> mCaptureList;
     FixStatus mLastFixStatus;
     QString mDateTimeFormat; // user specified format string in registry (no UI presented)
-    QgsVectorLayer * mpLastLayer = nullptr;
-    QFile * mLogFile = nullptr;
+    QgsVectorLayer *mpLastLayer = nullptr;
+    QFile *mLogFile = nullptr;
     QTextStream mLogFileTextStream;
     QColor mTrackColor;
 };

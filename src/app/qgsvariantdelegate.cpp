@@ -43,8 +43,8 @@
 
 #include "qgsvariantdelegate.h"
 
-QgsVariantDelegate::QgsVariantDelegate( QObject* parent )
-    : QItemDelegate( parent )
+QgsVariantDelegate::QgsVariantDelegate( QObject *parent )
+  : QItemDelegate( parent )
 {
   mBoolExp.setPattern( QStringLiteral( "true|false" ) );
   mBoolExp.setCaseSensitivity( Qt::CaseInsensitive );
@@ -64,9 +64,9 @@ QgsVariantDelegate::QgsVariantDelegate( QObject* parent )
   mDateTimeExp.setPattern( mDateExp.pattern() + 'T' + mTimeExp.pattern() );
 }
 
-void QgsVariantDelegate::paint( QPainter* painter,
-                                const QStyleOptionViewItem& option,
-                                const QModelIndex& index ) const
+void QgsVariantDelegate::paint( QPainter *painter,
+                                const QStyleOptionViewItem &option,
+                                const QModelIndex &index ) const
 {
   if ( index.column() == 2 )
   {
@@ -83,9 +83,9 @@ void QgsVariantDelegate::paint( QPainter* painter,
   QItemDelegate::paint( painter, option, index );
 }
 
-QWidget* QgsVariantDelegate::createEditor( QWidget* parent,
-    const QStyleOptionViewItem& option,
-    const QModelIndex& index ) const
+QWidget *QgsVariantDelegate::createEditor( QWidget *parent,
+    const QStyleOptionViewItem &option,
+    const QModelIndex &index ) const
 {
   Q_UNUSED( option )
   if ( index.column() != 2 )
@@ -95,7 +95,7 @@ QWidget* QgsVariantDelegate::createEditor( QWidget* parent,
   if ( !isSupportedType( QgsVariantDelegate::type( originalValue ) ) )
     return nullptr;
 
-  QLineEdit* lineEdit = new QLineEdit( parent );
+  QLineEdit *lineEdit = new QLineEdit( parent );
   lineEdit->setFrame( false );
 
   QRegExp regExp;
@@ -149,30 +149,30 @@ QWidget* QgsVariantDelegate::createEditor( QWidget* parent,
 
   if ( !regExp.isEmpty() )
   {
-    QValidator* validator = new QRegExpValidator( regExp, lineEdit );
+    QValidator *validator = new QRegExpValidator( regExp, lineEdit );
     lineEdit->setValidator( validator );
   }
 
   return lineEdit;
 }
 
-void QgsVariantDelegate::setEditorData( QWidget* editor,
-                                        const QModelIndex& index ) const
+void QgsVariantDelegate::setEditorData( QWidget *editor,
+                                        const QModelIndex &index ) const
 {
   QVariant value = index.model()->data( index, Qt::UserRole );
-  if ( QLineEdit* lineEdit = qobject_cast<QLineEdit* >( editor ) )
+  if ( QLineEdit *lineEdit = qobject_cast<QLineEdit * >( editor ) )
     lineEdit->setText( displayText( value ) );
 }
 
-void QgsVariantDelegate::setModelData( QWidget* editor, QAbstractItemModel* model,
-                                       const QModelIndex& index ) const
+void QgsVariantDelegate::setModelData( QWidget *editor, QAbstractItemModel *model,
+                                       const QModelIndex &index ) const
 {
-  QLineEdit* lineEdit = qobject_cast<QLineEdit* >( editor );
+  QLineEdit *lineEdit = qobject_cast<QLineEdit * >( editor );
   if ( !lineEdit->isModified() )
     return;
 
   QString text = lineEdit->text();
-  const QValidator* validator = lineEdit->validator();
+  const QValidator *validator = lineEdit->validator();
   if ( validator )
   {
     int pos;
@@ -271,7 +271,7 @@ bool QgsVariantDelegate::isSupportedType( QVariant::Type type )
   }
 }
 
-QString QgsVariantDelegate::displayText( const QVariant& value )
+QString QgsVariantDelegate::displayText( const QVariant &value )
 {
   switch ( QgsVariantDelegate::type( value ) )
   {
@@ -327,7 +327,7 @@ QString QgsVariantDelegate::displayText( const QVariant& value )
 }
 
 /* hack to get "real" type of a variant, because QVariant::type() almost always returns QString */
-QVariant::Type QgsVariantDelegate::type( const QVariant& value )
+QVariant::Type QgsVariantDelegate::type( const QVariant &value )
 {
   if ( value.type() == QVariant::String )
   {

@@ -41,7 +41,7 @@ class APP_EXPORT QgsDecorationItem: public QObject
     };
 
     //! Constructor
-    QgsDecorationItem( QObject* parent = nullptr );
+    QgsDecorationItem( QObject *parent = nullptr );
 
     virtual ~ QgsDecorationItem();
 

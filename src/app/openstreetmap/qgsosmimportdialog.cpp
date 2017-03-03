@@ -22,16 +22,16 @@
 
 #include "qgsosmimport.h"
 
-QgsOSMImportDialog::QgsOSMImportDialog( QWidget* parent )
-    : QDialog( parent )
-    , mImport( new QgsOSMXmlImport )
+QgsOSMImportDialog::QgsOSMImportDialog( QWidget *parent )
+  : QDialog( parent )
+  , mImport( new QgsOSMXmlImport )
 {
   setupUi( this );
 
   connect( btnBrowseXml, SIGNAL( clicked() ), this, SLOT( onBrowseXml() ) );
   connect( btnBrowseDb, SIGNAL( clicked() ), this, SLOT( onBrowseDb() ) );
-  connect( editXmlFileName, SIGNAL( textChanged( const QString& ) ), this, SLOT( xmlFileNameChanged( const QString& ) ) );
-  connect( editDbFileName, SIGNAL( textChanged( const QString& ) ), this, SLOT( dbFileNameChanged( const QString& ) ) );
+  connect( editXmlFileName, SIGNAL( textChanged( const QString & ) ), this, SLOT( xmlFileNameChanged( const QString & ) ) );
+  connect( editDbFileName, SIGNAL( textChanged( const QString & ) ), this, SLOT( dbFileNameChanged( const QString & ) ) );
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( onOK() ) );
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( onClose() ) );
 
@@ -71,12 +71,12 @@ void QgsOSMImportDialog::onBrowseDb()
 }
 
 
-void QgsOSMImportDialog::xmlFileNameChanged( const QString& fileName )
+void QgsOSMImportDialog::xmlFileNameChanged( const QString &fileName )
 {
   editDbFileName->setText( fileName + ".db" );
 }
 
-void QgsOSMImportDialog::dbFileNameChanged( const QString& fileName )
+void QgsOSMImportDialog::dbFileNameChanged( const QString &fileName )
 {
   editConnName->setText( QFileInfo( fileName ).baseName() );
 }

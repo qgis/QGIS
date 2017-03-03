@@ -46,16 +46,16 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgisAppInterface( QgisApp *qgisapp );
 
     QgisAppInterface( QgisAppInterface const & ) = delete;
-    QgisAppInterface & operator=( QgisAppInterface const & ) = delete;
+    QgisAppInterface &operator=( QgisAppInterface const & ) = delete;
 
-    QgsPluginManagerInterface* pluginManagerInterface() override;
+    QgsPluginManagerInterface *pluginManagerInterface() override;
 
-    QgsLayerTreeView* layerTreeView() override;
+    QgsLayerTreeView *layerTreeView() override;
 
-    virtual void addCustomActionForLayerType( QAction* action, QString menu,
+    virtual void addCustomActionForLayerType( QAction *action, QString menu,
         QgsMapLayer::LayerType type, bool allLayers ) override;
-    virtual void addCustomActionForLayer( QAction* action, QgsMapLayer* layer ) override;
-    virtual bool removeCustomActionForLayerType( QAction* action ) override;
+    virtual void addCustomActionForLayer( QAction *action, QgsMapLayer *layer ) override;
+    virtual bool removeCustomActionForLayerType( QAction *action ) override;
 
     /* Exposed functions */
 
@@ -69,14 +69,14 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void zoomToActiveLayer() override;
 
     //! Add a vector layer
-    QgsVectorLayer* addVectorLayer( const QString& vectorLayerPath, const QString& baseName, const QString& providerKey ) override;
+    QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey ) override;
     //! Add a raster layer given its file name
-    QgsRasterLayer* addRasterLayer( const QString& rasterLayerPath, const QString& baseName ) override;
+    QgsRasterLayer *addRasterLayer( const QString &rasterLayerPath, const QString &baseName ) override;
     //! Add a WMS layer
-    QgsRasterLayer* addRasterLayer( const QString& url, const QString& baseName, const QString& providerKey ) override;
+    QgsRasterLayer *addRasterLayer( const QString &url, const QString &baseName, const QString &providerKey ) override;
 
     //! Add a project
-    bool addProject( const QString& projectName ) override;
+    bool addProject( const QString &projectName ) override;
     //! Start a new blank project
     void newProject( bool promptToSaveFlag = false ) override;
 
@@ -97,7 +97,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * @param widget widget to add. The toolbar will take ownership of this widget
      * @return the QAction you can use to remove this widget from the toolbar
      */
-    QAction* addToolBarWidget( QWidget* widget ) override;
+    QAction *addToolBarWidget( QWidget *widget ) override;
     //! Remove an icon (action) from the plugin toolbar
     void removeToolBarIcon( QAction *qAction ) override;
     //! Add an icon to the Raster toolbar
@@ -111,7 +111,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * @param widget widget to add. The toolbar will take ownership of this widget
      * @return the QAction you can use to remove this widget from the toolbar
      */
-    QAction* addRasterToolBarWidget( QWidget* widget ) override;
+    QAction *addRasterToolBarWidget( QWidget *widget ) override;
     //! Remove an icon (action) from the Raster toolbar
     void removeRasterToolBarIcon( QAction *qAction ) override;
     //! Add an icon to the Vector toolbar
@@ -125,7 +125,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * @param widget widget to add. The toolbar will take ownership of this widget
      * @return the QAction you can use to remove this widget from the toolbar
      */
-    QAction* addVectorToolBarWidget( QWidget* widget ) override;
+    QAction *addVectorToolBarWidget( QWidget *widget ) override;
     //! Remove an icon (action) from the Vector toolbar
     void removeVectorToolBarIcon( QAction *qAction ) override;
     //! Add an icon to the Database toolbar
@@ -139,7 +139,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * @param widget widget to add. The toolbar will take ownership of this widget
      * @return the QAction you can use to remove this widget from the toolbar
      */
-    QAction* addDatabaseToolBarWidget( QWidget* widget ) override;
+    QAction *addDatabaseToolBarWidget( QWidget *widget ) override;
     //! Remove an icon (action) from the Database toolbar
     void removeDatabaseToolBarIcon( QAction *qAction ) override;
     //! Add an icon to the Web toolbar
@@ -153,16 +153,16 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * @param widget widget to add. The toolbar will take ownership of this widget
      * @return the QAction you can use to remove this widget from the toolbar
      */
-    QAction* addWebToolBarWidget( QWidget* widget ) override;
+    QAction *addWebToolBarWidget( QWidget *widget ) override;
     //! Remove an icon (action) from the Web toolbar
     void removeWebToolBarIcon( QAction *qAction ) override;
 
     //! Add toolbar with specified name
-    QToolBar* addToolBar( const QString& name ) override;
+    QToolBar *addToolBar( const QString &name ) override;
 
     //! Add a toolbar
     //! @note added in 2.3
-    void addToolBar( QToolBar* toolbar, Qt::ToolBarArea area = Qt::TopToolBarArea ) override;
+    void addToolBar( QToolBar *toolbar, Qt::ToolBarArea area = Qt::TopToolBarArea ) override;
 
     /** Open a url in the users browser. By default the QGIS doc directory is used
      * as the base for the URL. To open a URL that is not relative to the installed
@@ -174,35 +174,35 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 #ifndef Q_MOC_RUN
     Q_DECL_DEPRECATED
 #endif
-    void openURL( const QString& url, bool useQgisDocDirectory = true ) override;
+    void openURL( const QString &url, bool useQgisDocDirectory = true ) override;
 
     //! Return a pointer to the map canvas used by qgisapp
-    QgsMapCanvas * mapCanvas() override;
+    QgsMapCanvas *mapCanvas() override;
 
     /**
      * Returns a pointer to the layer tree canvas bridge
      *
      * @note added in 2.12
      */
-    QgsLayerTreeMapCanvasBridge* layerTreeCanvasBridge() override;
+    QgsLayerTreeMapCanvasBridge *layerTreeCanvasBridge() override;
 
     /** Gives access to main QgisApp object
 
         Plugins don't need to know about QgisApp, as we pass it as QWidget,
         it can be used for connecting slots and using as widget's parent
      */
-    QWidget * mainWindow() override;
+    QWidget *mainWindow() override;
 
-    QgsMessageBar * messageBar() override;
+    QgsMessageBar *messageBar() override;
 
     //! Open the message log dock widget *
     void openMessageLog() override;
 
     //! Adds a widget to the user input tool bar.
-    void addUserInputWidget( QWidget* widget ) override;
+    void addUserInputWidget( QWidget *widget ) override;
 
     // ### QGIS 3: return QgsComposer*, not QgsComposerView*
-    QList<QgsComposerView*> activeComposers() override;
+    QList<QgsComposerView *> activeComposers() override;
 
     // ### QGIS 3: return QgsComposer*, not QgsComposerView*
 
@@ -211,7 +211,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * @return pointer to composer's view
      * @note new composer window will be shown and activated
      */
-    QgsComposerView* createNewComposer( const QString& title = QString() ) override;
+    QgsComposerView *createNewComposer( const QString &title = QString() ) override;
 
     // ### QGIS 3: return QgsComposer*, not QgsComposerView*
 
@@ -221,48 +221,48 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * @return pointer to duplicate composer's view
      * @note duplicate composer window will be hidden until loaded, then shown and activated
      */
-    QgsComposerView* duplicateComposer( QgsComposerView* composerView, const QString& title = QString() ) override;
+    QgsComposerView *duplicateComposer( QgsComposerView *composerView, const QString &title = QString() ) override;
 
     //! Deletes parent composer of composer view, after closing composer window
-    void deleteComposer( QgsComposerView* composerView ) override;
+    void deleteComposer( QgsComposerView *composerView ) override;
 
     //! Return changeable options built from settings and/or defaults
     QMap<QString, QVariant> defaultStyleSheetOptions() override;
 
     /** Generate stylesheet
      * @param opts generated default option values, or a changed copy of them */
-    void buildStyleSheet( const QMap<QString, QVariant>& opts ) override;
+    void buildStyleSheet( const QMap<QString, QVariant> &opts ) override;
 
     //! Save changed default option keys/values to user settings
-    void saveStyleSheetOptions( const QMap<QString, QVariant>& opts ) override;
+    void saveStyleSheetOptions( const QMap<QString, QVariant> &opts ) override;
 
     //! Get reference font for initial qApp (may not be same as QgisApp)
     QFont defaultStyleSheetFont() override;
 
     //! Add action to the plugins menu
-    void addPluginToMenu( const QString& name, QAction* action ) override;
+    void addPluginToMenu( const QString &name, QAction *action ) override;
     //! Remove action from the plugins menu
-    void removePluginMenu( const QString& name, QAction* action ) override;
+    void removePluginMenu( const QString &name, QAction *action ) override;
 
     //! Add action to the Database menu
-    void addPluginToDatabaseMenu( const QString& name, QAction* action ) override;
+    void addPluginToDatabaseMenu( const QString &name, QAction *action ) override;
     //! Remove action from the Database menu
-    void removePluginDatabaseMenu( const QString& name, QAction* action ) override;
+    void removePluginDatabaseMenu( const QString &name, QAction *action ) override;
 
     //! Add action to the Raster menu
-    void addPluginToRasterMenu( const QString& name, QAction* action ) override;
+    void addPluginToRasterMenu( const QString &name, QAction *action ) override;
     //! Remove action from the Raster menu
-    void removePluginRasterMenu( const QString& name, QAction* action ) override;
+    void removePluginRasterMenu( const QString &name, QAction *action ) override;
 
     //! Add action to the Vector menu
-    void addPluginToVectorMenu( const QString& name, QAction* action ) override;
+    void addPluginToVectorMenu( const QString &name, QAction *action ) override;
     //! Remove action from the Raster menu
-    void removePluginVectorMenu( const QString& name, QAction* action ) override;
+    void removePluginVectorMenu( const QString &name, QAction *action ) override;
 
     //! Add action to the Web menu
-    void addPluginToWebMenu( const QString& name, QAction* action ) override;
+    void addPluginToWebMenu( const QString &name, QAction *action ) override;
     //! Remove action from the Web menu
-    void removePluginWebMenu( const QString& name, QAction* action ) override;
+    void removePluginWebMenu( const QString &name, QAction *action ) override;
 
     //! Add "add layer" action to the layer menu
     void insertAddLayerAction( QAction *action ) override;
@@ -270,10 +270,10 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void removeAddLayerAction( QAction *action ) override;
 
     //! Add a dock widget to the main window
-    void addDockWidget( Qt::DockWidgetArea area, QDockWidget * dockwidget ) override;
+    void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget ) override;
 
     //! Remove specified dock widget from main window (doesn't delete it).
-    void removeDockWidget( QDockWidget * dockwidget ) override;
+    void removeDockWidget( QDockWidget *dockwidget ) override;
 
     //! return CAD dock widget
     QgsAdvancedDigitizingDockWidget *cadDockWidget() override;
@@ -286,7 +286,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     /** Show layer attribute dialog for layer
      * @param l layer to show attribute table for
      */
-    virtual QDialog* showAttributeTable( QgsVectorLayer *l, const QString& filterExpression = QString() ) override;
+    virtual QDialog *showAttributeTable( QgsVectorLayer *l, const QString &filterExpression = QString() ) override;
 
     /** Add window to Window menu. The action title is the window title
      * and the action should raise, unminimize and activate the window. */
@@ -297,35 +297,35 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     virtual void removeWindow( QAction *action ) override;
 
     //! Register action to the shortcuts manager so its shortcut can be changed in GUI.
-    virtual bool registerMainWindowAction( QAction* action, const QString& defaultShortcut ) override;
+    virtual bool registerMainWindowAction( QAction *action, const QString &defaultShortcut ) override;
 
     //! Unregister a previously registered action. (e.g. when plugin is going to be unloaded.
-    virtual bool unregisterMainWindowAction( QAction* action ) override;
+    virtual bool unregisterMainWindowAction( QAction *action ) override;
 
     /** Register a new tab in the vector layer properties dialog.
      * @note added in QGIS 2.16
      * @note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
      * @see unregisterMapLayerPropertiesFactory() */
-    virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory* factory ) override;
+    virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) override;
 
     /** Unregister a previously registered tab in the vector layer properties dialog.
      * @note added in QGIS 2.16
      * @see registerMapLayerPropertiesFactory()
     */
-    virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory* factory ) override;
+    virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) override;
 
     /** Register a new custom drop handler.
      * @note added in QGIS 3.0
      * @note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
      * @see unregisterCustomDropHandler() */
-    virtual void registerCustomDropHandler( QgsCustomDropHandler* handler ) override;
+    virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) override;
 
     /** Unregister a previously registered custom drop handler.
      * @note added in QGIS 3.0
      * @see registerCustomDropHandler() */
-    virtual void unregisterCustomDropHandler( QgsCustomDropHandler* handler ) override;
+    virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) override;
 
     /** Accessors for inserting items into menus and toolbars.
      * An item can be inserted before any existing action.
@@ -484,7 +484,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      *
      * @return A feature form
      */
-    virtual QgsAttributeDialog* getFeatureForm( QgsVectorLayer *layer, QgsFeature &feature ) override;
+    virtual QgsAttributeDialog *getFeatureForm( QgsVectorLayer *layer, QgsFeature &feature ) override;
 
     /**
      * Access the vector layer tools instance.
@@ -493,7 +493,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      *
      * @return An instance of the vector layer tools
      */
-    virtual QgsVectorLayerTools* vectorLayerTools() override;
+    virtual QgsVectorLayerTools *vectorLayerTools() override;
 
     /** This method is only needed when using a UI form with a custom widget plugin and calling
      * openFeatureForm or getFeatureForm from Python (PyQt4) and you haven't used the info tool first.
@@ -506,7 +506,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      *
      * More information here: http://qt-project.org/forums/viewthread/27098/
      */
-    virtual void preloadForm( const QString& uifile ) override;
+    virtual void preloadForm( const QString &uifile ) override;
 
     /** Return vector layers in edit mode
      * @param modified whether to return only layers that have been modified
@@ -518,11 +518,11 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     virtual int messageTimeout() override;
 
   signals:
-    void currentThemeChanged( const QString& );
+    void currentThemeChanged( const QString & );
 
   private slots:
 
-    void cacheloadForm( const QString& uifile );
+    void cacheloadForm( const QString &uifile );
 
   private:
 

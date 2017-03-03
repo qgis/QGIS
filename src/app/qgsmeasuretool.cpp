@@ -32,16 +32,16 @@
 #include <QMouseEvent>
 #include <QSettings>
 
-QgsMeasureTool::QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea )
-    : QgsMapTool( canvas )
-    , mWrongProjectProjection( false )
+QgsMeasureTool::QgsMeasureTool( QgsMapCanvas *canvas, bool measureArea )
+  : QgsMapTool( canvas )
+  , mWrongProjectProjection( false )
 {
   mMeasureArea = measureArea;
 
   mRubberBand = new QgsRubberBand( canvas, mMeasureArea ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
   mRubberBandPoints = new QgsRubberBand( canvas, QgsWkbTypes::PointGeometry );
 
-  QPixmap myCrossHairQPixmap = QPixmap(( const char ** ) cross_hair_cursor );
+  QPixmap myCrossHairQPixmap = QPixmap( ( const char ** ) cross_hair_cursor );
   mCursor = QCursor( myCrossHairQPixmap, 8, 8 );
 
   mDone = true;
@@ -138,7 +138,7 @@ void QgsMeasureTool::updateSettings()
     mDone = lastDone;
     QgsCoordinateTransform ct( mDestinationCrs, mCanvas->mapSettings().destinationCrs() );
 
-    Q_FOREACH ( const QgsPoint& previousPoint, points )
+    Q_FOREACH ( const QgsPoint &previousPoint, points )
     {
       try
       {
@@ -177,12 +177,12 @@ void QgsMeasureTool::updateSettings()
 
 //////////////////////////
 
-void QgsMeasureTool::canvasPressEvent( QgsMapMouseEvent* e )
+void QgsMeasureTool::canvasPressEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMeasureTool::canvasMoveEvent( QgsMapMouseEvent* e )
+void QgsMeasureTool::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( ! mDone )
   {
@@ -194,7 +194,7 @@ void QgsMeasureTool::canvasMoveEvent( QgsMapMouseEvent* e )
 }
 
 
-void QgsMeasureTool::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMeasureTool::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   QgsPoint point = snapPoint( e->pos() );
 
@@ -247,9 +247,9 @@ void QgsMeasureTool::undo()
   }
 }
 
-void QgsMeasureTool::keyPressEvent( QKeyEvent* e )
+void QgsMeasureTool::keyPressEvent( QKeyEvent *e )
 {
-  if (( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete ) )
+  if ( ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete ) )
   {
     if ( !mDone )
     {

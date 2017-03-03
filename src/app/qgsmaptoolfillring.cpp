@@ -26,8 +26,8 @@
 
 #include <limits>
 
-QgsMapToolFillRing::QgsMapToolFillRing( QgsMapCanvas* canvas )
-    : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CapturePolygon )
+QgsMapToolFillRing::QgsMapToolFillRing( QgsMapCanvas *canvas )
+  : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CapturePolygon )
 {
 }
 
@@ -35,7 +35,7 @@ QgsMapToolFillRing::~QgsMapToolFillRing()
 {
 }
 
-void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
+void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   //check if we operate on a vector layer
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
@@ -126,7 +126,7 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
       yMin = std::numeric_limits<double>::max();
       yMax = -std::numeric_limits<double>::max();
 
-      Q_FOREACH ( const QgsPoint& point, pointList )
+      Q_FOREACH ( const QgsPoint &point, pointList )
       {
         xMin = qMin( xMin, point.x() );
         xMax = qMax( xMax, point.x() );

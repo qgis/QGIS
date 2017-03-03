@@ -21,8 +21,8 @@
 #include <QCheckBox>
 #include <QPushButton>
 
-QgsComposerImageExportOptionsDialog::QgsComposerImageExportOptionsDialog( QWidget* parent, Qt::WindowFlags flags )
-    : QDialog( parent, flags )
+QgsComposerImageExportOptionsDialog::QgsComposerImageExportOptionsDialog( QWidget *parent, Qt::WindowFlags flags )
+  : QDialog( parent, flags )
 {
   setupUi( this );
 
@@ -97,7 +97,7 @@ bool QgsComposerImageExportOptionsDialog::cropToContents() const
   return mClipToContentGroupBox->isChecked();
 }
 
-void QgsComposerImageExportOptionsDialog::getCropMargins( int& topMargin, int& rightMargin, int& bottomMargin, int& leftMargin ) const
+void QgsComposerImageExportOptionsDialog::getCropMargins( int &topMargin, int &rightMargin, int &bottomMargin, int &leftMargin ) const
 {
   topMargin = mTopMarginSpinBox->value();
   rightMargin = mRightMarginSpinBox->value();

@@ -33,12 +33,12 @@ class dwgCompressor
 {
   public:
     dwgCompressor()
-        : bufC( nullptr )
-        , bufD( nullptr )
-        , sizeC( 0 )
-        , sizeD( 0 )
-        , pos( 0 )
-        , rpos( 0 )
+      : bufC( nullptr )
+      , bufD( nullptr )
+      , sizeC( 0 )
+      , sizeD( 0 )
+      , pos( 0 )
+      , rpos( 0 )
     {}
 
     void decompress18( duint8 *cbuf, duint8 *dbuf, duint32 csize, duint32 dsize );

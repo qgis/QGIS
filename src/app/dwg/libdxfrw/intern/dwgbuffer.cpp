@@ -130,9 +130,9 @@ bool dwgFileStream::setPos( duint64 p )
   return stream->good();
 }
 
-bool dwgFileStream::read( duint8* s, duint64 n )
+bool dwgFileStream::read( duint8 *s, duint64 n )
 {
-  stream->read( reinterpret_cast<char*>( s ), n );
+  stream->read( reinterpret_cast<char *>( s ), n );
   return stream->good();
 }
 
@@ -148,7 +148,7 @@ bool dwgCharStream::setPos( duint64 p )
   return true;
 }
 
-bool dwgCharStream::read( duint8* s, duint64 n )
+bool dwgCharStream::read( duint8 *s, duint64 n )
 {
   if ( n > ( sz - pos ) )
   {
@@ -178,7 +178,7 @@ dwgBuffer::dwgBuffer( std::ifstream *stream, DRW_TextCodec *dc )
   bitPos = 0;
 }
 
-dwgBuffer::dwgBuffer( const dwgBuffer& org )
+dwgBuffer::dwgBuffer( const dwgBuffer &org )
 {
   filestr = org.filestr->clone();
   decoder = org.decoder;
@@ -187,7 +187,7 @@ dwgBuffer::dwgBuffer( const dwgBuffer& org )
   bitPos = org.bitPos;
 }
 
-dwgBuffer& dwgBuffer::operator=( const dwgBuffer & org )
+dwgBuffer &dwgBuffer::operator=( const dwgBuffer &org )
 {
   filestr = org.filestr->clone();
   decoder = org.decoder;
@@ -413,7 +413,7 @@ double dwgBuffer::getBitDouble()
     {
       filestr->read( buffer, 8 );
     }
-    double* ret = reinterpret_cast<double*>( buffer );
+    double *ret = reinterpret_cast<double *>( buffer );
     return *ret;
   }
   //    if (b == 2)
@@ -483,7 +483,7 @@ double dwgBuffer::getRawDouble()
     for ( int i = 0; i < 8; i++ )
       buffer[i] = getRawChar8();
   }
-  double* nOffset = reinterpret_cast<double*>( buffer );
+  double *nOffset = reinterpret_cast<double *>( buffer );
   return *nOffset;
 }
 
@@ -522,7 +522,7 @@ duint32 dwgBuffer::getUModularChar()
 {
   std::vector<duint8> buffer;
   duint32 result = 0;
-  for ( int i = 0; i < 4;i++ )
+  for ( int i = 0; i < 4; i++ )
   {
     duint8 b = getRawChar8();
     buffer.push_back( b & 0x7F );
@@ -530,7 +530,7 @@ duint32 dwgBuffer::getUModularChar()
       break;
   }
   int offset = 0;
-  for ( unsigned int i = 0; i < buffer.size();i++ )
+  for ( unsigned int i = 0; i < buffer.size(); i++ )
   {
     result += buffer[i] << offset;
     offset += 7;
@@ -546,7 +546,7 @@ dint32 dwgBuffer::getModularChar()
   bool negative = false;
   std::vector<dint8> buffer;
   dint32 result = 0;
-  for ( int i = 0; i < 4;i++ )
+  for ( int i = 0; i < 4; i++ )
   {
     duint8 b = getRawChar8();
     buffer.push_back( b & 0x7F );
@@ -562,7 +562,7 @@ dint32 dwgBuffer::getModularChar()
   }
 
   int offset = 0;
-  for ( unsigned int i = 0; i < buffer.size();i++ )
+  for ( unsigned int i = 0; i < buffer.size(); i++ )
   {
     result += buffer[i] << offset;
     offset += 7;
@@ -578,7 +578,7 @@ dint32 dwgBuffer::getModularShort()
 //    bool negative = false;
   std::vector<dint16> buffer;
   dint32 result = 0;
-  for ( int i = 0; i < 2;i++ )
+  for ( int i = 0; i < 2; i++ )
   {
     duint16 b = getRawShort16();
     buffer.push_back( b & 0x7FFF );
@@ -595,7 +595,7 @@ dint32 dwgBuffer::getModularShort()
       }*/
 
   int offset = 0;
-  for ( unsigned int i = 0; i < buffer.size();i++ )
+  for ( unsigned int i = 0; i < buffer.size(); i++ )
   {
     result += buffer[i] << offset;
     offset += 15;
@@ -612,7 +612,7 @@ dwgHandle dwgBuffer::getHandle()  //H
   hl.code = ( data >> 4 ) & 0x0F;
   hl.size = data & 0x0F;
   hl.ref = 0;
-  for ( int i = 0; i < hl.size;i++ )
+  for ( int i = 0; i < hl.size; i++ )
   {
     hl.ref = ( hl.ref << 8 ) | getRawChar8();
   }
@@ -658,7 +658,7 @@ std::string dwgBuffer::get8bitStr()
   duint8 tmp;
   if ( bitPos != 0 )
   {
-    for ( int i = 0; i < textSize;i++ )
+    for ( int i = 0; i < textSize; i++ )
     {
       tmp =  buffer[i];
       buffer[i] = ( currByte << bitPos ) | ( tmp >> ( 8 - bitPos ) );
@@ -667,7 +667,7 @@ std::string dwgBuffer::get8bitStr()
   }
 #endif
 
-  std::string str( reinterpret_cast<char*>( tmpBuffer ), textSize );
+  std::string str( reinterpret_cast<char *>( tmpBuffer ), textSize );
   delete[]tmpBuffer;
 
   return str;
@@ -692,7 +692,7 @@ std::string dwgBuffer::get16bitStr( duint16 textSize, bool nullTerm )
     tmpBuffer[textSize] = '\0';
     tmpBuffer[textSize + 1] = '\0';
   }
-  std::string str( reinterpret_cast<char*>( tmpBuffer ), ts );
+  std::string str( reinterpret_cast<char *>( tmpBuffer ), ts );
   delete[]tmpBuffer;
 
   return str;
@@ -807,10 +807,10 @@ double dwgBuffer::getDefaultDouble( double d )
     {
       filestr->read( buffer, 4 );
     }
-    tmp = reinterpret_cast<char*>( &d );
+    tmp = reinterpret_cast<char *>( &d );
     for ( int i = 0; i < 4; i++ )
       tmp[i] = buffer[i];
-    double ret = *reinterpret_cast<double*>( tmp );
+    double ret = *reinterpret_cast<double *>( tmp );
     return ret;
   }
   else if ( b == 2 )
@@ -826,12 +826,12 @@ double dwgBuffer::getDefaultDouble( double d )
     {
       filestr->read( buffer, 6 );
     }
-    tmp = reinterpret_cast<char*>( &d );
+    tmp = reinterpret_cast<char *>( &d );
     for ( int i = 2; i < 6; i++ )
-      tmp[i-2] = buffer[i];
+      tmp[i - 2] = buffer[i];
     tmp[4] = buffer[0];
     tmp[5] = buffer[1];
-    double ret = *reinterpret_cast<double*>( tmp );
+    double ret = *reinterpret_cast<double *>( tmp );
     return ret;
   }
   //    if (b == 3) return a full raw double
@@ -873,12 +873,12 @@ duint32 dwgBuffer::getCmColor( DRW::Version v )
              );
   Q_UNUSED( idx );
 
-  if ( cb&1 )
+  if ( cb & 1 )
   {
     std::string colorName = getVariableText( v, false );
     QgsDebugMsg( QString( "colorName:%1" ).arg( colorName.c_str() ) );
   }
-  if ( cb&2 )
+  if ( cb & 2 )
   {
     std::string bookName = getVariableText( v, false );
     QgsDebugMsg( QString( "bookName: %1" ).arg( bookName.c_str() ) );
@@ -896,7 +896,7 @@ duint32 dwgBuffer::getCmColor( DRW::Version v )
       return 256;//RGB RLZ TODO
       break;
     case 0xC3:
-      return rgb&0xFF;//ACIS
+      return rgb & 0xFF; //ACIS
       break;
     default:
       break;
@@ -974,7 +974,7 @@ bool dwgBuffer::getBytes( unsigned char *buf, int size )
 
   if ( bitPos != 0 )
   {
-    for ( int i = 0; i < size;i++ )
+    for ( int i = 0; i < size; i++ )
     {
       tmp =  buf[i];
       buf[i] = ( currByte << bitPos ) | ( tmp >> ( 8 - bitPos ) );
@@ -1000,13 +1000,13 @@ duint16 dwgBuffer::crc8( duint16 dx, dint32 start, dint32 end )
 
   while ( n-- > 0 )
   {
-    al = ( duint8 )(( *p ) ^(( dint8 )( dx & 0xFF ) ) );
+    al = ( duint8 )( ( *p ) ^ ( ( dint8 )( dx & 0xFF ) ) );
     dx = ( dx >> 8 ) & 0xFF;
     dx = dx ^ crctable[al & 0xFF];
     p++;
   }
   delete[]tmpBuf;
-  return( dx );
+  return ( dx );
 }
 
 duint32 dwgBuffer::crc32( duint32 seed, dint32 start, dint32 end )
@@ -1043,7 +1043,7 @@ std::string dwgBuffer::getBytes( int size )
 
   if ( bitPos != 0 )
   {
-    for ( int i = 0; i <= size;i++ )
+    for ( int i = 0; i <= size; i++ )
     {
       tmp =  buffer[i];
       buffer[i] = ( currByte << bitPos ) | ( tmp >> ( 8 - bitPos ) );
@@ -1051,7 +1051,7 @@ std::string dwgBuffer::getBytes( int size )
     }
   }
   std::string st;
-  for ( int i = 0; i < size;i++ )
+  for ( int i = 0; i < size; i++ )
   {
     st.push_back( buffer[i] );
   }

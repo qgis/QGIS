@@ -28,7 +28,7 @@ class APP_EXPORT QgsLabelingGui : public QgsTextFormatWidget, private QgsExpress
     Q_OBJECT
 
   public:
-    QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsPalLayerSettings* settings, QWidget* parent );
+    QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings *settings, QWidget *parent );
 
     QgsPalLayerSettings layerSettings();
     void writeSettingsToLayer();
@@ -42,7 +42,7 @@ class APP_EXPORT QgsLabelingGui : public QgsTextFormatWidget, private QgsExpress
 
     void setLabelMode( LabelMode mode );
 
-    void setLayer( QgsMapLayer* layer );
+    void setLayer( QgsMapLayer *layer );
 
   public slots:
 
@@ -52,11 +52,11 @@ class APP_EXPORT QgsLabelingGui : public QgsTextFormatWidget, private QgsExpress
 
   protected:
     void blockInitSignals( bool block );
-    void syncDefinedCheckboxFrame( QgsPropertyOverrideButton* ddBtn, QCheckBox* chkBx, QFrame* f );
+    void syncDefinedCheckboxFrame( QgsPropertyOverrideButton *ddBtn, QCheckBox *chkBx, QFrame *f );
 
   private:
-    QgsVectorLayer* mLayer = nullptr;
-    const QgsPalLayerSettings* mSettings = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
+    const QgsPalLayerSettings *mSettings = nullptr;
     QgsPropertyCollection mDataDefinedProperties;
     LabelMode mMode;
 

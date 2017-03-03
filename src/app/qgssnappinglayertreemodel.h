@@ -34,14 +34,14 @@ class APP_EXPORT QgsSnappingLayerDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    explicit QgsSnappingLayerDelegate( QgsMapCanvas* canvas, QObject *parent = nullptr );
+    explicit QgsSnappingLayerDelegate( QgsMapCanvas *canvas, QObject *parent = nullptr );
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
 
   private:
-    QgsMapCanvas* mCanvas = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
 };
 
 
@@ -59,37 +59,37 @@ class APP_EXPORT QgsSnappingLayerTreeModel : public QSortFilterProxyModel
       AvoidIntersectionColumn
     };
 
-    QgsSnappingLayerTreeModel( QgsProject* project, QObject* parent = nullptr );
+    QgsSnappingLayerTreeModel( QgsProject *project, QObject *parent = nullptr );
     ~QgsSnappingLayerTreeModel();
 
-    int columnCount( const QModelIndex& parent ) const override;
+    int columnCount( const QModelIndex &parent ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
-    Qt::ItemFlags flags( const QModelIndex& idx ) const override;
+    Qt::ItemFlags flags( const QModelIndex &idx ) const override;
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex& child ) const override;
+    QModelIndex parent( const QModelIndex &child ) const override;
     QModelIndex sibling( int row, int column, const QModelIndex &idx ) const override;
-    QVariant data( const QModelIndex& index, int role ) const override;
-    bool setData( const QModelIndex& index, const QVariant& value, int role ) override;
+    QVariant data( const QModelIndex &index, int role ) const override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
 
-    QgsLayerTreeModel* layerTreeModel() const;
-    void setLayerTreeModel( QgsLayerTreeModel* layerTreeModel );
+    QgsLayerTreeModel *layerTreeModel() const;
+    void setLayerTreeModel( QgsLayerTreeModel *layerTreeModel );
 
-    QgsVectorLayer* vectorLayer( const QModelIndex& idx ) const;
+    QgsVectorLayer *vectorLayer( const QModelIndex &idx ) const;
 
   protected:
-    bool filterAcceptsRow( int sourceRow, const QModelIndex& sourceParent ) const override;
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
   private slots:
     void onSnappingSettingsChanged();
 
   private:
-    bool nodeShown( QgsLayerTreeNode* node ) const;
+    bool nodeShown( QgsLayerTreeNode *node ) const;
 
-    QgsProject* mProject = nullptr;
-    QHash<QgsVectorLayer*, QgsSnappingConfig::IndividualLayerSettings> mIndividualLayerSettings;
-    QgsLayerTreeModel* mLayerTreeModel = nullptr;
+    QgsProject *mProject = nullptr;
+    QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> mIndividualLayerSettings;
+    QgsLayerTreeModel *mLayerTreeModel = nullptr;
 
-    void hasRowchanged( QgsLayerTreeNode* node, const QHash<QgsVectorLayer*, QgsSnappingConfig::IndividualLayerSettings>& oldSettings );
+    void hasRowchanged( QgsLayerTreeNode *node, const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &oldSettings );
 };
 
 #endif // QGSSNAPPINGLAYERTREEVIEW_H

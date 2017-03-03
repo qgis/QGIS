@@ -49,10 +49,10 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
 {
     Q_OBJECT
   public:
-    QgsComposerManager( QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsComposerManager( QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsComposerManager();
 
-    void addTemplates( const QMap<QString, QString>& templates );
+    void addTemplates( const QMap<QString, QString> &templates );
 
   public slots:
     //! Raise, unminimize and activate this window
@@ -62,7 +62,7 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
 
     /** Stores the relation between items and composer pointers. A 0 pointer for the composer means that
       this composer needs to be created from a default template*/
-    QMap<QListWidgetItem*, QgsComposer*> mItemComposerMap;
+    QMap<QListWidgetItem *, QgsComposer *> mItemComposerMap;
 
     /** Returns the default templates (key: template name, value: absolute path to template file)
      * @param fromUser whether to return user templates from ~/.qgis/composer_templates
@@ -70,24 +70,24 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
     QMap<QString, QString> defaultTemplates( bool fromUser = false ) const;
     QMap<QString, QString> otherTemplates() const;
 
-    QMap<QString, QString> templatesFromPath( const QString& path ) const;
+    QMap<QString, QString> templatesFromPath( const QString &path ) const;
 
     /** Open local directory with user's system, creating it if not present
      */
-    void openLocalDirectory( const QString& localDirPath );
+    void openLocalDirectory( const QString &localDirPath );
 
     QString mDefaultTemplatesDir;
     QString mUserTemplatesDir;
-    QPushButton* mShowButton = nullptr;
-    QPushButton* mRemoveButton = nullptr;
-    QPushButton* mRenameButton = nullptr;
-    QPushButton* mDuplicateButton = nullptr;
+    QPushButton *mShowButton = nullptr;
+    QPushButton *mRemoveButton = nullptr;
+    QPushButton *mRenameButton = nullptr;
+    QPushButton *mDuplicateButton = nullptr;
 
 #ifdef Q_OS_MAC
     void showEvent( QShowEvent *event );
     void changeEvent( QEvent * );
 
-    QAction* mWindowAction = nullptr;
+    QAction *mWindowAction = nullptr;
 #endif
 
   private slots:
@@ -111,7 +111,7 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
     //! Duplicate composer
     void duplicate_clicked();
     void rename_clicked();
-    void on_mComposerListWidget_itemChanged( QListWidgetItem * item );
+    void on_mComposerListWidget_itemChanged( QListWidgetItem *item );
 };
 
 #endif // QGSCOMPOSERMANAGER_H

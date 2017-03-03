@@ -20,7 +20,7 @@
 #include "qgsproject.h"
 #include <QMouseEvent>
 
-QgsMapToolTextAnnotation::QgsMapToolTextAnnotation( QgsMapCanvas* canvas ): QgsMapToolAnnotation( canvas )
+QgsMapToolTextAnnotation::QgsMapToolTextAnnotation( QgsMapCanvas *canvas ): QgsMapToolAnnotation( canvas )
 {
 
 }
@@ -30,7 +30,7 @@ QgsMapToolTextAnnotation::~QgsMapToolTextAnnotation()
 
 }
 
-QgsAnnotation* QgsMapToolTextAnnotation::createItem() const
+QgsAnnotation *QgsMapToolTextAnnotation::createItem() const
 {
   return new QgsTextAnnotation();
 }

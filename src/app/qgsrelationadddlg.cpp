@@ -21,7 +21,7 @@
 #include <QPushButton>
 
 QgsRelationAddDlg::QgsRelationAddDlg( QWidget *parent )
-    : QDialog( parent )
+  : QDialog( parent )
 {
   setupUi( this );
 

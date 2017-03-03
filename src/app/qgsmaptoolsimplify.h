@@ -34,7 +34,7 @@ class APP_EXPORT QgsSimplifyDialog : public QDialog, private Ui::SimplifyLineDia
 
   public:
 
-    QgsSimplifyDialog( QgsMapToolSimplify* tool, QWidget* parent = nullptr );
+    QgsSimplifyDialog( QgsMapToolSimplify *tool, QWidget *parent = nullptr );
 
     void updateStatusText();
     void enableOkButton( bool enabled );
@@ -42,10 +42,10 @@ class APP_EXPORT QgsSimplifyDialog : public QDialog, private Ui::SimplifyLineDia
   protected:
 
     //! Also cancels pending simplification
-    virtual void closeEvent( QCloseEvent* e ) override;
+    virtual void closeEvent( QCloseEvent *e ) override;
 
   private:
-    QgsMapToolSimplify* mTool = nullptr;
+    QgsMapToolSimplify *mTool = nullptr;
 
 };
 
@@ -55,12 +55,12 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 {
     Q_OBJECT
   public:
-    QgsMapToolSimplify( QgsMapCanvas* canvas );
+    QgsMapToolSimplify( QgsMapCanvas *canvas );
     virtual ~QgsMapToolSimplify();
 
-    void canvasPressEvent( QgsMapMouseEvent* e ) override;
-    void canvasMoveEvent( QgsMapMouseEvent* e ) override;
-    void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
     //! called when map tool is being deactivated
     void deactivate() override;
@@ -89,14 +89,14 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 
     void updateSimplificationPreview();
 
-    int vertexCount( const QgsGeometry& g ) const;
+    int vertexCount( const QgsGeometry &g ) const;
 
     // data
     //! Dialog with slider to set correct tolerance value
-    QgsSimplifyDialog* mSimplifyDialog = nullptr;
+    QgsSimplifyDialog *mSimplifyDialog = nullptr;
 
     //! Rubber bands to draw current state of simplification
-    QList<QgsRubberBand*> mRubberBands;
+    QList<QgsRubberBand *> mRubberBands;
     //! Features with which we are working
     QList<QgsFeature> mSelectedFeatures;
 
@@ -108,7 +108,7 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     //! stores actual selection rect
     QRect mSelectionRect;
     //! shows actual selection rect
-    QgsRubberBand* mSelectionRubberBand = nullptr;
+    QgsRubberBand *mSelectionRubberBand = nullptr;
     //! Flag to indicate a map canvas drag operation is taking place
     bool mDragging;
 

@@ -27,10 +27,10 @@
 #include <QMessageBox>
 #include <QSettings>
 
-QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget * parent, const QString& projectFile, Qt::WindowFlags f )
-    : QDialog( parent, f )
-    , mShowEmbeddedContent( false )
-    , mRootGroup( new QgsLayerTreeGroup )
+QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget *parent, const QString &projectFile, Qt::WindowFlags f )
+  : QDialog( parent, f )
+  , mShowEmbeddedContent( false )
+  , mRootGroup( new QgsLayerTreeGroup )
 {
   setupUi( this );
 
@@ -61,10 +61,10 @@ QgsProjectLayerGroupDialog::~QgsProjectLayerGroupDialog()
 QStringList QgsProjectLayerGroupDialog::selectedGroups() const
 {
   QStringList groups;
-  QgsLayerTreeModel* model = mTreeView->layerTreeModel();
-  Q_FOREACH ( const QModelIndex& index, mTreeView->selectionModel()->selectedIndexes() )
+  QgsLayerTreeModel *model = mTreeView->layerTreeModel();
+  Q_FOREACH ( const QModelIndex &index, mTreeView->selectionModel()->selectedIndexes() )
   {
-    QgsLayerTreeNode* node = model->index2node( index );
+    QgsLayerTreeNode *node = model->index2node( index );
     if ( QgsLayerTree::isGroup( node ) )
       groups << QgsLayerTree::toGroup( node )->name();
   }
@@ -74,10 +74,10 @@ QStringList QgsProjectLayerGroupDialog::selectedGroups() const
 QStringList QgsProjectLayerGroupDialog::selectedLayerIds() const
 {
   QStringList layerIds;
-  QgsLayerTreeModel* model = mTreeView->layerTreeModel();
-  Q_FOREACH ( const QModelIndex& index, mTreeView->selectionModel()->selectedIndexes() )
+  QgsLayerTreeModel *model = mTreeView->layerTreeModel();
+  Q_FOREACH ( const QModelIndex &index, mTreeView->selectionModel()->selectedIndexes() )
   {
-    QgsLayerTreeNode* node = model->index2node( index );
+    QgsLayerTreeNode *node = model->index2node( index );
     if ( QgsLayerTree::isLayer( node ) )
       layerIds << QgsLayerTree::toLayer( node )->layerId();
   }
@@ -87,10 +87,10 @@ QStringList QgsProjectLayerGroupDialog::selectedLayerIds() const
 QStringList QgsProjectLayerGroupDialog::selectedLayerNames() const
 {
   QStringList layerNames;
-  QgsLayerTreeModel* model = mTreeView->layerTreeModel();
-  Q_FOREACH ( const QModelIndex& index, mTreeView->selectionModel()->selectedIndexes() )
+  QgsLayerTreeModel *model = mTreeView->layerTreeModel();
+  Q_FOREACH ( const QModelIndex &index, mTreeView->selectionModel()->selectedIndexes() )
   {
-    QgsLayerTreeNode* node = model->index2node( index );
+    QgsLayerTreeNode *node = model->index2node( index );
     if ( QgsLayerTree::isLayer( node ) )
       layerNames << QgsLayerTree::toLayer( node )->name();
   }
@@ -178,7 +178,7 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
   if ( !mShowEmbeddedContent )
     removeEmbeddedNodes( mRootGroup );
 
-  QgsLayerTreeModel* model = new QgsLayerTreeModel( mRootGroup, this );
+  QgsLayerTreeModel *model = new QgsLayerTreeModel( mRootGroup, this );
   mTreeView->setModel( model );
 
   QObject::connect( mTreeView->selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( onTreeViewSelectionChanged() ) );
@@ -187,31 +187,31 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
 }
 
 
-void QgsProjectLayerGroupDialog::removeEmbeddedNodes( QgsLayerTreeGroup* node )
+void QgsProjectLayerGroupDialog::removeEmbeddedNodes( QgsLayerTreeGroup *node )
 {
-  QList<QgsLayerTreeNode*> childrenToRemove;
-  Q_FOREACH ( QgsLayerTreeNode* child, node->children() )
+  QList<QgsLayerTreeNode *> childrenToRemove;
+  Q_FOREACH ( QgsLayerTreeNode *child, node->children() )
   {
     if ( child->customProperty( QStringLiteral( "embedded" ) ).toInt() )
       childrenToRemove << child;
     else if ( QgsLayerTree::isGroup( child ) )
       removeEmbeddedNodes( QgsLayerTree::toGroup( child ) );
   }
-  Q_FOREACH ( QgsLayerTreeNode* childToRemove, childrenToRemove )
+  Q_FOREACH ( QgsLayerTreeNode *childToRemove, childrenToRemove )
     node->removeChildNode( childToRemove );
 }
 
 
 void QgsProjectLayerGroupDialog::onTreeViewSelectionChanged()
 {
-  Q_FOREACH ( const QModelIndex& index, mTreeView->selectionModel()->selectedIndexes() )
+  Q_FOREACH ( const QModelIndex &index, mTreeView->selectionModel()->selectedIndexes() )
   {
     deselectChildren( index );
   }
 }
 
 
-void QgsProjectLayerGroupDialog::deselectChildren( const QModelIndex& index )
+void QgsProjectLayerGroupDialog::deselectChildren( const QModelIndex &index )
 {
   int childCount = mTreeView->model()->rowCount( index );
   for ( int i = 0; i < childCount; ++i )

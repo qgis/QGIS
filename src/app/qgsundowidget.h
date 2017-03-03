@@ -46,14 +46,14 @@ class APP_EXPORT QgsUndoWidget : public QgsPanelWidget
     QPushButton *redoButton = nullptr;
     QSpacerItem *spacerItem1 = nullptr;
 
-    QgsUndoWidget( QWidget * parent, QgsMapCanvas* mapCanvas );
+    QgsUndoWidget( QWidget *parent, QgsMapCanvas *mapCanvas );
     void setupUi( QWidget *UndoWidget );
     void retranslateUi( QWidget *UndoWidget );
 
     /**
      * Setting new undo stack for undo view
      */
-    void setUndoStack( QUndoStack * undoStack );
+    void setUndoStack( QUndoStack *undoStack );
 
     /**
      * Handles destroying of stack when active layer is changed
@@ -61,7 +61,7 @@ class APP_EXPORT QgsUndoWidget : public QgsPanelWidget
     void destroyStack();
 
     //! Access to dock's contents
-    QWidget* dockContents() { return dockWidgetContents; }
+    QWidget *dockContents() { return dockWidgetContents; }
 
   public slots:
 
@@ -94,9 +94,9 @@ class APP_EXPORT QgsUndoWidget : public QgsPanelWidget
     void undoStackChanged();
 
   private:
-    QUndoView * mUndoView = nullptr;
-    QUndoStack * mUndoStack = nullptr;
-    QgsMapCanvas* mMapCanvas = nullptr;
+    QUndoView *mUndoView = nullptr;
+    QUndoStack *mUndoStack = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
 
     int mPreviousIndex;
     int mPreviousCount;

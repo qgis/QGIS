@@ -24,10 +24,10 @@
 #include "qgspluginsortfilterproxymodel.h"
 
 
-QgsPluginItemDelegate::QgsPluginItemDelegate( QObject * parent ) : QStyledItemDelegate( parent ) {}
+QgsPluginItemDelegate::QgsPluginItemDelegate( QObject *parent ) : QStyledItemDelegate( parent ) {}
 
 
-QSize QgsPluginItemDelegate::sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const
+QSize QgsPluginItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( option );
   Q_UNUSED( index );
