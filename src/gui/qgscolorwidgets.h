@@ -58,7 +58,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * @param parent parent QWidget for the widget
      * @param component color component the widget alters
      */
-    QgsColorWidget( QWidget* parent = nullptr, const ColorComponent component = Multiple );
+    QgsColorWidget( QWidget *parent = nullptr, const ColorComponent component = Multiple );
 
     /** Returns the current color for the widget
      * @returns current widget color
@@ -163,22 +163,22 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * @param newValue new value of color component. Values are automatically clipped to a
      * valid range for the color component.
      */
-    void alterColor( QColor& color, const QgsColorWidget::ColorComponent component, const int newValue ) const;
+    void alterColor( QColor &color, const QgsColorWidget::ColorComponent component, const int newValue ) const;
 
     /** Generates a checkboard pattern pixmap for use as a background to transparent colors
      * @returns checkerboard pixmap
      */
-    static const QPixmap& transparentBackground();
+    static const QPixmap &transparentBackground();
 
     //Reimplemented to accept dragged colors
-    void dragEnterEvent( QDragEnterEvent * e ) override;
+    void dragEnterEvent( QDragEnterEvent *e ) override;
 
     //Reimplemented to accept dropped colors
     void dropEvent( QDropEvent *e ) override;
 
-    void mouseMoveEvent( QMouseEvent* e ) override;
-    void mousePressEvent( QMouseEvent* e ) override;
-    void mouseReleaseEvent( QMouseEvent* e ) override;
+    void mouseMoveEvent( QMouseEvent *e ) override;
+    void mousePressEvent( QMouseEvent *e ) override;
+    void mouseReleaseEvent( QMouseEvent *e ) override;
 };
 
 
@@ -200,11 +200,11 @@ class GUI_EXPORT QgsColorWidgetAction: public QWidgetAction
      * @param menu parent menu
      * @param parent parent widget
      */
-    QgsColorWidgetAction( QgsColorWidget* colorWidget, QMenu* menu = nullptr, QWidget *parent = nullptr );
+    QgsColorWidgetAction( QgsColorWidget *colorWidget, QMenu *menu = nullptr, QWidget *parent = nullptr );
 
     /** Returns the color widget contained in the widget action.
      */
-    QgsColorWidget* colorWidget() { return mColorWidget; }
+    QgsColorWidget *colorWidget() { return mColorWidget; }
 
     /** Sets whether the parent menu should be dismissed and closed when a color is selected
      * from the action's color widget.
@@ -229,8 +229,8 @@ class GUI_EXPORT QgsColorWidgetAction: public QWidgetAction
     void colorChanged( const QColor &color );
 
   private:
-    QMenu* mMenu = nullptr;
-    QgsColorWidget* mColorWidget = nullptr;
+    QMenu *mMenu = nullptr;
+    QgsColorWidget *mColorWidget = nullptr;
 
     //used to suppress recursion with hover events
     bool mSuppressRecurse;
@@ -266,12 +266,12 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
     /** Constructs a new color wheel widget.
      * @param parent parent QWidget for the widget
      */
-    QgsColorWheel( QWidget* parent = nullptr );
+    QgsColorWheel( QWidget *parent = nullptr );
 
     virtual ~QgsColorWheel();
 
     virtual QSize sizeHint() const override;
-    void paintEvent( QPaintEvent* event ) override;
+    void paintEvent( QPaintEvent *event ) override;
 
   public slots:
 
@@ -303,13 +303,13 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
     ControlPart mClickedPart;
 
     /*Cached image of hue wheel*/
-    QImage* mWheelImage = nullptr;
+    QImage *mWheelImage = nullptr;
 
     /*Cached image of inner triangle*/
-    QImage* mTriangleImage = nullptr;
+    QImage *mTriangleImage = nullptr;
 
     /*Resuable, temporary image for drawing widget*/
-    QImage* mWidgetImage = nullptr;
+    QImage *mWidgetImage = nullptr;
 
     /*Whether the color wheel image requires redrawing*/
     bool mWheelDirty;
@@ -359,12 +359,12 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
      * which vary along the horizontal and vertical axis are automatically assigned
      * based on this constant color component.
      */
-    QgsColorBox( QWidget* parent = nullptr, const ColorComponent component = Value );
+    QgsColorBox( QWidget *parent = nullptr, const ColorComponent component = Value );
 
     virtual ~QgsColorBox();
 
     virtual QSize sizeHint() const override;
-    void paintEvent( QPaintEvent* event ) override;
+    void paintEvent( QPaintEvent *event ) override;
 
     virtual void setComponent( const ColorComponent component ) override;
 
@@ -383,7 +383,7 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
     int mMargin;
 
     /*Cached image for color box*/
-    QImage* mBoxImage = nullptr;
+    QImage *mBoxImage = nullptr;
 
     /*Whether the cached image requires redrawing*/
     bool mDirty;
@@ -452,12 +452,12 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
      * @param component color component which varies along the ramp
      * @param orientation orientation for widget
      */
-    QgsColorRampWidget( QWidget* parent = nullptr,
+    QgsColorRampWidget( QWidget *parent = nullptr,
                         const ColorComponent component = QgsColorWidget::Red,
                         const Orientation orientation = QgsColorRampWidget::Horizontal );
 
     virtual QSize sizeHint() const override;
-    void paintEvent( QPaintEvent* event ) override;
+    void paintEvent( QPaintEvent *event ) override;
 
     /** Sets the orientation for the color ramp
      * @param orientation new orientation for the ramp
@@ -510,9 +510,9 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
   protected:
 
     virtual void mouseMoveEvent( QMouseEvent *event ) override;
-    virtual void wheelEvent( QWheelEvent* event ) override;
+    virtual void wheelEvent( QWheelEvent *event ) override;
     virtual void mousePressEvent( QMouseEvent *event ) override;
-    virtual void keyPressEvent( QKeyEvent * event ) override;
+    virtual void keyPressEvent( QKeyEvent *event ) override;
 
   private:
 
@@ -555,7 +555,7 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
      * @param parent parent QWidget for the widget
      * @param component color component which is controlled by the slider
      */
-    QgsColorSliderWidget( QWidget* parent = nullptr, const ColorComponent component = QgsColorWidget::Red );
+    QgsColorSliderWidget( QWidget *parent = nullptr, const ColorComponent component = QgsColorWidget::Red );
 
     virtual void setComponent( const ColorComponent component ) override;
     virtual void setComponentValue( const int value ) override;
@@ -564,10 +564,10 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
   private:
 
     /*Color ramp widget*/
-    QgsColorRampWidget* mRampWidget = nullptr;
+    QgsColorRampWidget *mRampWidget = nullptr;
 
     /*Spin box widget*/
-    QSpinBox* mSpinBox = nullptr;
+    QSpinBox *mSpinBox = nullptr;
 
     /** Converts the real value of a color component to a friendly display value. For instance,
      * alpha values from 0-255 have little meaning to users, so we translate them to 0-100%
@@ -617,12 +617,12 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
     /** Construct a new color line edit widget.
      * @param parent parent QWidget for the widget
      */
-    QgsColorTextWidget( QWidget* parent = nullptr );
+    QgsColorTextWidget( QWidget *parent = nullptr );
 
     virtual void setColor( const QColor &color, const bool emitSignals = false ) override;
 
   protected:
-    void resizeEvent( QResizeEvent * event ) override;
+    void resizeEvent( QResizeEvent *event ) override;
 
   private:
 
@@ -636,10 +636,10 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
       Rgba //!< Rgba( r, g, b, a ) format, with alpha
     };
 
-    QLineEdit* mLineEdit = nullptr;
+    QLineEdit *mLineEdit = nullptr;
 
     /*Dropdown menu button*/
-    QToolButton* mMenuButton = nullptr;
+    QToolButton *mMenuButton = nullptr;
 
     /*Display format for colors*/
     ColorTextFormat mFormat;
@@ -675,9 +675,9 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
     /** Construct a new color preview widget.
      * @param parent parent QWidget for the widget
      */
-    QgsColorPreviewWidget( QWidget* parent = nullptr );
+    QgsColorPreviewWidget( QWidget *parent = nullptr );
 
-    void paintEvent( QPaintEvent* event ) override;
+    void paintEvent( QPaintEvent *event ) override;
     virtual QSize sizeHint() const override;
 
     /** Returns the secondary color for the widget
@@ -696,15 +696,15 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
      * @see setColor
      * @see color2
      */
-    virtual void setColor2( const QColor& color );
+    virtual void setColor2( const QColor &color );
 
   protected:
 
     //reimplemented to allow dragging colors
-    void mousePressEvent( QMouseEvent* e ) override;
+    void mousePressEvent( QMouseEvent *e ) override;
 
     //reimplemented to click colors
-    void mouseReleaseEvent( QMouseEvent* e ) override;
+    void mouseReleaseEvent( QMouseEvent *e ) override;
 
     //reimplemented to allow dragging colors
     void mouseMoveEvent( QMouseEvent *e ) override;
@@ -721,7 +721,7 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
      * @param rect rect to draw color in
      * @param painter destination painter
      */
-    void drawColor( const QColor& color, QRect rect, QPainter &painter );
+    void drawColor( const QColor &color, QRect rect, QPainter &painter );
 };
 
 #endif // #ifndef QGSCOLORWIDGETS_H

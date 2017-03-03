@@ -19,9 +19,9 @@
 
 #include <QSettings>
 
-QgsValueMapWidgetWrapper::QgsValueMapWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mComboBox( nullptr )
+QgsValueMapWidgetWrapper::QgsValueMapWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
+  : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+  , mComboBox( nullptr )
 {
 }
 
@@ -47,14 +47,14 @@ void QgsValueMapWidgetWrapper::showIndeterminateState()
   }
 }
 
-QWidget* QgsValueMapWidgetWrapper::createWidget( QWidget* parent )
+QWidget *QgsValueMapWidgetWrapper::createWidget( QWidget *parent )
 {
   return new QComboBox( parent );
 }
 
-void QgsValueMapWidgetWrapper::initWidget( QWidget* editor )
+void QgsValueMapWidgetWrapper::initWidget( QWidget *editor )
 {
-  mComboBox = qobject_cast<QComboBox*>( editor );
+  mComboBox = qobject_cast<QComboBox *>( editor );
 
   if ( mComboBox )
   {
@@ -75,7 +75,7 @@ bool QgsValueMapWidgetWrapper::valid() const
   return mComboBox;
 }
 
-void QgsValueMapWidgetWrapper::setValue( const QVariant& value )
+void QgsValueMapWidgetWrapper::setValue( const QVariant &value )
 {
   QString v;
   if ( value.isNull() )

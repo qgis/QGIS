@@ -37,13 +37,13 @@ class GUI_EXPORT QgsDial : public QDial
     QVariant variantValue() const;
 
   signals:
-    void valueChanged( const QVariant& );
+    void valueChanged( const QVariant & );
 
   protected slots:
     void valueChanged( int );
 
   protected:
-    virtual void paintEvent( QPaintEvent * event ) override;
+    virtual void paintEvent( QPaintEvent *event ) override;
 
   private:
     void update();

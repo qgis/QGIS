@@ -19,9 +19,9 @@
 #include <QMessageBox>
 #include <QSettings>
 
-QgsErrorDialog::QgsErrorDialog( const QgsError & error, const QString & title, QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mError( error )
+QgsErrorDialog::QgsErrorDialog( const QgsError &error, const QString &title, QWidget *parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mError( error )
 {
   setupUi( this );
 
@@ -54,7 +54,7 @@ QgsErrorDialog::QgsErrorDialog( const QgsError & error, const QString & title, Q
   if ( state == Qt::Checked ) on_mDetailPushButton_clicked();
 }
 
-void QgsErrorDialog::show( const QgsError & error, const QString & title, QWidget *parent, Qt::WindowFlags fl )
+void QgsErrorDialog::show( const QgsError &error, const QString &title, QWidget *parent, Qt::WindowFlags fl )
 {
   QgsErrorDialog d( error, title, parent, fl );
   d.exec();

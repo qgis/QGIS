@@ -22,8 +22,8 @@
 
 class QgsExternalResourceWidgetWrapper;
 
-QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsEditorConfigWidget( vl, fieldIdx, parent )
+QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
+  : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
 
@@ -170,7 +170,7 @@ QVariantMap QgsExternalResourceConfigDlg::config()
 }
 
 
-void QgsExternalResourceConfigDlg::setConfig( const QVariantMap& config )
+void QgsExternalResourceConfigDlg::setConfig( const QVariantMap &config )
 {
   if ( config.contains( QStringLiteral( "FileWidget" ) ) )
   {
@@ -201,7 +201,7 @@ void QgsExternalResourceConfigDlg::setConfig( const QVariantMap& config )
   if ( config.contains( QStringLiteral( "RelativeStorage" ) ) )
   {
     int relative = config.value( QStringLiteral( "RelativeStorage" ) ).toInt();
-    if (( QgsFileWidget::RelativeStorage )relative == QgsFileWidget::Absolute )
+    if ( ( QgsFileWidget::RelativeStorage )relative == QgsFileWidget::Absolute )
     {
       mRelativeGroupBox->setChecked( false );
     }

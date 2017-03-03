@@ -24,8 +24,8 @@
 #include <QSettings>
 
 
-QgsMapToolEdit::QgsMapToolEdit( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
+QgsMapToolEdit::QgsMapToolEdit( QgsMapCanvas *canvas )
+  : QgsMapTool( canvas )
 {
 }
 
@@ -65,10 +65,10 @@ QColor QgsMapToolEdit::digitizingFillColor()
 }
 
 
-QgsRubberBand* QgsMapToolEdit::createRubberBand( QgsWkbTypes::GeometryType geometryType, bool alternativeBand )
+QgsRubberBand *QgsMapToolEdit::createRubberBand( QgsWkbTypes::GeometryType geometryType, bool alternativeBand )
 {
   QSettings settings;
-  QgsRubberBand* rb = new QgsRubberBand( mCanvas, geometryType );
+  QgsRubberBand *rb = new QgsRubberBand( mCanvas, geometryType );
   rb->setWidth( digitizingStrokeWidth() );
   QColor color = digitizingStrokeColor();
   if ( alternativeBand )
@@ -86,13 +86,13 @@ QgsRubberBand* QgsMapToolEdit::createRubberBand( QgsWkbTypes::GeometryType geome
   return rb;
 }
 
-QgsVectorLayer* QgsMapToolEdit::currentVectorLayer()
+QgsVectorLayer *QgsMapToolEdit::currentVectorLayer()
 {
   return qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
 }
 
 
-int QgsMapToolEdit::addTopologicalPoints( const QList<QgsPoint>& geom )
+int QgsMapToolEdit::addTopologicalPoints( const QList<QgsPoint> &geom )
 {
   if ( !mCanvas )
   {
@@ -115,10 +115,10 @@ int QgsMapToolEdit::addTopologicalPoints( const QList<QgsPoint>& geom )
   return 0;
 }
 
-QgsGeometryRubberBand* QgsMapToolEdit::createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType, bool alternativeBand ) const
+QgsGeometryRubberBand *QgsMapToolEdit::createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType, bool alternativeBand ) const
 {
   QSettings settings;
-  QgsGeometryRubberBand* rb = new QgsGeometryRubberBand( mCanvas, geometryType );
+  QgsGeometryRubberBand *rb = new QgsGeometryRubberBand( mCanvas, geometryType );
   QColor color( settings.value( QStringLiteral( "/qgis/digitizing/line_color_red" ), 255 ).toInt(),
                 settings.value( QStringLiteral( "/qgis/digitizing/line_color_green" ), 0 ).toInt(),
                 settings.value( QStringLiteral( "/qgis/digitizing/line_color_blue" ), 0 ).toInt() );

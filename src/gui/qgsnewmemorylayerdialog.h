@@ -37,7 +37,7 @@ class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemo
      * @param parent parent widget
      * @returns new memory layer
      */
-    static QgsVectorLayer* runAndCreateLayer( QWidget* parent = nullptr );
+    static QgsVectorLayer *runAndCreateLayer( QWidget *parent = nullptr );
 
     QgsNewMemoryLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsNewMemoryLayerDialog();

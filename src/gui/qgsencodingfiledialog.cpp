@@ -25,15 +25,15 @@
 #include <QLayout>
 #include <QTextCodec>
 
-QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget* parent,
-    const QString& caption, const QString& directory,
-    const QString& filter, const QString& encoding )
-    : QFileDialog( parent, caption, directory, filter )
+QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget *parent,
+    const QString &caption, const QString &directory,
+    const QString &filter, const QString &encoding )
+  : QFileDialog( parent, caption, directory, filter )
 {
   mCancelAll       = false;
   mCancelAllButton = nullptr;
   mEncodingComboBox = new QComboBox( this );
-  QLabel* l = new QLabel( tr( "Encoding:" ), this );
+  QLabel *l = new QLabel( tr( "Encoding:" ), this );
 
   setOption( QFileDialog::DontUseNativeDialog );
   layout()->addWidget( l );

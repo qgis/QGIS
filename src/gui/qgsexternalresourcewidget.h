@@ -64,10 +64,10 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
      * @param type determines the type of the returned null variant if the document is not defined yet
      */
     QVariant documentPath( QVariant::Type type = QVariant::String ) const;
-    void setDocumentPath( const QVariant& documentPath );
+    void setDocumentPath( const QVariant &documentPath );
 
     //! access the file widget to allow its configuration
-    QgsFileWidget* fileWidget();
+    QgsFileWidget *fileWidget();
 
     //! returns if the file widget is visible in the widget
     bool fileWidgetVisible() const;
@@ -122,19 +122,19 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
      * Configures the base path which should be used if the relativeStorage property
      * is set to QgsFileWidget::RelativeDefaultPath.
      */
-    void setDefaultRoot( const QString& defaultRoot );
+    void setDefaultRoot( const QString &defaultRoot );
 
   signals:
     //! emitteed as soon as the current document changes
-    void valueChanged( const QString& );
+    void valueChanged( const QString & );
 
   private slots:
-    void loadDocument( const QString& path );
+    void loadDocument( const QString &path );
 
   private:
     void updateDocumentViewer();
 
-    QString resolvePath( const QString& path );
+    QString resolvePath( const QString &path );
 
     //! properties
     bool mFileWidgetVisible;
@@ -145,11 +145,11 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     QString mDefaultRoot; // configured default root path for QgsFileWidget::RelativeStorage::RelativeDefaultPath
 
     //! UI objects
-    QgsFileWidget* mFileWidget = nullptr;
-    QgsPixmapLabel* mPixmapLabel = nullptr;
+    QgsFileWidget *mFileWidget = nullptr;
+    QgsPixmapLabel *mPixmapLabel = nullptr;
 #ifdef WITH_QTWEBKIT
     //! This webview is used as a container to display the picture
-    QWebView* mWebView = nullptr;
+    QWebView *mWebView = nullptr;
 #endif
 
 };

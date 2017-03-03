@@ -27,12 +27,12 @@
 class GUI_EXPORT QgsHiddenWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
-    QgsHiddenWidgetFactory( const QString& name );
+    QgsHiddenWidgetFactory( const QString &name );
 
     // QgsEditorWidgetFactory interface
   public:
-    QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const override;
-    QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
+    QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const override;
+    QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
 };
 
 #endif // QGSHIDDENWIDGETFACTORY_H

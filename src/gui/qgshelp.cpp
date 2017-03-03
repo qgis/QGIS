@@ -29,12 +29,12 @@
 #include "qgsapplication.h"
 #include "qgsexpressioncontext.h"
 
-void QgsHelp::openHelp( const QString& key )
+void QgsHelp::openHelp( const QString &key )
 {
   QDesktopServices::openUrl( QgsHelp::helpUrl( key ) );
 }
 
-QUrl QgsHelp::helpUrl( const QString& key )
+QUrl QgsHelp::helpUrl( const QString &key )
 {
   QUrl helpNotFound = QUrl::fromLocalFile( QgsApplication::pkgDataPath() + "/doc/nohelp.html" );
 
@@ -51,7 +51,7 @@ QUrl QgsHelp::helpUrl( const QString& key )
   QString helpPath, fullPath;
   bool helpFound = false;
 
-  Q_FOREACH ( const QString& path, paths )
+  Q_FOREACH ( const QString &path, paths )
   {
     if ( path.endsWith( "\\" ) || path.endsWith( "/" ) )
     {
@@ -62,7 +62,7 @@ QUrl QgsHelp::helpUrl( const QString& key )
       fullPath = path;
     }
 
-    Q_FOREACH ( const QString& var, scope->variableNames() )
+    Q_FOREACH ( const QString &var, scope->variableNames() )
     {
       QRegularExpression rx( QStringLiteral( "(<!\\$\\$)*(\\$%1)" ).arg( var ) );
       fullPath.replace( rx, scope->variable( var ).toString() );
@@ -101,7 +101,7 @@ QUrl QgsHelp::helpUrl( const QString& key )
   return helpFound ? helpUrl : helpNotFound;
 }
 
-bool QgsHelp::urlExists( const QString& url )
+bool QgsHelp::urlExists( const QString &url )
 {
   QUrl helpUrl( url );
   QTcpSocket socket;

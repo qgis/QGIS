@@ -43,8 +43,8 @@ class GUI_EXPORT QgsAuthSslErrorsDialog : public QDialog, private Ui::QgsAuthSsl
      * @param hostport Unique host:port to associate with the server certificate
      */
     QgsAuthSslErrorsDialog( QNetworkReply *reply,
-                            const QList<QSslError>& sslErrors,
-                            QWidget *parent = nullptr ,
+                            const QList<QSslError> &sslErrors,
+                            QWidget *parent = nullptr,
                             const QString &digest = QString(),
                             const QString &hostport = QString() );
 
@@ -71,9 +71,9 @@ class GUI_EXPORT QgsAuthSslErrorsDialog : public QDialog, private Ui::QgsAuthSsl
   private:
     void populateErrorsList();
 
-    QPushButton* ignoreButton();
-    QPushButton* abortButton();
-    QPushButton* saveButton();
+    QPushButton *ignoreButton();
+    QPushButton *abortButton();
+    QPushButton *saveButton();
 
     QSslConfiguration mSslConfiguration;
     QList<QSslError> mSslErrors;

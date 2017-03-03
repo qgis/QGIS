@@ -45,7 +45,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     /**
      * Constructor for QgsProjectionSelectionTreeWidget.
      */
-    QgsProjectionSelectionTreeWidget( QWidget* parent = nullptr );
+    QgsProjectionSelectionTreeWidget( QWidget *parent = nullptr );
 
     ~QgsProjectionSelectionTreeWidget();
 
@@ -87,7 +87,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      * @note added in QGIS 3.0
      * @see crs()
      */
-    void setCrs( const QgsCoordinateReferenceSystem& crs );
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
 
     /**
      * \brief filters this widget by the given CRSs
@@ -101,7 +101,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      *
      * \warning This function's behavior is undefined if it is called after the widget is shown.
      */
-    void setOgcWmsCrsFilter( const QSet<QString>& crsFilter );
+    void setOgcWmsCrsFilter( const QSet<QString> &crsFilter );
 
     /**
      * Marks the current selected projection for push to front of recent projections list.
@@ -129,10 +129,10 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
 
   protected:
     // Used to ensure the projection list view is actually populated
-    void showEvent( QShowEvent * event ) override;
+    void showEvent( QShowEvent *event ) override;
 
     // Used to manage column sizes
-    void resizeEvent( QResizeEvent * event ) override;
+    void resizeEvent( QResizeEvent *event ) override;
 
   private:
 
@@ -163,7 +163,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      * \arg const QString in The input string to make safe.
      * \return The string made safe for SQL statements.
      */
-    const QString sqlSafeString( const QString& theSQL );
+    const QString sqlSafeString( const QString &theSQL );
 
     /**
      * \brief converts the CRS group to a SQL expression fragment
@@ -176,7 +176,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      *                  where you just want to offer what the WMS server can support.
      *
      */
-    QString ogcWmsCrsFilterAsSqlExpression( QSet<QString> * crsFilter );
+    QString ogcWmsCrsFilterAsSqlExpression( QSet<QString> *crsFilter );
 
     /**
      * \brief does the legwork of applying CRS Selection
@@ -195,7 +195,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
        *
        * \param e The sqlite3 expression (typically "srid" or "sridid")
        */
-    QString getSelectedExpression( const QString& e ) const;
+    QString getSelectedExpression( const QString &e ) const;
 
     QString selectedName();
 
@@ -205,7 +205,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     long selectedCrsId();
 
     //! Show the user a warning if the srs database could not be found
-    void showDBMissingWarning( const QString& fileName );
+    void showDBMissingWarning( const QString &fileName );
     // List view nodes for the tree view of projections
     //! User defined projections node
     QTreeWidgetItem *mUserProjList = nullptr;
@@ -214,7 +214,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     //! PROJCS node
     QTreeWidgetItem *mProjList = nullptr;
     //! "No projection" item
-    QTreeWidgetItem* mNoProjItem = nullptr;
+    QTreeWidgetItem *mNoProjItem = nullptr;
 
     //! Users custom coordinate system file
     QString mCustomCsFile;
@@ -224,7 +224,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     /**
      * Utility method used in conjunction with name based searching tool
      */
-    long getLargestCrsIdMatch( const QString& sql );
+    long getLargestCrsIdMatch( const QString &sql );
 
     //! add recently used CRS
     void insertRecent( long crsId );

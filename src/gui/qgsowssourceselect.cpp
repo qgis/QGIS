@@ -55,12 +55,12 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-QgsOWSSourceSelect::QgsOWSSourceSelect( const QString& service, QWidget * parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
-    : QDialog( parent, fl )
-    , mService( service )
-    , mManagerMode( managerMode )
-    , mEmbeddedMode( embeddedMode )
-    , mCurrentTileset( nullptr )
+QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
+  : QDialog( parent, fl )
+  , mService( service )
+  , mManagerMode( managerMode )
+  , mEmbeddedMode( embeddedMode )
+  , mCurrentTileset( nullptr )
 {
   setupUi( this );
 
@@ -376,7 +376,7 @@ void QgsOWSSourceSelect::on_mChangeCRSButton_clicked()
       layers << layer;
   }
 
-  QgsProjectionSelectionDialog * mySelector = new QgsProjectionSelectionDialog( this );
+  QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog( this );
   mySelector->setMessage( QString() );
   mySelector->setOgcWmsCrsFilter( mSelectedLayersCRSs );
 
@@ -555,7 +555,7 @@ void QgsOWSSourceSelect::showStatusMessage( QString const &message )
 
 void QgsOWSSourceSelect::showError( QString const &title, QString const &format, QString const &error )
 {
-  QgsMessageViewer * mv = new QgsMessageViewer( this );
+  QgsMessageViewer *mv = new QgsMessageViewer( this );
   mv->setWindowTitle( title );
 
   if ( format == QLatin1String( "text/html" ) )
@@ -580,7 +580,7 @@ void QgsOWSSourceSelect::on_mAddDefaultButton_clicked()
   addDefaultServers();
 }
 
-QString QgsOWSSourceSelect::descriptionForAuthId( const QString& authId )
+QString QgsOWSSourceSelect::descriptionForAuthId( const QString &authId )
 {
   if ( mCrsNames.contains( authId ) )
     return mCrsNames[ authId ];
@@ -620,7 +620,7 @@ void QgsOWSSourceSelect::addDefaultServers()
                             "need to set the proxy settings in the QGIS options dialog." ) + "</p>" );
 }
 
-void QgsOWSSourceSelect::addWmsListRow( const QDomElement& item, int row )
+void QgsOWSSourceSelect::addWmsListRow( const QDomElement &item, int row )
 {
   QDomElement title = item.firstChildElement( QStringLiteral( "title" ) );
   addWmsListItem( title, row, 0 );
@@ -630,11 +630,11 @@ void QgsOWSSourceSelect::addWmsListRow( const QDomElement& item, int row )
   addWmsListItem( link, row, 2 );
 }
 
-void QgsOWSSourceSelect::addWmsListItem( const QDomElement& el, int row, int column )
+void QgsOWSSourceSelect::addWmsListItem( const QDomElement &el, int row, int column )
 {
   if ( !el.isNull() )
   {
-    QTableWidgetItem* tableItem = new QTableWidgetItem( el.text() );
+    QTableWidgetItem *tableItem = new QTableWidgetItem( el.text() );
     // TODO: add linebreaks to long tooltips?
     tableItem->setToolTip( el.text() );
     mSearchTableWidget->setItem( row, column, tableItem );
@@ -724,7 +724,7 @@ void QgsOWSSourceSelect::on_mLayerUpButton_clicked()
     return; //item not existing or already on top
   }
 
-  QTreeWidgetItem* selectedItem = mLayerOrderTreeWidget->takeTopLevelItem( selectedIndex );
+  QTreeWidgetItem *selectedItem = mLayerOrderTreeWidget->takeTopLevelItem( selectedIndex );
   mLayerOrderTreeWidget->insertTopLevelItem( selectedIndex - 1, selectedItem );
   mLayerOrderTreeWidget->clearSelection();
   selectedItem->setSelected( true );
@@ -743,7 +743,7 @@ void QgsOWSSourceSelect::on_mLayerDownButton_clicked()
     return; //item not existing or already at bottom
   }
 
-  QTreeWidgetItem* selectedItem = mLayerOrderTreeWidget->takeTopLevelItem( selectedIndex );
+  QTreeWidgetItem *selectedItem = mLayerOrderTreeWidget->takeTopLevelItem( selectedIndex );
   mLayerOrderTreeWidget->insertTopLevelItem( selectedIndex + 1, selectedItem );
   mLayerOrderTreeWidget->clearSelection();
   selectedItem->setSelected( true );

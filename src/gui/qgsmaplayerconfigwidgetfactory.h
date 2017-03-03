@@ -50,7 +50,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
      * Set the icon for the factory object.
      * @param icon The icon to show in the interface.
      */
-    void setIcon( const QIcon& icon ) { mIcon = icon; }
+    void setIcon( const QIcon &icon ) { mIcon = icon; }
 
     /**
      * @brief The title of the panel.
@@ -65,7 +65,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
      * e.g style dock uses this as a tooltip.
      * @param title The title to set.
      */
-    void setTitle( const QString& title ) { mTitle = title; }
+    void setTitle( const QString &title ) { mTitle = title; }
 
     /**
      * Flag if widget is supported for use in style dock.
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
      * @param parent The parent of the widget.
      * @return A new QgsMapStylePanel which is shown in the map style dock.
      */
-    virtual QgsMapLayerConfigWidget* createWidget( QgsMapLayer* layer, QgsMapCanvas *canvas, bool dockWidget = true, QWidget* parent = 0 ) const = 0;
+    virtual QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget = true, QWidget *parent = 0 ) const = 0;
 
   private:
     QIcon mIcon;

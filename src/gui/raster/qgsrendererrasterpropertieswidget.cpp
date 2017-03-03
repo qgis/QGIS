@@ -52,11 +52,11 @@ static void _initRendererWidgetFunctions()
 
 
 
-QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLayer *layer, QgsMapCanvas* canvas, QWidget *parent )
-    : QgsMapLayerConfigWidget( layer, canvas, parent )
-    , mRendererWidget( nullptr )
+QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
+  : QgsMapLayerConfigWidget( layer, canvas, parent )
+  , mRendererWidget( nullptr )
 {
-  mRasterLayer = qobject_cast<QgsRasterLayer*>( layer );
+  mRasterLayer = qobject_cast<QgsRasterLayer *>( layer );
   if ( !mRasterLayer )
     return;
 
@@ -128,16 +128,16 @@ void QgsRendererRasterPropertiesWidget::apply()
   mRasterLayer->brightnessFilter()->setBrightness( mSliderBrightness->value() );
   mRasterLayer->brightnessFilter()->setContrast( mSliderContrast->value() );
 
-  QgsRasterRendererWidget* rendererWidget = dynamic_cast<QgsRasterRendererWidget*>( stackedWidget->currentWidget() );
+  QgsRasterRendererWidget *rendererWidget = dynamic_cast<QgsRasterRendererWidget *>( stackedWidget->currentWidget() );
   if ( rendererWidget )
   {
     rendererWidget->doComputations();
 
-    QgsRasterRenderer* newRenderer = rendererWidget->renderer();
+    QgsRasterRenderer *newRenderer = rendererWidget->renderer();
 
     // there are transparency related data stored in renderer instances, but they
     // are not configured in the widget, so we need to copy them over from existing renderer
-    QgsRasterRenderer* oldRenderer = mRasterLayer->renderer();
+    QgsRasterRenderer *oldRenderer = mRasterLayer->renderer();
     if ( oldRenderer )
       newRenderer->copyCommonProperties( oldRenderer, false );
     mRasterLayer->setRenderer( newRenderer );
@@ -148,13 +148,13 @@ void QgsRendererRasterPropertiesWidget::apply()
   if ( hueSaturationFilter )
   {
     hueSaturationFilter->setSaturation( sliderSaturation->value() );
-    hueSaturationFilter->setGrayscaleMode(( QgsHueSaturationFilter::GrayscaleMode ) comboGrayscale->currentIndex() );
+    hueSaturationFilter->setGrayscaleMode( ( QgsHueSaturationFilter::GrayscaleMode ) comboGrayscale->currentIndex() );
     hueSaturationFilter->setColorizeOn( mColorizeCheck->checkState() );
     hueSaturationFilter->setColorizeColor( btnColorizeColor->color() );
     hueSaturationFilter->setColorizeStrength( sliderColorizeStrength->value() );
   }
 
-  QgsRasterResampleFilter* resampleFilter = mRasterLayer->resampleFilter();
+  QgsRasterResampleFilter *resampleFilter = mRasterLayer->resampleFilter();
   if ( resampleFilter )
   {
     QgsRasterResampler *zoomedInResampler = nullptr;
@@ -186,19 +186,19 @@ void QgsRendererRasterPropertiesWidget::apply()
   mRasterLayer->setBlendMode( mBlendModeComboBox->blendMode() );
 }
 
-void QgsRendererRasterPropertiesWidget::syncToLayer( QgsRasterLayer* layer )
+void QgsRendererRasterPropertiesWidget::syncToLayer( QgsRasterLayer *layer )
 {
   mRasterLayer = layer;
 
   cboRenderers->blockSignals( true );
   cboRenderers->clear();
   QgsRasterRendererRegistryEntry entry;
-  Q_FOREACH ( const QString& name, QgsApplication::rasterRendererRegistry()->renderersList() )
+  Q_FOREACH ( const QString &name, QgsApplication::rasterRendererRegistry()->renderersList() )
   {
     if ( QgsApplication::rasterRendererRegistry()->rendererData( name, entry ) )
     {
-      if (( mRasterLayer->rasterType() != QgsRasterLayer::ColorLayer && entry.name != QLatin1String( "singlebandcolordata" ) ) ||
-          ( mRasterLayer->rasterType() == QgsRasterLayer::ColorLayer && entry.name == QLatin1String( "singlebandcolordata" ) ) )
+      if ( ( mRasterLayer->rasterType() != QgsRasterLayer::ColorLayer && entry.name != QLatin1String( "singlebandcolordata" ) ) ||
+           ( mRasterLayer->rasterType() == QgsRasterLayer::ColorLayer && entry.name == QLatin1String( "singlebandcolordata" ) ) )
       {
         cboRenderers->addItem( entry.icon(), entry.visibleName, entry.name );
       }
@@ -207,13 +207,13 @@ void QgsRendererRasterPropertiesWidget::syncToLayer( QgsRasterLayer* layer )
   cboRenderers->setCurrentIndex( -1 );
   cboRenderers->blockSignals( false );
 
-  QgsRasterRenderer* renderer = mRasterLayer->renderer();
+  QgsRasterRenderer *renderer = mRasterLayer->renderer();
   if ( renderer )
   {
     setRendererWidget( renderer->type() );
   }
 
-  QgsBrightnessContrastFilter* brightnessFilter = mRasterLayer->brightnessFilter();
+  QgsBrightnessContrastFilter *brightnessFilter = mRasterLayer->brightnessFilter();
   if ( brightnessFilter )
   {
     mSliderBrightness->setValue( brightnessFilter->brightness() );
@@ -224,15 +224,15 @@ void QgsRendererRasterPropertiesWidget::syncToLayer( QgsRasterLayer* layer )
   btnColorizeColor->setContext( QStringLiteral( "symbology" ) );
 
   // Hue and saturation color control
-  const QgsHueSaturationFilter* hueSaturationFilter = mRasterLayer->hueSaturationFilter();
+  const QgsHueSaturationFilter *hueSaturationFilter = mRasterLayer->hueSaturationFilter();
   //set hue and saturation controls to current values
   if ( hueSaturationFilter )
   {
     sliderSaturation->setValue( hueSaturationFilter->saturation() );
-    comboGrayscale->setCurrentIndex(( int ) hueSaturationFilter->grayscaleMode() );
+    comboGrayscale->setCurrentIndex( ( int ) hueSaturationFilter->grayscaleMode() );
 
     // Set initial state of saturation controls based on grayscale mode choice
-    toggleSaturationControls(( int )hueSaturationFilter->grayscaleMode() );
+    toggleSaturationControls( ( int )hueSaturationFilter->grayscaleMode() );
 
     // Set initial state of colorize controls
     mColorizeCheck->setChecked( hueSaturationFilter->colorizeOn() );
@@ -244,11 +244,11 @@ void QgsRendererRasterPropertiesWidget::syncToLayer( QgsRasterLayer* layer )
   //blend mode
   mBlendModeComboBox->setBlendMode( mRasterLayer->blendMode() );
 
-  const QgsRasterResampleFilter* resampleFilter = mRasterLayer->resampleFilter();
+  const QgsRasterResampleFilter *resampleFilter = mRasterLayer->resampleFilter();
   //set combo boxes to current resampling types
   if ( resampleFilter )
   {
-    const QgsRasterResampler* zoomedInResampler = resampleFilter->zoomedInResampler();
+    const QgsRasterResampler *zoomedInResampler = resampleFilter->zoomedInResampler();
     if ( zoomedInResampler )
     {
       if ( zoomedInResampler->type() == QLatin1String( "bilinear" ) )
@@ -265,7 +265,7 @@ void QgsRendererRasterPropertiesWidget::syncToLayer( QgsRasterLayer* layer )
       mZoomedInResamplingComboBox->setCurrentIndex( 0 );
     }
 
-    const QgsRasterResampler* zoomedOutResampler = resampleFilter->zoomedOutResampler();
+    const QgsRasterResampler *zoomedOutResampler = resampleFilter->zoomedOutResampler();
     if ( zoomedOutResampler )
     {
       if ( zoomedOutResampler->type() == QLatin1String( "bilinear" ) ) //bilinear resampler does averaging when zooming out
@@ -287,7 +287,7 @@ void QgsRendererRasterPropertiesWidget::on_mResetColorRenderingBtn_clicked()
   mSliderBrightness->setValue( 0 );
   mSliderContrast->setValue( 0 );
   sliderSaturation->setValue( 0 );
-  comboGrayscale->setCurrentIndex(( int ) QgsHueSaturationFilter::GrayscaleOff );
+  comboGrayscale->setCurrentIndex( ( int ) QgsHueSaturationFilter::GrayscaleOff );
   mColorizeCheck->setChecked( false );
   sliderColorizeStrength->setValue( 100 );
 }
@@ -320,8 +320,8 @@ void QgsRendererRasterPropertiesWidget::toggleColorizeControls( bool colorizeEna
 void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &rendererName )
 {
   QgsDebugMsg( "rendererName = " + rendererName );
-  QgsRasterRendererWidget* oldWidget = mRendererWidget;
-  QgsRasterRenderer* oldRenderer = mRasterLayer->renderer();
+  QgsRasterRendererWidget *oldWidget = mRendererWidget;
+  QgsRasterRenderer *oldRenderer = mRasterLayer->renderer();
 
   int alphaBand = -1;
   double opacity = 1;
@@ -363,8 +363,8 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
       if ( oldWidget )
       {
         // Compare used bands in new and old renderer and reset transparency dialog if different
-        QgsRasterRenderer* oldRenderer = oldWidget->renderer();
-        QgsRasterRenderer* newRenderer = mRendererWidget->renderer();
+        QgsRasterRenderer *oldRenderer = oldWidget->renderer();
+        QgsRasterRenderer *newRenderer = mRendererWidget->renderer();
         QList<int> oldBands = oldRenderer->usesBands();
         QList<int> newBands = newRenderer->usesBands();
 
@@ -394,31 +394,31 @@ void QgsRendererRasterPropertiesWidget::refreshAfterStyleChanged()
 {
   if ( mRendererWidget )
   {
-    QgsRasterRenderer* renderer = mRasterLayer->renderer();
-    if ( QgsMultiBandColorRenderer* mbcr = dynamic_cast<QgsMultiBandColorRenderer*>( renderer ) )
+    QgsRasterRenderer *renderer = mRasterLayer->renderer();
+    if ( QgsMultiBandColorRenderer *mbcr = dynamic_cast<QgsMultiBandColorRenderer *>( renderer ) )
     {
-      const QgsContrastEnhancement* redCe = mbcr->redContrastEnhancement();
+      const QgsContrastEnhancement *redCe = mbcr->redContrastEnhancement();
       if ( redCe )
       {
         mRendererWidget->setMin( QString::number( redCe->minimumValue() ), 0 );
         mRendererWidget->setMax( QString::number( redCe->maximumValue() ), 0 );
       }
-      const QgsContrastEnhancement* greenCe = mbcr->greenContrastEnhancement();
+      const QgsContrastEnhancement *greenCe = mbcr->greenContrastEnhancement();
       if ( greenCe )
       {
         mRendererWidget->setMin( QString::number( greenCe->minimumValue() ), 1 );
         mRendererWidget->setMax( QString::number( greenCe->maximumValue() ), 1 );
       }
-      const QgsContrastEnhancement* blueCe = mbcr->blueContrastEnhancement();
+      const QgsContrastEnhancement *blueCe = mbcr->blueContrastEnhancement();
       if ( blueCe )
       {
         mRendererWidget->setMin( QString::number( blueCe->minimumValue() ), 2 );
         mRendererWidget->setMax( QString::number( blueCe->maximumValue() ), 2 );
       }
     }
-    else if ( QgsSingleBandGrayRenderer* sbgr = dynamic_cast<QgsSingleBandGrayRenderer*>( renderer ) )
+    else if ( QgsSingleBandGrayRenderer *sbgr = dynamic_cast<QgsSingleBandGrayRenderer *>( renderer ) )
     {
-      const QgsContrastEnhancement* ce = sbgr->contrastEnhancement();
+      const QgsContrastEnhancement *ce = sbgr->contrastEnhancement();
       if ( ce )
       {
         mRendererWidget->setMin( QString::number( ce->minimumValue() ) );

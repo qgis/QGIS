@@ -25,10 +25,10 @@
 #include <QModelIndex>
 #include <QCheckBox>
 #include <QLinearGradient>
-QgsDetailedItemDelegate::QgsDetailedItemDelegate( QObject * parent )
-    : QAbstractItemDelegate( parent )
-    , mpWidget( new QgsDetailedItemWidget() )
-    , mpCheckBox( new QCheckBox() )
+QgsDetailedItemDelegate::QgsDetailedItemDelegate( QObject *parent )
+  : QAbstractItemDelegate( parent )
+  , mpWidget( new QgsDetailedItemWidget() )
+  , mpCheckBox( new QCheckBox() )
 
 {
   //mpWidget->setFixedHeight(80);
@@ -43,9 +43,9 @@ QgsDetailedItemDelegate::~QgsDetailedItemDelegate()
   delete mpWidget;
 }
 
-void QgsDetailedItemDelegate::paint( QPainter * thepPainter,
-                                     const QStyleOptionViewItem & option,
-                                     const QModelIndex & index ) const
+void QgsDetailedItemDelegate::paint( QPainter *thepPainter,
+                                     const QStyleOptionViewItem &option,
+                                     const QModelIndex &index ) const
 {
   // After painting we need to restore the painter to its original state
   thepPainter->save();
@@ -68,8 +68,8 @@ void QgsDetailedItemDelegate::paint( QPainter * thepPainter,
 
 
 QSize QgsDetailedItemDelegate::sizeHint(
-  const QStyleOptionViewItem & option,
-  const QModelIndex & index ) const
+  const QStyleOptionViewItem &option,
+  const QModelIndex &index ) const
 {
   if ( index.data( Qt::UserRole ).canConvert<QgsDetailedItemData>() )
   {
@@ -260,7 +260,7 @@ void QgsDetailedItemDelegate::paintAsWidget( QPainter *thepPainter,
 }//render as widget
 
 void QgsDetailedItemDelegate::drawHighlight( const QStyleOptionViewItem &option,
-    QPainter * thepPainter,
+    QPainter *thepPainter,
     int height ) const
 {
   QColor myColor1 = option.palette.highlight().color();
@@ -324,8 +324,8 @@ QFont QgsDetailedItemDelegate::titleFont( const QStyleOptionViewItem &option ) c
 }
 
 
-QStringList QgsDetailedItemDelegate::wordWrap( const QString& string,
-    const QFontMetrics& metrics,
+QStringList QgsDetailedItemDelegate::wordWrap( const QString &string,
+    const QFontMetrics &metrics,
     int width ) const
 {
   if ( string.isEmpty() )

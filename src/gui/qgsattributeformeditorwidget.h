@@ -56,8 +56,8 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
      * @param editorWidget associated editor widget wrapper (for default/edit modes)
      * @param form parent attribute form
      */
-    explicit QgsAttributeFormEditorWidget( QgsEditorWidgetWrapper* editorWidget,
-                                           QgsAttributeForm* form );
+    explicit QgsAttributeFormEditorWidget( QgsEditorWidgetWrapper *editorWidget,
+                                           QgsAttributeForm *form );
 
     ~QgsAttributeFormEditorWidget();
 
@@ -68,8 +68,8 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
      * @param config configuration which should be used for the widget creation
      * @param context editor context (not available in python bindings)
      */
-    void createSearchWidgetWrappers( const QString& widgetId, int fieldIdx,
-                                     const QVariantMap& config,
+    void createSearchWidgetWrappers( const QString &widgetId, int fieldIdx,
+                                     const QVariantMap &config,
                                      const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
 
     /** Sets the current mode for the widget. The widget will adapt its state and visible widgets to
@@ -88,7 +88,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
      * @param initialValue initial value to show in widget
      * @param mixedValues set to true to initially show the mixed values state
      */
-    void initialize( const QVariant& initialValue, bool mixedValues = false );
+    void initialize( const QVariant &initialValue, bool mixedValues = false );
 
     /** Returns true if the widget's value has been changed since it was initialized.
      * @see initialize()
@@ -124,12 +124,12 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
 
     //! Emitted when the widget's value changes
     //! @param value new widget value
-    void valueChanged( const QVariant& value );
+    void valueChanged( const QVariant &value );
 
   private slots:
 
     //! Triggered when editor widget's value changes
-    void editorWidgetChanged( const QVariant& value );
+    void editorWidgetChanged( const QVariant &value );
 
     //! Triggered when multi edit tool button requests value reset
     void resetValue();
@@ -146,7 +146,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
      * @note this method is in place for unit testing only, and is not considered
      * stable API
      */
-    QgsSearchWidgetToolButton* searchWidgetToolButton();
+    QgsSearchWidgetToolButton *searchWidgetToolButton();
 
     /** Sets the search widget wrapper for the widget used when the form is in
      * search mode.
@@ -156,43 +156,43 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
      * @note this method is in place for unit testing only, and is not considered
      * stable AP
      */
-    void setSearchWidgetWrapper( QgsSearchWidgetWrapper* wrapper );
+    void setSearchWidgetWrapper( QgsSearchWidgetWrapper *wrapper );
 
     /** Returns the widget which should be used as a parent during construction
      * of the search widget wrapper.
      * @note this method is in place for unit testing only, and is not considered
      * stable AP
      */
-    QWidget* searchWidgetFrame();
+    QWidget *searchWidgetFrame();
 
     /** Returns the search widget wrapper used in this widget. The wrapper must
      * first be created using createSearchWidgetWrapper()
      * @note this method is in place for unit testing only, and is not considered
      * stable AP
      */
-    QList< QgsSearchWidgetWrapper* > searchWidgetWrappers();
+    QList< QgsSearchWidgetWrapper * > searchWidgetWrappers();
 
   private:
 
-    QWidget* mEditPage = nullptr;
-    QWidget* mSearchPage = nullptr;
-    QStackedWidget* mStack = nullptr;
-    QWidget* mSearchFrame = nullptr;
+    QWidget *mEditPage = nullptr;
+    QWidget *mSearchPage = nullptr;
+    QStackedWidget *mStack = nullptr;
+    QWidget *mSearchFrame = nullptr;
 
-    QgsEditorWidgetWrapper* mWidget = nullptr;
-    QList< QgsSearchWidgetWrapper* > mSearchWidgets;
-    QgsAttributeForm* mForm = nullptr;
+    QgsEditorWidgetWrapper *mWidget = nullptr;
+    QList< QgsSearchWidgetWrapper * > mSearchWidgets;
+    QgsAttributeForm *mForm = nullptr;
     Mode mMode;
 
-    QgsMultiEditToolButton* mMultiEditButton = nullptr;
-    QgsSearchWidgetToolButton* mSearchWidgetToolButton = nullptr;
+    QgsMultiEditToolButton *mMultiEditButton = nullptr;
+    QgsSearchWidgetToolButton *mSearchWidgetToolButton = nullptr;
     QVariant mPreviousValue;
     bool mBlockValueUpdate;
     bool mIsMixed;
     bool mIsChanged;
 
 
-    QgsVectorLayer* layer();
+    QgsVectorLayer *layer();
     void updateWidgets();
 };
 

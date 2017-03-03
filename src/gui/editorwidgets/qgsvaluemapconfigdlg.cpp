@@ -24,8 +24,8 @@
 #include <QMessageBox>
 #include <QTextStream>
 
-QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsEditorConfigWidget( vl, fieldIdx, parent )
+QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
+  : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
 
@@ -53,7 +53,7 @@ QVariantMap QgsValueMapConfigDlg::config()
       continue;
 
     QString ks = ki->text();
-    if (( ks == QgsApplication::nullRepresentation() ) && !( ki->flags() & Qt::ItemIsEditable ) )
+    if ( ( ks == QgsApplication::nullRepresentation() ) && !( ki->flags() & Qt::ItemIsEditable ) )
       ks = QgsValueMapFieldFormatter::NULL_VALUE;
 
     if ( !vi || vi->text().isNull() )
@@ -71,7 +71,7 @@ QVariantMap QgsValueMapConfigDlg::config()
   return cfg;
 }
 
-void QgsValueMapConfigDlg::setConfig( const QVariantMap& config )
+void QgsValueMapConfigDlg::setConfig( const QVariantMap &config )
 {
   tableWidget->clearContents();
   for ( int i = tableWidget->rowCount() - 1; i > 0; i-- )
@@ -150,11 +150,11 @@ void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant> &map, bool i
   }
 }
 
-void QgsValueMapConfigDlg::setRow( int row, const QString& value, const QString& description )
+void QgsValueMapConfigDlg::setRow( int row, const QString &value, const QString &description )
 {
   QSettings settings;
-  QTableWidgetItem* valueCell = nullptr;
-  QTableWidgetItem* descriptionCell = new QTableWidgetItem( description );
+  QTableWidgetItem *valueCell = nullptr;
+  QTableWidgetItem *descriptionCell = new QTableWidgetItem( description );
   tableWidget->insertRow( row );
   if ( value == QgsValueMapFieldFormatter::NULL_VALUE )
   {
@@ -235,14 +235,14 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
     else
       continue;
 
-    if (( key.startsWith( '\"' ) && key.endsWith( '\"' ) ) ||
-        ( key.startsWith( '\'' ) && key.endsWith( '\'' ) ) )
+    if ( ( key.startsWith( '\"' ) && key.endsWith( '\"' ) ) ||
+         ( key.startsWith( '\'' ) && key.endsWith( '\'' ) ) )
     {
       key = key.mid( 1, key.length() - 2 );
     }
 
-    if (( val.startsWith( '\"' ) && val.endsWith( '\"' ) ) ||
-        ( val.startsWith( '\'' ) && val.endsWith( '\'' ) ) )
+    if ( ( val.startsWith( '\"' ) && val.endsWith( '\"' ) ) ||
+         ( val.startsWith( '\'' ) && val.endsWith( '\'' ) ) )
     {
       val = val.mid( 1, val.length() - 2 );
     }

@@ -39,7 +39,7 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
      * @brief setMapCanvas set the map canvas which will be used for the current scale buttons
      * if not set, the buttons are hidden.
      */
-    void setMapCanvas( QgsMapCanvas* mapCanvas );
+    void setMapCanvas( QgsMapCanvas *mapCanvas );
 
     //! return the minimum scale
     double minimumScale();
@@ -91,14 +91,14 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
 
   private:
     //! pointer to the map canvas used for current buttons.
-    QgsMapCanvas* mCanvas = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
 
     // ui
-    QGridLayout* mLayout = nullptr;
-    QLabel* mMaximumScaleIconLabel = nullptr;
-    QLabel* mMinimumScaleIconLabel = nullptr;
-    QgsScaleWidget* mMaximumScaleWidget = nullptr;
-    QgsScaleWidget* mMinimumScaleWidget = nullptr;
+    QGridLayout *mLayout = nullptr;
+    QLabel *mMaximumScaleIconLabel = nullptr;
+    QLabel *mMinimumScaleIconLabel = nullptr;
+    QgsScaleWidget *mMaximumScaleWidget = nullptr;
+    QgsScaleWidget *mMinimumScaleWidget = nullptr;
 };
 
 #endif // QGSSCALERANGEWIDGET_H

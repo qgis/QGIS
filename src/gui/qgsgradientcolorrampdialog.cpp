@@ -40,11 +40,11 @@
 #include <qwt_symbol.h>
 #include <qwt_legend.h>
 
-QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRamp& ramp, QWidget* parent )
-    : QDialog( parent )
-    , mRamp( ramp )
-    , mCurrentPlotColorComponent( -1 )
-    , mCurrentPlotMarkerIndex( 0 )
+QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRamp &ramp, QWidget *parent )
+  : QDialog( parent )
+  , mRamp( ramp )
+  , mCurrentPlotColorComponent( -1 )
+  , mCurrentPlotMarkerIndex( 0 )
 {
   setupUi( this );
 #ifdef Q_OS_MAC
@@ -63,8 +63,8 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
   btnColor2->setShowNoColor( true );
   btnColor2->setNoColorString( tr( "Transparent" ) );
   updateColorButtons();
-  connect( btnColor1, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor1( const QColor& ) ) );
-  connect( btnColor2, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor2( const QColor& ) ) );
+  connect( btnColor1, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setColor1( const QColor & ) ) );
+  connect( btnColor2, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setColor2( const QColor & ) ) );
 
   // fill type combobox
   cboType->blockSignals( true );
@@ -91,7 +91,7 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
   // hide the ugly canvas frame
   mPlot->setFrameStyle( QFrame::NoFrame );
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-  QFrame* plotCanvasFrame = dynamic_cast<QFrame*>( mPlot->canvas() );
+  QFrame *plotCanvasFrame = dynamic_cast<QFrame *>( mPlot->canvas() );
   if ( plotCanvasFrame )
     plotCanvasFrame->setFrameStyle( QFrame::NoFrame );
 #else
@@ -102,7 +102,7 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
   mPlot->enableAxis( QwtPlot::yLeft, false );
 
   // add a grid
-  QwtPlotGrid * grid = new QwtPlotGrid();
+  QwtPlotGrid *grid = new QwtPlotGrid();
   QwtScaleDiv gridDiv( 0.0, 1.0, QList<double>(), QList<double>(), QList<double>() << 0.2 << 0.4 << 0.6 << 0.8 );
   grid->setXDiv( gridDiv );
   grid->setYDiv( gridDiv );
@@ -112,25 +112,25 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
   mLightnessCurve = new QwtPlotCurve();
   mLightnessCurve->setTitle( QStringLiteral( "Lightness" ) );
   mLightnessCurve->setPen( QPen( QColor( 70, 150, 255 ), 0.0 ) ),
-  mLightnessCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+                  mLightnessCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
   mLightnessCurve->attach( mPlot );
 
   mHueCurve = new QwtPlotCurve();
   mHueCurve->setTitle( QStringLiteral( "Hue" ) );
   mHueCurve->setPen( QPen( QColor( 255, 215, 70 ), 0.0 ) ),
-  mHueCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+            mHueCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
   mHueCurve->attach( mPlot );
 
   mSaturationCurve = new QwtPlotCurve();
   mSaturationCurve->setTitle( QStringLiteral( "Saturation" ) );
   mSaturationCurve->setPen( QPen( QColor( 255, 70, 150 ), 0.0 ) ),
-  mSaturationCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+                   mSaturationCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
   mSaturationCurve->attach( mPlot );
 
   mAlphaCurve = new QwtPlotCurve();
   mAlphaCurve->setTitle( QStringLiteral( "Alpha" ) );
   mAlphaCurve->setPen( QPen( QColor( 50, 50, 50 ), 0.0 ) ),
-  mAlphaCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+              mAlphaCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
   mAlphaCurve->attach( mPlot );
 
   mPlotFilter = new QgsGradientPlotEventFilter( mPlot );
@@ -163,7 +163,7 @@ QgsGradientColorRampDialog::~QgsGradientColorRampDialog()
 
 }
 
-void QgsGradientColorRampDialog::setRamp( const QgsGradientColorRamp& ramp )
+void QgsGradientColorRampDialog::setRamp( const QgsGradientColorRamp &ramp )
 {
   mRamp = ramp;
 
@@ -176,8 +176,8 @@ void QgsGradientColorRampDialog::setRamp( const QgsGradientColorRamp& ramp )
 
 void QgsGradientColorRampDialog::on_cboType_currentIndexChanged( int index )
 {
-  if (( index == 0 && mRamp.isDiscrete() ) ||
-      ( index == 1 && !mRamp.isDiscrete() ) )
+  if ( ( index == 0 && mRamp.isDiscrete() ) ||
+       ( index == 1 && !mRamp.isDiscrete() ) )
     return;
   mRamp.convertToDiscrete( index == 0 );
   updateColorButtons();
@@ -290,7 +290,7 @@ void QgsGradientColorRampDialog::updateStopEditor()
   mStopEditor->blockSignals( false );
 }
 
-void QgsGradientColorRampDialog::selectedStopChanged( const QgsGradientStop& stop )
+void QgsGradientColorRampDialog::selectedStopChanged( const QgsGradientStop &stop )
 {
   mColorWidget->blockSignals( true );
   mColorWidget->setColor( stop.color );
@@ -299,7 +299,7 @@ void QgsGradientColorRampDialog::selectedStopChanged( const QgsGradientStop& sto
   mPositionSpinBox->setValue( stop.offset * 100 );
   mPositionSpinBox->blockSignals( false );
 
-  if (( stop.offset == 0 && stop.color == mRamp.color1() ) || ( stop.offset == 1.0 && stop.color == mRamp.color2() ) )
+  if ( ( stop.offset == 0 && stop.color == mRamp.color1() ) || ( stop.offset == 1.0 && stop.color == mRamp.color2() ) )
   {
     //first/last stop can't be repositioned
     mPositionSpinBox->setDisabled( true );
@@ -451,7 +451,7 @@ bool byX( QPointF p1, QPointF p2 )
   return p1.x() < p2.x();
 }
 
-void QgsGradientColorRampDialog::addPlotMarker( double x, double y, const QColor& color, bool isSelected )
+void QgsGradientColorRampDialog::addPlotMarker( double x, double y, const QColor &color, bool isSelected )
 {
   QColor borderColor = color.darker( 200 );
   borderColor.setAlpha( 255 );
@@ -471,7 +471,7 @@ void QgsGradientColorRampDialog::addPlotMarker( double x, double y, const QColor
   mMarkers << marker;
 }
 
-void QgsGradientColorRampDialog::addMarkersForColor( double x, const QColor& color, bool isSelected )
+void QgsGradientColorRampDialog::addMarkersForColor( double x, const QColor &color, bool isSelected )
 {
   if ( mPlotHueCheckbox->isChecked() )
     addPlotMarker( x, color.hslHueF(), color, isSelected && mCurrentPlotColorComponent == 0 );
@@ -486,7 +486,7 @@ void QgsGradientColorRampDialog::addMarkersForColor( double x, const QColor& col
 void QgsGradientColorRampDialog::updatePlot()
 {
   // remove existing markers
-  Q_FOREACH ( QwtPlotMarker* marker, mMarkers )
+  Q_FOREACH ( QwtPlotMarker *marker, mMarkers )
   {
     marker->detach();
     delete marker;
@@ -504,7 +504,7 @@ void QgsGradientColorRampDialog::updatePlot()
   addMarkersForColor( 0, mRamp.color1(), mCurrentPlotMarkerIndex == 0 );
 
   int i = 1;
-  Q_FOREACH ( const QgsGradientStop& stop, mRamp.stops() )
+  Q_FOREACH ( const QgsGradientStop &stop, mRamp.stops() )
   {
     lightnessPoints << QPointF( stop.offset, stop.color.lightnessF() );
     huePoints << QPointF( stop.offset, stop.color.hslHueF() );
@@ -566,13 +566,13 @@ void QgsGradientColorRampDialog::updateRampFromStopEditor()
   emit changed();
 }
 
-void QgsGradientColorRampDialog::setColor1( const QColor& color )
+void QgsGradientColorRampDialog::setColor1( const QColor &color )
 {
   mStopEditor->setColor1( color );
   updateColorButtons();
 }
 
-void QgsGradientColorRampDialog::setColor2( const QColor& color )
+void QgsGradientColorRampDialog::setColor2( const QColor &color )
 {
   mStopEditor->setColor2( color );
   updateColorButtons();
@@ -582,8 +582,8 @@ void QgsGradientColorRampDialog::setColor2( const QColor& color )
 /// @cond PRIVATE
 
 QgsGradientPlotEventFilter::QgsGradientPlotEventFilter( QwtPlot *plot )
-    : QObject( plot )
-    , mPlot( plot )
+  : QObject( plot )
+  , mPlot( plot )
 {
   mPlot->canvas()->installEventFilter( this );
 }
@@ -597,7 +597,7 @@ bool QgsGradientPlotEventFilter::eventFilter( QObject *object, QEvent *event )
   {
     case QEvent::MouseButtonPress:
     {
-      const QMouseEvent* mouseEvent = static_cast<QMouseEvent* >( event );
+      const QMouseEvent *mouseEvent = static_cast<QMouseEvent * >( event );
       if ( mouseEvent->button() == Qt::LeftButton )
       {
         emit mousePress( mapPoint( mouseEvent->pos() ) );
@@ -606,7 +606,7 @@ bool QgsGradientPlotEventFilter::eventFilter( QObject *object, QEvent *event )
     }
     case QEvent::MouseMove:
     {
-      const QMouseEvent* mouseEvent = static_cast<QMouseEvent* >( event );
+      const QMouseEvent *mouseEvent = static_cast<QMouseEvent * >( event );
       if ( mouseEvent->buttons() & Qt::LeftButton )
       {
         // only emit when button pressed
@@ -616,7 +616,7 @@ bool QgsGradientPlotEventFilter::eventFilter( QObject *object, QEvent *event )
     }
     case QEvent::MouseButtonRelease:
     {
-      const QMouseEvent* mouseEvent = static_cast<QMouseEvent* >( event );
+      const QMouseEvent *mouseEvent = static_cast<QMouseEvent * >( event );
       if ( mouseEvent->button() == Qt::LeftButton )
       {
         emit mouseRelease( mapPoint( mouseEvent->pos() ) );

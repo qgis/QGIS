@@ -65,9 +65,9 @@ class GUI_EXPORT QgsMapTip : public QWidget
      *        in pixel coordinates.
      * @param mpMapCanvas a map canvas on which the tip is drawn
      */
-    void showMapTip( QgsMapLayer * thepLayer,
-                     QgsPoint & mapPosition,
-                     QPoint & pixelPosition,
+    void showMapTip( QgsMapLayer *thepLayer,
+                     QgsPoint &mapPosition,
+                     QPoint &pixelPosition,
                      QgsMapCanvas *mpMapCanvas );
 
     /** Clear the current maptip if it exists
@@ -77,8 +77,8 @@ class GUI_EXPORT QgsMapTip : public QWidget
   private:
     // Fetch the feature to use for the maptip text.
     // Only the first feature in the search radius is used
-    QString fetchFeature( QgsMapLayer * thepLayer,
-                          QgsPoint & mapPosition,
+    QString fetchFeature( QgsMapLayer *thepLayer,
+                          QgsPoint &mapPosition,
                           QgsMapCanvas *mapCanvas );
 
     QString replaceText(
@@ -87,10 +87,10 @@ class GUI_EXPORT QgsMapTip : public QWidget
     // Flag to indicate if a maptip is currently being displayed
     bool mMapTipVisible;
 
-    QWidget* mWidget = nullptr;
-    QgsWebView* mWebView = nullptr;
+    QWidget *mWidget = nullptr;
+    QgsWebView *mWebView = nullptr;
 
   private slots:
-    void onLinkClicked( const QUrl& url );
+    void onLinkClicked( const QUrl &url );
 };
 #endif // QGSMAPTIP_H

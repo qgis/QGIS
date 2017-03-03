@@ -27,21 +27,21 @@
 QgsAuthCertTrustPolicyComboBox::QgsAuthCertTrustPolicyComboBox( QWidget *parent,
     QgsAuthCertUtils::CertTrustPolicy policy,
     QgsAuthCertUtils::CertTrustPolicy defaultpolicy )
-    : QComboBox( parent )
+  : QComboBox( parent )
 {
   QList < QPair<QgsAuthCertUtils::CertTrustPolicy, QString> > policies;
   policies << qMakePair( QgsAuthCertUtils::DefaultTrust,
                          defaultTrustText( defaultpolicy ) )
-  << qMakePair( QgsAuthCertUtils::Trusted,
-                QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Trusted ) )
-  << qMakePair( QgsAuthCertUtils::Untrusted,
-                QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Untrusted ) );
+           << qMakePair( QgsAuthCertUtils::Trusted,
+                         QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Trusted ) )
+           << qMakePair( QgsAuthCertUtils::Untrusted,
+                         QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Untrusted ) );
 
   for ( int i = 0; i < policies.size(); i++ )
   {
     QgsAuthCertUtils::CertTrustPolicy polcy = policies.at( i ).first;
     QString name = policies.at( i ).second;
-    addItem( name, QVariant(( int )polcy ) );
+    addItem( name, QVariant( ( int )polcy ) );
   }
 
   setItemData( 1, QgsAuthGuiUtils::greenColor(), Qt::TextColorRole );
@@ -70,13 +70,13 @@ QgsAuthCertUtils::CertTrustPolicy QgsAuthCertTrustPolicyComboBox::trustPolicyFor
 
 void QgsAuthCertTrustPolicyComboBox::setTrustPolicy( QgsAuthCertUtils::CertTrustPolicy policy )
 {
-  int idx = findData( QVariant(( int )policy ) );
+  int idx = findData( QVariant( ( int )policy ) );
   setCurrentIndex( idx == -1 ? 0 : idx );
 }
 
 void QgsAuthCertTrustPolicyComboBox::setDefaultTrustPolicy( QgsAuthCertUtils::CertTrustPolicy defaultpolicy )
 {
-  int idx = findData( QVariant(( int )QgsAuthCertUtils::DefaultTrust ) );
+  int idx = findData( QVariant( ( int )QgsAuthCertUtils::DefaultTrust ) );
   setItemText( idx, defaultTrustText( defaultpolicy ) );
 }
 

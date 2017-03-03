@@ -17,30 +17,30 @@
 
 #include "qgsdetaileditemdata.h"
 QgsDetailedItemData::QgsDetailedItemData()
-    : mCheckableFlag( false )
-    , mCheckedFlag( false )
-    , mEnabledFlag( true )
-    , mRenderAsWidgetFlag( false )
+  : mCheckableFlag( false )
+  , mCheckedFlag( false )
+  , mEnabledFlag( true )
+  , mRenderAsWidgetFlag( false )
 {
 
 }
 
-void QgsDetailedItemData::setTitle( const QString& title )
+void QgsDetailedItemData::setTitle( const QString &title )
 {
   mTitle = title;
 }
 
-void QgsDetailedItemData::setDetail( const QString& detail )
+void QgsDetailedItemData::setDetail( const QString &detail )
 {
   mDetail = detail;
 }
 
-void QgsDetailedItemData::setCategory( const QString& category )
+void QgsDetailedItemData::setCategory( const QString &category )
 {
   mCategory = category;
 }
 
-void QgsDetailedItemData::setIcon( const QPixmap& icon )
+void QgsDetailedItemData::setIcon( const QPixmap &icon )
 {
   mPixmap = icon;
 }

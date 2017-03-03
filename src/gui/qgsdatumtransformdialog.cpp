@@ -22,10 +22,10 @@
 #include <QDir>
 #include <QSettings>
 
-QgsDatumTransformDialog::QgsDatumTransformDialog( const QString& layerName, const QList< QList< int > > &dt, QWidget *parent, Qt::WindowFlags f )
-    : QDialog( parent, f )
-    , mDt( dt )
-    , mLayerName( layerName )
+QgsDatumTransformDialog::QgsDatumTransformDialog( const QString &layerName, const QList< QList< int > > &dt, QWidget *parent, Qt::WindowFlags f )
+  : QDialog( parent, f )
+  , mDt( dt )
+  , mLayerName( layerName )
 {
   setupUi( this );
 
@@ -138,7 +138,7 @@ QgsDatumTransformDialog::~QgsDatumTransformDialog()
   QApplication::restoreOverrideCursor();
 }
 
-void QgsDatumTransformDialog::setDatumTransformInfo( const QString& srcCRSauthId, const QString& destCRSauthId )
+void QgsDatumTransformDialog::setDatumTransformInfo( const QString &srcCRSauthId, const QString &destCRSauthId )
 {
   mSrcCRSauthId = srcCRSauthId;
   mDestCRSauthId = destCRSauthId;
@@ -148,7 +148,7 @@ void QgsDatumTransformDialog::setDatumTransformInfo( const QString& srcCRSauthId
 QList< int > QgsDatumTransformDialog::selectedDatumTransform()
 {
   QList<int> list;
-  QTreeWidgetItem * item = mDatumTransformTreeWidget->currentItem();
+  QTreeWidgetItem *item = mDatumTransformTreeWidget->currentItem();
   if ( item )
   {
     list.reserve( 2 );
@@ -166,12 +166,12 @@ bool QgsDatumTransformDialog::rememberSelection() const
   return mRememberSelectionCheckBox->isChecked();
 }
 
-bool QgsDatumTransformDialog::gridShiftTransformation( const QString& itemText ) const
+bool QgsDatumTransformDialog::gridShiftTransformation( const QString &itemText ) const
 {
   return !itemText.isEmpty() && !itemText.contains( QLatin1String( "towgs84" ), Qt::CaseInsensitive );
 }
 
-bool QgsDatumTransformDialog::testGridShiftFileAvailability( QTreeWidgetItem* item, int col ) const
+bool QgsDatumTransformDialog::testGridShiftFileAvailability( QTreeWidgetItem *item, int col ) const
 {
   if ( !item )
   {
@@ -184,7 +184,7 @@ bool QgsDatumTransformDialog::testGridShiftFileAvailability( QTreeWidgetItem* it
     return true;
   }
 
-  char* projLib = getenv( "PROJ_LIB" );
+  char *projLib = getenv( "PROJ_LIB" );
   if ( !projLib ) //no information about installation directory
   {
     return true;

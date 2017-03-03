@@ -27,19 +27,19 @@
 #include "qgsauthguiutils.h"
 
 QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, bool relayMessages )
-    : QWidget( parent )
-    , mRelayMessages( relayMessages )
-    , mConfigModel( nullptr )
-    , mAuthUtilitiesMenu( nullptr )
-    , mActionSetMasterPassword( nullptr )
-    , mActionClearCachedMasterPassword( nullptr )
-    , mActionResetMasterPassword( nullptr )
-    , mActionClearCachedAuthConfigs( nullptr )
-    , mActionRemoveAuthConfigs( nullptr )
-    , mActionEraseAuthDatabase( nullptr )
-    , mDisabled( false )
-    , mAuthNotifyLayout( nullptr )
-    , mAuthNotify( nullptr )
+  : QWidget( parent )
+  , mRelayMessages( relayMessages )
+  , mConfigModel( nullptr )
+  , mAuthUtilitiesMenu( nullptr )
+  , mActionSetMasterPassword( nullptr )
+  , mActionClearCachedMasterPassword( nullptr )
+  , mActionResetMasterPassword( nullptr )
+  , mActionClearCachedAuthConfigs( nullptr )
+  , mActionRemoveAuthConfigs( nullptr )
+  , mActionEraseAuthDatabase( nullptr )
+  , mDisabled( false )
+  , mAuthNotifyLayout( nullptr )
+  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -79,16 +79,16 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
     tableViewConfigs->sortByColumn( 1, Qt::AscendingOrder );
     tableViewConfigs->setSortingEnabled( true );
 
-    connect( tableViewConfigs->selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ),
-             this, SLOT( selectionChanged( const QItemSelection&, const QItemSelection& ) ) );
+    connect( tableViewConfigs->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ),
+             this, SLOT( selectionChanged( const QItemSelection &, const QItemSelection & ) ) );
 
     connect( tableViewConfigs, SIGNAL( doubleClicked( QModelIndex ) ),
              this, SLOT( on_btnEditConfig_clicked() ) );
 
     if ( mRelayMessages )
     {
-      connect( QgsAuthManager::instance(), SIGNAL( messageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ),
-               this, SLOT( authMessageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ) );
+      connect( QgsAuthManager::instance(), SIGNAL( messageOut( const QString &, const QString &, QgsAuthManager::MessageLevel ) ),
+               this, SLOT( authMessageOut( const QString &, const QString &, QgsAuthManager::MessageLevel ) ) );
     }
 
     connect( QgsAuthManager::instance(), SIGNAL( authDatabaseChanged() ),
@@ -156,7 +156,7 @@ void QgsAuthConfigEditor::eraseAuthenticationDatabase()
   QgsAuthGuiUtils::eraseAuthenticationDatabase( messageBar(), messageTimeout(), this );
 }
 
-void QgsAuthConfigEditor::authMessageOut( const QString& message, const QString& authtag, QgsAuthManager::MessageLevel level )
+void QgsAuthConfigEditor::authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level )
 {
   int levelint = ( int )level;
   messageBar()->pushMessage( authtag, message, ( QgsMessageBar::MessageLevel )levelint, 7 );
@@ -191,14 +191,14 @@ void QgsAuthConfigEditor::setRelayMessages( bool relay )
 
   if ( mRelayMessages )
   {
-    disconnect( QgsAuthManager::instance(), SIGNAL( messageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ),
-                this, SLOT( authMessageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ) );
+    disconnect( QgsAuthManager::instance(), SIGNAL( messageOut( const QString &, const QString &, QgsAuthManager::MessageLevel ) ),
+                this, SLOT( authMessageOut( const QString &, const QString &, QgsAuthManager::MessageLevel ) ) );
     mRelayMessages = relay;
     return;
   }
 
-  connect( QgsAuthManager::instance(), SIGNAL( messageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ),
-           this, SLOT( authMessageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ) );
+  connect( QgsAuthManager::instance(), SIGNAL( messageOut( const QString &, const QString &, QgsAuthManager::MessageLevel ) ),
+           this, SLOT( authMessageOut( const QString &, const QString &, QgsAuthManager::MessageLevel ) ) );
   mRelayMessages = relay;
 }
 
@@ -208,7 +208,7 @@ void QgsAuthConfigEditor::refreshTableView()
   tableViewConfigs->reset();
 }
 
-void QgsAuthConfigEditor::selectionChanged( const QItemSelection& selected , const QItemSelection& deselected )
+void QgsAuthConfigEditor::selectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
   Q_UNUSED( selected );
   Q_UNUSED( deselected );
@@ -227,7 +227,7 @@ void QgsAuthConfigEditor::on_btnAddConfig_clicked()
   if ( !QgsAuthManager::instance()->setMasterPassword( true ) )
     return;
 
-  QgsAuthConfigEdit * ace = new QgsAuthConfigEdit( this );
+  QgsAuthConfigEdit *ace = new QgsAuthConfigEdit( this );
   ace->setWindowModality( Qt::WindowModal );
   if ( ace->exec() )
   {
@@ -246,7 +246,7 @@ void QgsAuthConfigEditor::on_btnEditConfig_clicked()
   if ( !QgsAuthManager::instance()->setMasterPassword( true ) )
     return;
 
-  QgsAuthConfigEdit * ace = new QgsAuthConfigEdit( this, authcfg );
+  QgsAuthConfigEdit *ace = new QgsAuthConfigEdit( this, authcfg );
   ace->setWindowModality( Qt::WindowModal );
   if ( ace->exec() )
   {
@@ -275,7 +275,7 @@ void QgsAuthConfigEditor::on_btnRemoveConfig_clicked()
   }
 }
 
-QgsMessageBar * QgsAuthConfigEditor::messageBar()
+QgsMessageBar *QgsAuthConfigEditor::messageBar()
 {
   return mMsgBar;
 }

@@ -17,9 +17,9 @@
 #include "qgsvectorlayer.h"
 #include <QColorDialog>
 
-QgsArrowSymbolLayerWidget::QgsArrowSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerWidget( parent, vl )
-    , mLayer( nullptr )
+QgsArrowSymbolLayerWidget::QgsArrowSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+  : QgsSymbolLayerWidget( parent, vl )
+  , mLayer( nullptr )
 {
   setupUi( this );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
@@ -38,14 +38,14 @@ QgsArrowSymbolLayerWidget::QgsArrowSymbolLayerWidget( const QgsVectorLayer* vl, 
   mOffsetSpin->setClearValue( 0.0 );
 }
 
-void QgsArrowSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
+void QgsArrowSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
   if ( !layer || layer->layerType() != QLatin1String( "ArrowLine" ) )
   {
     return;
   }
 
-  mLayer = static_cast<QgsArrowSymbolLayer*>( layer );
+  mLayer = static_cast<QgsArrowSymbolLayer *>( layer );
 
   mArrowWidthSpin->setValue( mLayer->arrowWidth() );
   mArrowWidthUnitWidget->setUnit( mLayer->arrowWidthUnit() );
@@ -82,7 +82,7 @@ void QgsArrowSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
 }
 
 
-QgsSymbolLayer* QgsArrowSymbolLayerWidget::symbolLayer()
+QgsSymbolLayer *QgsArrowSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }

@@ -31,16 +31,16 @@ class GUI_EXPORT QgsMapToolPan : public QgsMapTool
 
   public:
     //! constructor
-    QgsMapToolPan( QgsMapCanvas* canvas );
+    QgsMapToolPan( QgsMapCanvas *canvas );
     ~QgsMapToolPan();
 
     void activate() override;
     void deactivate() override;
 
     virtual Flags flags() const override { return QgsMapTool::Transient | QgsMapTool::AllowZoomRect; }
-    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
-    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
-    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
     virtual void canvasDoubleClickEvent( QgsMapMouseEvent *e ) override;
     bool gestureEvent( QGestureEvent *e ) override;
 

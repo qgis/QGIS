@@ -57,8 +57,8 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
      * @param parent parent widget
      * @param layer associated vector layer
      */
-    QgsPropertyOverrideButton( QWidget* parent = nullptr,
-                               const QgsVectorLayer* layer = nullptr );
+    QgsPropertyOverrideButton( QWidget *parent = nullptr,
+                               const QgsVectorLayer *layer = nullptr );
 
     /**
      * Initialize a newly constructed property button (useful if button was included in a UI layout).
@@ -68,9 +68,9 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
      * @param layer associated vector layer
      */
     void init( int propertyKey,
-               const QgsProperty& property,
-               const QgsPropertiesDefinition& definitions,
-               const QgsVectorLayer* layer = nullptr );
+               const QgsProperty &property,
+               const QgsPropertiesDefinition &definitions,
+               const QgsVectorLayer *layer = nullptr );
 
     /**
      * Initialize a newly constructed property button (useful if button was included in a UI layout).
@@ -80,9 +80,9 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
      * @param layer associated vector layer
      */
     void init( int propertyKey,
-               const QgsAbstractPropertyCollection& collection,
-               const QgsPropertiesDefinition& definitions,
-               const QgsVectorLayer* layer = nullptr );
+               const QgsAbstractPropertyCollection &collection,
+               const QgsPropertiesDefinition &definitions,
+               const QgsVectorLayer *layer = nullptr );
 
     /**
      * Returns a QgsProperty object encapsulating the current state of the
@@ -94,7 +94,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     /**
      * Sets the widget to reflect the current state of a QgsProperty.
      */
-    void setToProperty( const QgsProperty& property );
+    void setToProperty( const QgsProperty &property );
 
     /**
      * Returns the property key linked to the button.
@@ -129,32 +129,32 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
      * Set the usage information for the property.
      * @see usageInfo()
      */
-    void setUsageInfo( const QString& info ) { mUsageInfo = info; updateGui(); }
+    void setUsageInfo( const QString &info ) { mUsageInfo = info; updateGui(); }
 
     /**
      * Sets the vector layer associated with the button. This controls which fields are
      * displayed within the widget's pop up menu.
      * @see vectorLayer()
      */
-    void setVectorLayer( const QgsVectorLayer* layer );
+    void setVectorLayer( const QgsVectorLayer *layer );
 
     /**
      * Returns the vector layer associated with the button. This controls which fields are
      * displayed within the widget's pop up menu.
      * @see setVectorLayer()
      */
-    const QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
+    const QgsVectorLayer *vectorLayer() const { return mVectorLayer; }
 
     /**
      * Register a sibling widget that get checked when the property is active.
      */
-    void registerCheckedWidget( QWidget* widget );
+    void registerCheckedWidget( QWidget *widget );
 
     /**
      * Register an expression context generator class that will be used to retrieve
      * an expression context for the button when required.
      */
-    void registerExpressionContextGenerator( QgsExpressionContextGenerator* generator );
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 
     /**
      * Sets a symbol which can be used for previews inside the widget or in any dialog created
@@ -199,7 +199,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
 
     int mPropertyKey = -1;
 
-    const QgsVectorLayer* mVectorLayer = nullptr;
+    const QgsVectorLayer *mVectorLayer = nullptr;
 
     QStringList mFieldNameList;
     QStringList mFieldTypeList;
@@ -207,20 +207,20 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     QString mExpressionString;
     QString mFieldName;
 
-    QMenu* mDefineMenu = nullptr;
-    QAction* mActionDataTypes = nullptr;
-    QMenu* mFieldsMenu = nullptr;
-    QMenu* mVariablesMenu = nullptr;
-    QAction* mActionVariables = nullptr;
+    QMenu *mDefineMenu = nullptr;
+    QAction *mActionDataTypes = nullptr;
+    QMenu *mFieldsMenu = nullptr;
+    QMenu *mVariablesMenu = nullptr;
+    QAction *mActionVariables = nullptr;
 
-    QAction* mActionActive = nullptr;
-    QAction* mActionDescription = nullptr;
-    QAction* mActionExpDialog = nullptr;
-    QAction* mActionExpression = nullptr;
-    QAction* mActionPasteExpr = nullptr;
-    QAction* mActionCopyExpr = nullptr;
-    QAction* mActionClearExpr = nullptr;
-    QAction* mActionAssistant = nullptr;
+    QAction *mActionActive = nullptr;
+    QAction *mActionDescription = nullptr;
+    QAction *mActionExpDialog = nullptr;
+    QAction *mActionExpression = nullptr;
+    QAction *mActionPasteExpr = nullptr;
+    QAction *mActionCopyExpr = nullptr;
+    QAction *mActionClearExpr = nullptr;
+    QAction *mActionAssistant = nullptr;
 
     QgsPropertyDefinition mDefinition;
 
@@ -230,7 +230,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     QString mFullDescription;
     QString mUsageInfo;
 
-    QgsExpressionContextGenerator* mExpressionContextGenerator = nullptr;
+    QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
 
     QList< QPointer<QWidget> > mCheckedWidgets;
 
@@ -241,7 +241,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
 
   private slots:
     void aboutToShowMenu();
-    void menuActionTriggered( QAction* action );
+    void menuActionTriggered( QAction *action );
 
     void checkCheckedWidgets( bool checked );
 };

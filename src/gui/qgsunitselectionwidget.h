@@ -47,7 +47,7 @@ class GUI_EXPORT QgsMapUnitScaleWidget : public QgsPanelWidget, private Ui::QgsM
     /** Constructor for QgsMapUnitScaleWidget.
      * @param parent parent widget
      */
-    QgsMapUnitScaleWidget( QWidget* parent = nullptr );
+    QgsMapUnitScaleWidget( QWidget *parent = nullptr );
 
     /** Returns a QgsMapUnitScale representing the settings shown in the
      * widget.
@@ -62,20 +62,20 @@ class GUI_EXPORT QgsMapUnitScaleWidget : public QgsPanelWidget, private Ui::QgsM
      * @see mapUnitScale()
      * @see mapUnitScaleChanged()
      */
-    void setMapUnitScale( const QgsMapUnitScale& scale );
+    void setMapUnitScale( const QgsMapUnitScale &scale );
 
     /** Sets the map canvas associated with the widget. This allows the
      * widget to retrieve the current map scale from the canvas.
      * @param canvas map canvas
      */
-    void setMapCanvas( QgsMapCanvas* canvas );
+    void setMapCanvas( QgsMapCanvas *canvas );
 
   signals:
 
     /** Emitted when the settings in the widget are modified.
      * @param scale QgsMapUnitScale reflecting new settings from the widget
      */
-    void mapUnitScaleChanged( const QgsMapUnitScale& scale );
+    void mapUnitScaleChanged( const QgsMapUnitScale &scale );
 
   private slots:
     void configureMinComboBox();
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsMapUnitScaleDialog : public QDialog
     /** Constructor for QgsMapUnitScaleDialog.
      * @param parent parent widget
      */
-    QgsMapUnitScaleDialog( QWidget* parent = nullptr );
+    QgsMapUnitScaleDialog( QWidget *parent = nullptr );
 
     /** Returns a QgsMapUnitScale representing the settings shown in the
      * dialog.
@@ -119,18 +119,18 @@ class GUI_EXPORT QgsMapUnitScaleDialog : public QDialog
      * @param scale map unit scale to show in dialog
      * @see mapUnitScale()
      */
-    void setMapUnitScale( const QgsMapUnitScale& scale );
+    void setMapUnitScale( const QgsMapUnitScale &scale );
 
     /** Sets the map canvas associated with the dialog. This allows the dialog to retrieve the current
      * map scale from the canvas.
      * @param canvas map canvas
      * @note added in QGIS 2.12
      */
-    void setMapCanvas( QgsMapCanvas* canvas );
+    void setMapCanvas( QgsMapCanvas *canvas );
 
   private:
 
-    QgsMapUnitScaleWidget* mWidget = nullptr;
+    QgsMapUnitScaleWidget *mWidget = nullptr;
 
 };
 
@@ -151,19 +151,19 @@ class GUI_EXPORT QgsUnitSelectionWidget : public QWidget, private Ui::QgsUnitSel
     /** Constructor for QgsUnitSelectionWidget.
      * @param parent parent widget
      */
-    QgsUnitSelectionWidget( QWidget* parent = nullptr );
+    QgsUnitSelectionWidget( QWidget *parent = nullptr );
 
     /** Sets the units which the user can choose from in the combobox.
      * @param units list of strings for custom units to display in the widget
      * @param mapUnitIdx specifies which entry corresponds to the map units, or -1 if none
      */
-    void setUnits( const QStringList& units, int mapUnitIdx );
+    void setUnits( const QStringList &units, int mapUnitIdx );
 
     /** Sets the units which the user can choose from in the combobox. Clears any existing units.
      * @param units list of valid units
      * @note added in QGIS 2.9
      */
-    void setUnits( const QgsUnitTypes::RenderUnitList& units );
+    void setUnits( const QgsUnitTypes::RenderUnitList &units );
 
     //! Get the selected unit index
     int getUnit() const { return mUnitCombo->currentIndex(); }
@@ -189,14 +189,14 @@ class GUI_EXPORT QgsUnitSelectionWidget : public QWidget, private Ui::QgsUnitSel
     QgsMapUnitScale getMapUnitScale() const { return mMapUnitScale; }
 
     //! Sets the map unit scale
-    void setMapUnitScale( const QgsMapUnitScale& scale ) { mMapUnitScale = scale; }
+    void setMapUnitScale( const QgsMapUnitScale &scale ) { mMapUnitScale = scale; }
 
     /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
      * map scale from the canvas.
      * @param canvas map canvas
      * @note added in QGIS 2.12
      */
-    void setMapCanvas( QgsMapCanvas* canvas );
+    void setMapCanvas( QgsMapCanvas *canvas );
 
   signals:
     void changed();
@@ -204,12 +204,12 @@ class GUI_EXPORT QgsUnitSelectionWidget : public QWidget, private Ui::QgsUnitSel
   private slots:
     void showDialog();
     void toggleUnitRangeButton();
-    void widgetChanged( const QgsMapUnitScale& scale );
+    void widgetChanged( const QgsMapUnitScale &scale );
 
   private:
     QgsMapUnitScale mMapUnitScale;
     int mMapUnitIdx;
-    QgsMapCanvas* mCanvas = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
 
 };
 

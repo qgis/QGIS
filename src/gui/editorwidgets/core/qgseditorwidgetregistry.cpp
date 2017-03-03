@@ -41,7 +41,7 @@
 #include "qgsvaluerelationwidgetfactory.h"
 
 
-QgsEditorWidgetRegistry* QgsEditorWidgetRegistry::instance()
+QgsEditorWidgetRegistry *QgsEditorWidgetRegistry::instance()
 {
   static QgsEditorWidgetRegistry sInstance;
   return &sInstance;
@@ -77,7 +77,7 @@ QgsEditorWidgetRegistry::~QgsEditorWidgetRegistry()
   qDeleteAll( mWidgetFactories );
 }
 
-QgsEditorWidgetSetup QgsEditorWidgetRegistry::findBest( const QgsVectorLayer* vl, const QString& fieldName ) const
+QgsEditorWidgetSetup QgsEditorWidgetRegistry::findBest( const QgsVectorLayer *vl, const QString &fieldName ) const
 {
   QgsFields fields = vl->fields();
   int index = fields.indexOf( fieldName );
@@ -91,18 +91,18 @@ QgsEditorWidgetSetup QgsEditorWidgetRegistry::findBest( const QgsVectorLayer* vl
   return mAutoConf.editorWidgetSetup( vl, fieldName );
 }
 
-QgsEditorWidgetWrapper* QgsEditorWidgetRegistry::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent, const QgsAttributeEditorContext &context )
+QgsEditorWidgetWrapper *QgsEditorWidgetRegistry::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent, const QgsAttributeEditorContext &context )
 {
   const QString fieldName = vl->fields().field( fieldIdx ).name();
   const QgsEditorWidgetSetup setup = findBest( vl, fieldName );
   return create( setup.type(), vl, fieldIdx, setup.config(), editor, parent, context );
 }
 
-QgsEditorWidgetWrapper* QgsEditorWidgetRegistry::create( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config, QWidget* editor, QWidget* parent, const QgsAttributeEditorContext &context )
+QgsEditorWidgetWrapper *QgsEditorWidgetRegistry::create( const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, const QVariantMap &config, QWidget *editor, QWidget *parent, const QgsAttributeEditorContext &context )
 {
   if ( mWidgetFactories.contains( widgetId ) )
   {
-    QgsEditorWidgetWrapper* ww = mWidgetFactories[widgetId]->create( vl, fieldIdx, editor, parent );
+    QgsEditorWidgetWrapper *ww = mWidgetFactories[widgetId]->create( vl, fieldIdx, editor, parent );
 
     if ( ww )
     {
@@ -129,11 +129,11 @@ QgsEditorWidgetWrapper* QgsEditorWidgetRegistry::create( const QString& widgetId
   return nullptr;
 }
 
-QgsSearchWidgetWrapper* QgsEditorWidgetRegistry::createSearchWidget( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config, QWidget* parent, const QgsAttributeEditorContext &context )
+QgsSearchWidgetWrapper *QgsEditorWidgetRegistry::createSearchWidget( const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, const QVariantMap &config, QWidget *parent, const QgsAttributeEditorContext &context )
 {
   if ( mWidgetFactories.contains( widgetId ) )
   {
-    QgsSearchWidgetWrapper* ww = mWidgetFactories[widgetId]->createSearchWidget( vl, fieldIdx, parent );
+    QgsSearchWidgetWrapper *ww = mWidgetFactories[widgetId]->createSearchWidget( vl, fieldIdx, parent );
 
     if ( ww )
     {
@@ -149,7 +149,7 @@ QgsSearchWidgetWrapper* QgsEditorWidgetRegistry::createSearchWidget( const QStri
   return nullptr;
 }
 
-QgsEditorConfigWidget* QgsEditorWidgetRegistry::createConfigWidget( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
+QgsEditorConfigWidget *QgsEditorWidgetRegistry::createConfigWidget( const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
 {
   if ( mWidgetFactories.contains( widgetId ) )
   {
@@ -158,7 +158,7 @@ QgsEditorConfigWidget* QgsEditorWidgetRegistry::createConfigWidget( const QStrin
   return nullptr;
 }
 
-QString QgsEditorWidgetRegistry::name( const QString& widgetId )
+QString QgsEditorWidgetRegistry::name( const QString &widgetId )
 {
   if ( mWidgetFactories.contains( widgetId ) )
   {
@@ -168,17 +168,17 @@ QString QgsEditorWidgetRegistry::name( const QString& widgetId )
   return QString();
 }
 
-QMap<QString, QgsEditorWidgetFactory*> QgsEditorWidgetRegistry::factories()
+QMap<QString, QgsEditorWidgetFactory *> QgsEditorWidgetRegistry::factories()
 {
   return mWidgetFactories;
 }
 
-QgsEditorWidgetFactory* QgsEditorWidgetRegistry::factory( const QString& widgetId )
+QgsEditorWidgetFactory *QgsEditorWidgetRegistry::factory( const QString &widgetId )
 {
   return mWidgetFactories.value( widgetId );
 }
 
-bool QgsEditorWidgetRegistry::registerWidget( const QString& widgetId, QgsEditorWidgetFactory* widgetFactory )
+bool QgsEditorWidgetRegistry::registerWidget( const QString &widgetId, QgsEditorWidgetFactory *widgetFactory )
 {
   if ( !widgetFactory )
   {
@@ -195,8 +195,8 @@ bool QgsEditorWidgetRegistry::registerWidget( const QString& widgetId, QgsEditor
     mWidgetFactories.insert( widgetId, widgetFactory );
 
     // Use this factory as default where it provides the heighest priority
-    QHash<const char*, int> types = widgetFactory->supportedWidgetTypes();
-    QHash<const char*, int>::ConstIterator it;
+    QHash<const char *, int> types = widgetFactory->supportedWidgetTypes();
+    QHash<const char *, int>::ConstIterator it;
     it = types.constBegin();
 
     for ( ; it != types.constEnd(); ++it )
@@ -211,9 +211,9 @@ bool QgsEditorWidgetRegistry::registerWidget( const QString& widgetId, QgsEditor
   }
 }
 
-QString QgsEditorWidgetRegistry::findSuitableWrapper( QWidget* editor, const QString& defaultWidget )
+QString QgsEditorWidgetRegistry::findSuitableWrapper( QWidget *editor, const QString &defaultWidget )
 {
-  QMap<const char*, QPair<int, QString> >::ConstIterator it;
+  QMap<const char *, QPair<int, QString> >::ConstIterator it;
 
   QString widgetid;
 

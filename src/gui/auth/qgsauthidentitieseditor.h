@@ -49,12 +49,12 @@ class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthId
     void showCertInfo( QTreeWidgetItem *item );
 
     //! Pass selection change on to UI update
-    void selectionChanged( const QItemSelection& selected, const QItemSelection& deselected );
+    void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 
     //! Update UI based upon current selection
     void checkSelection();
 
-    void handleDoubleClick( QTreeWidgetItem* item, int col );
+    void handleDoubleClick( QTreeWidgetItem *item, int col );
 
     void on_btnAddIdentity_clicked();
 
@@ -65,7 +65,7 @@ class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthId
     void on_btnGroupByOrg_toggled( bool checked );
 
     //! Relay messages to widget's messagebar
-    void authMessageOut( const QString& message, const QString& authtag, QgsAuthManager::MessageLevel level );
+    void authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level );
 
   protected:
     //! Overridden show event of base widget
@@ -81,18 +81,18 @@ class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthId
 
     void setupIdentitiesTree();
 
-    void populateIdentitiesSection( QTreeWidgetItem *item, const QList<QSslCertificate>& certs,
+    void populateIdentitiesSection( QTreeWidgetItem *item, const QList<QSslCertificate> &certs,
                                     QgsAuthIdentitiesEditor::IdentityType identype );
 
-    void appendIdentitiesToGroup( const QList<QSslCertificate>& certs,
+    void appendIdentitiesToGroup( const QList<QSslCertificate> &certs,
                                   QgsAuthIdentitiesEditor::IdentityType identype,
                                   QTreeWidgetItem *parent = nullptr );
 
-    void appendIdentitiesToItem( const QList<QSslCertificate>& certs,
+    void appendIdentitiesToItem( const QList<QSslCertificate> &certs,
                                  QgsAuthIdentitiesEditor::IdentityType identype,
                                  QTreeWidgetItem *parent = nullptr );
 
-    QgsMessageBar * messageBar();
+    QgsMessageBar *messageBar();
     int messageTimeout();
 
     bool mDisabled;

@@ -45,7 +45,7 @@ class GUI_EXPORT QgsRelationReferenceSearchWidgetWrapper : public QgsSearchWidge
      * @param canvas optional map canvas
      * @param parent parent widget
      */
-    explicit QgsRelationReferenceSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QgsMapCanvas* canvas, QWidget* parent = nullptr );
+    explicit QgsRelationReferenceSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
     /** Returns a variant representing the current state of the widget.
      */
@@ -64,8 +64,8 @@ class GUI_EXPORT QgsRelationReferenceSearchWidgetWrapper : public QgsSearchWidge
     virtual void setEnabled( bool enabled ) override;
 
   protected:
-    QWidget* createWidget( QWidget* parent ) override;
-    void initWidget( QWidget* editor ) override;
+    QWidget *createWidget( QWidget *parent ) override;
+    void initWidget( QWidget *editor ) override;
 
   public slots:
 
@@ -77,9 +77,9 @@ class GUI_EXPORT QgsRelationReferenceSearchWidgetWrapper : public QgsSearchWidge
 
   private:
 
-    QgsRelationReferenceWidget* mWidget = nullptr;
-    QgsVectorLayer* mLayer = nullptr;
-    QgsMapCanvas* mCanvas = nullptr;
+    QgsRelationReferenceWidget *mWidget = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
 
     friend class QgsRelationReferenceWidgetFactory;
 };

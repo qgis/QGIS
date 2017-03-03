@@ -60,11 +60,11 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
       FilterOr, //!< Filter should be combined using "OR"
     };
 
-    explicit QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &feature = QgsFeature(),
-                               const QgsAttributeEditorContext& context = QgsAttributeEditorContext(), QWidget *parent = nullptr );
+    explicit QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &feature = QgsFeature(),
+                               const QgsAttributeEditorContext &context = QgsAttributeEditorContext(), QWidget *parent = nullptr );
     ~QgsAttributeForm();
 
-    const QgsFeature& feature() { return mFeature; }
+    const QgsFeature &feature() { return mFeature; }
 
     /**
      * Hides the button box (Ok/Cancel) and enables auto-commit
@@ -91,14 +91,14 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * Takes ownership
      * @param iface
      */
-    void addInterface( QgsAttributeFormInterface* iface );
+    void addInterface( QgsAttributeFormInterface *iface );
 
     /**
      * Returns the layer for which this form is shown
      *
      * @return  Layer
      */
-    QgsVectorLayer* layer() { return mLayer; }
+    QgsVectorLayer *layer() { return mLayer; }
 
     /**
      * Returns if the form is currently in editable mode.
@@ -125,7 +125,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      *
      * @param message The message
      */
-    void setEditCommandMessage( const QString& message ) { mEditCommandMessage = message; }
+    void setEditCommandMessage( const QString &message ) { mEditCommandMessage = message; }
 
     /**
      * Intercepts keypress on custom form (escape should not close it)
@@ -135,20 +135,20 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      *
      * @return         true if the event has been handled (key was ESC)
      */
-    bool eventFilter( QObject* object, QEvent* event ) override;
+    bool eventFilter( QObject *object, QEvent *event ) override;
 
     /** Sets all feature IDs which are to be edited if the form is in multiedit mode
      * @param fids feature ID list
      * @note added in QGIS 2.16
      */
-    void setMultiEditFeatureIds( const QgsFeatureIds& fids );
+    void setMultiEditFeatureIds( const QgsFeatureIds &fids );
 
     /** Sets the message bar to display feedback from the form in. This is used in the search/filter
      * mode to display the count of selected features.
      * @param messageBar target message bar
      * @note added in QGIS 2.16
      */
-    void setMessageBar( QgsMessageBar* messageBar );
+    void setMessageBar( QgsMessageBar *messageBar );
 
   signals:
 
@@ -158,7 +158,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * @param attribute The name of the attribute that changed.
      * @param value     The new value of the attribute.
      */
-    void attributeChanged( const QString& attribute, const QVariant& value );
+    void attributeChanged( const QString &attribute, const QVariant &value );
 
     /**
      * Will be emitted before the feature is saved. Use this signal to perform sanity checks.
@@ -168,19 +168,19 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * @param ok  Set this parameter to false if you don't want the form to be saved
      * @note not available  in python bindings
      */
-    void beforeSave( bool& ok );
+    void beforeSave( bool &ok );
 
     /**
      * Is emitted, when a feature is changed or added
      */
-    void featureSaved( const QgsFeature& feature );
+    void featureSaved( const QgsFeature &feature );
 
     /** Is emitted when a filter expression is set using the form.
      * @param expression filter expression
      * @param type filter type
      * @note added in QGIS 2.16
      */
-    void filterExpressionSet( const QString& expression, QgsAttributeForm::FilterType type );
+    void filterExpressionSet( const QString &expression, QgsAttributeForm::FilterType type );
 
     /** Emitted when the form changes mode.
      * @param mode new mode
@@ -196,7 +196,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * Emitted when the user chooses to zoom to a filtered set of features.
      * @note added in QGIS 3.0
      */
-    void zoomToFeatures( const QString& filter );
+    void zoomToFeatures( const QString &filter );
 
   public slots:
 
@@ -206,14 +206,14 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * @param field The field to change
      * @param value The new value
      */
-    void changeAttribute( const QString& field, const QVariant& value );
+    void changeAttribute( const QString &field, const QVariant &value );
 
     /**
      * Update all editors to correspond to a different feature.
      *
      * @param feature The feature which will be represented by the form
      */
-    void setFeature( const QgsFeature& feature );
+    void setFeature( const QgsFeature &feature );
 
     /**
      * Save all the values from the editors to the layer.
@@ -238,12 +238,12 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void refreshFeature();
 
   private slots:
-    void onAttributeChanged( const QVariant& value );
+    void onAttributeChanged( const QVariant &value );
     void onAttributeAdded( int idx );
     void onAttributeDeleted( int idx );
     void onUpdatedFields();
-    void onConstraintStatusChanged( const QString& constraint,
-                                    const QString &description, const QString& err, QgsEditorWidgetWrapper::ConstraintResult result );
+    void onConstraintStatusChanged( const QString &constraint,
+                                    const QString &description, const QString &err, QgsEditorWidgetWrapper::ConstraintResult result );
     void preventFeatureRefresh();
     void synchronizeEnabledState();
     void layerSelectionChanged();
@@ -251,7 +251,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     //! Save multi edit changes
     bool saveMultiEdits();
     void resetMultiEdit( bool promptToSave = false );
-    void multiEditMessageClicked( const QString& link );
+    void multiEditMessageClicked( const QString &link );
 
     void filterAndTriggered();
     void filterOrTriggered();
@@ -273,22 +273,22 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     struct WidgetInfo
     {
       WidgetInfo()
-          : widget( nullptr )
-          , labelOnTop( false )
-          , labelAlignRight( false )
-          , showLabel( true )
+        : widget( nullptr )
+        , labelOnTop( false )
+        , labelAlignRight( false )
+        , showLabel( true )
       {}
 
-      QWidget* widget = nullptr;
+      QWidget *widget = nullptr;
       QString labelText;
       bool labelOnTop;
       bool labelAlignRight;
       bool showLabel;
     };
 
-    WidgetInfo createWidgetFromDef( const QgsAttributeEditorElement* widgetDef, QWidget* parent, QgsVectorLayer* vl, QgsAttributeEditorContext& context );
+    WidgetInfo createWidgetFromDef( const QgsAttributeEditorElement *widgetDef, QWidget *parent, QgsVectorLayer *vl, QgsAttributeEditorContext &context );
 
-    void addWidgetWrapper( QgsEditorWidgetWrapper* eww );
+    void addWidgetWrapper( QgsEditorWidgetWrapper *eww );
 
     /**
      * Creates widget wrappers for all suitable widgets found.
@@ -297,7 +297,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void createWrappers();
     void afterWidgetInit();
 
-    void scanForEqualAttributes( QgsFeatureIterator& fit, QSet< int >& mixedValueFields, QHash< int, QVariant >& fieldSharedValues ) const;
+    void scanForEqualAttributes( QgsFeatureIterator &fit, QSet< int > &mixedValueFields, QHash< int, QVariant > &fieldSharedValues ) const;
 
     //! Save single feature or add feature edits
     bool saveEdits();
@@ -311,59 +311,59 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     //! constraints management
     void updateAllConstraints();
-    void updateConstraints( QgsEditorWidgetWrapper* w );
-    bool currentFormFeature( QgsFeature& feature );
-    bool currentFormValidConstraints( QStringList& invalidFields, QStringList& descriptions );
-    QList<QgsEditorWidgetWrapper*> constraintDependencies( QgsEditorWidgetWrapper* w );
+    void updateConstraints( QgsEditorWidgetWrapper *w );
+    bool currentFormFeature( QgsFeature &feature );
+    bool currentFormValidConstraints( QStringList &invalidFields, QStringList &descriptions );
+    QList<QgsEditorWidgetWrapper *> constraintDependencies( QgsEditorWidgetWrapper *w );
     void clearInvalidConstraintsMessage();
-    void displayInvalidConstraintMessage( const QStringList& invalidFields,
-                                          const QStringList& description );
+    void displayInvalidConstraintMessage( const QStringList &invalidFields,
+                                          const QStringList &description );
 
-    QgsVectorLayer* mLayer = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
     QgsFeature mFeature;
-    QgsMessageBar* mMessageBar = nullptr;
+    QgsMessageBar *mMessageBar = nullptr;
     bool mOwnsMessageBar;
-    QgsMessageBarItem* mMultiEditUnsavedMessageBarItem = nullptr;
-    QgsMessageBarItem* mMultiEditMessageBarItem = nullptr;
-    QLabel* mInvalidConstraintMessage = nullptr;
-    QWidget* mTopMessageWidget = nullptr;
-    QList<QgsWidgetWrapper*> mWidgets;
+    QgsMessageBarItem *mMultiEditUnsavedMessageBarItem = nullptr;
+    QgsMessageBarItem *mMultiEditMessageBarItem = nullptr;
+    QLabel *mInvalidConstraintMessage = nullptr;
+    QWidget *mTopMessageWidget = nullptr;
+    QList<QgsWidgetWrapper *> mWidgets;
     QgsAttributeEditorContext mContext;
-    QDialogButtonBox* mButtonBox = nullptr;
-    QWidget* mSearchButtonBox = nullptr;
-    QList<QgsAttributeFormInterface*> mInterfaces;
-    QMap< int, QgsAttributeFormEditorWidget* > mFormEditorWidgets;
+    QDialogButtonBox *mButtonBox = nullptr;
+    QWidget *mSearchButtonBox = nullptr;
+    QList<QgsAttributeFormInterface *> mInterfaces;
+    QMap< int, QgsAttributeFormEditorWidget * > mFormEditorWidgets;
     QgsExpressionContext mExpressionContext;
 
     struct ContainerInformation
     {
-      ContainerInformation( QgsTabWidget* tabWidget, QWidget* widget, const QgsExpression& expression )
-          : tabWidget( tabWidget )
-          , widget( widget )
-          , expression( expression )
-          , isVisible( true )
+      ContainerInformation( QgsTabWidget *tabWidget, QWidget *widget, const QgsExpression &expression )
+        : tabWidget( tabWidget )
+        , widget( widget )
+        , expression( expression )
+        , isVisible( true )
       {}
 
-      ContainerInformation( QWidget* widget, const QgsExpression& expression )
-          : tabWidget( nullptr )
-          , widget( widget )
-          , expression( expression )
-          , isVisible( true )
+      ContainerInformation( QWidget *widget, const QgsExpression &expression )
+        : tabWidget( nullptr )
+        , widget( widget )
+        , expression( expression )
+        , isVisible( true )
       {}
 
-      QgsTabWidget* tabWidget = nullptr;
-      QWidget* widget = nullptr;
+      QgsTabWidget *tabWidget = nullptr;
+      QWidget *widget = nullptr;
       QgsExpression expression;
       bool isVisible;
 
-      void apply( QgsExpressionContext* expressionContext );
+      void apply( QgsExpressionContext *expressionContext );
     };
 
-    void registerContainerInformation( ContainerInformation* info );
+    void registerContainerInformation( ContainerInformation *info );
 
     // Contains information about tabs and groupboxes, their visibility state visibility conditions
-    QVector<ContainerInformation*> mContainerVisibilityInformation;
-    QMap<QString, QVector<ContainerInformation*> > mContainerInformationDependency;
+    QVector<ContainerInformation *> mContainerVisibilityInformation;
+    QMap<QString, QVector<ContainerInformation *> > mContainerInformationDependency;
 
     // Variables below are used for python
     static int sFormCounter;
@@ -388,7 +388,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     Mode mMode;
 
     //! Backlinks widgets to buddies.
-    QMap<QWidget*, QLabel*> mBuddyMap;
+    QMap<QWidget *, QLabel *> mBuddyMap;
 
     friend class TestQgsDualView;
     friend class TestQgsAttributeForm;

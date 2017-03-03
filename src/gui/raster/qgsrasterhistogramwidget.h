@@ -46,10 +46,10 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
     QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget *parent = nullptr );
 
     //! Save the histogram as an image to disk
-    bool histoSaveAsImage( const QString& filename, int width = 600, int height = 600, int quality = -1 );
+    bool histoSaveAsImage( const QString &filename, int width = 600, int height = 600, int quality = -1 );
 
     //! Set the renderer widget (or just its name if there is no widget)
-    void setRendererWidget( const QString& name, QgsRasterRendererWidget* rendererWidget = nullptr );
+    void setRendererWidget( const QString &name, QgsRasterRendererWidget *rendererWidget = nullptr );
 
     //! Activate the histogram widget
     void setActive( bool activeFlag );
@@ -88,7 +88,7 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
       */
     void histoPickerSelectedQwt5( QwtDoublePoint );
     //! Various actions that are stored in btnHistoActions.
-    void histoActionTriggered( QAction* );
+    void histoActionTriggered( QAction * );
     //! Draw the min/max markers on the histogram plot.
     void updateHistoMarkers();
     //! Button to compute the histogram, appears when no cached histogram is available.
@@ -104,16 +104,16 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
     };
 
     //! \brief Pointer to the raster layer that this property dilog changes the behavior of.
-    QgsRasterLayer * mRasterLayer = nullptr;
+    QgsRasterLayer *mRasterLayer = nullptr;
     //! \brief Pointer to the renderer widget, to get/set min/max.
-    QgsRasterRendererWidget* mRendererWidget = nullptr;
+    QgsRasterRendererWidget *mRendererWidget = nullptr;
     //! \brief Name of the renderer widget (see QgsRasterRendererRegistry).
     QString mRendererName;
 
-    QwtPlotPicker* mHistoPicker = nullptr;
-    QwtPlotZoomer* mHistoZoomer = nullptr;
-    QwtPlotMarker* mHistoMarkerMin = nullptr;
-    QwtPlotMarker* mHistoMarkerMax = nullptr;
+    QwtPlotPicker *mHistoPicker = nullptr;
+    QwtPlotZoomer *mHistoZoomer = nullptr;
+    QwtPlotMarker *mHistoMarkerMin = nullptr;
+    QwtPlotMarker *mHistoMarkerMax = nullptr;
     double mHistoMin;
     double mHistoMax;
     QVector<QColor> mHistoColors;

@@ -83,9 +83,9 @@ class GUI_EXPORT QgsAuthImportCertDialog : public QDialog, private Ui::QgsAuthIm
     void on_chkAllowInvalid_toggled( bool checked );
 
   private:
-    QString getOpenFileName( const QString& title, const QString& extfilter );
+    QString getOpenFileName( const QString &title, const QString &extfilter );
 
-    QPushButton* okButton();
+    QPushButton *okButton();
 
     QList<QSslCertificate> mCerts;
     QgsAuthImportCertDialog::CertFilter mFilter;

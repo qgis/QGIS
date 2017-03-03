@@ -24,11 +24,11 @@
 #include <QRegExpValidator>
 
 QgsNewHttpConnection::QgsNewHttpConnection(
-  QWidget *parent, const QString& baseKey, const QString& connName, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mBaseKey( baseKey )
-    , mOriginalConnName( connName )
-    , mAuthConfigSelect( nullptr )
+  QWidget *parent, const QString &baseKey, const QString &connName, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mBaseKey( baseKey )
+  , mOriginalConnName( connName )
+  , mAuthConfigSelect( nullptr )
 {
   setupUi( this );
 
@@ -203,12 +203,12 @@ void QgsNewHttpConnection::accept()
   QString credentialsKey = "/Qgis/" + mCredentialsBaseKey + '/' + txtName->text();
 
   // warn if entry was renamed to an existing connection
-  if (( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
-      settings.contains( key + "/url" ) &&
-      QMessageBox::question( this,
-                             tr( "Save connection" ),
-                             tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
-                             QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
+       settings.contains( key + "/url" ) &&
+       QMessageBox::question( this,
+                              tr( "Save connection" ),
+                              tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
+                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
   }

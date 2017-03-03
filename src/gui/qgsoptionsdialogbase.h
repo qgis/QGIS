@@ -54,7 +54,7 @@ class GUI_EXPORT QgsSearchHighlightOptionWidget : public QObject
     /** Constructor
      * @param widget the widget used to search text into
      */
-    explicit QgsSearchHighlightOptionWidget( QWidget* widget = 0 );
+    explicit QgsSearchHighlightOptionWidget( QWidget *widget = 0 );
 
     /**
      * Returns if it valid: if the widget type is handled and if the widget is not still available
@@ -65,7 +65,7 @@ class GUI_EXPORT QgsSearchHighlightOptionWidget : public QObject
      * search for a text pattern and highlight the widget if the text is found
      * @return true if the text pattern is found
      */
-    bool searchHighlight( const QString& searchText );
+    bool searchHighlight( const QString &searchText );
 
     /**
      *  reset the style to the original state
@@ -75,13 +75,13 @@ class GUI_EXPORT QgsSearchHighlightOptionWidget : public QObject
     /**
      * return the widget
      */
-    QWidget* widget() {return mWidget;}
+    QWidget *widget() {return mWidget;}
 
   private slots:
     void widgetDestroyed();
 
   private:
-    QWidget* mWidget = nullptr;
+    QWidget *mWidget = nullptr;
     QString mStyleSheet;
     bool mValid;
     bool mChangedStyle;
@@ -118,23 +118,23 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      * @param fl widget flags
      * @param settings custom QSettings pointer
      */
-    QgsOptionsDialogBase( const QString& settingsKey, QWidget* parent = nullptr, Qt::WindowFlags fl = 0, QSettings* settings = nullptr );
+    QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent = nullptr, Qt::WindowFlags fl = 0, QSettings *settings = nullptr );
     ~QgsOptionsDialogBase();
 
     /** Set up the base ui connections for vertical tabs.
      * @param restoreUi Whether to restore the base ui at this time.
      * @param title the window title
      */
-    void initOptionsBase( bool restoreUi = true, const QString& title = QString() );
+    void initOptionsBase( bool restoreUi = true, const QString &title = QString() );
 
     // set custom QSettings pointer if dialog used outside QGIS (in plugin)
-    void setSettings( QSettings* settings );
+    void setSettings( QSettings *settings );
 
     /** Restore the base ui.
      * Sometimes useful to do at end of subclass's constructor.
      * @param title the window title (it does not need to be defined if previously given to initOptionsBase();
      */
-    void restoreOptionsBaseUi( const QString& title = QString() );
+    void restoreOptionsBaseUi( const QString &title = QString() );
 
     /** Determine if the options list is in icon only mode
      */
@@ -147,7 +147,7 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      * @param text the text to search
      * @note added in 3.0
      */
-    void searchText( const QString& text );
+    void searchText( const QString &text );
 
   protected slots:
     void updateOptionsListVerticalTabs();
@@ -156,8 +156,8 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     void warnAboutMissingObjects();
 
   protected:
-    void showEvent( QShowEvent* e ) override;
-    void paintEvent( QPaintEvent* e ) override;
+    void showEvent( QShowEvent *e ) override;
+    void paintEvent( QPaintEvent *e ) override;
 
     virtual void updateWindowTitle();
 
@@ -168,15 +168,15 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      */
     void registerTextSearchWidgets();
 
-    QList< QPair< QgsSearchHighlightOptionWidget*, int > > mRegisteredSearchWidgets;
+    QList< QPair< QgsSearchHighlightOptionWidget *, int > > mRegisteredSearchWidgets;
 
     QString mOptsKey;
     bool mInit;
-    QListWidget* mOptListWidget = nullptr;
-    QStackedWidget* mOptStackedWidget = nullptr;
-    QSplitter* mOptSplitter = nullptr;
-    QDialogButtonBox* mOptButtonBox = nullptr;
-    QgsFilterLineEdit* mSearchLineEdit = nullptr;
+    QListWidget *mOptListWidget = nullptr;
+    QStackedWidget *mOptStackedWidget = nullptr;
+    QSplitter *mOptSplitter = nullptr;
+    QDialogButtonBox *mOptButtonBox = nullptr;
+    QgsFilterLineEdit *mSearchLineEdit = nullptr;
     QString mDialogTitle;
     bool mIconOnly;
     // pointer to app or custom, external QSettings

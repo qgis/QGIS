@@ -31,7 +31,7 @@
 */
 
 QgsFileDropEdit::QgsFileDropEdit( QWidget *parent )
-    : QLineEdit( parent )
+  : QLineEdit( parent )
 {
   mDirOnly = false;
   mFileOnly = true;
@@ -66,7 +66,7 @@ void QgsFileDropEdit::setFileOnly( bool isFileOnly )
 /*!
   Limit drops to files with specified extension.
 */
-void QgsFileDropEdit::setSuffixFilter( const QString& suffix )
+void QgsFileDropEdit::setSuffixFilter( const QString &suffix )
 {
   mSuffix = suffix;
 }
@@ -80,9 +80,9 @@ QString QgsFileDropEdit::acceptableFilePath( QDropEvent *event ) const
   if ( event->mimeData()->hasUrls() )
   {
     QFileInfo file( event->mimeData()->urls().first().toLocalFile() );
-    if ( !(( mFileOnly && !file.isFile() ) ||
-           ( mDirOnly && !file.isDir() ) ||
-           ( !mSuffix.isEmpty() && mSuffix.compare( file.suffix(), Qt::CaseInsensitive ) ) ) )
+    if ( !( ( mFileOnly && !file.isFile() ) ||
+            ( mDirOnly && !file.isDir() ) ||
+            ( !mSuffix.isEmpty() && mSuffix.compare( file.suffix(), Qt::CaseInsensitive ) ) ) )
       path = file.filePath();
   }
   return path;

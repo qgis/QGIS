@@ -27,22 +27,22 @@ class QCheckBox;
  * A widget to select format-specific raster saving options
  */
 class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget,
-      private Ui::QgsRasterPyramidsOptionsWidgetBase
+  private Ui::QgsRasterPyramidsOptionsWidgetBase
 {
     Q_OBJECT
 
   public:
 
-    QgsRasterPyramidsOptionsWidget( QWidget* parent = nullptr, const QString& provider = "gdal" );
+    QgsRasterPyramidsOptionsWidget( QWidget *parent = nullptr, const QString &provider = "gdal" );
 
     QStringList configOptions() const { return mSaveOptionsWidget->options(); }
-    QgsRasterFormatSaveOptionsWidget* createOptionsWidget() { return mSaveOptionsWidget; }
+    QgsRasterFormatSaveOptionsWidget *createOptionsWidget() { return mSaveOptionsWidget; }
     const QList<int> overviewList() const { return mOverviewList; }
     QgsRaster::RasterPyramidsFormat pyramidsFormat() const
     { return static_cast< QgsRaster::RasterPyramidsFormat >( cbxPyramidsFormat->currentIndex() ); }
     QString resamplingMethod() const;
-    void setRasterLayer( QgsRasterLayer* rasterLayer ) { mSaveOptionsWidget->setRasterLayer( rasterLayer ); }
-    void setRasterFileName( const QString& file ) { mSaveOptionsWidget->setRasterFileName( file ); }
+    void setRasterLayer( QgsRasterLayer *rasterLayer ) { mSaveOptionsWidget->setRasterLayer( rasterLayer ); }
+    void setRasterFileName( const QString &file ) { mSaveOptionsWidget->setRasterFileName( file ); }
 
   public slots:
 
@@ -73,7 +73,7 @@ class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget,
 
     QString mProvider;
     QList< int > mOverviewList;
-    QMap< int, QCheckBox* > mOverviewCheckBoxes;
+    QMap< int, QCheckBox * > mOverviewCheckBoxes;
 };
 
 #endif // QGSRASTERLAYERSAVEASDIALOG_H

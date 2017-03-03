@@ -22,11 +22,11 @@
 #include <QDebug>
 #include <QFocusEvent>
 
-QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString& title, bool folding, bool margin )
-    : QsciScintilla( parent )
-    , mWidgetTitle( title )
-    , mFolding( folding )
-    , mMargin( margin )
+QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool folding, bool margin )
+  : QsciScintilla( parent )
+  , mWidgetTitle( title )
+  , mFolding( folding )
+  , mMargin( margin )
 {
   if ( !parent && mWidgetTitle.isEmpty() )
   {
@@ -71,7 +71,7 @@ void QgsCodeEditor::focusOutEvent( QFocusEvent *event )
 // This workaround a likely bug in QScintilla. The ESC key should not be consumned
 // by the main entry, so that the default behavior (Dialog closing) can trigger,
 // but only is the auto-completion suggestion list isn't displayed
-void QgsCodeEditor::keyPressEvent( QKeyEvent * event )
+void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
 {
   if ( event->key() == Qt::Key_Escape && !isListActive() )
   {
@@ -107,7 +107,7 @@ void QgsCodeEditor::setSciWidget()
   setAutoCompletionSource( QsciScintilla::AcsAPIs );
 }
 
-void QgsCodeEditor::setTitle( const QString& title )
+void QgsCodeEditor::setTitle( const QString &title )
 {
   setWindowTitle( title );
 }
@@ -146,7 +146,7 @@ void QgsCodeEditor::setFoldingVisible( bool folding )
   }
 }
 
-void QgsCodeEditor::insertText( const QString& text )
+void QgsCodeEditor::insertText( const QString &text )
 {
   // Insert the text or replace selected text
   if ( hasSelectedText() )
@@ -163,7 +163,7 @@ void QgsCodeEditor::insertText( const QString& text )
 }
 
 // Settings for font and fontsize
-bool QgsCodeEditor::isFixedPitch( const QFont& font )
+bool QgsCodeEditor::isFixedPitch( const QFont &font )
 {
   return font.fixedPitch();
 }

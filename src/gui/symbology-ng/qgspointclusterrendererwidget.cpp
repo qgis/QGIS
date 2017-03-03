@@ -25,14 +25,14 @@
 #include "qgsvectorlayer.h"
 #include "qgisgui.h"
 
-QgsRendererWidget* QgsPointClusterRendererWidget::create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
+QgsRendererWidget *QgsPointClusterRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {
   return new QgsPointClusterRendererWidget( layer, style, renderer );
 }
 
-QgsPointClusterRendererWidget::QgsPointClusterRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
-    : QgsRendererWidget( layer, style )
-    , mRenderer( nullptr )
+QgsPointClusterRendererWidget::QgsPointClusterRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
+  : QgsRendererWidget( layer, style )
+  , mRenderer( nullptr )
 {
   if ( !layer )
   {
@@ -71,7 +71,7 @@ QgsPointClusterRendererWidget::QgsPointClusterRendererWidget( QgsVectorLayer* la
   {
     if ( *it != QLatin1String( "pointDisplacement" ) && *it != QLatin1String( "pointCluster" ) && *it != QLatin1String( "heatmapRenderer" ) )
     {
-      QgsRendererAbstractMetadata* m = QgsApplication::rendererRegistry()->rendererMetadata( *it );
+      QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( *it );
       mRendererComboBox->addItem( m->icon(), m->visibleName(), *it );
     }
   }
@@ -102,12 +102,12 @@ QgsPointClusterRendererWidget::~QgsPointClusterRendererWidget()
   delete mRenderer;
 }
 
-QgsFeatureRenderer* QgsPointClusterRendererWidget::renderer()
+QgsFeatureRenderer *QgsPointClusterRendererWidget::renderer()
 {
   return mRenderer;
 }
 
-void QgsPointClusterRendererWidget::setContext( const QgsSymbolWidgetContext& context )
+void QgsPointClusterRendererWidget::setContext( const QgsSymbolWidgetContext &context )
 {
   QgsRendererWidget::setContext( context );
   if ( mDistanceUnitWidget )
@@ -117,11 +117,11 @@ void QgsPointClusterRendererWidget::setContext( const QgsSymbolWidgetContext& co
 void QgsPointClusterRendererWidget::on_mRendererComboBox_currentIndexChanged( int index )
 {
   QString rendererId = mRendererComboBox->itemData( index ).toString();
-  QgsRendererAbstractMetadata* m = QgsApplication::rendererRegistry()->rendererMetadata( rendererId );
+  QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( rendererId );
   if ( m )
   {
     // unfortunately renderer conversion is only available through the creation of a widget...
-    QgsRendererWidget* tempRenderWidget = m->createRendererWidget( mLayer, mStyle, mRenderer->embeddedRenderer()->clone() );
+    QgsRendererWidget *tempRenderWidget = m->createRendererWidget( mLayer, mStyle, mRenderer->embeddedRenderer()->clone() );
     mRenderer->setEmbeddedRenderer( tempRenderWidget->renderer()->clone() );
     delete tempRenderWidget;
   }
@@ -133,10 +133,10 @@ void QgsPointClusterRendererWidget::on_mRendererSettingsButton_clicked()
   if ( !mRenderer )
     return;
 
-  QgsRendererAbstractMetadata* m = QgsApplication::rendererRegistry()->rendererMetadata( mRenderer->embeddedRenderer()->type() );
+  QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( mRenderer->embeddedRenderer()->type() );
   if ( m )
   {
-    QgsRendererWidget* w = m->createRendererWidget( mLayer, mStyle, mRenderer->embeddedRenderer()->clone() );
+    QgsRendererWidget *w = m->createRendererWidget( mLayer, mStyle, mRenderer->embeddedRenderer()->clone() );
     w->setPanelTitle( tr( "Renderer settings" ) );
 
     QgsExpressionContextScope scope;
@@ -186,8 +186,8 @@ void QgsPointClusterRendererWidget::on_mCenterSymbolPushButton_clicked()
   {
     return;
   }
-  QgsMarkerSymbol* markerSymbol = mRenderer->clusterSymbol()->clone();
-  QgsSymbolSelectorWidget* dlg = new QgsSymbolSelectorWidget( markerSymbol, QgsStyle::defaultStyle(), mLayer, this );
+  QgsMarkerSymbol *markerSymbol = mRenderer->clusterSymbol()->clone();
+  QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( markerSymbol, QgsStyle::defaultStyle(), mLayer, this );
   dlg->setPanelTitle( tr( "Cluster symbol" ) );
   dlg->setDockMode( this->dockMode() );
 
@@ -202,15 +202,15 @@ void QgsPointClusterRendererWidget::on_mCenterSymbolPushButton_clicked()
   dlg->setContext( context );
 
   connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateCenterSymbolFromWidget() ) );
-  connect( dlg, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget* ) ) );
+  connect( dlg, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget * ) ) );
   openPanel( dlg );
 }
 
 void QgsPointClusterRendererWidget::updateCenterSymbolFromWidget()
 {
-  QgsSymbolSelectorWidget* dlg = qobject_cast<QgsSymbolSelectorWidget*>( sender() );
-  QgsSymbol* symbol = dlg->symbol()->clone();
-  mRenderer->setClusterSymbol( static_cast< QgsMarkerSymbol* >( symbol ) );
+  QgsSymbolSelectorWidget *dlg = qobject_cast<QgsSymbolSelectorWidget *>( sender() );
+  QgsSymbol *symbol = dlg->symbol()->clone();
+  mRenderer->setClusterSymbol( static_cast< QgsMarkerSymbol * >( symbol ) );
   updateCenterIcon();
   emit widgetChanged();
 }
@@ -219,14 +219,14 @@ void QgsPointClusterRendererWidget::cleanUpSymbolSelector( QgsPanelWidget *conta
 {
   if ( container )
   {
-    QgsSymbolSelectorWidget* dlg = qobject_cast<QgsSymbolSelectorWidget*>( container );
+    QgsSymbolSelectorWidget *dlg = qobject_cast<QgsSymbolSelectorWidget *>( container );
     delete dlg->symbol();
   }
 }
 
 void QgsPointClusterRendererWidget::updateRendererFromWidget()
 {
-  QgsRendererWidget* w = qobject_cast<QgsRendererWidget*>( sender() );
+  QgsRendererWidget *w = qobject_cast<QgsRendererWidget *>( sender() );
   if ( !w )
     return;
 
@@ -236,7 +236,7 @@ void QgsPointClusterRendererWidget::updateRendererFromWidget()
 
 void QgsPointClusterRendererWidget::updateCenterIcon()
 {
-  QgsMarkerSymbol* symbol = mRenderer->clusterSymbol();
+  QgsMarkerSymbol *symbol = mRenderer->clusterSymbol();
   if ( !symbol )
   {
     return;
@@ -245,9 +245,9 @@ void QgsPointClusterRendererWidget::updateCenterIcon()
   mCenterSymbolPushButton->setIcon( icon );
 }
 
-void QgsPointClusterRendererWidget::setupBlankUi( const QString& layerName )
+void QgsPointClusterRendererWidget::setupBlankUi( const QString &layerName )
 {
-  QGridLayout* layout = new QGridLayout( this );
-  QLabel* label = new QLabel( tr( "The point cluster renderer only applies to (single) point layers. \n'%1' is not a point layer and cannot be displayed by the point cluster renderer" ).arg( layerName ), this );
+  QGridLayout *layout = new QGridLayout( this );
+  QLabel *label = new QLabel( tr( "The point cluster renderer only applies to (single) point layers. \n'%1' is not a point layer and cannot be displayed by the point cluster renderer" ).arg( layerName ), this );
   layout->addWidget( label );
 }

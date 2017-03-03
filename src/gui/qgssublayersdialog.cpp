@@ -22,12 +22,12 @@
 #include <QPushButton>
 
 
-QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString& name,
-                                        QWidget* parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mName( name )
-    , mShowCount( false )
-    , mShowType( false )
+QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString &name,
+                                        QWidget *parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mName( name )
+  , mShowCount( false )
+  , mShowType( false )
 {
   setupUi( this );
 
@@ -53,7 +53,7 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
   }
 
   // add a "Select All" button - would be nicer with an icon
-  QPushButton* button = new QPushButton( tr( "Select All" ) );
+  QPushButton *button = new QPushButton( tr( "Select All" ) );
   buttonBox->addButton( button, QDialogButtonBox::ActionRole );
   connect( button, SIGNAL( pressed() ), layersTable, SLOT( selectAll() ) );
   // connect( pbnSelectNone, SIGNAL( pressed() ), SLOT( layersTable->selectNone() ) );
@@ -70,7 +70,7 @@ QgsSublayersDialog::~QgsSublayersDialog()
                      layersTable->header()->saveState() );
 }
 
-static bool _isLayerIdUnique( int layerId, QTreeWidget* layersTable )
+static bool _isLayerIdUnique( int layerId, QTreeWidget *layersTable )
 {
   int count = 0;
   for ( int j = 0; j < layersTable->topLevelItemCount(); j++ )
@@ -88,7 +88,7 @@ QgsSublayersDialog::LayerDefinitionList QgsSublayersDialog::selection()
   LayerDefinitionList list;
   for ( int i = 0; i < layersTable->selectedItems().size(); i++ )
   {
-    QTreeWidgetItem* item = layersTable->selectedItems().at( i );
+    QTreeWidgetItem *item = layersTable->selectedItems().at( i );
 
     LayerDefinition def;
     def.layerId = item->text( 0 ).toInt();
@@ -107,9 +107,9 @@ QgsSublayersDialog::LayerDefinitionList QgsSublayersDialog::selection()
 }
 
 
-void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefinitionList& list )
+void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefinitionList &list )
 {
-  Q_FOREACH ( const LayerDefinition& item, list )
+  Q_FOREACH ( const LayerDefinition &item, list )
   {
     QStringList elements;
     elements << QString::number( item.layerId ) << item.layerName;

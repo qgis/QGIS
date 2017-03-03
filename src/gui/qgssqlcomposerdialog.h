@@ -54,7 +54,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
       public:
         virtual ~TableSelectedCallback() = default;
         //! method called when a table is selected
-        virtual void tableSelected( const QString& name ) = 0;
+        virtual void tableSelected( const QString &name ) = 0;
     };
 
     /** \ingroup gui
@@ -66,7 +66,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
       public:
         virtual ~SQLValidatorCallback() = default;
         //! method should return true if the SQL is valid. Otherwise return false and set the errorReason
-        virtual bool isValid( const QString& sql, QString& errorReason, QString& warningMsg ) = 0;
+        virtual bool isValid( const QString &sql, QString &errorReason, QString &warningMsg ) = 0;
     };
 
     //! argument of a function
@@ -78,7 +78,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
       QString type;
 
       //! constructor
-      Argument( const QString& nameIn = QString(), const QString& typeIn = QString() ) : name( nameIn ), type( typeIn ) {}
+      Argument( const QString &nameIn = QString(), const QString &typeIn = QString() ) : name( nameIn ), type( typeIn ) {}
     };
 
     //! description of server functions
@@ -96,43 +96,43 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
       QList<Argument> argumentList;
 
       //! constructor with name and fixed number of arguments
-      Function( const QString& nameIn, int args ) : name( nameIn ), minArgs( args ), maxArgs( args ) {}
+      Function( const QString &nameIn, int args ) : name( nameIn ), minArgs( args ), maxArgs( args ) {}
       //! constructor with name and min,max number of arguments
-      Function( const QString& nameIn, int minArgs, int maxArgsIn ) : name( nameIn ), minArgs( minArgs ), maxArgs( maxArgsIn ) {}
+      Function( const QString &nameIn, int minArgs, int maxArgsIn ) : name( nameIn ), minArgs( minArgs ), maxArgs( maxArgsIn ) {}
       //! default constructor
       Function() : minArgs( -1 ), maxArgs( -1 ) {}
     };
 
     //! constructor
-    explicit QgsSQLComposerDialog( QWidget * parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    explicit QgsSQLComposerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     virtual ~QgsSQLComposerDialog();
 
     //! initialize the SQL statement
-    void setSql( const QString& sql );
+    void setSql( const QString &sql );
 
     //! get the SQL statement
     QString sql() const;
 
     //! add a list of table names
-    void addTableNames( const QStringList& list );
+    void addTableNames( const QStringList &list );
     //! add a list of table names
-    void addTableNames( const QList<PairNameTitle> & listNameTitle );
+    void addTableNames( const QList<PairNameTitle> &listNameTitle );
     //! add a list of column names
-    void addColumnNames( const QStringList& list, const QString& tableName );
+    void addColumnNames( const QStringList &list, const QString &tableName );
     //! add a list of column names
-    void addColumnNames( const QList<PairNameType>& list, const QString& tableName );
+    void addColumnNames( const QList<PairNameType> &list, const QString &tableName );
     //! add a list of operators
-    void addOperators( const QStringList& list );
+    void addOperators( const QStringList &list );
     //! add a list of spatial predicates
-    void addSpatialPredicates( const QStringList& list );
+    void addSpatialPredicates( const QStringList &list );
     //! add a list of spatial predicates
-    void addSpatialPredicates( const QList<Function>& list );
+    void addSpatialPredicates( const QList<Function> &list );
     //! add a list of functions
-    void addFunctions( const QStringList& list );
+    void addFunctions( const QStringList &list );
     //! add a list of functions
-    void addFunctions( const QList<Function>& list );
+    void addFunctions( const QList<Function> &list );
     //! add a list of API for autocompletion
-    void addApis( const QStringList& list );
+    void addApis( const QStringList &list );
 
     //! set if multiple tables/joins are supported. Default is false
     void setSupportMultipleTables( bool bMultipleTables, const QString &mainTypename = QString() );
@@ -140,11 +140,11 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     /** Set a callback that will be called when a new table is selected, so
         that new column names can be added typically.
         Ownership of the callback remains to the caller */
-    void setTableSelectedCallback( TableSelectedCallback* tableSelectedCallback );
+    void setTableSelectedCallback( TableSelectedCallback *tableSelectedCallback );
 
     /** Set a callback that will be called when the OK button is pushed.
         Ownership of the callback remains to the caller */
-    void setSQLValidatorCallback( SQLValidatorCallback* sqlValidatorCallback );
+    void setSQLValidatorCallback( SQLValidatorCallback *sqlValidatorCallback );
 
   protected:
     bool eventFilter( QObject *obj, QEvent *event ) override;
@@ -170,9 +170,9 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
   private:
     QStringList mApiList;
     QSet<QString> mAlreadySelectedTables;
-    TableSelectedCallback* mTableSelectedCallback = nullptr;
-    SQLValidatorCallback* mSQLValidatorCallback = nullptr;
-    QObject* mFocusedObject = nullptr;
+    TableSelectedCallback *mTableSelectedCallback = nullptr;
+    SQLValidatorCallback *mSQLValidatorCallback = nullptr;
+    QObject *mFocusedObject = nullptr;
     bool mAlreadyModifyingFields;
     bool mDistinct;
     QString mResetSql;
@@ -183,13 +183,13 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     QString lastSearchedText;
 
 
-    void loadTableColumns( const QString& table );
-    void functionCurrentIndexChanged( QComboBox* combo,
-                                      const QMap<QString, QString>& mapEntryTextToName );
-    void getFunctionList( const QList<Function>& list,
-                          QStringList& listApi,
-                          QStringList& listCombo,
-                          QMap<QString, QString>& mapEntryTextToName );
+    void loadTableColumns( const QString &table );
+    void functionCurrentIndexChanged( QComboBox *combo,
+                                      const QMap<QString, QString> &mapEntryTextToName );
+    void getFunctionList( const QList<Function> &list,
+                          QStringList &listApi,
+                          QStringList &listCombo,
+                          QMap<QString, QString> &mapEntryTextToName );
 };
 
 #endif

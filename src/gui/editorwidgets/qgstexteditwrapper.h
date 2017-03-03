@@ -38,7 +38,7 @@ class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsTextEditWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = nullptr, QWidget* parent = nullptr );
+    explicit QgsTextEditWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor = nullptr, QWidget *parent = nullptr );
 
     // QgsEditorWidgetWrapper interface
   public:
@@ -46,26 +46,26 @@ class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
     void showIndeterminateState() override;
 
   protected:
-    QWidget*createWidget( QWidget* parent ) override;
-    void initWidget( QWidget* editor ) override;
+    QWidget *createWidget( QWidget *parent ) override;
+    void initWidget( QWidget *editor ) override;
     bool valid() const override;
 
   public slots:
-    void setValue( const QVariant& value ) override;
+    void setValue( const QVariant &value ) override;
     void setEnabled( bool enabled ) override;
 
   private slots:
-    void textChanged( const QString& text );
+    void textChanged( const QString &text );
 
   private:
-    QTextEdit* mTextEdit = nullptr;
-    QPlainTextEdit* mPlainTextEdit = nullptr;
-    QLineEdit* mLineEdit = nullptr;
+    QTextEdit *mTextEdit = nullptr;
+    QPlainTextEdit *mPlainTextEdit = nullptr;
+    QLineEdit *mLineEdit = nullptr;
     QPalette mReadOnlyPalette;
     QPalette mWritablePalette;
     QString mPlaceholderText;
 
-    void setWidgetValue( const QVariant& value );
+    void setWidgetValue( const QVariant &value );
 };
 
 #endif // QGSTEXTEDITWRAPPER_H

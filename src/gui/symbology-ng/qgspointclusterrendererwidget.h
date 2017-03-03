@@ -41,26 +41,26 @@ class GUI_EXPORT QgsPointClusterRendererWidget: public QgsRendererWidget, privat
      * @param renderer source QgsPointClusterRenderer renderer
      * @returns new QgsRendererWidget
      */
-    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
 
     /** Constructor for QgsPointClusterRendererWidget.
      * @param layer associated vector layer
      * @param style style collection
      * @param renderer source QgsPointClusterRenderer renderer
      */
-    QgsPointClusterRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    QgsPointClusterRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
 
     ~QgsPointClusterRendererWidget();
 
-    QgsFeatureRenderer* renderer() override;
-    void setContext( const QgsSymbolWidgetContext& context ) override;
+    QgsFeatureRenderer *renderer() override;
+    void setContext( const QgsSymbolWidgetContext &context ) override;
 
   private:
-    QgsPointClusterRenderer* mRenderer = nullptr;
+    QgsPointClusterRenderer *mRenderer = nullptr;
 
     void blockAllSignals( bool block );
     void updateCenterIcon();
-    void setupBlankUi( const QString& layerName );
+    void setupBlankUi( const QString &layerName );
 
   private slots:
 
@@ -70,7 +70,7 @@ class GUI_EXPORT QgsPointClusterRendererWidget: public QgsRendererWidget, privat
     void on_mCenterSymbolPushButton_clicked();
     void on_mRendererSettingsButton_clicked();
     void updateCenterSymbolFromWidget();
-    void cleanUpSymbolSelector( QgsPanelWidget* container );
+    void cleanUpSymbolSelector( QgsPanelWidget *container );
     void updateRendererFromWidget();
 };
 

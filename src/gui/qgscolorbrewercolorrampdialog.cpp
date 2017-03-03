@@ -21,7 +21,7 @@
 #include <QDialogButtonBox>
 
 #if 0 // unused
-static void updateColorButton( QAbstractButton* button, QColor color )
+static void updateColorButton( QAbstractButton *button, QColor color )
 {
   QPixmap p( 20, 20 );
   p.fill( color );
@@ -32,9 +32,9 @@ static void updateColorButton( QAbstractButton* button, QColor color )
 /////////
 
 
-QgsColorBrewerColorRampWidget::QgsColorBrewerColorRampWidget( const QgsColorBrewerColorRamp& ramp, QWidget* parent )
-    : QgsPanelWidget( parent )
-    , mRamp( ramp )
+QgsColorBrewerColorRampWidget::QgsColorBrewerColorRampWidget( const QgsColorBrewerColorRamp &ramp, QWidget *parent )
+  : QgsPanelWidget( parent )
+  , mRamp( ramp )
 {
 
   setupUi( this );
@@ -43,10 +43,10 @@ QgsColorBrewerColorRampWidget::QgsColorBrewerColorRampWidget( const QgsColorBrew
   cboSchemeName->setIconSize( iconSize );
 
   QStringList schemes = QgsColorBrewerColorRamp::listSchemeNames();
-  Q_FOREACH ( const QString& schemeName, schemes )
+  Q_FOREACH ( const QString &schemeName, schemes )
   {
     // create a preview icon using five color variant
-    QgsColorBrewerColorRamp* r = new QgsColorBrewerColorRamp( schemeName, 5 );
+    QgsColorBrewerColorRamp *r = new QgsColorBrewerColorRamp( schemeName, 5 );
     QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( r, iconSize );
     delete r;
     cboSchemeName->addItem( icon, schemeName );
@@ -57,7 +57,7 @@ QgsColorBrewerColorRampWidget::QgsColorBrewerColorRampWidget( const QgsColorBrew
   connect( cboColors, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setColors() ) );
 }
 
-void QgsColorBrewerColorRampWidget::setRamp( const QgsColorBrewerColorRamp& ramp )
+void QgsColorBrewerColorRampWidget::setRamp( const QgsColorBrewerColorRamp &ramp )
 {
   mRamp = ramp;
   updateUi();
@@ -118,13 +118,13 @@ void QgsColorBrewerColorRampWidget::setColors()
   emit changed();
 }
 
-QgsColorBrewerColorRampDialog::QgsColorBrewerColorRampDialog( const QgsColorBrewerColorRamp& ramp, QWidget* parent )
-    : QDialog( parent )
+QgsColorBrewerColorRampDialog::QgsColorBrewerColorRampDialog( const QgsColorBrewerColorRamp &ramp, QWidget *parent )
+  : QDialog( parent )
 {
-  QVBoxLayout* vLayout = new QVBoxLayout();
+  QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsColorBrewerColorRampWidget( ramp );
   vLayout->addWidget( mWidget );
-  QDialogButtonBox* bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
+  QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
   connect( bbox, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( bbox, SIGNAL( rejected() ), this, SLOT( reject() ) );
   vLayout->addWidget( bbox );

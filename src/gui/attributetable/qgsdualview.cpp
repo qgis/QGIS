@@ -37,18 +37,18 @@
 #include <QGroupBox>
 #include <QInputDialog>
 
-QgsDualView::QgsDualView( QWidget* parent )
-    : QStackedWidget( parent )
-    , mEditorContext()
-    , mMasterModel( nullptr )
-    , mFilterModel( nullptr )
-    , mFeatureListModel( nullptr )
-    , mAttributeForm( nullptr )
-    , mHorizontalHeaderMenu( nullptr )
-    , mLayerCache( nullptr )
-    , mProgressDlg( nullptr )
-    , mFeatureSelectionManager( nullptr )
-    , mAttributeEditorScrollArea( nullptr )
+QgsDualView::QgsDualView( QWidget *parent )
+  : QStackedWidget( parent )
+  , mEditorContext()
+  , mMasterModel( nullptr )
+  , mFilterModel( nullptr )
+  , mFeatureListModel( nullptr )
+  , mAttributeForm( nullptr )
+  , mHorizontalHeaderMenu( nullptr )
+  , mLayerCache( nullptr )
+  , mProgressDlg( nullptr )
+  , mFeatureSelectionManager( nullptr )
+  , mAttributeEditorScrollArea( nullptr )
 {
   setupUi( this );
 
@@ -64,18 +64,18 @@ QgsDualView::QgsDualView( QWidget* parent )
 
   // Connect layer list preview signals
   connect( mActionExpressionPreview, SIGNAL( triggered() ), SLOT( previewExpressionBuilder() ) );
-  connect( mPreviewActionMapper, SIGNAL( mapped( QObject* ) ), SLOT( previewColumnChanged( QObject* ) ) );
+  connect( mPreviewActionMapper, SIGNAL( mapped( QObject * ) ), SLOT( previewColumnChanged( QObject * ) ) );
   connect( mFeatureList, SIGNAL( displayExpressionChanged( QString ) ), this, SLOT( previewExpressionChanged( QString ) ) );
 }
 
-void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsFeatureRequest &request, const QgsAttributeEditorContext &context )
+void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request, const QgsAttributeEditorContext &context )
 {
   if ( !layer )
     return;
 
   mEditorContext = context;
 
-  connect( mTableView, SIGNAL( willShowContextMenu( QMenu*, QModelIndex ) ), this, SLOT( viewWillShowContextMenu( QMenu*, QModelIndex ) ) );
+  connect( mTableView, SIGNAL( willShowContextMenu( QMenu *, QModelIndex ) ), this, SLOT( viewWillShowContextMenu( QMenu *, QModelIndex ) ) );
   mTableView->horizontalHeader()->setContextMenuPolicy( Qt::CustomContextMenu );
   connect( mTableView->horizontalHeader(), SIGNAL( customContextMenuRequested( QPoint ) ), this, SLOT( showViewHeaderMenu( QPoint ) ) );
   connect( mTableView, SIGNAL( columnResized( int, int ) ), this, SLOT( tableColumnResized( int, int ) ) );
@@ -136,7 +136,7 @@ void QgsDualView::columnBoxInit()
   mFeatureListPreviewButton->addAction( mActionExpressionPreview );
   mFeatureListPreviewButton->addAction( mActionPreviewColumnsMenu );
 
-  Q_FOREACH ( const QgsField& field, fields )
+  Q_FOREACH ( const QgsField &field, fields )
   {
     int fieldIndex = mLayerCache->layer()->fields().lookupField( field.name() );
     if ( fieldIndex == -1 )
@@ -148,7 +148,7 @@ void QgsDualView::columnBoxInit()
       QString text = field.name();
 
       // Generate action for the preview popup button of the feature list
-      QAction* previewAction = new QAction( icon, text, mFeatureListPreviewButton );
+      QAction *previewAction = new QAction( icon, text, mFeatureListPreviewButton );
       mPreviewActionMapper->setMapping( previewAction, previewAction );
       connect( previewAction, SIGNAL( triggered() ), mPreviewActionMapper, SLOT( map() ) );
       mPreviewColumnsMenu->addAction( previewAction );
@@ -172,7 +172,7 @@ void QgsDualView::columnBoxInit()
     mFeatureListPreviewButton->defaultAction()->trigger();
   }
 
-  QAction* sortByPreviewExpression = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "sort.svg" ) ), tr( "Sort by preview expression" ), this );
+  QAction *sortByPreviewExpression = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "sort.svg" ) ), tr( "Sort by preview expression" ), this );
   connect( sortByPreviewExpression, SIGNAL( triggered( bool ) ), this, SLOT( sortByPreviewExpression() ) );
   mFeatureListPreviewButton->addAction( sortByPreviewExpression );
 }
@@ -198,7 +198,7 @@ void QgsDualView::setSelectedOnTop( bool selectedOnTop )
   mFilterModel->setSelectedOnTop( selectedOnTop );
 }
 
-void QgsDualView::initLayerCache( QgsVectorLayer* layer, bool cacheGeometry )
+void QgsDualView::initLayerCache( QgsVectorLayer *layer, bool cacheGeometry )
 {
   // Initialize the cache
   QSettings settings;
@@ -214,7 +214,7 @@ void QgsDualView::initLayerCache( QgsVectorLayer* layer, bool cacheGeometry )
   }
 }
 
-void QgsDualView::initModels( QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request )
+void QgsDualView::initModels( QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request )
 {
   delete mFeatureListModel;
   delete mFilterModel;
@@ -239,7 +239,7 @@ void QgsDualView::initModels( QgsMapCanvas* mapCanvas, const QgsFeatureRequest& 
   mFeatureListModel = new QgsFeatureListModel( mFilterModel, mFilterModel );
 }
 
-void QgsDualView::on_mFeatureList_aboutToChangeEditSelection( bool& ok )
+void QgsDualView::on_mFeatureList_aboutToChangeEditSelection( bool &ok )
 {
   if ( mLayerCache->layer()->isEditable() && !mAttributeForm->save() )
     ok = false;
@@ -258,7 +258,7 @@ void QgsDualView::on_mFeatureList_currentEditSelectionChanged( const QgsFeature 
   }
 }
 
-void QgsDualView::setCurrentEditSelection( const QgsFeatureIds& fids )
+void QgsDualView::setCurrentEditSelection( const QgsFeatureIds &fids )
 {
   mFeatureList->setCurrentFeatureEdited( false );
   mFeatureList->setEditSelection( fids );
@@ -315,9 +315,9 @@ void QgsDualView::previewExpressionBuilder()
   mDisplayExpression = mFeatureList->displayExpression();
 }
 
-void QgsDualView::previewColumnChanged( QObject* action )
+void QgsDualView::previewColumnChanged( QObject *action )
 {
-  QAction* previewAction = qobject_cast< QAction* >( action );
+  QAction *previewAction = qobject_cast< QAction * >( action );
 
   if ( previewAction )
   {
@@ -353,7 +353,7 @@ int QgsDualView::filteredFeatureCount()
 
 void QgsDualView::copyCellContent() const
 {
-  QAction* action = qobject_cast<QAction*>( sender() );
+  QAction *action = qobject_cast<QAction *>( sender() );
 
   if ( action && action->data().isValid() && action->data().canConvert<QModelIndex>() )
   {
@@ -363,7 +363,7 @@ void QgsDualView::copyCellContent() const
   }
 }
 
-void QgsDualView::viewWillShowContextMenu( QMenu* menu, const QModelIndex& atIndex )
+void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atIndex )
 {
   if ( !menu )
   {
@@ -378,8 +378,8 @@ void QgsDualView::viewWillShowContextMenu( QMenu* menu, const QModelIndex& atInd
   menu->addAction( copyContentAction );
   connect( copyContentAction, SIGNAL( triggered() ), this, SLOT( copyCellContent() ) );
 
-  QgsVectorLayer* vl = mFilterModel->layer();
-  QgsMapCanvas* canvas = mFilterModel->mapCanvas();
+  QgsVectorLayer *vl = mFilterModel->layer();
+  QgsMapCanvas *canvas = mFilterModel->mapCanvas();
   if ( canvas && vl && vl->geometryType() != QgsWkbTypes::NullGeometry )
   {
     menu->addAction( tr( "Zoom to feature" ), this, SLOT( zoomToCurrentFeature() ) );
@@ -390,15 +390,15 @@ void QgsDualView::viewWillShowContextMenu( QMenu* menu, const QModelIndex& atInd
   QList<QgsAction> actions = mLayerCache->layer()->actions()->actions( QStringLiteral( "Field" ) );
   if ( !actions.isEmpty() )
   {
-    QAction* a = menu->addAction( tr( "Run layer action" ) );
+    QAction *a = menu->addAction( tr( "Run layer action" ) );
     a->setEnabled( false );
 
-    Q_FOREACH ( const QgsAction& action, actions )
+    Q_FOREACH ( const QgsAction &action, actions )
     {
       if ( !action.runable() )
         continue;
 
-      QgsAttributeTableAction* a = new QgsAttributeTableAction( action.name(), this, action.id(), sourceIndex );
+      QgsAttributeTableAction *a = new QgsAttributeTableAction( action.name(), this, action.id(), sourceIndex );
       menu->addAction( action.name(), a, SLOT( execute() ) );
     }
   }
@@ -410,16 +410,16 @@ void QgsDualView::viewWillShowContextMenu( QMenu* menu, const QModelIndex& atInd
     //add a separator between user defined and standard actions
     menu->addSeparator();
 
-    QList<QgsMapLayerAction*>::iterator actionIt;
+    QList<QgsMapLayerAction *>::iterator actionIt;
     for ( actionIt = registeredActions.begin(); actionIt != registeredActions.end(); ++actionIt )
     {
-      QgsAttributeTableMapLayerAction *a = new QgsAttributeTableMapLayerAction(( *actionIt )->text(), this, ( *actionIt ), sourceIndex );
-      menu->addAction(( *actionIt )->text(), a, SLOT( execute() ) );
+      QgsAttributeTableMapLayerAction *a = new QgsAttributeTableMapLayerAction( ( *actionIt )->text(), this, ( *actionIt ), sourceIndex );
+      menu->addAction( ( *actionIt )->text(), a, SLOT( execute() ) );
     }
   }
 
   menu->addSeparator();
-  QgsAttributeTableAction* a = new QgsAttributeTableAction( tr( "Open form" ), this, QString(), sourceIndex );
+  QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open form" ), this, QString(), sourceIndex );
   menu->addAction( tr( "Open form" ), a, SLOT( featureForm() ) );
 }
 
@@ -430,24 +430,24 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
   delete mHorizontalHeaderMenu;
   mHorizontalHeaderMenu = new QMenu( this );
 
-  QAction* hide = new QAction( tr( "&Hide column" ), mHorizontalHeaderMenu );
+  QAction *hide = new QAction( tr( "&Hide column" ), mHorizontalHeaderMenu );
   connect( hide, SIGNAL( triggered( bool ) ), this, SLOT( hideColumn() ) );
   hide->setData( col );
   mHorizontalHeaderMenu->addAction( hide );
-  QAction* setWidth = new QAction( tr( "&Set width..." ), mHorizontalHeaderMenu );
+  QAction *setWidth = new QAction( tr( "&Set width..." ), mHorizontalHeaderMenu );
   connect( setWidth, SIGNAL( triggered( bool ) ), this, SLOT( resizeColumn() ) );
   setWidth->setData( col );
   mHorizontalHeaderMenu->addAction( setWidth );
-  QAction* optimizeWidth = new QAction( tr( "&Autosize" ), mHorizontalHeaderMenu );
+  QAction *optimizeWidth = new QAction( tr( "&Autosize" ), mHorizontalHeaderMenu );
   connect( optimizeWidth, SIGNAL( triggered( bool ) ), this, SLOT( autosizeColumn() ) );
   optimizeWidth->setData( col );
   mHorizontalHeaderMenu->addAction( optimizeWidth );
 
   mHorizontalHeaderMenu->addSeparator();
-  QAction* organize = new QAction( tr( "&Organize columns..." ), mHorizontalHeaderMenu );
+  QAction *organize = new QAction( tr( "&Organize columns..." ), mHorizontalHeaderMenu );
   connect( organize, SIGNAL( triggered( bool ) ), this, SLOT( organizeColumns() ) );
   mHorizontalHeaderMenu->addAction( organize );
-  QAction* sort = new QAction( tr( "&Sort..." ), mHorizontalHeaderMenu );
+  QAction *sort = new QAction( tr( "&Sort..." ), mHorizontalHeaderMenu );
   connect( sort, SIGNAL( triggered( bool ) ), this, SLOT( modifySort() ) );
   mHorizontalHeaderMenu->addAction( sort );
 
@@ -482,7 +482,7 @@ void QgsDualView::tableColumnResized( int column, int width )
 
 void QgsDualView::hideColumn()
 {
-  QAction* action = qobject_cast<QAction*>( sender() );
+  QAction *action = qobject_cast<QAction *>( sender() );
   int col = action->data().toInt();
   QgsAttributeTableConfig config = mConfig;
   int sourceCol = mConfig.mapVisibleColumnToIndex( col );
@@ -495,7 +495,7 @@ void QgsDualView::hideColumn()
 
 void QgsDualView::resizeColumn()
 {
-  QAction* action = qobject_cast<QAction*>( sender() );
+  QAction *action = qobject_cast<QAction *>( sender() );
   int col = action->data().toInt();
   if ( col < 0 )
     return;
@@ -518,14 +518,14 @@ void QgsDualView::resizeColumn()
 
 void QgsDualView::autosizeColumn()
 {
-  QAction* action = qobject_cast<QAction*>( sender() );
+  QAction *action = qobject_cast<QAction *>( sender() );
   int col = action->data().toInt();
   mTableView->resizeColumnToContents( col );
 }
 
 void QgsDualView::modifySort()
 {
-  QgsVectorLayer* layer = mLayerCache->layer();
+  QgsVectorLayer *layer = mLayerCache->layer();
   if ( !layer )
     return;
 
@@ -533,20 +533,20 @@ void QgsDualView::modifySort()
 
   QDialog orderByDlg;
   orderByDlg.setWindowTitle( tr( "Configure attribute table sort order" ) );
-  QDialogButtonBox* dialogButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
-  QGridLayout* layout = new QGridLayout();
+  QDialogButtonBox *dialogButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+  QGridLayout *layout = new QGridLayout();
   connect( dialogButtonBox, SIGNAL( accepted() ), &orderByDlg, SLOT( accept() ) );
   connect( dialogButtonBox, SIGNAL( rejected() ), &orderByDlg, SLOT( reject() ) );
   orderByDlg.setLayout( layout );
 
-  QGroupBox* sortingGroupBox = new QGroupBox();
+  QGroupBox *sortingGroupBox = new QGroupBox();
   sortingGroupBox->setTitle( tr( "Defined sort order in attribute table" ) );
   sortingGroupBox->setCheckable( true );
   sortingGroupBox->setChecked( !sortExpression().isEmpty() );
   layout->addWidget( sortingGroupBox );
   sortingGroupBox->setLayout( new QGridLayout() );
 
-  QgsExpressionBuilderWidget* expressionBuilder = new QgsExpressionBuilderWidget();
+  QgsExpressionBuilderWidget *expressionBuilder = new QgsExpressionBuilderWidget();
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
   expressionBuilder->setExpressionContext( context );
   expressionBuilder->setLayer( layer );
@@ -556,7 +556,7 @@ void QgsDualView::modifySort()
 
   sortingGroupBox->layout()->addWidget( expressionBuilder );
 
-  QCheckBox* cbxSortAscending = new QCheckBox( tr( "Sort ascending" ) );
+  QCheckBox *cbxSortAscending = new QCheckBox( tr( "Sort ascending" ) );
   cbxSortAscending->setChecked( config.sortOrder() == Qt::AscendingOrder );
   sortingGroupBox->layout()->addWidget( cbxSortAscending );
 
@@ -590,7 +590,7 @@ void QgsDualView::zoomToCurrentFeature()
 
   QgsFeatureIds ids;
   ids.insert( mFilterModel->rowToId( currentIndex ) );
-  QgsMapCanvas* canvas = mFilterModel->mapCanvas();
+  QgsMapCanvas *canvas = mFilterModel->mapCanvas();
   if ( canvas )
   {
     canvas->zoomToFeatureIds( mLayerCache->layer(), ids );
@@ -607,14 +607,14 @@ void QgsDualView::panToCurrentFeature()
 
   QgsFeatureIds ids;
   ids.insert( mFilterModel->rowToId( currentIndex ) );
-  QgsMapCanvas* canvas = mFilterModel->mapCanvas();
+  QgsMapCanvas *canvas = mFilterModel->mapCanvas();
   if ( canvas )
   {
     canvas->panToFeatureIds( mLayerCache->layer(), ids );
   }
 }
 
-void QgsDualView::previewExpressionChanged( const QString& expression )
+void QgsDualView::previewExpressionChanged( const QString &expression )
 {
   mLayerCache->layer()->setDisplayExpression( expression );
 }
@@ -642,17 +642,17 @@ void QgsDualView::featureFormAttributeChanged()
   mFeatureList->setCurrentFeatureEdited( true );
 }
 
-void QgsDualView::setFilteredFeatures( const QgsFeatureIds& filteredFeatures )
+void QgsDualView::setFilteredFeatures( const QgsFeatureIds &filteredFeatures )
 {
   mFilterModel->setFilteredFeatures( filteredFeatures );
 }
 
-void QgsDualView::setRequest( const QgsFeatureRequest& request )
+void QgsDualView::setRequest( const QgsFeatureRequest &request )
 {
   mMasterModel->setRequest( request );
 }
 
-void QgsDualView::setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager )
+void QgsDualView::setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager )
 {
   mTableView->setFeatureSelectionManager( featureSelectionManager );
   mFeatureList->setFeatureSelectionManager( featureSelectionManager );
@@ -663,7 +663,7 @@ void QgsDualView::setFeatureSelectionManager( QgsIFeatureSelectionManager* featu
   mFeatureSelectionManager = featureSelectionManager;
 }
 
-void QgsDualView::setAttributeTableConfig( const QgsAttributeTableConfig& config )
+void QgsDualView::setAttributeTableConfig( const QgsAttributeTableConfig &config )
 {
   mLayerCache->layer()->setAttributeTableConfig( config );
   mFilterModel->setAttributeTableConfig( config );
@@ -671,7 +671,7 @@ void QgsDualView::setAttributeTableConfig( const QgsAttributeTableConfig& config
   mConfig = config;
 }
 
-void QgsDualView::setSortExpression( const QString& sortExpression, Qt::SortOrder sortOrder )
+void QgsDualView::setSortExpression( const QString &sortExpression, Qt::SortOrder sortOrder )
 {
   if ( sortExpression.isNull() )
     mFilterModel->sort( -1 );
@@ -688,7 +688,7 @@ QString QgsDualView::sortExpression() const
   return mFilterModel->sortExpression();
 }
 
-void QgsDualView::progress( int i, bool& cancel )
+void QgsDualView::progress( int i, bool &cancel )
 {
   if ( !mProgressDlg )
   {

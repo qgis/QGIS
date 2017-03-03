@@ -19,24 +19,24 @@
 #include "qgsrelationmanager.h"
 #include "qgsrelationreferencewidget.h"
 
-QgsRelationReferenceWidgetWrapper::QgsRelationReferenceWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QgsMapCanvas* canvas, QgsMessageBar* messageBar, QWidget* parent )
-    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mWidget( nullptr )
-    , mCanvas( canvas )
-    , mMessageBar( messageBar )
-    , mIndeterminateState( false )
+QgsRelationReferenceWidgetWrapper::QgsRelationReferenceWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent )
+  : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+  , mWidget( nullptr )
+  , mCanvas( canvas )
+  , mMessageBar( messageBar )
+  , mIndeterminateState( false )
 {
 }
 
-QWidget* QgsRelationReferenceWidgetWrapper::createWidget( QWidget* parent )
+QWidget *QgsRelationReferenceWidgetWrapper::createWidget( QWidget *parent )
 {
-  QgsRelationReferenceWidget* w = new QgsRelationReferenceWidget( parent );
+  QgsRelationReferenceWidget *w = new QgsRelationReferenceWidget( parent );
   return w;
 }
 
-void QgsRelationReferenceWidgetWrapper::initWidget( QWidget* editor )
+void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
 {
-  QgsRelationReferenceWidget* w = dynamic_cast<QgsRelationReferenceWidget*>( editor );
+  QgsRelationReferenceWidget *w = dynamic_cast<QgsRelationReferenceWidget *>( editor );
   if ( !w )
   {
     w = new QgsRelationReferenceWidget( editor );
@@ -68,7 +68,7 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget* editor )
                          layer()->referencingRelations( fieldIdx() )[0];
 
   // If this widget is already embedded by the same relation, reduce functionality
-  const QgsAttributeEditorContext* ctx = &context();
+  const QgsAttributeEditorContext *ctx = &context();
   do
   {
     if ( ctx->relation().name() == relation.name() )
@@ -118,7 +118,7 @@ void QgsRelationReferenceWidgetWrapper::showIndeterminateState()
   mIndeterminateState = true;
 }
 
-void QgsRelationReferenceWidgetWrapper::setValue( const QVariant& val )
+void QgsRelationReferenceWidgetWrapper::setValue( const QVariant &val )
 {
   if ( !mWidget || ( !mIndeterminateState && val == value() ) )
     return;

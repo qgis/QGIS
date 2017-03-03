@@ -49,7 +49,7 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
      * than shown as a dialog by itself
      * @param parent parent widget
      */
-    QgsRendererPropertiesDialog( QgsVectorLayer* layer, QgsStyle* style, bool embedded = false, QWidget* parent = nullptr );
+    QgsRendererPropertiesDialog( QgsVectorLayer *layer, QgsStyle *style, bool embedded = false, QWidget *parent = nullptr );
     ~QgsRendererPropertiesDialog();
 
     /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
@@ -57,7 +57,7 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
      * @param canvas map canvas
      * @note added in QGIS 2.12
      */
-    void setMapCanvas( QgsMapCanvas* canvas );
+    void setMapCanvas( QgsMapCanvas *canvas );
 
     /**
      * Set the widget in dock mode which tells the widget to emit panel
@@ -87,7 +87,7 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
      * @note If you are connected to this signal you should also connect
      * given panels showPanel signal as they can be nested.
      */
-    void showPanel( QgsPanelWidget* panel );
+    void showPanel( QgsPanelWidget *panel );
 
   public slots:
     //! called when user changes renderer type
@@ -109,13 +109,13 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
      *
      * @param panel The panel widget to open.
      */
-    void openPanel( QgsPanelWidget* panel );
+    void openPanel( QgsPanelWidget *panel );
 
 
   private slots:
     void showOrderByDialog();
 
-    void changeOrderBy( const QgsFeatureRequest::OrderBy& orderBy, bool orderByEnabled );
+    void changeOrderBy( const QgsFeatureRequest::OrderBy &orderBy, bool orderByEnabled );
 
     void updateUIState( bool hidden );
 
@@ -134,16 +134,16 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
     void connectValueChanged( const QList<QWidget *> &widgets, const char *slot );
 
     // Reimplements dialog keyPress event so we can ignore it
-    void keyPressEvent( QKeyEvent * event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
 
-    QgsVectorLayer* mLayer = nullptr;
-    QgsStyle* mStyle = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
+    QgsStyle *mStyle = nullptr;
 
-    QgsRendererWidget* mActiveWidget = nullptr;
+    QgsRendererWidget *mActiveWidget = nullptr;
 
-    QgsPaintEffect* mPaintEffect = nullptr;
+    QgsPaintEffect *mPaintEffect = nullptr;
 
-    QgsMapCanvas* mMapCanvas = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
 
     QgsFeatureRequest::OrderBy mOrderBy;
 

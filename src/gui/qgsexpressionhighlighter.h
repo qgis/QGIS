@@ -34,7 +34,7 @@ class GUI_EXPORT QgsExpressionHighlighter : public QSyntaxHighlighter
 
   public:
     QgsExpressionHighlighter( QTextDocument *parent = nullptr );
-    void addFields( const QStringList& fieldList );
+    void addFields( const QStringList &fieldList );
 
   protected:
     void highlightBlock( const QString &text ) override;

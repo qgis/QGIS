@@ -31,7 +31,7 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
     Q_OBJECT
 
   public:
-    explicit QgsRelationWidgetWrapper( QgsVectorLayer* vl, const QgsRelation& relation, QWidget* editor = nullptr, QWidget* parent = nullptr );
+    explicit QgsRelationWidgetWrapper( QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor = nullptr, QWidget *parent = nullptr );
 
     /**
      * Defines if a title lable should be shown for this widget.
@@ -78,12 +78,12 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
     void setShowUnlinkButton( bool showUnlinkButton );
 
   protected:
-    QWidget* createWidget( QWidget* parent ) override;
-    void initWidget( QWidget* editor ) override;
+    QWidget *createWidget( QWidget *parent ) override;
+    void initWidget( QWidget *editor ) override;
     bool valid() const override;
 
   public slots:
-    void setFeature( const QgsFeature& feature ) override;
+    void setFeature( const QgsFeature &feature ) override;
 
     /** Sets the visibility of the wrapper's widget.
      * @param visible set to true to show widget, false to hide widget
@@ -93,7 +93,7 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
 
   private:
     QgsRelation mRelation;
-    QgsRelationEditorWidget* mWidget = nullptr;
+    QgsRelationEditorWidget *mWidget = nullptr;
 };
 
 #endif // QGSRELATIONWIDGETWRAPPER_H

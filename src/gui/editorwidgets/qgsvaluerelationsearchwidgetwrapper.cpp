@@ -25,12 +25,12 @@
 #include <QStringListModel>
 #include <QCompleter>
 
-QgsValueRelationSearchWidgetWrapper::QgsValueRelationSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
-    , mComboBox( nullptr )
-    , mListWidget( nullptr )
-    , mLineEdit( nullptr )
-    , mLayer( nullptr )
+QgsValueRelationSearchWidgetWrapper::QgsValueRelationSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
+  : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
+  , mComboBox( nullptr )
+  , mListWidget( nullptr )
+  , mLineEdit( nullptr )
+  , mLayer( nullptr )
 {
 }
 
@@ -66,7 +66,7 @@ QVariant QgsValueRelationSearchWidgetWrapper::value() const
     QStringList selection;
     for ( int i = 0; i < mListWidget->count(); ++i )
     {
-      QListWidgetItem* item = mListWidget->item( i );
+      QListWidgetItem *item = mListWidget->item( i );
       if ( item->checkState() == Qt::Checked )
         selection << item->data( Qt::UserRole ).toString();
     }
@@ -76,7 +76,7 @@ QVariant QgsValueRelationSearchWidgetWrapper::value() const
 
   if ( mLineEdit )
   {
-    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem& i , mCache )
+    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem &i, mCache )
     {
       if ( i.value == mLineEdit->text() )
       {
@@ -217,7 +217,7 @@ void QgsValueRelationSearchWidgetWrapper::setExpression( QString exp )
   mExpression = str;
 }
 
-QWidget* QgsValueRelationSearchWidgetWrapper::createWidget( QWidget* parent )
+QWidget *QgsValueRelationSearchWidgetWrapper::createWidget( QWidget *parent )
 {
   if ( config( QStringLiteral( "AllowMulti" ) ).toBool() )
   {
@@ -233,13 +233,13 @@ QWidget* QgsValueRelationSearchWidgetWrapper::createWidget( QWidget* parent )
   }
 }
 
-void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget* editor )
+void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget *editor )
 {
   mCache = QgsValueRelationFieldFormatter::createCache( config() );
 
-  mComboBox = qobject_cast<QComboBox*>( editor );
-  mListWidget = qobject_cast<QListWidget*>( editor );
-  mLineEdit = qobject_cast<QLineEdit*>( editor );
+  mComboBox = qobject_cast<QComboBox *>( editor );
+  mListWidget = qobject_cast<QListWidget *>( editor );
+  mLineEdit = qobject_cast<QLineEdit *>( editor );
 
   if ( mComboBox )
   {
@@ -249,7 +249,7 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget* editor )
       mComboBox->addItem( tr( "(no selection)" ), QVariant( layer()->fields().at( mFieldIdx ).type() ) );
     }
 
-    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem& element, mCache )
+    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem &element, mCache )
     {
       mComboBox->addItem( element.value, element.key );
     }
@@ -258,7 +258,7 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget* editor )
   }
   else if ( mListWidget )
   {
-    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem& element, mCache )
+    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem &element, mCache )
     {
       QListWidgetItem *item = nullptr;
       item = new QListWidgetItem( element.value );
@@ -266,19 +266,19 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget* editor )
 
       mListWidget->addItem( item );
     }
-    connect( mListWidget, SIGNAL( itemChanged( QListWidgetItem* ) ), this, SLOT( onValueChanged() ) );
+    connect( mListWidget, SIGNAL( itemChanged( QListWidgetItem * ) ), this, SLOT( onValueChanged() ) );
   }
   else if ( mLineEdit )
   {
     QStringList values;
     values.reserve( mCache.size() );
-    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem& i,  mCache )
+    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem &i,  mCache )
     {
       values << i.value;
     }
 
-    QStringListModel* m = new QStringListModel( values, mLineEdit );
-    QCompleter* completer = new QCompleter( m, mLineEdit );
+    QStringListModel *m = new QStringListModel( values, mLineEdit );
+    QCompleter *completer = new QCompleter( m, mLineEdit );
     completer->setCaseSensitivity( Qt::CaseInsensitive );
     mLineEdit->setCompleter( completer );
     connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( onValueChanged() ) );

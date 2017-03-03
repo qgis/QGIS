@@ -27,10 +27,10 @@
 
 ////////////////
 
-QgsSymbolLevelsDialog::QgsSymbolLevelsDialog( const QgsLegendSymbolList& list, bool usingSymbolLevels, QWidget* parent )
-    : QDialog( parent )
-    , mList( list )
-    , mForceOrderingEnabled( false )
+QgsSymbolLevelsDialog::QgsSymbolLevelsDialog( const QgsLegendSymbolList &list, bool usingSymbolLevels, QWidget *parent )
+  : QDialog( parent )
+  , mList( list )
+  , mForceOrderingEnabled( false )
 {
   setupUi( this );
 
@@ -53,7 +53,7 @@ QgsSymbolLevelsDialog::QgsSymbolLevelsDialog( const QgsLegendSymbolList& list, b
   tableLevels->setRowCount( mList.count() );
   for ( int i = 0; i < mList.count(); i++ )
   {
-    QgsSymbol* sym = mList.at( i ).second;
+    QgsSymbol *sym = mList.at( i ).second;
 
     // set icons for the rows
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( sym, QSize( 16, 16 ) );
@@ -95,14 +95,14 @@ void QgsSymbolLevelsDialog::populateTable()
 {
   for ( int row = 0; row < mList.count(); row++ )
   {
-    QgsSymbol* sym = mList.at( row ).second;
+    QgsSymbol *sym = mList.at( row ).second;
     QString label = mList.at( row ).first;
     QTableWidgetItem *itemLabel = new QTableWidgetItem( label );
     itemLabel->setFlags( itemLabel->flags() ^ Qt::ItemIsEditable );
     tableLevels->setItem( row, 0, itemLabel );
     for ( int layer = 0; layer < mMaxLayers; layer++ )
     {
-      QTableWidgetItem* item = nullptr;
+      QTableWidgetItem *item = nullptr;
       if ( layer >= sym->symbolLayerCount() )
       {
         item = new QTableWidgetItem();
@@ -110,7 +110,7 @@ void QgsSymbolLevelsDialog::populateTable()
       }
       else
       {
-        QgsSymbolLayer* sl = sym->symbolLayer( layer );
+        QgsSymbolLayer *sl = sym->symbolLayer( layer );
         QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, QgsUnitTypes::RenderMillimeters, QSize( 16, 16 ) );
         item = new QTableWidgetItem( icon, QString::number( sl->renderingPass() ) );
       }
@@ -130,7 +130,7 @@ void QgsSymbolLevelsDialog::setDefaultLevels()
 {
   for ( int i = 0; i < mList.count(); i++ )
   {
-    QgsSymbol* sym = mList.at( i ).second;
+    QgsSymbol *sym = mList.at( i ).second;
     for ( int layer = 0; layer < sym->symbolLayerCount(); layer++ )
     {
       sym->symbolLayer( layer )->setRenderingPass( layer );
@@ -147,7 +147,7 @@ void QgsSymbolLevelsDialog::renderingPassChanged( int row, int column )
 {
   if ( row < 0 || row >= mList.count() )
     return;
-  QgsSymbol* sym = mList.at( row ).second;
+  QgsSymbol *sym = mList.at( row ).second;
   if ( column < 0 || column > sym->symbolLayerCount() )
     return;
   sym->symbolLayer( column - 1 )->setRenderingPass( tableLevels->item( row, column )->text().toInt() );
@@ -168,7 +168,7 @@ void QgsSymbolLevelsDialog::setForceOrderingEnabled( bool enabled )
 
 /// @cond PRIVATE
 
-QWidget* SpinBoxDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem&, const QModelIndex& ) const
+QWidget *SpinBoxDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & ) const
 {
   QSpinBox *editor = new QSpinBox( parent );
   editor->setMinimum( 0 );
@@ -176,23 +176,23 @@ QWidget* SpinBoxDelegate::createEditor( QWidget* parent, const QStyleOptionViewI
   return editor;
 }
 
-void SpinBoxDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const
+void SpinBoxDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
   int value = index.model()->data( index, Qt::EditRole ).toInt();
-  QSpinBox *spinBox = static_cast<QSpinBox*>( editor );
+  QSpinBox *spinBox = static_cast<QSpinBox *>( editor );
   spinBox->setValue( value );
 }
 
-void SpinBoxDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const
+void SpinBoxDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  QSpinBox *spinBox = static_cast<QSpinBox*>( editor );
+  QSpinBox *spinBox = static_cast<QSpinBox *>( editor );
   spinBox->interpretText();
   int value = spinBox->value();
 
   model->setData( index, value, Qt::EditRole );
 }
 
-void SpinBoxDelegate::updateEditorGeometry( QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& ) const
+void SpinBoxDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex & ) const
 {
   editor->setGeometry( option.rect );
 }

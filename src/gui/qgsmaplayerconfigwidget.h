@@ -42,7 +42,7 @@ class GUI_EXPORT QgsMapLayerConfigWidget : public QgsPanelWidget
        * @note The widget is created each time the panel is selected in the dock.
        * Keep the loading light as possible for speed in the UI.
        */
-    QgsMapLayerConfigWidget( QgsMapLayer* layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
+    QgsMapLayerConfigWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
 
   public slots:
 
@@ -53,8 +53,8 @@ class GUI_EXPORT QgsMapLayerConfigWidget : public QgsPanelWidget
     virtual void apply() = 0;
 
   protected:
-    QgsMapLayer* mLayer = nullptr;
-    QgsMapCanvas* mMapCanvas = nullptr;
+    QgsMapLayer *mLayer = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
 };
 
 #endif // QGSMAPLAYERCONFIGWIDGET_H

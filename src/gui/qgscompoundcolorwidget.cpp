@@ -30,19 +30,19 @@
 #include <QInputDialog>
 #include <QVBoxLayout>
 
-QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor& color, Layout widgetLayout )
-    : QgsPanelWidget( parent )
-    , mAllowAlpha( true )
-    , mLastCustomColorIndex( 0 )
-    , mPickingColor( false )
-    , mDiscarded( false )
+QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &color, Layout widgetLayout )
+  : QgsPanelWidget( parent )
+  , mAllowAlpha( true )
+  , mLastCustomColorIndex( 0 )
+  , mPickingColor( false )
+  , mDiscarded( false )
 {
   setupUi( this );
 
   if ( widgetLayout == LayoutVertical )
   {
     // shuffle stuff around
-    QVBoxLayout* newLayout = new QVBoxLayout();
+    QVBoxLayout *newLayout = new QVBoxLayout();
     newLayout->setMargin( 0 );
     newLayout->setContentsMargins( 0, 0, 0, 0 );
     newLayout->addWidget( mTabWidget );
@@ -85,7 +85,7 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor& c
   connect( mActionNewPalette, SIGNAL( triggered() ), this, SLOT( newPalette() ) );
   connect( mRemoveColorsFromSchemeButton, SIGNAL( clicked() ), mSchemeList, SLOT( removeSelection() ) );
 
-  QMenu* schemeMenu = new QMenu( mSchemeToolButton );
+  QMenu *schemeMenu = new QMenu( mSchemeToolButton );
   schemeMenu->addAction( mActionCopyColors );
   schemeMenu->addAction( mActionPasteColors );
   schemeMenu->addSeparator();
@@ -274,7 +274,7 @@ void QgsCompoundColorWidget::refreshSchemeComboBox()
   QList<QgsColorScheme *>::const_iterator schemeIt = schemeList.constBegin();
   for ( ; schemeIt != schemeList.constEnd(); ++schemeIt )
   {
-    mSchemeComboBox->addItem(( *schemeIt )->schemeName() );
+    mSchemeComboBox->addItem( ( *schemeIt )->schemeName() );
   }
   mSchemeComboBox->blockSignals( false );
 }
@@ -319,7 +319,7 @@ void QgsCompoundColorWidget::importPalette()
   }
 
   //TODO - handle conflicting file names, name for new palette
-  QgsUserColorScheme* importedScheme = new QgsUserColorScheme( fileInfo.fileName() );
+  QgsUserColorScheme *importedScheme = new QgsUserColorScheme( fileInfo.fileName() );
   importedScheme->setName( paletteName );
   importedScheme->setColors( importedColors );
 
@@ -341,7 +341,7 @@ void QgsCompoundColorWidget::removePalette()
   }
 
   //make user scheme is a user removable scheme
-  QgsUserColorScheme* userScheme = dynamic_cast<QgsUserColorScheme*>( schemeList.at( prevIndex ) );
+  QgsUserColorScheme *userScheme = dynamic_cast<QgsUserColorScheme *>( schemeList.at( prevIndex ) );
   if ( !userScheme )
   {
     return;
@@ -398,7 +398,7 @@ void QgsCompoundColorWidget::newPalette()
     fileNumber++;
   }
 
-  QgsUserColorScheme* newScheme = new QgsUserColorScheme( destFileInfo.fileName() );
+  QgsUserColorScheme *newScheme = new QgsUserColorScheme( destFileInfo.fileName() );
   newScheme->setName( name );
 
   QgsApplication::colorSchemeRegistry()->addColorScheme( newScheme );
@@ -436,7 +436,7 @@ void QgsCompoundColorWidget::schemeIndexChanged( int index )
     return;
   }
 
-  QgsColorScheme* scheme = schemeList.at( index );
+  QgsColorScheme *scheme = schemeList.at( index );
   mSchemeList->setScheme( scheme );
 
   updateActionsForCurrentScheme();
@@ -514,7 +514,7 @@ void QgsCompoundColorWidget::on_mAddCustomColorButton_clicked()
 void QgsCompoundColorWidget::on_mSampleButton_clicked()
 {
   //activate picker color
-  QPixmap samplerPixmap = QPixmap(( const char ** ) sampler_cursor );
+  QPixmap samplerPixmap = QPixmap( ( const char ** ) sampler_cursor );
   setCursor( QCursor( samplerPixmap, 0, 0 ) );
   grabMouse();
   grabKeyboard();
@@ -536,7 +536,7 @@ void QgsCompoundColorWidget::on_mTabWidget_currentChanged( int index )
 
 void QgsCompoundColorWidget::on_mActionShowInButtons_toggled( bool state )
 {
-  QgsUserColorScheme* scheme = dynamic_cast< QgsUserColorScheme* >( mSchemeList->scheme() );
+  QgsUserColorScheme *scheme = dynamic_cast< QgsUserColorScheme * >( mSchemeList->scheme() );
   if ( scheme )
   {
     scheme->setShowSchemeInMenu( state );
@@ -631,8 +631,8 @@ void QgsCompoundColorWidget::setColor( const QColor &color )
     //alpha disallowed, so don't permit transparent colors
     fixedColor.setAlpha( 255 );
   }
-  QList<QgsColorWidget*> colorWidgets = this->findChildren<QgsColorWidget *>();
-  Q_FOREACH ( QgsColorWidget* widget, colorWidgets )
+  QList<QgsColorWidget *> colorWidgets = this->findChildren<QgsColorWidget *>();
+  Q_FOREACH ( QgsColorWidget *widget, colorWidgets )
   {
     if ( widget == mSamplePreview )
     {
@@ -673,7 +673,7 @@ QColor QgsCompoundColorWidget::averageColor( const QImage &image ) const
   //scan through image and sum rgb components
   for ( int heightIndex = 0; heightIndex < image.height(); ++heightIndex )
   {
-    QRgb* scanLine = ( QRgb* )image.constScanLine( heightIndex );
+    QRgb *scanLine = ( QRgb * )image.constScanLine( heightIndex );
     for ( int widthIndex = 0; widthIndex < image.width(); ++widthIndex )
     {
       tmpRgb = scanLine[widthIndex];
@@ -805,14 +805,14 @@ void QgsCompoundColorWidget::on_mAddColorToSchemeButton_clicked()
 
 void QgsCompoundColorWidget::updateActionsForCurrentScheme()
 {
-  QgsColorScheme* scheme = mSchemeList->scheme();
+  QgsColorScheme *scheme = mSchemeList->scheme();
 
   mActionImportColors->setEnabled( scheme->isEditable() );
   mActionPasteColors->setEnabled( scheme->isEditable() );
   mAddColorToSchemeButton->setEnabled( scheme->isEditable() );
   mRemoveColorsFromSchemeButton->setEnabled( scheme->isEditable() );
 
-  QgsUserColorScheme* userScheme = dynamic_cast<QgsUserColorScheme*>( scheme );
+  QgsUserColorScheme *userScheme = dynamic_cast<QgsUserColorScheme *>( scheme );
   mActionRemovePalette->setEnabled( userScheme ? true : false );
   if ( userScheme )
   {

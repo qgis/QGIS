@@ -37,21 +37,21 @@ class GUI_EXPORT QgsMultiBandColorRendererWidget: public QgsRasterRendererWidget
     Q_OBJECT
 
   public:
-    QgsMultiBandColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
-    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &extent ) { return new QgsMultiBandColorRendererWidget( layer, extent ); }
+    QgsMultiBandColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
+    static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) { return new QgsMultiBandColorRendererWidget( layer, extent ); }
 
-    QgsRasterRenderer* renderer() override;
-    void setMapCanvas( QgsMapCanvas* canvas ) override;
+    QgsRasterRenderer *renderer() override;
+    void setMapCanvas( QgsMapCanvas *canvas ) override;
 
-    void setFromRenderer( const QgsRasterRenderer* r );
+    void setFromRenderer( const QgsRasterRenderer *r );
 
     QString min( int index = 0 ) override;
     QString max( int index = 0 ) override;
-    void setMin( const QString& value, int index = 0 ) override;
-    void setMax( const QString& value, int index = 0 ) override;
+    void setMin( const QString &value, int index = 0 ) override;
+    void setMax( const QString &value, int index = 0 ) override;
     int selectedBand( int index = 0 ) override;
     void doComputations() override;
-    QgsRasterMinMaxWidget* minMaxWidget() override { return mMinMaxWidget; }
+    QgsRasterMinMaxWidget *minMaxWidget() override { return mMinMaxWidget; }
 
   public slots:
     //! called when new min/max values are loaded
@@ -69,11 +69,11 @@ class GUI_EXPORT QgsMultiBandColorRendererWidget: public QgsRasterRendererWidget
 
   private:
     void createValidators();
-    void setCustomMinMaxValues( QgsMultiBandColorRenderer* r, const QgsRasterDataProvider* provider, int redBand, int GreenBand,
+    void setCustomMinMaxValues( QgsMultiBandColorRenderer *r, const QgsRasterDataProvider *provider, int redBand, int GreenBand,
                                 int blueBand );
     //! Reads min/max values from contrast enhancement and fills values into the min/max line edits
-    void setMinMaxValue( const QgsContrastEnhancement* ce, QLineEdit* minEdit, QLineEdit* maxEdit );
-    QgsRasterMinMaxWidget * mMinMaxWidget = nullptr;
+    void setMinMaxValue( const QgsContrastEnhancement *ce, QLineEdit *minEdit, QLineEdit *maxEdit );
+    QgsRasterMinMaxWidget *mMinMaxWidget = nullptr;
     bool mDisableMinMaxWidgetRefresh;
 
     void minMaxModified();

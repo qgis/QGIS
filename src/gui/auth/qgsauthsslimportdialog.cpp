@@ -81,14 +81,14 @@
 
 
 QgsAuthSslImportDialog::QgsAuthSslImportDialog( QWidget *parent )
-    : QDialog( parent )
-    , mSocket( nullptr )
-    , mExecErrorsDialog( false )
-    , mTimer( nullptr )
-    , mSslErrors( QList<QSslError>() )
-    , mTrustedCAs( QList<QSslCertificate>() )
-    , mAuthNotifyLayout( nullptr )
-    , mAuthNotify( nullptr )
+  : QDialog( parent )
+  , mSocket( nullptr )
+  , mExecErrorsDialog( false )
+  , mTimer( nullptr )
+  , mSslErrors( QList<QSslError>() )
+  , mTrustedCAs( QList<QSslCertificate>() )
+  , mAuthNotifyLayout( nullptr )
+  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -377,7 +377,7 @@ void QgsAuthSslImportDialog::radioFileImportToggled( bool checked )
 
 void QgsAuthSslImportDialog::on_btnCertPath_clicked()
 {
-  const QString& fn = getOpenFileName( tr( "Open Server Certificate File" ),  tr( "PEM (*.pem);;DER (*.der)" ) );
+  const QString &fn = getOpenFileName( tr( "Open Server Certificate File" ),  tr( "PEM (*.pem);;DER (*.der)" ) );
   if ( !fn.isEmpty() )
   {
     leCertPath->setText( fn );

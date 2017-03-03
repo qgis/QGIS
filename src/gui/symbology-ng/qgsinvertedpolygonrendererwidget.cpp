@@ -21,13 +21,13 @@
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 
-QgsRendererWidget* QgsInvertedPolygonRendererWidget::create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
+QgsRendererWidget *QgsInvertedPolygonRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {
   return new QgsInvertedPolygonRendererWidget( layer, style, renderer );
 }
 
-QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
-    : QgsRendererWidget( layer, style )
+QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
+  : QgsRendererWidget( layer, style )
 {
   if ( !layer )
   {
@@ -41,8 +41,8 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
   {
     //setup blank dialog
     mRenderer.reset( nullptr );
-    QGridLayout* layout = new QGridLayout( this );
-    QLabel* label = new QLabel( tr( "The inverted polygon renderer only applies to polygon and multipolygon layers. \n"
+    QGridLayout *layout = new QGridLayout( this );
+    QLabel *label = new QLabel( tr( "The inverted polygon renderer only applies to polygon and multipolygon layers. \n"
                                     "'%1' is not a polygon layer and then cannot be displayed" )
                                 .arg( layer->name() ), this );
     this->setLayout( layout );
@@ -76,9 +76,9 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
   {
     if ( *it != QLatin1String( "invertedPolygonRenderer" ) ) //< an inverted renderer cannot contain another inverted renderer
     {
-      QgsRendererAbstractMetadata* m = QgsApplication::rendererRegistry()->rendererMetadata( *it );
+      QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( *it );
       mRendererComboBox->addItem( m->icon(), m->visibleName(), /* data */ *it );
-      const QgsFeatureRenderer* embeddedRenderer = mRenderer->embeddedRenderer();
+      const QgsFeatureRenderer *embeddedRenderer = mRenderer->embeddedRenderer();
       if ( embeddedRenderer && embeddedRenderer->type() == m->name() )
       {
         // store the combo box index of the current renderer
@@ -97,11 +97,11 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
   }
 }
 
-QgsFeatureRenderer* QgsInvertedPolygonRendererWidget::renderer()
+QgsFeatureRenderer *QgsInvertedPolygonRendererWidget::renderer()
 {
   if ( mRenderer && mEmbeddedRendererWidget )
   {
-    QgsFeatureRenderer* embeddedRenderer = mEmbeddedRendererWidget->renderer();
+    QgsFeatureRenderer *embeddedRenderer = mEmbeddedRendererWidget->renderer();
     if ( embeddedRenderer )
     {
       mRenderer->setEmbeddedRenderer( embeddedRenderer->clone() );
@@ -110,7 +110,7 @@ QgsFeatureRenderer* QgsInvertedPolygonRendererWidget::renderer()
   return mRenderer.get();
 }
 
-void QgsInvertedPolygonRendererWidget::setContext( const QgsSymbolWidgetContext& context )
+void QgsInvertedPolygonRendererWidget::setContext( const QgsSymbolWidgetContext &context )
 {
   QgsRendererWidget::setContext( context );
   if ( mEmbeddedRendererWidget )
@@ -120,10 +120,10 @@ void QgsInvertedPolygonRendererWidget::setContext( const QgsSymbolWidgetContext&
 void QgsInvertedPolygonRendererWidget::on_mRendererComboBox_currentIndexChanged( int index )
 {
   QString rendererId = mRendererComboBox->itemData( index ).toString();
-  QgsRendererAbstractMetadata* m = QgsApplication::rendererRegistry()->rendererMetadata( rendererId );
+  QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( rendererId );
   if ( m )
   {
-    mEmbeddedRendererWidget.reset( m->createRendererWidget( mLayer, mStyle, const_cast<QgsFeatureRenderer*>( mRenderer->embeddedRenderer() )->clone() ) );
+    mEmbeddedRendererWidget.reset( m->createRendererWidget( mLayer, mStyle, const_cast<QgsFeatureRenderer *>( mRenderer->embeddedRenderer() )->clone() ) );
     connect( mEmbeddedRendererWidget.get(), SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
     mEmbeddedRendererWidget->setContext( mContext );
 

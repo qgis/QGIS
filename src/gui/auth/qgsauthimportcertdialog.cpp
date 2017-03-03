@@ -29,15 +29,15 @@
 #include "qgsauthmanager.h"
 
 
-QgsAuthImportCertDialog::QgsAuthImportCertDialog( QWidget *parent ,
+QgsAuthImportCertDialog::QgsAuthImportCertDialog( QWidget *parent,
     QgsAuthImportCertDialog::CertFilter filter,
     QgsAuthImportCertDialog::CertInput input )
-    : QDialog( parent )
-    , mFilter( filter )
-    , mInput( input )
-    , mDisabled( false )
-    , mAuthNotifyLayout( nullptr )
-    , mAuthNotify( nullptr )
+  : QDialog( parent )
+  , mFilter( filter )
+  , mInput( input )
+  , mDisabled( false )
+  , mAuthNotifyLayout( nullptr )
+  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -224,7 +224,7 @@ void QgsAuthImportCertDialog::validateCertificates()
 
 void QgsAuthImportCertDialog::on_btnImportFile_clicked()
 {
-  const QString& fn = getOpenFileName( tr( "Open Certificate File" ),  tr( "PEM (*.pem);;DER (*.der)" ) );
+  const QString &fn = getOpenFileName( tr( "Open Certificate File" ),  tr( "PEM (*.pem);;DER (*.der)" ) );
   if ( !fn.isEmpty() )
   {
     leImportFile->setText( fn );
@@ -255,7 +255,7 @@ QString QgsAuthImportCertDialog::getOpenFileName( const QString &title, const QS
   return f;
 }
 
-QPushButton* QgsAuthImportCertDialog::okButton()
+QPushButton *QgsAuthImportCertDialog::okButton()
 {
   return buttonBox->button( QDialogButtonBox::Ok );
 }

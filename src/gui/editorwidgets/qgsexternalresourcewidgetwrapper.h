@@ -38,7 +38,7 @@ class GUI_EXPORT QgsExternalResourceWidgetWrapper : public QgsEditorWidgetWrappe
 {
     Q_OBJECT
   public:
-    explicit QgsExternalResourceWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = nullptr, QWidget* parent = nullptr );
+    explicit QgsExternalResourceWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor = nullptr, QWidget *parent = nullptr );
 
     // QgsEditorWidgetWrapper interface
   public:
@@ -46,20 +46,20 @@ class GUI_EXPORT QgsExternalResourceWidgetWrapper : public QgsEditorWidgetWrappe
     void showIndeterminateState() override;
 
   protected:
-    QWidget* createWidget( QWidget* parent ) override;
-    void initWidget( QWidget* editor ) override;
+    QWidget *createWidget( QWidget *parent ) override;
+    void initWidget( QWidget *editor ) override;
     bool valid() const override;
 
   public slots:
-    void setValue( const QVariant& value ) override;
+    void setValue( const QVariant &value ) override;
     void setEnabled( bool enabled ) override;
 
   private:
     void updateConstraintWidgetStatus( ConstraintResult status ) override;
 
-    QLineEdit* mLineEdit = nullptr;
-    QLabel* mLabel = nullptr;
-    QgsExternalResourceWidget* mQgsWidget = nullptr;
+    QLineEdit *mLineEdit = nullptr;
+    QLabel *mLabel = nullptr;
+    QgsExternalResourceWidget *mQgsWidget = nullptr;
 
 
 };

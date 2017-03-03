@@ -38,23 +38,23 @@ class GUI_EXPORT QgsCredentialDialog : public QDialog, public QgsCredentials, pr
   signals:
 
     //! @note not available in Python bindings
-    void credentialsRequested( const QString&, QString *, QString *, const QString&, bool * );
+    void credentialsRequested( const QString &, QString *, QString *, const QString &, bool * );
 
     //! @note not available in Python bindings
     void credentialsRequestedMasterPassword( QString *, bool, bool * );
 
   private slots:
-    void requestCredentials( const QString&, QString *, QString *, const QString&, bool * );
+    void requestCredentials( const QString &, QString *, QString *, const QString &, bool * );
 
     void requestCredentialsMasterPassword( QString *password, bool stored, bool *ok );
 
     void on_chkMasterPassShow_stateChanged( int state );
-    void on_leMasterPass_textChanged( const QString& pass );
-    void on_leMasterPassVerify_textChanged( const QString& pass );
+    void on_leMasterPass_textChanged( const QString &pass );
+    void on_leMasterPassVerify_textChanged( const QString &pass );
     void on_chkbxEraseAuthDb_toggled( bool checked );
 
   protected:
-    virtual bool request( const QString& realm, QString &username, QString &password, const QString& message = QString::null ) override;
+    virtual bool request( const QString &realm, QString &username, QString &password, const QString &message = QString::null ) override;
 
     virtual bool requestMasterPassword( QString &password, bool stored = false ) override;
 

@@ -25,9 +25,9 @@
 #include "qgslogger.h"
 #include "qgsgeometry.h"
 
-QgsMapCanvasSnapper::QgsMapCanvasSnapper( QgsMapCanvas* canvas )
-    : mMapCanvas( canvas )
-    , mSnapper( nullptr )
+QgsMapCanvasSnapper::QgsMapCanvasSnapper( QgsMapCanvas *canvas )
+  : mMapCanvas( canvas )
+  , mSnapper( nullptr )
 {
   if ( !canvas )
     return;
@@ -44,7 +44,7 @@ QgsMapCanvasSnapper::~QgsMapCanvasSnapper()
   delete mSnapper;
 }
 
-void QgsMapCanvasSnapper::setMapCanvas( QgsMapCanvas* canvas )
+void QgsMapCanvasSnapper::setMapCanvas( QgsMapCanvas *canvas )
 {
   mMapCanvas = canvas;
   delete mSnapper;
@@ -58,10 +58,10 @@ void QgsMapCanvasSnapper::setMapCanvas( QgsMapCanvas* canvas )
   }
 }
 
-int QgsMapCanvasSnapper::snapToCurrentLayer( QPoint p, QList<QgsSnappingResult>& results,
+int QgsMapCanvasSnapper::snapToCurrentLayer( QPoint p, QList<QgsSnappingResult> &results,
     QgsSnapper::SnappingType snap_to,
     double snappingTol,
-    const QList<QgsPoint>& excludePoints,
+    const QList<QgsPoint> &excludePoints,
     bool allResutInTolerance )
 {
   results.clear();
@@ -85,11 +85,11 @@ int QgsMapCanvasSnapper::snapToCurrentLayer( QPoint p, QList<QgsSnappingResult>&
   }
 
   //current vector layer
-  QgsMapLayer* currentLayer = mMapCanvas->currentLayer();
+  QgsMapLayer *currentLayer = mMapCanvas->currentLayer();
   if ( !currentLayer )
     return 2;
 
-  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
   if ( !vlayer )
     return 3;
 
@@ -119,13 +119,13 @@ int QgsMapCanvasSnapper::snapToCurrentLayer( QPoint p, QList<QgsSnappingResult>&
   return 0;
 }
 
-int QgsMapCanvasSnapper::snapToBackgroundLayers( QPoint p, QList<QgsSnappingResult>& results, const QList<QgsPoint>& excludePoints )
+int QgsMapCanvasSnapper::snapToBackgroundLayers( QPoint p, QList<QgsSnappingResult> &results, const QList<QgsPoint> &excludePoints )
 {
   const QgsPoint mapCoordPoint = mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( p.x(), p.y() );
   return snapToBackgroundLayers( mapCoordPoint, results, excludePoints );
 }
 
-int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<QgsSnappingResult>& results, const QList<QgsPoint>& excludePoints )
+int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint &point, QList<QgsSnappingResult> &results, const QList<QgsPoint> &excludePoints )
 {
   results.clear();
 
@@ -154,7 +154,7 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<Qg
     mSnapper->setSnapMode( QgsSnapper::SnapWithResultsWithinTolerances );
   }
 
-  QgsVectorLayer* currentVectorLayer = dynamic_cast<QgsVectorLayer*>( mMapCanvas->currentLayer() );
+  QgsVectorLayer *currentVectorLayer = dynamic_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
   if ( !currentVectorLayer )
   {
     return 1;
@@ -209,15 +209,15 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<Qg
   }
   else if ( snappingMode == QLatin1String( "all_layers" ) )
   {
-    QList<QgsMapLayer*> allLayers = mMapCanvas->layers();
-    QList<QgsMapLayer*>::const_iterator layerIt = allLayers.constBegin();
+    QList<QgsMapLayer *> allLayers = mMapCanvas->layers();
+    QList<QgsMapLayer *>::const_iterator layerIt = allLayers.constBegin();
     for ( ; layerIt != allLayers.constEnd(); ++layerIt )
     {
       if ( !( *layerIt ) )
       {
         continue;
       }
-      layerIdList.append(( *layerIt )->id() );
+      layerIdList.append( ( *layerIt )->id() );
       enabledList.append( QStringLiteral( "enabled" ) );
       toleranceList.append( defaultSnapTolerance );
       toleranceUnitList.append( defaultSnapToleranceUnit );
@@ -352,7 +352,7 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<Qg
         //We have to check the intersection point is inside the tolerance distance for both layers
         double toleranceA = 0;
         double toleranceB = 0;
-        for ( int i = 0 ;i < snapLayers.size();++i )
+        for ( int i = 0 ; i < snapLayers.size(); ++i )
         {
           if ( snapLayers[i].mLayer == oSegIt->layer )
           {

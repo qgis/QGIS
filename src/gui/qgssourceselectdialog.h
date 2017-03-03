@@ -38,11 +38,11 @@ class GUI_EXPORT QgsSourceSelectDialog : public QDialog, protected Ui::QgsSource
     enum ServiceType { MapService, FeatureService };
 
     //! Constructor
-    QgsSourceSelectDialog( const QString& serviceName, ServiceType serviceType, QWidget* parent, Qt::WindowFlags fl );
+    QgsSourceSelectDialog( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl );
 
     ~QgsSourceSelectDialog();
     //! Sets the current extent and CRS. Used to select an appropriate CRS and possibly to retrieve data only in the current extent
-    void setCurrentExtentAndCrs( const QgsRectangle& canvasExtent, const QgsCoordinateReferenceSystem& canvasCrs );
+    void setCurrentExtentAndCrs( const QgsRectangle &canvasExtent, const QgsCoordinateReferenceSystem &canvasCrs );
 
   signals:
     //! Emitted when a layer is added from the dialog
@@ -53,30 +53,30 @@ class GUI_EXPORT QgsSourceSelectDialog : public QDialog, protected Ui::QgsSource
   protected:
     QString mServiceName;
     ServiceType mServiceType;
-    QgsProjectionSelectionDialog* mProjectionSelector = nullptr;
+    QgsProjectionSelectionDialog *mProjectionSelector = nullptr;
     //  Available CRS for a server connection, key=typename, value=list("EPSG:XXXX")
     QMap<QString, QStringList> mAvailableCRS;
-    QStandardItemModel* mModel = nullptr;
-    QSortFilterProxyModel* mModelProxy = nullptr;
+    QStandardItemModel *mModel = nullptr;
+    QSortFilterProxyModel *mModelProxy = nullptr;
     QPushButton *mBuildQueryButton = nullptr;
     QPushButton *mAddButton = nullptr;
-    QButtonGroup* mImageEncodingGroup = nullptr;
+    QButtonGroup *mImageEncodingGroup = nullptr;
     QgsRectangle mCanvasExtent;
     QgsCoordinateReferenceSystem mCanvasCrs;
 
     //! To be implemented in the child class. Called when a new connection is initiated.
-    virtual bool connectToService( const QgsOwsConnection& connection ) = 0;
+    virtual bool connectToService( const QgsOwsConnection &connection ) = 0;
     //! May be implemented in child classes for services which support customized queries.
-    virtual void buildQuery( const QgsOwsConnection&, const QModelIndex& ) {}
+    virtual void buildQuery( const QgsOwsConnection &, const QModelIndex & ) {}
     //! To be implemented in the child class. Constructs an URI for the specified service layer.
-    virtual QString getLayerURI( const QgsOwsConnection& connection,
-                                 const QString& layerTitle,
-                                 const QString& layerName,
-                                 const QString& crs = QString(),
-                                 const QString& filter = QString(),
-                                 const QgsRectangle& bBox = QgsRectangle() ) const = 0;
+    virtual QString getLayerURI( const QgsOwsConnection &connection,
+                                 const QString &layerTitle,
+                                 const QString &layerName,
+                                 const QString &crs = QString(),
+                                 const QString &filter = QString(),
+                                 const QgsRectangle &bBox = QgsRectangle() ) const = 0;
     //! Updates the UI for the list of available image encodings from the specified list.
-    void populateImageEncodings( const QStringList& availableEncodings );
+    void populateImageEncodings( const QStringList &availableEncodings );
     //! Returns the selected image encoding.
     QString getSelectedImageEncoding() const;
 
@@ -88,7 +88,7 @@ class GUI_EXPORT QgsSourceSelectDialog : public QDialog, protected Ui::QgsSource
        2. WGS84 if contained in the set
        3. the first entry in the set else
     @return the authority id of the crs or an empty string in case of error*/
-    QString getPreferredCrs( const QSet<QString>& crsSet ) const;
+    QString getPreferredCrs( const QSet<QString> &crsSet ) const;
 
   private slots:
     void addEntryToServerList();
@@ -102,8 +102,8 @@ class GUI_EXPORT QgsSourceSelectDialog : public QDialog, protected Ui::QgsSource
     void filterChanged( const QString &text );
     void on_cmbConnections_activated( int index );
     void on_buttonBox_helpRequested() const;
-    void treeWidgetItemDoubleClicked( const QModelIndex & index );
-    void treeWidgetCurrentRowChanged( const QModelIndex & current, const QModelIndex & previous );
+    void treeWidgetItemDoubleClicked( const QModelIndex &index );
+    void treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous );
 };
 
 

@@ -32,17 +32,17 @@ class GUI_EXPORT QgsRelationReferenceConfigDlg : public QgsEditorConfigWidget, p
     Q_OBJECT
 
   public:
-    explicit QgsRelationReferenceConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent );
+    explicit QgsRelationReferenceConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent );
     virtual QVariantMap config() override;
-    virtual void setConfig( const QVariantMap& config ) override;
+    virtual void setConfig( const QVariantMap &config ) override;
 
   private:
     void loadFields();
-    void addFilterField( const QString& field );
-    void addFilterField( QListWidgetItem* item );
-    int indexFromListWidgetItem( QListWidgetItem* item );
+    void addFilterField( const QString &field );
+    void addFilterField( QListWidgetItem *item );
+    int indexFromListWidgetItem( QListWidgetItem *item );
 
-    QgsVectorLayer* mReferencedLayer = nullptr;
+    QgsVectorLayer *mReferencedLayer = nullptr;
 
   private slots:
     void relationChanged( int idx );

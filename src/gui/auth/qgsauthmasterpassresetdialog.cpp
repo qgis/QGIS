@@ -25,11 +25,11 @@
 
 
 QgsMasterPasswordResetDialog::QgsMasterPasswordResetDialog( QWidget *parent )
-    : QDialog( parent )
-    , mPassCurOk( false )
-    , mPassNewOk( false )
-    , mAuthNotifyLayout( nullptr )
-    , mAuthNotify( nullptr )
+  : QDialog( parent )
+  , mPassCurOk( false )
+  , mPassNewOk( false )
+  , mAuthNotifyLayout( nullptr )
+  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -65,7 +65,7 @@ bool QgsMasterPasswordResetDialog::requestMasterPasswordReset( QString *newpass,
   return false;
 }
 
-void QgsMasterPasswordResetDialog::on_leMasterPassCurrent_textChanged( const QString& pass )
+void QgsMasterPasswordResetDialog::on_leMasterPassCurrent_textChanged( const QString &pass )
 {
   // since this is called on every keystroke, block signals emitted during verification of password
   QgsAuthManager::instance()->blockSignals( true );
@@ -74,7 +74,7 @@ void QgsMasterPasswordResetDialog::on_leMasterPassCurrent_textChanged( const QSt
   validatePasswords();
 }
 
-void QgsMasterPasswordResetDialog::on_leMasterPassNew_textChanged( const QString& pass )
+void QgsMasterPasswordResetDialog::on_leMasterPassNew_textChanged( const QString &pass )
 {
   mPassNewOk = !pass.isEmpty();
   validatePasswords();
@@ -82,12 +82,12 @@ void QgsMasterPasswordResetDialog::on_leMasterPassNew_textChanged( const QString
 
 void QgsMasterPasswordResetDialog::on_chkPassShowCurrent_stateChanged( int state )
 {
-  leMasterPassCurrent->setEchoMode(( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
+  leMasterPassCurrent->setEchoMode( ( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
 }
 
 void QgsMasterPasswordResetDialog::on_chkPassShowNew_stateChanged( int state )
 {
-  leMasterPassNew->setEchoMode(( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
+  leMasterPassNew->setEchoMode( ( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
 }
 
 void QgsMasterPasswordResetDialog::validatePasswords()

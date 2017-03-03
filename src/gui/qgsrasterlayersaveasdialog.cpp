@@ -29,17 +29,17 @@
 #include <QMessageBox>
 #include <QSettings>
 
-QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLayer,
-    QgsRasterDataProvider* sourceProvider, const QgsRectangle& currentExtent,
-    const QgsCoordinateReferenceSystem& layerCrs, const QgsCoordinateReferenceSystem& currentCrs,
-    QWidget* parent, Qt::WindowFlags f )
-    : QDialog( parent, f )
-    , mRasterLayer( rasterLayer )
-    , mDataProvider( sourceProvider )
-    , mCurrentExtent( currentExtent )
-    , mLayerCrs( layerCrs )
-    , mCurrentCrs( currentCrs )
-    , mResolutionState( OriginalResolution )
+QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLayer,
+    QgsRasterDataProvider *sourceProvider, const QgsRectangle &currentExtent,
+    const QgsCoordinateReferenceSystem &layerCrs, const QgsCoordinateReferenceSystem &currentCrs,
+    QWidget *parent, Qt::WindowFlags f )
+  : QDialog( parent, f )
+  , mRasterLayer( rasterLayer )
+  , mDataProvider( sourceProvider )
+  , mCurrentExtent( currentExtent )
+  , mLayerCrs( layerCrs )
+  , mCurrentCrs( currentCrs )
+  , mResolutionState( OriginalResolution )
 {
   setupUi( this );
   mAddNoDataManuallyToolButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
@@ -60,7 +60,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
   //only one hardcoded format at the moment
   QStringList myFormats;
   myFormats << QStringLiteral( "GTiff" );
-  Q_FOREACH ( const QString& myFormat, myFormats )
+  Q_FOREACH ( const QString &myFormat, myFormats )
   {
     mFormatComboBox->addItem( myFormat );
   }
@@ -131,7 +131,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
   connect( mCrsSelector, SIGNAL( crsChanged( QgsCoordinateReferenceSystem ) ),
            this, SLOT( crsChanged() ) );
 
-  QPushButton* okButton = mButtonBox->button( QDialogButtonBox::Ok );
+  QPushButton *okButton = mButtonBox->button( QDialogButtonBox::Ok );
   if ( okButton )
   {
     okButton->setEnabled( false );
@@ -208,9 +208,9 @@ void QgsRasterLayerSaveAsDialog::on_mBrowseButton_clicked()
   }
 }
 
-void QgsRasterLayerSaveAsDialog::on_mSaveAsLineEdit_textChanged( const QString& text )
+void QgsRasterLayerSaveAsDialog::on_mSaveAsLineEdit_textChanged( const QString &text )
 {
-  QPushButton* okButton = mButtonBox->button( QDialogButtonBox::Ok );
+  QPushButton *okButton = mButtonBox->button( QDialogButtonBox::Ok );
   if ( !okButton )
   {
     return;
@@ -220,7 +220,7 @@ void QgsRasterLayerSaveAsDialog::on_mSaveAsLineEdit_textChanged( const QString& 
 }
 
 
-void QgsRasterLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( const QString & text )
+void QgsRasterLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( const QString &text )
 {
   //gdal-specific
   if ( mDataProvider && mDataProvider->name() == QLatin1String( "gdal" ) )
@@ -301,7 +301,7 @@ void QgsRasterLayerSaveAsDialog::hideOutput()
   mSaveAsLabel->hide();
   mSaveAsLineEdit->hide();
   mBrowseButton->hide();
-  QPushButton* okButton = mButtonBox->button( QDialogButtonBox::Ok );
+  QPushButton *okButton = mButtonBox->button( QDialogButtonBox::Ok );
   if ( okButton )
   {
     okButton->setEnabled( true );
@@ -340,7 +340,7 @@ void QgsRasterLayerSaveAsDialog::setOriginalResolution()
   recalcSize();
 }
 
-void QgsRasterLayerSaveAsDialog::setResolution( double xRes, double yRes, const QgsCoordinateReferenceSystem& srcCrs )
+void QgsRasterLayerSaveAsDialog::setResolution( double xRes, double yRes, const QgsCoordinateReferenceSystem &srcCrs )
 {
   if ( srcCrs != outputCrs() )
   {
@@ -500,10 +500,10 @@ void QgsRasterLayerSaveAsDialog::on_mAddNoDataManuallyToolButton_clicked()
 void QgsRasterLayerSaveAsDialog::on_mLoadTransparentNoDataToolButton_clicked()
 {
   if ( !mRasterLayer->renderer() ) return;
-  const QgsRasterTransparency* rasterTransparency = mRasterLayer->renderer()->rasterTransparency();
+  const QgsRasterTransparency *rasterTransparency = mRasterLayer->renderer()->rasterTransparency();
   if ( !rasterTransparency ) return;
 
-  Q_FOREACH ( const QgsRasterTransparency::TransparentSingleValuePixel& transparencyPixel, rasterTransparency->transparentSingleValuePixelList() )
+  Q_FOREACH ( const QgsRasterTransparency::TransparentSingleValuePixel &transparencyPixel, rasterTransparency->transparentSingleValuePixelList() )
   {
     if ( transparencyPixel.percentTransparent == 100 )
     {
@@ -568,7 +568,7 @@ void QgsRasterLayerSaveAsDialog::addNoDataRow( double min, double max )
   mNoDataTableWidget->resizeRowsToContents();
 }
 
-void QgsRasterLayerSaveAsDialog::noDataCellTextEdited( const QString & text )
+void QgsRasterLayerSaveAsDialog::noDataCellTextEdited( const QString &text )
 {
   Q_UNUSED( text );
 

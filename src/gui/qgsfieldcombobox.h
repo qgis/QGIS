@@ -73,11 +73,11 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
      * Returns the layer currently associated with the combobox.
      * @see setLayer()
      */
-    QgsVectorLayer* layer() const;
+    QgsVectorLayer *layer() const;
 
   signals:
     //! the signal is emitted when the currently selected field changes
-    void fieldChanged( const QString& fieldName );
+    void fieldChanged( const QString &fieldName );
 
   public slots:
 
@@ -86,16 +86,16 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
      * or a non-vector layer is set then the combobox will be empty.
      * @see layer()
      */
-    void setLayer( QgsMapLayer* layer );
+    void setLayer( QgsMapLayer *layer );
 
     //! setField sets the currently selected field
-    void setField( const QString& fieldName );
+    void setField( const QString &fieldName );
 
   protected slots:
     void indexChanged( int i );
 
   private:
-    QgsFieldProxyModel* mFieldProxyModel = nullptr;
+    QgsFieldProxyModel *mFieldProxyModel = nullptr;
 };
 
 #endif // QGSFIELDCOMBOBOX_H

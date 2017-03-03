@@ -23,8 +23,8 @@
 #include <QSettings>
 
 QgsFeatureListModel::QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject *parent )
-    : QAbstractProxyModel( parent )
-    , mInjectNull( false )
+  : QAbstractProxyModel( parent )
+  , mInjectNull( false )
 {
   setSourceModel( sourceModel );
   mExpression = new QgsExpression( QLatin1String( "" ) );
@@ -42,10 +42,10 @@ void QgsFeatureListModel::setSourceModel( QgsAttributeTableFilterModel *sourceMo
   if ( mFilterModel )
   {
     // rewire (filter-)change events in the source model so this proxy reflects the changes
-    connect( mFilterModel, SIGNAL( rowsAboutToBeRemoved( const QModelIndex&, int, int ) ), SLOT( onBeginRemoveRows( const QModelIndex&, int, int ) ) );
-    connect( mFilterModel, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), SLOT( onEndRemoveRows( const QModelIndex&, int, int ) ) );
-    connect( mFilterModel, SIGNAL( rowsAboutToBeInserted( const QModelIndex&, int, int ) ), SLOT( onBeginInsertRows( const QModelIndex&, int, int ) ) );
-    connect( mFilterModel, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), SLOT( onEndInsertRows( const QModelIndex&, int, int ) ) );
+    connect( mFilterModel, SIGNAL( rowsAboutToBeRemoved( const QModelIndex &, int, int ) ), SLOT( onBeginRemoveRows( const QModelIndex &, int, int ) ) );
+    connect( mFilterModel, SIGNAL( rowsRemoved( const QModelIndex &, int, int ) ), SLOT( onEndRemoveRows( const QModelIndex &, int, int ) ) );
+    connect( mFilterModel, SIGNAL( rowsAboutToBeInserted( const QModelIndex &, int, int ) ), SLOT( onBeginInsertRows( const QModelIndex &, int, int ) ) );
+    connect( mFilterModel, SIGNAL( rowsInserted( const QModelIndex &, int, int ) ), SLOT( onEndInsertRows( const QModelIndex &, int, int ) ) );
     // propagate sort order changes from source model to views connected to this model
     connect( mFilterModel, SIGNAL( layoutAboutToBeChanged() ), this, SIGNAL( layoutAboutToBeChanged() ) );
     connect( mFilterModel, SIGNAL( layoutChanged() ), this, SIGNAL( layoutChanged() ) );
@@ -104,7 +104,7 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
 
     mFilterModel->layerCache()->featureAtId( idxToFid( index ), feat );
 
-    QgsVectorLayerEditBuffer* editBuffer = mFilterModel->layer()->editBuffer();
+    QgsVectorLayerEditBuffer *editBuffer = mFilterModel->layer()->editBuffer();
 
     if ( editBuffer )
     {
@@ -163,14 +163,14 @@ bool QgsFeatureListModel::injectNull()
   return mInjectNull;
 }
 
-QgsAttributeTableModel* QgsFeatureListModel::masterModel()
+QgsAttributeTableModel *QgsFeatureListModel::masterModel()
 {
   return mFilterModel->masterModel();
 }
 
-bool QgsFeatureListModel::setDisplayExpression( const QString& expression )
+bool QgsFeatureListModel::setDisplayExpression( const QString &expression )
 {
-  QgsExpression* exp = new QgsExpression( expression );
+  QgsExpression *exp = new QgsExpression( expression );
 
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mFilterModel->layer() ) );
 
@@ -205,12 +205,12 @@ bool QgsFeatureListModel::featureByIndex( const QModelIndex &index, QgsFeature &
   return mFilterModel->layerCache()->featureAtId( idxToFid( index ), feat );
 }
 
-void QgsFeatureListModel::onBeginRemoveRows( const QModelIndex& parent, int first, int last )
+void QgsFeatureListModel::onBeginRemoveRows( const QModelIndex &parent, int first, int last )
 {
   beginRemoveRows( parent, first, last );
 }
 
-void QgsFeatureListModel::onEndRemoveRows( const QModelIndex& parent, int first, int last )
+void QgsFeatureListModel::onEndRemoveRows( const QModelIndex &parent, int first, int last )
 {
   Q_UNUSED( parent )
   Q_UNUSED( first )
@@ -218,12 +218,12 @@ void QgsFeatureListModel::onEndRemoveRows( const QModelIndex& parent, int first,
   endRemoveRows();
 }
 
-void QgsFeatureListModel::onBeginInsertRows( const QModelIndex& parent, int first, int last )
+void QgsFeatureListModel::onBeginInsertRows( const QModelIndex &parent, int first, int last )
 {
   beginInsertRows( parent, first, last );
 }
 
-void QgsFeatureListModel::onEndInsertRows( const QModelIndex& parent, int first, int last )
+void QgsFeatureListModel::onEndInsertRows( const QModelIndex &parent, int first, int last )
 {
   Q_UNUSED( parent )
   Q_UNUSED( first )
@@ -251,12 +251,12 @@ QModelIndex QgsFeatureListModel::mapFromMaster( const QModelIndex &sourceIndex )
   return createIndex( mFilterModel->mapFromMaster( sourceIndex ).row() + offset, 0 );
 }
 
-QItemSelection QgsFeatureListModel::mapSelectionFromMaster( const QItemSelection& selection ) const
+QItemSelection QgsFeatureListModel::mapSelectionFromMaster( const QItemSelection &selection ) const
 {
   return mapSelectionFromSource( mFilterModel->mapSelectionFromSource( selection ) );
 }
 
-QItemSelection QgsFeatureListModel::mapSelectionToMaster( const QItemSelection& selection ) const
+QItemSelection QgsFeatureListModel::mapSelectionToMaster( const QItemSelection &selection ) const
 {
   return mFilterModel->mapSelectionToSource( mapSelectionToSource( selection ) );
 }
@@ -281,26 +281,26 @@ QModelIndex QgsFeatureListModel::mapFromSource( const QModelIndex &sourceIndex )
   return createIndex( sourceIndex.row(), 0 );
 }
 
-QModelIndex QgsFeatureListModel::index( int row, int column, const QModelIndex& parent ) const
+QModelIndex QgsFeatureListModel::index( int row, int column, const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
 
   return createIndex( row, column );
 }
 
-QModelIndex QgsFeatureListModel::parent( const QModelIndex& child ) const
+QModelIndex QgsFeatureListModel::parent( const QModelIndex &child ) const
 {
   Q_UNUSED( child )
   return QModelIndex();
 }
 
-int QgsFeatureListModel::columnCount( const QModelIndex&parent ) const
+int QgsFeatureListModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
   return 1;
 }
 
-int QgsFeatureListModel::rowCount( const QModelIndex& parent ) const
+int QgsFeatureListModel::rowCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
 

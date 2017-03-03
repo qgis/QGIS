@@ -47,7 +47,7 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
      * @param color initial color for dialog
      * @param layout widget layout to use
      */
-    QgsCompoundColorWidget( QWidget *parent = nullptr, const QColor& color = QColor(), Layout layout = LayoutDefault );
+    QgsCompoundColorWidget( QWidget *parent = nullptr, const QColor &color = QColor(), Layout layout = LayoutDefault );
 
     ~QgsCompoundColorWidget();
 
@@ -86,11 +86,11 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
     /** Sets the color to show in an optional "previous color" section
      * @param color previous color
      */
-    void setPreviousColor( const QColor& color );
+    void setPreviousColor( const QColor &color );
 
   protected:
 
-    void mousePressEvent( QMouseEvent* e ) override;
+    void mousePressEvent( QMouseEvent *e ) override;
 
     void mouseMoveEvent( QMouseEvent *e ) override;
 

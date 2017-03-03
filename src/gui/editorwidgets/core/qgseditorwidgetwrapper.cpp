@@ -21,11 +21,11 @@
 
 #include <QTableView>
 
-QgsEditorWidgetWrapper::QgsEditorWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    : QgsWidgetWrapper( vl, editor, parent )
-    , mValidConstraint( true )
-    , mIsBlockingCommit( false )
-    , mFieldIdx( fieldIdx )
+QgsEditorWidgetWrapper::QgsEditorWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
+  : QgsWidgetWrapper( vl, editor, parent )
+  , mValidConstraint( true )
+  , mIsBlockingCommit( false )
+  , mFieldIdx( fieldIdx )
 {
 }
 
@@ -49,27 +49,27 @@ QVariant QgsEditorWidgetWrapper::defaultValue() const
   return mDefaultValue;
 }
 
-QgsEditorWidgetWrapper* QgsEditorWidgetWrapper::fromWidget( QWidget* widget )
+QgsEditorWidgetWrapper *QgsEditorWidgetWrapper::fromWidget( QWidget *widget )
 {
-  return qobject_cast<QgsEditorWidgetWrapper*>( widget->property( "EWV2Wrapper" ).value<QgsWidgetWrapper*>() );
+  return qobject_cast<QgsEditorWidgetWrapper *>( widget->property( "EWV2Wrapper" ).value<QgsWidgetWrapper *>() );
 }
 
 void QgsEditorWidgetWrapper::setEnabled( bool enabled )
 {
-  QWidget* wdg = widget();
+  QWidget *wdg = widget();
   if ( wdg )
   {
     wdg->setEnabled( enabled );
   }
 }
 
-void QgsEditorWidgetWrapper::setFeature( const QgsFeature& feature )
+void QgsEditorWidgetWrapper::setFeature( const QgsFeature &feature )
 {
   mFeature = feature;
   setValue( feature.attribute( mFieldIdx ) );
 }
 
-void QgsEditorWidgetWrapper::valueChanged( const QString& value )
+void QgsEditorWidgetWrapper::valueChanged( const QString &value )
 {
   emit valueChanged( QVariant( value ) );
 }
@@ -205,9 +205,9 @@ QString QgsEditorWidgetWrapper::constraintFailureReason() const
   return mConstraintFailureReason;
 }
 
-bool QgsEditorWidgetWrapper::isInTable( const QWidget* parent )
+bool QgsEditorWidgetWrapper::isInTable( const QWidget *parent )
 {
   if ( !parent ) return false;
-  if ( qobject_cast<const QTableView*>( parent ) ) return true;
+  if ( qobject_cast<const QTableView *>( parent ) ) return true;
   return isInTable( parent->parentWidget() );
 }

@@ -29,12 +29,12 @@ const int IDX_WHOLE_RASTER = 0;
 const int IDX_CURRENT_CANVAS = 1;
 const int IDX_UPDATED_CANVAS = 2;
 
-QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer* layer, QWidget *parent )
-    : QWidget( parent )
-    , mLayer( layer )
-    , mCanvas( nullptr )
-    , mLastRectangleValid( false )
-    , mBandsChanged( false )
+QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer *layer, QWidget *parent )
+  : QWidget( parent )
+  , mLayer( layer )
+  , mCanvas( nullptr )
+  , mLastRectangleValid( false )
+  , mBandsChanged( false )
 {
   QgsDebugMsg( "Entered." );
   setupUi( this );
@@ -43,17 +43,17 @@ QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer* layer, QWidget *pa
   setFromMinMaxOrigin( defaultMinMaxOrigin );
 }
 
-void QgsRasterMinMaxWidget::setMapCanvas( QgsMapCanvas* canvas )
+void QgsRasterMinMaxWidget::setMapCanvas( QgsMapCanvas *canvas )
 {
   mCanvas = canvas;
 }
 
-QgsMapCanvas* QgsRasterMinMaxWidget::mapCanvas()
+QgsMapCanvas *QgsRasterMinMaxWidget::mapCanvas()
 {
   return mCanvas;
 }
 
-void QgsRasterMinMaxWidget::setBands( const QList<int> & bands )
+void QgsRasterMinMaxWidget::setBands( const QList<int> &bands )
 {
   mBandsChanged = bands != mBands;
   mBands = bands;
@@ -86,7 +86,7 @@ void QgsRasterMinMaxWidget::on_mUserDefinedRadioButton_toggled( bool toggled )
   emit widgetChanged();
 }
 
-void QgsRasterMinMaxWidget::setFromMinMaxOrigin( const QgsRasterMinMaxOrigin& minMaxOrigin )
+void QgsRasterMinMaxWidget::setFromMinMaxOrigin( const QgsRasterMinMaxOrigin &minMaxOrigin )
 {
   switch ( minMaxOrigin.limits() )
   {

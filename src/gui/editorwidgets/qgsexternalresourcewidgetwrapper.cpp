@@ -24,11 +24,11 @@
 #include "qgsfilterlineedit.h"
 
 
-QgsExternalResourceWidgetWrapper::QgsExternalResourceWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mLineEdit( nullptr )
-    , mLabel( nullptr )
-    , mQgsWidget( nullptr )
+QgsExternalResourceWidgetWrapper::QgsExternalResourceWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
+  : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+  , mLineEdit( nullptr )
+  , mLabel( nullptr )
+  , mQgsWidget( nullptr )
 {
 }
 
@@ -77,27 +77,27 @@ bool QgsExternalResourceWidgetWrapper::valid() const
   return mLineEdit || mLabel || mQgsWidget;
 }
 
-QWidget* QgsExternalResourceWidgetWrapper::createWidget( QWidget* parent )
+QWidget *QgsExternalResourceWidgetWrapper::createWidget( QWidget *parent )
 {
   return new QgsExternalResourceWidget( parent );
 }
 
-void QgsExternalResourceWidgetWrapper::initWidget( QWidget* editor )
+void QgsExternalResourceWidgetWrapper::initWidget( QWidget *editor )
 {
-  mLineEdit = qobject_cast<QLineEdit*>( editor );
-  mLabel = qobject_cast<QLabel*>( editor );
-  mQgsWidget = qobject_cast<QgsExternalResourceWidget*>( editor );
+  mLineEdit = qobject_cast<QLineEdit *>( editor );
+  mLabel = qobject_cast<QLabel *>( editor );
+  mQgsWidget = qobject_cast<QgsExternalResourceWidget *>( editor );
 
   if ( mLineEdit )
   {
-    QgsFilterLineEdit* fle = qobject_cast<QgsFilterLineEdit*>( editor );
+    QgsFilterLineEdit *fle = qobject_cast<QgsFilterLineEdit *>( editor );
     if ( fle )
     {
       fle->setNullValue( QgsApplication::nullRepresentation() );
     }
   }
   else
-    mLineEdit = editor->findChild<QLineEdit*>();
+    mLineEdit = editor->findChild<QLineEdit *>();
 
   if ( mQgsWidget )
   {
@@ -116,11 +116,11 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget* editor )
     }
     if ( config().contains( QStringLiteral( "StorageMode" ) ) )
     {
-      mQgsWidget->fileWidget()->setStorageMode(( QgsFileWidget::StorageMode )config( QStringLiteral( "StorageMode" ) ).toInt() );
+      mQgsWidget->fileWidget()->setStorageMode( ( QgsFileWidget::StorageMode )config( QStringLiteral( "StorageMode" ) ).toInt() );
     }
     if ( config().contains( QStringLiteral( "RelativeStorage" ) ) )
     {
-      mQgsWidget->setRelativeStorage(( QgsFileWidget::RelativeStorage )config( QStringLiteral( "RelativeStorage" ) ).toInt() );
+      mQgsWidget->setRelativeStorage( ( QgsFileWidget::RelativeStorage )config( QStringLiteral( "RelativeStorage" ) ).toInt() );
     }
     if ( config().contains( QStringLiteral( "FileWidget" ) ) )
     {
@@ -132,7 +132,7 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget* editor )
     }
     if ( config().contains( QStringLiteral( "DocumentViewer" ) ) )
     {
-      mQgsWidget->setDocumentViewerContent(( QgsExternalResourceWidget::DocumentViewerContent )config( QStringLiteral( "DocumentViewer" ) ).toInt() );
+      mQgsWidget->setDocumentViewerContent( ( QgsExternalResourceWidget::DocumentViewerContent )config( QStringLiteral( "DocumentViewer" ) ).toInt() );
     }
     if ( config().contains( QStringLiteral( "FileWidgetFilter" ) ) )
     {
@@ -145,7 +145,7 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget* editor )
 
 }
 
-void QgsExternalResourceWidgetWrapper::setValue( const QVariant& value )
+void QgsExternalResourceWidgetWrapper::setValue( const QVariant &value )
 {
   if ( mLineEdit )
   {

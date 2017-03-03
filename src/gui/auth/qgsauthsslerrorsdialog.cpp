@@ -36,11 +36,11 @@ QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply,
     QWidget *parent,
     const QString &digest,
     const QString &hostport )
-    : QDialog( parent )
-    , mSslConfiguration( reply->sslConfiguration() )
-    , mSslErrors( sslErrors )
-    , mDigest( digest )
-    , mHostPort( hostport )
+  : QDialog( parent )
+  , mSslConfiguration( reply->sslConfiguration() )
+  , mSslErrors( sslErrors )
+  , mDigest( digest )
+  , mHostPort( hostport )
 {
   if ( mDigest.isEmpty() )
   {
@@ -188,8 +188,8 @@ void QgsAuthSslErrorsDialog::populateErrorsList()
   Q_FOREACH ( const QSslError &err, mSslErrors )
   {
     errs <<  QStringLiteral( "* %1: %2" )
-    .arg( QgsAuthCertUtils::sslErrorEnumString( err.error() ),
-          err.errorString() );
+         .arg( QgsAuthCertUtils::sslErrorEnumString( err.error() ),
+               err.errorString() );
   }
   teSslErrors->setPlainText( errs.join( QStringLiteral( "\n" ) ) );
 }

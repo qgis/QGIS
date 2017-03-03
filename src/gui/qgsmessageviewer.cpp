@@ -19,7 +19,7 @@
 #include <QSettings>
 
 QgsMessageViewer::QgsMessageViewer( QWidget *parent, Qt::WindowFlags fl, bool deleteOnClose )
-    : QDialog( parent, fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
   if ( deleteOnClose )
@@ -80,12 +80,12 @@ void QgsMessageViewer::showMessage( bool blocking )
   }
 }
 
-void QgsMessageViewer::setTitle( const QString& title )
+void QgsMessageViewer::setTitle( const QString &title )
 {
   setWindowTitle( title );
 }
 
-void QgsMessageViewer::setCheckBoxText( const QString& text )
+void QgsMessageViewer::setCheckBoxText( const QString &text )
 {
   checkBox->setText( text );
 }
@@ -105,7 +105,7 @@ Qt::CheckState QgsMessageViewer::checkBoxState()
   return checkBox->checkState();
 }
 
-void QgsMessageViewer::setCheckBoxQSettingsLabel( const QString& label )
+void QgsMessageViewer::setCheckBoxQSettingsLabel( const QString &label )
 {
   mCheckBoxQSettingsLabel = label;
 }

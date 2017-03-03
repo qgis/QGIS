@@ -36,10 +36,10 @@
 // - fix crash on Diverging?
 
 
-QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( const QgsCptCityColorRamp& ramp, QWidget* parent )
-    : QDialog( parent )
-    , mRamp( ramp )
-    , mArchiveViewType( QgsCptCityBrowserModel::Selections )
+QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( const QgsCptCityColorRamp &ramp, QWidget *parent )
+  : QDialog( parent )
+  , mRamp( ramp )
+  , mArchiveViewType( QgsCptCityBrowserModel::Selections )
 {
   setupUi( this );
 
@@ -121,7 +121,7 @@ QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( const QgsCptCityColorRamp&
 
 }
 
-void QgsCptCityColorRampDialog::setRamp( const QgsCptCityColorRamp& ramp )
+void QgsCptCityColorRampDialog::setRamp( const QgsCptCityColorRamp &ramp )
 {
   mRamp = ramp;
   updateUi();
@@ -152,7 +152,7 @@ void QgsCptCityColorRampDialog::populateVariants()
     QIcon blankIcon( blankPixmap );
     int index;
 
-    Q_FOREACH ( const QString& variant, variantList )
+    Q_FOREACH ( const QString &variant, variantList )
     {
       QString variantStr = variant;
       if ( variantStr.startsWith( '-' ) || variantStr.startsWith( '_' ) )
@@ -248,11 +248,11 @@ void QgsCptCityColorRampDialog::updateTreeView( QgsCptCityDataItem *item, bool r
   }
   else
   {
-    QgsDebugMsg( QString( "item %1 has invalid type %2" ).arg( item->path() ).arg(( int )item->type() ) );
+    QgsDebugMsg( QString( "item %1 has invalid type %2" ).arg( item->path() ).arg( ( int )item->type() ) );
   }
 }
 
-void QgsCptCityColorRampDialog::on_mListWidget_itemClicked( QListWidgetItem * item )
+void QgsCptCityColorRampDialog::on_mListWidget_itemClicked( QListWidgetItem *item )
 {
   QgsCptCityColorRampItem *rampItem = mListRamps.at( item->data( Qt::UserRole ).toInt() );
   if ( rampItem )
@@ -406,7 +406,7 @@ void QgsCptCityColorRampDialog::clearCopyingInfo()
   updateCopyingInfo( QMap< QString, QString >() );
 }
 
-void QgsCptCityColorRampDialog::updateCopyingInfo( const QMap< QString, QString >& copyingMap )
+void QgsCptCityColorRampDialog::updateCopyingInfo( const QMap< QString, QString > &copyingMap )
 {
   QString authorStr = copyingMap.value( QStringLiteral( "authors" ) );
   if ( authorStr.length() > 80 )
@@ -456,7 +456,7 @@ void QgsCptCityColorRampDialog::on_buttonBox_helpRequested()
                          "by installing the \"Color Ramp Manager\" plugin "
                          "(you must enable Experimental plugins in the plugin manager).\n\n"
                        );
-  QMessageBox* msg = new QMessageBox( this );
+  QMessageBox *msg = new QMessageBox( this );
   msg->setText( helpText );
   msg->exec();
 }
@@ -501,21 +501,21 @@ void QgsCptCityColorRampDialog::updateListWidget( QgsCptCityDataItem *item )
   mListWidget->blockSignals( true );
   mListWidget->clear();
   mListRamps.clear();
-  QgsCptCityCollectionItem* colItem = dynamic_cast<QgsCptCityCollectionItem*>( item );
+  QgsCptCityCollectionItem *colItem = dynamic_cast<QgsCptCityCollectionItem *>( item );
   if ( colItem )
   {
     QgsDebugMsg( "path= " + item->path() );
     // recursively get children ramps
-    QVector<QgsCptCityDataItem*> childrenRamps = colItem->childrenRamps( true );
+    QVector<QgsCptCityDataItem *> childrenRamps = colItem->childrenRamps( true );
     for ( int i = 0; i < childrenRamps.count(); i++ )
     {
-      QgsCptCityColorRampItem* rampItem = dynamic_cast<QgsCptCityColorRampItem*>( childrenRamps[i] );
+      QgsCptCityColorRampItem *rampItem = dynamic_cast<QgsCptCityColorRampItem *>( childrenRamps[i] );
       if ( ! rampItem )
       {
         QgsDebugMsg( "invalid item " + childrenRamps[i]->path() );
         continue;
       }
-      QListWidgetItem* listItem = new QListWidgetItem();
+      QListWidgetItem *listItem = new QListWidgetItem();
       listItem->setText( rampItem->shortInfo() );
       listItem->setIcon( rampItem->icon( QSize( 75, 50 ) ) );
       listItem->setToolTip( rampItem->path() + '\n' + rampItem->info() );
@@ -584,8 +584,8 @@ bool QgsCptCityColorRampDialog::updateRamp()
   {
     return false;
   }
-  QgsCptCityColorRampItem* childItem =
-    dynamic_cast<QgsCptCityColorRampItem*>( mModel->dataItem( modelIndex ) );
+  QgsCptCityColorRampItem *childItem =
+    dynamic_cast<QgsCptCityColorRampItem *>( mModel->dataItem( modelIndex ) );
   if ( ! childItem )
     return false;
   if ( mRamp.schemeName() != childItem->ramp().schemeName() )
@@ -613,7 +613,7 @@ bool QgsCptCityColorRampDialog::updateRamp()
     if ( mListRamps.at( i ) == childItem )
     {
       QgsDebugMsg( QString( "found matching item %1 target=%2" ).arg( mListRamps.at( i )->path(), childItem->path() ) );
-      QListWidgetItem* listItem = mListWidget->item( i );
+      QListWidgetItem *listItem = mListWidget->item( i );
       mListWidget->setCurrentItem( listItem );
       // on_mListWidget_itemClicked( listItem );
       populateVariants();
@@ -641,7 +641,7 @@ void QgsCptCityColorRampDialog::showAll()
   }
 }
 
-void QgsCptCityColorRampDialog::setTreeModel( QgsCptCityBrowserModel* model )
+void QgsCptCityColorRampDialog::setTreeModel( QgsCptCityBrowserModel *model )
 {
   mModel = model;
 
@@ -659,7 +659,7 @@ void QgsCptCityColorRampDialog::refresh()
   QApplication::restoreOverrideCursor();
 }
 
-void QgsCptCityColorRampDialog::refreshModel( const QModelIndex& index )
+void QgsCptCityColorRampDialog::refreshModel( const QModelIndex &index )
 {
   if ( index.isValid() )
   {
@@ -689,16 +689,16 @@ void QgsCptCityColorRampDialog::refreshModel( const QModelIndex& index )
 
 /// @cond PRIVATE
 
-TreeFilterProxyModel::TreeFilterProxyModel( QObject* parent, QgsCptCityBrowserModel* model )
-    : QSortFilterProxyModel( parent )
-    , mModel( model )
+TreeFilterProxyModel::TreeFilterProxyModel( QObject *parent, QgsCptCityBrowserModel *model )
+  : QSortFilterProxyModel( parent )
+  , mModel( model )
 {
   setSourceModel( mModel );
 }
 
-bool TreeFilterProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex& sourceParent ) const
+bool TreeFilterProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
 {
-  QgsCptCityDataItem* item = mModel->dataItem( mModel->index( sourceRow, 0, sourceParent ) );
+  QgsCptCityDataItem *item = mModel->dataItem( mModel->index( sourceRow, 0, sourceParent ) );
   return ( item && !( item->type() == QgsCptCityDataItem::ColorRamp ) );
 }
 

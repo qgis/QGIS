@@ -43,7 +43,7 @@ class GUI_EXPORT QgsEditorWidgetAutoConfPlugin
      *
      * @return and integer value rating how good is the setup provided by this plugin.
      */
-    virtual QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer* vl, const QString& fieldName, int& score ) const = 0;
+    virtual QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer *vl, const QString &fieldName, int &score ) const = 0;
 
 };
 
@@ -75,14 +75,14 @@ class GUI_EXPORT QgsEditorWidgetAutoConf
      *
      * @return The best widget setup that was found
      */
-    QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer* vl, const QString& fieldName ) const;
+    QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer *vl, const QString &fieldName ) const;
 
     /**
      * Register a new plugin.
      *
      * @param plugin The plugin (ownership is transferred)
      */
-    void registerPlugin( QgsEditorWidgetAutoConfPlugin* plugin );
+    void registerPlugin( QgsEditorWidgetAutoConfPlugin *plugin );
 
   private:
     QList<std::shared_ptr<QgsEditorWidgetAutoConfPlugin> > plugins;

@@ -31,12 +31,12 @@ class GUI_EXPORT QgsTextEditConfigDlg : public QgsEditorConfigWidget, private Ui
     Q_OBJECT
 
   public:
-    explicit QgsTextEditConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent = nullptr );
+    explicit QgsTextEditConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
 
     // QgsEditorConfigWidget interface
   public:
     QVariantMap config() override;
-    void setConfig( const QVariantMap& config ) override;
+    void setConfig( const QVariantMap &config ) override;
 };
 
 #endif // QGSTEXTEDITCONFIGDLG_H

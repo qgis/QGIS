@@ -42,19 +42,19 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
      * @param startText A default expression text to be applied (Defaults to empty)
      * @param parent parent object (owner)
      */
-    QgsExpressionSelectionDialog( QgsVectorLayer* layer, const QString& startText = QString(), QWidget* parent = nullptr );
+    QgsExpressionSelectionDialog( QgsVectorLayer *layer, const QString &startText = QString(), QWidget *parent = nullptr );
 
     /**
      * The builder widget that is used by the dialog
      * @return The builder widget that is used by the dialog
      */
-    QgsExpressionBuilderWidget* expressionBuilder();
+    QgsExpressionBuilderWidget *expressionBuilder();
 
     /**
      * Sets the current expression text
      * @param text the expression text to set
      */
-    void setExpressionText( const QString& text );
+    void setExpressionText( const QString &text );
 
     /**
      * Returns the current expression text
@@ -65,20 +65,20 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
     /**
      *Sets geometry calculator used in distance/area calculations.
      */
-    void setGeomCalculator( const QgsDistanceArea & da );
+    void setGeomCalculator( const QgsDistanceArea &da );
 
     /** Sets the message bar to display feedback from the dialog. This is used when zooming to
      * features to display the count of selected features.
      * @param messageBar target message bar
      * @note added in QGIS 3.0
      */
-    void setMessageBar( QgsMessageBar* messageBar );
+    void setMessageBar( QgsMessageBar *messageBar );
 
     /**
      * Sets a map canvas associated with the dialog.
      * @note added in QGIS 3.0
      */
-    void setMapCanvas( QgsMapCanvas* canvas );
+    void setMapCanvas( QgsMapCanvas *canvas );
 
   private slots:
     void on_mActionSelect_triggered();
@@ -106,9 +106,9 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
 
   private:
     void saveRecent();
-    QgsVectorLayer* mLayer = nullptr;
-    QgsMessageBar* mMessageBar = nullptr;
-    QgsMapCanvas* mMapCanvas = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
+    QgsMessageBar *mMessageBar = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
 };
 
 #endif
