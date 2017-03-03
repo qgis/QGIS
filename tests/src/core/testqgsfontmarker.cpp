@@ -45,11 +45,11 @@ class TestQgsFontMarkerSymbol : public QObject
 
   public:
     TestQgsFontMarkerSymbol()
-        : mTestHasError( false )
-        , mpPointsLayer( 0 )
-        , mFontMarkerLayer( 0 )
-        , mMarkerSymbol( 0 )
-        , mSymbolRenderer( 0 )
+      : mTestHasError( false )
+      , mpPointsLayer( 0 )
+      , mFontMarkerLayer( 0 )
+      , mMarkerSymbol( 0 )
+      , mSymbolRenderer( 0 )
     {}
 
   private slots:
@@ -65,12 +65,12 @@ class TestQgsFontMarkerSymbol : public QObject
   private:
     bool mTestHasError;
 
-    bool imageCheck( const QString& type );
+    bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPointsLayer = nullptr;
-    QgsFontMarkerSymbolLayer* mFontMarkerLayer = nullptr;
-    QgsMarkerSymbol* mMarkerSymbol = nullptr;
-    QgsSingleSymbolRenderer* mSymbolRenderer = nullptr;
+    QgsVectorLayer *mpPointsLayer = nullptr;
+    QgsFontMarkerSymbolLayer *mFontMarkerLayer = nullptr;
+    QgsMarkerSymbol *mMarkerSymbol = nullptr;
+    QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };
@@ -107,7 +107,7 @@ void TestQgsFontMarkerSymbol::initTestCase()
   // since maprender does not require a qui
   // and is more light weight
   //
-  mMapSettings.setLayers( QList<QgsMapLayer*>() << mpPointsLayer );
+  mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPointsLayer );
   mReport += QLatin1String( "<h1>Font Marker Tests</h1>\n" );
 
 }
@@ -173,7 +173,7 @@ void TestQgsFontMarkerSymbol::bounds()
 //
 
 
-bool TestQgsFontMarkerSymbol::imageCheck( const QString& testType )
+bool TestQgsFontMarkerSymbol::imageCheck( const QString &testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image

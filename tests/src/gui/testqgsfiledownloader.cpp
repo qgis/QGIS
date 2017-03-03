@@ -29,14 +29,14 @@ class TestQgsFileDownloader: public QObject
     Q_OBJECT
   public:
     TestQgsFileDownloader()
-        : mTempFile( nullptr )
-        , mErrorMessage()
-        , mCanceled( false )
-        , mProgress( false )
-        , mError( false )
-        , mCompleted( false )
-        , mExited( false )
-        , mFileDownloader( nullptr )
+      : mTempFile( nullptr )
+      , mErrorMessage()
+      , mCanceled( false )
+      , mProgress( false )
+      , mError( false )
+      , mCompleted( false )
+      , mExited( false )
+      , mFileDownloader( nullptr )
     {}
 
   public slots:
@@ -88,7 +88,7 @@ class TestQgsFileDownloader: public QObject
 #endif
 
   private:
-    void makeCall( QUrl url , QString fileName, bool cancel = false );
+    void makeCall( QUrl url, QString fileName, bool cancel = false );
     QTemporaryFile *mTempFile = nullptr;
     QString mErrorMessage;
     bool mCanceled;
@@ -226,11 +226,11 @@ void TestQgsFileDownloader::testSslError_data()
   QTest::addColumn<QString>( "result" );
 
   QTest::newRow( "expired" ) << "https://expired.badssl.com/"
-  << "SSL Errors: ;The certificate has expired";
+                             << "SSL Errors: ;The certificate has expired";
   QTest::newRow( "self-signed" ) << "https://self-signed.badssl.com/"
-  << "SSL Errors: ;The certificate is self-signed, and untrusted";
+                                 << "SSL Errors: ;The certificate is self-signed, and untrusted";
   QTest::newRow( "untrusted-root" ) << "https://untrusted-root.badssl.com/"
-  << "No certificates could be verified;SSL Errors: ;The issuer certificate of a locally looked up certificate could not be found";
+                                    << "No certificates could be verified;SSL Errors: ;The issuer certificate of a locally looked up certificate could not be found";
 }
 
 void TestQgsFileDownloader::testSslError()

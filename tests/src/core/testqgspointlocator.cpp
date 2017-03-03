@@ -28,21 +28,21 @@
 
 struct FilterExcludePoint : public QgsPointLocator::MatchFilter
 {
-  explicit FilterExcludePoint( const QgsPoint& p ) : mPoint( p ) {}
+  explicit FilterExcludePoint( const QgsPoint &p ) : mPoint( p ) {}
 
-  bool acceptMatch( const QgsPointLocator::Match& match ) { return match.point() != mPoint; }
+  bool acceptMatch( const QgsPointLocator::Match &match ) { return match.point() != mPoint; }
 
   QgsPoint mPoint;
 };
 
 struct FilterExcludeEdge : public QgsPointLocator::MatchFilter
 {
-  FilterExcludeEdge( const QgsPoint& p1, const QgsPoint& p2 )
-      : mP1( p1 )
-      , mP2( p2 )
+  FilterExcludeEdge( const QgsPoint &p1, const QgsPoint &p2 )
+    : mP1( p1 )
+    , mP2( p2 )
   {}
 
-  bool acceptMatch( const QgsPointLocator::Match& match )
+  bool acceptMatch( const QgsPointLocator::Match &match )
   {
     QgsPoint p1, p2;
     match.edgePoints( p1, p2 );
@@ -58,11 +58,11 @@ class TestQgsPointLocator : public QObject
     Q_OBJECT
   public:
     TestQgsPointLocator()
-        : mVL( 0 )
+      : mVL( 0 )
     {}
 
   private:
-    QgsVectorLayer* mVL = nullptr;
+    QgsVectorLayer *mVL = nullptr;
 
   private slots:
 
@@ -222,7 +222,7 @@ class TestQgsPointLocator : public QObject
       QVERIFY( mAddA.count() == 1 );
 
       // change geometry
-      QgsGeometry* newGeom = new QgsGeometry( ff.geometry() );
+      QgsGeometry *newGeom = new QgsGeometry( ff.geometry() );
       newGeom->moveVertex( 10, 10, 2 ); // change 11,11 to 10,10
       mVL->changeGeometry( ff.id(), *newGeom );
       delete newGeom;
@@ -265,7 +265,7 @@ class TestQgsPointLocator : public QObject
 
     void testNullGeometries()
     {
-      QgsVectorLayer* vlNullGeom = new QgsVectorLayer( "Polygon", "x", "memory" );
+      QgsVectorLayer *vlNullGeom = new QgsVectorLayer( "Polygon", "x", "memory" );
       QgsFeature ff( 0 );
       ff.setGeometry( QgsGeometry() );
       QgsFeatureList flist;
@@ -285,7 +285,7 @@ class TestQgsPointLocator : public QObject
 
     void testEmptyGeometries()
     {
-      QgsVectorLayer* vlEmptyGeom = new QgsVectorLayer( "Polygon", "x", "memory" );
+      QgsVectorLayer *vlEmptyGeom = new QgsVectorLayer( "Polygon", "x", "memory" );
       QgsFeature ff( 0 );
       QgsGeometry g;
       g.setGeometry( new QgsPolygonV2() );

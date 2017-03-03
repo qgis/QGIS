@@ -32,8 +32,8 @@ class TestSignalReceiver : public QObject
 
   public:
     TestSignalReceiver()
-        : QObject( 0 )
-        , blendMode( QPainter::CompositionMode_SourceOver )
+      : QObject( 0 )
+      , blendMode( QPainter::CompositionMode_SourceOver )
     {}
     QPainter::CompositionMode blendMode;
   public slots:
@@ -52,7 +52,7 @@ class TestQgsMapLayer : public QObject
 
   public:
     TestQgsMapLayer()
-        : mpLayer( 0 )
+      : mpLayer( 0 )
     {}
 
   private slots:
@@ -70,7 +70,7 @@ class TestQgsMapLayer : public QObject
 
 
   private:
-    QgsMapLayer * mpLayer = nullptr;
+    QgsMapLayer *mpLayer = nullptr;
 };
 
 void TestQgsMapLayer::initTestCase()
@@ -134,7 +134,7 @@ void TestQgsMapLayer::isInScaleRange_data()
   QTest::newRow( "too high" ) << 6000.0 << false;
   QTest::newRow( "max is not inclusive" ) << 5000.0 << false;
   QTest::newRow( "min is inclusive" ) << 2500.0 << true;
-  QTest::newRow( "min is inclusive even with conversion errors" ) << static_cast< double >( 1.0f / (( float )1.0 / 2500.0 ) ) << true;
+  QTest::newRow( "min is inclusive even with conversion errors" ) << static_cast< double >( 1.0f / ( ( float )1.0 / 2500.0 ) ) << true;
 }
 
 void TestQgsMapLayer::isInScaleRange()

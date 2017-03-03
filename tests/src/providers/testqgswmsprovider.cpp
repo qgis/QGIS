@@ -76,7 +76,7 @@ class TestQgsWmsProvider: public QObject
     }
 
   private:
-    QgsWmsCapabilities* mCapabilities = nullptr;
+    QgsWmsCapabilities *mCapabilities = nullptr;
 };
 
 QGSTEST_MAIN( TestQgsWmsProvider )

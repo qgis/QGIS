@@ -71,7 +71,7 @@ void  TestQgsGeometrySnapper::cleanup()
 
 void TestQgsGeometrySnapper::snapPolygonToPolygon()
 {
-  QgsVectorLayer* rl = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *rl = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
   QgsFeature ff( 0 );
   QgsGeometry refGeom = QgsGeometry::fromWkt( QStringLiteral( "Polygon((0 0, 10 0, 10 10, 0 10, 0 0))" ) );
   ff.setGeometry( refGeom );
@@ -101,7 +101,7 @@ void TestQgsGeometrySnapper::snapPolygonToPolygon()
 
 void TestQgsGeometrySnapper::snapLineToLine()
 {
-  QgsVectorLayer* rl = new QgsVectorLayer( QStringLiteral( "Linestring" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *rl = new QgsVectorLayer( QStringLiteral( "Linestring" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
   QgsFeature ff( 0 );
 
   // closed linestrings
@@ -153,7 +153,7 @@ void TestQgsGeometrySnapper::snapLineToLine()
 
 void TestQgsGeometrySnapper::snapLineToPolygon()
 {
-  QgsVectorLayer* rl = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *rl = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
   QgsFeature ff( 0 );
 
   // closed linestrings
@@ -179,7 +179,7 @@ void TestQgsGeometrySnapper::snapLineToPolygon()
 
   // remove vertex
   QgsGeometry lineGeom4 = QgsGeometry::fromWkt( QStringLiteral( "LineString(0.1 -0.1, 10.1 0, 9.9 10.1, 5 10, 0 10, 0.1 -0.1)" ) );
-  result = snapper.snapGeometry( lineGeom4 , 1 );
+  result = snapper.snapGeometry( lineGeom4, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "LineString (0 0, 10 0, 10 10, 0 10, 0 0)" ) );
 
 
@@ -205,7 +205,7 @@ void TestQgsGeometrySnapper::snapLineToPolygon()
 
 void TestQgsGeometrySnapper::snapLineToPoint()
 {
-  QgsVectorLayer* rl = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *rl = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
 
   QgsGeometry refGeom = QgsGeometry::fromWkt( QStringLiteral( "Point(0 0)" ) );
   QgsFeature ff( 0 );
@@ -234,7 +234,7 @@ void TestQgsGeometrySnapper::snapLineToPoint()
 
 void TestQgsGeometrySnapper::snapPolygonToLine()
 {
-  QgsVectorLayer* rl = new QgsVectorLayer( QStringLiteral( "Linestring" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *rl = new QgsVectorLayer( QStringLiteral( "Linestring" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
 
   // closed linestring
   QgsGeometry refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 0, 10 0, 10 10, 0 10, 0 0)" ) );
@@ -292,7 +292,7 @@ void TestQgsGeometrySnapper::snapPolygonToLine()
 
 void TestQgsGeometrySnapper::snapPolygonToPoint()
 {
-  QgsVectorLayer* rl = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *rl = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
 
   QgsGeometry refGeom = QgsGeometry::fromWkt( QStringLiteral( "Point(0 0)" ) );
   QgsFeature ff( 0 );
@@ -321,7 +321,7 @@ void TestQgsGeometrySnapper::snapPolygonToPoint()
 
 void TestQgsGeometrySnapper::snapPointToPoint()
 {
-  QgsVectorLayer* rl = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *rl = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
 
   QgsGeometry refGeom = QgsGeometry::fromWkt( QStringLiteral( "Point(0 0)" ) );
   QgsFeature ff( 0 );
@@ -345,7 +345,7 @@ void TestQgsGeometrySnapper::snapPointToPoint()
 
 void TestQgsGeometrySnapper::snapPointToLine()
 {
-  QgsVectorLayer* rl = new QgsVectorLayer( QStringLiteral( "Linestring" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *rl = new QgsVectorLayer( QStringLiteral( "Linestring" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
 
   // closed linestring
   QgsGeometry refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 0, 10 0, 10 10, 0 10, 0 0)" ) );
@@ -371,7 +371,7 @@ void TestQgsGeometrySnapper::snapPointToLine()
 
 void TestQgsGeometrySnapper::snapPointToLinePreferNearest()
 {
-  QgsVectorLayer* rl = new QgsVectorLayer( QStringLiteral( "Linestring" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *rl = new QgsVectorLayer( QStringLiteral( "Linestring" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
 
   // closed linestring
   QgsGeometry refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 0, 10 0, 10 10, 0 10, 0 0)" ) );
@@ -389,7 +389,7 @@ void TestQgsGeometrySnapper::snapPointToLinePreferNearest()
 
 void TestQgsGeometrySnapper::snapPointToPolygon()
 {
-  QgsVectorLayer* rl = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *rl = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
 
   // closed linestring
   QgsGeometry refGeom = QgsGeometry::fromWkt( QStringLiteral( "Polygon((0 0, 10 0, 10 10, 0 10, 0 0))" ) );

@@ -43,11 +43,11 @@ class TestQgsShapeburst : public QObject
     Q_OBJECT
   public:
     TestQgsShapeburst()
-        : mTestHasError( false )
-        , mpPolysLayer()
-        , mShapeburstFill( 0 )
-        , mFillSymbol( 0 )
-        , mSymbolRenderer( 0 )
+      : mTestHasError( false )
+      , mpPolysLayer()
+      , mShapeburstFill( 0 )
+      , mFillSymbol( 0 )
+      , mSymbolRenderer( 0 )
     {}
 
   private slots:
@@ -67,13 +67,13 @@ class TestQgsShapeburst : public QObject
 
   private:
     bool mTestHasError;
-    bool setQml( const QString& type );
-    bool imageCheck( const QString& type );
+    bool setQml( const QString &type );
+    bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPolysLayer = nullptr;
-    QgsShapeburstFillSymbolLayer* mShapeburstFill = nullptr;
-    QgsFillSymbol* mFillSymbol = nullptr;
-    QgsSingleSymbolRenderer* mSymbolRenderer = nullptr;
+    QgsVectorLayer *mpPolysLayer = nullptr;
+    QgsShapeburstFillSymbolLayer *mShapeburstFill = nullptr;
+    QgsFillSymbol *mFillSymbol = nullptr;
+    QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };
@@ -118,7 +118,7 @@ void TestQgsShapeburst::initTestCase()
   // since maprender does not require a qui
   // and is more light weight
   //
-  mMapSettings.setLayers( QList<QgsMapLayer*>() << mpPolysLayer );
+  mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
   mReport += QLatin1String( "<h1>Shapeburst Renderer Tests</h1>\n" );
 
 }
@@ -160,7 +160,7 @@ void TestQgsShapeburst::shapeburstSymbolRamp()
 {
   mReport += QLatin1String( "<h2>Shapeburst symbol renderer ramp test</h2>\n" );
 
-  QgsGradientColorRamp* gradientRamp = new QgsGradientColorRamp( QColor( Qt::yellow ), QColor( 255, 105, 180 ) );
+  QgsGradientColorRamp *gradientRamp = new QgsGradientColorRamp( QColor( Qt::yellow ), QColor( 255, 105, 180 ) );
   QgsGradientStopsList stops;
   stops.append( QgsGradientStop( 0.5, QColor( 255, 255, 255, 0 ) ) );
   gradientRamp->setStops( stops );
@@ -222,7 +222,7 @@ void TestQgsShapeburst::shapeburstSymbolFromQml()
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsShapeburst::setQml( const QString& type )
+bool TestQgsShapeburst::setQml( const QString &type )
 {
   //load a qml style and apply to our layer
   //the style will correspond to the renderer
@@ -237,7 +237,7 @@ bool TestQgsShapeburst::setQml( const QString& type )
   return myStyleFlag;
 }
 
-bool TestQgsShapeburst::imageCheck( const QString& testType )
+bool TestQgsShapeburst::imageCheck( const QString &testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image

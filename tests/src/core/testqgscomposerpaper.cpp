@@ -36,7 +36,7 @@ class TestQgsComposerPaper : public QObject
 
   public:
     TestQgsComposerPaper()
-        : mComposition( 0 )
+      : mComposition( 0 )
     {}
 
   private slots:
@@ -51,7 +51,7 @@ class TestQgsComposerPaper : public QObject
     void hiddenPages(); //test hidden page boundaries
 
   private:
-    QgsComposition* mComposition = nullptr;
+    QgsComposition *mComposition = nullptr;
     QString mReport;
     // QgsSingleSymbolRenderer* mSymbolRenderer;
 
@@ -103,8 +103,8 @@ void TestQgsComposerPaper::defaultPaper()
 
 void TestQgsComposerPaper::transparentPaper()
 {
-  QgsSimpleFillSymbolLayer* simpleFill = new QgsSimpleFillSymbolLayer();
-  QgsFillSymbol* fillSymbol = new QgsFillSymbol();
+  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::transparent );
   simpleFill->setStrokeColor( Qt::transparent );
@@ -118,8 +118,8 @@ void TestQgsComposerPaper::transparentPaper()
 
 void TestQgsComposerPaper::borderedPaper()
 {
-  QgsSimpleFillSymbolLayer* simpleFill = new QgsSimpleFillSymbolLayer();
-  QgsFillSymbol* fillSymbol = new QgsFillSymbol();
+  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::white );
   simpleFill->setStrokeColor( Qt::black );
@@ -134,8 +134,8 @@ void TestQgsComposerPaper::borderedPaper()
 
 void TestQgsComposerPaper::markerLinePaper()
 {
-  QgsMarkerLineSymbolLayer* markerLine = new QgsMarkerLineSymbolLayer();
-  QgsFillSymbol* markerLineSymbol = new QgsFillSymbol();
+  QgsMarkerLineSymbolLayer *markerLine = new QgsMarkerLineSymbolLayer();
+  QgsFillSymbol *markerLineSymbol = new QgsFillSymbol();
   markerLineSymbol->changeSymbolLayer( 0, markerLine );
   mComposition->setPageStyleSymbol( markerLineSymbol );
   delete markerLineSymbol;
@@ -147,8 +147,8 @@ void TestQgsComposerPaper::markerLinePaper()
 
 void TestQgsComposerPaper::hiddenPages()
 {
-  QgsSimpleFillSymbolLayer* simpleFill = new QgsSimpleFillSymbolLayer();
-  QgsFillSymbol* fillSymbol = new QgsFillSymbol();
+  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::blue );
   simpleFill->setStrokeColor( Qt::transparent );

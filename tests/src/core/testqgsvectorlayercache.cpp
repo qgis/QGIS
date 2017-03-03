@@ -37,9 +37,9 @@ class TestVectorLayerCache : public QObject
     Q_OBJECT
   public:
     TestVectorLayerCache()
-        : mVectorLayerCache( 0 )
-        , mFeatureIdIndex( 0 )
-        , mPointsLayer( 0 )
+      : mVectorLayerCache( 0 )
+      , mFeatureIdIndex( 0 )
+      , mPointsLayer( 0 )
     {}
 
   private slots:
@@ -56,12 +56,12 @@ class TestVectorLayerCache : public QObject
     void testFullCacheThroughRequest();
     void testCanUseCacheForRequest();
 
-    void onCommittedFeaturesAdded( const QString&, const QgsFeatureList& );
+    void onCommittedFeaturesAdded( const QString &, const QgsFeatureList & );
 
   private:
-    QgsVectorLayerCache*           mVectorLayerCache = nullptr;
-    QgsCacheIndexFeatureId*        mFeatureIdIndex = nullptr;
-    QgsVectorLayer*                mPointsLayer = nullptr;
+    QgsVectorLayerCache           *mVectorLayerCache = nullptr;
+    QgsCacheIndexFeatureId        *mFeatureIdIndex = nullptr;
+    QgsVectorLayer                *mPointsLayer = nullptr;
     QgsFeatureList                 mAddedFeatures;
     QMap<QString, QString> mTmpFiles;
 };
@@ -80,7 +80,7 @@ void TestVectorLayerCache::initTestCase()
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString myTestDataDir = myDataDir + '/';
 
-  Q_FOREACH ( const QString& f, backupFiles )
+  Q_FOREACH ( const QString &f, backupFiles )
   {
     QString origFileName = myTestDataDir + f;
     QFileInfo origFileInfo( origFileName );
@@ -331,7 +331,7 @@ void TestVectorLayerCache::testCanUseCacheForRequest()
   QVERIFY( cache.canUseCacheForRequest( QgsFeatureRequest().setFilterExpression( "$x<5" ), it ) );
 }
 
-void TestVectorLayerCache::onCommittedFeaturesAdded( const QString& layerId, const QgsFeatureList& features )
+void TestVectorLayerCache::onCommittedFeaturesAdded( const QString &layerId, const QgsFeatureList &features )
 {
   Q_UNUSED( layerId )
   mAddedFeatures.append( features );

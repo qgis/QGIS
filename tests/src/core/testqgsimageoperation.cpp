@@ -87,7 +87,7 @@ class TestQgsImageOperation : public QObject
     QString mSampleImage;
     QString mTransparentSampleImage;
 
-    bool imageCheck( const QString& testName, QImage &image, int mismatchCount );
+    bool imageCheck( const QString &testName, QImage &image, int mismatchCount );
 };
 
 void TestQgsImageOperation::initTestCase()
@@ -396,7 +396,7 @@ void TestQgsImageOperation::alphaOnlyBlur()
 void TestQgsImageOperation::gaussianBlur()
 {
   QImage image( mSampleImage );
-  QImage* blurredImage = QgsImageOperation::gaussianBlur( image, 30 );
+  QImage *blurredImage = QgsImageOperation::gaussianBlur( image, 30 );
 
   bool result = imageCheck( QStringLiteral( "imageop_gaussianblur" ), *blurredImage, 0 );
   QCOMPARE( blurredImage->format(), QImage::Format_ARGB32 );
@@ -410,7 +410,7 @@ void TestQgsImageOperation::gaussianBlurSmall()
   QImage image( QStringLiteral( TEST_DATA_DIR ) + "/small_sample_image.png" );
   image = image.convertToFormat( QImage::Format_ARGB32_Premultiplied );
 
-  QImage* blurredImage = QgsImageOperation::gaussianBlur( image, 10 );
+  QImage *blurredImage = QgsImageOperation::gaussianBlur( image, 10 );
 
   QCOMPARE( blurredImage->format(), QImage::Format_ARGB32_Premultiplied );
   bool result = imageCheck( QStringLiteral( "imageop_gaussianblur_small" ), *blurredImage, 0 );
@@ -421,7 +421,7 @@ void TestQgsImageOperation::gaussianBlurSmall()
 void TestQgsImageOperation::gaussianBlurNoChange()
 {
   QImage image( mSampleImage );
-  QImage* blurredImage = QgsImageOperation::gaussianBlur( image, 0 );
+  QImage *blurredImage = QgsImageOperation::gaussianBlur( image, 0 );
 
   bool result = imageCheck( QStringLiteral( "imageop_nochange" ), *blurredImage, 0 );
   delete blurredImage;
@@ -450,7 +450,7 @@ void TestQgsImageOperation::flipVertical()
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsImageOperation::imageCheck( const QString& testName, QImage &image, int mismatchCount )
+bool TestQgsImageOperation::imageCheck( const QString &testName, QImage &image, int mismatchCount )
 {
   //draw background
   QImage imageWithBackground( image.width(), image.height(), QImage::Format_RGB32 );

@@ -53,12 +53,12 @@ class TestQgisAppClipboard : public QObject
     void clipboardLogic(); //test clipboard logic
 
   private:
-    QgisApp * mQgisApp = nullptr;
+    QgisApp *mQgisApp = nullptr;
     QString mTestDataDir;
 };
 
 TestQgisAppClipboard::TestQgisAppClipboard()
-    : mQgisApp( nullptr )
+  : mQgisApp( nullptr )
 {
 
 }
@@ -94,7 +94,7 @@ void TestQgisAppClipboard::copyPaste()
   filesCounts.insert( QStringLiteral( "lines.shp" ), 6 );
   filesCounts.insert( QStringLiteral( "polys.shp" ), 10 );
 
-  Q_FOREACH ( const QString& fileName, filesCounts.keys() )
+  Q_FOREACH ( const QString &fileName, filesCounts.keys() )
   {
     // add vector layer
     QString filePath = mTestDataDir + fileName;
@@ -208,12 +208,12 @@ void TestQgisAppClipboard::pasteWkt()
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
   QCOMPARE( features.at( 0 ).geometry().geometry()->wkbType(), QgsWkbTypes::Point );
   QgsGeometry featureGeom = features.at( 0 ).geometry();
-  const QgsPointV2* point = dynamic_cast< QgsPointV2* >( featureGeom.geometry() );
+  const QgsPointV2 *point = dynamic_cast< QgsPointV2 * >( featureGeom.geometry() );
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
   QVERIFY( features.at( 1 ).hasGeometry() && !features.at( 1 ).geometry().isNull() );
   QCOMPARE( features.at( 1 ).geometry().geometry()->wkbType(), QgsWkbTypes::Point );
-  point = dynamic_cast< QgsPointV2* >( features.at( 1 ).geometry().geometry() );
+  point = dynamic_cast< QgsPointV2 * >( features.at( 1 ).geometry().geometry() );
   QCOMPARE( point->x(), 111.0 );
   QCOMPARE( point->y(), 30.0 );
 }
@@ -229,7 +229,7 @@ void TestQgisAppClipboard::pasteGeoJson()
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
   QCOMPARE( features.at( 0 ).geometry().geometry()->wkbType(), QgsWkbTypes::Point );
   QgsGeometry featureGeom = features.at( 0 ).geometry();
-  const QgsPointV2* point = dynamic_cast< QgsPointV2* >( featureGeom.geometry() );
+  const QgsPointV2 *point = dynamic_cast< QgsPointV2 * >( featureGeom.geometry() );
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
   QCOMPARE( features.at( 0 ).attribute( "name" ).toString(), QString( "Dinagat Islands" ) );

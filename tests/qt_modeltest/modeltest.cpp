@@ -384,7 +384,7 @@ void ModelTest::checkChildren( const QModelIndex &parent, int currentDepth )
       if ( model->parent( index ) != parent )
       {
         qDebug() << r << c << currentDepth << model->data( index ).toString()
-        << model->data( parent ).toString();
+                 << model->data( parent ).toString();
         qDebug() << index << parent << model->parent( index );
 //                 And a view that you can even use to show the model.
 //                 QTreeView view;
@@ -514,7 +514,7 @@ void ModelTest::rowsAboutToBeInserted( const QModelIndex &parent, int start, int
 
     \sa rowsAboutToBeInserted()
  */
-void ModelTest::rowsInserted( const QModelIndex & parent, int start, int end )
+void ModelTest::rowsInserted( const QModelIndex &parent, int start, int end )
 {
   Changing c = insert.pop();
   Q_ASSERT( c.parent == parent );
@@ -578,7 +578,7 @@ void ModelTest::rowsAboutToBeRemoved( const QModelIndex &parent, int start, int 
 
     \sa rowsAboutToBeRemoved()
  */
-void ModelTest::rowsRemoved( const QModelIndex & parent, int start, int end )
+void ModelTest::rowsRemoved( const QModelIndex &parent, int start, int end )
 {
   qDebug() << "rr" << parent << start << end;
   Changing c = remove.pop();

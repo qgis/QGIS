@@ -49,7 +49,7 @@ class DummyColorScheme : public QgsColorScheme
       return colors;
     }
 
-    virtual QgsColorScheme* clone() const override
+    virtual QgsColorScheme *clone() const override
     {
       return new DummyColorScheme();
     }
@@ -100,7 +100,7 @@ void TestQgsColorSchemeRegistry::cleanup()
 
 void TestQgsColorSchemeRegistry::createInstance()
 {
-  QgsColorSchemeRegistry* registry = QgsApplication::colorSchemeRegistry();
+  QgsColorSchemeRegistry *registry = QgsApplication::colorSchemeRegistry();
   QVERIFY( registry );
 }
 
@@ -108,7 +108,7 @@ void TestQgsColorSchemeRegistry::instanceHasDefaultSchemes()
 {
   //check that scheme instance is initially populated with some schemes
   //(assumes that there is some default schemes)
-  QgsColorSchemeRegistry* registry = QgsApplication::colorSchemeRegistry();
+  QgsColorSchemeRegistry *registry = QgsApplication::colorSchemeRegistry();
   QVERIFY( registry->schemes().length() > 0 );
 }
 
@@ -175,8 +175,8 @@ void TestQgsColorSchemeRegistry::matchingSchemes()
   DummyColorScheme *dummyScheme = new DummyColorScheme();
   registry->addColorScheme( dummyScheme );
   QVERIFY( registry->schemes().length() == 2 );
-  QList< QgsRecentColorScheme* > recentSchemes;
-  QList< DummyColorScheme* > dummySchemes;
+  QList< QgsRecentColorScheme * > recentSchemes;
+  QList< DummyColorScheme * > dummySchemes;
   registry->schemes( recentSchemes );
   QVERIFY( recentSchemes.length() == 1 );
   QCOMPARE( recentSchemes.at( 0 ), recentScheme );

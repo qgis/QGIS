@@ -53,14 +53,14 @@ void TestQgsFocusWatcher::cleanup()
 
 void TestQgsFocusWatcher::testSignals()
 {
-  QWidget* w = new QWidget();
-  QLineEdit* e1 = new QLineEdit( w );
-  QLineEdit* e2 = new QLineEdit( w );
+  QWidget *w = new QWidget();
+  QLineEdit *e1 = new QLineEdit( w );
+  QLineEdit *e2 = new QLineEdit( w );
   QApplication::setActiveWindow( w ); //required for focus events
   e1->setFocus();
 
-  QgsFocusWatcher* watcher1 = new QgsFocusWatcher( e1 );
-  QgsFocusWatcher* watcher2 = new QgsFocusWatcher( e2 );
+  QgsFocusWatcher *watcher1 = new QgsFocusWatcher( e1 );
+  QgsFocusWatcher *watcher2 = new QgsFocusWatcher( e2 );
 
   QSignalSpy spyFocusIn1( watcher1, SIGNAL( focusIn() ) );
   QSignalSpy spyFocusOut1( watcher1, SIGNAL( focusOut() ) );

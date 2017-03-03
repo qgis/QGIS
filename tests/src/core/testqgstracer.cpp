@@ -43,7 +43,7 @@ class TestQgsTracer : public QObject
 namespace QTest
 {
   template<>
-  char* toString( const QgsPoint& point )
+  char *toString( const QgsPoint &point )
   {
     QByteArray ba = "QgsPoint(" + QByteArray::number( point.x() ) +
                     ", " + QByteArray::number( point.y() ) + ")";
@@ -51,7 +51,7 @@ namespace QTest
   }
 }
 
-static QgsFeature make_feature( const QString& wkt )
+static QgsFeature make_feature( const QString &wkt )
 {
   QgsFeature f;
   QgsGeometry g = QgsGeometry::fromWkt( wkt ) ;
@@ -59,13 +59,13 @@ static QgsFeature make_feature( const QString& wkt )
   return f;
 }
 
-static QgsVectorLayer* make_layer( const QStringList& wkts )
+static QgsVectorLayer *make_layer( const QStringList &wkts )
 {
-  QgsVectorLayer* vl = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
   Q_ASSERT( vl->isValid() );
 
   vl->startEditing();
-  Q_FOREACH ( const QString& wkt, wkts )
+  Q_FOREACH ( const QString &wkt, wkts )
   {
     QgsFeature f( make_feature( wkt ) );
     vl->addFeature( f, false );
@@ -75,7 +75,7 @@ static QgsVectorLayer* make_layer( const QStringList& wkts )
   return vl;
 }
 
-void print_shortest_path( QgsTracer& tracer, const QgsPoint& p1, const QgsPoint& p2 )
+void print_shortest_path( QgsTracer &tracer, const QgsPoint &p1, const QgsPoint &p2 )
 {
   qDebug( "from (%f,%f) to (%f,%f)", p1.x(), p1.y(), p2.x(), p2.y() );
   QVector<QgsPoint> points = tracer.findShortestPath( p1, p2 );
@@ -83,7 +83,7 @@ void print_shortest_path( QgsTracer& tracer, const QgsPoint& p1, const QgsPoint&
   if ( points.isEmpty() )
     qDebug( "no path!" );
 
-  Q_FOREACH ( const QgsPoint& p, points )
+  Q_FOREACH ( const QgsPoint &p, points )
     qDebug( "p: %f %f", p.x(), p.y() );
 }
 
@@ -105,9 +105,9 @@ void TestQgsTracer::testSimple()
 {
   QStringList wkts;
   wkts  << QStringLiteral( "LINESTRING(0 0, 0 10)" )
-  << QStringLiteral( "LINESTRING(0 0, 10 0)" )
-  << QStringLiteral( "LINESTRING(0 10, 20 10)" )
-  << QStringLiteral( "LINESTRING(10 0, 20 10)" );
+        << QStringLiteral( "LINESTRING(0 0, 10 0)" )
+        << QStringLiteral( "LINESTRING(0 10, 20 10)" )
+        << QStringLiteral( "LINESTRING(10 0, 20 10)" );
 
   /* This shape - nearly a square (one side is shifted to have exactly one shortest
    * path between corners):
@@ -116,10 +116,10 @@ void TestQgsTracer::testSimple()
    * 0,0  +--+  10,0
    */
 
-  QgsVectorLayer* vl = make_layer( wkts );
+  QgsVectorLayer *vl = make_layer( wkts );
 
   QgsTracer tracer;
-  tracer.setLayers( QList<QgsVectorLayer*>() << vl );
+  tracer.setLayers( QList<QgsVectorLayer *>() << vl );
 
   QgsPolyline points1 = tracer.findShortestPath( QgsPoint( 0, 0 ), QgsPoint( 20, 10 ) );
   QCOMPARE( points1.count(), 3 );
@@ -163,10 +163,10 @@ void TestQgsTracer::testPolygon()
   QStringList wkts;
   wkts << QStringLiteral( "POLYGON((0 0, 0 10, 20 10, 10 0, 0 0))" );
 
-  QgsVectorLayer* vl = make_layer( wkts );
+  QgsVectorLayer *vl = make_layer( wkts );
 
   QgsTracer tracer;
-  tracer.setLayers( QList<QgsVectorLayer*>() << vl );
+  tracer.setLayers( QList<QgsVectorLayer *>() << vl );
 
   QgsPolyline points = tracer.findShortestPath( QgsPoint( 1, 0 ), QgsPoint( 0, 1 ) );
   QCOMPARE( points.count(), 3 );
@@ -192,10 +192,10 @@ void TestQgsTracer::testButterfly()
    *  0,0
    */
 
-  QgsVectorLayer* vl = make_layer( wkts );
+  QgsVectorLayer *vl = make_layer( wkts );
 
   QgsTracer tracer;
-  tracer.setLayers( QList<QgsVectorLayer*>() << vl );
+  tracer.setLayers( QList<QgsVectorLayer *>() << vl );
 
   QgsPolyline points = tracer.findShortestPath( QgsPoint( 0, 0 ), QgsPoint( 10, 0 ) );
 
@@ -214,14 +214,14 @@ void TestQgsTracer::testLayerUpdates()
   // same shape as in testSimple()
   QStringList wkts;
   wkts  << QStringLiteral( "LINESTRING(0 0, 0 10)" )
-  << QStringLiteral( "LINESTRING(0 0, 10 0)" )
-  << QStringLiteral( "LINESTRING(0 10, 20 10)" )
-  << QStringLiteral( "LINESTRING(10 0, 20 10)" );
+        << QStringLiteral( "LINESTRING(0 0, 10 0)" )
+        << QStringLiteral( "LINESTRING(0 10, 20 10)" )
+        << QStringLiteral( "LINESTRING(10 0, 20 10)" );
 
-  QgsVectorLayer* vl = make_layer( wkts );
+  QgsVectorLayer *vl = make_layer( wkts );
 
   QgsTracer tracer;
-  tracer.setLayers( QList<QgsVectorLayer*>() << vl );
+  tracer.setLayers( QList<QgsVectorLayer *>() << vl );
   tracer.init();
 
   QgsPolyline points1 = tracer.findShortestPath( QgsPoint( 10, 0 ), QgsPoint( 10, 10 ) );
@@ -278,14 +278,14 @@ void TestQgsTracer::testExtent()
   // same shape as in testSimple()
   QStringList wkts;
   wkts  << QStringLiteral( "LINESTRING(0 0, 0 10)" )
-  << QStringLiteral( "LINESTRING(0 0, 10 0)" )
-  << QStringLiteral( "LINESTRING(0 10, 20 10)" )
-  << QStringLiteral( "LINESTRING(10 0, 20 10)" );
+        << QStringLiteral( "LINESTRING(0 0, 10 0)" )
+        << QStringLiteral( "LINESTRING(0 10, 20 10)" )
+        << QStringLiteral( "LINESTRING(10 0, 20 10)" );
 
-  QgsVectorLayer* vl = make_layer( wkts );
+  QgsVectorLayer *vl = make_layer( wkts );
 
   QgsTracer tracer;
-  tracer.setLayers( QList<QgsVectorLayer*>() << vl );
+  tracer.setLayers( QList<QgsVectorLayer *>() << vl );
   tracer.setExtent( QgsRectangle( 0, 0, 5, 5 ) );
   tracer.init();
 
@@ -303,7 +303,7 @@ void TestQgsTracer::testReprojection()
   QStringList wkts;
   wkts  << QStringLiteral( "LINESTRING(1 0, 2 0)" );
 
-  QgsVectorLayer* vl = make_layer( wkts );
+  QgsVectorLayer *vl = make_layer( wkts );
 
   QgsCoordinateReferenceSystem dstCrs( QStringLiteral( "EPSG:3857" ) );
   QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), dstCrs );
@@ -311,7 +311,7 @@ void TestQgsTracer::testReprojection()
   QgsPoint p2 = ct.transform( QgsPoint( 2, 0 ) );
 
   QgsTracer tracer;
-  tracer.setLayers( QList<QgsVectorLayer*>() << vl );
+  tracer.setLayers( QList<QgsVectorLayer *>() << vl );
   tracer.setDestinationCrs( dstCrs );
   tracer.init();
 
@@ -330,10 +330,10 @@ void TestQgsTracer::testCurved()
    * 0,0  |   |  20,0
    */
 
-  QgsVectorLayer* vl = make_layer( wkts );
+  QgsVectorLayer *vl = make_layer( wkts );
 
   QgsTracer tracer;
-  tracer.setLayers( QList<QgsVectorLayer*>() << vl );
+  tracer.setLayers( QList<QgsVectorLayer *>() << vl );
 
   QgsPolyline points1 = tracer.findShortestPath( QgsPoint( 0, 0 ), QgsPoint( 10, 10 ) );
 
@@ -347,7 +347,7 @@ void TestQgsTracer::testCurved()
   QGSCOMPARENEAR( l, full_circle_length / 4, 0.01 );
 
   QCOMPARE( points1[0], QgsPoint( 0, 0 ) );
-  QCOMPARE( points1[points1.count()-1], QgsPoint( 10, 10 ) );
+  QCOMPARE( points1[points1.count() - 1], QgsPoint( 10, 10 ) );
 
   delete vl;
 }

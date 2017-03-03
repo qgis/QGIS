@@ -29,7 +29,7 @@ class TestQgsRasterBlock : public QObject
     Q_OBJECT
   public:
     TestQgsRasterBlock()
-        : mpRasterLayer( nullptr )
+      : mpRasterLayer( nullptr )
     {}
     ~TestQgsRasterBlock()
     {
@@ -47,7 +47,7 @@ class TestQgsRasterBlock : public QObject
   private:
 
     QString mTestDataDir;
-    QgsRasterLayer* mpRasterLayer = nullptr;
+    QgsRasterLayer *mpRasterLayer = nullptr;
 };
 
 
@@ -76,14 +76,14 @@ void TestQgsRasterBlock::cleanupTestCase()
 
 void TestQgsRasterBlock::testBasic()
 {
-  QgsRasterDataProvider* provider = mpRasterLayer->dataProvider();
+  QgsRasterDataProvider *provider = mpRasterLayer->dataProvider();
   QVERIFY( provider );
 
   QgsRectangle fullExtent = mpRasterLayer->extent();
   int width = mpRasterLayer->width();
   int height = mpRasterLayer->height();
 
-  QgsRasterBlock* block = provider->block( 1, fullExtent, width, height );
+  QgsRasterBlock *block = provider->block( 1, fullExtent, width, height );
 
   QCOMPARE( block->width(), 10 );
   QCOMPARE( block->height(), 10 );
@@ -147,9 +147,9 @@ void TestQgsRasterBlock::testWrite()
 
   // create a GeoTIFF - this will create data provider in editable mode
   QString filename = tmpFile.fileName();
-  QgsRasterDataProvider* dp = QgsRasterDataProvider::create( "gdal", filename, "GTiff", 1, Qgis::Byte, 10, 10, tform, mpRasterLayer->crs() );
+  QgsRasterDataProvider *dp = QgsRasterDataProvider::create( "gdal", filename, "GTiff", 1, Qgis::Byte, 10, 10, tform, mpRasterLayer->crs() );
 
-  QgsRasterBlock* block = mpRasterLayer->dataProvider()->block( 1, mpRasterLayer->extent(), mpRasterLayer->width(), mpRasterLayer->height() );
+  QgsRasterBlock *block = mpRasterLayer->dataProvider()->block( 1, mpRasterLayer->extent(), mpRasterLayer->width(), mpRasterLayer->height() );
 
   QByteArray origData = block->data();
   origData.detach();  // make sure we have private copy independent from independent block content
@@ -161,7 +161,7 @@ void TestQgsRasterBlock::testWrite()
   bool res = dp->writeBlock( block, 1 );
   QVERIFY( res );
 
-  QgsRasterBlock* block2 = dp->block( 1, mpRasterLayer->extent(), mpRasterLayer->width(), mpRasterLayer->height() );
+  QgsRasterBlock *block2 = dp->block( 1, mpRasterLayer->extent(), mpRasterLayer->width(), mpRasterLayer->height() );
   QByteArray newData2 = block2->data();
   QCOMPARE( newData2.at( 0 ), '\xa0' );
   QCOMPARE( newData2.at( 1 ), '\xa1' );
@@ -170,14 +170,14 @@ void TestQgsRasterBlock::testWrite()
   delete dp;
 
   // newly open raster and verify the write was permanent
-  QgsRasterLayer* rlayer = new QgsRasterLayer( filename, "tmp", "gdal" );
+  QgsRasterLayer *rlayer = new QgsRasterLayer( filename, "tmp", "gdal" );
   QVERIFY( rlayer->isValid() );
-  QgsRasterBlock* block3 = rlayer->dataProvider()->block( 1, rlayer->extent(), rlayer->width(), rlayer->height() );
+  QgsRasterBlock *block3 = rlayer->dataProvider()->block( 1, rlayer->extent(), rlayer->width(), rlayer->height() );
   QByteArray newData3 = block3->data();
   QCOMPARE( newData3.at( 0 ), '\xa0' );
   QCOMPARE( newData3.at( 1 ), '\xa1' );
 
-  QgsRasterBlock* block4 = new QgsRasterBlock( Qgis::Byte, 1, 2 );
+  QgsRasterBlock *block4 = new QgsRasterBlock( Qgis::Byte, 1, 2 );
   block4->setData( QByteArray( "\xb0\xb1" ) );
 
   // cannot write when provider is not editable
@@ -203,7 +203,7 @@ void TestQgsRasterBlock::testWrite()
   QVERIFY( !rlayer->dataProvider()->isEditable() );
 
   // verify the change is there
-  QgsRasterBlock* block5 = rlayer->dataProvider()->block( 1, rlayer->extent(), rlayer->width(), rlayer->height() );
+  QgsRasterBlock *block5 = rlayer->dataProvider()->block( 1, rlayer->extent(), rlayer->width(), rlayer->height() );
   QByteArray newData5 = block5->data();
   QCOMPARE( newData5.at( 0 ), '\xb0' );
   QCOMPARE( newData5.at( 1 ), '\xa1' ); // original data

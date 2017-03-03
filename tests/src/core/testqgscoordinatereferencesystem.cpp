@@ -107,7 +107,7 @@ void TestQgsCoordinateReferenceSystem::initTestCase()
   if ( strcmp( CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" ), "" ) != 0 )
   {
     qDebug() << "Warning! GDAL_FIX_ESRI_WKT =" << CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" )
-    << "this might generate errors!";
+             << "this might generate errors!";
   }
 
 }
@@ -337,7 +337,7 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
 {
   QString msg;
   QgsCoordinateReferenceSystem myCrs;
-  const char* configOld = CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" );
+  const char *configOld = CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" );
 
   // for more tests add definitions here
 

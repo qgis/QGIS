@@ -32,7 +32,7 @@ class TestQgsComposerObject : public QObject
 
   public:
     TestQgsComposerObject()
-        : mComposition( 0 )
+      : mComposition( 0 )
     {
     }
 
@@ -49,7 +49,7 @@ class TestQgsComposerObject : public QObject
     void writeRetrieveCustomProperties(); //test writing/retreiving custom properties from xml
 
   private:
-    bool renderCheck( const QString& testName, QImage &image, int mismatchCount = 0 );
+    bool renderCheck( const QString &testName, QImage &image, int mismatchCount = 0 );
     QgsComposition *mComposition = nullptr;
     QString mReport;
 
@@ -92,21 +92,21 @@ void TestQgsComposerObject::cleanup()
 
 void TestQgsComposerObject::creation()
 {
-  QgsComposerObject* object = new QgsComposerObject( mComposition );
+  QgsComposerObject *object = new QgsComposerObject( mComposition );
   QVERIFY( object );
   delete object;
 }
 
 void TestQgsComposerObject::composition()
 {
-  QgsComposerObject* object = new QgsComposerObject( mComposition );
+  QgsComposerObject *object = new QgsComposerObject( mComposition );
   QCOMPARE( object->composition(), mComposition );
   delete object;
 }
 
 void TestQgsComposerObject::writeReadXml()
 {
-  QgsComposerObject* object = new QgsComposerObject( mComposition );
+  QgsComposerObject *object = new QgsComposerObject( mComposition );
   QDomImplementation DomImplementation;
   QDomDocumentType documentType =
     DomImplementation.createDocumentType(
@@ -128,7 +128,7 @@ void TestQgsComposerObject::writeReadXml()
   QCOMPARE( evalNodeList.count(), 1 );
 
   //test reading node
-  QgsComposerObject* readObject = new QgsComposerObject( mComposition );
+  QgsComposerObject *readObject = new QgsComposerObject( mComposition );
 
   //test reading with no node
   QCOMPARE( readObject->readXml( noNode, doc ), false );
@@ -142,7 +142,7 @@ void TestQgsComposerObject::writeReadXml()
 
 void TestQgsComposerObject::writeRetrieveDDProperty()
 {
-  QgsComposerObject* object = new QgsComposerObject( mComposition );
+  QgsComposerObject *object = new QgsComposerObject( mComposition );
   object->dataDefinedProperties().setProperty( QgsComposerObject::TestProperty, QgsProperty::fromExpression( QStringLiteral( "10 + 40" ) ) );
   object->prepareProperties();
 
@@ -162,7 +162,7 @@ void TestQgsComposerObject::writeRetrieveDDProperty()
   QCOMPARE( evalNodeList.count(), 1 );
 
   //test reading node containing dd settings
-  QgsComposerObject* readObject = new QgsComposerObject( mComposition );
+  QgsComposerObject *readObject = new QgsComposerObject( mComposition );
   QVERIFY( readObject->readXml( composerObjectElem, doc ) );
 
   //test getting not set dd from restored object
@@ -181,7 +181,7 @@ void TestQgsComposerObject::writeRetrieveDDProperty()
 
 void TestQgsComposerObject::customProperties()
 {
-  QgsComposerObject* object = new QgsComposerObject( mComposition );
+  QgsComposerObject *object = new QgsComposerObject( mComposition );
 
   QCOMPARE( object->customProperty( "noprop", "defaultval" ).toString(), QString( "defaultval" ) );
   QVERIFY( object->customProperties().isEmpty() );
@@ -209,7 +209,7 @@ void TestQgsComposerObject::customProperties()
 
 void TestQgsComposerObject::writeRetrieveCustomProperties()
 {
-  QgsComposerObject* object = new QgsComposerObject( mComposition );
+  QgsComposerObject *object = new QgsComposerObject( mComposition );
   object->setCustomProperty( QStringLiteral( "testprop" ), "testval" );
   object->setCustomProperty( QStringLiteral( "testprop2" ), 5 );
 
@@ -229,7 +229,7 @@ void TestQgsComposerObject::writeRetrieveCustomProperties()
   QCOMPARE( evalNodeList.count(), 1 );
 
   //test reading node containing custom properties
-  QgsComposerObject* readObject = new QgsComposerObject( mComposition );
+  QgsComposerObject *readObject = new QgsComposerObject( mComposition );
   QVERIFY( readObject->readXml( composerObjectElem, doc ) );
 
   //test retrieved custom properties
@@ -243,7 +243,7 @@ void TestQgsComposerObject::writeRetrieveCustomProperties()
   delete readObject;
 }
 
-bool TestQgsComposerObject::renderCheck( const QString& testName, QImage &image, int mismatchCount )
+bool TestQgsComposerObject::renderCheck( const QString &testName, QImage &image, int mismatchCount )
 {
   mReport += "<h2>" + testName + "</h2>\n";
   QString myTmpDir = QDir::tempPath() + '/';

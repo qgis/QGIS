@@ -57,25 +57,25 @@ class TestQgsGeometryUtils: public QObject
 
 void TestQgsGeometryUtils::testExtractLinestrings()
 {
-  QgsLineString* outerRing1 = new QgsLineString();
+  QgsLineString *outerRing1 = new QgsLineString();
   outerRing1->setPoints( QList<QgsPointV2>() << QgsPointV2( 1, 1 ) << QgsPointV2( 1, 2 ) << QgsPointV2( 2, 2 ) << QgsPointV2( 2, 1 ) << QgsPointV2( 1, 1 ) );
-  QgsPolygonV2* polygon1 = new QgsPolygonV2();
+  QgsPolygonV2 *polygon1 = new QgsPolygonV2();
   polygon1->setExteriorRing( outerRing1 );
 
-  QgsLineString* outerRing2 = new QgsLineString();
+  QgsLineString *outerRing2 = new QgsLineString();
   outerRing2->setPoints( QList<QgsPointV2>() << QgsPointV2( 10, 10 ) << QgsPointV2( 10, 20 ) << QgsPointV2( 20, 20 ) << QgsPointV2( 20, 10 ) << QgsPointV2( 10, 10 ) );
-  QgsPolygonV2* polygon2 = new QgsPolygonV2();
+  QgsPolygonV2 *polygon2 = new QgsPolygonV2();
   polygon2->setExteriorRing( outerRing2 );
 
-  QgsLineString* innerRing2 = new QgsLineString();
+  QgsLineString *innerRing2 = new QgsLineString();
   innerRing2->setPoints( QList<QgsPointV2>() << QgsPointV2( 14, 14 ) << QgsPointV2( 14, 16 ) << QgsPointV2( 16, 16 ) << QgsPointV2( 16, 14 ) << QgsPointV2( 14, 14 ) );
-  polygon2->setInteriorRings( QList<QgsCurve*>() << innerRing2 );
+  polygon2->setInteriorRings( QList<QgsCurve *>() << innerRing2 );
 
   QgsMultiPolygonV2 mpg;
   mpg.addGeometry( polygon1 );
   mpg.addGeometry( polygon2 );
 
-  QList<QgsLineString*> linestrings = QgsGeometryUtils::extractLineStrings( &mpg );
+  QList<QgsLineString *> linestrings = QgsGeometryUtils::extractLineStrings( &mpg );
   QCOMPARE( linestrings.count(), 3 );
   qDeleteAll( linestrings );
 }
@@ -342,7 +342,7 @@ void TestQgsGeometryUtils::testAverageAngle()
 void TestQgsGeometryUtils::testAdjacentVertices()
 {
   // test polygon - should wrap around!
-  QgsLineString* closedRing1 = new QgsLineString();
+  QgsLineString *closedRing1 = new QgsLineString();
   closedRing1->setPoints( QList<QgsPointV2>() << QgsPointV2( 1, 1 ) << QgsPointV2( 1, 2 ) << QgsPointV2( 2, 2 ) << QgsPointV2( 2, 1 ) << QgsPointV2( 1, 1 ) );
   QgsPolygonV2 polygon1;
   polygon1.setExteriorRing( closedRing1 );
@@ -363,7 +363,7 @@ void TestQgsGeometryUtils::testAdjacentVertices()
 void TestQgsGeometryUtils::testDistanceToVertex()
 {
   //test with linestring
-  QgsLineString* outerRing1 = new QgsLineString();
+  QgsLineString *outerRing1 = new QgsLineString();
   outerRing1->setPoints( QList<QgsPointV2>() << QgsPointV2( 1, 1 ) << QgsPointV2( 1, 2 ) << QgsPointV2( 2, 2 ) << QgsPointV2( 2, 1 ) << QgsPointV2( 1, 1 ) );
   QCOMPARE( QgsGeometryUtils::distanceToVertex( *outerRing1, QgsVertexId( 0, 0, 0 ) ), 0.0 );
   QCOMPARE( QgsGeometryUtils::distanceToVertex( *outerRing1, QgsVertexId( 0, 0, 1 ) ), 1.0 );
@@ -393,7 +393,7 @@ void TestQgsGeometryUtils::testDistanceToVertex()
 void TestQgsGeometryUtils::testVerticesAtDistance()
 {
   //test with linestring
-  QgsLineString* outerRing1 = new QgsLineString();
+  QgsLineString *outerRing1 = new QgsLineString();
   QgsVertexId previous;
   QgsVertexId next;
   QVERIFY( !QgsGeometryUtils::verticesAtDistance( *outerRing1, .5, previous, next ) );
@@ -432,7 +432,7 @@ void TestQgsGeometryUtils::testVerticesAtDistance()
   delete outerRing1;
 
   // test closed line
-  QgsLineString* closedRing1 = new QgsLineString();
+  QgsLineString *closedRing1 = new QgsLineString();
   closedRing1->setPoints( QList<QgsPointV2>() << QgsPointV2( 1, 1 ) << QgsPointV2( 1, 2 ) << QgsPointV2( 2, 2 ) << QgsPointV2( 2, 1 ) << QgsPointV2( 1, 1 ) );
   QVERIFY( QgsGeometryUtils::verticesAtDistance( *closedRing1, 0, previous, next ) );
   QCOMPARE( previous, QgsVertexId( 0, 0, 0 ) );

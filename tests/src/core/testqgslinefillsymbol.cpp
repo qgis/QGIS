@@ -45,11 +45,11 @@ class TestQgsLineFillSymbol : public QObject
 
   public:
     TestQgsLineFillSymbol()
-        : mTestHasError( false )
-        , mpPolysLayer( 0 )
-        , mLineFill( 0 )
-        , mFillSymbol( 0 )
-        , mSymbolRenderer( 0 )
+      : mTestHasError( false )
+      , mpPolysLayer( 0 )
+      , mLineFill( 0 )
+      , mFillSymbol( 0 )
+      , mSymbolRenderer( 0 )
     {}
 
   private slots:
@@ -64,12 +64,12 @@ class TestQgsLineFillSymbol : public QObject
   private:
     bool mTestHasError;
 
-    bool imageCheck( const QString& type );
+    bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPolysLayer = nullptr;
-    QgsLinePatternFillSymbolLayer* mLineFill = nullptr;
-    QgsFillSymbol* mFillSymbol = nullptr;
-    QgsSingleSymbolRenderer* mSymbolRenderer = nullptr;
+    QgsVectorLayer *mpPolysLayer = nullptr;
+    QgsLinePatternFillSymbolLayer *mLineFill = nullptr;
+    QgsFillSymbol *mFillSymbol = nullptr;
+    QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };
@@ -110,7 +110,7 @@ void TestQgsLineFillSymbol::initTestCase()
   // since maprender does not require a qui
   // and is more light weight
   //
-  mMapSettings.setLayers( QList<QgsMapLayer*>() << mpPolysLayer );
+  mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
   mReport += QLatin1String( "<h1>Line Fill Symbol Tests</h1>\n" );
 
 }
@@ -138,7 +138,7 @@ void TestQgsLineFillSymbol::lineFillSymbol()
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
   properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  QgsLineSymbol* lineSymbol = QgsLineSymbol::createSimple( properties );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
 
   mLineFill->setSubSymbol( lineSymbol );
   QVERIFY( imageCheck( "symbol_linefill" ) );
@@ -152,7 +152,7 @@ void TestQgsLineFillSymbol::dataDefinedSubSymbol()
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
   properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  QgsLineSymbol* lineSymbol = QgsLineSymbol::createSimple( properties );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
   lineSymbol->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(\"Name\" ='Lake','#ff0000','#ff00ff')" ) ) );
   mLineFill->setSubSymbol( lineSymbol );
   QVERIFY( imageCheck( "datadefined_subsymbol" ) );
@@ -163,7 +163,7 @@ void TestQgsLineFillSymbol::dataDefinedSubSymbol()
 //
 
 
-bool TestQgsLineFillSymbol::imageCheck( const QString& testType )
+bool TestQgsLineFillSymbol::imageCheck( const QString &testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image

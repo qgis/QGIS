@@ -44,13 +44,13 @@ class TestQgsDataItem : public QObject
     void testDirItemChildren();
 
   private:
-    QgsDirectoryItem* mDirItem = nullptr;
+    QgsDirectoryItem *mDirItem = nullptr;
     QString mScanItemsSetting;
     bool isValidDirItem( QgsDirectoryItem *item );
 };
 
 TestQgsDataItem::TestQgsDataItem()
-    : mDirItem( nullptr )
+  : mDirItem( nullptr )
 {
 
 }
@@ -107,17 +107,17 @@ void TestQgsDataItem::testDirItemChildren()
   QSettings settings;
   QStringList tmpSettings;
   tmpSettings << QLatin1String( "" ) << QStringLiteral( "contents" ) << QStringLiteral( "extension" );
-  Q_FOREACH ( const QString& tmpSetting, tmpSettings )
+  Q_FOREACH ( const QString &tmpSetting, tmpSettings )
   {
     settings.setValue( QStringLiteral( "/qgis/scanItemsInBrowser2" ), tmpSetting );
-    QgsDirectoryItem* dirItem = new QgsDirectoryItem( 0, QStringLiteral( "Test" ), TEST_DATA_DIR );
+    QgsDirectoryItem *dirItem = new QgsDirectoryItem( 0, QStringLiteral( "Test" ), TEST_DATA_DIR );
     QVERIFY( isValidDirItem( dirItem ) );
 
-    QVector<QgsDataItem*> children = dirItem->createChildren();
+    QVector<QgsDataItem *> children = dirItem->createChildren();
     for ( int i = 0; i < children.size(); i++ )
     {
-      QgsDataItem* dataItem = children[i];
-      QgsLayerItem* layerItem = dynamic_cast<QgsLayerItem*>( dataItem );
+      QgsDataItem *dataItem = children[i];
+      QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem *>( dataItem );
       if ( ! layerItem )
         continue;
 

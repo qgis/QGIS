@@ -27,7 +27,7 @@
 namespace QTest
 {
   template<>
-  char* toString( const QgsRectangle& r )
+  char *toString( const QgsRectangle &r )
   {
     QByteArray ba = r.toString().toLocal8Bit();
     return qstrdup( ba.data() );
@@ -37,7 +37,7 @@ namespace QTest
 class QgsMapToolTest : public QgsMapTool
 {
   public:
-    QgsMapToolTest( QgsMapCanvas* canvas ) : QgsMapTool( canvas ) {}
+    QgsMapToolTest( QgsMapCanvas *canvas ) : QgsMapTool( canvas ) {}
 
 };
 
@@ -46,7 +46,7 @@ class TestQgsMapCanvas : public QObject
     Q_OBJECT
   public:
     TestQgsMapCanvas()
-        : mCanvas( nullptr )
+      : mCanvas( nullptr )
     {}
 
   private slots:
@@ -61,7 +61,7 @@ class TestQgsMapCanvas : public QObject
     void testShiftZoom();
 
   private:
-    QgsMapCanvas* mCanvas = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
 };
 
 
@@ -141,7 +141,7 @@ void TestQgsMapCanvas::testMagnification()
       myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   // prepare map canvas
-  mCanvas->setLayers( QList<QgsMapLayer*>() << layer );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << layer );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << layer );
 
   mCanvas->setExtent( layer->extent() );
@@ -279,7 +279,7 @@ void TestQgsMapCanvas::testMagnificationExtent()
   // zoomScale
   initialExtent = mCanvas->extent();
   double scale = mCanvas->scale();
-  mCanvas->zoomScale( 6.052017*10e7 );
+  mCanvas->zoomScale( 6.052017 * 10e7 );
 
   mCanvas->setMagnificationFactor( 4.0 );
   mCanvas->setMagnificationFactor( 1.0 );

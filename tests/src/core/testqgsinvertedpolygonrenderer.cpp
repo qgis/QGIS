@@ -56,18 +56,18 @@ class TestQgsInvertedPolygon : public QObject
 
   private:
     bool mTestHasError;
-    bool setQml( QgsVectorLayer* vlayer, const QString& qmlFile );
-    bool imageCheck( const QString& type, const QgsRectangle* = 0 );
+    bool setQml( QgsVectorLayer *vlayer, const QString &qmlFile );
+    bool imageCheck( const QString &type, const QgsRectangle * = 0 );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPolysLayer = nullptr;
+    QgsVectorLayer *mpPolysLayer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };
 
 
 TestQgsInvertedPolygon::TestQgsInvertedPolygon()
-    : mTestHasError( false )
-    , mpPolysLayer( nullptr )
+  : mTestHasError( false )
+  , mpPolysLayer( nullptr )
 {
 
 }
@@ -94,7 +94,7 @@ void TestQgsInvertedPolygon::initTestCase()
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
 
-  mMapSettings.setLayers( QList<QgsMapLayer*>() << mpPolysLayer );
+  mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
   mReport += QLatin1String( "<h1>Inverted Polygon Renderer Tests</h1>\n" );
 }
 
@@ -153,7 +153,7 @@ void TestQgsInvertedPolygon::curvedPolygons()
 {
   QString myCurvedPolysFileName = mTestDataDir + "curved_polys.gpkg";
   QFileInfo myCurvedPolyFileInfo( myCurvedPolysFileName );
-  QgsVectorLayer* curvedLayer = new QgsVectorLayer( myCurvedPolyFileInfo.filePath() + "|layername=polys",
+  QgsVectorLayer *curvedLayer = new QgsVectorLayer( myCurvedPolyFileInfo.filePath() + "|layername=polys",
       myCurvedPolyFileInfo.completeBaseName(), "ogr" );
   curvedLayer->setSimplifyMethod( simplifyMethod );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << curvedLayer );
@@ -170,7 +170,7 @@ void TestQgsInvertedPolygon::curvedPolygons()
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsInvertedPolygon::setQml( QgsVectorLayer* vlayer, const QString& qmlFile )
+bool TestQgsInvertedPolygon::setQml( QgsVectorLayer *vlayer, const QString &qmlFile )
 {
   //load a qml style and apply to our layer
   //the style will correspond to the renderer
@@ -186,7 +186,7 @@ bool TestQgsInvertedPolygon::setQml( QgsVectorLayer* vlayer, const QString& qmlF
   return myStyleFlag;
 }
 
-bool TestQgsInvertedPolygon::imageCheck( const QString& testType, const QgsRectangle* extent )
+bool TestQgsInvertedPolygon::imageCheck( const QString &testType, const QgsRectangle *extent )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image

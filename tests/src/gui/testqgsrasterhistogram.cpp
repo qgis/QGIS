@@ -48,19 +48,19 @@ class TestRasterHistogram : public QObject
     QString mDataDir;
     QString mTestPrefix;
     int mWidth, mHeight, mImageQuality;
-    QgsRasterLayer* mRasterLayer = nullptr;
-    QgsSingleBandGrayRendererWidget* mGrayRendererWidget = nullptr;
-    QgsMultiBandColorRendererWidget* mRGBRendererWidget = nullptr;
-    QgsSingleBandPseudoColorRendererWidget* mPseudoRendererWidget = nullptr;
-    QgsRasterHistogramWidget* mHistogramWidget = nullptr;
+    QgsRasterLayer *mRasterLayer = nullptr;
+    QgsSingleBandGrayRendererWidget *mGrayRendererWidget = nullptr;
+    QgsMultiBandColorRendererWidget *mRGBRendererWidget = nullptr;
+    QgsSingleBandPseudoColorRendererWidget *mPseudoRendererWidget = nullptr;
+    QgsRasterHistogramWidget *mHistogramWidget = nullptr;
     QString mReport;
 
-    bool openLayer( const QString& fileName );
+    bool openLayer( const QString &fileName );
     void closeLayer();
-    bool saveImage( const QString& fileName );
+    bool saveImage( const QString &fileName );
     int testFile( QString testName,
                   QString rendererName,
-                  QgsRasterRendererWidget* rendererWidget,
+                  QgsRasterRendererWidget *rendererWidget,
                   QStringList actionsList = QStringList(),
                   int selectedBand = -1 );
 
@@ -193,7 +193,7 @@ void TestRasterHistogram::testPseudo1()
 
 // helper methods
 
-bool TestRasterHistogram::openLayer( const QString& fileName )
+bool TestRasterHistogram::openLayer( const QString &fileName )
 {
   mRasterLayer = new QgsRasterLayer( mDataDir + "/" + fileName, fileName );
   if ( ! mRasterLayer )
@@ -235,7 +235,7 @@ void TestRasterHistogram::closeLayer()
   }
 }
 
-bool TestRasterHistogram::saveImage( const QString& fileName )
+bool TestRasterHistogram::saveImage( const QString &fileName )
 {
   return mHistogramWidget->histoSaveAsImage( fileName, mWidth, mHeight, mImageQuality );
 }
@@ -243,7 +243,7 @@ bool TestRasterHistogram::saveImage( const QString& fileName )
 // test resulting image file - relax this test because there are too many possible outputs depending on machine
 // 1 means pass, 0 means warning (different images), -1 means fail (no image output)
 int TestRasterHistogram::testFile( QString testType,
-                                   QString rendererName, QgsRasterRendererWidget* rendererWidget,
+                                   QString rendererName, QgsRasterRendererWidget *rendererWidget,
                                    QStringList actionsList, int selectedBand )
 {
   if ( mRasterLayer == 0 )

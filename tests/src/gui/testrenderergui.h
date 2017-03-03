@@ -32,7 +32,7 @@ class TestRendererGUI : public QMainWindow
     void setRenderer();
 
   protected:
-    QgsMapCanvas* mMapCanvas = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
 };
 
 #endif // TESTRENDERERV2GUI_H

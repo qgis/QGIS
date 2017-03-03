@@ -63,7 +63,7 @@ void TestQgsProject::cleanupTestCase()
 
 void TestQgsProject::testReadPath()
 {
-  QgsProject* prj = new QgsProject;
+  QgsProject *prj = new QgsProject;
   // this is a bit hacky as we do not really load such project
   QString prefix;
 #if defined(Q_OS_WIN)
@@ -114,7 +114,7 @@ void TestQgsProject::testProjectUnits()
   QSettings s;
   s.setValue( QStringLiteral( "/qgis/measure/displayunits" ), QgsUnitTypes::encodeUnit( QgsUnitTypes::DistanceFeet ) );
 
-  QgsProject* prj = new QgsProject;
+  QgsProject *prj = new QgsProject;
   // new project should inherit QGIS default distance unit
   prj->clear();
   QCOMPARE( prj->distanceUnits(), QgsUnitTypes::DistanceFeet );
@@ -149,7 +149,7 @@ void TestQgsProject::testProjectUnits()
 
 void TestQgsProject::variablesChanged()
 {
-  QgsProject* prj = new QgsProject;
+  QgsProject *prj = new QgsProject;
   QSignalSpy spyVariablesChanged( prj, &QgsProject::customVariablesChanged );
   QVariantMap vars;
   vars.insert( QStringLiteral( "variable" ), QStringLiteral( "1" ) );

@@ -32,7 +32,7 @@ class TestQgsMapToolIdentifyAction : public QObject
     Q_OBJECT
   public:
     TestQgsMapToolIdentifyAction()
-        : canvas( 0 )
+      : canvas( 0 )
     {}
 
   private slots:
@@ -48,10 +48,10 @@ class TestQgsMapToolIdentifyAction : public QObject
     void identifyInvalidPolygons(); // test selecting invalid polygons
 
   private:
-    QgsMapCanvas* canvas = nullptr;
+    QgsMapCanvas *canvas = nullptr;
 
-    QString testIdentifyRaster( QgsRasterLayer* layer, double xGeoref, double yGeoref );
-    QList<QgsMapToolIdentify::IdentifyResult> testIdentifyVector( QgsVectorLayer* layer, double xGeoref, double yGeoref );
+    QString testIdentifyRaster( QgsRasterLayer *layer, double xGeoref, double yGeoref );
+    QList<QgsMapToolIdentify::IdentifyResult> testIdentifyVector( QgsVectorLayer *layer, double xGeoref, double yGeoref );
 
     // Release return with delete []
     unsigned char *
@@ -136,7 +136,7 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
   QgsPoint mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
 
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
-  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer*>() << tempLayer.get() );
+  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
   QString derivedLength = result.at( 0 ).mDerivedAttributes[tr( "Length" )];
   double length = derivedLength.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
@@ -144,7 +144,7 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
 
   //check that project units are respected
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceFeet );
-  result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer*>() << tempLayer.get() );
+  result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
   derivedLength = result.at( 0 ).mDerivedAttributes[tr( "Length" )];
   length = derivedLength.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
@@ -152,7 +152,7 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
 
   //test unchecked "keep base units" setting
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), false );
-  result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer*>() << tempLayer.get() );
+  result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
   derivedLength = result.at( 0 ).mDerivedAttributes[tr( "Length" )];
   length = derivedLength.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
@@ -189,7 +189,7 @@ void TestQgsMapToolIdentifyAction::perimeterCalculation()
   QgsPoint mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
 
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
-  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer*>() << tempLayer.get() );
+  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
   QString derivedPerimeter = result.at( 0 ).mDerivedAttributes[tr( "Perimeter" )];
   double perimeter = derivedPerimeter.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
@@ -197,7 +197,7 @@ void TestQgsMapToolIdentifyAction::perimeterCalculation()
 
   //check that project units are respected
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceFeet );
-  result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer*>() << tempLayer.get() );
+  result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
   derivedPerimeter = result.at( 0 ).mDerivedAttributes[tr( "Perimeter" )];
   perimeter = derivedPerimeter.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
@@ -205,7 +205,7 @@ void TestQgsMapToolIdentifyAction::perimeterCalculation()
 
   //test unchecked "keep base units" setting
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), false );
-  result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer*>() << tempLayer.get() );
+  result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
   derivedPerimeter = result.at( 0 ).mDerivedAttributes[tr( "Perimeter" )];
   perimeter = derivedPerimeter.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
@@ -243,7 +243,7 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
   QgsPoint mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
 
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
-  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer*>() << tempLayer.get() );
+  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
   QString derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area" )];
   double area = derivedArea.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
@@ -251,7 +251,7 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
 
   //check that project units are respected
   QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMiles );
-  result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer*>() << tempLayer.get() );
+  result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
   derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area" )];
   area = derivedArea.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
@@ -260,7 +260,7 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
   //test unchecked "keep base units" setting
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), false );
   QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareFeet );
-  result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer*>() << tempLayer.get() );
+  result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
   derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area" )];
   area = derivedArea.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
@@ -268,11 +268,11 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
 }
 
 // private
-QString TestQgsMapToolIdentifyAction::testIdentifyRaster( QgsRasterLayer* layer, double xGeoref, double yGeoref )
+QString TestQgsMapToolIdentifyAction::testIdentifyRaster( QgsRasterLayer *layer, double xGeoref, double yGeoref )
 {
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
   QgsPoint mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
-  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer*>() << layer );
+  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << layer );
   if ( result.length() != 1 )
     return QLatin1String( "" );
   return result[0].mAttributes[QStringLiteral( "Band 1" )];
@@ -280,11 +280,11 @@ QString TestQgsMapToolIdentifyAction::testIdentifyRaster( QgsRasterLayer* layer,
 
 // private
 QList<QgsMapToolIdentify::IdentifyResult>
-TestQgsMapToolIdentifyAction::testIdentifyVector( QgsVectorLayer* layer, double xGeoref, double yGeoref )
+TestQgsMapToolIdentifyAction::testIdentifyVector( QgsVectorLayer *layer, double xGeoref, double yGeoref )
 {
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
   QgsPoint mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
-  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer*>() << layer );
+  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << layer );
   return result;
 }
 

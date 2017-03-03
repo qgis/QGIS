@@ -31,9 +31,9 @@ class TestQgsRubberband : public QObject
     Q_OBJECT
   public:
     TestQgsRubberband()
-        : mCanvas( 0 )
-        , mPolygonLayer( 0 )
-        , mRubberband( 0 )
+      : mCanvas( 0 )
+      , mPolygonLayer( 0 )
+      , mRubberband( 0 )
     {}
 
   private slots:
@@ -48,10 +48,10 @@ class TestQgsRubberband : public QObject
     void testClose(); //test closing geometry
 
   private:
-    QgsMapCanvas* mCanvas = nullptr;
-    QgsVectorLayer* mPolygonLayer = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
+    QgsVectorLayer *mPolygonLayer = nullptr;
     QString mTestDataDir;
-    QgsRubberBand* mRubberband = nullptr;
+    QgsRubberBand *mRubberband = nullptr;
 };
 
 void TestQgsRubberband::initTestCase()

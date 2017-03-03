@@ -93,7 +93,7 @@ class TestQgsVectorFileWriter: public QObject
 };
 
 TestQgsVectorFileWriter::TestQgsVectorFileWriter()
-    : mError( QgsVectorFileWriter::NoError )
+  : mError( QgsVectorFileWriter::NoError )
 {
 
 }

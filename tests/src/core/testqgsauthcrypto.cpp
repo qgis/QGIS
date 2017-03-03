@@ -52,16 +52,16 @@ const QString TestQgsAuthCrypto::PASS = QStringLiteral( "password" );
 const QString TestQgsAuthCrypto::SALT = QStringLiteral( "f48b706946df69d4d2b45bd0603c95af" );
 const QString TestQgsAuthCrypto::HASH = QStringLiteral( "0be18c3f1bf872194d6042f5f4a0c116" );
 const QString TestQgsAuthCrypto::CIV = QStringLiteral(
-                                         "1c18c442b6723ee465bcbb60568412179fcc3313eb0187b4546ca96d869fbdc1"
+    "1c18c442b6723ee465bcbb60568412179fcc3313eb0187b4546ca96d869fbdc1"
                                        );
 const QString TestQgsAuthCrypto::TEXT = QString(
-                                          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod "
-                                          "tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim "
-                                          "veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea "
-                                          "commodo consequat. Duis aute irure dolor in reprehenderit in voluptate "
-                                          "velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint "
-                                          "occaecat cupidatat non proident, sunt in culpa qui officia deserunt "
-                                          "mollit anim id est laborum."
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod "
+    "tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim "
+    "veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea "
+    "commodo consequat. Duis aute irure dolor in reprehenderit in voluptate "
+    "velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint "
+    "occaecat cupidatat non proident, sunt in culpa qui officia deserunt "
+    "mollit anim id est laborum."
                                         );
 const QString TestQgsAuthCrypto::CRYPT = QString(
       "ec53707ca8769489a6084e88c0e1fb18d3423406ac23c34ad5ac25600f59486375927bc9ed79"

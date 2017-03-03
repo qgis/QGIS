@@ -44,11 +44,11 @@ class TestQgsSimpleMarkerSymbol : public QObject
 
   public:
     TestQgsSimpleMarkerSymbol()
-        : mTestHasError( false )
-        , mpPointsLayer( 0 )
-        , mSimpleMarkerLayer( 0 )
-        , mMarkerSymbol( 0 )
-        , mSymbolRenderer( 0 )
+      : mTestHasError( false )
+      , mpPointsLayer( 0 )
+      , mSimpleMarkerLayer( 0 )
+      , mMarkerSymbol( 0 )
+      , mSymbolRenderer( 0 )
     {}
 
   private slots:
@@ -70,12 +70,12 @@ class TestQgsSimpleMarkerSymbol : public QObject
   private:
     bool mTestHasError;
 
-    bool imageCheck( const QString& type );
+    bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPointsLayer = nullptr;
-    QgsSimpleMarkerSymbolLayer* mSimpleMarkerLayer = nullptr;
-    QgsMarkerSymbol* mMarkerSymbol = nullptr;
-    QgsSingleSymbolRenderer* mSymbolRenderer = nullptr;
+    QgsVectorLayer *mpPointsLayer = nullptr;
+    QgsSimpleMarkerSymbolLayer *mSimpleMarkerLayer = nullptr;
+    QgsMarkerSymbol *mMarkerSymbol = nullptr;
+    QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };
@@ -116,7 +116,7 @@ void TestQgsSimpleMarkerSymbol::initTestCase()
   // since maprender does not require a qui
   // and is more light weight
   //
-  mMapSettings.setLayers( QList<QgsMapLayer*>() << mpPointsLayer );
+  mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPointsLayer );
   mReport += QLatin1String( "<h1>Simple Marker Tests</h1>\n" );
 
 }
@@ -277,7 +277,7 @@ void TestQgsSimpleMarkerSymbol::colors()
 //
 
 
-bool TestQgsSimpleMarkerSymbol::imageCheck( const QString& testType )
+bool TestQgsSimpleMarkerSymbol::imageCheck( const QString &testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image

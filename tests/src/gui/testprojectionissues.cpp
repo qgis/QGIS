@@ -30,8 +30,8 @@ class TestProjectionIssues : public QObject
     Q_OBJECT
   public:
     TestProjectionIssues()
-        : mRasterLayer( 0 )
-        , mMapCanvas( 0 )
+      : mRasterLayer( 0 )
+      , mMapCanvas( 0 )
     {}
 
   private slots:
@@ -42,8 +42,8 @@ class TestProjectionIssues : public QObject
     void issue5895();// test for #5895
 
   private:
-    QgsRasterLayer* mRasterLayer = nullptr;
-    QgsMapCanvas*   mMapCanvas = nullptr;
+    QgsRasterLayer *mRasterLayer = nullptr;
+    QgsMapCanvas   *mMapCanvas = nullptr;
 };
 
 void TestProjectionIssues::initTestCase()
@@ -60,7 +60,7 @@ void TestProjectionIssues::initTestCase()
   sourceCRS.createFromId( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
   mRasterLayer->setCrs( sourceCRS, false );
 
-  QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
+  QgsMultiBandColorRenderer *rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
   mRasterLayer->setRenderer( rasterRenderer );
 
   QList<QgsMapLayer *> mapLayers;
@@ -68,8 +68,8 @@ void TestProjectionIssues::initTestCase()
   QgsProject::instance()->addMapLayers( mapLayers );
 
   // Add all layers in registry to the canvas
-  QList<QgsMapLayer*> canvasLayers;
-  Q_FOREACH ( QgsMapLayer* layer, QgsProject::instance()->mapLayers() )
+  QList<QgsMapLayer *> canvasLayers;
+  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers() )
   {
     canvasLayers.append( layer );
   }

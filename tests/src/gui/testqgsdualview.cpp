@@ -34,9 +34,9 @@ class TestQgsDualView : public QObject
     Q_OBJECT
   public:
     TestQgsDualView()
-        : mCanvas( 0 )
-        , mPointsLayer( 0 )
-        , mDualView( 0 )
+      : mCanvas( 0 )
+      , mPointsLayer( 0 )
+      , mDualView( 0 )
     {}
 
   private slots:
@@ -58,10 +58,10 @@ class TestQgsDualView : public QObject
     void testAttributeFormSharedValueScanning();
 
   private:
-    QgsMapCanvas* mCanvas = nullptr;
-    QgsVectorLayer* mPointsLayer = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
+    QgsVectorLayer *mPointsLayer = nullptr;
     QString mTestDataDir;
-    QgsDualView* mDualView = nullptr;
+    QgsDualView *mDualView = nullptr;
 };
 
 void TestQgsDualView::initTestCase()
@@ -153,22 +153,22 @@ void TestQgsDualView::testSort()
 
   QStringList classes;
   classes << QStringLiteral( "B52" )
-  << QStringLiteral( "B52" )
-  << QStringLiteral( "B52" )
-  << QStringLiteral( "B52" )
-  << QStringLiteral( "Biplane" )
-  << QStringLiteral( "Biplane" )
-  << QStringLiteral( "Biplane" )
-  << QStringLiteral( "Biplane" )
-  << QStringLiteral( "Biplane" )
-  << QStringLiteral( "Jet" )
-  << QStringLiteral( "Jet" )
-  << QStringLiteral( "Jet" )
-  << QStringLiteral( "Jet" )
-  << QStringLiteral( "Jet" )
-  << QStringLiteral( "Jet" )
-  << QStringLiteral( "Jet" )
-  << QStringLiteral( "Jet" );
+          << QStringLiteral( "B52" )
+          << QStringLiteral( "B52" )
+          << QStringLiteral( "B52" )
+          << QStringLiteral( "Biplane" )
+          << QStringLiteral( "Biplane" )
+          << QStringLiteral( "Biplane" )
+          << QStringLiteral( "Biplane" )
+          << QStringLiteral( "Biplane" )
+          << QStringLiteral( "Jet" )
+          << QStringLiteral( "Jet" )
+          << QStringLiteral( "Jet" )
+          << QStringLiteral( "Jet" )
+          << QStringLiteral( "Jet" )
+          << QStringLiteral( "Jet" )
+          << QStringLiteral( "Jet" )
+          << QStringLiteral( "Jet" );
 
   for ( int i = 0; i < classes.length(); ++i )
   {
@@ -178,22 +178,22 @@ void TestQgsDualView::testSort()
 
   QStringList headings;
   headings << QStringLiteral( "0" )
-  <<  QStringLiteral( "0" )
-  <<  QStringLiteral( "12" )
-  <<  QStringLiteral( "34" )
-  <<  QStringLiteral( "80" )
-  <<  QStringLiteral( "85" )
-  <<  QStringLiteral( "90" )
-  <<  QStringLiteral( "90" )
-  <<  QStringLiteral( "95" )
-  <<  QStringLiteral( "100" )
-  <<  QStringLiteral( "140" )
-  <<  QStringLiteral( "160" )
-  <<  QStringLiteral( "180" )
-  <<  QStringLiteral( "240" )
-  <<  QStringLiteral( "270" )
-  <<  QStringLiteral( "300" )
-  <<  QStringLiteral( "340" );
+           <<  QStringLiteral( "0" )
+           <<  QStringLiteral( "12" )
+           <<  QStringLiteral( "34" )
+           <<  QStringLiteral( "80" )
+           <<  QStringLiteral( "85" )
+           <<  QStringLiteral( "90" )
+           <<  QStringLiteral( "90" )
+           <<  QStringLiteral( "95" )
+           <<  QStringLiteral( "100" )
+           <<  QStringLiteral( "140" )
+           <<  QStringLiteral( "160" )
+           <<  QStringLiteral( "180" )
+           <<  QStringLiteral( "240" )
+           <<  QStringLiteral( "270" )
+           <<  QStringLiteral( "300" )
+           <<  QStringLiteral( "340" );
 
   mDualView->setSortExpression( QStringLiteral( "Heading" ) );
 
@@ -212,7 +212,7 @@ void TestQgsDualView::testAttributeFormSharedValueScanning()
   QHash< int, QVariant > fieldSharedValues;
 
   // make a temporary layer to check through
-  QgsVectorLayer* layer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:integer&field=col3:integer&field=col4:integer" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:integer&field=col3:integer&field=col4:integer" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
   QVERIFY( layer->isValid() );
   QgsFeature f1( layer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "col1" ), 1 );

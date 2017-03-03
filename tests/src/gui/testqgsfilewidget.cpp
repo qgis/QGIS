@@ -51,7 +51,7 @@ void TestQgsFileWidget::cleanup()
 
 void TestQgsFileWidget::relativePath()
 {
-  QgsFileWidget* w = new QgsFileWidget();
+  QgsFileWidget *w = new QgsFileWidget();
   w->setDefaultRoot( QStringLiteral( "/home/test" ) );
   w->setRelativeStorage( QgsFileWidget::Absolute );
   QCOMPARE( w->relativePath( "/home/test2/file1.ext", true ), QString( "/home/test2/file1.ext" ) );
@@ -65,7 +65,7 @@ void TestQgsFileWidget::relativePath()
 
 void TestQgsFileWidget::toUrl()
 {
-  QgsFileWidget* w = new QgsFileWidget();
+  QgsFileWidget *w = new QgsFileWidget();
   w->setDefaultRoot( QStringLiteral( "/home/test" ) );
   w->setRelativeStorage( QgsFileWidget::Absolute );
   w->setFullUrl( true );

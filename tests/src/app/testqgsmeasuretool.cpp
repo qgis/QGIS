@@ -45,13 +45,13 @@ class TestQgsMeasureTool : public QObject
     void testAreaCalculation();
 
   private:
-    QgisApp * mQgisApp = nullptr;
-    QgsMapCanvas* mCanvas = nullptr;
+    QgisApp *mQgisApp = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
 };
 
 TestQgsMeasureTool::TestQgsMeasureTool()
-    : mQgisApp( nullptr )
-    , mCanvas( nullptr )
+  : mQgisApp( nullptr )
+  , mCanvas( nullptr )
 {
 
 }

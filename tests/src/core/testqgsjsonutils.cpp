@@ -26,7 +26,7 @@ class TestQgsJSONUtils : public QObject
 
       {
         const QString json = QgsJSONUtils::encodeValue( list );
-        QCOMPARE( json , QString( "[]" ) );
+        QCOMPARE( json, QString( "[]" ) );
         const QVariant back = QgsJSONUtils::parseArray( json, QVariant::String );
         QCOMPARE( back.toStringList(), list );
       }
@@ -53,7 +53,8 @@ class TestQgsJSONUtils : public QObject
         QCOMPARE( back.at( 0 ).type(), QVariant::Int );
       }
 
-      { // check invalid entries are ignored
+      {
+        // check invalid entries are ignored
         const QVariantList back = QgsJSONUtils::parseArray( QStringLiteral( "[1,\"a\",-2]" ), QVariant::Int );
         QCOMPARE( back, list );
       }
