@@ -51,14 +51,14 @@
 #include <gdal.h>
 
 QgsVectorFileWriter::FieldValueConverter::FieldValueConverter()
-= default;
+  = default;
 
-QgsField QgsVectorFileWriter::FieldValueConverter::fieldDefinition( const QgsField& field )
+QgsField QgsVectorFileWriter::FieldValueConverter::fieldDefinition( const QgsField &field )
 {
   return field;
 }
 
-QVariant QgsVectorFileWriter::FieldValueConverter::convert( int /*fieldIdxInLayer*/, const QVariant& value )
+QVariant QgsVectorFileWriter::FieldValueConverter::convert( int /*fieldIdxInLayer*/, const QVariant &value )
 {
   return value;
 }
@@ -66,52 +66,52 @@ QVariant QgsVectorFileWriter::FieldValueConverter::convert( int /*fieldIdxInLaye
 QgsVectorFileWriter::QgsVectorFileWriter(
   const QString &vectorFileName,
   const QString &fileEncoding,
-  const QgsFields& fields,
+  const QgsFields &fields,
   QgsWkbTypes::Type geometryType,
-  const QgsCoordinateReferenceSystem& srs,
-  const QString& driverName,
+  const QgsCoordinateReferenceSystem &srs,
+  const QString &driverName,
   const QStringList &datasourceOptions,
   const QStringList &layerOptions,
   QString *newFilename,
   SymbologyExport symbologyExport
 )
-    : mDS( nullptr )
-    , mLayer( nullptr )
-    , mOgrRef( nullptr )
-    , mError( NoError )
-    , mCodec( nullptr )
-    , mWkbType( geometryType )
-    , mSymbologyExport( symbologyExport )
-    , mSymbologyScaleDenominator( 1.0 )
-    , mFieldValueConverter( nullptr )
+  : mDS( nullptr )
+  , mLayer( nullptr )
+  , mOgrRef( nullptr )
+  , mError( NoError )
+  , mCodec( nullptr )
+  , mWkbType( geometryType )
+  , mSymbologyExport( symbologyExport )
+  , mSymbologyScaleDenominator( 1.0 )
+  , mFieldValueConverter( nullptr )
 {
-  init( vectorFileName, fileEncoding, fields,  geometryType ,
+  init( vectorFileName, fileEncoding, fields,  geometryType,
         srs, driverName, datasourceOptions, layerOptions, newFilename, nullptr,
         QString(), CreateOrOverwriteFile );
 }
 
-QgsVectorFileWriter::QgsVectorFileWriter( const QString& vectorFileName,
-    const QString& fileEncoding,
-    const QgsFields& fields,
+QgsVectorFileWriter::QgsVectorFileWriter( const QString &vectorFileName,
+    const QString &fileEncoding,
+    const QgsFields &fields,
     QgsWkbTypes::Type geometryType,
-    const QgsCoordinateReferenceSystem& srs,
-    const QString& driverName,
-    const QStringList& datasourceOptions,
-    const QStringList& layerOptions,
-    QString* newFilename,
+    const QgsCoordinateReferenceSystem &srs,
+    const QString &driverName,
+    const QStringList &datasourceOptions,
+    const QStringList &layerOptions,
+    QString *newFilename,
     QgsVectorFileWriter::SymbologyExport symbologyExport,
-    FieldValueConverter* fieldValueConverter,
-    const QString& layerName,
+    FieldValueConverter *fieldValueConverter,
+    const QString &layerName,
     ActionOnExistingFile action )
-    : mDS( nullptr )
-    , mLayer( nullptr )
-    , mOgrRef( nullptr )
-    , mError( NoError )
-    , mCodec( nullptr )
-    , mWkbType( geometryType )
-    , mSymbologyExport( symbologyExport )
-    , mSymbologyScaleDenominator( 1.0 )
-    , mFieldValueConverter( nullptr )
+  : mDS( nullptr )
+  , mLayer( nullptr )
+  , mOgrRef( nullptr )
+  , mError( NoError )
+  , mCodec( nullptr )
+  , mWkbType( geometryType )
+  , mSymbologyExport( symbologyExport )
+  , mSymbologyScaleDenominator( 1.0 )
+  , mFieldValueConverter( nullptr )
 {
   init( vectorFileName, fileEncoding, fields, geometryType, srs, driverName,
         datasourceOptions, layerOptions, newFilename, fieldValueConverter,
@@ -120,15 +120,15 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& vectorFileName,
 
 void QgsVectorFileWriter::init( QString vectorFileName,
                                 QString fileEncoding,
-                                const QgsFields& fields,
+                                const QgsFields &fields,
                                 QgsWkbTypes::Type geometryType,
                                 QgsCoordinateReferenceSystem srs,
-                                const QString& driverName,
+                                const QString &driverName,
                                 QStringList datasourceOptions,
                                 QStringList layerOptions,
-                                QString* newFilename,
-                                FieldValueConverter* fieldValueConverter,
-                                const QString& layerNameIn,
+                                QString *newFilename,
+                                FieldValueConverter *fieldValueConverter,
+                                const QString &layerNameIn,
                                 ActionOnExistingFile action )
 {
   mRenderContext.setRendererScale( mSymbologyScaleDenominator );
@@ -209,7 +209,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     {
       QStringList allExts = metadata.ext.split( ' ', QString::SkipEmptyParts );
       bool found = false;
-      Q_FOREACH ( const QString& ext, allExts )
+      Q_FOREACH ( const QString &ext, allExts )
       {
         if ( vectorFileName.endsWith( '.' + ext, Qt::CaseInsensitive ) )
         {
@@ -233,7 +233,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
         {
           QFileInfoList fileList = dir.entryInfoList(
                                      QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst );
-          Q_FOREACH ( const QFileInfo& info, fileList )
+          Q_FOREACH ( const QFileInfo &info, fileList )
           {
             QFile::remove( info.absoluteFilePath() );
           }
@@ -260,7 +260,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   char **options = nullptr;
   if ( !datasourceOptions.isEmpty() )
   {
-    options = new char *[ datasourceOptions.size()+1 ];
+    options = new char *[ datasourceOptions.size() + 1 ];
     for ( int i = 0; i < datasourceOptions.size(); i++ )
     {
       options[i] = CPLStrdup( datasourceOptions[i].toLocal8Bit().constData() );
@@ -364,7 +364,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
   if ( !layerOptions.isEmpty() )
   {
-    options = new char *[ layerOptions.size()+1 ];
+    options = new char *[ layerOptions.size() + 1 ];
     for ( int i = 0; i < layerOptions.size(); i++ )
     {
       options[i] = CPLStrdup( layerOptions[i].toLocal8Bit().constData() );
@@ -471,7 +471,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     {
       case QVariant::LongLong:
       {
-        const char* pszDataTypes = GDALGetMetadataItem( poDriver, GDAL_DMD_CREATIONFIELDDATATYPES, nullptr );
+        const char *pszDataTypes = GDALGetMetadataItem( poDriver, GDAL_DMD_CREATIONFIELDDATATYPES, nullptr );
         if ( pszDataTypes && strstr( pszDataTypes, "Integer64" ) )
           ogrType = OFTInteger64;
         else
@@ -637,8 +637,8 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
 {
   QMap<QString, MetaData> driverMetadata;
 
-  QMap<QString, Option*> datasetOptions;
-  QMap<QString, Option*> layerOptions;
+  QMap<QString, Option *> datasetOptions;
+  QMap<QString, Option *> layerOptions;
 
   // Arc/Info ASCII Coverage
   datasetOptions.clear();
@@ -1758,7 +1758,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
   return driverMetadata;
 }
 
-bool QgsVectorFileWriter::driverMetadata( const QString& driverName, QgsVectorFileWriter::MetaData& driverMetadata )
+bool QgsVectorFileWriter::driverMetadata( const QString &driverName, QgsVectorFileWriter::MetaData &driverMetadata )
 {
   static const QMap<QString, MetaData> sDriverMetadata = initMetaData();
 
@@ -1776,7 +1776,7 @@ bool QgsVectorFileWriter::driverMetadata( const QString& driverName, QgsVectorFi
   return false;
 }
 
-QStringList QgsVectorFileWriter::defaultDatasetOptions( const QString& driverName )
+QStringList QgsVectorFileWriter::defaultDatasetOptions( const QString &driverName )
 {
   MetaData metadata;
   bool ok = driverMetadata( driverName, metadata );
@@ -1785,7 +1785,7 @@ QStringList QgsVectorFileWriter::defaultDatasetOptions( const QString& driverNam
   return concatenateOptions( metadata.driverOptions );
 }
 
-QStringList QgsVectorFileWriter::defaultLayerOptions( const QString& driverName )
+QStringList QgsVectorFileWriter::defaultLayerOptions( const QString &driverName )
 {
   MetaData metadata;
   bool ok = driverMetadata( driverName, metadata );
@@ -1817,7 +1817,7 @@ QString QgsVectorFileWriter::errorMessage()
   return mErrorMessage;
 }
 
-bool QgsVectorFileWriter::addFeature( QgsFeature& feature, QgsFeatureRenderer* renderer, QgsUnitTypes::DistanceUnit outputUnit )
+bool QgsVectorFileWriter::addFeature( QgsFeature &feature, QgsFeatureRenderer *renderer, QgsUnitTypes::DistanceUnit outputUnit )
 {
   // create the feature
   OGRFeatureH poFeature = createFeature( feature );
@@ -1840,7 +1840,7 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature, QgsFeatureRenderer* r
       for ( int i = 0; i < nSymbolLayers; ++i )
       {
 #if 0
-        QMap< QgsSymbolLayer*, QString >::const_iterator it = mSymbolLayerTable.find(( *symbolIt )->symbolLayer( i ) );
+        QMap< QgsSymbolLayer *, QString >::const_iterator it = mSymbolLayerTable.find( ( *symbolIt )->symbolLayer( i ) );
         if ( it == mSymbolLayerTable.constEnd() )
         {
           continue;
@@ -1884,7 +1884,7 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature, QgsFeatureRenderer* r
   return true;
 }
 
-OGRFeatureH QgsVectorFileWriter::createFeature( const QgsFeature& feature )
+OGRFeatureH QgsVectorFileWriter::createFeature( const QgsFeature &feature )
 {
   QgsLocaleNumC l; // Make sure the decimal delimiter is a dot
   Q_UNUSED( l );
@@ -2127,11 +2127,11 @@ QgsVectorFileWriter::~QgsVectorFileWriter()
 }
 
 QgsVectorFileWriter::WriterError
-QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
-    const QString& fileName,
-    const QString& fileEncoding,
-    const QgsCoordinateReferenceSystem& destCRS,
-    const QString& driverName,
+QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
+    const QString &fileName,
+    const QString &fileEncoding,
+    const QgsCoordinateReferenceSystem &destCRS,
+    const QString &driverName,
     bool onlySelected,
     QString *errorMessage,
     const QStringList &datasourceOptions,
@@ -2140,12 +2140,12 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     QString *newFilename,
     SymbologyExport symbologyExport,
     double symbologyScale,
-    const QgsRectangle* filterExtent,
+    const QgsRectangle *filterExtent,
     QgsWkbTypes::Type overrideGeometryType,
     bool forceMulti,
     bool includeZ,
-    const QgsAttributeList& attributes,
-    FieldValueConverter* fieldValueConverter )
+    const QgsAttributeList &attributes,
+    FieldValueConverter *fieldValueConverter )
 {
   QgsCoordinateTransform ct;
   if ( destCRS.isValid() && layer )
@@ -2161,11 +2161,11 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
   return error;
 }
 
-QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
-    const QString& fileName,
-    const QString& fileEncoding,
-    const QgsCoordinateTransform& ct,
-    const QString& driverName,
+QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
+    const QString &fileName,
+    const QString &fileEncoding,
+    const QgsCoordinateTransform &ct,
+    const QString &driverName,
     bool onlySelected,
     QString *errorMessage,
     const QStringList &datasourceOptions,
@@ -2174,12 +2174,12 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
     QString *newFilename,
     SymbologyExport symbologyExport,
     double symbologyScale,
-    const QgsRectangle* filterExtent,
+    const QgsRectangle *filterExtent,
     QgsWkbTypes::Type overrideGeometryType,
     bool forceMulti,
     bool includeZ,
-    const QgsAttributeList& attributes,
-    FieldValueConverter* fieldValueConverter )
+    const QgsAttributeList &attributes,
+    FieldValueConverter *fieldValueConverter )
 {
   SaveVectorOptions options;
   options.fileEncoding = fileEncoding;
@@ -2202,30 +2202,30 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
 }
 
 QgsVectorFileWriter::SaveVectorOptions::SaveVectorOptions()
-    : driverName( QStringLiteral( "ESRI Shapefile" ) )
-    , layerName( QString() )
-    , actionOnExistingFile( CreateOrOverwriteFile )
-    , fileEncoding( QString() )
-    , ct( QgsCoordinateTransform() )
-    , onlySelectedFeatures( false )
-    , datasourceOptions( QStringList() )
-    , layerOptions( QStringList() )
-    , skipAttributeCreation( false )
-    , attributes( QgsAttributeList() )
-    , symbologyExport( NoSymbology )
-    , symbologyScale( 1.0 )
-    , filterExtent( QgsRectangle() )
-    , overrideGeometryType( QgsWkbTypes::Unknown )
-    , forceMulti( false )
-    , includeZ( false )
-    , fieldValueConverter( nullptr )
+  : driverName( QStringLiteral( "ESRI Shapefile" ) )
+  , layerName( QString() )
+  , actionOnExistingFile( CreateOrOverwriteFile )
+  , fileEncoding( QString() )
+  , ct( QgsCoordinateTransform() )
+  , onlySelectedFeatures( false )
+  , datasourceOptions( QStringList() )
+  , layerOptions( QStringList() )
+  , skipAttributeCreation( false )
+  , attributes( QgsAttributeList() )
+  , symbologyExport( NoSymbology )
+  , symbologyScale( 1.0 )
+  , filterExtent( QgsRectangle() )
+  , overrideGeometryType( QgsWkbTypes::Unknown )
+  , forceMulti( false )
+  , includeZ( false )
+  , fieldValueConverter( nullptr )
 {
 }
 
 QgsVectorFileWriter::WriterError
-QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
-    const QString& fileName,
-    const SaveVectorOptions& options,
+QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
+    const QString &fileName,
+    const SaveVectorOptions &options,
     QString *newFilename,
     QString *errorMessage )
 {
@@ -2352,7 +2352,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     }
   }
 
-  QgsVectorFileWriter* writer =
+  QgsVectorFileWriter *writer =
     new QgsVectorFileWriter( fileName,
                              options.fileEncoding, fields, destWkbType,
                              outputCRS, options.driverName,
@@ -2408,7 +2408,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
 
   if ( writer->symbologyExport() == SymbolLayerSymbology )
   {
-    QgsFeatureRenderer* r = layer->renderer();
+    QgsFeatureRenderer *r = layer->renderer();
     if ( r->capabilities() & QgsFeatureRenderer::SymbolLevels
          && r->usingSymbolLevels() )
     {
@@ -2457,7 +2457,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     if ( options.feedback )
     {
       //avoid spamming progress reports
-      int newProgress = initialProgress + (( 100.0 - initialProgress ) * saved ) / total;
+      int newProgress = initialProgress + ( ( 100.0 - initialProgress ) * saved ) / total;
       if ( newProgress < 100 && newProgress != lastProgressReport )
       {
         lastProgressReport = newProgress;
@@ -2545,7 +2545,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
 }
 
 
-bool QgsVectorFileWriter::deleteShapeFile( const QString& fileName )
+bool QgsVectorFileWriter::deleteShapeFile( const QString &fileName )
 {
   QFileInfo fi( fileName );
   QDir dir = fi.dir();
@@ -2558,7 +2558,7 @@ bool QgsVectorFileWriter::deleteShapeFile( const QString& fileName )
   }
 
   bool ok = true;
-  Q_FOREACH ( const QString& file, dir.entryList( filter ) )
+  Q_FOREACH ( const QString &file, dir.entryList( filter ) )
   {
     QFile f( dir.canonicalPath() + '/' + file );
     if ( !f.remove() )
@@ -2658,7 +2658,7 @@ QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
     }
   }
 
-  Q_FOREACH ( const QString& drvName, writableDrivers )
+  Q_FOREACH ( const QString &drvName, writableDrivers )
   {
     MetaData metadata;
     if ( driverMetadata( drvName, metadata ) && !metadata.trLongName.isEmpty() )
@@ -2685,7 +2685,7 @@ QString QgsVectorFileWriter::fileFilterString()
   return filterString;
 }
 
-QString QgsVectorFileWriter::filterForDriver( const QString& driverName )
+QString QgsVectorFileWriter::filterForDriver( const QString &driverName )
 {
   MetaData metadata;
   if ( !driverMetadata( driverName, metadata ) || metadata.trLongName.isEmpty() || metadata.glob.isEmpty() )
@@ -2711,14 +2711,14 @@ QString QgsVectorFileWriter::convertCodecNameForEncodingOption( const QString &c
   return codecName;
 }
 
-void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer* vl,  const QgsCoordinateTransform& ct, OGRDataSourceH ds )
+void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer *vl,  const QgsCoordinateTransform &ct, OGRDataSourceH ds )
 {
   if ( !vl || !ds )
   {
     return;
   }
 
-  QgsFeatureRenderer* renderer = vl->renderer();
+  QgsFeatureRenderer *renderer = vl->renderer();
   if ( !renderer )
   {
     return;
@@ -2747,7 +2747,7 @@ void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer* vl,  const Qgs
     int nLevels = ( *symbolIt )->symbolLayerCount();
     for ( int i = 0; i < nLevels; ++i )
     {
-      mSymbolLayerTable.insert(( *symbolIt )->symbolLayer( i ), QString::number( nTotalLevels ) );
+      mSymbolLayerTable.insert( ( *symbolIt )->symbolLayer( i ), QString::number( nTotalLevels ) );
       OGR_SM_AddStyle( styleManager, QString::number( nTotalLevels ).toLocal8Bit(),
                        ( *symbolIt )->symbolLayer( i )->ogrFeatureStyle( mmsf, musf ).toLocal8Bit() );
       ++nTotalLevels;
@@ -2756,8 +2756,8 @@ void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer* vl,  const Qgs
   OGR_DS_SetStyleTableDirectly( ds, ogrStyleTable );
 }
 
-QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels( QgsVectorLayer* layer, QgsFeatureIterator& fit,
-    const QgsCoordinateTransform& ct, QString* errorMessage )
+QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels( QgsVectorLayer *layer, QgsFeatureIterator &fit,
+    const QgsCoordinateTransform &ct, QString *errorMessage )
 {
   if ( !layer )
     return ErrInvalidLayer;
@@ -2768,7 +2768,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
   if ( !renderer )
     return ErrInvalidLayer;
 
-  QHash< QgsSymbol*, QList<QgsFeature> > features;
+  QHash< QgsSymbol *, QList<QgsFeature> > features;
 
   //unit type
   QgsUnitTypes::DistanceUnit mapUnits = layer->crs().mapUnits();
@@ -2781,7 +2781,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
 
   //fetch features
   QgsFeature fet;
-  QgsSymbol* featureSymbol = nullptr;
+  QgsSymbol *featureSymbol = nullptr;
   while ( fit.nextFeature( fet ) )
   {
     if ( ct.isValid() )
@@ -2814,7 +2814,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
       continue;
     }
 
-    QHash< QgsSymbol*, QList<QgsFeature> >::iterator it = features.find( featureSymbol );
+    QHash< QgsSymbol *, QList<QgsFeature> >::iterator it = features.find( featureSymbol );
     if ( it == features.end() )
     {
       it = features.insert( featureSymbol, QList<QgsFeature>() );
@@ -2827,7 +2827,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
   QgsSymbolList symbols = renderer->symbols( mRenderContext );
   for ( int i = 0; i < symbols.count(); i++ )
   {
-    QgsSymbol* sym = symbols[i];
+    QgsSymbol *sym = symbols[i];
     for ( int j = 0; j < sym->symbolLayerCount(); j++ )
     {
       int level = sym->symbolLayer( j )->renderingPass();
@@ -2846,11 +2846,11 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
   //export symbol layers and symbology
   for ( int l = 0; l < levels.count(); l++ )
   {
-    QgsSymbolLevel& level = levels[l];
+    QgsSymbolLevel &level = levels[l];
     for ( int i = 0; i < level.count(); i++ )
     {
-      QgsSymbolLevelItem& item = level[i];
-      QHash< QgsSymbol*, QList<QgsFeature> >::iterator levelIt = features.find( item.symbol() );
+      QgsSymbolLevelItem &item = level[i];
+      QHash< QgsSymbol *, QList<QgsFeature> >::iterator levelIt = features.find( item.symbol() );
       if ( levelIt == features.end() )
       {
         ++nErrors;
@@ -2861,7 +2861,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
       double musf = mapUnitScaleFactor( mSymbologyScaleDenominator, levelIt.key()->outputUnit(), mapUnits );
 
       int llayer = item.layer();
-      QList<QgsFeature>& featureList = levelIt.value();
+      QList<QgsFeature> &featureList = levelIt.value();
       QList<QgsFeature>::iterator featureIt = featureList.begin();
       for ( ; featureIt != featureList.end(); ++featureIt )
       {
@@ -2931,9 +2931,9 @@ double QgsVectorFileWriter::mapUnitScaleFactor( double scaleDenominator, QgsUnit
   return 1.0;
 }
 
-void QgsVectorFileWriter::startRender( QgsVectorLayer* vl )
+void QgsVectorFileWriter::startRender( QgsVectorLayer *vl )
 {
-  QgsFeatureRenderer* renderer = symbologyRenderer( vl );
+  QgsFeatureRenderer *renderer = symbologyRenderer( vl );
   if ( !renderer )
   {
     return;
@@ -2942,9 +2942,9 @@ void QgsVectorFileWriter::startRender( QgsVectorLayer* vl )
   renderer->startRender( mRenderContext, vl->fields() );
 }
 
-void QgsVectorFileWriter::stopRender( QgsVectorLayer* vl )
+void QgsVectorFileWriter::stopRender( QgsVectorLayer *vl )
 {
-  QgsFeatureRenderer* renderer = symbologyRenderer( vl );
+  QgsFeatureRenderer *renderer = symbologyRenderer( vl );
   if ( !renderer )
   {
     return;
@@ -2953,7 +2953,7 @@ void QgsVectorFileWriter::stopRender( QgsVectorLayer* vl )
   renderer->stopRender( mRenderContext );
 }
 
-QgsFeatureRenderer* QgsVectorFileWriter::symbologyRenderer( QgsVectorLayer* vl ) const
+QgsFeatureRenderer *QgsVectorFileWriter::symbologyRenderer( QgsVectorLayer *vl ) const
 {
   if ( mSymbologyExport == NoSymbology )
   {
@@ -2967,13 +2967,13 @@ QgsFeatureRenderer* QgsVectorFileWriter::symbologyRenderer( QgsVectorLayer* vl )
   return vl->renderer();
 }
 
-void QgsVectorFileWriter::addRendererAttributes( QgsVectorLayer* vl, QgsAttributeList& attList )
+void QgsVectorFileWriter::addRendererAttributes( QgsVectorLayer *vl, QgsAttributeList &attList )
 {
-  QgsFeatureRenderer* renderer = symbologyRenderer( vl );
+  QgsFeatureRenderer *renderer = symbologyRenderer( vl );
   if ( renderer )
   {
     const QSet<QString> rendererAttributes = renderer->usedAttributes( mRenderContext );
-  for ( const QString& attr : rendererAttributes )
+    for ( const QString &attr : rendererAttributes )
     {
       int index = vl->fields().lookupField( attr );
       if ( index != -1 )
@@ -2984,10 +2984,10 @@ void QgsVectorFileWriter::addRendererAttributes( QgsVectorLayer* vl, QgsAttribut
   }
 }
 
-QStringList QgsVectorFileWriter::concatenateOptions( const QMap<QString, QgsVectorFileWriter::Option*>& options )
+QStringList QgsVectorFileWriter::concatenateOptions( const QMap<QString, QgsVectorFileWriter::Option *> &options )
 {
   QStringList list;
-  QMap<QString, QgsVectorFileWriter::Option*>::ConstIterator it;
+  QMap<QString, QgsVectorFileWriter::Option *>::ConstIterator it;
 
   for ( it = options.constBegin(); it != options.constEnd(); ++it )
   {
@@ -2996,7 +2996,7 @@ QStringList QgsVectorFileWriter::concatenateOptions( const QMap<QString, QgsVect
     {
       case QgsVectorFileWriter::Int:
       {
-        QgsVectorFileWriter::IntOption *opt = dynamic_cast<QgsVectorFileWriter::IntOption*>( option );
+        QgsVectorFileWriter::IntOption *opt = dynamic_cast<QgsVectorFileWriter::IntOption *>( option );
         if ( opt )
         {
           list.append( QStringLiteral( "%1=%2" ).arg( it.key() ).arg( opt->defaultValue ) );
@@ -3006,7 +3006,7 @@ QStringList QgsVectorFileWriter::concatenateOptions( const QMap<QString, QgsVect
 
       case QgsVectorFileWriter::Set:
       {
-        QgsVectorFileWriter::SetOption *opt = dynamic_cast<QgsVectorFileWriter::SetOption*>( option );
+        QgsVectorFileWriter::SetOption *opt = dynamic_cast<QgsVectorFileWriter::SetOption *>( option );
         if ( opt && !opt->defaultValue.isEmpty() )
         {
           list.append( QStringLiteral( "%1=%2" ).arg( it.key(), opt->defaultValue ) );
@@ -3016,7 +3016,7 @@ QStringList QgsVectorFileWriter::concatenateOptions( const QMap<QString, QgsVect
 
       case QgsVectorFileWriter::String:
       {
-        QgsVectorFileWriter::StringOption *opt = dynamic_cast<QgsVectorFileWriter::StringOption*>( option );
+        QgsVectorFileWriter::StringOption *opt = dynamic_cast<QgsVectorFileWriter::StringOption *>( option );
         if ( opt )
         {
           list.append( QStringLiteral( "%1=%2" ).arg( it.key(), opt->defaultValue ) );
@@ -3025,7 +3025,7 @@ QStringList QgsVectorFileWriter::concatenateOptions( const QMap<QString, QgsVect
       }
 
       case QgsVectorFileWriter::Hidden:
-        QgsVectorFileWriter::HiddenOption *opt = dynamic_cast<QgsVectorFileWriter::HiddenOption*>( option );
+        QgsVectorFileWriter::HiddenOption *opt = dynamic_cast<QgsVectorFileWriter::HiddenOption *>( option );
         if ( opt )
         {
           list.append( QStringLiteral( "%1=%2" ).arg( it.key(), opt->mValue ) );
@@ -3037,7 +3037,7 @@ QStringList QgsVectorFileWriter::concatenateOptions( const QMap<QString, QgsVect
   return list;
 }
 
-QgsVectorFileWriter::EditionCapabilities QgsVectorFileWriter::editionCapabilities( const QString& datasetName )
+QgsVectorFileWriter::EditionCapabilities QgsVectorFileWriter::editionCapabilities( const QString &datasetName )
 {
   OGRSFDriverH hDriver = nullptr;
   OGRDataSourceH hDS = OGROpen( datasetName.toUtf8().constData(), TRUE, &hDriver );
@@ -3077,8 +3077,8 @@ QgsVectorFileWriter::EditionCapabilities QgsVectorFileWriter::editionCapabilitie
   return caps;
 }
 
-bool QgsVectorFileWriter::targetLayerExists( const QString& datasetName,
-    const QString& layerNameIn )
+bool QgsVectorFileWriter::targetLayerExists( const QString &datasetName,
+    const QString &layerNameIn )
 {
   OGRSFDriverH hDriver = nullptr;
   OGRDataSourceH hDS = OGROpen( datasetName.toUtf8().constData(), TRUE, &hDriver );
@@ -3095,10 +3095,10 @@ bool QgsVectorFileWriter::targetLayerExists( const QString& datasetName,
 }
 
 
-bool QgsVectorFileWriter::areThereNewFieldsToCreate( const QString& datasetName,
-    const QString& layerName,
-    QgsVectorLayer* layer,
-    const QgsAttributeList& attributes )
+bool QgsVectorFileWriter::areThereNewFieldsToCreate( const QString &datasetName,
+    const QString &layerName,
+    QgsVectorLayer *layer,
+    const QgsAttributeList &attributes )
 {
   OGRSFDriverH hDriver = nullptr;
   OGRDataSourceH hDS = OGROpen( datasetName.toUtf8().constData(), TRUE, &hDriver );

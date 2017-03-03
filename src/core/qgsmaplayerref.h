@@ -27,8 +27,8 @@
 template<typename TYPE>
 struct _LayerRef
 {
-  _LayerRef( TYPE* l = nullptr ): layer( l ), layerId( l ? l->id() : QString() ) {}
-  _LayerRef( const QString& id ): layer(), layerId( id ) {}
+  _LayerRef( TYPE *l = nullptr ): layer( l ), layerId( l ? l->id() : QString() ) {}
+  _LayerRef( const QString &id ): layer(), layerId( id ) {}
 
   QPointer<TYPE> layer;
   QString layerId;

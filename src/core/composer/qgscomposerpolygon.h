@@ -39,22 +39,22 @@ class CORE_EXPORT QgsComposerPolygon: public QgsComposerNodesItem
     /** Constructor
      * @param c parent composition
      */
-    QgsComposerPolygon( QgsComposition* c );
+    QgsComposerPolygon( QgsComposition *c );
 
     /** Constructor
      * @param polygon nodes of the shape
      * @param c parent composition
      */
-    QgsComposerPolygon( const QPolygonF &polygon, QgsComposition* c );
+    QgsComposerPolygon( const QPolygonF &polygon, QgsComposition *c );
 
     //! Overridden to return shape name
     virtual QString displayName() const override;
 
     //! Returns the QgsSymbol used to draw the shape.
-    QgsFillSymbol* polygonStyleSymbol() { return mPolygonStyleSymbol.get(); }
+    QgsFillSymbol *polygonStyleSymbol() { return mPolygonStyleSymbol.get(); }
 
     //! Set the QgsSymbol used to draw the shape.
-    void setPolygonStyleSymbol( QgsFillSymbol* symbol );
+    void setPolygonStyleSymbol( QgsFillSymbol *symbol );
 
     //! Return correct graphics item type.
     virtual int type() const override { return ComposerPolygon; }

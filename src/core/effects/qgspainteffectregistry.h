@@ -42,7 +42,7 @@ class CORE_EXPORT QgsPaintEffectAbstractMetadata
      * @param name unique string representing paint effect class
      * @param visibleName user visible name representing paint effect class
      */
-    QgsPaintEffectAbstractMetadata( const QString& name, const QString& visibleName );
+    QgsPaintEffectAbstractMetadata( const QString &name, const QString &visibleName );
 
     virtual ~QgsPaintEffectAbstractMetadata() = default;
 
@@ -62,13 +62,13 @@ class CORE_EXPORT QgsPaintEffectAbstractMetadata
      * @param map properties string map
      * @returns new paint effect
      */
-    virtual QgsPaintEffect* createPaintEffect( const QgsStringMap& map ) = 0;
+    virtual QgsPaintEffect *createPaintEffect( const QgsStringMap &map ) = 0;
 
     /** Create configuration widget for paint effect of this class. Can return nullptr
      * if there's no GUI for the paint effect class.
      * @returns configuration widget
      */
-    virtual QgsPaintEffectWidget* createWidget() { return nullptr; }
+    virtual QgsPaintEffectWidget *createWidget() { return nullptr; }
 
   protected:
     QString mName;
@@ -76,8 +76,8 @@ class CORE_EXPORT QgsPaintEffectAbstractMetadata
 
 };
 
-typedef QgsPaintEffect*( *QgsPaintEffectCreateFunc )( const QgsStringMap& );
-typedef QgsPaintEffectWidget*( *QgsPaintEffectWidgetFunc )();
+typedef QgsPaintEffect *( *QgsPaintEffectCreateFunc )( const QgsStringMap & );
+typedef QgsPaintEffectWidget *( *QgsPaintEffectWidgetFunc )();
 
 /** \ingroup core
  * \class QgsPaintEffectMetadata
@@ -97,12 +97,12 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
      * @param pfWidget widget creation function
      * @note not available in python bindings
      */
-    QgsPaintEffectMetadata( const QString& name, const QString& visibleName,
+    QgsPaintEffectMetadata( const QString &name, const QString &visibleName,
                             QgsPaintEffectCreateFunc pfCreate,
                             QgsPaintEffectWidgetFunc pfWidget = nullptr )
-        : QgsPaintEffectAbstractMetadata( name, visibleName )
-        , mCreateFunc( pfCreate )
-        , mWidgetFunc( pfWidget )
+      : QgsPaintEffectAbstractMetadata( name, visibleName )
+      , mCreateFunc( pfCreate )
+      , mWidgetFunc( pfWidget )
     {}
 
     /** Returns the paint effect creation function for the paint effect class
@@ -131,14 +131,14 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
      * @note not available in python bindings
      * @see createWidget
      */
-    virtual QgsPaintEffect* createPaintEffect( const QgsStringMap& map ) override { return mCreateFunc ? mCreateFunc( map ) : nullptr; }
+    virtual QgsPaintEffect *createPaintEffect( const QgsStringMap &map ) override { return mCreateFunc ? mCreateFunc( map ) : nullptr; }
 
     /** Creates a new paint effect properties widget for the metadata's effect class
      * @returns effect properties widget
      * @note not available in python bindings
      * @see createWidget
      */
-    virtual QgsPaintEffectWidget* createWidget() override { return mWidgetFunc ? mWidgetFunc() : nullptr; }
+    virtual QgsPaintEffectWidget *createWidget() override { return mWidgetFunc ? mWidgetFunc() : nullptr; }
 
   protected:
     QgsPaintEffectCreateFunc mCreateFunc;
@@ -163,21 +163,21 @@ class CORE_EXPORT QgsPaintEffectRegistry
     ~QgsPaintEffectRegistry();
 
     //! QgsPaintEffectRegistry cannot be copied.
-    QgsPaintEffectRegistry( const QgsPaintEffectRegistry& rh ) = delete;
+    QgsPaintEffectRegistry( const QgsPaintEffectRegistry &rh ) = delete;
     //! QgsPaintEffectRegistry cannot be copied.
-    QgsPaintEffectRegistry& operator=( const QgsPaintEffectRegistry& rh ) = delete;
+    QgsPaintEffectRegistry &operator=( const QgsPaintEffectRegistry &rh ) = delete;
 
     /** Returns the metadata for a specific effect.
      * @param name unique string name for paint effect class
      * @returns paint effect metadata if found, otherwise nullptr
      */
-    QgsPaintEffectAbstractMetadata* effectMetadata( const QString& name ) const;
+    QgsPaintEffectAbstractMetadata *effectMetadata( const QString &name ) const;
 
     /** Registers a new effect type.
      * @param metadata effect metadata. Ownership is transferred to the registry.
      * @returns true if add was successful.
      */
-    bool addEffectType( QgsPaintEffectAbstractMetadata* metadata );
+    bool addEffectType( QgsPaintEffectAbstractMetadata *metadata );
 
     /** Creates a new paint effect given the effect name and properties map.
      * @param name unique name representing paint effect class
@@ -185,7 +185,7 @@ class CORE_EXPORT QgsPaintEffectRegistry
      * @returns new paint effect of specified class, or nullptr if matching
      * paint effect could not be created
      */
-    QgsPaintEffect* createEffect( const QString& name, const QgsStringMap& properties = QgsStringMap() ) const;
+    QgsPaintEffect *createEffect( const QString &name, const QgsStringMap &properties = QgsStringMap() ) const;
 
     /** Creates a new paint effect given a DOM element storing paint effect
      * properties.
@@ -193,7 +193,7 @@ class CORE_EXPORT QgsPaintEffectRegistry
      * @returns new paint effect, or nullptr if matching
      * paint effect could not be created
      */
-    QgsPaintEffect* createEffect( const QDomElement& element ) const;
+    QgsPaintEffect *createEffect( const QDomElement &element ) const;
 
     /** Returns a list of known paint effects.
      * @returns list of paint effect names
@@ -206,7 +206,7 @@ class CORE_EXPORT QgsPaintEffectRegistry
      * @returns default effects stack
      * @see isDefaultStack()
      */
-    static QgsPaintEffect* defaultStack();
+    static QgsPaintEffect *defaultStack();
 
     /** Tests whether a paint effect matches the default effects stack.
      * @param effect paint effect to test
@@ -214,11 +214,11 @@ class CORE_EXPORT QgsPaintEffectRegistry
      * @note added in QGIS 2.12
      * @see defaultStack()
      */
-    static bool isDefaultStack( QgsPaintEffect* effect );
+    static bool isDefaultStack( QgsPaintEffect *effect );
 
   private:
 
-    QMap<QString, QgsPaintEffectAbstractMetadata*> mMetadata;
+    QMap<QString, QgsPaintEffectAbstractMetadata *> mMetadata;
 };
 
 #endif //QGSPAINTEFFECTREGISTRY_H

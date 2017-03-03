@@ -27,32 +27,32 @@
 
 #include <cmath>
 
-QgsComposerArrow::QgsComposerArrow( QgsComposition* c )
-    : QgsComposerItem( c )
-    , mStartPoint( 0, 0 )
-    , mStopPoint( 0, 0 )
-    , mStartXIdx( 0 )
-    , mStartYIdx( 0 )
-    , mMarkerMode( DefaultMarker )
-    , mArrowHeadStrokeWidth( 1.0 )
-    , mArrowHeadStrokeColor( Qt::black )
-    , mArrowHeadFillColor( Qt::black )
-    , mBoundsBehavior( 24 )
-    , mLineSymbol( nullptr )
+QgsComposerArrow::QgsComposerArrow( QgsComposition *c )
+  : QgsComposerItem( c )
+  , mStartPoint( 0, 0 )
+  , mStopPoint( 0, 0 )
+  , mStartXIdx( 0 )
+  , mStartYIdx( 0 )
+  , mMarkerMode( DefaultMarker )
+  , mArrowHeadStrokeWidth( 1.0 )
+  , mArrowHeadStrokeColor( Qt::black )
+  , mArrowHeadFillColor( Qt::black )
+  , mBoundsBehavior( 24 )
+  , mLineSymbol( nullptr )
 {
   init();
 }
 
-QgsComposerArrow::QgsComposerArrow( QPointF startPoint, QPointF stopPoint, QgsComposition* c )
-    : QgsComposerItem( c )
-    , mStartPoint( startPoint )
-    , mStopPoint( stopPoint )
-    , mMarkerMode( DefaultMarker )
-    , mArrowHeadStrokeWidth( 1.0 )
-    , mArrowHeadStrokeColor( Qt::black )
-    , mArrowHeadFillColor( Qt::black )
-    , mBoundsBehavior( 24 )
-    , mLineSymbol( nullptr )
+QgsComposerArrow::QgsComposerArrow( QPointF startPoint, QPointF stopPoint, QgsComposition *c )
+  : QgsComposerItem( c )
+  , mStartPoint( startPoint )
+  , mStopPoint( stopPoint )
+  , mMarkerMode( DefaultMarker )
+  , mArrowHeadStrokeWidth( 1.0 )
+  , mArrowHeadStrokeColor( Qt::black )
+  , mArrowHeadFillColor( Qt::black )
+  , mBoundsBehavior( 24 )
+  , mLineSymbol( nullptr )
 {
   mStartXIdx = mStopPoint.x() < mStartPoint.x();
   mStartYIdx = mStopPoint.y() < mStartPoint.y();
@@ -88,7 +88,7 @@ void QgsComposerArrow::createDefaultLineSymbol()
   mLineSymbol = QgsLineSymbol::createSimple( properties );
 }
 
-void QgsComposerArrow::paint( QPainter* painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
+void QgsComposerArrow::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
 {
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
@@ -136,7 +136,7 @@ void QgsComposerArrow::paint( QPainter* painter, const QStyleOptionGraphicsItem 
   }
 }
 
-void QgsComposerArrow::setSceneRect( const QRectF& rectangle )
+void QgsComposerArrow::setSceneRect( const QRectF &rectangle )
 {
   //update rect for data defined size and position
   QRectF evaluatedRect = evalItemRect( rectangle );
@@ -175,7 +175,7 @@ void QgsComposerArrow::drawLine( QPainter *painter )
     return;
   }
 
-  QPaintDevice* paintDevice = painter->device();
+  QPaintDevice *paintDevice = painter->device();
   painter->save();
   //setup painter scaling to dots so that raster symbology is drawn to scale
   double dotsPerMM = paintDevice->logicalDpiX() / 25.4;
@@ -191,7 +191,7 @@ void QgsComposerArrow::drawLine( QPainter *painter )
   //line scaled to dots
   QPolygonF line;
   line << QPointF( mStartPoint.x() - pos().x(), mStartPoint.y() - pos().y() ) * dotsPerMM
-  << QPointF( mStopPoint.x() - pos().x(), mStopPoint.y() - pos().y() ) * dotsPerMM;
+       << QPointF( mStopPoint.x() - pos().x(), mStopPoint.y() - pos().y() ) * dotsPerMM;
 
   mLineSymbol->startRender( context );
   mLineSymbol->renderPolyline( line, nullptr, context );
@@ -216,7 +216,7 @@ void QgsComposerArrow::drawHardcodedMarker( QPainter *p, MarkerType type )
   }
 }
 
-void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QString &markerPath )
+void QgsComposerArrow::drawSVGMarker( QPainter *p, MarkerType type, const QString &markerPath )
 {
   Q_UNUSED( markerPath );
   double angle = QgsComposerUtils::angle( mStartPoint, mStopPoint );
@@ -293,7 +293,7 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
   p->restore();
 }
 
-void QgsComposerArrow::setStartMarker( const QString& svgPath )
+void QgsComposerArrow::setStartMarker( const QString &svgPath )
 {
   QSvgRenderer r;
   mStartMarkerFile = svgPath;
@@ -310,7 +310,7 @@ void QgsComposerArrow::setStartMarker( const QString& svgPath )
   adaptItemSceneRect();
 }
 
-void QgsComposerArrow::setEndMarker( const QString& svgPath )
+void QgsComposerArrow::setEndMarker( const QString &svgPath )
 {
   QSvgRenderer r;
   mEndMarkerFile = svgPath;
@@ -419,7 +419,7 @@ void QgsComposerArrow::setMarkerMode( MarkerMode mode )
   adaptItemSceneRect();
 }
 
-bool QgsComposerArrow::writeXml( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerArrow::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
   QDomElement composerArrowElem = doc.createElement( QStringLiteral( "ComposerArrow" ) );
   composerArrowElem.setAttribute( QStringLiteral( "arrowHeadWidth" ), QString::number( mArrowHeadWidth ) );
@@ -452,7 +452,7 @@ bool QgsComposerArrow::writeXml( QDomElement& elem, QDomDocument & doc ) const
   return _writeXml( composerArrowElem, doc );
 }
 
-bool QgsComposerArrow::readXml( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerArrow::readXml( const QDomElement &itemElem, const QDomDocument &doc )
 {
   mArrowHeadWidth = itemElem.attribute( QStringLiteral( "arrowHeadWidth" ), QStringLiteral( "2.0" ) ).toDouble();
   mArrowHeadFillColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "arrowHeadFillColor" ), QStringLiteral( "0,0,0,255" ) ) );

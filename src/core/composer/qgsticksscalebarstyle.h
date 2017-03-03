@@ -33,7 +33,7 @@ class CORE_EXPORT QgsTicksScaleBarStyle: public QgsScaleBarStyle
       TicksMiddle
     };
 
-    QgsTicksScaleBarStyle( const QgsComposerScaleBar* bar );
+    QgsTicksScaleBarStyle( const QgsComposerScaleBar *bar );
 
     QString name() const override;
 
@@ -41,7 +41,7 @@ class CORE_EXPORT QgsTicksScaleBarStyle: public QgsScaleBarStyle
      @param p painter object
      @param xOffset offset
      */
-    void draw( QPainter* p, double xOffset = 0 ) const override;
+    void draw( QPainter *p, double xOffset = 0 ) const override;
 
     void setTickPosition( TickPosition p ) {mTickPosition = p;}
 

@@ -28,7 +28,7 @@
 
 QgsContextHelp *QgsContextHelp::sContextHelp = nullptr;  // Singleton instance
 
-void QgsContextHelp::run( const QString& context )
+void QgsContextHelp::run( const QString &context )
 {
   if ( !sContextHelp )
   {
@@ -79,7 +79,7 @@ void QgsContextHelp::error( QProcess::ProcessError error )
   QgsMessageLog::logMessage( tr( "Error starting help viewer [%1]" ).arg( error ), tr( "Context help" ) );
 }
 
-void QgsContextHelp::showContext( const QString& context )
+void QgsContextHelp::showContext( const QString &context )
 {
   init();
 

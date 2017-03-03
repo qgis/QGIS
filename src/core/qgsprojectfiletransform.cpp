@@ -67,7 +67,7 @@ QgsProjectFileTransform::TransformItem QgsProjectFileTransform::sTransformers[] 
   {PFV(), PFV( 2, 99, 0 ), &QgsProjectFileTransform::transform2990},
 };
 
-bool QgsProjectFileTransform::updateRevision( const QgsProjectVersion& newVersion )
+bool QgsProjectFileTransform::updateRevision( const QgsProjectVersion &newVersion )
 {
   Q_UNUSED( newVersion );
   bool returnValue = false;
@@ -76,7 +76,7 @@ bool QgsProjectFileTransform::updateRevision( const QgsProjectVersion& newVersio
   {
     for ( std::size_t i = 0; i < sizeof( sTransformers ) / sizeof( TransformItem ); i++ )
     {
-      const TransformItem& transformer = sTransformers[i];
+      const TransformItem &transformer = sTransformers[i];
       if ( transformer.from == mCurrentVersion || transformer.from.isNull() )
       {
         // Run the transformer, and update the revision in every case
@@ -339,14 +339,14 @@ void QgsProjectFileTransform::transform0110to1000()
       QString providerKey = providerNode.toElement().text();
 
       //create the layer to get the provider for int->fieldName conversion
-      QgsVectorLayer* layer = new QgsVectorLayer( dataSource, QLatin1String( "" ), providerKey, false );
+      QgsVectorLayer *layer = new QgsVectorLayer( dataSource, QLatin1String( "" ), providerKey, false );
       if ( !layer->isValid() )
       {
         delete layer;
         return;
       }
 
-      QgsVectorDataProvider* provider = layer->dataProvider();
+      QgsVectorDataProvider *provider = layer->dataProvider();
       if ( !provider )
       {
         return;
@@ -731,8 +731,8 @@ void QgsProjectFileTransform::transform2990()
   }
 }
 
-void QgsProjectFileTransform::convertRasterProperties( QDomDocument& doc, QDomNode& parentNode,
-    QDomElement& rasterPropertiesElem, QgsRasterLayer* rlayer )
+void QgsProjectFileTransform::convertRasterProperties( QDomDocument &doc, QDomNode &parentNode,
+    QDomElement &rasterPropertiesElem, QgsRasterLayer *rlayer )
 {
   //no data
   //TODO: We would need to set no data on all bands, but we don't know number of bands here
@@ -968,7 +968,7 @@ int QgsProjectFileTransform::rasterBandNumber( const QDomElement &rasterProperti
   return band;
 }
 
-void QgsProjectFileTransform::transformContrastEnhancement( QDomDocument& doc, const QDomElement& rasterproperties, QDomElement& rendererElem )
+void QgsProjectFileTransform::transformContrastEnhancement( QDomDocument &doc, const QDomElement &rasterproperties, QDomElement &rendererElem )
 {
   if ( rasterproperties.isNull() || rendererElem.isNull() )
   {
@@ -1061,7 +1061,7 @@ void QgsProjectFileTransform::transformContrastEnhancement( QDomDocument& doc, c
   }
 }
 
-void QgsProjectFileTransform::transformRasterTransparency( QDomDocument& doc, const QDomElement& orig, QDomElement& rendererElem )
+void QgsProjectFileTransform::transformRasterTransparency( QDomDocument &doc, const QDomElement &orig, QDomElement &rendererElem )
 {
   //soon...
   Q_UNUSED( doc );

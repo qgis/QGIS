@@ -21,13 +21,13 @@
 #include <QDomElement>
 
 
-QgsSvgAnnotation::QgsSvgAnnotation( QObject* parent )
-    : QgsAnnotation( parent )
+QgsSvgAnnotation::QgsSvgAnnotation( QObject *parent )
+  : QgsAnnotation( parent )
 {
 
 }
 
-void QgsSvgAnnotation::writeXml( QDomElement& elem, QDomDocument & doc ) const
+void QgsSvgAnnotation::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
   QDomElement svgAnnotationElem = doc.createElement( QStringLiteral( "SVGAnnotationItem" ) );
   svgAnnotationElem.setAttribute( QStringLiteral( "file" ), QgsProject::instance()->writePath( mFilePath ) );
@@ -35,7 +35,7 @@ void QgsSvgAnnotation::writeXml( QDomElement& elem, QDomDocument & doc ) const
   elem.appendChild( svgAnnotationElem );
 }
 
-void QgsSvgAnnotation::readXml( const QDomElement& itemElem, const QDomDocument& doc )
+void QgsSvgAnnotation::readXml( const QDomElement &itemElem, const QDomDocument &doc )
 {
   QString filePath = QgsProject::instance()->readPath( itemElem.attribute( QStringLiteral( "file" ) ) );
   setFilePath( filePath );
@@ -46,9 +46,9 @@ void QgsSvgAnnotation::readXml( const QDomElement& itemElem, const QDomDocument&
   }
 }
 
-void QgsSvgAnnotation::renderAnnotation( QgsRenderContext& context, QSizeF size ) const
+void QgsSvgAnnotation::renderAnnotation( QgsRenderContext &context, QSizeF size ) const
 {
-  QPainter* painter = context.painter();
+  QPainter *painter = context.painter();
   if ( !painter )
   {
     return;
@@ -78,7 +78,7 @@ void QgsSvgAnnotation::renderAnnotation( QgsRenderContext& context, QSizeF size 
   }
 }
 
-void QgsSvgAnnotation::setFilePath( const QString& file )
+void QgsSvgAnnotation::setFilePath( const QString &file )
 {
   mFilePath = file;
   mSvgRenderer.load( mFilePath );

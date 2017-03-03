@@ -42,8 +42,8 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 {
   public:
     class Rule;
-    typedef QList<Rule*> RuleList;
-    typedef QMap<Rule*, QgsVectorLayerLabelProvider*> RuleToProviderMap;
+    typedef QList<Rule *> RuleList;
+    typedef QMap<Rule *, QgsVectorLayerLabelProvider *> RuleToProviderMap;
 
     /**
      * \ingroup core
@@ -55,13 +55,13 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     {
       public:
         //! takes ownership of settings
-        Rule( QgsPalLayerSettings* settings, int scaleMinDenom = 0, int scaleMaxDenom = 0, const QString& filterExp = QString(), const QString& description = QString(), bool elseRule = false );
+        Rule( QgsPalLayerSettings *settings, int scaleMinDenom = 0, int scaleMaxDenom = 0, const QString &filterExp = QString(), const QString &description = QString(), bool elseRule = false );
         ~Rule();
 
         //! Rules cannot be copied.
-        Rule( const Rule& rh ) = delete;
+        Rule( const Rule &rh ) = delete;
         //! Rules cannot be copied.
-        Rule& operator=( const Rule& rh ) = delete;
+        Rule &operator=( const Rule &rh ) = delete;
 
         //! The result of registering a rule
         enum RegisterResult
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         /**
          * Get the labeling settings. May return a null pointer.
          */
-        QgsPalLayerSettings* settings() const { return mSettings; }
+        QgsPalLayerSettings *settings() const { return mSettings; }
 
         /**
          * Determines if scale based labeling is active
@@ -134,7 +134,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         QString ruleKey() const { return mRuleKey; }
 
         //! set new settings (or NULL). Deletes old settings if any.
-        void setSettings( QgsPalLayerSettings* settings );
+        void setSettings( QgsPalLayerSettings *settings );
 
         /**
          * Set the minimum denominator for which this rule shall apply.
@@ -157,14 +157,14 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          *
          * @param filterExp An expression
          */
-        void setFilterExpression( const QString& filterExp ) { mFilterExp = filterExp; initFilter(); }
+        void setFilterExpression( const QString &filterExp ) { mFilterExp = filterExp; initFilter(); }
 
         /**
          * Set a human readable description for this rule
          *
          * @param description Description
          */
-        void setDescription( const QString& description ) { mDescription = description; }
+        void setDescription( const QString &description ) { mDescription = description; }
 
         /**
          * Sets if this rule is active
@@ -180,7 +180,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         void setIsElse( bool iselse ) { mElseRule = iselse; }
 
         //! Override the assigned rule key (should be used just internally by rule-based labeling)
-        void setRuleKey( const QString& key ) { mRuleKey = key; }
+        void setRuleKey( const QString &key ) { mRuleKey = key; }
 
         // parent / child operations
 
@@ -189,14 +189,14 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          *
          * @return A list of rules
          */
-        const RuleList& children() const { return mChildren; }
+        const RuleList &children() const { return mChildren; }
 
         /**
          * Return all children rules of this rule
          *
          * @return A list of rules
          */
-        RuleList& children() { return mChildren; }
+        RuleList &children() { return mChildren; }
 
         /**
          * Returns all children, grand-children, grand-grand-children, grand-gra... you get it
@@ -210,29 +210,29 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          *
          * @return Parent rule
          */
-        const Rule* parent() const { return mParent; }
+        const Rule *parent() const { return mParent; }
 
         /**
          * The parent rule
          *
          * @return Parent rule
          */
-        Rule* parent() { return mParent; }
+        Rule *parent() { return mParent; }
 
         //! add child rule, take ownership, sets this as parent
-        void appendChild( Rule* rule );
+        void appendChild( Rule *rule );
 
         //! add child rule, take ownership, sets this as parent
-        void insertChild( int i, Rule* rule );
+        void insertChild( int i, Rule *rule );
 
         //! delete child rule
         void removeChildAt( int i );
 
         //! Try to find a rule given its unique key
-        const Rule* findRuleByKey( const QString& key ) const;
+        const Rule *findRuleByKey( const QString &key ) const;
 
         //! clone this rule, return new instance
-        Rule* clone() const;
+        Rule *clone() const;
 
         // load / save
 
@@ -241,24 +241,24 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * @param ruleElem  The XML rule element
          * @return A new rule
          */
-        static Rule* create( const QDomElement& ruleElem );
+        static Rule *create( const QDomElement &ruleElem );
 
         //! store labeling info to XML element
-        QDomElement save( QDomDocument& doc ) const;
+        QDomElement save( QDomDocument &doc ) const;
 
         // evaluation
 
         //! add providers
-        void createSubProviders( QgsVectorLayer* layer, RuleToProviderMap& subProviders, QgsRuleBasedLabelProvider *provider );
+        void createSubProviders( QgsVectorLayer *layer, RuleToProviderMap &subProviders, QgsRuleBasedLabelProvider *provider );
 
         //! append rule keys of descendants that contain valid settings (i.e. they will be sub-providers)
-        void subProviderIds( QStringList& list ) const;
+        void subProviderIds( QStringList &list ) const;
 
         //! call prepare() on sub-providers and populate attributeNames
-        void prepare( const QgsRenderContext& context, QSet<QString>& attributeNames, RuleToProviderMap& subProviders );
+        void prepare( const QgsRenderContext &context, QSet<QString> &attributeNames, RuleToProviderMap &subProviders );
 
         //! register individual features
-        RegisterResult registerFeature( QgsFeature& feature, QgsRenderContext& context, RuleToProviderMap& subProviders, QgsGeometry* obstacleGeometry = nullptr );
+        RegisterResult registerFeature( QgsFeature &feature, QgsRenderContext &context, RuleToProviderMap &subProviders, QgsGeometry *obstacleGeometry = nullptr );
 
         /**
          * Returns true if this rule or any of its children requires advanced composition effects
@@ -275,7 +275,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * @param context   The context in which the rendering happens
          * @return          True if the feature shall be rendered
          */
-        bool isFilterOK( QgsFeature& f, QgsRenderContext& context ) const;
+        bool isFilterOK( QgsFeature &f, QgsRenderContext &context ) const;
 
         /**
          * Check if this rule applies for a given scale
@@ -296,8 +296,8 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         void updateElseRules();
 
       protected:
-        Rule* mParent; // parent rule (NULL only for root rule)
-        QgsPalLayerSettings* mSettings = nullptr;
+        Rule *mParent; // parent rule (NULL only for root rule)
+        QgsPalLayerSettings *mSettings = nullptr;
         int mScaleMinDenom, mScaleMaxDenom;
         QString mFilterExp, mDescription;
         bool mElseRule;
@@ -308,34 +308,34 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         QString mRuleKey; // string used for unique identification of rule within labeling
 
         // temporary
-        QgsExpression* mFilter = nullptr;
+        QgsExpression *mFilter = nullptr;
 
     };
 
 
     //! Constructs the labeling from given tree of rules (takes ownership)
-    explicit QgsRuleBasedLabeling( QgsRuleBasedLabeling::Rule* root );
+    explicit QgsRuleBasedLabeling( QgsRuleBasedLabeling::Rule *root );
     //! Copy constructor
-    QgsRuleBasedLabeling( const QgsRuleBasedLabeling& other );
+    QgsRuleBasedLabeling( const QgsRuleBasedLabeling &other );
     ~QgsRuleBasedLabeling();
 
-    Rule* rootRule() { return mRootRule; }
-    const Rule* rootRule() const { return mRootRule; }
+    Rule *rootRule() { return mRootRule; }
+    const Rule *rootRule() const { return mRootRule; }
 
     //! Create the instance from a DOM element with saved configuration
-    static QgsRuleBasedLabeling* create( const QDomElement& element );
+    static QgsRuleBasedLabeling *create( const QDomElement &element );
 
     // implementation of parent interface
 
     virtual QString type() const override;
-    virtual QDomElement save( QDomDocument& doc ) const override;
-    virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer* layer ) const override;
+    virtual QDomElement save( QDomDocument &doc ) const override;
+    virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const override;
     virtual QStringList subProviders() const override;
-    virtual QgsPalLayerSettings settings( QgsVectorLayer* layer, const QString& providerId = QString() ) const override;
-    bool requiresAdvancedEffects( QgsVectorLayer* layer ) const override;
+    virtual QgsPalLayerSettings settings( QgsVectorLayer *layer, const QString &providerId = QString() ) const override;
+    bool requiresAdvancedEffects( QgsVectorLayer *layer ) const override;
 
   protected:
-    Rule* mRootRule = nullptr;
+    Rule *mRootRule = nullptr;
 };
 
 
@@ -347,20 +347,20 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 class CORE_EXPORT QgsRuleBasedLabelProvider : public QgsVectorLayerLabelProvider
 {
   public:
-    QgsRuleBasedLabelProvider( const QgsRuleBasedLabeling& rules, QgsVectorLayer* layer, bool withFeatureLoop = true );
+    QgsRuleBasedLabelProvider( const QgsRuleBasedLabeling &rules, QgsVectorLayer *layer, bool withFeatureLoop = true );
     ~QgsRuleBasedLabelProvider();
 
     // reimplemented
 
-    virtual bool prepare( const QgsRenderContext& context, QSet<QString>& attributeNames ) override;
+    virtual bool prepare( const QgsRenderContext &context, QSet<QString> &attributeNames ) override;
 
-    virtual void registerFeature( QgsFeature& feature, QgsRenderContext& context, QgsGeometry* obstacleGeometry = nullptr ) override;
+    virtual void registerFeature( QgsFeature &feature, QgsRenderContext &context, QgsGeometry *obstacleGeometry = nullptr ) override;
 
     //! create a label provider
-    virtual QgsVectorLayerLabelProvider *createProvider( QgsVectorLayer *layer, const QString& providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings );
+    virtual QgsVectorLayerLabelProvider *createProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings );
 
     //! return subproviders
-    virtual QList<QgsAbstractLabelProvider*> subProviders() override;
+    virtual QList<QgsAbstractLabelProvider *> subProviders() override;
 
   protected:
     //! owned copy

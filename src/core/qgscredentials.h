@@ -42,8 +42,8 @@ class CORE_EXPORT QgsCredentials
 
     virtual ~QgsCredentials() = default;
 
-    bool get( const QString& realm, QString &username, QString &password, const QString& message = QString::null );
-    void put( const QString& realm, const QString& username, const QString& password );
+    bool get( const QString &realm, QString &username, QString &password, const QString &message = QString::null );
+    void put( const QString &realm, const QString &username, const QString &password );
 
     bool getMasterPassword( QString &password, bool stored = false );
 
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsCredentials
     QgsCredentials();
 
     //! request a password
-    virtual bool request( const QString& realm, QString &username, QString &password, const QString& message = QString::null ) = 0;
+    virtual bool request( const QString &realm, QString &username, QString &password, const QString &message = QString::null ) = 0;
 
     //! request a master password
     virtual bool requestMasterPassword( QString &password, bool stored = false ) = 0;
@@ -112,7 +112,7 @@ class CORE_EXPORT QgsCredentialsNone : public QObject, public QgsCredentials
     void destroyed();
 
   protected:
-    virtual bool request( const QString& realm, QString &username, QString &password, const QString& message = QString::null ) override;
+    virtual bool request( const QString &realm, QString &username, QString &password, const QString &message = QString::null ) override;
     virtual bool requestMasterPassword( QString &password, bool stored = false ) override;
 };
 
@@ -136,7 +136,7 @@ class CORE_EXPORT QgsCredentialsConsole : public QObject, public QgsCredentials
     void destroyed();
 
   protected:
-    virtual bool request( const QString& realm, QString &username, QString &password, const QString& message = QString::null ) override;
+    virtual bool request( const QString &realm, QString &username, QString &password, const QString &message = QString::null ) override;
     virtual bool requestMasterPassword( QString &password, bool stored = false ) override;
 };
 

@@ -21,16 +21,16 @@
 #include <QDomElement>
 
 QgsNullSymbolRenderer::QgsNullSymbolRenderer()
-    : QgsFeatureRenderer( QStringLiteral( "nullSymbol" ) )
+  : QgsFeatureRenderer( QStringLiteral( "nullSymbol" ) )
 {
 }
 
-QgsSymbol* QgsNullSymbolRenderer::symbolForFeature( QgsFeature& , QgsRenderContext& )
+QgsSymbol *QgsNullSymbolRenderer::symbolForFeature( QgsFeature &, QgsRenderContext & )
 {
   return nullptr;
 }
 
-QgsSymbol* QgsNullSymbolRenderer::originalSymbolForFeature( QgsFeature&, QgsRenderContext& )
+QgsSymbol *QgsNullSymbolRenderer::originalSymbolForFeature( QgsFeature &, QgsRenderContext & )
 {
   return nullptr;
 }
@@ -60,13 +60,13 @@ bool QgsNullSymbolRenderer::renderFeature( QgsFeature &feature, QgsRenderContext
   return true;
 }
 
-void QgsNullSymbolRenderer::startRender( QgsRenderContext& context, const QgsFields& fields )
+void QgsNullSymbolRenderer::startRender( QgsRenderContext &context, const QgsFields &fields )
 {
   Q_UNUSED( context );
   Q_UNUSED( fields );
 }
 
-void QgsNullSymbolRenderer::stopRender( QgsRenderContext& context )
+void QgsNullSymbolRenderer::stopRender( QgsRenderContext &context )
 {
   if ( mSymbol.get() )
   {
@@ -74,13 +74,13 @@ void QgsNullSymbolRenderer::stopRender( QgsRenderContext& context )
   }
 }
 
-bool QgsNullSymbolRenderer::willRenderFeature( QgsFeature&, QgsRenderContext& )
+bool QgsNullSymbolRenderer::willRenderFeature( QgsFeature &, QgsRenderContext & )
 {
   //return true for every feature - so they are still selectable
   return true;
 }
 
-QSet<QString> QgsNullSymbolRenderer::usedAttributes( const QgsRenderContext& ) const
+QSet<QString> QgsNullSymbolRenderer::usedAttributes( const QgsRenderContext & ) const
 {
   return QSet<QString>();
 }
@@ -90,32 +90,32 @@ QString QgsNullSymbolRenderer::dump() const
   return QStringLiteral( "NULL" );
 }
 
-QgsFeatureRenderer* QgsNullSymbolRenderer::clone() const
+QgsFeatureRenderer *QgsNullSymbolRenderer::clone() const
 {
-  QgsNullSymbolRenderer* r = new QgsNullSymbolRenderer();
+  QgsNullSymbolRenderer *r = new QgsNullSymbolRenderer();
   return r;
 }
 
-QgsSymbolList QgsNullSymbolRenderer::symbols( QgsRenderContext& )
+QgsSymbolList QgsNullSymbolRenderer::symbols( QgsRenderContext & )
 {
   return QgsSymbolList();
 }
 
-QgsFeatureRenderer* QgsNullSymbolRenderer::create( QDomElement& element )
+QgsFeatureRenderer *QgsNullSymbolRenderer::create( QDomElement &element )
 {
   Q_UNUSED( element );
-  QgsNullSymbolRenderer* r = new QgsNullSymbolRenderer();
+  QgsNullSymbolRenderer *r = new QgsNullSymbolRenderer();
   return r;
 }
 
-QDomElement QgsNullSymbolRenderer::save( QDomDocument& doc )
+QDomElement QgsNullSymbolRenderer::save( QDomDocument &doc )
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "nullSymbol" ) );
   return rendererElem;
 }
 
-QgsNullSymbolRenderer* QgsNullSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
+QgsNullSymbolRenderer *QgsNullSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {
   Q_UNUSED( renderer );
   return new QgsNullSymbolRenderer();

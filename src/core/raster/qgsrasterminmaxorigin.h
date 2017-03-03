@@ -78,7 +78,7 @@ class CORE_EXPORT QgsRasterMinMaxOrigin
     QgsRasterMinMaxOrigin();
 
     //! \brief Equality operator.
-    bool operator ==( const QgsRasterMinMaxOrigin& other ) const;
+    bool operator ==( const QgsRasterMinMaxOrigin &other ) const;
 
     //////// Getter methods /////////////////////
 
@@ -123,10 +123,10 @@ class CORE_EXPORT QgsRasterMinMaxOrigin
     //////// XML serialization /////////////////////
 
     //! \brief Serialize object.
-    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
     //! \brief Deserialize object.
-    void readXml( const QDomElement& elem );
+    void readXml( const QDomElement &elem );
 
     //////// Static methods /////////////////////
 
@@ -134,19 +134,19 @@ class CORE_EXPORT QgsRasterMinMaxOrigin
     static QString limitsString( Limits limits );
 
     //! \brief Deserialize Limits
-    static Limits limitsFromString( const QString& limits );
+    static Limits limitsFromString( const QString &limits );
 
     //! \brief Return a string to serialize Extent
     static QString extentString( Extent extent );
 
     //! \brief Deserialize Extent
-    static Extent extentFromString( const QString& extent );
+    static Extent extentFromString( const QString &extent );
 
     //! \brief Return a string to serialize StatAccuracy
     static QString statAccuracyString( StatAccuracy accuracy );
 
     //! \brief Deserialize StatAccuracy
-    static StatAccuracy statAccuracyFromString( const QString& accuracy );
+    static StatAccuracy statAccuracyFromString( const QString &accuracy );
 
   private:
 

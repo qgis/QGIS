@@ -46,10 +46,10 @@ class CORE_EXPORT QgsFieldsPrivate : public QSharedData
     {
     }
 
-    QgsFieldsPrivate( const QgsFieldsPrivate& other )
-        : QSharedData( other )
-        , fields( other.fields )
-        , nameToIndex( other.nameToIndex )
+    QgsFieldsPrivate( const QgsFieldsPrivate &other )
+      : QSharedData( other )
+      , fields( other.fields )
+      , nameToIndex( other.nameToIndex )
     {
     }
 

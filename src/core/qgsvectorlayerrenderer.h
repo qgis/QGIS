@@ -52,10 +52,10 @@ class QgsVectorLayerRendererInterruptionChecker: public QgsInterruptionChecker
 {
   public:
     //! Constructor
-    explicit QgsVectorLayerRendererInterruptionChecker( const QgsRenderContext& context );
+    explicit QgsVectorLayerRendererInterruptionChecker( const QgsRenderContext &context );
     bool mustStop() const override;
   private:
-    const QgsRenderContext& mContext;
+    const QgsRenderContext &mContext;
 };
 
 /** \ingroup core
@@ -67,14 +67,14 @@ class QgsVectorLayerRendererInterruptionChecker: public QgsInterruptionChecker
 class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 {
   public:
-    QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRenderContext& context );
+    QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRenderContext &context );
     ~QgsVectorLayerRenderer();
 
     virtual bool render() override;
 
     //! where to save the cached geometries
     //! @note The way how geometries are cached is really suboptimal - this method may be removed in future releases
-    void setGeometryCachePointer( QgsGeometryCache* cache );
+    void setGeometryCachePointer( QgsGeometryCache *cache );
 
   private:
 
@@ -82,39 +82,39 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
       @param layer diagram layer
       @param attributeNames attributes needed for labeling and diagrams will be added to the list
      */
-    void prepareLabeling( QgsVectorLayer* layer, QSet<QString>& attributeNames );
-    void prepareDiagrams( QgsVectorLayer* layer, QSet<QString>& attributeNames );
+    void prepareLabeling( QgsVectorLayer *layer, QSet<QString> &attributeNames );
+    void prepareDiagrams( QgsVectorLayer *layer, QSet<QString> &attributeNames );
 
     /** Draw layer with renderer V2. QgsFeatureRenderer::startRender() needs to be called before using this method
      */
-    void drawRenderer( QgsFeatureIterator& fit );
+    void drawRenderer( QgsFeatureIterator &fit );
 
     /** Draw layer with renderer V2 using symbol levels. QgsFeatureRenderer::startRender() needs to be called before using this method
      */
-    void drawRendererLevels( QgsFeatureIterator& fit );
+    void drawRendererLevels( QgsFeatureIterator &fit );
 
     //! Stop version 2 renderer and selected renderer (if required)
-    void stopRenderer( QgsSingleSymbolRenderer* selRenderer );
+    void stopRenderer( QgsSingleSymbolRenderer *selRenderer );
 
 
   protected:
 
-    QgsRenderContext& mContext;
+    QgsRenderContext &mContext;
 
     QgsVectorLayerRendererInterruptionChecker mInterruptionChecker;
 
     //! The rendered layer
-    QgsVectorLayer* mLayer = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
 
     QgsFields mFields; // TODO: use fields from mSource
 
     QgsFeatureIds mSelectedFeatureIds;
 
-    QgsVectorLayerFeatureSource* mSource = nullptr;
+    QgsVectorLayerFeatureSource *mSource = nullptr;
 
     QgsFeatureRenderer *mRenderer = nullptr;
 
-    QgsGeometryCache* mCache = nullptr;
+    QgsGeometryCache *mCache = nullptr;
 
     bool mDrawVertexMarkers;
     bool mVertexMarkerOnlyForSelection;
@@ -131,10 +131,10 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     //! used with new labeling engine (QgsLabelingEngine): provider for labels.
     //! may be null. no need to delete: if exists it is owned by labeling engine
-    QgsVectorLayerLabelProvider* mLabelProvider = nullptr;
+    QgsVectorLayerLabelProvider *mLabelProvider = nullptr;
     //! used with new labeling engine (QgsLabelingEngine): provider for diagrams.
     //! may be null. no need to delete: if exists it is owned by labeling engine
-    QgsVectorLayerDiagramProvider* mDiagramProvider = nullptr;
+    QgsVectorLayerDiagramProvider *mDiagramProvider = nullptr;
 
     QPainter::CompositionMode mFeatureBlendMode;
 

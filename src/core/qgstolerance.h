@@ -49,21 +49,21 @@ class CORE_EXPORT QgsTolerance
      * @return value of vertex tolerance in map units (not layer units)
      * @note added in 2.8
      */
-    static double vertexSearchRadius( const QgsMapSettings& mapSettings );
+    static double vertexSearchRadius( const QgsMapSettings &mapSettings );
 
     /**
      * Static function to get vertex tolerance value for a layer.
      * The value is read from settings and transformed if necessary.
      * @return value of vertex tolerance in layer units
      */
-    static double vertexSearchRadius( QgsMapLayer* layer, const QgsMapSettings& mapSettings );
+    static double vertexSearchRadius( QgsMapLayer *layer, const QgsMapSettings &mapSettings );
 
     /**
      * Static function to get default tolerance value for a layer.
      * The value is read from settings and transformed if necessary.
      * @return value of default tolerance in layer units
      */
-    static double defaultTolerance( QgsMapLayer* layer, const QgsMapSettings& mapSettings );
+    static double defaultTolerance( QgsMapLayer *layer, const QgsMapSettings &mapSettings );
 
     /**
      * Static function to translate tolerance value into map units
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsTolerance
      * @return value of tolerance in map units
      * @note added in 2.8
      */
-    static double toleranceInProjectUnits( double tolerance, QgsMapLayer* layer, const QgsMapSettings& mapSettings, QgsTolerance::UnitType units );
+    static double toleranceInProjectUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings &mapSettings, QgsTolerance::UnitType units );
 
     /**
      * Static function to translate tolerance value into layer units
@@ -84,11 +84,11 @@ class CORE_EXPORT QgsTolerance
      * @param units type of units to be translated
      * @return value of tolerance in layer units
      */
-    static double toleranceInMapUnits( double tolerance, QgsMapLayer* layer, const QgsMapSettings& mapSettings, UnitType units = LayerUnits );
+    static double toleranceInMapUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings &mapSettings, UnitType units = LayerUnits );
 
   private:
-    static double computeMapUnitPerPixel( QgsMapLayer* layer, const QgsMapSettings& mapSettings );
-    static QgsPoint toLayerCoordinates( QgsMapLayer* layer, const QgsMapSettings& mapSettings, QPoint point );
+    static double computeMapUnitPerPixel( QgsMapLayer *layer, const QgsMapSettings &mapSettings );
+    static QgsPoint toLayerCoordinates( QgsMapLayer *layer, const QgsMapSettings &mapSettings, QPoint point );
 
 };
 

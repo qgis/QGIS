@@ -43,46 +43,46 @@ class QgsFieldPrivate : public QSharedData
 {
   public:
 
-    QgsFieldPrivate( const QString& name = QString(),
+    QgsFieldPrivate( const QString &name = QString(),
                      QVariant::Type type = QVariant::Invalid,
                      QVariant::Type subType = QVariant::Invalid,
-                     const QString& typeName = QString(),
+                     const QString &typeName = QString(),
                      int len = 0,
                      int prec = 0,
-                     const QString& comment = QString() )
-        : name( name )
-        , type( type )
-        , subType( subType )
-        , typeName( typeName )
-        , length( len )
-        , precision( prec )
-        , comment( comment )
+                     const QString &comment = QString() )
+      : name( name )
+      , type( type )
+      , subType( subType )
+      , typeName( typeName )
+      , length( len )
+      , precision( prec )
+      , comment( comment )
     {
     }
 
-    QgsFieldPrivate( const QgsFieldPrivate& other )
-        : QSharedData( other )
-        , name( other.name )
-        , type( other.type )
-        , subType( other.subType )
-        , typeName( other.typeName )
-        , length( other.length )
-        , precision( other.precision )
-        , comment( other.comment )
-        , alias( other.alias )
-        , defaultValueExpression( other.defaultValueExpression )
-        , constraints( other.constraints )
+    QgsFieldPrivate( const QgsFieldPrivate &other )
+      : QSharedData( other )
+      , name( other.name )
+      , type( other.type )
+      , subType( other.subType )
+      , typeName( other.typeName )
+      , length( other.length )
+      , precision( other.precision )
+      , comment( other.comment )
+      , alias( other.alias )
+      , defaultValueExpression( other.defaultValueExpression )
+      , constraints( other.constraints )
     {
     }
 
     ~QgsFieldPrivate() {}
 
-    bool operator==( const QgsFieldPrivate& other ) const
+    bool operator==( const QgsFieldPrivate &other ) const
     {
-      return (( name == other.name ) && ( type == other.type ) && ( subType == other.subType )
-              && ( length == other.length ) && ( precision == other.precision )
-              && ( alias == other.alias ) && ( defaultValueExpression == other.defaultValueExpression )
-              && ( constraints == other.constraints ) );
+      return ( ( name == other.name ) && ( type == other.type ) && ( subType == other.subType )
+               && ( length == other.length ) && ( precision == other.precision )
+               && ( alias == other.alias ) && ( defaultValueExpression == other.defaultValueExpression )
+               && ( constraints == other.constraints ) );
     }
 
     //! Name

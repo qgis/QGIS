@@ -53,10 +53,10 @@ class CORE_EXPORT QgsContrastEnhancement
     };
 
     QgsContrastEnhancement( Qgis::DataType datatype = Qgis::Byte );
-    QgsContrastEnhancement( const QgsContrastEnhancement& ce );
+    QgsContrastEnhancement( const QgsContrastEnhancement &ce );
     ~QgsContrastEnhancement();
 
-    const QgsContrastEnhancement& operator=( const QgsContrastEnhancement& ) = delete;
+    const QgsContrastEnhancement &operator=( const QgsContrastEnhancement & ) = delete;
 
     /*
      *
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsContrastEnhancement
     static QString contrastEnhancementAlgorithmString( ContrastEnhancementAlgorithm algorithm );
 
     //! \brief Deserialize ContrastEnhancementAlgorithm
-    static ContrastEnhancementAlgorithm contrastEnhancementAlgorithmFromString( const QString& contrastEnhancementString );
+    static ContrastEnhancementAlgorithm contrastEnhancementAlgorithmFromString( const QString &contrastEnhancementString );
 
     /*
      *
@@ -103,7 +103,7 @@ class CORE_EXPORT QgsContrastEnhancement
     void setContrastEnhancementAlgorithm( ContrastEnhancementAlgorithm, bool generateTable = true );
 
     //! \brief A public method that allows the user to set their own custom contrast enhancement function
-    void setContrastEnhancementFunction( QgsContrastEnhancementFunction* );
+    void setContrastEnhancementFunction( QgsContrastEnhancementFunction * );
 
     //! \brief Set the maximum value for the contrast enhancement range.
     void setMaximumValue( double, bool generateTable = true );
@@ -111,16 +111,16 @@ class CORE_EXPORT QgsContrastEnhancement
     //! \brief Return the minimum value for the contrast enhancement range.
     void setMinimumValue( double, bool generateTable = true );
 
-    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
-    void readXml( const QDomElement& elem );
+    void readXml( const QDomElement &elem );
 
   private:
     //! \brief Current contrast enhancement algorithm
     ContrastEnhancementAlgorithm mContrastEnhancementAlgorithm;
 
     //! \brief Pointer to the contrast enhancement function
-    QgsContrastEnhancementFunction* mContrastEnhancementFunction = nullptr;
+    QgsContrastEnhancementFunction *mContrastEnhancementFunction = nullptr;
 
     //! \brief Flag indicating if the lookup table needs to be regenerated
     bool mEnhancementDirty;

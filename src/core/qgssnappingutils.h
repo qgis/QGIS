@@ -49,31 +49,31 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     Q_PROPERTY( QgsSnappingConfig config READ config WRITE setConfig NOTIFY configChanged )
 
   public:
-    QgsSnappingUtils( QObject* parent = nullptr );
+    QgsSnappingUtils( QObject *parent = nullptr );
     ~QgsSnappingUtils();
 
     // main actions
 
     //! Get a point locator for the given layer. If such locator does not exist, it will be created
-    QgsPointLocator* locatorForLayer( QgsVectorLayer* vl );
+    QgsPointLocator *locatorForLayer( QgsVectorLayer *vl );
 
     //! Snap to map according to the current configuration (mode). Optional filter allows discarding unwanted matches.
-    QgsPointLocator::Match snapToMap( QPoint point, QgsPointLocator::MatchFilter* filter = nullptr );
-    QgsPointLocator::Match snapToMap( const QgsPoint& pointMap, QgsPointLocator::MatchFilter* filter = nullptr );
+    QgsPointLocator::Match snapToMap( QPoint point, QgsPointLocator::MatchFilter *filter = nullptr );
+    QgsPointLocator::Match snapToMap( const QgsPoint &pointMap, QgsPointLocator::MatchFilter *filter = nullptr );
 
     //! Snap to current layer
-    QgsPointLocator::Match snapToCurrentLayer( QPoint point, int type, QgsPointLocator::MatchFilter* filter = nullptr );
+    QgsPointLocator::Match snapToCurrentLayer( QPoint point, int type, QgsPointLocator::MatchFilter *filter = nullptr );
 
     // environment setup
 
     //! Assign current map settings to the utils - used for conversion between screen coords to map coords
-    void setMapSettings( const QgsMapSettings& settings );
+    void setMapSettings( const QgsMapSettings &settings );
     QgsMapSettings mapSettings() const { return mMapSettings; }
 
     //! Set current layer so that if mode is SnapCurrentLayer we know which layer to use
-    void setCurrentLayer( QgsVectorLayer* layer );
+    void setCurrentLayer( QgsVectorLayer *layer );
     //! The current layer used if mode is SnapCurrentLayer
-    QgsVectorLayer* currentLayer() const { return mCurrentLayer; }
+    QgsVectorLayer *currentLayer() const { return mCurrentLayer; }
 
     // configuration
 
@@ -122,24 +122,24 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
        * @param tol The tolerance radius in which the snapping will trigger
        * @param u   The unit in which the tolerance is specified
        */
-      LayerConfig( QgsVectorLayer* l, QgsPointLocator::Types t, double tol, QgsTolerance::UnitType u )
-          : layer( l )
-          , type( t )
-          , tolerance( tol )
-          , unit( u )
+      LayerConfig( QgsVectorLayer *l, QgsPointLocator::Types t, double tol, QgsTolerance::UnitType u )
+        : layer( l )
+        , type( t )
+        , tolerance( tol )
+        , unit( u )
       {}
 
-      bool operator==( const LayerConfig& other ) const
+      bool operator==( const LayerConfig &other ) const
       {
         return layer == other.layer && type == other.type && tolerance == other.tolerance && unit == other.unit;
       }
-      bool operator!=( const LayerConfig& other ) const
+      bool operator!=( const LayerConfig &other ) const
       {
         return !operator==( other );
       }
 
       //! The layer to configure.
-      QgsVectorLayer* layer = nullptr;
+      QgsVectorLayer *layer = nullptr;
       //! To which geometry properties of this layers a snapping should happen.
       QgsPointLocator::Types type;
       //! The range around snapping targets in which snapping should occur.
@@ -166,7 +166,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     /**
      * The snapping configuration controls the behavior of this object
      */
-    void setConfig( const QgsSnappingConfig& snappingConfig );
+    void setConfig( const QgsSnappingConfig &snappingConfig );
 
     /**
      * Toggles the state of snapping
@@ -180,7 +180,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     /**
      * Emitted when the snapping settings object changes.
      */
-    void configChanged( const QgsSnappingConfig& snappingConfig );
+    void configChanged( const QgsSnappingConfig &snappingConfig );
 
   protected:
     //! Called when starting to index - can be overridden and e.g. progress dialog can be provided
@@ -197,21 +197,21 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     void clearAllLocators();
 
     //! return a locator (temporary or not) according to the indexing strategy
-    QgsPointLocator* locatorForLayerUsingStrategy( QgsVectorLayer* vl, const QgsPoint& pointMap, double tolerance );
+    QgsPointLocator *locatorForLayerUsingStrategy( QgsVectorLayer *vl, const QgsPoint &pointMap, double tolerance );
     //! return a temporary locator with index only for a small area (will be replaced by another one on next request)
-    QgsPointLocator* temporaryLocatorForLayer( QgsVectorLayer* vl, const QgsPoint& pointMap, double tolerance );
+    QgsPointLocator *temporaryLocatorForLayer( QgsVectorLayer *vl, const QgsPoint &pointMap, double tolerance );
 
-    typedef QPair< QgsVectorLayer*, QgsRectangle > LayerAndAreaOfInterest;
+    typedef QPair< QgsVectorLayer *, QgsRectangle > LayerAndAreaOfInterest;
 
     //! find out whether the strategy would index such layer or just use a temporary locator
-    bool isIndexPrepared( QgsVectorLayer* vl, const QgsRectangle& areaOfInterest );
+    bool isIndexPrepared( QgsVectorLayer *vl, const QgsRectangle &areaOfInterest );
     //! initialize index for layers where it makes sense (according to the indexing strategy)
-    void prepareIndex( const QList<LayerAndAreaOfInterest>& layers );
+    void prepareIndex( const QList<LayerAndAreaOfInterest> &layers );
 
   private:
     // environment
     QgsMapSettings mMapSettings;
-    QgsVectorLayer* mCurrentLayer = nullptr;
+    QgsVectorLayer *mCurrentLayer = nullptr;
 
     QgsSnappingConfig mSnappingConfig;
 
@@ -220,7 +220,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     QList<LayerConfig> mLayers;
 
     // internal data
-    typedef QMap<QgsVectorLayer*, QgsPointLocator*> LocatorsMap;
+    typedef QMap<QgsVectorLayer *, QgsPointLocator *> LocatorsMap;
     //! on-demand locators used (locators are owned)
     LocatorsMap mLocators;
     //! temporary locators (indexing just a part of layers). owned by the instance

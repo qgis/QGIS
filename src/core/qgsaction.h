@@ -48,7 +48,7 @@ class CORE_EXPORT QgsAction
      * Default constructor
      */
     QgsAction()
-        : mType( Generic )
+      : mType( Generic )
     {}
 
     /**
@@ -59,12 +59,12 @@ class CORE_EXPORT QgsAction
      * @param command       The action text. Its interpretation depends on the type
      * @param capture       If this is set to true, the output will be captured when an action is run
      */
-    QgsAction( ActionType type, const QString& description, const QString& command, bool capture = false )
-        : mType( type )
-        , mDescription( description )
-        , mCommand( command )
-        , mCaptureOutput( capture )
-        , mId( QUuid::createUuid() )
+    QgsAction( ActionType type, const QString &description, const QString &command, bool capture = false )
+      : mType( type )
+      , mDescription( description )
+      , mCommand( command )
+      , mCaptureOutput( capture )
+      , mId( QUuid::createUuid() )
     {}
 
     /**
@@ -78,15 +78,15 @@ class CORE_EXPORT QgsAction
      * @param shortTitle           A short string used to label user interface elements like buttons
      * @param actionScopes         A set of scopes in which this action will be available
      */
-    QgsAction( ActionType type, const QString& description, const QString& action, const QString& icon, bool capture, const QString& shortTitle = QString(), const QSet<QString>& actionScopes = QSet<QString>() )
-        : mType( type )
-        , mDescription( description )
-        , mShortTitle( shortTitle )
-        , mIcon( icon )
-        , mCommand( action )
-        , mCaptureOutput( capture )
-        , mActionScopes( actionScopes )
-        , mId( QUuid::createUuid() )
+    QgsAction( ActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>() )
+      : mType( type )
+      , mDescription( description )
+      , mShortTitle( shortTitle )
+      , mIcon( icon )
+      , mCommand( action )
+      , mCaptureOutput( capture )
+      , mActionScopes( actionScopes )
+      , mId( QUuid::createUuid() )
     {}
 
     //! The name of the action. This may be a longer description.
@@ -138,14 +138,14 @@ class CORE_EXPORT QgsAction
      *
      * @note Added in QGIS 3.0
      */
-    void run( QgsVectorLayer* layer, const QgsFeature& feature, const QgsExpressionContext& expressionContext ) const;
+    void run( QgsVectorLayer *layer, const QgsFeature &feature, const QgsExpressionContext &expressionContext ) const;
 
     /**
      * Run this action.
      *
      * @note Added in QGIS 3.0
      */
-    void run( const QgsExpressionContext& expressionContext ) const;
+    void run( const QgsExpressionContext &expressionContext ) const;
 
     /**
      * The action scopes define where an action will be available.
@@ -164,7 +164,7 @@ class CORE_EXPORT QgsAction
      *
      * @note Added in QGIS 3.0
      */
-    void setActionScopes( const QSet<QString>& actionScopes );
+    void setActionScopes( const QSet<QString> &actionScopes );
 
     /**
      * Reads an XML definition from actionNode
@@ -172,7 +172,7 @@ class CORE_EXPORT QgsAction
      *
      * @note Added in QGIS 3.0
      */
-    void readXml( const QDomNode& actionNode );
+    void readXml( const QDomNode &actionNode );
 
     /**
      * Appends an XML definition for this action as a new
@@ -180,7 +180,7 @@ class CORE_EXPORT QgsAction
      *
      * @note Added in QGIS 3.0
      */
-    void writeXml( QDomNode& actionsNode ) const;
+    void writeXml( QDomNode &actionsNode ) const;
 
   private:
     ActionType mType;

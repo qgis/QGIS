@@ -22,20 +22,20 @@
 #include <QDomElement>
 #include <QImage>
 
-QgsSingleBandColorDataRenderer::QgsSingleBandColorDataRenderer( QgsRasterInterface* input, int band ):
-    QgsRasterRenderer( input, QStringLiteral( "singlebandcolordata" ) ), mBand( band )
+QgsSingleBandColorDataRenderer::QgsSingleBandColorDataRenderer( QgsRasterInterface *input, int band ):
+  QgsRasterRenderer( input, QStringLiteral( "singlebandcolordata" ) ), mBand( band )
 {
 
 }
 
-QgsSingleBandColorDataRenderer* QgsSingleBandColorDataRenderer::clone() const
+QgsSingleBandColorDataRenderer *QgsSingleBandColorDataRenderer::clone() const
 {
-  QgsSingleBandColorDataRenderer * renderer = new QgsSingleBandColorDataRenderer( nullptr, mBand );
+  QgsSingleBandColorDataRenderer *renderer = new QgsSingleBandColorDataRenderer( nullptr, mBand );
   renderer->copyCommonProperties( this );
   return renderer;
 }
 
-QgsRasterRenderer* QgsSingleBandColorDataRenderer::create( const QDomElement& elem, QgsRasterInterface* input )
+QgsRasterRenderer *QgsSingleBandColorDataRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
 {
   if ( elem.isNull() )
   {
@@ -43,12 +43,12 @@ QgsRasterRenderer* QgsSingleBandColorDataRenderer::create( const QDomElement& el
   }
 
   int band = elem.attribute( QStringLiteral( "band" ), QStringLiteral( "-1" ) ).toInt();
-  QgsRasterRenderer* r = new QgsSingleBandColorDataRenderer( input, band );
+  QgsRasterRenderer *r = new QgsSingleBandColorDataRenderer( input, band );
   r->readXml( elem );
   return r;
 }
 
-QgsRasterBlock* QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback )
+QgsRasterBlock *QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   Q_UNUSED( bandNo );
 
@@ -84,9 +84,9 @@ QgsRasterBlock* QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle 
   // make sure input is also premultiplied!
   inputBlock->convert( Qgis::ARGB32_Premultiplied );
 
-  QRgb* inputBits = ( QRgb* )inputBlock->bits();
-  QRgb* outputBits = ( QRgb* )outputBlock->bits();
-  for ( qgssize i = 0; i < ( qgssize )width*height; i++ )
+  QRgb *inputBits = ( QRgb * )inputBlock->bits();
+  QRgb *outputBits = ( QRgb * )outputBlock->bits();
+  for ( qgssize i = 0; i < ( qgssize )width * height; i++ )
   {
     QRgb c = inputBits[i];
     outputBits[i] = qRgba( mOpacity * qRed( c ), mOpacity * qGreen( c ), mOpacity * qBlue( c ), mOpacity * qAlpha( c ) );
@@ -96,7 +96,7 @@ QgsRasterBlock* QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle 
   return outputBlock;
 }
 
-void QgsSingleBandColorDataRenderer::writeXml( QDomDocument& doc, QDomElement& parentElem ) const
+void QgsSingleBandColorDataRenderer::writeXml( QDomDocument &doc, QDomElement &parentElem ) const
 {
   if ( parentElem.isNull() )
     return;
@@ -117,7 +117,7 @@ QList<int> QgsSingleBandColorDataRenderer::usesBands() const
   return bandList;
 }
 
-bool QgsSingleBandColorDataRenderer::setInput( QgsRasterInterface* input )
+bool QgsSingleBandColorDataRenderer::setInput( QgsRasterInterface *input )
 {
   // Renderer can only work with numerical values in at least 1 band
   if ( !input ) return false;

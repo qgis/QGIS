@@ -17,13 +17,13 @@
 #include "qgsvectorlayer.h"
 
 QgsTrackedVectorLayerTools::QgsTrackedVectorLayerTools()
-    : mBackend()
+  : mBackend()
 {
 }
 
-bool QgsTrackedVectorLayerTools::addFeature( QgsVectorLayer* layer, const QgsAttributeMap& defaultValues, const QgsGeometry& defaultGeometry, QgsFeature* feature ) const
+bool QgsTrackedVectorLayerTools::addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature ) const
 {
-  QgsFeature* f = feature;
+  QgsFeature *f = feature;
   if ( !feature )
     f = new QgsFeature();
 
@@ -42,34 +42,34 @@ bool QgsTrackedVectorLayerTools::addFeature( QgsVectorLayer* layer, const QgsAtt
   }
 }
 
-bool QgsTrackedVectorLayerTools::startEditing( QgsVectorLayer* layer ) const
+bool QgsTrackedVectorLayerTools::startEditing( QgsVectorLayer *layer ) const
 {
   return mBackend->startEditing( layer );
 }
 
-bool QgsTrackedVectorLayerTools::stopEditing( QgsVectorLayer* layer, bool allowCancel ) const
+bool QgsTrackedVectorLayerTools::stopEditing( QgsVectorLayer *layer, bool allowCancel ) const
 {
   return mBackend->stopEditing( layer, allowCancel );
 }
 
-bool QgsTrackedVectorLayerTools::saveEdits( QgsVectorLayer* layer ) const
+bool QgsTrackedVectorLayerTools::saveEdits( QgsVectorLayer *layer ) const
 {
   return mBackend->saveEdits( layer );
 }
 
-bool QgsTrackedVectorLayerTools::copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureRequest& request, double dx, double dy, QString* errorMsg ) const
+bool QgsTrackedVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double dx, double dy, QString *errorMsg ) const
 {
   return mBackend->copyMoveFeatures( layer, request, dx, dy, errorMsg );
 }
 
-void QgsTrackedVectorLayerTools::setVectorLayerTools( const QgsVectorLayerTools* tools )
+void QgsTrackedVectorLayerTools::setVectorLayerTools( const QgsVectorLayerTools *tools )
 {
   mBackend = tools;
 }
 
 void QgsTrackedVectorLayerTools::rollback()
 {
-  QMapIterator<QgsVectorLayer*, QgsFeatureIds> it( mAddedFeatures );
+  QMapIterator<QgsVectorLayer *, QgsFeatureIds> it( mAddedFeatures );
   while ( it.hasNext() )
   {
     it.next();

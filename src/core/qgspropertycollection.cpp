@@ -20,13 +20,13 @@
 // QgsAbstractPropertyCollection
 //
 
-QgsAbstractPropertyCollection::QgsAbstractPropertyCollection( const QString& name )
-    : mName( name )
+QgsAbstractPropertyCollection::QgsAbstractPropertyCollection( const QString &name )
+  : mName( name )
 {
 
 }
 
-QString QgsAbstractPropertyCollection::valueAsString( int key, const QgsExpressionContext& context, const QString& defaultString, bool* ok ) const
+QString QgsAbstractPropertyCollection::valueAsString( int key, const QgsExpressionContext &context, const QString &defaultString, bool *ok ) const
 {
   if ( ok )
     *ok = false;
@@ -38,7 +38,7 @@ QString QgsAbstractPropertyCollection::valueAsString( int key, const QgsExpressi
   return prop.valueAsString( context, defaultString, ok );
 }
 
-QColor QgsAbstractPropertyCollection::valueAsColor( int key, const QgsExpressionContext &context, const QColor &defaultColor, bool* ok ) const
+QColor QgsAbstractPropertyCollection::valueAsColor( int key, const QgsExpressionContext &context, const QColor &defaultColor, bool *ok ) const
 {
   if ( ok )
     *ok = false;
@@ -50,7 +50,7 @@ QColor QgsAbstractPropertyCollection::valueAsColor( int key, const QgsExpression
   return prop.valueAsColor( context, defaultColor, ok );
 }
 
-double QgsAbstractPropertyCollection::valueAsDouble( int key, const QgsExpressionContext &context, double defaultValue, bool* ok ) const
+double QgsAbstractPropertyCollection::valueAsDouble( int key, const QgsExpressionContext &context, double defaultValue, bool *ok ) const
 {
   if ( ok )
     *ok = false;
@@ -61,7 +61,7 @@ double QgsAbstractPropertyCollection::valueAsDouble( int key, const QgsExpressio
   return prop.valueAsDouble( context, defaultValue, ok );
 }
 
-int QgsAbstractPropertyCollection::valueAsInt( int key, const QgsExpressionContext &context, int defaultValue, bool* ok ) const
+int QgsAbstractPropertyCollection::valueAsInt( int key, const QgsExpressionContext &context, int defaultValue, bool *ok ) const
 {
   if ( ok )
     *ok = false;
@@ -72,7 +72,7 @@ int QgsAbstractPropertyCollection::valueAsInt( int key, const QgsExpressionConte
   return prop.valueAsInt( context, defaultValue, ok );
 }
 
-bool QgsAbstractPropertyCollection::valueAsBool( int key, const QgsExpressionContext& context, bool defaultValue, bool* ok ) const
+bool QgsAbstractPropertyCollection::valueAsBool( int key, const QgsExpressionContext &context, bool defaultValue, bool *ok ) const
 {
   if ( ok )
     *ok = false;
@@ -89,25 +89,25 @@ bool QgsAbstractPropertyCollection::valueAsBool( int key, const QgsExpressionCon
 // QgsPropertyCollection
 //
 
-QgsPropertyCollection::QgsPropertyCollection( const QString& name )
-    : QgsAbstractPropertyCollection( name )
-    , mDirty( false )
-    , mHasActiveProperties( false )
-    , mHasDynamicProperties( false )
+QgsPropertyCollection::QgsPropertyCollection( const QString &name )
+  : QgsAbstractPropertyCollection( name )
+  , mDirty( false )
+  , mHasActiveProperties( false )
+  , mHasDynamicProperties( false )
 {}
 
-QgsPropertyCollection::QgsPropertyCollection( const QgsPropertyCollection& other )
-    : QgsAbstractPropertyCollection( other )
-    , mProperties( other.mProperties )
-    , mDirty( other.mDirty )
-    , mHasActiveProperties( other.mHasActiveProperties )
-    , mHasDynamicProperties( other.mHasDynamicProperties )
-    , mCount( other.mCount )
+QgsPropertyCollection::QgsPropertyCollection( const QgsPropertyCollection &other )
+  : QgsAbstractPropertyCollection( other )
+  , mProperties( other.mProperties )
+  , mDirty( other.mDirty )
+  , mHasActiveProperties( other.mHasActiveProperties )
+  , mHasDynamicProperties( other.mHasDynamicProperties )
+  , mCount( other.mCount )
 {
   mProperties.detach();
 }
 
-QgsPropertyCollection&QgsPropertyCollection::operator=( const QgsPropertyCollection & other )
+QgsPropertyCollection &QgsPropertyCollection::operator=( const QgsPropertyCollection &other )
 {
   QgsAbstractPropertyCollection::operator=( other );
   mProperties = other.mProperties;
@@ -149,7 +149,7 @@ void QgsPropertyCollection::clear()
   mCount = 0;
 }
 
-void QgsPropertyCollection::setProperty( int key, const QgsProperty& property )
+void QgsPropertyCollection::setProperty( int key, const QgsProperty &property )
 {
   if ( property )
     mProperties.insert( key, property );
@@ -159,7 +159,7 @@ void QgsPropertyCollection::setProperty( int key, const QgsProperty& property )
   mDirty = true;
 }
 
-void QgsPropertyCollection::setProperty( int key, const QVariant& value )
+void QgsPropertyCollection::setProperty( int key, const QVariant &value )
 {
   mProperties.insert( key, QgsProperty::fromValue( value ) );
   mDirty = true;
@@ -181,13 +181,13 @@ QgsProperty QgsPropertyCollection::property( int key ) const
   return mProperties.value( key );
 }
 
-QgsProperty& QgsPropertyCollection::property( int key )
+QgsProperty &QgsPropertyCollection::property( int key )
 {
   mDirty = true;
   return mProperties[ key ];
 }
 
-QVariant QgsPropertyCollection::value( int key, const QgsExpressionContext& context, const QVariant& defaultValue ) const
+QVariant QgsPropertyCollection::value( int key, const QgsExpressionContext &context, const QVariant &defaultValue ) const
 {
   if ( mProperties.isEmpty() )
     return defaultValue;
@@ -199,7 +199,7 @@ QVariant QgsPropertyCollection::value( int key, const QgsExpressionContext& cont
   return prop.value( context, defaultValue );
 }
 
-bool QgsPropertyCollection::prepare( const QgsExpressionContext& context ) const
+bool QgsPropertyCollection::prepare( const QgsExpressionContext &context ) const
 {
   bool result = true;
   QHash<int, QgsProperty>::const_iterator it = mProperties.constBegin();
@@ -276,7 +276,7 @@ bool QgsPropertyCollection::hasDynamicProperties() const
   return mHasDynamicProperties;
 }
 
-bool QgsPropertyCollection::writeXml( QDomElement &collectionElem, QDomDocument &doc, const QgsPropertiesDefinition& definitions ) const
+bool QgsPropertyCollection::writeXml( QDomElement &collectionElem, QDomDocument &doc, const QgsPropertiesDefinition &definitions ) const
 {
   collectionElem.setAttribute( "name", name() );
   collectionElem.setAttribute( "type", "collection" );
@@ -353,22 +353,22 @@ QgsPropertyCollectionStack::~QgsPropertyCollectionStack()
 }
 
 QgsPropertyCollectionStack::QgsPropertyCollectionStack( const QgsPropertyCollectionStack &other )
-    : QgsAbstractPropertyCollection( other )
+  : QgsAbstractPropertyCollection( other )
 {
   clear();
 
-  Q_FOREACH ( QgsPropertyCollection* collection, other.mStack )
+  Q_FOREACH ( QgsPropertyCollection *collection, other.mStack )
   {
     mStack << new QgsPropertyCollection( *collection );
   }
 }
 
-QgsPropertyCollectionStack &QgsPropertyCollectionStack::operator=( const QgsPropertyCollectionStack & other )
+QgsPropertyCollectionStack &QgsPropertyCollectionStack::operator=( const QgsPropertyCollectionStack &other )
 {
   setName( other.name() );
   clear();
 
-  Q_FOREACH ( QgsPropertyCollection* collection, other.mStack )
+  Q_FOREACH ( QgsPropertyCollection *collection, other.mStack )
   {
     mStack << new QgsPropertyCollection( *collection );
   }
@@ -387,24 +387,24 @@ void QgsPropertyCollectionStack::clear()
   mStack.clear();
 }
 
-void QgsPropertyCollectionStack::appendCollection( QgsPropertyCollection* collection )
+void QgsPropertyCollectionStack::appendCollection( QgsPropertyCollection *collection )
 {
   mStack.append( collection );
 }
 
-QgsPropertyCollection* QgsPropertyCollectionStack::at( int index )
+QgsPropertyCollection *QgsPropertyCollectionStack::at( int index )
 {
   return mStack.value( index );
 }
 
-const QgsPropertyCollection* QgsPropertyCollectionStack::at( int index ) const
+const QgsPropertyCollection *QgsPropertyCollectionStack::at( int index ) const
 {
   return mStack.value( index );
 }
 
-QgsPropertyCollection* QgsPropertyCollectionStack::collection( const QString &name )
+QgsPropertyCollection *QgsPropertyCollectionStack::collection( const QString &name )
 {
-  Q_FOREACH ( QgsPropertyCollection* collection, mStack )
+  Q_FOREACH ( QgsPropertyCollection *collection, mStack )
   {
     if ( collection->name() == name )
       return collection;
@@ -414,7 +414,7 @@ QgsPropertyCollection* QgsPropertyCollectionStack::collection( const QString &na
 
 bool QgsPropertyCollectionStack::hasActiveProperties() const
 {
-  Q_FOREACH ( const QgsPropertyCollection* collection, mStack )
+  Q_FOREACH ( const QgsPropertyCollection *collection, mStack )
   {
     if ( collection->hasActiveProperties() )
       return true;
@@ -424,7 +424,7 @@ bool QgsPropertyCollectionStack::hasActiveProperties() const
 
 bool QgsPropertyCollectionStack::hasDynamicProperties() const
 {
-  Q_FOREACH ( const QgsPropertyCollection* collection, mStack )
+  Q_FOREACH ( const QgsPropertyCollection *collection, mStack )
   {
     if ( collection->hasDynamicProperties() )
       return true;
@@ -442,7 +442,7 @@ QgsProperty QgsPropertyCollectionStack::property( int key ) const
   //loop through stack looking for last active matching property
   for ( int i = mStack.size() - 1; i >= 0; --i )
   {
-    const QgsPropertyCollection* collection = mStack.at( i );
+    const QgsPropertyCollection *collection = mStack.at( i );
     QgsProperty property = collection->property( key );
     if ( property && property.isActive() )
     {
@@ -454,7 +454,7 @@ QgsProperty QgsPropertyCollectionStack::property( int key ) const
 }
 
 
-QVariant QgsPropertyCollectionStack::value( int key, const QgsExpressionContext& context, const QVariant& defaultValue ) const
+QVariant QgsPropertyCollectionStack::value( int key, const QgsExpressionContext &context, const QVariant &defaultValue ) const
 {
   QgsProperty p = property( key );
   if ( !p )
@@ -467,17 +467,17 @@ QVariant QgsPropertyCollectionStack::value( int key, const QgsExpressionContext&
 QSet< QString > QgsPropertyCollectionStack::referencedFields( const QgsExpressionContext &context ) const
 {
   QSet< QString > cols;
-  Q_FOREACH ( QgsPropertyCollection* collection, mStack )
+  Q_FOREACH ( QgsPropertyCollection *collection, mStack )
   {
     cols.unite( collection->referencedFields( context ) );
   }
   return cols;
 }
 
-bool QgsPropertyCollectionStack::prepare( const QgsExpressionContext& context ) const
+bool QgsPropertyCollectionStack::prepare( const QgsExpressionContext &context ) const
 {
   bool result = true;
-  Q_FOREACH ( QgsPropertyCollection* collection, mStack )
+  Q_FOREACH ( QgsPropertyCollection *collection, mStack )
   {
     result = result && collection->prepare( context );
   }
@@ -487,7 +487,7 @@ bool QgsPropertyCollectionStack::prepare( const QgsExpressionContext& context ) 
 QSet<int> QgsPropertyCollectionStack::propertyKeys() const
 {
   QSet<int> keys;
-  Q_FOREACH ( QgsPropertyCollection* collection, mStack )
+  Q_FOREACH ( QgsPropertyCollection *collection, mStack )
   {
     keys.unite( collection->propertyKeys() );
   }
@@ -496,7 +496,7 @@ QSet<int> QgsPropertyCollectionStack::propertyKeys() const
 
 bool QgsPropertyCollectionStack::hasProperty( int key ) const
 {
-  Q_FOREACH ( QgsPropertyCollection* collection, mStack )
+  Q_FOREACH ( QgsPropertyCollection *collection, mStack )
   {
     if ( collection->hasProperty( key ) )
       return true;
@@ -504,12 +504,12 @@ bool QgsPropertyCollectionStack::hasProperty( int key ) const
   return false;
 }
 
-bool QgsPropertyCollectionStack::writeXml( QDomElement& collectionElem, QDomDocument& doc, const QgsPropertiesDefinition& definitions ) const
+bool QgsPropertyCollectionStack::writeXml( QDomElement &collectionElem, QDomDocument &doc, const QgsPropertiesDefinition &definitions ) const
 {
   collectionElem.setAttribute( "type", "stack" );
   collectionElem.setAttribute( "name", name() );
 
-  Q_FOREACH ( QgsPropertyCollection* child, mStack )
+  Q_FOREACH ( QgsPropertyCollection *child, mStack )
   {
     QDomElement childElement = doc.createElement( "props" );
     if ( !child->writeXml( childElement, doc, definitions ) )
@@ -519,7 +519,7 @@ bool QgsPropertyCollectionStack::writeXml( QDomElement& collectionElem, QDomDocu
   return true;
 }
 
-bool QgsPropertyCollectionStack::readXml( const QDomElement& collectionElem, const QDomDocument& doc, const QgsPropertiesDefinition& definitions )
+bool QgsPropertyCollectionStack::readXml( const QDomElement &collectionElem, const QDomDocument &doc, const QgsPropertiesDefinition &definitions )
 {
   clear();
 
@@ -529,7 +529,7 @@ bool QgsPropertyCollectionStack::readXml( const QDomElement& collectionElem, con
   for ( int i = 0; i < childNodeList.size(); ++i )
   {
     QDomElement childElem = childNodeList.at( i ).toElement();
-    QgsPropertyCollection* child = new QgsPropertyCollection();
+    QgsPropertyCollection *child = new QgsPropertyCollection();
     child->readXml( childElem, doc, definitions );
     mStack.append( child );
   }

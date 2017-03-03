@@ -24,30 +24,30 @@
 
 #include <QDomElement>
 
-QgsVectorLayerJoinBuffer::QgsVectorLayerJoinBuffer( QgsVectorLayer* layer )
-    : mLayer( layer )
+QgsVectorLayerJoinBuffer::QgsVectorLayerJoinBuffer( QgsVectorLayer *layer )
+  : mLayer( layer )
 {
 }
 
-static QList<QgsVectorLayer*> _outEdges( QgsVectorLayer* vl )
+static QList<QgsVectorLayer *> _outEdges( QgsVectorLayer *vl )
 {
-  QList<QgsVectorLayer*> lst;
-  Q_FOREACH ( const QgsVectorLayerJoinInfo& info, vl->vectorJoins() )
+  QList<QgsVectorLayer *> lst;
+  Q_FOREACH ( const QgsVectorLayerJoinInfo &info, vl->vectorJoins() )
   {
-    if ( QgsVectorLayer* joinVl = info.joinLayer() )
+    if ( QgsVectorLayer *joinVl = info.joinLayer() )
       lst << joinVl;
   }
   return lst;
 }
 
-static bool _hasCycleDFS( QgsVectorLayer* n, QHash<QgsVectorLayer*, int>& mark )
+static bool _hasCycleDFS( QgsVectorLayer *n, QHash<QgsVectorLayer *, int> &mark )
 {
   if ( mark.value( n ) == 1 ) // temporary
     return true;
   if ( mark.value( n ) == 0 ) // not visited
   {
     mark[n] = 1; // temporary
-    Q_FOREACH ( QgsVectorLayer* m, _outEdges( n ) )
+    Q_FOREACH ( QgsVectorLayer *m, _outEdges( n ) )
     {
       if ( _hasCycleDFS( m, mark ) )
         return true;
@@ -58,14 +58,14 @@ static bool _hasCycleDFS( QgsVectorLayer* n, QHash<QgsVectorLayer*, int>& mark )
 }
 
 
-bool QgsVectorLayerJoinBuffer::addJoin( const QgsVectorLayerJoinInfo& joinInfo )
+bool QgsVectorLayerJoinBuffer::addJoin( const QgsVectorLayerJoinInfo &joinInfo )
 {
   QMutexLocker locker( &mMutex );
   mVectorJoins.push_back( joinInfo );
 
   // run depth-first search to detect cycles in the graph of joins between layers.
   // any cycle would cause infinite recursion when updating fields
-  QHash<QgsVectorLayer*, int> markDFS;
+  QHash<QgsVectorLayer *, int> markDFS;
   if ( mLayer && _hasCycleDFS( mLayer, markDFS ) )
   {
     // we have to reject this one
@@ -83,7 +83,7 @@ bool QgsVectorLayerJoinBuffer::addJoin( const QgsVectorLayerJoinInfo& joinInfo )
   // During project load the joined layers possibly do not exist yet so the connection will not be created,
   // but then QgsProject makes sure to call createJoinCaches() which will do the connection.
   // Unique connection makes sure we do not respond to one layer's update more times (in case of multiple join)
-  if ( QgsVectorLayer* vl = joinInfo.joinLayer() )
+  if ( QgsVectorLayer *vl = joinInfo.joinLayer() )
   {
     connectJoinedLayer( vl );
   }
@@ -93,7 +93,7 @@ bool QgsVectorLayerJoinBuffer::addJoin( const QgsVectorLayerJoinInfo& joinInfo )
 }
 
 
-bool QgsVectorLayerJoinBuffer::removeJoin( const QString& joinLayerId )
+bool QgsVectorLayerJoinBuffer::removeJoin( const QString &joinLayerId )
 {
   QMutexLocker locker( &mMutex );
   bool res = false;
@@ -101,7 +101,7 @@ bool QgsVectorLayerJoinBuffer::removeJoin( const QString& joinLayerId )
   {
     if ( mVectorJoins.at( i ).joinLayerId() == joinLayerId )
     {
-      if ( QgsVectorLayer* vl = mVectorJoins.at( i ).joinLayer() )
+      if ( QgsVectorLayer *vl = mVectorJoins.at( i ).joinLayer() )
       {
         disconnect( vl, &QgsVectorLayer::updatedFields, this, &QgsVectorLayerJoinBuffer::joinedLayerUpdatedFields );
       }
@@ -115,7 +115,7 @@ bool QgsVectorLayerJoinBuffer::removeJoin( const QString& joinLayerId )
   return res;
 }
 
-void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorLayerJoinInfo& joinInfo )
+void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorLayerJoinInfo &joinInfo )
 {
   //memory cache not required or already done
   if ( !joinInfo.isUsingMemoryCache() || !joinInfo.cacheDirty )
@@ -123,7 +123,7 @@ void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorLayerJoinInfo& joinInfo 
     return;
   }
 
-  QgsVectorLayer* cacheLayer = joinInfo.joinLayer();
+  QgsVectorLayer *cacheLayer = joinInfo.joinLayer();
   if ( cacheLayer )
   {
     int joinFieldIndex = cacheLayer->fields().indexFromName( joinInfo.joinFieldName() );
@@ -176,10 +176,10 @@ void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorLayerJoinInfo& joinInfo 
 }
 
 
-QVector<int> QgsVectorLayerJoinBuffer::joinSubsetIndices( QgsVectorLayer* joinLayer, const QStringList& joinFieldsSubset )
+QVector<int> QgsVectorLayerJoinBuffer::joinSubsetIndices( QgsVectorLayer *joinLayer, const QStringList &joinFieldsSubset )
 {
   QVector<int> subsetIndices;
-  const QgsFields& fields = joinLayer->fields();
+  const QgsFields &fields = joinLayer->fields();
   for ( int i = 0; i < joinFieldsSubset.count(); ++i )
   {
     QString joinedFieldName = joinFieldsSubset.at( i );
@@ -197,20 +197,20 @@ QVector<int> QgsVectorLayerJoinBuffer::joinSubsetIndices( QgsVectorLayer* joinLa
   return subsetIndices;
 }
 
-void QgsVectorLayerJoinBuffer::updateFields( QgsFields& fields )
+void QgsVectorLayerJoinBuffer::updateFields( QgsFields &fields )
 {
   QString prefix;
 
   QList< QgsVectorLayerJoinInfo>::const_iterator joinIt = mVectorJoins.constBegin();
   for ( int joinIdx = 0 ; joinIt != mVectorJoins.constEnd(); ++joinIt, ++joinIdx )
   {
-    QgsVectorLayer* joinLayer = joinIt->joinLayer();
+    QgsVectorLayer *joinLayer = joinIt->joinLayer();
     if ( !joinLayer )
     {
       continue;
     }
 
-    const QgsFields& joinFields = joinLayer->fields();
+    const QgsFields &joinFields = joinLayer->fields();
     QString joinFieldName = joinIt->joinFieldName();
 
     QSet<QString> subset;
@@ -242,7 +242,7 @@ void QgsVectorLayerJoinBuffer::updateFields( QgsFields& fields )
       {
         QgsField f = joinFields.at( idx );
         f.setName( prefix + f.name() );
-        fields.append( f, QgsFields::OriginJoin, idx + ( joinIdx*1000 ) );
+        fields.append( f, QgsFields::OriginJoin, idx + ( joinIdx * 1000 ) );
       }
     }
   }
@@ -260,7 +260,7 @@ void QgsVectorLayerJoinBuffer::createJoinCaches()
 }
 
 
-void QgsVectorLayerJoinBuffer::writeXml( QDomNode& layer_node, QDomDocument& document ) const
+void QgsVectorLayerJoinBuffer::writeXml( QDomNode &layer_node, QDomDocument &document ) const
 {
   QDomElement vectorJoinsElem = document.createElement( QStringLiteral( "vectorjoins" ) );
   layer_node.appendChild( vectorJoinsElem );
@@ -279,7 +279,7 @@ void QgsVectorLayerJoinBuffer::writeXml( QDomNode& layer_node, QDomDocument& doc
     if ( joinIt->joinFieldNamesSubset() )
     {
       QDomElement subsetElem = document.createElement( QStringLiteral( "joinFieldsSubset" ) );
-      Q_FOREACH ( const QString& fieldName, *joinIt->joinFieldNamesSubset() )
+      Q_FOREACH ( const QString &fieldName, *joinIt->joinFieldNamesSubset() )
       {
         QDomElement fieldElem = document.createElement( QStringLiteral( "field" ) );
         fieldElem.setAttribute( QStringLiteral( "name" ), fieldName );
@@ -299,7 +299,7 @@ void QgsVectorLayerJoinBuffer::writeXml( QDomNode& layer_node, QDomDocument& doc
   }
 }
 
-void QgsVectorLayerJoinBuffer::readXml( const QDomNode& layer_node )
+void QgsVectorLayerJoinBuffer::readXml( const QDomNode &layer_node )
 {
   mVectorJoins.clear();
   QDomElement vectorJoinsElem = layer_node.firstChildElement( QStringLiteral( "vectorjoins" ) );
@@ -319,7 +319,7 @@ void QgsVectorLayerJoinBuffer::readXml( const QDomNode& layer_node )
       QDomElement subsetElem = infoElem.firstChildElement( QStringLiteral( "joinFieldsSubset" ) );
       if ( !subsetElem.isNull() )
       {
-        QStringList* fieldNames = new QStringList;
+        QStringList *fieldNames = new QStringList;
         QDomNodeList fieldNodes = infoElem.elementsByTagName( QStringLiteral( "field" ) );
         fieldNames->reserve( fieldNodes.count() );
         for ( int i = 0; i < fieldNodes.count(); ++i )
@@ -337,7 +337,7 @@ void QgsVectorLayerJoinBuffer::readXml( const QDomNode& layer_node )
   }
 }
 
-void QgsVectorLayerJoinBuffer::resolveReferences( QgsProject* project )
+void QgsVectorLayerJoinBuffer::resolveReferences( QgsProject *project )
 {
   bool resolved = false;
   for ( QgsVectorJoinList::iterator it = mVectorJoins.begin(); it != mVectorJoins.end(); ++it )
@@ -345,7 +345,7 @@ void QgsVectorLayerJoinBuffer::resolveReferences( QgsProject* project )
     if ( it->joinLayer() )
       continue;  // already resolved
 
-    if ( QgsVectorLayer* joinedLayer = qobject_cast<QgsVectorLayer*>( project->mapLayer( it->joinLayerId() ) ) )
+    if ( QgsVectorLayer *joinedLayer = qobject_cast<QgsVectorLayer *>( project->mapLayer( it->joinLayerId() ) ) )
     {
       it->setJoinLayer( joinedLayer );
       resolved = true;
@@ -356,7 +356,7 @@ void QgsVectorLayerJoinBuffer::resolveReferences( QgsProject* project )
     emit joinedFieldsChanged();
 }
 
-int QgsVectorLayerJoinBuffer::joinedFieldsOffset( const QgsVectorLayerJoinInfo* info, const QgsFields& fields )
+int QgsVectorLayerJoinBuffer::joinedFieldsOffset( const QgsVectorLayerJoinInfo *info, const QgsFields &fields )
 {
   if ( !info )
     return -1;
@@ -376,7 +376,7 @@ int QgsVectorLayerJoinBuffer::joinedFieldsOffset( const QgsVectorLayerJoinInfo* 
   return -1;
 }
 
-const QgsVectorLayerJoinInfo* QgsVectorLayerJoinBuffer::joinForFieldIndex( int index, const QgsFields& fields, int& sourceFieldIndex ) const
+const QgsVectorLayerJoinInfo *QgsVectorLayerJoinBuffer::joinForFieldIndex( int index, const QgsFields &fields, int &sourceFieldIndex ) const
 {
   if ( fields.fieldOrigin( index ) != QgsFields::OriginJoin )
     return nullptr;
@@ -391,9 +391,9 @@ const QgsVectorLayerJoinInfo* QgsVectorLayerJoinBuffer::joinForFieldIndex( int i
   return &( mVectorJoins[sourceJoinIndex] );
 }
 
-QgsVectorLayerJoinBuffer* QgsVectorLayerJoinBuffer::clone() const
+QgsVectorLayerJoinBuffer *QgsVectorLayerJoinBuffer::clone() const
 {
-  QgsVectorLayerJoinBuffer* cloned = new QgsVectorLayerJoinBuffer( mLayer );
+  QgsVectorLayerJoinBuffer *cloned = new QgsVectorLayerJoinBuffer( mLayer );
   cloned->mVectorJoins = mVectorJoins;
   return cloned;
 }
@@ -403,7 +403,7 @@ void QgsVectorLayerJoinBuffer::joinedLayerUpdatedFields()
   // TODO - check - this whole method is probably not needed anymore,
   // since the cache handling is covered by joinedLayerModified()
 
-  QgsVectorLayer* joinedLayer = qobject_cast<QgsVectorLayer*>( sender() );
+  QgsVectorLayer *joinedLayer = qobject_cast<QgsVectorLayer *>( sender() );
   Q_ASSERT( joinedLayer );
 
   // recache the joined layer
@@ -421,7 +421,7 @@ void QgsVectorLayerJoinBuffer::joinedLayerUpdatedFields()
 
 void QgsVectorLayerJoinBuffer::joinedLayerModified()
 {
-  QgsVectorLayer* joinedLayer = qobject_cast<QgsVectorLayer*>( sender() );
+  QgsVectorLayer *joinedLayer = qobject_cast<QgsVectorLayer *>( sender() );
   Q_ASSERT( joinedLayer );
 
   // recache the joined layer
@@ -436,13 +436,13 @@ void QgsVectorLayerJoinBuffer::joinedLayerModified()
 
 void QgsVectorLayerJoinBuffer::joinedLayerWillBeDeleted()
 {
-  QgsVectorLayer* joinedLayer = qobject_cast<QgsVectorLayer*>( sender() );
+  QgsVectorLayer *joinedLayer = qobject_cast<QgsVectorLayer *>( sender() );
   Q_ASSERT( joinedLayer );
 
   removeJoin( joinedLayer->id() );
 }
 
-void QgsVectorLayerJoinBuffer::connectJoinedLayer( QgsVectorLayer* vl )
+void QgsVectorLayerJoinBuffer::connectJoinedLayer( QgsVectorLayer *vl )
 {
   connect( vl, &QgsVectorLayer::updatedFields, this, &QgsVectorLayerJoinBuffer::joinedLayerUpdatedFields, Qt::UniqueConnection );
   connect( vl, &QgsVectorLayer::layerModified, this, &QgsVectorLayerJoinBuffer::joinedLayerModified, Qt::UniqueConnection );

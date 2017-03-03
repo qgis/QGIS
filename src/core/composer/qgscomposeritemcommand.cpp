@@ -23,15 +23,15 @@
 #include "qgsproject.h"
 #include "qgslogger.h"
 
-QgsComposerItemCommand::QgsComposerItemCommand( QgsComposerItem* item, const QString& text, QUndoCommand* parent )
-    : QUndoCommand( text, parent )
-    , mItem( item )
-    , mMultiFrame( nullptr )
-    , mFrameNumber( 0 )
-    , mFirstRun( true )
+QgsComposerItemCommand::QgsComposerItemCommand( QgsComposerItem *item, const QString &text, QUndoCommand *parent )
+  : QUndoCommand( text, parent )
+  , mItem( item )
+  , mMultiFrame( nullptr )
+  , mFrameNumber( 0 )
+  , mFirstRun( true )
 {
   //is item a frame?
-  QgsComposerFrame* frame = dynamic_cast<QgsComposerFrame*>( mItem );
+  QgsComposerFrame *frame = dynamic_cast<QgsComposerFrame *>( mItem );
   if ( frame )
   {
     //store parent multiframe and frame index
@@ -60,9 +60,9 @@ bool QgsComposerItemCommand::containsChange() const
   return !( mPreviousState.isNull() || mAfterState.isNull() || mPreviousState.toString() == mAfterState.toString() );
 }
 
-QgsComposerItem* QgsComposerItemCommand::item() const
+QgsComposerItem *QgsComposerItemCommand::item() const
 {
-  QgsComposerItem* item = nullptr;
+  QgsComposerItem *item = nullptr;
   if ( mMultiFrame )
   {
     //item is a frame, so it needs to be handled differently
@@ -91,9 +91,9 @@ void QgsComposerItemCommand::saveAfterState()
   saveState( mAfterState );
 }
 
-void QgsComposerItemCommand::saveState( QDomDocument& stateDoc ) const
+void QgsComposerItemCommand::saveState( QDomDocument &stateDoc ) const
 {
-  const QgsComposerItem* source = item();
+  const QgsComposerItem *source = item();
   if ( !source )
   {
     return;
@@ -105,9 +105,9 @@ void QgsComposerItemCommand::saveState( QDomDocument& stateDoc ) const
   stateDoc.appendChild( documentElement );
 }
 
-void QgsComposerItemCommand::restoreState( QDomDocument& stateDoc ) const
+void QgsComposerItemCommand::restoreState( QDomDocument &stateDoc ) const
 {
-  QgsComposerItem* destItem = item();
+  QgsComposerItem *destItem = item();
   if ( !destItem )
   {
     return;
@@ -122,21 +122,21 @@ void QgsComposerItemCommand::restoreState( QDomDocument& stateDoc ) const
 //QgsComposerMergeCommand
 //
 
-QgsComposerMergeCommand::QgsComposerMergeCommand( Context c, QgsComposerItem* item, const QString& text )
-    : QgsComposerItemCommand( item, text )
-    , mContext( c )
+QgsComposerMergeCommand::QgsComposerMergeCommand( Context c, QgsComposerItem *item, const QString &text )
+  : QgsComposerItemCommand( item, text )
+  , mContext( c )
 {
 }
 
-bool QgsComposerMergeCommand::mergeWith( const QUndoCommand * command )
+bool QgsComposerMergeCommand::mergeWith( const QUndoCommand *command )
 {
-  QgsComposerItem* thisItem = item();
+  QgsComposerItem *thisItem = item();
   if ( !thisItem )
   {
     return false;
   }
 
-  const QgsComposerItemCommand* c = dynamic_cast<const QgsComposerItemCommand*>( command );
+  const QgsComposerItemCommand *c = dynamic_cast<const QgsComposerItemCommand *>( command );
   if ( !c || thisItem != c->item() )
   {
     return false;

@@ -17,21 +17,21 @@
 
 #include "qgsprocessingregistry.h"
 
-QgsProcessingRegistry::QgsProcessingRegistry( QObject* parent )
-    : QObject( parent )
+QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent )
+  : QObject( parent )
 {
 
 }
 
 QgsProcessingRegistry::~QgsProcessingRegistry()
 {
-  Q_FOREACH ( QgsProcessingProvider* p, mProviders )
+  Q_FOREACH ( QgsProcessingProvider *p, mProviders )
   {
     removeProvider( p );
   }
 }
 
-bool QgsProcessingRegistry::addProvider( QgsProcessingProvider* provider )
+bool QgsProcessingRegistry::addProvider( QgsProcessingProvider *provider )
 {
   if ( !provider )
     return false;
@@ -44,7 +44,7 @@ bool QgsProcessingRegistry::addProvider( QgsProcessingProvider* provider )
   return true;
 }
 
-bool QgsProcessingRegistry::removeProvider( QgsProcessingProvider* provider )
+bool QgsProcessingRegistry::removeProvider( QgsProcessingProvider *provider )
 {
   if ( !provider )
     return false;
@@ -59,13 +59,13 @@ bool QgsProcessingRegistry::removeProvider( QgsProcessingProvider* provider )
   return true;
 }
 
-bool QgsProcessingRegistry::removeProvider( const QString& providerId )
+bool QgsProcessingRegistry::removeProvider( const QString &providerId )
 {
-  QgsProcessingProvider* p = providerById( providerId );
+  QgsProcessingProvider *p = providerById( providerId );
   return removeProvider( p );
 }
 
-QgsProcessingProvider* QgsProcessingRegistry::providerById( const QString& id )
+QgsProcessingProvider *QgsProcessingRegistry::providerById( const QString &id )
 {
   return mProviders.value( id, nullptr );
 }

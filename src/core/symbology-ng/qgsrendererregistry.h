@@ -49,10 +49,10 @@ class CORE_EXPORT QgsRendererAbstractMetadata
     };
     Q_DECLARE_FLAGS( LayerTypes, LayerType )
 
-    QgsRendererAbstractMetadata( const QString& name, const QString& visibleName, const QIcon& icon = QIcon() )
-        : mName( name )
-        , mVisibleName( visibleName )
-        , mIcon( icon )
+    QgsRendererAbstractMetadata( const QString &name, const QString &visibleName, const QIcon &icon = QIcon() )
+      : mName( name )
+      , mVisibleName( visibleName )
+      , mIcon( icon )
     {}
     virtual ~QgsRendererAbstractMetadata() = default;
 
@@ -60,7 +60,7 @@ class CORE_EXPORT QgsRendererAbstractMetadata
     QString visibleName() const { return mVisibleName; }
 
     QIcon icon() const { return mIcon; }
-    void setIcon( const QIcon& icon ) { mIcon = icon; }
+    void setIcon( const QIcon &icon ) { mIcon = icon; }
 
     /** Returns flags indicating the types of layer the renderer is compatible with.
      * @note added in QGIS 2.16
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsRendererAbstractMetadata
 
     /** Return new instance of the renderer given the DOM element. Returns NULL on error.
      * Pure virtual function: must be implemented in derived classes.  */
-    virtual QgsFeatureRenderer* createRenderer( QDomElement& elem ) = 0;
+    virtual QgsFeatureRenderer *createRenderer( QDomElement &elem ) = 0;
 
     /** Return new instance of settings widget for the renderer. Returns NULL on error.
      *
@@ -78,10 +78,10 @@ class CORE_EXPORT QgsRendererAbstractMetadata
      * The old renderer does not have to be of the same type as returned by createRenderer().
      * When using \a oldRenderer make sure to make a copy of it - it will be deleted afterwards.
      */
-    virtual QgsRendererWidget* createRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* oldRenderer )
+    virtual QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *oldRenderer )
     { Q_UNUSED( layer ); Q_UNUSED( style ); Q_UNUSED( oldRenderer ); return nullptr; }
 
-    virtual QgsFeatureRenderer* createRendererFromSld( QDomElement& elem, QgsWkbTypes::GeometryType geomType )
+    virtual QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, QgsWkbTypes::GeometryType geomType )
     { Q_UNUSED( elem ); Q_UNUSED( geomType ); return nullptr; }
 
   protected:
@@ -97,9 +97,9 @@ class CORE_EXPORT QgsRendererAbstractMetadata
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsRendererAbstractMetadata::LayerTypes )
 
 
-typedef QgsFeatureRenderer*( *QgsRendererCreateFunc )( QDomElement& );
-typedef QgsRendererWidget*( *QgsRendererWidgetFunc )( QgsVectorLayer*, QgsStyle*, QgsFeatureRenderer* );
-typedef QgsFeatureRenderer*( *QgsRendererCreateFromSldFunc )( QDomElement&, QgsWkbTypes::GeometryType geomType );
+typedef QgsFeatureRenderer *( *QgsRendererCreateFunc )( QDomElement & );
+typedef QgsRendererWidget *( *QgsRendererWidgetFunc )( QgsVectorLayer *, QgsStyle *, QgsFeatureRenderer * );
+typedef QgsFeatureRenderer *( *QgsRendererCreateFromSldFunc )( QDomElement &, QgsWkbTypes::GeometryType geomType );
 
 /** \ingroup core
  Convenience metadata class that uses static functions to create renderer and its widget.
@@ -110,41 +110,41 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
 
     //! Construct metadata
     //! @note not available in python bindings
-    QgsRendererMetadata( const QString& name,
-                         const QString& visibleName,
+    QgsRendererMetadata( const QString &name,
+                         const QString &visibleName,
                          QgsRendererCreateFunc pfCreate,
-                         const QIcon& icon = QIcon(),
+                         const QIcon &icon = QIcon(),
                          QgsRendererWidgetFunc pfWidget = nullptr,
                          QgsRendererAbstractMetadata::LayerTypes layerTypes = QgsRendererAbstractMetadata::All )
-        : QgsRendererAbstractMetadata( name, visibleName, icon )
-        , mCreateFunc( pfCreate )
-        , mWidgetFunc( pfWidget )
-        , mCreateFromSldFunc( nullptr )
-        , mLayerTypes( layerTypes )
+      : QgsRendererAbstractMetadata( name, visibleName, icon )
+      , mCreateFunc( pfCreate )
+      , mWidgetFunc( pfWidget )
+      , mCreateFromSldFunc( nullptr )
+      , mLayerTypes( layerTypes )
     {}
 
     //! @note not available in python bindings
-    QgsRendererMetadata( const QString& name,
-                         const QString& visibleName,
+    QgsRendererMetadata( const QString &name,
+                         const QString &visibleName,
                          QgsRendererCreateFunc pfCreate,
                          QgsRendererCreateFromSldFunc pfCreateFromSld,
-                         const QIcon& icon = QIcon(),
+                         const QIcon &icon = QIcon(),
                          QgsRendererWidgetFunc pfWidget = nullptr,
                          QgsRendererAbstractMetadata::LayerTypes layerTypes = QgsRendererAbstractMetadata::All )
-        : QgsRendererAbstractMetadata( name, visibleName, icon )
-        , mCreateFunc( pfCreate )
-        , mWidgetFunc( pfWidget )
-        , mCreateFromSldFunc( pfCreateFromSld )
-        , mLayerTypes( layerTypes )
+      : QgsRendererAbstractMetadata( name, visibleName, icon )
+      , mCreateFunc( pfCreate )
+      , mWidgetFunc( pfWidget )
+      , mCreateFromSldFunc( pfCreateFromSld )
+      , mLayerTypes( layerTypes )
     {}
 
     virtual ~QgsRendererMetadata() = default;
 
-    virtual QgsFeatureRenderer* createRenderer( QDomElement& elem ) override { return mCreateFunc ? mCreateFunc( elem ) : nullptr; }
-    virtual QgsRendererWidget* createRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer ) override
-      { return mWidgetFunc ? mWidgetFunc( layer, style, renderer ) : nullptr; }
-    virtual QgsFeatureRenderer* createRendererFromSld( QDomElement& elem, QgsWkbTypes::GeometryType geomType ) override
-      { return mCreateFromSldFunc ? mCreateFromSldFunc( elem, geomType ) : nullptr; }
+    virtual QgsFeatureRenderer *createRenderer( QDomElement &elem ) override { return mCreateFunc ? mCreateFunc( elem ) : nullptr; }
+    virtual QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) override
+    { return mWidgetFunc ? mWidgetFunc( layer, style, renderer ) : nullptr; }
+    virtual QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, QgsWkbTypes::GeometryType geomType ) override
+    { return mCreateFromSldFunc ? mCreateFromSldFunc( elem, geomType ) : nullptr; }
 
     //! @note not available in python bindings
     QgsRendererCreateFunc createFunction() const { return mCreateFunc; }
@@ -189,25 +189,25 @@ class CORE_EXPORT QgsRendererRegistry
     ~QgsRendererRegistry();
 
     //! QgsRendererRegistry cannot be copied.
-    QgsRendererRegistry( const QgsRendererRegistry& rh ) = delete;
+    QgsRendererRegistry( const QgsRendererRegistry &rh ) = delete;
     //! QgsRendererRegistry cannot be copied.
-    QgsRendererRegistry& operator=( const QgsRendererRegistry& rh ) = delete;
+    QgsRendererRegistry &operator=( const QgsRendererRegistry &rh ) = delete;
 
     //! Adds a renderer to the registry. Takes ownership of the metadata object.
     //! @param metadata renderer metadata
     //! @returns true if renderer was added successfully, or false if renderer could not
     //! be added (e.g., a renderer with a duplicate name already exists)
-    bool addRenderer( QgsRendererAbstractMetadata* metadata );
+    bool addRenderer( QgsRendererAbstractMetadata *metadata );
 
     //! Removes a renderer from registry.
     //! @param rendererName name of renderer to remove from registry
     //! @returns true if renderer was successfully removed, or false if matching
     //! renderer could not be found
-    bool removeRenderer( const QString& rendererName );
+    bool removeRenderer( const QString &rendererName );
 
     //! Returns the metadata for a specified renderer. Returns NULL if a matching
     //! renderer was not found in the registry.
-    QgsRendererAbstractMetadata* rendererMetadata( const QString& rendererName );
+    QgsRendererAbstractMetadata *rendererMetadata( const QString &rendererName );
 
     //! Returns a list of available renderers.
     //! @param layerTypes flags to filter the renderers by compatible layer types
@@ -216,12 +216,12 @@ class CORE_EXPORT QgsRendererRegistry
     //! Returns a list of available renderers which are compatible with a specified layer.
     //! @param layer vector layer
     //! @note added in QGIS 2.16
-    QStringList renderersList( const QgsVectorLayer* layer ) const;
+    QStringList renderersList( const QgsVectorLayer *layer ) const;
 
   private:
 
     //! Map of name to renderer
-    QMap<QString, QgsRendererAbstractMetadata*> mRenderers;
+    QMap<QString, QgsRendererAbstractMetadata *> mRenderers;
 
     //! List of renderers, maintained in the order that they have been added
     QStringList mRenderersOrder;

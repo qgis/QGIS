@@ -29,7 +29,7 @@
 #include <QBuffer>
 
 QgsRasterChecker::QgsRasterChecker()
-    : mReport( QLatin1String( "" ) )
+  : mReport( QLatin1String( "" ) )
 {
   mTabStyle = QStringLiteral( "border-spacing: 0px; border-width: 1px 1px 0 0; border-style: solid;" );
   mCellStyle = QStringLiteral( "border-width: 0 0 1px 1px; border-style: solid; font-size: smaller; text-align: center;" );
@@ -38,14 +38,14 @@ QgsRasterChecker::QgsRasterChecker()
   mErrMsgStyle = QStringLiteral( "color: #ff0000;" );
 }
 
-bool QgsRasterChecker::runTest( const QString& verifiedKey, QString verifiedUri,
-                                const QString& expectedKey, QString expectedUri )
+bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
+                                const QString &expectedKey, QString expectedUri )
 {
   bool ok = true;
   mReport += QLatin1String( "\n\n" );
 
   //QgsRasterDataProvider* verifiedProvider = QgsRasterLayer::loadProvider( verifiedKey, verifiedUri );
-  QgsRasterDataProvider* verifiedProvider = dynamic_cast< QgsRasterDataProvider* >( QgsProviderRegistry::instance()->provider( verifiedKey, verifiedUri ) );
+  QgsRasterDataProvider *verifiedProvider = dynamic_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->provider( verifiedKey, verifiedUri ) );
   if ( !verifiedProvider || !verifiedProvider->isValid() )
   {
     error( QStringLiteral( "Cannot load provider %1 with URI: %2" ).arg( verifiedKey, verifiedUri ), mReport );
@@ -53,7 +53,7 @@ bool QgsRasterChecker::runTest( const QString& verifiedKey, QString verifiedUri,
   }
 
   //QgsRasterDataProvider* expectedProvider = QgsRasterLayer::loadProvider( expectedKey, expectedUri );
-  QgsRasterDataProvider* expectedProvider = dynamic_cast< QgsRasterDataProvider* >( QgsProviderRegistry::instance()->provider( expectedKey, expectedUri ) );
+  QgsRasterDataProvider *expectedProvider = dynamic_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->provider( expectedKey, expectedUri ) );
   if ( !expectedProvider || !expectedProvider->isValid() )
   {
     error( QStringLiteral( "Cannot load provider %1 with URI: %2" ).arg( expectedKey, expectedUri ), mReport );
@@ -192,7 +192,7 @@ bool QgsRasterChecker::runTest( const QString& verifiedKey, QString verifiedUri,
   return allOk;
 }
 
-void QgsRasterChecker::error( const QString& message, QString &report )
+void QgsRasterChecker::error( const QString &message, QString &report )
 {
   report += QStringLiteral( "<font style='%1'>Error: " ).arg( mErrMsgStyle );
   report += message;
@@ -213,7 +213,7 @@ QString QgsRasterChecker::compareHead()
   return html;
 }
 
-void QgsRasterChecker::compare( const QString& paramName, int verifiedVal, int expectedVal, QString &report, bool &ok )
+void QgsRasterChecker::compare( const QString &paramName, int verifiedVal, int expectedVal, QString &report, bool &ok )
 {
   bool isEqual = verifiedVal == expectedVal;
   compareRow( paramName, QString::number( verifiedVal ), QString::number( expectedVal ), report, isEqual, QString::number( verifiedVal - expectedVal ) );
@@ -227,7 +227,7 @@ bool QgsRasterChecker::compare( double verifiedVal, double expectedVal, double t
   return ( qIsNaN( verifiedVal ) && qIsNaN( expectedVal ) ) || ( qAbs( verifiedVal - expectedVal ) <= tolerance );
 }
 
-void QgsRasterChecker::compare( const QString& paramName, double verifiedVal, double expectedVal, QString &report, bool &ok, double tolerance )
+void QgsRasterChecker::compare( const QString &paramName, double verifiedVal, double expectedVal, QString &report, bool &ok, double tolerance )
 {
   bool isNearEqual = compare( verifiedVal, expectedVal, tolerance );
   compareRow( paramName, QString::number( verifiedVal ), QString::number( expectedVal ), report, isNearEqual, QString::number( verifiedVal - expectedVal ), QString::number( tolerance ) );
@@ -235,7 +235,7 @@ void QgsRasterChecker::compare( const QString& paramName, double verifiedVal, do
     ok = false;
 }
 
-void QgsRasterChecker::compareRow( const QString& paramName, const QString& verifiedVal, const QString& expectedVal, QString &report, bool ok, const QString& difference, const QString& tolerance )
+void QgsRasterChecker::compareRow( const QString &paramName, const QString &verifiedVal, const QString &expectedVal, QString &report, bool ok, const QString &difference, const QString &tolerance )
 {
   report += QLatin1String( "<tr>\n" );
   report += QStringLiteral( "<td style='%1'>%2</td><td style='%1 %3'>%4</td><td style='%1'>%5</td>\n" ).arg( mCellStyle, paramName, ok ? mOkStyle : mErrStyle, verifiedVal, expectedVal );

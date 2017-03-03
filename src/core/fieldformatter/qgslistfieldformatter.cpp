@@ -22,7 +22,7 @@ QString QgsListFieldFormatter::id() const
   return QStringLiteral( "List" );
 }
 
-QString QgsListFieldFormatter::representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QString QgsListFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
   Q_UNUSED( layer );
   Q_UNUSED( fieldIndex );
@@ -35,7 +35,7 @@ QString QgsListFieldFormatter::representValue( QgsVectorLayer* layer, int fieldI
   }
 
   QString result;
-  Q_FOREACH ( const QVariant& val, value.toList() )
+  Q_FOREACH ( const QVariant &val, value.toList() )
   {
     if ( !result.isEmpty() )
       result.append( ", " );

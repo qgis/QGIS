@@ -18,7 +18,7 @@
 #include "qgsdxfpaintdevice.h"
 #include "qgsdxfpaintengine.h"
 
-QgsDxfPaintDevice::QgsDxfPaintDevice( QgsDxfExport* dxf ): QPaintDevice(), mPaintEngine( nullptr )
+QgsDxfPaintDevice::QgsDxfPaintDevice( QgsDxfExport *dxf ): QPaintDevice(), mPaintEngine( nullptr )
 {
   mPaintEngine = new QgsDxfPaintEngine( this, dxf );
 }
@@ -28,7 +28,7 @@ QgsDxfPaintDevice::~QgsDxfPaintDevice()
   delete mPaintEngine;
 }
 
-QPaintEngine* QgsDxfPaintDevice::paintEngine() const
+QPaintEngine *QgsDxfPaintDevice::paintEngine() const
 {
   return mPaintEngine;
 }
@@ -88,7 +88,7 @@ QPointF QgsDxfPaintDevice::dxfCoordinates( QPointF pt ) const
   return QPointF( x, y );
 }
 
-void QgsDxfPaintDevice::setLayer( const QString& layer )
+void QgsDxfPaintDevice::setLayer( const QString &layer )
 {
   if ( mPaintEngine )
   {

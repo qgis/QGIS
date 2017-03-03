@@ -46,7 +46,7 @@ typedef void *OGRSpatialReferenceH;
 #endif
 
 class QgsCoordinateReferenceSystem;
-typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem& );
+typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & );
 
 /** \ingroup core
  * This class represents a coordinate reference system (CRS).
@@ -219,7 +219,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @see createFromString()
      */
     // TODO QGIS 3: remove "POSTGIS" and "INTERNAL", allow PROJ4 without the prefix
-    explicit QgsCoordinateReferenceSystem( const QString& definition );
+    explicit QgsCoordinateReferenceSystem( const QString &definition );
 
     /** Constructor a CRS object using a postgis SRID, an EPSG code or an internal QGIS CRS ID.
      * @note We encourage you to use EPSG code, WKT or Proj4 to describe CRS's in your code
@@ -231,10 +231,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     QgsCoordinateReferenceSystem( const long id, CrsType type = PostgisCrsId );
 
     //! Copy constructor
-    QgsCoordinateReferenceSystem( const QgsCoordinateReferenceSystem& srs );
+    QgsCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &srs );
 
     //! Assignment operator
-    QgsCoordinateReferenceSystem& operator=( const QgsCoordinateReferenceSystem& srs );
+    QgsCoordinateReferenceSystem &operator=( const QgsCoordinateReferenceSystem &srs );
 
     /**
      * Returns a list of all valid SRS IDs present in the CRS database. Any of the
@@ -253,7 +253,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @note added in QGIS 3.0
      * @see createFromOgcWmsCrs()
     */
-    static QgsCoordinateReferenceSystem fromOgcWmsCrs( const QString& ogcCrs );
+    static QgsCoordinateReferenceSystem fromOgcWmsCrs( const QString &ogcCrs );
 
     /** Creates a CRS from a given EPSG ID.
      * @param epsg epsg CRS ID
@@ -268,7 +268,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @note added in QGIS 3.0
      * @see createFromProj4()
     */
-    static QgsCoordinateReferenceSystem fromProj4( const QString& proj4 );
+    static QgsCoordinateReferenceSystem fromProj4( const QString &proj4 );
 
     /** Creates a CRS from a WKT spatial ref sys definition string.
      * @param wkt WKT for the desired spatial reference system.
@@ -276,7 +276,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @note added in QGIS 3.0
      * @see createFromWkt()
     */
-    static QgsCoordinateReferenceSystem fromWkt( const QString& wkt );
+    static QgsCoordinateReferenceSystem fromWkt( const QString &wkt );
 
     /** Creates a CRS from a specified QGIS SRS ID.
      * @param srsId internal QGIS SRS ID
@@ -309,7 +309,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @see fromOgcWmsCrs()
      */
     // TODO QGIS 3: remove "QGIS" and "CUSTOM", only support "USER" (also returned by authid())
-    bool createFromOgcWmsCrs( const QString& crs );
+    bool createFromOgcWmsCrs( const QString &crs );
 
     /** Sets this CRS by lookup of the given PostGIS SRID in the CRS database.
      * @param srid The postgis SRID for the desired spatial reference system.
@@ -449,14 +449,14 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @param node The node from which state will be restored
      * @return bool True on success, False on failure
      */
-    bool readXml( const QDomNode & node );
+    bool readXml( const QDomNode &node );
 
     /** Stores state to the given Dom node in the given document.
      * @param node The node in which state will be restored
      * @param doc The document in which state will be stored
      * @return bool True on success, False on failure
      */
-    bool writeXml( QDomNode & node, QDomDocument & doc ) const;
+    bool writeXml( QDomNode &node, QDomDocument &doc ) const;
 
 
     /** Sets custom function to force valid CRS
@@ -554,7 +554,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /** Set user hint for validation
      */
-    void setValidationHint( const QString& html );
+    void setValidationHint( const QString &html );
 
     /** Get user hint for validation
      */
@@ -571,7 +571,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /** Save the proj4-string as a custom CRS
      * @returns bool true if success else false
      */
-    bool saveAsUserCrs( const QString& name );
+    bool saveAsUserCrs( const QString &name );
 
     //! Returns auth id of related geographic CRS
     QString geographicCrsAuthId() const;
@@ -613,7 +613,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /** Set the Description
      * @param description A textual description of the CRS.
      */
-    void setDescription( const QString& description );
+    void setDescription( const QString &description );
 
     /** Set the Proj Proj4String.
      * @param proj4String Proj4 format specifies
@@ -625,7 +625,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Gets stored in the CRS as:
      * +proj=longlat +datum=WGS84 +no_defs
      */
-    void setProj4String( const QString& proj4String );
+    void setProj4String( const QString &proj4String );
 
     /** Set this Geographic? flag
      * @param geoFlag Whether this is a geographic or projected coordinate system
@@ -640,17 +640,17 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /** Set the authority identifier for this CRS
      * @param theID the authority identifier for this CRS (defaults to 0)
      */
-    void setAuthId( const QString& theID );
+    void setAuthId( const QString &theID );
 
     /** Set the projection acronym
      * @param projectionAcronym the acronym (must be a valid proj4 projection acronym)
      */
-    void setProjectionAcronym( const QString& projectionAcronym );
+    void setProjectionAcronym( const QString &projectionAcronym );
 
     /** Set the ellipsoid acronym
      * @param ellipsoidAcronym the acronym (must be a valid proj4 ellipsoid acronym)
      */
-    void setEllipsoidAcronym( const QString& ellipsoidAcronym );
+    void setEllipsoidAcronym( const QString &ellipsoidAcronym );
 
     /** Print the description if debugging
      */
@@ -665,11 +665,11 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @param sql The sql query to execute
      * @return An associative array of field name <-> value pairs
      */
-    RecordMap getRecord( const QString& sql );
+    RecordMap getRecord( const QString &sql );
 
     //! Open SQLite db and show message if cannot be opened
     //! @return the same code as sqlite3_open
-    static int openDatabase( const QString& path, sqlite3 **db, bool readonly = true );
+    static int openDatabase( const QString &path, sqlite3 **db, bool readonly = true );
 
     //! Work out the projection units and set the appropriate local variable
     void setMapUnits();
@@ -682,12 +682,12 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     //! Initialize the CRS object by looking up CRS database in path given in db argument,
     //! using first CRS entry where expression = 'value'
-    bool loadFromDatabase( const QString& db, const QString& expression, const QString& value );
+    bool loadFromDatabase( const QString &db, const QString &expression, const QString &value );
 
     static bool loadIds( QHash<int, QString> &wkts );
     static bool loadWkts( QHash<int, QString> &wkts, const char *filename );
     //! Update datum shift definitions from GDAL data. Used by syncDb()
-    static bool syncDatumTransform( const QString& dbPath );
+    static bool syncDatumTransform( const QString &dbPath );
 
     QExplicitlySharedDataPointer<QgsCoordinateReferenceSystemPrivate> d;
 
@@ -715,7 +715,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
 
 //! Output stream operator
-inline std::ostream& operator << ( std::ostream& os, const QgsCoordinateReferenceSystem &r )
+inline std::ostream &operator << ( std::ostream &os, const QgsCoordinateReferenceSystem &r )
 {
   QString mySummary( QStringLiteral( "\n\tSpatial Reference System:" ) );
   mySummary += QLatin1String( "\n\t\tDescription : " );

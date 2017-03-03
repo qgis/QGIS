@@ -38,16 +38,16 @@ class CORE_EXPORT QgsDatabaseFilterProxyModel: public QSortFilterProxyModel
     /**
      * Constructor for QgsDatabaseFilterProxyModel.
      */
-    QgsDatabaseFilterProxyModel( QObject* parent = nullptr );
+    QgsDatabaseFilterProxyModel( QObject *parent = nullptr );
 
     //! Calls QSortFilterProxyModel::setFilterWildcard and triggers update
-    void _setFilterWildcard( const QString& pattern );
+    void _setFilterWildcard( const QString &pattern );
 
     //! Calls QSortFilterProxyModel::setFilterRegExp and triggers update
-    void _setFilterRegExp( const QString& pattern );
+    void _setFilterRegExp( const QString &pattern );
 
   protected:
-    virtual bool filterAcceptsRow( int row, const QModelIndex & source_parent ) const override;
+    virtual bool filterAcceptsRow( int row, const QModelIndex &source_parent ) const override;
 };
 
 #endif

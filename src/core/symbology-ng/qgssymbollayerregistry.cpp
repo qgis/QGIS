@@ -71,7 +71,7 @@ QgsSymbolLayerRegistry::~QgsSymbolLayerRegistry()
   qDeleteAll( mMetadata );
 }
 
-bool QgsSymbolLayerRegistry::addSymbolLayerType( QgsSymbolLayerAbstractMetadata* metadata )
+bool QgsSymbolLayerRegistry::addSymbolLayerType( QgsSymbolLayerAbstractMetadata *metadata )
 {
   if ( !metadata || mMetadata.contains( metadata->name() ) )
     return false;
@@ -81,12 +81,12 @@ bool QgsSymbolLayerRegistry::addSymbolLayerType( QgsSymbolLayerAbstractMetadata*
 }
 
 
-QgsSymbolLayerAbstractMetadata* QgsSymbolLayerRegistry::symbolLayerMetadata( const QString& name ) const
+QgsSymbolLayerAbstractMetadata *QgsSymbolLayerRegistry::symbolLayerMetadata( const QString &name ) const
 {
   return mMetadata.value( name );
 }
 
-QgsSymbolLayer* QgsSymbolLayerRegistry::defaultSymbolLayer( QgsSymbol::SymbolType type )
+QgsSymbolLayer *QgsSymbolLayerRegistry::defaultSymbolLayer( QgsSymbol::SymbolType type )
 {
   switch ( type )
   {
@@ -107,7 +107,7 @@ QgsSymbolLayer* QgsSymbolLayerRegistry::defaultSymbolLayer( QgsSymbol::SymbolTyp
 }
 
 
-QgsSymbolLayer* QgsSymbolLayerRegistry::createSymbolLayer( const QString& name, const QgsStringMap& properties ) const
+QgsSymbolLayer *QgsSymbolLayerRegistry::createSymbolLayer( const QString &name, const QgsStringMap &properties ) const
 {
   if ( !mMetadata.contains( name ) )
     return nullptr;
@@ -115,7 +115,7 @@ QgsSymbolLayer* QgsSymbolLayerRegistry::createSymbolLayer( const QString& name, 
   return mMetadata[name]->createSymbolLayer( properties );
 }
 
-QgsSymbolLayer* QgsSymbolLayerRegistry::createSymbolLayerFromSld( const QString& name, QDomElement& element ) const
+QgsSymbolLayer *QgsSymbolLayerRegistry::createSymbolLayerFromSld( const QString &name, QDomElement &element ) const
 {
   if ( !mMetadata.contains( name ) )
     return nullptr;
@@ -126,7 +126,7 @@ QgsSymbolLayer* QgsSymbolLayerRegistry::createSymbolLayerFromSld( const QString&
 QStringList QgsSymbolLayerRegistry::symbolLayersForType( QgsSymbol::SymbolType type )
 {
   QStringList lst;
-  QMap<QString, QgsSymbolLayerAbstractMetadata*>::ConstIterator it = mMetadata.constBegin();
+  QMap<QString, QgsSymbolLayerAbstractMetadata *>::ConstIterator it = mMetadata.constBegin();
   for ( ; it != mMetadata.constEnd(); ++it )
   {
     if ( it.value()->type() == type || it.value()->type() == QgsSymbol::Hybrid )

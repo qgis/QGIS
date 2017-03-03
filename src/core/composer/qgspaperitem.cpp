@@ -27,7 +27,7 @@
 
 //QgsPaperGrid
 
-QgsPaperGrid::QgsPaperGrid( double x, double y, double width, double height, QgsComposition* composition ): QGraphicsRectItem( 0, 0, width, height ), mComposition( composition )
+QgsPaperGrid::QgsPaperGrid( double x, double y, double width, double height, QgsComposition *composition ): QGraphicsRectItem( 0, 0, width, height ), mComposition( composition )
 {
   setFlag( QGraphicsItem::ItemIsSelectable, false );
   setFlag( QGraphicsItem::ItemIsMovable, false );
@@ -35,7 +35,7 @@ QgsPaperGrid::QgsPaperGrid( double x, double y, double width, double height, Qgs
   setPos( x, y );
 }
 
-void QgsPaperGrid::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
+void QgsPaperGrid::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
 {
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
@@ -85,10 +85,10 @@ void QgsPaperGrid::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
           //check QGraphicsView to get current transform
           if ( scene() )
           {
-            QList<QGraphicsView*> viewList = scene()->views();
+            QList<QGraphicsView *> viewList = scene()->views();
             if ( !viewList.isEmpty() )
             {
-              QGraphicsView* currentView = viewList.at( 0 );
+              QGraphicsView *currentView = viewList.at( 0 );
               if ( currentView->isVisible() )
               {
                 //set halfCrossLength to equivalent of 1 pixel
@@ -120,20 +120,20 @@ void QgsPaperGrid::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
 
 //QgsPaperItem
 
-QgsPaperItem::QgsPaperItem( QgsComposition* c ): QgsComposerItem( c, false ),
-    mPageGrid( nullptr )
+QgsPaperItem::QgsPaperItem( QgsComposition *c ): QgsComposerItem( c, false ),
+  mPageGrid( nullptr )
 {
   initialize();
 }
 
-QgsPaperItem::QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition ): QgsComposerItem( x, y, width, height, composition, false ),
-    mPageGrid( nullptr ), mPageMargin( 0 )
+QgsPaperItem::QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition *composition ): QgsComposerItem( x, y, width, height, composition, false ),
+  mPageGrid( nullptr ), mPageMargin( 0 )
 {
   initialize();
 }
 
 QgsPaperItem::QgsPaperItem(): QgsComposerItem( nullptr, false ),
-    mPageGrid( nullptr ), mPageMargin( 0 )
+  mPageGrid( nullptr ), mPageMargin( 0 )
 {
   initialize();
 }
@@ -143,7 +143,7 @@ QgsPaperItem::~QgsPaperItem()
   delete mPageGrid;
 }
 
-void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
+void QgsPaperItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
 {
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
@@ -213,21 +213,21 @@ void QgsPaperItem::calculatePageMargin()
   mPageMargin = maxBleedMm;
 }
 
-bool QgsPaperItem::writeXml( QDomElement& elem, QDomDocument & doc ) const
+bool QgsPaperItem::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
   Q_UNUSED( elem );
   Q_UNUSED( doc );
   return true;
 }
 
-bool QgsPaperItem::readXml( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsPaperItem::readXml( const QDomElement &itemElem, const QDomDocument &doc )
 {
   Q_UNUSED( itemElem );
   Q_UNUSED( doc );
   return true;
 }
 
-void QgsPaperItem::setSceneRect( const QRectF& rectangle )
+void QgsPaperItem::setSceneRect( const QRectF &rectangle )
 {
   QgsComposerItem::setSceneRect( rectangle );
   //update size and position of attached QgsPaperGrid to reflect new page size and position
@@ -254,6 +254,6 @@ void QgsPaperItem::initialize()
 
     //connect to atlas feature changes
     //to update symbol style (in case of data-defined symbology)
-    connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( repaint() ) );
+    connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature * ) ), this, SLOT( repaint() ) );
   }
 }

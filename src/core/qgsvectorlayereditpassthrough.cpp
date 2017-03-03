@@ -17,8 +17,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
-QgsVectorLayerEditPassthrough::QgsVectorLayerEditPassthrough( QgsVectorLayer* layer )
-    : mModified( false )
+QgsVectorLayerEditPassthrough::QgsVectorLayerEditPassthrough( QgsVectorLayer *layer )
+  : mModified( false )
 {
   L = layer;
 }
@@ -28,7 +28,7 @@ bool QgsVectorLayerEditPassthrough::isModified() const
   return mModified;
 }
 
-bool QgsVectorLayerEditPassthrough::addFeature( QgsFeature& f )
+bool QgsVectorLayerEditPassthrough::addFeature( QgsFeature &f )
 {
 
   QgsFeatureList fl;
@@ -43,11 +43,11 @@ bool QgsVectorLayerEditPassthrough::addFeature( QgsFeature& f )
   return false;
 }
 
-bool QgsVectorLayerEditPassthrough::addFeatures( QgsFeatureList& features )
+bool QgsVectorLayerEditPassthrough::addFeatures( QgsFeatureList &features )
 {
   if ( L->dataProvider()->addFeatures( features ) )
   {
-    Q_FOREACH ( const QgsFeature& f, features )
+    Q_FOREACH ( const QgsFeature &f, features )
     {
       emit featureAdded( f.id() );
     }
@@ -68,7 +68,7 @@ bool QgsVectorLayerEditPassthrough::deleteFeature( QgsFeatureId fid )
   return false;
 }
 
-bool QgsVectorLayerEditPassthrough::deleteFeatures( const QgsFeatureIds& fids )
+bool QgsVectorLayerEditPassthrough::deleteFeatures( const QgsFeatureIds &fids )
 {
   if ( L->dataProvider()->deleteFeatures( fids ) )
   {
@@ -81,7 +81,7 @@ bool QgsVectorLayerEditPassthrough::deleteFeatures( const QgsFeatureIds& fids )
   return false;
 }
 
-bool QgsVectorLayerEditPassthrough::changeGeometry( QgsFeatureId fid, const QgsGeometry& geom )
+bool QgsVectorLayerEditPassthrough::changeGeometry( QgsFeatureId fid, const QgsGeometry &geom )
 {
   QgsGeometryMap geomMap;
   geomMap.insert( fid, geom );
@@ -132,7 +132,7 @@ bool QgsVectorLayerEditPassthrough::deleteAttribute( int attr )
   return false;
 }
 
-bool QgsVectorLayerEditPassthrough::renameAttribute( int attr, const QString& newName )
+bool QgsVectorLayerEditPassthrough::renameAttribute( int attr, const QString &newName )
 {
   QgsFieldNameMap map;
   map[ attr ] = newName;
@@ -145,7 +145,7 @@ bool QgsVectorLayerEditPassthrough::renameAttribute( int attr, const QString& ne
   return false;
 }
 
-bool QgsVectorLayerEditPassthrough::commitChanges( QStringList& /*commitErrors*/ )
+bool QgsVectorLayerEditPassthrough::commitChanges( QStringList & /*commitErrors*/ )
 {
   mModified = false;
   return true;

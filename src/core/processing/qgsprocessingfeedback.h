@@ -51,13 +51,13 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * 4 of 5 layers".
      * @see setProgress()
      */
-    virtual void setProgressText( const QString& text ) { Q_UNUSED( text ); }
+    virtual void setProgressText( const QString &text ) { Q_UNUSED( text ); }
 
     /**
      * Reports that the algorithm encountered an error which prevented it
      * from successfully executing.
      */
-    virtual void reportError( const QString& error ) { Q_UNUSED( error ); }
+    virtual void reportError( const QString &error ) { Q_UNUSED( error ); }
 
     /**
      * Pushes a general informational message from the algorithm. This can
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * @see pushDebugInfo()
      * @see pushConsoleInfo()
      */
-    virtual void pushInfo( const QString& info ) { Q_UNUSED( info ); }
+    virtual void pushInfo( const QString &info ) { Q_UNUSED( info ); }
 
     /**
      * Pushes an informational message containing a command from the algorithm.
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * @see pushDebugInfo()
      * @see pushConsoleInfo()
      */
-    virtual void pushCommandInfo( const QString& info ) { Q_UNUSED( info ); }
+    virtual void pushCommandInfo( const QString &info ) { Q_UNUSED( info ); }
 
     /**
      * Pushes an informational message containing debugging helpers from
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * @see pushCommandInfo()
      * @see pushConsoleInfo()
      */
-    virtual void pushDebugInfo( const QString& info ) { Q_UNUSED( info ); }
+    virtual void pushDebugInfo( const QString &info ) { Q_UNUSED( info ); }
 
     /**
      * Pushes a console feedback message from the algorithm. This is used to
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * @see pushDebugInfo()
      * @see pushCommandInfo()
      */
-    virtual void pushConsoleInfo( const QString& info ) { Q_UNUSED( info ); }
+    virtual void pushConsoleInfo( const QString &info ) { Q_UNUSED( info ); }
 
 };
 

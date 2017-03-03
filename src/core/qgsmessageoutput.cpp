@@ -19,7 +19,7 @@
 
 #include <QRegExp>
 
-static QgsMessageOutput* messageOutputConsole_()
+static QgsMessageOutput *messageOutputConsole_()
 {
   return new QgsMessageOutputConsole;
 }
@@ -33,12 +33,12 @@ void QgsMessageOutput::setMessageOutputCreator( MESSAGE_OUTPUT_CREATOR f )
   mMessageOutputCreator = f;
 }
 
-QgsMessageOutput* QgsMessageOutput::createMessageOutput()
+QgsMessageOutput *QgsMessageOutput::createMessageOutput()
 {
   return mMessageOutputCreator();
 }
 
-void QgsMessageOutput::showMessage( const QString& title, const QString& message, MessageType msgType )
+void QgsMessageOutput::showMessage( const QString &title, const QString &message, MessageType msgType )
 {
   QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
   output->setTitle( title );
@@ -50,18 +50,18 @@ void QgsMessageOutput::showMessage( const QString& title, const QString& message
 // QgsMessageOutputConsole
 
 QgsMessageOutputConsole::QgsMessageOutputConsole()
-    : mMessage( QLatin1String( "" ) )
-    , mMsgType( MessageText )
+  : mMessage( QLatin1String( "" ) )
+  , mMsgType( MessageText )
 {
 }
 
-void QgsMessageOutputConsole::setMessage( const QString& message, MessageType msgType )
+void QgsMessageOutputConsole::setMessage( const QString &message, MessageType msgType )
 {
   mMessage = message;
   mMsgType = msgType;
 }
 
-void QgsMessageOutputConsole::appendMessage( const QString& message )
+void QgsMessageOutputConsole::appendMessage( const QString &message )
 {
   mMessage += message;
 }
@@ -79,7 +79,7 @@ void QgsMessageOutputConsole::showMessage( bool )
   delete this;
 }
 
-void QgsMessageOutputConsole::setTitle( const QString& title )
+void QgsMessageOutputConsole::setTitle( const QString &title )
 {
   mTitle = title;
 }

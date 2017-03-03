@@ -188,8 +188,8 @@ class CORE_EXPORT QgsSettings : public QObject
     static QString sGlobalSettingsPath;
     void init( );
     QString sanitizeKey( QString key ) const;
-    QSettings* mUserSettings = nullptr;
-    QSettings* mGlobalSettings = nullptr;
+    QSettings *mUserSettings = nullptr;
+    QSettings *mGlobalSettings = nullptr;
     bool mUsingGlobalArray = false;
     Q_DISABLE_COPY( QgsSettings )
 

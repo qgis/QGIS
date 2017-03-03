@@ -27,7 +27,7 @@ QgsContrastEnhancementFunction::QgsContrastEnhancementFunction( Qgis::DataType d
   mMinimumMaximumRange = mMaximumValue - mMinimumValue;
 }
 
-QgsContrastEnhancementFunction::QgsContrastEnhancementFunction( const QgsContrastEnhancementFunction& f )
+QgsContrastEnhancementFunction::QgsContrastEnhancementFunction( const QgsContrastEnhancementFunction &f )
 {
   mQgsRasterDataType = f.mQgsRasterDataType;
   mMaximumValue = f.mMaximumValue;
@@ -43,7 +43,7 @@ int QgsContrastEnhancementFunction::enhance( double value )
   }
   else
   {
-    return static_cast<int>(((( value - QgsContrastEnhancement::minimumValuePossible( mQgsRasterDataType ) ) / ( QgsContrastEnhancement::maximumValuePossible( mQgsRasterDataType ) - QgsContrastEnhancement::minimumValuePossible( mQgsRasterDataType ) ) )*255.0 ) );
+    return static_cast<int>( ( ( ( value - QgsContrastEnhancement::minimumValuePossible( mQgsRasterDataType ) ) / ( QgsContrastEnhancement::maximumValuePossible( mQgsRasterDataType ) - QgsContrastEnhancement::minimumValuePossible( mQgsRasterDataType ) ) ) * 255.0 ) );
   }
 }
 

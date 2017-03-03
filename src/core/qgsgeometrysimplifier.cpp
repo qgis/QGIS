@@ -19,12 +19,12 @@
 #include "qgsrectangle.h"
 #include "qgsgeometry.h"
 
-bool QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( const QgsRectangle& envelope, float mapToPixelTol )
+bool QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( const QgsRectangle &envelope, float mapToPixelTol )
 {
   return ( envelope.xMaximum() - envelope.xMinimum() ) < mapToPixelTol && ( envelope.yMaximum() - envelope.yMinimum() ) < mapToPixelTol;
 }
 
-bool QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( const QVector<QPointF>& points, float mapToPixelTol )
+bool QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( const QVector<QPointF> &points, float mapToPixelTol )
 {
   QgsRectangle r;
   r.setMinimal();
@@ -42,7 +42,7 @@ QgsTopologyPreservingSimplifier::QgsTopologyPreservingSimplifier( double toleran
 {
 }
 
-QgsGeometry QgsTopologyPreservingSimplifier::simplify( const QgsGeometry& geometry ) const
+QgsGeometry QgsTopologyPreservingSimplifier::simplify( const QgsGeometry &geometry ) const
 {
   return geometry.simplify( mTolerance );
 }

@@ -98,9 +98,9 @@ namespace pal
       ~Pal();
 
       //! Pal cannot be copied.
-      Pal( const Pal& other ) = delete;
+      Pal( const Pal &other ) = delete;
       //! Pal cannot be copied.
-      Pal& operator=( const Pal& other ) = delete;
+      Pal &operator=( const Pal &other ) = delete;
 
       /**
        * \brief add a new layer
@@ -117,7 +117,7 @@ namespace pal
        *
        * @todo add symbolUnit
        */
-      Layer* addLayer( QgsAbstractLabelProvider* provider, const QString& layerName, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, bool displayAll = false );
+      Layer *addLayer( QgsAbstractLabelProvider *provider, const QString &layerName, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, bool displayAll = false );
 
       /**
        * \brief remove a layer
@@ -136,19 +136,19 @@ namespace pal
        *
        * @return A list of label to display on map
        */
-      QList<LabelPosition*> *labeller( double bbox[4], PalStat **stats, bool displayAll );
+      QList<LabelPosition *> *labeller( double bbox[4], PalStat **stats, bool displayAll );
 
-      typedef bool ( *FnIsCancelled )( void* ctx );
+      typedef bool ( *FnIsCancelled )( void *ctx );
 
       //! Register a function that returns whether this job has been cancelled - PAL calls it during the computation
-      void registerCancellationCallback( FnIsCancelled fnCancelled, void* context );
+      void registerCancellationCallback( FnIsCancelled fnCancelled, void *context );
 
       //! Check whether the job has been cancelled
       inline bool isCancelled() { return fnIsCancelled ? fnIsCancelled( fnIsCancelledContext ) : false; }
 
-      Problem* extractProblem( double bbox[4] );
+      Problem *extractProblem( double bbox[4] );
 
-      QList<LabelPosition*>* solveProblem( Problem* prob, bool displayAll );
+      QList<LabelPosition *> *solveProblem( Problem *prob, bool displayAll );
 
       /**
        *\brief Set flag show partial label
@@ -222,7 +222,7 @@ namespace pal
 
     private:
 
-      QHash< QgsAbstractLabelProvider*, Layer* > mLayers;
+      QHash< QgsAbstractLabelProvider *, Layer * > mLayers;
 
       QMutex mMutex;
 
@@ -263,7 +263,7 @@ namespace pal
       //! Callback that may be called from PAL to check whether the job has not been cancelled in meanwhile
       FnIsCancelled fnIsCancelled;
       //! Application-specific context for the cancellation check function
-      void* fnIsCancelledContext = nullptr;
+      void *fnIsCancelledContext = nullptr;
 
       /**
        * \brief Problem factory
@@ -274,7 +274,7 @@ namespace pal
        * @param lambda_max xMax bounding-box
        * @param phi_max yMax bounding-box
        */
-      Problem* extract( double lambda_min, double phi_min,
+      Problem *extract( double lambda_min, double phi_min,
                         double lambda_max, double phi_max );
 
 

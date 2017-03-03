@@ -25,15 +25,15 @@
 
 #include "qgsexception.h"
 
-QgsPoint::QgsPoint( const QgsPoint& p )
+QgsPoint::QgsPoint( const QgsPoint &p )
 {
   mX = p.x();
   mY = p.y();
 }
 
-QgsPoint::QgsPoint( const QgsPointV2& point )
-    : mX( point.x() )
-    , mY( point.y() )
+QgsPoint::QgsPoint( const QgsPointV2 &point )
+  : mX( point.x() )
+  , mY( point.y() )
 {
 }
 
@@ -85,12 +85,12 @@ QString QgsPoint::toDegreesMinutesSeconds( int precision, const bool useSuffix, 
   }
 
   int myDegreesX = int( qAbs( myWrappedX ) );
-  double myFloatMinutesX = double(( qAbs( myWrappedX ) - myDegreesX ) * 60 );
+  double myFloatMinutesX = double( ( qAbs( myWrappedX ) - myDegreesX ) * 60 );
   int myIntMinutesX = int( myFloatMinutesX );
   double mySecondsX = double( myFloatMinutesX - myIntMinutesX ) * 60;
 
   int myDegreesY = int( qAbs( myWrappedY ) );
-  double myFloatMinutesY = double(( qAbs( myWrappedY ) - myDegreesY ) * 60 );
+  double myFloatMinutesY = double( ( qAbs( myWrappedY ) - myDegreesY ) * 60 );
   int myIntMinutesY = int( myFloatMinutesY );
   double mySecondsY = double( myFloatMinutesY - myIntMinutesY ) * 60;
 
@@ -187,10 +187,10 @@ QString QgsPoint::toDegreesMinutes( int precision, const bool useSuffix, const b
   }
 
   int myDegreesX = int( qAbs( myWrappedX ) );
-  double myFloatMinutesX = double(( qAbs( myWrappedX ) - myDegreesX ) * 60 );
+  double myFloatMinutesX = double( ( qAbs( myWrappedX ) - myDegreesX ) * 60 );
 
   int myDegreesY = int( qAbs( mY ) );
-  double myFloatMinutesY = double(( qAbs( mY ) - myDegreesY ) * 60 );
+  double myFloatMinutesY = double( ( qAbs( mY ) - myDegreesY ) * 60 );
 
   //make sure rounding to specified precision doesn't create minutes >= 60
   if ( qRound( myFloatMinutesX * pow( 10.0, precision ) ) >= 60 * pow( 10.0, precision ) )
@@ -266,7 +266,7 @@ double QgsPoint::sqrDist( double x, double y ) const
   return ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y );
 }
 
-double QgsPoint::sqrDist( const QgsPoint& other ) const
+double QgsPoint::sqrDist( const QgsPoint &other ) const
 {
   return sqrDist( other.x(), other.y() );
 }
@@ -276,12 +276,12 @@ double QgsPoint::distance( double x, double y ) const
   return sqrt( sqrDist( x, y ) );
 }
 
-double QgsPoint::distance( const QgsPoint& other ) const
+double QgsPoint::distance( const QgsPoint &other ) const
 {
   return sqrt( sqrDist( other ) );
 }
 
-double QgsPoint::azimuth( const QgsPoint& other ) const
+double QgsPoint::azimuth( const QgsPoint &other ) const
 {
   double dx = other.x() - mX;
   double dy = other.y() - mY;
@@ -302,17 +302,17 @@ bool QgsPoint::compare( const QgsPoint &other, double epsilon ) const
 }
 
 // operators
-bool QgsPoint::operator==( const QgsPoint & other )
+bool QgsPoint::operator==( const QgsPoint &other )
 {
   return ( qgsDoubleNear( mX, other.x() ) && qgsDoubleNear( mY, other.y() ) );
 }
 
-bool QgsPoint::operator!=( const QgsPoint & other ) const
+bool QgsPoint::operator!=( const QgsPoint &other ) const
 {
   return !( qgsDoubleNear( mX, other.x() ) && qgsDoubleNear( mY, other.y() ) );
 }
 
-QgsPoint & QgsPoint::operator=( const QgsPoint & other )
+QgsPoint &QgsPoint::operator=( const QgsPoint &other )
 {
   if ( &other != this )
   {
@@ -329,29 +329,29 @@ void QgsPoint::multiply( double scalar )
   mY *= scalar;
 }
 
-int QgsPoint::onSegment( const QgsPoint& a, const QgsPoint& b ) const
+int QgsPoint::onSegment( const QgsPoint &a, const QgsPoint &b ) const
 {
   //algorithm from 'graphics GEMS', A. Paeth: 'A Fast 2D Point-on-line test'
   if (
-    qAbs(( b.y() - a.y() ) *( mX - a.x() ) - ( mY - a.y() ) *( b.x() - a.x() ) )
+    qAbs( ( b.y() - a.y() ) * ( mX - a.x() ) - ( mY - a.y() ) * ( b.x() - a.x() ) )
     >= qMax( qAbs( b.x() - a.x() ), qAbs( b.y() - a.y() ) )
   )
   {
     return 0;
   }
-  if (( b.x() < a.x() && a.x() < mX ) || ( b.y() < a.y() && a.y() < mY ) )
+  if ( ( b.x() < a.x() && a.x() < mX ) || ( b.y() < a.y() && a.y() < mY ) )
   {
     return 1;
   }
-  if (( mX < a.x() && a.x() < b.x() ) || ( mY < a.y() && a.y() < b.y() ) )
+  if ( ( mX < a.x() && a.x() < b.x() ) || ( mY < a.y() && a.y() < b.y() ) )
   {
     return 1;
   }
-  if (( a.x() < b.x() && b.x() < mX ) || ( a.y() < b.y() && b.y() < mY ) )
+  if ( ( a.x() < b.x() && b.x() < mX ) || ( a.y() < b.y() && b.y() < mY ) )
   {
     return 3;
   }
-  if (( mX < b.x() && b.x() < a.x() ) || ( mY < b.y() && b.y() < a.y() ) )
+  if ( ( mX < b.x() && b.x() < a.x() ) || ( mY < b.y() && b.y() < a.y() ) )
   {
     return 3;
   }
@@ -359,7 +359,7 @@ int QgsPoint::onSegment( const QgsPoint& a, const QgsPoint& b ) const
   return 2;
 }
 
-double QgsPoint::sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPoint& minDistPoint, double epsilon ) const
+double QgsPoint::sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPoint &minDistPoint, double epsilon ) const
 {
   double nx, ny; //normal vector
 
@@ -367,7 +367,7 @@ double QgsPoint::sqrDistToSegment( double x1, double y1, double x2, double y2, Q
   ny = -( x2 - x1 );
 
   double t;
-  t = ( mX * ny - mY * nx - x1 * ny + y1 * nx ) / (( x2 - x1 ) * ny - ( y2 - y1 ) * nx );
+  t = ( mX * ny - mY * nx - x1 * ny + y1 * nx ) / ( ( x2 - x1 ) * ny - ( y2 - y1 ) * nx );
 
   if ( t < 0.0 )
   {
@@ -381,8 +381,8 @@ double QgsPoint::sqrDistToSegment( double x1, double y1, double x2, double y2, Q
   }
   else
   {
-    minDistPoint.setX( x1 + t *( x2 - x1 ) );
-    minDistPoint.setY( y1 + t *( y2 - y1 ) );
+    minDistPoint.setX( x1 + t * ( x2 - x1 ) );
+    minDistPoint.setY( y1 + t * ( y2 - y1 ) );
   }
 
   double dist = sqrDist( minDistPoint );

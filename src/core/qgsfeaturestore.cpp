@@ -19,13 +19,13 @@ QgsFeatureStore::QgsFeatureStore()
 {
 }
 
-QgsFeatureStore::QgsFeatureStore( const QgsFields& fields, const QgsCoordinateReferenceSystem& crs )
-    : mFields( fields )
-    , mCrs( crs )
+QgsFeatureStore::QgsFeatureStore( const QgsFields &fields, const QgsCoordinateReferenceSystem &crs )
+  : mFields( fields )
+  , mCrs( crs )
 {
 }
 
-void QgsFeatureStore::setFields( const QgsFields & fields )
+void QgsFeatureStore::setFields( const QgsFields &fields )
 {
   mFields = fields;
   QgsFeatureList::iterator it = mFeatures.begin();
@@ -35,7 +35,7 @@ void QgsFeatureStore::setFields( const QgsFields & fields )
   }
 }
 
-void QgsFeatureStore::addFeature( const QgsFeature& feature )
+void QgsFeatureStore::addFeature( const QgsFeature &feature )
 {
   QgsFeature f( feature );
   f.setFields( mFields );

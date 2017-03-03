@@ -56,28 +56,28 @@ inline void delete_chain( Chain *chain )
 }
 
 Problem::Problem()
-    : nbLabelledLayers( 0 )
-    , nblp( 0 )
-    , all_nblp( 0 )
-    , nbft( 0 )
-    , displayAll( false )
-    , labelPositionCost( nullptr )
-    , nbOlap( nullptr )
-    , featStartId( nullptr )
-    , featNbLp( nullptr )
-    , inactiveCost( nullptr )
-    , sol( nullptr )
-    , nbActive( 0 )
-    , nbOverlap( 0.0 )
-    , pal( nullptr )
+  : nbLabelledLayers( 0 )
+  , nblp( 0 )
+  , all_nblp( 0 )
+  , nbft( 0 )
+  , displayAll( false )
+  , labelPositionCost( nullptr )
+  , nbOlap( nullptr )
+  , featStartId( nullptr )
+  , featNbLp( nullptr )
+  , inactiveCost( nullptr )
+  , sol( nullptr )
+  , nbActive( 0 )
+  , nbOverlap( 0.0 )
+  , pal( nullptr )
 {
   bbox[0] = 0;
   bbox[1] = 0;
   bbox[2] = 0;
   bbox[3] = 0;
   featWrap = nullptr;
-  candidates = new RTree<LabelPosition*, double, 2, double>();
-  candidates_sol = new RTree<LabelPosition*, double, 2, double>();
+  candidates = new RTree<LabelPosition *, double, 2, double>();
+  candidates_sol = new RTree<LabelPosition *, double, 2, double>();
   candidates_subsol = nullptr;
 }
 
@@ -121,7 +121,7 @@ typedef struct
 
 inline bool borderSizeInc( void *l, void *r )
 {
-  return ( reinterpret_cast< SubPart* >( l ) )->borderSize > ( reinterpret_cast< SubPart* >( r ) )->borderSize;
+  return ( reinterpret_cast< SubPart * >( l ) )->borderSize > ( reinterpret_cast< SubPart * >( r ) )->borderSize;
 }
 
 void Problem::reduce()
@@ -174,7 +174,7 @@ void Problem::reduce()
               lp2->getBoundingBox( amin, amax );
 
               nbOverlap -= lp2->getNumOverlaps();
-              candidates->Search( amin, amax, LabelPosition::removeOverlapCallback, reinterpret_cast< void* >( lp2 ) );
+              candidates->Search( amin, amax, LabelPosition::removeOverlapCallback, reinterpret_cast< void * >( lp2 ) );
               lp2->removeFromIndex( candidates );
             }
 
@@ -217,12 +217,12 @@ typedef struct
 {
   PriorityQueue *list = nullptr;
   LabelPosition *lp = nullptr;
-  RTree <LabelPosition*, double, 2, double> *candidates;
+  RTree <LabelPosition *, double, 2, double> *candidates;
 } FalpContext;
 
-bool falpCallback2( LabelPosition *lp, void* ctx )
+bool falpCallback2( LabelPosition *lp, void *ctx )
 {
-  FalpContext* context = reinterpret_cast< FalpContext* >( ctx );
+  FalpContext *context = reinterpret_cast< FalpContext * >( ctx );
   LabelPosition *lp2 = context->lp;
   PriorityQueue *list = context->list;
 
@@ -234,7 +234,7 @@ bool falpCallback2( LabelPosition *lp, void* ctx )
 }
 
 
-void ignoreLabel( LabelPosition *lp, PriorityQueue *list, RTree <LabelPosition*, double, 2, double> *candidates )
+void ignoreLabel( LabelPosition *lp, PriorityQueue *list, RTree <LabelPosition *, double, 2, double> *candidates )
 {
 
 
@@ -258,12 +258,12 @@ void ignoreLabel( LabelPosition *lp, PriorityQueue *list, RTree <LabelPosition*,
 }
 
 
-bool falpCallback1( LabelPosition *lp, void* ctx )
+bool falpCallback1( LabelPosition *lp, void *ctx )
 {
-  FalpContext* context = reinterpret_cast< FalpContext* >( ctx );
+  FalpContext *context = reinterpret_cast< FalpContext * >( ctx );
   LabelPosition *lp2 = context->lp;
   PriorityQueue *list = context->list;
-  RTree <LabelPosition*, double, 2, double> *candidates = context->candidates;
+  RTree <LabelPosition *, double, 2, double> *candidates = context->candidates;
 
   if ( lp2->isInConflict( lp ) )
   {
@@ -341,7 +341,7 @@ void Problem::init_sol_falp()
     lp->getBoundingBox( amin, amax );
 
     context->lp = lp;
-    candidates->Search( amin, amax, falpCallback1, reinterpret_cast< void* >( context ) );
+    candidates->Search( amin, amax, falpCallback1, reinterpret_cast< void * >( context ) );
     candidates_sol->Insert( amin, amax, lp );
   }
 
@@ -354,7 +354,7 @@ void Problem::init_sol_falp()
   {
     int nbOverlap;
     int start_p;
-    LabelPosition* retainedLabel = nullptr;
+    LabelPosition *retainedLabel = nullptr;
     int p;
 
     for ( i = 0; i < nbft; i++ ) // forearch hidden feature
@@ -404,7 +404,7 @@ void Problem::popmusic()
 
   SearchMethod searchMethod = pal->searchMethod;
 
-  candidates_subsol = new RTree<LabelPosition*, double, 2, double>();
+  candidates_subsol = new RTree<LabelPosition *, double, 2, double>();
 
   double delta = 0.0;
 
@@ -418,7 +418,7 @@ void Problem::popmusic()
   featWrap = new int[nbft];
   memset( featWrap, -1, sizeof( int ) *nbft );
 
-  SubPart ** parts = new SubPart*[nbft];
+  SubPart **parts = new SubPart*[nbft];
   int *isIn = new int[nbft];
 
   memset( isIn, 0, sizeof( int ) *nbft );
@@ -430,7 +430,7 @@ void Problem::popmusic()
     ok[i] = false;
   }
   delete[] isIn;
-  Util::sort( reinterpret_cast< void** >( parts ), nbft, borderSizeInc );
+  Util::sort( reinterpret_cast< void ** >( parts ), nbft, borderSizeInc );
   //sort ((void**)parts, nbft, borderSizeDec);
 
   init_sol_falp();
@@ -472,9 +472,9 @@ void Problem::popmusic()
 
     switch ( searchMethod )
     {
-        //case branch_and_bound :
-        //delta = current->branch_and_bound_search();
-        //   break;
+      //case branch_and_bound :
+      //delta = current->branch_and_bound_search();
+      //   break;
 
       case POPMUSIC_TABU :
         delta = popmusic_tabu( current );
@@ -550,7 +550,7 @@ typedef struct
 
 bool subPartCallback( LabelPosition *lp, void *ctx )
 {
-  SubPartContext* context = reinterpret_cast< SubPartContext* >( ctx );
+  SubPartContext *context = reinterpret_cast< SubPartContext * >( ctx );
   int *isIn = context->isIn;
   QLinkedList<int> *queue = context->queue;
 
@@ -566,7 +566,7 @@ bool subPartCallback( LabelPosition *lp, void *ctx )
 }
 
 /* Select a sub part, expected size of r, from seed */
-SubPart * Problem::subPart( int r, int featseed, int *isIn )
+SubPart *Problem::subPart( int r, int featseed, int *isIn )
 {
   QLinkedList<int> *queue = new QLinkedList<int>;
   QLinkedList<int> *ri = new QLinkedList<int>;
@@ -608,14 +608,14 @@ SubPart * Problem::subPart( int r, int featseed, int *isIn )
       lp->getBoundingBox( amin, amax );
 
       context.lp = lp;
-      candidates->Search( amin, amax, subPartCallback, reinterpret_cast< void* >( &context ) );
+      candidates->Search( amin, amax, subPartCallback, reinterpret_cast< void * >( &context ) );
     }
   }
 
   nb = queue->size();
   n = ri->size();
 
-  sub = new int[n+nb];
+  sub = new int[n + nb];
 
   i = 0;
 
@@ -670,7 +670,7 @@ double Problem::compute_feature_cost( SubPart *part, int feat_id, int label_id, 
     lp->getBoundingBox( amin, amax );
 
     context.lp = lp;
-    candidates_subsol->Search( amin, amax, LabelPosition::countFullOverlapCallback, reinterpret_cast< void* >( &context ) );
+    candidates_subsol->Search( amin, amax, LabelPosition::countFullOverlapCallback, reinterpret_cast< void * >( &context ) );
 
     cost += lp->cost();
   }
@@ -714,7 +714,7 @@ typedef struct _Triple
 
 bool decreaseCost( void *tl, void *tr )
 {
-  return ( reinterpret_cast< Triple* >( tl ) )->cost < ( reinterpret_cast< Triple* >( tr ) )->cost;
+  return ( reinterpret_cast< Triple * >( tl ) )->cost < ( reinterpret_cast< Triple * >( tr ) )->cost;
 }
 
 inline void actualizeTabuCandidateList( int m, int iteration, int nbOverlap, int *candidateListSize,
@@ -766,7 +766,7 @@ typedef struct
 
 bool updateCandidatesCost( LabelPosition *lp, void *context )
 {
-  UpdateContext *ctx = reinterpret_cast< UpdateContext* >( context );
+  UpdateContext *ctx = reinterpret_cast< UpdateContext * >( context );
 
   if ( ctx->lp->isInConflict( lp ) )
   {
@@ -780,7 +780,7 @@ bool updateCandidatesCost( LabelPosition *lp, void *context )
     int feat_id2;
     if ( feat_id >= 0 && ctx->sol[feat_id] == lp->getId() ) // this label is in use
     {
-      if (( feat_id2 = feat_id - ctx->borderSize ) >= 0 )
+      if ( ( feat_id2 = feat_id - ctx->borderSize ) >= 0 )
       {
         ctx->candidates[feat_id2]->cost += ctx->diff_cost;
         ctx->candidates[feat_id2]->nbOverlap--;
@@ -804,7 +804,7 @@ double Problem::popmusic_tabu( SubPart *part )
   Triple **candidateList = new Triple*[probSize];
   Triple **candidateListUnsorted = new Triple*[probSize];
 
-  int * best_sol = new int[subSize];
+  int *best_sol = new int[subSize];
 
   double cur_cost;
   double best_cost;
@@ -887,19 +887,19 @@ double Problem::popmusic_tabu( SubPart *part )
 
     candidateList[i] = new Triple();
     candidateList[i]->feat_id = i + borderSize;
-    candidateList[i]->label_id = sol[i+borderSize];
+    candidateList[i]->label_id = sol[i + borderSize];
 
     candidateListUnsorted[i] = candidateList[i];
 
-    if ( sol[i+borderSize] >= 0 )
+    if ( sol[i + borderSize] >= 0 )
     {
-      j = sol[i+borderSize];
+      j = sol[i + borderSize];
       candidateList[i]->cost = labelPositionCost[j];
       candidateList[i]->nbOverlap = nbOlap[j];
     }
     else
     {
-      candidateList[i]->cost = inactiveCost[sub[i+borderSize]];
+      candidateList[i]->cost = inactiveCost[sub[i + borderSize]];
       candidateList[i]->nbOverlap = 1;
     }
 
@@ -919,11 +919,11 @@ double Problem::popmusic_tabu( SubPart *part )
     }
   }
 
-  Util::sort( reinterpret_cast< void** >( candidateList ), probSize, decreaseCost );
+  Util::sort( reinterpret_cast< void ** >( candidateList ), probSize, decreaseCost );
 
   best_cost = cur_cost;
   initial_cost = cur_cost;
-  memcpy( best_sol, sol, sizeof( int ) *( subSize ) );
+  memcpy( best_sol, sol, sizeof( int ) * ( subSize ) );
 
   // START TABU
 
@@ -1000,7 +1000,7 @@ double Problem::popmusic_tabu( SubPart *part )
       // update the solution and update tabu list
       int old_label = sol[choosed_feat];
 
-      tabu_list[choosed_feat-borderSize] = it + tenure;
+      tabu_list[choosed_feat - borderSize] = it + tenure;
       sol[choosed_feat] = choosed_label;
       candidateList[candidateId]->label_id = choosed_label;
 
@@ -1063,12 +1063,12 @@ double Problem::popmusic_tabu( SubPart *part )
         lp->insertIntoIndex( candidates_subsol );
       }
 
-      Util::sort( reinterpret_cast< void** >( candidateList ), probSize, decreaseCost );
+      Util::sort( reinterpret_cast< void ** >( candidateList ), probSize, decreaseCost );
 
       if ( best_cost - cur_cost > EPSILON ) // new best sol
       {
         best_cost = cur_cost;
-        memcpy( best_sol, sol, sizeof( int ) *( subSize ) );
+        memcpy( best_sol, sol, sizeof( int ) * ( subSize ) );
         stop_it = it + itwImp;
         if ( stop_it > max_it )
           stop_it = max_it;
@@ -1083,7 +1083,7 @@ double Problem::popmusic_tabu( SubPart *part )
     it++;
   }
 
-  memcpy( sol, best_sol, sizeof( int ) *( subSize ) );
+  memcpy( sol, best_sol, sizeof( int ) * ( subSize ) );
 
   for ( i = 0; i < subSize; i++ )
     featWrap[sub[i]] = -1;
@@ -1111,7 +1111,7 @@ typedef struct
   int *featWrap = nullptr;
   int *feat = nullptr;
   int borderSize;
-  QLinkedList<ElemTrans*> *currentChain;
+  QLinkedList<ElemTrans *> *currentChain;
   QLinkedList<int> *conflicts;
   double *delta_tmp = nullptr;
   double *inactiveCost = nullptr;
@@ -1121,7 +1121,7 @@ typedef struct
 
 bool chainCallback( LabelPosition *lp, void *context )
 {
-  ChainContext *ctx = reinterpret_cast< ChainContext* >( context );
+  ChainContext *ctx = reinterpret_cast< ChainContext * >( context );
 
   if ( lp->isInConflict( ctx->lp ) )
   {
@@ -1146,10 +1146,10 @@ bool chainCallback( LabelPosition *lp, void *context )
     }
 
     // is there any cycles ?
-    QLinkedList< ElemTrans* >::iterator cur;
+    QLinkedList< ElemTrans * >::iterator cur;
     for ( cur = ctx->currentChain->begin(); cur != ctx->currentChain->end(); ++cur )
     {
-      if (( *cur )->feat == feat )
+      if ( ( *cur )->feat == feat )
       {
         throw - 1;
       }
@@ -1192,7 +1192,7 @@ inline Chain *Problem::chain( SubPart *part, int seed )
 
   int seedNbLp;
 
-  QLinkedList<ElemTrans*> *currentChain = new QLinkedList<ElemTrans*>;
+  QLinkedList<ElemTrans *> *currentChain = new QLinkedList<ElemTrans *>;
   QLinkedList<int> *conflicts = new QLinkedList<int>;
 
   int *tmpsol = new int[subSize];
@@ -1248,7 +1248,7 @@ inline Chain *Problem::chain( SubPart *part, int seed )
             context.lp = lp;
 
             // search ative conflicts and count them
-            candidates_subsol->Search( amin, amax, chainCallback, reinterpret_cast< void* >( &context ) );
+            candidates_subsol->Search( amin, amax, chainCallback, reinterpret_cast< void * >( &context ) );
 
             // no conflict -> end of chain
             if ( conflicts->isEmpty() )
@@ -1271,8 +1271,8 @@ inline Chain *Problem::chain( SubPart *part, int seed )
                 retainedChain->degree = currentChain->size() + 1;
                 retainedChain->feat  = new int[retainedChain->degree]; // HERE
                 retainedChain->label = new int[retainedChain->degree]; // HERE
-                QLinkedList< ElemTrans* >::iterator current = currentChain->begin();
-                ElemTrans* move = nullptr;
+                QLinkedList< ElemTrans * >::iterator current = currentChain->begin();
+                ElemTrans *move = nullptr;
                 j = 0;
                 while ( current != currentChain->end() )
                 {
@@ -1310,8 +1310,8 @@ inline Chain *Problem::chain( SubPart *part, int seed )
               newChain->degree = currentChain->size() + 1 + conflicts->size();
               newChain->feat  = new int[newChain->degree]; // HERE
               newChain->label = new int[newChain->degree]; // HERE
-              QLinkedList<ElemTrans*>::iterator current = currentChain->begin();
-              ElemTrans* move = nullptr;
+              QLinkedList<ElemTrans *>::iterator current = currentChain->begin();
+              ElemTrans *move = nullptr;
               j = 0;
               while ( current != currentChain->end() )
               {
@@ -1368,8 +1368,8 @@ inline Chain *Problem::chain( SubPart *part, int seed )
               retainedChain->degree = currentChain->size() + 1;
               retainedChain->feat  = new int[retainedChain->degree]; // HERE
               retainedChain->label = new int[retainedChain->degree]; // HERE
-              QLinkedList<ElemTrans*>::iterator current = currentChain->begin();
-              ElemTrans* move = nullptr;
+              QLinkedList<ElemTrans *>::iterator current = currentChain->begin();
+              ElemTrans *move = nullptr;
               j = 0;
               while ( current != currentChain->end() )
               {
@@ -1427,7 +1427,7 @@ inline Chain *Problem::chain( SubPart *part, int seed )
 
   while ( !currentChain->isEmpty() )
   {
-    ElemTrans* et =  currentChain->takeFirst();
+    ElemTrans *et =  currentChain->takeFirst();
 
     if ( et->new_label != -1 )
     {
@@ -1472,7 +1472,7 @@ inline Chain *Problem::chain( int seed )
 
   int seedNbLp;
 
-  QLinkedList<ElemTrans*> *currentChain = new QLinkedList<ElemTrans*>;
+  QLinkedList<ElemTrans *> *currentChain = new QLinkedList<ElemTrans *>;
   QLinkedList<int> *conflicts = new QLinkedList<int>;
 
   int *tmpsol = new int[nbft];
@@ -1526,7 +1526,7 @@ inline Chain *Problem::chain( int seed )
 
             context.lp = lp;
 
-            candidates_sol->Search( amin, amax, chainCallback, reinterpret_cast< void* >( &context ) );
+            candidates_sol->Search( amin, amax, chainCallback, reinterpret_cast< void * >( &context ) );
 
             // no conflict -> end of chain
             if ( conflicts->isEmpty() )
@@ -1548,8 +1548,8 @@ inline Chain *Problem::chain( int seed )
                 retainedChain->degree = currentChain->size() + 1;
                 retainedChain->feat  = new int[retainedChain->degree];
                 retainedChain->label = new int[retainedChain->degree];
-                QLinkedList<ElemTrans*>::iterator current = currentChain->begin();
-                ElemTrans* move = nullptr;
+                QLinkedList<ElemTrans *>::iterator current = currentChain->begin();
+                ElemTrans *move = nullptr;
                 j = 0;
                 while ( current != currentChain->end() )
                 {
@@ -1587,8 +1587,8 @@ inline Chain *Problem::chain( int seed )
               newChain->degree = currentChain->size() + 1 + conflicts->size();
               newChain->feat  = new int[newChain->degree];
               newChain->label = new int[newChain->degree];
-              QLinkedList<ElemTrans*>::iterator current = currentChain->begin();
-              ElemTrans* move = nullptr;
+              QLinkedList<ElemTrans *>::iterator current = currentChain->begin();
+              ElemTrans *move = nullptr;
               j = 0;
 
               while ( current != currentChain->end() )
@@ -1648,8 +1648,8 @@ inline Chain *Problem::chain( int seed )
               retainedChain->degree = currentChain->size() + 1;
               retainedChain->feat  = new int[retainedChain->degree];
               retainedChain->label = new int[retainedChain->degree];
-              QLinkedList<ElemTrans*>::iterator current = currentChain->begin();
-              ElemTrans* move = nullptr;
+              QLinkedList<ElemTrans *>::iterator current = currentChain->begin();
+              ElemTrans *move = nullptr;
               j = 0;
               while ( current != currentChain->end() )
               {
@@ -1710,7 +1710,7 @@ inline Chain *Problem::chain( int seed )
 
   while ( !currentChain->isEmpty() )
   {
-    ElemTrans* et =  currentChain->takeFirst();
+    ElemTrans *et =  currentChain->takeFirst();
 
     if ( et->new_label != -1 )
     {
@@ -1800,7 +1800,7 @@ double Problem::popmusic_chain( SubPart *part )
     tabu_list[i] = maxit;   // border always are taboo
 
   for ( i = 0; i < probSize; i++ )
-    tabu_list[i+borderSize] = -1; // others aren't
+    tabu_list[i + borderSize] = -1; // others aren't
 
   while ( it < stop_it )
   {
@@ -1952,16 +1952,16 @@ double Problem::popmusic_tabu_chain( SubPart *part )
 
   for ( i = 0; i < probSize; i++ )
   {
-    tabu_list[i+borderSize] = -1;
+    tabu_list[i + borderSize] = -1;
 
     candidates[i] = new Triple();
     candidates[i]->feat_id = i + borderSize;
     candidatesUnsorted[i] = candidates[i];
 
-    candidates[i]->cost = ( sol[i+borderSize] == -1 ? inactiveCost[i+borderSize] : mLabelPositions.at( sol[i+borderSize] )->cost() );
+    candidates[i]->cost = ( sol[i + borderSize] == -1 ? inactiveCost[i + borderSize] : mLabelPositions.at( sol[i + borderSize] )->cost() );
   }
 
-  Util::sort( reinterpret_cast< void** >( candidates ), probSize, decreaseCost );
+  Util::sort( reinterpret_cast< void ** >( candidates ), probSize, decreaseCost );
 
   int candidateListSize;
   candidateListSize = int ( pal->candListSize * static_cast< double >( probSize ) + 0.5 );
@@ -2021,7 +2021,7 @@ double Problem::popmusic_tabu_chain( SubPart *part )
           mLabelPositions.at( lid )->insertIntoIndex( candidates_subsol );
 
         tabu_list[fid] = it + tenure;
-        candidatesUnsorted[fid-borderSize]->cost = ( lid == -1 ? inactiveCost[sub[fid]] : mLabelPositions.at( lid )->cost() );
+        candidatesUnsorted[fid - borderSize]->cost = ( lid == -1 ? inactiveCost[sub[fid]] : mLabelPositions.at( lid )->cost() );
 
       }
 
@@ -2036,7 +2036,7 @@ double Problem::popmusic_tabu_chain( SubPart *part )
 
         stop_it = ( it + itwimp > maxit ? maxit : it + itwimp );
       }
-      Util::sort( reinterpret_cast< void** >( candidates ), probSize, decreaseCost );
+      Util::sort( reinterpret_cast< void ** >( candidates ), probSize, decreaseCost );
     }
     it++;
   }
@@ -2061,7 +2061,7 @@ double Problem::popmusic_tabu_chain( SubPart *part )
 
 bool checkCallback( LabelPosition *lp, void *ctx )
 {
-  QLinkedList<LabelPosition*> *list = reinterpret_cast< QLinkedList<LabelPosition*>* >( ctx );
+  QLinkedList<LabelPosition *> *list = reinterpret_cast< QLinkedList<LabelPosition *>* >( ctx );
   list->append( lp );
 
   return true;
@@ -2080,9 +2080,9 @@ void Problem::check_solution()
   amax[0] = bbox[2];
   amax[1] = bbox[3];
 
-  QLinkedList<LabelPosition*> *list = new QLinkedList<LabelPosition*>;
+  QLinkedList<LabelPosition *> *list = new QLinkedList<LabelPosition *>;
 
-  candidates_sol->Search( amin, amax, checkCallback, reinterpret_cast< void* >( list ) );
+  candidates_sol->Search( amin, amax, checkCallback, reinterpret_cast< void * >( list ) );
 
   int i;
   int nbActive = 0;
@@ -2118,7 +2118,7 @@ typedef struct _nokContext
 
 bool nokCallback( LabelPosition *lp, void *context )
 {
-  NokContext* ctx = reinterpret_cast< NokContext*>( context );
+  NokContext *ctx = reinterpret_cast< NokContext *>( context );
   LabelPosition *lp2 = ctx->lp;
   bool *ok = ctx->ok;
   int *wrap = ctx->wrap;
@@ -2237,16 +2237,16 @@ void Problem::chain_search()
   delete[] ok;
 }
 
-bool Problem::compareLabelArea( pal::LabelPosition* l1, pal::LabelPosition* l2 )
+bool Problem::compareLabelArea( pal::LabelPosition *l1, pal::LabelPosition *l2 )
 {
   return l1->getWidth() * l1->getHeight() > l2->getWidth() * l2->getHeight();
 }
 
-QList<LabelPosition*> * Problem::getSolution( bool returnInactive )
+QList<LabelPosition *> *Problem::getSolution( bool returnInactive )
 {
 
   int i;
-  QList<LabelPosition*> *solList = new QList<LabelPosition*>();
+  QList<LabelPosition *> *solList = new QList<LabelPosition *>();
 
   if ( nbft == 0 )
   {
@@ -2276,7 +2276,7 @@ QList<LabelPosition*> * Problem::getSolution( bool returnInactive )
   return solList;
 }
 
-PalStat * Problem::getStats()
+PalStat *Problem::getStats()
 {
   int i, j;
 

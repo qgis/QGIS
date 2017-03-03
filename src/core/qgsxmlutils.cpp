@@ -20,7 +20,7 @@
 #include "qgsrectangle.h"
 
 
-QgsUnitTypes::DistanceUnit QgsXmlUtils::readMapUnits( const QDomElement& element )
+QgsUnitTypes::DistanceUnit QgsXmlUtils::readMapUnits( const QDomElement &element )
 {
   if ( "unknown" == element.text() )
   {
@@ -33,7 +33,7 @@ QgsUnitTypes::DistanceUnit QgsXmlUtils::readMapUnits( const QDomElement& element
   }
 }
 
-QgsRectangle QgsXmlUtils::readRectangle( const QDomElement& element )
+QgsRectangle QgsXmlUtils::readRectangle( const QDomElement &element )
 {
   QgsRectangle aoi;
 
@@ -63,7 +63,7 @@ QgsRectangle QgsXmlUtils::readRectangle( const QDomElement& element )
 
 
 
-QDomElement QgsXmlUtils::writeMapUnits( QgsUnitTypes::DistanceUnit units, QDomDocument& doc )
+QDomElement QgsXmlUtils::writeMapUnits( QgsUnitTypes::DistanceUnit units, QDomDocument &doc )
 {
   QString unitsString = QgsUnitTypes::encodeUnit( units );
   // maintain compatibility with old projects
@@ -75,7 +75,7 @@ QDomElement QgsXmlUtils::writeMapUnits( QgsUnitTypes::DistanceUnit units, QDomDo
   return unitsNode;
 }
 
-QDomElement QgsXmlUtils::writeRectangle( const QgsRectangle& rect, QDomDocument& doc )
+QDomElement QgsXmlUtils::writeRectangle( const QgsRectangle &rect, QDomDocument &doc )
 {
   QDomElement xMin = doc.createElement( QStringLiteral( "xmin" ) );
   QDomElement yMin = doc.createElement( QStringLiteral( "ymin" ) );
@@ -100,7 +100,7 @@ QDomElement QgsXmlUtils::writeRectangle( const QgsRectangle& rect, QDomDocument&
   return extentNode;
 }
 
-QDomElement QgsXmlUtils::writeVariant( const QVariant& value, QDomDocument& doc )
+QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc )
 {
   QDomElement element = doc.createElement( QStringLiteral( "Option" ) );
   switch ( value.type() )
@@ -136,7 +136,7 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant& value, QDomDocument& doc 
   return element;
 }
 
-QVariant QgsXmlUtils::readVariant( const QDomElement& element )
+QVariant QgsXmlUtils::readVariant( const QDomElement &element )
 {
   QString type = element.attribute( QStringLiteral( "type" ) );
 

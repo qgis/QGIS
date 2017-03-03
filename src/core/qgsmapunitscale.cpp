@@ -17,7 +17,7 @@
 #include "qgsmapunitscale.h"
 #include "qgsrendercontext.h"
 
-double QgsMapUnitScale::computeMapUnitsPerPixel( const QgsRenderContext& c ) const
+double QgsMapUnitScale::computeMapUnitsPerPixel( const QgsRenderContext &c ) const
 {
   double mup = c.mapToPixel().mapUnitsPerPixel();
   double renderScale = c.rendererScale(); // Note: this value is 1 / scale

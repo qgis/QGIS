@@ -106,7 +106,7 @@ QStringList QgsSettings::allKeys() const
   QStringList keys = mUserSettings->allKeys( );
   if ( mGlobalSettings )
   {
-  for ( auto &s : mGlobalSettings->allKeys() )
+    for ( auto &s : mGlobalSettings->allKeys() )
     {
       if ( ! keys.contains( s ) )
       {
@@ -123,7 +123,7 @@ QStringList QgsSettings::childKeys() const
   QStringList keys = mUserSettings->childKeys( );
   if ( mGlobalSettings )
   {
-  for ( auto &s : mGlobalSettings->childKeys() )
+    for ( auto &s : mGlobalSettings->childKeys() )
     {
       if ( ! keys.contains( s ) )
       {
@@ -139,7 +139,7 @@ QStringList QgsSettings::childGroups() const
   QStringList keys = mUserSettings->childGroups( );
   if ( mGlobalSettings )
   {
-  for ( auto &s : mGlobalSettings->childGroups() )
+    for ( auto &s : mGlobalSettings->childGroups() )
     {
       if ( ! keys.contains( s ) )
       {
@@ -246,7 +246,7 @@ void QgsSettings::setArrayIndex( int i )
   }
 }
 
-void QgsSettings::setValue( const QString &key, const QVariant &value , const QgsSettings::Section section )
+void QgsSettings::setValue( const QString &key, const QVariant &value, const QgsSettings::Section section )
 {
   // TODO: add valueChanged signal
   mUserSettings->setValue( prefixedKey( key, section ), value );

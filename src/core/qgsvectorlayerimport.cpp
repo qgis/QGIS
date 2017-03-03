@@ -48,20 +48,20 @@ typedef QgsVectorLayerImport::ImportError createEmptyLayer_t(
 
 QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
     const QString &providerKey,
-    const QgsFields& fields,
+    const QgsFields &fields,
     QgsWkbTypes::Type geometryType,
-    const QgsCoordinateReferenceSystem& crs,
+    const QgsCoordinateReferenceSystem &crs,
     bool overwrite,
     const QMap<QString, QVariant> *options,
     QProgressDialog *progress )
-    : mErrorCount( 0 )
-    , mAttributeCount( -1 )
-    , mProgress( progress )
+  : mErrorCount( 0 )
+  , mAttributeCount( -1 )
+  , mProgress( progress )
 
 {
   mProvider = nullptr;
 
-  QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
+  QgsProviderRegistry *pReg = QgsProviderRegistry::instance();
 
   std::unique_ptr< QLibrary > myLib( pReg->providerLibrary( providerKey ) );
   if ( !myLib )
@@ -71,7 +71,7 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
     return;
   }
 
-  createEmptyLayer_t * pCreateEmpty = reinterpret_cast< createEmptyLayer_t * >( cast_to_fptr( myLib->resolve( "createEmptyLayer" ) ) );
+  createEmptyLayer_t *pCreateEmpty = reinterpret_cast< createEmptyLayer_t * >( cast_to_fptr( myLib->resolve( "createEmptyLayer" ) ) );
   if ( !pCreateEmpty )
   {
     mError = ErrProviderUnsupportedFeature;
@@ -98,7 +98,7 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
 
   QgsDebugMsg( "Created empty layer" );
 
-  QgsVectorDataProvider *vectorProvider = dynamic_cast< QgsVectorDataProvider* >( pReg->provider( providerKey, uri ) );
+  QgsVectorDataProvider *vectorProvider = dynamic_cast< QgsVectorDataProvider * >( pReg->provider( providerKey, uri ) );
   if ( !vectorProvider || !vectorProvider->isValid() || ( vectorProvider->capabilities() & QgsVectorDataProvider::AddFeatures ) == 0 )
   {
     mError = ErrInvalidLayer;
@@ -132,7 +132,7 @@ QString QgsVectorLayerImport::errorMessage()
   return mErrorMessage;
 }
 
-bool QgsVectorLayerImport::addFeature( QgsFeature& feat )
+bool QgsVectorLayerImport::addFeature( QgsFeature &feat )
 {
   QgsAttributes attrs = feat.attributes();
 
@@ -204,10 +204,10 @@ bool QgsVectorLayerImport::createSpatialIndex()
 }
 
 QgsVectorLayerImport::ImportError
-QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
-                                   const QString& uri,
-                                   const QString& providerKey,
-                                   const QgsCoordinateReferenceSystem& destCRS,
+QgsVectorLayerImport::importLayer( QgsVectorLayer *layer,
+                                   const QString &uri,
+                                   const QString &providerKey,
+                                   const QgsCoordinateReferenceSystem &destCRS,
                                    bool onlySelected,
                                    QString *errorMessage,
                                    bool skipAttributeCreation,
@@ -283,7 +283,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     }
   }
 
-  QgsVectorLayerImport * writer =
+  QgsVectorLayerImport *writer =
     new QgsVectorLayerImport( uri, providerKey, fields, wkbType, outputCRS, overwrite, options, progress );
 
   // check whether file creation was successful
@@ -312,7 +312,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
 
   QgsFeatureIterator fit = layer->getFeatures( req );
 
-  const QgsFeatureIds& ids = layer->selectedFeatureIds();
+  const QgsFeatureIds &ids = layer->selectedFeatureIds();
 
   // Create our transform
   if ( destCRS.isValid() )

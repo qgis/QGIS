@@ -20,32 +20,32 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
 {
   public:
     QgsVectorLayerJoinInfo()
-        : mMemoryCache( false )
-        , cacheDirty( true )
+      : mMemoryCache( false )
+      , cacheDirty( true )
     {}
 
     //! Sets weak reference to the joined layer
-    void setJoinLayer( QgsVectorLayer* layer ) { mJoinLayerRef = QgsVectorLayerRef( layer ); }
+    void setJoinLayer( QgsVectorLayer *layer ) { mJoinLayerRef = QgsVectorLayerRef( layer ); }
     //! Returns joined layer (may be null if the reference was set by layer ID and not resolved yet)
-    QgsVectorLayer* joinLayer() const { return mJoinLayerRef.layer.data(); }
+    QgsVectorLayer *joinLayer() const { return mJoinLayerRef.layer.data(); }
 
     //! Sets ID of the joined layer. It will need to be overwritten by setJoinLayer() to a reference to real layer
-    void setJoinLayerId( const QString& layerId ) { mJoinLayerRef = QgsVectorLayerRef( layerId ); }
+    void setJoinLayerId( const QString &layerId ) { mJoinLayerRef = QgsVectorLayerRef( layerId ); }
     //! ID of the joined layer - may be used to resolve reference to the joined layer
     QString joinLayerId() const { return mJoinLayerRef.layerId; }
 
     //! Sets name of the field of our layer that will be used for join
-    void setTargetFieldName( const QString& fieldName ) { mTargetFieldName = fieldName; }
+    void setTargetFieldName( const QString &fieldName ) { mTargetFieldName = fieldName; }
     //! Returns name of the field of our layer that will be used for join
     QString targetFieldName() const { return mTargetFieldName; }
 
     //! Sets name of the field of joined layer that will be used for join
-    void setJoinFieldName( const QString& fieldName ) { mJoinFieldName = fieldName; }
+    void setJoinFieldName( const QString &fieldName ) { mJoinFieldName = fieldName; }
     //! Returns name of the field of joined layer that will be used for join
     QString joinFieldName() const { return mJoinFieldName; }
 
     //! Sets prefix of fields from the joined layer. If null, joined layer's name will be used.
-    void setPrefix( const QString& prefix ) { mPrefix = prefix; }
+    void setPrefix( const QString &prefix ) { mPrefix = prefix; }
     //! Returns prefix of fields from the joined layer. If null, joined layer's name will be used.
     QString prefix() const { return mPrefix; }
 
@@ -54,7 +54,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     //! Returns whether values from the joined layer should be cached in memory to speed up lookups
     bool isUsingMemoryCache() const { return mMemoryCache; }
 
-    bool operator==( const QgsVectorLayerJoinInfo& other ) const
+    bool operator==( const QgsVectorLayerJoinInfo &other ) const
     {
       return mTargetFieldName == other.mTargetFieldName &&
              mJoinLayerRef.layerId == other.mJoinLayerRef.layerId &&
@@ -66,11 +66,11 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
 
     /** Set subset of fields to be used from joined layer. Takes ownership of the passed pointer. Null pointer tells to use all fields.
       @note added in 2.6 */
-    void setJoinFieldNamesSubset( QStringList* fieldNamesSubset ) { mJoinFieldsSubset = std::shared_ptr<QStringList>( fieldNamesSubset ); }
+    void setJoinFieldNamesSubset( QStringList *fieldNamesSubset ) { mJoinFieldsSubset = std::shared_ptr<QStringList>( fieldNamesSubset ); }
 
     /** Get subset of fields to be used from joined layer. All fields will be used if null is returned.
       @note added in 2.6 */
-    QStringList* joinFieldNamesSubset() const { return mJoinFieldsSubset.get(); }
+    QStringList *joinFieldNamesSubset() const { return mJoinFieldsSubset.get(); }
 
   protected:
     //! Join field in the target layer

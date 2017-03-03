@@ -55,7 +55,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
     /**
      * Constructor for QgsAnnotation.
      */
-    QgsAnnotation( QObject* parent = nullptr );
+    QgsAnnotation( QObject *parent = nullptr );
 
     /**
      * Returns true if the annotation is visible and should be rendered.
@@ -100,7 +100,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * position.
      * @see mapPosition()
      */
-    void setMapPosition( const QgsPoint& position );
+    void setMapPosition( const QgsPoint &position );
 
     /**
      * Returns the CRS of the map position, or an invalid CRS if the annotation does
@@ -113,7 +113,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * Sets the CRS of the map position.
      * @see mapPositionCrs()
      */
-    void setMapPositionCrs( const QgsCoordinateReferenceSystem& crs );
+    void setMapPositionCrs( const QgsCoordinateReferenceSystem &crs );
 
     /**
      * Returns the relative position of the annotation, if it is not attached to a fixed map
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * content.
      * @see contentsMargin()
      */
-    void setContentsMargin( const QgsMargins& margins );
+    void setContentsMargin( const QgsMargins &margins );
 
     /**
      * Returns the margins (in millimeters) between the outside of the frame and the annotation
@@ -176,18 +176,18 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * of the symbol is transferred to the annotation.
      * @see fillSymbol()
      */
-    void setFillSymbol( QgsFillSymbol* symbol );
+    void setFillSymbol( QgsFillSymbol *symbol );
 
     /**
      * Returns the symbol that is used for rendering the annotation frame.
      * @see setFillSymbol()
      */
-    QgsFillSymbol* fillSymbol() const { return mFillSymbol.get(); }
+    QgsFillSymbol *fillSymbol() const { return mFillSymbol.get(); }
 
     /**
      * Renders the annotation to a target render context.
      */
-    void render( QgsRenderContext& context ) const;
+    void render( QgsRenderContext &context ) const;
 
     /**
      * Writes the annotation state to a DOM element. Derived classes should
@@ -195,7 +195,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * @see readXml()
      * @see _writeXml()
      */
-    virtual void writeXml( QDomElement& elem, QDomDocument & doc ) const = 0;
+    virtual void writeXml( QDomElement &elem, QDomDocument &doc ) const = 0;
 
     /**
      * Restores the annotation's state from a DOM element. Derived classes should
@@ -203,20 +203,20 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * @see writeXml()
      * @see _readXml()
      */
-    virtual void readXml( const QDomElement& itemElem, const QDomDocument& doc ) = 0;
+    virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc ) = 0;
 
     /**
      * Sets the symbol that is drawn at the annotation's map position. Ownership
      * of the symbol is transferred to the annotation.
      * @see markerSymbol()
      */
-    void setMarkerSymbol( QgsMarkerSymbol* symbol );
+    void setMarkerSymbol( QgsMarkerSymbol *symbol );
 
     /**
      * Returns the symbol that is drawn at the annotation's map position.
      * @see setMarkerSymbol()
      */
-    QgsMarkerSymbol* markerSymbol() const { return mMarkerSymbol.get(); }
+    QgsMarkerSymbol *markerSymbol() const { return mMarkerSymbol.get(); }
 
     /**
      * Returns the map layer associated with the annotation. Annotations can be
@@ -224,7 +224,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * with the layer's visibility.
      * @see setMapLayer()
      */
-    QgsMapLayer* mapLayer() const { return mMapLayer.data(); }
+    QgsMapLayer *mapLayer() const { return mMapLayer.data(); }
 
     /**
      * Sets the map layer associated with the annotation. Annotations can be
@@ -232,7 +232,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * with the layer's visibility.
      * @see mapLayer()
      */
-    void setMapLayer( QgsMapLayer* layer );
+    void setMapLayer( QgsMapLayer *layer );
 
     /**
      * Returns the feature associated with the annotation, or an invalid
@@ -245,7 +245,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * Sets the feature associated with the annotation.
      * @see associatedFeature()
      */
-    virtual void setAssociatedFeature( const QgsFeature& feature ) { mFeature = feature; }
+    virtual void setAssociatedFeature( const QgsFeature &feature ) { mFeature = feature; }
 
   signals:
 
@@ -269,7 +269,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * Renders the annotation's contents to a target /a context at the specified /a size.
      * Derived classes should implement their custom annotation drawing logic here.
      */
-    virtual void renderAnnotation( QgsRenderContext& context, QSizeF size ) const = 0;
+    virtual void renderAnnotation( QgsRenderContext &context, QSizeF size ) const = 0;
 
     /**
      * Returns the minimum frame size for the annotation. Subclasses should implement this if they
@@ -283,7 +283,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * @see writeXml()
      * @see _readXml()
      */
-    void _writeXml( QDomElement& itemElem, QDomDocument& doc ) const;
+    void _writeXml( QDomElement &itemElem, QDomDocument &doc ) const;
 
     /**
      * Reads common annotation properties from a DOM element.
@@ -291,7 +291,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * @see readXml()
      * @see _writeXml()
      */
-    void _readXml( const QDomElement& annotationElem, const QDomDocument& doc );
+    void _readXml( const QDomElement &annotationElem, const QDomDocument &doc );
 
   private:
 
@@ -305,10 +305,10 @@ class CORE_EXPORT QgsAnnotation : public QObject
     QPointF pointOnLineWithDistance( QPointF startPoint, QPointF directionPoint, double distance ) const;
 
     //! Draws the annotation frame to a destination painter
-    void drawFrame( QgsRenderContext& context ) const;
+    void drawFrame( QgsRenderContext &context ) const;
 
     //! Draws the map position marker symbol to a destination painter
-    void drawMarkerSymbol( QgsRenderContext& context ) const;
+    void drawMarkerSymbol( QgsRenderContext &context ) const;
 
     bool mVisible = true;
 

@@ -46,14 +46,14 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
      * @param map encoded properties string map
      * @returns new QgsBlurEffect
      */
-    static QgsPaintEffect* create( const QgsStringMap& map );
+    static QgsPaintEffect *create( const QgsStringMap &map );
 
     QgsBlurEffect();
 
     virtual QString type() const override { return QStringLiteral( "blur" ); }
     virtual QgsStringMap properties() const override;
-    virtual void readProperties( const QgsStringMap& props ) override;
-    virtual QgsBlurEffect* clone() const override;
+    virtual void readProperties( const QgsStringMap &props ) override;
+    virtual QgsBlurEffect *clone() const override;
 
     /** Sets blur level (strength)
      * @param level blur level. Depending on the current @link blurMethod @endlink, this parameter
@@ -113,8 +113,8 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
 
   protected:
 
-    virtual void draw( QgsRenderContext& context ) override;
-    virtual QRectF boundingRect( const QRectF& rect, const QgsRenderContext& context ) const override;
+    virtual void draw( QgsRenderContext &context ) override;
+    virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const override;
 
   private:
 
@@ -125,7 +125,7 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
 
     void drawStackBlur( QgsRenderContext &context );
     void drawGaussianBlur( QgsRenderContext &context );
-    void drawBlurredImage( QgsRenderContext& context, QImage &image );
+    void drawBlurredImage( QgsRenderContext &context, QImage &image );
 };
 
 #endif // QGSBLUREFFECT_H

@@ -67,7 +67,7 @@ class CORE_EXPORT QgsVector
      * Adds another vector to this vector in place.
      * @note added in QGIS 3.0
      */
-    QgsVector& operator+=( QgsVector other );
+    QgsVector &operator+=( QgsVector other );
 
     /**
      * Subtracts another vector to this vector.
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsVector
      * Subtracts another vector to this vector in place.
      * @note added in QGIS 3.0
      */
-    QgsVector& operator-=( QgsVector other );
+    QgsVector &operator-=( QgsVector other );
 
     /** Returns the length of the vector.
      */

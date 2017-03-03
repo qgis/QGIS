@@ -18,11 +18,11 @@
 #include "qgsvectorfilewritertask.h"
 
 
-QgsVectorFileWriterTask::QgsVectorFileWriterTask( QgsVectorLayer* layer, const QString& fileName, const QgsVectorFileWriter::SaveVectorOptions& options )
-    : QgsTask( tr( "Saving %1 " ).arg( fileName ), QgsTask::CanCancel )
-    , mLayer( layer )
-    , mDestFileName( fileName )
-    , mOptions( options )
+QgsVectorFileWriterTask::QgsVectorFileWriterTask( QgsVectorLayer *layer, const QString &fileName, const QgsVectorFileWriter::SaveVectorOptions &options )
+  : QgsTask( tr( "Saving %1 " ).arg( fileName ), QgsTask::CanCancel )
+  , mLayer( layer )
+  , mDestFileName( fileName )
+  , mOptions( options )
 {
   if ( !mOptions.feedback )
   {
@@ -30,7 +30,7 @@ QgsVectorFileWriterTask::QgsVectorFileWriterTask( QgsVectorLayer* layer, const Q
     mOptions.feedback = mOwnedFeedback.get();
   }
   if ( mLayer )
-    setDependentLayers( QList< QgsMapLayer* >() << mLayer );
+    setDependentLayers( QList< QgsMapLayer * >() << mLayer );
 }
 
 void QgsVectorFileWriterTask::cancel()

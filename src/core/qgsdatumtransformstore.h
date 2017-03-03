@@ -33,26 +33,26 @@ class QDomElement;
 class CORE_EXPORT QgsDatumTransformStore
 {
   public:
-    explicit QgsDatumTransformStore( const QgsCoordinateReferenceSystem& destCrs );
+    explicit QgsDatumTransformStore( const QgsCoordinateReferenceSystem &destCrs );
 
     void clear();
 
-    void setDestinationCrs( const QgsCoordinateReferenceSystem& destCrs );
+    void setDestinationCrs( const QgsCoordinateReferenceSystem &destCrs );
 
-    void addEntry( const QString& layerId, const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform, int destDatumTransform );
+    void addEntry( const QString &layerId, const QString &srcAuthId, const QString &destAuthId, int srcDatumTransform, int destDatumTransform );
 
-    bool hasEntryForLayer( QgsMapLayer* layer ) const;
+    bool hasEntryForLayer( QgsMapLayer *layer ) const;
 
     /** Will return transform from layer's CRS to current destination CRS.
      *  Will emit datumTransformInfoRequested signal if the layer has no entry.
      *  @returns transformation associated with layer, or an invalid QgsCoordinateTransform
      *  if no transform is associated with the layer
      */
-    QgsCoordinateTransform transformation( const QgsMapLayer* layer ) const;
+    QgsCoordinateTransform transformation( const QgsMapLayer *layer ) const;
 
-    void readXml( const QDomNode& parentNode );
+    void readXml( const QDomNode &parentNode );
 
-    void writeXml( QDomNode& parentNode, QDomDocument& doc ) const;
+    void writeXml( QDomNode &parentNode, QDomDocument &doc ) const;
 
     struct CORE_EXPORT Entry
     {

@@ -21,8 +21,8 @@
 #include "qgspluginlayer.h"
 #include "qgsproject.h"
 
-QgsPluginLayerType::QgsPluginLayerType( const QString& name )
-    : mName( name )
+QgsPluginLayerType::QgsPluginLayerType( const QString &name )
+  : mName( name )
 {
 }
 
@@ -31,12 +31,12 @@ QString QgsPluginLayerType::name()
   return mName;
 }
 
-QgsPluginLayer* QgsPluginLayerType::createLayer()
+QgsPluginLayer *QgsPluginLayerType::createLayer()
 {
   return nullptr;
 }
 
-QgsPluginLayer* QgsPluginLayerType::createLayer( const QString& uri )
+QgsPluginLayer *QgsPluginLayerType::createLayer( const QString &uri )
 {
   Q_UNUSED( uri );
   return nullptr;
@@ -74,7 +74,7 @@ QStringList QgsPluginLayerRegistry::pluginLayerTypes()
   return mPluginLayerTypes.keys();
 }
 
-bool QgsPluginLayerRegistry::addPluginLayerType( QgsPluginLayerType* type )
+bool QgsPluginLayerRegistry::addPluginLayerType( QgsPluginLayerType *type )
 {
   if ( !type )
     return false;
@@ -87,18 +87,18 @@ bool QgsPluginLayerRegistry::addPluginLayerType( QgsPluginLayerType* type )
 }
 
 
-bool QgsPluginLayerRegistry::removePluginLayerType( const QString& typeName )
+bool QgsPluginLayerRegistry::removePluginLayerType( const QString &typeName )
 {
   if ( !mPluginLayerTypes.contains( typeName ) )
     return false;
 
   // remove all remaining layers of this type - to avoid invalid behavior
-  QList<QgsMapLayer*> layers = QgsProject::instance()->mapLayers().values();
-  Q_FOREACH ( QgsMapLayer* layer, layers )
+  QList<QgsMapLayer *> layers = QgsProject::instance()->mapLayers().values();
+  Q_FOREACH ( QgsMapLayer *layer, layers )
   {
     if ( layer->type() == QgsMapLayer::PluginLayer )
     {
-      QgsPluginLayer* pl = qobject_cast<QgsPluginLayer*>( layer );
+      QgsPluginLayer *pl = qobject_cast<QgsPluginLayer *>( layer );
       if ( pl->pluginLayerType() == typeName )
       {
         QgsProject::instance()->removeMapLayers(
@@ -111,15 +111,15 @@ bool QgsPluginLayerRegistry::removePluginLayerType( const QString& typeName )
   return true;
 }
 
-QgsPluginLayerType* QgsPluginLayerRegistry::pluginLayerType( const QString& typeName )
+QgsPluginLayerType *QgsPluginLayerRegistry::pluginLayerType( const QString &typeName )
 {
   return mPluginLayerTypes.value( typeName, nullptr );
 }
 
 
-QgsPluginLayer* QgsPluginLayerRegistry::createLayer( const QString& typeName, const QString& uri )
+QgsPluginLayer *QgsPluginLayerRegistry::createLayer( const QString &typeName, const QString &uri )
 {
-  QgsPluginLayerType* type = pluginLayerType( typeName );
+  QgsPluginLayerType *type = pluginLayerType( typeName );
   if ( !type )
   {
     QgsDebugMsg( "Unknown plugin layer type: " + typeName );

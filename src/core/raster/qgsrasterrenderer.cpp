@@ -27,10 +27,10 @@
 // See #9101 before any change of NODATA_COLOR!
 const QRgb QgsRasterRenderer::NODATA_COLOR = qRgba( 0, 0, 0, 0 );
 
-QgsRasterRenderer::QgsRasterRenderer( QgsRasterInterface* input, const QString& type )
-    : QgsRasterInterface( input )
-    , mType( type ), mOpacity( 1.0 ), mRasterTransparency( nullptr )
-    , mAlphaBand( -1 ) //, mInvertColor( false )
+QgsRasterRenderer::QgsRasterRenderer( QgsRasterInterface *input, const QString &type )
+  : QgsRasterInterface( input )
+  , mType( type ), mOpacity( 1.0 ), mRasterTransparency( nullptr )
+  , mAlphaBand( -1 ) //, mInvertColor( false )
 {
 }
 
@@ -59,7 +59,7 @@ Qgis::DataType QgsRasterRenderer::dataType( int bandNo ) const
   return Qgis::UnknownDataType;
 }
 
-bool QgsRasterRenderer::setInput( QgsRasterInterface* input )
+bool QgsRasterRenderer::setInput( QgsRasterInterface *input )
 {
   // Renderer can only work with numerical values in at least 1 band
   if ( !input ) return false;
@@ -91,13 +91,13 @@ bool QgsRasterRenderer::usesTransparency() const
   return ( mAlphaBand > 0 || ( mRasterTransparency && !mRasterTransparency->isEmpty() ) || !qgsDoubleNear( mOpacity, 1.0 ) );
 }
 
-void QgsRasterRenderer::setRasterTransparency( QgsRasterTransparency* t )
+void QgsRasterRenderer::setRasterTransparency( QgsRasterTransparency *t )
 {
   delete mRasterTransparency;
   mRasterTransparency = t;
 }
 
-void QgsRasterRenderer::_writeXml( QDomDocument& doc, QDomElement& rasterRendererElem ) const
+void QgsRasterRenderer::_writeXml( QDomDocument &doc, QDomElement &rasterRendererElem ) const
 {
   if ( rasterRendererElem.isNull() )
   {
@@ -118,7 +118,7 @@ void QgsRasterRenderer::_writeXml( QDomDocument& doc, QDomElement& rasterRendere
   rasterRendererElem.appendChild( minMaxOriginElem );
 }
 
-void QgsRasterRenderer::readXml( const QDomElement& rendererElem )
+void QgsRasterRenderer::readXml( const QDomElement &rendererElem )
 {
   if ( rendererElem.isNull() )
   {
@@ -144,7 +144,7 @@ void QgsRasterRenderer::readXml( const QDomElement& rendererElem )
   }
 }
 
-void QgsRasterRenderer::copyCommonProperties( const QgsRasterRenderer* other, bool copyMinMaxOrigin )
+void QgsRasterRenderer::copyCommonProperties( const QgsRasterRenderer *other, bool copyMinMaxOrigin )
 {
   if ( !other )
     return;

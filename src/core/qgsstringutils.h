@@ -42,8 +42,8 @@ class CORE_EXPORT QgsStringReplacement
      * @param caseSensitive set to true for a case sensitive match
      * @param wholeWordOnly set to true to match complete words only, or false to allow partial word matches
      */
-    QgsStringReplacement( const QString& match,
-                          const QString& replacement,
+    QgsStringReplacement( const QString &match,
+                          const QString &replacement,
                           bool caseSensitive = false,
                           bool wholeWordOnly = false );
 
@@ -63,9 +63,9 @@ class CORE_EXPORT QgsStringReplacement
      * @param input input string
      * @returns input string with any matches replaced by replacement string
      */
-    QString process( const QString& input ) const;
+    QString process( const QString &input ) const;
 
-    bool operator==( const QgsStringReplacement& other )
+    bool operator==( const QgsStringReplacement &other )
     {
       return mMatch == other.mMatch
              && mReplacement == other.mReplacement
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsStringReplacement
     /** Creates a new QgsStringReplacement from an encoded properties map.
      * @see properties()
      */
-    static QgsStringReplacement fromProperties( const QgsStringMap& properties );
+    static QgsStringReplacement fromProperties( const QgsStringMap &properties );
 
   private:
 
@@ -111,8 +111,8 @@ class CORE_EXPORT QgsStringReplacementCollection
     /** Constructor for QgsStringReplacementCollection
      * @param replacements initial list of string replacements
      */
-    QgsStringReplacementCollection( const QList< QgsStringReplacement >& replacements = QList< QgsStringReplacement >() )
-        : mReplacements( replacements )
+    QgsStringReplacementCollection( const QList< QgsStringReplacement > &replacements = QList< QgsStringReplacement >() )
+      : mReplacements( replacements )
     {}
 
     /** Returns the list of string replacements in this collection.
@@ -125,7 +125,7 @@ class CORE_EXPORT QgsStringReplacementCollection
      * order they are specified here.
      * @see replacements()
      */
-    void setReplacements( const QList< QgsStringReplacement >& replacements )
+    void setReplacements( const QList< QgsStringReplacement > &replacements )
     {
       mReplacements = replacements;
     }
@@ -136,20 +136,20 @@ class CORE_EXPORT QgsStringReplacementCollection
      * @param input input string
      * @returns input string with any matches replaced by replacement string
      */
-    QString process( const QString& input ) const;
+    QString process( const QString &input ) const;
 
     /** Writes the collection state to an XML element.
      * @param elem target DOM element
      * @param doc DOM document
      * @see readXml()
      */
-    void writeXml( QDomElement& elem, QDomDocument& doc ) const;
+    void writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
     /** Reads the collection state from an XML element.
      * @param elem DOM element
      * @see writeXml()
      */
-    void readXml( const QDomElement& elem );
+    void readXml( const QDomElement &elem );
 
   private:
 
@@ -183,7 +183,7 @@ class CORE_EXPORT QgsStringUtils
      * @return capitalized string
      * @note added in QGIS 3.0
      */
-    static QString capitalize( const QString& string, Capitalization capitalization );
+    static QString capitalize( const QString &string, Capitalization capitalization );
 
     /** Returns the Levenshtein edit distance between two strings. This equates to the minimum
      * number of character edits (insertions, deletions or substitutions) required to change
@@ -229,7 +229,7 @@ class CORE_EXPORT QgsStringUtils
      * @returns string with inserted links
      * @note added in QGIS 3.0
      */
-    static QString insertLinks( const QString& string, bool* foundLinks = nullptr );
+    static QString insertLinks( const QString &string, bool *foundLinks = nullptr );
 };
 
 #endif //QGSSTRINGUTILS_H

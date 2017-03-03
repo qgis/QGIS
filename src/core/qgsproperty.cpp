@@ -24,13 +24,13 @@
 
 
 QgsPropertyDefinition::QgsPropertyDefinition()
-    : mTypes( DataTypeString )
+  : mTypes( DataTypeString )
 {}
 
-QgsPropertyDefinition::QgsPropertyDefinition( const QString& name, const QString& description, QgsPropertyDefinition::StandardPropertyTemplate type )
-    : mName( name )
-    , mDescription( description )
-    , mStandardType( type )
+QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString &description, QgsPropertyDefinition::StandardPropertyTemplate type )
+  : mName( name )
+  , mDescription( description )
+  , mStandardType( type )
 {
   switch ( mStandardType )
   {
@@ -175,11 +175,11 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString& name, const QString
   }
 }
 
-QgsPropertyDefinition::QgsPropertyDefinition( const QString& name, DataType dataTypes, const QString& description, const QString& helpText )
-    : mName( name )
-    , mDescription( description )
-    , mTypes( dataTypes )
-    , mHelpText( helpText )
+QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, DataType dataTypes, const QString &description, const QString &helpText )
+  : mName( name )
+  , mDescription( description )
+  , mTypes( dataTypes )
+  , mHelpText( helpText )
 {}
 
 bool QgsPropertyDefinition::supportsAssistant() const
@@ -203,7 +203,7 @@ QgsProperty::QgsProperty()
   d = new QgsPropertyPrivate();
 }
 
-QgsProperty QgsProperty::fromExpression( const QString& expression, bool isActive )
+QgsProperty QgsProperty::fromExpression( const QString &expression, bool isActive )
 {
   QgsProperty p;
   p.setExpressionString( expression );
@@ -211,7 +211,7 @@ QgsProperty QgsProperty::fromExpression( const QString& expression, bool isActiv
   return p;
 }
 
-QgsProperty QgsProperty::fromField( const QString& fieldName, bool isActive )
+QgsProperty QgsProperty::fromField( const QString &fieldName, bool isActive )
 {
   QgsProperty p;
   p.setField( fieldName );
@@ -219,7 +219,7 @@ QgsProperty QgsProperty::fromField( const QString& fieldName, bool isActive )
   return p;
 }
 
-QgsProperty QgsProperty::fromValue( const QVariant& value, bool isActive )
+QgsProperty QgsProperty::fromValue( const QVariant &value, bool isActive )
 {
   QgsProperty p;
   p.setStaticValue( value );
@@ -227,29 +227,29 @@ QgsProperty QgsProperty::fromValue( const QVariant& value, bool isActive )
   return p;
 }
 
-QgsProperty::QgsProperty( const QgsProperty& other ) //NOLINT
-    : d( other.d )
+QgsProperty::QgsProperty( const QgsProperty &other ) //NOLINT
+  : d( other.d )
 {}
 
-QgsProperty &QgsProperty::operator=( const QgsProperty & other ) //NOLINT
+QgsProperty &QgsProperty::operator=( const QgsProperty &other )  //NOLINT
 {
   d = other.d;
   return *this;
 }
 
-bool QgsProperty::operator==( const QgsProperty& other ) const
+bool QgsProperty::operator==( const QgsProperty &other ) const
 {
   return d->active == other.d->active
          && d->type == other.d->type
          && ( d->type != StaticProperty || d->staticValue == other.d->staticValue )
          && ( d->type != FieldBasedProperty || d->fieldName == other.d->fieldName )
          && ( d->type != ExpressionBasedProperty || d->expressionString == other.d->expressionString )
-         && (( !d->transformer && !other.d->transformer ) || ( d->transformer && other.d->transformer && d->transformer->toExpression( QString() ) == other.d->transformer->toExpression( QString() ) ) );
+         && ( ( !d->transformer && !other.d->transformer ) || ( d->transformer && other.d->transformer && d->transformer->toExpression( QString() ) == other.d->transformer->toExpression( QString() ) ) );
 }
 
-bool QgsProperty::operator!=( const QgsProperty& other ) const
+bool QgsProperty::operator!=( const QgsProperty &other ) const
 {
-  return ( !(( *this ) == other ) );
+  return ( !( ( *this ) == other ) );
 }
 
 QgsProperty::Type QgsProperty::propertyType() const
@@ -268,7 +268,7 @@ void QgsProperty::setActive( bool active )
   d->active = active;
 }
 
-void QgsProperty::setStaticValue( const QVariant& value )
+void QgsProperty::setStaticValue( const QVariant &value )
 {
   d.detach();
   d->type = StaticProperty;
@@ -283,7 +283,7 @@ QVariant QgsProperty::staticValue() const
   return d->staticValue;
 }
 
-void QgsProperty::setField( const QString& field )
+void QgsProperty::setField( const QString &field )
 {
   d.detach();
   d->type = FieldBasedProperty;
@@ -304,7 +304,7 @@ QgsProperty::operator bool() const
   return d->type != InvalidProperty;
 }
 
-void QgsProperty::setExpressionString( const QString& expression )
+void QgsProperty::setExpressionString( const QString &expression )
 {
   d.detach();
   d->type = ExpressionBasedProperty;
@@ -346,7 +346,7 @@ QString QgsProperty::asExpression() const
   return d->transformer ? d->transformer->toExpression( exp ) : exp;
 }
 
-bool QgsProperty::prepare( const QgsExpressionContext& context ) const
+bool QgsProperty::prepare( const QgsExpressionContext &context ) const
 {
   if ( !d->active )
     return true;
@@ -388,7 +388,7 @@ bool QgsProperty::prepare( const QgsExpressionContext& context ) const
   return false;
 }
 
-QSet<QString> QgsProperty::referencedFields( const QgsExpressionContext& context ) const
+QSet<QString> QgsProperty::referencedFields( const QgsExpressionContext &context ) const
 {
   if ( !d->active )
     return QSet<QString>();
@@ -420,7 +420,7 @@ QSet<QString> QgsProperty::referencedFields( const QgsExpressionContext& context
   return QSet<QString>();
 }
 
-QVariant QgsProperty::propertyValue( const QgsExpressionContext& context, const QVariant& defaultValue, bool* ok ) const
+QVariant QgsProperty::propertyValue( const QgsExpressionContext &context, const QVariant &defaultValue, bool *ok ) const
 {
   if ( ok )
     *ok = false;
@@ -488,7 +488,7 @@ QVariant QgsProperty::propertyValue( const QgsExpressionContext& context, const 
 }
 
 
-QVariant QgsProperty::value( const QgsExpressionContext& context, const QVariant& defaultValue, bool* ok ) const
+QVariant QgsProperty::value( const QgsExpressionContext &context, const QVariant &defaultValue, bool *ok ) const
 {
   if ( ok )
     *ok = false;
@@ -511,7 +511,7 @@ QVariant QgsProperty::value( const QgsExpressionContext& context, const QVariant
   return val;
 }
 
-QString QgsProperty::valueAsString( const QgsExpressionContext& context, const QString& defaultString, bool* ok ) const
+QString QgsProperty::valueAsString( const QgsExpressionContext &context, const QString &defaultString, bool *ok ) const
 {
   bool valOk = false;
   QVariant val = value( context, defaultString, &valOk );
@@ -530,7 +530,7 @@ QString QgsProperty::valueAsString( const QgsExpressionContext& context, const Q
   }
 }
 
-QColor QgsProperty::valueAsColor( const QgsExpressionContext &context, const QColor &defaultColor, bool* ok ) const
+QColor QgsProperty::valueAsColor( const QgsExpressionContext &context, const QColor &defaultColor, bool *ok ) const
 {
   if ( ok )
     *ok = false;
@@ -561,7 +561,7 @@ QColor QgsProperty::valueAsColor( const QgsExpressionContext &context, const QCo
   }
 }
 
-double QgsProperty::valueAsDouble( const QgsExpressionContext &context, double defaultValue, bool* ok ) const
+double QgsProperty::valueAsDouble( const QgsExpressionContext &context, double defaultValue, bool *ok ) const
 {
   if ( ok )
     *ok = false;
@@ -584,7 +584,7 @@ double QgsProperty::valueAsDouble( const QgsExpressionContext &context, double d
   }
 }
 
-int QgsProperty::valueAsInt( const QgsExpressionContext &context, int defaultValue, bool* ok ) const
+int QgsProperty::valueAsInt( const QgsExpressionContext &context, int defaultValue, bool *ok ) const
 {
   if ( ok )
     *ok = false;
@@ -620,7 +620,7 @@ int QgsProperty::valueAsInt( const QgsExpressionContext &context, int defaultVal
   }
 }
 
-bool QgsProperty::valueAsBool( const QgsExpressionContext& context, bool defaultValue, bool* ok ) const
+bool QgsProperty::valueAsBool( const QgsExpressionContext &context, bool defaultValue, bool *ok ) const
 {
   if ( ok )
     *ok = false;
@@ -726,13 +726,13 @@ bool QgsProperty::readXml( const QDomElement &propertyElem, const QDomDocument &
 }
 
 
-void QgsProperty::setTransformer( QgsPropertyTransformer* transformer )
+void QgsProperty::setTransformer( QgsPropertyTransformer *transformer )
 {
   d.detach();
   d->transformer = transformer;
 }
 
-const QgsPropertyTransformer* QgsProperty::transformer() const
+const QgsPropertyTransformer *QgsProperty::transformer() const
 {
   return d->transformer;
 }

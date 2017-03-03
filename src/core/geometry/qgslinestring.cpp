@@ -40,9 +40,9 @@ QgsLineString::QgsLineString(): QgsCurve()
   mWkbType = QgsWkbTypes::LineString;
 }
 
-bool QgsLineString::operator==( const QgsCurve& other ) const
+bool QgsLineString::operator==( const QgsCurve &other ) const
 {
-  const QgsLineString* otherLine = dynamic_cast< const QgsLineString* >( &other );
+  const QgsLineString *otherLine = dynamic_cast< const QgsLineString * >( &other );
   if ( !otherLine )
     return false;
 
@@ -68,7 +68,7 @@ bool QgsLineString::operator==( const QgsCurve& other ) const
   return true;
 }
 
-bool QgsLineString::operator!=( const QgsCurve& other ) const
+bool QgsLineString::operator!=( const QgsCurve &other ) const
 {
   return !operator==( other );
 }
@@ -93,7 +93,7 @@ bool QgsLineString::isEmpty() const
   return mX.isEmpty();
 }
 
-bool QgsLineString::fromWkb( QgsConstWkbPtr& wkbPtr )
+bool QgsLineString::fromWkb( QgsConstWkbPtr &wkbPtr )
 {
   if ( !wkbPtr )
   {
@@ -110,7 +110,7 @@ bool QgsLineString::fromWkb( QgsConstWkbPtr& wkbPtr )
   return true;
 }
 
-void QgsLineString::fromWkbPoints( QgsWkbTypes::Type type, const QgsConstWkbPtr& wkb )
+void QgsLineString::fromWkbPoints( QgsWkbTypes::Type type, const QgsConstWkbPtr &wkb )
 {
   mWkbType = type;
   importVerticesFromWkb( wkb );
@@ -146,7 +146,7 @@ QgsRectangle QgsLineString::calculateBoundingBox() const
  * See details in QEP #17
  ****************************************************************************/
 
-bool QgsLineString::fromWkt( const QString& wkt )
+bool QgsLineString::fromWkt( const QString &wkt )
 {
   clear();
 
@@ -191,7 +191,7 @@ QString QgsLineString::asWkt( int precision ) const
   return wkt;
 }
 
-QDomElement QgsLineString::asGML2( QDomDocument& doc, int precision, const QString& ns ) const
+QDomElement QgsLineString::asGML2( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QgsPointSequence pts;
   points( pts );
@@ -202,7 +202,7 @@ QDomElement QgsLineString::asGML2( QDomDocument& doc, int precision, const QStri
   return elemLineString;
 }
 
-QDomElement QgsLineString::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
+QDomElement QgsLineString::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QgsPointSequence pts;
   points( pts );
@@ -264,11 +264,11 @@ QgsPointV2 QgsLineString::endPoint() const
  * See details in QEP #17
  ****************************************************************************/
 
-QgsLineString* QgsLineString::curveToLine( double tolerance, SegmentationToleranceType toleranceType ) const
+QgsLineString *QgsLineString::curveToLine( double tolerance, SegmentationToleranceType toleranceType ) const
 {
   Q_UNUSED( tolerance );
   Q_UNUSED( toleranceType );
-  return static_cast<QgsLineString*>( clone() );
+  return static_cast<QgsLineString *>( clone() );
 }
 
 int QgsLineString::numPoints() const
@@ -410,7 +410,7 @@ void QgsLineString::setPoints( const QgsPointSequence &points )
   }
 
   //get wkb type from first point
-  const QgsPointV2& firstPt = points.at( 0 );
+  const QgsPointV2 &firstPt = points.at( 0 );
   bool hasZ = firstPt.is3D();
   bool hasM = firstPt.isMeasure();
 
@@ -456,7 +456,7 @@ void QgsLineString::setPoints( const QgsPointSequence &points )
  * See details in QEP #17
  ****************************************************************************/
 
-void QgsLineString::append( const QgsLineString* line )
+void QgsLineString::append( const QgsLineString *line )
 {
   if ( !line )
   {
@@ -518,9 +518,9 @@ void QgsLineString::append( const QgsLineString* line )
   clearCache(); //set bounding box invalid
 }
 
-QgsLineString* QgsLineString::reversed() const
+QgsLineString *QgsLineString::reversed() const
 {
-  QgsLineString* copy = clone();
+  QgsLineString *copy = clone();
   std::reverse( copy->mX.begin(), copy->mX.end() );
   std::reverse( copy->mY.begin(), copy->mY.end() );
   if ( copy->is3D() )
@@ -540,12 +540,12 @@ QgsLineString* QgsLineString::reversed() const
  * See details in QEP #17
  ****************************************************************************/
 
-void QgsLineString::draw( QPainter& p ) const
+void QgsLineString::draw( QPainter &p ) const
 {
   p.drawPolyline( asQPolygonF() );
 }
 
-void QgsLineString::addToPainterPath( QPainterPath& path ) const
+void QgsLineString::addToPainterPath( QPainterPath &path ) const
 {
   int nPoints = numPoints();
   if ( nPoints < 1 )
@@ -564,14 +564,14 @@ void QgsLineString::addToPainterPath( QPainterPath& path ) const
   }
 }
 
-void QgsLineString::drawAsPolygon( QPainter& p ) const
+void QgsLineString::drawAsPolygon( QPainter &p ) const
 {
   p.drawPolygon( asQPolygonF() );
 }
 
-QgsAbstractGeometry* QgsLineString::toCurveType() const
+QgsAbstractGeometry *QgsLineString::toCurveType() const
 {
-  QgsCompoundCurve* compoundCurve = new QgsCompoundCurve();
+  QgsCompoundCurve *compoundCurve = new QgsCompoundCurve();
   compoundCurve->addCurve( clone() );
   return compoundCurve;
 }
@@ -608,9 +608,9 @@ void QgsLineString::extend( double startDistance, double endDistance )
  * See details in QEP #17
  ****************************************************************************/
 
-void QgsLineString::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
+void QgsLineString::transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
 {
-  double* zArray = mZ.data();
+  double *zArray = mZ.data();
 
   bool hasZ = is3D();
   int nPoints = numPoints();
@@ -631,7 +631,7 @@ void QgsLineString::transform( const QgsCoordinateTransform& ct, QgsCoordinateTr
   clearCache();
 }
 
-void QgsLineString::transform( const QTransform& t )
+void QgsLineString::transform( const QTransform &t )
 {
   int nPoints = numPoints();
   for ( int i = 0; i < nPoints; ++i )
@@ -650,7 +650,7 @@ void QgsLineString::transform( const QTransform& t )
  * See details in QEP #17
  ****************************************************************************/
 
-bool QgsLineString::insertVertex( QgsVertexId position, const QgsPointV2& vertex )
+bool QgsLineString::insertVertex( QgsVertexId position, const QgsPointV2 &vertex )
 {
   if ( position.vertex < 0 || position.vertex > mX.size() )
   {
@@ -676,7 +676,7 @@ bool QgsLineString::insertVertex( QgsVertexId position, const QgsPointV2& vertex
   return true;
 }
 
-bool QgsLineString::moveVertex( QgsVertexId position, const QgsPointV2& newPos )
+bool QgsLineString::moveVertex( QgsVertexId position, const QgsPointV2 &newPos )
 {
   if ( position.vertex < 0 || position.vertex >= mX.size() )
   {
@@ -729,7 +729,7 @@ bool QgsLineString::deleteVertex( QgsVertexId position )
  * See details in QEP #17
  ****************************************************************************/
 
-void QgsLineString::addVertex( const QgsPointV2& pt )
+void QgsLineString::addVertex( const QgsPointV2 &pt )
 {
   if ( mWkbType == QgsWkbTypes::Unknown || mX.isEmpty() )
   {
@@ -749,7 +749,7 @@ void QgsLineString::addVertex( const QgsPointV2& pt )
   clearCache(); //set bounding box invalid
 }
 
-double QgsLineString::closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const
+double QgsLineString::closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
 {
   double sqrDist = std::numeric_limits<double>::max();
   double testDist = 0;
@@ -791,7 +791,7 @@ double QgsLineString::closestSegment( const QgsPointV2& pt, QgsPointV2& segmentP
  * See details in QEP #17
  ****************************************************************************/
 
-bool QgsLineString::pointAt( int node, QgsPointV2& point, QgsVertexId::VertexType& type ) const
+bool QgsLineString::pointAt( int node, QgsPointV2 &point, QgsVertexId::VertexType &type ) const
 {
   if ( node < 0 || node >= numPoints() )
   {
@@ -846,7 +846,7 @@ QgsPointV2 QgsLineString::centroid() const
  * See details in QEP #17
  ****************************************************************************/
 
-void QgsLineString::sumUpArea( double& sum ) const
+void QgsLineString::sumUpArea( double &sum ) const
 {
   int maxIndex = numPoints() - 1;
 
@@ -856,7 +856,7 @@ void QgsLineString::sumUpArea( double& sum ) const
   }
 }
 
-void QgsLineString::importVerticesFromWkb( const QgsConstWkbPtr& wkb )
+void QgsLineString::importVerticesFromWkb( const QgsConstWkbPtr &wkb )
 {
   bool hasZ = is3D();
   bool hasM = isMeasure();

@@ -28,16 +28,16 @@
 #include "qgsvectorlayer.h"
 #include "qgsrasterrenderer.h"
 
-QgsLayerTreeModelLegendNode::QgsLayerTreeModelLegendNode( QgsLayerTreeLayer* nodeL, QObject* parent )
-    : QObject( parent )
-    , mLayerNode( nodeL )
-    , mEmbeddedInParent( false )
+QgsLayerTreeModelLegendNode::QgsLayerTreeModelLegendNode( QgsLayerTreeLayer *nodeL, QObject *parent )
+  : QObject( parent )
+  , mLayerNode( nodeL )
+  , mEmbeddedInParent( false )
 {
 }
 
-QgsLayerTreeModel* QgsLayerTreeModelLegendNode::model() const
+QgsLayerTreeModel *QgsLayerTreeModelLegendNode::model() const
 {
-  return qobject_cast<QgsLayerTreeModel*>( parent() );
+  return qobject_cast<QgsLayerTreeModel *>( parent() );
 }
 
 Qt::ItemFlags QgsLayerTreeModelLegendNode::flags() const
@@ -45,7 +45,7 @@ Qt::ItemFlags QgsLayerTreeModelLegendNode::flags() const
   return Qt::ItemIsEnabled;
 }
 
-bool QgsLayerTreeModelLegendNode::setData( const QVariant& value, int role )
+bool QgsLayerTreeModelLegendNode::setData( const QVariant &value, int role )
 {
   Q_UNUSED( value );
   Q_UNUSED( role );
@@ -53,7 +53,7 @@ bool QgsLayerTreeModelLegendNode::setData( const QVariant& value, int role )
 }
 
 
-QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( const QgsLegendSettings& settings, ItemContext* ctx )
+QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( const QgsLegendSettings &settings, ItemContext *ctx )
 {
   QFont symbolLabelFont = settings.style( QgsLegendStyle::SymbolLabel ).font();
 
@@ -70,7 +70,7 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( cons
 }
 
 
-QSizeF QgsLayerTreeModelLegendNode::drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const
+QSizeF QgsLayerTreeModelLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const
 {
   QIcon symbolIcon = data( Qt::DecorationRole ).value<QIcon>();
   if ( symbolIcon.isNull() )
@@ -83,7 +83,7 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbol( const QgsLegendSettings& setting
 }
 
 
-QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings& settings, ItemContext* ctx, QSizeF symbolSize ) const
+QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &settings, ItemContext *ctx, QSizeF symbolSize ) const
 {
   QSizeF labelSize( 0, 0 );
 
@@ -128,11 +128,11 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings& set
 // -------------------------------------------------------------------------
 
 
-QgsSymbolLegendNode::QgsSymbolLegendNode( QgsLayerTreeLayer* nodeLayer, const QgsLegendSymbolItem& item, QObject* parent )
-    : QgsLayerTreeModelLegendNode( nodeLayer, parent )
-    , mItem( item )
-    , mSymbolUsesMapUnits( false )
-    , mIconSize( 16, 16 )
+QgsSymbolLegendNode::QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsLegendSymbolItem &item, QObject *parent )
+  : QgsLayerTreeModelLegendNode( nodeLayer, parent )
+  , mItem( item )
+  , mSymbolUsesMapUnits( false )
+  , mIconSize( 16, 16 )
 {
   updateLabel();
 
@@ -155,7 +155,7 @@ QSize QgsSymbolLegendNode::minimumIconSize() const
   return minimumIconSize( context.get() );
 }
 
-QSize QgsSymbolLegendNode::minimumIconSize( QgsRenderContext* context ) const
+QSize QgsSymbolLegendNode::minimumIconSize( QgsRenderContext *context ) const
 {
   QSize minSz( 16, 16 );
   if ( mItem.symbol() && mItem.symbol()->type() == QgsSymbol::Marker )
@@ -181,17 +181,17 @@ QSize QgsSymbolLegendNode::minimumIconSize( QgsRenderContext* context ) const
   return minSz;
 }
 
-const QgsSymbol* QgsSymbolLegendNode::symbol() const
+const QgsSymbol *QgsSymbolLegendNode::symbol() const
 {
   return mItem.symbol();
 }
 
-void QgsSymbolLegendNode::setSymbol( QgsSymbol* symbol )
+void QgsSymbolLegendNode::setSymbol( QgsSymbol *symbol )
 {
   if ( !symbol )
     return;
 
-  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mLayerNode->layer() );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
   if ( !vlayer || !vlayer->renderer() )
     return;
 
@@ -215,7 +215,7 @@ void QgsSymbolLegendNode::uncheckAllItems()
 }
 
 inline
-QgsRenderContext * QgsSymbolLegendNode::createTemporaryRenderContext() const
+QgsRenderContext *QgsSymbolLegendNode::createTemporaryRenderContext() const
 {
   double scale = 0.0;
   double mupp = 0.0;
@@ -234,12 +234,12 @@ QgsRenderContext * QgsSymbolLegendNode::createTemporaryRenderContext() const
 
 void QgsSymbolLegendNode::checkAll( bool state )
 {
-  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mLayerNode->layer() );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
   if ( !vlayer || !vlayer->renderer() )
     return;
 
   QgsLegendSymbolListV2 symbolList = vlayer->renderer()->legendSymbolItemsV2();
-  Q_FOREACH ( const QgsLegendSymbolItem& item, symbolList )
+  Q_FOREACH ( const QgsLegendSymbolItem &item, symbolList )
   {
     vlayer->renderer()->checkLegendSymbolItem( item.ruleKey(), state );
   }
@@ -294,7 +294,7 @@ QVariant QgsSymbolLegendNode::data( int role ) const
     if ( !mItem.isCheckable() )
       return QVariant();
 
-    QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mLayerNode->layer() );
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
     if ( !vlayer || !vlayer->renderer() )
       return QVariant();
 
@@ -312,7 +312,7 @@ QVariant QgsSymbolLegendNode::data( int role ) const
   return QVariant();
 }
 
-bool QgsSymbolLegendNode::setData( const QVariant& value, int role )
+bool QgsSymbolLegendNode::setData( const QVariant &value, int role )
 {
   if ( role != Qt::CheckStateRole )
     return false;
@@ -320,7 +320,7 @@ bool QgsSymbolLegendNode::setData( const QVariant& value, int role )
   if ( !mItem.isCheckable() )
     return false;
 
-  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mLayerNode->layer() );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
   if ( !vlayer || !vlayer->renderer() )
     return false;
 
@@ -335,9 +335,9 @@ bool QgsSymbolLegendNode::setData( const QVariant& value, int role )
 
 
 
-QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const
+QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const
 {
-  QgsSymbol* s = mItem.symbol();
+  QgsSymbol *s = mItem.symbol();
   if ( !s )
   {
     return QSizeF();
@@ -359,7 +359,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings& settings, ItemC
   double widthOffset = 0;
   double heightOffset = 0;
 
-  if ( QgsMarkerSymbol* markerSymbol = dynamic_cast<QgsMarkerSymbol*>( s ) )
+  if ( QgsMarkerSymbol *markerSymbol = dynamic_cast<QgsMarkerSymbol *>( s ) )
   {
     // allow marker symbol to occupy bigger area if necessary
     double size = context.convertToPainterUnits( markerSymbol->size(), markerSymbol->sizeUnit(), markerSymbol->sizeMapUnitScale() ) / context.scaleFactor();
@@ -379,13 +379,13 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings& settings, ItemC
   {
     double currentXPosition = ctx->point.x();
     double currentYCoord = ctx->point.y() + ( itemHeight - settings.symbolSize().height() ) / 2;
-    QPainter* p = ctx->painter;
+    QPainter *p = ctx->painter;
 
     //setup painter scaling to dots so that raster symbology is drawn to scale
     double dotsPerMM = context.scaleFactor();
 
     int opacity = 255;
-    if ( QgsVectorLayer* vectorLayer = dynamic_cast<QgsVectorLayer*>( layerNode()->layer() ) )
+    if ( QgsVectorLayer *vectorLayer = dynamic_cast<QgsVectorLayer *>( layerNode()->layer() ) )
       opacity = 255 - ( 255 * vectorLayer->layerTransparency() / 100 );
 
     p->save();
@@ -442,7 +442,7 @@ void QgsSymbolLegendNode::invalidateMapBasedData()
 void QgsSymbolLegendNode::updateLabel()
 {
   bool showFeatureCount = mLayerNode->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toBool();
-  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( mLayerNode->layer() );
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
 
   if ( mEmbeddedInParent )
   {
@@ -467,11 +467,11 @@ void QgsSymbolLegendNode::updateLabel()
 // -------------------------------------------------------------------------
 
 
-QgsSimpleLegendNode::QgsSimpleLegendNode( QgsLayerTreeLayer* nodeLayer, const QString& label, const QIcon& icon, QObject* parent, const QString& key )
-    : QgsLayerTreeModelLegendNode( nodeLayer, parent )
-    , mLabel( label )
-    , mIcon( icon )
-    , mKey( key )
+QgsSimpleLegendNode::QgsSimpleLegendNode( QgsLayerTreeLayer *nodeLayer, const QString &label, const QIcon &icon, QObject *parent, const QString &key )
+  : QgsLayerTreeModelLegendNode( nodeLayer, parent )
+  , mLabel( label )
+  , mIcon( icon )
+  , mKey( key )
 {
 }
 
@@ -490,9 +490,9 @@ QVariant QgsSimpleLegendNode::data( int role ) const
 
 // -------------------------------------------------------------------------
 
-QgsImageLegendNode::QgsImageLegendNode( QgsLayerTreeLayer* nodeLayer, const QImage& img, QObject* parent )
-    : QgsLayerTreeModelLegendNode( nodeLayer, parent )
-    , mImage( img )
+QgsImageLegendNode::QgsImageLegendNode( QgsLayerTreeLayer *nodeLayer, const QImage &img, QObject *parent )
+  : QgsLayerTreeModelLegendNode( nodeLayer, parent )
+  , mImage( img )
 {
 }
 
@@ -509,7 +509,7 @@ QVariant QgsImageLegendNode::data( int role ) const
   return QVariant();
 }
 
-QSizeF QgsImageLegendNode::drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const
+QSizeF QgsImageLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const
 {
   Q_UNUSED( itemHeight );
 
@@ -523,10 +523,10 @@ QSizeF QgsImageLegendNode::drawSymbol( const QgsLegendSettings& settings, ItemCo
 
 // -------------------------------------------------------------------------
 
-QgsRasterSymbolLegendNode::QgsRasterSymbolLegendNode( QgsLayerTreeLayer* nodeLayer, const QColor& color, const QString& label, QObject* parent )
-    : QgsLayerTreeModelLegendNode( nodeLayer, parent )
-    , mColor( color )
-    , mLabel( label )
+QgsRasterSymbolLegendNode::QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent )
+  : QgsLayerTreeModelLegendNode( nodeLayer, parent )
+  , mColor( color )
+  , mLabel( label )
 {
 }
 
@@ -546,14 +546,14 @@ QVariant QgsRasterSymbolLegendNode::data( int role ) const
 }
 
 
-QSizeF QgsRasterSymbolLegendNode::drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const
+QSizeF QgsRasterSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const
 {
   if ( ctx )
   {
     QColor itemColor = mColor;
-    if ( QgsRasterLayer* rasterLayer = dynamic_cast<QgsRasterLayer*>( layerNode()->layer() ) )
+    if ( QgsRasterLayer *rasterLayer = dynamic_cast<QgsRasterLayer *>( layerNode()->layer() ) )
     {
-      if ( QgsRasterRenderer* rasterRenderer = rasterLayer->renderer() )
+      if ( QgsRasterRenderer *rasterRenderer = rasterLayer->renderer() )
         itemColor.setAlpha( rasterRenderer->opacity() * 255.0 );
     }
     ctx->painter->setBrush( itemColor );
@@ -579,9 +579,9 @@ QSizeF QgsRasterSymbolLegendNode::drawSymbol( const QgsLegendSettings& settings,
 
 // -------------------------------------------------------------------------
 
-QgsWmsLegendNode::QgsWmsLegendNode( QgsLayerTreeLayer* nodeLayer, QObject* parent )
-    : QgsLayerTreeModelLegendNode( nodeLayer, parent )
-    , mValid( false )
+QgsWmsLegendNode::QgsWmsLegendNode( QgsLayerTreeLayer *nodeLayer, QObject *parent )
+  : QgsLayerTreeModelLegendNode( nodeLayer, parent )
+  , mValid( false )
 {
 }
 
@@ -592,19 +592,19 @@ QImage QgsWmsLegendNode::getLegendGraphic() const
     // or maybe in presence of a downloader we should just delete it
     // and start a new one ?
 
-    QgsRasterLayer* layer = qobject_cast<QgsRasterLayer*>( mLayerNode->layer() );
-    const QgsLayerTreeModel* mod = model();
+    QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( mLayerNode->layer() );
+    const QgsLayerTreeModel *mod = model();
     if ( ! mod ) return mImage;
-    const QgsMapSettings* ms = mod->legendFilterMapSettings();
+    const QgsMapSettings *ms = mod->legendFilterMapSettings();
 
-    QgsRasterDataProvider* prov = layer->dataProvider();
+    QgsRasterDataProvider *prov = layer->dataProvider();
 
     Q_ASSERT( ! mFetcher );
     mFetcher.reset( prov->getLegendGraphicFetcher( ms ) );
     if ( mFetcher )
     {
-      connect( mFetcher.get(), SIGNAL( finish( const QImage& ) ), this, SLOT( getLegendGraphicFinished( const QImage& ) ) );
-      connect( mFetcher.get(), SIGNAL( error( const QString& ) ), this, SLOT( getLegendGraphicErrored( const QString& ) ) );
+      connect( mFetcher.get(), SIGNAL( finish( const QImage & ) ), this, SLOT( getLegendGraphicFinished( const QImage & ) ) );
+      connect( mFetcher.get(), SIGNAL( error( const QString & ) ), this, SLOT( getLegendGraphicErrored( const QString & ) ) );
       connect( mFetcher.get(), SIGNAL( progress( qint64, qint64 ) ), this, SLOT( getLegendGraphicProgress( qint64, qint64 ) ) );
       mFetcher->start();
     } // else QgsDebugMsg("XXX No legend supported?");
@@ -629,7 +629,7 @@ QVariant QgsWmsLegendNode::data( int role ) const
   return QVariant();
 }
 
-QSizeF QgsWmsLegendNode::drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const
+QSizeF QgsWmsLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const
 {
   Q_UNUSED( itemHeight );
 
@@ -643,7 +643,7 @@ QSizeF QgsWmsLegendNode::drawSymbol( const QgsLegendSettings& settings, ItemCont
 }
 
 /* private */
-QImage QgsWmsLegendNode::renderMessage( const QString& msg ) const
+QImage QgsWmsLegendNode::renderMessage( const QString &msg ) const
 {
   const int fontHeight = 10;
   const int margin = fontHeight / 2;
@@ -671,7 +671,7 @@ void QgsWmsLegendNode::getLegendGraphicProgress( qint64 cur, qint64 tot )
   emit dataChanged();
 }
 
-void QgsWmsLegendNode::getLegendGraphicErrored( const QString& msg )
+void QgsWmsLegendNode::getLegendGraphicErrored( const QString &msg )
 {
   if ( ! mFetcher ) return; // must be coming after finish
 
@@ -687,7 +687,7 @@ void QgsWmsLegendNode::getLegendGraphicErrored( const QString& msg )
   //QTimer::singleShot(5000, this, SLOT(invalidateMapBasedData()));
 }
 
-void QgsWmsLegendNode::getLegendGraphicFinished( const QImage& image )
+void QgsWmsLegendNode::getLegendGraphicFinished( const QImage &image )
 {
   if ( ! mFetcher ) return; // must be coming after error
 

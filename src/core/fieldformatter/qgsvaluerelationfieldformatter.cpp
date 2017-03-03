@@ -21,12 +21,12 @@
 
 #include <QSettings>
 
-bool orderByKeyLessThan( const QgsValueRelationFieldFormatter::ValueRelationItem& p1, const QgsValueRelationFieldFormatter::ValueRelationItem& p2 )
+bool orderByKeyLessThan( const QgsValueRelationFieldFormatter::ValueRelationItem &p1, const QgsValueRelationFieldFormatter::ValueRelationItem &p2 )
 {
   return qgsVariantLessThan( p1.key, p2.key );
 }
 
-bool orderByValueLessThan( const QgsValueRelationFieldFormatter::ValueRelationItem& p1, const QgsValueRelationFieldFormatter::ValueRelationItem& p2 )
+bool orderByValueLessThan( const QgsValueRelationFieldFormatter::ValueRelationItem &p1, const QgsValueRelationFieldFormatter::ValueRelationItem &p2 )
 {
   return qgsVariantLessThan( p1.value, p2.value );
 }
@@ -42,7 +42,7 @@ QString QgsValueRelationFieldFormatter::id() const
   return QStringLiteral( "ValueRelation" );
 }
 
-QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
   Q_UNUSED( layer )
   Q_UNUSED( fieldIndex )
@@ -63,7 +63,7 @@ QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer* layer, i
     QStringList keyList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( ',' );
     QStringList valueList;
 
-    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem& item, vrCache )
+    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem &item, vrCache )
     {
       if ( keyList.contains( item.key.toString() ) )
       {
@@ -80,7 +80,7 @@ QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer* layer, i
       return QgsApplication::nullRepresentation();
     }
 
-    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem& item, vrCache )
+    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem &item, vrCache )
     {
       if ( item.key == value )
       {
@@ -92,12 +92,12 @@ QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer* layer, i
   return QString( "(%1)" ).arg( value.toString() );
 }
 
-QVariant QgsValueRelationFieldFormatter::sortValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QVariant QgsValueRelationFieldFormatter::sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
   return representValue( layer, fieldIndex, config, cache, value );
 }
 
-QVariant QgsValueRelationFieldFormatter::createCache( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config ) const
+QVariant QgsValueRelationFieldFormatter::createCache( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const
 {
   Q_UNUSED( layer )
   Q_UNUSED( fieldIndex )
@@ -105,11 +105,11 @@ QVariant QgsValueRelationFieldFormatter::createCache( QgsVectorLayer* layer, int
 
 }
 
-QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatter::createCache( const QVariantMap& config )
+QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatter::createCache( const QVariantMap &config )
 {
   ValueRelationCache cache;
 
-  QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( config.value( "Layer" ).toString() ) );
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( config.value( "Layer" ).toString() ) );
 
   if ( !layer )
     return cache;

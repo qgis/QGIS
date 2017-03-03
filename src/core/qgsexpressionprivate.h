@@ -35,22 +35,22 @@ class QgsExpressionPrivate
 {
   public:
     QgsExpressionPrivate()
-        : ref( 1 )
-        , mRootNode( nullptr )
-        , mCalc( nullptr )
-        , mDistanceUnit( QgsUnitTypes::DistanceUnknownUnit )
-        , mAreaUnit( QgsUnitTypes::AreaUnknownUnit )
+      : ref( 1 )
+      , mRootNode( nullptr )
+      , mCalc( nullptr )
+      , mDistanceUnit( QgsUnitTypes::DistanceUnknownUnit )
+      , mAreaUnit( QgsUnitTypes::AreaUnknownUnit )
     {}
 
-    QgsExpressionPrivate( const QgsExpressionPrivate& other )
-        : ref( 1 )
-        , mRootNode( other.mRootNode ? other.mRootNode->clone() : nullptr )
-        , mParserErrorString( other.mParserErrorString )
-        , mEvalErrorString( other.mEvalErrorString )
-        , mExp( other.mExp )
-        , mCalc( other.mCalc )
-        , mDistanceUnit( other.mDistanceUnit )
-        , mAreaUnit( other.mAreaUnit )
+    QgsExpressionPrivate( const QgsExpressionPrivate &other )
+      : ref( 1 )
+      , mRootNode( other.mRootNode ? other.mRootNode->clone() : nullptr )
+      , mParserErrorString( other.mParserErrorString )
+      , mEvalErrorString( other.mEvalErrorString )
+      , mExp( other.mExp )
+      , mCalc( other.mCalc )
+      , mDistanceUnit( other.mDistanceUnit )
+      , mAreaUnit( other.mAreaUnit )
     {}
 
     ~QgsExpressionPrivate()
@@ -60,7 +60,7 @@ class QgsExpressionPrivate
 
     QAtomicInt ref;
 
-    QgsExpression::Node* mRootNode = nullptr;
+    QgsExpression::Node *mRootNode = nullptr;
 
     QString mParserErrorString;
     QString mEvalErrorString;

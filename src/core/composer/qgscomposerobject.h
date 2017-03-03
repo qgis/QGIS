@@ -102,52 +102,52 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      * Returns the composer object property definitions.
      * @note added in QGIS 3.0
      */
-    static const QgsPropertiesDefinition& propertyDefinitions();
+    static const QgsPropertiesDefinition &propertyDefinitions();
 
     /** Constructor
      * @param composition parent composition
      */
-    QgsComposerObject( QgsComposition* composition );
+    QgsComposerObject( QgsComposition *composition );
     virtual ~QgsComposerObject() = default;
 
     /** Returns the composition the item is attached to.
      * @returns QgsComposition for item.
      */
-    const QgsComposition* composition() const { return mComposition; }
+    const QgsComposition *composition() const { return mComposition; }
 
     //! @note not available in python bindings
-    QgsComposition* composition() { return mComposition; }
+    QgsComposition *composition() { return mComposition; }
 
     /** Stores item state in DOM element
      * @param elem is DOM element corresponding to item tag
      * @param doc is the DOM document
      */
-    virtual bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
+    virtual bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
     /** Sets item state from DOM element
      * @param itemElem is DOM node corresponding to item tag
      * @param doc is DOM document
      */
-    virtual bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
+    virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
     /** Returns a reference to the object's property collection, used for data defined overrides.
      * @note added in QGIS 3.0
      * @see setDataDefinedProperties()
      */
-    QgsPropertyCollection& dataDefinedProperties() { return mDataDefinedProperties; }
+    QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
 
     /** Returns a reference to the object's property collection, used for data defined overrides.
      * @note added in QGIS 3.0
      * @see setDataDefinedProperties()
      */
-    const QgsPropertyCollection& dataDefinedProperties() const { return mDataDefinedProperties; }
+    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; }
 
     /** Sets the objects's property collection, used for data defined overrides.
      * @param collection property collection. Existing properties will be replaced.
      * @note added in QGIS 3.0
      * @see dataDefinedProperties()
      */
-    void setDataDefinedProperties( const QgsPropertyCollection& collection ) { mDataDefinedProperties = collection; }
+    void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
     /** Set a custom property for the object.
      * @param key property key. If a property with the same key already exists it will be overwritten.
@@ -206,11 +206,11 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      * @param context expression context for evaluating data defined expressions
      * @note this method was added in version 2.5
      */
-    virtual void refreshDataDefinedProperty( const DataDefinedProperty property = AllProperties, const QgsExpressionContext* context = nullptr );
+    virtual void refreshDataDefinedProperty( const DataDefinedProperty property = AllProperties, const QgsExpressionContext *context = nullptr );
 
   protected:
 
-    QgsComposition* mComposition = nullptr;
+    QgsComposition *mComposition = nullptr;
 
     //! Custom properties for object
     QgsObjectCustomProperties mCustomProperties;

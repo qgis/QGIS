@@ -22,9 +22,9 @@
 #include <QPen>
 #include <QPainter>
 
-QgsAnnotation::QgsAnnotation( QObject* parent )
-    : QObject( parent )
-    , mMarkerSymbol( new QgsMarkerSymbol() )
+QgsAnnotation::QgsAnnotation( QObject *parent )
+  : QObject( parent )
+  , mMarkerSymbol( new QgsMarkerSymbol() )
 {
   QgsStringMap props;
   props.insert( QStringLiteral( "color" ), QStringLiteral( "white" ) );
@@ -55,13 +55,13 @@ void QgsAnnotation::setHasFixedMapPosition( bool fixed )
   emit moved();
 }
 
-void QgsAnnotation::setMapPosition( const QgsPoint& position )
+void QgsAnnotation::setMapPosition( const QgsPoint &position )
 {
   mMapPosition = position;
   emit moved();
 }
 
-void QgsAnnotation::setMapPositionCrs( const QgsCoordinateReferenceSystem& crs )
+void QgsAnnotation::setMapPositionCrs( const QgsCoordinateReferenceSystem &crs )
 {
   mMapPositionCrs = crs;
   emit moved();
@@ -90,21 +90,21 @@ void QgsAnnotation::setFrameSize( QSizeF size )
   emit appearanceChanged();
 }
 
-void QgsAnnotation::setContentsMargin( const QgsMargins& margins )
+void QgsAnnotation::setContentsMargin( const QgsMargins &margins )
 {
   mContentsMargins = margins;
   emit appearanceChanged();
 }
 
-void QgsAnnotation::setFillSymbol( QgsFillSymbol* symbol )
+void QgsAnnotation::setFillSymbol( QgsFillSymbol *symbol )
 {
   mFillSymbol.reset( symbol );
   emit appearanceChanged();
 }
 
-void QgsAnnotation::render( QgsRenderContext& context ) const
+void QgsAnnotation::render( QgsRenderContext &context ) const
 {
-  QPainter* painter = context.painter();
+  QPainter *painter = context.painter();
   if ( !painter )
   {
     return;
@@ -133,13 +133,13 @@ void QgsAnnotation::render( QgsRenderContext& context ) const
   painter->restore();
 }
 
-void QgsAnnotation::setMarkerSymbol( QgsMarkerSymbol* symbol )
+void QgsAnnotation::setMarkerSymbol( QgsMarkerSymbol *symbol )
 {
   mMarkerSymbol.reset( symbol );
   emit appearanceChanged();
 }
 
-void QgsAnnotation::setMapLayer( QgsMapLayer* layer )
+void QgsAnnotation::setMapLayer( QgsMapLayer *layer )
 {
   mMapLayer = layer;
   emit mapLayerChanged();
@@ -256,7 +256,7 @@ QPointF QgsAnnotation::pointOnLineWithDistance( QPointF startPoint, QPointF dire
   return QPointF( startPoint.x() + dx * scaleFactor, startPoint.y() + dy * scaleFactor );
 }
 
-void QgsAnnotation::drawFrame( QgsRenderContext& context ) const
+void QgsAnnotation::drawFrame( QgsRenderContext &context ) const
 {
   if ( !mFillSymbol )
     return;
@@ -285,7 +285,7 @@ void QgsAnnotation::drawFrame( QgsRenderContext& context ) const
   mFillSymbol->stopRender( context );
 }
 
-void QgsAnnotation::drawMarkerSymbol( QgsRenderContext& context ) const
+void QgsAnnotation::drawMarkerSymbol( QgsRenderContext &context ) const
 {
   if ( !context.painter() )
   {
@@ -300,7 +300,7 @@ void QgsAnnotation::drawMarkerSymbol( QgsRenderContext& context ) const
   }
 }
 
-void QgsAnnotation::_writeXml( QDomElement& itemElem, QDomDocument& doc ) const
+void QgsAnnotation::_writeXml( QDomElement &itemElem, QDomDocument &doc ) const
 {
   if ( itemElem.isNull() )
   {
@@ -345,7 +345,7 @@ void QgsAnnotation::_writeXml( QDomElement& itemElem, QDomDocument& doc ) const
   itemElem.appendChild( annotationElem );
 }
 
-void QgsAnnotation::_readXml( const QDomElement& annotationElem, const QDomDocument& doc )
+void QgsAnnotation::_readXml( const QDomElement &annotationElem, const QDomDocument &doc )
 {
   Q_UNUSED( doc );
   if ( annotationElem.isNull() )
@@ -385,7 +385,7 @@ void QgsAnnotation::_readXml( const QDomElement& annotationElem, const QDomDocum
   QDomElement symbolElem = annotationElem.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !symbolElem.isNull() )
   {
-    QgsMarkerSymbol* symbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElem );
+    QgsMarkerSymbol *symbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElem );
     if ( symbol )
     {
       mMarkerSymbol.reset( symbol );
@@ -399,7 +399,7 @@ void QgsAnnotation::_readXml( const QDomElement& annotationElem, const QDomDocum
     QDomElement symbolElem = fillElem.firstChildElement( QStringLiteral( "symbol" ) );
     if ( !symbolElem.isNull() )
     {
-      QgsFillSymbol* symbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem );
+      QgsFillSymbol *symbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem );
       if ( symbol )
       {
         mFillSymbol.reset( symbol );

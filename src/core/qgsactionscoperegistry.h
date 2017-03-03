@@ -50,7 +50,7 @@ class CORE_EXPORT QgsActionScopeRegistry : public QObject
      *
      * @note Added in QGIS 3.0
      */
-    explicit QgsActionScopeRegistry( QObject* parent = nullptr );
+    explicit QgsActionScopeRegistry( QObject *parent = nullptr );
 
     /**
      * Get all registered action scopes.
@@ -64,21 +64,21 @@ class CORE_EXPORT QgsActionScopeRegistry : public QObject
      *
      * @note Added in QGIS 3.0
      */
-    void registerActionScope( const QgsActionScope& actionScope );
+    void registerActionScope( const QgsActionScope &actionScope );
 
     /**
      * Unregister an additional action scope.
      *
      * @note Added in QGIS 3.0
      */
-    void unregisterActionScope( const QgsActionScope& actionScope );
+    void unregisterActionScope( const QgsActionScope &actionScope );
 
     /**
      * Get an action scope by its id.
      *
      * @note Added in QGIS 3.0
      */
-    QgsActionScope actionScope( const QString& id );
+    QgsActionScope actionScope( const QString &id );
 
   signals:
 

@@ -114,15 +114,15 @@ namespace pal
       ~Problem();
 
       //! Problem cannot be copied
-      Problem( const Problem& other ) = delete;
+      Problem( const Problem &other ) = delete;
       //! Problem cannot be copied
-      Problem& operator=( const Problem& other ) = delete;
+      Problem &operator=( const Problem &other ) = delete;
 
       /** Adds a candidate label position to the problem.
        * @param position label candidate position. Ownership is transferred to Problem.
        * @note added in QGIS 2.12
        */
-      void addCandidatePosition( LabelPosition* position ) { mLabelPositions.append( position ); }
+      void addCandidatePosition( LabelPosition *position ) { mLabelPositions.append( position ); }
 
       /////////////////
       // problem inspection functions
@@ -130,7 +130,7 @@ namespace pal
       // features counted 0...n-1
       int getFeatureCandidateCount( int i ) { return featNbLp[i]; }
       // both features and candidates counted 0..n-1
-      LabelPosition* getFeatureCandidate( int fi, int ci ) { return mLabelPositions.at( featStartId[fi] + ci ); }
+      LabelPosition *getFeatureCandidate( int fi, int ci ) { return mLabelPositions.at( featStartId[fi] + ci ); }
       /////////////////
 
 
@@ -146,9 +146,9 @@ namespace pal
        */
       void chain_search();
 
-      QList<LabelPosition*> * getSolution( bool returnInactive );
+      QList<LabelPosition *> *getSolution( bool returnInactive );
 
-      PalStat * getStats();
+      PalStat *getStats();
 
       /* useful only for postscript post-conversion*/
       //void toFile(char *label_file);
@@ -158,7 +158,7 @@ namespace pal
       void initialization();
 
       double compute_feature_cost( SubPart *part, int feat_id, int label_id, int *nbOverlap );
-      double compute_subsolution_cost( SubPart *part, int *s, int * nbOverlap );
+      double compute_subsolution_cost( SubPart *part, int *s, int *nbOverlap );
 
       /**
        *  POPMUSIC, chain
@@ -180,7 +180,7 @@ namespace pal
       void init_sol_empty();
       void init_sol_falp();
 
-      static bool compareLabelArea( pal::LabelPosition* l1, pal::LabelPosition* l2 );
+      static bool compareLabelArea( pal::LabelPosition *l1, pal::LabelPosition *l2 );
 
     private:
 
@@ -223,11 +223,11 @@ namespace pal
       double *labelPositionCost = nullptr;
       int *nbOlap = nullptr;
 
-      QList< LabelPosition* > mLabelPositions;
+      QList< LabelPosition * > mLabelPositions;
 
-      RTree<LabelPosition*, double, 2, double> *candidates;  // index all candidates
-      RTree<LabelPosition*, double, 2, double> *candidates_sol; // index active candidates
-      RTree<LabelPosition*, double, 2, double> *candidates_subsol; // idem for subparts
+      RTree<LabelPosition *, double, 2, double> *candidates; // index all candidates
+      RTree<LabelPosition *, double, 2, double> *candidates_sol; // index active candidates
+      RTree<LabelPosition *, double, 2, double> *candidates_subsol; // idem for subparts
 
       //int *feat;        // [nblp]
       int *featStartId; // [nbft]

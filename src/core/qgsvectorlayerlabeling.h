@@ -44,17 +44,17 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
     virtual QString type() const = 0;
 
     //! Factory for label provider implementation
-    virtual QgsVectorLayerLabelProvider* provider( QgsVectorLayer* layer ) const = 0;
+    virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const = 0;
 
     //! Return labeling configuration as XML element
-    virtual QDomElement save( QDomDocument& doc ) const = 0;
+    virtual QDomElement save( QDomDocument &doc ) const = 0;
 
     //! Get list of sub-providers within the layer's labeling.
     virtual QStringList subProviders() const { return QStringList( QString() ); }
 
     //! Get associated label settings. In case of multiple sub-providers with different settings,
     //! they are identified by their ID (e.g. in case of rule-based labeling, provider ID == rule key)
-    virtual QgsPalLayerSettings settings( QgsVectorLayer* layer, const QString& providerId = QString() ) const = 0;
+    virtual QgsPalLayerSettings settings( QgsVectorLayer *layer, const QString &providerId = QString() ) const = 0;
 
     /**
      * Returns true if drawing labels requires advanced effects like composition
@@ -62,12 +62,12 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
      * or exported to a vector format.
      * @note added in QGIS 3.0
      */
-    virtual bool requiresAdvancedEffects( QgsVectorLayer* layer ) const = 0;
+    virtual bool requiresAdvancedEffects( QgsVectorLayer *layer ) const = 0;
 
     // static stuff
 
     //! Try to create instance of an implementation based on the XML data
-    static QgsAbstractVectorLayerLabeling* create( const QDomElement& element );
+    static QgsAbstractVectorLayerLabeling *create( const QDomElement &element );
 };
 
 /** \ingroup core
@@ -84,10 +84,10 @@ class CORE_EXPORT QgsVectorLayerSimpleLabeling : public QgsAbstractVectorLayerLa
   public:
 
     virtual QString type() const override;
-    virtual QgsVectorLayerLabelProvider* provider( QgsVectorLayer* layer ) const override;
-    virtual QDomElement save( QDomDocument& doc ) const override;
-    virtual QgsPalLayerSettings settings( QgsVectorLayer* layer, const QString& providerId = QString() ) const override;
-    bool requiresAdvancedEffects( QgsVectorLayer* layer ) const override;
+    virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const override;
+    virtual QDomElement save( QDomDocument &doc ) const override;
+    virtual QgsPalLayerSettings settings( QgsVectorLayer *layer, const QString &providerId = QString() ) const override;
+    bool requiresAdvancedEffects( QgsVectorLayer *layer ) const override;
 };
 
 #endif // QGSVECTORLAYERLABELING_H

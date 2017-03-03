@@ -67,14 +67,14 @@ class CORE_EXPORT QgsColorSchemeRegistry
      * @see populateFromInstance
      * @see removeColorScheme
      */
-    void addColorScheme( QgsColorScheme* scheme );
+    void addColorScheme( QgsColorScheme *scheme );
 
     /** Removes all matching color schemes from the registry
      * @param scheme color scheme to remove
      * @returns true if scheme was found and removed
      * @see addColorScheme
      */
-    bool removeColorScheme( QgsColorScheme* scheme );
+    bool removeColorScheme( QgsColorScheme *scheme );
 
     /** Returns all color schemes in the registry
      * @returns list of color schemes
@@ -91,22 +91,22 @@ class CORE_EXPORT QgsColorSchemeRegistry
      * @param schemeList destination list for matching schemes
      * @note not available in python bindings
      */
-    template<class T> void schemes( QList<T*>& schemeList );
+    template<class T> void schemes( QList<T *> &schemeList );
 
   private:
 
-    QList< QgsColorScheme* > mColorSchemeList;
+    QList< QgsColorScheme * > mColorSchemeList;
 
 };
 
-template<class T> void QgsColorSchemeRegistry::schemes( QList<T*>& schemeList )
+template<class T> void QgsColorSchemeRegistry::schemes( QList<T *> &schemeList )
 {
   schemeList.clear();
   QList<QgsColorScheme *> schemeInstanceList = schemes();
   QList<QgsColorScheme *>::iterator schemeIt = schemeInstanceList.begin();
   for ( ; schemeIt != schemeInstanceList.end(); ++schemeIt )
   {
-    T* scheme = dynamic_cast<T*>( *schemeIt );
+    T *scheme = dynamic_cast<T *>( *schemeIt );
     if ( scheme )
     {
       schemeList.push_back( scheme );

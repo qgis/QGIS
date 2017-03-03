@@ -102,7 +102,7 @@ class CORE_EXPORT QgsColorScheme
     /** Clones a color scheme
      * @returns copy of color scheme
      */
-    virtual QgsColorScheme* clone() const = 0;
+    virtual QgsColorScheme *clone() const = 0;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsColorScheme::SchemeFlags )
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
 
     virtual QString schemeName() const override;
 
-    virtual QgsUserColorScheme* clone() const override;
+    virtual QgsUserColorScheme *clone() const override;
 
     virtual bool isEditable() const override { return true; }
 
@@ -199,14 +199,14 @@ class CORE_EXPORT QgsRecentColorScheme : public QgsColorScheme
     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
                                            const QColor &baseColor = QColor() ) override;
 
-    QgsRecentColorScheme* clone() const override;
+    QgsRecentColorScheme *clone() const override;
 
     /** Adds a color to the list of recent colors.
      * @param color color to add
      * @note added in QGIS 2.14
      * @see lastUsedColor()
      */
-    static void addRecentColor( const QColor& color );
+    static void addRecentColor( const QColor &color );
 
     /** Returns the most recently used color.
      * @note added in QGIS 3.0
@@ -237,7 +237,7 @@ class CORE_EXPORT QgsCustomColorScheme : public QgsColorScheme
 
     virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() ) override;
 
-    QgsCustomColorScheme* clone() const override;
+    QgsCustomColorScheme *clone() const override;
 };
 
 /** \ingroup core
@@ -262,7 +262,7 @@ class CORE_EXPORT QgsProjectColorScheme : public QgsColorScheme
 
     virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() ) override;
 
-    QgsProjectColorScheme* clone() const override;
+    QgsProjectColorScheme *clone() const override;
 };
 
 #endif

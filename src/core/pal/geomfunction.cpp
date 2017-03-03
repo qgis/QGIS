@@ -36,7 +36,7 @@
 
 using namespace pal;
 
-void heapsort( int *sid, int *id, const double* const x, int N )
+void heapsort( int *sid, int *id, const double *const x, int N )
 {
   unsigned int n = N, i = n / 2, parent, child;
   int tx;
@@ -78,7 +78,7 @@ void heapsort( int *sid, int *id, const double* const x, int N )
 }
 
 
-void heapsort2( int *x, double* heap, int N )
+void heapsort2( int *x, double *heap, int N )
 {
   unsigned int n = N, i = n / 2, parent, child;
   double t;
@@ -162,7 +162,7 @@ bool GeomFunction::computeLineIntersection( double x1, double y1, double x2, dou
   return true;
 }
 
-int GeomFunction::convexHullId( int *id, const double* const x, const double* const y, int n, int *&cHull )
+int GeomFunction::convexHullId( int *id, const double *const x, const double *const y, int n, int *&cHull )
 {
   int i;
 
@@ -175,8 +175,8 @@ int GeomFunction::convexHullId( int *id, const double* const x, const double* co
 
   if ( n <= 3 ) return n;
 
-  int* stack = new int[n];
-  double* tan = new double [n];
+  int *stack = new int[n];
+  double *tan = new double [n];
   int ref;
 
   int second, top;
@@ -211,7 +211,7 @@ int GeomFunction::convexHullId( int *id, const double* const x, const double* co
     ref++;
   }
   else
-    stack[1] = cHull[ref-1];
+    stack[1] = cHull[ref - 1];
 
 
   top = 1;
@@ -356,7 +356,7 @@ bool GeomFunction::containsCandidate( const GEOSPreparedGeometry *geom, double x
 
   try
   {
-    GEOSGeometry* bboxGeos = GEOSGeom_createLinearRing_r( geosctxt, coord );
+    GEOSGeometry *bboxGeos = GEOSGeom_createLinearRing_r( geosctxt, coord );
     bool result = ( GEOSPreparedContainsProperly_r( geosctxt, geom, bboxGeos ) == 1 );
     GEOSGeom_destroy_r( geosctxt, bboxGeos );
     return result;
@@ -370,7 +370,7 @@ bool GeomFunction::containsCandidate( const GEOSPreparedGeometry *geom, double x
 
 void GeomFunction::findLineCircleIntersection( double cx, double cy, double radius,
     double x1, double y1, double x2, double y2,
-    double& xRes, double& yRes )
+    double &xRes, double &yRes )
 {
   double dx = x2 - x1;
   double dy = y2 - y1;

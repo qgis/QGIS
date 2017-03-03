@@ -51,12 +51,12 @@ class CORE_EXPORT QgsAttributeTableConfig
     {
       //! Constructor for ColumnConfig
       ColumnConfig()
-          : type( Field )
-          , hidden( false )
-          , width( -1 )
+        : type( Field )
+        , hidden( false )
+        , width( -1 )
       {}
 
-      bool operator== ( const ColumnConfig& other ) const;
+      bool operator== ( const ColumnConfig &other ) const;
 
       Type type;    //!< The type of this column.
       QString name; //!< The name of the attribute if this column represents a field
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsAttributeTableConfig
      * Set the list of columns visible in the attribute table.
      * The list order defines the order of appearance.
      */
-    void setColumns( const QVector<ColumnConfig>& columns );
+    void setColumns( const QVector<ColumnConfig> &columns );
 
     /**
      * Update the configuration with the given fields.
@@ -103,7 +103,7 @@ class CORE_EXPORT QgsAttributeTableConfig
      * parameter fields will be removed. Any field which is in the parameter
      * fields but not in the configuration will be appended.
      */
-    void update( const QgsFields& fields );
+    void update( const QgsFields &fields );
 
     /**
      * Returns true if the action widget is visible
@@ -128,12 +128,12 @@ class CORE_EXPORT QgsAttributeTableConfig
     /**
      * Serialize to XML on layer save
      */
-    void writeXml( QDomNode& node ) const;
+    void writeXml( QDomNode &node ) const;
 
     /**
      * Deserialize to XML on layer load
      */
-    void readXml( const QDomNode& node );
+    void readXml( const QDomNode &node );
 
     /**
      * Get the expression used for sorting.
@@ -143,7 +143,7 @@ class CORE_EXPORT QgsAttributeTableConfig
     /**
      * Set the sort expression used for sorting.
      */
-    void setSortExpression( const QString& sortExpression );
+    void setSortExpression( const QString &sortExpression );
 
     /** Returns the width of a column, or -1 if column should use default width.
      * @param column column index
@@ -186,7 +186,7 @@ class CORE_EXPORT QgsAttributeTableConfig
     /**
      * Compare this configuration to other.
      */
-    bool operator!= ( const QgsAttributeTableConfig& other ) const;
+    bool operator!= ( const QgsAttributeTableConfig &other ) const;
 
   private:
     QVector<ColumnConfig> mColumns;

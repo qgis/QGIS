@@ -27,12 +27,12 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 
-QgsJSONExporter::QgsJSONExporter( const QgsVectorLayer* vectorLayer, int precision )
-    : mPrecision( precision )
-    , mIncludeGeometry( true )
-    , mIncludeAttributes( true )
-    , mIncludeRelatedAttributes( false )
-    , mLayerId( vectorLayer ? vectorLayer->id() : QString() )
+QgsJSONExporter::QgsJSONExporter( const QgsVectorLayer *vectorLayer, int precision )
+  : mPrecision( precision )
+  , mIncludeGeometry( true )
+  , mIncludeAttributes( true )
+  , mIncludeRelatedAttributes( false )
+  , mLayerId( vectorLayer ? vectorLayer->id() : QString() )
 {
   if ( vectorLayer )
   {
@@ -42,7 +42,7 @@ QgsJSONExporter::QgsJSONExporter( const QgsVectorLayer* vectorLayer, int precisi
   mTransform.setDestinationCrs( QgsCoordinateReferenceSystem( 4326, QgsCoordinateReferenceSystem::EpsgCrsId ) );
 }
 
-void QgsJSONExporter::setVectorLayer( const QgsVectorLayer* vectorLayer )
+void QgsJSONExporter::setVectorLayer( const QgsVectorLayer *vectorLayer )
 {
   mLayerId = vectorLayer ? vectorLayer->id() : QString();
   if ( vectorLayer )
@@ -54,10 +54,10 @@ void QgsJSONExporter::setVectorLayer( const QgsVectorLayer* vectorLayer )
 
 QgsVectorLayer *QgsJSONExporter::vectorLayer() const
 {
-  return qobject_cast< QgsVectorLayer* >( QgsProject::instance()->mapLayer( mLayerId ) );
+  return qobject_cast< QgsVectorLayer * >( QgsProject::instance()->mapLayer( mLayerId ) );
 }
 
-void QgsJSONExporter::setSourceCrs( const QgsCoordinateReferenceSystem& crs )
+void QgsJSONExporter::setSourceCrs( const QgsCoordinateReferenceSystem &crs )
 {
   mCrs = crs;
   mTransform.setSourceCrs( mCrs );
@@ -68,8 +68,8 @@ QgsCoordinateReferenceSystem QgsJSONExporter::sourceCrs() const
   return mCrs;
 }
 
-QString QgsJSONExporter::exportFeature( const QgsFeature& feature, const QVariantMap& extraProperties,
-                                        const QVariant& id ) const
+QString QgsJSONExporter::exportFeature( const QgsFeature &feature, const QVariantMap &extraProperties,
+                                        const QVariant &id ) const
 {
   QString s = QStringLiteral( "{\n   \"type\":\"Feature\",\n" );
 
@@ -123,7 +123,7 @@ QString QgsJSONExporter::exportFeature( const QgsFeature& feature, const QVarian
 
       for ( int i = 0; i < fields.count(); ++i )
       {
-        if (( !mAttributeIndexes.isEmpty() && !mAttributeIndexes.contains( i ) ) || mExcludedAttributeIndexes.contains( i ) )
+        if ( ( !mAttributeIndexes.isEmpty() && !mAttributeIndexes.contains( i ) ) || mExcludedAttributeIndexes.contains( i ) )
           continue;
 
         if ( attributeCounter > 0 )
@@ -151,18 +151,18 @@ QString QgsJSONExporter::exportFeature( const QgsFeature& feature, const QVarian
     }
 
     // related attributes
-    QgsVectorLayer* vl = vectorLayer();
+    QgsVectorLayer *vl = vectorLayer();
     if ( vl && mIncludeRelatedAttributes )
     {
       QList< QgsRelation > relations = QgsProject::instance()->relationManager()->referencedRelations( vl );
-      Q_FOREACH ( const QgsRelation& relation, relations )
+      Q_FOREACH ( const QgsRelation &relation, relations )
       {
         if ( attributeCounter > 0 )
           properties += QLatin1String( ",\n" );
 
         QgsFeatureRequest req = relation.getRelatedFeaturesRequest( feature );
         req.setFlags( QgsFeatureRequest::NoGeometry );
-        QgsVectorLayer* childLayer = relation.referencingLayer();
+        QgsVectorLayer *childLayer = relation.referencingLayer();
         QString relatedFeatureAttributes;
         if ( childLayer )
         {
@@ -204,10 +204,10 @@ QString QgsJSONExporter::exportFeature( const QgsFeature& feature, const QVarian
   return s;
 }
 
-QString QgsJSONExporter::exportFeatures( const QgsFeatureList& features ) const
+QString QgsJSONExporter::exportFeatures( const QgsFeatureList &features ) const
 {
   QStringList featureJSON;
-  Q_FOREACH ( const QgsFeature& feature, features )
+  Q_FOREACH ( const QgsFeature &feature, features )
   {
     featureJSON << exportFeature( feature );
   }
@@ -268,7 +268,7 @@ QString QgsJSONUtils::encodeValue( const QVariant &value )
   }
 }
 
-QString QgsJSONUtils::exportAttributes( const QgsFeature& feature )
+QString QgsJSONUtils::exportAttributes( const QgsFeature &feature )
 {
   QgsFields fields = feature.fields();
   QString attrs;
@@ -283,7 +283,7 @@ QString QgsJSONUtils::exportAttributes( const QgsFeature& feature )
   return attrs.prepend( '{' ).append( '}' );
 }
 
-QVariantList QgsJSONUtils::parseArray( const QString& json, QVariant::Type type )
+QVariantList QgsJSONUtils::parseArray( const QString &json, QVariant::Type type )
 {
   QJsonParseError error;
   const QJsonDocument jsonDoc = QJsonDocument::fromJson( json.toUtf8(), &error );
@@ -298,7 +298,7 @@ QVariantList QgsJSONUtils::parseArray( const QString& json, QVariant::Type type 
     QgsLogger::warning( QStringLiteral( "Cannot parse json (%1) as array: %2" ).arg( error.errorString(), json ) );
     return result;
   }
-  Q_FOREACH ( const QJsonValue& cur, jsonDoc.array() )
+  Q_FOREACH ( const QJsonValue &cur, jsonDoc.array() )
   {
     QVariant curVariant = cur.toVariant();
     if ( curVariant.convert( type ) )

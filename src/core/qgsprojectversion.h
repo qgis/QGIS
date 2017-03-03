@@ -37,13 +37,13 @@ class CORE_EXPORT QgsProjectVersion
      * Creates a new NULL version
      */
     QgsProjectVersion()
-        : mMajor( 0 )
-        , mMinor( 0 )
-        , mSub( 0 )
+      : mMajor( 0 )
+      , mMinor( 0 )
+      , mSub( 0 )
     {}
 
-    QgsProjectVersion( int major, int minor, int sub, const QString& name = "" );
-    QgsProjectVersion( const QString& string );
+    QgsProjectVersion( int major, int minor, int sub, const QString &name = "" );
+    QgsProjectVersion( const QString &string );
     int majorVersion() { return mMajor;}
     int minorVersion() { return mMinor;}
     int subVersion()   { return mSub;}

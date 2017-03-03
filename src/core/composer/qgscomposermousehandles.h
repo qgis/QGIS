@@ -73,10 +73,10 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
 
     QgsComposerMouseHandles( QgsComposition *composition );
 
-    void setComposition( QgsComposition* c ) { mComposition = c; }
-    QgsComposition* composition() { return mComposition; }
+    void setComposition( QgsComposition *c ) { mComposition = c; }
+    QgsComposition *composition() { return mComposition; }
 
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
     //! Finds out which mouse move action to choose depending on the scene cursor position
     QgsComposerMouseHandles::MouseAction mouseActionForScenePos( QPointF sceneCoordPos );
@@ -89,12 +89,12 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
 
   protected:
 
-    void mouseMoveEvent( QGraphicsSceneMouseEvent* event ) override;
-    void mouseReleaseEvent( QGraphicsSceneMouseEvent* event ) override;
-    void mousePressEvent( QGraphicsSceneMouseEvent* event ) override;
-    void mouseDoubleClickEvent( QGraphicsSceneMouseEvent* event ) override;
-    void hoverMoveEvent( QGraphicsSceneHoverEvent * event ) override;
-    void hoverLeaveEvent( QGraphicsSceneHoverEvent * event ) override;
+    void mouseMoveEvent( QGraphicsSceneMouseEvent *event ) override;
+    void mouseReleaseEvent( QGraphicsSceneMouseEvent *event ) override;
+    void mousePressEvent( QGraphicsSceneMouseEvent *event ) override;
+    void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event ) override;
+    void hoverMoveEvent( QGraphicsSceneHoverEvent *event ) override;
+    void hoverLeaveEvent( QGraphicsSceneHoverEvent *event ) override;
 
   public slots:
 
@@ -109,8 +109,8 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
 
   private:
 
-    QgsComposition* mComposition; //reference to composition
-    QGraphicsView* mGraphicsView; //reference to QGraphicsView
+    QgsComposition *mComposition; //reference to composition
+    QGraphicsView *mGraphicsView; //reference to QGraphicsView
 
     QgsComposerMouseHandles::MouseAction mCurrentMouseMoveAction;
     //! Start point of the last mouse move action (in scene coordinates)
@@ -135,8 +135,8 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     bool mIsResizing;
 
     //! Align snap lines
-    QGraphicsLineItem* mHAlignSnapItem = nullptr;
-    QGraphicsLineItem* mVAlignSnapItem = nullptr;
+    QGraphicsLineItem *mHAlignSnapItem = nullptr;
+    QGraphicsLineItem *mVAlignSnapItem = nullptr;
 
     QSizeF mCursorOffset;
 
@@ -144,14 +144,14 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     QRectF selectionBounds() const;
 
     //! Returns true if all selected items have same rotation, and if so, updates passed rotation variable
-    bool selectionRotation( double & rotation ) const;
+    bool selectionRotation( double &rotation ) const;
 
     //! Redraws or hides the handles based on the current selection
     void updateHandles();
     //! Draws the handles
-    void drawHandles( QPainter* painter, double rectHandlerSize );
+    void drawHandles( QPainter *painter, double rectHandlerSize );
     //! Draw outlines for selected items
-    void drawSelectedItemBounds( QPainter* painter );
+    void drawSelectedItemBounds( QPainter *painter );
 
     /** Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the
     item border for resizing*/
@@ -173,27 +173,27 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     void resizeMouseMove( QPointF currentPosition, bool lockAspect, bool fromCenter );
 
     //! Return horizontal align snap item. Creates a new graphics line if 0
-    QGraphicsLineItem* hAlignSnapItem();
+    QGraphicsLineItem *hAlignSnapItem();
     void deleteHAlignSnapItem();
     //! Return vertical align snap item. Creates a new graphics line if 0
-    QGraphicsLineItem* vAlignSnapItem();
+    QGraphicsLineItem *vAlignSnapItem();
     void deleteVAlignSnapItem();
     void deleteAlignItems();
 
     //! Snaps an item or point (depending on mode) originating at originalPoint to the grid or align rulers
     QPointF snapPoint( QPointF originalPoint, QgsComposerMouseHandles::SnapGuideMode mode );
     //! Snaps an item originating at unalignedX, unalignedY to the grid or align rulers
-    QPointF alignItem( double& alignX, double& alignY, double unalignedX, double unalignedY );
+    QPointF alignItem( double &alignX, double &alignY, double unalignedX, double unalignedY );
     //! Snaps a point to to the grid or align rulers
-    QPointF alignPos( QPointF pos, double& alignX, double& alignY );
+    QPointF alignPos( QPointF pos, double &alignX, double &alignY );
 
     //helper functions for item align
-    void collectAlignCoordinates( QMap< double, const QgsComposerItem* >& alignCoordsX, QMap< double, const QgsComposerItem* >& alignCoordsY );
-    bool nearestItem( const QMap< double, const QgsComposerItem* >& coords, double value, double& nearestValue ) const;
-    void checkNearestItem( double checkCoord, const QMap< double, const QgsComposerItem* >& alignCoords, double& smallestDiff, double itemCoordOffset, double& itemCoord, double& alignCoord );
+    void collectAlignCoordinates( QMap< double, const QgsComposerItem * > &alignCoordsX, QMap< double, const QgsComposerItem * > &alignCoordsY );
+    bool nearestItem( const QMap< double, const QgsComposerItem * > &coords, double value, double &nearestValue ) const;
+    void checkNearestItem( double checkCoord, const QMap< double, const QgsComposerItem * > &alignCoords, double &smallestDiff, double itemCoordOffset, double &itemCoord, double &alignCoord );
 
     //tries to return the current QGraphicsView attached to the composition
-    QGraphicsView* graphicsView();
+    QGraphicsView *graphicsView();
 
     //sets the mouse cursor for the QGraphicsView attached to the composition (workaround qt bug #3732)
     void setViewportCursor( Qt::CursorShape cursor );

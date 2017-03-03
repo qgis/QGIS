@@ -43,13 +43,13 @@ class CORE_EXPORT QgsAuthMethodConfig
      * @param method Textual key of the authentication method
      * @param version Version of the configuration (for updating previously saved configs later on)
      */
-    QgsAuthMethodConfig( const QString& method = QString(), int version = 0 );
+    QgsAuthMethodConfig( const QString &method = QString(), int version = 0 );
 
     //! Operator used to compare configs' equality
-    bool operator==( const QgsAuthMethodConfig& other ) const;
+    bool operator==( const QgsAuthMethodConfig &other ) const;
 
     //! Operator used to compare configs' inequality
-    bool operator!=( const QgsAuthMethodConfig& other ) const;
+    bool operator!=( const QgsAuthMethodConfig &other ) const;
 
     /**
      * Get 'authcfg' 7-character alphanumeric ID of the config
@@ -57,20 +57,20 @@ class CORE_EXPORT QgsAuthMethodConfig
      */
     const QString id() const { return mId; }
     //! Set auth config ID
-    void setId( const QString& id ) { mId = id; }
+    void setId( const QString &id ) { mId = id; }
 
     //! Get name of configuration
     const QString name() const { return mName; }
     //! Set name of configuration
-    void setName( const QString& name ) { mName = name; }
+    void setName( const QString &name ) { mName = name; }
 
     //! A URI to auto-select a config when connecting to a resource
     const QString uri() const { return mUri; }
-    void setUri( const QString& uri ) { mUri = uri; }
+    void setUri( const QString &uri ) { mUri = uri; }
 
     //! Textual key of the associated authentication method
     QString method() const { return mMethod; }
-    void setMethod( const QString& method ) { mMethod = method; }
+    void setMethod( const QString &method ) { mMethod = method; }
 
     //! Get version of the configuration
     int version() const { return mVersion; }
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsAuthMethodConfig
      * Load existing extended configuration
      * @param configstr Configuration string to load
      */
-    void loadConfigString( const QString& configstr );
+    void loadConfigString( const QString &configstr );
 
     //! Get extended configuration, mapped to key/value pairs of QStrings
     QgsStringMap configMap() const { return mConfigMap; }
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsAuthMethodConfig
      * Set extended configuration map
      * @param map Map to set
      */
-    void setConfigMap( const QgsStringMap& map ) { mConfigMap = map; }
+    void setConfigMap( const QgsStringMap &map ) { mConfigMap = map; }
 
     /**
      * Set a single config value per key in the map
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsAuthMethodConfig
      * @param key Config key
      * @param defaultvalue Default value, if key not found
      */
-    QString config( const QString &key, const QString& defaultvalue = QString() ) const;
+    QString config( const QString &key, const QString &defaultvalue = QString() ) const;
 
     /**
      * Return a config's list of values
@@ -262,9 +262,9 @@ class CORE_EXPORT QgsPkiConfigBundle
      * @param cert Certificate to store in bundle
      * @param certkey Private key to store in bundle
      */
-    QgsPkiConfigBundle( const QgsAuthMethodConfig& config,
-                        const QSslCertificate& cert,
-                        const QSslKey& certkey );
+    QgsPkiConfigBundle( const QgsAuthMethodConfig &config,
+                        const QSslCertificate &cert,
+                        const QSslKey &certkey );
 
     //! Whether the bundle is valid
     bool isValid();
@@ -272,17 +272,17 @@ class CORE_EXPORT QgsPkiConfigBundle
     //! Authentication method configuration
     const QgsAuthMethodConfig config() const { return mConfig; }
     //! Set authentication method configuration
-    void setConfig( const QgsAuthMethodConfig& config ) { mConfig = config; }
+    void setConfig( const QgsAuthMethodConfig &config ) { mConfig = config; }
 
     //! Client certificate object
     const QSslCertificate clientCert() const { return mCert; }
     //! Set client certificate object
-    void setClientCert( const QSslCertificate& cert ) { mCert = cert; }
+    void setClientCert( const QSslCertificate &cert ) { mCert = cert; }
 
     //! Private key object
     const QSslKey clientCertKey() const { return mCertKey; }
     //! Set private key object
-    void setClientCertKey( const QSslKey& certkey ) { mCertKey = certkey; }
+    void setClientCertKey( const QSslKey &certkey ) { mCertKey = certkey; }
 
   private:
     QgsAuthMethodConfig mConfig;
@@ -303,12 +303,12 @@ class CORE_EXPORT QgsAuthConfigSslServer
     //! Server certificate object
     const QSslCertificate sslCertificate() const { return mSslCert; }
     //! Set server certificate object
-    void setSslCertificate( const QSslCertificate& cert ) { mSslCert = cert; }
+    void setSslCertificate( const QSslCertificate &cert ) { mSslCert = cert; }
 
     //! Server host:port string
     const QString sslHostPort() const  { return mSslHostPort; }
     //! Set server host:port string
-    void setSslHostPort( const QString& hostport ) { mSslHostPort = hostport; }
+    void setSslHostPort( const QString &hostport ) { mSslHostPort = hostport; }
 
     //! SSL server protocol to use in connections
     QSsl::SslProtocol sslProtocol() const { return mSslProtocol; }
@@ -320,7 +320,7 @@ class CORE_EXPORT QgsAuthConfigSslServer
     //! SSL server errors (as enum list) to ignore in connections
     const QList<QSslError::SslError> sslIgnoredErrorEnums() const { return mSslIgnoredErrors; }
     //! Set SSL server errors (as enum list) to ignore in connections
-    void setSslIgnoredErrorEnums( const QList<QSslError::SslError>& errors ) { mSslIgnoredErrors = errors; }
+    void setSslIgnoredErrorEnums( const QList<QSslError::SslError> &errors ) { mSslIgnoredErrors = errors; }
 
     //! SSL client's peer verify mode to use in connections
     QSslSocket::PeerVerifyMode sslPeerVerifyMode() const { return mSslPeerVerifyMode; }
@@ -350,7 +350,7 @@ class CORE_EXPORT QgsAuthConfigSslServer
     //! Configuration as a concatenated string
     const QString configString() const;
     //! Load concatenated string into configuration, e.g. from auth database
-    void loadConfigString( const QString& config = QString() );
+    void loadConfigString( const QString &config = QString() );
 
     //! Whether configuration is null (missing components)
     bool isNull() const;

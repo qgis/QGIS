@@ -37,14 +37,14 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
      * @param mTagName tag used in XML file
      * @param c parent composition
      */
-    QgsComposerNodesItem( const QString &mTagName, QgsComposition* c );
+    QgsComposerNodesItem( const QString &mTagName, QgsComposition *c );
 
     /** Constructor
      * @param mTagName tag used in XML file
      * @param polygon nodes of the shape
      * @param c parent composition
      */
-    QgsComposerNodesItem( const QString &mTagName, const QPolygonF &polygon, QgsComposition* c );
+    QgsComposerNodesItem( const QString &mTagName, const QPolygonF &polygon, QgsComposition *c );
 
     /** Add a node in current shape.
      * @param pt is the location of the new node
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
     bool moveNode( const int index, QPointF node );
 
     //! \brief Reimplementation of QCanvasItem::paint - draw on canvas
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
     /** Search the nearest node in shape within a maximal area. Returns the
      * index of the nearest node or -1.
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
      * @param itemElem is Dom node corresponding to item tag
      * @param doc is Dom document
      */
-    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
     /** Remove a node from the shape.
      * @param index of the node to delete
@@ -117,7 +117,7 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc write template file
      */
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
   protected:
 

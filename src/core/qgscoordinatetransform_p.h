@@ -47,41 +47,41 @@ class QgsCoordinateTransformPrivate : public QSharedData
   public:
 
     explicit QgsCoordinateTransformPrivate()
-        : mIsValid( false )
-        , mShortCircuit( false )
-        , mSourceProjection( nullptr )
-        , mDestinationProjection( nullptr )
-        , mSourceDatumTransform( -1 )
-        , mDestinationDatumTransform( -1 )
+      : mIsValid( false )
+      , mShortCircuit( false )
+      , mSourceProjection( nullptr )
+      , mDestinationProjection( nullptr )
+      , mSourceDatumTransform( -1 )
+      , mDestinationDatumTransform( -1 )
     {
       setFinder();
     }
 
-    QgsCoordinateTransformPrivate( const QgsCoordinateReferenceSystem& source,
-                                   const QgsCoordinateReferenceSystem& destination )
-        : mIsValid( false )
-        , mShortCircuit( false )
-        , mSourceCRS( source )
-        , mDestCRS( destination )
-        , mSourceProjection( nullptr )
-        , mDestinationProjection( nullptr )
-        , mSourceDatumTransform( -1 )
-        , mDestinationDatumTransform( -1 )
+    QgsCoordinateTransformPrivate( const QgsCoordinateReferenceSystem &source,
+                                   const QgsCoordinateReferenceSystem &destination )
+      : mIsValid( false )
+      , mShortCircuit( false )
+      , mSourceCRS( source )
+      , mDestCRS( destination )
+      , mSourceProjection( nullptr )
+      , mDestinationProjection( nullptr )
+      , mSourceDatumTransform( -1 )
+      , mDestinationDatumTransform( -1 )
     {
       setFinder();
       initialize();
     }
 
-    QgsCoordinateTransformPrivate( const QgsCoordinateTransformPrivate& other )
-        : QSharedData( other )
-        , mIsValid( other.mIsValid )
-        , mShortCircuit( other.mShortCircuit )
-        , mSourceCRS( other.mSourceCRS )
-        , mDestCRS( other.mDestCRS )
-        , mSourceProjection( nullptr )
-        , mDestinationProjection( nullptr )
-        , mSourceDatumTransform( other.mSourceDatumTransform )
-        , mDestinationDatumTransform( other.mDestinationDatumTransform )
+    QgsCoordinateTransformPrivate( const QgsCoordinateTransformPrivate &other )
+      : QSharedData( other )
+      , mIsValid( other.mIsValid )
+      , mShortCircuit( other.mShortCircuit )
+      , mSourceCRS( other.mSourceCRS )
+      , mDestCRS( other.mDestCRS )
+      , mSourceProjection( nullptr )
+      , mDestinationProjection( nullptr )
+      , mSourceDatumTransform( other.mSourceDatumTransform )
+      , mDestinationDatumTransform( other.mDestinationDatumTransform )
     {
       //must reinitialize to setup mSourceProjection and mDestinationProjection
       initialize();
@@ -210,7 +210,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
     }
 
     //! Removes +nadgrids and +towgs84 from proj4 string
-    QString stripDatumTransform( const QString& proj4 ) const
+    QString stripDatumTransform( const QString &proj4 ) const
     {
       QStringList parameterSplit = proj4.split( '+', QString::SkipEmptyParts );
       QString currentParameter;
@@ -234,7 +234,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
     {
       QString transformString;
 
-      sqlite3* db = nullptr;
+      sqlite3 *db = nullptr;
       int openResult = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().constData(), &db, SQLITE_OPEN_READONLY, 0 );
       if ( openResult != SQLITE_OK )
       {
@@ -242,7 +242,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
         return transformString;
       }
 
-      sqlite3_stmt* stmt = nullptr;
+      sqlite3_stmt *stmt = nullptr;
       QString sql = QStringLiteral( "SELECT coord_op_method_code,p1,p2,p3,p4,p5,p6,p7 FROM tbl_datum_transform WHERE coord_op_code=%1" ).arg( datumTransform );
       int prepareRes = sqlite3_prepare( db, sql.toLatin1(), sql.size(), &stmt, nullptr );
       if ( prepareRes != SQLITE_OK )
@@ -287,7 +287,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
     }
 
     //! In certain situations, null grid shifts have to be added to src / dst proj string
-    void addNullGridShifts( QString& srcProjString, QString& destProjString ) const
+    void addNullGridShifts( QString &srcProjString, QString &destProjString ) const
     {
       //if one transformation uses ntv2, the other one needs to be null grid shift
       if ( mDestinationDatumTransform == -1 && srcProjString.contains( QLatin1String( "+nadgrids" ) ) ) //add null grid if source transformation is ntv2

@@ -35,13 +35,13 @@ QgsColorSchemeRegistry::~QgsColorSchemeRegistry()
 void QgsColorSchemeRegistry::populateFromInstance()
 {
   //get schemes from global instance
-  QList< QgsColorScheme* > schemeList = QgsApplication::colorSchemeRegistry()->schemes();
+  QList< QgsColorScheme * > schemeList = QgsApplication::colorSchemeRegistry()->schemes();
 
   //add to this scheme registry
-  QList< QgsColorScheme* >::iterator it = schemeList.begin();
+  QList< QgsColorScheme * >::iterator it = schemeList.begin();
   for ( ; it != schemeList.end(); ++it )
   {
-    addColorScheme(( *it )->clone() );
+    addColorScheme( ( *it )->clone() );
   }
 }
 
@@ -79,24 +79,24 @@ void QgsColorSchemeRegistry::addColorScheme( QgsColorScheme *scheme )
 
 QList<QgsColorScheme *> QgsColorSchemeRegistry::schemes() const
 {
-  QList< QgsColorScheme* > allSchemes;
-  QList<QgsColorScheme*>::const_iterator schemeIt;
+  QList< QgsColorScheme * > allSchemes;
+  QList<QgsColorScheme *>::const_iterator schemeIt;
   for ( schemeIt = mColorSchemeList.constBegin(); schemeIt != mColorSchemeList.constEnd(); ++schemeIt )
   {
-    allSchemes.append(( *schemeIt ) );
+    allSchemes.append( ( *schemeIt ) );
   }
   return allSchemes;
 }
 
 QList<QgsColorScheme *> QgsColorSchemeRegistry::schemes( const QgsColorScheme::SchemeFlag flag ) const
 {
-  QList< QgsColorScheme* > matchingSchemes;
-  QList<QgsColorScheme*>::const_iterator schemeIt;
+  QList< QgsColorScheme * > matchingSchemes;
+  QList<QgsColorScheme *>::const_iterator schemeIt;
   for ( schemeIt = mColorSchemeList.constBegin(); schemeIt != mColorSchemeList.constEnd(); ++schemeIt )
   {
-    if (( *schemeIt )->flags().testFlag( flag ) )
+    if ( ( *schemeIt )->flags().testFlag( flag ) )
     {
-      matchingSchemes.append(( *schemeIt ) );
+      matchingSchemes.append( ( *schemeIt ) );
     }
   }
   return matchingSchemes;

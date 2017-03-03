@@ -47,7 +47,7 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
   public:
     QgsNetworkProxyFactory() {}
 
-    QList<QNetworkProxy> queryProxy( const QNetworkProxyQuery & query = QNetworkProxyQuery() ) override
+    QList<QNetworkProxy> queryProxy( const QNetworkProxyQuery &query = QNetworkProxyQuery() ) override
     {
       QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
 
@@ -69,7 +69,7 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
 
       QString url = query.url().toString();
 
-      Q_FOREACH ( const QString& exclude, nam->excludeList() )
+      Q_FOREACH ( const QString &exclude, nam->excludeList() )
       {
         if ( url.startsWith( exclude ) )
         {
@@ -99,7 +99,7 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
 //
 // Static calls to enforce singleton behavior
 //
-QgsNetworkAccessManager* QgsNetworkAccessManager::instance()
+QgsNetworkAccessManager *QgsNetworkAccessManager::instance()
 {
   static QThreadStorage<QgsNetworkAccessManager> sInstances;
   QgsNetworkAccessManager *nam = &sInstances.localData();
@@ -114,9 +114,9 @@ QgsNetworkAccessManager* QgsNetworkAccessManager::instance()
 }
 
 QgsNetworkAccessManager::QgsNetworkAccessManager( QObject *parent )
-    : QNetworkAccessManager( parent )
-    , mUseSystemProxy( false )
-    , mInitialized( false )
+  : QNetworkAccessManager( parent )
+  , mUseSystemProxy( false )
+  , mInitialized( false )
 {
   setProxyFactory( new QgsNetworkProxyFactory() );
 }
@@ -219,7 +219,7 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   connect( reply, SIGNAL( downloadProgress( qint64, qint64 ) ), timer, SLOT( start() ) );
   connect( reply, SIGNAL( uploadProgress( qint64, qint64 ) ), timer, SLOT( start() ) );
   connect( reply, SIGNAL( finished( ) ), timer, SLOT( stop( ) ) );
-  QgsDebugMsgLevel( QString( "Created [reply:%1]" ).arg(( qint64 ) reply, 0, 16 ), 3 );
+  QgsDebugMsgLevel( QString( "Created [reply:%1]" ).arg( ( qint64 ) reply, 0, 16 ), 3 );
 
   return reply;
 }
@@ -233,7 +233,7 @@ void QgsNetworkAccessManager::abortRequest()
   Q_ASSERT( reply );
 
   reply->abort();
-  QgsDebugMsgLevel( QString( "Abort [reply:%1] %2" ).arg(( qint64 ) reply, 0, 16 ).arg( reply->url().toString() ), 3 );
+  QgsDebugMsgLevel( QString( "Abort [reply:%1] %2" ).arg( ( qint64 ) reply, 0, 16 ).arg( reply->url().toString() ), 3 );
   QgsMessageLog::logMessage( tr( "Network request %1 timed out" ).arg( reply->url().toString() ), tr( "Network" ) );
   // Notify the application
   emit requestTimedOut( reply );
@@ -297,8 +297,8 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
              sMainNAM, SIGNAL( proxyAuthenticationRequired( const QNetworkProxy &, QAuthenticator * ) ),
              Qt::BlockingQueuedConnection );
 
-    connect( this, SIGNAL( requestTimedOut( QNetworkReply* ) ),
-             sMainNAM, SIGNAL( requestTimedOut( QNetworkReply* ) ) );
+    connect( this, SIGNAL( requestTimedOut( QNetworkReply * ) ),
+             sMainNAM, SIGNAL( requestTimedOut( QNetworkReply * ) ) );
 
 #ifndef QT_NO_SSL
     connect( this, SIGNAL( sslErrors( QNetworkReply *, const QList<QSslError> & ) ),
@@ -366,7 +366,7 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
 
   setFallbackProxyAndExcludes( proxy, excludes );
 
-  QgsNetworkDiskCache *newcache = qobject_cast<QgsNetworkDiskCache*>( cache() );
+  QgsNetworkDiskCache *newcache = qobject_cast<QgsNetworkDiskCache *>( cache() );
   if ( !newcache )
     newcache = new QgsNetworkDiskCache( this );
 

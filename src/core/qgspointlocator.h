@@ -56,23 +56,23 @@ class CORE_EXPORT QgsPointLocator : public QObject
      *  do the searches on data reprojected to the given CRS
      *  @arg extent  if not null, will index only a subset of the layer
      */
-    explicit QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateReferenceSystem& destinationCrs = QgsCoordinateReferenceSystem(),
-                              const QgsRectangle* extent = nullptr );
+    explicit QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
+                              const QgsRectangle *extent = nullptr );
 
     ~QgsPointLocator();
 
     //! Get associated layer
     //! @note added in QGIS 2.14
-    QgsVectorLayer* layer() const { return mLayer; }
+    QgsVectorLayer *layer() const { return mLayer; }
     //! Get destination CRS - may be an invalid QgsCoordinateReferenceSystem if not doing OTF reprojection
     //! @note added in QGIS 2.14
     QgsCoordinateReferenceSystem destinationCrs() const;
     //! Get extent of the area point locator covers - if null then it caches the whole layer
     //! @note added in QGIS 2.14
-    const QgsRectangle* extent() const { return mExtent; }
+    const QgsRectangle *extent() const { return mExtent; }
     //! Configure extent - if not null, it will index only that area
     //! @note added in QGIS 2.14
-    void setExtent( const QgsRectangle* extent );
+    void setExtent( const QgsRectangle *extent );
 
     /**
      * The type of a snap result or the filter type for a snap request.
@@ -99,86 +99,86 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
     struct Match
     {
-      //! construct invalid match
-      Match()
+        //! construct invalid match
+        Match()
           : mType( Invalid )
           , mDist( 0 )
           , mPoint()
           , mLayer( nullptr )
           , mFid( 0 )
           , mVertexIndex( 0 )
-      {}
+        {}
 
-      Match( Type t, QgsVectorLayer* vl, QgsFeatureId fid, double dist, const QgsPoint& pt, int vertexIndex = 0, QgsPoint* edgePoints = nullptr )
+        Match( Type t, QgsVectorLayer *vl, QgsFeatureId fid, double dist, const QgsPoint &pt, int vertexIndex = 0, QgsPoint *edgePoints = nullptr )
           : mType( t )
           , mDist( dist )
           , mPoint( pt )
           , mLayer( vl )
           , mFid( fid )
           , mVertexIndex( vertexIndex )
-      {
-        if ( edgePoints )
         {
-          mEdgePoints[0] = edgePoints[0];
-          mEdgePoints[1] = edgePoints[1];
+          if ( edgePoints )
+          {
+            mEdgePoints[0] = edgePoints[0];
+            mEdgePoints[1] = edgePoints[1];
+          }
         }
-      }
 
-      Type type() const { return mType; }
+        Type type() const { return mType; }
 
-      bool isValid() const { return mType != Invalid; }
-      bool hasVertex() const { return mType == Vertex; }
-      bool hasEdge() const { return mType == Edge; }
-      bool hasArea() const { return mType == Area; }
+        bool isValid() const { return mType != Invalid; }
+        bool hasVertex() const { return mType == Vertex; }
+        bool hasEdge() const { return mType == Edge; }
+        bool hasArea() const { return mType == Area; }
 
-      //! for vertex / edge match
-      //! units depending on what class returns it (geom.cache: layer units, map canvas snapper: dest crs units)
-      double distance() const { return mDist; }
+        //! for vertex / edge match
+        //! units depending on what class returns it (geom.cache: layer units, map canvas snapper: dest crs units)
+        double distance() const { return mDist; }
 
-      //! for vertex / edge match
-      //! coords depending on what class returns it (geom.cache: layer coords, map canvas snapper: dest coords)
-      QgsPoint point() const { return mPoint; }
+        //! for vertex / edge match
+        //! coords depending on what class returns it (geom.cache: layer coords, map canvas snapper: dest coords)
+        QgsPoint point() const { return mPoint; }
 
-      //! for vertex / edge match (first vertex of the edge)
-      int vertexIndex() const { return mVertexIndex; }
+        //! for vertex / edge match (first vertex of the edge)
+        int vertexIndex() const { return mVertexIndex; }
 
-      /**
-       * The vector layer where the snap occurred.
-       * Will be null if the snap happened on an intersection.
-       */
-      QgsVectorLayer* layer() const { return mLayer; }
+        /**
+         * The vector layer where the snap occurred.
+         * Will be null if the snap happened on an intersection.
+         */
+        QgsVectorLayer *layer() const { return mLayer; }
 
-      /**
-       * The id of the feature to which the snapped geometry belongs.
-       */
-      QgsFeatureId featureId() const { return mFid; }
+        /**
+         * The id of the feature to which the snapped geometry belongs.
+         */
+        QgsFeatureId featureId() const { return mFid; }
 
-      //! Only for a valid edge match - obtain endpoints of the edge
-      void edgePoints( QgsPoint& pt1, QgsPoint& pt2 ) const
-      {
-        pt1 = mEdgePoints[0];
-        pt2 = mEdgePoints[1];
-      }
+        //! Only for a valid edge match - obtain endpoints of the edge
+        void edgePoints( QgsPoint &pt1, QgsPoint &pt2 ) const
+        {
+          pt1 = mEdgePoints[0];
+          pt2 = mEdgePoints[1];
+        }
 
-      bool operator==( const Match& other ) const
-      {
-        return mType == other.mType &&
-               mDist == other.mDist &&
-               mPoint == other.mPoint &&
-               mLayer == other.mLayer &&
-               mFid == other.mFid &&
-               mVertexIndex == other.mVertexIndex &&
-               mEdgePoints == other.mEdgePoints;
-      }
+        bool operator==( const Match &other ) const
+        {
+          return mType == other.mType &&
+                 mDist == other.mDist &&
+                 mPoint == other.mPoint &&
+                 mLayer == other.mLayer &&
+                 mFid == other.mFid &&
+                 mVertexIndex == other.mVertexIndex &&
+                 mEdgePoints == other.mEdgePoints;
+        }
 
-    protected:
-      Type mType;
-      double mDist;
-      QgsPoint mPoint;
-      QgsVectorLayer* mLayer = nullptr;
-      QgsFeatureId mFid;
-      int mVertexIndex; // e.g. vertex index
-      QgsPoint mEdgePoints[2];
+      protected:
+        Type mType;
+        double mDist;
+        QgsPoint mPoint;
+        QgsVectorLayer *mLayer = nullptr;
+        QgsFeatureId mFid;
+        int mVertexIndex; // e.g. vertex index
+        QgsPoint mEdgePoints[2];
     };
 
     typedef class QList<Match> MatchList;
@@ -189,28 +189,28 @@ class CORE_EXPORT QgsPointLocator : public QObject
     struct MatchFilter
     {
       virtual ~MatchFilter() = default;
-      virtual bool acceptMatch( const Match& match ) = 0;
+      virtual bool acceptMatch( const Match &match ) = 0;
     };
 
     // intersection queries
 
     //! Find nearest vertex to the specified point - up to distance specified by tolerance
     //! Optional filter may discard unwanted matches.
-    Match nearestVertex( const QgsPoint& point, double tolerance, MatchFilter* filter = nullptr );
+    Match nearestVertex( const QgsPoint &point, double tolerance, MatchFilter *filter = nullptr );
     //! Find nearest edge to the specified point - up to distance specified by tolerance
     //! Optional filter may discard unwanted matches.
-    Match nearestEdge( const QgsPoint& point, double tolerance, MatchFilter* filter = nullptr );
+    Match nearestEdge( const QgsPoint &point, double tolerance, MatchFilter *filter = nullptr );
     //! Find edges within a specified recangle
     //! Optional filter may discard unwanted matches.
-    MatchList edgesInRect( const QgsRectangle& rect, MatchFilter* filter = nullptr );
+    MatchList edgesInRect( const QgsRectangle &rect, MatchFilter *filter = nullptr );
     //! Override of edgesInRect that construct rectangle from a center point and tolerance
-    MatchList edgesInRect( const QgsPoint& point, double tolerance, MatchFilter* filter = nullptr );
+    MatchList edgesInRect( const QgsPoint &point, double tolerance, MatchFilter *filter = nullptr );
 
     // point-in-polygon query
 
     // TODO: function to return just the first match?
     //! find out if the point is in any polygons
-    MatchList pointInPolygon( const QgsPoint& point );
+    MatchList pointInPolygon( const QgsPoint &point );
 
     //
 
@@ -225,22 +225,22 @@ class CORE_EXPORT QgsPointLocator : public QObject
   private slots:
     void onFeatureAdded( QgsFeatureId fid );
     void onFeatureDeleted( QgsFeatureId fid );
-    void onGeometryChanged( QgsFeatureId fid, const QgsGeometry& geom );
+    void onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom );
 
   private:
     //! Storage manager
-    SpatialIndex::IStorageManager* mStorage = nullptr;
+    SpatialIndex::IStorageManager *mStorage = nullptr;
 
-    QHash<QgsFeatureId, QgsGeometry*> mGeoms;
-    SpatialIndex::ISpatialIndex* mRTree = nullptr;
+    QHash<QgsFeatureId, QgsGeometry *> mGeoms;
+    SpatialIndex::ISpatialIndex *mRTree = nullptr;
 
     //! flag whether the layer is currently empty (i.e. mRTree is null but it is not necessary to rebuild it)
     bool mIsEmptyLayer;
 
     //! R-tree containing spatial index
     QgsCoordinateTransform mTransform;
-    QgsVectorLayer* mLayer = nullptr;
-    QgsRectangle* mExtent = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
+    QgsRectangle *mExtent = nullptr;
 
     friend class QgsPointLocator_VisitorNearestVertex;
     friend class QgsPointLocator_VisitorNearestEdge;
