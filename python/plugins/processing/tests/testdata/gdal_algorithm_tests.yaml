@@ -644,3 +644,24 @@ tests:
       OUTPUT:
         hash: 2d0585dc8166fbe3cec7d9e6fd66e95cc9bdb1043b3b0fa7cbdfef4c
         type: rasterhash
+
+  - algorithm: gdal:gridinvdist
+    name: IDW interpolation
+    params:
+      ANGLE: 0.0
+      INPUT:
+        name: custom/points_values.gml
+        type: vector
+      MAX_POINTS: 0.0
+      MIN_POINTS: 0.0
+      NODATA: 0.0
+      POWER: 2.0
+      RADIUS_1: 0.0
+      RADIUS_2: 0.0
+      RTYPE: '5'
+      SMOTHING: 0.0
+      Z_FIELD: EC
+    results:
+      OUTPUT:
+        hash: 2033731d6fd653da391a2633158f0ea755d96e1b2b2c60a9100332b1
+        type: rasterhash
