@@ -23,7 +23,7 @@
 #include <QSettings>
 
 QgsGeometryCheckerDialog::QgsGeometryCheckerDialog( QgisInterface *iface, QWidget *parent )
-    : QDialog( parent )
+  : QDialog( parent )
 {
   mIface = iface;
 
@@ -35,7 +35,7 @@ QgsGeometryCheckerDialog::QgsGeometryCheckerDialog( QgisInterface *iface, QWidge
   mTabWidget = new QTabWidget();
   mButtonBox = new QDialogButtonBox( QDialogButtonBox::Close, Qt::Horizontal );
 
-  QVBoxLayout* layout = new QVBoxLayout( this );
+  QVBoxLayout *layout = new QVBoxLayout( this );
   layout->addWidget( mTabWidget );
   layout->addWidget( mButtonBox );
 
@@ -44,7 +44,7 @@ QgsGeometryCheckerDialog::QgsGeometryCheckerDialog( QgisInterface *iface, QWidge
   mTabWidget->setTabEnabled( 1, false );
 
   connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
-  connect( mTabWidget->widget( 0 ), SIGNAL( checkerStarted( QgsGeometryChecker*, QgsFeaturePool* ) ), this, SLOT( onCheckerStarted( QgsGeometryChecker*, QgsFeaturePool* ) ) );
+  connect( mTabWidget->widget( 0 ), SIGNAL( checkerStarted( QgsGeometryChecker *, QgsFeaturePool * ) ), this, SLOT( onCheckerStarted( QgsGeometryChecker *, QgsFeaturePool * ) ) );
   connect( mTabWidget->widget( 0 ), SIGNAL( checkerFinished( bool ) ), this, SLOT( onCheckerFinished( bool ) ) );
 }
 
@@ -70,7 +70,7 @@ void QgsGeometryCheckerDialog::onCheckerFinished( bool successful )
   {
     mTabWidget->setTabEnabled( 1, true );
     mTabWidget->setCurrentIndex( 1 );
-    static_cast<QgsGeometryCheckerResultTab*>( mTabWidget->widget( 1 ) )->finalize();
+    static_cast<QgsGeometryCheckerResultTab *>( mTabWidget->widget( 1 ) )->finalize();
   }
 }
 
@@ -83,10 +83,10 @@ void QgsGeometryCheckerDialog::done( int r )
   mTabWidget->setTabEnabled( 1, false );
 }
 
-void QgsGeometryCheckerDialog::closeEvent( QCloseEvent* ev )
+void QgsGeometryCheckerDialog::closeEvent( QCloseEvent *ev )
 {
-  if ( qobject_cast<QgsGeometryCheckerResultTab*>( mTabWidget->widget( 1 ) ) &&
-       !static_cast<QgsGeometryCheckerResultTab*>( mTabWidget->widget( 1 ) )->isCloseable() )
+  if ( qobject_cast<QgsGeometryCheckerResultTab *>( mTabWidget->widget( 1 ) ) &&
+       !static_cast<QgsGeometryCheckerResultTab *>( mTabWidget->widget( 1 ) )->isCloseable() )
   {
     ev->ignore();
   }

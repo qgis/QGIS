@@ -42,8 +42,8 @@
 
 //class QgisInterface;
 
-checkDock::checkDock( QgisInterface* qIface, QWidget* parent )
-    : QgsDockWidget( parent ), Ui::checkDock()
+checkDock::checkDock( QgisInterface *qIface, QWidget *parent )
+  : QgsDockWidget( parent ), Ui::checkDock()
 {
   mTest = new topolTest( qIface );
 
@@ -62,7 +62,7 @@ checkDock::checkDock( QgisInterface* qIface, QWidget* parent )
   mConfigureDialog = new rulesDialog( mTest->testMap(), qIface, parent );
   mTestTable = mConfigureDialog->rulesTable();
 
-  QgsMapCanvas* canvas = qIface->mapCanvas();// mQgisApp->mapCanvas();
+  QgsMapCanvas *canvas = qIface->mapCanvas();// mQgisApp->mapCanvas();
   mRBFeature1 = new QgsRubberBand( canvas );
   mRBFeature2 = new QgsRubberBand( canvas );
   mRBConflict = new QgsRubberBand( canvas );
@@ -148,10 +148,10 @@ void checkDock::deleteErrors()
   mRbErrorMarkers.clear();
 }
 
-void checkDock::parseErrorListByLayer( const QString& layerId )
+void checkDock::parseErrorListByLayer( const QString &layerId )
 {
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( layerId ) );
-  QList<TopolError*>::Iterator it = mErrorList.begin();
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
+  QList<TopolError *>::Iterator it = mErrorList.begin();
 
   while ( it != mErrorList.end() )
   {
@@ -171,7 +171,7 @@ void checkDock::parseErrorListByLayer( const QString& layerId )
 
 void checkDock::parseErrorListByFeature( int featureId )
 {
-  QList<TopolError*>::Iterator it = mErrorList.begin();
+  QList<TopolError *>::Iterator it = mErrorList.begin();
 
   while ( it != mErrorList.end() )
   {
@@ -195,12 +195,12 @@ void checkDock::configure()
   mConfigureDialog->show();
 }
 
-void checkDock::errorListClicked( const QModelIndex& index )
+void checkDock::errorListClicked( const QModelIndex &index )
 {
   int row = index.row();
   QgsRectangle r = mErrorList.at( row )->boundingBox();
   r.scale( 1.5 );
-  QgsMapCanvas* canvas = qgsInterface->mapCanvas();
+  QgsMapCanvas *canvas = qgsInterface->mapCanvas();
   canvas->setExtent( r );
   canvas->refresh();
 
@@ -328,17 +328,17 @@ void checkDock::runTests( ValidateType type )
     QString layer2Str = mTestTable->item( i, 5 )->text();
 
     // test if layer1 is in the registry
-    if ( !(( QgsVectorLayer* )QgsProject::instance()->mapLayers().contains( layer1Str ) ) )
+    if ( !( ( QgsVectorLayer * )QgsProject::instance()->mapLayers().contains( layer1Str ) ) )
     {
       QgsMessageLog::logMessage( tr( "Layer %1 not found in registry." ).arg( layer1Str ), tr( "Topology plugin" ) );
       return;
     }
 
-    QgsVectorLayer* layer1 = ( QgsVectorLayer* )QgsProject::instance()->mapLayer( layer1Str );
-    QgsVectorLayer* layer2 = nullptr;
+    QgsVectorLayer *layer1 = ( QgsVectorLayer * )QgsProject::instance()->mapLayer( layer1Str );
+    QgsVectorLayer *layer2 = nullptr;
 
-    if (( QgsVectorLayer* )QgsProject::instance()->mapLayers().contains( layer2Str ) )
-      layer2 = ( QgsVectorLayer* )QgsProject::instance()->mapLayer( layer2Str );
+    if ( ( QgsVectorLayer * )QgsProject::instance()->mapLayers().contains( layer2Str ) )
+      layer2 = ( QgsVectorLayer * )QgsProject::instance()->mapLayer( layer2Str );
 
     QProgressDialog progress( testName, tr( "Abort" ), 0, layer1->featureCount(), this );
     progress.setWindowModality( Qt::WindowModal );
@@ -349,12 +349,12 @@ void checkDock::runTests( ValidateType type )
 
     ErrorList errors = mTest->runTest( testName, layer1, layer2, type, toleranceStr.toDouble() );
 
-    QList<TopolError*>::Iterator it;
+    QList<TopolError *>::Iterator it;
 
-    QgsRubberBand* rb = nullptr;
+    QgsRubberBand *rb = nullptr;
     for ( it = errors.begin(); it != errors.end(); ++it )
     {
-      TopolError* te = *it;
+      TopolError *te = *it;
       te->conflict();
 
       QSettings settings;
@@ -416,10 +416,10 @@ void checkDock::validateSelected()
 
 void checkDock::toggleErrorMarker()
 {
-  QList<QgsRubberBand*>::const_iterator it;
+  QList<QgsRubberBand *>::const_iterator it;
   for ( it = mRbErrorMarkers.begin(); it != mRbErrorMarkers.end(); ++it )
   {
-    QgsRubberBand* rb = *it;
+    QgsRubberBand *rb = *it;
     if ( mToggleRubberband->isChecked() )
     {
       rb->show();

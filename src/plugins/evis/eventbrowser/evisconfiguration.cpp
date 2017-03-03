@@ -115,7 +115,7 @@ void eVisConfiguration::setAttributeCompassOffset( bool compassOffset )
   mAttributeCompassOffset = compassOffset;
 }
 
-void eVisConfiguration::setBasePath( const QString& path )
+void eVisConfiguration::setBasePath( const QString &path )
 {
   QSettings myQSettings;
   mBasePath = path;
@@ -123,14 +123,14 @@ void eVisConfiguration::setBasePath( const QString& path )
   {
     if ( mBasePath.contains( '/' ) )
     {
-      if ( mBasePath[mBasePath.length()-1] != '/' )
+      if ( mBasePath[mBasePath.length() - 1] != '/' )
       {
         mBasePath = mBasePath + '/';
       }
     }
     else
     {
-      if ( mBasePath[mBasePath.length()-1] != '\\' )
+      if ( mBasePath[mBasePath.length() - 1] != '\\' )
       {
         mBasePath = mBasePath + '\\';
       }
@@ -138,7 +138,7 @@ void eVisConfiguration::setBasePath( const QString& path )
   }
 }
 
-void eVisConfiguration::setCompassBearingField( const QString& field )
+void eVisConfiguration::setCompassBearingField( const QString &field )
 {
   mCompassBearingField = field;
 }
@@ -148,7 +148,7 @@ void eVisConfiguration::setCompassOffset( double offset )
   mCompassOffset = offset;
 }
 
-void eVisConfiguration::setCompassOffsetField( const QString& field )
+void eVisConfiguration::setCompassOffsetField( const QString &field )
 {
   mCompassOffsetField = field;
 }
@@ -158,7 +158,7 @@ void eVisConfiguration::setDisplayCompassBearing( bool compassBearing )
   mDisplayCompassBearing = compassBearing;
 }
 
-void eVisConfiguration::setEventImagePathField( const QString& field )
+void eVisConfiguration::setEventImagePathField( const QString &field )
 {
   mEventImagePathField = field;
 }

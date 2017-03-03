@@ -32,13 +32,13 @@ class QgsFtpTransaction: public QObject
        @param ftpUrl url of the file to access
        @param pointer to buffer to store file contents
        @return 0 in case of success*/
-    Q_DECL_DEPRECATED int get( const QString& ftpUrl, QByteArray& ba );
+    Q_DECL_DEPRECATED int get( const QString &ftpUrl, QByteArray &ba );
 
   public slots:
     void setFinishedFlag( bool error );
 
   private:
-    QFtp* mFtp = nullptr;
+    QFtp *mFtp = nullptr;
     bool mRequestFinished;
     bool mErrorFlag;
 };

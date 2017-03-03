@@ -63,10 +63,10 @@ QString temp4( GRASS_VERSION_RELEASE );
 bool QgsGrassNewMapset::sRunning = false;
 
 QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
-                                      QgsGrassPlugin *plugin, QWidget * parent,
+                                      QgsGrassPlugin *plugin, QWidget *parent,
                                       Qt::WindowFlags f )
-    : QWizard( parent, f )
-    , QgsGrassNewMapsetBase()
+  : QWizard( parent, f )
+  , QgsGrassNewMapsetBase()
 {
   QgsDebugMsg( "QgsGrassNewMapset()" );
 
@@ -426,7 +426,7 @@ void QgsGrassNewMapset::setGrassProjection()
       QgsDebugMsg( QString( "OSRIsGeographic = %1" ).arg( OSRIsGeographic( hCRS ) ) );
       QgsDebugMsg( QString( "OSRIsProjected = %1" ).arg( OSRIsProjected( hCRS ) ) );
 
-      if (( errcode = OSRExportToWkt( hCRS, &wkt ) ) != OGRERR_NONE )
+      if ( ( errcode = OSRExportToWkt( hCRS, &wkt ) ) != OGRERR_NONE )
       {
         QgsDebugMsg( QString( "OGR can't get Wkt-style parameter string\nOGR Error code was %1" ).arg( errcode ) );
       }
@@ -446,7 +446,7 @@ void QgsGrassNewMapset::setGrassProjection()
 
       Q_UNUSED( ret );
       QgsDebugMsg( QString( "ret = %1" ).arg( ret ) );
-      QgsDebugMsg( QString( "mProjInfo = %1" ).arg( QString::number(( qulonglong )mProjInfo, 16 ).toLocal8Bit().constData() ) );
+      QgsDebugMsg( QString( "mProjInfo = %1" ).arg( QString::number( ( qulonglong )mProjInfo, 16 ).toLocal8Bit().constData() ) );
 
       CPLFree( wkt );
     }
@@ -677,10 +677,10 @@ void QgsGrassNewMapset::checkRegion()
   double res = ( e - w ) / 1000; // reasonable resolution
   double res3 = res / 10.;
 
-  mCellHead.rows   = ( int )(( n - s ) / res );
-  mCellHead.rows3  = ( int )(( n - s ) / res3 );
-  mCellHead.cols   = ( int )(( e - w ) / res );
-  mCellHead.cols3  = ( int )(( e - w ) / res3 );
+  mCellHead.rows   = ( int )( ( n - s ) / res );
+  mCellHead.rows3  = ( int )( ( n - s ) / res3 );
+  mCellHead.cols   = ( int )( ( e - w ) / res );
+  mCellHead.cols3  = ( int )( ( e - w ) / res3 );
   mCellHead.depths = 1;
 
   mCellHead.ew_res  = res;
@@ -803,11 +803,11 @@ void QgsGrassNewMapset::setSelectedRegion()
   std::vector<QgsPoint> points;
   // corners ll lr ur ul
   points.push_back( QgsPoint( mRegionsPoints[index] ) );
-  points.push_back( QgsPoint( mRegionsPoints[index+1].x(),
+  points.push_back( QgsPoint( mRegionsPoints[index + 1].x(),
                               mRegionsPoints[index].y() ) );
-  points.push_back( QgsPoint( mRegionsPoints[index+1] ) );
+  points.push_back( QgsPoint( mRegionsPoints[index + 1] ) );
   points.push_back( QgsPoint( mRegionsPoints[index].x(),
-                              mRegionsPoints[index+1].y() ) );
+                              mRegionsPoints[index + 1].y() ) );
 
   // Convert to currently selected coordinate system
 
@@ -986,7 +986,7 @@ void QgsGrassNewMapset::drawRegion()
   // Shift if LL and W > E
   if ( mCellHead.proj == PROJECTION_LL && w > e )
   {
-    if (( 180 - w ) < ( e + 180 ) )
+    if ( ( 180 - w ) < ( e + 180 ) )
     {
       w -= 360;
     }
@@ -1013,10 +1013,10 @@ void QgsGrassNewMapset::drawRegion()
     {
       double x = tpoints[i].x();
       double y = tpoints[i].y();
-      double dx = ( tpoints[i+1].x() - x ) / 3;
-      double dy = ( tpoints[i+1].y() - y ) / 3;
-      QgsDebugMsg( QString( "dx = %1 x = %2" ).arg( dx ).arg( x + j*dx ) );
-      points << QgsPoint( x + j*dx, y + j*dy );
+      double dx = ( tpoints[i + 1].x() - x ) / 3;
+      double dy = ( tpoints[i + 1].y() - y ) / 3;
+      QgsDebugMsg( QString( "dx = %1 x = %2" ).arg( dx ).arg( x + j * dx ) );
+      points << QgsPoint( x + j * dx, y + j * dy );
 
     }
   }
@@ -1085,7 +1085,7 @@ void QgsGrassNewMapset::drawRegion()
     for ( int i = 0; i < 12; i++ )
     {
       double x1 = points[i].x();
-      double x2 = points[i+1].x();
+      double x2 = points[i + 1].x();
 
       if ( qAbs( x2 - x1 ) > 150 )
       {
@@ -1099,7 +1099,7 @@ void QgsGrassNewMapset::drawRegion()
         }
       }
       p.drawLine( 180 + shift + ( int )x1, 90 - ( int )points[i].y(),
-                  180 + shift + ( int )x2, 90 - ( int )points[i+1].y() );
+                  180 + shift + ( int )x2, 90 - ( int )points[i + 1].y() );
     }
   }
 
@@ -1241,7 +1241,7 @@ void QgsGrassNewMapset::createMapset()
       ret = G_make_location( location.toUtf8().data(), &mCellHead, mProjInfo, mProjUnits );
 #endif
     }
-    G_CATCH( QgsGrass::Exception &e )
+    G_CATCH( QgsGrass::Exception & e )
     {
       Q_UNUSED( e );
       error = QString( e.what() );
@@ -1332,7 +1332,7 @@ void QgsGrassNewMapset::setError( QLabel *line, const QString &err )
 
 // Warning: we have to catch key press otherwise QWizard goes always
 // to next page if Key_Enter is pressed
-void QgsGrassNewMapset::keyPressEvent( QKeyEvent * e )
+void QgsGrassNewMapset::keyPressEvent( QKeyEvent *e )
 {
   Q_UNUSED( e );
 // QgsDebugMsg(QString("key = %1").arg(e->key()));

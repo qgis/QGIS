@@ -26,27 +26,27 @@ class ANALYSIS_EXPORT Node
 {
   protected:
     //! Pointer to the Point3D object associated with the node
-    Point3D* mPoint = nullptr;
+    Point3D *mPoint = nullptr;
     //! Pointer to the next Node in the linked list
-    Node* mNext = nullptr;
+    Node *mNext = nullptr;
   public:
     Node();
-    Node( const Node& n );
+    Node( const Node &n );
     ~Node();
-    Node& operator=( const Node& n );
+    Node &operator=( const Node &n );
     //! Returns a pointer to the next element in the linked list
-    Node* getNext() const;
+    Node *getNext() const;
     //! Returns a pointer to the Point3D object associated with the node
-    Point3D* getPoint() const;
+    Point3D *getPoint() const;
     //! Sets the pointer to the next node
-    void setNext( Node* n );
+    void setNext( Node *n );
     //! Sets a new pointer to an associated Point3D object
-    void setPoint( Point3D* p );
+    void setPoint( Point3D *p );
 };
 
 inline Node::Node()
-    : mPoint( nullptr )
-    , mNext( nullptr )
+  : mPoint( nullptr )
+  , mNext( nullptr )
 {
 
 }
@@ -56,22 +56,22 @@ inline Node::~Node()
   delete mPoint;
 }
 
-inline Node* Node::getNext() const
+inline Node *Node::getNext() const
 {
   return mNext;
 }
 
-inline Point3D* Node::getPoint() const
+inline Point3D *Node::getPoint() const
 {
   return mPoint;
 }
 
-inline void Node::setNext( Node* n )
+inline void Node::setNext( Node *n )
 {
   mNext = n;
 }
 
-inline void Node::setPoint( Point3D* p )
+inline void Node::setPoint( Point3D *p )
 {
   mPoint = p;
 }

@@ -52,21 +52,21 @@ class QgsGrassToolsTreeFilterProxyModel : public QSortFilterProxyModel
 {
   public:
     explicit QgsGrassToolsTreeFilterProxyModel( QObject *parent )
-        : QSortFilterProxyModel( parent )
-        , mModel( 0 )
+      : QSortFilterProxyModel( parent )
+      , mModel( 0 )
     {
       setDynamicSortFilter( true );
       mRegExp.setPatternSyntax( QRegExp::Wildcard );
       mRegExp.setCaseSensitivity( Qt::CaseInsensitive );
     }
 
-    void setSourceModel( QAbstractItemModel * sourceModel ) override
+    void setSourceModel( QAbstractItemModel *sourceModel ) override
     {
       mModel = sourceModel;
       QSortFilterProxyModel::setSourceModel( sourceModel );
     }
 
-    void setFilter( const QString & filter )
+    void setFilter( const QString &filter )
     {
       QgsDebugMsg( QString( "filter = %1" ).arg( filter ) );
       if ( mFilter == filter )
@@ -81,11 +81,11 @@ class QgsGrassToolsTreeFilterProxyModel : public QSortFilterProxyModel
 
   protected:
 
-    QAbstractItemModel* mModel = nullptr;
+    QAbstractItemModel *mModel = nullptr;
     QString mFilter; // filter string provided
     QRegExp mRegExp; // regular expression constructed from filter string
 
-    bool filterAcceptsString( const QString & value ) const
+    bool filterAcceptsString( const QString &value ) const
     {
       return value.contains( mRegExp );
     }
@@ -149,15 +149,15 @@ class QgsGrassToolsTreeFilterProxyModel : public QSortFilterProxyModel
     }
 };
 
-QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget * parent, const char * name, Qt::WindowFlags f )
-    : QgsDockWidget( parent, f )
-    , mModulesListModel( 0 )
-    , mModelProxy( 0 )
+QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget *parent, const char *name, Qt::WindowFlags f )
+  : QgsDockWidget( parent, f )
+  , mModulesListModel( 0 )
+  , mModelProxy( 0 )
 {
   Q_UNUSED( name );
   QgsDebugMsg( "QgsGrassTools()" );
   setupUi( this );
-  QPushButton * closeMapsetButton = new QPushButton( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileExit.png" ) ), tr( "Close mapset" ), this );
+  QPushButton *closeMapsetButton = new QPushButton( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileExit.png" ) ), tr( "Close mapset" ), this );
   mTabWidget->setCornerWidget( closeMapsetButton );
   connect( closeMapsetButton, SIGNAL( clicked() ), SLOT( closeMapset() ) );
 
@@ -265,7 +265,7 @@ void QgsGrassTools::runModule( QString name, bool direct )
   }
 
 #ifdef HAVE_POSIX_OPENPT
-  QgsGrassShell* sh = 0;
+  QgsGrassShell *sh = 0;
 #endif
 
   QWidget *m = nullptr;
@@ -361,7 +361,7 @@ bool QgsGrassTools::loadConfig()
   return loadConfig( conf, mTreeModel, mModulesListModel, false );
 }
 
-bool QgsGrassTools::loadConfig( QString filePath, QStandardItemModel *treeModel, QStandardItemModel * modulesListModel, bool direct )
+bool QgsGrassTools::loadConfig( QString filePath, QStandardItemModel *treeModel, QStandardItemModel *modulesListModel, bool direct )
 {
   QgsDebugMsg( filePath );
   treeModel->clear();
@@ -441,7 +441,7 @@ void QgsGrassTools::appendItem( QStandardItemModel *treeModel, QStandardItem *pa
   }
 }
 
-void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QStandardItemModel *treeModel, QStandardItemModel * modulesListModel, bool direct )
+void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QStandardItemModel *treeModel, QStandardItemModel *modulesListModel, bool direct )
 {
   QDomNode n = element.firstChild();
   while ( !n.isNull() )
@@ -488,7 +488,8 @@ void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QSt
         appendItem( treeModel, parent, item );
       }
       else if ( e.tagName() == QLatin1String( "grass" ) )
-      { // GRASS module
+      {
+        // GRASS module
         QString name = e.attribute( QStringLiteral( "name" ) );
         QgsDebugMsgLevel( QString( "name = %1" ).arg( name ), 1 );
 
@@ -500,7 +501,7 @@ void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QSt
         {
           QString label = name + " - " + description.label;
           QPixmap pixmap = QgsGrassModule::pixmap( path, 32 );
-          QStandardItem * item = new QStandardItem( name + "\n" + description.label );
+          QStandardItem *item = new QStandardItem( name + "\n" + description.label );
           item->setData( name, Qt::UserRole + Name ); // for calling runModule later
           item->setData( label, Qt::UserRole + Label ); // original label, for debug
           item->setData( label, Qt::UserRole + Search ); // for filtering later
@@ -520,7 +521,7 @@ void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QSt
           }
           if ( !exists )
           {
-            QStandardItem * listItem = item->clone();
+            QStandardItem *listItem = item->clone();
             listItem->setText( name + "\n" + description.label );
             // setData in the delegate with a variantised QgsDetailedItemData
             QgsDetailedItemData myData;
@@ -695,7 +696,7 @@ void QgsGrassTools::itemClicked( const QModelIndex &index )
       model = mModulesListModel;
     }
 
-    QStandardItem * mypItem = model->itemFromIndex( index );
+    QStandardItem *mypItem = model->itemFromIndex( index );
     if ( mypItem )
     {
       QString myModuleName = mypItem->data( Qt::UserRole + Name ).toString();

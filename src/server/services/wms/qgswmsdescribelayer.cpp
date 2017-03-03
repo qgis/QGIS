@@ -25,8 +25,8 @@
 namespace QgsWms
 {
 
-  void writeDescribeLayer( QgsServerInterface* serverIface, const QgsProject* project, const QString& version,
-                           const QgsServerRequest& request, QgsServerResponse& response )
+  void writeDescribeLayer( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
+                           const QgsServerRequest &request, QgsServerResponse &response )
   {
     QDomDocument doc = describeLayer( serverIface, project, version, request );
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
@@ -34,13 +34,13 @@ namespace QgsWms
   }
 
   // DescribeLayer is defined for WMS1.1.1/SLD1.0 and in WMS 1.3.0 SLD Extension
-  QDomDocument describeLayer( QgsServerInterface* serverIface, const QgsProject* project, const QString& version,
-                              const QgsServerRequest& request )
+  QDomDocument describeLayer( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
+                              const QgsServerRequest &request )
   {
     Q_UNUSED( version );
 
     QgsServerRequest::Parameters parameters = request.parameters();
-    QgsWmsConfigParser* configParser = getConfigParser( serverIface );
+    QgsWmsConfigParser *configParser = getConfigParser( serverIface );
 
     if ( !parameters.contains( QStringLiteral( "SLD_VERSION" ) ) )
     {

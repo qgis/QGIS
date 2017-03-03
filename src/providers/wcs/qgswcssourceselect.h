@@ -60,9 +60,9 @@ class QgsWCSSourceSelect : public QgsOWSSourceSelect
   public slots:
 
   signals:
-    void addRasterLayer( QString const & rasterLayerPath,
-                         QString const & baseName,
-                         QString const & providerKey );
+    void addRasterLayer( QString const &rasterLayerPath,
+                         QString const &baseName,
+                         QString const &providerKey );
 
   private:
     QgsWcsCapabilities mCapabilities;

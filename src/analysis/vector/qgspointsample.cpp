@@ -22,18 +22,18 @@
 #include "mersenne-twister.h"
 
 
-QgsPointSample::QgsPointSample( QgsVectorLayer* inputLayer, const QString& outputLayer, const QString& nPointsAttribute, const QString& minDistAttribute ): mInputLayer( inputLayer ),
-    mOutputLayer( outputLayer ), mNumberOfPointsAttribute( nPointsAttribute ), mMinDistanceAttribute( minDistAttribute ), mNCreatedPoints( 0 )
+QgsPointSample::QgsPointSample( QgsVectorLayer *inputLayer, const QString &outputLayer, const QString &nPointsAttribute, const QString &minDistAttribute ): mInputLayer( inputLayer ),
+  mOutputLayer( outputLayer ), mNumberOfPointsAttribute( nPointsAttribute ), mMinDistanceAttribute( minDistAttribute ), mNCreatedPoints( 0 )
 {
 }
 
 QgsPointSample::QgsPointSample()
-    : mInputLayer( nullptr )
-    , mNCreatedPoints( 0 )
+  : mInputLayer( nullptr )
+  , mNCreatedPoints( 0 )
 {
 }
 
-int QgsPointSample::createRandomPoints( QProgressDialog* pd )
+int QgsPointSample::createRandomPoints( QProgressDialog *pd )
 {
   Q_UNUSED( pd );
 
@@ -92,7 +92,7 @@ int QgsPointSample::createRandomPoints( QProgressDialog* pd )
   return 0;
 }
 
-void QgsPointSample::addSamplePoints( QgsFeature& inputFeature, QgsVectorFileWriter& writer, int nPoints, double minDistance )
+void QgsPointSample::addSamplePoints( QgsFeature &inputFeature, QgsVectorFileWriter &writer, int nPoints, double minDistance )
 {
   if ( !inputFeature.hasGeometry() )
     return;
@@ -116,8 +116,8 @@ void QgsPointSample::addSamplePoints( QgsFeature& inputFeature, QgsVectorFileWri
 
   while ( nIterations < maxIterations && points < nPoints )
   {
-    randX = (( double )mt_rand() / MD_RAND_MAX ) * geomRect.width() + geomRect.xMinimum();
-    randY = (( double )mt_rand() / MD_RAND_MAX ) * geomRect.height() + geomRect.yMinimum();
+    randX = ( ( double )mt_rand() / MD_RAND_MAX ) * geomRect.width() + geomRect.xMinimum();
+    randY = ( ( double )mt_rand() / MD_RAND_MAX ) * geomRect.height() + geomRect.yMinimum();
     QgsPoint randPoint( randX, randY );
     QgsGeometry ptGeom = QgsGeometry::fromPoint( randPoint );
     if ( ptGeom.within( geom ) && checkMinDistance( randPoint, sIndex, minDistance, pointMapForFeature ) )
@@ -138,7 +138,7 @@ void QgsPointSample::addSamplePoints( QgsFeature& inputFeature, QgsVectorFileWri
   }
 }
 
-bool QgsPointSample::checkMinDistance( QgsPoint& pt, QgsSpatialIndex& index, double minDistance, QMap< QgsFeatureId, QgsPoint >& pointMap )
+bool QgsPointSample::checkMinDistance( QgsPoint &pt, QgsSpatialIndex &index, double minDistance, QMap< QgsFeatureId, QgsPoint > &pointMap )
 {
   if ( minDistance <= 0 )
   {

@@ -25,9 +25,9 @@
 namespace QgsWms
 {
 
-  void writeGetMap( QgsServerInterface* serverIface, const QgsProject* project,
-                    const QString& version, const QgsServerRequest& request,
-                    QgsServerResponse& response )
+  void writeGetMap( QgsServerInterface *serverIface, const QgsProject *project,
+                    const QString &version, const QgsServerRequest &request,
+                    QgsServerResponse &response )
   {
     Q_UNUSED( version );
 

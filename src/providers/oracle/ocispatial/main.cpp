@@ -46,15 +46,15 @@
 #include "qsql_ocispatial.h"
 
 QOCISpatialDriverPlugin::QOCISpatialDriverPlugin()
-    : QSqlDriverPlugin()
+  : QSqlDriverPlugin()
 {
 }
 
-QSqlDriver* QOCISpatialDriverPlugin::create( const QString &name )
+QSqlDriver *QOCISpatialDriverPlugin::create( const QString &name )
 {
   if ( name == QLatin1String( "QOCISPATIAL" ) || name == QLatin1String( "QOCISPATIAL8" ) )
   {
-    QOCISpatialDriver* driver = new QOCISpatialDriver();
+    QOCISpatialDriver *driver = new QOCISpatialDriver();
     return driver;
   }
   return 0;

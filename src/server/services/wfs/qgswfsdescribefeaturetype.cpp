@@ -24,8 +24,8 @@
 namespace QgsWfs
 {
 
-  void writeDescribeFeatureType( QgsServerInterface* serverIface, const QString& version,
-                                 const QgsServerRequest& request, QgsServerResponse& response )
+  void writeDescribeFeatureType( QgsServerInterface *serverIface, const QString &version,
+                                 const QgsServerRequest &request, QgsServerResponse &response )
   {
     QDomDocument doc = createDescribeFeatureTypeDocument( serverIface, version, request );
 
@@ -34,14 +34,14 @@ namespace QgsWfs
   }
 
 
-  QDomDocument createDescribeFeatureTypeDocument( QgsServerInterface* serverIface, const QString& version,
-      const QgsServerRequest& request )
+  QDomDocument createDescribeFeatureTypeDocument( QgsServerInterface *serverIface, const QString &version,
+      const QgsServerRequest &request )
   {
     Q_UNUSED( version );
 
     QDomDocument doc;
 
-    QgsWfsProjectParser* configParser = getConfigParser( serverIface );
+    QgsWfsProjectParser *configParser = getConfigParser( serverIface );
     QgsServerRequest::Parameters parameters = request.parameters();
 
     //xsd:schema

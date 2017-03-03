@@ -29,10 +29,10 @@ class QgsPostgresTransaction;
 class QgsPostgresFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    explicit QgsPostgresFeatureSource( const QgsPostgresProvider* p );
+    explicit QgsPostgresFeatureSource( const QgsPostgresProvider *p );
     ~QgsPostgresFeatureSource();
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   protected:
 
@@ -59,7 +59,7 @@ class QgsPostgresFeatureSource : public QgsAbstractFeatureSource
      * connection remains valid during the life time of the feature source
      * even if the QgsPostgresTransaction object which initially created the
      * connection has since been destroyed. */
-    QgsPostgresConn* mTransactionConnection = nullptr;
+    QgsPostgresConn *mTransactionConnection = nullptr;
 
     friend class QgsPostgresFeatureIterator;
     friend class QgsPostgresExpressionCompiler;
@@ -71,7 +71,7 @@ class QgsPostgresConn;
 class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsPostgresFeatureSource>
 {
   public:
-    QgsPostgresFeatureIterator( QgsPostgresFeatureSource* source, bool ownSource, const QgsFeatureRequest &request );
+    QgsPostgresFeatureIterator( QgsPostgresFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
     ~QgsPostgresFeatureIterator();
 
@@ -79,17 +79,17 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Q
     virtual bool close() override;
 
   protected:
-    virtual bool fetchFeature( QgsFeature& feature ) override;
-    bool nextFeatureFilterExpression( QgsFeature& f ) override;
-    virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod ) override;
+    virtual bool fetchFeature( QgsFeature &feature ) override;
+    bool nextFeatureFilterExpression( QgsFeature &f ) override;
+    virtual bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod ) override;
 
-    QgsPostgresConn* mConn = nullptr;
+    QgsPostgresConn *mConn = nullptr;
 
 
     QString whereClauseRect();
     bool getFeature( QgsPostgresResult &queryResult, int row, QgsFeature &feature );
-    void getFeatureAttribute( int idx, QgsPostgresResult& queryResult, int row, int& col, QgsFeature& feature );
-    bool declareCursor( const QString& whereClause, long limit = -1, bool closeOnFail = true , const QString& orderBy = QString() );
+    void getFeatureAttribute( int idx, QgsPostgresResult &queryResult, int row, int &col, QgsFeature &feature );
+    bool declareCursor( const QString &whereClause, long limit = -1, bool closeOnFail = true, const QString &orderBy = QString() );
 
     QString mCursorName;
 

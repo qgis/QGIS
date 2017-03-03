@@ -26,9 +26,9 @@
 #include <osg/ValueObject>
 #include <osgEarth/Registry>
 
-QgsGlobeFeatureIdentifyCallback::QgsGlobeFeatureIdentifyCallback( QgsMapCanvas* mapCanvas )
-    : mCanvas( mapCanvas )
-    , mRubberBand( new QgsRubberBand( mapCanvas, QgsWkbTypes::PolygonGeometry ) )
+QgsGlobeFeatureIdentifyCallback::QgsGlobeFeatureIdentifyCallback( QgsMapCanvas *mapCanvas )
+  : mCanvas( mapCanvas )
+  , mRubberBand( new QgsRubberBand( mapCanvas, QgsWkbTypes::PolygonGeometry ) )
 {
   QColor color( Qt::green );
   color.setAlpha( 190 );
@@ -43,23 +43,23 @@ QgsGlobeFeatureIdentifyCallback::~QgsGlobeFeatureIdentifyCallback()
 }
 
 #if OSGEARTH_VERSION_LESS_THAN(2, 7, 0)
-void QgsGlobeFeatureIdentifyCallback::onHit( osgEarth::Features::FeatureSourceIndexNode* index, osgEarth::Features::FeatureID fid, const EventArgs& /*args*/ )
+void QgsGlobeFeatureIdentifyCallback::onHit( osgEarth::Features::FeatureSourceIndexNode *index, osgEarth::Features::FeatureID fid, const EventArgs & /*args*/ )
 {
-  QgsGlobeFeatureSource* globeSource = dynamic_cast<QgsGlobeFeatureSource*>( index->getFeatureSource() );
+  QgsGlobeFeatureSource *globeSource = dynamic_cast<QgsGlobeFeatureSource *>( index->getFeatureSource() );
   if ( globeSource )
   {
-    QgsVectorLayer* lyr = globeSource->layer();
+    QgsVectorLayer *lyr = globeSource->layer();
 
 #else
 void QgsGlobeFeatureIdentifyCallback::onHit( osgEarth::ObjectID id )
 {
-  osgEarth::Features::FeatureIndex* index = osgEarth::Registry::objectIndex()->get<osgEarth::Features::FeatureIndex>( id );
-  osgEarth::Features::Feature* feature = index->getFeature( id );
+  osgEarth::Features::FeatureIndex *index = osgEarth::Registry::objectIndex()->get<osgEarth::Features::FeatureIndex>( id );
+  osgEarth::Features::Feature *feature = index->getFeature( id );
   osgEarth::Features::FeatureID fid = feature->getFID();
   std::string layerId;
   if ( feature->getUserValue( "qgisLayerId", layerId ) )
   {
-    QgsVectorLayer* lyr = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( QString::fromStdString( layerId ) ) );
+    QgsVectorLayer *lyr = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( QString::fromStdString( layerId ) ) );
 #endif
     if ( lyr )
     {

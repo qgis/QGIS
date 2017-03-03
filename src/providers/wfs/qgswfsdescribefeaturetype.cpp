@@ -15,13 +15,13 @@
 
 #include "qgswfsdescribefeaturetype.h"
 
-QgsWFSDescribeFeatureType::QgsWFSDescribeFeatureType( const QString& uri )
-    : QgsWfsRequest( uri )
+QgsWFSDescribeFeatureType::QgsWFSDescribeFeatureType( const QString &uri )
+  : QgsWfsRequest( uri )
 {
 }
 
-bool QgsWFSDescribeFeatureType::requestFeatureType( const QString& WFSVersion,
-    const QString& typeName )
+bool QgsWFSDescribeFeatureType::requestFeatureType( const QString &WFSVersion,
+    const QString &typeName )
 {
   QUrl url( baseURL() );
   url.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "DescribeFeatureType" ) );
@@ -31,7 +31,7 @@ bool QgsWFSDescribeFeatureType::requestFeatureType( const QString& WFSVersion,
   return sendGET( url, true, false );
 }
 
-QString QgsWFSDescribeFeatureType::errorMessageWithReason( const QString& reason )
+QString QgsWFSDescribeFeatureType::errorMessageWithReason( const QString &reason )
 {
   return tr( "Download of feature type failed: %1" ).arg( reason );
 }

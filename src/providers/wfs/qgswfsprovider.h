@@ -62,14 +62,14 @@ class QgsWFSProvider : public QgsVectorDataProvider
     Q_OBJECT
   public:
 
-    explicit QgsWFSProvider( const QString& uri, const QgsWfsCapabilities::Capabilities &caps = QgsWfsCapabilities::Capabilities() );
+    explicit QgsWFSProvider( const QString &uri, const QgsWfsCapabilities::Capabilities &caps = QgsWfsCapabilities::Capabilities() );
     ~QgsWFSProvider();
 
     /* Inherited from QgsVectorDataProvider */
 
-    virtual QgsAbstractFeatureSource* featureSource() const override;
+    virtual QgsAbstractFeatureSource *featureSource() const override;
 
-    QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) const override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
 
     QgsWkbTypes::Type wkbType() const override;
     long featureCount() const override;
@@ -79,7 +79,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
     virtual QgsCoordinateReferenceSystem crs() const override;
 
     virtual QString subsetString() const override;
-    virtual bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
+    virtual bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
 
     virtual bool supportsSubsetString() const override { return true; }
 
@@ -107,8 +107,8 @@ class QgsWFSProvider : public QgsVectorDataProvider
     virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
     virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
     virtual QVariantMap metadata() const override;
-    virtual QString translateMetadataKey( const QString& mdKey ) const override;
-    virtual QString translateMetadataValue( const QString& mdKey, const QVariant& value ) const override;
+    virtual QString translateMetadataKey( const QString &mdKey ) const override;
+    virtual QString translateMetadataValue( const QString &mdKey, const QVariant &value ) const override;
 
   public slots:
 
@@ -118,7 +118,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     void featureReceivedAnalyzeOneFeature( QVector<QgsWFSFeatureGmlIdPair> );
 
-    void pushErrorSlot( const QString& errorMsg );
+    void pushErrorSlot( const QString &errorMsg );
 
   private:
     //! Mutable data shared between provider and feature sources
@@ -148,40 +148,40 @@ class QgsWFSProvider : public QgsVectorDataProvider
     /** Collects information about the field types. Is called internally from QgsWFSProvider ctor.
        The method gives back the name of
        the geometry attribute and the thematic attributes with their types*/
-    bool describeFeatureType( QString& geometryAttribute,
-                              QgsFields& fields, QgsWkbTypes::Type& geomType );
+    bool describeFeatureType( QString &geometryAttribute,
+                              QgsFields &fields, QgsWkbTypes::Type &geomType );
 
     /** For a given typename, reads the name of the geometry attribute, the
         thematic attributes and their types from a dom document. Returns true in case of success*/
-    bool readAttributesFromSchema( QDomDocument& schemaDoc,
-                                   const QString& prefixedTypename,
-                                   QString& geometryAttribute,
-                                   QgsFields& fields, QgsWkbTypes::Type& geomType, QString& errorMsg );
+    bool readAttributesFromSchema( QDomDocument &schemaDoc,
+                                   const QString &prefixedTypename,
+                                   QString &geometryAttribute,
+                                   QgsFields &fields, QgsWkbTypes::Type &geomType, QString &errorMsg );
 
     //helper methods for WFS-T
 
     /** Sends the transaction document to the server using HTTP POST
       @return true if transmission to the server succeeded, otherwise false
         note: true does not automatically mean that the transaction succeeded*/
-    bool sendTransactionDocument( const QDomDocument& doc, QDomDocument& serverResponse );
+    bool sendTransactionDocument( const QDomDocument &doc, QDomDocument &serverResponse );
 
     //! Creates a transaction element and adds it (normally as first element) to the document
-    QDomElement createTransactionElement( QDomDocument& doc ) const;
+    QDomElement createTransactionElement( QDomDocument &doc ) const;
 
     //! True if the server response means success
-    bool transactionSuccess( const QDomDocument& serverResponse ) const;
+    bool transactionSuccess( const QDomDocument &serverResponse ) const;
     //! Returns the inserted ids
-    QStringList insertedFeatureIds( const QDomDocument& serverResponse ) const;
+    QStringList insertedFeatureIds( const QDomDocument &serverResponse ) const;
     //! Retrieve version and capabilities for this layer from GetCapabilities document (will be stored in mCapabilities)
     bool getCapabilities();
     //! Records provider error
-    void handleException( const QDomDocument& serverResponse );
+    void handleException( const QDomDocument &serverResponse );
     //! Converts DescribeFeatureType schema geometry property type to WKBType
-    QgsWkbTypes::Type geomTypeFromPropertyType( const QString& attName, const QString& propType );
+    QgsWkbTypes::Type geomTypeFromPropertyType( const QString &attName, const QString &propType );
     //! Convert the value to its appropriate XML representation
-    QString convertToXML( const QVariant& value );
+    QString convertToXML( const QVariant &value );
 
-    bool processSQL( const QString& sqlString, QString& errorMsg, QString& warningMsg );
+    bool processSQL( const QString &sqlString, QString &errorMsg, QString &warningMsg );
 };
 
 #endif /* QGSWFSPROVIDER_H */

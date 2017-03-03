@@ -46,12 +46,12 @@ class SERVER_EXPORT QgsServerFilter
      * QgsServerInterface passed to plugins constructors
      * and must be passed to QgsServerFilter instances.
      */
-    QgsServerFilter( QgsServerInterface* serverInterface );
+    QgsServerFilter( QgsServerInterface *serverInterface );
 
     virtual ~QgsServerFilter() = default;
 
     //! Return the QgsServerInterface instance
-    QgsServerInterface* serverInterface() { return mServerInterface; }
+    QgsServerInterface *serverInterface() { return mServerInterface; }
 
     /** Method called when the QgsRequestHandler is ready and populated with
     * parameters, just before entering the main switch for core services.*/
@@ -74,10 +74,10 @@ class SERVER_EXPORT QgsServerFilter
 
   private:
 
-    QgsServerInterface* mServerInterface = nullptr;
+    QgsServerInterface *mServerInterface = nullptr;
 
 };
 
-typedef QMultiMap<int, QgsServerFilter*> QgsServerFiltersMap;
+typedef QMultiMap<int, QgsServerFilter *> QgsServerFiltersMap;
 
 #endif // QGSSERVERFILTER_H

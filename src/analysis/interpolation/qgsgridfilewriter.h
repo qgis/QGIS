@@ -31,7 +31,7 @@ class QgsInterpolator;
 class ANALYSIS_EXPORT QgsGridFileWriter
 {
   public:
-    QgsGridFileWriter( QgsInterpolator* i, const QString& outputPath, const QgsRectangle& extent, int nCols, int nRows, double cellSizeX, double cellSizeY );
+    QgsGridFileWriter( QgsInterpolator *i, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows, double cellSizeX, double cellSizeY );
 
     /** Writes the grid file.
      @param showProgressDialog shows a dialog with the possibility to cancel
@@ -42,9 +42,9 @@ class ANALYSIS_EXPORT QgsGridFileWriter
   private:
 
     QgsGridFileWriter(); //forbidden
-    int writeHeader( QTextStream& outStream );
+    int writeHeader( QTextStream &outStream );
 
-    QgsInterpolator* mInterpolator = nullptr;
+    QgsInterpolator *mInterpolator = nullptr;
     QString mOutputFilePath;
     QgsRectangle mInterpolationExtent;
     int mNumColumns;

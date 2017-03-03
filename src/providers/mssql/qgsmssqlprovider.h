@@ -50,13 +50,13 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-    explicit QgsMssqlProvider( const QString& uri = QString() );
+    explicit QgsMssqlProvider( const QString &uri = QString() );
 
     virtual ~QgsMssqlProvider();
 
-    static QSqlDatabase GetDatabase( const QString& service, const QString& host, const QString& database, const QString& username, const QString& password );
+    static QSqlDatabase GetDatabase( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password );
 
-    virtual QgsAbstractFeatureSource* featureSource() const override;
+    virtual QgsAbstractFeatureSource *featureSource() const override;
 
     static bool OpenDatabase( QSqlDatabase db );
 
@@ -67,7 +67,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     virtual QVariant minimumValue( int index ) const override;
     virtual QVariant maximumValue( int index ) const override;
     virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) const override;
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) const override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
 
     virtual QgsWkbTypes::Type wkbType() const override;
 
@@ -80,7 +80,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
     QString subsetString() const override;
 
-    bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
+    bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
 
     virtual bool supportsSubsetString() const override { return true; }
 
@@ -101,9 +101,9 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
     virtual bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
 
-    virtual bool addFeatures( QgsFeatureList & flist ) override;
+    virtual bool addFeatures( QgsFeatureList &flist ) override;
 
-    virtual bool deleteFeatures( const QgsFeatureIds & id ) override;
+    virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
 
     virtual bool addAttributes( const QList<QgsField> &attributes ) override;
 
@@ -121,13 +121,13 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     static bool convertField( QgsField &field );
 
     //! Convert values to quoted values for database work *
-    static QString quotedValue( const QVariant& value );
+    static QString quotedValue( const QVariant &value );
 
     QString defaultValueClause( int fieldId ) const override;
 
     //! Import a vector layer into the database
     static QgsVectorLayerImport::ImportError createEmptyLayer(
-      const QString& uri,
+      const QString &uri,
       const QgsFields &fields,
       QgsWkbTypes::Type wkbType,
       const QgsCoordinateReferenceSystem &srs,
@@ -141,7 +141,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
   protected:
     //! Loads fields from input file to member attributeFields
-    QVariant::Type DecodeSqlType( const QString& sqlTypeName );
+    QVariant::Type DecodeSqlType( const QString &sqlTypeName );
     void loadFields();
     void loadMetadata();
 
@@ -206,13 +206,13 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     QString mSqlWhereClause;
 
     // Sets the error messages
-    void setLastError( const QString& error )
+    void setLastError( const QString &error )
     {
       mLastError = error;
     }
 
     static void mssqlWkbTypeAndDimension( QgsWkbTypes::Type wkbType, QString &geometryType, int &dim );
-    static QgsWkbTypes::Type getWkbType( const QString& wkbType, int dim );
+    static QgsWkbTypes::Type getWkbType( const QString &wkbType, int dim );
 
     friend class QgsMssqlFeatureSource;
 

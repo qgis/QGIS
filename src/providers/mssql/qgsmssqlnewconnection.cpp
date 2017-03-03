@@ -26,9 +26,9 @@
 #include "qgsmssqlprovider.h"
 #include "qgscontexthelp.h"
 
-QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString& connName, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mOriginalConnName( connName )
+QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mOriginalConnName( connName )
 {
   setupUi( this );
 
@@ -74,13 +74,13 @@ void QgsMssqlNewConnection::accept()
   settings.setValue( baseKey + "selected", txtName->text() );
 
   // warn if entry was renamed to an existing connection
-  if (( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
-      ( settings.contains( baseKey + txtName->text() + "/service" ) ||
-        settings.contains( baseKey + txtName->text() + "/host" ) ) &&
-      QMessageBox::question( this,
-                             tr( "Save connection" ),
-                             tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
-                             QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
+       ( settings.contains( baseKey + txtName->text() + "/service" ) ||
+         settings.contains( baseKey + txtName->text() + "/host" ) ) &&
+       QMessageBox::question( this,
+                              tr( "Save connection" ),
+                              tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
+                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
   }
@@ -94,7 +94,7 @@ void QgsMssqlNewConnection::accept()
 
   baseKey += txtName->text();
   QString database;
-  QListWidgetItem* item = listDatabase->currentItem();
+  QListWidgetItem *item = listDatabase->currentItem();
   if ( item && item->text() != QLatin1String( "(from service)" ) )
   {
     database = item->text();
@@ -147,7 +147,7 @@ QgsMssqlNewConnection::~QgsMssqlNewConnection()
   delete bar;
 }
 
-bool QgsMssqlNewConnection::testConnection( const QString& testDatabase )
+bool QgsMssqlNewConnection::testConnection( const QString &testDatabase )
 {
   bar->pushMessage( QStringLiteral( "Testing connection" ), QStringLiteral( "....." ) );
   // Gross but needed to show the last message.
@@ -161,7 +161,7 @@ bool QgsMssqlNewConnection::testConnection( const QString& testDatabase )
   }
 
   QString database;
-  QListWidgetItem* item = listDatabase->currentItem();
+  QListWidgetItem *item = listDatabase->currentItem();
   if ( !testDatabase.isEmpty() )
   {
     database = testDatabase;

@@ -35,11 +35,11 @@ class QgsTileCache
   public:
 
     //! Add a tile image with given URL to the cache
-    static void insertTile( const QUrl& url, const QImage& image );
+    static void insertTile( const QUrl &url, const QImage &image );
 
     //! Try to access a tile and load it into "image" argument
     //! @returns true if the tile exists in the cache
-    static bool tile( const QUrl& url, QImage& image );
+    static bool tile( const QUrl &url, QImage &image );
 
     //! how many tiles are stored in the in-memory cache
     static int totalCost() { return sTileCache.totalCost(); }

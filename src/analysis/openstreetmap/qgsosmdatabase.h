@@ -47,15 +47,15 @@ typedef QPair<QString, int> QgsOSMTagCountPair;
 class ANALYSIS_EXPORT QgsOSMDatabase
 {
   public:
-    explicit QgsOSMDatabase( const QString& dbFileName = QString() );
+    explicit QgsOSMDatabase( const QString &dbFileName = QString() );
     ~QgsOSMDatabase();
 
     //! QgsOSMDatabase cannot be copied.
-    QgsOSMDatabase( const QgsOSMDatabase& rh ) = delete;
+    QgsOSMDatabase( const QgsOSMDatabase &rh ) = delete;
     //! QgsOSMDatabase cannot be copied.
-    QgsOSMDatabase& operator=( const QgsOSMDatabase& rh ) = delete;
+    QgsOSMDatabase &operator=( const QgsOSMDatabase &rh ) = delete;
 
-    void setFileName( const QString& dbFileName ) { mDbFileName = dbFileName; }
+    void setFileName( const QString &dbFileName ) { mDbFileName = dbFileName; }
     QString filename() const { return mDbFileName; }
     bool isOpen() const;
 
@@ -89,23 +89,23 @@ class ANALYSIS_EXPORT QgsOSMDatabase
     // export to spatialite
 
     enum ExportType { Point, Polyline, Polygon };
-    bool exportSpatiaLite( ExportType type, const QString& tableName,
-                           const QStringList& tagKeys = QStringList(),
-                           const QStringList& noNullTagKeys = QStringList() );
+    bool exportSpatiaLite( ExportType type, const QString &tableName,
+                           const QStringList &tagKeys = QStringList(),
+                           const QStringList &noNullTagKeys = QStringList() );
 
   protected:
     bool prepareStatements();
-    int runCountStatement( const char* sql ) const;
+    int runCountStatement( const char *sql ) const;
 
     /**
      * @note not available in Python bindings
      */
-    void deleteStatement( sqlite3_stmt*& stmt );
+    void deleteStatement( sqlite3_stmt *&stmt );
 
-    void exportSpatiaLiteNodes( const QString& tableName, const QStringList& tagKeys, const QStringList& notNullTagKeys = QStringList() );
-    void exportSpatiaLiteWays( bool closed, const QString& tableName, const QStringList& tagKeys, const QStringList& notNullTagKeys = QStringList() );
-    bool createSpatialTable( const QString& tableName, const QString& geometryType, const QStringList& tagKeys );
-    bool createSpatialIndex( const QString& tableName );
+    void exportSpatiaLiteNodes( const QString &tableName, const QStringList &tagKeys, const QStringList &notNullTagKeys = QStringList() );
+    void exportSpatiaLiteWays( bool closed, const QString &tableName, const QStringList &tagKeys, const QStringList &notNullTagKeys = QStringList() );
+    bool createSpatialTable( const QString &tableName, const QString &geometryType, const QStringList &tagKeys );
+    bool createSpatialIndex( const QString &tableName );
 
     QString quotedIdentifier( QString id );
     QString quotedValue( QString value );
@@ -117,14 +117,14 @@ class ANALYSIS_EXPORT QgsOSMDatabase
     QString mError;
 
     //! pointer to sqlite3 database that keeps OSM data
-    sqlite3* mDatabase = nullptr;
+    sqlite3 *mDatabase = nullptr;
 
-    sqlite3_stmt* mStmtNode = nullptr;
-    sqlite3_stmt* mStmtNodeTags = nullptr;
-    sqlite3_stmt* mStmtWay = nullptr;
-    sqlite3_stmt* mStmtWayNode = nullptr;
-    sqlite3_stmt* mStmtWayNodePoints = nullptr;
-    sqlite3_stmt* mStmtWayTags = nullptr;
+    sqlite3_stmt *mStmtNode = nullptr;
+    sqlite3_stmt *mStmtNodeTags = nullptr;
+    sqlite3_stmt *mStmtWay = nullptr;
+    sqlite3_stmt *mStmtWayNode = nullptr;
+    sqlite3_stmt *mStmtWayNodePoints = nullptr;
+    sqlite3_stmt *mStmtWayTags = nullptr;
 
 };
 
@@ -145,9 +145,9 @@ class ANALYSIS_EXPORT QgsOSMNodeIterator // clazy:exclude=rule-of-three
 
     /** @note not available in Python bindings
      */
-    QgsOSMNodeIterator( sqlite3* handle );
+    QgsOSMNodeIterator( sqlite3 *handle );
 
-    sqlite3_stmt* mStmt = nullptr;
+    sqlite3_stmt *mStmt = nullptr;
 
     friend class QgsOSMDatabase;
 
@@ -171,9 +171,9 @@ class ANALYSIS_EXPORT QgsOSMWayIterator // clazy:exclude=rule-of-three
 
     /** @note not available in Python bindings
      */
-    QgsOSMWayIterator( sqlite3* handle );
+    QgsOSMWayIterator( sqlite3 *handle );
 
-    sqlite3_stmt* mStmt = nullptr;
+    sqlite3_stmt *mStmt = nullptr;
 
     friend class QgsOSMDatabase;
 

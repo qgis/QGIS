@@ -25,7 +25,7 @@
 namespace QgsWms
 {
 
-  void writeInfoResponse( QDomDocument& infoDoc, QgsServerResponse& response, const QString& infoFormat )
+  void writeInfoResponse( QDomDocument &infoDoc, QgsServerResponse &response, const QString &infoFormat )
   {
     QByteArray ba;
     QgsMessageLog::logMessage( "Info format is:" + infoFormat );
@@ -155,9 +155,9 @@ namespace QgsWms
   }
 
 
-  void writeGetFeatureInfo( QgsServerInterface* serverIface, const QgsProject* project,
-                            const QString& version, const QgsServerRequest& request,
-                            QgsServerResponse& response )
+  void writeGetFeatureInfo( QgsServerInterface *serverIface, const QgsProject *project,
+                            const QString &version, const QgsServerRequest &request,
+                            QgsServerResponse &response )
   {
     Q_UNUSED( version );
     QgsServerRequest::Parameters params = request.parameters();

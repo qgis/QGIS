@@ -31,7 +31,7 @@ class QgsFilterResponseDecorator: public QgsServerResponse
 {
   public:
 
-    QgsFilterResponseDecorator( QgsServerFiltersMap filters, QgsServerResponse& response );
+    QgsFilterResponseDecorator( QgsServerFiltersMap filters, QgsServerResponse &response );
     ~QgsFilterResponseDecorator();
 
     /**
@@ -41,11 +41,11 @@ class QgsFilterResponseDecorator: public QgsServerResponse
 
     // QgsServerResponse overrides
 
-    void setHeader( const QString& key, const QString& value ) override {  mResponse.setHeader( key, value ); }
+    void setHeader( const QString &key, const QString &value ) override {  mResponse.setHeader( key, value ); }
 
-    void clearHeader( const QString& key ) override { mResponse.clearHeader( key ); }
+    void clearHeader( const QString &key ) override { mResponse.clearHeader( key ); }
 
-    QString getHeader( const QString& key ) const override { return mResponse.getHeader( key ); }
+    QString getHeader( const QString &key ) const override { return mResponse.getHeader( key ); }
 
     QList<QString> headerKeys() const override { return mResponse.headerKeys(); }
 
@@ -53,9 +53,9 @@ class QgsFilterResponseDecorator: public QgsServerResponse
 
     void setReturnCode( int code ) override { mResponse.setReturnCode( code ); }
 
-    void sendError( int code,  const QString& message ) override { mResponse.sendError( code, message ); }
+    void sendError( int code,  const QString &message ) override { mResponse.sendError( code, message ); }
 
-    QIODevice* io() override { return mResponse.io(); }
+    QIODevice *io() override { return mResponse.io(); }
 
     void finish() override;
 
@@ -67,7 +67,7 @@ class QgsFilterResponseDecorator: public QgsServerResponse
 
   private:
     QgsServerFiltersMap  mFilters;
-    QgsServerResponse&   mResponse;
+    QgsServerResponse   &mResponse;
 };
 
 #endif

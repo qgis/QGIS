@@ -24,9 +24,9 @@
 
 namespace QgsWms
 {
-  void writeGetPrint( QgsServerInterface* serverIface, const QgsProject* project,
-                      const QString& version, const QgsServerRequest& request,
-                      QgsServerResponse& response )
+  void writeGetPrint( QgsServerInterface *serverIface, const QgsProject *project,
+                      const QString &version, const QgsServerRequest &request,
+                      QgsServerResponse &response )
   {
     QgsServerRequest::Parameters params = request.parameters();
 

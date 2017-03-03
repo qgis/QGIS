@@ -31,28 +31,28 @@ class QgsGeometryCheckerFixSummaryDialog : public QDialog
   public:
     struct Statistics
     {
-      QSet<QgsGeometryCheckError*> newErrors;
-      QSet<QgsGeometryCheckError*> obsoleteErrors;
-      QSet<QgsGeometryCheckError*> fixedErrors;
-      QSet<QgsGeometryCheckError*> failedErrors;
+      QSet<QgsGeometryCheckError *> newErrors;
+      QSet<QgsGeometryCheckError *> obsoleteErrors;
+      QSet<QgsGeometryCheckError *> fixedErrors;
+      QSet<QgsGeometryCheckError *> failedErrors;
       int itemCount() const
       {
         return newErrors.size() + obsoleteErrors.size() + fixedErrors.size() + failedErrors.size();
       }
     };
 
-    QgsGeometryCheckerFixSummaryDialog( QgisInterface *iface, QgsVectorLayer *layer, const Statistics& stats, const QStringList& messages, QWidget* parent = nullptr );
+    QgsGeometryCheckerFixSummaryDialog( QgisInterface *iface, QgsVectorLayer *layer, const Statistics &stats, const QStringList &messages, QWidget *parent = nullptr );
 
   signals:
-    void errorSelected( QgsGeometryCheckError* error );
+    void errorSelected( QgsGeometryCheckError *error );
 
   private:
     Ui::QgsGeometryCheckerFixSummaryDialog ui;
-    QgisInterface* mIface = nullptr;
-    QgsVectorLayer* mLayer = nullptr;
+    QgisInterface *mIface = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
 
-    void addError( QTableWidget* table, QgsGeometryCheckError* error );
-    void setupTable( QTableWidget* table );
+    void addError( QTableWidget *table, QgsGeometryCheckError *error );
+    void setupTable( QTableWidget *table );
 
   private slots:
     void onTableSelectionChanged( const QItemSelection &newSel, const QItemSelection &oldSel );

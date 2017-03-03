@@ -57,12 +57,12 @@ class eVisConfiguration
 
     void setApplyPathRulesToDocs( bool pathRules );
     void setAttributeCompassOffset( bool compassOffset );
-    void setBasePath( const QString& );
-    void setCompassBearingField( const QString& );
+    void setBasePath( const QString & );
+    void setCompassBearingField( const QString & );
     void setCompassOffset( double );
-    void setCompassOffsetField( const QString& );
+    void setCompassOffsetField( const QString & );
     void setDisplayCompassBearing( bool compassBearing );
-    void setEventImagePathField( const QString& );
+    void setEventImagePathField( const QString & );
     void setEventImagePathRelative( bool pathRelative );
     void setManualCompassOffset( bool manualOffset );
     void setUseOnlyFilename( bool useOnlyFileName );

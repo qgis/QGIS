@@ -39,15 +39,15 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
 
     virtual ~QgsVirtualLayerProvider();
 
-    virtual QgsAbstractFeatureSource* featureSource() const override;
+    virtual QgsAbstractFeatureSource *featureSource() const override;
     virtual QString storageType() const override;
     virtual QgsCoordinateReferenceSystem crs() const override;
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) const override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
     QgsWkbTypes::Type wkbType() const override;
     long featureCount() const override;
     virtual QgsRectangle extent() const override;
     virtual QString subsetString() const override;
-    virtual bool setSubsetString( const QString& subset, bool updateFeatureCount = true ) override;
+    virtual bool setSubsetString( const QString &subset, bool updateFeatureCount = true ) override;
     virtual bool supportsSubsetString() const override { return true; }
     QgsFields fields() const override;
     bool isValid() const override;
@@ -68,19 +68,19 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     struct SourceLayer
     {
       SourceLayer(): layer( nullptr ) {}
-      SourceLayer( QgsVectorLayer *l, const QString& n = "" )
-          : layer( l )
-          , name( n )
+      SourceLayer( QgsVectorLayer *l, const QString &n = "" )
+        : layer( l )
+        , name( n )
       {}
-      SourceLayer( const QString& p, const QString& s, const QString& n, const QString& e = "UTF-8" )
-          : layer( nullptr )
-          , name( n )
-          , source( s )
-          , provider( p )
-          , encoding( e )
+      SourceLayer( const QString &p, const QString &s, const QString &n, const QString &e = "UTF-8" )
+        : layer( nullptr )
+        , name( n )
+        , source( s )
+        , provider( p )
+        , encoding( e )
       {}
       // non-null if it refers to a live layer
-      QgsVectorLayer* layer = nullptr;
+      QgsVectorLayer *layer = nullptr;
       QString name;
       // non-empty if it is an embedded layer
       QString source;

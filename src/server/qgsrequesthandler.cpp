@@ -33,10 +33,10 @@
 #include <QUrl>
 #include <QUrlQuery>
 
-QgsRequestHandler::QgsRequestHandler( QgsServerRequest& request, QgsServerResponse& response )
-    : mExceptionRaised( false )
-    , mRequest( request )
-    , mResponse( response )
+QgsRequestHandler::QgsRequestHandler( QgsServerRequest &request, QgsServerResponse &response )
+  : mExceptionRaised( false )
+  , mRequest( request )
+  , mResponse( response )
 {
 }
 
@@ -69,7 +69,7 @@ void QgsRequestHandler::removeHeader( const QString &name )
   mResponse.clearHeader( name );
 }
 
-QString QgsRequestHandler::getHeader( const QString& name ) const
+QString QgsRequestHandler::getHeader( const QString &name ) const
 {
   return mResponse.getHeader( name );
 }
@@ -95,7 +95,7 @@ void QgsRequestHandler::sendResponse()
   mResponse.flush();
 }
 
-void QgsRequestHandler::setServiceException( const QgsServerException& ex )
+void QgsRequestHandler::setServiceException( const QgsServerException &ex )
 {
   // Safety measure to avoid potential leaks if called repeatedly
   mExceptionRaised = true;
@@ -180,7 +180,7 @@ void QgsRequestHandler::parseInput()
       typedef QPair<QString, QString> pair_t;
       QUrlQuery query( inputString );
       QList<pair_t> items = query.queryItems();
-      Q_FOREACH ( const pair_t& pair, items )
+      Q_FOREACH ( const pair_t &pair, items )
       {
         mRequest.setParameter( pair.first.toUpper(), pair.second );
       }

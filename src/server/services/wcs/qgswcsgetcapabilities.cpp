@@ -34,8 +34,8 @@ namespace QgsWcs
   /**
    * Output WCS  GetCapabilities response
    */
-  void writeGetCapabilities( QgsServerInterface* serverIface, const QgsProject* project, const QString& version,
-                             const QgsServerRequest& request, QgsServerResponse& response )
+  void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
+                             const QgsServerRequest &request, QgsServerResponse &response )
   {
     QDomDocument doc = createGetCapabilitiesDocument( serverIface, project, version, request );
 
@@ -44,8 +44,8 @@ namespace QgsWcs
   }
 
 
-  QDomDocument createGetCapabilitiesDocument( QgsServerInterface* serverIface, const QgsProject* project, const QString& version,
-      const QgsServerRequest& request )
+  QDomDocument createGetCapabilitiesDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
+      const QgsServerRequest &request )
   {
     Q_UNUSED( version );
 
@@ -111,7 +111,7 @@ namespace QgsWcs
 
   }
 
-  QDomElement getServiceElement( QDomDocument& doc, const QgsProject* project )
+  QDomElement getServiceElement( QDomDocument &doc, const QgsProject *project )
   {
     //Service element
     QDomElement serviceElem = doc.createElement( QStringLiteral( "Service" ) );
@@ -250,10 +250,10 @@ namespace QgsWcs
     return serviceElem;
   }
 
-  QDomElement getContentMetadataElement( QDomDocument& doc, QgsServerInterface* serverIface, const QgsProject* project )
+  QDomElement getContentMetadataElement( QDomDocument &doc, QgsServerInterface *serverIface, const QgsProject *project )
   {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    QgsAccessControl* accessControl = serverIface->accessControls();
+    QgsAccessControl *accessControl = serverIface->accessControls();
 #endif
     /*
      * Adding layer list in ContentMetadata

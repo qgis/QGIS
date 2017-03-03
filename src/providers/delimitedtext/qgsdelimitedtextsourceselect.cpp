@@ -33,13 +33,13 @@
 
 const int MAX_SAMPLE_LENGTH = 200;
 
-QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt::WindowFlags fl, bool embedded )
-    : QDialog( parent, fl )
-    , mFile( new QgsDelimitedTextFile() )
-    , mExampleRowCount( 20 )
-    , mBadRowCount( 0 )
-    , mPluginKey( QStringLiteral( "/Plugin-DelimitedText" ) )
-    , mLastFileType( QLatin1String( "" ) )
+QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embedded )
+  : QDialog( parent, fl )
+  , mFile( new QgsDelimitedTextFile() )
+  , mExampleRowCount( 20 )
+  , mBadRowCount( 0 )
+  , mPluginKey( QStringLiteral( "/Plugin-DelimitedText" ) )
+  , mLastFileType( QLatin1String( "" ) )
 {
 
   setupUi( this );
@@ -224,7 +224,7 @@ QString QgsDelimitedTextSourceSelect::selectedChars()
   chars.append( txtDelimiterOther->text() );
   return chars;
 }
-void QgsDelimitedTextSourceSelect::setSelectedChars( const QString& delimiters )
+void QgsDelimitedTextSourceSelect::setSelectedChars( const QString &delimiters )
 {
   QString chars = QgsDelimitedTextFile::decodeChars( delimiters );
   cbxDelimComma->setChecked( chars.contains( ',' ) );
@@ -237,7 +237,7 @@ void QgsDelimitedTextSourceSelect::setSelectedChars( const QString& delimiters )
   txtDelimiterOther->setText( chars );
 }
 
-void QgsDelimitedTextSourceSelect::loadSettings( const QString& subkey, bool loadGeomSettings )
+void QgsDelimitedTextSourceSelect::loadSettings( const QString &subkey, bool loadGeomSettings )
 {
   QSettings settings;
 
@@ -294,7 +294,7 @@ void QgsDelimitedTextSourceSelect::loadSettings( const QString& subkey, bool loa
 
 }
 
-void QgsDelimitedTextSourceSelect::saveSettings( const QString& subkey, bool saveGeomSettings )
+void QgsDelimitedTextSourceSelect::saveSettings( const QString &subkey, bool saveGeomSettings )
 {
   QSettings settings;
   QString key = mPluginKey;
@@ -331,7 +331,7 @@ void QgsDelimitedTextSourceSelect::saveSettings( const QString& subkey, bool sav
 
 }
 
-void QgsDelimitedTextSourceSelect::loadSettingsForFile( const QString& filename )
+void QgsDelimitedTextSourceSelect::loadSettingsForFile( const QString &filename )
 {
   if ( filename.isEmpty() ) return;
   QFileInfo fi( filename );
@@ -341,7 +341,7 @@ void QgsDelimitedTextSourceSelect::loadSettingsForFile( const QString& filename 
   mLastFileType = filetype;
 }
 
-void QgsDelimitedTextSourceSelect::saveSettingsForFile( const QString& filename )
+void QgsDelimitedTextSourceSelect::saveSettingsForFile( const QString &filename )
 {
   if ( filename.isEmpty() ) return;
   QFileInfo fi( filename );
@@ -424,7 +424,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     // Look at count of non-blank fields
 
     int nv = values.size();
-    while ( nv > 0 && values[nv-1].isEmpty() ) nv--;
+    while ( nv > 0 && values[nv - 1].isEmpty() ) nv--;
 
     if ( isEmpty.size() < nv )
     {
@@ -567,7 +567,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
 
 }
 
-bool QgsDelimitedTextSourceSelect::trySetXYField( QStringList &fields, QList<bool> &isValidNumber, const QString& xname, const QString& yname )
+bool QgsDelimitedTextSourceSelect::trySetXYField( QStringList &fields, QList<bool> &isValidNumber, const QString &xname, const QString &yname )
 {
   // If fields already set, then nothing to do
   if ( cmbXField->currentIndex() >= 0 && cmbYField->currentIndex() >= 0 ) return true;

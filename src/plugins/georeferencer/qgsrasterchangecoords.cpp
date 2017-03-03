@@ -21,11 +21,11 @@
 #include <QFile>
 
 QgsRasterChangeCoords::QgsRasterChangeCoords()
-    : mHasCrs( false )
-    , mUL_X( 0. )
-    , mUL_Y( 0. )
-    , mResX( 1. )
-    , mResY( 1. )
+  : mHasCrs( false )
+  , mUL_X( 0. )
+  , mUL_Y( 0. )
+  , mResX( 1. )
+  , mResY( 1. )
 {
 }
 
@@ -69,7 +69,7 @@ QgsRectangle QgsRasterChangeCoords::getBoundingBox( const QgsRectangle &rect, bo
   QgsPoint( QgsRasterChangeCoords::* func )( const QgsPoint & );
 
   func = toPixel ? &QgsRasterChangeCoords::toColumnLine : &QgsRasterChangeCoords::toXY;
-  rectReturn.set(( this->*func )( p1 ), ( this->*func )( p2 ) );
+  rectReturn.set( ( this->*func )( p1 ), ( this->*func )( p2 ) );
 
   return rectReturn;
 }

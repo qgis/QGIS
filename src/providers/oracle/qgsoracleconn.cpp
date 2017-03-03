@@ -31,7 +31,7 @@ QMap<QString, QgsOracleConn *> QgsOracleConn::sConnections;
 int QgsOracleConn::snConnections = 0;
 const int QgsOracleConn::sGeomTypeSelectLimit = 100;
 
-QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceUri& uri )
+QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceUri &uri )
 {
   QString conninfo = toPoolName( uri );
   if ( sConnections.contains( conninfo ) )
@@ -55,9 +55,9 @@ QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceUri& uri )
 }
 
 QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri )
-    : mRef( 1 )
-    , mCurrentUser( QString::null )
-    , mHasSpatial( -1 )
+  : mRef( 1 )
+  , mCurrentUser( QString::null )
+  , mHasSpatial( -1 )
 {
   QgsDebugMsg( QString( "New Oracle connection for " ) + uri.connectionInfo() );
 
@@ -179,7 +179,7 @@ bool QgsOracleConn::exec( QSqlQuery &qry, QString sql, const QVariantList &param
   bool res = qry.prepare( sql );
   if ( res )
   {
-  for ( const auto &param: params )
+    for ( const auto &param : params )
     {
       QgsDebugMsgLevel( QString( " ARG: %1 [%2]" ).arg( param.toString() ).arg( param.typeName() ), 4 );
       qry.addBindValue( param );
@@ -230,7 +230,7 @@ bool QgsOracleConn::tableInfo( bool geometryColumnsOnly, bool userTablesOnly, bo
 
   QString
   prefix( userTablesOnly ? "user" : "all" ),
-  owner( userTablesOnly ? "user AS owner" : "c.owner" );
+          owner( userTablesOnly ? "user AS owner" : "c.owner" );
 
   sql = QString( "SELECT %1,c.table_name,c.column_name,%2,o.object_type AS type"
                  " FROM %3_%4 c"

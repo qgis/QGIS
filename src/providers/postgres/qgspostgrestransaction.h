@@ -27,16 +27,16 @@ class QgsPostgresTransaction : public QgsTransaction
     Q_OBJECT
 
   public:
-    explicit QgsPostgresTransaction( const QString& connString );
-    bool executeSql( const QString& sql, QString& error ) override;
-    QgsPostgresConn* connection() const { return mConn; }
+    explicit QgsPostgresTransaction( const QString &connString );
+    bool executeSql( const QString &sql, QString &error ) override;
+    QgsPostgresConn *connection() const { return mConn; }
 
   private:
-    QgsPostgresConn* mConn = nullptr;
+    QgsPostgresConn *mConn = nullptr;
 
-    bool beginTransaction( QString& error, int statementTimeout ) override;
-    bool commitTransaction( QString& error ) override;
-    bool rollbackTransaction( QString& error ) override;
+    bool beginTransaction( QString &error, int statementTimeout ) override;
+    bool commitTransaction( QString &error ) override;
+    bool rollbackTransaction( QString &error ) override;
 
 };
 

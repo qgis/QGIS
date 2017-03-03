@@ -32,7 +32,7 @@ namespace QgsWcs
     return QStringLiteral( "1.0.0" );
   }
 
-  QDomElement getCoverageOffering( QDomDocument& doc, const QgsRasterLayer* layer, bool brief )
+  QDomElement getCoverageOffering( QDomDocument &doc, const QgsRasterLayer *layer, bool brief )
   {
     QDomElement layerElem;
     if ( brief )
@@ -231,7 +231,7 @@ namespace QgsWcs
   }
 
 
-  QString serviceUrl( const QgsServerRequest& request, const QgsProject* project )
+  QString serviceUrl( const QgsServerRequest &request, const QgsProject *project )
   {
     QString href;
     if ( project )
@@ -258,7 +258,7 @@ namespace QgsWcs
     return  href;
   }
 
-  QgsRectangle parseBbox( const QString& bboxStr )
+  QgsRectangle parseBbox( const QString &bboxStr )
   {
     QStringList lst = bboxStr.split( QStringLiteral( "," ) );
     if ( lst.count() != 4 )

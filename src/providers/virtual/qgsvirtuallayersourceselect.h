@@ -33,7 +33,7 @@ class QgsVirtualLayerSourceSelect : public QDialog, private Ui::QgsVirtualLayerS
     Q_OBJECT
 
   public:
-    QgsVirtualLayerSourceSelect( QWidget * parent, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsVirtualLayerSourceSelect( QWidget *parent, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
   private slots:
     void on_buttonBox_accepted();
@@ -43,7 +43,7 @@ class QgsVirtualLayerSourceSelect : public QDialog, private Ui::QgsVirtualLayerS
     void onAddLayer();
     void onRemoveLayer();
     void onImportLayer();
-    void onTableRowChanged( const QModelIndex& current, const QModelIndex& previous );
+    void onTableRowChanged( const QModelIndex &current, const QModelIndex &previous );
 
   signals:
     //! Source, name, provider
@@ -55,7 +55,7 @@ class QgsVirtualLayerSourceSelect : public QDialog, private Ui::QgsVirtualLayerS
     QgsVirtualLayerDefinition getVirtualLayerDef();
     long mSrid;
     QStringList mProviderList;
-    QgsEmbeddedLayerSelectDialog* mEmbeddedSelectionDialog = nullptr;
+    QgsEmbeddedLayerSelectDialog *mEmbeddedSelectionDialog = nullptr;
     void addEmbeddedLayer( const QString &name, const QString &provider, const QString &encoding, const QString &source );
 };
 

@@ -27,9 +27,9 @@
 #include <QMenu>
 #include <QGraphicsView>
 
-QgsTileScaleWidget::QgsTileScaleWidget( QgsMapCanvas * mapCanvas, QWidget * parent, Qt::WindowFlags f )
-    : QWidget( parent, f )
-    , mMapCanvas( mapCanvas )
+QgsTileScaleWidget::QgsTileScaleWidget( QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags f )
+  : QWidget( parent, f )
+  , mMapCanvas( mapCanvas )
 {
   setupUi( this );
 
@@ -53,7 +53,7 @@ void QgsTileScaleWidget::layerChanged( QgsMapLayer *layer )
   QVariant res = rl->dataProvider()->property( "resolutions" );
 
   mResolutions.clear();
-  Q_FOREACH ( const QVariant& r, res.toList() )
+  Q_FOREACH ( const QVariant &r, res.toList() )
   {
     QgsDebugMsg( QString( "found resolution: %1" ).arg( r.toDouble() ) );
     mResolutions << r.toDouble();
@@ -118,7 +118,7 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
   }
 
   QgsMapCanvas *canvas = mainWindow->findChild<QgsMapCanvas *>( QStringLiteral( "theMapCanvas" ) );
-  QgsDebugMsg( QString( "canvas:%1 [%2]" ).arg(( quint64 ) canvas, 0, 16 ).arg( canvas ? canvas->objectName() : "" ) );
+  QgsDebugMsg( QString( "canvas:%1 [%2]" ).arg( ( quint64 ) canvas, 0, 16 ).arg( canvas ? canvas->objectName() : "" ) );
   if ( !canvas )
   {
     QgsDebugMsg( "map canvas mapCanvas not found" );
@@ -128,11 +128,11 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
   QgsTileScaleWidget *tws = new QgsTileScaleWidget( canvas );
   tws->setObjectName( QStringLiteral( "theTileScaleWidget" ) );
 
-  QObject *legend = mainWindow->findChild<QObject*>( QStringLiteral( "theLayerTreeView" ) );
+  QObject *legend = mainWindow->findChild<QObject *>( QStringLiteral( "theLayerTreeView" ) );
   if ( legend )
   {
-    connect( legend, SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
-             tws, SLOT( layerChanged( QgsMapLayer* ) ) );
+    connect( legend, SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
+             tws, SLOT( layerChanged( QgsMapLayer * ) ) );
   }
   else
   {

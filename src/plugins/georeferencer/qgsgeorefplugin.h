@@ -86,7 +86,7 @@ class QgsGeorefPlugin: public QObject, public QgisPlugin
     //! unload the plugin
     void unload() override;
     //! update the plugins theme when the app tells us its theme is changed
-    void setCurrentTheme( const QString& themeName );
+    void setCurrentTheme( const QString &themeName );
     QIcon getThemeIcon( const QString &themeName );
 
     //////////////////////////////////////////////////////////////////////
@@ -106,7 +106,7 @@ class QgsGeorefPlugin: public QObject, public QgisPlugin
     //! Pointer to the QGIS interface object
     QgisInterface *mQGisIface = nullptr;
     //!pointer to the qaction for this plugin
-    QAction * mActionRunGeoref = nullptr;
+    QAction *mActionRunGeoref = nullptr;
     ////////////////////////////////////////////////////////////////////
     //
     // ADD YOUR OWN MEMBER DECLARATIONS AFTER THIS POINT.....

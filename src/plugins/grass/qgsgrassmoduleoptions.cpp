@@ -51,11 +51,11 @@ extern "C"
 QgsGrassModuleOptions::QgsGrassModuleOptions(
   QgsGrassTools *tools, QgsGrassModule *module,
   QgisInterface *iface, bool direct )
-    : mIface( iface )
-    , mTools( tools )
-    , mModule( module )
-    , mRegionModeComboBox( 0 )
-    , mDirect( direct )
+  : mIface( iface )
+  , mTools( tools )
+  , mModule( module )
+  , mRegionModeComboBox( 0 )
+  , mDirect( direct )
 {
   QgsDebugMsg( "called." );
 
@@ -77,10 +77,10 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   QgsGrassTools *tools, QgsGrassModule *module,
   QgisInterface *iface,
   QString xname, QDomElement confDocElem,
-  bool direct, QWidget * parent, Qt::WindowFlags f )
-    : QWidget( parent, f )
-    , QgsGrassModuleOptions( tools, module, iface, direct )
-    , mXName( xname )
+  bool direct, QWidget *parent, Qt::WindowFlags f )
+  : QWidget( parent, f )
+  , QgsGrassModuleOptions( tools, module, iface, direct )
+  , mXName( xname )
 {
   //QgsDebugMsg( "called." );
   QgsDebugMsg( QString( "PATH = %1" ).arg( getenv( "PATH" ) ) );
@@ -88,12 +88,12 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   //
   //Set up dynamic inside a scroll box
   //
-  QVBoxLayout * mypOuterLayout = new QVBoxLayout( this );
+  QVBoxLayout *mypOuterLayout = new QVBoxLayout( this );
   mypOuterLayout->setContentsMargins( 0, 0, 0, 0 );
-  QScrollArea * mypScrollArea = new QScrollArea();
+  QScrollArea *mypScrollArea = new QScrollArea();
   //transfers scroll area ownership so no need to call delete
   mypOuterLayout->addWidget( mypScrollArea );
-  QFrame * mypInnerFrame = new QFrame();
+  QFrame *mypInnerFrame = new QFrame();
   mypInnerFrame->setFrameShape( QFrame::NoFrame );
   mypInnerFrame->setFrameShadow( QFrame::Plain );
   //transfers frame ownership so no need to call delete
@@ -101,9 +101,9 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   mypScrollArea->setWidgetResizable( true );
   QVBoxLayout *mypInnerFrameLayout = new QVBoxLayout( mypInnerFrame );
 
-  QFrame * mypRegionModeFrame = new QFrame();
-  QHBoxLayout * mypRegionModeFrameLayout = new QHBoxLayout( mypRegionModeFrame );
-  QLabel * mypRegionModeLabel = new QLabel( tr( "Region" ) );
+  QFrame *mypRegionModeFrame = new QFrame();
+  QHBoxLayout *mypRegionModeFrameLayout = new QHBoxLayout( mypRegionModeFrame );
+  QLabel *mypRegionModeLabel = new QLabel( tr( "Region" ) );
   mRegionModeComboBox = new QComboBox();
   mRegionModeComboBox->addItem( tr( "Input layers" ), RegionInput );
   mRegionModeComboBox->addItem( tr( "Current map canvas" ), RegionCurrent );
@@ -112,14 +112,14 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   mypRegionModeFrameLayout->addWidget( mRegionModeComboBox );
 
   // Add frames for simple/advanced options
-  QFrame * mypSimpleFrame = new QFrame();
+  QFrame *mypSimpleFrame = new QFrame();
   mypSimpleFrame->setFrameShape( QFrame::NoFrame );
   mypSimpleFrame->setFrameShadow( QFrame::Plain );
   mAdvancedFrame.setFrameShape( QFrame::NoFrame );
   mXName = xname;
   mAdvancedFrame.setFrameShadow( QFrame::Plain );
 
-  QFrame * mypAdvancedPushButtonFrame = new QFrame();
+  QFrame *mypAdvancedPushButtonFrame = new QFrame();
   QHBoxLayout *mypAdvancedPushButtonFrameLayout = new QHBoxLayout( mypAdvancedPushButtonFrame );
   connect( &mAdvancedPushButton, SIGNAL( clicked() ), this, SLOT( switchAdvanced() ) );
   mypAdvancedPushButtonFrameLayout->addWidget( &mAdvancedPushButton );
@@ -379,7 +379,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
     layout->addStretch();
   }
 
-  Q_FOREACH ( QgsGrassModuleParam* item, mParams )
+  Q_FOREACH ( QgsGrassModuleParam *item, mParams )
   {
     mErrors << item->errors();
   }
@@ -483,7 +483,7 @@ QList<QgsGrassProvider *> QgsGrassModuleStandardOptions::grassProviders()
   {
     if ( layer->type() == QgsMapLayer::VectorLayer )
     {
-      QgsVectorLayer *vector = qobject_cast<QgsVectorLayer*>( layer );
+      QgsVectorLayer *vector = qobject_cast<QgsVectorLayer *>( layer );
       if ( vector  && vector->providerType() == QLatin1String( "grass" ) )
       {
         QgsGrassProvider *provider = qobject_cast<QgsGrassProvider *>( vector->dataProvider() );
@@ -504,7 +504,7 @@ QList<QgsGrassRasterProvider *> QgsGrassModuleStandardOptions::grassRasterProvid
   {
     if ( layer->type() == QgsMapLayer::RasterLayer )
     {
-      QgsRasterLayer *raster = qobject_cast<QgsRasterLayer*>( layer );
+      QgsRasterLayer *raster = qobject_cast<QgsRasterLayer *>( layer );
       if ( raster  && raster->providerType() == QLatin1String( "grassraster" ) )
       {
         QgsGrassRasterProvider *provider = qobject_cast<QgsGrassRasterProvider *>( raster->dataProvider() );
@@ -845,7 +845,7 @@ bool QgsGrassModuleStandardOptions::usesRegion()
   return false;
 }
 
-bool QgsGrassModuleStandardOptions::getCurrentMapRegion( QgsGrassModuleInput* input, struct Cell_head * window )
+bool QgsGrassModuleStandardOptions::getCurrentMapRegion( QgsGrassModuleInput *input, struct Cell_head *window )
 {
   if ( !input )
   {
@@ -882,7 +882,7 @@ QgsGrassModuleStandardOptions::~QgsGrassModuleStandardOptions()
 {
 }
 
-QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QString & xname, QStringList & errors )
+QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QString &xname, QStringList &errors )
 {
   QDomDocument gDoc( QStringLiteral( "task" ) );
 

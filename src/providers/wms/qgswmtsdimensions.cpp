@@ -22,7 +22,7 @@
 #include <QComboBox>
 
 QgsWmtsDimensions::QgsWmtsDimensions( const QgsWmtsTileLayer &layer, QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
 

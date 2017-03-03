@@ -37,12 +37,12 @@
 
 QString QgsGeometryCheckerResultTab::sSettingsGroup = QStringLiteral( "/geometry_checker/default_fix_methods/" );
 
-QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface* iface, QgsGeometryChecker* checker, QgsFeaturePool *featurePool, QTabWidget* tabWidget, QWidget* parent )
-    : QWidget( parent )
-    , mTabWidget( tabWidget )
-    , mIface( iface )
-    , mChecker( checker )
-    , mFeaturePool( featurePool )
+QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface *iface, QgsGeometryChecker *checker, QgsFeaturePool *featurePool, QTabWidget *tabWidget, QWidget *parent )
+  : QWidget( parent )
+  , mTabWidget( tabWidget )
+  , mIface( iface )
+  , mChecker( checker )
+  , mFeaturePool( featurePool )
 {
   ui.setupUi( this );
   mErrorCount = 0;
@@ -55,8 +55,8 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface* iface, 
     ui.comboBoxMergeAttribute->addItem( mFeaturePool->getLayer()->fields().at( i ).name() );
   }
 
-  connect( checker, SIGNAL( errorAdded( QgsGeometryCheckError* ) ), this, SLOT( addError( QgsGeometryCheckError* ) ) );
-  connect( checker, SIGNAL( errorUpdated( QgsGeometryCheckError*, bool ) ), this, SLOT( updateError( QgsGeometryCheckError*, bool ) ) );
+  connect( checker, SIGNAL( errorAdded( QgsGeometryCheckError * ) ), this, SLOT( addError( QgsGeometryCheckError * ) ) );
+  connect( checker, SIGNAL( errorUpdated( QgsGeometryCheckError *, bool ) ), this, SLOT( updateError( QgsGeometryCheckError *, bool ) ) );
   connect( ui.comboBoxMergeAttribute, SIGNAL( currentIndexChanged( int ) ), checker, SLOT( setMergeAttributeIndex( int ) ) );
   connect( ui.tableWidgetErrors->selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( onSelectionChanged( QItemSelection, QItemSelection ) ) );
   connect( ui.buttonGroupSelectAction, SIGNAL( buttonClicked( int ) ), this, SLOT( highlightErrors() ) );
@@ -68,7 +68,7 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface* iface, 
   connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( checkRemovedLayer( QStringList ) ) );
   connect( ui.pushButtonExport, SIGNAL( clicked() ), this, SLOT( exportErrors() ) );
 
-  if (( mFeaturePool->getLayer()->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries ) == 0 )
+  if ( ( mFeaturePool->getLayer()->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries ) == 0 )
   {
     ui.pushButtonFixWithDefault->setEnabled( false );
     ui.pushButtonFixWithPrompt->setEnabled( false );
@@ -99,7 +99,7 @@ void QgsGeometryCheckerResultTab::finalize()
     dialog.setLayout( new QVBoxLayout() );
     dialog.layout()->addWidget( new QLabel( tr( "The following checks reported errors:" ) ) );
     dialog.layout()->addWidget( new QPlainTextEdit( mChecker->getMessages().join( QStringLiteral( "\n" ) ) ) );
-    QDialogButtonBox* bbox = new QDialogButtonBox( QDialogButtonBox::Close, Qt::Horizontal );
+    QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Close, Qt::Horizontal );
     dialog.layout()->addWidget( bbox );
     connect( bbox, SIGNAL( accepted() ), &dialog, SLOT( accept() ) );
     connect( bbox, SIGNAL( rejected() ), &dialog, SLOT( reject() ) );
@@ -132,12 +132,12 @@ void QgsGeometryCheckerResultTab::addError( QgsGeometryCheckError *error )
     value = error->value();
   }
   ui.tableWidgetErrors->insertRow( row );
-  QTableWidgetItem* idItem = new QTableWidgetItem();
+  QTableWidgetItem *idItem = new QTableWidgetItem();
   idItem->setData( Qt::EditRole, error->featureId() != FEATUREID_NULL ? QVariant( error->featureId() ) : QVariant() );
   ui.tableWidgetErrors->setItem( row, 0, idItem );
   ui.tableWidgetErrors->setItem( row, 1, new QTableWidgetItem( error->description() ) );
   ui.tableWidgetErrors->setItem( row, 2, new QTableWidgetItem( posStr ) );
-  QTableWidgetItem* valueItem = new QTableWidgetItem();
+  QTableWidgetItem *valueItem = new QTableWidgetItem();
   valueItem->setData( Qt::EditRole, value );
   ui.tableWidgetErrors->setItem( row, 3, valueItem );
   ui.tableWidgetErrors->setItem( row, 4, new QTableWidgetItem( QLatin1String( "" ) ) );
@@ -234,7 +234,7 @@ void QgsGeometryCheckerResultTab::exportErrors()
   }
 }
 
-bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString& file )
+bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
 {
   QList< QPair<QString, QString> > attributes;
   attributes.append( qMakePair( QStringLiteral( "FeatureID" ), QStringLiteral( "String;10;" ) ) );
@@ -245,7 +245,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString& file )
   {
     return false;
   }
-  typedef bool ( *createEmptyDataSourceProc )( const QString&, const QString&, const QString&, QgsWkbTypes::Type, const QList< QPair<QString, QString> >&, const QgsCoordinateReferenceSystem& );
+  typedef bool ( *createEmptyDataSourceProc )( const QString &, const QString &, const QString &, QgsWkbTypes::Type, const QList< QPair<QString, QString> > &, const QgsCoordinateReferenceSystem & );
   createEmptyDataSourceProc createEmptyDataSource = ( createEmptyDataSourceProc ) cast_to_fptr( ogrLib.resolve( "createEmptyDataSource" ) );
   if ( !createEmptyDataSource )
   {
@@ -255,7 +255,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString& file )
   {
     return false;
   }
-  QgsVectorLayer* layer = new QgsVectorLayer( file, QFileInfo( file ).baseName(), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *layer = new QgsVectorLayer( file, QFileInfo( file ).baseName(), QStringLiteral( "ogr" ) );
   if ( !layer->isValid() )
   {
     delete layer;
@@ -266,7 +266,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString& file )
   int fieldErrDesc = layer->fields().lookupField( QStringLiteral( "ErrorDesc" ) );
   for ( int row = 0, nRows = ui.tableWidgetErrors->rowCount(); row < nRows; ++row )
   {
-    QgsGeometryCheckError* error = ui.tableWidgetErrors->item( row, 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError*>();
+    QgsGeometryCheckError *error = ui.tableWidgetErrors->item( row, 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError *>();
 
     QgsFeature f( layer->fields() );
     f.setAttribute( fieldFeatureId, error->featureId() );
@@ -277,10 +277,10 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString& file )
 
   // Remove existing layer with same uri
   QStringList toRemove;
-  Q_FOREACH ( QgsMapLayer* maplayer, QgsProject::instance()->mapLayers() )
+  Q_FOREACH ( QgsMapLayer *maplayer, QgsProject::instance()->mapLayers() )
   {
-    if ( dynamic_cast<QgsVectorLayer*>( maplayer ) &&
-         static_cast<QgsVectorLayer*>( maplayer )->dataProvider()->dataSourceUri() == layer->dataProvider()->dataSourceUri() )
+    if ( dynamic_cast<QgsVectorLayer *>( maplayer ) &&
+         static_cast<QgsVectorLayer *>( maplayer )->dataProvider()->dataSourceUri() == layer->dataProvider()->dataSourceUri() )
     {
       toRemove.append( maplayer->id() );
     }
@@ -290,11 +290,11 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString& file )
     QgsProject::instance()->removeMapLayers( toRemove );
   }
 
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << layer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << layer );
   return true;
 }
 
-void QgsGeometryCheckerResultTab::highlightError( QgsGeometryCheckError* error )
+void QgsGeometryCheckerResultTab::highlightError( QgsGeometryCheckError *error )
 {
   if ( !mErrorMap.contains( error ) )
   {
@@ -310,7 +310,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
   qDeleteAll( mCurrentRubberBands );
   mCurrentRubberBands.clear();
 
-  QList<QTableWidgetItem*> items;
+  QList<QTableWidgetItem *> items;
   QVector<QgsPoint> errorPositions;
   QgsRectangle totextent;
 
@@ -322,14 +322,14 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
   {
     items.append( ui.tableWidgetErrors->selectedItems() );
   }
-  Q_FOREACH ( QTableWidgetItem* item, items )
+  Q_FOREACH ( QTableWidgetItem *item, items )
   {
-    QgsGeometryCheckError* error = ui.tableWidgetErrors->item( item->row(), 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError*>();
+    QgsGeometryCheckError *error = ui.tableWidgetErrors->item( item->row(), 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError *>();
 
-    QgsAbstractGeometry* geometry = error->geometry();
+    QgsAbstractGeometry *geometry = error->geometry();
     if ( ui.checkBoxHighlight->isChecked() && geometry )
     {
-      QgsRubberBand* featureRubberBand = new QgsRubberBand( mIface->mapCanvas() );
+      QgsRubberBand *featureRubberBand = new QgsRubberBand( mIface->mapCanvas() );
       QgsGeometry geom( geometry->clone() );
       featureRubberBand->addGeometry( geom, mFeaturePool->getLayer() );
       featureRubberBand->setWidth( 5 );
@@ -345,7 +345,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
 
     if ( ui.radioButtonError->isChecked() || current || error->status() == QgsGeometryCheckError::StatusFixed )
     {
-      QgsRubberBand* pointRubberBand = new QgsRubberBand( mIface->mapCanvas(), QgsWkbTypes::PointGeometry );
+      QgsRubberBand *pointRubberBand = new QgsRubberBand( mIface->mapCanvas(), QgsWkbTypes::PointGeometry );
       QgsPoint pos = mIface->mapCanvas()->mapSettings().layerToMapCoordinates( mFeaturePool->getLayer(), QgsPoint( error->location().x(), error->location().y() ) );
       pointRubberBand->addPoint( pos );
       pointRubberBand->setWidth( 20 );
@@ -373,7 +373,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
   {
     double cx = 0., cy = 0.;
     QgsRectangle pointExtent( errorPositions.first(), errorPositions.first() );
-    Q_FOREACH ( const QgsPoint& p, errorPositions )
+    Q_FOREACH ( const QgsPoint &p, errorPositions )
     {
       cx += p.x();
       cy += p.y();
@@ -421,7 +421,7 @@ void QgsGeometryCheckerResultTab::openAttributeTable()
   QSet<int> ids;
   Q_FOREACH ( QModelIndex idx, ui.tableWidgetErrors->selectionModel()->selectedRows() )
   {
-    QgsFeatureId id = ui.tableWidgetErrors->item( idx.row(), 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError*>()->featureId();
+    QgsFeatureId id = ui.tableWidgetErrors->item( idx.row(), 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError *>()->featureId();
     if ( id >= 0 )
     {
       ids.insert( id );
@@ -455,10 +455,10 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
     ui.tableWidgetErrors->selectAll();
     rows = ui.tableWidgetErrors->selectionModel()->selectedRows();
   }
-  QList<QgsGeometryCheckError*> errors;
-  Q_FOREACH ( const QModelIndex& index, rows )
+  QList<QgsGeometryCheckError *> errors;
+  Q_FOREACH ( const QModelIndex &index, rows )
   {
-    QgsGeometryCheckError* error = ui.tableWidgetErrors->item( index.row(), 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError*>();
+    QgsGeometryCheckError *error = ui.tableWidgetErrors->item( index.row(), 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError *>();
     if ( error->status() < QgsGeometryCheckError::StatusFixed )
     {
       errors.append( error );
@@ -485,7 +485,7 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
   {
     QgsGeometryCheckerFixDialog fixdialog( mChecker, errors, mIface, mIface->mainWindow() );
     QEventLoop loop;
-    connect( &fixdialog, SIGNAL( currentErrorChanged( QgsGeometryCheckError* ) ), this, SLOT( highlightError( QgsGeometryCheckError* ) ) );
+    connect( &fixdialog, SIGNAL( currentErrorChanged( QgsGeometryCheckError * ) ), this, SLOT( highlightError( QgsGeometryCheckError * ) ) );
     connect( &fixdialog, SIGNAL( finished( int ) ), &loop, SLOT( quit() ) );
     fixdialog.show();
     parentWidget()->parentWidget()->parentWidget()->setEnabled( false );
@@ -498,7 +498,7 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
     ui.progressBarFixErrors->setVisible( true );
     ui.progressBarFixErrors->setRange( 0, errors.size() );
 
-    Q_FOREACH ( QgsGeometryCheckError* error, errors )
+    Q_FOREACH ( QgsGeometryCheckError *error, errors )
     {
       int fixMethod = QSettings().value( sSettingsGroup + error->check()->errorName(), QVariant::fromValue<int>( 0 ) ).toInt();
       mChecker->fixError( error, fixMethod );
@@ -515,7 +515,7 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
   {
     QgsGeometryCheckerFixSummaryDialog summarydialog( mIface, mFeaturePool->getLayer(), mStatistics, mChecker->getMessages(), mIface->mainWindow() );
     QEventLoop loop;
-    connect( &summarydialog, SIGNAL( errorSelected( QgsGeometryCheckError* ) ), this, SLOT( highlightError( QgsGeometryCheckError* ) ) );
+    connect( &summarydialog, SIGNAL( errorSelected( QgsGeometryCheckError * ) ), this, SLOT( highlightError( QgsGeometryCheckError * ) ) );
     connect( &summarydialog, SIGNAL( finished( int ) ), &loop, SLOT( quit() ) );
     summarydialog.show();
     parentWidget()->parentWidget()->parentWidget()->setEnabled( false );
@@ -525,11 +525,11 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
   mCloseable = true;
 }
 
-void QgsGeometryCheckerResultTab::setRowStatus( int row, const QColor& color, const QString& message, bool selectable )
+void QgsGeometryCheckerResultTab::setRowStatus( int row, const QColor &color, const QString &message, bool selectable )
 {
   for ( int col = 0, nCols = ui.tableWidgetErrors->columnCount(); col < nCols; ++col )
   {
-    QTableWidgetItem* item = ui.tableWidgetErrors->item( row, col );
+    QTableWidgetItem *item = ui.tableWidgetErrors->item( row, col );
     item->setBackground( color );
     if ( !selectable )
     {
@@ -545,31 +545,31 @@ void QgsGeometryCheckerResultTab::setDefaultResolutionMethods()
   QDialog dialog( this );
   dialog.setWindowTitle( tr( "Set Error Resolutions" ) );
 
-  QVBoxLayout* layout = new QVBoxLayout( &dialog );
+  QVBoxLayout *layout = new QVBoxLayout( &dialog );
 
-  QScrollArea* scrollArea = new QScrollArea( &dialog );
+  QScrollArea *scrollArea = new QScrollArea( &dialog );
   scrollArea->setFrameShape( QFrame::NoFrame );
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->addWidget( scrollArea );
 
-  QWidget* scrollAreaContents = new QWidget( scrollArea );
-  QVBoxLayout* scrollAreaLayout = new QVBoxLayout( scrollAreaContents );
+  QWidget *scrollAreaContents = new QWidget( scrollArea );
+  QVBoxLayout *scrollAreaLayout = new QVBoxLayout( scrollAreaContents );
 
-  Q_FOREACH ( const QgsGeometryCheck* check, mChecker->getChecks() )
+  Q_FOREACH ( const QgsGeometryCheck *check, mChecker->getChecks() )
   {
-    QGroupBox* groupBox = new QGroupBox( scrollAreaContents );
+    QGroupBox *groupBox = new QGroupBox( scrollAreaContents );
     groupBox->setTitle( check->errorDescription() );
     groupBox->setFlat( true );
 
-    QVBoxLayout* groupBoxLayout = new QVBoxLayout( groupBox );
+    QVBoxLayout *groupBoxLayout = new QVBoxLayout( groupBox );
     groupBoxLayout->setContentsMargins( 2, 0, 2, 2 );
-    QButtonGroup* radioGroup = new QButtonGroup( groupBox );
+    QButtonGroup *radioGroup = new QButtonGroup( groupBox );
     radioGroup->setProperty( "errorType", check->errorName() );
     int id = 0;
     int checkedId = QSettings().value( sSettingsGroup + check->errorName(), QVariant::fromValue<int>( 0 ) ).toInt();
-    Q_FOREACH ( const QString& method, check->getResolutionMethods() )
+    Q_FOREACH ( const QString &method, check->getResolutionMethods() )
     {
-      QRadioButton* radio = new QRadioButton( method, groupBox );
+      QRadioButton *radio = new QRadioButton( method, groupBox );
       radio->setChecked( id == checkedId );
       groupBoxLayout->addWidget( radio );
       radioGroup->addButton( radio, id++ );
@@ -580,7 +580,7 @@ void QgsGeometryCheckerResultTab::setDefaultResolutionMethods()
   }
   scrollArea->setWidget( scrollAreaContents );
 
-  QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok, Qt::Horizontal, &dialog );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok, Qt::Horizontal, &dialog );
   connect( buttonBox, SIGNAL( accepted() ), &dialog, SLOT( accept() ) );
   layout->addWidget( buttonBox );
   dialog.exec();
@@ -588,7 +588,7 @@ void QgsGeometryCheckerResultTab::setDefaultResolutionMethods()
 
 void QgsGeometryCheckerResultTab::storeDefaultResolutionMethod( int id ) const
 {
-  QString errorType = qobject_cast<QButtonGroup*>( QObject::sender() )->property( "errorType" ).toString();
+  QString errorType = qobject_cast<QButtonGroup *>( QObject::sender() )->property( "errorType" ).toString();
   QSettings().setValue( sSettingsGroup + errorType, id );
 }
 

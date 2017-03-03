@@ -22,13 +22,13 @@
 
 // ------------------------ QgsNonEditableDelegate ------------------------- //
 QgsNonEditableDelegate::QgsNonEditableDelegate( QWidget *parent )
-    : QStyledItemDelegate( parent )
+  : QStyledItemDelegate( parent )
 {
 }
 
 // ------------------------- QgsDmsAndDdDelegate --------------------------- //
 QgsDmsAndDdDelegate::QgsDmsAndDdDelegate( QWidget *parent )
-    : QStyledItemDelegate( parent )
+  : QStyledItemDelegate( parent )
 {
 }
 
@@ -72,7 +72,7 @@ void QgsDmsAndDdDelegate::updateEditorGeometry( QWidget *editor, const QStyleOpt
   editor->setGeometry( option.rect );
 }
 
-double QgsDmsAndDdDelegate::dmsToDD( const QString& dms ) const
+double QgsDmsAndDdDelegate::dmsToDD( const QString &dms ) const
 {
   QStringList list = dms.split( ' ' );
   QString tmpStr = list.at( 0 );
@@ -91,7 +91,7 @@ double QgsDmsAndDdDelegate::dmsToDD( const QString& dms ) const
 
 // ---------------------------- QgsCoordDelegate --------------------------- //
 QgsCoordDelegate::QgsCoordDelegate( QWidget *parent )
-    : QStyledItemDelegate( parent )
+  : QStyledItemDelegate( parent )
 {
 }
 
@@ -106,7 +106,7 @@ QWidget *QgsCoordDelegate::createEditor( QWidget *parent, const QStyleOptionView
   return editor;
 }
 
-void QgsCoordDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const
+void QgsCoordDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
   QString value = index.model()->data( index, Qt::EditRole ).toString();
 
@@ -114,7 +114,7 @@ void QgsCoordDelegate::setEditorData( QWidget* editor, const QModelIndex& index 
   lineEdit->setText( value );
 }
 
-void QgsCoordDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const
+void QgsCoordDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
   QLineEdit *lineEdit = static_cast<QLineEdit *>( editor );
   QString stringValue = lineEdit->text();
@@ -124,7 +124,7 @@ void QgsCoordDelegate::setModelData( QWidget* editor, QAbstractItemModel* model,
   model->setData( index, value, Qt::ToolTipRole );
 }
 
-void QgsCoordDelegate::updateEditorGeometry( QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index ) const
+void QgsCoordDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( index );
   editor->setGeometry( option.rect );

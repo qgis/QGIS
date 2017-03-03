@@ -32,23 +32,23 @@ class QgsGeometryCheckerFixDialog : public QDialog
 {
     Q_OBJECT
   public:
-    QgsGeometryCheckerFixDialog( QgsGeometryChecker* checker, const QList<QgsGeometryCheckError *>& errors, QgisInterface *iface, QWidget* parent = nullptr );
+    QgsGeometryCheckerFixDialog( QgsGeometryChecker *checker, const QList<QgsGeometryCheckError *> &errors, QgisInterface *iface, QWidget *parent = nullptr );
 
   signals:
-    void currentErrorChanged( QgsGeometryCheckError* error );
+    void currentErrorChanged( QgsGeometryCheckError *error );
 
   private:
-    QgsGeometryChecker* mChecker = nullptr;
+    QgsGeometryChecker *mChecker = nullptr;
     QList<QgsGeometryCheckError *> mErrors;
-    QgisInterface* mIface = nullptr;
-    QGroupBox* mResolutionsBox = nullptr;
-    QDialogButtonBox* mButtonBox = nullptr;
-    QLabel* mStatusLabel = nullptr;
-    QProgressBar* mProgressBar = nullptr;
-    QButtonGroup* mRadioGroup = nullptr;
-    QPushButton* mNextBtn = nullptr;
-    QPushButton* mFixBtn = nullptr;
-    QPushButton* mSkipBtn = nullptr;
+    QgisInterface *mIface = nullptr;
+    QGroupBox *mResolutionsBox = nullptr;
+    QDialogButtonBox *mButtonBox = nullptr;
+    QLabel *mStatusLabel = nullptr;
+    QProgressBar *mProgressBar = nullptr;
+    QButtonGroup *mRadioGroup = nullptr;
+    QPushButton *mNextBtn = nullptr;
+    QPushButton *mFixBtn = nullptr;
+    QPushButton *mSkipBtn = nullptr;
 
     void showEvent( QShowEvent * ) override;
 

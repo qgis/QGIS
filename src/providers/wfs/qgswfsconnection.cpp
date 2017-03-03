@@ -19,20 +19,20 @@
 
 #include <QSettings>
 
-QgsWfsConnection::QgsWfsConnection( const QString & connName )
-    : QgsOwsConnection( QStringLiteral( "WFS" ), connName )
+QgsWfsConnection::QgsWfsConnection( const QString &connName )
+  : QgsOwsConnection( QStringLiteral( "WFS" ), connName )
 {
-  const QString& key = QgsWFSConstants::CONNECTIONS_WFS + mConnName;
+  const QString &key = QgsWFSConstants::CONNECTIONS_WFS + mConnName;
 
   QSettings settings;
 
-  const QString& version = settings.value( key + "/" + QgsWFSConstants::SETTINGS_VERSION ).toString();
+  const QString &version = settings.value( key + "/" + QgsWFSConstants::SETTINGS_VERSION ).toString();
   if ( !version.isEmpty() )
   {
     mUri.setParam( QgsWFSConstants::URI_PARAM_VERSION, version );
   }
 
-  const QString& maxnumfeatures = settings.value( key + "/" + QgsWFSConstants::SETTINGS_MAXNUMFEATURES ).toString();
+  const QString &maxnumfeatures = settings.value( key + "/" + QgsWFSConstants::SETTINGS_MAXNUMFEATURES ).toString();
   if ( !maxnumfeatures.isEmpty() )
   {
     mUri.setParam( QgsWFSConstants::URI_PARAM_MAXNUMFEATURES, maxnumfeatures );
@@ -46,7 +46,7 @@ QStringList QgsWfsConnection::connectionList()
   return QgsOwsConnection::connectionList( QStringLiteral( "WFS" ) );
 }
 
-void QgsWfsConnection::deleteConnection( const QString & name )
+void QgsWfsConnection::deleteConnection( const QString &name )
 {
   QgsOwsConnection::deleteConnection( QStringLiteral( "WFS" ), name );
 }
@@ -56,7 +56,7 @@ QString QgsWfsConnection::selectedConnection()
   return QgsOwsConnection::selectedConnection( QStringLiteral( "WFS" ) );
 }
 
-void QgsWfsConnection::setSelectedConnection( const QString & name )
+void QgsWfsConnection::setSelectedConnection( const QString &name )
 {
   QgsOwsConnection::setSelectedConnection( QStringLiteral( "WFS" ), name );
 }

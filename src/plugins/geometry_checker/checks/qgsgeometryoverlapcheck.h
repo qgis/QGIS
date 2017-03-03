@@ -21,19 +21,19 @@
 class QgsGeometryOverlapCheckError : public QgsGeometryCheckError
 {
   public:
-    QgsGeometryOverlapCheckError( const QgsGeometryCheck* check,
+    QgsGeometryOverlapCheckError( const QgsGeometryCheck *check,
                                   QgsFeatureId featureId,
-                                  const QgsPointV2& errorLocation,
-                                  const QVariant& value,
+                                  const QgsPointV2 &errorLocation,
+                                  const QVariant &value,
                                   QgsFeatureId otherId )
-        : QgsGeometryCheckError( check, featureId, errorLocation, QgsVertexId(), value, ValueArea )
-        , mOtherId( otherId )
+      : QgsGeometryCheckError( check, featureId, errorLocation, QgsVertexId(), value, ValueArea )
+      , mOtherId( otherId )
     { }
     QgsFeatureId otherId() const { return mOtherId; }
 
-    bool isEqual( QgsGeometryCheckError* other ) const override
+    bool isEqual( QgsGeometryCheckError *other ) const override
     {
-      QgsGeometryOverlapCheckError* err = dynamic_cast<QgsGeometryOverlapCheckError*>( other );
+      QgsGeometryOverlapCheckError *err = dynamic_cast<QgsGeometryOverlapCheckError *>( other );
       return err &&
              other->featureId() == featureId() &&
              err->otherId() == otherId() &&
@@ -43,7 +43,7 @@ class QgsGeometryOverlapCheckError : public QgsGeometryCheckError
 
     bool closeMatch( QgsGeometryCheckError *other ) const override
     {
-      QgsGeometryOverlapCheckError* err = dynamic_cast<QgsGeometryOverlapCheckError*>( other );
+      QgsGeometryOverlapCheckError *err = dynamic_cast<QgsGeometryOverlapCheckError *>( other );
       return err && other->featureId() == featureId() && err->otherId() == otherId();
     }
 
@@ -58,12 +58,12 @@ class QgsGeometryOverlapCheck : public QgsGeometryCheck
     Q_OBJECT
 
   public:
-    QgsGeometryOverlapCheck( QgsFeaturePool* featurePool, double threshold )
-        : QgsGeometryCheck( FeatureCheck, featurePool )
-        , mThreshold( threshold )
+    QgsGeometryOverlapCheck( QgsFeaturePool *featurePool, double threshold )
+      : QgsGeometryCheck( FeatureCheck, featurePool )
+      , mThreshold( threshold )
     {}
-    void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &messages, QAtomicInt* progressCounter = nullptr, const QgsFeatureIds& ids = QgsFeatureIds() ) const override;
-    void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
+    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QgsFeatureIds &ids = QgsFeatureIds() ) const override;
+    void fixError( QgsGeometryCheckError *error, int method, int mergeAttributeIndex, Changes &changes ) const override;
     QStringList getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Overlap" ); }
     QString errorName() const override { return QStringLiteral( "QgsGeometryOverlapCheck" ); }

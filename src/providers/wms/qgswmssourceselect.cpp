@@ -55,12 +55,12 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
-    : QDialog( parent, fl )
-    , mManagerMode( managerMode )
-    , mEmbeddedMode( embeddedMode )
-    , mDefaultCRS( GEO_EPSG_CRS_AUTHID )
-    , mCurrentTileset( nullptr )
+QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
+  : QDialog( parent, fl )
+  , mManagerMode( managerMode )
+  , mEmbeddedMode( embeddedMode )
+  , mDefaultCRS( GEO_EPSG_CRS_AUTHID )
+  , mCurrentTileset( nullptr )
 {
   setupUi( this );
 
@@ -271,12 +271,12 @@ void QgsWMSSourceSelect::clear()
   mFeatureCount->setEnabled( false );
 }
 
-bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities& capabilities )
+bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabilities )
 {
   QVector<QgsWmsLayerProperty> layers = capabilities.supportedLayers();
 
   bool first = true;
-  Q_FOREACH ( const QString& encoding, capabilities.supportedImageEncodings() )
+  Q_FOREACH ( const QString &encoding, capabilities.supportedImageEncodings() )
   {
     int id = mMimeMap.value( encoding, -1 );
     if ( id < 0 )
@@ -362,7 +362,7 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities& capabiliti
       {
         Q_FOREACH ( const QgsWmtsTileMatrixSetLink &setLink, l.setLinks )
         {
-          Q_FOREACH ( const QString& format, l.formats )
+          Q_FOREACH ( const QString &format, l.formats )
           {
             QTableWidgetItem *item = new QTableWidgetItem( l.identifier );
             item->setData( Qt::UserRole + 0, l.identifier );
@@ -617,7 +617,7 @@ void QgsWMSSourceSelect::on_btnChangeSpatialRefSys_clicked()
       layers << layer;
   }
 
-  QgsProjectionSelectionDialog * mySelector = new QgsProjectionSelectionDialog( this );
+  QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog( this );
   mySelector->setMessage( QString() );
   mySelector->setOgcWmsCrsFilter( mCRSs );
 
@@ -1058,9 +1058,9 @@ void QgsWMSSourceSelect::showStatusMessage( QString const &message )
 }
 
 
-void QgsWMSSourceSelect::showError( QgsWmsProvider * wms )
+void QgsWMSSourceSelect::showError( QgsWmsProvider *wms )
 {
-  QgsMessageViewer * mv = new QgsMessageViewer( this );
+  QgsMessageViewer *mv = new QgsMessageViewer( this );
   mv->setWindowTitle( wms->lastErrorTitle() );
 
   if ( wms->lastErrorFormat() == QLatin1String( "text/html" ) )
@@ -1085,7 +1085,7 @@ void QgsWMSSourceSelect::on_btnAddDefault_clicked()
   addDefaultServers();
 }
 
-QString QgsWMSSourceSelect::descriptionForAuthId( const QString& authId )
+QString QgsWMSSourceSelect::descriptionForAuthId( const QString &authId )
 {
   if ( mCrsNames.contains( authId ) )
     return mCrsNames[ authId ];
@@ -1123,7 +1123,7 @@ void QgsWMSSourceSelect::addDefaultServers()
                             "need to set the proxy settings in the QGIS options dialog." ) + "</p>" );
 }
 
-void QgsWMSSourceSelect::addWMSListRow( const QDomElement& item, int row )
+void QgsWMSSourceSelect::addWMSListRow( const QDomElement &item, int row )
 {
   QDomElement title = item.firstChildElement( QStringLiteral( "title" ) );
   addWMSListItem( title, row, 0 );
@@ -1133,11 +1133,11 @@ void QgsWMSSourceSelect::addWMSListRow( const QDomElement& item, int row )
   addWMSListItem( link, row, 2 );
 }
 
-void QgsWMSSourceSelect::addWMSListItem( const QDomElement& el, int row, int column )
+void QgsWMSSourceSelect::addWMSListItem( const QDomElement &el, int row, int column )
 {
   if ( !el.isNull() )
   {
-    QTableWidgetItem* tableItem = new QTableWidgetItem( el.text() );
+    QTableWidgetItem *tableItem = new QTableWidgetItem( el.text() );
     // TODO: add linebreaks to long tooltips?
     tableItem->setToolTip( el.text() );
     tableWidgetWMSList->setItem( row, column, tableItem );
@@ -1280,7 +1280,7 @@ void QgsWMSSourceSelect::on_mLayerDownButton_clicked()
     return; //item not existing or already at bottom
   }
 
-  QTreeWidgetItem* selectedItem = mLayerOrderTreeWidget->takeTopLevelItem( selectedIndex );
+  QTreeWidgetItem *selectedItem = mLayerOrderTreeWidget->takeTopLevelItem( selectedIndex );
   mLayerOrderTreeWidget->insertTopLevelItem( selectedIndex + 1, selectedItem );
   mLayerOrderTreeWidget->clearSelection();
   selectedItem->setSelected( true );
@@ -1288,7 +1288,7 @@ void QgsWMSSourceSelect::on_mLayerDownButton_clicked()
   updateButtons();
 }
 
-void QgsWMSSourceSelect::updateLayerOrderTab( const QStringList& newLayerList, const QStringList& newStyleList, const QStringList &newTitleList )
+void QgsWMSSourceSelect::updateLayerOrderTab( const QStringList &newLayerList, const QStringList &newStyleList, const QStringList &newTitleList )
 {
   //check, if each layer / style combination is already contained in the  layer order tab
   //if not, add it to the top of the list
@@ -1302,7 +1302,7 @@ void QgsWMSSourceSelect::updateLayerOrderTab( const QStringList& newLayerList, c
     bool combinationExists = false;
     for ( int i = 0; i < mLayerOrderTreeWidget->topLevelItemCount(); ++i )
     {
-      QTreeWidgetItem* currentItem = mLayerOrderTreeWidget->topLevelItem( i );
+      QTreeWidgetItem *currentItem = mLayerOrderTreeWidget->topLevelItem( i );
       if ( currentItem->text( 0 ) == *layerListIt && currentItem->text( 1 ) == *styleListIt )
       {
         combinationExists = true;
@@ -1312,7 +1312,7 @@ void QgsWMSSourceSelect::updateLayerOrderTab( const QStringList& newLayerList, c
 
     if ( !combinationExists )
     {
-      QTreeWidgetItem* newItem = new QTreeWidgetItem();
+      QTreeWidgetItem *newItem = new QTreeWidgetItem();
       newItem->setText( 0, *layerListIt );
       newItem->setText( 1, *styleListIt );
       newItem->setText( 2, *titleListIt );
@@ -1328,7 +1328,7 @@ void QgsWMSSourceSelect::updateLayerOrderTab( const QStringList& newLayerList, c
   {
     for ( int i = mLayerOrderTreeWidget->topLevelItemCount() - 1; i >= 0; --i )
     {
-      QTreeWidgetItem* currentItem = mLayerOrderTreeWidget->topLevelItem( i );
+      QTreeWidgetItem *currentItem = mLayerOrderTreeWidget->topLevelItem( i );
       bool combinationExists = false;
 
       QStringList::const_iterator llIt = newLayerList.constBegin();

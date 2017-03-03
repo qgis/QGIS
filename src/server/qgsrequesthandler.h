@@ -51,7 +51,7 @@ class SERVER_EXPORT QgsRequestHandler
      *
      * Note that QgsServerRequest and QgsServerResponse MUST live in the same scope
      */
-    explicit QgsRequestHandler( QgsServerRequest& request, QgsServerResponse& response );
+    explicit QgsRequestHandler( QgsServerRequest &request, QgsServerResponse &response );
     ~QgsRequestHandler();
 
     //! Allow plugins to return a QgsMapServiceException
@@ -71,7 +71,7 @@ class SERVER_EXPORT QgsRequestHandler
     void removeHeader( const QString &name );
 
     //! Retrieve header value
-    QString getHeader( const QString& name ) const;
+    QString getHeader( const QString &name ) const;
 
     //! Return the list of all header keys
     QList<QString> headerKeys() const;
@@ -121,8 +121,8 @@ class SERVER_EXPORT QgsRequestHandler
     QString mService;
     bool mExceptionRaised;
 
-    QgsServerRequest&   mRequest;
-    QgsServerResponse&  mResponse;
+    QgsServerRequest   &mRequest;
+    QgsServerResponse  &mResponse;
 
 };
 

@@ -38,20 +38,20 @@ class SERVER_EXPORT QgsConfigCache : public QObject
 {
     Q_OBJECT
   public:
-    static QgsConfigCache* instance();
+    static QgsConfigCache *instance();
 
-    QgsServerProjectParser* serverConfiguration( const QString& filePath );
-    QgsWfsProjectParser* wfsConfiguration(
-      const QString& filePath
-      , const QgsAccessControl* accessControl
+    QgsServerProjectParser *serverConfiguration( const QString &filePath );
+    QgsWfsProjectParser *wfsConfiguration(
+      const QString &filePath
+      , const QgsAccessControl *accessControl
     );
-    QgsWmsConfigParser* wmsConfiguration(
-      const QString& filePath
-      , const QgsAccessControl* accessControl
-      , const QMap<QString, QString>& parameterMap = ( QMap< QString, QString >() )
+    QgsWmsConfigParser *wmsConfiguration(
+      const QString &filePath
+      , const QgsAccessControl *accessControl
+      , const QMap<QString, QString> &parameterMap = ( QMap< QString, QString >() )
     );
 
-    void removeEntry( const QString& path );
+    void removeEntry( const QString &path );
 
   private:
     QgsConfigCache();
@@ -60,7 +60,7 @@ class SERVER_EXPORT QgsConfigCache : public QObject
     QFileSystemWatcher mFileSystemWatcher;
 
     //! Returns xml document for project file / sld or 0 in case of errors
-    QDomDocument* xmlDocument( const QString& filePath );
+    QDomDocument *xmlDocument( const QString &filePath );
 
     QCache<QString, QDomDocument> mXmlDocumentCache;
     QCache<QString, QgsWmsConfigParser> mWMSConfigCache;
@@ -68,7 +68,7 @@ class SERVER_EXPORT QgsConfigCache : public QObject
 
   private slots:
     //! Removes changed entry from this cache
-    void removeChangedEntry( const QString& path );
+    void removeChangedEntry( const QString &path );
 };
 
 #endif // QGSCONFIGCACHE_H

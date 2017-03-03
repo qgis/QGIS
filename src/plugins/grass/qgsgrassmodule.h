@@ -44,7 +44,7 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
         bool direct;
         Description(): direct( true ) {}
         Description( QString lab, bool dir = false ): label( lab ), direct( dir ) { }
-        Description( const Description & desc ) { label = desc.label; direct =  desc.direct; }
+        Description( const Description &desc ) { label = desc.label; direct =  desc.direct; }
     };
 
     //! Constructor
@@ -88,7 +88,7 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
     static QString libraryPathVariable();
 
     //! Set LD_LIBRARY_PATH or equivalent to GRASS Direct library
-    static void setDirectLibraryPath( QProcessEnvironment & environment );
+    static void setDirectLibraryPath( QProcessEnvironment &environment );
 
     QStringList errors() { return mErrors; }
 

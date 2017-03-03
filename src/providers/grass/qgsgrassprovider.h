@@ -64,9 +64,9 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     virtual ~QgsGrassProvider();
 
     virtual QgsVectorDataProvider::Capabilities capabilities() const override;
-    virtual QgsAbstractFeatureSource* featureSource() const override;
+    virtual QgsAbstractFeatureSource *featureSource() const override;
     virtual QString storageType() const override;
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) const override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
     QgsWkbTypes::Type wkbType() const override;
     long featureCount() const override;
     virtual QgsRectangle extent() const override;
@@ -100,11 +100,11 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     // ----------------------------------- New edit --------------------------------
     // Changes are written during editing.
     // TODO: implement also these functions but disable during manual layer editing
-    virtual bool addFeatures( QgsFeatureList & flist ) override { Q_UNUSED( flist ); return true; }
-    virtual bool deleteFeatures( const QgsFeatureIds & id ) override { Q_UNUSED( id ); return true; }
+    virtual bool addFeatures( QgsFeatureList &flist ) override { Q_UNUSED( flist ); return true; }
+    virtual bool deleteFeatures( const QgsFeatureIds &id ) override { Q_UNUSED( id ); return true; }
     virtual bool addAttributes( const QList<QgsField> &attributes ) override;
     virtual bool deleteAttributes( const QgsAttributeIds &attributes ) override;
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map ) override  { Q_UNUSED( attr_map ); return true; }
+    virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override  { Q_UNUSED( attr_map ); return true; }
     virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override { Q_UNUSED( geometry_map ); return true; }
 
 
@@ -168,7 +168,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      *   @return line type
      *   @return <0 deadline or error
      */
-    int readLine( struct line_pnts * Points, struct line_cats * Cats, int line );
+    int readLine( struct line_pnts *Points, struct line_cats *Cats, int line );
 
     /** Read node coordinates
      *   @param line line number
@@ -354,7 +354,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
   public slots:
     void onFeatureAdded( QgsFeatureId fid );
     void onFeatureDeleted( QgsFeatureId fid );
-    void onGeometryChanged( QgsFeatureId fid, const QgsGeometry& geom );
+    void onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom );
     void onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
     void onAttributeAdded( int idx );
     void onAttributeDeleted( int idx );
@@ -376,7 +376,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     QgsGrassVectorMapLayer *openLayer() const;
 
   private:
-    struct Map_info * map() const;
+    struct Map_info *map() const;
     void setMapset();
     bool openLayer();
     // update topo symbol of new features
@@ -422,18 +422,18 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     void setTopoFields();
 
-    void setPoints( struct line_pnts *points, const QgsAbstractGeometry * geometry );
+    void setPoints( struct line_pnts *points, const QgsAbstractGeometry *geometry );
 
     // Get other edited layer, returns 0 if layer does not exist
-    QgsGrassVectorMapLayer * otherEditLayer( int layerField );
+    QgsGrassVectorMapLayer *otherEditLayer( int layerField );
 
     //! Fields used for topo layers
     QgsFields mTopoFields;
 
     //QgsFields mEditFields;
 
-    QgsVectorLayerEditBuffer* mEditBuffer = nullptr;
-    QgsVectorLayer* mEditLayer = nullptr;
+    QgsVectorLayerEditBuffer *mEditBuffer = nullptr;
+    QgsVectorLayer *mEditLayer = nullptr;
 
     //  next digitized feature GRASS type
     int mNewFeatureType;

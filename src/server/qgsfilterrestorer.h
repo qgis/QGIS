@@ -31,8 +31,8 @@ class SERVER_EXPORT QgsOWSServerFilterRestorer
 {
   public:
 
-    QgsOWSServerFilterRestorer( const QgsAccessControl* accessControl )
-        : mAccessControl( accessControl )
+    QgsOWSServerFilterRestorer( const QgsAccessControl *accessControl )
+      : mAccessControl( accessControl )
     {}
 
     //! Destructor. When object is destroyed all original layer filters will be restored.
@@ -41,24 +41,24 @@ class SERVER_EXPORT QgsOWSServerFilterRestorer
       restoreLayerFilters( mOriginalLayerFilters );
     }
 
-    void restoreLayerFilters( const QHash<QgsMapLayer*, QString>& filterMap );
+    void restoreLayerFilters( const QHash<QgsMapLayer *, QString> &filterMap );
 
     /** Returns a reference to the object's hash of layers to original subsetString filters.
      * Original layer subsetString filters MUST be inserted into this hash before modifying them.
      */
-    QHash<QgsMapLayer*, QString>& originalFilters() { return mOriginalLayerFilters; }
+    QHash<QgsMapLayer *, QString> &originalFilters() { return mOriginalLayerFilters; }
 
     //! Apply filter from AccessControl
     //XXX May be this method should be owned QgsAccessControl
-    static void applyAccessControlLayerFilters( const QgsAccessControl* accessControl, QgsMapLayer* mapLayer,
-        QHash<QgsMapLayer*, QString>& originalLayerFilters );
+    static void applyAccessControlLayerFilters( const QgsAccessControl *accessControl, QgsMapLayer *mapLayer,
+        QHash<QgsMapLayer *, QString> &originalLayerFilters );
 
   private:
-    const QgsAccessControl* mAccessControl = nullptr;
-    QHash<QgsMapLayer*, QString> mOriginalLayerFilters;
+    const QgsAccessControl *mAccessControl = nullptr;
+    QHash<QgsMapLayer *, QString> mOriginalLayerFilters;
 
-    QgsOWSServerFilterRestorer( const QgsOWSServerFilterRestorer& rh );
-    QgsOWSServerFilterRestorer& operator=( const QgsOWSServerFilterRestorer& rh );
+    QgsOWSServerFilterRestorer( const QgsOWSServerFilterRestorer &rh );
+    QgsOWSServerFilterRestorer &operator=( const QgsOWSServerFilterRestorer &rh );
 };
 
 #endif // QGSFILTERRESTORER_H

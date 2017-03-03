@@ -24,11 +24,11 @@ class QgsMssqlExpressionCompiler : public QgsSqlExpressionCompiler
 {
   public:
 
-    explicit QgsMssqlExpressionCompiler( QgsMssqlFeatureSource* source );
+    explicit QgsMssqlExpressionCompiler( QgsMssqlFeatureSource *source );
 
   protected:
-    virtual Result compileNode( const QgsExpression::Node* node, QString& result ) override;
-    virtual QString quotedValue( const QVariant& value, bool& ok ) override;
+    virtual Result compileNode( const QgsExpression::Node *node, QString &result ) override;
+    virtual QString quotedValue( const QVariant &value, bool &ok ) override;
 
 };
 

@@ -51,7 +51,7 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
      * QGIS when it attempts to instantiate the plugin.
      * @param qI Pointer to the QgisInterface object.
      */
-    explicit QgsGrassPlugin( QgisInterface * qI );
+    explicit QgsGrassPlugin( QgisInterface *qI );
 
     /**
      * Virtual function to return the name of the plugin. The name will be used when presenting a list
@@ -121,11 +121,11 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     void setCurrentTheme( QString themeName );
     void setTransform();
     //! Called when a new layer was added to map registry
-    void onLayerWasAdded( QgsMapLayer* mapLayer );
+    void onLayerWasAdded( QgsMapLayer *mapLayer );
     //! Called when editing of a layer started
     void onEditingStarted();
     void onEditingStopped();
-    void onCurrentLayerChanged( QgsMapLayer* layer );
+    void onCurrentLayerChanged( QgsMapLayer *layer );
 
     void onFieldsChanged();
 

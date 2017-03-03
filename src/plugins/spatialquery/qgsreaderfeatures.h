@@ -42,7 +42,7 @@ class QgsReaderFeatures
      * \param feature reference to next Feature.
      * \returns True if has next feature.
      */
-    bool nextFeature( QgsFeature & feature );
+    bool nextFeature( QgsFeature &feature );
 
   private:
 
@@ -52,7 +52,7 @@ class QgsReaderFeatures
      */
     void initReader( bool useSelection );
 
-    QgsVectorLayer * mLayer = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
     QgsFeatureIterator mFit;
 };
 

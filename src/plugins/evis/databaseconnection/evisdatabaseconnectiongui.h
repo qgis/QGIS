@@ -50,26 +50,26 @@ class eVisDatabaseConnectionGui : public QDialog, private Ui::eVisDatabaseConnec
 
   public:
     //! \brief Constructor
-    eVisDatabaseConnectionGui( QList<QTemporaryFile*>*, QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
+    eVisDatabaseConnectionGui( QList<QTemporaryFile *> *, QWidget *parent = nullptr, Qt::WindowFlags fl = 0 );
 
     ~eVisDatabaseConnectionGui();
 
   private:
     //! \brief Pointer to a database connection
-    eVisDatabaseConnection* mDatabaseConnection = nullptr;
+    eVisDatabaseConnection *mDatabaseConnection = nullptr;
 
     //! \brief Pointer to a temporary file which will hold the results of our query
-    QList<QTemporaryFile*>* mTempOutputFileList;
+    QList<QTemporaryFile *> *mTempOutputFileList;
 
     //! \brief Pointer to another GUI component that will select which fields contain x, y coordinates
-    eVisDatabaseLayerFieldSelectionGui* mDatabaseLayerFieldSelector = nullptr;
+    eVisDatabaseLayerFieldSelectionGui *mDatabaseLayerFieldSelector = nullptr;
 
     //! \brief Pointer to a QMap which will hold the definition of preexisting query that can be loaded from an xml file
-    QMap<int, eVisQueryDefinition>* mQueryDefinitionMap;
+    QMap<int, eVisQueryDefinition> *mQueryDefinitionMap;
 
   private slots:
     //! \brief Slot called after the user selects the x, y fields in the field selection gui component
-    void drawNewVectorLayer( const QString&, const QString&, const QString& );
+    void drawNewVectorLayer( const QString &, const QString &, const QString & );
 
     void on_buttonBox_accepted();
     void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "plugins/plugins_evis.html#database-connection" ) ); }
@@ -83,7 +83,7 @@ class eVisDatabaseConnectionGui : public QDialog, private Ui::eVisDatabaseConnec
 
   signals:
     //! \brief signal emitted by the drawNewVectorLayer slot
-    void drawVectorLayer( const QString&, const QString&, const QString& );
+    void drawVectorLayer( const QString &, const QString &, const QString & );
 };
 
 #endif

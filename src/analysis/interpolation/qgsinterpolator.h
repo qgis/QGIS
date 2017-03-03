@@ -49,13 +49,13 @@ class ANALYSIS_EXPORT QgsInterpolator
     //! A layer together with the information about interpolation attribute / z-coordinate interpolation and the type (point, structure line, breakline)
     struct LayerData
     {
-      QgsVectorLayer* vectorLayer = nullptr;
+      QgsVectorLayer *vectorLayer = nullptr;
       bool zCoordInterpolation;
       int interpolationAttribute;
       InputType mInputType;
     };
 
-    QgsInterpolator( const QList<LayerData>& layerData );
+    QgsInterpolator( const QList<LayerData> &layerData );
 
     virtual ~QgsInterpolator() = default;
 
@@ -64,7 +64,7 @@ class ANALYSIS_EXPORT QgsInterpolator
        @param y y-coordinate (in map units)
        @param result out: interpolation result
        @return 0 in case of success*/
-    virtual int interpolatePoint( double x, double y, double& result ) = 0;
+    virtual int interpolatePoint( double x, double y, double &result ) = 0;
 
     //! @note not available in Python bindings
     QList<LayerData> layerData() const { return mLayerData; }
@@ -92,7 +92,7 @@ class ANALYSIS_EXPORT QgsInterpolator
        @param zCoord true if the z-coordinate of the geometry is to be interpolated
        @param attributeValue the attribute value for interpolation (if not interpolated from z-coordinate)
      @return 0 in case of success*/
-    int addVerticesToCache( const QgsGeometry& geom, bool zCoord, double attributeValue );
+    int addVerticesToCache( const QgsGeometry &geom, bool zCoord, double attributeValue );
 };
 
 #endif

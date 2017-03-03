@@ -50,8 +50,8 @@
 * @param interface - Pointer to the application interface
 * @param fl - Window flags
 */
-eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget* parent, QgisInterface* interface, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget *parent, QgisInterface *interface, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
 
@@ -83,8 +83,8 @@ eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget* parent, QgisInt
 * @param canvas - Pointer to the map canvas
 * @param fl - Window flags
 */
-eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget* parent, QgsMapCanvas* canvas, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget *parent, QgsMapCanvas *canvas, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
 
@@ -197,7 +197,7 @@ bool eVisGenericEventBrowserGui::initBrowser()
       //verify that the active layer is a vector layer
       if ( QgsMapLayer::VectorLayer == mInterface->activeLayer()->type() )
       {
-        mVectorLayer = ( QgsVectorLayer* )mInterface->activeLayer();
+        mVectorLayer = ( QgsVectorLayer * )mInterface->activeLayer();
         mCanvas = mInterface->mapCanvas();
       }
       else
@@ -221,7 +221,7 @@ bool eVisGenericEventBrowserGui::initBrowser()
       //verify that the active layer is a vector layer
       if ( QgsMapLayer::VectorLayer == mCanvas->currentLayer()->type() )
       {
-        mVectorLayer = ( QgsVectorLayer* )mCanvas->currentLayer();
+        mVectorLayer = ( QgsVectorLayer * )mCanvas->currentLayer();
       }
       else
       {
@@ -265,7 +265,7 @@ bool eVisGenericEventBrowserGui::initBrowser()
     return false;
 
   //get the first feature in the list so we can set the field in the pulldown menues
-  QgsFeature* myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
+  QgsFeature *myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
   if ( !myFeature )
   {
     QMessageBox::warning( this, tr( "Error" ), tr( "An invalid feature was received during initialization" ) );
@@ -528,7 +528,7 @@ void eVisGenericEventBrowserGui::displayImage()
       //select the current feature in the layer
       mVectorLayer->select( mFeatureIds.at( mCurrentFeatureIndex ) );
       //get a copy of the feature
-      QgsFeature* myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
+      QgsFeature *myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 
       if ( !myFeature )
         return;
@@ -552,7 +552,7 @@ void eVisGenericEventBrowserGui::displayImage()
  * Returns a pointer to the requested feature with a given featureid
  * @param id - FeatureId of the feature to find/select
  */
-QgsFeature* eVisGenericEventBrowserGui::featureAtId( QgsFeatureId id )
+QgsFeature *eVisGenericEventBrowserGui::featureAtId( QgsFeatureId id )
 {
   //This method was originally necessary because delimited text data provider did not support featureAtId()
   //It has mostly been stripped down now
@@ -575,7 +575,7 @@ void eVisGenericEventBrowserGui::loadRecord()
   treeEventData->clear();
 
   //Get a pointer to the current feature
-  QgsFeature* myFeature = nullptr;
+  QgsFeature *myFeature = nullptr;
   myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 
   if ( !myFeature )
@@ -592,7 +592,7 @@ void eVisGenericEventBrowserGui::loadRecord()
     QStringList myValues;
     QString fieldName = myFields.at( i ).name();
     myValues << fieldName << myAttrs.at( i ).toString();
-    QTreeWidgetItem* myItem = new QTreeWidgetItem( myValues );
+    QTreeWidgetItem *myItem = new QTreeWidgetItem( myValues );
     if ( fieldName == myEventImagePathField )
     {
       mEventImagePath = myAttrs.at( i ).toString();
@@ -716,7 +716,7 @@ void eVisGenericEventBrowserGui::setBasePathToDataSource()
  * @param item - The tree widget item click
  * @param column - The column that was clicked
  */
-void eVisGenericEventBrowserGui::launchExternalApplication( QTreeWidgetItem * item, int column )
+void eVisGenericEventBrowserGui::launchExternalApplication( QTreeWidgetItem *item, int column )
 {
   // At this point there is only attribute data with no children, ignore clicks on field name
   if ( 1 == column )
@@ -793,7 +793,7 @@ void eVisGenericEventBrowserGui::launchExternalApplication( QTreeWidgetItem * it
  * Slot called when the restore or save button is click on the options panel
  * @param state - The new state of the checkbox
  */
-void eVisGenericEventBrowserGui::on_buttonboxOptions_clicked( QAbstractButton* button )
+void eVisGenericEventBrowserGui::on_buttonboxOptions_clicked( QAbstractButton *button )
 {
   if ( QDialogButtonBox::ResetRole == buttonboxOptions->buttonRole( button ) )
   {
@@ -827,7 +827,7 @@ void eVisGenericEventBrowserGui::on_cboxEventImagePathField_currentIndexChanged(
     mConfiguration.setEventImagePathField( cboxEventImagePathField->currentText() );
 
     QgsFields myFields = mDataProvider->fields();
-    QgsFeature* myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
+    QgsFeature *myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 
     if ( !myFeature )
       return;
@@ -855,7 +855,7 @@ void eVisGenericEventBrowserGui::on_cboxCompassBearingField_currentIndexChanged(
     mConfiguration.setCompassBearingField( cboxCompassBearingField->currentText() );
 
     QgsFields myFields = mDataProvider->fields();
-    QgsFeature* myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
+    QgsFeature *myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 
     if ( !myFeature )
       return;
@@ -883,7 +883,7 @@ void eVisGenericEventBrowserGui::on_cboxCompassOffsetField_currentIndexChanged( 
     mConfiguration.setCompassOffsetField( cboxCompassOffsetField->currentText() );
 
     QgsFields myFields = mDataProvider->fields();
-    QgsFeature* myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
+    QgsFeature *myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 
     if ( !myFeature )
       return;
@@ -962,7 +962,7 @@ void eVisGenericEventBrowserGui::on_dsboxCompassOffset_valueChanged( double valu
  * Slot called the text in leBasePath is set or changed
  * @param text - The new base path
  */
-void eVisGenericEventBrowserGui::on_leBasePath_textChanged( const QString& text )
+void eVisGenericEventBrowserGui::on_leBasePath_textChanged( const QString &text )
 {
   mConfiguration.setBasePath( text );
 }
@@ -1105,13 +1105,13 @@ void eVisGenericEventBrowserGui::on_tableFileTypeAssociations_cellDoubleClicked(
  * This slot is coonnected to the map canvas. When the canvas is done drawing the slot is fired to display thee highlighting symbol
  * @param painter - Pointer to the QPainter object
  */
-void eVisGenericEventBrowserGui::renderSymbol( QPainter* painter )
+void eVisGenericEventBrowserGui::renderSymbol( QPainter *painter )
 {
 
   if ( !mFeatureIds.isEmpty() && mVectorLayer )
   {
     //Get a pointer to the current feature
-    QgsFeature* myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
+    QgsFeature *myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 
     if ( !myFeature )
       return;

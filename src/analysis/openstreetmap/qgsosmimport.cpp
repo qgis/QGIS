@@ -20,15 +20,15 @@
 #include <QXmlStreamReader>
 
 
-QgsOSMXmlImport::QgsOSMXmlImport( const QString& xmlFilename, const QString& dbFilename )
-    : mXmlFileName( xmlFilename )
-    , mDbFileName( dbFilename )
-    , mDatabase( nullptr )
-    , mStmtInsertNode( nullptr )
-    , mStmtInsertNodeTag( nullptr )
-    , mStmtInsertWay( nullptr )
-    , mStmtInsertWayNode( nullptr )
-    , mStmtInsertWayTag( nullptr )
+QgsOSMXmlImport::QgsOSMXmlImport( const QString &xmlFilename, const QString &dbFilename )
+  : mXmlFileName( xmlFilename )
+  , mDbFileName( dbFilename )
+  , mDatabase( nullptr )
+  , mStmtInsertNode( nullptr )
+  , mStmtInsertNodeTag( nullptr )
+  , mStmtInsertWay( nullptr )
+  , mStmtInsertWayNode( nullptr )
+  , mStmtInsertWayTag( nullptr )
 {
 
 }
@@ -108,13 +108,13 @@ bool QgsOSMXmlImport::import()
 bool QgsOSMXmlImport::createIndexes()
 {
   // index on tags for faster access
-  const char* sqlIndexes[] =
+  const char *sqlIndexes[] =
   {
     "CREATE INDEX nodes_tags_idx ON nodes_tags(id)",
     "CREATE INDEX ways_tags_idx ON ways_tags(id)",
     "CREATE INDEX ways_nodes_way ON ways_nodes(way_id)"
   };
-  int count = sizeof( sqlIndexes ) / sizeof( const char* );
+  int count = sizeof( sqlIndexes ) / sizeof( const char * );
   for ( int i = 0; i < count; ++i )
   {
     int ret = sqlite3_exec( mDatabase, sqlIndexes[i], nullptr, nullptr, nullptr );
@@ -150,7 +150,7 @@ bool QgsOSMXmlImport::createDatabase()
   }
   sqlite3_free_table( results );
 
-  const char* sqlInitStatements[] =
+  const char *sqlInitStatements[] =
   {
     "PRAGMA cache_size = 100000", // TODO!!!
     "PRAGMA synchronous = OFF", // TODO!!!
@@ -162,10 +162,10 @@ bool QgsOSMXmlImport::createDatabase()
     "CREATE TABLE ways_tags ( id INTEGER, k TEXT, v TEXT )",
   };
 
-  int initCount = sizeof( sqlInitStatements ) / sizeof( const char* );
+  int initCount = sizeof( sqlInitStatements ) / sizeof( const char * );
   for ( int i = 0; i < initCount; ++i )
   {
-    char* errMsg = nullptr;
+    char *errMsg = nullptr;
     if ( sqlite3_exec( mDatabase, sqlInitStatements[i], nullptr, nullptr, &errMsg ) != SQLITE_OK )
     {
       mError = QStringLiteral( "Error executing SQL command:\n%1\nSQL:\n%2" )
@@ -176,7 +176,7 @@ bool QgsOSMXmlImport::createDatabase()
     }
   }
 
-  const char* sqlInsertStatements[] =
+  const char *sqlInsertStatements[] =
   {
     "INSERT INTO nodes ( id, lat, lon ) VALUES (?,?,?)",
     "INSERT INTO nodes_tags ( id, k, v ) VALUES (?,?,?)",
@@ -184,7 +184,7 @@ bool QgsOSMXmlImport::createDatabase()
     "INSERT INTO ways_nodes ( way_id, node_id, way_pos ) VALUES (?,?,?)",
     "INSERT INTO ways_tags ( id, k, v ) VALUES (?,?,?)"
   };
-  sqlite3_stmt** sqliteInsertStatements[] =
+  sqlite3_stmt **sqliteInsertStatements[] =
   {
     &mStmtInsertNode,
     &mStmtInsertNodeTag,
@@ -192,14 +192,14 @@ bool QgsOSMXmlImport::createDatabase()
     &mStmtInsertWayNode,
     &mStmtInsertWayTag
   };
-  Q_ASSERT( sizeof( sqlInsertStatements ) / sizeof( const char* ) == sizeof( sqliteInsertStatements ) / sizeof( sqlite3_stmt** ) );
-  int insertCount = sizeof( sqlInsertStatements ) / sizeof( const char* );
+  Q_ASSERT( sizeof( sqlInsertStatements ) / sizeof( const char * ) == sizeof( sqliteInsertStatements ) / sizeof( sqlite3_stmt ** ) );
+  int insertCount = sizeof( sqlInsertStatements ) / sizeof( const char * );
 
   for ( int i = 0; i < insertCount; ++i )
   {
     if ( sqlite3_prepare_v2( mDatabase, sqlInsertStatements[i], -1, sqliteInsertStatements[i], nullptr ) != SQLITE_OK )
     {
-      const char* errMsg = sqlite3_errmsg( mDatabase ); // does not require free
+      const char *errMsg = sqlite3_errmsg( mDatabase ); // does not require free
       mError = QStringLiteral( "Error preparing SQL command:\n%1\nSQL:\n%2" )
                .arg( QString::fromUtf8( errMsg ), QString::fromUtf8( sqlInsertStatements[i] ) );
       closeDatabase();
@@ -211,7 +211,7 @@ bool QgsOSMXmlImport::createDatabase()
 }
 
 
-void QgsOSMXmlImport::deleteStatement( sqlite3_stmt*& stmt )
+void QgsOSMXmlImport::deleteStatement( sqlite3_stmt *&stmt )
 {
   if ( stmt )
   {
@@ -240,7 +240,7 @@ bool QgsOSMXmlImport::closeDatabase()
 }
 
 
-void QgsOSMXmlImport::readRoot( QXmlStreamReader& xml )
+void QgsOSMXmlImport::readRoot( QXmlStreamReader &xml )
 {
   int i = 0;
   int percent = -1;
@@ -276,7 +276,7 @@ void QgsOSMXmlImport::readRoot( QXmlStreamReader& xml )
 }
 
 
-void QgsOSMXmlImport::readNode( QXmlStreamReader& xml )
+void QgsOSMXmlImport::readNode( QXmlStreamReader &xml )
 {
   // <node id="2197214" lat="50.0682113" lon="14.4348483" user="viduka" uid="595326" visible="true" version="10" changeset="10714591" timestamp="2012-02-17T19:58:49Z">
   QXmlStreamAttributes attrs = xml.attributes();
@@ -313,14 +313,14 @@ void QgsOSMXmlImport::readNode( QXmlStreamReader& xml )
   }
 }
 
-void QgsOSMXmlImport::readTag( bool way, QgsOSMId id, QXmlStreamReader& xml )
+void QgsOSMXmlImport::readTag( bool way, QgsOSMId id, QXmlStreamReader &xml )
 {
   QXmlStreamAttributes attrs = xml.attributes();
   QByteArray k = attrs.value( QStringLiteral( "k" ) ).toString().toUtf8();
   QByteArray v = attrs.value( QStringLiteral( "v" ) ).toString().toUtf8();
   xml.skipCurrentElement();
 
-  sqlite3_stmt* stmtInsertTag = way ? mStmtInsertWayTag : mStmtInsertNodeTag;
+  sqlite3_stmt *stmtInsertTag = way ? mStmtInsertWayTag : mStmtInsertNodeTag;
 
   sqlite3_bind_int64( stmtInsertTag, 1, id );
   sqlite3_bind_text( stmtInsertTag, 2, k.constData(), -1, SQLITE_STATIC );
@@ -335,7 +335,7 @@ void QgsOSMXmlImport::readTag( bool way, QgsOSMId id, QXmlStreamReader& xml )
   sqlite3_reset( stmtInsertTag );
 }
 
-void QgsOSMXmlImport::readWay( QXmlStreamReader& xml )
+void QgsOSMXmlImport::readWay( QXmlStreamReader &xml )
 {
   /*
    <way id="141756602" user="Vratislav Filler" uid="527259" visible="true" version="1" changeset="10145142" timestamp="2011-12-18T10:43:14Z">

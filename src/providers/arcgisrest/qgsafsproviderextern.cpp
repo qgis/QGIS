@@ -25,7 +25,7 @@ const QString AFS_KEY = QStringLiteral( "arcgisfeatureserver" );
 const QString AFS_DESCRIPTION = QStringLiteral( "ArcGIS Feature Server data provider" );
 
 
-QGISEXTERN QgsAfsProvider * classFactory( const QString *uri )
+QGISEXTERN QgsAfsProvider *classFactory( const QString *uri )
 {
   return new QgsAfsProvider( *uri );
 }

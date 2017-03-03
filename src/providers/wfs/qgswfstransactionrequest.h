@@ -22,13 +22,13 @@ class QgsWFSTransactionRequest : public QgsWfsRequest
 {
     Q_OBJECT
   public:
-    explicit QgsWFSTransactionRequest( const QString& uri );
+    explicit QgsWFSTransactionRequest( const QString &uri );
 
     //! Send the transaction document and return the server response
-    bool send( const QDomDocument& doc, QDomDocument& serverResponse );
+    bool send( const QDomDocument &doc, QDomDocument &serverResponse );
 
   protected:
-    virtual QString errorMessageWithReason( const QString& reason ) override;
+    virtual QString errorMessageWithReason( const QString &reason ) override;
 };
 
 #endif // QGSWFSTRANSACTIONREQUEST_H

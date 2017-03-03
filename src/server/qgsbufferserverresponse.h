@@ -38,11 +38,11 @@ class QgsBufferServerResponse: public QgsServerResponse
     QgsBufferServerResponse();
     ~QgsBufferServerResponse();
 
-    virtual void setHeader( const QString& key, const QString& value ) override;
+    virtual void setHeader( const QString &key, const QString &value ) override;
 
-    virtual void clearHeader( const QString& key ) override;
+    virtual void clearHeader( const QString &key ) override;
 
-    virtual QString getHeader( const QString& key ) const override;
+    virtual QString getHeader( const QString &key ) const override;
 
     virtual QList<QString> headerKeys() const override;
 
@@ -50,9 +50,9 @@ class QgsBufferServerResponse: public QgsServerResponse
 
     virtual void setReturnCode( int code ) override;
 
-    virtual void sendError( int code,  const QString& message ) override;
+    virtual void sendError( int code,  const QString &message ) override;
 
-    virtual QIODevice* io() override;
+    virtual QIODevice *io() override;
 
     virtual void finish() override;
 
@@ -99,7 +99,7 @@ class QgsBufferServerRequest : public QgsServerRequest
     * @param url the url string
     * @param method the request method
     */
-    QgsBufferServerRequest( const QString& url, Method method = GetMethod, QByteArray* data = nullptr );
+    QgsBufferServerRequest( const QString &url, Method method = GetMethod, QByteArray *data = nullptr );
 
     /**
      * Constructor
@@ -107,7 +107,7 @@ class QgsBufferServerRequest : public QgsServerRequest
      * @param url QUrl
      * @param method the request method
      */
-    QgsBufferServerRequest( const QUrl& url, Method method = GetMethod, QByteArray* data = nullptr );
+    QgsBufferServerRequest( const QUrl &url, Method method = GetMethod, QByteArray *data = nullptr );
 
     ~QgsBufferServerRequest();
 

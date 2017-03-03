@@ -29,10 +29,10 @@
 #include <QInputDialog>
 
 // ---------------------------------------------------------------------------
-QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri )
-    : QgsDataCollectionItem( parent, name, path )
-    , mUri( uri )
-    , mCapabilitiesDownload( nullptr )
+QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem *parent, QString name, QString path, QString uri )
+  : QgsDataCollectionItem( parent, name, path )
+  , mUri( uri )
+  , mCapabilitiesDownload( nullptr )
 {
   mIconName = QStringLiteral( "mIconConnect.png" );
   mCapabilitiesDownload = new QgsWmsCapabilitiesDownload( false );
@@ -52,9 +52,9 @@ void QgsWMSConnectionItem::deleteLater()
   QgsDataCollectionItem::deleteLater();
 }
 
-QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
+QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
 {
-  QVector<QgsDataItem*> children;
+  QVector<QgsDataItem *> children;
 
   QgsDataSourceUri uri;
   uri.setEncodedUri( mUri );
@@ -88,14 +88,14 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
   if ( !layerProperties.isEmpty() )
   {
     QgsWmsCapabilitiesProperty capabilitiesProperty = caps.capabilitiesProperty();
-    const QgsWmsCapabilityProperty& capabilityProperty = capabilitiesProperty.capability;
+    const QgsWmsCapabilityProperty &capabilityProperty = capabilitiesProperty.capability;
 
     // If we have several top-level layers, or if we just have one single top-level layer,
     // then use those top-level layers directly
     if ( capabilityProperty.layers.size() > 1 ||
          ( capabilityProperty.layers.size() == 1 && capabilityProperty.layers[0].layer.size() == 0 ) )
     {
-      Q_FOREACH ( const QgsWmsLayerProperty& layerProperty, capabilityProperty.layers )
+      Q_FOREACH ( const QgsWmsLayerProperty &layerProperty, capabilityProperty.layers )
       {
         // Attention, the name may be empty
         QgsDebugMsg( QString::number( layerProperty.orderId ) + ' ' + layerProperty.name + ' ' + layerProperty.title );
@@ -177,7 +177,7 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
               styleItem->addChildItem( linkItem );
           }
 
-          Q_FOREACH ( const QString& format, l.formats )
+          Q_FOREACH ( const QString &format, l.formats )
           {
             QString name = format;
             if ( linkItem == styleItem )
@@ -214,15 +214,15 @@ bool QgsWMSConnectionItem::equal( const QgsDataItem *other )
   return ( mPath == o->mPath && mName == o->mName );
 }
 
-QList<QAction*> QgsWMSConnectionItem::actions()
+QList<QAction *> QgsWMSConnectionItem::actions()
 {
-  QList<QAction*> lst;
+  QList<QAction *> lst;
 
-  QAction* actionEdit = new QAction( tr( "Edit..." ), this );
+  QAction *actionEdit = new QAction( tr( "Edit..." ), this );
   connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
   lst.append( actionEdit );
 
-  QAction* actionDelete = new QAction( tr( "Delete" ), this );
+  QAction *actionDelete = new QAction( tr( "Delete" ), this );
   connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteConnection() ) );
   lst.append( actionDelete );
 
@@ -250,11 +250,11 @@ void QgsWMSConnectionItem::deleteConnection()
 
 // ---------------------------------------------------------------------------
 
-QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, QString name, QString path, const QgsWmsCapabilitiesProperty &capabilitiesProperty, const QgsDataSourceUri& dataSourceUri, const QgsWmsLayerProperty &layerProperty )
-    : QgsLayerItem( parent, name, path, QString(), QgsLayerItem::Raster, QStringLiteral( "wms" ) )
-    , mCapabilitiesProperty( capabilitiesProperty )
-    , mDataSourceUri( dataSourceUri )
-    , mLayerProperty( layerProperty )
+QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem *parent, QString name, QString path, const QgsWmsCapabilitiesProperty &capabilitiesProperty, const QgsDataSourceUri &dataSourceUri, const QgsWmsLayerProperty &layerProperty )
+  : QgsLayerItem( parent, name, path, QString(), QgsLayerItem::Raster, QStringLiteral( "wms" ) )
+  , mCapabilitiesProperty( capabilitiesProperty )
+  , mDataSourceUri( dataSourceUri )
+  , mLayerProperty( layerProperty )
 {
   mSupportedCRS = mLayerProperty.crs;
   mSupportFormats = mCapabilitiesProperty.capability.request.getMap.format;
@@ -268,7 +268,7 @@ QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, QString name, QString pat
     // Attention, the name may be empty
     QgsDebugMsg( QString::number( layerProperty.orderId ) + ' ' + layerProperty.name + ' ' + layerProperty.title );
     QString pathName = layerProperty.name.isEmpty() ? QString::number( layerProperty.orderId ) : layerProperty.name;
-    QgsWMSLayerItem * layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + '/' + pathName, mCapabilitiesProperty, dataSourceUri, layerProperty );
+    QgsWMSLayerItem *layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + '/' + pathName, mCapabilitiesProperty, dataSourceUri, layerProperty );
     //mChildren.append( layer );
     addChildItem( layer );
   }
@@ -308,7 +308,7 @@ QString QgsWMSLayerItem::createUri()
   QString crs;
   // get first known if possible
   QgsCoordinateReferenceSystem testCrs;
-  Q_FOREACH ( const QString& c, mLayerProperty.crs )
+  Q_FOREACH ( const QString &c, mLayerProperty.crs )
   {
     testCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( c );
     if ( testCrs.isValid() )
@@ -339,14 +339,14 @@ QgsWMTSLayerItem::QgsWMTSLayerItem( QgsDataItem *parent,
                                     const QString &tileMatrixSet,
                                     const QString &crs,
                                     const QString &title )
-    : QgsLayerItem( parent, name, path, QString(), QgsLayerItem::Raster, QStringLiteral( "wms" ) )
-    , mDataSourceUri( uri )
-    , mId( id )
-    , mFormat( format )
-    , mStyle( style )
-    , mTileMatrixSet( tileMatrixSet )
-    , mCrs( crs )
-    , mTitle( title )
+  : QgsLayerItem( parent, name, path, QString(), QgsLayerItem::Raster, QStringLiteral( "wms" ) )
+  , mDataSourceUri( uri )
+  , mId( id )
+  , mFormat( format )
+  , mStyle( style )
+  , mTileMatrixSet( tileMatrixSet )
+  , mCrs( crs )
+  , mTitle( title )
 {
   mUri = createUri();
   setState( Populated );
@@ -370,8 +370,8 @@ QString QgsWMTSLayerItem::createUri()
 }
 
 // ---------------------------------------------------------------------------
-QgsWMSRootItem::QgsWMSRootItem( QgsDataItem* parent, QString name, QString path )
-    : QgsDataCollectionItem( parent, name, path )
+QgsWMSRootItem::QgsWMSRootItem( QgsDataItem *parent, QString name, QString path )
+  : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconWms.svg" );
@@ -382,25 +382,25 @@ QgsWMSRootItem::~QgsWMSRootItem()
 {
 }
 
-QVector<QgsDataItem*> QgsWMSRootItem::createChildren()
+QVector<QgsDataItem *> QgsWMSRootItem::createChildren()
 {
-  QVector<QgsDataItem*> connections;
+  QVector<QgsDataItem *> connections;
 
-  Q_FOREACH ( const QString& connName, QgsWMSConnection::connectionList() )
+  Q_FOREACH ( const QString &connName, QgsWMSConnection::connectionList() )
   {
     QgsWMSConnection connection( connName );
-    QgsDataItem * conn = new QgsWMSConnectionItem( this, connName, mPath + '/' + connName, connection.uri().encodedUri() );
+    QgsDataItem *conn = new QgsWMSConnectionItem( this, connName, mPath + '/' + connName, connection.uri().encodedUri() );
 
     connections.append( conn );
   }
   return connections;
 }
 
-QList<QAction*> QgsWMSRootItem::actions()
+QList<QAction *> QgsWMSRootItem::actions()
 {
-  QList<QAction*> lst;
+  QList<QAction *> lst;
 
-  QAction* actionNew = new QAction( tr( "New Connection..." ), this );
+  QAction *actionNew = new QAction( tr( "New Connection..." ), this );
   connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
   lst.append( actionNew );
 
@@ -408,7 +408,7 @@ QList<QAction*> QgsWMSRootItem::actions()
 }
 
 
-QWidget * QgsWMSRootItem::paramWidget()
+QWidget *QgsWMSRootItem::paramWidget()
 {
   QgsWMSSourceSelect *select = new QgsWMSSourceSelect( nullptr, 0, true, true );
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
@@ -438,13 +438,13 @@ QGISEXTERN void registerGui( QMainWindow *mainWindow )
   QgsTileScaleWidget::showTileScale( mainWindow );
 }
 
-QGISEXTERN QgsWMSSourceSelect * selectWidget( QWidget * parent, Qt::WindowFlags fl )
+QGISEXTERN QgsWMSSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl )
 {
   return new QgsWMSSourceSelect( parent, fl );
 }
 
 
-QgsDataItem* QgsWmsDataItemProvider::createDataItem( const QString& path, QgsDataItem *parentItem )
+QgsDataItem *QgsWmsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
   QgsDebugMsg( "thePath = " + path );
   if ( path.isEmpty() )
@@ -466,9 +466,9 @@ QgsDataItem* QgsWmsDataItemProvider::createDataItem( const QString& path, QgsDat
   return nullptr;
 }
 
-QGISEXTERN QList<QgsDataItemProvider*> dataItemProviders()
+QGISEXTERN QList<QgsDataItemProvider *> dataItemProviders()
 {
-  return QList<QgsDataItemProvider*>()
+  return QList<QgsDataItemProvider *>()
          << new QgsWmsDataItemProvider
          << new QgsXyzTileDataItemProvider;
 }
@@ -477,7 +477,7 @@ QGISEXTERN QList<QgsDataItemProvider*> dataItemProviders()
 
 
 QgsXyzTileRootItem::QgsXyzTileRootItem( QgsDataItem *parent, QString name, QString path )
-    : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconWms.svg" );
@@ -486,11 +486,11 @@ QgsXyzTileRootItem::QgsXyzTileRootItem( QgsDataItem *parent, QString name, QStri
 
 QVector<QgsDataItem *> QgsXyzTileRootItem::createChildren()
 {
-  QVector<QgsDataItem*> connections;
-  Q_FOREACH ( const QString& connName, QgsXyzConnectionUtils::connectionList() )
+  QVector<QgsDataItem *> connections;
+  Q_FOREACH ( const QString &connName, QgsXyzConnectionUtils::connectionList() )
   {
     QgsXyzConnection connection( QgsXyzConnectionUtils::connection( connName ) );
-    QgsDataItem * conn = new QgsXyzLayerItem( this, connName, mPath + '/' + connName, connection.encodedUri() );
+    QgsDataItem *conn = new QgsXyzLayerItem( this, connName, mPath + '/' + connName, connection.encodedUri() );
     connections.append( conn );
   }
   return connections;
@@ -498,9 +498,9 @@ QVector<QgsDataItem *> QgsXyzTileRootItem::createChildren()
 
 QList<QAction *> QgsXyzTileRootItem::actions()
 {
-  QAction* actionNew = new QAction( tr( "New Connection..." ), this );
+  QAction *actionNew = new QAction( tr( "New Connection..." ), this );
   connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
-  return QList<QAction*>() << actionNew;
+  return QList<QAction *>() << actionNew;
 }
 
 void QgsXyzTileRootItem::newConnection()
@@ -519,20 +519,20 @@ void QgsXyzTileRootItem::newConnection()
 
 
 QgsXyzLayerItem::QgsXyzLayerItem( QgsDataItem *parent, QString name, QString path, const QString &encodedUri )
-    : QgsLayerItem( parent, name, path, encodedUri, QgsLayerItem::Raster, QStringLiteral( "wms" ) )
+  : QgsLayerItem( parent, name, path, encodedUri, QgsLayerItem::Raster, QStringLiteral( "wms" ) )
 {
   setState( Populated );
 }
 
 QList<QAction *> QgsXyzLayerItem::actions()
 {
-  QList<QAction*> lst = QgsLayerItem::actions();
+  QList<QAction *> lst = QgsLayerItem::actions();
 
-  QAction* actionEdit = new QAction( tr( "Edit..." ), this );
+  QAction *actionEdit = new QAction( tr( "Edit..." ), this );
   connect( actionEdit, &QAction::triggered, this, &QgsXyzLayerItem::editConnection );
   lst << actionEdit;
 
-  QAction* actionDelete = new QAction( tr( "Delete" ), this );
+  QAction *actionDelete = new QAction( tr( "Delete" ), this );
   connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteConnection() ) );
   lst << actionDelete;
 

@@ -36,17 +36,17 @@ class QgsServerInterfaceImpl : public QgsServerInterface
 
     //! Constructor
     explicit QgsServerInterfaceImpl( QgsCapabilitiesCache *capCache,
-                                     QgsServiceRegistry* srvRegistry,
-                                     QgsServerSettings* serverSettings );
+                                     QgsServiceRegistry *srvRegistry,
+                                     QgsServerSettings *serverSettings );
 
 
     ~QgsServerInterfaceImpl();
 
-    void setRequestHandler( QgsRequestHandler* requestHandler ) override;
+    void setRequestHandler( QgsRequestHandler *requestHandler ) override;
     void clearRequestHandler() override;
-    QgsCapabilitiesCache* capabilitiesCache() override { return mCapabilitiesCache; }
+    QgsCapabilitiesCache *capabilitiesCache() override { return mCapabilitiesCache; }
     //! Return the QgsRequestHandler, to be used only in server plugins
-    QgsRequestHandler*  requestHandler() override { return mRequestHandler; }
+    QgsRequestHandler  *requestHandler() override { return mRequestHandler; }
     void registerFilter( QgsServerFilter *filter, int priority = 0 ) override;
     QgsServerFiltersMap filters() override { return mFilters; }
     //! Register an access control filter
@@ -56,27 +56,27 @@ class QgsServerInterfaceImpl : public QgsServerInterface
     /** Gets the helper over all the registered access control filters
      * @return the access control helper
      */
-    QgsAccessControl* accessControls() const override { return mAccessControls; }
-    QString getEnv( const QString& name ) const override;
+    QgsAccessControl *accessControls() const override { return mAccessControls; }
+    QString getEnv( const QString &name ) const override;
     QString configFilePath() override { return mConfigFilePath; }
-    void setConfigFilePath( const QString& configFilePath ) override;
+    void setConfigFilePath( const QString &configFilePath ) override;
     void setFilters( QgsServerFiltersMap *filters ) override;
-    void removeConfigCacheEntry( const QString& path ) override;
-    void removeProjectLayers( const QString& path ) override;
+    void removeConfigCacheEntry( const QString &path ) override;
+    void removeProjectLayers( const QString &path ) override;
 
-    QgsServiceRegistry* serviceRegistry() override;
+    QgsServiceRegistry *serviceRegistry() override;
 
-    QgsServerSettings* serverSettings() override;
+    QgsServerSettings *serverSettings() override;
 
   private:
 
     QString mConfigFilePath;
     QgsServerFiltersMap mFilters;
-    QgsAccessControl* mAccessControls = nullptr;
-    QgsCapabilitiesCache* mCapabilitiesCache = nullptr;
-    QgsRequestHandler* mRequestHandler = nullptr;
-    QgsServiceRegistry* mServiceRegistry = nullptr;
-    QgsServerSettings* mServerSettings = nullptr;
+    QgsAccessControl *mAccessControls = nullptr;
+    QgsCapabilitiesCache *mCapabilitiesCache = nullptr;
+    QgsRequestHandler *mRequestHandler = nullptr;
+    QgsServiceRegistry *mServiceRegistry = nullptr;
+    QgsServerSettings *mServerSettings = nullptr;
 };
 
 #endif // QGSSERVERINTERFACEIMPL_H

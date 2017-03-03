@@ -49,12 +49,12 @@ extern "C"
 /********************** QgsGrassModuleParam *************************/
 QgsGrassModuleParam::QgsGrassModuleParam( QgsGrassModule *module, QString key,
     QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct )
-    : mModule( module )
-    , mKey( key )
-    , mMultiple( false )
-    , mHidden( false )
-    , mRequired( false )
-    , mDirect( direct )
+  : mModule( module )
+  , mKey( key )
+  , mMultiple( false )
+  , mHidden( false )
+  , mRequired( false )
+  , mDirect( direct )
 {
   Q_UNUSED( gdesc );
   //mAnswer = qdesc.attribute("answer", "");
@@ -128,7 +128,7 @@ QStringList QgsGrassModuleParam::options()
   return QStringList();
 }
 
-QString QgsGrassModuleParam::getDescPrompt( QDomElement descDomElement, const QString & name )
+QString QgsGrassModuleParam::getDescPrompt( QDomElement descDomElement, const QString &name )
 {
   QDomNode gispromptNode = descDomElement.namedItem( QStringLiteral( "gisprompt" ) );
 
@@ -168,7 +168,7 @@ QDomNode QgsGrassModuleParam::nodeByKey( QDomElement descDomElement, QString key
   return QDomNode();
 }
 
-QList<QDomNode> QgsGrassModuleParam::nodesByType( QDomElement descDomElement, STD_OPT optionType, const QString & age )
+QList<QDomNode> QgsGrassModuleParam::nodesByType( QDomElement descDomElement, STD_OPT optionType, const QString &age )
 {
   // TODO: never tested
   QList<QDomNode> nodes;
@@ -211,9 +211,9 @@ QList<QDomNode> QgsGrassModuleParam::nodesByType( QDomElement descDomElement, ST
 
 QgsGrassModuleGroupBoxItem::QgsGrassModuleGroupBoxItem( QgsGrassModule *module, QString key,
     QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
-    bool direct, QWidget * parent )
-    : QGroupBox( parent )
-    , QgsGrassModuleParam( module, key, qdesc, gdesc, gnode, direct )
+    bool direct, QWidget *parent )
+  : QGroupBox( parent )
+  , QgsGrassModuleParam( module, key, qdesc, gdesc, gnode, direct )
 {
   adjustTitle();
   setToolTip( mToolTip );
@@ -221,7 +221,7 @@ QgsGrassModuleGroupBoxItem::QgsGrassModuleGroupBoxItem( QgsGrassModule *module, 
 
 QgsGrassModuleGroupBoxItem::~QgsGrassModuleGroupBoxItem() {}
 
-void QgsGrassModuleGroupBoxItem::resizeEvent( QResizeEvent * event )
+void QgsGrassModuleGroupBoxItem::resizeEvent( QResizeEvent *event )
 {
   Q_UNUSED( event );
   adjustTitle();
@@ -239,11 +239,11 @@ void QgsGrassModuleGroupBoxItem::adjustTitle()
 
 QgsGrassModuleMultiParam::QgsGrassModuleMultiParam( QgsGrassModule *module, QString key,
     QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
-    bool direct, QWidget * parent )
-    : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
-    , mLayout( 0 )
-    , mParamsLayout( 0 )
-    , mButtonsLayout( 0 )
+    bool direct, QWidget *parent )
+  : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
+  , mLayout( 0 )
+  , mParamsLayout( 0 )
+  , mButtonsLayout( 0 )
 {
   adjustTitle();
   setToolTip( mToolTip );
@@ -281,18 +281,18 @@ void QgsGrassModuleMultiParam::showAddRemoveButtons()
 
 QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
     QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
-    bool direct, QWidget * parent )
-    : QgsGrassModuleMultiParam( module, key, qdesc, gdesc, gnode, direct, parent )
-    , mControlType( NoControl )
-    , mValueType( String )
-    , mOutputType( None )
-    , mHaveLimits( false )
-    , mMin( INT_MAX )
-    , mMax( INT_MIN )
-    , mComboBox( 0 )
-    , mIsOutput( false )
-    , mValidator( 0 )
-    , mUsesRegion( false )
+    bool direct, QWidget *parent )
+  : QgsGrassModuleMultiParam( module, key, qdesc, gdesc, gnode, direct, parent )
+  , mControlType( NoControl )
+  , mValueType( String )
+  , mOutputType( None )
+  , mHaveLimits( false )
+  , mMin( INT_MAX )
+  , mMax( INT_MIN )
+  , mComboBox( 0 )
+  , mIsOutput( false )
+  , mValidator( 0 )
+  , mUsesRegion( false )
 {
   setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
 
@@ -530,7 +530,7 @@ void QgsGrassModuleOption::addRow()
   {
     if ( mHaveLimits )
     {
-      mValidator = new QIntValidator(( int )mMin, ( int )mMax, this );
+      mValidator = new QIntValidator( ( int )mMin, ( int )mMax, this );
     }
     else
     {
@@ -681,7 +681,7 @@ QString QgsGrassModuleOption::value()
   return value;
 }
 
-bool QgsGrassModuleOption::checkVersion( const QString& version_min, const QString& version_max, QStringList& errors )
+bool QgsGrassModuleOption::checkVersion( const QString &version_min, const QString &version_max, QStringList &errors )
 {
   QgsDebugMsg( "version_min = " + version_min );
   QgsDebugMsg( "version_max = " + version_max );
@@ -776,8 +776,8 @@ QgsGrassModuleOption::~QgsGrassModuleOption()
 /***************** QgsGrassModuleFlag *********************/
 QgsGrassModuleFlag::QgsGrassModuleFlag( QgsGrassModule *module, QString key,
                                         QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
-                                        bool direct, QWidget * parent )
-    : QgsGrassModuleCheckBox( QLatin1String( "" ), parent ), QgsGrassModuleParam( module, key, qdesc, gdesc, gnode, direct )
+                                        bool direct, QWidget *parent )
+  : QgsGrassModuleCheckBox( QLatin1String( "" ), parent ), QgsGrassModuleParam( module, key, qdesc, gdesc, gnode, direct )
 {
 
   if ( mHidden )
@@ -810,11 +810,11 @@ QgsGrassModuleFlag::~QgsGrassModuleFlag()
 
 QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
   QgsGrassModule *module, Type type, QString key, QDomElement &qdesc,
-  QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget * parent )
-    : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
-    , mType( type )
-    , mOgrLayerOption( QLatin1String( "" ) )
-    , mOgrWhereOption( QLatin1String( "" ) )
+  QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget *parent )
+  : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
+  , mType( type )
+  , mOgrLayerOption( QLatin1String( "" ) )
+  , mOgrWhereOption( QLatin1String( "" ) )
 {
   if ( mTitle.isEmpty() )
   {
@@ -1060,8 +1060,8 @@ QgsGrassModuleGdalInput::~QgsGrassModuleGdalInput()
 
 /***************** QgsGrassModuleField *********************/
 QgsGrassModuleField::QgsGrassModuleField( QgsGrassModule *module, QString key,
-    QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget * parent )
-    : QgsGrassModuleOption( module, key, qdesc, gdesc, gnode, direct, parent )
+    QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget *parent )
+  : QgsGrassModuleOption( module, key, qdesc, gdesc, gnode, direct, parent )
 {
   // Validator is disabled to also allow entering of expressions
 #if 0
@@ -1082,9 +1082,9 @@ QgsGrassModuleField::~QgsGrassModuleField()
 QgsGrassModuleVectorField::QgsGrassModuleVectorField(
   QgsGrassModule *module, QgsGrassModuleStandardOptions *options,
   QString key, QDomElement &qdesc,
-  QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget * parent )
-    : QgsGrassModuleMultiParam( module, key, qdesc, gdesc, gnode, direct, parent )
-    , mModuleStandardOptions( options ), mLayerInput( 0 )
+  QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget *parent )
+  : QgsGrassModuleMultiParam( module, key, qdesc, gdesc, gnode, direct, parent )
+  , mModuleStandardOptions( options ), mLayerInput( 0 )
 {
   if ( mTitle.isEmpty() )
   {
@@ -1157,7 +1157,7 @@ void QgsGrassModuleVectorField::updateFields()
     }
 
     int index = 0;
-    Q_FOREACH ( const QgsField& field, mLayerInput->currentFields() )
+    Q_FOREACH ( const QgsField &field, mLayerInput->currentFields() )
     {
       if ( mType.contains( field.typeName() ) )
       {
@@ -1204,11 +1204,11 @@ QgsGrassModuleVectorField::~QgsGrassModuleVectorField()
 QgsGrassModuleSelection::QgsGrassModuleSelection(
   QgsGrassModule *module, QgsGrassModuleStandardOptions *options,
   QString key, QDomElement &qdesc,
-  QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget * parent )
-    : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
-    , mModuleStandardOptions( options )
-    , mLayerInput( 0 )
-    , mVectorLayer( 0 )
+  QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget *parent )
+  : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
+  , mModuleStandardOptions( options )
+  , mLayerInput( 0 )
+  , mVectorLayer( 0 )
 {
   if ( mTitle.isEmpty() )
   {
@@ -1334,7 +1334,7 @@ QString QgsGrassModuleSelection::currentSelectionLayerId()
   return id;
 }
 
-QgsVectorLayer * QgsGrassModuleSelection::currentSelectionLayer()
+QgsVectorLayer *QgsGrassModuleSelection::currentSelectionLayer()
 {
   QString id = currentSelectionLayerId();
   if ( id.isEmpty() )
@@ -1446,9 +1446,9 @@ QgsGrassModuleSelection::~QgsGrassModuleSelection()
 QgsGrassModuleFile::QgsGrassModuleFile(
   QgsGrassModule *module,
   QString key, QDomElement &qdesc,
-  QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget * parent )
-    : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
-    , mType( Old )
+  QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget *parent )
+  : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
+  , mType( Old )
 {
   if ( mTitle.isEmpty() )
   {
@@ -1576,9 +1576,9 @@ QgsGrassModuleFile::~QgsGrassModuleFile()
 
 /***************************** QgsGrassModuleCheckBox *********************************/
 
-QgsGrassModuleCheckBox::QgsGrassModuleCheckBox( const QString & text, QWidget * parent )
-    : QCheckBox( text, parent )
-    , mText( text )
+QgsGrassModuleCheckBox::QgsGrassModuleCheckBox( const QString &text, QWidget *parent )
+  : QCheckBox( text, parent )
+  , mText( text )
 {
   adjustText();
 }
@@ -1587,17 +1587,17 @@ QgsGrassModuleCheckBox::~QgsGrassModuleCheckBox()
 {
 }
 
-void QgsGrassModuleCheckBox::resizeEvent( QResizeEvent * event )
+void QgsGrassModuleCheckBox::resizeEvent( QResizeEvent *event )
 {
   Q_UNUSED( event );
   adjustText();
 }
-void QgsGrassModuleCheckBox::setText( const QString & text )
+void QgsGrassModuleCheckBox::setText( const QString &text )
 {
   mText = text;
   adjustText();
 }
-void QgsGrassModuleCheckBox::setToolTip( const QString & text )
+void QgsGrassModuleCheckBox::setToolTip( const QString &text )
 {
   mTip = text;
   QWidget::setToolTip( text );

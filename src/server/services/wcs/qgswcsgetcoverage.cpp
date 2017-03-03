@@ -34,8 +34,8 @@ namespace QgsWcs
   /**
    * Output WCS DescribeCoverage response
    */
-  void writeGetCoverage( QgsServerInterface* serverIface, const QgsProject* project, const QString& version,
-                         const QgsServerRequest& request, QgsServerResponse& response )
+  void writeGetCoverage( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
+                         const QgsServerRequest &request, QgsServerResponse &response )
   {
     Q_UNUSED( version );
 
@@ -43,12 +43,12 @@ namespace QgsWcs
     response.setHeader( "Content-Type", "image/tiff" );
   }
 
-  QByteArray getCoverageData( QgsServerInterface* serverIface, const QgsProject* project, const QgsServerRequest& request )
+  QByteArray getCoverageData( QgsServerInterface *serverIface, const QgsProject *project, const QgsServerRequest &request )
   {
     QgsServerRequest::Parameters parameters = request.parameters();
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    QgsAccessControl* accessControl = serverIface->accessControls();
+    QgsAccessControl *accessControl = serverIface->accessControls();
 #endif
     //defining coverage name
     QString coveName;
@@ -75,7 +75,7 @@ namespace QgsWcs
     //get the raster layer
     QStringList wcsLayersId = QgsServerProjectUtils::wcsLayers( *project );
 
-    QgsRasterLayer* rLayer = nullptr;
+    QgsRasterLayer *rLayer = nullptr;
     for ( int i = 0; i < wcsLayersId.size(); ++i )
     {
       QgsMapLayer *layer = project->mapLayer( wcsLayersId.at( i ) );
@@ -191,7 +191,7 @@ namespace QgsWcs
     // add projector if necessary
     if ( responseCRS != rLayer->crs() )
     {
-      QgsRasterProjector * projector = new QgsRasterProjector;
+      QgsRasterProjector *projector = new QgsRasterProjector;
       projector->setCrs( rLayer->crs(), responseCRS );
       if ( !pipe.insert( 2, projector ) )
       {

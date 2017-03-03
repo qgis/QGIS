@@ -46,12 +46,12 @@ static const QString sPluginIcon = ":/compass.svn";
  * @param _qI Pointer to the QGIS interface object
  */
 QgsCompassPlugin::QgsCompassPlugin( QgisInterface *themQGisIface )
-    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
-    , mQGisIface( themQGisIface )
-    , mActionRunCompass( 0 )
-    , mActionAboutCompass( 0 )
-    , mQgsCompassPluginGui( 0 )
-    , mDock( 0 )
+  : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+  , mQGisIface( themQGisIface )
+  , mActionRunCompass( 0 )
+  , mActionAboutCompass( 0 )
+  , mQgsCompassPluginGui( 0 )
+  , mDock( 0 )
 {
 }
 
@@ -215,7 +215,7 @@ void QgsCompassPlugin::about()
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * themQGisIfacePointer )
+QGISEXTERN QgisPlugin *classFactory( QgisInterface *themQGisIfacePointer )
 {
   return new QgsCompassPlugin( themQGisIfacePointer );
 }
@@ -256,7 +256,7 @@ QGISEXTERN QString icon()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * pluginPointer )
+QGISEXTERN void unload( QgisPlugin *pluginPointer )
 {
   delete pluginPointer;
 }

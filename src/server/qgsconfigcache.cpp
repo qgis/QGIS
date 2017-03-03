@@ -26,7 +26,7 @@
 
 #include <QFile>
 
-QgsConfigCache* QgsConfigCache::instance()
+QgsConfigCache *QgsConfigCache::instance()
 {
   static QgsConfigCache *sInstance = nullptr;
 
@@ -38,10 +38,10 @@ QgsConfigCache* QgsConfigCache::instance()
 
 QgsConfigCache::QgsConfigCache()
 {
-  QObject::connect( &mFileSystemWatcher, SIGNAL( fileChanged( const QString& ) ), this, SLOT( removeChangedEntry( const QString& ) ) );
+  QObject::connect( &mFileSystemWatcher, SIGNAL( fileChanged( const QString & ) ), this, SLOT( removeChangedEntry( const QString & ) ) );
 }
 
-QgsServerProjectParser* QgsConfigCache::serverConfiguration( const QString& filePath )
+QgsServerProjectParser *QgsConfigCache::serverConfiguration( const QString &filePath )
 {
   QgsMessageLog::logMessage(
     QStringLiteral( "Open the project file '%1'." )
@@ -49,7 +49,7 @@ QgsServerProjectParser* QgsConfigCache::serverConfiguration( const QString& file
     QStringLiteral( "Server" ), QgsMessageLog::INFO
   );
 
-  QDomDocument* doc = xmlDocument( filePath );
+  QDomDocument *doc = xmlDocument( filePath );
   if ( !doc )
   {
     return nullptr;
@@ -77,14 +77,14 @@ QgsServerProjectParser* QgsConfigCache::serverConfiguration( const QString& file
 }
 
 QgsWfsProjectParser *QgsConfigCache::wfsConfiguration(
-  const QString& filePath
-  , const QgsAccessControl* accessControl
+  const QString &filePath
+  , const QgsAccessControl *accessControl
 )
 {
   QgsWfsProjectParser *p = mWFSConfigCache.object( filePath );
   if ( !p )
   {
-    QDomDocument* doc = xmlDocument( filePath );
+    QDomDocument *doc = xmlDocument( filePath );
     if ( !doc )
     {
       return nullptr;
@@ -103,15 +103,15 @@ QgsWfsProjectParser *QgsConfigCache::wfsConfiguration(
 }
 
 QgsWmsConfigParser *QgsConfigCache::wmsConfiguration(
-  const QString& filePath
-  , const QgsAccessControl* accessControl
-  , const QMap<QString, QString>& parameterMap
+  const QString &filePath
+  , const QgsAccessControl *accessControl
+  , const QMap<QString, QString> &parameterMap
 )
 {
   QgsWmsConfigParser *p = mWMSConfigCache.object( filePath );
   if ( !p )
   {
-    QDomDocument* doc = xmlDocument( filePath );
+    QDomDocument *doc = xmlDocument( filePath );
     if ( !doc )
     {
       return nullptr;
@@ -140,7 +140,7 @@ QgsWmsConfigParser *QgsConfigCache::wmsConfiguration(
   return p;
 }
 
-QDomDocument* QgsConfigCache::xmlDocument( const QString& filePath )
+QDomDocument *QgsConfigCache::xmlDocument( const QString &filePath )
 {
   //first open file
   QFile configFile( filePath );
@@ -157,7 +157,7 @@ QDomDocument* QgsConfigCache::xmlDocument( const QString& filePath )
   }
 
   // first get cache
-  QDomDocument* xmlDoc = mXmlDocumentCache.object( filePath );
+  QDomDocument *xmlDoc = mXmlDocumentCache.object( filePath );
   if ( !xmlDoc )
   {
     //then create xml document
@@ -179,7 +179,7 @@ QDomDocument* QgsConfigCache::xmlDocument( const QString& filePath )
   return xmlDoc;
 }
 
-void QgsConfigCache::removeChangedEntry( const QString& path )
+void QgsConfigCache::removeChangedEntry( const QString &path )
 {
   mWMSConfigCache.remove( path );
   mWFSConfigCache.remove( path );
@@ -191,7 +191,7 @@ void QgsConfigCache::removeChangedEntry( const QString& path )
 }
 
 
-void QgsConfigCache::removeEntry( const QString& path )
+void QgsConfigCache::removeEntry( const QString &path )
 {
   removeChangedEntry( path );
 }

@@ -31,7 +31,7 @@ class QgsDb2NewConnection : public QDialog, private Ui::QgsDb2NewConnectionBase
     Q_OBJECT
   public:
     //! Constructor
-    QgsDb2NewConnection( QWidget *parent = 0, const QString& connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsDb2NewConnection( QWidget *parent = 0, const QString &connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
 
     ~QgsDb2NewConnection();
@@ -51,7 +51,7 @@ class QgsDb2NewConnection : public QDialog, private Ui::QgsDb2NewConnectionBase
     void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#db2-spatial-layers" ) ); }
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
-    QgsAuthConfigSelect * mAuthConfigSelect = nullptr;
+    QgsAuthConfigSelect *mAuthConfigSelect = nullptr;
 };
 
 #endif //  QGSDB2NEWCONNECTION_H

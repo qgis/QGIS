@@ -38,7 +38,7 @@
 
 
 QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
-    : QObject( parent )
+  : QObject( parent )
 {
   mWidgets.append( new QgsCollapsibleGroupBoxPlugin( this ) );
   mWidgets.append( new QgsColorButtonPlugin( this ) );
@@ -61,7 +61,7 @@ QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
   mWidgets.append( new QgsSpinBoxPlugin( this ) );
 }
 
-QList<QDesignerCustomWidgetInterface*> QgisCustomWidgets::customWidgets() const
+QList<QDesignerCustomWidgetInterface *> QgisCustomWidgets::customWidgets() const
 {
   return mWidgets;
 }

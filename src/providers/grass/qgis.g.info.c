@@ -170,7 +170,7 @@ int main( int argc, char **argv )
     // Statistics
     if ( G_read_fp_range( rast_opt->answer, "", &range ) < 0 )
     {
-      G_fatal_error(( "Unable to read range file" ) );
+      G_fatal_error( ( "Unable to read range file" ) );
     }
     G_get_fp_range_min_max( &range, &zmin, &zmax );
     fprintf( stdout, "MIN_VALUE:%.17e\n", zmin );
@@ -256,8 +256,8 @@ int main( int argc, char **argv )
 #if GRASS_VERSION_MAJOR < 7
               if ( G_get_c_raster_row( fd, cell, row ) < 0 )
               {
-                G_fatal_error(( "Unable to read raster map <%s> row %d" ),
-                              rast_opt->answer, row );
+                G_fatal_error( ( "Unable to read raster map <%s> row %d" ),
+                               rast_opt->answer, row );
               }
 #else
               G_get_c_raster_row( fd, cell, row );
@@ -270,8 +270,8 @@ int main( int argc, char **argv )
 #if GRASS_VERSION_MAJOR < 7
               if ( G_get_d_raster_row( fd, dcell, row ) < 0 )
               {
-                G_fatal_error(( "Unable to read raster map <%s> row %d" ),
-                              rast_opt->answer, row );
+                G_fatal_error( ( "Unable to read raster map <%s> row %d" ),
+                               rast_opt->answer, row );
               }
 #else
               G_get_d_raster_row( fd, dcell, row );
@@ -351,8 +351,8 @@ int main( int argc, char **argv )
 #if GRASS_VERSION_MAJOR < 7
           if ( G_get_c_raster_row( fd, cell, row ) < 0 )
           {
-            G_fatal_error(( "Unable to read raster map <%s> row %d" ),
-                          rast_opt->answer, row );
+            G_fatal_error( ( "Unable to read raster map <%s> row %d" ),
+                           rast_opt->answer, row );
           }
 #else
           G_get_c_raster_row( fd, cell, row );
@@ -363,8 +363,8 @@ int main( int argc, char **argv )
 #if GRASS_VERSION_MAJOR < 7
           if ( G_get_d_raster_row( fd, dcell, row ) < 0 )
           {
-            G_fatal_error(( "Unable to read raster map <%s> row %d" ),
-                          rast_opt->answer, row );
+            G_fatal_error( ( "Unable to read raster map <%s> row %d" ),
+                           rast_opt->answer, row );
           }
 #else
           G_get_d_raster_row( fd, dcell, row );

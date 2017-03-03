@@ -26,15 +26,15 @@ class QgsAfsFeatureSource : public QObject, public QgsAbstractFeatureSource
     Q_OBJECT
 
   public:
-    QgsAfsFeatureSource( const QgsAfsProvider* provider );
-    QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
-    QgsAfsProvider* provider() const;
+    QgsAfsFeatureSource( const QgsAfsProvider *provider );
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
+    QgsAfsProvider *provider() const;
 
   signals:
     void extentRequested( const QgsRectangle & );
 
   protected:
-    QgsAfsProvider* mProvider = nullptr;
+    QgsAfsProvider *mProvider = nullptr;
 
     friend class QgsAfsFeatureIterator;
 };
@@ -42,13 +42,13 @@ class QgsAfsFeatureSource : public QObject, public QgsAbstractFeatureSource
 class QgsAfsFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsAfsFeatureSource>
 {
   public:
-    QgsAfsFeatureIterator( QgsAfsFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
+    QgsAfsFeatureIterator( QgsAfsFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
     ~QgsAfsFeatureIterator();
     bool rewind() override;
     bool close() override;
 
   protected:
-    bool fetchFeature( QgsFeature& f ) override;
+    bool fetchFeature( QgsFeature &f ) override;
 
   private:
     QgsFeatureId mFeatureIterator;

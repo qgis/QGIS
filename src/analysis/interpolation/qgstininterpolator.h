@@ -37,7 +37,7 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
       Linear,
       CloughTocher
     };
-    QgsTINInterpolator( const QList<LayerData>& inputData, TINInterpolation interpolation = Linear, bool showProgressDialog = false );
+    QgsTINInterpolator( const QList<LayerData> &inputData, TINInterpolation interpolation = Linear, bool showProgressDialog = false );
     ~QgsTINInterpolator();
 
     /** Calculates interpolation value for map coordinates x, y
@@ -45,14 +45,14 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
        @param y y-coordinate (in map units)
        @param result out: interpolation result
        @return 0 in case of success*/
-    int interpolatePoint( double x, double y, double& result ) override;
+    int interpolatePoint( double x, double y, double &result ) override;
 
     void setExportTriangulationToFile( bool e ) {mExportTriangulationToFile = e;}
-    void setTriangulationFilePath( const QString& filepath ) {mTriangulationFilePath = filepath;}
+    void setTriangulationFilePath( const QString &filepath ) {mTriangulationFilePath = filepath;}
 
   private:
-    Triangulation* mTriangulation = nullptr;
-    TriangleInterpolator* mTriangleInterpolator = nullptr;
+    Triangulation *mTriangulation = nullptr;
+    TriangleInterpolator *mTriangleInterpolator = nullptr;
     bool mIsInitialized;
     bool mShowProgressDialog;
     //! If true: export triangulation to shapefile after initialization
@@ -71,7 +71,7 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
       @param attr interpolation attribute index (if zCoord is false)
       @param type point/structure line, break line
       @return 0 in case of success, -1 if the feature could not be inserted because of numerical problems*/
-    int insertData( QgsFeature* f, bool zCoord, int attr, InputType type );
+    int insertData( QgsFeature *f, bool zCoord, int attr, InputType type );
 };
 
 #endif

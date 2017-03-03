@@ -24,9 +24,9 @@
 namespace QgsWms
 {
 
-  void writeGetContext( QgsServerInterface* serverIface, const QgsProject* project,
-                        const QString& version, const QgsServerRequest& request,
-                        QgsServerResponse& response )
+  void writeGetContext( QgsServerInterface *serverIface, const QgsProject *project,
+                        const QString &version, const QgsServerRequest &request,
+                        QgsServerResponse &response )
   {
     QDomDocument doc = getContext( serverIface, project, version, request );
 
@@ -35,12 +35,12 @@ namespace QgsWms
   }
 
 
-  QDomDocument getContext( QgsServerInterface* serverIface, const QgsProject* project,
-                           const QString& version, const QgsServerRequest& request )
+  QDomDocument getContext( QgsServerInterface *serverIface, const QgsProject *project,
+                           const QString &version, const QgsServerRequest &request )
   {
     Q_UNUSED( version );
 
-    QgsWmsConfigParser*  configParser = getConfigParser( serverIface );
+    QgsWmsConfigParser  *configParser = getConfigParser( serverIface );
 
     QDomDocument doc;
     QDomProcessingInstruction xmlDeclaration = doc.createProcessingInstruction( QStringLiteral( "xml" ),

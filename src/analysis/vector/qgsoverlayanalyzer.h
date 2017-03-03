@@ -40,15 +40,15 @@ class ANALYSIS_EXPORT QgsOverlayAnalyzer
       @param onlySelectedFeatures if true, only selected features are considered, else all the features
       @param p progress dialog (or 0 if no progress dialog is to be shown)
       */
-    bool intersection( QgsVectorLayer* layerA, QgsVectorLayer* layerB,
-                       const QString& shapefileName, bool onlySelectedFeatures = false,
-                       QProgressDialog* p = nullptr );
+    bool intersection( QgsVectorLayer *layerA, QgsVectorLayer *layerB,
+                       const QString &shapefileName, bool onlySelectedFeatures = false,
+                       QProgressDialog *p = nullptr );
 
   private:
 
-    void combineFieldLists( QgsFields& fieldListA, const QgsFields& fieldListB );
-    void intersectFeature( QgsFeature& f, QgsVectorFileWriter* vfw, QgsVectorLayer* dp, QgsSpatialIndex* index );
-    void combineAttributeMaps( QgsAttributes& attributesA, const QgsAttributes& attributesB );
+    void combineFieldLists( QgsFields &fieldListA, const QgsFields &fieldListB );
+    void intersectFeature( QgsFeature &f, QgsVectorFileWriter *vfw, QgsVectorLayer *dp, QgsSpatialIndex *index );
+    void combineAttributeMaps( QgsAttributes &attributesA, const QgsAttributes &attributesB );
 };
 
 #endif //QGSVECTORANALYZER

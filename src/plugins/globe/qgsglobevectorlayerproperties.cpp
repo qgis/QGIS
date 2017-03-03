@@ -19,24 +19,24 @@
 
 #include <osgEarth/Version>
 
-Q_DECLARE_METATYPE( QgsGlobeVectorLayerConfig* )
+Q_DECLARE_METATYPE( QgsGlobeVectorLayerConfig * )
 
-QgsGlobeVectorLayerConfig* QgsGlobeVectorLayerConfig::getConfig( QgsVectorLayer* layer )
+QgsGlobeVectorLayerConfig *QgsGlobeVectorLayerConfig::getConfig( QgsVectorLayer *layer )
 {
-  QgsGlobeVectorLayerConfig* layerConfig = layer->property( "globe-config" ).value<QgsGlobeVectorLayerConfig*>();
+  QgsGlobeVectorLayerConfig *layerConfig = layer->property( "globe-config" ).value<QgsGlobeVectorLayerConfig *>();
   if ( !layerConfig )
   {
     layerConfig = new QgsGlobeVectorLayerConfig( layer );
-    layer->setProperty( "globe-config", QVariant::fromValue<QgsGlobeVectorLayerConfig*>( layerConfig ) );
+    layer->setProperty( "globe-config", QVariant::fromValue<QgsGlobeVectorLayerConfig *>( layerConfig ) );
   }
   return layerConfig;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsGlobeVectorLayerPropertiesPage::QgsGlobeVectorLayerPropertiesPage( QgsVectorLayer* layer, QgsMapCanvas *canvas, QWidget *parent )
-    : QgsMapLayerConfigWidget( layer, canvas, parent )
-    , mLayer( layer )
+QgsGlobeVectorLayerPropertiesPage::QgsGlobeVectorLayerPropertiesPage( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
+  : QgsMapLayerConfigWidget( layer, canvas, parent )
+  , mLayer( layer )
 {
   setupUi( this );
 
@@ -80,7 +80,7 @@ QgsGlobeVectorLayerPropertiesPage::QgsGlobeVectorLayerPropertiesPage( QgsVectorL
   connect( comboBoxAltitudeTechnique, SIGNAL( currentIndexChanged( int ) ), this, SLOT( onAltituteTechniqueChanged( int ) ) );
 
   // Set values
-  QgsGlobeVectorLayerConfig* layerConfig = QgsGlobeVectorLayerConfig::getConfig( mLayer );
+  QgsGlobeVectorLayerConfig *layerConfig = QgsGlobeVectorLayerConfig::getConfig( mLayer );
 
   comboBoxRenderingMode->setCurrentIndex( comboBoxRenderingMode->findData( static_cast<int>( layerConfig->renderingMode ) ) );
 
@@ -117,7 +117,7 @@ QgsGlobeVectorLayerPropertiesPage::QgsGlobeVectorLayerPropertiesPage( QgsVectorL
 
 void QgsGlobeVectorLayerPropertiesPage::apply()
 {
-  QgsGlobeVectorLayerConfig* layerConfig = QgsGlobeVectorLayerConfig::getConfig( mLayer );
+  QgsGlobeVectorLayerConfig *layerConfig = QgsGlobeVectorLayerConfig::getConfig( mLayer );
 
   layerConfig->renderingMode = static_cast<QgsGlobeVectorLayerConfig::RenderingMode>( comboBoxRenderingMode->currentData().toInt() );
   layerConfig->altitudeClamping = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>( comboBoxAltitudeClamping->currentData().toInt() );
@@ -184,17 +184,17 @@ void QgsGlobeVectorLayerPropertiesPage::showRenderingModeWidget( int index )
 ///////////////////////////////////////////////////////////////////////////////
 
 QgsGlobeLayerPropertiesFactory::QgsGlobeLayerPropertiesFactory( QObject *parent )
-    : QObject( parent )
+  : QObject( parent )
 {
-  connect( QgsProject::instance(), SIGNAL( readMapLayer( QgsMapLayer*, QDomElement ) ), this, SLOT( readGlobeVectorLayerConfig( QgsMapLayer*, QDomElement ) ) );
-  connect( QgsProject::instance(), SIGNAL( writeMapLayer( QgsMapLayer*, QDomElement&, QDomDocument& ) ), this, SLOT( writeGlobeVectorLayerConfig( QgsMapLayer*, QDomElement&, QDomDocument& ) ) );
+  connect( QgsProject::instance(), SIGNAL( readMapLayer( QgsMapLayer *, QDomElement ) ), this, SLOT( readGlobeVectorLayerConfig( QgsMapLayer *, QDomElement ) ) );
+  connect( QgsProject::instance(), SIGNAL( writeMapLayer( QgsMapLayer *, QDomElement &, QDomDocument & ) ), this, SLOT( writeGlobeVectorLayerConfig( QgsMapLayer *, QDomElement &, QDomDocument & ) ) );
 }
 
 QgsMapLayerConfigWidget *QgsGlobeLayerPropertiesFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget, QWidget *parent ) const
 {
   Q_UNUSED( dockWidget );
-  QgsGlobeVectorLayerPropertiesPage* propsPage = new QgsGlobeVectorLayerPropertiesPage( qobject_cast<QgsVectorLayer*>( layer ), canvas, parent );
-  connect( propsPage, SIGNAL( layerSettingsChanged( QgsMapLayer* ) ), this, SIGNAL( layerSettingsChanged( QgsMapLayer* ) ) );
+  QgsGlobeVectorLayerPropertiesPage *propsPage = new QgsGlobeVectorLayerPropertiesPage( qobject_cast<QgsVectorLayer *>( layer ), canvas, parent );
+  connect( propsPage, SIGNAL( layerSettingsChanged( QgsMapLayer * ) ), this, SIGNAL( layerSettingsChanged( QgsMapLayer * ) ) );
   return propsPage;
 }
 
@@ -213,12 +213,12 @@ bool QgsGlobeLayerPropertiesFactory::supportsLayer( QgsMapLayer *layer ) const
   return layer->type() == QgsMapLayer::VectorLayer;
 }
 
-void QgsGlobeLayerPropertiesFactory::readGlobeVectorLayerConfig( QgsMapLayer* mapLayer, const QDomElement& elem )
+void QgsGlobeLayerPropertiesFactory::readGlobeVectorLayerConfig( QgsMapLayer *mapLayer, const QDomElement &elem )
 {
-  if ( dynamic_cast<QgsVectorLayer*>( mapLayer ) )
+  if ( dynamic_cast<QgsVectorLayer *>( mapLayer ) )
   {
-    QgsVectorLayer* vLayer = static_cast<QgsVectorLayer*>( mapLayer );
-    QgsGlobeVectorLayerConfig* config = QgsGlobeVectorLayerConfig::getConfig( vLayer );
+    QgsVectorLayer *vLayer = static_cast<QgsVectorLayer *>( mapLayer );
+    QgsGlobeVectorLayerConfig *config = QgsGlobeVectorLayerConfig::getConfig( vLayer );
 
     QDomElement globeElem = elem.firstChildElement( "globe" );
     if ( !globeElem.isNull() )
@@ -256,12 +256,12 @@ void QgsGlobeLayerPropertiesFactory::readGlobeVectorLayerConfig( QgsMapLayer* ma
   }
 }
 
-void QgsGlobeLayerPropertiesFactory::writeGlobeVectorLayerConfig( QgsMapLayer* mapLayer, QDomElement& elem, QDomDocument& doc )
+void QgsGlobeLayerPropertiesFactory::writeGlobeVectorLayerConfig( QgsMapLayer *mapLayer, QDomElement &elem, QDomDocument &doc )
 {
-  if ( dynamic_cast<QgsVectorLayer*>( mapLayer ) )
+  if ( dynamic_cast<QgsVectorLayer *>( mapLayer ) )
   {
-    QgsVectorLayer* vLayer = static_cast<QgsVectorLayer*>( mapLayer );
-    QgsGlobeVectorLayerConfig* config = QgsGlobeVectorLayerConfig::getConfig( vLayer );
+    QgsVectorLayer *vLayer = static_cast<QgsVectorLayer *>( mapLayer );
+    QgsGlobeVectorLayerConfig *config = QgsGlobeVectorLayerConfig::getConfig( vLayer );
 
     QDomElement globeElem = doc.createElement( "globe" );
 

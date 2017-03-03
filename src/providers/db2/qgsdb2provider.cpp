@@ -30,12 +30,12 @@ static const QString PROVIDER_DESCRIPTION = QStringLiteral( "DB2 Spatial Extende
 
 int QgsDb2Provider::sConnectionId = 0;
 
-QgsDb2Provider::QgsDb2Provider( const QString& uri )
-    : QgsVectorDataProvider( uri )
-    , mNumberFeatures( 0 )
-    , mFidColIdx( -1 )
-    , mEnvironment( ENV_LUW )
-    , mWkbType( QgsWkbTypes::Unknown )
+QgsDb2Provider::QgsDb2Provider( const QString &uri )
+  : QgsVectorDataProvider( uri )
+  , mNumberFeatures( 0 )
+  , mFidColIdx( -1 )
+  , mEnvironment( ENV_LUW )
+  , mWkbType( QgsWkbTypes::Unknown )
 {
   QgsDebugMsg( "uri: " + uri );
   QgsDataSourceUri anUri = QgsDataSourceUri( uri );
@@ -457,12 +457,12 @@ QString QgsDb2Provider::db2TypeName( int typeId )
   return typeName;
 }
 
-QgsAbstractFeatureSource* QgsDb2Provider::featureSource() const
+QgsAbstractFeatureSource *QgsDb2Provider::featureSource() const
 {
   return new QgsDb2FeatureSource( this );
 }
 
-QgsFeatureIterator QgsDb2Provider::getFeatures( const QgsFeatureRequest& request ) const
+QgsFeatureIterator QgsDb2Provider::getFeatures( const QgsFeatureRequest &request ) const
 {
   if ( !mValid )
   {
@@ -649,7 +649,7 @@ QString QgsDb2Provider::subsetString() const
   return mSqlWhereClause;
 }
 
-bool QgsDb2Provider::setSubsetString( const QString& theSQL, bool )
+bool QgsDb2Provider::setSubsetString( const QString &theSQL, bool )
 {
   QString prevWhere = mSqlWhereClause;
   QgsDebugMsg( theSQL );
@@ -730,7 +730,7 @@ void QgsDb2Provider::db2WkbTypeAndDimension( QgsWkbTypes::Type wkbType, QString 
     dim = 0;
 }
 
-bool QgsDb2Provider::deleteFeatures( const QgsFeatureIds & id )
+bool QgsDb2Provider::deleteFeatures( const QgsFeatureIds &id )
 {
   if ( mFidColName.isEmpty() )
     return false;
@@ -786,7 +786,7 @@ bool QgsDb2Provider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     if ( FID_IS_NEW( fid ) )
       continue;
 
-    const QgsAttributeMap& attrs = it.value();
+    const QgsAttributeMap &attrs = it.value();
     if ( attrs.isEmpty() )
       continue;
 
@@ -897,7 +897,7 @@ bool QgsDb2Provider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   return true;
 }
 
-bool QgsDb2Provider::addFeatures( QgsFeatureList & flist )
+bool QgsDb2Provider::addFeatures( QgsFeatureList &flist )
 {
   QgsDebugMsg( "mGeometryColType: " + mGeometryColType );
   int writeCount = 0;
@@ -1244,10 +1244,10 @@ bool QgsDb2Provider::changeGeometryValues( const QgsGeometryMap &geometry_map )
   return true;
 }
 
-QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QString& uri,
+QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QString &uri,
     const QgsFields &fields,
     QgsWkbTypes::Type wkbType,
-    const QgsCoordinateReferenceSystem& srs,
+    const QgsCoordinateReferenceSystem &srs,
     bool overwrite,
     QMap<int, int> *oldToNewAttrIdxMap,
     QString *errorMessage,
@@ -1418,7 +1418,7 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QStrin
 
       if ( oldToNewAttrIdxMap && fld.name() == primaryKey )
       {
-        oldToNewAttrIdxMap->insert( i , 0 );
+        oldToNewAttrIdxMap->insert( i, 0 );
         continue;
       }
 
@@ -1556,7 +1556,7 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QStrin
   return QgsVectorLayerImport::NoError;
 }
 
-QString QgsDb2Provider::qgsFieldToDb2Field( const QgsField& field )
+QString QgsDb2Provider::qgsFieldToDb2Field( const QgsField &field )
 {
   QString result = QLatin1String( "" );
   switch ( field.type() )
@@ -1725,7 +1725,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 
 
 QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
-  const QString& uri,
+  const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type wkbType,
   const QgsCoordinateReferenceSystem &srs,
