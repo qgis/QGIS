@@ -22,8 +22,9 @@
 #include "qgsproject.h"
 #include "qgsrubberband.h"
 #include "qgssnappingutils.h"
+#include "qgssettings.h"
+
 #include <QMouseEvent>
-#include <QSettings>
 #include <cmath>
 
 QgsMapToolMeasureAngle::QgsMapToolMeasureAngle( QgsMapCanvas *canvas )
@@ -134,7 +135,7 @@ void QgsMapToolMeasureAngle::createRubberBand()
   delete mRubberBand;
   mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::LineGeometry );
 
-  QSettings settings;
+  QgsSettings settings;
   int myRed = settings.value( QStringLiteral( "/qgis/default_measure_color_red" ), 180 ).toInt();
   int myGreen = settings.value( QStringLiteral( "/qgis/default_measure_color_green" ), 180 ).toInt();
   int myBlue = settings.value( QStringLiteral( "/qgis/default_measure_color_blue" ), 180 ).toInt();

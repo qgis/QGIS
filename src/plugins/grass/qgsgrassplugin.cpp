@@ -39,11 +39,11 @@
 #include "qgsproviderregistry.h"
 #include "qgsrendererregistry.h"
 #include "qgsvectorlayer.h"
+#include "qgssettings.h"
 
 #include <QAction>
 #include <QFileInfo>
 #include <QMessageBox>
-#include <QSettings>
 #include <QToolBar>
 
 extern "C"
@@ -551,7 +551,7 @@ void QgsGrassPlugin::mapsetChanged()
     mRegionAction->setEnabled( true );
     mCloseMapsetAction->setEnabled( true );
 
-    QSettings settings;
+    QgsSettings settings;
     bool on = settings.value( QStringLiteral( "/GRASS/region/on" ), true ).toBool();
     mRegionAction->setChecked( on );
     switchRegion( on );
@@ -700,7 +700,7 @@ void QgsGrassPlugin::displayRegion()
 void QgsGrassPlugin::switchRegion( bool on )
 {
 
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/GRASS/region/on" ), on );
 
   if ( on )

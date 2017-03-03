@@ -17,9 +17,9 @@
 #include <QFont>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QSettings>
 
-#include <qgsapplication.h>
+#include "qgssettings.h"
+#include "qgsapplication.h"
 #include "qgsstatusbarmagnifierwidget.h"
 #include "qgsdoublespinbox.h"
 #include "qgisgui.h"
@@ -27,7 +27,7 @@
 QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget( QWidget *parent )
   : QWidget( parent )
 {
-  QSettings settings;
+  QgsSettings settings;
   int minimumFactor = 100 * QgisGui::CANVAS_MAGNIFICATION_MIN;
   int maximumFactor = 100 * QgisGui::CANVAS_MAGNIFICATION_MAX;
   int defaultFactor = 100 * settings.value( QStringLiteral( "/qgis/magnifier_factor_default" ), 1.0 ).toDouble();

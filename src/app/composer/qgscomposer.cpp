@@ -67,6 +67,7 @@
 #include "qgscomposerimageexportoptionsdialog.h"
 #include "ui_qgssvgexportoptions.h"
 #include "qgspanelwidgetstack.h"
+#include "qgssettings.h"
 
 #include <QCloseEvent>
 #include <QCheckBox>
@@ -85,7 +86,6 @@
 #include <QPixmap>
 #include <QPrintDialog>
 #include <QPrinter>
-#include <QSettings>
 #include <QSizeGrip>
 #include <QSvgGenerator>
 #include <QTimer>
@@ -120,7 +120,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString &title )
   setWindowTitle( mTitle );
   setupTheme();
 
-  QSettings settings;
+  QgsSettings settings;
   setStyleSheet( mQgis->styleSheet() );
 
   int size = settings.value( QStringLiteral( "/IconSize" ), QGIS_ICON_SIZE ).toInt();
@@ -536,7 +536,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString &title )
   mViewFrame->setLayout( mViewLayout );
 
   //initial state of rulers
-  QSettings myQSettings;
+  QgsSettings myQSettings;
   bool showRulers = myQSettings.value( QStringLiteral( "/Composer/showRulers" ), true ).toBool();
   mActionShowRulers->blockSignals( true );
   mActionShowRulers->setChecked( showRulers );
@@ -1419,7 +1419,7 @@ void QgsComposer::toggleRulers( bool checked )
   mVerticalRuler->setVisible( checked );
   mRulerLayoutFix->setVisible( checked );
 
-  QSettings myQSettings;
+  QgsSettings myQSettings;
   myQSettings.setValue( QStringLiteral( "/Composer/showRulers" ), checked );
 }
 
@@ -1669,7 +1669,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
 
   if ( mode == QgsComposer::Single || ( mode == QgsComposer::Atlas && atlasOnASingleFile ) )
   {
-    QSettings myQSettings;  // where we keep last used filter in persistent state
+    QgsSettings myQSettings;  // where we keep last used filter in persistent state
     QString lastUsedFile = myQSettings.value( QStringLiteral( "/UI/lastSaveAsPdfFile" ), "qgis.pdf" ).toString();
     QFileInfo file( lastUsedFile );
 
@@ -1720,7 +1720,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
       atlasMap->setFilenamePattern( QStringLiteral( "'output_'||@atlas_featurenumber" ) );
     }
 
-    QSettings myQSettings;
+    QgsSettings myQSettings;
     QString lastUsedDir = myQSettings.value( QStringLiteral( "/UI/lastSaveAtlasAsPdfDir" ), QDir::homePath() ).toString();
     outputDir = QFileDialog::getExistingDirectory( this,
                 tr( "Export atlas to directory" ),
@@ -2021,7 +2021,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     showWmsPrintingWarning();
   }
 
-  QSettings settings;
+  QgsSettings settings;
 
   // Image size
   int width = ( int )( mComposition->printResolution() * mComposition->paperWidth() / 25.4 );
@@ -2214,7 +2214,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
       atlasMap->setFilenamePattern( QStringLiteral( "'output_'||@atlas_featurenumber" ) );
     }
 
-    QSettings myQSettings;
+    QgsSettings myQSettings;
     QString lastUsedDir = myQSettings.value( QStringLiteral( "/UI/lastSaveAtlasAsImagesDir" ), QDir::homePath() ).toString();
     QString lastUsedFormat = myQSettings.value( QStringLiteral( "/UI/lastSaveAtlasAsImagesFormat" ), "jpg" ).toString();
 
@@ -2487,7 +2487,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
   }
 
   QString settingsLabel = QStringLiteral( "/UI/displaySVGWarning" );
-  QSettings settings;
+  QgsSettings settings;
 
   bool displaySVGWarning = settings.value( settingsLabel, true ).toBool();
 
@@ -2498,7 +2498,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
     m->setCheckBoxText( tr( "Don't show this message again" ) );
     m->setCheckBoxState( Qt::Unchecked );
     m->setCheckBoxVisible( true );
-    m->setCheckBoxQSettingsLabel( settingsLabel );
+    m->setCheckBoxQgsSettingsLabel( settingsLabel );
     m->setMessageAsHtml( tr( "<p>The SVG export function in QGIS has several "
                              "problems due to bugs and deficiencies in the " )
                          + tr( "Qt4 svg code. In particular, there are problems "
@@ -2576,7 +2576,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
       atlasMap->setFilenamePattern( QStringLiteral( "'output_'||@atlas_featurenumber" ) );
     }
 
-    QSettings myQSettings;
+    QgsSettings myQSettings;
     QString lastUsedDir = myQSettings.value( QStringLiteral( "/UI/lastSaveAtlasAsSvgDir" ), QDir::homePath() ).toString();
 
     // open file dialog
@@ -3092,7 +3092,7 @@ void QgsComposer::on_mActionComposerManager_triggered()
 void QgsComposer::on_mActionSaveAsTemplate_triggered()
 {
   //show file dialog
-  QSettings settings;
+  QgsSettings settings;
   QString lastSaveDir = settings.value( QStringLiteral( "UI/lastComposerTemplateDir" ), QDir::homePath() ).toString();
 #ifdef Q_OS_MAC
   mQgis->activateWindow();
@@ -3135,7 +3135,7 @@ void QgsComposer::on_mActionLoadFromTemplate_triggered()
   if ( !mComposition )
     return;
 
-  QSettings settings;
+  QgsSettings settings;
   QString openFileDir = settings.value( QStringLiteral( "UI/lastComposerTemplateDir" ), QDir::homePath() ).toString();
   QString openFileString = QFileDialog::getOpenFileName( nullptr, tr( "Load template" ), openFileDir, QStringLiteral( "*.qpt" ) );
 
@@ -3442,7 +3442,7 @@ void QgsComposer::showEvent( QShowEvent *event )
 
 void QgsComposer::saveWindowState()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Composer/geometry" ), saveGeometry() );
   // store the toolbar/dock widget settings using Qt4 settings API
   settings.setValue( QStringLiteral( "/ComposerUI/state" ), saveState() );
@@ -3453,7 +3453,7 @@ void QgsComposer::saveWindowState()
 void QgsComposer::restoreWindowState()
 {
   // restore the toolbar and dock widgets positions using Qt4 settings API
-  QSettings settings;
+  QgsSettings settings;
 
   if ( !restoreState( settings.value( QStringLiteral( "/ComposerUI/state" ), QByteArray::fromRawData( ( char * )defaultComposerUIstate, sizeof defaultComposerUIstate ) ).toByteArray() ) )
   {
@@ -3853,7 +3853,7 @@ bool QgsComposer::containsAdvancedEffects() const
 void QgsComposer::showWmsPrintingWarning()
 {
   QString myQSettingsLabel = QStringLiteral( "/UI/displayComposerWMSWarning" );
-  QSettings myQSettings;
+  QgsSettings myQSettings;
 
   bool displayWMSWarning = myQSettings.value( myQSettingsLabel, true ).toBool();
   if ( displayWMSWarning )
@@ -3864,7 +3864,7 @@ void QgsComposer::showWmsPrintingWarning()
     m->setCheckBoxText( tr( "Don't show this message again" ) );
     m->setCheckBoxState( Qt::Unchecked );
     m->setCheckBoxVisible( true );
-    m->setCheckBoxQSettingsLabel( myQSettingsLabel );
+    m->setCheckBoxQgsSettingsLabel( myQSettingsLabel );
     m->exec();
   }
 }
@@ -4180,7 +4180,7 @@ void QgsComposer::loadAtlasPredefinedScalesFromProject()
   if ( !hasProjectScales || scales.isEmpty() )
   {
     // default to global map tool scales
-    QSettings settings;
+    QgsSettings settings;
     QString scalesStr( settings.value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString() );
     scales = scalesStr.split( ',' );
   }

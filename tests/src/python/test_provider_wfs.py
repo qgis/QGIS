@@ -20,7 +20,7 @@ import shutil
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'
 
-from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QDateTime, QSettings
+from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QDateTime
 
 from qgis.core import (
     QgsWkbTypes,
@@ -31,7 +31,8 @@ from qgis.core import (
     QgsPoint,
     QgsVectorDataProvider,
     QgsFeatureRequest,
-    QgsApplication
+    QgsApplication,
+    QgsSettings
 )
 from qgis.testing import (start_app,
                           unittest
@@ -79,7 +80,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("TestPyQgsWFSProvider.com")
         QCoreApplication.setApplicationName("TestPyQgsWFSProvider")
-        QSettings().clear()
+        QgsSettings().clear()
         start_app()
 
         # On Windows we must make sure that any backslash in the path is
@@ -337,9 +338,9 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
-        QSettings().clear()
+        QgsSettings().clear()
         shutil.rmtree(cls.basetestpath, True)
-        cls.vl = None # so as to properly close the provider and remove any temporary file
+        cls.vl = None  # so as to properly close the provider and remove any temporary file
 
     def testInconsistentUri(self):
         """Test a URI with a typename that doesn't match a type of the capabilities"""
@@ -2028,7 +2029,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </wfs:member>
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
-        QSettings().setValue('wfs/max_feature_count_if_not_provided', '1')
+        QgsSettings().setValue('wfs/max_feature_count_if_not_provided', '1')
 
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='2.0.0'", 'test', 'WFS')
         assert vl.isValid()

@@ -19,9 +19,9 @@
 #include "qgsgeometryrubberband.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
+#include "qgssettings.h"
 
 #include <QKeyEvent>
-#include <QSettings>
 
 
 QgsMapToolEdit::QgsMapToolEdit( QgsMapCanvas *canvas )
@@ -31,12 +31,12 @@ QgsMapToolEdit::QgsMapToolEdit( QgsMapCanvas *canvas )
 
 double QgsMapToolEdit::defaultZValue() const
 {
-  return QSettings().value( QStringLiteral( "/qgis/digitizing/default_z_value" ), Qgis::DEFAULT_Z_COORDINATE ).toDouble();
+  return QgsSettings().value( QStringLiteral( "/qgis/digitizing/default_z_value" ), Qgis::DEFAULT_Z_COORDINATE ).toDouble();
 }
 
 QColor QgsMapToolEdit::digitizingStrokeColor()
 {
-  QSettings settings;
+  QgsSettings settings;
   QColor color(
     settings.value( QStringLiteral( "/qgis/digitizing/line_color_red" ), 255 ).toInt(),
     settings.value( QStringLiteral( "/qgis/digitizing/line_color_green" ), 0 ).toInt(),
@@ -48,13 +48,13 @@ QColor QgsMapToolEdit::digitizingStrokeColor()
 
 int QgsMapToolEdit::digitizingStrokeWidth()
 {
-  QSettings settings;
+  QgsSettings settings;
   return settings.value( QStringLiteral( "/qgis/digitizing/line_width" ), 1 ).toInt();
 }
 
 QColor QgsMapToolEdit::digitizingFillColor()
 {
-  QSettings settings;
+  QgsSettings settings;
   QColor fillColor(
     settings.value( QStringLiteral( "/qgis/digitizing/fill_color_red" ), 255 ).toInt(),
     settings.value( QStringLiteral( "/qgis/digitizing/fill_color_green" ), 0 ).toInt(),
@@ -67,7 +67,7 @@ QColor QgsMapToolEdit::digitizingFillColor()
 
 QgsRubberBand *QgsMapToolEdit::createRubberBand( QgsWkbTypes::GeometryType geometryType, bool alternativeBand )
 {
-  QSettings settings;
+  QgsSettings settings;
   QgsRubberBand *rb = new QgsRubberBand( mCanvas, geometryType );
   rb->setWidth( digitizingStrokeWidth() );
   QColor color = digitizingStrokeColor();
@@ -117,7 +117,7 @@ int QgsMapToolEdit::addTopologicalPoints( const QList<QgsPoint> &geom )
 
 QgsGeometryRubberBand *QgsMapToolEdit::createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType, bool alternativeBand ) const
 {
-  QSettings settings;
+  QgsSettings settings;
   QgsGeometryRubberBand *rb = new QgsGeometryRubberBand( mCanvas, geometryType );
   QColor color( settings.value( QStringLiteral( "/qgis/digitizing/line_color_red" ), 255 ).toInt(),
                 settings.value( QStringLiteral( "/qgis/digitizing/line_color_green" ), 0 ).toInt(),

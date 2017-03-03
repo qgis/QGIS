@@ -27,10 +27,10 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.PyQt.QtCore import Qt, QSettings
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QFont, QColor, QKeySequence
 from qgis.PyQt.QtWidgets import QShortcut
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsSettings
 
 from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs
 
@@ -111,7 +111,7 @@ class ScriptEdit(QsciScintilla):
     def setFonts(self, size):
 
         # Load font from Python console settings
-        settings = QSettings()
+        settings = QgsSettings()
         fontName = settings.value('pythonConsole/fontfamilytext', 'Monospace')
         fontSize = int(settings.value('pythonConsole/fontsize', size))
 
@@ -191,7 +191,7 @@ class ScriptEdit(QsciScintilla):
 
             self.api = QsciAPIs(self.lexer)
 
-            settings = QSettings()
+            settings = QgsSettings()
             useDefaultAPI = bool(settings.value('pythonConsole/preloadAPI',
                                                 True))
             if useDefaultAPI:

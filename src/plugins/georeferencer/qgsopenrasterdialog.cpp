@@ -16,8 +16,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QPushButton>
-#include <QSettings>
 
+#include "qgssettings.h"
 #include "qgsrasterlayer.h"
 #include "qgsproject.h"
 
@@ -57,7 +57,7 @@ void QgsOpenRasterDialog::changeEvent( QEvent *e )
 // --------------------------- private slots ------------------------------- //
 void QgsOpenRasterDialog::on_tbnSelectRaster_clicked()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString dir = settings.value( "/Plugin-GeoReferencer/rasterdirectory" ).toString();
   if ( dir.isEmpty() )
     dir = ".";
@@ -107,7 +107,7 @@ void QgsOpenRasterDialog::on_tbnSelectRaster_clicked()
 
 void QgsOpenRasterDialog::on_tbnSelectModifiedRaster_clicked()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString dir = settings.value( "/Plugin-GeoReferencer/rasterdirectory" ).toString();
   if ( dir.isEmpty() )
     dir = ".";

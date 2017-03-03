@@ -31,16 +31,13 @@ import json
 import os
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt, QSize, QByteArray, QSettings
-from qgis.PyQt.QtGui import QIcon, QCursor
-from qgis.PyQt.QtWidgets import (QMenu,
-                                 QAction,
-                                 QToolButton,
-                                 QMessageBox,
+from qgis.PyQt.QtCore import Qt, QSize, QByteArray
+from qgis.PyQt.QtGui import QCursor
+from qgis.PyQt.QtWidgets import (QMessageBox,
                                  QFileDialog,
                                  QApplication)
 
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsSettings
 from qgis.utils import iface
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
@@ -71,7 +68,7 @@ class ScriptEditorDialog(BASE, WIDGET):
                             Qt.WindowMaximizeButtonHint |
                             Qt.WindowCloseButtonHint)
 
-        settings = QSettings()
+        settings = QgsSettings()
         self.restoreState(settings.value("/Processing/stateScriptEditor", QByteArray()))
         self.restoreGeometry(settings.value("/Processing/geometryScriptEditor", QByteArray()))
 

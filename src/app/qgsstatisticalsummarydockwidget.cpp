@@ -18,9 +18,10 @@
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
+#include "qgssettings.h"
+
 #include <QTableWidget>
 #include <QAction>
-#include <QSettings>
 
 QList< QgsStatisticalSummary::Statistic > QgsStatisticalSummaryDockWidget::sDisplayStats =
   QList< QgsStatisticalSummary::Statistic > () << QgsStatisticalSummary::Count
@@ -91,7 +92,7 @@ QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *paren
   connect( mButtonRefresh, SIGNAL( clicked( bool ) ), this, SLOT( refreshStatistics() ) );
   connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( layersRemoved( QStringList ) ) );
 
-  QSettings settings;
+  QgsSettings settings;
   Q_FOREACH ( QgsStatisticalSummary::Statistic stat, sDisplayStats )
   {
     QAction *action = new QAction( QgsStatisticalSummary::displayName( stat ), mOptionsToolButton );
@@ -280,7 +281,7 @@ void QgsStatisticalSummaryDockWidget::statActionTriggered( bool checked )
   QAction *action = dynamic_cast<QAction *>( sender() );
   int stat = action->data().toInt();
 
-  QSettings settings;
+  QgsSettings settings;
   if ( stat >= 0 )
   {
     settings.setValue( QStringLiteral( "/StatisticalSummaryDock/checked_%1" ).arg( stat ), checked );

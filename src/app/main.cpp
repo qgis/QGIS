@@ -25,7 +25,6 @@
 #include <QFontDatabase>
 #include <QPixmap>
 #include <QLocale>
-#include <QSettings>
 #include <QSplashScreen>
 #include <QString>
 #include <QStringList>
@@ -122,7 +121,7 @@ void usage( const QString &appName )
       << QStringLiteral( "\t[--nocustomization]\tdon't apply GUI customization\n" )
       << QStringLiteral( "\t[--customizationfile path]\tuse the given ini file as GUI customization\n" )
       << QStringLiteral( "\t[--globalsettingsfile path]\tuse the given ini file as Global Settings (defaults)\n" )
-      << QStringLiteral( "\t[--optionspath path]\tuse the given QSettings path\n" )
+      << QStringLiteral( "\t[--optionspath path]\tuse the given QgsSettings path\n" )
       << QStringLiteral( "\t[--configpath path]\tuse the given path for all user configuration\n" )
       << QStringLiteral( "\t[--authdbdirectory path] use the given directory for authentication database\n" )
       << QStringLiteral( "\t[--code path]\trun the given python file on load\n" )
@@ -550,7 +549,7 @@ int main( int argc, char *argv[] )
   QString myTranslationCode;
 
   // The user can specify a path which will override the default path of custom
-  // user settings (~/.qgis) and it will be used for QSettings INI file
+  // user settings (~/.qgis) and it will be used for QgsSettings INI file
   QString configpath;
   QString optionpath;
   QString authdbdirectory;
@@ -796,7 +795,7 @@ int main( int argc, char *argv[] )
 
   if ( !optionpath.isEmpty() || !configpath.isEmpty() )
   {
-    // tell QSettings to use INI format and save the file in custom config path
+    // tell QgsSettings to use INI format and save the file in custom config path
     QSettings::setDefaultFormat( QSettings::IniFormat );
     QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, optionpath.isEmpty() ? configpath : optionpath );
   }
@@ -852,7 +851,7 @@ int main( int argc, char *argv[] )
   QSettings *customizationsettings = nullptr;
   if ( !optionpath.isEmpty() || !configpath.isEmpty() )
   {
-    // tell QSettings to use INI format and save the file in custom config path
+    // tell QgsSettings to use INI format and save the file in custom config path
     QSettings::setDefaultFormat( QSettings::IniFormat );
     QString path = optionpath.isEmpty() ? configpath : optionpath;
     QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, path );
@@ -870,7 +869,7 @@ int main( int argc, char *argv[] )
     QgsCustomization::instance()->setEnabled( true );
   }
 
-  // Load and set possible default customization, must be done afterQgsApplication init and QSettings ( QCoreApplication ) init
+  // Load and set possible default customization, must be done afterQgsApplication init and QgsSettings ( QCoreApplication ) init
   QgsCustomization::instance()->setSettings( customizationsettings );
   QgsCustomization::instance()->loadDefault();
 

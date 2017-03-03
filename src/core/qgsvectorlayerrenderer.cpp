@@ -35,8 +35,8 @@
 #include "qgsfeaturefilterprovider.h"
 #include "qgscsexception.h"
 #include "qgslogger.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QPicture>
 
 // TODO:
@@ -70,7 +70,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   mSimplifyMethod = layer->simplifyMethod();
   mSimplifyGeometry = layer->simplifyDrawingCanbeApplied( mContext, QgsVectorSimplifyMethod::GeometrySimplification );
 
-  QSettings settings;
+  QgsSettings settings;
   mVertexMarkerOnlyForSelection = settings.value( QStringLiteral( "/qgis/digitizing/marker_only_for_selected" ), true ).toBool();
 
   QString markerTypeString = settings.value( QStringLiteral( "/qgis/digitizing/marker_style" ), "Cross" ).toString();

@@ -58,7 +58,7 @@ class TestQgsSettings(unittest.TestCase):
         self.globalsettings.sync()
 
     def addArrayToDefaults(self, prefix, key, values):
-        defaults = QSettings(self.settings.globalSettingsPath(), QSettings.IniFormat)
+        defaults = QSettings(self.settings.globalSettingsPath(), QSettings.IniFormat)  # NOQA
         self.globalsettings.beginWriteArray(prefix)
         i = 0
         for v in values:
@@ -157,20 +157,20 @@ class TestQgsSettings(unittest.TestCase):
     def test_section_getters_setters(self):
         self.assertEqual(self.settings.allKeys(), [])
 
-        self.settings.setValue('key1', 'core1', QgsSettings.Core)
-        self.settings.setValue('key2', 'core2', QgsSettings.Core)
+        self.settings.setValue('key1', 'core1', section=QgsSettings.Core)
+        self.settings.setValue('key2', 'core2', section=QgsSettings.Core)
 
-        self.settings.setValue('key1', 'server1', QgsSettings.Server)
-        self.settings.setValue('key2', 'server2', QgsSettings.Server)
+        self.settings.setValue('key1', 'server1', section=QgsSettings.Server)
+        self.settings.setValue('key2', 'server2', section=QgsSettings.Server)
 
-        self.settings.setValue('key1', 'gui1', QgsSettings.Gui)
+        self.settings.setValue('key1', 'gui1', section=QgsSettings.Gui)
         self.settings.setValue('key2', 'gui2', QgsSettings.Gui)
 
-        self.settings.setValue('key1', 'plugins1', QgsSettings.Plugins)
-        self.settings.setValue('key2', 'plugins2', QgsSettings.Plugins)
+        self.settings.setValue('key1', 'plugins1', section=QgsSettings.Plugins)
+        self.settings.setValue('key2', 'plugins2', section=QgsSettings.Plugins)
 
-        self.settings.setValue('key1', 'misc1', QgsSettings.Misc)
-        self.settings.setValue('key2', 'misc2', QgsSettings.Misc)
+        self.settings.setValue('key1', 'misc1', section=QgsSettings.Misc)
+        self.settings.setValue('key2', 'misc2', section=QgsSettings.Misc)
 
         # Test that the values are namespaced
         self.assertEqual(self.settings.value('core/key1'), 'core1')
@@ -189,23 +189,23 @@ class TestQgsSettings(unittest.TestCase):
         self.assertEqual(self.settings.value('misc/key2'), 'misc2')
 
         # Test getters
-        self.assertEqual(self.settings.value('key1', None, QgsSettings.Core), 'core1')
-        self.assertEqual(self.settings.value('key2', None, QgsSettings.Core), 'core2')
+        self.assertEqual(self.settings.value('key1', None, section=QgsSettings.Core), 'core1')
+        self.assertEqual(self.settings.value('key2', None, section=QgsSettings.Core), 'core2')
 
-        self.assertEqual(self.settings.value('key1', None, QgsSettings.Server), 'server1')
-        self.assertEqual(self.settings.value('key2', None, QgsSettings.Server), 'server2')
+        self.assertEqual(self.settings.value('key1', None, section=QgsSettings.Server), 'server1')
+        self.assertEqual(self.settings.value('key2', None, section=QgsSettings.Server), 'server2')
 
-        self.assertEqual(self.settings.value('key1', None, QgsSettings.Gui), 'gui1')
-        self.assertEqual(self.settings.value('key2', None, QgsSettings.Gui), 'gui2')
+        self.assertEqual(self.settings.value('key1', None, section=QgsSettings.Gui), 'gui1')
+        self.assertEqual(self.settings.value('key2', None, section=QgsSettings.Gui), 'gui2')
 
-        self.assertEqual(self.settings.value('key1', None, QgsSettings.Plugins), 'plugins1')
-        self.assertEqual(self.settings.value('key2', None, QgsSettings.Plugins), 'plugins2')
+        self.assertEqual(self.settings.value('key1', None, section=QgsSettings.Plugins), 'plugins1')
+        self.assertEqual(self.settings.value('key2', None, section=QgsSettings.Plugins), 'plugins2')
 
-        self.assertEqual(self.settings.value('key1', None, QgsSettings.Misc), 'misc1')
-        self.assertEqual(self.settings.value('key2', None, QgsSettings.Misc), 'misc2')
+        self.assertEqual(self.settings.value('key1', None, section=QgsSettings.Misc), 'misc1')
+        self.assertEqual(self.settings.value('key2', None, section=QgsSettings.Misc), 'misc2')
 
         # Test default values on Section getter
-        self.assertEqual(self.settings.value('key_not_exist', 'misc_not_exist', QgsSettings.Misc), 'misc_not_exist')
+        self.assertEqual(self.settings.value('key_not_exist', 'misc_not_exist', section=QgsSettings.Misc), 'misc_not_exist')
 
     def test_contains(self):
         self.assertEqual(self.settings.allKeys(), [])

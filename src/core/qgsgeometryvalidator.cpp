@@ -17,8 +17,7 @@ email                : jef at norbit dot de
 #include "qgsgeometryvalidator.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
-
-#include <QSettings>
+#include "qgssettings.h"
 
 QgsGeometryValidator::QgsGeometryValidator( const QgsGeometry *g, QList<QgsGeometry::Error> *errors )
   : QThread()
@@ -216,7 +215,7 @@ void QgsGeometryValidator::validatePolygon( int idx, const QgsPolygon &polygon )
 void QgsGeometryValidator::run()
 {
   mErrorCount = 0;
-  QSettings settings;
+  QgsSettings settings;
   if ( settings.value( QStringLiteral( "/qgis/digitizing/validate_geometries" ), 1 ).toInt() == 2 )
   {
     char *r = nullptr;

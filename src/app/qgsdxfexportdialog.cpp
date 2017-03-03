@@ -30,10 +30,10 @@
 #include "qgsmapcanvas.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgscrscache.h"
+#include "qgssettings.h"
 
 #include <QFileDialog>
 #include <QPushButton>
-#include <QSettings>
 
 FieldSelectorDelegate::FieldSelectorDelegate( QObject *parent )
   : QItemDelegate( parent )
@@ -443,7 +443,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   mFileLineEdit->setFocus();
 
   //last dxf symbology mode
-  QSettings s;
+  QgsSettings s;
   mSymbologyModeComboBox->setCurrentIndex( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfSymbologyMode" ), s.value( QStringLiteral( "qgis/lastDxfSymbologyMode" ), "2" ).toString() ).toInt() );
 
   //last symbol scale
@@ -478,7 +478,7 @@ QgsDxfExportDialog::~QgsDxfExportDialog()
 {
   delete mLayerTreeGroup;
 
-  QSettings().setValue( QStringLiteral( "/Windows/DxfExport/geometry" ), saveGeometry() );
+  QgsSettings().setValue( QStringLiteral( "/Windows/DxfExport/geometry" ), saveGeometry() );
 }
 
 void QgsDxfExportDialog::on_mVisibilityPresets_currentIndexChanged( int index )
@@ -566,7 +566,7 @@ QgsDxfExport::SymbologyExport QgsDxfExportDialog::symbologyMode() const
 void QgsDxfExportDialog::on_mFileSelectionButton_clicked()
 {
   //get last dxf save directory
-  QSettings s;
+  QgsSettings s;
   QString lastSavePath = s.value( QStringLiteral( "qgis/lastDxfDir" ), QDir::homePath() ).toString();
 
   QString filePath = QFileDialog::getSaveFileName( nullptr, tr( "Export as DXF" ), lastSavePath, tr( "DXF files *.dxf *.DXF" ) );
@@ -604,7 +604,7 @@ bool QgsDxfExportDialog::layerTitleAsName() const
 
 void QgsDxfExportDialog::saveSettings()
 {
-  QSettings s;
+  QgsSettings s;
   QFileInfo dxfFileInfo( mFileLineEdit->text() );
   s.setValue( QStringLiteral( "qgis/lastDxfDir" ), dxfFileInfo.absolutePath() );
   s.setValue( QStringLiteral( "qgis/lastDxfSymbologyMode" ), mSymbologyModeComboBox->currentIndex() );

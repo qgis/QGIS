@@ -22,11 +22,12 @@ email                : brush.tyler@gmail.com
 from builtins import str
 from builtins import range
 
-from qgis.PyQt.QtCore import Qt, QObject, QSettings, pyqtSignal
+from qgis.PyQt.QtCore import Qt, QObject, pyqtSignal
 from qgis.PyQt.QtWidgets import QApplication, QAction, QMenu, QInputDialog, QMessageBox
 from qgis.PyQt.QtGui import QKeySequence, QIcon
 
 from qgis.gui import QgsMessageBar
+from qgis.core import QgsSettings
 from ..db_plugins import createDbPlugin
 
 
@@ -119,7 +120,7 @@ class DBPlugin(QObject):
         return self.connect(self.parent())
 
     def remove(self):
-        settings = QSettings()
+        settings = QgsSettings()
         settings.beginGroup(u"/%s/%s" % (self.connectionSettingsKey(), self.connectionName()))
         settings.remove("")
         self.deleted.emit()
@@ -157,7 +158,7 @@ class DBPlugin(QObject):
     def connections(self):
         # get the list of connections
         conn_list = []
-        settings = QSettings()
+        settings = QgsSettings()
         settings.beginGroup(self.connectionSettingsKey())
         for name in settings.childGroups():
             conn_list.append(createDbPlugin(self.typeName(), name))

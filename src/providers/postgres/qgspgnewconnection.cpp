@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QSettings>
 #include <QMessageBox>
 #include <QInputDialog>
 
@@ -24,6 +23,7 @@
 #include "qgscontexthelp.h"
 #include "qgsdatasourceuri.h"
 #include "qgspostgresconn.h"
+#include "qgssettings.h"
 
 QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -46,7 +46,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
   {
     // populate the dialog with the information stored for the connection
     // populate the fields with the stored setting parameters
-    QSettings settings;
+    QgsSettings settings;
 
     QString key = "/PostgreSQL/connections/" + connName;
     txtService->setText( settings.value( key + "/service" ).toString() );
@@ -107,7 +107,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
 //! Autoconnected SLOTS *
 void QgsPgNewConnection::accept()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString baseKey = QStringLiteral( "/PostgreSQL/connections/" );
   settings.setValue( baseKey + "selected", txtName->text() );
   bool hasAuthConfigID = !mAuthConfigSelect->configId().isEmpty();

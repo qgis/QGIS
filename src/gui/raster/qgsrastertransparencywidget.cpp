@@ -15,14 +15,13 @@
 #include <QWidget>
 #include <QDoubleValidator>
 #include <QIntValidator>
-#include <QSettings>
 #include <QFile>
 #include <QTextStream>
 #include <QMessageBox>
 #include <QFileDialog>
 
+#include "qgssettings.h"
 #include "qgsrastertransparencywidget.h"
-
 #include "qgsrasterlayer.h"
 #include "qgsraster.h"
 #include "qgsrasterlayerrenderer.h"
@@ -232,7 +231,7 @@ void QgsRasterTransparencyWidget::on_pbnDefaultValues_clicked()
 
 void QgsRasterTransparencyWidget::on_pbnExportTransparentPixelValues_clicked()
 {
-  QSettings myQSettings;
+  QgsSettings myQSettings;
   QString myLastDir = myQSettings.value( QStringLiteral( "lastRasterFileFilterDir" ), QDir::homePath() ).toString();
   QString myFileName = QFileDialog::getSaveFileName( this, tr( "Save file" ), myLastDir, tr( "Textfile" ) + " (*.txt)" );
   if ( !myFileName.isEmpty() )
@@ -282,7 +281,7 @@ void QgsRasterTransparencyWidget::on_pbnImportTransparentPixelValues_clicked()
   int myLineCounter = 0;
   bool myImportError = false;
   QString myBadLines;
-  QSettings myQSettings;
+  QgsSettings myQSettings;
   QString myLastDir = myQSettings.value( QStringLiteral( "lastRasterFileFilterDir" ), QDir::homePath() ).toString();
   QString myFileName = QFileDialog::getOpenFileName( this, tr( "Open file" ), myLastDir, tr( "Textfile" ) + " (*.txt)" );
   QFile myInputFile( myFileName );

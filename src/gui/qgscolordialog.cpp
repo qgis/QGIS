@@ -20,7 +20,8 @@
 #include "qgssymbollayerutils.h"
 #include "qgscursors.h"
 #include "qgsapplication.h"
-#include <QSettings>
+#include "qgssettings.h"
+
 #include <QPushButton>
 #include <QMenu>
 #include <QToolButton>
@@ -37,7 +38,7 @@ QgsColorDialog::QgsColorDialog( QWidget *parent, Qt::WindowFlags fl, const QColo
 {
   setupUi( this );
 
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/ColorDialog/geometry" ) ).toByteArray() );
 
   if ( mPreviousColor.isValid() )
@@ -78,7 +79,7 @@ QColor QgsColorDialog::getLiveColor( const QColor &initialColor, QObject *update
 {
   QColor returnColor( initialColor );
 
-  QSettings settings;
+  QgsSettings settings;
 
   //using native color dialogs?
   bool useNative = settings.value( QStringLiteral( "/qgis/native_color_dialogs" ), false ).toBool();
@@ -123,7 +124,7 @@ QColor QgsColorDialog::getColor( const QColor &initialColor, QWidget *parent, co
 {
   QString dialogTitle = title.isEmpty() ? tr( "Select Color" ) : title;
 
-  QSettings settings;
+  QgsSettings settings;
   //using native color dialogs?
   bool useNative = settings.value( QStringLiteral( "/qgis/native_color_dialogs" ), false ).toBool();
   if ( useNative )
@@ -177,7 +178,7 @@ void QgsColorDialog::discardColor()
 
 void QgsColorDialog::saveSettings()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/ColorDialog/geometry" ), saveGeometry() );
 }
 

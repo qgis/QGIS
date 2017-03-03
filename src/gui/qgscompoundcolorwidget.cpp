@@ -19,7 +19,8 @@
 #include "qgssymbollayerutils.h"
 #include "qgscursors.h"
 #include "qgsapplication.h"
-#include <QSettings>
+#include "qgssettings.h"
+
 #include <QPushButton>
 #include <QMenu>
 #include <QToolButton>
@@ -53,7 +54,7 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
     setLayout( newLayout );
   }
 
-  QSettings settings;
+  QgsSettings settings;
 
   mSchemeList->header()->hide();
   mSchemeList->setColumnWidth( 0, 44 );
@@ -281,7 +282,7 @@ void QgsCompoundColorWidget::refreshSchemeComboBox()
 
 void QgsCompoundColorWidget::importPalette()
 {
-  QSettings s;
+  QgsSettings s;
   QString lastDir = s.value( QStringLiteral( "/UI/lastGplPaletteDir" ), QDir::homePath() ).toString();
   QString filePath = QFileDialog::getOpenFileName( this, tr( "Select palette file" ), lastDir, QStringLiteral( "GPL (*.gpl);;All files (*.*)" ) );
   activateWindow();
@@ -551,7 +552,7 @@ void QgsCompoundColorWidget::saveSettings()
     mSchemeList->saveColorsToScheme();
   }
 
-  QSettings settings;
+  QgsSettings settings;
 
   //record active component
   int activeRadio = 0;

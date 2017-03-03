@@ -20,8 +20,8 @@
 
 #include <QMenu>
 #include <QMessageBox>
-#include <QSettings>
 
+#include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsauthcertificateinfo.h"
 #include "qgsauthmanager.h"
@@ -416,6 +416,6 @@ QgsMessageBar *QgsAuthServersEditor::messageBar()
 
 int QgsAuthServersEditor::messageTimeout()
 {
-  QSettings settings;
+  QgsSettings settings;
   return settings.value( QStringLiteral( "/qgis/messageTimeout" ), 5 ).toInt();
 }

@@ -26,8 +26,7 @@
 #include "qgssymbolselectordialog.h"
 #include "qgisapp.h"
 #include "qgisgui.h"
-
-#include <QSettings>
+#include "qgssettings.h"
 
 QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidget *parent )
   : QDialog( parent )
@@ -37,7 +36,7 @@ QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidg
 {
   setupUi( this );
 
-  QSettings settings;
+  QgsSettings settings;
   //  restoreGeometry( settings.value( "/Windows/DecorationGrid/geometry" ).toByteArray() );
 
   grpEnable->setChecked( mDeco.enabled() );
@@ -168,7 +167,7 @@ void QgsDecorationGridDialog::updateDecoFromGui()
 
 QgsDecorationGridDialog::~QgsDecorationGridDialog()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/DecorationGrid/geometry" ), saveGeometry() );
   if ( mLineSymbol )
     delete mLineSymbol;

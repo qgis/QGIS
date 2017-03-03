@@ -30,18 +30,15 @@ __revision__ = '$Format:%H$'
 import os
 import re
 
-from qgis.PyQt.QtCore import QSettings
-from qgis.core import (Qgis,
-                       QgsProject,
-                       QgsVectorFileWriter,
+from qgis.core import (QgsVectorFileWriter,
                        QgsMapLayer,
                        QgsRasterLayer,
                        QgsWkbTypes,
                        QgsVectorLayer,
                        QgsProject,
-                       QgsCoordinateReferenceSystem)
+                       QgsCoordinateReferenceSystem,
+                       QgsSettings)
 from qgis.gui import QgsSublayersDialog
-from qgis.utils import iface
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -188,7 +185,7 @@ def load(fileName, name=None, crs=None, style=None):
     if fileName is None:
         return
     prjSetting = None
-    settings = QSettings()
+    settings = QgsSettings()
     if crs is not None:
         prjSetting = settings.value('/Projections/defaultBehavior')
         settings.setValue('/Projections/defaultBehavior', '')
@@ -272,7 +269,7 @@ def getObjectFromUri(uri, forceLoad=True):
         if normalizeLayerSource(table.source()) == normalizeLayerSource(uri):
             return table
     if forceLoad and os.path.exists(uri):
-        settings = QSettings()
+        settings = QgsSettings()
         prjSetting = settings.value('/Projections/defaultBehavior')
         settings.setValue('/Projections/defaultBehavior', '')
 
@@ -312,7 +309,7 @@ def exportVectorLayer(layer, supported=None):
     """
 
     supported = supported or ["shp"]
-    settings = QSettings()
+    settings = QgsSettings()
     systemEncoding = settings.value('/UI/encoding', 'System')
 
     output = getTempFilename('shp')
@@ -379,7 +376,7 @@ def exportTable(table):
     file if the original one contains non-ascii characters.
     """
 
-    settings = QSettings()
+    settings = QgsSettings()
     systemEncoding = settings.value('/UI/encoding', 'System')
     output = getTempFilename()
     isASCII = True

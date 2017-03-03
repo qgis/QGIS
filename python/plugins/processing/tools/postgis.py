@@ -33,9 +33,9 @@ __revision__ = '$Format:%H$'
 import psycopg2
 import psycopg2.extensions  # For isolation levels
 import re
+import os
 
-from qgis.PyQt.QtCore import QSettings
-from qgis.core import QgsDataSourceUri, QgsCredentials
+from qgis.core import QgsDataSourceUri, QgsCredentials, QgsSettings
 
 
 # Use unicode!
@@ -43,7 +43,7 @@ psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
 
 
 def uri_from_name(conn_name):
-    settings = QSettings()
+    settings = QgsSettings()
     settings.beginGroup(u"/PostgreSQL/connections/%s" % conn_name)
 
     if not settings.contains("database"):  # non-existent entry?

@@ -14,13 +14,13 @@
  ***************************************************************************/
 #include "qgisgui.h"
 
-#include <QSettings>
-#include <QImageWriter>
+#include "qgssettings.h"
 #include "qgsencodingfiledialog.h"
 #include "qgslogger.h"
-
-#include <QFontDialog>
 #include "qgis_gui.h"
+
+#include <QImageWriter>
+#include <QFontDialog>
 
 
 namespace QgisGui
@@ -32,7 +32,7 @@ namespace QgisGui
   {
     Q_UNUSED( enc );
 
-    QSettings settings;
+    QgsSettings settings;
     QString lastUsedFilter = settings.value( "/UI/" + filterName, "" ).toString();
     QString lastUsedDir = settings.value( "/UI/" + filterName + "Dir", QDir::homePath() ).toString();
 
@@ -105,7 +105,7 @@ namespace QgisGui
     }
 #endif
 
-    QSettings settings;  // where we keep last used filter in persistent state
+    QgsSettings settings;  // where we keep last used filter in persistent state
     QString lastUsedDir = settings.value( QStringLiteral( "/UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
 
     // Prefer "png" format unless the user previously chose a different format

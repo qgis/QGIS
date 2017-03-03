@@ -29,11 +29,10 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsslconnect.h"
-
 #include "qgslogger.h"
+#include "qgssettings.h"
 
 #include <QPushButton>
-#include <QSettings>
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QFileDialog>
@@ -46,7 +45,7 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
 {
   setupUi( this );
 
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/NewSpatiaLiteLayer/geometry" ) ).toByteArray() );
 
   mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewAttribute.svg" ) ) );
@@ -93,7 +92,7 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
 
 QgsNewSpatialiteLayerDialog::~QgsNewSpatialiteLayerDialog()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/NewSpatiaLiteLayer/geometry" ), saveGeometry() );
 }
 
@@ -312,7 +311,7 @@ bool QgsNewSpatialiteLayerDialog::createDb()
 
   QString key = "/SpatiaLite/connections/" + fi.fileName() + "/sqlitepath";
 
-  QSettings settings;
+  QgsSettings settings;
   if ( !settings.contains( key ) )
   {
     settings.setValue( QStringLiteral( "/SpatiaLite/connections/selected" ), fi.fileName() + tr( "@" ) + fi.canonicalFilePath() );

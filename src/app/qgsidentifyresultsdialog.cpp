@@ -45,13 +45,13 @@
 #include "qgsfiledownloader.h"
 #include "qgsfieldformatterregistry.h"
 #include "qgsfieldformatter.h"
+#include "qgssettings.h"
 
 #include <QCloseEvent>
 #include <QLabel>
 #include <QAction>
 #include <QTreeWidgetItem>
 #include <QPixmap>
-#include <QSettings>
 #include <QMenu>
 #include <QClipboard>
 #include <QMenuBar>
@@ -113,7 +113,7 @@ void QgsIdentifyResultsWebView::handleDownload( QUrl url )
   else
   {
     const QString DOWNLOADER_LAST_DIR_KEY( "Qgis/fileDownloaderLastDir" );
-    QSettings settings;
+    QgsSettings settings;
     // Try to get some information from the URL
     QFileInfo info( url.toString( ) );
     QString savePath = settings.value( DOWNLOADER_LAST_DIR_KEY ).toString( );
@@ -319,7 +319,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
 
   mOpenFormAction->setDisabled( true );
 
-  QSettings mySettings;
+  QgsSettings mySettings;
   mDock = new QgsDockWidget( tr( "Identify Results" ), QgisApp::instance() );
   mDock->setObjectName( QStringLiteral( "IdentifyResultsDock" ) );
   mDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
@@ -408,7 +408,7 @@ QgsIdentifyResultsDialog::~QgsIdentifyResultsDialog()
 {
   clearHighlights();
 
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/Identify/columnWidth" ), lstResults->columnWidth( 0 ) );
 
   if ( mActionPopup )
@@ -946,7 +946,7 @@ void QgsIdentifyResultsDialog::show()
     {
       lstResults->setCurrentItem( featItem );
 
-      if ( QSettings().value( QStringLiteral( "/Map/identifyAutoFeatureForm" ), false ).toBool() )
+      if ( QgsSettings().value( QStringLiteral( "/Map/identifyAutoFeatureForm" ), false ).toBool() )
       {
         QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( layItem->data( 0, Qt::UserRole ).value<QObject *>() );
         if ( layer )
@@ -1138,7 +1138,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
 // Save the current window location (store in ~/.qt/qgisrc)
 void QgsIdentifyResultsDialog::saveWindowLocation()
 {
-  QSettings settings;
+  QgsSettings settings;
   // first column width
   settings.setValue( QStringLiteral( "/Windows/Identify/columnWidth" ), lstResults->columnWidth( 0 ) );
   settings.setValue( QStringLiteral( "/Windows/Identify/columnWidthTable" ), tblResults->columnWidth( 0 ) );
@@ -1620,7 +1620,7 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
     highlight->setWidth( 2 );
   }
 
-  QSettings settings;
+  QgsSettings settings;
   QColor color = QColor( settings.value( QStringLiteral( "/Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
   int alpha = settings.value( QStringLiteral( "/Map/highlight/colorAlpha" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
   double buffer = settings.value( QStringLiteral( "/Map/highlight/buffer" ), Qgis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
@@ -1856,7 +1856,7 @@ void QgsIdentifyResultsDialog::printCurrentItem()
 
 void QgsIdentifyResultsDialog::on_cmbIdentifyMode_currentIndexChanged( int index )
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Map/identifyMode" ), cmbIdentifyMode->itemData( index ).toInt() );
 }
 
@@ -1867,13 +1867,13 @@ void QgsIdentifyResultsDialog::on_cmbViewMode_currentIndexChanged( int index )
 
 void QgsIdentifyResultsDialog::on_cbxAutoFeatureForm_toggled( bool checked )
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Map/identifyAutoFeatureForm" ), checked );
 }
 
 void QgsIdentifyResultsDialog::on_mExpandNewAction_triggered( bool checked )
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Map/identifyExpand" ), checked );
 }
 

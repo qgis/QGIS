@@ -25,12 +25,12 @@
 #include <QPrinter>
 #include <QProgressDialog>
 #include <QPushButton>
-#include <QSettings>
 #include <QTextStream>
 #include <QPen>
 #include <QStringList>
 #include <QList>
 
+#include "qgssettings.h"
 #include "qgisinterface.h"
 #include "qgsapplication.h"
 
@@ -88,7 +88,7 @@ QgsGeorefPluginGui::QgsGeorefPluginGui( QgisInterface *qgisInterface, QWidget *p
 {
   setupUi( this );
 
-  QSettings s;
+  QgsSettings s;
   restoreGeometry( s.value( QStringLiteral( "/Plugin-GeoReferencer/Window/geometry" ) ).toByteArray() );
 
   QWidget *centralWidget = this->centralWidget();
@@ -148,7 +148,7 @@ void QgsGeorefPluginGui::dockThisWindow( bool dock )
 
 QgsGeorefPluginGui::~QgsGeorefPluginGui()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Plugin-GeoReferencer/Window/geometry" ), saveGeometry() );
 
   clearGCPData();
@@ -239,7 +239,7 @@ void QgsGeorefPluginGui::openRaster()
       return;
   }
 
-  QSettings s;
+  QgsSettings s;
   QString dir = s.value( QStringLiteral( "/Plugin-GeoReferencer/rasterdirectory" ) ).toString();
   if ( dir.isEmpty() )
     dir = '.';
@@ -654,7 +654,7 @@ void QgsGeorefPluginGui::showGeorefConfigDialog()
   {
     mCanvas->refresh();
     mIface->mapCanvas()->refresh();
-    QSettings s;
+    QgsSettings s;
     //update dock state
     bool dock = s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowDocked" ) ).toBool();
     if ( dock && !mDock )
@@ -992,7 +992,7 @@ void QgsGeorefPluginGui::createMapCanvas()
   connect( mToolMovePointQgis, SIGNAL( pointReleased( const QPoint & ) ),
            this, SLOT( releasePoint( const QPoint & ) ) );
 
-  QSettings s;
+  QgsSettings s;
   double zoomFactor = s.value( QStringLiteral( "/qgis/zoom_factor" ), 2 ).toDouble();
   mCanvas->setWheelFactor( zoomFactor );
 
@@ -1024,7 +1024,7 @@ void QgsGeorefPluginGui::createMenus()
   mToolbarMenu->addAction( toolBarEdit->toggleViewAction() );
   mToolbarMenu->addAction( toolBarView->toggleViewAction() );
 
-  QSettings s;
+  QgsSettings s;
   int size = s.value( QStringLiteral( "/IconSize" ), 32 ).toInt();
   toolBarFile->setIconSize( QSize( size, size ) );
   toolBarEdit->setIconSize( QSize( size, size ) );
@@ -1192,7 +1192,7 @@ void QgsGeorefPluginGui::addRaster( const QString &file )
 // Settings
 void QgsGeorefPluginGui::readSettings()
 {
-  QSettings s;
+  QgsSettings s;
   QRect georefRect = QApplication::desktop()->screenGeometry( mIface->mainWindow() );
   resize( s.value( QStringLiteral( "/Plugin-GeoReferencer/size" ), QSize( georefRect.width() / 2 + georefRect.width() / 5,
                    mIface->mainWindow()->height() ) ).toSize() );
@@ -1208,7 +1208,7 @@ void QgsGeorefPluginGui::readSettings()
 
 void QgsGeorefPluginGui::writeSettings()
 {
-  QSettings s;
+  QgsSettings s;
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/pos" ), pos() );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/size" ), size() );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/uistate" ), saveState() );
@@ -1517,7 +1517,7 @@ bool QgsGeorefPluginGui::writePDFMapFile( const QString &fileName, const QgsGeor
   printer.setOutputFormat( QPrinter::PdfFormat );
   printer.setOutputFileName( fileName );
 
-  QSettings s;
+  QgsSettings s;
   double paperWidth = s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/WidthPDFMap" ), "297" ).toDouble();
   double paperHeight = s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/HeightPDFMap" ), "420" ).toDouble();
 
@@ -1603,7 +1603,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString &fileName, const QgsG
   QFont tableContentFont;
   tableContentFont.setPointSize( 9 );
 
-  QSettings s;
+  QgsSettings s;
   double leftMargin = s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/LeftMarginPDF" ), "2.0" ).toDouble();
   double rightMargin = s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/RightMarginPDF" ), "2.0" ).toDouble();
   double contentWidth = 210 - ( leftMargin + rightMargin );
@@ -2109,7 +2109,7 @@ QIcon QgsGeorefPluginGui::getThemeIcon( const QString &name )
   }
   else
   {
-    QSettings settings;
+    QgsSettings settings;
     QString themePath = ":/icons/" + settings.value( QStringLiteral( "/Themes" ) ).toString() + name;
     if ( QFile::exists( themePath ) )
     {
@@ -2197,6 +2197,6 @@ void QgsGeorefPluginGui::clearGCPData()
 
 int QgsGeorefPluginGui::messageTimeout()
 {
-  QSettings settings;
+  QgsSettings settings;
   return settings.value( QStringLiteral( "/qgis/messageTimeout" ), 5 ).toInt();
 }

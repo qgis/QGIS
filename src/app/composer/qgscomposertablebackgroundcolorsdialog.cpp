@@ -18,7 +18,8 @@
 #include "qgscomposertablebackgroundcolorsdialog.h"
 #include "qgscomposertablev2.h"
 #include "qgscomposition.h"
-#include <QSettings>
+#include "qgssettings.h"
+
 #include <QCheckBox>
 #include <QPushButton>
 
@@ -50,7 +51,7 @@ QgsComposerTableBackgroundColorsDialog::QgsComposerTableBackgroundColorsDialog( 
 
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
 
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/ComposerTableBackgroundColorsDialog/geometry" ) ).toByteArray() );
 
   setGuiElementValues();
@@ -58,7 +59,7 @@ QgsComposerTableBackgroundColorsDialog::QgsComposerTableBackgroundColorsDialog( 
 
 QgsComposerTableBackgroundColorsDialog::~QgsComposerTableBackgroundColorsDialog()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/ComposerTableBackgroundColorsDialog/geometry" ), saveGeometry() );
 }
 

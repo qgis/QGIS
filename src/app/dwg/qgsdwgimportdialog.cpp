@@ -17,11 +17,11 @@
 
 #include "qgsdwgimportdialog.h"
 
-#include <QSettings>
 #include <QDialogButtonBox>
 #include <QFileInfo>
 #include <QFileDialog>
 
+#include "qgssettings.h"
 #include "qgisapp.h"
 #include "qgsdwgimporter.h"
 #include "qgsvectorlayer.h"
@@ -63,7 +63,7 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
 {
   setupUi( this );
 
-  QSettings s;
+  QgsSettings s;
   leDatabase->setText( s.value( "/DwgImport/lastDatabase", "" ).toString() );
   cbExpandInserts->setChecked( s.value( "/DwgImport/lastExpandInserts", true ).toBool() );
   cbMergeLayers->setChecked( s.value( "/DwgImport/lastMergeLayers", false ).toBool() );
@@ -89,7 +89,7 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
 
 QgsDwgImportDialog::~QgsDwgImportDialog()
 {
-  QSettings s;
+  QgsSettings s;
   s.setValue( "/DwgImport/lastDatabase", leDatabase->text() );
   s.setValue( "/DwgImport/lastExpandInserts", cbExpandInserts->isChecked() );
   s.setValue( "/DwgImport/lastMergeLayers", cbMergeLayers->isChecked() );

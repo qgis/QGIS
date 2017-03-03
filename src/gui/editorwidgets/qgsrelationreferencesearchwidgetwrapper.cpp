@@ -21,8 +21,8 @@
 #include "qgsproject.h"
 #include "qgsrelationreferencewidget.h"
 #include "qgsrelationmanager.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QStringListModel>
 
 QgsRelationReferenceSearchWidgetWrapper::QgsRelationReferenceSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QgsMapCanvas *canvas, QWidget *parent )
@@ -136,7 +136,7 @@ void QgsRelationReferenceSearchWidgetWrapper::onValueChanged( const QVariant &va
   }
   else
   {
-    QSettings settings;
+    QgsSettings settings;
     setExpression( value.isNull() ? QgsApplication::nullRepresentation() : value.toString() );
     emit valueChanged();
   }
@@ -145,7 +145,7 @@ void QgsRelationReferenceSearchWidgetWrapper::onValueChanged( const QVariant &va
 
 void QgsRelationReferenceSearchWidgetWrapper::setExpression( QString exp )
 {
-  QSettings settings;
+  QgsSettings settings;
   QString nullValue = QgsApplication::nullRepresentation();
   QString fieldName = layer()->fields().at( mFieldIdx ).name();
 

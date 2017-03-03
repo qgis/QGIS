@@ -15,11 +15,11 @@
 
 
 #include <stdlib.h>
-
-#include "qgssettings.h"
 #include <QFileInfo>
 #include <QSettings>
 #include <QDir>
+
+#include "qgssettings.h"
 
 QString QgsSettings::sGlobalSettingsPath = QString();
 
@@ -46,33 +46,33 @@ void QgsSettings::init()
 QgsSettings::QgsSettings( const QString &organization, const QString &application, QObject *parent )
 {
   mUserSettings = new QSettings( organization, application, parent );
-  init( );
+  init();
 }
 
 QgsSettings::QgsSettings( QSettings::Scope scope, const QString &organization,
                           const QString &application, QObject *parent )
 {
   mUserSettings = new QSettings( scope, organization, application, parent );
-  init( );
+  init();
 }
 
 QgsSettings::QgsSettings( QSettings::Format format, QSettings::Scope scope,
                           const QString &organization, const QString &application, QObject *parent )
 {
   mUserSettings = new QSettings( format, scope, organization, application, parent );
-  init( );
+  init();
 }
 
 QgsSettings::QgsSettings( const QString &fileName, QSettings::Format format, QObject *parent )
 {
   mUserSettings = new QSettings( fileName, format, parent );
-  init( );
+  init();
 }
 
 QgsSettings::QgsSettings( QObject *parent )
 {
   mUserSettings = new QSettings( parent );
-  init( );
+  init();
 }
 
 QgsSettings::~QgsSettings()
@@ -153,7 +153,7 @@ QStringList QgsSettings::childGroups() const
 QVariant QgsSettings::value( const QString &key, const QVariant &defaultValue, const QgsSettings::Section section ) const
 {
   QString pKey = prefixedKey( key, section );
-  if ( ! mUserSettings->value( pKey ).isNull() )
+  if ( !mUserSettings->value( pKey ).isNull() )
   {
     return mUserSettings->value( pKey );
   }
@@ -164,10 +164,11 @@ QVariant QgsSettings::value( const QString &key, const QVariant &defaultValue, c
   return defaultValue;
 }
 
-bool QgsSettings::contains( const QString &key ) const
+bool QgsSettings::contains( const QString &key, const QgsSettings::Section section ) const
 {
-  return mUserSettings->contains( key ) ||
-         ( mGlobalSettings && mGlobalSettings->contains( key ) );
+  QString pKey = prefixedKey( key, section );
+  return mUserSettings->contains( pKey ) ||
+         ( mGlobalSettings && mGlobalSettings->contains( pKey ) );
 }
 
 QString QgsSettings::fileName() const
@@ -177,7 +178,7 @@ QString QgsSettings::fileName() const
 
 void QgsSettings::sync()
 {
-  return mUserSettings->sync( );
+  return mUserSettings->sync();
 }
 
 void QgsSettings::remove( const QString &key )
@@ -256,4 +257,9 @@ void QgsSettings::setValue( const QString &key, const QVariant &value, const Qgs
 QString QgsSettings::sanitizeKey( QString key ) const
 {
   return QDir::cleanPath( key.toLower() );
+}
+
+void QgsSettings::clear()
+{
+  mUserSettings->clear();
 }

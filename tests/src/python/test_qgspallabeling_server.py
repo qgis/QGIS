@@ -24,9 +24,9 @@ import os
 import glob
 import shutil
 
-from qgis.PyQt.QtCore import QSettings, qDebug
+from qgis.PyQt.QtCore import qDebug
 
-from qgis.core import QgsProject, QgsApplication, QgsPalLabeling
+from qgis.core import QgsProject, QgsApplication, QgsSettings, QgsPalLabeling
 
 from utilities import mapSettingsString
 
@@ -68,7 +68,7 @@ class TestServerBase(TestQgsPalLabeling):
         # the blue background (set via layer style) to match renderchecker's
         TestQgsPalLabeling.loadFeatureLayer('background', True)
 
-        settings = QSettings()
+        settings = QgsSettings()
         # noinspection PyArgumentList
         cls._CacheDir = settings.value(
             "cache/directory",

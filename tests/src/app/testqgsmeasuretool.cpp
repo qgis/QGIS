@@ -64,7 +64,7 @@ void TestQgsMeasureTool::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  // Set up the QSettings environment
+  // Set up the QgsSettings environment
   QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
@@ -87,7 +87,7 @@ void TestQgsMeasureTool::cleanupTestCase()
 void TestQgsMeasureTool::testLengthCalculation()
 {
   //test length measurement
-  QSettings s;
+  QgsSettings s;
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
 
   // set project CRS and ellipsoid
@@ -179,7 +179,7 @@ void TestQgsMeasureTool::testLengthCalculationNoCrs()
 void TestQgsMeasureTool::testAreaCalculation()
 {
   //test area measurement
-  QSettings s;
+  QgsSettings s;
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
 
   // set project CRS and ellipsoid

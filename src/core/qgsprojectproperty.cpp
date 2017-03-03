@@ -69,7 +69,7 @@ bool QgsProjectPropertyValue::readXml( const QDomNode &keyNode )
 
   // This huge switch is left-over from an earlier incarnation of
   // QgsProject where there was a fine level of granularity for value
-  // types.  The current interface, borrowed from QSettings, supports a
+  // types.  The current interface, borrowed from QgsSettings, supports a
   // very small sub-set of these types.  However, I've left all the
   // other types just in case the interface is expanded to include these
   // other types.

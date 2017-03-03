@@ -25,9 +25,11 @@
 #include <qgsmessagelog.h>
 #include <qgslogger.h>
 #include <qgis.h>
+#include "qgssettings.h"
+#include "qgsnetworkdiskcache.h"
+#include "qgsauthmanager.h"
 
 #include <QUrl>
-#include <QSettings>
 #include <QTimer>
 #include <QNetworkReply>
 #include <QThreadStorage>
@@ -167,7 +169,7 @@ void QgsNetworkAccessManager::setFallbackProxyAndExcludes( const QNetworkProxy &
 
 QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData )
 {
-  QSettings s;
+  QgsSettings s;
 
   QNetworkRequest *pReq( const_cast< QNetworkRequest * >( &req ) ); // hack user agent
 
@@ -308,7 +310,7 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
   }
 
   // check if proxy is enabled
-  QSettings settings;
+  QgsSettings settings;
   QNetworkProxy proxy;
   QStringList excludes;
 

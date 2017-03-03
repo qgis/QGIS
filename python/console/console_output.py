@@ -21,11 +21,11 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 from builtins import range
 from builtins import object
 
-from qgis.PyQt.QtCore import Qt, QCoreApplication, QSettings
+from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtGui import QColor, QFont, QKeySequence
 from qgis.PyQt.QtWidgets import QGridLayout, QSpacerItem, QSizePolicy, QShortcut, QMenu, QApplication
 from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsSettings
 from qgis.gui import QgsMessageBar
 import sys
 
@@ -85,7 +85,7 @@ class ShellOutputScintilla(QsciScintilla):
         self.parent = parent
         self.shell = self.parent.shell
 
-        self.settings = QSettings()
+        self.settings = QgsSettings()
 
         # Creates layout for message bar
         self.layout = QGridLayout(self)

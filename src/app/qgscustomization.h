@@ -21,15 +21,15 @@
 
 #include <QDialog>
 #include <QDomNode>
-#include <QEvent>
-#include <QMouseEvent>
-#include <QSettings>
-#include <QTreeWidgetItem>
+
 #include "qgis_app.h"
 
 class QString;
 class QWidget;
 class QTreeWidgetItem;
+class QEvent;
+class QMouseEvent;
+class QSettings;
 
 class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCustomizationDialogBase
 {

@@ -19,10 +19,11 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QPushButton>
-#include <QSettings>
 #include <QTextStream>
 
+#include "qgssettings.h"
 #include "qgsmanageconnectionsdialog.h"
+
 
 QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mode, Type type, const QString &fileName )
   : QDialog( parent )
@@ -209,7 +210,7 @@ bool QgsManageConnectionsDialog::populateConnections()
   // Export mode. Populate connections list from settings
   if ( mDialogMode == Export )
   {
-    QSettings settings;
+    QgsSettings settings;
     switch ( mConnectionType )
     {
       case WMS:
@@ -357,7 +358,7 @@ QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
-  QSettings settings;
+  QgsSettings settings;
   QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
@@ -393,7 +394,7 @@ QDomDocument QgsManageConnectionsDialog::saveWfsConnections( const QStringList &
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
-  QSettings settings;
+  QgsSettings settings;
   QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
@@ -420,7 +421,7 @@ QDomDocument QgsManageConnectionsDialog::savePgConnections( const QStringList &c
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
-  QSettings settings;
+  QgsSettings settings;
   QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
@@ -461,7 +462,7 @@ QDomDocument QgsManageConnectionsDialog::saveMssqlConnections( const QStringList
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
-  QSettings settings;
+  QgsSettings settings;
   QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
@@ -502,7 +503,7 @@ QDomDocument QgsManageConnectionsDialog::saveOracleConnections( const QStringLis
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
-  QSettings settings;
+  QgsSettings settings;
   QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
@@ -546,7 +547,7 @@ QDomDocument QgsManageConnectionsDialog::saveDb2Connections( const QStringList &
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
-  QSettings settings;
+  QgsSettings settings;
   QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
@@ -591,7 +592,7 @@ void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, co
   }
 
   QString connectionName;
-  QSettings settings;
+  QgsSettings settings;
   settings.beginGroup( "/Qgis/connections-" + service.toLower() );
   QStringList keys = settings.childGroups();
   settings.endGroup();
@@ -678,7 +679,7 @@ void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, co
   }
 
   QString connectionName;
-  QSettings settings;
+  QgsSettings settings;
   settings.beginGroup( QStringLiteral( "/Qgis/connections-wfs" ) );
   QStringList keys = settings.childGroups();
   settings.endGroup();
@@ -760,7 +761,7 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
   }
 
   QString connectionName;
-  QSettings settings;
+  QgsSettings settings;
   settings.beginGroup( QStringLiteral( "/PostgreSQL/connections" ) );
   QStringList keys = settings.childGroups();
   settings.endGroup();
@@ -850,7 +851,7 @@ void QgsManageConnectionsDialog::loadMssqlConnections( const QDomDocument &doc, 
   }
 
   QString connectionName;
-  QSettings settings;
+  QgsSettings settings;
   settings.beginGroup( QStringLiteral( "/MSSQL/connections" ) );
   QStringList keys = settings.childGroups();
   settings.endGroup();
@@ -940,7 +941,7 @@ void QgsManageConnectionsDialog::loadOracleConnections( const QDomDocument &doc,
   }
 
   QString connectionName;
-  QSettings settings;
+  QgsSettings settings;
   settings.beginGroup( QStringLiteral( "/Oracle/connections" ) );
   QStringList keys = settings.childGroups();
   settings.endGroup();
@@ -1026,7 +1027,7 @@ void QgsManageConnectionsDialog::loadDb2Connections( const QDomDocument &doc, co
   }
 
   QString connectionName;
-  QSettings settings;
+  QgsSettings settings;
   settings.beginGroup( QStringLiteral( "/DB2/connections" ) );
   QStringList keys = settings.childGroups();
   settings.endGroup();

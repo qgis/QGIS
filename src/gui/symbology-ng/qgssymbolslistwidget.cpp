@@ -26,9 +26,9 @@
 #include "qgsmapcanvas.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
+#include "qgssettings.h"
 
 #include <QAction>
-#include <QSettings>
 #include <QString>
 #include <QStringList>
 #include <QPainter>
@@ -182,7 +182,7 @@ void QgsSymbolsListWidget::populateGroups()
   }
   groupsCombo->blockSignals( false );
 
-  QSettings settings;
+  QgsSettings settings;
   index = settings.value( "qgis/symbolsListGroupsIndex", 0 ).toInt();
   groupsCombo->setCurrentIndex( index );
 
@@ -599,7 +599,7 @@ void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex &index )
 
 void QgsSymbolsListWidget::on_groupsCombo_currentIndexChanged( int index )
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "qgis/symbolsListGroupsIndex" ), index );
 
   populateSymbolView();

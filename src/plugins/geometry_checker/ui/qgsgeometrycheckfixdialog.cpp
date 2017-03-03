@@ -18,8 +18,11 @@
 #include "qgsgeometrycheckerresulttab.h"
 #include "qgisinterface.h"
 #include "qgsmapcanvas.h"
+#include "qgssettings.h"
+
 #include "../qgsgeometrychecker.h"
 #include "../checks/qgsgeometrycheck.h"
+
 #include <QButtonGroup>
 #include <QDialogButtonBox>
 #include <QGroupBox>
@@ -27,7 +30,6 @@
 #include <QProgressBar>
 #include <QPushButton>
 #include <QRadioButton>
-#include <QSettings>
 #include <QGridLayout>
 
 QgsGeometryCheckerFixDialog::QgsGeometryCheckerFixDialog( QgsGeometryChecker *checker,
@@ -104,7 +106,7 @@ void QgsGeometryCheckerFixDialog::setupNextError()
   mResolutionsBox->layout()->setContentsMargins( 0, 0, 0, 4 );
 
   int id = 0;
-  int checkedid = QSettings().value( QgsGeometryCheckerResultTab::sSettingsGroup + error->check()->errorName(), QVariant::fromValue<int>( 0 ) ).toInt();
+  int checkedid = QgsSettings().value( QgsGeometryCheckerResultTab::sSettingsGroup + error->check()->errorName(), QVariant::fromValue<int>( 0 ) ).toInt();
   Q_FOREACH ( const QString &method, error->check()->getResolutionMethods() )
   {
     QRadioButton *radio = new QRadioButton( method );

@@ -18,14 +18,15 @@
 
 #include "qgsfeatureiterator.h"
 #include "qgspointv2.h"
-#include <qgslogger.h>
-#include <qgsvertexmarker.h>
-#include <qgsgeometryvalidator.h>
-#include <qgsvectorlayer.h>
-#include <qgsrubberband.h>
-#include <qgisapp.h>
-#include <qgslayertreeview.h>
-#include <qgsproject.h>
+#include "qgssettings.h"
+#include "qgslogger.h"
+#include "qgsvertexmarker.h"
+#include "qgsgeometryvalidator.h"
+#include "qgsvectorlayer.h"
+#include "qgsrubberband.h"
+#include "qgisapp.h"
+#include "qgslayertreeview.h"
+#include "qgsproject.h"
 
 QgsSelectedFeature::QgsSelectedFeature( QgsFeatureId featureId,
                                         QgsVectorLayer *vlayer,
@@ -158,7 +159,7 @@ void QgsSelectedFeature::geometryChanged( QgsFeatureId fid, const QgsGeometry &g
 
 void QgsSelectedFeature::validateGeometry( QgsGeometry *g )
 {
-  QSettings settings;
+  QgsSettings settings;
   if ( settings.value( QStringLiteral( "/qgis/digitizing/validate_geometries" ), 1 ).toInt() == 0 )
     return;
 

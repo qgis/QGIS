@@ -20,8 +20,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsfilterlineedit.h"
 #include "qgsvaluerelationwidgetwrapper.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QStringListModel>
 #include <QCompleter>
 
@@ -189,7 +189,7 @@ void QgsValueRelationSearchWidgetWrapper::onValueChanged()
   }
   else
   {
-    QSettings settings;
+    QgsSettings settings;
     setExpression( vl.isNull() ? QgsApplication::nullRepresentation() : vl.toString() );
     emit valueChanged();
   }
@@ -198,7 +198,7 @@ void QgsValueRelationSearchWidgetWrapper::onValueChanged()
 
 void QgsValueRelationSearchWidgetWrapper::setExpression( QString exp )
 {
-  QSettings settings;
+  QgsSettings settings;
   QString nullValue = QgsApplication::nullRepresentation();
   QString fieldName = layer()->fields().at( mFieldIdx ).name();
 

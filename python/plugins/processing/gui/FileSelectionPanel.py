@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QFileDialog
-from qgis.PyQt.QtCore import QSettings
+from qgis.core import QgsSettings
 
 from processing.tools.system import isWindows
 
@@ -51,7 +51,7 @@ class FileSelectionPanel(BASE, WIDGET):
 
     def showSelectionDialog(self):
         # Find the file dialog's working directory
-        settings = QSettings()
+        settings = QgsSettings()
         text = self.leText.text()
         if os.path.isdir(text):
             path = text

@@ -18,13 +18,14 @@
 #define QGSOPTIONSDIALOGBASE_H
 
 #include "qgisgui.h"
+#include "qgssettings.h"
+#include "qgis_gui.h"
+
 #include <functional>
 
 #include <QDialog>
 #include <QPointer>
-#include <QSettings>
 #include <QStyledItemDelegate>
-#include "qgis_gui.h"
 
 
 class QDialogButtonBox;
@@ -113,12 +114,12 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
   public:
 
     /** Constructor
-     * @param settingsKey QSettings subgroup key for saving/restore ui states, e.g. "ProjectProperties".
+     * @param settingsKey QgsSettings subgroup key for saving/restore ui states, e.g. "ProjectProperties".
      * @param parent parent object (owner)
      * @param fl widget flags
-     * @param settings custom QSettings pointer
+     * @param settings custom QgsSettings pointer
      */
-    QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent = nullptr, Qt::WindowFlags fl = 0, QSettings *settings = nullptr );
+    QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent = nullptr, Qt::WindowFlags fl = 0, QgsSettings *settings = nullptr );
     ~QgsOptionsDialogBase();
 
     /** Set up the base ui connections for vertical tabs.
@@ -127,8 +128,8 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      */
     void initOptionsBase( bool restoreUi = true, const QString &title = QString() );
 
-    // set custom QSettings pointer if dialog used outside QGIS (in plugin)
-    void setSettings( QSettings *settings );
+    // set custom QgsSettings pointer if dialog used outside QGIS (in plugin)
+    void setSettings( QgsSettings *settings );
 
     /** Restore the base ui.
      * Sometimes useful to do at end of subclass's constructor.
@@ -179,9 +180,9 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     QgsFilterLineEdit *mSearchLineEdit = nullptr;
     QString mDialogTitle;
     bool mIconOnly;
-    // pointer to app or custom, external QSettings
+    // pointer to app or custom, external QgsSettings
     // QPointer in case custom settings obj gets deleted while dialog is open
-    QPointer<QSettings> mSettings;
+    QPointer<QgsSettings> mSettings;
     bool mDelSettings;
 };
 

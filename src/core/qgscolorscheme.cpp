@@ -20,8 +20,8 @@
 #include "qgsproject.h"
 #include "qgssymbollayerutils.h"
 #include "qgsapplication.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QDir>
 
 bool QgsColorScheme::setColors( const QgsNamedColorList &colors, const QString &context, const QColor &baseColor )
@@ -49,7 +49,7 @@ QgsNamedColorList QgsRecentColorScheme::fetchColors( const QString &context, con
   Q_UNUSED( baseColor );
 
   //fetch recent colors
-  QSettings settings;
+  QgsSettings settings;
   QList< QVariant > recentColorVariants = settings.value( QStringLiteral( "/colors/recent" ) ).toList();
 
   //generate list from recent colors
@@ -77,7 +77,7 @@ void QgsRecentColorScheme::addRecentColor( const QColor &color )
   QColor opaqueColor = color;
   opaqueColor.setAlpha( 255 );
 
-  QSettings settings;
+  QgsSettings settings;
   QList< QVariant > recentColorVariants = settings.value( QStringLiteral( "/colors/recent" ) ).toList();
 
   //remove colors by name
@@ -105,7 +105,7 @@ void QgsRecentColorScheme::addRecentColor( const QColor &color )
 QColor QgsRecentColorScheme::lastUsedColor()
 {
   //fetch recent colors
-  QSettings settings;
+  QgsSettings settings;
   QList< QVariant > recentColorVariants = settings.value( QStringLiteral( "/colors/recent" ) ).toList();
 
   if ( recentColorVariants.isEmpty() )
@@ -127,7 +127,7 @@ QgsNamedColorList QgsCustomColorScheme::fetchColors( const QString &context, con
 
   //fetch predefined custom colors
   QgsNamedColorList colorList;
-  QSettings settings;
+  QgsSettings settings;
 
   //check if settings contains custom palette
   if ( !settings.contains( QStringLiteral( "/colors/palettecolors" ) ) )
@@ -175,7 +175,7 @@ bool QgsCustomColorScheme::setColors( const QgsNamedColorList &colors, const QSt
   Q_UNUSED( baseColor );
 
   // save colors to settings
-  QSettings settings;
+  QgsSettings settings;
   QList< QVariant > customColors;
   QList< QVariant > customColorLabels;
 
@@ -354,7 +354,7 @@ QgsColorScheme::SchemeFlags QgsUserColorScheme::flags() const
 {
   QgsColorScheme::SchemeFlags f = QgsGplColorScheme::flags();
 
-  QSettings s;
+  QgsSettings s;
   QStringList showInMenuSchemes = s.value( QStringLiteral( "/colors/showInMenuList" ) ).toStringList();
 
   if ( showInMenuSchemes.contains( mName ) )
@@ -379,7 +379,7 @@ bool QgsUserColorScheme::erase()
 
 void QgsUserColorScheme::setShowSchemeInMenu( bool show )
 {
-  QSettings s;
+  QgsSettings s;
   QStringList showInMenuSchemes = s.value( QStringLiteral( "/colors/showInMenuList" ) ).toStringList();
 
   if ( show && !showInMenuSchemes.contains( mName ) )

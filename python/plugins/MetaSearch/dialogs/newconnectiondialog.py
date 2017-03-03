@@ -27,7 +27,7 @@
 #
 ###############################################################################
 
-from qgis.PyQt.QtCore import QSettings
+from qgis.core import QgsSettings
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox
 
 from MetaSearch.util import get_ui_class
@@ -44,7 +44,7 @@ class NewConnectionDialog(QDialog, BASE_CLASS):
 
         QDialog.__init__(self)
         self.setupUi(self)
-        self.settings = QSettings()
+        self.settings = QgsSettings()
         self.conn_name = None
         self.conn_name_orig = conn_name
 

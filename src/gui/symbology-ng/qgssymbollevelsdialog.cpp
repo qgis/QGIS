@@ -18,6 +18,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgssymbollayer.h"
 #include "qgssymbol.h"
+#include "qgssettings.h"
 
 #include <QTableWidgetItem>
 #include <QItemDelegate>
@@ -34,7 +35,7 @@ QgsSymbolLevelsDialog::QgsSymbolLevelsDialog( const QgsLegendSymbolList &list, b
 {
   setupUi( this );
 
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/symbolLevelsDlg/geometry" ) ).toByteArray() );
 
   tableLevels->setItemDelegate( new SpinBoxDelegate( this ) );
@@ -87,7 +88,7 @@ QgsSymbolLevelsDialog::QgsSymbolLevelsDialog( const QgsLegendSymbolList &list, b
 
 QgsSymbolLevelsDialog::~QgsSymbolLevelsDialog()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/symbolLevelsDlg/geometry" ), saveGeometry() );
 }
 

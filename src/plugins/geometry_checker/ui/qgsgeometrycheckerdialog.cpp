@@ -18,9 +18,10 @@
 #include "qgsgeometrycheckersetuptab.h"
 #include "qgsgeometrycheckerresulttab.h"
 
+#include "qgssettings.h"
+
 #include <QCloseEvent>
 #include <QVBoxLayout>
-#include <QSettings>
 
 QgsGeometryCheckerDialog::QgsGeometryCheckerDialog( QgisInterface *iface, QWidget *parent )
   : QDialog( parent )
@@ -29,7 +30,7 @@ QgsGeometryCheckerDialog::QgsGeometryCheckerDialog( QgisInterface *iface, QWidge
 
   setWindowTitle( tr( "Check Geometries" ) );
 
-  QSettings s;
+  QgsSettings s;
   restoreGeometry( s.value( QStringLiteral( "/Plugin-GeometryChecker/Window/geometry" ) ).toByteArray() );
 
   mTabWidget = new QTabWidget();
@@ -50,7 +51,7 @@ QgsGeometryCheckerDialog::QgsGeometryCheckerDialog( QgisInterface *iface, QWidge
 
 QgsGeometryCheckerDialog::~QgsGeometryCheckerDialog()
 {
-  QSettings s;
+  QgsSettings s;
   s.setValue( QStringLiteral( "/Plugin-GeometryChecker/Window/geometry" ), saveGeometry() );
 }
 

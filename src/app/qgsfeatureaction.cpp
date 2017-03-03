@@ -29,9 +29,9 @@
 #include "qgsactionmanager.h"
 #include "qgsaction.h"
 #include "qgsvectorlayerutils.h"
+#include "qgssettings.h"
 
 #include <QPushButton>
-#include <QSettings>
 
 QgsFeatureAction::QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *layer, const QUuid &actionId, int defaultAttr, QObject *parent )
   : QAction( name, parent )
@@ -145,7 +145,7 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
   if ( !mLayer || !mLayer->isEditable() )
     return false;
 
-  QSettings settings;
+  QgsSettings settings;
   bool reuseLastValues = settings.value( QStringLiteral( "/qgis/digitizing/reuseLastValues" ), false ).toBool();
   QgsDebugMsg( QString( "reuseLastValues: %1" ).arg( reuseLastValues ) );
 
@@ -236,7 +236,7 @@ void QgsFeatureAction::onFeatureSaved( const QgsFeature &feature )
 
   mFeatureSaved = true;
 
-  QSettings settings;
+  QgsSettings settings;
   bool reuseLastValues = settings.value( QStringLiteral( "/qgis/digitizing/reuseLastValues" ), false ).toBool();
   QgsDebugMsg( QString( "reuseLastValues: %1" ).arg( reuseLastValues ) );
 

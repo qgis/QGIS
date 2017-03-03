@@ -16,10 +16,10 @@
 #include "qgscontexthelp.h"
 #include "qgslogger.h"
 #include "qgsgpsdetector.h"
+#include "qgssettings.h"
 
 //qt includes
 #include <QFileDialog>
-#include <QSettings>
 
 //standard includes
 #include <cassert>
@@ -80,7 +80,7 @@ QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap &importers,
 
 QgsGPSPluginGui::~QgsGPSPluginGui()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Plugin-GPS/geometry" ), saveGeometry() );
   settings.setValue( QStringLiteral( "/Plugin-GPS/lastTab" ), tabWidget->currentIndex() );
 }
@@ -157,7 +157,7 @@ void QgsGPSPluginGui::on_buttonBox_accepted()
 
 void QgsGPSPluginGui::on_pbnDLOutput_clicked()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString dir = settings.value( QStringLiteral( "/Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
   QString myFileNameQString =
     QFileDialog::getSaveFileName( this,
@@ -250,7 +250,7 @@ void QgsGPSPluginGui::on_buttonBox_rejected()
 void QgsGPSPluginGui::on_pbnGPXSelectFile_clicked()
 {
   QgsLogger::debug( QStringLiteral( " GPS File Importer::pbnGPXSelectFile_clicked() " ) );
-  QSettings settings;
+  QgsSettings settings;
   QString dir = settings.value( QStringLiteral( "/Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
   QString myFileNameQString = QFileDialog::getOpenFileName(
                                 this,
@@ -266,7 +266,7 @@ void QgsGPSPluginGui::on_pbnGPXSelectFile_clicked()
 
 void QgsGPSPluginGui::on_pbnIMPInput_clicked()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString dir = settings.value( QStringLiteral( "/Plugin-GPS/importdirectory" ), QDir::homePath() ).toString();
   QString tf = mBabelFilter.split( QStringLiteral( ";;" ) ).first();
   QString myFileType = settings.value( QStringLiteral( "/Plugin-GPS/lastImportFilter" ), tf ).toString();
@@ -307,7 +307,7 @@ void QgsGPSPluginGui::on_pbnIMPInput_clicked()
 
 void QgsGPSPluginGui::on_pbnIMPOutput_clicked()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString dir = settings.value( QStringLiteral( "/Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
   QString myFileNameQString =
     QFileDialog::getSaveFileName( this,
@@ -343,7 +343,7 @@ void QgsGPSPluginGui::populatePortComboBoxes()
   }
 
   // remember the last ports used
-  QSettings settings;
+  QgsSettings settings;
   QString lastDLPort = settings.value( QStringLiteral( "/Plugin-GPS/lastdlport" ), "" ).toString();
   QString lastULPort = settings.value( QStringLiteral( "/Plugin-GPS/lastulport" ), "" ).toString();
 
@@ -372,7 +372,7 @@ void QgsGPSPluginGui::populateIMPBabelFormats()
   mBabelFilter = QLatin1String( "" );
   cmbULDevice->clear();
   cmbDLDevice->clear();
-  QSettings settings;
+  QgsSettings settings;
   QString lastDLDevice = settings.value( QStringLiteral( "/Plugin-GPS/lastdldevice" ), "" ).toString();
   QString lastULDevice = settings.value( QStringLiteral( "/Plugin-GPS/lastuldevice" ), "" ).toString();
   BabelMap::const_iterator iter;
@@ -398,7 +398,7 @@ void QgsGPSPluginGui::populateIMPBabelFormats()
 
 void QgsGPSPluginGui::on_pbnCONVInput_clicked()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString dir = settings.value( QStringLiteral( "/Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
   QString myFileNameQString = QFileDialog::getOpenFileName(
                                 this,
@@ -414,7 +414,7 @@ void QgsGPSPluginGui::on_pbnCONVInput_clicked()
 
 void QgsGPSPluginGui::on_pbnCONVOutput_clicked()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString dir = settings.value( QStringLiteral( "/Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
   QString myFileNameQString =
     QFileDialog::getSaveFileName( this,
@@ -446,7 +446,7 @@ void QgsGPSPluginGui::devicesUpdated()
 
 void QgsGPSPluginGui::restoreState()
 {
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Plugin-GPS/geometry" ) ).toByteArray() );
   tabWidget->setCurrentIndex( settings.value( QStringLiteral( "/Plugin-GPS/lastTab" ), 4 ).toInt() );
 }

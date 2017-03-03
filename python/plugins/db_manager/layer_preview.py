@@ -20,12 +20,12 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from qgis.PyQt.QtCore import Qt, QSettings, QTimer
+from qgis.PyQt.QtCore import Qt, QTimer
 from qgis.PyQt.QtGui import QColor, QCursor
 from qgis.PyQt.QtWidgets import QApplication
 
 from qgis.gui import QgsMapCanvas, QgsMessageBar
-from qgis.core import QgsVectorLayer, QgsProject
+from qgis.core import QgsVectorLayer, QgsProject, QgsSettings
 
 from .db_plugins.plugin import Table
 
@@ -42,9 +42,8 @@ class LayerPreview(QgsMapCanvas):
         self.currentLayer = None
 
         # reuse settings from QGIS
-        settings = QSettings()
+        settings = QgsSettings()
         self.enableAntiAliasing(settings.value("/qgis/enable_anti_aliasing", False, type=bool))
-        action = settings.value("/qgis/wheel_action", 0, type=float)
         zoomFactor = settings.value("/qgis/zoom_factor", 2, type=float)
         self.setWheelFactor(zoomFactor)
 

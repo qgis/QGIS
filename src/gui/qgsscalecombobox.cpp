@@ -18,10 +18,10 @@
 #include "qgis.h"
 #include "qgslogger.h"
 #include "qgsscalecombobox.h"
+#include "qgssettings.h"
 
 #include <QAbstractItemView>
 #include <QLocale>
-#include <QSettings>
 #include <QLineEdit>
 
 QgsScaleComboBox::QgsScaleComboBox( QWidget *parent )
@@ -46,7 +46,7 @@ void QgsScaleComboBox::updateScales( const QStringList &scales )
 
   if ( scales.isEmpty() )
   {
-    QSettings settings;
+    QgsSettings settings;
     QString myScales = settings.value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString();
     if ( !myScales.isEmpty() )
     {

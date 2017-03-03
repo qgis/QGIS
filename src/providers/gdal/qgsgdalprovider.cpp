@@ -33,9 +33,9 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterpyramid.h"
 #include "qgspoint.h"
+#include "qgssettings.h"
 
 #include <QImage>
-#include <QSettings>
 #include <QColor>
 #include <QProcess>
 #include <QMessageBox>
@@ -2114,7 +2114,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
   fileFiltersString = filters.join( QStringLiteral( ";;" ) ) + ";;";
 
   // VSIFileHandler (see qgsogrprovider.cpp) - second
-  QSettings settings;
+  QgsSettings settings;
   if ( settings.value( QStringLiteral( "/qgis/scanZipInBrowser2" ), "basic" ).toString() != QLatin1String( "no" ) )
   {
     fileFiltersString.prepend( createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), QStringLiteral( "*.zip *.gz *.tar *.tar.gz *.tgz" ) ) );

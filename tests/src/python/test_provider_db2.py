@@ -12,25 +12,13 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
-import os
-import sys
-from qgis.core import NULL
-from pprint import pprint
-from qgis.core import (
-    QgsVectorLayer,
-    QgsFeatureRequest,
-    QgsFeature,
-    QgsProviderRegistry
-)
+import qgis  # NOQA
 
-from PyQt4.QtCore import (
-    QSettings,
-    QDate,
-    QTime,
-    QDateTime,
-    QVariant
-)
+import os
+
+from qgis.core import QgsVectorLayer
+
+from PyQt4.QtCore import QgsSettings
 
 from utilities import unitTestDataPath
 from qgis.testing import (
@@ -72,10 +60,11 @@ class TestPyQgsDb2Provider(unittest.TestCase, ProviderTestCase):
         return 'cnt > 100 and cnt < 410'
 
     def enableCompiler(self):
-        QSettings().setValue('/qgis/compileExpressions', True)
+        QgsSettings().setValue('/qgis/compileExpressions', True)
 
     def disableCompiler(self):
-        QSettings().setValue('/qgis/compileExpressions', False)
+        QgsSettings().setValue('/qgis/compileExpressions', False)
+
 
 if __name__ == '__main__':
     unittest.main()

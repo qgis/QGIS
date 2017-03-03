@@ -44,11 +44,10 @@ from jinja2 import Environment, FileSystemLoader
 from pygments import highlight
 from pygments.lexers import XmlLexer
 from pygments.formatters import HtmlFormatter
-from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.PyQt.uic import loadUiType
 
-from qgis.core import Qgis, QgsWkbTypes
+from qgis.core import Qgis, QgsSettings
 
 
 LOGGER = logging.getLogger('MetaSearch')
@@ -137,7 +136,7 @@ def highlight_xml(context, xml):
 def get_help_url():
     """return QGIS MetaSearch help documentation link"""
 
-    locale_name = QSettings().value('locale/userLocale')[0:2]
+    locale_name = QgsSettings().value('locale/userLocale')[0:2]
     version = Qgis.QGIS_VERSION.rsplit('.', 1)[0]
 
     path = '%s/%s/docs/user_manual/plugins/plugins_metasearch.html' % \

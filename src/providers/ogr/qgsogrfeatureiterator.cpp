@@ -23,6 +23,7 @@
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgssettings.h"
 
 #include <QTextCodec>
 #include <QFile>
@@ -114,7 +115,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   }
 
   if ( request.filterType() == QgsFeatureRequest::FilterExpression
-       && QSettings().value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() )
+       && QgsSettings().value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() )
   {
     QgsSqlExpressionCompiler *compiler = nullptr;
     if ( source->mDriverName == QLatin1String( "SQLite" ) || source->mDriverName == QLatin1String( "GPKG" ) )

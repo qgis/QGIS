@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QSettings>
 #include <QMessageBox>
 #include <QInputDialog>
 
+#include "qgssettings.h"
 #include "qgsoraclenewconnection.h"
 #include "qgscontexthelp.h"
 #include "qgsdatasourceuri.h"
@@ -34,7 +34,7 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString &
   {
     // populate the dialog with the information stored for the connection
     // populate the fields with the stored setting parameters
-    QSettings settings;
+    QgsSettings settings;
 
     QString key = "/Oracle/connections/" + connName;
     txtDatabase->setText( settings.value( key + "/database" ).toString() );
@@ -84,7 +84,7 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString &
 //! Autoconnected SLOTS *
 void QgsOracleNewConnection::accept()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString baseKey = "/Oracle/connections/";
   settings.setValue( baseKey + "selected", txtName->text() );
 

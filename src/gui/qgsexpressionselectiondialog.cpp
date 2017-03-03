@@ -20,8 +20,8 @@
 #include "qgsgeometry.h"
 #include "qgsmessagebar.h"
 #include "qgsvectorlayer.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 
 QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *layer, const QString &startText, QWidget *parent )
   : QDialog( parent )
@@ -55,7 +55,7 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *laye
   // by default, zoom to features is hidden, shown only if canvas is set
   mButtonZoomToFeatures->setVisible( false );
 
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/ExpressionSelectionDialog/geometry" ) ).toByteArray() );
 }
 
@@ -150,7 +150,7 @@ void QgsExpressionSelectionDialog::on_mButtonZoomToFeatures_clicked()
   }
   features.close();
 
-  QSettings settings;
+  QgsSettings settings;
   int timeout = settings.value( QStringLiteral( "/qgis/messageTimeout" ), 5 ).toInt();
   if ( featureCount > 0 )
   {
@@ -177,7 +177,7 @@ void QgsExpressionSelectionDialog::closeEvent( QCloseEvent *closeEvent )
 {
   QDialog::closeEvent( closeEvent );
 
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/ExpressionSelectionDialog/geometry" ), saveGeometry() );
 }
 

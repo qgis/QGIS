@@ -18,8 +18,8 @@
 #include "qgsfield_p.h"
 #include "qgis.h"
 #include "qgsapplication.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QDataStream>
 #include <QtCore/qmath.h>
 #include <QIcon>
@@ -206,7 +206,7 @@ QString QgsField::displayString( const QVariant &v ) const
 {
   if ( v.isNull() )
   {
-    QSettings settings;
+    QgsSettings settings;
     return QgsApplication::nullRepresentation();
   }
 

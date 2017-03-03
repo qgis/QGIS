@@ -20,10 +20,10 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QPushButton>
-#include <QSettings>
 
 #include <QtCrypto>
 
+#include "qgssettings.h"
 #include "qgsauthcertutils.h"
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
@@ -240,7 +240,7 @@ void QgsAuthImportCertDialog::on_chkAllowInvalid_toggled( bool checked )
 
 QString QgsAuthImportCertDialog::getOpenFileName( const QString &title, const QString &extfilter )
 {
-  QSettings settings;
+  QgsSettings settings;
   QString recentdir = settings.value( QStringLiteral( "UI/lastAuthImportCertOpenFileDir" ), QDir::homePath() ).toString();
   QString f = QFileDialog::getOpenFileName( this, title, recentdir, extfilter );
 

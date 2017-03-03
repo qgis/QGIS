@@ -35,6 +35,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgswkbptr.h"
+#include "qgssettings.h"
 
 // QWT Charting widget
 
@@ -56,7 +57,6 @@
 #endif
 
 #include <QMessageBox>
-#include <QSettings>
 #include <QFileInfo>
 #include <QColorDialog>
 #include <QFileDialog>
@@ -171,7 +171,7 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas *thepCanvas, QWid
   mpPlot->replot();
 
   // Restore state
-  QSettings mySettings;
+  QgsSettings mySettings;
   mGroupShowMarker->setChecked( mySettings.value( QStringLiteral( "/gps/showMarker" ), "true" ).toBool() );
   mSliderMarkerSize->setValue( mySettings.value( QStringLiteral( "/gps/markerSize" ), "12" ).toInt() );
   mSpinTrackWidth->setValue( mySettings.value( QStringLiteral( "/gps/trackWidth" ), "2" ).toInt() );
@@ -259,7 +259,7 @@ QgsGPSInformationWidget::~QgsGPSInformationWidget()
   delete mpSatellitesGrid;
 #endif
 
-  QSettings mySettings;
+  QgsSettings mySettings;
   mySettings.setValue( QStringLiteral( "/gps/lastPort" ), mCboDevices->currentData().toString() );
   mySettings.setValue( QStringLiteral( "/gps/trackWidth" ), mSpinTrackWidth->value() );
   mySettings.setValue( QStringLiteral( "/gps/trackColor" ), mTrackColor );
@@ -1000,7 +1000,7 @@ void QgsGPSInformationWidget::populateDevices()
   }
 
   // remember the last ports used
-  QSettings settings;
+  QgsSettings settings;
   QString lastPort = settings.value( QStringLiteral( "/gps/lastPort" ), "" ).toString();
 
   int idx = mCboDevices->findData( lastPort );
@@ -1024,7 +1024,7 @@ void QgsGPSInformationWidget::on_mBtnLogFile_clicked()
 //=========================
   // This does not allow for an extension other than ".nmea"
   // Retrieve last used log file dir from persistent settings
-  QSettings settings;
+  QgsSettings settings;
   QString settingPath( QStringLiteral( "/gps/lastLogFileDir" ) );
   QString lastUsedDir = settings.value( settingPath, QDir::homePath() ).toString();
   QString saveFilePath = QFileDialog::getSaveFileName( this, tr( "Save GPS log file as" ), lastUsedDir, tr( "NMEA files" ) + " (*.nmea)" );

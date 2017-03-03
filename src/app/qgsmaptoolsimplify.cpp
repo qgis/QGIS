@@ -22,6 +22,7 @@
 #include "qgsvectorlayer.h"
 #include "qgstolerance.h"
 #include "qgisapp.h"
+#include "qgssettings.h"
 
 #include <QMouseEvent>
 
@@ -71,7 +72,7 @@ QgsMapToolSimplify::QgsMapToolSimplify( QgsMapCanvas *canvas )
   , mReducedVertexCount( 0 )
   , mReducedHasErrors( false )
 {
-  QSettings settings;
+  QgsSettings settings;
   mTolerance = settings.value( QStringLiteral( "/digitizing/simplify_tolerance" ), 1 ).toDouble();
   mToleranceUnits = ( QgsTolerance::UnitType ) settings.value( QStringLiteral( "/digitizing/simplify_tolerance_units" ), 0 ).toInt();
 
@@ -89,7 +90,7 @@ void QgsMapToolSimplify::setTolerance( double tolerance )
 {
   mTolerance = tolerance;
 
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/digitizing/simplify_tolerance" ), tolerance );
 
   if ( !mSelectedFeatures.isEmpty() )
@@ -100,7 +101,7 @@ void QgsMapToolSimplify::setToleranceUnits( int units )
 {
   mToleranceUnits = ( QgsTolerance::UnitType ) units;
 
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/digitizing/simplify_tolerance_units" ), units );
 
   if ( !mSelectedFeatures.isEmpty() )

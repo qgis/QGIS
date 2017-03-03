@@ -14,12 +14,12 @@
  ***************************************************************************/
 
 #include <QKeyEvent>
-#include <QSettings>
 #include <QHeaderView>
 #include <QMenu>
 #include <QToolButton>
 #include <QHBoxLayout>
 
+#include "qgssettings.h"
 #include "qgsactionmanager.h"
 #include "qgsattributetableview.h"
 #include "qgsattributetablemodel.h"
@@ -44,7 +44,7 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
   , mRowSectionAnchor( 0 )
   , mCtrlDragSelectionFlag( QItemSelectionModel::Select )
 {
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/BetterAttributeTable/geometry" ) ).toByteArray() );
 
   //verticalHeader()->setDefaultSectionSize( 20 );
@@ -249,7 +249,7 @@ QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
 void QgsAttributeTableView::closeEvent( QCloseEvent *e )
 {
   Q_UNUSED( e );
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/BetterAttributeTable/geometry" ), QVariant( saveGeometry() ) );
 }
 

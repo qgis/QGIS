@@ -20,8 +20,8 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QPushButton>
-#include <QSettings>
 
+#include "qgssettings.h"
 #include "qgsauthcertutils.h"
 #include "qgsauthconfig.h"
 #include "qgsauthguiutils.h"
@@ -474,7 +474,7 @@ void QgsAuthImportIdentityDialog::fileFound( bool found, QWidget *widget )
 
 QString QgsAuthImportIdentityDialog::getOpenFileName( const QString &title, const QString &extfilter )
 {
-  QSettings settings;
+  QgsSettings settings;
   QString recentdir = settings.value( QStringLiteral( "UI/lastAuthImportBundleOpenFileDir" ), QDir::homePath() ).toString();
   QString f = QFileDialog::getOpenFileName( this, title, recentdir, extfilter );
 

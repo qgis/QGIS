@@ -24,6 +24,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsunittypes.h"
 #include "qgsmaptoolidentifyaction.h"
+#include "qgssettings.h"
 
 #include "cpl_conv.h"
 
@@ -81,7 +82,7 @@ void TestQgsMapToolIdentifyAction::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-  // Set up the QSettings environment
+  // Set up the QgsSettings environment
   QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
@@ -110,7 +111,7 @@ void TestQgsMapToolIdentifyAction::cleanup()
 
 void TestQgsMapToolIdentifyAction::lengthCalculation()
 {
-  QSettings s;
+  QgsSettings s;
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
 
   //create a temporary layer
@@ -161,7 +162,7 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
 
 void TestQgsMapToolIdentifyAction::perimeterCalculation()
 {
-  QSettings s;
+  QgsSettings s;
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
 
   //create a temporary layer
@@ -214,7 +215,7 @@ void TestQgsMapToolIdentifyAction::perimeterCalculation()
 
 void TestQgsMapToolIdentifyAction::areaCalculation()
 {
-  QSettings s;
+  QgsSettings s;
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
 
   //create a temporary layer

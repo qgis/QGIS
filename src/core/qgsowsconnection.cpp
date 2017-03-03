@@ -25,13 +25,12 @@
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgsowsconnection.h"
+#include "qgssettings.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QPicture>
-#include <QSettings>
 #include <QUrl>
-
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
@@ -41,7 +40,7 @@ QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connN
 {
   QgsDebugMsg( "theConnName = " + connName );
 
-  QSettings settings;
+  QgsSettings settings;
 
   QString key = "/Qgis/connections-" + mService.toLower() + '/' + mConnName;
   QString credentialsKey = "/Qgis/" + mService + '/' + mConnName;
@@ -99,26 +98,26 @@ QgsDataSourceUri QgsOwsConnection::uri() const
 
 QStringList QgsOwsConnection::connectionList( const QString &service )
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.beginGroup( "/Qgis/connections-" + service.toLower() );
   return settings.childGroups();
 }
 
 QString QgsOwsConnection::selectedConnection( const QString &service )
 {
-  QSettings settings;
+  QgsSettings settings;
   return settings.value( "/Qgis/connections-" + service.toLower() + "/selected" ).toString();
 }
 
 void QgsOwsConnection::setSelectedConnection( const QString &service, const QString &name )
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( "/Qgis/connections-" + service.toLower() + "/selected", name );
 }
 
 void QgsOwsConnection::deleteConnection( const QString &service, const QString &name )
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.remove( "/Qgis/connections-" + service.toLower() + '/' + name );
   settings.remove( "/Qgis/" + service + '/' + name );
 }

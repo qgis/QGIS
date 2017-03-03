@@ -24,7 +24,6 @@
 #include <QDomNode>
 #include <QFile>
 #include <QFileInfo>
-#include <QSettings> // TODO: get rid of it [MD]
 #include <QTextStream>
 #include <QUrl>
 
@@ -47,6 +46,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsxmlutils.h"
+#include "qgssettings.h" // TODO: get rid of it [MD]
 
 
 QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
@@ -959,7 +959,7 @@ void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSign
 QString QgsMapLayer::capitalizeLayerName( const QString &name )
 {
   // Capitalize the first letter of the layer name if requested
-  QSettings settings;
+  QgsSettings settings;
   bool capitalizeLayerName =
     settings.value( QStringLiteral( "/qgis/capitalizeLayerName" ), QVariant( false ) ).toBool();
 

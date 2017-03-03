@@ -32,7 +32,8 @@ import os
 import stat
 import subprocess
 
-from qgis.PyQt.QtCore import QSettings, QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.core import QgsSettings
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
 from processing.tools.system import userFolder, isWindows, mkdir, getTempFilenameInTempFolder
@@ -197,7 +198,7 @@ class RUtils(object):
                                  'it before running R scripts.')
 
         R_INSTALLED = 'R_INSTALLED'
-        settings = QSettings()
+        settings = QgsSettings()
         if not ignoreRegistrySettings:
             if settings.contains(R_INSTALLED):
                 return

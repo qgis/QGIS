@@ -14,13 +14,14 @@
  ***************************************************************************/
 #include "qgsquerybuilder.h"
 #include "qgslogger.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
+
 #include <QListView>
 #include <QMessageBox>
 #include <QRegExp>
 #include <QPushButton>
-#include <QSettings>
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
 
 // constructor used when the query builder must make its own
 // connection to the database
@@ -32,7 +33,7 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
 {
   setupUi( this );
 
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/QueryBuilder/geometry" ) ).toByteArray() );
 
   QPushButton *pbn = new QPushButton( tr( "&Test" ) );
@@ -57,7 +58,7 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
 
 QgsQueryBuilder::~QgsQueryBuilder()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/QueryBuilder/geometry" ), saveGeometry() );
 }
 
@@ -119,7 +120,7 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
   QList<QVariant> values;
   mLayer->uniqueValues( idx, values, limit );
 
-  QSettings settings;
+  QgsSettings settings;
   QString nullValue = QgsApplication::nullRepresentation();
 
   QgsDebugMsg( QString( "nullValue: %1" ).arg( nullValue ) );

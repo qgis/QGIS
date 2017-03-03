@@ -28,11 +28,11 @@
 #include "qgsmapcanvas.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgscsexception.h"
+#include "qgssettings.h"
 
 #include <QItemDelegate>
 #include <QListWidgetItem>
 #include <QMessageBox>
-#include <QSettings>
 #include <QFileDialog>
 #include <QRadioButton>
 #include <QImageReader>
@@ -79,7 +79,7 @@ QgsSourceSelectDialog::QgsSourceSelectDialog( const QString &serviceName, Servic
 
   treeView->setItemDelegate( new QgsSourceSelectItemDelegate( treeView ) );
 
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/SourceSelectDialog/geometry" ) ).toByteArray() );
   cbxUseTitleLayerName->setChecked( settings.value( QStringLiteral( "/Windows/SourceSelectDialog/UseTitleLayerName" ), false ).toBool() );
 
@@ -110,7 +110,7 @@ QgsSourceSelectDialog::QgsSourceSelectDialog( const QString &serviceName, Servic
 
 QgsSourceSelectDialog::~QgsSourceSelectDialog()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/SourceSelectDialog/geometry" ), saveGeometry() );
   settings.setValue( QStringLiteral( "/Windows/SourceSelectDialog/UseTitleLayerName" ), cbxUseTitleLayerName->isChecked() );
 

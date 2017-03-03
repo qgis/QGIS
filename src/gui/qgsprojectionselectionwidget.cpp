@@ -20,7 +20,7 @@
 #include "qgsapplication.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsproject.h"
-#include <QSettings>
+#include "qgssettings.h"
 
 QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
   : QWidget( parent )
@@ -39,7 +39,7 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
   mProjectCrs = QgsProject::instance()->crs();
   addProjectCrsOption();
 
-  QSettings settings;
+  QgsSettings settings;
   QString defCrsString = settings.value( QStringLiteral( "/Projections/projectDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString();
   mDefaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( defCrsString );
   if ( mDefaultCrs.authid() != mProjectCrs.authid() )

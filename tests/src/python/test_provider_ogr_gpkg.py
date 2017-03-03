@@ -19,8 +19,8 @@ import tempfile
 import shutil
 from osgeo import gdal, ogr
 
-from qgis.core import QgsVectorLayer, QgsFeature, QgsGeometry, QgsRectangle
-from qgis.PyQt.QtCore import QCoreApplication, QSettings
+from qgis.core import QgsVectorLayer, QgsFeature, QgsGeometry, QgsRectangle, QgsSettings
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing import start_app, unittest
 
 
@@ -46,7 +46,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("TestPyQgsOGRProviderGpkg.com")
         QCoreApplication.setApplicationName("TestPyQgsOGRProviderGpkg")
-        QSettings().clear()
+        QgsSettings().clear()
         start_app()
 
         # Create test layer
@@ -57,7 +57,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         """Run after all tests"""
         shutil.rmtree(cls.basetestpath, True)
 
-        QSettings().clear()
+        QgsSettings().clear()
 
     def testSingleToMultiPolygonPromotion(self):
 
@@ -310,7 +310,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(errmsg, "")
 
         # Try overwrite it but simulate answer no
-        settings = QSettings()
+        settings = QgsSettings()
         settings.setValue("/qgis/overwriteStyle", False)
         errorMsg = vl.saveStyleToDatabase("name", "description_bis", False, "")
         self.assertNotEqual(errorMsg, "")
@@ -323,7 +323,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(desclist, ['description'])
 
         # Try overwrite it and simulate answer yes
-        settings = QSettings()
+        settings = QgsSettings()
         settings.setValue("/qgis/overwriteStyle", True)
         errorMsg = vl.saveStyleToDatabase("name", "description_bis", False, "")
         self.assertEqual(errorMsg, "")
@@ -358,7 +358,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
 
     def testDisablewalForSqlite3(self):
         ''' Test disabling walForSqlite3 setting '''
-        QSettings().setValue("/qgis/walForSqlite3", False)
+        QgsSettings().setValue("/qgis/walForSqlite3", False)
 
         tmpfile = os.path.join(self.basetestpath, 'testDisablewalForSqlite3.gpkg')
         ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
@@ -393,7 +393,8 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertIsNone(cbk.msg)
         vl = None
 
-        QSettings().setValue("/qgis/walForSqlite3", None)
+        QgsSettings().setValue("/qgis/walForSqlite3", None)
+
 
 if __name__ == '__main__':
     unittest.main()

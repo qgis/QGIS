@@ -25,13 +25,13 @@
 #include "qgsrasterlayer.h"
 #include "qgsproviderregistry.h"
 #include "qgsmessagebar.h"
+#include "qgssettings.h"
 
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFileDialog>
 #include <QPushButton>
 #include <QMessageBox>
-#include <QSettings>
 #include <QUrl>
 
 QgsHandleBadLayersHandler::QgsHandleBadLayersHandler()
@@ -288,7 +288,7 @@ void QgsHandleBadLayers::browseClicked()
   {
     QString title = tr( "Select new directory of selected files" );
 
-    QSettings settings;
+    QgsSettings settings;
     QString lastDir = settings.value( QStringLiteral( "/UI/missingDirectory" ), QDir::homePath() ).toString();
     QString selectedFolder = QFileDialog::getExistingDirectory( this, title, lastDir );
     if ( selectedFolder.isEmpty() )

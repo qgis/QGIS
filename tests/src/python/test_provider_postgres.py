@@ -30,10 +30,12 @@ from qgis.core import (
     QgsFieldConstraints,
     QgsDataProvider,
     NULL,
-    QgsVectorLayerUtils
+    QgsVectorLayerUtils,
+    QgsSettings,
+    QgsTransactionGroup
 )
 from qgis.gui import QgsEditorWidgetRegistry
-from qgis.PyQt.QtCore import QSettings, QDate, QTime, QDateTime, QVariant, QDir
+from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from providertestbase import ProviderTestCase
@@ -88,10 +90,10 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         return vl
 
     def enableCompiler(self):
-        QSettings().setValue('/qgis/compileExpressions', True)
+        QgsSettings().setValue('/qgis/compileExpressions', True)
 
     def disableCompiler(self):
-        QSettings().setValue('/qgis/compileExpressions', False)
+        QgsSettings().setValue('/qgis/compileExpressions', False)
 
     def uncompiledFilters(self):
         return set([])
@@ -721,10 +723,10 @@ class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
         """Run after all tests"""
 
     def enableCompiler(self):
-        QSettings().setValue('/qgis/compileExpressions', True)
+        QgsSettings().setValue('/qgis/compileExpressions', True)
 
     def disableCompiler(self):
-        QSettings().setValue('/qgis/compileExpressions', False)
+        QgsSettings().setValue('/qgis/compileExpressions', False)
 
     def uncompiledFilters(self):
         return set([])

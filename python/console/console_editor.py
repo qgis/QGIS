@@ -21,11 +21,11 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 from __future__ import print_function
 from builtins import str
 from builtins import range
-from qgis.PyQt.QtCore import Qt, QObject, QEvent, QSettings, QCoreApplication, QFileInfo, QSize
+from qgis.PyQt.QtCore import Qt, QObject, QEvent, QCoreApplication, QFileInfo, QSize
 from qgis.PyQt.QtGui import QFont, QFontMetrics, QColor, QKeySequence, QCursor
 from qgis.PyQt.QtWidgets import QShortcut, QMenu, QApplication, QWidget, QGridLayout, QSpacerItem, QSizePolicy, QFileDialog, QTabWidget, QTreeWidgetItem, QFrame, QLabel, QToolButton, QMessageBox
 from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs, QsciStyle
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsSettings
 from qgis.gui import QgsMessageBar
 import sys
 import os
@@ -88,10 +88,10 @@ class Editor(QsciScintilla):
         self.opening = ['(', '{', '[', "'", '"']
         self.closing = [')', '}', ']', "'", '"']
 
-        ## List of marker line to be deleted from check syntax
+        # List of marker line to be deleted from check syntax
         self.bufferMarkerLine = []
 
-        self.settings = QSettings()
+        self.settings = QgsSettings()
 
         # Enable non-ascii chars for editor
         self.setUtf8(True)
@@ -869,7 +869,7 @@ class EditorTabWidget(QTabWidget):
         QTabWidget.__init__(self, parent=None)
         self.parent = parent
 
-        self.settings = QSettings()
+        self.settings = QgsSettings()
 
         self.idx = -1
         # Layout for top frame (restore tabs)

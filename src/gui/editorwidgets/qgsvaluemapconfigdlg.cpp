@@ -18,8 +18,8 @@
 #include "qgsattributetypeloaddialog.h"
 #include "qgsvaluemapfieldformatter.h"
 #include "qgsapplication.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTextStream>
@@ -41,7 +41,7 @@ QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer *vl, int fieldIdx, QW
 QVariantMap QgsValueMapConfigDlg::config()
 {
   QVariantMap values;
-  QSettings settings;
+  QgsSettings settings;
 
   //store data to map
   for ( int i = 0; i < tableWidget->rowCount() - 1; i++ )
@@ -152,7 +152,7 @@ void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant> &map, bool i
 
 void QgsValueMapConfigDlg::setRow( int row, const QString &value, const QString &description )
 {
-  QSettings settings;
+  QgsSettings settings;
   QTableWidgetItem *valueCell = nullptr;
   QTableWidgetItem *descriptionCell = new QTableWidgetItem( description );
   tableWidget->insertRow( row );
@@ -189,7 +189,7 @@ void QgsValueMapConfigDlg::loadFromLayerButtonPushed()
 
 void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
 {
-  QSettings settings;
+  QgsSettings settings;
 
   QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Select a file" ), QDir::homePath() );
   if ( fileName.isNull() )

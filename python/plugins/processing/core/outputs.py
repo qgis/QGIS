@@ -31,14 +31,14 @@ __revision__ = '$Format:%H$'
 import os
 import sys
 
-from qgis.PyQt.QtCore import QCoreApplication, QSettings
+from qgis.PyQt.QtCore import QCoreApplication
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import isWindows, getTempFilenameInTempFolder, getTempDirInTempFolder
 from processing.tools.vector import VectorWriter, TableWriter
 from processing.tools import dataobjects
 
-from qgis.core import QgsExpressionContext, QgsExpressionContextUtils, QgsExpression, QgsExpressionContextScope, QgsProject
+from qgis.core import QgsExpressionContext, QgsExpressionContextUtils, QgsExpression, QgsExpressionContextScope, QgsProject, QgsSettings
 
 
 def _expressionContext(alg):
@@ -289,7 +289,7 @@ class OutputTable(Output):
         """
 
         if self.encoding is None:
-            settings = QSettings()
+            settings = QgsSettings()
             self.encoding = settings.value('/Processing/encoding', 'System')
 
         return TableWriter(self.value, self.encoding, fields)
@@ -374,7 +374,7 @@ class OutputVector(Output):
         """
 
         if self.encoding is None:
-            settings = QSettings()
+            settings = QgsSettings()
             self.encoding = settings.value('/Processing/encoding', 'System', str)
 
         w = VectorWriter(self.value, self.encoding, fields, geomType,

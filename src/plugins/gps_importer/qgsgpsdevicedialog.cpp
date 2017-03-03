@@ -12,9 +12,9 @@
 
 #include "qgsgpsdevicedialog.h"
 #include "qgisgui.h"
+#include "qgssettings.h"
 
 #include <QMessageBox>
-#include <QSettings>
 
 
 QgsGPSDeviceDialog::QgsGPSDeviceDialog( std::map < QString,
@@ -155,7 +155,7 @@ void QgsGPSDeviceDialog::slotSelectionChanged( QListWidgetItem *current )
 void QgsGPSDeviceDialog::writeDeviceSettings()
 {
   QStringList deviceNames;
-  QSettings settings;
+  QgsSettings settings;
   QString devPath = QStringLiteral( "/Plugin-GPS/devices/%1" );
   settings.remove( QStringLiteral( "/Plugin-GPS/devices" ) );
 

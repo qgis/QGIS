@@ -19,10 +19,11 @@
 #define QGSCOLLAPSIBLEGROUPBOX_H
 
 #include <QGroupBox>
-#include <QSettings>
 #include <QPointer>
 #include <QToolButton>
 #include <QMouseEvent>
+
+#include "qgssettings.h"
 #include "qgis_gui.h"
 
 class QToolButton;
@@ -182,22 +183,22 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
     Q_OBJECT
 
     /**
-     * Shall the collapsed state of this group box be saved and loaded persistently in QSettings
+     * Shall the collapsed state of this group box be saved and loaded persistently in QgsSettings
      */
     Q_PROPERTY( bool saveCollapsedState READ saveCollapsedState WRITE setSaveCollapsedState )
 
     /**
-     * Shall the checked state of this group box be saved and loaded persistently in QSettings
+     * Shall the checked state of this group box be saved and loaded persistently in QgsSettings
      */
     Q_PROPERTY( bool saveCheckedState READ saveCheckedState WRITE setSaveCheckedState )
 
   public:
-    QgsCollapsibleGroupBox( QWidget *parent = nullptr, QSettings *settings = nullptr );
-    QgsCollapsibleGroupBox( const QString &title, QWidget *parent = nullptr, QSettings *settings = nullptr );
+    QgsCollapsibleGroupBox( QWidget *parent = nullptr, QgsSettings *settings = nullptr );
+    QgsCollapsibleGroupBox( const QString &title, QWidget *parent = nullptr, QgsSettings *settings = nullptr );
     ~QgsCollapsibleGroupBox();
 
-    // set custom QSettings pointer if group box was already created from QtDesigner promotion
-    void setSettings( QSettings *settings );
+    // set custom QgsSettings pointer if group box was already created from QtDesigner promotion
+    void setSettings( QgsSettings *settings );
 
     //! set this to false to not save/restore collapsed state
     void setSaveCollapsedState( bool save ) { mSaveCollapsedState = save; }
@@ -239,9 +240,9 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
     void showEvent( QShowEvent *event ) override;
     QString saveKey() const;
 
-    // pointer to app or custom, external QSettings
+    // pointer to app or custom, external QgsSettings
     // QPointer in case custom settings obj gets deleted while groupbox's dialog is open
-    QPointer<QSettings> mSettings;
+    QPointer<QgsSettings> mSettings;
     bool mDelSettings;
 
     bool mSaveCollapsedState;

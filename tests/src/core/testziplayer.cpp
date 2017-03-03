@@ -19,13 +19,14 @@
 #include <QFileInfo>
 
 //qgis includes...
-#include <qgsapplication.h>
-#include <qgsproviderregistry.h>
-#include <qgsvectorlayer.h>
-#include <qgsrasterlayer.h>
-#include <qgsdataitem.h>
+#include "qgsapplication.h"
+#include "qgsproviderregistry.h"
+#include "qgsvectorlayer.h"
+#include "qgsrasterlayer.h"
+#include "qgsdataitem.h"
 #include "qgsconfig.h"
 #include "qgsrasterrenderer.h"
+#include "qgssettings.h"
 
 #include <gdal.h>
 
@@ -228,7 +229,7 @@ bool TestZipLayer::testZipItem( const QString &myFileName, const QString &myChil
 int TestZipLayer::getLayerTransparency( const QString &myFileName, const QString &myProviderKey, const QString &myScanZipSetting )
 {
   int myTransparency = -1;
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( mSettingsKey, myScanZipSetting );
   if ( myScanZipSetting != settings.value( mSettingsKey ).toString() )
     return myTransparency;
@@ -288,13 +289,13 @@ void TestZipLayer::initTestCase()
   QFile::remove( QDir::tempPath() + "/testzip.zip" );
   QVERIFY( QFile::copy( QString( TEST_DATA_DIR ) + "/zip/" + "testzip.zip", QDir::tempPath() + "/testzip.zip" ) );
   mDataDir = QStringLiteral( TEST_DATA_DIR ) + "/zip/";
-  // Set up the QSettings environment
+  // Set up the QgsSettings environment
   QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
 
   // save current zipSetting value
-  QSettings settings;
+  QgsSettings settings;
   mSettingsKey = QStringLiteral( "/qgis/scanZipInBrowser2" );
   mScanZipSetting = settings.value( mSettingsKey, "" ).toString();
   mScanZipSettings << QLatin1String( "" ) << QStringLiteral( "basic" ) << QStringLiteral( "full" );
@@ -305,13 +306,13 @@ void TestZipLayer::cleanupTestCase()
   QgsApplication::exitQgis();
 
   // restore zipSetting
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( mSettingsKey, mScanZipSetting );
 }
 
 void TestZipLayer::testPassthruVectorZip()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString myFileName = mDataDir + "points2.zip";
   QgsDebugMsg( "GDAL: " + QString( GDAL_RELEASE_NAME ) );
   QgsDebugMsg( "FILE: " + QString( myFileName ) );
@@ -325,7 +326,7 @@ void TestZipLayer::testPassthruVectorZip()
 
 void TestZipLayer::testPassthruVectorTar()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString myFileName = mDataDir + "points2.tar";
   Q_FOREACH ( const QString &s, mScanZipSettings )
   {
@@ -337,7 +338,7 @@ void TestZipLayer::testPassthruVectorTar()
 
 void TestZipLayer::testPassthruVectorGzip()
 {
-  QSettings settings;
+  QgsSettings settings;
   Q_FOREACH ( const QString &s, mScanZipSettings )
   {
     settings.setValue( mSettingsKey, s );
@@ -348,7 +349,7 @@ void TestZipLayer::testPassthruVectorGzip()
 
 void TestZipLayer::testPassthruRasterZip()
 {
-  QSettings settings;
+  QgsSettings settings;
   Q_FOREACH ( const QString &s, mScanZipSettings )
   {
     settings.setValue( mSettingsKey, s );
@@ -359,7 +360,7 @@ void TestZipLayer::testPassthruRasterZip()
 
 void TestZipLayer::testPassthruRasterTar()
 {
-  QSettings settings;
+  QgsSettings settings;
   Q_FOREACH ( const QString &s, mScanZipSettings )
   {
     settings.setValue( mSettingsKey, s );
@@ -370,7 +371,7 @@ void TestZipLayer::testPassthruRasterTar()
 
 void TestZipLayer::testPassthruRasterGzip()
 {
-  QSettings settings;
+  QgsSettings settings;
   Q_FOREACH ( const QString &s, mScanZipSettings )
   {
     settings.setValue( mSettingsKey, s );
@@ -381,7 +382,7 @@ void TestZipLayer::testPassthruRasterGzip()
 
 void TestZipLayer::testZipItemRaster()
 {
-  QSettings settings;
+  QgsSettings settings;
   Q_FOREACH ( const QString &s, mScanZipSettings )
   {
     settings.setValue( mSettingsKey, s );
@@ -392,7 +393,7 @@ void TestZipLayer::testZipItemRaster()
 
 void TestZipLayer::testTarItemRaster()
 {
-  QSettings settings;
+  QgsSettings settings;
   Q_FOREACH ( const QString &s, mScanZipSettings )
   {
     settings.setValue( mSettingsKey, s );
@@ -403,7 +404,7 @@ void TestZipLayer::testTarItemRaster()
 
 void TestZipLayer::testZipItemVector()
 {
-  QSettings settings;
+  QgsSettings settings;
   Q_FOREACH ( const QString &s, mScanZipSettings )
   {
     settings.setValue( mSettingsKey, s );
@@ -414,7 +415,7 @@ void TestZipLayer::testZipItemVector()
 
 void TestZipLayer::testTarItemVector()
 {
-  QSettings settings;
+  QgsSettings settings;
   Q_FOREACH ( const QString &s, mScanZipSettings )
   {
     settings.setValue( mSettingsKey, s );
@@ -429,7 +430,7 @@ void TestZipLayer::testZipItemAll()
   // using zipSetting 2 (Basic Scan) would raise errors, because QgsZipItem would not test for valid items
   // and return child names of the invalid items
   // test file does not contain invalid items (some of dash tests failed because of them)
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( mSettingsKey, "full" );
   QVERIFY( "full" == settings.value( mSettingsKey ).toString() );
   QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "" ) );
@@ -437,7 +438,7 @@ void TestZipLayer::testZipItemAll()
 
 void TestZipLayer::testTarItemAll()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( mSettingsKey, "full" );
   QVERIFY( "full" == settings.value( mSettingsKey ).toString() );
   QVERIFY( testZipItem( mDataDir + "testtar.tgz", "" ) );
@@ -486,7 +487,7 @@ void TestZipLayer::testGzipItemRasterTransparency()
 
 void TestZipLayer::testZipItemSubfolder()
 {
-  QSettings settings;
+  QgsSettings settings;
   Q_FOREACH ( const QString &s, mScanZipSettings )
   {
     settings.setValue( mSettingsKey, s );
@@ -497,7 +498,7 @@ void TestZipLayer::testZipItemSubfolder()
 
 void TestZipLayer::testTarItemSubfolder()
 {
-  QSettings settings;
+  QgsSettings settings;
   Q_FOREACH ( const QString &s, mScanZipSettings )
   {
     settings.setValue( mSettingsKey, s );
@@ -509,7 +510,7 @@ void TestZipLayer::testTarItemSubfolder()
 
 void TestZipLayer::testZipItemVRT()
 {
-  QSettings settings;
+  QgsSettings settings;
   Q_FOREACH ( const QString &s, mScanZipSettings )
   {
     settings.setValue( mSettingsKey, s );

@@ -16,10 +16,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsapplication.h"
+#include "qgssettings.h"
 
 #include "qgsprojectionselectiondialog.h"
 #include <QApplication>
-#include <QSettings>
 
 QgsProjectionSelectionDialog::QgsProjectionSelectionDialog( QWidget *parent,
     Qt::WindowFlags fl )
@@ -27,7 +27,7 @@ QgsProjectionSelectionDialog::QgsProjectionSelectionDialog( QWidget *parent,
 {
   setupUi( this );
 
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/ProjectionSelector/geometry" ) ).toByteArray() );
 
   //we will show this only when a message is set

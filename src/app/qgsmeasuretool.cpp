@@ -27,10 +27,10 @@
 #include "qgsmeasuretool.h"
 #include "qgscursors.h"
 #include "qgsmessagelog.h"
+#include "qgssettings.h"
 
 #include <QMessageBox>
 #include <QMouseEvent>
-#include <QSettings>
 
 QgsMeasureTool::QgsMeasureTool( QgsMapCanvas *canvas, bool measureArea )
   : QgsMapTool( canvas )
@@ -117,7 +117,7 @@ void QgsMeasureTool::restart()
 
 void QgsMeasureTool::updateSettings()
 {
-  QSettings settings;
+  QgsSettings settings;
 
   int myRed = settings.value( QStringLiteral( "/qgis/default_measure_color_red" ), 222 ).toInt();
   int myGreen = settings.value( QStringLiteral( "/qgis/default_measure_color_green" ), 155 ).toInt();

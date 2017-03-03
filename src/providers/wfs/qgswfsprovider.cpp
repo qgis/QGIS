@@ -33,6 +33,7 @@
 #include "qgswfstransactionrequest.h"
 #include "qgswfsshareddata.h"
 #include "qgswfsutils.h"
+#include "qgssettings.h"
 
 #include <QDomDocument>
 #include <QMessageBox>
@@ -44,7 +45,6 @@
 #include <QWidget>
 #include <QPair>
 #include <QTimer>
-#include <QSettings>
 
 #include <cfloat>
 
@@ -1523,7 +1523,7 @@ bool QgsWFSProvider::getCapabilities()
 
   if ( mShared->mMaxFeatures <= 0 && mShared->mCaps.supportsPaging )
   {
-    QSettings settings;
+    QgsSettings settings;
     mShared->mMaxFeatures = settings.value( QStringLiteral( "wfs/max_feature_count_if_not_provided" ), "1000" ).toInt();
     mShared->mMaxFeaturesWasSetFromDefaultForPaging = true;
     QgsDebugMsg( QString( "Server declares paging but does not advertize max feature count and user did not specify it. Using %1" ).arg( mShared->mMaxFeatures ) );

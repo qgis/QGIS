@@ -663,7 +663,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
   if ( !QgsMimeDataUtils::isUriList( data ) )
     return false;
 
-  QSettings settings;
+  QgsSettings settings;
 
   QgsCoordinateReferenceSystem mapsetCrs = QgsGrass::crsDirect( mGrassObject.gisdbase(), mGrassObject.location() );
 

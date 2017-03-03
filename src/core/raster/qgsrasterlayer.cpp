@@ -45,6 +45,7 @@ email                : tim at linfiniti.com
 #include "qgssinglebandcolordatarenderer.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgssinglebandpseudocolorrenderer.h"
+#include "qgssettings.h"
 
 #include <cmath>
 #include <cstdio>
@@ -69,7 +70,6 @@ email                : tim at linfiniti.com
 #include <QPainter>
 #include <QPixmap>
 #include <QRegExp>
-#include <QSettings>
 #include <QSlider>
 #include <QTime>
 
@@ -1134,7 +1134,7 @@ bool QgsRasterLayer::defaultContrastEnhancementSettings(
   QgsContrastEnhancement::ContrastEnhancementAlgorithm &myAlgorithm,
   QgsRasterMinMaxOrigin::Limits &myLimits ) const
 {
-  QSettings mySettings;
+  QgsSettings mySettings;
 
   QString key;
   QString defaultAlg;

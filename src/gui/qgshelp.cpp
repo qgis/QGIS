@@ -15,7 +15,11 @@
 
 #include "qgshelp.h"
 
-#include <QSettings>
+#include "qgis.h"
+#include "qgssettings.h"
+#include "qgsapplication.h"
+#include "qgsexpressioncontext.h"
+
 #include <QUrl>
 #include <QFileInfo>
 #include <QTcpSocket>
@@ -38,7 +42,7 @@ QUrl QgsHelp::helpUrl( const QString &key )
 {
   QUrl helpNotFound = QUrl::fromLocalFile( QgsApplication::pkgDataPath() + "/doc/nohelp.html" );
 
-  QSettings settings;
+  QgsSettings settings;
   QStringList paths = settings.value( QStringLiteral( "help/helpSearchPath" ) ).toStringList();
   if ( paths.isEmpty() )
   {
@@ -106,7 +110,7 @@ bool QgsHelp::urlExists( const QString &url )
   QUrl helpUrl( url );
   QTcpSocket socket;
 
-  QSettings settings;
+  QgsSettings settings;
   bool proxyEnabled = settings.value( QStringLiteral( "proxy/proxyEnabled" ), false ).toBool();
   if ( proxyEnabled )
   {

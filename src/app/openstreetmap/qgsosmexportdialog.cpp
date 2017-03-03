@@ -20,11 +20,11 @@
 #include "qgsdatasourceuri.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
+#include "qgssettings.h"
 
 #include <QApplication>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QSettings>
 #include <QStandardItemModel>
 
 QgsOSMExportDialog::QgsOSMExportDialog( QWidget *parent )
@@ -57,7 +57,7 @@ QgsOSMExportDialog::~QgsOSMExportDialog()
 
 void QgsOSMExportDialog::onBrowse()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString lastDir = settings.value( QStringLiteral( "/osm/lastDir" ), QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getOpenFileName( this, QString(), lastDir, tr( "SQLite databases (*.db)" ) );

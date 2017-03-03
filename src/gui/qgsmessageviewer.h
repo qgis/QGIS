@@ -60,16 +60,16 @@ class GUI_EXPORT QgsMessageViewer: public QDialog, public QgsMessageOutput, priv
     void setCheckBoxState( Qt::CheckState state );
     // Get checkbox state
     Qt::CheckState checkBoxState();
-    // Specifies a QSettings tag to store/retrieve the checkbox
+    // Specifies a QgsSettings tag to store/retrieve the checkbox
     // state to/from. Use an empty QString to disable this feature.
-    void setCheckBoxQSettingsLabel( const QString &label );
+    void setCheckBoxQgsSettingsLabel( const QString &label );
 
   private slots:
     void on_checkBox_toggled( bool );
 
 
   private:
-    QString mCheckBoxQSettingsLabel;
+    QString mCheckBoxQgsSettingsLabel;
 };
 
 #endif

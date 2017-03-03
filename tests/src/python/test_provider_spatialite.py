@@ -25,14 +25,14 @@ from qgis.core import (QgsVectorLayer,
                        QgsFeature,
                        QgsGeometry,
                        QgsProject,
-                       QgsField,
                        QgsFieldConstraints,
-                       QgsVectorLayerUtils)
+                       QgsVectorLayerUtils,
+                       QgsSettings)
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from providertestbase import ProviderTestCase
-from qgis.PyQt.QtCore import QSettings, QVariant
+from qgis.PyQt.QtCore import QVariant
 
 from qgis.utils import spatialite_connect
 
@@ -186,10 +186,10 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         pass
 
     def enableCompiler(self):
-        QSettings().setValue('/qgis/compileExpressions', True)
+        QgsSettings().setValue('/qgis/compileExpressions', True)
 
     def disableCompiler(self):
-        QSettings().setValue('/qgis/compileExpressions', False)
+        QgsSettings().setValue('/qgis/compileExpressions', False)
 
     def uncompiledFilters(self):
         return set(['cnt = 10 ^ 2',

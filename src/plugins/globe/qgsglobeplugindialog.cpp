@@ -16,10 +16,11 @@
 #include "qgsglobeplugindialog.h"
 #include "globe_plugin.h"
 
-#include <qgsapplication.h>
-#include <qgsnetworkaccessmanager.h>
-#include <qgsproject.h>
-#include <qgslogger.h>
+#include "qgsapplication.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsproject.h"
+#include "qgslogger.h"
+#include "qgssettings.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -28,7 +29,6 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QMenu>
-#include <QSettings>
 #include <QTimer>
 
 #include <osg/DisplaySettings>
@@ -105,7 +105,7 @@ QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget *parent, Qt::WFlags fl )
 
 void QgsGlobePluginDialog::restoreSavedSettings()
 {
-  QSettings settings;
+  QgsSettings settings;
 
   // Video settings
   comboBoxStereoMode->setCurrentIndex( comboBoxStereoMode->findText( settings.value( "/Plugin-Globe/stereoMode", "OFF" ).toString() ) );
@@ -153,7 +153,7 @@ void QgsGlobePluginDialog::on_buttonBox_rejected()
 
 void QgsGlobePluginDialog::apply()
 {
-  QSettings settings;
+  QgsSettings settings;
 
   // Video settings
   settings.setValue( "/Plugin-Globe/stereoMode", comboBoxStereoMode->currentText() );

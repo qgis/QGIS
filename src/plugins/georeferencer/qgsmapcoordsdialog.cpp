@@ -16,9 +16,9 @@
 #include <QPushButton>
 
 #include "qgsmapcanvas.h"
-
 #include "qgsgeorefvalidators.h"
 #include "qgsmapcoordsdialog.h"
+#include "qgssettings.h"
 
 QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPoint &pixelCoords, QWidget *parent )
   : QDialog( parent, Qt::Dialog )
@@ -28,7 +28,7 @@ QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPoint
 {
   setupUi( this );
 
-  QSettings s;
+  QgsSettings s;
   restoreGeometry( s.value( QStringLiteral( "/Plugin-GeoReferencer/MapCoordsWindow/geometry" ) ).toByteArray() );
 
   setAttribute( Qt::WA_DeleteOnClose );
@@ -60,7 +60,7 @@ QgsMapCoordsDialog::~QgsMapCoordsDialog()
 {
   delete mToolEmitPoint;
 
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Plugin-GeoReferencer/MapCoordsWindow/geometry" ), saveGeometry() );
 }
 

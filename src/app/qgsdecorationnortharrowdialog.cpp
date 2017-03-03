@@ -14,9 +14,9 @@
 #include "qgsdecorationnortharrow.h"
 #include "qgslogger.h"
 #include "qgshelp.h"
+#include "qgssettings.h"
 
 #include <QPainter>
-#include <QSettings>
 #include <cmath>
 #include <QDialogButtonBox>
 #include <QPushButton>
@@ -27,7 +27,7 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
 {
   setupUi( this );
 
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/DecorationNorthArrow/geometry" ) ).toByteArray() );
 
   QPushButton *applyButton = buttonBox->button( QDialogButtonBox::Apply );
@@ -59,7 +59,7 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
 
 QgsDecorationNorthArrowDialog::~QgsDecorationNorthArrowDialog()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/DecorationNorthArrow/geometry" ), saveGeometry() );
 }
 

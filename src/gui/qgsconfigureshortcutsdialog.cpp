@@ -16,8 +16,8 @@
 #include "qgsconfigureshortcutsdialog.h"
 
 #include "qgsshortcutsmanager.h"
-
 #include "qgslogger.h"
+#include "qgssettings.h"
 
 #include <QKeyEvent>
 #include <QKeySequence>
@@ -27,7 +27,6 @@
 #include <QDomDocument>
 #include <QFileDialog>
 #include <QTextStream>
-#include <QSettings>
 #include <QDebug>
 
 QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget *parent, QgsShortcutsManager *manager )
@@ -66,7 +65,7 @@ QgsConfigureShortcutsDialog::~QgsConfigureShortcutsDialog()
  */
 void QgsConfigureShortcutsDialog::saveState()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/ShortcutsDialog/geometry" ), saveGeometry() );
 }
 
@@ -75,7 +74,7 @@ void QgsConfigureShortcutsDialog::saveState()
  */
 void QgsConfigureShortcutsDialog::restoreState()
 {
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/ShortcutsDialog/geometry" ) ).toByteArray() );
 }
 
@@ -150,7 +149,7 @@ void QgsConfigureShortcutsDialog::saveShortcuts()
     return;
   }
 
-  QSettings settings;
+  QgsSettings settings;
 
   QDomDocument doc( QStringLiteral( "shortcuts" ) );
   QDomElement root = doc.createElement( QStringLiteral( "qgsshortcuts" ) );
@@ -222,7 +221,7 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
     return;
   }
 
-  QSettings settings;
+  QgsSettings settings;
   QString currentLocale;
 
   bool localeOverrideFlag = settings.value( QStringLiteral( "locale/overrideFlag" ), false ).toBool();

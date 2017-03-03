@@ -32,6 +32,7 @@ email                : sbr00pwb@users.sourceforge.net
 #include "qgspoint.h"
 #include "qgsproject.h"
 #include "qgsunittypes.h"
+#include "qgssettings.h"
 
 #include <QPainter>
 #include <QAction>
@@ -131,7 +132,7 @@ void QgsDecorationScaleBar::render( QPainter *theQPainter )
     int myMajorTickSize = 8;
     int myTextOffsetX = 3;
 
-    QSettings settings;
+    QgsSettings settings;
     bool ok = false;
     QgsUnitTypes::DistanceUnit myPreferredUnits = QgsUnitTypes::decodeDistanceUnit( settings.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString(), &ok );
     if ( !ok )

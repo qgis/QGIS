@@ -28,11 +28,11 @@ email                : sherman at mrcc.com
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
 #include "qgscolumntypethread.h"
+#include "qgssettings.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
-#include <QSettings>
 #include <QTextStream>
 #include <QHeaderView>
 #include <QStringList>
@@ -254,7 +254,7 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool 
 
   connect( mTablesTreeView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ), this, SLOT( treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & ) ) );
 
-  QSettings settings;
+  QgsSettings settings;
   mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "/qgis/addPostgisDC" ), false ).toBool() ?
                                      QAbstractItemView::ExtendedSelection :
                                      QAbstractItemView::MultiSelection );
@@ -369,7 +369,7 @@ void QgsPgSourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index )
 
 void QgsPgSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &index )
 {
-  QSettings settings;
+  QgsSettings settings;
   if ( settings.value( QStringLiteral( "/qgis/addPostgisDC" ), false ).toBool() )
   {
     addTables();
@@ -460,7 +460,7 @@ QgsPgSourceSelect::~QgsPgSourceSelect()
     finishList();
   }
 
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/PgSourceSelect/geometry" ), saveGeometry() );
   settings.setValue( QStringLiteral( "/Windows/PgSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
 

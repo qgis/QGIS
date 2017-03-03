@@ -16,8 +16,8 @@
 #include "qgsloadstylefromdbdialog.h"
 #include "qgslogger.h"
 #include "qgisapp.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QMessageBox>
 #include <QVector>
 
@@ -53,13 +53,13 @@ QgsLoadStyleFromDBDialog::QgsLoadStyleFromDBDialog( QWidget *parent )
   setTabOrder( mCancelButton, mDeleteButton );
   setTabOrder( mDeleteButton, mLoadButton );
 
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/loadStyleFromDb/geometry" ) ).toByteArray() );
 }
 
 QgsLoadStyleFromDBDialog::~QgsLoadStyleFromDBDialog()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/loadStyleFromDb/geometry" ), saveGeometry() );
 }
 

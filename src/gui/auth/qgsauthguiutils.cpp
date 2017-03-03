@@ -19,8 +19,8 @@
 #include <QFileDialog>
 #include <QLineEdit>
 #include <QMessageBox>
-#include <QSettings>
 
+#include "qgssettings.h"
 #include "qgsauthmanager.h"
 #include "qgsauthmasterpassresetdialog.h"
 #include "qgslogger.h"
@@ -251,7 +251,7 @@ void QgsAuthGuiUtils::fileFound( bool found, QWidget *widget )
 
 QString QgsAuthGuiUtils::getOpenFileName( QWidget *parent, const QString &title, const QString &extfilter )
 {
-  QSettings settings;
+  QgsSettings settings;
   QString recentdir = settings.value( QStringLiteral( "UI/lastAuthOpenFileDir" ), QDir::homePath() ).toString();
   QString f = QFileDialog::getOpenFileName( parent, title, recentdir, extfilter );
   if ( !f.isEmpty() )

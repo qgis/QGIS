@@ -31,12 +31,12 @@ import sys
 import os
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt, QRectF, QMimeData, QPoint, QPointF, QSettings, QByteArray, QSize, QSizeF, pyqtSignal
+from qgis.PyQt.QtCore import Qt, QRectF, QMimeData, QPoint, QPointF, QByteArray, QSize, QSizeF, pyqtSignal
 from qgis.PyQt.QtWidgets import QGraphicsView, QTreeWidget, QMessageBox, QFileDialog, QTreeWidgetItem, QSizePolicy, QMainWindow, QShortcut
 from qgis.PyQt.QtGui import QIcon, QImage, QPainter, QKeySequence
 from qgis.PyQt.QtSvg import QSvgGenerator
 from qgis.PyQt.QtPrintSupport import QPrinter
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsSettings
 from qgis.gui import QgsMessageBar
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
@@ -86,7 +86,7 @@ class ModelerDialog(BASE, WIDGET):
                             Qt.WindowMaximizeButtonHint |
                             Qt.WindowCloseButtonHint)
 
-        settings = QSettings()
+        settings = QgsSettings()
         self.restoreState(settings.value("/Processing/stateModeler", QByteArray()))
         self.restoreGeometry(settings.value("/Processing/geometryModeler", QByteArray()))
 
@@ -125,7 +125,7 @@ class ModelerDialog(BASE, WIDGET):
         def _wheelEvent(event):
             self.view.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
 
-            settings = QSettings()
+            settings = QgsSettings()
             factor = settings.value('/qgis/zoom_favor', 2.0)
             if (event.modifiers() == Qt.ControlModifier):
                 factor = 1.0 + (factor - 1.0) / 20.0
@@ -249,7 +249,7 @@ class ModelerDialog(BASE, WIDGET):
         self.hasChanged = False
 
     def closeEvent(self, evt):
-        settings = QSettings()
+        settings = QgsSettings()
         settings.setValue("/Processing/stateModeler", self.saveState())
         settings.setValue("/Processing/geometryModeler", self.saveGeometry())
 
@@ -302,7 +302,7 @@ class ModelerDialog(BASE, WIDGET):
         self.view.setTransformationAnchor(QGraphicsView.NoAnchor)
         point = self.view.mapToScene(QPoint(self.view.viewport().width() / 2, self.view.viewport().height() / 2))
 
-        settings = QSettings()
+        settings = QgsSettings()
         factor = settings.value('/qgis/zoom_favor', 2.0)
 
         self.view.scale(factor, factor)
@@ -313,7 +313,7 @@ class ModelerDialog(BASE, WIDGET):
         self.view.setTransformationAnchor(QGraphicsView.NoAnchor)
         point = self.view.mapToScene(QPoint(self.view.viewport().width() / 2, self.view.viewport().height() / 2))
 
-        settings = QSettings()
+        settings = QgsSettings()
         factor = settings.value('/qgis/zoom_favor', 2.0)
         factor = 1 / factor
 

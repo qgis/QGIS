@@ -15,8 +15,8 @@
  ***************************************************************************/
 
 #include "qgscodeeditor.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QWidget>
 #include <QFont>
 #include <QDebug>
@@ -170,7 +170,7 @@ bool QgsCodeEditor::isFixedPitch( const QFont &font )
 
 QFont QgsCodeEditor::getMonospaceFont()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString loadFont = settings.value( QStringLiteral( "pythonConsole/fontfamilytextEditor" ), "Monospace" ).toString();
   int fontSize = settings.value( QStringLiteral( "pythonConsole/fontsizeEditor" ), 10 ).toInt();
 

@@ -20,8 +20,8 @@
 #include <QFileInfo>
 #include <QLibrary>
 #include <QMessageBox>
-#include <QSettings>
 
+#include "qgssettings.h"
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgisinterface.h"
@@ -282,7 +282,7 @@ void QgsPluginRegistry::loadPythonPlugin( const QString &packageName )
     return;
   }
 
-  QSettings settings;
+  QgsSettings settings;
 
   // is loaded already?
   if ( ! isLoaded( packageName ) )
@@ -315,7 +315,7 @@ void QgsPluginRegistry::loadPythonPlugin( const QString &packageName )
 
 void QgsPluginRegistry::loadCppPlugin( const QString &fullPathName )
 {
-  QSettings settings;
+  QgsSettings settings;
 
   QString baseName = QFileInfo( fullPathName ).baseName();
 
@@ -432,7 +432,7 @@ void QgsPluginRegistry::unloadPythonPlugin( const QString &packageName )
   }
 
   // disable the plugin no matter if successfully loaded or not
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( "/PythonPlugins/" + packageName, false );
 #endif
 }
@@ -440,7 +440,7 @@ void QgsPluginRegistry::unloadPythonPlugin( const QString &packageName )
 
 void QgsPluginRegistry::unloadCppPlugin( const QString &fullPathName )
 {
-  QSettings settings;
+  QgsSettings settings;
   QString baseName = QFileInfo( fullPathName ).baseName();
   settings.setValue( "/Plugins/" + baseName, false );
   if ( isLoaded( baseName ) )
@@ -469,7 +469,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QStringList &pluginDirList 
 
 void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
 {
-  QSettings mySettings;
+  QgsSettings mySettings;
 
 #if defined(Q_OS_WIN) || defined(__CYGWIN__)
   QString pluginExt = "*.dll";

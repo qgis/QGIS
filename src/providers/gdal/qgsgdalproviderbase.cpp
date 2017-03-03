@@ -21,8 +21,7 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsgdalproviderbase.h"
-
-#include <QSettings>
+#include "qgssettings.h"
 
 QgsGdalProviderBase::QgsGdalProviderBase()
 {
@@ -218,7 +217,7 @@ int QgsGdalProviderBase::colorInterpretationFromGdal( const GDALColorInterp gdal
 void QgsGdalProviderBase::registerGdalDrivers()
 {
   GDALAllRegister();
-  QSettings mySettings;
+  QgsSettings mySettings;
   QString myJoinedList = mySettings.value( QStringLiteral( "gdal/skipList" ), "" ).toString();
   if ( !myJoinedList.isEmpty() )
   {

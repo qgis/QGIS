@@ -29,11 +29,11 @@ email                : jef at norbit dot de
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
 #include "qgsoraclecolumntypethread.h"
+#include "qgssettings.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
-#include <QSettings>
 #include <QTextStream>
 #include <QHeaderView>
 #include <QStringList>
@@ -226,7 +226,7 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
 
   connect( mTablesTreeView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ), this, SLOT( treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & ) ) );
 
-  QSettings settings;
+  QgsSettings settings;
   mTablesTreeView->setSelectionMode( settings.value( "/qgis/addOracleDC", false ).toBool() ?
                                      QAbstractItemView::ExtendedSelection :
                                      QAbstractItemView::MultiSelection );
@@ -357,7 +357,7 @@ void QgsOracleSourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index
 
 void QgsOracleSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &index )
 {
-  QSettings settings;
+  QgsSettings settings;
   if ( settings.value( "/qgis/addOracleDC", false ).toBool() )
   {
     addTables();
@@ -443,7 +443,7 @@ QgsOracleSourceSelect::~QgsOracleSourceSelect()
     finishList();
   }
 
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( "/Windows/OracleSourceSelect/geometry", saveGeometry() );
   settings.setValue( "/Windows/OracleSourceSelect/HoldDialogOpen", mHoldDialogOpen->isChecked() );
 

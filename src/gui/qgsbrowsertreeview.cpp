@@ -13,11 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QSettings>
-
+#include "qgssettings.h"
 #include "qgsbrowsermodel.h"
 #include "qgsbrowsertreeview.h"
-
 #include "qgslogger.h"
 
 
@@ -55,7 +53,7 @@ void QgsBrowserTreeView::hideEvent( QHideEvent *e )
 
 void QgsBrowserTreeView::saveState()
 {
-  QSettings settings;
+  QgsSettings settings;
   QStringList expandedPaths = expandedPathsList( QModelIndex() );
   settings.setValue( expandedPathsKey(), expandedPaths );
   QgsDebugMsg( "expandedPaths = " + expandedPaths.join( " " ) );
@@ -63,7 +61,7 @@ void QgsBrowserTreeView::saveState()
 
 void QgsBrowserTreeView::restoreState()
 {
-  QSettings settings;
+  QgsSettings settings;
   mExpandPaths = settings.value( expandedPathsKey(), QVariant() ).toStringList();
 
   QgsDebugMsg( "mExpandPaths = " + mExpandPaths.join( " " ) );

@@ -17,10 +17,10 @@
 
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgssettings.h"
 
 #include <QFileInfo>
 #include <QTextStream>
-#include <QSettings>
 
 #include <ogr_srs_api.h>
 #include <cpl_error.h>
@@ -212,7 +212,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   QgsDebugMsgLevel( "thePath: " + path, 2 );
 
   // zip settings + info
-  QSettings settings;
+  QgsSettings settings;
   QString scanZipSetting = settings.value( QStringLiteral( "/qgis/scanZipInBrowser2" ), "basic" ).toString();
   QString vsiPrefix = QgsZipItem::vsiPrefix( path );
   bool is_vsizip = ( vsiPrefix == QLatin1String( "/vsizip/" ) );

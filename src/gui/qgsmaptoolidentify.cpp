@@ -41,8 +41,8 @@
 #include "qgscurve.h"
 #include "qgscoordinateutils.h"
 #include "qgscsexception.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QMouseEvent>
 #include <QCursor>
 #include <QPixmap>
@@ -103,7 +103,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
 
   if ( mode == DefaultQgsSetting )
   {
-    QSettings settings;
+    QgsSettings settings;
     mode = static_cast<IdentifyMode>( settings.value( QStringLiteral( "/Map/identifyMode" ), 0 ).toInt() );
   }
 
@@ -671,7 +671,7 @@ QgsUnitTypes::AreaUnit QgsMapToolIdentify::displayAreaUnits() const
 
 QString QgsMapToolIdentify::formatDistance( double distance ) const
 {
-  QSettings settings;
+  QgsSettings settings;
   bool baseUnit = settings.value( QStringLiteral( "/qgis/measure/keepbaseunit" ), true ).toBool();
 
   return QgsDistanceArea::formatDistance( distance, 3, displayDistanceUnits(), baseUnit );
@@ -679,7 +679,7 @@ QString QgsMapToolIdentify::formatDistance( double distance ) const
 
 QString QgsMapToolIdentify::formatArea( double area ) const
 {
-  QSettings settings;
+  QgsSettings settings;
   bool baseUnit = settings.value( QStringLiteral( "/qgis/measure/keepbaseunit" ), true ).toBool();
 
   return QgsDistanceArea::formatArea( area, 3, displayAreaUnits(), baseUnit );

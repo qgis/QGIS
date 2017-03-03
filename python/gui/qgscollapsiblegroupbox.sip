@@ -104,12 +104,12 @@ class QgsCollapsibleGroupBox : QgsCollapsibleGroupBoxBasic
 #include <qgscollapsiblegroupbox.h>
 %End
   public:
-    QgsCollapsibleGroupBox( QWidget *parent /TransferThis/ = 0, QSettings* settings = 0 );
-    QgsCollapsibleGroupBox( const QString &title, QWidget *parent /TransferThis/ = 0, QSettings* settings = 0 );
+    QgsCollapsibleGroupBox( QWidget *parent /TransferThis/ = 0, QgsSettings* settings = 0 );
+    QgsCollapsibleGroupBox( const QString &title, QWidget *parent /TransferThis/ = 0, QgsSettings* settings = 0 );
     ~QgsCollapsibleGroupBox();
 
-    // set custom QSettings pointer if group box was already created from QtDesigner promotion
-    void setSettings( QSettings* settings );
+    // set custom QgsSettings pointer if group box was already created from QtDesigner promotion
+    void setSettings( QgsSettings* settings );
 
     //! set this to false to not save/restore collapsed state
     void setSaveCollapsedState( bool save );

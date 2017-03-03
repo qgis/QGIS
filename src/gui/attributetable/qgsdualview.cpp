@@ -27,13 +27,13 @@
 #include "qgsvectorlayercache.h"
 #include "qgsorganizetablecolumnsdialog.h"
 #include "qgseditorwidgetregistry.h"
+#include "qgssettings.h"
 
 #include <QClipboard>
 #include <QDialog>
 #include <QMenu>
 #include <QMessageBox>
 #include <QProgressDialog>
-#include <QSettings>
 #include <QGroupBox>
 #include <QInputDialog>
 
@@ -201,7 +201,7 @@ void QgsDualView::setSelectedOnTop( bool selectedOnTop )
 void QgsDualView::initLayerCache( QgsVectorLayer *layer, bool cacheGeometry )
 {
   // Initialize the cache
-  QSettings settings;
+  QgsSettings settings;
   int cacheSize = settings.value( QStringLiteral( "/qgis/attributeTableRowCache" ), "10000" ).toInt();
   mLayerCache = new QgsVectorLayerCache( layer, cacheSize, this );
   mLayerCache->setCacheGeometry( cacheGeometry );

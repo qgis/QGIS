@@ -454,7 +454,7 @@ QPushButton *QgsAuthSslImportDialog::closeButton()
 
 QString QgsAuthSslImportDialog::getOpenFileName( const QString &title, const QString &extfilter )
 {
-  QSettings settings;
+  QgsSettings settings;
   QString recentdir = settings.value( QStringLiteral( "UI/lastAuthImportSslOpenFileDir" ), QDir::homePath() ).toString();
   QString f = QFileDialog::getOpenFileName( this, title, recentdir, extfilter );
 

@@ -15,16 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QSettings>
 #include <QInputDialog>
 #include <QMessageBox>
-
-#include <QtSql/QSqlDatabase>
-#include <QtSql/QSqlError>
+#include <QSqlDatabase>
+#include <QSqlError>
 
 #include "qgsmssqlnewconnection.h"
 #include "qgsmssqlprovider.h"
 #include "qgscontexthelp.h"
+#include "qgssettings.h"
 
 QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -38,7 +37,7 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
   {
     // populate the dialog with the information stored for the connection
     // populate the fields with the stored setting parameters
-    QSettings settings;
+    QgsSettings settings;
 
     QString key = "/MSSQL/connections/" + connName;
     txtService->setText( settings.value( key + "/service" ).toString() );
@@ -69,7 +68,7 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
 //! Autoconnected SLOTS *
 void QgsMssqlNewConnection::accept()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString baseKey = QStringLiteral( "/MSSQL/connections/" );
   settings.setValue( baseKey + "selected", txtName->text() );
 

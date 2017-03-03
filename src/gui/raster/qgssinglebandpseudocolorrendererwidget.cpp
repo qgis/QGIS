@@ -22,6 +22,7 @@
 #include "qgsrastershader.h"
 #include "qgsrasterminmaxwidget.h"
 #include "qgstreewidgetitem.h"
+#include "qgssettings.h"
 
 // for color ramps - todo add rasterStyle and refactor raster vs. vector ramps
 #include "qgsstyle.h"
@@ -35,7 +36,6 @@
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
-#include <QSettings>
 #include <QTextStream>
 #include <QTreeView>
 
@@ -45,7 +45,7 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   , mDisableMinMaxWidgetRefresh( false )
   , mMinMaxOrigin( 0 )
 {
-  QSettings settings;
+  QgsSettings settings;
 
   setupUi( this );
 
@@ -395,7 +395,7 @@ void QgsSingleBandPseudoColorRendererWidget::applyColorRamp()
   if ( !btnColorRamp->colorRampName().isEmpty() )
   {
     // Remember last used color ramp
-    QSettings settings;
+    QgsSettings settings;
     settings.setValue( QStringLiteral( "/Raster/defaultPalette" ), btnColorRamp->colorRampName() );
   }
 
@@ -454,7 +454,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mLoadFromFileButton_clicked()
   int lineCounter = 0;
   bool importError = false;
   QString badLines;
-  QSettings settings;
+  QgsSettings settings;
   QString lastDir = settings.value( QStringLiteral( "lastColorMapDir" ), QDir::homePath() ).toString();
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Open file" ), lastDir, tr( "Textfile (*.txt)" ) );
   QFile inputFile( fileName );
@@ -541,7 +541,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mLoadFromFileButton_clicked()
 
 void QgsSingleBandPseudoColorRendererWidget::on_mExportToFileButton_clicked()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString lastDir = settings.value( QStringLiteral( "lastColorMapDir" ), QDir::homePath() ).toString();
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Save file" ), lastDir, tr( "Textfile (*.txt)" ) );
   if ( !fileName.isEmpty() )
@@ -672,7 +672,7 @@ void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRen
         }
         else
         {
-          QSettings settings;
+          QgsSettings settings;
           QString defaultPalette = settings.value( "/Raster/defaultPalette", "Spectral" ).toString();
           btnColorRamp->setColorRampFromName( defaultPalette );
         }

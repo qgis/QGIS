@@ -29,9 +29,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.PyQt.QtCore import QCoreApplication, QSettings, QObject, pyqtSignal
-from qgis.PyQt.QtGui import QIcon
-from qgis.core import NULL, QgsApplication
+from qgis.PyQt.QtCore import QCoreApplication, QObject, pyqtSignal
+from qgis.core import NULL, QgsApplication, QgsSettings
 from processing.tools.system import defaultOutputFolder
 import processing.tools.dataobjects
 
@@ -323,7 +322,7 @@ class Setting(object):
         self.validator(value)
         self.value = value
 
-    def read(self, qsettings=QSettings()):
+    def read(self, qsettings=QgsSettings()):
         value = qsettings.value(self.qname, None)
         if value is not None:
             if isinstance(self.value, bool):
@@ -337,7 +336,7 @@ class Setting(object):
             else:
                 self.value = value
 
-    def save(self, qsettings=QSettings()):
+    def save(self, qsettings=QgsSettings()):
         if self.valuetype == self.SELECTION:
             qsettings.setValue(self.qname, self.options.index(self.value))
         else:

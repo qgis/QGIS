@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmessageviewer.h"
-#include <QSettings>
+#include "qgssettings.h"
 
 QgsMessageViewer::QgsMessageViewer( QWidget *parent, Qt::WindowFlags fl, bool deleteOnClose )
   : QDialog( parent, fl )
@@ -30,15 +30,15 @@ QgsMessageViewer::QgsMessageViewer( QWidget *parent, Qt::WindowFlags fl, bool de
   setCheckBoxVisible( false );
   setCheckBoxState( Qt::Unchecked );
 
-  mCheckBoxQSettingsLabel = QLatin1String( "" );
+  mCheckBoxQgsSettingsLabel = QLatin1String( "" );
 
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/MessageViewer/geometry" ) ).toByteArray() );
 }
 
 QgsMessageViewer::~QgsMessageViewer()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/MessageViewer/geometry" ), saveGeometry() );
 }
 
@@ -105,21 +105,21 @@ Qt::CheckState QgsMessageViewer::checkBoxState()
   return checkBox->checkState();
 }
 
-void QgsMessageViewer::setCheckBoxQSettingsLabel( const QString &label )
+void QgsMessageViewer::setCheckBoxQgsSettingsLabel( const QString &label )
 {
-  mCheckBoxQSettingsLabel = label;
+  mCheckBoxQgsSettingsLabel = label;
 }
 
 
 void QgsMessageViewer::on_checkBox_toggled( bool toggled )
 {
   Q_UNUSED( toggled );
-  if ( !mCheckBoxQSettingsLabel.isEmpty() )
+  if ( !mCheckBoxQgsSettingsLabel.isEmpty() )
   {
-    QSettings settings;
+    QgsSettings settings;
     if ( checkBox->checkState() == Qt::Checked )
-      settings.setValue( mCheckBoxQSettingsLabel, false );
+      settings.setValue( mCheckBoxQgsSettingsLabel, false );
     else
-      settings.setValue( mCheckBoxQSettingsLabel, true );
+      settings.setValue( mCheckBoxQgsSettingsLabel, true );
   }
 }

@@ -18,6 +18,8 @@
 #include "qgslogger.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolordialog.h"
+#include "qgssettings.h"
+
 #include <QPainter>
 #include <QColorDialog>
 #include <QMimeData>
@@ -134,7 +136,7 @@ void QgsColorSchemeList::copyColors()
 
 void QgsColorSchemeList::showImportColorsDialog()
 {
-  QSettings s;
+  QgsSettings s;
   QString lastDir = s.value( QStringLiteral( "/UI/lastGplPaletteDir" ), QDir::homePath() ).toString();
   QString filePath = QFileDialog::getOpenFileName( this, tr( "Select palette file" ), lastDir, QStringLiteral( "GPL (*.gpl);;All files (*.*)" ) );
   activateWindow();
@@ -163,7 +165,7 @@ void QgsColorSchemeList::showImportColorsDialog()
 
 void QgsColorSchemeList::showExportColorsDialog()
 {
-  QSettings s;
+  QgsSettings s;
   QString lastDir = s.value( QStringLiteral( "/UI/lastGplPaletteDir" ), QDir::homePath() ).toString();
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Palette file" ), lastDir, QStringLiteral( "GPL (*.gpl)" ) );
   activateWindow();

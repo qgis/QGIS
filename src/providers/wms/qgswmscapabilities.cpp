@@ -19,8 +19,8 @@
 #include <QFile>
 #include <QDir>
 #include <QNetworkCacheMetaData>
-#include <QSettings>
 
+#include "qgssettings.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"
 #include "qgslogger.h"
@@ -2074,7 +2074,7 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
           QgsDebugMsg( QString( "expirationDate:%1" ).arg( cmd.expirationDate().toString() ) );
           if ( cmd.expirationDate().isNull() )
           {
-            QSettings s;
+            QgsSettings s;
             cmd.setExpirationDate( QDateTime::currentDateTime().addSecs( s.value( QStringLiteral( "/qgis/defaultCapabilitiesExpiry" ), "24" ).toInt() * 60 * 60 ) );
           }
 

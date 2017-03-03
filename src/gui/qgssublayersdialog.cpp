@@ -14,10 +14,9 @@
  ***************************************************************************/
 
 #include "qgssublayersdialog.h"
-
 #include "qgslogger.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QTableWidgetItem>
 #include <QPushButton>
 
@@ -58,13 +57,13 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
   connect( button, SIGNAL( pressed() ), layersTable, SLOT( selectAll() ) );
   // connect( pbnSelectNone, SIGNAL( pressed() ), SLOT( layersTable->selectNone() ) );
 
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( "/Windows/" + mName + "SubLayers/geometry" ).toByteArray() );
 }
 
 QgsSublayersDialog::~QgsSublayersDialog()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( "/Windows/" + mName + "SubLayers/geometry", saveGeometry() );
   settings.setValue( "/Windows/" + mName + "SubLayers/headerState",
                      layersTable->header()->saveState() );
@@ -121,7 +120,7 @@ void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefi
   }
 
   // resize columns
-  QSettings settings;
+  QgsSettings settings;
   QByteArray ba = settings.value( "/Windows/" + mName + "SubLayers/headerState" ).toByteArray();
   if ( ! ba.isNull() )
   {
@@ -140,7 +139,7 @@ void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefi
 // TODO alert the user when dialog is not opened
 int QgsSublayersDialog::exec()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString promptLayers = settings.value( QStringLiteral( "/qgis/promptForSublayers" ), 1 ).toString();
 
   // make sure three are sublayers to choose

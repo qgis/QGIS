@@ -19,7 +19,8 @@
 #include "qgsfieldvalidator.h"
 #include "qgsexpression.h"
 #include "qgsfieldvalueslineedit.h"
-#include <QSettings>
+#include "qgssettings.h"
+
 #include <QHBoxLayout>
 
 QgsDefaultSearchWidgetWrapper::QgsDefaultSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
@@ -58,7 +59,7 @@ void QgsDefaultSearchWidgetWrapper::setExpression( QString exp )
   QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
   bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double || fldType == QVariant::LongLong );
 
-  QSettings settings;
+  QgsSettings settings;
   QString nullValue = QgsApplication::nullRepresentation();
   QString fieldName = layer()->fields().at( mFieldIdx ).name();
   QString str;

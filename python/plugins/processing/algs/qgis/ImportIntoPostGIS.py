@@ -25,8 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.PyQt.QtCore import QSettings
-from qgis.core import QgsDataSourceUri, QgsVectorLayerImport
+from qgis.core import QgsVectorLayerImport, QgsSettings
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -168,6 +167,6 @@ class ImportIntoPostGIS(GeoAlgorithm):
         db.vacuum_analyze(table, schema)
 
     def dbConnectionNames(self):
-        settings = QSettings()
+        settings = QgsSettings()
         settings.beginGroup('/PostgreSQL/connections/')
         return settings.childGroups()

@@ -34,6 +34,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorfilewriter.h"
+#include "qgssettings.h"
 
 QString QgsGeometryCheckerResultTab::sSettingsGroup = QStringLiteral( "/geometry_checker/default_fix_methods/" );
 
@@ -500,7 +501,7 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
 
     Q_FOREACH ( QgsGeometryCheckError *error, errors )
     {
-      int fixMethod = QSettings().value( sSettingsGroup + error->check()->errorName(), QVariant::fromValue<int>( 0 ) ).toInt();
+      int fixMethod = QgsSettings().value( sSettingsGroup + error->check()->errorName(), QVariant::fromValue<int>( 0 ) ).toInt();
       mChecker->fixError( error, fixMethod );
       ui.progressBarFixErrors->setValue( ui.progressBarFixErrors->value() + 1 );
       QApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
@@ -566,7 +567,7 @@ void QgsGeometryCheckerResultTab::setDefaultResolutionMethods()
     QButtonGroup *radioGroup = new QButtonGroup( groupBox );
     radioGroup->setProperty( "errorType", check->errorName() );
     int id = 0;
-    int checkedId = QSettings().value( sSettingsGroup + check->errorName(), QVariant::fromValue<int>( 0 ) ).toInt();
+    int checkedId = QgsSettings().value( sSettingsGroup + check->errorName(), QVariant::fromValue<int>( 0 ) ).toInt();
     Q_FOREACH ( const QString &method, check->getResolutionMethods() )
     {
       QRadioButton *radio = new QRadioButton( method, groupBox );
@@ -589,7 +590,7 @@ void QgsGeometryCheckerResultTab::setDefaultResolutionMethods()
 void QgsGeometryCheckerResultTab::storeDefaultResolutionMethod( int id ) const
 {
   QString errorType = qobject_cast<QButtonGroup *>( QObject::sender() )->property( "errorType" ).toString();
-  QSettings().setValue( sSettingsGroup + errorType, id );
+  QgsSettings().setValue( sSettingsGroup + errorType, id );
 }
 
 void QgsGeometryCheckerResultTab::checkRemovedLayer( const QStringList &ids )

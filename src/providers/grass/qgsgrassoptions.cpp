@@ -40,7 +40,7 @@ QgsGrassOptions::QgsGrassOptions( QWidget *parent )
   connect( this, SIGNAL( accepted() ), SLOT( saveOptions() ) );
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), SLOT( saveOptions() ) );
 
-  QSettings settings;
+  QgsSettings settings;
 
   // General
   QString version = QStringLiteral( GRASS_VERSION_STRING ).remove( QStringLiteral( "@(#)" ) ).trimmed();
@@ -139,7 +139,7 @@ void QgsGrassOptions::on_mModulesConfigBrowseButton_clicked()
 
 void QgsGrassOptions::saveOptions()
 {
-  QSettings settings;
+  QgsSettings settings;
 
   // General
   bool customGisbase = mGisbaseCustomRadioButton->isChecked();

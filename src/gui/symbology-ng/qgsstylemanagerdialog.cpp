@@ -29,6 +29,7 @@
 #include "qgscptcitycolorrampdialog.h"
 #include "qgsstyleexportimportdialog.h"
 #include "qgssmartgroupeditordialog.h"
+#include "qgssettings.h"
 
 #include <QAction>
 #include <QFile>
@@ -36,7 +37,6 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QPushButton>
-#include <QSettings>
 #include <QStandardItemModel>
 #include <QMenu>
 
@@ -53,7 +53,7 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   setWindowModality( Qt::WindowModal );
 #endif
 
-  QSettings settings;
+  QgsSettings settings;
 
   restoreGeometry( settings.value( QStringLiteral( "/Windows/StyleV2Manager/geometry" ) ).toByteArray() );
   mSplitter->setSizes( QList<int>() << 170 << 540 );
@@ -194,7 +194,7 @@ void QgsStyleManagerDialog::onFinished()
     mStyle->save();
   }
 
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/StyleV2Manager/geometry" ), saveGeometry() );
   settings.setValue( QStringLiteral( "/Windows/StyleV2Manager/splitter" ), mSplitter->saveState() );
 }

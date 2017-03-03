@@ -18,7 +18,6 @@
 #include <QHeaderView>
 #include <QTreeView>
 #include <QMenu>
-#include <QSettings>
 #include <QToolButton>
 #include <QFileDialog>
 #include <QPlainTextDocumentLayout>
@@ -31,6 +30,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
+#include "qgssettings.h"
 
 // browser layer properties dialog
 #include "qgsapplication.h"
@@ -123,7 +123,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
   QgsCoordinateReferenceSystem layerCrs;
 
   // temporarily override /Projections/defaultBehavior to avoid dialog prompt
-  QSettings settings;
+  QgsSettings settings;
   QString defaultProjectionOption = settings.value( QStringLiteral( "/Projections/defaultBehavior" ), "prompt" ).toString();
   if ( settings.value( QStringLiteral( "/Projections/defaultBehavior" ), "prompt" ).toString() == QLatin1String( "prompt" ) )
   {
@@ -240,13 +240,13 @@ QgsBrowserPropertiesDialog::QgsBrowserPropertiesDialog( const QString &settingsS
   , mSettingsSection( settingsSection )
 {
   setupUi( this );
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( mSettingsSection + "/propertiesDialog/geometry" ).toByteArray() );
 }
 
 QgsBrowserPropertiesDialog::~QgsBrowserPropertiesDialog()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( mSettingsSection + "/propertiesDialog/geometry", saveGeometry() );
 }
 
@@ -325,7 +325,7 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QWidget *parent
 
 QgsBrowserDockWidget::~QgsBrowserDockWidget()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( settingsSection() + "/propertiesWidgetEnabled", mPropertiesWidgetEnabled );
   //settings.setValue(settingsSection() + "/propertiesWidgetHeight", mPropertiesWidget->size().height() );
   settings.setValue( settingsSection() + "/propertiesWidgetHeight", mPropertiesWidgetHeight );
@@ -354,7 +354,7 @@ void QgsBrowserDockWidget::showEvent( QShowEvent *e )
              this, &QgsBrowserDockWidget::selectionChanged );
 
     // objectName used by settingsSection() is not yet set in constructor
-    QSettings settings;
+    QgsSettings settings;
     mPropertiesWidgetEnabled = settings.value( settingsSection() + "/propertiesWidgetEnabled", false ).toBool();
     mActionPropertiesWidget->setChecked( mPropertiesWidgetEnabled );
     mPropertiesWidget->setVisible( false ); // false until item is selected
@@ -382,7 +382,7 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
 
   if ( item->type() == QgsDataItem::Directory )
   {
-    QSettings settings;
+    QgsSettings settings;
     QStringList favDirs = settings.value( QStringLiteral( "/browser/favourites" ) ).toStringList();
     bool inFavDirs = item->parent() && item->parent()->type() == QgsDataItem::Favorites;
 
@@ -620,7 +620,7 @@ void QgsBrowserDockWidget::toggleFastScan()
 
   if ( item->type() == QgsDataItem::Directory )
   {
-    QSettings settings;
+    QgsSettings settings;
     QStringList fastScanDirs = settings.value( QStringLiteral( "/qgis/scanItemsFastScanUris" ),
                                QStringList() ).toStringList();
     int idx = fastScanDirs.indexOf( item->path() );

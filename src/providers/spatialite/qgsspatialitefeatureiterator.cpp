@@ -19,12 +19,11 @@
 #include "qgsspatialiteprovider.h"
 #include "qgssqliteexpressioncompiler.h"
 
-#include <qgsgeometry.h>
-#include <qgslogger.h>
-#include <qgsmessagelog.h>
-#include <qgsjsonutils.h>
-
-#include <QSettings>
+#include "qgsgeometry.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsjsonutils.h"
+#include "qgssettings.h"
 
 QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsSpatiaLiteFeatureSource>( source, ownSource, request )
@@ -99,7 +98,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
       mFetchGeometry = true;
     }
 
-    if ( QSettings().value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() )
+    if ( QgsSettings().value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() )
     {
       QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( source->mFields );
 
@@ -138,7 +137,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
 
   mOrderByCompiled = true;
 
-  if ( QSettings().value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() )
+  if ( QgsSettings().value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() )
   {
     Q_FOREACH ( const QgsFeatureRequest::OrderByClause &clause, request.orderBy() )
     {

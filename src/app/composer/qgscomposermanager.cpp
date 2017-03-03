@@ -21,6 +21,7 @@
 #include "qgscomposer.h"
 #include "qgscomposition.h"
 #include "qgslogger.h"
+#include "qgssettings.h"
 
 #include <QDesktopServices>
 #include <QDialog>
@@ -30,13 +31,12 @@
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QUrl>
-#include <QSettings>
 
 QgsComposerManager::QgsComposerManager( QWidget *parent, Qt::WindowFlags f ): QDialog( parent, f )
 {
   setupUi( this );
 
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/ComposerManager/geometry" ) ).toByteArray() );
 
   mComposerListWidget->setItemDelegate( new QgsComposerNameDelegate( mComposerListWidget ) );
@@ -84,7 +84,7 @@ QgsComposerManager::QgsComposerManager( QWidget *parent, Qt::WindowFlags f ): QD
 
 QgsComposerManager::~QgsComposerManager()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/ComposerManager/geometry" ), saveGeometry() );
 }
 
@@ -312,7 +312,7 @@ void QgsComposerManager::on_mTemplate_currentIndexChanged( int indx )
 
 void QgsComposerManager::on_mTemplatePathBtn_pressed()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString lastTmplDir = settings.value( QStringLiteral( "/UI/lastComposerTemplateDir" ), QDir::homePath() ).toString();
   QString tmplPath = QFileDialog::getOpenFileName( this,
                      tr( "Choose template" ),

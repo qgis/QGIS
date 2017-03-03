@@ -21,13 +21,13 @@
 #include "qgsapplication.h"
 #include "qgsdialog.h"
 #include "qgssymbollayerutils.h"
+#include "qgssettings.h"
 
 #include <QPushButton>
 #include <QTextEdit>
 #include <QTime>
 #include <QMessageBox>
 #include <QSortFilterProxyModel>
-#include <QSettings>
 
 /////////
 
@@ -45,7 +45,7 @@ QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( const QgsCptCityColorRamp 
 
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/CptCityColorRampV2Dialog/geometry" ) ).toByteArray() );
   mSplitter->setSizes( QList<int>() << 250 << 550 );
   mSplitter->restoreState( settings.value( QStringLiteral( "/Windows/CptCityColorRampV2Dialog/splitter" ) ).toByteArray() );
@@ -444,7 +444,7 @@ void QgsCptCityColorRampDialog::on_cboVariantName_currentIndexChanged( int index
 void QgsCptCityColorRampDialog::onFinished()
 {
   // save settings
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/CptCityColorRampV2Dialog/geometry" ), saveGeometry() );
   settings.setValue( QStringLiteral( "/Windows/CptCityColorRampV2Dialog/splitter" ), mSplitter->saveState() );
 }

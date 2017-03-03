@@ -46,6 +46,7 @@
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgslogger.h"
+#include "qgssettings.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -53,7 +54,6 @@
 #include <QGraphicsView>
 #include <QPainter>
 #include <QPrinter>
-#include <QSettings>
 #include <QDir>
 
 #include <limits>
@@ -166,7 +166,7 @@ QgsProject *QgsComposition::project() const
 
 void QgsComposition::loadDefaults()
 {
-  QSettings settings;
+  QgsSettings settings;
   mSnapGridResolution = settings.value( QStringLiteral( "/Composer/defaultSnapGridResolution" ), 10.0 ).toDouble();
   mSnapGridOffsetX = settings.value( QStringLiteral( "/Composer/defaultSnapGridOffsetX" ), 0 ).toDouble();
   mSnapGridOffsetY = settings.value( QStringLiteral( "/Composer/defaultSnapGridOffsetY" ), 0 ).toDouble();
@@ -2303,7 +2303,7 @@ void QgsComposition::updateSettings()
 void QgsComposition::loadSettings()
 {
   //read grid style, grid color and pen width from settings
-  QSettings s;
+  QgsSettings s;
 
   QString gridStyleString;
   gridStyleString = s.value( QStringLiteral( "/Composer/gridStyle" ), "Dots" ).toString();

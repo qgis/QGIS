@@ -19,6 +19,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsdelimitedtextprovider.h"
 #include "qgsdelimitedtextfile.h"
+#include "qgssettings.h"
 
 #include <QButtonGroup>
 #include <QFile>
@@ -26,7 +27,6 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QRegExp>
-#include <QSettings>
 #include <QTextStream>
 #include <QTextCodec>
 #include <QUrl>
@@ -44,7 +44,7 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
 
   setupUi( this );
 
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( mPluginKey + "/geometry" ).toByteArray() );
 
   if ( embedded )
@@ -103,7 +103,7 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
 
 QgsDelimitedTextSourceSelect::~QgsDelimitedTextSourceSelect()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( mPluginKey + "/geometry", saveGeometry() );
   delete mFile;
 }
@@ -239,7 +239,7 @@ void QgsDelimitedTextSourceSelect::setSelectedChars( const QString &delimiters )
 
 void QgsDelimitedTextSourceSelect::loadSettings( const QString &subkey, bool loadGeomSettings )
 {
-  QSettings settings;
+  QgsSettings settings;
 
   // at startup, fetch the last used delimiter and directory from
   // settings
@@ -296,7 +296,7 @@ void QgsDelimitedTextSourceSelect::loadSettings( const QString &subkey, bool loa
 
 void QgsDelimitedTextSourceSelect::saveSettings( const QString &subkey, bool saveGeomSettings )
 {
-  QSettings settings;
+  QgsSettings settings;
   QString key = mPluginKey;
   if ( ! subkey.isEmpty() ) key.append( '/' ).append( subkey );
   settings.setValue( key + "/encoding", cmbEncoding->currentText() );
@@ -621,7 +621,7 @@ void QgsDelimitedTextSourceSelect::getOpenFileName()
 {
   // Get a file to process, starting at the current directory
   // Set initial dir to last used
-  QSettings settings;
+  QgsSettings settings;
   QString selectedFilter = settings.value( mPluginKey + "/file_filter", "" ).toString();
 
   QString s = QFileDialog::getOpenFileName(
@@ -645,7 +645,7 @@ void QgsDelimitedTextSourceSelect::updateFileName()
   QFileInfo finfo( filename );
   if ( finfo.exists() )
   {
-    QSettings settings;
+    QgsSettings settings;
     settings.setValue( mPluginKey + "/text_path", finfo.path() );
   }
   txtLayerName->setText( finfo.completeBaseName() );

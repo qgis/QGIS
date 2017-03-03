@@ -67,7 +67,7 @@ class CORE_EXPORT QgsSettings : public QObject
 
     /** Construct a QgsSettings object for accessing settings of the application
      * called application from the organization called organization, and with parent parent.
-    */
+     */
     explicit QgsSettings( const QString &organization,
                           const QString &application = QString(), QObject *parent = nullptr );
 
@@ -170,7 +170,7 @@ class CORE_EXPORT QgsSettings : public QObject
                     const Section section = Section::NoSection ) const;
     //! Returns true if there exists a setting called key; returns false otherwise.
     //! If a group is set using beginGroup(), key is taken to be relative to that group.
-    bool contains( const QString &key ) const;
+    bool contains( const QString &key, const Section section = Section::NoSection ) const;
     //! Returns the path where settings written using this QSettings object are stored.
     QString fileName() const;
     //! Writes any unsaved changes to permanent storage, and reloads any settings that have been
@@ -182,11 +182,13 @@ class CORE_EXPORT QgsSettings : public QObject
     void remove( const QString &key );
     //! Return the sanitized and prefixed key
     QString prefixedKey( const QString &key, const Section section ) const;
+    //! Removes all entries in the user settings
+    void clear();
 
   private:
 
     static QString sGlobalSettingsPath;
-    void init( );
+    void init();
     QString sanitizeKey( QString key ) const;
     QSettings *mUserSettings = nullptr;
     QSettings *mGlobalSettings = nullptr;

@@ -25,10 +25,10 @@
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgssettings.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QSettings>
 
 
 QgsSelectLayerTreeModel::QgsSelectLayerTreeModel( QgsLayerTreeGroup *rootNode, QObject *parent )
@@ -86,7 +86,7 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget *parent, Qt::Win
 
 QgsOfflineEditingPluginGui::~QgsOfflineEditingPluginGui()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "Plugin-OfflineEditing/geometry" ), saveGeometry() );
   settings.setValue( QStringLiteral( "Plugin-OfflineEditing/offline_data_path" ), mOfflineDataPath );
 }
@@ -172,7 +172,7 @@ void QgsOfflineEditingPluginGui::on_buttonBox_helpRequested()
 
 void QgsOfflineEditingPluginGui::restoreState()
 {
-  QSettings settings;
+  QgsSettings settings;
   mOfflineDataPath = settings.value( QStringLiteral( "Plugin-OfflineEditing/offline_data_path" ), QDir::homePath() ).toString();
   restoreGeometry( settings.value( QStringLiteral( "Plugin-OfflineEditing/geometry" ) ).toByteArray() );
 }

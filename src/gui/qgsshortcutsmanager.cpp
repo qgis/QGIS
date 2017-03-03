@@ -15,7 +15,8 @@
 
 #include "qgsshortcutsmanager.h"
 #include "qgslogger.h"
-#include <QSettings>
+#include "qgssettings.h"
+
 #include <QShortcut>
 
 QgsShortcutsManager *QgsShortcutsManager::sInstance = nullptr;
@@ -99,7 +100,7 @@ bool QgsShortcutsManager::registerAction( QAction *action, const QString &defaul
   actionText.remove( '&' ); // remove the accelerator
 
   // load overridden value from settings
-  QSettings settings;
+  QgsSettings settings;
   QString sequence = settings.value( mSettingsPath + actionText, defaultSequence ).toString();
 
   action->setShortcut( sequence );
@@ -123,7 +124,7 @@ bool QgsShortcutsManager::registerShortcut( QShortcut *shortcut, const QString &
   QString shortcutName = shortcut->objectName();
 
   // load overridden value from settings
-  QSettings settings;
+  QgsSettings settings;
   QString keySequence = settings.value( mSettingsPath + shortcutName, defaultSequence ).toString();
 
   shortcut->setKey( keySequence );
@@ -224,7 +225,7 @@ bool QgsShortcutsManager::setKeySequence( QAction *action, const QString &sequen
   actionText.remove( '&' ); // remove the accelerator
 
   // save to settings
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( mSettingsPath + actionText, sequence );
   return true;
 }
@@ -236,7 +237,7 @@ bool QgsShortcutsManager::setKeySequence( QShortcut *shortcut, const QString &se
   QString shortcutText = shortcut->objectName();
 
   // save to settings
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( mSettingsPath + shortcutText, sequence );
   return true;
 }

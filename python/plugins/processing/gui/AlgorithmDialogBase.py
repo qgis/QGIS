@@ -30,14 +30,15 @@ import os
 import webbrowser
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QCoreApplication, QSettings, QByteArray, QUrl
-from qgis.PyQt.QtWidgets import QApplication, QDialogButtonBox, QDesktopWidget
+from qgis.PyQt.QtCore import QCoreApplication, QByteArray, QUrl
+from qgis.PyQt.QtWidgets import QApplication, QDialogButtonBox
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 
 from qgis.utils import iface
 from qgis.core import (QgsNetworkAccessManager,
                        QgsProject,
-                       QgsProcessingFeedback)
+                       QgsProcessingFeedback,
+                       QgsSettings)
 
 
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -86,7 +87,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
         self.feedback = AlgorithmDialogFeedback(self)
 
-        self.settings = QSettings()
+        self.settings = QgsSettings()
         self.restoreGeometry(self.settings.value("/Processing/dialogBase", QByteArray()))
 
         self.executed = False

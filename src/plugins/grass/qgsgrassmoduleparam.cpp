@@ -17,7 +17,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
-#include <QSettings>
+#include "qgssettings.h"
 
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
@@ -597,7 +597,7 @@ void QgsGrassModuleOption::browse( bool checked )
 {
   Q_UNUSED( checked );
 
-  QSettings settings;
+  QgsSettings settings;
   QString lastDir = settings.value( QStringLiteral( "/GRASS/lastDirectOutputDir" ), "" ).toString();
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Output file" ), lastDir, tr( "GeoTIFF" ) + " (*.tif)" );
   if ( !fileName.isEmpty() )

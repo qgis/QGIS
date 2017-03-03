@@ -32,11 +32,11 @@
 #include "qgsmanageconnectionsdialog.h"
 #include "qgssqlstatement.h"
 #include "qgssqlcomposerdialog.h"
+#include "qgssettings.h"
 
 #include <QDomDocument>
 #include <QListWidgetItem>
 #include <QMessageBox>
-#include <QSettings>
 #include <QFileDialog>
 #include <QPainter>
 
@@ -88,7 +88,7 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, boo
   mItemDelegate = new QgsWFSItemDelegate( treeView );
   treeView->setItemDelegate( mItemDelegate );
 
-  QSettings settings;
+  QgsSettings settings;
   QgsDebugMsg( "restoring settings" );
   restoreGeometry( settings.value( QStringLiteral( "/Windows/WFSSourceSelect/geometry" ) ).toByteArray() );
   cbxUseTitleLayerName->setChecked( settings.value( QStringLiteral( "/Windows/WFSSourceSelect/UseTitleLayerName" ), false ).toBool() );
@@ -112,7 +112,7 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, boo
 
 QgsWFSSourceSelect::~QgsWFSSourceSelect()
 {
-  QSettings settings;
+  QgsSettings settings;
   QgsDebugMsg( "saving settings" );
   settings.setValue( QStringLiteral( "/Windows/WFSSourceSelect/geometry" ), saveGeometry() );
   settings.setValue( QStringLiteral( "/Windows/WFSSourceSelect/UseTitleLayerName" ), cbxUseTitleLayerName->isChecked() );
@@ -208,6 +208,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
 
   if ( !mCapabilities )
     return;
+
   QgsWfsCapabilities::ErrorCode err = mCapabilities->errorCode();
   if ( err != QgsWfsCapabilities::NoError )
   {
@@ -224,7 +225,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
         title = tr( "Server Exception" );
         break;
       default:
-        tr( "Error" );
+        title = tr( "Error" );
         break;
     }
     // handle errors

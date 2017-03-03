@@ -30,16 +30,12 @@
 #include "qgsquerybuilder.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
+#include "qgssettings.h"
 
 #include <QFileDialog>
-#include <QInputDialog>
 #include <QMessageBox>
-#include <QSettings>
-#include <QTextStream>
-#include <QHeaderView>
 #include <QStringList>
-#include <QtSql/QSqlDatabase>
-#include <QtSql/QSqlError>
+#include <QSqlDatabase>
 
 //! Used to create an editor for when the user tries to change the contents of a cell
 QWidget *QgsDb2SourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
@@ -178,7 +174,7 @@ QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, boo
 
   connect( mTablesTreeView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ), this, SLOT( treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & ) ) );
 
-  QSettings settings;
+  QgsSettings settings;
   mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "/qgis/addDb2DC" ), false ).toBool() ?
                                      QAbstractItemView::ExtendedSelection :
                                      QAbstractItemView::MultiSelection );
@@ -237,7 +233,7 @@ void QgsDb2SourceSelect::on_btnDelete_clicked()
 void QgsDb2SourceSelect::deleteConnection( const QString &name )
 {
   QString key = "/Db2/connections/" + name;
-  QSettings settings;
+  QgsSettings settings;
   settings.remove( key + "/service" );
   settings.remove( key + "/driver" );
   settings.remove( key + "/port" );
@@ -291,7 +287,7 @@ void QgsDb2SourceSelect::on_btnEdit_clicked()
 void QgsDb2SourceSelect::on_cmbConnections_activated( int )
 {
   // Remember which database was selected.
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Db2/connections/selected" ), cmbConnections->currentText() );
 
   cbxAllowGeometrylessTables->blockSignals( true );
@@ -316,7 +312,7 @@ void QgsDb2SourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index )
 
 void QgsDb2SourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &index )
 {
-  QSettings settings;
+  QgsSettings settings;
   if ( settings.value( QStringLiteral( "/qgis/addDb2DC" ), false ).toBool() )
   {
     addTables();
@@ -402,7 +398,7 @@ QgsDb2SourceSelect::~QgsDb2SourceSelect()
     mColumnTypeThread->wait();
   }
 
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/Db2SourceSelect/geometry" ), saveGeometry() );
   settings.setValue( QStringLiteral( "/Windows/Db2SourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
 
@@ -414,7 +410,7 @@ QgsDb2SourceSelect::~QgsDb2SourceSelect()
 
 void QgsDb2SourceSelect::populateConnectionList()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.beginGroup( QStringLiteral( "/Db2/connections" ) );
   QStringList keys = settings.childGroups();
   QStringList::Iterator it = keys.begin();
@@ -643,7 +639,7 @@ QString QgsDb2SourceSelect::fullDescription( const QString &schema, const QStrin
 void QgsDb2SourceSelect::setConnectionListPosition()
 {
   // If possible, set the item currently displayed database
-  QSettings settings;
+  QgsSettings settings;
   QString toSelect = settings.value( QStringLiteral( "/Db2/connections/selected" ) ).toString();
   cmbConnections->setCurrentIndex( cmbConnections->findText( toSelect ) );
 

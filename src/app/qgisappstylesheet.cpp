@@ -20,9 +20,9 @@
 #include "qgsapplication.h"
 #include "qgisapp.h"
 #include "qgslogger.h"
+#include "qgssettings.h"
 
 #include <QFont>
-#include <QSettings>
 #include <QStyle>
 
 /** @class QgisAppStyleSheet
@@ -46,9 +46,9 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   // the following default values, before insertion in opts, can be
   // configured using the platforms and window servers defined in the
   // constructor to set reasonable non-Qt defaults for the app stylesheet
-  QSettings settings;
-  // handle move from old QSettings group (/) to new (/qgis/stylesheet)
-  // NOTE: don't delete old QSettings keys, in case user is also running older QGIS
+  QgsSettings settings;
+  // handle move from old QgsSettings group (/) to new (/qgis/stylesheet)
+  // NOTE: don't delete old QgsSettings keys, in case user is also running older QGIS
   QVariant oldFontPointSize = settings.value( QStringLiteral( "/fontPointSize" ) );
   QVariant oldFontFamily = settings.value( QStringLiteral( "/fontFamily" ) );
 
@@ -182,7 +182,7 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
 
 void QgisAppStyleSheet::saveToSettings( const QMap<QString, QVariant> &opts )
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.beginGroup( QStringLiteral( "qgis/stylesheet" ) );
 
   QMap<QString, QVariant>::const_iterator opt = opts.constBegin();

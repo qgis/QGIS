@@ -18,9 +18,9 @@
 #include "qgsdatumtransformdialog.h"
 #include "qgscoordinatetransform.h"
 #include "qgslogger.h"
+#include "qgssettings.h"
 
 #include <QDir>
-#include <QSettings>
 
 QgsDatumTransformDialog::QgsDatumTransformDialog( const QString &layerName, const QList< QList< int > > &dt, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
@@ -33,7 +33,7 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QString &layerName, cons
 
   updateTitle();
 
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/DatumTransformDialog/geometry" ) ).toByteArray() );
   mHideDeprecatedCheckBox->setChecked( settings.value( QStringLiteral( "/Windows/DatumTransformDialog/hideDeprecated" ), false ).toBool() );
   mRememberSelectionCheckBox->setChecked( settings.value( QStringLiteral( "/Windows/DatumTransformDialog/rememberSelection" ), false ).toBool() );
@@ -125,7 +125,7 @@ void QgsDatumTransformDialog::load()
 
 QgsDatumTransformDialog::~QgsDatumTransformDialog()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/DatumTransformDialog/geometry" ), saveGeometry() );
   settings.setValue( QStringLiteral( "/Windows/DatumTransformDialog/hideDeprecated" ), mHideDeprecatedCheckBox->isChecked() );
   settings.setValue( QStringLiteral( "/Windows/DatumTransformDialog/rememberSelection" ), mRememberSelectionCheckBox->isChecked() );

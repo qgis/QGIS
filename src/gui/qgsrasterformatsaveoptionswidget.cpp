@@ -21,8 +21,8 @@
 #include "qgsrasterlayer.h"
 #include "qgsproviderregistry.h"
 #include "qgsrasterdataprovider.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QTextEdit>
@@ -202,7 +202,7 @@ void QgsRasterFormatSaveOptionsWidget::updateProfiles()
   // update UI
   mProfileComboBox->blockSignals( false );
   // mProfileComboBox->setCurrentIndex( 0 );
-  QSettings mySettings;
+  QgsSettings mySettings;
   mProfileComboBox->setCurrentIndex( mProfileComboBox->findData( mySettings.value(
                                        mProvider + "/driverOptions/" + format.toLower() + "/defaultProfile",
                                        "z_adefault" ) ) );
@@ -320,7 +320,7 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
     // temporarily override /Projections/defaultBehavior to avoid dialog prompt
     // this is taken from qgsbrowserdockwidget.cpp
     // TODO - integrate this into qgis core
-    QSettings settings;
+    QgsSettings settings;
     QString defaultProjectionOption = settings.value( QStringLiteral( "/Projections/defaultBehavior" ), "prompt" ).toString();
     if ( settings.value( QStringLiteral( "/Projections/defaultBehavior" ), "prompt" ).toString() == QLatin1String( "prompt" ) )
     {
@@ -515,19 +515,19 @@ QStringList QgsRasterFormatSaveOptionsWidget::options() const
 
 QString QgsRasterFormatSaveOptionsWidget::createOptions( const QString &profileName ) const
 {
-  QSettings mySettings;
+  QgsSettings mySettings;
   return mySettings.value( settingsKey( profileName ), "" ).toString();
 }
 
 void QgsRasterFormatSaveOptionsWidget::deleteCreateOptions( const QString &profileName )
 {
-  QSettings mySettings;
+  QgsSettings mySettings;
   mySettings.remove( settingsKey( profileName ) );
 }
 
 void QgsRasterFormatSaveOptionsWidget::setCreateOptions()
 {
-  QSettings mySettings;
+  QgsSettings mySettings;
   QString myProfiles;
   QMap< QString, QString >::const_iterator i = mOptionsMap.constBegin();
   while ( i != mOptionsMap.constEnd() )
@@ -544,7 +544,7 @@ void QgsRasterFormatSaveOptionsWidget::setCreateOptions()
 
 void QgsRasterFormatSaveOptionsWidget::setCreateOptions( const QString &profileName, const QString &options )
 {
-  QSettings mySettings;
+  QgsSettings mySettings;
   mySettings.setValue( settingsKey( profileName ), options.trimmed() );
 }
 
@@ -555,7 +555,7 @@ void QgsRasterFormatSaveOptionsWidget::setCreateOptions( const QString &profileN
 
 QStringList QgsRasterFormatSaveOptionsWidget::profiles() const
 {
-  QSettings mySettings;
+  QgsSettings mySettings;
   return mySettings.value( mProvider + "/driverOptions/" + pseudoFormat().toLower() + "/profiles", "" ).toString().trimmed().split( ' ', QString::SkipEmptyParts );
 }
 

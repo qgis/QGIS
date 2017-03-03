@@ -36,13 +36,13 @@ import json
 import os.path
 from urllib.request import build_opener, install_opener, ProxyHandler
 
-from qgis.PyQt.QtCore import QSettings, Qt
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QApplication, QDialog, QDialogButtonBox, QMessageBox, QTreeWidgetItem, QWidget
 from qgis.PyQt.QtGui import QColor, QCursor
 
 from qgis.core import (QgsApplication, QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform, QgsGeometry, QgsPoint,
-                       QgsProviderRegistry)
+                       QgsProviderRegistry, QgsSettings)
 from qgis.gui import QgsRubberBand
 
 from owslib.csw import CatalogueServiceWeb
@@ -74,7 +74,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         self.iface = iface
         self.map = iface.mapCanvas()
-        self.settings = QSettings()
+        self.settings = QgsSettings()
         self.catalog = None
         self.catalog_url = None
         self.context = StaticContext()
@@ -226,7 +226,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         # lot of items)
         if not exists and conn_count > 0:
             # If to_select is null, then the selected connection wasn't found
-            # by QSettings, which probably means that this is the first time
+            # by QgsSettings, which probably means that this is the first time
             # the user has used CSWClient, so default to the first in the list
             # of connetions. Otherwise default to the last.
             if not to_select:

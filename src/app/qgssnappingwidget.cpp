@@ -21,7 +21,6 @@
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QMenu>
-#include <QSettings>
 #include <QToolBar>
 #include <QToolButton>
 
@@ -36,7 +35,7 @@
 #include "qgssnappinglayertreemodel.h"
 #include "qgssnappingwidget.h"
 #include "qgsunittypes.h"
-
+#include "qgssettings.h"
 
 
 QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas, QWidget *parent )
@@ -236,17 +235,17 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   modeChanged();
   updateToleranceDecimals();
 
-  bool defaultSnapEnabled = QSettings().value( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ), false ).toBool();
+  bool defaultSnapEnabled = QgsSettings().value( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ), false ).toBool();
   enableSnapping( defaultSnapEnabled );
 
-  restoreGeometry( QSettings().value( "/Windows/SnappingWidget/geometry" ).toByteArray() );
+  restoreGeometry( QgsSettings().value( "/Windows/SnappingWidget/geometry" ).toByteArray() );
 }
 
 QgsSnappingWidget::~QgsSnappingWidget()
 {
   if ( mDisplayMode == Widget )
   {
-    QSettings().setValue( QStringLiteral( "/Windows/SnappingWidget/geometry" ), saveGeometry() );
+    QgsSettings().setValue( QStringLiteral( "/Windows/SnappingWidget/geometry" ), saveGeometry() );
   }
 }
 

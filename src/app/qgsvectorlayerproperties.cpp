@@ -52,6 +52,10 @@
 #include "qgsdatasourceuri.h"
 #include "qgsrenderer.h"
 #include "qgsexpressioncontext.h"
+#include "qgssettings.h"
+#include "qgsrendererpropertiesdialog.h"
+#include "qgsstyle.h"
+
 #include "layertree/qgslayertreelayer.h"
 
 #include <QMessageBox>
@@ -60,7 +64,6 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QFontDialog>
-#include <QSettings>
 #include <QComboBox>
 #include <QCheckBox>
 #include <QHeaderView>
@@ -287,7 +290,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     )
   );
 
-  QSettings settings;
+  QgsSettings settings;
   // if dialog hasn't been opened/closed yet, default to Styles tab, which is used most often
   // this will be read by restoreOptionsBaseUi()
   if ( !settings.contains( QStringLiteral( "/Windows/VectorLayerProperties/tab" ) ) )
@@ -807,7 +810,7 @@ void QgsVectorLayerProperties::saveDefaultStyle_clicked()
 
 void QgsVectorLayerProperties::loadStyle_clicked()
 {
-  QSettings myQSettings;  // where we keep last used filter in persistent state
+  QgsSettings myQSettings;  // where we keep last used filter in persistent state
   QString myLastUsedDir = myQSettings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load layer properties from style file" ), myLastUsedDir,
@@ -870,7 +873,7 @@ void QgsVectorLayerProperties::saveStyleAsMenuTriggered( QAction *action )
 
 void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
 {
-  QSettings myQSettings;  // where we keep last used filter in persistent state
+  QgsSettings myQSettings;  // where we keep last used filter in persistent state
   QString myLastUsedDir = myQSettings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   if ( styleType == DB )
@@ -1221,7 +1224,7 @@ void QgsVectorLayerProperties::openPanel( QgsPanelWidget *panel )
 {
   QDialog *dlg = new QDialog();
   QString key =  QStringLiteral( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );
-  QSettings settings;
+  QgsSettings settings;
   dlg->restoreGeometry( settings.value( key ).toByteArray() );
   dlg->setWindowTitle( panel->panelTitle() );
   dlg->setLayout( new QVBoxLayout() );

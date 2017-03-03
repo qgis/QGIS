@@ -16,9 +16,10 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QSettings>
+
 #include <memory>
 
+#include "qgssettings.h"
 #include "qgsfield.h"
 #include "qgsapplication.h"
 #include "qgstest.h"
@@ -51,7 +52,7 @@ class TestQgsField: public QObject
 
 void TestQgsField::initTestCase()
 {
-  // Set up the QSettings environment
+  // Set up the QgsSettings environment
   QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );

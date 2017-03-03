@@ -21,8 +21,9 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgscodeeditorhtml.h"
 #include "qgscodeeditorcss.h"
+#include "qgssettings.h"
+
 #include <QFileDialog>
-#include <QSettings>
 
 
 QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml *html, QgsComposerFrame *frame )
@@ -122,7 +123,7 @@ void QgsComposerHtmlWidget::on_mUrlLineEdit_editingFinished()
 
 void QgsComposerHtmlWidget::on_mFileToolButton_clicked()
 {
-  QSettings s;
+  QgsSettings s;
   QString lastDir = s.value( QStringLiteral( "/UI/lastHtmlDir" ), QDir::homePath() ).toString();
   QString file = QFileDialog::getOpenFileName( this, tr( "Select HTML document" ), lastDir, QStringLiteral( "HTML (*.html *.htm);;All files (*.*)" ) );
   if ( !file.isEmpty() )

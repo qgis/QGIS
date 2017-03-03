@@ -24,10 +24,10 @@
 #include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsunittypes.h"
+#include "qgssettings.h"
 
 #include <QCloseEvent>
 #include <QLocale>
-#include <QSettings>
 #include <QPushButton>
 
 
@@ -97,7 +97,7 @@ void QgsMeasureDialog::crsChanged()
 
 void QgsMeasureDialog::updateSettings()
 {
-  QSettings settings;
+  QgsSettings settings;
 
   mDecimalPlaces = settings.value( QStringLiteral( "/qgis/measure/decimalplaces" ), "3" ).toInt();
   mCanvasUnits = mTool->canvas()->mapUnits();
@@ -248,7 +248,7 @@ void QgsMeasureDialog::closeEvent( QCloseEvent *e )
 
 void QgsMeasureDialog::restorePosition()
 {
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/Measure/geometry" ) ).toByteArray() );
   int wh;
   if ( mMeasureArea )
@@ -261,7 +261,7 @@ void QgsMeasureDialog::restorePosition()
 
 void QgsMeasureDialog::saveWindowLocation()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/Measure/geometry" ), saveGeometry() );
   const QString &key = mMeasureArea ? "/Windows/Measure/hNoTable" : "/Windows/Measure/h";
   settings.setValue( key, height() );
@@ -269,7 +269,7 @@ void QgsMeasureDialog::saveWindowLocation()
 
 QString QgsMeasureDialog::formatDistance( double distance, bool convertUnits ) const
 {
-  QSettings settings;
+  QgsSettings settings;
   bool baseUnit = settings.value( QStringLiteral( "/qgis/measure/keepbaseunit" ), true ).toBool();
 
   if ( convertUnits )

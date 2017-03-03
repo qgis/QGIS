@@ -17,6 +17,7 @@
 #include "qgslogger.h"
 #include "qgswfsutils.h"
 #include "qgsgeometry.h"
+#include "qgssettings.h"
 
 // 1 minute
 #define KEEP_ALIVE_DELAY        (60 * 1000)
@@ -26,7 +27,6 @@
 #include <QTimer>
 #include <QSharedMemory>
 #include <QDateTime>
-#include <QSettings>
 #include <QCryptographicHash>
 
 QMutex QgsWFSUtils::sMutex;
@@ -36,7 +36,7 @@ int QgsWFSUtils::sCounter = 0;
 
 QString QgsWFSUtils::getBaseCacheDirectory( bool createIfNotExisting )
 {
-  QSettings settings;
+  QgsSettings settings;
   QString cacheDirectory = settings.value( QStringLiteral( "cache/directory" ) ).toString();
   if ( cacheDirectory.isEmpty() )
     cacheDirectory = QgsApplication::qgisSettingsDirPath() + "cache";

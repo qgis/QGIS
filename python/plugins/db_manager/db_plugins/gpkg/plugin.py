@@ -24,10 +24,10 @@ from builtins import str
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import GPKGDBConnector
 
-from qgis.PyQt.QtCore import Qt, QSettings, QFileInfo
+from qgis.PyQt.QtCore import Qt, QFileInfo
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QApplication, QAction, QFileDialog
-from qgis.core import QgsDataSourceUri
+from qgis.core import QgsDataSourceUri, QgsSettings
 from qgis.gui import QgsMessageBar
 
 from ..plugin import DBPlugin, Database, Table, VectorTable, RasterTable, TableField, TableIndex, TableTrigger, \
@@ -68,7 +68,7 @@ class GPKGDBPlugin(DBPlugin):
 
     def connect(self, parent=None):
         conn_name = self.connectionName()
-        settings = QSettings()
+        settings = QgsSettings()
         settings.beginGroup(u"/%s/%s" % (self.connectionSettingsKey(), conn_name))
 
         if not settings.contains("gpkgpath"):  # non-existent entry?
@@ -82,7 +82,7 @@ class GPKGDBPlugin(DBPlugin):
 
     @classmethod
     def addConnection(self, conn_name, uri):
-        settings = QSettings()
+        settings = QgsSettings()
         settings.beginGroup(u"/%s/%s" % (self.connectionSettingsKey(), conn_name))
         settings.setValue("gpkgpath", uri.database())
         return True

@@ -23,10 +23,10 @@
 #include "qgsvectorlayerimport.h"
 #include "qgsmessageoutput.h"
 #include "qgsvectorlayer.h"
+#include "qgssettings.h"
 
 #include <QAction>
 #include <QMessageBox>
-#include <QSettings>
 #include <QProgressDialog>
 
 QGISEXTERN bool deleteLayer( const QString &dbPath, const QString &tableName, QString &errCause );
@@ -335,7 +335,7 @@ QGISEXTERN bool createDb( const QString &dbPath, QString &errCause );
 
 void QgsSLRootItem::createDatabase()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString lastUsedDir = settings.value( QStringLiteral( "/UI/lastSpatiaLiteDir" ), QDir::homePath() ).toString();
 
   QString filename = QFileDialog::getSaveFileName( nullptr, tr( "New SpatiaLite Database File" ),

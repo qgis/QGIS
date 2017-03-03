@@ -26,6 +26,7 @@
 #include "qgsproject.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatetransform.h"
+#include "qgssettings.h"
 
 #include "qgsosmdownload.h"
 
@@ -151,7 +152,7 @@ void QgsOSMDownloadDialog::onCurrentLayerChanged( int index )
 
 void QgsOSMDownloadDialog::onBrowseClicked()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString lastDir = settings.value( QStringLiteral( "/osm/lastDir" ), QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getSaveFileName( this, QString(), lastDir, tr( "OpenStreetMap files (*.osm)" ) );

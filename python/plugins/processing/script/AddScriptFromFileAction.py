@@ -28,9 +28,9 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
-from qgis.PyQt.QtCore import QSettings, QFileInfo
+from qgis.PyQt.QtCore import QFileInfo
 
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsSettings
 
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.gui.ToolboxAction import ToolboxAction
@@ -51,7 +51,7 @@ class AddScriptFromFileAction(ToolboxAction):
         return QgsApplication.getThemeIcon("/processingScript.svg")
 
     def execute(self):
-        settings = QSettings()
+        settings = QgsSettings()
         lastDir = settings.value('Processing/lastScriptsDir', '')
         filenames, selected_filter = QFileDialog.getOpenFileNames(self.toolbox,
                                                                   self.tr('Script files', 'AddScriptFromFileAction'), lastDir,

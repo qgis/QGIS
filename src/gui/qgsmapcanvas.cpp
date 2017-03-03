@@ -30,7 +30,6 @@ email                : sherman at mrcc.com
 #include <QPaintEvent>
 #include <QPixmap>
 #include <QRect>
-#include <QSettings>
 #include <QTextStream>
 #include <QResizeEvent>
 #include <QString>
@@ -38,6 +37,7 @@ email                : sherman at mrcc.com
 #include <QWheelEvent>
 
 #include "qgis.h"
+#include "qgssettings.h"
 #include "qgsmapcanvasannotationitem.h"
 #include "qgsapplication.h"
 #include "qgscsexception.h"
@@ -145,7 +145,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   mSettings.setFlag( QgsMapSettings::RenderPartialOutput );
 
   //segmentation parameters
-  QSettings settings;
+  QgsSettings settings;
   double segmentationTolerance = settings.value( QStringLiteral( "/qgis/segmentationTolerance" ), "0.01745" ).toDouble();
   QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::SegmentationToleranceType( settings.value( QStringLiteral( "/qgis/segmentationToleranceType" ), 0 ).toInt() );
   mSettings.setSegmentationTolerance( segmentationTolerance );
@@ -547,7 +547,7 @@ void QgsMapCanvas::rendererJobFinished()
     QPainter p( &img );
     emit renderComplete( &p );
 
-    QSettings settings;
+    QgsSettings settings;
     if ( settings.value( QStringLiteral( "/Map/logCanvasRefreshEvent" ), false ).toBool() )
     {
       QString logMsg = tr( "Canvas refresh: %1 ms" ).arg( mJob->renderingTime() );
@@ -1824,7 +1824,7 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer *ml, const QString &
   }
 
   //check if default datum transformation available
-  QSettings s;
+  QgsSettings s;
   QString settingsString = "/Projections/" + srcAuthId + "//" + destAuthId;
   QVariant defaultSrcTransform = s.value( settingsString + "_srcTransform" );
   QVariant defaultDestTransform = s.value( settingsString + "_destTransform" );

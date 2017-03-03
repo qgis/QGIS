@@ -19,8 +19,8 @@ import tempfile
 import shutil
 from osgeo import gdal, ogr, osr
 
-from qgis.core import QgsDataSourceUri
-from qgis.PyQt.QtCore import QCoreApplication, QSettings
+from qgis.core import QgsDataSourceUri, QgsSettings
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing import start_app, unittest
 
 from plugins.db_manager.db_plugins import supportedDbTypes, createDbPlugin
@@ -40,7 +40,7 @@ class TestPyQgsDBManagerGpkg(unittest.TestCase):
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("TestPyQgsDBManagerGpkg.com")
         QCoreApplication.setApplicationName("TestPyQgsDBManagerGpkg")
-        QSettings().clear()
+        QgsSettings().clear()
         start_app()
 
         cls.basetestpath = tempfile.mkdtemp()
@@ -61,7 +61,7 @@ class TestPyQgsDBManagerGpkg(unittest.TestCase):
     def tearDownClass(cls):
         """Run after all tests"""
 
-        QSettings().clear()
+        QgsSettings().clear()
         shutil.rmtree(cls.basetestpath, True)
 
     def testSupportedDbTypes(self):

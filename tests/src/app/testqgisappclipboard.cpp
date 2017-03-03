@@ -17,17 +17,17 @@
 #include <QSplashScreen>
 #include <QString>
 #include <QStringList>
-#include "qgstest.h"
 
-#include <qgisapp.h>
-#include <qgsapplication.h>
-#include <qgsfeature.h>
+#include "qgisapp.h"
+#include "qgsapplication.h"
+#include "qgsfeature.h"
 #include "qgsfeaturestore.h"
-#include <qgsfield.h>
-#include <qgsclipboard.h>
-#include <qgsvectorlayer.h>
+#include "qgsfield.h"
+#include "qgsclipboard.h"
+#include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
 #include "qgspointv2.h"
+#include "qgssettings.h"
 
 /** \ingroup UnitTests
  * This is a unit test for the QgisApp clipboard.
@@ -66,7 +66,7 @@ TestQgisAppClipboard::TestQgisAppClipboard()
 //runs before all tests
 void TestQgisAppClipboard::initTestCase()
 {
-  // Set up the QSettings environment
+  // Set up the QgsSettings environment
   QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
@@ -140,7 +140,7 @@ void TestQgisAppClipboard::copyToText()
   mQgisApp->clipboard()->replaceWithCopyOf( feats );
 
   // attributes only
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesOnly );
   QString result = mQgisApp->clipboard()->generateClipboardText();
   QCOMPARE( result, QString( "int_field\tstring_field\n9\tval\n19\tval2" ) );

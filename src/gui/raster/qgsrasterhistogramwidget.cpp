@@ -21,12 +21,12 @@
 #include "qgsrasterrendererwidget.h"
 #include "qgsrasterhistogramwidget.h"
 #include "qgsrasterdataprovider.h"
+#include "qgssettings.h"
 
 #include <QMenu>
 #include <QFileInfo>
 #include <QDir>
 #include <QPainter>
-#include <QSettings>
 
 // QWT Charting widget
 #include <qwt_global.h>
@@ -75,7 +75,7 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget
   mHistoMarkerMin = nullptr;
   mHistoMarkerMax = nullptr;
 
-  QSettings settings;
+  QgsSettings settings;
   mHistoShowMarkers = settings.value( QStringLiteral( "/Raster/histogram/showMarkers" ), false ).toBool();
   // mHistoLoadApplyAll = settings.value( "/Raster/histogram/loadApplyAll", false ).toBool();
   mHistoZoomToMinMax = settings.value( QStringLiteral( "/Raster/histogram/zoomToMinMax" ), false ).toBool();
@@ -789,7 +789,7 @@ void QgsRasterHistogramWidget::histoAction( const QString &actionName, bool acti
   if ( actionName == QLatin1String( "Show markers" ) )
   {
     mHistoShowMarkers = actionFlag;
-    QSettings settings;
+    QgsSettings settings;
     settings.setValue( QStringLiteral( "/Raster/histogram/showMarkers" ), mHistoShowMarkers );
     updateHistoMarkers();
     return;
@@ -797,14 +797,14 @@ void QgsRasterHistogramWidget::histoAction( const QString &actionName, bool acti
   else if ( actionName == QLatin1String( "Zoom min_max" ) )
   {
     mHistoZoomToMinMax = actionFlag;
-    QSettings settings;
+    QgsSettings settings;
     settings.setValue( QStringLiteral( "/Raster/histogram/zoomToMinMax" ), mHistoZoomToMinMax );
     return;
   }
   else if ( actionName == QLatin1String( "Update min_max" ) )
   {
     mHistoUpdateStyleToMinMax = actionFlag;
-    QSettings settings;
+    QgsSettings settings;
     settings.setValue( QStringLiteral( "/Raster/histogram/updateStyleToMinMax" ), mHistoUpdateStyleToMinMax );
     return;
   }
@@ -832,7 +832,7 @@ void QgsRasterHistogramWidget::histoAction( const QString &actionName, bool acti
   else if ( actionName == QLatin1String( "Draw lines" ) )
   {
     mHistoDrawLines = actionFlag;
-    QSettings settings;
+    QgsSettings settings;
     settings.setValue( QStringLiteral( "/Raster/histogram/drawLines" ), mHistoDrawLines );
     on_btnHistoCompute_clicked(); // refresh
     return;

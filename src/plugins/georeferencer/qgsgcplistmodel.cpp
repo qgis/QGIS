@@ -18,8 +18,8 @@
 #include "qgis.h"
 #include "qgsgeorefdatapoint.h"
 #include "qgsgeoreftransform.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <cmath>
 
 class QgsStandardItem : public QStandardItem
@@ -85,7 +85,7 @@ void QgsGCPListModel::updateModel()
   //  // Setup table header
   QStringList itemLabels;
   QString unitType;
-  QSettings s;
+  QgsSettings s;
   bool mapUnitsPossible = false;
 
   if ( mGeorefTransform )

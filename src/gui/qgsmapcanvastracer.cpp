@@ -22,6 +22,7 @@
 #include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"
 #include "qgssnappingconfig.h"
+#include "qgssettings.h"
 
 #include <QAction>
 
@@ -45,7 +46,7 @@ QgsMapCanvasTracer::QgsMapCanvasTracer( QgsMapCanvas *canvas, QgsMessageBar *mes
 
   // arbitrarily chosen limit that should allow for fairly fast initialization
   // of the underlying graph structure
-  setMaxFeatureCount( QSettings().value( QStringLiteral( "/qgis/digitizing/tracing_max_feature_count" ), 10000 ).toInt() );
+  setMaxFeatureCount( QgsSettings().value( QStringLiteral( "/qgis/digitizing/tracing_max_feature_count" ), 10000 ).toInt() );
 }
 
 QgsMapCanvasTracer::~QgsMapCanvasTracer()
@@ -89,7 +90,7 @@ void QgsMapCanvasTracer::reportError( QgsTracer::PathError err, bool addingVerte
     return;
 
   mLastMessage = new QgsMessageBarItem( tr( "Tracing" ), message, QgsMessageBar::WARNING,
-                                        QSettings().value( QStringLiteral( "/qgis/messageTimeout" ), 5 ).toInt() );
+                                        QgsSettings().value( QStringLiteral( "/qgis/messageTimeout" ), 5 ).toInt() );
   mMessageBar->pushItem( mLastMessage );
 }
 

@@ -23,7 +23,7 @@
 #include "qgssvgselectorwidget.h"
 #include "qgssubstitutionlistwidget.h"
 #include "qgspallabeling.h" // for enum values
-#include <QSettings>
+#include "qgssettings.h"
 
 QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent )
   : QWidget( parent )
@@ -236,7 +236,7 @@ void QgsTextFormatWidget::initWidget()
   // get rid of annoying outer focus rect on Mac
   mLabelingOptionsListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
 
-  QSettings settings;
+  QgsSettings settings;
 
   // reset horiz stretch of left side of options splitter (set to 1 for previewing in Qt Designer)
   QSizePolicy policy( mLabelingOptionsListFrame->sizePolicy() );
@@ -705,7 +705,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
 
 QgsTextFormatWidget::~QgsTextFormatWidget()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/Labeling/FontPreviewSplitState" ), mFontPreviewSplitter->saveState() );
   settings.setValue( QStringLiteral( "/Windows/Labeling/OptionsSplitState" ), mLabelingOptionsSplitter->saveState() );
   settings.setValue( QStringLiteral( "/Windows/Labeling/Tab" ), mLabelingOptionsListWidget->currentRow() );
@@ -1413,7 +1413,7 @@ QgsTextFormatDialog::QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCan
 
   setLayout( layout );
 
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/TextFormatDialog/geometry" ) ).toByteArray() );
 
   connect( buttonBox->button( QDialogButtonBox::Ok ), SIGNAL( clicked() ), this, SLOT( accept() ) );
@@ -1422,7 +1422,7 @@ QgsTextFormatDialog::QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCan
 
 QgsTextFormatDialog::~QgsTextFormatDialog()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/TextFormatDialog/geometry" ), saveGeometry() );
 }
 

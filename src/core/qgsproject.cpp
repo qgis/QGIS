@@ -43,6 +43,7 @@
 #include "qgstransactiongroup.h"
 #include "qgsvectordataprovider.h"
 #include "qgsprojectbadlayerhandler.h"
+#include "qgssettings.h"
 
 #include <QApplication>
 #include <QFileInfo>
@@ -52,7 +53,6 @@
 #include <QTemporaryFile>
 #include <QDir>
 #include <QUrl>
-#include <QSettings>
 
 #ifdef Q_OS_UNIX
 #include <utime.h>
@@ -477,7 +477,7 @@ void QgsProject::clear()
   writeEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
 
   //copy default units to project
-  QSettings s;
+  QgsSettings s;
   writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/DistanceUnits" ), s.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString() );
   writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/AreaUnits" ), s.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString() );
 
@@ -1878,7 +1878,7 @@ QgsUnitTypes::DistanceUnit QgsProject::distanceUnits() const
     return QgsUnitTypes::decodeDistanceUnit( distanceUnitString );
 
   //fallback to QGIS default measurement unit
-  QSettings s;
+  QgsSettings s;
   bool ok = false;
   QgsUnitTypes::DistanceUnit type = QgsUnitTypes::decodeDistanceUnit( s.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString(), &ok );
   return ok ? type : QgsUnitTypes::DistanceMeters;
@@ -1896,7 +1896,7 @@ QgsUnitTypes::AreaUnit QgsProject::areaUnits() const
     return QgsUnitTypes::decodeAreaUnit( areaUnitString );
 
   //fallback to QGIS default area unit
-  QSettings s;
+  QgsSettings s;
   bool ok = false;
   QgsUnitTypes::AreaUnit type = QgsUnitTypes::decodeAreaUnit( s.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString(), &ok );
   return ok ? type : QgsUnitTypes::AreaSquareMeters;

@@ -60,7 +60,7 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, const QList<
 
   connect( QgsProject::instance(), SIGNAL( layerWillBeRemoved( QgsMapLayer * ) ), this, SLOT( layerAboutToBeRemoved( QgsMapLayer * ) ) );
 
-  QSettings settings;
+  QgsSettings settings;
   mLiveApplyCheck->setChecked( settings.value( QStringLiteral( "UI/autoApplyStyling" ), true ).toBool() );
 
   mAutoApplyTimer = new QTimer( this );
@@ -487,7 +487,7 @@ void QgsLayerStylingWidget::layerAboutToBeRemoved( QgsMapLayer *layer )
 
 void QgsLayerStylingWidget::liveApplyToggled( bool value )
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "UI/autoApplyStyling" ), value );
 }
 
@@ -538,7 +538,7 @@ bool QgsMapLayerStyleCommand::mergeWith( const QUndoCommand *other )
 
   // only merge commands if they are created shortly after each other
   // (e.g. user keeps modifying one property)
-  QSettings settings;
+  QgsSettings settings;
   int timeout = settings.value( QStringLiteral( "/UI/styleUndoMergeTimeout" ), 500 ).toInt();
   if ( mTime.msecsTo( otherCmd->mTime ) > timeout )
     return false;

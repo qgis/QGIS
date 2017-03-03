@@ -19,8 +19,9 @@
 #include "qgsdb2featureiterator.h"
 #include "qgsdb2provider.h"
 #include "qgsdb2expressioncompiler.h"
-#include <qgslogger.h>
-#include <qgsgeometry.h>
+#include "qgssettings.h"
+#include "qgslogger.h"
+#include "qgsgeometry.h"
 
 #include <QObject>
 #include <QTextStream>
@@ -184,8 +185,8 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   mCompileStatus = NoCompilation;
   if ( request.filterType() == QgsFeatureRequest::FilterExpression )
   {
-    QgsDebugMsg( QString( "compileExpressions: %1" ).arg( QSettings().value( "/qgis/compileExpressions", true ).toString() ) );
-    if ( QSettings().value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() )
+    QgsDebugMsg( QString( "compileExpressions: %1" ).arg( QgsSettings().value( "/qgis/compileExpressions", true ).toString() ) );
+    if ( QgsSettings().value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() )
     {
       QgsDb2ExpressionCompiler compiler = QgsDb2ExpressionCompiler( mSource );
       QgsDebugMsg( "expression dump: " + request.filterExpression()->dump() );
@@ -217,8 +218,8 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
 
   QStringList orderByParts;
   mOrderByCompiled = true;
-  QgsDebugMsg( QString( "compileExpressions: %1" ).arg( QSettings().value( "/qgis/compileExpressions", true ).toString() ) );
-  if ( QSettings().value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() && limitAtProvider )
+  QgsDebugMsg( QString( "compileExpressions: %1" ).arg( QgsSettings().value( "/qgis/compileExpressions", true ).toString() ) );
+  if ( QgsSettings().value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() && limitAtProvider )
   {
     Q_FOREACH ( const QgsFeatureRequest::OrderByClause &clause, request.orderBy() )
     {

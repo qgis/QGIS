@@ -34,6 +34,7 @@
 #include "qgsproject.h"
 #include "qgsexpression.h"
 #include "qgsmapcanvas.h"
+#include "qgssettings.h"
 
 #include <QKeyEvent>
 #include <QMenu>
@@ -903,7 +904,7 @@ int QgsCategorizedSymbolRendererWidget::matchToSymbols( QgsStyle *style )
 
 void QgsCategorizedSymbolRendererWidget::matchToSymbolsFromXml()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString openFileDir = settings.value( QStringLiteral( "UI/lastMatchToSymbolsDir" ), QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Match to symbols from file" ), openFileDir,

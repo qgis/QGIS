@@ -28,10 +28,10 @@
 #include "qgsgeometryrubberband.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
+#include "qgssettings.h"
 
 #include <QMouseEvent>
 #include <QRubberBand>
-#include <QSettings>
 
 QgsMapToolNodeTool::QgsMapToolNodeTool( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
@@ -87,7 +87,7 @@ void QgsMapToolNodeTool::createTopologyRubberBands()
       if ( !mMoveRubberBands.contains( snapFeatureId ) )
       {
         QgsGeometryRubberBand *rb = new QgsGeometryRubberBand( mCanvas, feature.geometry().type() );
-        QSettings settings;
+        QgsSettings settings;
         QColor color(
           settings.value( QStringLiteral( "/qgis/digitizing/line_color_red" ), 255 ).toInt(),
           settings.value( QStringLiteral( "/qgis/digitizing/line_color_green" ), 0 ).toInt(),
@@ -123,7 +123,7 @@ void QgsMapToolNodeTool::canvasMoveEvent( QgsMapMouseEvent *e )
   {
     if ( mMoveRubberBands.empty() )
     {
-      QSettings settings;
+      QgsSettings settings;
       bool ghostLine = settings.value( QStringLiteral( "/qgis/digitizing/line_ghost" ), false ).toBool();
       if ( !ghostLine )
       {
@@ -393,7 +393,7 @@ void QgsMapToolNodeTool::updateSelectFeature( const QgsGeometry &geom )
     mSelectRubberBand = new QgsGeometryRubberBand( mCanvas, mSelectedFeature->geometry()->type() );
     mSelectRubberBand->setBrushStyle( Qt::SolidPattern );
 
-    QSettings settings;
+    QgsSettings settings;
     QColor color(
       settings.value( QStringLiteral( "/qgis/digitizing/fill_color_red" ), 255 ).toInt(),
       settings.value( QStringLiteral( "/qgis/digitizing/fill_color_green" ), 0 ).toInt(),
@@ -422,7 +422,7 @@ void QgsMapToolNodeTool::selectedFeatureDestroyed()
 
 void QgsMapToolNodeTool::geometryChanged( QgsFeatureId fid, const QgsGeometry &geom )
 {
-  QSettings settings;
+  QgsSettings settings;
   bool ghostLine = settings.value( QStringLiteral( "/qgis/digitizing/line_ghost" ), false ).toBool();
   if ( !ghostLine && mSelectedFeature && ( mSelectedFeature->featureId() == fid ) )
   {

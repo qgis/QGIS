@@ -17,18 +17,16 @@
 
 #include "qgssymbol.h"
 #include "qgscolorramp.h"
-
 #include "qgssymbollayerregistry.h"
-
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgssettings.h"
 
 #include <QDomDocument>
 #include <QDomElement>
 #include <QDomNode>
 #include <QDomNodeList>
 #include <QFile>
-#include <QSettings>
 #include <QTextStream>
 #include <QByteArray>
 
@@ -624,7 +622,7 @@ int QgsStyle::addTag( const QString &tagname )
     ( void )sqlite3_step( ppStmt );
   sqlite3_finalize( ppStmt );
 
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "qgis/symbolsListGroupsIndex" ), 0 );
 
   emit groupsModified();
@@ -723,7 +721,7 @@ void QgsStyle::remove( StyleEntity type, int id )
   {
     if ( groupRemoved )
     {
-      QSettings settings;
+      QgsSettings settings;
       settings.setValue( QStringLiteral( "qgis/symbolsListGroupsIndex" ), 0 );
 
       emit groupsModified();
@@ -1201,7 +1199,7 @@ int QgsStyle::addSmartgroup( const QString &name, const QString &op, const QgsSm
 
   if ( runEmptyQuery( query ) )
   {
-    QSettings settings;
+    QgsSettings settings;
     settings.setValue( QStringLiteral( "qgis/symbolsListGroupsIndex" ), 0 );
 
     emit groupsModified();

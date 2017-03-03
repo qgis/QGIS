@@ -14,12 +14,11 @@
  ***************************************************************************/
 #include "qgsspatialiteconnection.h"
 #include "qgsslconnect.h"
+#include "qgssettings.h"
+#include "qgslogger.h"
 
 #include <QFileInfo>
-#include <QSettings>
 #include <cstdlib> // atoi
-
-#include "qgslogger.h"
 
 #ifdef _MSC_VER
 #define strcasecmp(a,b) stricmp(a,b)
@@ -27,14 +26,14 @@
 
 QStringList QgsSpatiaLiteConnection::connectionList()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.beginGroup( QStringLiteral( "/SpatiaLite/connections" ) );
   return settings.childGroups();
 }
 
 void QgsSpatiaLiteConnection::deleteConnection( const QString &name )
 {
-  QSettings settings;
+  QgsSettings settings;
   QString key = "/SpatiaLite/connections/" + name;
   settings.remove( key + "/sqlitepath" );
   settings.remove( key );
@@ -42,7 +41,7 @@ void QgsSpatiaLiteConnection::deleteConnection( const QString &name )
 
 QString QgsSpatiaLiteConnection::connectionPath( const QString &name )
 {
-  QSettings settings;
+  QgsSettings settings;
   return settings.value( "/SpatiaLite/connections/" + name + "/sqlitepath" ).toString();
 }
 
@@ -52,7 +51,7 @@ QgsSpatiaLiteConnection::QgsSpatiaLiteConnection( const QString &name )
 {
   // "name" can be either a saved connection or a path to database
 
-  QSettings settings;
+  QgsSettings settings;
   mPath = settings.value( QStringLiteral( "/SpatiaLite/connections/%1/sqlitepath" ).arg( name ) ).toString();
   if ( mPath.isNull() )
     mPath = name; // not found in settings - probably it's a path

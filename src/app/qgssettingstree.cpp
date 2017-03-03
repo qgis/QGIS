@@ -39,13 +39,12 @@
 ****************************************************************************/
 
 #include <QHeaderView>
-#include <QSettings>
 #include <QEvent>
 
 #include "qgssettingstree.h"
 #include "qgsvariantdelegate.h"
-
 #include "qgslogger.h"
+#include "qgssettings.h"
 
 QgsSettingsTree::QgsSettingsTree( QWidget *parent )
   : QTreeWidget( parent )
@@ -74,7 +73,7 @@ QgsSettingsTree::QgsSettingsTree( QWidget *parent )
   connect( &refreshTimer, SIGNAL( timeout() ), this, SLOT( maybeRefresh() ) );
 }
 
-void QgsSettingsTree::setSettingsObject( QSettings *settings )
+void QgsSettingsTree::setSettingsObject( QgsSettings *settings )
 {
   delete this->settings;
   this->settings = settings;
@@ -115,15 +114,6 @@ void QgsSettingsTree::setAutoRefresh( bool autoRefresh )
   }
 }
 
-void QgsSettingsTree::setFallbacksEnabled( bool enabled )
-{
-  if ( settings )
-  {
-    settings->setFallbacksEnabled( enabled );
-    refresh();
-  }
-}
-
 void QgsSettingsTree::maybeRefresh()
 {
   if ( state() != EditingState )
@@ -140,7 +130,7 @@ void QgsSettingsTree::refresh()
 
   settings->sync();
 
-  // add any settings not in QSettings object, so it will show up in the tree view
+  // add any settings not in QgsSettings object, so it will show up in the tree view
   if ( settings )
   {
     QMap<QString, QStringList>::const_iterator it = settingsMap.constBegin();

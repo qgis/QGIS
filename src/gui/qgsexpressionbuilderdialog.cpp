@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgsexpressionbuilderdialog.h"
-#include <QSettings>
+#include "qgssettings.h"
 
 QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, const QString &startText, QWidget *parent, const QString &key, const QgsExpressionContext &context )
   : QDialog( parent )
@@ -31,7 +31,7 @@ QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, c
   builder->loadFieldNames();
   builder->loadRecent( mRecentKey );
 
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/ExpressionBuilderDialog/geometry" ) ).toByteArray() );
 }
 
@@ -64,7 +64,7 @@ void QgsExpressionBuilderDialog::done( int r )
 {
   QDialog::done( r );
 
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/ExpressionBuilderDialog/geometry" ), saveGeometry() );
 }
 

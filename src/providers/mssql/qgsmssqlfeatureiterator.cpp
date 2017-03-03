@@ -19,11 +19,11 @@
 #include "qgsmssqlexpressioncompiler.h"
 #include "qgsmssqlprovider.h"
 #include "qgslogger.h"
+#include "qgssettings.h"
 
 #include <QObject>
 #include <QTextStream>
 #include <QSqlRecord>
-#include <QSettings>
 
 
 QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
@@ -178,7 +178,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   mCompileStatus = NoCompilation;
   if ( request.filterType() == QgsFeatureRequest::FilterExpression )
   {
-    if ( QSettings().value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() )
+    if ( QgsSettings().value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() )
     {
       QgsMssqlExpressionCompiler compiler = QgsMssqlExpressionCompiler( mSource );
       QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
@@ -209,7 +209,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   QStringList orderByParts;
   mOrderByCompiled = true;
 
-  if ( QSettings().value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() )
+  if ( QgsSettings().value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() )
   {
     Q_FOREACH ( const QgsFeatureRequest::OrderByClause &clause, request.orderBy() )
     {

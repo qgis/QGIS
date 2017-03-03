@@ -20,12 +20,12 @@
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeutils.h"
+#include "qgssettings.h"
 
 #include <QDomDocument>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
-#include <QSettings>
 
 QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget *parent, const QString &projectFile, Qt::WindowFlags f )
   : QDialog( parent, f )
@@ -34,7 +34,7 @@ QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget *parent, const Q
 {
   setupUi( this );
 
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/EmbedLayer/geometry" ) ).toByteArray() );
 
   if ( !projectFile.isEmpty() )
@@ -52,7 +52,7 @@ QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget *parent, const Q
 
 QgsProjectLayerGroupDialog::~QgsProjectLayerGroupDialog()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/EmbedLayer/geometry" ), saveGeometry() );
 
   delete mRootGroup;
@@ -112,7 +112,7 @@ void QgsProjectLayerGroupDialog::on_mBrowseFileToolButton_clicked()
   //line edit might emit editingFinished signal when losing focus
   mProjectFileLineEdit->blockSignals( true );
 
-  QSettings s;
+  QgsSettings s;
   QString projectFile = QFileDialog::getOpenFileName( this,
                         tr( "Select project file" ),
                         s.value( QStringLiteral( "/qgis/last_embedded_project_path" ), QDir::homePath() ).toString(),
@@ -226,7 +226,7 @@ void QgsProjectLayerGroupDialog::deselectChildren( const QModelIndex &index )
 
 void QgsProjectLayerGroupDialog::on_mButtonBox_accepted()
 {
-  QSettings s;
+  QgsSettings s;
   QFileInfo fi( mProjectPath );
   if ( fi.exists() )
   {

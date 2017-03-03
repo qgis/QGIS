@@ -19,7 +19,6 @@
 #include <QTime>
 #include <QTimer>
 #include <QtConcurrentMap>
-#include <QSettings>
 
 #include "qgslogger.h"
 #include "qgsrendercontext.h"
@@ -36,6 +35,7 @@
 #include "qgslabelingengine.h"
 #include "qgsmaplayerlistutils.h"
 #include "qgsvectorlayerlabeling.h"
+#include "qgssettings.h"
 
 ///@cond PRIVATE
 
@@ -502,7 +502,7 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings, const La
 
 void QgsMapRendererJob::logRenderingTime( const LayerRenderJobs &jobs, const LabelRenderJob &labelJob )
 {
-  QSettings settings;
+  QgsSettings settings;
   if ( !settings.value( QStringLiteral( "/Map/logCanvasRefreshEvent" ), false ).toBool() )
     return;
 

@@ -20,8 +20,7 @@
 #include "qgsfields.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-
-#include <QSettings>
+#include "qgssettings.h"
 
 QgsDelAttrDialog::QgsDelAttrDialog( const QgsVectorLayer *vl )
   : QDialog()
@@ -60,13 +59,13 @@ QgsDelAttrDialog::QgsDelAttrDialog( const QgsVectorLayer *vl )
     mCanDeleteAttributesInfo->setVisible( !canDeleteAttributes );
   }
 
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/QgsDelAttrDialog/geometry" ) ).toByteArray() );
 }
 
 QgsDelAttrDialog::~QgsDelAttrDialog()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/QgsDelAttrDialog/geometry" ), saveGeometry() );
 }
 

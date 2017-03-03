@@ -21,20 +21,21 @@
 #include "checkDock.h"
 
 #include "qgsfeatureiterator.h"
-#include <qgsvectordataprovider.h>
-#include <qgsvectorlayer.h>
-#include <qgsmaplayer.h>
-#include <qgsproject.h>
-#include <qgsgeometry.h>
-#include <qgsvertexmarker.h>
-#include <qgsfeature.h>
-#include <qgsmapcanvas.h>
-#include <qgsrubberband.h>
-#include <qgsproviderregistry.h>
-#include <qgslogger.h>
-#include <qgsspatialindex.h>
-#include <qgisinterface.h>
-#include <qgsmessagelog.h>
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsmaplayer.h"
+#include "qgsproject.h"
+#include "qgsgeometry.h"
+#include "qgsvertexmarker.h"
+#include "qgsfeature.h"
+#include "qgsmapcanvas.h"
+#include "qgsrubberband.h"
+#include "qgsproviderregistry.h"
+#include "qgslogger.h"
+#include "qgsspatialindex.h"
+#include "qgisinterface.h"
+#include "qgsmessagelog.h"
+#include "qgssettings.h"
 
 #include "topolTest.h"
 #include "rulesDialog.h"
@@ -357,7 +358,7 @@ void checkDock::runTests( ValidateType type )
       TopolError *te = *it;
       te->conflict();
 
-      QSettings settings;
+      QgsSettings settings;
       if ( te->conflict().type() == QgsWkbTypes::PolygonGeometry )
       {
         rb = new QgsRubberBand( qgsInterface->mapCanvas(), QgsWkbTypes::PolygonGeometry );

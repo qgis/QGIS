@@ -30,11 +30,13 @@
 #include "qgssymbollayerutils.h"
 #include "qgsfontutils.h"
 #include "qgsunittypes.h"
+#include "qgssettings.h"
+
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFontMetricsF>
 #include <QPainter>
-#include <QSettings>
+
 #include <cmath>
 
 QgsComposerScaleBar::QgsComposerScaleBar( QgsComposition *composition )
@@ -432,7 +434,7 @@ void QgsComposerScaleBar::applyDefaultSettings()
   mBrush2.setStyle( Qt::SolidPattern );
 
   //get default composer font from settings
-  QSettings settings;
+  QgsSettings settings;
   QString defaultFontString = settings.value( QStringLiteral( "/Composer/defaultFont" ) ).toString();
   if ( !defaultFontString.isEmpty() )
   {

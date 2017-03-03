@@ -21,6 +21,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsfieldexpressionwidget.h"
 #include "qgsdoublespinbox.h"
+#include "qgssettings.h"
+
 #include <QCheckBox>
 #include <QDialogButtonBox>
 #include <QGridLayout>
@@ -28,7 +30,6 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QScrollArea>
-#include <QSettings>
 #include <QSpinBox>
 #include <QSortFilterProxyModel>
 
@@ -282,7 +283,7 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
 {
   setupUi( this );
 
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/AttributeSelectionDialog/geometry" ) ).toByteArray() );
 
   if ( mComposerTable )
@@ -321,7 +322,7 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
 
 QgsAttributeSelectionDialog::~QgsAttributeSelectionDialog()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/AttributeSelectionDialog/geometry" ), saveGeometry() );
 }
 

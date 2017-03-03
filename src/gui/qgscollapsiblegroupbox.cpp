@@ -16,15 +16,14 @@
  ***************************************************************************/
 
 #include "qgscollapsiblegroupbox.h"
-
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgssettings.h"
 
 #include <QToolButton>
 #include <QMouseEvent>
 #include <QPushButton>
 #include <QStyleOptionGroupBox>
-#include <QSettings>
 #include <QScrollArea>
 
 QgsCollapsibleGroupBoxBasic::QgsCollapsibleGroupBoxBasic( QWidget *parent )
@@ -299,7 +298,7 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
 {
   setUpdatesEnabled( false );
 
-  QSettings settings;
+  QgsSettings settings;
   // NOTE: QGIS-Style groupbox styled in app stylesheet
   bool usingQgsStyle = settings.value( QStringLiteral( "qgis/stylesheet/groupBoxCustom" ), QVariant( false ) ).toBool();
 
@@ -470,7 +469,7 @@ void QgsCollapsibleGroupBoxBasic::collapseExpandFixes()
 
 // ----
 
-QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( QWidget *parent, QSettings *settings )
+QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( QWidget *parent, QgsSettings *settings )
   : QgsCollapsibleGroupBoxBasic( parent )
   , mSettings( settings )
 {
@@ -478,7 +477,7 @@ QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( QWidget *parent, QSettings *sett
 }
 
 QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( const QString &title,
-    QWidget *parent, QSettings *settings )
+    QWidget *parent, QgsSettings *settings )
   : QgsCollapsibleGroupBoxBasic( title, parent )
   , mSettings( settings )
 {
@@ -493,7 +492,7 @@ QgsCollapsibleGroupBox::~QgsCollapsibleGroupBox()
   mSettings = nullptr; // null the pointer (in case of outside settings obj)
 }
 
-void QgsCollapsibleGroupBox::setSettings( QSettings *settings )
+void QgsCollapsibleGroupBox::setSettings( QgsSettings *settings )
 {
   if ( mDelSettings ) // local settings obj to delete
     delete mSettings;
@@ -509,7 +508,7 @@ void QgsCollapsibleGroupBox::init()
   mDelSettings = false;
   if ( !mSettings )
   {
-    mSettings = new QSettings();
+    mSettings = new QgsSettings();
     mDelSettings = true; // only delete obj created by class
   }
   // variables

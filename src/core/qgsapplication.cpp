@@ -33,11 +33,13 @@
 #include "qgsrasterrendererregistry.h"
 #include "qgsrendererregistry.h"
 #include "qgssymbollayerregistry.h"
-#include "gps/qgsgpsconnectionregistry.h"
 #include "qgspluginlayerregistry.h"
 #include "qgsmessagelog.h"
-#include "processing/qgsprocessingregistry.h"
 #include "qgsannotationregistry.h"
+#include "qgssettings.h"
+
+#include "gps/qgsgpsconnectionregistry.h"
+#include "processing/qgsprocessingregistry.h"
 
 #include <QDir>
 #include <QFile>
@@ -46,7 +48,6 @@
 #include <QMessageBox>
 #include <QPalette>
 #include <QProcess>
-#include <QSettings>
 #include <QIcon>
 #include <QPixmap>
 #include <QThreadPool>
@@ -246,7 +247,7 @@ void QgsApplication::init( QString customConfigPath )
   QCoreApplication::addLibraryPath( pluginPath() );
 
   // set max. thread count to -1
-  // this should be read from QSettings but we don't know where they are at this point
+  // this should be read from QgsSettings but we don't know where they are at this point
   // so we read actual value in main.cpp
   ABISYM( mMaxThreads ) = -1;
 }
@@ -737,7 +738,7 @@ QStringList QgsApplication::svgPaths()
 {
   //local directories to search when looking for an SVG with a given basename
   //defined by user in options dialog
-  QSettings settings;
+  QgsSettings settings;
   QStringList pathList = settings.value( QStringLiteral( "svg/searchPathsForSVG" ) ).toStringList();
 
   // maintain user set order while stripping duplicates
@@ -763,7 +764,7 @@ QStringList QgsApplication::composerTemplatePaths()
 {
   //local directories to search when looking for an SVG with a given basename
   //defined by user in options dialog
-  QSettings settings;
+  QgsSettings settings;
   QStringList pathList = settings.value( QStringLiteral( "composer/searchPathsForTemplates" ) ).toStringList();
 
   return pathList;
@@ -870,7 +871,7 @@ QString QgsApplication::platform()
 
 QString QgsApplication::locale()
 {
-  QSettings settings;
+  QgsSettings settings;
   bool overrideLocale = settings.value( QStringLiteral( "locale/overrideFlag" ), false ).toBool();
   if ( overrideLocale )
   {
@@ -1275,8 +1276,8 @@ void QgsApplication::copyPath( const QString &src, const QString &dst )
 
 QVariantMap QgsApplication::customVariables()
 {
-  //read values from QSettings
-  QSettings settings;
+  //read values from QgsSettings
+  QgsSettings settings;
 
   QVariantMap variables;
 
@@ -1307,7 +1308,7 @@ QVariantMap QgsApplication::customVariables()
 
 void QgsApplication::setCustomVariables( const QVariantMap &variables )
 {
-  QSettings settings;
+  QgsSettings settings;
 
   QList< QVariant > customVariableValues;
   QList< QVariant > customVariableNames;
@@ -1328,7 +1329,7 @@ void QgsApplication::setCustomVariables( const QVariantMap &variables )
 void QgsApplication::setCustomVariable( const QString &name, const QVariant &value )
 {
   // save variable to settings
-  QSettings settings;
+  QgsSettings settings;
 
   QList< QVariant > customVariableVariants = settings.value( QStringLiteral( "/variables/values" ) ).toList();
   QList< QVariant > customVariableNames = settings.value( QStringLiteral( "/variables/names" ) ).toList();
@@ -1347,7 +1348,7 @@ QString QgsApplication::nullRepresentation()
   ApplicationMembers *appMembers = members();
   if ( appMembers->mNullRepresentation.isNull() )
   {
-    appMembers->mNullRepresentation = QSettings().value( QStringLiteral( "qgis/nullValue" ), QStringLiteral( "NULL" ) ).toString();
+    appMembers->mNullRepresentation = QgsSettings().value( QStringLiteral( "qgis/nullValue" ), QStringLiteral( "NULL" ) ).toString();
   }
   return appMembers->mNullRepresentation;
 }
@@ -1359,7 +1360,7 @@ void QgsApplication::setNullRepresentation( const QString &nullRepresentation )
     return;
 
   appMembers->mNullRepresentation = nullRepresentation;
-  QSettings().setValue( QStringLiteral( "qgis/nullValue" ), nullRepresentation );
+  QgsSettings().setValue( QStringLiteral( "qgis/nullValue" ), nullRepresentation );
 
   QgsApplication *app = instance();
   if ( app )

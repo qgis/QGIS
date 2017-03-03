@@ -36,10 +36,10 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgslogger.h"
 #include "qgisapp.h"
+#include "qgssettings.h"
 
 #include <QList>
 #include <QMessageBox>
-#include <QSettings>
 
 
 
@@ -152,7 +152,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mAngleOffsetComboBox->addItem( tr( "Bottom" ), 270 * 16 );
   mAngleOffsetComboBox->addItem( tr( "Left" ), 180 * 16 );
 
-  QSettings settings;
+  QgsSettings settings;
 
   // reset horiz stretch of left side of options splitter (set to 1 for previewing in Qt Designer)
   QSizePolicy policy( mDiagramOptionsListFrame->sizePolicy() );
@@ -424,7 +424,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
 
 QgsDiagramProperties::~QgsDiagramProperties()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/Diagrams/OptionsSplitState" ), mDiagramOptionsSplitter->saveState() );
   settings.setValue( QStringLiteral( "/Windows/Diagrams/Tab" ), mDiagramOptionsListWidget->currentRow() );
 }

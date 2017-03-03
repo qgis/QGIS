@@ -18,16 +18,16 @@
 #include "qgisapp.h"
 #include "qgsversioninfo.h"
 #include "qgsapplication.h"
+#include "qgssettings.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QListView>
-#include <QSettings>
 
 QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   : QWidget( parent )
 {
-  QSettings settings;
+  QgsSettings settings;
 
   QVBoxLayout *mainLayout = new QVBoxLayout;
   mainLayout->setMargin( 0 );

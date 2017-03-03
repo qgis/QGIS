@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QSettings>
 #include <QMenu>
 
 #include <cmath>
@@ -30,6 +29,7 @@
 #include "qgspoint.h"
 #include "qgslinestring.h"
 #include "qgsfocuswatcher.h"
+#include "qgssettings.h"
 
 struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter
 {
@@ -93,8 +93,8 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   , mCurrentMapToolSupportsCad( false )
   , mCadEnabled( false )
   , mConstructionMode( false )
-  , mSnappingMode( ( QgsMapMouseEvent::SnappingMode ) QSettings().value( QStringLiteral( "/Cad/SnappingMode" ), QgsMapMouseEvent::SnapProjectConfig ).toInt() )
-  , mCommonAngleConstraint( QSettings().value( QStringLiteral( "/Cad/CommonAngle" ), 90 ).toInt() )
+  , mSnappingMode( ( QgsMapMouseEvent::SnappingMode ) QgsSettings().value( QStringLiteral( "/Cad/SnappingMode" ), QgsMapMouseEvent::SnapProjectConfig ).toInt() )
+  , mCommonAngleConstraint( QgsSettings().value( QStringLiteral( "/Cad/CommonAngle" ), 90 ).toInt() )
   , mSnappedToVertex( false )
   , mSessionActive( false )
   , mErrorMessage( nullptr )
@@ -326,7 +326,7 @@ void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction *action )
   {
     isn.key()->setChecked( true );
     mSnappingMode = isn.value();
-    QSettings().setValue( QStringLiteral( "/Cad/SnappingMode" ), ( int )isn.value() );
+    QgsSettings().setValue( QStringLiteral( "/Cad/SnappingMode" ), ( int )isn.value() );
     return;
   }
 
@@ -336,7 +336,7 @@ void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction *action )
   {
     ica.key()->setChecked( true );
     mCommonAngleConstraint = ica.value();
-    QSettings().setValue( QStringLiteral( "/Cad/CommonAngle" ), ica.value() );
+    QgsSettings().setValue( QStringLiteral( "/Cad/CommonAngle" ), ica.value() );
     return;
   }
 }

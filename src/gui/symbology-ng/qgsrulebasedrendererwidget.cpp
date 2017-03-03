@@ -28,11 +28,11 @@
 #include "qgssinglesymbolrenderer.h"
 #include "qgspanelwidget.h"
 #include "qgsmapcanvas.h"
+#include "qgssettings.h"
 
 #include <QKeyEvent>
 #include <QMenu>
 #include <QProgressDialog>
-#include <QSettings>
 #include <QTreeWidgetItem>
 #include <QVBoxLayout>
 #include <QMessageBox>
@@ -409,14 +409,14 @@ void QgsRuleBasedRendererWidget::saveSectionWidth( int section, int oldSize, int
   // skip last section, as it stretches
   if ( section == 5 )
     return;
-  QSettings settings;
+  QgsSettings settings;
   QString path = "/Windows/RuleBasedTree/sectionWidth/" + QString::number( section );
   settings.setValue( path, newSize );
 }
 
 void QgsRuleBasedRendererWidget::restoreSectionWidths()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString path = QStringLiteral( "/Windows/RuleBasedTree/sectionWidth/" );
   QHeaderView *head = viewRules->header();
   head->resizeSection( 0, settings.value( path + QString::number( 0 ), 150 ).toInt() );
@@ -676,13 +676,13 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Ru
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
 
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/QgsRendererRulePropsDialog/geometry" ) ).toByteArray() );
 }
 
 QgsRendererRulePropsDialog::~QgsRendererRulePropsDialog()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/QgsRendererRulePropsDialog/geometry" ), saveGeometry() );
 }
 

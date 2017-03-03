@@ -22,7 +22,6 @@
 #include <QString>
 #include <QStringList>
 #include <QClipboard>
-#include <QSettings>
 #include <QMimeData>
 #include <QTextCodec>
 
@@ -36,6 +35,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsogrutils.h"
 #include "qgsjsonutils.h"
+#include "qgssettings.h"
 
 QgsClipboard::QgsClipboard()
   : QObject()
@@ -80,7 +80,7 @@ void QgsClipboard::replaceWithCopyOf( QgsFeatureStore &featureStore )
 
 QString QgsClipboard::generateClipboardText() const
 {
-  QSettings settings;
+  QgsSettings settings;
   CopyFormat format = AttributesWithWKT;
   if ( settings.contains( QStringLiteral( "/qgis/copyFeatureFormat" ) ) )
     format = static_cast< CopyFormat >( settings.value( QStringLiteral( "/qgis/copyFeatureFormat" ), true ).toInt() );

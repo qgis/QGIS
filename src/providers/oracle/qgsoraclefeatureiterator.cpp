@@ -21,9 +21,9 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsgeometry.h"
+#include "qgssettings.h"
 
 #include <QObject>
-#include <QSettings>
 
 QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsOracleFeatureSource>( source, ownSource, request )
@@ -169,7 +169,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
   bool useFallback = false;
   if ( request.filterType() == QgsFeatureRequest::FilterExpression )
   {
-    if ( QSettings().value( "/qgis/compileExpressions", true ).toBool() )
+    if ( QgsSettings().value( "/qgis/compileExpressions", true ).toBool() )
     {
       QgsOracleExpressionCompiler compiler( mSource );
       QgsSqlExpressionCompiler::Result result = compiler.compile( mRequest.filterExpression() );

@@ -19,8 +19,8 @@
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsstatisticalsummary.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QObject>
 #include <QMouseEvent>
 
@@ -62,7 +62,7 @@ QgsHistogramWidget::QgsHistogramWidget( QWidget *parent, QgsVectorLayer *layer, 
   mpPlot->canvas()->setFrameStyle( QFrame::NoFrame );
 #endif
 
-  QSettings settings;
+  QgsSettings settings;
   mMeanCheckBox->setChecked( settings.value( QStringLiteral( "/HistogramWidget/showMean" ), false ).toBool() );
   mStdevCheckBox->setChecked( settings.value( QStringLiteral( "/HistogramWidget/showStdev" ), false ).toBool() );
 
@@ -85,7 +85,7 @@ QgsHistogramWidget::QgsHistogramWidget( QWidget *parent, QgsVectorLayer *layer, 
 
 QgsHistogramWidget::~QgsHistogramWidget()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/HistogramWidget/showMean" ), mMeanCheckBox->isChecked() );
   settings.setValue( QStringLiteral( "/HistogramWidget/showStdev" ), mStdevCheckBox->isChecked() );
 }

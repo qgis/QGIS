@@ -22,9 +22,9 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgseditorwidgetfactory.h"
 #include "qgseditorwidgetregistry.h"
+#include "qgssettings.h"
 
 #include <QMessageBox>
-#include <QSettings>
 #include <QFileDialog>
 #include <QTextCodec>
 
@@ -71,7 +71,7 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, i
 void QgsVectorLayerSaveAsDialog::setup()
 {
   setupUi( this );
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/VectorLayerSaveAs/geometry" ) ).toByteArray() );
 
   QMap<QString, QString> map = QgsVectorFileWriter::ogrDriverList();
@@ -207,7 +207,7 @@ QList<QPair<QLabel *, QWidget *> > QgsVectorLayerSaveAsDialog::createControls( c
 
 QgsVectorLayerSaveAsDialog::~QgsVectorLayerSaveAsDialog()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/VectorLayerSaveAs/geometry" ), saveGeometry() );
 }
 
@@ -328,7 +328,7 @@ void QgsVectorLayerSaveAsDialog::accept()
     }
   }
 
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/UI/lastVectorFileFilterDir" ), QFileInfo( filename() ).absolutePath() );
   settings.setValue( QStringLiteral( "/UI/lastVectorFormat" ), format() );
   settings.setValue( QStringLiteral( "/UI/encoding" ), encoding() );
@@ -627,7 +627,7 @@ void QgsVectorLayerSaveAsDialog::on_leFilename_textChanged( const QString &text 
 
 void QgsVectorLayerSaveAsDialog::on_browseFilename_clicked()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString dirName = leFilename->text().isEmpty() ? settings.value( QStringLiteral( "/UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString() : leFilename->text();
   QString filterString = QgsVectorFileWriter::filterForDriver( format() );
   QString outputFile = QFileDialog::getSaveFileName( nullptr, tr( "Save layer as..." ), dirName, filterString, nullptr, QFileDialog::DontConfirmOverwrite );

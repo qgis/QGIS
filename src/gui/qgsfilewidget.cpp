@@ -20,10 +20,10 @@
 #include <QToolButton>
 #include <QLabel>
 #include <QFileDialog>
-#include <QSettings>
 #include <QGridLayout>
 #include <QUrl>
 
+#include "qgssettings.h"
 #include "qgsfilterlineedit.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
@@ -186,7 +186,7 @@ void QgsFileWidget::setRelativeStorage( QgsFileWidget::RelativeStorage relativeS
 
 void QgsFileWidget::openFileDialog()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString oldPath;
 
   // If we use fixed default path

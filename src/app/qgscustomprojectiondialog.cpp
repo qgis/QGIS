@@ -25,12 +25,12 @@
 #include "qgslogger.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgscrscache.h"
+#include "qgssettings.h"
 
 //qt includes
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QLocale>
-#include <QSettings>
 
 //stdc++ includes
 #include <fstream>
@@ -48,7 +48,7 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
 {
   setupUi( this );
 
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/CustomProjection/geometry" ) ).toByteArray() );
 
   // user database is created at QGIS startup in QgisApp::createDB
@@ -74,7 +74,7 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
 
 QgsCustomProjectionDialog::~QgsCustomProjectionDialog()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/CustomProjection/geometry" ), saveGeometry() );
 }
 

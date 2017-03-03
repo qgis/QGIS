@@ -18,8 +18,8 @@
 #include <QApplication>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QSettings>
 
+#include "qgssettings.h"
 #include "qgsosmimport.h"
 
 QgsOSMImportDialog::QgsOSMImportDialog( QWidget *parent )
@@ -46,7 +46,7 @@ QgsOSMImportDialog::~QgsOSMImportDialog()
 
 void QgsOSMImportDialog::onBrowseXml()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString lastDir = settings.value( QStringLiteral( "/osm/lastDir" ), QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getOpenFileName( this, QString(), lastDir, tr( "OpenStreetMap files (*.osm)" ) );
@@ -59,7 +59,7 @@ void QgsOSMImportDialog::onBrowseXml()
 
 void QgsOSMImportDialog::onBrowseDb()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString lastDir = settings.value( QStringLiteral( "/osm/lastDir" ), QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getSaveFileName( this, QString(), lastDir, tr( "SQLite databases (*.db)" ) );
@@ -113,7 +113,7 @@ void QgsOSMImportDialog::onOK()
   if ( groupCreateConn->isChecked() )
   {
     // create connection - this is a bit hacky, sorry for that.
-    QSettings settings;
+    QgsSettings settings;
     settings.setValue( QStringLiteral( "/SpatiaLite/connections/%1/sqlitepath" ).arg( editConnName->text() ), mImport->outputDatabaseFileName() );
   }
 

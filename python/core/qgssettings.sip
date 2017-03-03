@@ -44,10 +44,11 @@
  */
 class QgsSettings : public QObject
 {
+%TypeHeaderCode
+#include <qgssettings.h>
 
-  %TypeHeaderCode
-  #include <qgssettings.h>
-  %End
+typedef PyObject *(*pyqt5_from_qvariant_by_type)(QVariant &value, PyObject *type);
+%End
 
   public:
 
@@ -64,7 +65,7 @@ class QgsSettings : public QObject
 
   /** Construct a QgsSettings object for accessing settings of the application
    * called application from the organization called organization, and with parent parent.
-  */
+   */
   explicit QgsSettings( const QString &organization,
                         const QString &application = QString(), QObject *parent = 0 );
 
@@ -161,8 +162,23 @@ class QgsSettings : public QObject
    * If no default value is specified, a default QVariant is returned.
    * An optional Section argument can be used to get a value from a specific Section.
    */
-  QVariant value( const QString &key, const QVariant &defaultValue = QVariant(),
-                  const QgsSettings::Section section = QgsSettings::Section::NoSection ) const;
+  SIP_PYOBJECT value( const QString &key, const QVariant &defaultValue = QVariant(),
+		      SIP_PYOBJECT type = 0,
+		      QgsSettings::Section section = QgsSettings::Section::NoSection ) const /ReleaseGIL/;
+%MethodCode
+   QVariant value;
+
+   // QSettings has an internal mutex so release the GIL to avoid the possibility of deadlocks.
+   Py_BEGIN_ALLOW_THREADS
+   value = sipCpp->value(*a0, *a1, a3);
+   Py_END_ALLOW_THREADS
+
+   pyqt5_from_qvariant_by_type f = (pyqt5_from_qvariant_by_type) sipImportSymbol("pyqt5_from_qvariant_by_type");
+   sipRes = f(value, a2);
+
+   sipIsErr = !sipRes;
+%End
+
   //! Removes the setting key and any sub-settings of key.
   void remove(const QString &key);
   //! Return the sanitized and prefixed key
@@ -176,6 +192,8 @@ class QgsSettings : public QObject
   void sync();
   //! Returns true if there exists a setting called key; returns false otherwise.
   //! If a group is set using beginGroup(), key is taken to be relative to that group.
-  bool contains(const QString &key) const;
+  bool contains(const QString &key, QgsSettings::Section section = QgsSettings::Section::NoSection ) const;
+  //! Removes all entries in the primary location associated to this QgsSettings object.
+  void clear();
 
 };

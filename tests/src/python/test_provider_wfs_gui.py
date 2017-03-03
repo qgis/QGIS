@@ -18,17 +18,12 @@ import sys
 import tempfile
 import shutil
 
-from qgis.PyQt.QtCore import QObject, QCoreApplication, QSettings, Qt, QEventLoop
-from qgis.PyQt.QtWidgets import QApplication, QWidget, QTextEdit, QLineEdit, QDialogButtonBox, QTreeView, QComboBox
+from qgis.PyQt.QtCore import QCoreApplication, Qt, QEventLoop
+from qgis.PyQt.QtWidgets import QApplication, QWidget, QTextEdit, QLineEdit, QDialogButtonBox, QComboBox
 from qgis.PyQt.QtTest import QTest
 
-from qgis.core import (
-    QgsProviderRegistry
-)
-from qgis.testing import (start_app,
-                          unittest
-                          )
-from providertestbase import ProviderTestCase
+from qgis.core import QgsProviderRegistry, QgsSettings
+from qgis.testing import start_app, unittest
 
 
 def sanitize(endpoint, x):
@@ -52,7 +47,7 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsWFSProviderGUI.com")
         QCoreApplication.setApplicationName("QGIS_TestPyQgsWFSProviderGUI")
-        QSettings().clear()
+        QgsSettings().clear()
         start_app()
 
         cls.basetestpath = tempfile.mkdtemp().replace('\\', '/')
@@ -60,7 +55,7 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
-        QSettings().clear()
+        QgsSettings().clear()
         if cls.basetestpath is not None:
             shutil.rmtree(cls.basetestpath, True)
 

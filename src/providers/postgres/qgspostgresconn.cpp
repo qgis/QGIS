@@ -26,9 +26,9 @@
 #include "qgsproviderregistry.h"
 #include "qgsvectordataprovider.h"
 #include "qgswkbtypes.h"
+#include "qgssettings.h"
 
 #include <QApplication>
-#include <QSettings>
 #include <QThread>
 
 #include <climits>
@@ -1695,20 +1695,20 @@ QgsWkbTypes::Type QgsPostgresConn::wkbTypeFromGeomType( QgsWkbTypes::GeometryTyp
 
 QStringList QgsPostgresConn::connectionList()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.beginGroup( QStringLiteral( "/PostgreSQL/connections" ) );
   return settings.childGroups();
 }
 
 QString QgsPostgresConn::selectedConnection()
 {
-  QSettings settings;
+  QgsSettings settings;
   return settings.value( QStringLiteral( "/PostgreSQL/connections/selected" ) ).toString();
 }
 
 void QgsPostgresConn::setSelectedConnection( const QString &name )
 {
-  QSettings settings;
+  QgsSettings settings;
   return settings.setValue( QStringLiteral( "/PostgreSQL/connections/selected" ), name );
 }
 
@@ -1716,7 +1716,7 @@ QgsDataSourceUri QgsPostgresConn::connUri( const QString &connName )
 {
   QgsDebugMsg( "theConnName = " + connName );
 
-  QSettings settings;
+  QgsSettings settings;
 
   QString key = "/PostgreSQL/connections/" + connName;
 
@@ -1779,33 +1779,33 @@ QgsDataSourceUri QgsPostgresConn::connUri( const QString &connName )
 
 bool QgsPostgresConn::publicSchemaOnly( const QString &connName )
 {
-  QSettings settings;
+  QgsSettings settings;
   return settings.value( "/PostgreSQL/connections/" + connName + "/publicOnly", false ).toBool();
 }
 
 bool QgsPostgresConn::geometryColumnsOnly( const QString &connName )
 {
-  QSettings settings;
+  QgsSettings settings;
 
   return settings.value( "/PostgreSQL/connections/" + connName + "/geometryColumnsOnly", false ).toBool();
 }
 
 bool QgsPostgresConn::dontResolveType( const QString &connName )
 {
-  QSettings settings;
+  QgsSettings settings;
 
   return settings.value( "/PostgreSQL/connections/" + connName + "/dontResolveType", false ).toBool();
 }
 
 bool QgsPostgresConn::allowGeometrylessTables( const QString &connName )
 {
-  QSettings settings;
+  QgsSettings settings;
   return settings.value( "/PostgreSQL/connections/" + connName + "/allowGeometrylessTables", false ).toBool();
 }
 
 void QgsPostgresConn::deleteConnection( const QString &connName )
 {
-  QSettings settings;
+  QgsSettings settings;
 
   QString key = "/PostgreSQL/connections/" + connName;
   settings.remove( key + "/service" );

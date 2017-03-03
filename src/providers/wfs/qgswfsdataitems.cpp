@@ -21,8 +21,8 @@
 #include "qgswfsdataitems.h"
 #include "qgswfssourceselect.h"
 #include "qgswfsdatasourceuri.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QCoreApplication>
 #include <QEventLoop>
 
@@ -30,7 +30,7 @@
 QgsWfsLayerItem::QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDataSourceUri &uri, QString featureType, QString title, QString crsString )
   : QgsLayerItem( parent, title, parent->path() + '/' + name, QString(), QgsLayerItem::Vector, QStringLiteral( "WFS" ) )
 {
-  QSettings settings;
+  QgsSettings settings;
   bool useCurrentViewExtent = settings.value( QStringLiteral( "/Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), true ).toBool();
   mUri = QgsWFSDataSourceURI::build( uri.uri(), featureType, crsString, QString(), useCurrentViewExtent );
   setState( Populated );

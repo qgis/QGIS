@@ -17,7 +17,8 @@
 
 #include "qgscomposerimageexportoptionsdialog.h"
 #include "qgis.h"
-#include <QSettings>
+#include "qgssettings.h"
+
 #include <QCheckBox>
 #include <QPushButton>
 
@@ -28,13 +29,13 @@ QgsComposerImageExportOptionsDialog::QgsComposerImageExportOptionsDialog( QWidge
 
   connect( mClipToContentGroupBox, SIGNAL( toggled( bool ) ), this, SLOT( clipToContentsToggled( bool ) ) );
 
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/ComposerImageExportOptionsDialog/geometry" ) ).toByteArray() );
 }
 
 QgsComposerImageExportOptionsDialog::~QgsComposerImageExportOptionsDialog()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/ComposerImageExportOptionsDialog/geometry" ), saveGeometry() );
 }
 

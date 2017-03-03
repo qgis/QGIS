@@ -16,6 +16,9 @@
 #include "qgscolorwidgets.h"
 #include "qgsapplication.h"
 #include "qgssymbollayerutils.h"
+#include "qgssettings.h"
+#include "qgslogger.h"
+
 #include <QResizeEvent>
 #include <QStyleOptionFrameV3>
 #include <QPainter>
@@ -25,10 +28,9 @@
 #include <QFontMetrics>
 #include <QToolButton>
 #include <QMenu>
-#include <QSettings>
 #include <QDrag>
+
 #include <cmath>
-#include "qgslogger.h"
 
 
 //
@@ -1427,7 +1429,7 @@ QgsColorTextWidget::QgsColorTextWidget( QWidget *parent )
   connect( mMenuButton, SIGNAL( clicked() ), this, SLOT( showMenu() ) );
 
   //restore format setting
-  QSettings settings;
+  QgsSettings settings;
   mFormat = ( ColorTextFormat )settings.value( QStringLiteral( "/ColorWidgets/textWidgetFormat" ), 0 ).toInt();
 
   updateText();
@@ -1526,7 +1528,7 @@ void QgsColorTextWidget::showMenu()
   }
 
   //save format setting
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/ColorWidgets/textWidgetFormat" ), ( int )mFormat );
 
   updateText();

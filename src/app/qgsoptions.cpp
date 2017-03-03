@@ -45,10 +45,10 @@
 #include "qgsexpressioncontext.h"
 #include "qgsunittypes.h"
 #include "qgsclipboard.h"
+#include "qgssettings.h"
 
 #include <QInputDialog>
 #include <QFileDialog>
-#include <QSettings>
 #include <QColorDialog>
 #include <QLocale>
 #include <QProcess>
@@ -112,7 +112,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   mIdentifyHighlightColorButton->setContext( QStringLiteral( "gui" ) );
   mIdentifyHighlightColorButton->setDefaultColor( Qgis::DEFAULT_HIGHLIGHT_COLOR );
 
-  mSettings = new QSettings();
+  mSettings = new QgsSettings();
 
   double identifyValue = mSettings->value( QStringLiteral( "/Map/searchRadiusMM" ), Qgis::DEFAULT_SEARCH_RADIUS_MM ).toDouble();
   QgsDebugMsg( QString( "Standard Identify radius setting read from settings file: %1" ).arg( identifyValue ) );
@@ -1031,7 +1031,7 @@ void QgsOptions::on_mProjectOnLaunchCmbBx_currentIndexChanged( int indx )
 void QgsOptions::on_mProjectOnLaunchPushBtn_pressed()
 {
   // Retrieve last used project dir from persistent settings
-  QSettings settings;
+  QgsSettings settings;
   QString lastUsedDir = mSettings->value( QStringLiteral( "/UI/lastProjectDir" ), QDir::homePath() ).toString();
   QString projPath = QFileDialog::getOpenFileName( this,
                      tr( "Choose project file to open at launch" ),
@@ -1045,7 +1045,7 @@ void QgsOptions::on_mProjectOnLaunchPushBtn_pressed()
 
 void QgsOptions::saveOptions()
 {
-  QSettings settings;
+  QgsSettings settings;
 
   mSettings->setValue( QStringLiteral( "UI/UITheme" ), cmbUITheme->currentText() );
 
@@ -2104,7 +2104,7 @@ void QgsOptions::on_pbnExportScales_clicked()
 
 void QgsOptions::initContrastEnhancement( QComboBox *cbox, const QString &name, const QString &defaultVal )
 {
-  QSettings settings;
+  QgsSettings settings;
 
   //add items to the color enhanceContrast combo boxes
   cbox->addItem( tr( "No Stretch" ),
@@ -2122,14 +2122,14 @@ void QgsOptions::initContrastEnhancement( QComboBox *cbox, const QString &name, 
 
 void QgsOptions::saveContrastEnhancement( QComboBox *cbox, const QString &name )
 {
-  QSettings settings;
+  QgsSettings settings;
   QString value = cbox->currentData().toString();
   mSettings->setValue( "/Raster/defaultContrastEnhancementAlgorithm/" + name, value );
 }
 
 void QgsOptions::initMinMaxLimits( QComboBox *cbox, const QString &name, const QString &defaultVal )
 {
-  QSettings settings;
+  QgsSettings settings;
 
   //add items to the color limitsContrast combo boxes
   cbox->addItem( tr( "Cumulative pixel count cut" ),
@@ -2145,7 +2145,7 @@ void QgsOptions::initMinMaxLimits( QComboBox *cbox, const QString &name, const Q
 
 void QgsOptions::saveMinMaxLimits( QComboBox *cbox, const QString &name )
 {
-  QSettings settings;
+  QgsSettings settings;
   QString value = cbox->currentData().toString();
   mSettings->setValue( "/Raster/defaultContrastEnhancementLimits/" + name, value );
 }
@@ -2176,7 +2176,7 @@ void QgsOptions::on_mAddDefaultTransformButton_clicked()
 
 void QgsOptions::saveDefaultDatumTransformations()
 {
-  QSettings s;
+  QgsSettings s;
   s.beginGroup( QStringLiteral( "/Projections" ) );
   QStringList groupKeys = s.allKeys();
   QStringList::const_iterator groupKeyIt = groupKeys.constBegin();

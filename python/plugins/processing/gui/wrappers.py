@@ -38,6 +38,7 @@ from qgis.core import (
     QgsExpression,
     QgsMapLayerProxyModel,
     QgsWkbTypes,
+    QgsSettings
 )
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
@@ -60,7 +61,7 @@ from qgis.gui import (
     QgsMapLayerComboBox,
     QgsProjectionSelectionWidget,
 )
-from qgis.PyQt.QtCore import pyqtSignal, QObject, QVariant, QSettings
+from qgis.PyQt.QtCore import pyqtSignal, QObject, QVariant
 
 from processing.gui.NumberInputPanel import NumberInputPanel, ModellerNumberInputPanel
 from processing.modeler.MultilineTextPanel import MultilineTextPanel
@@ -173,7 +174,7 @@ class WidgetWrapper(QObject):
 
     def getFileName(self, initial_value=''):
         """Shows a file open dialog"""
-        settings = QSettings()
+        settings = QgsSettings()
         if os.path.isdir(initial_value):
             path = initial_value
         elif os.path.isdir(os.path.dirname(initial_value)):

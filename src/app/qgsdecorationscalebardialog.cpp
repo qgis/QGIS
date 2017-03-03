@@ -14,9 +14,9 @@
 #include "qgsdecorationscalebar.h"
 #include "qgslogger.h"
 #include "qgshelp.h"
+#include "qgssettings.h"
 
 #include <QColorDialog>
-#include <QSettings>
 #include <QDialogButtonBox>
 #include <QPushButton>
 
@@ -26,7 +26,7 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar 
 {
   setupUi( this );
 
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/DecorationScaleBar/geometry" ) ).toByteArray() );
 
   QPushButton *applyButton = buttonBox->button( QDialogButtonBox::Apply );
@@ -78,7 +78,7 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar 
 
 QgsDecorationScaleBarDialog::~QgsDecorationScaleBarDialog()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/DecorationScaleBar/geometry" ), saveGeometry() );
 }
 

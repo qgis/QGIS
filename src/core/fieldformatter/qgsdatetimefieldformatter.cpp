@@ -15,8 +15,7 @@
  ***************************************************************************/
 #include "qgsdatetimefieldformatter.h"
 
-#include <QSettings>
-
+#include "qgssettings.h"
 #include "qgsfield.h"
 #include "qgsvectorlayer.h"
 
@@ -38,7 +37,7 @@ QString QgsDateTimeFieldFormatter::representValue( QgsVectorLayer *layer, int fi
 
   if ( value.isNull() )
   {
-    QSettings settings;
+    QgsSettings settings;
     return QgsApplication::nullRepresentation();
   }
 

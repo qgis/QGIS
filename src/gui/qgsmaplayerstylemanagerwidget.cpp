@@ -17,10 +17,10 @@
 #include <QToolBar>
 #include <QInputDialog>
 #include <QMessageBox>
-#include <QSettings>
 #include <QFileDialog>
 
 #include "qgsmaplayerstylemanagerwidget.h"
+#include "qgssettings.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
 #include "qgsmapcanvas.h"
@@ -295,7 +295,7 @@ void QgsMapLayerStyleManagerWidget::saveStyle()
 
 void QgsMapLayerStyleManagerWidget::loadStyle()
 {
-  QSettings myQSettings;  // where we keep last used filter in persistent state
+  QgsSettings myQSettings;  // where we keep last used filter in persistent state
   QString myLastUsedDir = myQSettings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load layer properties from style file" ), myLastUsedDir,

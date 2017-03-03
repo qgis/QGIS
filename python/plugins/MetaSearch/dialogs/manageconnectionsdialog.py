@@ -29,7 +29,7 @@
 
 import xml.etree.ElementTree as etree
 
-from qgis.PyQt.QtCore import QSettings
+from qgis.core import QgsSettings
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QFileDialog, QListWidgetItem, QMessageBox
 
 from MetaSearch.util import (get_connections_from_file, get_ui_class,
@@ -47,7 +47,7 @@ class ManageConnectionsDialog(QDialog, BASE_CLASS):
 
         QDialog.__init__(self)
         self.setupUi(self)
-        self.settings = QSettings()
+        self.settings = QgsSettings()
         self.filename = None
         self.mode = mode  # 0 - save, 1 - load
         self.btnBrowse.clicked.connect(self.select_file)

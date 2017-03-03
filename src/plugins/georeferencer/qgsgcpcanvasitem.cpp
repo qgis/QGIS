@@ -17,6 +17,7 @@
 #include "qgsgeorefdatapoint.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
+#include "qgssettings.h"
 
 QgsGCPCanvasItem::QgsGCPCanvasItem( QgsMapCanvas *mapCanvas, const QgsGeorefDataPoint *dataPoint, bool isGCPSource )
   : QgsMapCanvasItem( mapCanvas )
@@ -60,7 +61,7 @@ void QgsGCPCanvasItem::paint( QPainter *p )
   p->setBrush( mPointBrush );
   p->drawEllipse( -2, -2, 5, 5 );
 
-  QSettings s;
+  QgsSettings s;
   bool showIDs = s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowId" ) ).toBool();
   bool showCoords = s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowCoords" ) ).toBool();
 

@@ -29,12 +29,12 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
-#include <QSettings>
 #include <QPushButton>
 #include <QKeySequence>
 #include <QToolButton>
 #include <QStatusBar>
 #include <QMetaObject>
+#include <QSettings>
 
 #ifdef Q_OS_MACX
 QgsCustomizationDialog::QgsCustomizationDialog( QWidget *parent, QSettings *settings )
@@ -239,7 +239,7 @@ void QgsCustomizationDialog::on_actionSave_triggered( bool checked )
   QFileInfo fileInfo( fileName );
   mySettings.setValue( mLastDirSettingsName, fileInfo.absoluteDir().absolutePath() );
 
-  QSettings fileSettings( fileName, QSettings::IniFormat );
+  QSettings fileSettings( fileName );
   treeToSettings( &fileSettings );
 }
 
@@ -258,7 +258,7 @@ void QgsCustomizationDialog::on_actionLoad_triggered( bool checked )
   QFileInfo fileInfo( fileName );
   mySettings.setValue( mLastDirSettingsName, fileInfo.absoluteDir().absolutePath() );
 
-  QSettings fileSettings( fileName, QSettings::IniFormat );
+  QSettings fileSettings( fileName );
   settingsToTree( &fileSettings );
 }
 
@@ -954,7 +954,7 @@ void QgsCustomization::loadDefault()
   }
   QgsDebugMsg( "Loading default customization from " + path );
 
-  QSettings fileSettings( path, QSettings::IniFormat );
+  QSettings fileSettings( path );
   QStringList keys = fileSettings.allKeys();
   QgsDebugMsg( QString( "size = %1" ).arg( keys.size() ) );
   QStringList::const_iterator i;

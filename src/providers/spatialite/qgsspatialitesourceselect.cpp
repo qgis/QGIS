@@ -25,10 +25,10 @@ email                : a.furieri@lqt.it
 #include "qgsquerybuilder.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
+#include "qgssettings.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
-#include <QSettings>
 #include <QTextStream>
 #include <QTableWidgetItem>
 #include <QHeaderView>
@@ -44,7 +44,7 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
 {
   setupUi( this );
 
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/SpatiaLiteSourceSelect/geometry" ) ).toByteArray() );
   mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "/Windows/SpatiaLiteSourceSelect/HoldDialogOpen" ), false ).toBool() );
 
@@ -116,7 +116,7 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
 
 QgsSpatiaLiteSourceSelect::~QgsSpatiaLiteSourceSelect()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/SpatiaLiteSourceSelect/geometry" ), saveGeometry() );
   settings.setValue( QStringLiteral( "/Windows/SpatiaLiteSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
 }
@@ -269,7 +269,7 @@ void QgsSpatiaLiteSourceSelect::on_btnNew_clicked()
 bool QgsSpatiaLiteSourceSelect::newConnection( QWidget *parent )
 {
   // Retrieve last used project dir from persistent settings
-  QSettings settings;
+  QgsSettings settings;
   QString lastUsedDir = settings.value( QStringLiteral( "/UI/lastSpatiaLiteDir" ), QDir::homePath() ).toString();
 
   QString myFile = QFileDialog::getOpenFileName( parent,
@@ -550,13 +550,13 @@ QString QgsSpatiaLiteSourceSelect::fullDescription( const QString &table, const 
 void QgsSpatiaLiteSourceSelect::dbChanged()
 {
   // Remember which database was selected.
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/SpatiaLite/connections/selected" ), cmbConnections->currentText() );
 }
 
 void QgsSpatiaLiteSourceSelect::setConnectionListPosition()
 {
-  QSettings settings;
+  QgsSettings settings;
   // If possible, set the item currently displayed database
   QString toSelect = settings.value( QStringLiteral( "/SpatiaLite/connections/selected" ) ).toString();
 

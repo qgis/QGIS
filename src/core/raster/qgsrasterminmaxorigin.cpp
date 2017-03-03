@@ -16,10 +16,10 @@
  ***************************************************************************/
 
 #include "qgsrasterminmaxorigin.h"
+#include "qgssettings.h"
 
 #include <QDomDocument>
 #include <QDomElement>
-#include <QSettings>
 
 QgsRasterMinMaxOrigin::QgsRasterMinMaxOrigin()
   : mLimits( None )
@@ -29,7 +29,7 @@ QgsRasterMinMaxOrigin::QgsRasterMinMaxOrigin()
   , mCumulativeCutUpper( CUMULATIVE_CUT_UPPER )
   , mStdDevFactor( DEFAULT_STDDEV_FACTOR )
 {
-  QSettings mySettings;
+  QgsSettings mySettings;
   mCumulativeCutLower = mySettings.value( QStringLiteral( "/Raster/cumulativeCutLower" ), CUMULATIVE_CUT_LOWER ).toDouble();
   mCumulativeCutUpper = mySettings.value( QStringLiteral( "/Raster/cumulativeCutUpper" ), CUMULATIVE_CUT_UPPER ).toDouble();
   mStdDevFactor = mySettings.value( QStringLiteral( "/Raster/defaultStandardDeviation" ), DEFAULT_STDDEV_FACTOR ).toDouble();

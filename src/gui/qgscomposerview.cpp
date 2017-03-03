@@ -47,6 +47,7 @@
 #include "qgsmapcanvas.h"
 #include "qgscursors.h"
 #include "qgscomposerutils.h"
+#include "qgssettings.h"
 
 #define MIN_VIEW_SCALE 0.05
 #define MAX_VIEW_SCALE 1000.0
@@ -1978,7 +1979,7 @@ void QgsComposerView::wheelEvent( QWheelEvent *event )
     {
       if ( item->isSelected() )
       {
-        QSettings settings;
+        QgsSettings settings;
         //read zoom mode
         QgsComposerItem::ZoomMode zoomMode = ( QgsComposerItem::ZoomMode )settings.value( QStringLiteral( "/qgis/wheel_action" ), 2 ).toInt();
         if ( zoomMode == QgsComposerItem::NoZoom )
@@ -2012,7 +2013,7 @@ void QgsComposerView::wheelEvent( QWheelEvent *event )
 void QgsComposerView::wheelZoom( QWheelEvent *event )
 {
   //get mouse wheel zoom behavior settings
-  QSettings mySettings;
+  QgsSettings mySettings;
   double zoomFactor = mySettings.value( QStringLiteral( "/qgis/zoom_factor" ), 2 ).toDouble();
 
   if ( event->modifiers() & Qt::ControlModifier )

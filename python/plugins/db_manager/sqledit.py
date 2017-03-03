@@ -25,10 +25,11 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-from qgis.PyQt.QtCore import Qt, QSettings
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor, QFont, QKeySequence
 from qgis.PyQt.QtWidgets import QShortcut
 from qgis.PyQt.Qsci import QsciScintilla, QsciLexerSQL
+from qgis.core import QgsSettings
 
 
 class SqlEdit(QsciScintilla):
@@ -98,7 +99,7 @@ class SqlEdit(QsciScintilla):
         self.setAutoCompletionCaseSensitivity(False)
 
         # Load font from Python console settings
-        settings = QSettings()
+        settings = QgsSettings()
         fontName = settings.value('pythonConsole/fontfamilytext', 'Monospace')
         fontSize = int(settings.value('pythonConsole/fontsize', 10))
 

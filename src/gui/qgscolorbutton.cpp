@@ -22,9 +22,9 @@
 #include "qgscolorswatchgrid.h"
 #include "qgscolorschemeregistry.h"
 #include "qgscolorwidgets.h"
+#include "qgssettings.h"
 
 #include <QPainter>
-#include <QSettings>
 #include <QTemporaryFile>
 #include <QMouseEvent>
 #include <QMenu>
@@ -109,7 +109,7 @@ void QgsColorButton::showColorDialog()
   }
 
   QColor newColor;
-  QSettings settings;
+  QgsSettings settings;
 
   if ( mAcceptLiveUpdates && settings.value( QStringLiteral( "/qgis/live_color_dialogs" ), false ).toBool() )
   {

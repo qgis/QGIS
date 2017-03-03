@@ -45,6 +45,7 @@
 #include "qgsgmlschema.h"
 #include "qgswmscapabilities.h"
 #include "qgscsexception.h"
+#include "qgssettings.h"
 
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -53,7 +54,6 @@
 #include <QImage>
 #include <QImageReader>
 #include <QPainter>
-#include <QSettings>
 #include <QEventLoop>
 #include <QTextCodec>
 #include <QThread>
@@ -3319,7 +3319,7 @@ QUrl QgsWmsProvider::getLegendGraphicFullURL( double scale, const QgsRectangle &
     setQueryItem( url, QStringLiteral( "TRANSPARENT" ), QStringLiteral( "true" ) );
 
   // add config parameter related to resolution
-  QSettings s;
+  QgsSettings s;
   int defaultLegendGraphicResolution = s.value( QStringLiteral( "/qgis/defaultLegendGraphicResolution" ), 0 ).toInt();
   QgsDebugMsg( QString( "defaultLegendGraphicResolution: %1" ).arg( defaultLegendGraphicResolution ) );
   if ( defaultLegendGraphicResolution )
@@ -3780,7 +3780,7 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
     QgsDebugMsg( QString( "expirationDate:%1" ).arg( cmd.expirationDate().toString() ) );
     if ( cmd.expirationDate().isNull() )
     {
-      QSettings s;
+      QgsSettings s;
       cmd.setExpirationDate( QDateTime::currentDateTime().addSecs( s.value( QStringLiteral( "/qgis/defaultTileExpiry" ), "24" ).toInt() * 60 * 60 ) );
     }
 
@@ -3997,7 +3997,7 @@ void QgsWmsTiledImageDownloadHandler::repeatTileRequest( QNetworkRequest const &
   int retry = request.attribute( static_cast<QNetworkRequest::Attribute>( TileRetry ) ).toInt();
   retry++;
 
-  QSettings s;
+  QgsSettings s;
   int maxRetry = s.value( QStringLiteral( "/qgis/defaultTileMaxRetry" ), "3" ).toInt();
   if ( retry > maxRetry )
   {

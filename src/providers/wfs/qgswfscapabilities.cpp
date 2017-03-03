@@ -20,9 +20,9 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsogcutils.h"
+#include "qgssettings.h"
 
 #include <QDomDocument>
-#include <QSettings>
 #include <QStringList>
 
 QgsWfsCapabilities::QgsWfsCapabilities( const QString &uri )
@@ -481,7 +481,7 @@ QString QgsWfsCapabilities::NormalizeSRSName( QString crsName )
 
 int QgsWfsCapabilities::defaultExpirationInSec()
 {
-  QSettings s;
+  QgsSettings s;
   return s.value( QStringLiteral( "/qgis/defaultCapabilitiesExpiry" ), "24" ).toInt() * 60 * 60;
 }
 
