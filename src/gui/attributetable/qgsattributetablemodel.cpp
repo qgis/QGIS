@@ -658,7 +658,6 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
       {
         styles = QgsConditionalStyle::matchingConditionalStyles( layer()->conditionalStyles()->rowStyles(), QVariant(),  mExpressionContext );
         mRowStylesMap.insert( index.row(), styles );
-
       }
 
       QgsConditionalStyle rowstyle = QgsConditionalStyle::compressStyles( styles );
