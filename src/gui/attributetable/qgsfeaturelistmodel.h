@@ -23,6 +23,8 @@
 
 #include "qgsfeaturemodel.h"
 #include "qgsfeature.h" // QgsFeatureId
+#include "qgsexpressioncontext.h"
+#include "qgsconditionalstyle.h"
 #include "qgis_gui.h"
 
 class QgsAttributeTableFilterModel;
@@ -123,10 +125,12 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
     void onEndInsertRows( const QModelIndex &parent, int first, int last );
 
   private:
-    QgsExpression *mExpression = nullptr;
+    mutable QgsExpression mDisplayExpression;
     QgsAttributeTableFilterModel *mFilterModel = nullptr;
     QString mParserErrorString;
     bool mInjectNull;
+    mutable QgsExpressionContext mExpressionContext;
+    mutable QMap< QgsFeatureId, QList<QgsConditionalStyle> > mRowStylesMap;
 };
 
 Q_DECLARE_METATYPE( QgsFeatureListModel::FeatureInfo )
