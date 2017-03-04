@@ -22,7 +22,10 @@
 pushd ${HOME}
 
 # fetching data from github should be just as fast as S3
-curl -L https://github.com/opengisch/osgeo4travis/archive/qt5bin.tar.gz | tar -xzC /home/travis --strip-components=1
+curl -L https://github.com/opengisch/osgeo4travis/archive/qt5bin.tar.gz | tar --strip-components=1 -xz -C /home/travis &
+SETUP_OSGEO4W_PID=$!
+
+mkdir /home/travis/osgeo4travis
 
 # other dependencies live in a cached folder
 pushd depcache
@@ -33,6 +36,8 @@ tar --strip-components=1 -zx -f cmake-3.5.0-Linux-x86_64.tar.gz -C /home/travis/
 # Download OTB package for Processing tests
 [[ -f OTB-5.6.0-Linux64.run ]] || curl -O https://www.orfeo-toolbox.org/packages/archives/OTB/OTB-5.6.0-Linux64.run
 sh ./OTB-5.6.0-Linux64.run
+
+wait $SETUP_OSGEO4W_PID
 
 popd
 popd
