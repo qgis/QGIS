@@ -37,6 +37,7 @@ matrix:
             - txt2tags
             - xvfb
             - clang-3.8
+            - grc
 
 
     - os: linux
