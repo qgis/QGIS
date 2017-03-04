@@ -130,8 +130,7 @@ class TestQgsSettings(unittest.TestCase):
         self.settings.endGroup()
         self.settings.beginGroup('testqgissettings/names')
         self.settings.setValue('name4', 'qgisrocks-4')
-        keys = list(self.settings.childKeys())
-        keys.sort()
+        keys = sorted(self.settings.childKeys())
         self.assertEqual(keys, ['name1', 'name2', 'name3', 'name4'])
         self.settings.endGroup()
         self.assertEqual('qgisrocks-1', self.settings.value('testqgissettings/names/name1'))
@@ -217,6 +216,12 @@ class TestQgsSettings(unittest.TestCase):
 
         self.settings.setValue('testqgissettings/name3', 'qgisrocks3')
         self.assertTrue(self.settings.contains('testqgissettings/name3'))
+
+    def test_remove(self):
+        self.settings.setValue('testQgisSettings/temp', True)
+        self.assertEqual(self.settings.value('testqgissettings/temp'), True)
+        self.settings.remove('testQgisSettings/temp')
+        self.assertEqual(self.settings.value('testqgissettings/temp'), None)
 
 
 if __name__ == '__main__':
