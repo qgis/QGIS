@@ -88,6 +88,12 @@ for line in p.stdout:
                 in_failure = False
             else:
                 updated_line = colored(updated_line, 'yellow')
+        elif re.search('\*\*\* Segmentation fault', updated_line):
+            start_fold('segfault')
+            updated_line = colored(updated_line, 'magenta')
+        elif re.match('  Test failed: Segmentation fault', updated_line):
+            end_fold()
+
         else:
             if re.match('FAIL[:\!].*', updated_line):
                 updated_line = colored(updated_line, 'yellow')
