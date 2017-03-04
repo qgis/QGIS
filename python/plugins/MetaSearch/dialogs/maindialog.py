@@ -49,10 +49,10 @@ from MetaSearch.dialogs.manageconnectionsdialog import ManageConnectionsDialog
 from MetaSearch.dialogs.newconnectiondialog import NewConnectionDialog
 from MetaSearch.dialogs.recorddialog import RecordDialog
 from MetaSearch.dialogs.xmldialog import XMLDialog
-from MetaSearch.util import (get_connections_from_file, get_ui_class,
-                             get_help_url, highlight_xml, normalize_text,
-                             open_url, render_template, serialize_string,
-                             StaticContext)
+from MetaSearch.util import (clean_ows_url, get_connections_from_file,
+                             get_ui_class, get_help_url, highlight_xml,
+                             normalize_text, open_url, render_template,
+                             serialize_string, StaticContext)
 
 BASE_CLASS = get_ui_class('maindialog.ui')
 
@@ -718,7 +718,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         # no dups detected or overwrite is allowed
         self.settings.beginGroup('/Qgis/connections-%s' % stype[1])
-        self.settings.setValue('/%s/url' % sname, data_url)
+        self.settings.setValue('/%s/url' % sname, clean_ows_url(data_url))
         self.settings.endGroup()
 
         # open provider window
