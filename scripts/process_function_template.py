@@ -40,6 +40,7 @@ def quote(v):
     else:
         raise BaseException("unexpected type " + repr(v))
 
+
 for f in sorted(glob.glob('resources/function_help/json/*')):
     with open(f) as function_file:
         try:
@@ -51,13 +52,13 @@ for f in sorted(glob.glob('resources/function_help/json/*')):
     json_params = quote(json_params)
 
     for field in ['name', 'type']:
-        if not field in json_params:
+        if field not in json_params:
             raise BaseException("%s: %s missing" % (f, field))
 
     if not json_params['type'] in ['function', 'operator', 'value', 'expression', 'group']:
         raise BaseException("%s: invalid type %s " % (f, json_params['type']))
 
-    if not 'variants' in json_params:
+    if 'variants' not in json_params:
         # convert single variant shortcut to a expanded variant
         v = {}
         for i in json_params:
@@ -71,7 +72,7 @@ for f in sorted(glob.glob('resources/function_help/json/*')):
 
     if json_params['type'] == 'operator':
         for v in json_params['variants']:
-            if not 'arguments' in v:
+            if 'arguments' not in v:
                 raise BaseException("%s: arguments expected for operator")
             if len(list(v['arguments'])) < 1 or len(list(v['arguments'])) > 2:
                 raise BaseException("%s: 1 or 2 arguments expected for operator")

@@ -33,8 +33,7 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtWidgets import QMenu, QAction, QTreeWidgetItem, QLabel, QMessageBox
 from qgis.utils import iface
-from qgis.core import (QgsApplication,
-                       QgsProcessingRegistry)
+from qgis.core import QgsApplication
 
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.core.Processing import Processing

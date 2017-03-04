@@ -14,22 +14,17 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-import os
-
-from qgis.PyQt.QtCore import QVariant
-
 from qgis.core import (QgsVectorLayer,
                        QgsVectorLayerUtils,
-                       QgsField,
                        QgsFieldConstraints,
-                       QgsFields,
                        QgsFeature,
                        QgsGeometry,
                        QgsPoint,
                        NULL
                        )
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
+
+
 start_app()
 
 

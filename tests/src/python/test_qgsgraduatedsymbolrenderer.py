@@ -24,8 +24,6 @@ from qgis.core import (QgsGraduatedSymbolRenderer,
                        QgsFeature,
                        QgsGeometry,
                        QgsPoint,
-                       QgsSymbol,
-                       QgsSymbolLayerUtils,
                        QgsRenderContext
                        )
 from qgis.PyQt.QtCore import Qt
@@ -456,6 +454,7 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
         # Other calculation method tests
         # createRenderer function
         # symbolForFeature correctly selects range
+
 
 if __name__ == "__main__":
     unittest.main()

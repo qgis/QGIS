@@ -28,16 +28,12 @@ __revision__ = '$Format:%H$'
 import os
 
 try:
-    import plotly
+    import plotly  # NOQA
     hasPlotly = True
 except:
     hasPlotly = False
 
-from qgis.PyQt.QtGui import QIcon
-
-from qgis.core import (Qgis,
-                       QgsWkbTypes,
-                       QgsApplication)
+from qgis.core import QgsApplication
 
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.script.ScriptUtils import ScriptUtils

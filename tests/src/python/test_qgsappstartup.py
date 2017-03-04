@@ -23,11 +23,9 @@ import shutil
 import subprocess
 import tempfile
 import errno
-import locale
 
 from qgis.testing import unittest
 from utilities import unitTestDataPath
-from builtins import str
 
 print('CTEST_FULL_OUTPUT')
 
@@ -81,7 +79,6 @@ class TestPyQgsAppStartup(unittest.TestCase):
         p = subprocess.Popen(call, env=myenv)
 
         s = 0
-        ok = True
         while not os.path.exists(myTestFile):
             p.poll()
             if p.returncode is not None:

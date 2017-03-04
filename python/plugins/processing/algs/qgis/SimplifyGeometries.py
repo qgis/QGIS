@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsWkbTypes, QgsMapToPixelSimplifier
+from qgis.core import QgsMapToPixelSimplifier
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -94,7 +94,7 @@ class SimplifyGeometries(GeoAlgorithm):
                 input_geometry = input_feature.geometry()
                 pointsBefore += input_geometry.geometry().nCoordinates()
 
-                if method == 0: # distance
+                if method == 0:  # distance
                     output_geometry = input_geometry.simplify(tolerance)
                 else:
                     output_geometry = simplifier.simplify(input_geometry)

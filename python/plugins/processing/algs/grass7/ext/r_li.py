@@ -26,7 +26,7 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 import shutil
-from processing.tools.system import isWindows, isMac, userFolder, mkdir
+from processing.tools.system import isWindows, mkdir
 from processing.core.parameters import getParameterFromString
 import os
 

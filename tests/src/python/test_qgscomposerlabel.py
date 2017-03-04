@@ -18,8 +18,9 @@ import qgis  # NOQA
 
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QFileInfo, QDate, QDateTime
-from qgis.core import QgsVectorLayer, QgsProject, QgsMapSettings, QgsComposition, QgsComposerLabel, QgsFeatureRequest, QgsFeature, QgsExpression, QgsProject
+from qgis.core import QgsVectorLayer, QgsMapSettings, QgsComposition, QgsComposerLabel, QgsProject
 from utilities import unitTestDataPath
+
 
 start_app()
 
@@ -89,6 +90,7 @@ class TestQgsComposerLabel(unittest.TestCase):
         # move the the second page and re-evaluate
         mLabel.setItemPosition(0, 320)
         assert mLabel.displayText() == "2/2"
+
 
 if __name__ == '__main__':
     unittest.main()

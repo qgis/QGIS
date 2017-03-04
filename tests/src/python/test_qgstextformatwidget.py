@@ -13,7 +13,6 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
-import os
 
 from qgis.core import (QgsTextBufferSettings,
                        QgsTextBackgroundSettings,
@@ -22,10 +21,10 @@ from qgis.core import (QgsTextBufferSettings,
                        QgsUnitTypes,
                        QgsMapUnitScale)
 from qgis.gui import (QgsTextFormatWidget, QgsTextFormatDialog)
-from qgis.PyQt.QtGui import (QColor, QPainter, QFont, QImage, QBrush, QPen)
-from qgis.PyQt.QtCore import (Qt, QSizeF, QPointF, QRectF, QDir)
+from qgis.PyQt.QtGui import (QColor, QPainter)
+from qgis.PyQt.QtCore import (Qt, QSizeF, QPointF)
 from qgis.testing import unittest, start_app
-from utilities import getTestFont, svgSymbolsPath
+from utilities import getTestFont
 
 start_app()
 
@@ -189,6 +188,7 @@ class PyQgsTextFormatWidget(unittest.TestCase):
         s = self.createFormatSettings()
         d = QgsTextFormatDialog(s)
         self.checkTextFormat(d.format())
+
 
 if __name__ == '__main__':
     unittest.main()

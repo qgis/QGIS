@@ -16,7 +16,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.server import QgsServerProjectUtils
-from qgis.core import QgsApplication, QgsProject
+from qgis.core import QgsProject
 from qgis.testing import unittest
 from utilities import unitTestDataPath
 
@@ -42,6 +42,7 @@ class TestQgsServerProjectUtils(unittest.TestCase):
         self.assertEqual(QgsServerProjectUtils.wmsServiceUrl(self.prj), "my_wms_advertised_url")
         self.assertEqual(QgsServerProjectUtils.wcsServiceUrl(self.prj), "my_wcs_advertised_url")
         self.assertEqual(QgsServerProjectUtils.wfsServiceUrl(self.prj), "my_wfs_advertised_url")
+
 
 if __name__ == '__main__':
     unittest.main()

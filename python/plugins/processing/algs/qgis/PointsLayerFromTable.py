@@ -25,9 +25,7 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import Qgis, QgsWkbTypes, QgsPointV2
-from qgis.core import QgsCoordinateReferenceSystem
-from qgis.core import QgsGeometry
+from qgis.core import QgsWkbTypes, QgsPointV2, QgsCoordinateReferenceSystem, QgsGeometry
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField

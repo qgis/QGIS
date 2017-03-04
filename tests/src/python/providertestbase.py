@@ -27,9 +27,7 @@ from qgis.core import (
     NULL
 )
 
-from utilities import(
-    compareWkt
-)
+from utilities import compareWkt
 
 
 class ProviderTestCase(object):
@@ -170,8 +168,8 @@ class ProviderTestCase(object):
         self.assert_query(provider, 'cnt = 50 * 2', [1])
         self.assert_query(provider, 'cnt = 150 / 1.5', [1])
         self.assert_query(provider, 'cnt = 1000 / 10', [1])
-        self.assert_query(provider, 'cnt = 1000/11+10', []) # checks that provider isn't rounding int/int
-        self.assert_query(provider, 'pk = 9 // 4', [2]) # int division
+        self.assert_query(provider, 'cnt = 1000/11+10', [])  # checks that provider isn't rounding int/int
+        self.assert_query(provider, 'pk = 9 // 4', [2])  # int division
         self.assert_query(provider, 'cnt = 99 + 1', [1])
         self.assert_query(provider, 'cnt = 101 - 1', [1])
         self.assert_query(provider, 'cnt - 1 = 99', [1])

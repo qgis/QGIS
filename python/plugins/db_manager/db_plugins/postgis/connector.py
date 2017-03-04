@@ -27,7 +27,7 @@ from builtins import range
 from functools import cmp_to_key
 
 from qgis.PyQt.QtCore import QRegExp
-from qgis.core import QgsCredentials, QgsDataSourceUri
+from qgis.core import Qgis, QgsCredentials, QgsDataSourceUri
 
 from ..connector import DBConnector
 from ..plugin import ConnectionError, DbError, Table
@@ -219,8 +219,6 @@ class PostGisDBConnector(DBConnector):
         return self.has_raster
 
     def hasCustomQuerySupport(self):
-        from qgis.core import Qgis, QgsWkbTypes
-
         return Qgis.QGIS_VERSION[0:3] >= "1.5"
 
     def hasTableColumnEditingSupport(self):
@@ -712,7 +710,7 @@ class PostGisDBConnector(DBConnector):
         if self.isVectorTable(table):
             sql = u"SELECT DropGeometryTable(%s%s)" % (schema_part, self.quoteString(tablename))
         elif self.isRasterTable(table):
-            ## Fix #8521: delete raster table and references from raster_columns table
+            # Fix #8521: delete raster table and references from raster_columns table
             sql = u"DROP TABLE %s" % self.quoteId(table)
         else:
             sql = u"DROP TABLE %s" % self.quoteId(table)
@@ -986,31 +984,31 @@ class PostGisDBConnector(DBConnector):
     #       pass
 
     # moved into the parent class: DbConnector._execute_and_commit()
-    #def _execute_and_commit(self, sql):
+    # def _execute_and_commit(self, sql):
     #       pass
 
     # moved into the parent class: DbConnector._get_cursor()
-    #def _get_cursor(self, name=None):
+    # def _get_cursor(self, name=None):
     #       pass
 
     # moved into the parent class: DbConnector._fetchall()
-    #def _fetchall(self, c):
+    # def _fetchall(self, c):
     #       pass
 
     # moved into the parent class: DbConnector._fetchone()
-    #def _fetchone(self, c):
+    # def _fetchone(self, c):
     #       pass
 
     # moved into the parent class: DbConnector._commit()
-    #def _commit(self):
+    # def _commit(self):
     #       pass
 
     # moved into the parent class: DbConnector._rollback()
-    #def _rollback(self):
+    # def _rollback(self):
     #       pass
 
     # moved into the parent class: DbConnector._get_cursor_columns()
-    #def _get_cursor_columns(self, c):
+    # def _get_cursor_columns(self, c):
     #       pass
 
     def getSqlDictionary(self):

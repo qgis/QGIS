@@ -96,9 +96,10 @@ class ZonalStatistics(GeoAlgorithm):
         rasterXSize = rasterDS.RasterXSize
         rasterYSize = rasterDS.RasterYSize
 
-        rasterBBox = QgsRectangle(geoTransform[0], geoTransform[3] - cellYSize
-                                  * rasterYSize, geoTransform[0] + cellXSize
-                                  * rasterXSize, geoTransform[3])
+        rasterBBox = QgsRectangle(geoTransform[0],
+                                  geoTransform[3] - cellYSize * rasterYSize,
+                                  geoTransform[0] + cellXSize * rasterXSize,
+                                  geoTransform[3])
 
         rasterGeom = QgsGeometry.fromRect(rasterBBox)
 

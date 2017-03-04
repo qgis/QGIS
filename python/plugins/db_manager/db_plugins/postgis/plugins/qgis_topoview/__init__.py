@@ -23,8 +23,9 @@ Based on qgis_pgis_topoview by Sandro Santilli <strk@keybit.net>
 from builtins import str
 
 from qgis.PyQt.QtWidgets import QAction
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QIcon
-from qgis.core import QgsProject, QgsVectorLayer, Qgis, QgsWkbTypes
+from qgis.core import QgsProject, QgsVectorLayer, QgsWkbTypes, QgsLayerTreeGroup
 from qgis.gui import QgsMessageBar
 
 import os
@@ -225,7 +226,9 @@ def run(item, action, mainwindow):
 
         faceLayers = [layerFaceMbr, layerFaceGeom, layerFaceSeed]
         nodeLayers = [layerNode, layerNodeLabel]
-        edgeLayers = [layerEdge, layerDirectedEdge, layerEdgeLabel, layerEdgeFaceLeft, layerEdgeFaceRight, layerEdgeNextLeft, layerEdgeNextRight]
+        edgeLayers = [layerEdge, layerDirectedEdge, layerEdgeLabel
+                      # , layerEdgeFaceLeft, layerEdgeFaceRight, layerEdgeNextLeft, layerEdgeNextRight
+                      ]
 
         QgsProject.instance().addMapLayers(faceLayers, False)
 
@@ -236,13 +239,13 @@ def run(item, action, mainwindow):
             nodeLayer.setExpanded(False)
 
         groupNodes = QgsLayerTreeGroup(u'Nodes')
-        for layer in faceLayers:
+        for layer in nodeLayers:
             nodeLayer = groupNodes.addLayer(layer)
             nodeLayer.setVisible(Qt.Unchecked)
             nodeLayer.setExpanded(False)
 
         groupEdges = QgsLayerTreeGroup(u'Edges')
-        for layer in faceLayers:
+        for layer in edgeLayers:
             nodeLayer = groupEdges.addLayer(layer)
             nodeLayer.setVisible(Qt.Unchecked)
             nodeLayer.setExpanded(False)

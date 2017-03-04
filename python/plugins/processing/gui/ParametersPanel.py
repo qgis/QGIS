@@ -20,7 +20,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -31,14 +30,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-import locale
-
-from qgis.core import QgsMapLayer
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
-from qgis.PyQt.QtWidgets import (QWidget, QLayout, QVBoxLayout, QHBoxLayout, QToolButton,
-                                 QLabel, QCheckBox, QComboBox, QLineEdit, QPlainTextEdit)
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtWidgets import (QWidget, QHBoxLayout, QToolButton,
+                                 QLabel, QCheckBox)
 from qgis.PyQt.QtGui import QIcon
 
 from processing.gui.OutputSelectionPanel import OutputSelectionPanel

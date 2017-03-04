@@ -15,10 +15,7 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 from qgis.testing import unittest
-from qgis.core import (
-    QgsUnitTypes,
-    QgsSymbol
-)
+from qgis.core import QgsUnitTypes
 from qgis.PyQt.QtCore import QLocale
 
 # enforce C locale because the tests expect it
@@ -227,7 +224,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                                        msg='got {:.7f}, expected {:.7f} when converting from {} to {}'.format(res, expected_factor,
                                                                                                               QgsUnitTypes.toString(from_unit),
                                                                                                               QgsUnitTypes.toString(to_unit)))
-                #test conversion to unknown units
+                # test conversion to unknown units
                 res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.DistanceUnknownUnit)
                 self.assertAlmostEqual(res,
                                        1.0,
@@ -256,7 +253,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                                        msg='got {:.15f}, expected {:.15f} when converting from {} to {}'.format(res, expected_factor,
                                                                                                                 QgsUnitTypes.toString(from_unit),
                                                                                                                 QgsUnitTypes.toString(to_unit)))
-                #test conversion to unknown units
+                # test conversion to unknown units
                 res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.AreaUnknownUnit)
                 self.assertAlmostEqual(res,
                                        1.0,
@@ -342,7 +339,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                                        msg='got {:.7f}, expected {:.7f} when converting from {} to {}'.format(res, expected_factor,
                                                                                                               QgsUnitTypes.toString(from_unit),
                                                                                                               QgsUnitTypes.toString(to_unit)))
-                #test conversion to unknown units
+                # test conversion to unknown units
                 res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.AngleUnknownUnit)
                 self.assertAlmostEqual(res,
                                        1.0,
@@ -358,6 +355,7 @@ class TestQgsUnitTypes(unittest.TestCase):
         self.assertEqual(QgsUnitTypes.formatAngle(1.99999999, 2, QgsUnitTypes.AngleSecondsOfArc), '2.00″')
         self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleTurn), '1.00 tr')
         self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleUnknownUnit), '1.00')
+
 
 if __name__ == "__main__":
     unittest.main()

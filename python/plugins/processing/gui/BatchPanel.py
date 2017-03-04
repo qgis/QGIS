@@ -37,16 +37,16 @@ from qgis.gui import QgsMessageBar
 
 from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
 
-from processing.core.parameters import ParameterFile
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterTable
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterExtent
-from processing.core.parameters import ParameterCrs
-from processing.core.parameters import ParameterPoint
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterFixedTable
-from processing.core.parameters import ParameterMultipleInput
+from processing.core.parameters import ParameterFile  # NOQA
+from processing.core.parameters import ParameterRaster  # NOQA
+from processing.core.parameters import ParameterTable  # NOQA
+from processing.core.parameters import ParameterVector  # NOQA
+from processing.core.parameters import ParameterExtent  # NOQA
+from processing.core.parameters import ParameterCrs  # NOQA
+from processing.core.parameters import ParameterPoint  # NOQA
+from processing.core.parameters import ParameterSelection  # NOQA
+from processing.core.parameters import ParameterFixedTable  # NOQA
+from processing.core.parameters import ParameterMultipleInput  # NOQA
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(

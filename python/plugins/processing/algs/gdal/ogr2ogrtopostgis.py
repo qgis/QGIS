@@ -184,6 +184,7 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
         tsrs = str(self.getParameterValue(self.T_SRS))
         asrs = str(self.getParameterValue(self.A_SRS))
         table = str(self.getParameterValue(self.TABLE))
+        schema = str(self.getParameterValue(self.SCHEMA))
         pk = str(self.getParameterValue(self.PK))
         pkstring = "-lco FID=" + pk
         primary_key = self.getParameterValue(self.PRIMARY_KEY)

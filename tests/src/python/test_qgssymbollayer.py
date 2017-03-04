@@ -54,7 +54,6 @@ from qgis.core import (QgsCentroidFillSymbolLayer,
                        QgsRasterFillSymbolLayer,
                        QgsShapeburstFillSymbolLayer,
                        QgsArrowSymbolLayer,
-                       QgsSymbol,
                        QgsUnitTypes,
                        QgsFillSymbol,
                        QgsLineSymbol,
@@ -1107,6 +1106,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mSymbolLayer.subSymbol().setColor(QColor(250, 150, 200))
         self.assertEqual(mSymbolLayer.subSymbol().color(), QColor(250, 150, 200))
         self.assertEqual(mSymbolLayer.color(), QColor(250, 150, 200))
+
 
 if __name__ == '__main__':
     unittest.main()

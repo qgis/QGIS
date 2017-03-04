@@ -74,13 +74,13 @@ class TestAuthManager(unittest.TestCase):
         cls.testdata_path = unitTestDataPath('qgis_server') + '/'
         cls.project_path = cls.testdata_path + "test_project.qgs"
         # Enable auth
-        #os.environ['QGIS_AUTH_PASSWORD_FILE'] = QGIS_AUTH_PASSWORD_FILE
+        # os.environ['QGIS_AUTH_PASSWORD_FILE'] = QGIS_AUTH_PASSWORD_FILE
         authm = QgsAuthManager.instance()
         assert (authm.setMasterPassword('masterpassword', True))
         cls.auth_config = QgsAuthMethodConfig('Basic')
         cls.auth_config.setName('test_auth_config')
         cls.username = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6))
-        cls.password = cls.username[::-1] # reversed
+        cls.password = cls.username[::-1]  # reversed
         cls.auth_config.setConfig('username', cls.username)
         cls.auth_config.setConfig('password', cls.password)
         assert (authm.storeAuthenticationConfig(cls.auth_config)[0])

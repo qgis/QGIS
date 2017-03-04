@@ -90,5 +90,6 @@ class TestQgsLineSymbolLayers(unittest.TestCase):
 
         self.assertTrue(self.imageCheck('symbol_layer', 'simpleline_offset', image))
 
+
 if __name__ == '__main__':
     unittest.main()

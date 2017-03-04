@@ -12,16 +12,14 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis  # NOQA
 
-from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtGui import QPolygonF
 from qgis.PyQt.QtCore import QPointF
 
 from qgis.core import (QgsComposerPolygon,
                        QgsComposerItem,
                        QgsComposition,
-                       QgsMapSettings,
                        QgsFillSymbol,
                        QgsProject
                        )
@@ -219,6 +217,7 @@ class TestQgsComposerPolygon(unittest.TestCase):
         rc = self.mComposerPolygon.nodeAtPosition(
             QPointF(100.0, 210.0), True, 10.1)
         self.assertEqual(rc, 3)
+
 
 if __name__ == '__main__':
     unittest.main()

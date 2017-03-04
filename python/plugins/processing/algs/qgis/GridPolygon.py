@@ -30,7 +30,8 @@ import math
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsRectangle, QgsCoordinateReferenceSystem, Qgis, QgsField, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
+from qgis.core import QgsRectangle, QgsCoordinateReferenceSystem, QgsField, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterExtent
@@ -241,7 +242,6 @@ class GridPolygon(GeoAlgorithm):
                         hoverlay cannot be negative. Increase hoverlay.').format(hSpacing, hOverlay)
             )
 
-        halfHSpacing = hSpacing / 2.0
         halfVSpacing = vSpacing / 2.0
 
         columns = int(math.ceil(float(width) / hOverlay))

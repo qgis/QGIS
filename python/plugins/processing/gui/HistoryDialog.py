@@ -103,8 +103,8 @@ class HistoryDialog(BASE, WIDGET):
             groupItem.setText(0, category)
             groupItem.setIcon(0, self.groupIcon)
             for entry in elements[category]:
-                item = TreeLogEntryItem(entry, category
-                                        == ProcessingLog.LOG_ALGORITHM)
+                item = TreeLogEntryItem(entry, category ==
+                                        ProcessingLog.LOG_ALGORITHM)
                 item.setIcon(0, self.keyIcon)
                 groupItem.insertChild(0, item)
             self.tree.addTopLevelItem(groupItem)

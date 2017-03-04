@@ -33,9 +33,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsProject,
                        QgsRectangle,
                        QgsMultiRenderChecker,
-                       QgsNullSymbolRenderer,
-                       QgsFeatureRequest
-                       )
+                       QgsNullSymbolRenderer)
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
 from utilities import unitTestDataPath

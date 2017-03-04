@@ -29,7 +29,7 @@ import os
 import operator
 import sys
 
-from collections import defaultdict, deque
+from collections import defaultdict
 
 from qgis.core import (QgsField,
                        QgsGeometry,
@@ -162,7 +162,7 @@ class TopoColor(GeoAlgorithm):
             feedback.setProgress(int(i * total))
 
         for feature_id, f in features_with_geometry.items():
-            if not feature_id in s.node_edge:
+            if feature_id not in s.node_edge:
                 s.add_edge(feature_id, None)
 
         return s, id_graph

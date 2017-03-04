@@ -36,7 +36,9 @@ from processing.core.parameters import (Parameter,
                                         ParameterRaster,
                                         ParameterNumber,
                                         ParameterBoolean,
-                                        _splitParameterOptions)
+                                        _splitParameterOptions,
+                                        _createDescriptiveName)
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.outputs import OutputRaster, OutputTable
 from processing.tools import raster
 
@@ -98,7 +100,7 @@ class Relief(GeoAlgorithm):
                 isOptional, name, definition = _splitParameterOptions(line)
                 descName = _createDescriptiveName(name)
                 parent = definition.lower().strip()[len('relief colors') + 1:]
-                return ParameterReliefColors(name, description, parent)
+                return ParameterReliefColors(name, descName, parent)
 
             @staticmethod
             def colorsToString(colors):

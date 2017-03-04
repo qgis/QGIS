@@ -354,7 +354,8 @@ def main():
 
     w = ResultHandler()
     w.parse_url(args.dash_url)
-    w.exec()
+    w.exec_()
+
 
 if __name__ == '__main__':
     main()

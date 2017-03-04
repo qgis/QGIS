@@ -14,18 +14,15 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsMapSettings,
-                       QgsCoordinateReferenceSystem,
+from qgis.core import (QgsCoordinateReferenceSystem,
                        QgsRectangle,
                        QgsVectorLayer,
                        QgsFeature,
                        QgsGeometry,
-                       QgsMultiRenderChecker,
-                       QgsApplication)
+                       QgsMultiRenderChecker)
 from qgis.gui import (QgsMapCanvas)
 
-from qgis.PyQt.QtCore import (Qt,
-                              QDir)
+from qgis.PyQt.QtCore import QDir
 import time
 from qgis.testing import start_app, unittest
 

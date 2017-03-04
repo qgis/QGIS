@@ -45,10 +45,10 @@ class TestQgsFontUtils(unittest.TestCase):
         # print self._family + ' styles:' + styles
 
         res = (
-            self._has_style(self._family, 'Roman')
-            and self._has_style(self._family, 'Oblique')
-            and self._has_style(self._family, 'Bold')
-            and self._has_style(self._family, 'Bold Oblique')
+            self._has_style(self._family, 'Roman') and
+            self._has_style(self._family, 'Oblique') and
+            self._has_style(self._family, 'Bold') and
+            self._has_style(self._family, 'Bold Oblique')
         )
         msg = self._family + ' test font styles could not be loaded'
         assert res, msg
@@ -58,10 +58,10 @@ class TestQgsFontUtils(unittest.TestCase):
         f = QgsFontUtils.getStandardTestFont('Bold Oblique', 14)
         """:type: QFont"""
         res = (
-            f.family() == self._family
-            and f.bold()
-            and f.italic()
-            and f.pointSize() == 14
+            f.family() == self._family and
+            f.bold() and
+            f.italic() and
+            f.pointSize() == 14
         )
         msg = self._family + ' test font Bold Oblique at 14 pt not retrieved'
         assert res, msg

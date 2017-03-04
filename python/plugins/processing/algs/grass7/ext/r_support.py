@@ -25,8 +25,6 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-import os
-
 
 def processCommand(alg):
     # We temporary remove the output

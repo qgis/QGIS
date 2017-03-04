@@ -17,12 +17,10 @@ import qgis  # NOQA
 import os
 import tempfile
 import shutil
-import glob
 from osgeo import gdal, ogr
 
-from qgis.core import QgsVectorLayer, QgsFeature, QgsGeometry, QgsFeatureRequest, QgsField, QgsFieldConstraints, NULL
+from qgis.core import QgsVectorLayer, QgsFeature, QgsFeatureRequest, QgsFieldConstraints, NULL
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime
 
 start_app()

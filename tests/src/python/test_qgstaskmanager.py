@@ -13,14 +13,10 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
-import os
 
-from qgis.core import (
-    QgsTask,
-    QgsTaskManager,
-    QgsApplication
-)
-from qgis.PyQt.QtCore import (QCoreApplication)
+from qgis.core import QgsTask, QgsApplication
+
+from qgis.PyQt.QtCore import QCoreApplication
 
 from qgis.testing import start_app, unittest
 from time import sleep
@@ -165,7 +161,7 @@ class TestQgsTaskManager(unittest.TestCase):
         while task.status() != QgsTask.Running:
             pass
 
-        #wait a fraction so that setProgress gets a chance to be called
+        # wait a fraction so that setProgress gets a chance to be called
         sleep(0.001)
         self.assertEqual(task.progress(), 50)
         self.assertFalse(task.exception)
@@ -248,6 +244,7 @@ class TestQgsTaskManager(unittest.TestCase):
         self.assertFalse(task.exception)
         self.assertEqual(finished_multiple_value_result.value, 5)
         self.assertEqual(finished_multiple_value_result.statement, 'whoo')
+
 
 if __name__ == '__main__':
     unittest.main()

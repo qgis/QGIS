@@ -17,7 +17,6 @@
 ***************************************************************************
 """
 from builtins import str
-from builtins import range
 
 
 __author__ = 'Victor Olaya'
@@ -32,11 +31,10 @@ from qgis.PyQt.QtCore import Qt, QUrl, QMetaObject
 from qgis.PyQt.QtWidgets import (QDialog, QDialogButtonBox, QLabel, QLineEdit,
                                  QFrame, QPushButton, QSizePolicy, QVBoxLayout,
                                  QHBoxLayout, QTabWidget, QWidget, QScrollArea,
-                                 QComboBox, QTableWidgetItem, QMessageBox,
-                                 QTextBrowser, QToolButton, QMenu, QAction)
+                                 QTextBrowser)
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 
-from qgis.core import QgsApplication, QgsNetworkAccessManager
+from qgis.core import QgsNetworkAccessManager
 
 from qgis.gui import QgsMessageBar
 
@@ -47,11 +45,7 @@ from processing.core.outputs import (OutputRaster,
                                      OutputTable,
                                      OutputHTML,
                                      OutputFile,
-                                     OutputDirectory,
-                                     OutputNumber,
-                                     OutputString,
-                                     OutputExtent,
-                                     OutputCrs)
+                                     OutputDirectory)
 from processing.core.parameters import ParameterPoint, ParameterExtent
 
 from processing.modeler.ModelerAlgorithm import (ValueFromInput,
@@ -91,8 +85,8 @@ class ModelerParametersDialog(QDialog):
         self.resize(650, 450)
         self.buttonBox = QDialogButtonBox()
         self.buttonBox.setOrientation(Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel
-                                          | QDialogButtonBox.Ok)
+        self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel |
+                                          QDialogButtonBox.Ok)
         tooltips = self._alg.getParameterDescriptions()
         self.setSizePolicy(QSizePolicy.Expanding,
                            QSizePolicy.Expanding)
@@ -167,8 +161,8 @@ class ModelerParametersDialog(QDialog):
                 continue
             if isinstance(output, (OutputRaster, OutputVector, OutputTable,
                                    OutputHTML, OutputFile, OutputDirectory)):
-                label = QLabel(output.description + '<'
-                               + output.__class__.__name__ + '>')
+                label = QLabel(output.description + '<' +
+                               output.__class__.__name__ + '>')
                 item = QLineEdit()
                 if hasattr(item, 'setPlaceholderText'):
                     item.setPlaceholderText(ModelerParametersDialog.ENTER_NAME)

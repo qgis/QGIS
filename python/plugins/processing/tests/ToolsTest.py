@@ -32,9 +32,8 @@ import tempfile
 from qgis.core import (QgsVectorLayer, QgsFeatureRequest)
 from qgis.testing import start_app, unittest
 
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.tests.TestData import testDataPath, points, invalid_geometries
+from processing.tests.TestData import points
 from processing.tools import vector
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
@@ -202,10 +201,9 @@ class VectorTest(unittest.TestCase):
 
         # OGR provider - multiple layers
         _copyFile(os.path.join(outdir, 'b.csv'))
-        name = vector.ogrLayerName(outdir + '|layerid=0')
-        self.assertEqual(name, 'a')
-        name = vector.ogrLayerName(outdir + '|layerid=1')
-        self.assertEqual(name, 'b')
+        name1 = vector.ogrLayerName(outdir + '|layerid=0')
+        name2 = vector.ogrLayerName(outdir + '|layerid=1')
+        self.assertEqual(sorted([name1, name2]), ['a', 'b'])
 
         name = vector.ogrLayerName(outdir + '|layerid=2')
         self.assertIsNone(name)

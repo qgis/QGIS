@@ -17,7 +17,6 @@
 ***************************************************************************
 """
 from builtins import str
-from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -34,13 +33,8 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import pyqtSignal
 from qgis.PyQt.QtWidgets import QDialog
 
-from qgis.core import (QgsDataSourceUri,
-                       QgsCredentials,
-                       QgsExpression,
-                       QgsRasterLayer,
-                       QgsExpressionContextScope)
-from qgis.gui import QgsEncodingFileDialog, QgsExpressionBuilderDialog
-from qgis.utils import iface
+from qgis.core import QgsExpression
+from qgis.gui import QgsExpressionBuilderDialog
 from processing.core.parameters import ParameterNumber, ParameterVector, ParameterRaster
 from processing.core.outputs import OutputNumber, OutputVector, OutputRaster
 from processing.modeler.ModelerAlgorithm import ValueFromInput, ValueFromOutput, CompoundValue

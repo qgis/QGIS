@@ -34,7 +34,7 @@ from functools import partial
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QUrl
-from qgis.PyQt.QtGui import QIcon, QCursor
+from qgis.PyQt.QtGui import QCursor
 from qgis.PyQt.QtWidgets import QApplication, QTreeWidgetItem, QPushButton, QMessageBox
 from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
 

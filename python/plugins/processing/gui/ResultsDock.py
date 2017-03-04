@@ -26,7 +26,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-import codecs
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QUrl

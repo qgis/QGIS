@@ -14,12 +14,8 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsSymbolLayerUtils,
-                       QgsMapSettings,
-                       QgsRectangle,
-                       QgsRenderContext,
-                       QgsUnitTypes)
-from qgis.PyQt.QtCore import (Qt, QSize, QSizeF, QPointF)
+from qgis.core import QgsSymbolLayerUtils
+from qgis.PyQt.QtCore import QSizeF, QPointF
 from qgis.testing import unittest
 
 

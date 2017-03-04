@@ -22,7 +22,6 @@ from qgis.PyQt.QtCore import QRectF
 
 from qgis.core import (QgsComposerPicture,
                        QgsComposition,
-                       QgsMapSettings,
                        QgsComposerMap,
                        QgsRectangle,
                        QgsCoordinateReferenceSystem,
@@ -143,6 +142,7 @@ class TestQgsComposerPicture(unittest.TestCase):
         # add an offset
         composerPicture.setNorthOffset(-10)
         self.assertAlmostEqual(composerPicture.pictureRotation(), -38.18 + 35, 1)
+
 
 if __name__ == '__main__':
     unittest.main()

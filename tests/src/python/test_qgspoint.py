@@ -54,5 +54,6 @@ class TestQgsPoint(unittest.TestCase):
         mySet = set([a, b, c, d, e])
         assert len(mySet) == 4
 
+
 if __name__ == '__main__':
     unittest.main()

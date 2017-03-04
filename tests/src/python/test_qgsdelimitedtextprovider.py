@@ -25,11 +25,12 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
+from builtins import file
+
 import os
 import re
 import tempfile
 import inspect
-import sys
 import time
 import test_qgsdelimitedtextprovider_wanted as want  # NOQA
 import collections
@@ -44,9 +45,7 @@ from qgis.core import (
     QgsFeatureRequest,
     QgsRectangle,
     QgsApplication,
-    QgsFeature,
-    QgsFeatureIterator
-)
+    QgsFeature)
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath, compareWkt

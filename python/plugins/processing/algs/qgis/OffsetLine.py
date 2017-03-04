@@ -27,9 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsGeometry, QgsWkbTypes
-
-from qgis.PyQt.QtGui import QIcon
+from qgis.core import QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException

@@ -25,7 +25,6 @@ __copyright__ = '(C) 2012, Mathieu Pellerin'
 
 __revision__ = '$Format:%H$'
 
-from qgis.PyQt.QtCore import QSettings
 from qgis.core import QgsDataSourceUri, QgsVectorLayerImport
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -33,7 +32,6 @@ from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecution
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterTableField
 from processing.tools import dataobjects, spatialite
 

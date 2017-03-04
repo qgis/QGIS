@@ -91,5 +91,6 @@ class TestQgsAttributeTableModel(unittest.TestCase):
 
         self.assertEqual(self.am.columnCount(), 1)
 
+
 if __name__ == '__main__':
     unittest.main()

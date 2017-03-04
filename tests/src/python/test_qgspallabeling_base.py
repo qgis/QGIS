@@ -28,7 +28,6 @@ import sys
 import datetime
 import glob
 import shutil
-import tempfile
 
 from qgis.PyQt.QtCore import QSize, qDebug, Qt
 from qgis.PyQt.QtGui import QFont, QColor
@@ -43,7 +42,6 @@ from qgis.core import (
     QgsProviderRegistry,
     QgsVectorLayer,
     QgsMultiRenderChecker,
-    QgsTextFormat,
     QgsUnitTypes
 )
 
@@ -60,7 +58,7 @@ from utilities import (
 )
 
 
-start_app(sys.platform != 'darwin') # No cleanup on mac os x, it crashes the pallabelingcanvas test on exit
+start_app(sys.platform != 'darwin')  # No cleanup on mac os x, it crashes the pallabelingcanvas test on exit
 FONTSLOADED = loadTestFonts()
 
 PALREPORT = 'PAL_REPORT' in os.environ
@@ -292,8 +290,8 @@ class TestQgsPalLabeling(unittest.TestCase):
     def saveControlImage(self, tmpimg=''):
         # don't save control images for RenderVsOtherOutput (Vs) tests, since
         # those control images belong to a different test result
-        if ('PAL_CONTROL_IMAGE' not in os.environ
-                or 'Vs' in self._TestGroup):
+        if ('PAL_CONTROL_IMAGE' not in os.environ or
+                'Vs' in self._TestGroup):
             return
         imgpath = self.controlImagePath()
         testdir = os.path.dirname(imgpath)

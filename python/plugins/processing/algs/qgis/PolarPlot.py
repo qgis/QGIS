@@ -50,7 +50,7 @@ class PolarPlot(GeoAlgorithm):
         self.addParameter(ParameterTable(self.INPUT,
                                          self.tr('Input table')))
         self.addParameter(ParameterTableField(self.NAME_FIELD,
-                                              self.tr('Category name field'), self.INPUT))
+                                              self.tr('Category name field'), self.INPUT))  # FIXME unused?
         self.addParameter(ParameterTableField(self.VALUE_FIELD,
                                               self.tr('Value field'), self.INPUT))
 
@@ -59,7 +59,7 @@ class PolarPlot(GeoAlgorithm):
     def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
-        namefieldname = self.getParameterValue(self.NAME_FIELD)
+        namefieldname = self.getParameterValue(self.NAME_FIELD)  # NOQA  FIXME unused?
         valuefieldname = self.getParameterValue(self.VALUE_FIELD)
 
         output = self.getOutputValue(self.OUTPUT)

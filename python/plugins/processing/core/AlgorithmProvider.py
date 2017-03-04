@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -26,8 +25,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os
-from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsProcessingProvider
 from processing.core.ProcessingConfig import Setting, ProcessingConfig

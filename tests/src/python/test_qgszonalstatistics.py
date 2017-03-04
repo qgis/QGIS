@@ -119,5 +119,6 @@ class TestQgsZonalStatistics(unittest.TestCase):
         myMessage = ('Expected: %f\nGot: %f\n' % (2.0, feat[11]))
         assert feat[11] == 2.0, myMessage
 
+
 if __name__ == '__main__':
     unittest.main()

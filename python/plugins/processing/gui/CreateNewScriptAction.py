@@ -27,13 +27,10 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.PyQt.QtGui import QIcon
-
 from qgis.core import QgsApplication
 
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.gui.ScriptEditorDialog import ScriptEditorDialog
-from processing.core.alglist import algList
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 

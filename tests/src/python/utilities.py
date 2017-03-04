@@ -18,18 +18,17 @@ import sys
 import glob
 import platform
 import tempfile
+
 try:
     from urllib2 import urlopen, HTTPError, URLError
 except ImportError:
     from urllib.request import urlopen, HTTPError, URLError
-
 
 from qgis.PyQt.QtCore import QDir
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsVectorFileWriter,
-    QgsProject,
     QgsMapSettings,
     QgsMapRendererParallelJob,
     QgsMapRendererSequentialJob,
@@ -104,26 +103,6 @@ def unitTestDataPath(theSubdir=None):
 def svgSymbolsPath():
     return os.path.abspath(
         os.path.join(unitTestDataPath(), '..', '..', 'images', 'svg'))
-
-
-def setCanvasCrs(theEpsgId, theOtfpFlag=False):
-    """Helper to set the crs for the CANVAS before a test is run.
-
-    Args:
-
-        * theEpsgId  - Valid EPSG identifier (int)
-        * theOtfpFlag - whether on the fly projections should be enabled
-                        on the CANVAS. Default to False.
-    """
-    # Enable on-the-fly reprojection
-    CANVAS.mapRenderer().setProjectionsEnabled(theOtfpFlag)  # FIXME
-
-    # Create CRS Instance
-    myCrs = QgsCoordinateReferenceSystem()
-    myCrs.createFromId(theEpsgId, QgsCoordinateReferenceSystem.E)
-
-    # Reproject all layers to WGS84 geographic CRS
-    CANVAS.mapRenderer().setDestinationCrs(myCrs)  # FIXME
 
 
 def writeShape(theMemoryLayer, theFileName):
@@ -315,8 +294,8 @@ def loadTestFonts():
     if FONTSLOADED is False:
         QgsFontUtils.loadStandardTestFonts(['Roman', 'Bold'])
         msg = getTestFontFamily() + ' base test font styles could not be loaded'
-        res = (QgsFontUtils.fontFamilyHasStyle(getTestFontFamily(), 'Roman')
-               and QgsFontUtils.fontFamilyHasStyle(getTestFontFamily(), 'Bold'))
+        res = (QgsFontUtils.fontFamilyHasStyle(getTestFontFamily(), 'Roman') and
+               QgsFontUtils.fontFamilyHasStyle(getTestFontFamily(), 'Bold'))
         assert res, msg
         FONTSLOADED = True
 
@@ -442,11 +421,11 @@ class DoxygenParser():
                         class_name = elem.find('compoundname').text
                         acceptable_missing = self.acceptable_missing.get(class_name, [])
 
-                        if not self.hasGroup(class_name) and not class_name in self.acceptable_missing_group:
+                        if not self.hasGroup(class_name) and class_name not in self.acceptable_missing_group:
                             self.classes_missing_group.append(class_name)
-                        if not class_name in self.acceptable_missing_brief and not has_brief_description:
+                        if class_name not in self.acceptable_missing_brief and not has_brief_description:
                             self.classes_missing_brief.append(class_name)
-                        if not class_name in self.acceptable_missing_added_note and not found_version_added:
+                        if class_name not in self.acceptable_missing_added_note and not found_version_added:
                             self.classes_missing_version_added.append(class_name)
 
                         # GEN LIST

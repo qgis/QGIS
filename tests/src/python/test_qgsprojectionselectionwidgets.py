@@ -19,7 +19,8 @@ from qgis.gui import (QgsProjectionSelectionWidget,
                       QgsProjectionSelectionDialog)
 from qgis.core import QgsCoordinateReferenceSystem, QgsProject
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtGui import QColor
+
+
 start_app()
 
 

@@ -30,7 +30,7 @@ def load(dbplugin, mainwindow):
         if not os.path.isdir(os.path.join(current_dir, name)):
             continue
         try:
-            exec (u"from .%s import load" % name)
+            exec(u"from .%s import load" % name)
         except ImportError:
             continue
 

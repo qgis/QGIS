@@ -25,11 +25,8 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-import os
-
-from qgis.PyQt.QtCore import pyqtWrapperType, Qt, QDir, QFile, QIODevice, QPointF
-from qgis.PyQt.QtXml import (
-    QDomDocument, QDomElement, QDomNode, QDomNamedNodeMap)
+from qgis.PyQt.QtCore import Qt, QDir, QFile, QIODevice, QPointF
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtGui import QColor
 
 from qgis.core import (
@@ -460,7 +457,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         layer = QgsVectorLayer("Polygon", "addfeat", "memory")
 
         mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), "graduated"))
-        status = layer.loadNamedStyle(mFilePath)
+        status = layer.loadNamedStyle(mFilePath)  # NOQA
 
         dom, root = self.layerToSld(layer)
         # print("Graduated no scale deps:" + dom.toString())
@@ -473,20 +470,20 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         layer = QgsVectorLayer("Polygon", "addfeat", "memory")
 
         mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), "ruleBased"))
-        status = layer.loadNamedStyle(mFilePath)
+        status = layer.loadNamedStyle(mFilePath)  # NOQA
 
         dom, root = self.layerToSld(layer)
         print(("Rule based, no root scale deps:" + dom.toString()))
 
-        ruleCount = root.elementsByTagName('se:Rule').size()
+        ruleCount = root.elementsByTagName('se:Rule').size()  # NOQA
         self.assertScaleDenominator(root, '1000', '40000000', 0)
         self.assertScaleDenominator(root, None, None, 1)
 
-    def testRuleBasedNoRootScaleDependencies(self):
+    def testRuleBasedNoRootScaleDependencies2(self):
         layer = QgsVectorLayer("Polygon", "addfeat", "memory")
 
         mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), "ruleBased"))
-        status = layer.loadNamedStyle(mFilePath)
+        status = layer.loadNamedStyle(mFilePath)  # NOQA
         layer.setMinimumScale(5000)
         layer.setMaximumScale(50000000)
         layer.setScaleBasedVisibility(True)
@@ -494,7 +491,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         dom, root = self.layerToSld(layer)
         # print("Rule based, with root scale deps:" + dom.toString())
 
-        ruleCount = root.elementsByTagName('se:Rule').size()
+        ruleCount = root.elementsByTagName('se:Rule').size()  # NOQA
         self.assertScaleDenominator(root, '5000', '40000000', 0)
         self.assertScaleDenominator(root, '5000', '50000000', 1)
 

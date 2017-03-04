@@ -27,9 +27,9 @@ from qgis.core import (QgsTextBufferSettings,
                        QgsRenderContext,
                        QgsRectangle,
                        QgsRenderChecker)
-from qgis.PyQt.QtGui import (QColor, QPainter, QFont, QImage, QBrush, QPen)
+from qgis.PyQt.QtGui import (QColor, QPainter, QImage, QBrush, QPen)
 from qgis.PyQt.QtCore import (Qt, QSizeF, QPointF, QRectF, QDir)
-from qgis.PyQt.QtXml import (QDomDocument, QDomElement)
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.testing import unittest, start_app
 from utilities import getTestFont, svgSymbolsPath
 
@@ -473,13 +473,13 @@ class PyQgsTextRenderer(unittest.TestCase):
         painter.setFont(format.scaledFont(context))
         painter.setPen(QPen(QColor(255, 0, 255, 200)))
         # For comparison with QPainter's methods:
-        if alignment == QgsTextRenderer.AlignCenter:
-            align = Qt.AlignHCenter
-        elif alignment == QgsTextRenderer.AlignRight:
-            align = Qt.AlignRight
-        else:
-            align = Qt.AlignLeft
-        #painter.drawText(rect, align, '\n'.join(text))
+        # if alignment == QgsTextRenderer.AlignCenter:
+        #     align = Qt.AlignHCenter
+        # elif alignment == QgsTextRenderer.AlignRight:
+        #     align = Qt.AlignRight
+        # else:
+        #     align = Qt.AlignLeft
+        # painter.drawText(rect, align, '\n'.join(text))
 
         painter.end()
         return self.imageCheck(name, name, image)
@@ -1008,7 +1008,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
         # need to call getTestFont to make sure font style is installed and ready to go
-        temp_font = getTestFont('Bold Oblique')
+        temp_font = getTestFont('Bold Oblique')  # NOQA
         format.setFont(getTestFont())
         format.setNamedStyle('Bold Oblique')
         format.setSize(60)

@@ -32,7 +32,6 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsRectangle,
                        QgsCoordinateReferenceSystem,
-                       Qgis,
                        QgsField,
                        QgsFeature,
                        QgsGeometry,

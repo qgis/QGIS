@@ -233,5 +233,6 @@ class TestAuthManager(unittest.TestCase):
         pg_layer = self._getPostGISLayer('testlayer_èé')
         self.assertFalse(pg_layer.isValid())
 
+
 if __name__ == '__main__':
     unittest.main()

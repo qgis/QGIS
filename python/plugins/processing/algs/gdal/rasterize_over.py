@@ -37,6 +37,7 @@ from processing.core.parameters import ParameterTableField
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
+from processing.tools import dataobjects
 from processing.tools.vector import ogrConnectionString, ogrLayerName
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]

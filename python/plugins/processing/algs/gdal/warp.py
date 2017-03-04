@@ -36,8 +36,7 @@ from processing.core.parameters import (ParameterRaster,
                                         ParameterSelection,
                                         ParameterCrs,
                                         ParameterNumber,
-                                        ParameterString,
-                                        ParameterBoolean)
+                                        ParameterString)
 from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
 

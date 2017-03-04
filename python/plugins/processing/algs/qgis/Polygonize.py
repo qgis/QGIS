@@ -26,8 +26,7 @@ __copyright__ = '(C) 2013, Piotr Pociask'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (Qgis,
-                       QgsFields,
+from qgis.core import (QgsFields,
                        QgsField,
                        QgsFeature,
                        QgsGeometry,

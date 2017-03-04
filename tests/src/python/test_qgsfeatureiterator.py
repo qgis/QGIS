@@ -112,9 +112,8 @@ class TestQgsFeatureIterator(unittest.TestCase):
         layer = QgsVectorLayer(myShpFile, 'Points', 'ogr')
         self.assertTrue(layer.isValid())
 
-        cnt = layer.pendingFields().count()
-        idx = layer.addExpressionField('"Staff"*2', QgsField('exp1', QVariant.LongLong))
-        idx = layer.addExpressionField('"exp1"-1', QgsField('exp2', QVariant.LongLong))
+        idx = layer.addExpressionField('"Staff"*2', QgsField('exp1', QVariant.LongLong))  # NOQA
+        idx = layer.addExpressionField('"exp1"-1', QgsField('exp2', QVariant.LongLong))  # NOQA
 
         fet = next(layer.getFeatures(QgsFeatureRequest().setSubsetOfAttributes(['exp2'], layer.fields())))
         self.assertEqual(fet['Class'], NULL)
@@ -128,9 +127,8 @@ class TestQgsFeatureIterator(unittest.TestCase):
         layer = QgsVectorLayer(myShpFile, 'Points', 'ogr')
         self.assertTrue(layer.isValid())
 
-        cnt = layer.pendingFields().count()
-        idx = layer.addExpressionField('$x*2', QgsField('exp1', QVariant.LongLong))
-        idx = layer.addExpressionField('"exp1"/1.5', QgsField('exp2', QVariant.LongLong))
+        idx = layer.addExpressionField('$x*2', QgsField('exp1', QVariant.LongLong))  # NOQA
+        idx = layer.addExpressionField('"exp1"/1.5', QgsField('exp2', QVariant.LongLong))  # NOQA
 
         fet = next(layer.getFeatures(QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes(['exp2'], layer.fields())))
         # nested virtual fields should have made geometry be fetched
@@ -144,10 +142,10 @@ class TestQgsFeatureIterator(unittest.TestCase):
         layer = QgsVectorLayer(myShpFile, 'Points', 'ogr')
         self.assertTrue(layer.isValid())
 
-        cnt = layer.pendingFields().count()
-        idx = layer.addExpressionField('"exp3"*2', QgsField('exp1', QVariant.LongLong))
-        idx = layer.addExpressionField('"exp1"-1', QgsField('exp2', QVariant.LongLong))
-        idx = layer.addExpressionField('"exp2"*3', QgsField('exp3', QVariant.LongLong))
+        cnt = layer.pendingFields().count()  # NOQA
+        idx = layer.addExpressionField('"exp3"*2', QgsField('exp1', QVariant.LongLong))  # NOQA
+        idx = layer.addExpressionField('"exp1"-1', QgsField('exp2', QVariant.LongLong))  # NOQA
+        idx = layer.addExpressionField('"exp2"*3', QgsField('exp3', QVariant.LongLong))  # NOQA
 
         # really just testing that this doesn't hang/crash... there's no good result here!
         fet = next(layer.getFeatures(QgsFeatureRequest().setSubsetOfAttributes(['exp2'], layer.fields())))

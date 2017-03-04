@@ -18,10 +18,9 @@ import os
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QPainter
-from qgis.PyQt.QtXml import (QDomDocument, QDomElement)
+from qgis.PyQt.QtXml import QDomDocument
 
-from qgis.core import (Qgis,
-                       QgsWkbTypes,
+from qgis.core import (QgsWkbTypes,
                        QgsVectorLayer,
                        QgsRectangle,
                        QgsFeature,
@@ -981,7 +980,7 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         self.assertFalse(layer.renameAttribute(-1, 'fldtxt2'))
         self.assertFalse(layer.renameAttribute(10, 'fldtxt2'))
-        self.assertFalse(layer.renameAttribute(0, 'fldint')) # duplicate name
+        self.assertFalse(layer.renameAttribute(0, 'fldint'))  # duplicate name
 
         self.assertTrue(layer.renameAttribute(0, 'fldtxt2'))
         checkFieldNames(['fldtxt2', 'fldint'])
@@ -1288,7 +1287,6 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertEqual(set(layer.uniqueValues(1)), set([123, 457, 888, -1, 0, 999, 9999]))
 
         # change an attribute value to a new unique value
-        f = QgsFeature()
         f1_id = next(layer.getFeatures()).id()
         self.assertTrue(layer.changeAttributeValue(f1_id, 1, 481523))
         # note - this isn't 100% accurate, since 123 no longer exists - but it avoids looping through all features
@@ -1368,7 +1366,6 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertEqual(layer.minimumValue(1), -1000)
 
         # change an attribute value to a new minimum value
-        f = QgsFeature()
         f1_id = next(layer.getFeatures()).id()
         self.assertTrue(layer.changeAttributeValue(f1_id, 1, -1001))
         self.assertEqual(layer.minimumValue(1), -1001)
@@ -1400,7 +1397,6 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertEqual(layer.maximumValue(1), 1000)
 
         # change an attribute value to a new maximum value
-        f = QgsFeature()
         f1_id = next(layer.getFeatures()).id()
         self.assertTrue(layer.changeAttributeValue(f1_id, 1, 1001))
         self.assertEqual(layer.maximumValue(1), 1001)

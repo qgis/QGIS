@@ -32,7 +32,6 @@ from qgis.core import (QgsVectorLayer,
                        QgsGeometry,
                        QgsPoint
                        )
-from qgis.testing import unittest
 from qgis.testing.mocked import get_iface
 from utilities import unitTestDataPath
 

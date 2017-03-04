@@ -12,7 +12,7 @@ from future import standard_library
 import os
 import tempfile
 from functools import partial
-from qgis.PyQt.QtCore import QEventLoop, QUrl, QTimer
+from qgis.PyQt.QtCore import QEventLoop, QUrl
 from qgis.gui import (QgsFileDownloader,)
 from qgis.testing import start_app, unittest
 

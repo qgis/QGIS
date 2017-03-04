@@ -1500,5 +1500,6 @@ class TestQgsServerAccessControl(unittest.TestCase):
                 str(response).find("<qgs:color>{color}</qgs:color>".format(color=color)) != -1,
                 "Wrong color in result\n%s" % response)
 
+
 if __name__ == "__main__":
     unittest.main()

@@ -29,11 +29,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import sys
 import os
 import traceback
 
-from qgis.PyQt.QtCore import Qt, QCoreApplication, QObject, pyqtSignal
+from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtWidgets import QApplication
 from qgis.PyQt.QtGui import QCursor
 
@@ -54,14 +53,14 @@ from processing.gui.AlgorithmExecutor import runalg
 from processing.tools import dataobjects
 from processing.core.alglist import algList
 
-from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
-from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider
-from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider
-from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider
-from processing.algs.r.RAlgorithmProvider import RAlgorithmProvider
-from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
-from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
-from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider
+from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider  # NOQA
+from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider  # NOQA
+from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider  # NOQA
+from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider  # NOQA
+from processing.algs.r.RAlgorithmProvider import RAlgorithmProvider  # NOQA
+from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider  # NOQA
+from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  # NOQA
+from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider  # NOQA
 
 
 class Processing(object):
@@ -281,8 +280,8 @@ class Processing(object):
             return
 
         if not alg.checkInputCRS():
-            print('Warning: Not all input layers use the same CRS.\n'
-                  + 'This can cause unexpected results.')
+            print('Warning: Not all input layers use the same CRS.\n' +
+                  'This can cause unexpected results.')
             QgsMessageLog.logMessage(Processing.tr('Warning: Not all input layers use the same CRS.\nThis can cause unexpected results.'), Processing.tr("Processing"))
 
         # Don't set the wait cursor twice, because then when you

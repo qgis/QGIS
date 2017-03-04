@@ -29,7 +29,6 @@ from qgis.core import QgsWkbTypes, QgsExpression, QgsExpressionContext, QgsExpre
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterVector, ParameterSelection, ParameterBoolean, ParameterExpression
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector

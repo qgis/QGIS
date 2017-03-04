@@ -25,8 +25,8 @@ from builtins import zip
 from builtins import next
 from builtins import str
 
-from qgis.PyQt.QtCore import Qt, QObject, QSettings, QByteArray, pyqtSignal
-from qgis.PyQt.QtWidgets import QDialog, QWidget, QAction, QDialogButtonBox, QApplication, QMessageBox, QInputDialog, QStyledItemDelegate
+from qgis.PyQt.QtCore import Qt, pyqtSignal
+from qgis.PyQt.QtWidgets import QDialog, QWidget, QAction, QApplication, QStyledItemDelegate
 from qgis.PyQt.QtGui import QKeySequence, QCursor, QClipboard, QIcon, QStandardItemModel, QStandardItem
 from qgis.PyQt.Qsci import QsciAPIs
 from qgis.PyQt.QtXml import QDomDocument
@@ -40,7 +40,7 @@ from .dlg_db_error import DlgDbError
 from .dlg_query_builder import QueryBuilderDlg
 
 try:
-    from qgis.gui import QgsCodeEditorSQL
+    from qgis.gui import QgsCodeEditorSQL  # NOQA
 except:
     from .sqledit import SqlEdit
     from qgis import gui
@@ -80,8 +80,8 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         self.dbplugin = dbplugin
         self.db = db
         self.filter = ""
-        self.allowMultiColumnPk = isinstance(db, PGDatabase) # at the moment only PostgreSQL allows a primary key to span multiple columns, spatialite doesn't
-        self.aliasSubQuery = isinstance(db, PGDatabase) # only PostgreSQL requires subqueries to be aliases
+        self.allowMultiColumnPk = isinstance(db, PGDatabase)  # at the moment only PostgreSQL allows a primary key to span multiple columns, spatialite doesn't
+        self.aliasSubQuery = isinstance(db, PGDatabase)  # only PostgreSQL requires subqueries to be aliases
         self.setupUi(self)
         self.setWindowTitle(
             u"%s - %s [%s]" % (self.windowTitle(), db.connection().connectionName(), db.connection().typeNameString()))
@@ -125,11 +125,11 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         self.uniqueCombo.setModel(self.uniqueModel)
         if self.allowMultiColumnPk:
             self.uniqueCombo.setItemDelegate(QStyledItemDelegate())
-            self.uniqueModel.itemChanged.connect(self.uniqueChanged)                # react to the (un)checking of an item
-            self.uniqueCombo.lineEdit().textChanged.connect(self.uniqueTextChanged) # there are other events that change the displayed text and some of them can not be caught directly
+            self.uniqueModel.itemChanged.connect(self.uniqueChanged)                 # react to the (un)checking of an item
+            self.uniqueCombo.lineEdit().textChanged.connect(self.uniqueTextChanged)  # there are other events that change the displayed text and some of them can not be caught directly
 
         self.layerTypeWidget.hide()  # show if load as raster is supported
-        #self.loadLayerBtn.clicked.connect(self.loadSqlLayer)
+        # self.loadLayerBtn.clicked.connect(self.loadSqlLayer)
         self.updateLayerBtn.clicked.connect(self.updateSqlLayer)
         self.getColumnsBtn.clicked.connect(self.fillColumnCombos)
 
@@ -140,7 +140,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         self.presetName.textChanged.connect(self.nameChanged)
 
         # Update from layer
-        # Fisrtly the SQL from QgsDataSourceUri table
+        # First the SQL from QgsDataSourceUri table
         sql = uri.table()
         if uri.keyColumn() == '_uid_':
             match = re.search('^\(SELECT .+ AS _uid_,\* FROM \((.*)\) AS _subq_.+_\s*\)$', sql, re.S)
@@ -314,7 +314,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         try:
             layer = self._getSqlLayer(self.filter)
-            if layer == None:
+            if layer is None:
                 return
 
             QgsProject.instance().addMapLayers([layer], True)
@@ -325,11 +325,11 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         try:
             layer = self._getSqlLayer(self.filter)
-            if layer == None:
+            if layer is None:
                 return
 
-            #self.layer.dataProvider().setDataSourceUri(layer.dataProvider().dataSourceUri())
-            #self.layer.dataProvider().reloadData()
+            # self.layer.dataProvider().setDataSourceUri(layer.dataProvider().dataSourceUri())
+            # self.layer.dataProvider().reloadData()
             XMLDocument = QDomDocument("style")
             XMLMapLayers = XMLDocument.createElement("maplayers")
             XMLMapLayer = XMLDocument.createElement("maplayer")

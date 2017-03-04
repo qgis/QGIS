@@ -31,14 +31,12 @@ from qgis.PyQt.QtCore import QDir
 from qgis.PyQt.QtGui import QImage, QColor, QPainter
 
 from qgis.core import (QgsGeometry,
-                       QgsSymbol,
                        QgsMapUnitScale,
                        QgsMarkerSymbol,
                        QgsFillSymbol,
                        QgsLineSymbol,
                        QgsRenderContext,
                        QgsFeature,
-                       Qgis,
                        QgsMapSettings,
                        QgsRenderChecker,
                        QgsSimpleMarkerSymbolLayer,

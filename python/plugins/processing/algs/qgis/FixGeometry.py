@@ -25,12 +25,13 @@ __copyright__ = '(C) 2017, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsWkbTypes
+from qgis.core import QgsWkbTypes, QgsGeometry
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+from processing.core.ProcessingLog import ProcessingLog
 from processing.tools import dataobjects, vector
 
 

@@ -29,8 +29,7 @@ __copyright__ = '(C) 2014, Arnaud Morvan'
 __revision__ = '$Format:%H$'
 
 
-from qgis.core import QgsField, QgsExpression, QgsExpressionContext, QgsExpressionContextUtils, QgsDistanceArea, QgsProject, QgsFeature, GEO_NONE
-from qgis.utils import iface
+from qgis.core import QgsField, QgsExpression, QgsDistanceArea, QgsProject, QgsFeature, GEO_NONE
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterTable
@@ -124,8 +123,8 @@ class FieldsMapper(GeoAlgorithm):
             if expression.hasParserError():
                 raise GeoAlgorithmExecutionException(
                     self.tr(u'Parser error in expression "{}": {}')
-                    .format(unicode(expression.expression()),
-                            unicode(expression.parserErrorString())))
+                    .format(str(expression.expression()),
+                            str(expression.parserErrorString())))
             expressions.append(expression)
 
         writer = output.getVectorWriter(fields,
@@ -167,5 +166,5 @@ class FieldsMapper(GeoAlgorithm):
         if error_exp is not None:
             raise GeoAlgorithmExecutionException(
                 self.tr(u'Evaluation error in expression "{}": {}')
-                    .format(unicode(error_exp.expression()),
-                            unicode(error_exp.parserErrorString())))
+                    .format(str(error_exp.expression()),
+                            str(error_exp.parserErrorString())))

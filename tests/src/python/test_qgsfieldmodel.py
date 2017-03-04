@@ -14,7 +14,7 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import QgsField, QgsFields, QgsVectorLayer
+from qgis.core import QgsFields, QgsVectorLayer
 from qgis.gui import QgsFieldModel
 from qgis.PyQt.QtCore import QVariant, Qt
 
@@ -220,6 +220,7 @@ class TestQgsFieldModel(unittest.TestCase):
         self.assertEqual(m.data(m.indexFromName('an expression'), Qt.DisplayRole), 'an expression')
         m.setAllowEmptyFieldName(True)
         self.assertFalse(m.data(m.indexFromName(None), Qt.DisplayRole))
+
 
 if __name__ == '__main__':
     unittest.main()

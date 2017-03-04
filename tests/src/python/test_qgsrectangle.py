@@ -196,5 +196,6 @@ class TestQgsRectangle(unittest.TestCase):
                      (myExpectedWkt, myWkt))
         assert compareWkt(myWkt, myExpectedWkt), myMessage
 
+
 if __name__ == '__main__':
     unittest.main()

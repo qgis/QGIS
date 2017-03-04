@@ -27,7 +27,6 @@ __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import QgsExpression, QgsExpressionContext, QgsExpressionContextUtils, QgsFeature, QgsField, QgsDistanceArea, QgsProject, GEO_NONE
-from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -36,7 +35,7 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector, system
+from processing.tools import dataobjects, vector
 
 from .ui.FieldsCalculatorDialog import FieldsCalculatorDialog
 

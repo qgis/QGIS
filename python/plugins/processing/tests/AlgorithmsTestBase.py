@@ -45,14 +45,14 @@ from osgeo.gdalconst import GA_ReadOnly
 from numpy import nan_to_num
 
 import processing
-from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
-from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider
-from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider
-from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider
-from processing.algs.r.RAlgorithmProvider import RAlgorithmProvider
-from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
-from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
-from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider
+from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider  # NOQA
+from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider  # NOQA
+from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider  # NOQA
+from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider  # NOQA
+from processing.algs.r.RAlgorithmProvider import RAlgorithmProvider  # NOQA
+from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider  # NOQA
+from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  # NOQA
+from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider  # NOQA
 
 
 from qgis.core import QgsVectorLayer, QgsRasterLayer, QgsProject
@@ -74,7 +74,6 @@ class AlgorithmsTest(object):
         """
         This is the main test function. All others will be executed based on the definitions in testdata/algorithm_tests.yaml
         """
-        ver = processing.version()
         with open(os.path.join(processingTestDataPath(), self.test_definition_file()), 'r') as stream:
             algorithm_tests = yaml.load(stream)
 
@@ -238,6 +237,7 @@ class AlgorithmsTest(object):
                 self.assertLayersEqual(expected_lyr, result_lyr, compare=compare)
 
             elif 'rasterhash' == expected_result['type']:
+                print("id:{} result:{}".format(id, results[id]))
                 dataset = gdal.Open(results[id], GA_ReadOnly)
                 dataArray = nan_to_num(dataset.ReadAsArray(0))
                 strhash = hashlib.sha224(dataArray.data).hexdigest()

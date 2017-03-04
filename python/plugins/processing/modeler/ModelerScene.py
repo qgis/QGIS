@@ -137,8 +137,8 @@ class ModelerScene(QGraphicsScene):
                     self.addItem(item)
                     pos = alg.outputs[key].pos
                     if pos is None:
-                        pos = (alg.pos + QPointF(ModelerGraphicItem.BOX_WIDTH, 0)
-                               + self.algItems[alg.name].getLinkPointForOutput(idx))
+                        pos = (alg.pos + QPointF(ModelerGraphicItem.BOX_WIDTH, 0) +
+                               self.algItems[alg.name].getLinkPointForOutput(idx))
                     item.setPos(pos)
                     outputItems[key] = item
                     arrow = ModelerArrowItem(self.algItems[alg.name], idx, item,

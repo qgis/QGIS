@@ -26,7 +26,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import QgsApplication
 

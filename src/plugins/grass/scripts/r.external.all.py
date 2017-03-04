@@ -102,6 +102,7 @@ def main():
 
     import_directory_of_rasters(input, recursive)
 
+
 if __name__ == "__main__":
     options, flags = grass.parser()
     flags_string = "".join([k for k in flags.keys() if flags[k] and k != 'r'])

@@ -21,10 +21,7 @@ from qgis.core import QgsVectorLayer
 from PyQt4.QtCore import QgsSettings
 
 from utilities import unitTestDataPath
-from qgis.testing import (
-    start_app,
-    unittest
-)
+from qgis.testing import start_app, unittest
 from providertestbase import ProviderTestCase
 
 start_app()

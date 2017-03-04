@@ -26,7 +26,7 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
+from qgis.core import QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector

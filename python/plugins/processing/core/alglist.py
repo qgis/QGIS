@@ -25,8 +25,7 @@ __copyright__ = '(C) 2016, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsApplication,
-                       QgsProcessingRegistry)
+from qgis.core import QgsApplication
 from qgis.PyQt.QtCore import QObject, pyqtSignal
 
 
