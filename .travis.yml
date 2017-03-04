@@ -12,6 +12,7 @@ matrix:
       sudo: false
       cache:
         apt: true
+        pip: true
         directories:
           - $HOME/.ccache
           - $HOME/depcache
