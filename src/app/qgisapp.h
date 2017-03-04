@@ -1472,6 +1472,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** Copy a vector style from a layer to another one, if they have the same geometry type */
     void duplicateVectorStyle( QgsVectorLayer* srcLayer, QgsVectorLayer* destLayer );
 
+    //! Loads the list of recent projects from settings
+    void readRecentProjects();
+
     QgisAppStyleSheet *mStyleSheetBuilder;
 
     // actions for menus and toolbars -----------------
