@@ -99,7 +99,7 @@ class GeometryByExpression(GeoAlgorithm):
 
         if not expression.prepare(exp_context):
             raise GeoAlgorithmExecutionException(
-                self.tr('Evaluation error: %s' % expression.evalErrorString()))
+                self.tr('Evaluation error: {0}').format(expression.evalErrorString()))
 
         features = vector.features(layer)
         total = 100.0 / len(features)
@@ -110,7 +110,7 @@ class GeometryByExpression(GeoAlgorithm):
             value = expression.evaluate(exp_context)
             if expression.hasEvalError():
                 raise GeoAlgorithmExecutionException(
-                    self.tr('Evaluation error: %s' % expression.evalErrorString()))
+                    self.tr('Evaluation error: {0}').format(expression.evalErrorString()))
 
             if not value:
                 output_feature.setGeometry(QgsGeometry())

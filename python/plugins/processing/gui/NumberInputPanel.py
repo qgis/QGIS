@@ -90,7 +90,7 @@ class ModellerNumberInputPanel(BASE, WIDGET):
                 name = "%s_%s" % (value.alg, value.output)
                 alg = self.modelParametersDialog.model.algs[value.alg]
                 out = alg.algorithm.getOutputFromName(value.output)
-                desc = "Output '%s' from algorithm '%s" % (out.description, alg.description)
+                desc = self.tr("Output '{0}' from algorithm '{1}").format(out.description, alg.description)
             variables[name] = desc
         values = self.modelParametersDialog.getAvailableValuesOfType(ParameterVector, OutputVector)
         values.extend(self.modelParametersDialog.getAvailableValuesOfType(ParameterRaster, OutputRaster))
@@ -103,7 +103,7 @@ class ModellerNumberInputPanel(BASE, WIDGET):
                 name = "%s_%s" % (value.alg, value.output)
                 alg = self.modelParametersDialog.model.algs[value.alg]
                 element = alg.algorithm.getOutputFromName(value.output)
-                desc = "Output '%s' from algorithm '%s" % (element.description, alg.description)
+                desc = self.tr("Output '{0}' from algorithm '{1}").format(element.description, alg.description)
             variables['%s_minx' % name] = "Minimum X of %s" % desc
             variables['%s_miny' % name] = "Maximum X of %s" % desc
             variables['%s_maxx' % name] = "Minimum Y of %s" % desc

@@ -455,7 +455,7 @@ class ModelerDialog(BASE, WIDGET):
             except:
                 if saveAs:
                     QMessageBox.warning(self, self.tr('I/O error'),
-                                        self.tr('Unable to save edits. Reason:\n %s') % str(sys.exc_info()[1]))
+                                        self.tr('Unable to save edits. Reason:\n {0}').format(str(sys.exc_info()[1])))
                 else:
                     QMessageBox.warning(self, self.tr("Can't save model"),
                                         self.tr("This model can't be saved in its "
@@ -486,13 +486,13 @@ class ModelerDialog(BASE, WIDGET):
                 self.hasChanged = False
             except WrongModelException as e:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                       self.tr('Could not load model %s\n%s') % (filename, e.msg))
+                                       self.tr('Could not load model {0}\n{1}').format(filename, e.msg))
                 QMessageBox.critical(self, self.tr('Could not open model'),
                                      self.tr('The selected model could not be loaded.\n'
                                              'See the log for more information.'))
             except Exception as e:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                       self.tr('Could not load model %s\n%s') % (filename, e.args[0]))
+                                       self.tr('Could not load model {0}\n{1}').format(filename, e.args[0]))
                 QMessageBox.critical(self, self.tr('Could not open model'),
                                      self.tr('The selected model could not be loaded.\n'
                                              'See the log for more information.'))

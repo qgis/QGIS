@@ -95,10 +95,10 @@ def get_connections_from_file(parent, filename):
             msg = parent.tr('Invalid CSW connections XML.')
     except etree.ParseError as err:
         error = 1
-        msg = parent.tr('Cannot parse XML file: %s' % err)
+        msg = parent.tr('Cannot parse XML file: {0}').format(err)
     except IOError as err:
         error = 1
-        msg = parent.tr('Cannot open file: %s' % err)
+        msg = parent.tr('Cannot open file: {0}').format(err)
 
     if error == 1:
         QMessageBox.information(parent, parent.tr('Loading Connections'), msg)

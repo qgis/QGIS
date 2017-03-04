@@ -91,15 +91,15 @@ class SagaAlgorithm(GeoAlgorithm):
             if '|' in self.name:
                 tokens = self.name.split('|')
                 self.name = tokens[0]
-                #cmdname is the name of the algorithm in SAGA, that is, the name to use to call it in the console
+                # cmdname is the name of the algorithm in SAGA, that is, the name to use to call it in the console
                 self.cmdname = tokens[1]
 
             else:
                 self.cmdname = self.name
                 self.i18n_name = QCoreApplication.translate("SAGAAlgorithm", str(self.name))
-            #_commandLineName is the name used in processing to call the algorithm
-            #Most of the time will be equal to the cmdname, but in same cases, several processing algorithms
-            #call the same SAGA one
+            # _commandLineName is the name used in processing to call the algorithm
+            # Most of the time will be equal to the cmdname, but in same cases, several processing algorithms
+            # call the same SAGA one
             self._commandLineName = self.createCommandLineName(self.name)
             self.name = decoratedAlgorithmName(self.name)
             self.i18n_name = QCoreApplication.translate("SAGAAlgorithm", str(self.name))
@@ -242,14 +242,14 @@ class SagaAlgorithm(GeoAlgorithm):
         commands.append(command)
 
         # special treatment for RGB algorithm
-        #TODO: improve this and put this code somewhere else
+        # TODO: improve this and put this code somewhere else
         for out in self.outputs:
             if isinstance(out, OutputRaster):
                 filename = out.getCompatibleFileName(self)
                 filename2 = filename + '.sgrd'
                 if self.cmdname == 'RGB Composite':
-                    commands.append('io_grid_image 0 -IS_RGB -GRID:"' + filename2
-                                    + '" -FILE:"' + filename + '"')
+                    commands.append('io_grid_image 0 -IS_RGB -GRID:"' + filename2 +
+                                    '" -FILE:"' + filename + '"')
 
         # 3: Run SAGA
         commands = self.editCommands(commands)
@@ -346,8 +346,8 @@ class SagaAlgorithm(GeoAlgorithm):
                 if layer is None:
                     continue
                 if layer.bandCount() > 1:
-                    return self.tr('Input layer %s has more than one band.\n'
-                                   'Multiband layers are not supported by SAGA' % str(layer.name()))
+                    return self.tr('Input layer {0} has more than one band.\n'
+                                   'Multiband layers are not supported by SAGA').format(layer.name())
                 if not self.allowUnmatchingGridExtents:
                     if extent is None:
                         extent = (layer.extent(), layer.height(), layer.width())

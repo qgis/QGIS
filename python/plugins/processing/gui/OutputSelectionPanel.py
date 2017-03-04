@@ -149,7 +149,7 @@ class OutputSelectionPanel(BASE, WIDGET):
             self.leText.setText("postgis:" + uri.uri())
 
     def saveToSpatialite(self):
-        fileFilter = self.output.tr('Spatialite files(*.sqlite)', 'OutputFile')
+        fileFilter = self.output.tr('SpatiaLite files (*.sqlite)', 'OutputFile')
 
         settings = QgsSettings()
         if settings.contains('/Processing/LastOutputPath'):

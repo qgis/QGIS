@@ -159,7 +159,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
         )
         if ret != 0:
             raise GeoAlgorithmExecutionException(
-                self.tr('Error importing to PostGIS\n%s' % errMsg))
+                self.tr('Error importing to PostGIS\n{0}').format(errMsg))
 
         if geomColumn and createIndex:
             db.create_spatial_index(table, schema, geomColumn)

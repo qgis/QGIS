@@ -107,8 +107,8 @@ class HypsometricCurves(GeoAlgorithm):
 
             if intersectedGeom.isEmpty():
                 feedback.pushInfo(
-                    self.tr('Feature %d does not intersect raster or '
-                            'entirely located in NODATA area' % f.id()))
+                    self.tr('Feature {0} does not intersect raster or '
+                            'entirely located in NODATA area').format(f.id()))
                 continue
 
             fName = os.path.join(
@@ -132,8 +132,8 @@ class HypsometricCurves(GeoAlgorithm):
 
             if srcOffset[2] == 0 or srcOffset[3] == 0:
                 feedback.pushInfo(
-                    self.tr('Feature %d is smaller than raster '
-                            'cell size' % f.id()))
+                    self.tr('Feature {0} is smaller than raster '
+                            'cell size').format(f.id()))
                 continue
 
             newGeoTransform = (
@@ -179,8 +179,8 @@ class HypsometricCurves(GeoAlgorithm):
         d = data.compressed()
         if d.size == 0:
             feedback.pushInfo(
-                self.tr('Feature %d does not intersect raster or '
-                        'entirely located in NODATA area' % fid))
+                self.tr('Feature {0} does not intersect raster or '
+                        'entirely located in NODATA area').format(fid))
             return
 
         minValue = d.min()

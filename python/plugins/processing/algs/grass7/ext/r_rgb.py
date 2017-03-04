@@ -67,7 +67,7 @@ def processCommand(alg):
     # if the input raster is multiband: export each component directly
     raster = alg.exportedLayers[alg.getParameterValue('input')]
     for color in ['red', 'green', 'blue']:
-        alg.exportedLayers[alg.getOutputValue(color)] = color + alg.uniqueSufix
+        alg.exportedLayers[alg.getOutputValue(color)] = color + alg.uniqueSuffix
 
     commands = ["if [ $(g.list type=rast pattern='{}.*' | wc -l) -eq \"0\" ]; then".format(raster)]
     commands.append("  r.rgb input={} red={} green={} blue={} --overwrite".format(

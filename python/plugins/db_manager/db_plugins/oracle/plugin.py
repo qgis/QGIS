@@ -86,7 +86,7 @@ class OracleDBPlugin(DBPlugin):
 
         if not settings.contains("database"):  # non-existent entry?
             raise InvalidDataException(
-                self.tr('There is no defined database connection "{}".'.format(
+                self.tr('There is no defined database connection "{0}".'.format(
                     conn_name)))
 
         from qgis.core import QgsDataSourceUri

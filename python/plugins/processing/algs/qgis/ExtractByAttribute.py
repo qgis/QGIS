@@ -100,7 +100,7 @@ class ExtractByAttribute(GeoAlgorithm):
         if fieldType != QVariant.String and operator in self.STRING_OPERATORS:
             op = ''.join(['"%s", ' % o for o in self.STRING_OPERATORS])
             raise GeoAlgorithmExecutionException(
-                self.tr('Operators %s can be used only with string fields.' % op))
+                self.tr('Operators {0} can be used only with string fields.').format(op))
 
         field_ref = QgsExpression.quotedColumnRef(fieldName)
         quoted_val = QgsExpression.quotedValue(value)

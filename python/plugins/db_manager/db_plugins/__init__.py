@@ -26,7 +26,7 @@ class NotSupportedDbType(Exception):
 
     def __init__(self, dbtype):
         from qgis.PyQt.QtWidgets import QApplication
-        self.msg = QApplication.translate("DBManagerPlugin", "%s is not supported yet" % dbtype)
+        self.msg = QApplication.translate("DBManagerPlugin", "{0} is not supported yet").format(dbtype)
         Exception(self, self.msg)
 
     def __str__(self):

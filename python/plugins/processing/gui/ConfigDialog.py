@@ -273,7 +273,7 @@ class ConfigDialog(BASE, WIDGET):
                         setting.setValue(str(self.items[setting].text()))
                     except ValueError as e:
                         QMessageBox.warning(self, self.tr('Wrong value'),
-                                            self.tr('Wrong value for parameter "%s":\n\n%s' % (setting.description, str(e))))
+                                            self.tr('Wrong value for parameter "{0}":\n\n{1}').format(setting.description, str(e)))
                         return
                 setting.save(qsettings)
         Processing.updateAlgsList()

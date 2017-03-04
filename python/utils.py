@@ -313,8 +313,7 @@ def loadPlugin(packageName):
         __import__(packageName)
         return True
     except:
-        msgTemplate = QCoreApplication.translate("Python", "Couldn't load plugin '%s'")
-        msg = msgTemplate % packageName
+        msg = QCoreApplication.translate("Python", "Couldn't load plugin '{0}'").format(packageName)
         showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
         return False
 
@@ -325,12 +324,13 @@ def startPlugin(packageName):
 
     if packageName in active_plugins:
         return False
+
     if packageName not in sys.modules:
         return False
 
     package = sys.modules[packageName]
 
-    errMsg = QCoreApplication.translate("Python", "Couldn't load plugin %s") % packageName
+    errMsg = QCoreApplication.translate("Python", "Couldn't load plugin '{0}'").format(packageName)
 
     start = time.clock()
     # create an instance of the plugin
@@ -338,7 +338,7 @@ def startPlugin(packageName):
         plugins[packageName] = package.classFactory(iface)
     except:
         _unloadPluginModules(packageName)
-        msg = QCoreApplication.translate("Python", "%s due to an error when calling its classFactory() method") % errMsg
+        msg = QCoreApplication.translate("Python", "{0} due to an error when calling its classFactory() method").format(errMsg)
         showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
         return False
 
@@ -348,7 +348,7 @@ def startPlugin(packageName):
     except:
         del plugins[packageName]
         _unloadPluginModules(packageName)
-        msg = QCoreApplication.translate("Python", "%s due to an error when calling its initGui() method") % errMsg
+        msg = QCoreApplication.translate("Python", "{0} due to an error when calling its initGui() method").format(errMsg)
         showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
         return False
 
@@ -396,7 +396,7 @@ def unloadPlugin(packageName):
         _unloadPluginModules(packageName)
         return True
     except Exception as e:
-        msg = QCoreApplication.translate("Python", "Error while unloading plugin %s") % packageName
+        msg = QCoreApplication.translate("Python", "Error while unloading plugin {0}").format(packageName)
         showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
         return False
 
@@ -573,7 +573,7 @@ def startServerPlugin(packageName):
 
     package = sys.modules[packageName]
 
-    errMsg = QCoreApplication.translate("Python", "Couldn't load server plugin %s") % packageName
+    errMsg = QCoreApplication.translate("Python", "Couldn't load server plugin {0}").format(packageName)
 
     # create an instance of the plugin
     try:
@@ -581,7 +581,7 @@ def startServerPlugin(packageName):
     except:
         _unloadPluginModules(packageName)
         msg = QCoreApplication.translate("Python",
-                                         "%s due to an error when calling its serverClassFactory() method") % errMsg
+                                         "{0} due to an error when calling its serverClassFactory() method").format(errMsg)
         showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg)
         return False
 

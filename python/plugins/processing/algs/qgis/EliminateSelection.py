@@ -79,7 +79,7 @@ class EliminateSelection(GeoAlgorithm):
 
         if inLayer.selectedFeatureCount() == 0:
             ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                   self.tr('%s: (No selection in input layer "%s")' % (self.commandLineName(), self.getParameterValue(self.INPUT))))
+                                   self.tr('{0}: (No selection in input layer "{1}")').format(self.commandLineName(), self.getParameterValue(self.INPUT)))
 
         featToEliminate = []
         selFeatIds = inLayer.selectedFeatureIds()
@@ -183,7 +183,7 @@ class EliminateSelection(GeoAlgorithm):
                         madeProgress = True
                     else:
                         raise GeoAlgorithmExecutionException(
-                            self.tr('Could not replace geometry of feature with id %s' % mergeWithFid))
+                            self.tr('Could not replace geometry of feature with id {0}').format(mergeWithFid))
 
                     start = start + add
                     feedback.setProgress(start)

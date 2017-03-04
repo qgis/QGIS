@@ -37,6 +37,8 @@ import os
 
 from qgis.core import QgsDataSourceUri, QgsCredentials, QgsSettings
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 
 # Use unicode!
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
@@ -47,7 +49,7 @@ def uri_from_name(conn_name):
     settings.beginGroup(u"/PostgreSQL/connections/%s" % conn_name)
 
     if not settings.contains("database"):  # non-existent entry?
-        raise DbError('There is no defined database connection "%s".' % conn_name)
+        raise DbError(QCoreApplication.translate("postgis", 'There is no defined database connection "{0}".').format(conn_name))
 
     uri = QgsDataSourceUri()
 
@@ -220,7 +222,7 @@ class GeoDB(object):
                                                                      password,
                                                                      err)
                 if not ok:
-                    raise DbError(u'Action canceled by user')
+                    raise DbError(QCoreApplication.translate("postgis", 'Action canceled by user'))
                 if user:
                     self.uri.setUsername(user)
                 if password:

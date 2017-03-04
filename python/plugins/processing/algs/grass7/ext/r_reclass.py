@@ -50,11 +50,11 @@ def processCommand(alg):
 
         raster = alg.getParameterValue(u'input')
         output = alg.getOutputFromName(u'output')
-        alg.exportedLayers[output.value] = output.name + alg.uniqueSufix
+        alg.exportedLayers[output.value] = output.name + alg.uniqueSuffix
         if raster:
             raster = alg.exportedLayers[raster]
         command = u"r.reclass input={} rules=- output={} --overwrite < {}".format(
-            raster, output.name + alg.uniqueSufix, tempRulesName)
+            raster, output.name + alg.uniqueSuffix, tempRulesName)
         alg.commands.append(command)
     else:
         alg.processCommand()

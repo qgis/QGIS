@@ -28,12 +28,10 @@ __copyright__ = '(C) 2012-2015, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-import time
 import uuid
 import importlib
 
 from qgis.PyQt.QtCore import QCoreApplication, QUrl
-from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsRasterLayer,
                        QgsApplication)
@@ -87,7 +85,7 @@ class Grass7Algorithm(GeoAlgorithm):
         self.defineCharacteristicsFromFile()
         self.numExportedLayers = 0
         self._icon = None
-        self.uniqueSufix = str(uuid.uuid4()).replace('-', '')
+        self.uniqueSuffix = str(uuid.uuid4()).replace('-', '')
 
         # Use the ext mechanism
         name = self.commandLineName().replace('.', '_')[len('grass7:'):]
@@ -173,13 +171,14 @@ class Grass7Algorithm(GeoAlgorithm):
                         elif isinstance(output, OutputVector):
                             vectorOutputs += 1
                         if isinstance(output, OutputHTML):
-                            self.addOutput(OutputFile("rawoutput", output.description +
-                                                      " (raw output)", "txt"))
+                            self.addOutput(OutputFile("rawoutput",
+                                                      self.tr("{0} (raw output)").format(output.description),
+                                                      "txt"))
                     line = lines.readline().strip('\n').strip()
                 except Exception as e:
                     ProcessingLog.addToLog(
                         ProcessingLog.LOG_ERROR,
-                        self.tr('Could not open GRASS GIS 7 algorithm: %s\n%s' % (self.descriptionFile, line)))
+                        self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(self.descriptionFile, line))
                     raise e
 
         self.addParameter(ParameterExtent(
@@ -194,7 +193,7 @@ class Grass7Algorithm(GeoAlgorithm):
         if hasVectorInput:
             param = ParameterNumber(self.GRASS_SNAP_TOLERANCE_PARAMETER,
                                     'v.in.ogr snap tolerance (-1 = no snap)',
-                                    - 1, None, -1.0)
+                                    -1, None, -1.0)
             param.isAdvanced = True
             self.addParameter(param)
             param = ParameterNumber(self.GRASS_MIN_AREA_PARAMETER,
@@ -217,9 +216,9 @@ class Grass7Algorithm(GeoAlgorithm):
                         layer = param.value
                     else:
                         layer = dataobjects.getObjectFromUri(param.value)
-                    cellsize = max(cellsize, (layer.extent().xMaximum()
-                                              - layer.extent().xMinimum())
-                                   / layer.width())
+                    cellsize = max(cellsize, (layer.extent().xMaximum() -
+                                              layer.extent().xMinimum()) /
+                                   layer.width())
                 elif isinstance(param, ParameterMultipleInput):
 
                     layers = param.value.split(';')
@@ -227,9 +226,9 @@ class Grass7Algorithm(GeoAlgorithm):
                         layer = dataobjects.getObjectFromUri(layername)
                         if isinstance(layer, QgsRasterLayer):
                             cellsize = max(cellsize, (
-                                layer.extent().xMaximum()
-                                - layer.extent().xMinimum())
-                                / layer.width()
+                                layer.extent().xMaximum() -
+                                layer.extent().xMinimum()) /
+                                layer.width()
                             )
 
         if cellsize == 0:
@@ -421,7 +420,7 @@ class Grass7Algorithm(GeoAlgorithm):
             elif not isinstance(out, OutputHTML):
                 # We add an output name to make sure it is unique if the session
                 # uses this algorithm several times.
-                uniqueOutputName = out.name + self.uniqueSufix
+                uniqueOutputName = out.name + self.uniqueSuffix
                 command += ' ' + out.name + '=' + uniqueOutputName
 
                 # Add output file to exported layers, to indicate that
@@ -439,34 +438,34 @@ class Grass7Algorithm(GeoAlgorithm):
 
                 # Raster layer output: adjust region to layer before
                 # exporting
-                self.commands.append('g.region raster=' + out.name + self.uniqueSufix)
-                self.outputCommands.append('g.region raster=' + out.name
-                                           + self.uniqueSufix)
+                self.commands.append('g.region raster=' + out.name + self.uniqueSuffix)
+                self.outputCommands.append('g.region raster=' + out.name +
+                                           self.uniqueSuffix)
 
                 if self.grass7Name == 'r.statistics':
                     # r.statistics saves its results in a non-qgis compatible
                     # way. Post-process them with r.mapcalc.
-                    calcExpression = 'correctedoutput' + self.uniqueSufix
-                    calcExpression += '=@' + out.name + self.uniqueSufix
+                    calcExpression = 'correctedoutput' + self.uniqueSuffix
+                    calcExpression += '=@' + out.name + self.uniqueSuffix
                     command = 'r.mapcalc expression="' + calcExpression + '"'
                     self.commands.append(command)
                     self.outputCommands.append(command)
 
                     command = 'r.out.gdal --overwrite -c createopt="TFW=YES,COMPRESS=LZW"'
                     command += ' input='
-                    command += 'correctedoutput' + self.uniqueSufix
+                    command += 'correctedoutput' + self.uniqueSuffix
                     command += ' output="' + filename + '"'
                 else:
                     command = 'r.out.gdal --overwrite -c createopt="TFW=YES,COMPRESS=LZW"'
                     command += ' input='
 
                 if self.grass7Name == 'r.horizon':
-                    command += out.name + self.uniqueSufix + '_0'
+                    command += out.name + self.uniqueSuffix + '_0'
                 elif self.grass7Name == 'r.statistics':
                     self.commands.append(command)
                     self.outputCommands.append(command)
                 else:
-                    command += out.name + self.uniqueSufix
+                    command += out.name + self.uniqueSuffix
                     command += ' output="' + filename + '"'
                     self.commands.append(command)
                     self.outputCommands.append(command)
@@ -477,17 +476,17 @@ class Grass7Algorithm(GeoAlgorithm):
                 outtype = ('auto' if typeidx
                            is None else self.OUTPUT_TYPES[typeidx])
                 if self.grass7Name == 'r.flow':
-                    command = 'v.out.ogr type=line layer=0 -s -e input=' + out.name + self.uniqueSufix
+                    command = 'v.out.ogr type=line layer=0 -s -e input=' + out.name + self.uniqueSuffix
                 elif self.grass7Name == 'v.voronoi':
                     if '-l' in self.commands[-1]:
-                        command = 'v.out.ogr type=line layer=0 -s -e input=' + out.name + self.uniqueSufix
+                        command = 'v.out.ogr type=line layer=0 -s -e input=' + out.name + self.uniqueSuffix
                     else:
-                        command = 'v.out.ogr -s -e input=' + out.name + self.uniqueSufix
+                        command = 'v.out.ogr -s -e input=' + out.name + self.uniqueSuffix
                         command += ' type=' + outtype
                 elif self.grass7Name == 'v.sample':
-                    command = 'v.out.ogr type=point -s -e input=' + out.name + self.uniqueSufix
+                    command = 'v.out.ogr type=point -s -e input=' + out.name + self.uniqueSuffix
                 else:
-                    command = 'v.out.ogr -s -e input=' + out.name + self.uniqueSufix
+                    command = 'v.out.ogr -s -e input=' + out.name + self.uniqueSuffix
                     command += ' type=' + outtype
                 command += ' output="' + os.path.dirname(out.value) + '"'
                 command += ' format=ESRI_Shapefile'

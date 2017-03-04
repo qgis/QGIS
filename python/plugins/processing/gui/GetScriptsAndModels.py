@@ -270,9 +270,9 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
             content = bytes(reply.readAll()).decode('utf8')
             descriptions = json.loads(content)
             html = '<h2>%s</h2>' % item.name
-            html += self.tr('<p><b>Description:</b> %s</p>') % getDescription(ALG_DESC, descriptions)
-            html += self.tr('<p><b>Created by:</b> %s') % getDescription(ALG_CREATOR, descriptions)
-            html += self.tr('<p><b>Version:</b> %s') % getDescription(ALG_VERSION, descriptions)
+            html += self.tr('<p><b>Description:</b> {0}</p>').format(getDescription(ALG_DESC, descriptions))
+            html += self.tr('<p><b>Created by:</b> {0}').format(getDescription(ALG_CREATOR, descriptions))
+            html += self.tr('<p><b>Version:</b> {0}').format(getDescription(ALG_VERSION, descriptions))
         reply.deleteLater()
         self.txtHelp.setHtml(html)
 

@@ -111,7 +111,7 @@ class FieldsCalculator(GeoAlgorithm):
 
         if not exp.prepare(exp_context):
             raise GeoAlgorithmExecutionException(
-                self.tr('Evaluation error: %s' % exp.evalErrorString()))
+                self.tr('Evaluation error: {0}').format(exp.evalErrorString()))
 
         outFeature = QgsFeature()
         outFeature.initAttributes(len(fields))
@@ -146,7 +146,7 @@ class FieldsCalculator(GeoAlgorithm):
         if not calculationSuccess:
             raise GeoAlgorithmExecutionException(
                 self.tr('An error occurred while evaluating the calculation '
-                        'string:\n%s' % error))
+                        'string:\n{0}').format(error))
 
     def checkParameterValuesBeforeExecuting(self):
         newField = self.getParameterValue(self.NEW_FIELD)

@@ -139,7 +139,7 @@ class BatchInputSelectionPanel(QWidget):
             path = ''
 
         ret, selected_filter = QFileDialog.getOpenFileNames(self, self.tr('Open file'), path,
-                                                            self.tr('All files(*.*);;') + self.param.getFileFilter())
+                                                            self.tr('All files (*.*);;') + self.param.getFileFilter())
         if ret:
             files = list(ret)
             settings.setValue('/Processing/LastInputPath',

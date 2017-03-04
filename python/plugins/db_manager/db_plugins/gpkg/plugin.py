@@ -72,7 +72,7 @@ class GPKGDBPlugin(DBPlugin):
         settings.beginGroup(u"/%s/%s" % (self.connectionSettingsKey(), conn_name))
 
         if not settings.contains("gpkgpath"):  # non-existent entry?
-            raise InvalidDataException(u'there is no defined database connection "%s".' % conn_name)
+            raise InvalidDataException(self.tr(u'There is no defined database connection "{0}".').format(conn_name))
 
         database = settings.value("gpkgpath")
 

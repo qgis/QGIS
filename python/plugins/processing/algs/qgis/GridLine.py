@@ -97,11 +97,11 @@ class GridLine(GeoAlgorithm):
 
         if hSpacing <= 0 or vSpacing <= 0:
             raise GeoAlgorithmExecutionException(
-                self.tr('Invalid grid spacing: %s/%s' % (hSpacing, vSpacing)))
+                self.tr('Invalid grid spacing: {0}/{1}').format(hSpacing, vSpacing))
 
         if hSpacing <= hOverlay or vSpacing <= vOverlay:
             raise GeoAlgorithmExecutionException(
-                self.tr('Invalid overlay: %s/%s' % (hOverlay, vOverlay)))
+                self.tr('Invalid overlay: {0}/{1}').format(hOverlay, vOverlay))
 
         if width < hSpacing:
             raise GeoAlgorithmExecutionException(

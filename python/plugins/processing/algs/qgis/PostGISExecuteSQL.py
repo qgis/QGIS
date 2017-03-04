@@ -56,4 +56,4 @@ class PostGISExecuteSQL(GeoAlgorithm):
             self.db._exec_sql_and_commit(str(sql))
         except postgis.DbError as e:
             raise GeoAlgorithmExecutionException(
-                self.tr('Error executing SQL:\n%s') % str(e))
+                self.tr('Error executing SQL:\n{0}').format(str(e)))

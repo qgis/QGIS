@@ -80,7 +80,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.context = StaticContext()
 
         version = self.context.metadata.get('general', 'version')
-        self.setWindowTitle('MetaSearch %s' % version)
+        self.setWindowTitle(self.tr('MetaSearch {0}').format(version))
 
         self.rubber_band = QgsRubberBand(self.map, True)  # True = a polygon
         self.rubber_band.setColor(QColor(255, 0, 0, 75))
@@ -311,7 +311,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         key = '/MetaSearch/%s' % current_text
 
-        msg = self.tr('Remove service %s?') % current_text
+        msg = self.tr('Remove service {0}?').format(current_text)
 
         result = QMessageBox.information(self, self.tr('Confirm delete'), msg,
                                          QMessageBox.Ok | QMessageBox.Cancel)
@@ -345,7 +345,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             name = server.attrib.get('name')
             # check for duplicates
             if name in keys:
-                msg = self.tr('%s exists.  Overwrite?') % name
+                msg = self.tr('{0} exists.  Overwrite?').format(name)
                 res = QMessageBox.warning(self,
                                           self.tr('Loading connections'), msg,
                                           QMessageBox.Yes | QMessageBox.No)
@@ -475,12 +475,12 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         except ExceptionReport as err:
             QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('Search error'),
-                                self.tr('Search error: %s') % err)
+                                self.tr('Search error: {0}').format(err))
             return
         except Exception as err:
             QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('Connection error'),
-                                self.tr('Connection error: %s') % err)
+                                self.tr('Connection error: {0}').format(err))
             return
 
         if self.catalog.results['matches'] == 0:
@@ -498,9 +498,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         position = self.catalog.results['returned'] + self.startfrom
 
-        msg = self.tr('Showing %d - %d of %n result(s)', 'number of results',
-                      self.catalog.results['matches']) % (self.startfrom + 1,
-                                                          position)
+        msg = self.tr('Showing {0} - {1} of %n result(s)', 'number of results',
+                      self.catalog.results['matches']).format(self.startfrom + 1,
+                                                              position)
 
         self.lblResults.setText(msg)
 
@@ -655,12 +655,12 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         except ExceptionReport as err:
             QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('Search error'),
-                                self.tr('Search error: %s') % err)
+                                self.tr('Search error: {0}').format(err))
             return
         except Exception as err:
             QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('Connection error'),
-                                self.tr('Connection error: %s') % err)
+                                self.tr('Connection error: {0}').format(err))
             return
 
         QApplication.restoreOverrideCursor()
@@ -711,7 +711,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         # check for duplicates
         if sname in keys:  # duplicate found
             if self.radioTitleAsk.isChecked():  # ask to overwrite
-                msg = self.tr('Connection %s exists. Overwrite?') % sname
+                msg = self.tr('Connection {0} exists. Overwrite?').format(sname)
                 res = QMessageBox.warning(self, self.tr('Saving server'), msg,
                                           QMessageBox.Yes | QMessageBox.No)
                 if res != QMessageBox.Yes:  # assign new name with serial
@@ -777,12 +777,12 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         except ExceptionReport as err:
             QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('GetRecords error'),
-                                self.tr('Error getting response: %s') % err)
+                                self.tr('Error getting response: {0}').format(err))
             return
         except KeyError as err:
             QMessageBox.warning(self,
                                 self.tr('Record parsing error'),
-                                'Unable to locate record identifier')
+                                self.tr('Unable to locate record identifier'))
             QApplication.restoreOverrideCursor()
             return
 
@@ -853,11 +853,11 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                                                timeout=self.timeout)
             return True
         except ExceptionReport as err:
-            msg = self.tr('Error connecting to service: %s') % err
+            msg = self.tr('Error connecting to service: {0}').format(err)
         except ValueError as err:
-            msg = self.tr('Value Error: %s') % err
+            msg = self.tr('Value Error: {0}').format(err)
         except Exception as err:
-            msg = self.tr('Unknown Error: %s') % err
+            msg = self.tr('Unknown Error: {0}').format(err)
 
         QMessageBox.warning(self, self.tr('CSW Connection error'), msg)
         QApplication.restoreOverrideCursor()

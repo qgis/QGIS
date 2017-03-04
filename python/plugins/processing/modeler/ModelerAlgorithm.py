@@ -32,10 +32,7 @@ import sys
 import copy
 import time
 import json
-import codecs
-import traceback
-from qgis.PyQt.QtCore import QCoreApplication, QPointF
-from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QPointF
 from operator import attrgetter
 
 from qgis.core import QgsApplication
@@ -44,18 +41,14 @@ from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.modeler.WrongModelException import WrongModelException
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import (getParameterFromString,
-                                        ParameterRaster,
+from processing.core.parameters import (ParameterRaster,
                                         ParameterVector,
                                         ParameterTable,
                                         ParameterTableField,
                                         ParameterBoolean,
                                         ParameterString,
                                         ParameterNumber,
-                                        ParameterExtent,
-                                        ParameterCrs,
-                                        ParameterDataObject,
-                                        ParameterMultipleInput)
+                                        ParameterDataObject)
 
 from processing.gui.Help2Html import getHtmlFromDescriptionsDict
 from processing.core.alglist import algList
@@ -429,7 +422,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                 else:
                     if iface is not None:
                         iface.messageBar().pushMessage(self.tr("Warning"),
-                                                       self.tr("Parameter %s in algorithm %s in the model is run with default value! Edit the model to make sure that this is correct.") % (param.name, alg.name),
+                                                       self.tr("Parameter {0} in algorithm {1} in the model is run with default value! Edit the model to make sure that this is correct.").format(param.name, alg.name),
                                                        QgsMessageBar.WARNING, 4)
                     value = param.default
                 # We allow unexistent filepaths, since that allows
@@ -437,8 +430,10 @@ class ModelerAlgorithm(GeoAlgorithm):
                 if not param.setValue(value) and not isinstance(param,
                                                                 ParameterDataObject):
                     raise GeoAlgorithmExecutionException(
-                        self.tr('Wrong value %s for %s %s', 'ModelerAlgorithm')
-                        % (value, param.__class__.__name__, param.name))
+                        self.tr('Wrong value {0} for {1} {2}', 'ModelerAlgorithm').format(
+                            value, param.__class__.__name__, param.name
+                        )
+                    )
 
         for out in algInstance.outputs:
             if not out.hidden:
@@ -498,12 +493,12 @@ class ModelerAlgorithm(GeoAlgorithm):
                     if canExecute:
                         try:
                             feedback.pushDebugInfo(
-                                self.tr('Prepare algorithm: %s', 'ModelerAlgorithm') % alg.name)
+                                self.tr('Prepare algorithm: {0}', 'ModelerAlgorithm').format(alg.name))
                             self.prepareAlgorithm(alg)
                             feedback.setProgressText(
-                                self.tr('Running %s [%i/%i]', 'ModelerAlgorithm') % (alg.description, len(executed) + 1, len(toExecute)))
-                            feedback.pushDebugInfo('Parameters: ' + ', '.join([str(p).strip()
-                                                                               + '=' + str(p.value) for p in alg.algorithm.parameters]))
+                                self.tr('Running {0} [{1}/{2}]', 'ModelerAlgorithm').format(alg.description, len(executed) + 1, len(toExecute)))
+                            feedback.pushDebugInfo('Parameters: ' + ', '.join([str(p).strip() +
+                                                                               '=' + str(p.value) for p in alg.algorithm.parameters]))
                             t0 = time.time()
                             alg.algorithm.execute(feedback, self)
                             dt = time.time() - t0
@@ -518,14 +513,14 @@ class ModelerAlgorithm(GeoAlgorithm):
 
                             executed.append(alg.name)
                             feedback.pushDebugInfo(
-                                self.tr('OK. Execution took %0.3f ms (%i outputs).', 'ModelerAlgorithm') % (dt, len(alg.algorithm.outputs)))
+                                self.tr('OK. Execution took %{0:.3f} ms ({1} outputs).', 'ModelerAlgorithm').format(dt, len(alg.algorithm.outputs)))
                         except GeoAlgorithmExecutionException as e:
                             feedback.pushDebugInfo(self.tr('Failed', 'ModelerAlgorithm'))
                             raise GeoAlgorithmExecutionException(
-                                self.tr('Error executing algorithm %s\n%s', 'ModelerAlgorithm') % (alg.description, e.msg))
+                                self.tr('Error executing algorithm {0}\n{1}', 'ModelerAlgorithm').format(alg.description, e.msg))
 
         feedback.pushDebugInfo(
-            self.tr('Model processed ok. Executed %i algorithms total', 'ModelerAlgorithm') % len(executed))
+            self.tr('Model processed ok. Executed {0} algorithms total', 'ModelerAlgorithm').format(len(executed)))
 
     def getAsCommand(self):
         if self.descriptionFile:
@@ -543,7 +538,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         for alg in list(self.algs.values()):
             algInstance = algList.getAlgorithm(alg.consoleName)
             if algInstance is None:
-                return "The model you are trying to run contains an algorithm that is not available: <i>%s</i>" % alg.consoleName
+                return self.tr("The model you are trying to run contains an algorithm that is not available: <i>{0}</i>").format(alg.consoleName)
 
     def setModelerView(self, dialog):
         self.modelerdialog = dialog

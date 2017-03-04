@@ -107,4 +107,4 @@ class SimplifyGeometries(GeoAlgorithm):
         del writer
 
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                               self.tr('Simplify: Input geometries have been simplified from %s to %s points' % (pointsBefore, pointsAfter)))
+                               self.tr('Simplify: Input geometries have been simplified from {0} to {1} points').format(pointsBefore, pointsAfter))

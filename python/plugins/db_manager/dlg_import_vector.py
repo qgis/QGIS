@@ -361,7 +361,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
         if ret != 0:
             output = QgsMessageViewer()
             output.setTitle(self.tr("Import to database"))
-            output.setMessageAsPlainText(self.tr("Error %d\n%s") % (ret, errMsg))
+            output.setMessageAsPlainText(self.tr("Error {0}\n{1}").format(ret, errMsg))
             output.showMessage()
             return
 

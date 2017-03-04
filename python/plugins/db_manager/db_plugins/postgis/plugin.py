@@ -75,7 +75,7 @@ class PostGisDBPlugin(DBPlugin):
         settings.beginGroup(u"/%s/%s" % (self.connectionSettingsKey(), conn_name))
 
         if not settings.contains("database"):  # non-existent entry?
-            raise InvalidDataException(self.tr('There is no defined database connection "%s".') % conn_name)
+            raise InvalidDataException(self.tr('There is no defined database connection "{0}".').format(conn_name))
 
         from qgis.core import QgsDataSourceUri
 
@@ -216,7 +216,7 @@ class PGTable(Table):
             rule_name = parts[1]
             rule_action = parts[2]
 
-            msg = u"Do you want to %s rule %s?" % (rule_action, rule_name)
+            msg = self.tr(u"Do you want to {0} rule {1}?").format(rule_action, rule_name)
 
             QApplication.restoreOverrideCursor()
 

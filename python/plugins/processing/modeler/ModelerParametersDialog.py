@@ -300,7 +300,7 @@ class ModelerParametersDialog(QDialog):
             return self.model.inputs[value.name].param.description
         else:
             alg = self.model.algs[value.alg]
-            return self.tr("'%s' from algorithm '%s'") % (alg.algorithm.getOutputFromName(value.output).description, alg.description)
+            return self.tr("'{0}' from algorithm '{1}'").format(alg.algorithm.getOutputFromName(value.output).description, alg.description)
 
     def setPreviousValues(self):
         if self._algName is not None:

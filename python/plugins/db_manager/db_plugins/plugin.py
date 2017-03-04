@@ -72,9 +72,9 @@ class DbError(BaseError):
         if self.query is None:
             return BaseError.__unicode__(self)
 
-        msg = QApplication.translate("DBManagerPlugin", "Error:\n%s") % BaseError.__unicode__(self)
+        msg = QApplication.translate("DBManagerPlugin", "Error:\n{0}").format(BaseError.__unicode__(self))
         if self.query:
-            msg += QApplication.translate("DBManagerPlugin", "\n\nQuery:\n%s") % self.query
+            msg += QApplication.translate("DBManagerPlugin", "\n\nQuery:\n{0}").format(self.query)
         return msg
 
 
@@ -177,7 +177,7 @@ class DBPlugin(QObject):
         try:
             res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "hey!"),
                                        QApplication.translate("DBManagerPlugin",
-                                                              "Really remove connection to %s?") % item.connectionName(),
+                                                              "Really remove connection to {0}?").format(item.connectionName()),
                                        QMessageBox.Yes | QMessageBox.No)
             if res != QMessageBox.Yes:
                 return
@@ -387,7 +387,7 @@ class Database(DbItemObject):
                 return
             res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "hey!"),
                                        QApplication.translate("DBManagerPlugin",
-                                                              "Really delete schema %s?") % item.name,
+                                                              "Really delete schema {0}?").format(item.name),
                                        QMessageBox.Yes | QMessageBox.No)
             if res != QMessageBox.Yes:
                 return
@@ -444,7 +444,7 @@ class Database(DbItemObject):
                 return
             res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "hey!"),
                                        QApplication.translate("DBManagerPlugin",
-                                                              "Really delete table/view %s?") % item.name,
+                                                              "Really delete table/view {0}?").format(item.name),
                                        QMessageBox.Yes | QMessageBox.No)
             if res != QMessageBox.Yes:
                 return
@@ -462,7 +462,7 @@ class Database(DbItemObject):
                 return
             res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "hey!"),
                                        QApplication.translate("DBManagerPlugin",
-                                                              "Really delete all items from table %s?") % item.name,
+                                                              "Really delete all items from table {0}?").format(item.name),
                                        QMessageBox.Yes | QMessageBox.No)
             if res != QMessageBox.Yes:
                 return
@@ -887,7 +887,7 @@ class Table(DbItemObject):
             parts = action.split('/')
             trigger_action = parts[1]
 
-            msg = QApplication.translate("DBManagerPlugin", "Do you want to %s all triggers?") % trigger_action
+            msg = QApplication.translate("DBManagerPlugin", "Do you want to {0} all triggers?").format(trigger_action)
             QApplication.restoreOverrideCursor()
             try:
                 if QMessageBox.question(None, QApplication.translate("DBManagerPlugin", "Table triggers"), msg,
@@ -908,7 +908,7 @@ class Table(DbItemObject):
             trigger_name = parts[1]
             trigger_action = parts[2]
 
-            msg = QApplication.translate("DBManagerPlugin", "Do you want to %s trigger %s?") % (
+            msg = QApplication.translate("DBManagerPlugin", "Do you want to {0} trigger {1}?").format(
                 trigger_action, trigger_name)
             QApplication.restoreOverrideCursor()
             try:
@@ -1004,7 +1004,7 @@ class VectorTable(Table):
             parts = action.split('/')
             spatialIndex_action = parts[1]
 
-            msg = QApplication.translate("DBManagerPlugin", "Do you want to %s spatial index for field %s?") % (
+            msg = QApplication.translate("DBManagerPlugin", "Do you want to {0} spatial index for field {1}?").format(
                 spatialIndex_action, self.geomColumn)
             QApplication.restoreOverrideCursor()
             try:

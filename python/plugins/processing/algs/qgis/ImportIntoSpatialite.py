@@ -131,7 +131,7 @@ class ImportIntoSpatialite(GeoAlgorithm):
         )
         if ret != 0:
             raise GeoAlgorithmExecutionException(
-                self.tr('Error importing to Spatialite\n%s' % errMsg))
+                self.tr('Error importing to Spatialite\n{0}').format(errMsg))
 
         if geomColumn and createIndex:
             db.create_spatial_index(table, geomColumn)

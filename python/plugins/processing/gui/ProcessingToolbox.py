@@ -251,7 +251,7 @@ class ProcessingToolbox(BASE, WIDGET):
                 dlg.setTitle(self.tr('Error executing algorithm'))
                 dlg.setMessage(
                     self.tr('<h3>This algorithm cannot '
-                            'be run :-( </h3>\n%s') % message)
+                            'be run :-( </h3>\n{0}').format(message))
                 dlg.exec_()
                 return
             alg = alg.getCopy()

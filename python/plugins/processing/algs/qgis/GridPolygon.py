@@ -100,7 +100,7 @@ class GridPolygon(GeoAlgorithm):
 
         if hSpacing <= 0 or vSpacing <= 0:
             raise GeoAlgorithmExecutionException(
-                self.tr('Invalid grid spacing: %s/%s' % (hSpacing, vSpacing)))
+                self.tr('Invalid grid spacing: {0}/{1}').format(hSpacing, vSpacing))
 
         if width < hSpacing:
             raise GeoAlgorithmExecutionException(
@@ -108,7 +108,7 @@ class GridPolygon(GeoAlgorithm):
 
         if hSpacing <= hOverlay or vSpacing <= vOverlay:
             raise GeoAlgorithmExecutionException(
-                self.tr('Invalid overlay: %s/%s' % (hOverlay, vOverlay)))
+                self.tr('Invalid overlay: {0}/{1}').format(hOverlay, vOverlay))
 
         if height < vSpacing:
             raise GeoAlgorithmExecutionException(
@@ -237,8 +237,9 @@ class GridPolygon(GeoAlgorithm):
         if hOverlay < 0:
             raise GeoAlgorithmExecutionException(
                 self.tr('To preserve symmetry, hspacing is fixed relative to vspacing\n \
-                        hspacing is fixed at: %s and hoverlay is fixed at: %s\n \
-                        hoverlay cannot be negative. Increase hoverlay.' % (hSpacing, hOverlay)))
+                        hspacing is fixed at: {0} and hoverlay is fixed at: {1}\n \
+                        hoverlay cannot be negative. Increase hoverlay.').format(hSpacing, hOverlay)
+            )
 
         halfHSpacing = hSpacing / 2.0
         halfVSpacing = vSpacing / 2.0

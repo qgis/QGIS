@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 from builtins import range
 
 __author__ = 'Alexander Bruy'
@@ -31,8 +30,7 @@ import os
 import json
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QTableWidgetItem, QComboBox, QLineEdit, QHeaderView, QFileDialog, QMessageBox
+from qgis.PyQt.QtWidgets import QTableWidgetItem, QComboBox, QHeaderView, QFileDialog, QMessageBox
 
 from qgis.core import QgsApplication
 from qgis.gui import QgsMessageBar
@@ -190,8 +188,8 @@ class BatchPanel(BASE, WIDGET):
                     continue
                 wrapper = self.wrappers[row][col]
                 if not self.setParamValue(param, wrapper, alg):
-                    self.parent.bar.pushMessage("", self.tr('Wrong or missing parameter value: %s (row %d)')
-                                                % (param.description, row + 1),
+                    self.parent.bar.pushMessage("", self.tr('Wrong or missing parameter value: {0} (row {1})').format(
+                                                param.description, row + 1),
                                                 level=QgsMessageBar.WARNING, duration=5)
                     return
                 algParams[param.name] = param.getValueAsCommandLineParameter()
@@ -205,8 +203,8 @@ class BatchPanel(BASE, WIDGET):
                     algOutputs[out.name] = text.strip()
                     col += 1
                 else:
-                    self.parent.bar.pushMessage("", self.tr('Wrong or missing output value: %s (row %d)')
-                                                % (out.description, row + 1),
+                    self.parent.bar.pushMessage("", self.tr('Wrong or missing output value: {0} (row {1})').format(
+                                                out.description, row + 1),
                                                 level=QgsMessageBar.WARNING, duration=5)
                     return
             toSave.append({self.PARAMETERS: algParams, self.OUTPUTS: algOutputs})

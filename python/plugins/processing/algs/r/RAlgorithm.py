@@ -31,8 +31,6 @@ __revision__ = '$Format:%H$'
 import os
 import json
 
-from qgis.PyQt.QtGui import QIcon
-
 from qgis.core import QgsApplication
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -51,12 +49,10 @@ from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterFile
-from processing.core.parameters import ParameterPoint
 from processing.core.outputs import OutputTable
 from processing.core.outputs import OutputVector
 from processing.core.outputs import OutputRaster
 from processing.core.outputs import OutputHTML
-from processing.core.outputs import OutputFile
 from processing.core.parameters import getParameterFromString
 from processing.core.outputs import getOutputFromString
 from processing.tools import dataobjects
@@ -123,7 +119,7 @@ class RAlgorithm(GeoAlgorithm):
                     self.processParameterLine(line)
                 except Exception:
                     raise WrongScriptException(
-                        self.tr('Could not load R script: %s.\n Problem with line %s' % (self.descriptionFile, line)))
+                        self.tr('Could not load R script: {0}.\n Problem with line {1}').format(self.descriptionFile, line))
             elif line.startswith('>'):
                 self.commands.append(line[1:])
                 self.verboseCommands.append(line[1:])
@@ -183,11 +179,11 @@ class RAlgorithm(GeoAlgorithm):
             self.addOutput(out)
         else:
             raise WrongScriptException(
-                self.tr('Could not load script: %s.\n'
-                        'Problem with line "%s"', 'ScriptAlgorithm') % (self.descriptionFile or '', line))
+                self.tr('Could not load script: {0}.\n'
+                        'Problem with line "{1}"', 'ScriptAlgorithm').format(self.descriptionFile or '', line))
 
             raise WrongScriptException(
-                self.tr('Could not load R script: %s.\n Problem with line %s' % (self.descriptionFile, line)))
+                self.tr('Could not load R script: {0}.\n Problem with line {1}').format(self.descriptionFile, line))
 
     def processAlgorithm(self, feedback):
         if isWindows():
@@ -227,13 +223,13 @@ class RAlgorithm(GeoAlgorithm):
                 value = out.value
                 value = value.replace('\\', '/')
                 if self.useRasterPackage or self.passFileNames:
-                    commands.append('writeRaster(' + out.name + ',"' + value
-                                    + '", overwrite=TRUE)')
+                    commands.append('writeRaster(' + out.name + ',"' + value +
+                                    '", overwrite=TRUE)')
                 else:
                     if not value.endswith('tif'):
                         value = value + '.tif'
-                    commands.append('writeGDAL(' + out.name + ',"' + value
-                                    + '")')
+                    commands.append('writeGDAL(' + out.name + ',"' + value +
+                                    '")')
             elif isinstance(out, OutputVector):
                 value = out.value
                 if not value.endswith('shp'):
@@ -241,8 +237,8 @@ class RAlgorithm(GeoAlgorithm):
                 value = value.replace('\\', '/')
                 filename = os.path.basename(value)
                 filename = filename[:-4]
-                commands.append('writeOGR(' + out.name + ',"' + value + '","'
-                                + filename + '", driver="ESRI Shapefile")')
+                commands.append('writeOGR(' + out.name + ',"' + value + '","' +
+                                filename + '", driver="ESRI Shapefile")')
             elif isinstance(out, OutputTable):
                 value = out.value
                 value = value.replace('\\', '/')
@@ -265,9 +261,9 @@ class RAlgorithm(GeoAlgorithm):
         packages = RUtils.getRequiredPackages(self.script)
         packages.extend(['rgdal', 'raster'])
         for p in packages:
-            commands.append('tryCatch(find.package("' + p
-                            + '"), error=function(e) install.packages("' + p
-                            + '", dependencies=TRUE))')
+            commands.append('tryCatch(find.package("' + p +
+                            '"), error=function(e) install.packages("' + p +
+                            '", dependencies=TRUE))')
         commands.append('library("raster")')
         commands.append('library("rgdal")')
 
@@ -281,11 +277,9 @@ class RAlgorithm(GeoAlgorithm):
                     if self.passFileNames:
                         commands.append(param.name + ' = "' + value + '"')
                     elif self.useRasterPackage:
-                        commands.append(param.name + ' = ' + 'brick("' + value
-                                        + '")')
+                        commands.append(param.name + ' = ' + 'brick("' + value + '")')
                     else:
-                        commands.append(param.name + ' = ' + 'readGDAL("' + value
-                                        + '")')
+                        commands.append(param.name + ' = ' + 'readGDAL("' + value + '")')
             elif isinstance(param, ParameterVector):
                 if param.value is None:
                     commands.append(param.name + '= NULL')
@@ -298,8 +292,8 @@ class RAlgorithm(GeoAlgorithm):
                     if self.passFileNames:
                         commands.append(param.name + ' = "' + value + '"')
                     else:
-                        commands.append(param.name + ' = readOGR("' + folder
-                                        + '",layer="' + filename + '")')
+                        commands.append(param.name + ' = readOGR("' + folder +
+                                        '",layer="' + filename + '")')
             elif isinstance(param, ParameterTable):
                 if param.value is None:
                     commands.append(param.name + '= NULL')
@@ -311,8 +305,8 @@ class RAlgorithm(GeoAlgorithm):
                     if self.passFileNames:
                         commands.append(param.name + ' = "' + value + '"')
                     else:
-                        commands.append(param.name + ' <- read.csv("' + value
-                                        + '", head=TRUE, sep=",")')
+                        commands.append(param.name + ' <- read.csv("' + value +
+                                        '", head=TRUE, sep=",")')
             elif isinstance(param, ParameterExtent):
                 if param.value:
                     tokens = str(param.value).split(',')
@@ -348,14 +342,14 @@ class RAlgorithm(GeoAlgorithm):
                     for layer in layers:
                         layer = layer.replace('\\', '/')
                         if self.passFileNames:
-                            commands.append('tempvar' + str(iLayer) + ' <- "'
-                                            + layer + '"')
+                            commands.append('tempvar' + str(iLayer) + ' <- "' +
+                                            layer + '"')
                         elif self.useRasterPackage:
-                            commands.append('tempvar' + str(iLayer) + ' <- '
-                                            + 'brick("' + layer + '")')
+                            commands.append('tempvar' + str(iLayer) + ' <- ' +
+                                            'brick("' + layer + '")')
                         else:
-                            commands.append('tempvar' + str(iLayer) + ' <- '
-                                            + 'readGDAL("' + layer + '")')
+                            commands.append('tempvar' + str(iLayer) + ' <- ' +
+                                            'readGDAL("' + layer + '")')
                         iLayer += 1
                 else:
                     exported = param.getSafeExportedLayers()
@@ -369,12 +363,12 @@ class RAlgorithm(GeoAlgorithm):
                         filename = os.path.basename(layer)
                         filename = filename[:-4]
                         if self.passFileNames:
-                            commands.append('tempvar' + str(iLayer) + ' <- "'
-                                            + layer + '"')
+                            commands.append('tempvar' + str(iLayer) + ' <- "' +
+                                            layer + '"')
                         else:
-                            commands.append('tempvar' + str(iLayer) + ' <- '
-                                            + 'readOGR("' + layer + '",layer="'
-                                            + filename + '")')
+                            commands.append('tempvar' + str(iLayer) + ' <- ' +
+                                            'readOGR("' + layer + '",layer="' +
+                                            filename + '")')
                         iLayer += 1
                 s = ''
                 s += param.name

@@ -328,7 +328,7 @@ void QgsBookmarks::exportToXml()
 
   QString lastUsedDir = settings.value( QStringLiteral( "/Windows/Bookmarks/LastUsedDirectory" ), QDir::homePath() ).toString();
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Export bookmarks" ), lastUsedDir,
-                     tr( "XML files( *.xml *.XML )" ) );
+                     tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;

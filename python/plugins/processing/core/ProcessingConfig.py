@@ -291,26 +291,26 @@ class Setting(object):
                     try:
                         float(v)
                     except ValueError:
-                        raise ValueError(self.tr('Wrong parameter value:\n%s') % str(v))
+                        raise ValueError(self.tr('Wrong parameter value:\n{0}').format(v))
                 validator = checkFloat
             elif self.valuetype == self.INT:
                 def checkInt(v):
                     try:
                         int(v)
                     except ValueError:
-                        raise ValueError(self.tr('Wrong parameter value:\n%s') % str(v))
+                        raise ValueError(self.tr('Wrong parameter value:\n{0}').format(v))
                 validator = checkInt
             elif self.valuetype in [self.FILE, self.FOLDER]:
                 def checkFileOrFolder(v):
                     if v and not os.path.exists(v):
-                        raise ValueError(self.tr('Specified path does not exist:\n%s') % str(v))
+                        raise ValueError(self.tr('Specified path does not exist:\n{0}').format(v))
                 validator = checkFileOrFolder
             elif self.valuetype == self.MULTIPLE_FOLDERS:
                 def checkMultipleFolders(v):
                     folders = v.split(';')
                     for f in folders:
                         if f and not os.path.exists(f):
-                            raise ValueError(self.tr('Specified path does not exist:\n%s') % str(f))
+                            raise ValueError(self.tr('Specified path does not exist:\n{0}').format(f))
                 validator = checkMultipleFolders
             else:
                 def validator(x):

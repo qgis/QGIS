@@ -188,7 +188,7 @@ class DlgExportVector(QDialog, Ui_Dialog):
             QApplication.restoreOverrideCursor()
 
         if ret != 0:
-            QMessageBox.warning(self, self.tr("Export to file"), self.tr("Error %d\n%s") % (ret, errMsg))
+            QMessageBox.warning(self, self.tr("Export to file"), self.tr("Error {0}\n{1}").format(ret, errMsg))
             return
 
         # create spatial index

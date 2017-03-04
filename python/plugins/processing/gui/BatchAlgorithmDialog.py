@@ -39,7 +39,6 @@ from processing.gui.Postprocessing import handleAlgorithmResults
 
 from processing.core.ProcessingResults import ProcessingResults
 
-from processing.core.parameters import ParameterExtent
 from processing.core.outputs import OutputNumber
 from processing.core.outputs import OutputString
 from processing.core.outputs import OutputHTML
@@ -56,7 +55,7 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
 
         self.alg = alg
 
-        self.setWindowTitle(self.tr('Batch Processing - %s') % self.alg.name)
+        self.setWindowTitle(self.tr('Batch Processing - {0}').format(self.alg.name))
 
         self.setMainWidget(BatchPanel(self, self.alg))
 
@@ -79,8 +78,8 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
                     continue
                 wrapper = self.mainWidget.wrappers[row][col]
                 if not self.mainWidget.setParamValue(param, wrapper, alg):
-                    self.bar.pushMessage("", self.tr('Wrong or missing parameter value: %s (row %d)')
-                                         % (param.description, row + 1),
+                    self.bar.pushMessage("", self.tr('Wrong or missing parameter value: {0} (row {1})').format(
+                                         param.description, row + 1),
                                          level=QgsMessageBar.WARNING, duration=5)
                     self.algs = None
                     return
@@ -95,8 +94,8 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
                     out.value = text
                     col += 1
                 else:
-                    self.bar.pushMessage("", self.tr('Wrong or missing output value: %s (row %d)')
-                                         % (out.description, row + 1),
+                    self.bar.pushMessage("", self.tr('Wrong or missing output value: {0} (row {1})').format(
+                                         out.description, row + 1),
                                          level=QgsMessageBar.WARNING, duration=5)
                     self.algs = None
                     return
@@ -120,12 +119,12 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
             pass
 
         for count, alg in enumerate(self.algs):
-            self.setText(self.tr('\nProcessing algorithm %d/%d...') % (count + 1, len(self.algs)))
-            self.setInfo(self.tr('<b>Algorithm %s starting...</b>' % alg.name))
+            self.setText(self.tr('\nProcessing algorithm {0}/{1}...').format(count + 1, len(self.algs)))
+            self.setInfo(self.tr('<b>Algorithm {0} starting...</b>').format(alg.name))
             if runalg(alg, self.feedback) and not self.canceled:
                 if self.load[count]:
                     handleAlgorithmResults(alg, self.feedback, False)
-                self.setInfo(self.tr('Algorithm %s correctly executed...') % alg.name)
+                self.setInfo(self.tr('Algorithm {0} correctly executed...').format(alg.name))
             else:
                 QApplication.restoreOverrideCursor()
                 return
