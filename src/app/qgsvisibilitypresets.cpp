@@ -30,7 +30,7 @@
 #include "qgsnewnamedialog.h"
 
 #include <QInputDialog>
-
+#include <QMessageBox>
 
 QgsVisibilityPresets* QgsVisibilityPresets::sInstance;
 
@@ -179,6 +179,12 @@ void QgsVisibilityPresets::replaceTriggered()
 {
   QAction* actionPreset = qobject_cast<QAction*>( sender() );
   if ( !actionPreset )
+    return;
+
+  int res = QMessageBox::question( mMenu, tr( "Replace preset" ),
+                                   tr( "Are you sure you want to replace the existing preset %1?" ).arg( actionPreset->text() ),
+                                   QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+  if ( res != QMessageBox::Yes )
     return;
 
   //adding preset with same name is effectively a replace
