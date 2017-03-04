@@ -84,10 +84,10 @@ QgsSettings::~QgsSettings()
 
 void QgsSettings::beginGroup( const QString &prefix )
 {
-  mUserSettings->beginGroup( prefix );
+  mUserSettings->beginGroup( prefix.toLower() );
   if ( mGlobalSettings )
   {
-    mGlobalSettings->beginGroup( prefix );
+    mGlobalSettings->beginGroup( prefix.toLower() );
   }
 }
 
@@ -152,7 +152,7 @@ QStringList QgsSettings::childGroups() const
 
 QVariant QgsSettings::value( const QString &key, const QVariant &defaultValue, const QgsSettings::Section section ) const
 {
-  QString pKey = prefixedKey( key, section );
+  QString pKey = prefixedKey( key.toLower(), section );
   if ( !mUserSettings->value( pKey ).isNull() )
   {
     return mUserSettings->value( pKey );
@@ -166,7 +166,7 @@ QVariant QgsSettings::value( const QString &key, const QVariant &defaultValue, c
 
 bool QgsSettings::contains( const QString &key, const QgsSettings::Section section ) const
 {
-  QString pKey = prefixedKey( key, section );
+  QString pKey = prefixedKey( key.toLower(), section );
   return mUserSettings->contains( pKey ) ||
          ( mGlobalSettings && mGlobalSettings->contains( pKey ) );
 }
@@ -183,7 +183,7 @@ void QgsSettings::sync()
 
 void QgsSettings::remove( const QString &key )
 {
-  mUserSettings->remove( key );
+  mUserSettings->remove( key.toLower() );
 }
 
 QString QgsSettings::prefixedKey( const QString &key, const Section section ) const
@@ -208,18 +208,18 @@ QString QgsSettings::prefixedKey( const QString &key, const Section section ) co
       break;
     case Section::NoSection:
     default:
-      return sanitizeKey( key );
+      return sanitizeKey( key.toLower() );
   }
-  return prefix  + "/" + sanitizeKey( key );
+  return prefix  + "/" + sanitizeKey( key.toLower() );
 }
 
 
 int QgsSettings::beginReadArray( const QString &prefix )
 {
-  int size = mUserSettings->beginReadArray( prefix );
+  int size = mUserSettings->beginReadArray( prefix.toLower() );
   if ( 0 == size && mGlobalSettings )
   {
-    size = mGlobalSettings->beginReadArray( prefix );
+    size = mGlobalSettings->beginReadArray( prefix.toLower() );
     mUsingGlobalArray = ( size > 0 );
   }
   return size;
@@ -250,7 +250,7 @@ void QgsSettings::setArrayIndex( int i )
 void QgsSettings::setValue( const QString &key, const QVariant &value, const QgsSettings::Section section )
 {
   // TODO: add valueChanged signal
-  mUserSettings->setValue( prefixedKey( key, section ), value );
+  mUserSettings->setValue( prefixedKey( key.toLower(), section ), value );
 }
 
 // To lower case and clean the path
