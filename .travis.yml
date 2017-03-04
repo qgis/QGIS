@@ -5,8 +5,6 @@ matrix:
     - os: linux
       language: python # This lets us use newer python versions from virtualenv
       env:
-        - BUILD=qt5
-        - QT_VERSION=5
         - LLVM_VERSION=3.8
         - TRAVIS_CONFIG=linux
       sudo: false
