@@ -154,6 +154,34 @@ class TestQgsMapCanvas(unittest.TestCase):
             # messy, but only way to check that canvas redraw doesn't occur
             self.assertFalse(canvas.isDrawing())
 
+    def testCancelAndDestroy(self):
+        """ test that nothing goes wrong if we destroy a canvas while a job is canceling """
+        canvas = QgsMapCanvas()
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem(4326))
+        canvas.setFrameStyle(0)
+        canvas.resize(600, 400)
+
+        layer = QgsVectorLayer("Polygon?crs=epsg:4326&field=fldtxt:string",
+                               "layer", "memory")
+
+        # add a ton of features
+        for i in range(5000):
+            f = QgsFeature()
+            f.setGeometry(QgsGeometry.fromRect(QgsRectangle(5, 25, 25, 45)))
+            self.assertTrue(layer.dataProvider().addFeatures([f]))
+
+        canvas.setLayers([layer])
+        canvas.setExtent(QgsRectangle(10, 30, 20, 35))
+        canvas.show()
+
+        # need to wait until first redraw can occur (note that we first need to wait till drawing starts!)
+        while not canvas.isDrawing():
+            app.processEvents()
+        self.assertTrue(canvas.isDrawing())
+
+        canvas.stopRendering()
+        del canvas
+
     def canvasImageCheck(self, name, reference_image, canvas):
         self.report += "<h2>Render {}</h2>\n".format(name)
         temp_dir = QDir.tempPath() + '/'
