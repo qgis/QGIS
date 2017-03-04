@@ -32,6 +32,6 @@ if [ "$CACHE_WARMING" = true ] ; then
   xvfb-run ctest -V -R NOTESTS -S ./qgis-test-travis.ctest --output-on-failure
   false
 else
-  grc -c ${TRAVIS_BUILD_DIR}/ci/travis/linux/.grc.colors \
+  python ${TRAVIS_BUILD_DIR}/ci/travis/scripts/ctest2travis.py \
 	  xvfb-run ctest -V -E "$(cat ${DIR}/blacklist.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)" -S ./qgis-test-travis.ctest --output-on-failure
 fi
