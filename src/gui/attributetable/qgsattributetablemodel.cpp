@@ -60,13 +60,13 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
 
   loadAttributes();
 
-  connect( mLayerCache, SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ), this, SLOT( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ) );
-  connect( layer(), SIGNAL( featuresDeleted( QgsFeatureIds ) ), this, SLOT( featuresDeleted( QgsFeatureIds ) ) );
-  connect( layer(), SIGNAL( attributeDeleted( int ) ), this, SLOT( attributeDeleted( int ) ) );
-  connect( layer(), SIGNAL( updatedFields() ), this, SLOT( updatedFields() ) );
-  connect( layer(), SIGNAL( editCommandEnded() ), this, SLOT( editCommandEnded() ) );
-  connect( mLayerCache, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( featureAdded( QgsFeatureId ) ) );
-  connect( mLayerCache, SIGNAL( cachedLayerDeleted() ), this, SLOT( layerDeleted() ) );
+  connect( mLayerCache, &QgsVectorLayerCache::attributeValueChanged, this, &QgsAttributeTableModel::attributeValueChanged );
+  connect( layer(), &QgsVectorLayer::featuresDeleted, this, &QgsAttributeTableModel::featuresDeleted );
+  connect( layer(), &QgsVectorLayer::attributeDeleted, this, &QgsAttributeTableModel::attributeDeleted );
+  connect( layer(), &QgsVectorLayer::updatedFields, this, &QgsAttributeTableModel::updatedFields );
+  connect( layer(), &QgsVectorLayer::editCommandEnded, this, &QgsAttributeTableModel::editCommandEnded );
+  connect( mLayerCache, &QgsVectorLayerCache::featureAdded, this, &QgsAttributeTableModel::featureAdded );
+  connect( mLayerCache, &QgsVectorLayerCache::cachedLayerDeleted, this, &QgsAttributeTableModel::layerDeleted );
 }
 
 bool QgsAttributeTableModel::loadFeatureAtId( QgsFeatureId fid ) const
@@ -430,7 +430,7 @@ void QgsAttributeTableModel::loadLayer()
 
   emit finished();
 
-  connect( mLayerCache, SIGNAL( invalidated() ), this, SLOT( loadLayer() ), Qt::UniqueConnection );
+  connect( mLayerCache, &QgsVectorLayerCache::invalidated, this, &QgsAttributeTableModel::loadLayer, Qt::UniqueConnection );
 
   endResetModel();
 }

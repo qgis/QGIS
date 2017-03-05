@@ -83,7 +83,6 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QWidget
   : QDialog( parent, flags )
   , mDock( nullptr )
   , mLayer( layer )
-  , mRubberBand( nullptr )
   , mCurrentSearchWidgetWrapper( nullptr )
 {
   setObjectName( QStringLiteral( "QgsAttributeTableDialog/" ) + layer->id() );
@@ -133,21 +132,26 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QWidget
   mEditorContext.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
 
   QgsFeatureRequest r;
+  bool needsGeom = false;
+  QgsAttributeTableFilterModel::FilterMode initialMode = static_cast< QgsAttributeTableFilterModel::FilterMode>( settings.value( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll ).toInt() );
   if ( mLayer->geometryType() != QgsWkbTypes::NullGeometry &&
-       settings.value( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll ).toInt() == QgsAttributeTableFilterModel::ShowVisible )
+       initialMode == QgsAttributeTableFilterModel::ShowVisible )
   {
     QgsMapCanvas *mc = QgisApp::instance()->mapCanvas();
     QgsRectangle extent( mc->mapSettings().mapToLayerCoordinates( layer, mc->extent() ) );
     r.setFilterRect( extent );
-
-    mRubberBand = new QgsRubberBand( mc, QgsWkbTypes::PolygonGeometry );
-    mRubberBand->setToGeometry( QgsGeometry::fromRect( extent ), layer );
-
-    mActionShowAllFilter->setText( tr( "Show All Features In Initial Canvas Extent" ) );
+    needsGeom = true;
   }
+  else if ( initialMode == QgsAttributeTableFilterModel::ShowSelected )
+  {
+    if ( layer->selectedFeatureCount() > 0 )
+      r.setFilterFids( layer->selectedFeatureIds() );
+  }
+  if ( !needsGeom )
+    r.setFlags( QgsFeatureRequest::NoGeometry );
 
   // Initialize dual view
-  mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), r, mEditorContext );
+  mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), r, mEditorContext, false );
 
   QgsAttributeTableConfig config = mLayer->attributeTableConfig();
   mMainView->setAttributeTableConfig( config );
@@ -334,18 +338,16 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QWidget
 QgsAttributeTableDialog::~QgsAttributeTableDialog()
 {
   delete myDa;
-  delete mRubberBand;
 }
 
 void QgsAttributeTableDialog::updateTitle()
 {
   QWidget *w = mDock ? qobject_cast<QWidget *>( mDock ) : qobject_cast<QWidget *>( this );
-  w->setWindowTitle( tr( " %1 :: Features total: %2, filtered: %3, selected: %4%5" )
+  w->setWindowTitle( tr( " %1 :: Features total: %2, filtered: %3, selected: %4" )
                      .arg( mLayer->name() )
-                     .arg( mMainView->featureCount() )
+                     .arg( qMax( static_cast< long >( mMainView->featureCount() ), mLayer->featureCount() ) ) // layer count may be estimated, so use larger of the two
                      .arg( mMainView->filteredFeatureCount() )
                      .arg( mLayer->selectedFeatureCount() )
-                     .arg( mRubberBand ? tr( ", spatially limited" ) : QLatin1String( "" ) )
                    );
 
   if ( mMainView->filterMode() == QgsAttributeTableFilterModel::ShowAll )
