@@ -24,7 +24,7 @@
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
 #include "qgsunittypes.h"
-#include <QSettings>
+#include "qgssettings.h"
 
 #include "qgstest.h"
 
@@ -178,11 +178,13 @@ void TestQgsAttributeTable::testFieldCalculationArea()
 
 void TestQgsAttributeTable::testNoGeom()
 {
+  QgsSettings s;
+
   //test that by default the attribute table DOESN'T fetch geometries (because performance)
   std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
 
-  QSettings().setValue( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll );
+  s.setValue( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll );
   std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get() ) );
 
   QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
@@ -190,7 +192,7 @@ void TestQgsAttributeTable::testNoGeom()
 
   // but if we are requesting only visible features, then geometry must be fetched...
 
-  QSettings().setValue( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowVisible );
+  s.setValue( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowVisible );
   dlg.reset( new QgsAttributeTableDialog( tempLayer.get() ) );
   QVERIFY( dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
   QVERIFY( !( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry ) );
