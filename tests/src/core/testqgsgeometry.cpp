@@ -3501,6 +3501,25 @@ void TestQgsGeometry::triangle()
   QCOMPARE( bis.at( 2 )->pointN( 0 ), t7.vertexAt( 2 ) );
   QGSCOMPARENEARPOINT( bis.at( 2 )->pointN( 1 ), QgsPointV2( 0, 2.9289 ), 0.0001 );
 
+  // "deleted" method
+  QgsTriangle t11( QgsPointV2( 0, 0 ), QgsPointV2( 100, 100 ), QgsPointV2( 0, 200 ) );
+  ext->setPoints( QgsPointSequence() << QgsPointV2( 5, 5 )
+                  << QgsPointV2( 50, 50 ) << QgsPointV2( 0, 25 )
+                  << QgsPointV2( 5, 5 ) );
+  t11.addInteriorRing( ext );
+  QCOMPARE( t11.asWkt(), QString( "Triangle ((0 0, 100 100, 0 200, 0 0))" ) );
+
+  /* QList<QgsCurve *> lc;
+   lc.append(ext);
+   t11.setInteriorRings( lc );
+   QCOMPARE( t11.asWkt(), QString( "Triangle ((0 0, 100 100, 0 200, 0 0))" ) );*/
+
+  QgsVertexId id( 0, 0, 1 );
+  QVERIFY( !t11.deleteVertex( id ) );
+  QCOMPARE( t11.asWkt(), QString( "Triangle ((0 0, 100 100, 0 200, 0 0))" ) );
+  QVERIFY( !t11.insertVertex( id, QgsPointV2( 5, 5 ) ) );
+  QCOMPARE( t11.asWkt(), QString( "Triangle ((0 0, 100 100, 0 200, 0 0))" ) );
+
 }
 
 void TestQgsGeometry::compoundCurve()

@@ -33,6 +33,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     QgsTriangle();
 
     /** Construct a triangle from three QgsPointV2.
+     * An empty triangle is returned if there are identical points or if the points are collinear.
      * @param p1 first point
      * @param p2 second point
      * @param p3 third point
@@ -59,8 +60,15 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     QgsAbstractGeometry* toCurveType() const override;
 
-    void addInteriorRing( QgsCurve* ring ) override; // NOTE: no interior ring for triangle.
-    //overridden to handle LineString25D rings
+    //! Inherited method not used. You cannot add an interior ring into a triangle.
+    void addInteriorRing( QgsCurve* ring ) override;
+    //! Inherited method not used. You cannot add an interior ring into a triangle.
+    void setInteriorRings( const QList< QgsCurve *> &rings ) = delete;
+    //! Inherited method not used. You cannot delete or insert a vertex directly. Returns always false.
+    bool deleteVertex( QgsVertexId position ) override;
+    //! Inherited method not used. You cannot delete or insert a vertex directly. Returns always false.
+    bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex ) override;
+
     virtual void setExteriorRing( QgsCurve* ring ) override;
 
     virtual QgsAbstractGeometry* boundary() const override;
@@ -70,21 +78,31 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     /**
      *  Returns coordinates of a vertex.
      *  @param atVertex index of the vertex
-     *  @return Coordinates of the vertex or QgsPointV2(0,0) on error
+     *  @return Coordinates of the vertex or QgsPointV2(0,0) on error (\a atVertex < 0 or > 3).
      */
     QgsPointV2 vertexAt( int atVertex ) const;
-
-    // TODO:
 
     /**
      * Returns the three lengths of the triangle.
      * @return Lengths of triangle ABC where [AB] is at 0, [BC] is at 1, [CA] is at 2
+     * * Example:
+     * \code{.py}
+     *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
+     *   tri.lengths()
+     *   # [5.0, 5.0, 7.0710678118654755]
+     * \endcode
      */
     QVector<double> lengths() const;
 
     /**
      * Returns the three angles of the triangle.
      * @return Angles in radians of triangle ABC where angle BAC is at 0, angle ABC is at 1, angle BCA is at 2
+     * * Example:
+     * \code{.py}
+     *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
+     *   [math.degrees(i) for i in tri.angles()]
+     *   # [45.0, 90.0, 45.0]
+     * \endcode
      */
     QVector<double> angles() const;
 
@@ -92,6 +110,15 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
      * Is the triangle isocele (two sides with the same length)?
      * @param lengthTolerance The tolerance to use
      * @return True or False
+     * * Example:
+     * \code{.py}
+     *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
+     *   tri.lengths()
+     *   # [5.0, 5.0, 7.0710678118654755]
+     *   tri.isIsocele()
+     *   # True
+     *   # length of [AB] == length of [BC]
+     * \endcode
      */
     bool isIsocele( double lengthTolerance = 0.0001 ) const;
 
@@ -99,6 +126,15 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
      * Is the triangle equilateral (three sides with the same length)?
      * @param lengthTolerance The tolerance to use
      * @return True or False
+     * * Example:
+     * \code{.py}
+     *   tri = QgsTriangle( QgsPointV2( 10, 10 ), QgsPointV2( 16, 10 ), QgsPointV2( 13, 15.1962 ) )
+     *   tri.lengths()
+     *   # [6.0, 6.0000412031918575, 6.0000412031918575]
+     *   tri.isEquilateral()
+     *   # True
+     *   # All lengths are close to 6.0
+     * \endcode
      */
     bool isEquilateral( double lengthTolerance = 0.0001 ) const;
 
@@ -106,6 +142,15 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
      * Is the triangle right-angled?
      * @param angleTolerance The tolerance to use
      * @return True or False
+     * * Example:
+     * \code{.py}
+     *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
+     *   [math.degrees(i) for i in tri.angles()]
+     *   # [45.0, 90.0, 45.0]
+     *   tri.isRight()
+     *   # True
+     *   # angle of ABC == 90
+     * \endcode
      */
     bool isRight( double angleTolerance = 0.0001 ) const;
 
@@ -113,50 +158,87 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
      * Is the triangle scalene (all sides have differen lengths)?
      * @param lengthTolerance The tolerance to use
      * @return True or False
+     * @return True or False
+     * * Example:
+     * \code{.py}
+     *   tri = QgsTriangle( QgsPointV2( 7.2825, 4.2368 ), QgsPointV2( 13.0058, 3.3218 ), QgsPointV2( 9.2145, 6.5242 ) )
+     *   tri.lengths()
+     *   # [5.795980321740233, 4.962793714229921, 2.994131386562721]
+     *   tri.isScalene()
+     *   # True
+     *   # All lengths are different
+     * \endcode
      */
     bool isScalene( double lengthTolerance = 0.0001 ) const;
 
     /**
-     * Altitudes
+     * An altitude is a segment (defined by a QgsLineString) from a vertex to the opposite side (or, if necessary, to the extension of the opposite side).
      * @return Three altitudes from this triangle
+     * @note not available in Python bindings
      */
     QVector<QgsLineString *> altitudes( ) const;
 
     /**
-     * Medians
+     * A median is a segment (defined by a QgsLineString) from a vertex to the midpoint of the opposite side.
      * @return Three medians from this triangle
+     * @note not available in Python bindings
      */
     QVector<QgsLineString *> medians( ) const;
 
     /**
-     * Bisectors
+     * The segment (defined by a QgsLineString) returned bisect the angle of a vertex to the opposite side.
      * @param lengthTolerance The tolerance to use
      * @return Three angle bisector from this triangle
+     * @note not available in Python bindings
      */
     QVector<QgsLineString *> bisectors( double lengthTolerance = 0.0001 ) const;
 
     /**
-     * Medial
+     * Medial (or midpoint) triangle of a triangle ABC is the triangle with vertices at the midpoints of the triangle's sides.
      * @return The medial from this triangle
+     * * Example:
+     * \code{.py}
+     *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
+     *   tri.medial().asWkt()
+     *   # 'Triangle ((0 2.5, 2.5 5, 2.5 2.5, 0 2.5))'
+     * \endcode
      */
     QgsTriangle medial( ) const;
 
     /**
-     * Orthocenter
+     * An orthocenter is the point of intersection of the altitudes of a triangle.
      * @param lengthTolerance The tolerance to use
-     * @return The orthocenter of the triangle (intersection of the altitudes of a triangle.)
+     * @return The orthocenter of the triangle.
+     * * Example:
+     * \code{.py}
+     *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
+     *   tri.orthocenter().asWkt()
+     *   # 'Point (0 5)'
+     * \endcode
      */
     QgsPointV2 orthocenter( double lengthTolerance = 0.0001 ) const;
 
     /**
-     * Center of the circumscribed circle of the triangle
+     * Center of the circumscribed circle of the triangle.
      * @return The center of the circumscribed circle of the triangle
+     * * Example:
+     * \code{.py}
+     *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
+     *   tri.circumscribedCenter().asWkt()
+     *   # 'Point (2.5 2.5)'
+     * \endcode
      */
     QgsPointV2 circumscribedCenter( ) const;
 
     /**
-     * Radius of the circumscribed circle of the triangle
+     * Radius of the circumscribed circle of the triangle.
      * @return The radius of the circumscribed circle of the triangle
+     * * Example:
+     * \code{.py}
+     *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
+     *   tri.circumscribedRadius()
+     *   # 3.5355339059327378
+     * \endcode
      */
     double circumscribedRadius( ) const;
 
@@ -164,14 +246,26 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     // QgsCircle circumscribedCircle ( ) const; // need QgsCircle (from CADDigitize.CADCircle)
 
     /**
-     * Center of the inscribed circle of the triangle
+     * Center of the inscribed circle of the triangle.
      * @return The center of the inscribed circle of the triangle
+     * * Example:
+     * \code{.py}
+     *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
+     *   tri.inscribedCenter().asWkt()
+     *   # 'Point (1.46446609406726225 3.53553390593273775)'
+     * \endcode
      */
     QgsPointV2 inscribedCenter( ) const;
 
     /**
-     * Radius of the inscribed circle of the triangle
+     * Radius of the inscribed circle of the triangle.
      * @return The radius of the inscribed circle of the triangle
+     * * Example:
+     * \code{.py}
+     *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
+     *   tri.inscribedRadius()
+     *   # 1.4644660940672622
+     * \endcode
      */
     double inscribedRadius( ) const;
 

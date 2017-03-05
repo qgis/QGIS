@@ -174,6 +174,19 @@ void QgsTriangle::addInteriorRing( QgsCurve *ring )
   return;
 }
 
+bool QgsTriangle::deleteVertex( QgsVertexId position )
+{
+  Q_UNUSED( position );
+  return false;
+}
+
+bool QgsTriangle::insertVertex( QgsVertexId position, const QgsPointV2 &vertex )
+{
+  Q_UNUSED( position );
+  Q_UNUSED( vertex );
+  return false;
+}
+
 void QgsTriangle::setExteriorRing( QgsCurve *ring )
 {
   if ( !ring )
