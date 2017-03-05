@@ -25,8 +25,6 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from builtins import file
-
 import os
 import re
 import tempfile

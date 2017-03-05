@@ -84,7 +84,7 @@ class ModellerNumberInputPanel(BASE, WIDGET):
                 name = "%s_%s" % (value.alg, value.output)
                 alg = self.modelParametersDialog.model.algs[value.alg]
                 out = alg.algorithm.getOutputFromName(value.output)
-                desc = self.tr("Output '{0}' from algorithm '{1}").format(out.description, alg.description)
+                desc = self.tr("Output '{0}' from algorithm '{1}'").format(out.description, alg.description)
             variables[name] = desc
         values = self.modelParametersDialog.getAvailableValuesOfType(ParameterVector, OutputVector)
         values.extend(self.modelParametersDialog.getAvailableValuesOfType(ParameterRaster, OutputRaster))
@@ -97,16 +97,16 @@ class ModellerNumberInputPanel(BASE, WIDGET):
                 name = "%s_%s" % (value.alg, value.output)
                 alg = self.modelParametersDialog.model.algs[value.alg]
                 element = alg.algorithm.getOutputFromName(value.output)
-                desc = self.tr("Output '{0}' from algorithm '{1}").format(element.description, alg.description)
-            variables['%s_minx' % name] = "Minimum X of %s" % desc
-            variables['%s_miny' % name] = "Maximum X of %s" % desc
-            variables['%s_maxx' % name] = "Minimum Y of %s" % desc
-            variables['%s_maxy' % name] = "Maximum Y of %s" % desc
+                desc = self.tr("Output '{0}' from algorithm '{1}'").format(element.description, alg.description)
+            variables['%s_minx' % name] = self.tr("Minimum X of {0}").format(desc)
+            variables['%s_miny' % name] = self.tr("Minimum Y of {0}").format(desc)
+            variables['%s_maxx' % name] = self.tr("Maximum X of {0}").format(desc)
+            variables['%s_maxy' % name] = self.tr("Maximum Y of {0}").format(desc)
             if isinstance(element, (ParameterRaster, OutputRaster)):
-                variables['%s_min' % name] = "Minimum value of %s" % desc
-                variables['%s_max' % name] = "Maximum value of %s" % desc
-                variables['%s_avg' % name] = "Mean value of %s" % desc
-                variables['%s_stddev' % name] = "Standard deviation of %s" % desc
+                variables['%s_min' % name] = self.tr("Minimum value of {0}").format(desc)
+                variables['%s_max' % name] = self.tr("Maximum value of {0}").format(desc)
+                variables['%s_avg' % name] = self.tr("Mean value of {0}").format(desc)
+                variables['%s_stddev' % name] = self.tr("Standard deviation of {0}").format(desc)
         for variable, desc in variables.items():
             dlg.expressionBuilder().registerItem("Modeler", variable, "@" + variable, desc, highlightedItem=True)
 

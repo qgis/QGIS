@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgsunittypes.h"
-#include <QCoreApplication>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -140,28 +139,28 @@ QString QgsUnitTypes::toString( DistanceUnit unit )
   switch ( unit )
   {
     case DistanceMeters:
-      return QCoreApplication::translate( "UnitType", "meters" );
+      return QObject::tr( "meters", "distance" );
 
     case DistanceKilometers:
-      return QCoreApplication::translate( "UnitType", "kilometers" );
+      return QObject::tr( "kilometers", "distance" );
 
     case DistanceFeet:
-      return QCoreApplication::translate( "UnitType", "feet" );
+      return QObject::tr( "feet", "distance" );
 
     case DistanceYards:
-      return QCoreApplication::translate( "UnitType", "yards" );
+      return QObject::tr( "yards", "distance" );
 
     case DistanceMiles:
-      return QCoreApplication::translate( "UnitType", "miles" );
+      return QObject::tr( "miles", "distance" );
 
     case DistanceDegrees:
-      return QCoreApplication::translate( "UnitType", "degrees" );
+      return QObject::tr( "degrees", "distance" );
 
     case DistanceUnknownUnit:
-      return QCoreApplication::translate( "UnitType", "<unknown>" );
+      return QObject::tr( "<unknown>", "distance" );
 
     case DistanceNauticalMiles:
-      return QCoreApplication::translate( "UnitType", "nautical miles" );
+      return QObject::tr( "nautical miles", "distance" );
   }
   return QString();
 }
@@ -171,28 +170,28 @@ QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::DistanceUnit unit )
   switch ( unit )
   {
     case DistanceMeters:
-      return QCoreApplication::translate( "UnitType", "m" );
+      return QObject::tr( "m", "distance" );
 
     case DistanceKilometers:
-      return QCoreApplication::translate( "UnitType", "km" );
+      return QObject::tr( "km", "distance" );
 
     case DistanceFeet:
-      return QCoreApplication::translate( "UnitType", "ft" );
+      return QObject::tr( "ft", "distance" );
 
     case DistanceYards:
-      return QCoreApplication::translate( "UnitType", "yd" );
+      return QObject::tr( "yd", "distance" );
 
     case DistanceMiles:
-      return QCoreApplication::translate( "UnitType", "mi" );
+      return QObject::tr( "mi", "distance" );
 
     case DistanceDegrees:
-      return QCoreApplication::translate( "UnitType", "deg" );
+      return QObject::tr( "deg", "distance" );
 
     case DistanceUnknownUnit:
       return QString();
 
     case DistanceNauticalMiles:
-      return QCoreApplication::translate( "UnitType", "NM" );
+      return QObject::tr( "NM", "distance" );
   }
   return QString();
 }
@@ -493,25 +492,25 @@ QString QgsUnitTypes::toString( QgsUnitTypes::AreaUnit unit )
   switch ( unit )
   {
     case AreaSquareMeters:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "square meters" );
+      return QObject::tr( "square meters", "area" );
     case AreaSquareKilometers:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "square kilometers" );
+      return QObject::tr( "square kilometers", "area" );
     case AreaSquareFeet:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "square feet" );
+      return QObject::tr( "square feet", "area" );
     case AreaSquareYards:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "square yards" );
+      return QObject::tr( "square yards", "area" );
     case AreaSquareMiles:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "square miles" );
+      return QObject::tr( "square miles", "area" );
     case AreaHectares:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "hectares" );
+      return QObject::tr( "hectares", "area" );
     case AreaAcres:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "acres" );
+      return QObject::tr( "acres", "area" );
     case AreaSquareNauticalMiles:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "square nautical miles" );
+      return QObject::tr( "square nautical miles", "area" );
     case AreaSquareDegrees:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "square degrees" );
+      return QObject::tr( "square degrees", "area" );
     case AreaUnknownUnit:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "<unknown>" );
+      return QObject::tr( "<unknown>", "area" );
   }
   return QString();
 }
@@ -521,23 +520,23 @@ QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::AreaUnit unit )
   switch ( unit )
   {
     case AreaSquareMeters:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "m²" );
+      return QObject::trUtf8( "m²", "area" );
     case AreaSquareKilometers:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "km²" );
+      return QObject::trUtf8( "km²", "area" );
     case AreaSquareFeet:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "ft²" );
+      return QObject::trUtf8( "ft²", "area" );
     case AreaSquareYards:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "yd²" );
+      return QObject::trUtf8( "yd²", "area" );
     case AreaSquareMiles:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "mi²" );
+      return QObject::trUtf8( "mi²", "area" );
     case AreaHectares:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "ha²" );
+      return QObject::trUtf8( "ha²", "area" );
     case AreaAcres:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "ac²" );
+      return QObject::trUtf8( "ac²", "area" );
     case AreaSquareNauticalMiles:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "NM²" );
+      return QObject::trUtf8( "NM²", "area" );
     case AreaSquareDegrees:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "deg²" );
+      return QObject::trUtf8( "deg²", "area" );
     case AreaUnknownUnit:
       return QString();
   }
@@ -941,19 +940,19 @@ QString QgsUnitTypes::toString( QgsUnitTypes::AngleUnit unit )
   switch ( unit )
   {
     case AngleDegrees:
-      return QCoreApplication::translate( "QgsUnitTypes::AngleUnit", "degrees" );
+      return QObject::tr( "degrees", "angle" );
     case AngleRadians:
-      return QCoreApplication::translate( "QgsUnitTypes::AngleUnit", "radians" );
+      return QObject::tr( "radians", "angle" );
     case AngleGon:
-      return QCoreApplication::translate( "QgsUnitTypes::AngleUnit", "gon" );
+      return QObject::tr( "gon", "angle" );
     case AngleMinutesOfArc:
-      return QCoreApplication::translate( "QgsUnitTypes::AngleUnit", "minutes of arc" );
+      return QObject::tr( "minutes of arc", "angle" );
     case AngleSecondsOfArc:
-      return QCoreApplication::translate( "QgsUnitTypes::AngleUnit", "seconds of arc" );
+      return QObject::tr( "seconds of arc", "angle" );
     case AngleTurn:
-      return QCoreApplication::translate( "QgsUnitTypes::AngleUnit", "turns" );
+      return QObject::tr( "turns", "angle" );
     case AngleUnknownUnit:
-      return QCoreApplication::translate( "QgsUnitTypes::AngleUnit", "<unknown>" );
+      return QObject::tr( "<unknown>", "angle" );
   }
   return QString();
 }
@@ -1102,22 +1101,22 @@ QString QgsUnitTypes::formatAngle( double angle, int decimals, QgsUnitTypes::Ang
   switch ( unit )
   {
     case AngleDegrees:
-      unitLabel = QObject::trUtf8( "°" );
+      unitLabel = QObject::trUtf8( "°", "angle" );
       break;
     case AngleRadians:
-      unitLabel = QObject::trUtf8( " rad" );
+      unitLabel = QObject::trUtf8( " rad", "angle" );
       break;
     case AngleGon:
-      unitLabel = QObject::trUtf8( " gon" );
+      unitLabel = QObject::trUtf8( " gon", "angle" );
       break;
     case AngleMinutesOfArc:
-      unitLabel = QObject::trUtf8( "′" );
+      unitLabel = QObject::trUtf8( "′", "angle minutes" );
       break;
     case AngleSecondsOfArc:
-      unitLabel = QObject::trUtf8( "″" );
+      unitLabel = QObject::trUtf8( "″", "angle seconds" );
       break;
     case AngleTurn:
-      unitLabel = QObject::trUtf8( " tr" );
+      unitLabel = QObject::trUtf8( " tr", "angle turn" );
       break;
     case AngleUnknownUnit:
       break;

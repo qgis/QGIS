@@ -466,20 +466,20 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         for i in range(0, ruleCount):
             self.assertScaleDenominator(root, None, None, i)
 
+#    def testRuleBasedNoRootScaleDependencies(self):
+#        layer = QgsVectorLayer("Polygon", "addfeat", "memory")
+#
+#        mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), "ruleBased"))
+#        status = layer.loadNamedStyle(mFilePath)  # NOQA
+#
+#        dom, root = self.layerToSld(layer)
+#        print(("Rule based, no root scale deps:" + dom.toString()))
+#
+#        ruleCount = root.elementsByTagName('se:Rule').size()  # NOQA
+#        self.assertScaleDenominator(root, '1000', '40000000', 0)
+#        self.assertScaleDenominator(root, None, None, 1)
+
     def testRuleBasedNoRootScaleDependencies(self):
-        layer = QgsVectorLayer("Polygon", "addfeat", "memory")
-
-        mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), "ruleBased"))
-        status = layer.loadNamedStyle(mFilePath)  # NOQA
-
-        dom, root = self.layerToSld(layer)
-        print(("Rule based, no root scale deps:" + dom.toString()))
-
-        ruleCount = root.elementsByTagName('se:Rule').size()  # NOQA
-        self.assertScaleDenominator(root, '1000', '40000000', 0)
-        self.assertScaleDenominator(root, None, None, 1)
-
-    def testRuleBasedNoRootScaleDependencies2(self):
         layer = QgsVectorLayer("Polygon", "addfeat", "memory")
 
         mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), "ruleBased"))
