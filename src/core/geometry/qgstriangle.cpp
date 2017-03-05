@@ -32,7 +32,10 @@ QgsTriangle::QgsTriangle( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsP
 {
   mWkbType = QgsWkbTypes::Triangle;
 
-  //TODO: test colinear, test distinct points
+  if ((( p1 == p2 ) || ( p1 == p3 ) || ( p2 == p3 ) ) || qgsDoubleNear( QgsGeometryUtils::leftOfLine( p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y() ), 0.0 ) )
+  {
+    return;
+  }
   QgsLineString *ext = new QgsLineString();
   ext->setPoints( QgsPointSequence() << p1 << p2 << p3 << p1 );
   setExteriorRing( ext );

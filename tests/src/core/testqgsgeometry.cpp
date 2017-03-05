@@ -3279,7 +3279,45 @@ void TestQgsGeometry::triangle()
   QCOMPARE( t2.nCoordinates(), 4 );
 
   //constructor with 3 points
-  QgsTriangle t3( QgsPointV2( 0, 0 ), QgsPointV2( 0, 10 ), QgsPointV2( 10, 10 ) );
+  // double points
+  QgsTriangle t3( QgsPointV2( 0, 0 ), QgsPointV2( 0, 0 ), QgsPointV2( 10, 10 ) );
+  QVERIFY( t3.isEmpty() );
+  QCOMPARE( t3.numInteriorRings(), 0 );
+  QCOMPARE( t3.nCoordinates(), 0 );
+  QCOMPARE( t3.ringCount(), 0 );
+  QCOMPARE( t3.partCount(), 0 );
+  QVERIFY( !t3.is3D() );
+  QVERIFY( !t3.isMeasure() );
+  QCOMPARE( t3.wkbType(), QgsWkbTypes::Triangle );
+  QCOMPARE( t3.wktTypeStr(), QString( "Triangle" ) );
+  QCOMPARE( t3.geometryType(), QString( "Triangle" ) );
+  QCOMPARE( t3.dimension(), 2 );
+  QVERIFY( !t3.hasCurvedSegments() );
+  QCOMPARE( t3.area(), 0.0 );
+  QCOMPARE( t3.perimeter(), 0.0 );
+  QVERIFY( !t3.exteriorRing() );
+  QVERIFY( !t3.interiorRing( 0 ) );
+
+  // colinear
+  t3 = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 0, 10 ) );
+  QVERIFY( t3.isEmpty() );
+  QCOMPARE( t3.numInteriorRings(), 0 );
+  QCOMPARE( t3.nCoordinates(), 0 );
+  QCOMPARE( t3.ringCount(), 0 );
+  QCOMPARE( t3.partCount(), 0 );
+  QVERIFY( !t3.is3D() );
+  QVERIFY( !t3.isMeasure() );
+  QCOMPARE( t3.wkbType(), QgsWkbTypes::Triangle );
+  QCOMPARE( t3.wktTypeStr(), QString( "Triangle" ) );
+  QCOMPARE( t3.geometryType(), QString( "Triangle" ) );
+  QCOMPARE( t3.dimension(), 2 );
+  QVERIFY( !t3.hasCurvedSegments() );
+  QCOMPARE( t3.area(), 0.0 );
+  QCOMPARE( t3.perimeter(), 0.0 );
+  QVERIFY( !t3.exteriorRing() );
+  QVERIFY( !t3.interiorRing( 0 ) );
+
+  t3 = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 10 ), QgsPointV2( 10, 10 ) );
   QVERIFY( !t3.isEmpty() );
   QCOMPARE( t3.numInteriorRings(), 0 );
   QCOMPARE( t3.nCoordinates(), 4 );
@@ -3296,6 +3334,7 @@ void TestQgsGeometry::triangle()
   QGSCOMPARENEAR( t3.perimeter(), 34.1421, 0.001 );
   QVERIFY( t3.exteriorRing() );
   QVERIFY( !t3.interiorRing( 0 ) );
+
 
   // clone
   QgsTriangle *t4 = t3.clone();

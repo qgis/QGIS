@@ -368,5 +368,6 @@
 %Include geometry/qgspointv2.sip
 %Include geometry/qgspolygon.sip
 %Include geometry/qgssurface.sip
+%Include geometry/qgstriangle.sip
 %Include geometry/qgswkbtypes.sip
 %Include geometry/qgswkbptr.sip
