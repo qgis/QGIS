@@ -59,7 +59,7 @@ class QgsFieldValuesLineEditValuesGatherer: public QThread
         return;
       }
 
-      // allow responsive cancelation
+      // allow responsive cancellation
       mFeedback = new QgsFeedback();
       // just get 100 values... maybe less/more would be useful?
       mValues = mLayer->uniqueStringsMatching( mAttributeIndex, mSubstring, 100, mFeedback );

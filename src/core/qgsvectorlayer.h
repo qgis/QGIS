@@ -1497,7 +1497,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @param fieldOrExpression field name or an expression string
      * @param ok will be set to false if field or expression is invalid, otherwise true
      * @param selectedOnly set to true to get values from selected features only
-     * @param feedback optional feedback object to allow cancelation
+     * @param feedback optional feedback object to allow cancellation
      * @returns list of fetched values
      * @note added in QGIS 2.9
      * @see getDoubleValues
@@ -1510,7 +1510,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @param ok will be set to false if field or expression is invalid, otherwise true
      * @param selectedOnly set to true to get values from selected features only
      * @param nullCount optional pointer to integer to store number of null values encountered in
-     * @param feedback optional feedback object to allow cancelation
+     * @param feedback optional feedback object to allow cancellation
      * @returns list of fetched values
      * @note added in QGIS 2.9
      * @see getValues

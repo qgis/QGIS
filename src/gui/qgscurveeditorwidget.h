@@ -61,7 +61,7 @@ class QgsHistogramValuesGatherer: public QThread
         return;
       }
 
-      // allow responsive cancelation
+      // allow responsive cancellation
       mFeedback = new QgsFeedback();
 
       mHistogram.setValues( mLayer, mExpression, mFeedback );

@@ -1807,7 +1807,7 @@ bool DRW_MText::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
   DRW_UNUSED( ext_ht );
   /* Extents wid BD Undocumented and not present in DXF or entget The extents
   rectangle, when rotated the same as the text, fits the actual text image on
-  the screen (altough we've seen it include an extra row of text in height). */
+  the screen (although we've seen it include an extra row of text in height). */
   double ext_wid = buf->getBitDouble();
   DRW_UNUSED( ext_wid );
   /* Text TV 1 All text in one long string (without '\n's 3 for line wrapping).
