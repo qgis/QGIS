@@ -45,6 +45,7 @@
 #include "qgsgeometrycollection.h"
 #include "qgspointv2.h"
 #include "qgspolygon.h"
+#include "qgstriangle.h"
 #include "qgsmultipoint.h"
 #include "qgsmultilinestring.h"
 #include "qgscurvepolygon.h"
@@ -2187,6 +2188,38 @@ static QVariant fcnMakePolygon( const QVariantList& values, const QgsExpressionC
   return QVariant::fromValue( QgsGeometry( polygon ) );
 }
 
+static QVariant fcnMakeTriangle( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  if ( values.count() < 3 )
+  {
+    return QVariant();
+  }
+
+  QgsTriangle *tr = new QgsTriangle();
+  QgsLineString* lineString = new QgsLineString();
+  lineString->clear();
+
+  Q_FOREACH ( const QVariant& value, values )
+  {
+    QgsGeometry geom = getGeometry( value, parent );
+    if ( geom.isNull() )
+      continue;
+
+    if ( geom.type() != QgsWkbTypes::PointGeometry || geom.isMultipart() )
+      continue;
+
+    QgsPointV2* point = dynamic_cast< QgsPointV2* >( geom.geometry() );
+    if ( !point )
+      continue;
+
+    lineString->addVertex( *point );
+  }
+
+  tr->setExteriorRing( lineString );
+
+  return QVariant::fromValue( QgsGeometry( tr ) );
+}
+
 static QVariant pointAt( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent ) // helper function
 {
   FEAT_FROM_CONTEXT( context, f );
@@ -3991,6 +4024,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( QStringLiteral( "make_point_m" ), 3, fcnMakePointM, QStringLiteral( "GeometryGroup" ) )
     << new StaticFunction( QStringLiteral( "make_line" ), -1, fcnMakeLine, QStringLiteral( "GeometryGroup" ) )
     << new StaticFunction( QStringLiteral( "make_polygon" ), -1, fcnMakePolygon, QStringLiteral( "GeometryGroup" ) )
+    << new StaticFunction( QStringLiteral( "make_triangle" ), -1, fcnMakeTriangle, QStringLiteral( "GeometryGroup" ) )
     << new StaticFunction( QStringLiteral( "$x_at" ), 1, fcnXat, QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>(), false, QStringList() << QStringLiteral( "xat" ) << QStringLiteral( "x_at" ) )
     << new StaticFunction( QStringLiteral( "$y_at" ), 1, fcnYat, QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>(), false, QStringList() << QStringLiteral( "yat" ) << QStringLiteral( "y_at" ) )
     << new StaticFunction( QStringLiteral( "x_min" ), 1, fcnXMin, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "xmin" ) )
