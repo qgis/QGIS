@@ -334,7 +334,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
   private:
     void initLayerCache( bool cacheGeometry );
-    void initModels( QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request );
+    void initModels( QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request, bool loadFeatures );
 
     QgsAttributeEditorContext mEditorContext;
     QgsAttributeTableModel *mMasterModel = nullptr;

@@ -83,7 +83,6 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QWidget
   : QDialog( parent, flags )
   , mDock( nullptr )
   , mLayer( layer )
-  , mRubberBand( nullptr )
   , mCurrentSearchWidgetWrapper( nullptr )
 {
   setObjectName( QStringLiteral( "QgsAttributeTableDialog/" ) + layer->id() );
@@ -145,8 +144,8 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QWidget
   }
   else if ( initialMode == QgsAttributeTableFilterModel::ShowSelected )
   {
-    if ( theLayer->selectedFeatureCount() > 0 )
-      r.setFilterFids( theLayer->selectedFeatureIds() );
+    if ( layer->selectedFeatureCount() > 0 )
+      r.setFilterFids( layer->selectedFeatureIds() );
   }
   if ( !needsGeom )
     r.setFlags( QgsFeatureRequest::NoGeometry );
@@ -344,7 +343,7 @@ QgsAttributeTableDialog::~QgsAttributeTableDialog()
 void QgsAttributeTableDialog::updateTitle()
 {
   QWidget *w = mDock ? qobject_cast<QWidget *>( mDock ) : qobject_cast<QWidget *>( this );
-  w->setWindowTitle( tr( " %1 :: Features total: %2, filtered: %3, selected: %4%5" )
+  w->setWindowTitle( tr( " %1 :: Features total: %2, filtered: %3, selected: %4" )
                      .arg( mLayer->name() )
                      .arg( qMax( static_cast< long >( mMainView->featureCount() ), mLayer->featureCount() ) ) // layer count may be estimated, so use larger of the two
                      .arg( mMainView->filteredFeatureCount() )
