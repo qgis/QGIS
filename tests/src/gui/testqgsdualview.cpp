@@ -280,7 +280,7 @@ void TestQgsDualView::testNoGeom()
   QgsFeatureRequest req;
   dv->init( mPointsLayer, mCanvas, req );
   // check that both master model AND cache are using geometry
-  QgsAttributeTableModel* model = dv->masterModel();
+  QgsAttributeTableModel *model = dv->masterModel();
   QVERIFY( model->layerCache()->cacheGeometry() );
   QVERIFY( !( model->request().flags() & QgsFeatureRequest::NoGeometry ) );
 
@@ -298,7 +298,7 @@ void TestQgsDualView::testNoGeom()
   dv->init( mPointsLayer, mCanvas, req );
   model = dv->masterModel();
   QVERIFY( !model->layerCache()->cacheGeometry() );
-  QVERIFY(( model->request().flags() & QgsFeatureRequest::NoGeometry ) );
+  QVERIFY( ( model->request().flags() & QgsFeatureRequest::NoGeometry ) );
 }
 
 QGSTEST_MAIN( TestQgsDualView )
