@@ -44,6 +44,7 @@ from jinja2 import Environment, FileSystemLoader
 from pygments import highlight
 from pygments.lexers import XmlLexer
 from pygments.formatters import HtmlFormatter
+from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.PyQt.uic import loadUiType
 
@@ -137,7 +138,12 @@ def get_help_url():
     """return QGIS MetaSearch help documentation link"""
 
     locale_name = QgsSettings().value('locale/userLocale')[0:2]
-    version = Qgis.QGIS_VERSION.rsplit('.', 1)[0]
+    major, minor = QGis.QGIS_VERSION.split('.')[:2]
+
+    if minor == '99':  # master
+        version = 'testing'
+    else:
+        version = '.'.join([major, minor])
 
     path = '%s/%s/docs/user_manual/plugins/plugins_metasearch.html' % \
            (version, locale_name)
@@ -171,3 +177,15 @@ def serialize_string(input_string):
         value = '%s 1' % input_string
 
     return value
+
+
+def clean_ows_url(url):
+    """clean an OWS URL of added basic service parameters"""
+
+    url2 = QUrl(url)
+    url2.removeEncodedQueryItem('service')
+    url2.removeEncodedQueryItem('SERVICE')
+    url2.removeEncodedQueryItem('request')
+    url2.removeEncodedQueryItem('REQUEST')
+
+    return url2.toString()
