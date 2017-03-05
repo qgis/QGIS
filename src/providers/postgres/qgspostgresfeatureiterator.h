@@ -118,6 +118,8 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Q
 
     bool mIsTransactionConnection;
 
+    static const int sFeatureQueueSize;
+
   private:
     //! returns whether the iterator supports simplify geometries on provider side
     virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const override;
