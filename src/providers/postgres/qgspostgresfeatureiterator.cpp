@@ -22,16 +22,13 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 
+#include <QElapsedTimer>
 #include <QObject>
 #include <QSettings>
 
-
-const int QgsPostgresFeatureIterator::sFeatureQueueSize = 2000;
-
-
 QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIteratorFromSource<QgsPostgresFeatureSource>( source, ownSource, request )
-    , mFeatureQueueSize( sFeatureQueueSize )
+    , mFeatureQueueSize( 1 )
     , mFetched( 0 )
     , mFetchGeometry( false )
     , mExpressionCompiled( false )
@@ -227,6 +224,9 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature& feature )
 
   if ( mFeatureQueue.empty() && !mLastFetch )
   {
+    QElapsedTimer timer;
+    timer.start();
+
     QString fetch = QString( "FETCH FORWARD %1 FROM %2" ).arg( mFeatureQueueSize ).arg( mCursorName );
     QgsDebugMsgLevel( QString( "fetching %1 features." ).arg( mFeatureQueueSize ), 4 );
 
@@ -262,6 +262,15 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature& feature )
       } // for each row in queue
     }
     unlock();
+
+    if ( timer.elapsed() > 500 && mFeatureQueueSize > 1 )
+    {
+      mFeatureQueueSize /= 2;
+    }
+    else if ( timer.elapsed() < 50 && mFeatureQueueSize < 10000 )
+    {
+      mFeatureQueueSize *= 2;
+    }
   }
 
   if ( mFeatureQueue.empty() )
