@@ -318,26 +318,26 @@ bool QgsTriangle::isScalene( double lengthTolerance ) const
   return !isIsocele( lengthTolerance );
 }
 
-QVector<QgsLineString *> QgsTriangle::altitudes() const
+QVector<QgsLineString> QgsTriangle::altitudes() const
 {
-  QVector<QgsLineString *> alt;
-  alt.append( QgsGeometryUtils::perpendicularSegment( vertexAt( 0 ), vertexAt( 2 ), vertexAt( 1 ) ) );
-  alt.append( QgsGeometryUtils::perpendicularSegment( vertexAt( 1 ), vertexAt( 0 ), vertexAt( 2 ) ) );
-  alt.append( QgsGeometryUtils::perpendicularSegment( vertexAt( 2 ), vertexAt( 0 ), vertexAt( 1 ) ) );
+  QVector<QgsLineString> alt;
+  alt.append( *QgsGeometryUtils::perpendicularSegment( vertexAt( 0 ), vertexAt( 2 ), vertexAt( 1 ) ) );
+  alt.append( *QgsGeometryUtils::perpendicularSegment( vertexAt( 1 ), vertexAt( 0 ), vertexAt( 2 ) ) );
+  alt.append( *QgsGeometryUtils::perpendicularSegment( vertexAt( 2 ), vertexAt( 0 ), vertexAt( 1 ) ) );
 
   return alt;
 }
 
-QVector<QgsLineString *> QgsTriangle::medians() const
+QVector<QgsLineString> QgsTriangle::medians() const
 {
-  QVector<QgsLineString *> med;
+  QVector<QgsLineString> med;
 
-  QgsLineString *med1 = new QgsLineString();
-  QgsLineString *med2 = new QgsLineString();
-  QgsLineString *med3 = new QgsLineString();
-  med1->setPoints( QgsPointSequence() << vertexAt( 0 ) << QgsGeometryUtils::midpoint( vertexAt( 1 ), vertexAt( 2 ) ) );
-  med2->setPoints( QgsPointSequence() << vertexAt( 1 ) << QgsGeometryUtils::midpoint( vertexAt( 0 ), vertexAt( 2 ) ) );
-  med3->setPoints( QgsPointSequence() << vertexAt( 2 ) << QgsGeometryUtils::midpoint( vertexAt( 0 ), vertexAt( 1 ) ) );
+  QgsLineString med1;
+  QgsLineString med2;
+  QgsLineString med3;
+  med1.setPoints( QgsPointSequence() << vertexAt( 0 ) << QgsGeometryUtils::midpoint( vertexAt( 1 ), vertexAt( 2 ) ) );
+  med2.setPoints( QgsPointSequence() << vertexAt( 1 ) << QgsGeometryUtils::midpoint( vertexAt( 0 ), vertexAt( 2 ) ) );
+  med3.setPoints( QgsPointSequence() << vertexAt( 2 ) << QgsGeometryUtils::midpoint( vertexAt( 0 ), vertexAt( 1 ) ) );
   med.append( med1 );
   med.append( med2 );
   med.append( med3 );
@@ -345,23 +345,23 @@ QVector<QgsLineString *> QgsTriangle::medians() const
   return med;
 }
 
-QVector<QgsLineString *> QgsTriangle::bisectors( double lengthTolerance ) const
+QVector<QgsLineString> QgsTriangle::bisectors( double lengthTolerance ) const
 {
-  QVector<QgsLineString *> bis;
-  QgsLineString *bis1 = new QgsLineString();
-  QgsLineString *bis2 = new QgsLineString();
-  QgsLineString *bis3 = new QgsLineString();
+  QVector<QgsLineString> bis;
+  QgsLineString bis1;
+  QgsLineString bis2;
+  QgsLineString bis3;
   QgsPointV2 incenter = inscribedCenter();
   QgsPointV2 out;
 
   QgsGeometryUtils::segmentIntersection( vertexAt( 0 ), incenter, vertexAt( 1 ), vertexAt( 2 ), out, lengthTolerance );
-  bis1->setPoints( QgsPointSequence() <<  vertexAt( 0 ) << out );
+  bis1.setPoints( QgsPointSequence() <<  vertexAt( 0 ) << out );
 
   QgsGeometryUtils::segmentIntersection( vertexAt( 1 ), incenter, vertexAt( 0 ), vertexAt( 2 ), out, lengthTolerance );
-  bis2->setPoints( QgsPointSequence() <<  vertexAt( 1 ) << out );
+  bis2.setPoints( QgsPointSequence() <<  vertexAt( 1 ) << out );
 
   QgsGeometryUtils::segmentIntersection( vertexAt( 2 ), incenter, vertexAt( 0 ), vertexAt( 1 ), out, lengthTolerance );
-  bis3->setPoints( QgsPointSequence() <<  vertexAt( 2 ) << out );
+  bis3.setPoints( QgsPointSequence() <<  vertexAt( 2 ) << out );
 
   bis.append( bis1 );
   bis.append( bis2 );
@@ -381,9 +381,9 @@ QgsTriangle QgsTriangle::medial() const
 
 QgsPointV2 QgsTriangle::orthocenter( double lengthTolerance ) const
 {
-  QVector<QgsLineString *> alt = altitudes();
+  QVector<QgsLineString> alt = altitudes();
   QgsPointV2 ortho;
-  QgsGeometryUtils::segmentIntersection( alt.at( 0 )->pointN( 0 ), alt.at( 0 )->pointN( 1 ), alt.at( 1 )->pointN( 0 ), alt.at( 1 )->pointN( 1 ), ortho, lengthTolerance );
+  QgsGeometryUtils::segmentIntersection( alt.at( 0 ).pointN( 0 ), alt.at( 0 ).pointN( 1 ), alt.at( 1 ).pointN( 0 ), alt.at( 1 ).pointN( 1 ), ortho, lengthTolerance );
 
   return ortho;
 }

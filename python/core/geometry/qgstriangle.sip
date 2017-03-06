@@ -39,10 +39,9 @@ class QgsTriangle : public QgsPolygonV2
     bool isRight( double angleTolerance = 0.0001 ) const;
     bool isScalene( double lengthTolerance = 0.0001 ) const;
 
-    // NOTE: not available in Python bindings
-    // QVector<QgsLineString *> altitudes( ) const;
-    // QVector<QgsLineString *> medians( ) const;
-    // QVector<QgsLineString *> bisectors( double lengthTolerance = 0.0001 ) const;
+    QVector<QgsLineString> altitudes( ) const;
+    QVector<QgsLineString> medians( ) const;
+    QVector<QgsLineString> bisectors( double lengthTolerance = 0.0001 ) const;
 
     QgsTriangle medial( ) const;
     QgsPointV2 orthocenter( double lengthTolerance = 0.0001 ) const;

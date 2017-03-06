@@ -174,24 +174,39 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     /**
      * An altitude is a segment (defined by a QgsLineString) from a vertex to the opposite side (or, if necessary, to the extension of the opposite side).
      * @return Three altitudes from this triangle
-     * @note not available in Python bindings
+     * * Example:
+     * \code{.py}
+     *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
+     *   [alt.asWkt() for alt in tri.altitudes()]
+     *   # ['LineString (0 0, 0 5)', 'LineString (0 5, 2.5 2.5)', 'LineString (5 5, 0 5)']
+     * \endcode
      */
-    QVector<QgsLineString *> altitudes( ) const;
+    QVector<QgsLineString> altitudes( ) const;
 
     /**
      * A median is a segment (defined by a QgsLineString) from a vertex to the midpoint of the opposite side.
      * @return Three medians from this triangle
-     * @note not available in Python bindings
+     * * Example:
+     * \code{.py}
+     *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
+     *   [med.asWkt() for med in tri.medians()]
+     *   # ['LineString (0 0, 2.5 5)', 'LineString (0 5, 2.5 2.5)', 'LineString (5 5, 0 2.5)']
+     * \endcode
      */
-    QVector<QgsLineString *> medians( ) const;
+    QVector<QgsLineString> medians( ) const;
 
     /**
      * The segment (defined by a QgsLineString) returned bisect the angle of a vertex to the opposite side.
      * @param lengthTolerance The tolerance to use
      * @return Three angle bisector from this triangle
-     * @note not available in Python bindings
+     * * Example:
+     * \code{.py}
+     *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
+     *   [bis.asWkt() for bis in tri.bisectors()]
+     *   # ['LineString (0 0, 2.07106781186547462 5)', 'LineString (0 5, 2.5 2.5)', 'LineString (5 5, 0 2.92893218813452538)']
+     * \endcode
      */
-    QVector<QgsLineString *> bisectors( double lengthTolerance = 0.0001 ) const;
+    QVector<QgsLineString> bisectors( double lengthTolerance = 0.0001 ) const;
 
     /**
      * Medial (or midpoint) triangle of a triangle ABC is the triangle with vertices at the midpoints of the triangle's sides.
