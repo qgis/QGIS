@@ -145,7 +145,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.populate_connection_list()
         self.btnCapabilities.setEnabled(False)
         self.spnRecords.setValue(
-            self.settings.value('/MetaSearch/returnRecords', 10, int))
+            int(self.settings.value('/MetaSearch/returnRecords', 10)))
 
         key = '/MetaSearch/%s' % self.cmbConnectionsSearch.currentText()
         self.catalog_url = self.settings.value('%s/url' % key)
@@ -380,7 +380,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
     def set_bbox_from_map(self):
         """set bounding box from map extent"""
 
-        crs = self.map.mapRenderer().destinationCrs()
+        crs = self.map.mapSettings().destinationCrs()
         crsid = int(crs.authid().split(':')[1])
 
         extent = self.map.extent()
