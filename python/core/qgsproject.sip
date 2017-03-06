@@ -546,6 +546,8 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      */
     void customVariablesChanged();
 
+    void crsChanged();
+
     /**
      * Emitted whenever a new transaction group has been created or a
      * transaction group has been removed.

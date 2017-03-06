@@ -77,7 +77,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( QStringList nonIdentifiableLayers READ nonIdentifiableLayers WRITE setNonIdentifiableLayers NOTIFY nonIdentifiableLayersChanged )
     Q_PROPERTY( QString fileName READ fileName WRITE setFileName NOTIFY fileNameChanged )
     Q_PROPERTY( QString homePath READ homePath NOTIFY homePathChanged )
-    Q_PROPERTY( QgsCoordinateReferenceSystem crs READ crs WRITE setCrs )
+    Q_PROPERTY( QgsCoordinateReferenceSystem crs READ crs WRITE setCrs NOTIFY crsChanged )
     Q_PROPERTY( QgsMapThemeCollection *mapThemeCollection READ mapThemeCollection NOTIFY mapThemeCollectionChanged )
     Q_PROPERTY( QgsSnappingConfig snappingConfig READ snappingConfig WRITE setSnappingConfig NOTIFY snappingConfigChanged )
     Q_PROPERTY( QgsRelationManager *relationManager READ relationManager )
@@ -748,6 +748,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * @note added in QGIS 3.0
      */
     void customVariablesChanged();
+
+    /**
+     * Emitted when the CRS of the project has changed.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void crsChanged();
 
     /**
      * Emitted whenever a new transaction group has been created or a

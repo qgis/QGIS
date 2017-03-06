@@ -433,6 +433,8 @@ void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs )
   writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), static_cast< int >( crs.srsid() ) );
   writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCrs" ), crs.authid() );
   setDirty( true );
+
+  emit crsChanged();
 }
 
 QString QgsProject::ellipsoid() const
@@ -929,6 +931,7 @@ bool QgsProject::read()
     setDirty( false );
 
   emit nonIdentifiableLayersChanged( nonIdentifiableLayers() );
+  emit crsChanged();
 
   return true;
 }
