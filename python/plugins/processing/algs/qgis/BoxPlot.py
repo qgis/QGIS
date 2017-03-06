@@ -82,9 +82,9 @@ class BoxPlot(GeoAlgorithm):
                     boxmean=True)]
         else:
             data = [go.Box(
-            x=values[namefieldname],
-            y=values[valuefieldname],
-            boxmean='sd')]
+                    x=values[namefieldname],
+                    y=values[valuefieldname],
+                    boxmean='sd')]
 
 
         plt.offline.plot(data, filename=output, auto_open=False)
