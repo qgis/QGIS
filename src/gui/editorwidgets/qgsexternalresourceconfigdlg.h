@@ -38,15 +38,21 @@ class GUI_EXPORT QgsExternalResourceConfigDlg : public QgsEditorConfigWidget, pr
     QVariantMap config() override;
     void setConfig( const QVariantMap &config ) override;
 
+  private:
+    void setRootPathExpression( const QString &expression );
+
   private slots:
     //! Choose a base directory for rootPath
     void chooseDefaultPath();
 
+    void showRootPathExpressionBuilder();
+
     //! Modify RelativeDefault according to mRootPath content
     void enableRelativeDefault();
 
-    //! Dynamic activation of RelativeGroupBox
-    void enableRelative( bool state );
+  private:
+    QAction *mRootPathExpressionButton;
+    QAction *mRootPathFindFolderButton;
 };
 
 #endif // QGSEXTERNALRESOURCECONFIGDLG_H
