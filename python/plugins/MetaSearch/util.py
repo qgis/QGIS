@@ -44,7 +44,7 @@ from jinja2 import Environment, FileSystemLoader
 from pygments import highlight
 from pygments.lexers import XmlLexer
 from pygments.formatters import HtmlFormatter
-from qgis.PyQt.QtCore import QUrl
+from qgis.PyQt.QtCore import QUrl, QUrlQuery
 from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.PyQt.uic import loadUiType
 
@@ -110,14 +110,17 @@ def get_connections_from_file(parent, filename):
 def prettify_xml(xml):
     """convenience function to prettify XML"""
 
-    if xml.count('\n') > 5:  # likely already pretty printed
+    if isinstance(xml, bytes):
+        xml = xml.decode('utf-8')
+
+    if xml.count('\n') > 20:  # likely already pretty printed
+        return xml
+
+    # check if it's a GET request
+    if xml.startswith('http'):
         return xml
     else:
-        # check if it's a GET request
-        if xml.startswith('http'):
-            return xml
-        else:
-            return parseString(xml).toprettyxml()
+        return parseString(xml).toprettyxml()
 
 
 def highlight_xml(context, xml):
@@ -138,7 +141,7 @@ def get_help_url():
     """return QGIS MetaSearch help documentation link"""
 
     locale_name = QgsSettings().value('locale/userLocale')[0:2]
-    major, minor = QGis.QGIS_VERSION.split('.')[:2]
+    major, minor = Qgis.QGIS_VERSION.split('.')[:2]
 
     if minor == '99':  # master
         version = 'testing'
@@ -182,10 +185,15 @@ def serialize_string(input_string):
 def clean_ows_url(url):
     """clean an OWS URL of added basic service parameters"""
 
-    url2 = QUrl(url)
-    url2.removeEncodedQueryItem('service')
-    url2.removeEncodedQueryItem('SERVICE')
-    url2.removeEncodedQueryItem('request')
-    url2.removeEncodedQueryItem('REQUEST')
+    url = QUrl(url)
+    query_string = url.query()
 
-    return url2.toString()
+    if query_string:
+        query_string = QUrlQuery(query_string)
+        query_string.removeQueryItem('service')
+        query_string.removeQueryItem('SERVICE')
+        query_string.removeQueryItem('request')
+        query_string.removeQueryItem('REQUEST')
+        url.setQuery(query_string)
+
+    return url.toString()
