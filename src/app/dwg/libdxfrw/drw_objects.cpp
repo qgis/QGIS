@@ -1151,7 +1151,7 @@ bool DRW_Vport::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
     /*dint16 xrefindex =*/
     buf->getBitShort();
   }
-  flags |= buf->getBit() << 4; //is refx dependant, style code 70, bit 5 (16)
+  flags |= buf->getBit() << 4; //is refx dependent, style code 70, bit 5 (16)
   height = buf->getBitDouble();
   ratio = buf->getBitDouble();
 

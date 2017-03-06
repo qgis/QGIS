@@ -126,7 +126,7 @@ namespace DRW
   //! Shadow mode
   enum ShadowMode
   {
-    CastAndReceieveShadows = 0,
+    CastAndReceiveShadows = 0,
     CastShadows = 1,
     ReceiveShadows = 2,
     IgnoreShadows = 3

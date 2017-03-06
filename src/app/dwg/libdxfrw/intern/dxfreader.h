@@ -55,7 +55,7 @@ class dxfReader
     std::string getCodePage() { return decoder.getCodePage();}
 
   protected:
-    virtual bool readCode( int *code ) = 0; //return true if sucesful (not EOF)
+    virtual bool readCode( int *code ) = 0; //return true if successful (not EOF)
     virtual bool readString( std::string *text ) = 0;
     virtual bool readString() = 0;
     virtual bool readInt16() = 0;

@@ -70,27 +70,27 @@ class secEnum
   public:
     enum DWGSection
     {
-      UNKNOWNS,      //!< UNKNOWN section.
-      FILEHEADER,    //!< File Header (in R3-R15
-      HEADER,        //!< AcDb:Header
-      CLASSES,       //!< AcDb:Classes
-      SUMARYINFO,    //!< AcDb:SummaryInfo
-      PREVIEW,       //!< AcDb:Preview
-      VBAPROY,       //!< AcDb:VBAProject
-      APPINFO,       //!< AcDb:AppInfo
-      FILEDEP,       //!< AcDb:FileDepList
-      REVHISTORY,    //!< AcDb:RevHistory
-      SECURITY,      //!< AcDb:Security
-      OBJECTS,       //!< AcDb:AcDbObjects
-      OBJFREESPACE,  //!< AcDb:ObjFreeSpace
-      TEMPLATE,      //!< AcDb:Template
-      HANDLES,       //!< AcDb:Handles
-      PROTOTYPE,     //!< AcDb:AcDsPrototype_1b
-      AUXHEADER,     //!< AcDb:AuxHeader, in (R13-R15) second file header
-      SIGNATURE,     //!< AcDb:Signature
-      APPINFOHISTORY,     //!< AcDb:AppInfoHistory (in ac1021 may be a renamed section?
-      EXTEDATA,      //!< Extended Entity Data
-      PROXYGRAPHICS //!< PROXY ENTITY GRAPHICS
+      UNKNOWNS,        //!< UNKNOWN section.
+      FILEHEADER,      //!< File Header (in R3-R15
+      HEADER,          //!< AcDb:Header
+      CLASSES,         //!< AcDb:Classes
+      SUMMARYINFO,     //!< AcDb:SummaryInfo
+      PREVIEW,         //!< AcDb:Preview
+      VBAPROY,         //!< AcDb:VBAProject
+      APPINFO,         //!< AcDb:AppInfo
+      FILEDEP,         //!< AcDb:FileDepList
+      REVHISTORY,      //!< AcDb:RevHistory
+      SECURITY,        //!< AcDb:Security
+      OBJECTS,         //!< AcDb:AcDbObjects
+      OBJFREESPACE,    //!< AcDb:ObjFreeSpace
+      TEMPLATE,        //!< AcDb:Template
+      HANDLES,         //!< AcDb:Handles
+      PROTOTYPE,       //!< AcDb:AcDsPrototype_1b
+      AUXHEADER,       //!< AcDb:AuxHeader, in (R13-R15) second file header
+      SIGNATURE,       //!< AcDb:Signature
+      APPINFOHISTORY,  //!< AcDb:AppInfoHistory (in ac1021 may be a renamed section?
+      EXTEDATA,        //!< Extended Entity Data
+      PROXYGRAPHICS    //!< PROXY ENTITY GRAPHICS
     };
 
     secEnum() {}

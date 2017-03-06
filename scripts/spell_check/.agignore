@@ -11,7 +11,6 @@ python/plugins/processing/algs/otb/
 python/plugins/processing/algs/saga/
 python/qsci_apis/
 src/astyle
-src/app/dwg/libdxfrw/
 src/app/gps/qwtpolar-1.0/
 src/app/gps/qwtpolar-1.1.1/
 src/core/pal

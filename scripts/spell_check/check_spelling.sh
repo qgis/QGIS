@@ -50,8 +50,8 @@ while getopts ":rdl:" opt; do
 done
 shift $(expr $OPTIND - 1)
 
-if [ ! $# -eq 0 ]; then
-  EXCLUDE=$(cat $AGIGNORE |${GP}sed -e 's/\s*#.*$//' -e '/^\s*$/d' | tr '\n' '|' |${GP}sed -e 's/|$//')
+if [ $# -ne 0 ]; then
+  EXCLUDE=$(${GP}sed -e 's/\s*#.*$//' -e '/^\s*$/d' $AGIGNORE | tr '\n' '|' | ${GP}sed -e 's/|$//')
   INPUTFILES=$(echo $@ | tr -s '[[:blank:]]' '\n' | egrep -iv "$EXCLUDE" | tr '\n' ' ' )
   if [[ -z $INPUTFILES  ]]; then
     exit 0
@@ -151,11 +151,11 @@ for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
         # also make error small case and escape special chars: ( ) |
         ERRORSMALLCASE=$(echo ${ERROR,,} |${GP}sed -r 's/\(/\\(/g' |${GP}sed -r 's/\)/\\)/g' |${GP}sed -r 's/\|/\\|/g')
         if [[ ! "${ERRORSMALLCASE}" =~ $IGNORECASE_INWORD ]]; then
-         if [[ ! -z $(ag --nonumbers --case-sensitive "^${ERRORSMALLCASE:1:-1}${ERRORSMALLCASE: -1}?:" scripts/spell_check/spelling.dat) ]]; then
+         if [[ -n $(ag --nonumbers --case-sensitive "^${ERRORSMALLCASE:1:-1}${ERRORSMALLCASE: -1}?:" scripts/spell_check/spelling.dat) ]]; then
            ERRORSMALLCASE=${ERRORSMALLCASE#?}
            ERROR=${ERROR#?}
          fi
-         if [[ ! -z $(ag --nonumbers --case-sensitive "^${ERRORSMALLCASE::-1}:" scripts/spell_check/spelling.dat) ]]; then
+         if [[ -n $(ag --nonumbers --case-sensitive "^${ERRORSMALLCASE::-1}:" scripts/spell_check/spelling.dat) ]]; then
            ERRORSMALLCASE=${ERRORSMALLCASE::-1}
            ERROR=${ERROR::-1}
          fi
@@ -170,16 +170,16 @@ for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
           MATCHCASE="$ERROR:$CORRECTION"
           CORRECTIONCASE=$(echo "$MATCHCASE" | ${GP}sed -r 's/([A-Z]+):(.*)/\1:\U\2/; s/([A-Z][a-z]+):([a-z])/\1:\U\2\L/' | cut -d: -f2)
 
-          if [[ ! -z $OUTPUTLOG ]]; then
+          if [[ -n $OUTPUTLOG ]]; then
             echo "$FILE $NUMBER $ERROR $CORRECTIONCASE" >> $OUTPUTLOG
           fi
           if [[ "$INTERACTIVE" =~ YES ]]; then
             # Skip global replace
-            if [[ !  -z  ${GLOBREP_ALLFILES["$ERROR"]} ]]; then
+            if [[ -n ${GLOBREP_ALLFILES["$ERROR"]} ]]; then
               echo -e "replace \x1B[33m$ERROR\x1B[0m by \x1B[33m$CORRECTIONCASE\x1B[0m in \x1B[33m$FILE\x1B[0m"
               ${GP}sed -i -r "/${SPELLOKRX}/! s/$ERROR/$CORRECTIONCASE/g" $FILE
               continue
-            elif [[ ( ! -z  ${GLOBREP_CURRENTFILE["$ERROR"]} ) || ( ! -z  ${GLOBREP_IGNORE["$ERROR"]} ) ]]; then
+            elif [[ ( -n ${GLOBREP_CURRENTFILE["$ERROR"]} ) || ( -n ${GLOBREP_IGNORE["$ERROR"]} ) ]]; then
               echo "skipping occurrence"
               continue
             else

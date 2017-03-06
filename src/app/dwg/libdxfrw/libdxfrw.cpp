@@ -1867,7 +1867,7 @@ bool dxfRW::writeTables()
       writer->writeInt16( 281, 0 );
     }
   }
-  /* allways call writeBlockRecords to iface for prepare unnamed blocks */
+  /* always call writeBlockRecords to iface for prepare unnamed blocks */
   iface->writeBlockRecords();
   if ( version > DRW::AC1009 )
   {
