@@ -86,5 +86,4 @@ class BoxPlot(GeoAlgorithm):
                     y=values[valuefieldname],
                     boxmean='sd')]
 
-
         plt.offline.plot(data, filename=output, auto_open=False)
