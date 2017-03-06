@@ -1698,7 +1698,7 @@ bool DRW_Text::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
   else  //14-
   {
     oblique = buf->getBitDouble(); /* Oblique angle BD 51 */
-    anglele = buf->getBitDouble(); /* Rotation angle BD 50 */
+    angle = buf->getBitDouble(); /* Rotation angle BD 50 */
     height = buf->getBitDouble(); /* Height BD 40 */
     widthscale = buf->getBitDouble(); /* Width factor BD 41 */
   }
