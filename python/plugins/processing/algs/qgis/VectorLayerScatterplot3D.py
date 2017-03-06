@@ -76,8 +76,11 @@ class VectorLayerScatterplot3D(GeoAlgorithm):
         output = self.getOutputValue(self.OUTPUT)
 
         values = vector.values(layer, xfieldname, yfieldname, zfieldname)
-        data = [go.Scatter3d(x=values[xfieldname],
-                           y=values[yfieldname],
-                           z=values[zfieldname],
-                           mode='markers')]
+
+        data = [go.Scatter3d(
+                x=values[xfieldname],
+                y=values[yfieldname],
+                z=values[zfieldname],
+                mode='markers')]
+
         plt.offline.plot(data, filename=output, auto_open=False)

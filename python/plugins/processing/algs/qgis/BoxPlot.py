@@ -76,11 +76,15 @@ class BoxPlot(GeoAlgorithm):
         msd = self.getParameterValue(self.MSD)
 
         if not msd:
-            data = [go.Box(x=values[namefieldname],
-            y=values[valuefieldname], boxmean=True)]
+            data = [go.Box(
+                    x=values[namefieldname],
+                    y=values[valuefieldname],
+                    boxmean=True)]
         else:
-            data = [go.Box(x=values[namefieldname],
-            y=values[valuefieldname], boxmean='sd')]
+            data = [go.Box(
+            x=values[namefieldname],
+            y=values[valuefieldname],
+            boxmean='sd')]
 
 
         plt.offline.plot(data, filename=output, auto_open=False)
