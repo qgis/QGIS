@@ -219,9 +219,9 @@ class TestQgsSettings(unittest.TestCase):
 
     def test_remove(self):
         self.settings.setValue('testQgisSettings/temp', True)
-        self.assertEqual(self.settings.value('testqgissettings/temp'), True)
+        self.assertEqual(self.settings.value('testQgisSettings/temp'), True)
         self.settings.remove('testQgisSettings/temp')
-        self.assertEqual(self.settings.value('testqgissettings/temp'), None)
+        self.assertEqual(self.settings.value('testqQgisSettings/temp'), None)
 
 
 if __name__ == '__main__':

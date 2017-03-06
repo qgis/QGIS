@@ -256,7 +256,7 @@ void QgsSettings::setValue( const QString &key, const QVariant &value, const Qgs
 // To lower case and clean the path
 QString QgsSettings::sanitizeKey( QString key ) const
 {
-  return QDir::cleanPath( key.toLower() );
+  return QDir::cleanPath( key );
 }
 
 void QgsSettings::clear()

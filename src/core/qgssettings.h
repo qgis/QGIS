@@ -28,8 +28,6 @@
  * - the second one (Global Settings) is meant to provide read-only
  *   pre-configuration and defaults to the first one.
  *
- * Unlike the original QSettings, the keys of QgsSettings are case insensitive.
- *
  * For a given settings key, the function call to value(key, default) will return
  * the first existing setting in the order specified below:
  *  - User Settings
@@ -158,7 +156,6 @@ class CORE_EXPORT QgsSettings : public QObject
     void setArrayIndex( int i );
     //! Sets the value of setting key to value. If the key already exists, the previous value is overwritten.
     //! An optional Section argument can be used to set a value to a specific Section.
-    //! @note keys are case insensitive
     void setValue( const QString &key, const QVariant &value, const Section section = Section::NoSection );
 
     /** Returns the value for setting key. If the setting doesn't exist, it will be
