@@ -36,6 +36,7 @@ except:
 from qgis.core import (QgsApplication,
                        QgsProcessingProvider)
 
+from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.script.ScriptUtils import ScriptUtils
 
 from .RegularPoints import RegularPoints
@@ -271,6 +272,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                          BarPlot(), PolarPlot()])
 
         # to store algs added by 3rd party plugins as scripts
+        self.externalAlgs = []
+
         folder = os.path.join(os.path.dirname(__file__), 'scripts')
         scripts = ScriptUtils.loadFromFolder(folder)
         for script in scripts:
