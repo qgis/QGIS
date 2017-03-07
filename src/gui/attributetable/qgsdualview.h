@@ -80,8 +80,11 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      *                   {@link QgsAttributeTableFilterModel::ShowVisible}
      * @param request    Use a modified request to limit the shown features
      * @param context    The context in which this view is shown
+     * @param loadFeatures whether to initially load all features into the view. If set to
+     * false, limited features can later be loaded using setFilterMode()
      */
-    void init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request = QgsFeatureRequest(), const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
+    void init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request = QgsFeatureRequest(), const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
+               bool loadFeatures = true );
 
     /**
      * Change the current view mode.
@@ -326,7 +329,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
   private:
     void initLayerCache( bool cacheGeometry );
-    void initModels( QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request );
+    void initModels( QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request, bool loadFeatures );
 
     QgsAttributeEditorContext mEditorContext;
     QgsAttributeTableModel* mMasterModel;
