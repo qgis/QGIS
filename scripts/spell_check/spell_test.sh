@@ -15,7 +15,7 @@ elif [[ ! -z  $TRAVIS_COMMIT_RANGE  ]]; then
   FILES=$(git diff --diff-filter=AM --name-only ${TRAVIS_COMMIT_RANGE/.../..} | tr '\n' ' ' )
   export PATH=${HOME}/osgeo4travis/bin:${PATH}
 else
-  echo "Runnng spell test on all files (might take a while)"
+  echo "Running spell test on all files (might take a while)"
   FILES=""
 fi
 
