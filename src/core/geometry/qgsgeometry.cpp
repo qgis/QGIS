@@ -2103,18 +2103,18 @@ void QgsGeometry::draw( QPainter &p ) const
   }
 }
 
-static bool vertexIndexInfo( const QgsAbstractGeometry* g, int vertexIndex, int& partIndex, int& ringIndex, int& vertex )
+static bool vertexIndexInfo( const QgsAbstractGeometry *g, int vertexIndex, int &partIndex, int &ringIndex, int &vertex )
 {
   if ( vertexIndex < 0 )
     return false;  // clearly something wrong
 
-  if ( const QgsGeometryCollection* geomCollection = dynamic_cast<const QgsGeometryCollection*>( g ) )
+  if ( const QgsGeometryCollection *geomCollection = dynamic_cast<const QgsGeometryCollection *>( g ) )
   {
     partIndex = 0;
     int offset = 0;
     for ( int i = 0; i < geomCollection->numGeometries(); ++i )
     {
-      const QgsAbstractGeometry* part = geomCollection->geometryN( i );
+      const QgsAbstractGeometry *part = geomCollection->geometryN( i );
 
       // count total number of vertices in the part
       int numPoints = 0;
@@ -2131,9 +2131,9 @@ static bool vertexIndexInfo( const QgsAbstractGeometry* g, int vertexIndex, int&
       partIndex++;
     }
   }
-  else if ( const QgsCurvePolygon* curvePolygon = dynamic_cast<const QgsCurvePolygon*>( g ) )
+  else if ( const QgsCurvePolygon *curvePolygon = dynamic_cast<const QgsCurvePolygon *>( g ) )
   {
-    const QgsCurve* ring = curvePolygon->exteriorRing();
+    const QgsCurve *ring = curvePolygon->exteriorRing();
     if ( vertexIndex < ring->numPoints() )
     {
       partIndex = 0;
@@ -2145,7 +2145,7 @@ static bool vertexIndexInfo( const QgsAbstractGeometry* g, int vertexIndex, int&
     ringIndex = 1;
     for ( int i = 0; i < curvePolygon->numInteriorRings(); ++i )
     {
-      const QgsCurve* ring = curvePolygon->interiorRing( i );
+      const QgsCurve *ring = curvePolygon->interiorRing( i );
       if ( vertexIndex < ring->numPoints() )
       {
         partIndex = 0;
@@ -2156,7 +2156,7 @@ static bool vertexIndexInfo( const QgsAbstractGeometry* g, int vertexIndex, int&
       ringIndex += 1;
     }
   }
-  else if ( const QgsCurve* curve = dynamic_cast<const QgsCurve*>( g ) )
+  else if ( const QgsCurve *curve = dynamic_cast<const QgsCurve *>( g ) )
   {
     if ( vertexIndex < curve->numPoints() )
     {
@@ -2166,7 +2166,7 @@ static bool vertexIndexInfo( const QgsAbstractGeometry* g, int vertexIndex, int&
       return true;
     }
   }
-  else if ( dynamic_cast<const QgsPointV2*>( g ) )
+  else if ( dynamic_cast<const QgsPointV2 *>( g ) )
   {
     if ( vertexIndex == 0 )
     {
@@ -2180,7 +2180,7 @@ static bool vertexIndexInfo( const QgsAbstractGeometry* g, int vertexIndex, int&
   return false;
 }
 
-bool QgsGeometry::vertexIdFromVertexNr( int nr, QgsVertexId& id ) const
+bool QgsGeometry::vertexIdFromVertexNr( int nr, QgsVertexId &id ) const
 {
   if ( !d->geometry )
   {
@@ -2194,18 +2194,18 @@ bool QgsGeometry::vertexIdFromVertexNr( int nr, QgsVertexId& id ) const
     return false;
 
   // now let's find out if it is a straight or circular segment
-  const QgsAbstractGeometry* g = d->geometry;
-  if ( const QgsGeometryCollection* geomCollection = dynamic_cast<const QgsGeometryCollection*>( g ) )
+  const QgsAbstractGeometry *g = d->geometry;
+  if ( const QgsGeometryCollection *geomCollection = dynamic_cast<const QgsGeometryCollection *>( g ) )
   {
     g = geomCollection->geometryN( id.part );
   }
 
-  if ( const QgsCurvePolygon* curvePolygon = dynamic_cast<const QgsCurvePolygon*>( g ) )
+  if ( const QgsCurvePolygon *curvePolygon = dynamic_cast<const QgsCurvePolygon *>( g ) )
   {
     g = id.ring == 0 ? curvePolygon->exteriorRing() : curvePolygon->interiorRing( id.ring - 1 );
   }
 
-  if ( const QgsCurve* curve = dynamic_cast<const QgsCurve*>( g ) )
+  if ( const QgsCurve *curve = dynamic_cast<const QgsCurve *>( g ) )
   {
     QgsPointV2 p;
     res = curve->pointAt( id.vertex, p, id.type );

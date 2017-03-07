@@ -24,7 +24,7 @@
 
 #include "nodetool/qgsnodetool2.h"
 
-bool operator==( const QgsGeometry& g1, const QgsGeometry& g2 )
+bool operator==( const QgsGeometry &g1, const QgsGeometry &g2 )
 {
   if ( g1.isNull() && g2.isNull() )
     return true;
@@ -35,7 +35,7 @@ bool operator==( const QgsGeometry& g1, const QgsGeometry& g2 )
 namespace QTest
 {
   // pretty printing of geometries in comparison tests
-  template<> char *toString( const QgsGeometry& geom )
+  template<> char *toString( const QgsGeometry &geom )
   {
     QByteArray ba = geom.exportToWkt().toAscii();
     return qstrdup( ba.data() );
@@ -95,19 +95,19 @@ class TestQgsNodeTool : public QObject
     }
 
   private:
-    QgsMapCanvas* mCanvas = nullptr;
-    QgsAdvancedDigitizingDockWidget* mAdvancedDigitizingDockWidget = nullptr;
-    QgsNodeTool2* mNodeTool = nullptr;
-    QgsVectorLayer* mLayerLine = nullptr;
-    QgsVectorLayer* mLayerPolygon = nullptr;
-    QgsVectorLayer* mLayerPoint = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
+    QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget = nullptr;
+    QgsNodeTool2 *mNodeTool = nullptr;
+    QgsVectorLayer *mLayerLine = nullptr;
+    QgsVectorLayer *mLayerPolygon = nullptr;
+    QgsVectorLayer *mLayerPoint = nullptr;
     QgsFeatureId mFidLineF1 = 0;
     QgsFeatureId mFidPolygonF1 = 0;
     QgsFeatureId mFidPointF1 = 0;
 };
 
 TestQgsNodeTool::TestQgsNodeTool()
-    : mCanvas( nullptr )
+  : mCanvas( nullptr )
 {
 }
 
@@ -127,7 +127,7 @@ void TestQgsNodeTool::initTestCase()
 
   mCanvas = new QgsMapCanvas();
 
-  qDebug( "canvas otf %d crs %s", mCanvas->hasCrsTransformEnabled(), mCanvas->mapSettings().destinationCrs().authid().toAscii().data() );
+  qDebug( "canvas crs %s", mCanvas->mapSettings().destinationCrs().authid().toAscii().data() );
   mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( "EPSG:27700" ) );
 
   mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mCanvas );
@@ -139,7 +139,7 @@ void TestQgsNodeTool::initTestCase()
   QVERIFY( mLayerPolygon->isValid() );
   mLayerPoint = new QgsVectorLayer( "Point?crs=EPSG:27700", "layer point", "memory" );
   QVERIFY( mLayerPoint->isValid() );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << mLayerLine << mLayerPolygon << mLayerPoint );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerPolygon << mLayerPoint );
 
   QgsPolyline line1;
   line1 << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) << QgsPoint( 1, 3 );
@@ -186,7 +186,7 @@ void TestQgsNodeTool::initTestCase()
   QCOMPARE( mCanvas->mapSettings().outputSize(), QSize( 512, 512 ) );
   QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
 
-  mCanvas->setLayers( QList<QgsMapLayer*>() << mLayerLine << mLayerPolygon << mLayerPoint );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerPolygon << mLayerPoint );
 
   qDebug( "line layer extent: %s", mLayerLine->extent().toString().toAscii().data() );
 

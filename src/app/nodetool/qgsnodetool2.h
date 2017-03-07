@@ -29,12 +29,12 @@ class QgsVertexMarker;
 //! helper structure for a vertex being dragged
 struct Vertex
 {
-  Vertex( QgsVectorLayer* layer, QgsFeatureId fid, int vertexId )
-      : layer( layer )
-      , fid( fid )
-      , vertexId( vertexId ) {}
+  Vertex( QgsVectorLayer *layer, QgsFeatureId fid, int vertexId )
+    : layer( layer )
+    , fid( fid )
+    , vertexId( vertexId ) {}
 
-  QgsVectorLayer* layer;
+  QgsVectorLayer *layer;
   QgsFeatureId fid;
   int vertexId;
 };
@@ -43,23 +43,23 @@ struct Vertex
 //! helper structure for an edge being dragged
 struct Edge
 {
-  Edge( QgsVectorLayer* layer, QgsFeatureId fid, int vertexId, const QgsPoint& startMapPoint )
-      : layer( layer )
-      , fid( fid )
-      , edgeVertex0( vertexId )
-      , startMapPoint( startMapPoint ) {}
+  Edge( QgsVectorLayer *layer, QgsFeatureId fid, int vertexId, const QgsPoint &startMapPoint )
+    : layer( layer )
+    , fid( fid )
+    , edgeVertex0( vertexId )
+    , startMapPoint( startMapPoint ) {}
 
-  QgsVectorLayer* layer = nullptr;
+  QgsVectorLayer *layer = nullptr;
   QgsFeatureId fid;
   int edgeVertex0;    //!< First vertex (with lower index)
   QgsPoint startMapPoint;  //!< Map point where edge drag started
 
   //! rubber band between the edge's endpoints (owned by drag_bands, not this instance)
-  QgsRubberBand* band0to1 = nullptr;
+  QgsRubberBand *band0to1 = nullptr;
   //! rubber bands from other edges to our edge's first endpoint (owned by drag_bands, not this instance)
-  QList<QgsRubberBand*> bandsTo0;
+  QList<QgsRubberBand *> bandsTo0;
   //! rubber bands from other edges to our edge's second endpoint (owned by drag_bands, not this instance)
-  QList<QgsRubberBand*> bandsTo1;
+  QList<QgsRubberBand *> bandsTo1;
 };
 
 
@@ -68,42 +68,42 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
 {
     Q_OBJECT
   public:
-    QgsNodeTool2( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDock );
+    QgsNodeTool2( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock );
 
     //! Cleanup canvas items we have created
     ~QgsNodeTool2();
 
-    virtual void cadCanvasPressEvent( QgsMapMouseEvent* e ) override;
+    virtual void cadCanvasPressEvent( QgsMapMouseEvent *e ) override;
 
-    virtual void cadCanvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    virtual void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
-    virtual void cadCanvasMoveEvent( QgsMapMouseEvent* e ) override;
+    virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     //! Start addition of a new vertex on double-click
-    virtual void canvasDoubleClickEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasDoubleClickEvent( QgsMapMouseEvent *e ) override;
 
     virtual void deactivate() override;
 
-    void keyPressEvent( QKeyEvent* e ) override;
+    void keyPressEvent( QKeyEvent *e ) override;
 
-    QgsGeometry cachedGeometry( const QgsVectorLayer* layer, QgsFeatureId fid );
+    QgsGeometry cachedGeometry( const QgsVectorLayer *layer, QgsFeatureId fid );
 
   private slots:
     //! update geometry of our feature
-    void onCachedGeometryChanged( QgsFeatureId fid, const QgsGeometry& geom );
+    void onCachedGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom );
 
     void onCachedGeometryDeleted( QgsFeatureId fid );
 
 
   private:
 
-    void addDragBand( const QgsPoint& v1, const QgsPoint& v2 );
+    void addDragBand( const QgsPoint &v1, const QgsPoint &v2 );
 
     void clearDragBands();
 
-    void mouseMoveDraggingVertex( QgsMapMouseEvent* e );
+    void mouseMoveDraggingVertex( QgsMapMouseEvent *e );
 
-    void mouseMoveDraggingEdge( QgsMapMouseEvent* e );
+    void mouseMoveDraggingEdge( QgsMapMouseEvent *e );
 
     void removeTemporaryRubberBands();
 
@@ -111,61 +111,61 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
      of any editable vector layer, to allow selection of node for editing
      (if snapped to edge, it would offer creation of a new vertex there).
     */
-    QgsPointLocator::Match snapToEditableLayer( QgsMapMouseEvent* e );
+    QgsPointLocator::Match snapToEditableLayer( QgsMapMouseEvent *e );
 
     //! check whether we are still close to the endpoint_marker
-    bool isNearEndpointMarker( const QgsPoint& map_point );
+    bool isNearEndpointMarker( const QgsPoint &map_point );
 
-    bool isMatchAtEndpoint( const QgsPointLocator::Match& match );
+    bool isMatchAtEndpoint( const QgsPointLocator::Match &match );
 
-    QgsPoint positionForEndpointMarker( const QgsPointLocator::Match& match );
+    QgsPoint positionForEndpointMarker( const QgsPointLocator::Match &match );
 
-    void mouseMoveNotDragging( QgsMapMouseEvent* e );
+    void mouseMoveNotDragging( QgsMapMouseEvent *e );
 
-    QgsGeometry cachedGeometryForVertex( const Vertex& vertex );
+    QgsGeometry cachedGeometryForVertex( const Vertex &vertex );
 
-    void startDragging( QgsMapMouseEvent* e );
+    void startDragging( QgsMapMouseEvent *e );
 
-    void startDraggingMoveVertex( const QgsPoint& map_point, const QgsPointLocator::Match& m );
+    void startDraggingMoveVertex( const QgsPoint &map_point, const QgsPointLocator::Match &m );
 
     //! Get list of matches of all vertices of a layer exactly snapped to a map point
-    QList<QgsPointLocator::Match> layerVerticesSnappedToPoint( QgsVectorLayer* layer, const QgsPoint& map_point );
+    QList<QgsPointLocator::Match> layerVerticesSnappedToPoint( QgsVectorLayer *layer, const QgsPoint &map_point );
 
-    void startDraggingAddVertex( const QgsPointLocator::Match& m );
+    void startDraggingAddVertex( const QgsPointLocator::Match &m );
 
-    void startDraggingAddVertexAtEndpoint( const QgsPoint& map_point );
+    void startDraggingAddVertexAtEndpoint( const QgsPoint &map_point );
 
-    void startDraggingEdge( const QgsPointLocator::Match& m, const QgsPoint& map_point );
+    void startDraggingEdge( const QgsPointLocator::Match &m, const QgsPoint &map_point );
 
     void stopDragging();
 
-    QgsPoint matchToLayerPoint( const QgsVectorLayer* dest_layer, const QgsPoint& map_point, const QgsPointLocator::Match* match );
+    QgsPoint matchToLayerPoint( const QgsVectorLayer *dest_layer, const QgsPoint &map_point, const QgsPointLocator::Match *match );
 
     //! Finish moving of an edge
-    void moveEdge( const QgsPoint& map_point );
+    void moveEdge( const QgsPoint &map_point );
 
-    void moveVertex( const QgsPoint& map_point, const QgsPointLocator::Match* map_point_match );
+    void moveVertex( const QgsPoint &map_point, const QgsPointLocator::Match *map_point_match );
 
     void deleteVertex();
 
-    void setHighlightedNodes( const QList<Vertex>& list_nodes );
+    void setHighlightedNodes( const QList<Vertex> &list_nodes );
 
     //! Allow moving back and forth selected vertex within a feature
     void highlightAdjacentVertex( double offset );
 
     //! Initialize rectangle that is being dragged to select nodes.
     //! Argument point0 is in screen coordinates.
-    void startSelectionRect( const QPoint& point0 );
+    void startSelectionRect( const QPoint &point0 );
 
     //! Update bottom-right corner of the existing selection rectangle.
     //! Argument point1 is in screen coordinates.
-    void updateSelectionRect( const QPoint& point1 );
+    void updateSelectionRect( const QPoint &point1 );
 
     void stopSelectionRect();
 
     //! Using a given edge match and original map point, find out
     //! center of the edge and whether we are close enough to the center
-    bool matchEdgeCenterTest( const QgsPointLocator::Match& m, const QgsPoint& map_point, QgsPoint* edge_center_ptr = nullptr );
+    bool matchEdgeCenterTest( const QgsPointLocator::Match &m, const QgsPoint &map_point, QgsPoint *edge_center_ptr = nullptr );
 
 
   private:
@@ -173,20 +173,20 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
     // members used for temporary highlight of stuff
 
     //! marker of a snap match (if any) when dragging a vertex
-    QgsVertexMarker* mSnapMarker = nullptr;
+    QgsVertexMarker *mSnapMarker = nullptr;
     //! marker in the middle of an edge while pointer is close to a vertex and not dragging anything
     //! (highlighting point that can be clicked to add a new vertex)
-    QgsVertexMarker* mEdgeCenterMarker = nullptr;
+    QgsVertexMarker *mEdgeCenterMarker = nullptr;
     //! rubber band for highlight of a whole feature on mouse over and not dragging anything
-    QgsRubberBand* mFeatureBand = nullptr;
+    QgsRubberBand *mFeatureBand = nullptr;
     //! source layer for feature_band (null if feature_band is null)
-    const QgsVectorLayer* mFeatureBandLayer = nullptr;
+    const QgsVectorLayer *mFeatureBandLayer = nullptr;
     //! source feature id for feature_band (zero if feature_band is null)
     QgsFeatureId mFeatureBandFid;
     //! highlight of a vertex while mouse pointer is close to a vertex and not dragging anything
-    QgsRubberBand* mVertexBand = nullptr;
+    QgsRubberBand *mVertexBand = nullptr;
     //! highlight of an edge while mouse pointer is close to an edge and not dragging anything
-    QgsRubberBand* mEdgeBand = nullptr;
+    QgsRubberBand *mEdgeBand = nullptr;
 
     // members for dragging operation
 
@@ -200,9 +200,9 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
 
     //! marker for a point used only for moving standalone point geoetry
     //! (there are no adjacent vertices so drag_bands is empty in that case)
-    QgsVertexMarker* mDragPointMarker = nullptr;
+    QgsVertexMarker *mDragPointMarker = nullptr;
     //! list of QgsRubberBand instances used when dragging
-    QList<QgsRubberBand*> drag_bands;
+    QList<QgsRubberBand *> drag_bands;
     //! instance of Vertex that is being currently moved or nothing
     //! (vertex_id when adding is a tuple (vid, adding_at_endpoint))
     std::unique_ptr<Vertex> mDraggingVertex;
@@ -219,7 +219,7 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
     //! list of Vertex instances of nodes that are selected
     QList<Vertex> mSelectedNodes;
     //! list of vertex markers
-    QList<QgsVertexMarker*> mSelectedNodesMarkers;
+    QList<QgsVertexMarker *> mSelectedNodesMarkers;
 
     // members for rectangle for selection
 
@@ -228,7 +228,7 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
     //! QRect in screen coordinates or null
     std::unique_ptr<QRect> mSelectionRect;
     //! QRubberBand to show selection_rect
-    QRubberBand* mSelectionRectItem = nullptr;
+    QRubberBand *mSelectionRectItem = nullptr;
 
     // members for addition of vertices at the end of a curve
 
@@ -238,7 +238,7 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
     std::unique_ptr<QgsPoint> mEndpointMarkerCenter;
     //! marker shown near the end of a curve to suggest that the user
     //! may add a new vertex at the end of the curve
-    QgsVertexMarker* mEndpointMarker = nullptr;
+    QgsVertexMarker *mEndpointMarker = nullptr;
 
     //! keeps information about previously used snap match
     //! to stick with the same highlighted feature next time if there are more options
@@ -254,7 +254,7 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
     std::unique_ptr<QgsPointLocator::Match> mNewVertexFromDoubleClick;
 
     //! Geometry cache for fast access to geometries
-    QHash<const QgsVectorLayer*, QHash<QgsFeatureId, QgsGeometry> > mCache;
+    QHash<const QgsVectorLayer *, QHash<QgsFeatureId, QgsGeometry> > mCache;
 };
 
 
