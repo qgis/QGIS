@@ -103,9 +103,16 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * Enable or disable the caching of geometries
      *
      * @param cacheGeometry    Enable or disable the caching of geometries
+     * @see cacheGeometry()
      */
     void setCacheGeometry( bool cacheGeometry );
 
+    /**
+     * Returns true if the cache will fetch and cache feature geometries.
+     * @note added in QGIS 3.0
+     * @see setCacheGeometry()
+     */
+    bool cacheGeometry() const { return mCacheGeometry; }
 
     /**
      * Set the subset of attributes to be cached
@@ -131,6 +138,8 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * be used for slow data sources, be aware, that the call to this method might take a long time.
      *
      * @param fullCache   True: enable full caching, False: disable full caching
+     * @note when a cache is invalidated() (e.g. by adding an attribute to a layer) this setting
+     * is reset. A full cache rebuild must be performed by calling setFullCache( true ) again.
      * @see hasFullCache()
      */
     void setFullCache( bool fullCache );
@@ -273,7 +282,9 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     void featureAdded( QgsFeatureId fid );
 
     /**
-     * The cache has been invalidated and cleared.
+     * The cache has been invalidated and cleared. Note that when a cache is invalidated
+     * the fullCache() setting will be cleared, and a full cache rebuild via setFullCache( true )
+     * will need to be performed.
      */
     void invalidated();
 

@@ -32,16 +32,8 @@ class QgsDualView : QStackedWidget
     explicit QgsDualView( QWidget* parent /TransferThis/ = 0 );
     virtual ~QgsDualView();
 
-    /**
-     * Has to be called to initialize the dual view.
-     *
-     * @param layer      The layer which should be used to fetch features
-     * @param mapCanvas  The mapCanvas (used for the FilterMode
-     *                   {@link QgsAttributeTableFilterModel::ShowVisible}
-     * @param request    Use a modified request to limit the shown features
-     * @param context    The context in which this view is shown
-     */
-    void init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request = QgsFeatureRequest(), const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
+    void init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request = QgsFeatureRequest(), const QgsAttributeEditorContext& context = QgsAttributeEditorContext(),
+               bool loadFeatures = true );
 
     /**
      * Change the current view mode.
