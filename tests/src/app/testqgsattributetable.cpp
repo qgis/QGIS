@@ -179,21 +179,32 @@ void TestQgsAttributeTable::testFieldCalculationArea()
 void TestQgsAttributeTable::testNoGeom()
 {
   //test that by default the attribute table DOESN'T fetch geometries (because performance)
-  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QString( "LineString?crs=epsg:3111&field=pk:int&field=col1:double" ), QString( "vl" ), QString( "memory" ) ) );
+  QScopedPointer< QgsVectorLayer> tempLayer( new QgsVectorLayer( QString( "LineString?crs=epsg:3111&field=pk:int&field=col1:double" ), QString( "vl" ), QString( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
 
-  QSettings().setValue( QString( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll );
-  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get() ) );
+  QSettings().setValue( QString( "/qgis/attributeTableBehaviour" ), QgsAttributeTableFilterModel::ShowAll );
+  QScopedPointer< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.data() ) );
 
   QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
   QVERIFY( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry );
 
   // but if we are requesting only visible features, then geometry must be fetched...
 
-  QSettings().setValue( QString( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowVisible );
-  dlg.reset( new QgsAttributeTableDialog( tempLayer.get() ) );
+  QSettings().setValue( QString( "/qgis/attributeTableBehaviour" ), QgsAttributeTableFilterModel::ShowVisible );
+  dlg.reset( new QgsAttributeTableDialog( tempLayer.data() ) );
   QVERIFY( dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
   QVERIFY( !( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry ) );
+
+  // try changing existing dialog to no geometry mode
+  dlg->filterShowAll();
+  QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
+  QVERIFY( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry );
+
+  // and back to a geometry mode
+  dlg->filterVisible();
+  QVERIFY( dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
+  QVERIFY( !( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry ) );
+
 }
 
 QTEST_MAIN( TestQgsAttributeTable )
