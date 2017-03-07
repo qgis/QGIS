@@ -177,7 +177,7 @@ for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
             # Skip global replace
             if [[ -n ${GLOBREP_ALLFILES["$ERROR"]} ]]; then
               echo -e "replace \x1B[33m$ERROR\x1B[0m by \x1B[33m$CORRECTIONCASE\x1B[0m in \x1B[33m$FILE\x1B[0m"
-              ${GP}sed -i -r "/${SPELLOKRX}/! s/\<$ERROR\>/$CORRECTIONCASE/g" $FILE
+              ${GP}sed -i -r "/${SPELLOKRX}/! s/$ERROR/$CORRECTIONCASE/g" $FILE
               continue
             elif [[ ( -n ${GLOBREP_CURRENTFILE["$ERROR"]} ) || ( -n ${GLOBREP_IGNORE["$ERROR"]} ) ]]; then
               echo "skipping occurrence"
@@ -215,20 +215,20 @@ for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
                 case $n in
                     r)
                       echo -e "replacing \x1B[33m$ERROR\x1B[0m by \x1B[33m$CORRECTIONCASE\x1B[0m in \x1B[33m$FILE\x1B[0m at line \x1B[33m$NUMBER\x1B[0m"
-                      ${GP}sed -i "${NUMBER}s/\<$ERROR\>/$CORRECTIONCASE/g" $FILE
+                      ${GP}sed -i "${NUMBER}s/$ERROR/$CORRECTIONCASE/g" $FILE
                       break
                       ;;
                     f)
                       GLOBREP_CURRENTFILE+=(["$ERROR"]=1)
                       echo -e "replacing \x1B[33m$ERROR\x1B[0m by \x1B[33m$CORRECTIONCASE\x1B[0m in \x1B[33m$FILE\x1B[0m"
-                      ${GP}sed -i -r "/${SPELLOKRX}/! s/\<$ERROR\>/$CORRECTIONCASE/g" $FILE
+                      ${GP}sed -i -r "/${SPELLOKRX}/! s/$ERROR/$CORRECTIONCASE/g" $FILE
                       break
                       ;;
                     a)
                       GLOBREP_CURRENTFILE+=(["$ERROR"]=1)
                       GLOBREP_ALLFILES+=(["$ERROR"]=1)
                       echo -e "replace \x1B[33m$ERROR\x1B[0m by \x1B[33m$CORRECTIONCASE\x1B[0m in \x1B[33m$FILE\x1B[0m"
-                      ${GP}sed -i -r "/${SPELLOKRX}/! s/\<$ERROR\>/$CORRECTIONCASE/g" $FILE
+                      ${GP}sed -i -r "/${SPELLOKRX}/! s/$ERROR/$CORRECTIONCASE/g" $FILE
                       break
                       ;;
                     p)
@@ -242,7 +242,7 @@ for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
                       MATCHCASE="$ERROR:$CORRECTION"
                       CORRECTIONCASE=$(echo "$MATCHCASE" | ${GP}sed -r 's/([A-Z]+):(.*)/\1:\U\2/; s/([A-Z][a-z]+):([a-z])/\1:\U\2\L/' | cut -d: -f2)
                       echo -e "replacing \x1B[33m$ERROR\x1B[0m by \x1B[33m$CORRECTIONCASE\x1B[0m in \x1B[33m$FILE\x1B[0m at line \x1B[33m$NUMBER\x1B[0m"
-                      ${GP}sed -i "${NUMBER}s/\<$ERROR\>/$CORRECTIONCASE/g" $FILE
+                      ${GP}sed -i "${NUMBER}s/$ERROR/$CORRECTIONCASE/g" $FILE
                       break
                       ;;
                     c)
