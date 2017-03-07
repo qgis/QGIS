@@ -245,7 +245,7 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
   switch ( mFilterModel->filterMode() )
   {
     case QgsAttributeTableFilterModel::ShowVisible:
-      disconnect( mMapCanvas, SIGNAL(extentsChanged()), this, SLOT(extentChanged()) );
+      disconnect( mMapCanvas, SIGNAL( extentsChanged() ), this, SLOT( extentChanged() ) );
       break;
 
     case QgsAttributeTableFilterModel::ShowAll:
@@ -254,8 +254,8 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
       break;
 
     case QgsAttributeTableFilterModel::ShowSelected:
-      disconnect( masterModel()->layer(), SIGNAL(selectionChanged()), this,
-                  SLOT(updateSelectedFeatures()) );
+      disconnect( masterModel()->layer(), SIGNAL( selectionChanged() ), this,
+                  SLOT( updateSelectedFeatures() ) );
       break;
   }
 
@@ -270,7 +270,7 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
   switch ( filterMode )
   {
     case QgsAttributeTableFilterModel::ShowVisible:
-      connect( mMapCanvas, SIGNAL(extentsChanged()), this, SLOT(extentChanged()) );
+      connect( mMapCanvas, SIGNAL( extentsChanged() ), this, SLOT( extentChanged() ) );
       r.setFilterFids( QgsFeatureIds() );
       r.disableFilter();
       if ( mMapCanvas )
@@ -288,7 +288,7 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
       break;
 
     case QgsAttributeTableFilterModel::ShowSelected:
-      connect( masterModel()->layer(), SIGNAL(selectionChanged()), this, SLOT(updateSelectedFeatures()) );
+      connect( masterModel()->layer(), SIGNAL( selectionChanged() ), this, SLOT( updateSelectedFeatures() ) );
       if ( masterModel()->layer()->selectedFeatureCount() > 0 )
         r.setFilterFids( masterModel()->layer()->selectedFeaturesIds() );
       else
@@ -318,10 +318,8 @@ void QgsDualView::initLayerCache( bool cacheGeometry )
   mLayerCache->setCacheGeometry( cacheGeometry );
   if ( 0 == cacheSize || 0 == ( QgsVectorDataProvider::SelectAtId & mLayer->dataProvider()->capabilities() ) )
   {
-    connect( mLayerCache, SIGNAL( progress( int, bool & ) ), this, SLOT( progress( int, bool & ) ) );
-    connect( mLayerCache, SIGNAL( finished() ), this, SLOT( finished() ) );
-
-    mLayerCache->setFullCache( true );
+    connect( mLayerCache, SIGNAL(invalidated()), this, SLOT(rebuildFullLayerCache()) );
+    rebuildFullLayerCache();
   }
 }
 
@@ -712,6 +710,14 @@ void QgsDualView::zoomToCurrentFeature()
   {
     canvas->zoomToFeatureIds( mLayer, ids );
   }
+}
+
+void QgsDualView::rebuildFullLayerCache()
+{
+  connect( mLayerCache, SIGNAL(progress(int,bool&)), this, SLOT(progress(int,bool&)), Qt::UniqueConnection );
+  connect( mLayerCache, SIGNAL(finished()), this, SLOT(finished()), Qt::UniqueConnection );
+
+  mLayerCache->setFullCache( true );
 }
 
 void QgsDualView::previewExpressionChanged( const QString& expression )
