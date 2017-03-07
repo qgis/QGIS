@@ -3172,6 +3172,7 @@ void QgisApp::closeAdditionalMapCanvases()
   Q_FOREACH ( QgsMapCanvasDockWidget *w, findChildren< QgsMapCanvasDockWidget * >() )
   {
     w->closeWithoutWarning();
+    delete w;
   }
   freezeCanvases( false );
 }
