@@ -132,8 +132,9 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 
   QgsFeatureRequest r;
   bool needsGeom = false;
+  QgsAttributeTableFilterModel::FilterMode initialMode = static_cast< QgsAttributeTableFilterModel::FilterMode>( settings.value( QString( "/qgis/attributeTableBehaviour" ), QgsAttributeTableFilterModel::ShowAll ).toInt() );
   if ( mLayer->geometryType() != QGis::NoGeometry &&
-       settings.value( "/qgis/attributeTableBehaviour", QgsAttributeTableFilterModel::ShowAll ).toInt() == QgsAttributeTableFilterModel::ShowVisible )
+       initialMode == QgsAttributeTableFilterModel::ShowVisible )
   {
     QgsMapCanvas *mc = QgisApp::instance()->mapCanvas();
     QgsRectangle extent( mc->mapSettings().mapToLayerCoordinates( theLayer, mc->extent() ) );
@@ -146,6 +147,11 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 
     mActionShowAllFilter->setText( tr( "Show All Features In Initial Canvas Extent" ) );
     needsGeom = true;
+  }
+  else if ( initialMode == QgsAttributeTableFilterModel::ShowSelected )
+  {
+    if ( theLayer->selectedFeatureCount() > 0 )
+      r.setFilterFids( theLayer->selectedFeaturesIds() );
   }
   if ( !needsGeom )
     r.setFlags( QgsFeatureRequest::NoGeometry );

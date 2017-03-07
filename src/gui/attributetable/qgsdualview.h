@@ -294,6 +294,10 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     void sortByPreviewExpression();
 
+    void updateSelectedFeatures();
+
+    void extentChanged();
+
     /**
      * Will be called whenever the currently shown feature form changes.
      * Will forward this signal to the feature list to visually represent
@@ -338,6 +342,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QString mDisplayExpression;
     QgsAttributeTableConfig mConfig;
     QScrollArea* mAttributeEditorScrollArea;
+    QgsMapCanvas *mMapCanvas;
 
     friend class TestQgsDualView;
 };

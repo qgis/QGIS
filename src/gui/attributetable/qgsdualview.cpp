@@ -48,6 +48,7 @@ QgsDualView::QgsDualView( QWidget* parent )
     , mProgressDlg( nullptr )
     , mFeatureSelectionManager( nullptr )
     , mAttributeEditorScrollArea( nullptr )
+    , mMapCanvas( nullptr )
 {
   setupUi( this );
 
@@ -69,6 +70,8 @@ QgsDualView::QgsDualView( QWidget* parent )
 
 void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsFeatureRequest &request, const QgsAttributeEditorContext &context )
 {
+  mMapCanvas = mapCanvas;
+
   if ( !layer )
     return;
 
@@ -235,15 +238,67 @@ QgsDualView::ViewMode QgsDualView::view() const
 
 void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filterMode )
 {
-  bool needsGeometry = filterMode == QgsAttributeTableFilterModel::ShowVisible;
+  if ( mFilterModel->filterMode() == filterMode )
+    return;
+
+  // cleanup any existing connections
+  switch ( mFilterModel->filterMode() )
+  {
+    case QgsAttributeTableFilterModel::ShowVisible:
+      disconnect( mMapCanvas, SIGNAL(extentsChanged()), this, SLOT(extentChanged()) );
+      break;
+
+    case QgsAttributeTableFilterModel::ShowAll:
+    case QgsAttributeTableFilterModel::ShowEdited:
+    case QgsAttributeTableFilterModel::ShowFilteredList:
+      break;
+
+    case QgsAttributeTableFilterModel::ShowSelected:
+      disconnect( masterModel()->layer(), SIGNAL(selectionChanged()), this,
+                  SLOT(updateSelectedFeatures()) );
+      break;
+  }
 
   QgsFeatureRequest r = mMasterModel->request();
+  bool needsGeometry = filterMode == QgsAttributeTableFilterModel::ShowVisible;
+
   if ( !needsGeometry )
     r.setFlags( r.flags() | QgsFeatureRequest::NoGeometry );
   else
     r.setFlags( r.flags() & ~( QgsFeatureRequest::NoGeometry ) );
+
+  switch ( filterMode )
+  {
+    case QgsAttributeTableFilterModel::ShowVisible:
+      connect( mMapCanvas, SIGNAL(extentsChanged()), this, SLOT(extentChanged()) );
+      r.setFilterFids( QgsFeatureIds() );
+      r.disableFilter();
+      if ( mMapCanvas )
+      {
+        QgsRectangle rect = mMapCanvas->mapSettings().mapToLayerCoordinates( mLayer, mMapCanvas->extent() );
+        r.setFilterRect( rect );
+      }
+      break;
+
+    case QgsAttributeTableFilterModel::ShowAll:
+    case QgsAttributeTableFilterModel::ShowEdited:
+    case QgsAttributeTableFilterModel::ShowFilteredList:
+      r.setFilterFids( QgsFeatureIds() );
+      r.disableFilter();
+      break;
+
+    case QgsAttributeTableFilterModel::ShowSelected:
+      connect( masterModel()->layer(), SIGNAL(selectionChanged()), this, SLOT(updateSelectedFeatures()) );
+      if ( masterModel()->layer()->selectedFeatureCount() > 0 )
+        r.setFilterFids( masterModel()->layer()->selectedFeaturesIds() );
+      else
+        r.disableFilter();
+      break;
+  }
+
   mMasterModel->setRequest( r );
   whileBlocking( mLayerCache )->setCacheGeometry( needsGeometry );
+  mMasterModel->loadLayer();
 
   mFilterModel->setFilterMode( filterMode );
   emit filterChanged();
@@ -680,6 +735,29 @@ void QgsDualView::sortByPreviewExpression()
     sortOrder = mConfig.sortOrder() == Qt::AscendingOrder ? Qt::DescendingOrder : Qt::AscendingOrder;
   }
   setSortExpression( mFeatureList->displayExpression(), sortOrder );
+}
+
+void QgsDualView::updateSelectedFeatures()
+{
+  QgsFeatureRequest r = mMasterModel->request();
+  if ( masterModel()->layer()->selectedFeatureCount() > 0 )
+    r.setFilterFids( masterModel()->layer()->selectedFeaturesIds() );
+  else
+    r.disableFilter();
+  mMasterModel->setRequest( r );
+  mMasterModel->loadLayer();
+}
+
+void QgsDualView::extentChanged()
+{
+  QgsFeatureRequest r = mMasterModel->request();
+  if ( mMapCanvas )
+  {
+    QgsRectangle rect = mMapCanvas->mapSettings().mapToLayerCoordinates( mLayer, mMapCanvas->extent() );
+    r.setFilterRect( rect );
+  }
+  mMasterModel->setRequest( r );
+  mMasterModel->loadLayer();
 }
 
 void QgsDualView::featureFormAttributeChanged()
