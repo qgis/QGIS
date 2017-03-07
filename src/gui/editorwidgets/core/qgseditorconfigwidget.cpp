@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgseditorconfigwidget.h"
-
+#include "qgspropertyoverridebutton.h"
 
 QgsEditorConfigWidget::QgsEditorConfigWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QWidget( parent )
@@ -32,5 +32,19 @@ int QgsEditorConfigWidget::field()
 QgsVectorLayer *QgsEditorConfigWidget::layer()
 {
   return mLayer;
+}
+
+QgsExpressionContext QgsEditorConfigWidget::createExpressionContext() const
+{
+  return QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+}
+
+void QgsEditorConfigWidget::initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsWidgetWrapper::Property key )
+{
+  button->blockSignals( true );
+  button->init( key, mPropertyCollection, QgsWidgetWrapper::propertyDefinitions(), mLayer );
+  connect( button, &QgsPropertyOverrideButton::changed, this, &QgsEditorConfigWidget::changed );
+  button->registerExpressionContextGenerator( this );
+  button->blockSignals( false );
 }
 

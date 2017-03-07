@@ -21,25 +21,11 @@
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgspropertyoverridebutton.h"
+#include "qgseditorwidgetwrapper.h"
 
 #include <QFileDialog>
 
 class QgsExternalResourceWidgetWrapper;
-
-const QgsPropertiesDefinition &QgsExternalResourceConfigDlg::propertyDefinitions()
-{
-  static QgsPropertiesDefinition propertyDefinitions;
-
-  if ( propertyDefinitions.isEmpty() )
-  {
-    propertyDefinitions = QgsPropertiesDefinition
-    {
-      { RootPath, QgsPropertyDefinition( "propertyRootPath", QgsPropertyDefinition::DataTypeString, QObject::tr( "Root path" ), QString() ) }
-    };
-  }
-
-  return propertyDefinitions;
-}
 
 QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )
@@ -57,9 +43,7 @@ QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer *vl, 
 
   connect( mRootPathButton, &QToolButton::clicked, this, &QgsExternalResourceConfigDlg::chooseDefaultPath );
 
-  mRootPathPropertyOverrideButton->init( RootPath, mPropertyCollection, propertyDefinitions(), vl );
-
-  mRootPathPropertyOverrideButton->setVectorLayer( vl );
+  initializeDataDefinedButton( mRootPathPropertyOverrideButton, QgsEditorWidgetWrapper::RootPath );
   connect( mRootPathPropertyOverrideButton, &QgsPropertyOverrideButton::changed, this, &QgsExternalResourceConfigDlg::rootPathPropertyChanged );
 
   // Activate Relative Default Path option only if Default Path is set
@@ -116,8 +100,7 @@ void QgsExternalResourceConfigDlg::chooseDefaultPath()
 void QgsExternalResourceConfigDlg::rootPathPropertyChanged()
 {
   QgsProperty prop = mRootPathPropertyOverrideButton->toProperty();
-
-  setRootPathExpression( prop.expressionString() );
+  setRootPathExpression( prop );
 
   mRootPathExpression->setVisible( prop.isActive() );
   mRootPath->setVisible( !prop.isActive() );
@@ -172,9 +155,6 @@ QVariantMap QgsExternalResourceConfigDlg::config()
   if ( !mRootPath->text().isEmpty() )
     cfg.insert( QStringLiteral( "DefaultRoot" ), mRootPath->text() );
 
-  if ( !mRootPathExpression->text().isEmpty() )
-    cfg.insert( QStringLiteral( "DefaultRootExpression" ), mRootPathExpression->toolTip() );
-
   // Save Storage Mode
   cfg.insert( QStringLiteral( "StorageMode" ), mStorageButtonGroup->checkedId() );
 
@@ -226,17 +206,8 @@ void QgsExternalResourceConfigDlg::setConfig( const QVariantMap &config )
   }
 
   mRootPath->setText( config.value( QStringLiteral( "DefaultRoot" ) ).toString() );
-  setRootPathExpression( config.value( QStringLiteral( "DefaultRootExpression" ) ).toString() );
 
-  bool rootPathIsExpression = config.value( QStringLiteral( "DefaultRootStyle" ) ) == QStringLiteral( "expression" );
-
-  QgsProperty prop = mRootPathPropertyOverrideButton->toProperty();
-  prop.setActive( rootPathIsExpression );
-  mRootPathPropertyOverrideButton->setToProperty( prop );
   rootPathPropertyChanged();
-
-  mRootPathExpression->setVisible( rootPathIsExpression );
-  mRootPath->setVisible( !rootPathIsExpression );
 
   // relative storage
   if ( config.contains( QStringLiteral( "RelativeStorage" ) ) )
@@ -281,18 +252,12 @@ void QgsExternalResourceConfigDlg::setConfig( const QVariantMap &config )
   }
 }
 
-void QgsExternalResourceConfigDlg::setRootPathExpression( const QString &expression )
+void QgsExternalResourceConfigDlg::setRootPathExpression( const QgsProperty &property )
 {
-  mRootPathExpression->setToolTip( expression );
-  mRootPathPropertyOverrideButton->setText( expression );
+  mRootPathExpression->setToolTip( property.asExpression() );
 
-  QgsProperty prop = mRootPathPropertyOverrideButton->toProperty();
-  prop.setExpressionString( expression );
-  mRootPathPropertyOverrideButton->setToProperty( prop );
-
-  QgsExpression exp( expression );
   QgsExpressionContext ctx = layer()->createExpressionContext();
 
-  mRootPathExpression->setText( exp.evaluate( &ctx ).toString() );
+  mRootPathExpression->setText( property.valueAsString( ctx ) );
   enableRelativeDefault();
 }

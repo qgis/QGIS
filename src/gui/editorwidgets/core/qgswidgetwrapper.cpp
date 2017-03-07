@@ -18,6 +18,15 @@
 
 #include <QWidget>
 
+
+QgsPropertiesDefinition QgsWidgetWrapper::sPropertyDefinitions;
+
+const QgsPropertiesDefinition &QgsWidgetWrapper::propertyDefinitions()
+{
+  QgsWidgetWrapper::initPropertyDefinitions();
+  return sPropertyDefinitions;
+}
+
 QgsWidgetWrapper::QgsWidgetWrapper( QgsVectorLayer *vl, QWidget *editor, QWidget *parent )
   : QObject( parent )
   , mWidget( editor )
@@ -89,4 +98,15 @@ void QgsWidgetWrapper::initWidget( QWidget *editor )
 void QgsWidgetWrapper::setEnabled( bool enabled )
 {
   Q_UNUSED( enabled );
+}
+
+void QgsWidgetWrapper::initPropertyDefinitions()
+{
+  if ( !sPropertyDefinitions.isEmpty() )
+    return;
+
+  sPropertyDefinitions = QgsPropertiesDefinition
+  {
+    { RootPath, QgsPropertyDefinition( "propertyRootPath", QgsPropertyDefinition::DataTypeString, QObject::tr( "Root path" ), QString() ) }
+  };
 }
