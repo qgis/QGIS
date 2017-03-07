@@ -213,8 +213,8 @@ QgsMapCanvas::~QgsMapCanvas()
 
   if ( mJob )
   {
-    mJob->cancel();
-    Q_ASSERT( !mJob );
+    whileBlocking( mJob )->cancel();
+    delete mJob;
   }
 
   delete mCache;
