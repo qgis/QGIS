@@ -27,6 +27,7 @@
 #include "checks/qgsgeometrymultipartcheck.h"
 #include "checks/qgsgeometryoverlapcheck.h"
 #include "checks/qgsgeometrysegmentlengthcheck.h"
+#include "checks/qgsgeometryselfcontactcheck.h"
 #include "checks/qgsgeometryselfintersectioncheck.h"
 #include "checks/qgsgeometrysliverpolygoncheck.h"
 #include "checks/qgsgeometrytypecheck.h"
@@ -354,6 +355,34 @@ template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometrySegmentLengthCh
 }
 
 REGISTER_QGS_GEOMETRY_CHECK_FACTORY( QgsGeometryCheckFactoryT<QgsGeometrySegmentLengthCheck> )
+
+///////////////////////////////////////////////////////////////////////////////
+
+template<> void QgsGeometryCheckFactoryT<QgsGeometrySelfContactCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab &ui ) const
+{
+  ui.checkBoxSelfContacts->setChecked( QgsSettings().value( sSettingsGroup + "checkSelfContacts" ).toBool() );
+}
+
+template<> bool QgsGeometryCheckFactoryT<QgsGeometrySelfContactCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, QgsWkbTypes::GeometryType geomType ) const
+{
+  ui.checkBoxSelfContacts->setEnabled( geomType == QgsWkbTypes::PolygonGeometry || geomType == QgsWkbTypes::LineGeometry );
+  return ui.checkBoxSelfContacts->isEnabled();
+}
+
+template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometrySelfContactCheck>::createInstance( QgsFeaturePool *featurePool, const Ui::QgsGeometryCheckerSetupTab &ui, double /*mapToLayerUnits*/ ) const
+{
+  QgsSettings().setValue( sSettingsGroup + "checkSelfContacts", ui.checkBoxSelfContacts->isChecked() );
+  if ( ui.checkBoxSelfContacts->isEnabled() && ui.checkBoxSelfContacts->isChecked() )
+  {
+    return new QgsGeometrySelfContactCheck( featurePool );
+  }
+  else
+  {
+    return 0;
+  }
+}
+
+REGISTER_QGS_GEOMETRY_CHECK_FACTORY( QgsGeometryCheckFactoryT<QgsGeometrySelfContactCheck> )
 
 ///////////////////////////////////////////////////////////////////////////////
 
