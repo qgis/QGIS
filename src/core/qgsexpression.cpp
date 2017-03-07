@@ -2190,34 +2190,29 @@ static QVariant fcnMakePolygon( const QVariantList& values, const QgsExpressionC
 
 static QVariant fcnMakeTriangle( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
-  if ( values.count() < 3 )
-  {
-    return QVariant();
-  }
-
-  QgsTriangle *tr = new QgsTriangle();
-  QgsLineString* lineString = new QgsLineString();
+  std::unique_ptr<QgsTriangle> tr( new QgsTriangle() );
+  std::unique_ptr<QgsLineString> lineString( new QgsLineString() );
   lineString->clear();
 
   Q_FOREACH ( const QVariant& value, values )
   {
     QgsGeometry geom = getGeometry( value, parent );
     if ( geom.isNull() )
-      continue;
+      return QVariant();
 
     if ( geom.type() != QgsWkbTypes::PointGeometry || geom.isMultipart() )
-      continue;
+      return QVariant();
 
     QgsPointV2* point = dynamic_cast< QgsPointV2* >( geom.geometry() );
     if ( !point )
-      continue;
+      return QVariant();
 
     lineString->addVertex( *point );
   }
 
-  tr->setExteriorRing( lineString );
+  tr->setExteriorRing( lineString.release() );
 
-  return QVariant::fromValue( QgsGeometry( tr ) );
+  return QVariant::fromValue( QgsGeometry( tr.release() ) );
 }
 
 static QVariant pointAt( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent ) // helper function
@@ -4024,7 +4019,10 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( QStringLiteral( "make_point_m" ), 3, fcnMakePointM, QStringLiteral( "GeometryGroup" ) )
     << new StaticFunction( QStringLiteral( "make_line" ), -1, fcnMakeLine, QStringLiteral( "GeometryGroup" ) )
     << new StaticFunction( QStringLiteral( "make_polygon" ), -1, fcnMakePolygon, QStringLiteral( "GeometryGroup" ) )
-    << new StaticFunction( QStringLiteral( "make_triangle" ), -1, fcnMakeTriangle, QStringLiteral( "GeometryGroup" ) )
+    << new StaticFunction( QStringLiteral( "make_triangle" ), ParameterList() << Parameter( QStringLiteral( "geometry" ) )
+                           << Parameter( QStringLiteral( "geometry" ) )
+                           << Parameter( QStringLiteral( "geometry" ) ),
+                           fcnMakeTriangle, QStringLiteral( "GeometryGroup" ) )
     << new StaticFunction( QStringLiteral( "$x_at" ), 1, fcnXat, QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>(), false, QStringList() << QStringLiteral( "xat" ) << QStringLiteral( "x_at" ) )
     << new StaticFunction( QStringLiteral( "$y_at" ), 1, fcnYat, QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>(), false, QStringList() << QStringLiteral( "yat" ) << QStringLiteral( "y_at" ) )
     << new StaticFunction( QStringLiteral( "x_min" ), 1, fcnXMin, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "xmin" ) )

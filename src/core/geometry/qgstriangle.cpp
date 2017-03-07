@@ -32,7 +32,7 @@ QgsTriangle::QgsTriangle( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsP
 {
   mWkbType = QgsWkbTypes::Triangle;
 
-  if ((( p1 == p2 ) || ( p1 == p3 ) || ( p2 == p3 ) ) || qgsDoubleNear( QgsGeometryUtils::leftOfLine( p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y() ), 0.0 ) )
+  if ( !validateGeom( p1, p2, p3 ) )
   {
     return;
   }
@@ -221,6 +221,11 @@ void QgsTriangle::setExteriorRing( QgsCurve *ring )
       lineString->close();
     }
     ring = lineString;
+  }
+
+  if ( !validateGeom( ring->vertexAt( QgsVertexId( 0, 0, 0 ) ), ring->vertexAt( QgsVertexId( 0, 0, 1 ) ), ring->vertexAt( QgsVertexId( 0, 0, 2 ) ) ) )
+  {
+    return;
   }
 
   delete mExteriorRing;
@@ -425,6 +430,16 @@ QgsPointV2 QgsTriangle::inscribedCenter() const
 double QgsTriangle::inscribedRadius() const
 {
   return ( 2.0 * area() / perimeter() );
+}
+
+bool QgsTriangle::validateGeom( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &p3 )
+{
+  if ((( p1 == p2 ) || ( p1 == p3 ) || ( p2 == p3 ) ) || qgsDoubleNear( QgsGeometryUtils::leftOfLine( p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y() ), 0.0 ) )
+  {
+    return false;
+  }
+
+  return true;
 }
 
 /*
