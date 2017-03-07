@@ -503,6 +503,16 @@ void QgisAppInterface::unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigW
   qgis->unregisterMapLayerPropertiesFactory( factory );
 }
 
+void QgisAppInterface::registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory )
+{
+  qgis->registerOptionsWidgetFactory( factory );
+}
+
+void QgisAppInterface::unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory )
+{
+  qgis->unregisterOptionsWidgetFactory( factory );
+}
+
 void QgisAppInterface::registerCustomDropHandler( QgsCustomDropHandler *handler )
 {
   qgis->registerCustomDropHandler( handler );

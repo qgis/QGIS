@@ -167,6 +167,7 @@
 #include "qgsfieldformatter.h"
 #include "qgsfieldformatterregistry.h"
 #include "qgsformannotation.h"
+#include "qgisgui.h"
 #include "qgshtmlannotation.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsgpsinformationwidget.h"
@@ -9105,7 +9106,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage )
 
   bool oldCapitalize = mySettings.value( QStringLiteral( "/qgis/capitalizeLayerName" ), QVariant( false ) ).toBool();
 
-  QgsOptions *optionsDialog = new QgsOptions( parent );
+  std::unique_ptr< QgsOptions > optionsDialog( new QgsOptions( parent, QgisGui::ModalDialogFlags, mOptionsWidgetFactories ) );
   if ( !currentPage.isEmpty() )
   {
     optionsDialog->setCurrentPage( currentPage );
@@ -9167,8 +9168,6 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage )
     mMagnifierWidget->setDefaultFactor( factor );
     mMagnifierWidget->updateMagnification( factor );
   }
-
-  delete optionsDialog;
 }
 
 void QgisApp::fullHistogramStretch()
@@ -9383,6 +9382,16 @@ void QgisApp::unregisterMapLayerPropertiesFactory( QgsMapLayerConfigWidgetFactor
   mMapLayerPanelFactories.removeAll( factory );
   if ( mMapStyleWidget )
     mMapStyleWidget->setPageFactories( mMapLayerPanelFactories );
+}
+
+void QgisApp::registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory )
+{
+  mOptionsWidgetFactories << factory;
+}
+
+void QgisApp::unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory )
+{
+  mOptionsWidgetFactories.removeAll( factory );
 }
 
 //! Get a pointer to the currently selected map layer

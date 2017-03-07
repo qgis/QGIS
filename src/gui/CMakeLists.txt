@@ -416,6 +416,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsnewvectorlayerdialog.h
   qgsnewgeopackagelayerdialog.h
   qgsoptionsdialogbase.h
+  qgsoptionswidgetfactory.h
   qgsorderbydialog.h
   qgsowssourceselect.h
   qgssourceselectdialog.h
