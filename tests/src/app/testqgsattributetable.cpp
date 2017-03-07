@@ -40,6 +40,7 @@ class TestQgsAttributeTable : public QObject
     void cleanup() {} // will be called after every testfunction.
     void testFieldCalculation();
     void testFieldCalculationArea();
+    void testNoGeom();
 
   private:
     QgisApp * mQgisApp;
@@ -59,6 +60,13 @@ void TestQgsAttributeTable::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   mQgisApp = new QgisApp();
+
+  // setup the test QSettings environment
+  QCoreApplication::setOrganizationName( QString( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QString( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QString( "QGIS-TEST" ) );
+
+  QSettings().setValue( QString( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll );
 }
 
 //runs after all tests
@@ -166,6 +174,26 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   QVERIFY( fit.nextFeature( f ) );
   expected = 389.6117565069;
   QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 0.001 ) );
+}
+
+void TestQgsAttributeTable::testNoGeom()
+{
+  //test that by default the attribute table DOESN'T fetch geometries (because performance)
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QString( "LineString?crs=epsg:3111&field=pk:int&field=col1:double" ), QString( "vl" ), QString( "memory" ) ) );
+  QVERIFY( tempLayer->isValid() );
+
+  QSettings().setValue( QString( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll );
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get() ) );
+
+  QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
+  QVERIFY( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry );
+
+  // but if we are requesting only visible features, then geometry must be fetched...
+
+  QSettings().setValue( QString( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowVisible );
+  dlg.reset( new QgsAttributeTableDialog( tempLayer.get() ) );
+  QVERIFY( dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
+  QVERIFY( !( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry ) );
 }
 
 QTEST_MAIN( TestQgsAttributeTable )
