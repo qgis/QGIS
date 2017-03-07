@@ -332,7 +332,7 @@ void QgsAttributeTableDialog::updateTitle()
   QWidget *w = mDock ? qobject_cast<QWidget*>( mDock ) : qobject_cast<QWidget*>( this );
   w->setWindowTitle( tr( " %1 :: Features total: %2, filtered: %3, selected: %4%5" )
                      .arg( mLayer->name() )
-                     .arg( mMainView->featureCount() )
+                     .arg( qMax( static_cast< long >( mMainView->featureCount() ), mLayer->featureCount() ) ) // layer count may be estimated, so use larger of the two
                      .arg( mMainView->filteredFeatureCount() )
                      .arg( mLayer->selectedFeatureCount() )
                      .arg( mRubberBand ? tr( ", spatially limited" ) : "" )

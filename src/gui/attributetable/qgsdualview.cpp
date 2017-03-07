@@ -759,6 +759,7 @@ void QgsDualView::updateSelectedFeatures()
     r.disableFilter();
   mMasterModel->setRequest( r );
   mMasterModel->loadLayer();
+  emit filterChanged();
 }
 
 void QgsDualView::extentChanged()
@@ -771,6 +772,7 @@ void QgsDualView::extentChanged()
     mMasterModel->setRequest( r );
     mMasterModel->loadLayer();
   }
+  emit filterChanged();
 }
 
 void QgsDualView::featureFormAttributeChanged()
