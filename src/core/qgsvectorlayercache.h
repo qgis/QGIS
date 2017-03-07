@@ -103,9 +103,16 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * Enable or disable the caching of geometries
      *
      * @param cacheGeometry    Enable or disable the caching of geometries
+     * @see cacheGeometry()
      */
     void setCacheGeometry( bool cacheGeometry );
 
+    /**
+     * Returns true if the cache will fetch and cache feature geometries.
+     * @note added in QGIS 3.0
+     * @see setCacheGeometry()
+     */
+    bool cacheGeometry() const { return mCacheGeometry; }
 
     /**
      * Set the subset of attributes to be cached

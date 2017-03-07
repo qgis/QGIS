@@ -53,6 +53,7 @@ class TestQgsDualView : public QObject
     void testSort();
 
     void testAttributeFormSharedValueScanning();
+    void testNoGeom();
 
   private:
     QgsMapCanvas* mCanvas;
@@ -264,6 +265,36 @@ void TestQgsDualView::testAttributeFormSharedValueScanning()
   QCOMPARE( fieldSharedValues.value( 2 ).toInt(), 3 );
   QCOMPARE( fieldSharedValues.value( 3 ).toInt(), 2 );
   QVERIFY( mixedValueFields.isEmpty() );
+}
+
+void TestQgsDualView::testNoGeom()
+{
+  //test that both the master model and cache for the dual view either both request geom or both don't request geom
+  QScopedPointer< QgsDualView > dv( new QgsDualView() );
+
+  // request with geometry
+  QgsFeatureRequest req;
+  dv->init( mPointsLayer, mCanvas, req );
+  // check that both master model AND cache are using geometry
+  QgsAttributeTableModel* model = dv->masterModel();
+  QVERIFY( model->layerCache()->cacheGeometry() );
+  QVERIFY( !( model->request().flags() & QgsFeatureRequest::NoGeometry ) );
+
+  // request with NO geometry, but using filter rect (which should override and request geom)
+  req = QgsFeatureRequest().setFilterRect( QgsRectangle( 1, 2, 3, 4 ) );
+  dv.reset( new QgsDualView() );
+  dv->init( mPointsLayer, mCanvas, req );
+  model = dv->masterModel();
+  QVERIFY( model->layerCache()->cacheGeometry() );
+  QVERIFY( !( model->request().flags() & QgsFeatureRequest::NoGeometry ) );
+
+  // request with NO geometry
+  req = QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry );
+  dv.reset( new QgsDualView() );
+  dv->init( mPointsLayer, mCanvas, req );
+  model = dv->masterModel();
+  QVERIFY( !model->layerCache()->cacheGeometry() );
+  QVERIFY(( model->request().flags() & QgsFeatureRequest::NoGeometry ) );
 }
 
 QTEST_MAIN( TestQgsDualView )

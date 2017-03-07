@@ -81,7 +81,7 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const Qg
   connect( mTableView->horizontalHeader(), SIGNAL( customContextMenuRequested( QPoint ) ), this, SLOT( showViewHeaderMenu( QPoint ) ) );
   connect( mTableView, SIGNAL( columnResized( int, int ) ), this, SLOT( tableColumnResized( int, int ) ) );
 
-  initLayerCache( !request.filterRect().isNull() );
+  initLayerCache( !( request.flags() & QgsFeatureRequest::NoGeometry ) || !request.filterRect().isNull() );
   initModels( mapCanvas, request );
 
   mConditionalFormatWidget->setLayer( mLayer );
