@@ -9,7 +9,7 @@
 #                    Alexander Bruy (alexander.bruy@gmail.com),
 #                    Maxim Dubinin (sim@gis-lab.info)
 #
-# Copyright (C) 2014 Tom Kralidis (tomkralidis@gmail.com)
+# Copyright (C) 2017 Tom Kralidis (tomkralidis@gmail.com)
 #
 # This source is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free
@@ -47,12 +47,16 @@ class NewConnectionDialog(QDialog, BASE_CLASS):
         self.settings = QgsSettings()
         self.conn_name = None
         self.conn_name_orig = conn_name
+        self.username = None
+        self.password = None
 
     def accept(self):
         """add CSW entry"""
 
         conn_name = self.leName.text().strip()
         conn_url = self.leURL.text().strip()
+        conn_username = self.leUsername.text().strip()
+        conn_password = self.lePassword.text().strip()
 
         if any([conn_name == '', conn_url == '']):
             QMessageBox.warning(self, self.tr('Save connection'),
@@ -85,6 +89,11 @@ class NewConnectionDialog(QDialog, BASE_CLASS):
 
             self.settings.setValue(keyurl, conn_url)
             self.settings.setValue('/MetaSearch/selected', conn_name)
+
+            if conn_username != '':
+                self.settings.setValue('%s/username' % key, conn_username)
+            if conn_password != '':
+                self.settings.setValue('%s/password' % key, conn_password)
 
             QDialog.accept(self)
 
