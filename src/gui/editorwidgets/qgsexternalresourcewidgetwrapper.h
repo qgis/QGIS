@@ -61,8 +61,6 @@ class GUI_EXPORT QgsExternalResourceWidgetWrapper : public QgsEditorWidgetWrappe
     QLineEdit *mLineEdit = nullptr;
     QLabel *mLabel = nullptr;
     QgsExternalResourceWidget *mQgsWidget = nullptr;
-
-    QgsExpression mDefaultRootExpression;
 };
 
 #endif // QGSEXTERNALRESOURCEWIDGETWRAPPER_H

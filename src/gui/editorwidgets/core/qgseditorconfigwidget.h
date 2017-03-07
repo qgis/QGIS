@@ -18,9 +18,11 @@
 
 #include <QWidget>
 #include "qgis_gui.h"
-
+#include "qgseditorwidgetwrapper.h"
+#include "qgsexpressioncontextgenerator.h"
 
 class QgsVectorLayer;
+class QgsPropertyOverrideButton;
 
 /** \ingroup gui
  * This class should be subclassed for every configurable editor widget type.
@@ -30,7 +32,7 @@ class QgsVectorLayer;
  * It will only be instantiated by {@see QgsEditorWidgetFactory}
  */
 
-class GUI_EXPORT QgsEditorConfigWidget : public QWidget
+class GUI_EXPORT QgsEditorConfigWidget : public QWidget, public QgsExpressionContextGenerator
 {
     Q_OBJECT
   public:
@@ -72,12 +74,26 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget
      */
     QgsVectorLayer *layer();
 
+    QgsExpressionContext createExpressionContext() const override;
+
   signals:
 
     /** Emitted when the configuration of the widget is changed.
      * @note added in QGIS 3.0
      */
     void changed();
+
+  protected:
+
+    /**
+     * Registers a property override button, setting up its initial value, connections and description.
+     * @param button button to register
+     * @param key corresponding data defined property key
+     */
+    void initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsWidgetWrapper::Property key );
+
+    //! Temporary property collection for config widgets
+    QgsPropertyCollection mPropertyCollection;
 
   private:
     QgsVectorLayer *mLayer = nullptr;

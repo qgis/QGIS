@@ -24,6 +24,7 @@ class QgsVectorLayer;
 
 #include "qgsattributeeditorcontext.h"
 #include "qgis_gui.h"
+#include "qgspropertycollection.h"
 
 /** \ingroup gui
  * Manages an editor widget
@@ -40,6 +41,20 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
 {
     Q_OBJECT
   public:
+
+    /**
+     * Data defined properties for different editor widgets.
+     */
+    enum Property
+    {
+      RootPath = 0, //!< Root path for external resource
+    };
+
+    /**
+     * Returns the editor widget property definitions.
+     * @note added in QGIS 3.0
+     */
+    static const QgsPropertiesDefinition &propertyDefinitions();
 
     /**
      * Create a new widget wrapper
@@ -133,6 +148,26 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      */
     virtual bool valid() const = 0;
 
+
+    /** Returns a reference to the editor widget's property collection, used for data defined overrides.
+     * @note added in QGIS 3.0
+     * @see setDataDefinedProperties()
+     */
+    QgsPropertyCollection &dataDefinedProperties() { return mPropertyCollection; }
+
+    /** Returns a reference to the editor widget's property collection, used for data defined overrides.
+     * @note added in QGIS 3.0
+     * @see setDataDefinedProperties()
+     */
+    const QgsPropertyCollection &dataDefinedProperties() const { return mPropertyCollection; }
+
+    /** Sets the editor widget's property collection, used for data defined overrides.
+     * @param collection property collection. Existing properties will be replaced.
+     * @note added in QGIS 3.0
+     * @see dataDefinedProperties()
+     */
+    void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mPropertyCollection = collection; }
+
   protected:
 
     /**
@@ -154,6 +189,9 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      * @param editor The widget which will represent this attribute editor in a form.
      */
     virtual void initWidget( QWidget *editor );
+
+    //! Data defined property collection
+    QgsPropertyCollection mPropertyCollection;
 
   public slots:
 
@@ -180,6 +218,11 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     QWidget *mParent = nullptr;
     QgsVectorLayer *mLayer = nullptr;
     bool mInitialized;
+
+    //! Property definitions
+    static QgsPropertiesDefinition sPropertyDefinitions;
+
+    static void initPropertyDefinitions();
 };
 
 // We'll use this class inside a QVariant in the widgets properties
