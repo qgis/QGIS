@@ -43,7 +43,6 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
 
   mMainWidget->layout()->addWidget( mMapCanvas );
 
-  connect( mActionSetCrs, &QAction::triggered, this, &QgsMapCanvasDockWidget::setMapCrs );
   connect( mActionSyncView, &QAction::toggled, this, &QgsMapCanvasDockWidget::syncView );
 
   QMenu *menu = new QMenu();
@@ -53,6 +52,11 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   toolButton->setPopupMode( QToolButton::InstantPopup );
   toolButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapSettings.svg" ) ) );
   mToolbar->addWidget( toolButton );
+
+  connect( mActionSetCrs, &QAction::triggered, this, &QgsMapCanvasDockWidget::setMapCrs );
+  connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapCanvasDockWidget::mapCrsChanged );
+  mapCrsChanged();
+  menu->addAction( mActionSetCrs );
 
   QgsMapSettingsAction *settingsAction = new QgsMapSettingsAction( menu );
   menu->addAction( settingsAction );
@@ -186,6 +190,13 @@ void QgsMapCanvasDockWidget::mapExtentChanged()
   destCanvas->refresh();
 
   syncView( true );
+}
+
+void QgsMapCanvasDockWidget::mapCrsChanged()
+{
+  mActionSetCrs->setText( tr( "Change Map CRS (%1)" ).arg( mMapCanvas->mapSettings().destinationCrs().isValid() ?
+                          mMapCanvas->mapSettings().destinationCrs().authid() :
+                          tr( "No projection" ) ) );
 }
 
 QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )

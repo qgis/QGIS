@@ -61,6 +61,7 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     void setMapCrs();
     void syncView( bool enabled );
     void mapExtentChanged();
+    void mapCrsChanged();
 
   private:
 

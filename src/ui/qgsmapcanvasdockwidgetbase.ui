@@ -41,7 +41,6 @@
       <property name="floatable">
        <bool>false</bool>
       </property>
-      <addaction name="mActionSetCrs"/>
       <addaction name="mActionSyncView"/>
      </widget>
     </item>
