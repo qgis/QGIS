@@ -50,6 +50,7 @@ class TestQgsDualView : public QObject
     void testColumnHeaders();
 
     void testData();
+    void testFilterSelected();
 
     void testSelectAll();
 
@@ -132,6 +133,36 @@ void TestQgsDualView::testData()
     QModelIndex index = mDualView->tableView()->model()->index( 0, i );
     QCOMPARE( mDualView->tableView()->model()->data( index ).toString(), fld.displayString( feature.attribute( i ) ) );
   }
+}
+
+void TestQgsDualView::testFilterSelected()
+{
+  QgsFeature feature;
+  QList< QgsFeatureId > ids;
+  QgsFeatureIterator it = mPointsLayer->getFeatures( QgsFeatureRequest().setOrderBy( QgsFeatureRequest::OrderBy() << QgsFeatureRequest::OrderByClause( "Heading" ) ) );
+  while ( it.nextFeature( feature ) )
+    ids << feature.id();
+
+  // select some features
+  QList< QgsFeatureId > selected;
+  selected << ids.at( 1 ) << ids.at( 3 );
+  mPointsLayer->selectByIds( selected.toSet() );
+
+  mDualView->setFilterMode( QgsAttributeTableFilterModel::ShowSelected );
+  QCOMPARE( mDualView->tableView()->model()->rowCount(), 2 );
+
+  int headingIdx = mPointsLayer->fields().lookupField( "Heading" );
+  QgsField fld = mPointsLayer->fields().at( headingIdx );
+  for ( int i = 0; i < selected.count(); ++i )
+  {
+    mPointsLayer->getFeatures( QgsFeatureRequest().setFilterFid( selected.at( i ) ) ).nextFeature( feature );
+    QModelIndex index = mDualView->tableView()->model()->index( i, headingIdx );
+    QCOMPARE( mDualView->tableView()->model()->data( index ).toString(), fld.displayString( feature.attribute( headingIdx ) ) );
+  }
+
+  // select none
+  mPointsLayer->removeSelection();
+  QCOMPARE( mDualView->tableView()->model()->rowCount(), 0 );
 }
 
 void TestQgsDualView::testSelectAll()
