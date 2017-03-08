@@ -56,7 +56,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     // inherited: QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
     // inherited: QString asJSON( int precision = 17 ) const;
 
-    // inherited: QgsPolygonV2* surfaceToPolygon() const override;
+    QgsPolygonV2* surfaceToPolygon() const override;
 
     QgsAbstractGeometry* toCurveType() const override;
 

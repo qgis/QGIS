@@ -3278,6 +3278,34 @@ void TestQgsGeometry::triangle()
   QVERIFY( t2.exteriorRing()->isClosed() );
   QCOMPARE( t2.nCoordinates(), 4 );
 
+  // invalid number of points
+  ext = new QgsLineString();
+  t2.clear();
+  ext->setPoints( QgsPointSequence() << QgsPointV2( 0, 0 ) << QgsPointV2( 0, 10 ) );
+  t2.setExteriorRing( ext );
+  QVERIFY( t2.isEmpty() );
+
+  ext = new QgsLineString();
+  t2.clear();
+  ext->setPoints( QgsPointSequence() << QgsPointV2( 0, 0 ) << QgsPointV2( 0, 10 ) << QgsPointV2( 10, 10 ) << QgsPointV2( 5, 10 ) << QgsPointV2( 8, 10 ) );
+  t2.setExteriorRing( ext );
+  QVERIFY( t2.isEmpty() );
+
+  // invalid exterior ring
+  ext = new QgsLineString();
+  t2.clear();
+  ext->setPoints( QgsPointSequence() << QgsPointV2( 0, 0 ) << QgsPointV2( 0, 10 ) << QgsPointV2( 10, 10 ) << QgsPointV2( 5, 10 ) );
+  t2.setExteriorRing( ext );
+  QVERIFY( t2.isEmpty() );
+
+  // circular ring
+  QgsCircularString* circularRing = new QgsCircularString();
+  t2.clear();
+  circularRing->setPoints( QgsPointSequence() << QgsPointV2( 0, 0 ) << QgsPointV2( 0, 10 ) << QgsPointV2( 10, 10 ) );
+  QVERIFY( circularRing->hasCurvedSegments() );
+  t2.setExteriorRing( circularRing );
+  QVERIFY( t2.isEmpty() );
+
   //constructor with 3 points
   // double points
   QgsTriangle t3( QgsPointV2( 0, 0 ), QgsPointV2( 0, 0 ), QgsPointV2( 10, 10 ) );
@@ -3335,7 +3363,6 @@ void TestQgsGeometry::triangle()
   QVERIFY( t3.exteriorRing() );
   QVERIFY( !t3.interiorRing( 0 ) );
 
-
   // clone
   QgsTriangle *t4 = t3.clone();
   QCOMPARE( t3, *t4 );
@@ -3345,14 +3372,26 @@ void TestQgsGeometry::triangle()
   QgsTriangle t5;
   ext = new QgsLineString();
   ext->setPoints( QgsPointSequence() << QgsPointV2( QgsWkbTypes::PointZM, 0, 0, 1, 5 )
-                  << QgsPointV2( QgsWkbTypes::PointZM, 0, 10, 2, 6 ) << QgsPointV2( QgsWkbTypes::PointZM, 10, 10, 3, 7 )
-                  << QgsPointV2( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) << QgsPointV2( QgsWkbTypes::PointZM, 0, 0, 1, 9 ) );
+                  << QgsPointV2( QgsWkbTypes::PointZM, 0, 10, 2, 6 ) << QgsPointV2( QgsWkbTypes::PointZM, 10, 10, 3, 7 ) );
   t5.setExteriorRing( ext );
   QString wkt = t5.asWkt();
   QVERIFY( !wkt.isEmpty() );
   QgsTriangle t6;
   QVERIFY( t6.fromWkt( wkt ) );
   QCOMPARE( t5, t6 );
+
+  // conversion
+  QgsPolygonV2 p1;
+  ext = new QgsLineString();
+  ext->setPoints( QgsPointSequence() << QgsPointV2( QgsWkbTypes::PointZM, 0, 0, 1, 5 )
+                  << QgsPointV2( QgsWkbTypes::PointZM, 0, 10, 2, 6 ) << QgsPointV2( QgsWkbTypes::PointZM, 10, 10, 3, 7 ) );
+  p1.setExteriorRing( ext );
+  //toPolygon
+  std::unique_ptr< QgsPolygonV2 > poly( t5.toPolygon() );
+  QCOMPARE( *poly, p1 );
+  //surfaceToPolygon
+  std::unique_ptr< QgsPolygonV2 > surface( t5.surfaceToPolygon() );
+  QCOMPARE( *surface, p1 );
 
   //bad WKT
   QVERIFY( !t6.fromWkt( "Point()" ) );

@@ -160,6 +160,11 @@ bool QgsTriangle::fromWkt( const QString &wkt )
   return true;
 }
 
+QgsPolygonV2 *QgsTriangle::surfaceToPolygon() const
+{
+  return toPolygon();
+}
+
 QgsAbstractGeometry *QgsTriangle::toCurveType() const
 {
   std::unique_ptr<QgsCurvePolygon> curvePolygon( new QgsCurvePolygon() );
@@ -202,7 +207,11 @@ void QgsTriangle::setExteriorRing( QgsCurve *ring )
     ring = line;
   }
 
-  if ( ring->numPoints() == 4 )
+  if (( ring->numPoints() > 4 ) || ( ring->numPoints() < 3 ) )
+  {
+    return;
+  }
+  else if ( ring->numPoints() == 4 )
   {
     if ( !ring->isClosed() )
     {
