@@ -240,8 +240,6 @@ void QgsNodeTool2::clearDragBands()
 
 void QgsNodeTool2::cadCanvasPressEvent( QgsMapMouseEvent *e )
 {
-  qDebug( "PRESS %d,%d", e->pos().x(), e->pos().y() );
-
   setHighlightedNodes( QList<Vertex>() ); // reset selection
 
   if ( e->button() == Qt::LeftButton )
@@ -266,8 +264,6 @@ void QgsNodeTool2::cadCanvasPressEvent( QgsMapMouseEvent *e )
 
 void QgsNodeTool2::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  qDebug( "RELEASE %d,%d", e->pos().x(), e->pos().y() );
-
   if ( mNewVertexFromDoubleClick )
   {
     QgsPointLocator::Match m( *mNewVertexFromDoubleClick );
@@ -314,25 +310,21 @@ void QgsNodeTool2::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   }
   else  // selection rect is not being dragged
   {
-    qDebug( "release: no selection rect!" );
     if ( e->button() == Qt::LeftButton )
     {
       // accepting action
       if ( mDraggingVertex )
       {
         QgsPointLocator::Match match = e->mapPointMatch();
-        qDebug( "release: move vertex" );
         moveVertex( e->mapPoint(), &match );
       }
       else if ( mDraggingEdge )
       {
         // do not use e.mapPoint() as it may be snapped
-        qDebug( "release: move edge" );
         moveEdge( toMapCoordinates( e->pos() ) );
       }
       else
       {
-        qDebug( "release: start dragging" );
         startDragging( e );
       }
     }
@@ -474,14 +466,12 @@ QgsPointLocator::Match QgsNodeTool2::snapToEditableLayer( QgsMapMouseEvent *e )
 {
   QgsPoint mapPoint = toMapCoordinates( e->pos() );
   double tol = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
-  qDebug( "snap: pt %f,%f tol %f", mapPoint.x(), mapPoint.y(), tol );
 
   QgsSnappingConfig config( QgsProject::instance() );
   config.setEnabled( true );
   config.setMode( QgsSnappingConfig::AdvancedConfiguration );
   config.setIntersectionSnapping( false );  // only snap to layers
 
-  qDebug( "canvas layers: %d", canvas()->layers().count() );
   Q_FOREACH ( QgsMapLayer *layer, canvas()->layers() )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
@@ -490,7 +480,6 @@ QgsPointLocator::Match QgsNodeTool2::snapToEditableLayer( QgsMapMouseEvent *e )
 
     config.setIndividualLayerSettings( vlayer, QgsSnappingConfig::IndividualLayerSettings(
                                          true, QgsSnappingConfig::VertexAndSegment, tol, QgsTolerance::ProjectUnits ) );
-    qDebug( "will use layer %s tolerance %f", vlayer->name().toAscii().data(), tol );
   }
 
   QgsSnappingUtils *snapUtils = canvas()->snappingUtils();
@@ -736,13 +725,11 @@ void QgsNodeTool2::startDragging( QgsMapMouseEvent *e )
   QgsPoint mapPoint = toMapCoordinates( e->pos() );
   if ( isNearEndpointMarker( mapPoint ) )
   {
-    qDebug( "start drag at endpoint" );
     startDraggingAddVertexAtEndpoint( mapPoint );
     return;
   }
 
   QgsPointLocator::Match m = snapToEditableLayer( e );
-  qDebug( "match type: %d", m.type() );
   if ( !m.isValid() )
     return;
 
@@ -752,7 +739,6 @@ void QgsNodeTool2::startDragging( QgsMapMouseEvent *e )
   // adding a new vertex instead of moving a vertex
   if ( m.hasEdge() )
   {
-    qDebug( "dragging edge!" );
     // only start dragging if we are near edge center
     mapPoint = toMapCoordinates( e->pos() );
     bool isNearCenter = matchEdgeCenterTest( m, mapPoint );
@@ -763,7 +749,6 @@ void QgsNodeTool2::startDragging( QgsMapMouseEvent *e )
   }
   else   // vertex
   {
-    qDebug( "dragging vertex!" );
     startDraggingMoveVertex( e->mapPoint(), m );
   }
 }
@@ -1027,12 +1012,11 @@ void QgsNodeTool2::moveVertex( const QgsPoint &mapPoint, const QgsPointLocator::
   stopDragging();
 
   QgsPoint layerPoint = matchToLayerPoint( dragLayer, mapPoint, mapPointMatch );
-  qDebug( "layer pt: %f,%f", layerPoint.x(), layerPoint.y() );
 
   QgsVertexId vid;
   if ( !geom.vertexIdFromVertexNr( dragVertexId, vid ) )
   {
-    qDebug( "invalid vertex index" );
+    QgsDebugMsg( "invalid vertex index" );
     return;
   }
 
@@ -1046,7 +1030,7 @@ void QgsNodeTool2::moveVertex( const QgsPoint &mapPoint, const QgsPointLocator::
 
     if ( !geomTmp->insertVertex( vid, QgsPointV2( layerPoint ) ) )
     {
-      qDebug( "append vertex failed!" );
+      QgsDebugMsg( "append vertex failed!" );
       return;
     }
   }
@@ -1054,7 +1038,7 @@ void QgsNodeTool2::moveVertex( const QgsPoint &mapPoint, const QgsPointLocator::
   {
     if ( !geomTmp->moveVertex( vid, QgsPointV2( layerPoint ) ) )
     {
-      qDebug( "move vertex failed!" );
+      QgsDebugMsg( "move vertex failed!" );
       return;
     }
   }
@@ -1082,7 +1066,7 @@ void QgsNodeTool2::moveVertex( const QgsPoint &mapPoint, const QgsPointLocator::
 
     if ( !topoGeom.moveVertex( point.x(), point.y(), topo.vertexId ) )
     {
-      qDebug( "[topo] move vertex failed!" );
+      QgsDebugMsg( "[topo] move vertex failed!" );
       continue;
     }
     edits[topo.layer][topo.fid] = topoGeom;
@@ -1091,8 +1075,6 @@ void QgsNodeTool2::moveVertex( const QgsPoint &mapPoint, const QgsPointLocator::
   // TODO: topo editing: add points when adding a vertex on a common edge
 
   // TODO: add topological points: when moving vertex - if snapped to something
-
-  qDebug( "writing changes now" );
 
   // do the changes to layers
   QHash<QgsVectorLayer *, QHash<QgsFeatureId, QgsGeometry> >::iterator it = edits.begin();

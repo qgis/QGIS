@@ -61,8 +61,6 @@ class TestQgsNodeTool : public QObject
     void testAddVertexAtEndpoint();
     void testDeleteVertex();
 
-    void undoChanged(); // TODO
-
   private:
     QPoint mapToScreen( double mapX, double mapY )
     {
@@ -127,7 +125,6 @@ void TestQgsNodeTool::initTestCase()
 
   mCanvas = new QgsMapCanvas();
 
-  qDebug( "canvas crs %s", mCanvas->mapSettings().destinationCrs().authid().toAscii().data() );
   mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( "EPSG:27700" ) );
 
   mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mCanvas );
@@ -176,8 +173,6 @@ void TestQgsNodeTool::initTestCase()
   QCOMPARE( mLayerPolygon->undoStack()->index(), 1 );
   QCOMPARE( mLayerPoint->undoStack()->index(), 1 );
 
-  connect( mLayerLine->undoStack(), &QUndoStack::indexChanged, this, &TestQgsNodeTool::undoChanged );
-
   mCanvas->setFrameStyle( QFrame::NoFrame );
   mCanvas->resize( 512, 512 );
   mCanvas->setExtent( QgsRectangle( 0, 0, 8, 8 ) );
@@ -187,8 +182,6 @@ void TestQgsNodeTool::initTestCase()
   QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
 
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerPolygon << mLayerPoint );
-
-  qDebug( "line layer extent: %s", mLayerLine->extent().toString().toAscii().data() );
 
   // TODO: set up snapping
 
@@ -207,11 +200,6 @@ void TestQgsNodeTool::cleanupTestCase()
   delete mAdvancedDigitizingDockWidget;
   delete mCanvas;
   QgsApplication::exitQgis();
-}
-
-void TestQgsNodeTool::undoChanged()
-{
-  qDebug( "UNDO CHANGED" );
 }
 
 void TestQgsNodeTool::testMoveVertex()
