@@ -1008,6 +1008,14 @@ ELSE(NOT APPLE)
     PUBLIC_HEADER "${QGIS_CORE_HDRS};${QGIS_CORE_MOC_HDRS}"
     LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}"
   )
+  # generated export header does not get copied with PUBLIC_HEADER files
+  ADD_CUSTOM_COMMAND(TARGET qgis_core
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy qgis_core.h
+            "${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR}/qgis_core.framework/Headers"
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    DEPENDS qgis_core.h
+  )
 ENDIF(NOT APPLE)
 
 #generate unversioned libs for android
