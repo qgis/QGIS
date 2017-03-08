@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgsmapcanvasdockwidget.h"
 #include "qgsmapcanvas.h"
+#include "qgscsexception.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsscalecombobox.h"
 #include "qgsstatusbarmagnifierwidget.h"
@@ -194,7 +195,18 @@ void QgsMapCanvasDockWidget::mapExtentChanged()
   syncView( false );
 
   QgsMapCanvas *destCanvas = sourceCanvas == mMapCanvas ? mMainCanvas : mMapCanvas;
-  destCanvas->setExtent( sourceCanvas->extent() );
+
+  // reproject extent
+  QgsCoordinateTransform ct( sourceCanvas->mapSettings().destinationCrs(),
+                             destCanvas->mapSettings().destinationCrs() );
+  try
+  {
+    destCanvas->setExtent( ct.transformBoundingBox( sourceCanvas->extent() ) );
+  }
+  catch ( QgsCsException & )
+  {
+    destCanvas->setExtent( sourceCanvas->extent() );
+  }
   destCanvas->refresh();
 
   syncView( true );
