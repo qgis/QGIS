@@ -123,6 +123,7 @@ void QgsMapToolAnnotation::canvasPressEvent( QgsMapMouseEvent *e )
       {
         QgsPoint mapPos = transformCanvasToAnnotation( toMapCoordinates( e->pos() ), annotation );
         annotation->setMapPosition( mapPos );
+        annotation->setMapPositionCrs( mCanvas->mapSettings().destinationCrs() );
         annotation->setRelativePosition( QPointF( e->posF().x() / mCanvas->width(),
                                          e->posF().y() / mCanvas->height() ) );
         annotation->setFrameSize( QSizeF( 200, 100 ) );
