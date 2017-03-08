@@ -233,6 +233,17 @@ inline double qgsRound( double x )
   return x < 0.0 ? std::ceil( x - 0.5 ) : std::floor( x + 0.5 );
 }
 
+/**
+ * Returns a double \a number, rounded (as close as possible) to the specified number of \a places.
+ *
+ * @note Added in QGIS 3.0
+ */
+inline double qgsRound( double number, double places )
+{
+  int scaleFactor = pow( 10, places );
+  return static_cast<double>( static_cast<qlonglong>( number * scaleFactor + 0.5 ) ) / scaleFactor;
+}
+
 /** Converts a string to a double in a permissive way, e.g., allowing for incorrect
  * numbers of digits between thousand separators
  * @param string string to convert

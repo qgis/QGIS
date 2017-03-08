@@ -322,8 +322,8 @@ class TestQgsDistanceArea(unittest.TestCase):
         self.assertEqual(QgsDistanceArea.formatDistance(0.5, 1, QgsUnitTypes.DistanceNauticalMiles, False), '0.5 NM')
         self.assertEqual(QgsDistanceArea.formatDistance(1.5, 1, QgsUnitTypes.DistanceNauticalMiles, True), '1.5 NM')
         self.assertEqual(QgsDistanceArea.formatDistance(1.5, 1, QgsUnitTypes.DistanceNauticalMiles, False), '1.5 NM')
-        self.assertEqual(QgsDistanceArea.formatDistance(1.5, 1, QgsUnitTypes.DistanceDegrees, True), '1.5 degrees')
-        self.assertEqual(QgsDistanceArea.formatDistance(1.0, 1, QgsUnitTypes.DistanceDegrees, False), '1.0 degree')
+        self.assertEqual(QgsDistanceArea.formatDistance(1.5, 1, QgsUnitTypes.DistanceDegrees, True), '1.5 deg')
+        self.assertEqual(QgsDistanceArea.formatDistance(1.0, 1, QgsUnitTypes.DistanceDegrees, False), '1.0 deg')
         self.assertEqual(QgsDistanceArea.formatDistance(1.0, 1, QgsUnitTypes.DistanceUnknownUnit, False), '1.0')
         QLocale.setDefault(QLocale.system())
 

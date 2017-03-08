@@ -39,6 +39,7 @@ General purpose distance and area calculator.
 class CORE_EXPORT QgsDistanceArea
 {
   public:
+
     //! Constructor
     QgsDistanceArea();
 

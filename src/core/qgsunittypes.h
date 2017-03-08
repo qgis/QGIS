@@ -38,7 +38,6 @@ class CORE_EXPORT QgsUnitTypes
     Q_GADGET
 
   public:
-
     //! Units of distance
     enum DistanceUnit
     {
@@ -49,6 +48,8 @@ class CORE_EXPORT QgsUnitTypes
       DistanceYards, //!< Imperial yards
       DistanceMiles, //!< Terrestrial miles
       DistanceDegrees, //!< Degrees, for planar geographic CRS distance measurements
+      DistanceCentimeters, //!< Centimeters
+      DistanceMillimeters, //!< Millimeters
       DistanceUnknownUnit, //!< Unknown distance unit
     };
 
@@ -73,6 +74,8 @@ class CORE_EXPORT QgsUnitTypes
       AreaAcres, //!< Acres
       AreaSquareNauticalMiles, //!< Square nautical miles
       AreaSquareDegrees, //!< Square degrees, for planar geographic CRS area measurements
+      AreaSquareCentimeters, //! Square centimeters
+      AreaSquareMillimeters, //! Square millimeters
       AreaUnknownUnit, //!< Unknown areal unit
     };
 
@@ -98,6 +101,44 @@ class CORE_EXPORT QgsUnitTypes
       RenderPoints, //! points (e.g., for font sizes)
       RenderInches, //! Inches
       RenderUnknownUnit, //!< Mixed or unknown units
+    };
+
+    /**
+     * A combination of distance value and unit.
+     *
+     * @note Added in QGIS 3.0
+     */
+    struct DistanceValue
+    {
+
+      /**
+       * The value part of the distance. For 3.7 meters, this will be 3.7.
+       */
+      double value;
+
+      /**
+       * The value part of the distance. For 3.7 meters, this will be QgsUnitTypes::DistanceMeters.
+       */
+      QgsUnitTypes::DistanceUnit unit;
+    };
+
+    /**
+     * A combination of area value and unit.
+     *
+     * @note Added in QGIS 3.0
+     */
+    struct AreaValue
+    {
+
+      /**
+       * The value part of the distance. For 3.7 square meters, this will be 3.7.
+       */
+      double value;
+
+      /**
+       * The value part of the distance. For 3.7 square meters, this will be QgsUnitTypes::AreaSquareMeters.
+       */
+      QgsUnitTypes::AreaUnit unit;
     };
 
     //! List of render units
@@ -243,6 +284,53 @@ class CORE_EXPORT QgsUnitTypes
      * @returns formatted angle string
      */
     Q_INVOKABLE static QString formatAngle( double angle, int decimals, AngleUnit unit );
+
+
+    /**
+     * Will convert a \a distance with a given \a unit to a distance value which is nice to display.
+     * It will convert between different units (e.g. from meters to kilometers or millimeters)
+     * if appropriate, unless forced otherwise with \a keepBaseUnit.
+     * The value will also be rounded to \a decimals (be prepared that the returned value is still a double so it will require
+     * further formatting when converting to a string).
+     *
+     * @note Added in QGIS 3.0
+     */
+    Q_INVOKABLE static DistanceValue scaledDistance( double distance, QgsUnitTypes::DistanceUnit unit, int decimals, bool keepBaseUnit = false );
+
+    /**
+     * Will convert an \a area with a given \a unit to an area value which is nice to display.
+     * It will convert between different units (e.g. from square meters to square kilometers)
+     * if appropriate, unless forced otherwise with \a keepBaseUnit.
+     * The value will also be rounded to \a decimals (be prepared that the returned value is still a double so it will require
+     * further formatting when converting to a string).
+     *
+     * @note Added in QGIS 3.0
+     */
+    Q_INVOKABLE static AreaValue scaledArea( double area, QgsUnitTypes::AreaUnit unit, int decimals, bool keepBaseUnit = false );
+
+    /** Returns an distance formatted as a friendly string.
+     * @param distance distance to format
+     * @param decimals number of decimal places to show
+     * @param unit unit of distance
+     * @param keepBaseUnit set to false to allow conversion of large distances to more suitable units, e.g., meters to
+     * kilometers
+     * @returns formatted distance string
+     * @note added in QGIS 3.0
+     * @see formatArea()
+     */
+    Q_INVOKABLE static QString formatDistance( double distance, int decimals, QgsUnitTypes::DistanceUnit unit, bool keepBaseUnit = false );
+
+    /** Returns an area formatted as a friendly string.
+     * @param area area to format
+     * @param decimals number of decimal places to show
+     * @param unit unit of area
+     * @param keepBaseUnit set to false to allow conversion of large areas to more suitable units, e.g., square meters to
+     * square kilometers
+     * @returns formatted area string
+     * @note added in QGIS 3.0
+     * @see formatDistance()
+     */
+    Q_INVOKABLE static QString formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit = false );
 
     // RENDER UNITS
 
