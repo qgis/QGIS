@@ -46,6 +46,7 @@
 #include "qgsunittypes.h"
 #include "qgsclipboard.h"
 #include "qgssettings.h"
+#include "qgsoptionswidgetfactory.h"
 
 #include <QInputDialog>
 #include <QFileDialog>
@@ -74,7 +75,7 @@
  * \class QgsOptions - Set user options and preferences
  * Constructor
  */
-QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
+QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOptionsWidgetFactory *> &optionsFactories )
   : QgsOptionsDialogBase( QStringLiteral( "Options" ), parent, fl )
   , mSettings( nullptr )
 {
@@ -926,6 +927,23 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
 
   mAdvancedSettingsEditor->setSettingsObject( mSettings );
 
+  Q_FOREACH ( QgsOptionsWidgetFactory *factory, optionsFactories )
+  {
+    QListWidgetItem *item = new QListWidgetItem();
+    item->setIcon( factory->icon() );
+    item->setText( factory->title() );
+    item->setToolTip( factory->title() );
+
+    mOptionsListWidget->addItem( item );
+
+    QgsOptionsPageWidget *page = factory->createWidget( this );
+    if ( !page )
+      continue;
+
+    mAdditionalOptionWidgets << page;
+    mOptionsStackedWidget->addWidget( page );
+  }
+
   // restore window and widget geometry/state
   restoreOptionsBaseUi();
 }
@@ -1473,6 +1491,11 @@ void QgsOptions::saveOptions()
   }
 
   saveDefaultDatumTransformations();
+
+  Q_FOREACH ( QgsOptionsPageWidget *widget, mAdditionalOptionWidgets )
+  {
+    widget->apply();
+  }
 }
 
 void QgsOptions::rejectOptions()

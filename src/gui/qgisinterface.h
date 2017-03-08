@@ -41,6 +41,7 @@ class QgsRasterLayer;
 class QgsSnappingUtils;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
+class QgsOptionsWidgetFactory;
 
 #include <QObject>
 #include <QFont>
@@ -363,6 +364,19 @@ class GUI_EXPORT QgisInterface : public QObject
      * @see registerMapLayerPropertiesFactory()
     */
     virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
+
+    /** Register a new tab in the options dialog.
+     * @note added in QGIS 3.0
+     * @note Ownership of the factory is not transferred, and the factory must
+     *       be unregistered when plugin is unloaded.
+     * @see unregisterOptionsWidgetFactory() */
+    virtual void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
+
+    /** Unregister a previously registered tab in the options dialog.
+     * @note added in QGIS 3.0
+     * @see registerOptionsWidgetFactory()
+    */
+    virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 
     /** Register a new custom drop handler.
      * @note added in QGIS 3.0

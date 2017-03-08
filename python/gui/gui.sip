@@ -129,6 +129,7 @@
 %Include qgsnewvectorlayerdialog.sip
 %Include qgsnewgeopackagelayerdialog.sip
 %Include qgsoptionsdialogbase.sip
+%Include qgsoptionswidgetfactory.sip
 %Include qgsorderbydialog.sip
 %Include qgsowssourceselect.sip
 %Include qgspanelwidget.sip

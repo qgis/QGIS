@@ -87,6 +87,7 @@ class QgsUserInputDockWidget;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 class QgsWelcomePage;
+class QgsOptionsWidgetFactory;
 
 class QDomDocument;
 class QNetworkReply;
@@ -535,6 +536,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Unregister a previously registered tab in the layer properties dialog
     void unregisterMapLayerPropertiesFactory( QgsMapLayerConfigWidgetFactory *factory );
+
+    //! Register a new tab in the options dialog
+    void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory );
+
+    //! Unregister a previously registered tab in the options dialog
+    void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory );
 
     //! Register a new custom drop handler.
     void registerCustomDropHandler( QgsCustomDropHandler *handler );
@@ -1852,6 +1859,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsSnappingUtils *mSnappingUtils = nullptr;
 
     QList<QgsMapLayerConfigWidgetFactory *> mMapLayerPanelFactories;
+    QList<QgsOptionsWidgetFactory *> mOptionsWidgetFactories;
 
     QList<QgsCustomDropHandler *> mCustomDropHandlers;
 

@@ -48,7 +48,9 @@ from qgis.PyQt.QtGui import (QIcon,
                              QStandardItem,
                              QCursor)
 
-from qgis.gui import QgsDoubleSpinBox, QgsSpinBox
+from qgis.gui import (QgsDoubleSpinBox,
+                      QgsSpinBox,
+                      QgsOptionsPageWidget)
 from qgis.core import NULL, QgsApplication, QgsSettings
 
 from processing.core.ProcessingConfig import (ProcessingConfig,
@@ -64,13 +66,27 @@ WIDGET, BASE = uic.loadUiType(
     os.path.join(pluginPath, 'ui', 'DlgConfig.ui'))
 
 
+class ConfigOptionsPage(QgsOptionsPageWidget):
+
+    def __init__(self, parent):
+        super(ConfigOptionsPage, self).__init__(parent)
+        self.config_widget = ConfigDialog()
+        layout = QHBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setMargin(0)
+        self.setLayout(layout)
+        layout.addWidget(self.config_widget)
+
+    def apply(self):
+        self.config_widget.accept()
+
+
 class ConfigDialog(BASE, WIDGET):
 
-    def __init__(self, toolbox):
+    def __init__(self):
         super(ConfigDialog, self).__init__(None)
         self.setupUi(self)
 
-        self.toolbox = toolbox
         self.groupIcon = QIcon()
         self.groupIcon.addPixmap(self.style().standardPixmap(
             QStyle.SP_DirClosedIcon), QIcon.Normal, QIcon.Off)
@@ -262,7 +278,6 @@ class ConfigDialog(BASE, WIDGET):
         self.saveMenus = True
 
     def accept(self):
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         qsettings = QgsSettings()
         for setting in list(self.items.keys()):
             if setting.group != menusSettingsGroup or self.saveMenus:
@@ -278,8 +293,6 @@ class ConfigDialog(BASE, WIDGET):
                 setting.save(qsettings)
         Processing.updateAlgsList()
         settingsWatcher.settingsChanged.emit()
-        QApplication.restoreOverrideCursor()
-        QDialog.accept(self)
 
     def itemExpanded(self, idx):
         if idx == self.menusItem.index():
