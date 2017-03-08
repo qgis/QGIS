@@ -1591,6 +1591,7 @@ void QgsMapCanvas::setLayerStyleOverrides( const QMap<QString, QString> &overrid
     return;
 
   mSettings.setLayerStyleOverrides( overrides );
+  clearCache();
   emit layerStyleOverridesChanged();
 }
 
