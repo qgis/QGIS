@@ -67,10 +67,10 @@ QgsStatusBarScaleWidget::QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget 
 
   setLayout( mLayout );
 
-  connect( mScale, SIGNAL( scaleChanged( double ) ), this, SLOT( userScale() ) );
+  connect( mScale, &QgsScaleComboBox::scaleChanged, this, &QgsStatusBarScaleWidget::userScale );
 
-  connect( mLockButton, SIGNAL( toggled( bool ) ), this, SIGNAL( scaleLockChanged( bool ) ) );
-  connect( mLockButton, SIGNAL( toggled( bool ) ), mScale, SLOT( setDisabled( bool ) ) );
+  connect( mLockButton, &QAbstractButton::toggled, this, &QgsStatusBarScaleWidget::scaleLockChanged );
+  connect( mLockButton, &QAbstractButton::toggled, mScale, &QWidget::setDisabled );
 }
 
 QgsStatusBarScaleWidget::~QgsStatusBarScaleWidget()

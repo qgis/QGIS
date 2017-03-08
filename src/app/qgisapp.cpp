@@ -2477,7 +2477,7 @@ void QgisApp::createStatusBar()
   mScaleWidget = new QgsStatusBarScaleWidget( mMapCanvas, statusBar() );
   mScaleWidget->setObjectName( QStringLiteral( "mScaleWidget" ) );
   mScaleWidget->setFont( myFont );
-  connect( mScaleWidget, SIGNAL( scaleLockChanged( bool ) ), mMapCanvas, SLOT( setScaleLocked( bool ) ) );
+  connect( mScaleWidget, &QgsStatusBarScaleWidget::scaleLockChanged, mMapCanvas, &QgsMapCanvas::setScaleLocked );
   statusBar()->addPermanentWidget( mScaleWidget, 0 );
 
   // zoom widget
@@ -10513,8 +10513,8 @@ void QgisApp::projectProperties()
   connect( pp, SIGNAL( displayPrecisionChanged() ), this,
            SLOT( updateMouseCoordinatePrecision() ) );
 
-  connect( pp, SIGNAL( scalesChanged( const QStringList & ) ), mScaleWidget,
-           SLOT( updateScales( const QStringList & ) ) );
+  connect( pp, &QgsProjectProperties::scalesChanged, mScaleWidget,
+           &QgsStatusBarScaleWidget::updateScales );
   QApplication::restoreOverrideCursor();
 
   //pass any refresh signals off to canvases
