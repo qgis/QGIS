@@ -809,7 +809,12 @@ int main( int argc, char *argv[] )
 
   QgsApplication myApp( argc, argv, myUseGuiFlag, configpath );
 
+#ifdef Q_OS_MAC
+  // Set 1024x1024 icon for dock, app switcher, etc., rendering
+  myApp.setWindowIcon( QIcon( QgsApplication::iconsPath() + QStringLiteral( "qgis-icon-macos.png" ) ) );
+#else
   myApp.setWindowIcon( QIcon( QgsApplication::appIconPath() ) );
+#endif
 
 
   //
