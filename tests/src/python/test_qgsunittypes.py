@@ -33,6 +33,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                     QgsUnitTypes.DistanceYards: QgsUnitTypes.Standard,
                     QgsUnitTypes.DistanceMiles: QgsUnitTypes.Standard,
                     QgsUnitTypes.DistanceDegrees: QgsUnitTypes.Geographic,
+                    QgsUnitTypes.DistanceCentimeters: QgsUnitTypes.Standard,
+                    QgsUnitTypes.DistanceMillimeters: QgsUnitTypes.Standard,
                     QgsUnitTypes.DistanceUnknownUnit: QgsUnitTypes.UnknownType,
                     QgsUnitTypes.DistanceNauticalMiles: QgsUnitTypes.Standard
                     }
@@ -48,6 +50,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                  QgsUnitTypes.DistanceYards,
                  QgsUnitTypes.DistanceMiles,
                  QgsUnitTypes.DistanceDegrees,
+                 QgsUnitTypes.DistanceCentimeters,
+                 QgsUnitTypes.DistanceMillimeters,
                  QgsUnitTypes.DistanceUnknownUnit,
                  QgsUnitTypes.DistanceNauticalMiles]
 
@@ -74,6 +78,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                  QgsUnitTypes.DistanceYards,
                  QgsUnitTypes.DistanceMiles,
                  QgsUnitTypes.DistanceDegrees,
+                 QgsUnitTypes.DistanceCentimeters,
+                 QgsUnitTypes.DistanceMillimeters,
                  QgsUnitTypes.DistanceUnknownUnit,
                  QgsUnitTypes.DistanceNauticalMiles]
 
@@ -104,6 +110,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                     QgsUnitTypes.AreaAcres: QgsUnitTypes.Standard,
                     QgsUnitTypes.AreaSquareNauticalMiles: QgsUnitTypes.Standard,
                     QgsUnitTypes.AreaSquareDegrees: QgsUnitTypes.Geographic,
+                    QgsUnitTypes.AreaSquareCentimeters: QgsUnitTypes.Standard,
+                    QgsUnitTypes.AreaSquareMillimeters: QgsUnitTypes.Standard,
                     QgsUnitTypes.AreaUnknownUnit: QgsUnitTypes.UnknownType,
                     }
 
@@ -121,6 +129,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                  QgsUnitTypes.AreaAcres,
                  QgsUnitTypes.AreaSquareNauticalMiles,
                  QgsUnitTypes.AreaSquareDegrees,
+                 QgsUnitTypes.AreaSquareCentimeters,
+                 QgsUnitTypes.AreaSquareMillimeters,
                  QgsUnitTypes.AreaUnknownUnit]
 
         for u in units:
@@ -149,6 +159,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                  QgsUnitTypes.AreaAcres,
                  QgsUnitTypes.AreaSquareNauticalMiles,
                  QgsUnitTypes.AreaSquareDegrees,
+                 QgsUnitTypes.AreaSquareCentimeters,
+                 QgsUnitTypes.AreaSquareMillimeters,
                  QgsUnitTypes.AreaUnknownUnit]
 
         for u in units:

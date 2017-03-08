@@ -172,10 +172,10 @@ QString QgsUnitTypes::toString( DistanceUnit unit )
       return QObject::tr( "degrees", "distance" );
 
     case DistanceCentimeters:
-      return QObject::tr( "UnitType", "centimeters" );
+      return QObject::tr( "centimeters", "distance" );
 
     case DistanceMillimeters:
-      return QObject::tr( "UnitType", "millimeters" );
+      return QObject::tr( "millimeters", "distance" );
 
     case DistanceUnknownUnit:
       return QObject::tr( "<unknown>", "distance" );
@@ -250,8 +250,8 @@ QgsUnitTypes::DistanceUnit QgsUnitTypes::stringToDistanceUnit( const QString &st
     return DistanceDegrees;
   if ( normalized == toString( DistanceCentimeters ) )
     return DistanceCentimeters;
-  if ( normalized == toString( DistanceCentimeters ) )
-    return DistanceCentimeters;
+  if ( normalized == toString( DistanceMillimeters ) )
+    return DistanceMillimeters;
   if ( normalized == toString( DistanceNauticalMiles ) )
     return DistanceNauticalMiles;
   if ( normalized == toString( DistanceUnknownUnit ) )
