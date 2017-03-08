@@ -205,15 +205,118 @@ class TestQgsUnitTypes(unittest.TestCase):
     def testFromUnitToUnitFactor(self):
         """Test calculation of conversion factor between units"""
 
-        expected = {QgsUnitTypes.DistanceMeters: {QgsUnitTypes.DistanceMeters: 1.0, QgsUnitTypes.DistanceKilometers: 0.001, QgsUnitTypes.DistanceFeet: 3.28083989501, QgsUnitTypes.DistanceYards: 1.0936133, QgsUnitTypes.DistanceMiles: 0.00062136931818182, QgsUnitTypes.DistanceDegrees: 0.00000898315, QgsUnitTypes.DistanceNauticalMiles: 0.000539957},
-                    QgsUnitTypes.DistanceKilometers: {QgsUnitTypes.DistanceMeters: 1000.0, QgsUnitTypes.DistanceKilometers: 1.0, QgsUnitTypes.DistanceFeet: 3280.8398950, QgsUnitTypes.DistanceYards: 1093.6132983, QgsUnitTypes.DistanceMiles: 0.62137121212119317271, QgsUnitTypes.DistanceDegrees: 0.0089832, QgsUnitTypes.DistanceNauticalMiles: 0.53995682073432482717},
-                    QgsUnitTypes.DistanceFeet: {QgsUnitTypes.DistanceMeters: 0.3048, QgsUnitTypes.DistanceKilometers: 0.0003048, QgsUnitTypes.DistanceFeet: 1.0, QgsUnitTypes.DistanceYards: 0.3333333, QgsUnitTypes.DistanceMiles: 0.00018939375, QgsUnitTypes.DistanceDegrees: 2.73806498599629E-06, QgsUnitTypes.DistanceNauticalMiles: 0.000164579},
-                    QgsUnitTypes.DistanceYards: {QgsUnitTypes.DistanceMeters: 0.9144, QgsUnitTypes.DistanceKilometers: 0.0009144, QgsUnitTypes.DistanceFeet: 3.0, QgsUnitTypes.DistanceYards: 1.0, QgsUnitTypes.DistanceMiles: 0.000568182, QgsUnitTypes.DistanceDegrees: 0.0000082, QgsUnitTypes.DistanceNauticalMiles: 0.0004937366590756},
-                    QgsUnitTypes.DistanceDegrees: {QgsUnitTypes.DistanceMeters: 111319.49079327358, QgsUnitTypes.DistanceKilometers: 111.3194908, QgsUnitTypes.DistanceFeet: 365221.4264871, QgsUnitTypes.DistanceYards: 121740.4754957, QgsUnitTypes.DistanceMiles: 69.1707247, QgsUnitTypes.DistanceDegrees: 1.0, QgsUnitTypes.DistanceNauticalMiles: 60.1077164},
-                    QgsUnitTypes.DistanceMiles: {QgsUnitTypes.DistanceMeters: 1609.3440000, QgsUnitTypes.DistanceKilometers: 1.6093440, QgsUnitTypes.DistanceFeet: 5280.0000000, QgsUnitTypes.DistanceYards: 1760.0000000, QgsUnitTypes.DistanceMiles: 1.0, QgsUnitTypes.DistanceDegrees: 0.0144570, QgsUnitTypes.DistanceNauticalMiles: 0.8689762},
-                    QgsUnitTypes.DistanceNauticalMiles: {QgsUnitTypes.DistanceMeters: 1852.0, QgsUnitTypes.DistanceKilometers: 1.8520000, QgsUnitTypes.DistanceFeet: 6076.1154856, QgsUnitTypes.DistanceYards: 2025.3718285, QgsUnitTypes.DistanceMiles: 1.1507794, QgsUnitTypes.DistanceDegrees: 0.0166367990650, QgsUnitTypes.DistanceNauticalMiles: 1.0},
-                    QgsUnitTypes.DistanceUnknownUnit: {QgsUnitTypes.DistanceMeters: 1.0, QgsUnitTypes.DistanceKilometers: 1.0, QgsUnitTypes.DistanceFeet: 1.0, QgsUnitTypes.DistanceYards: 1.0, QgsUnitTypes.DistanceMiles: 1.0, QgsUnitTypes.DistanceDegrees: 1.0, QgsUnitTypes.DistanceNauticalMiles: 1.0}
-                    }
+        expected = {
+            QgsUnitTypes.DistanceMeters: {
+                QgsUnitTypes.DistanceMeters: 1.0,
+                QgsUnitTypes.DistanceKilometers: 0.001,
+                QgsUnitTypes.DistanceFeet: 3.28083989501,
+                QgsUnitTypes.DistanceYards: 1.0936133,
+                QgsUnitTypes.DistanceMiles: 0.00062136931818182,
+                QgsUnitTypes.DistanceDegrees: 0.00000898315,
+                QgsUnitTypes.DistanceNauticalMiles: 0.000539957,
+                QgsUnitTypes.DistanceMillimeters: 1000.0,
+                QgsUnitTypes.DistanceCentimeters: 100.0
+            },
+            QgsUnitTypes.DistanceKilometers: {
+                QgsUnitTypes.DistanceMeters: 1000.0,
+                QgsUnitTypes.DistanceKilometers: 1.0,
+                QgsUnitTypes.DistanceFeet: 3280.8398950,
+                QgsUnitTypes.DistanceYards: 1093.6132983,
+                QgsUnitTypes.DistanceMiles: 0.62137121212119317271,
+                QgsUnitTypes.DistanceDegrees: 0.0089832,
+                QgsUnitTypes.DistanceNauticalMiles: 0.53995682073432482717,
+                QgsUnitTypes.DistanceMillimeters: 1000000.0,
+                QgsUnitTypes.DistanceCentimeters: 100000.0
+            },
+            QgsUnitTypes.DistanceFeet: {
+                QgsUnitTypes.DistanceMeters: 0.3048,
+                QgsUnitTypes.DistanceKilometers: 0.0003048,
+                QgsUnitTypes.DistanceFeet: 1.0,
+                QgsUnitTypes.DistanceYards: 0.3333333,
+                QgsUnitTypes.DistanceMiles: 0.00018939375,
+                QgsUnitTypes.DistanceDegrees: 2.73806498599629E-06,
+                QgsUnitTypes.DistanceNauticalMiles: 0.000164579,
+                QgsUnitTypes.DistanceMillimeters: 304.8,
+                QgsUnitTypes.DistanceCentimeters: 30.48
+            },
+            QgsUnitTypes.DistanceYards: {
+                QgsUnitTypes.DistanceMeters: 0.9144,
+                QgsUnitTypes.DistanceKilometers: 0.0009144,
+                QgsUnitTypes.DistanceFeet: 3.0,
+                QgsUnitTypes.DistanceYards: 1.0,
+                QgsUnitTypes.DistanceMiles: 0.000568182,
+                QgsUnitTypes.DistanceDegrees: 0.0000082,
+                QgsUnitTypes.DistanceNauticalMiles: 0.0004937366590756,
+                QgsUnitTypes.DistanceMillimeters: 914.4,
+                QgsUnitTypes.DistanceCentimeters: 91.44
+            },
+            QgsUnitTypes.DistanceDegrees: {
+                QgsUnitTypes.DistanceMeters: 111319.49079327358,
+                QgsUnitTypes.DistanceKilometers: 111.3194908,
+                QgsUnitTypes.DistanceFeet: 365221.4264871,
+                QgsUnitTypes.DistanceYards: 121740.4754957,
+                QgsUnitTypes.DistanceMiles: 69.1707247,
+                QgsUnitTypes.DistanceDegrees: 1.0,
+                QgsUnitTypes.DistanceNauticalMiles: 60.1077164,
+                QgsUnitTypes.DistanceMillimeters: 111319490.79327358,
+                QgsUnitTypes.DistanceCentimeters: 11131949.079327358
+            },
+            QgsUnitTypes.DistanceMiles: {
+                QgsUnitTypes.DistanceMeters: 1609.3440000,
+                QgsUnitTypes.DistanceKilometers: 1.6093440,
+                QgsUnitTypes.DistanceFeet: 5280.0000000,
+                QgsUnitTypes.DistanceYards: 1760.0000000,
+                QgsUnitTypes.DistanceMiles: 1.0,
+                QgsUnitTypes.DistanceDegrees: 0.0144570,
+                QgsUnitTypes.DistanceNauticalMiles: 0.8689762,
+                QgsUnitTypes.DistanceMillimeters: 1609344.0,
+                QgsUnitTypes.DistanceCentimeters: 160934.4
+            },
+            QgsUnitTypes.DistanceNauticalMiles: {
+                QgsUnitTypes.DistanceMeters: 1852.0,
+                QgsUnitTypes.DistanceKilometers: 1.8520000,
+                QgsUnitTypes.DistanceFeet: 6076.1154856,
+                QgsUnitTypes.DistanceYards: 2025.3718285,
+                QgsUnitTypes.DistanceMiles: 1.1507794,
+                QgsUnitTypes.DistanceDegrees: 0.0166367990650,
+                QgsUnitTypes.DistanceNauticalMiles: 1.0,
+                QgsUnitTypes.DistanceMillimeters: 1852000.0,
+                QgsUnitTypes.DistanceCentimeters: 185200.0
+            },
+            QgsUnitTypes.DistanceMillimeters: {
+                QgsUnitTypes.DistanceMeters: 0.001,
+                QgsUnitTypes.DistanceKilometers: 0.000001,
+                QgsUnitTypes.DistanceFeet: 0.00328083989501,
+                QgsUnitTypes.DistanceYards: 0.0010936133,
+                QgsUnitTypes.DistanceMiles: 0.00000062136931818182,
+                QgsUnitTypes.DistanceDegrees: 0.00000000898315,
+                QgsUnitTypes.DistanceNauticalMiles: 0.000000539957,
+                QgsUnitTypes.DistanceMillimeters: 1.0,
+                QgsUnitTypes.DistanceCentimeters: 0.1
+            },
+            QgsUnitTypes.DistanceCentimeters: {
+                QgsUnitTypes.DistanceMeters: 0.01,
+                QgsUnitTypes.DistanceKilometers: 0.00001,
+                QgsUnitTypes.DistanceFeet: 0.0328083989501,
+                QgsUnitTypes.DistanceYards: 0.010936133,
+                QgsUnitTypes.DistanceMiles: 0.0000062136931818182,
+                QgsUnitTypes.DistanceDegrees: 0.0000000898315,
+                QgsUnitTypes.DistanceNauticalMiles: 0.00000539957,
+                QgsUnitTypes.DistanceMillimeters: 10.0,
+                QgsUnitTypes.DistanceCentimeters: 1.0
+            },
+            QgsUnitTypes.DistanceUnknownUnit: {
+                QgsUnitTypes.DistanceMeters: 1.0,
+                QgsUnitTypes.DistanceKilometers: 1.0,
+                QgsUnitTypes.DistanceFeet: 1.0,
+                QgsUnitTypes.DistanceYards: 1.0,
+                QgsUnitTypes.DistanceMiles: 1.0,
+                QgsUnitTypes.DistanceDegrees: 1.0,
+                QgsUnitTypes.DistanceNauticalMiles: 1.0,
+                QgsUnitTypes.DistanceMillimeters: 1.0,
+                QgsUnitTypes.DistanceCentimeters: 1.0
+            },
+        }
 
         for from_unit in list(expected.keys()):
             for to_unit in list(expected[from_unit].keys()):
@@ -234,15 +337,162 @@ class TestQgsUnitTypes(unittest.TestCase):
     def testAreaFromUnitToUnitFactor(self):
         """Test calculation of conversion factor between areal units"""
 
-        expected = {QgsUnitTypes.AreaSquareMeters: {QgsUnitTypes.AreaSquareMeters: 1.0, QgsUnitTypes.AreaSquareKilometers: 1e-6, QgsUnitTypes.AreaSquareFeet: 10.7639104, QgsUnitTypes.AreaSquareYards: 1.19599, QgsUnitTypes.AreaSquareMiles: 3.86102e-7, QgsUnitTypes.AreaHectares: 0.0001, QgsUnitTypes.AreaAcres: 0.000247105, QgsUnitTypes.AreaSquareNauticalMiles: 2.91553e-7, QgsUnitTypes.AreaSquareDegrees: 0.000000000080697, QgsUnitTypes.AreaUnknownUnit: 1.0},
-                    QgsUnitTypes.AreaSquareKilometers: {QgsUnitTypes.AreaSquareMeters: 1e6, QgsUnitTypes.AreaSquareKilometers: 1, QgsUnitTypes.AreaSquareFeet: 10763910.4167097, QgsUnitTypes.AreaSquareYards: 1195990.04630108, QgsUnitTypes.AreaSquareMiles: 0.386102158, QgsUnitTypes.AreaHectares: 100, QgsUnitTypes.AreaAcres: 247.105381467, QgsUnitTypes.AreaSquareNauticalMiles: 0.291553349598, QgsUnitTypes.AreaSquareDegrees: 0.000080697034968, QgsUnitTypes.AreaUnknownUnit: 1.0},
-                    QgsUnitTypes.AreaSquareFeet: {QgsUnitTypes.AreaSquareMeters: 0.092903, QgsUnitTypes.AreaSquareKilometers: 9.2903e-8, QgsUnitTypes.AreaSquareFeet: 1.0, QgsUnitTypes.AreaSquareYards: 0.11111111111, QgsUnitTypes.AreaSquareMiles: 3.58701e-8, QgsUnitTypes.AreaHectares: 9.2903e-6, QgsUnitTypes.AreaAcres: 2.29568e-5, QgsUnitTypes.AreaSquareNauticalMiles: 2.70862e-8, QgsUnitTypes.AreaSquareDegrees: 0.000000000007497, QgsUnitTypes.AreaUnknownUnit: 1.0},
-                    QgsUnitTypes.AreaSquareYards: {QgsUnitTypes.AreaSquareMeters: 0.836127360, QgsUnitTypes.AreaSquareKilometers: 8.36127e-7, QgsUnitTypes.AreaSquareFeet: 9.0, QgsUnitTypes.AreaSquareYards: 1.0, QgsUnitTypes.AreaSquareMiles: 3.22831e-7, QgsUnitTypes.AreaHectares: 8.3612736E-5, QgsUnitTypes.AreaAcres: 0.00020661157, QgsUnitTypes.AreaSquareNauticalMiles: 2.43776e-7, QgsUnitTypes.AreaSquareDegrees: 0.000000000067473, QgsUnitTypes.AreaUnknownUnit: 1.0},
-                    QgsUnitTypes.AreaSquareMiles: {QgsUnitTypes.AreaSquareMeters: 2589988.110336, QgsUnitTypes.AreaSquareKilometers: 2.589988110, QgsUnitTypes.AreaSquareFeet: 27878400, QgsUnitTypes.AreaSquareYards: 3097600, QgsUnitTypes.AreaSquareMiles: 1.0, QgsUnitTypes.AreaHectares: 258.998811, QgsUnitTypes.AreaAcres: 640, QgsUnitTypes.AreaSquareNauticalMiles: 0.75511970898, QgsUnitTypes.AreaSquareDegrees: 0.000209004361107, QgsUnitTypes.AreaUnknownUnit: 1.0},
-                    QgsUnitTypes.AreaHectares: {QgsUnitTypes.AreaSquareMeters: 10000, QgsUnitTypes.AreaSquareKilometers: 0.01, QgsUnitTypes.AreaSquareFeet: 107639.1041670972, QgsUnitTypes.AreaSquareYards: 11959.9004630, QgsUnitTypes.AreaSquareMiles: 0.00386102, QgsUnitTypes.AreaHectares: 1.0, QgsUnitTypes.AreaAcres: 2.471053814, QgsUnitTypes.AreaSquareNauticalMiles: 0.00291553, QgsUnitTypes.AreaSquareDegrees: 0.000000806970350, QgsUnitTypes.AreaUnknownUnit: 1.0},
-                    QgsUnitTypes.AreaAcres: {QgsUnitTypes.AreaSquareMeters: 4046.8564224, QgsUnitTypes.AreaSquareKilometers: 0.00404686, QgsUnitTypes.AreaSquareFeet: 43560, QgsUnitTypes.AreaSquareYards: 4840, QgsUnitTypes.AreaSquareMiles: 0.0015625, QgsUnitTypes.AreaHectares: 0.404685642, QgsUnitTypes.AreaAcres: 1.0, QgsUnitTypes.AreaSquareNauticalMiles: 0.00117987, QgsUnitTypes.AreaSquareDegrees: 0.000000326569314, QgsUnitTypes.AreaUnknownUnit: 1.0},
-                    QgsUnitTypes.AreaSquareNauticalMiles: {QgsUnitTypes.AreaSquareMeters: 3429904, QgsUnitTypes.AreaSquareKilometers: 3.4299040, QgsUnitTypes.AreaSquareFeet: 36919179.39391434, QgsUnitTypes.AreaSquareYards: 4102131.04376826, QgsUnitTypes.AreaSquareMiles: 1.324293337, QgsUnitTypes.AreaHectares: 342.9904000000, QgsUnitTypes.AreaAcres: 847.54773631, QgsUnitTypes.AreaSquareNauticalMiles: 1.0, QgsUnitTypes.AreaSquareDegrees: 0.000276783083025, QgsUnitTypes.AreaUnknownUnit: 1.0},
-                    QgsUnitTypes.AreaSquareDegrees: {QgsUnitTypes.AreaSquareMeters: 12392029030.5, QgsUnitTypes.AreaSquareKilometers: 12392.029030499, QgsUnitTypes.AreaSquareFeet: 133386690365.5682220, QgsUnitTypes.AreaSquareYards: 14820743373.9520263, QgsUnitTypes.AreaSquareMiles: 4784.5891573967, QgsUnitTypes.AreaHectares: 1239202.903050, QgsUnitTypes.AreaAcres: 3062137.060733889, QgsUnitTypes.AreaSquareNauticalMiles: 3612.93757215, QgsUnitTypes.AreaSquareDegrees: 1.0, QgsUnitTypes.AreaUnknownUnit: 1.0}}
+        expected = {
+            QgsUnitTypes.AreaSquareMeters: {
+                QgsUnitTypes.AreaSquareMeters: 1.0,
+                QgsUnitTypes.AreaSquareKilometers: 1e-6,
+                QgsUnitTypes.AreaSquareFeet: 10.7639104,
+                QgsUnitTypes.AreaSquareYards: 1.19599,
+                QgsUnitTypes.AreaSquareMiles: 3.86102e-7,
+                QgsUnitTypes.AreaHectares: 0.0001,
+                QgsUnitTypes.AreaAcres: 0.000247105,
+                QgsUnitTypes.AreaSquareNauticalMiles: 2.91553e-7,
+                QgsUnitTypes.AreaSquareDegrees: 0.000000000080697,
+                QgsUnitTypes.AreaSquareMillimeters: 1e6,
+                QgsUnitTypes.AreaSquareCentimeters: 1e4,
+                QgsUnitTypes.AreaUnknownUnit: 1.0
+            },
+            QgsUnitTypes.AreaSquareKilometers: {
+                QgsUnitTypes.AreaSquareMeters: 1e6,
+                QgsUnitTypes.AreaSquareKilometers: 1,
+                QgsUnitTypes.AreaSquareFeet: 10763910.4167097,
+                QgsUnitTypes.AreaSquareYards: 1195990.04630108,
+                QgsUnitTypes.AreaSquareMiles: 0.386102158,
+                QgsUnitTypes.AreaHectares: 100,
+                QgsUnitTypes.AreaAcres: 247.105381467,
+                QgsUnitTypes.AreaSquareNauticalMiles: 0.291553349598,
+                QgsUnitTypes.AreaSquareDegrees: 0.000080697034968,
+                QgsUnitTypes.AreaSquareMillimeters: 1e12,
+                QgsUnitTypes.AreaSquareCentimeters: 1e10,
+                QgsUnitTypes.AreaUnknownUnit: 1.0
+            },
+            QgsUnitTypes.AreaSquareFeet: {
+                QgsUnitTypes.AreaSquareMeters: 0.092903,
+                QgsUnitTypes.AreaSquareKilometers: 9.2903e-8,
+                QgsUnitTypes.AreaSquareFeet: 1.0,
+                QgsUnitTypes.AreaSquareYards: 0.11111111111,
+                QgsUnitTypes.AreaSquareMiles: 3.58701e-8,
+                QgsUnitTypes.AreaHectares: 9.2903e-6,
+                QgsUnitTypes.AreaAcres: 2.29568e-5,
+                QgsUnitTypes.AreaSquareNauticalMiles: 2.70862e-8,
+                QgsUnitTypes.AreaSquareDegrees: 0.000000000007497,
+                QgsUnitTypes.AreaSquareMillimeters: 92903.04,
+                QgsUnitTypes.AreaSquareCentimeters: 929.0304,
+                QgsUnitTypes.AreaUnknownUnit: 1.0
+            },
+            QgsUnitTypes.AreaSquareYards: {
+                QgsUnitTypes.AreaSquareMeters: 0.836127360,
+                QgsUnitTypes.AreaSquareKilometers: 8.36127e-7,
+                QgsUnitTypes.AreaSquareFeet: 9.0,
+                QgsUnitTypes.AreaSquareYards: 1.0,
+                QgsUnitTypes.AreaSquareMiles: 3.22831e-7,
+                QgsUnitTypes.AreaHectares: 8.3612736E-5,
+                QgsUnitTypes.AreaAcres: 0.00020661157,
+                QgsUnitTypes.AreaSquareNauticalMiles: 2.43776e-7,
+                QgsUnitTypes.AreaSquareDegrees: 0.000000000067473,
+                QgsUnitTypes.AreaSquareMillimeters: 836127.360,
+                QgsUnitTypes.AreaSquareCentimeters: 8361.27360,
+                QgsUnitTypes.AreaUnknownUnit: 1.0
+            },
+            QgsUnitTypes.AreaSquareMiles: {
+                QgsUnitTypes.AreaSquareMeters: 2589988.110336,
+                QgsUnitTypes.AreaSquareKilometers: 2.589988110,
+                QgsUnitTypes.AreaSquareFeet: 27878400,
+                QgsUnitTypes.AreaSquareYards: 3097600,
+                QgsUnitTypes.AreaSquareMiles: 1.0,
+                QgsUnitTypes.AreaHectares: 258.998811,
+                QgsUnitTypes.AreaAcres: 640,
+                QgsUnitTypes.AreaSquareNauticalMiles: 0.75511970898,
+                QgsUnitTypes.AreaSquareDegrees: 0.000209004361107,
+                QgsUnitTypes.AreaSquareMillimeters: 2589988110336.0,
+                QgsUnitTypes.AreaSquareCentimeters: 25899881103.36,
+                QgsUnitTypes.AreaUnknownUnit: 1.0
+            },
+            QgsUnitTypes.AreaHectares: {
+                QgsUnitTypes.AreaSquareMeters: 10000,
+                QgsUnitTypes.AreaSquareKilometers: 0.01,
+                QgsUnitTypes.AreaSquareFeet: 107639.1041670972,
+                QgsUnitTypes.AreaSquareYards: 11959.9004630,
+                QgsUnitTypes.AreaSquareMiles: 0.00386102,
+                QgsUnitTypes.AreaHectares: 1.0,
+                QgsUnitTypes.AreaAcres: 2.471053814,
+                QgsUnitTypes.AreaSquareNauticalMiles: 0.00291553,
+                QgsUnitTypes.AreaSquareDegrees: 0.000000806970350,
+                QgsUnitTypes.AreaSquareMillimeters: 10000000000.0,
+                QgsUnitTypes.AreaSquareCentimeters: 100000000.0,
+                QgsUnitTypes.AreaUnknownUnit: 1.0
+            },
+            QgsUnitTypes.AreaAcres: {
+                QgsUnitTypes.AreaSquareMeters: 4046.8564224,
+                QgsUnitTypes.AreaSquareKilometers: 0.00404686,
+                QgsUnitTypes.AreaSquareFeet: 43560,
+                QgsUnitTypes.AreaSquareYards: 4840,
+                QgsUnitTypes.AreaSquareMiles: 0.0015625,
+                QgsUnitTypes.AreaHectares: 0.404685642,
+                QgsUnitTypes.AreaAcres: 1.0,
+                QgsUnitTypes.AreaSquareNauticalMiles: 0.00117987,
+                QgsUnitTypes.AreaSquareDegrees: 0.000000326569314,
+                QgsUnitTypes.AreaSquareMillimeters: 4046856422.4000005,
+                QgsUnitTypes.AreaSquareCentimeters: 40468564.224,
+                QgsUnitTypes.AreaUnknownUnit: 1.0
+            },
+            QgsUnitTypes.AreaSquareNauticalMiles: {
+                QgsUnitTypes.AreaSquareMeters: 3429904,
+                QgsUnitTypes.AreaSquareKilometers: 3.4299040,
+                QgsUnitTypes.AreaSquareFeet: 36919179.39391434,
+                QgsUnitTypes.AreaSquareYards: 4102131.04376826,
+                QgsUnitTypes.AreaSquareMiles: 1.324293337,
+                QgsUnitTypes.AreaHectares: 342.9904000000,
+                QgsUnitTypes.AreaAcres: 847.54773631,
+                QgsUnitTypes.AreaSquareNauticalMiles: 1.0,
+                QgsUnitTypes.AreaSquareDegrees: 0.000276783083025,
+                QgsUnitTypes.AreaSquareMillimeters: 3429904000000.0,
+                QgsUnitTypes.AreaSquareCentimeters: 34299040000.0,
+                QgsUnitTypes.AreaUnknownUnit: 1.0
+            },
+            QgsUnitTypes.AreaSquareDegrees: {
+                QgsUnitTypes.AreaSquareMeters: 12392029030.5,
+                QgsUnitTypes.AreaSquareKilometers: 12392.029030499,
+                QgsUnitTypes.AreaSquareFeet: 133386690365.5682220,
+                QgsUnitTypes.AreaSquareYards: 14820743373.9520263,
+                QgsUnitTypes.AreaSquareMiles: 4784.5891573967,
+                QgsUnitTypes.AreaHectares: 1239202.903050,
+                QgsUnitTypes.AreaAcres: 3062137.060733889,
+                QgsUnitTypes.AreaSquareNauticalMiles: 3612.93757215,
+                QgsUnitTypes.AreaSquareDegrees: 1.0,
+                QgsUnitTypes.AreaSquareMillimeters: 12392029030500000.0,
+                QgsUnitTypes.AreaSquareCentimeters: 123920290305000.0,
+                QgsUnitTypes.AreaUnknownUnit: 1.0
+            },
+            QgsUnitTypes.AreaSquareMillimeters: {
+                QgsUnitTypes.AreaSquareMeters: 1e-6,
+                QgsUnitTypes.AreaSquareKilometers: 1e-12,
+                QgsUnitTypes.AreaSquareFeet: 0.000010763910417,
+                QgsUnitTypes.AreaSquareYards: 0.000001195990046,
+                QgsUnitTypes.AreaSquareMiles: 3.861021585424458e-13,
+                QgsUnitTypes.AreaHectares: 1e-10,
+                QgsUnitTypes.AreaAcres: 2.471053814671653e-10,
+                QgsUnitTypes.AreaSquareNauticalMiles: 2.9155334959812287e-13,
+                QgsUnitTypes.AreaSquareDegrees: 8.069703496810251e-17,
+                QgsUnitTypes.AreaSquareMillimeters: 1.0,
+                QgsUnitTypes.AreaSquareCentimeters: 0.01,
+                QgsUnitTypes.AreaUnknownUnit: 1.0
+            },
+            QgsUnitTypes.AreaSquareCentimeters: {
+                QgsUnitTypes.AreaSquareMeters: 1e-4,
+                QgsUnitTypes.AreaSquareKilometers: 1e-10,
+                QgsUnitTypes.AreaSquareFeet: 0.0010763910417,
+                QgsUnitTypes.AreaSquareYards: 0.0001195990046,
+                QgsUnitTypes.AreaSquareMiles: 3.861021585424458e-11,
+                QgsUnitTypes.AreaHectares: 1e-8,
+                QgsUnitTypes.AreaAcres: 2.471053814671653e-8,
+                QgsUnitTypes.AreaSquareNauticalMiles: 2.9155334959812287e-11,
+                QgsUnitTypes.AreaSquareDegrees: 8.069703496810251e-15,
+                QgsUnitTypes.AreaSquareMillimeters: 100,
+                QgsUnitTypes.AreaSquareCentimeters: 1.0,
+                QgsUnitTypes.AreaUnknownUnit: 1.0
+            }
+        }
 
         for from_unit in list(expected.keys()):
             for to_unit in list(expected[from_unit].keys()):
