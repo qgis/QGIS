@@ -144,8 +144,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QWidget
   }
   else if ( initialMode == QgsAttributeTableFilterModel::ShowSelected )
   {
-    if ( layer->selectedFeatureCount() > 0 )
-      r.setFilterFids( layer->selectedFeatureIds() );
+    r.setFilterFids( layer->selectedFeatureIds() );
   }
   if ( !needsGeom )
     r.setFlags( QgsFeatureRequest::NoGeometry );

@@ -245,8 +245,7 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
 
     case QgsAttributeTableFilterModel::ShowSelected:
       connect( masterModel()->layer(), &QgsVectorLayer::selectionChanged, this, &QgsDualView::updateSelectedFeatures );
-      if ( masterModel()->layer()->selectedFeatureCount() > 0 )
-        r.setFilterFids( masterModel()->layer()->selectedFeatureIds() );
+      r.setFilterFids( masterModel()->layer()->selectedFeatureIds() );
       break;
   }
 
@@ -718,10 +717,7 @@ void QgsDualView::updateSelectedFeatures()
   if ( r.filterType() == QgsFeatureRequest::FilterNone && r.filterRect().isNull() )
     return; // already requested all features
 
-  if ( masterModel()->layer()->selectedFeatureCount() > 0 )
-    r.setFilterFids( masterModel()->layer()->selectedFeatureIds() );
-  else
-    r.disableFilter();
+  r.setFilterFids( masterModel()->layer()->selectedFeatureIds() );
   mMasterModel->setRequest( r );
   mMasterModel->loadLayer();
   emit filterChanged();
