@@ -1175,6 +1175,9 @@ void QgsNodeTool2::deleteVertex()
       layer->destroyEditCommand();
   }
 
+  // make sure the temporary feature rubber band is not visible
+  removeTemporaryRubberBands();
+
   // pre-select next node for deletion if we are deleting just one node
   if ( toDelete.count() == 1 )
   {
