@@ -23,6 +23,7 @@
 
 class QgsMapCanvas;
 class QgsScaleComboBox;
+class QgsDoubleSpinBox;
 
 /**
  * \class QgsMapCanvasDockWidget
@@ -66,27 +67,31 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     QgsMapCanvas *mMainCanvas = nullptr;
     bool mShowCloseWarning = true;
     QgsScaleComboBox *mScaleCombo = nullptr;
+    QgsDoubleSpinBox *mRotationEdit = nullptr;
     bool mBlockScaleUpdate = false;
+    bool mBlockRotationUpdate = false;
 };
 
 /**
- * \class QgsScaleComboAction
- * Allows embedding a scale combo into a menu.
+ * \class QgsMapSettingsAction
+ * Allows embedding a scale, rotation and other map settings into a menu.
  * \note added in QGIS 3.0
  */
 
-class QgsScaleComboAction: public QWidgetAction
+class QgsMapSettingsAction: public QWidgetAction
 {
     Q_OBJECT
 
   public:
 
-    QgsScaleComboAction( QWidget *parent = nullptr );
+    QgsMapSettingsAction( QWidget *parent = nullptr );
 
     QgsScaleComboBox *scaleCombo() { return mScaleCombo; }
+    QgsDoubleSpinBox *rotationEdit() { return mRotationEdit; }
 
   private:
     QgsScaleComboBox *mScaleCombo = nullptr;
+    QgsDoubleSpinBox *mRotationEdit = nullptr;
 };
 
 

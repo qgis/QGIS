@@ -16,6 +16,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsscalecombobox.h"
+#include "qgsdoublespinbox.h"
 #include <QMessageBox>
 #include <QMenu>
 #include <QToolBar>
@@ -51,9 +52,10 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   toolButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapSettings.svg" ) ) );
   mToolbar->addWidget( toolButton );
 
-  QgsScaleComboAction *scaleAction = new QgsScaleComboAction( menu );
-  menu->addAction( scaleAction );
-  mScaleCombo = scaleAction->scaleCombo();
+  QgsMapSettingsAction *settingsAction = new QgsMapSettingsAction( menu );
+  menu->addAction( settingsAction );
+  mScaleCombo = settingsAction->scaleCombo();
+  mRotationEdit = settingsAction->rotationEdit();
   connect( mScaleCombo, &QgsScaleComboBox::scaleChanged, this, [ = ]( double scale )
   {
     if ( !mBlockScaleUpdate )
@@ -70,6 +72,27 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
       mBlockScaleUpdate = true;
       mScaleCombo->setScale( 1.0 / scale );
       mBlockScaleUpdate = false;
+    }
+  } );
+
+  connect( mRotationEdit, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double value )
+  {
+    if ( !mBlockRotationUpdate )
+    {
+      mBlockRotationUpdate = true;
+      mMapCanvas->setRotation( value );
+      mMapCanvas->refresh();
+      mBlockRotationUpdate = false;
+    }
+  } );
+
+  connect( mMapCanvas, &QgsMapCanvas::rotationChanged, this, [ = ]( double rotation )
+  {
+    if ( !mBlockRotationUpdate )
+    {
+      mBlockRotationUpdate = true;
+      mRotationEdit->setValue( rotation );
+      mBlockRotationUpdate = false;
     }
   } );
 }
@@ -141,17 +164,32 @@ void QgsMapCanvasDockWidget::mapExtentChanged()
   syncView( true );
 }
 
-QgsScaleComboAction::QgsScaleComboAction( QWidget *parent )
+QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )
   : QWidgetAction( parent )
 {
-  mScaleCombo = new QgsScaleComboBox();
-
-  QHBoxLayout *hLayout = new QHBoxLayout();
-  hLayout->setContentsMargins( 2, 2, 2, 2 );
+  QGridLayout *gLayout = new QGridLayout();
+  gLayout->setContentsMargins( 3, 2, 3, 2 );
   QLabel *label = new QLabel( tr( "Scale" ) );
-  hLayout->addWidget( label );
-  hLayout->addWidget( mScaleCombo );
+  gLayout->addWidget( label, 0, 0 );
+
+  mScaleCombo = new QgsScaleComboBox();
+  gLayout->addWidget( mScaleCombo, 0, 1 );
+
+  mRotationEdit = new QgsDoubleSpinBox();
+  mRotationEdit->setClearValue( 0.0 );
+  mRotationEdit->setKeyboardTracking( false );
+  mRotationEdit->setMaximumWidth( 120 );
+  mRotationEdit->setDecimals( 1 );
+  mRotationEdit->setRange( -180.0, 180.0 );
+  mRotationEdit->setWrapping( true );
+  mRotationEdit->setSingleStep( 5.0 );
+  mRotationEdit->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
+
+  label = new QLabel( tr( "Rotation" ) );
+  gLayout->addWidget( label, 1, 0 );
+  gLayout->addWidget( mRotationEdit, 1, 1 );
+
   QWidget *w = new QWidget();
-  w->setLayout( hLayout );
+  w->setLayout( gLayout );
   setDefaultWidget( w );
 }
