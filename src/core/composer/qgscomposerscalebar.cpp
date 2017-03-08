@@ -435,7 +435,7 @@ void QgsComposerScaleBar::applyDefaultSettings()
 
   //get default composer font from settings
   QgsSettings settings;
-  QString defaultFontString = settings.value( QStringLiteral( "/Composer/defaultFont" ) ).toString();
+  QString defaultFontString = settings.value( QStringLiteral( "Composer/defaultFont" ) ).toString();
   if ( !defaultFontString.isEmpty() )
   {
     mFont.setFamily( defaultFontString );

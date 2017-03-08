@@ -83,11 +83,11 @@ QString QgsClipboard::generateClipboardText() const
   QgsSettings settings;
   CopyFormat format = AttributesWithWKT;
   if ( settings.contains( QStringLiteral( "/qgis/copyFeatureFormat" ) ) )
-    format = static_cast< CopyFormat >( settings.value( QStringLiteral( "/qgis/copyFeatureFormat" ), true ).toInt() );
+    format = static_cast< CopyFormat >( settings.value( QStringLiteral( "qgis/copyFeatureFormat" ), true ).toInt() );
   else
   {
     //old format setting
-    format = settings.value( QStringLiteral( "/qgis/copyGeometryAsWKT" ), true ).toBool() ? AttributesWithWKT : AttributesOnly;
+    format = settings.value( QStringLiteral( "qgis/copyGeometryAsWKT" ), true ).toBool() ? AttributesWithWKT : AttributesOnly;
   }
 
   switch ( format )

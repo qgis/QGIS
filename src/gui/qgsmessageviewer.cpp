@@ -33,13 +33,13 @@ QgsMessageViewer::QgsMessageViewer( QWidget *parent, Qt::WindowFlags fl, bool de
   mCheckBoxQgsSettingsLabel = QLatin1String( "" );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/MessageViewer/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/MessageViewer/geometry" ) ).toByteArray() );
 }
 
 QgsMessageViewer::~QgsMessageViewer()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/MessageViewer/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/MessageViewer/geometry" ), saveGeometry() );
 }
 
 void QgsMessageViewer::setMessageAsHtml( const QString &msg )

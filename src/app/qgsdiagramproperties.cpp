@@ -167,8 +167,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   }
 
   // restore dialog, splitters and current tab
-  mDiagramOptionsSplitter->restoreState( settings.value( QStringLiteral( "/Windows/Diagrams/OptionsSplitState" ) ).toByteArray() );
-  mDiagramOptionsListWidget->setCurrentRow( settings.value( QStringLiteral( "/Windows/Diagrams/Tab" ), 0 ).toInt() );
+  mDiagramOptionsSplitter->restoreState( settings.value( QStringLiteral( "Windows/Diagrams/OptionsSplitState" ) ).toByteArray() );
+  mDiagramOptionsListWidget->setCurrentRow( settings.value( QStringLiteral( "Windows/Diagrams/Tab" ), 0 ).toInt() );
 
   // field combo and expression button
   mSizeFieldExpressionWidget->setLayer( mLayer );
@@ -425,8 +425,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
 QgsDiagramProperties::~QgsDiagramProperties()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/Diagrams/OptionsSplitState" ), mDiagramOptionsSplitter->saveState() );
-  settings.setValue( QStringLiteral( "/Windows/Diagrams/Tab" ), mDiagramOptionsListWidget->currentRow() );
+  settings.setValue( QStringLiteral( "Windows/Diagrams/OptionsSplitState" ), mDiagramOptionsSplitter->saveState() );
+  settings.setValue( QStringLiteral( "Windows/Diagrams/Tab" ), mDiagramOptionsListWidget->currentRow() );
 }
 
 void QgsDiagramProperties::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsDiagramLayerSettings::Property key )

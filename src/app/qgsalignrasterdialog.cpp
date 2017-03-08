@@ -458,7 +458,7 @@ void QgsAlignRasterLayerConfigDialog::setItem( const QString &inputFilename, con
 void QgsAlignRasterLayerConfigDialog::browseOutputFilename()
 {
   QgsSettings settings;
-  QString dirName = editOutput->text().isEmpty() ? settings.value( QStringLiteral( "/UI/lastRasterFileDir" ), QDir::homePath() ).toString() : editOutput->text();
+  QString dirName = editOutput->text().isEmpty() ? settings.value( QStringLiteral( "UI/lastRasterFileDir" ), QDir::homePath() ).toString() : editOutput->text();
 
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Select output file" ), dirName, tr( "GeoTIFF" ) + " (*.tif *.tiff *.TIF *.TIFF)" );
 

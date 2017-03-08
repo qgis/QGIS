@@ -124,10 +124,10 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
 
   // temporarily override /Projections/defaultBehavior to avoid dialog prompt
   QgsSettings settings;
-  QString defaultProjectionOption = settings.value( QStringLiteral( "/Projections/defaultBehavior" ), "prompt" ).toString();
-  if ( settings.value( QStringLiteral( "/Projections/defaultBehavior" ), "prompt" ).toString() == QLatin1String( "prompt" ) )
+  QString defaultProjectionOption = settings.value( QStringLiteral( "Projections/defaultBehavior" ), "prompt" ).toString();
+  if ( settings.value( QStringLiteral( "Projections/defaultBehavior" ), "prompt" ).toString() == QLatin1String( "prompt" ) )
   {
-    settings.setValue( QStringLiteral( "/Projections/defaultBehavior" ), "useProject" );
+    settings.setValue( QStringLiteral( "Projections/defaultBehavior" ), "useProject" );
   }
 
   // find root item
@@ -172,7 +172,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
   // restore /Projections/defaultBehavior
   if ( defaultProjectionOption == QLatin1String( "prompt" ) )
   {
-    settings.setValue( QStringLiteral( "/Projections/defaultBehavior" ), defaultProjectionOption );
+    settings.setValue( QStringLiteral( "Projections/defaultBehavior" ), defaultProjectionOption );
   }
 
   mNameLabel->setText( layerItem->name() );
@@ -383,7 +383,7 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
   if ( item->type() == QgsDataItem::Directory )
   {
     QgsSettings settings;
-    QStringList favDirs = settings.value( QStringLiteral( "/browser/favourites" ) ).toStringList();
+    QStringList favDirs = settings.value( QStringLiteral( "browser/favourites" ) ).toStringList();
     bool inFavDirs = item->parent() && item->parent()->type() == QgsDataItem::Favorites;
 
     if ( item->parent() && !inFavDirs )
@@ -400,7 +400,7 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
     menu->addAction( tr( "Hide from Browser" ), this, SLOT( hideItem() ) );
     QAction *action = menu->addAction( tr( "Fast Scan this Directory" ), this, SLOT( toggleFastScan() ) );
     action->setCheckable( true );
-    action->setChecked( settings.value( QStringLiteral( "/qgis/scanItemsFastScanUris" ),
+    action->setChecked( settings.value( QStringLiteral( "qgis/scanItemsFastScanUris" ),
                                         QStringList() ).toStringList().contains( item->path() ) );
   }
   else if ( item->type() == QgsDataItem::Layer )
@@ -621,7 +621,7 @@ void QgsBrowserDockWidget::toggleFastScan()
   if ( item->type() == QgsDataItem::Directory )
   {
     QgsSettings settings;
-    QStringList fastScanDirs = settings.value( QStringLiteral( "/qgis/scanItemsFastScanUris" ),
+    QStringList fastScanDirs = settings.value( QStringLiteral( "qgis/scanItemsFastScanUris" ),
                                QStringList() ).toStringList();
     int idx = fastScanDirs.indexOf( item->path() );
     if ( idx != -1 )
@@ -632,7 +632,7 @@ void QgsBrowserDockWidget::toggleFastScan()
     {
       fastScanDirs << item->path();
     }
-    settings.setValue( QStringLiteral( "/qgis/scanItemsFastScanUris" ), fastScanDirs );
+    settings.setValue( QStringLiteral( "qgis/scanItemsFastScanUris" ), fastScanDirs );
   }
 }
 

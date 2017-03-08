@@ -48,7 +48,7 @@ QgsCustomizationDialog::QgsCustomizationDialog( QWidget * parent, QSettings * se
   setupUi( this );
 
   QSettings appSettings;
-  restoreGeometry( appSettings.value( QStringLiteral( "/Windows/Customization/geometry" ) ).toByteArray() );
+  restoreGeometry( appSettings.value( QStringLiteral( "Windows/Customization/geometry" ) ).toByteArray() );
 
   init();
   QStringList myHeaders;
@@ -67,7 +67,7 @@ QgsCustomizationDialog::QgsCustomizationDialog( QWidget * parent, QSettings * se
 QgsCustomizationDialog::~QgsCustomizationDialog()
 {
   QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/Customization/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/Customization/geometry" ), saveGeometry() );
 }
 
 QTreeWidgetItem *QgsCustomizationDialog::item( const QString &path, QTreeWidgetItem *widgetItem )
@@ -189,7 +189,7 @@ void QgsCustomizationDialog::reset()
   settingsToTree( mSettings );
 
   QSettings settings;
-  bool enabled = settings.value( QStringLiteral( "/UI/Customization/enabled" ), "false" ).toString() == QLatin1String( "true" );
+  bool enabled = settings.value( QStringLiteral( "UI/Customization/enabled" ), "false" ).toString() == QLatin1String( "true" );
   mCustomizationEnabledCheckBox->setChecked( enabled );
   treeWidget->setEnabled( enabled );
   toolBar->setEnabled( enabled );
@@ -208,7 +208,7 @@ void QgsCustomizationDialog::apply()
   mSettings->sync();
 
   QSettings settings;
-  settings.setValue( QStringLiteral( "/UI/Customization/enabled" ), mCustomizationEnabledCheckBox->isChecked() );
+  settings.setValue( QStringLiteral( "UI/Customization/enabled" ), mCustomizationEnabledCheckBox->isChecked() );
 }
 
 void QgsCustomizationDialog::cancel()
@@ -635,7 +635,7 @@ QgsCustomization::QgsCustomization()
 {
 
   QSettings settings;
-  mEnabled = settings.value( QStringLiteral( "/UI/Customization/enabled" ), "false" ).toString() == QLatin1String( "true" );
+  mEnabled = settings.value( QStringLiteral( "UI/Customization/enabled" ), "false" ).toString() == QLatin1String( "true" );
 }
 
 QgsCustomization::~QgsCustomization()

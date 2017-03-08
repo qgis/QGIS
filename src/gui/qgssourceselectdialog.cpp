@@ -80,8 +80,8 @@ QgsSourceSelectDialog::QgsSourceSelectDialog( const QString &serviceName, Servic
   treeView->setItemDelegate( new QgsSourceSelectItemDelegate( treeView ) );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/SourceSelectDialog/geometry" ) ).toByteArray() );
-  cbxUseTitleLayerName->setChecked( settings.value( QStringLiteral( "/Windows/SourceSelectDialog/UseTitleLayerName" ), false ).toBool() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/SourceSelectDialog/geometry" ) ).toByteArray() );
+  cbxUseTitleLayerName->setChecked( settings.value( QStringLiteral( "Windows/SourceSelectDialog/UseTitleLayerName" ), false ).toBool() );
 
   mModel = new QStandardItemModel();
   mModel->setHorizontalHeaderItem( 0, new QStandardItem( QStringLiteral( "Title" ) ) );
@@ -111,8 +111,8 @@ QgsSourceSelectDialog::QgsSourceSelectDialog( const QString &serviceName, Servic
 QgsSourceSelectDialog::~QgsSourceSelectDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/SourceSelectDialog/geometry" ), saveGeometry() );
-  settings.setValue( QStringLiteral( "/Windows/SourceSelectDialog/UseTitleLayerName" ), cbxUseTitleLayerName->isChecked() );
+  settings.setValue( QStringLiteral( "Windows/SourceSelectDialog/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/SourceSelectDialog/UseTitleLayerName" ), cbxUseTitleLayerName->isChecked() );
 
   delete mProjectionSelector;
   delete mModel;

@@ -149,7 +149,7 @@ void QgsGeorefPluginGui::dockThisWindow( bool dock )
 QgsGeorefPluginGui::~QgsGeorefPluginGui()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Plugin-GeoReferencer/Window/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Plugin-GeoReferencer/Window/geometry" ), saveGeometry() );
 
   clearGCPData();
 
@@ -2110,7 +2110,7 @@ QIcon QgsGeorefPluginGui::getThemeIcon( const QString &name )
   else
   {
     QgsSettings settings;
-    QString themePath = ":/icons/" + settings.value( QStringLiteral( "/Themes" ) ).toString() + name;
+    QString themePath = ":/icons/" + settings.value( QStringLiteral( "Themes" ) ).toString() + name;
     if ( QFile::exists( themePath ) )
     {
       return QIcon( themePath );
@@ -2198,5 +2198,5 @@ void QgsGeorefPluginGui::clearGCPData()
 int QgsGeorefPluginGui::messageTimeout()
 {
   QgsSettings settings;
-  return settings.value( QStringLiteral( "/qgis/messageTimeout" ), 5 ).toInt();
+  return settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
 }

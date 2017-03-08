@@ -216,7 +216,7 @@ void QgsGeometryValidator::run()
 {
   mErrorCount = 0;
   QgsSettings settings;
-  if ( settings.value( QStringLiteral( "/qgis/digitizing/validate_geometries" ), 1 ).toInt() == 2 )
+  if ( settings.value( QStringLiteral( "qgis/digitizing/validate_geometries" ), 1 ).toInt() == 2 )
   {
     char *r = nullptr;
     GEOSGeometry *g0 = mG.exportToGeos();

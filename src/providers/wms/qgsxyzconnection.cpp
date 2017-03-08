@@ -33,7 +33,7 @@ QString QgsXyzConnection::encodedUri() const
 QStringList QgsXyzConnectionUtils::connectionList()
 {
   QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "/Qgis/connections-xyz" ) );
+  settings.beginGroup( QStringLiteral( "Qgis/connections-xyz" ) );
   return settings.childGroups();
 }
 

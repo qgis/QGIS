@@ -30,9 +30,9 @@ QgsRasterMinMaxOrigin::QgsRasterMinMaxOrigin()
   , mStdDevFactor( DEFAULT_STDDEV_FACTOR )
 {
   QgsSettings mySettings;
-  mCumulativeCutLower = mySettings.value( QStringLiteral( "/Raster/cumulativeCutLower" ), CUMULATIVE_CUT_LOWER ).toDouble();
-  mCumulativeCutUpper = mySettings.value( QStringLiteral( "/Raster/cumulativeCutUpper" ), CUMULATIVE_CUT_UPPER ).toDouble();
-  mStdDevFactor = mySettings.value( QStringLiteral( "/Raster/defaultStandardDeviation" ), DEFAULT_STDDEV_FACTOR ).toDouble();
+  mCumulativeCutLower = mySettings.value( QStringLiteral( "Raster/cumulativeCutLower" ), CUMULATIVE_CUT_LOWER ).toDouble();
+  mCumulativeCutUpper = mySettings.value( QStringLiteral( "Raster/cumulativeCutUpper" ), CUMULATIVE_CUT_UPPER ).toDouble();
+  mStdDevFactor = mySettings.value( QStringLiteral( "Raster/defaultStandardDeviation" ), DEFAULT_STDDEV_FACTOR ).toDouble();
 }
 
 bool QgsRasterMinMaxOrigin::operator ==( const QgsRasterMinMaxOrigin &other ) const

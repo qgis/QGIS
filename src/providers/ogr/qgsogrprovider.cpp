@@ -382,7 +382,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri )
   QgsApplication::registerOgrDrivers();
 
   QgsSettings settings;
-  CPLSetConfigOption( "SHAPE_ENCODING", settings.value( QStringLiteral( "/qgis/ignoreShapeEncoding" ), true ).toBool() ? "" : nullptr );
+  CPLSetConfigOption( "SHAPE_ENCODING", settings.value( QStringLiteral( "qgis/ignoreShapeEncoding" ), true ).toBool() ? "" : nullptr );
 
   // make connection to the data source
 
@@ -758,7 +758,7 @@ void QgsOgrProvider::setEncoding( const QString &e )
 {
 #if defined(OLCStringsAsUTF8)
   QgsSettings settings;
-  if ( ( ogrDriverName == QLatin1String( "ESRI Shapefile" ) && settings.value( QStringLiteral( "/qgis/ignoreShapeEncoding" ), true ).toBool() ) || !OGR_L_TestCapability( ogrLayer, OLCStringsAsUTF8 ) )
+  if ( ( ogrDriverName == QLatin1String( "ESRI Shapefile" ) && settings.value( QStringLiteral( "qgis/ignoreShapeEncoding" ), true ).toBool() ) || !OGR_L_TestCapability( ogrLayer, OLCStringsAsUTF8 ) )
   {
     QgsVectorDataProvider::setEncoding( e );
   }
@@ -2388,7 +2388,7 @@ QString createFilters( const QString &type )
     // Requires GDAL>=1.6.0 with libz support, let's assume we have it.
     // This does not work for some file types, see VSIFileHandler doc.
     QgsSettings settings;
-    if ( settings.value( QStringLiteral( "/qgis/scanZipInBrowser2" ), "basic" ).toString() != QLatin1String( "no" ) )
+    if ( settings.value( QStringLiteral( "qgis/scanZipInBrowser2" ), "basic" ).toString() != QLatin1String( "no" ) )
     {
       sFileFilters.prepend( createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), QStringLiteral( "*.zip *.gz *.tar *.tar.gz *.tgz" ) ) );
       sExtensions << QStringLiteral( "zip" ) << QStringLiteral( "gz" ) << QStringLiteral( "tar" ) << QStringLiteral( "tar.gz" ) << QStringLiteral( "tgz" );
@@ -2666,7 +2666,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   CSLDestroy( papszOptions );
 
   QgsSettings settings;
-  if ( !settings.value( QStringLiteral( "/qgis/ignoreShapeEncoding" ), true ).toBool() )
+  if ( !settings.value( QStringLiteral( "qgis/ignoreShapeEncoding" ), true ).toBool() )
   {
     CPLSetConfigOption( "SHAPE_ENCODING", nullptr );
   }
@@ -3835,7 +3835,7 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
   {
     QgsSettings settings;
     // Only used in tests. Do not define it for interactive implication
-    QVariant overwriteStyle = settings.value( QStringLiteral( "/qgis/overwriteStyle" ) );
+    QVariant overwriteStyle = settings.value( QStringLiteral( "qgis/overwriteStyle" ) );
     if ( ( !overwriteStyle.isNull() && !overwriteStyle.toBool() ) ||
          ( overwriteStyle.isNull() &&
            QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),

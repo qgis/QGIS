@@ -104,7 +104,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QWidget
 
   QgsSettings settings;
 
-  int size = settings.value( QStringLiteral( "/IconSize" ), 16 ).toInt();
+  int size = settings.value( QStringLiteral( "IconSize" ), 16 ).toInt();
   if ( size > 32 )
   {
     size -= 16;
@@ -120,7 +120,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QWidget
   mToolbar->setIconSize( QSize( size, size ) );
 
   // Initialize the window geometry
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/BetterAttributeTable/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/BetterAttributeTable/geometry" ) ).toByteArray() );
 
   myDa = new QgsDistanceArea();
 
@@ -133,7 +133,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QWidget
 
   QgsFeatureRequest r;
   bool needsGeom = false;
-  QgsAttributeTableFilterModel::FilterMode initialMode = static_cast< QgsAttributeTableFilterModel::FilterMode>( settings.value( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll ).toInt() );
+  QgsAttributeTableFilterModel::FilterMode initialMode = static_cast< QgsAttributeTableFilterModel::FilterMode>( settings.value( QStringLiteral( "qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll ).toInt() );
   if ( mLayer->geometryType() != QgsWkbTypes::NullGeometry &&
        initialMode == QgsAttributeTableFilterModel::ShowVisible )
   {
@@ -200,7 +200,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QWidget
   // info from table to application
   connect( this, SIGNAL( saveEdits( QgsMapLayer * ) ), QgisApp::instance(), SLOT( saveEdits( QgsMapLayer * ) ) );
 
-  bool myDockFlag = settings.value( QStringLiteral( "/qgis/dockAttributeTable" ), false ).toBool();
+  bool myDockFlag = settings.value( QStringLiteral( "qgis/dockAttributeTable" ), false ).toBool();
   if ( myDockFlag )
   {
     mDock = new QgsAttributeTableDock( tr( "%1 (%n Feature(s))", "feature count", mMainView->featureCount() ).arg( mLayer->name() ), QgisApp::instance() );
@@ -262,7 +262,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QWidget
   mMainViewButtonGroup->setId( mAttributeViewButton, QgsDualView::AttributeEditor );
 
   // Load default attribute table filter
-  QgsAttributeTableFilterModel::FilterMode defaultFilterMode = ( QgsAttributeTableFilterModel::FilterMode ) settings.value( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll ).toInt();
+  QgsAttributeTableFilterModel::FilterMode defaultFilterMode = ( QgsAttributeTableFilterModel::FilterMode ) settings.value( QStringLiteral( "qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll ).toInt();
 
   switch ( defaultFilterMode )
   {
@@ -292,10 +292,10 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QWidget
   mUpdateExpressionText->setLayer( mLayer );
   mUpdateExpressionText->setLeftHandButtonStyle( true );
 
-  int initialView = settings.value( QStringLiteral( "/qgis/attributeTableView" ), -1 ).toInt();
+  int initialView = settings.value( QStringLiteral( "qgis/attributeTableView" ), -1 ).toInt();
   if ( initialView < 0 )
   {
-    initialView = settings.value( QStringLiteral( "/qgis/attributeTableLastView" ), QgsDualView::AttributeTable ).toInt();
+    initialView = settings.value( QStringLiteral( "qgis/attributeTableLastView" ), QgsDualView::AttributeTable ).toInt();
   }
   mMainView->setView( static_cast< QgsDualView::ViewMode >( initialView ) );
   mMainViewButtonGroup->button( initialView )->setChecked( true );
@@ -372,7 +372,7 @@ void QgsAttributeTableDialog::closeEvent( QCloseEvent *event )
   if ( !mDock )
   {
     QgsSettings settings;
-    settings.setValue( QStringLiteral( "/Windows/BetterAttributeTable/geometry" ), saveGeometry() );
+    settings.setValue( QStringLiteral( "Windows/BetterAttributeTable/geometry" ), saveGeometry() );
   }
 }
 

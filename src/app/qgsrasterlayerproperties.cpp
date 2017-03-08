@@ -423,7 +423,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   // this will be read by restoreOptionsBaseUi()
   if ( !settings.contains( QStringLiteral( "/Windows/RasterLayerProperties/tab" ) ) )
   {
-    settings.setValue( QStringLiteral( "/Windows/RasterLayerProperties/tab" ),
+    settings.setValue( QStringLiteral( "Windows/RasterLayerProperties/tab" ),
                        mOptStackedWidget->indexOf( mOptsPage_Style ) );
   }
 

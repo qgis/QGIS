@@ -134,7 +134,7 @@ void QgsDecorationScaleBar::render( QPainter *theQPainter )
 
     QgsSettings settings;
     bool ok = false;
-    QgsUnitTypes::DistanceUnit myPreferredUnits = QgsUnitTypes::decodeDistanceUnit( settings.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString(), &ok );
+    QgsUnitTypes::DistanceUnit myPreferredUnits = QgsUnitTypes::decodeDistanceUnit( settings.value( QStringLiteral( "qgis/measure/displayunits" ) ).toString(), &ok );
     if ( !ok )
       myPreferredUnits = QgsUnitTypes::DistanceMeters;
     QgsUnitTypes::DistanceUnit myMapUnits = canvas->mapUnits();

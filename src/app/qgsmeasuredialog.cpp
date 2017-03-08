@@ -99,7 +99,7 @@ void QgsMeasureDialog::updateSettings()
 {
   QgsSettings settings;
 
-  mDecimalPlaces = settings.value( QStringLiteral( "/qgis/measure/decimalplaces" ), "3" ).toInt();
+  mDecimalPlaces = settings.value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
   mCanvasUnits = mTool->canvas()->mapUnits();
   // Configure QgsDistanceArea
   mDistanceUnits = QgsProject::instance()->distanceUnits();
@@ -249,12 +249,12 @@ void QgsMeasureDialog::closeEvent( QCloseEvent *e )
 void QgsMeasureDialog::restorePosition()
 {
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/Measure/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/Measure/geometry" ) ).toByteArray() );
   int wh;
   if ( mMeasureArea )
-    wh = settings.value( QStringLiteral( "/Windows/Measure/hNoTable" ), 70 ).toInt();
+    wh = settings.value( QStringLiteral( "Windows/Measure/hNoTable" ), 70 ).toInt();
   else
-    wh = settings.value( QStringLiteral( "/Windows/Measure/h" ), 200 ).toInt();
+    wh = settings.value( QStringLiteral( "Windows/Measure/h" ), 200 ).toInt();
   resize( width(), wh );
   updateUi();
 }
@@ -262,7 +262,7 @@ void QgsMeasureDialog::restorePosition()
 void QgsMeasureDialog::saveWindowLocation()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/Measure/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/Measure/geometry" ), saveGeometry() );
   const QString &key = mMeasureArea ? "/Windows/Measure/hNoTable" : "/Windows/Measure/h";
   settings.setValue( key, height() );
 }
@@ -270,7 +270,7 @@ void QgsMeasureDialog::saveWindowLocation()
 QString QgsMeasureDialog::formatDistance( double distance, bool convertUnits ) const
 {
   QgsSettings settings;
-  bool baseUnit = settings.value( QStringLiteral( "/qgis/measure/keepbaseunit" ), true ).toBool();
+  bool baseUnit = settings.value( QStringLiteral( "qgis/measure/keepbaseunit" ), true ).toBool();
 
   if ( convertUnits )
     distance = convertLength( distance, mDistanceUnits );

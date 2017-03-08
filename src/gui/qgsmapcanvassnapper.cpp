@@ -168,9 +168,9 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint &point, QList<Qg
 
   QgsSettings settings;
   QString snappingMode = QgsProject::instance()->readEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/SnappingMode" ), QStringLiteral( "current_layer" ), &snappingDefinedInProject );
-  QString defaultSnapToleranceUnit = snappingDefinedInProject ? QgsProject::instance()->readEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapToleranceUnit" ) ) : settings.value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ), "0" ).toString();
-  QString defaultSnapTolerance = snappingDefinedInProject ? QString::number( QgsProject::instance()->readDoubleEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapTolerance" ) ) ) : settings.value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), "0" ).toString();
-  bool defaultSnapEnabled = settings.value( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ), false ).toBool();
+  QString defaultSnapToleranceUnit = snappingDefinedInProject ? QgsProject::instance()->readEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapToleranceUnit" ) ) : settings.value( QStringLiteral( "qgis/digitizing/default_snapping_tolerance_unit" ), "0" ).toString();
+  QString defaultSnapTolerance = snappingDefinedInProject ? QString::number( QgsProject::instance()->readDoubleEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapTolerance" ) ) ) : settings.value( QStringLiteral( "qgis/digitizing/default_snapping_tolerance" ), "0" ).toString();
+  bool defaultSnapEnabled = settings.value( QStringLiteral( "qgis/digitizing/default_snap_enabled" ), false ).toBool();
 
   QString defaultSnapType;
   if ( snappingDefinedInProject )
@@ -180,7 +180,7 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint &point, QList<Qg
   else
   {
     int dst;
-    dst = settings.value( QStringLiteral( "/qgis/digitizing/default_snap_mode" ), QgsSnappingConfig::Vertex ).toInt();
+    dst = settings.value( QStringLiteral( "qgis/digitizing/default_snap_mode" ), QgsSnappingConfig::Vertex ).toInt();
     switch ( dst )
     {
       case QgsSnappingConfig::Segment:

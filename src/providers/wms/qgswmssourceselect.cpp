@@ -146,14 +146,14 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, boo
 
   QgsSettings settings;
   QgsDebugMsg( "restoring geometry" );
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/WMSSourceSelect/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/WMSSourceSelect/geometry" ) ).toByteArray() );
 }
 
 QgsWMSSourceSelect::~QgsWMSSourceSelect()
 {
   QgsSettings settings;
   QgsDebugMsg( "saving geometry" );
-  settings.setValue( QStringLiteral( "/Windows/WMSSourceSelect/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/WMSSourceSelect/geometry" ), saveGeometry() );
 }
 
 
@@ -1102,7 +1102,7 @@ void QgsWMSSourceSelect::addDefaultServers()
   exampleServers[QStringLiteral( "GeoServer Demo - World" )] = QStringLiteral( "http://tiles.boundlessgeo.com/" );
 
   QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "/Qgis/connections-wms" ) );
+  settings.beginGroup( QStringLiteral( "Qgis/connections-wms" ) );
   QMap<QString, QString>::const_iterator i = exampleServers.constBegin();
   for ( ; i != exampleServers.constEnd(); ++i )
   {
@@ -1156,7 +1156,7 @@ void QgsWMSSourceSelect::on_btnSearch_clicked()
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   QgsSettings settings;
-  QString mySearchUrl = settings.value( QStringLiteral( "/qgis/WMSSearchUrl" ), "http://geopole.org/wms/search?search=%1&type=rss" ).toString();
+  QString mySearchUrl = settings.value( QStringLiteral( "qgis/WMSSearchUrl" ), "http://geopole.org/wms/search?search=%1&type=rss" ).toString();
   QUrl url( mySearchUrl.arg( leSearchTerm->text() ) );
   QgsDebugMsg( url.toString() );
 

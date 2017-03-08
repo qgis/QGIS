@@ -1908,7 +1908,7 @@ void QgsAttributeForm::setMessageBar( QgsMessageBar *messageBar )
 int QgsAttributeForm::messageTimeout()
 {
   QgsSettings settings;
-  return settings.value( QStringLiteral( "/qgis/messageTimeout" ), 5 ).toInt();
+  return settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
 }
 
 void QgsAttributeForm::ContainerInformation::apply( QgsExpressionContext *expressionContext )

@@ -54,13 +54,13 @@ QgsLoadStyleFromDBDialog::QgsLoadStyleFromDBDialog( QWidget *parent )
   setTabOrder( mDeleteButton, mLoadButton );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/loadStyleFromDb/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/loadStyleFromDb/geometry" ) ).toByteArray() );
 }
 
 QgsLoadStyleFromDBDialog::~QgsLoadStyleFromDBDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/loadStyleFromDb/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/loadStyleFromDb/geometry" ), saveGeometry() );
 }
 
 void QgsLoadStyleFromDBDialog::initializeLists( const QStringList &ids, const QStringList &names, const QStringList &descriptions, int sectionLimit )

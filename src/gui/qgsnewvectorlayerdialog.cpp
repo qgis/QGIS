@@ -37,7 +37,7 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   setupUi( this );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/NewVectorLayer/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/NewVectorLayer/geometry" ) ).toByteArray() );
 
   mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewAttribute.svg" ) ) );
   mRemoveAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteAttribute.svg" ) ) );
@@ -85,7 +85,7 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
 
   mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << QStringLiteral( "id" ) << QStringLiteral( "Integer" ) << QStringLiteral( "10" ) << QLatin1String( "" ) ) );
 
-  QgsCoordinateReferenceSystem defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( settings.value( QStringLiteral( "/Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString() );
+  QgsCoordinateReferenceSystem defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( settings.value( QStringLiteral( "Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString() );
   defaultCrs.validate();
   mCrsSelector->setCrs( defaultCrs );
 
@@ -99,7 +99,7 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
 QgsNewVectorLayerDialog::~QgsNewVectorLayerDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/NewVectorLayer/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/NewVectorLayer/geometry" ), saveGeometry() );
 }
 
 void QgsNewVectorLayerDialog::on_mFileFormatComboBox_currentIndexChanged( int index )
@@ -249,7 +249,7 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget *parent, QString *pE
   geomDialog.attributes( attributes );
 
   QgsSettings settings;
-  QString lastUsedDir = settings.value( QStringLiteral( "/UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString();
+  QString lastUsedDir = settings.value( QStringLiteral( "UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString();
   QString filterString = QgsVectorFileWriter::filterForDriver( fileformat );
   QString fileName = QFileDialog::getSaveFileName( nullptr, tr( "Save layer as..." ), lastUsedDir, filterString );
   if ( fileName.isNull() )
@@ -260,8 +260,8 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget *parent, QString *pE
   if ( fileformat == QLatin1String( "ESRI Shapefile" ) && !fileName.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) )
     fileName += QLatin1String( ".shp" );
 
-  settings.setValue( QStringLiteral( "/UI/lastVectorFileFilterDir" ), QFileInfo( fileName ).absolutePath() );
-  settings.setValue( QStringLiteral( "/UI/encoding" ), enc );
+  settings.setValue( QStringLiteral( "UI/lastVectorFileFilterDir" ), QFileInfo( fileName ).absolutePath() );
+  settings.setValue( QStringLiteral( "UI/encoding" ), enc );
 
   //try to create the new layer with OGRProvider instead of QgsVectorFileWriter
   QgsProviderRegistry *pReg = QgsProviderRegistry::instance();

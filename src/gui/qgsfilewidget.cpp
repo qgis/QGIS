@@ -209,7 +209,7 @@ void QgsFileWidget::openFileDialog()
     {
       defPath = QDir::homePath();
     }
-    oldPath = settings.value( QStringLiteral( "/UI/lastExternalResourceWidgetDefaultPath" ), defPath ).toString();
+    oldPath = settings.value( QStringLiteral( "UI/lastExternalResourceWidgetDefaultPath" ), defPath ).toString();
   }
 
   // Handle Storage
@@ -235,11 +235,11 @@ void QgsFileWidget::openFileDialog()
 
   if ( mStorageMode == GetFile )
   {
-    settings.setValue( QStringLiteral( "/UI/lastFileNameWidgetDir" ), QFileInfo( fileName ).absolutePath() );
+    settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), QFileInfo( fileName ).absolutePath() );
   }
   else if ( mStorageMode == GetDirectory )
   {
-    settings.setValue( QStringLiteral( "/UI/lastFileNameWidgetDir" ), fileName );
+    settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), fileName );
   }
 
   // Handle relative Path storage

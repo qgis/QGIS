@@ -37,7 +37,7 @@ QgsComposerManager::QgsComposerManager( QWidget *parent, Qt::WindowFlags f ): QD
   setupUi( this );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/ComposerManager/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/ComposerManager/geometry" ) ).toByteArray() );
 
   mComposerListWidget->setItemDelegate( new QgsComposerNameDelegate( mComposerListWidget ) );
 
@@ -77,7 +77,7 @@ QgsComposerManager::QgsComposerManager( QWidget *parent, Qt::WindowFlags f ): QD
   this->addTemplates( defaultTemplateMap );
   this->addTemplates( this->otherTemplates() );
 
-  mTemplatePathLineEdit->setText( settings.value( QStringLiteral( "/UI/ComposerManager/templatePath" ), QString() ).toString() );
+  mTemplatePathLineEdit->setText( settings.value( QStringLiteral( "UI/ComposerManager/templatePath" ), QString() ).toString() );
 
   refreshComposers();
 }
@@ -85,7 +85,7 @@ QgsComposerManager::QgsComposerManager( QWidget *parent, Qt::WindowFlags f ): QD
 QgsComposerManager::~QgsComposerManager()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/ComposerManager/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/ComposerManager/geometry" ), saveGeometry() );
 }
 
 void QgsComposerManager::refreshComposers()
@@ -313,7 +313,7 @@ void QgsComposerManager::on_mTemplate_currentIndexChanged( int indx )
 void QgsComposerManager::on_mTemplatePathBtn_pressed()
 {
   QgsSettings settings;
-  QString lastTmplDir = settings.value( QStringLiteral( "/UI/lastComposerTemplateDir" ), QDir::homePath() ).toString();
+  QString lastTmplDir = settings.value( QStringLiteral( "UI/lastComposerTemplateDir" ), QDir::homePath() ).toString();
   QString tmplPath = QFileDialog::getOpenFileName( this,
                      tr( "Choose template" ),
                      lastTmplDir,

@@ -49,8 +49,8 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   QgsSettings settings;
   // handle move from old QgsSettings group (/) to new (/qgis/stylesheet)
   // NOTE: don't delete old QgsSettings keys, in case user is also running older QGIS
-  QVariant oldFontPointSize = settings.value( QStringLiteral( "/fontPointSize" ) );
-  QVariant oldFontFamily = settings.value( QStringLiteral( "/fontFamily" ) );
+  QVariant oldFontPointSize = settings.value( QStringLiteral( "fontPointSize" ) );
+  QVariant oldFontFamily = settings.value( QStringLiteral( "fontFamily" ) );
 
   settings.beginGroup( QStringLiteral( "qgis/stylesheet" ) );
 
@@ -92,7 +92,7 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
 
   settings.endGroup(); // "qgis/stylesheet"
 
-  opts.insert( QStringLiteral( "iconSize" ), settings.value( QStringLiteral( "/IconSize" ), QGIS_ICON_SIZE ) );
+  opts.insert( QStringLiteral( "iconSize" ), settings.value( QStringLiteral( "IconSize" ), QGIS_ICON_SIZE ) );
 
   return opts;
 }

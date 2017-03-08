@@ -55,9 +55,9 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
 
   QgsSettings settings;
 
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/StyleV2Manager/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/StyleV2Manager/geometry" ) ).toByteArray() );
   mSplitter->setSizes( QList<int>() << 170 << 540 );
-  mSplitter->restoreState( settings.value( QStringLiteral( "/Windows/StyleV2Manager/splitter" ) ).toByteArray() );
+  mSplitter->restoreState( settings.value( QStringLiteral( "Windows/StyleV2Manager/splitter" ) ).toByteArray() );
 
   tabItemType->setDocumentMode( true );
   searchBox->setPlaceholderText( trUtf8( "Filter symbols…" ) );
@@ -195,8 +195,8 @@ void QgsStyleManagerDialog::onFinished()
   }
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/StyleV2Manager/geometry" ), saveGeometry() );
-  settings.setValue( QStringLiteral( "/Windows/StyleV2Manager/splitter" ), mSplitter->saveState() );
+  settings.setValue( QStringLiteral( "Windows/StyleV2Manager/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/StyleV2Manager/splitter" ), mSplitter->saveState() );
 }
 
 void QgsStyleManagerDialog::populateTypes()

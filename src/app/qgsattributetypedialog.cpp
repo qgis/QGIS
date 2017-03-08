@@ -87,7 +87,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
          );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/QgsAttributeTypeDialog/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/QgsAttributeTypeDialog/geometry" ) ).toByteArray() );
 
   constraintExpressionWidget->setLayer( vl );
 }
@@ -95,7 +95,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
 QgsAttributeTypeDialog::~QgsAttributeTypeDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/QgsAttributeTypeDialog/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/QgsAttributeTypeDialog/geometry" ), saveGeometry() );
 
   qDeleteAll( mEditorConfigWidgets );
 }

@@ -33,13 +33,13 @@ QgsSaveStyleToDbDialog::QgsSaveStyleToDbDialog( QWidget *parent )
   setTabOrder( mUseAsDefault, buttonBox );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/saveStyleToDb/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/saveStyleToDb/geometry" ) ).toByteArray() );
 }
 
 QgsSaveStyleToDbDialog::~QgsSaveStyleToDbDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/saveStyleToDb/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/saveStyleToDb/geometry" ), saveGeometry() );
 }
 
 QString QgsSaveStyleToDbDialog::getName()

@@ -56,7 +56,7 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *laye
   mButtonZoomToFeatures->setVisible( false );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/ExpressionSelectionDialog/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/ExpressionSelectionDialog/geometry" ) ).toByteArray() );
 }
 
 QgsExpressionBuilderWidget *QgsExpressionSelectionDialog::expressionBuilder()
@@ -151,7 +151,7 @@ void QgsExpressionSelectionDialog::on_mButtonZoomToFeatures_clicked()
   features.close();
 
   QgsSettings settings;
-  int timeout = settings.value( QStringLiteral( "/qgis/messageTimeout" ), 5 ).toInt();
+  int timeout = settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
   if ( featureCount > 0 )
   {
     mMapCanvas->zoomToFeatureExtent( bbox );
@@ -178,7 +178,7 @@ void QgsExpressionSelectionDialog::closeEvent( QCloseEvent *closeEvent )
   QDialog::closeEvent( closeEvent );
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/ExpressionSelectionDialog/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/ExpressionSelectionDialog/geometry" ), saveGeometry() );
 }
 
 void QgsExpressionSelectionDialog::on_mPbnClose_clicked()

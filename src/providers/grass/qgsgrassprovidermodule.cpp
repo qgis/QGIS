@@ -820,7 +820,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
       QgsDebugMsg( "providerCrs = " + providerCrs.toWkt() );
       QgsDebugMsg( "mapsetCrs = " + mapsetCrs.toWkt() );
 
-      bool settingsExternal = settings.value( QStringLiteral( "/GRASS/browser/import/external" ), true ).toBool();
+      bool settingsExternal = settings.value( QStringLiteral( "GRASS/browser/import/external" ), true ).toBool();
       QgsGrassObject rasterObject( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset(), destName, QgsGrassObject::Raster );
       if ( providerCrs.isValid() && mapsetCrs.isValid() && providerCrs == mapsetCrs
            && rasterProvider->name() == QLatin1String( "gdal" ) && settingsExternal )
@@ -841,7 +841,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
             projector->destExtentSize( rasterProvider->extent(), rasterProvider->xSize(), rasterProvider->ySize(),
                                        newExtent, newXSize, newYSize );
           }
-          QgsRasterProjector::Precision precision = ( QgsRasterProjector::Precision ) settings.value( QStringLiteral( "/GRASS/browser/import/crsTransform" ), QgsRasterProjector::Approximate ).toInt();
+          QgsRasterProjector::Precision precision = ( QgsRasterProjector::Precision ) settings.value( QStringLiteral( "GRASS/browser/import/crsTransform" ), QgsRasterProjector::Approximate ).toInt();
           projector->setPrecision( precision );
 
           pipe->set( projector );

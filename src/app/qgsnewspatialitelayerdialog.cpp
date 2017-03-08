@@ -46,7 +46,7 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
   setupUi( this );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/NewSpatiaLiteLayer/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/NewSpatiaLiteLayer/geometry" ) ).toByteArray() );
 
   mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewAttribute.svg" ) ) );
   mRemoveAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteAttribute.svg" ) ) );
@@ -56,7 +56,7 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
 
   mPointRadioButton->setChecked( true );
   // Populate the database list from the stored connections
-  settings.beginGroup( QStringLiteral( "/SpatiaLite/connections" ) );
+  settings.beginGroup( QStringLiteral( "SpatiaLite/connections" ) );
   QStringList keys = settings.childGroups();
   QStringList::Iterator it = keys.begin();
   mDatabaseComboBox->clear();
@@ -73,7 +73,7 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
   mOkButton->setEnabled( false );
 
   // Set the SRID box to a default of WGS84
-  QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( settings.value( QStringLiteral( "/Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString() );
+  QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( settings.value( QStringLiteral( "Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString() );
   srs.validate();
   mCrsId = srs.authid();
   leSRID->setText( srs.authid() + " - " + srs.description() );
@@ -93,7 +93,7 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
 QgsNewSpatialiteLayerDialog::~QgsNewSpatialiteLayerDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/NewSpatiaLiteLayer/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/NewSpatiaLiteLayer/geometry" ), saveGeometry() );
 }
 
 void QgsNewSpatialiteLayerDialog::on_mTypeBox_currentIndexChanged( int index )
@@ -314,7 +314,7 @@ bool QgsNewSpatialiteLayerDialog::createDb()
   QgsSettings settings;
   if ( !settings.contains( key ) )
   {
-    settings.setValue( QStringLiteral( "/SpatiaLite/connections/selected" ), fi.fileName() + tr( "@" ) + fi.canonicalFilePath() );
+    settings.setValue( QStringLiteral( "SpatiaLite/connections/selected" ), fi.fileName() + tr( "@" ) + fi.canonicalFilePath() );
     settings.setValue( key, fi.canonicalFilePath() );
 
     QMessageBox::information( nullptr, tr( "SpatiaLite Database" ), tr( "Registered new database!" ) );

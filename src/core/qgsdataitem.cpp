@@ -845,7 +845,7 @@ void QgsDirectoryItem::directoryChanged()
 bool QgsDirectoryItem::hiddenPath( const QString &path )
 {
   QgsSettings settings;
-  QStringList hiddenItems = settings.value( QStringLiteral( "/browser/hiddenPaths" ),
+  QStringList hiddenItems = settings.value( QStringLiteral( "browser/hiddenPaths" ),
                             QStringList() ).toStringList();
   int idx = hiddenItems.indexOf( path );
   return ( idx > -1 );
@@ -974,7 +974,7 @@ QgsDirectoryParamWidget::QgsDirectoryParamWidget( const QString &path, QWidget *
 
   // hide columns that are not requested
   QgsSettings settings;
-  QList<QVariant> lst = settings.value( QStringLiteral( "/dataitem/directoryHiddenColumns" ) ).toList();
+  QList<QVariant> lst = settings.value( QStringLiteral( "dataitem/directoryHiddenColumns" ) ).toList();
   Q_FOREACH ( const QVariant &colVariant, lst )
   {
     setColumnHidden( colVariant.toInt(), true );
@@ -1019,7 +1019,7 @@ void QgsDirectoryParamWidget::showHideColumn()
     if ( isColumnHidden( i ) )
       lst.append( QVariant( i ) );
   }
-  settings.setValue( QStringLiteral( "/dataitem/directoryHiddenColumns" ), lst );
+  settings.setValue( QStringLiteral( "dataitem/directoryHiddenColumns" ), lst );
 }
 
 QgsProjectItem::QgsProjectItem( QgsDataItem *parent, const QString &name, const QString &path )
@@ -1053,7 +1053,7 @@ QVector<QgsDataItem *> QgsFavoritesItem::createChildren()
   QVector<QgsDataItem *> children;
 
   QgsSettings settings;
-  QStringList favDirs = settings.value( QStringLiteral( "/browser/favourites" ), QVariant() ).toStringList();
+  QStringList favDirs = settings.value( QStringLiteral( "browser/favourites" ), QVariant() ).toStringList();
 
   Q_FOREACH ( const QString &favDir, favDirs )
   {
@@ -1066,9 +1066,9 @@ QVector<QgsDataItem *> QgsFavoritesItem::createChildren()
 void QgsFavoritesItem::addDirectory( const QString &favDir )
 {
   QgsSettings settings;
-  QStringList favDirs = settings.value( QStringLiteral( "/browser/favourites" ) ).toStringList();
+  QStringList favDirs = settings.value( QStringLiteral( "browser/favourites" ) ).toStringList();
   favDirs.append( favDir );
-  settings.setValue( QStringLiteral( "/browser/favourites" ), favDirs );
+  settings.setValue( QStringLiteral( "browser/favourites" ), favDirs );
 
   if ( state() == Populated )
   {
@@ -1086,9 +1086,9 @@ void QgsFavoritesItem::removeDirectory( QgsDirectoryItem *item )
     return;
 
   QgsSettings settings;
-  QStringList favDirs = settings.value( QStringLiteral( "/browser/favourites" ) ).toStringList();
+  QStringList favDirs = settings.value( QStringLiteral( "browser/favourites" ) ).toStringList();
   favDirs.removeAll( item->dirPath() );
-  settings.setValue( QStringLiteral( "/browser/favourites" ), favDirs );
+  settings.setValue( QStringLiteral( "browser/favourites" ), favDirs );
 
   int idx = findItem( mChildren, item );
   if ( idx < 0 )
@@ -1282,7 +1282,7 @@ QVector<QgsDataItem *> QgsZipItem::createChildren()
   QVector<QgsDataItem *> children;
   QString tmpPath;
   QgsSettings settings;
-  QString scanZipSetting = settings.value( QStringLiteral( "/qgis/scanZipInBrowser2" ), "basic" ).toString();
+  QString scanZipSetting = settings.value( QStringLiteral( "qgis/scanZipInBrowser2" ), "basic" ).toString();
 
   mZipFileList.clear();
 
@@ -1355,7 +1355,7 @@ QgsDataItem *QgsZipItem::itemFromPath( QgsDataItem *parent, const QString &path,
 QgsDataItem *QgsZipItem::itemFromPath( QgsDataItem *parent, const QString &filePath, const QString &name, const QString &path )
 {
   QgsSettings settings;
-  QString scanZipSetting = settings.value( QStringLiteral( "/qgis/scanZipInBrowser2" ), "basic" ).toString();
+  QString scanZipSetting = settings.value( QStringLiteral( "qgis/scanZipInBrowser2" ), "basic" ).toString();
   int zipFileCount = 0;
   QStringList zipFileList;
   QString vsiPrefix = QgsZipItem::vsiPrefix( filePath );
@@ -1458,7 +1458,7 @@ QStringList QgsZipItem::getZipFileList()
 
   QString tmpPath;
   QgsSettings settings;
-  QString scanZipSetting = settings.value( QStringLiteral( "/qgis/scanZipInBrowser2" ), "basic" ).toString();
+  QString scanZipSetting = settings.value( QStringLiteral( "qgis/scanZipInBrowser2" ), "basic" ).toString();
 
   QgsDebugMsgLevel( QString( "mFilePath = %1 name= %2 scanZipSetting= %3 vsiPrefix= %4" ).arg( mFilePath, name(), scanZipSetting, mVsiPrefix ), 3 );
 

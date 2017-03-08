@@ -72,7 +72,7 @@ QgsComposerTableV2::QgsComposerTableV2( QgsComposition *composition, bool create
 
   //get default composer font from settings
   QgsSettings settings;
-  QString defaultFontString = settings.value( QStringLiteral( "/Composer/defaultFont" ) ).toString();
+  QString defaultFontString = settings.value( QStringLiteral( "Composer/defaultFont" ) ).toString();
   if ( !defaultFontString.isEmpty() )
   {
     mHeaderFont.setFamily( defaultFontString );

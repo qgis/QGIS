@@ -45,7 +45,7 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
   , mCtrlDragSelectionFlag( QItemSelectionModel::Select )
 {
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/BetterAttributeTable/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "BetterAttributeTable/geometry" ) ).toByteArray() );
 
   //verticalHeader()->setDefaultSectionSize( 20 );
   horizontalHeader()->setHighlightSections( false );
@@ -250,7 +250,7 @@ void QgsAttributeTableView::closeEvent( QCloseEvent *e )
 {
   Q_UNUSED( e );
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/BetterAttributeTable/geometry" ), QVariant( saveGeometry() ) );
+  settings.setValue( QStringLiteral( "BetterAttributeTable/geometry" ), QVariant( saveGeometry() ) );
 }
 
 void QgsAttributeTableView::mousePressEvent( QMouseEvent *event )

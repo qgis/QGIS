@@ -42,13 +42,13 @@ QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QS
   init( layerId, providerId, featureId, labelText );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/ChangeLabelProps/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/ChangeLabelProps/geometry" ) ).toByteArray() );
 }
 
 QgsLabelPropertyDialog::~QgsLabelPropertyDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/ChangeLabelProps/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/ChangeLabelProps/geometry" ), saveGeometry() );
 }
 
 void QgsLabelPropertyDialog::on_buttonBox_clicked( QAbstractButton *button )

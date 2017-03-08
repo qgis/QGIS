@@ -197,10 +197,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   int myBlueInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorBluePart" ), 0 );
   int myAlphaInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorAlphaPart" ), 255 );
   QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt, myAlphaInt );
-  myRedInt = settings.value( QStringLiteral( "/qgis/default_selection_color_red" ), 255 ).toInt();
-  myGreenInt = settings.value( QStringLiteral( "/qgis/default_selection_color_green" ), 255 ).toInt();
-  myBlueInt = settings.value( QStringLiteral( "/qgis/default_selection_color_blue" ), 0 ).toInt();
-  myAlphaInt = settings.value( QStringLiteral( "/qgis/default_selection_color_alpha" ), 255 ).toInt();
+  myRedInt = settings.value( QStringLiteral( "qgis/default_selection_color_red" ), 255 ).toInt();
+  myGreenInt = settings.value( QStringLiteral( "qgis/default_selection_color_green" ), 255 ).toInt();
+  myBlueInt = settings.value( QStringLiteral( "qgis/default_selection_color_blue" ), 0 ).toInt();
+  myAlphaInt = settings.value( QStringLiteral( "qgis/default_selection_color_alpha" ), 255 ).toInt();
   QColor defaultSelectionColor = QColor( myRedInt, myGreenInt, myBlueInt, myAlphaInt );
   pbnSelectionColor->setContext( QStringLiteral( "gui" ) );
   pbnSelectionColor->setColor( myColor );
@@ -213,9 +213,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   myGreenInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), 255 );
   myBlueInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), 255 );
   myColor = QColor( myRedInt, myGreenInt, myBlueInt );
-  myRedInt = settings.value( QStringLiteral( "/qgis/default_canvas_color_red" ), 255 ).toInt();
-  myGreenInt = settings.value( QStringLiteral( "/qgis/default_canvas_color_green" ), 255 ).toInt();
-  myBlueInt = settings.value( QStringLiteral( "/qgis/default_canvas_color_blue" ), 255 ).toInt();
+  myRedInt = settings.value( QStringLiteral( "qgis/default_canvas_color_red" ), 255 ).toInt();
+  myGreenInt = settings.value( QStringLiteral( "qgis/default_canvas_color_green" ), 255 ).toInt();
+  myBlueInt = settings.value( QStringLiteral( "qgis/default_canvas_color_blue" ), 255 ).toInt();
   QColor defaultCanvasColor = QColor( myRedInt, myGreenInt, myBlueInt );
 
   pbnCanvasColor->setContext( QStringLiteral( "gui" ) );

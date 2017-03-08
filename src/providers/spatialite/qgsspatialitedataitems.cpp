@@ -336,7 +336,7 @@ QGISEXTERN bool createDb( const QString &dbPath, QString &errCause );
 void QgsSLRootItem::createDatabase()
 {
   QgsSettings settings;
-  QString lastUsedDir = settings.value( QStringLiteral( "/UI/lastSpatiaLiteDir" ), QDir::homePath() ).toString();
+  QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSpatiaLiteDir" ), QDir::homePath() ).toString();
 
   QString filename = QFileDialog::getSaveFileName( nullptr, tr( "New SpatiaLite Database File" ),
                      lastUsedDir,

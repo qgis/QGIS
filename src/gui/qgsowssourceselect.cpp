@@ -116,14 +116,14 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
 
   QgsSettings settings;
   QgsDebugMsg( "restoring geometry" );
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/WMSSourceSelect/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/WMSSourceSelect/geometry" ) ).toByteArray() );
 }
 
 QgsOWSSourceSelect::~QgsOWSSourceSelect()
 {
   QgsSettings settings;
   QgsDebugMsg( "saving geometry" );
-  settings.setValue( QStringLiteral( "/Windows/WMSSourceSelect/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/WMSSourceSelect/geometry" ), saveGeometry() );
 }
 
 void QgsOWSSourceSelect::clearFormats()
@@ -653,7 +653,7 @@ void QgsOWSSourceSelect::on_mSearchButton_clicked()
 
   QgsSettings settings;
   // geopole.org (geopole.ch) 25.4.2012 : 503 Service Unavailable, archive: Recently added 20 Jul 2011
-  QString mySearchUrl = settings.value( QStringLiteral( "/qgis/WMSSearchUrl" ), "http://geopole.org/wms/search?search=%1&type=rss" ).toString();
+  QString mySearchUrl = settings.value( QStringLiteral( "qgis/WMSSearchUrl" ), "http://geopole.org/wms/search?search=%1&type=rss" ).toString();
   QUrl url( mySearchUrl.arg( mSearchTermLineEdit->text() ) );
   QgsDebugMsg( url.toString() );
 

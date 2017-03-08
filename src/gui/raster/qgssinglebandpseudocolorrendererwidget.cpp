@@ -59,7 +59,7 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   connect( mColormapTreeWidget, &QTreeView::customContextMenuRequested,  [ = ]( const QPoint & ) { contextMenu->exec( QCursor::pos() ); }
          );
 
-  QString defaultPalette = settings.value( QStringLiteral( "/Raster/defaultPalette" ), "" ).toString();
+  QString defaultPalette = settings.value( QStringLiteral( "Raster/defaultPalette" ), "" ).toString();
   btnColorRamp->setColorRampFromName( defaultPalette );
 
   if ( !mRasterLayer )
@@ -396,7 +396,7 @@ void QgsSingleBandPseudoColorRendererWidget::applyColorRamp()
   {
     // Remember last used color ramp
     QgsSettings settings;
-    settings.setValue( QStringLiteral( "/Raster/defaultPalette" ), btnColorRamp->colorRampName() );
+    settings.setValue( QStringLiteral( "Raster/defaultPalette" ), btnColorRamp->colorRampName() );
   }
 
   bool enableContinuous = ( ramp->count() > 0 );

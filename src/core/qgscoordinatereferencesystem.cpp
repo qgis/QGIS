@@ -1654,14 +1654,14 @@ bool QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
     //We add the just created user CRS to the list of recently used CRS
     QgsSettings settings;
     //QStringList recentProjections = settings.value( "/UI/recentProjections" ).toStringList();
-    QStringList projectionsProj4 = settings.value( QStringLiteral( "/UI/recentProjectionsProj4" ) ).toStringList();
-    QStringList projectionsAuthId = settings.value( QStringLiteral( "/UI/recentProjectionsAuthId" ) ).toStringList();
+    QStringList projectionsProj4 = settings.value( QStringLiteral( "UI/recentProjectionsProj4" ) ).toStringList();
+    QStringList projectionsAuthId = settings.value( QStringLiteral( "UI/recentProjectionsAuthId" ) ).toStringList();
     //recentProjections.append();
     //settings.setValue( "/UI/recentProjections", recentProjections );
     projectionsProj4.append( toProj4() );
     projectionsAuthId.append( authid() );
-    settings.setValue( QStringLiteral( "/UI/recentProjectionsProj4" ), projectionsProj4 );
-    settings.setValue( QStringLiteral( "/UI/recentProjectionsAuthId" ), projectionsAuthId );
+    settings.setValue( QStringLiteral( "UI/recentProjectionsProj4" ), projectionsProj4 );
+    settings.setValue( QStringLiteral( "UI/recentProjectionsAuthId" ), projectionsAuthId );
 
   }
   else
@@ -2305,12 +2305,12 @@ QStringList QgsCoordinateReferenceSystem::recentProjections()
 
   // Read settings from persistent storage
   QgsSettings settings;
-  projections = settings.value( QStringLiteral( "/UI/recentProjections" ) ).toStringList();
+  projections = settings.value( QStringLiteral( "UI/recentProjections" ) ).toStringList();
   /*** The reading (above) of internal id from persistent storage should be removed sometime in the future */
   /*** This is kept now for backwards compatibility */
 
-  QStringList projectionsProj4  = settings.value( QStringLiteral( "/UI/recentProjectionsProj4" ) ).toStringList();
-  QStringList projectionsAuthId = settings.value( QStringLiteral( "/UI/recentProjectionsAuthId" ) ).toStringList();
+  QStringList projectionsProj4  = settings.value( QStringLiteral( "UI/recentProjectionsProj4" ) ).toStringList();
+  QStringList projectionsAuthId = settings.value( QStringLiteral( "UI/recentProjectionsAuthId" ) ).toStringList();
   if ( projectionsAuthId.size() >= projections.size() )
   {
     // We had saved state with AuthId and Proj4. Use that instead

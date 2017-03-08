@@ -104,7 +104,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
   if ( mode == DefaultQgsSetting )
   {
     QgsSettings settings;
-    mode = static_cast<IdentifyMode>( settings.value( QStringLiteral( "/Map/identifyMode" ), 0 ).toInt() );
+    mode = static_cast<IdentifyMode>( settings.value( QStringLiteral( "Map/identifyMode" ), 0 ).toInt() );
   }
 
   if ( mode == LayerSelection )
@@ -672,7 +672,7 @@ QgsUnitTypes::AreaUnit QgsMapToolIdentify::displayAreaUnits() const
 QString QgsMapToolIdentify::formatDistance( double distance ) const
 {
   QgsSettings settings;
-  bool baseUnit = settings.value( QStringLiteral( "/qgis/measure/keepbaseunit" ), true ).toBool();
+  bool baseUnit = settings.value( QStringLiteral( "qgis/measure/keepbaseunit" ), true ).toBool();
 
   return QgsDistanceArea::formatDistance( distance, 3, displayDistanceUnits(), baseUnit );
 }
@@ -680,7 +680,7 @@ QString QgsMapToolIdentify::formatDistance( double distance ) const
 QString QgsMapToolIdentify::formatArea( double area ) const
 {
   QgsSettings settings;
-  bool baseUnit = settings.value( QStringLiteral( "/qgis/measure/keepbaseunit" ), true ).toBool();
+  bool baseUnit = settings.value( QStringLiteral( "qgis/measure/keepbaseunit" ), true ).toBool();
 
   return QgsDistanceArea::formatArea( area, 3, displayAreaUnits(), baseUnit );
 }

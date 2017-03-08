@@ -52,7 +52,7 @@ eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile *> *t
   setupUi( this );
 
   QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/eVis/db-geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "eVis/db-geometry" ) ).toByteArray() );
 
   mTempOutputFileList = temporaryFileList;
 
@@ -87,7 +87,7 @@ eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile *> *t
 eVisDatabaseConnectionGui::~eVisDatabaseConnectionGui()
 {
   QSettings settings;
-  settings.setValue( QStringLiteral( "/eVis/db-geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "eVis/db-geometry" ), saveGeometry() );
 }
 
 /*
