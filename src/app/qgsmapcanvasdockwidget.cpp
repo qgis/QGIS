@@ -19,6 +19,7 @@
 #include "qgsstatusbarmagnifierwidget.h"
 #include "qgsdoublespinbox.h"
 #include "qgssettings.h"
+#include "qgsmaptoolpan.h"
 #include <QMessageBox>
 #include <QMenu>
 #include <QToolBar>
@@ -36,6 +37,8 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
 
   setWindowTitle( name );
   mMapCanvas = new QgsMapCanvas( this );
+  mPanTool = new QgsMapToolPan( mMapCanvas );
+  mMapCanvas->setMapTool( mPanTool );
 
   mMainWidget->setLayout( new QVBoxLayout() );
   mMainWidget->layout()->setContentsMargins( 0, 0, 0, 0 );

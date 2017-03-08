@@ -20,11 +20,13 @@
 #include "qgsdockwidget.h"
 #include "qgis_app.h"
 #include <QWidgetAction>
+#include <memory>
 
 class QgsMapCanvas;
 class QgsScaleComboBox;
 class QgsDoubleSpinBox;
 class QgsStatusBarMagnifierWidget;
+class QgsMapToolPan;
 
 /**
  * \class QgsMapCanvasDockWidget
@@ -74,6 +76,7 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     bool mBlockScaleUpdate = false;
     bool mBlockRotationUpdate = false;
     bool mBlockMagnificationUpdate = false;
+    QgsMapToolPan *mPanTool = nullptr;
 };
 
 /**
