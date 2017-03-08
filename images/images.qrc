@@ -557,6 +557,7 @@
         <file>themes/default/processingResult.svg</file>
         <file>themes/default/search.svg</file>
         <file>themes/default/mActionNewMap.svg</file>
+        <file>themes/default/mActionMapSettings.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

@@ -19,9 +19,16 @@
 
 #include "qgsdockwidget.h"
 #include "qgis_app.h"
+#include <QWidgetAction>
 
 class QgsMapCanvas;
+class QgsScaleComboBox;
 
+/**
+ * \class QgsMapCanvasDockWidget
+ * A dock widget with an embedded map canvas, for additional map views.
+ * \note added in QGIS 3.0
+ */
 class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsMapCanvasDockWidgetBase
 {
     Q_OBJECT
@@ -58,8 +65,28 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsMapCanvas *mMainCanvas = nullptr;
     bool mShowCloseWarning = true;
+    QgsScaleComboBox *mScaleCombo = nullptr;
+    bool mBlockScaleUpdate = false;
+};
 
+/**
+ * \class QgsScaleComboAction
+ * Allows embedding a scale combo into a menu.
+ * \note added in QGIS 3.0
+ */
 
+class QgsScaleComboAction: public QWidgetAction
+{
+    Q_OBJECT
+
+  public:
+
+    QgsScaleComboAction( QWidget *parent = nullptr );
+
+    QgsScaleComboBox *scaleCombo() { return mScaleCombo; }
+
+  private:
+    QgsScaleComboBox *mScaleCombo = nullptr;
 };
 
 

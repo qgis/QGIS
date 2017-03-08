@@ -15,7 +15,11 @@
 #include "qgsmapcanvasdockwidget.h"
 #include "qgsmapcanvas.h"
 #include "qgsprojectionselectiondialog.h"
+#include "qgsscalecombobox.h"
 #include <QMessageBox>
+#include <QMenu>
+#include <QToolBar>
+#include <QToolButton>
 
 QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *parent )
   : QgsDockWidget( parent )
@@ -38,6 +42,36 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
 
   connect( mActionSetCrs, &QAction::triggered, this, &QgsMapCanvasDockWidget::setMapCrs );
   connect( mActionSyncView, &QAction::toggled, this, &QgsMapCanvasDockWidget::syncView );
+
+  QMenu *menu = new QMenu();
+
+  QToolButton *toolButton = new QToolButton();
+  toolButton->setMenu( menu );
+  toolButton->setPopupMode( QToolButton::InstantPopup );
+  toolButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapSettings.svg" ) ) );
+  mToolbar->addWidget( toolButton );
+
+  QgsScaleComboAction *scaleAction = new QgsScaleComboAction( menu );
+  menu->addAction( scaleAction );
+  mScaleCombo = scaleAction->scaleCombo();
+  connect( mScaleCombo, &QgsScaleComboBox::scaleChanged, this, [ = ]( double scale )
+  {
+    if ( !mBlockScaleUpdate )
+    {
+      mBlockScaleUpdate = true;
+      mMapCanvas->zoomScale( 1.0 / scale );
+      mBlockScaleUpdate = false;
+    }
+  } );
+  connect( mMapCanvas, &QgsMapCanvas::scaleChanged, this, [ = ]( double scale )
+  {
+    if ( !mBlockScaleUpdate )
+    {
+      mBlockScaleUpdate = true;
+      mScaleCombo->setScale( 1.0 / scale );
+      mBlockScaleUpdate = false;
+    }
+  } );
 }
 
 QgsMapCanvas *QgsMapCanvasDockWidget::mapCanvas()
@@ -105,4 +139,19 @@ void QgsMapCanvasDockWidget::mapExtentChanged()
   destCanvas->refresh();
 
   syncView( true );
+}
+
+QgsScaleComboAction::QgsScaleComboAction( QWidget *parent )
+  : QWidgetAction( parent )
+{
+  mScaleCombo = new QgsScaleComboBox();
+
+  QHBoxLayout *hLayout = new QHBoxLayout();
+  hLayout->setContentsMargins( 2, 2, 2, 2 );
+  QLabel *label = new QLabel( tr( "Scale" ) );
+  hLayout->addWidget( label );
+  hLayout->addWidget( mScaleCombo );
+  QWidget *w = new QWidget();
+  w->setLayout( hLayout );
+  setDefaultWidget( w );
 }
