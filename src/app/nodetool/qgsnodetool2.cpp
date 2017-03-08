@@ -559,7 +559,7 @@ QgsPoint QgsNodeTool2::positionForEndpointMarker( const QgsPointLocator::Match &
 
 void QgsNodeTool2::mouseMoveNotDragging( QgsMapMouseEvent *e )
 {
-  if ( !mMouseAtEndpoint )
+  if ( mMouseAtEndpoint )
   {
     // check if we are still at the endpoint, i.e. whether to keep showing
     // the endpoint indicator - or go back to snapping to editable layers
