@@ -33,6 +33,8 @@ class QgsUnitTypes
       DistanceYards, /*!< imperial yards */
       DistanceMiles, /*!< terrestrial miles */
       DistanceDegrees, /*!< degrees, for planar geographic CRS distance measurements */
+      DistanceCentimeters,
+      DistanceMillimeters,
       DistanceUnknownUnit, /*!< unknown distance unit */
     };
 
@@ -57,7 +59,9 @@ class QgsUnitTypes
       AreaAcres, /*!< acres */
       AreaSquareNauticalMiles, /*!< square nautical miles */
       AreaSquareDegrees, /*!< square degrees, for planar geographic CRS area measurements */
-      AreaUnknownUnit, /*!< unknown areal unit */
+      AreaSquareCentimeters,
+      AreaSquareMillimeters,
+      AreaUnknownUnit,
     };
 
     //! Units of angles

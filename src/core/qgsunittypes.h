@@ -74,6 +74,8 @@ class CORE_EXPORT QgsUnitTypes
       AreaAcres, //!< Acres
       AreaSquareNauticalMiles, //!< Square nautical miles
       AreaSquareDegrees, //!< Square degrees, for planar geographic CRS area measurements
+      AreaSquareCentimeters, //! Square centimeters
+      AreaSquareMillimeters, //! Square millimeters
       AreaUnknownUnit, //!< Unknown areal unit
     };
 

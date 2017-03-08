@@ -58,6 +58,8 @@ QgsUnitTypes::DistanceUnitType QgsUnitTypes::unitType( QgsUnitTypes::AreaUnit un
     case AreaHectares:
     case AreaAcres:
     case AreaSquareNauticalMiles:
+    case AreaSquareCentimeters:
+    case AreaSquareMillimeters:
       return Standard;
 
     case AreaSquareDegrees:
@@ -562,6 +564,10 @@ QString QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaUnit unit )
       return QStringLiteral( "nm2" );
     case AreaSquareDegrees:
       return QStringLiteral( "deg2" );
+    case AreaSquareCentimeters:
+      return QStringLiteral( "cm2" );
+    case AreaSquareMillimeters:
+      return QStringLiteral( "mm2" );
     case AreaUnknownUnit:
       return QStringLiteral( "<unknown>" );
   }
@@ -593,6 +599,10 @@ QgsUnitTypes::AreaUnit QgsUnitTypes::decodeAreaUnit( const QString &string, bool
     return AreaSquareNauticalMiles;
   if ( normalized == encodeUnit( AreaSquareDegrees ) )
     return AreaSquareDegrees;
+  if ( normalized == encodeUnit( AreaSquareCentimeters ) )
+    return AreaSquareCentimeters;
+  if ( normalized == encodeUnit( AreaSquareMillimeters ) )
+    return AreaSquareMillimeters;
   if ( normalized == encodeUnit( AreaUnknownUnit ) )
     return AreaUnknownUnit;
 
@@ -624,6 +634,10 @@ QString QgsUnitTypes::toString( QgsUnitTypes::AreaUnit unit )
       return QObject::tr( "square nautical miles", "area" );
     case AreaSquareDegrees:
       return QObject::tr( "square degrees", "area" );
+    case AreaSquareMillimeters:
+      return QObject::tr( "square millimeters", "area" );
+    case AreaSquareCentimeters:
+      return QObject::tr( "square centimeters", "area" );
     case AreaUnknownUnit:
       return QObject::tr( "<unknown>", "area" );
   }
@@ -652,6 +666,10 @@ QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::AreaUnit unit )
       return QObject::trUtf8( "NM²", "area" );
     case AreaSquareDegrees:
       return QObject::trUtf8( "deg²", "area" );
+    case AreaSquareCentimeters:
+      return QObject::trUtf8( "cm²", "area" );
+    case AreaSquareMillimeters:
+      return QObject::trUtf8( "mm²", "area" );
     case AreaUnknownUnit:
       return QString();
   }
@@ -683,6 +701,10 @@ QgsUnitTypes::AreaUnit QgsUnitTypes::stringToAreaUnit( const QString &string, bo
     return AreaSquareNauticalMiles;
   if ( normalized == toString( AreaSquareDegrees ) )
     return AreaSquareDegrees;
+  if ( normalized == toString( AreaSquareMillimeters ) )
+    return AreaSquareMillimeters;
+  if ( normalized == toString( AreaSquareCentimeters ) )
+    return AreaSquareCentimeters;
   if ( normalized == toString( AreaUnknownUnit ) )
     return AreaUnknownUnit;
   if ( ok )
@@ -694,6 +716,8 @@ QgsUnitTypes::AreaUnit QgsUnitTypes::stringToAreaUnit( const QString &string, bo
 double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaUnit fromUnit, QgsUnitTypes::AreaUnit toUnit )
 {
 #define KM2_TO_M2 1000000.0
+#define CM2_TO_M2 0.0001
+#define MM2_TO_M2 0.000001
 #define FT2_TO_M2 0.09290304
 #define YD2_TO_M2 0.83612736
 #define MI2_TO_M2 2589988.110336
@@ -727,6 +751,10 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaUnit fromUnit, QgsU
           return 1.0 / NM2_TO_M2;
         case AreaSquareDegrees:
           return 1.0 / DEG2_TO_M2;
+        case AreaSquareCentimeters:
+          return 1.0 / CM2_TO_M2;
+        case AreaSquareMillimeters:
+          return 1.0 / MM2_TO_M2;
         case AreaUnknownUnit:
           break;
       }
@@ -755,6 +783,10 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaUnit fromUnit, QgsU
           return KM2_TO_M2 / NM2_TO_M2;
         case AreaSquareDegrees:
           return KM2_TO_M2 / DEG2_TO_M2;
+        case AreaSquareCentimeters:
+          return KM2_TO_M2 / CM2_TO_M2;
+        case AreaSquareMillimeters:
+          return KM2_TO_M2 / MM2_TO_M2;
         case AreaUnknownUnit:
           break;
       }
@@ -783,6 +815,10 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaUnit fromUnit, QgsU
           return FT2_TO_M2 / NM2_TO_M2;
         case AreaSquareDegrees:
           return FT2_TO_M2 / DEG2_TO_M2;
+        case AreaSquareCentimeters:
+          return FT2_TO_M2 / CM2_TO_M2;
+        case AreaSquareMillimeters:
+          return FT2_TO_M2 / MM2_TO_M2;
         case AreaUnknownUnit:
           break;
       }
@@ -812,6 +848,10 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaUnit fromUnit, QgsU
           return YD2_TO_M2 / NM2_TO_M2;
         case AreaSquareDegrees:
           return YD2_TO_M2 / DEG2_TO_M2;
+        case AreaSquareCentimeters:
+          return YD2_TO_M2 / CM2_TO_M2;
+        case AreaSquareMillimeters:
+          return YD2_TO_M2 / MM2_TO_M2;
         case AreaUnknownUnit:
           break;
       }
@@ -840,6 +880,10 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaUnit fromUnit, QgsU
           return MI2_TO_M2 / NM2_TO_M2;
         case AreaSquareDegrees:
           return MI2_TO_M2 / DEG2_TO_M2;
+        case AreaSquareCentimeters:
+          return MI2_TO_M2 / CM2_TO_M2;
+        case AreaSquareMillimeters:
+          return MI2_TO_M2 / MM2_TO_M2;
         case AreaUnknownUnit:
           break;
       }
@@ -869,6 +913,10 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaUnit fromUnit, QgsU
           return HA_TO_M2 / NM2_TO_M2;
         case AreaSquareDegrees:
           return HA_TO_M2 / DEG2_TO_M2;
+        case AreaSquareCentimeters:
+          return HA_TO_M2 / CM2_TO_M2;
+        case AreaSquareMillimeters:
+          return HA_TO_M2 / MM2_TO_M2;
         case AreaUnknownUnit:
           break;
       }
@@ -898,6 +946,10 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaUnit fromUnit, QgsU
           return AC_TO_FT2 * FT2_TO_M2 / NM2_TO_M2;
         case AreaSquareDegrees:
           return AC_TO_FT2 * FT2_TO_M2 / DEG2_TO_M2;
+        case AreaSquareCentimeters:
+          return AC_TO_FT2 * FT2_TO_M2 / CM2_TO_M2;
+        case AreaSquareMillimeters:
+          return AC_TO_FT2 * FT2_TO_M2 / MM2_TO_M2;
         case AreaUnknownUnit:
           break;
       }
@@ -927,6 +979,10 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaUnit fromUnit, QgsU
           return 1.0;
         case AreaSquareDegrees:
           return NM2_TO_M2 / DEG2_TO_M2;
+        case AreaSquareCentimeters:
+          return NM2_TO_M2 / CM2_TO_M2;
+        case AreaSquareMillimeters:
+          return NM2_TO_M2 / MM2_TO_M2;
         case AreaUnknownUnit:
           break;
       }
@@ -956,6 +1012,10 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaUnit fromUnit, QgsU
           return DEG2_TO_M2 / NM2_TO_M2;
         case AreaSquareDegrees:
           return 1.0;
+        case AreaSquareCentimeters:
+          return DEG2_TO_M2 / CM2_TO_M2;
+        case AreaSquareMillimeters:
+          return DEG2_TO_M2 / MM2_TO_M2;
         case AreaUnknownUnit:
           break;
       }
@@ -963,6 +1023,70 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaUnit fromUnit, QgsU
       break;
     }
 
+    case AreaSquareMillimeters:
+    {
+      switch ( toUnit )
+      {
+        case AreaSquareMeters:
+          return MM2_TO_M2;
+        case AreaSquareKilometers:
+          return MM2_TO_M2 / KM2_TO_M2;
+        case AreaSquareFeet:
+          return MM2_TO_M2 / FT2_TO_M2 ;
+        case AreaSquareYards:
+          return MM2_TO_M2 / YD2_TO_M2;
+        case AreaSquareMiles:
+          return MM2_TO_M2 / MI2_TO_M2;
+        case AreaHectares:
+          return MM2_TO_M2 / HA_TO_M2;
+        case AreaAcres:
+          return MM2_TO_M2 / AC_TO_FT2 / FT2_TO_M2;
+        case AreaSquareNauticalMiles:
+          return MM2_TO_M2 / NM2_TO_M2;
+        case AreaSquareDegrees:
+          return MM2_TO_M2 / DEG2_TO_M2;
+        case AreaSquareCentimeters:
+          return MM2_TO_M2 / CM2_TO_M2;
+        case AreaSquareMillimeters:
+          return 1.0;
+        case AreaUnknownUnit:
+          break;
+      }
+
+      break;
+    }
+    case AreaSquareCentimeters:
+    {
+      switch ( toUnit )
+      {
+        case AreaSquareMeters:
+          return CM2_TO_M2;
+        case AreaSquareKilometers:
+          return CM2_TO_M2 / KM2_TO_M2;
+        case AreaSquareFeet:
+          return CM2_TO_M2 / FT2_TO_M2 ;
+        case AreaSquareYards:
+          return CM2_TO_M2 / YD2_TO_M2;
+        case AreaSquareMiles:
+          return CM2_TO_M2 / MI2_TO_M2;
+        case AreaHectares:
+          return CM2_TO_M2 / HA_TO_M2;
+        case AreaAcres:
+          return CM2_TO_M2 / AC_TO_FT2 / FT2_TO_M2;
+        case AreaSquareNauticalMiles:
+          return CM2_TO_M2 / NM2_TO_M2;
+        case AreaSquareDegrees:
+          return CM2_TO_M2 / DEG2_TO_M2;
+        case AreaSquareCentimeters:
+          return 1.0;
+        case AreaSquareMillimeters:
+          return CM2_TO_M2 / MM2_TO_M2;
+        case AreaUnknownUnit:
+          break;
+      }
+
+      break;
+    }
     case AreaUnknownUnit:
       break;
   }
@@ -980,10 +1104,10 @@ QgsUnitTypes::AreaUnit QgsUnitTypes::distanceToAreaUnit( DistanceUnit distanceUn
       return AreaSquareKilometers;
 
     case DistanceCentimeters:
-      return AreaSquareMeters;
+      return AreaSquareCentimeters;
 
     case DistanceMillimeters:
-      return AreaSquareMeters;
+      return AreaSquareCentimeters;
 
     case DistanceFeet:
       return AreaSquareFeet;
@@ -1362,8 +1486,42 @@ QgsUnitTypes::AreaValue QgsUnitTypes::scaledArea( double area, QgsUnitTypes::Are
 {
   AreaValue result;
 
+  // If we are not forced to keep the base units, switch to meter calculation
+  if ( unit == AreaSquareMillimeters )
+  {
+    if ( keepBaseUnit )
+    {
+      result.value = qgsRound( area, decimals );
+      result.unit = QgsUnitTypes::AreaSquareMillimeters;
+    }
+    else
+    {
+      area /= 1000000.0;
+      unit = QgsUnitTypes::AreaSquareMeters;
+    }
+  }
+  else if ( unit == AreaSquareCentimeters )
+  {
+    if ( keepBaseUnit )
+    {
+      result.value = qgsRound( area, decimals );
+      result.unit = QgsUnitTypes::AreaSquareCentimeters;
+    }
+    else
+    {
+      area /= 10000.0;
+      unit = QgsUnitTypes::AreaSquareMeters;
+    }
+  }
+
   switch ( unit )
   {
+    case AreaSquareCentimeters:
+      // handled in the if above
+      break;
+    case AreaSquareMillimeters:
+      // handled in the if above
+      break;
     case AreaSquareMeters:
     {
       if ( keepBaseUnit )
