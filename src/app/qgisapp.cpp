@@ -9321,7 +9321,7 @@ void QgisApp::apiDocumentation()
   else
   {
     QgsSettings settings;
-    QString QgisApiUrl = settings.value( QStringLiteral( "Qgis/QgisApiUrl" ),
+    QString QgisApiUrl = settings.value( QStringLiteral( "qgis/QgisApiUrl" ),
                                          QStringLiteral( "https://qgis.org/api/" ) ).toString();
     openURL( QgisApiUrl, false );
   }
@@ -9330,7 +9330,7 @@ void QgisApp::apiDocumentation()
 void QgisApp::reportaBug()
 {
   QgsSettings settings;
-  QString reportaBugUrl = settings.value( QStringLiteral( "Qgis/reportaBugUrl" ),
+  QString reportaBugUrl = settings.value( QStringLiteral( "qgis/reportaBugUrl" ),
                                           tr( "https://qgis.org/en/site/getinvolved/development/bugreporting.html" ) ).toString();
   openURL( reportaBugUrl, false );
 }
@@ -9338,7 +9338,7 @@ void QgisApp::reportaBug()
 void QgisApp::supportProviders()
 {
   QgsSettings settings;
-  QString supportProvidersUrl = settings.value( QStringLiteral( "Qgis/supportProvidersUrl" ),
+  QString supportProvidersUrl = settings.value( QStringLiteral( "qgis/supportProvidersUrl" ),
                                 tr( "https://qgis.org/en/site/forusers/commercial_support.html" ) ).toString();
   openURL( supportProvidersUrl, false );
 }
@@ -9346,7 +9346,7 @@ void QgisApp::supportProviders()
 void QgisApp::helpQgisHomePage()
 {
   QgsSettings settings;
-  QString  helpQgisHomePageUrl = settings.value( QStringLiteral( "Qgis/helpQgisHomePageUrl" ),
+  QString  helpQgisHomePageUrl = settings.value( QStringLiteral( "qgis/helpQgisHomePageUrl" ),
                                  QStringLiteral( "https://qgis.org" ) ).toString();
   openURL( helpQgisHomePageUrl, false );
 }

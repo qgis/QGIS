@@ -1102,7 +1102,7 @@ void QgsWMSSourceSelect::addDefaultServers()
   exampleServers[QStringLiteral( "GeoServer Demo - World" )] = QStringLiteral( "http://tiles.boundlessgeo.com/" );
 
   QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "Qgis/connections-wms" ) );
+  settings.beginGroup( QStringLiteral( "qgis/connections-wms" ) );
   QMap<QString, QString>::const_iterator i = exampleServers.constBegin();
   for ( ; i != exampleServers.constEnd(); ++i )
   {
@@ -1234,7 +1234,7 @@ void QgsWMSSourceSelect::on_btnAddWMS_clicked()
   }
 
   // add selected WMS to config and mark as current
-  settings.setValue( QStringLiteral( "Qgis/connections-wms/%1/url" ).arg( wmsTitle ), wmsUrl );
+  settings.setValue( QStringLiteral( "qgis/connections-wms/%1/url" ).arg( wmsTitle ), wmsUrl );
   QgsWMSConnection::setSelectedConnection( wmsTitle );
   populateConnectionList();
 
