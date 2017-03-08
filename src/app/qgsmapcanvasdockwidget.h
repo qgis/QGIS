@@ -24,6 +24,7 @@
 class QgsMapCanvas;
 class QgsScaleComboBox;
 class QgsDoubleSpinBox;
+class QgsStatusBarMagnifierWidget;
 
 /**
  * \class QgsMapCanvasDockWidget
@@ -68,8 +69,10 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     bool mShowCloseWarning = true;
     QgsScaleComboBox *mScaleCombo = nullptr;
     QgsDoubleSpinBox *mRotationEdit = nullptr;
+    QgsDoubleSpinBox *mMagnificationEdit = nullptr;
     bool mBlockScaleUpdate = false;
     bool mBlockRotationUpdate = false;
+    bool mBlockMagnificationUpdate = false;
 };
 
 /**
@@ -87,11 +90,13 @@ class QgsMapSettingsAction: public QWidgetAction
     QgsMapSettingsAction( QWidget *parent = nullptr );
 
     QgsScaleComboBox *scaleCombo() { return mScaleCombo; }
-    QgsDoubleSpinBox *rotationEdit() { return mRotationEdit; }
+    QgsDoubleSpinBox *rotationSpinBox() { return mRotationWidget; }
+    QgsDoubleSpinBox *magnifierSpinBox() { return mMagnifierWidget; }
 
   private:
     QgsScaleComboBox *mScaleCombo = nullptr;
-    QgsDoubleSpinBox *mRotationEdit = nullptr;
+    QgsDoubleSpinBox *mRotationWidget = nullptr;
+    QgsDoubleSpinBox *mMagnifierWidget = nullptr;
 };
 
 

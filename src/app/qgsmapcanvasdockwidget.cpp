@@ -16,7 +16,9 @@
 #include "qgsmapcanvas.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsscalecombobox.h"
+#include "qgsstatusbarmagnifierwidget.h"
 #include "qgsdoublespinbox.h"
+#include "qgssettings.h"
 #include <QMessageBox>
 #include <QMenu>
 #include <QToolBar>
@@ -55,7 +57,8 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   QgsMapSettingsAction *settingsAction = new QgsMapSettingsAction( menu );
   menu->addAction( settingsAction );
   mScaleCombo = settingsAction->scaleCombo();
-  mRotationEdit = settingsAction->rotationEdit();
+  mRotationEdit = settingsAction->rotationSpinBox();
+  mMagnificationEdit = settingsAction->magnifierSpinBox();
   connect( mScaleCombo, &QgsScaleComboBox::scaleChanged, this, [ = ]( double scale )
   {
     if ( !mBlockScaleUpdate )
@@ -93,6 +96,27 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
       mBlockRotationUpdate = true;
       mRotationEdit->setValue( rotation );
       mBlockRotationUpdate = false;
+    }
+  } );
+
+  connect( mMagnificationEdit, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double value )
+  {
+    if ( !mBlockMagnificationUpdate )
+    {
+      mBlockMagnificationUpdate = true;
+      mMapCanvas->setMagnificationFactor( value / 100 );
+      mMapCanvas->refresh();
+      mBlockMagnificationUpdate = false;
+    }
+  } );
+
+  connect( mMapCanvas, &QgsMapCanvas::magnificationChanged, this, [ = ]( double factor )
+  {
+    if ( !mBlockMagnificationUpdate )
+    {
+      mBlockMagnificationUpdate = true;
+      mMagnificationEdit->setValue( factor * 100 );
+      mBlockMagnificationUpdate = false;
     }
   } );
 }
@@ -175,19 +199,40 @@ QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )
   mScaleCombo = new QgsScaleComboBox();
   gLayout->addWidget( mScaleCombo, 0, 1 );
 
-  mRotationEdit = new QgsDoubleSpinBox();
-  mRotationEdit->setClearValue( 0.0 );
-  mRotationEdit->setKeyboardTracking( false );
-  mRotationEdit->setMaximumWidth( 120 );
-  mRotationEdit->setDecimals( 1 );
-  mRotationEdit->setRange( -180.0, 180.0 );
-  mRotationEdit->setWrapping( true );
-  mRotationEdit->setSingleStep( 5.0 );
-  mRotationEdit->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
+  mRotationWidget = new QgsDoubleSpinBox();
+  mRotationWidget->setClearValue( 0.0 );
+  mRotationWidget->setKeyboardTracking( false );
+  mRotationWidget->setMaximumWidth( 120 );
+  mRotationWidget->setDecimals( 1 );
+  mRotationWidget->setRange( -180.0, 180.0 );
+  mRotationWidget->setWrapping( true );
+  mRotationWidget->setSingleStep( 5.0 );
+  mRotationWidget->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
 
   label = new QLabel( tr( "Rotation" ) );
   gLayout->addWidget( label, 1, 0 );
-  gLayout->addWidget( mRotationEdit, 1, 1 );
+  gLayout->addWidget( mRotationWidget, 1, 1 );
+
+  QgsSettings settings;
+  int minimumFactor = 100 * QgisGui::CANVAS_MAGNIFICATION_MIN;
+  int maximumFactor = 100 * QgisGui::CANVAS_MAGNIFICATION_MAX;
+  int defaultFactor = 100 * settings.value( QStringLiteral( "/qgis/magnifier_factor_default" ), 1.0 ).toDouble();
+
+  mMagnifierWidget = new QgsDoubleSpinBox();
+  mMagnifierWidget->setSuffix( QStringLiteral( "%" ) );
+  mMagnifierWidget->setKeyboardTracking( false );
+  mMagnifierWidget->setDecimals( 0 );
+  mMagnifierWidget->setRange( minimumFactor, maximumFactor );
+  mMagnifierWidget->setWrapping( false );
+  mMagnifierWidget->setSingleStep( 50 );
+  mMagnifierWidget->setToolTip( tr( "Magnifier level" ) );
+  mMagnifierWidget->setClearValueMode( QgsDoubleSpinBox::CustomValue );
+  mMagnifierWidget->setClearValue( defaultFactor );
+  mMagnifierWidget->setValue( defaultFactor );
+
+  label = new QLabel( tr( "Magnification" ) );
+  gLayout->addWidget( label, 2, 0 );
+  gLayout->addWidget( mMagnifierWidget, 2, 1 );
 
   QWidget *w = new QWidget();
   w->setLayout( gLayout );
