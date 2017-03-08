@@ -251,6 +251,12 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     void mapThemesChanged();
 
     /**
+     * Emitted when a map theme changes definition.
+     * @note added in QGIS 3.0
+     */
+    void mapThemeChanged( const QString &theme );
+
+    /**
      * Emitted when the project changes
      *
      * \copydoc project()
