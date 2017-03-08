@@ -29,7 +29,7 @@
 QgsMapThemeCollection::QgsMapThemeCollection( QgsProject *project )
   : mProject( project )
 {
-  connect( project, &QgsProject::layersRemoved, this, &QgsMapThemeCollection::registryLayersRemoved );
+  connect( project, static_cast<void ( QgsProject::* )( const QStringList & )>( &QgsProject::layersWillBeRemoved ), this, &QgsMapThemeCollection::registryLayersRemoved );
 }
 
 QgsMapThemeCollection::MapThemeLayerRecord QgsMapThemeCollection::createThemeLayerRecord( QgsLayerTreeLayer *nodeLayer, QgsLayerTreeModel *model )
@@ -169,9 +169,9 @@ void QgsMapThemeCollection::setProject( QgsProject *project )
   if ( project == mProject )
     return;
 
-  disconnect( mProject, &QgsProject::layersRemoved, this, &QgsMapThemeCollection::registryLayersRemoved );
+  disconnect( mProject, static_cast<void ( QgsProject::* )( const QStringList & )>( &QgsProject::layersWillBeRemoved ), this, &QgsMapThemeCollection::registryLayersRemoved );
   mProject = project;
-  connect( mProject, &QgsProject::layersRemoved, this, &QgsMapThemeCollection::registryLayersRemoved );
+  connect( mProject, static_cast<void ( QgsProject::* )( const QStringList & )>( &QgsProject::layersWillBeRemoved ), this, &QgsMapThemeCollection::registryLayersRemoved );
   emit projectChanged();
 }
 
@@ -186,6 +186,7 @@ void QgsMapThemeCollection::insert( const QString &name, const QgsMapThemeCollec
   mMapThemes.insert( name, state );
 
   reconnectToLayersStyleManager();
+  emit mapThemeChanged( name );
   emit mapThemesChanged();
 }
 
@@ -197,6 +198,7 @@ void QgsMapThemeCollection::update( const QString &name, const MapThemeRecord &s
   mMapThemes[name] = state;
 
   reconnectToLayersStyleManager();
+  emit mapThemeChanged( name );
   emit mapThemesChanged();
 }
 
@@ -316,7 +318,7 @@ void QgsMapThemeCollection::reconnectToLayersStyleManager()
 
   Q_FOREACH ( QgsMapLayer *ml, layers )
   {
-    connect( ml->styleManager(), SIGNAL( styleRenamed( QString, QString ) ), this, SLOT( layerStyleRenamed( QString, QString ) ) );
+    connect( ml->styleManager(), &QgsMapLayerStyleManager::styleRenamed, this, &QgsMapThemeCollection::layerStyleRenamed );
   }
 }
 
@@ -375,6 +377,7 @@ void QgsMapThemeCollection::readXml( const QDomDocument &doc )
     MapThemeRecord rec;
     rec.setLayerRecords( layerRecords.values() );
     mMapThemes.insert( presetName, rec );
+    emit mapThemeChanged( presetName );
 
     visPresetElem = visPresetElem.nextSiblingElement( QStringLiteral( "visibility-preset" ) );
   }
@@ -426,8 +429,9 @@ void QgsMapThemeCollection::writeXml( QDomDocument &doc )
 
 void QgsMapThemeCollection::registryLayersRemoved( const QStringList &layerIDs )
 {
-  // TODO: this should not be necessary - layers are stored as weak pointers
-
+  // while layers are stored as weak pointers, this triggers the mapThemeChanged signal for
+  // affected themes
+  QSet< QString > changedThemes;
   MapThemeRecordMap::iterator it = mMapThemes.begin();
   for ( ; it != mMapThemes.end(); ++it )
   {
@@ -436,8 +440,16 @@ void QgsMapThemeCollection::registryLayersRemoved( const QStringList &layerIDs )
     {
       MapThemeLayerRecord &layerRec = rec.mLayerRecords[i];
       if ( layerRec.layer() && layerIDs.contains( layerRec.layer()->id() ) )
+      {
         rec.mLayerRecords.removeAt( i-- );
+        changedThemes << it.key();
+      }
     }
+  }
+
+  Q_FOREACH ( const QString &theme, changedThemes )
+  {
+    emit mapThemeChanged( theme );
   }
   emit mapThemesChanged();
 }
@@ -447,6 +459,8 @@ void QgsMapThemeCollection::layerStyleRenamed( const QString &oldName, const QSt
   QgsMapLayerStyleManager *styleMgr = qobject_cast<QgsMapLayerStyleManager *>( sender() );
   if ( !styleMgr )
     return;
+
+  QSet< QString > changedThemes;
 
   MapThemeRecordMap::iterator it = mMapThemes.begin();
   for ( ; it != mMapThemes.end(); ++it )
@@ -458,9 +472,16 @@ void QgsMapThemeCollection::layerStyleRenamed( const QString &oldName, const QSt
       if ( layerRec.layer() == styleMgr->layer() )
       {
         if ( layerRec.currentStyle == oldName )
+        {
           layerRec.currentStyle = newName;
+          changedThemes << it.key();
+        }
       }
     }
+  }
+  Q_FOREACH ( const QString &theme, changedThemes )
+  {
+    emit mapThemeChanged( theme );
   }
   emit mapThemesChanged();
 }

@@ -160,9 +160,10 @@ class QgsMapThemeCollection : QObject
     void setProject( QgsProject* project );
   signals:
 
-    /** Emitted when map themes within the collection are changed.
-     */
     void mapThemesChanged();
+
+    void mapThemeChanged( const QString &theme );
+
     void projectChanged();
 };
 
