@@ -453,7 +453,7 @@ void QgsNodeTool2::mouseMoveDraggingEdge( QgsMapMouseEvent *e )
 void QgsNodeTool2::canvasDoubleClickEvent( QgsMapMouseEvent *e )
 {
   QgsPointLocator::Match m = snapToEditableLayer( e );
-  if ( !m.isValid() )
+  if ( !m.hasEdge() )
     return;
 
   mNewVertexFromDoubleClick.reset( new QgsPointLocator::Match( m ) );
