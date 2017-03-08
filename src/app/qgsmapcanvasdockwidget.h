@@ -54,6 +54,10 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
      */
     void closeWithoutWarning();
 
+  signals:
+
+    void renameTriggered();
+
   protected:
 
     virtual void closeEvent( QCloseEvent *event ) override;

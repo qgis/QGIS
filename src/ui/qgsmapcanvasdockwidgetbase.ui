@@ -73,7 +73,7 @@
      <normaloff>:/images/themes/default/propertyicons/CRS.svg</normaloff>:/images/themes/default/propertyicons/CRS.svg</iconset>
    </property>
    <property name="text">
-    <string>Set Map CRS</string>
+    <string>Set Map CRS...</string>
    </property>
    <property name="toolTip">
     <string>Set Map CRS</string>
@@ -92,6 +92,14 @@
    </property>
    <property name="toolTip">
     <string>Synchronize View with Main Map</string>
+   </property>
+  </action>
+  <action name="mActionRename">
+   <property name="text">
+    <string>Rename view...</string>
+   </property>
+   <property name="toolTip">
+    <string>Rename View</string>
    </property>
   </action>
  </widget>

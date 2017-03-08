@@ -59,10 +59,15 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   connect( mActionSetCrs, &QAction::triggered, this, &QgsMapCanvasDockWidget::setMapCrs );
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapCanvasDockWidget::mapCrsChanged );
   mapCrsChanged();
-  menu->addAction( mActionSetCrs );
 
   QgsMapSettingsAction *settingsAction = new QgsMapSettingsAction( menu );
   menu->addAction( settingsAction );
+
+  menu->addSeparator();
+  menu->addAction( mActionSetCrs );
+  menu->addAction( mActionRename );
+  connect( mActionRename, &QAction::triggered, this, &QgsMapCanvasDockWidget::renameTriggered );
+
   mScaleCombo = settingsAction->scaleCombo();
   mRotationEdit = settingsAction->rotationSpinBox();
   mMagnificationEdit = settingsAction->magnifierSpinBox();

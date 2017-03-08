@@ -267,6 +267,7 @@
 #include "qgsvectorlayerutils.h"
 #include "qgshelp.h"
 #include "qgsvectorfilewritertask.h"
+#include "qgsnewnamedialog.h"
 
 #include "qgssublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
@@ -3163,6 +3164,7 @@ QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name, bool isFloating,
   mapCanvas->freeze( false );
   markDirty();
   connect( mapCanvasWidget, &QgsMapCanvasDockWidget::closed, this, &QgisApp::markDirty );
+  connect( mapCanvasWidget, &QgsMapCanvasDockWidget::renameTriggered, this, &QgisApp::renameView );
   return mapCanvas;
 }
 
@@ -11171,6 +11173,37 @@ void QgisApp::refreshActionFeatureAction()
 
   bool layerHasActions = !vlayer->actions()->actions( QStringLiteral( "Canvas" ) ).isEmpty() || !QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer ).isEmpty();
   mActionFeatureAction->setEnabled( layerHasActions );
+}
+
+void QgisApp::renameView()
+{
+  QgsMapCanvasDockWidget *view = qobject_cast< QgsMapCanvasDockWidget * >( sender() );
+  if ( !view )
+    return;
+
+  // calculate existing names
+  QStringList names;
+  Q_FOREACH ( QgsMapCanvas *c, mapCanvases() )
+  {
+    if ( c == view->mapCanvas() )
+      continue;
+
+    names << c->objectName();
+  }
+
+  QString currentName = view->mapCanvas()->objectName();
+
+  QgsNewNameDialog renameDlg( currentName, currentName, QStringList(), names, QRegExp(), Qt::CaseSensitive, this );
+  renameDlg.setWindowTitle( tr( "Map Views" ) );
+  //renameDlg.setHintString( tr( "Name of the new view" ) );
+  renameDlg.setOverwriteEnabled( false );
+  renameDlg.setConflictingNameWarning( tr( "A view with this name already exists" ) );
+  if ( renameDlg.exec() || renameDlg.name().isEmpty() )
+  {
+    QString newName = renameDlg.name();
+    view->setWindowTitle( newName );
+    view->mapCanvas()->setObjectName( newName );
+  }
 }
 
 /////////////////////////////////////////////////////////////////

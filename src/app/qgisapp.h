@@ -759,6 +759,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QMenu *panelMenu() { return mPanelMenu; }
 
+    void renameView();
+
   protected:
 
     //! Handle state changes (WindowTitleChange)
