@@ -104,6 +104,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
 
     virtual void changeEvent( QEvent *event ) override;
     virtual void paintEvent( QPaintEvent *event ) override;
+    void wheelEvent( QWheelEvent *event ) override;
 
   private slots:
     void changed( int value );

@@ -103,6 +103,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
 
   protected:
     virtual void changeEvent( QEvent *event ) override;
+    void wheelEvent( QWheelEvent *event ) override;
 
   private slots:
     void changed( double value );
