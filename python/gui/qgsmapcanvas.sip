@@ -185,16 +185,11 @@ class QgsMapCanvas : QGraphicsView
     //! @note added in 2.12
     void setLayerStyleOverrides( const QMap<QString, QString>& overrides );
 
-    //! Get the current coordinate transform
-    const QgsMapToPixel* getCoordinateTransform();
-
-    //! Find out whether rendering is in progress
+    void setTheme( const QString &theme );
+    QString theme() const;
+    const QgsMapToPixel *getCoordinateTransform();
     bool isDrawing();
-
-    //! returns current layer (set by legend widget)
-    QgsMapLayer* currentLayer();
-
-    //! set wheel zoom factor (should be greater than 1)
+    QgsMapLayer *currentLayer();
     void setWheelFactor( double factor );
 
     //! Zoom to a specific scale
@@ -434,12 +429,9 @@ class QgsMapCanvas : QGraphicsView
     //! @note added in 2.8
     void currentLayerChanged( QgsMapLayer* layer );
 
-    //! Emitted when the configuration of overridden layer styles changes
-    //! @note added in 2.12
     void layerStyleOverridesChanged();
-
-    //! emit a message (usually to be displayed in a message bar)
-    void messageEmitted( const QString& title, const QString& message, QgsMessageBar::MessageLevel = QgsMessageBar::INFO );
+    void themeChanged( const QString &theme );
+    void messageEmitted( const QString &title, const QString &message, QgsMessageBar::MessageLevel = QgsMessageBar::INFO );
 
   protected:
 

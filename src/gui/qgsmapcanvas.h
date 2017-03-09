@@ -72,6 +72,7 @@ class QgsRubberBand;
 class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 {
     Q_OBJECT
+    Q_PROPERTY( QString theme READ theme WRITE setTheme NOTIFY themeChanged )
 
   public:
 
@@ -273,6 +274,21 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @note added in 2.12
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
 
+    /**
+     * Sets a map \a theme to show in the canvas. The theme name must match
+     * a theme present in the associated project's QgsMapThemeCollection.
+     * @note added in QGIS 3.0
+     * @see theme()
+     */
+    void setTheme( const QString &theme );
+
+    /**
+     * Returns the map's theme shown in the canvas, if set.
+     * @note added in QGIS 3.0
+     * @see setTheme()
+     */
+    QString theme() const { return mTheme; }
+
     //! Get the current coordinate transform
     const QgsMapToPixel *getCoordinateTransform();
 
@@ -472,6 +488,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     void refreshMap();
 
+    void mapThemeChanged( const QString &theme );
+
   signals:
 
     /** Emits current mouse position
@@ -547,6 +565,13 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Emitted when the configuration of overridden layer styles changes
     //! @note added in 2.12
     void layerStyleOverridesChanged();
+
+    /**
+     * Emitted when the map theme set for the canvas is changed.
+     * @see setTheme()
+     * @note added in QGIS 3.0
+     */
+    void themeChanged( const QString &theme );
 
     //! emit a message (usually to be displayed in a message bar)
     void messageEmitted( const QString &title, const QString &message, QgsMessageBar::MessageLevel = QgsMessageBar::INFO );
@@ -707,6 +732,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QCursor mZoomCursor;
 
     QTimer mAutoRefreshTimer;
+
+    QString mTheme;
 
     //! Force a resize of the map canvas item
     //! @note added in 2.16

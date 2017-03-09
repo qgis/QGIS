@@ -63,6 +63,7 @@ email                : sherman at mrcc.com
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include "qgscursors.h"
+#include "qgsmapthemecollection.h"
 #include <cmath>
 
 
@@ -139,6 +140,8 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
            this, &QgsMapCanvas::readProject );
   connect( QgsProject::instance(), &QgsProject::writeProject,
            this, &QgsMapCanvas::writeProject );
+
+  connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemeChanged, this, &QgsMapCanvas::mapThemeChanged );
 
   mSettings.setFlag( QgsMapSettings::DrawEditingInfo );
   mSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
@@ -482,6 +485,16 @@ void QgsMapCanvas::refreshMap()
 
   mSettings.setExpressionContext( expressionContext );
 
+  if ( !mTheme.isEmpty() )
+  {
+    mSettings.setLayerStyleOverrides( QgsProject::instance()->mapThemeCollection()->mapThemeStyleOverrides( mTheme ) );
+    mSettings.setLayers( QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( mTheme ) );
+  }
+  else
+  {
+    mSettings.setLayerStyleOverrides( QMap< QString, QString>() );
+  }
+
   // create the renderer job
   Q_ASSERT( !mJob );
   mJobCanceled = false;
@@ -516,6 +529,16 @@ void QgsMapCanvas::refreshMap()
   mMapUpdateTimer.start();
 
   emit renderStarting();
+}
+
+void QgsMapCanvas::mapThemeChanged( const QString &theme )
+{
+  if ( theme == mTheme )
+  {
+    setLayers( QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( mTheme ) );
+    clearCache();
+    refresh();
+  }
 }
 
 
@@ -1595,6 +1618,15 @@ void QgsMapCanvas::setLayerStyleOverrides( const QMap<QString, QString> &overrid
   emit layerStyleOverridesChanged();
 }
 
+void QgsMapCanvas::setTheme( const QString &theme )
+{
+  if ( mTheme == theme )
+    return;
+
+  mTheme = theme;
+  clearCache();
+  emit themeChanged( theme );
+}
 
 void QgsMapCanvas::setRenderFlag( bool flag )
 {

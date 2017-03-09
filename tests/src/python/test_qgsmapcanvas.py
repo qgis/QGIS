@@ -19,7 +19,11 @@ from qgis.core import (QgsCoordinateReferenceSystem,
                        QgsVectorLayer,
                        QgsFeature,
                        QgsGeometry,
-                       QgsMultiRenderChecker)
+                       QgsMultiRenderChecker,
+                       QgsFillSymbol,
+                       QgsSingleSymbolRenderer,
+                       QgsMapThemeCollection,
+                       QgsProject)
 from qgis.gui import (QgsMapCanvas)
 
 from qgis.PyQt.QtCore import QDir
@@ -178,6 +182,134 @@ class TestQgsMapCanvas(unittest.TestCase):
 
         canvas.stopRendering()
         del canvas
+
+    def testMapTheme(self):
+        canvas = QgsMapCanvas()
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem(4326))
+        canvas.setFrameStyle(0)
+        canvas.resize(600, 400)
+        self.assertEqual(canvas.width(), 600)
+        self.assertEqual(canvas.height(), 400)
+
+        layer = QgsVectorLayer("Polygon?crs=epsg:4326&field=fldtxt:string",
+                               "layer", "memory")
+        # add a polygon to layer
+        f = QgsFeature()
+        f.setGeometry(QgsGeometry.fromRect(QgsRectangle(5, 25, 25, 45)))
+        self.assertTrue(layer.dataProvider().addFeatures([f]))
+
+        # create a style
+        sym1 = QgsFillSymbol.createSimple({'color': '#ffb200'})
+        renderer = QgsSingleSymbolRenderer(sym1)
+        layer.setRenderer(renderer)
+
+        canvas.setLayers([layer])
+        canvas.setExtent(QgsRectangle(10, 30, 20, 35))
+        canvas.show()
+
+        # need to wait until first redraw can occur (note that we first need to wait till drawing starts!)
+        while not canvas.isDrawing():
+            app.processEvents()
+        while canvas.isDrawing():
+            app.processEvents()
+
+        self.assertTrue(self.canvasImageCheck('theme1', 'theme1', canvas))
+
+        # add some styles
+        layer.styleManager().addStyleFromLayer('style1')
+        sym2 = QgsFillSymbol.createSimple({'color': '#00b2ff'})
+        renderer2 = QgsSingleSymbolRenderer(sym2)
+        layer.setRenderer(renderer2)
+        layer.styleManager().addStyleFromLayer('style2')
+
+        canvas.refresh()
+        while not canvas.isDrawing():
+            app.processEvents()
+        while canvas.isDrawing():
+            app.processEvents()
+        self.assertTrue(self.canvasImageCheck('theme2', 'theme2', canvas))
+
+        layer.styleManager().setCurrentStyle('style1')
+        canvas.refresh()
+        while not canvas.isDrawing():
+            app.processEvents()
+        while canvas.isDrawing():
+            app.processEvents()
+        self.assertTrue(self.canvasImageCheck('theme1', 'theme1', canvas))
+
+        # ok, so all good with setting/rendering map styles
+        # try setting canvas to a particular theme
+
+        # make some themes...
+        theme1 = QgsMapThemeCollection.MapThemeRecord()
+        record1 = QgsMapThemeCollection.MapThemeLayerRecord(layer)
+        record1.currentStyle = 'style1'
+        record1.usingCurrentStyle = True
+        theme1.setLayerRecords([record1])
+
+        theme2 = QgsMapThemeCollection.MapThemeRecord()
+        record2 = QgsMapThemeCollection.MapThemeLayerRecord(layer)
+        record2.currentStyle = 'style2'
+        record2.usingCurrentStyle = True
+        theme2.setLayerRecords([record2])
+
+        QgsProject.instance().mapThemeCollection().insert('theme1', theme1)
+        QgsProject.instance().mapThemeCollection().insert('theme2', theme2)
+
+        canvas.setTheme('theme2')
+        canvas.refresh()
+        while not canvas.isDrawing():
+            app.processEvents()
+        while canvas.isDrawing():
+            app.processEvents()
+        self.assertTrue(self.canvasImageCheck('theme2', 'theme2', canvas))
+
+        canvas.setTheme('theme1')
+        canvas.refresh()
+        while not canvas.isDrawing():
+            app.processEvents()
+        while canvas.isDrawing():
+            app.processEvents()
+        self.assertTrue(self.canvasImageCheck('theme1', 'theme1', canvas))
+
+        # add another layer
+        layer2 = QgsVectorLayer("Polygon?crs=epsg:4326&field=fldtxt:string",
+                                "layer2", "memory")
+        f = QgsFeature()
+        f.setGeometry(QgsGeometry.fromRect(QgsRectangle(5, 25, 25, 45)))
+        self.assertTrue(layer2.dataProvider().addFeatures([f]))
+
+        # create a style
+        sym1 = QgsFillSymbol.createSimple({'color': '#b2ff00'})
+        renderer = QgsSingleSymbolRenderer(sym1)
+        layer2.setRenderer(renderer)
+
+        # rerender canvas - should NOT show new layer
+        canvas.refresh()
+        while not canvas.isDrawing():
+            app.processEvents()
+        while canvas.isDrawing():
+            app.processEvents()
+        self.assertTrue(self.canvasImageCheck('theme1', 'theme1', canvas))
+        # test again - this time refresh all layers
+        canvas.refreshAllLayers()
+        while not canvas.isDrawing():
+            app.processEvents()
+        while canvas.isDrawing():
+            app.processEvents()
+        self.assertTrue(self.canvasImageCheck('theme1', 'theme1', canvas))
+
+        # add layer 2 to theme1
+        record3 = QgsMapThemeCollection.MapThemeLayerRecord(layer2)
+        theme1.setLayerRecords([record3])
+        QgsProject.instance().mapThemeCollection().update('theme1', theme1)
+
+        canvas.refresh()
+        while not canvas.isDrawing():
+            app.processEvents()
+        while canvas.isDrawing():
+            app.processEvents()
+        self.assertTrue(self.canvasImageCheck('theme3', 'theme3', canvas))
 
     def canvasImageCheck(self, name, reference_image, canvas):
         self.report += "<h2>Render {}</h2>\n".format(name)
