@@ -189,8 +189,7 @@ QVariant QgsXmlUtils::readVariant( const QDomElement &element )
     for ( int i = 0; i < values.count(); ++i )
     {
       QDomElement elem = values.at( i ).toElement();
-      if ( elem.tagName() == QLatin1String( "e" ) )
-        list.append( readVariant( elem ) );
+      list.append( readVariant( elem ) );
     }
     return list;
   }
