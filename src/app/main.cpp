@@ -806,7 +806,12 @@ int main( int argc, char *argv[] )
 
   QgsApplication myApp( argc, argv, myUseGuiFlag, configpath );
 
+#ifdef Q_OS_MAC
+  // Set 1024x1024 icon for dock, app switcher, etc., rendering
+  myApp.setWindowIcon( QIcon( QgsApplication::iconsPath() + QLatin1String( "qgis-icon-macos.png" ) ) );
+#else
   myApp.setWindowIcon( QIcon( QgsApplication::appIconPath() ) );
+#endif
 
   //
   // Set up the QSettings environment must be done after qapp is created
