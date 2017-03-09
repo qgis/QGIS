@@ -714,7 +714,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   }
   leTemplateFolder->setText( templateDirName );
 
-  spinZoomFactor->setValue( mSettings->value( QStringLiteral( "/qgis/zoom_factor" ), 2 ).toDouble() );
+  setZoomFactorValue();
 
   // predefined scales for scale combobox
   QString myPaths = mSettings->value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString();
@@ -1347,7 +1347,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/default_measure_color_green" ), myColor.green() );
   mSettings->setValue( QStringLiteral( "/qgis/default_measure_color_blue" ), myColor.blue() );
 
-  mSettings->setValue( QStringLiteral( "/qgis/zoom_factor" ), spinZoomFactor->value() );
+  mSettings->setValue( QStringLiteral( "/qgis/zoom_factor" ), zoomFactorValue() );
 
   //digitizing
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/line_width" ), mLineWidthSpinBox->value() );
@@ -2299,4 +2299,28 @@ void QgsOptions::scaleItemChanged( QListWidgetItem *changedScaleItem )
   mListGlobalScales->takeItem( row );
   addScaleToScaleList( changedScaleItem );
   mListGlobalScales->setCurrentItem( changedScaleItem );
+}
+
+double QgsOptions::zoomFactorValue()
+{
+  // Get the decimal value for zoom factor. This function is needed because the zoom factor spin box is shown as a percent value.
+  // The minimum zoom factor value is 1.01
+  if ( spinZoomFactor->value() == spinZoomFactor->minimum() )
+    return 1.01;
+  else
+    return spinZoomFactor->value() / 100.0;
+}
+
+void QgsOptions::setZoomFactorValue()
+{
+  // Set the percent value for zoom factor spin box. This function is for converting the decimal zoom factor value in the qgis setting to the percent zoom factor value.
+  if ( mSettings->value( QStringLiteral( "/qgis/zoom_factor" ), 2 ) <= 1.01 )
+  {
+    spinZoomFactor->setValue( spinZoomFactor->minimum() );
+  }
+  else
+  {
+    int percentValue = mSettings->value( QStringLiteral( "/qgis/zoom_factor" ), 2 ).toInt() * 100;
+    spinZoomFactor->setValue( percentValue );
+  }
 }

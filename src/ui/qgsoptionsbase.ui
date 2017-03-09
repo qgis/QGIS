@@ -3440,15 +3440,21 @@
                    </widget>
                   </item>
                   <item row="0" column="1">
-                   <widget class="QDoubleSpinBox" name="spinZoomFactor">
-                    <property name="decimals">
-                     <number>1</number>
+                   <widget class="QSpinBox" name="spinZoomFactor">
+                    <property name="suffix">
+                     <string>%</string>
                     </property>
                     <property name="minimum">
-                     <double>1.100000000000000</double>
+                     <number>100</number>
+                    </property>
+                    <property name="maximum">
+                     <number>999999999</number>
+                    </property>
+                    <property name="singleStep">
+                     <number>100</number>
                     </property>
                     <property name="value">
-                     <double>2.000000000000000</double>
+                     <number>200</number>
                     </property>
                    </widget>
                   </item>
