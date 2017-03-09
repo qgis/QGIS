@@ -218,11 +218,6 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     QWidget *mParent = nullptr;
     QgsVectorLayer *mLayer = nullptr;
     bool mInitialized;
-
-    //! Property definitions
-    static QgsPropertiesDefinition sPropertyDefinitions;
-
-    static void initPropertyDefinitions();
 };
 
 // We'll use this class inside a QVariant in the widgets properties

@@ -903,7 +903,7 @@ bool QgsComposition::writeXml( QDomElement &composerElem, QDomDocument &doc )
 
   //data defined properties
   QDomElement ddPropsElement = doc.createElement( QStringLiteral( "dataDefinedProperties" ) );
-  mDataDefinedProperties.writeXml( ddPropsElement, doc, QgsComposerObject::propertyDefinitions() );
+  mDataDefinedProperties.writeXml( ddPropsElement, QgsComposerObject::propertyDefinitions() );
   compositionElem.appendChild( ddPropsElement );
 
   composerElem.appendChild( compositionElem );
@@ -990,7 +990,7 @@ bool QgsComposition::readXml( const QDomElement &compositionElem, const QDomDocu
   QDomNode propsNode = compositionElem.namedItem( QStringLiteral( "dataDefinedProperties" ) );
   if ( !propsNode.isNull() )
   {
-    mDataDefinedProperties.readXml( propsNode.toElement(), doc, QgsComposerObject::propertyDefinitions() );
+    mDataDefinedProperties.readXml( propsNode.toElement(), QgsComposerObject::propertyDefinitions() );
   }
 
   //custom properties

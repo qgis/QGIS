@@ -100,6 +100,7 @@ void QgsExternalResourceConfigDlg::chooseDefaultPath()
 void QgsExternalResourceConfigDlg::rootPathPropertyChanged()
 {
   QgsProperty prop = mRootPathPropertyOverrideButton->toProperty();
+  mPropertyCollection.setProperty( QgsWidgetWrapper::RootPath, prop );
   setRootPathExpression( prop );
 
   mRootPathExpression->setVisible( prop.isActive() );
@@ -146,14 +147,12 @@ QVariantMap QgsExternalResourceConfigDlg::config()
       cfg.insert( QStringLiteral( "FullUrl" ), mFullUrl->isChecked() );
   }
 
-  if ( mRootPathPropertyOverrideButton->isActive() )
-    cfg.insert( QStringLiteral( "DefaultRootStyle" ), QStringLiteral( "expression" ) );
-  else
-    cfg.insert( QStringLiteral( "DefaultRootStyle" ), QStringLiteral( "path" ) );
-
+  cfg.insert( QStringLiteral( "PropertyCollection" ), mPropertyCollection.toVariant( QgsWidgetWrapper::propertyDefinitions() ) );
 
   if ( !mRootPath->text().isEmpty() )
     cfg.insert( QStringLiteral( "DefaultRoot" ), mRootPath->text() );
+
+  cfg.insert( QStringLiteral( "RootPathProperty" ), mRootPathPropertyOverrideButton->toProperty().toVariant() );
 
   // Save Storage Mode
   cfg.insert( QStringLiteral( "StorageMode" ), mStorageButtonGroup->checkedId() );
@@ -205,6 +204,8 @@ void QgsExternalResourceConfigDlg::setConfig( const QVariantMap &config )
       mFullUrl->setChecked( true );
   }
 
+  mPropertyCollection.loadVariant( config.value( QStringLiteral( "PropertyCollection" ) ), QgsWidgetWrapper::propertyDefinitions() );
+  setRootPathExpression( mPropertyCollection.property( QgsWidgetWrapper::RootPath ) );
   mRootPath->setText( config.value( QStringLiteral( "DefaultRoot" ) ).toString() );
 
   rootPathPropertyChanged();
@@ -254,6 +255,7 @@ void QgsExternalResourceConfigDlg::setConfig( const QVariantMap &config )
 
 void QgsExternalResourceConfigDlg::setRootPathExpression( const QgsProperty &property )
 {
+  mRootPathPropertyOverrideButton->setToProperty( property );
   mRootPathExpression->setToolTip( property.asExpression() );
 
   QgsExpressionContext ctx = layer()->createExpressionContext();

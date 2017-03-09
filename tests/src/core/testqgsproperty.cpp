@@ -297,36 +297,35 @@ void TestQgsProperty::staticProperty()
   p1.setStaticValue( "test" );
   p1.setTransformer( new TestTransformer( 10, 20 ) );
 
-  QDomElement element = doc.createElement( "prop" );
-  p1.writeXml( element, doc );
+  QVariant element = p1.toVariant();
 
   QgsProperty r1;
-  r1.readXml( element, doc );
+  r1.loadVariant( element );
   QVERIFY( r1.isActive() );
   QVERIFY( r1.transformer() );
   QCOMPARE( r1.staticValue(), QVariant( "test" ) );
 
   p1.setActive( false );
-  p1.writeXml( element, doc );
-  r1.readXml( element, doc );
+  element = p1.toVariant();
+  r1.loadVariant( element );
   QVERIFY( !r1.isActive() );
 
   //saving/restoring different types
   p1.setStaticValue( QVariant( 5 ) ); //int
-  p1.writeXml( element, doc );
-  r1.readXml( element, doc );
+  element = p1.toVariant();
+  r1.loadVariant( element );
   QCOMPARE( r1.staticValue(), p1.staticValue() );
   p1.setStaticValue( QVariant( 5.7 ) ); //double
-  p1.writeXml( element, doc );
-  r1.readXml( element, doc );
+  element = p1.toVariant();
+  r1.loadVariant( element );
   QCOMPARE( r1.staticValue(), p1.staticValue() );
   p1.setStaticValue( QVariant( true ) ); //bool
-  p1.writeXml( element, doc );
-  r1.readXml( element, doc );
+  element = p1.toVariant();
+  r1.loadVariant( element );
   QCOMPARE( r1.staticValue(), p1.staticValue() );
   p1.setStaticValue( QVariant( 5LL ) ); //longlong
-  p1.writeXml( element, doc );
-  r1.readXml( element, doc );
+  element = p1.toVariant();
+  r1.loadVariant( element );
   QCOMPARE( r1.staticValue(), p1.staticValue() );
 
   // test copying a static property
@@ -413,22 +412,22 @@ void TestQgsProperty::fieldBasedProperty()
   p1.setActive( true );
   p1.setField( "test_field" );
 
-  QDomElement element = doc.createElement( "prop" );
+  QVariant element;
   QgsProperty r1;
   //try reading from an empty element
-  r1.readXml( element, doc );
+  r1.loadVariant( element );
   QVERIFY( !r1.isActive() );
   QVERIFY( r1.field().isEmpty() );
 
   // now populate element and re-read
-  p1.writeXml( element, doc );
-  r1.readXml( element, doc );
+  element = p1.toVariant();
+  r1.loadVariant( element );
   QVERIFY( r1.isActive() );
   QCOMPARE( r1.field(), QStringLiteral( "test_field" ) );
 
   p1.setActive( false );
-  p1.writeXml( element, doc );
-  r1.readXml( element, doc );
+  element = p1.toVariant();
+  r1.loadVariant( element );
   QVERIFY( !r1.isActive() );
 
   // test copying a field based property
@@ -520,24 +519,24 @@ void TestQgsProperty::expressionBasedProperty()
   p1.setActive( true );
   p1.setExpressionString( "4+5" );
 
-  QDomElement element = doc.createElement( "prop" );
+  QVariant element;
   QgsProperty r1;
   //try reading from an empty element
-  r1.readXml( element, doc );
+  r1.loadVariant( element );
   QVERIFY( !r1.isActive() );
   QVERIFY( r1.expressionString().isEmpty() );
   QCOMPARE( r1.value( context, -1 ).toInt(), -1 );
 
   // now populate element and re-read
-  p1.writeXml( element, doc );
-  r1.readXml( element, doc );
+  element = p1.toVariant();
+  r1.loadVariant( element );
   QVERIFY( r1.isActive() );
   QCOMPARE( r1.expressionString(), QStringLiteral( "4+5" ) );
   QCOMPARE( r1.value( context, -1 ).toInt(), 9 );
 
   p1.setActive( false );
-  p1.writeXml( element, doc );
-  r1.readXml( element, doc );
+  element = p1.toVariant();
+  r1.loadVariant( element );
   QVERIFY( !r1.isActive() );
   QCOMPARE( r1.value( context, -1 ).toInt(), -1 );
 
@@ -627,10 +626,10 @@ void TestQgsProperty::propertyTransformer()
   QDomDocument doc( documentType );
 
   TestTransformer t1( -5, 6 );
-  QDomElement element = doc.createElement( "transform" );
+  QVariant element;
   TestTransformer r1( -99, -98 );
-  QVERIFY( t1.writeXml( element, doc ) );
-  QVERIFY( r1.readXml( element, doc ) );
+  element = t1.toVariant();
+  QVERIFY( r1.loadVariant( element ) );
   QCOMPARE( r1.minValue(), -5.0 );
   QCOMPARE( r1.maxValue(), 6.0 );
 
@@ -646,11 +645,11 @@ void TestQgsProperty::propertyTransformer()
   QCOMPARE( p1.value( context, -99 ).toDouble(), 22.0 );
 
   //test that transform is saved/restored with property
-  QDomElement propElement = doc.createElement( "property" );
+  QVariant propElement;
   QgsProperty p2;
   QVERIFY( !p2.transformer() );
-  QVERIFY( p1.writeXml( propElement, doc ) );
-  QVERIFY( p2.readXml( propElement, doc ) );
+  propElement = p1.toVariant();
+  p2.loadVariant( propElement );
   QVERIFY( p2.transformer() );
   QCOMPARE( p2.transformer()->minValue(), 10.0 );
   QCOMPARE( p2.transformer()->maxValue(), 20.0 );
@@ -755,10 +754,10 @@ void TestQgsProperty::genericNumericTransformer()
                                    99 );
   t2.setCurveTransform( new QgsCurveTransform( QList< QgsPoint >() << QgsPoint( 0, 0.8 ) << QgsPoint( 1, 0.2 ) ) );
 
-  QDomElement element = doc.createElement( "xform" );
-  QVERIFY( t2.writeXml( element, doc ) );
+  QVariant element;
+  element = t2.toVariant();
   QgsGenericNumericTransformer r1;
-  QVERIFY( r1.readXml( element, doc ) );
+  QVERIFY( r1.loadVariant( element ) );
   QCOMPARE( r1.minValue(), 15.0 );
   QCOMPARE( r1.maxValue(), 25.0 );
   QCOMPARE( r1.minOutputValue(), 150.0 );
@@ -949,10 +948,10 @@ void TestQgsProperty::sizeScaleTransformer()
                               99 );
   t1.setCurveTransform( new QgsCurveTransform( QList< QgsPoint >() << QgsPoint( 0, 0.8 ) << QgsPoint( 1, 0.2 ) ) );
 
-  QDomElement element = doc.createElement( "xform" );
-  QVERIFY( t1.writeXml( element, doc ) );
+  QVariant element;
+  element = t1.toVariant();
   QgsSizeScaleTransformer r1;
-  QVERIFY( r1.readXml( element, doc ) );
+  QVERIFY( r1.loadVariant( element ) );
   QCOMPARE( r1.minValue(), 15.0 );
   QCOMPARE( r1.maxValue(), 25.0 );
   QCOMPARE( r1.minSize(), 150.0 );
@@ -1177,10 +1176,10 @@ void TestQgsProperty::colorRampTransformer()
   t1.setRampName( "rampname " );
   t1.setCurveTransform( new QgsCurveTransform( QList< QgsPoint >() << QgsPoint( 0, 0.8 ) << QgsPoint( 1, 0.2 ) ) );
 
-  QDomElement element = doc.createElement( "xform" );
-  QVERIFY( t1.writeXml( element, doc ) );
+  QVariant element;
+  element = t1.toVariant();
   QgsColorRampTransformer r1;
-  QVERIFY( r1.readXml( element, doc ) );
+  QVERIFY( r1.loadVariant( element ) );
   QCOMPARE( r1.minValue(), 15.0 );
   QCOMPARE( r1.maxValue(), 25.0 );
   QCOMPARE( r1.nullColor(), QColor( 100, 150, 200 ) );
@@ -1415,11 +1414,10 @@ void TestQgsProperty::propertyCollection()
     DomImplementation.createDocumentType(
       "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
   QDomDocument doc( documentType );
-  QDomElement element = doc.createElement( "collection" );
-  collection.writeXml( element, doc, mDefinitions );
+  QVariant collectionElement = collection.toVariant( mDefinitions );
 
   QgsPropertyCollection restoredCollection;
-  restoredCollection.readXml( element, doc, mDefinitions );
+  restoredCollection.loadVariant( collectionElement, mDefinitions );
   QCOMPARE( restoredCollection.name(), QStringLiteral( "collection" ) );
   QCOMPARE( restoredCollection.count(), 4 );
   QCOMPARE( restoredCollection.property( Property1 ).propertyType(), QgsProperty::StaticProperty );
