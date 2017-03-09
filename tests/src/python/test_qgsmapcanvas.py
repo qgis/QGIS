@@ -311,6 +311,31 @@ class TestQgsMapCanvas(unittest.TestCase):
             app.processEvents()
         self.assertTrue(self.canvasImageCheck('theme3', 'theme3', canvas))
 
+        # change the appearance of an active style
+        layer2.styleManager().addStyleFromLayer('style4')
+        record3.currentStyle = 'style4'
+        record3.usingCurrentStyle = True
+        theme1.setLayerRecords([record3])
+        QgsProject.instance().mapThemeCollection().update('theme1', theme1)
+
+        canvas.refresh()
+        while not canvas.isDrawing():
+            app.processEvents()
+        while canvas.isDrawing():
+            app.processEvents()
+        self.assertTrue(self.canvasImageCheck('theme3', 'theme3', canvas))
+
+        layer2.styleManager().setCurrentStyle('style4')
+        sym3 = QgsFillSymbol.createSimple({'color': '#b200b2'})
+        layer2.renderer().setSymbol(sym3)
+        canvas.refresh()
+
+        while not canvas.isDrawing():
+            app.processEvents()
+        while canvas.isDrawing():
+            app.processEvents()
+        self.assertTrue(self.canvasImageCheck('theme4', 'theme4', canvas))
+
     def canvasImageCheck(self, name, reference_image, canvas):
         self.report += "<h2>Render {}</h2>\n".format(name)
         temp_dir = QDir.tempPath() + '/'
