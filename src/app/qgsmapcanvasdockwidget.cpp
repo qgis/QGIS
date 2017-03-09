@@ -21,6 +21,9 @@
 #include "qgsdoublespinbox.h"
 #include "qgssettings.h"
 #include "qgsmaptoolpan.h"
+#include "qgsmapthemecollection.h"
+#include "qgsproject.h"
+#include "qgsmapthemes.h"
 #include <QMessageBox>
 #include <QMenu>
 #include <QToolBar>
@@ -49,24 +52,36 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
 
   connect( mActionSyncView, &QAction::toggled, this, &QgsMapCanvasDockWidget::syncView );
 
-  QMenu *menu = new QMenu();
+  mMenu = new QMenu();
+  connect( mMenu, &QMenu::aboutToShow, this, &QgsMapCanvasDockWidget::menuAboutToShow );
 
-  QToolButton *toolButton = new QToolButton();
-  toolButton->setMenu( menu );
-  toolButton->setPopupMode( QToolButton::InstantPopup );
-  toolButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapSettings.svg" ) ) );
-  mToolbar->addWidget( toolButton );
+  QToolButton *btnMapThemes = new QToolButton;
+  btnMapThemes->setAutoRaise( true );
+  btnMapThemes->setToolTip( tr( "Set View Theme" ) );
+  btnMapThemes->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ) );
+  btnMapThemes->setPopupMode( QToolButton::InstantPopup );
+  btnMapThemes->setMenu( mMenu );
+  mToolbar->addWidget( btnMapThemes );
+
+  QMenu *settingsMenu = new QMenu();
+  QToolButton *settingsButton = new QToolButton();
+  btnMapThemes->setAutoRaise( true );
+  settingsButton->setMenu( settingsMenu );
+  settingsButton->setPopupMode( QToolButton::InstantPopup );
+  settingsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapSettings.svg" ) ) );
+  mToolbar->addWidget( settingsButton );
 
   connect( mActionSetCrs, &QAction::triggered, this, &QgsMapCanvasDockWidget::setMapCrs );
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapCanvasDockWidget::mapCrsChanged );
   mapCrsChanged();
 
-  QgsMapSettingsAction *settingsAction = new QgsMapSettingsAction( menu );
-  menu->addAction( settingsAction );
+  QgsMapSettingsAction *settingsAction = new QgsMapSettingsAction( settingsMenu );
+  settingsMenu->addAction( settingsAction );
 
-  menu->addSeparator();
-  menu->addAction( mActionSetCrs );
-  menu->addAction( mActionRename );
+  settingsMenu->addSeparator();
+  settingsMenu->addAction( mActionSetCrs );
+  settingsMenu->addAction( mActionRename );
+  settingsMenu->addSeparator();
   connect( mActionRename, &QAction::triggered, this, &QgsMapCanvasDockWidget::renameTriggered );
 
   mScaleCombo = settingsAction->scaleCombo();
@@ -218,6 +233,45 @@ void QgsMapCanvasDockWidget::mapCrsChanged()
                           mMapCanvas->mapSettings().destinationCrs().authid() :
                           tr( "No projection" ) ) );
 }
+
+void QgsMapCanvasDockWidget::menuAboutToShow()
+{
+  qDeleteAll( mMenuPresetActions );
+  mMenuPresetActions.clear();
+
+  QString currentTheme = mMapCanvas->theme();
+
+  QAction *actionFollowMain = new QAction( tr( "(default)" ), mMenu );
+  actionFollowMain->setCheckable( true );
+  if ( currentTheme.isEmpty() || !QgsProject::instance()->mapThemeCollection()->hasMapTheme( currentTheme ) )
+  {
+    actionFollowMain->setChecked( true );
+  }
+  connect( actionFollowMain, &QAction::triggered, this, [ = ]
+  {
+    mMapCanvas->setTheme( QString() );
+    mMapCanvas->refresh();
+  } );
+  mMenuPresetActions.append( actionFollowMain );
+
+  Q_FOREACH ( const QString &grpName, QgsProject::instance()->mapThemeCollection()->mapThemes() )
+  {
+    QAction *a = new QAction( grpName, mMenu );
+    a->setCheckable( true );
+    if ( grpName == currentTheme )
+    {
+      a->setChecked( true );
+    }
+    connect( a, &QAction::triggered, this, [a, this]
+    {
+      mMapCanvas->setTheme( a->text() );
+      mMapCanvas->refresh();
+    } );
+    mMenuPresetActions.append( a );
+  }
+  mMenu->addActions( mMenuPresetActions );
+}
+
 
 QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )
   : QWidgetAction( parent )

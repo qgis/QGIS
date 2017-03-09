@@ -1864,7 +1864,7 @@ void QgsMapCanvas::readProject( const QDomDocument &doc )
       {
         QDomElement elementNode = nodes.at( i ).toElement();
 
-        if ( elementNode.hasAttribute( "name" ) && elementNode.attribute( "name" ) == objectName() )
+        if ( elementNode.hasAttribute( QStringLiteral( "name" ) ) && elementNode.attribute( QStringLiteral( "name" ) ) == objectName() )
         {
           node = nodes.at( i );
           break;
@@ -1881,6 +1881,15 @@ void QgsMapCanvas::readProject( const QDomDocument &doc )
     enableMapTileRendering( tmpSettings.testFlag( QgsMapSettings::RenderMapTile ) );
 
     clearExtentHistory(); // clear the extent history on project load
+
+    QDomElement elem = node.toElement();
+    if ( elem.hasAttribute( QStringLiteral( "theme" ) ) )
+    {
+      if ( QgsProject::instance()->mapThemeCollection()->hasMapTheme( elem.attribute( QStringLiteral( "theme" ) ) ) )
+      {
+        setTheme( elem.attribute( QStringLiteral( "theme" ) ) );
+      }
+    }
   }
   else
   {
@@ -1902,6 +1911,8 @@ void QgsMapCanvas::writeProject( QDomDocument &doc )
 
   QDomElement mapcanvasNode = doc.createElement( QStringLiteral( "mapcanvas" ) );
   mapcanvasNode.setAttribute( "name", objectName() );
+  if ( !mTheme.isEmpty() )
+    mapcanvasNode.setAttribute( "theme", mTheme );
   qgisNode.appendChild( mapcanvasNode );
 
   mSettings.writeXml( mapcanvasNode, doc );

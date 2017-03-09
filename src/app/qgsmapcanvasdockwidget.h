@@ -68,12 +68,15 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     void syncView( bool enabled );
     void mapExtentChanged();
     void mapCrsChanged();
+    void menuAboutToShow();
 
   private:
 
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsMapCanvas *mMainCanvas = nullptr;
     bool mShowCloseWarning = true;
+    QMenu *mMenu = nullptr;
+    QList<QAction *> mMenuPresetActions;
     QgsScaleComboBox *mScaleCombo = nullptr;
     QgsDoubleSpinBox *mRotationEdit = nullptr;
     QgsDoubleSpinBox *mMagnificationEdit = nullptr;
