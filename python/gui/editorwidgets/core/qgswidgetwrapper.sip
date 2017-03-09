@@ -51,6 +51,7 @@ class QgsWidgetWrapper : QObject
     {
       RootPath = 0,
     };
+    static const QgsPropertiesDefinition &propertyDefinitions();
     /**
      * Create a new widget wrapper
      *
