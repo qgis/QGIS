@@ -128,9 +128,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.btnNext.clicked.connect(self.navigate)
         self.btnLast.clicked.connect(self.navigate)
 
-        self.btnAddToWms.clicked.connect(self.add_to_ows)
-        self.btnAddToWfs.clicked.connect(self.add_to_ows)
-        self.btnAddToWcs.clicked.connect(self.add_to_ows)
+        self.mActionAddWms.triggered.connect(self.add_to_ows)
+        self.mActionAddWfs.triggered.connect(self.add_to_ows)
+        self.mActionAddWcs.triggered.connect(self.add_to_ows)
         self.btnShowXml.clicked.connect(self.show_xml)
 
         # settings
@@ -614,13 +614,14 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                     wcs_link_types]):
                 if link_type in wmswmst_link_types:
                     services['wms'] = link['url']
-                    self.btnAddToWms.setEnabled(True)
+                    self.mActionAddWms.setEnabled(True)
                 if link_type in wfs_link_types:
                     services['wfs'] = link['url']
-                    self.btnAddToWfs.setEnabled(True)
+                    self.mActionAddWfs.setEnabled(True)
                 if link_type in wcs_link_types:
                     services['wcs'] = link['url']
-                    self.btnAddToWcs.setEnabled(True)
+                    self.mActionAddWcs.setEnabled(True)
+                self.tbAddData.setEnabled(True)
 
             set_item_data(item, 'link', json.dumps(services))
 
@@ -695,13 +696,13 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         caller = self.sender().objectName()
 
         # stype = human name,/Qgis/connections-%s,providername
-        if caller == 'btnAddToWms':
+        if caller == 'mActionAddWms':
             stype = ['OGC:WMS/OGC:WMTS', 'wms', 'wms']
             data_url = item_data['wms']
-        elif caller == 'btnAddToWfs':
+        elif caller == 'mActionAddWfs':
             stype = ['OGC:WFS', 'wfs', 'WFS']
             data_url = item_data['wfs']
-        elif caller == 'btnAddToWcs':
+        elif caller == 'mActionAddWcs':
             stype = ['OGC:WCS', 'wcs', 'wcs']
             data_url = item_data['wcs']
 
@@ -834,9 +835,10 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         """Convenience function to disable WMS/WMTS|WFS|WCS buttons"""
 
         if services:
-            self.btnAddToWms.setEnabled(False)
-            self.btnAddToWfs.setEnabled(False)
-            self.btnAddToWcs.setEnabled(False)
+            self.tbAddData.setEnabled(False)
+            self.mActionAddWms.setEnabled(False)
+            self.mActionAddWfs.setEnabled(False)
+            self.mActionAddWcs.setEnabled(False)
 
         if xml:
             self.btnShowXml.setEnabled(False)
