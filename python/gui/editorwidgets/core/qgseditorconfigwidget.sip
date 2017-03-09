@@ -32,5 +32,7 @@ class QgsEditorConfigWidget : QWidget
 
   protected:
     void initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsWidgetWrapper::Property key );
+    void updateDataDefinedButtons();
+    void updateDataDefinedButton( QgsPropertyOverrideButton *button );
 };
 
