@@ -488,11 +488,6 @@ void QgsMapCanvas::refreshMap()
   if ( !mTheme.isEmpty() )
   {
     mSettings.setLayerStyleOverrides( QgsProject::instance()->mapThemeCollection()->mapThemeStyleOverrides( mTheme ) );
-    mSettings.setLayers( QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( mTheme ) );
-  }
-  else
-  {
-    mSettings.setLayerStyleOverrides( QMap< QString, QString>() );
   }
 
   // create the renderer job
@@ -1623,9 +1618,19 @@ void QgsMapCanvas::setTheme( const QString &theme )
   if ( mTheme == theme )
     return;
 
-  mTheme = theme;
   clearCache();
-  emit themeChanged( theme );
+  if ( theme.isEmpty() || !QgsProject::instance()->mapThemeCollection()->hasMapTheme( theme ) )
+  {
+    mTheme.clear();
+    mSettings.setLayerStyleOverrides( QMap< QString, QString>() );
+    emit themeChanged( QString() );
+  }
+  else
+  {
+    mTheme = theme;
+    setLayers( QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( mTheme ) );
+    emit themeChanged( theme );
+  }
 }
 
 void QgsMapCanvas::setRenderFlag( bool flag )
