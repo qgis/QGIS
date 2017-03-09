@@ -38,6 +38,7 @@
 #include "qgsexpressioncontextgenerator.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsprojectproperty.h"
+#include "qgsmaplayer.h"
 
 class QFileInfo;
 class QDomDocument;
@@ -690,6 +691,22 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void reloadAllLayers();
 
+    /**
+     * Returns an ordered list of layers. This list reflects the order of layers as
+     * drawn in the main map canvas for the project.
+     * @note added in QGIS 3.0
+     * @see setLayerOrder()
+     */
+    QList< QgsMapLayer * > layerOrder() const;
+
+    /**
+     * Sets the \a order for layers in the project. This list reflects the order of layers shown in
+     * the layer tree for the project.
+     * @note added in QGIS 3.0
+     * @see layerOrder()
+     */
+    void setLayerOrder( const QList< QgsMapLayer * > &order );
+
   signals:
     //! emitted when project is being read
     void readProject( const QDomDocument & );
@@ -892,6 +909,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void legendLayersAdded( const QList<QgsMapLayer *> &layers );
 
+    /**
+     * Emitted when the order of layers in the project is changed.
+     * @note added in QGIS 3.0
+     * @see setLayerOrder()
+     */
+    void layerOrderChanged();
+
   public slots:
 
     /**
@@ -950,6 +974,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void loadEmbeddedNodes( QgsLayerTreeGroup *group );
 
     QMap<QString, QgsMapLayer *> mMapLayers;
+
+    QgsWeakMapLayerPointerList mLayerOrder;
 
     QString mErrorMessage;
 

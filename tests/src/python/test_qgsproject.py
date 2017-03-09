@@ -18,12 +18,19 @@ import os
 
 import qgis  # NOQA
 
-from qgis.core import QgsProject, QgsApplication, QgsUnitTypes, QgsCoordinateReferenceSystem
-
+from qgis.core import (QgsProject,
+                       QgsApplication,
+                       QgsUnitTypes,
+                       QgsCoordinateReferenceSystem,
+                       QgsVectorLayer)
+from qgis.gui import (QgsLayerTreeMapCanvasBridge,
+                      QgsMapCanvas)
 from qgis.testing import start_app, unittest
 from utilities import (unitTestDataPath)
+from qgis.PyQt.QtCore import QDir
+from qgis.PyQt.QtTest import QSignalSpy
 
-start_app()
+app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
@@ -175,6 +182,85 @@ class TestQgsProject(unittest.TestCase):
 
         expected = ['polys', 'lines']
         self.assertEqual(sorted(layers_names), sorted(expected))
+
+    def testLayerOrder(self):
+        """ test project layer order"""
+        prj = QgsProject()
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer1", "memory")
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer2", "memory")
+        layer3 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer3", "memory")
+        prj.addMapLayers([layer, layer2, layer3])
+
+        layer_order_changed_spy = QSignalSpy(prj.layerOrderChanged)
+        prj.setLayerOrder([layer2, layer])
+        self.assertEqual(len(layer_order_changed_spy), 1)
+        prj.setLayerOrder([layer2, layer])
+        self.assertEqual(len(layer_order_changed_spy), 1) # no signal, order not changed
+
+        self.assertEqual(prj.layerOrder(), [layer2, layer])
+        prj.setLayerOrder([layer])
+        self.assertEqual(prj.layerOrder(), [layer])
+        self.assertEqual(len(layer_order_changed_spy), 2)
+
+        # remove a layer
+        prj.setLayerOrder([layer2, layer, layer3])
+        self.assertEqual(len(layer_order_changed_spy), 3)
+        prj.removeMapLayer(layer)
+        self.assertEqual(prj.layerOrder(), [layer2, layer3])
+        self.assertEqual(len(layer_order_changed_spy), 4)
+
+        # save and restore
+        file_name = os.path.join(str(QDir.tempPath()), 'proj.qgs')
+        prj.setFileName(file_name)
+        prj.write()
+        prj2 = QgsProject()
+        prj2.setFileName(file_name)
+        prj2.read()
+        self.assertEqual([l.id() for l in prj2.layerOrder()], [layer2.id(), layer3.id()])
+
+        # clear project
+        prj.clear()
+        self.assertEqual(prj.layerOrder(), [])
+
+    def testLayerOrderUpdatedThroughBridge(self):
+        """ test that project layer order is updated when layer tree changes """
+
+        prj = QgsProject.instance()
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer1", "memory")
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer2", "memory")
+        layer3 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer3", "memory")
+        prj.addMapLayers([layer, layer2, layer3])
+
+        canvas = QgsMapCanvas()
+        bridge = QgsLayerTreeMapCanvasBridge(prj.layerTreeRoot(), canvas)
+
+        #custom layer order
+        bridge.setHasCustomLayerOrder(True)
+        bridge.setCustomLayerOrder([layer3.id(), layer.id(), layer2.id()])
+        app.processEvents()
+        self.assertEqual([l.id() for l in prj.layerOrder()], [layer3.id(), layer.id(), layer2.id()])
+
+        # no custom layer order
+        bridge.setHasCustomLayerOrder(False)
+        app.processEvents()
+        self.assertEqual([l.id() for l in prj.layerOrder()], [layer.id(), layer2.id(), layer3.id()])
+
+        # mess around with the layer tree order
+        root = prj.layerTreeRoot()
+        layer_node = root.findLayer(layer2.id())
+        cloned_node = layer_node.clone()
+        parent = layer_node.parent()
+        parent.insertChildNode(0, cloned_node)
+        parent.removeChildNode(layer_node)
+        app.processEvents()
+        # make sure project respects this
+        self.assertEqual([l.id() for l in prj.layerOrder()], [layer2.id(), layer.id(), layer3.id()])
 
 
 if __name__ == '__main__':

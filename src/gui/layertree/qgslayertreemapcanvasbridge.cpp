@@ -140,6 +140,7 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
   int currentLayerCount = layerNodes.count();
   bool firstLayers = mAutoSetupOnFirstLayer && mLastLayerCount == 0 && currentLayerCount != 0;
 
+  QgsProject::instance()->setLayerOrder( canvasLayers );
   mCanvas->setLayers( canvasLayers );
   if ( mOverviewCanvas )
     mOverviewCanvas->setLayers( overviewLayers );
