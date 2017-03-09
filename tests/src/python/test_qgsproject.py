@@ -262,6 +262,12 @@ class TestQgsProject(unittest.TestCase):
         # make sure project respects this
         self.assertEqual([l.id() for l in prj.layerOrder()], [layer2.id(), layer.id(), layer3.id()])
 
+        # make sure project order includes ALL layers, not just visible ones
+        layer_node = root.findLayer(layer.id())
+        layer_node.setItemVisibilityChecked(False)
+        app.processEvents()
+        self.assertEqual([l.id() for l in prj.layerOrder()], [layer2.id(), layer.id(), layer3.id()])
+
 
 if __name__ == '__main__':
     unittest.main()

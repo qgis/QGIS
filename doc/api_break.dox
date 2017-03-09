@@ -1261,6 +1261,7 @@ QgsLayerTreeMapCanvasBridge        {#qgis_api_break_3_0_QgsLayerTreeMapCanvasBri
 -----------------
 
 - setAutoEnableCrsTransform() and autoEnableCrsTransform() were removed. CRS transformation is now always enabled.
+- setCanvasLayers() now requires a third map layer list argument for storage of all layers in the layer tree order.
 
 
 QgsLayerTreeModel        {#qgis_api_break_3_0_QgsLayerTreeMode}

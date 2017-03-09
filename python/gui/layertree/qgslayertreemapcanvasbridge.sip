@@ -64,8 +64,8 @@ class QgsLayerTreeMapCanvasBridge : QObject
 
     void defaultLayerOrder( QgsLayerTreeNode* node, QStringList& order ) const;
 
-    //! Fill canvasLayers and overviewLayers lists from node and its descendants
-    void setCanvasLayers( QgsLayerTreeNode* node, QList<QgsMapLayer*> &canvasLayers, QList<QgsMapLayer*>& overviewLayers );
+    void setCanvasLayers( QgsLayerTreeNode *node, QList<QgsMapLayer *> &canvasLayers, QList<QgsMapLayer *> &overviewLayers,
+                          QList<QgsMapLayer *> &allLayers );
 
     void deferredSetCanvasLayers();
 

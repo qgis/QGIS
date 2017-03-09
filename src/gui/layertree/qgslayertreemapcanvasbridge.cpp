@@ -117,7 +117,7 @@ void QgsLayerTreeMapCanvasBridge::setCustomLayerOrder( const QStringList &order 
 
 void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
 {
-  QList<QgsMapLayer *> canvasLayers, overviewLayers;
+  QList<QgsMapLayer *> canvasLayers, overviewLayers, allLayerOrder;
 
   if ( mHasCustomLayerOrder )
   {
@@ -126,6 +126,7 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
       QgsLayerTreeLayer *nodeLayer = mRoot->findLayer( layerId );
       if ( nodeLayer )
       {
+        allLayerOrder << nodeLayer->layer();
         if ( nodeLayer->isVisible() )
           canvasLayers << nodeLayer->layer();
         if ( nodeLayer->customProperty( QStringLiteral( "overview" ), 0 ).toInt() )
@@ -134,13 +135,13 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
     }
   }
   else
-    setCanvasLayers( mRoot, canvasLayers, overviewLayers );
+    setCanvasLayers( mRoot, canvasLayers, overviewLayers, allLayerOrder );
 
   QList<QgsLayerTreeLayer *> layerNodes = mRoot->findLayers();
   int currentLayerCount = layerNodes.count();
   bool firstLayers = mAutoSetupOnFirstLayer && mLastLayerCount == 0 && currentLayerCount != 0;
 
-  QgsProject::instance()->setLayerOrder( canvasLayers );
+  QgsProject::instance()->setLayerOrder( allLayerOrder );
   mCanvas->setLayers( canvasLayers );
   if ( mOverviewCanvas )
     mOverviewCanvas->setLayers( overviewLayers );
@@ -229,11 +230,12 @@ void QgsLayerTreeMapCanvasBridge::writeProject( QDomDocument &doc )
   doc.documentElement().appendChild( elem );
 }
 
-void QgsLayerTreeMapCanvasBridge::setCanvasLayers( QgsLayerTreeNode *node, QList<QgsMapLayer *> &canvasLayers, QList<QgsMapLayer *> &overviewLayers )
+void QgsLayerTreeMapCanvasBridge::setCanvasLayers( QgsLayerTreeNode *node, QList<QgsMapLayer *> &canvasLayers, QList<QgsMapLayer *> &overviewLayers, QList<QgsMapLayer *> &allLayers )
 {
   if ( QgsLayerTree::isLayer( node ) )
   {
     QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
+    allLayers << nodeLayer->layer();
     if ( nodeLayer->isVisible() )
       canvasLayers << nodeLayer->layer();
     if ( nodeLayer->customProperty( QStringLiteral( "overview" ), 0 ).toInt() )
@@ -241,7 +243,7 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers( QgsLayerTreeNode *node, QList
   }
 
   Q_FOREACH ( QgsLayerTreeNode *child, node->children() )
-    setCanvasLayers( child, canvasLayers, overviewLayers );
+    setCanvasLayers( child, canvasLayers, overviewLayers, allLayers );
 }
 
 void QgsLayerTreeMapCanvasBridge::deferredSetCanvasLayers()

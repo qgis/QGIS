@@ -17,6 +17,8 @@ import qgis  # NOQA
 from qgis.core import (QgsMapThemeCollection,
                        QgsProject,
                        QgsVectorLayer)
+from qgis.gui import (QgsLayerTreeMapCanvasBridge,
+                      QgsMapCanvas)
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtTest import QSignalSpy
 
@@ -99,7 +101,7 @@ class TestQgsMapThemeCollection(unittest.TestCase):
 
     def testMasterLayerOrder(self):
         """ test master layer order"""
-        prj = QgsProject()
+        prj = QgsProject.instance()
         layer = QgsVectorLayer("Point?field=fldtxt:string",
                                "layer1", "memory")
         layer2 = QgsVectorLayer("Point?field=fldtxt:string",
@@ -148,6 +150,23 @@ class TestQgsMapThemeCollection(unittest.TestCase):
         self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme1'), [layer3.id(), layer.id()])
         self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme2'), [layer2.id(), layer3.id(), layer.id()])
         self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme3'), [layer2.id(), layer.id()])
+
+        # check that layers include those hidden in the layer tree
+        canvas = QgsMapCanvas()
+        bridge = QgsLayerTreeMapCanvasBridge(prj.layerTreeRoot(), canvas)
+        root = prj.layerTreeRoot()
+        layer_node = root.findLayer(layer2.id())
+        layer_node.setItemVisibilityChecked(False)
+        app.processEvents()
+        self.assertEqual(prj.mapThemeCollection().masterLayerOrder(), [layer, layer2, layer3])
+
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme1'), [layer, layer3])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme2'), [layer, layer2, layer3])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme3'), [layer, layer2])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme1'), [layer.id(), layer3.id()])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme2'),
+                         [layer.id(), layer2.id(), layer3.id()])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme3'), [layer.id(), layer2.id()])
 
 
 if __name__ == '__main__':
