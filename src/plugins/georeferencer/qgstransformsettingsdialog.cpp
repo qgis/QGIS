@@ -83,7 +83,7 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
 QgsTransformSettingsDialog::~QgsTransformSettingsDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Plugin-GeoReferencer/TransformSettingsWindow/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Plugin-GeoReferencer/TransformSettingsWindow/geometry" ), saveGeometry() );
 }
 
 void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::TransformParametrisation &tp,
@@ -309,7 +309,7 @@ QIcon QgsTransformSettingsDialog::getThemeIcon( const QString &name )
   else
   {
     QgsSettings settings;
-    QString themePath = ":/icons/" + settings.value( QStringLiteral( "/Themes" ) ).toString() + name;
+    QString themePath = ":/icons/" + settings.value( QStringLiteral( "Themes" ) ).toString() + name;
     if ( QFile::exists( themePath ) )
     {
       return QIcon( themePath );

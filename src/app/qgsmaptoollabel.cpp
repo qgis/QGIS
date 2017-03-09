@@ -89,10 +89,10 @@ void QgsMapToolLabel::createRubberBands()
       if ( !geom.isNull() )
       {
         QgsSettings settings;
-        int r = settings.value( QStringLiteral( "/qgis/digitizing/line_color_red" ), 255 ).toInt();
-        int g = settings.value( QStringLiteral( "/qgis/digitizing/line_color_green" ), 0 ).toInt();
-        int b = settings.value( QStringLiteral( "/qgis/digitizing/line_color_blue" ), 0 ).toInt();
-        int a = settings.value( QStringLiteral( "/qgis/digitizing/line_color_alpha" ), 200 ).toInt();
+        int r = settings.value( QStringLiteral( "qgis/digitizing/line_color_red" ), 255 ).toInt();
+        int g = settings.value( QStringLiteral( "qgis/digitizing/line_color_green" ), 0 ).toInt();
+        int b = settings.value( QStringLiteral( "qgis/digitizing/line_color_blue" ), 0 ).toInt();
+        int a = settings.value( QStringLiteral( "qgis/digitizing/line_color_alpha" ), 200 ).toInt();
         mFeatureRubberBand = new QgsRubberBand( mCanvas, geom.type() );
         mFeatureRubberBand->setColor( QColor( r, g, b, a ) );
         mFeatureRubberBand->setToGeometry( geom, vlayer );

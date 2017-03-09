@@ -96,13 +96,13 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
   }
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/QgsOrganizeTableColumnsDialog/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/QgsOrganizeTableColumnsDialog/geometry" ) ).toByteArray() );
 }
 
 QgsOrganizeTableColumnsDialog::~QgsOrganizeTableColumnsDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/QgsOrganizeTableColumnsDialog/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/QgsOrganizeTableColumnsDialog/geometry" ), saveGeometry() );
 }
 
 QgsAttributeTableConfig QgsOrganizeTableColumnsDialog::config() const

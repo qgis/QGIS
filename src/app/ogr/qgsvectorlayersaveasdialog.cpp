@@ -72,7 +72,7 @@ void QgsVectorLayerSaveAsDialog::setup()
 {
   setupUi( this );
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/VectorLayerSaveAs/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/VectorLayerSaveAs/geometry" ) ).toByteArray() );
 
   QMap<QString, QString> map = QgsVectorFileWriter::ogrDriverList();
   mFormatComboBox->blockSignals( true );
@@ -81,7 +81,7 @@ void QgsVectorLayerSaveAsDialog::setup()
     mFormatComboBox->addItem( it.key(), it.value() );
   }
 
-  QString format = settings.value( QStringLiteral( "/UI/lastVectorFormat" ), "ESRI Shapefile" ).toString();
+  QString format = settings.value( QStringLiteral( "UI/lastVectorFormat" ), "ESRI Shapefile" ).toString();
   mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( format ) );
   mFormatComboBox->blockSignals( false );
 
@@ -96,7 +96,7 @@ void QgsVectorLayerSaveAsDialog::setup()
 
   mEncodingComboBox->addItems( QgsVectorDataProvider::availableEncodings() );
 
-  QString enc = settings.value( QStringLiteral( "/UI/encoding" ), "System" ).toString();
+  QString enc = settings.value( QStringLiteral( "UI/encoding" ), "System" ).toString();
   int idx = mEncodingComboBox->findText( enc );
   if ( idx < 0 )
   {
@@ -208,7 +208,7 @@ QList<QPair<QLabel *, QWidget *> > QgsVectorLayerSaveAsDialog::createControls( c
 QgsVectorLayerSaveAsDialog::~QgsVectorLayerSaveAsDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/VectorLayerSaveAs/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/VectorLayerSaveAs/geometry" ), saveGeometry() );
 }
 
 void QgsVectorLayerSaveAsDialog::accept()
@@ -329,9 +329,9 @@ void QgsVectorLayerSaveAsDialog::accept()
   }
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/UI/lastVectorFileFilterDir" ), QFileInfo( filename() ).absolutePath() );
-  settings.setValue( QStringLiteral( "/UI/lastVectorFormat" ), format() );
-  settings.setValue( QStringLiteral( "/UI/encoding" ), encoding() );
+  settings.setValue( QStringLiteral( "UI/lastVectorFileFilterDir" ), QFileInfo( filename() ).absolutePath() );
+  settings.setValue( QStringLiteral( "UI/lastVectorFormat" ), format() );
+  settings.setValue( QStringLiteral( "UI/encoding" ), encoding() );
   QDialog::accept();
 }
 
@@ -628,7 +628,7 @@ void QgsVectorLayerSaveAsDialog::on_leFilename_textChanged( const QString &text 
 void QgsVectorLayerSaveAsDialog::on_browseFilename_clicked()
 {
   QgsSettings settings;
-  QString dirName = leFilename->text().isEmpty() ? settings.value( QStringLiteral( "/UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString() : leFilename->text();
+  QString dirName = leFilename->text().isEmpty() ? settings.value( QStringLiteral( "UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString() : leFilename->text();
   QString filterString = QgsVectorFileWriter::filterForDriver( format() );
   QString outputFile = QFileDialog::getSaveFileName( nullptr, tr( "Save layer as..." ), dirName, filterString, nullptr, QFileDialog::DontConfirmOverwrite );
   if ( !outputFile.isNull() )

@@ -30,7 +30,7 @@ QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget( QWidget *parent )
   QgsSettings settings;
   int minimumFactor = 100 * QgisGui::CANVAS_MAGNIFICATION_MIN;
   int maximumFactor = 100 * QgisGui::CANVAS_MAGNIFICATION_MAX;
-  int defaultFactor = 100 * settings.value( QStringLiteral( "/qgis/magnifier_factor_default" ), 1.0 ).toDouble();
+  int defaultFactor = 100 * settings.value( QStringLiteral( "qgis/magnifier_factor_default" ), 1.0 ).toDouble();
 
   // label
   mLabel = new QLabel();

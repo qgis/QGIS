@@ -27,7 +27,7 @@
 QStringList QgsSpatiaLiteConnection::connectionList()
 {
   QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "/SpatiaLite/connections" ) );
+  settings.beginGroup( QStringLiteral( "SpatiaLite/connections" ) );
   return settings.childGroups();
 }
 
@@ -52,7 +52,7 @@ QgsSpatiaLiteConnection::QgsSpatiaLiteConnection( const QString &name )
   // "name" can be either a saved connection or a path to database
 
   QgsSettings settings;
-  mPath = settings.value( QStringLiteral( "/SpatiaLite/connections/%1/sqlitepath" ).arg( name ) ).toString();
+  mPath = settings.value( QStringLiteral( "SpatiaLite/connections/%1/sqlitepath" ).arg( name ) ).toString();
   if ( mPath.isNull() )
     mPath = name; // not found in settings - probably it's a path
 }

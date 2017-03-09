@@ -28,7 +28,7 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   setupUi( this );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/DecorationNorthArrow/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/DecorationNorthArrow/geometry" ) ).toByteArray() );
 
   QPushButton *applyButton = buttonBox->button( QDialogButtonBox::Apply );
   connect( applyButton, SIGNAL( clicked() ), this, SLOT( apply() ) );
@@ -60,7 +60,7 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
 QgsDecorationNorthArrowDialog::~QgsDecorationNorthArrowDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/DecorationNorthArrow/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/DecorationNorthArrow/geometry" ), saveGeometry() );
 }
 
 void QgsDecorationNorthArrowDialog::on_buttonBox_helpRequested()

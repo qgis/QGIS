@@ -45,8 +45,8 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
   setupUi( this );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/SpatiaLiteSourceSelect/geometry" ) ).toByteArray() );
-  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "/Windows/SpatiaLiteSourceSelect/HoldDialogOpen" ), false ).toBool() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/SpatiaLiteSourceSelect/geometry" ) ).toByteArray() );
+  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "Windows/SpatiaLiteSourceSelect/HoldDialogOpen" ), false ).toBool() );
 
   setWindowTitle( tr( "Add SpatiaLite Layer(s)" ) );
   btnEdit->hide();  // hide the edit button
@@ -117,8 +117,8 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
 QgsSpatiaLiteSourceSelect::~QgsSpatiaLiteSourceSelect()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/SpatiaLiteSourceSelect/geometry" ), saveGeometry() );
-  settings.setValue( QStringLiteral( "/Windows/SpatiaLiteSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
+  settings.setValue( QStringLiteral( "Windows/SpatiaLiteSourceSelect/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/SpatiaLiteSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
 }
 
 // Slot for performing action when the Add button is clicked
@@ -270,7 +270,7 @@ bool QgsSpatiaLiteSourceSelect::newConnection( QWidget *parent )
 {
   // Retrieve last used project dir from persistent settings
   QgsSettings settings;
-  QString lastUsedDir = settings.value( QStringLiteral( "/UI/lastSpatiaLiteDir" ), QDir::homePath() ).toString();
+  QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSpatiaLiteDir" ), QDir::homePath() ).toString();
 
   QString myFile = QFileDialog::getOpenFileName( parent,
                    tr( "Choose a SpatiaLite/SQLite DB to open" ),
@@ -306,7 +306,7 @@ bool QgsSpatiaLiteSourceSelect::newConnection( QWidget *parent )
   }
 
   // Persist last used SpatiaLite dir
-  settings.setValue( QStringLiteral( "/UI/lastSpatiaLiteDir" ), myPath );
+  settings.setValue( QStringLiteral( "UI/lastSpatiaLiteDir" ), myPath );
   // inserting this SQLite DB path
   settings.setValue( baseKey + "selected", savedName );
   settings.setValue( baseKey + savedName + "/sqlitepath", myFI.canonicalFilePath() );
@@ -551,14 +551,14 @@ void QgsSpatiaLiteSourceSelect::dbChanged()
 {
   // Remember which database was selected.
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/SpatiaLite/connections/selected" ), cmbConnections->currentText() );
+  settings.setValue( QStringLiteral( "SpatiaLite/connections/selected" ), cmbConnections->currentText() );
 }
 
 void QgsSpatiaLiteSourceSelect::setConnectionListPosition()
 {
   QgsSettings settings;
   // If possible, set the item currently displayed database
-  QString toSelect = settings.value( QStringLiteral( "/SpatiaLite/connections/selected" ) ).toString();
+  QString toSelect = settings.value( QStringLiteral( "SpatiaLite/connections/selected" ) ).toString();
 
   toSelect += '@' + settings.value( "/SpatiaLite/connections/" + toSelect + "/sqlitepath" ).toString();
 

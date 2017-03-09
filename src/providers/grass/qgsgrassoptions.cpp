@@ -47,8 +47,8 @@ QgsGrassOptions::QgsGrassOptions( QWidget *parent )
   QString revision = QStringLiteral( GIS_H_VERSION ).remove( QStringLiteral( "$" ) ).trimmed();
   mGrassVersionLabel->setText( tr( "GRASS version" ) + " : " + version + " " + revision );
 
-  bool customGisbase = settings.value( QStringLiteral( "/GRASS/gidbase/custom" ), false ).toBool();
-  QString customGisbaseDir = settings.value( QStringLiteral( "/GRASS/gidbase/customDir" ) ).toString();
+  bool customGisbase = settings.value( QStringLiteral( "GRASS/gidbase/custom" ), false ).toBool();
+  QString customGisbaseDir = settings.value( QStringLiteral( "GRASS/gidbase/customDir" ) ).toString();
   mGisbaseDefaultRadioButton->setText( tr( "Default" ) + " (" + QgsGrass::defaultGisbase() + ")" );
   mGisbaseDefaultRadioButton->setChecked( !customGisbase );
   mGisbaseCustomRadioButton->setChecked( customGisbase );
@@ -76,7 +76,7 @@ QgsGrassOptions::QgsGrassOptions( QWidget *parent )
 
   mImportExternalCheckBox->setChecked( settings.value( mImportSettingsPath + "/external", true ).toBool() );
 
-  mTopoLayersCheckBox->setChecked( settings.value( QStringLiteral( "/GRASS/showTopoLayers" ), false ).toBool() );
+  mTopoLayersCheckBox->setChecked( settings.value( QStringLiteral( "GRASS/showTopoLayers" ), false ).toBool() );
 
   // Region
   QPen regionPen = QgsGrass::regionPen();
@@ -158,7 +158,7 @@ void QgsGrassOptions::saveOptions()
 
   settings.setValue( mImportSettingsPath + "/external", mImportExternalCheckBox->isChecked() );
 
-  settings.setValue( QStringLiteral( "/GRASS/showTopoLayers" ), mTopoLayersCheckBox->isChecked() );
+  settings.setValue( QStringLiteral( "GRASS/showTopoLayers" ), mTopoLayersCheckBox->isChecked() );
 
   // Region
   QPen regionPen = QgsGrass::regionPen();

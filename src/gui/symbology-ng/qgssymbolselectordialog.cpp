@@ -689,7 +689,7 @@ QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *s
   layout()->addWidget( mButtonBox );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/SymbolSelectorWidget/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/SymbolSelectorWidget/geometry" ) ).toByteArray() );
 
   // can be embedded in renderer properties dialog
   if ( embedded )
@@ -703,7 +703,7 @@ QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *s
 QgsSymbolSelectorDialog::~QgsSymbolSelectorDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/SymbolSelectorWidget/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/SymbolSelectorWidget/geometry" ), saveGeometry() );
 }
 
 QMenu *QgsSymbolSelectorDialog::advancedMenu()

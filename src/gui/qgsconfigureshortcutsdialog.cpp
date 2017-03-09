@@ -65,7 +65,7 @@ QgsConfigureShortcutsDialog::~QgsConfigureShortcutsDialog()
 void QgsConfigureShortcutsDialog::saveState()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/ShortcutsDialog/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/ShortcutsDialog/geometry" ), saveGeometry() );
 }
 
 /*!
@@ -74,7 +74,7 @@ void QgsConfigureShortcutsDialog::saveState()
 void QgsConfigureShortcutsDialog::restoreState()
 {
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/ShortcutsDialog/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/ShortcutsDialog/geometry" ) ).toByteArray() );
 }
 
 void QgsConfigureShortcutsDialog::populateActions()

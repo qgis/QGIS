@@ -295,7 +295,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   // this will be read by restoreOptionsBaseUi()
   if ( !settings.contains( QStringLiteral( "/Windows/VectorLayerProperties/tab" ) ) )
   {
-    settings.setValue( QStringLiteral( "/Windows/VectorLayerProperties/tab" ),
+    settings.setValue( QStringLiteral( "Windows/VectorLayerProperties/tab" ),
                        mOptStackedWidget->indexOf( mOptsPage_Style ) );
   }
 

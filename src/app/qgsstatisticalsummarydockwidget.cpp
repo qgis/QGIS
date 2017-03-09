@@ -97,7 +97,7 @@ QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *paren
   {
     QAction *action = new QAction( QgsStatisticalSummary::displayName( stat ), mOptionsToolButton );
     action->setCheckable( true );
-    bool checked = settings.value( QStringLiteral( "/StatisticalSummaryDock/checked_%1" ).arg( stat ), true ).toBool();
+    bool checked = settings.value( QStringLiteral( "StatisticalSummaryDock/checked_%1" ).arg( stat ), true ).toBool();
     action->setChecked( checked );
     action->setData( stat );
     mStatsActions.insert( stat, action );
@@ -108,7 +108,7 @@ QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *paren
   //count of null values statistic:
   QAction *nullCountAction = new QAction( tr( "Missing (null) values" ), mOptionsToolButton );
   nullCountAction->setCheckable( true );
-  bool checked = settings.value( QStringLiteral( "/StatisticalSummaryDock/checked_missing_values" ), true ).toBool();
+  bool checked = settings.value( QStringLiteral( "StatisticalSummaryDock/checked_missing_values" ), true ).toBool();
   nullCountAction->setChecked( checked );
   nullCountAction->setData( MISSING_VALUES );
   mStatsActions.insert( MISSING_VALUES, nullCountAction );
@@ -284,11 +284,11 @@ void QgsStatisticalSummaryDockWidget::statActionTriggered( bool checked )
   QgsSettings settings;
   if ( stat >= 0 )
   {
-    settings.setValue( QStringLiteral( "/StatisticalSummaryDock/checked_%1" ).arg( stat ), checked );
+    settings.setValue( QStringLiteral( "StatisticalSummaryDock/checked_%1" ).arg( stat ), checked );
   }
   else if ( stat == MISSING_VALUES )
   {
-    settings.setValue( QStringLiteral( "/StatisticalSummaryDock/checked_missing_values" ).arg( stat ), checked );
+    settings.setValue( QStringLiteral( "StatisticalSummaryDock/checked_missing_values" ).arg( stat ), checked );
   }
 }
 

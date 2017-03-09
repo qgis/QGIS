@@ -552,7 +552,7 @@ void QgsGrassPlugin::mapsetChanged()
     mCloseMapsetAction->setEnabled( true );
 
     QgsSettings settings;
-    bool on = settings.value( QStringLiteral( "/GRASS/region/on" ), true ).toBool();
+    bool on = settings.value( QStringLiteral( "GRASS/region/on" ), true ).toBool();
     mRegionAction->setChecked( on );
     switchRegion( on );
 
@@ -701,7 +701,7 @@ void QgsGrassPlugin::switchRegion( bool on )
 {
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/GRASS/region/on" ), on );
+  settings.setValue( QStringLiteral( "GRASS/region/on" ), on );
 
   if ( on )
   {

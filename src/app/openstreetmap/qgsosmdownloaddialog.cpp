@@ -153,13 +153,13 @@ void QgsOSMDownloadDialog::onCurrentLayerChanged( int index )
 void QgsOSMDownloadDialog::onBrowseClicked()
 {
   QgsSettings settings;
-  QString lastDir = settings.value( QStringLiteral( "/osm/lastDir" ), QDir::homePath() ).toString();
+  QString lastDir = settings.value( QStringLiteral( "osm/lastDir" ), QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getSaveFileName( this, QString(), lastDir, tr( "OpenStreetMap files (*.osm)" ) );
   if ( fileName.isNull() )
     return;
 
-  settings.setValue( QStringLiteral( "/osm/lastDir" ), QFileInfo( fileName ).absolutePath() );
+  settings.setValue( QStringLiteral( "osm/lastDir" ), QFileInfo( fileName ).absolutePath() );
   editFileName->setText( fileName );
 }
 

@@ -46,9 +46,9 @@ QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( const QgsCptCityColorRamp 
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/CptCityColorRampV2Dialog/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/CptCityColorRampV2Dialog/geometry" ) ).toByteArray() );
   mSplitter->setSizes( QList<int>() << 250 << 550 );
-  mSplitter->restoreState( settings.value( QStringLiteral( "/Windows/CptCityColorRampV2Dialog/splitter" ) ).toByteArray() );
+  mSplitter->restoreState( settings.value( QStringLiteral( "Windows/CptCityColorRampV2Dialog/splitter" ) ).toByteArray() );
 
   mModel = mAuthorsModel = mSelectionsModel = nullptr; //mListModel = 0;
   mTreeFilter = nullptr;
@@ -445,8 +445,8 @@ void QgsCptCityColorRampDialog::onFinished()
 {
   // save settings
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/CptCityColorRampV2Dialog/geometry" ), saveGeometry() );
-  settings.setValue( QStringLiteral( "/Windows/CptCityColorRampV2Dialog/splitter" ), mSplitter->saveState() );
+  settings.setValue( QStringLiteral( "Windows/CptCityColorRampV2Dialog/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/CptCityColorRampV2Dialog/splitter" ), mSplitter->saveState() );
 }
 
 void QgsCptCityColorRampDialog::on_buttonBox_helpRequested()

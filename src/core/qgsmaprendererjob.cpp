@@ -503,7 +503,7 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings, const La
 void QgsMapRendererJob::logRenderingTime( const LayerRenderJobs &jobs, const LabelRenderJob &labelJob )
 {
   QgsSettings settings;
-  if ( !settings.value( QStringLiteral( "/Map/logCanvasRefreshEvent" ), false ).toBool() )
+  if ( !settings.value( QStringLiteral( "Map/logCanvasRefreshEvent" ), false ).toBool() )
     return;
 
   QMultiMap<int, QString> elapsed;

@@ -76,11 +76,11 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget
   mHistoMarkerMax = nullptr;
 
   QgsSettings settings;
-  mHistoShowMarkers = settings.value( QStringLiteral( "/Raster/histogram/showMarkers" ), false ).toBool();
+  mHistoShowMarkers = settings.value( QStringLiteral( "Raster/histogram/showMarkers" ), false ).toBool();
   // mHistoLoadApplyAll = settings.value( "/Raster/histogram/loadApplyAll", false ).toBool();
-  mHistoZoomToMinMax = settings.value( QStringLiteral( "/Raster/histogram/zoomToMinMax" ), false ).toBool();
-  mHistoUpdateStyleToMinMax = settings.value( QStringLiteral( "/Raster/histogram/updateStyleToMinMax" ), true ).toBool();
-  mHistoDrawLines = settings.value( QStringLiteral( "/Raster/histogram/drawLines" ), true ).toBool();
+  mHistoZoomToMinMax = settings.value( QStringLiteral( "Raster/histogram/zoomToMinMax" ), false ).toBool();
+  mHistoUpdateStyleToMinMax = settings.value( QStringLiteral( "Raster/histogram/updateStyleToMinMax" ), true ).toBool();
+  mHistoDrawLines = settings.value( QStringLiteral( "Raster/histogram/drawLines" ), true ).toBool();
   // mHistoShowBands = (HistoShowBands) settings.value( "/Raster/histogram/showBands", (int) ShowAll ).toInt();
   mHistoShowBands = ShowAll;
 
@@ -790,7 +790,7 @@ void QgsRasterHistogramWidget::histoAction( const QString &actionName, bool acti
   {
     mHistoShowMarkers = actionFlag;
     QgsSettings settings;
-    settings.setValue( QStringLiteral( "/Raster/histogram/showMarkers" ), mHistoShowMarkers );
+    settings.setValue( QStringLiteral( "Raster/histogram/showMarkers" ), mHistoShowMarkers );
     updateHistoMarkers();
     return;
   }
@@ -798,14 +798,14 @@ void QgsRasterHistogramWidget::histoAction( const QString &actionName, bool acti
   {
     mHistoZoomToMinMax = actionFlag;
     QgsSettings settings;
-    settings.setValue( QStringLiteral( "/Raster/histogram/zoomToMinMax" ), mHistoZoomToMinMax );
+    settings.setValue( QStringLiteral( "Raster/histogram/zoomToMinMax" ), mHistoZoomToMinMax );
     return;
   }
   else if ( actionName == QLatin1String( "Update min_max" ) )
   {
     mHistoUpdateStyleToMinMax = actionFlag;
     QgsSettings settings;
-    settings.setValue( QStringLiteral( "/Raster/histogram/updateStyleToMinMax" ), mHistoUpdateStyleToMinMax );
+    settings.setValue( QStringLiteral( "Raster/histogram/updateStyleToMinMax" ), mHistoUpdateStyleToMinMax );
     return;
   }
   else if ( actionName == QLatin1String( "Show all" ) )
@@ -833,7 +833,7 @@ void QgsRasterHistogramWidget::histoAction( const QString &actionName, bool acti
   {
     mHistoDrawLines = actionFlag;
     QgsSettings settings;
-    settings.setValue( QStringLiteral( "/Raster/histogram/drawLines" ), mHistoDrawLines );
+    settings.setValue( QStringLiteral( "Raster/histogram/drawLines" ), mHistoDrawLines );
     on_btnHistoCompute_clicked(); // refresh
     return;
   }

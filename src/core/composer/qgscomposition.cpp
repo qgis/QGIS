@@ -168,10 +168,10 @@ QgsProject *QgsComposition::project() const
 void QgsComposition::loadDefaults()
 {
   QgsSettings settings;
-  mSnapGridResolution = settings.value( QStringLiteral( "/Composer/defaultSnapGridResolution" ), 10.0 ).toDouble();
-  mSnapGridOffsetX = settings.value( QStringLiteral( "/Composer/defaultSnapGridOffsetX" ), 0 ).toDouble();
-  mSnapGridOffsetY = settings.value( QStringLiteral( "/Composer/defaultSnapGridOffsetY" ), 0 ).toDouble();
-  mSnapTolerance = settings.value( QStringLiteral( "/Composer/defaultSnapTolerancePixels" ), 5 ).toInt();
+  mSnapGridResolution = settings.value( QStringLiteral( "Composer/defaultSnapGridResolution" ), 10.0 ).toDouble();
+  mSnapGridOffsetX = settings.value( QStringLiteral( "Composer/defaultSnapGridOffsetX" ), 0 ).toDouble();
+  mSnapGridOffsetY = settings.value( QStringLiteral( "Composer/defaultSnapGridOffsetY" ), 0 ).toDouble();
+  mSnapTolerance = settings.value( QStringLiteral( "Composer/defaultSnapTolerancePixels" ), 5 ).toInt();
 }
 
 void QgsComposition::updateBounds()

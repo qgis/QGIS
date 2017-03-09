@@ -677,13 +677,13 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Ru
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/QgsRendererRulePropsDialog/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/QgsRendererRulePropsDialog/geometry" ) ).toByteArray() );
 }
 
 QgsRendererRulePropsDialog::~QgsRendererRulePropsDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/QgsRendererRulePropsDialog/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/QgsRendererRulePropsDialog/geometry" ), saveGeometry() );
 }
 
 void QgsRendererRulePropsDialog::testFilter()

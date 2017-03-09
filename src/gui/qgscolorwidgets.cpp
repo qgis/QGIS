@@ -1430,7 +1430,7 @@ QgsColorTextWidget::QgsColorTextWidget( QWidget *parent )
 
   //restore format setting
   QgsSettings settings;
-  mFormat = ( ColorTextFormat )settings.value( QStringLiteral( "/ColorWidgets/textWidgetFormat" ), 0 ).toInt();
+  mFormat = ( ColorTextFormat )settings.value( QStringLiteral( "ColorWidgets/textWidgetFormat" ), 0 ).toInt();
 
   updateText();
 }
@@ -1529,7 +1529,7 @@ void QgsColorTextWidget::showMenu()
 
   //save format setting
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/ColorWidgets/textWidgetFormat" ), ( int )mFormat );
+  settings.setValue( QStringLiteral( "ColorWidgets/textWidgetFormat" ), ( int )mFormat );
 
   updateText();
 }

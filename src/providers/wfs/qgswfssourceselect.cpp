@@ -90,10 +90,10 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, boo
 
   QgsSettings settings;
   QgsDebugMsg( "restoring settings" );
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/WFSSourceSelect/geometry" ) ).toByteArray() );
-  cbxUseTitleLayerName->setChecked( settings.value( QStringLiteral( "/Windows/WFSSourceSelect/UseTitleLayerName" ), false ).toBool() );
-  cbxFeatureCurrentViewExtent->setChecked( settings.value( QStringLiteral( "/Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), true ).toBool() );
-  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "/Windows/WFSSourceSelect/HoldDialogOpen" ), false ).toBool() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/WFSSourceSelect/geometry" ) ).toByteArray() );
+  cbxUseTitleLayerName->setChecked( settings.value( QStringLiteral( "Windows/WFSSourceSelect/UseTitleLayerName" ), false ).toBool() );
+  cbxFeatureCurrentViewExtent->setChecked( settings.value( QStringLiteral( "Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), true ).toBool() );
+  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "Windows/WFSSourceSelect/HoldDialogOpen" ), false ).toBool() );
 
   mModel = new QStandardItemModel();
   mModel->setHorizontalHeaderItem( MODEL_IDX_TITLE, new QStandardItem( QStringLiteral( "Title" ) ) );
@@ -114,10 +114,10 @@ QgsWFSSourceSelect::~QgsWFSSourceSelect()
 {
   QgsSettings settings;
   QgsDebugMsg( "saving settings" );
-  settings.setValue( QStringLiteral( "/Windows/WFSSourceSelect/geometry" ), saveGeometry() );
-  settings.setValue( QStringLiteral( "/Windows/WFSSourceSelect/UseTitleLayerName" ), cbxUseTitleLayerName->isChecked() );
-  settings.setValue( QStringLiteral( "/Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), cbxFeatureCurrentViewExtent->isChecked() );
-  settings.setValue( QStringLiteral( "/Windows/WFSSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
+  settings.setValue( QStringLiteral( "Windows/WFSSourceSelect/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/WFSSourceSelect/UseTitleLayerName" ), cbxUseTitleLayerName->isChecked() );
+  settings.setValue( QStringLiteral( "Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), cbxFeatureCurrentViewExtent->isChecked() );
+  settings.setValue( QStringLiteral( "Windows/WFSSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
 
   delete mItemDelegate;
   delete mProjectionSelector;

@@ -56,14 +56,14 @@ QgsGrassSelect::QgsGrassSelect( QWidget *parent, int type )
     else
     {
       QgsSettings settings;
-      sLastGisdbase = settings.value( QStringLiteral( "/GRASS/lastGisdbase" ) ).toString();
+      sLastGisdbase = settings.value( QStringLiteral( "GRASS/lastGisdbase" ) ).toString();
       //check we got something from qsettings otherwise default to users home dir
       if ( sLastGisdbase.isEmpty() )
       {
         QDir home = QDir::home();
         sLastGisdbase = QString( home.path() );
       }
-      sLastMapset = settings.value( QStringLiteral( "/GRASS/lastMapset" ) ).toString();
+      sLastMapset = settings.value( QStringLiteral( "GRASS/lastMapset" ) ).toString();
     }
     sFirst = false;
   }
@@ -425,7 +425,7 @@ void QgsGrassSelect::accept()
 
   //write to qgsettings as gisdbase seems to be valid
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/GRASS/lastGisdbase" ), sLastGisdbase );
+  settings.setValue( QStringLiteral( "GRASS/lastGisdbase" ), sLastGisdbase );
 
   location = elocation->currentText();
   sLastLocation = location;
@@ -433,7 +433,7 @@ void QgsGrassSelect::accept()
   mapset = emapset->currentText();
   sLastMapset = mapset;
 
-  settings.setValue( QStringLiteral( "/GRASS/lastMapset" ), sLastMapset );
+  settings.setValue( QStringLiteral( "GRASS/lastMapset" ), sLastMapset );
 
   map = emap->currentText().trimmed();
 

@@ -542,7 +542,7 @@ void QgsBrowserModel::removeFavorite( const QModelIndex &index )
 void QgsBrowserModel::hidePath( QgsDataItem *item )
 {
   QgsSettings settings;
-  QStringList hiddenItems = settings.value( QStringLiteral( "/browser/hiddenPaths" ),
+  QStringList hiddenItems = settings.value( QStringLiteral( "browser/hiddenPaths" ),
                             QStringList() ).toStringList();
   int idx = hiddenItems.indexOf( item->path() );
   if ( idx != -1 )
@@ -553,7 +553,7 @@ void QgsBrowserModel::hidePath( QgsDataItem *item )
   {
     hiddenItems << item->path();
   }
-  settings.setValue( QStringLiteral( "/browser/hiddenPaths" ), hiddenItems );
+  settings.setValue( QStringLiteral( "browser/hiddenPaths" ), hiddenItems );
   if ( item->parent() )
   {
     item->parent()->deleteChildItem( item );

@@ -163,11 +163,11 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
   connect( dock, SIGNAL( visibilityChanged( bool ) ), tws, SLOT( scaleEnabled( bool ) ) );
 
   QgsSettings settings;
-  dock->setVisible( settings.value( QStringLiteral( "/UI/tileScaleEnabled" ), false ).toBool() );
+  dock->setVisible( settings.value( QStringLiteral( "UI/tileScaleEnabled" ), false ).toBool() );
 }
 
 void QgsTileScaleWidget::scaleEnabled( bool enabled )
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/UI/tileScaleEnabled" ), enabled );
+  settings.setValue( QStringLiteral( "UI/tileScaleEnabled" ), enabled );
 }

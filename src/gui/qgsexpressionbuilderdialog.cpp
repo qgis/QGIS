@@ -32,7 +32,7 @@ QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, c
   builder->loadRecent( mRecentKey );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/ExpressionBuilderDialog/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/ExpressionBuilderDialog/geometry" ) ).toByteArray() );
 }
 
 QgsExpressionBuilderWidget *QgsExpressionBuilderDialog::expressionBuilder()
@@ -65,7 +65,7 @@ void QgsExpressionBuilderDialog::done( int r )
   QDialog::done( r );
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/ExpressionBuilderDialog/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/ExpressionBuilderDialog/geometry" ), saveGeometry() );
 }
 
 void QgsExpressionBuilderDialog::accept()

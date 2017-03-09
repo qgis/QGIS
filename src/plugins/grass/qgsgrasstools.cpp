@@ -622,14 +622,14 @@ void QgsGrassTools::closeEvent( QCloseEvent *e )
 void QgsGrassTools::restorePosition()
 {
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/GRASS/windows/tools/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "GRASS/windows/tools/geometry" ) ).toByteArray() );
   show();
 }
 
 void QgsGrassTools::saveWindowLocation()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/GRASS/windows/tools/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "GRASS/windows/tools/geometry" ), saveGeometry() );
 }
 
 void QgsGrassTools::emitRegionChanged()

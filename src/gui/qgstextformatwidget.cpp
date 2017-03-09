@@ -254,10 +254,10 @@ void QgsTextFormatWidget::initWidget()
   connect( mLabelStackedWidget, SIGNAL( currentChanged( int ) ), this, SLOT( optionsStackedWidget_CurrentChanged( int ) ) );
 
   // restore dialog, splitters and current tab
-  mFontPreviewSplitter->restoreState( settings.value( QStringLiteral( "/Windows/Labeling/FontPreviewSplitState" ) ).toByteArray() );
-  mLabelingOptionsSplitter->restoreState( settings.value( QStringLiteral( "/Windows/Labeling/OptionsSplitState" ) ).toByteArray() );
+  mFontPreviewSplitter->restoreState( settings.value( QStringLiteral( "Windows/Labeling/FontPreviewSplitState" ) ).toByteArray() );
+  mLabelingOptionsSplitter->restoreState( settings.value( QStringLiteral( "Windows/Labeling/OptionsSplitState" ) ).toByteArray() );
 
-  mLabelingOptionsListWidget->setCurrentRow( settings.value( QStringLiteral( "/Windows/Labeling/Tab" ), 0 ).toInt() );
+  mLabelingOptionsListWidget->setCurrentRow( settings.value( QStringLiteral( "Windows/Labeling/Tab" ), 0 ).toInt() );
 
   setDockMode( false );
 
@@ -706,9 +706,9 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
 QgsTextFormatWidget::~QgsTextFormatWidget()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/Labeling/FontPreviewSplitState" ), mFontPreviewSplitter->saveState() );
-  settings.setValue( QStringLiteral( "/Windows/Labeling/OptionsSplitState" ), mLabelingOptionsSplitter->saveState() );
-  settings.setValue( QStringLiteral( "/Windows/Labeling/Tab" ), mLabelingOptionsListWidget->currentRow() );
+  settings.setValue( QStringLiteral( "Windows/Labeling/FontPreviewSplitState" ), mFontPreviewSplitter->saveState() );
+  settings.setValue( QStringLiteral( "Windows/Labeling/OptionsSplitState" ), mLabelingOptionsSplitter->saveState() );
+  settings.setValue( QStringLiteral( "Windows/Labeling/Tab" ), mLabelingOptionsListWidget->currentRow() );
 }
 
 QgsTextFormat QgsTextFormatWidget::format() const
@@ -1414,7 +1414,7 @@ QgsTextFormatDialog::QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCan
   setLayout( layout );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/TextFormatDialog/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/TextFormatDialog/geometry" ) ).toByteArray() );
 
   connect( buttonBox->button( QDialogButtonBox::Ok ), SIGNAL( clicked() ), this, SLOT( accept() ) );
   connect( buttonBox->button( QDialogButtonBox::Cancel ), SIGNAL( clicked() ), this, SLOT( reject() ) );
@@ -1423,7 +1423,7 @@ QgsTextFormatDialog::QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCan
 QgsTextFormatDialog::~QgsTextFormatDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/TextFormatDialog/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/TextFormatDialog/geometry" ), saveGeometry() );
 }
 
 QgsTextFormat QgsTextFormatDialog::format() const

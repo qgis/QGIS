@@ -136,13 +136,13 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
   setOkButtonState();
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/QgsFieldCalculator/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/QgsFieldCalculator/geometry" ) ).toByteArray() );
 }
 
 QgsFieldCalculator::~QgsFieldCalculator()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/QgsFieldCalculator/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/QgsFieldCalculator/geometry" ), saveGeometry() );
 }
 
 void QgsFieldCalculator::accept()

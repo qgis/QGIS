@@ -123,7 +123,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString &title )
   QgsSettings settings;
   setStyleSheet( mQgis->styleSheet() );
 
-  int size = settings.value( QStringLiteral( "/IconSize" ), QGIS_ICON_SIZE ).toInt();
+  int size = settings.value( QStringLiteral( "IconSize" ), QGIS_ICON_SIZE ).toInt();
   setIconSize( QSize( size, size ) );
 
   QToolButton *orderingToolButton = new QToolButton( this );
@@ -537,7 +537,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString &title )
 
   //initial state of rulers
   QgsSettings myQSettings;
-  bool showRulers = myQSettings.value( QStringLiteral( "/Composer/showRulers" ), true ).toBool();
+  bool showRulers = myQSettings.value( QStringLiteral( "Composer/showRulers" ), true ).toBool();
   mActionShowRulers->blockSignals( true );
   mActionShowRulers->setChecked( showRulers );
   mHorizontalRuler->setVisible( showRulers );
@@ -1420,7 +1420,7 @@ void QgsComposer::toggleRulers( bool checked )
   mRulerLayoutFix->setVisible( checked );
 
   QgsSettings myQSettings;
-  myQSettings.setValue( QStringLiteral( "/Composer/showRulers" ), checked );
+  myQSettings.setValue( QStringLiteral( "Composer/showRulers" ), checked );
 }
 
 void QgsComposer::on_mActionAtlasSettings_triggered()
@@ -1670,7 +1670,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
   if ( mode == QgsComposer::Single || ( mode == QgsComposer::Atlas && atlasOnASingleFile ) )
   {
     QgsSettings myQSettings;  // where we keep last used filter in persistent state
-    QString lastUsedFile = myQSettings.value( QStringLiteral( "/UI/lastSaveAsPdfFile" ), "qgis.pdf" ).toString();
+    QString lastUsedFile = myQSettings.value( QStringLiteral( "UI/lastSaveAsPdfFile" ), "qgis.pdf" ).toString();
     QFileInfo file( lastUsedFile );
 
     if ( hasAnAtlas && !atlasOnASingleFile &&
@@ -1702,7 +1702,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
       outputFileName += QLatin1String( ".pdf" );
     }
 
-    myQSettings.setValue( QStringLiteral( "/UI/lastSaveAsPdfFile" ), outputFileName );
+    myQSettings.setValue( QStringLiteral( "UI/lastSaveAsPdfFile" ), outputFileName );
   }
   // else, we need to choose a directory
   else
@@ -1721,7 +1721,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
     }
 
     QgsSettings myQSettings;
-    QString lastUsedDir = myQSettings.value( QStringLiteral( "/UI/lastSaveAtlasAsPdfDir" ), QDir::homePath() ).toString();
+    QString lastUsedDir = myQSettings.value( QStringLiteral( "UI/lastSaveAtlasAsPdfDir" ), QDir::homePath() ).toString();
     outputDir = QFileDialog::getExistingDirectory( this,
                 tr( "Export atlas to directory" ),
                 lastUsedDir,
@@ -1740,7 +1740,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
       return;
     }
 
-    myQSettings.setValue( QStringLiteral( "/UI/lastSaveAtlasAsPdfDir" ), outputDir );
+    myQSettings.setValue( QStringLiteral( "UI/lastSaveAtlasAsPdfDir" ), outputDir );
   }
 
   mView->setPaintingEnabled( false );
@@ -2064,7 +2064,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
 
     if ( atlasMap->enabled() && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
     {
-      QString lastUsedDir = settings.value( QStringLiteral( "/UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
+      QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
       outputFileName = QDir( lastUsedDir ).filePath( atlasMap->currentFilename() );
     }
 
@@ -2215,8 +2215,8 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     }
 
     QgsSettings myQSettings;
-    QString lastUsedDir = myQSettings.value( QStringLiteral( "/UI/lastSaveAtlasAsImagesDir" ), QDir::homePath() ).toString();
-    QString lastUsedFormat = myQSettings.value( QStringLiteral( "/UI/lastSaveAtlasAsImagesFormat" ), "jpg" ).toString();
+    QString lastUsedDir = myQSettings.value( QStringLiteral( "UI/lastSaveAtlasAsImagesDir" ), QDir::homePath() ).toString();
+    QString lastUsedFormat = myQSettings.value( QStringLiteral( "UI/lastSaveAtlasAsImagesFormat" ), "jpg" ).toString();
 
     QFileDialog dlg( this, tr( "Export atlas to directory" ) );
     dlg.setFileMode( QFileDialog::Directory );
@@ -2286,7 +2286,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     mComposition->setCustomProperty( QStringLiteral( "imageCropMarginBottom" ), marginBottom );
     mComposition->setCustomProperty( QStringLiteral( "imageCropMarginLeft" ), marginLeft );
 
-    myQSettings.setValue( QStringLiteral( "/UI/lastSaveAtlasAsImagesDir" ), dir );
+    myQSettings.setValue( QStringLiteral( "UI/lastSaveAtlasAsImagesDir" ), dir );
 
     // So, now we can render the atlas
     mView->setPaintingEnabled( false );
@@ -2526,7 +2526,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
 
   if ( mode == QgsComposer::Single )
   {
-    QString lastUsedFile = settings.value( QStringLiteral( "/UI/lastSaveAsSvgFile" ), "qgis.svg" ).toString();
+    QString lastUsedFile = settings.value( QStringLiteral( "UI/lastSaveAsSvgFile" ), "qgis.svg" ).toString();
     QFileInfo file( lastUsedFile );
 
     if ( atlasMap->enabled() && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
@@ -2558,7 +2558,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
       outputFileName += QLatin1String( ".svg" );
     }
 
-    settings.setValue( QStringLiteral( "/UI/lastSaveAsSvgFile" ), outputFileName );
+    settings.setValue( QStringLiteral( "UI/lastSaveAsSvgFile" ), outputFileName );
   }
   else
   {
@@ -2577,7 +2577,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
     }
 
     QgsSettings myQSettings;
-    QString lastUsedDir = myQSettings.value( QStringLiteral( "/UI/lastSaveAtlasAsSvgDir" ), QDir::homePath() ).toString();
+    QString lastUsedDir = myQSettings.value( QStringLiteral( "UI/lastSaveAtlasAsSvgDir" ), QDir::homePath() ).toString();
 
     // open file dialog
     outputDir = QFileDialog::getExistingDirectory( this,
@@ -2598,7 +2598,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
                             QMessageBox::Ok );
       return;
     }
-    myQSettings.setValue( QStringLiteral( "/UI/lastSaveAtlasAsSvgDir" ), outputDir );
+    myQSettings.setValue( QStringLiteral( "UI/lastSaveAtlasAsSvgDir" ), outputDir );
   }
 
   // open options dialog
@@ -3443,9 +3443,9 @@ void QgsComposer::showEvent( QShowEvent *event )
 void QgsComposer::saveWindowState()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Composer/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Composer/geometry" ), saveGeometry() );
   // store the toolbar/dock widget settings using Qt4 settings API
-  settings.setValue( QStringLiteral( "/ComposerUI/state" ), saveState() );
+  settings.setValue( QStringLiteral( "ComposerUI/state" ), saveState() );
 }
 
 #include "ui_defaults.h"
@@ -3455,12 +3455,12 @@ void QgsComposer::restoreWindowState()
   // restore the toolbar and dock widgets positions using Qt4 settings API
   QgsSettings settings;
 
-  if ( !restoreState( settings.value( QStringLiteral( "/ComposerUI/state" ), QByteArray::fromRawData( ( char * )defaultComposerUIstate, sizeof defaultComposerUIstate ) ).toByteArray() ) )
+  if ( !restoreState( settings.value( QStringLiteral( "ComposerUI/state" ), QByteArray::fromRawData( ( char * )defaultComposerUIstate, sizeof defaultComposerUIstate ) ).toByteArray() ) )
   {
     QgsDebugMsg( "restore of composer UI state failed" );
   }
   // restore window geometry
-  if ( !restoreGeometry( settings.value( QStringLiteral( "/Composer/geometry" ), QByteArray::fromRawData( ( char * )defaultComposerUIgeometry, sizeof defaultComposerUIgeometry ) ).toByteArray() ) )
+  if ( !restoreGeometry( settings.value( QStringLiteral( "Composer/geometry" ), QByteArray::fromRawData( ( char * )defaultComposerUIgeometry, sizeof defaultComposerUIgeometry ) ).toByteArray() ) )
   {
     QgsDebugMsg( "restore of composer UI geometry failed" );
   }

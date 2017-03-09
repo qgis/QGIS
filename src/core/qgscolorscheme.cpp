@@ -50,7 +50,7 @@ QgsNamedColorList QgsRecentColorScheme::fetchColors( const QString &context, con
 
   //fetch recent colors
   QgsSettings settings;
-  QList< QVariant > recentColorVariants = settings.value( QStringLiteral( "/colors/recent" ) ).toList();
+  QList< QVariant > recentColorVariants = settings.value( QStringLiteral( "colors/recent" ) ).toList();
 
   //generate list from recent colors
   QgsNamedColorList colorList;
@@ -78,7 +78,7 @@ void QgsRecentColorScheme::addRecentColor( const QColor &color )
   opaqueColor.setAlpha( 255 );
 
   QgsSettings settings;
-  QList< QVariant > recentColorVariants = settings.value( QStringLiteral( "/colors/recent" ) ).toList();
+  QList< QVariant > recentColorVariants = settings.value( QStringLiteral( "colors/recent" ) ).toList();
 
   //remove colors by name
   for ( int colorIdx = recentColorVariants.length() - 1; colorIdx >= 0; --colorIdx )
@@ -99,14 +99,14 @@ void QgsRecentColorScheme::addRecentColor( const QColor &color )
     recentColorVariants.pop_back();
   }
 
-  settings.setValue( QStringLiteral( "/colors/recent" ), recentColorVariants );
+  settings.setValue( QStringLiteral( "colors/recent" ), recentColorVariants );
 }
 
 QColor QgsRecentColorScheme::lastUsedColor()
 {
   //fetch recent colors
   QgsSettings settings;
-  QList< QVariant > recentColorVariants = settings.value( QStringLiteral( "/colors/recent" ) ).toList();
+  QList< QVariant > recentColorVariants = settings.value( QStringLiteral( "colors/recent" ) ).toList();
 
   if ( recentColorVariants.isEmpty() )
     return QColor();
@@ -147,8 +147,8 @@ QgsNamedColorList QgsCustomColorScheme::fetchColors( const QString &context, con
     return colorList;
   }
 
-  QList< QVariant > customColorVariants = settings.value( QStringLiteral( "/colors/palettecolors" ) ).toList();
-  QList< QVariant > customColorLabels = settings.value( QStringLiteral( "/colors/palettelabels" ) ).toList();
+  QList< QVariant > customColorVariants = settings.value( QStringLiteral( "colors/palettecolors" ) ).toList();
+  QList< QVariant > customColorLabels = settings.value( QStringLiteral( "colors/palettelabels" ) ).toList();
 
   //generate list from custom colors
   int colorIndex = 0;
@@ -187,8 +187,8 @@ bool QgsCustomColorScheme::setColors( const QgsNamedColorList &colors, const QSt
     customColors.append( color );
     customColorLabels.append( label );
   }
-  settings.setValue( QStringLiteral( "/colors/palettecolors" ), customColors );
-  settings.setValue( QStringLiteral( "/colors/palettelabels" ), customColorLabels );
+  settings.setValue( QStringLiteral( "colors/palettecolors" ), customColors );
+  settings.setValue( QStringLiteral( "colors/palettelabels" ), customColorLabels );
   return true;
 }
 

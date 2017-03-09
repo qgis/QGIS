@@ -598,7 +598,7 @@ void QgsGrassModuleOption::browse( bool checked )
   Q_UNUSED( checked );
 
   QgsSettings settings;
-  QString lastDir = settings.value( QStringLiteral( "/GRASS/lastDirectOutputDir" ), "" ).toString();
+  QString lastDir = settings.value( QStringLiteral( "GRASS/lastDirectOutputDir" ), "" ).toString();
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Output file" ), lastDir, tr( "GeoTIFF" ) + " (*.tif)" );
   if ( !fileName.isEmpty() )
   {
@@ -607,7 +607,7 @@ void QgsGrassModuleOption::browse( bool checked )
       fileName = fileName + ".tif";
     }
     mLineEdits.at( 0 )->setText( fileName );
-    settings.setValue( QStringLiteral( "/GRASS/lastDirectOutputDir" ),  QFileInfo( fileName ).absolutePath() );
+    settings.setValue( QStringLiteral( "GRASS/lastDirectOutputDir" ),  QFileInfo( fileName ).absolutePath() );
   }
 }
 

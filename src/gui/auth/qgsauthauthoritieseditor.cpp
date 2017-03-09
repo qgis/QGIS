@@ -788,5 +788,5 @@ QgsMessageBar *QgsAuthAuthoritiesEditor::messageBar()
 int QgsAuthAuthoritiesEditor::messageTimeout()
 {
   QgsSettings settings;
-  return settings.value( QStringLiteral( "/qgis/messageTimeout" ), 5 ).toInt();
+  return settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
 }
