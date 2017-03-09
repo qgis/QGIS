@@ -248,12 +248,25 @@ QList<QgsMapLayer *> QgsMapThemeCollection::mapThemeVisibleLayers( const QString
 {
   QList<QgsMapLayer *> layers;
   const QList<MapThemeLayerRecord> &recs = mMapThemes.value( name ).mLayerRecords;
-  Q_FOREACH ( QgsMapLayer *layer, masterLayerOrder() )
+  QList<QgsMapLayer *> layerOrder = masterLayerOrder();
+  if ( layerOrder.isEmpty() )
   {
-    Q_FOREACH ( const MapThemeLayerRecord &layerRec, recs )
+    // no master layer order - so we have to just use the stored theme layer order as a fallback
+    Q_FOREACH ( const MapThemeLayerRecord &layerRec, mMapThemes.value( name ).mLayerRecords )
     {
-      if ( layerRec.layer() == layer )
+      if ( layerRec.layer() )
         layers << layerRec.layer();
+    }
+  }
+  else
+  {
+    Q_FOREACH ( QgsMapLayer *layer, layerOrder )
+    {
+      Q_FOREACH ( const MapThemeLayerRecord &layerRec, recs )
+      {
+        if ( layerRec.layer() == layer )
+          layers << layerRec.layer();
+      }
     }
   }
 

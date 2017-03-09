@@ -168,6 +168,12 @@ class TestQgsMapThemeCollection(unittest.TestCase):
                          [layer.id(), layer2.id(), layer3.id()])
         self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme3'), [layer.id(), layer2.id()])
 
+        # no layer order - should use stored order as a last resort
+        prj.setLayerOrder([])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme1'), [layer3, layer])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme2'), [layer3, layer2, layer])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme3'), [layer2, layer])
+
 
 if __name__ == '__main__':
     unittest.main()
