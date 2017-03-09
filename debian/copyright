@@ -125,82 +125,9 @@ License: public-domain
  is used when saving/restoring a QGIS project.
  This file is in the public domain
 
-Files: python/ext-libs/dateutil/*
-Copyright: 2003-2010, Gustavo Niemeyer <gustavo@niemeyer.net>
-License: BSD-3-Clause
-
-Files: python/ext-libs/httplib2/*
-Copyright: 2006, 2012, Joe Gregorio <joe@bitworking.org>
-License: GPL-2+
-
-Files: python/ext-libs/httplib2/socks.py
-Copyright: 2006, Dan-Haim
-License: BSD-2-Clause
-
-Files: python/ext-libs/jinja2/*
-Copyright: 2006-2010, the Jinja Team
-License: BSD-3-Clause
-
-Files: python/ext-libs/markupsafe/*
-Copyright: 2010, 2013, Armin Ronacher
-License: BSD-3-Clause
-
-Files: python/ext-libs/nose2/*
-Copyright: Jason Pellerin <jpellerin+nose@gmail.com>
-License: BSD-2-Clause
-
-Files: python/ext-libs/nose2/events.py
- python/ext-libs/nose2/exceptions.py
- python/ext-libs/nose2/loader.py
- python/ext-libs/nose2/runner.py
- python/ext-libs/nose2/tools/params.py
- python/ext-libs/nose2/util.py
-Copyright: 2001-2010, Python Software Foundation
-License: Python-2.0
-
-Files: python/ext-libs/nose2/backports/ordereddict.py
-Copyright: Python Software Foundation
-License: MIT
-
-Files: python/ext-libs/owslib/*
-Copyright: 2006, Ancient World Mapping Center
-      2008-2013, Tom Kralidis
-           2013, Christian Ledermann <christian.ledermann@gmail.com>
-           2012, Brad Hards <bradh@frogmouth.net>
-           2012, Jachym Cepicky
-      2007-2009, STFC <http://www.stfc.ac.uk>
-      2004-2006, Sean C. Gillies
-           2005, Nuxeo SARL <http://nuxeo.com>
-License: BSD-3-Clause
-
-Files: python/ext-libs/pygments/*
-Copyright: 2006-2013, the Pygments team
-License: BSD-2-Clause
-
-Files: python/ext-libs/pygments/lexers/_robotframeworklexer.py
-Copyright: 2006-2013, the Pygments team
-                2012, Nokia Siemens Networks Oyj
-License: BSD-2-Clause and Apache-2.0
-
 Files: python/ext-libs/pyspatialite/*
 Copyright: 2004-2010, Gerhard Häring <gh@ghaering.de>
 License: Zlib
-
-Files: python/ext-libs/pytz/*
-Copyright: 2003-2009, Stuart Bishop <stuart@stuartbishop.net>
-License: MIT
-
-Files: python/ext-libs/six.py
-Copyright: 2010-2015, Benjamin Peterson
-License: MIT
-
-Files: python/ext-libs/yaml/*
-Copyright: 2006, Kirill Simonov <xi@resolvent.net>
-License: MIT
-
-Files: python/plugins/GdalTools/*
-Copyright: 2009, Faunalia
-License: MIT
 
 Files: python/plugins/processing/modeler/ModelerArrowItem.py
  src/app/qgssettingstree.cpp
