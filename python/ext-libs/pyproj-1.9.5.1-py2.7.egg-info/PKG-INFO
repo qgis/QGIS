@@ -1,0 +1,24 @@
+Metadata-Version: 1.1
+Name: pyproj
+Version: 1.9.5.1
+Summary: Python interface to PROJ.4 library
+Home-page: https://github.com/jswhit/pyproj
+Author: Jeff Whitaker
+Author-email: jeffrey.s.whitaker@noaa.gov
+License: OSI Approved
+Download-URL: http://python.org/pypi/pyproj
+Description: 
+        Performs cartographic transformations between geographic (lat/lon)
+        and map projection (x/y) coordinates. Can also transform directly
+        from one map projection coordinate system to another.
+        Coordinates can be given as numpy arrays, python arrays, lists or scalars.
+        Optimized for numpy arrays.
+Keywords: python,map projections,GIS,mapping,maps
+Platform: any
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Scientific/Engineering :: GIS
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Classifier: Operating System :: OS Independent

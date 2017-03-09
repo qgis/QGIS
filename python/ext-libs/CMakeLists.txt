@@ -37,7 +37,7 @@ ENDMACRO(EXT_PYLIB lib)
 # Fallback to system package by default
 EXT_PYLIB(yaml FALSE)
 
-FOREACH(pkg httplib2 jinja2 markupsafe owslib pygments dateutil pytz nose2 requests)
+FOREACH(pkg httplib2 jinja2 markupsafe owslib pygments dateutil pytz nose2 requests pyproj)
   EXT_PYLIB(${pkg} TRUE)
 ENDFOREACH(pkg)
 
@@ -61,4 +61,3 @@ IF(WITH_INTERNAL_SIX)
   )
 
 ENDIF(WITH_INTERNAL_SIX)
-
