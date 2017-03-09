@@ -242,6 +242,13 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      */
     void setProject( QgsProject *project );
 
+    /**
+     * Returns the master layer order (this will always match the project's QgsProject::layerOrder() ).
+     * All map themes will maintain the same layer order as the master layer order.
+     * @note added in QGIS 3.0
+     */
+    QList< QgsMapLayer * > masterLayerOrder() const;
+
   signals:
 
     /**

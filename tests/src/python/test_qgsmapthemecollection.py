@@ -97,6 +97,58 @@ class TestQgsMapThemeCollection(unittest.TestCase):
         app.processEvents()
         self.assertEqual(len(theme_changed_spy), 6) # signal should be emitted - layer is in record
 
+    def testMasterLayerOrder(self):
+        """ test master layer order"""
+        prj = QgsProject()
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer1", "memory")
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer2", "memory")
+        layer3 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer3", "memory")
+        prj.addMapLayers([layer, layer2, layer3])
+
+        prj.setLayerOrder([layer2, layer])
+        self.assertEqual(prj.mapThemeCollection().masterLayerOrder(), [layer2, layer])
+
+        prj.setLayerOrder([layer, layer2, layer3])
+        # make some themes...
+        theme1 = QgsMapThemeCollection.MapThemeRecord()
+        theme1.setLayerRecords([QgsMapThemeCollection.MapThemeLayerRecord(layer3),
+                                QgsMapThemeCollection.MapThemeLayerRecord(layer)])
+
+        theme2 = QgsMapThemeCollection.MapThemeRecord()
+        theme2.setLayerRecords([QgsMapThemeCollection.MapThemeLayerRecord(layer3),
+                                QgsMapThemeCollection.MapThemeLayerRecord(layer2),
+                                QgsMapThemeCollection.MapThemeLayerRecord(layer)])
+
+        theme3 = QgsMapThemeCollection.MapThemeRecord()
+        theme3.setLayerRecords([QgsMapThemeCollection.MapThemeLayerRecord(layer2),
+                                QgsMapThemeCollection.MapThemeLayerRecord(layer)])
+
+        prj.mapThemeCollection().insert('theme1', theme1)
+        prj.mapThemeCollection().insert('theme2', theme2)
+        prj.mapThemeCollection().insert('theme3', theme3)
+
+        #order of layers in theme should respect master order
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme1'), [layer, layer3])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme2'), [layer, layer2, layer3])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme3'), [layer, layer2])
+
+        # also check ids!
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme1'), [layer.id(), layer3.id()])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme2'), [layer.id(), layer2.id(), layer3.id()])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme3'), [layer.id(), layer2.id()])
+
+        # reset master order
+        prj.setLayerOrder([layer2, layer3, layer])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme1'), [layer3, layer])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme2'), [layer2, layer3, layer])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme3'), [layer2, layer])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme1'), [layer3.id(), layer.id()])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme2'), [layer2.id(), layer3.id(), layer.id()])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme3'), [layer2.id(), layer.id()])
+
 
 if __name__ == '__main__':
     unittest.main()

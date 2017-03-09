@@ -175,6 +175,14 @@ void QgsMapThemeCollection::setProject( QgsProject *project )
   emit projectChanged();
 }
 
+QList<QgsMapLayer *> QgsMapThemeCollection::masterLayerOrder() const
+{
+  if ( !mProject )
+    return QList< QgsMapLayer * >();
+
+  return mProject->layerOrder();
+}
+
 
 bool QgsMapThemeCollection::hasMapTheme( const QString &name ) const
 {
@@ -229,23 +237,26 @@ QStringList QgsMapThemeCollection::mapThemes() const
 QStringList QgsMapThemeCollection::mapThemeVisibleLayerIds( const QString &name ) const
 {
   QStringList layerIds;
-  Q_FOREACH ( const MapThemeLayerRecord &layerRec, mMapThemes.value( name ).mLayerRecords )
+  Q_FOREACH ( QgsMapLayer *layer, mapThemeVisibleLayers( name ) )
   {
-    if ( layerRec.layer() )
-      layerIds << layerRec.layer()->id();
+    layerIds << layer->id();
   }
   return layerIds;
 }
 
-
 QList<QgsMapLayer *> QgsMapThemeCollection::mapThemeVisibleLayers( const QString &name ) const
 {
   QList<QgsMapLayer *> layers;
-  Q_FOREACH ( const MapThemeLayerRecord &layerRec, mMapThemes.value( name ).mLayerRecords )
+  const QList<MapThemeLayerRecord> &recs = mMapThemes.value( name ).mLayerRecords;
+  Q_FOREACH ( QgsMapLayer *layer, masterLayerOrder() )
   {
-    if ( layerRec.layer() )
-      layers << layerRec.layer();
+    Q_FOREACH ( const MapThemeLayerRecord &layerRec, recs )
+    {
+      if ( layerRec.layer() == layer )
+        layers << layerRec.layer();
+    }
   }
+
   return layers;
 }
 
