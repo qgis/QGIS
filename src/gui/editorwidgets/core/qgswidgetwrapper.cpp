@@ -19,12 +19,18 @@
 #include <QWidget>
 
 
-QgsPropertiesDefinition QgsWidgetWrapper::sPropertyDefinitions;
-
 const QgsPropertiesDefinition &QgsWidgetWrapper::propertyDefinitions()
 {
-  QgsWidgetWrapper::initPropertyDefinitions();
-  return sPropertyDefinitions;
+  static QgsPropertiesDefinition properties;
+
+  if ( properties.isEmpty() )
+  {
+    properties =
+    {
+      { RootPath, QgsPropertyDefinition( "propertyRootPath", QgsPropertyDefinition::DataTypeString, QObject::tr( "Root path" ), QString() ) }
+    };
+  }
+  return properties;
 }
 
 QgsWidgetWrapper::QgsWidgetWrapper( QgsVectorLayer *vl, QWidget *editor, QWidget *parent )
@@ -98,15 +104,4 @@ void QgsWidgetWrapper::initWidget( QWidget *editor )
 void QgsWidgetWrapper::setEnabled( bool enabled )
 {
   Q_UNUSED( enabled );
-}
-
-void QgsWidgetWrapper::initPropertyDefinitions()
-{
-  if ( !sPropertyDefinitions.isEmpty() )
-    return;
-
-  sPropertyDefinitions = QgsPropertiesDefinition
-  {
-    { RootPath, QgsPropertyDefinition( "propertyRootPath", QgsPropertyDefinition::DataTypeString, QObject::tr( "Root path" ), QString() ) }
-  };
 }

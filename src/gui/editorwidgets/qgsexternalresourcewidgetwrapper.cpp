@@ -87,7 +87,6 @@ void QgsExternalResourceWidgetWrapper::setFeature( const QgsFeature &feature )
     QString path = mPropertyCollection.valueAsString( QgsEditorWidgetWrapper::RootPath, expressionContext, QString(), &ok );
     if ( ok )
     {
-      qWarning() << "Default root << " << path;
       mQgsWidget->setDefaultRoot( path );
     }
   }
@@ -132,7 +131,7 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget *editor )
       mQgsWidget->fileWidget()->setFullUrl( cfg.value( QStringLiteral( "FullUrl" ) ).toBool() );
     }
 
-    qWarning() << "Default root style " << cfg.value( QStringLiteral( "DefaultRootStyle" ) );
+    mPropertyCollection.loadVariant( cfg.value( "PropertyCollection" ), propertyDefinitions() );
     if ( !mPropertyCollection.isActive( QgsWidgetWrapper::RootPath ) )
     {
       mQgsWidget->setDefaultRoot( cfg.value( QStringLiteral( "DefaultRoot" ) ).toString() );
