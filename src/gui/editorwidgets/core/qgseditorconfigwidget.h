@@ -92,10 +92,10 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget, public QgsExpressionCon
      */
     void initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsWidgetWrapper::Property key );
 
+  private:
     //! Temporary property collection for config widgets
     QgsPropertyCollection mPropertyCollection;
 
-  private:
     QgsVectorLayer *mLayer = nullptr;
     int mField;
 };

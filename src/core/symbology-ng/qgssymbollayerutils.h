@@ -364,8 +364,20 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QDomElement saveColorRamp( const QString &name, QgsColorRamp *ramp, QDomDocument &doc );
 
+    /**
+     * Saves a color ramp to a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::writeVariant to save it to an XML document.
+     *
+     * @see loadColorRamp( const QVariant &value )
+     */
     static QVariant colorRampToVariant( const QString &name, QgsColorRamp *ramp );
 
+    /**
+     * Load a color ramp from a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::readVariant to load it from an XML document.
+     *
+     * @see colorRampToVariant()
+     */
     static QgsColorRamp *loadColorRamp( const QVariant &value );
 
     /**

@@ -47,6 +47,10 @@ class QgsWidgetWrapper : QObject
 %End
 
   public:
+    enum Property
+    {
+      RootPath = 0,
+    };
     /**
      * Create a new widget wrapper
      *
@@ -131,6 +135,8 @@ class QgsWidgetWrapper : QObject
      */
     virtual bool valid() const = 0;
 
+    const QgsPropertyCollection &dataDefinedProperties() const;
+    void setDataDefinedProperties( const QgsPropertyCollection &collection );
   protected:
     /**
      * This method should create a new widget with the provided parent. This will only be called

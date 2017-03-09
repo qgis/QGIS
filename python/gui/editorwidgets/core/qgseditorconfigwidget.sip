@@ -21,29 +21,16 @@ class QgsEditorConfigWidget : QWidget
 
   public:
     explicit QgsEditorConfigWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent /TransferThis/ );
-
-    /**
-     * Returns the field for which this configuration widget applies
-     *
-     * @return The field index
-     */
-    int field();
-
-    /**
-     * Returns the layer for which this configuration widget applies
-     *
-     * @return The layer
-     */
-    QgsVectorLayer* layer();
-
     virtual QVariantMap config() = 0;
     virtual void setConfig( const QVariantMap& config ) = 0;
+    int field();
+    QgsVectorLayer* layer();
+    QgsExpressionContext createExpressionContext() const;
 
   signals:
-
-    /** Emitted when the configuration of the widget is changed.
-     * @note added in QGIS 3.0
-     */
     void changed();
+
+  protected:
+    void initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsWidgetWrapper::Property key );
 };
 

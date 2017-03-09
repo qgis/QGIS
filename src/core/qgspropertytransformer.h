@@ -134,8 +134,20 @@ class CORE_EXPORT QgsCurveTransform
     */
     bool writeXml( QDomElement &transformElem, QDomDocument &doc ) const;
 
+    /**
+     * Saves this curve transformer to a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::writeVariant to save it to an XML document.
+     *
+     * @see loadVariant()
+     */
     QVariant toVariant() const;
 
+    /**
+     * Load this curve transformer from a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::writeVariant to load it from an XML document.
+     *
+     * @see toVariant()
+     */
     bool loadVariant( const QVariant &transformer );
 
   private:
