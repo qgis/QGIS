@@ -42,6 +42,40 @@ QgsTriangle::QgsTriangle( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsP
 
 }
 
+QgsTriangle::QgsTriangle( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3 )
+    : QgsPolygonV2()
+{
+  mWkbType = QgsWkbTypes::Triangle;
+  QgsPointV2 pt1( p1 );
+  QgsPointV2 pt2( p2 );
+  QgsPointV2 pt3( p3 );
+
+  if ( !validateGeom( pt1, pt2, pt3 ) )
+  {
+    return;
+  }
+  QgsLineString *ext = new QgsLineString();
+  ext->setPoints( QgsPointSequence() << pt1 << pt2 << pt3 << pt1 );
+  setExteriorRing( ext );
+}
+
+QgsTriangle::QgsTriangle( const QPointF p1, const QPointF p2, const QPointF p3 )
+    : QgsPolygonV2()
+{
+  mWkbType = QgsWkbTypes::Triangle;
+  QgsPointV2 pt1( p1 );
+  QgsPointV2 pt2( p2 );
+  QgsPointV2 pt3( p3 );
+
+  if ( !validateGeom( pt1, pt2, pt3 ) )
+  {
+    return;
+  }
+  QgsLineString *ext = new QgsLineString();
+  ext->setPoints( QgsPointSequence() << pt1 << pt2 << pt3 << pt1 );
+  setExteriorRing( ext );
+}
+
 void QgsTriangle::clear()
 {
   QgsCurvePolygon::clear();

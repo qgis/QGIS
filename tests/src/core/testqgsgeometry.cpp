@@ -3368,6 +3368,12 @@ void TestQgsGeometry::triangle()
   QCOMPARE( t3, *t4 );
   delete t4;
 
+  // constructor from QgsPoint and QPointF
+  QgsTriangle t_qgspoint = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 10 ), QgsPoint( 10, 10 ) );
+  QVERIFY( t3 == t_qgspoint );
+  QgsTriangle t_pointf = QgsTriangle( QPointF( 0, 0 ), QPointF( 0, 10 ), QPointF( 10, 10 ) );
+  QVERIFY( t3 == t_pointf );
+
   // fromWkt
   QgsTriangle t5;
   ext = new QgsLineString();

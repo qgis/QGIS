@@ -32,13 +32,29 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
   public:
     QgsTriangle();
 
-    /** Construct a triangle from three QgsPointV2.
+    /** Construct a QgsTriangle from three QgsPointV2.
      * An empty triangle is returned if there are identical points or if the points are collinear.
      * @param p1 first point
      * @param p2 second point
      * @param p3 third point
      */
     QgsTriangle( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &p3 );
+
+    /** Construct a QgsTriangle from three QgsPoint.
+     * An empty triangle is returned if there are identical points or if the points are collinear.
+     * @param p1 first point
+     * @param p2 second point
+     * @param p3 third point
+     */
+    explicit QgsTriangle( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3 );
+
+    /** Construct a QgsTriangle from three QPointF.
+     * An empty triangle is returned if there are identical points or if the points are collinear.
+     * @param p1 first point
+     * @param p2 second point
+     * @param p3 third point
+     */
+    explicit QgsTriangle( const QPointF p1, const QPointF p2, const QPointF p3 );
 
     // inherited: bool operator==( const QgsTriangle& other ) const;
     // inherited: bool operator!=( const QgsTriangle& other ) const;
