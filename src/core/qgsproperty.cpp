@@ -636,24 +636,26 @@ bool QgsProperty::valueAsBool( const QgsExpressionContext &context, bool default
   return val.toBool();
 }
 
-bool QgsProperty::writeXml( QDomElement &propertyElem, QDomDocument &doc ) const
+QVariant QgsProperty::toVariant() const
 {
-  propertyElem.setAttribute( "active", d->active ? "1" : "0" );
-  propertyElem.setAttribute( "type", d->type );
+  QVariantMap propertyMap;
+
+  propertyMap.insert( QStringLiteral( "active" ), d->active );
+  propertyMap.insert( QStringLiteral( "type" ), d->type );
 
   switch ( d->type )
   {
     case StaticProperty:
-      propertyElem.setAttribute( "valType", d->staticValue.typeName() );
-      propertyElem.setAttribute( "val", d->staticValue.toString() );
+      // propertyMap.insert( QStringLiteral( "valType" ), d->staticValue.typeName() );
+      propertyMap.insert( QStringLiteral( "val" ), d->staticValue.toString() );
       break;
 
     case FieldBasedProperty:
-      propertyElem.setAttribute( "field", d->fieldName );
+      propertyMap.insert( QStringLiteral( "field" ), d->fieldName );
       break;
 
     case ExpressionBasedProperty:
-      propertyElem.setAttribute( "expression", d->expressionString );
+      propertyMap.insert( QStringLiteral( "expression" ), d->expressionString );
       break;
 
     case InvalidProperty:
@@ -662,36 +664,39 @@ bool QgsProperty::writeXml( QDomElement &propertyElem, QDomDocument &doc ) const
 
   if ( d->transformer )
   {
-    QDomElement transformerElem = doc.createElement( "transformer" );
-    transformerElem.setAttribute( "t", static_cast< int >( d->transformer->transformerType() ) );
-    if ( d->transformer->writeXml( transformerElem, doc ) )
-      propertyElem.appendChild( transformerElem );
+    QVariantMap transformer;
+    transformer.insert( QStringLiteral( "t" ), d->transformer->transformerType() );
+    transformer.insert( QStringLiteral( "d" ), d->transformer->toVariant() );
+
+    propertyMap.insert( QStringLiteral( "transformer" ), transformer );
   }
 
-  return true;
+  return propertyMap;
 }
 
-bool QgsProperty::readXml( const QDomElement &propertyElem, const QDomDocument &doc )
+bool QgsProperty::loadVariant( const QVariant &property )
 {
+  QVariantMap propertyMap = property.toMap();
+
   d.detach();
-  d->active = static_cast< bool >( propertyElem.attribute( "active", "1" ).toInt() );
-  d->type = static_cast< Type >( propertyElem.attribute( "type", "0" ).toInt() );
+  d->active = propertyMap.value( QStringLiteral( "active" ) ).toBool();
+  d->type = static_cast< Type >( propertyMap.value( QStringLiteral( "type" ), InvalidProperty ).toInt() );
 
   switch ( d->type )
   {
     case StaticProperty:
-      d->staticValue = QVariant( propertyElem.attribute( "val", "" ) );
-      d->staticValue.convert( QVariant::nameToType( propertyElem.attribute( "valType", "QString" ).toLocal8Bit().constData() ) );
+      d->staticValue = propertyMap.value( QStringLiteral( "val" ) );
+      // d->staticValue.convert( QVariant::nameToType( propertyElem.attribute( "valType", "QString" ).toLocal8Bit().constData() ) );
       break;
 
     case FieldBasedProperty:
-      d->fieldName = propertyElem.attribute( "field" );
+      d->fieldName = propertyMap.value( QStringLiteral( "field" ) ).toString();
       if ( d->fieldName.isEmpty() )
         d->active = false;
       break;
 
     case ExpressionBasedProperty:
-      d->expressionString = propertyElem.attribute( "expression" );
+      d->expressionString = propertyMap.value( QStringLiteral( "expression" ) ).toString();
       if ( d->expressionString.isEmpty() )
         d->active = false;
 
@@ -709,15 +714,20 @@ bool QgsProperty::readXml( const QDomElement &propertyElem, const QDomDocument &
   if ( d->transformer )
     delete d->transformer;
   d->transformer = nullptr;
-  QDomNodeList transformerNodeList = propertyElem.elementsByTagName( "transformer" );
-  if ( !transformerNodeList.isEmpty() )
+
+
+  QVariant transform = propertyMap.value( QStringLiteral( "transformer" ) );
+
+  if ( transform.isValid() )
   {
-    QDomElement transformerElem = transformerNodeList.at( 0 ).toElement();
-    QgsPropertyTransformer::Type type = static_cast< QgsPropertyTransformer::Type >( transformerElem.attribute( "t", "0" ).toInt() );
+    QVariantMap transformerMap = transform.toMap();
+
+    QgsPropertyTransformer::Type type = static_cast< QgsPropertyTransformer::Type >( transformerMap.value( QStringLiteral( "t" ), QgsPropertyTransformer::GenericNumericTransformer ).toInt() );
     std::unique_ptr< QgsPropertyTransformer > transformer( QgsPropertyTransformer::create( type ) );
+
     if ( transformer )
     {
-      if ( transformer->readXml( transformerElem, doc ) )
+      if ( transformer->loadVariant( transformerMap.value( QStringLiteral( "d" ) ) ) )
         d->transformer = transformer.release();
     }
   }

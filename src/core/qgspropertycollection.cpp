@@ -15,6 +15,7 @@
 
 #include "qgspropertycollection.h"
 #include "qgsproperty.h"
+#include "qgsxmlutils.h"
 
 //
 // QgsAbstractPropertyCollection
@@ -81,6 +82,21 @@ bool QgsAbstractPropertyCollection::valueAsBool( int key, const QgsExpressionCon
     return defaultValue;
 
   return prop.valueAsBool( context, defaultValue, ok );
+}
+
+bool QgsAbstractPropertyCollection::writeXml( QDomElement &collectionElem, const QgsPropertiesDefinition &definitions ) const
+{
+  QVariant collection = toVariant( definitions );
+  QDomDocument doc = collectionElem.ownerDocument();
+  QDomElement element = QgsXmlUtils::writeVariant( collection, doc );
+  collectionElem.appendChild( element );
+  return true;
+}
+
+bool QgsAbstractPropertyCollection::readXml( const QDomElement &collectionElem, const QgsPropertiesDefinition &definitions )
+{
+  QVariant collection = QgsXmlUtils::readVariant( collectionElem.firstChild().toElement() );
+  return loadVariant( collection.toMap(), definitions );
 }
 
 
@@ -276,47 +292,45 @@ bool QgsPropertyCollection::hasDynamicProperties() const
   return mHasDynamicProperties;
 }
 
-bool QgsPropertyCollection::writeXml( QDomElement &collectionElem, QDomDocument &doc, const QgsPropertiesDefinition &definitions ) const
+QVariant QgsPropertyCollection::toVariant( const QgsPropertiesDefinition &definitions ) const
 {
-  collectionElem.setAttribute( "name", name() );
-  collectionElem.setAttribute( "type", "collection" );
+  QVariantMap collection;
+
+  collection.insert( QStringLiteral( "name" ), name() );
+  collection.insert( QStringLiteral( "type" ), QStringLiteral( "collection" ) );
+
+  QVariantMap properties;
+
   QHash<int, QgsProperty>::const_iterator it = mProperties.constBegin();
   for ( ; it != mProperties.constEnd(); ++it )
   {
     if ( it.value() )
     {
-      QDomElement propertyElement = doc.createElement( "p" );
-      int key = it.key();
-      QString propName = definitions.value( key ).name();
-      propertyElement.setAttribute( "n", propName );
-      it.value().writeXml( propertyElement, doc );
-      collectionElem.appendChild( propertyElement );
+      properties.insert( definitions.value( it.key() ).name(), it.value().toVariant() );
     }
   }
-  return true;
+  collection.insert( QStringLiteral( "properties" ), properties );
+  return collection;
 }
 
-bool QgsPropertyCollection::readXml( const QDomElement &collectionElem, const QDomDocument &doc, const QgsPropertiesDefinition &definitions )
+bool QgsPropertyCollection::loadVariant( const QVariant &collection, const QgsPropertiesDefinition &definitions )
 {
   clear();
 
-  setName( collectionElem.attribute( "name" ) );
+  QVariantMap collectionMap = collection.toMap();
+
+  setName( collectionMap.value( QStringLiteral( "name" ) ).toString() );
 
   mCount = 0;
-  QDomNodeList propertyNodeList = collectionElem.elementsByTagName( "p" );
-  for ( int i = 0; i < propertyNodeList.size(); ++i )
+  QVariantMap properties = collectionMap.value( QStringLiteral( "properties" ) ).toMap();
+  for ( auto propertyIterator = properties.constBegin(); propertyIterator != properties.constEnd(); ++propertyIterator )
   {
-    QDomElement propertyElem = propertyNodeList.at( i ).toElement();
-    QString propName = propertyElem.attribute( "n" );
-    if ( propName.isEmpty() )
-      continue;
-
     // match name to int key
     int key = -1;
     QgsPropertiesDefinition::const_iterator it = definitions.constBegin();
     for ( ; it != definitions.constEnd(); ++it )
     {
-      if ( it->name() == propName )
+      if ( it->name() == propertyIterator.key() )
       {
         key = it.key();
         break;
@@ -327,10 +341,11 @@ bool QgsPropertyCollection::readXml( const QDomElement &collectionElem, const QD
       continue;
 
     QgsProperty prop;
-    prop.readXml( propertyElem, doc );
+    prop.loadVariant( propertyIterator.value() );
     mProperties.insert( key, prop );
 
     mCount++;
+
     mHasActiveProperties = mHasActiveProperties || prop.isActive();
     mHasDynamicProperties = mHasDynamicProperties ||
                             ( prop.isActive() &&
@@ -504,34 +519,40 @@ bool QgsPropertyCollectionStack::hasProperty( int key ) const
   return false;
 }
 
-bool QgsPropertyCollectionStack::writeXml( QDomElement &collectionElem, QDomDocument &doc, const QgsPropertiesDefinition &definitions ) const
+QVariant QgsPropertyCollectionStack::toVariant( const QgsPropertiesDefinition &definitions ) const
 {
-  collectionElem.setAttribute( "type", "stack" );
-  collectionElem.setAttribute( "name", name() );
+  QVariantMap collection;
+  collection.insert( QStringLiteral( "type" ), QStringLiteral( "stack" ) );
+  collection.insert( QStringLiteral( "name" ), name() );
+
+  QVariantList properties;
 
   Q_FOREACH ( QgsPropertyCollection *child, mStack )
   {
-    QDomElement childElement = doc.createElement( "props" );
-    if ( !child->writeXml( childElement, doc, definitions ) )
-      return false;
-    collectionElem.appendChild( childElement );
+    properties.append( child->toVariant( definitions ) );
   }
-  return true;
+
+  collection.insert( QStringLiteral( "properties" ), properties );
+
+  return collection;
 }
 
-bool QgsPropertyCollectionStack::readXml( const QDomElement &collectionElem, const QDomDocument &doc, const QgsPropertiesDefinition &definitions )
+bool QgsPropertyCollectionStack::loadVariant( const QVariant &collection, const QgsPropertiesDefinition &definitions )
 {
   clear();
 
-  setName( collectionElem.attribute( "name" ) );
+  QVariantMap collectionMap = collection.toMap();
 
-  QDomNodeList childNodeList = collectionElem.elementsByTagName( "props" );
-  for ( int i = 0; i < childNodeList.size(); ++i )
+  setName( collectionMap.value( QStringLiteral( "name" ) ).toString() );
+
+  QVariantList properties = collectionMap.value( QStringLiteral( "properties" ) ).toList();
+
+  Q_FOREACH ( const QVariant &property, properties )
   {
-    QDomElement childElem = childNodeList.at( i ).toElement();
-    QgsPropertyCollection *child = new QgsPropertyCollection();
-    child->readXml( childElem, doc, definitions );
-    mStack.append( child );
+    QgsPropertyCollection *propertyCollection = new QgsPropertyCollection();
+    propertyCollection->loadVariant( property.toMap(), definitions );
+    mStack.append( propertyCollection );
   }
+
   return true;
 }

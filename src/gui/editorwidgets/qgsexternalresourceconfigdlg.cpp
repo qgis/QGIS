@@ -151,9 +151,10 @@ QVariantMap QgsExternalResourceConfigDlg::config()
   else
     cfg.insert( QStringLiteral( "DefaultRootStyle" ), QStringLiteral( "path" ) );
 
-
   if ( !mRootPath->text().isEmpty() )
     cfg.insert( QStringLiteral( "DefaultRoot" ), mRootPath->text() );
+
+  cfg.insert( QStringLiteral( "RootPathProperty" ), mRootPathPropertyOverrideButton->toProperty().toVariant() );
 
   // Save Storage Mode
   cfg.insert( QStringLiteral( "StorageMode" ), mStorageButtonGroup->checkedId() );
@@ -206,6 +207,9 @@ void QgsExternalResourceConfigDlg::setConfig( const QVariantMap &config )
   }
 
   mRootPath->setText( config.value( QStringLiteral( "DefaultRoot" ) ).toString() );
+  QgsProperty rootPathProperty;
+  rootPathProperty.loadVariant( config.value( QStringLiteral( "RootPathProperty" ) ) );
+  mRootPathPropertyOverrideButton->setToProperty( rootPathProperty );
 
   rootPathPropertyChanged();
 

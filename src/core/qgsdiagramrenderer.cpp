@@ -111,7 +111,7 @@ void QgsDiagramLayerSettings::readXml( const QDomElement &elem, const QgsVectorL
   QDomNodeList propertyElems = elem.elementsByTagName( "properties" );
   if ( !propertyElems.isEmpty() )
   {
-    ( void )mDataDefinedProperties.readXml( propertyElems.at( 0 ).toElement(), elem.ownerDocument(), sPropertyDefinitions );
+    ( void )mDataDefinedProperties.readXml( propertyElems.at( 0 ).toElement(), sPropertyDefinitions );
   }
   else
   {
@@ -154,7 +154,7 @@ void QgsDiagramLayerSettings::writeXml( QDomElement &layerElem, QDomDocument &do
 
   QDomElement diagramLayerElem = doc.createElement( QStringLiteral( "DiagramLayerSettings" ) );
   QDomElement propertiesElem = doc.createElement( "properties" );
-  ( void )mDataDefinedProperties.writeXml( propertiesElem, doc, sPropertyDefinitions );
+  ( void )mDataDefinedProperties.writeXml( propertiesElem, sPropertyDefinitions );
   diagramLayerElem.appendChild( propertiesElem );
   diagramLayerElem.setAttribute( QStringLiteral( "placement" ), mPlacement );
   diagramLayerElem.setAttribute( QStringLiteral( "linePlacementFlags" ), mPlacementFlags );

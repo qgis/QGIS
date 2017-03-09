@@ -219,20 +219,34 @@ class CORE_EXPORT QgsAbstractPropertyCollection
     /**
      * Writes the current state of the property collection into an XML element
      * @param collectionElem destination element for the property collection's state
-     * @param doc DOM document
      * @param definitions property definitions
      * @see readXml()
     */
-    virtual bool writeXml( QDomElement &collectionElem, QDomDocument &doc, const QgsPropertiesDefinition &definitions ) const = 0;
+    virtual bool writeXml( QDomElement &collectionElem, const QgsPropertiesDefinition &definitions ) const;
 
     /**
      * Reads property collection state from an XML element.
      * @param collectionElem source DOM element for property collection's state
-     * @param doc DOM document
      * @param definitions property definitions
      * @see writeXml()
     */
-    virtual bool readXml( const QDomElement &collectionElem, const QDomDocument &doc, const QgsPropertiesDefinition &definitions ) = 0;
+    virtual bool readXml( const QDomElement &collectionElem, const QgsPropertiesDefinition &definitions );
+
+    /**
+     * Saves this property collection to a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::writeVariant to save it to an XML document.
+     *
+     * @see loadVariant()
+     */
+    virtual QVariant toVariant( const QgsPropertiesDefinition &definitions ) const = 0;
+
+    /**
+     * Loads this property collection from a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::readVariant to save it to an XML document.
+     *
+     * @see toVariant()
+     */
+    virtual bool loadVariant( const QVariant &configuration, const QgsPropertiesDefinition &definitions ) = 0;
 
   private:
 
@@ -292,8 +306,9 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
     bool isActive( int key ) const override;
     bool hasActiveProperties() const override;
     bool hasDynamicProperties() const override;
-    bool writeXml( QDomElement &collectionElem, QDomDocument &doc, const QgsPropertiesDefinition &definitions ) const override;
-    bool readXml( const QDomElement &collectionElem, const QDomDocument &doc, const QgsPropertiesDefinition &definitions ) override;
+
+    QVariant toVariant( const QgsPropertiesDefinition &definitions ) const override;
+    bool loadVariant( const QVariant &configuration, const QgsPropertiesDefinition &definitions ) override;
 
     /**
      * Adds a property to the collection and takes ownership of it.
@@ -439,8 +454,10 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
 
     QSet<int> propertyKeys() const override;
     bool hasProperty( int key ) const override;
-    bool writeXml( QDomElement &collectionElem, QDomDocument &doc, const QgsPropertiesDefinition &definitions ) const override;
-    bool readXml( const QDomElement &collectionElem, const QDomDocument &doc, const QgsPropertiesDefinition &definitions ) override;
+
+    virtual QVariant toVariant( const QgsPropertiesDefinition &definitions ) const override;
+
+    virtual bool loadVariant( const QVariant &collection, const QgsPropertiesDefinition &definitions ) override;
 
   private:
 

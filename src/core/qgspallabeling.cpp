@@ -669,7 +669,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer *layer )
     QDomDocument doc( QStringLiteral( "dd" ) );
     doc.setContent( layer->customProperty( QStringLiteral( "labeling/ddProperties" ) ).toString() );
     QDomElement elem = doc.firstChildElement( QStringLiteral( "properties" ) );
-    mDataDefinedProperties.readXml( elem, doc, sPropertyDefinitions );
+    mDataDefinedProperties.readXml( elem, sPropertyDefinitions );
   }
   else
   {
@@ -760,7 +760,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer *layer )
 
   doc = QDomDocument( QStringLiteral( "dd" ) );
   QDomElement ddElem = doc.createElement( QStringLiteral( "properties" ) );
-  mDataDefinedProperties.writeXml( ddElem, doc, sPropertyDefinitions );
+  mDataDefinedProperties.writeXml( ddElem, sPropertyDefinitions );
   QString ddProps;
   QTextStream streamProps( &ddProps );
   ddElem.save( streamProps, -1 );
@@ -876,7 +876,7 @@ void QgsPalLayerSettings::readXml( QDomElement &elem )
   QDomElement ddElem = elem.firstChildElement( QStringLiteral( "dd_properties" ) );
   if ( !ddElem.isNull() )
   {
-    mDataDefinedProperties.readXml( ddElem, ddElem.ownerDocument(), sPropertyDefinitions );
+    mDataDefinedProperties.readXml( ddElem, sPropertyDefinitions );
   }
   else
   {
@@ -965,7 +965,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc )
   renderingElem.setAttribute( QStringLiteral( "zIndex" ), zIndex );
 
   QDomElement ddElem = doc.createElement( QStringLiteral( "dd_properties" ) );
-  mDataDefinedProperties.writeXml( ddElem, doc, sPropertyDefinitions );
+  mDataDefinedProperties.writeXml( ddElem, sPropertyDefinitions );
 
   QDomElement elem = doc.createElement( QStringLiteral( "settings" ) );
   elem.appendChild( textStyleElem );

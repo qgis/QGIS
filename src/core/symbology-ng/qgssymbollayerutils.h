@@ -364,6 +364,10 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QDomElement saveColorRamp( const QString &name, QgsColorRamp *ramp, QDomDocument &doc );
 
+    static QVariant colorRampToVariant( const QString &name, QgsColorRamp *ramp );
+
+    static QgsColorRamp *loadColorRamp( const QVariant &value );
+
     /**
      * Returns a friendly display name for a color
      * @param color source color
