@@ -277,6 +277,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /**
      * Sets a map \a theme to show in the canvas. The theme name must match
      * a theme present in the associated project's QgsMapThemeCollection.
+     * If an empty string is passed then the current theme association will be
+     * cleared. The layers from the previously associated theme will remain
+     * in the canvas, and a call to setLayers() may be necessary to define
+     * which layers should be shown in the canvas.
      * @note added in QGIS 3.0
      * @see theme()
      */
