@@ -82,7 +82,7 @@ QgsAfsConnectionItem::QgsAfsConnectionItem( QgsDataItem *parent, const QString &
   : QgsDataCollectionItem( parent, name, path )
   , mUrl( url )
 {
-  mIconName = QStringLiteral( "mIconAfs.svg" );
+  mIconName = QStringLiteral( "mIconConnect.png" );
 }
 
 QVector<QgsDataItem *> QgsAfsConnectionItem::createChildren()
@@ -152,5 +152,5 @@ QgsAfsLayerItem::QgsAfsLayerItem( QgsDataItem *parent, const QString &name, cons
 {
   mUri = QStringLiteral( "crs='%1' url='%2'" ).arg( authid, url );
   setState( Populated );
-  mIconName = QStringLiteral( "mIconConnect.png" );
+  mIconName = QStringLiteral( "mIconAfs.svg" );
 }
