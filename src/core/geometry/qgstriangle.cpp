@@ -191,6 +191,40 @@ bool QgsTriangle::insertVertex( QgsVertexId position, const QgsPointV2 &vertex )
   Q_UNUSED( vertex );
   return false;
 }
+#include <iostream>
+bool QgsTriangle::moveVertex( QgsVertexId vId, const QgsPointV2 &newPos )
+{
+  if ( !mExteriorRing || vId.part != 0 || vId.ring != 0 || vId.vertex < 0 || vId.vertex > 4 )
+  {
+    return false;
+  }
+
+  if ( vId.vertex == 4 )
+  {
+    vId.vertex = 0;
+  }
+
+  QgsPointV2 p1( vId.vertex == 0 ? newPos : vertexAt( 0 ) );
+  QgsPointV2 p2( vId.vertex == 1 ? newPos : vertexAt( 1 ) );
+  QgsPointV2 p3( vId.vertex == 2 ? newPos : vertexAt( 2 ) );
+
+  if ( !validateGeom( p1, p2, p3 ) )
+  {
+    return false;
+  }
+
+  QgsCurve* ring = mExteriorRing;
+  int n = ring->numPoints();
+  bool success = ring->moveVertex( vId, newPos );
+  if ( success )
+  {
+    // If first or last vertex is moved, also move the last/first vertex
+    if ( vId.vertex == 0 )
+      ring->moveVertex( QgsVertexId( vId.part, vId.ring, n - 1 ), newPos );
+    clearCache();
+  }
+  return success;
+}
 
 void QgsTriangle::setExteriorRing( QgsCurve *ring )
 {

@@ -3559,6 +3559,50 @@ void TestQgsGeometry::triangle()
   QVERIFY( !t11.insertVertex( id, QgsPointV2( 5, 5 ) ) );
   QCOMPARE( t11.asWkt(), QString( "Triangle ((0 0, 100 100, 0 200, 0 0))" ) );
 
+  //move vertex
+  QgsPointV2 pt1( 5, 5 );
+  // invalid part
+  id.part = -1;
+  QVERIFY( !t11.moveVertex( id, pt1 ) );
+  id.part = 1;
+  QVERIFY( !t11.moveVertex( id, pt1 ) );
+  // invalid ring
+  id.part = 0;
+  id.ring = -1;
+  QVERIFY( !t11.moveVertex( id, pt1 ) );
+  id.ring = 1;
+  QVERIFY( !t11.moveVertex( id, pt1 ) );
+  id.ring = 0;
+  id.vertex = -1;
+  QVERIFY( !t11.moveVertex( id, pt1 ) );
+  id.vertex = 5;
+  QVERIFY( !t11.moveVertex( id, pt1 ) );
+
+  // valid vertex
+  id.vertex = 0;
+  QVERIFY( t11.moveVertex( id, pt1 ) );
+  QCOMPARE( t11.asWkt(), QString( "Triangle ((5 5, 100 100, 0 200, 5 5))" ) );
+  pt1 = QgsPointV2();
+  QVERIFY( t11.moveVertex( id, pt1 ) );
+  QCOMPARE( t11.asWkt(), QString( "Triangle ((0 0, 100 100, 0 200, 0 0))" ) );
+  id.vertex = 4;
+  pt1 = QgsPointV2( 5, 5 );
+  QVERIFY( t11.moveVertex( id, pt1 ) );
+  QCOMPARE( t11.asWkt(), QString( "Triangle ((5 5, 100 100, 0 200, 5 5))" ) );
+  pt1 = QgsPointV2();
+  QVERIFY( t11.moveVertex( id, pt1 ) );
+  QCOMPARE( t11.asWkt(), QString( "Triangle ((0 0, 100 100, 0 200, 0 0))" ) );
+  id.vertex = 1;
+  pt1 = QgsPointV2( 5, 5 );
+  QVERIFY( t11.moveVertex( id, pt1 ) );
+  QCOMPARE( t11.asWkt(), QString( "Triangle ((0 0, 5 5, 0 200, 0 0))" ) );
+  // colinear
+  pt1 = QgsPointV2( 0, 100 );
+  QVERIFY( !t11.moveVertex( id, pt1 ) );
+  // duplicate point
+  pt1 = QgsPointV2( 0, 0 );
+  QVERIFY( !t11.moveVertex( id, pt1 ) );
+
 }
 
 void TestQgsGeometry::compoundCurve()

@@ -68,6 +68,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     bool deleteVertex( QgsVertexId position ) override;
     //! Inherited method not used. You cannot delete or insert a vertex directly. Returns always false.
     bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex ) override;
+    bool moveVertex( QgsVertexId vId, const QgsPointV2& newPos ) override;
 
     virtual void setExteriorRing( QgsCurve* ring ) override;
 
