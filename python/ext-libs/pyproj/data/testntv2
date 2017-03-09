@@ -1,0 +1,74 @@
+:
+#
+# Test NTv2 (.gsb) support.  Assumes ntv2_0.gsb is installed.
+#
+#
+NAD_DIR=`dirname $0`
+EXE=$1
+
+usage()
+{
+    echo "Usage: ${0} <path to 'cs2cs' program>" 
+    echo
+    exit 1
+}
+
+if test -z "${EXE}"; then
+    EXE=../src/cs2cs
+fi
+
+if test ! -x ${EXE}; then
+    echo "*** ERROR: Can not find '${EXE}' program!"
+    exit 1
+fi
+
+echo "============================================"
+echo "Running ${0} using ${EXE}:"
+echo "============================================"
+
+OUT=ntv2_out
+#EXE=../src/cs2cs
+#
+echo "doing tests into file ${OUT}, please wait"
+rm -f ${OUT}
+#
+echo "##############################################################" >> ${OUT}
+echo Point in the ONwinsor subgrid. >> ${OUT}
+#
+$EXE +proj=latlong +ellps=clrk66 +nadgrids=ntv2_0.gsb \
+ +to +proj=latlong +datum=NAD83 -E -w4 >>${OUT} <<EOF
+82d00'00.000"W 42d00'00.000"N 0.0
+82d00'01.000"W 42d00'00.000"N 0.0
+82d00'02.000"W 42d00'00.000"N 0.0
+84d00'00.000"W 42d00'00.000"N 0.0
+EOF
+
+echo "##############################################################" >> ${OUT}
+echo Try with NTv2 and NTv1 together ... falls back to NTv1 >> ${OUT}
+#
+$EXE +proj=latlong +ellps=clrk66 +nadgrids=ntv2_0.gsb,ntv1_can.dat,conus \
+ +to +proj=latlong +datum=NAD83 -E -w4 >>${OUT} <<EOF
+99d00'00.000"W 65d00'00.000"N 0.0
+111d00'00.000"W 46d00'00.000"N 0.0
+111d00'00.000"W 47d30'00.000"N 0.0
+EOF
+#
+##############################################################################
+# Done! 
+# do 'diff' with distribution results
+echo "diff ${OUT} with ${OUT}.dist"
+diff -b ${OUT} ${NAD_DIR}/${OUT}.dist
+if [ $? -ne 0 ] ; then
+	echo  ""
+	echo "PROBLEMS HAVE OCCURED"
+	echo "test file ${OUT} saved"
+    echo
+    exit 100
+else
+	echo "TEST OK"
+	echo "test file ${OUT} removed"
+    echo
+	/bin/rm -f ${OUT}
+    exit 0
+fi
+

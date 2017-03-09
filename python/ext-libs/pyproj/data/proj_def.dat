@@ -1,0 +1,17 @@
+# Projection library defaults file
+# SCCSID--- @(#)proj_def.dat	4.3	94/02/23	GIE	REL"
+# very preliminary version
+<general>
+ellps=WGS84 
+<>
+<aea> # Conterminous U.S. map
+lat_1=29.5
+lat_2=45.5
+<>
+<lcc> # Conterminous U.S. map
+lat_1=33
+lat_2=45
+<>
+<lagrng>
+W=2
+<>
