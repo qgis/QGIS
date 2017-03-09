@@ -92,8 +92,22 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget, public QgsExpressionCon
      */
     void initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsWidgetWrapper::Property key );
 
+    /**
+     * Updates all property override buttons to reflect the widgets's current properties.
+     */
+    void updateDataDefinedButtons();
+
+    /**
+     * Updates a specific property override \a button to reflect the widgets's current properties.
+     */
+    void updateDataDefinedButton( QgsPropertyOverrideButton *button );
+
     //! Temporary property collection for config widgets
     QgsPropertyCollection mPropertyCollection;
+
+  private slots:
+
+    void updateProperty();
 
   private:
     QgsVectorLayer *mLayer = nullptr;
