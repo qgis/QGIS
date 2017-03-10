@@ -33,7 +33,7 @@ MACRO(EXT_PYLIB lib)
   ENDIF(WITH_INTERNAL_${ulib})
 ENDMACRO(EXT_PYLIB lib)
 
-FOREACH(pkg markupsafe owslib dateutil pytz yaml nose2 pyproj)
+FOREACH(pkg markupsafe owslib dateutil pytz yaml nose2)
   EXT_PYLIB(${pkg})
 ENDFOREACH(pkg)
 
