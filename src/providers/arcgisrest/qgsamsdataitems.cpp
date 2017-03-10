@@ -33,9 +33,9 @@ QVector<QgsDataItem*> QgsAmsRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
 
-  foreach ( QString connName, QgsOWSConnection::connectionList( "ArcGisMapServer" ) )
+  foreach ( QString connName, QgsOWSConnection::connectionList( "arcgismapserver" ) )
   {
-    QgsOWSConnection connection( "ArcGisMapServer", connName );
+    QgsOWSConnection connection( "arcgismapserver", connName );
     QString path = "ams:/" + connName;
     connections.append( new QgsAmsConnectionItem( this, connName, path, connection.uri().param( "url" ) ) );
   }
@@ -64,8 +64,8 @@ void QgsAmsRootItem::connectionsChanged()
 
 void QgsAmsRootItem::newConnection()
 {
-  QgsNewHttpConnection nc( 0 );
-  nc.setWindowTitle( tr( "Create a new AMS connection" ) );
+  QgsNewHttpConnection nc( 0, "/Qgis/connections-arcgismapserver/" );
+  nc.setWindowTitle( tr( "Create a new ArcGisMapServer connection" ) );
 
   if ( nc.exec() )
   {
@@ -145,8 +145,8 @@ QList<QAction*> QgsAmsConnectionItem::actions()
 
 void QgsAmsConnectionItem::editConnection()
 {
-  QgsNewHttpConnection nc( 0, "/Qgis/connections-afs/", mName );
-  nc.setWindowTitle( tr( "Modify AMS connection" ) );
+  QgsNewHttpConnection nc( 0, "/Qgis/connections-arcgismapserver/", mName );
+  nc.setWindowTitle( tr( "Modify ArcGisMapServer connection" ) );
 
   if ( nc.exec() )
   {
@@ -156,7 +156,7 @@ void QgsAmsConnectionItem::editConnection()
 
 void QgsAmsConnectionItem::deleteConnection()
 {
-  QgsOWSConnection::deleteConnection( "ArcGisMapServer", mName );
+  QgsOWSConnection::deleteConnection( "arcgismapserver", mName );
   mParent->refresh();
 }
 

@@ -66,9 +66,9 @@ QGISEXTERN QgsDataItem *dataItem( QString thePath, QgsDataItem *parentItem )
   if ( thePath.startsWith( "afs:/" ) )
   {
     QString connectionName = thePath.split( '/' ).last();
-    if ( QgsOWSConnection::connectionList( "ArcGisFeatureServer" ).contains( connectionName ) )
+    if ( QgsOWSConnection::connectionList( "arcgisfeatureserver" ).contains( connectionName ) )
     {
-      QgsOWSConnection connection( "ArcGisFeatureServer", connectionName );
+      QgsOWSConnection connection( "arcgisfeatureserver", connectionName );
       return new QgsAfsConnectionItem( parentItem, "ArcGisFeatureServer", thePath, connection.uri().param( "url" ) );
     }
   }

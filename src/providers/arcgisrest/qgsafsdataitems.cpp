@@ -37,9 +37,9 @@ QVector<QgsDataItem*> QgsAfsRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
 
-  foreach ( QString connName, QgsOWSConnection::connectionList( "ArcGisFeatureServer" ) )
+  foreach ( QString connName, QgsOWSConnection::connectionList( "arcgisfeatureserver" ) )
   {
-    QgsOWSConnection connection( "ArcGisFeatureServer", connName );
+    QgsOWSConnection connection( "arcgisfeatureserver", connName );
     QString path = "afs:/" + connName;
     connections.append( new QgsAfsConnectionItem( this, connName, path, connection.uri().param( "url" ) ) );
   }
@@ -67,8 +67,8 @@ void QgsAfsRootItem::connectionsChanged()
 
 void QgsAfsRootItem::newConnection()
 {
-  QgsNewHttpConnection nc( 0, "/Qgis/connections-afs/" );
-  nc.setWindowTitle( tr( "Create a new AFS connection" ) );
+  QgsNewHttpConnection nc( 0, "/Qgis/connections-arcgisfeatureserver/" );
+  nc.setWindowTitle( tr( "Create a new ArcGISFeatureServer connection" ) );
 
   if ( nc.exec() )
   {
@@ -130,8 +130,8 @@ QList<QAction*> QgsAfsConnectionItem::actions()
 
 void QgsAfsConnectionItem::editConnection()
 {
-  QgsNewHttpConnection nc( 0, "/Qgis/connections-afs/", mName );
-  nc.setWindowTitle( tr( "Modify AFS connection" ) );
+  QgsNewHttpConnection nc( 0, "/Qgis/connections-arcgisfeatureserver/", mName );
+  nc.setWindowTitle( tr( "Modify ArcGISFeatureServer connection" ) );
 
   if ( nc.exec() )
   {
@@ -141,7 +141,7 @@ void QgsAfsConnectionItem::editConnection()
 
 void QgsAfsConnectionItem::deleteConnection()
 {
-  QgsOWSConnection::deleteConnection( "ArcGisFeatureServer", mName );
+  QgsOWSConnection::deleteConnection( "arcgisfeatureserver", mName );
   mParent->refresh();
 }
 
