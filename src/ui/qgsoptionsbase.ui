@@ -3440,7 +3440,11 @@
                    </widget>
                   </item>
                   <item row="0" column="1">
-                   <widget class="QSpinBox" name="spinZoomFactor">
+                   <widget class="QgsSpinBox" name="spinZoomFactor">
+                    <property name="toolTip">
+                     <string>Specifies the change in zoom level with each move of the mouse wheel.
+The bigger the number, the faster zooming with the mouse wheel will be.</string>
+                    </property>
                     <property name="suffix">
                      <string>%</string>
                     </property>
@@ -3455,6 +3459,9 @@
                     </property>
                     <property name="value">
                      <number>200</number>
+                    </property>
+                    <property name="showClearButton" stdset="100">
+                     <bool>true</bool>
                     </property>
                    </widget>
                   </item>
@@ -5479,6 +5486,11 @@
    <extends>QTabWidget</extends>
    <header>qgsautheditorwidgets.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
