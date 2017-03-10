@@ -620,7 +620,7 @@ static QVariant fcnExpScale( const QVariantList &values, const QgsExpressionCont
   }
 
   // Return exponentially scaled value
-  return QVariant((( rangeMax - rangeMin ) / pow( domainMax - domainMin, exponent ) ) * pow( val - domainMin, exponent ) + rangeMin );
+  return QVariant( ( ( rangeMax - rangeMin ) / pow( domainMax - domainMin, exponent ) ) * pow( val - domainMin, exponent ) + rangeMin );
 }
 
 static QVariant fcnMax( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
@@ -1350,7 +1350,7 @@ static QVariant fcnRegexpMatch( const QVariantList &values, const QgsExpressionC
     parent->setEvalErrorString( QObject::tr( "Invalid regular expression '%1': %2" ).arg( regexp, re.errorString() ) );
     return QVariant();
   }
-  return QVariant(( str.indexOf( re ) + 1 ) );
+  return QVariant( ( str.indexOf( re ) + 1 ) );
 }
 
 static QVariant fcnRegexpMatches( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
@@ -4315,7 +4315,7 @@ QgsExpression &QgsExpression::operator=( const QgsExpression & other )
 }
 
 QgsExpression::QgsExpression()
-    : d( new QgsExpressionPrivate )
+  : d( new QgsExpressionPrivate )
 {
 }
 
@@ -4581,7 +4581,7 @@ double QgsExpression::evaluateToDouble( const QString &text, const double fallba
 
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+          << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 
   QVariant result = expr.evaluate( &context );
   convertedValue = result.toDouble( &ok );
@@ -4739,8 +4739,8 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression *parent, const Q
         }
         return QVariant( computeDateTimeFromInterval( dL, &iL ) );
       }
-      else if ( mOp == boPlus && (( vL.type() == QVariant::Date && vR.type() == QVariant::Time ) ||
-                                  ( vR.type() == QVariant::Date && vL.type() == QVariant::Time ) ) )
+      else if ( mOp == boPlus && ( ( vL.type() == QVariant::Date && vR.type() == QVariant::Time ) ||
+                                   ( vR.type() == QVariant::Date && vL.type() == QVariant::Time ) ) )
       {
         QDate date = getDateValue( vL.type() == QVariant::Date ? vL : vR, parent );
         ENSURE_NO_EVAL_ERROR;
@@ -4780,7 +4780,7 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression *parent, const Q
         ENSURE_NO_EVAL_ERROR;
         double fR = getDoubleValue( vR, parent );
         ENSURE_NO_EVAL_ERROR;
-        if (( mOp == boDiv || mOp == boMod ) && fR == 0. )
+        if ( ( mOp == boDiv || mOp == boMod ) && fR == 0. )
           return QVariant(); // silently handle division by zero and return NULL
         return QVariant( computeDouble( fL, fR ) );
       }
@@ -4911,7 +4911,7 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression *parent, const Q
           }
           QRegExp rx( "[^\\\\](%)" );
           int pos = 0;
-          while (( pos = rx.indexIn( esc_regexp, pos ) ) != -1 )
+          while ( ( pos = rx.indexIn( esc_regexp, pos ) ) != -1 )
           {
             esc_regexp.replace( pos + 1, 1, QStringLiteral( ".*" ) );
             pos += 1;
@@ -4924,7 +4924,7 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression *parent, const Q
           }
           rx.setPattern( QStringLiteral( "[^\\\\](_)" ) );
           pos = 0;
-          while (( pos = rx.indexIn( esc_regexp, pos ) ) != -1 )
+          while ( ( pos = rx.indexIn( esc_regexp, pos ) ) != -1 )
           {
             esc_regexp.replace( pos + 1, 1, '.' );
             pos += 1;
