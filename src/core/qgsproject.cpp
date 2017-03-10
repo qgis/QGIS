@@ -876,13 +876,13 @@ bool QgsProject::read()
       vl->resolveReferences( this );
   }
 
-  // now that layers are loaded, we can resolve layer tree's references to the layers
-  mRootGroup->resolveReferences( this );
-
   mLayerTreeRegistryBridge->setEnabled( true );
 
   // load embedded groups and layers
   loadEmbeddedNodes( mRootGroup );
+
+  // now that layers are loaded, we can resolve layer tree's references to the layers
+  mRootGroup->resolveReferences( this );
 
   // make sure the are just valid layers
   QgsLayerTreeUtils::removeInvalidLayers( mRootGroup );
