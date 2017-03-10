@@ -2320,7 +2320,7 @@ void QgsOptions::setZoomFactorValue()
   }
   else
   {
-    int percentValue = mSettings->value( QStringLiteral( "/qgis/zoom_factor" ), 2 ).toInt() * 100;
+    int percentValue = mSettings->value( QStringLiteral( "/qgis/zoom_factor" ), 2 ).toDouble() * 100;
     spinZoomFactor->setValue( percentValue );
   }
 }
