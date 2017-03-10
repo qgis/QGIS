@@ -34,7 +34,7 @@ ifneq (,$(findstring -oracle,$(DISTRIBUTION)))
 	WITH_ORACLE=1
 endif
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"jessie stretch precise trusty xenial yakkety"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"jessie stretch trusty xenial yakkety"))
 	DISTRIBUTION := sid
 endif
 
@@ -70,15 +70,43 @@ CMAKE_OPTS := \
 	-DGENERATE_QHP=TRUE \
 	-DSUPPRESS_SIP_WARNINGS=TRUE \
 	-DWITH_CUSTOM_WIDGETS=TRUE \
-	-DWITH_INTERNAL_HTTPLIB2=FALSE \
-	-DWITH_INTERNAL_JINJA2=FALSE \
-	-DWITH_INTERNAL_MARKUPSAFE=FALSE \
-	-DWITH_INTERNAL_PYGMENTS=FALSE \
-	-DWITH_INTERNAL_DATEUTIL=FALSE \
-	-DWITH_INTERNAL_PYTZ=FALSE \
-	-DWITH_INTERNAL_YAML=FALSE \
 	-DQT_TAG_FILE=/usr/share/qt4/doc/html/qt.tags \
 	-DQT_DOC_URL=/usr/share/qt4/doc/html/
+
+ifneq (,$(findstring $(DISTRIBUTION),"trusty"))
+	CMAKE_OPTS += \
+		-DWITH_INTERNAL_MARKUPSAFE=TRUE \
+		-DWITH_INTERNAL_DATEUTIL=TRUE \
+		-DWITH_INTERNAL_NOSE2=TRUE \
+		-DWITH_INTERNAL_YAML=TRUE
+else
+	CMAKE_OPTS += \
+		-DWITH_INTERNAL_MARKUPSAFE=FALSE \
+		-DWITH_INTERNAL_DATEUTIL=FALSE \
+		-DWITH_INTERNAL_NOSE2=FALSE \
+		-DWITH_INTERNAL_YAML=FALSE
+endif
+
+ifneq (,$(findstring $(DISTRIBUTION),"jessie trusty"))
+	CMAKE_OPTS += \
+		-DWITH_INTERNAL_FUTURE=TRUE \
+		-DWITH_INTERNAL_PYPROJ=TRUE \
+		-DWITH_INTERNAL_PYTZ=TRUE \
+		-DWITH_INTERNAL_SIX=TRUE
+else
+	CMAKE_OPTS += \
+		-DWITH_INTERNAL_FUTURE=FALSE \
+		-DWITH_INTERNAL_PYPROJ=FALSE \
+		-DWITH_INTERNAL_PYTZ=FALSE \
+		-DWITH_INTERNAL_SIX=FALSE
+endif
+
+ifneq (,$(findstring $(DISTRIBUTION),"jessie trusty xenial"))
+	CMAKE_OPTS += -DWITH_INTERNAL_OWSLIB=TRUE
+else
+	CMAKE_OPTS += -DWITH_INTERNAL_OWSLIB=FALSE
+endif
+
 
 ifneq ($(SHA),)
 	CMAKE_OPTS += -DSHA=$(SHA)
@@ -101,24 +129,8 @@ ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	MAKEFLAGS += -j$(NUMJOBS)
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"precise"))
-	CMAKE_OPTS += -DWITH_INTERNAL_NOSE2=TRUE -DWITH_INTERNAL_SIX=TRUE
-else
-	CMAKE_OPTS += -DWITH_INTERNAL_NOSE2=FALSE -DWITH_INTERNAL_SIX=FALSE
-endif
-
-ifeq (,$(findstring $(DISTRIBUTION),"stretch sid xenial yakkety"))
-	CMAKE_OPTS += -DWITH_INTERNAL_FUTURE=TRUE
-else
-	CMAKE_OPTS += -DWITH_INTERNAL_FUTURE=FALSE
-endif
-
 ifneq (,$(WITH_GLOBE))
 	CMAKE_OPTS += -DWITH_GLOBE=TRUE
-endif
-
-ifneq (,$(findstring $(DISTRIBUTION),"precise"))
-	CMAKE_OPTS += -DWITH_PYSPATIALITE=TRUE
 endif
 
 ifneq (,$(findstring $(DISTRIBUTION),"sid stretch"))

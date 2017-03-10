@@ -137,10 +137,6 @@ Files: python/ext-libs/httplib2/socks.py
 Copyright: 2006, Dan-Haim
 License: BSD-2-Clause
 
-Files: python/ext-libs/jinja2/*
-Copyright: 2006-2010, the Jinja Team
-License: BSD-3-Clause
-
 Files: python/ext-libs/markupsafe/*
 Copyright: 2010, 2013, Armin Ronacher
 License: BSD-3-Clause
@@ -172,15 +168,6 @@ Copyright: 2006, Ancient World Mapping Center
       2004-2006, Sean C. Gillies
            2005, Nuxeo SARL <http://nuxeo.com>
 License: BSD-3-Clause
-
-Files: python/ext-libs/pygments/*
-Copyright: 2006-2013, the Pygments team
-License: BSD-2-Clause
-
-Files: python/ext-libs/pygments/lexers/_robotframeworklexer.py
-Copyright: 2006-2013, the Pygments team
-                2012, Nokia Siemens Networks Oyj
-License: BSD-2-Clause and Apache-2.0
 
 Files: python/ext-libs/pyspatialite/*
 Copyright: 2004-2010, Gerhard Häring <gh@ghaering.de>
