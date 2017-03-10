@@ -4124,7 +4124,7 @@ const QList<QgsExpression::Function *> &QgsExpression::Functions()
         << new StaticFunction( QStringLiteral( "attribute" ), 2, fcnAttribute, QStringLiteral( "Record" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES )
 
         // functions for arrays
-        << new StaticFunction( QStringLiteral( "array" ), -1, fcnArray, QStringLiteral( "Arrays" ) )
+        << new StaticFunction( QStringLiteral( "array" ), -1, fcnArray, QStringLiteral( "Arrays" ), QString(), false, QSet<QString>(), false, QStringList(), true )
         << new StaticFunction( QStringLiteral( "array_length" ), 1, fcnArrayLength, QStringLiteral( "Arrays" ) )
         << new StaticFunction( QStringLiteral( "array_contains" ), ParameterList() << Parameter( QStringLiteral( "array" ) ) << Parameter( QStringLiteral( "value" ) ), fcnArrayContains, QStringLiteral( "Arrays" ) )
         << new StaticFunction( QStringLiteral( "array_find" ), ParameterList() << Parameter( QStringLiteral( "array" ) ) << Parameter( QStringLiteral( "value" ) ), fcnArrayFind, QStringLiteral( "Arrays" ) )
