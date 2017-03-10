@@ -130,7 +130,8 @@ class WebMapTileService(object):
 
         #serviceProvider metadata
         serviceprov=self._capabilities.find('{http://www.opengis.net/ows/1.1}ServiceProvider')
-        self.provider=ServiceProvider(serviceprov)
+        if serviceprov is not None:
+            self.provider = ServiceProvider(serviceprov)
 
         #serviceOperations metadata
         self.operations=[]
