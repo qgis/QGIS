@@ -205,13 +205,14 @@ class TestQgsRectangle(unittest.TestCase):
                      (myExpectedString, myString))
         assert myString == myExpectedString, myMessage
 
-        myString = rect.toString(False)
+        myExpectedString = '0,0 : 0,0'
+        myString = rect.toString(0)
         myMessage = ('Expected: %s\nGot: %s\n' %
                      (myExpectedString, myString))
         assert myString == myExpectedString, myMessage
 
         myExpectedString = '0.00,0.10 : 0.20,0.30'
-        myString = rect.toString(True)
+        myString = rect.toString(2)
         myMessage = ('Expected: %s\nGot: %s\n' %
                      (myExpectedString, myString))
         assert myString == myExpectedString, myMessage
@@ -222,8 +223,15 @@ class TestQgsRectangle(unittest.TestCase):
                      (myExpectedString, myString))
         assert myString == myExpectedString, myMessage
 
-        myExpectedString = '0.000,0.100 : 0.200,0.300'
-        myString = rect.toString(3)
+        myExpectedString = '0.00,0.10 : 0.20,0.30'
+        myString = rect.toString(-1)
+        myMessage = ('Expected: %s\nGot: %s\n' %
+                     (myExpectedString, myString))
+        assert myString == myExpectedString, myMessage
+
+        rect = QgsRectangle(5000000.01111, -0.3, 5000000.44111, 99.8)
+        myExpectedString = '5000000.01,-0.30 : 5000000.44,99.80'
+        myString = rect.toString(-1)
         myMessage = ('Expected: %s\nGot: %s\n' %
                      (myExpectedString, myString))
         assert myString == myExpectedString, myMessage

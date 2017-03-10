@@ -90,10 +90,9 @@ class QgsRectangle
     QString asWktPolygon() const;
     //! returns a QRectF with same coordinates.
     QRectF toRectF() const;
-    //! returns string representation of form xmin,ymin xmax,ymax
-    QString toString( bool automaticPrecision /Constrained/ = false ) const;
-    //! overloaded toString that allows precision of numbers to be set
-    QString toString( int thePrecision ) const;
+    //! returns string representation of form xmin,ymin xmax,ymax.
+    //!
+    QString toString( int thePrecision = 16 ) const;
     //! returns rectangle as a polygon
     QString asPolygon() const;
     /** Comparison operator
