@@ -27,7 +27,6 @@ import locale
 
 from qgis.testing import unittest
 from utilities import unitTestDataPath
-from builtins import str
 
 print('CTEST_FULL_OUTPUT')
 
@@ -162,8 +161,11 @@ class TestPyQgsAppStartup(unittest.TestCase):
             env={'PYQGIS_STARTUP': testmod})
 
     def testOptionsAsFiles(self):
+        if os.name == 'nt':
+            return
+
         # verify QGIS accepts filenames that match options after the special option '--'
-        # '--help' should return immediatly (after displaying the usage hints)
+        # '--help' should return immediately (after displaying the usage hints)
         # '-- --help' should not exit but try (and probably fail) to load a layer called '--help'
         with self.assertRaises(Exception):
             self.doTestStartup(option="--configpath",
