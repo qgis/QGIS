@@ -21,6 +21,10 @@ QgsXyzConnectionDialog::QgsXyzConnectionDialog( QWidget *parent )
   : QDialog( parent )
 {
   setupUi( this );
+
+  // Behavior for min and max zoom check box
+  connect( mCheckBoxZMin, &QCheckBox::toggled, mSpinZMin, &QSpinBox::setEnabled );
+  connect( mCheckBoxZMax, &QCheckBox::toggled, mSpinZMax, &QSpinBox::setEnabled );
 }
 
 void QgsXyzConnectionDialog::setConnection( const QgsXyzConnection &conn )
@@ -43,28 +47,4 @@ QgsXyzConnection QgsXyzConnectionDialog::connection() const
   if ( mCheckBoxZMax->isChecked() )
     conn.zMax = mSpinZMax->value();
   return conn;
-}
-
-void QgsXyzConnectionDialog::on_mCheckBoxZMin_stateChanged( int state )
-{
-  if ( state == Qt::Checked )
-  {
-    mSpinZMin->setEnabled( true );
-  }
-  else
-  {
-    mSpinZMin->setEnabled( false );
-  }
-}
-
-void QgsXyzConnectionDialog::on_mCheckBoxZMax_stateChanged( int state )
-{
-  if ( state == Qt::Checked )
-  {
-    mSpinZMax->setEnabled( true );
-  }
-  else
-  {
-    mSpinZMax->setEnabled( false );
-  }
 }

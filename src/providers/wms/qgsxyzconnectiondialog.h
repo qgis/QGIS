@@ -33,10 +33,6 @@ class QgsXyzConnectionDialog : public QDialog, public Ui::QgsXyzConnectionDialog
 
     QgsXyzConnection connection() const;
 
-  public slots:
-    void on_mCheckBoxZMin_stateChanged( int state );
-    void on_mCheckBoxZMax_stateChanged( int state );
-
 };
 
 #endif // QGSXYZCONNECTIONDIALOG_H
