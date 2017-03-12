@@ -36,6 +36,11 @@ class TestQgsFeatureIterator(unittest.TestCase):
         myShpFile = os.path.join(TEST_DATA_DIR, 'points.shp')
         pointLayer = QgsVectorLayer(myShpFile, 'Points', 'ogr')
 
+        myCount = pointLayer.featureCount(QgsFeatureRequest().setFilterExpression('Staff > 3'))
+        myExpectedCount = 5
+        myMessage = '\nExpected: %s features\nGot: %s features' % (myCount, myExpectedCount)
+        assert myCount == myExpectedCount, myMessage
+
         ids = [feat.id() for feat in pointLayer.getFeatures(QgsFeatureRequest().setFilterExpression('Staff > 3'))]
         expectedIds = [1, 5, 6, 7, 8]
         myMessage = '\nExpected: {0} features\nGot: {1} features'.format(repr(expectedIds), repr(ids))
@@ -44,12 +49,22 @@ class TestQgsFeatureIterator(unittest.TestCase):
         pointLayer.startEditing()
         self.addFeatures(pointLayer)
 
+        myCount = pointLayer.featureCount(QgsFeatureRequest().setFilterExpression('Staff > 3'))
+        myExpectedCount = 6
+        myMessage = '\nExpected: %s features\nGot: %s features' % (myCount, myExpectedCount)
+        assert myCount == myExpectedCount, myMessage
+
         ids = [feat.id() for feat in pointLayer.getFeatures(QgsFeatureRequest().setFilterExpression('Staff > 3'))]
         expectedIds = [-2, 1, 5, 6, 7, 8]
         myMessage = '\nExpected: {0} features\nGot: {1} features'.format(repr(expectedIds), repr(ids))
         assert ids == expectedIds, myMessage
 
         pointLayer.rollBack()
+
+        myCount = pointLayer.featureCount(QgsFeatureRequest().setFilterExpression('Staff > 3'))
+        myExpectedCount = 5
+        myMessage = '\nExpected: %s features\nGot: %s features' % (myCount, myExpectedCount)
+        assert myCount == myExpectedCount, myMessage
 
         ids = [feat.id() for feat in pointLayer.getFeatures(QgsFeatureRequest().setFilterExpression('Staff > 3'))]
         expectedIds = [1, 5, 6, 7, 8]
@@ -77,6 +92,11 @@ class TestQgsFeatureIterator(unittest.TestCase):
         myShpFile = os.path.join(TEST_DATA_DIR, 'points.shp')
         pointLayer = QgsVectorLayer(myShpFile, 'Points', 'ogr')
 
+        myCount = pointLayer.featureCount(QgsFeatureRequest().setFilterFids([7, 8, 12, 30]))
+        myExpectedCount = 3
+        myMessage = '\nExpected: %s features\nGot: %s features' % (myCount, myExpectedCount)
+        assert myCount == myExpectedCount, myMessage
+
         ids = [feat.id() for feat in pointLayer.getFeatures(QgsFeatureRequest().setFilterFids([7, 8, 12, 30]))]
         expectedIds = [7, 8, 12]
         self.assertEqual(set(ids), set(expectedIds))
@@ -84,11 +104,21 @@ class TestQgsFeatureIterator(unittest.TestCase):
         pointLayer.startEditing()
         self.addFeatures(pointLayer)
 
+        myCount = pointLayer.featureCount(QgsFeatureRequest().setFilterFids([-4, 7, 8, 12, 30]))
+        myExpectedCount = 4
+        myMessage = '\nExpected: %s features\nGot: %s features' % (myCount, myExpectedCount)
+        assert myCount == myExpectedCount, myMessage
+
         ids = [feat.id() for feat in pointLayer.getFeatures(QgsFeatureRequest().setFilterFids([-4, 7, 8, 12, 30]))]
         expectedIds = [-4, 7, 8, 12]
         self.assertEqual(set(ids), set(expectedIds))
 
         pointLayer.rollBack()
+
+        myCount = pointLayer.featureCount(QgsFeatureRequest().setFilterFids([-2, 7, 8, 12, 30]))
+        myExpectedCount = 3
+        myMessage = '\nExpected: %s features\nGot: %s features' % (myCount, myExpectedCount)
+        assert myCount == myExpectedCount, myMessage
 
         ids = [feat.id() for feat in pointLayer.getFeatures(QgsFeatureRequest().setFilterFids([-2, 7, 8, 12, 30]))]
         expectedIds = [7, 8, 12]

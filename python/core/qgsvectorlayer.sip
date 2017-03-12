@@ -1032,6 +1032,12 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
      */
     long featureCount() const;
 
+    /**
+     * Returns feature count with a QgsFeatureRequest
+     * including changes which have not yet been committed.
+     */
+    long featureCount( QgsFeatureRequest request );
+
     /** Make layer read-only (editing disabled) or not
      *  @return false if the layer is in editing yet
      */
